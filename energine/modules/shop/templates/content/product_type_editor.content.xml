@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<content>
+		<component name="productTypeEditor" module="shop" class="ProductTypeEditor"></component>
+		<component name="productTypeEditorTextBlock" module="share" class="TextBlock" />
+</content>

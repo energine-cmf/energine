@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<uri_patterns>
+				<pattern>/page-[int]/</pattern>
+				<pattern>/</pattern>
+		     </uri_patterns>
+			<toolbar>
+				<control id="view" title="BTN_GO" type="link"/>
+			</toolbar>
+		</method>
+		<method name="view">
+		     <uri_patterns>
+		         <pattern>/[string]/</pattern>
+		     </uri_patterns>
+		</method>
+	</methods>
+</configuration>

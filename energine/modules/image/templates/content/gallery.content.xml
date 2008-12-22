@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<component name="galleryTextBlock" module="share" class="TextBlock" />
+	<component name="galleryDivisions" module="share" class="ChildDivisions"></component>
+     <component name="gallery" module="image" class="GalleryFeed"></component>
+
+	 <component name="galleryEditor" module="image" class="GalleryEditor">
+		<params>
+			<param name="rights">3</param>
+			<param name="linkTo">gallery</param>
+		</params>
+    </component>
+</content>

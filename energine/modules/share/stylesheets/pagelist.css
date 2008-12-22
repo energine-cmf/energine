@@ -1,0 +1,40 @@
+ul.pagelist {
+    height: 14px;
+    margin: 1px 0 0 0 !important;
+    padding: 3px 2px 3px 22px !important;
+    background: #EED url(../images/pagelist.gif) 4px center no-repeat !important;
+    font: 12px tahoma, sans-serif;
+}
+
+ul.pagelist * {
+    margin: 0;
+    padding: 0;
+}
+
+ul.pagelist li {
+    display: inline;
+    margin: 0 2px !important;
+    padding: 0 4px !important;
+    background: transparent !important;
+    list-style: none !important;
+    cursor: default;
+	color:#36C;
+}
+
+ul.pagelist li.highlighted {
+    background: #FF8 !important;
+    cursor: pointer;
+    cursor: hand;
+}
+
+ul.pagelist li.current {
+    background: #36C !important;
+    color: #FFF;
+    font-weight: bold;
+    cursor: default;
+}
+ul.pagelist li input{
+	font-size:11px;
+	width:50px;
+	margin-right:10px;
+}

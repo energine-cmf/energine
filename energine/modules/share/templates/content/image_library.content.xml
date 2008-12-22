@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<content>
+    <component name="imageLibrary" module="image" class="ImageLibrary">
+        <params>
+            <param name="configFilename">core/modules/image/config/onpageImageLibrary.component.xml</param>
+        </params>
+    </component>
+</content>

@@ -1,0 +1,30 @@
+﻿* { margin: 0; padding: 0; }
+
+body { padding: 10px; }
+
+div.tabpane {
+    /*height: 390px;*/
+}
+
+div.tabpane div.paneContainer {
+    /*height: 366px;*/
+}
+
+div.tabpane div.paneContainer div.pane {
+    height: 406px;
+}
+
+.gridContainer {
+    height: 330px !important;
+}
+
+div.container ul {
+	margin-left:15px;
+    list-style-type: none;
+    clear: both;
+	font: 11px Tahoma, sans-serif;
+}
+
+div.container ul li {
+	padding-left:5px;
+}

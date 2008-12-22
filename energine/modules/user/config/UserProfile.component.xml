@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+<methods>
+	<method name="main">
+		<javascript>
+			<object name="UserProfile" />
+		</javascript>
+		<toolbar>
+			<control id="change" title="BTN_CHANGE" type="button" click="validate"/>
+		</toolbar>
+		<translations>
+			<translation const="TXT_REQUIRED_FIELDS" />
+		</translations>
+	</method> 
+	<method name="save">
+		<uri_patterns>
+			<pattern>/save-user/</pattern>
+		</uri_patterns>
+	</method>
+	<method name="success">
+		<uri_patterns>
+			<pattern>/success/</pattern>
+		</uri_patterns>
+	</method>
+</methods>
+</configuration>

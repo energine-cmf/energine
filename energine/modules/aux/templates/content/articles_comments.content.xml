@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<component name="articleDivisions" module="share" class="ChildDivisions" />
+	<component name="articleTextBlock" module="share" class="TextBlock" />
+    <component name="articles" module="aux" class="ArticlesFeed"></component>
+    <component name="articlesFeedEditor" module="aux" class="ArticlesFeedEditor">
+		<params>
+			<param name="rights">2</param>
+			<param name="linkTo">articles</param>
+		</params>
+    </component>
+	<component name="comments" module="aux" class="Comments">
+		<params>
+			<param name="mainComponent">articles</param>
+			<param name="tableName">v_articles_comments</param>
+			<param name="linkField">art_id</param>
+		</params>
+    </component>
+    <component name="commentForm" module="aux" class="CommentForm">
+		<params>
+			<param name="mainComponent">articles</param>
+			<param name="linkTo">comments</param>
+			<param name="linkTable">aux_comments2articles</param>
+			<param name="linkField">art_id</param>
+		</params>
+    </component>
+</content>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<uri_patterns>
+				<pattern>/page-[int]/</pattern>
+				<pattern>/</pattern>
+		     </uri_patterns>
+			<fields>
+				<field name="news_id"/>
+				<field name="smap_id"/>
+				<field name="news_date" outputFormat="%d/%m/%Y"/>
+				<field name="news_title"/>
+				<field name="news_announce_rtf"/>
+			</fields>
+			<toolbar>
+				<control id="view" title="BTN_GO" type="link"/>
+			</toolbar>
+		</method>
+		<method name="view">
+		     <uri_patterns>
+		         <pattern>/[int]-[int]-[int]/</pattern>
+		     </uri_patterns>
+ 			<fields>
+				<field name="news_id"/>
+				<field name="smap_id"/>
+				<field name="news_date" outputFormat="%d/%m/%Y"/>
+				<field name="news_title"/>
+				<field name="news_text_rtf"/>
+			</fields>
+		</method>
+	</methods>
+</configuration>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<javascript>
+				<object name="ResumeForm"/>
+			</javascript>
+			<uri_patterns>
+				<pattern>/</pattern>
+		     </uri_patterns>
+			<toolbar>
+				<control id="send_resume" title="BTN_SEND" type="submit"/>
+			</toolbar>
+		</method>
+		<method name="send">
+		     <uri_patterns>
+		         <pattern>/send-resume/</pattern>
+		     </uri_patterns>
+			<fields>
+				<field name="result"/>
+			</fields>
+		</method>
+	</methods>
+</configuration>

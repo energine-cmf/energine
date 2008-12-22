@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+<methods>
+	<method name="main">
+		<uri_patterns>
+			<pattern>/page-[int]/</pattern>
+		</uri_patterns>
+		<fields>
+			<field name="smap_id" length="10" type="integer"/>
+			<field name="smap_segment" length="50" type="string"/>
+			<field name="smap_name" length="100" type="string"/>
+			<field name="smap_description" type="text"/>
+		</fields>
+	</method>
+</methods>
+</configuration>

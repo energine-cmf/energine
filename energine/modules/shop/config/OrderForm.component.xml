@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<javascript>
+				<object name="Order" />
+			</javascript>
+			
+			<toolbar>
+				<control id="send" title="BTN_SEND" type="submit" click="validate"/>
+			</toolbar>
+			<translations>
+				<translation const="TXT_REQUIRED_FIELDS" />
+			</translations>
+		</method>
+		<method name="save">
+			<uri_patterns>
+				<pattern>/save-order/</pattern>
+			</uri_patterns>
+			<javascript>
+				<object name="Order" />
+			</javascript>
+			<fields>
+				<field name="order_id"/>
+				<field name="u_name" mode="2"/>
+			</fields>
+			<toolbar>
+				<control id="send" title="BTN_SEND" type="submit" click="validate"/>
+			</toolbar>
+		</method>
+		<method name="success">
+			<uri_patterns>
+				<pattern>/success/</pattern>
+			</uri_patterns>
+		</method>
+	</methods>
+</configuration>

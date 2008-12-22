@@ -1,0 +1,53 @@
+div.tabpane {
+    width: 100%;
+}
+
+div.tabpane ul.tabs {
+    margin: 0 !important;
+    padding: 0 !important;
+    font: 11px Tahoma, sans-serif;
+}
+
+div.tabpane ul.tabs li {
+    float: left;
+	clear: none;
+    height: 16px;
+    overflow: hidden;
+    margin: 2px -1px 0 0 !important;
+    padding: 2px 10px !important;
+    border: 1px solid #AAA;
+    border-bottom: 0;
+    background: #EED;
+    list-style: none !important;
+    font: 11px Tahoma, sans-serif;
+}
+
+div.tabpane ul.tabs li a { color: #000 !important; text-decoration: none; }
+
+div.tabpane ul.tabs li.highlighted {
+    background-color: #FF8;
+}
+
+div.tabpane ul.tabs li.current {
+    position: relative;
+    z-index: 1;
+    margin: 0px -1px -1px 0 !important;
+    padding: 4px 10px 3px 10px !important;
+    background-color: #FFF;
+}
+
+div.tabpane ul.tabs li span.data {
+    display: none;
+}
+
+div.tabpane div.paneContainer {
+    clear: both;
+    padding: 10px;
+    border: 1px solid #AAA;
+    background: #FFF;
+    zoom: 1;
+}
+
+div.tabpane div.pane {
+    /*overflow-y: auto;*/
+}

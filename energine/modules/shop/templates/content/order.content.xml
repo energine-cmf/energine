@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<component name="basket" module="shop" class="BasketForm">
+		<params>
+			<param name="configFilename">core/modules/shop/config/OrderBasketForm.component.xml</param>
+		</params>
+	</component>
+	<component name="textBlock_order" module="share" class="TextBlock" />
+	<component name="order" module="shop" class="OrderForm"></component>
+</content>

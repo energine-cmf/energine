@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<fields>
+				<field name="basket_id" mode="2"/>
+				<field name="basket_count" type="int" title="FIELD_BASKET_COUNT" mode="2"/>
+			</fields>
+			<toolbar>
+				<control id="basket" title="BTN_GO_BASKET" type="link" click="shop/basket/"/>
+				<control id="order" title="BTN_ORDER" type="link" click="shop/order/"/>
+			</toolbar>
+		</method>
+	</methods>
+</configuration>

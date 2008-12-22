@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<javascript>
+				<object name="GridManager" />
+			</javascript>
+			<fields>
+				<field name="dscnt_id"/>
+				<field name="dscnt_name"/>
+				<field name="dscnt_percent"/>
+			</fields>
+			<toolbar>
+				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
+				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+			</toolbar>
+		</method>
+		<method name="add">
+		     <uri_patterns>
+		         <pattern>/add/</pattern>
+		     </uri_patterns>
+			<javascript>
+				<object name="Form"/>
+			</javascript>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="edit">
+		     <uri_patterns>
+		         <pattern>/[int]/edit/</pattern>
+		     </uri_patterns>
+			<javascript>
+				<object name="Form"/>
+			</javascript>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="save" rights="2">
+		     <uri_patterns>
+		         <pattern>/save/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="delete"  rights="2">
+		     <uri_patterns>
+		         <pattern>/[int]/delete/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="getRawData"  rights="2">
+			<uri_patterns>
+		         <pattern>/get-data/</pattern>
+					<pattern>/get-data/page-[int]/</pattern>
+		     </uri_patterns>
+		</method>
+	</methods>
+</configuration>

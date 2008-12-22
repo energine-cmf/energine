@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<javascript>
+				<object name="ProductManager" />
+			</javascript>
+			<fields>
+				<field name="product_id"/>
+				<field name="product_name"/>
+				<field name="ps_id"/>
+			</fields>
+			<toolbar>
+				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
+				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+				<control id="showParams" title="BTN_SHOW_PARAMS" type="button" onclick="showParams"/>
+				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+				<control id="sep01" type="separator"/>
+				<control id="print" title="BTN_PRINT" type="button" onclick="print"/>
+			</toolbar>
+		</method>
+		<method name="add">
+		     <uri_patterns>
+		         <pattern>/add/</pattern>
+		     </uri_patterns>
+			<javascript>
+				<object name="ProductForm"/>
+			</javascript>
+			<fields>
+				<field name="product_id"/>
+				<field name="lang_id"/>
+				<field name="ps_id"/>
+				<field name="smap_id" key="0"/>
+				<field name="product_segment" pattern="/^[a-z0-9\-\_]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
+				<field name="product_code"/>
+				<field name="product_price" ro_rights="2" fc_rights="3"/>
+				<field name="curr_id"/>
+				<field name="product_count"/>
+				<field name="pt_id"/>
+				<field name="producer_id"/>
+				<field name="product_photo_img"/>
+				<field name="product_name"/>
+				<field name="product_short_description_rtf"/>
+				<field name="product_description_rtf"/>
+			</fields>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="edit">
+		     <uri_patterns>
+		         <pattern>/[int]/edit/</pattern>
+		     </uri_patterns>
+			<javascript>
+				<object name="ProductForm"/>
+			</javascript>
+			<fields>
+				<field name="product_id"/>
+				<field name="lang_id"/>
+				<field name="ps_id"/>
+				<field name="smap_id" key="0"/>
+				<field name="product_segment" pattern="/^[a-z0-9\-\_]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
+				<field name="product_code"/>
+				<field name="product_price"/>
+				<field name="curr_id"/>
+				<field name="product_count"/>
+				<field name="pt_id" mode="1"/>
+				<field name="producer_id"/>
+				<field name="product_photo_img"/>
+				<field name="product_name"/>
+				<field name="product_short_description_rtf"/>
+				<field name="product_description_rtf"/>
+			</fields>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="save">
+		     <uri_patterns>
+		         <pattern>/save/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="upload">
+		     <uri_patterns>
+		         <pattern>/upload/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="delete">
+		     <uri_patterns>
+		         <pattern>/[int]/delete/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="getRawData">
+			<uri_patterns>
+		         <pattern>/get-data/</pattern>
+				 <pattern>/get-data/page-[int]/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="imageManager" rights="2">
+			<uri_patterns>
+				<pattern>/imagemanager/</pattern>
+			</uri_patterns>
+		</method>
+		<method name="fileLibrary" rights="2">
+			<uri_patterns>
+				<pattern>/file-library/</pattern>
+				<pattern>/file-library/[string]/</pattern>
+			</uri_patterns>
+		</method>
+		<method name="showTree" rights="2">
+			<uri_patterns>
+				<pattern>/show-tree/</pattern>
+				<pattern>/show-tree/[int]/</pattern>
+				<pattern>/show-tree/get-data/</pattern>
+				<pattern>/show-tree/add/</pattern>
+				<pattern>/show-tree/[int]/edit/</pattern>
+				<pattern>/show-tree/[int]/delete/</pattern>
+				<pattern>/show-tree/save/</pattern>
+				<pattern>/show-tree/upload/</pattern>
+			</uri_patterns>
+		</method>
+		<method name="showParams" rights="2">
+			<uri_patterns>
+			      <pattern>/[int]/show-params/[any]/</pattern>
+			      <!--
+				<pattern>/[int]/show-params/</pattern>
+				<pattern>/[int]/show-params/[int]/</pattern>
+				<pattern>/[int]/show-params/get-data/</pattern>
+				<pattern>/[int]/show-params/get-data/page-[int]/</pattern>
+				<pattern>/[int]/show-params/add/</pattern>
+				<pattern>/[int]/show-params/[int]/edit/</pattern>
+				<pattern>/[int]/show-params/[int]/delete/</pattern>
+				<pattern>/[int]/show-params/save/</pattern>
+				<pattern>/[int]/show-params/upload/</pattern>
+				-->
+			</uri_patterns>
+		</method>
+		<method name="cleanup" rights="2">
+			<uri_patterns>
+				<pattern>/cleanup/</pattern>
+			</uri_patterns>
+		</method>
+		<method name="printData">
+			<uri_patterns>
+				<pattern>/print/</pattern>
+			</uri_patterns>
+		</method>
+	</methods>
+</configuration>

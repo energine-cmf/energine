@@ -1,0 +1,126 @@
+form .invalid {
+    border-style: solid;
+    border-color: #F00;
+}
+
+form div.error {
+    padding: 0.5em;
+    color: #F00;
+    font: 11px Tahoma, sans-serif;
+}
+
+form .field {
+    margin: 15px 0 0 10px;
+    font: 11px Tahoma, sans-serif;
+}
+form .field button {
+	font: 11px Tahoma, sans-serif;
+}
+form .field .name {
+    /**/
+}
+
+form .field label {
+    font-weight: normal;
+}
+
+form .field.required label {
+    font-weight: bold;
+}
+
+form input, form textarea, form select {
+    margin: 1px 0;
+    padding: 1px;
+    border: 1px solid gray;
+    font: 11px Tahoma, sans-serif;
+	width: 250px;
+	height:auto;
+}
+form select{
+	height:auto;
+}
+form select[multiple]{
+	height:auto;
+}
+form input.file{
+	width:230px;
+}
+form input.checkbox {
+	width:auto;
+	border: none;
+}
+form textarea {
+	width: 400px;
+	height: 200px;
+}
+
+form select {
+	width: 250px;
+}
+
+.page_rights {
+	padding:10px 10px 0px 10px;
+}
+.page_rights table {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border-collapse: collapse;
+	border: 1px solid #aaaaaa;
+	font: 11px Tahoma, sans-serif;
+}
+.page_rights table td {
+   padding: 5px 0.5em;
+   border: 1px solid #aaaaaa;
+}
+.page_rights table tr.even td {
+	background: #f4f4f4;
+} 
+.page_rights table thead td {	
+	background: #eeeedd;
+	font-weight: bold;
+}
+.page_rights table td.group_name, .page_rights table tr.even td.group_name {
+	background: #eeeedd;
+	font-weight: bold;
+}
+
+.page_rights table tr td select {
+    font: 11px Tahoma, sans-serif;
+	width: 250px;
+	border: 1px solid gray;
+}
+
+form .field .control .image {
+	width:90%;
+	overflow:auto;
+	overflow-y:hidden;
+}
+
+form .field .control .image img {
+    display: block;
+}
+
+form .richEditor {
+    margin: 1px 0;
+    width: 550px;
+    height: 200px;
+    border: 1px solid gray;
+    background: #FFF;
+}
+
+form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
+
+.label_icon {
+	vertical-align: baseline;
+	margin: 0 5px;	
+}
+
+.tool-tip{
+	padding: 5px;
+	background: #EEEEDD;
+	border: 1px solid gray;
+}
+.tool-text{
+	font: 11px Tahoma, sans-serif;
+}

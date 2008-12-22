@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<uri_patterns>
+				<pattern>/page-[int]/</pattern>
+				<pattern>/</pattern>
+		     </uri_patterns>
+			<fields>
+				<field name="pg_id"/>
+				<field name="smap_id"/>
+				<field name="pg_thumb_img"/>
+				<field name="pg_photo_img"/>
+				<field name="pg_title"/>
+				<field name="pg_text"/>
+			</fields>
+			<toolbar>
+				<control id="view" title="BTN_GO" type="link"/>
+			</toolbar>
+		</method>
+	</methods>
+</configuration>

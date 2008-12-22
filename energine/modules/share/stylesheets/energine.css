@@ -1,0 +1,13 @@
+﻿*[unselectable="on"] { -moz-user-select: none; }
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+	zoom: 1; /* IE5.5+ */
+	_height: 1%; /* IE5-6 */
+}

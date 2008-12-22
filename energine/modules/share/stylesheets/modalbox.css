@@ -1,0 +1,48 @@
+div#mb_overlay {
+	position: fixed;
+	_position: absolute;
+	z-index: 1000;
+	top: 0;
+	_top: expression(eval(document.documentElement.scrollTop - 25));
+	left: 0;
+	width: 100%;
+	_width: expression(eval(document.body.clientWidth));
+	background: #000;
+}
+
+div.modalbox {
+	position: fixed;
+	_position: absolute;
+	z-index: 1001;
+	top: 50px;
+	_top: expression(eval(document.documentElement.scrollTop + 25));
+	left: 50%;
+	background: #FFF;
+}
+
+div.modalbox * {
+    margin: 0;
+    padding: 0;
+}
+
+div.modalbox div.closeButton {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 16px;
+    height: 16px;
+    background: #FFF url(../images/close.gif) no-repeat;
+    cursor: pointer;
+    cursor: hand;
+}
+
+div.modalbox div.closeButton.highlighted {
+    background-color: #FF8;
+}
+
+div.modalbox iframe {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 0;
+}

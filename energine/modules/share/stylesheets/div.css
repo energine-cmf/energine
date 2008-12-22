@@ -1,0 +1,8 @@
+div#treeContainer {
+    width: 99%;
+    height: 400px;
+    overflow: auto;
+    padding-left: 4px;
+    border: 1px solid #B1AFA9;
+    font: 12px Tahoma, sans-serif;
+}

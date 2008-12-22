@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+<methods>
+	<method name="main">
+		<fields>
+			<field name="curr_id"/>
+			<field name="curr_name"/>
+			<field name="curr_rate"/>
+			<field name="is_current" type="boolean"/>
+		</fields>
+	</method>
+</methods>
+</configuration>

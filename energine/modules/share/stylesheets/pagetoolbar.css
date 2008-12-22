@@ -1,0 +1,48 @@
+body {
+	position: relative;	
+	margin-top: 25px;
+}
+
+ul#pageToolbar.toolbar {
+	position: fixed;
+	_position: absolute;
+	z-index: 100;
+	top: 0;
+	_top: expression(eval(document.documentElement.scrollTop - 25));
+	left: 0;
+	width: 100%;
+	_width: expression(eval(document.body.clientWidth - 28));
+	min-height: 24px;
+	_height: 24px;	
+	margin: 0 !important;
+	padding: 0 0 0 28px !important;
+	border-bottom: 1px solid #AAA;
+	background: #EED url(../images/toolbar/pagetb_logo.gif) left top no-repeat;
+	color:black;
+}
+
+ul#pageToolbar.toolbar li {
+	min-height: 24px;
+	height: 2.182em; /* =24px для размера шрифта 11px */
+	_height: 24px;
+	margin: 0 !important;
+	padding: 0 10px !important;
+	border: 0;
+	line-height: 24px;
+	vertical-align: middle;
+}
+
+ul#pageToolbar.toolbar li.icon {
+    padding: 0 4px !important;
+	background: center center no-repeat;
+}
+
+ul#pageToolbar.toolbar li.separator {
+	width: 2px;
+	margin: 0 !important;
+	padding: 0 2px !important;
+	background: url(../images/toolbar/separator.gif) center center no-repeat !important;
+}
+
+ul#pageToolbar.toolbar li.highlighted { background-color: #FF8 !important; }
+/*ul#pageToolbar.toolbar li.pressed { background-color: #A6CE39; }*/

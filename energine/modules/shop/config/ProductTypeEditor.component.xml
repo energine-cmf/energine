@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<javascript>
+				<object name="ProductTypeEditor" />
+			</javascript>
+			<toolbar>
+				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
+				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+				<control id="params" title="BTN_PARAMS_LIST" type="button" onclick="showParams"/>
+			</toolbar>
+		</method>
+		<method name="add">
+		     <uri_patterns>
+		         <pattern>/add/</pattern>
+		     </uri_patterns>
+			<javascript>
+				<object name="Form"/>
+			</javascript>
+			<fields>
+				<field name="pt_id"/>
+				<field name="pt_name"/>
+			</fields>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="edit">
+		     <uri_patterns>
+		         <pattern>/[int]/edit/</pattern>
+		     </uri_patterns>
+			<javascript>
+				<object name="Form"/>
+			</javascript>
+			<fields>
+				<field name="pt_id"/>
+				<field name="pt_name"/>
+			</fields>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="save">
+		     <uri_patterns>
+		         <pattern>/save/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="delete">
+		     <uri_patterns>
+		         <pattern>/[int]/delete/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="getRawData">
+			<uri_patterns>
+		         <pattern>/get-data/</pattern>
+				 <pattern>/get-data/page-[int]/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="showParams">
+			<uri_patterns>
+				<pattern>/[int]/show-params/</pattern>
+				<pattern>/[int]/show-params/[int]/</pattern>
+				<pattern>/[int]/show-params/get-data/</pattern>
+				<pattern>/[int]/show-params/get-data/page-[int]/</pattern>
+				<pattern>/[int]/show-params/add/</pattern>
+				<pattern>/[int]/show-params/[int]/edit/</pattern>
+				<pattern>/[int]/show-params/[int]/delete/</pattern>
+				<pattern>/[int]/show-params/save/</pattern>
+				<pattern>/[int]/show-params/upload/</pattern>
+			</uri_patterns>
+		</method>
+	</methods>
+</configuration>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<component name="ChildsTextBlock" module="share" class="TextBlock" />
+    <component name="childs" module="share" class="ChildDivisions"> </component>
+</content>

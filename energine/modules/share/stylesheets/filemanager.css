@@ -1,0 +1,82 @@
+div.dirArea {
+    width: 100%;
+	height: 404px;
+}
+
+div.dirArea * {
+    margin: 0;
+    padding: 0;
+}
+
+div.dirArea .scrollHelper {
+    height: 100%;
+    overflow: auto;
+    border: 1px solid #B1AFA9;
+}
+
+div.dirArea .scrollHelper div {
+	width:120px;
+	height:120px;
+	border:1px solid silver;
+	margin:10px 10px 10px 10px;
+	float:left;
+	text-align:center;
+}
+
+div.dirArea .scrollHelper div.highlighted {
+	background: #FFA;
+}
+
+div.dirArea .scrollHelper div.selected {
+	background: #316AC5;
+	color: #FFF;
+}
+
+div.dirArea .scrollHelper div div {
+	position:static;
+	float:none;
+	border:none;
+	margin:auto;
+	width:auto;
+	font-family:Tahoma;
+	font-size:9px;
+}
+
+div.dirArea .scrollHelper div div.undefined {
+	width:60px;
+	height:60px;
+	background: url(../images/icons/icon_undefined.gif) no-repeat center center;
+}
+
+div.dirArea .scrollHelper div div.folder {
+	width:60px;
+	height:60px;
+	background: url(../images/icons/icon_folder.gif) no-repeat center center;
+}
+
+div.dirArea .scrollHelper div div.image {
+	width:60px;
+	height:60px;
+	background: url(../images/icons/icon_image.gif) no-repeat center center;
+}
+
+div.dirArea .scrollHelper div div.pdf {
+	width:60px;
+	height:60px;
+	background: url(../images/icons/icon_pdf.gif) no-repeat center center;
+}
+
+div.dirArea .scrollHelper div div.name {
+	height:30px;
+	overflow:hidden;
+	margin-top:2px;
+	font-size:10px;
+	width:80%;
+}
+div.dirArea .scrollHelper div input.name {
+	height:auto;
+	border:1px solid red;
+	margin-top:2px;
+	font-size:10px;
+	width:80%;
+}

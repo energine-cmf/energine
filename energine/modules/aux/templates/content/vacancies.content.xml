@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<component name="vacancyTextBlock" module="share" class="TextBlock" />
+    <component name="vacancies" module="aux" class="VacancyFeed"></component>
+    <component name="vacancyFeedEditor" module="aux" class="VacancyFeedEditor">
+		<params>
+			<param name="rights">3</param>
+			<param name="linkTo">vacancies</param>
+		</params>
+    </component>
+	<component name="resumeForm" module="aux" class="ResumeForm"></component>
+</content>

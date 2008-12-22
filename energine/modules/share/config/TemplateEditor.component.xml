@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<javascript>
+				<object name="GridManager"/>
+			</javascript>
+			<toolbar>
+				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
+				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="add">
+		    <uri_patterns>
+		        <pattern>/add/</pattern>
+		    </uri_patterns>
+			<javascript>
+				<object name="Form"/>
+			</javascript>
+			<fields>
+				<field name="tmpl_id"/>
+				<field name="tmpl_name"/>
+				<field name="tmpl_content"/>
+				<field name="tmpl_layout"/>
+			</fields>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="edit">
+		    <uri_patterns>
+		        <pattern>/[int]/edit/</pattern>
+		    </uri_patterns>
+			<javascript>
+				<object name="Form"/>
+			</javascript>
+			<fields>
+				<field name="tmpl_id"/>
+				<field name="tmpl_name"/>
+				<field name="tmpl_content"/>
+				<field name="tmpl_layout"/>
+			</fields>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="save">
+		    <uri_patterns>
+		        <pattern>/save/</pattern>
+		    </uri_patterns>
+		</method>
+		<method name="upload">
+		    <uri_patterns>
+		        <pattern>/upload/</pattern>
+		    </uri_patterns>
+		</method>
+		<method name="getRawData">
+		    <uri_patterns>
+		        <pattern>/get-data/</pattern>
+				<pattern>/get-data/page-[int]/</pattern>
+		    </uri_patterns>
+		</method>
+		<method name="delete">
+		    <uri_patterns>
+		        <pattern>/[int]/delete/</pattern>
+		    </uri_patterns>
+		</method>
+	</methods>
+</configuration>

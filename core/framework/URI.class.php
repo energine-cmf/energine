@@ -114,6 +114,29 @@ final class URI extends Object {
     public function getHost() {
         return $this->host;
     }
+    
+    /**
+     * Устанавливает порт
+     *
+     * @access public
+     * @return void
+     */
+    public function setPort($port) {
+        if (empty($port)) {
+            $port = 80;
+        }
+        
+        $this->port = $port;
+    }
+    /**
+     * Возвращает идентификатор порта
+     *
+     * @access public
+     * @return int
+     */
+    public function getPort() {
+        return $this->port;
+    }    
 
     /**
      * Устанавливает путь.

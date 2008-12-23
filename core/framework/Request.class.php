@@ -76,6 +76,8 @@ final class Request extends Object {
      * Путь, относящийся к действию
      */
     const PATH_ACTION = 3;
+    
+     private $port = 80;
 
     /**
      * Конструктор класса.
@@ -88,6 +90,11 @@ final class Request extends Object {
 
         $uri = (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
         $this->uri = new URI($uri);
+        //Определение порта
+        //SERVER_PORT - не катит при использовании проброса из какого то порта на 80
+        $port = explode(':', $_SERVER['HTTP_HOST']);
+        $this->uri->setPort((sizeof($port)>1)?$port[1]:80);
+        
         $path = $this->uri->getPath();
         $rootPath = $this->getConfigValue('site.root');
         if ($rootPath[strlen($rootPath)-1] != '/') {
@@ -150,7 +157,7 @@ final class Request extends Object {
      * @return string
      */
     public function getBasePath() {
-        return $this->getURI()->getScheme().'://'.$this->getURI()->getHost().$this->getRootPath();
+        return $this->getURI()->getScheme().'://'.$this->getURI()->getHost().((($port = $this->getURI()->getPort()) == 80)?'':':'.$port).$this->getRootPath();
     }
 
     /**

@@ -8,7 +8,7 @@ RewriteRule ^.*$ #{siteRoot}index.php
     Deny from all
 </FilesMatch>
 
-<FilesMatch "(Root|Repository|Entries)$">
+<FilesMatch "\.(svn)$">
     Order allow,deny
     Deny from all
 </FilesMatch>

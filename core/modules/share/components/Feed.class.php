@@ -41,8 +41,11 @@ abstract class Feed extends DBDataSet {
 	 */
 	protected function createDataDescription() {
 	    $result = parent::createDataDescription();
-	    //$result->removeFieldDescription($result->getFieldDescriptionByName('smap_id'));
-        return $result;
+	    if($smapField = $result->getFieldDescriptionByName('smap_id')){
+	    	$result->removeFieldDescription($smapField);
+	    }
+
+	    return $result;
 	}
     /**
      * Фильтруем по разделам

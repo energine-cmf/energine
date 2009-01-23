@@ -1,3 +1,7 @@
+window.supportContentEdit = window.ie || window.gecko;
+var isset = function(variable){
+	return ('undefined' != typeof(variable));
+}
 /*
  * Class: ScriptLoader
  *     Загружает указанные скрипты из директории scripts.

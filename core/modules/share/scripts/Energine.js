@@ -89,7 +89,7 @@ Element.implement({
             onComplete: function(responseText) {
                 try {
                     var response = Json.evaluate(responseText);
-                }
+                    }
                 catch (e) {
                     var response = {
                         result: false,
@@ -107,8 +107,7 @@ Element.implement({
                         if (typeof error.field != 'undefined') {
                             msg += error.field + " :\t";
                         }
-                        
-                        if (typeof error.field != 'undefined') {
+                        if (typeof error.message != 'undefined') {
                             msg += error.message + "\n";
                         }
                         else{

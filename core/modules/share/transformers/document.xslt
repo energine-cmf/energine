@@ -8,6 +8,7 @@
 	<xsl:variable name="BASE" select="$DOC_PROPS[@name='base']" />
 	<xsl:variable name="LANG_ID" select="$DOC_PROPS[@name='lang']" />
 	<xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@abbr" />
+	<xsl:variable name="NBSP"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></xsl:variable>
 
     <xsl:template match="/">
         <html>
@@ -34,12 +35,12 @@
                         <script type="text/javascript" src="scripts/mootools-debug.js"></script>
                     </xsl:when>
                     <xsl:otherwise>
-                        <script type="text/javascript" src="scripts/mootools.js"></script>        
+                        <script type="text/javascript" src="scripts/mootools.js"></script>
                     </xsl:otherwise>
                 </xsl:choose>
         		<script type="text/javascript" src="scripts/Energine.js"></script>
                 <xsl:call-template name="interface_js"/>
-                
+
                 <script type="text/javascript">
                     function init() {
                         try {
@@ -74,15 +75,15 @@
                         <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
                             <xsl:variable name="objectID" select="generate-id(../../recordset)" />
                             <xsl:value-of select="$objectID" /> = new <xsl:value-of select="@name" />($('<xsl:value-of select="$objectID" />'));
-                            
-        				</xsl:for-each> 
+
+        				</xsl:for-each>
                         }
                         catch (e) {
                                 //alert(e.message);
                         }
 
-                    
-                        
+
+
                     }
                     window.addEvent('domready', init);
         		</script>

@@ -382,6 +382,18 @@ class Grid extends DBDataSet {
         return $response;
     }
 
+    final protected function getSaver(){
+    	if(is_null($this->saver)){
+			$this->saver = new Saver();
+    	}
+
+    	return $this->saver;
+    }
+
+    final protected function setSaver(Saver $saver){
+    	$this->saver = $saver;
+    }
+
     /**
      * Внутренний метод сохранения
      *
@@ -434,16 +446,17 @@ class Grid extends DBDataSet {
         $this->setData($dataObject);
 
         //Создаем сейвер
-        $this->saver = new Saver();
-        //Устанавливаем его режим
-        $this->saver->setMode($mode);
-        $this->saver->setDataDescription($this->getDataDescription());
-        $this->saver->setData($this->getData());
+        $saver = $this->getSaver();
 
-        if($this->saver->validate() === true) {
-            $this->saver->setFilter($this->getFilter());
-            $this->saver->save();
-            $result = $this->saver->getResult();
+        //Устанавливаем его режим
+        $saver->setMode($mode);
+        $saver->setDataDescription($this->getDataDescription());
+        $saver->setData($this->getData());
+
+        if($saver->validate() === true) {
+            $saver->setFilter($this->getFilter());
+            $saver->save();
+            $result = $saver->getResult();
 
         }
         else {

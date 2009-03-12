@@ -4,7 +4,20 @@ var Validator = new Class({
         this.form = $(form);
         this.tabPane = tabPane || null;
     },
+	showError: function(field, message){
+		if (!field.hasClass('invalid')) {
+	        field.addClass('invalid');
+	        new Element('div').addClass('error').appendText('^ ' + message).injectAfter(field.parentNode);
+	    }
+	},
+	scrollToElement: function(field){
+		var scroll = new Fx.Scroll(window, {
+			offset: {'x': -30, 'y': -20},
+			transition: Fx.Transitions.linear
+		});
 
+		scroll.toElement(field).chain(function(){field.focus()});
+	},
     validate: function() {
 		var firstFailure = null;
 		var failed = false;
@@ -28,10 +41,8 @@ var Validator = new Class({
 					if (this.tabPane) {
                         var tab = this.tabPane.whereIs(field);
                     }
-                    if (!field.hasClass('invalid')) {
-                        field.addClass('invalid');
-                        new Element('div').addClass('error').appendText('^ '+field.getProperty('message')).injectAfter(field.parentNode);
-                    }
+                    this.showError(field, field.getProperty('message'));
+
 					if (!firstFailure) {
 						firstFailure = field;
 					}
@@ -56,17 +67,12 @@ var Validator = new Class({
 
 				if (this.tabPane) {
 					try {
-						firstFailure.focus()	
+						firstFailure.focus()
 					}
 					catch (e) {};
-					
-				} else {
-					var scroll = new Fx.Scroll(window, {
-						offset: {'x': -30, 'y': -20},
-						transition: Fx.Transitions.linear
-					});
 
-					scroll.toElement(firstFailure).chain(function(){firstFailure.focus()});
+				} else {
+					this.scrollToElement(firstFailure);
 				}
 
 			}

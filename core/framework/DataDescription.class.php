@@ -61,6 +61,7 @@ class DataDescription extends Object implements Iterator {
      * @return void
      * @see DBA::getColumnsInfo()
      */
+	//TODO Добавить возможность загрузки обычного массива создавая FieldDescription с параметрами по умолчанию
     public function load(array $columnsInfo) {
         foreach ($columnsInfo as $columnName => $columnInfo) {
             $fieldDescr = new FieldDescription($columnName);

@@ -8,6 +8,7 @@
 			<fields>
 				<field name="basket_id"/>
 				<field name="product_name" title="FIELD_PRODUCT_NAME"/>
+				<field name="product_code" title="FIELD_PRODUCT_CODE"/>
 				<field name="product_price" title="FIELD_PRODUCT_PRICE"/>
 				<field name="basket_count"/>
 			</fields>

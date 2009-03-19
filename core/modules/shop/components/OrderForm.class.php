@@ -320,7 +320,7 @@ class OrderForm extends DBDataSet {
         $summ = 0;
         foreach ($contents as $key => $productInfo) {
             $basketHTML .= '<tr>';
-            $basketHTML .= '<td>'.$productInfo['product_name'] .'</td>';
+            $basketHTML .= '<td>'.$productInfo['product_name'] .' '.$productInfo['product_code'] .'</td>';
             $basketHTML .= '<td>'.$productInfo['basket_count'] .'</td>';
             $basketHTML .= '<td>'.$productInfo['product_price'] .'</td>';
             $basketHTML .= '<th>'.$productInfo['product_summ'] .'</th>';

@@ -205,7 +205,7 @@ class Basket extends DBWorker {
 
     public function getContents($formattedOutput = true) {
         $result = $this->dbh->selectRequest(
-        'SELECT main.*, pt.product_name, ext.product_price, ext.product_price*main.basket_count as product_summ, ext.product_price * (1 - dscnt.dscnt_percent / 100) AS product_summ_with_discount, ext.curr_id, product.product_segment '.
+        'SELECT main.*, pt.product_name, ext.product_price, ext.product_price*main.basket_count as product_summ, ext.product_price * (1 - dscnt.dscnt_percent / 100) AS product_summ_with_discount, ext.curr_id, product.product_segment, product.product_code '.
         'FROM '.$this->getTableName().' main '.
         'LEFT JOIN shop_products product ON product.product_id = main.product_id '.
         'LEFT JOIN shop_products_translation pt ON pt.product_id = main.product_id '.

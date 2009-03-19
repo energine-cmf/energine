@@ -315,21 +315,21 @@ class OrderForm extends DBDataSet {
         $contents = $this->order->getBasket()->getContents();
         $basketHTML = '<table border="1">';
         $basketHTML .= '<thead><tr>';
-        $basketHTML .= '<td>'.$this->translate('FIELD_PRODUCT_NAME').'</td><td>'.$this->translate('FIELD_BASKET_COUNT').'</td><td>'.$this->translate('FIELD_PRODUCT_PRICE').'</td><td>'.$this->translate('FIELD_PRODUCT_SUMM').'</td>';
+        $basketHTML .= '<td>'.$this->translate('FIELD_PRODUCT_NAME')."</td>\t<td>".$this->translate('FIELD_BASKET_COUNT')."</td>\t<td>".$this->translate('FIELD_PRODUCT_PRICE')."</td>\t<td>".$this->translate('FIELD_PRODUCT_SUMM')."</td>\n";
         $basketHTML .= '</tr></thead><tbody>';
         $summ = 0;
         foreach ($contents as $key => $productInfo) {
             $basketHTML .= '<tr>';
-            $basketHTML .= '<td>'.$productInfo['product_name'] .' '.$productInfo['product_code'] .'</td>';
-            $basketHTML .= '<td>'.$productInfo['basket_count'] .'</td>';
-            $basketHTML .= '<td>'.$productInfo['product_price'] .'</td>';
-            $basketHTML .= '<th>'.$productInfo['product_summ'] .'</th>';
-            $basketHTML .= '</tr>';
+            $basketHTML .= '<td>'.$productInfo['product_name'] .' '.$productInfo['product_code'] ."</td>\t";
+            $basketHTML .= '<td>'.$productInfo['basket_count'] ."</td>\t";
+            $basketHTML .= '<td>'.$productInfo['product_price'] ."</td>\t";
+            $basketHTML .= '<th>'.$productInfo['product_summ'] ."</th>\t";
+            $basketHTML .= "</tr>\n";
             $summ += $productInfo['product_summ'];
         }
         $basketHTML .= '</tbody>';
         $basketHTML .= '<tfoot>';
-        $basketHTML .= '<tr><td colspan="3">'.$this->translate('TXT_BASKET_SUMM').'</td><td>'.$converter->format($summ, $converter->getIDByAbbr('HRN')).'</td></tr>';
+        $basketHTML .= '<tr><td colspan="3">'.$this->translate('TXT_BASKET_SUMM')."</td>\t<td>".$converter->format($summ, $converter->getIDByAbbr('HRN')).'</td></tr>';
         if ($discounts->getDiscountForGroup() > 0) {
             $basketHTML .= '<tr><td colspan="3">'.$this->translate('TXT_BASKET_SUMM_WITH_DISCOUNT').' '.$discounts->getDiscountForGroup().'%</td><td>'.number_format($discounts->calculateCost($summ), 2, '.', ' ').'</td></tr>';
         }

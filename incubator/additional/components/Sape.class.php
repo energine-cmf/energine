@@ -22,7 +22,7 @@ class Sape extends Component {
             parent::defineParams(),
             array(
             'links' => '',
-            'code' => 'e37aa5ee5da182b23876ce80785cd92a'
+            'code' => ''
             )
         );
     }

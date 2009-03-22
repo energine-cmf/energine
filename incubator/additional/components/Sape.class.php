@@ -21,7 +21,8 @@ class Sape extends Component {
         return array_merge(
             parent::defineParams(),
             array(
-            'links' => ''
+            'links' => '',
+            'code' => 'e37aa5ee5da182b23876ce80785cd92a'
             )
         );
     }
@@ -29,11 +30,16 @@ class Sape extends Component {
     public function getClient(){
         if (!isset($GLOBALS['sape'])) {
         	if (!defined('_SAPE_USER')){
-                 define('_SAPE_USER', 'e37aa5ee5da182b23876ce80785cd92a');
+                 define('_SAPE_USER', $this->getParam('code'));
             }
             require_once($_SERVER['DOCUMENT_ROOT'].'/'._SAPE_USER.'/sape.php');
           
-            $GLOBALS['sape'] = new SAPE_client(array('charset' => 'UTF-8'));
+            $GLOBALS['sape'] = new SAPE_client(
+                array(
+                	'charset' => 'UTF-8',
+                	'force_show_code' => true
+                )
+            );
         }
       
         return $GLOBALS['sape'];

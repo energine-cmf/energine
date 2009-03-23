@@ -25,7 +25,7 @@ var Validator = new Class({
 
         for (var i = 0; i < this.form.elements.length; i++) {
             var field = $(this.form.elements[i]);
-            if (field.getProperty('pattern') && field.getProperty('message')) {
+            if (field.getProperty('pattern') && field.getProperty('message') && !field.getProperty('disabled')) {
                 if (field.hasClass('invalid')) {
                     field.removeClass('invalid');
                     var errorDiv;

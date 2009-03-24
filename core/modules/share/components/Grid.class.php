@@ -256,6 +256,27 @@ class Grid extends DBDataSet {
         return $result;
     }
 
+    /**
+     * Метод используется для форматирования даты и времени в полях date и datetime
+     * Запрашивается через AJAX
+     * Получает данные из POST и возвращает строку даты
+     *
+     * @return void
+     */
+    protected function formatDate(){
+    	$result = '';
+
+    	if(isset($_POST['date'])){
+			$date = $_POST['date'];
+			list($year, $month, $day) = explode('-', $date);
+
+			$result = (int)$day.' '.$this->translate('TXT_MONTH_'.(int)$month).' '.$year;
+    	}
+    	$this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write(json_encode($result));
+        $this->response->commit();
+    }
+
 
     /**
      * Выводит данные в JSON формате для AJAX

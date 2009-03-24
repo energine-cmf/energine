@@ -146,17 +146,17 @@ Element.implement({
 	var getPathInfo = function(str) {
 		var re = new RegExp("(.*)/([A-Za-z0-9\-_\. ]+\.[A-Za-z0-9\-_]+)$","gi");
 		var arr = re.exec(str);
-		
+
 		return {'path':RegExp.$1, 'filename':RegExp.$2};
 	}
 
 	var showhideField = function (obj, fieldName, fieldLanguage) {
 		var fieldLanguage = fieldLanguage || '';
-		var obj = $(obj); 
-		var currentStatus =  Number(!Boolean(Number(obj.getProperty('is_hidden')))); 
-		obj.innerHTML = obj.getProperty('message'+currentStatus); 
-		obj.setProperty('is_hidden',currentStatus); 
-		$('control_'+fieldLanguage+'_'+fieldName).setStyle('display', ((currentStatus)?'none':'block')); 
+		var obj = $(obj);
+		var currentStatus =  Number(!Boolean(Number(obj.getProperty('is_hidden'))));
+		obj.innerHTML = obj.getProperty('message'+currentStatus);
+		obj.setProperty('is_hidden',currentStatus);
+		$('control_'+fieldLanguage+'_'+fieldName).setStyle('display', ((currentStatus)?'none':'block'));
 		return false;
 	}
 
@@ -173,18 +173,18 @@ Element.implement({
 						var tmp = '...recursion...';
 						if (l<2) {
 							try {
-								tmp = console._dump(d[k],l+1);	
+								tmp = console._dump(d[k],l+1);
 							}
 							catch (e) {
 							}
-							
+
 						}
-						s += k+": " + tmp;	
-						
+						s += k+": " + tmp;
+
 					}
 					for (var i=0; i<l-1; i++) s += "  ";
 					s += "}\n"
-				} 
+				}
 				else {
 					s += "" + d + "\n";
 				}

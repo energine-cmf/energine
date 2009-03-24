@@ -83,7 +83,7 @@ var Calendar = new Class({
 
     destroy: function() {
         this.element.remove();
-        delete Form.calendars[this.options.fieldName];
+        delete FormCalendar.calendars[this.options.fieldName];
     },
 
     selectDate: function(event) {
@@ -156,3 +156,48 @@ var Calendar = new Class({
 
 Calendar.implement(new Events);
 Calendar.implement(new Options);
+
+var FormCalendar = {
+	setDate: function(fieldName){
+		var getDateString = function(date, destinationField){
+
+			new Ajax(this.singlePath + 'format-date/', {
+				method:'post',
+				data:Object.toQueryString({'date':date}),
+				onSuccess: function(responseText){
+					var result = Json.evaluate(responseText);
+					$(destinationField).value = result;
+
+			}}).request();
+		}.bind(this);
+
+		getDateString($(fieldName).getValue(), 'date_'+fieldName);
+	},
+	showCalendar: function(fieldName, event) {
+	    if (FormCalendar.calendars[fieldName]) return;
+	    var field = $(fieldName);
+	    var calendOptions = {
+	        fieldName: fieldName,
+	        onSelect: function(date) {
+	            field.value = date.year+'-'+date.month+'-'+date.day;
+	            this.setDate(fieldName);
+	        }.bind(this)
+	    };
+	    var currDate = field.getValue();
+	    if (currDate != '') {
+	        currDate = currDate.split('-', 3);
+	        calendOptions = Object.extend(calendOptions, {
+	            currYear: parseInt(currDate[0]),
+	            currMonth: parseInt(currDate[1]),
+	            currDay: parseInt(currDate[2])
+	        });
+	    }
+	    var calend = new Calendar(calendOptions);
+	    FormCalendar.calendars[fieldName] = calend;
+
+	    var target = event.target || $(window.event.srcElement);
+
+	    calend.element.setStyles({ position: 'absolute', top: target.getTop()+'px', left: target.getLeft()+'px' }).injectInside(document.body);
+	},
+	calendars:{}
+};

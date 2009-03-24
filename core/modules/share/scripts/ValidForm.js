@@ -1,4 +1,4 @@
-ScriptLoader.load('Validator.js');
+ScriptLoader.load('Validator.js', 'Calendar.js');
 
 var ValidForm = new Class({
 

@@ -32,11 +32,11 @@ var Form = new Class({
         var iframe, form, newField;
 		var iframeAction =  this.singlePath + 'upload/';
 		var fileField = $(fileField);
-		
+
 		if (fileField.getProperty('protected')) {
 			iframeAction += '?protected';
 		}
-				
+
         if (window.ie) {
             iframe = $(document.createElement('<iframe name="uploader" id="uploader">'));
 			form = $(document.createElement('<form enctype="multipart/form-data" method="post" target="uploader" action="' + iframeAction + '" style="width:0; height:0; border:0; display:none;">'));
@@ -67,7 +67,6 @@ var Form = new Class({
 		form.remove();
 		form /*= newField */= null;
     },
-
     save: function() {
         this.richEditors.each(function(editor) { editor.onSaveForm(); });
         if (!this.validator.validate()) {
@@ -83,7 +82,6 @@ var Form = new Class({
     close: function() {
         ModalBox.close();
     },
-
     openFileLib: function (button) {
         var path = $($(button).getProperty('link')).getValue();
         if (path == '') {
@@ -105,33 +103,7 @@ var Form = new Class({
     }
 });
 Form.implement(Request);
-
-Form.calendars = {};
-Form.showCalendar = function(fieldName, event) {
-    if (Form.calendars[fieldName]) return;
-    var field = $(fieldName);
-    var calendOptions = {
-        fieldName: fieldName,
-        onSelect: function(date) {
-            field.value = date.year+'-'+date.month+'-'+date.day;
-        }
-    };
-    var currDate = field.getValue();
-    if (currDate != '') {
-        currDate = currDate.split('-', 3);
-        calendOptions = Object.extend(calendOptions, {
-            currYear: parseInt(currDate[0]),
-            currMonth: parseInt(currDate[1]),
-            currDay: parseInt(currDate[2])
-        });
-    }
-    var calend = new Calendar(calendOptions);
-    Form.calendars[fieldName] = calend;
-
-    var target = event.target || $(window.event.srcElement);
-    
-    calend.element.setStyles({ position: 'absolute', top: target.getTop()+'px', left: target.getLeft()+'px' }).injectInside(document.body);
-}
+Form.implement(FormCalendar);
 
 Form.RichEditor = RichEditor.extend({
 
@@ -144,7 +116,7 @@ Form.RichEditor = RichEditor.extend({
             this.hidden = new Element('input').setProperty('name', this.textarea.name).setProperties({ 'type': 'hidden', 'value': '', 'pattern':this.textarea.getProperty('pattern'), 'message':this.textarea.getProperty('message')}).injectBefore(this.textarea);
             this.area = new Element('div').setProperties({ componentPath: this.form.singlePath }).addClass('richEditor').setStyles({ clear: 'both', overflow: 'auto' }).setHTML(this.textarea.value);
             this.textarea.replaceWith(this.area);
-            
+
             //document.addEvent('keydown', this.processKeyEvent.bind(this));
             this.pasteArea = new Element('div').setStyles({ 'visibility': 'hidden', 'width': '0', 'height': '0', 'font-size': '0', 'line-height': '0' }).injectInside(document.body);
 

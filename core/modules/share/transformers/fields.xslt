@@ -26,14 +26,14 @@
                             <xsl:when test="@type='select'">
                                 <xsl:choose>
                                     <xsl:when test="not(options/option/@selected)">1</xsl:when>
-                                    <xsl:otherwise>0</xsl:otherwise>                                
+                                    <xsl:otherwise>0</xsl:otherwise>
                                 </xsl:choose>
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:choose>
                                     <xsl:when test=".=''">1</xsl:when>
-                                    <xsl:otherwise>0</xsl:otherwise>                                
-                                </xsl:choose>    
+                                    <xsl:otherwise>0</xsl:otherwise>
+                                </xsl:choose>
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
@@ -41,20 +41,20 @@
                         <xsl:when test="@type='select'">
                             <xsl:choose>
                                 <xsl:when test="not(options/option/@selected)">
-                                    <xsl:value-of select="../../../translations/translation[@const='TXT_OPEN_FIELD']"/>                                            
+                                    <xsl:value-of select="../../../translations/translation[@const='TXT_OPEN_FIELD']"/>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <xsl:value-of select="../../../translations/translation[@const='TXT_CLOSE_FIELD']"/>                
+                                    <xsl:value-of select="../../../translations/translation[@const='TXT_CLOSE_FIELD']"/>
                                 </xsl:otherwise>
                             </xsl:choose>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:choose>
                                 <xsl:when test=".=''">
-                                    <xsl:value-of select="../../../translations/translation[@const='TXT_OPEN_FIELD']"/>                
+                                    <xsl:value-of select="../../../translations/translation[@const='TXT_OPEN_FIELD']"/>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <xsl:value-of select="../../../translations/translation[@const='TXT_CLOSE_FIELD']"/>                
+                                    <xsl:value-of select="../../../translations/translation[@const='TXT_CLOSE_FIELD']"/>
                                 </xsl:otherwise>
                             </xsl:choose>
                         </xsl:otherwise>
@@ -67,18 +67,18 @@
                 </xsl:if>
 			</div>
 		</xsl:if>
-        
+
 		<div class="control" id="control_{@language}_{@name}">
             <xsl:if test="@nullable and ancestor::component/@exttype = 'grid'">
                 <xsl:choose>
                     <xsl:when test="@type='select'">
                         <xsl:if test="not(options/option/@selected)">
-                            <xsl:attribute name="style">display:none;</xsl:attribute>    
-                        </xsl:if>                        
+                            <xsl:attribute name="style">display:none;</xsl:attribute>
+                        </xsl:if>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:if test=".=''">
-                            <xsl:attribute name="style">display:none;</xsl:attribute>    
+                            <xsl:attribute name="style">display:none;</xsl:attribute>
                         </xsl:if>
                     </xsl:otherwise>
                 </xsl:choose>
@@ -335,7 +335,7 @@
         <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
     </xsl:if>
     <div>
-    
+
     </div>
     <xsl:element name="input">
         <xsl:attribute name="type">text</xsl:attribute>
@@ -476,7 +476,7 @@
                         <xsl:attribute name="style">width:auto;vertical-align:middle;border:none;</xsl:attribute>
                         <xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>
                         <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
-                        <xsl:attribute name="name"><xsl:value-of select="$NAME"/></xsl:attribute>    
+                        <xsl:attribute name="name"><xsl:value-of select="$NAME"/></xsl:attribute>
                         <xsl:if test="@selected">
                             <xsl:attribute name="checked">checked</xsl:attribute>
                         </xsl:if>
@@ -648,7 +648,7 @@
                 </xsl:choose></xsl:attribute>
                 <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
             </xsl:element>
-        </div>        
+        </div>
     </xsl:if>
 </xsl:template>
 
@@ -763,7 +763,7 @@
                 </xsl:choose></xsl:attribute>
                 <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
             </xsl:element>
-        </div>    
+        </div>
     </xsl:if>
 </xsl:template>
 
@@ -815,24 +815,34 @@
 <xsl:template name="DATE">
 	<xsl:element name="input">
 		<xsl:attribute name="type">text</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
 		<xsl:if test="@length">
 			<xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
 		</xsl:if>
+		<xsl:attribute name="id">date_<xsl:value-of select="@name" /></xsl:attribute>
+        <xsl:attribute name="readonly">readonly</xsl:attribute>
+	</xsl:element>
+	<input type="hidden">
+		<xsl:attribute name="name"><xsl:choose>
+			<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+			<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+		</xsl:choose></xsl:attribute>
 		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
 		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-        <xsl:attribute name="readonly">readonly</xsl:attribute>
-        <xsl:if test="@pattern">
+		<xsl:if test="@pattern">
         	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
         	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
-	</xsl:element>
-    <button style="height: 22px; margin-left: 2px;" type="button" onclick="Form.showCalendar('{@name}', event);">...</button>
+	</input>
+
+	<script type="text/javascript">
+		Window.addEvent('load', function(){
+			<xsl:value-of select="generate-id(../..)"/>.setDate('<xsl:value-of select="@name"/>');
+		});
+	</script>
+
+    <button style="height: 22px; margin-left: 2px;" type="button" onclick="{generate-id(../..)}.showCalendar('{@name}', event); ">...</button>
 </xsl:template>
 
 <!-- Для поля hidden -->

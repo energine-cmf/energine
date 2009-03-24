@@ -11,7 +11,7 @@
 				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
 				<!-- <control type="button" id="up" title="BTN_MOVE_UP" onclick="up" />
-				<control type="button" id="down" title="BTN_MOVE_DOWN" onclick="down" /> 
+				<control type="button" id="down" title="BTN_MOVE_DOWN" onclick="down" />
 				<control id="print" title="BTN_PRINT" type="button" onclick="print"/>
 				-->
 			</toolbar>
@@ -88,7 +88,12 @@
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>
 		</method>
-<!-- 	
+		<method name="formatDate" rights="2">
+			<uri_patterns>
+				<pattern>/format-date/</pattern>
+			</uri_patterns>
+		</method>
+<!--
 		<method name="exportCSV">
 			<uri_patterns>
 				<pattern>/csv/</pattern>

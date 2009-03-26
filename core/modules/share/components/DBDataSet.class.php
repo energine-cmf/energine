@@ -527,6 +527,10 @@ class DBDataSet extends DataSet {
         return $this->pk;
     }
 
+    final protected function setPK($primaryColumnName){
+    	$this->pk = $primaryColumnName;
+    }
+
     /**
      * Для мультиязычного грида
      * подменяем построитель

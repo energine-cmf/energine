@@ -197,7 +197,13 @@ var FormCalendar = {
 
 	    var target = event.target || $(window.event.srcElement);
 
-	    calend.element.setStyles({ position: 'absolute', top: target.getTop()+'px', left: target.getLeft()+'px' }).injectInside(document.body);
+	    calend.element.setStyles(
+	    	{
+	    		position: 'absolute',
+	    		top: target.getTop(($E('.pane'))?[$E('.pane')]:[])+'px',
+	    		left: target.getLeft(($E('.pane'))?[$E('.pane')]:[])+'px'
+	    	}
+	    ).injectInside(document.body);
 	},
 	calendars:{}
 };

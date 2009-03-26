@@ -835,13 +835,13 @@
         	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
 	</input>
-
-	<script type="text/javascript">
-		Window.addEvent('load', function(){
-			<xsl:value-of select="generate-id(../..)"/>.setDate('<xsl:value-of select="@name"/>');
-		});
-	</script>
-
+	<xsl:if test=".!=''">
+		<script type="text/javascript">
+			Window.addEvent('load', function(){
+				<xsl:value-of select="generate-id(../..)"/>.setDate('<xsl:value-of select="@name"/>');
+			});
+		</script>
+	</xsl:if>
     <button style="height: 22px; margin-left: 2px;" type="button" onclick="{generate-id(../..)}.showCalendar('{@name}', event); ">...</button>
 </xsl:template>
 

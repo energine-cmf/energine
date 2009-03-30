@@ -837,7 +837,7 @@
 	</input>
 	<xsl:if test=".!=''">
 		<script type="text/javascript">
-			Window.addEvent('load', function(){
+			Window.addEvent('domready', function(){
 				<xsl:value-of select="generate-id(../..)"/>.setDate('<xsl:value-of select="@name"/>');
 			});
 		</script>

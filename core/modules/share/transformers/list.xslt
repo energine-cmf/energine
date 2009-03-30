@@ -141,7 +141,7 @@
                     </div>
                 </div>
             </div>
-        </div>        
+        </div>
     </xsl:template>
 
     <xsl:template match="component[@type='list']/recordset/record/field">
@@ -214,7 +214,7 @@ THEAD { display: table-header-group; }
                 <tr>
                     <th>...</th>
                     <xsl:for-each select="recordset/record[1]/field[@type!='hidden'][@index != 'PRI' or not(@index)]">
-                            <th><xsl:value-of select="@title"/></th>    
+                            <th><xsl:value-of select="@title"/></th>
                     </xsl:for-each>
                 </tr>
             </thead>

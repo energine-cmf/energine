@@ -56,7 +56,7 @@ var GridManager = new Class({
     onTabChange: function(tabData) {
         this.langId = tabData.lang;
         // Загружаем первую страницу только если панель инструментов уже прикреплена.
-        if (this.toolbar && this.filter.element) this.removeFilter(true); 
+        if (this.toolbar && this.filter.element) this.removeFilter(true);
         else if (this.toolbar){
             this.reloadGrid();
         }
@@ -88,7 +88,7 @@ var GridManager = new Class({
             var fieldName = this.filter.fields.options[this.filter.fields.selectedIndex].value;
             postBody  += 'filter'+fieldName+'='+this.filter.query.value+'&';
         }
-        this.request(this.singleTemplatePath + 'get-data/page-' + pageNum, 
+        this.request(this.singleTemplatePath + 'get-data/page-' + pageNum,
                 postBody, function(result) {
                     if (!this.initialized) {
                         this.grid.setMetadata(result.meta);

@@ -91,7 +91,7 @@ final class AuthUser extends User {
             //stop($_POST['user']['remember']);
             $this->isJustNowAuthenticated = true;
         }
-        
+
         $this->loadInfo($id);
     }
 

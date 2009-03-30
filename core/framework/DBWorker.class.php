@@ -89,6 +89,20 @@ abstract class DBWorker extends Object {
     }
 
     /**
+     * Возвращает дату в виде строки прописью
+     *
+     * @param $year
+     * @param $month
+     * @param $day
+     * @return string
+     * @static
+     */
+    public static function _dateToString($year, $month, $day){
+		$result = (int)$day.' '.self::_translate('TXT_MONTH_'.(int)$month).' '.$year;
+		return $result;
+    }
+
+    /**
      * Нестатический метод-обёртка над DBWorker::_translate -
      * для удобства использования внутри производных классов.
      *
@@ -101,4 +115,19 @@ abstract class DBWorker extends Object {
     public function translate($const, $langID = null) {
         return self::_translate($const, $langID);
     }
+
+    /**
+     * Дата прописью
+     * Обертка над DBWorker::_dateToString
+     *
+     * @param $date string
+     * @param $format string
+     * @return string
+     * @see DBWorker::_dateToString
+     */
+    public function dateToString($date, $format='%d-%d-%d'){
+    	list($year, $month, $day) = sscanf($date, $format);
+		return self::_dateToString($year, $month, $day);
+    }
+
 }

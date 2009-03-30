@@ -267,10 +267,7 @@ class Grid extends DBDataSet {
     	$result = '';
 
     	if(isset($_POST['date'])){
-			$date = $_POST['date'];
-			list($year, $month, $day) = explode('-', $date);
-
-			$result = (int)$day.' '.$this->translate('TXT_MONTH_'.(int)$month).' '.$year;
+			$result = $this->dateToString($_POST['date']);
     	}
     	$this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
         $this->response->write(json_encode($result));

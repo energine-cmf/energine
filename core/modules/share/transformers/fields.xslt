@@ -251,6 +251,7 @@
         <xsl:if test="@pattern">
         	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
+        <xsl:attribute name="class">float</xsl:attribute>
         <xsl:if test="@message">
         	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>

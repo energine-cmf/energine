@@ -7,10 +7,11 @@ var ValidForm = new Class({
         this.form = $(this.componentElement.getElement('input').form);
         this.form.addClass('form').addEvent('submit', this.validateForm.bind(this));
         this.validator = new Validator(this.form);
-    },
 
+    },
     validateForm: function(event) {
         event = event || window.event;
+
         var result = false;
         if (!this.validator.validate()) {
             if (event.stopPropagation) event.stopPropagation();

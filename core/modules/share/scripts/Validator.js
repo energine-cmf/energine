@@ -3,7 +3,21 @@ var Validator = new Class({
     initialize: function(form, tabPane) {
         this.form = $(form);
         this.tabPane = tabPane || null;
+        this.prepareFloatFields();
     },
+    prepareFloatFields: function(){
+		var prepareFunction = function(event){
+        		event= new Event(event || window.event);
+        		event.target.value = event.target.value.replace(/\,/, '.');
+        };
+
+	    //Для всех field type=float(class=float)
+        //меняем , на .
+        $ES('.float', this.form).each(function(element){
+        	element.removeEvent('change', prepareFunction);
+        	element.addEvent('change', prepareFunction);
+        });
+	},
 	showError: function(field, message){
 		if (!field.hasClass('invalid')) {
 	        field.addClass('invalid');

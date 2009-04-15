@@ -75,8 +75,8 @@ form select {
 }
 .page_rights table tr.even td {
 	background: #f4f4f4;
-} 
-.page_rights table thead td {	
+}
+.page_rights table thead td {
 	background: #eeeedd;
 	font-weight: bold;
 }
@@ -113,7 +113,7 @@ form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
 
 .label_icon {
 	vertical-align: baseline;
-	margin: 0 5px;	
+	margin: 0 5px;
 }
 
 .tool-tip{
@@ -123,4 +123,15 @@ form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
 }
 .tool-text{
 	font: 11px Tahoma, sans-serif;
+}
+
+.formContainer fieldset{
+	border:1px solid #AAAAAA;
+	padding:0px 5px 10px 0px;
+	margin:15px;
+}
+
+.formContainer legend{
+	margin-left:10px;
+	font: 12px Tahoma, sans-serif;
 }

@@ -33,4 +33,9 @@ class TranslationEditor extends Grid {
         $this->setTableName('share_lang_tags');
         $this->setOrder(array('ltag_name' =>QAL::ASC ));
 	}
+
+	protected function saveData(){
+		$_POST[$this->getTableName()]['ltag_name'] = strtoupper($_POST[$this->getTableName()]['ltag_name']);
+		parent::saveData();
+	}
 }

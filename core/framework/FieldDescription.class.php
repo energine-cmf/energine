@@ -424,7 +424,11 @@ class FieldDescription extends DBWorker {
                 break;
             case self::FIELD_TYPE_FLOAT:
                 $this->length = 10;
-                if ($this->getPropertyValue('nullable') === false) {
+                if (
+                	($this->getPropertyValue('nullable') === false)
+                	||
+                	(is_null($this->getPropertyValue('nullable')))
+                ) {
                     $regexp = '/^[0-9,\.]{1,'.$this->length.'}$/';
                 }
                 else {

@@ -15,9 +15,8 @@
  * @package energine
  * @subpackage share
  * @author dr.Pavka
- * @abstract
- */
-abstract class Feed extends DBDataSet {
+  */
+class Feed extends DBDataSet {
     /**
      * Конструктор класса
      *

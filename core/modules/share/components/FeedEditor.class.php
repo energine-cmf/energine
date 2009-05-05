@@ -15,9 +15,8 @@
  * @package energine
  * @subpackage share
  * @author dr.Pavka
- * @abstract
  */
-abstract class FeedEditor extends Grid {
+class FeedEditor extends Grid {
     /**
      * Включен ли режим редактирования
      *

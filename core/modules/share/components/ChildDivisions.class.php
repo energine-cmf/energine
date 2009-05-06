@@ -17,6 +17,7 @@
  * @package energine
  * @subpackage share
  * @author dr.Pavka
+ * @todo класс необходимо переписать поскольку используется разный принцип получения данных для страниц и разделов
  *
  */
 class ChildDivisions extends DataSet  {
@@ -134,7 +135,26 @@ class ChildDivisions extends DataSet  {
 	 */
 
     protected function loadData() {
-        $data = Sitemap::getInstance()->getChilds($this->getID());
+    	if(!$this->getParam('showFinal')){
+        	$data = Sitemap::getInstance()->getChilds($this->getID());
+    	}
+    	else{
+    		$request = '
+    		select
+    			map.smap_id as Id,
+    			map.smap_pid as Pid,
+    			map.smap_segment as Segment,
+    			tmap.smap_name as Name,
+    			tmap.smap_description_rtf as DescriptionRtf
+			FROm share_sitemap map
+			LEFT JOIN share_sitemap_translation tmap ON tmap.smap_id = map.smap_id
+			WHERE lang_id = %s and smap_pid = %s and smap_is_disabled =0 and smap_is_final=1';
+
+    		$data = $this->dbh->selectRequest($request, $this->document->getLang(), $this->id);
+    		$data = array_filter($data, array($this, 'filterDataByRights'));
+    		$data = array_map(array($this, 'prepareSegment'), $data);
+
+    	}
         $data = (empty($data))?false:$data;
         if(is_array($data)) {
             if ($this->getParam('recordsPerPage')) {
@@ -157,5 +177,27 @@ class ChildDivisions extends DataSet  {
         }
 
         return $data;
+    }
+
+    /**
+     * Callback функция для фильтрации массива данных о дочерних страницах(не разделах) по правам
+     *
+     * @param $row
+     * @return bool
+     */
+    private function filterDataByRights($row){
+		return (Sitemap::getInstance()->getDocumentRights($row['Id']) != ACCESS_NONE);
+    }
+
+    /**
+     * Callback функция для генерации полного URL дл страниц
+     *
+     * @param $row
+     * @return array
+     */
+    private function prepareSegment($row){
+    	$row['Segment'] = Sitemap::getInstance()->getURLByID($row['Pid']).$row['Segment'].'/';
+
+    	return $row;
     }
 }

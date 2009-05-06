@@ -18,6 +18,8 @@
  * Класс - синглтон
  * Содержит методы по работе со структурой сайта
  *
+ * @todo проблема с конечными страницами
+ *
  * @package energine
  * @subpackage core
  * @author dr.Pavka
@@ -228,6 +230,8 @@ final class Sitemap extends DBWorker {
 
     /**
      * Возвращает часть строки УРЛ по идентификатору
+     *
+     * @todo Ошибка с вычислением URL для конечных разделов
      *
      * @param int
      * @return string

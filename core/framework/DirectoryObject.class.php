@@ -128,6 +128,9 @@ class DirectoryObject extends FileSystemObject {
         	throw new SystemException('ERR_DEV_INSUFFICIENT_DATA', SystemException::ERR_DEVELOPER);
         }
 
+        if(!isset($data[self::TABLE_NAME]['upl_path'])){
+			$data[self::TABLE_NAME]['upl_path'] = Translit::transliterate($data[self::TABLE_NAME]['upl_name'], '_', true);
+		}
         $data[self::TABLE_NAME]['upl_path'] = $data['path'].'/'.$data[self::TABLE_NAME]['upl_path'];
         unset($data['path']);
         $data = $data[self::TABLE_NAME];

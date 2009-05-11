@@ -255,7 +255,7 @@ class FileLibrary extends DataSet {
     protected function saveDir() {
         try {
             $folder = new DirectoryObject();
-            $folder->create($_POST);
+	        $folder->create($_POST);
 
             $JSONResponse = array(
             'result' => true,

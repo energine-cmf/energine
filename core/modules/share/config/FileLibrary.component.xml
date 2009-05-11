@@ -13,7 +13,7 @@
 				<control id="open" title="BTN_OPEN" type="button" onclick="open"/>
 				<control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
 				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
-				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/> 
+				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
 				<control id="rename" title="BTN_RENAME" type="button" onclick="rename"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
@@ -27,7 +27,7 @@
 			</javascript>
 			<fields>
 			    <field name="upl_id" />
-				<field name="upl_path" message="MSG_BAD_FORMAT" pattern="/^[a-z0-9\-\_]+$/"/>
+				<!--<field name="upl_path" message="MSG_BAD_FORMAT" pattern="/^[a-z0-9\-\_]+$/"/>-->
 			    <field name="upl_name" />
 			</fields>
 			<toolbar>

@@ -29,18 +29,48 @@
 </xsl:template>
 
 <xsl:template match="field[@name='attached_files'][ancestor::component[@class='DivisionEditor']]">
-    <div class="page_rights">
+
+	<div class="page_rights">
         <table width="100%">
-            <xsl:for-each select="recordset/record">
-                <tr>
-                    <xsl:if test="floor(position() div 2) = position() div 2">
-                        <xsl:attribute name="class">even</xsl:attribute>
-                    </xsl:if>
-                    <td>
-	                
-                    </td>
-                </tr>
-            </xsl:for-each>
+            <thead>
+            <tr>
+                <xsl:for-each select="recordset/record[position()=1]/field[position()!=1]/@title">
+                    <td style="text-align:center;"><xsl:value-of select="."/></td>
+                </xsl:for-each>
+             </tr>
+            </thead>
+            <tbody>
+            	<xsl:choose>
+            	<xsl:when test="not(recordset/@empty)">
+	                <xsl:for-each select="recordset/record">
+	                    <tr>
+							<xsl:if test="floor(position() div 2) = position() div 2">
+								<xsl:attribute name="class">even</xsl:attribute>
+							</xsl:if>
+	                        <xsl:for-each select="field[position()!=1]">
+	                            <td style="text-align:center;">
+	                            	<xsl:choose>
+	                            		<xsl:when test="@is_image">
+											<img src="{.}" border="0"/>
+	                            		</xsl:when>
+	                            		<xsl:otherwise>
+	                            			<xsl:value-of select="."/>
+	                            		</xsl:otherwise>
+	                            	</xsl:choose>
+	                            </td>
+	                        </xsl:for-each>
+	                    </tr>
+	                </xsl:for-each>
+           		</xsl:when>
+				<xsl:otherwise>
+					<tr>
+						<td colspan="2"  style="text-align:center;" id="empty_row">
+							<xsl:value-of select="../../../translations/translation[@const='MSG_NO_ATTACHED_FILES']"/>
+						</td>
+					</tr>
+				</xsl:otherwise>
+				</xsl:choose>
+            </tbody>
         </table>
     </div>
 </xsl:template>
@@ -78,7 +108,7 @@
     </div>
 </xsl:template>
 
-<xsl:template name="BUILD_RIGHTS_TAB">    
+<xsl:template name="BUILD_RIGHTS_TAB">
     <div id="{generate-id(../rights)}">
         <div class="page_rights">
             <table width="100%" border="0">
@@ -86,7 +116,7 @@
                     <tr>
                         <td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
                         <xsl:for-each select="../rights/recordset/record[position()=1]/field[@name='right_id']/options/option">
-                            <td style="text-align:center;"><xsl:value-of select="."/></td>   
+                            <td style="text-align:center;"><xsl:value-of select="."/></td>
                         </xsl:for-each>
                      </tr>
                 </thead>
@@ -102,7 +132,7 @@
                                     <input type="radio" style="border:none; width:auto;" value="{@id}">
                                         <xsl:attribute name="name">right_id[<xsl:value-of select="../../../field[@name='group_id']/@group_id"/>]</xsl:attribute>
                                         <xsl:if test="@selected">
-                                            <xsl:attribute name="checked">checked</xsl:attribute>    
+                                            <xsl:attribute name="checked">checked</xsl:attribute>
                                         </xsl:if>
                                     </input>
                                 </td>
@@ -189,7 +219,7 @@
                         <xsl:if test="@message">
                             <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
                         </xsl:if>
-                    </xsl:element>        
+                    </xsl:element>
                 </xsl:when>
                 <xsl:otherwise>
                     <span class="read" style="color: #000; font-size: 11px;"><xsl:value-of select="." disable-output-escaping="yes" /></span>
@@ -202,7 +232,7 @@
                         <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
                     </xsl:element>
                 </xsl:otherwise>
-            </xsl:choose>/    
+            </xsl:choose>/
         </div>
 	</div>
 </xsl:template>

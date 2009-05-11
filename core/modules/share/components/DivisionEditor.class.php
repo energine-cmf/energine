@@ -191,7 +191,9 @@ final class DivisionEditor extends Grid {
 
         if(in_array($this->getAction(), array('add', 'edit'))){
             $field = new Field('attached_files');
-            $field->setData($this->buildAttachedFiles($result->getFieldByName('smap_id')->getRowData(0)));
+            for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
+            	$field->addRowData($this->buildAttachedFiles($result->getFieldByName('smap_id')->getRowData(0)));
+            }
             $result->addField($field);
         }
 
@@ -204,10 +206,11 @@ final class DivisionEditor extends Grid {
         $f = new FieldDescription('upl_id');
         $dd->addFieldDescription($f);
 
-        $f = new FieldDescription('upl_path');
+        $f = new FieldDescription('upl_name');
         $dd->addFieldDescription($f);
 
-        $f = new FieldDescription('upl_name');
+        $f = new FieldDescription('upl_path');
+        $f->addProperty('title', $this->translate('FIELD_UPL_FILE'));
         $dd->addFieldDescription($f);
 
         $d = new Data();
@@ -218,9 +221,19 @@ final class DivisionEditor extends Grid {
                 LEFT JOIN `share_uploads` files ON s2f.upl_id=files.upl_id
                 WHERE smap_id = %s
             ', $id);
-
 		if(is_array($data)){
         	$d->load($data);
+        	$pathField = $d->getFieldByName('upl_path');
+        	foreach ($pathField as $i => $path) {
+        		if(@file_exists($path) && @getimagesize($path)){
+        			$thumbnailPath = dirname($path).'/.'.basename($path);
+        			if(@file_exists($thumbnailPath) && @getimagesize($thumbnailPath)){
+        				$path = $thumbnailPath;
+        			}
+        			$pathField->changeRowData($i, $path);
+        			$pathField->setRowProperty($i, 'is_image', true);
+        		}
+        	}
 		}
 		else{
 			$this->addTranslation('MSG_NO_ATTACHED_FILES');

@@ -28,6 +28,23 @@
     </div>
 </xsl:template>
 
+<xsl:template match="field[@name='attached_files'][ancestor::component[@class='DivisionEditor']]">
+    <div class="page_rights">
+        <table width="100%">
+            <xsl:for-each select="recordset/record">
+                <tr>
+                    <xsl:if test="floor(position() div 2) = position() div 2">
+                        <xsl:attribute name="class">even</xsl:attribute>
+                    </xsl:if>
+                    <td>
+	                
+                    </td>
+                </tr>
+            </xsl:for-each>
+        </table>
+    </div>
+</xsl:template>
+
 
 <xsl:template match="recordset[parent::component[@type='form'][@class='DivisionEditor'][@exttype='grid']]">
     <div class="formContainer">
@@ -64,7 +81,7 @@
 <xsl:template name="BUILD_RIGHTS_TAB">    
     <div id="{generate-id(../rights)}">
         <div class="page_rights">
-            <table width="100%" border="1">
+            <table width="100%" border="0">
                 <thead>
                     <tr>
                         <td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>

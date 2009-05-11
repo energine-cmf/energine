@@ -48,7 +48,7 @@ class DBDataSet extends DataSet {
     /**
      * Условие сортировки
      *
-     * @var array
+     * @var mixed
      * @access protected
      */
     private $order = null;
@@ -463,11 +463,12 @@ class DBDataSet extends DataSet {
             if (!in_array(current($order), array(QAL::ASC, QAL::DESC))) {
                 throw new SystemException('ERR_DEV_BAD_ORDER_FORMAT', SystemException::ERR_DEVELOPER);
             }
-            $this->order = $order;
         }
-        else {
+        $this->order = $order;
+        
+        /*else {
             $this->order = array($order=>QAL::ASC);
-        }
+        }*/
     }
 
     /**

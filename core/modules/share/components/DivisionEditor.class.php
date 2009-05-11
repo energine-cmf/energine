@@ -161,6 +161,11 @@ final class DivisionEditor extends Grid {
             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
             $fd->setMode(FieldDescription::FIELD_MODE_READ);
             $result->getFieldDescriptionByName('smap_name')->removeProperty('nullable');
+            
+            $field = new FieldDescription('attached_files');
+            $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
+            $field->addProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
+            $result->addFieldDescription($field);
         }
         else {
 
@@ -180,6 +185,46 @@ final class DivisionEditor extends Grid {
         }
         return $result;
     }
+    
+    protected function createData(){
+        $result = parent::createData();
+        
+        if(in_array($this->getAction(), array('add', 'edit'))){
+            $field = new Field('attached_files');
+            $field->setData($this->buildAttachedFiles($result->getFieldByName('smap_id')->getRowData(0)));
+            $result->addField($field);
+        }
+        
+        return $result;
+    } 
+    
+    private function buildAttachedFiles($id){
+        $builder = new SimpleBuilder();
+        $dd = new DataDescription();
+        $f = new FieldDescription('sf_id');
+        $dd->addFieldDescription($f);
+        
+        $f = new FieldDescription('sf_file_prfile');
+        $dd->addFieldDescription($f);
+        
+        $d = new Data();
+        $data = 
+            $this->dbh->selectRequest('
+            	SELECT files.sf_id, sf_file_prfile 
+                FROM `share_sitemap_files` s2f
+                LEFT JOIN `share_files` files ON s2f.sf_id=files.sf_id
+                WHERE smap_id = %s
+            ', $id);
+        
+        $d->load($data);
+        $builder->setData($d);
+        $builder->setDataDescription($dd);
+        
+        $builder->build();
+        
+        return $builder->getResult();
+    }
+    
     /**
      * Добавляет данные об УРЛ
      *
@@ -430,10 +475,14 @@ final class DivisionEditor extends Grid {
                     }
                 }
 
+                if($this->getType() != self::COMPONENT_TYPE_LIST )
+                    $this->addTab($this->buildTab($this->translate('TAB_ATTACHED_FILES')));
+                    
                 $result = parent::build();
-                if ($this->getType() != self::COMPONENT_TYPE_LIST ) {
+                
+                if ($this->getType() != self::COMPONENT_TYPE_LIST ) 
                     $result->documentElement->appendChild($this->buildRightsTab());
-                }
+                
         		break;
         }
 

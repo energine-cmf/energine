@@ -52,7 +52,55 @@ var DivForm = Form.extend({
                 }
             }.bind(this)
         );
-    }
+    },
+	addAttachment: function(){
+		ModalBox.open({ 'url': this.singlePath + 'file-library', 'onClose': function(result){
+		if(result){
+			var data = result;
+			var emptyRow;
+			if(emptyRow = $('empty_row')) emptyRow.remove();
+
+			if(!$('row_' + data.upl_id))
+				$E('#attached_files tbody').adopt(
+					new Element('tr', {'id': 'row_' + data.upl_id}).adopt([
+						new Element('td').adopt([
+							new Element('a',
+								{'href': '#', 'events': {'click': function(event){
+									event = event || window.event;
+									this.delAttachment(data.upl_id);
+
+									if (event.stopPropagation) event.stopPropagation();
+						            else event.cancelBubble = true;
+
+						            if (event.preventDefault) event.preventDefault();
+						            else event.returnValue = false;
+								}.bind(this)
+							}
+						}).setText(delete_button_text),
+						new Element('input', {'name': 'share_sitemap_uploads[upl_id][]', 'type': 'hidden', 'value': data.upl_id})
+						]),
+						new Element('td').setHTML(data.upl_name),
+						new Element('td').adopt(
+							new Element('a', {'href':data.upl_path, 'target':'blank'}).adopt(
+								(data.upl_mime_type != 1)? new Element('span').setHTML(data.upl_path):new Element('img', {'src':data.upl_data.thumb, 'border': '0'})
+							)
+						)
+					])
+				)
+		}
+		}.bind(this)});
+	},
+	delAttachment: function(id){
+		$('row_' + id).remove();
+		if($E('#attached_files tbody').getChildren().length == 0){
+			$E('#attached_files tbody').adopt(
+				new Element('tr', {'id': 'empty_row'}).adopt(
+					new Element('td', {'colspan': '3'}).setHTML(no_attached_files)
+				)
+			);
+
+		}
+	}
 });
 
 DivForm.implement(Label);

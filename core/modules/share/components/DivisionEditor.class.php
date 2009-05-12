@@ -190,9 +190,19 @@ final class DivisionEditor extends Grid {
         $result = parent::createData();
 
         if(in_array($this->getAction(), array('add', 'edit'))){
+        	//Добавляем поле с дополнительными файлами
             $field = new Field('attached_files');
+
+			//Ссылки на добавление и удаление файла
+            $this->addTranslation('BTN_ADD_FILE');
+            $this->addTranslation('BTN_DEL_FILE');
+
             for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
-            	$field->addRowData($this->buildAttachedFiles($result->getFieldByName('smap_id')->getRowData(0)));
+            	$field->addRowData(
+            		$this->buildAttachedFiles(
+            			$result->getFieldByName('smap_id')->getRowData(0)
+            		)
+            	);
             }
             $result->addField($field);
         }
@@ -200,6 +210,12 @@ final class DivisionEditor extends Grid {
         return $result;
     }
 
+    /**
+     * Строит список дополнительных файлов
+     *
+     * @param $id идентификатор раздела
+     * @return DOMNode
+     */
     private function buildAttachedFiles($id){
         $builder = new SimpleBuilder();
         $dd = new DataDescription();
@@ -227,6 +243,7 @@ final class DivisionEditor extends Grid {
         	foreach ($pathField as $i => $path) {
         		if(@file_exists($path) && @getimagesize($path)){
         			$thumbnailPath = dirname($path).'/.'.basename($path);
+        			$pathField->setRowProperty($i, 'real_image', $path);
         			if(@file_exists($thumbnailPath) && @getimagesize($thumbnailPath)){
         				$path = $thumbnailPath;
         			}
@@ -235,9 +252,8 @@ final class DivisionEditor extends Grid {
         		}
         	}
 		}
-		else{
-			$this->addTranslation('MSG_NO_ATTACHED_FILES');
-		}
+
+		$this->addTranslation('MSG_NO_ATTACHED_FILES');
 
         $builder->setData($d);
         $builder->setDataDescription($dd);
@@ -406,6 +422,17 @@ final class DivisionEditor extends Grid {
 
         //Изменяем smap_modified
         $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('smap_modified' => date('Y-m-d H:i:s')), array('smap_id'=>$smapID));
+
+        //Удаляем предыдущие записи из таблицы связей с дополнительными файлами
+       	$this->dbh->modify(QAL::DELETE, 'share_sitemap_uploads', null, array('smap_id' => $smapID));
+
+       	//записываем данные в таблицу share_sitemap_uploads
+        if(isset($_POST['share_sitemap_uploads']['upl_id'])){
+        	foreach ($_POST['share_sitemap_uploads']['upl_id'] as $uplID){
+        		$this->dbh->modify(QAL::INSERT, 'share_sitemap_uploads', array('smap_id' => $smapID, 'upl_id' => $uplID));
+        	}
+        }
+
         return $result;
     }
 

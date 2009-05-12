@@ -29,13 +29,23 @@
 </xsl:template>
 
 <xsl:template match="field[@name='attached_files'][ancestor::component[@class='DivisionEditor']]">
-
+	<xsl:variable name="TRANSLATIONS" select="../../../translations/translation"></xsl:variable>
+	<xsl:variable name="JS_OBJECT" select="generate-id(../..)"></xsl:variable>
 	<div class="page_rights">
-        <table width="100%">
+        <table width="100%" id="attached_files">
             <thead>
             <tr>
-                <xsl:for-each select="recordset/record[position()=1]/field[position()!=1]/@title">
-                    <td style="text-align:center;"><xsl:value-of select="."/></td>
+                <xsl:for-each select="recordset/record[position()=1]/field/@title">
+                    <td style="text-align:center;">
+                    	<xsl:choose>
+                    		<xsl:when test="position() != 1">
+                    			<xsl:value-of select="."/>
+                    		</xsl:when>
+                    		<xsl:otherwise>
+                    			<xsl:value-of select="$NBSP" disable-output-escaping="yes"/>
+                    		</xsl:otherwise>
+                    	</xsl:choose>
+                    	</td>
                 </xsl:for-each>
              </tr>
             </thead>
@@ -43,34 +53,47 @@
             	<xsl:choose>
             	<xsl:when test="not(recordset/@empty)">
 	                <xsl:for-each select="recordset/record">
-	                    <tr>
+	                    <tr id="row_{field[@name='upl_id']}">
 							<xsl:if test="floor(position() div 2) = position() div 2">
 								<xsl:attribute name="class">even</xsl:attribute>
 							</xsl:if>
-	                        <xsl:for-each select="field[position()!=1]">
-	                            <td style="text-align:center;">
+							<td><input type="hidden" name="share_sitemap_uploads[upl_id][]" value="{field[@name='upl_id']}"/><a href="#" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']}); return false;"><xsl:value-of select="$TRANSLATIONS[@const='BTN_DEL_FILE']"/></a></td>
+							<td><xsl:value-of select="field[@name='upl_name']"/></td>
+							<td>
+								<a href="{field[@name='upl_path']/@real_image}" target="blank">
 	                            	<xsl:choose>
-	                            		<xsl:when test="@is_image">
-											<img src="{.}" border="0"/>
+	                            		<xsl:when test="field[@name='upl_path']/@is_image">
+											<img src="{field[@name='upl_path']}" border="0"/>
 	                            		</xsl:when>
 	                            		<xsl:otherwise>
-	                            			<xsl:value-of select="."/>
+	                            			<xsl:value-of select="field[@name='upl_path']"/>
 	                            		</xsl:otherwise>
 	                            	</xsl:choose>
-	                            </td>
-	                        </xsl:for-each>
+	                            </a>
+							</td>
 	                    </tr>
 	                </xsl:for-each>
            		</xsl:when>
 				<xsl:otherwise>
-					<tr>
-						<td colspan="2"  style="text-align:center;" id="empty_row">
-							<xsl:value-of select="../../../translations/translation[@const='MSG_NO_ATTACHED_FILES']"/>
+					<tr id="empty_row">
+						<td colspan="3"  style="text-align:center;">
+							<xsl:value-of select="$TRANSLATIONS[@const='MSG_NO_ATTACHED_FILES']"/>
 						</td>
 					</tr>
 				</xsl:otherwise>
 				</xsl:choose>
             </tbody>
+            <tfoot>
+            	<tr>
+            		<td colspan="3" style="text-align:right;">
+            			<a href="#" onclick="{$JS_OBJECT}.addAttachment(); return false;"><xsl:value-of select="$TRANSLATIONS[@const='BTN_ADD_FILE']"/></a>
+            			<script type="text/javascript">
+            				var delete_button_text = '<xsl:value-of select="$TRANSLATIONS[@const='BTN_DEL_FILE']"/>';
+            				var no_attached_files = '<xsl:value-of select="$TRANSLATIONS[@const='MSG_NO_ATTACHED_FILES']"/>';
+            			</script>
+            		</td>
+            	</tr>
+            </tfoot>
         </table>
     </div>
 </xsl:template>

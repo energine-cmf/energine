@@ -4,7 +4,7 @@
  * Содержит класс UserEditor
  *
  * @package energine
- * @subpackage user 
+ * @subpackage user
  * @author dr.Pavka
  * @copyright ColoCall 2006
  * @version $Id$
@@ -138,7 +138,7 @@ class UserEditor extends Grid {
     protected function createDataDescription() {
         $result = parent::createDataDescription();
 
-        if ($this->getType() != self::COMPONENT_TYPE_LIST) {
+        if (in_array($this->getAction(), array('add', 'edit'))) {
             foreach ($result as $fieldDescription) {
                 $fieldDescription->addProperty('tabName', $this->translate('TXT_USER_EDITOR'));
             }
@@ -158,8 +158,11 @@ class UserEditor extends Grid {
             $result->addFieldDescription($fd);
         }
 
-        if ($this->getType() == self::COMPONENT_TYPE_FORM_ALTER) {
-            $f = $result->getFieldDescriptionByName('u_password');
+        if (
+        	($this->getType() == self::COMPONENT_TYPE_FORM_ALTER)
+        	&&
+        	($f = $result->getFieldDescriptionByName('u_password'))
+        ) {
             $f->removeProperty('pattern');
             $f->removeProperty('message');
             $f->addProperty('nullable', true);

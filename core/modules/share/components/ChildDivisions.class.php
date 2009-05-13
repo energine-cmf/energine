@@ -134,23 +134,23 @@ class ChildDivisions extends DataSet  {
 
 	protected function createData(){
 		$result = parent::createData();
-		$field = new Field('AttachedFiles');
-		$result->addField($field);
-		//Делаем выборку из таблицы дополнительных файлов
-		foreach ($result->getFieldByName('Id') as $index => $smapID) {
-			$data = $this->dbh->selectRequest('
-				SELECT upl.*
-				FROM `share_uploads` upl
-				LEFT JOIN share_sitemap_uploads ssu on ssu.upl_id = upl.upl_id
-				WHERE smap_id = %s
-			', $smapID);
+		if($result){
+			$field = new Field('AttachedFiles');
+			$result->addField($field);
+			//Делаем выборку из таблицы дополнительных файлов
+			foreach ($result->getFieldByName('Id') as $index => $smapID) {
+				$data = $this->dbh->selectRequest('
+					SELECT upl.*
+					FROM `share_uploads` upl
+					LEFT JOIN share_sitemap_uploads ssu on ssu.upl_id = upl.upl_id
+					WHERE smap_id = %s
+				', $smapID);
 
-			if(is_array($data) && !empty($data)){
-				$result->getFieldByName('AttachedFiles')->setRowData($index, $this->buildAttachedFilesField($data));
+				if(is_array($data) && !empty($data)){
+					$result->getFieldByName('AttachedFiles')->setRowData($index, $this->buildAttachedFilesField($data));
+				}
 			}
-
 		}
-
 
 		return $result;
 	}

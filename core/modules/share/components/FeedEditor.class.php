@@ -87,7 +87,7 @@ class FeedEditor extends Grid {
             $field = $result->getFieldByName('smap_id');
             for($i=0; $i<sizeof(Language::getInstance()->getLanguages()); $i++) {
                 $field->setRowProperty($i, 'segment', Sitemap::getInstance()->getURLByID($this->document->getID()));
-                $field->changeRowData($i, $info['Name']);
+                $field->setRowData($i, $info['Name']);
             }
         }
         return $result;

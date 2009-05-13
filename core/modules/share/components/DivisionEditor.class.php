@@ -106,7 +106,7 @@ final class DivisionEditor extends Grid {
 
                     //если установлены права для группы  - изменяем в объекте данных
                     if (isset($data[$groupsField->getRowData($i)])) {
-                        $rightsField->changeRowData($i, $data[$groupsField->getRowData($i)]['right_id']);
+                        $rightsField->setRowData($i, $data[$groupsField->getRowData($i)]['right_id']);
                     }
 
                     $groupsField->setRowProperty($i, 'group_id', $groupsField->getRowData($i));
@@ -116,7 +116,7 @@ final class DivisionEditor extends Grid {
 
         for ($i=0; $i<$resultData->getRowCount(); $i++) {
             $groupsField->setRowProperty($i, 'group_id', $groupsField->getRowData($i));
-            $groupsField->changeRowData($i, $groups[$groupsField->getRowData($i)]['group_name']);
+            $groupsField->setRowData($i, $groups[$groupsField->getRowData($i)]['group_name']);
         }
 
         $resultDD = new DataDescription();
@@ -247,7 +247,7 @@ final class DivisionEditor extends Grid {
         			if(@file_exists($thumbnailPath) && @getimagesize($thumbnailPath)){
         				$path = $thumbnailPath;
         			}
-        			$pathField->changeRowData($i, $path);
+        			$pathField->setRowData($i, $path);
         			$pathField->setRowProperty($i, 'is_image', true);
         		}
         	}
@@ -311,7 +311,7 @@ final class DivisionEditor extends Grid {
             if (!empty($res)) {
                 $name = simplifyDBResult($res, 'smap_name', true);
                 for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
-                    $field->changeRowData($i, $actionParams[0]);
+                    $field->setRowData($i, $actionParams[0]);
                     $field->setRowProperty($i, 'data_name', $name);
                     $field->setRowProperty($i, 'segment', $smapSegment);
                 }

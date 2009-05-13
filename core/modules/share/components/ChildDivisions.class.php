@@ -211,7 +211,7 @@ class ChildDivisions extends DataSet  {
 			}
 			foreach ($data as $id => $current) {
 				$data[$id] = array(
-				'Id' => $current['Id'],
+				'Id' => (isset($current['Id']))?$current['Id']:$id,
                 'Segment' => $current['Segment'],
                 'Name' => $current['Name'],
                 'DescriptionRtf' => $current['DescriptionRtf']

@@ -109,7 +109,7 @@ class Data extends Object {
         foreach ($rowData as $fieldName => $fieldValue) {
         	$field = $this->getFieldByName($fieldName);
         	if ($field) {
-        		$result = $field->changeRowData($rowIndex, $fieldValue);
+        		$result = $field->setRowData($rowIndex, $fieldValue);
         	}
         }
         return $result;

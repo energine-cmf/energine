@@ -147,19 +147,19 @@ class Field extends Object implements Iterator{
     }
 
     /**
-     * Обновляет данные в указанной строке.
+     * Устанавливает данные в указанной строке.
      *
      * @access public
      * @param int $rowIndex индекс строки
      * @param mixed $newData новые данные
      * @return boolean
      */
-    public function changeRowData($rowIndex, $newData) {
+    public function setRowData($rowIndex, $newData) {
         $result = false;
-        if (isset($this->data[$rowIndex])) {
+        //if (isset($this->data[$rowIndex])) {
             $this->data[$rowIndex] = $newData;
             $result = true;
-        }
+        //}
         return $result;
     }
 

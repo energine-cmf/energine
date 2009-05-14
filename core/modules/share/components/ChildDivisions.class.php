@@ -195,9 +195,10 @@ class ChildDivisions extends DataSet  {
 			WHERE lang_id = %s and smap_pid = %s and smap_is_disabled =0 and smap_is_final=1';
 
 			$data = $this->dbh->selectRequest($request, $this->document->getLang(), $this->id);
-			$data = array_filter($data, array($this, 'filterDataByRights'));
-			$data = array_map(array($this, 'prepareSegment'), $data);
-
+			if(is_array($data)) {
+				$data = array_filter($data, array($this, 'filterDataByRights'));
+				$data = array_map(array($this, 'prepareSegment'), $data);
+			}
 		}
 		$data = (empty($data))?false:$data;
 		if(is_array($data)) {

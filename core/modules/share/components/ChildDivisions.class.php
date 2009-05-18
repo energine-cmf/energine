@@ -165,6 +165,13 @@ class ChildDivisions extends DataSet  {
 		$dataDescription->load($this->dbh->getColumnsInfo('share_uploads'));
 
 		$builder->setData($data);
+		foreach ($data->getFieldByName('upl_path') as $key => $row) {
+			if(file_exists($row)){
+				list($width, $height) = @getimagesize($row);
+				$data->getFieldByName('upl_path')->setRowProperty($key, 'width', $width);
+				$data->getFieldByName('upl_path')->setRowProperty($key, 'height', $height);
+			}
+		}
 		$builder->setDataDescription($dataDescription);
 		$builder->build();
 

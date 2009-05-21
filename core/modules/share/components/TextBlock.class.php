@@ -96,6 +96,9 @@ final class TextBlock extends DataSet {
         if ($this->isEditable) {
             $this->document->addTranslation('TXT_PREVIEW');
             $this->document->addTranslation('TXT_RESET');
+            $this->document->addTranslation('TXT_H1');
+        	$this->document->addTranslation('TXT_H2');
+        	$this->document->addTranslation('TXT_H3');
         	$this->document->addTranslation('TXT_H4');
         	$this->document->addTranslation('TXT_H5');
         	$this->document->addTranslation('TXT_H6');

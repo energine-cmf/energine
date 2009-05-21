@@ -39,14 +39,14 @@ var PageEditor = new Class({
         toolbar.appendControl(new Toolbar.Button({ id: 'right', icon: 'images/toolbar/justifyright.gif', title: 'Align right', action: 'alignRight' }));
         toolbar.appendControl(new Toolbar.Button({ id: 'justify', icon: 'images/toolbar/justifyall.gif', title: 'Align justify', action: 'alignJustify' }));
 		toolbar.appendControl(new Toolbar.Select({ id: 'selectFormat', action: 'changeFormat' },
-		 {'':'', 'reset':TXT_RESET,'H4':TXT_H4, 'H5':TXT_H5, 'H6':TXT_H6, 'ADDRESS':TXT_ADDRESS}));
+		 {'':'', 'reset':TXT_RESET,'H1':TXT_H1, 'H2':TXT_H2, 'H3':TXT_H3,'H4':TXT_H4, 'H5':TXT_H5, 'H6':TXT_H6, 'ADDRESS':TXT_ADDRESS}));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep4' }));
         toolbar.appendControl(new Toolbar.Button({ id: 'source', icon: 'images/toolbar/source.gif', title: 'View source', action: 'showSource' }));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep5' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'imagemngr', icon: 'images/toolbar/image.gif', title: 'Images manager', action: 'imageManager' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'filemngr', icon: 'images/toolbar/filemngr.gif', title: 'BTN_FILE_LIBRARY', action: 'fileLibrary' }));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep6' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'viewModeSwitcher', title: TXT_PREVIEW, action: 'switchToViewMode' }));		
+		toolbar.appendControl(new Toolbar.Button({ id: 'viewModeSwitcher', title: TXT_PREVIEW, action: 'switchToViewMode' }));
 
 		toolbar.bindTo(this);
 		return toolbar;
@@ -177,7 +177,7 @@ PageEditor.BlockEditor = RichEditor.extend({
 		var data = 'num='+this.num+'&data='+encodeURIComponent(this.area.innerHTML);
 		if (this.docId) data += '&docID='+this.docId;
 		this.overlay.show(document.body.getCoordinates());
-		
+
 		var ajax = new Ajax(this.path + 'save-text', {
             method: 'post',
             postBody: data,

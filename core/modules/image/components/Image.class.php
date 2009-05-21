@@ -281,8 +281,98 @@ class Image extends Object {
 	 * @param mixed $newHeight - новая высота
 	 * @return void
 	 */
-    public function resize($newWidth, $newHeight) {
-        $posX = $posY = 0;
+    public function resize($newWidth, $newHeight, $crop = false) {
+    	if (!$this->checkAvailableMemory($newWidth, $newHeight)) {
+            throw new SystemException('ERR_MEMORY_NOT_AVAILABLE', SystemException::ERR_NOTICE);
+        }
+
+    	if($crop){
+			$resizedImage = $this->crop($newWidth, $newHeight);
+    	}
+    	else{
+			$resizedImage = $this->resizeWithMargins($newWidth, $newHeight);
+    	}
+
+
+        imagedestroy($this->image);
+
+        $this->image  = $resizedImage;
+        $this->width  = $newWidth;
+        $this->height = $newHeight;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+	private function crop($newWidth, $newHeight){
+		list($width,$height)= array($this->width, $this->height);
+		$OldImage = $this->image;
+
+        // check if ratios match
+        $_ratio=array($width/$height,$newWidth/$newHeight);
+        if ($_ratio[0] != $_ratio[1]) { // crop image
+
+            // find the right scale to use
+            $_scale=min((float)($width/$newWidth),(float)($height/$newHeight));
+
+            // coords to crop
+            $cropX=(float)($width-($_scale*$newWidth));
+            $cropY=(float)($height-($_scale*$newHeight));
+
+            // cropped image size
+            $cropW=(float)($width-$cropX);
+            $cropH=(float)($height-$cropY);
+
+            $crop=ImageCreateTrueColor($cropW,$cropH);
+            // crop the middle part of the image to fit proportions
+            ImageCopy(
+                $crop,
+                $OldImage,
+                0,
+                0,
+                (int)($cropX/2),
+                (int)($cropY/2),
+                $cropW,
+                $cropH
+            );
+        }
+
+        // do the thumbnail
+        $NewThumb=ImageCreateTrueColor($newWidth,$newHeight);
+        if (isset($crop)) { // been cropped
+            ImageCopyResampled(
+                $NewThumb,
+                $crop,
+                0,
+                0,
+                0,
+                0,
+                $newWidth,
+                $newHeight,
+                $cropW,
+                $cropH
+            );
+            ImageDestroy($crop);
+        } else { // ratio match, regular resize
+            ImageCopyResampled(
+                $NewThumb,
+                $OldImage,
+                0,
+                0,
+                0,
+                0,
+                $w,
+                $h,
+                $width,
+                $height
+            );
+        }
+
+        $result = $NewThumb;
+
+        return $result;
+	}
+
+	private function resizeWithMargins($newWidth, $newHeight){
+		$posX = $posY = 0;
 
         $lowend = 0.8;
         $highend = 1.25;
@@ -304,11 +394,6 @@ class Image extends Object {
             $posY = (int)(0.5 * ($newHeight - $newCanvasHeight));
         }
 
-
-        if (!$this->checkAvailableMemory($newWidth, $newHeight)) {
-            throw new SystemException('ERR_MEMORY_NOT_AVAILABLE', SystemException::ERR_NOTICE);
-        }
-
         $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
         $bgColor = imagecolorallocate($resizedImage, 255, 255, 255);
         imagefill($resizedImage, 0, 0, $bgColor);
@@ -320,14 +405,8 @@ class Image extends Object {
         $this->width, $this->height
         );
 
-        imagedestroy($this->image);
-
-        $this->image  = $resizedImage;
-        $this->width  = $newWidth;
-        $this->height = $newHeight;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
+        return $resizedImage;
+	}
 
     /**
 	 * Возвращает расширение файла.

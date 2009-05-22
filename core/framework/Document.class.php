@@ -164,7 +164,11 @@ final class Document extends DBWorker {
         if (!$this->documentInfo) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
-
+        //Если URL редиректа не пустой  - осуществляем редирект по нему
+		if(!empty($this->documentInfo['RedirectUrl'])){
+			Response::getInstance()->setStatus('301');
+			Response::getInstance()->setRedirect($this->documentInfo['RedirectUrl']);
+		}
         // загружаем компоненты страницы
         $this->loadComponents($this->documentInfo['templateID']);
 

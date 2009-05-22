@@ -183,7 +183,7 @@ final class Sitemap extends DBWorker {
 
         $result = convertDBResult(
             $this->dbh->selectRequest(
-                'SELECT s.smap_id, s.smap_pid, s.tmpl_id as templateID, s.smap_segment as Segment, s.smap_is_final as isFinal, st.smap_name, smap_description_rtf, smap_html_title, smap_meta_keywords, smap_meta_description '.
+                'SELECT s.smap_id, s.smap_pid, s.tmpl_id as templateID, s.smap_segment as Segment, s.smap_is_final as isFinal, st.smap_name, smap_redirect_url, smap_description_rtf, smap_html_title, smap_meta_keywords, smap_meta_description '.
                 'FROM share_sitemap s '.
                 'LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id '.
                 'WHERE st.lang_id = '.$this->langID.' AND s.smap_id IN ('.$ids.')'),

@@ -722,7 +722,8 @@ class FieldDescription extends DBWorker {
             $secondaryFieldDescription->setMode($mode);
         }
         $secondaryFieldDescription->isMultilanguage = $primaryFieldDescription->isMultilanguage || $secondaryFieldDescription->isMultilanguage();
-        $properties = $secondaryFieldDescription->getPropertyNames();
+        //$properties = $secondaryFieldDescription->getPropertyNames();
+        $properties = array_merge($primaryFieldDescription->getPropertyNames() , $secondaryFieldDescription->getPropertyNames());
         foreach ($properties as $propertyName) {
             $propertyValue = $primaryFieldDescription->getPropertyValue($propertyName);
 

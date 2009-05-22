@@ -94,15 +94,35 @@ final class TextBlock extends DataSet {
         $this->isEditable = isset($_REQUEST['editMode']);
         $this->tableName = 'share_textblocks';
         if ($this->isEditable) {
-            $this->document->addTranslation('TXT_PREVIEW');
-            $this->document->addTranslation('TXT_RESET');
-            $this->document->addTranslation('TXT_H1');
-        	$this->document->addTranslation('TXT_H2');
-        	$this->document->addTranslation('TXT_H3');
-        	$this->document->addTranslation('TXT_H4');
-        	$this->document->addTranslation('TXT_H5');
-        	$this->document->addTranslation('TXT_H6');
-        	$this->document->addTranslation('TXT_ADDRESS');
+        	$translations = array(
+					'BTN_ITALIC',
+	        		'BTN_HREF',
+	        		'BTN_UL',
+	        		'BTN_OL',
+	        		'BTN_ALIGN_LEFT',
+	        		'TXT_PREVIEW',
+	        		'BTN_FILE_LIBRARY',
+	        		'BTN_INSERT_IMAGE',
+	        		'BTN_VIEWSOURCE',
+	        		'TXT_PREVIEW',
+	        		'TXT_RESET',
+	        		'TXT_H1',
+	        		'TXT_H2',
+	        		'TXT_H3',
+	        		'TXT_H4',
+	        		'TXT_H5',
+	        		'TXT_H6',
+	        		'TXT_ADDRESS',
+	        		'BTN_SAVE',
+	        		'BTN_BOLD',
+	        		'BTN_ALIGN_CENTER',
+	        		'BTN_ALIGN_RIGHT',
+	        		'BTN_ALIGN_JUSTIFY',
+	        	);
+        	array_walk(
+	        	$translations,
+	        	array($this->document, 'addTranslation')
+        	);
         }
     }
 

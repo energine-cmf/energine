@@ -126,6 +126,7 @@ class Grid extends DBDataSet {
         $this->prepare();
         $this->addTranslation('TXT_OPEN_FIELD');
         $this->addTranslation('TXT_CLOSE_FIELD');
+        $this->addToolbarTranslations();
         //$this->addCrumb('TXT_ADD_ITEM');
     }
 
@@ -140,6 +141,7 @@ class Grid extends DBDataSet {
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->addTranslation('TXT_OPEN_FIELD');
         $this->addTranslation('TXT_CLOSE_FIELD');
+
         $id = $this->getActionParams();
         list($id) = $id;
         if (!$this->recordExists($id)) {
@@ -157,7 +159,7 @@ class Grid extends DBDataSet {
                 }
             }
         }
-
+		$this->addToolbarTranslations();
     }
 
     /**
@@ -933,5 +935,46 @@ class Grid extends DBDataSet {
         $row = substr($row, 0, -1);
 
         return $result.$row;
+    }
+
+    private function addToolbarTranslations(){
+    	$hasRTFFields = false;
+    	foreach($this->getDataDescription() as $fd){
+    		if($hasRTFFields = ($fd->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK)){
+				break;
+    		}
+    	}
+
+    	if($hasRTFFields){
+	    	$translations = array(
+						'BTN_ITALIC',
+		        		'BTN_HREF',
+		        		'BTN_UL',
+		        		'BTN_OL',
+		        		'BTN_ALIGN_LEFT',
+		        		'TXT_PREVIEW',
+		        		'BTN_FILE_LIBRARY',
+		        		'BTN_INSERT_IMAGE',
+		        		'BTN_VIEWSOURCE',
+		        		'TXT_PREVIEW',
+		        		'TXT_RESET',
+		        		'TXT_H1',
+		        		'TXT_H2',
+		        		'TXT_H3',
+		        		'TXT_H4',
+		        		'TXT_H5',
+		        		'TXT_H6',
+		        		'TXT_ADDRESS',
+		        		'BTN_SAVE',
+		        		'BTN_BOLD',
+		        		'BTN_ALIGN_CENTER',
+		        		'BTN_ALIGN_RIGHT',
+		        		'BTN_ALIGN_JUSTIFY',
+		        	);
+	        	array_walk(
+		        	$translations,
+		        	array($this->document, 'addTranslation')
+	        	);
+    	}
     }
 }

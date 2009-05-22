@@ -129,23 +129,23 @@ Form.RichEditor = RichEditor.extend({
         }
 
         this.toolbar = new Toolbar(this.textarea.name);
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'bold', icon: 'images/toolbar/bold.gif', title: 'Bold', action: 'bold' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'italic', icon: 'images/toolbar/italic.gif', title: 'Italic', action: 'italic' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'olist', icon: 'images/toolbar/olist.gif', title: 'Ordered list', action: 'olist' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'ulist', icon: 'images/toolbar/ulist.gif', title: 'Unordered list', action: 'ulist' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'link', icon: 'images/toolbar/link.gif', title: 'Insert link', action: 'link' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'bold', icon: 'images/toolbar/bold.gif', title: BTN_BOLD, action: 'bold' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'italic', icon: 'images/toolbar/italic.gif', title: BTN_ITALIC, action: 'italic' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'olist', icon: 'images/toolbar/olist.gif', title: BTN_OL, action: 'olist' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'ulist', icon: 'images/toolbar/ulist.gif', title: BTN_UL, action: 'ulist' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'link', icon: 'images/toolbar/link.gif', title: BTN_HREF, action: 'link' }));
         this.toolbar.appendControl(new Toolbar.Separator({ id: 'sep1' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'left', icon: 'images/toolbar/justifyleft.gif', title: 'Justify left', action: 'alignLeft' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'center', icon: 'images/toolbar/justifycenter.gif', title: 'Justify center', action: 'alignCenter' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'right', icon: 'images/toolbar/justifyright.gif', title: 'Justify right', action: 'alignRight' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'justify', icon: 'images/toolbar/justifyall.gif', title: 'Justify all', action: 'alignJustify' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'left', icon: 'images/toolbar/justifyleft.gif', title: BTN_ALIGN_LEFT, action: 'alignLeft' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'center', icon: 'images/toolbar/justifycenter.gif', title: BTN_ALIGN_CENTER, action: 'alignCenter' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'right', icon: 'images/toolbar/justifyright.gif', title: BTN_ALIGN_RIGHT, action: 'alignRight' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'justify', icon: 'images/toolbar/justifyall.gif', title: BTN_ALIGN_JUSTIFY, action: 'alignJustify' }));
         if (window.ie && !this.fallback_ie) {
             this.toolbar.appendControl(new Toolbar.Separator({ id: 'sep2' }));
-            this.toolbar.appendControl(new Toolbar.Button({ id: 'source', icon: 'images/toolbar/source.gif', title: 'Edit source', action: 'showSource' }));
+            this.toolbar.appendControl(new Toolbar.Button({ id: 'source', icon: 'images/toolbar/source.gif', title: BTN_VIEWSOURCE, action: 'showSource' }));
         }
         this.toolbar.appendControl(new Toolbar.Separator({ id: 'sep3' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'filelib', icon: 'images/toolbar/filemngr.gif', title: 'File library', action: 'fileLibrary' }));
-        this.toolbar.appendControl(new Toolbar.Button({ id: 'imgmngr', icon: 'images/toolbar/image.gif', title: 'Image manager', action: 'imageManager' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'filelib', icon: 'images/toolbar/filemngr.gif', title: BTN_FILE_LIBRARY, action: 'fileLibrary' }));
+        this.toolbar.appendControl(new Toolbar.Button({ id: 'imgmngr', icon: 'images/toolbar/image.gif', title: BTN_INSERT_IMAGE, action: 'imageManager' }));
         $pick(this.area, this.textarea).getParent().adopt(this.toolbar.getElement());
         this.toolbar.element.setStyle('width', '550px');
         this.toolbar.bindTo(this);

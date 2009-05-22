@@ -26,25 +26,25 @@ var PageEditor = new Class({
     },
 	createToolbar: function(){
 		var toolbar = new Toolbar('page_toolbar');
-		toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: 'Save', action: 'save' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: BTN_SAVE, action: 'save' }));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep2' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'bold', icon: 'images/toolbar/bold.gif', title: 'Bold', action: 'bold' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'italic', icon: 'images/toolbar/italic.gif', title: 'Italic', action: 'italic' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'olist', icon: 'images/toolbar/olist.gif', title: 'Ordered list', action: 'olist' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'ulist', icon: 'images/toolbar/ulist.gif', title: 'Unordered list', action: 'ulist' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'link', icon: 'images/toolbar/link.gif', title: 'Link', action: 'link' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'bold', icon: 'images/toolbar/bold.gif', title: BTN_BOLD, action: 'bold' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'italic', icon: 'images/toolbar/italic.gif', title: BTN_ITALIC, action: 'italic' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'olist', icon: 'images/toolbar/olist.gif', title: BTN_OL, action: 'olist' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'ulist', icon: 'images/toolbar/ulist.gif', title: BTN_UL, action: 'ulist' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'link', icon: 'images/toolbar/link.gif', title: BTN_HREF, action: 'link' }));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep3' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'left', icon: 'images/toolbar/justifyleft.gif', title: 'Align left', action: 'alignLeft' }));
-        toolbar.appendControl(new Toolbar.Button({ id: 'center', icon: 'images/toolbar/justifycenter.gif', title: 'Align center', action: 'alignCenter' }));
-        toolbar.appendControl(new Toolbar.Button({ id: 'right', icon: 'images/toolbar/justifyright.gif', title: 'Align right', action: 'alignRight' }));
-        toolbar.appendControl(new Toolbar.Button({ id: 'justify', icon: 'images/toolbar/justifyall.gif', title: 'Align justify', action: 'alignJustify' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'left', icon: 'images/toolbar/justifyleft.gif', title: BTN_ALIGN_LEFT, action: 'alignLeft' }));
+        toolbar.appendControl(new Toolbar.Button({ id: 'center', icon: 'images/toolbar/justifycenter.gif', title: BTN_ALIGN_CENTER, action: 'alignCenter' }));
+        toolbar.appendControl(new Toolbar.Button({ id: 'right', icon: 'images/toolbar/justifyright.gif', title: BTN_ALIGN_RIGHT, action: 'alignRight' }));
+        toolbar.appendControl(new Toolbar.Button({ id: 'justify', icon: 'images/toolbar/justifyall.gif', title: BTN_ALIGN_JUSTIFY, action: 'alignJustify' }));
 		toolbar.appendControl(new Toolbar.Select({ id: 'selectFormat', action: 'changeFormat' },
 		 {'':'', 'reset':TXT_RESET,'H1':TXT_H1, 'H2':TXT_H2, 'H3':TXT_H3,'H4':TXT_H4, 'H5':TXT_H5, 'H6':TXT_H6, 'ADDRESS':TXT_ADDRESS}));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep4' }));
-        toolbar.appendControl(new Toolbar.Button({ id: 'source', icon: 'images/toolbar/source.gif', title: 'View source', action: 'showSource' }));
+        toolbar.appendControl(new Toolbar.Button({ id: 'source', icon: 'images/toolbar/source.gif', title: BTN_VIEWSOURCE, action: 'showSource' }));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep5' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'imagemngr', icon: 'images/toolbar/image.gif', title: 'Images manager', action: 'imageManager' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'filemngr', icon: 'images/toolbar/filemngr.gif', title: 'BTN_FILE_LIBRARY', action: 'fileLibrary' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'imagemngr', icon: 'images/toolbar/image.gif', title:BTN_INSERT_IMAGE , action: 'imageManager' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'filemngr', icon: 'images/toolbar/filemngr.gif', title: BTN_FILE_LIBRARY, action: 'fileLibrary' }));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep6' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'viewModeSwitcher', title: TXT_PREVIEW, action: 'switchToViewMode' }));
 

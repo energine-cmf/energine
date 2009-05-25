@@ -305,6 +305,17 @@
 	</div>
 </xsl:template>
 
+<!--<xsl:template match="field[@name='smap_redirect_url'][ancestor::component[@class='DivisionEditor'][@type='form'][@exttype='grid']]">
+	<div class="field">
+		<div class="name">
+			<label for="{@name}"><xsl:value-of select="@title"/></label>
+        </div>
+      <div style="display: block;" id="control__{@name}" class="control">
+      	<input type="text" message="{@message}" pattern="{@pattern}" value="{.}" id="{@name}" maxlength="250" name="{@tableName}[{@name}]"/> <button onclick="{generate-id(ancestor::recordset)}.showInternalRedirect(this);">...</button>
+      </div>
+   </div>
+</xsl:template>-->
+
 <xsl:template match="record[parent::recordset[parent::component[@class='DivisionEditor'][@type='list']]]" />
 <xsl:template match="rights[parent::component[@class='DivisionEditor']]"/>
 </xsl:stylesheet>

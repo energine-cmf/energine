@@ -15,7 +15,15 @@ var DivForm = Form.extend({
             extraData: { disabledNode: this.form.getElement('#smap_id').value } // restrictSubtree
         });
     },
-
+    /*showInternalRedirect: function(obj) {
+        this.obj = obj;
+        ModalBox.open({
+            url: this.singlePath+'/list',
+            onClose: function(result){
+				console.log(result);
+            }.bind(this)
+        });
+    },*/
     save: function() {
         this.richEditors.each(function(editor) { editor.onSaveForm(); });
         if (!this.validator.validate()) {

@@ -11,10 +11,14 @@
 			</javascript>
 			<toolbar>
 				<control id="open" title="BTN_OPEN" type="button" onclick="open"/>
+				<control id="sep01" type="separator"/>
 				<control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
 				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
 				<control id="rename" title="BTN_RENAME" type="button" onclick="rename"/>
+				<control id="sep02" type="separator"/>
+				<control id="zip_upload" title="BTN_ZIP_UPLOAD" type="button" onclick="uploadZip"/>
+				<control id="sep03" type="separator"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</method>
@@ -81,6 +85,21 @@
 			<uri_patterns>
 				<pattern>/rename/</pattern>
 			</uri_patterns>
+		</method>
+		<method name="uploadZip">
+			<uri_patterns>
+				<pattern>/upload-zip/</pattern>
+			</uri_patterns>
+			<javascript>
+				<object name="Form"/>
+			</javascript>
+			<fields>
+				<field name="upl_path" type="file" title="FIELD_UPL_FILE"/>
+			</fields>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
 		</method>
 	</methods>
 </configuration>

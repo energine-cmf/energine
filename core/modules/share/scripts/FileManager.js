@@ -36,11 +36,11 @@ var FileManager = new Class({
         if (!path && (cookiePath = Cookie.get(FILE_COOKIE_NAME))) {
             path = cookiePath;
         }
-        
+
 
 		var postBody = path ? 'path='+path+'&' : '';
 
-        
+
 
         if (this.element.getProperty('file_type') == 'image') {
             postBody += 'imageonly=true';
@@ -62,7 +62,7 @@ var FileManager = new Class({
                 }
 
 				this.viewWidget.build();
-				Cookie.set(FILE_COOKIE_NAME, path?path:'', {duration: false}); 
+				Cookie.set(FILE_COOKIE_NAME, path?path:'', {duration: false});
 
             }.bind(this)
         );
@@ -148,6 +148,13 @@ var FileManager = new Class({
     insert: function() {
         ModalBox.setReturnValue(this.viewWidget.getSelectedItem().obj);
         ModalBox.close();
+    },
+    uploadZip: function(){
+		ModalBox.open({
+            url: this.element.getProperty('single_template')+'upload-zip',
+            onClose: this.onActionComplete.bind(this),
+            extraData: this.currentFolder
+        });
     }
 });
 FileManager.implement(Request);

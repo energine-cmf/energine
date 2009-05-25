@@ -9,20 +9,15 @@
  * @version $Id$
  */
 
-//require_once('core/modules/image/components/Image.class.php');
-//require_once('core/modules/share/components/DataSet.class.php');
-//require_once('core/framework/DirectoryObject.class.php');
-//require_once('core/framework/FileUploader.class.php');
-//require_once('core/modules/share/components/JSONUploadBuilder.class.php');
-
 /**
  * Библитека изображений
  *
  * @package energine
  * @subpackage share
  * @author dr.Pavka
+ * @final
  */
-class FileLibrary extends DataSet {
+final class FileLibrary extends DataSet {
     /**
      * Путь к директории в которой хранятся загруженные пользователями файлы
      *
@@ -346,6 +341,12 @@ class FileLibrary extends DataSet {
 
     protected function add() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
+        $this->prepare();
+    }
+
+    protected function uploadZip(){
+    	//inspect($this->uploadsDir);
+		$this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
     }
 

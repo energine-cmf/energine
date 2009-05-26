@@ -280,6 +280,7 @@
                     <xsl:element name="option"></xsl:element>
                 </xsl:if>
                 <xsl:for-each select="options/option[@tmpl_is_system='']">
+                	<xsl:sort select="@tmpl_order_num" order="ascending" data-type="number"/>
                     <xsl:element name="option">
                         <xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>
                         <xsl:if test="@selected">
@@ -290,6 +291,7 @@
                 </xsl:for-each>
                 <optgroup label="System templates">
                 <xsl:for-each select="options/option[@tmpl_is_system='1']">
+                	<xsl:sort select="@tmpl_order_num" order="ascending" data-type="number"/>
                     <xsl:element name="option">
                         <xsl:attribute name="disabled">disabled</xsl:attribute>
                         <xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>

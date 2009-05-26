@@ -9,6 +9,10 @@
 				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
 				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+				<control type="separator" id="sep01" />
+				<control type="button" id="up" title="BTN_MOVE_UP" onclick="up" />
+				<control type="button" id="down" title="BTN_MOVE_DOWN" onclick="down" />
+				<control type="separator" id="sep02" />
 				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</method>
@@ -68,6 +72,16 @@
 		    <uri_patterns>
 		        <pattern>/[int]/delete/</pattern>
 		    </uri_patterns>
+		</method>
+		<method name="up" rights="2">
+			<uri_patterns>
+				<pattern>/[int]/up/</pattern>
+			</uri_patterns>
+		</method>
+		<method name="down" rights="2">
+			<uri_patterns>
+				<pattern>/[int]/down/</pattern>
+			</uri_patterns>
 		</method>
 	</methods>
 </configuration>

@@ -28,6 +28,7 @@ class TemplateEditor extends Grid {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('share_templates');
         $this->setTitle($this->translate('TXT_TEMPLATE_EDITOR'));
-        $this->setOrder(array('tmpl_name'=>QAL::ASC));
+        $this->setOrderColumn('tmpl_order_num');
+        $this->setOrder(array('tmpl_order_num' =>QAL::ASC));
     }
 }

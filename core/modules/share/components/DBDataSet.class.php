@@ -387,7 +387,7 @@ class DBDataSet extends DataSet {
      * @final
      */
 
-    final protected function getFilter() {
+    final public function getFilter() {
         return $this->filter;
     }
 
@@ -465,7 +465,7 @@ class DBDataSet extends DataSet {
             }
         }
         $this->order = $order;
-        
+
         /*else {
             $this->order = array($order=>QAL::ASC);
         }*/

@@ -81,6 +81,7 @@ class FeedEditor extends Grid {
      */
 
      protected function createData() {
+
         $result = parent::createData();
         if (in_array($this->getType(), array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER))) {
             $info = Sitemap::getInstance()->getDocumentInfo($this->document->getID());
@@ -101,10 +102,22 @@ class FeedEditor extends Grid {
      */
 
     protected function main() {
+    	$_SESSION['feed_smap_id'] =
+	    	$this->document->componentManager->getComponentByName(
+		   			$this->getParam('linkTo')
+		   	)->getFilter();
+
         if ($toolbar = $this->createToolbar()) {
             $this->setToolbar($toolbar);
         }
         $this->js = $this->buildJS();
+    }
+
+    protected function changeOrder($direction){
+	   	$this->setFilter($_SESSION['feed_smap_id']);
+		unset($_SESSION['feed_smap_id']);
+
+	   	return parent::changeOrder($direction);
     }
 
     /**

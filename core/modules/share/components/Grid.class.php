@@ -799,6 +799,7 @@ class Grid extends DBDataSet {
      */
 
     protected function changeOrder($direction) {
+
         try {
 
             if (!$this->getOrderColumn()) {
@@ -810,18 +811,51 @@ class Grid extends DBDataSet {
             list($currentID) = $currentID;
 
             //Определяем order_num текущей страницы
-            $currentOrderNum = simplifyDBResult($this->dbh->selectRequest('select '.$this->getOrderColumn().' from '.$this->getTableName().' where '.$this->getPK().' = %s', $currentID), $this->getOrderColumn(), true);
+            $currentOrderNum = simplifyDBResult(
+            	$this->dbh->selectRequest(
+            		'SELECT '.$this->getOrderColumn().' '.
+            		'FROM '.$this->getTableName().' '.
+            		'WHERE '.$this->getPK().' = %s',
+            		$currentID
+            	),
+            	$this->getOrderColumn(),
+            	true
+            );
+
             $orderDirection = ($direction == Grid::DIR_DOWN)?QAL::ASC:QAL::DESC;
 
+			$baseFilter = $this->getFilter();
+
+            if(!empty($baseFilter)){
+				$baseFilter = ' AND '.str_replace('WHERE', '', $this->dbh->buildWhereCondition($this->getFilter()));
+			}
+			else{
+				$baseFilter = '';
+			}
+
             //Определяем идентификатор записи которая находится рядом с текущей
-            $request = 'SELECT '.$this->getPK().' as neighborID, '.$this->getOrderColumn().' as neighborOrderNum FROM '.$this->getTableName().' WHERE '.$this->getOrderColumn().' '.$direction.' '.$currentOrderNum.' order by '.$this->getOrderColumn().' '.$orderDirection.' Limit 1';
+            $request =
+            	'SELECT '.$this->getPK().' as neighborID, '.$this->getOrderColumn().' as neighborOrderNum '.
+            	'FROM '.$this->getTableName().' '.
+            	'WHERE '.$this->getOrderColumn().' '.$direction.' '.$currentOrderNum.' '.$baseFilter.
+            	'ORDER BY '.$this->getOrderColumn().' '.$orderDirection.' Limit 1';
 
             $data = convertDBResult($this->dbh->selectRequest($request), 'neighborID');
             if ($data) {
                 extract(current($data));
                 $this->dbh->beginTransaction();
-                $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array($this->getOrderColumn()=>$neighborOrderNum), array($this->getPK()=>$currentID));
-                $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array($this->getOrderColumn()=>$currentOrderNum), array($this->getPK()=>$neighborID));
+                $this->dbh->modify(
+                	QAL::UPDATE,
+                	$this->getTableName(),
+                	array($this->getOrderColumn()=>$neighborOrderNum),
+                	array($this->getPK()=>$currentID)
+                );
+                $this->dbh->modify(
+                	QAL::UPDATE,
+                	$this->getTableName(),
+                	array($this->getOrderColumn()=>$currentOrderNum),
+                	array($this->getPK()=>$neighborID)
+                );
                 $this->dbh->commit();
             }
 

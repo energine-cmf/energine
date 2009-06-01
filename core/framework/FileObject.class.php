@@ -112,10 +112,29 @@ class FileObject extends FileSystemObject {
         $data = $data[self::TABLE_NAME];
         $fileName = $data['upl_path'];
         //Копируем файл из временной директории на нужное место
-        copy('tmp/'.basename($fileName), $fileName);
-        unlink('tmp/'.basename($fileName));
+        copy($tmpFile = self::getTmpFilePath($fileName), $fileName);
+        unlink($fileName);
+
         $this->dbh->modify(QAL::INSERT, self::TABLE_NAME, $data);
     }
+
+	public static function getTmpFilePath($filename){
+		return 'tmp/'.basename($filename);
+	}
+
+	public static function generateFilename($dirPath, $fileExtension){
+        /*
+         * Генерируем уникальное имя файла.
+         */
+        $c = ''; // первый вариант имени не будет включать символ '0'
+        do {
+            $filename = time().rand(1, 10000)."$c.{$fileExtension}";
+            $c++; // при первом проходе цикла $c приводится к integer(1)
+        } while(file_exists($dirPath.$filename));
+
+        return $filename;
+	}
+
 
     /**
 	 * Создание файла из существующего

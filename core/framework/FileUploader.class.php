@@ -174,19 +174,12 @@ class FileUploader extends Object {
             $dir .= '/';
         }
 
-        /*
-         * Генерируем уникальное имя файла.
-         */
-        $c = ''; // первый вариант имени не будет включать символ '0'
-        do {
-            $filename = time()."$c.{$this->ext}";
-            $c++; // при первом проходе цикла $c приводится к integer(1)
-        } while(file_exists($this->uploadsPath.$dir.$filename));
+        $filePath = $this->uploadsPath.$dir.FileObject::generateFilename($this->uploadsPath.$dir, $this->ext);
 
-        if (!@move_uploaded_file($this->file['tmp_name'], $this->uploadsPath.$dir.$filename)) {
+        if (!@move_uploaded_file($this->file['tmp_name'], $filePath)) {
             throw new SystemException('ERR_DEV_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file);
         }
-        $this->FileObjectName = $this->uploadsPath.$dir.$filename;
+        $this->FileObjectName = $filePath;
         chmod($this->FileObjectName, 0644);
 
         return true;

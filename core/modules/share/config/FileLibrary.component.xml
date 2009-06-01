@@ -91,15 +91,20 @@
 				<pattern>/upload-zip/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Form"/>
+				<object name="FileForm"/>
 			</javascript>
 			<fields>
-				<field name="upl_path" type="file" title="FIELD_UPL_FILE"/>
+				<field name="upl_path" type="prfile" title="FIELD_ZIP_FILE"/>
 			</fields>
 			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="save" title="BTN_SAVE" type="button" onclick="saveZip"/>
 				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
+		</method>
+		<method name="saveZip">
+			<uri_patterns>
+				<pattern>/save-zip/</pattern>
+			</uri_patterns>
 		</method>
 	</methods>
 </configuration>

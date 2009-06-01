@@ -333,6 +333,83 @@ final class FileLibrary extends DataSet {
     }
 
     /**
+     * Распаковка залитого zip файла
+     *
+     * @return void
+     * @access protected
+     */
+    protected function saveZip(){
+		try {
+			$filename = FileObject::getTmpFilePath($_POST['share_uploads']['upl_path']);
+
+			if(file_exists($filename)){
+				$zip = new ZipArchive();
+				$zip->open($filename);
+
+				for ($i = 0; $i < $zip->numFiles; $i++){
+					$currentFile = $zip->statIndex($i);
+
+					$currentFile = $currentFile['name'];
+					$fileInfo = pathinfo($currentFile);
+
+					if(
+						!(
+							(substr($fileInfo['filename'], 0, 1) === '.')
+							||
+							(strpos($currentFile, 'MACOSX') !== false)
+							||
+							$fileInfo['filename'] === ''
+
+						)
+					){
+						if($fileInfo['dirname'] == '.'){
+							$path = '';
+						}
+						else{
+							$path = Translit::transliterate(addslashes($fileInfo['dirname'])).'/';
+						}
+
+
+						//Directory
+						if(!isset($fileInfo['extension'])){
+
+							$zip->renameIndex(
+								$i,
+								$currentFile = $path.Translit::transliterate($fileInfo['filename'])
+							);
+						}
+						else{
+							$zip->renameIndex(
+								$i,
+								$currentFile = $path.FileObject::generateFilename('' , $fileInfo['extension'])
+							);
+						}
+
+						$zip->extractTo($this->uploadsDir->getPath(), $currentFile);
+						$f = new FileObject();
+						$f->createFromPath($this->uploadsDir->getPath().'/'.$currentFile, $fileInfo['filename']);
+					}
+				}
+				$zip->close();
+			}
+
+
+            $JSONResponse = array(
+            'result' => true,
+            'mode' => 'insert'
+            );
+        }
+        catch (SystemException $e){
+            $message['errors'][] = array('message'=>$e->getMessage().current($e->getCustomMessage()));
+            $JSONResponse = array_merge(array('result'=>false, 'header'=>$this->translate('TXT_SHIT_HAPPENS')), $message);
+
+        }
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write(json_encode($JSONResponse));
+        $this->response->commit();
+    }
+
+    /**
      * Выводит форму создания файла
      *
      * @return void
@@ -344,8 +421,13 @@ final class FileLibrary extends DataSet {
         $this->prepare();
     }
 
+    /**
+     * Выводи форму загрузки Zip файла содержащего набор файлов
+     *
+     * @return void
+     * @access protected
+     */
     protected function uploadZip(){
-    	//inspect($this->uploadsDir);
 		$this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
     }

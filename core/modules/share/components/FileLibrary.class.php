@@ -151,6 +151,9 @@ final class FileLibrary extends DataSet {
             case FileSystemObject::IS_IMAGE:
                 $row['className'] = 'image';
             break;
+            case FileSystemObject::IS_ZIP:
+                $row['className'] = 'zip';
+            break;
         	default:
         	    $row['className'] = 'undefined';
         		break;
@@ -441,13 +444,13 @@ final class FileLibrary extends DataSet {
      * @final
      */
     final protected function upload() {
-        try {
-            $js =
-            'var doc = window.parent.document;'."\n".
-            'var path = doc.getElementById(\'path\');'."\n".
-            'var pb = doc.getElementById(\'progress_bar\'); '."\n".
-            'var iframe = doc.getElementById(\'uploader\'); '."\n";
+        $js =
+        'var doc = window.parent.document;'."\n".
+        'var path = doc.getElementById(\'path\');'."\n".
+        'var pb = doc.getElementById(\'progress_bar\'); '."\n".
+        'var iframe = doc.getElementById(\'uploader\'); '."\n";
 
+    	try {
             if (empty($_FILES) || !isset($_FILES['file'])) {
                 throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
             }
@@ -456,8 +459,11 @@ final class FileLibrary extends DataSet {
             $uploader->setFile($_FILES['file']);
             $uploader->upload('tmp/');
             $fileName = $uploader->getFileObjectName();
-            if (FileSystemObject::getTypeInfo($fileName) == FileSystemObject::IS_IMAGE) {
+            if (($fileType = FileSystemObject::getTypeInfo($fileName)) == FileSystemObject::IS_IMAGE) {
             	$js .= 'iframe.preview.src = "'.$fileName.'";';
+            }
+            elseif($fileType == FileSystemObject::IS_ZIP){
+				$js .= 'iframe.preview.src = "images/icons/icon_zip.gif";';
             }
             else {
             	$js .= 'iframe.preview.src = "images/icons/icon_undefined.gif";';

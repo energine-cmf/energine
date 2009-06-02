@@ -48,6 +48,12 @@ div.dirArea .scrollHelper div div.undefined {
 	background: url(../images/icons/icon_undefined.gif) no-repeat center center;
 }
 
+div.dirArea .scrollHelper div div.zip {
+	width:60px;
+	height:60px;
+	background: url(../images/icons/icon_zip.gif) no-repeat center center;
+}
+
 div.dirArea .scrollHelper div div.folder {
 	width:60px;
 	height:60px;

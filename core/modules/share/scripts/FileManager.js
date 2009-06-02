@@ -78,11 +78,11 @@ var FileManager = new Class({
 
         if (selectedItem.obj['upl_name']== '...') {
             delBtn.disable();
-            renBtn.disable();
+            if(renBtn)renBtn.disable();
         }
         else {
             delBtn.enable();
-            renBtn.enable();
+            if(renBtn)renBtn.enable();
         }
     },
 

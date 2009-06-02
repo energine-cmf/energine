@@ -43,7 +43,7 @@ class NewsFeed extends Feed {
 
      protected function main() {
         parent::main();
-		if($this->getData() && $newsID = $this->getData()->getFieldByName('news_id')){ 	
+		if($this->getData() && $newsID = $this->getData()->getFieldByName('news_id')){
 			$hasTextField = new FieldDescription('has_text');
 			$hasTextField->setType(FieldDescription::FIELD_TYPE_BOOL);
 			$this->getDataDescription()->addFieldDescription($hasTextField);
@@ -64,10 +64,13 @@ class NewsFeed extends Feed {
 	 */
 
     protected function view() {
-
         $params = $this->getActionParams();
+
         list($day, $month, $year) = $params;
-        $this->setFilter(array('news_date'=>sprintf('%s-%s-%s', $year, $month, $day)));
+        $this->addFilterCondition(
+        	array('news_date'=>sprintf('%s-%s-%s', $year, $month, $day))
+        );
+        $this->addFilterCondition(array('smap_id' => $this->document->getID()));
 
         $this->setType(self::COMPONENT_TYPE_FORM);
         $this->setDataDescription($this->createDataDescription());

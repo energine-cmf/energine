@@ -100,7 +100,7 @@ var PageEditor = new Class({
             if (this.activeEditor) this.activeEditor.focus();
         }
 
-        if (!window.ie && this.activeEditor) {
+        if (!window.supportContentEdit && this.activeEditor) {
             this.activeEditor.showSource();
         }
     },
@@ -125,11 +125,13 @@ PageEditor.BlockEditor = RichEditor.extend({
         this.path  = this.area.getProperty('componentPath');
         this.docId = this.area.getProperty('docID') ? this.area.getProperty('docID') : false;
         this.num   = this.area.getProperty('num');
-        if (window.ie && !this.fallback_ie) {
+
+        if (window.supportContentEdit && !this.fallback_ie) {
             document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this));
             this.pasteArea = new Element('div').setStyles({ 'visibility': 'hidden', 'width': '0', 'height': '0', 'font-size': '0', 'line-height': '0' }).injectInside(document.body);
 			//addEvent('paste' работать не захотело
-            this.area.onpaste = this.processPaste.bindWithEvent(this);
+            if(window.ie) this.area.onpaste = this.processPaste.bindWithEvent(this);
+            else if(window.gecko) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
         }
         this.switchToViewMode = this.pageEditor.switchToViewMode;
 		this.overlay = new Overlay();
@@ -138,7 +140,7 @@ PageEditor.BlockEditor = RichEditor.extend({
     focus: function() {
         this.area.addClass('activeEditor');
         var toolbar = this.pageEditor.toolbar.bindTo(this);
-        if (!window.ie) {
+        if (!window.supportContentEdit) {
             if (this.dirty) toolbar.getControlById('save').enable();
             return;
         }
@@ -151,7 +153,7 @@ PageEditor.BlockEditor = RichEditor.extend({
         this.area.removeClass('activeEditor');
         var toolbar = this.pageEditor.toolbar.bindTo(this.pageEditor).disableControls();
         toolbar.getControlById('viewModeSwitcher').enable();
-        if (!window.ie) {
+        if (!window.supportContentEdit) {
             return;
         }
         this.area.contentEditable = 'false';

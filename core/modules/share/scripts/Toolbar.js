@@ -145,6 +145,7 @@ Toolbar.Control = new Class({
             this.element.addClass('icon')
 				.setProperty('id', this.toolbar.name + this.properties.id)
                 .setProperty('title', this.properties.title + (this.properties.tooltip ? ' ('+this.properties.tooltip+')' : ''))
+                .setStyle('-moz-user-select','none')
                 .setStyle('background-image', 'url(' + $E('base').getProperty('href') + this.toolbar.imagesPath + this.properties.icon + ')');
                 //.setHTML('&#160;');
         }
@@ -235,7 +236,7 @@ Toolbar.Select = Toolbar.Control.extend({
             this.disable();
         }
 		
-		if(window.ie)
+		if(window.supportContentEdit)
 			$H(this.options).each(function(value, key){
 				control.select.adopt(new Element('option').setProperties({'value': key}).setText(value));
 			});

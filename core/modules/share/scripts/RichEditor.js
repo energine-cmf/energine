@@ -1,8 +1,15 @@
 ScriptLoader.load('ModalBox.js');
-
+/**
+ * WYSIWYG Редактор
+ */
 var RichEditor = new Class({
-
+	/**
+	 * Аттрибут указывающий на то что  блок был изменен
+	 */
     dirty: false,
+    /**
+     * Режим HTML source
+     */
     fallback_ie: false,
 
     initialize: function(area) {
@@ -18,12 +25,23 @@ var RichEditor = new Class({
     },
 
     action: function(cmd, showUI, value) {
-        if (window.gecko || this.fallback_ie) return this.fallback(cmd);
-        if (!window.ie || document.selection.type == 'Control') return;
+        if (/*window.gecko ||*/ this.fallback_ie) return this.fallback(cmd);
+        var selection = this._getSelection();
+        if (!window.supportContentEdit || selection.type == 'Control') return;
 
-        var range = document.selection.createRange();
+        var range = selection.createRange();
         if (this.validateParent(range)) {
-            range.execCommand(cmd, (showUI || false), value);
+
+        	if(isset(range.execCommand))
+        		range.execCommand(cmd, (showUI || false), value);
+        	else {
+        		if(cmd == 'CreateLink'){
+        			value  = prompt("Enter a URL:", "http://");
+        			showUI = false;
+        		}
+        		document.execCommand(cmd, (showUI || false), value);
+
+        	}
             this.dirty = true;
         }
     },
@@ -46,11 +64,11 @@ var RichEditor = new Class({
 
     getSelectionInfo: function() {
         var selection = { start: -1, end: -1 };
-        if (window.gecko) {
+        /*if (window.gecko) {
             selection.start = this.textarea.selectionStart;
             selection.end = this.textarea.selectionEnd;
         }
-        else if (window.ie) {
+        else */if (window.supportContentEdit) {
             var range = (this.currentRange)?this.currentRange:document.selection.createRange();
             var dup_range = range.duplicate();
             dup_range.moveToElementText(this.textarea);
@@ -84,9 +102,13 @@ var RichEditor = new Class({
     alignJustify: function() { this.action('JustifyFull'); },
 
 	imageManager: function() {
-        if (window.ie) {
-			this.currentRange = document.selection.createRange();
-			if (document.selection.type == 'Control' && this.currentRange(0).tagName == 'IMG') {
+        if (window.supportContentEdit) {
+			this.currentRange = this._getSelection().createRange();
+			//console.log(this.currentRange);
+
+			//TODO Что то тут нужно решить с редактированием изображения
+
+			/*if (document.selection.type == 'Control' && this.currentRange(0).tagName == 'IMG') {
                 var img = this.currentRange(0);
                 imageData = {
                     'upl_path': img.src,
@@ -101,17 +123,17 @@ var RichEditor = new Class({
                 };
 				this.insertImage(imageData);
 				return;
-            }
+            }*/
 		}
 
         ModalBox.open({
             url: this.area.getProperty('componentPath')+'file-library/image-only',
             onClose: this.insertImage.bind(this)
         });
-		
+
     },
     fileLibrary: function() {
-        if (window.ie) this.currentRange = document.selection.createRange();
+        if (window.supportContentEdit) this.currentRange = document.selection.createRange();
         ModalBox.open({
             url: this.area.getProperty('componentPath')+'file-library',
             onClose: this.insertFileLink.bind(this)
@@ -140,7 +162,13 @@ var RichEditor = new Class({
 					this.currentRange.select();
 				}
 				else {
-					if (window.gecko || this.fallback_ie) {
+					if(window.gecko){
+						var imgStr = '<img src="'+image.filename+'" width="'+image.width+'" height="'+image.height+'" align="'+image.align+'" hspace="'+image.hspace+'" vspace="'+image.vspace+'" alt="'+image.alt+'" border="0" />';
+						document.execCommand('inserthtml', false, imgStr);
+						this.dirty = true;
+						return;
+					}
+					else if (this.fallback_ie) {
 						this.replaceSelectionWith('<img src="'+image.filename+'" width="'+image.width+'" height="'+image.height+'" align="'+image.align+'" hspace="'+image.hspace+'" vspace="'+image.vspace+'" alt="'+image.alt+'" border="0" />');
 						this.dirty = true;
 						return;
@@ -179,20 +207,42 @@ var RichEditor = new Class({
         }
     },
     processPaste: function(event) {
-        var orig_tr = document.selection.createRange();
-        var new_tr = document.body.createTextRange();
+    	//TODO если заработает копирование в ФФ - не забыть почистить
+    	var selection = this._getSelection();
+
+        var orig_tr = selection.createRange();
+        var new_tr = (window.gecko)?document.createRange():document.body.createTextRange();
 
         this.pasteArea.innerHTML = 'dummy text';
-        new_tr.moveToElementText(this.pasteArea);
-        new_tr.select();
-        document.execCommand('paste', false, null);
+        if(window.ie){
+	        new_tr.moveToElementText(this.pasteArea);
+	        new_tr.select();
+	        document.execCommand('paste', false, null);
+	        orig_tr.select();
+	        orig_tr.pasteHTML(this.cleanMarkup(this.area.getProperty('componentPath'), this.pasteArea.innerHTML, true));
+        }
+        else{
+        	//orig_tr.selectNode(this.pasteArea);
+        	var markup = this.cleanMarkup(this.area.getProperty('componentPath'), this.pasteArea.innerHTML, true);
 
-        orig_tr.select();
-        orig_tr.pasteHTML(this.cleanMarkup(this.area.getProperty('componentPath'), this.pasteArea.innerHTML, true));
-        this.pasteArea.setHTML('');
+        	document.execCommand('inserthtml', false, markup);
+        }
+
+        /*this.pasteArea.setHTML('');*/
+        this.pasteArea.innerHTML = '';
         event.stop();
     },
+    processPasteFF: function(event){
+    	(function(){
+	    	this.area.innerHTML =
+				this.cleanMarkup(
+					this.area.getProperty('componentPath'),
+					this.area.innerHTML,
+				true);
+    	}).delay(300, this);
 
+		//event.stop();
+    },
     cleanMarkup: function(path, data, aggressive) {
         var ajax = new Ajax(path + 'cleanup' + (aggressive ? '?aggressive=1' : ''), {
             method: 'post',
@@ -210,6 +260,40 @@ var RichEditor = new Class({
 			document.execCommand("FormatBlock", false, '<'+selectedOption+'>');
 		}
 		control.select.value = '';
+	},
+    _getSelection: function(){
+		var selection = (document.selection || window.getSelection());
+
+		if(!isset(selection.type)){
+			selection.type = 'Text';
+		}
+		if(!isset(selection.createRange)){
+			/**
+			 * Для FF имитируем присутствие IE ф-ций
+			 */
+			selection.createRange = function(){
+				var range = this.getRangeAt(0);
+
+				range.parentElement = function(){
+					//var result = this.startContainer;
+					var result = this.commonAncestorContainer;
+					/**
+					 * Если предком является елемент #text
+					 */
+					if(result.nodeType == 3){
+						/**
+						 * Нужно получить родительский узел
+						 */
+						result = result.parentNode;
+					}
+					return result;
+				};
+
+				return range;
+			};
+		}
+		return selection;
 	}
 
 });
+

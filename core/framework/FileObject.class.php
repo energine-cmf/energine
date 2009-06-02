@@ -113,7 +113,7 @@ class FileObject extends FileSystemObject {
         $fileName = $data['upl_path'];
         //Копируем файл из временной директории на нужное место
         copy($tmpFile = self::getTmpFilePath($fileName), $fileName);
-        unlink($fileName);
+        unlink($tmpFile);
 
         $this->dbh->modify(QAL::INSERT, self::TABLE_NAME, $data);
     }

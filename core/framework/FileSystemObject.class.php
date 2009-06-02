@@ -36,6 +36,10 @@ abstract class FileSystemObject extends DBWorker {
      *
      */
     const IS_FILE = 2;
+    /**
+	 * Zip файл
+     */
+    const IS_ZIP = 3;
 
     /**
      * Имя таблицы в которой хранится мета описания папки
@@ -170,6 +174,13 @@ abstract class FileSystemObject extends DBWorker {
 
         if (is_dir($path)) {
             $result = self::IS_FOLDER;
+        }
+        elseif(pathinfo($path, PATHINFO_EXTENSION) == 'zip'){
+        	$zip = new ZipArchive();
+        	if($zip->open($path, ZIPARCHIVE::CHECKCONS)){
+				$zip->close();
+				$result = self::IS_ZIP;
+        	}
         }
         else {
             if(getimagesize($path))$result = self::IS_IMAGE;

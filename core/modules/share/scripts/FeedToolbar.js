@@ -1,7 +1,7 @@
 ScriptLoader.load('Toolbar.js', 'ModalBox.js');
 
-var FeedToolbar = Toolbar.extend({
-
+var FeedToolbar = new Class({
+	Extends: Toolbar,
     initialize: function(Container) {
         Asset.css('feedtoolbar.css');
         this.parent();

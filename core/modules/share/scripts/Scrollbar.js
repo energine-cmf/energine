@@ -1,14 +1,12 @@
 var Scrollbar = new Class({
 
-    getOptions: function() {
-        return {
+    options: {
             type: 'vertical',
             scrolledElement: null
-        };
     },
 
     initialize: function(options) {
-        this.setOptions(this.getOptions(), options);
+        this.setOptions(options);
         this.options.type = ['vertical', 'horizontal'].test(this.options.type) ? this.options.type : 'vertical';
         this.element = new Element('div').setStyles({ 'position': 'absolute', 'background': '#EED url(images/scrollbar_bg.gif)', 'display': 'none' }).injectInside(document.body);
         this.knob = new Element('div').setStyles({ 'background': '#EED url(images/scrollbar_knob.gif)', 'width': '16px', 'height': '20px' }).injectInside(this.element);
@@ -41,8 +39,8 @@ var Scrollbar = new Class({
         var coords = this.contents.getCoordinates();
         this.element.setStyles({
             'display': '',
-            'top': coords.top - (window.ie ? (window.singleMode ? -1 : 24) : 0) + 'px',
-            'left': coords.right + (window.ie ? 2 : 1) + 'px',
+            'top': coords.top - (Browser.Engine.trident ? (window.singleMode ? -1 : 24) : 0) + 'px',
+            'left': coords.right + (Browser.Engine.trident ? 2 : 1) + 'px',
             'width': '16px',
             'height': this.options.scrolledElement.getSize().size.y - 1 + 'px'
         });

@@ -1,5 +1,6 @@
 var Overlay = new Class({
-
+	Implements: Options,
+	/*
     getOptions: function() {
         return {
             top: null,
@@ -13,17 +14,29 @@ var Overlay = new Class({
                 width: 32, height: 32
             }
         };
+    },*/
+	options:{
+            top: null,
+            left: null,
+            width: null,
+            height: null,
+            opacity: 0.25,
+            hideObjects: true,
+            indicator: {
+                image: 'images/overlay_loading.gif',
+                width: 32, height: 32
+            }
     },
-
     initialize: function(options) {
-        this.setOptions(this.getOptions(), options);
+        this.setOptions(options);
         this.element = new Element('div').setStyles({
             'position': 'absolute',
             'z-index': '1000',
             'background': '#000',
             'text-align': 'center'
         }).injectInside(document.body);
-        this.fx = this.element.effect('opacity', { wait: false }).hide();
+        //this.fx = this.element.effect('opacity', { wait: false }).hide();
+        this.element.fade('hide');
         this.indicator = new Element('img').setProperties({
             'src': this.options.indicator.image,
             'width': this.options.indicator.width,
@@ -36,28 +49,32 @@ var Overlay = new Class({
     },
 
     show: function(options) {
-        this.setOptions(this.options, options);
+        this.setOptions(options);
         this.element.setStyles({
-            'top': options.top - (window.ie ? $(document.body).getStyle('margin-top').toInt() : 0) + 'px',
+            'top': options.top - (Browser.Engine.trident ? $(document.body).getStyle('margin-top').toInt() : 0) + 'px',
             'left': options.left + 'px',
             'width': options.width + 'px',
             'height': options.height + 'px'
         });
         this.setupObjects(true);
-        this.fx.start(this.options.opacity);
+        this.element.fade(this.options.opacity);
+        //this.fx.start(this.options.opacity);
     },
 
     hide: function() {
-        this.fx.chain(this.setupObjects.pass(false, this)).start(0);
-        this.fx.start(0);
+    	new Fx.Tween(this.element).chain(
+				this.setupObjects.pass(false, this)
+		).start('opacity', this.options.opacity, 0);
+
+        //this.fx.chain(this.setupObjects.pass(false, this)).start(0);
+		//this.element.fade('hide');
+        //this.fx.start(0);
     },
 
     setupObjects: function(hide) {
         if (!this.options.hideObjects) return;
         var elements = $A(document.getElementsByTagName('object'));
-        elements.extend(document.getElementsByTagName(window.ie ? 'select' : 'embed'));
+        elements.extend(document.getElementsByTagName(Browser.Engine.trident ? 'select' : 'embed'));
         elements.each(function(element) { element.style.visibility = hide ? 'hidden' : ''; });
     }
 });
-
-Overlay.implement(new Options);

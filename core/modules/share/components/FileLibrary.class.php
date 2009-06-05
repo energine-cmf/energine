@@ -445,10 +445,11 @@ final class FileLibrary extends DataSet {
      */
     final protected function upload() {
         $js =
-        'var doc = window.parent.document;'."\n".
-        'var path = doc.getElementById(\'path\');'."\n".
-        'var pb = doc.getElementById(\'progress_bar\'); '."\n".
-        'var iframe = doc.getElementById(\'uploader\'); '."\n";
+	        'var doc = window.parent.document;'."\n".
+	        'var path = doc.getElementById(\'path\');'."\n".
+	        'var pb = doc.getElementById(\'progress_bar\'); '."\n".
+	        'var iframe = doc.getElementById(\'uploader\');'."\n"/*.
+        	'var preview = doc.getElementById(iframe.getAttribute("preview"));'."\n"*/;
 
     	try {
             if (empty($_FILES) || !isset($_FILES['file'])) {

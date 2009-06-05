@@ -1,4 +1,4 @@
-/*
+/**
  * DOM structure:
  *
  *   <ul class="toolbar">
@@ -28,7 +28,7 @@ var Toolbar = new Class({
         this.element = new Element('ul').addClass('toolbar').addClass('clearfix');
         this.controls = [];
 		this.name = toolbarName;
-    },
+	},
 
     getElement: function() {
         return this.element;
@@ -38,7 +38,7 @@ var Toolbar = new Class({
         this.boundTo = object;
         return this;
     },
-	
+
 	load: function(toolbarDescr) {
         $A(toolbarDescr.childNodes).each(function(elem) {
             if (elem.nodeType == 1) {
@@ -74,7 +74,7 @@ var Toolbar = new Class({
             this.controls.each(function(ctrl, index) {
                 if (ctrl == control) {
                     ctrl.toolbar = null;
-                    ctrl.element.remove();
+                    ctrl.element.dispose();
                     this.controls.splice(index, 1);
                 }
             }, this);
@@ -125,7 +125,7 @@ Toolbar.Control = new Class({
             action: null,
             disabled: false
         };
-        Object.extend(this.properties, $pick(properties, {}));
+        $extend(this.properties, $pick(properties, {}));
     },
     load: function(controlDescr) {
         this.properties.id       = controlDescr.getAttribute('id')		 || '';
@@ -146,7 +146,7 @@ Toolbar.Control = new Class({
 				.setProperty('id', this.toolbar.name + this.properties.id)
                 .setProperty('title', this.properties.title + (this.properties.tooltip ? ' ('+this.properties.tooltip+')' : ''))
                 .setStyle('-moz-user-select','none')
-                .setStyle('background-image', 'url(' + $E('base').getProperty('href') + this.toolbar.imagesPath + this.properties.icon + ')');
+                .setStyle('background-image', 'url(' + Energine.base + this.toolbar.imagesPath + this.properties.icon + ')');
                 //.setHTML('&#160;');
         }
         else {
@@ -161,14 +161,14 @@ Toolbar.Control = new Class({
     disable: function() {
         if (!this.properties.disabled) {
             this.properties.disabled = true;
-            this.element.addClass('disabled').setOpacity(0.25);        
+            this.element.addClass('disabled').setOpacity(0.25);
         }
     },
 
     enable: function() {
         if (this.properties.disabled) {
             this.properties.disabled = false;
-            this.element.removeClass('disabled').setOpacity(1);        
+            this.element.removeClass('disabled').setOpacity(1);
         }
     },
 
@@ -177,7 +177,8 @@ Toolbar.Control = new Class({
     }
 });
 
-Toolbar.Button = Toolbar.Control.extend({
+Toolbar.Button = new Class({
+	Extends:Toolbar.Control,
     build: function() {
         this.parent();
         var control = this;
@@ -189,19 +190,20 @@ Toolbar.Button = Toolbar.Control.extend({
     }
 });
 
-Toolbar.Separator = Toolbar.Control.extend({
-
+Toolbar.Separator = new Class({
+	Extends:Toolbar.Control,
     build: function() {
         this.parent();
         this.element.addClass('separator');
     },
 
     disable: function() {
-        // Separator connot be disabled.
+        // Separator cannot be disabled.
     }
 });
 
-Toolbar.Select = Toolbar.Control.extend({
+Toolbar.Select = new Class({
+	Extends:Toolbar.Control,
 	select:null,
 	toolbar:null,
 
@@ -212,8 +214,8 @@ Toolbar.Select = Toolbar.Control.extend({
             action: null,
             disabled: false
         };
-        Object.extend(this.properties, $pick(properties, {}));
-		
+        $extend(this.properties, $pick(properties, {}));
+
 		this.options = options || {};
     },
 
@@ -235,24 +237,24 @@ Toolbar.Select = Toolbar.Control.extend({
         if (this.properties.disabled) {
             this.disable();
         }
-		
-		if(window.supportContentEdit)
+
+		if(Energine.supportContentEdit)
 			$H(this.options).each(function(value, key){
-				control.select.adopt(new Element('option').setProperties({'value': key}).setText(value));
+				control.select.adopt(new Element('option').setProperties({'value': key}).set('text', value));
 			});
     },
 
     disable: function() {
         if (!this.properties.disabled) {
             this.properties.disabled = true;
-            this.select.setProperty('disabled', 'disabled');        
+            this.select.setProperty('disabled', 'disabled');
         }
     },
 
     enable: function() {
         if (this.properties.disabled) {
             this.properties.disabled = false;
-			this.select.removeProperty('disabled');        
+			this.select.removeProperty('disabled');
         }
     },
 

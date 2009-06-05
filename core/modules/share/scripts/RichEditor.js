@@ -25,9 +25,9 @@ var RichEditor = new Class({
     },
 
     action: function(cmd, showUI, value) {
-        if (/*window.gecko ||*/ this.fallback_ie) return this.fallback(cmd);
+        if (/*Browser.Engine.gecko ||*/ this.fallback_ie) return this.fallback(cmd);
         var selection = this._getSelection();
-        if (!window.supportContentEdit || selection.type == 'Control') return;
+        if (!Energine.supportContentEdit || selection.type == 'Control') return;
 
         var range = selection.createRange();
         if (this.validateParent(range)) {
@@ -64,11 +64,11 @@ var RichEditor = new Class({
 
     getSelectionInfo: function() {
         var selection = { start: -1, end: -1 };
-        /*if (window.gecko) {
+        /*if (Browser.Engine.gecko) {
             selection.start = this.textarea.selectionStart;
             selection.end = this.textarea.selectionEnd;
         }
-        else */if (window.supportContentEdit) {
+        else */if (Energine.supportContentEdit) {
             var range = (this.currentRange)?this.currentRange:document.selection.createRange();
             var dup_range = range.duplicate();
             dup_range.moveToElementText(this.textarea);
@@ -102,7 +102,7 @@ var RichEditor = new Class({
     alignJustify: function() { this.action('JustifyFull'); },
 
 	imageManager: function() {
-        if (window.supportContentEdit) {
+        if (Energine.supportContentEdit) {
 			this.currentRange = this._getSelection().createRange();
 			//console.log(this.currentRange);
 
@@ -133,7 +133,7 @@ var RichEditor = new Class({
 
     },
     fileLibrary: function() {
-        if (window.supportContentEdit) this.currentRange = document.selection.createRange();
+        if (Energine.supportContentEdit) this.currentRange = document.selection.createRange();
         ModalBox.open({
             url: this.area.getProperty('componentPath')+'file-library',
             onClose: this.insertFileLink.bind(this)
@@ -162,7 +162,7 @@ var RichEditor = new Class({
 					this.currentRange.select();
 				}
 				else {
-					if(window.gecko){
+					if(Browser.Engine.gecko){
 						var imgStr = '<img src="'+image.filename+'" width="'+image.width+'" height="'+image.height+'" align="'+image.align+'" hspace="'+image.hspace+'" vspace="'+image.vspace+'" alt="'+image.alt+'" border="0" />';
 						document.execCommand('inserthtml', false, imgStr);
 						this.dirty = true;
@@ -189,7 +189,7 @@ var RichEditor = new Class({
         if (!data) return;
         var filename = data['upl_path'];
 
-        if (window.gecko) {
+        if (Browser.Engine.gecko) {
             this.wrapSelectionWith('a', 'href="'+filename+'"');
             this.dirty = true;
             return;
@@ -211,10 +211,10 @@ var RichEditor = new Class({
     	var selection = this._getSelection();
 
         var orig_tr = selection.createRange();
-        var new_tr = (window.gecko)?document.createRange():document.body.createTextRange();
+        var new_tr = (Browser.Engine.gecko)?document.createRange():document.body.createTextRange();
 
         this.pasteArea.innerHTML = 'dummy text';
-        if(window.ie){
+        if(Browser.Engine.trident){
 	        new_tr.moveToElementText(this.pasteArea);
 	        new_tr.select();
 	        document.execCommand('paste', false, null);

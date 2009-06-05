@@ -13,7 +13,7 @@ var Validator = new Class({
 
 	    //Для всех field type=float(class=float)
         //меняем , на .
-        $ES('.float', this.form).each(function(element){
+        this.form.getElements('.float').each(function(element){
         	element.removeEvent('change', prepareFunction);
         	element.addEvent('change', prepareFunction);
         });
@@ -43,8 +43,8 @@ var Validator = new Class({
                 if (field.hasClass('invalid')) {
                     field.removeClass('invalid');
                     var errorDiv;
-                    if(errorDiv = $E('div.error', field.parentNode.parentNode)){
-                        errorDiv.remove();
+                    if(errorDiv = field.getParent().getParent().getElement('div.error')){
+                        errorDiv.dispose();
                     }
                 }
 
@@ -66,7 +66,7 @@ var Validator = new Class({
                 else {
                     field.removeClass('invalid');
                     var error = $(field.parentNode).getElement('div.error');
-                    if (error) error.remove();
+                    if (error) error.dispose();
                 }
             }
         }
@@ -98,11 +98,9 @@ var Validator = new Class({
 
 		} else {
 			/*inserting cleaner for Opera*/
-			if (window.opera) {
+			if (Browser.Engine.presto) {
 				/*getting all fields with pattern attribute*/
-				$ES('input[pattern], textarea[pattern]', this.form).each(function(item){
-				   item.removeProperty('pattern');
-				});
+				this.form.getElements('input[pattern], textarea[pattern]').removeProperty('pattern');
 			}
 
 			return true;

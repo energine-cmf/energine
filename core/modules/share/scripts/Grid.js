@@ -1,23 +1,20 @@
 ScriptLoader.load('View.js');
 
-
-
-var Grid = View.extend({
-
-    getOptions: function() {
-        return Object.extend(this.parent(), {
-            onSelect: Class.empty,
-            onSortChange: Class.empty,
-            onDoubleClick: Class.empty
-        });
+var Grid = new Class({
+	Extends: View,
+	options:{
+	    onSelect: $empty,
+	    onSortChange: $empty,
+	    onDoubleClick: $empty
     },
 
     initialize: function(element, options) {
         Asset.css('grid.css');
-        this.parent(element, options);
-		this.headOff = $E('.gridContainer thead', this.element);
+        this.setOptions(options);
+        this.parent(element, this.options);
+		this.headOff = this.element.getElement('.gridContainer thead');
 		this.headOff.setStyle('display', 'none');
-        this.tbody = $E('.gridContainer tbody', this.element);
+        this.tbody = this.element.getElement('.gridContainer tbody');
 
     },
 
@@ -60,8 +57,17 @@ var Grid = View.extend({
 
 		this.headOff.setStyle('visibility', 'hidden');
 		this.headOff.setStyle('display', 'table-header-group');
+
         if (this.data.length) {
-            this.data.each(function(record, key) { this.addRecord(record, key, preiouslySelectedRecordKey); }, this);
+			if(!this.dataKeyExists(preiouslySelectedRecordKey)){
+				preiouslySelectedRecordKey = false;
+			}
+            this.data.each(
+            	function(record, key) {
+            		this.addRecord(record, key, preiouslySelectedRecordKey);
+            	},
+            	this
+            );
             if (!preiouslySelectedRecordKey) {
 				this.selectItem(this.tbody.getFirst());
             }
@@ -69,24 +75,25 @@ var Grid = View.extend({
         else {
             this.addRecord(null);
         }
-		
+
 		var headers = new Array();
-		$ES('th', this.headOff).each(function(element, key){
+		this.headOff.getElements('th').each(function(element, key){
 			headers[key] = element.clientWidth;
-		}) 
-		//
-		
-        $ES('.gridHeadContainer col', this.element).each(function(element, key){
-			element.setStyle('width',headers[key]);
-		});	
+		})
 
-        $ES('.gridContainer col', this.element).each(function(element, key){
-			element.setStyle('width',headers[key]);
-		});				
 
-		$E('.gridContainer table.gridTable', this.element).setStyle('tableLayout', 'fixed');
-		$E('.gridHeadContainer table.gridTable', this.element).setStyle('tableLayout', 'fixed');
+        this.element.getElements('.gridHeadContainer col').each(function(element, key){
+			element.setStyle('width',headers[key]);
+		});
+
+        this.element.getElements('.gridContainer col').each(function(element, key){
+			element.setStyle('width',headers[key]);
+		});
+
+		this.element.getElement('.gridContainer table.gridTable').setStyle('tableLayout', 'fixed');
+		this.element.getElement('.gridHeadContainer table.gridTable').setStyle('tableLayout', 'fixed');
 		this.headOff.setStyle('display', 'none');
+
     },
 
     isEmpty: function() {
@@ -102,6 +109,15 @@ var Grid = View.extend({
         if (!this.keyFieldName) return false;
         return this.getSelectedRecord()[this.keyFieldName];
     },
+
+    dataKeyExists: function(key){
+		if(!this.data) return false;
+		if (!this.keyFieldName) return false;
+
+		return this.data.some(function(item, index){
+			return (item[this.keyFieldName]== key);
+		}.bind(this));
+	},
 
     getSortFieldName: function() {
         //return this.headers[this.sortFieldIndex].fieldName;
@@ -132,10 +148,11 @@ var Grid = View.extend({
             }
             header.setStyle('width', firstRow.childNodes[i].getSize().size.x + delta + 'px');
         }, this);
-        if (!this.data.length) this.tbody.getFirst().remove();
+        if (!this.data.length) this.tbody.getFirst().dispose();
     },
 
     addRecord: function(record, key, currentKey) {
+
         if (!record) {
             var row = new Element('tr').injectInside(this.tbody);
             return;
@@ -147,10 +164,12 @@ var Grid = View.extend({
                 return false;
             }
         }
+
         // Создаем новую строку в таблице.
         var row = new Element('tr').addClass(((key/2)==Math.ceil(key/2))?'odd':'even').setProperty('unselectable', 'on').injectInside(this.tbody);
         // Сохраняем запись в объекте строки.
         row.record = record;
+
         for (var fieldName in record) {
             // Пропускаем невидимые поля.
             if (!this.metadata[fieldName].visible || this.metadata[fieldName].type == 'hidden') continue;
@@ -170,16 +189,17 @@ var Grid = View.extend({
             else {
                 var fieldValue = record[fieldName].clean();
                 if (fieldValue != '') cell.appendText(fieldValue);
-                else cell.setHTML('&#160;');
+                else cell.set('html', '&#160;');
             }
         }
+
         // Помечаем первую ячейку строки.
         row.getFirst().addClass('firstColumn');
 		if (currentKey == record[this.keyFieldName]) {
 			this.selectItem(row);
-			///////
-			$E('.gridContainer').scrollTo(0,200);
+			new Fx.Scroll($(document.body).getElement('.gridContainer')).toElement(row);
 		}
+
         var grid = this;
         row.addEvents({
             'mouseover': function() { if (this != grid.getSelectedItem()) this.addClass('highlighted'); },
@@ -187,6 +207,7 @@ var Grid = View.extend({
             'click': function() { if (this != grid.getSelectedItem()) grid.selectItem(this); },
             'dblclick': function() { this.fireEvent('onDoubleClick'); }.bind(this)
         });
+
     },
 
     changeSort: function(fieldIndex) {

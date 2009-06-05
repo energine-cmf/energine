@@ -1,7 +1,6 @@
 ScriptLoader.load('Form.js', 'ModalBox.js');
-
-var DivForm = Form.extend({
-
+var DivForm = new Class({
+	Extends: Form,
 	initialize: function(element){
 		this.parent(element);
         this.obj = null;
@@ -53,7 +52,7 @@ var DivForm = Form.extend({
             this.form.toQueryString(),
             function(response) {
                 if (response.mode == 'insert' && confirm(MSG_START_EDITING)) {
-                    window.top.location.href = $E('base', window.top.document.head).getProperty('href')+response.url;
+                    window.top.location.href = window.top.document.head.getElement('base').getProperty('href') + response.url;
                 }
                 else {
                     ModalBox.setReturnValue(true); this.close();
@@ -66,10 +65,10 @@ var DivForm = Form.extend({
 		if(result){
 			var data = result;
 			var emptyRow;
-			if(emptyRow = $('empty_row')) emptyRow.remove();
+			if(emptyRow = $('empty_row')) emptyRow.dispose();
 
 			if(!$('row_' + data.upl_id))
-				$E('#attached_files tbody').adopt(
+				Document.getElement('#attached_files tbody').adopt(
 					new Element('tr', {'id': 'row_' + data.upl_id}).adopt([
 						new Element('td').adopt([
 							new Element('a',
@@ -84,13 +83,13 @@ var DivForm = Form.extend({
 						            else event.returnValue = false;
 								}.bind(this)
 							}
-						}).setText(delete_button_text),
+						}).set('text', delete_button_text),
 						new Element('input', {'name': 'share_sitemap_uploads[upl_id][]', 'type': 'hidden', 'value': data.upl_id})
 						]),
-						new Element('td').setHTML(data.upl_name),
+						new Element('td').set('html', data.upl_name),
 						new Element('td').adopt(
 							new Element('a', {'href':data.upl_path, 'target':'blank'}).adopt(
-								(data.upl_mime_type != 1)? new Element('span').setHTML(data.upl_path):new Element('img', {'src':data.upl_data.thumb, 'border': '0'})
+								(data.upl_mime_type != 1)? new Element('span').set('html', data.upl_path):new Element('img', {'src':data.upl_data.thumb, 'border': '0'})
 							)
 						)
 					])
@@ -99,11 +98,11 @@ var DivForm = Form.extend({
 		}.bind(this)});
 	},
 	delAttachment: function(id){
-		$('row_' + id).remove();
-		if($E('#attached_files tbody').getChildren().length == 0){
-			$E('#attached_files tbody').adopt(
+		$('row_' + id).dispose();
+		if(Document.getElement('#attached_files tbody').getChildren().length == 0){
+			Document.getElement('#attached_files tbody').adopt(
 				new Element('tr', {'id': 'empty_row'}).adopt(
-					new Element('td', {'colspan': '3'}).setHTML(no_attached_files)
+					new Element('td', {'colspan': '3'}).set('html', no_attached_files)
 				)
 			);
 

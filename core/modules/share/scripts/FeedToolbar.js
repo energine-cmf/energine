@@ -10,10 +10,10 @@ var FeedToolbar = Toolbar.extend({
 		this.load(Container);
 		this.singlePath = Container.getProperty('single_template');
 		this._prepareDataSet(Container.getProperty('linkedTo'));
-		Container.remove();
+		Container.dispose();
 		this.selected = false;
 		this.previous = false;
-		
+
 		var component;
 		this.disableControls();
 		if(component = this.getControlById('add')){
@@ -24,7 +24,7 @@ var FeedToolbar = Toolbar.extend({
 		ModalBox.open({
             url: this.singlePath + 'add/',
             onClose: this._reload.bind(this)
-        });		
+        });
 	},
 	edit: function() {
         ModalBox.open({
@@ -37,7 +37,7 @@ var FeedToolbar = Toolbar.extend({
 		if (confirm(MSG_CONFIRM_DELETE)) {
             this.request(this.singlePath + this.selected + '/delete/', null, this._reload);
 		}
-    },	
+    },
 	up: function(){
 		this.request(this.singlePath + this.selected + '/up/', null, this._aftermove.pass('up', this));
 	},
@@ -48,21 +48,21 @@ var FeedToolbar = Toolbar.extend({
 		try {
 			if (direction == 'up') {
 				var sibling = this.previous.getPrevious();
-				
+
 				if (!sibling.getProperty('record')) {
 					throw 'error';
 				}
 				$(this.previous).injectBefore(sibling);
 			}
 			else {
-				$(this.previous).injectAfter(this.previous.getNext());			
-			}			
+				$(this.previous).injectAfter(this.previous.getNext());
+			}
 		}
 		catch (exception) {
 			this._reload(true);
 		}
-		
-		
+
+
 	},
 	_select:function(event, element){
 		if (this.previous){
@@ -88,7 +88,7 @@ var FeedToolbar = Toolbar.extend({
 		if (linkID = $(linkID)) {
 			linkID.addClass('active_component');
 			new Fx.Style(linkID, 'opacity').set(0.6);
-			$ES('[record]', linkID).each(function(element){
+			linkID.getElements('[record]').each(function(element){
 				element.addEvent('mouseover', function(){this.addClass('record_highlight')});
 				element.addEvent('mouseout', function(){this.removeClass('record_highlight')});
 				element.addEvent('click', this._select.bindWithEvent(this, element));

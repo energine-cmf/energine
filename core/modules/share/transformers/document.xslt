@@ -33,19 +33,25 @@
                 <xsl:choose>
                     <xsl:when test="document/@debug=1">
                         <script type="text/javascript" src="scripts/mootools-debug.js"></script>
+                        <script type="text/javascript" src="scripts/mootools-more-debug.js"></script>
                     </xsl:when>
                     <xsl:otherwise>
                         <script type="text/javascript" src="scripts/mootools.js"></script>
+                        <script type="text/javascript" src="scripts/mootools-more.js"></script>
                     </xsl:otherwise>
                 </xsl:choose>
         		<script type="text/javascript" src="scripts/Energine.js"></script>
+
                 <xsl:call-template name="interface_js"/>
 
                 <script type="text/javascript">
                     function init() {
+                   		<xsl:if test="document/@debug=1">
+							Energine.debug = true;
+		        		</xsl:if>
+		        		Energine.base = '<xsl:value-of select="$BASE"/>';
                         try {
                             ScriptLoader.load(<xsl:for-each select="$COMPONENTS/javascript/include | $COMPONENTS/javascript/object[@name!='PageEditor']">'<xsl:value-of select="@name" />.js'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
-
                             <xsl:if test="$COMPONENTS/javascript/object[@name='PageEditor']">
                                 <xsl:if test="position()=1">
                                     ScriptLoader.load('PageEditor.js');
@@ -75,15 +81,12 @@
                         <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
                             <xsl:variable name="objectID" select="generate-id(../../recordset)" />
                             <xsl:value-of select="$objectID" /> = new <xsl:value-of select="@name" />($('<xsl:value-of select="$objectID" />'));
-
         				</xsl:for-each>
                         }
                         catch (e) {
-                                console.log(e.message);
+                                console.error(e);
+                                //alert(e.message);
                         }
-
-
-
                     }
                     window.addEvent('domready', init);
         		</script>

@@ -5,7 +5,8 @@ var ModalBox = window.top.ModalBox || {
     init: function() {
         Asset.css('modalbox.css');
         this.overlay = new Element('div').setProperty('id', 'mb_overlay').injectInside(document.body);
-        this.overlay.fx = this.overlay.effect('opacity').hide();
+
+        this.overlay.fade();//this.overlay.effect('opacity').hide();
         //this.eventKeyDown = this.keyboardListener.bindWithEvent(this);
         this.eventPosition = this.position.bind(this);
         this.initialized = true;
@@ -17,16 +18,32 @@ var ModalBox = window.top.ModalBox || {
             url: null,
             width: 640,
             height: 520,
-            onClose: Class.empty,
+            onClose: $empty,//$empty,
             extraData: null
 		};
-		Object.extend(box.options, $pick(options, {}));
+		$extend(box.options, $pick(options, {}));
+
 		box.setStyles({
 		    'width': box.options.width + 'px',
 		    'height': box.options.height + 'px',
-		    'left': (Window.getWidth() / 2) - (box.options.width / 2) + 'px'
+		    'left': (Window.getSize().x / 2) - (box.options.width / 2) + 'px'
 		});
-		box.iframe = new Element('iframe').setProperties({ 'src': box.options.url, 'frameBorder': '0', 'scrolling': 'no' }).injectInside(box);
+
+		box.iframe =
+			new Element('iframe').setProperties(
+				{
+					'src': box.options.url,
+					'frameBorder': '0',
+					'scrolling': 'no'
+				}
+			).injectInside(box);
+
+		/*box.iframe = new IFrame({
+			'src': box.options.url,
+			'frameBorder': '0',
+			'scrolling': 'no'
+		}).injectInside(box);
+*/
 		//box.iframe.addEvent('keydown', this.keyboardListener.bindWithEvent(this));
         box.closeButton = new Element('div').addClass('closeButton').injectInside(box);
         box.closeButton.addEvents({
@@ -39,7 +56,7 @@ var ModalBox = window.top.ModalBox || {
         if (this.boxes.length == 1) {
             this.position();
             this.setup(true);
-            this.overlay.fx.start(0.8);
+            this.overlay.fade(0.5);
         }
     },
 
@@ -60,10 +77,14 @@ var ModalBox = window.top.ModalBox || {
             return;
         }
         var box = this.boxes.pop();
-        box.remove().options.onClose(box.returnValue);
+        box.dispose().options.onClose(box.returnValue);
+
 		if (!this.boxes.length) {
-			this.overlay.fx.chain(this.setup.pass(false, this)).start(0);
+			new Fx.Tween(this.overlay).chain(
+				this.setup.pass(false, this)
+			).start('opacity', 0);
 		}
+
     },
 
     keyboardListener: function(event) {
@@ -77,15 +98,19 @@ var ModalBox = window.top.ModalBox || {
     },
 
     setup: function(open) {
-        var elements = $A(document.getElementsByTagName('object'));
-        elements.extend(document.getElementsByTagName(window.ie ? 'select' : 'embed'));
+        var elements = $(document.body).getElements('object');
+
+        elements.extend(
+        	$(document.body).getElements(Browser.Engine.trident ? 'select' : 'embed')
+        );
         elements.each(function(element) { element.style.visibility = open ? 'hidden' : ''; });
         var fn = open ? 'addEvent' : 'removeEvent';
         window[fn]('resize', this.eventPosition);
+
         //document[fn]('keydown', this.eventKeyDown);
     }
 };
 
 if (!ModalBox.initialized) {
-    Window.onDomReady(ModalBox.init.bind(ModalBox));
+	window.addEvent('domready', ModalBox.init.bind(ModalBox));
 }

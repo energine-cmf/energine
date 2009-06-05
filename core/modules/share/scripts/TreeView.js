@@ -54,7 +54,7 @@ var TreeView = new Class({
     },
 
     setupStyles: function() {
-        if (!window.ie) return;
+        if (!Browser.Engine.trident) return;
         this.element.getElements('li.last').each(function(item) {
             if (item.hasClass('folder')) {
                 if (item.hasClass('opened')) {
@@ -75,24 +75,24 @@ var TreeView = new Class({
         event.stop();
 
         var node = event.target.treeNode;
-        if (event.target.getTag() == 'a') {
+        if (event.target.get('tag') == 'a') {
             node = event.target.getParent().treeNode;
             if (!node) return;
         }
 
-        if (event.target.getTag() == 'li') {
+        if (event.target.get('tag') == 'li') {
             var x = event.page.x - node.element.getLeft();
             var y = event.page.y - node.element.getTop();
 
             // Fix fo IE.
-            var delta_x = window.ie ? $(document.documentElement).getStyle('border-left-width') : 0;
-            var delta_y = window.ie ? document.documentElement.getStyle('border-top-width') : 0;
+            var delta_x = Browser.Engine.trident ? $(document.documentElement).getStyle('border-left-width') : 0;
+            var delta_y = Browser.Engine.trident ? $(document.documentElement).getStyle('border-top-width') : 0;
             if (delta_x == 'medium' && delta_y == 'medium') {
                 delta_x = 2; delta_y = 2;
             }
             var container = $('treeContainer');
-            delta_x -= container.getSize().scroll.x;
-            delta_y -= container.getSize().scroll.y;
+            delta_x -= container.getScroll().x;
+            delta_y -= container.getScroll().y;
             x -= delta_x; y -= delta_y;
 
             if ((0 > x || x > 8) || (4 > y || y > 12)) return; // a little magic here ))
@@ -138,7 +138,7 @@ TreeView.Node = new Class({
         }
         else {
             this.element = new Element('li').adopt(
-                new Element('a').setProperty('href', '#').setHTML(nodeInfo['name'])
+                new Element('a').setProperty('href', '#').set('html', nodeInfo['name'])
             );
             this.id = nodeInfo['id'];
             this.data = nodeInfo['data'];
@@ -174,7 +174,7 @@ TreeView.Node = new Class({
 
     removeChilds: function() {
         if (!this.childs) return;
-        for (var i = this.childs.childNodes.length-1; i >= 0; this.childs.childNodes[i].treeNode.remove(), i--);
+        for (var i = this.childs.childNodes.length-1; i >= 0; this.childs.childNodes[i].treeNode.dispose(), i--);
     },
 
     getPrevious: function() {
@@ -232,7 +232,7 @@ TreeView.Node = new Class({
 
     remove: function() {
         this.removeChilds();
-        this.element.remove();
+        this.element.dispose();
         this.tree.nodes.pop(this);
         this.tree.setupCssClasses();
         return this;
@@ -286,7 +286,7 @@ TreeView.Node = new Class({
     },
 
     setName: function(name) {
-        this.element.getElement('a').setHTML(name);
+        this.element.getElement('a').set('html', name);
     },
 
     setData: function(data) {
@@ -297,6 +297,6 @@ TreeView.Node = new Class({
         return this.data;
     },
     onSelect: function (node) {
-    
+
     }
 });

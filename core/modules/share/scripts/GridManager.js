@@ -8,7 +8,7 @@ ScriptLoader.load(
 );
 
 var GridManager = new Class({
-
+	Implements:ERequest,
     initialize: function(element) {
         this.element = element;
         this.tabPane = new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });
@@ -22,7 +22,7 @@ var GridManager = new Class({
                 event = new Event(event);
                 if ((event.key == 'enter') && (event.control.value != '')) {
                     event.stop();
-                    var button = $E('.filter button', element);
+                    var button = element.getElement('.filter button');
                     button.click();
                 }
             });
@@ -36,7 +36,7 @@ var GridManager = new Class({
         this.pageList = new PageList({ onPageSelect: this.loadPage.bind(this) });
         this.tabPane.element.adopt(this.pageList.getElement());
         this.overlay = new Overlay;
-        this.singleTemplatePath = /*$E('base', document.head).getProperty('href') + */this.element.getProperty('single_template');
+        this.singleTemplatePath = this.element.getProperty('single_template');
     },
 
     attachToolbar: function(toolbar) {
@@ -81,7 +81,6 @@ var GridManager = new Class({
 
         this.overlay.show(this.element.getCoordinates());
         this.grid.clear();
-
         var postBody = '';
         if (this.langId) postBody += 'languageID='+this.langId+'&';
         if (this.filter.active && this.filter.query.value.length > 0) {
@@ -90,21 +89,22 @@ var GridManager = new Class({
         }
         this.request(this.singleTemplatePath + 'get-data/page-' + pageNum,
                 postBody, function(result) {
-                    if (!this.initialized) {
-                        this.grid.setMetadata(result.meta);
-                        this.initialized = true;
-                    }
-                    this.grid.setData(result.data || []);
-                    this.grid.build();
-                    this.pageList.build(result.pager.count, result.pager.current);
-                    this.overlay.hide();
-                    if (this.grid.isEmpty()) {
-                        if (control = this.toolbar.getControlById('add')) control.enable();
-                    }
-                    else {
-                        this.toolbar.enableControls();
-                        this.pageList.enable();
+                if (!this.initialized) {
+                    this.grid.setMetadata(result.meta);
+                    this.initialized = true;
                 }
+                this.grid.setData(result.data || []);
+                this.grid.build();
+                this.pageList.build(result.pager.count, result.pager.current);
+
+                this.overlay.hide();
+                if (this.grid.isEmpty()) {
+                    if (control = this.toolbar.getControlById('add')) control.enable();
+                }
+                else {
+                    this.toolbar.enableControls();
+                    this.pageList.enable();
+            	}
             }.bind(this)
         );
     },
@@ -173,5 +173,3 @@ var GridManager = new Class({
 		document.location.href = this.element.getProperty('single_template')+'csv/';
 	}
 });
-
-GridManager.implement(Request);

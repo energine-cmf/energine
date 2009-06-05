@@ -1,6 +1,8 @@
 ScriptLoader.load('TabPane.js', 'Toolbar.js', 'ModalBox.js', 'TreeView.js');
 
 var DivManager = new Class({
+	Implements: ERequest,
+
     initialize: function(element) {
         Asset.css('treeview.css');
         Asset.css('div.css');
@@ -10,7 +12,7 @@ var DivManager = new Class({
         this.langId = this.tabPane.getCurrentTab().data.lang;
         new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
 		    new Element('li').setProperty('id', 'treeRoot').addClass('folder').adopt(
-		        new Element('a').setProperty('href', '#').addClass('folder').setStyle('font-weight', 'bold').setHTML(TXT_DIVISIONS)
+		        new Element('a').setProperty('href', '#').addClass('folder').setStyle('font-weight', 'bold').set('html', TXT_DIVISIONS)
 		    )
 		);
 		this.tree = new TreeView('divTree');
@@ -105,7 +107,7 @@ var DivManager = new Class({
             this.singlePath+nodeId+'/delete',
             '',
 			function(response) {
-			    this.tree.getSelectedNode().remove();
+			    this.tree.getSelectedNode().dispose();
 				this.treeRoot.select();
 			}.bind(this)
 		);
@@ -143,7 +145,7 @@ var DivManager = new Class({
 
     go: function () {
         var nodeData = this.tree.getSelectedNode().getData();
-        if (nodeData.smap_segment) window.top.document.location = $E('base', window.top.document.head).getProperty('href') + nodeData.smap_segment;
+        if (nodeData.smap_segment) window.top.document.location = window.top.document.head.getElement('base').getProperty('href') + nodeData.smap_segment;
     },
     onSelectNode: function (node) {
         var data = node.getData();
@@ -180,5 +182,3 @@ var DivManager = new Class({
         );
 	}
 });
-
-DivManager.implement(Request);

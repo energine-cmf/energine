@@ -10,19 +10,20 @@ var PageEditor = new Class({
         Asset.css('pagetoolbar.css');
         Asset.css('pageeditor.css');
 
-        $$('div.' + this.editorClassName).each(function(element) {
+        $(document.body).getElements('div.' + this.editorClassName).each(function(element) {
             this.editors.push(new PageEditor.BlockEditor(this, element));
         }, this);
 
         document.addEvent('click', this.processClick.bindWithEvent(this));
 
-        Window.addEvent('unload', function() {
+        window.addEvent('unload', function() {
             if (this.activeEditor) {
                 this.activeEditor.saveWithConfirmation();
             }
         }.bind(this));
 
 		this.attachToolbar(this.createToolbar());
+
     },
 	createToolbar: function(){
 		var toolbar = new Toolbar('page_toolbar');
@@ -71,7 +72,7 @@ var PageEditor = new Class({
     processClick: function(event) {
         var element = $(event.target);
 
-        if (element.getTag() == 'td') {
+        if (element.get('tag') == 'td') {
             /*
              * Если клик был на таблице, СОДЕРЖАЩЕЙ редактируемый блок,
              * тогда ищем этот <div /> внутри неё. Иначе, если клик был на таблице,
@@ -100,7 +101,7 @@ var PageEditor = new Class({
             if (this.activeEditor) this.activeEditor.focus();
         }
 
-        if (!window.supportContentEdit && this.activeEditor) {
+        if (!Energine.supportContentEdit && this.activeEditor) {
             this.activeEditor.showSource();
         }
     },
@@ -115,7 +116,8 @@ var PageEditor = new Class({
     }
 });
 
-PageEditor.BlockEditor = RichEditor.extend({
+PageEditor.BlockEditor = new Class({
+	Extends: RichEditor,
 
     initialize: function(pageEditor, area) {
         this.pageEditor = pageEditor;
@@ -126,12 +128,12 @@ PageEditor.BlockEditor = RichEditor.extend({
         this.docId = this.area.getProperty('docID') ? this.area.getProperty('docID') : false;
         this.num   = this.area.getProperty('num');
 
-        if (window.supportContentEdit && !this.fallback_ie) {
+        if (Energine.supportContentEdit && !this.fallback_ie) {
             document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this));
             this.pasteArea = new Element('div').setStyles({ 'visibility': 'hidden', 'width': '0', 'height': '0', 'font-size': '0', 'line-height': '0' }).injectInside(document.body);
 			//addEvent('paste' работать не захотело
-            if(window.ie) this.area.onpaste = this.processPaste.bindWithEvent(this);
-            else if(window.gecko) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
+            if(Browser.Engine.trident) this.area.onpaste = this.processPaste.bindWithEvent(this);
+            else if(Browser.Engine.gecko) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
         }
         this.switchToViewMode = this.pageEditor.switchToViewMode;
 		this.overlay = new Overlay();
@@ -140,7 +142,7 @@ PageEditor.BlockEditor = RichEditor.extend({
     focus: function() {
         this.area.addClass('activeEditor');
         var toolbar = this.pageEditor.toolbar.bindTo(this);
-        if (!window.supportContentEdit) {
+        if (!Energine.supportContentEdit) {
             if (this.dirty) toolbar.getControlById('save').enable();
             return;
         }
@@ -153,7 +155,7 @@ PageEditor.BlockEditor = RichEditor.extend({
         this.area.removeClass('activeEditor');
         var toolbar = this.pageEditor.toolbar.bindTo(this.pageEditor).disableControls();
         toolbar.getControlById('viewModeSwitcher').enable();
-        if (!window.supportContentEdit) {
+        if (!Energine.supportContentEdit) {
             return;
         }
         this.area.contentEditable = 'false';
@@ -166,7 +168,7 @@ PageEditor.BlockEditor = RichEditor.extend({
             extraData: this.cleanMarkup('dummy', this.area.innerHTML),
             onClose: function(returnValue) {
                 if (returnValue || (returnValue === '')) {
-                    this.area.setHTML(this.cleanMarkup('dummy', returnValue));
+                    this.area.set('html',this.cleanMarkup('dummy', returnValue));
                     this.dirty = true;
                 }
                 this.focus();
@@ -180,14 +182,15 @@ PageEditor.BlockEditor = RichEditor.extend({
 		if (this.docId) data += '&docID='+this.docId;
 		this.overlay.show(document.body.getCoordinates());
 
-		var ajax = new Ajax(this.path + 'save-text', {
+		new Request({
+			url: this.path + 'save-text',
             method: 'post',
-            postBody: data,
+            'data': data,
             onSuccess: function(response){
 				this.area.innerHTML = response;
 				this.overlay.hide();
 			}.bind(this)
-        }).request();
+        }).send();
     },
 
     saveWithConfirmation: function() {

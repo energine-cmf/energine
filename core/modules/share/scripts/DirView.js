@@ -1,11 +1,11 @@
 ScriptLoader.load('View.js');
 
-var DirView = View.extend({
-
+var DirView = new Class({
+	Extends: View,
     getOptions: function() {
         return Object.extend(this.parent(), {
-            onEdit: Class.empty,
-            onOpen: Class.empty
+            onEdit: $empty,
+            onOpen: $empty
         });
     },
 
@@ -43,7 +43,7 @@ var DirView = View.extend({
         }
 
         var obj = new Element('div').setProperty('title', record['upl_name']).injectInside(this.scrollArea);
-		new Element('div').addClass('name').setHTML(record['upl_name']).injectInside(obj);
+		new Element('div').addClass('name').set('html', record['upl_name']).injectInside(obj);
 
         if ($type(record['upl_data'].thumb) == 'string') {
             new Element('img').setProperty('src', record['upl_data'].thumb).injectInside(obj);
@@ -67,20 +67,23 @@ var DirView = View.extend({
         var divElem = this.getSelectedItem().getElement('div.name');
         if (divElem) {
             var inputElem = new Element('input').setProperties({ 'type': 'text', 'value': divElem.innerHTML }).addClass('name');
-            divElem.replaceWith(inputElem);
+            //divElem.replaceWith(inputElem);
+            inputElem.replaces(divElem);
+
             inputElem.select();
             inputElem.focus();
             inputElem.addEvent('blur', this.edit.bind(this));
         }
         else {
             var inputElem = this.getSelectedItem().getElement('input.name');
-            var divElem = new Element('div').addClass('name').setHTML(inputElem.getValue());
-            inputElem.replaceWith(divElem);
+            var divElem = new Element('div').addClass('name').set('html', inputElem.getValue());
+            //inputElem.replaceWith(divElem);
+            divElem.replaces(inputElem);
         }
     },
 
     edit: function() {
         this.switchMode();
-        this.fireEvent('onEdit');
+        this.fireEvent('onEdit', 'dummy');
     }
 });

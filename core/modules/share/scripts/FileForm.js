@@ -1,7 +1,7 @@
 ScriptLoader.load('Form.js', 'ModalBox.js');
 
-var FileForm = Form.extend({
-
+var FileForm = new Class({
+	Extends: Form,
     initialize: function(element){
         this.parent(element);
     },
@@ -43,7 +43,7 @@ var FileForm = Form.extend({
     _buildUpload: function(fileField, savePath){
     	var iframe;
 
-        if (window.ie) {
+        if (Browser.Engine.trident) {
             iframe = $(document.createElement('<iframe name="uploader" id="uploader">'));
         }
         else {

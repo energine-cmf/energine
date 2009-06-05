@@ -1,14 +1,12 @@
 var PageList = new Class({
 
-    getOptions: function() {
-        return {
-            onPageSelect: Class.empty
-        };
+    options:{
+            onPageSelect: $empty
     },
 
     initialize: function(options) {
         Asset.css('pagelist.css');
-        this.setOptions(this.getOptions(), options);
+        this.setOptions(options);
         this.element = new Element('ul').addClass('pagelist').setProperty('unselectable', 'on');
     },
 
@@ -28,13 +26,13 @@ var PageList = new Class({
     _createPageLink : function(title, index, image){
         var index = index || false;
         var image = image || false;
-        
+
         var listItem = new Element('li');
             if (image) {
-                new Element('img', {'src':image, 'border': 0, 'align':'absmiddle', alt:title, title:title, 'styles':{width:6, height:11}}).injectInside(listItem);                
+                new Element('img', {'src':image, 'border': 0, 'align':'absmiddle', alt:title, title:title, 'styles':{width:6, height:11}}).injectInside(listItem);
             }
             else {
-                listItem.appendText(title);   
+                listItem.appendText(title);
             }
             listItem.setProperty('index', index);
 
@@ -45,7 +43,7 @@ var PageList = new Class({
                 'mouseover': function() { if (!pageList.disabled && this.pageNum != pageList.currentPage) this.addClass('highlighted'); },
                 'mouseout': function() { this.removeClass('highlighted'); },
                 'click': function() { if (!pageList.disabled && this.pageNum != pageList.currentPage) { pageList.selectPage(this); } }
-            });                    
+            });
         }
         return listItem;
     },
@@ -65,7 +63,7 @@ var PageList = new Class({
                         event = new Event(event);
                         if ((event.key == 'enter') && (event.target.getValue() != '')) {
                             var num = parseInt(event.target.getValue());
-                            event.target.value = ''; 
+                            event.target.value = '';
                             if (num >=1 && num <=numPages) {
                                 this.selectPageByNum(num);
                             }
@@ -74,13 +72,13 @@ var PageList = new Class({
                     }.bind(this)
                 },
                 'type':'text'
-            })).injectInside(this.element);                
+            })).injectInside(this.element);
         }
 
         if (startPage > 1) {
             this._createPageLink(1, 1).injectInside(this.element)
         }
-        
+
         if (startPage > 2) {
             this._createPageLink(2, 2).injectInside(this.element);
             if (startPage != 2 + 1) {
@@ -89,12 +87,12 @@ var PageList = new Class({
         }
         for (var i = startPage; i <= endPage; i++) {
             if ((currentPage != 1) && (currentPage == i)) {
-                this._createPageLink('previous',i-1, 'images/prev_page.gif').injectInside(this.element);        
+                this._createPageLink('previous',i-1, 'images/prev_page.gif').injectInside(this.element);
             }
             this._createPageLink(i, i).injectInside(this.element);
-            
+
             if ((currentPage != numPages) && (currentPage == i)) {
-                this._createPageLink('next', i+1, 'images/next_page.gif').injectInside(this.element);        
+                this._createPageLink('next', i+1, 'images/next_page.gif').injectInside(this.element);
             }
         }
 
@@ -106,7 +104,7 @@ var PageList = new Class({
         }
         if (endPage < numPages) {
             this._createPageLink(numPages, numPages).injectInside(this.element)
-        }        
+        }
     },
 
     // Private methods:

@@ -23,7 +23,7 @@ var ViewWidget = new Class({
 		this.metadata = false;
 		this.data = false;
         this.options = Object.extend(
-            {onSelect: Class.empty},
+            {onSelect: $empty},
             options || {}
         );
     },

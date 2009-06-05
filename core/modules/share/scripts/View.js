@@ -1,18 +1,15 @@
 var View = new Class({
-
+	Implements:[Events, Options],
     metadata: null,
     data: null,
     selectedItem: null,
-
-    getOptions: function() {
-        return {
-            onSelect: Class.empty
-        };
+    options: {
+    	onSelect: $empty
     },
 
     initialize: function(element, options) {
         this.element = $(element);
-		this.setOptions(this.getOptions(), options);
+		this.setOptions(options);
     },
 
     setMetadata: function(metadata) {
@@ -39,11 +36,7 @@ var View = new Class({
             this.fireEvent('onSelect', item);
         }
 	},
-
 	getSelectedItem: function() {
         return this.selectedItem;
     }
 });
-
-View.implement(new Events);
-View.implement(new Options);

@@ -2,11 +2,12 @@ ScriptLoader.load('TabPane.js', 'Toolbar.js', 'ModalBox.js', 'DirView.js');
 var FILE_COOKIE_NAME = 'lastPath';
 
 var FileManager = new Class({
-
+	Implements: ERequest,
     currentFolder: false,
     initialized: false,
 
 	initialize: function(element){
+
 		this.element = $(element);
 		this.tabPane = new TabPane(this.element);
 		this.viewWidget = new DirView(this.element.getElement('.dirArea'), {
@@ -23,6 +24,7 @@ var FileManager = new Class({
                 return;
             }
         }
+
         this.load();
     },
 
@@ -33,19 +35,13 @@ var FileManager = new Class({
 
 	load: function(path) {
         var cookiePath;
-        if (!path && (cookiePath = Cookie.get(FILE_COOKIE_NAME))) {
+        if (!path && (cookiePath = Cookie.read(FILE_COOKIE_NAME))) {
             path = cookiePath;
         }
-
-
 		var postBody = path ? 'path='+path+'&' : '';
-
-
-
         if (this.element.getProperty('file_type') == 'image') {
             postBody += 'imageonly=true';
         }
-
         this.request(
             this.element.getProperty('single_template')+'get-data',
             postBody,
@@ -55,15 +51,12 @@ var FileManager = new Class({
                     this.initialized = true;
                 }
                 this.viewWidget.setData(response.data || []);
-
                 if (typeof response.currentDirectory != 'undefined') {
                     this.currentFolder = response.currentDirectory;
                     this.tabPane.setTabTitle(this.currentFolder);
                 }
-
 				this.viewWidget.build();
-				Cookie.set(FILE_COOKIE_NAME, path?path:'', {duration: false});
-
+				Cookie.write(FILE_COOKIE_NAME, path?path:'', {duration: false});
             }.bind(this)
         );
 	},
@@ -157,4 +150,3 @@ var FileManager = new Class({
         });
     }
 });
-FileManager.implement(Request);

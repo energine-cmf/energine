@@ -1,11 +1,13 @@
 ScriptLoader.load('Toolbar.js', 'ModalBox.js');
 
-var PageToolbar = Toolbar.extend({
-
+var PageToolbar = new Class({
+	Extends: Toolbar,
     initialize: function(componentPath, documentId) {
         Asset.css('pagetoolbar.css');
         this.parent();
+
         this.element.setProperty('id', 'pageToolbar').injectInside(document.body);
+
         this.bindTo(this);
         this.componentPath = componentPath;
         this.documentId = documentId;

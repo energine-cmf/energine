@@ -1,5 +1,5 @@
 var Calendar = new Class({
-
+	Implements: [Events, Options],
     getOptions: function() {
         var today = new Date;
         return {
@@ -15,14 +15,15 @@ var Calendar = new Class({
             maxMonth: 12,
             weekdayNames: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
             monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
-            onSelect: Class.empty,
+            onSelect: $empty,
             fieldName: null
         };
     },
 
     initialize: function(options) {
         Asset.css('calendar.css');
-        this.setOptions(this.getOptions(), options);
+        this.options = this.getOptions();
+        this.setOptions(options);
 
         this.year = $pick(this.options.year, this.options.currYear);
         this.month = $pick(this.options.month, this.options.currMonth);
@@ -64,17 +65,17 @@ var Calendar = new Class({
     },
 
     build: function() {
-        this.monthName.setHTML(this.options.monthNames[this.month - 1]+' '+this.year);
+        this.monthName.set('html', this.options.monthNames[this.month - 1]+' '+this.year);
 
         var isCurrMonth = (this.year == this.options.currYear && this.month == this.options.currMonth);
         var daysInMonth = this.getDaysInMonth(this.year, this.month);
         var monthFirstWeekday = this.getWeekday(this.year, this.month, 1);
         for (var i = 1; i <= 42; i++) { // 6 weeks * 7 days
             var day = this.monthGrid[(Math.ceil(i / 7) - 1)][((i - 1) % 7)];
-            day.setHTML('').className = '';
+            day.set('html', '').className = '';
             var dayNum = i - monthFirstWeekday + 1;
             if (0 < dayNum && dayNum <= daysInMonth) {
-                day.setHTML(dayNum).addClass('thisMonth');
+                day.set('html', dayNum).addClass('thisMonth');
                 if (isCurrMonth && dayNum == this.options.currDay) day.addClass('currDay');
             }
             else day.addClass('otherMonth');
@@ -153,9 +154,6 @@ var Calendar = new Class({
         return (date.getDay() || 7);
     }
 });
-
-Calendar.implement(new Events);
-Calendar.implement(new Options);
 
 var FormCalendar = {
 	setDate: function(fieldName){

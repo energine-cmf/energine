@@ -1,15 +1,13 @@
 var TabPane = new Class({
-
-    getOptions: function() {
-        return {
-            onTabChange: Class.empty
-        };
-    },
+	options: {
+		onTabChange: $empty
+	},
+	Implements:[Options, Events],
 
     initialize: function(element, options) {
         Asset.css('tabpane.css');
+        this.setOptions(options);
         this.element = $(element).addClass('tabpane');
-        this.setOptions(this.getOptions(), options);
 
         this.tabs = this.element.getElement('ul.tabs').addClass('clearfix').getElements('li');
         this.tabs.each(function(tab) {
@@ -18,7 +16,7 @@ var TabPane = new Class({
             var paneId = anchor.href.slice(anchor.href.lastIndexOf('#'));
             anchor.onclick = function() { this.blur(); return false; }
             var tabData = tab.getElement('span.data');
-            tab.data = (tabData ? Json.evaluate(tabData.firstChild.nodeValue) : {});
+            tab.data = (tabData ? JSON.decode(tabData.firstChild.nodeValue) : {});
             tab.pane = this.element.getElement('div'+paneId).addClass('pane').setStyle('display', 'none');
             tab.pane.tab = tab;
 
@@ -50,7 +48,7 @@ var TabPane = new Class({
 
     setTabTitle: function(title, tab) {
         tab = $pick(tab, this.getCurrentTab());
-        tab.getElement('a').setHTML(title);
+        tab.getElement('a').set('html', title);
     },
 
     whereIs: function(element) {
@@ -64,6 +62,3 @@ var TabPane = new Class({
         return pane;
     }
 });
-
-TabPane.implement(new Events);
-TabPane.implement(new Options);

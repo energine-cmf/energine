@@ -1,9 +1,9 @@
 var EnlargeImage = new Class({
 	/* 	This Mootools class is made by the fifth generation Lutz, wizzard in the Algo solarsystem.
 		Use this with caution for it is entangled with magic from the old times.
-		
+
 		This Mootools class is licensed under the MIT License.
-		
+
 		v. 1.1
 	*/
 	initialize: function(element,options) {
@@ -13,15 +13,15 @@ var EnlargeImage = new Class({
 	},
 	enlarge: function() {
 		// There must only be one.
-		if($("EnlargedImage")) $("EnlargedImage").remove();
-	
+		if($("EnlargedImage")) $("EnlargedImage").dispose();
+
 		// Collect position and size information from the element thou clicked upon.
 		var coordinates = $(this.element).getCoordinates();
 		var coordinatesTop = coordinates.top;
 		var coordinatesLeft = coordinates.left;
 		var coordinatesWidth = coordinates.width;
 		var coordinatesHeight = coordinates.height;
-		
+
 		// Create an element which will shine upon thee and be embraced by the browser as a larger image.
 		var image = new Element('img', {
 			'styles': {
@@ -41,7 +41,7 @@ var EnlargeImage = new Class({
 
 			// As will the width of the browser.
 			var browserWidth = window.getWidth();
-			
+
 			// Let new styles shine down and entagle the image.
 			image.setStyles({
 				'top': coordinatesTop+"px",
@@ -55,7 +55,7 @@ var EnlargeImage = new Class({
 			var position;
 			if(this.options.position == "this") position = Math.abs((coordinatesTop-(imageHeight/2)+(coordinatesHeight/2)))+'px';
 			else position = this.options.position+"px";
-			
+
 			// Make it grow,
 			// make it rise,
 			// it must flow,
@@ -63,10 +63,10 @@ var EnlargeImage = new Class({
 			var animationDuration = this.options.duration;
 			var transStyle = Fx.Transitions.Back.easeInOut;
 			var enlargeImage = new Fx.Styles(image,{duration: animationDuration,transition:transStyle, onComplete: function() {
-				
-				image.addEvent('click', function() { 
+
+				image.addEvent('click', function() {
 					var contractImage = new Fx.Styles(image,{duration: animationDuration,transition:transStyle,onComplete: function() {
-						image.remove();
+						image.dispose();
 					}});
 					contractImage.start({
 						'top': [position,coordinatesTop],

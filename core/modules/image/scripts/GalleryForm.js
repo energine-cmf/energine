@@ -1,6 +1,8 @@
 ScriptLoader.load('Form.js');
 
-var GalleryForm = Form.extend({
+var GalleryForm = new Class({
+	Extends: Form,
+	Implements: Label,
 	initialize: function(element){
 		this.parent(element);
         this.obj = null;
@@ -14,5 +16,3 @@ var GalleryForm = Form.extend({
 	}
 
 });
-
-GalleryForm.implement(Label);

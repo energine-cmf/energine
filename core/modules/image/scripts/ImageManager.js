@@ -1,7 +1,7 @@
 ScriptLoader.load('Form.js', 'ModalBox.js');
 
-var ImageManager = Form.extend({
-
+var ImageManager = new Class({
+	Extends: Form,
     initialize: function(objID) {
         this.parent(objID);
         this.image = {};

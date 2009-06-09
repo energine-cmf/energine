@@ -133,7 +133,7 @@ var RichEditor = new Class({
 
     },
     fileLibrary: function() {
-        if (Energine.supportContentEdit) this.currentRange = document.selection.createRange();
+        if (Energine.supportContentEdit) this.currentRange = this._getSelection().createRange();
         ModalBox.open({
             url: this.area.getProperty('componentPath')+'file-library',
             onClose: this.insertFileLink.bind(this)
@@ -189,20 +189,29 @@ var RichEditor = new Class({
         if (!data) return;
         var filename = data['upl_path'];
 
-        if (Browser.Engine.gecko) {
-            this.wrapSelectionWith('a', 'href="'+filename+'"');
-            this.dirty = true;
-            return;
-        }
+		if(this.currentRange.select)
+        	this.currentRange.select();
 
-        this.currentRange.select();
         if (this.validateParent(this.currentRange)) {
-            if (this.currentRange.text != '') {
-                this.currentRange.pasteHTML('<a href="'+filename+'">'+this.currentRange.text+'</a>');
-            }
-            else {
-                this.currentRange.pasteHTML('<a href="'+filename+'">'+filename+'</a>');
-            }
+        	//IE
+        	if(this.currentRange.pasteHTML){
+	            if (this.currentRange.text != '') {
+	                this.currentRange.pasteHTML('<a href="'+filename+'">'+this.currentRange.text+'</a>');
+	            }
+	            else {
+	                this.currentRange.pasteHTML('<a href="'+filename+'">'+filename+'</a>');
+	            }
+        	}
+        	//FF
+        	else{
+        		var str;
+        		if(this.currentRange.toString())
+					str = '<a href="'+filename+'">'+this.currentRange.toString()+'</a>';
+				else
+					str = '<a href="'+filename+'">'+filename+'</a>';
+
+				document.execCommand('inserthtml', false, str);
+        	}
             this.dirty = true;
         }
     },

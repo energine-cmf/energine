@@ -83,7 +83,7 @@ var Calendar = new Class({
     },
 
     destroy: function() {
-        this.element.remove();
+        this.element.dispose();
         delete FormCalendar.calendars[this.options.fieldName];
     },
 
@@ -158,18 +158,18 @@ var Calendar = new Class({
 var FormCalendar = {
 	setDate: function(fieldName){
 		var getDateString = function(date, destinationField){
-
-			new Ajax(this.singlePath + 'format-date/', {
-				method:'post',
-				data:Object.toQueryString({'date':date}),
-				onSuccess: function(responseText){
-					var result = Json.evaluate(responseText);
-					$(destinationField).value = result;
-
-			}}).request();
+			new Request(
+				{
+					url: this.singlePath + 'format-date/',
+					method: 'post',
+					onSuccess: function(responseText){
+						$(destinationField).set('value', JSON.decode(responseText));
+					}
+				}
+			).send(new Hash({'date':date}).toQueryString());
 		}.bind(this);
 
-		getDateString($(fieldName).getValue(), 'date_'+fieldName);
+		getDateString($(fieldName).get('value'), 'date_'+fieldName);
 	},
 	showCalendar: function(fieldName, event) {
 	    if (FormCalendar.calendars[fieldName]) return;
@@ -181,10 +181,10 @@ var FormCalendar = {
 	            this.setDate(fieldName);
 	        }.bind(this)
 	    };
-	    var currDate = field.getValue();
+	    var currDate = field.get('value');
 	    if (currDate != '') {
 	        currDate = currDate.split('-', 3);
-	        calendOptions = Object.extend(calendOptions, {
+	        calendOptions = $extend(calendOptions, {
 	            currYear: parseInt(currDate[0]),
 	            currMonth: parseInt(currDate[1]),
 	            currDay: parseInt(currDate[2])
@@ -198,8 +198,8 @@ var FormCalendar = {
 	    calend.element.setStyles(
 	    	{
 	    		position: 'absolute',
-	    		top: target.getTop(($E('.pane'))?[$E('.pane')]:[])+'px',
-	    		left: target.getLeft(($E('.pane'))?[$E('.pane')]:[])+'px'
+	    		top: target.getTop((document.body.getElement('.pane'))?[document.body.getElement('.pane')]:[])+'px',
+	    		left: target.getLeft((document.body.getElement('.pane'))?[document.body.getElement('.pane')]:[])+'px'
 	    	}
 	    ).injectInside(document.body);
 	},

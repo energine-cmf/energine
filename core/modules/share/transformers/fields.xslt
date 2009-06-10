@@ -822,6 +822,7 @@
 		<xsl:attribute name="id">date_<xsl:value-of select="@name" /></xsl:attribute>
         <xsl:attribute name="readonly">readonly</xsl:attribute>
 	</xsl:element>
+
 	<input type="hidden">
 		<xsl:attribute name="name"><xsl:choose>
 			<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
@@ -838,12 +839,23 @@
 	</input>
 	<xsl:if test=".!=''">
 		<script type="text/javascript">
-			Window.addEvent('domready', function(){
+			window.addEvent('domready', function(){
 				<xsl:value-of select="generate-id(../..)"/>.setDate('<xsl:value-of select="@name"/>');
 			});
 		</script>
 	</xsl:if>
-    <button style="height: 22px; margin-left: 2px;" type="button" onclick="{generate-id(../..)}.showCalendar('{@name}', event); ">...</button>
+
+
+    <!--<button style="height: 22px; margin-left: 2px;" type="button" onclick="{generate-id(../..)}.showCalendar('{@name}', event); ">...</button>-->
+    <img src="images/calendar.gif" id="calendarImg" onclick="{generate-id(../..)}.showCalendar('{@name}', event); "/>
+    <!--<script type="text/javascript">
+			window.addEvent('domready', function(){
+				new DatePicker('date_<xsl:value-of select="@name" />', {
+ 			    	additionalShowLinks: ['calendarImg'],
+    				showOnInputFocus: false
+				});
+			});
+	</script>-->
 </xsl:template>
 
 <!-- Для поля hidden -->

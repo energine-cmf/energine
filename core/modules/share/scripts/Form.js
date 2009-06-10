@@ -1,5 +1,5 @@
 ScriptLoader.load('TabPane.js', 'Toolbar.js', 'Validator.js', 'RichEditor.js',
-		'Calendar.js', 'ModalBox.js');
+		'Calendar.js',  'ModalBox.js');
 
 var Form = new Class({
 	Implements : [ERequest, FormCalendar],
@@ -124,7 +124,7 @@ var Form = new Class({
 		ModalBox.close();
 	},
 	openFileLib : function(button) {
-		var path = $($(button).getProperty('link')).getValue();
+		var path = $($(button).getProperty('link')).get('value');
 		if (path == '') {
 			path = null;
 		}

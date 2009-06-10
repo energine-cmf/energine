@@ -1,5 +1,5 @@
 var PageList = new Class({
-
+	Implements: Options,
     options:{
             onPageSelect: $empty
     },
@@ -61,8 +61,8 @@ var PageList = new Class({
                 'events':{
                     'keydown':function(event){
                         event = new Event(event);
-                        if ((event.key == 'enter') && (event.target.getValue() != '')) {
-                            var num = parseInt(event.target.getValue());
+                        if ((event.key == 'enter') && (event.target.get('value') != '')) {
+                            var num = parseInt(event.target.get('value'));
                             event.target.value = '';
                             if (num >=1 && num <=numPages) {
                                 this.selectPageByNum(num);
@@ -126,5 +126,3 @@ var PageList = new Class({
         this.options.onPageSelect(this.currentPage);
     }
 });
-
-PageList.implement(new Options);

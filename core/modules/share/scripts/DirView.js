@@ -76,7 +76,7 @@ var DirView = new Class({
         }
         else {
             var inputElem = this.getSelectedItem().getElement('input.name');
-            var divElem = new Element('div').addClass('name').set('html', inputElem.getValue());
+            var divElem = new Element('div').addClass('name').set('html', inputElem.get('value'));
             //inputElem.replaceWith(divElem);
             divElem.replaces(inputElem);
         }

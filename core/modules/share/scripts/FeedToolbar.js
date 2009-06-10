@@ -2,6 +2,7 @@ ScriptLoader.load('Toolbar.js', 'ModalBox.js');
 
 var FeedToolbar = new Class({
 	Extends: Toolbar,
+	Implements: ERequest,
     initialize: function(Container) {
         Asset.css('feedtoolbar.css');
         this.parent();
@@ -87,7 +88,7 @@ var FeedToolbar = new Class({
 		var linkID;
 		if (linkID = $(linkID)) {
 			linkID.addClass('active_component');
-			new Fx.Style(linkID, 'opacity').set(0.6);
+			linkID.fade(0.7);
 			linkID.getElements('[record]').each(function(element){
 				element.addEvent('mouseover', function(){this.addClass('record_highlight')});
 				element.addEvent('mouseout', function(){this.removeClass('record_highlight')});
@@ -105,5 +106,3 @@ var FeedToolbar = new Class({
 	}
 
 });
-
-FeedToolbar.implement(Request);

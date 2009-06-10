@@ -253,12 +253,18 @@ var RichEditor = new Class({
 		//event.stop();
     },
     cleanMarkup: function(path, data, aggressive) {
-        var ajax = new Ajax(path + 'cleanup' + (aggressive ? '?aggressive=1' : ''), {
-            method: 'post',
-            postBody: 'data='+encodeURIComponent(data),
-            async: false
-        }).request();
-        return ajax.transport.responseText;
+    	var result;
+    	new Request(
+				{
+					url: path + 'cleanup' + (aggressive ? '?aggressive=1' : ''),
+					method: 'post',
+					async: false,
+					onSuccess: function(responseText){
+						result = responseText;
+					}
+				}
+			).send('data='+encodeURIComponent(data));
+        return result;
     },
 	changeFormat: function(control){
 		var selectedOption = control.select.value;

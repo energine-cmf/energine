@@ -1,7 +1,7 @@
 ScriptLoader.load('Form.js');
 
-var TextBlockSource = Form.extend({
-
+var TextBlockSource = new Class({
+	Extends: Form,
     fallback_ie: true,
 
     initialize: function(element) {

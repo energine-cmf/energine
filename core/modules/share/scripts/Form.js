@@ -284,7 +284,7 @@ Form.RichEditor = new Class({
 			},
 
 			onSaveForm : function() {
-				if (!Browser.Engine.trident || this.fallback_ie)
+				if (!Energine.supportContentEdit || this.fallback_ie)
 					return;
 				this.hidden.value = this.area.innerHTML;
 			},

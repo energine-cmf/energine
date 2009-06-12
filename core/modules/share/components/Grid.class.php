@@ -10,11 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DBDataSet.class.php');
-//require_once('core/framework/JSONBuilder.class.php');
-//require_once('core/framework/Saver.class.php');
-//require_once('core/framework/FormException.class.php');
-//require_once('core/modules/share/components/FileLibrary.class.php');
 /**
  * Сетка
  *
@@ -1010,5 +1005,9 @@ class Grid extends DBDataSet {
 		        	array($this->document, 'addTranslation')
 	        	);
     	}
+    }
+
+    function test(){
+
     }
 }

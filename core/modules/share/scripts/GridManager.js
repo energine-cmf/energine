@@ -98,6 +98,7 @@ var GridManager = new Class({
                 this.pageList.build(result.pager.count, result.pager.current);
 
                 this.overlay.hide();
+
                 if (this.grid.isEmpty()) {
                     if (control = this.toolbar.getControlById('add')) control.enable();
                 }

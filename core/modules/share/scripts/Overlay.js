@@ -62,19 +62,19 @@ var Overlay = new Class({
     },
 
     hide: function() {
-    	new Fx.Tween(this.element).chain(
-				this.setupObjects.pass(false, this)
-		).start('opacity', this.options.opacity, 0);
-
-        //this.fx.chain(this.setupObjects.pass(false, this)).start(0);
-		//this.element.fade('hide');
-        //this.fx.start(0);
+		var fx = new Fx.Tween(this.element, {property: 'opacity'})
+    	fx.start(this.options.opacity, 0).chain(
+    		this.setupObjects.pass(false, this)
+    	);
+    	fx.start(0);
     },
 
     setupObjects: function(hide) {
         if (!this.options.hideObjects) return;
-        var elements = $A(document.getElementsByTagName('object'));
-        elements.extend(document.getElementsByTagName(Browser.Engine.trident ? 'select' : 'embed'));
+        var elements = $A(document.body.getElements('object'));
+        elements.extend(
+        	$A(document.body.getElements(Browser.Engine.trident ? 'select' : 'embed'))
+        );
         elements.each(function(element) { element.style.visibility = hide ? 'hidden' : ''; });
     }
 });

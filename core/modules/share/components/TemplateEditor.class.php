@@ -31,4 +31,25 @@ class TemplateEditor extends Grid {
         $this->setOrderColumn('tmpl_order_num');
         $this->setOrder(array('tmpl_order_num' =>QAL::ASC));
     }
+
+    protected function edit(){
+    	parent::edit();
+
+    	$field = $this->getData()->getFieldByName('tmpl_content');
+		$field->setRowData(0,
+			str_replace('.content.xml', '', $field->getRowData(0))
+		);
+
+		$field = $this->getData()->getFieldByName('tmpl_layout');
+		$field->setRowData(0,
+			str_replace('.layout.xml', '', $field->getRowData(0))
+		);
+    }
+
+    protected function saveData(){
+		$_POST[$this->getTableName()]['tmpl_content'] .= '.content.xml';
+		$_POST[$this->getTableName()]['tmpl_layout'] .= '.layout.xml';
+
+		parent::saveData();
+    }
 }

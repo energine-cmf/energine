@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="staffFeed" module="aux" class="StaffFeed"></component>
+    <component name="staffFeedEditor" module="aux" class="StaffFeedEditor">
+        <params>
+            <param name="rights">2</param>
+            <param name="linkTo">staffFeed</param>
+        </params>
+    </component>
+</content>

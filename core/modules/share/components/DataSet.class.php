@@ -5,7 +5,7 @@
  * @package energine
  * @subpackage share
  * @author dr.Pavka
- * @copyright ColoCall 2006
+ * @copyright Energine 2006
  * @version $Id: DataSet.class.php,v 1.32 2008/12/13 14:10:09 pavka Exp $
  */
 

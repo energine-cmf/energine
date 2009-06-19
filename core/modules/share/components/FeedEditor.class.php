@@ -5,7 +5,7 @@
  * @package energine
  * @subpackage share
  * @author dr.Pavka
- * @copyright ColoCall 2007
+ * @copyright Energine 2007
  * @version $Id$
  */
 
@@ -115,7 +115,7 @@ class FeedEditor extends Grid {
 
     protected function changeOrder($direction){
 	   	$this->setFilter($_SESSION['feed_smap_id']);
-		unset($_SESSION['feed_smap_id']);
+		//unset($_SESSION['feed_smap_id']);
 
 	   	return parent::changeOrder($direction);
     }

@@ -5,7 +5,7 @@
  * @package energine
  * @subpackage share
  * @author 1m.dm
- * @copyright ColoCall 2007
+ * @copyright Energine 2007
  * @version $Id$
  */
 

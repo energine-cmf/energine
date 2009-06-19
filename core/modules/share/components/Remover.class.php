@@ -5,7 +5,7 @@
  * @package energine
  * @subpackage core
  * @author dr.Pavka
- * @copyright ColoCall 2006
+ * @copyright Energine 2006
  * @version $Id: Remover.class.php,v 1.5 2008/08/27 15:39:16 chyk Exp $
  */
 

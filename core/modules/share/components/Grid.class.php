@@ -6,7 +6,7 @@
  * @package energine
  * @subpackage share
  * @author dr.Pavka
- * @copyright ColoCall 2006
+ * @copyright Energine 2006
  * @version $Id$
  */
 
@@ -1005,9 +1005,5 @@ class Grid extends DBDataSet {
 		        	array($this->document, 'addTranslation')
 	        	);
     	}
-    }
-
-    function test(){
-
     }
 }

@@ -5,7 +5,7 @@
  * @package energine
  * @subpackage share
  * @author dr.Pavka
- * @copyright ColoCall 2007
+ * @copyright Energine 2007
  * @version $Id: FeedbackList.class.php,v 1.6 2008/08/27 15:39:16 chyk Exp $
  */
 

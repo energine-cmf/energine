@@ -5,17 +5,15 @@
  * @package energine
  * @subpackage aux
  * @author d.pavka
- * @copyright d.pavka@gmal.com
- * @version $Id$
+ * @copyright d.pavka@gmail.com
  */
 
  /**
- * Спсиок статей
+ * Список статей
  *
  * @package energine
  * @subpackage aux
  * @author d.pavka
- * @
  */
  class ArticlesFeed extends Feed {
     /**

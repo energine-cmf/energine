@@ -28,6 +28,6 @@
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('aux_staff');
-        $this->setOrder(array('staff_order_num' => QAL::DESC));
+        $this->setOrder(array('staff_order_num' => QAL::ASC));
     }
 }

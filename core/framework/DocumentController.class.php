@@ -6,16 +6,8 @@
  * @package energine
  * @subpackage core
  * @author 1m.dm
- * @copyright ColoCall 2006
- * @version $Id$
+ * @copyright Energine 2006
  */
-
-//require_once('core/framework/SystemConfig.class.php');
-//require_once('core/framework/Sitemap.class.php');
-////require_once('core/framework/Request.class.php');
-//require_once('core/framework/Response.class.php');
-//require_once('core/framework/Document.class.php');
-//require_once('core/framework/Transformer.class.php');
 
 /**
  * Отвечает за подготовку среды и запуск работы объекта Document.
@@ -26,6 +18,10 @@
  * @final
  */
 final class DocumentController extends Object {
+
+	private static $transformer;
+
+	private static $instance;
 
     /**
      * @access private
@@ -48,6 +44,20 @@ final class DocumentController extends Object {
     public function __construct() {
         parent::__construct();
         $this->response = Response::getInstance();
+    }
+
+    /**
+     * Возвращает единый для всей системы экземпляр класса DocumentController
+     *
+     * @access public
+     * @static
+     * @return DocumentController
+     */
+    static public function getInstance() {
+        if (!isset(self::$instance)) {
+            self::$instance = new DocumentController();
+        }
+        return self::$instance;
     }
 
     /**
@@ -91,6 +101,15 @@ final class DocumentController extends Object {
         $this->transform();
     }
 
+    public function getTransformer(){
+    	if(!isset(self::$transformer)){
+    		self::$transformer = new Transformer();
+    	}
+
+        return self::$transformer;
+    }
+
+
     /**
      * Трансформирует XML-документ страницы в выходной формат,
      * и выводит результат клиенту.
@@ -109,14 +128,8 @@ final class DocumentController extends Object {
             $this->response->setHeader('Content-Type', 'text/xml; charset=UTF-8');
         }
         else {
-            $transformer = new Transformer;
-            $result = $transformer->transform($dom_document);
-            if (isset($_GET['source'])) {
-                $this->response->setHeader('Content-Type', 'text/xml; charset=UTF-8');
-            }
-            else {
-            	$this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
-            }
+            $result = $this->getTransformer()->transform($dom_document);
+          	$this->response->setHeader('Content-Type', 'text/html; charset=UTF-8', false);
         }
 
         $this->response->write($result);

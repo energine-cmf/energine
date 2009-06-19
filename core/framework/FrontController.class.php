@@ -6,14 +6,10 @@
  * @package energine
  * @subpackage core
  * @author 1m.dm
- * @copyright ColoCall 2006
+ * @copyright Energine 2006
  * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
-//require_once('core/framework/SystemException.class.php');
-//require_once('core/framework/DocumentController.class.php');
-//require_once('core/framework/UserSession.class.php');
 /**
  * Front Controller - единая точка входа для запуска работы системы.
  *
@@ -23,6 +19,8 @@
  * @final
  */
 final class FrontController extends DBWorker {
+
+    private static $instance;
 
     /**
      * Конструктор класса.
@@ -48,6 +46,20 @@ final class FrontController extends DBWorker {
     }
 
     /**
+     * Возвращает единый для всей системы экземпляр класса FrontController
+     *
+     * @access public
+     * @static
+     * @return FrontController
+     */
+    static public function getInstance() {
+        if (!isset(self::$instance)) {
+            self::$instance = new FrontController();
+        }
+        return self::$instance;
+    }
+
+    /**
      * Создаёт объект DocumentController и передаёт ему управление.
      *
      * @access public
@@ -55,7 +67,7 @@ final class FrontController extends DBWorker {
      */
     public function run() {
         try {
-            $documentConroller = new DocumentController;
+            $documentConroller = DocumentController::getInstance();
             $documentConroller->run();
         }
         catch (SystemException $systemException) {

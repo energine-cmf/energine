@@ -5,7 +5,7 @@
  * @package energine
  * @subpackage image
  * @author 1m.dm
- * @copyright ColoCall 2006
+ * @copyright Energine 2006
  * @version $Id$
  */
 

@@ -5,7 +5,7 @@
  * @package energine
  * @subpackage core
  * @author dr.Pavka
- * @copyright ColoCall 2008
+ * @copyright Energine 2008
  * @copyright YURiQUE (Yuriy Malchenko) jmalchenko@gmail.com, 2005
  * @version $Id$
  */

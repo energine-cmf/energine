@@ -6,7 +6,7 @@
  * @package energine
  * @subpackage core
  * @author dr.Pavka
- * @copyright ColoCall 2007
+ * @copyright Energine 2007
  * @version $Id$
  */
 

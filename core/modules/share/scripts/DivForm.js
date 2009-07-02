@@ -1,6 +1,7 @@
 ScriptLoader.load('Form.js', 'ModalBox.js');
 var DivForm = new Class({
 	Extends: Form,
+    Implements: Label,
 	initialize: function(element){
 		this.parent(element);
         this.obj = null;
@@ -52,7 +53,7 @@ var DivForm = new Class({
             this.form.toQueryString(),
             function(response) {
                 if (response.mode == 'insert' && confirm(MSG_START_EDITING)) {
-                    window.top.location.href = window.top.document.head.getElement('base').getProperty('href') + response.url;
+                    window.top.location.href = Energine.base + response.url;
                 }
                 else {
                     ModalBox.setReturnValue(true); this.close();
@@ -67,8 +68,8 @@ var DivForm = new Class({
 			var emptyRow;
 			if(emptyRow = $('empty_row')) emptyRow.dispose();
 
-			if(!$('row_' + data.upl_id))
-				Document.getElement('#attached_files tbody').adopt(
+			if(!$('row_' + data.upl_id)){
+				document.getElement('#attached_files tbody').adopt(
 					new Element('tr', {'id': 'row_' + data.upl_id}).adopt([
 						new Element('td').adopt([
 							new Element('a',
@@ -94,13 +95,14 @@ var DivForm = new Class({
 						)
 					])
 				)
+            }
 		}
-		}.bind(this)});
+	   }.bind(this)});
 	},
 	delAttachment: function(id){
 		$('row_' + id).dispose();
-		if(Document.getElement('#attached_files tbody').getChildren().length == 0){
-			Document.getElement('#attached_files tbody').adopt(
+		if(document.getElement('#attached_files tbody').getChildren().length == 0){
+			document.getElement('#attached_files tbody').adopt(
 				new Element('tr', {'id': 'empty_row'}).adopt(
 					new Element('td', {'colspan': '3'}).set('html', no_attached_files)
 				)
@@ -109,5 +111,3 @@ var DivForm = new Class({
 		}
 	}
 });
-
-DivForm.implement(Label);

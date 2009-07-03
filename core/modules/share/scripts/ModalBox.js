@@ -5,6 +5,7 @@ var ModalBox = window.top.ModalBox || {
     init: function() {
         Asset.css('modalbox.css');
         this.overlay = new Element('div').setProperty('id', 'mb_overlay').injectInside(document.body);
+        this.fx = new Fx.Tween(this.overlay);
 
         this.overlay.fade();//this.overlay.effect('opacity').hide();
         //this.eventKeyDown = this.keyboardListener.bindWithEvent(this);
@@ -56,7 +57,7 @@ var ModalBox = window.top.ModalBox || {
         if (this.boxes.length == 1) {
             this.position();
             this.setup(true);
-            this.overlay.fade(0.5);
+            this.fx.set('opacity', 0.5);
         }
     },
 
@@ -80,7 +81,7 @@ var ModalBox = window.top.ModalBox || {
         box.dispose().options.onClose(box.returnValue);
 
 		if (!this.boxes.length) {
-			new Fx.Tween(this.overlay).chain(
+			this.fx.chain(
 				this.setup.pass(false, this)
 			).start('opacity', 0);
 		}

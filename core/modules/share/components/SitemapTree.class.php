@@ -10,8 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DataSet.class.php');
-//require_once('core/framework/TreeBuilder.class.php');
 
 /**
  * Карта сайта

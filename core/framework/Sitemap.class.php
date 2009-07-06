@@ -205,6 +205,8 @@ final class Sitemap extends DBWorker {
         $result = convertFieldNames($current,'smap');
         if(is_null($result['MetaKeywords'])) $result['MetaKeywords'] = $this->defaultMetaKeywords;
         if(is_null($result['MetaDescription'])) $result['MetaDescription'] = $this->defaultMetaDescription;
+        if($result['RedirectUrl']) $result['RedirectUrl'] = (URI::validate($result['RedirectUrl']))?$result['RedirectUrl']:Request::getInstance()->getBasePath().$result['RedirectUrl'];
+        
         return $result;
     }
 

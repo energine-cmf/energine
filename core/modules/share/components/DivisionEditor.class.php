@@ -399,7 +399,10 @@ final class DivisionEditor extends Grid {
         if (isset($_POST[$this->getTableName()]['smap_default']) && $_POST[$this->getTableName()]['smap_default'] !== '0') {
             $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('smap_default'=>null));
         }
-
+        if(isset($_POST[$this->getTableName()]['smap_redirect_url']) && !empty($_POST[$this->getTableName()]['smap_redirect_url'])){
+            $_POST[$this->getTableName()]['smap_redirect_url'] = str_replace(Request::getInstance()->getBasePath(), '', $_POST[$this->getTableName()]['smap_redirect_url']);        	
+        }
+        
         //Выставляем фильтр для родительского идентификатора
         $PID = $_POST[$this->getTableName()]['smap_pid'];
         if (empty($PID)) {
@@ -446,6 +449,14 @@ final class DivisionEditor extends Grid {
     protected function add() {
         parent::add();
         $this->addTranslation('MSG_START_EDITING');
+    }
+    
+    protected function edit() {
+    	parent::edit();
+    	$field = $this->getData()->getFieldByName('smap_redirect_url');
+    	if($field->getRowData(0)){
+    		$field->setRowData(0, Request::getInstance()->getBasePath().$field->getRowData(0));
+    	}
     }
 
     /**

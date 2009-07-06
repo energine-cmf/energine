@@ -143,7 +143,7 @@ final class Document extends DBWorker {
         $this->sitemap = Sitemap::getInstance();
         $this->request = Request::getInstance();
         $this->componentManager = new ComponentManager($this);
-
+//inspect(Request::getInstance()->getRootPath());
         // получаем идентификатор документа
         $segments = $this->request->getPath();
         if (isset($segments[0]) && $segments[0] == self::SINGLE_SEGMENT) $segments = array();

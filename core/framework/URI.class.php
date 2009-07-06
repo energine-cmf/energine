@@ -62,15 +62,31 @@ final class URI extends Object {
     public function __construct($uri) {
         parent::__construct();
 
-        if (preg_match('/^(\w+):\/\/([a-z0-9\.\-]+)(\/[^?]*)(\?(.*))?$/i', $uri, $matches) && count($matches) >= 4) {
-            $this->setScheme($matches[1]);
-            $this->setHost($matches[2]);
-            $this->setPath($matches[3]);
-            $this->setQuery(isset($matches[5]) ? $matches[5] : '');
+        if ($validatedURL = self::validate($uri)) {
+            $this->setScheme($validatedURL[1]);
+            $this->setHost($validatedURL[2]);
+            $this->setPath($validatedURL[3]);
+            $this->setQuery(isset($validatedURL[5]) ? $validatedURL[5] : '');
         }
         else {
             $this->scheme = $this->host = $this->path = $this->query = $this->fragment = '';
         }
+    }
+    /**
+     * Проверяет является ли переданная строка URLом 
+     * 
+     * @param $uri УРЛ
+     * @return mixed array($scheme, $host, $path, $query) || false
+     * @access public
+     * @static   
+     */
+    public static function validate($uri){
+    	$result = false;
+    	if(preg_match('/^(\w+):\/\/([a-z0-9\.\-]+)(\/[^?]*)(\?(.*))?$/i', $uri, $matches) && count($matches) >= 4){
+    	   $result = $matches;	
+    	}
+    	
+    	return $result;
     }
 
     /**

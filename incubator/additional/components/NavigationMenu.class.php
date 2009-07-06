@@ -27,7 +27,7 @@ final class NavigationMenu extends SitemapTree {
 	 * @access public
 	 */
 	public function __construct($name, $module, Document $document,  array $params = null) {
-		$params['configFilename'] = sprintf(ComponentConfig::CORE_CONFIG_DIR, 'share').get_class($this).'.component.xml';
+		$params['configFilename'] = sprintf(ComponentConfig::CORE_CONFIG_DIR, $module).get_class($this).'.component.xml';
 		parent::__construct($name, $module, $document,  $params);
 	}
 
@@ -46,7 +46,8 @@ final class NavigationMenu extends SitemapTree {
 				$nodeChilds = $this->dbh->select(
                       'share_sitemap', 
 				array('smap_id', 'smap_pid'),
-				array('smap_pid' => $nodeID)
+				array('smap_pid' => $nodeID),
+				array('smap_order_num' => QAL::ASC)
 				);
 
 				if(is_array($nodeChilds)){
@@ -68,11 +69,11 @@ final class NavigationMenu extends SitemapTree {
 		}
         //ниже 1го уровня получаем дочерние страницы
 		if(!empty($parents)){
-			$childs = $this->dbh->select('share_sitemap', array('smap_id', 'smap_pid'), array('smap_pid' => $this->document->getID()));
+			$childs = $this->dbh->select('share_sitemap', array('smap_id', 'smap_pid'), array('smap_pid' => $this->document->getID()), array('smap_order_num' => QAL::ASC));
 		}
 		//если первого уровня - получаем дочерние разделы 
 		else{
-			$childs = $this->dbh->selectRequest('SELECT smap_id, null as smap_pid FROM share_sitemap WHERE smap_pid = %s ', $this->document->getID()); 
+			$childs = $this->dbh->selectRequest('SELECT smap_id, null as smap_pid FROM share_sitemap WHERE smap_pid = %s ORDER BY smap_order_num', $this->document->getID()); 
 		}
 
 		if(is_array($childs))

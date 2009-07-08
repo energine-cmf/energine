@@ -30,4 +30,8 @@
         DocumentController::getInstance()->getTransformer()->setFileName('rss.xslt');
         Response::getInstance()->setHeader('Content-Type', 'application/rss+xml; charset=UTF-8');
     }
+
+    protected function main(){
+        
+    }
 }

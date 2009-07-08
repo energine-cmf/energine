@@ -10,7 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/Object.class.php');
 
 /**
  * Отправщик сообщения
@@ -203,6 +202,8 @@ final class Mail extends Object {
 	        $fileName = (!$fileName)?basename($file):$fileName;
 	        $this->attachments[$fileName] = $fileContent;
         }
+        
+        return $this;
     }
 
 

@@ -633,7 +633,7 @@ abstract class DataSet extends Component {
      * @static
      */
 
-    protected static function cleanupHTML($data) {
+    public static function cleanupHTML($data) {
         $aggressive = isset($_GET['aggressive']);
 
         $data = str_replace('Р', '^р^', $data); // cyrillic

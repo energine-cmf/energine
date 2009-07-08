@@ -107,7 +107,7 @@ var DivManager = new Class({
             this.singlePath+nodeId+'/delete',
             '',
 			function(response) {
-			    this.tree.getSelectedNode().dispose();
+			    this.tree.getSelectedNode().remove();
 				this.treeRoot.select();
 			}.bind(this)
 		);

@@ -6,28 +6,28 @@
 				<object name="PageEditor"/>
 			</javascript>
 	    </method>
-		<method name="save" rights="2">
+		<method name="save" rights="3">
 			<uri_patterns>
 				<pattern>/save-text/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="cleanup" rights="2">
+		<method name="cleanup" rights="3">
 			<uri_patterns>
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>
 		</method>
-        <method name="source" rights="2">
+        <method name="source" rights="3">
             <uri_patterns>
                 <pattern>/source/</pattern>
             </uri_patterns>
         </method>
-		<method name="imageManager" rights="2">
+		<method name="imageManager" rights="3">
 			<uri_patterns>
 				<pattern>/imagemanager/</pattern>
 			</uri_patterns>
 		</method>
 		<!-- Сквозной метод -->
-		<method name="fileLibrary" rights="2">
+		<method name="fileLibrary" rights="3">
 			<uri_patterns>
 				<pattern>/file-library/</pattern>
 				<pattern>/file-library/[string]/</pattern>

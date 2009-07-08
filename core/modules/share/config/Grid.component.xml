@@ -51,7 +51,7 @@
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</method>
-		<method name="save" rights="2">
+		<method name="save" rights="3">
 		     <uri_patterns>
 		         <pattern>/save/</pattern>
 		     </uri_patterns>
@@ -72,23 +72,23 @@
 					<pattern>/get-data/page-[int]/</pattern>
 		     </uri_patterns>
 		</method>
-		<method name="imageManager" rights="2">
+		<method name="imageManager" rights="3">
 			<uri_patterns>
 				<pattern>/imagemanager/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="fileLibrary" rights="2">
+		<method name="fileLibrary" rights="3">
 			<uri_patterns>
 				<pattern>/file-library/</pattern>
 				<pattern>/file-library/[string]/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="cleanup" rights="2">
+		<method name="cleanup" rights="3">
 			<uri_patterns>
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="formatDate" rights="2">
+		<method name="formatDate" rights="3">
 			<uri_patterns>
 				<pattern>/format-date/</pattern>
 			</uri_patterns>
@@ -105,12 +105,12 @@
 			</uri_patterns>
 		</method>
 
-		<method name="up" rights="2">
+		<method name="up" rights="3">
 			<uri_patterns>
 				<pattern>/[int]/up/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="down" rights="2">
+		<method name="down" rights="3">
 			<uri_patterns>
 				<pattern>/[int]/down/</pattern>
 			</uri_patterns>

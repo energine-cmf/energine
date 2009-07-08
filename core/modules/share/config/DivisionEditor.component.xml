@@ -144,18 +144,18 @@
 				<pattern>/[int]/down/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="imageManager" rights="2">
+		<method name="imageManager" rights="3">
 			<uri_patterns>
 				<pattern>/imagemanager/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="fileLibrary" rights="2">
+		<method name="fileLibrary" rights="3">
 			<uri_patterns>
 				<pattern>/file-library/</pattern>
 				<pattern>/file-library/[any]/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="showTemplate" rights="2">
+		<method name="showTemplate" rights="3">
 			<uri_patterns>
 				<pattern>/template/[any]/</pattern>
 
@@ -168,7 +168,7 @@
 				<pattern>/template/[int]/delete/</pattern> -->
 			</uri_patterns>
 		</method>
-        <method name="showTransEditor" rights="2">
+        <method name="showTransEditor" rights="3">
 			<uri_patterns>
 				<pattern>/translation/[any]/</pattern>
 <!-- 			<pattern>/translation/</pattern>
@@ -200,7 +200,7 @@
 				<param name="dock">top</param>
 			</javascript>
 		</method>
-		<method name="cleanup" rights="2">
+		<method name="cleanup" rights="3">
 			<uri_patterns>
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>

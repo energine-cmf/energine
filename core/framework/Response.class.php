@@ -140,7 +140,7 @@ final class Response extends Object {
         if (!isset($reasonPhrase)) {
             $reasonPhrase = (isset($this->reasonPhrases[$statusCode]) ? $this->reasonPhrases[$statusCode] : '');
         }
-        $this->statusLine = "HTTP/1.1 $statusCode $reasonPhrase";
+        $this->statusLine = $_SERVER['SERVER_PROTOCOL']." $statusCode $reasonPhrase";
     }
 
     /**

@@ -46,6 +46,7 @@ class FeedbackForm extends DBDataSet {
         $result = array_merge(parent::defineParams(),
         array(
         'active'=>true,
+        'textBlock' => false
         ));
         return $result;
     }
@@ -137,7 +138,8 @@ class FeedbackForm extends DBDataSet {
 
 
 	        $this->prepare();
-	        if ($textBlock = $this->document->componentManager->getComponentByName('feedback_text')) {
+	        
+	        if ($this->getParam('textBlock') && ($textBlock = $this->document->componentManager->getComponentByName($this->getParam('textBlock')))) {
 	        	$textBlock->disable();
 	        }
 

@@ -280,13 +280,32 @@ final class QAL extends DBA {
      * @todo Исключать поля типа текст из результатов выборки для таблицы с переводами
      * @todo Подключить фильтрацию
      */
-    public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = '') {
+    public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
         $fkValueName = substr($fkKeyName, 0, strpos($fkKeyName, '_')).'_name';
 
         //если существует таблица с переводами для связанной таблицы
         //нужно брать значения оттуда
         if ($transTableName = $this->getTranslationTablename($fkTableName)) {
-            $request = sprintf('SELECT main.*,trans.%s FROM %s main LEFT JOIN %s trans on trans.%s = main.%s WHERE lang_id =%s', $fkValueName, $fkTableName, $transTableName, $fkKeyName, $fkKeyName, $currentLangID);
+        	if($filter){
+        	   $filter = ' AND '.str_replace('WHERE', '', $this->buildWhereCondition($filter));	
+        	}
+        	else{
+        		$filter = '';
+        	}
+        	
+            $request = sprintf(
+                'SELECT 
+                    %2$s.*, %3$s.%s 
+                    FROM %s %2$s 
+                    LEFT JOIN %s %3$s on %3$s.%s = %2$s.%s 
+                    WHERE lang_id =%s'.$filter, 
+                $fkValueName, 
+                $fkTableName, 
+                $transTableName, 
+                $fkKeyName, 
+                $fkKeyName, 
+                $currentLangID
+            );
             $res = $this->selectRequest($request);
         }
         else {
@@ -294,7 +313,7 @@ final class QAL extends DBA {
             $columns = array_filter($columns,
                 create_function('$value', 'return !($value["type"] == QAL::COLTYPE_TEXT);')
             );
-            $res = $this->select($fkTableName, array_keys($columns), null, array($fkValueName=>QAL::ASC));
+            $res = $this->select($fkTableName, array_keys($columns), $filter, array($fkValueName=>QAL::ASC));
         }
 
         return array($res, $fkKeyName, $fkValueName);

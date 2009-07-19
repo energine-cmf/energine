@@ -62,10 +62,10 @@ var EnlargeImage = new Class({
 			// really nice.
 			var animationDuration = this.options.duration;
 			var transStyle = Fx.Transitions.Back.easeInOut;
-			var enlargeImage = new Fx.Styles(image,{duration: animationDuration,transition:transStyle, onComplete: function() {
+			var enlargeImage = new Fx.Morph(image,{duration: animationDuration,transition:transStyle, onComplete: function() {
 
 				image.addEvent('click', function() {
-					var contractImage = new Fx.Styles(image,{duration: animationDuration,transition:transStyle,onComplete: function() {
+					var contractImage = new Fx.Morph(image,{duration: animationDuration,transition:transStyle,onComplete: function() {
 						image.dispose();
 					}});
 					contractImage.start({

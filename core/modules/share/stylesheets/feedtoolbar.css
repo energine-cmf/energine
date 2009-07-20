@@ -46,7 +46,7 @@ ul#feedToolbar.toolbar li.separator {
 ul#feedToolbar.toolbar li.highlighted { background-color: #FF8 !important; }
 
 .record_highlight{
-	background-color: #FF8 !important;
+	background-color:#FF8 !important;
 }
 .record_select{
 	background-color: green !important;

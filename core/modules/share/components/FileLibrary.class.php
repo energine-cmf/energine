@@ -346,23 +346,24 @@ final class FileLibrary extends DataSet {
 			$filename = FileObject::getTmpFilePath($_POST['share_uploads']['upl_path']);
 
 			if(file_exists($filename)){
+			    exec('export LC_ALL=uk_UA.utf8');
 				$zip = new ZipArchive();
 				$zip->open($filename);
 
 				for ($i = 0; $i < $zip->numFiles; $i++){
+				    
 					$currentFile = $zip->statIndex($i);
-
+					    
 					$currentFile = $currentFile['name'];
 					$fileInfo = pathinfo($currentFile);
-
-					if(
+					/*if($fileInfo['filename'] === ''){
+					    
+					}
+					else*/if(
 						!(
 							(substr($fileInfo['filename'], 0, 1) === '.')
 							||
 							(strpos($currentFile, 'MACOSX') !== false)
-							||
-							$fileInfo['filename'] === ''
-
 						)
 					){
 						if($fileInfo['dirname'] == '.'){

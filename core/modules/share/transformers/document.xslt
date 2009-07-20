@@ -78,10 +78,12 @@
                                 pageToolbar.getControlById('add').disable();
                             </xsl:if>
         				</xsl:if>
+                        
                         <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
                             <xsl:variable name="objectID" select="generate-id(../../recordset)" />
                             <xsl:value-of select="$objectID" /> = new <xsl:value-of select="@name" />($('<xsl:value-of select="$objectID" />'));
         				</xsl:for-each>
+                        
                         }
                         catch (e) {
                                 console.error(e);

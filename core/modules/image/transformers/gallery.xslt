@@ -5,7 +5,7 @@
         <script type="text/javascript" src="scripts/EnlargeImage.js"></script>
         <script type="text/javascript">
             var showPhoto = function(obj){
-                var img = $E('img', $(obj));
+                var img = $(obj).getElement('img');
                 new EnlargeImage(img,{duration: 800, position: 'this'})
                 return false;
             } 

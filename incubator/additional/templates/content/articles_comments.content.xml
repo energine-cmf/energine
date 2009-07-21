@@ -2,21 +2,21 @@
 <content>
 	<component name="articleDivisions" module="share" class="ChildDivisions" />
 	<component name="articleTextBlock" module="share" class="TextBlock" />
-    <component name="articles" module="aux" class="ArticlesFeed"></component>
-    <component name="articlesFeedEditor" module="aux" class="ArticlesFeedEditor">
+    <component name="articles" module="misc" class="ArticlesFeed"></component>
+    <component name="articlesFeedEditor" module="misc" class="ArticlesFeedEditor">
 		<params>
 			<param name="rights">2</param>
 			<param name="linkTo">articles</param>
 		</params>
     </component>
-	<component name="comments" module="aux" class="Comments">
+	<component name="comments" module="misc" class="Comments">
 		<params>
 			<param name="mainComponent">articles</param>
 			<param name="tableName">v_articles_comments</param>
 			<param name="linkField">art_id</param>
 		</params>
     </component>
-    <component name="commentForm" module="aux" class="CommentForm">
+    <component name="commentForm" module="misc" class="CommentForm">
 		<params>
 			<param name="mainComponent">articles</param>
 			<param name="linkTo">comments</param>

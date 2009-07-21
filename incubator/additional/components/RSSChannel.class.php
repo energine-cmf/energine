@@ -3,7 +3,7 @@
  * Содержит класс RSSSChannel
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
@@ -12,7 +12,7 @@
   * Генератор RSS feed
   *
   * @package energine
-  * @subpackage aux
+  * @subpackage misc
   * @author d.pavka@gmail.com
   */
  class RSSChannel extends DataSet {

@@ -3,7 +3,7 @@
  * Содержит класс редактора вакансий.
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmal.com
  * @version $Id$
@@ -13,7 +13,7 @@
  * Редактор вакансий, интегрирующийся в список вакансий
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @
  */

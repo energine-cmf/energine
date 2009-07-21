@@ -3,7 +3,7 @@
  * Содержит класс StaffFeedEditor.
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
@@ -12,7 +12,7 @@
  * Редактор статей
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  */
 class StaffFeedEditor extends FeedEditor {

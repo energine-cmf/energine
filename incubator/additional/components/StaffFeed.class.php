@@ -3,7 +3,7 @@
  * Содержит класс StaffFeed.
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
@@ -12,7 +12,7 @@
  * Список сотрудников
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  */
  class StaffFeed extends Feed {

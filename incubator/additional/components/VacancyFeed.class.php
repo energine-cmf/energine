@@ -3,7 +3,7 @@
  * Класс Содержит класс списка вакансий.
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmal.com
  * @version $Id$
@@ -13,7 +13,7 @@
  * Спиоск вакансий
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  */
 class VacancyFeed extends Feed {

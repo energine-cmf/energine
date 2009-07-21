@@ -3,7 +3,7 @@
  * Содержит класс ArticlesFeedEditor.
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmal.com
  * @version $Id$
@@ -13,7 +13,7 @@
  * Редактор статей
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  */
 class ArticlesFeedEditor extends FeedEditor {

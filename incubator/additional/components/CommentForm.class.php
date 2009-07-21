@@ -3,7 +3,7 @@
  * Содержит класс CommentForm.
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmal.com
  * @version $Id$
@@ -13,7 +13,7 @@
  * Форма добавления комментария
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  */
 class CommentForm extends DataSet {

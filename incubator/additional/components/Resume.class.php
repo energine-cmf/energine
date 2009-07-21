@@ -3,7 +3,7 @@
  * Содержит класс ResumeForm.
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmal.com
  * @version $Id$
@@ -13,7 +13,7 @@
  * Класс для отправки и хранения резюме, а также просмотра отправленных резюме
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @final
  */

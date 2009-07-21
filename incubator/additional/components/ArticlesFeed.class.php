@@ -3,7 +3,7 @@
  * Содержит класс ArticlesFeed.
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
@@ -12,7 +12,7 @@
  * Список статей
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  */
  class ArticlesFeed extends Feed {

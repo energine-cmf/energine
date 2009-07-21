@@ -3,7 +3,7 @@
  * Содержит класс NavigationMenu
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
@@ -12,7 +12,7 @@
  * Компонент выводящий список дочерних страниц, а также список страниц того же уровня
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka@gmail.com
  * @final
  */

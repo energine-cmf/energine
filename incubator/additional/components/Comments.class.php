@@ -3,7 +3,7 @@
  * Содержит класс Comments.
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @copyright d.pavka@gmal.com
  * @version $Id$
@@ -13,7 +13,7 @@
  * Класс предназначееный для присоединения комментариев к страницам, и другим сущностям
  *
  * @package energine
- * @subpackage aux
+ * @subpackage misc
  * @author d.pavka
  * @final
  */

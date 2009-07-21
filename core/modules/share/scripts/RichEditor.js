@@ -222,7 +222,7 @@ var RichEditor = new Class({
         var orig_tr = selection.createRange();
         var new_tr = (Browser.Engine.gecko)?document.createRange():document.body.createTextRange();
 
-        this.pasteArea.innerHTML = 'dummy text';
+        this.pasteArea.innerHTML = '';
         if(Browser.Engine.trident){
 	        new_tr.moveToElementText(this.pasteArea);
 	        new_tr.select();

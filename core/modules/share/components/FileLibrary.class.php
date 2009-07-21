@@ -346,7 +346,7 @@ final class FileLibrary extends DataSet {
 			$filename = FileObject::getTmpFilePath($_POST['share_uploads']['upl_path']);
 
 			if(file_exists($filename)){
-			    exec('export LC_ALL=uk_UA.utf8');
+				setlocale(LC_CTYPE, "uk_UA.UTF-8");
 				$zip = new ZipArchive();
 				$zip->open($filename);
 

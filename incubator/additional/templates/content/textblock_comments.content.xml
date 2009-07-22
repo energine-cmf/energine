@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<component name="commentableTextBlock" module="share" class="TextBlock" />
+    <component name="commentForm" module="misc" class="CommentForm">
+		<params>
+			<param name="linkTo">comments</param>
+			<param name="linkTable">aux_comment2sitemap</param>
+		</params>
+    </component>
+	<component name="comments" module="misc" class="Comments">
+		<params>
+			<param name="tableName">v_page_comments</param>
+			<param name="linkField">smap_id</param>
+		</params>
+    </component>
+</content>

@@ -57,14 +57,7 @@
                     <xsl:if test="field[@name='Id'] != ''">
                         <xsl:choose>
                             <xsl:when test="position() != last()">								
-								<xsl:choose>
-									<xsl:when test="position() = 1">
-										<a href="{$BASE}{$LANG_ABBR}{field[@name='Segment']}"><img src="images/home.gif" width="11" height="10" border="0" alt="{field[@name='Name']}" style="vertical-align: baseline;" /></a>	
-									</xsl:when>
-									<xsl:otherwise>
 										<a href="{$BASE}{$LANG_ABBR}{field[@name='Segment']}"><xsl:value-of select="field[@name='Name']" disable-output-escaping="yes" /></a>
-									</xsl:otherwise>
-								</xsl:choose>                                
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:value-of select="field[@name='Name']" disable-output-escaping="yes" />

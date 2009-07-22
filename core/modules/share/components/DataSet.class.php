@@ -635,47 +635,18 @@ abstract class DataSet extends Component {
 
     public static function cleanupHTML($data) {
         $aggressive = isset($_GET['aggressive']);
-
-        $data = str_replace('Р', '^р^', $data); // cyrillic
-        $data = str_replace('&nbsp;', ' ', $data);
-        $data = str_replace('à', '^a^', $data);
-
-
-        $tidy = new tidy;
-        $config = array(
-        'bare' => $aggressive,
-        //'clean' => true,
-        'drop-font-tags' => true,
-        'drop-proprietary-attributes' => true,
-        'hide-comments' => true,
-        'indent' => true,
-        'logical-emphasis' => true,
-        'numeric-entities' => true,
-        'show-body-only' => true,
-        'input-encoding' => 'utf8',
-        'output-encoding' => 'utf8',
-        'output-xhtml' => true,
-        /*'merge-spans' => true,
-        'merge-divs' => true,*/
-        );
-        $tidy->parseString($data, $config);
-        $tidy->cleanRepair();
-        $data = tidy_get_output($tidy);
-
-        // FIX THE PROBLEMS:
-        $data = str_replace('^р^', 'Р', $data); // cyrillic
-        $data = str_replace("\r", '', $data);
-        $data = str_replace('^a^', 'à', $data);
-        //$data = str_replace(array("\r", "\n"), ' ', $data);
-        //$data = preg_replace('/style="text-align: ([^"]+)"/', 'align="$1"', $data);
-
+        $jewix = new Jevix();
+        $jewix->cfgSetXHTMLMode(true);
+        $jewix->cfgSetAutoBrMode(false);
+        $jewix->cfgSetAutoLinkMode(false);
         $allowedTags = array(
-        'a', 'abbr', 'acronym', 'address', 'b', 'big', 'blockquote', 'br', 'cite',
-        'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em',
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'ins', 'kbd', 'li', 'ol',
-        'p', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
-        'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
+            'a', 'abbr', 'acronym', 'address', 'b', 'big', 'blockquote', 'br', 'cite',
+            'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'ins', 'kbd', 'li', 'ol',
+            'p', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
+            'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
         );
+        
         if (!$aggressive) {
             $allowedTags = array_merge($allowedTags, array(
                 'img',
@@ -687,55 +658,34 @@ abstract class DataSet extends Component {
                 'area'
             ));
         }
-
-        // strip all tags except allowed
-        $data = preg_replace('/<\/(?!'.join('[ >]|', $allowedTags).'[ >])(.*?)>/ims', '', $data);
-        $data = preg_replace('/<(?!\/)(?!'.join('[ >]|', $allowedTags).'[ >])(.*?)>/ims', '', $data);
-        $data = preg_replace('/<([^\/][^>]+)>/ems', '\'<\'.stripHtmlAttributes(\'$1\', $aggressive).\'>\'', $data);
-
+        $jewix->cfgAllowTags($allowedTags);
+        
+        
+        $jewix->cfgAllowTagParams('table', array('cellpadding', 'cellspacing'));
+        $jewix->cfgAllowTagParams('td', array('colspan', 'rowspan'));
+        $jewix->cfgAllowTagParams('th', array('colspan', 'rowspan'));
+        $jewix->cfgAllowTagParams('a', array('href', 'target'));
+        
+        if(!$aggressive){
+        	array_walk($allowedTags, create_function('$element, $key, $jewix', '$jewix->cfgAllowTagParams($element, array("id", "class", "style"));'), $jewix);
+        	$jewix->cfgAllowTagParams('img', 
+	            array(
+	                'align', 
+	                'alt', 
+	                'src', 
+	                'vspace', 
+	                'width',
+	                'hspace',
+	                'height',
+	                'border'
+	            )
+            );
+        }
+        
+        $errors = false;
+        $data = $jewix->parse($data, $errors);
+        
         return $data;
     }
 }
-
-/**
- * Функция очистки лишних аттрибутов
- * Вынесена отдельно изза специфики работы preg_replace
- *
- * @param string $tagSource
- * @param boolean $aggressive
- * @return string
- */
-function stripHtmlAttributes($tagSource, $aggressive) {
-    $request = Request::getInstance();
-    $tagSource = urldecode($tagSource);
-    $tagSource = str_replace($request->getBasePath(), '', $tagSource);
-    $uri = $request->getURI();
-    $tagSource = str_replace($uri->getScheme().'://'.$uri->getHost().'/', '', $tagSource);
-
-    $allowedAttrs = array(
-    'align', 'alt', 'strong', 'border', 'cellpadding', 'cellspacing',  'colspan',
-    'height', 'href', 'hspace', 'id', 'rowspan', 'src', 'target', 'title', 'vspace', 'width'
-    );
-    if (!$aggressive) {
-        $allowedAttrs = array_merge(
-            $allowedAttrs, array(
-                'style',
-                'class',
-                'name',
-                'value',
-                'type',
-                'data',
-                'allowfullscreen',
-                'shape',
-                'coords',
-                'usemap'
-            )
-        );
-    }
-    $tagSource = stripslashes($tagSource);
-    $tagSource = str_replace(array("\r", "\n"), ' ', $tagSource);
-    $result = preg_replace('/\b(?!'.join('|', $allowedAttrs).')[^ =]+=\s*"[^"]+"/i', '', $tagSource);
-    return $result;
-}
-
 

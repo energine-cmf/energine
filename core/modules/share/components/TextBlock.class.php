@@ -298,6 +298,7 @@ final class TextBlock extends DataSet {
     protected function save() {
         $this->dbh->beginTransaction();
         try {
+
             if (!isset($_POST['data']) && !isset($_POST['num'])) {
                 throw new SystemException('ERR_DEV_NO_DATA', SystemException::ERR_DEVELOPER );
             }

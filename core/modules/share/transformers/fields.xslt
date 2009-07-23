@@ -146,141 +146,130 @@
 	</div>
 </xsl:template>
 
-<!-- Строковое поле -->
+<!-- строковое поле -->
 <xsl:template name="STRING">
-	<xsl:element name="input">
-		<xsl:attribute name="type">text</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-		<xsl:if test="@length">
-			<xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-		</xsl:if>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+    <input type="text" id="{@name}" value="{.}" class="text inp_string">
+    	<xsl:attribute name="name">
+            <xsl:choose>
+            	<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:if test="@length">
+        	<xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
+        </xsl:if>
         <xsl:if test="@pattern">
         	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
         	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
-	</xsl:element>
+    </input>
 </xsl:template>
 
 <!-- поле для ввода Email -->
 <xsl:template name="EMAIL">
-	<xsl:element name="input">
-		<xsl:attribute name="type">text</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+    <input type="text" id="{@name}" value="{.}" class="text inp_email">
+		<xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+    			<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
         <xsl:if test="@pattern">
         	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
         	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
-	</xsl:element>
+	</input>
 </xsl:template>
 
 <!-- поле для ввода телефона-->
 <xsl:template name="PHONE">
-	<xsl:element name="input">
-		<xsl:attribute name="type">text</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-		<xsl:if test="@length">
-			<xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-		</xsl:if>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-        <xsl:if test="@pattern">
-        	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
-        </xsl:if>
-        <xsl:if test="@message">
-        	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
-        </xsl:if>
-	</xsl:element>
-</xsl:template>
-
-
-<!-- Строковое поле -->
-<xsl:template name="INTEGER">
-	<xsl:element name="input">
-		<xsl:attribute name="type">text</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-		<xsl:if test="@length">
-			<xsl:attribute name="maxlength">5</xsl:attribute>
-		</xsl:if>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-        <xsl:attribute name="class">int</xsl:attribute>
-        <xsl:attribute name="length">5</xsl:attribute>
-        <xsl:if test="@pattern">
-        	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
-        </xsl:if>
-        <xsl:if test="@message">
-        	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
-        </xsl:if>
-	</xsl:element>
-</xsl:template>
-
-
-<!-- Строковое поле -->
-<xsl:template name="FLOAT">
-	<xsl:element name="input">
-		<xsl:attribute name="type">text</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-		<xsl:if test="@length">
-			<xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-		</xsl:if>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-        <xsl:if test="@pattern">
-        	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
-        </xsl:if>
-        <xsl:attribute name="class">float</xsl:attribute>
-        <xsl:if test="@message">
-        	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
-        </xsl:if>
-	</xsl:element>
-</xsl:template>
-
-<!-- Поле пароля -->
-<xsl:template name="PASSWORD">
-	<xsl:element name="input">
-		<xsl:attribute name="type">password</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-				<xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+    <input type="text" id="{@name}" value="{.}" class="text inp_phone">
+        <xsl:attribute name="name">
+            <xsl:choose>
+				<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
 				<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-		</xsl:choose></xsl:attribute>
+            </xsl:choose>
+        </xsl:attribute>
 		<xsl:if test="@length">
 			<xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
 		</xsl:if>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
         <xsl:if test="@pattern">
         	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
         	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
-	</xsl:element>
+	</input>
 </xsl:template>
 
-<!-- Поле логического типа -->
+<!-- числовое поле (integer) -->
+<xsl:template name="INTEGER">
+    <input type="text" id="{@name}" value="{.}" length="5" class="text inp_integer">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:if test="@length">
+            <xsl:attribute name="maxlength">5</xsl:attribute>
+        </xsl:if>
+        <xsl:if test="@pattern">
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="@message">
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+        </xsl:if>
+    </input>
+</xsl:template>
+
+<!-- числовое поле (float) -->
+<xsl:template name="FLOAT">
+    <input type="text" id="{@name}" value="{.}" class="text inp_float">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:if test="@length">
+            <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="@pattern">
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="@message">
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+        </xsl:if>
+    </input>
+</xsl:template>
+
+<!-- поле пароля -->
+<xsl:template name="PASSWORD">
+    <input type="password" id="{@name}" value="{.}" class="text inp_password">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:if test="@length">
+            <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="@pattern">
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+        </xsl:if>
+        <xsl:if test="@message">
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+        </xsl:if>
+    </input>
+</xsl:template>
+
+<!-- поле логического типа -->
 <xsl:template name="BOOLEAN">
 	<xsl:variable name="FIELD_NAME">
         <xsl:choose>
@@ -297,64 +286,55 @@
 	<label for="{@name}"><xsl:value-of select="concat(' ', @title)" disable-output-escaping="yes" /></label>
 </xsl:template>
 
+<!-- поле для загрузки изображения из репозитория (используется в админчасти) -->
 <xsl:template name="IMAGE">
-    <div class = "image">
-            <xsl:element name="img">
+    <div class="image">
+        <img id="{generate-id(.)}_preview">
             <xsl:if test=".!=''">
                 <xsl:attribute name="src"><xsl:value-of select="."/></xsl:attribute>
             </xsl:if>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_preview</xsl:attribute>
-        </xsl:element>
+        </img>
     </div>
-
-    <xsl:element name="input">
-        <xsl:attribute name="type">text</xsl:attribute>
-        <xsl:attribute name="class">file</xsl:attribute>
-        <xsl:attribute name="readonly">readonly</xsl:attribute>
-        <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-        <xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-		</xsl:choose></xsl:attribute>
-        <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+    
+    <input type="text" id="{generate-id(.)}" value="{.}" readonly="readonly" class="text inp_file">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
         <xsl:if test="@pattern">
-        	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
-        	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
-
-    </xsl:element>
+    </input>
     <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
 </xsl:template>
 
 <xsl:template name="FILE">
-    <div class="file">
-        <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_preview</xsl:attribute>
-    </div>
+    <div id="{generate-id(.)}_preview" class="file"></div>
     <xsl:if test=".!=''">
         <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
     </xsl:if>
     <div>
 
     </div>
-    <xsl:element name="input">
-        <xsl:attribute name="type">text</xsl:attribute>
-        <xsl:attribute name="class">file</xsl:attribute>
-        <xsl:attribute name="readonly">readonly</xsl:attribute>
-        <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-        <xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-		</xsl:choose></xsl:attribute>
-        <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+    <input type="text" id="{generate-id(.)}" value="{.}" readonly="readonly" class="text inp_file">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
         <xsl:if test="@pattern">
-        	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
-        	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
-    </xsl:element>
+    </input>
     <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
 </xsl:template>
 
@@ -439,31 +419,30 @@
     </input>
 </xsl:template>
 
-<!-- Поле выбора из списка -->
+<!-- поле выбора из списка -->
 <xsl:template name="SELECT">
-	<xsl:element name="select">
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-        <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
-		<xsl:if test="@nullable='1'">
-			<xsl:element name="option"></xsl:element>
-		</xsl:if>
-		<xsl:for-each select="options/option">
-			<xsl:element name="option">
-				<xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>
-				<xsl:if test="@selected">
-					<xsl:attribute name="selected">selected</xsl:attribute>
-				</xsl:if>
-				<xsl:value-of select="."/>
-			</xsl:element>
-		</xsl:for-each>
-	</xsl:element>
+    <select id="{@name}">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:if test="@nullable='1'">
+            <option></option>
+        </xsl:if>
+        <xsl:for-each select="options/option">
+            <option value="{@id}">
+                <xsl:if test="@selected">
+                    <xsl:attribute name="selected">selected</xsl:attribute>
+                </xsl:if>
+                <xsl:value-of select="."/>
+            </option>
+        </xsl:for-each>
+    </select>
 </xsl:template>
 
-
-<!-- Поле множественного выбора -->
+<!-- поле множественного выбора -->
 <xsl:template name="MULTI">
     <xsl:variable name="NAME"><xsl:choose>
         <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
@@ -472,276 +451,251 @@
         <div style="margin-left:20px;padding-top:5px;">
             <xsl:for-each select="options/option">
                 <div>
-                    <xsl:element name="input">
-                        <xsl:attribute name="type">checkbox</xsl:attribute>
-                        <xsl:attribute name="style">width:auto;vertical-align:middle;border:none;</xsl:attribute>
-                        <xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>
-                        <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
-                        <xsl:attribute name="name"><xsl:value-of select="$NAME"/></xsl:attribute>
+                    <input type="checkbox" id="{generate-id(.)}" name="{$NAME}" value="{@id}" style="width:auto;vertical-align:middle;border:none;">
                         <xsl:if test="@selected">
                             <xsl:attribute name="checked">checked</xsl:attribute>
                         </xsl:if>
-                    </xsl:element>
+                    </input>
                     <label for="{generate-id(.)}"><xsl:value-of select="."/></label>
                 </div>
             </xsl:for-each>
         </div>
 </xsl:template>
 
-<!-- Поле типа текст -->
+<!-- поле типа текст -->
 <xsl:template name="TEXT">
-	<xsl:element name="textarea">
-        <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-		<xsl:if test="@pattern">
-        	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+    <textarea id="{@name}">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:if test="@pattern">
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
-        	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
         <xsl:value-of select="."/>
-	</xsl:element>
+    </textarea>
 </xsl:template>
 
-<!-- Поле типа rtf текст -->
+<!-- поле типа rtf текст -->
 <xsl:template name="HTML_EDITOR">
-	<xsl:element name="textarea">
-        <xsl:attribute name="class">richEditor</xsl:attribute>
+    <textarea class="richEditor">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
 		<xsl:if test="@pattern">
-        	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
-        	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
-        </xsl:if>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+        </xsl:if>		
 		<xsl:value-of select="."/>
-	</xsl:element>
+	</textarea>
 </xsl:template>
 
-<!-- Для любого поля на которое нет прав на просмотр -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode=0]">
-</xsl:template>
+<!-- для любого поля, на которое нет прав на просмотр -->
+<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode=0]" />
 
-
-<!-- Для любого поля на которое права только чтение -->
+<!-- для любого поля, на которое права только чтение -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1']">
     <xsl:if test=".!=''">
         <div class="field">
             <xsl:if test="@title">
-                <xsl:element name="label">
-                    <xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
+                <label for="{@name}">
                     <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes" />
-                </xsl:element><xsl:text> </xsl:text>
+                </label><xsl:text> </xsl:text>
             </xsl:if>
             <span class="read"><xsl:value-of select="." disable-output-escaping="yes" /></span>
-            <xsl:element name="input">
-                <xsl:attribute name="type">hidden</xsl:attribute>
-                <xsl:attribute name="name"><xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                </xsl:choose></xsl:attribute>
-                <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-            </xsl:element>
+            <input type="hidden" value="{.}">
+                <xsl:attribute name="name">
+                    <xsl:choose>
+                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                        <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+            </input>
         </div>
     </xsl:if>
 </xsl:template>
 
-<!-- Read-only поле логического типа -->
+<!-- read-only поле логического типа -->
 <xsl:template match="field[@mode=1][@type='boolean'][ancestor::component[@exttype='grid'][@type='form']]">
-	<div class="field">
-		<xsl:if test="@title">
-			<xsl:element name="label">
-				<xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
-				<xsl:value-of select="concat(@title, ':')" />
-			</xsl:element><xsl:text> </xsl:text>
-		</xsl:if>
-	<xsl:variable name="FIELD_NAME"><xsl:choose>
-			<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-			<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-	</xsl:choose></xsl:variable>
-	<xsl:element name="input">
-		<xsl:attribute name="type">hidden</xsl:attribute>
-		<xsl:attribute name="name"><xsl:value-of select="$FIELD_NAME"/></xsl:attribute>
-		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-	</xsl:element>
-	<xsl:element name="input">
-	    <xsl:attribute name="class">checkbox</xsl:attribute>
-		<xsl:attribute name="type">checkbox</xsl:attribute>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-		<xsl:attribute name="name"><xsl:value-of select="$FIELD_NAME"/></xsl:attribute>
-		<xsl:attribute name="disabled">disabled</xsl:attribute>
-		<xsl:if test=".=1">
-			<xsl:attribute name="checked">checked</xsl:attribute>
-		</xsl:if>
-	</xsl:element>
+    <div class="field">
+        <xsl:if test="@title">
+            <label for="{@name}">
+                <xsl:value-of select="concat(@title, ':')" />
+            </label><xsl:text> </xsl:text>
+        </xsl:if>
+        <xsl:variable name="FIELD_NAME">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <input type="hidden" name="{$FIELD_NAME}" value="{.}" />
+        <input type="checkbox" id="{@name}" name="{$FIELD_NAME}" disabled="disabled" class="checkbox">
+            <xsl:if test=".=1">
+                <xsl:attribute name="checked">checked</xsl:attribute>
+            </xsl:if>
+        </input>
 	</div>
 </xsl:template>
 
-
-<!-- Для поля HTMLBLOCK на которое права только чтение -->
+<!-- для поля HTMLBLOCK на которое права только чтение -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='htmlblock']">
     <xsl:if test=".!=''">
         <div class="field">
             <xsl:if test="@title">
-                <xsl:element name="label">
-                    <xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
+                <label for="{@name}">
                     <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes" />
-                </xsl:element><xsl:text> </xsl:text>
+                </label><xsl:text> </xsl:text>
             </xsl:if>
             <div class="readonlyBlock"><xsl:value-of select="." disable-output-escaping="yes" /></div>
-            <xsl:element name="input">
-                <xsl:attribute name="type">hidden</xsl:attribute>
-                <xsl:attribute name="name"><xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                </xsl:choose></xsl:attribute>
-                <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-            </xsl:element>
+            <input type="hidden" value="{.}">
+                <xsl:attribute name="name">
+                    <xsl:choose>
+                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                        <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+            </input>
         </div>
     </xsl:if>
 </xsl:template>
 
-<!-- Для поля TEXT на которое права только на чтение -->
+<!-- для поля TEXT на которое права только на чтение -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='text']">
     <xsl:if test=".!=''">
         <div class="field">
             <xsl:if test="@title">
-                <xsl:element name="label">
-                    <xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
+                <label for="{@name}">                    
                     <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes" />
-                </xsl:element><xsl:text> </xsl:text>
+                </label><xsl:text> </xsl:text>
             </xsl:if>
             <div class="read"><xsl:value-of select="." disable-output-escaping="yes" /></div>
-            <xsl:element name="input">
-                <xsl:attribute name="type">hidden</xsl:attribute>
-                <xsl:attribute name="name"><xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                </xsl:choose></xsl:attribute>
-                <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-            </xsl:element>
+            <input type="hidden" value="{.}">
+                <xsl:attribute name="name">
+                    <xsl:choose>
+                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                        <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+            </input>
         </div>
     </xsl:if>
 </xsl:template>
 
-<!-- Для поля EMAIL на которое права только чтение -->
+<!-- для поля EMAIL на которое права только чтение -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='email']">
     <xsl:if test=".!=''">
         <div class="field">
             <xsl:if test="@title">
-                <xsl:element name="label">
-                    <xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
+                <label for="{@name}">
                     <xsl:value-of select="concat(@title, ':')" />
-                </xsl:element><xsl:text> </xsl:text>
+                </label><xsl:text> </xsl:text>
             </xsl:if>
             <a href="mailto:{.}" class="email"><xsl:value-of select="."/></a>
-            <xsl:element name="input">
-                <xsl:attribute name="type">hidden</xsl:attribute>
-                <xsl:attribute name="name"><xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                </xsl:choose></xsl:attribute>
-                <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-            </xsl:element>
+            <input type="hidden" value="{.}">
+                <xsl:attribute name="name">
+                    <xsl:choose>
+                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                        <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+            </input>
         </div>
     </xsl:if>
 </xsl:template>
 
-<!-- Для поля FILE на которое права только чтение -->
+<!-- для поля FILE на которое права только чтение -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='file']">
-	<div class="field">
-		<xsl:if test="@title">
-			<xsl:element name="label">
-				<xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
-				<xsl:value-of select="concat(@title, ':')" />
-			</xsl:element><xsl:text> </xsl:text>
-		</xsl:if>
-		<a href="{.}" target="_blank"><xsl:value-of select="."/></a>
-		<xsl:element name="input">
-			<xsl:attribute name="type">hidden</xsl:attribute>
-			<xsl:attribute name="name"><xsl:choose>
-				<xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-				<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-			</xsl:choose></xsl:attribute>
-			<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-		</xsl:element>
-	</div>
+    <div class="field">
+        <xsl:if test="@title">
+            <label for="{@name}">
+                <xsl:value-of select="concat(@title, ':')" />
+            </label><xsl:text> </xsl:text>
+        </xsl:if>
+        <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
+        <input type="hidden" value="{.}">
+            <xsl:attribute name="name">
+                <xsl:choose>
+                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+        </input>
+    </div>
 </xsl:template>
 
-<!-- Read - only поле типа select -->
+<!-- read-only поле типа select -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='select']">
-	<div class="field">
-		<xsl:if test="@title">
-			<xsl:element name="label">
-				<xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
-				<xsl:value-of select="concat(@title, ':')" />
-			</xsl:element><xsl:text> </xsl:text>
-		</xsl:if>
-		<span class="read"><xsl:value-of select="options/option[@selected='selected']"/></span>
-		<xsl:element name="input">
-			<xsl:attribute name="type">hidden</xsl:attribute>
-			<xsl:attribute name="name"><xsl:choose>
-				<xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-				<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-			</xsl:choose></xsl:attribute>
-			<xsl:attribute name="value"><xsl:value-of select="options/option[@selected='selected']/@id"/></xsl:attribute>
-		</xsl:element>
-	</div>
+    <div class="field">
+        <xsl:if test="@title">
+            <label for="{@name}">
+                <xsl:value-of select="concat(@title, ':')" />
+            </label><xsl:text> </xsl:text>
+        </xsl:if>
+        <span class="read"><xsl:value-of select="options/option[@selected='selected']"/></span>
+        <input type="hidden" value="{options/option[@selected='selected']/@id}">
+            <xsl:attribute name="name">
+                <xsl:choose>
+                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+        </input>
+    </div>
 </xsl:template>
 
-<!-- Read - only поле типа multiselect -->
+<!-- read-only поле типа multiselect -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='multi']">
-	<div class="field">
-		<xsl:if test="@title">
-			<xsl:element name="label">
-				<xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
-				<xsl:value-of select="concat(@title, ':')" />
-			</xsl:element><xsl:text> </xsl:text>
-		</xsl:if>
-		<div class="read">
+    <div class="field">
+        <xsl:if test="@title">
+            <label for="{@name}">
+                <xsl:value-of select="concat(@title, ':')" />
+            </label><xsl:text> </xsl:text>
+        </xsl:if>
+        <div class="read">
             <xsl:for-each select="options/option[@selected='selected']">
-            	<xsl:value-of select="."/><br/>
-                <xsl:element name="input">
-                    <xsl:attribute name="type">hidden</xsl:attribute>
-                    <xsl:attribute name="name"><xsl:choose>
-                        <xsl:when test="../../@tableName"><xsl:value-of select="../../@tableName" />[<xsl:value-of select="../../@name" />]</xsl:when>
-                        <xsl:otherwise><xsl:value-of select="../../@name" /></xsl:otherwise>
-                    </xsl:choose>[]</xsl:attribute>
-                    <xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>
-                </xsl:element>
+                <xsl:value-of select="."/><br/>
+                    <input type="hidden" value="{@id}">
+                        <xsl:attribute name="name">
+                            <xsl:choose>
+                                <xsl:when test="../../@tableName"><xsl:value-of select="../../@tableName" />[<xsl:value-of select="../../@name" />]</xsl:when>
+                                <xsl:otherwise><xsl:value-of select="../../@name" /></xsl:otherwise>
+                            </xsl:choose>[]
+                        </xsl:attribute>
+                    </input>
             </xsl:for-each>
         </div>
-	</div>
+    </div>
 </xsl:template>
 
-
-<!-- Read - only поле типа image -->
+<!-- read-only поле типа image -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='image']">
     <xsl:if test="@title">
-		<xsl:element name="label">
-			<xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
+        <label for="{@name}">
 			<xsl:value-of select="concat(@title, ':')" />
-		</xsl:element><xsl:text> </xsl:text>
-	</xsl:if>
+        </label><xsl:text> </xsl:text>
+    </xsl:if>
     <xsl:if test=".!=''">
         <div class="image">
-            <xsl:element name="img">
-                <xsl:attribute name="src"><xsl:value-of select="."/></xsl:attribute>
-            </xsl:element>
-            <xsl:element name="input">
-    			<xsl:attribute name="type">hidden</xsl:attribute>
-    			<xsl:attribute name="name"><xsl:choose>
-    				<xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-    				<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-    			</xsl:choose></xsl:attribute>
-    			<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-    		</xsl:element>
+            <img src="{.}" />
+            <input type="hidden" value="{.}">
+    			<xsl:attribute name="name">
+                    <xsl:choose>
+    				    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+    				    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+    		</input>
         </div>
     </xsl:if>
 </xsl:template>
@@ -750,102 +704,87 @@
     <xsl:if test=".!=''">
         <div class="field">
             <xsl:if test="@title">
-                <xsl:element name="label">
-                    <xsl:attribute name="for"><xsl:value-of select="@name" /></xsl:attribute>
+                <label for="{@name}">
                     <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes" />
-                </xsl:element><xsl:text> </xsl:text>
+                </label><xsl:text> </xsl:text>
             </xsl:if>
             <div class="read"><xsl:value-of select="." disable-output-escaping="yes" /></div>
-            <xsl:element name="input">
-                <xsl:attribute name="type">hidden</xsl:attribute>
-                <xsl:attribute name="name"><xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                </xsl:choose></xsl:attribute>
-                <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-            </xsl:element>
+            <input type="hidden" value="{.}">
+                <xsl:attribute name="name">
+                    <xsl:choose>
+                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                        <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+            </input>
         </div>
     </xsl:if>
 </xsl:template>
 
-
-<!-- Для PK  -->
+<!-- для PK  -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@key='1']">
-		<xsl:element name="input">
-			<xsl:attribute name="type">hidden</xsl:attribute>
-			<xsl:attribute name="name"><xsl:choose>
-				<xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-				<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-			</xsl:choose></xsl:attribute>
-			<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-			<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-			<xsl:attribute name="primary">primary</xsl:attribute>
-		</xsl:element>
-
+    <input type="hidden" id="{@name}" value="{.}" primary="primary">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+    </input>
 </xsl:template>
 
 <xsl:template name="DATE_TIME">
-	<xsl:element name="input">
-		<xsl:attribute name="type">text</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-		<xsl:if test="@length">
-			<xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-		</xsl:if>
-        <xsl:attribute name="readonly">readonly</xsl:attribute>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-        <xsl:attribute name="style">width:200px;</xsl:attribute>
-		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-        <!-- <xsl:attribute name="readonly">readonly</xsl:attribute> -->
+    <input type="text" id="{@name}" value="{.}" readonly="readonly" class="text inp_date" style="width:200px;">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:if test="@length">
+            <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
+        </xsl:if>
         <xsl:if test="@pattern">
-        	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
-        	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
-	</xsl:element>
-
-    <xsl:element name="button">
-        <xsl:attribute name="type">button</xsl:attribute>
-        <xsl:attribute name="style">height:22px;margin-left:2px;</xsl:attribute>
-        <xsl:attribute name="onclick">calendarKick(<xsl:value-of select="@name" />,document.body.scrollLeft+event.clientX,document.body.scrollTop+event.clientY,true,null,null,true);</xsl:attribute>...</xsl:element>
+    </input>
+    
+    <button type="button" onclick="calendarKick({@name},document.body.scrollLeft+event.clientX,document.body.scrollTop+event.clientY,true,null,null,true);" style="height:22px;margin-left:2px;">...</button>
 </xsl:template>
 
 <xsl:template name="DATE">
-	<xsl:element name="input">
-		<xsl:attribute name="type">text</xsl:attribute>
-		<xsl:if test="@length">
-			<xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-		</xsl:if>
-		<xsl:attribute name="id">date_<xsl:value-of select="@name" /></xsl:attribute>
-        <xsl:attribute name="readonly">readonly</xsl:attribute>
-	</xsl:element>
-
-	<input type="hidden">
-		<xsl:attribute name="name"><xsl:choose>
-			<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-			<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-		</xsl:choose></xsl:attribute>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-		<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-		<xsl:if test="@pattern">
-        	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+    <input type="text" id="date_{@name}" readonly="readonly" class="text inp_date">
+        <xsl:if test="@length">
+            <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
+        </xsl:if>
+    </input>
+    
+    <input type="hidden" id="{@name}" value="{.}">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:if test="@pattern">
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
-        	<xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
-	</input>
-	<xsl:if test=".!=''">
-		<script type="text/javascript">
-			window.addEvent('domready', function(){
-				<xsl:value-of select="generate-id(../..)"/>.setDate('<xsl:value-of select="@name"/>');
-			});
-		</script>
-	</xsl:if>
-
-
+    </input>
+    
+    <xsl:if test=".!=''">
+        <script type="text/javascript">
+            window.addEvent('domready', function(){
+                <xsl:value-of select="generate-id(../..)"/>.setDate('<xsl:value-of select="@name"/>');
+            });
+        </script>
+    </xsl:if>
+    
     <!--<button style="height: 22px; margin-left: 2px;" type="button" onclick="{generate-id(../..)}.showCalendar('{@name}', event); ">...</button>-->
     <img src="images/calendar.gif" id="calendarImg" onclick="{generate-id(../..)}.showCalendar('{@name}', event); "/>
     <!--<script type="text/javascript">
@@ -858,20 +797,20 @@
 	</script>-->
 </xsl:template>
 
-<!-- Для поля hidden -->
+<!-- для поля hidden -->
 <xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@type='hidden']">
-<xsl:call-template name="HIDDEN"/>
+    <xsl:call-template name="HIDDEN"/>
 </xsl:template>
 
 <xsl:template name="HIDDEN">
-	<xsl:element name="input">
-		<xsl:attribute name="type">hidden</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-        <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-		<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-	</xsl:element>
+    <input type="hidden" id="{@name}" value="{.}">
+        <xsl:attribute name="name">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+    </input>
 </xsl:template>
+
 </xsl:stylesheet>

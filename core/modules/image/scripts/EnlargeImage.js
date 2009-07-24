@@ -23,16 +23,15 @@ var EnlargeImage = new Class({
 		var coordinatesHeight = coordinates.height;
 
 		// Create an element which will shine upon thee and be embraced by the browser as a larger image.
-		var image = new Element('img', {
+		var image = new Asset.image(this.element.getProperty('main'), {
 			'styles': {
 				'position': 'absolute',
 				'top': '0px',
 				'z-index': '-99',
 				'cursor': 'pointer'
 			},
-			'src': this.element.getProperty('main'),
 			'id': 'EnlargedImage'
-		})
+		});
 		// Let the image turn alive and appear into your browser.
 		if(document.body.appendChild(image)) {
 			// The size of the image is needed for the grand plan and will be saved here.

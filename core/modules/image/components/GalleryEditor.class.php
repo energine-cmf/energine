@@ -34,4 +34,18 @@ class GalleryEditor extends FeedEditor {
         $this->setOrder(array('pg_order_num'=>QAL::ASC));
         $this->setOrderColumn('pg_order_num');
     }
+    /**
+     * При необходимости осуществляем генерацию thumbnail
+     * 
+     *    
+     */
+    protected function saveData(){
+        $result = parent::saveData();
+        if(!($field = $this->getSaver()->getDataDescription()->getFieldDescriptionByName('pg_thumb_img'))){
+        	
+        }
+        
+        return $result;
+    }
+    
 }

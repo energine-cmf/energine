@@ -18,6 +18,14 @@
 			<javascript>
 				<object name="Form"/>
 			</javascript>
+            <fields>
+                <field name="pg_id"/>
+                <field name="smap_id"/>
+                
+                <field name="pg_photo_img"/>
+                <field name="pg_title"/>
+                <field name="pg_text"/>
+            </fields>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>

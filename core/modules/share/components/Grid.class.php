@@ -396,7 +396,15 @@ class Grid extends DBDataSet {
         $response = array_merge(array('result'=>false, 'header'=>$this->translate('TXT_SHIT_HAPPENS')), $message);
         return $response;
     }
-
+    /**
+     * Возвращает объект Saver
+     * Есть смысл вызывать эту функцию только внутри save/saveSata
+     * во всех остальных случаях она возвращает false
+     * 
+     * @return Saver
+     * @access protected
+     * @final
+     */
     final protected function getSaver(){
     	if(is_null($this->saver)){
 			$this->saver = new Saver();
@@ -711,7 +719,8 @@ class Grid extends DBDataSet {
     protected function generateThumbnail($sourceFileName, $destFieldName, $width, $height, $filter, $rewrite = true) {
         $destFileName = false;
         if (!empty($sourceFileName)) {
-            $destFileName = dirname($sourceFileName).'/'.$destFieldName.'_'.basename($sourceFileName);
+        	list($dirname, $basename, $extension, $filename) = array_values(pathinfo($sourceFileName));
+            $destFileName = $dirname.'/'.'.'.$filename.'.'.$width.'-'.$height.'.'.$extension;
             if (
             (
             file_exists($fullDestFileName = dirname($_SERVER['SCRIPT_FILENAME']).'/'.$destFileName)

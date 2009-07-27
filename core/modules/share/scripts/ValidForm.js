@@ -4,9 +4,12 @@ var ValidForm = new Class({
 
     initialize: function(element) {
         this.componentElement = $(element);
-        this.form = $(this.componentElement.getElement('input').form);
-        this.form.addClass('form').addEvent('submit', this.validateForm.bind(this));
-        this.validator = new Validator(this.form);
+        this.form = this.componentElement.getElement('form');
+        
+        if(this.form){
+            this.form.addClass('form').addEvent('submit', this.validateForm.bind(this));
+            this.validator = new Validator(this.form);
+        }
 
     },
     validateForm: function(event) {

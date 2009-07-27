@@ -66,7 +66,7 @@ final class Translit{
         }
 
         $string = preg_replace("/([qwrtpsdfghklzxcvbnmQWRTPSDFGHKLZXCVBNM]+)[jJ]e/", "\${1}e", $string);
-        $string = preg_replace("/([qwrtpsdfghklzxcvbnmQWRTPSDFGHKLZXCVBNM]+)[jJ]/", "\${1}'", $string);
+        $string = preg_replace("/([qwrtpsdfghklzxcvbnmQWRTPSDFGHKLZXCVBNM]+)[jJ]/", "\${1}y", $string);
         $string = preg_replace("/([eyuioaEYUIOA]+)[Kk]h/", "\${1}h", $string);
         $string = preg_replace("/^kh/", "h", $string);
         $string = preg_replace("/^Kh/", "H", $string);

@@ -4,7 +4,7 @@ var ValidForm = new Class({
 
     initialize: function(element) {
         this.componentElement = $(element);
-        this.form = this.componentElement.getElement('form');
+        this.form = this.componentElement.getParent('form');
         
         if(this.form){
             this.form.addClass('form').addEvent('submit', this.validateForm.bind(this));

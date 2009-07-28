@@ -3,7 +3,7 @@
 	<methods>
 		<method name="main">
 			<javascript>
-				<object name="ResumeForm"/>
+				<object name="ValidForm"/>
 			</javascript>
 			<uri_patterns>
 				<pattern>/</pattern>

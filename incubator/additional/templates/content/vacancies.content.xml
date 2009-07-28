@@ -8,5 +8,9 @@
 			<param name="linkTo">vacancies</param>
 		</params>
     </component>
-	<component name="resumeForm" module="misc" class="ResumeForm"></component>
+	<component name="resumeForm" module="misc" class="ResumeForm">
+        <params>
+            <param name="vacancies">vacancies</param>
+        </params>
+    </component>
 </content>

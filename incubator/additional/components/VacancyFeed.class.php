@@ -55,7 +55,7 @@ class VacancyFeed extends Feed {
      * @return void
      */
     protected function view() {
-         $this->setType(self::COMPONENT_TYPE_FORM);
+        $this->setType(self::COMPONENT_TYPE_FORM);
         $id = $this->getActionParams();
         list($id) = $id;
         $this->setFilter(array('vacancy_url_segment' => $id));

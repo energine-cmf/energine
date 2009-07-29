@@ -31,7 +31,7 @@ class VacancyFeed extends Feed {
         $this->setTableName('aux_vacancies');
 
         //Если у текущего пользователя нет прав на редактирование - убираем все все неактивные вакансии
-        if ($this->document->getRights() < ACCESS_EDIT) {
+        if ($this->document->getRights() < ACCESS_FULL) {
             $this->setFilter(array('vacancy_is_active'=>1));
         }
 

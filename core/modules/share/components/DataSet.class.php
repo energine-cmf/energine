@@ -665,7 +665,13 @@ abstract class DataSet extends Component {
         $jewix->cfgAllowTagParams('td', array('colspan', 'rowspan'));
         $jewix->cfgAllowTagParams('th', array('colspan', 'rowspan'));
         $jewix->cfgAllowTagParams('a', array('href', 'target'));
+        //Заменяем все абсолютные ссылки на относительные
+        $jewix->cfgSetAutoReplace(
+            Request::getInstance()->getBasePath(), 
+            ''
+        );
         
+        $jewix->cfgSetTagCutWithContent(array('script', 'iframe')); 
         if(!$aggressive){
         	array_walk($allowedTags, create_function('$element, $key, $jewix', '$jewix->cfgAllowTagParams($element, array("id", "class", "style"));'), $jewix);
         	$jewix->cfgAllowTagParams('img', 

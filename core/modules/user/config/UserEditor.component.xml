@@ -56,5 +56,10 @@
 				<pattern>/[int]/delete/</pattern>
 			</uri_patterns>
 		</method>
+		<method name="formatDate" rights="3">
+            <uri_patterns>
+                <pattern>/format-date/</pattern>
+            </uri_patterns>
+        </method>
 	</methods>
 </configuration>

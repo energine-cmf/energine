@@ -140,7 +140,8 @@ final class ResumeForm extends DataSet {
 		$this->jevix->cfgSetAutoBrMode(false);
 		$this->jevix->cfgSetAutoLinkMode(false);
 		$this->jevix->cfgSetXHTMLMode(true);
-	  
+	    $this->jevix->cfgSetTagCutWithContent(array('script', 'iframe'));
+	    
 		$data = array_map(array($this, 'cleanInputData'), $data);
         
         if(isset($_FILES['file'])){

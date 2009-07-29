@@ -142,11 +142,21 @@ final class ResumeForm extends DataSet {
 		$this->jevix->cfgSetXHTMLMode(true);
 	  
 		$data = array_map(array($this, 'cleanInputData'), $data);
-        $this->dbh->modify(QAL::INSERT, self::RESUME_TABLE_NAME, $data);
-        if(isset($_FILES[self::RESUME_TABLE_NAME])){
-        	$uploader = new FileUploader();
-        	$uploader->setFile()
+        
+        if(isset($_FILES['file'])){
+        	try {
+	        	$uploader = new FileUploader();
+	        	$uploader->setFile($_FILES['file']);
+	        	$uploader->upload('uploads/private/');
+	        	$data['resume_main_pfile'] = $uploader->getFileObjectName();
+        	}
+        	catch (Exception $e){
+        		//Если с файлом что то не так
+        		//и хрен с ним
+        	}
         }
+        $data['resume_date'] = date('Y-m-d');
+        $this->dbh->modify(QAL::INSERT, self::RESUME_TABLE_NAME, $data);
         
 		$mail = new Mail();
 		$mail->setFrom($this->getConfigValue('mail.from'));
@@ -154,8 +164,8 @@ final class ResumeForm extends DataSet {
 		$mail->setSubject($this->translate('TXT_SUBJ_NEW_RESUME'));
 		$mail->addReplyTo($data['resume_candidate_email'], $data['resume_candidate_name']);
 		$mail->setText($this->translate('TXT_BODY_NEW_RESUME'), $data);
-		if(isset($_FILES[self::RESUME_TABLE_NAME])){
-			$mail->addAttachment($_FILES[self::RESUME_TABLE_NAME]['tmp_name']['resume_main_pfile'], $_FILES[self::RESUME_TABLE_NAME]['name']['resume_main_pfile']);
+		if(isset($_FILES['file'])){
+			$mail->addAttachment($_FILES['file']['tmp_name'], $_FILES['file']['name']);
 		}
 
 		$mail->send();

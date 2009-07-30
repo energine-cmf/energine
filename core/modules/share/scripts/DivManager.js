@@ -145,7 +145,9 @@ var DivManager = new Class({
 
     go: function () {
         var nodeData = this.tree.getSelectedNode().getData();
-        if (nodeData.smap_segment) window.top.document.location = window.top.document.head.getElement('base').getProperty('href') + nodeData.smap_segment;
+        if (nodeData.smap_segment) {
+            window.top.document.location = Energine.base + nodeData.smap_segment;
+        }
     },
     onSelectNode: function (node) {
         var data = node.getData();

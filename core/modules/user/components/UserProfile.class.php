@@ -30,10 +30,6 @@ class UserProfile extends DBDataSet {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('user_users');
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
-        if (!$this->document->user->isAuthenticated()) {
-            throw new SystemException('ERR_DEV_NO_AUTH_USER', SystemException::ERR_DEVELOPER);
-        }
-        $this->setFilter($this->document->user->getID());
     }
 
 
@@ -45,6 +41,11 @@ class UserProfile extends DBDataSet {
 	 */
 
     protected function main() {
+    	if (!$this->document->user->isAuthenticated()) {
+            throw new SystemException('ERR_DEV_NO_AUTH_USER', SystemException::ERR_DEVELOPER);
+        }
+        $this->setFilter($this->document->user->getID());
+        
         $this->setDataSetAction('save-user');
         $this->setTitle($this->translate('TXT_USER_PROFILE'));
         $this->addTranslation('MSG_PWD_MISMATCH');

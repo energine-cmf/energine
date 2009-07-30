@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <content>
 	<component name="regForm" module="user"  class="Register"></component>
+    <component name="regFormRemover" module="share" class="Remover">
+       <params>
+           <param name="componentName">regForm</param>
+           <param name="rights">2</param>
+       </params>
+    </component>
+    <component name="userProfile" module="user"  class="UserProfile">
+       <params>
+           <param name="rights">2</param>
+       </params>
+    </component>
 </content>

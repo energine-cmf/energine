@@ -615,7 +615,12 @@
 </xsl:template>
 
 <!-- для поля FILE на которое права только чтение -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='file']">
+<xsl:template match="
+    field[ancestor::component[@type='form']][@mode='1'][@type='file'] 
+    | 
+    field[ancestor::component[@type='form']][@mode='1'][@type='pfile']
+    |
+    field[ancestor::component[@type='form']][@mode='1'][@type='prfile']">
     <div class="field">
         <xsl:if test="@title">
             <label for="{@name}">

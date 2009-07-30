@@ -549,7 +549,7 @@
 </xsl:template>
 
 <!-- для поля HTMLBLOCK на которое права только чтение -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='htmlblock']">
+<xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='htmlblock']">
     <xsl:if test=".!=''">
         <div class="field">
             <xsl:if test="@title">
@@ -571,7 +571,7 @@
 </xsl:template>
 
 <!-- для поля TEXT на которое права только на чтение -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='text']">
+<xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='text']">
     <xsl:if test=".!=''">
         <div class="field">
             <xsl:if test="@title">
@@ -593,7 +593,7 @@
 </xsl:template>
 
 <!-- для поля EMAIL на которое права только чтение -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='email']">
+<xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='email']">
     <xsl:if test=".!=''">
         <div class="field">
             <xsl:if test="@title">
@@ -640,7 +640,7 @@
 </xsl:template>
 
 <!-- read-only поле типа select -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='select']">
+<xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='select']">
     <div class="field">
         <xsl:if test="@title">
             <label for="{@name}">
@@ -660,7 +660,7 @@
 </xsl:template>
 
 <!-- read-only поле типа multiselect -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='multi']">
+<xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='multi']">
     <div class="field">
         <xsl:if test="@title">
             <label for="{@name}">
@@ -684,7 +684,7 @@
 </xsl:template>
 
 <!-- read-only поле типа image -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@mode='1'][@type='image']">
+<xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='image']">
     <xsl:if test="@title">
         <label for="{@name}">
 			<xsl:value-of select="concat(@title, ':')" />
@@ -705,7 +705,10 @@
     </xsl:if>
 </xsl:template>
 
-<xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='date'] | field[ancestor::component[@type='form']][@mode='1'][@type='datetime']">
+<xsl:template match="
+    field[ancestor::component[@type='form']][@mode='1'][@type='date'] 
+    |
+    field[ancestor::component[@type='form']][@mode='1'][@type='datetime']">
     <xsl:if test=".!=''">
         <div class="field">
             <xsl:if test="@title">
@@ -727,7 +730,7 @@
 </xsl:template>
 
 <!-- для PK  -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@key='1']">
+<xsl:template match="field[ancestor::component[@type='form']][@key='1']">
     <input type="hidden" id="{@name}" value="{.}" primary="primary">
         <xsl:attribute name="name">
             <xsl:choose>
@@ -803,7 +806,7 @@
 </xsl:template>
 
 <!-- для поля hidden -->
-<xsl:template match="field[parent::record[parent::recordset[parent::component[@type='form']]]][@type='hidden']">
+<xsl:template match="field[ancestor::component[@type='form']][@type='hidden']">
     <xsl:call-template name="HIDDEN"/>
 </xsl:template>
 

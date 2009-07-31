@@ -32,78 +32,62 @@ var Validator = new Class({
 
 		scroll.toElement(field).chain(function(){field.focus()});
 	},
-    validate: function() {
-		var firstFailure = null;
-		var failed = false;
-		var firstTab = null;
-
-        for (var i = 0; i < this.form.elements.length; i++) {
-            var field = $(this.form.elements[i]);
-            if (field.getProperty('pattern') && field.getProperty('message') && !field.getProperty('disabled')) {
-                if (field.hasClass('invalid')) {
-                    field.removeClass('invalid');
-                    var errorDiv;
-                    if(errorDiv = field.getParent().getParent().getElement('div.error')){
-                        errorDiv.dispose();
-                    }
-                }
-
-                if (!eval('field.value.match('+field.getProperty('pattern')+');')) {
-                    if (this.tabPane && !firstTab) {
-                        firstTab = this.tabPane.whereIs(field);
-                    }
-					if (this.tabPane) {
-                        var tab = this.tabPane.whereIs(field);
-                    }
-                    this.showError(field, field.getProperty('message'));
-
-					if (!firstFailure) {
-						firstFailure = field;
-					}
-
-					failed = true;
-                }
-                else {
-                    field.removeClass('invalid');
-                    var error = $(field.parentNode).getElement('div.error');
-                    if (error) error.dispose();
+    validateElement: function(field){
+        var result = true;
+        field = $(field);
+        if (field.getProperty('pattern') && field.getProperty('message') && !field.getProperty('disabled')) {
+            //Убираем информацию о предыдущей ошибке
+            if (field.hasClass('invalid')) {
+                field.removeClass('invalid');
+                var errorDiv;
+                if(errorDiv = field.getParent().getParent().getElement('div.error')){
+                    errorDiv.dispose();
                 }
             }
+
+            if (!eval('field.value.match('+field.getProperty('pattern')+');')) {
+                this.showError(field, field.getProperty('message'));
+                result = false;
+            }
+            
+            //Похоже это не нужно
+            else {
+                field.removeClass('invalid');
+                var error = $(field.parentNode).getElement('div.error');
+                if (error) error.dispose();
+                result = true;
+            }
+        }    
+        return result;
+    },
+    validate: function() {
+		//Массив ошибочных полей
+        var errorFields =[];
+        
+        //заполняем массив ошибочных полей
+        new Elements(this.form.elements).each(function(field){
+            if(!this.validateElement(field)){
+                errorFields.push(field);       
+            }
+        }, this);
+        
+        //Если есть ошибки
+        if(errorFields.length){
+            //Нас интересует только первое поле
+            var firstField = errorFields[0];
+            //Если мы внутри табов
+            //определяем таб первого ошибочного поля и переключаемся на этот таб
+            if(this.tabPane){
+                this.tabPane.show(this.tabPane.whereIs(firstField))
+            }
+            //Скроллируем
+            this.scrollToElement(firstField);
+            try {
+                firstField.focus()
+            }
+            catch (e) {};
         }
-		if (failed) {
 
-			failed = false;
-
-			if (firstTab) {
-				this.tabPane.show(firstTab);
-			}
-			if (firstFailure) {
-
-				if (this.tabPane) {
-					try {
-						firstFailure.focus()
-					}
-					catch (e) {};
-
-				} else {
-					this.scrollToElement(firstFailure);
-				}
-
-			}
-
-			this.firstFailure = null;
-			firstTab = null;
-
-			return false;
-
-		} else {
-			/*inserting cleaner for Opera*/
-			if (Browser.Engine.presto) {
-				/*getting all fields with pattern attribute*/
-				this.form.getElements('input[pattern], textarea[pattern]').removeProperty('pattern');
-			}
-
-			return true;
-		}
+        return !(errorFields.length);
     }
 });

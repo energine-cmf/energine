@@ -872,7 +872,7 @@ class Jevix{
                                                         continue(2);
                                                 }
                                                 // Первый символ должен быть a-z0-9!
-                                                if(!preg_match('/^[a-z0-9\/]/ui', $value)) {
+                                                if(!preg_match('/^[a-z0-9\/\#]/ui', $value)) {
                                                         $this->eror('URI: Первый символ адреса должен быть буквой или цифрой');
                                                         continue(2);
                                                 }

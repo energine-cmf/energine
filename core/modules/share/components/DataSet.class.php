@@ -634,6 +634,7 @@ abstract class DataSet extends Component {
      */
 
     public static function cleanupHTML($data) {
+    	
         $aggressive = isset($_GET['aggressive']);
         $jewix = new Jevix();
         $jewix->cfgSetXHTMLMode(true);
@@ -665,11 +666,7 @@ abstract class DataSet extends Component {
         $jewix->cfgAllowTagParams('td', array('colspan', 'rowspan'));
         $jewix->cfgAllowTagParams('th', array('colspan', 'rowspan'));
         $jewix->cfgAllowTagParams('a', array('href', 'target'));
-        //Заменяем все абсолютные ссылки на относительные
-        $jewix->cfgSetAutoReplace(
-            Request::getInstance()->getBasePath(), 
-            ''
-        );
+        
         
         $jewix->cfgSetTagCutWithContent(array('script', 'iframe')); 
         if(!$aggressive){
@@ -690,6 +687,12 @@ abstract class DataSet extends Component {
         
         $errors = false;
         $data = $jewix->parse($data, $errors);
+        $data = 
+	        str_replace(
+	            (strpos($data, '%7E'))?str_replace('~', '%7E',Request::getInstance()->getBasePath()):Request::getInstance()->getBasePath(),
+	             '',
+	            $data
+	        );
         
         return $data;
     }

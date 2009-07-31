@@ -6,11 +6,13 @@
 			<object name="Register" />
 		</javascript>
 		<toolbar>
-			<control id="register" title="BTN_REGISTER" type="button" click="validate"/>
+			<control id="register" title="BTN_REGISTER" type="submit"/>
 		</toolbar>
 		<translations>
 			<translation const="TXT_REQUIRED_FIELDS" />
 		</translations>
+	</method>
+	<method name="checkLogin">
 	</method>
 	<method name="save">
 	    <uri_patterns>

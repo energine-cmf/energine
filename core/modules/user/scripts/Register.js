@@ -11,17 +11,24 @@ var Register  = new Class({
             $('u_name').addEvent('blur', this.checkLogin.bind(this));
         }
 	},
-    checkLogin: function(event){
-        var login = event.target.value;
-        if(login)
+    validateForm: function(event){
+        this.checkLogin();
+        this.parent(event);
+    },
+    checkLogin: function(){
+        var login = $('u_name');
+        if(login && login.value)
             new Request.JSON(
                 {
                     url: this.componentElement.getProperty('single_template')+'check/', 
                     method: 'post',
                     onSuccess: function(response){
-                        console.log(response);
-                    } 
+                        if(!response.result){
+                            this.validator.showError(login, response.message);
+                            //this.validator.scrollToElement(login);
+                        }
+                    }.bind(this) 
                 }
-            ).send('login='+login);
+            ).send('login='+login.value);
     }
 });

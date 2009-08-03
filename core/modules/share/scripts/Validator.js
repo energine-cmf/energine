@@ -10,7 +10,6 @@ var Validator = new Class({
         		event= new Event(event || window.event);
         		event.target.value = event.target.value.replace(/\,/, '.');
         };
-
 	    //Для всех field type=float(class=float)
         //меняем , на .
         this.form.getElements('.float').each(function(element){
@@ -18,11 +17,19 @@ var Validator = new Class({
         	element.addEvent('change', prepareFunction);
         });
 	},
+    removeError: function(field){
+        if (field.hasClass('invalid')) {
+            field.removeClass('invalid');
+            var errorDiv;
+            if(errorDiv = field.getParent().getParent().getElement('div.error')){
+                errorDiv.dispose();
+            }
+        }    
+    },
 	showError: function(field, message){
-		if (!field.hasClass('invalid')) {
-	        field.addClass('invalid');
-	        new Element('div').addClass('error').appendText('^ ' + message).injectAfter(field.parentNode);
-	    }
+        this.removeError(field);
+        field.addClass('invalid');
+        new Element('div').addClass('error').appendText('^ ' + message).injectAfter(field.parentNode);
 	},
 	scrollToElement: function(field){
 		var scroll = new Fx.Scroll(window, {
@@ -35,27 +42,18 @@ var Validator = new Class({
     validateElement: function(field){
         var result = true;
         field = $(field);
-        if (field.getProperty('pattern') && field.getProperty('message') && !field.getProperty('disabled')) {
+        if (
+            field.getProperty('pattern') 
+            && 
+            field.getProperty('message') 
+            && 
+            !field.getProperty('disabled')
+        ) {
             //Убираем информацию о предыдущей ошибке
-            if (field.hasClass('invalid')) {
-                field.removeClass('invalid');
-                var errorDiv;
-                if(errorDiv = field.getParent().getParent().getElement('div.error')){
-                    errorDiv.dispose();
-                }
-            }
-
+            this.removeError(field);
             if (!eval('field.value.match('+field.getProperty('pattern')+');')) {
                 this.showError(field, field.getProperty('message'));
                 result = false;
-            }
-            
-            //Похоже это не нужно
-            else {
-                field.removeClass('invalid');
-                var error = $(field.parentNode).getElement('div.error');
-                if (error) error.dispose();
-                result = true;
             }
         }    
         return result;

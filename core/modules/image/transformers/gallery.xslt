@@ -5,9 +5,30 @@
         <script type="text/javascript" src="scripts/EnlargeImage.js"></script>
         
         <script type="text/javascript">
+            var currentImage = false;
             var showPhoto = function(obj){
-                var img = $(obj).getElement('img');
-                new EnlargeImage(img,{duration: 800, position: 'this'})
+                //Для некоторых ИЕ
+                if(window.event){
+                    var event = new Event(window.event);
+            
+                    if (event.stopPropagation) event.stopPropagation();
+                    else event.cancelBubble = true;
+            
+                    if (event.preventDefault) event.preventDefault();
+                    else event.returnValue = false;
+                }
+                
+                var createImage = function(){
+                        currentImage = new EnlargeImage($(obj).getElement('img'),{duration: 800});    
+                };
+                
+                if(currentImage){
+                    currentImage.zoomOut(createImage);                    
+                }
+                else{
+                    createImage();
+                }
+                
                 return false;
             } 
         </script>

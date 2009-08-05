@@ -49,11 +49,14 @@ var Validator = new Class({
             && 
             !field.getProperty('disabled')
         ) {
-            //Убираем информацию о предыдущей ошибке
-            this.removeError(field);
             if (!eval('field.value.match('+field.getProperty('pattern')+');')) {
+                //Выводим информацию об ошибке
                 this.showError(field, field.getProperty('message'));
                 result = false;
+            }
+            else{
+                //Убираем информацию о предыдущей ошибке
+                this.removeError(field);
             }
         }    
         return result;

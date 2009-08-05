@@ -1,26 +1,11 @@
 var Overlay = new Class({
 	Implements: Options,
-	/*
-    getOptions: function() {
-        return {
-            top: null,
-            left: null,
-            width: null,
-            height: null,
-            opacity: 0.25,
-            hideObjects: true,
-            indicator: {
-                image: 'images/overlay_loading.gif',
-                width: 32, height: 32
-            }
-        };
-    },*/
 	options:{
             top: null,
             left: null,
             width: null,
             height: null,
-            opacity: 0.25,
+            opacity: 0.5,
             hideObjects: true,
             indicator: {
                 image: 'images/overlay_loading.gif',

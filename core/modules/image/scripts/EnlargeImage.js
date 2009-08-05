@@ -47,7 +47,7 @@ var EnlargeImage = new Class({
                 'left':this.thumbnail.properties.left + 'px',
                 'position': 'absolute',
                 'z-index': '100000',
-                'background': '#fff url(images/overlay_loading.gif) 50% 50% no-repeat'
+                'background': '#fff url(images/image_loading.gif) 50% 50% no-repeat'
             }
             
         });

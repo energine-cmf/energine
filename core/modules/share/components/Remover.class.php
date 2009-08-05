@@ -44,8 +44,7 @@ class Remover extends Component {
         return array_merge(
             parent::defineParams(),
             array(
-	            'componentName' => false,
-	            'removeAlways' => false
+	            'componentName' => false
         ));
     }
 
@@ -62,12 +61,6 @@ class Remover extends Component {
 	            $this->document->getRights() != ACCESS_FULL 
 	            && 
 	            $component = $this->document->componentManager->getComponentByName($this->getParam('componentName'))
-            )
-            ||
-            (
-                $this->document->getRights() == ACCESS_FULL
-                && 
-                $this->getParam('removeAlways')
             )
         ) {
         	$component->disable();

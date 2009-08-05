@@ -143,6 +143,17 @@ final class Mail extends Object {
         return $this;
     }
     /**
+     * Очищает список получателей
+     * 
+     * @access public
+     * @return Mail
+     */
+    public function clearRecipientList(){
+        $this->to = array();
+        
+        return $this;
+    }
+    /**
      * Добавление reply-to заголовка
      *
      * @return Mail

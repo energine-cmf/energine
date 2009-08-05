@@ -6,7 +6,7 @@
 			<object name="UserProfile" />
 		</javascript>
 		<toolbar>
-			<control id="change" title="BTN_CHANGE" type="button" click="validate"/>
+			<control id="change" title="BTN_CHANGE" type="submit" />
 		</toolbar>
 		<translations>
 			<translation const="TXT_REQUIRED_FIELDS" />

@@ -16,7 +16,7 @@
 	</method>
 	<method name="save">
 	    <uri_patterns>
-	        <pattern>/save-user/</pattern>
+	        <pattern>/save-new-user/</pattern>
 	    </uri_patterns>
 	</method>
 	<method name="success">

@@ -13,11 +13,14 @@ var Register  = new Class({
         }
 	},
     validateForm: function(event){
-        if(this.parent(event)){
-            if(!login.retrieve('valid')){
+        var result;
+        if(result = this.parent(event)){
+            if(!this.loginField.retrieve('valid')){
+                result = false;
                 this.cancelEvent(event);
             }
         }
+        return result;
     },
     checkLogin: function(){
         var login = this.loginField;

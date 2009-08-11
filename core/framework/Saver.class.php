@@ -235,6 +235,9 @@ class Saver extends DBWorker {
             	// исключаем поля, которым нет соответствия в БД
                 if (is_null($fieldInfo->getPropertyValue('customField')) && $this->data->getFieldByName($fieldName)) {
                     $fieldValue = $this->data->getFieldByName($fieldName)->getRowData($i);
+                    if($fieldInfo->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK){
+                    	$fieldValue = DataSet::cleanupHTML($fieldValue);
+                    }    
             		// сохраняем поля из основной таблицы
             		if ($fieldInfo->isMultilanguage() == false && $fieldInfo->getPropertyValue('key') !== true && $fieldInfo->getPropertyValue('languageID') == false) {
             		    //Для типа флоат меняем запятые на точки

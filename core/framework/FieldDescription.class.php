@@ -125,6 +125,12 @@ class FieldDescription extends DBWorker {
      *
      */
     const FIELD_TYPE_CUSTOM = 'custom';
+    /**
+     * Поле содержит видео данные
+     * в формате flv 
+     * если установлен ffmpeg - конвертируется из одного из поддерживаемых форматов 
+     */
+    const FIELD_TYPE_VIDEO = 'video';
 
     /*
     * Режимы отображения полей:
@@ -408,6 +414,7 @@ class FieldDescription extends DBWorker {
             case self::FIELD_TYPE_FILE:
             case self::FIELD_TYPE_PRFILE:
             case self::FIELD_TYPE_PFILE:
+            case self::FIELD_TYPE_VIDEO:            	
                 if ($this->getPropertyValue('nullable') === false) {
                     $this->addProperty('pattern', '/^.+$/');
                     $this->addProperty('message', $this->translate('MSG_FILE_IS_NOT_NULL'));
@@ -660,6 +667,9 @@ class FieldDescription extends DBWorker {
                 }
                 elseif (strpos($this->name, '_prfile')) {
                     $result = self::FIELD_TYPE_PRFILE;
+                }
+                elseif (strpos($this->name, '_video')) {
+                    $result = self::FIELD_TYPE_VIDEO;
                 }
                 else {
                     $result = self::FIELD_TYPE_STRING;

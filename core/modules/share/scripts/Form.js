@@ -40,72 +40,78 @@ var Form = new Class({
 		this.toolbar = toolbar;
 		this.componentElement.adopt(this.toolbar.getElement());
 	},
+    uploadVideo: function(fileField){
+        fileField = $(fileField);
+        
+        this._createUploader(
+            fileField,
+            this.singlePath + 'upload-video/'
+        );
+    },
 	upload : function(fileField) {
-		var iframe, form, newField;
-		var iframeAction = this.singlePath + 'upload/';
-		var fileField = $(fileField);
-
-		if (fileField.getProperty('protected')) {
-			iframeAction += '?protected';
-		}
-
-		if (Browser.Engine.trident) {
-			iframe = $(document
-					.createElement('<iframe name="uploader" id="uploader">'));
-			form = $(document
-					.createElement('<form enctype="multipart/form-data" method="post" target="uploader" action="'
-							+ iframeAction
-							+ '" style="width:0; height:0; border:0; display:none;">'));
-		} else {
-			iframe = new Element('iframe').setProperties({
-						name : 'uploader',
-						id : 'uploader'
-					});
-			form = new Element('form').setStyles({
-						width : 0,
-						height : 0,
-						border : 0,
-						display : 'none'
-					});
-			form.setProperties({
-						action : iframeAction,
-						target : 'uploader',
-						method : 'post',
-						enctype : 'multipart/form-data'
-					});
-		}
-
-		form.injectInside(document.body);
-		newField = fileField.clone();
-		// newField = newfileField.replaceWith(newField);
-		newField.replaces(fileField);
-
-		fileField.injectInside(form);
-
-		iframe.setStyles({
-					width : 0,
-					height : 0,
-					border : 0
-				}).injectBefore(this.form);
-		iframe.setProperty('link', fileField.getProperty('link'));
-		iframe.setProperty('field', fileField.getProperty('field'));
-		iframe.setProperty('preview', fileField.getProperty('preview'));
-
-		var progressBar = new Element('img').setProperties({
-					id : 'progress_bar',
-					src : 'images/loading.gif'
-				}).injectAfter(newField);
-		/*
-		 * this.form.setProperties({ action: this.singlePath+'upload/', target:
-		 * 'uploader' }); this.form.submit(); this.form.setProperty('target',
-		 * '_self');
-		 */
-		form.submit();
-
-		// newField.remove();
-		form.dispose();
-		form /* = newField */= null;
+        fileField = $(fileField);
+        
+        this._createUploader(
+            fileField,
+            this.singlePath + 'upload/' + (fileField.getProperty('protected'))? '?protected':''
+        );
 	},
+    _createUploader: function(field, iframeAction){
+        var iframe, form, newField;
+        var fileField = $(field);
+        
+        if (Browser.Engine.trident) {
+            iframe = $(document
+                    .createElement('<iframe name="uploader" id="uploader">'));
+            form = $(document
+                    .createElement('<form enctype="multipart/form-data" method="post" target="uploader" action="'
+                            + iframeAction
+                            + '" style="width:0; height:0; border:0; display:none;">'));
+        } else {
+            iframe = new Element('iframe').setProperties({
+                        name : 'uploader',
+                        id : 'uploader'
+                    });
+            form = new Element('form').setStyles({
+                        width : 0,
+                        height : 0,
+                        border : 0,
+                        display : 'none'
+                    });
+            form.setProperties({
+                        action : iframeAction,
+                        target : 'uploader',
+                        method : 'post',
+                        enctype : 'multipart/form-data'
+                    });
+        }    
+        newField = fileField.clone();
+        newField.replaces(fileField);
+        fileField.injectInside(form);
+
+        form.injectInside(document.body);
+        iframe.setStyles({
+                    width : 0,
+                    height : 0,
+                    border : 0,
+                    position: 'absolute'
+                }).injectBefore(this.form);
+                
+        iframe.setProperty('link', fileField.getProperty('link'));
+        iframe.setProperty('field', fileField.getProperty('field'));
+        iframe.setProperty('preview', fileField.getProperty('preview'));
+
+        var progressBar = new Element('img').setProperties({
+                    id : 'progress_bar',
+                    src : 'images/loading.gif'
+                }).inject(newField, 'after');
+
+        form.submit();
+
+        form.dispose();
+        form /* = newField */= null;
+    
+    },
 	save : function() {
 		this.richEditors.each(function(editor) {
 					editor.onSaveForm();

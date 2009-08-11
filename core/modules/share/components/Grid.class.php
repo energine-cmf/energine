@@ -609,6 +609,54 @@ class Grid extends DBDataSet {
             $this->addTab($this->buildTab($langInfo['lang_name'], $tabProperties));
         }
     }
+    
+    final protected function uploadVideo(){
+    	try{
+        $uploadPath = 'uploads/protected/';
+        $js =
+	        'var doc = window.parent.document;'."\n".
+	        'var pb = doc.getElementById(\'progress_bar\'); '."\n".
+	        'var iframe = doc.getElementById(\'uploader\'); '."\n".
+	        'var path = doc.getElementById(iframe.getAttribute(\'field\'));'."\n";
+        
+            if (empty($_FILES) || !isset($_FILES['file'])) {
+                throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
+            }
+
+            $uploader = new FileUploader();
+            $uploader->setFile($_FILES['file']);
+            $uploader->upload($uploadPath);
+            $fileName = $uploader->getFileObjectName();
+            if (in_array($uploader->getExtension(), array('flv', 'avi', 'mpeg', 'mpg'))) {
+                $js .= 
+                "doc.window.insertVideo('".str_replace('.flv', '', Request::getInstance()->getRootPath().$fileName)."');\n";
+            }
+            else{
+            	throw new SystemException('ERR_NOT_VIDEO_FILE', SystemException::ERR_CRITICAL);
+            }
+
+            $js .= sprintf(
+            'path.value ="%s";'.
+            'pb.parentNode.removeChild(pb); '.
+            'iframe.parentNode.removeChild(iframe);',
+            $fileName,
+            $uploadPath.basename($fileName)
+            );
+        }
+        catch (SystemException $e) {
+            $js .=
+            'pb.parentNode.removeChild(pb); '."\n".
+            'alert(\''.$this->translate('TXT_SHIT_HAPPENS').': '.$e->getMessage().'\'); '.
+            'iframe.parentNode.removeChild(iframe); '."\n";
+        }
+
+        $responseText = '<html><head/><body><script type="text/javascript">'.$js.'</script></body></html>';
+        $response = Response::getInstance();
+        $response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+        $response->write($responseText);
+        $response->commit();        
+        
+    }
 
     /**
      * Метод для заливки файла

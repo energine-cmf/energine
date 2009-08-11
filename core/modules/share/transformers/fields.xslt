@@ -138,6 +138,9 @@
     			<xsl:when test="@type='prfile'">
     				<xsl:call-template name="PRFILE"/>
     			</xsl:when>
+                <xsl:when test="@type='video'">
+                    <xsl:call-template name="VIDEOFILE"/>
+                </xsl:when>                
     			<xsl:otherwise>
     				<xsl:call-template name="STRING"/>
     			</xsl:otherwise>
@@ -284,6 +287,58 @@
 		</xsl:if>
     </input>
 	<label for="{@name}"><xsl:value-of select="concat(' ', @title)" disable-output-escaping="yes" /></label>
+</xsl:template>
+
+<xsl:template name="VIDEOFILE">
+    <script type="text/javascript">
+        var insertVideo = function(videoFile){
+            var player = new Swiff('images/player.swf',
+                {
+                    container:'<xsl:value-of select="generate-id(.)"/>_preview',
+                    id: 'myBeautifulMovie',
+                    width: 450,
+                    height: 370,
+                    vars: {
+                       beginplay: false,
+                       vidurl: videoFile 
+                    } 
+                }
+            );
+        }
+    </script>
+    <div class="video" id="{generate-id(.)}_preview">
+        
+    </div>
+
+    <xsl:if test=".!=''">
+        <script type="text/javascript">
+            window.addEvent('domready', insertVideo.pass('<xsl:value-of select="$BASE"/><xsl:value-of select="."/>'));
+        </script>
+    </xsl:if>
+    <xsl:variable name="FIELD_ID">tmp_<xsl:value-of select="generate-id()"/></xsl:variable>
+    <input type="file">
+        <xsl:attribute name="id"><xsl:value-of select="$FIELD_ID"/></xsl:attribute>
+        <xsl:attribute name="name">file</xsl:attribute>
+        <xsl:attribute name="field"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+        <xsl:attribute name="link"><xsl:value-of select="generate-id(.)"/>_link</xsl:attribute>
+        <xsl:attribute name="preview"><xsl:value-of select="generate-id(.)"/>_preview</xsl:attribute>
+        <xsl:attribute name="onchange"><xsl:value-of select="generate-id(ancestor::recordset)"/>.uploadVideo.bind(<xsl:value-of select="generate-id(ancestor::recordset)"/>)(this);</xsl:attribute>
+    </input>
+    <input type="hidden">
+        <xsl:attribute name="name"><xsl:choose>
+            <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+        </xsl:choose></xsl:attribute>
+        <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+        <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+        <xsl:if test="@pattern">
+            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+            </xsl:if>
+        <xsl:if test="@message">
+            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+        </xsl:if>
+    </input>
+    
 </xsl:template>
 
 <!-- поле для загрузки изображения из репозитория (используется в админчасти) -->

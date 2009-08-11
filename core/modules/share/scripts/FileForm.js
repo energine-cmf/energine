@@ -49,13 +49,17 @@ var FileForm = new Class({
         else {
             iframe = new Element('iframe').setProperties({ name: 'uploader', id: 'uploader' });
         }
-        iframe.setStyles({ width: 0, height: 0, border: 0 }).injectBefore(this.form);
+        iframe.setStyles({ width: 0, height: 0, border: 0, position: 'absolute'});
+        iframe.injectBefore(this.form);
+
         iframe.filename = $(fileField.getAttribute('link'));
         iframe.preview = $(fileField.getAttribute('preview'));
         var path = new Element('input').setProperty('name', 'path').setProperties({ 'id': 'path', 'type': 'hidden', 'value': ModalBox.getExtraData() }).injectInside(this.form);
         var progressBar = new Element('img').setProperties({ id: 'progress_bar', src: 'images/loading.gif' }).injectAfter(fileField);
         this.form.setProperties({ action: this.componentElement.getProperty('single_template') + savePath, target: 'uploader' });
+
         this.form.submit();
+
         this.form.setProperty('target', '_self');
     }
 

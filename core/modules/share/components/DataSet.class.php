@@ -634,12 +634,41 @@ abstract class DataSet extends Component {
      */
 
     public static function cleanupHTML($data) {
-    	
-        $aggressive = isset($_GET['aggressive']);
+    	$aggressive = isset($_GET['aggressive']);
+    	//dump_log($data);
+    	//Если подключено расширение tidy
+    	if(function_exists('tidy_get_output')){
+            try {    		
+		    	$tidy = new tidy();
+		        $config = array(
+			        'bare' => true,
+			        'drop-font-tags' => true,
+			        'drop-proprietary-attributes' => true,
+			        'hide-comments' => true,
+			        'logical-emphasis' => true,  
+			        'numeric-entities' => true,
+			        'show-body-only' => true,
+		            'clean' => true,  
+		            'wrap' => 0, 
+			        /*'input-encoding' => 'utf8',
+			        'output-encoding' => 'utf8',*/
+			        //'output-xhtml' => true,
+			        'word-2000' => true
+		        );
+		        $data = $tidy->repairString($data, $config, 'utf8');
+            }
+            catch(Exception $dummyError){
+                //Никаких действий предпринимать нет необходимости	
+            }
+	        unset($tidy);
+    	}
+        //dump_log($data, true);
+        
         $jewix = new Jevix();
         $jewix->cfgSetXHTMLMode(true);
         $jewix->cfgSetAutoBrMode(false);
         $jewix->cfgSetAutoLinkMode(false);
+        $shortTags  = array('br', 'hr');
         $allowedTags = array(
             'a', 'abbr', 'acronym', 'address', 'b', 'big', 'blockquote', 'br', 'cite',
             'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em',
@@ -658,9 +687,10 @@ abstract class DataSet extends Component {
                 'map',
                 'area'
             ));
+            array_push($shortTags, 'img');
         }
         $jewix->cfgAllowTags($allowedTags);
-        
+        $jewix->cfgSetTagShort($shortTags);
         
         $jewix->cfgAllowTagParams('table', array('cellpadding', 'cellspacing'));
         $jewix->cfgAllowTagParams('td', array('colspan', 'rowspan'));
@@ -693,7 +723,7 @@ abstract class DataSet extends Component {
 	             '',
 	            $data
 	        );
-        
+        //dump_log($data, true);
         return $data;
     }
 }

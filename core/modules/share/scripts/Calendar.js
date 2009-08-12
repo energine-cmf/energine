@@ -192,16 +192,9 @@ var FormCalendar = {
 	    }
 	    var calend = new Calendar(calendOptions);
 	    FormCalendar.calendars[fieldName] = calend;
-
-	    var target = event.target || $(window.event.srcElement);
-
-	    calend.element.setStyles(
-	    	{
-	    		position: 'absolute',
-	    		top: target.getTop((document.body.getElement('.pane'))?[document.body.getElement('.pane')]:[])+'px',
-	    		left: target.getLeft((document.body.getElement('.pane'))?[document.body.getElement('.pane')]:[])+'px'
-	    	}
-	    ).injectInside(document.body);
+        
+	    var target = $(event.target || window.event.srcElement);
+        calend.element.inject(target, 'before').position({relativeTo:target, 'position':'upperleft'});
 	},
 	calendars:{}
 };

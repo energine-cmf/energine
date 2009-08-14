@@ -18,15 +18,6 @@
         </div>
 </xsl:template>
 
-<xsl:template match="control[ancestor::component[@class='Register']]">
-	<div class="buttons">
-		<xsl:element name="input">
-			<xsl:attribute name="type">button</xsl:attribute>
-			<xsl:attribute name="onclick"><xsl:value-of select="generate-id(ancestor::component[@class='Register']/recordset)"/>.<xsl:value-of select="@click"/>();</xsl:attribute>
-			<xsl:attribute name="value"><xsl:value-of select="@title"/></xsl:attribute>
-		</xsl:element>
-	</div>
-</xsl:template>
 
 <xsl:template match="component[@class='Register'][descendant::field[@name='sucess_message']]">
     <div>

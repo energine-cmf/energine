@@ -303,7 +303,13 @@ final class DivisionEditor extends Grid {
             }
 
         }
-        elseif ($this->getAction() == 'add' && !empty($actionParams)) {
+        elseif (
+            ($this->getAction() == 'add')
+            && 
+            !empty($actionParams) 
+            && 
+            ($actionParams[0] != Sitemap::getInstance()->getDefault())
+        ) {
             $field = $this->getData()->getFieldByName('smap_pid');
             $smapSegment = Sitemap::getInstance()->getURLByID($actionParams[0]);
 

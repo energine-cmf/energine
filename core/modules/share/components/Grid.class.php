@@ -777,11 +777,7 @@ class Grid extends DBDataSet {
                 $image->loadFromFile($sourceFileName);
                 $image->resize($width,$height);
                 $image->saveToFile($destFileName);
-                $image = new FileObject();
-                try {
-                    $image->createFromPath($destFileName, $this->translate($destFieldName).': '.basename($sourceFileName));
-                }
-                catch (Exception $e){}
+                
                 //Сохраняем в БД
                 $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array($destFieldName=>$destFileName), $filter);
             }

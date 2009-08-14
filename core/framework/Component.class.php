@@ -148,7 +148,6 @@ class Component extends DBWorker {
         if (is_array($params)) {
             foreach ($params as $name => $value) {
                 $this->setParam($name, $value);
-                //$this->params[$name] = $value;
             }
         }
         $this->rights = $this->getParam('rights');
@@ -168,7 +167,27 @@ class Component extends DBWorker {
 
         $this->determineAction();
     }
+/*    
+    protected function __set($name, $value){
+    	if($name == 'params'){
+    		$this->setParam($name, $value);
+    	}
+    	else{
+    		throw new SystemException('ERR_BAD_VARIABLE', SystemException::ERR_DEVELOPER, $name);
+    	}
+    }
+    protected function __get($name){
+    	$result = null;
+        if($name == 'params'){
+            $result =  $this->_params[$name];      	
+        }
+        else{
+        	throw new SystemException('ERR_BAD_VARIABLE', SystemException::ERR_DEVELOPER, $name);
+        }
 
+        
+    }
+*/
      /**
       * Возвращает флаг активности компонента
       *
@@ -241,7 +260,14 @@ class Component extends DBWorker {
 
         // если новое значение пустое - оставляем значение по-умолчанию
         if (!empty($value) || $value === false) {
-            $this->params[$name] = $value;
+        	if(!is_array($value)){
+	        	//ОБрабатываем случай передачи массива-строки в параметры
+	        	$value = explode('|', $value);
+	            $this->params[$name] = (sizeof($value) == 1)?current($value):$value;
+        	}
+        	else{
+        		$this->params[$name] = array_values($value);
+        	}
         }
     }
 

@@ -41,13 +41,19 @@ class GalleryEditor extends FeedEditor {
      */
     protected function saveData(){
         $result = parent::saveData();
-        if(!($field = $this->getSaver()->getDataDescription()->getFieldDescriptionByName('pg_thumb_img'))){
+        list($width, $height) = $this->getParam('thumbnail');
+        
+        if(
+            !($field = $this->getSaver()->getDataDescription()->getFieldDescriptionByName('pg_thumb_img'))
+        ){
         	$this->generateThumbnail(
         	   $this->getSaver()->getData()->getFieldByName('pg_photo_img')->getRowData(0),
         	   'pg_thumb_img',
-        	   100,
-        	   100,
-        	   array('pg_id' => ($this->getSaver()->getMode() == QAL::INSERT)? $result:$this->getSaver()->getData()->getFieldByName('pg_id')->getRowData(0))
+        	   $width,
+        	   $height,
+        	   array(
+        	       'pg_id' => ($this->getSaver()->getMode() == QAL::INSERT)? $result:$this->getSaver()->getData()->getFieldByName('pg_id')->getRowData(0)
+        	   )
         	);
         }
         

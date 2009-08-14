@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-     <xsl:template match="component[@class='GalleryFeed'] | component[@class='PhotoListFeed']">
+     <xsl:template match="component[@class='GalleryFeed']">
         <script type="text/javascript" src="scripts/EnlargeImage.js"></script>
         
         <script type="text/javascript">
@@ -35,7 +35,7 @@
         <xsl:apply-templates />
     </xsl:template>
 
-    <xsl:template match="recordset[parent::component[@class='GalleryFeed'][@exttype='feed'][@type='list']] | recordset[parent::component[@class='PhotoListFeed'][@exttype='feed'][@type='list']]">
+    <xsl:template match="recordset[parent::component[@class='GalleryFeed'][@exttype='feed'][@type='list']]">
         <xsl:if test="not(@empty)">
             <ul id="{generate-id(.)}" class="gallery">
                 <xsl:apply-templates />
@@ -43,13 +43,13 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="record[ancestor::component[@class='GalleryFeed'][@type='list']] | record[ancestor::component[@class='PhotoListFeed'][@type='list']]">
+    <xsl:template match="record[ancestor::component[@class='GalleryFeed'][@type='list']]">
         <li record="{field[@index='PRI']}">
             <div class="image">
                 <a href="{$BASE}{field[@name='pg_photo_img']}" onclick="return showPhoto(this);">
                     <img 
-                        width="100"
-                        height="100"
+                        width="{field[@name='pg_thumb_img']/@width}"
+                        height="{field[@name='pg_thumb_img']/@height}"
                         src="{$BASE}{field[@name='pg_thumb_img']}" 
                         alt="{field[@name='pg_title']}" 
                         main="{$BASE}{field[@name='pg_photo_img']}" 

@@ -167,6 +167,16 @@ abstract class Builder extends DBWorker {
                             }
                             catch (Exception  $dummy){};
                         break;
+                    case FieldDescription::FIELD_TYPE_IMAGE:
+                    	if(file_exists($fieldValue)){
+                    		list($width, $height) = getimagesize($fieldValue);
+                    		$result->setAttribute('width', $width);
+                    		$result->setAttribute('height', $height);
+                    	}
+                    	else{
+                    		$fieldValue = '';
+                    	}
+                    	break;
                     default: // not used
                 }
             }

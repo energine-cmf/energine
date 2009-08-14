@@ -107,6 +107,8 @@ class Grid extends DBDataSet {
             }
         }
         $params['active'] = true;
+        $params['thumbnail'] = array($this->getConfigValue('thumbnail.width'), $this->getConfigValue('thumbnail.height'));
+        
         return array_merge(parent::defineParams(),$params);
     }
     /**
@@ -622,19 +624,13 @@ class Grid extends DBDataSet {
             if (empty($_FILES) || !isset($_FILES['file'])) {
                 throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
             }
-
-            $uploader = new FileUploader();
+            
+            $uploader = new VideoUploader();
             $uploader->setFile($_FILES['file']);
             $uploader->upload($uploadPath);
             $fileName = $uploader->getFileObjectName();
-            if (in_array($uploader->getExtension(), array('flv', 'avi', 'mpeg', 'mpg'))) {
-                $js .= 
-                "doc.window.insertVideo('".str_replace('.flv', '', Request::getInstance()->getRootPath().$fileName)."');\n";
-            }
-            else{
-            	throw new SystemException('ERR_NOT_VIDEO_FILE', SystemException::ERR_CRITICAL);
-            }
-
+            $js .= 
+                "doc.window.insertVideo('".Request::getInstance()->getRootPath().$fileName."');\n";
             $js .= sprintf(
             'path.value ="%s";'.
             'pb.parentNode.removeChild(pb); '.
@@ -649,10 +645,11 @@ class Grid extends DBDataSet {
             'alert(\''.$this->translate('TXT_SHIT_HAPPENS').': '.$e->getMessage().'\'); '.
             'iframe.parentNode.removeChild(iframe); '."\n";
         }
-
+        
         $responseText = '<html><head/><body><script type="text/javascript">'.$js.'</script></body></html>';
         $response = Response::getInstance();
         $response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+        $response->setHeader('Cache-Control', 'no-cache');
         $response->write($responseText);
         $response->commit();        
         

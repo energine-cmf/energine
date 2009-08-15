@@ -59,12 +59,17 @@ var DivManager = new Class({
             var node = this.tree.getNodeById(nodeId);
             for (var i = 0, len = treeInfo[nodeId].length; i < len; i++) {
                 var child = treeInfo[nodeId][i];
-                var childId = child['smap_id'];
-                var newNode = new TreeView.Node({ id: childId, name: child['smap_name'] }, this.tree);
-                newNode.setData(child);
-                newNode.onSelect = this.onSelectNode.bind(this);
-                node.adopt(newNode);
-                if (treeInfo[childId]) lambda(childId);
+                if(child['smap_default']){
+                    this.treeRoot.setName(child['smap_name']);
+                }
+                else{
+                    var childId = child['smap_id'];
+                    var newNode = new TreeView.Node({ id: childId, name: child['smap_name'] }, this.tree);
+                    newNode.setData(child);
+                    newNode.onSelect = this.onSelectNode.bind(this);
+                    node.adopt(newNode);
+                    if (treeInfo[childId]) lambda(childId);                    
+                }
             }
         }.bind(this);
         lambda(this.treeRoot.getId());

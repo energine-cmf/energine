@@ -15,6 +15,7 @@
 				<field name="smap_name"/>
 				<field name="smap_is_final"/>
 				<field name="smap_is_system"/>
+                <field name="smap_default"/>                
 			</fields>
 			<toolbar>
 				<control id="add" title="BTN_ADD" type="button" onclick="add"/>

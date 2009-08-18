@@ -61,6 +61,9 @@ var DivManager = new Class({
                 var child = treeInfo[nodeId][i];
                 if(child['smap_default']){
                     this.treeRoot.setName(child['smap_name']);
+                    this.treeRoot.id = child['smap_id'];
+                    this.treeRoot.setData(child);
+                    this.treeRoot.onSelect = this.onSelectNode.bind(this);
                 }
                 else{
                     var childId = child['smap_id'];
@@ -76,6 +79,7 @@ var DivManager = new Class({
 
         this.tree.setupCssClasses();
         this.treeRoot.expand();
+        this.treeRoot.select();
     },
 
     reload: function(really) {

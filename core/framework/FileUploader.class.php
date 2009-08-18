@@ -22,11 +22,11 @@
 class FileUploader extends Object {
 
     /**
-     * @access private
-     * @var array описание загружаемого файла
+     * @access protected
+     * @var array описание загружаемого файла - $_FILE
      * @see PHP manual, POST method uploads
      */
-    private $file = array();
+    protected $file = array();
 
     /**
      * @access private
@@ -41,10 +41,10 @@ class FileUploader extends Object {
     private $ext;
 
     /**
-     * @access private
+     * @access protected
      * @var string имя, под которым загруженный файл сохранен на сервере
      */
-    private $FileObjectName;
+    protected $FileObjectName;
 
     /**
      * @access private
@@ -66,26 +66,18 @@ class FileUploader extends Object {
      * @access public
      * @return void
      */
-    public function __construct() {
+    public function __construct(Array $restrictions = array()) {
         parent::__construct();
-        $this->restrictions = array(
-            'width' => false,
-            'height' => false,
-            'precision' => false,
-            'max' => false
-        );
+        $this->restrictions = $restrictions;
     }
 
     /**
      * Устанавливает ограничения которым должен соответствовать загружаемый
      *
-     * Для изображений:
-     *     array(
-     *         'width'   => integer, // ширина ищображения
-     *         'height'  => integer, // высота изображения
-     *         'precise' => boolean  // true - точный размер, false - не более указанного (по-умолчанию),
-     *         'max' => integer //максимальный размер файла
-     *     )
+     * 
+     * array(
+     *      'ext' => array('jpg', 'gif')
+     * )
      *
      * @access public
      * @param array $restrictions
@@ -107,6 +99,8 @@ class FileUploader extends Object {
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER, $file);
         }
         $this->file = $file;
+        
+        $this->validate();
     }
 
     /**
@@ -120,38 +114,22 @@ class FileUploader extends Object {
          * Браузер может не посылать MIME type, поэтому расчитывать на него нельзя.
          */
         if (empty($this->file)) {
-            throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER, $this->file);
+            throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER, $this->file['name']);
         }
 
         if ($this->file['error'] != UPLOAD_ERR_OK || !is_uploaded_file($this->file['tmp_name'])) {
             throw new SystemException('ERR_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file['error']);
         }
-
-        $this->ext = strtolower(substr(strrchr($this->file['name'], '.'), 1));
-/*
-
-        $size = @getimagesize($this->file['tmp_name']);
-        if (!$size) {
-            throw new SystemException('ERR_INVALID_IMAGE', SystemException::ERR_WARNING, $this->file['tmp_name']);
+        
+        $dummy = explode('.', $this->file['name']);
+        $this->ext = array_pop($dummy);
+        
+        if(isset($this->restrictions['ext'])){
+        	if(!in_array($this->ext, $this->restrictions['ext'])){
+        		throw new SystemException('ERR_BAD_FILE_TYPE', SystemException::ERR_DEVELOPER, $this->file['name']);
+        	}
         }
-
-        if (isset($this->restrictions['width']) &&
-            (($this->restrictions['precise'] && $size[0] != $this->restrictions['width']) ||
-            $size[0] > $this->restrictions['width'])) {
-            throw new SystemException('ERR_BAD_IMAGE_WIDTH', SystemException::ERR_WARNING, $size[0]);
-        }
-
-        if (isset($this->restrictions['height']) &&
-            (($this->restrictions['precise'] && $size[1] != $this->restrictions['height']) ||
-            $size[1] > $this->restrictions['height'])) {
-            throw new SystemException('ERR_BAD_IMAGE_HEIGHT', SystemException::ERR_WARNING, $size[1]);
-        }
-
-
-        if ($this->file['size'] > $this->maxsize) {
-            throw new SystemException('ERR_UPLOADED_FILE_EXCEEDS_SIZE_LIMIT', SystemException::ERR_WARNING, $this->file['size']);
-        }
-*/
+        
         return ($this->validated = true);
     }
 
@@ -166,7 +144,21 @@ class FileUploader extends Object {
         if (!$this->validated) {
             $this->validate();
         }
+        if (
+            !@move_uploaded_file(
+                $this->file['tmp_name'], 
+                $filePath = $this->generateFilename($dir, $this->ext)
+             )
+        ) {
+            throw new SystemException('ERR_DEV_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file['name']);
+        }
+        $this->FileObjectName = $filePath;
+        chmod($this->FileObjectName, 0666);
 
+        return true;
+    }
+    
+    protected function generateFilename($dir, $ext){
         if ($dir[0] == '/') {
             $dir = substr($dir, 1);
         }
@@ -174,15 +166,7 @@ class FileUploader extends Object {
             $dir .= '/';
         }
 
-        $filePath = $this->uploadsPath.$dir.FileObject::generateFilename($this->uploadsPath.$dir, $this->ext);
-
-        if (!@move_uploaded_file($this->file['tmp_name'], $filePath)) {
-            throw new SystemException('ERR_DEV_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file);
-        }
-        $this->FileObjectName = $filePath;
-        chmod($this->FileObjectName, 0644);
-
-        return true;
+        return $this->uploadsPath.$dir.FileObject::generateFilename($this->uploadsPath.$dir, $ext);
     }
 
     /**
@@ -204,6 +188,7 @@ class FileUploader extends Object {
     public function getExtension() {
         return $this->ext;
     }
+    
 
     /**
      * Очищает состояние объекта для повторного использования.

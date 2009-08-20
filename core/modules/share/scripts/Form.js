@@ -41,7 +41,7 @@ var Form = new Class({
 		this.componentElement.adopt(this.toolbar.getElement());
 	},
     uploadVideo: function(fileField){
-        fileField = $(fileField);
+        var fileField = $(fileField);
         
         this._createUploader(
             fileField,
@@ -49,17 +49,16 @@ var Form = new Class({
         );
     },
 	upload : function(fileField) {
-        fileField = $(fileField);
+        var fileField = $(fileField);
         
         this._createUploader(
             fileField,
-            this.singlePath + 'upload/' + (fileField.getProperty('protected'))? '?protected':''
+            this.singlePath + 'upload/' + (fileField.getProperty('protected')? '?protected':'')
         );
 	},
     _createUploader: function(field, iframeAction){
         var iframe, form, newField;
         var fileField = $(field);
-        
         if (Browser.Engine.trident) {
             iframe = $(document
                     .createElement('<iframe name="uploader" id="uploader">'));

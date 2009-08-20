@@ -7,7 +7,9 @@
 			</javascript>
 			<fields>
 				<field name="u_id"/>
+				<field name="u_fullname"/>
 				<field name="u_name"/>
+				
 				<field name="u_group" type="text" title="FIELD_U_GROUP"/>
 			</fields>
 			<toolbar>
@@ -61,7 +63,7 @@
                 <pattern>/format-date/</pattern>
             </uri_patterns>
         </method>
-        <method name="upload"  rights="2">
+        <method name="upload"  rights="3">
              <uri_patterns>
                  <pattern>/upload/</pattern>
              </uri_patterns>

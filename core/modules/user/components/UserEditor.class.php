@@ -72,9 +72,32 @@ class UserEditor extends Grid {
         $result = parent::saveData();
 
         $UID = (is_int($result))?$result:current($this->getFilter());
-
+        
+        //если задана аватарка
+        if(
+            isset($_POST[$this->getTableName()]['u_avatar_prfile'])
+            &&
+            file_exists($_POST[$this->getTableName()]['u_avatar_prfile'])
+        ){
+        	//и ее размеры отличаются от необходимых
+        	list($realWidth, $realHeight) = getimagesize($_POST[$this->getTableName()]['u_avatar_prfile']);
+        	list($neededWidth, $neededHeight) = $this->getParam('thumbnail');
+        	 
+        	if(
+        	   ($realWidth != $neededWidth) 
+        	   || 
+        	   ($realHeight != $neededHeight)
+        	){
+        		$fileName = $_POST[$this->getTableName()]['u_avatar_prfile'];
+                $image = new Image();
+                $image->loadFromFile($fileName);
+                $image->resize($neededWidth,$neededHeight);
+                $image->saveToFile($fileName);      	
+        	}
+        }
+        
         $this->dbh->modify(QAL::DELETE, 'user_user_groups', null, array('u_id'=>$UID));
-
+        
         if(isset($_POST['group_id']) && is_array($_POST['group_id']))
         foreach ($_POST['group_id'] as $groupID) {
             $this->dbh->modify(QAL::INSERT, 'user_user_groups',array('u_id'=>$UID, 'group_id'=>$groupID));

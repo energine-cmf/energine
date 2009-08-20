@@ -61,5 +61,21 @@
                 <pattern>/format-date/</pattern>
             </uri_patterns>
         </method>
+        <method name="upload"  rights="2">
+             <uri_patterns>
+                 <pattern>/upload/</pattern>
+             </uri_patterns>
+        </method>
+        <method name="imageManager" rights="3">
+            <uri_patterns>
+                <pattern>/imagemanager/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="fileLibrary" rights="3">
+            <uri_patterns>
+                <pattern>/file-library/</pattern>
+                <pattern>/file-library/[string]/</pattern>
+            </uri_patterns>
+        </method>
 	</methods>
 </configuration>

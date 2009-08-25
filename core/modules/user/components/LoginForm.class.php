@@ -31,7 +31,11 @@ class LoginForm extends DataSet {
     public function __construct($name, $module, Document $document,  array $params = null) {
         $params['action'] = $document->user->isAuthenticated()?'showLogoutForm':'showLoginForm';
         parent::__construct($name, $module, $document,  $params);
-        if ($this->document->user->isAuthenticated() && $this->document->user->isNowAuthenticated()) {
+        if (
+            $this->document->user->isAuthenticated() 
+            && $this->document->user->isNowAuthenticated()
+            && ($this->getParam('successAction') !== false)
+        ) {
             $this->response->redirectToCurrentSection($this->getParam('successAction'));
         }
 		$this->setTitle($this->translate('TXT_LOGIN_FORM'));
@@ -48,7 +52,7 @@ class LoginForm extends DataSet {
         return array_merge(
         parent::defineParams(),
         array(
-        'successAction' => ''
+        'successAction' => false
         )
         );
     }

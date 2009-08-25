@@ -36,7 +36,7 @@ ini_set('html_errors', 0);
 /**
  * отключаем magic_quotes_runtime
  */
-set_magic_quotes_runtime(1);
+@set_magic_quotes_runtime(1);
 /**
  * поскольку magic_quotes_gpc в runtime отключить нельзя, идем на ухищрение
  */

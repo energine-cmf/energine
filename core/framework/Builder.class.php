@@ -148,7 +148,7 @@ abstract class Builder extends DBWorker {
         	}
         }
 
-        if ($fieldValue instanceof DOMNode) {
+        if (($fieldValue instanceof DOMNode) || ($fieldValue instanceof DOMElement)) {
             try {
         	   $result->appendChild($fieldValue);
             }

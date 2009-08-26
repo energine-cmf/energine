@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <xsl:variable name="DOC_PROPS" select="/document/properties/property" />
-    <xsl:variable name="COMPONENTS" select="//component" />
+    <xsl:variable name="COMPONENTS" select="//component[@name][@module]" />
 
     <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']" />
 	<xsl:variable name="BASE" select="$DOC_PROPS[@name='base']" />
@@ -86,7 +86,7 @@
                         
                         }
                         catch (e) {
-                                console.error(e);
+                                //console.error(e);
                                 //alert(e.message);
                         }
                     }

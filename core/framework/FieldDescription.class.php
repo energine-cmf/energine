@@ -410,6 +410,7 @@ class FieldDescription extends DBWorker {
                 }
                 $this->length = true;
                 $this->addProperty('outputFormat', '%s');
+                $this->addProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_FILE:
             case self::FIELD_TYPE_PRFILE:
@@ -421,6 +422,7 @@ class FieldDescription extends DBWorker {
                 }
                 $this->length = true;
                 $this->addProperty('outputFormat', '%s');
+                $this->addProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_STRING:
                 if ($this->getPropertyValue('nullable') === false  || is_null($this->getPropertyValue('nullable'))) {

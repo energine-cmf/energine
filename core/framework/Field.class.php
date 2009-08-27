@@ -82,6 +82,8 @@ class Field extends Object implements Iterator{
      * @access public
      * @param mixed $data
      * @param bool $setForAll - установить для всех строчек
+     *  только для перепределения данных
+     *  в случае если поле только создано то нужно заполнять через итератор 
      * @return void
      */
     public function setData($data, $setForAll = false) {

@@ -11,3 +11,7 @@
 	zoom: 1; /* IE5.5+ */
 	_height: 1%; /* IE5-6 */
 }
+
+code{
+    white-space: pre;
+}

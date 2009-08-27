@@ -290,20 +290,23 @@
 </xsl:template>
 
 <xsl:template name="VIDEOFILE">
+    <!-- Вынесено в отдельную функцию для того чтоб была возможность вызвать не в форме -->
     <script type="text/javascript">
-        var insertVideo = function(videoFile){
-            var player = new Swiff('images/player.swf',
-                {
-                    container:'<xsl:value-of select="generate-id(.)"/>_preview',
-                    id: 'myBeautifulMovie',
-                    width: 450,
-                    height: 370,
-                    vars: {
-                       beginplay: false,
-                       vidurl: videoFile 
-                    } 
-                }
-            );
+        if(!insertVideo){
+            var insertVideo = function(videoFile, id){
+                new Swiff('images/player.swf',
+                    {
+                        'container':id + '_preview',
+                        'id': id + '_preview_video',
+                        'width': 450,
+                        'height': 370,
+                        'vars': {
+                           'beginplay': false,
+                           'vidurl': videoFile 
+                        } 
+                    }
+                );
+            }
         }
     </script>
     <div class="video" id="{generate-id(.)}_preview">
@@ -312,15 +315,17 @@
 
     <xsl:if test=".!=''">
         <script type="text/javascript">
-            window.addEvent('domready', insertVideo.pass('<xsl:value-of select="$BASE"/><xsl:value-of select="."/>'));
+            window.addEvent('domready', insertVideo.pass(['<xsl:value-of select="$BASE"/><xsl:value-of select="."/>', '<xsl:value-of select="generate-id(.)"/>']));
         </script>
+        <a href="#">
+            <xsl:attribute name="onclick">return <xsl:value-of select="generate-id(ancestor::recordset)"/>.removeFilePreview.run(['<xsl:value-of select="generate-id(.)"/>', this], <xsl:value-of select="generate-id(ancestor::recordset)"/>);</xsl:attribute>
+            <xsl:value-of select="@deleteFileTitle"/></a>
     </xsl:if>
     <xsl:variable name="FIELD_ID">tmp_<xsl:value-of select="generate-id()"/></xsl:variable>
     <input type="file">
         <xsl:attribute name="id"><xsl:value-of select="$FIELD_ID"/></xsl:attribute>
         <xsl:attribute name="name">file</xsl:attribute>
         <xsl:attribute name="field"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
-        <xsl:attribute name="link"><xsl:value-of select="generate-id(.)"/>_link</xsl:attribute>
         <xsl:attribute name="preview"><xsl:value-of select="generate-id(.)"/>_preview</xsl:attribute>
         <xsl:attribute name="onchange"><xsl:value-of select="generate-id(ancestor::recordset)"/>.uploadVideo.bind(<xsl:value-of select="generate-id(ancestor::recordset)"/>)(this);</xsl:attribute>
     </input>
@@ -350,7 +355,11 @@
             </xsl:if>
         </img>
     </div>
-    
+    <xsl:if test=".!=''">
+        <a href="#">
+            <xsl:attribute name="onclick">return <xsl:value-of select="generate-id(ancestor::recordset)"/>.removeFilePreview.run(['<xsl:value-of select="generate-id(.)"/>', '<xsl:value-of select="generate-id(.)"/>_preview', this], <xsl:value-of select="generate-id(ancestor::recordset)"/>);</xsl:attribute>
+            <xsl:value-of select="@deleteFileTitle"/></a>
+    </xsl:if>
     <input type="text" id="{generate-id(.)}" value="{.}" readonly="readonly" class="text inp_file">
         <xsl:attribute name="name">
             <xsl:choose>
@@ -372,6 +381,9 @@
     <div id="{generate-id(.)}_preview" class="file"></div>
     <xsl:if test=".!=''">
         <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
+        <a href="#">
+            <xsl:attribute name="onclick">return <xsl:value-of select="generate-id(ancestor::recordset)"/>.removeFilePreview.run(['<xsl:value-of select="generate-id(.)"/>', this], <xsl:value-of select="generate-id(ancestor::recordset)"/>);</xsl:attribute>
+            <xsl:value-of select="@deleteFileTitle"/></a>
     </xsl:if>
     <div>
 
@@ -404,7 +416,11 @@
             </xsl:if>
         </img>
     </div>
-
+    <xsl:if test=".!=''">
+        <a href="#">
+            <xsl:attribute name="onclick">return <xsl:value-of select="generate-id(ancestor::recordset)"/>.removeFilePreview.run(['<xsl:value-of select="generate-id(.)"/>', '<xsl:value-of select="generate-id(.)"/>_preview', this], <xsl:value-of select="generate-id(ancestor::recordset)"/>);</xsl:attribute>
+            <xsl:value-of select="@deleteFileTitle"/></a>
+    </xsl:if>
     <div style="margin-bottom:5px;">
         <a href="{.}" target="_blank" id='{generate-id(.)}_link'><xsl:value-of select="."/></a>
     </div>
@@ -448,6 +464,12 @@
     <div style="margin-bottom:5px;">
         <a href="{.}" target="_blank" id='{generate-id(.)}_link'><xsl:value-of select="."/></a>
     </div>
+    <xsl:if test=".!=''">
+        <a href="#">
+            <xsl:attribute name="onclick">return <xsl:value-of select="generate-id(ancestor::recordset)"/>.removeFilePreview.run(['<xsl:value-of select="generate-id(.)"/>', '<xsl:value-of select="generate-id(.)"/>_preview', this], <xsl:value-of select="generate-id(ancestor::recordset)"/>);</xsl:attribute>
+            <xsl:value-of select="@deleteFileTitle"/></a>
+    </xsl:if>
+
     <xsl:variable name="FIELD_ID">tmp_<xsl:value-of select="generate-id()"/></xsl:variable>
     <input type="file">
         <xsl:attribute name="id"><xsl:value-of select="$FIELD_ID"/></xsl:attribute>

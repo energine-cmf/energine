@@ -17,8 +17,8 @@ var ModalBox = window.top.ModalBox || {
 		var box = new Element('div').addClass('modalbox').injectInside(document.body);
 		box.options = {
             url: null,
-            width: 640,
-            height: 520,
+            width: 755,
+            height: 650,
             onClose: $empty,//$empty,
             extraData: null
 		};

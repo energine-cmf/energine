@@ -619,7 +619,9 @@ class Grid extends DBDataSet {
 	        'var doc = window.parent.document;'."\n".
 	        'var pb = doc.getElementById(\'progress_bar\'); '."\n".
 	        'var iframe = doc.getElementById(\'uploader\'); '."\n".
-	        'var path = doc.getElementById(iframe.getAttribute(\'field\'));'."\n";
+            'var fieldId = iframe.getAttribute(\'field\');'."\n".
+            'var preview = doc.getElementById(iframe.getAttribute(\'preview\')); '."\n".
+	        'var path = doc.getElementById(fieldId);'."\n";
         
             if (empty($_FILES) || !isset($_FILES['file'])) {
                 throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
@@ -630,7 +632,7 @@ class Grid extends DBDataSet {
             $uploader->upload($uploadPath);
             $fileName = $uploader->getFileObjectName();
             $js .= 
-                "doc.window.insertVideo('".Request::getInstance()->getRootPath().$fileName."');\n";
+                "doc.window.insertVideo('".Request::getInstance()->getRootPath().$fileName."', fieldId);\n";
             $js .= sprintf(
             'path.value ="%s";'.
             'pb.parentNode.removeChild(pb); '.

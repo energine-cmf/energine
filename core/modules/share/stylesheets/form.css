@@ -50,7 +50,7 @@ form input.checkbox {
 	border: none;
 }
 form textarea {
-	width: 400px;
+	width: 650px;
 	height: 200px;
 }
 
@@ -104,8 +104,8 @@ form .field .control .image img {
 
 form .richEditor {
     margin: 1px 0;
-    width: 550px;
-    height: 200px;
+    width: 650px;
+    height: 300px;
     border: 1px solid gray;
     background: #FFF;
 }

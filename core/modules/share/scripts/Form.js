@@ -48,6 +48,12 @@ var Form = new Class({
             this.singlePath + 'upload-video/'
         );
     },
+    removeFilePreview: function(fieldId, control){
+        $(fieldId).value = '';
+        $(fieldId + '_preview').empty();
+        $(control).dispose();
+        return false;
+    },
 	upload : function(fileField) {
         var fileField = $(fileField);
         
@@ -187,8 +193,10 @@ Form.RichEditor = new Class({
 								'font-size' : '0',
 								'line-height' : '0'
 							}).injectInside(document.body);
-
-					this.area.onpaste = this.processPaste.bindWithEvent(this);
+                    //addEvent('paste' работать не захотело
+                    if(Browser.Engine.trident) this.area.onpaste = this.processPaste.bindWithEvent(this);
+                    else if(Browser.Engine.gecko) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
+					//this.area.onpaste = this.processPaste.bindWithEvent(this);
 
 					this.area.contentEditable = 'true';
 				} else {
@@ -284,7 +292,7 @@ Form.RichEditor = new Class({
 				$pick(this.area, this.textarea).getParent().adopt(this.toolbar
 						.getElement());
 
-				this.toolbar.element.setStyle('width', '550px');
+				this.toolbar.element.setStyle('width', '650px');
 				this.toolbar.bindTo(this);
 			},
 
@@ -303,7 +311,13 @@ Form.RichEditor = new Class({
 					this.textarea.replaces(this.area);
 				} else {
 					this.fallback_ie = false;
-					this.area.set('html', this.textarea.value);
+					this.area.set('html', 
+                        this.cleanMarkup(
+                            this.form.singlePath,      
+                            this.textarea.value,
+                            false
+                        )
+                    );
 					// this.textarea.replaceWith(this.area);
 					this.area.replaces(this.textarea);
 				}

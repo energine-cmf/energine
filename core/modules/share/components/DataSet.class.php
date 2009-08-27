@@ -650,7 +650,7 @@ abstract class DataSet extends Component {
 			        'show-body-only' => true,
 		            'quote-nbsp' => false,
 		            'indent' => true,  
-		            'wrap' => 0,  
+		            'wrap' => 0,
 				);
 				if($aggressive){
 					$config = array_merge(
@@ -674,22 +674,22 @@ abstract class DataSet extends Component {
 		$jewix->cfgSetXHTMLMode(true);
 		$jewix->cfgSetAutoBrMode(false);
 		$jewix->cfgSetAutoLinkMode(false);
+		
 		$shortTags  = array('br', 'hr');
 		$allowedTags = array(
             'a', 'abbr', 'acronym', 'address', 'b', 'big', 'blockquote', 'br', 'cite',
             'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em',
             'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'ins', 'kbd', 'li', 'ol',
-            'p', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
+            'p', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup','pre',
             'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
             );
-
+         
             if (!$aggressive) {
             	$allowedTags = array_merge($allowedTags, array(
                 'img',
                 'object',
                 'param',
                 'embed',
-                'pre',
                 'map',
                 'area'
                 ));
@@ -697,7 +697,10 @@ abstract class DataSet extends Component {
             }
             $jewix->cfgAllowTags($allowedTags);
             $jewix->cfgSetTagShort($shortTags);
-
+            
+            $jewix->cfgSetTagNoTypography(array('code', 'pre', 'blockquote'));
+            $jewix->cfgSetTagPreformatted(array('code', 'pre', 'blockquote'));
+            
             $jewix->cfgAllowTagParams('table', array('cellpadding', 'cellspacing'));
             $jewix->cfgAllowTagParams('td', array('colspan', 'rowspan'));
             $jewix->cfgAllowTagParams('th', array('colspan', 'rowspan'));

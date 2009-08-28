@@ -100,7 +100,7 @@ class LoginForm extends DataSet {
             $data[] = $tmp['group_name'];
         }
 
-        $this->getData()->getFieldByName('role_name')->setData(implode(',', $data));
+        $this->getData()->getFieldByName('role_name')->setData(implode(', ', $data));
     }
 
     protected function loadData() {

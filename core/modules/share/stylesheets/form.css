@@ -109,6 +109,13 @@ form .richEditor {
     border: 1px solid gray;
     background: #FFF;
 }
+form textarea.richEditor{
+    font-family:Courier New;
+    font-size: 12px;
+    line-height:1em;
+    border-color: red;
+    line-height: 1.5em;
+}
 
 form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
 

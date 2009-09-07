@@ -100,7 +100,11 @@ final class DocumentController extends Object {
         $this->document->build();
         $this->transform();
     }
-
+    /**
+     * Возвращает объект  - XSLT трансформатор
+     *
+     * @return Transformer
+     */
     public function getTransformer(){
     	if(!isset(self::$transformer)){
     		self::$transformer = new Transformer();

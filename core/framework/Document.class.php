@@ -179,6 +179,9 @@ final class Document extends DBWorker {
         $this->setProperty('ID', $this->getID());
         $this->setProperty('final', $this->documentInfo['isFinal']);
 	    $this->setProperty('default', $this->sitemap->getDefault()==$this->getID());
+	    if($this->getConfigValue('google.verify')){
+	    	$this->setProperty('google_verify', $this->getConfigValue('google.verify'));
+	    }
 
         /*
         * Если в каком-либо компоненте происходит ошибка, не позволяющая ему

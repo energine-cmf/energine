@@ -38,7 +38,12 @@ class Transformer extends Object {
 		parent::__construct();
 		$this->setFileName($this->getConfigValue('document.transformer'));
 	}
-
+    /**
+     * Устанавливает имя основного файла трансформации
+     * 
+     * @param string  
+     * @return void
+     */
 	public function setFileName($transformerFilename){
 		$transformerFilename = self::MAIN_TRANSFORMER_DIR.$transformerFilename;
 		if (!file_exists($transformerFilename)) {

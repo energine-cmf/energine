@@ -118,12 +118,27 @@ final class ResumeForm extends DataSet {
 				$component->getFilter()
 				), 'vacancy_id', true);
 				$field->setData($vacancyID);
-				 
+					
 				$result->addField($field);
 			}
 
 		}
 		return $result;
+	}
+
+	protected function checkCaptcha(){
+		$_SESSION['captchaChecked'] = $result = (
+	        isset($_POST['captcha'])
+	        &&
+	        ($_SESSION['captchaCode'] == sha1($_POST['captcha']))
+        );
+		
+		$result = array(
+		  'result' => $result
+		);
+		$this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+		$this->response->write(json_encode($result));
+		$this->response->commit();
 	}
 
 	/**
@@ -133,6 +148,17 @@ final class ResumeForm extends DataSet {
 	 * @return мщшв
 	 */
 	protected function send() {
+		if(
+		      !isset($_SESSION['captchaChecked'])
+		      ||
+		      !$_SESSION['captchaChecked']
+		){
+			unset($_SESSION['captchaChecked'], $_SESSION['captchaCode']);
+			throw new SystemException('MSG_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
+		}
+		
+		unset($_SESSION['captchaChecked'],$_SESSION['captchaCode']);
+		
 		$data = $_POST[self::RESUME_TABLE_NAME ];
 		$data['resume_date'] = date('r');
 
@@ -140,25 +166,25 @@ final class ResumeForm extends DataSet {
 		$this->jevix->cfgSetAutoBrMode(false);
 		$this->jevix->cfgSetAutoLinkMode(false);
 		$this->jevix->cfgSetXHTMLMode(true);
-	    $this->jevix->cfgSetTagCutWithContent(array('script', 'iframe'));
-	    
+		$this->jevix->cfgSetTagCutWithContent(array('script', 'iframe'));
+	  
 		$data = array_map(array($this, 'cleanInputData'), $data);
-        
-        if(isset($_FILES['file'])){
-        	try {
-	        	$uploader = new FileUploader();
-	        	$uploader->setFile($_FILES['file']);
-	        	$uploader->upload('uploads/private/');
-	        	$data['resume_main_pfile'] = $uploader->getFileObjectName();
-        	}
-        	catch (Exception $e){
-        		//Если с файлом что то не так
-        		//и хрен с ним
-        	}
-        }
-        $data['resume_date'] = date('Y-m-d');
-        $this->dbh->modify(QAL::INSERT, self::RESUME_TABLE_NAME, $data);
-        
+
+		if(isset($_FILES['file'])){
+			try {
+				$uploader = new FileUploader();
+				$uploader->setFile($_FILES['file']);
+				$uploader->upload('uploads/private/');
+				$data['resume_main_pfile'] = $uploader->getFileObjectName();
+			}
+			catch (Exception $e){
+				//Если с файлом что то не так
+				//и хрен с ни
+			}
+		}
+		$data['resume_date'] = date('Y-m-d');
+		$this->dbh->modify(QAL::INSERT, self::RESUME_TABLE_NAME, $data);
+
 		$mail = new Mail();
 		$mail->setFrom($this->getConfigValue('mail.from'));
 		$mail->addTo($this->getConfigValue('misc.vacancy_email'));

@@ -3,7 +3,7 @@
 	<methods>
 		<method name="main">
 			<javascript>
-				<object name="ValidForm"/>
+				<object name="ResumeForm"/>
 			</javascript>
 			<uri_patterns>
 				<pattern>/</pattern>
@@ -12,6 +12,12 @@
 				<control id="send_resume" title="BTN_SEND" type="submit"/>
 			</toolbar>
 		</method>
+		<method name="checkCaptcha">
+		  <uri_patterns>
+		      <pattern>/check-captcha/</pattern>
+		  </uri_patterns>
+		</method>
+		
 		<method name="send">
 		     <uri_patterns>
 		         <pattern>/send-resume/</pattern>

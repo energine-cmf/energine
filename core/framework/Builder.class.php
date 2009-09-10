@@ -163,9 +163,12 @@ abstract class Builder extends DBWorker {
                     case FieldDescription::FIELD_TYPE_DATE:
                     case FieldDescription::FIELD_TYPE_HIDDEN:
                             try {
+                            	$result->setAttribute('date', @strftime('%d-%m-%Y-%H-%S', $fieldValue));
                                 $fieldValue = @strftime($fieldInfo->getPropertyValue('outputFormat'), $fieldValue);
                             }
-                            catch (Exception  $dummy){};
+                            catch (Exception  $dummy){
+                            inspect($dummy);
+                            };
                         break;
                     case FieldDescription::FIELD_TYPE_IMAGE:
                     	if(file_exists($fieldValue)){

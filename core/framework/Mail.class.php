@@ -97,8 +97,6 @@ final class Mail extends Object {
      */
 	public function __construct() {
 		parent::__construct();
-        $this->headers[] = 'X-Mailer: PHP v'.phpversion();
-        $this->headers[] = 'MIME-Version: 1.0';
         $this->sender = $this->getConfigValue('mail.from');
 	}
 
@@ -228,7 +226,10 @@ final class Mail extends Object {
     public function send() {
         $MIMEBoundary1 = md5(time()).rand(1000,9999);
         $MIMEBoundary2 = md5(time()).rand(1000,9999);
-
+        
+        $this->headers = array('X-Mailer: PHP v'.phpversion());
+        $this->headers[] = 'MIME-Version: 1.0';
+        
         # Common Headers
         $this->headers[] = 'From: '.$this->sender;
         $this->headers[] = (!empty($this->replyTo))?'Reply-To: '.implode(',', $this->replyTo):'Reply-To: '.$this->sender;

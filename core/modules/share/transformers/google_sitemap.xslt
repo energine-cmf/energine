@@ -8,7 +8,8 @@
     <xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@abbr" />
 
     <xsl:template match="component[@class='GoogleSitemap']">
-        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        <urlset>
+            <xsl:attribute name="xmlns">http://www.sitemaps.org/schemas/sitemap/0.9</xsl:attribute>
             <xsl:call-template name="TREE_BUILDER"></xsl:call-template>
         </urlset>
     </xsl:template>

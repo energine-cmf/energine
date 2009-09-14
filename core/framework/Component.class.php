@@ -253,7 +253,9 @@ class Component extends DBWorker {
         if (!isset($this->params[$name])) {
             throw new SystemException('ERR_DEV_NO_PARAM', SystemException::ERR_DEVELOPER, $name);
         }
-
+        if($name == 'active'){
+        	$value = (bool)$value;
+        }
         /*if (in_array($name, array('action','configFilename', 'active'))) {
             throw new SystemException('ERR_DEV_INVARIANT_PARAM', SystemException::ERR_DEVELOPER, $name);
         }*/

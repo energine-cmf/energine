@@ -167,7 +167,6 @@ abstract class Builder extends DBWorker {
                                 $fieldValue = @strftime($fieldInfo->getPropertyValue('outputFormat'), $fieldValue);
                             }
                             catch (Exception  $dummy){
-                            inspect($dummy);
                             };
                         break;
                     case FieldDescription::FIELD_TYPE_IMAGE:

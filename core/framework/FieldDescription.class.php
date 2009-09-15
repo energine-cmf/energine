@@ -722,33 +722,33 @@ class FieldDescription extends DBWorker {
      * @return FieldDescription
      * @static
      */
-    public static function intersect(FieldDescription $primaryFieldDescription, FieldDescription $secondaryFieldDescription) {
-        $type = $primaryFieldDescription->getType();
-        $mode = $primaryFieldDescription->getMode();
-
+    public static function intersect(FieldDescription $configFieldDescription, FieldDescription $dbFieldDescription) {
+        $type = $configFieldDescription->getType();
+        $mode = $configFieldDescription->getMode();
         if (!is_null($type)) {
+        	$dbFieldDescription->addProperty('origType', $dbFieldDescription->getType());
             //меняем тип
-            $secondaryFieldDescription->setType($type);
+            $dbFieldDescription->setType($type);
         }
         if (!is_null($mode)) {
-            $secondaryFieldDescription->setMode($mode);
+            $dbFieldDescription->setMode($mode);
         }
-        $secondaryFieldDescription->isMultilanguage = $primaryFieldDescription->isMultilanguage || $secondaryFieldDescription->isMultilanguage();
+        $dbFieldDescription->isMultilanguage = $configFieldDescription->isMultilanguage || $dbFieldDescription->isMultilanguage();
         //$properties = $secondaryFieldDescription->getPropertyNames();
-        $properties = array_merge($primaryFieldDescription->getPropertyNames() , $secondaryFieldDescription->getPropertyNames());
+        $properties = array_merge($configFieldDescription->getPropertyNames() , $dbFieldDescription->getPropertyNames());
         foreach ($properties as $propertyName) {
-            $propertyValue = $primaryFieldDescription->getPropertyValue($propertyName);
+            $propertyValue = $configFieldDescription->getPropertyValue($propertyName);
 
             if (!is_null($propertyValue) && !($propertyName == 'title' && $propertyValue == 'FIELD_'.self::EMPTY_FIELD_NAME)) {
                 if ($propertyName == 'message') {
-                    $propertyValue = $primaryFieldDescription->translate($propertyValue);
+                    $propertyValue = $configFieldDescription->translate($propertyValue);
                 }
 
-                $secondaryFieldDescription->addProperty($propertyName, $propertyValue);
+                $dbFieldDescription->addProperty($propertyName, $propertyValue);
             }
         }
 
-        return $secondaryFieldDescription;
+        return $dbFieldDescription;
     }
 
     /**

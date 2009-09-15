@@ -146,7 +146,12 @@ class DBDataSet extends DataSet {
             $dbFields = array();
             foreach ($this->getDataDescription()->getFieldDescriptions() as $fieldName => $field) {
                 if (is_null($field->getPropertyValue('customField'))) {
-                    array_push($dbFields, $fieldName);
+                    if(
+                       ($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
+                    ){
+                        $fieldName = ' IF(('.$fieldName.' IS NOT NULL) AND ('.$fieldName.' <> ""), 1, 0) AS '.$fieldName;
+                    }
+                    array_push($dbFields, $fieldName);   
                 }
             }
             //Если не пустой массив полей для отбора
@@ -171,7 +176,7 @@ class DBDataSet extends DataSet {
             }
         }
         else {
-            //Для мультиязычной таблицы - дергаем метод загрузки данных
+            //Для мультиязычной таблицы - дергаем отдельный метод загрузки данных
             $data = $this->multiLoadData();
         }
         return $data;
@@ -210,7 +215,15 @@ class DBDataSet extends DataSet {
             if (!$field->getPropertyValue('languageID') && $field->getPropertyValue('key') !== true) {
                 //не включаем в набор поля полученные  из конфигурации
                 if (is_null($field->getPropertyValue('customField'))) {
-                    $dbFields[$field->getPropertyValue('tableName')][$fieldName] = $field->getPropertyValue('tableName').'.'.$fieldName;
+                	if(
+                	   !($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
+                	){
+                        $dbFields[$field->getPropertyValue('tableName')][$fieldName] = $field->getPropertyValue('tableName').'.'.$fieldName;
+                	}
+                	else{
+                	   	$dbFields[$field->getPropertyValue('tableName')][$fieldName] = 
+                	   	   ' IF(('.$field->getPropertyValue('tableName').'.'.$fieldName.' IS NOT NULL) AND ('.$field->getPropertyValue('tableName').'.'.$fieldName.' <> ""), 1, 0) AS '.$fieldName;
+                	}
                 }
             }
         }
@@ -250,21 +263,19 @@ class DBDataSet extends DataSet {
         }
         if ($this->getType() != self::COMPONENT_TYPE_FORM_ADD) {
             $request=sprintf(
-            "SELECT
+            'SELECT
         	       %s.%s, %s.lang_id,
         	       %s
         	       %s
-        	       FROM %s
-        	       LEFT JOIN %s ON %s.%s = %s.%s
+        	       FROM %1$s
+        	       LEFT JOIN %3$s ON %3$s.%2$s = %1$s.%2$s
         	       %s
         	       %s
         	       %s
-        	       ",
+        	       ',
             $this->getTableName(), $this->getPK(), $this->getTranslationTableName(),
             (isset($dbFields[$this->getTableName()]))?implode(',', $dbFields[$this->getTableName()]):'',
             isset($dbFields[$this->getTranslationTableName()])?((isset($dbFields[$this->getTableName()]))?',':'').implode(',', $dbFields[$this->getTranslationTableName()]):'',
-            $this->getTableName(),
-            $this->getTranslationTableName(), $this->getTranslationTableName(), $this->getPK(), $this->getTableName(), $this->getPK(),
             $filter,
             $order,
             $limit

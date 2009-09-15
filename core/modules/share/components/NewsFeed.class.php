@@ -43,6 +43,7 @@ class NewsFeed extends Feed {
 
      protected function main() {
         parent::main();
+        /*
 		if($this->getData() && $newsID = $this->getData()->getFieldByName('news_id')){
 			$hasTextField = new FieldDescription('has_text');
 			$hasTextField->setType(FieldDescription::FIELD_TYPE_BOOL);
@@ -53,7 +54,7 @@ class NewsFeed extends Feed {
 				$hasTextField->addRowData(simplifyDBResult($this->dbh->select($this->getTranslationTableName(), array('news_text_rtf is not null as has_text'), array('news_id'=>$id)), 'has_text', true));
 			}
 			$this->getData()->addField($hasTextField);
-		}
+		}*/
      }
 
     /**

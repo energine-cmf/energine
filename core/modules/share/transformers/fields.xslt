@@ -846,7 +846,6 @@
             <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
         </xsl:if>
     </input>
-    
     <input type="hidden" id="{@name}" value="{.}">
         <xsl:attribute name="name">
             <xsl:choose>
@@ -869,17 +868,7 @@
             });
         </script>
     </xsl:if>
-    
-    <!--<button style="height: 22px; margin-left: 2px;" type="button" onclick="{generate-id(../..)}.showCalendar('{@name}', event); ">...</button>-->
     <img src="images/calendar.gif" id="calendarImg" onclick="{generate-id(../..)}.showCalendar('{@name}', event); "/>
-    <!--<script type="text/javascript">
-			window.addEvent('domready', function(){
-				new DatePicker('date_<xsl:value-of select="@name" />', {
- 			    	additionalShowLinks: ['calendarImg'],
-    				showOnInputFocus: false
-				});
-			});
-	</script>-->
 </xsl:template>
 
 <!-- для поля hidden -->

@@ -171,7 +171,7 @@ var FormCalendar = {
 
 		getDateString($(fieldName).get('value'), 'date_'+fieldName);
 	},
-	showCalendar: function(fieldName, event) {
+	showCalendar: function(fieldName, event, calendarExternalOptions) {
 	    if (FormCalendar.calendars[fieldName]) return;
 	    var field = $(fieldName);
 	    var calendOptions = {
@@ -190,6 +190,9 @@ var FormCalendar = {
 	            currDay: parseInt(currDate[2])
 	        });
 	    }
+        if(calendarExternalOptions){
+            calendOptions = $extend(calendOptions, calendarExternalOptions);
+        }
 	    var calend = new Calendar(calendOptions);
 	    FormCalendar.calendars[fieldName] = calend;
         

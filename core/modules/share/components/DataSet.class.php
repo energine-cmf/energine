@@ -589,6 +589,26 @@ abstract class DataSet extends Component {
 	final protected function addTab(DOMNode $tab) {
 		array_push($this->tabs, $tab);
 	}
+	
+    /**
+     * Метод используется для форматирования даты и времени в полях date и datetime
+     * Запрашивается через AJAX
+     * Получает данные из POST и возвращает строку даты
+     *
+     * @return void
+     * @access protected
+     * @final
+     */
+    final protected function formatDate(){
+        $result = '';
+
+        if(isset($_POST['date'])){
+            $result = $this->dateToString($_POST['date']);
+        }
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write(json_encode($result));
+        $this->response->commit();
+    }	
 
 	/**
 	 * Метод возвращает файл

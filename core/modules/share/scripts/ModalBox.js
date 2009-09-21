@@ -18,7 +18,7 @@ var ModalBox = window.top.ModalBox || {
 		box.options = {
             url: null,
             width: 755,
-            height: 650,
+            height: 600,
             onClose: $empty,//$empty,
             extraData: null
 		};

@@ -1,10 +1,11 @@
 ScriptLoader.load('Validator.js', 'Calendar.js');
 
 var ValidForm = new Class({
-
+    Implements:FormCalendar,
     initialize: function(element) {
         this.componentElement = $(element);
         if(this.componentElement && (this.form = this.componentElement.getParent('form'))){
+            this.singlePath = this.componentElement.getProperty('single_template');
             this.form.addClass('form').addEvent('submit', this.validateForm.bind(this));
             this.validator = new Validator(this.form);
         }

@@ -3,10 +3,15 @@ ScriptLoader.load('ValidForm.js');
 var ResumeForm = new Class({
     Extends: ValidForm,
     initialize: function(element) {
-        this.componentElement = $(element);
-        if(this.componentElement && (this.form = this.componentElement.getParent('form'))){
-            this.form.addClass('form').addEvent('submit', this.checkCaptcha.bind(this));
-            this.validator = new Validator(this.form);
+        if($('captcha')){
+            this.componentElement = $(element);
+            if(this.componentElement && (this.form = this.componentElement.getParent('form'))){
+                this.form.addClass('form').addEvent('submit', this.checkCaptcha.bind(this));
+                this.validator = new Validator(this.form);
+            }
+        }
+        else{
+            this.parent(element);
         }
     },
      checkCaptcha: function(event){

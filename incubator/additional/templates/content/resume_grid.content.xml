@@ -2,7 +2,7 @@
 <content>
     <component name="resumeGrid" module="misc" class="Grid">
         <params>
-            <param name="configFilename">misc/config/ResumeGrid.component.xml</param>
+            <param name="configFilename">core/modules/misc/config/ResumeGrid.component.xml</param>
             <param name="tableName">aux_resumes</param>
         </params>
     </component>

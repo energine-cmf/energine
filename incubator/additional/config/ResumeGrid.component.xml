@@ -3,14 +3,14 @@
 	<methods>
 		<method name="main">
 			<javascript>
-				<object name="GridManager" />
+				<object name="ResumeGridManager" />
 			</javascript>
 			<fields>
-			 <field name="resume_id"></field>
-			 <field name="vacancy_id"></field>
-			 <field name="resume_date"></field>
-             <field name="resume_candidate_name"></field>			 
-			 <field name="resume_candidate_email"></field>
+				 <field name="resume_id"></field>
+				 <field name="vacancy_id"></field>
+				 <field name="resume_date"></field>
+	             <field name="resume_candidate_name"></field>			 
+				 <field name="resume_candidate_email"></field>
 			</fields>
 			<toolbar>
  				<control id="view" title="BTN_VIEW" type="button" onclick="view"/>

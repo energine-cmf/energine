@@ -149,16 +149,21 @@ final class ResumeForm extends DataSet {
 	 */
 	protected function send() {
 		if(
-		      !isset($_SESSION['captchaChecked'])
-		      ||
-		      !$_SESSION['captchaChecked']
+		      isset($_SESSION['captchaCode'])
+		      &&(
+			      !isset($_SESSION['captchaChecked'])
+			      ||
+			      !$_SESSION['captchaChecked']
+		      )
 		){
 			unset($_SESSION['captchaChecked'], $_SESSION['captchaCode']);
 			throw new SystemException('MSG_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
 		}
 		
 		unset($_SESSION['captchaChecked'],$_SESSION['captchaCode']);
-		
+		if(!isset($_POST[self::RESUME_TABLE_NAME ])){
+			throw new SystemException('MSG_NO_RESUME_SEND', SystemException::ERR_CRITICAL);
+		}
 		$data = $_POST[self::RESUME_TABLE_NAME ];
 		$data['resume_date'] = date('r');
 

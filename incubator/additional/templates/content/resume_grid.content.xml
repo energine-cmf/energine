@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="resumeGrid" module="misc" class="Grid">
+        <params>
+            <param name="configFilename">misc/config/ResumeGrid.component.xml</param>
+            <param name="tableName">aux_resumes</param>
+        </params>
+    </component>
+</content>

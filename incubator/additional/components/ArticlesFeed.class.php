@@ -29,7 +29,11 @@
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('aux_articles');
     }
-
+    
+    protected function createDataDescription() {
+    	return DBDataSet::createDataDescription();
+    }
+    
     /**
      * Добавляем поле содержащее путь
      *

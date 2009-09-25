@@ -45,7 +45,7 @@
         if (is_array($result)) {
             $result = array_map(
                 create_function('$row','
-                    $row["art_url"] = Sitemap::getInstance()->getURLByID($row["smap_id"]);
+                    $row["art_url"] = Sitemap::getInstance()->getURLByID($row["smap_id"]).$row["art_id"]."/";
                     return $row;
                 '),
                 $result

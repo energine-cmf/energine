@@ -38,18 +38,25 @@ final class NavigationMenu extends SitemapTree {
 		
         //если у нас не раздел 1го уровня
 		if($parents = Sitemap::getInstance()->getParents($this->document->getID())){
-			
 			$ancestorID = key($parents);
 			//проходимся по всем прямым предкам
 			foreach ($parents as $nodeID => $node){
 				//получаем дочерние разделы
+				$nodeChilds = $this->dbh->selectRequest('
+				    SELECT s.smap_id, s.smap_pid
+				    FROM share_sitemap s
+				    LEFT JOIN share_sitemap_translation st ON s.smap_id=st.smap_id
+				    WHERE smap_pid  = '.$nodeID.' AND smap_is_disabled = 0 AND lang_id = '.Language::getInstance()->getCurrent().'
+				    ORDER BY smap_order_num ASC
+				');
+				/*
 				$nodeChilds = $this->dbh->select(
                       'share_sitemap', 
 				array('smap_id', 'smap_pid'),
 				array('smap_pid' => $nodeID),
 				array('smap_order_num' => QAL::ASC)
 				);
-
+*/
 				if(is_array($nodeChilds)){
 					$nodeChilds = array_map(
 					create_function(

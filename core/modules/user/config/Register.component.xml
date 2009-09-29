@@ -13,6 +13,9 @@
 		</translations>
 	</method>
 	<method name="checkLogin">
+      <uri_patterns>
+           <pattern>/check/</pattern>
+       </uri_patterns>
 	</method>
 	<method name="save">
 	    <uri_patterns>

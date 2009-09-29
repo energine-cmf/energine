@@ -28,7 +28,7 @@ class Register extends DBDataSet {
 	 * @var User
 	 * @access private
 	 */
-	private $user;
+	protected $user;
 
 	/**
 	 * Конструктор класса

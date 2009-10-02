@@ -192,7 +192,7 @@ final class ResumeForm extends DataSet {
 
 		$mail = new Mail();
 		$mail->setFrom($this->getConfigValue('mail.from'));
-		$mail->addTo($this->getConfigValue('misc.vacancy_email'));
+		$mail->addTo($this->getConfigValue('mail.vacancy_email'));
 		$mail->setSubject($this->translate('TXT_SUBJ_NEW_RESUME'));
 		$mail->addReplyTo($data['resume_candidate_email'], $data['resume_candidate_name']);
 		$mail->setText($this->translate('TXT_BODY_NEW_RESUME'), $data);

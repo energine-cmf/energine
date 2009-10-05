@@ -13,7 +13,7 @@
  * не катит
  */
 if (ini_get('register_globals')) {
-	die('Режим register_globals должен быть выключен.');
+	die('Register_globals directive must be turned off.');
 }
 /**
  * Хак для cgi mode, где SCRIPT_FILENAME возвращает путь к PHP, вместо пути к текущему исполняемому файлу

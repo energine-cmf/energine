@@ -10,14 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
-//require_once('core/framework/AuthUser.class.php');
-//require_once('core/framework/Language.class.php');
-//require_once('core/framework/Sitemap.class.php');
-//require_once('core/framework/Request.class.php');
-//require_once('core/framework/Response.class.php');
-//require_once('core/framework/ComponentManager.class.php');
-
 /**
  * Документ страницы.
  *
@@ -179,9 +171,10 @@ final class Document extends DBWorker {
         $this->setProperty('ID', $this->getID());
         $this->setProperty('final', $this->documentInfo['isFinal']);
 	    $this->setProperty('default', $this->sitemap->getDefault()==$this->getID());
-	    if($this->getConfigValue('google.verify')){
+	    if(($verifyCode = $this->getConfigValue('google.verify')) && !empty($verifyCode)){
 	    	$this->setProperty('google_verify', $this->getConfigValue('google.verify'));
 	    }
+	    unset($verifyCode);
 
         /*
         * Если в каком-либо компоненте происходит ошибка, не позволяющая ему

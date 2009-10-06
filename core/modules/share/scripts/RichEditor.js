@@ -206,6 +206,8 @@ var RichEditor = new Class({
 							url : this.area.getProperty('componentPath')
 									+ 'imagemanager',
 							onClose : function(image) {
+                                 //TODO Fix image margins in IE
+                                
                                 if(!image) return;
 								if ($type(this.currentRange) == 'collection') {
 									var controlRange = this.currentRange;
@@ -222,15 +224,21 @@ var RichEditor = new Class({
 									}
 									this.currentRange.select();
 								} else {
+                                   
 									if (Browser.Engine.gecko) {
 										var imgStr = '<img src="'
 												+ image.filename + '" width="'
 												+ image.width + '" height="'
 												+ image.height + '" align="'
-												+ image.align /*+ '" hspace="'
-												+ image.hspace + '" vspace="'
-												+ image.vspace */+ '" alt="'
-												+ image.alt + '" border="0" />';
+												+ image.align + '" alt="'
+												+ image.alt + '" border="0" style="';
+                                        ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'].each(function(marginProp){
+                                            if(image[marginProp] != 0){
+                                                imgStr += marginProp + ':'+image[marginProp]+'px;';
+                                            }
+                                            
+                                        });        
+                                        imgStr +='" />';
 										document.execCommand('inserthtml',
 												false, imgStr);
 										this.dirty = true;
@@ -245,11 +253,7 @@ var RichEditor = new Class({
 														+ image.height
 														+ '" align="'
 														+ image.align
-														+ '" hspace="'
-														+ image.hspace
-														+ '" vspace="'
-														+ image.vspace
-														+ '" alt="'
+			             								+ '" alt="'
 														+ image.alt
 														+ '" border="0" />');
 										this.dirty = true;
@@ -262,9 +266,7 @@ var RichEditor = new Class({
 												+ image.filename + '" width="'
 												+ image.width + '" height="'
 												+ image.height + '" align="'
-												+ image.align + '" hspace="'
-												+ image.hspace + '" vspace="'
-												+ image.vspace + '" alt="'
+												+ image.align + '" alt="'
 												+ image.alt + '" border="0" />';
 										this.currentRange.pasteHTML(imgStr);
 										this.dirty = true;

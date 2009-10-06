@@ -206,6 +206,7 @@ var RichEditor = new Class({
 							url : this.area.getProperty('componentPath')
 									+ 'imagemanager',
 							onClose : function(image) {
+                                if(!image) return;
 								if ($type(this.currentRange) == 'collection') {
 									var controlRange = this.currentRange;
 									if (controlRange(0).tagName == 'IMG') {
@@ -214,9 +215,10 @@ var RichEditor = new Class({
 										img.width = image.width;
 										img.height = image.height;
 										img.align = image.align;
-										img.hspace = image.hspace;
-										img.vspace = image.vspace;
+										/*img.hspace = image.hspace;
+										img.vspace = image.vspace;*/
 										img.alt = image.alt;
+                                        
 									}
 									this.currentRange.select();
 								} else {
@@ -225,9 +227,9 @@ var RichEditor = new Class({
 												+ image.filename + '" width="'
 												+ image.width + '" height="'
 												+ image.height + '" align="'
-												+ image.align + '" hspace="'
+												+ image.align /*+ '" hspace="'
 												+ image.hspace + '" vspace="'
-												+ image.vspace + '" alt="'
+												+ image.vspace */+ '" alt="'
 												+ image.alt + '" border="0" />';
 										document.execCommand('inserthtml',
 												false, imgStr);

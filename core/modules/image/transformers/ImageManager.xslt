@@ -8,7 +8,7 @@
         <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"  single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <ul class="tabs">
                     <li>
-                        <a href="#{$IDD}">Менеджер изображений</a>
+                        <a href="#{$IDD}"><xsl:value-of select="../@title"/></a>
                     </li>
             </ul>
             <div class="paneContainer">
@@ -17,9 +17,9 @@
                             <div>
                                 <img id="thumbnail" width="50" height="50" alt=""  style="border: thin inset; width:auto;display:block;"/>
                              </div>
-                             <div style="padding-top:20px;">
+                             <!--<div style="padding-top:20px;">
                                 <input type="checkbox" id="insThumbnail" name="insThumbnail" value="1" style="width:auto;" disabled="disabled"/><label for="insThumbnail">вставить&#160;превью</label>
-                             </div>
+                             </div>-->
                         </div>
                        <xsl:apply-templates />
                 </div>

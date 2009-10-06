@@ -5,6 +5,7 @@ var ImageManager = new Class({
     initialize: function(objID) {
         this.parent(objID);
         this.image = {};
+        this.imageMargins = ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'];
 		$('filename').disabled = true;
         var imageData = ModalBox.getExtraData();
         if (imageData != null) {
@@ -38,10 +39,12 @@ var ImageManager = new Class({
 		$('width').value  = this.image['upl_data'].width || 0;
 		$('height').value = this.image['upl_data'].height || 0;
 		$('align').value  = $('align').value  || this.image.align || '';
-		$('hspace').value = $('hspace').value || this.image.hspace || '0';
-		$('vspace').value = $('vspace').value || this.image.vspace || '0';
+        this.imageMargins.each(function(propertyName){
+            $(propertyName).value = $(propertyName).value || this.image['propertyName'] || '0';            
+            
+        }, this);
 		$('alt').value    = $('alt').value    || this.image['upl_name'] || '';
-		$('insThumbnail').checked = this.image.insertThumbnail;
+		//$('insThumbnail').checked = this.image.insertThumbnail;
     },
 
     insertImage: function() {
@@ -50,11 +53,12 @@ var ImageManager = new Class({
             this.image.width     = parseInt($('width').value) || '';
             this.image.height    = parseInt($('height').value) || '';
             this.image.align     = $('align').value || '';
-            this.image.hspace    = parseInt($('hspace').value) || 0;
-            this.image.vspace    = parseInt($('vspace').value) || 0;
+            this.imageMargins.each(function(propertyName){
+                this.image[propertyName] =  parseInt($(propertyName).value) || 0;
+            }, this);
             this.image.alt       = $('alt').value;
             this.image.thumbnail = $('thumbnail').src;
-            this.image.insertThumbnail = $('insThumbnail').checked;
+            //this.image.insertThumbnail = $('insThumbnail').checked;
             ModalBox.setReturnValue(this.image)
         }
         this.close();

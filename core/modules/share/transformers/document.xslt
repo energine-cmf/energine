@@ -28,7 +28,7 @@
         		</xsl:choose>
                 <link rel="stylesheet" type="text/css" href="stylesheets/energine.css" />
                 <xsl:if test="$DOC_PROPS[@name='google_verify']">
-                    <meta name="verify-v1" content="{$DOC_PROPS[@name='google_verify']}"/>
+                    <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
                 </xsl:if>
                 <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}" />
                 <meta name="description" content="{$DOC_PROPS[@name='description']}" />

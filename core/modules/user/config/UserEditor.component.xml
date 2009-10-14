@@ -3,19 +3,21 @@
 	<methods>
 		<method name="main">
 			<javascript>
-				<object name="GridManager"/>
+				<object name="UserManager"/>
 			</javascript>
 			<fields>
 				<field name="u_id"/>
+                <field name="u_is_active"/>
 				<field name="u_fullname"/>
 				<field name="u_name"/>
-				
 				<field name="u_group" type="text" title="FIELD_U_GROUP"/>
 			</fields>
 			<toolbar>
 				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
 				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+				<control id="sep1" type="separator"></control>
+				<control id="activate" title="BTN_ACTIVATE" type="button" onclick="activate"/>
 			</toolbar>
 		</method>
 		<method name="add" >
@@ -77,6 +79,11 @@
             <uri_patterns>
                 <pattern>/file-library/</pattern>
                 <pattern>/file-library/[string]/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="activate" rights="3">
+            <uri_patterns>
+                <pattern>/[int]/activate/</pattern>
             </uri_patterns>
         </method>
 	</methods>

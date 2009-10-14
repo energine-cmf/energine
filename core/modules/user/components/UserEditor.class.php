@@ -105,6 +105,42 @@ class UserEditor extends Grid {
 
         return $result;
     }
+    /**
+     * toggles user activity status
+     * 
+     * @return void
+     * @access protected
+     */
+    protected function activate(){
+    	$transactionStarted = $this->dbh->beginTransaction();
+        try {
+            list($id) = $this->getActionParams();
+            if (!$this->recordExists($id)) {
+                throw new SystemException('ERR_404', SystemException::ERR_404);
+            }
+            
+	        if ($this->document->user->getID() == $id) {
+	           throw new SystemException('ERR_CANT_ACTIVATE_YOURSELF', SystemException::ERR_CRITICAL);
+	        }
+	        
+            $this->dbh->modifyRequest('UPDATE '.$this->getTableName().' SET u_is_active = NOT u_is_active WHERE u_id = %s', $id);
+
+            $JSONResponse = array(
+            'result'=>true
+            );
+            $this->dbh->commit();
+        }
+        catch (SystemException $e){
+            if ($transactionStarted) {
+                $this->dbh->rollback();
+            }
+            $JSONResponse = $this->generateError($e->getCode(), $e->getMessage());
+
+        }
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write(json_encode($JSONResponse));
+        $this->response->commit();        
+    }
 
     /**
      * Для метода редактирования убирается пароль

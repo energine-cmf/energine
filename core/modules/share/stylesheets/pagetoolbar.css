@@ -1,7 +1,84 @@
-body {
-	position: relative;	
-	margin-top: 25px;
+/* ----- base ---- */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;           
 }
+html {
+    /* 
+        Для этого блока применяется метод перевода боксовой модели в модель border-box, 
+        что дает возможность создать сверху блока отступ при 100% высоте блока.
+        В IE6 для html отступ не добавляется к высоте, поэтому для него ничего отдельно не нужно делать. 
+    */
+    -moz-box-sizing: border-box; /* Firefox 2+ */
+    -ms-box-sizing: border-box; /* IE 8 */
+    -khtml-box-sizing: border-box; /* Konquerror */
+    -webkit-box-sizing: border-box; /* Safari 3+ */
+    box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
+}
+html.e-has-topframe1 {              
+    padding-top: 25px; /* отступ для размещения верхней панели, ограничение - фиксированная высота панели */
+}
+html.e-has-topframe2 {              
+    padding-top: 50px; /* отступ для размещения верхней панели, ограничение - фиксированная высота панели */
+}
+.e-has-sideframe body {             
+    padding-left: 300px; /* этот отступ создает нужные две колонки правая из которых фиксированная, а левая - растягивается на оставшуюся ширину окна */
+}
+/* ----- /base ---- */            
+/* ----- e_frames ----- */          
+.e-topframe {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    min-height: 25px;
+    /*background: lightblue;*/
+}
+.e-has-topframe1 .e-topframe, .e-has-topframe2 .e-topframe {
+    display: block;
+}
+.e-has-sideframe .e-topframe {
+    _left: 300px;
+}
+
+.e-mainframe {
+    float: left;
+    width: 100%;
+    height: 100%;               
+    overflow: auto;
+    margin-right: -100%;
+    /*background: lightyellow;*/
+    _clear: right;                          
+}
+
+.e-sideframe {
+    display: none;
+    position: relative;
+    left: -300px;                   
+    float: left;
+    width: 300px;
+    height: 100%;
+    overflow: auto;
+    /*background: lightgreen;*/
+    _clear: right;                      
+}
+.e-has-sideframe .e-sideframe {
+    display: block;
+}
+.e-sideframe iframe {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 0;
+}
+/* /side frame */                   
+/* ----- /e_frames ----- */
+
 
 ul#pageToolbar.toolbar {
 	position: fixed;

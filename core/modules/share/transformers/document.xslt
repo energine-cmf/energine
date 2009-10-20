@@ -66,7 +66,18 @@
         					<xsl:for-each select="$COMPONENTS[@name='pageToolBar']/toolbar/control">
         					    <xsl:choose>
         					        <xsl:when test="@type='button'">
-                                        pageToolbar.appendControl(new Toolbar.Button({ id: '<xsl:value-of select="@id" />', title: '<xsl:value-of select="@title" />', action: '<xsl:value-of select="@onclick" />' }));
+                                        pageToolbar.appendControl(
+                                            new Toolbar.Button(
+                                                { 
+                                                    id: '<xsl:value-of select="@id" />', 
+                                                    title: '<xsl:value-of select="@title" />', 
+                                                    action: '<xsl:value-of select="@onclick" />'
+                                                    <xsl:if test="@icon">
+                                                        ,icon: '<xsl:value-of select="@icon" />' 
+                                                    </xsl:if> 
+                                                }
+                                            )
+                                        );
                                     </xsl:when>
                                     <xsl:when test="@type='separator'">
                                         pageToolbar.appendControl(new Toolbar.Separator({ id: '<xsl:value-of select="@id" />' }));

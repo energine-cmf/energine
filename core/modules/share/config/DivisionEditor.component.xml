@@ -187,6 +187,7 @@
 			</uri_patterns>
 			<toolbar>
 				<control id="editMode" title="BTN_EDIT_MODE" type="button" onclick="editMode"/>
+				<control id="sep1" type="separator"/>
 				<control id="add" title="BTN_ADD_PAGE" type="button" onclick="add"/>
 				<control id="edit" title="BTN_EDIT_PAGE" type="button" onclick="edit" />
 				<control id="sep5" type="separator"/>

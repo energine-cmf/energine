@@ -1,6 +1,6 @@
 div#treeContainer {
     width: 99%;
-    height: 485px;
+    height: 100%;
     overflow: auto;
     padding-left: 4px;
     border: 1px solid #B1AFA9;

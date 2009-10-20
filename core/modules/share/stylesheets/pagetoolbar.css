@@ -75,6 +75,7 @@ html.e-has-topframe2 {
     height: 100%;
     overflow: hidden;
     border: 0;
+    display:block;
 }
 /* /side frame */                   
 /* ----- /e_frames ----- */

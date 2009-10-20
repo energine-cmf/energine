@@ -4,6 +4,7 @@
 		<method name="main">
 			<uri_patterns>
 				<pattern>/show/</pattern>
+				<pattern>/show/[int]/</pattern>
 			</uri_patterns>
 			<javascript>
 				<object name="DivManager"/>
@@ -186,12 +187,14 @@
 				<pattern>/show-toolbar/</pattern>
 			</uri_patterns>
 			<toolbar>
+    			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/next_page.gif" onclick="toggleSidebar"/>
+    			<control id="sep1" type="separator"/>
 				<control id="editMode" title="BTN_EDIT_MODE" type="button" onclick="editMode"/>
-				<control id="sep1" type="separator"/>
+				<control id="sep2" type="separator"/>
 				<control id="add" title="BTN_ADD_PAGE" type="button" onclick="add"/>
 				<control id="edit" title="BTN_EDIT_PAGE" type="button" onclick="edit" />
 				<control id="sep5" type="separator"/>
-				<control id="divEditor" title="BTN_DIV_EDITOR" type="button" onclick="showDivEditor"/>
+				<!-- <control id="divEditor" title="BTN_DIV_EDITOR" type="button" onclick="showDivEditor"/>-->
 				<control id="templateEditor" title="BTN_TMPL_EDITOR" type="button" onclick="showTmplEditor"/>
 				<control id="transEditor" title="BTN_TRANS_EDITOR" type="button" onclick="showTransEditor"/>
 				<control id="sep6" type="separator"/>

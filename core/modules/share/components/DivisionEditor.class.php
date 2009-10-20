@@ -278,6 +278,39 @@ final class DivisionEditor extends Grid {
 
         return $result;
     }
+    
+    protected function getRawData($baseMethod = self::DEFAULT_ACTION_NAME){
+         try {
+            $this->setParam('onlyCurrentLang', true);
+            $this->config->setCurrentMethod($baseMethod);
+            $this->setBuilder(new JSONDivBuilder());
+            
+            $this->setDataDescription($this->createDataDescription());
+            $this->getBuilder()->setDocumentId($this->document->getID());
+            $this->getBuilder()->setDataDescription($this->getDataDescription());
+            
+            $data = $this->createData();
+            if ($data instanceof Data) {
+                $this->setData($data);
+                $this->getBuilder()->setData($this->getData());
+            }
+
+            if ($this->getBuilder()->build()) {
+                $result = $this->getBuilder()->getResult();
+            }
+            else {
+                $result = $this->getBuilder()->getErrors();
+            }
+
+        }
+        catch (Exception $e){
+            $message['errors'][] = array('message'=>$e->getMessage().current($e->getCustomMessage()));
+            $result = json_encode(array_merge(array('result'=>false, 'header'=>$this->translate('TXT_SHIT_HAPPENS')), $message));
+        }
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write($result);
+        $this->response->commit();	
+    }
 
     /**
      * Подменяем построитель для метода setPageRights
@@ -474,6 +507,12 @@ final class DivisionEditor extends Grid {
 
      protected function main() {
         parent::main();
+        /*
+        $params = $this->getActionParams();
+        if(!empty($params)){
+        	list($openItemID) = $params;
+        	$this->setProperty('openItem', $openItemID);
+        }*/
         $this->addTranslation('TXT_DIVISIONS');
      }
 

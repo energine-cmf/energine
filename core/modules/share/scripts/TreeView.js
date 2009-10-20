@@ -23,7 +23,21 @@ var TreeView = new Class({
         }
         return false;
     },
-
+    expandToNode: function(nodeId){
+        var nodes = [];
+        var lambda = function(node){
+            var n;
+            if(n = node.getParent()){
+                nodes.push(n);
+                lambda(n);
+            }    
+        };
+        lambda(this.getNodeById(nodeId));
+        nodes.reverse();
+        nodes.each(function(node){
+            node.expand();
+        });
+    },
     expandAllNodes: function() {
         for (var i = 0, len = this.nodes.length; i < len; this.nodes[i].expand(), i++);
     },

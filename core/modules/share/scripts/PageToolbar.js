@@ -30,7 +30,7 @@ var PageToolbar = new Class({
         
         new Element('iframe').setProperties(
                 {
-                    'src': this.componentPath + 'show',
+                    'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
                     'frameBorder': '0',
                     'scrolling': 'no'
                 }
@@ -53,8 +53,8 @@ var PageToolbar = new Class({
 	    ModalBox.open({ 'url': this.componentPath + this.documentId + '/edit' });
 	},
 
-	showDivEditor: function() {
-	    ModalBox.open({ 'url': this.componentPath + 'show' });
+	toggleSidebar: function() {
+        $$('html').toggleClass('e-has-sideframe');
 	},
 
     showTmplEditor: function() {

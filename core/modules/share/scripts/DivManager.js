@@ -42,11 +42,11 @@ var DivManager = new Class({
             this.singlePath+'get-data',
             'languageID='+this.langId,
             function(response) {
-                this.buildTree(response.data);
+                this.buildTree(response.data, (response.current)?response.current:null);
             }.bind(this)
         );
     },
-    buildTree: function(nodes) {
+    buildTree: function(nodes, currentNodeID) {
         var treeInfo = {};
         for (var i = 0, len = nodes.length; i < len; i++) {
             var node = nodes[i];
@@ -79,7 +79,9 @@ var DivManager = new Class({
 
         this.tree.setupCssClasses();
         this.treeRoot.expand();
-        this.treeRoot.select();
+        this.tree.expandToNode(currentNodeID)
+        this.tree.getNodeById(currentNodeID).select();
+        //this.treeRoot.select();
     },
 
     reload: function(really) {

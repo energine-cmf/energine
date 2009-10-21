@@ -20,7 +20,6 @@ var DivSidebar = new Class({
         this.loadTree();  
     },
     attachToolbar: function(toolbar) {
-        console.log(this);
         this.toolbar = toolbar;
         this.toolbar.getElement().inject(this.element, 'top');
         this.toolbar.disableControls();

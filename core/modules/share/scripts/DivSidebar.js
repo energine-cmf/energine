@@ -22,7 +22,7 @@ var DivSidebar = new Class({
     attachToolbar: function(toolbar) {
         console.log(this);
         this.toolbar = toolbar;
-        this.element.adopt(this.toolbar.getElement());
+        this.toolbar.getElement().inject(this.element, 'top');
         this.toolbar.disableControls();
         var addBtn, selectBtn;
         if (addBtn = this.toolbar.getControlById('add')) {

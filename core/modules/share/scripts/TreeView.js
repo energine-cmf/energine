@@ -3,7 +3,6 @@ var TreeView = new Class({
     selectedNode: null,
 
     initialize: function(element) {
-        console.log(element);
         this.element = $(element);
         this.nodes = [];
         this.element.getElements('li').each(function(item) {

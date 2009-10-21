@@ -27,14 +27,13 @@ var DivManager = new Class({
         this.toolbar = toolbar;
         this.element.adopt(this.toolbar.getElement());
         this.toolbar.disableControls();
-        var addBtn, selectBtn;
-        if (addBtn = this.toolbar.getControlById('add')) {
-            addBtn.enable();
-        }
-        if (selectBtn = this.toolbar.getControlById('select')) {
-            selectBtn.enable();
-        }
-        this.toolbar.getControlById('close').enable();
+        var btn;
+        ['add', 'select', 'close'].each(function(btnID){
+            var btn;
+            if (btn = this.toolbar.getControlById(btnID)) {
+                btn.enable();
+            }
+        }, this);
     },
 
     loadTree: function() {
@@ -181,8 +180,11 @@ var DivManager = new Class({
             if(addBtn) addBtn.enable();
             if(selectBtn)selectBtn.enable();
         }
-
-        this.toolbar.getControlById('close').enable();
+        
+        if (btn = this.toolbar.getControlById('close')) {
+            btn.enable();
+        }
+        
     },
 	refreshNode: function() {
 	    var nodeId = this.tree.getSelectedNode().getId();

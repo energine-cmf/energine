@@ -1,9 +1,15 @@
 var TreeView = new Class({
-
+    options: {
+        dblClick:$empty
+    },
+    Implements: Options,
     selectedNode: null,
 
-    initialize: function(element) {
+    initialize: function(element, options) {
         this.element = $(element);
+        this.options.dblClick = this.nodeToggleListener;
+        this.setOptions(options);
+        
         this.nodes = [];
         this.element.getElements('li').each(function(item) {
             this.nodes.push(new TreeView.Node(item, this));
@@ -165,7 +171,7 @@ TreeView.Node = new Class({
         this.opened = this.element.hasClass('opened');
 
         this.element.addEvent('click', this.tree.nodeToggleListener);
-        this.anchor.addEvent('dblclick', this.tree.nodeToggleListener);
+        this.anchor.addEvent('dblclick', this.tree.options.dblClick);
         this.anchor.addEvent('click', this.tree.nodeSelectListener);
     },
 

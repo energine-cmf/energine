@@ -13,7 +13,7 @@ var DivSidebar = new Class({
             )
         );
         this.langId = this.element.getProperty('lang_id');
-        this.tree = new TreeView('divTree');
+        this.tree = new TreeView('divTree', {dblClick: this.go.bind(this)});
         this.treeRoot = this.tree.getSelectedNode();
         this.treeRoot.onSelect = this.onSelectNode.bind(this);
         this.singlePath = this.element.getProperty('single_template');

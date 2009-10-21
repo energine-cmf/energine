@@ -19,14 +19,14 @@ var PageToolbar = new Class({
         if((Cookie.read('sidebar')== null) || (Cookie.read('sidebar') == 1))
             $$('html')[0].addClass('e-has-sideframe');
         
-        var currentBody = document.body.getChildren();
+        var currentBody = $(document.body).getChildren();
         
         var mainFrame = new Element('div', {'class': 'e-mainframe'});
         var topFrame = new Element('div', {'class':'e-topframe'});
         var sidebarFrame = new Element('div', {'class':'e-sideframe'});
         var sidebarFrameContent = new Element('div', {'class':'e-sideframe-content'});
         var sidebarFrameBorder = new Element('div', {'class':'e-sideframe-border'});
-        document.body.adopt([topFrame, mainFrame, sidebarFrame]);
+        $(document.body).adopt([topFrame, mainFrame, sidebarFrame]);
         mainFrame.adopt(currentBody);
         sidebarFrame.adopt([sidebarFrameContent, sidebarFrameBorder]);
         

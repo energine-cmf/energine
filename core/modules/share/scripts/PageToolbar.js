@@ -15,8 +15,9 @@ var PageToolbar = new Class({
         this.bindTo(this);
     },
     createAdminMap: function(){
-        $$('html').addClass('e-has-topframe1');
-        $$('html').addClass('e-has-sideframe');
+        $$('html')[0].addClass('e-has-topframe1');
+        if((Cookie.read('sidebar')== null) || (Cookie.read('sidebar') == 1))
+            $$('html')[0].addClass('e-has-sideframe');
         
         var currentBody = document.body.getChildren();
         
@@ -54,7 +55,8 @@ var PageToolbar = new Class({
 	},
 
 	toggleSidebar: function() {
-        $$('html').toggleClass('e-has-sideframe');
+        $$('html')[0].toggleClass('e-has-sideframe');
+        Cookie.write('sidebar', $$('html')[0].hasClass('e-has-sideframe')?1:0, {path:new URI(Energine.base).get('directory')});
 	},
 
     showTmplEditor: function() {

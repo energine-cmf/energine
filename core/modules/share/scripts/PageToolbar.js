@@ -23,9 +23,12 @@ var PageToolbar = new Class({
         
         var mainFrame = new Element('div', {'class': 'e-mainframe'});
         var topFrame = new Element('div', {'class':'e-topframe'});
-        var sidebarFrame = new Element('div', {'class':'e-sideframe'})
+        var sidebarFrame = new Element('div', {'class':'e-sideframe'});
+        var sidebarFrameContent = new Element('div', {'class':'e-sideframe-content'});
+        var sidebarFrameBorder = new Element('div', {'class':'e-sideframe-border'});
         document.body.adopt([topFrame, mainFrame, sidebarFrame]);
         mainFrame.adopt(currentBody);
+        sidebarFrame.adopt([sidebarFrameContent, sidebarFrameBorder]);
         
         topFrame.grab(this.element);
         
@@ -35,7 +38,7 @@ var PageToolbar = new Class({
                     'frameBorder': '0',
                     'scrolling': 'no'
                 }
-        ).injectInside(sidebarFrame);
+        ).injectInside(sidebarFrameContent);
     },
 
     // Actions:

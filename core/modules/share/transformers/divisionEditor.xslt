@@ -5,6 +5,7 @@
     Компонент Редактора разделов
 -->
 
+
 <!-- Вывод дерева разделов -->
 <xsl:template match="recordset[parent::component[@class='DivisionEditor'][@type='list']]">
     <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"  single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
@@ -25,6 +26,12 @@
                 <div id="treeContainer"></div>
             </div>
         </div>
+    </div>
+</xsl:template>
+
+<xsl:template match="recordset[parent::component[@class='DivisionEditor'][@componentAction='main'][@type='list']]">
+    <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"  lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+        <div id="treeContainer"></div>
     </div>
 </xsl:template>
 

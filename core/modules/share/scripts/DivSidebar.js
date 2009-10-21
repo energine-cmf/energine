@@ -1,0 +1,35 @@
+ScriptLoader.load('DivManager.js');
+var DivSidebar = new Class({
+    Extends: DivManager,
+
+    initialize: function(element) {
+        Asset.css('treeview.css');
+        Asset.css('div.css');
+
+        this.element = $(element);
+        new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
+            new Element('li').setProperty('id', 'treeRoot').addClass('folder').adopt(
+                new Element('a').setProperty('href', '#').addClass('folder').setStyle('font-weight', 'bold').set('html', TXT_DIVISIONS)
+            )
+        );
+        this.langId = this.element.getProperty('lang_id');
+        this.tree = new TreeView('divTree');
+        this.treeRoot = this.tree.getSelectedNode();
+        this.treeRoot.onSelect = this.onSelectNode.bind(this);
+        this.singlePath = this.element.getProperty('single_template');
+        this.loadTree();  
+    },
+    attachToolbar: function(toolbar) {
+        console.log(this);
+        this.toolbar = toolbar;
+        this.element.adopt(this.toolbar.getElement());
+        this.toolbar.disableControls();
+        var addBtn, selectBtn;
+        if (addBtn = this.toolbar.getControlById('add')) {
+            addBtn.enable();
+        }
+        if (selectBtn = this.toolbar.getControlById('select')) {
+            selectBtn.enable();
+        }
+    }
+});

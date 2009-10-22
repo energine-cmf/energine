@@ -166,7 +166,9 @@ TreeView.Node = new Class({
 
         this.element.treeNode = this;
         this.anchor = this.element.getElement('a');
-
+        if(nodeInfo.data && nodeInfo.data['class']){
+            this.anchor.addClass(nodeInfo.data['class']);
+        }
         this.childs = this.element.getElement('ul');
         this.opened = this.element.hasClass('opened');
 

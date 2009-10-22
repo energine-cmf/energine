@@ -17,3 +17,11 @@
 .treeview a:hover, .treeview a.folder:hover, .treeview li.selected li a:hover { background-color: #FF8; color: #000; }
 .treeview li.selected a, .treeview li.selected a:hover { background-color: #36C; color: #FFF; }
 .treeview li.selected li a { background-color: transparent; color: #000; }
+
+.treeview a.final { 
+    font-style: italic;
+}
+.treeview a.current { 
+    font-weight: bold;
+    color:green;
+}

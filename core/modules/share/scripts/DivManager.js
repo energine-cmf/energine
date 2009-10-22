@@ -66,7 +66,15 @@ var DivManager = new Class({
                 }
                 else{
                     var childId = child['smap_id'];
-                    var newNode = new TreeView.Node({ id: childId, name: child['smap_name'] }, this.tree);
+                    var newNode = new TreeView.Node({ 
+                        id: childId, 
+                        name: child['smap_name'], 
+                        data:{
+                            'class':
+                                ((child['smap_is_final'])?'final':'') +
+                                ((childId == currentNodeID)?' current':'')
+                        } 
+                    }, this.tree);
                     newNode.setData(child);
                     newNode.onSelect = this.onSelectNode.bind(this);
                     node.adopt(newNode);

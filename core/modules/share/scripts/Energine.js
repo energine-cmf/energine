@@ -175,17 +175,6 @@ var Label = {
 	}
 }
 
-// Разбиваем строку URL на путь и имя файла
-var getPathInfo = function(str) {
-	var re = new RegExp("(.*)/([A-Za-z0-9\-_\. ]+\.[A-Za-z0-9\-_]+)$", "gi");
-	var arr = re.exec(str);
-
-	return {
-		'path' : RegExp.$1,
-		'filename' : RegExp.$2
-	};
-}
-
 var showhideField = function(obj, fieldName, fieldLanguage) {
 	var fieldLanguage = fieldLanguage || '';
 	var obj = $(obj);

@@ -32,13 +32,10 @@ var PageToolbar = new Class({
         
         topFrame.grab(this.element);
         
-        new Element('iframe').setProperties(
-                {
+        new Element('iframe').setProperties({
                     'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
-                    'frameBorder': '0',
-                    'scrolling': 'no'
-                }
-        ).injectInside(sidebarFrameContent);
+                    'frameBorder': '0'
+       }).injectInside(sidebarFrameContent);
     },
 
     // Actions:

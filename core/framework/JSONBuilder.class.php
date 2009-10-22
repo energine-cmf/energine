@@ -83,6 +83,12 @@ class JSONBuilder extends Builder {
                                 $fieldValue = strftime($fieldInfo->getPropertyValue('outputFormat'), $fieldValue);
                             }
                             break;
+                        case FieldDescription::FIELD_TYPE_IMAGE:
+                            if ($fieldValue) {
+                                if(file_exists(dirname($fieldValue).'/.'.basename($fieldValue)))
+                                    $fieldValue = dirname($fieldValue).'/.'.basename($fieldValue);    
+                            }
+                        	break;    
                         case FieldDescription::FIELD_TYPE_SELECT:
                             $value = $fieldInfo->getAvailableValues();
                             if (isset($value[$fieldValue])) {

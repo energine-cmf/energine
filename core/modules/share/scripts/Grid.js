@@ -183,9 +183,7 @@ var Grid = new Class({
             }
             else if (this.metadata[fieldName].type == 'image') {
                 if(record[fieldName]){
-                    var uri = new URI(record[fieldName]);
-                    uri.set('filename', '.' + uri.get('filename'));
-                    var image = new Element('img').setProperties({ 'src': uri.toString(), 'width':50, 'height':50 }).injectInside(cell);
+                    var image = new Element('img').setProperties({ 'src': record[fieldName], 'width':50, 'height':50 }).injectInside(cell);
                     cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });                    
                 }
             }

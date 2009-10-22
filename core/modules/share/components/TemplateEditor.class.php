@@ -31,6 +31,36 @@ class TemplateEditor extends Grid {
         $this->setOrderColumn('tmpl_order_num');
         $this->setOrder(array('tmpl_order_num' =>QAL::ASC));
     }
+    
+    protected function createDataDescription(){
+        $result = parent::createDataDescription();
+        if($iconField = $result->getFieldDescriptionByName('tmpl_icon')){
+	        $iconField->setType(FieldDescription::FIELD_TYPE_IMAGE);
+        	if(in_array($this->getAction(), array('add', 'edit'))){
+	            $iconField->setType(FieldDescription::FIELD_TYPE_SELECT);
+                $iconField->loadAvailableValues(
+                $this->loadIconsData(),            
+                'key','value');	                    	
+	        }
+        }
+        return $result;
+    }
+    private function loadIconsData(){
+    	$result = array();
+        foreach(glob("templates/icons/*.gif") as $path){
+        	$result[] = array(
+        	   'key' => $path,
+        	   'value' => basename($path) 
+        	);
+        }
+        
+    	return $result;
+    }
+    
+    protected function createData(){
+    	$result = parent::createData();
+    	return $result;
+    }
 
     protected function edit(){
     	parent::edit();

@@ -100,7 +100,7 @@
                         }
                         catch (e) {
                                 //console.error(e);
-                                //alert(e.message);
+                                alert(e.message);
                         }
                     }
                     window.addEvent('domready', init);

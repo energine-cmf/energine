@@ -296,9 +296,14 @@ abstract class DataSet extends Component {
 	protected function createToolbar() {
 		$toolbar = false;
 		if ($this->config->getCurrentMethodConfig()) {
-			$toolbar = new Toolbar(self::TB_PREFIX.$this->getName());
+			$toolbarDescription = $this->config->getCurrentMethodConfig()->toolbar;
+			$toolbar = new Toolbar(
+			 ((string)$toolbarDescription['name'])?
+			     (string)$toolbarDescription['name']:
+			     self::TB_PREFIX.$this->getName()
+			);
 			$toolbar->attachToComponent($this);
-			$toolbar->loadXML($this->config->getCurrentMethodConfig()->toolbar);
+			$toolbar->loadXML($toolbarDescription);
 			$toolbar->translate();
 		}
 

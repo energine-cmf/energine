@@ -6,3 +6,11 @@ div#treeContainer {
     border: 1px solid #B1AFA9;
     font: 12px Tahoma, sans-serif;
 }
+
+.treeview a.final { 
+    font-style: italic;
+}
+.treeview a.current { 
+    font-weight: bold;
+    color:green;
+}

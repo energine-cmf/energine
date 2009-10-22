@@ -25,9 +25,12 @@ var Toolbar = new Class({
 
     initialize: function(toolbarName) {
         Asset.css('toolbar.css');
+        this.name = toolbarName;
         this.element = new Element('ul').addClass('toolbar').addClass('clearfix');
+        if(this.name){
+            this.element.addClass(this.name);
+        }
         this.controls = [];
-		this.name = toolbarName;
 	},
 
     getElement: function() {

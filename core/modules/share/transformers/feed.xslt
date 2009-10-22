@@ -33,10 +33,7 @@
         </xsl:if>
 		<div class="date"><strong><xsl:value-of select="field[@name='news_date']" /></strong></div>
 		<h4>
-			<xsl:choose>
-				<xsl:when test="field[@name='has_text'] = 1"><a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{translate(field[@name='news_date'], '/', '-')}/"><xsl:value-of select="field[@name='news_title']" /></a></xsl:when>
-				<xsl:otherwise><xsl:value-of select="field[@name='news_title']" /></xsl:otherwise>
-			</xsl:choose>			
+            <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{translate(field[@name='news_date'], '/', '-')}/"><xsl:value-of select="field[@name='news_title']" /></a>
 		</h4>
 		<div class="anounce"><xsl:value-of select="field[@name='news_announce_rtf']" disable-output-escaping="yes" /></div>
     </li>

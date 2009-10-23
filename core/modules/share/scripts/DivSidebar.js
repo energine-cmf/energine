@@ -17,6 +17,7 @@ var DivSidebar = new Class({
         this.treeRoot = this.tree.getSelectedNode();
         this.treeRoot.onSelect = this.onSelectNode.bind(this);
         this.singlePath = this.element.getProperty('single_template');
+        $$('html')[0].addClass('e-divtree-panel');
         this.loadTree();  
     },
     attachToolbar: function(toolbar) {

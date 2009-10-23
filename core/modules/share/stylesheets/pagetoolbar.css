@@ -61,7 +61,7 @@ html.e-has-topframe2 {
     height: 100%;               
     overflow: auto;
     margin-right: -100%;
-    _clear: right;                  
+    _clear: right;                
 }
 
 .e-sideframe {
@@ -115,13 +115,13 @@ ul#pageToolbar.toolbar {
 	width: 100%;
 	_width: expression(eval(document.body.clientWidth - 28));
 	*/
-	min-height: 24px;
-	_height: 24px;	
+	min-height: 24px;		
 	margin: 0 !important;
 	padding: 0 0 0 28px !important;
 	border-bottom: 1px solid #AAA;
 	background: #EED url(../images/toolbar/pagetb_logo.gif) left top no-repeat;
 	color: black;
+	_height: 24px;
 }
 .e-has-sideframe ul#pageToolbar { /* костыль для IE6, который не может растянуть верхний фрейм на всю ширину body */
     _position: relative;

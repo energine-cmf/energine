@@ -10,26 +10,53 @@
     -khtml-box-sizing: border-box; /* Konquerror */
     -webkit-box-sizing: border-box; /* Safari 3+ */
     box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
-    display: table;
-    width: 100%;
     height: 100%;
+    padding: 26px 1px 1px 1px;
     border: 10px solid #f8f8ed;
-    border-collapse: separate;
-    border-spacing: 1px;
+    border-top: 15px solid #f8f8ed; 
     background: #aaaaaa;
-    *display: block;
-    *width: auto;
-    *padding: 1px;
 }
-.e-divtree-panel body {
-    display: table-cell;
+.e-divtree-panel body {    
     height: 100%;
+    padding: 0;
     background: #fff;
+}
+.e-divtree-panel form {
+    position: relative;   
+    height: 100%;
+}
+.e-divtree-panel form div {
+    height: 100%;
 }
 .e-divtree-main {
-    padding: 30px 0 0 4px;
-    background: #fff;
-    font: 12px Tahoma, sans-serif;    
+    height: 100%;
+    overflow: auto;
+    padding: 0 0 0 4px;
+    font: 12px Tahoma, sans-serif;        
+}
+.treeview a.final { 
+    font-style: italic;
+}
+.treeview a.current { 
+    font-weight: bold;
+    color: green;
+}
+
+/* тулбар дерева подразделов в боковой панели */
+.e-divtree-panel .e-divtree-toolbar {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    margin: 0 !important;
+    padding: 2px 0 !important;
+}
+.e-divtree-panel .e-divtree-toolbar li.icon {
+    margin: 0 2px !important;
+}
+.e-divtree-panel .e-divtree-toolbar li.separator {
+    height: 16px !important;
 }
 
 /* дерево подразделов в модальном окне */
@@ -40,32 +67,4 @@
     padding-left: 4px;
     border: 1px solid #B1AFA9;
     font: 12px Tahoma, sans-serif;
-}
-
-/* тулбар дерева подразделов в боковой панели */
-.e-divtree-toolbar {
-    position: fixed;        
-    top: -1px;
-    left: 10px;
-    right: 10px;        
-    z-index: 1;
-    border-top: 10px solid #f8f8ed;
-    border-bottom: 1px solid #aaaaaa;
-    _position: absolute;
-    _top: expression(eval(document.documentElement.scrollTop - 1));
-    _left: 0;
-    _right: 0;
-    _width: expression(eval(document.documentElement.offsetWidth - 24));
-    _border-top: 0;   
-}
-.e-divtree-toolbar li.separator {
-    height: 16px !important;
-}
-
-.treeview a.final { 
-    font-style: italic;
-}
-.treeview a.current { 
-    font-weight: bold;
-    color:green;
 }

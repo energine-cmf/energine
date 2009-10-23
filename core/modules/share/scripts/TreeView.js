@@ -157,8 +157,12 @@ TreeView.Node = new Class({
         }
         else {
             this.element = new Element('li').adopt(
-                new Element('a').setProperty('href', '#').set('html', nodeInfo['name']).
-                grab(new Element('img').setProperty('src', nodeInfo.data.icon), 'top')
+                new Element('a')
+                    .setProperties({
+                        'href': '#'
+                    })
+                    .setStyle('background','url(' + nodeInfo.data.icon + ') left top no-repeat')
+                    .set('html', nodeInfo['name'])
             );
             this.id = nodeInfo['id'];
             this.data = nodeInfo['data'];

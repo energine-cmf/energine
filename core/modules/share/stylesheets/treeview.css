@@ -12,8 +12,27 @@
 .treeview li.folder.last { background: #FFF url(../images/treeview/closed_last.gif) left -3px no-repeat; }
 .treeview li.folder.opened.last { background: #FFF url(../images/treeview/opened_last.gif) left -3px no-repeat; }
 
-.treeview a { padding: 2px; color: #000; text-decoration: none; }
-.treeview a.folder { padding-left: 21px; background: url(../images/treeview/folder.gif) left top no-repeat; }
-.treeview a:hover, .treeview a.folder:hover, .treeview li.selected li a:hover { background-color: #FF8; color: #000; }
+.treeview a { 
+	padding: 2px; 
+	color: #000; 
+	text-decoration: none;
+    /*padding-left: 21px; */
+}
+.treeview a img{
+    border:0;
+    padding:0;
+    margin:0;
+    vertical-align:middle;
+    width:16px;
+    height:16px;
+}
+/*
+.treeview a.folder { 
+	padding-left: 21px; 
+	background: url(../images/treeview/folder.gif) left top no-repeat; 
+}*/
+.treeview a:hover/*, .treeview a.folder:hover,*/ .treeview li.selected li a:hover { 
+	background-color: #FF8; color: #000; 
+}
 .treeview li.selected a, .treeview li.selected a:hover { background-color: #36C; color: #FFF; }
 .treeview li.selected li a { background-color: transparent; color: #000; }

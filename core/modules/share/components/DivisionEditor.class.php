@@ -273,7 +273,24 @@ final class DivisionEditor extends Grid {
     protected function loadData() {
         $result = parent::loadData();
         if($result && $this->getAction() == 'getRawData') {
-            $result = array_map(create_function('$val', '$val["smap_segment"] = SiteMap::getInstance()->getURLByID($val["smap_id"]); return $val;'), $result);
+        	//Используется GLOBALS поскольку нет другой возможности передать 
+        	//в runtime created function посторонее значение 
+        	$GLOBALS['__SMAP2ICONS'] = convertDBResult($this->dbh->selectRequest('
+	        	SELECT DISTINCT t.tmpl_icon, s.smap_id FROM `share_sitemap` s
+	            LEFT JOIN share_templates t ON t.tmpl_id=s.tmpl_id
+        	'), 'smap_id', true);
+        	
+            $result = array_map(
+                create_function(
+                    '$val', 
+                    '
+                    $val["smap_segment"] = SiteMap::getInstance()->getURLByID($val["smap_id"]);
+                    $val["tmpl_icon"] = $GLOBALS["__SMAP2ICONS"][$val["smap_id"]]["tmpl_icon"]; 
+                    return $val;
+                    '
+                )
+            , $result);
+            unset($GLOBALS['__SMAP2ICONS']);
         }
 
         return $result;

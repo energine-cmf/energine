@@ -56,11 +56,11 @@ var TreeView = new Class({
         this.element.getElements('li').each(function(item) {
             if (item.treeNode.childs && item.treeNode.childs.childNodes.length) {
                 item.addClass('folder');
-                item.getElement('a').addClass('folder');
+                //item.getElement('a').addClass('folder');
             }
             else {
                 item.removeClass('folder');
-                item.getElement('a').removeClass('folder');
+                //item.getElement('a').removeClass('folder');
             }
 
             if (item.getNext()) {
@@ -151,14 +151,14 @@ TreeView.Node = new Class({
      */
     initialize: function(nodeInfo, tree) {
         this.tree = tree;
-
         if ($type(nodeInfo) == 'element') {
             this.element = $(nodeInfo);
             this.id = this.element.getProperty('id');
         }
         else {
             this.element = new Element('li').adopt(
-                new Element('a').setProperty('href', '#').set('html', nodeInfo['name'])
+                new Element('a').setProperty('href', '#').set('html', nodeInfo['name']).
+                grab(new Element('img').setProperty('src', nodeInfo.data.icon), 'top')
             );
             this.id = nodeInfo['id'];
             this.data = nodeInfo['data'];

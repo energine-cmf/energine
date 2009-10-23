@@ -72,7 +72,8 @@ var DivManager = new Class({
                         data:{
                             'class':
                                 ((child['smap_is_final'])?'final':'') +
-                                ((childId == currentNodeID)?' current':'')
+                                ((childId == currentNodeID)?' current':''),
+                            'icon': (child['tmpl_icon'])?Energine.base + child['tmpl_icon']:Energine.base + 'images/treeview/folder.gif'
                         } 
                     }, this.tree);
                     newNode.setData(child);

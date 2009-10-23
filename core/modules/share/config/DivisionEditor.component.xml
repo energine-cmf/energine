@@ -14,6 +14,7 @@
 				<field name="smap_pid"/>
 				<field name="lang_id"/>
 				<field name="smap_name"/>
+                <field name="tmpl_icon"/>
 				<field name="smap_is_final"/>
 				<field name="smap_is_system"/>
                 <field name="smap_default"/>                

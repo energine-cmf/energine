@@ -18,14 +18,14 @@
 				<field name="smap_is_system"/>
                 <field name="smap_default"/>                
 			</fields>
-			<toolbar name="sidebar">
-				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
-				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
-				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+			<toolbar name="e-divtree-toolbar">
+				<control id="add" title="BTN_ADD" type="button" icon="images/toolbar/add.gif" onclick="add"/>
+				<control id="edit" title="BTN_EDIT" type="button" icon="images/toolbar/edit.gif" onclick="edit"/>
+				<control id="delete" title="BTN_DELETE" type="button" icon="images/toolbar/delete.gif" onclick="del"/>
 				<!-- <control id="go" title="BTN_GO" type="button" onclick="go"/>-->
 				<control id="sep1" type="separator"/>
-				<control id="up" title="BTN_MOVE_UP" type="button" onclick="up"/>
-				<control id="down" title="BTN_MOVE_DOWN" type="button" onclick="down"/>
+				<control id="up" title="BTN_MOVE_UP" type="button" icon="images/toolbar/up.gif" onclick="up"/>
+				<control id="down" title="BTN_MOVE_DOWN" type="button" icon="images/toolbar/down.gif" onclick="down"/>
 				<!-- <control id="sep2" type="separator"/>
 				<control id="close" title="BTN_ClOSE" type="button" onclick="close"/>-->
 			</toolbar>
@@ -187,7 +187,7 @@
 				<pattern>/show-toolbar/</pattern>
 			</uri_patterns>
 			<toolbar>
-    			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/toolbar/structure.gif" onclick="toggleSidebar"/>
+    			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/toolbar/tools.gif" onclick="toggleSidebar"/>
     			<control id="sep1" type="separator"/>
 				<control id="editMode" title="BTN_EDIT_MODE" type="button" onclick="editMode"/>
 				<control id="sep2" type="separator"/>

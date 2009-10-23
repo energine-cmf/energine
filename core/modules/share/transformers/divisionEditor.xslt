@@ -23,7 +23,7 @@
         </ul>
         <div class="paneContainer">
             <div id="{generate-id(../tabs)}">
-                <div id="treeContainer"></div>
+                <div id="treeContainer" class="e-divtree-select"></div>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
 
 <xsl:template match="recordset[parent::component[@class='DivisionEditor'][@componentAction='main'][@type='list']]">
     <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"  lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
-        <div id="treeContainer"></div>
+        <div id="treeContainer" class="e-divtree-main"></div>
     </div>
 </xsl:template>
 

@@ -1,10 +1,65 @@
-div#treeContainer {
+/* дерево подразделов в боковой панели */
+.e-divtree-panel {
+    /* 
+        Для этого блока применяется метод перевода боксовой модели в модель border-box, 
+        что дает возможность задавать внутри блока отступы при 100% ширине и высоте блока.
+        В IE6-7 для html отступ не добавляется к высоте, поэтому для них ничего отдельно делать не нужно. 
+    */
+    -moz-box-sizing: border-box; /* Firefox 2+ */
+    -ms-box-sizing: border-box; /* IE 8 */
+    -khtml-box-sizing: border-box; /* Konquerror */
+    -webkit-box-sizing: border-box; /* Safari 3+ */
+    box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
+    display: table;
+    width: 100%;
+    height: 100%;
+    border: 10px solid #f8f8ed;
+    border-collapse: separate;
+    border-spacing: 1px;
+    background: #aaaaaa;
+    *display: block;
+    *width: auto;
+    *padding: 1px;
+}
+.e-divtree-panel body {
+    display: table-cell;
+    height: 100%;
+    background: #fff;
+}
+.e-divtree-main {
+    padding: 30px 0 0 4px;
+    background: #fff;
+    font: 12px Tahoma, sans-serif;    
+}
+
+/* дерево подразделов в модальном окне */
+.e-divtree-select {
     width: 99%;
     height: 100%;
     overflow: auto;
     padding-left: 4px;
     border: 1px solid #B1AFA9;
     font: 12px Tahoma, sans-serif;
+}
+
+/* тулбар дерева подразделов в боковой панели */
+.e-divtree-toolbar {
+    position: fixed;        
+    top: -1px;
+    left: 10px;
+    right: 10px;        
+    z-index: 1;
+    border-top: 10px solid #f8f8ed;
+    border-bottom: 1px solid #aaaaaa;
+    _position: absolute;
+    _top: expression(eval(document.documentElement.scrollTop - 1));
+    _left: 0;
+    _right: 0;
+    _width: expression(eval(document.documentElement.offsetWidth - 24));
+    _border-top: 0;   
+}
+.e-divtree-toolbar li.separator {
+    height: 16px !important;
 }
 
 .treeview a.final { 

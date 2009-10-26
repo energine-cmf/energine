@@ -17,7 +17,25 @@ var PageToolbar = new Class({
     setupLayout: function(){
         var html = $$('html')[0];
         if(!html.hasClass('e-has-topframe1')) html.addClass('e-has-topframe1');
-        this.createLayout();
+        if((Cookie.read('sidebar')== null) || (Cookie.read('sidebar') == 1))
+        $$('html')[0].addClass('e-has-sideframe');
+            
+        var currentBody = $(document.body).getChildren().filter(function(element){return (element.id !== 'mb_overlay');});
+        
+        var mainFrame = new Element('div', {'class': 'e-mainframe'});
+        var topFrame = new Element('div', {'class':'e-topframe'});
+        var sidebarFrame = new Element('div', {'class':'e-sideframe'});
+        var sidebarFrameContent = new Element('div', {'class':'e-sideframe-content'});
+        var sidebarFrameBorder = new Element('div', {'class':'e-sideframe-border'});
+        $(document.body).adopt([topFrame, mainFrame, sidebarFrame]);
+        mainFrame.adopt(currentBody);
+        sidebarFrame.adopt([sidebarFrameContent, sidebarFrameBorder]);
+        topFrame.grab(this.element);
+        
+        new Element('iframe').setProperties({
+                    'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
+                    'frameBorder': '0'
+       }).injectInside(sidebarFrameContent);
     },
 
     // Actions:

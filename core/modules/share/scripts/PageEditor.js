@@ -25,7 +25,7 @@ var PageEditor = new Class({
 
     },
 	createToolbar: function(){
-		var toolbar = new Toolbar('page_toolbar');
+		var toolbar = new Toolbar('wysiwyg_toolbar');
 		toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: BTN_SAVE, action: 'save' }));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep2' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'bold', icon: 'images/toolbar/bold.gif', title: BTN_BOLD, action: 'bold' }));
@@ -53,9 +53,15 @@ var PageEditor = new Class({
 	},
     attachToolbar: function(toolbar) {
         this.toolbar = toolbar;
-        this.toolbar.getElement().setProperty('id', 'pageToolbar').injectInside(document.body);
+        this.toolbar.getElement().setProperty('id', 'pageToolbar').injectInside(
+            document.getElement('.e-topframe')
+        );
         this.toolbar.disableControls();
 		this.toolbar.getControlById('viewModeSwitcher').enable();
+        
+        var html = $$('html')[0];
+        if(html.hasClass('e-has-topframe1')) html.removeClass('e-has-topframe1');
+        html.addClass('e-has-topframe2');
     },
 
     getEditorByElement: function(element) {

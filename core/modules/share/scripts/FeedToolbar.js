@@ -4,23 +4,38 @@ var FeedToolbar = new Class({
 	Extends: Toolbar,
 	Implements: ERequest,
     initialize: function(Container) {
-        Asset.css('feedtoolbar.css');
+//        Asset.css('feedtoolbar.css');
+        Asset.css('pagetoolbar.css');
         this.parent();
-        this.element.setProperty('id', 'feedToolbar').injectInside(document.body);
         this.bindTo(this);
+
+        this.element.setProperty('id', 'pageToolbar').injectInside(
+            document.getElement('.e-topframe')
+        );
+       
+        var html = $$('html')[0];
+        if(html.hasClass('e-has-topframe1')) {
+                html.removeClass('e-has-topframe1');
+                html.addClass('e-has-topframe2');
+        }
+        if(html.hasClass('e-has-topframe2')) {
+                html.removeClass('e-has-topframe2');
+                html.addClass('e-has-topframe3');
+        }
+
 		this.load(Container);
 		this.singlePath = Container.getProperty('single_template');
 		this._prepareDataSet(Container.getProperty('linkedTo'));
 		Container.dispose();
 		this.selected = false;
 		this.previous = false;
-        this.createLayout();
 		var component;
 		this.disableControls();
 		if(component = this.getControlById('add')){
 			component.enable();
 		}
     },
+    
 	add: function() {
 		ModalBox.open({
             url: this.singlePath + 'add/',

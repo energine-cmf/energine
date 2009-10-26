@@ -60,8 +60,15 @@ var PageEditor = new Class({
 		this.toolbar.getControlById('viewModeSwitcher').enable();
         
         var html = $$('html')[0];
-        if(html.hasClass('e-has-topframe1')) html.removeClass('e-has-topframe1');
-        html.addClass('e-has-topframe2');
+        if(html.hasClass('e-has-topframe2')) {
+                html.removeClass('e-has-topframe2');
+                html.addClass('e-has-topframe3');
+        }
+        else if(html.hasClass('e-has-topframe1')) {
+                html.removeClass('e-has-topframe1');
+                html.addClass('e-has-topframe2');
+        }
+        
     },
 
     getEditorByElement: function(element) {

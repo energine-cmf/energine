@@ -84,6 +84,10 @@
                                 pageToolbar.getControlById('add').disable();
                             </xsl:if>
         				</xsl:if>
+                        <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
+                            <xsl:variable name="objectID" select="generate-id(../../recordset)" />
+                            <xsl:value-of select="$objectID" /> = new <xsl:value-of select="@name" />($('<xsl:value-of select="$objectID" />'));
+        				</xsl:for-each>
                         <xsl:if test="$COMPONENTS/javascript/object[@name='PageEditor']">
                             <xsl:if test="position()=1">
                                 ScriptLoader.load('PageEditor.js');
@@ -91,12 +95,7 @@
                                 <xsl:value-of select="$objectID" /> = new PageEditor();
                             </xsl:if>
                         </xsl:if>
-                        
-                        <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
-                            <xsl:variable name="objectID" select="generate-id(../../recordset)" />
-                            <xsl:value-of select="$objectID" /> = new <xsl:value-of select="@name" />($('<xsl:value-of select="$objectID" />'));
-        				</xsl:for-each>
-                        
+
                         }
                         catch (e) {
                                 //console.error(e);

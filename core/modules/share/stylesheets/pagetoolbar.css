@@ -32,6 +32,9 @@ html.e-has-topframe1 {
 html.e-has-topframe2 {              
     padding-top: 50px; /* отступ для размещения верхней панели (с двумя тулбарами), ограничение - фиксированная высота панели */
 }
+html.e-has-topframe3 {              
+    padding-top: 75px; /* отступ для размещения верхней панели (с двумя тулбарами), ограничение - фиксированная высота панели */
+}
 .e-has-sideframe body {             
     padding-left: 300px; /* этот отступ создает нужные две колонки правая из которых фиксированная, а левая - растягивается на оставшуюся ширину окна */
 }
@@ -47,7 +50,7 @@ html.e-has-topframe2 {
     width: 100%;
     min-height: 25px;
 }
-.e-has-topframe1 .e-topframe, .e-has-topframe2 .e-topframe {
+.e-has-topframe1 .e-topframe, .e-has-topframe2 .e-topframe, .e-has-topframe3 .e-topframe {
     display: block;
 }
 .e-has-sideframe .e-topframe { /* костыль для IE6, который не может растянуть верхний фрейм на всю ширину body */

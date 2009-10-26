@@ -3,7 +3,7 @@ div#mb_overlay {
 	_position: absolute;
 	z-index: 1000;
 	top: 0;
-	_top: expression(eval(document.documentElement.scrollTop - 25));
+	_top: expression(eval(document.documentElement.scrollTop));
 	left: 0;
 	width: 100%;
 	_width: expression(eval(document.body.clientWidth));
@@ -15,7 +15,7 @@ div.modalbox {
 	_position: absolute;
 	z-index: 1001;
 	top: 50px;
-	_top: expression(eval(document.documentElement.scrollTop + 25));
+	_top: expression(eval(document.documentElement.scrollTop + 50));
 	left: 50%;
 	background: #FFF;
 }

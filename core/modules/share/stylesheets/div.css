@@ -37,7 +37,7 @@
 .treeview a.final { 
     font-style: italic;
 }
-.treeview a.current { 
+.treeview a.current, .treeview li.selected li a.current { 
     font-weight: bold;
     color: green;
 }

@@ -161,7 +161,11 @@ TreeView.Node = new Class({
                     .setProperties({
                         'href': '#'
                     })
-                    .setStyle('background','url(' + nodeInfo.data.icon + ') left top no-repeat')
+                    .setStyles({
+                     'background-image':'url(' + nodeInfo.data.icon + ')', 
+                     'background-position': 'left top',
+                     'background-repeat':'no-repeat'
+                     })
                     .set('html', nodeInfo['name'])
             );
             this.id = nodeInfo['id'];

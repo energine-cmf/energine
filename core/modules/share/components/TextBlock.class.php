@@ -196,7 +196,7 @@ final class TextBlock extends DataSet {
         if ($this->isEditable) {
             //Отключаем тулбар страницы если есть
             if ($component = $this->document->componentManager->getComponentByName('pageToolBar')) {
-                $component->disable();
+                //$component->disable();
             }
 
             //выставляем свойство указывающее на то что блок находится в режиме редактирования

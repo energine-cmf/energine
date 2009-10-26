@@ -26,6 +26,7 @@
 			<fields>
 				<field name="tmpl_id"/>
                 <field name="tmpl_icon"/>
+                <field name="tmpl_preview"/>
 				<field name="tmpl_name"/>
 				<field name="tmpl_content"/>
 				<field name="tmpl_layout"/>
@@ -44,7 +45,8 @@
 			</javascript>
 			<fields>
 				<field name="tmpl_id"/>
-                <field name="tmpl_icon"/>				
+                <field name="tmpl_icon"/>
+                <field name="tmpl_preview"/>                				
 				<field name="tmpl_name"/>
 				<field name="tmpl_content"/>
 				<field name="tmpl_layout"/>

@@ -14,7 +14,7 @@ var FeedToolbar = new Class({
 		Container.dispose();
 		this.selected = false;
 		this.previous = false;
-
+        this.createLayout();
 		var component;
 		this.disableControls();
 		if(component = this.getControlById('add')){

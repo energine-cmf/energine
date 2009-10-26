@@ -18,13 +18,10 @@
 	text-decoration: none;
     padding-left: 21px; 
 }
-/*
-.treeview a.folder { 
-	padding-left: 21px; 
-	background: url(../images/treeview/folder.gif) left top no-repeat; 
-}*/
-.treeview a:hover/*, .treeview a.folder:hover,*/ .treeview li.selected li a:hover { 
-	background-color: #FF8; color: #000; 
+.treeview li a:hover, .treeview li.selected a:hover { 
+	background-color: #FF8; 
 }
-.treeview li.selected a, .treeview li.selected a:hover { background-color: #36C; color: #FFF; }
-.treeview li.selected li a { background-color: transparent; color: #000; }
+.treeview li.selected a, .treeview li.selected a:hover { 
+	background-color: #36C; 
+	color: #FFF; 
+}

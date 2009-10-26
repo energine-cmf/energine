@@ -43,11 +43,23 @@ class TemplateEditor extends Grid {
                 'key','value');	                    	
 	        }
         }
+        
+        if(
+            $previewField = $result->getFieldDescriptionByName('tmpl_preview')
+            &&
+            in_array($this->getAction(), array('add', 'edit'))
+        ){
+        	   inspect($previewField);
+                $previewField->setType(FieldDescription::FIELD_TYPE_SELECT);
+                $previewField->loadAvailableValues(
+                $this->loadPreviewData(),            
+                'key','value');                         
+        }
         return $result;
     }
     private function loadIconsData(){
     	$result = array();
-        foreach(glob("templates/icons/*.gif") as $path){
+        foreach(glob("templates/icons/*.icon.gif") as $path){
         	$result[] = array(
         	   'key' => $path,
         	   'value' => basename($path) 
@@ -57,6 +69,17 @@ class TemplateEditor extends Grid {
     	return $result;
     }
     
+    private function loadPreviewData(){
+        $result = array();
+        foreach(glob("templates/icons/*.preview.gif") as $path){
+            $result[] = array(
+               'key' => $path,
+               'value' => basename($path) 
+            );
+        }
+        
+        return $result;
+    }
     protected function createData(){
     	$result = parent::createData();
     	return $result;

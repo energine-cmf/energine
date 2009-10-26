@@ -8,34 +8,16 @@ var PageToolbar = new Class({
         this.componentPath = componentPath;
         this.documentId = documentId;
 
-        this.createAdminMap();
+        this.setupLayout();
         //this.element.setProperty('id', 'pageToolbar').injectInside(document.body);
         this.element.setProperty('id', 'pageToolbar');
         
         this.bindTo(this);
     },
-    createAdminMap: function(){
-        $$('html')[0].addClass('e-has-topframe1');
-        if((Cookie.read('sidebar')== null) || (Cookie.read('sidebar') == 1))
-            $$('html')[0].addClass('e-has-sideframe');
-        
-        var currentBody = $(document.body).getChildren();
-        
-        var mainFrame = new Element('div', {'class': 'e-mainframe'});
-        var topFrame = new Element('div', {'class':'e-topframe'});
-        var sidebarFrame = new Element('div', {'class':'e-sideframe'});
-        var sidebarFrameContent = new Element('div', {'class':'e-sideframe-content'});
-        var sidebarFrameBorder = new Element('div', {'class':'e-sideframe-border'});
-        $(document.body).adopt([topFrame, mainFrame, sidebarFrame]);
-        mainFrame.adopt(currentBody);
-        sidebarFrame.adopt([sidebarFrameContent, sidebarFrameBorder]);
-        
-        topFrame.grab(this.element);
-        
-        new Element('iframe').setProperties({
-                    'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
-                    'frameBorder': '0'
-       }).injectInside(sidebarFrameContent);
+    setupLayout: function(){
+        var html = $$('html')[0];
+        if(!html.hasClass('e-has-topframe1')) html.addClass('e-has-topframe1');
+        this.createLayout();
     },
 
     // Actions:

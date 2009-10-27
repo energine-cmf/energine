@@ -26,6 +26,7 @@ var PageEditor = new Class({
     },
 	createToolbar: function(){
 		var toolbar = new Toolbar('wysiwyg_toolbar');
+        toolbar.dock();
 		toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: BTN_SAVE, action: 'save' }));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep2' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'bold', icon: 'images/toolbar/bold.gif', title: BTN_BOLD, action: 'bold' }));
@@ -53,7 +54,7 @@ var PageEditor = new Class({
 	},
     attachToolbar: function(toolbar) {
         this.toolbar = toolbar;
-        this.toolbar.getElement().setProperty('id', 'pageToolbar').injectInside(
+        this.toolbar.getElement().injectInside(
             document.getElement('.e-topframe')
         );
         this.toolbar.disableControls();

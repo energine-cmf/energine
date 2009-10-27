@@ -9,8 +9,7 @@ var PageToolbar = new Class({
         this.documentId = documentId;
 
         this.setupLayout();
-        //this.element.setProperty('id', 'pageToolbar').injectInside(document.body);
-        this.element.setProperty('id', 'pageToolbar');
+        this.dock();
         
         this.bindTo(this);
     },

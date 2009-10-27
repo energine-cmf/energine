@@ -9,8 +9,8 @@ var FeedToolbar = new Class({
         //TODO это слегка костыль        
         this.parent('feed_toolbar');
         this.bindTo(this);
-
-        this.element.setProperty('id', 'pageToolbar').injectInside(
+        this.dock();
+        this.element.injectInside(
             document.getElement('.e-topframe')
         );
        

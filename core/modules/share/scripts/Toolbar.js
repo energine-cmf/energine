@@ -32,7 +32,12 @@ var Toolbar = new Class({
         }
         this.controls = [];
 	},
-
+    dock: function(){
+        this.element.addClass('docked_toolbar');
+    },
+    undock: function(){
+        this.element.removeClass('docked_toolbar');        
+    },
     getElement: function() {
         return this.element;
     },

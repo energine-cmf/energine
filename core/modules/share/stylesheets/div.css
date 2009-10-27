@@ -11,15 +11,17 @@
     -webkit-box-sizing: border-box; /* Safari 3+ */
     box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
     height: 100%;
-    padding: 26px 1px 1px 1px;
-    border: 10px solid #f8f8ed;
-    border-top: 15px solid #f8f8ed; 
-    background: #aaaaaa;
+    overflow: hidden;
+    padding: 63px 10px 12px 10px;
+    border: 0; 
+    background: #f8f8ed;
+    _padding-top: 38px;    
 }
 .e-divtree-panel body {    
     height: 100%;
     padding: 0;
     background: #fff;
+    border: 1px solid #aaaaaa;
 }
 .e-divtree-panel form {
     position: relative;   
@@ -32,12 +34,12 @@
     height: 100%;
     overflow: auto;
     padding: 0 0 0 4px;
-    font: 12px Tahoma, sans-serif;        
+    font: 12px Tahoma, sans-serif;
 }
 .treeview a.final { 
     font-style: italic;
 }
-.treeview a.current,.treeview li.selected li a.current { 
+.treeview a.current, .treeview li.selected li a.current { 
     font-weight: bold;
     color: green;
 }
@@ -47,11 +49,12 @@
 .e-divtree-panel .e-divtree-toolbar {
     position: absolute;
     top: -25px;
-    left: 0;
+    left: -1px;
     z-index: 1;
     width: 100%;
     margin: 0 !important;
     padding: 2px 0 !important;
+    border: 1px solid #aaaaaa;            
 }
 .e-divtree-panel .e-divtree-toolbar li.icon {
     margin: 0 2px !important;

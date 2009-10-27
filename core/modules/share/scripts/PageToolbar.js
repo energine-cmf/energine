@@ -65,6 +65,15 @@ var PageToolbar = new Class({
     showTransEditor: function() {
         ModalBox.open({ 'url': this.componentPath + 'translation' });
     },
+    showUserEditor: function() {
+        ModalBox.open({ 'url': this.componentPath + 'user' });
+    },
+    showRoleEditor: function() {
+        ModalBox.open({ 'url': this.componentPath + 'role' });
+    },
+    showLangEditor: function() {
+        ModalBox.open({ 'url': this.componentPath + 'languages' });
+    },
     showFileRepository: function() {
         ModalBox.open({ 'url': this.componentPath + 'file-library' });
     }

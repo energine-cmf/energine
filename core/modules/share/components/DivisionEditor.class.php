@@ -36,6 +36,27 @@ final class DivisionEditor extends Grid {
      * @access private
      */
     private $transEditor;
+    /**
+     * Редактор пользователей
+     * 
+     * @var UserEditor
+     * @access private
+     */
+    private $userEditor;
+    /**
+     * Редактор ролей
+     * 
+     * @var RoleEditor
+     * @access private
+     */
+    private $roleEditor;
+    /**
+     * Редактор языков
+     * 
+     * @var LanguageEditor
+     * @access private
+     */
+    private $langEditor;
 
     /**
      * Конструктор класса
@@ -588,6 +609,15 @@ final class DivisionEditor extends Grid {
             case 'showTransEditor':
                 $result = $this->transEditor->build();
                 break;
+            case 'showUserEditor':
+                $result = $this->userEditor->build();
+                break;
+            case 'showRoleEditor':
+                $result = $this->roleEditor->build();
+                break;
+            case 'showLangEditor':
+                $result = $this->langEditor->build();
+                break;                                                
         	default:
                 if ($this->getType() == self::COMPONENT_TYPE_FORM_ALTER ) {
                     if (($field = $this->getData()->getFieldByName('smap_default')) && ($field->getRowData(0)=== true)) {
@@ -693,7 +723,43 @@ final class DivisionEditor extends Grid {
         $this->transEditor = $this->document->componentManager->createComponent('transEditor', 'share', 'TranslationEditor', null);
         $this->transEditor->run();
     }
-  /**
+    /**
+     * Вывод редактора пользователей
+     *
+     * @return void
+     * @access protected
+     */
+
+    protected function showUserEditor() {
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->userEditor = $this->document->componentManager->createComponent('userEditor', 'user', 'UserEditor', null);
+        $this->userEditor->run();
+    }
+    /**
+     * Вывод редактора ролей
+     *
+     * @return void
+     * @access protected
+     */
+
+    protected function showRoleEditor() {
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->roleEditor = $this->document->componentManager->createComponent('roleEditor', 'user', 'RoleEditor', null);
+        $this->roleEditor->run();
+    }
+    /**
+     * Вывод редактора языков
+     *
+     * @return void
+     * @access protected
+     */
+
+    protected function showLangEditor() {
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->langEditor = $this->document->componentManager->createComponent('langEditor', 'share', 'LanguageEditor', null);
+        $this->langEditor->run();
+    }        
+    /**
      * Изменяет порядок следования
      *
      * @param string

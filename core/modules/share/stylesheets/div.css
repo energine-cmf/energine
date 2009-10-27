@@ -37,11 +37,12 @@
 .treeview a.final { 
     font-style: italic;
 }
-.treeview a.current, .treeview li.selected li a.current { 
+.treeview a.current,.treeview li.selected li a.current { 
     font-weight: bold;
     color: green;
 }
 
+	
 /* тулбар дерева подразделов в боковой панели */
 .e-divtree-panel .e-divtree-toolbar {
     position: absolute;

@@ -12,7 +12,7 @@ var DivManager = new Class({
         this.langId = this.tabPane.getCurrentTab().data.lang;
         new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
 		    new Element('li').setProperty('id', 'treeRoot').addClass('folder').adopt(
-		        new Element('a').setProperty('href', '#').addClass('folder').setStyle('font-weight', 'bold').set('html', TXT_DIVISIONS)
+		        new Element('a').setProperty('href', '#').setStyle('font-weight', 'bold').set('html', TXT_DIVISIONS)
 		    )
 		);
 		this.tree = new TreeView('divTree');
@@ -58,11 +58,14 @@ var DivManager = new Class({
             var node = this.tree.getNodeById(nodeId);
             for (var i = 0, len = treeInfo[nodeId].length; i < len; i++) {
                 var child = treeInfo[nodeId][i];
+                var icon = (child['tmpl_icon'])?Energine.base + child['tmpl_icon']:Energine.base + 'images/treeview/folder.gif';
                 if(child['smap_default']){
                     this.treeRoot.setName(child['smap_name']);
                     this.treeRoot.id = child['smap_id'];
                     this.treeRoot.setData(child);
+                    this.treeRoot.setIcon(icon);
                     this.treeRoot.onSelect = this.onSelectNode.bind(this);
+                    
                 }
                 else{
                     var childId = child['smap_id'];
@@ -73,7 +76,7 @@ var DivManager = new Class({
                             'class':
                                 ((child['smap_is_final'])?'final':'') +
                                 ((childId == currentNodeID)?' current':''),
-                            'icon': (child['tmpl_icon'])?Energine.base + child['tmpl_icon']:Energine.base + 'images/treeview/folder.gif'
+                            'icon': icon
                         } 
                     }, this.tree);
                     newNode.setData(child);
@@ -86,7 +89,7 @@ var DivManager = new Class({
         lambda(this.treeRoot.getId());
 
         this.tree.setupCssClasses();
-        this.treeRoot.expand();
+        //this.treeRoot.expand();
         this.tree.expandToNode(currentNodeID)
         this.tree.getNodeById(currentNodeID).select();
         //this.treeRoot.select();

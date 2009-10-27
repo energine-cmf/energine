@@ -80,9 +80,6 @@
                             <xsl:if test="not($COMPONENTS[@class='TextBlock'])">
                                 pageToolbar.getControlById('editMode').disable();
                             </xsl:if>
-                            <xsl:if test="$DOC_PROPS[@name='final'] = '1'">
-                                pageToolbar.getControlById('add').disable();
-                            </xsl:if>
         				</xsl:if>
                         <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
                             <xsl:variable name="objectID" select="generate-id(../../recordset)" />

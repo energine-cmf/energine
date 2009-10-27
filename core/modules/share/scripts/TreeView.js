@@ -56,11 +56,9 @@ var TreeView = new Class({
         this.element.getElements('li').each(function(item) {
             if (item.treeNode.childs && item.treeNode.childs.childNodes.length) {
                 item.addClass('folder');
-                //item.getElement('a').addClass('folder');
             }
             else {
                 item.removeClass('folder');
-                //item.getElement('a').removeClass('folder');
             }
 
             if (item.getNext()) {
@@ -322,7 +320,13 @@ TreeView.Node = new Class({
     setData: function(data) {
         this.data = data;
     },
-
+    setIcon: function(icon){
+        this.element.getElement('a').setStyles({
+         'background-image':'url(' + icon + ')', 
+         'background-position': 'left top',
+         'background-repeat':'no-repeat'
+         })        
+    },
     getData: function() {
         return this.data;
     },

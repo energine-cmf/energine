@@ -161,28 +161,28 @@
 		<method name="showTemplate" rights="3">
 			<uri_patterns>
 				<pattern>/template/[any]/</pattern>
-
-<!-- 			<pattern>/template/</pattern>
-				<pattern>/template/get-data/</pattern>
-				<pattern>/template/get-data/page-[int]/</pattern>
-				<pattern>/template/add/</pattern>
-				<pattern>/template/[int]/edit/</pattern>
-				<pattern>/template/save/</pattern>
-				<pattern>/template/[int]/delete/</pattern> -->
 			</uri_patterns>
 		</method>
         <method name="showTransEditor" rights="3">
 			<uri_patterns>
 				<pattern>/translation/[any]/</pattern>
-<!-- 			<pattern>/translation/</pattern>
-				<pattern>/translation/get-data/</pattern>
-				<pattern>/translation/get-data/page-[int]/</pattern>
-				<pattern>/translation/add/</pattern>
-				<pattern>/translation/[int]/edit/</pattern>
-				<pattern>/translation/save/</pattern>
-				<pattern>/translation/[int]/delete/</pattern> -->
 			</uri_patterns>
 		</method>
+        <method name="showUserEditor" rights="3">
+            <uri_patterns>
+                <pattern>/user/[any]/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="showRoleEditor" rights="3">
+            <uri_patterns>
+                <pattern>/role/[any]/</pattern>
+            </uri_patterns>
+        </method>        		
+        <method name="showLangEditor" rights="3">
+            <uri_patterns>
+                <pattern>/languages/[any]/</pattern>
+            </uri_patterns>
+        </method>        
 		<method name="showPageToolbar" rights="3">
 			<uri_patterns>
 				<pattern>/show-toolbar/</pattern>
@@ -191,13 +191,13 @@
     			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/toolbar/tools.gif" onclick="toggleSidebar"/>
     			<control id="sep1" type="separator"/>
 				<control id="editMode" title="BTN_EDIT_MODE" type="button" onclick="editMode"/>
-				<control id="sep2" type="separator"/>
-				<control id="add" title="BTN_ADD_PAGE" type="button" onclick="add"/>
-				<control id="edit" title="BTN_EDIT_PAGE" type="button" onclick="edit" />
 				<control id="sep5" type="separator"/>
-				<!-- <control id="divEditor" title="BTN_DIV_EDITOR" type="button" onclick="showDivEditor"/>-->
 				<control id="templateEditor" title="BTN_TMPL_EDITOR" type="button" onclick="showTmplEditor"/>
 				<control id="transEditor" title="BTN_TRANS_EDITOR" type="button" onclick="showTransEditor"/>
+				<control id="language" title="BTN_LANG_EDITOR" type="button" onclick="showLangEditor"/>
+				<control id="sep2" type="separator"/>
+                <control id="user" title="BTN_USER_EDITOR" type="button" onclick="showUserEditor"/>
+                <control id="role" title="BTN_ROLE_EDITOR" type="button" onclick="showRoleEditor" />
 				<control id="sep6" type="separator"/>
 				<control id="fileRepository" title="BTN_FILE_REPOSITORY" type="button" onclick="showFileRepository"/>
 			</toolbar>

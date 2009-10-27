@@ -1,51 +1,4 @@
-﻿body {
-	position: relative;
-	margin-top: 50px !important;
-}
-
-ul#feedToolbar.toolbar {
-	position: fixed;
-	_position: absolute;
-	z-index: 100;
-	top: 2.273em; /* =25px для размера шрифта 11px */
-	_top: expression(eval(document.documentElement.scrollTop - 50));
-	left: 0;
-	width: 100%;
-	_width: expression(eval(document.body.clientWidth - 28));
-	min-height: 24px;
-	_height: 24px;
-	margin: 0 !important;
-	padding: 0 0 0 28px !important;
-	border-bottom: 1px solid #AAA;
-	color:black;
-}
-
-ul#feedToolbar.toolbar li {
-	min-height: 24px;
-	height: 2.182em; /* =24px для размера шрифта 11px */
-	_height: 24px;
-	margin: 0 !important;
-	padding: 0 10px !important;
-	border: 0;
-	line-height: 24px;
-	vertical-align: middle;
-}
-
-ul#feedToolbar.toolbar li.icon {
-    padding: 0 4px !important;
-	background: center center no-repeat;
-}
-
-ul#feedToolbar.toolbar li.separator {
-	width: 2px;
-	margin: 0 !important;
-	padding: 0 2px !important;
-	background: url(../images/toolbar/separator.gif) center center no-repeat !important;
-}
-
-ul#feedToolbar.toolbar li.highlighted { background-color: #FF8 !important; }
-
-.record_highlight{
+﻿.record_highlight{
 	background-color:#FF8 !important;
 }
 .record_select{
@@ -55,4 +8,3 @@ ul#feedToolbar.toolbar li.highlighted { background-color: #FF8 !important; }
 	border: 1px dashed #0D0;
 	cursor:default;
 }
-/*ul#feedToolbar.toolbar li.pressed { background-color: #A6CE39; }*/

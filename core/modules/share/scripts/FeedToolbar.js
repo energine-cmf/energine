@@ -5,6 +5,7 @@ var FeedToolbar = new Class({
 	Implements: ERequest,
     initialize: function(Container) {
         Asset.css('pagetoolbar.css');
+        Asset.css('feedtoolbar.css');
         //TODO это слегка костыль        
         this.parent('feed_toolbar');
         this.bindTo(this);

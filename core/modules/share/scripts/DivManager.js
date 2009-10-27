@@ -89,7 +89,7 @@ var DivManager = new Class({
         lambda(this.treeRoot.getId());
 
         this.tree.setupCssClasses();
-        //this.treeRoot.expand();
+        this.treeRoot.expand();
         this.tree.expandToNode(currentNodeID)
         this.tree.getNodeById(currentNodeID).select();
         //this.treeRoot.select();

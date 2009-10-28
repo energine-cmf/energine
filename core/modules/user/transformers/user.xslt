@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml">
 
 <xsl:template match="field[@name='restore_password_result']">
 	<xsl:value-of select="." disable-output-escaping="yes"/>
@@ -26,8 +26,8 @@
                 </xsl:if>
                 <xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
                 <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-                <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
-                <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+                <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
+                <xsl:attribute name="nrgn:message"  xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
                 <xsl:attribute name="message2"><xsl:value-of select="@message2"/></xsl:attribute>
             </xsl:element>
         </div>

@@ -44,7 +44,7 @@ class TemplateEditor extends Grid {
 	        }
         }
         
-        if(
+        /*if(
             $previewField = $result->getFieldDescriptionByName('tmpl_preview')
             &&
             in_array($this->getAction(), array('add', 'edit'))
@@ -54,7 +54,7 @@ class TemplateEditor extends Grid {
                 $previewField->loadAvailableValues(
                 $this->loadPreviewData(),            
                 'key','value');                         
-        }
+        }*/
         return $result;
     }
     private function loadIconsData(){

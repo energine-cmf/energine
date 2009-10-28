@@ -159,7 +159,6 @@ PageEditor.BlockEditor = new Class({
             if (this.dirty) toolbar.getControlById('save').enable();
             return;
         }
-        this.save.periodical(10000, this);
         toolbar.enableControls();
         this.area.contentEditable = 'true';
     },

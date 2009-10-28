@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" 
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                >
 
     <xsl:variable name="DOC_PROPS" select="/document/properties/property" />
     <xsl:variable name="COMPONENTS" select="//component[@name][@module]" />
@@ -10,7 +12,7 @@
 	<xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@abbr" />
 	<xsl:variable name="NBSP"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></xsl:variable>
 
-    <xsl:template match="/">
+    <xsl:template match="/" xmlns:nrgn="http://energine.org" xmlns="http://www.w3.org/1999/xhtml">
         <html>
         	<head>
                 <title><xsl:call-template name="build_title"/></title>

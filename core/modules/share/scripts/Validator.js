@@ -41,17 +41,18 @@ var Validator = new Class({
 	},
     validateElement: function(field){
         var result = true;
+        var pattern, message;
         field = $(field);
         if (
-            field.getProperty('pattern') 
+            (pattern = field.getProperty('nrgn:pattern')) 
             && 
-            field.getProperty('message') 
+            (message = field.getProperty('nrgn:message')) 
             && 
             !field.getProperty('disabled')
         ) {
-            if (!eval('field.value.match('+field.getProperty('pattern')+');')) {
+            if (!eval('field.value.match('+pattern+');')) {
                 //Выводим информацию об ошибке
-                this.showError(field, field.getProperty('message'));
+                this.showError(field, message);
                 result = false;
             }
             else{

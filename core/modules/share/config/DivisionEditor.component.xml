@@ -188,7 +188,7 @@
 				<pattern>/show-toolbar/</pattern>
 			</uri_patterns>
 			<toolbar name="main_toolbar">
-    			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/toolbar/tools.gif" onclick="toggleSidebar"/>
+    			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/toolbar/structure.gif" onclick="toggleSidebar"/>
     			<control id="sep1" type="separator"/>
 				<control id="editMode" title="BTN_EDIT_MODE" type="button" onclick="editMode"/>
 				<control id="sep5" type="separator"/>

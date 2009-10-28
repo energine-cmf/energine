@@ -161,7 +161,7 @@ TreeView.Node = new Class({
                     })
                     .setStyles({
                      'background-image':'url(' + nodeInfo.data.icon + ')', 
-                     'background-position': 'left top',
+                     'background-position': '1px 1px',
                      'background-repeat':'no-repeat'
                      })
                     .set('html', nodeInfo['name'])
@@ -323,7 +323,7 @@ TreeView.Node = new Class({
     setIcon: function(icon){
         this.element.getElement('a').setStyles({
          'background-image':'url(' + icon + ')', 
-         'background-position': 'left top',
+         'background-position': '1px 1px',
          'background-repeat':'no-repeat'
          })        
     },

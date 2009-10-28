@@ -58,7 +58,7 @@ var DivManager = new Class({
             var node = this.tree.getNodeById(nodeId);
             for (var i = 0, len = treeInfo[nodeId].length; i < len; i++) {
                 var child = treeInfo[nodeId][i];
-                var icon = (child['tmpl_icon'])?Energine.base + child['tmpl_icon']:Energine.base + 'images/treeview/folder.gif';
+                var icon = (child['tmpl_icon'])?Energine.base + child['tmpl_icon']:Energine.base + 'templates/icons/empty.icon.gif';
                 if(child['smap_default']){
                     this.treeRoot.setName(child['smap_name']);
                     this.treeRoot.id = child['smap_id'];

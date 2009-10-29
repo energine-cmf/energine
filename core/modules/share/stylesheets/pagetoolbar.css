@@ -151,7 +151,7 @@ ul.docked_toolbar li.separator {
     _height: 24px;
 }
 ul.docked_toolbar li.highlighted { background-color: #FF8 !important; }
-/*.docked_toolbar li.pressed { background-color: #A6CE39; }*/
+ul.docked_toolbar li.pressed { background-color: #A6CE39 !important; }
 
 ul.main_toolbar {
     padding-left: 28px !important;  

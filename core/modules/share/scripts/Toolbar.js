@@ -53,7 +53,6 @@ var Toolbar = new Class({
                 var control = null;
                 switch (elem.getAttribute('type')) {
                     case 'button':       control = new Toolbar.Button;       break;
-                    case 'togglebutton': control = new Toolbar.ToggleButton; break;
                     case 'separator':    control = new Toolbar.Separator;    break;
                 }
                 if (control) {
@@ -64,6 +63,12 @@ var Toolbar = new Class({
         }.bind(this));
     },
     appendControl: function(control) {
+        if($chk(control.type) && $chk(control.id)){
+            control.action = control.onclick;
+            delete control.onclick;
+            control = new Toolbar[control.type.capitalize()](control);
+        }
+        
         if (control instanceof Toolbar.Control) {
             control.toolbar = this;
             control.build();
@@ -195,6 +200,22 @@ Toolbar.Button = new Class({
             'click':     function() { if (!control.properties.disabled) { control.toolbar._callAction(control.properties.action); } }
         });
     }
+});
+Toolbar.Switcher = new Class({
+    Extends:Toolbar.Button,
+    build: function(){
+        this.parent();
+        if (this.properties.state == 1){
+            this.element.addClass('pressed');
+        }
+    },
+    getState: function(){
+        return this.properties.state;
+    }
+    /*toggle: function(){
+        this.element.toggleClass('pressed');
+        this.properties.state = this.
+    }*/
 });
 
 Toolbar.Separator = new Class({

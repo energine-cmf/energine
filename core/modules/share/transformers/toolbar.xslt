@@ -72,6 +72,17 @@
 	);
 </xsl:template>
 
+<!--<xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'switcher']">
+    toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
+        new Toolbar.Switcher({
+            id: '<xsl:value-of select="@id"/>',
+            title: '<xsl:value-of select="@title"/>',
+            action: '<xsl:value-of select="@onclick"/>',
+            icon: '<xsl:value-of select="@icon"/>'
+        })
+    );
+</xsl:template>-->
+
 <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'separator']">
 	toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
         new Toolbar.Separator({ id: '<xsl:value-of select="@id"/>' })

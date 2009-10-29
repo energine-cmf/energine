@@ -27,7 +27,7 @@ html {
     box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */    
     overflow: hidden;
 }
-html.e-has-topframe1 {              
+html.e-has-topframe1 {           
     padding-top: 25px; /* отступ для размещения верхней панели (с одним тулбаром), ограничение - фиксированная высота панели */
 }
 html.e-has-topframe2 {              
@@ -120,7 +120,7 @@ ul.docked_toolbar {
     z-index: 10;
     min-height: 24px;       
     margin: 0 !important;
-    padding: 0 0 0 28px !important;
+    padding: 0 !important;
     border-bottom: 1px solid #AAA;
     background: #EED;
     color: black;
@@ -153,17 +153,15 @@ ul.docked_toolbar li.separator {
 ul.docked_toolbar li.highlighted { background-color: #FF8 !important; }
 /*.docked_toolbar li.pressed { background-color: #A6CE39; }*/
 
-ul.main_toolbar {    
+ul.main_toolbar {
+    padding-left: 28px !important;  
     background: #EED url(../images/toolbar/pagetb_logo.gif) left top no-repeat;
 }
 .e-has-sideframe ul.main_toolbar { /* костыль для IE6, который не может растянуть верхний фрейм на всю ширину body */
     _margin-left: -300px !important;
 }
-ul.wysiwyg_toolbar, ul.feed_toolbar {
-    margin-left: 300px !important;
-    padding-left: 0 !important; 
-}
-.e-has-sideframe ul.wysiwyg_toolbar, .e-has-sideframe ul.feed_toolbar {    
+.e-has-sideframe ul.wysiwyg_toolbar, .e-has-sideframe ul.feed_toolbar { 
+    margin-left: 300px !important;   
     _margin-left: 0 !important;    
 }
 /* ----- /page toolbars ----- */

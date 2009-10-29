@@ -91,7 +91,7 @@ final class TextBlock extends DataSet {
          * @todo Не забыть убрать $_REQUEST или переделать чтобы для режима отладки  -_REQUEST а так  - _POST
          *
          */
-        $this->isEditable = isset($_REQUEST['editMode']);
+        $this->isEditable = $this->document->isEditable();
         $this->tableName = 'share_textblocks';
         if ($this->isEditable) {
         	$translations = array(

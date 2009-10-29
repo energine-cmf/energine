@@ -58,27 +58,15 @@
                             ScriptLoader.load(<xsl:for-each select="$COMPONENTS/javascript/include | $COMPONENTS/javascript/object[@name!='PageEditor']">'<xsl:value-of select="@name" />.js'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
                             var pageToolbar = new <xsl:value-of select="$COMPONENTS[@name='pageToolBar']/javascript/object/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$COMPONENTS[@name='pageToolBar']/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$COMPONENTS[@name='pageToolBar']/toolbar/@name"/>');
-        					<xsl:for-each select="$COMPONENTS[@name='pageToolBar']/toolbar/control">
-        					    <xsl:choose>
-        					        <xsl:when test="@type='button'">
-                                        pageToolbar.appendControl(
-                                            new Toolbar.Button(
-                                                { 
-                                                    id: '<xsl:value-of select="@id" />', 
-                                                    title: '<xsl:value-of select="@title" />', 
-                                                    action: '<xsl:value-of select="@onclick" />'
-                                                    <xsl:if test="@icon">
-                                                        ,icon: '<xsl:value-of select="@icon" />' 
-                                                    </xsl:if> 
-                                                }
-                                            )
-                                        );
-                                    </xsl:when>
-                                    <xsl:when test="@type='separator'">
-                                        pageToolbar.appendControl(new Toolbar.Separator({ id: '<xsl:value-of select="@id" />' }));
-                                    </xsl:when>
-                                </xsl:choose>
-        					</xsl:for-each>
+                            <xsl:for-each select="$COMPONENTS[@name='pageToolBar']/toolbar/control">
+                            pageToolbar.appendControl({
+                                <xsl:for-each select="@*[name()!='mode']">
+                                    '<xsl:value-of select="name()"/>':'<xsl:value-of select="."/>'
+                                    <xsl:if test="position()!=last()">,</xsl:if>
+                                </xsl:for-each>
+                            });	    
+          					</xsl:for-each>
+                               
                             <xsl:if test="not($COMPONENTS[@class='TextBlock'])">
                                 pageToolbar.getControlById('editMode').disable();
                             </xsl:if>

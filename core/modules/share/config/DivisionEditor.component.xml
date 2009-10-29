@@ -190,7 +190,7 @@
 			<toolbar name="main_toolbar">
     			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/toolbar/structure.gif" onclick="toggleSidebar"/>
     			<control id="sep1" type="separator"/>
-				<control id="editMode" title="BTN_EDIT_MODE" type="button" onclick="editMode"/>
+				<control id="editMode" title="BTN_EDIT_MODE" type="switcher" onclick="editMode"/>
 				<control id="sep5" type="separator"/>
 				<control id="templateEditor" title="BTN_TMPL_EDITOR" type="button" onclick="showTmplEditor"/>
 				<control id="transEditor" title="BTN_TRANS_EDITOR" type="button" onclick="showTransEditor"/>

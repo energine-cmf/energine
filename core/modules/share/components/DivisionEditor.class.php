@@ -684,6 +684,8 @@ final class DivisionEditor extends Grid {
             throw new SystemException('ERR_DEV_TOOLBAR_MUST_HAVE_CONFIG', SystemException::ERR_DEVELOPER);
         }
         $this->setToolbar($this->createToolbar());
+        if($this->document->isEditable())
+            $this->getToolbar()->getControlByID('editMode')->setState(1);
     }
 
     /**

@@ -40,9 +40,14 @@ var PageToolbar = new Class({
     // Actions:
 
     editMode: function() {
-        var form = new Element('form').setProperties({ 'action': '', 'method': 'post' }).injectInside(document.body);
-        new Element('input').setProperty('name', 'editMode').setProperties({ 'type': 'hidden', 'value': '1' }).injectInside(form);
-        form.submit();
+        if(this.getControlById('editMode').getState() == 0){
+            var form = new Element('form').setProperties({ 'action': '', 'method': 'post' }).injectInside(document.body);
+            new Element('input').setProperty('name', 'editMode').setProperties({ 'type': 'hidden', 'value': '1' }).injectInside(form);
+            form.submit();
+        }
+        else{
+            window.location = window.location;
+        }
     },
 
     add: function() {

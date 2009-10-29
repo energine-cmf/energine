@@ -46,9 +46,9 @@ var PageEditor = new Class({
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep5' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'imagemngr', icon: 'images/toolbar/image.gif', title:BTN_INSERT_IMAGE , action: 'imageManager' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'filemngr', icon: 'images/toolbar/filemngr.gif', title: BTN_FILE_LIBRARY, action: 'fileLibrary' }));
-		toolbar.appendControl(new Toolbar.Separator({ id: 'sep6' }));
+		/*toolbar.appendControl(new Toolbar.Separator({ id: 'sep6' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'viewModeSwitcher', title: TXT_PREVIEW, action: 'switchToViewMode' }));
-
+*/
 		toolbar.bindTo(this);
 		return toolbar;
 	},
@@ -58,7 +58,7 @@ var PageEditor = new Class({
             document.getElement('.e-topframe')
         );
         this.toolbar.disableControls();
-		this.toolbar.getControlById('viewModeSwitcher').enable();
+		//this.toolbar.getControlById('viewModeSwitcher').enable();
         
         var html = $$('html')[0];
         if(html.hasClass('e-has-topframe2')) {

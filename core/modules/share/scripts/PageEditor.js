@@ -113,7 +113,6 @@ var PageEditor = new Class({
             this.activeEditor = this.getEditorByElement(element);
             if (this.activeEditor) this.activeEditor.focus();
         }
-
         if (!Energine.supportContentEdit && this.activeEditor) {
             this.activeEditor.showSource();
         }
@@ -143,13 +142,15 @@ PageEditor.BlockEditor = new Class({
 
         if (Energine.supportContentEdit && !this.fallback_ie) {
             document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this));
-            this.pasteArea = new Element('div').setStyles({ 'visibility': 'hidden', 'width': '0', 'height': '0', 'font-size': '0', 'line-height': '0' }).injectInside(document.body);
+            if(!(this.pasteArea = $('pasteArea'))){
+                this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility': 'hidden', 'width': '0', 'height': '0', 'font-size': '0', 'line-height': '0' }).injectInside(document.body);
+            }
 			//addEvent('paste' работать не захотело
             if(Browser.Engine.trident) this.area.onpaste = this.processPaste.bindWithEvent(this);
-            else if(Browser.Engine.gecko) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
+            else if(Browser.Engine.gecko || Browser.Engine.presto) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
         }
         this.switchToViewMode = this.pageEditor.switchToViewMode;
-		this.overlay = new Overlay();
+		//this.overlay = new Overlay();
     },
 
     focus: function() {
@@ -160,14 +161,14 @@ PageEditor.BlockEditor = new Class({
             return;
         }
         toolbar.enableControls();
-        this.area.contentEditable = 'true';
+        this.area.contentEditable = true;
     },
 
     blur: function() {
         //this.saveWithConfirmation();
         this.area.removeClass('activeEditor');
         var toolbar = this.pageEditor.toolbar.bindTo(this.pageEditor).disableControls();
-        toolbar.getControlById('viewModeSwitcher').enable();
+        //toolbar.getControlById('viewModeSwitcher').enable();
         if (!Energine.supportContentEdit) {
             return;
         }
@@ -193,7 +194,7 @@ PageEditor.BlockEditor = new Class({
         this.dirty = false;
 		var data = 'num='+this.num+'&data='+encodeURIComponent(this.area.innerHTML);
 		if (this.docId) data += '&docID='+this.docId;
-		this.overlay.show(document.body.getCoordinates());
+		//this.overlay.show(document.body.getCoordinates());
 
 		new Request({
 			url: this.path + 'save-text',
@@ -201,7 +202,7 @@ PageEditor.BlockEditor = new Class({
             'data': data,
             onSuccess: function(response){
 				this.area.innerHTML = response;
-				this.overlay.hide();
+				//this.overlay.hide();
 			}.bind(this)
         }).send();
     },

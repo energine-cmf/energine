@@ -4,8 +4,9 @@ var isset = function(variable) {
 var Energine = {
 	debug : false,
 	base : null,
-	supportContentEdit : Browser.Engine.trident || Browser.Engine.gecko
+	supportContentEdit : Browser.Engine.trident || Browser.Engine.gecko || Browser.Engine.presto
 }
+
 /*
  * Class: ScriptLoader Загружает указанные скрипты из директории scripts.
  */

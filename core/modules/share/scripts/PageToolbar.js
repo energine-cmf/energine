@@ -41,7 +41,7 @@ var PageToolbar = new Class({
 
     editMode: function() {
         if(this.getControlById('editMode').getState() == 0){
-            var form = new Element('form').setProperties({ 'action': '', 'method': 'post' }).injectInside(document.body);
+            var form = new Element('form', {'styles':{'display':'none'}}).setProperties({ 'action': '', 'method': 'post' }).injectInside(document.body);
             new Element('input').setProperty('name', 'editMode').setProperties({ 'type': 'hidden', 'value': '1' }).injectInside(form);
             form.submit();
         }

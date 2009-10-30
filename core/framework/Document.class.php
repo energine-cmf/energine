@@ -471,4 +471,8 @@ final class Document extends DBWorker {
     public function addTranslation($const) {
         $this->translations[$const] = $this->translate($const);
     }
+    
+    public function isEditable(){
+        return isset($_REQUEST['editMode']);	
+    }
 }

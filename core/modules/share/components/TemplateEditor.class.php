@@ -19,6 +19,9 @@
  * @author dr.Pavka
  */
 class TemplateEditor extends Grid {
+	const TMPL_CONTENT = 'content';
+	const TMPL_LAYOUT = 'layout';
+	
     /**
      * Конструктор класса
      *
@@ -34,27 +37,25 @@ class TemplateEditor extends Grid {
     
     protected function createDataDescription(){
         $result = parent::createDataDescription();
-        if($iconField = $result->getFieldDescriptionByName('tmpl_icon')){
-	        $iconField->setType(FieldDescription::FIELD_TYPE_IMAGE);
+        
+        if($f = $result->getFieldDescriptionByName('tmpl_icon')){
+	        $f->setType(FieldDescription::FIELD_TYPE_IMAGE);
         	if(in_array($this->getAction(), array('add', 'edit'))){
-	            $iconField->setType(FieldDescription::FIELD_TYPE_SELECT);
-                $iconField->loadAvailableValues(
+	            $f->setType(FieldDescription::FIELD_TYPE_SELECT);
+                $f->loadAvailableValues(
                 $this->loadIconsData(),            
                 'key','value');	                    	
 	        }
         }
         
-        /*if(
-            $previewField = $result->getFieldDescriptionByName('tmpl_preview')
-            &&
-            in_array($this->getAction(), array('add', 'edit'))
-        ){
-        	   inspect($previewField);
-                $previewField->setType(FieldDescription::FIELD_TYPE_SELECT);
-                $previewField->loadAvailableValues(
-                $this->loadPreviewData(),            
-                'key','value');                         
-        }*/
+        foreach (array(self::TMPL_CONTENT, self::TMPL_LAYOUT) as $type)
+	        if(($f = $result->getFieldDescriptionByName('tmpl_'.$type)) && in_array($this->getAction(), array('add', 'edit'))){
+		        $f->setType(FieldDescription::FIELD_TYPE_SELECT);
+		        $f->loadAvailableValues(
+		        $this->loadTemplateData($type),            
+		        'key','value');                         
+	        }
+        
         return $result;
     }
     private function loadIconsData(){
@@ -67,6 +68,18 @@ class TemplateEditor extends Grid {
         }
         
     	return $result;
+    }
+    
+    private function loadTemplateData($type){
+        $result = array();
+        foreach(glob("templates/".$type."/*.".$type.".xml") as $path){
+            $result[] = array(
+               'key' => $path,
+               'value' => basename($path) 
+            );
+        }
+        
+        return $result;    	
     }
     
     private function loadPreviewData(){

@@ -81,43 +81,4 @@
     	</script>
     </xsl:template>
 
-	<!-- Template Editor -->
-
-	<xsl:template match="
-		field[@name='tmpl_content'][ancestor::component[@class='TemplateEditor'][@type='form']]
-		|
-		field[@name='tmpl_layout'][ancestor::component[@class='TemplateEditor'][@type='form']]
-	">
-		<xsl:variable name="TEXT"><xsl:choose>
-			<xsl:when test="@name='tmpl_content'">.content.xml</xsl:when>
-			<xsl:otherwise>.layout.xml</xsl:otherwise>
-		</xsl:choose></xsl:variable>
-		<div class="field">
-		    <xsl:attribute name="class">field required</xsl:attribute>
-		    <div class="name">
-    			<label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
-				<xsl:if test="not(@nullable) and not(ancestor::component/@exttype = 'grid')"><span class="mark">*</span></xsl:if>
-                <xsl:if test="@help">
-                    <xsl:variable name="HELP_IMG"><xsl:value-of select="generate-id()"/></xsl:variable>
-                    <img src="images/help.gif" width="11" height="11" border="0" title="{@help}"/>
-                </xsl:if>
-			</div>
-			<div class="control" id="control_{@language}_{@name}">
-				<xsl:element name="input">
-					<xsl:attribute name="style">width:182px; text-align:right;</xsl:attribute>
-					<xsl:attribute name="type">text</xsl:attribute>
-					<xsl:attribute name="name">
-								<xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:attribute>
-					<xsl:if test="@length">
-						<xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-					</xsl:if>
-					<xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-					<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-			        	<xsl:attribute  name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
-			        	<xsl:attribute name="nrgn:message"  xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
-				</xsl:element><span><xsl:value-of select="$TEXT"/></span>
-        	</div>
-		</div>
-	</xsl:template>
-
 </xsl:stylesheet>

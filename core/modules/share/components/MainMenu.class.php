@@ -68,9 +68,8 @@ final class MainMenu extends DataSet {
         if (empty($data)) {
             $this->generateError(SystemException::ERR_WARNING, 'ERR_NO_DATA');
         }
-
         foreach ($data as $key => $value) {
-            if($key == $sitemap->getDefault()) {
+            if($key == $sitemap->getDefault() || $value['isFinal']) {
                 unset($data[$key]);
             }
             else {

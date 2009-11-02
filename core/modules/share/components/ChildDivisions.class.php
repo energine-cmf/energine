@@ -166,8 +166,8 @@ class ChildDivisions extends DataSet  {
 
 		$builder->setData($data);
 		foreach ($data->getFieldByName('upl_path') as $key => $row) {
-			if(file_exists($row)){
 				list($width, $height) = @getimagesize($row);
+			if(file_exists($row)){
 				$data->getFieldByName('upl_path')->setRowProperty($key, 'width', $width);
 				$data->getFieldByName('upl_path')->setRowProperty($key, 'height', $height);
 			}
@@ -186,26 +186,16 @@ class ChildDivisions extends DataSet  {
 	 */
 
 	protected function loadData() {
+		$data = Sitemap::getInstance()->getChilds($this->getID());
 		if(!$this->getParam('showFinal')){
-			$data = Sitemap::getInstance()->getChilds($this->getID());
+			$data = array_filter(
+			     $data, create_function('$element', 'return !$element["isFinal"];')
+			);
 		}
 		else{
-			$request = '
-    		select
-    			map.smap_id as Id,
-    			map.smap_pid as Pid,
-    			map.smap_segment as Segment,
-    			tmap.smap_name as Name,
-    			tmap.smap_description_rtf as DescriptionRtf
-			FROm share_sitemap map
-			LEFT JOIN share_sitemap_translation tmap ON tmap.smap_id = map.smap_id
-			WHERE lang_id = %s and smap_pid = %s and smap_is_disabled =0 and smap_is_final=1';
-
-			$data = $this->dbh->selectRequest($request, $this->document->getLang(), $this->id);
-			if(is_array($data)) {
-				$data = array_filter($data, array($this, 'filterDataByRights'));
-				$data = array_map(array($this, 'prepareSegment'), $data);
-			}
+            $data = array_filter(
+                 $data, create_function('$element', 'return $element["isFinal"];')
+            );
 		}
 		$data = (empty($data))?false:$data;
 		if(is_array($data)) {

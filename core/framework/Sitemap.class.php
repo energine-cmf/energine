@@ -128,7 +128,7 @@ final class Sitemap extends DBWorker {
         $res = $this->dbh->selectRequest('
             SELECT s.smap_id, s.smap_pid FROM share_sitemap s
             LEFT JOIN share_sitemap_translation st ON st.smap_id = s.smap_id
-            WHERE st.smap_is_disabled = 0 AND st.lang_id = %s AND smap_is_final = 0
+            WHERE st.smap_is_disabled = 0 AND st.lang_id = %s 
             ORDER BY smap_order_num
         ', $this->langID);
         if ($res === true) {
@@ -148,7 +148,7 @@ final class Sitemap extends DBWorker {
         list($res) = $res;
         $this->defaultMetaKeywords = $res['smap_meta_keywords'];
         $this->defaultMetaDescription = $res['smap_meta_description'];
-        $this->info = $this->getSitemapData(array_keys($this->tree->asList()));
+        $this->getSitemapData(array_keys($this->tree->asList()));
 
     }
 
@@ -178,17 +178,28 @@ final class Sitemap extends DBWorker {
         if (!is_array($id)) {
         	$id = array($id);
         }
-
-        $ids = implode(',', $id);
-
-        $result = convertDBResult(
-            $this->dbh->selectRequest(
-                'SELECT s.smap_id, s.smap_pid, s.tmpl_id as templateID, s.smap_segment as Segment, s.smap_is_final as isFinal, st.smap_name, smap_redirect_url, smap_description_rtf, smap_html_title, smap_meta_keywords, smap_meta_description '.
-                'FROM share_sitemap s '.
-                'LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id '.
-                'WHERE st.lang_id = '.$this->langID.' AND s.smap_id IN ('.$ids.')'),
-            'smap_id', true);
-        $result = array_map(array($this, 'preparePageInfo'), $result);
+        $diff = array();
+        
+        if($diff = array_diff($id, array_keys($this->info))){
+	        $ids = implode(',', $diff);
+	        $result = convertDBResult(
+	            $this->dbh->selectRequest(
+	                'SELECT s.smap_id, s.smap_pid, s.tmpl_id as templateID, s.smap_segment as Segment, s.smap_is_final as isFinal, st.smap_name, smap_redirect_url, smap_description_rtf, smap_html_title, smap_meta_keywords, smap_meta_description '.
+	                'FROM share_sitemap s '.
+	                'LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id '.
+	                'WHERE st.lang_id = '.$this->langID.' AND s.smap_id IN ('.$ids.')'),
+	            'smap_id', true);
+	        $result = array_map(array($this, 'preparePageInfo'), $result);
+	        $this->info += $result; 
+        }
+        else{
+        	$result = array();
+            foreach ($this->info as $key=>$value){
+            	if(in_array($key, $diff))
+            	   $result[$key] = $value;
+            }
+        }
+                
         return $result;
     }
 
@@ -401,27 +412,15 @@ final class Sitemap extends DBWorker {
 
     /**
      * Возвращает информацию о документе
-     * Сначала ищем есть ли документ с нужным идентификатором в $this->info
-     * Если его там нет, получаем инфу о нем и добавляем в $this->info
+     * Ищем документ с нужным идентификатором в $this->info
      *
      * @param int Идентификатор раздела
-     * @param кешировать ли информацию о странице в $this->info
      * @return array
      * @access public
      */
 
-    public function getDocumentInfo($id, $cache = true) {
-        if (!isset($this->info[$id])) {
-            $result = $this->getSitemapData($id);
-            if ($cache) {
-                $this->info = $this->info + $result;
-            }
-            $result = $result[$id];
-        }
-        else {
-        	$result = $this->info[$id];
-        }
-
+    public function getDocumentInfo($id) {
+      	$result = $this->info[$id];
         return $result;
     }
 

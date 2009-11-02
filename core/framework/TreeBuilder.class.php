@@ -87,6 +87,7 @@ class TreeBuilder extends Builder  {
         $dom_recordset = $this->result->createElement('recordset');
         $data = array_flip($this->data->getFieldByName($this->idFieldName)->getData());
         foreach ($tree as $id => $node) {
+        	if(isset($data[$id])){
             //Идентификатор строки
             $num = $data[$id];
             $dom_record = $this->result->createElement('record');
@@ -103,6 +104,7 @@ class TreeBuilder extends Builder  {
         	$dom_recordset->appendChild($dom_record);
             if ($node->hasChildren()) {
         		$dom_record->appendChild($this->treeBuild($node->getChildren()));
+        	}
         	}
 
         }

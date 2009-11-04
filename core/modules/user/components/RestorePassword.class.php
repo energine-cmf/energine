@@ -87,10 +87,8 @@ class RestorePassword extends DataSet {
             }
         }
         $this->prepare();
-        $data = new Data();
         $messageField = new Field('restore_password_result');
         $messageField->setData($message);
-        $data->addField($messageField);
-        $this->setData($data);
+        $this->getData()->addField($messageField);
     }
 }

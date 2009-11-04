@@ -74,7 +74,6 @@ class LoginForm extends DataSet {
 
         	$messageField = new Field('message');
         	$messageField->addRowData($this->translate('ERR_BAD_LOGIN'));
-        	$this->setData(new Data());
         	$this->getData()->addField($messageField);
         }
     }

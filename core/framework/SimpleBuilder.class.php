@@ -48,13 +48,13 @@ class SimpleBuilder extends Builder {
     protected function run() {
         $dom_recordSet = $this->result->createElement('recordset');
         $this->result->appendChild($dom_recordSet);
-        if (!$this->data || !$this->data->getRowCount()) {
+        if ($this->data->isEmpty() || !$this->data->getRowCount()) {
         	$dom_recordSet->setAttribute('empty', 'empty');
         }
         $rowCount = 0;
         $i = 0;
         do {
-            if ($this->data) {
+            if (!$this->data->isEmpty()) {
                 $rowCount = $this->data->getRowCount();
             }
 
@@ -81,7 +81,7 @@ class SimpleBuilder extends Builder {
                     }
                     $fieldValue = $this->createOptions($fieldInfo, $data);
                 }
-                elseif (!$this->data) {
+                elseif ($this->data->isEmpty()) {
                 	$fieldValue = false;
                 }
                 elseif ($this->data->getFieldByName($fieldName)) {

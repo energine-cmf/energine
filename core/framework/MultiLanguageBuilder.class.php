@@ -46,7 +46,7 @@ class MultiLanguageBuilder extends Builder {
         $correlation = array();
 
         // для режима списка и режима редактирования (когда есть данные)
-        if ($this->data) {
+        if (!$this->data->isEmpty()) {
             foreach ($this->dataDescription->getFieldDescriptions() as $fieldName => $fieldInfo) {
                 $fieldData = $this->data->getFieldByName($fieldName);
                 // если это первичный ключ

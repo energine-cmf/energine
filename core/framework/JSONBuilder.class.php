@@ -71,7 +71,7 @@ class JSONBuilder extends Builder {
             );
         }
 
-        if ($this->data) {
+        if (!$this->data->isEmpty()) {
             for ($i = 0; $i < $this->data->getRowCount(); $i++) {
                 foreach ($fields as $fieldName => $fieldInfo) {
                     $fieldType = $fieldInfo->getType();

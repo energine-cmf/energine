@@ -175,6 +175,14 @@ class Data extends Object {
     public function getLength() {
         return $this->length;
     }
+    /**
+     * Возвращает флаг указывающий на то является ли объект данных пустым 
+     * 
+     * @return bool
+     */
+    public function isEmpty(){
+    	return empty($this->fields);
+    }
 
     /**
      * Возвращает количество строк данных.

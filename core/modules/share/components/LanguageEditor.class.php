@@ -64,13 +64,9 @@ class LanguageEditor extends Grid {
         if($fd = $this->getDataDescription()->getFieldDescriptionByName('lang_default')){
             $fd->setMode(FieldDescription::FIELD_MODE_READ);
         }
-        $data = new Data();
-
         $field = new Field('lang_default');
         $field->setData(0);
-        $data->addField($field);
-
-        $this->setData($data);
+        $this->getData()->addField($field);
     }
 
     /**

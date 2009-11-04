@@ -434,9 +434,9 @@ abstract class DataSet extends Component {
 		if (is_null($data)) {
 			throw new SystemException('ERR_DEV_LOAD_DATA_IS_FUNCTION', SystemException::ERR_DEVELOPER);
 		}
-
+		$result = new Data();
+		
 		if (is_array($data)) {
-			$result = new Data();
 			$result->load($data);
 		}
 		return $result;

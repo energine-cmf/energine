@@ -58,6 +58,7 @@ class TemplateEditor extends Grid {
         
         return $result;
     }
+    
     private function loadIconsData(){
     	$result = array();
         foreach(glob("templates/icons/*.icon.gif") as $path){
@@ -66,19 +67,18 @@ class TemplateEditor extends Grid {
         	   'value' => basename($path) 
         	);
         }
-        
     	return $result;
     }
     
     private function loadTemplateData($type){
         $result = array();
         foreach(glob("templates/".$type."/*.".$type.".xml") as $path){
+        	$path = basename($path);
             $result[] = array(
                'key' => $path,
-               'value' => basename($path) 
+               'value' => $path 
             );
         }
-        
         return $result;    	
     }
     
@@ -90,32 +90,6 @@ class TemplateEditor extends Grid {
                'value' => basename($path) 
             );
         }
-        
         return $result;
-    }
-    protected function createData(){
-    	$result = parent::createData();
-    	return $result;
-    }
-
-    protected function edit(){
-    	parent::edit();
-
-    	$field = $this->getData()->getFieldByName('tmpl_content');
-		$field->setRowData(0,
-			str_replace('.content.xml', '', $field->getRowData(0))
-		);
-
-		$field = $this->getData()->getFieldByName('tmpl_layout');
-		$field->setRowData(0,
-			str_replace('.layout.xml', '', $field->getRowData(0))
-		);
-    }
-
-    protected function saveData(){
-		$_POST[$this->getTableName()]['tmpl_content'] .= '.content.xml';
-		$_POST[$this->getTableName()]['tmpl_layout'] .= '.layout.xml';
-
-		parent::saveData();
     }
 }

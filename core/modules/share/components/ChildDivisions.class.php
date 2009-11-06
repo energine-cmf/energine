@@ -134,10 +134,11 @@ class ChildDivisions extends DataSet  {
 
 	protected function createData(){
 		$result = parent::createData();
-		if($result){
-			$field = new Field('AttachedFiles');
-			$result->addField($field);
-			//Делаем выборку из таблицы дополнительных файлов
+		$field = new Field('AttachedFiles');
+		$result->addField($field);
+		
+		//Делаем выборку из таблицы дополнительных файлов
+		if($result->getFieldByName('Id'))
 			foreach ($result->getFieldByName('Id') as $index => $smapID) {
 				$data = $this->dbh->selectRequest('
 					SELECT upl.*
@@ -149,8 +150,7 @@ class ChildDivisions extends DataSet  {
 				if(is_array($data) && !empty($data)){
 					$result->getFieldByName('AttachedFiles')->setRowData($index, $this->buildAttachedFilesField($data));
 				}
-			}
-		}
+		    }
 
 		return $result;
 	}
@@ -166,8 +166,8 @@ class ChildDivisions extends DataSet  {
 
 		$builder->setData($data);
 		foreach ($data->getFieldByName('upl_path') as $key => $row) {
-				list($width, $height) = @getimagesize($row);
 			if(file_exists($row)){
+				list($width, $height) = @getimagesize($row);
 				$data->getFieldByName('upl_path')->setRowProperty($key, 'width', $width);
 				$data->getFieldByName('upl_path')->setRowProperty($key, 'height', $height);
 			}

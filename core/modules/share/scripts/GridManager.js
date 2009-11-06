@@ -36,7 +36,7 @@ var GridManager = new Class({
         this.pageList = new PageList({ onPageSelect: this.loadPage.bind(this) });
         this.tabPane.element.adopt(this.pageList.getElement());
         this.overlay = new Overlay;
-        this.singleTemplatePath = this.element.getProperty('single_template');
+        this.singlePath = this.element.getProperty('single_template');
     },
 
     attachToolbar: function(toolbar) {
@@ -87,7 +87,7 @@ var GridManager = new Class({
             var fieldName = this.filter.fields.options[this.filter.fields.selectedIndex].value;
             postBody  += 'filter'+fieldName+'='+this.filter.query.value+'&';
         }
-        this.request(this.singleTemplatePath + 'get-data/page-' + pageNum,
+        this.request(this.singlePath + 'get-data/page-' + pageNum,
                 postBody, function(result) {
                 if (!this.initialized) {
                     this.grid.setMetadata(result.meta);
@@ -133,19 +133,19 @@ var GridManager = new Class({
     // Actions:
 
     view: function() {
-        ModalBox.open({ url: this.singleTemplatePath + this.grid.getSelectedRecordKey() });
+        ModalBox.open({ url: this.singlePath + this.grid.getSelectedRecordKey() });
     },
 
     add: function() {
         ModalBox.open({
-            url: this.singleTemplatePath + 'add',
+            url: this.singlePath + 'add',
             onClose: this.reloadGrid.bind(this)
         });
     },
 
     edit: function() {
         ModalBox.open({
-            url: this.singleTemplatePath + this.grid.getSelectedRecordKey() + '/edit',
+            url: this.singlePath + this.grid.getSelectedRecordKey() + '/edit',
             onClose: this.loadPage.pass(this.pageList.currentPage, this)
         });
     },
@@ -153,7 +153,7 @@ var GridManager = new Class({
     del: function() {
         var MSG_CONFIRM_DELETE = window.MSG_CONFIRM_DELETE || 'Do you really want to delete selected record?';
 		if (confirm(MSG_CONFIRM_DELETE)) {
-            this.request(this.singleTemplatePath + this.grid.getSelectedRecordKey() + '/delete/', null, this.loadPage.pass(this.pageList.currentPage, this));
+            this.request(this.singlePath + this.grid.getSelectedRecordKey() + '/delete/', null, this.loadPage.pass(this.pageList.currentPage, this));
 		}
     },
 
@@ -161,11 +161,11 @@ var GridManager = new Class({
         ModalBox.close();
 	},
     up: function() {
-		this.request(this.singleTemplatePath + this.grid.getSelectedRecordKey()+'/up/', '', this.loadPage.pass(this.pageList.currentPage, this));
+		this.request(this.singlePath + this.grid.getSelectedRecordKey()+'/up/', '', this.loadPage.pass(this.pageList.currentPage, this));
 	},
 
 	down: function() {
-		this.request(this.singleTemplatePath + this.grid.getSelectedRecordKey()+'/down/', '', this.loadPage.pass(this.pageList.currentPage, this));
+		this.request(this.singlePath + this.grid.getSelectedRecordKey()+'/down/', '', this.loadPage.pass(this.pageList.currentPage, this));
 	},
 	print: function(){
 		window.open(this.element.getProperty('single_template')+'print/');

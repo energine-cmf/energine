@@ -71,25 +71,6 @@ final class DocumentController extends Object {
     public function run() {
         $request = Request::getInstance();
         $language = Language::getInstance();
-        /*
-         * Если страница или язык неопределены - переадресовываем клиента
-         * на адрес страницы по-умолчанию с языком по-умолчанию.
-         */
-        /*
-        if (is_null($request->getLang()) || sizeof($request->getPath()) == 0) {
-            if (!is_null($request->getLang())) {
-            	$language->setCurrent($language->getIDByAbbr($request->getLang()));
-            }
-            else {
-                $language->setCurrent($language->getDefault());
-            }
-            $sitemap = Sitemap::getInstance();
-            $newURL = $request->getBasePath().
-                $language->getAbbrByID($language->getCurrent()).
-                    $sitemap->getURLByID($sitemap->getDefault());
-            $this->response->setRedirect($newURL);
-        }
-        */
         $language->setCurrent($language->getIDByAbbr($request->getLang(), true));
 
         // уберём за собой

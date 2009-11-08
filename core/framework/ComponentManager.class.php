@@ -10,7 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/SystemConfig.class.php');
 
 /**
  * Менеджер набора компонентов документа.
@@ -195,7 +194,15 @@ final class ComponentManager extends Object {
      * @return Component
      */
     public function createComponent($name, $module, $class, $params = null) {
-        return new $class($name, $module, $this->document, $params);
+        try {
+            $result = new $class($name, $module, $this->document, $params);    
+        }
+        catch(SystemException $e) {
+            throw new SystemException('ERR_CLASS_NOT_FOUND', SystemException::ERR_DEVELOPER, array(
+                'class' => (($module !== 'site')?str_replace('*', $module, CORE_COMPONENTS_DIR):SITE_COMPONENTS_DIR.$module).'/'.$class.'.class.php'
+            ));
+        }
+        return $result;
     }
     /**
      * Возвращает набор компонентов

@@ -188,7 +188,10 @@ var Grid = new Class({
                 }
             }
             else {
-                var fieldValue = record[fieldName].clean();
+				var fieldValue = '';
+				if (record[fieldName]){
+					var fieldValue = record[fieldName].clean();
+                }
                 if (fieldValue != '') cell.appendText(fieldValue);
                 else cell.set('html', '&#160;');
             }

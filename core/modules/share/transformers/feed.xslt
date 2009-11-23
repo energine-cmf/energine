@@ -25,7 +25,6 @@
         <xsl:apply-templates />        
     </li>
 </xsl:template>
-
 <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='list']]">
     <li>
         <xsl:if test="$COMPONENTS[@editable]">
@@ -38,6 +37,7 @@
 		<div class="anounce"><xsl:value-of select="field[@name='news_announce_rtf']" disable-output-escaping="yes" /></div>
     </li>
 </xsl:template>
+
 
 <xsl:template match="toolbar[ancestor::component[@exttype='feed'][@type='list']][@name!='pager']" />
 

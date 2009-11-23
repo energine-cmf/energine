@@ -25,6 +25,7 @@
         <xsl:apply-templates />        
     </li>
 </xsl:template>
+
 <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='list']]">
     <li>
         <xsl:if test="$COMPONENTS[@editable]">

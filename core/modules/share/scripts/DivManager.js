@@ -64,8 +64,7 @@ var DivManager = new Class({
                     this.treeRoot.id = child['smap_id'];
                     this.treeRoot.setData(child);
                     this.treeRoot.setIcon(icon);
-                    this.treeRoot.onSelect = this.onSelectNode.bind(this);
-                    
+                    this.treeRoot.addEvent('select', this.onSelectNode.bind(this));
                 }
                 else{
                     var childId = child['smap_id'];
@@ -80,7 +79,7 @@ var DivManager = new Class({
                         } 
                     }, this.tree);
                     newNode.setData(child);
-                    newNode.onSelect = this.onSelectNode.bind(this);
+                    newNode.addEvent('select', this.onSelectNode.bind(this));
                     node.adopt(newNode);
                     if (treeInfo[childId]) lambda(childId);                    
                 }
@@ -92,7 +91,6 @@ var DivManager = new Class({
         this.treeRoot.expand();
         this.tree.expandToNode(currentNodeID)
         this.tree.getNodeById(currentNodeID).select();
-        //this.treeRoot.select();
     },
 
     reload: function(really) {
@@ -176,10 +174,9 @@ var DivManager = new Class({
         var delBtn = this.toolbar.getControlById('delete');
         var addBtn = this.toolbar.getControlById('add');
         var selectBtn = this.toolbar.getControlById('select');
-
         if (undefined != data) {
             this.toolbar.enableControls();
-            if (data.smap_is_system) {
+            if (data.smap_is_system || data.smap_default) {
                 if (delBtn) delBtn.disable();
             }
             if (data.smap_is_final) {

@@ -125,12 +125,12 @@ var TreeView = new Class({
 
         var node = event.target.getParent().treeNode;
         node.select();
-        node.onSelect(node);
     }
 });
 
 TreeView.Node = new Class({
-
+    Implements: Events,
+    
     tree: null,
     element: null,
     anchor: null,
@@ -291,11 +291,16 @@ TreeView.Node = new Class({
     },
 
     select: function() {
-        if (this == this.tree.selectedNode) return;
+        if (this == this.tree.selectedNode) {
+            this.fireEvent('select', this);
+            return this;
+        }
         if (this.tree.selectedNode) this.tree.selectedNode.unselect();
         this.tree.selectedNode = this;
         this.element.addClass('selected');
         this.selected = true;
+        this.fireEvent('select', this);
+        
         return this;
     },
 
@@ -325,8 +330,5 @@ TreeView.Node = new Class({
     },
     getData: function() {
         return this.data;
-    },
-    onSelect: function (node) {
-
     }
 });

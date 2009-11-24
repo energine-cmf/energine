@@ -76,38 +76,6 @@ Asset.css = function(source, properties) {
 	return false;
 }
 
-/*
- * Object.toQueryString = function(source){ var queryString = []; for (var
- * property in source) { if ($type(source[property]) == 'array') { for (var i =
- * 0; i < source[property].length; i++) {
- * queryString.push(encodeURIComponent(property)+'='+encodeURIComponent(source[property][i])); } }
- * else {
- * queryString.push(encodeURIComponent(property)+'='+encodeURIComponent(source[property])); } }
- * return queryString.join('&'); };
- *
- * Element.implement({ // Для единообразия. removeProperty: function(property){
- * this.removeAttribute(property); return this; } });
- */
-// Объект предназначен для последующей имплементации его в нужных местах
-// отправляет запрос на сервер и обрабатывает результат
-/*
- * var ERequest = { request : function(uri, data, onSuccess, onUserError) { var
- * callbackFunction = function(responseText) { try { var response =
- * JSON.decode(responseText); } catch (e) { var response = { result : false,
- * title : 'Ошибка', errors : [{ message : 'Произошла ошибка. Пожалуйста,
- * обновите страницу.' }] }; }
- *
- * if (response.result) { onSuccess(response); } else { var msg = (typeof
- * response.title != 'undefined') ? response.title : 'Произошла ошибка:' + "\n";
- * response.errors.each(function(error) { if (typeof error.field != 'undefined') {
- * msg += error.field + " :\t"; } if (typeof error.message != 'undefined') { msg +=
- * error.message + "\n"; } else { msg += error + "\n"; } }); alert(msg); if
- * (onUserError) { onUserError(response); } } };
- *
- * new Request({ 'url' : uri, 'method' : 'post', 'data' : data, //'noCache':
- * true, 'evalResponse': false, 'onComplete' : callbackFunction }).send();
- *  } }
- */
 var ERequest = {
 	request : function(uri, data, onSuccess, onUserError) {
 		var callbackFunction = function(response, responseText) {

@@ -58,7 +58,7 @@
 				<pattern>/get-data/[string]/</pattern>
 		     </uri_patterns>
 		</method>
-		<method name="getDivisionName">
+		<method name="getProperties">
 			<uri_patterns>
 				<pattern>/get-node-data/</pattern>
 			</uri_patterns>

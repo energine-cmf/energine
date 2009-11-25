@@ -174,10 +174,17 @@ var DivManager = new Class({
         var delBtn = this.toolbar.getControlById('delete');
         var addBtn = this.toolbar.getControlById('add');
         var selectBtn = this.toolbar.getControlById('select');
+        var downBtn = this.toolbar.getControlById('down');
+        var upBtn = this.toolbar.getControlById('up');
+        
         if (undefined != data) {
             this.toolbar.enableControls();
             if (data.smap_is_system || data.smap_default) {
                 if (delBtn) delBtn.disable();
+                if(data.smap_default && upBtn && downBtn){
+                    upBtn.disable();
+                    downBtn.disable();
+                }
             }
             if (data.smap_is_final) {
                 if (addBtn) addBtn.disable();
@@ -201,7 +208,11 @@ var DivManager = new Class({
             this.singlePath+'get-node-data',
             'languageID='+this.langId+'&id='+nodeId,
             function(response) {
-    			this.tree.getSelectedNode().setName(response.data);
+                var currentNode = this.tree.getSelectedNode();
+                var parentNode = (response.data.smap_pid)?this.tree.getNodeById(response.data.smap_pid):this.treeRoot;
+                this.tree.expandToNode(parentNode);
+                currentNode.injectInside(parentNode);
+    			currentNode.setName(response.data.smap_name);
             }.bind(this)
         );
 	}

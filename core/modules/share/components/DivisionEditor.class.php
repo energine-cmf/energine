@@ -648,7 +648,7 @@ final class DivisionEditor extends Grid {
      * @access protected
      */
 
-    protected function getDivisionName() {
+    protected function getProperties() {
         try {
             $id = $_POST['id'];
             $langID = $_POST['languageID'];
@@ -657,11 +657,16 @@ final class DivisionEditor extends Grid {
             }
 
             $this->setFilter(array('smap_id'=>$id, 'lang_id'=>$langID));
-            $result = $this->dbh->select($this->getTranslationTableName(), array('smap_name'), $this->getFilter());
-
+            $result = $this->dbh->selectRequest(
+                'SELECT smap_name, smap_pid, smap_order_num'.
+                ' FROM share_sitemap s'.
+                ' LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id'.
+                ' WHERE s.smap_id = '.$id.' AND lang_id = '.$langID
+            );
+            list($result) = $result;
             $JSONResponse = array(
             'result'=>true,
-            'data'=>simplifyDBResult($result, 'smap_name', true)
+            'data'=>$result,
             );
         }
         catch (SystemException $e){

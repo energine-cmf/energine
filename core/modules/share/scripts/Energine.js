@@ -132,7 +132,7 @@ var Label = {
 		var id = name = segment = segmentObject = '';
 		if (typeof(result) != 'undefined') {
 			if (result) {
-				id = result.smap_id;
+			    id = (result.smap_default)?'':result.smap_id;
 				name = result.smap_name;
 				segment = result.smap_segment;
 			}

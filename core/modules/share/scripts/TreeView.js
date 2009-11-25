@@ -33,12 +33,12 @@ var TreeView = new Class({
         var nodes = [];
         var lambda = function(node){
             var n;
-            if(n = node.getParent()){
+            if(node && (n = node.getParent())){
                 nodes.push(n);
                 lambda(n);
-            }    
+            }
         };
-        lambda(this.getNodeById(nodeId));
+        lambda((!(nodeId instanceof TreeView.Node))?this.getNodeById(nodeId):nodeId);
         nodes.reverse();
         nodes.each(function(node){
             node.expand();
@@ -54,7 +54,7 @@ var TreeView = new Class({
 
     setupCssClasses: function() {
         this.element.getElements('li').each(function(item) {
-            if (item.treeNode.childs && item.treeNode.childs.childNodes.length) {
+            if (item.retrieve('treeNode').childs && item.retrieve('treeNode').childs.childNodes.length) {
                 item.addClass('folder');
             }
             else {
@@ -92,9 +92,9 @@ var TreeView = new Class({
         event = new Event(event || window.event);
         event.stop();
 
-        var node = event.target.treeNode;
+        var node = event.target.retrieve('treeNode');
         if (event.target.get('tag') == 'a') {
-            node = event.target.getParent().treeNode;
+            node = event.target.getParent().retrieve('treeNode');
             if (!node) return;
         }
 
@@ -123,7 +123,7 @@ var TreeView = new Class({
         event = new Event(event || window.event);
         event.stop();
 
-        var node = event.target.getParent().treeNode;
+        var node = event.target.getParent().retrieve('treeNode');
         node.select();
     }
 });
@@ -165,8 +165,8 @@ TreeView.Node = new Class({
             this.data = nodeInfo['data'];
             this.setIcon(nodeInfo.data.icon);
         }
-
-        this.element.treeNode = this;
+        this.element.store('treeNode', this)
+        //this.element.treeNode = this;
         this.anchor = this.element.getElement('a');
         if(nodeInfo.data && nodeInfo.data['class']){
             this.anchor.addClass(nodeInfo.data['class']);
@@ -187,6 +187,7 @@ TreeView.Node = new Class({
         //this.tree.setupCssClasses();
         return this;
     },
+    
 
     injectBefore: function(node) {
         if (!(node instanceof TreeView.Node)) return false;
@@ -195,31 +196,38 @@ TreeView.Node = new Class({
         //this.tree.setupCssClasses();
         return this;
     },
-
+    injectInside: function(parentNode){
+        if (!(parentNode instanceof TreeView.Node)) return false;
+        if (!parentNode.childs) parentNode.childs = new Element('ul').addClass('hidden').injectInside(parentNode.element);
+        this.element.inject(parentNode.childs, 'top');
+        parentNode.expand();
+        this.tree.setupCssClasses();
+        return this;
+    },
     removeChilds: function() {
         if (!this.childs) return;
-        for (var i = this.childs.childNodes.length-1; i >= 0; this.childs.childNodes[i].treeNode.remove(), i--);
+        for (var i = this.childs.childNodes.length-1; i >= 0; this.childs.childNodes[i].retrive('treeNode').remove(), i--);
     },
 
     getPrevious: function() {
         var prev = this.element.getPrevious();
-        return (prev ? prev.treeNode : false);
+        return (prev ? prev.retrieve('treeNode') : false);
     },
 
     getNext: function() {
         var next = this.element.getNext();
-        return (next ? next.treeNode : false);
+        return (next ? next.retrieve('treeNode') : false);
     },
 
     getParent: function() {
         var parent = this.element.getParent().getParent(); // li / ul / li
-        return (parent ? parent.treeNode : false);
+        return (parent ? parent.retrieve('treeNode') : false);
     },
 
     isParentOf: function(node) {
         var items = this.element.getElements('li');
         for (var i = 0, len = items.length; i < len; i++) {
-            if (items[i].treeNode == node) return true;
+            if (items[i].retrieve('treeNode') == node) return true;
         }
         return false;
     },
@@ -242,7 +250,7 @@ TreeView.Node = new Class({
             this.injectBefore(node);
             tmpNode.adopt(node);
         }
-        //this.tree.setupCssClasses();
+        this.tree.setupCssClasses();
         return this;
     },
 
@@ -266,7 +274,7 @@ TreeView.Node = new Class({
         if (this.childs && this.childs.childNodes.length) {
             this.element.toggleClass('opened');
             this.opened = this.element.hasClass('opened');
-            this.element.getElement('ul').toggleClass('hidden');
+            this.childs.toggleClass('hidden');
             this.tree.setupStyles();
         }
         return this;

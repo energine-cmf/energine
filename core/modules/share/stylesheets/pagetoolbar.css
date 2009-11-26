@@ -49,7 +49,7 @@ html.e-has-topframe3 {
     left: 0;    
     width: 100%;
     min-height: 25px;
-    _z-index: 1;
+    *z-index: 1;
 }
 .e-has-topframe1 .e-topframe, .e-has-topframe2 .e-topframe, .e-has-topframe3 .e-topframe {
     display: block;

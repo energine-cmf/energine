@@ -1,4 +1,4 @@
-﻿*[unselectable="on"] { -moz-user-select: none;}
+*[unselectable="on"] { -moz-user-select: none;}
 
 .clearfix:after {
     content: ".";

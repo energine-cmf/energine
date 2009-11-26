@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <content>	
 	<component name="orderHistory" module="shop" class="OrderHistory"></component>
 	<component name="orderHistoryTextBlock" module="share" class="TextBlock" />	

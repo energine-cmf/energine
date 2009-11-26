@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <content>    
     <component name="currEditor" module="shop" class="CurrencyEditor"></component>
 	<component name="currEditorTextBlock" module="share" class="TextBlock"/>

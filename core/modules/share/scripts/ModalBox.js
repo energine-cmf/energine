@@ -105,9 +105,10 @@ var ModalBox = window.top.ModalBox || {
         	$(document.body).getElements(Browser.Engine.trident ? 'select' : 'embed')
         );
         elements.each(function(element) { element.style.visibility = open ? 'hidden' : ''; });
+        /*
         var fn = open ? 'addEvent' : 'removeEvent';
         window[fn]('resize', this.eventPosition);
-
+*/
         //document[fn]('keydown', this.eventKeyDown);
     }
 };

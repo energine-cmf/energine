@@ -17,7 +17,7 @@ var DivManager = new Class({
 		);
 		this.tree = new TreeView('divTree');
 		this.treeRoot = this.tree.getSelectedNode();
-        this.treeRoot.onSelect = this.onSelectNode.bind(this);
+        //this.treeRoot.onSelect = this.onSelectNode.bind(this);
         this.singlePath = this.element.getProperty('single_template');
 
         this.loadTree();
@@ -208,10 +208,17 @@ var DivManager = new Class({
             this.singlePath+'get-node-data',
             'languageID='+this.langId+'&id='+nodeId,
             function(response) {
+                if(response.data.smap_pid == null){
+                    response.data.smap_pid = '';
+                }
+                var smapPid = response.data.smap_pid;
                 var currentNode = this.tree.getSelectedNode();
-                var parentNode = (response.data.smap_pid)?this.tree.getNodeById(response.data.smap_pid):this.treeRoot;
-                this.tree.expandToNode(parentNode);
-                currentNode.injectInside(parentNode);
+                if(smapPid != currentNode.getData().smap_pid) {
+                    var parentNode = (smapPid)?this.tree.getNodeById(smapPid):this.treeRoot;
+                    this.tree.expandToNode(parentNode);
+                    currentNode.injectInside(parentNode);
+                }
+                currentNode.setData(response.data);
     			currentNode.setName(response.data.smap_name);
             }.bind(this)
         );

@@ -545,12 +545,6 @@ final class DivisionEditor extends Grid {
 
      protected function main() {
         parent::main();
-        /*
-        $params = $this->getActionParams();
-        if(!empty($params)){
-        	list($openItemID) = $params;
-        	$this->setProperty('openItem', $openItemID);
-        }*/
         $this->addTranslation('TXT_DIVISIONS');
      }
 
@@ -658,7 +652,7 @@ final class DivisionEditor extends Grid {
 
             $this->setFilter(array('smap_id'=>$id, 'lang_id'=>$langID));
             $result = $this->dbh->selectRequest(
-                'SELECT smap_name, smap_pid, smap_order_num'.
+                'SELECT smap_name, smap_pid, smap_order_num, smap_is_final, smap_default, smap_is_system, tmpl_id'.
                 ' FROM share_sitemap s'.
                 ' LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id'.
                 ' WHERE s.smap_id = '.$id.' AND lang_id = '.$langID

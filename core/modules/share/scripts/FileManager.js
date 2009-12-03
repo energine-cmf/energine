@@ -56,7 +56,7 @@ var FileManager = new Class({
                     this.tabPane.setTabTitle(this.currentFolder);
                 }
 				this.viewWidget.build();
-				Cookie.write(FILE_COOKIE_NAME, path?path:'', {duration: false});
+				Cookie.write(FILE_COOKIE_NAME, path?path:'', {path:new URI(Energine.base).get('directory'), duration:1});
             }.bind(this)
         );
 	},

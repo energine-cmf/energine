@@ -60,7 +60,7 @@ var PageToolbar = new Class({
 
 	toggleSidebar: function() {
         $$('html')[0].toggleClass('e-has-sideframe');
-        Cookie.write('sidebar', $$('html')[0].hasClass('e-has-sideframe')?1:0, {path:new URI(Energine.base).get('directory')});
+        Cookie.write('sidebar', $$('html')[0].hasClass('e-has-sideframe')?1:0, {path:new URI(Energine.base).get('directory'), duration:1});
 	},
 
     showTmplEditor: function() {

@@ -6,17 +6,7 @@
  * @subpackage share
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
  */
-
-//require_once('core/framework/DBWorker.class.php');
-//require_once('core/modules/share/components/Container.class.php');
-//require_once('core/modules/share/components/Link.class.php');
-//require_once('core/modules/share/components/Button.class.php');
-//require_once('core/modules/share/components/Submit.class.php');
-//require_once('core/modules/share/components/Separator.class.php');
-//require_once('core/modules/share/components/Switcher.class.php');
-//require_once('core/modules/share/components/Select.class.php');
 
 /**
  * Панель инструментов
@@ -92,6 +82,16 @@ class Toolbar extends Object {
         $this->name = $name;
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->imageDir = $imageDir;
+    }
+    /**
+     * Return toolbar name
+     * 
+     * @final
+     * @access public
+     * @return string
+     */
+    final public function getName(){
+        return $this->name;    	
     }
 
     /**

@@ -68,12 +68,12 @@ abstract class DataSet extends Component {
 	private $data = false;
 
 	/**
-	 * Панель инструментов
+	 * Панели инструментов
 	 *
-	 * @var Toolbar
+	 * @var array of Toolbar
 	 * @access private
 	 */
-	private $toolbar = false;
+	private $toolbar = array();
 
 	/**
 	 * JavaScript
@@ -174,24 +174,43 @@ abstract class DataSet extends Component {
 	}
 
 	/**
-	 * Возвращает тулбар
+	 * Возвращает набор тулбаров
 	 *
-	 * @return ToolBar
+	 * @param string $toolbarName
+	 * @return mixed (array of ToolBar or Toolbar) 
 	 * @access protected
 	 */
 
-	protected function getToolbar() {
-		return $this->toolbar;
+	protected function getToolbar($toolbarName = false) {
+		$result = array();
+		if(!$toolbarName){
+			$result = $this->toolbar;
+		}
+		elseif(isset($this->toolbar[$toolbarName])){
+			$result = $this->toolbar[$toolbarName];
+		}
+
+		return $result;
 	}
 	/**
-	 * Устанавливает обїект тулбара
+	 * Устанавливает объекты тулбара
 	 *
+	 * @param mixed
 	 * @return void
 	 * @access protected
 	 */
 
-	protected function setToolbar(Toolbar $toolbar) {
-		$this->toolbar = $toolbar;
+	protected function addToolbar($toolbar) {
+		if(!is_array($toolbar)){
+			$toolbar = array($toolbar);
+		}
+		foreach ($toolbar as $tb)
+		if($tb instanceof Toolbar){
+			$this->toolbar[$tb->getName()] = $tb;
+		}
+		else{
+			throw new SystemException('ERR_BAD_TOOLBAR', SystemException::ERR_DEVELOPER);
+		}
 	}
 
 	/**
@@ -241,8 +260,11 @@ abstract class DataSet extends Component {
 		if ($data instanceof Data) {
 			$this->setData($data);
 		}
-		if ($toolbar = $this->createToolbar()) {
-			$this->setToolbar($toolbar);
+
+		$toolbars = $this->createToolbar();
+
+		if (!empty($toolbars)) {
+			$this->addToolbar($toolbars);
 		}
 		$this->js = $this->buildJS();
 	}
@@ -288,26 +310,27 @@ abstract class DataSet extends Component {
 	}
 
 	/**
-	 * Создание панели инструментов
+	 * Создание панелей инструментов
 	 *
-	 * @return void
+	 * @return array
 	 * @access protected
 	 */
 	protected function createToolbar() {
-		$toolbar = false;
-		if ($this->config->getCurrentMethodConfig()) {
-			$toolbarDescription = $this->config->getCurrentMethodConfig()->toolbar;
-			$toolbar = new Toolbar(
-			 ((string)$toolbarDescription['name'])?
-			     (string)$toolbarDescription['name']:
-			     self::TB_PREFIX.$this->getName()
-			);
-			$toolbar->attachToComponent($this);
-			$toolbar->loadXML($toolbarDescription);
-			$toolbar->translate();
-		}
+		$result = array();
+		if ($config = $this->config->getCurrentMethodConfig()) {
+			foreach($config->toolbar as $toolbarDescription){
+				$toolbarName = ((string)$toolbarDescription['name'])?
+				(string)$toolbarDescription['name']:
+				self::TB_PREFIX.$this->getName();
 
-		return $toolbar;
+				$toolbar = new Toolbar($toolbarName);
+				$toolbar->attachToComponent($this);
+				$toolbar->loadXML($toolbarDescription);
+				$toolbar->translate();
+				$result[$toolbarName] = $toolbar;
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -382,11 +405,15 @@ abstract class DataSet extends Component {
 		if ($this->js) {
 			$result->documentElement->appendChild($result->importNode($this->js, true));
 		}
+		$toolbars = $this->getToolbar();
 
-		if (($toolbar = $this->getToolbar()) && ($toolbar = $toolbar->build())) {
-			$result->documentElement->appendChild($result->importNode($toolbar, true));
-		}
-
+		if (!empty($toolbars)) 
+			foreach ($toolbars as $tb)
+				if($toolbar = $tb->build()){
+			     $result->documentElement->appendChild(
+			         $result->importNode($toolbar, true)
+			     );	 	
+				}
 		if ($this->pager && $this->getType() == self::COMPONENT_TYPE_LIST && $pagerData = $this->pager->build()) {
 			$pager = $result->importNode($pagerData, true);
 			$result->documentElement->appendChild($pager);
@@ -435,7 +462,7 @@ abstract class DataSet extends Component {
 			throw new SystemException('ERR_DEV_LOAD_DATA_IS_FUNCTION', SystemException::ERR_DEVELOPER);
 		}
 		$result = new Data();
-		
+
 		if (is_array($data)) {
 			$result->load($data);
 		}
@@ -594,26 +621,26 @@ abstract class DataSet extends Component {
 	final protected function addTab(DOMNode $tab) {
 		array_push($this->tabs, $tab);
 	}
-	
-    /**
-     * Метод используется для форматирования даты и времени в полях date и datetime
-     * Запрашивается через AJAX
-     * Получает данные из POST и возвращает строку даты
-     *
-     * @return void
-     * @access protected
-     * @final
-     */
-    final protected function formatDate(){
-        $result = '';
 
-        if(isset($_POST['date'])){
-            $result = $this->dateToString($_POST['date']);
-        }
-        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
-        $this->response->write(json_encode($result));
-        $this->response->commit();
-    }	
+	/**
+	 * Метод используется для форматирования даты и времени в полях date и datetime
+	 * Запрашивается через AJAX
+	 * Получает данные из POST и возвращает строку даты
+	 *
+	 * @return void
+	 * @access protected
+	 * @final
+	 */
+	final protected function formatDate(){
+		$result = '';
+
+		if(isset($_POST['date'])){
+			$result = $this->dateToString($_POST['date']);
+		}
+		$this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+		$this->response->write(json_encode($result));
+		$this->response->commit();
+	}
 
 	/**
 	 * Метод возвращает файл
@@ -699,7 +726,7 @@ abstract class DataSet extends Component {
 		$jewix->cfgSetXHTMLMode(true);
 		$jewix->cfgSetAutoBrMode(false);
 		$jewix->cfgSetAutoLinkMode(false);
-		
+
 		$shortTags  = array('br', 'hr');
 		$allowedTags = array(
             'a', 'abbr', 'acronym', 'address', 'b', 'big', 'blockquote', 'br', 'cite',
@@ -708,7 +735,7 @@ abstract class DataSet extends Component {
             'p', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup','pre',
             'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
             );
-         
+             
             if (!$aggressive) {
             	$allowedTags = array_merge($allowedTags, array(
                 'img',
@@ -722,10 +749,10 @@ abstract class DataSet extends Component {
             }
             $jewix->cfgAllowTags($allowedTags);
             $jewix->cfgSetTagShort($shortTags);
-            
+
             $jewix->cfgSetTagNoTypography(array('code', 'pre', 'blockquote'));
             $jewix->cfgSetTagPreformatted(array('code', 'pre', 'blockquote'));
-            
+
             $jewix->cfgAllowTagParams('table', array('cellpadding', 'cellspacing'));
             $jewix->cfgAllowTagParams('td', array('colspan', 'rowspan'));
             $jewix->cfgAllowTagParams('th', array('colspan', 'rowspan'));

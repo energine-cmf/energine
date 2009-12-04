@@ -86,9 +86,9 @@ class NewsFeed extends Feed {
         else {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
-        if ($toolbar = $this->createToolbar()) {
-            $this->setToolbar($toolbar);
-        }
+        
+        $this->addToolbar($this->createToolbar());
+        
         foreach ($this->getDataDescription()->getFieldDescriptions() as $fieldDescription) {
             $fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
         }

@@ -595,7 +595,11 @@ final class DivisionEditor extends Grid {
                 // вызываем родительский метод построения
                 $result = Component::build();
                 $result->documentElement->appendChild($result->importNode($this->buildJS(), true));
-                $result->documentElement->appendChild($result->importNode($this->getToolBar()->build(), true));
+                $tbs = $this->getToolbar();
+                if(!empty($tbs))
+                	foreach($tbs as $toolbar){
+                	   $result->documentElement->appendChild($result->importNode($toolbar->build(), true));	
+                	}
         	   break;
             case 'showTemplate':
                 $result = $this->templateEditor->build();
@@ -682,9 +686,9 @@ final class DivisionEditor extends Grid {
         if (!$this->config->getCurrentMethodConfig()) {
             throw new SystemException('ERR_DEV_TOOLBAR_MUST_HAVE_CONFIG', SystemException::ERR_DEVELOPER);
         }
-        $this->setToolbar($this->createToolbar());
+        $this->addToolbar($this->createToolbar());
         if($this->document->isEditable())
-            $this->getToolbar()->getControlByID('editMode')->setState(1);
+            $this->getToolbar('main_toolbar')->getControlByID('editMode')->setState(1);
     }
 
     /**

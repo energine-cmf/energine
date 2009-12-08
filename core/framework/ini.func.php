@@ -51,7 +51,7 @@ if (get_magic_quotes_gpc()) {
    $_REQUEST = array_map('recursiveStripslashes', $_REQUEST);
 }
 
-date_default_timezone_set('Europe/Kiev');
+@date_default_timezone_set('Europe/Kiev');
 
 /**
  * Путь к директории пользовательских компонентов

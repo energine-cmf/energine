@@ -135,11 +135,12 @@ class FeedEditor extends Grid {
 					$result->documentElement->appendChild($result->importNode($this->js, true));
 				}
 				$result->documentElement->appendChild($result->createElement('recordset'));
-				$tbs = $this->getToolbar();
-				if(!empty($tbs))
-				foreach($tbs as $tb)
-				if($toolbar = $toolbar->build())
-				$result->documentElement->appendChild($result->importNode($toolbar, true));
+				if (($tbs = $this->getToolbar()) && (!empty($tbs))) {
+				    foreach($tbs as $tb)
+					if($toolbar = $tb->build()) {
+					    $result->documentElement->appendChild($result->importNode($toolbar, true));
+					}
+				}
 				 
 			}
 		}

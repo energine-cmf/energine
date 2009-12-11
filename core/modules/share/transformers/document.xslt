@@ -72,7 +72,7 @@
                             </xsl:if>
         				</xsl:if>
                         <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
-                            <xsl:variable name="objectID" select="generate-id(../../recordset)" />
+                            <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])" />
                             <xsl:value-of select="$objectID" /> = new <xsl:value-of select="@name" />($('<xsl:value-of select="$objectID" />'));
         				</xsl:for-each>
                         <xsl:if test="$COMPONENTS/javascript/object[@name='PageEditor']">

@@ -469,7 +469,7 @@
     </div>
     <xsl:if test=".!=''">
         <a href="#">
-            <xsl:attribute name="onclick">return <xsl:value-of select="generate-id(ancestor::recordset)"/>.removeFilePreview.run(['<xsl:value-of select="generate-id(.)"/>', '<xsl:value-of select="generate-id(.)"/>_preview', this], <xsl:value-of select="generate-id(ancestor::recordset)"/>);</xsl:attribute>
+            <xsl:attribute name="onclick">return <xsl:value-of select="generate-id(ancestor::recordset)"/>.removeFilePreview.run(['<xsl:value-of select="generate-id(.)"/>', this], <xsl:value-of select="generate-id(ancestor::recordset)"/>);</xsl:attribute>
             <xsl:value-of select="@deleteFileTitle"/></a>
     </xsl:if>
 

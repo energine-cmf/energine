@@ -50,7 +50,12 @@ var Form = new Class({
     },
     removeFilePreview: function(fieldId, control){
         $(fieldId).value = '';
-        $(fieldId + '_preview').empty();
+        
+        if($(fieldId + '_preview')){
+            $(fieldId + '_preview').setProperty('src', '');
+        }
+        
+        $(fieldId + '_link').set('html', '');
         $(control).dispose();
         return false;
     },

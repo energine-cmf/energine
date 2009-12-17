@@ -31,6 +31,7 @@ class SimpleBuilder extends Builder {
     /**
      * Конструктор класса.
      *
+     * @param string recordset title
      * @access public
      * @return void
      */

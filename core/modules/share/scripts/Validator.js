@@ -32,12 +32,12 @@ var Validator = new Class({
         new Element('div').addClass('error').appendText('^ ' + message).injectAfter(field.parentNode);
 	},
 	scrollToElement: function(field){
-		var scroll = new Fx.Scroll(window, {
+        var context = (context=document.getElement('.e-mainframe'))?context:window;
+		var scroll = new Fx.Scroll(context, {
 			offset: {'x': -30, 'y': -20},
 			transition: Fx.Transitions.linear
 		});
-
-		scroll.toElement(field).chain(function(){field.focus()});
+		scroll.toElement(field).chain(function(){try{field.focus()}catch(e){}});
 	},
     validateElement: function(field){
         var result = true;

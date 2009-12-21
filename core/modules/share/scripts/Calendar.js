@@ -196,8 +196,11 @@ var FormCalendar = {
 	    var calend = new Calendar(calendOptions);
 	    FormCalendar.calendars[fieldName] = calend;
         
-	    var target = $(event.target || window.event.srcElement);
-        calend.element.inject(target, 'before').position({relativeTo:target, 'position':'upperleft'});
+	    var target = $(event.target || window.event.srcElement);        
+        calend.element.inject(target, 'before').setStyles({
+        	'position': 'absolute', 
+        	'z-index': '1'
+        });
 	},
 	calendars:{}
 };

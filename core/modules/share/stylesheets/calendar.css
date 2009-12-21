@@ -1,3 +1,9 @@
+.calendar_box {
+    display: -moz-inline-box;
+    display: inline-block;
+    position: relative;
+}
+
 table.calendar * { margin: 0; padding: 0; }
 
 table.calendar {
@@ -7,6 +13,7 @@ table.calendar {
     background: #FFF;
     color: #000;
     font: 11px tahoma, sans-serif;
+    width: 178px;
 }
 
 #calendar_prevMonth, #calendar_nextMonth {

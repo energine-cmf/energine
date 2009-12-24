@@ -199,7 +199,7 @@ var FormCalendar = {
 	    var target = $(event.target || window.event.srcElement);        
         calend.element.inject(target, 'before').setStyles({
         	'position': 'absolute', 
-        	'z-index': '1'
+        	'z-index': '100'
         });
 	},
 	calendars:{}

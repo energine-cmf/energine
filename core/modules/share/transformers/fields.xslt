@@ -844,11 +844,6 @@
 </xsl:template>
 
 <xsl:template name="DATE">
-    <input type="text" id="date_{@name}" readonly="readonly" class="text inp_date">
-        <xsl:if test="@length">
-            <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-        </xsl:if>
-    </input>
     <input type="hidden" id="{@name}" value="{.}">
         <xsl:attribute name="name">
             <xsl:choose>
@@ -863,7 +858,11 @@
             <xsl:attribute name="nrgn:message"  xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
     </input>
-    
+    <input type="text" id="date_{@name}" readonly="readonly" class="text inp_date">
+        <xsl:if test="@length">
+            <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
+        </xsl:if>
+    </input>        
     <xsl:if test=".!=''">
         <script type="text/javascript">
             window.addEvent('domready', function(){

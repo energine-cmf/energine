@@ -871,7 +871,9 @@
             });
         </script>
     </xsl:if>
-    <img src="images/calendar.gif" id="calendarImg" onclick="{generate-id(../..)}.showCalendar('{@name}', event); "/>
+    <span class="calendar_box">
+        <img src="images/calendar.gif" id="calendarImg" class="set_date" onclick="{generate-id(../..)}.showCalendar('{@name}', event); "/>
+    </span>
 </xsl:template>
 
 <!-- для поля hidden -->

@@ -64,10 +64,6 @@
                     </xsl:choose>
                     </a>)
                 </xsl:if>
-                <xsl:if test="@help">
-                    <xsl:variable name="HELP_IMG"><xsl:value-of select="generate-id()"/></xsl:variable>
-                    <img src="images/help.gif" width="11" height="11" border="0" title="{@help}"/>
-                </xsl:if>
 			</div>
 		</xsl:if>
 
@@ -871,7 +867,7 @@
         </script>
     </xsl:if>
     <span class="calendar_box">
-        <img src="images/calendar.gif" id="calendarImg" class="set_date" onclick="{generate-id(../..)}.showCalendar('{@name}', event); "/>
+        <img src="images/calendar.gif" class="set_date" onclick="{generate-id(../..)}.showCalendar('{@name}', event); "/>
     </span>
 </xsl:template>
 

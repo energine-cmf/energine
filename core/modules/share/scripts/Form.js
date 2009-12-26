@@ -49,14 +49,16 @@ var Form = new Class({
         );
     },
     removeFilePreview: function(fieldId, control){
+        var tmpNode;
         $(fieldId).value = '';
         
-        if($(fieldId + '_preview')){
-            $(fieldId + '_preview').setProperty('src', '');
+        if(tmpNode = $(fieldId + '_preview')){
+            tmpNode.setProperty('src', '');
         }
         
-        $(fieldId + '_link').set('html', '');
-        $(control).dispose();
+        if(tmpNode = $(fieldId + '_link')){
+            tmpNode.set('html', '');
+        }
         return false;
     },
 	upload : function(fileField) {

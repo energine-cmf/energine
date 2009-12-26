@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <content>
+    <component name="regFormTextBlock" module="share"  class="TextBlock" >
+        <params>
+            <param name="num">1</param>
+        </params>
+    </component>
 	<component name="regForm" module="user"  class="Register"></component>
     <component name="regFormRemover" module="share" class="Remover">
        <params>
            <param name="componentName">regForm</param>
            <param name="rights">2</param>
        </params>
+    </component>
+    <component name="regFormTextBlock2" module="share"  class="TextBlock" >
+        <params>
+            <param name="rights">2</param>
+            <param name="num">2</param>
+        </params>
     </component>
     <component name="userProfile" module="user"  class="UserProfile">
        <params>

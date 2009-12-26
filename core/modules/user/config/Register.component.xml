@@ -5,6 +5,11 @@
 		<javascript>
 			<object name="Register" />
 		</javascript>
+		<fields>
+		  <field name="u_id"/>
+		  <field name="u_name"/>
+		  <field name="u_fullname"/>
+		</fields>
 		<toolbar>
 			<control id="register" title="BTN_REGISTER" type="submit"/>
 		</toolbar>

@@ -69,33 +69,33 @@ class Register extends DBDataSet {
 	 */
 	protected function check(){
 		if($_SESSION['captchaChecked'] = $result = (
-            isset($_POST['captcha'])
-            &&
-            ($_SESSION['captchaCode'] == sha1($_POST['captcha']))
-        )){
+		isset($_POST['captcha'])
+		&&
+		($_SESSION['captchaCode'] == sha1($_POST['captcha']))
+		)){
 			$login = trim($_POST['login']);
 			$result = !(bool)simplifyDBResult(
-				$this->dbh->select(
-					$this->getTableName(),
-					array('COUNT(u_id) as number'),
-					array('u_name' => $login)
-				),
+			$this->dbh->select(
+			$this->getTableName(),
+			array('COUNT(u_id) as number'),
+			array('u_name' => $login)
+			),
 		        'number', 
-				true
+			true
 			);
 			$field = 'login';
 			$message = ($result)?$this->translate('TXT_LOGIN_AVAILABLE'):$this->translate('TXT_LOGIN_ENGAGED');
-        }
-        else{
-            $message = $this->translate('TXT_BAD_CAPTCHA');
-            $field = 'captcha';        	
-        }
-		
+		}
+		else{
+			$message = $this->translate('TXT_BAD_CAPTCHA');
+			$field = 'captcha';
+		}
+
 		$result = array(
                 'result'=> $result,
                 'message' => $message,
 		        'field' => $field,  
-        );
+		);
 		$result = json_encode($result);
 		$this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
 		$this->response->write($result);
@@ -136,7 +136,11 @@ class Register extends DBDataSet {
 			$mailer->setSubject($this->translate('TXT_SUBJ_REGISTER'));
 			$mailer->setText(
 			$this->translate('TXT_BODY_REGISTER'),
-			array('name' => $this->user->getValue('u_name'), 'password' => $password)
+			array(
+			     'login' => $this->user->getValue('u_name'), 
+			     'name' => $this->user->getValue('u_fullname'),
+			     'password' => $password
+			)
 			);
 			$mailer->addTo($this->user->getValue('u_name'));
 			$mailer->send();

@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml">
 
 <xsl:template match="component[@class='Register']">
-    <form method="post" action="{../@action}"  class="base_form registration_form">
+    <form method="post" action="{@action}"  class="base_form registration_form">
         <xsl:apply-templates />
     </form>    
 </xsl:template>

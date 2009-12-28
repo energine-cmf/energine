@@ -867,6 +867,7 @@
         </script>
     </xsl:if>
     <span class="calendar_box">
+        <xsl:text> </xsl:text>
         <img src="images/calendar.gif" class="set_date" onclick="{generate-id(../..)}.showCalendar('{@name}', event); "/>
     </span>
 </xsl:template>

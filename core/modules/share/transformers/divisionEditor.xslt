@@ -64,7 +64,7 @@
 							<xsl:if test="floor(position() div 2) = position() div 2">
 								<xsl:attribute name="class">even</xsl:attribute>
 							</xsl:if>
-							<td><input type="hidden" name="share_sitemap_uploads[upl_id][]" value="{field[@name='upl_id']}"/><a href="#" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']}); return false;"><xsl:value-of select="$TRANSLATIONS[@const='BTN_DEL_FILE']"/></a></td>
+							<td><input type="hidden" name="share_sitemap_uploads[upl_id][]" value="{field[@name='upl_id']}"/><a href="#" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']}); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATIONS[@const='BTN_DEL_FILE']"/></a></td>
 							<td><xsl:value-of select="field[@name='upl_name']"/></td>
 							<td>
 								<a href="{field[@name='upl_path']/@real_image}" target="blank">
@@ -93,7 +93,7 @@
             <tfoot>
             	<tr>
             		<td colspan="3" style="text-align:right;">
-            			<a href="#" onclick="{$JS_OBJECT}.addAttachment(); return false;"><xsl:value-of select="$TRANSLATIONS[@const='BTN_ADD_FILE']"/></a>
+            			<a href="#" onclick="{$JS_OBJECT}.addAttachment(); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATIONS[@const='BTN_ADD_FILE']"/></a>
             			<script type="text/javascript">
             				var delete_button_text = '<xsl:value-of select="$TRANSLATIONS[@const='BTN_DEL_FILE']"/>';
             				var no_attached_files = '<xsl:value-of select="$TRANSLATIONS[@const='MSG_NO_ATTACHED_FILES']"/>';

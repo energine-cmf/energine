@@ -356,7 +356,7 @@
     </div>
     <xsl:if test=".!=''">
         <a href="#">
-            <xsl:attribute name="onclick"><xsl:value-of select="generate-id(ancestor::recordset)"/>.removeFilePreview.run(['<xsl:value-of select="generate-id(.)"/>', '<xsl:value-of select="generate-id(.)"/>_preview', this], <xsl:value-of select="generate-id(ancestor::recordset)"/>); $(this).destroy();return false;</xsl:attribute>
+            <xsl:attribute name="onclick"><xsl:value-of select="generate-id(ancestor::recordset)"/>.removeFilePreview.run(['<xsl:value-of select="generate-id(.)"/>', '<xsl:value-of select="generate-id(.)"/>_preview', this], <xsl:value-of select="generate-id(ancestor::recordset)"/>); $(this).destroy();new Event(arguments[0] || window.event).stop();</xsl:attribute>
             <xsl:value-of select="@deleteFileTitle"/></a>
     </xsl:if>
     <input type="text" id="{generate-id(.)}" value="{.}" readonly="readonly" class="text inp_file">

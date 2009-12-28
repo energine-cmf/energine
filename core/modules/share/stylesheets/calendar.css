@@ -1,7 +1,6 @@
 .calendar_box {
     display: -moz-inline-box;
     display: inline-block;
-    position: relative;
 }
 
 table.calendar * { margin: 0; padding: 0; }

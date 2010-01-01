@@ -18,22 +18,16 @@
  * @final
  */
 final class DocumentController extends Object {
-
+    /**
+     * 
+     * @var Transformer
+     */
 	private static $transformer;
-
+	/**
+	 * 
+	 * @var DocumentController
+	 */
 	private static $instance;
-
-    /**
-     * @access private
-     * @var Document экземпляр класса Document
-     */
-    private $document;
-
-    /**
-     * @access private
-     * @var Response экземпляр класса Response (HTTP-ответ)
-     */
-    private $response;
 
     /**
      * Конструктор класса.
@@ -43,7 +37,6 @@ final class DocumentController extends Object {
      */
     public function __construct() {
         parent::__construct();
-        $this->response = Response::getInstance();
     }
 
     /**
@@ -77,9 +70,9 @@ final class DocumentController extends Object {
         unset($request);
         unset($language);
         //unset($sitemap);
-        $this->document = new Document;
-        $this->document->build();
-        $this->transform();
+        $document = new Document;
+        $document->build();
+        $this->transform($document);
     }
     /**
      * Возвращает объект  - XSLT трансформатор
@@ -99,25 +92,27 @@ final class DocumentController extends Object {
      * Трансформирует XML-документ страницы в выходной формат,
      * и выводит результат клиенту.
      *
+     * @param $document Document
      * @access private
      * @return void
      */
-    private function transform() {
-        $dom_document = $this->document->getResult();
+    private function transform($document) {
+        $response = Response::getInstance();
+        $dom_document = $document->getResult();
         if (!($dom_document instanceof DOMDocument)) {
             throw new SystemException('ERR_BAD_DOCUMENT', SystemException::ERR_CRITICAL);
         }
 
         if ((isset($_GET['debug']) && $this->getConfigValue('site.debug')) || $this->getConfigValue('site.asXML')) {
             $result = trim($dom_document->saveXML());
-            $this->response->setHeader('Content-Type', 'text/xml; charset=UTF-8');
+            $response->setHeader('Content-Type', 'text/xml; charset=UTF-8');
         }
         else {
             $result = $this->getTransformer()->transform($dom_document);
-          	$this->response->setHeader('Content-Type', 'text/html; charset=UTF-8', false);
+          	$response->setHeader('Content-Type', 'text/html; charset=UTF-8', false);
         }
 
-        $this->response->write($result);
-        $this->response->commit();
+        $response->write($result);
+        $response->commit();
     }
 }

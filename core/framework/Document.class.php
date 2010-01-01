@@ -172,7 +172,7 @@ final class Document extends DBWorker {
         $this->setProperty('final', $this->documentInfo['isFinal']);
 	    $this->setProperty('default', $this->sitemap->getDefault()==$this->getID());
 	    if(($verifyCode = $this->getConfigValue('google.verify')) && !empty($verifyCode)){
-	    	$this->setProperty('google_verify', $this->getConfigValue('google.verify'));
+	    	$this->setProperty('google_verify', $verifyCode);
 	    }
 	    unset($verifyCode);
 

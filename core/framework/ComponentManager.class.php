@@ -118,9 +118,9 @@ final class ComponentManager extends Object {
             $components = $file->xpath("/*/component[@name='".$onlyComponent."']");
         }
         else {
-            $components = $file->xpath('/*/component');
+            $components = $file->children();
+            //$components = $file->xpath('/*/component');
         }
-
         if (!empty($components)) {
             $result = true;
             foreach ($components as $componentDescription) {

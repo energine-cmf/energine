@@ -905,7 +905,7 @@ class Jevix{
                             continue(2);
                         }
                         // HTTP в начале если нет
-                        if(!preg_match('/^(http|https|ftp):\/\//ui', $value) && !preg_match('/^(\/|\#)/ui', $value) ) $value = 'http://'.$value;
+                        //if(!preg_match('/^(http|https|ftp):\/\//ui', $value) && !preg_match('/^(\/|\#)/ui', $value) ) $value = 'http://'.$value;
                         break;
 
                     case '#image':
@@ -915,7 +915,7 @@ class Jevix{
                             continue(2);
                         }
                         // HTTP в начале если нет
-                        if(!preg_match('/^http:\/\//ui', $value) && !preg_match('/^\//ui', $value)) $value = 'http://'.$value;
+                        //if(!preg_match('/^http:\/\//ui', $value) && !preg_match('/^\//ui', $value)) $value = 'http://'.$value;
                         break;
 
                     default:

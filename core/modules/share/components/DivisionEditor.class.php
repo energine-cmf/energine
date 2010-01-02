@@ -185,7 +185,7 @@ final class DivisionEditor extends Grid {
 
             $field = new FieldDescription('attached_files');
             $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
-            $field->addProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
+            $field->setProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
             $result->addFieldDescription($field);
         }
         else {
@@ -200,7 +200,7 @@ final class DivisionEditor extends Grid {
             if ($this->getAction() == 'getRawData') {
                 $field = new FieldDescription('smap_segment');
                 $field->setType(FieldDescription::FIELD_TYPE_STRING);
-                $field->addProperty('tableName', $this->getTableName());
+                $field->setProperty('tableName', $this->getTableName());
                 $result->addFieldDescription($field);
             }
         }
@@ -247,7 +247,7 @@ final class DivisionEditor extends Grid {
         $dd->addFieldDescription($f);
 
         $f = new FieldDescription('upl_path');
-        $f->addProperty('title', $this->translate('FIELD_UPL_FILE'));
+        $f->setProperty('title', $this->translate('FIELD_UPL_FILE'));
         $dd->addFieldDescription($f);
 
         $d = new Data();

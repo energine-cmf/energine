@@ -110,7 +110,7 @@ class ChildDivisions extends DataSet  {
 
 		$field = new FieldDescription('Id');
 		$field->setType(FieldDescription::FIELD_TYPE_INT);
-		$field->addProperty('key', true);
+		$field->setProperty('key', true);
 		$result->addFieldDescription($field);
 
 		$field = new FieldDescription('Name');

@@ -45,8 +45,8 @@ class LanguageEditor extends Grid {
 
         if ($this->getType() !== self::COMPONENT_TYPE_LIST) {
             $langAbbr = $dataDescription->getFieldDescriptionByName('lang_abbr');
-            $langAbbr->addProperty('pattern', '/^[a-z]{2}$/');
-            $langAbbr->addProperty('message', 'MSG_BAD_LANG_ABBR');
+            $langAbbr->setProperty('pattern', '/^[a-z]{2}$/');
+            $langAbbr->setProperty('message', 'MSG_BAD_LANG_ABBR');
         }
 
         return $dataDescription;

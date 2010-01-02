@@ -152,7 +152,7 @@ class Grid extends DBDataSet {
             if (($fieldDescription->getType() == FieldDescription::FIELD_TYPE_PRFILE || $fieldDescription->getType() == FieldDescription::FIELD_TYPE_PFILE) && ($fieldData = $this->getData()->getFieldByName($fieldName)->getData())) {
                 $fieldData = $fieldData[0];
                 if (file_exists($fieldData) && @getimagesize($fieldData)) {
-                    $this->getDataDescription()->getFieldDescriptionByName($fieldName)->addProperty('is_image', 'is_image');
+                    $this->getDataDescription()->getFieldDescriptionByName($fieldName)->setProperty('is_image', 'is_image');
                 }
             }
         }

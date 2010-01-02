@@ -210,16 +210,16 @@ class UserProfile extends DBDataSet {
         }
 
         $field = $result->getFieldDescriptionByName('u_password');
-        $field->addProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
+        $field->setProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
         $result->removeFieldDescription($field);
         $result->addFieldDescription($field);
 
         if ($this->getAction() !== 'save') {
         	$field = new FieldDescription('u_password2');
-            $field->addProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
+            $field->setProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
             $field->setType(FieldDescription::FIELD_TYPE_PWD);
-            $field->addProperty('customField', true);
-            $field->addProperty('title', $this->translate('FIELD_U_PASSWORD2'));
+            $field->setProperty('customField', true);
+            $field->setProperty('title', $this->translate('FIELD_U_PASSWORD2'));
             $result->addFieldDescription($field);
         }
 

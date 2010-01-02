@@ -199,7 +199,7 @@ class UserEditor extends Grid {
 
         if (in_array($this->getAction(), array('add', 'edit'))) {
             foreach ($result as $fieldDescription) {
-                $fieldDescription->addProperty('tabName', $this->translate('TXT_USER_EDITOR'));
+                $fieldDescription->setProperty('tabName', $this->translate('TXT_USER_EDITOR'));
             }
             $result->getFieldDescriptionByName('u_name')->setType(FieldDescription::FIELD_TYPE_EMAIL);
             if ($fd = $result->getFieldDescriptionByName('u_is_active')) {
@@ -208,8 +208,8 @@ class UserEditor extends Grid {
             $fd = new FieldDescription('group_id');
             $fd->setSystemType(FieldDescription::FIELD_TYPE_INT);
             $fd->setType(FieldDescription::FIELD_TYPE_MULTI);
-            $fd->addProperty('tabName', $this->translate('TXT_USER_GROUPS'));
-            $fd->addProperty('customField', true);
+            $fd->setProperty('tabName', $this->translate('TXT_USER_GROUPS'));
+            $fd->setProperty('customField', true);
 
             $data = $this->dbh->select('user_groups', array('group_id', 'group_name'), 'group_id IN(select group_id from user_groups where group_default=0)');
 
@@ -224,7 +224,7 @@ class UserEditor extends Grid {
         ) {
             $f->removeProperty('pattern');
             $f->removeProperty('message');
-            $f->addProperty('nullable', true);
+            $f->setProperty('nullable', true);
         }
 
         return $result;

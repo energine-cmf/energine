@@ -64,7 +64,7 @@ class SimpleBuilder extends Builder {
             foreach ($this->dataDescription->getFieldDescriptions() as $fieldName => $fieldInfo) {
                 $fieldProperties = false;
                 if ($fieldInfo->getPropertyValue('tabName') === null) {
-                    $fieldInfo->addProperty('tabName', $this->title);
+                    $fieldInfo->setProperty('tabName', $this->title);
                 }
 
                 // если тип поля предполагает выбор из нескольких значений - создаем соответствующие узлы

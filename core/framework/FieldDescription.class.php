@@ -239,7 +239,7 @@ class FieldDescription extends DBWorker {
 
         // формируем название поля добавляя префикс 'FIELD_'
         if ($name!=self::EMPTY_FIELD_NAME ) {
-            $this->addProperty('title', $this->translate('FIELD_'.$name));
+            $this->setProperty('title', $this->translate('FIELD_'.$name));
         }
 
     }
@@ -265,7 +265,7 @@ class FieldDescription extends DBWorker {
                     $this->isMultilanguage = true;
                     break;
                 default:
-                    $this->addProperty($propName, $propValue);
+                    $this->setProperty($propName, $propValue);
             }
         }
         return $result;
@@ -303,7 +303,7 @@ class FieldDescription extends DBWorker {
                     elseif ($attrName == 'message') {
                         $attrValue = $this->translate($attrValue);
                     }
-                    $this->addProperty($attrName, $attrValue);
+                    $this->setProperty($attrName, $attrValue);
             }
         }
         return $result;
@@ -372,13 +372,13 @@ class FieldDescription extends DBWorker {
         $this->type = (string)$type;
         switch ($this->type) {
             case self::FIELD_TYPE_PWD :
-                $this->addProperty('pattern', '/^.+$/');
-                $this->addProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
-                $this->addProperty('outputFormat', '%s');
+                $this->setProperty('pattern', '/^.+$/');
+                $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                $this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_HIDDEN :
                 if (is_null($this->getPropertyValue('outputFormat'))) {
-                	$this->addProperty('outputFormat', '%s');
+                	$this->setProperty('outputFormat', '%s');
                 }
                 break;
             case self::FIELD_TYPE_EMAIL:
@@ -388,9 +388,9 @@ class FieldDescription extends DBWorker {
                 else {
                     $regexp = '/^((([^()<>@,;:\\\".\[\] ]+)|("[^"\\\\\r]*"))((\.[^()<>@,;:\\\".\[\] ]+)|(\."[^"\\\\\r]*"))*@(([a-z0-9][a-z0-9\-]+)*[a-z0-9]+\.)+[a-z]{2,})?$/i';
                 }
-                $this->addProperty('pattern', $regexp);
-                $this->addProperty('message', $this->translate('MSG_BAD_EMAIL_FORMAT'));
-                $this->addProperty('outputFormat', '%s');
+                $this->setProperty('pattern', $regexp);
+                $this->setProperty('message', $this->translate('MSG_BAD_EMAIL_FORMAT'));
+                $this->setProperty('outputFormat', '%s');
                 break;
             case  self::FIELD_TYPE_PHONE:
                 if ($this->getPropertyValue('nullable') === false || is_null($this->getPropertyValue('nullable'))) {
@@ -399,37 +399,37 @@ class FieldDescription extends DBWorker {
                 else {
                     $regexp = '/^([0-9\(\)\+\-\. ]{5,25})?$/';
                 }
-                $this->addProperty('pattern', $regexp);
-                $this->addProperty('message', $this->translate('MSG_BAD_PHONE_FORMAT'));
-                $this->addProperty('outputFormat', '%s');
+                $this->setProperty('pattern', $regexp);
+                $this->setProperty('message', $this->translate('MSG_BAD_PHONE_FORMAT'));
+                $this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_IMAGE:
                 if ($this->getPropertyValue('nullable') === false) {
-                    $this->addProperty('pattern', '/^.+$/');
-                    $this->addProperty('message', $this->translate('MSG_IMG_IS_NOT_NULL'));
+                    $this->setProperty('pattern', '/^.+$/');
+                    $this->setProperty('message', $this->translate('MSG_IMG_IS_NOT_NULL'));
                 }
                 $this->length = true;
-                $this->addProperty('outputFormat', '%s');
-                $this->addProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
+                $this->setProperty('outputFormat', '%s');
+                $this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_FILE:
             case self::FIELD_TYPE_PRFILE:
             case self::FIELD_TYPE_PFILE:
             case self::FIELD_TYPE_VIDEO:            	
                 if ($this->getPropertyValue('nullable') === false) {
-                    $this->addProperty('pattern', '/^.+$/');
-                    $this->addProperty('message', $this->translate('MSG_FILE_IS_NOT_NULL'));
+                    $this->setProperty('pattern', '/^.+$/');
+                    $this->setProperty('message', $this->translate('MSG_FILE_IS_NOT_NULL'));
                 }
                 $this->length = true;
-                $this->addProperty('outputFormat', '%s');
-                $this->addProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
+                $this->setProperty('outputFormat', '%s');
+                $this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_STRING:
                 if ($this->getPropertyValue('nullable') === false  || is_null($this->getPropertyValue('nullable'))) {
-                    $this->addProperty('pattern', '/^.+$/');
-                    $this->addProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                    $this->setProperty('pattern', '/^.+$/');
+                    $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
                 }
-                $this->addProperty('outputFormat', '%s');
+                $this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_FLOAT:
                 $this->length = 10;
@@ -443,13 +443,13 @@ class FieldDescription extends DBWorker {
                 else {
                     $regexp = '/^[0-9,\.]{0,'.$this->length.'}$/';
                 }
-                $this->addProperty('outputFormat', '%f');
-                $this->addProperty('pattern', $regexp);
-                $this->addProperty('message', $this->translate('MSG_BAD_FLOAT_FORMAT'));
+                $this->setProperty('outputFormat', '%f');
+                $this->setProperty('pattern', $regexp);
+                $this->setProperty('message', $this->translate('MSG_BAD_FLOAT_FORMAT'));
                 break;
             case self::FIELD_TYPE_BOOL:
                 $this->length = true;
-                $this->addProperty('outputFormat', '%s');
+                $this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_SELECT:
                 $this->length = true;
@@ -464,18 +464,18 @@ class FieldDescription extends DBWorker {
                         $regexp = '/^\d{0,5}$/';
                         $message = $this->translate('MSG_BAD_INT_FORMAT');
                     }
-                    $this->addProperty('pattern', $regexp);
-                    $this->addProperty('message', $message);
-                    $this->addProperty('outputFormat', '%d');
+                    $this->setProperty('pattern', $regexp);
+                    $this->setProperty('message', $message);
+                    $this->setProperty('outputFormat', '%d');
                 }
                 break;
             case self::FIELD_TYPE_TEXT:
             case self::FIELD_TYPE_HTML_BLOCK:
                 if ($this->getPropertyValue('nullable') === false|| is_null($this->getPropertyValue('nullable'))) {
-                    $this->addProperty('pattern', '/^.+$/m');
-                    $this->addProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                    $this->setProperty('pattern', '/^.+$/m');
+                    $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
                 }
-                $this->addProperty('outputFormat', '%s');
+                $this->setProperty('outputFormat', '%s');
                 $this->length = true;
                 break;
             case self::FIELD_TYPE_DATETIME:
@@ -485,9 +485,9 @@ class FieldDescription extends DBWorker {
                 else {
                     $regexp = '/^(\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2})?$/';
                 }
-                $this->addProperty('pattern', $regexp);
-                $this->addProperty('outputFormat', '%Y-%m-%d %H:%M:%S');
-                $this->addProperty('message', $this->translate('MSG_WRONG_DATETIME_FORMAT'));
+                $this->setProperty('pattern', $regexp);
+                $this->setProperty('outputFormat', '%Y-%m-%d %H:%M:%S');
+                $this->setProperty('message', $this->translate('MSG_WRONG_DATETIME_FORMAT'));
                 $this->length = true;
                 break;
             case self::FIELD_TYPE_DATE:
@@ -497,15 +497,15 @@ class FieldDescription extends DBWorker {
                 else {
                     $regexp = '/^(\d{4}\-\d{1,2}\-\d{1,2})?$/';
                 }
-                $this->addProperty('pattern', $regexp);
-                $this->addProperty('outputFormat', '%Y-%m-%d');
-                $this->addProperty('message', $this->translate('MSG_WRONG_DATE_FORMAT'));
+                $this->setProperty('pattern', $regexp);
+                $this->setProperty('outputFormat', '%Y-%m-%d');
+                $this->setProperty('message', $this->translate('MSG_WRONG_DATE_FORMAT'));
                 $this->length = true;
                 break;
             case self::FIELD_TYPE_CUSTOM:
                 if ($this->getPropertyValue('nullable') === false) {
-                    $this->addProperty('pattern', '/^.+$/');
-                    $this->addProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                    $this->setProperty('pattern', '/^.+$/');
+                    $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
                 }
                 break;
             default:
@@ -596,7 +596,7 @@ class FieldDescription extends DBWorker {
      * @param mixed $value
      * @return void
      */
-    public function addProperty($name, $value) {
+    public function setProperty($name, $value) {
         if ($name == 'nullable') {
             $value = (bool)$value;
         }
@@ -726,7 +726,7 @@ class FieldDescription extends DBWorker {
         $type = $configFieldDescription->getType();
         $mode = $configFieldDescription->getMode();
         if (!is_null($type)) {
-        	$dbFieldDescription->addProperty('origType', $dbFieldDescription->getType());
+        	$dbFieldDescription->setProperty('origType', $dbFieldDescription->getType());
             //меняем тип
             $dbFieldDescription->setType($type);
         }
@@ -744,7 +744,7 @@ class FieldDescription extends DBWorker {
                     $propertyValue = $configFieldDescription->translate($propertyValue);
                 }
 
-                $dbFieldDescription->addProperty($propertyName, $propertyValue);
+                $dbFieldDescription->setProperty($propertyName, $propertyValue);
             }
         }
 

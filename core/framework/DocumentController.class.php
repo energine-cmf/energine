@@ -70,8 +70,19 @@ final class DocumentController extends Object {
         unset($request);
         unset($language);
         //unset($sitemap);
-        $document = new Document;
+        $document = new Document(Request::getInstance()->getPath());
+       /*
+        * Если в каком-либо компоненте происходит ошибка, не позволяющая ему
+        * продолжить работу, генерируется фиктивное исключение, с помощью
+        * которого прерывается работа компонента. В дальнейшем, при вызове
+        * метода Document::build, происходит обработка всех возникших ошибок.
+        */
+        try {
+            $document->runComponents();
+        }
+        catch (DummyException $dummyException) {}
         $document->build();
+        
         $this->transform($document);
     }
     /**

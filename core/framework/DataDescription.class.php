@@ -185,7 +185,7 @@ class DataDescription extends Object implements Iterator {
                  * которое указывает на то, что данные этого поля сохранять в БД не нужно.
                  */
                 else {
-                    $this->getFieldDescriptionByName($fieldName)->addProperty('customField', 'customField');
+                    $this->getFieldDescriptionByName($fieldName)->setProperty('customField', 'customField');
                 }
             }
             $result = $this;

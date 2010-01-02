@@ -51,7 +51,7 @@ class MultiLanguageBuilder extends Builder {
                 $fieldData = $this->data->getFieldByName($fieldName);
                 // если это первичный ключ
                 if ($fieldInfo->getPropertyValue('key') === true) {
-                    $fieldInfo->addProperty('tabName', $this->translate('TXT_PROPERTIES'));
+                    $fieldInfo->setProperty('tabName', $this->translate('TXT_PROPERTIES'));
                     $i = 0;
                     while ($i < $fieldData->getRowCount()) {
                         $rowData = $fieldData->getRowData($i);
@@ -70,8 +70,8 @@ class MultiLanguageBuilder extends Builder {
                     foreach ($fieldData->getData() as $key => $data) {
                         $langID = $this->data->getFieldByName('lang_id')->getRowData($key);
                         $dataProperties = $fieldData->getRowProperties($key);
-                        $fieldInfo->addProperty('language', $langID);
-                        $fieldInfo->addProperty('tabName', $lang->getNameByID($langID));
+                        $fieldInfo->setProperty('language', $langID);
+                        $fieldInfo->setProperty('tabName', $lang->getNameByID($langID));
                         $dom_field = $this->createField($fieldName, $fieldInfo, $data, $dataProperties);
                         $records[$correlation[$key]][] = $dom_field;
                     }
@@ -105,10 +105,10 @@ class MultiLanguageBuilder extends Builder {
 
                         $dataProperties = ($fieldData)?$fieldData->getRowProperties($value):false;
                         if (is_null($fieldInfo->getPropertyValue('tabName'))) {
-                            $fieldInfo->addProperty('tabName', $this->translate('TXT_PROPERTIES'));
+                            $fieldInfo->setProperty('tabName', $this->translate('TXT_PROPERTIES'));
                         }
                         else {
-                        	$fieldInfo->addProperty('tabName', $fieldInfo->getPropertyValue('tabName'));
+                        	$fieldInfo->setProperty('tabName', $fieldInfo->getPropertyValue('tabName'));
                         }
 
                         $dom_field = $this->createField($fieldName, $fieldInfo, $fieldValue, $dataProperties);
@@ -132,8 +132,8 @@ class MultiLanguageBuilder extends Builder {
                 if ($fieldInfo->isMultilanguage()) {
                     //$title = $fieldInfo->getPropertyValue('title');
                     foreach (array_keys($lang->getLanguages()) as $langID) {
-                        $fieldInfo->addProperty('language', $langID);
-                        $fieldInfo->addProperty('tabName', $lang->getNameByID($langID));
+                        $fieldInfo->setProperty('language', $langID);
+                        $fieldInfo->setProperty('tabName', $lang->getNameByID($langID));
                         $dom_record->appendChild($this->createField($fieldName, $fieldInfo, ''));
                     }
                 }
@@ -146,10 +146,10 @@ class MultiLanguageBuilder extends Builder {
                     }
 
                     if (is_null($fieldInfo->getPropertyValue('tabName'))) {
-                        $fieldInfo->addProperty('tabName', $this->translate('TXT_PROPERTIES'));
+                        $fieldInfo->setProperty('tabName', $this->translate('TXT_PROPERTIES'));
                     }
                     else {
-                    	$fieldInfo->addProperty('tabName', $fieldInfo->getPropertyValue('tabName'));
+                    	$fieldInfo->setProperty('tabName', $fieldInfo->getPropertyValue('tabName'));
                     }
 
                     $dom_record->appendChild($this->createField($fieldName, $fieldInfo, $fieldValue));

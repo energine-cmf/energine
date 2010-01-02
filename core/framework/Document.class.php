@@ -127,7 +127,7 @@ final class Document extends DBWorker {
      * @access public
      * @return void
      */
-    public function __construct() {
+    public function __construct($segments) {
         parent::__construct();
         $this->user = AuthUser::getInstance();
         $this->language = Language::getInstance();
@@ -135,9 +135,7 @@ final class Document extends DBWorker {
         $this->sitemap = Sitemap::getInstance();
         $this->request = Request::getInstance();
         $this->componentManager = new ComponentManager($this);
-//inspect(Request::getInstance()->getRootPath());
         // получаем идентификатор документа
-        $segments = $this->request->getPath();
         if (isset($segments[0]) && $segments[0] == self::SINGLE_SEGMENT) $segments = array();
         $this->id = $this->sitemap->getIDByURI($segments, true);
         if (empty($this->id)) {
@@ -175,17 +173,6 @@ final class Document extends DBWorker {
 	    	$this->setProperty('google_verify', $verifyCode);
 	    }
 	    unset($verifyCode);
-
-        /*
-        * Если в каком-либо компоненте происходит ошибка, не позволяющая ему
-        * продолжить работу, генерируется фиктивное исключение, с помощью
-        * которого прерывается работа компонента. В дальнейшем, при вызове
-        * метода Document::build, происходит обработка всех возникших ошибок.
-        */
-        try {
-            $this->runComponents();
-        }
-        catch (DummyException $dummyException) {}
     }
 
     /**
@@ -306,18 +293,18 @@ final class Document extends DBWorker {
     /**
      * Определяет компоненты страницы и загружает их в менеджер компонентов.
      *
-     * @access private
+     * @access public
      * @param int $templateID идентификатор шаблона страницы
      * @return void
      * @todo Полный рефакторинг!
      */
-    private function loadComponents($templateID) {
+    public function loadComponents($templateID) {
         // получаем информацию о шаблоне страницы
         $res = $this->dbh->select('share_templates', true, array('tmpl_id' => $templateID));
         if (!is_array($res)) {
             throw new SystemException('ERR_DEV_NO_TEMPLATE_INFO', SystemException::ERR_CRITICAL);
         }
-        $templateInfo = $res[0];
+        list($templateInfo) = $res;
 
         // определяем и загружаем описания content- и layout- частей страницы
         $this->documentInfo['layoutFileName'] = self::TEMPLATES_DIR.'layout/'.$templateInfo['tmpl_layout'];
@@ -361,10 +348,10 @@ final class Document extends DBWorker {
     /**
      * Запускает работу всех компонентов страницы.
      *
-     * @access private
+     * @access public
      * @return void
      */
-    private function runComponents() {
+    public function runComponents() {
         foreach ($this->componentManager->getComponents() as $componentInfo) {
             $component = $componentInfo['component'];
             /*
@@ -455,10 +442,10 @@ final class Document extends DBWorker {
      * @return string
      * @access public
      */
-
+/*
     public function getSiteRoot() {
         return dirname($_SERVER['SCRIPT_FILENAME']);
-    }
+    }*/
 
     /**
      * Добавляет константу перевода к документу

@@ -160,7 +160,7 @@ final class Document extends DBWorker {
 			Response::getInstance()->setRedirect($this->documentInfo['RedirectUrl']);
 		}
         // загружаем компоненты страницы
-        $this->loadComponents($this->documentInfo['templateID']);
+        //$this->loadComponents($this->documentInfo['templateID']);
 
         // устанавливаем свойства документа
         $this->setProperty('base', $this->request->getBasePath());

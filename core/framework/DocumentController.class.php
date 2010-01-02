@@ -66,11 +66,14 @@ final class DocumentController extends Object {
         $language = Language::getInstance();
         $language->setCurrent($language->getIDByAbbr($request->getLang(), true));
 
-        // уберём за собой
-        unset($request);
-        unset($language);
         //unset($sitemap);
-        $document = new Document(Request::getInstance()->getPath());
+        $document = new Document($request->getPath());
+        $documentDescription = Sitemap::getInstance()->getDocumentInfo($document->getID()); 
+        $document->loadComponents($documentDescription['templateID']);
+        
+        // уберём за собой
+        unset($request, $language, $documentDescription);
+        
        /*
         * Если в каком-либо компоненте происходит ошибка, не позволяющая ему
         * продолжить работу, генерируется фиктивное исключение, с помощью

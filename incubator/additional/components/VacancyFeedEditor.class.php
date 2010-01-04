@@ -43,7 +43,7 @@
         parent::add();
         $this->getData()->getFieldByName('vacancy_is_active')->setData(true, true);
         $this->getData()->getFieldByName('vacancy_date')->setData(date('Y-m-d'), true);
-        $this->getDataDescription()->getFieldDescriptionByName('vacancy_url_segment')->addProperty('nullable','nullable');
+        $this->getDataDescription()->getFieldDescriptionByName('vacancy_url_segment')->setProperty('nullable','nullable');
         $this->getDataDescription()->getFieldDescriptionByName('vacancy_url_segment')->removeProperty('pattern');
     }
 
@@ -55,7 +55,7 @@
      */
     protected function edit() {
         parent::edit();
-        $this->getDataDescription()->getFieldDescriptionByName('vacancy_url_segment')->addProperty('nullable','nullable');
+        $this->getDataDescription()->getFieldDescriptionByName('vacancy_url_segment')->setProperty('nullable','nullable');
         $this->getDataDescription()->getFieldDescriptionByName('vacancy_url_segment')->removeProperty('pattern');
     }
 

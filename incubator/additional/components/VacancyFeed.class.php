@@ -42,7 +42,7 @@ class VacancyFeed extends Feed {
         $result = parent::createDataDescription();
         foreach ($result as $fieldDescription){
             if($fieldDescription->getType() == FieldDescription::FIELD_TYPE_DATE){
-                $fieldDescription->addProperty('outputFormat', '%d/%m/%Y');
+                $fieldDescription->setProperty('outputFormat', '%d/%m/%Y');
             }
         }
         return $result;

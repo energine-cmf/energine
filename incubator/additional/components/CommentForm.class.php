@@ -137,7 +137,7 @@ class CommentForm extends DataSet {
 
         $fd = new FieldDescription('comment_time');
         $fd->setType(FieldDescription::FIELD_TYPE_DATETIME);
-        $fd->addProperty('tableName', $this->getTableName());
+        $fd->setProperty('tableName', $this->getTableName());
 
         $this->getDataDescription()->addFieldDescription($fd);
         $saver->setDataDescription($this->getDataDescription());

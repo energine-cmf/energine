@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<content>
-   	<component name="templateEditor" module="share" class="TemplateEditor"/>
-   	<component name="textBlock_1" module="share" class="TextBlock" />
-</content>

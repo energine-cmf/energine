@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml">
 
 <xsl:template match="component[@class='OrderForm']">
 	<xsl:apply-templates />
@@ -68,10 +68,10 @@
                 <xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
                 <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
                 <xsl:if test="@pattern">
-                    <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+                    <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
                 </xsl:if>
                 <xsl:if test="@message">
-                    <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+                    <xsl:attribute name="nrgn:message" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
                 </xsl:if>
             </xsl:element>
         </div>

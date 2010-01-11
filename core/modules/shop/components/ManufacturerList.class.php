@@ -46,7 +46,7 @@ class ManufacturerList extends DataSet {
         $result = new DataDescription();
         $fd = new FieldDescription('producer_id');
         $fd ->setType(FieldDescription::FIELD_TYPE_INT);
-        $fd->addProperty('key', true);
+        $fd->setProperty('key', true);
         $result->addFieldDescription($fd);
 
         $fd = new FieldDescription('producer_name');

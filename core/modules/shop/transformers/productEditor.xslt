@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml">
 <xsl:template match="field[ancestor::component[@class='ProductEditor'][@type='form']][@name='smap_id']">
 	<div class="field">
 	    <xsl:if test="not(@nullable)">
@@ -22,10 +22,10 @@
                 <xsl:attribute name="id">h_<xsl:value-of select="$FIELD_ID"/></xsl:attribute>
                 <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
                 <xsl:if test="@pattern">
-                	<xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+                	<xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
                 </xsl:if>
                 <xsl:if test="@message">
-        	        <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+        	        <xsl:attribute name="nrgn:message" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
                 </xsl:if>
         		<xsl:attribute name="name"><xsl:choose>
 					<xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
@@ -69,10 +69,10 @@
             <xsl:attribute name="style">width:50px;</xsl:attribute>
             <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
             <xsl:if test="@pattern">
-                <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+                <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
             </xsl:if>
             <xsl:if test="@message">
-                <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+                <xsl:attribute name="nrgn:message" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
             </xsl:if>
         </xsl:element>
         <xsl:variable name="CURRENCY_SELECTOR" select="../field[@name='curr_id']"></xsl:variable> 
@@ -128,10 +128,10 @@
                         <xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
                         <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
                         <xsl:if test="@pattern">
-                            <xsl:attribute name="pattern"><xsl:value-of select="@pattern"/></xsl:attribute>
+                            <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
                         </xsl:if>
                         <xsl:if test="@message">
-                            <xsl:attribute name="message"><xsl:value-of select="@message"/></xsl:attribute>
+                            <xsl:attribute name="nrgn:message" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
                         </xsl:if>
                     </xsl:element>        
                 </xsl:when>

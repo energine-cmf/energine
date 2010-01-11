@@ -120,15 +120,15 @@ class ProductEditor extends Grid {
             $smapPIDFieldDescription->setType(FieldDescription::FIELD_TYPE_STRING);
             $smapPIDFieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
             if ($productPriceFieldDescription = $result->getFieldDescriptionByName('product_price')) {
-                $productPriceFieldDescription->addProperty('nullable', false);
+                $productPriceFieldDescription->setProperty('nullable', false);
                 $productPriceFieldDescription->setType(FieldDescription::FIELD_TYPE_FLOAT);
-                $productPriceFieldDescription->addProperty('title', $this->translate('FIELD_PRODUCT_PRICE'));
-                $productPriceFieldDescription->addProperty('tableName', $this->getExternalTableName());
+                $productPriceFieldDescription->setProperty('title', $this->translate('FIELD_PRODUCT_PRICE'));
+                $productPriceFieldDescription->setProperty('tableName', $this->getExternalTableName());
             }
             if ($productCurrFieldDescription = $result->getFieldDescriptionByName('curr_id')) {
                 $productCurrFieldDescription->setType(FieldDescription::FIELD_TYPE_SELECT );
-                $productCurrFieldDescription->addProperty('title', $this->translate('FIELD_CURR_ID'));
-                $productCurrFieldDescription->addProperty('tableName', $this->getExternalTableName());
+                $productCurrFieldDescription->setProperty('title', $this->translate('FIELD_CURR_ID'));
+                $productCurrFieldDescription->setProperty('tableName', $this->getExternalTableName());
                 $currencyOptions = $this->dbh->selectRequest(
                 'SELECT c.curr_id, curr_name FROM shop_currency c '.
                 'LEFT JOIN shop_currency_translation ct ON ct.curr_id = c.curr_id '.
@@ -139,13 +139,13 @@ class ProductEditor extends Grid {
 
             if($productCountFieldDescription = $result->getFieldDescriptionByName('product_count')){
                 $productCountFieldDescription->setType(FieldDescription::FIELD_TYPE_INT);
-                $productCountFieldDescription->addProperty('title', $this->translate('FIELD_PRODUCT_COUNT'));
-                $productCountFieldDescription->addProperty('tableName', $this->getExternalTableName());
+                $productCountFieldDescription->setProperty('title', $this->translate('FIELD_PRODUCT_COUNT'));
+                $productCountFieldDescription->setProperty('tableName', $this->getExternalTableName());
             }
         }
         elseif ($this->getAction() == 'getRawData' && ($productCountFieldDescription = $result->getFieldDescriptionByName('product_count'))) {
             $productCountFieldDescription->setType(FieldDescription::FIELD_TYPE_INT);
-            $productCountFieldDescription->addProperty('title', $this->translate('FIELD_PRODUCT_COUNT'));
+            $productCountFieldDescription->setProperty('title', $this->translate('FIELD_PRODUCT_COUNT'));
         }
         return $result;
     }

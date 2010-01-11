@@ -72,7 +72,7 @@ class ProductList extends DBDataSet {
         $result = parent::createDataDescription();
         if($producerIDFD = $result->getFieldDescriptionByName('producer_id')) {
             $producerIDFD->setType(FieldDescription::FIELD_TYPE_TEXT);
-            $producerIDFD->addProperty('title', $this->translate('TXT_ANOTHER_PRODUCTS'));
+            $producerIDFD->setProperty('title', $this->translate('TXT_ANOTHER_PRODUCTS'));
         }
         if ($result->getFieldDescriptionByName('product_price')) {
             $discountFD = new FieldDescription('product_price_with_discount');
@@ -201,8 +201,8 @@ class ProductList extends DBDataSet {
             //Для каждого параметра создаем FieldDescription
             $paramFD = new FieldDescription($paramName);
             $paramFD->setType($row['pp_type']);
-            $paramFD->addProperty('title', $row['pp_name']);
-            $paramFD->addProperty('param', $this->translate('TXT_PRODUCT_PARAMS'));
+            $paramFD->setProperty('title', $row['pp_name']);
+            $paramFD->setProperty('param', $this->translate('TXT_PRODUCT_PARAMS'));
             $this->getDataDescription()->addFieldDescription($paramFD);
             // находим его значение для данного продукта
 

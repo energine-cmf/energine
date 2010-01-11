@@ -43,8 +43,8 @@ class CurrencyEditor extends Grid {
 
     public function build() {
         if ($this->getAction() !== self::DEFAULT_ACTION_NAME ) {
-            $this->getDataDescription()->getFieldDescriptionByName('curr_abbr')->addProperty('pattern', '/[A-Z]{3}/');
-            $this->getDataDescription()->getFieldDescriptionByName('curr_abbr')->addProperty('message', $this->translate('MSG_BAD_CURR_ABBR'));
+            $this->getDataDescription()->getFieldDescriptionByName('curr_abbr')->setProperty('pattern', '/[A-Z]{3}/');
+            $this->getDataDescription()->getFieldDescriptionByName('curr_abbr')->setProperty('message', $this->translate('MSG_BAD_CURR_ABBR'));
         }
         return parent::build();
     }

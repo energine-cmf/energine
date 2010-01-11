@@ -51,7 +51,7 @@ class OrderHistory extends Grid {
      protected function createDataDescription() {
          $result = parent::createDataDescription();
          if ($this->getAction() == 'getRawData') {
-         	$result->getFieldDescriptionByName('order_created')->addProperty('outputFormat', '%d/%m/%Y %H:%M');
+         	$result->getFieldDescriptionByName('order_created')->setProperty('outputFormat', '%d/%m/%Y %H:%M');
          }
          return $result;
      }
@@ -90,7 +90,7 @@ class OrderHistory extends Grid {
             foreach ($userData as $fieldName => $value) {
                 $field = new FieldDescription($fieldName);
                 $field->setType(FieldDescription::FIELD_TYPE_STRING);
-                $field->addProperty('customField', true);
+                $field->setProperty('customField', true);
                 $field->setMode(FieldDescription::FIELD_MODE_READ);
                 $this->getDataDescription()->addFieldDescription($field);
 

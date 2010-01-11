@@ -67,6 +67,9 @@ class CurrencyConverter extends DBWorker {
         'WHERE trans.lang_id = %s',
         Language::getInstance()->getCurrent()
         );
+        if(!is_array($this->currencies)){
+        	throw new SystemException('ERR_NO_CURRENCIES', SystemException::ERR_DEVELOPER);
+        }
         $this->currencies = convertDBResult($this->currencies, 'curr_id', true);
         $this->currencies = array_map(create_function('$currInfo', 'return convertFieldNames($currInfo, "curr");'),$this->currencies);
     }

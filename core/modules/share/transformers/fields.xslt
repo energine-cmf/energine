@@ -524,7 +524,7 @@
         <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
         <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
         </xsl:choose>[]</xsl:variable>
-        <div style="margin-left:20px;padding-top:5px;">
+        <div class="checkbox_set">
             <xsl:for-each select="options/option">
                 <div>
                     <input type="checkbox" id="{generate-id(.)}" name="{$NAME}" value="{@id}" style="width:auto;vertical-align:middle;border:none;">

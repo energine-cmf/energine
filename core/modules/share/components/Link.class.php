@@ -9,7 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/Control.class.php');
 
 /**
  * Ссылка для панели инструментов
@@ -26,12 +25,10 @@ class Link extends Control {
      * @return type
      * @access public
      */
-    public function __construct($id, $action = false, $image = false, $title = false, $tooltip = false) {
-        parent::__construct();
+    public function __construct($id, $action = false, $title = false, $tooltip = false) {
+        parent::__construct($id);
         $this->type = 'link';
-        $this->setAttribute('id', $id);
         if ($action)  $this->setAttribute('action',  $action);
-        if ($image)   $this->setAttribute('image',   $image);
         if ($title)   $this->setAttribute('title',   $title);
         if ($tooltip) $this->setAttribute('tooltip', $tooltip);
     }
@@ -57,16 +54,6 @@ class Link extends Control {
     }
 
     /**
-     * Возвращает идентификатор кнопки
-     *
-     * @return string
-     * @access public
-     */
-    public function getID() {
-        return $this->getAttribute('id');
-    }
-
-    /**
      * Возвращает имя действия
      *
      * @return string
@@ -74,16 +61,6 @@ class Link extends Control {
      */
     public function getAction() {
         return $this->getAttribute('action');
-    }
-
-    /**
-     * Возвращает путь к изображению
-     *
-     * @return string
-     * @access public
-     */
-    public function getImage() {
-        return $this->getAttribute('image');
     }
 
     /**

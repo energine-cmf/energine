@@ -238,6 +238,7 @@ Toolbar.Select = new Class({
 	initialize: function(properties, options) {
         this.properties = {
             id: null,
+            title: '',
             tooltip: '',
             action: null,
             disabled: false
@@ -253,6 +254,7 @@ Toolbar.Select = new Class({
         }
 
         this.element = new Element('li').setProperty('unselectable', 'on');
+        if(this.properties.title) this.element.set('text', this.properties.title);
 		this.select = new Element('select');
 
 		var control = this;

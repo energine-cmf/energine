@@ -25,17 +25,7 @@ class Separator extends Control {
      * @access public
      */
     public function __construct($id) {
-        parent::__construct();
+        parent::__construct($id);
         $this->type = 'separator';
-    }
-
-    /**
-     * Возвращает идентификатор разделителя
-     *
-     * @return string
-     * @access public
-     */
-    public function getID() {
-        return $this->getAttribute('id');
     }
 }

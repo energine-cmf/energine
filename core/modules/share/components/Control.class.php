@@ -83,8 +83,9 @@ abstract class Control extends Object {
      * @param string $tooltip
      * @access public
      */
-    public function __construct() {
+    public function __construct($id) {
         parent::__construct();
+        $this->setAttribute('id', $id);
         $this->doc = new DOMDocument('1.0', 'UTF-8');
     }
 
@@ -141,7 +142,7 @@ abstract class Control extends Object {
      * Загрузка элемента из XML-описания.
      *
      * @param SimpleXMLElement $description
-     * @return boolean
+     * @return void
      * @access public
      */
     public function loadFromXml(SimpleXMLElement $description) {
@@ -228,6 +229,16 @@ abstract class Control extends Object {
             return $this->attributes[$attrName];
         }
         return false;
+    }
+    
+    /**
+     * Возвращает идентификатор
+     *
+     * @return string
+     * @access public
+     */
+    public function getID() {
+        return $this->getAttribute('id');
     }
 
     /**

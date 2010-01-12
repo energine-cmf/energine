@@ -71,7 +71,33 @@
         })
 	);
 </xsl:template>
-
+<xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'select']">
+    toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
+        new Toolbar.Select({
+            id: '<xsl:value-of select="@id"/>',
+            title: '<xsl:value-of select="@title"/>',
+            action: '<xsl:value-of select="@action"/>'
+        },
+        {
+            <xsl:if test="options">
+                <xsl:for-each select="options/option">
+                    '<xsl:value-of select="@id"/>':'<xsl:value-of select="."/>'<xsl:if test="position()!=last()">,</xsl:if>
+                </xsl:for-each>
+            </xsl:if>
+        })
+    );
+</xsl:template>
+<!--
+<xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'checkbox']">
+    toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
+        new Toolbar.Checkbox({
+            id: '<xsl:value-of select="@id"/>',
+            title: '<xsl:value-of select="@title"/>',
+            action: '<xsl:value-of select="@onclick"/>'
+        })
+    );
+</xsl:template>
+-->
 <!--<xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'switcher']">
     toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
         new Toolbar.Switcher({

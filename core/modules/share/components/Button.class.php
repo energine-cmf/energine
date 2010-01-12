@@ -9,7 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/Control.class.php');
 
 /**
  * Кнопка панели инструментов
@@ -27,9 +26,8 @@ class Button extends Control {
      * @access public
      */
     public function __construct($id, $action = false, $image = false, $title = false, $tooltip = false) {
-        parent::__construct();
+        parent::__construct($id);
         $this->type = 'button';
-        $this->setAttribute('id', $id);
         if ($action)  $this->setAttribute('action',  $action);
         if ($image)   $this->setAttribute('image',   $image);
         if ($title)   $this->setAttribute('title',   $title);
@@ -54,16 +52,6 @@ class Button extends Control {
      */
     public function getTitle() {
         return $this->getAttribute('title');
-    }
-
-    /**
-     * Возвращает идентификатор кнопки
-     *
-     * @return string
-     * @access public
-     */
-    public function getID() {
-        return $this->getAttribute('id');
     }
 
     /**

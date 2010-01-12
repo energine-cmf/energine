@@ -27,12 +27,10 @@ class Container extends Control {
      *
      * @return void
      */
-	public function __construct($id, $action = false, $image = false, $title = false, $tooltip = false) {
-		parent::__construct();
+	public function __construct($id, $action = false, $title = false, $tooltip = false) {
+		parent::__construct($id);
 		$this->type = 'container';
-        $this->setAttribute('id', $id);
         if ($action)  $this->setAttribute('action',  $action);
-        if ($image)   $this->setAttribute('image',   $image);
         if ($title)   $this->setAttribute('title',   $title);
         if ($tooltip) $this->setAttribute('tooltip', $tooltip);
 	}

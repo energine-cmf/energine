@@ -253,8 +253,8 @@ Toolbar.Select = new Class({
             return false;
         }
 
-        this.element = new Element('li').setProperty('unselectable', 'on');
-        if(this.properties.title) this.element.set('text', this.properties.title);
+        this.element = new Element('li').setProperty('unselectable', 'on').addClass('select');
+        if(this.properties.title) this.element.adopt(new Element('span').addClass('label').set('text', this.properties.title));
 		this.select = new Element('select');
 
 		var control = this;

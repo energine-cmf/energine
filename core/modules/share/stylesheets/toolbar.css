@@ -41,9 +41,18 @@ ul.toolbar li.separator {
     background: url(../images/toolbar/separator.gif) center center no-repeat;
 }
 
+ul.toolbar li.select {    
+    padding: 1px 0 !important;
+    border: 0;
+}
+
 ul.toolbar li.highlighted { background-color: #FF8; cursor: pointer; cursor: hand; }
 ul.toolbar li.pressed { border-color: #000 #BBB #BBB #000; }
 ul.toolbar li.disabled {}
+
+ul.toolbar .label {
+    margin-right: 5px;
+}
 
 ul.toolbar li select{
 	font: 11px Tahoma, sans-serif;

@@ -97,7 +97,7 @@ abstract class DataSet extends Component {
 	 * @var array
 	 * @access private
 	 */
-	private $translations = array();
+	//private $translations = array();
 
 
 	/**
@@ -425,7 +425,7 @@ abstract class DataSet extends Component {
 				$this->addTranslation($translation['const']);
 			}
 		}
-
+        /*
 		if (!empty($this->translations)) {
 			$translationsXML = $this->doc->createElement('translations');
 			foreach ($this->translations as $tag) {
@@ -434,7 +434,7 @@ abstract class DataSet extends Component {
 				$translationsXML->appendChild($translationXML);
 			}
 			$result->documentElement->appendChild($translationsXML);
-		}
+		}*/
 
 		if (!empty($this->tabs)) {
 			$tabsXML = $this->doc->createElement('tabs');
@@ -588,7 +588,8 @@ abstract class DataSet extends Component {
 	 */
 
 	final protected function addTranslation($tag) {
-		array_push($this->translations, $tag);
+		$this->document->addTranslation($tag, $this);
+		//array_push($this->translations, $tag);
 	}
 	/**
 	 * Создает tab

@@ -187,16 +187,6 @@
     	</script>
     </xsl:template>
 
-    <xsl:template match="component/translations">
-    	<script type="text/javascript">
-            <xsl:apply-templates />
-    	</script>
-    </xsl:template>
-
-    <xsl:template match="translation">
-    	var <xsl:value-of select="@const" /> = '<xsl:value-of select="." />';
-    </xsl:template>
-
     <xsl:template match="component[@class!='PageToolBar']/javascript/object">
     	var <xsl:value-of select="generate-id(../../recordset)" />;
     </xsl:template>

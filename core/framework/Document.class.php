@@ -231,9 +231,12 @@ final class Document extends DBWorker {
 
         if (!empty($this->translations)) {
             $dom_translations = $this->doc->createElement('translations');
-            foreach ($this->translations as $const => $value) {
-            	$dom_translation = $this->doc->createElement('translation', $value);
+            foreach ($this->translations as $const => $componentName) {
+            	$dom_translation = $this->doc->createElement('translation', $this->translate($const));
             	$dom_translation->setAttribute('const', $const);
+            	if(!is_null($componentName)){
+            	   $dom_translation->setAttribute('component', $componentName);
+            	}
             	$dom_translations->appendChild($dom_translation);
             }
             $dom_root->appendChild($dom_translations);
@@ -451,12 +454,14 @@ final class Document extends DBWorker {
      * Добавляет константу перевода к документу
      *
      * @param string
+     * @param Component
+     * 
      * @return void
      * @access public
      */
 
-    public function addTranslation($const) {
-        $this->translations[$const] = $this->translate($const);
+    public function addTranslation($const, Component $component = null) {
+        $this->translations[$const] = (!is_null($component))?$component->getName():null;
     }
     
     public function isEditable(){

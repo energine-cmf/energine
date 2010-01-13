@@ -6,7 +6,16 @@ var DivForm = new Class({
 		this.parent(element);
         this.obj = null;
 	},
-
+    attachToolbar : function(toolbar) {
+        this.parent(toolbar);
+        var afterSaveActionSelect; 
+        if(afterSaveActionSelect = this.toolbar.getControlById('after_save_action')){
+            var savedActionState = Cookie.read('after_add_default_action');
+            if(savedActionState){
+                afterSaveActionSelect.setSelected(savedActionState);
+            }
+        }
+    },
     showTree: function(obj) {
         this.obj = obj;
         ModalBox.open({
@@ -47,13 +56,26 @@ var DivForm = new Class({
             alert('Ошибка: необходимо указать название раздела для всех не отключенных языков!');
             return false;
         }
-
+        
+        
+        
         this.request(
             this.singlePath + 'save',
             this.form.toQueryString(),
             function(response) {
-                if (response.mode == 'insert' && confirm(MSG_START_EDITING)) {
-                    window.top.location.href = Energine.base + response.url;
+                if (response.mode == 'insert') {
+                    var nextActionSelector;
+                    if(nextActionSelector = this.toolbar.getControlById('after_save_action')){
+                        Cookie.write('after_add_default_action', nextActionSelector.getValue(), {path:new URI(Energine.base).get('directory'), duration:1});
+                        switch (nextActionSelector.getValue()){
+                            case 'go':
+                                window.top.location.href = Energine.base + response.url;
+                                break;
+                            case 'close':
+                                ModalBox.setReturnValue(true); this.close();
+                                break;
+                        }
+                    }                    
                 }
                 else {
                     ModalBox.setReturnValue(true); this.close();

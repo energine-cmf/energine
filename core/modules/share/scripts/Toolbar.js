@@ -290,6 +290,26 @@ Toolbar.Select = new Class({
 
     setAction: function(action) {
         this.properties.action = action;
+    },
+    getValue: function(){
+        return this.select.getSelected().getLast().get('value');
+    },
+    /**
+     * Устанавливает выделенный элемент
+     * @param int itemId
+     */
+    setSelected: function(itemId){
+        //Если существует такая опция
+        if(this.options[itemId]){
+            //Элемент уже построен
+            if(this.select){
+                this.select.getElement('option[value=' + itemId + ']').setProperty('selected', 'selected');    
+            }
+            else{
+                
+            }
+        }
     }
+    
 
 });

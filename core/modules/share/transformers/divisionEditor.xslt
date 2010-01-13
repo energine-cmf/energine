@@ -175,19 +175,6 @@
     </div>
 </xsl:template>
 
-<!-- Рекурсивный Именованный шаблон  -->
-<xsl:template name="BUILD_NODE_TREE">
-	<xsl:variable name="CURRENT_ID" select="field[@name='smap_id']"/>
-		id:<xsl:value-of select="$CURRENT_ID"/>,
-        label:"<xsl:value-of select="field[@name='smap_name'][@language='1']"/>",
-        isDefault:"<xsl:value-of select="field[@name='smap_default']"/>",
-        isSystem:"<xsl:value-of select="field[@name='smap_is_system']"/>",
-		childs:<xsl:choose>
-		<xsl:when test="count(../record[field[@name='smap_pid'][.=$CURRENT_ID]])>0">[<xsl:for-each select="../record[field[@name='smap_pid']=$CURRENT_ID]">{<xsl:call-template name="BUILD_NODE_TREE" />}<xsl:if test="position()!=last()">,</xsl:if> </xsl:for-each>]</xsl:when>
-		<xsl:otherwise>false</xsl:otherwise>
-	</xsl:choose>
-</xsl:template>
-
 <xsl:template match="field[ancestor::component[@class='DivisionEditor'][@type='form'][@exttype='grid']][@name='smap_pid']">
 	<div class="field">
 		<xsl:if test="@title">

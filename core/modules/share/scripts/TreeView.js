@@ -206,7 +206,9 @@ TreeView.Node = new Class({
     },
     removeChilds: function() {
         if (!this.childs) return;
-        for (var i = this.childs.childNodes.length-1; i >= 0; this.childs.childNodes[i].retrive('treeNode').remove(), i--);
+        this.childs.getChildren().each(function(child){
+            child.retrieve('treeNode').remove();
+        }, this);
     },
 
     getPrevious: function() {

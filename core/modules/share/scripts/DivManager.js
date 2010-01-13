@@ -53,9 +53,11 @@ var DivManager = new Class({
             if (!treeInfo[pid]) treeInfo[pid] = [];
             treeInfo[pid].push(node);
         }
-
+        
         var lambda = function(nodeId) {
             var node = this.tree.getNodeById(nodeId);
+            
+            //console.log(treeInfo[nodeId], nodeId);
             for (var i = 0, len = treeInfo[nodeId].length; i < len; i++) {
                 var child = treeInfo[nodeId][i];
                 var icon = (child['tmpl_icon'])?Energine.base + child['tmpl_icon']:Energine.base + 'templates/icons/empty.icon.gif';
@@ -84,6 +86,7 @@ var DivManager = new Class({
                     if (treeInfo[childId]) lambda(childId);                    
                 }
             }
+            
         }.bind(this);
         lambda(this.treeRoot.getId());
 
@@ -96,6 +99,7 @@ var DivManager = new Class({
     reload: function(really) {
         if (really) {
             this.treeRoot.removeChilds();
+            this.treeRoot.id = 'treeRoot';
             this.loadTree();
         }
     },

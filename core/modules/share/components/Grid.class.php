@@ -1040,4 +1040,83 @@ class Grid extends DBDataSet {
     		}
     	}
     }
+    
+    /**
+     * Строит список дополнительных файлов
+     * Используется в тех случаях когда необходимо создать дополнительную вкладку с приаттачеными к записи файлами
+     * 
+     * Сохранение приаттаченных данных должно происходить в методе saveData на общих основаниях 
+     * @see DivisionEditor
+     * @see ProductEditor
+     *  
+     * @access protected
+     * @return void
+     */
+    protected function addAttFilesField($data = true){
+    	    $field = new FieldDescription('attached_files');
+            $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
+            $field->setProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
+            $this->getDataDescription()->addFieldDescription($field);
+            
+    	   //Добавляем поле с дополнительными файлами
+            $field = new Field('attached_files');
+
+            //Ссылки на добавление и удаление файла
+            $this->addTranslation('BTN_ADD_FILE');
+            $this->addTranslation('BTN_DEL_FILE');
+            for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
+                $field->addRowData(
+                    $this->buildAttachedFiles($data)
+                );
+            }
+            $this->getData()->addField($field);
+    }
+    /**
+     * @param $data Данные 
+     * 
+     * @access private
+     * @return DOMNode
+     */
+    
+    private function buildAttachedFiles($data){
+        $builder = new SimpleBuilder();
+        $dd = new DataDescription();
+        $f = new FieldDescription('upl_id');
+        $dd->addFieldDescription($f);
+
+        $f = new FieldDescription('upl_name');
+        $dd->addFieldDescription($f);
+
+        $f = new FieldDescription('upl_path');
+        $f->setProperty('title', $this->translate('FIELD_UPL_FILE'));
+        $dd->addFieldDescription($f);
+
+        $d = new Data();
+            
+        if(is_array($data)){
+            $d->load($data);
+            $pathField = $d->getFieldByName('upl_path');
+            foreach ($pathField as $i => $path) {
+                if(@file_exists($path) && @getimagesize($path)){
+                    $thumbnailPath = dirname($path).'/.'.basename($path);
+                    $pathField->setRowProperty($i, 'real_image', $path);
+                    if(@file_exists($thumbnailPath) && @getimagesize($thumbnailPath)){
+                        $path = $thumbnailPath;
+                    }
+                    $pathField->setRowData($i, $path);
+                    $pathField->setRowProperty($i, 'is_image', true);
+                }
+            }
+        }
+
+        $this->addTranslation('MSG_NO_ATTACHED_FILES');
+
+        $builder->setData($d);
+        $builder->setDataDescription($dd);
+
+        $builder->build();
+
+        return $builder->getResult();	
+    }
+    
 }

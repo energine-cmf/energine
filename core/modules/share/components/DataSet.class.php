@@ -422,20 +422,9 @@ abstract class DataSet extends Component {
 		//Работа с константами переводов
 		if (($methodConfig = $this->config->getCurrentMethodConfig()) && $methodConfig->translations) {
 			foreach ($methodConfig->translations->translation as $translation) {
-				$this->addTranslation($translation['const']);
+				$this->addTranslation((string)$translation['const']);
 			}
 		}
-        /*
-		if (!empty($this->translations)) {
-			$translationsXML = $this->doc->createElement('translations');
-			foreach ($this->translations as $tag) {
-				$translationXML = $this->doc->createElement('translation', $this->translate($tag));
-				$translationXML->setAttribute('const', $tag);
-				$translationsXML->appendChild($translationXML);
-			}
-			$result->documentElement->appendChild($translationsXML);
-		}*/
-
 		if (!empty($this->tabs)) {
 			$tabsXML = $this->doc->createElement('tabs');
 

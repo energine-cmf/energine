@@ -182,11 +182,6 @@ final class DivisionEditor extends Grid {
             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
             $fd->setMode(FieldDescription::FIELD_MODE_READ);
             $result->getFieldDescriptionByName('smap_name')->removeProperty('nullable');
-
-            $field = new FieldDescription('attached_files');
-            $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
-            $field->setProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
-            $result->addFieldDescription($field);
         }
         else {
 
@@ -205,81 +200,6 @@ final class DivisionEditor extends Grid {
             }
         }
         return $result;
-    }
-
-    protected function createData(){
-        $result = parent::createData();
-
-        if(in_array($this->getAction(), array('add', 'edit'))){
-        	//Добавляем поле с дополнительными файлами
-            $field = new Field('attached_files');
-
-			//Ссылки на добавление и удаление файла
-            $this->addTranslation('BTN_ADD_FILE');
-            $this->addTranslation('BTN_DEL_FILE');
-            for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
-            	$field->addRowData(
-            		$this->buildAttachedFiles(
-            			$result->getFieldByName('smap_id')->getRowData(0)
-            		)
-            	);
-            }
-            $result->addField($field);
-        }
-        return $result;
-    }
-
-    /**
-     * Строит список дополнительных файлов
-     *
-     * @param $id идентификатор раздела
-     * @return DOMNode
-     */
-    private function buildAttachedFiles($id){
-        $builder = new SimpleBuilder();
-        $dd = new DataDescription();
-        $f = new FieldDescription('upl_id');
-        $dd->addFieldDescription($f);
-
-        $f = new FieldDescription('upl_name');
-        $dd->addFieldDescription($f);
-
-        $f = new FieldDescription('upl_path');
-        $f->setProperty('title', $this->translate('FIELD_UPL_FILE'));
-        $dd->addFieldDescription($f);
-
-        $d = new Data();
-        $data =
-            $this->dbh->selectRequest('
-            	SELECT files.upl_id, upl_path, upl_name
-                FROM `share_sitemap_uploads` s2f
-                LEFT JOIN `share_uploads` files ON s2f.upl_id=files.upl_id
-                WHERE smap_id = %s
-            ', $id);
-		if(is_array($data)){
-        	$d->load($data);
-        	$pathField = $d->getFieldByName('upl_path');
-        	foreach ($pathField as $i => $path) {
-        		if(@file_exists($path) && @getimagesize($path)){
-        			$thumbnailPath = dirname($path).'/.'.basename($path);
-        			$pathField->setRowProperty($i, 'real_image', $path);
-        			if(@file_exists($thumbnailPath) && @getimagesize($thumbnailPath)){
-        				$path = $thumbnailPath;
-        			}
-        			$pathField->setRowData($i, $path);
-        			$pathField->setRowProperty($i, 'is_image', true);
-        		}
-        	}
-		}
-
-		$this->addTranslation('MSG_NO_ATTACHED_FILES');
-
-        $builder->setData($d);
-        $builder->setDataDescription($dd);
-
-        $builder->build();
-
-        return $builder->getResult();
     }
 
     /**
@@ -358,7 +278,18 @@ final class DivisionEditor extends Grid {
     protected function prepare() {
         parent::prepare();
         $actionParams = $this->getActionParams();
+        
         if ($this->getAction() == 'edit') {
+        	$this->addAttFilesField(
+	        	$this->dbh->selectRequest('
+	                SELECT files.upl_id, upl_path, upl_name
+	                FROM `share_sitemap_uploads` s2f
+	                LEFT JOIN `share_uploads` files ON s2f.upl_id=files.upl_id
+	                WHERE smap_id = %s
+	            ', $this->getData()->getFieldByName('smap_id')->getRowData(0))
+        	);
+        	$this->addTab($this->buildTab($this->translate('TAB_ATTACHED_FILES')));
+        	
             $field = $this->getData()->getFieldByName('smap_pid');
             $smapSegment = '';
             if($field->getRowData(0) !== null) {
@@ -372,25 +303,28 @@ final class DivisionEditor extends Grid {
             }
 
         }
-        elseif (
-            ($this->getAction() == 'add')
-            && 
-            !empty($actionParams) 
+        elseif ($this->getAction() == 'add') {
+        	$this->addAttFilesField();
+        	$this->addTab($this->buildTab($this->translate('TAB_ATTACHED_FILES')));
+        	
+        	if(
+        	!empty($actionParams) 
             && 
             ($actionParams[0] != Sitemap::getInstance()->getDefault())
-        ) {
-            $field = $this->getData()->getFieldByName('smap_pid');
-            $smapSegment = Sitemap::getInstance()->getURLByID($actionParams[0]);
-
-            $res = $this->dbh->select($this->getTranslationTableName(), array('smap_name'), array('smap_id' => $actionParams[0], 'lang_id' => $this->document->getLang()));
-            if (!empty($res)) {
-                $name = simplifyDBResult($res, 'smap_name', true);
-                for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
-                    $field->setRowData($i, $actionParams[0]);
-                    $field->setRowProperty($i, 'data_name', $name);
-                    $field->setRowProperty($i, 'segment', $smapSegment);
-                }
-            }
+            ){
+	            $field = $this->getData()->getFieldByName('smap_pid');
+	            $smapSegment = Sitemap::getInstance()->getURLByID($actionParams[0]);
+	
+	            $res = $this->dbh->select($this->getTranslationTableName(), array('smap_name'), array('smap_id' => $actionParams[0], 'lang_id' => $this->document->getLang()));
+	            if (!empty($res)) {
+	                $name = simplifyDBResult($res, 'smap_name', true);
+	                for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
+	                    $field->setRowData($i, $actionParams[0]);
+	                    $field->setRowProperty($i, 'data_name', $name);
+	                    $field->setRowProperty($i, 'segment', $smapSegment);
+	                }
+	            }
+        	}
         }
     }
 
@@ -609,12 +543,7 @@ final class DivisionEditor extends Grid {
                         }
                     }
                 }
-
-                if($this->getType() != self::COMPONENT_TYPE_LIST )
-                    $this->addTab($this->buildTab($this->translate('TAB_ATTACHED_FILES')));
-
                 $result = parent::build();
-
                 if ($this->getType() != self::COMPONENT_TYPE_LIST )
                     $result->documentElement->appendChild($this->buildRightsTab());
 

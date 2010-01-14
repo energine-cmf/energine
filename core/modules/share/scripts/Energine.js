@@ -125,25 +125,6 @@ var ERequest = {
 
 };
 
-// Предназначен для последующей имплементации
-// Содержит метод setLabel использующийся для привязки кнопки выбора разделов
-var Label = {
-	setLabel : function(result) {
-		var id = name = segment = segmentObject = '';
-		if (typeof(result) != 'undefined') {
-			if (result) {
-			    id = (result.smap_default)?'':result.smap_id;
-				name = result.smap_name;
-				segment = result.smap_segment;
-			}
-			$(this.obj.getProperty('hidden_field')).value = id;
-			$(this.obj.getProperty('span_field')).innerHTML = name;
-			if (segmentObject = $('smap_pid_segment'))
-				segmentObject.innerHTML = segment;
-		}
-	}
-}
-
 var showhideField = function(obj, fieldName, fieldLanguage) {
 	var fieldLanguage = fieldLanguage || '';
 	var obj = $(obj);

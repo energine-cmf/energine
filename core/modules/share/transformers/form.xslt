@@ -81,4 +81,73 @@
     	</script>
     </xsl:template>
 
+    <xsl:template match="field[@name='attached_files'][@type='custom']">
+        <xsl:variable name="JS_OBJECT" select="generate-id(../..)"></xsl:variable>
+        <div class="page_rights">
+            <table width="100%" id="attached_files">
+                <thead>
+                <tr>
+                    <xsl:for-each select="recordset/record[position()=1]/field/@title">
+                        <td style="text-align:center;">
+                            <xsl:choose>
+                                <xsl:when test="position() != 1">
+                                    <xsl:value-of select="."/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="$NBSP" disable-output-escaping="yes"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            </td>
+                    </xsl:for-each>
+                 </tr>
+                </thead>
+                <tbody>
+                    <xsl:choose>
+                    <xsl:when test="not(recordset/@empty)">
+                        <xsl:for-each select="recordset/record">
+                            <tr id="row_{field[@name='upl_id']}">
+                                <xsl:if test="floor(position() div 2) = position() div 2">
+                                    <xsl:attribute name="class">even</xsl:attribute>
+                                </xsl:if>
+                                <td><input type="hidden" name="{@tableName}[upl_id][]" value="{field[@name='upl_id']}"/><a href="#" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']}); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/></a></td>
+                                <td><xsl:value-of select="field[@name='upl_name']"/></td>
+                                <td>
+                                    <a href="{field[@name='upl_path']/@real_image}" target="blank">
+                                        <xsl:choose>
+                                            <xsl:when test="field[@name='upl_path']/@is_image">
+                                                <img src="{field[@name='upl_path']}" border="0"/>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <xsl:value-of select="field[@name='upl_path']"/>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </a>
+                                </td>
+                            </tr>
+                        </xsl:for-each>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <tr id="empty_row">
+                            <td colspan="3"  style="text-align:center;">
+                                <xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>
+                            </td>
+                        </tr>
+                    </xsl:otherwise>
+                    </xsl:choose>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align:right;">
+                            <a href="#" onclick="{$JS_OBJECT}.addAttachment(); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
+                            <script type="text/javascript">
+                                var delete_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/>';
+                                var no_attached_files = '<xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>';
+                            </script>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </xsl:template>
+
 </xsl:stylesheet>

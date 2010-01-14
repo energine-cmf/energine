@@ -281,6 +281,7 @@ final class DivisionEditor extends Grid {
         
         if ($this->getAction() == 'edit') {
         	$this->addAttFilesField(
+        	    'share_sitemap_uploads',
 	        	$this->dbh->selectRequest('
 	                SELECT files.upl_id, upl_path, upl_name
 	                FROM `share_sitemap_uploads` s2f
@@ -288,7 +289,6 @@ final class DivisionEditor extends Grid {
 	                WHERE smap_id = %s
 	            ', $this->getData()->getFieldByName('smap_id')->getRowData(0))
         	);
-        	$this->addTab($this->buildTab($this->translate('TAB_ATTACHED_FILES')));
         	
             $field = $this->getData()->getFieldByName('smap_pid');
             $smapSegment = '';
@@ -304,9 +304,7 @@ final class DivisionEditor extends Grid {
 
         }
         elseif ($this->getAction() == 'add') {
-        	$this->addAttFilesField();
-        	$this->addTab($this->buildTab($this->translate('TAB_ATTACHED_FILES')));
-        	
+        	$this->addAttFilesField('share_sitemap_uploads');
         	if(
         	!empty($actionParams) 
             && 

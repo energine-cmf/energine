@@ -1052,10 +1052,13 @@ class Grid extends DBDataSet {
      * @access protected
      * @return void
      */
-    protected function addAttFilesField($data = true){
+    protected function addAttFilesField($tableName, $data = true){
+    	$this->addTab($this->buildTab($this->translate('TAB_ATTACHED_FILES')));
+    	
     	    $field = new FieldDescription('attached_files');
             $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
             $field->setProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
+            $field->setProperty('tableName', $tableName);
             $this->getDataDescription()->addFieldDescription($field);
             
     	   //Добавляем поле с дополнительными файлами

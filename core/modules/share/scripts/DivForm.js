@@ -1,7 +1,7 @@
 ScriptLoader.load('Form.js', 'ModalBox.js');
 var DivForm = new Class({
 	Extends: Form,
-    Implements: Label,
+    Implements: [Form.Label, Form.Attachments],
 	initialize: function(element){
 		this.parent(element);
         this.obj = null;
@@ -82,54 +82,5 @@ var DivForm = new Class({
                 }
             }.bind(this)
         );
-    },
-	addAttachment: function(){
-		ModalBox.open({ 'url': this.singlePath + 'file-library', 'onClose': function(result){
-		if(result){
-			var data = result;
-			var emptyRow;
-			if(emptyRow = $('empty_row')) emptyRow.dispose();
-
-			if(!$('row_' + data.upl_id)){
-				document.getElement('#attached_files tbody').adopt(
-					new Element('tr', {'id': 'row_' + data.upl_id}).adopt([
-						new Element('td').adopt([
-							new Element('a',
-								{'href': '#', 'events': {'click': function(event){
-									event = event || window.event;
-									this.delAttachment(data.upl_id);
-
-									if (event.stopPropagation) event.stopPropagation();
-						            else event.cancelBubble = true;
-
-						            if (event.preventDefault) event.preventDefault();
-						            else event.returnValue = false;
-								}.bind(this)
-							}
-						}).set('text', delete_button_text),
-						new Element('input', {'name': 'share_sitemap_uploads[upl_id][]', 'type': 'hidden', 'value': data.upl_id})
-						]),
-						new Element('td').set('html', data.upl_name),
-						new Element('td').adopt(
-							new Element('a', {'href':data.upl_path, 'target':'blank'}).adopt(
-								(data.upl_mime_type != 1)? new Element('span').set('html', data.upl_path):new Element('img', {'src':data.upl_data.thumb, 'border': '0'})
-							)
-						)
-					])
-				)
-            }
-		}
-	   }.bind(this)});
-	},
-	delAttachment: function(id){
-		$('row_' + id).dispose();
-		if(document.getElement('#attached_files tbody').getChildren().length == 0){
-			document.getElement('#attached_files tbody').adopt(
-				new Element('tr', {'id': 'empty_row'}).adopt(
-					new Element('td', {'colspan': '3'}).set('html', no_attached_files)
-				)
-			);
-
-		}
-	}
+    }
 });

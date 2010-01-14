@@ -103,12 +103,12 @@
 				<pattern>/imagemanager/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="fileLibrary" rights="2">
-			<uri_patterns>
-				<pattern>/file-library/</pattern>
-				<pattern>/file-library/[string]/</pattern>
-			</uri_patterns>
-		</method>
+        <method name="fileLibrary" rights="3">
+            <uri_patterns>
+                <pattern>/file-library/</pattern>
+                <pattern>/file-library/[any]/</pattern>
+            </uri_patterns>
+        </method>
 		<method name="showTree" rights="2">
 			<uri_patterns>
 				<pattern>/show-tree/</pattern>
@@ -137,15 +137,10 @@
 				-->
 			</uri_patterns>
 		</method>
-		<method name="cleanup" rights="2">
-			<uri_patterns>
-				<pattern>/cleanup/</pattern>
-			</uri_patterns>
-		</method>
-		<method name="printData">
-			<uri_patterns>
-				<pattern>/print/</pattern>
-			</uri_patterns>
-		</method>
+        <method name="cleanup" rights="3">
+            <uri_patterns>
+                <pattern>/cleanup/</pattern>
+            </uri_patterns>
+        </method>
 	</methods>
 </configuration>

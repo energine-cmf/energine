@@ -207,14 +207,27 @@ class ProductEditor extends Grid {
     protected function prepare() {
         parent::prepare();
         if ($this->getAction() == 'edit') {
-            $field = $this->getData()->getFieldByName('smap_id');
-
+            
+        	$field = $this->getData()->getFieldByName('smap_id');
+            $this->addAttFilesField(
+                'share_sitemap_uploads',
+                $this->dbh->selectRequest('
+                    SELECT files.upl_id, upl_path, upl_name
+                    FROM `share_product_uploads` p2f
+                    LEFT JOIN `share_uploads` files ON p2f.upl_id=files.upl_id
+                    WHERE product_id = %s
+                ', $this->getData()->getFieldByName('product_id')->getRowData(0))
+            );
+        	
             $res = $this->dbh->select('share_sitemap_translation', array('smap_name'), array('smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang()));
             if (!empty($res)) {
                 for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
                     $field->setRowProperty($i, 'data_name', simplifyDBResult($res, 'smap_name', true));
                 }
             }
+        }
+        elseif($this->getAction() == 'add'){
+        	$this->addAttFilesField('share_sitemap_uploads');
         }
     }
 

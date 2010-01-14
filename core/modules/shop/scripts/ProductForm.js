@@ -2,7 +2,7 @@ ScriptLoader.load('Form.js');
 
 var ProductForm = new Class({
     Extends: Form,
-    Implements: Label,
+    Implements: [Form.Label, Form.Attachments],
 	initialize: function(element){
 		this.parent(element);
         this.obj = null;

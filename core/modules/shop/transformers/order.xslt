@@ -11,9 +11,9 @@
 <form action="{../@action}" method="POST" id="{generate-id(.)}" class="base_form order_form">
 	<xsl:if test="../@componentAction = 'main'"><xsl:value-of select="../@title"/></xsl:if>
 	<xsl:apply-templates />
-	<xsl:if test="../translations/translation[@const='TXT_REQUIRED_FIELDS']">
+	<xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
 		<div class="note">
-			<xsl:value-of select="../translations/translation[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes" />
+			<xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes" />
 		</div>
 	</xsl:if>
 </form>
@@ -122,7 +122,7 @@
                 <td colspan="{count(record[1]/field[@name!='product_summ'][@name!='product_id'])}" align="right"><xsl:value-of select="@title"/>:</td><td><strong><xsl:value-of select="@summ"/></strong></td>
             </tr>
             <xsl:if test="@discount > 0">
-                <tr><td style="text-align: right;" colspan="3"><xsl:value-of select="../../../../translations/translation[@const='TXT_BASKET_SUMM_WITH_DISCOUNT']"/>&#160;<xsl:value-of select="format-number(@discount, '#')"/>%: </td><td style="text-align: right;"><strong><xsl:value-of select="format-number(@summ_with_discount, '#.00')"/></strong></td></tr>
+                <tr><td style="text-align: right;" colspan="3"><xsl:value-of select="$TRANSLATION[@const='TXT_BASKET_SUMM_WITH_DISCOUNT']"/>&#160;<xsl:value-of select="format-number(@discount, '#')"/>%: </td><td style="text-align: right;"><strong><xsl:value-of select="format-number(@summ_with_discount, '#.00')"/></strong></td></tr>
             </xsl:if>
         </tfoot>
     </table>

@@ -15,7 +15,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:if test="recordset/@empty">
-					<p><xsl:value-of select="translations/translation[@const='TXT_BASKET_EMPTY']" /></p>
+					<p><xsl:value-of select="$TRANSLATION[@const='TXT_BASKET_EMPTY']" /></p>
 				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -44,10 +44,10 @@
 			</tbody>
 			<tfoot>
 			<tr>
-				<td style="text-align: right;" colspan="4"><strong><xsl:value-of select="../translations/translation[@const='TXT_BASKET_SUMM']"/></strong>: </td><td style="text-align: right;"><xsl:value-of select="../@summ"/></td>
+				<td style="text-align: right;" colspan="4"><strong><xsl:value-of select="$TRANSLATION[@const='TXT_BASKET_SUMM']"/></strong>: </td><td style="text-align: right;"><xsl:value-of select="../@summ"/></td>
 			</tr>
 			<xsl:if test="../@discount > 0">
-				<tr><td style="text-align: right;" colspan="4"><strong><xsl:value-of select="../translations/translation[@const='TXT_BASKET_SUMM_WITH_DISCOUNT']"/>&#160;<xsl:value-of select="format-number(../@discount, '#')"/>%</strong>: </td><td style="text-align: right;"><xsl:value-of select="../@summ_with_discount"/></td></tr>
+				<tr><td style="text-align: right;" colspan="4"><strong><xsl:value-of select="$TRANSLATION[@const='TXT_BASKET_SUMM_WITH_DISCOUNT']"/>&#160;<xsl:value-of select="format-number(../@discount, '#')"/>%</strong>: </td><td style="text-align: right;"><xsl:value-of select="../@summ_with_discount"/></td></tr>
 			</xsl:if>
 			</tfoot>
 		</table>
@@ -172,7 +172,7 @@
      <xsl:value-of select="@title" />:
      <xsl:choose>
         <xsl:when test="recordset/@empty">
-            <xsl:value-of select="translations/translation[@const='TXT_BASKET_EMPTY']"/>
+            <xsl:value-of select="$TRANSLATION[@const='TXT_BASKET_EMPTY']"/>
         </xsl:when>
         <xsl:otherwise>
             <xsl:apply-templates />
@@ -186,7 +186,7 @@
     <strong><xsl:value-of select="record/field[@name='basket_count']/@title"/></strong>
 	<xsl:text disable-output-escaping="yes"> </xsl:text>
 	<xsl:value-of select="sum(record/field[@name='basket_count'])"/><br/>
-    <strong><xsl:value-of select="../translations/translation[@const='TXT_BASKET_SUMM2']"/></strong>
+    <strong><xsl:value-of select="$TRANSLATION[@const='TXT_BASKET_SUMM2']"/></strong>
 	<xsl:text disable-output-escaping="yes"> </xsl:text>
 	<xsl:value-of select="../@summ"/>
 </div>

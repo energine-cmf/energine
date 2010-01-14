@@ -1,6 +1,8 @@
 ScriptLoader.load('Form.js');
 
-var ProductForm = Form.extend({
+var ProductForm = new Class({
+    Extends: Form,
+    Implements: Label,
 	initialize: function(element){
 		this.parent(element);
         this.obj = null;
@@ -14,5 +16,3 @@ var ProductForm = Form.extend({
 	}
 
 });
-
-ProductForm.implement(Label);

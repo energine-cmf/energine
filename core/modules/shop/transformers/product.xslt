@@ -243,7 +243,7 @@
 </xsl:template>
 
 <xsl:template match="component[@class='ManufacturerList']">
-        <xsl:value-of select="translations/translation[@const='FIELD_PRODUCER']"/>:
+        <xsl:value-of select="$TRANSLATION[@const='FIELD_PRODUCER']"/>:
         <xsl:apply-templates />
 </xsl:template>
 

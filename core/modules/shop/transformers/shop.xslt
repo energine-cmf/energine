@@ -48,13 +48,13 @@
 
 <xsl:template match="recordset[parent::component[@class='CurrencySwitcher']]">
 	<div>
-		<strong><xsl:value-of select="../translations/translation[@const='MSG_SWITCHER_TIP']" />:</strong>
+		<strong><xsl:value-of select="$TRANSLATION[@const='MSG_SWITCHER_TIP']" />:</strong>
 		<select name="current_currency" onchange="this.form.submit();">
 		  <xsl:apply-templates />
 		</select>
 	</div>
     <div style="padding-top:5px;">
-    <strong><xsl:value-of select="../translations/translation[@const='TXT_CURRENCY_RATE']" />:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></strong>
+    <strong><xsl:value-of select="$TRANSLATION[@const='TXT_CURRENCY_RATE']" />:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></strong>
     <xsl:for-each select="record[field[@name='curr_id']!=1]">
         <xsl:value-of select="field[@name='curr_name']"/><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
         <xsl:value-of select="field[@name='curr_rate']"/>

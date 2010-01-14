@@ -1,6 +1,7 @@
 ScriptLoader.load('Form.js');
 
-var OrderHistoryForm = Form.extend({
+var OrderHistoryForm = new Class({
+    Extends: Form,
 	initialize: function(element){
 		this.parent(element);
         this.obj = null;

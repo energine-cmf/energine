@@ -1,6 +1,7 @@
 ScriptLoader.load('GridManager.js');
 
-var ProductManager = GridManager.extend({
+var ProductManager = new Class({
+    Extends: GridManager,
     initialize: function(element){
 		this.parent(element);
 	},

@@ -10,9 +10,9 @@
 <xsl:template match="recordset[parent::component[@class='Register']]">
         <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
     		<xsl:apply-templates />
-			<xsl:if test="../translations/translation[@const='TXT_REQUIRED_FIELDS']">
+			<xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
 				<div class="note">
-					<xsl:value-of select="../translations/translation[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes" />
+					<xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes" />
 				</div>
 			</xsl:if>
         </div>

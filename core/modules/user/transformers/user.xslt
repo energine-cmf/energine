@@ -4,11 +4,6 @@
 <xsl:template match="field[@name='restore_password_result']">
 	<xsl:value-of select="." disable-output-escaping="yes"/>
 </xsl:template>
-<xsl:template match="translations[ancestor::component[@class='UserProfile']]">
-    <script language="JavaScript">
-        <xsl:apply-templates />
-    </script>
-</xsl:template>
 
 <xsl:template match="field[@name='group_div_rights']">
         <div class="page_rights">

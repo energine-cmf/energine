@@ -23,9 +23,9 @@
     </xsl:template>
 
     <xsl:template match="component[@class='LoginForm' and @componentAction='showLogoutForm']/recordset/record">
-        <span><xsl:value-of select="../../translations/translation[@const='TXT_USER_GREETING']"/></span><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-        <span><xsl:value-of select="../../translations/translation[@const='TXT_USER_NAME']"/>:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><strong><xsl:value-of select="field[@name='u_name']"/></strong></span><br />
-        <span><xsl:value-of select="../../translations/translation[@const='TXT_ROLE_TEXT']"/>:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><strong><xsl:value-of select="field[@name='role_name']"/></strong></span>
+        <span><xsl:value-of select="$TRANSLATION[@const='TXT_USER_GREETING']"/></span><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+        <span><xsl:value-of select="$TRANSLATION[@const='TXT_USER_NAME']"/>:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><strong><xsl:value-of select="field[@name='u_name']"/></strong></span><br />
+        <span><xsl:value-of select="$TRANSLATION[@const='TXT_ROLE_TEXT']"/>:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><strong><xsl:value-of select="field[@name='role_name']"/></strong></span>
     </xsl:template>
 
     <xsl:template match="control[@id='restore']">

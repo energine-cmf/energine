@@ -460,11 +460,11 @@ final class Document extends DBWorker {
      * @access public
      */
 
-    public function addTranslation($const, $component = null) {
+    public function addTranslation($const, Component $component = null) {
         $this->translations[$const] = (!is_null($component))?$component->getName():null;
     }
     
     public function isEditable(){
-        return isset($_REQUEST['editMode']);	
+        return ($this->getConfigValue('site.debug'))?isset($_REQUEST['editMode']):isset($_POST['editMode']);	
     }
 }

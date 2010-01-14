@@ -460,7 +460,7 @@ final class Document extends DBWorker {
      * @access public
      */
 
-    public function addTranslation($const, Component $component = null) {
+    public function addTranslation($const, $component = null) {
         $this->translations[$const] = (!is_null($component))?$component->getName():null;
     }
     

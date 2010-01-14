@@ -5,12 +5,13 @@
 
     <xsl:variable name="DOC_PROPS" select="/document/properties/property" />
     <xsl:variable name="COMPONENTS" select="//component[@name][@module]" />
-
+    <xsl:variable name="TRANSLATION" select="/document/translations/translation" />
     <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']" />
 	<xsl:variable name="BASE" select="$DOC_PROPS[@name='base']" />
 	<xsl:variable name="LANG_ID" select="$DOC_PROPS[@name='lang']" />
 	<xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@abbr" />
 	<xsl:variable name="NBSP"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></xsl:variable>
+    
 
     <xsl:template match="/" xmlns:nrgn="http://energine.org" xmlns="http://www.w3.org/1999/xhtml">
         <html>
@@ -127,12 +128,6 @@
         <xsl:apply-templates />
     </xsl:template>
 
-    <xsl:template match="document/translations">
-        <script type="text/javascript">
-            <xsl:for-each select="translation">
-                var <xsl:value-of select="@const"/>='<xsl:value-of select="."/>';
-            </xsl:for-each>
-        </script>
-    </xsl:template>
+    <xsl:template match="/document/translations"/>
 
 </xsl:stylesheet>

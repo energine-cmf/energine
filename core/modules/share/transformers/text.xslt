@@ -36,7 +36,7 @@
         <div class="formContainer">
             <xsl:variable name="paneID"><xsl:value-of select="generate-id(record)" /></xsl:variable>
             <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
-                <ul class="tabs"><li><a href="#{$paneID}"><xsl:value-of select="../translations/translation[@const='FIELD_TEXTBLOCK_SOURCE']"/></a></li></ul>
+                <ul class="tabs"><li><a href="#{$paneID}"><xsl:value-of select="$TRANSLATION[@const='FIELD_TEXTBLOCK_SOURCE']"/></a></li></ul>
                 <div class="paneContainer">
                     <div id="{$paneID}">
                         <xsl:apply-templates />

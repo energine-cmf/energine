@@ -217,7 +217,6 @@ final class DivisionEditor extends Grid {
 			//Ссылки на добавление и удаление файла
             $this->addTranslation('BTN_ADD_FILE');
             $this->addTranslation('BTN_DEL_FILE');
-
             for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
             	$field->addRowData(
             		$this->buildAttachedFiles(
@@ -227,7 +226,6 @@ final class DivisionEditor extends Grid {
             }
             $result->addField($field);
         }
-
         return $result;
     }
 
@@ -516,18 +514,6 @@ final class DivisionEditor extends Grid {
         return $result;
     }
 
-    /**
-     * Добавляем перевод
-     *
-     * @return void
-     * @access protected
-     */
-
-    protected function add() {
-        parent::add();
-        $this->addTranslation('MSG_START_EDITING');
-    }
-    
     protected function edit() {
     	parent::edit();
     	$field = $this->getData()->getFieldByName('smap_redirect_url');
@@ -588,7 +574,6 @@ final class DivisionEditor extends Grid {
      */
 
     public function build() {
-
         switch ($this->getAction()) {
             case 'showPageToolbar':
             	$result = false;

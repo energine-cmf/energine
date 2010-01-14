@@ -24,14 +24,14 @@
     	<div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
     		<xsl:apply-templates />
     	</div>
-		<xsl:if test="../translations/translation[@const='TXT_REQUIRED_FIELDS']">
+		<xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
 			<div class="note">
-				<xsl:value-of select="../translations/translation[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes" />
+				<xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes" />
 			</div>
 		</xsl:if>
     </xsl:template>
 
-    <xsl:template match="translation[@const='TXT_REQUIRED_FIELDS'][ancestor::component[@type='form']]" />
+    <xsl:template match="/document/translations/translation[@const='TXT_REQUIRED_FIELDS']" />
 
     <!-- Форма как часть grid-а выводится в другом стиле -->
     <xsl:template match="recordset[parent::component[@type='form' and @exttype='grid']]">

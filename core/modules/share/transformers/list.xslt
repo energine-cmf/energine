@@ -23,6 +23,15 @@
             <xsl:call-template name="BUILD_GRID"/>
         </div>
     </xsl:template>
+    
+    <!-- Выводим переводы для WYSIWYG -->
+    <xsl:template match="document/translations[translation[@component=//component[@type='form' and @exttype='grid'][descendant::field[@type='htmlblock']]/@name]]">
+            <script type="text/javascript">
+                <xsl:for-each select="translation[@component=$COMPONENTS[@type='form' and @exttype='grid'][descendant::field[@type='htmlblock']]/@name]">
+                    var <xsl:value-of select="@const"/>='<xsl:value-of select="."/>';
+                </xsl:for-each>
+            </script>
+    </xsl:template>
 
     <xsl:template name="BUILD_GRID">
         <xsl:variable name="FIRST_TAB_LANG" select="../tabs/tab[position()=1]/@id" />
@@ -43,7 +52,7 @@
                 <div class="grid">
                     <xsl:if test="record/field[@type = 'string']">
                         <div class="filter">
-                            <xsl:value-of select="../translations/translation[@const = 'TXT_FILTER']" />:<xsl:text>&#160;</xsl:text>
+                            <xsl:value-of select="$TRANSLATION[@const = 'TXT_FILTER']" />:<xsl:text>&#160;</xsl:text>
                             <select name="fieldName">
                                 <xsl:for-each select="record/field[@type!='hidden']">
                                     <xsl:choose>
@@ -65,9 +74,9 @@
                             <xsl:text>&#160;</xsl:text>
                             <input type="text" name="query" />
                             <xsl:text>&#160;</xsl:text>
-                            <button type="button" onclick="{generate-id(.)}.applyFilter();"><xsl:value-of select="../translations/translation[@const = 'BTN_APPLY_FILTER']" /></button>
+                            <button type="button" onclick="{generate-id(.)}.applyFilter();"><xsl:value-of select="$TRANSLATION[@const = 'BTN_APPLY_FILTER']" /></button>
                             <xsl:text>&#160;</xsl:text>
-                            <a href="javascript:{generate-id(.)}.removeFilter();"><xsl:value-of select="../translations/translation[@const = 'TXT_RESET_FILTER']" /></a>
+                            <a href="javascript:{generate-id(.)}.removeFilter();"><xsl:value-of select="$TRANSLATION[@const = 'TXT_RESET_FILTER']" /></a>
                         </div>
                     </xsl:if>
                     <div class="gridHeadContainer">

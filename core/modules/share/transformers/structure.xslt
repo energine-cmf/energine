@@ -19,7 +19,7 @@
                 <xsl:if test="$DOC_PROPS[@name='default'] !=1">
                     <li>
                         <a href="{$LANG_ABBR}">
-                            <xsl:value-of select="../translations/translation[@const='TXT_HOME']" disable-output-escaping="yes" />
+                            <xsl:value-of select="$TRANSLATION[@const='TXT_HOME']" disable-output-escaping="yes" />
                         </a>
                     </li>                    
                 </xsl:if>

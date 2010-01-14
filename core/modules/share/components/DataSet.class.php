@@ -589,7 +589,6 @@ abstract class DataSet extends Component {
 
 	final protected function addTranslation($tag) {
 		$this->document->addTranslation($tag, $this);
-		//array_push($this->translations, $tag);
 	}
 	/**
 	 * Создает tab

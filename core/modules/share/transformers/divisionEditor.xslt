@@ -5,6 +5,13 @@
     Компонент Редактора разделов
 -->
 
+<xsl:template match="document/translations[translation[@component=//component[@class='DivisionEditor']/@name]]">
+        <script type="text/javascript">
+            <xsl:for-each select="translation[@component=$COMPONENTS[@class='DivisionEditor']/@name]">
+                var <xsl:value-of select="@const"/>='<xsl:value-of select="."/>';
+            </xsl:for-each>
+        </script>
+</xsl:template>
 
 <!-- Вывод дерева разделов -->
 <xsl:template match="recordset[parent::component[@class='DivisionEditor'][@type='list']]">
@@ -36,7 +43,6 @@
 </xsl:template>
 
 <xsl:template match="field[@name='attached_files'][ancestor::component[@class='DivisionEditor']]">
-	<xsl:variable name="TRANSLATIONS" select="../../../translations/translation"></xsl:variable>
 	<xsl:variable name="JS_OBJECT" select="generate-id(../..)"></xsl:variable>
 	<div class="page_rights">
         <table width="100%" id="attached_files">
@@ -64,7 +70,7 @@
 							<xsl:if test="floor(position() div 2) = position() div 2">
 								<xsl:attribute name="class">even</xsl:attribute>
 							</xsl:if>
-							<td><input type="hidden" name="share_sitemap_uploads[upl_id][]" value="{field[@name='upl_id']}"/><a href="#" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']}); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATIONS[@const='BTN_DEL_FILE']"/></a></td>
+							<td><input type="hidden" name="share_sitemap_uploads[upl_id][]" value="{field[@name='upl_id']}"/><a href="#" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']}); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/></a></td>
 							<td><xsl:value-of select="field[@name='upl_name']"/></td>
 							<td>
 								<a href="{field[@name='upl_path']/@real_image}" target="blank">
@@ -84,7 +90,7 @@
 				<xsl:otherwise>
 					<tr id="empty_row">
 						<td colspan="3"  style="text-align:center;">
-							<xsl:value-of select="$TRANSLATIONS[@const='MSG_NO_ATTACHED_FILES']"/>
+							<xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>
 						</td>
 					</tr>
 				</xsl:otherwise>
@@ -93,10 +99,10 @@
             <tfoot>
             	<tr>
             		<td colspan="3" style="text-align:right;">
-            			<a href="#" onclick="{$JS_OBJECT}.addAttachment(); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATIONS[@const='BTN_ADD_FILE']"/></a>
+            			<a href="#" onclick="{$JS_OBJECT}.addAttachment(); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
             			<script type="text/javascript">
-            				var delete_button_text = '<xsl:value-of select="$TRANSLATIONS[@const='BTN_DEL_FILE']"/>';
-            				var no_attached_files = '<xsl:value-of select="$TRANSLATIONS[@const='MSG_NO_ATTACHED_FILES']"/>';
+            				var delete_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/>';
+            				var no_attached_files = '<xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>';
             			</script>
             		</td>
             	</tr>

@@ -37,6 +37,4 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="component[@class='LoginForm']/translations" />
-
 </xsl:stylesheet>

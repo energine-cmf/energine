@@ -44,8 +44,6 @@
     
 </xsl:template>
 
-<xsl:template match="translations[parent::component[@class='CurrencySwitcher']]" />
-
 <xsl:template match="recordset[parent::component[@class='CurrencySwitcher']]">
 	<div>
 		<strong><xsl:value-of select="$TRANSLATION[@const='MSG_SWITCHER_TIP']" />:</strong>

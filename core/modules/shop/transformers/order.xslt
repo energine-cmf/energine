@@ -5,8 +5,6 @@
 	<xsl:apply-templates />
 </xsl:template>
 
-<xsl:template match="translations[ancestor::component[@class='UserOrderHistory']]"></xsl:template>
-
 <xsl:template match="recordset[parent::component[@class='OrderForm']]">
 <form action="{../@action}" method="POST" id="{generate-id(.)}" class="base_form order_form">
 	<xsl:if test="../@componentAction = 'main'"><xsl:value-of select="../@title"/></xsl:if>

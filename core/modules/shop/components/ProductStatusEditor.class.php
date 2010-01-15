@@ -57,7 +57,6 @@ class ProductStatusEditor extends Grid {
      protected function add() {
         parent::add();
         $this->getData()->getFieldByName('right_id')->setData(FieldDescription::FIELD_MODE_READ);
-        $this->getData()->getFieldByName('ps_is_visible')->setData(true);
      }
 
     /**

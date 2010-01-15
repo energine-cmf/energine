@@ -149,9 +149,7 @@
 
 
 <xsl:template match="field[ancestor::component[@class='ProductList']][@name='ps_id']">
-    <xsl:if test="options/option[@selected]/@ps_is_visible=1">
-                    <div style="text-align: right; font-weight: bold; color: white;"><span style="background-color: red; margin: 2px 0px; padding: 0 0.5em;"><xsl:value-of select="options/option[@selected]"/></span></div>
-    </xsl:if>
+    <div style="text-align: right; font-weight: bold; color: white;"><span style="background-color: red; margin: 2px 0px; padding: 0 0.5em;"><xsl:value-of select="options/option[@selected]"/></span></div>
 </xsl:template>
 
 <xsl:template match="field[ancestor::component[@class='ProductList']][@name='product_photo_img']"/>

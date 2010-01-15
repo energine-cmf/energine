@@ -13,8 +13,6 @@
 				<field name="product_id"/>
 				<field name="lang_id"/>
 				<field name="product_name"/>
-				<field name="product_thumb_img"/>
-				<field name="product_photo_img"/>
 				<field name="product_short_description_rtf"/>
 				<field name="smap_id" type="string"/>
 				<field name="ps_id"/>
@@ -38,8 +36,6 @@
 				<field name="product_id"/>
 				<field name="lang_id"/>
 				<field name="product_name"/>
-				<field name="product_thumb_img"/>
-				<field name="product_photo_img"/>
 				<field name="product_description_rtf"/>
 				<field name="smap_id" type="string"/>
 				<field name="ps_id"/>
@@ -62,8 +58,6 @@
 				<field name="product_id"/>
 				<field name="lang_id"/>
 				<field name="product_name"/>
-				<field name="product_thumb_img"/>
-				<field name="product_photo_img"/>
 				<field name="product_short_description_rtf"/>
 				<field name="smap_id" type="string"/>
 				<field name="ps_id"/>
@@ -88,8 +82,6 @@
 				<field name="product_id"/>
 				<field name="lang_id"/>
 				<field name="product_name"/>
-				<field name="product_thumb_img"/>
-				<field name="product_photo_img"/>
 				<field name="product_short_description_rtf"/>
 				<field name="smap_id" type="string"/>
 				<field name="ps_id"/>

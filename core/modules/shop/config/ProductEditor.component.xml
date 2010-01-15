@@ -38,7 +38,6 @@
 				<field name="product_count"/>
 				<field name="pt_id"/>
 				<field name="producer_id"/>
-				<field name="product_photo_img"/>
 				<field name="product_name"/>
 				<field name="product_short_description_rtf"/>
 				<field name="product_description_rtf"/>
@@ -67,7 +66,6 @@
 				<field name="product_count"/>
 				<field name="pt_id" mode="1"/>
 				<field name="producer_id"/>
-				<field name="product_photo_img"/>
 				<field name="product_name"/>
 				<field name="product_short_description_rtf"/>
 				<field name="product_description_rtf"/>

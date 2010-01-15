@@ -248,16 +248,18 @@ class ProductEditor extends Grid {
 
         }
 
-
+        /*
         $res = $this->dbh->select($this->getTableName(), array('product_photo_img', 'product_code'), $filter);
         if (!is_array($res) || empty($res)) {
             throw new SystemException('ERR_BAD_DATA', SystemException::ERR_CRITICAL);
         }
-
+        */
+        
         //Получили имя файла для исходного изображения
-        $sourceFileName = simplifyDBResult($res, 'product_photo_img', true);
+        //$sourceFileName = simplifyDBResult($res, 'product_photo_img', true);
         
         //Создаем thumbnail в том случае если не указан вывод маленькой фотки в форме
+        /*
         if (
             !$this->saver->getDataDescription()->getFieldDescriptionByName('product_thumb_img')
             && !empty($sourceFileName)
@@ -266,7 +268,7 @@ class ProductEditor extends Grid {
                 $this->getConfigValue('shop.thumbnail.width'), 
                 $this->getConfigValue('shop.thumbnail.height'), $filter, true);
         }
-
+*/
 
         //Сохраняем данные в таблице дополнительных свойств
 

@@ -151,9 +151,11 @@ class BasketForm extends DataSet {
             $this->addTranslation('TXT_BASKET_SUMM');
             $this->addTranslation('TXT_BASKET_SUMM_WITH_DISCOUNT');
             //Добавляем изображение
+            /*
             foreach ($result as $key => $productInfo) {
             	$result[$key]['product_thumb_img'] = simplifyDBResult($this->dbh->select('shop_products', 'product_thumb_img', array('product_id'=>$productInfo['product_id'])), 'product_thumb_img', true);
             }
+            */
         }
         else {
             //Если корзина пустая - добавляем перевод сообщения

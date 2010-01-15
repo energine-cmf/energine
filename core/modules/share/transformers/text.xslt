@@ -40,7 +40,15 @@
             <xsl:value-of select="." disable-output-escaping="yes" />
         </div>
     </xsl:template>
-
+    
+    <xsl:template match="document/translations[translation[@component=//component[@class='TextBlockSource']/@name]]">
+            <script type="text/javascript">
+                <xsl:for-each select="translation">
+                    var <xsl:value-of select="@const"/>='<xsl:value-of select="."/>';
+                </xsl:for-each>
+            </script>
+    </xsl:template>
+    
     <xsl:template match="component[@type='form' and @class='TextBlockSource']/recordset">
         <div class="formContainer">
             <xsl:variable name="paneID"><xsl:value-of select="generate-id(record)" /></xsl:variable>

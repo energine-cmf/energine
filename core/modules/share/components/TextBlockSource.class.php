@@ -50,7 +50,7 @@ class TextBlockSource extends DataSet {
 	        );
         	array_walk(
 	        	$translations,
-	        	array($this->document, 'addTranslation')
+	        	array($this, 'addTranslation')
         	);
     }
 }

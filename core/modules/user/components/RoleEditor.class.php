@@ -56,11 +56,6 @@ class RoleEditor extends Grid {
             }
         }
 
-        if ($this->getType() != self::COMPONENT_TYPE_LIST) {
-            //Добавляем вкладку с уровнем прав
-            $this->addTab($this->buildTab($this->translate('TXT_ROLE_DIV_RIGHTS')));
-        }
-
         return parent::build();
     }
 

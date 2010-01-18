@@ -271,20 +271,4 @@ class UserEditor extends Grid {
         }
         return $result;
     }
-
-    /**
-     * Добавляем таб
-     *
-     * @return DOMNode
-     * @access public
-     */
-
-    public function build() {
-        if ($this->getType() != self::COMPONENT_TYPE_LIST) {
-            $this->addTab($this->buildTab($this->translate('TXT_USER_GROUPS')));
-        }
-
-        $result = parent::build();
-        return $result;
-    }
 }

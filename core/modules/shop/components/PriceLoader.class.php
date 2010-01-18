@@ -57,7 +57,6 @@ class PriceLoader extends DataSet {
         $this->setDataSetAction('load');
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         parent::main();
-        $this->addTab($this->buildTab($this->translate('TXT_LOAD_PRICE')));
     }
 
     /**

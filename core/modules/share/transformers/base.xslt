@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet 
+    version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  
-    xmlns="http://www.w3.org/1999/xhtml" 
-    version="1.0">
+    xmlns="http://www.w3.org/1999/xhtml">
 
     <!--
         В этом файле собраны базовые правила обработки с низким приоритетом. Файл импортируется в include.xslt,
         что позволяет использовать правило apply-imports в шаблонах более высокого уровня.
         Для переопределения этих правил нужно создать такой же файл и подключить его (импортировать) аналогично 
-        в нужный модуль.        
+        в нужный модуль. Также здесь собраны некоторые именованные шаблоны - импортирование позволяет переопределять
+        их позже в site/transformers.
     -->
     
     <!-- 
@@ -345,5 +346,26 @@
     </xsl:template>
     
     <!-- /form elements -->
+    
+    <!-- именованный шаблон для построения заголовка окна -->
+    <xsl:template name="build_title">
+        <xsl:choose>
+            <xsl:when test="$DOC_PROPS[@name='title']/@alt!=''">
+                <xsl:value-of select="$DOC_PROPS[@name='title']/@alt"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:for-each select="$COMPONENTS[@class='BreadCrumbs']/recordset/record">
+                    <xsl:sort data-type="text" order="descending" select="position()"/>
+                    <xsl:if test="field[@name='Name'] != ''">
+                        <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>           
+                        <xsl:value-of select="field[@name='Name']" />                        
+                    </xsl:if>
+                </xsl:for-each>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
+    <!-- именованный шаблон для подключения интерфейсных скриптов  -->
+    <xsl:template name="interface_js"/>
 
 </xsl:stylesheet>

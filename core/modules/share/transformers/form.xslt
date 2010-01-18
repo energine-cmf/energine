@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml">
-
+<xsl:stylesheet 
+    version="1.0" 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns="http://www.w3.org/1999/xhtml">
+    
+    <!-- компонент типа form -->
     <xsl:template match="component[@type='form']">
         <form method="post" action="{@action}">
             <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">
@@ -8,32 +12,43 @@
             </xsl:if>
 			<xsl:choose>
 				<xsl:when test="@class='FeedbackForm'"><xsl:attribute name="class">base_form feedback_form</xsl:attribute></xsl:when>
+                <xsl:when test="@class='RestorePassword'"><xsl:attribute name="class">base_form restore_password_form</xsl:attribute></xsl:when>
+                <xsl:when test="@class='Register'"><xsl:attribute name="class">base_form registration_form</xsl:attribute></xsl:when>
 				<xsl:when test="@class='UserProfile'"><xsl:attribute name="class">base_form profile_form</xsl:attribute></xsl:when>
-				<xsl:otherwise></xsl:otherwise>
 			</xsl:choose>
             <input type="hidden" name="componentAction" value="{@componentAction}" id="componentAction"/>
-    		<xsl:apply-templates />
+    		<xsl:apply-templates/>
         </form>
-    </xsl:template>
-
-    <xsl:template match="component[@type='form'][@class='FeedbackForm'][@componentAction='send']">
-	    <xsl:value-of select="recordset/record/field[@name='result']" disable-output-escaping="yes"/>
     </xsl:template>
 
     <xsl:template match="recordset[parent::component[@type='form']]">
     	<div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
-    		<xsl:apply-templates />
+    		<xsl:apply-templates/>
     	</div>
 		<xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
 			<div class="note">
-				<xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes" />
+				<xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
 			</div>
 		</xsl:if>
+    </xsl:template>    
+
+    <xsl:template match="record[ancestor::component[@type='form']]">
+        <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="/document/translations/translation[@const='TXT_REQUIRED_FIELDS']" />
-
-    <!-- Форма как часть grid-а выводится в другом стиле -->
+    <xsl:template match="javascript[parent::component[@type='form']]">
+    	<script type="text/javascript">
+    		<xsl:apply-templates/>
+    	</script>
+    </xsl:template>
+    
+    <xsl:template match="toolbar[parent::component[@type='form']]">
+        <div class="controlset">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+    
+    <!-- форма как часть grid-а выводится в другом стиле -->
     <xsl:template match="recordset[parent::component[@type='form' and @exttype='grid']]">
         <div class="formContainer">
             <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
@@ -69,16 +84,6 @@
                 </div>
             </div>
         </div>
-    </xsl:template>
-
-    <xsl:template match="record[ancestor::component[@type='form']]">
-        <xsl:apply-templates />
-    </xsl:template>
-
-    <xsl:template match="javascript[parent::component[@type='form']]">
-    	<script type="text/javascript">
-    		<xsl:apply-templates />
-    	</script>
     </xsl:template>
 
     <xsl:template match="field[@name='attached_files'][@type='custom']">
@@ -147,6 +152,13 @@
                     </tr>
                 </tfoot>
             </table>
+        </div>
+    </xsl:template>
+    
+    <!-- обработка сообщения об отправке данных формы -->
+    <xsl:template match="component[@type='form'][@componentAction='send']">
+        <div class="result_message">
+            <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>
     </xsl:template>
 

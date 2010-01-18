@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet 
+    version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-    xmlns="http://www.w3.org/1999/xhtml"
-    version="1.0">
+    xmlns="http://www.w3.org/1999/xhtml">
     
     <!--
         Шаблон - контроллер для любого поля из компонента типа форма.
@@ -34,7 +34,7 @@
         Шаблон для необязательного (nullable) поля в админчасти вынесен отдельно. 
         В нем добавляется возможность скрыть/раскрыть необязательное поле. 
     -->
-    <xsl:template match="field[ancestor::component[@type='form'][@exttype = 'grid']][@nullable]">
+    <xsl:template match="field[@nullable][ancestor::component[@type='form'][@exttype = 'grid']]">
         <div class="field">
             <xsl:if test="@title and @type != 'boolean'">
                 <div class="name">
@@ -102,10 +102,10 @@
     </xsl:template>
     
     <!-- для любого поля, на которое нет прав на просмотр -->
-    <xsl:template match="field[ancestor::component[@type='form']][@mode=0]" />
+    <xsl:template match="field[@mode=0][ancestor::component[@type='form']]" />
     
     <!-- для любого поля, на которое права только чтение -->
-    <xsl:template match="field[ancestor::component[@type='form']][@mode='1']">
+    <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
             <div class="field">
                 <xsl:if test="@title">
@@ -127,7 +127,7 @@
     </xsl:template>
     
     <!-- read-only поле логического типа -->
-    <xsl:template match="field[@mode=1][@type='boolean'][ancestor::component[@exttype='grid'][@type='form']]">
+    <xsl:template match="field[@type='boolean'][@mode=1][ancestor::component[@exttype='grid'][@type='form']]">
         <div class="field">
             <xsl:if test="@title">
                 <label for="{@name}">
@@ -150,7 +150,7 @@
     </xsl:template>
     
     <!-- для поля HTMLBLOCK на которое права только чтение -->
-    <xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='htmlblock']">
+    <xsl:template match="field[@type='htmlblock'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
             <div class="field">
                 <xsl:if test="@title">
@@ -172,7 +172,7 @@
     </xsl:template>
     
     <!-- для поля TEXT на которое права только на чтение -->
-    <xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='text']">
+    <xsl:template match="field[@type='text'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
             <div class="field">
                 <xsl:if test="@title">
@@ -194,7 +194,7 @@
     </xsl:template>
     
     <!-- для поля EMAIL на которое права только чтение -->
-    <xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='email']">
+    <xsl:template match="field[@type='email'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
             <div class="field">
                 <xsl:if test="@title">
@@ -217,11 +217,11 @@
     
     <!-- для поля FILE на которое права только чтение -->
     <xsl:template match="
-        field[ancestor::component[@type='form']][@mode='1'][@type='file'] 
+        field[@type='file'][@mode='1'][ancestor::component[@type='form']] 
         | 
-        field[ancestor::component[@type='form']][@mode='1'][@type='pfile']
+        field[@type='pfile'][@mode='1'][ancestor::component[@type='form']]
         |
-        field[ancestor::component[@type='form']][@mode='1'][@type='prfile']">
+        field[@type='prfile'][@mode='1'][ancestor::component[@type='form']]">
         <div class="field">
             <xsl:if test="@title">
                 <label for="{@name}">
@@ -241,7 +241,7 @@
     </xsl:template>
     
     <!-- read-only поле типа select -->
-    <xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='select']">
+    <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]">
         <div class="field">
             <xsl:if test="@title">
                 <label for="{@name}">
@@ -261,7 +261,7 @@
     </xsl:template>
     
     <!-- read-only поле типа multiselect -->
-    <xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='multi']">
+    <xsl:template match="field[@type='multi'][@mode='1'][ancestor::component[@type='form']]">
         <div class="field">
             <xsl:if test="@title">
                 <label for="{@name}">
@@ -285,7 +285,7 @@
     </xsl:template>
     
     <!-- read-only поле типа image -->
-    <xsl:template match="field[ancestor::component[@type='form']][@mode='1'][@type='image']">
+    <xsl:template match="field[@type='image'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test="@title">
             <label for="{@name}">
                 <xsl:value-of select="concat(@title, ':')" />
@@ -308,9 +308,9 @@
     
     <!-- read-only поле типа date и datetime -->
     <xsl:template match="
-        field[ancestor::component[@type='form']][@mode='1'][@type='date'] 
+        field[@type='date'][@mode='1'][ancestor::component[@type='form']] 
         |
-        field[ancestor::component[@type='form']][@mode='1'][@type='datetime']">
+        field[@type='datetime'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
             <div class="field">
                 <xsl:if test="@title">
@@ -332,7 +332,7 @@
     </xsl:template>
     
     <!-- для PK  -->
-    <xsl:template match="field[ancestor::component[@type='form']][@key='1']">
+    <xsl:template match="field[@key='1'][ancestor::component[@type='form']]">
         <input type="hidden" id="{@name}" value="{.}" primary="primary">
             <xsl:attribute name="name">
                 <xsl:choose>
@@ -344,7 +344,7 @@
     </xsl:template>
     
     <!-- для поля hidden -->
-    <xsl:template match="field[ancestor::component[@type='form']][@type='hidden']">
+    <xsl:template match="field[@type='hidden'][ancestor::component[@type='form']]">
         <xsl:apply-imports />
     </xsl:template>
 

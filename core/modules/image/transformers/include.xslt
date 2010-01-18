@@ -4,7 +4,6 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
     
-    <xsl:include href="ImageManager.xslt"/>
-    <xsl:include href="gallery.xslt"/>
+    <xsl:include href="image.xslt"/>
     
 </xsl:stylesheet>

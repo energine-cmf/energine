@@ -2,22 +2,15 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml">
 
    <xsl:template match="recordset[parent::component[@class='FileLibrary'][@type='list']]">
-    <xsl:variable name="FIRST_TAB_LANG" select="../tabs/tab[position()=1]/@id" />
+    <xsl:variable name="TAB_ID" select="generate-id(record[1])"></xsl:variable>
     <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" file_type="{../@allowed_file_type}">
         <ul class="tabs">
-            <xsl:for-each select="../tabs/tab">
-                <xsl:variable name="TAB_NAME" select="@name" />
-                <xsl:variable name="TAB_LANG" select="@id" />
-                <li>
-                    <a href="#{generate-id(../.)}"><xsl:value-of select="$TAB_NAME" /></a>
-                    <xsl:if test="$TAB_LANG">
-                        <span class="data">{ lang: <xsl:value-of select="$TAB_LANG" /> }</span>
-                    </xsl:if>
-                </li>
-            </xsl:for-each>
+            <li>
+                <a href="#{$TAB_ID}"><xsl:value-of select="record[1]/field[1]/@tabName" /></a>
+            </li>
         </ul>
         <div class="paneContainer">
-            <div id="{generate-id(../tabs)}">
+            <div id="{$TAB_ID}">
                 <div class="dirArea">
                     <div class="scrollHelper">
                     </div>

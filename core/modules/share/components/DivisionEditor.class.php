@@ -158,11 +158,8 @@ final class DivisionEditor extends Grid {
 
         $builder->setDataDescription($resultDD);
         $builder->build();
-        $result = $this->doc->createElement('rights');
-        $result->setAttribute('title', $this->translate('TXT_RIGHTS'));
-
-        $result->appendChild($this->doc->importNode($builder->getResult(), true));
-        return $result;
+        
+        return $builder->getResult();
     }
 
     /**
@@ -184,7 +181,6 @@ final class DivisionEditor extends Grid {
             $result->getFieldDescriptionByName('smap_name')->removeProperty('nullable');
         }
         else {
-
             //Для режима списка нам нужно выводить не значение а ключ
             if ($this->getType() == self::COMPONENT_TYPE_LIST) {
                 $smapPIDFieldDescription = $result->getFieldDescriptionByName('smap_pid');
@@ -279,6 +275,18 @@ final class DivisionEditor extends Grid {
         parent::prepare();
         $actionParams = $this->getActionParams();
         
+        if(in_array($this->getAction(), array('add', 'edit'))){
+        	$field = new Field('page_rights');
+        	$rightsData = $this->buildRightsTab();
+        	
+            for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
+                $field->addRowData(
+                    $rightsData
+                );
+            }
+            $this->getData()->addField($field);
+        }
+                
         if ($this->getAction() == 'edit') {
         	$this->addAttFilesField(
         	    'share_sitemap_uploads',
@@ -289,7 +297,6 @@ final class DivisionEditor extends Grid {
 	                WHERE smap_id = %s
 	            ', $this->getData()->getFieldByName('smap_id')->getRowData(0))
         	);
-        	
             $field = $this->getData()->getFieldByName('smap_pid');
             $smapSegment = '';
             if($field->getRowData(0) !== null) {
@@ -542,9 +549,9 @@ final class DivisionEditor extends Grid {
                     }
                 }
                 $result = parent::build();
-                if ($this->getType() != self::COMPONENT_TYPE_LIST )
+                /*if ($this->getType() != self::COMPONENT_TYPE_LIST )
                     $result->documentElement->appendChild($this->buildRightsTab());
-
+*/
         		break;
         }
 

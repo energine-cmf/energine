@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml">
+<xsl:stylesheet 
+    version="1.0" 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:set="http://exslt.org/sets"
+    extension-element-prefixes="set"
+    >
 
     <xsl:template match="component[@type='list']">
     	<form method="post" action="{@action}">
@@ -34,32 +40,42 @@
     </xsl:template>
 
     <xsl:template name="BUILD_GRID">
-        <xsl:variable name="FIRST_TAB_LANG" select="../tabs/tab[position()=1]/@id" />
+        <xsl:variable name="FIELDS" select="record/field"></xsl:variable>
+        <xsl:variable name="TAB_ID" select="generate-id(record)"></xsl:variable>
         <ul class="tabs">
-            <xsl:for-each select="../tabs/tab">
-                <xsl:variable name="TAB_NAME" select="@name" />
-                <xsl:variable name="TAB_LANG" select="@id" />
-                <li>
-                    <a href="#{generate-id(../.)}"><xsl:value-of select="$TAB_NAME" /></a>
-                    <xsl:if test="$TAB_LANG">
-                        <span class="data">{ lang: <xsl:value-of select="$TAB_LANG" /> }</span>
-                    </xsl:if>
-                </li>
-            </xsl:for-each>
+            <xsl:choose>
+                <xsl:when test="$FIELDS[@language]">
+                    <xsl:for-each select="set:distinct($FIELDS[@language]/@tabName)">
+                        <xsl:variable name="TAB_NAME" select="." />
+                        <li>
+                            <a href="#{$TAB_ID}"><xsl:value-of select="." /></a>
+                            <span class="data">{ lang: <xsl:value-of select="$FIELDS[@tabName=$TAB_NAME]/@language" /> }</span>
+                        </li>
+                    </xsl:for-each>        
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:for-each select="set:distinct($FIELDS/@tabName)">
+                        <xsl:variable name="TAB_NAME" select="." />
+                        <li>
+                            <a href="#{$TAB_ID}"><xsl:value-of select="." /></a>
+                        </li>
+                    </xsl:for-each>        
+                </xsl:otherwise>
+            </xsl:choose>
         </ul>
+
         <div class="paneContainer">
-            <div id="{generate-id(../tabs)}">
+            <div id="{$TAB_ID}">
                 <div class="grid">
-                    <xsl:if test="record/field[@type = 'string']">
+                    <!-- если есть хотя бы одно поле с типом string -->
+                    <xsl:if test="$FIELDS[@type = 'string']">
                         <div class="filter">
                             <xsl:value-of select="$TRANSLATION[@const = 'TXT_FILTER']" />:<xsl:text>&#160;</xsl:text>
                             <select name="fieldName">
-                                <xsl:for-each select="record/field[@type!='hidden']">
+                                <xsl:for-each select="$FIELDS[@type!='hidden' and @index!='PRI']">
                                     <xsl:choose>
-                                        <xsl:when test="@index = 'PRI'">
-                                        </xsl:when>
                                         <xsl:when test="@language">
-                                            <xsl:if test="@language = $FIRST_TAB_LANG and (@type = 'string' or @type = 'htmlblock')">
+                                            <xsl:if test="(@language = $LANG) and (@type = 'string' or @type = 'htmlblock')">
                                                 <option value="[{@tableName}][{@name}]"><xsl:value-of select="@title"/></option>
                                             </xsl:if>
                                         </xsl:when>
@@ -81,13 +97,13 @@
                     </xsl:if>
                     <div class="gridHeadContainer">
                     <table class="gridTable" cellspacing="0">
-                        <xsl:for-each select="record/field[@type!='hidden']">
+                        <xsl:for-each select="$FIELDS[@type!='hidden']">
                             <xsl:choose>
-                                <xsl:when test="@index = 'PRI'" />
+                                <xsl:when test="@index='PRI'"></xsl:when>
                                 <xsl:when test="@language">
-                                    <xsl:if test="@language = $FIRST_TAB_LANG">
+                                    <xsl:if test="@language = $LANG_ID">
                                         <col id="col_1{position()}" />
-                                    </xsl:if>
+                                    </xsl:if>    
                                 </xsl:when>
                                 <xsl:otherwise>
                                     <col id="col_1{position()}" />
@@ -96,11 +112,11 @@
                         </xsl:for-each>
                         <thead>
                             <tr>
-                                <xsl:for-each select="record/field[@type!='hidden']">
+                                <xsl:for-each select="$FIELDS[@type!='hidden']">
                                     <xsl:choose>
-                                        <xsl:when test="@index = 'PRI'" />
+                                        <xsl:when test="@index='PRI'"></xsl:when>
                                         <xsl:when test="@language">
-                                            <xsl:if test="@language = $FIRST_TAB_LANG">
+                                            <xsl:if test="@language = $LANG_ID">
                                                 <th><xsl:value-of select="@title"/></th>
                                             </xsl:if>
                                         </xsl:when>
@@ -115,11 +131,11 @@
                     </div>
                     <div class="gridContainer">
                         <table class="gridTable" cellspacing="0">
-                        <xsl:for-each select="record/field[@type!='hidden']">
+                        <xsl:for-each select="$FIELDS[@type!='hidden']">
                             <xsl:choose>
-                                <xsl:when test="@index = 'PRI'" />
+                                <xsl:when test="@index='PRI'"></xsl:when>
                                 <xsl:when test="@language">
-                                    <xsl:if test="@language = $FIRST_TAB_LANG">
+                                    <xsl:if test="@language = $LANG_ID">
                                         <col id="col_{position()}a" />
                                     </xsl:if>
                                 </xsl:when>
@@ -130,11 +146,11 @@
                          </xsl:for-each>
                             <thead style="visibility: hidden;">
                                 <tr>
-                                <xsl:for-each select="record/field[@type!='hidden']">
+                                <xsl:for-each select="$FIELDS[@type!='hidden']">
                                     <xsl:choose>
-                                        <xsl:when test="@index = 'PRI'" />
+                                        <xsl:when test="@index='PRI'"></xsl:when>
                                         <xsl:when test="@language">
-                                            <xsl:if test="@language = $FIRST_TAB_LANG">
+                                            <xsl:if test="@language = $LANG_ID">
                                                 <th id="col_{position()}"><xsl:value-of select="@title"/></th>
                                             </xsl:if>
                                         </xsl:when>

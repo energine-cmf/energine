@@ -121,8 +121,6 @@ class Grid extends DBDataSet {
     protected function add() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
-        $this->addTranslation('TXT_OPEN_FIELD');
-        $this->addTranslation('TXT_CLOSE_FIELD');
         $this->addToolbarTranslations();
         //$this->addCrumb('TXT_ADD_ITEM');
     }
@@ -136,8 +134,6 @@ class Grid extends DBDataSet {
 
     protected function edit() {
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
-        $this->addTranslation('TXT_OPEN_FIELD');
-        $this->addTranslation('TXT_CLOSE_FIELD');
 
         $id = $this->getActionParams();
         list($id) = $id;
@@ -491,25 +487,6 @@ class Grid extends DBDataSet {
      */
 
     public function build() {
-        if (!$this->getTranslationTableName()) {
-            //Немультиязычные грид и форма
-            if (!empty($this->tabs)) {
-                $this->tabs = array_push_before($this->tabs, $this->buildTab($this->getTitle()), 0);
-            }
-            else {
-                $this->addTab($this->buildTab($this->getTitle()));
-            }
-        }
-        elseif ($this->getType() == self::COMPONENT_TYPE_LIST ) {
-            //Мультиязычный грид
-            $this->buildLangTabs();
-        }
-        else {
-            //Мультиязычная форма
-            $this->buildLangTabs();
-            $this->tabs = array_push_before($this->tabs, $this->buildTab($this->translate('TXT_PROPERTIES')), 0);
-        }
-
         switch ($this->getAction()) {
             case 'imageManager':
                 return $this->imageManager->build();
@@ -575,23 +552,6 @@ class Grid extends DBDataSet {
         return $result;
     }
 
-    /**
-     * Создает вкладки языков
-     *
-     * @return void
-     * @access private
-     */
-
-    private function buildLangTabs() {
-        $lang = Language::getInstance()->getLanguages();
-        foreach ($lang as $langID => $langInfo) {
-            $tabProperties = array(
-            'id' => $langID,
-            'abbr' => $langInfo['lang_abbr']
-            );
-            $this->addTab($this->buildTab($langInfo['lang_name'], $tabProperties));
-        }
-    }
     
     final protected function uploadVideo(){
     	try{
@@ -1005,40 +965,15 @@ class Grid extends DBDataSet {
      * @return void
      */
     private function addToolbarTranslations(){
-    	foreach($this->getDataDescription() as $fd){
-    		if(($fd->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK)){
-    	       $translations = array(
-                        'BTN_ITALIC',
-                        'BTN_HREF',
-                        'BTN_UL',
-                        'BTN_OL',
-                        'BTN_ALIGN_LEFT',
-                        'TXT_PREVIEW',
-                        'BTN_FILE_LIBRARY',
-                        'BTN_INSERT_IMAGE',
-                        'BTN_VIEWSOURCE',
-                        'TXT_PREVIEW',
-                        'TXT_RESET',
-                        'TXT_H1',
-                        'TXT_H2',
-                        'TXT_H3',
-                        'TXT_H4',
-                        'TXT_H5',
-                        'TXT_H6',
-                        'TXT_ADDRESS',
-                        'BTN_SAVE',
-                        'BTN_BOLD',
-                        'BTN_ALIGN_CENTER',
-                        'BTN_ALIGN_RIGHT',
-                        'BTN_ALIGN_JUSTIFY',
-                    );
-                array_walk(
-                    $translations,
-                    array($this, 'addTranslation')
-                );
-				break;
-    		}
-    	}
+    	$this->addTranslation('TXT_OPEN_FIELD');
+        $this->addTranslation('TXT_CLOSE_FIELD');
+        
+        foreach($this->getDataDescription() as $fd){
+            if(($fd->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK)){
+                $this->addWYSIWYGTranslations();       
+                break;
+            }
+        }
     }
     
     /**
@@ -1053,8 +988,6 @@ class Grid extends DBDataSet {
      * @return void
      */
     protected function addAttFilesField($tableName, $data = true){
-    	$this->addTab($this->buildTab($this->translate('TAB_ATTACHED_FILES')));
-    	
     	    $field = new FieldDescription('attached_files');
             $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
             $field->setProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
@@ -1067,10 +1000,9 @@ class Grid extends DBDataSet {
             //Ссылки на добавление и удаление файла
             $this->addTranslation('BTN_ADD_FILE');
             $this->addTranslation('BTN_DEL_FILE');
+            $attachedFilesData = $this->buildAttachedFiles($data); 
             for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
-                $field->addRowData(
-                    $this->buildAttachedFiles($data)
-                );
+                $field->addRowData($attachedFilesData);
             }
             $this->getData()->addField($field);
     }

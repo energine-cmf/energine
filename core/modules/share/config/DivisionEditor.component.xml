@@ -79,6 +79,7 @@
 				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
 				<field name="smap_redirect_url"/>
 				<field name="smap_is_disabled"/>
+                <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>				
 				<field name="smap_name"/>
 				<field name="smap_description_rtf"/>
 				<field name="smap_html_title"/>
@@ -115,6 +116,7 @@
 				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
 				<field name="smap_redirect_url" />
 				<field name="smap_is_disabled"/>
+                <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>             				
 				<field name="smap_name"/>
 				<field name="smap_description_rtf"/>
 				<field name="smap_html_title"/>

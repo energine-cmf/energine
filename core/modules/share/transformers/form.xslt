@@ -2,9 +2,10 @@
 <xsl:stylesheet 
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-    xmlns="http://www.w3.org/1999/xhtml">
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:set="http://exslt.org/sets"
+    extension-element-prefixes="set">
     
-    <!-- компонент типа form -->
     <xsl:template match="component[@type='form']">
         <form method="post" action="{@action}">
             <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">
@@ -50,37 +51,26 @@
     
     <!-- форма как часть grid-а выводится в другом стиле -->
     <xsl:template match="recordset[parent::component[@type='form' and @exttype='grid']]">
+        <xsl:variable name="FIELDS" select="record/field"></xsl:variable>
         <div class="formContainer">
             <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
                 <ul class="tabs">
-                    <xsl:for-each select="../tabs/tab">
-                    <xsl:variable name="TAB_NAME" select="@name" />
-                        <xsl:if test="count(../../recordset/record/field[@tabName=$TAB_NAME][not(@index='PRI')])&gt;0">
-                            <li><a href="#{generate-id(.)}"><xsl:value-of select="@name" /></a></li>
+                    <xsl:for-each select="set:distinct($FIELDS/@tabName)">
+                        <xsl:variable name="TAB_NAME" select="."></xsl:variable>
+                        <xsl:if test="count(set:distinct($FIELDS[not(@index='PRI')][@tabName=$TAB_NAME]))&gt;0">
+                            <li><a href="#{generate-id(.)}"><xsl:value-of select="$TAB_NAME" /></a></li>
                         </xsl:if>
                      </xsl:for-each>
                 </ul>
                 <div class="paneContainer">
-                <xsl:choose>
-                    <xsl:when test="count(../tabs/tab)&gt;1">
-                        <xsl:for-each select="../tabs/tab">
-                            <xsl:variable name="TAB_NAME" select="@name" />
+                    <xsl:for-each select="set:distinct($FIELDS/@tabName)">
+                        <xsl:variable name="TAB_NAME" select="."></xsl:variable>
                             <div id="{generate-id(.)}">
                                 <div>
-                                    <xsl:apply-templates select="../../recordset/record/field[@tabName=$TAB_NAME]"/>
+                                    <xsl:apply-templates select="$FIELDS[@tabName=$TAB_NAME]"/>
                                 </div>
                             </div>
                         </xsl:for-each>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <div id="{generate-id(../tabs/tab[1])}">
-                            <div>
-                                <xsl:apply-templates select="record/field"/>
-                            </div>
-                        </div>
-                    </xsl:otherwise>
-                </xsl:choose>
-
                 </div>
             </div>
         </div>

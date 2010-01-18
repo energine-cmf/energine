@@ -203,18 +203,6 @@ final class FileLibrary extends DataSet {
     }
 
     /**
-     * Добавляем таб
-     *
-     * @return DOMNode
-     * @access public
-     */
-
-    public function prepare() {
-        parent::prepare();
-        $this->addTab($this->buildTab($this->getTitle()));
-    }
-
-    /**
      * Method Description
      *
      * @return type

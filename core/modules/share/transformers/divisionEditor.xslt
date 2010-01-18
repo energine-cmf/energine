@@ -1,5 +1,11 @@
 <?xml version='1.0' encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml">
+<xsl:stylesheet 
+    version="1.0" 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:set="http://exslt.org/sets"
+    extension-element-prefixes="set"
+    >
 
 <!--
     Компонент Редактора разделов
@@ -14,82 +20,26 @@
 </xsl:template>
 
 <!-- Вывод дерева разделов -->
-<xsl:template match="recordset[parent::component[@class='DivisionEditor'][@type='list']]">
-    <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"  single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
-        <ul class="tabs">
-            <xsl:for-each select="../tabs/tab[@id=$LANG_ID]">
-                <xsl:variable name="TAB_NAME" select="@name" />
-                <xsl:variable name="TAB_LANG" select="@id" />
-                <li>
-                    <a href="#{generate-id(../.)}"><xsl:value-of select="$TAB_NAME" /></a>
-                    <xsl:if test="$TAB_LANG">
-                        <span class="data">{ lang: <xsl:value-of select="$TAB_LANG" /> }</span>
-                    </xsl:if>
-                </li>
-            </xsl:for-each>
-        </ul>
-        <div class="paneContainer">
-            <div id="{generate-id(../tabs)}">
-                <div id="treeContainer" class="e-divtree-select"></div>
-            </div>
-        </div>
-    </div>
-</xsl:template>
-
 <xsl:template match="recordset[parent::component[@class='DivisionEditor'][@componentAction='main'][@type='list']]">
     <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"  lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
         <div id="treeContainer" class="e-divtree-main"></div>
     </div>
 </xsl:template>
 
-
-
-<xsl:template match="recordset[parent::component[@type='form'][@class='DivisionEditor'][@exttype='grid']]">
-    <div class="formContainer">
-        <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"  single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
-            <ul class='tabs'>
-                <xsl:for-each select="../tabs/tab">
-                    <xsl:variable name="TAB_NAME" select="@name" />
-                    <li>
-                        <a href="#{generate-id(.)}"><xsl:value-of select="$TAB_NAME" /></a>
-                        <xsl:if test="@id">
-                            <span class="data">{ lang: <xsl:value-of select="@id" /> }</span>
-                        </xsl:if>
-                    </li>
-                </xsl:for-each>
-                <li>
-                    <a href="#{generate-id(../rights)}"><xsl:value-of select="../rights/@title"/></a>
-                </li>
-            </ul>
-            <div class="paneContainer">
-                <xsl:for-each select="../tabs/tab">
-                    <xsl:variable name="TAB_NAME" select="@name" />
-                    <div id="{generate-id(.)}">
-                        <div>
-                            <xsl:apply-templates select="../../recordset/record/field[@tabName=$TAB_NAME]"/>
-                        </div>
-                    </div>
-                </xsl:for-each>
-                <xsl:call-template name="BUILD_RIGHTS_TAB"/>
-            </div>
-        </div>
-    </div>
-</xsl:template>
-
-<xsl:template name="BUILD_RIGHTS_TAB">
-    <div id="{generate-id(../rights)}">
+<xsl:template match="field[@name='page_rights'][@type='custom']">
+    <xsl:variable name="RECORDS" select="recordset/record"/>
         <div class="page_rights">
             <table width="100%" border="0">
                 <thead>
                     <tr>
                         <td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
-                        <xsl:for-each select="../rights/recordset/record[position()=1]/field[@name='right_id']/options/option">
+                        <xsl:for-each select="$RECORDS[position()=1]/field[@name='right_id']/options/option">
                             <td style="text-align:center;"><xsl:value-of select="."/></td>
                         </xsl:for-each>
                      </tr>
                 </thead>
                 <tbody>
-                    <xsl:for-each select="../rights/recordset/record">
+                    <xsl:for-each select="$RECORDS">
                         <tr>
 							<xsl:if test="floor(position() div 2) = position() div 2">
 								<xsl:attribute name="class">even</xsl:attribute>
@@ -110,7 +60,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
 </xsl:template>
 
 <xsl:template match="field[ancestor::component[@class='DivisionEditor'][@type='form'][@exttype='grid']][@name='smap_pid']">

@@ -13,7 +13,7 @@ var TabPane = new Class({
         this.tabs.each(function(tab) {
             tab.setProperty('unselectable', 'on');
             var anchor = tab.getElement('a');
-            var paneId = anchor.href.slice(anchor.href.lastIndexOf('#'));
+            var paneId = anchor.getProperty('href').slice(anchor.getProperty('href').lastIndexOf('#'));
             anchor.onclick = function() { this.blur(); return false; }
             var tabData = tab.getElement('span.data');
             tab.data = (tabData ? JSON.decode(tabData.firstChild.nodeValue) : {});

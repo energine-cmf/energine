@@ -228,21 +228,12 @@ final class Document extends DBWorker {
         $langProperty ->setAttribute('abbr', $this->request->getLangSegment());
         $langProperty ->setAttribute('real_abbr', Language::getInstance()->getAbbrByID($this->getLang()));
         $dom_documentProperties->appendChild($langProperty);
-
-        if (!empty($this->translations)) {
+        
+        if (!empty($this->translations)){ 
             $dom_translations = $this->doc->createElement('translations');
-            foreach ($this->translations as $const => $componentName) {
-            	$dom_translation = $this->doc->createElement('translation', $this->translate($const));
-            	$dom_translation->setAttribute('const', $const);
-            	if(!is_null($componentName)){
-            	   $dom_translation->setAttribute('component', $componentName);
-            	}
-            	$dom_translations->appendChild($dom_translation);
-            }
             $dom_root->appendChild($dom_translations);
         }
-
-
+        
         $dom_layout = $this->doc->createElement('layout');
         $dom_layout->setAttribute('file', $this->documentInfo['layoutFileName']);
         $dom_content = $this->doc->createElement('content');
@@ -289,6 +280,17 @@ final class Document extends DBWorker {
             }
             elseif ($dom_errors) {
                 $dom_root->appendChild($dom_errors);
+            }
+        }
+        
+            if (!empty($this->translations)) {
+            foreach ($this->translations as $const => $componentName) {
+                $dom_translation = $this->doc->createElement('translation', $this->translate($const));
+                $dom_translation->setAttribute('const', $const);
+                if(!is_null($componentName)){
+                   $dom_translation->setAttribute('component', $componentName);
+                }
+                $dom_translations->appendChild($dom_translation);
             }
         }
     }

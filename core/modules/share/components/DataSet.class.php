@@ -107,13 +107,6 @@ abstract class DataSet extends Component {
 	 */
 	protected $pager;
 
-	/**
-	 * Набор табо
-	 *
-	 * @var array
-	 * @access protected
-	 */
-	protected $tabs = array();
 
 	/**
 	 * Конструктор класса
@@ -424,15 +417,6 @@ abstract class DataSet extends Component {
 			foreach ($methodConfig->translations->translation as $translation) {
 				$this->addTranslation((string)$translation['const']);
 			}
-		}
-		if (!empty($this->tabs)) {
-			$tabsXML = $this->doc->createElement('tabs');
-
-			foreach ($this->tabs as $tab) {
-				$tabsXML->appendChild($tab);
-			}
-
-			$result->documentElement->appendChild($tabsXML);
 		}
 
 		return $result;

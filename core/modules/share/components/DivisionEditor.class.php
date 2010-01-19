@@ -177,7 +177,7 @@ final class DivisionEditor extends Grid {
         if (in_array($this->getAction(), array('add', 'edit'))) {
             $fd = $result->getFieldDescriptionByName('smap_pid');
             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-            //$fd->setMode(FieldDescription::FIELD_MODE_READ);
+            $fd->setMode(FieldDescription::FIELD_MODE_READ);
             $result->getFieldDescriptionByName('smap_name')->removeProperty('nullable');
         }
         else {

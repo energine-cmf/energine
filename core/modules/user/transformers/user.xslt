@@ -13,6 +13,12 @@
         </form>
     </xsl:template>
     
+    <xsl:template match="recordset[parent::component[@class='LoginForm']]">
+        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+    
     <xsl:template match="control[@id='restore'][ancestor::component[@class='LoginForm']]">
         <xsl:if test="@mode != 0">
             <div class="restore_link">

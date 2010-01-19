@@ -4,6 +4,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
     
+    <xsl:import href="base.xslt"/>
     <xsl:include href="shop.xslt"/>
     <xsl:include href="productEditor.xslt"/>
     <xsl:include href="product.xslt"/>

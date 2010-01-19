@@ -114,8 +114,12 @@ class ProductEditor extends Grid {
     protected function createDataDescription() {
         $result = parent::createDataDescription();
 
-
+        
         if (in_array($this->getAction(), array('add', 'edit'))) {
+        	if($this->getAction() == 'add'){
+        	   $result->getFieldDescriptionByName('product_segment')->removeProperty('nullable');	
+        	}
+        	$result->getFieldDescriptionByName('pt_id')->setProperty('tabName', $this->translate('TAB_PRODUCT_PARAMS'));
             $smapPIDFieldDescription = $result->getFieldDescriptionByName('smap_id');
             $smapPIDFieldDescription->setType(FieldDescription::FIELD_TYPE_STRING);
             $smapPIDFieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
@@ -183,6 +187,7 @@ class ProductEditor extends Grid {
                 if (isset($result[$langID]['ps_id'])) {
                     $result[$langID]['ps_id'] = ProductStatusEditor::getDefaultStatus();
                 }
+                $result[$langID]['product_count'] = 1;
             }
         }
         elseif ($this->getAction() == 'getRawData' && is_array($result) && $this->getDataDescription()->getFieldDescriptionByName('product_count')) {

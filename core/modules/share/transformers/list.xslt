@@ -72,10 +72,11 @@
                         <div class="filter">
                             <xsl:value-of select="$TRANSLATION[@const = 'TXT_FILTER']" />:<xsl:text>&#160;</xsl:text>
                             <select name="fieldName">
-                                <xsl:for-each select="$FIELDS[@type!='hidden' and @index!='PRI']">
+                                <xsl:for-each select="$FIELDS[@type!='hidden']">
                                     <xsl:choose>
+                                        <xsl:when test="@index='PRI'"></xsl:when>
                                         <xsl:when test="@language">
-                                            <xsl:if test="(@language = $LANG) and (@type = 'string' or @type = 'htmlblock')">
+                                            <xsl:if test="(@language = $LANG_ID) and (@type = 'string' or @type = 'htmlblock')">
                                                 <option value="[{@tableName}][{@name}]"><xsl:value-of select="@title"/></option>
                                             </xsl:if>
                                         </xsl:when>

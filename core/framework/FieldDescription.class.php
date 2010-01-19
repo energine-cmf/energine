@@ -297,12 +297,9 @@ class FieldDescription extends DBWorker {
                     $this->setMode($attrValue);
                     break;
                 default:
-                    if ($attrName == 'title') {
-                        $attrValue = $this->translate($attrValue);
-                    }
-                    elseif ($attrName == 'message') {
-                        $attrValue = $this->translate($attrValue);
-                    }
+                	if(in_array($attrName, array('title', 'message', 'tabName'))){
+                		$attrValue = $this->translate($attrValue);
+                	}
                     $this->setProperty($attrName, $attrValue);
             }
         }

@@ -64,7 +64,7 @@
         private function isApacheSuitable() {
             $result = true;
 
-            if (strpos(strtolower($_SERVER["SERVER_SOFTWARE"]), 'apache') === false) {
+            if ((strpos(strtolower($_SERVER["SERVER_SOFTWARE"]), 'apache') === false ) && (strpos(strtolower($_SERVER["SERVER_SOFTWARE"]), 'nginx') === false)) {
               	$this->getViewer()->addBlock('На этот сервер невозможно установить Energine.',Viewer::TPL_CHECKER_EXCEPTION);
               	$result = false;
             } elseif(!$this->silentMode) {

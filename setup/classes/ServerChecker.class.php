@@ -32,6 +32,7 @@
             	'json',
             	'gd',
             	'mbstring',
+            	'mysql',
             	'PDO',
             	'pdo_mysql',
             	'tidy',

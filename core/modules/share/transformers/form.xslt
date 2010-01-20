@@ -6,6 +6,7 @@
     xmlns:set="http://exslt.org/sets"
     extension-element-prefixes="set">
     
+    <!-- обработка компонента типа form -->
     <xsl:template match="component[@type='form']">
         <form method="post" action="{@action}">
             <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">

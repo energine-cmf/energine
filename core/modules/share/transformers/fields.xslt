@@ -102,7 +102,7 @@
     </xsl:template>
     
     <!-- для любого поля, на которое нет прав на просмотр -->
-    <xsl:template match="field[@mode=0][ancestor::component[@type='form']]" />
+    <xsl:template match="field[@mode=0][ancestor::component[@type='form']]"/>
     
     <!-- для любого поля, на которое права только чтение -->
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]">
@@ -117,8 +117,8 @@
                 <input type="hidden" value="{.}">
                     <xsl:attribute name="name">
                         <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name" />]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
                 </input>
@@ -131,16 +131,16 @@
         <div class="field">
             <xsl:if test="@title">
                 <label for="{@name}">
-                    <xsl:value-of select="concat(@title, ':')" />
+                    <xsl:value-of select="concat(@title, ':')"/>
                 </label><xsl:text> </xsl:text>
             </xsl:if>
             <xsl:variable name="FIELD_NAME">
                 <xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
+                    <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                 </xsl:choose>
             </xsl:variable>
-            <input type="hidden" name="{$FIELD_NAME}" value="{.}" />
+            <input type="hidden" name="{$FIELD_NAME}" value="{.}"/>
             <input type="checkbox" id="{@name}" name="{$FIELD_NAME}" disabled="disabled" class="checkbox">
                 <xsl:if test=".=1">
                     <xsl:attribute name="checked">checked</xsl:attribute>
@@ -155,15 +155,15 @@
             <div class="field">
                 <xsl:if test="@title">
                     <label for="{@name}">
-                        <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes" />
+                        <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes"/>
                     </label><xsl:text> </xsl:text>
                 </xsl:if>
-                <div class="readonlyBlock"><xsl:value-of select="." disable-output-escaping="yes" /></div>
+                <div class="readonlyBlock"><xsl:value-of select="." disable-output-escaping="yes"/></div>
                 <input type="hidden" value="{.}">
                     <xsl:attribute name="name">
                         <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
                 </input>
@@ -177,15 +177,15 @@
             <div class="field">
                 <xsl:if test="@title">
                     <label for="{@name}">                    
-                        <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes" />
+                        <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes"/>
                     </label><xsl:text> </xsl:text>
                 </xsl:if>
-                <div class="read"><xsl:value-of select="." disable-output-escaping="yes" /></div>
+                <div class="read"><xsl:value-of select="." disable-output-escaping="yes"/></div>
                 <input type="hidden" value="{.}">
                     <xsl:attribute name="name">
                         <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
                 </input>
@@ -199,15 +199,15 @@
             <div class="field">
                 <xsl:if test="@title">
                     <label for="{@name}">
-                        <xsl:value-of select="concat(@title, ':')" />
+                        <xsl:value-of select="concat(@title, ':')"/>
                     </label><xsl:text> </xsl:text>
                 </xsl:if>
                 <a href="mailto:{.}" class="email"><xsl:value-of select="."/></a>
                 <input type="hidden" value="{.}">
                     <xsl:attribute name="name">
                         <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
                 </input>
@@ -225,15 +225,15 @@
         <div class="field">
             <xsl:if test="@title">
                 <label for="{@name}">
-                    <xsl:value-of select="concat(@title, ':')" />
+                    <xsl:value-of select="concat(@title, ':')"/>
                 </label><xsl:text> </xsl:text>
             </xsl:if>
             <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
             <input type="hidden" value="{.}">
                 <xsl:attribute name="name">
                     <xsl:choose>
-                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                        <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                        <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                        <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                     </xsl:choose>
                 </xsl:attribute>
             </input>
@@ -245,15 +245,15 @@
         <div class="field">
             <xsl:if test="@title">
                 <label for="{@name}">
-                    <xsl:value-of select="concat(@title, ':')" />
+                    <xsl:value-of select="concat(@title, ':')"/>
                 </label><xsl:text> </xsl:text>
             </xsl:if>
             <span class="read"><xsl:value-of select="options/option[@selected='selected']"/></span>
             <input type="hidden" value="{options/option[@selected='selected']/@id}">
                 <xsl:attribute name="name">
                     <xsl:choose>
-                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                        <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                        <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                        <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                     </xsl:choose>
                 </xsl:attribute>
             </input>
@@ -265,7 +265,7 @@
         <div class="field">
             <xsl:if test="@title">
                 <label for="{@name}">
-                    <xsl:value-of select="concat(@title, ':')" />
+                    <xsl:value-of select="concat(@title, ':')"/>
                 </label><xsl:text> </xsl:text>
             </xsl:if>
             <div class="read">
@@ -274,8 +274,8 @@
                         <input type="hidden" value="{@id}">
                             <xsl:attribute name="name">
                                 <xsl:choose>
-                                    <xsl:when test="../../@tableName"><xsl:value-of select="../../@tableName" />[<xsl:value-of select="../../@name" />]</xsl:when>
-                                    <xsl:otherwise><xsl:value-of select="../../@name" /></xsl:otherwise>
+                                    <xsl:when test="../../@tableName"><xsl:value-of select="../../@tableName"/>[<xsl:value-of select="../../@name"/>]</xsl:when>
+                                    <xsl:otherwise><xsl:value-of select="../../@name"/></xsl:otherwise>
                                 </xsl:choose>[]
                             </xsl:attribute>
                         </input>
@@ -288,7 +288,7 @@
     <xsl:template match="field[@type='image'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test="@title">
             <label for="{@name}">
-                <xsl:value-of select="concat(@title, ':')" />
+                <xsl:value-of select="concat(@title, ':')"/>
             </label><xsl:text> </xsl:text>
         </xsl:if>
         <xsl:if test=".!=''">
@@ -297,8 +297,8 @@
                 <input type="hidden" value="{.}">
                     <xsl:attribute name="name">
                         <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
                 </input>
@@ -315,15 +315,15 @@
             <div class="field">
                 <xsl:if test="@title">
                     <label for="{@name}">
-                        <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes" />
+                        <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes"/>
                     </label><xsl:text> </xsl:text>
                 </xsl:if>
-                <div class="read"><xsl:value-of select="." disable-output-escaping="yes" /></div>
+                <div class="read"><xsl:value-of select="." disable-output-escaping="yes"/></div>
                 <input type="hidden" value="{.}">
                     <xsl:attribute name="name">
                         <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
                 </input>
@@ -336,8 +336,8 @@
         <input type="hidden" id="{@name}" value="{.}" primary="primary">
             <xsl:attribute name="name">
                 <xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name" />]</xsl:when>
+                    <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                 </xsl:choose>
             </xsl:attribute>
         </input>
@@ -345,7 +345,7 @@
     
     <!-- для поля hidden -->
     <xsl:template match="field[@type='hidden'][ancestor::component[@type='form']]">
-        <xsl:apply-imports />
+        <xsl:apply-imports/>
     </xsl:template>
 
 </xsl:stylesheet>

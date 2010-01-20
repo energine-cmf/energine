@@ -143,3 +143,12 @@ form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
 	margin-left:10px;
 	font: 12px Tahoma, sans-serif;
 }
+
+.smap_segment {
+    font-size: 10px;
+    color: gray;
+}
+.smap_segment .current_segment {
+    font-size: 11px;
+    color: #000;
+}

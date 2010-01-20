@@ -9,28 +9,30 @@
         что позволяет использовать правило apply-imports в шаблонах более высокого уровня.        
     -->
     
-    <!-- form elements -->
+    <!-- переопределение fields для компонентов из модуля shop -->
     <!-- компонент ProductEditor -->
-    <xsl:template match="field[@name='product_segment'][ancestor::component[@class='ProductEditor']]">        
-        <span><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/></span><span id="smap_pid_segment"><xsl:value-of select="../field[@name='smap_id']/@segment"/></span>
-        <xsl:choose>
-            <xsl:when test="@mode='2'">
-                <input style="width: 150px;">
-                    <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-                </input>
-            </xsl:when>
-            <xsl:otherwise>
-                <span class="read" style="color: #000; font-size: 11px;"><xsl:value-of select="." disable-output-escaping="yes"/></span>
-                <input type="hidden" value="{.}">
-                    <xsl:attribute name="name">
-                        <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:attribute>
-                </input>
-            </xsl:otherwise>
-        </xsl:choose>/
+    <xsl:template match="field[@name='product_segment'][ancestor::component[@class='ProductEditor']]">
+        <div class="smap_segment">
+            <span><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/></span><span id="smap_pid_segment"><xsl:value-of select="../field[@name='smap_id']/@segment"/></span>
+            <xsl:choose>
+                <xsl:when test="@mode='2'">
+                    <input style="width: 150px;">
+                        <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+                    </input>
+                </xsl:when>
+                <xsl:otherwise>
+                    <span class="read current_segment"><xsl:value-of select="." disable-output-escaping="yes"/></span>
+                    <input type="hidden" value="{.}">
+                        <xsl:attribute name="name">
+                            <xsl:choose>
+                                <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:attribute>
+                    </input>
+                </xsl:otherwise>
+            </xsl:choose>/
+        </div>
     </xsl:template>
     
     <xsl:template match="field[@name='product_price'][ancestor::component[@class='ProductEditor'][@type='form']]">
@@ -59,7 +61,5 @@
         </select>
     </xsl:template>
     <!-- /компонент ProductEditor -->
-    
-    <!-- /form elements -->   
 
 </xsl:stylesheet>

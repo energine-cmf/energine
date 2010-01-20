@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet version="1.0" 
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet 
+    version="1.0" 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns="http://www.w3.org/1999/xhtml">
 
-    <xsl:variable name="DOC_PROPS" select="/document/properties/property" />
-    <xsl:variable name="COMPONENTS" select="//component[@name][@module]" />
-    <xsl:variable name="TRANSLATION" select="/document/translations/translation" />
-    <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']" />
-	<xsl:variable name="BASE" select="$DOC_PROPS[@name='base']" />
-	<xsl:variable name="LANG_ID" select="$DOC_PROPS[@name='lang']" />
-	<xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@abbr" />
+    <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
+    <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
+    <xsl:variable name="TRANSLATION" select="/document/translations/translation"/>
+    <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']"/>
+	<xsl:variable name="BASE" select="$DOC_PROPS[@name='base']"/>
+	<xsl:variable name="LANG_ID" select="$DOC_PROPS[@name='lang']"/>
+	<xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@abbr"/>
 	<xsl:variable name="NBSP"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></xsl:variable>
     
 
@@ -16,24 +18,23 @@
         <html>
         	<head>
                 <title><xsl:call-template name="build_title"/></title>
-        		<base href="{$BASE}" />
-                <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
-
+        		<base href="{$BASE}"/>
+                <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
         		<xsl:choose>
             		<xsl:when test="not($DOC_PROPS[@name='single'])">
-            		    <xsl:call-template name="stylesheets" />
+            		    <xsl:call-template name="stylesheets"/>
             		</xsl:when>
             		<xsl:otherwise>
-                        <link rel="stylesheet" type="text/css" href="stylesheets/singlemode.css" />
+                        <link rel="stylesheet" type="text/css" href="stylesheets/singlemode.css"/>
                         <script type="text/javascript">window.singleMode = true;</script>
             		</xsl:otherwise>
         		</xsl:choose>
-                <link rel="stylesheet" type="text/css" href="stylesheets/energine.css" />
+                <link rel="stylesheet" type="text/css" href="stylesheets/energine.css"/>
                 <xsl:if test="$DOC_PROPS[@name='google_verify']">
                     <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
                 </xsl:if>
-                <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}" />
-                <meta name="description" content="{$DOC_PROPS[@name='description']}" />
+                <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
+                <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
                 <xsl:choose>
                     <xsl:when test="document/@debug=1">
                         <script type="text/javascript" src="scripts/mootools-debug.js"></script>
@@ -72,14 +73,14 @@
                             </xsl:if>
         				</xsl:if>
                         <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
-                            <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])" />
-                            <xsl:value-of select="$objectID" /> = new <xsl:value-of select="@name" />($('<xsl:value-of select="$objectID" />'));
+                            <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
+                            <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>($('<xsl:value-of select="$objectID"/>'));
         				</xsl:for-each>
                         <xsl:if test="$COMPONENTS/javascript/object[@name='PageEditor']">
                             <xsl:if test="position()=1">
                                 ScriptLoader.load('PageEditor.js');
-                                <xsl:variable name="objectID" select="generate-id($COMPONENTS[javascript/object[@name='PageEditor']]/recordset)" />
-                                <xsl:value-of select="$objectID" /> = new PageEditor();
+                                <xsl:variable name="objectID" select="generate-id($COMPONENTS[javascript/object[@name='PageEditor']]/recordset)"/>
+                                <xsl:value-of select="$objectID"/> = new PageEditor();
                             </xsl:if>
                         </xsl:if>
 
@@ -94,7 +95,7 @@
                 <xsl:apply-templates select="document/translations"/>
         	</head>
         	<body>
-        		<xsl:apply-templates select="document" />
+        		<xsl:apply-templates select="document"/>
         	</body>
         </html>
     </xsl:template>
@@ -102,29 +103,29 @@
     <xsl:template match="document">
         <div id="container">
             <div id="header">
-                <img id="logo" src="images/energine_logo.png" width="246" height="64" alt="Energine" />
-                <xsl:apply-templates select="$COMPONENTS[@class='LangSwitcher']" />
+                <img id="logo" src="images/energine_logo.png" width="246" height="64" alt="Energine"/>
+                <xsl:apply-templates select="$COMPONENTS[@class='LangSwitcher']"/>
             </div>
-            <xsl:apply-templates select="$COMPONENTS[@class='BreadCrumbs']" />
-            <xsl:apply-templates select="$COMPONENTS[@class='MainMenu']" />
+            <xsl:apply-templates select="$COMPONENTS[@class='BreadCrumbs']"/>
+            <xsl:apply-templates select="$COMPONENTS[@class='MainMenu']"/>
             <div id="content">
-                <h1><xsl:value-of select="$DOC_PROPS[@name='title']" /></h1>
+                <h1><xsl:value-of select="$DOC_PROPS[@name='title']"/></h1>
                 <xsl:apply-templates select="content" />
             </div>
-            <xsl:apply-templates select="$COMPONENTS[@class='LoginForm']" />
+            <xsl:apply-templates select="$COMPONENTS[@class='LoginForm']"/>
             <div id="footer">
-                <xsl:apply-templates select="$COMPONENTS[@name='FooterTextBlock']" />
+                <xsl:apply-templates select="$COMPONENTS[@name='FooterTextBlock']"/>
             </div>
         </div>
     </xsl:template>
 
     <!-- Single mode document -->
     <xsl:template match="document[properties/property[@name='single']]">
-        <xsl:apply-templates select="//component" />
+        <xsl:apply-templates select="//component"/>
     </xsl:template>
 
     <xsl:template match="layout | content">
-        <xsl:apply-templates />
+        <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="/document/translations"/>

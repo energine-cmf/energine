@@ -13,8 +13,8 @@
     -->
     
     <!-- 
-        Form elements
-        В этой секции собраны правила вывода полей формы, которые создают сам html-элемент (input, select, etc.).
+        Default form elements
+        В этой секции собраны дефолтные правила вывода полей формы, которые создают сам html-элемент (input, select, etc.).
      -->
     <!-- строковое поле (string), или поле, к которому не нашлось шаблона -->
     <xsl:template match="field[ancestor::component[@type='form']]">
@@ -321,7 +321,7 @@
         </input>
     </xsl:template>
     
-    <!-- именованный шаблон с дефолтным набором атрибутов для элемента формы - не переписывать в другом месте! -->
+    <!-- именованный шаблон с дефолтным набором атрибутов для элемента формы - НЕ ПЕРЕПИСЫВАТЬ В ДРУГОМ МЕСТЕ! -->
     <xsl:template name="FORM_ELEMENT_ATTRIBUTES">
         <xsl:if test="not(@type='text') and not(@type='htmlblock')">
             <xsl:attribute name="type">text</xsl:attribute>
@@ -343,9 +343,23 @@
         <xsl:if test="@message">
             <xsl:attribute name="nrgn:message"  xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
-    </xsl:template>
+    </xsl:template>    
+    <!-- /default form elements -->
     
-    <!-- /form elements -->
+    <!-- переопределение fields для компонентов из модуля share -->    
+    <!-- компонент FileLibrary -->
+    <xsl:template match="field[@name='upl_path'][ancestor::component[@class='FileLibrary']]">
+        <div class="image">
+            <img id="{generate-id(.)}_preview"/>
+        </div>
+        <input type="file" id="{@name}" name="file" link="{generate-id(.)}" preview="{generate-id(.)}_preview" onchange="{generate-id(ancestor::recordset)}.upload(this);"/>
+        <input>
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">hidden</xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+        </input>
+    </xsl:template>
+    <!-- /компонент FileLibrary -->
     
     <!-- именованный шаблон для построения заголовка окна -->
     <xsl:template name="build_title">

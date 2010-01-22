@@ -47,117 +47,46 @@
                 </script>
             </div>
     	</div>
-    </xsl:template>
-<!--  
-<xsl:template match="field[ancestor::component[@class='ProductEditor'][@type='form']][@name='product_price']">
-<div class="field">
-	    <xsl:if test="not(@nullable)">
-		    <xsl:attribute name="class">field required</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="@title">
-		    <div class="name">
-    			<label for="{@name}">
-    				<xsl:value-of select="@title" disable-output-escaping="yes" />
-    			</label>
-			</div>
-		</xsl:if>
-		<div class="control">
-    		<xsl:element name="input">
-            <xsl:attribute name="type">text</xsl:attribute>
-            <xsl:attribute name="name"><xsl:choose>
-                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-                        <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                    </xsl:choose></xsl:attribute>
-            <xsl:if test="@length">
-                <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-            </xsl:if>
-            <xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-            <xsl:attribute name="style">width:50px;</xsl:attribute>
-            <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-            <xsl:if test="@pattern">
-                <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
-            </xsl:if>
-            <xsl:if test="@message">
-                <xsl:attribute name="nrgn:message" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
-            </xsl:if>
-        </xsl:element>
-        <xsl:variable name="CURRENCY_SELECTOR" select="../field[@name='curr_id']"></xsl:variable> 
-        <xsl:element name="select">
-        <xsl:attribute name="style">width:200px;</xsl:attribute>
-		<xsl:attribute name="name"><xsl:choose>
-					<xsl:when test="$CURRENCY_SELECTOR/@tableName"><xsl:value-of select="$CURRENCY_SELECTOR/@tableName" />[<xsl:value-of select="$CURRENCY_SELECTOR/@name" />]</xsl:when>
-					<xsl:otherwise><xsl:value-of select="$CURRENCY_SELECTOR/@name" /></xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-        <xsl:attribute name="id"><xsl:value-of select="$CURRENCY_SELECTOR/@name"/></xsl:attribute>
-		<xsl:if test="$CURRENCY_SELECTOR/@nullable='1'">
-			<xsl:element name="option"></xsl:element>
-		</xsl:if>
-		<xsl:for-each select="$CURRENCY_SELECTOR/options/option">
-			<xsl:element name="option">
-				<xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>
-				<xsl:if test="@selected">
-					<xsl:attribute name="selected">selected</xsl:attribute>
-				</xsl:if>
-				<xsl:value-of select="."/>
-			</xsl:element>
-		</xsl:for-each>
-	</xsl:element>
-        </div>
-	</div>    
-</xsl:template>
--->
-    <!-- 
+    </xsl:template>    
+    
+    <!-- поле ввода сегмента товара -->
     <xsl:template match="field[@name='product_segment'][ancestor::component[@class='ProductEditor']]">
     	<div class="field">
-    		    <xsl:attribute name="class">field required</xsl:attribute>
-    		    <div class="name">
-        			<label for="{@name}">
-        				<xsl:value-of select="@title" disable-output-escaping="yes" />
-        			</label>
-    			</div>
-    		<div class="control" style="font-size: 10px; color: gray;">
-                <span><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/></span><span id="smap_pid_segment"><xsl:value-of select="../field[@name='smap_id']/@segment"/></span>
-                <xsl:choose>
-                    <xsl:when test="@mode='2'">
-                        <xsl:element name="input">
-                            <xsl:attribute name="type">text</xsl:attribute>
-                            <xsl:attribute name="style">width:150px;</xsl:attribute>
-                            <xsl:attribute name="name"><xsl:choose>
-                                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+            <xsl:if test="not(@nullable)">
+                <xsl:attribute name="class">field required</xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@title">
+                <div class="name">
+                    <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes"/></label>
+                </div>
+            </xsl:if>
+    		<div class="control">
+                <div class="smap_segment">
+                    <span><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/></span><span id="smap_pid_segment"><xsl:value-of select="../field[@name='smap_id']/@segment"/></span>
+                    <xsl:choose>
+                        <xsl:when test="@mode='2'">
+                            <input style="width: 150px;">
+                                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+                            </input>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <span class="read current_segment"><xsl:value-of select="." disable-output-escaping="yes"/></span>
+                            <input type="hidden" value="{.}">
+                                <xsl:attribute name="name">
+                                    <xsl:choose>
+                                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
                                         <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                                    </xsl:choose></xsl:attribute>
-                            <xsl:if test="@length">
-                                <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-                            </xsl:if>
-                            <xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
-                            <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-                            <xsl:if test="@pattern">
-                                <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
-                            </xsl:if>
-                            <xsl:if test="@message">
-                                <xsl:attribute name="nrgn:message" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
-                            </xsl:if>
-                        </xsl:element>        
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <span class="read" style="color: #000; font-size: 11px;"><xsl:value-of select="." disable-output-escaping="yes" /></span>
-                        <xsl:element name="input">
-                            <xsl:attribute name="type">hidden</xsl:attribute>
-                            <xsl:attribute name="name"><xsl:choose>
-                                <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                            </xsl:choose></xsl:attribute>
-                            <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-                        </xsl:element>
-                    </xsl:otherwise>
-                </xsl:choose>/    
+                                    </xsl:choose>
+                                </xsl:attribute>
+                            </input>
+                        </xsl:otherwise>
+                    </xsl:choose>/
+                </div>
             </div>
     	</div>
     </xsl:template>
-     -->
      
-    <xsl:template match="field[@name='curr_id'][ancestor::component[@class='ProductEditor'][@type='form']]"/>
-    
+    <xsl:template match="field[@name='curr_id'][ancestor::component[@class='ProductEditor'][@type='form']]"/>    
     <!-- /компонент ProductEditor -->
 
 </xsl:stylesheet>

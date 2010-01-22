@@ -154,7 +154,7 @@
                         <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                     </xsl:choose></xsl:attribute>
                     <xsl:if test="@nullable='1'">
-                        <xsl:element name="option"></xsl:element>
+                        <option></option>
                     </xsl:if>
                     <xsl:for-each select="options/option[@tmpl_is_system='']">
                     	<xsl:sort select="@tmpl_order_num" order="ascending" data-type="number"/>

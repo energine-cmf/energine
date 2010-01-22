@@ -183,4 +183,6 @@
     <!-- Панель управления страницей обрабатывается в document.xslt  -->
     <xsl:template match="toolbar[parent::component[@class='PageToolBar']]"/>
 
+<!-- Те действия на которые нет прав  - прячем -->
+<xsl:template match="control[@mode=0]"></xsl:template>
 </xsl:stylesheet>

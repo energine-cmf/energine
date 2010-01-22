@@ -229,11 +229,6 @@ final class Document extends DBWorker {
         $langProperty ->setAttribute('real_abbr', Language::getInstance()->getAbbrByID($this->getLang()));
         $dom_documentProperties->appendChild($langProperty);
         
-        if (!empty($this->translations)){ 
-            $dom_translations = $this->doc->createElement('translations');
-            $dom_root->appendChild($dom_translations);
-        }
-        
         $dom_layout = $this->doc->createElement('layout');
         $dom_layout->setAttribute('file', $this->documentInfo['layoutFileName']);
         $dom_content = $this->doc->createElement('content');
@@ -284,6 +279,9 @@ final class Document extends DBWorker {
         }
         
             if (!empty($this->translations)) {
+            $dom_translations = $this->doc->createElement('translations');
+            $dom_root->appendChild($dom_translations);
+        
             foreach ($this->translations as $const => $componentName) {
                 $dom_translation = $this->doc->createElement('translation', $this->translate($const));
                 $dom_translation->setAttribute('const', $const);

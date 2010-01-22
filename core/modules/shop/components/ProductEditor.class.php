@@ -116,9 +116,6 @@ class ProductEditor extends Grid {
 
         
         if (in_array($this->getAction(), array('add', 'edit'))) {
-        	if($this->getAction() == 'add'){
-        	   $result->getFieldDescriptionByName('product_segment')->removeProperty('nullable');	
-        	}
         	$result->getFieldDescriptionByName('pt_id')->setProperty('tabName', $this->translate('TAB_PRODUCT_PARAMS'));
             $smapPIDFieldDescription = $result->getFieldDescriptionByName('smap_id');
             $smapPIDFieldDescription->setType(FieldDescription::FIELD_TYPE_STRING);

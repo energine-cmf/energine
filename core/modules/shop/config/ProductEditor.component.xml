@@ -13,7 +13,6 @@
 			<toolbar>
 				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
 				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
-				<control id="showParams" title="BTN_SHOW_PARAMS" type="button" onclick="showParams"/>
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
 				<control id="sep01" type="separator"/>
 				<control id="print" title="BTN_PRINT" type="button" onclick="print"/>
@@ -117,22 +116,6 @@
 				<pattern>/show-tree/[int]/delete/</pattern>
 				<pattern>/show-tree/save/</pattern>
 				<pattern>/show-tree/upload/</pattern>
-			</uri_patterns>
-		</method>
-		<method name="showParams" rights="2">
-			<uri_patterns>
-			      <pattern>/[int]/show-params/[any]/</pattern>
-			      <!--
-				<pattern>/[int]/show-params/</pattern>
-				<pattern>/[int]/show-params/[int]/</pattern>
-				<pattern>/[int]/show-params/get-data/</pattern>
-				<pattern>/[int]/show-params/get-data/page-[int]/</pattern>
-				<pattern>/[int]/show-params/add/</pattern>
-				<pattern>/[int]/show-params/[int]/edit/</pattern>
-				<pattern>/[int]/show-params/[int]/delete/</pattern>
-				<pattern>/[int]/show-params/save/</pattern>
-				<pattern>/[int]/show-params/upload/</pattern>
-				-->
 			</uri_patterns>
 		</method>
         <method name="cleanup" rights="3">

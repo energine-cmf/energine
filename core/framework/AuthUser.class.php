@@ -62,7 +62,7 @@ final class AuthUser extends User {
     public function __construct($id = false) {
         parent::__construct(false);
         //Если пришел флаг  - отлогиниться
-        if (isset($_POST['user']['logout']) || isset($_GET['user']['logout'])) {
+        if (isset($_POST['user']['logout']) || isset($_GET['logout'])) {
             //Очищаем информацию о пользователе
             $this->clearInfo();
             return;
@@ -165,12 +165,14 @@ final class AuthUser extends User {
      * @return boolean
      */
     public function clearInfo() {
-        if (isset($_SESSION['userID'])) {
-        	unset($_SESSION['userID']);
-        }
+    	$response = Response::getInstance();
+      	unset($_SESSION['userID']);
+      	if(isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])){
+      		$response->deleteCookie(UserSession::DEFAULT_SESSION_NAME, $this->getConfigValue('site.root'));
+      	}
         if (isset($_COOKIE['user'])) {
-            $response = Response::getInstance();
             $response->deleteCookie('user', $this->getConfigValue('site.root'));
         }
+        session_destroy();
     }
 }

@@ -297,9 +297,12 @@ class FieldDescription extends DBWorker {
                     $this->setMode($attrValue);
                     break;
                 default:
-                	if(in_array($attrName, array('title', 'message', 'tabName'))){
-                		$attrValue = $this->translate($attrValue);
-                	}
+                    if ($attrName == 'title') {
+                        $attrValue = $this->translate($attrValue);
+                    }
+                    elseif ($attrName == 'message') {
+                        $attrValue = $this->translate($attrValue);
+                    }
                     $this->setProperty($attrName, $attrValue);
             }
         }
@@ -826,7 +829,6 @@ class FieldDescription extends DBWorker {
         //Если уровень прав не указан, берем права документа
         $RORights = is_null($RORights)?$methodRights:$RORights;
         $FCRights = is_null($FCRights)?$methodRights:$FCRights;
-
 
         //Если права на чтение на контрол меньше чем права на метод, то контрол - невидим
         if($methodRights<$RORights) {

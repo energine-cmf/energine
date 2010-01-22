@@ -47,10 +47,10 @@ class Component extends DBWorker {
     protected $params;
 
     /**
-     * @access protected
+     * @access public
      * @var Document документ страницы
      */
-    protected $document;
+    public $document;
 
     /**
      * @access protected

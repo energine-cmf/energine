@@ -152,15 +152,15 @@ abstract class Control extends Object {
 
         $attr = $description->attributes();
 
-        $this->setAttribute('mode', FieldDescription::computeRights($this->getToolbar()->getComponent()->getMethodRights(), !is_null($attr['ro_rights'])?(int)$attr['ro_rights']:null, !is_null($attr['fc_rights'])?(int)$attr['fc_rights']:null));
-
-        if (isset($attr['ro_rights'])) {
-            unset($attr['ro_rights']);
-        }
-        if (isset($attr['fc_rights'])) {
-            unset($attr['fc_rights']);
-        }
-
+        $this->setAttribute('mode', 
+            FieldDescription::computeRights(
+                $this->getToolbar()->getComponent()->document->getRights(), 
+                !is_null($attr['ro_rights'])?(int)$attr['ro_rights']:null, 
+                !is_null($attr['fc_rights'])?(int)$attr['fc_rights']:null
+            )
+        );
+        unset($attr['ro_rights']);
+        unset($attr['fc_rights']);
         foreach ($attr as $key => $value) {
             if (isset($this->$key)) {
                 $this->$key = (string)$value;

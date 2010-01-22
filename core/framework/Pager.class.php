@@ -211,21 +211,21 @@ final class Pager extends Object {
         $endPage  = (($page = $this->currentPage + self::VISIBLE_PAGES_COUNT) > $this->numPages)?$this->numPages:$page;
 
         if ($startPage > 1) {
-            $control = new Link("page1", 1, false, 1);
+            $control = new Link("page1", 1, 1);
             $pager->attachControl($control);
         }
         if ($startPage > 2) {
-            $control = new Link("page2", 2, false, 2);
+            $control = new Link("page2", 2, 2);
             $pager->attachControl($control);
             if ($startPage != 2 + 1) {
-            	$control->setAttribute('start_break', 'start_break');
+            	$pager->attachControl(new Separator('sep_start'));
             }
         }
 
         for ($i = $startPage; $i <= $endPage; $i++) {
             $isCurrent = ($i == $this->currentPage);
 
-            $control = new Link("page$i", $i, false, $i);
+            $control = new Link("page$i", $i, $i);
             if ($isCurrent) {
             	$control->disable();
             }
@@ -233,14 +233,14 @@ final class Pager extends Object {
         }
 
         if ($endPage < $this->numPages - 1) {
-            $control = new Link("page".($this->numPages-1), $this->numPages-1, false, $this->numPages-1);
+            $control = new Link("page".($this->numPages-1), $this->numPages-1, $this->numPages-1);
             $pager->attachControl($control);
             if ($endPage != $this->numPages - 2) {
-            	$control->setAttribute('end_break', 'end_break');
+            	$pager->attachControl(new Separator('sep_end'));
             }
         }
         if ($endPage < $this->numPages) {
-        	$control = new Link("page$this->numPages", $this->numPages, false, $this->numPages);
+        	$control = new Link("page$this->numPages", $this->numPages, $this->numPages);
             $pager->attachControl($control);
         }
 

@@ -30,7 +30,7 @@
 				<field name="lang_id"/>
 				<field name="ps_id"/>
 				<field name="smap_id" key="0"/>
-				<field name="product_segment" pattern="/^[a-z0-9\-\_]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
+				<field name="product_segment" pattern="/^[-_a-z0-9]*$/" nullable="nullable" message="TXT_BAD_SEGMENT_FORMAT" />
 				<field name="product_code"/>
 				<field name="product_price" ro_rights="2" fc_rights="3"/>
 				<field name="curr_id"/>
@@ -43,7 +43,14 @@
 			</fields>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			    <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
+                    <options>
+                        <option id="close">BTN_CLOSE</option>
+                        <option id="go">BTN_ADD</option>
+                    </options>
+                </control>
+                <control id="sep1" type="separator" />
+				<control id="close" title="BTN_CANCEL" type="button" onclick="close"/>
 			</toolbar>
 		</method>
 		<method name="edit">

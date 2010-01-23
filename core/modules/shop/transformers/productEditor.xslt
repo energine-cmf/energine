@@ -72,12 +72,7 @@
                         <xsl:otherwise>
                             <span class="read current_segment"><xsl:value-of select="." disable-output-escaping="yes"/></span>
                             <input type="hidden" value="{.}">
-                                <xsl:attribute name="name">
-                                    <xsl:choose>
-                                        <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                                        <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
-                                    </xsl:choose>
-                                </xsl:attribute>
+                                <xsl:attribute name="name"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:attribute>
                             </input>
                         </xsl:otherwise>
                     </xsl:choose>/

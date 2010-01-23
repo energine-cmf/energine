@@ -59,7 +59,11 @@
                     <xsl:for-each select="set:distinct($FIELDS/@tabName)">
                         <xsl:variable name="TAB_NAME" select="."></xsl:variable>
                         <xsl:if test="count(set:distinct($FIELDS[not(@index='PRI')][@tabName=$TAB_NAME]))&gt;0">
-                            <li><a href="#{generate-id(.)}"><xsl:value-of select="$TAB_NAME" /></a></li>
+                            <li><a href="#{generate-id(.)}"><xsl:value-of select="$TAB_NAME" /></a>
+                                <xsl:if test="$FIELDS[@tabName=$TAB_NAME][1]/@language">
+                                    <span class="data">{ lang: <xsl:value-of select="$FIELDS[@tabName=$TAB_NAME][1]/@language" /> }</span>                                
+                                </xsl:if>
+                            </li>
                         </xsl:if>
                      </xsl:for-each>
                 </ul>

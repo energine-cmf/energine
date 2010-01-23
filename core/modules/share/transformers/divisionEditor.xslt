@@ -18,11 +18,11 @@
     <!-- вывод дерева разделов -->
     <xsl:template match="recordset[parent::component[@class='DivisionEditor'][@type='list']]">
         <xsl:variable name="TAB_ID" select="generate-id(record[1])"/>
-        <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"  single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+        <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"   lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <ul class="tabs">
                 <li>
                     <a href="#{$TAB_ID}"><xsl:value-of select="record[1]/field[1]/@tabName" /></a>
-                    <span class="data">{ lang: <xsl:value-of select="$LANG_ID" /> }</span>
+                    <!--<span class="data">{ lang: <xsl:value-of select="$LANG_ID" /> }</span>-->
                 </li>
             </ul>
             <div class="paneContainer">

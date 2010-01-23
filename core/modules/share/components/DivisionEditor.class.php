@@ -285,6 +285,7 @@ final class DivisionEditor extends Grid {
                 );
             }
             $this->getData()->addField($field);
+            $this->addTranslation('ERR_NO_DIV_NAME');
         }
                 
         if ($this->getAction() == 'edit') {

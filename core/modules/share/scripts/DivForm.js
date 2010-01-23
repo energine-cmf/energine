@@ -52,8 +52,10 @@ var DivForm = new Class({
                 }
             }
         });
+
+        
         if (!valid) {
-            alert('Ошибка: необходимо указать название раздела для всех не отключенных языков!');
+            alert(ERR_NO_DIV_NAME);
             return false;
         }
         

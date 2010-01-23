@@ -9,7 +9,7 @@ var DivManager = new Class({
 
         this.element = $(element);
         this.tabPane = new TabPane(this.element);
-        this.langId = this.tabPane.getCurrentTab().data.lang;
+        this.langId = this.element.getProperty('lang_id');
         new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
 		    new Element('li').setProperty('id', 'treeRoot').addClass('folder').adopt(
 		        new Element('a').setProperty('href', '#').setStyle('font-weight', 'bold').set('html', TXT_DIVISIONS)

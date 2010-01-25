@@ -267,6 +267,7 @@
     <xsl:template match="field[@type='text'][ancestor::component[@type='form']]">
         <textarea>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:value-of select="."/>
         </textarea>
     </xsl:template>    
 
@@ -274,6 +275,7 @@
     <xsl:template match="field[@type='htmlblock'][ancestor::component[@type='form']]">
         <textarea class="richEditor">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:value-of select="."/>
         </textarea>
     </xsl:template>
     
@@ -325,6 +327,7 @@
     <xsl:template name="FORM_ELEMENT_ATTRIBUTES">
         <xsl:if test="not(@type='text') and not(@type='htmlblock')">
             <xsl:attribute name="type">text</xsl:attribute>
+            <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
         </xsl:if>
         <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
         <xsl:attribute name="name">
@@ -333,7 +336,6 @@
                 <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
             </xsl:choose>
         </xsl:attribute>
-        <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
         <xsl:if test="@length and not(@type='htmlblock')">
             <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
         </xsl:if>

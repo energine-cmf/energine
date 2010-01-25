@@ -7,6 +7,54 @@ var Energine = {
 	supportContentEdit : Browser.Engine.trident || Browser.Engine.gecko || Browser.Engine.presto
 }
 
+Energine.request = {
+    request : function(uri, data, onSuccess, onUserError) {
+        var callbackFunction = function(response, responseText) {
+            /*try {
+                var response = JSON.decode(responseText);
+            } catch (e) {
+                var response = {
+                    result : false,
+                    title : 'Ошибка',
+                    errors : [{
+                        message : 'Произошла ошибка. Пожалуйста, обновите страницу.'
+                    }]
+                };
+            }*/
+            if (response.result) {
+                onSuccess(response);
+            } else {
+                var msg = (typeof response.title != 'undefined')
+                        ? response.title
+                        : 'Произошла ошибка:' + "\n";
+                response.errors.each(function(error) {
+                            if (typeof error.field != 'undefined') {
+                                msg += error.field + " :\t";
+                            }
+                            if (typeof error.message != 'undefined') {
+                                msg += error.message + "\n";
+                            } else {
+                                msg += error + "\n";
+                            }
+                        });
+                alert(msg);
+                if (onUserError) {
+                    onUserError(response);
+                }
+            }
+        };
+        new Request.JSON({
+            'url' : uri,
+            'method' : 'post',
+            'data' : data,
+            // 'noCache': true,
+            'evalResponse' : false,
+            'onComplete' : callbackFunction
+        }).send();
+
+    }
+
+};
 /*
  * Class: ScriptLoader Загружает указанные скрипты из директории scripts.
  */
@@ -75,55 +123,6 @@ Asset.css = function(source, properties) {
 	}
 	return false;
 }
-
-var ERequest = {
-	request : function(uri, data, onSuccess, onUserError) {
-		var callbackFunction = function(response, responseText) {
-			/*try {
-				var response = JSON.decode(responseText);
-			} catch (e) {
-				var response = {
-					result : false,
-					title : 'Ошибка',
-					errors : [{
-						message : 'Произошла ошибка. Пожалуйста, обновите страницу.'
-					}]
-				};
-			}*/
-			if (response.result) {
-				onSuccess(response);
-			} else {
-				var msg = (typeof response.title != 'undefined')
-						? response.title
-						: 'Произошла ошибка:' + "\n";
-				response.errors.each(function(error) {
-							if (typeof error.field != 'undefined') {
-								msg += error.field + " :\t";
-							}
-							if (typeof error.message != 'undefined') {
-								msg += error.message + "\n";
-							} else {
-								msg += error + "\n";
-							}
-						});
-				alert(msg);
-				if (onUserError) {
-					onUserError(response);
-				}
-			}
-		};
-		new Request.JSON({
-			'url' : uri,
-			'method' : 'post',
-			'data' : data,
-			// 'noCache': true,
-			'evalResponse' : false,
-			'onComplete' : callbackFunction
-		}).send();
-
-	}
-
-};
 
 var showhideField = function(obj, fieldName, fieldLanguage) {
 	var fieldLanguage = fieldLanguage || '';

@@ -1,7 +1,7 @@
 ScriptLoader.load('TabPane.js', 'Toolbar.js', 'ModalBox.js', 'TreeView.js');
 
 var DivManager = new Class({
-	Implements: ERequest,
+	Implements: Energine.request,
 
     initialize: function(element) {
         Asset.css('treeview.css');

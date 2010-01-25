@@ -8,7 +8,7 @@ ScriptLoader.load(
 );
 
 var GridManager = new Class({
-	Implements:ERequest,
+	Implements:Energine.request,
     initialize: function(element) {
         this.element = element;
         this.tabPane = new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });

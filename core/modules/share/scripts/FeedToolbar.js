@@ -2,7 +2,7 @@ ScriptLoader.load('Toolbar.js', 'ModalBox.js');
 
 var FeedToolbar = new Class({
 	Extends: Toolbar,
-	Implements: ERequest,
+	Implements: Energine.request,
     initialize: function(Container) {
         Asset.css('pagetoolbar.css');
         Asset.css('feedtoolbar.css');

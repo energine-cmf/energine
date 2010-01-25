@@ -2,7 +2,7 @@ ScriptLoader.load('TabPane.js', 'Toolbar.js', 'ModalBox.js', 'DirView.js');
 var FILE_COOKIE_NAME = 'lastPath';
 
 var FileManager = new Class({
-	Implements: ERequest,
+	Implements: Energine.request,
     currentFolder: false,
     initialized: false,
 

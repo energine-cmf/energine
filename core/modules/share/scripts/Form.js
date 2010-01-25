@@ -2,7 +2,7 @@ ScriptLoader.load('TabPane.js', 'Toolbar.js', 'Validator.js', 'RichEditor.js',
 		'Calendar.js',  'ModalBox.js');
 
 var Form = new Class({
-	Implements : [ERequest, FormCalendar],
+	Implements : [Energine.request, FormCalendar],
 	initialize : function(element) {
 		Asset.css('form.css');
 		this.componentElement = $(element);

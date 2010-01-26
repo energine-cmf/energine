@@ -58,7 +58,7 @@ final class Translit{
 	 * @static
 	 */
 
-	static public function transliterate($string, $wordSeparator = '', $convertToLowercase = false) {
+	static public function transliterate($string, $wordSeparator = '', $clean = false) {
 	    //$str = iconv($encIn, "utf-8", $str);
 
         for($i=0; $i<count(self::$cyr); $i++){
@@ -73,12 +73,14 @@ final class Translit{
 
         $string = trim($string);
 
-        if ($convertToLowercase) {
-        	$string = strtolower($string);
-        }
-
         if ($wordSeparator) {
         	$string = str_replace(' ', $wordSeparator, $string);
+            $string = preg_replace('/['.$wordSeparator.']{2,}/','', $string);
+        }
+	    
+        if ($clean) {
+            $string = strtolower($string);
+            $string = preg_replace('/[^-_a-z0-9]+/','', $string);
         }
 
         //return iconv("utf-8", $encOut, $str);

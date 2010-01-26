@@ -34,14 +34,6 @@ class ProductEditor extends Grid {
     private $externalTableName;
 
     /**
-     * Редактор параметров
-     *
-     * @var ParamValuesEditor
-     * @access private
-     */
-    private $paramValueEditor = false;
-
-    /**
      * Конструктор класса
      *
      * @param string $name
@@ -53,6 +45,7 @@ class ProductEditor extends Grid {
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('shop_products');
+        $this->setOrder(array('product_id' => QAL::DESC));
         $this->externalTableName = 'shop_product_external_properties';
     }
 
@@ -67,7 +60,7 @@ class ProductEditor extends Grid {
     final protected function getExternalTableName() {
         return $this->externalTableName;
     }
-
+    
     /**
 	 * Выводит дерево разделов
 	 *
@@ -93,9 +86,6 @@ class ProductEditor extends Grid {
         if ($this->getAction() == 'showTree') {
             $result = $this->divEditor->build();
         }
-        elseif ($this->getAction() == 'showParams') {
-            $result = $this->paramValueEditor->build();
-        }
         else {
             $result = parent::build();
         }
@@ -116,6 +106,8 @@ class ProductEditor extends Grid {
 
         
         if (in_array($this->getAction(), array('add', 'edit'))) {
+        	$this->addTranslation('FIELD_PP_NAME');
+        	$this->addTranslation('FIELD_PPV_VALUE');
         	$result->getFieldDescriptionByName('pt_id')->setProperty('tabName', $this->translate('TAB_PRODUCT_PARAMS'));
             $smapPIDFieldDescription = $result->getFieldDescriptionByName('smap_id');
             $smapPIDFieldDescription->setType(FieldDescription::FIELD_TYPE_STRING);
@@ -133,7 +125,8 @@ class ProductEditor extends Grid {
                 $currencyOptions = $this->dbh->selectRequest(
                 'SELECT c.curr_id, curr_name FROM shop_currency c '.
                 'LEFT JOIN shop_currency_translation ct ON ct.curr_id = c.curr_id '.
-                'WHERE ct.lang_id = %s', Language::getInstance()->getCurrent()
+                'WHERE ct.lang_id = %s '.
+                'ORDER by curr_order_num', Language::getInstance()->getCurrent()
                 );
                 $productCurrFieldDescription->loadAvailableValues($currencyOptions, 'curr_id', 'curr_name');
             }
@@ -210,27 +203,37 @@ class ProductEditor extends Grid {
         parent::prepare();
         if ($this->getAction() == 'edit') {
             
-        	$field = $this->getData()->getFieldByName('smap_id');
+        	$field = $this->getData()->getFieldByName('product_id');
             $this->addAttFilesField(
-                'share_sitemap_uploads',
+                'shop_product_uploads',
                 $this->dbh->selectRequest('
                     SELECT files.upl_id, upl_path, upl_name
-                    FROM `share_product_uploads` p2f
+                    FROM `shop_product_uploads` p2f
                     LEFT JOIN `share_uploads` files ON p2f.upl_id=files.upl_id
                     WHERE product_id = %s
                 ', $this->getData()->getFieldByName('product_id')->getRowData(0))
             );
         	
-            $res = $this->dbh->select('share_sitemap_translation', array('smap_name'), array('smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang()));
-            if (!empty($res)) {
-                for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
-                    $field->setRowProperty($i, 'data_name', simplifyDBResult($res, 'smap_name', true));
-                }
+            $field = $this->getData()->getFieldByName('smap_id');
+            $smapSegment = '';
+            if($field->getRowData(0) !== null) {
+                $smapSegment = Sitemap::getInstance()->getURLByID($field->getRowData(0));
+            }
+            $smapName = simplifyDBResult($this->dbh->select('share_sitemap_translation', array('smap_name'), array('smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang())), 'smap_name', true);
+
+            for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
+                $field->setRowProperty($i, 'data_name', $smapName);
+                $field->setRowProperty($i, 'segment', $smapSegment);
             }
         }
         elseif($this->getAction() == 'add'){
-        	$this->addAttFilesField('share_sitemap_uploads');
+        	$this->addAttFilesField('shop_product_uploads');
         }
+        /*
+        if(in_array($this->getAction(), array('add', 'edit'))){
+            $fd = $this->getDataDescription()->getFieldDescriptionByName('producer_id');
+            inspect($fd->getAvailableValues());
+        }*/   
     }
 
     /**
@@ -241,6 +244,9 @@ class ProductEditor extends Grid {
      */
 
     protected function saveData() {
+    	if(($this->getPreviousAction() == 'add') && (!isset($_POST[$this->getTableName()]['product_segment']) || empty($_POST[$this->getTableName()]['product_segment'])) ){
+    	   	$_POST[$this->getTableName()]['product_segment'] = Translit::transliterate($_POST[$this->getTranslationTableName()][Language::getInstance()->getDefault()]['product_name'], '-', true);
+    	}
         $result = parent::saveData();
 
         //Если пустой фильтр  - значит у нас метод вставки
@@ -250,31 +256,8 @@ class ProductEditor extends Grid {
 
         }
 
-        /*
-        $res = $this->dbh->select($this->getTableName(), array('product_photo_img', 'product_code'), $filter);
-        if (!is_array($res) || empty($res)) {
-            throw new SystemException('ERR_BAD_DATA', SystemException::ERR_CRITICAL);
-        }
-        */
-        
-        //Получили имя файла для исходного изображения
-        //$sourceFileName = simplifyDBResult($res, 'product_photo_img', true);
-        
-        //Создаем thumbnail в том случае если не указан вывод маленькой фотки в форме
-        /*
-        if (
-            !$this->saver->getDataDescription()->getFieldDescriptionByName('product_thumb_img')
-            && !empty($sourceFileName)
-        ) {
-            $this->generateThumbnail($sourceFileName, 'product_thumb_img', 
-                $this->getConfigValue('shop.thumbnail.width'), 
-                $this->getConfigValue('shop.thumbnail.height'), $filter, true);
-        }
-*/
-
         //Сохраняем данные в таблице дополнительных свойств
-
-        if($productCode = simplifyDBResult($res, 'product_code', true)) {
+            $productCode = $_POST[$this->getTableName()]['product_code'];
             //Удаляем все записи с таким кодом продукта
             $this->dbh->modify(QAL::DELETE, $this->getExternalTableName(), null, array('product_code' => $productCode));
 
@@ -283,26 +266,38 @@ class ProductEditor extends Grid {
             $currency = (isset($_POST[$this->getExternalTableName()]['curr_id']))?$_POST[$this->getExternalTableName()]['curr_id']:0;
             //Вставляем записи
             $res = $this->dbh->modify(QAL::INSERT , $this->getExternalTableName(), array('product_code' => $productCode, 'product_price' => $price, 'product_count' => $count, 'curr_id'=> $currency));
+        $productID = ($this->saver->getMode() == QAL::INSERT)?$this->saver->getResult():$_POST[$this->getTableName()]['product_id'];
+
+        $productParams = array_filter($_POST['shop_product_param_values']);
+        if(!empty($productParams)){
+            $this->dbh->modify(
+                QAL::DELETE,
+                'shop_product_param_values', 
+                null, 
+                array('product_id'=>$productID)
+            );
+            foreach($productParams as $ppID => $ppValue){
+            	$this->dbh->modify(
+            	   QAL::INSERT,
+            	   'shop_product_param_values', 
+            	   array(
+            	       'product_id' => $productID,
+            	       'pp_id' => $ppID,
+            	       'pp_value' => $ppValue
+            	   )
+            	);
+            }	
         }
-
-        //Для режима вставки в таблицу значений параметров для всех языков добавляем пустые значения
-        if ($this->saver->getMode() == QAL::INSERT) {
-            $productID = $this->saver->getResult();
-
-            $res = $this->dbh->select('shop_products', 'pt_id' , array('product_id' => $productID));
-            $ptID = simplifyDBResult($res, 'pt_id', true);
-            $res = $this->dbh->select('shop_product_params', 'pp_id', array('pt_id'=>$ptID));
-            if (is_array($res)) {
-                $langAbbr = array_keys(Language::getInstance()->getLanguages());
-                foreach ($res as $paramInfo) {
-                    $ppID = $paramInfo['pp_id'];
-                    $ppvID = $this->dbh->modify(QAL::INSERT, 'shop_product_param_values', array('product_id' => $productID, 'pp_id' => $ppID));
-                    foreach ($langAbbr as $langID) {
-                        $this->dbh->modify(QAL::INSERT, 'shop_product_param_values_translation', array('ppv_id'=>$ppvID, 'lang_id'=>$langID, 'ppv_value'=>QAL::EMPTY_STRING));
-                    }
-                }
+        
+    //записываем данные в таблицу share_sitemap_uploads
+        if(isset($_POST['uploads']['upl_id'])){
+            foreach ($_POST['uploads']['upl_id'] as $uplID){
+                $this->dbh->modify(QAL::INSERT, 'shop_product_uploads', array('product_id' => $productID, 'upl_id' => $uplID));
             }
         }
+       
+        
+        
         return $result;
     }
 
@@ -313,12 +308,22 @@ class ProductEditor extends Grid {
      * @access protected
      */
 
-    protected function showParams() {
-        $productID = $this->getActionParams();
-        $productID = $productID[0];
-        $this->request->setPathOffset($this->request->getPathOffset() + 2);
-        $this->paramValueEditor = $this->document->componentManager->createComponent('paramValuesEditor', 'shop', 'ParamValuesEditor', array('productID'=>$productID));
-        //$this->paramValueEditor->getAction();
-        $this->paramValueEditor->run();
+    protected function loadParams() {
+    	//inspect($_POST);
+        $typeId = (int)$_POST['pt_id'];
+        $productId = (int)$_POST['product_id'];
+        
+        $data = $this->dbh->selectRequest('
+        SELECT p.pp_id, pp_type, pp_name, pp_value FROM `shop_product_params` p
+            LEFT JOIN shop_product_params_translation pt On pt.pp_id = p.pp_id
+            LEFT JOIN shop_product_param_values pv ON pv.pp_id = p.pp_id and product_id = %s
+            WHERE pt_id=%s and pt.lang_id =%s
+        ', $productId, $typeId, Language::getInstance()->getDefault());
+        
+        $JSONResponse = array('result' => true, 'data' => $data);
+        
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write(json_encode($JSONResponse));
+        $this->response->commit();    
     }
 }

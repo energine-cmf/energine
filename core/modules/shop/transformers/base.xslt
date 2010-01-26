@@ -3,6 +3,23 @@
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  
     xmlns="http://www.w3.org/1999/xhtml">
+    
+    <xsl:template match="field[ancestor::component[@class='ProductEditor'][@type='form'][@exttype='grid']][@name='pt_id']">
+        <xsl:apply-imports/>
+        <div class="page_rights" style="padding:10px 10px 10px 0px;">
+          <table width="100%" id="product_params">
+            <thead>
+              <tr>
+                <td style="text-align: center;"> </td>
+                <td style="text-align: center;"><xsl:value-of select="$TRANSLATION[@const='FIELD_PP_NAME']"/></td>
+                <td style="text-align: center;"><xsl:value-of select="$TRANSLATION[@const='FIELD_PPV_VALUE']"/></td>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+    </xsl:template>
 
     <!--
         В этом файле собраны базовые правила обработки с низким приоритетом. Файл импортируется в include.xslt,

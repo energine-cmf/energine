@@ -14,6 +14,9 @@
 				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
 				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+				<control id="sepo01" type="separator"/>
+                <control id="up" title="BTN_UP" type="button" onclick="up"/>
+                <control id="down" title="BTN_DOWN" type="button" onclick="down"/>
 			</toolbar>
 		</method>
 		<method name="add">
@@ -58,7 +61,7 @@
 		<method name="getRawData"  rights="2">
 			<uri_patterns>
 		         <pattern>/get-data/</pattern>
-<pattern>/get-data/page-[int]/</pattern>
+                 <pattern>/get-data/page-[int]/</pattern>
 		     </uri_patterns>
 		</method>
 		<method name="imageManager" rights="2">
@@ -78,5 +81,15 @@
 				<pattern>/imagelibrary/upload/</pattern>
 			</uri_patterns>
 		</method>
+        <method name="up" rights="3">
+            <uri_patterns>
+                <pattern>/[int]/up/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="down" rights="3">
+            <uri_patterns>
+                <pattern>/[int]/down/</pattern>
+            </uri_patterns>
+        </method>		
 	</methods>
 </configuration>

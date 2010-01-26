@@ -3,7 +3,6 @@
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
-    
     <!-- компонент ProductEditor -->
     <!-- этот филд скорее всего будет удален - пока остается как есть -->
     <xsl:template match="field[ancestor::component[@class='ProductEditor'][@type='form'][@exttype='grid']][@name='smap_id']">
@@ -38,13 +37,7 @@
     					<xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
     				</xsl:choose></xsl:attribute>            	
                 </xsl:element>
-        		<button type="button" id="{generate-id(.)}" hidden_field="h_{$FIELD_ID}" span_field="s_{$FIELD_ID}">...</button>
-                <script type="text/javascript">
-                $('<xsl:value-of select="generate-id(.)"/>').onclick = function(event){
-                    var event = new Event(event);
-                    <xsl:value-of select="generate-id(../..)"/>.showTree(event.target);
-                }
-                </script>
+        		<button type="button" id="sitemap_selector" hidden_field="h_{$FIELD_ID}" span_field="s_{$FIELD_ID}">...</button>
             </div>
     	</div>
     </xsl:template>    

@@ -5,9 +5,17 @@ var ProductManager = new Class({
     initialize: function(element){
 		this.parent(element);
 	},
-	showParams: function () {
+    add: function() {
         ModalBox.open({
-            url: this.element.getProperty('single_template') + '/' + this.grid.getSelectedRecordKey() + '/show-params/'
+            url: this.singlePath + 'add/',
+            onClose: function(returnValue){
+                if(returnValue == 'add'){
+                    this.add();   
+                }
+                else{
+                    this.reloadGrid();
+                }
+            }.bind(this)
         });
-	}
+    }
 });

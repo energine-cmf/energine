@@ -22,14 +22,9 @@
 			<javascript>
 				<object name="Form"/>
 			</javascript>
-			<fields>
-				<field name="producer_id"/>
-				<field name="producer_name"/>
-				<field name="producer_segment"  pattern="/^[a-z0-9\-\_]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
-			</fields>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+				<control id="list" title="BTN_CANCEL" type="button" onclick="close"/>
 			</toolbar>
 		</method>
 		<method name="edit">
@@ -39,14 +34,9 @@
 			<javascript>
 				<object name="Form"/>
 			</javascript>
-			<fields>
-				<field name="producer_id"/>
-				<field name="producer_name"/>
-				<field name="producer_segment"  pattern="/^[a-z0-9\-\_]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
-			</fields>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+				<control id="list" title="BTN_CANCEL" type="button" onclick="close"/>
 			</toolbar>
 		</method>
 		<method name="save" rights="2">

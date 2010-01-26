@@ -445,8 +445,8 @@ final class DivisionEditor extends Grid {
        	$this->dbh->modify(QAL::DELETE, 'share_sitemap_uploads', null, array('smap_id' => $smapID));
 
        	//записываем данные в таблицу share_sitemap_uploads
-        if(isset($_POST['share_sitemap_uploads']['upl_id'])){
-        	foreach ($_POST['share_sitemap_uploads']['upl_id'] as $uplID){
+        if(isset($_POST['uploads']['upl_id'])){
+        	foreach ($_POST['uploads']['upl_id'] as $uplID){
         		$this->dbh->modify(QAL::INSERT, 'share_sitemap_uploads', array('smap_id' => $smapID, 'upl_id' => $uplID));
         	}
         }

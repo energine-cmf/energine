@@ -96,7 +96,7 @@
     					<xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
     				</xsl:choose></xsl:attribute>
                 </input>
-        		<button type="button" onclick="{generate-id(../..)}.showTree(this);" hidden_field="h_{$FIELD_ID}" span_field="s_{$FIELD_ID}">...</button>
+        		<button type="button" id="sitemap_selector" hidden_field="h_{$FIELD_ID}" span_field="s_{$FIELD_ID}">...</button>
             </div>
     	</div>
     </xsl:template>

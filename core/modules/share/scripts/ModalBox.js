@@ -12,7 +12,6 @@ var ModalBox = window.top.ModalBox || {
         this.eventPosition = this.position.bind(this);
         this.initialized = true;
     },
-
     open: function(options) {
 		var box = new Element('div').addClass('modalbox').injectInside(document.body);
 		box.options = {
@@ -59,6 +58,7 @@ var ModalBox = window.top.ModalBox || {
             this.setup(true);
             this.fx.set('opacity', 0.5);
         }
+        
     },
 
     getCurrent: function() {
@@ -78,14 +78,13 @@ var ModalBox = window.top.ModalBox || {
             return;
         }
         var box = this.boxes.pop();
-        box.dispose().options.onClose(box.returnValue);
-
+        box.options.onClose(box.returnValue);
 		if (!this.boxes.length) {
 			this.fx.chain(
 				this.setup.pass(false, this)
 			).start('opacity', 0);
 		}
-
+        box.destroy();
     },
 
     keyboardListener: function(event) {

@@ -4,7 +4,7 @@ var DivForm = new Class({
     Implements: [Form.Label, Form.Attachments],
 	initialize: function(element){
 		this.parent(element);
-        this.obj = null;
+        this.prepareLabel('list/')
 	},
     attachToolbar : function(toolbar) {
         this.parent(toolbar);
@@ -16,23 +16,6 @@ var DivForm = new Class({
             }
         }
     },
-    showTree: function(obj) {
-        this.obj = obj;
-        ModalBox.open({
-            url: this.singlePath+'/list',
-            onClose: this.setLabel.bind(this),
-            extraData: { disabledNode: this.form.getElement('#smap_id').value } // restrictSubtree
-        });
-    },
-    /*showInternalRedirect: function(obj) {
-        this.obj = obj;
-        ModalBox.open({
-            url: this.singlePath+'/list',
-            onClose: function(result){
-				console.log(result);
-            }.bind(this)
-        });
-    },*/
     save: function() {
         this.richEditors.each(function(editor) { editor.onSaveForm(); });
         if (!this.validator.validate()) {

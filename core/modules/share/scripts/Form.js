@@ -186,7 +186,7 @@ Form.Attachments = {
                                 }.bind(this)
                             }
                         }).set('text', delete_button_text),
-                        new Element('input', {'name': 'share_sitemap_uploads[upl_id][]', 'type': 'hidden', 'value': data.upl_id})
+                        new Element('input', {'name': 'uploads[upl_id][]', 'type': 'hidden', 'value': data.upl_id})
                         ]),
                         new Element('td').set('html', data.upl_name),
                         new Element('td').adopt(
@@ -227,6 +227,37 @@ Form.Label = {
             $(this.obj.getProperty('span_field')).innerHTML = name;
             if (segmentObject = $('smap_pid_segment'))
                 segmentObject.innerHTML = segment;
+            Cookie.write(
+                'last_selected_smap', 
+                JSON.encode({'id':id, 'name': name, 'segment': segment}),
+                {path:new URI(Energine.base).get('directory'), duration:1}
+            );    
+        }
+    },
+    prepareLabel: function(treeURL, restore){
+        if(!arguments[1]){
+            restore = false;
+        }
+        this.obj = $('sitemap_selector');
+        this.obj.addEvent('click', this.showTree.pass(treeURL, this));
+        if(restore){
+            this.restoreLabel();    
+        }
+    },
+    showTree : function (url) {
+        ModalBox.open({
+            url: this.singlePath + url,
+            onClose: this.setLabel.bind(this)
+        });
+    },
+    restoreLabel: function(){
+        var savedData = Cookie.read('last_selected_smap');
+        if(this.obj && savedData){
+            savedData = JSON.decode(savedData);
+            $(this.obj.getProperty('hidden_field')).value = savedData.id;
+            $(this.obj.getProperty('span_field')).innerHTML = savedData.name;
+            if (segmentObject = $('smap_pid_segment'))
+                segmentObject.innerHTML = savedData.segment;
         }
     }
 }

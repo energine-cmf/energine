@@ -10,17 +10,6 @@ var Energine = {
 Energine.request = {
     request : function(uri, data, onSuccess, onUserError) {
         var callbackFunction = function(response, responseText) {
-            /*try {
-                var response = JSON.decode(responseText);
-            } catch (e) {
-                var response = {
-                    result : false,
-                    title : 'Ошибка',
-                    errors : [{
-                        message : 'Произошла ошибка. Пожалуйста, обновите страницу.'
-                    }]
-                };
-            }*/
             if (response.result) {
                 onSuccess(response);
             } else {

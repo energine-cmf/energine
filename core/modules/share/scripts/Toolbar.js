@@ -268,7 +268,7 @@ Toolbar.Select = new Class({
             this.disable();
         }
 
-		if(Energine.supportContentEdit)
+//		if(Energine.supportContentEdit)
 			$H(this.options).each(function(value, key){
 				control.select.adopt(new Element('option').setProperties({'value': key}).set('text', value));
 			});

@@ -67,9 +67,11 @@
     </xsl:template>
 
     <xsl:template match="recordset[parent::component[@class='LangSwitcher']]">
-        <ul class="lang_switcher">
-            <xsl:apply-templates/>
-        </ul>
+        <xsl:if test="count(record)&gt;1">
+            <ul class="lang_switcher">
+                <xsl:apply-templates/>
+            </ul>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="record[ancestor::component[@class='LangSwitcher']]">

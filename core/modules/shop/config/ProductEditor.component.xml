@@ -115,16 +115,10 @@
                 <pattern>/file-library/[any]/</pattern>
             </uri_patterns>
         </method>
-		<method name="showTree" rights="2">
+		<method name="showTree" rights="3">
 			<uri_patterns>
-				<pattern>/show-tree/</pattern>
-				<pattern>/show-tree/[int]/</pattern>
-				<pattern>/show-tree/get-data/</pattern>
-				<pattern>/show-tree/add/</pattern>
-				<pattern>/show-tree/[int]/edit/</pattern>
-				<pattern>/show-tree/[int]/delete/</pattern>
-				<pattern>/show-tree/save/</pattern>
-				<pattern>/show-tree/upload/</pattern>
+    			<pattern>/show-tree/</pattern>
+				<pattern>/show-tree/[any]/</pattern>
 			</uri_patterns>
 		</method>
         <method name="cleanup" rights="3">

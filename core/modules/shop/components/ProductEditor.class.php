@@ -70,8 +70,17 @@ class ProductEditor extends Grid {
 
     protected function showTree() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $_POST['selectorID'] = Sitemap::getInstance()->getIDByURI(array('shop'));
-        $this->divEditor = $this->document->componentManager->createComponent('divEditor', 'share', 'DivisionEditor', array('action' => 'selector'));
+        
+        //$_POST['selectorID'] = Sitemap::getInstance()->getIDByURI(array('shop'));
+        $this->divEditor = $this->document->componentManager->createComponent(
+            'divEditor', 
+            'share', 
+            'DivisionEditor', 
+            array(
+                'action' => 'selector',
+                'configFilename' => 'core/modules/shop/config/ProductDivisionEditor.component.xml'
+            )
+        );
         $this->divEditor->run();
     }
 

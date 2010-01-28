@@ -7,10 +7,12 @@ var ProductForm = new Class({
 		this.parent(element);
         this.prepareLabel('show-tree/', !($('product_id').get('value')));
         this.productTypeSelector = $('pt_id');
-        //this.paramsRepository = new Hash();
+
         var loadParamsFunc = function(){
+            var f = this.productTypeSelector.getSelected();
+            if(f.length)
                 this.loadParams(
-                    this.productTypeSelector.getSelected().getLast().get('value'),
+                    f.getLast().get('value'),
                     $('product_id').get('value')
                 );
         }.bind(this);
@@ -21,16 +23,6 @@ var ProductForm = new Class({
             loadParamsFunc
         );
 	},
-    attachToolbar : function(toolbar) {
-        this.parent(toolbar);
-        var afterSaveActionSelect; 
-        if(afterSaveActionSelect = this.toolbar.getControlById('after_save_action')){
-            var savedActionState = Cookie.read('after_product_add_default_action');
-            if(savedActionState){
-                afterSaveActionSelect.setSelected(savedActionState);
-            }
-        }
-    },
     loadParams: function(productTypeId, productId){
         var data = 'pt_id='+productTypeId;
         if(!productId){
@@ -43,39 +35,6 @@ var ProductForm = new Class({
             this.buildParamsTable.bind(this)       
         );
     },
-    save : function() {
-        this.richEditors.each(function(editor) {
-                    editor.onSaveForm();
-                });
-        
-        if (!this.validator.validate()) {
-            return false;
-        }
-
-        this.request(
-            this.singlePath + 'save/', 
-            this.form.toQueryString(),
-                function(response) {
-                    if (response.mode == 'insert') {
-                        var nextActionSelector;
-                        if(nextActionSelector = this.toolbar.getControlById('after_save_action')){
-                            Cookie.write('after_product_add_default_action', nextActionSelector.getValue(), {path:new URI(Energine.base).get('directory'), duration:1});
-                            switch (nextActionSelector.getValue()){
-                                case 'add':
-                                    ModalBox.setReturnValue('add'); 
-                                    break;
-                                case 'close':
-                                    ModalBox.setReturnValue(true); 
-                                    break;
-                            }
-                            this.close();
-                        }                    
-                    }
-                    else {
-                        ModalBox.setReturnValue(true); this.close();
-                    }
-                }.bind(this));
-    },    
     buildParamsTable: function(response){
         var data = response.data;
         var body = this.componentElement.getElement('#product_params tbody');

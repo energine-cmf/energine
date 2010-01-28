@@ -296,7 +296,9 @@ final class Sitemap extends DBWorker {
 			if (!is_array($res)) {
 				break;
 			}
-
+            /**
+             * @todo Тут вот херня
+             */
 			$request->setPathOffset($i);
 			list($res) = $res;
 			$id = $res['smap_id'];

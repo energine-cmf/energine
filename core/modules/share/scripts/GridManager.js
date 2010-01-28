@@ -143,7 +143,7 @@ var GridManager = new Class({
                 if(returnValue == 'add'){
                     this.add();   
                 }
-                else{
+                else if(returnValue){
                     this.reloadGrid();
                 }
             }.bind(this)

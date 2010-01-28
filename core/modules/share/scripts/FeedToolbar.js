@@ -40,7 +40,14 @@ var FeedToolbar = new Class({
 	add: function() {
 		ModalBox.open({
             url: this.singlePath + 'add/',
-            onClose: this._reload.bind(this)
+            onClose: function(returnValue){
+                if(returnValue == 'add'){
+                    this.add();   
+                }
+                else if(returnValue){
+                    this._reload(true);
+                }
+            }.bind(this)
         });
 	},
 	edit: function() {

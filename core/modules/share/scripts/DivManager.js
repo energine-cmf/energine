@@ -107,8 +107,16 @@ var DivManager = new Class({
 	add: function() {
 		var nodeId = this.tree.getSelectedNode() != this.treeRoot ? this.tree.getSelectedNode().getId() : '';
         ModalBox.open({
-            url: this.singlePath+'add/'+nodeId,
-            onClose: this.reload.bind(this),
+            url: this.singlePath+'add/'+nodeId+'/',
+            onClose: function(returnValue){
+                
+                if(returnValue == 'add'){
+                    this.add();   
+                }
+                else if(returnValue){
+                    this.reload(true);
+                }
+            }.bind(this),
             extraData: this.tree.getSelectedNode()
         });
 	},

@@ -39,6 +39,13 @@ var Form = new Class({
 	attachToolbar : function(toolbar) {
 		this.toolbar = toolbar;
 		this.componentElement.adopt(this.toolbar.getElement());
+        var afterSaveActionSelect; 
+        if(afterSaveActionSelect = this.toolbar.getControlById('after_save_action')){
+            var savedActionState = Cookie.read('after_add_default_action');
+            if(savedActionState){
+                afterSaveActionSelect.setSelected(savedActionState);
+            }
+        }        
 	},
     uploadVideo: function(fileField){
         var fileField = $(fileField);
@@ -132,9 +139,25 @@ var Form = new Class({
 			return false;
 		}
 		this.request(this.singlePath + 'save', this.form.toQueryString(),
-				function() {
-					ModalBox.setReturnValue(true);
-					this.close();
+				function(response) {
+					if (response && (response.mode == 'insert')) {
+                        var nextActionSelector;
+                        if(nextActionSelector = this.toolbar.getControlById('after_save_action')){
+                            Cookie.write('after_add_default_action', nextActionSelector.getValue(), {path:new URI(Energine.base).get('directory'), duration:1});
+                            ModalBox.setReturnValue(true); 
+                            switch (nextActionSelector.getValue()){
+                                case 'add':
+                                    ModalBox.setReturnValue('add'); 
+                                    break;
+                                case 'close':
+                                    break;
+                            }
+                            this.close();
+                        }                    
+                    }
+                    else {
+                        ModalBox.setReturnValue(true); this.close();
+                    }
 				}.bind(this));
 	},
 

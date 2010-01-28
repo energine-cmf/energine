@@ -26,7 +26,14 @@
 			</javascript>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+                <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
+                    <options>
+                        <option id="close">BTN_CLOSE</option>
+                        <option id="add">BTN_ADD</option>
+                    </options>
+                </control>
+                <control id="sep1" type="separator" />
+				<control id="list" title="BTN_CANCEL" type="button" onclick="close"/>
 			</toolbar>
 		</method>
 		<method name="edit">

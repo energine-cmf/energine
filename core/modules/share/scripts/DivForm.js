@@ -6,16 +6,6 @@ var DivForm = new Class({
 		this.parent(element);
         this.prepareLabel('list/')
 	},
-    attachToolbar : function(toolbar) {
-        this.parent(toolbar);
-        var afterSaveActionSelect; 
-        if(afterSaveActionSelect = this.toolbar.getControlById('after_save_action')){
-            var savedActionState = Cookie.read('after_add_default_action');
-            if(savedActionState){
-                afterSaveActionSelect.setSelected(savedActionState);
-            }
-        }
-    },
     save: function() {
         this.richEditors.each(function(editor) { editor.onSaveForm(); });
         if (!this.validator.validate()) {
@@ -41,9 +31,6 @@ var DivForm = new Class({
             alert(ERR_NO_DIV_NAME);
             return false;
         }
-        
-        
-        
         this.request(
             this.singlePath + 'save',
             this.form.toQueryString(),
@@ -56,10 +43,14 @@ var DivForm = new Class({
                             case 'go':
                                 window.top.location.href = Energine.base + response.url;
                                 break;
+                            case 'add':
+                                    ModalBox.setReturnValue('add'); 
+                                    break;                                
                             case 'close':
-                                ModalBox.setReturnValue(true); this.close();
+                                ModalBox.setReturnValue(true); 
                                 break;
                         }
+                        this.close();
                     }                    
                 }
                 else {

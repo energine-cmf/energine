@@ -121,6 +121,12 @@
 				<pattern>/show-tree/[any]/</pattern>
 			</uri_patterns>
 		</method>
+		<method name="addManufacturer" rights="3">
+            <uri_patterns>
+                <pattern>/add-manufacturer/</pattern>
+                <pattern>/add-manufacturer/[any]/</pattern>
+            </uri_patterns>
+        </method>
         <method name="cleanup" rights="3">
             <uri_patterns>
                 <pattern>/cleanup/</pattern>

@@ -53,6 +53,32 @@
             </xsl:for-each>
         </select>
     </xsl:template>
+    
+    <xsl:template match="field[@name='producer_id'][ancestor::component[@class='ProductEditor'][@type='form']]">
+        <select id="{@name}">
+            <xsl:attribute name="name">
+                <xsl:choose>
+                    <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
+                    <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+            <option></option>
+            <xsl:apply-templates></xsl:apply-templates>
+
+        </select>
+    </xsl:template>
+
+    <xsl:template match="option[@id='-1'][ancestor::field[@name='producer_id'][ancestor::component[@class='ProductEditor'][@type='form']]]">
+        <optgroup label="--{@label}--">
+            <option value="{@id}">
+                <xsl:if test="@selected">
+                    <xsl:attribute name="selected">selected</xsl:attribute>
+                </xsl:if>
+                <xsl:value-of select="."/>
+            </option>
+        </optgroup>
+    </xsl:template>
+    
     <!-- /компонент ProductEditor -->
 
 </xsl:stylesheet>

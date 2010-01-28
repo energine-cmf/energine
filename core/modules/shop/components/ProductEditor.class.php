@@ -32,6 +32,8 @@ class ProductEditor extends Grid {
      * @access private
      */
     private $externalTableName;
+    
+    private $manufacturerEditor;
 
     /**
      * Конструктор класса
@@ -92,14 +94,62 @@ class ProductEditor extends Grid {
      */
 
     public function build() {
-        if ($this->getAction() == 'showTree') {
-            $result = $this->divEditor->build();
-        }
-        else {
-            $result = parent::build();
-        }
+    	switch ($this->getAction()){
+    		case 'showTree':
+    			$result = $this->divEditor->build();
+    			break;
+    		case 'addManufacturer':
+    			$result = $this->manufacturerEditor->build();
+    			break;
+    		default:
+    			$result = parent::build();
+    	}
+        
 
         return $result;
+    }
+
+    /**
+     * Возвращает данные о значения в связанной таблицы
+     * Добавлена возможность вызвать окно "добавить производителя" из списка выбора
+     *  
+     * @return array
+     * @access protected
+     */
+
+    protected function getFKData($fkTableName, $fkKeyName) {
+    	$result = $this->dbh->getForeignKeyData($fkTableName, $fkKeyName, $this->document->getLang()); 
+    	if(in_array($this->getAction(), array('add', 'edit')) && $fkKeyName == 'producer_id'){
+    	   $addManufacturerOption  = array(
+               array(
+                   $result[1] => '-1',
+                   $result[2] => $this->translate('TXT_ADD_MANUFACTURER'),
+                   'label' => $this->translate('TXT_OR')
+               )
+           ); 
+    	   if($result[0] === true){
+    	       $result[0] = $addManufacturerOption;  
+    	   }
+    	   else{
+    	       $result[0] = array_merge($result[0], $addManufacturerOption);	
+    	   }	
+    	}
+    	
+        return $result;
+    } 
+
+    protected function addManufacturer(){
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->manufacturerEditor = 
+            $this->document->componentManager->createComponent(
+                'manufacturerEditor', 
+                'shop', 
+                'ManufacturersEditor', 
+                array(
+                    'action'=>'add',
+                    'configFilename' => 'core/modules/shop/config/AddManufacturerForm.component.xml'
+                ));
+        $this->manufacturerEditor->run();
     }
 
     /**
@@ -120,6 +170,7 @@ class ProductEditor extends Grid {
         	$fdPtID = $result->getFieldDescriptionByName('pt_id');
         	$fdPtID->removeProperty('nullable'); 
         	$fdPtID->setProperty('tabName', $this->translate('TAB_PRODUCT_PARAMS'));
+        	$result->getFieldDescriptionByName('producer_id')->removeProperty('nullable');
             $smapPIDFieldDescription = $result->getFieldDescriptionByName('smap_id');
             $smapPIDFieldDescription->setType(FieldDescription::FIELD_TYPE_STRING);
             $smapPIDFieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
@@ -278,28 +329,29 @@ class ProductEditor extends Grid {
             //Вставляем записи
             $res = $this->dbh->modify(QAL::INSERT , $this->getExternalTableName(), array('product_code' => $productCode, 'product_price' => $price, 'product_count' => $count, 'curr_id'=> $currency));
         $productID = ($this->saver->getMode() == QAL::INSERT)?$this->saver->getResult():$_POST[$this->getTableName()]['product_id'];
-
-        $productParams = array_filter($_POST['shop_product_param_values']);
-        if(!empty($productParams)){
-            $this->dbh->modify(
-                QAL::DELETE,
-                'shop_product_param_values', 
-                null, 
-                array('product_id'=>$productID)
-            );
-            foreach($productParams as $ppID => $ppValue){
-            	$this->dbh->modify(
-            	   QAL::INSERT,
-            	   'shop_product_param_values', 
-            	   array(
-            	       'product_id' => $productID,
-            	       'pp_id' => $ppID,
-            	       'pp_value' => $ppValue
-            	   )
-            	);
-            }	
-        }
         
+        if(isset($_POST['shop_product_param_values'])){
+	        $productParams = array_filter($_POST['shop_product_param_values']);
+	        if(!empty($productParams)){
+	            $this->dbh->modify(
+	                QAL::DELETE,
+	                'shop_product_param_values', 
+	                null, 
+	                array('product_id'=>$productID)
+	            );
+	            foreach($productParams as $ppID => $ppValue){
+	            	$this->dbh->modify(
+	            	   QAL::INSERT,
+	            	   'shop_product_param_values', 
+	            	   array(
+	            	       'product_id' => $productID,
+	            	       'pp_id' => $ppID,
+	            	       'pp_value' => $ppValue
+	            	   )
+	            	);
+	            }	
+	        }
+        }
     //записываем данные в таблицу share_sitemap_uploads
         if(isset($_POST['uploads']['upl_id'])){
             foreach ($_POST['uploads']['upl_id'] as $uplID){

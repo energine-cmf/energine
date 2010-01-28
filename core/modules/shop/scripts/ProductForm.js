@@ -22,7 +22,36 @@ var ProductForm = new Class({
             'change',
             loadParamsFunc
         );
+        this.producerSelector = $('producer_id');
+        this.producerSelector.addEvent('change', 
+            function(event){
+                event = new Event(event || window.event);
+                if($(event.target).getSelected().getLast().get('value') == '-1'){
+                    this.addManufacturer();
+                }
+            
+            }.bind(this)
+        );
 	},
+    addManufacturer: function() {
+        ModalBox.open({
+            url: this.singlePath + 'add-manufacturer/',
+            onClose: function(returnValue){
+                if(returnValue){
+                    new Element('option', {'value': returnValue.id})
+                        .set('text', returnValue.name)
+                        .inject(
+                            this.producerSelector.getElement('option:nth-child(first)'),
+                            'after'
+                        );
+                    this.producerSelector.set('value', returnValue.id);    
+                }
+                else{
+                    this.producerSelector.set('value', '');
+                }
+            }.bind(this)
+        });
+    },
     loadParams: function(productTypeId, productId){
         var data = 'pt_id='+productTypeId;
         if(!productId){

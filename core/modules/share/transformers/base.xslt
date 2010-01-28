@@ -232,15 +232,17 @@
             <xsl:if test="@nullable='1'">
                 <option></option>
             </xsl:if>
-            <xsl:for-each select="options/option">
-                <option value="{@id}">
-                    <xsl:if test="@selected">
-                        <xsl:attribute name="selected">selected</xsl:attribute>
-                    </xsl:if>
-                    <xsl:value-of select="."/>
-                </option>
-            </xsl:for-each>
+            <xsl:apply-templates />
         </select>
+    </xsl:template>
+    
+    <xsl:template match="option[ancestor::field[@type='select'][ancestor::component[@type='form']]]">
+        <option value="{@id}">
+            <xsl:if test="@selected">
+                <xsl:attribute name="selected">selected</xsl:attribute>
+            </xsl:if>
+            <xsl:value-of select="."/>
+        </option>
     </xsl:template>
 
     <!-- поле множественного выбора (multi) -->

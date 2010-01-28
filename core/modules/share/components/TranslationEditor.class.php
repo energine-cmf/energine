@@ -43,6 +43,6 @@ class TranslationEditor extends Grid {
 
 	protected function saveData(){
 		$_POST[$this->getTableName()]['ltag_name'] = strtoupper($_POST[$this->getTableName()]['ltag_name']);
-		parent::saveData();
+		return parent::saveData();
 	}
 }

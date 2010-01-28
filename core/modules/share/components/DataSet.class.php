@@ -765,6 +765,7 @@ abstract class DataSet extends Component {
 	             '',
             $data
             );
+            //$data = str_replace('&amp;', '&', $data);
             //dump_log($data, true);
             return $data;
 	}

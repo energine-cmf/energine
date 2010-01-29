@@ -50,7 +50,7 @@
                 <xsl:call-template name="interface_js"/>
 
                 <script type="text/javascript">
-                    function init() {
+                    window.addEvent('domready', function () {
                    		<xsl:if test="document/@debug=1">
 							Energine.debug = true;
 		        		</xsl:if>
@@ -86,11 +86,10 @@
 
                         }
                         catch (e) {
-                                //console.error(e);
-                                alert(e.message);
+                                console.error(e);
+                                //alert(e.message);
                         }
-                    }
-                    window.addEvent('domready', init);
+                    });
         		</script>
                 <xsl:apply-templates select="document/translations"/>
         	</head>

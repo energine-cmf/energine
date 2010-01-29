@@ -140,11 +140,11 @@ var Form = new Class({
 		}
 		this.request(this.singlePath + 'save', this.form.toQueryString(),
 				function(response) {
+                    ModalBox.setReturnValue(true); 
 					if (response && (response.mode == 'insert')) {
                         var nextActionSelector;
                         if(nextActionSelector = this.toolbar.getControlById('after_save_action')){
                             Cookie.write('after_add_default_action', nextActionSelector.getValue(), {path:new URI(Energine.base).get('directory'), duration:1});
-                            ModalBox.setReturnValue(true); 
                             switch (nextActionSelector.getValue()){
                                 case 'add':
                                     ModalBox.setReturnValue('add'); 
@@ -152,12 +152,9 @@ var Form = new Class({
                                 case 'close':
                                     break;
                             }
-                            this.close();
                         }                    
                     }
-                    else {
-                        ModalBox.setReturnValue(true); this.close();
-                    }
+                    this.close();
 				}.bind(this));
 	},
 

@@ -35,6 +35,7 @@ var DivForm = new Class({
             this.singlePath + 'save',
             this.form.toQueryString(),
             function(response) {
+                ModalBox.setReturnValue(true); 
                 if (response.mode == 'insert') {
                     var nextActionSelector;
                     if(nextActionSelector = this.toolbar.getControlById('after_save_action')){
@@ -47,15 +48,11 @@ var DivForm = new Class({
                                     ModalBox.setReturnValue('add'); 
                                     break;                                
                             case 'close':
-                                ModalBox.setReturnValue(true); 
                                 break;
                         }
-                        this.close();
                     }                    
                 }
-                else {
-                    ModalBox.setReturnValue(true); this.close();
-                }
+                this.close();
             }.bind(this)
         );
     }

@@ -6,7 +6,6 @@ var Energine = {
 	base : null,
 	supportContentEdit : Browser.Engine.trident || Browser.Engine.gecko || Browser.Engine.presto
 }
-
 Energine.request = {
     request : function(uri, data, onSuccess, onUserError) {
         var callbackFunction = function(response, responseText) {
@@ -47,27 +46,29 @@ Energine.request = {
 /*
  * Class: ScriptLoader Загружает указанные скрипты из директории scripts.
  */
-var ScriptLoader = {
-
+var ScriptLoader = function() {
+    window.top.currentWindow = window;
+    
+    return window.top.ScriptLoader || {
 	request : null,
-
 	loaded : {},
-
 	load : function() {
+        var filename;
 		for (var i = 0, len = arguments.length; i < len; i++) {
-			var filename = arguments[i];
+			filename = arguments[i];
+            //Проверяем загружен ли файл 
 			if (!this.loaded[filename]) {
+                //Если файл не загружен
 				if (!this.request) {
+                    //И нет XMLHTTRequest - создаем
 					this.request = window.XMLHttpRequest
 							? new XMLHttpRequest
 							: (Browser.Engine.trident
 									? new ActiveXObject('Microsoft.XMLHTTP')
 									: null);
 				}
-
 				if (!this.request)
-					return false;
-				this.loaded[filename] = true;
+					throw 'Ajax request is not created';
 
 				this.request
 						.open('GET', Energine.base
@@ -76,22 +77,56 @@ var ScriptLoader = {
 										+ ((Energine.debug) ? '?'
 												+ Math.random() : ''), false);
 				this.request.send(null);
-
+                //получаем текст запрашиваемого файла                    
 				if (this.request.status == 200) {
-					this.globalEval(this.request.responseText);
+					this.loaded[filename] = [];
+                    this.loaded[filename]['code'] = this.request.responseText;
 				}
 			}
+            
+            if(!this.loaded[filename]['code'])
+                throw 'Invalid file code. Filename: ' + filename;
+                
+            //На этот момент у нас есть текст запрашиваемого файла
+            //Но он может быть исполнен в одном из открытых окон а в другом - нет
+                
+           //this.globalEval(this.loaded[filename]['code']);
+                
+            if(!this.loaded[filename]['w'])
+                    this.loaded[filename]['w'] = [];
+            //Текст получен  - но не исполнен ни в одном окне
+            if(
+                !this.isLoadedInCurrentWindow(this.loaded[filename]['w'])
+             ){
+                //исполняем в текущем    
+                this.loaded[filename]['w'].push(window.top.currentWindow);
+                this.globalEval(this.loaded[filename]['code']);
+            }
+            
 		}
-
 	},
-
+    isLoadedInCurrentWindow: function(arr){
+        var result = false;
+        for(var i = 0, l = arr.length; i < l; i++){
+            if(arr[i] === window.top.currentWindow){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    },
 	globalEval : function(code) {
-		if (window.execScript)
-			window.execScript(code, 'javascript');
-		else
-			window.eval(code);
+        var w = window.top.currentWindow;
+		if (w.execScript){
+			w.execScript(code, 'javascript');
+            return ;
+        }
+
+//            (function(){w.eval.call(w, code)})();
+			w.eval(code);
 	}
-}
+};
+}()
 
 /*
  * Улучшения: - Проверка уже загруженных стилей; - Загрузка стилей из директории

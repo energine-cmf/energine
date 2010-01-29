@@ -66,39 +66,40 @@ var ProductForm = new Class({
     },
     buildParamsTable: function(response){
         var data = response.data;
-        var body = this.componentElement.getElement('#product_params tbody');
-        
-        body.empty();
-        //this.paramsRepository.empty();
-        
-        var tr, td, controlName;
-        data.each(function(param){
-            controlName = 'shop_product_param_values[' + param.pp_id + ']';
-            tr = new Element('tr');
-            tr.grab(new Element('td'));
-            tr.grab(new Element('td').set('text', param.pp_name));
-            tr.grab(new Element('td').grab(
-                new Element('input', 
-                    {
-                        'type':'text', 
-                        'id': param.pp_id, 
-                        'value': param.pp_value, 
-                        'name': controlName/*,
-                        'events':{
-                            'change': function(event){
-                                var event = new Event(event || window.event);
-                                var el = $(event.target);
-                                this.paramsRepository.set(
-                                    el.getProperty('name'), el.get('value')
-                                );
-                            }.bind(this)
-                    }*/}
-                )
-            ));
-            body.grab(tr);
-            //this.paramsRepository.set(controlName, param.ppv_value);
-        }, this);
-        
+        if($type(data) == 'array'){
+            var body = this.componentElement.getElement('#product_params tbody');
+            
+            body.empty();
+            //this.paramsRepository.empty();
+            
+            var tr, td, controlName;
+            data.each(function(param){
+                controlName = 'shop_product_param_values[' + param.pp_id + ']';
+                tr = new Element('tr');
+                tr.grab(new Element('td'));
+                tr.grab(new Element('td').set('text', param.pp_name));
+                tr.grab(new Element('td').grab(
+                    new Element('input', 
+                        {
+                            'type':'text', 
+                            'id': param.pp_id, 
+                            'value': param.pp_value, 
+                            'name': controlName/*,
+                            'events':{
+                                'change': function(event){
+                                    var event = new Event(event || window.event);
+                                    var el = $(event.target);
+                                    this.paramsRepository.set(
+                                        el.getProperty('name'), el.get('value')
+                                    );
+                                }.bind(this)
+                        }*/}
+                    )
+                ));
+                body.grab(tr);
+                //this.paramsRepository.set(controlName, param.ppv_value);
+            }, this);
+        }
     }
 
 });

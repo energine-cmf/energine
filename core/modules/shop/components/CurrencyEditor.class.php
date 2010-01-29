@@ -35,19 +35,20 @@ class CurrencyEditor extends Grid {
         $this->setOrder(array('curr_order_num'=>QAL::ASC));
 	}
 
-    /**
-     * Переопределенный метод
-     * Для формы редактирования, если чекбокс валюты по умолчанию отмечен делает его неактивным
-     *
-     * @return void
-     * @access public
-     */
-
-    public function build() {
-        if ($this->getAction() !== self::DEFAULT_ACTION_NAME ) {
-            $this->getDataDescription()->getFieldDescriptionByName('curr_abbr')->setProperty('pattern', '/[A-Z]{3}/');
-            $this->getDataDescription()->getFieldDescriptionByName('curr_abbr')->setProperty('message', $this->translate('MSG_BAD_CURR_ABBR'));
+    protected function createDataDescription() {
+    	$result = parent::createDataDescription();
+        if (in_array($this->getAction(), array('add', 'edit'))) {
+            $fd = $result->getFieldDescriptionByName('curr_abbr');
+            $fd->setProperty('pattern', '/[a-zA-Z]{3}/');
+            $fd->setProperty('message', $this->translate('MSG_BAD_CURR_ABBR'));
         }
-        return parent::build();
+        return $result;
     }
+    
+    protected function saveData(){
+    	if(isset($_POST[$this->getTableName()]['curr_abbr'])){
+    		$_POST[$this->getTableName()]['curr_abbr'] = strtoupper($_POST[$this->getTableName()]['curr_abbr']);
+    	}
+    	return parent::saveData();
+    } 
 }

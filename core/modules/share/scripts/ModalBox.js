@@ -79,14 +79,19 @@ var ModalBox = window.top.ModalBox || {
         }
         var box = this.boxes.pop();
         box.options.onClose(box.returnValue);
+
+        var destroyBox = function(){
+        	box.iframe.setProperty('src', 'about:blank');
+			box.iframe.destroy();
+			box.destroy();
+        }
+        
+        destroyBox();
+        
 		if (!this.boxes.length) {
-    		this.fx.start('opacity', 0).chain(
-                function(){console.log(1)}).chain(
-    			this.setup.pass(false, this)).chain(
-                function(){console.log(2);/*box.destroy();*/}                
-			);
+			this.setup(false);
+    		this.fx.start('opacity', 0);
 		}
-        //box.destroy();
     },
 
     keyboardListener: function(event) {

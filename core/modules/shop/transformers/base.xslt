@@ -28,7 +28,7 @@
     
     <!-- переопределение fields для компонентов из модуля shop -->
     <!-- компонент ProductEditor -->    
-    <xsl:template match="field[@name='product_price'][ancestor::component[@class='ProductEditor'][@type='form']]">
+    <xsl:template match="field[@name='product_price'][ancestor::component[@type='form']]">
         <input style="width: 50px;">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>

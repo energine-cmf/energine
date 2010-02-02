@@ -86,7 +86,7 @@ var ModalBox = window.top.ModalBox || {
 			box.destroy();
         }
         
-        destroyBox();
+        destroyBox.delay(1);
         
 		if (!this.boxes.length) {
 			this.setup(false);

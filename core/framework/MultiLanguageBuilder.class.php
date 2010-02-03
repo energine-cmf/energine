@@ -59,7 +59,7 @@ class MultiLanguageBuilder extends Builder {
 
                         $correlation[$i] = $index;
                         if (!isset($records[$index])) {
-                            $records[$index][] = $this->createField($fieldName, $fieldInfo, $rowData);
+                            $records[$index][] = $this->createField($fieldName, $fieldInfo, $rowData, $fieldData->getRowProperties($i));
                         }
                         $i++;
                     }

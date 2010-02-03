@@ -7,6 +7,7 @@
 			</javascript>
 			<fields>
 				<field name="curr_id"/>
+                <field name="curr_is_main"/>
 				<field name="curr_name"/>
                 <field name="curr_abbr"/>				
 				<field name="curr_rate"/>

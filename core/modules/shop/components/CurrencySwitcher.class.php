@@ -36,6 +36,7 @@ class CurrencySwitcher extends DBDataSet {
         $this->setTitle($this->translate('TXT_CURRENT_CURRENCY'));
         $this->setParam('recordsPerPage', false);
         $this->setParam('onlyCurrentLang', true);
+        $this->setOrder(array('curr_order_num' => QAL::ASC));
 	}
 
     /**
@@ -66,17 +67,26 @@ class CurrencySwitcher extends DBDataSet {
         if (isset($_POST['current_currency'])) {
         	$currencyConverter->setCurrent($_POST['current_currency']);
         }
-        $isCurrentField = new Field('is_current');
-        foreach ($currencyConverter->getCurrencies() as $currID) {
-            if ($currID == $currencyConverter->getCurrent()) {
-                $isCurrentField->addRowData(true);
-            }
-            else {
-            	$isCurrentField->addRowData(false);
-            }
-
+        $currIDField = $this->getData()->getFieldByName('curr_id'); 
+        $currRate = $this->getData()->getFieldByName('curr_rate');
+        $currString = new Field('curr_string');
+        $this->getData()->addField($currString);
+        foreach($currIDField as $rowID => $currencyRowData){
+        	if($currencyRowData == $currencyConverter->getCurrent()){
+        		$currIDField->setRowProperty($rowID, 'current', 'current');
+        	}
+        	$currString->setRowData(
+        	   $rowID, 
+        	   $currencyConverter->format(
+        	       $currencyConverter->convert(
+        	           1,
+                       $currencyRowData, 
+        	           $currencyConverter->getMain()
+        	       ), 
+        	       $currencyRowData
+        	   )
+        	);
         }
-        $this->getData()->addField($isCurrentField);
         $this->addTranslation('MSG_SWITCHER_TIP');
 		$this->addTranslation('TXT_CURRENCY_RATE');
      }

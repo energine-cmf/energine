@@ -6,13 +6,26 @@
     
     <!-- компонент CurrencySwitcher -->
     <xsl:template match="component[@class='CurrencySwitcher']">
-        <div id="currencySwitcher">
-            <form action="" method="POST">
-                <xsl:apply-templates/>
-            </form>
-        </div>        
+        <xsl:if test="count(recordset/record) &gt; 1">
+            <div id="currencySwitcher">
+                <form action="" method="POST">
+                    <xsl:apply-templates/>
+                </form>
+            </div>  
+        </xsl:if>      
     </xsl:template>
-    
+    <!--
+    <xsl:template match="component[@class='CurrencySwitcher'][parent::content]">
+        <xsl:if test="count(recordset/record) &gt; 1">
+            
+            <div id="currencySwitcher">
+                <form action="" method="POST">
+                    <xsl:apply-templates/>
+                </form>
+            </div>  
+        </xsl:if>      
+    </xsl:template>    
+    -->
     <xsl:template match="recordset[parent::component[@class='CurrencySwitcher']]">
         <div>
             <strong><xsl:value-of select="$TRANSLATION[@const='MSG_SWITCHER_TIP']" />:</strong>
@@ -22,10 +35,10 @@
         </div>
         <div style="padding-top: 5px;">
             <strong><xsl:value-of select="$TRANSLATION[@const='TXT_CURRENCY_RATE']" />:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></strong>
-            <xsl:for-each select="record[field[@name='curr_id']!=1]">
-                <xsl:value-of select="field[@name='curr_name']"/><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-                <xsl:value-of select="field[@name='curr_rate']"/>
-                <xsl:if test="position()!=last()">, </xsl:if>
+            <xsl:for-each select="record">
+                <xsl:sort select="field[@name='curr_is_main']" data-type="number" order="descending"/>
+                <xsl:value-of select="field[@name='curr_string']"/><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+                <xsl:if test="position()!=last()"> = </xsl:if>
             </xsl:for-each>
         </div>
     </xsl:template>
@@ -33,7 +46,7 @@
     <xsl:template match="record[ancestor::component[@class='CurrencySwitcher']]">
         <option>
             <xsl:attribute name="value"><xsl:value-of select="field[@name='curr_id']"/></xsl:attribute>
-            <xsl:if test="field[@name='is_current']=1">
+            <xsl:if test="field[@name='curr_id']/@current">
                 <xsl:attribute name="selected">selected</xsl:attribute>
             </xsl:if>
             <xsl:value-of select="field[@name='curr_name']"/> 

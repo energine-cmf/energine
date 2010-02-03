@@ -102,6 +102,14 @@ class CurrencyConverter extends DBWorker {
             }
         }
     }
+    
+    public function getMain(){
+        foreach ($this->currencies as $currID => $currencyInfo) {
+            if ($currencyInfo['IsMain'] == 1) {
+                return $currID;
+            }
+        }
+    }
 
     /**
      * Возвращает курс для переданного идентификатора валюты
@@ -215,6 +223,6 @@ class CurrencyConverter extends DBWorker {
      */
 
     public function getCurrencies() {
-        return array_keys($this->currencies);
+        return $this->currencies;
     }
 }

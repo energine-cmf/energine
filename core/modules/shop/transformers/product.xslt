@@ -26,7 +26,7 @@
         <td style="vertical-align: top;"><xsl:apply-templates select="field[@name='product_thumb_img']"/></td>
         <td style="text-align: justify; vertical-align: top;">
             <xsl:apply-templates select="field[@name='product_short_description_rtf']"/>
-            <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{field[@name='product_segment']}/"><xsl:value-of select="../../toolbar/control[@id='go']/@title"/></a>
+            <a href="{$BASE}{$LANG_ABBR}{field[@name='smap_id']/@smap_segment}{field[@name='product_segment']}/"><xsl:value-of select="../../toolbar/control[@id='go']/@title"/></a>
         </td>
     </tr>
     <tr>

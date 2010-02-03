@@ -99,12 +99,12 @@ class ProductList extends DBDataSet {
                     list($producerData) = $this->dbh->select('shop_producers', array('producer_name', 'producer_segment'), array('producer_id'=>$producerID->getRowData($i)));
                     $producerID->setRowProperty($i, 'producerID', $producerID->getRowData($i));
                     $producerID->setRowProperty($i, 'producer_segment', $producerData['producer_segment']);
-                    $producerID->changeRowData($i, $producerData['producer_name']);
+                    $producerID->setRowData($i, $producerData['producer_name']);
                 }
                 if ($smapID = $result->getFieldByName('smap_id')) {
                     $smapInfo = $sitemap->getDocumentInfo($smapID->getRowData($i));
                     $smapID->setRowProperty($i, 'smap_segment', $sitemap->getURLByID($smapID->getRowData($i)));
-                    $smapID->changeRowData($i, $smapInfo['Name']);
+                    $smapID->setRowData($i, $smapInfo['Name']);
                 }
             }
         }
@@ -207,11 +207,10 @@ class ProductList extends DBDataSet {
             // находим его значение для данного продукта
 
             $paramValue = simplifyDBResult($this->dbh->selectRequest(
-            'SELECT ppv_value FROM `shop_product_param_values_translation` ppvt
-                LEFT JOIN shop_product_param_values ppv ON ppv.ppv_id = ppvt.ppv_id
-                WHERE lang_id = %s and ppv.pp_id = %s and ppv.product_id = %s',
-            $this->document->getLang(), $row['pp_id'], $id
-            ), 'ppv_value', true);
+            'SELECT pp_value FROM `shop_product_param_values` pp
+                WHERE pp.pp_id = %s and pp.product_id = %s',
+             $row['pp_id'], $id
+            ), 'pp_value', true);
             $paramDD = new Field('product_param_'.$row['pp_id']);
 
             $paramDD->setData($paramValue);

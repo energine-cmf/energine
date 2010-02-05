@@ -157,4 +157,45 @@
         </div>
     </xsl:template>
 
+   
+    <xsl:template match="recordset[ancestor::component[@class='FileLibrary'][@type='form' and  @exttype='grid']]">
+        <xsl:variable name="FIELDS" select="record/field[@name!= 'thumb_width' and @name !='thumb_height']"></xsl:variable>
+        <div class="formContainer">
+            <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+                <ul class="tabs">
+                    <xsl:for-each select="set:distinct($FIELDS/@tabName)">
+                        <xsl:variable name="TAB_NAME" select="."></xsl:variable>
+                        <xsl:if test="count(set:distinct($FIELDS[not(@index='PRI')][@tabName=$TAB_NAME]))&gt;0">
+                            <li><a href="#{generate-id(.)}"><xsl:value-of select="$TAB_NAME" /></a>
+                                <xsl:if test="$FIELDS[@tabName=$TAB_NAME][1]/@language">
+                                    <span class="data">{ lang: <xsl:value-of select="$FIELDS[@tabName=$TAB_NAME][1]/@language" /> }</span>                                
+                                </xsl:if>
+                            </li>
+                        </xsl:if>
+                     </xsl:for-each>
+                </ul>
+                <div class="paneContainer">
+                    <xsl:for-each select="set:distinct($FIELDS/@tabName)">
+                        <xsl:variable name="TAB_NAME" select="."></xsl:variable>
+                            <div id="{generate-id(.)}">
+                                <div>
+                                    <xsl:apply-templates select="$FIELDS[@tabName=$TAB_NAME]"/>
+                                </div>
+                            </div>
+                        </xsl:for-each>
+                </div>
+            </div>
+        </div>
+    </xsl:template>
+    
+    <xsl:template match="field[@name='generate_thumb'][ancestor::component[@class='FileLibrary'][@type='form']]">
+        <fieldset>
+            <legend><input type="checkbox"/><xsl:value-of select="@title"/></legend>
+            <xsl:apply-templates select="../field[@name='thumb_width']"/>
+            <xsl:apply-templates select="../field[@name='thumb_height']"/>
+        </fieldset>
+    </xsl:template>
+    <!-- /компонент FileLibrary -->
+
+
 </xsl:stylesheet>

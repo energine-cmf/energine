@@ -41,17 +41,18 @@ var FileForm = new Class({
         );
     },
     _buildUpload: function(fileField, savePath){
-    	var iframe;
-
-        if (Browser.Engine.trident) {
-            iframe = $(document.createElement('<iframe name="uploader" id="uploader">'));
+    	var iframe = $('uploader');
+        if(!iframe){
+            if (Browser.Engine.trident) {
+                iframe = $(document.createElement('<iframe name="uploader" id="uploader">'));
+            }
+            else {
+                iframe = new Element('iframe').setProperties({ name: 'uploader', id: 'uploader' });
+            }
+            iframe.setStyles({ width: 0, height: 0, border: 0, position: 'absolute'});
+            iframe.injectBefore(this.form);
         }
-        else {
-            iframe = new Element('iframe').setProperties({ name: 'uploader', id: 'uploader' });
-        }
-        iframe.setStyles({ width: 0, height: 0, border: 0, position: 'absolute'});
-        iframe.injectBefore(this.form);
-
+        
         iframe.filename = $(fileField.getAttribute('link'));
         iframe.preview = $(fileField.getAttribute('preview'));
         var path = new Element('input').setProperty('name', 'path').setProperties({ 'id': 'path', 'type': 'hidden', 'value': ModalBox.getExtraData() }).injectInside(this.form);

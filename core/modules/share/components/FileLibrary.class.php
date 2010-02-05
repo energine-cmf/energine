@@ -461,8 +461,8 @@ final class FileLibrary extends DataSet {
             $js .= sprintf(
             'path.parentNode.removeChild(path);'.
             'pb.parentNode.removeChild(pb); '.
-            'iframe.filename.value = "%s"; '.
-            'iframe.parentNode.removeChild(iframe);',
+            'iframe.filename.value = "%s"; console.log(window.parent.document.location);'/*.
+            'iframe.parentNode.removeChild(iframe);'*/,
             $_POST['path'].'/'.basename($fileName)
             );
 
@@ -471,8 +471,8 @@ final class FileLibrary extends DataSet {
             $js .=
             'path.parentNode.removeChild(path);'."\n".
             'pb.parentNode.removeChild(pb); '."\n".
-            'alert(\''.$this->translate('TXT_SHIT_HAPPENS').': '.$e->getMessage().'\'); '.
-            'iframe.parentNode.removeChild(iframe); '."\n";
+            'alert(\''.$this->translate('TXT_SHIT_HAPPENS').': '.$e->getMessage().'\'); '/*.
+            'iframe.parentNode.removeChild(iframe); '*/."\n";
         }
 
         $responseText = '<html><head/><body><script type="text/javascript">'.$js.'</script></body></html>';

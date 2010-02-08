@@ -80,6 +80,7 @@ class ProductList extends DBDataSet {
             $discountFD->setMode(FieldDescription::FIELD_MODE_READ);
             $result->addFieldDescription($discountFD);
         }
+        
         return $result;
     }
 

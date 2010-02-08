@@ -64,9 +64,6 @@ class CurrencySwitcher extends DBDataSet {
      protected function main() {
         parent::main();
         $currencyConverter = CurrencyConverter::getInstance();
-        if (isset($_POST['current_currency'])) {
-        	$currencyConverter->setCurrent($_POST['current_currency']);
-        }
         $currIDField = $this->getData()->getFieldByName('curr_id'); 
         $currRate = $this->getData()->getFieldByName('curr_rate');
         $currString = new Field('curr_string');

@@ -72,6 +72,10 @@ class CurrencyConverter extends DBWorker {
         }
         $this->currencies = convertDBResult($this->currencies, 'curr_id', true);
         $this->currencies = array_map(create_function('$currInfo', 'return convertFieldNames($currInfo, "curr");'),$this->currencies);
+        
+        if (isset($_POST['current_currency'])) {
+            $this->setCurrent($_POST['current_currency']);
+        }
     }
 
     /**

@@ -22,30 +22,6 @@
  */
 class BasketForm extends DataSet {
     /**
-     * Режим корзины
-     * просмотр
-     */
-    const BASKET_MODE_VIEW = 0;
-
-    /**
-     * Режим корзины - добавление
-     *
-     */
-    const BASKET_MODE_ADD = 1;
-
-    /**
-     * Режим корзины - обновление
-     *
-     */
-    const BASKET_MODE_UPDATE = 2;
-
-    /**
-     * Режим корзины - удаление
-     *
-     */
-    const BASKET_MODE_DEL = 4;
-
-    /**
      * Объект - корзина
      *
      * @var Basket
@@ -58,14 +34,6 @@ class BasketForm extends DataSet {
      * @var Discounts скидки
      */
     private $discounts;
-
-    /**
-     * Режим корзины
-     *
-     * @var int
-     * @access private
-     */
-    private $mode;
 
     /**
      * Конструктор класса
@@ -81,27 +49,6 @@ class BasketForm extends DataSet {
         $this->basket = Basket::getInstance();
         $this->discounts = Discounts::getInstance();
         $this->setType(self::COMPONENT_TYPE_LIST);
-        $this->mode = self::BASKET_MODE_VIEW;
-
-        if (isset($_POST['shop_products']['product_id'])) $this->mode = self::BASKET_MODE_ADD;
-        elseif (isset($_POST['update']) && isset($_POST['recount'])) $this->mode = self::BASKET_MODE_UPDATE;
-        elseif (isset($_POST['delete']) && isset($_POST['selectedID'])) $this->mode = self::BASKET_MODE_DEL;
-
-        switch ($this->mode){
-            case self::BASKET_MODE_ADD :
-                $productCount = (isset($_POST['shop_products']['product_count']))?$_POST['shop_products']['product_count']:1;
-                $this->basket->put($_POST['shop_products']['product_id'], $productCount);
-                $this->response->redirectToCurrentSection();
-            break;
-            case self::BASKET_MODE_UPDATE:
-                $this->basket->recount($_POST['recount']);
-            break;
-            case self::BASKET_MODE_DEL:
-                foreach ($_POST['selectedID'] as $currentId) {
-                    $this->basket->takeOut($currentId);
-                }
-            break;
-        }
     }
 
     /**
@@ -112,9 +59,9 @@ class BasketForm extends DataSet {
 	 */
 
     protected function main() {
-        if ($component = $this->document->componentManager->getComponentByName('basketList')) {
+        /*if ($component = $this->document->componentManager->getComponentByName('basketList')) {
         	$component->disable();
-        }
+        }*/
         parent::main();
     }
 

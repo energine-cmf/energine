@@ -9,11 +9,8 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DataSet.class.php');
-//require_once('core/modules/shop/components/Basket.class.php');
-
 /**
- * Класс віводящий содержимое корзины, не для редактирования
+ * Класс выводящий содержимое корзины, не для редактирования
  *
  * @package energine
  * @subpackage shop

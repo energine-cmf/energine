@@ -25,7 +25,7 @@
     </xsl:template>
 
     <xsl:template match="recordset[parent::component[@class='BasketForm'][@type='list']]">
-		<table width="100%" border="1" cellpadding="2" cellspacing="0" class="basket">
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" class="basket">
 			<thead>
 				<tr>
 					<xsl:for-each select="record[1]/field[not(@name='product_id') and not(@name='product_segment') and not(@name='product_thumb_img')]">
@@ -95,7 +95,7 @@
     	<xsl:when test="@mode>'1'">
             <xsl:element name="input">
                 <xsl:attribute name="type">text</xsl:attribute>
-                <xsl:attribute name="name">recount[<xsl:value-of select="../field[@name='product_id']"/>]</xsl:attribute>
+                <xsl:attribute name="name">basket[update][<xsl:value-of select="../field[@name='product_id']"/>]</xsl:attribute>
                 <xsl:attribute name="maxlength">3</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="@name" /></xsl:attribute>
                 <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
@@ -123,7 +123,7 @@
             <xsl:when test="@mode>1">
                 <xsl:element name="input">
                     <xsl:attribute name="type">checkbox</xsl:attribute>
-                    <xsl:attribute name="name">selectedID[]</xsl:attribute>
+                    <xsl:attribute name="name">basket[deleteItems][]</xsl:attribute>
                      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
                 </xsl:element>
             </xsl:when>
@@ -138,15 +138,15 @@
 	<div style="text-align: right;">
 
 		<xsl:if test="control[@id='delete']/@mode != 0">
-			<input type="{control[@id='delete']/@type}" name="{control[@id='delete']/@id}" value="{control[@id='delete']/@title}" style="float: left; margin-right:5px;" />		
+			<input type="{control[@id='delete']/@type}" name="basket[delete]" value="{control[@id='delete']/@title}" style="float: left; margin-right:5px;" />		
 		</xsl:if>	
 
 		<xsl:if test="control[@id='update']/@mode != 0">
-			<input type="{control[@id='update']/@type}" name="{control[@id='update']/@id}" value="{control[@id='update']/@title}" style="float: left;" />		
+			<input type="{control[@id='update']/@type}"  value="{control[@id='update']/@title}" style="float: left;" />		
 		</xsl:if>
 
 		<xsl:if test="control[@id='order']/@mode != 0">
-			<input type="{control[@id='order']/@type}" name="{control[@id='order']/@id}" value="{control[@id='order']/@title}" onclick="document.location = '{$BASE}{$LANG_ABBR}shop/order/'" />		
+			<input type="{control[@id='order']/@type}"  value="{control[@id='order']/@title}" onclick="document.location = '{$BASE}{$LANG_ABBR}shop/order/'" />		
 		</xsl:if>
 		
 	</div>	

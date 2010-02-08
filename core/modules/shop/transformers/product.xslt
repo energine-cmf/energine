@@ -10,7 +10,7 @@
 
 <xsl:template match="recordset[parent::component[@class='ProductList']]">
     <xsl:if test="record/field[@key='1']!=''">
-        <form method="POST" action="{$BASE}{$LANG_ABBR}shop/basket/" id="{generate-id(.)}" >
+        <form method="POST" action="" id="{generate-id(.)}" >
             <table class="product" width="100%" border="0">
                 <xsl:apply-templates />
             </table>

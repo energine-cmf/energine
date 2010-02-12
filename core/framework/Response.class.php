@@ -249,7 +249,7 @@ final class Response extends Object {
             }
         }
         else {
-            throw new SystemException('ERR_HEADERS_SENT', SystemException::ERR_CRITICAL, array($filename, $linenum));
+            //throw new SystemException('ERR_HEADERS_SENT', SystemException::ERR_CRITICAL, array($filename, $linenum));
         }
         $contents = $this->body;
 
@@ -260,6 +260,7 @@ final class Response extends Object {
         }
 
         echo $contents;
+        session_write_close();
         exit;
     }
 }

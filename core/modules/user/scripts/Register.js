@@ -1,4 +1,4 @@
-ScriptLoader.load('ValidForm.js');
+ScriptLoader.load('ValidForm');
 
 var Register  = new Class({
     Extends: ValidForm,

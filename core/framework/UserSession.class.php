@@ -146,7 +146,6 @@ final class UserSession extends DBWorker {
             else {
                 $this->dbh->modify(QAL::DELETE, $this->tableName, null, "session_native_id = '{$this->phpSessId}'");
                 // удаляем cookie сеанса
-                $response = Response::getInstance();
                 $response->deleteCookie($this->name, $this->getConfigValue('site.root'));
             }
         }
@@ -200,7 +199,7 @@ final class UserSession extends DBWorker {
 	 */
     public function read($phpSessId) {
         $result = '';
-
+        //dump_log(array($this->phpSessId, $phpSessId), true);
         $this->phpSessId = $phpSessId;
 
         $res = $this->dbh->select(
@@ -241,9 +240,7 @@ final class UserSession extends DBWorker {
 	 * @return mixed
 	 */
     public function write($phpSessId, $data) {
-        if ($this->id) {
-            $this->dbh->modify(QAL::UPDATE, $this->tableName, array('session_data' => $data), array('session_id' => $this->id));
-        }
+        $this->dbh->modify(QAL::UPDATE, $this->tableName, array('session_data' => $data), array('session_native_id' => $phpSessId));
         return true;
     }
 
@@ -266,7 +263,12 @@ final class UserSession extends DBWorker {
 	 * @return bool
 	 */
     public function gc($maxLifeTime) {
-        $this->dbh->modify(QAL::DELETE, $this->tableName, null, "(NOW() - session_created) > {$this->lifespan} AND (NOW() - session_last_impression) > {$this->timeout}");
+        $this->dbh->modify(
+            QAL::DELETE, 
+            $this->tableName, 
+            null, 
+            '((NOW() - session_created) > '.$this->lifespan.') OR ((NOW() - session_last_impression) > '.$this->timeout.')'
+        );
         return true;
     }
 
@@ -278,7 +280,7 @@ final class UserSession extends DBWorker {
      */
     public function start() {
         if ($this->phpSessId) {
-        	$this->dbh->modifyRequest("UPDATE {$this->tableName} SET session_last_impression = NOW() WHERE session_native_id = %s", $this->phpSessId);
+        	$this->dbh->modifyRequest('UPDATE '.$this->tableName.' SET session_last_impression = NOW() WHERE session_native_id = %s', $this->phpSessId);
         }
     }
 

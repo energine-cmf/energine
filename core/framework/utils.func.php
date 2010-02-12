@@ -35,7 +35,7 @@ function inspect() {
 function stop() {
     $args = func_get_args();
     call_user_func_array('inspect', $args);
-    exit;
+    Response::getInstance()->commit();
 }
 
 /**
@@ -79,7 +79,7 @@ function ddump_log() {
         'logs/debug.log',
         "\ndate: ".date("l dS of F Y h:i:s")."\n\n".implode("\n", $result)."\n"
     );
-    exit;
+    Response::getInstance()->commit();
 }
 
 /**

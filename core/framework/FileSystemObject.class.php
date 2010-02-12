@@ -182,8 +182,8 @@ abstract class FileSystemObject extends DBWorker {
 				$result = self::IS_ZIP;
         	}
         }
-        else {
-            if(getimagesize($path))$result = self::IS_IMAGE;
+        elseif(@getimagesize($path)) {
+            $result = self::IS_IMAGE;
         }
 
         return $result;

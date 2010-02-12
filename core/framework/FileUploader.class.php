@@ -144,14 +144,33 @@ class FileUploader extends Object {
         if (!$this->validated) {
             $this->validate();
         }
+        if(!is_uploaded_file($this->file['tmp_name'])){
+        	throw new SystemException('ERR_BAD_UPLOAD', SystemException::ERR_WARNING, $this->file['name']);
+        }
+        
+        $filePath = $this->generateFilename($dir, $this->ext);
         if (
             !@move_uploaded_file(
                 $this->file['tmp_name'], 
-                $filePath = $this->generateFilename($dir, $this->ext)
-             )
+                $filePath
+            )
         ) {
             throw new SystemException('ERR_DEV_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file['name']);
         }
+        //Ресайзим изображение
+        if(in_array($this->getExtension(), array('gif', 'png', 'jpg', 'jpeg'))){
+            $img = new Image();
+            $img->loadFromFile($filePath);
+            
+            if(($img->getWidth()> 800) || ($img->getHeight() > 600)){
+	            $img->resize(800, 600);
+	            $img->saveToFile($filePath);	
+            }
+          	unset($image);
+            	
+        }
+        
+        
         $this->FileObjectName = $filePath;
         chmod($this->FileObjectName, 0666);
 

@@ -101,7 +101,7 @@ class DirectoryObject extends FileSystemObject {
             throw new SystemException('ERR_DEV_UNABLE_OPEN_DIR', SystemException::ERR_DEVELOPER, $this->path);
         }
         while (false !== ($fileName = readdir($this->dirHandle))) {
-            if (substr($fileName, 0, 1) != '.' && $fileName != 'CVS' && (strpos($fileName, 'product_thumb_img')===false)) {
+            if (substr($fileName, 0, 1) != '.') {
                 $fullPath = $this->getPath().'/'.$fileName;
 
                 if (isset($_POST['imageonly']) && !in_array(self::getTypeInfo($fullPath), array(self::IS_IMAGE, self::IS_FOLDER ))) {

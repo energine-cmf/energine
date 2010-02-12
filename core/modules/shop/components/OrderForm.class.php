@@ -90,7 +90,7 @@ class OrderForm extends DBDataSet {
         	}
         }
         $result = array_merge($result, $this->dbh->getColumnsInfo('user_users'));
-        unset($result['u_is_active'], $result['u_password']);
+        unset($result['u_is_active'], $result['u_password'], $result['u_avatar_prfile']);
         $commentField = $result['order_delivery_comment'];
         unset($result['order_delivery_comment']);
         $result['order_delivery_comment'] = $commentField;
@@ -243,25 +243,11 @@ class OrderForm extends DBDataSet {
      */
 
     protected function sendNotification($data) {
-        $body = $this->buildClientMailBody($data);
-        $mail = new Mail();
-        $mail->setFrom($this->getConfigValue('mail.from'));
-        $mail->addTo($data['u_name']);
-        $mail->setSubject($this->translate('TXT_ORDER_CLIENT_SUBJECT'));
-        $mail->setText($body);
-        $mail->send();
-        if ($managerEmail = $this->getConfigValue('mail.manager')) {
-            $mail = new Mail();
-            $mail->setFrom($this->getConfigValue('mail.from'));
-            $managerEmails = explode(' ', $managerEmail);
+        $this->sendClientMail($data);
 
-            foreach ($managerEmails as $email) {
-                $mail->addTo($email);
-            }
-            $mail->setSubject($this->translate('TXT_ORDER_MANAGER_SUBJECT'));
-            $body = $this->buildManagerMailBody($data);
-            $mail->setText($body);
-            $mail->send();
+        if ($managerEmail = $this->getConfigValue('mail.manager')) {
+            $this->sendManagerMail($data);
+        
         }
 
         return true;
@@ -275,16 +261,22 @@ class OrderForm extends DBDataSet {
       * @access protected
       */
 
-    protected function buildClientMailBody($data) {
+    protected function sendClientMail($data) {
+    	$mail = new Mail();
+        $mail->setFrom($this->getConfigValue('mail.from'));
+        $mail->addTo($data['u_name']);
+        $mail->setSubject($this->translate('TXT_ORDER_CLIENT_SUBJECT'));
         $result = '';
-        $basketHTML = $this->buildBasketHTML();
         if ($this->order->getUser()->getValue('u_password') === true) {
-            $result = sprintf($this->translate('TXT_ORDER_CLIENT_MAIL_BODY'), $data['order_id'], $data['u_name'], $data['u_contact_person'], $data['u_phone'], $data['u_address'], $data['order_delivery_comment'], $basketHTML);
+        	$mail->setText($body);
+            $result = sprintf($this->translate('TXT_ORDER_CLIENT_MAIL_BODY'), $data['order_id'], $data['u_name'], $data['u_fullname'], $data['order_delivery_comment'], $basketHTML);
         }
         else {
-            $result = sprintf($this->translate('TXT_ORDER_NEW_CLIENT_MAIL_BODY'), $data['u_name'], $this->order->getUser()->getValue('u_password'), $data['order_id'], $data['u_name'], $data['u_contact_person'], $data['u_phone'], $data['u_address'], $data['order_delivery_comment'], $basketHTML);
+        	$mail->setText($body);
+            $result = 
+                sprintf($this->translate('TXT_ORDER_NEW_CLIENT_MAIL_BODY'), $data['u_name'], $this->order->getUser()->getValue('u_password'), $data['order_id'], $data['u_name'], $data['u_fullname'], $data['order_delivery_comment'], $basketHTML);
         }
-        return $result;
+        $mail->send();
     }
 
 
@@ -296,11 +288,22 @@ class OrderForm extends DBDataSet {
      * @return string
      * @access protected
      */
-    protected function buildManagerMailBody($data) {
+    protected function sendManagerMail($data) {
+    	$mail = new Mail();
+        $mail->setFrom($this->getConfigValue('mail.from'));
+        $managerEmails = explode(' ', $managerEmail);
+
+        foreach ($managerEmails as $email) {
+            $mail->addTo($email);
+        }
+        $mail->setSubject($this->translate('TXT_ORDER_MANAGER_SUBJECT'));
+        $body = $this->buildManagerMailBody($data);
+        $mail->setText($body);
+        $mail->send();
+    	
         $result = '';
         $basketHTML = $this->buildBasketHTML();
-        $result = sprintf($this->translate('TXT_ORDER_MANAGER_MAIL_BODY'), $data['order_id'], $data['u_name'], $data['u_contact_person'], $data['u_phone'], $data['u_address'], $data['order_delivery_comment'], $basketHTML);
-        return $result;
+        $result = sprintf($this->translate('TXT_ORDER_MANAGER_MAIL_BODY'), $data['order_id'], $data['u_name'], $data['u_fullname'], $data['order_delivery_comment'], $basketHTML);
     }
 
     /**

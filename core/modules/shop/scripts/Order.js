@@ -1,4 +1,4 @@
-ScriptLoader.load('Validator.js');
+ScriptLoader.load('Validator');
 
 var Order = new Class({
 	initialize: function(objID){

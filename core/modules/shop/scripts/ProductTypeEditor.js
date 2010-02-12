@@ -1,4 +1,4 @@
-ScriptLoader.load('GridManager.js');
+ScriptLoader.load('GridManager');
 
 var ProductTypeEditor = new Class({
     Extends: GridManager,

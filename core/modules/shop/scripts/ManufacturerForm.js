@@ -1,4 +1,4 @@
-ScriptLoader.load('Form.js');
+ScriptLoader.load('Form');
 
 var ManufacturerForm = new Class({
     Extends: Form,

@@ -23,7 +23,11 @@
         <xsl:apply-templates select="field[@name='product_name']"/>
     </tr>
     <tr>
-        <td style="vertical-align: top;"><xsl:apply-templates select="field[@name='product_thumb_img']"/></td>
+        <td style="vertical-align: top;">
+            <xsl:if test="field[@name='product_images']/recordset">
+                <xsl:apply-templates select="field[@name='product_images']/recordset/record[1]/field[@name='upl_path']"/>
+            </xsl:if>
+        </td>
         <td style="text-align: justify; vertical-align: top;">
             <xsl:apply-templates select="field[@name='product_short_description_rtf']"/>
             <a href="{$BASE}{$LANG_ABBR}{field[@name='smap_id']/@smap_segment}{field[@name='product_segment']}/"><xsl:value-of select="../../toolbar/control[@id='go']/@title"/></a>
@@ -55,7 +59,15 @@
 
 <xsl:template match="record[ancestor::component[@class='ProductList'][@type='form']]">    
     <tr>
-        <td style="vertical-align: top;" rowspan="3"><xsl:apply-templates select="field[@name='product_thumb_img']"/></td>
+        <td style="vertical-align: top;" rowspan="3">
+            <xsl:if test="field[@name='product_images']/recordset">
+                <ul>
+                    <xsl:for-each select="field[@name='product_images']/recordset/record">
+                        <li><xsl:apply-templates select="field[@name='upl_path']"/></li>
+                    </xsl:for-each>
+                </ul>
+            </xsl:if>
+        </td>
         <td style="text-align: justify;"><xsl:value-of select="field[@name='product_description_rtf']" disable-output-escaping="yes"/></td>
     </tr>
     <xsl:if test="count(field[@param])&gt;0">

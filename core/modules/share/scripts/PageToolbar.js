@@ -1,4 +1,4 @@
-ScriptLoader.load('Toolbar.js', 'ModalBox.js');
+ScriptLoader.load('Toolbar', 'ModalBox');
 
 var PageToolbar = new Class({
 	Extends: Toolbar,

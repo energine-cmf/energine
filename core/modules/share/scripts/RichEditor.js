@@ -1,4 +1,4 @@
-ScriptLoader.load('ModalBox.js');
+ScriptLoader.load('ModalBox');
 /**
  * WYSIWYG Редактор
  */

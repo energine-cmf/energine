@@ -1,4 +1,4 @@
-ScriptLoader.load('View.js');
+ScriptLoader.load('View');
 
 var DirView = new Class({
 	Extends: View,

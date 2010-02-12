@@ -1,4 +1,4 @@
-ScriptLoader.load('Toolbar.js', 'RichEditor.js', 'ModalBox.js', 'Overlay.js');
+ScriptLoader.load('Toolbar', 'RichEditor', 'ModalBox', 'Overlay');
 
 var PageEditor = new Class({
 

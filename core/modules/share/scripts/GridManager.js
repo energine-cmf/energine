@@ -1,10 +1,10 @@
 ScriptLoader.load(
-    'Grid.js',
-    'TabPane.js',
-    'PageList.js',
-    'Toolbar.js',
-    'Overlay.js',
-    'ModalBox.js'
+    'Grid',
+    'TabPane',
+    'PageList',
+    'Toolbar',
+    'Overlay',
+    'ModalBox'
 );
 
 var GridManager = new Class({

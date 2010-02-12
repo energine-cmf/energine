@@ -1,4 +1,4 @@
-ScriptLoader.load('Form.js');
+ScriptLoader.load('Form');
 
 var TextBlockSource = new Class({
 	Extends: Form,

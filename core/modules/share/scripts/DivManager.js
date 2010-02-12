@@ -1,4 +1,4 @@
-ScriptLoader.load('TabPane.js', 'Toolbar.js', 'ModalBox.js', 'TreeView.js');
+ScriptLoader.load('TabPane', 'Toolbar', 'ModalBox', 'TreeView');
 
 var DivManager = new Class({
 	Implements: Energine.request,

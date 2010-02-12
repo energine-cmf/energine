@@ -1,4 +1,4 @@
-ScriptLoader.load('View.js');
+ScriptLoader.load('View');
 
 var Grid = new Class({
 	Extends: View,

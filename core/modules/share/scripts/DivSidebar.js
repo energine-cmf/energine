@@ -1,4 +1,4 @@
-ScriptLoader.load('DivManager.js');
+ScriptLoader.load('DivManager');
 var DivSidebar = new Class({
     Extends: DivManager,
 

@@ -1,4 +1,4 @@
-ScriptLoader.load('TabPane.js', 'Toolbar.js', 'ModalBox.js', 'DirView.js');
+ScriptLoader.load('TabPane', 'Toolbar', 'ModalBox', 'DirView');
 var FILE_COOKIE_NAME = 'lastPath';
 
 var FileManager = new Class({

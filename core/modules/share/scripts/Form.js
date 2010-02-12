@@ -1,5 +1,5 @@
-ScriptLoader.load('TabPane.js', 'Toolbar.js', 'Validator.js', 'RichEditor.js',
-		'Calendar.js',  'ModalBox.js');
+ScriptLoader.load('TabPane', 'Toolbar', 'Validator', 'RichEditor',
+		'Calendar',  'ModalBox');
 
 var Form = new Class({
 	Implements : [Energine.request, FormCalendar],
@@ -167,7 +167,7 @@ var Form = new Class({
 			path = null;
 		}
 		ModalBox.open({
-					url : this.singlePath + 'file-library',
+					url : this.singlePath + 'file-library/',
 					extraData : path,
 					onClose : function(result) {
 						if (result) {
@@ -183,7 +183,7 @@ var Form = new Class({
 });
 Form.Attachments = {
     addAttachment: function(){
-        ModalBox.open({ 'url': this.singlePath + 'file-library', 'onClose': function(result){
+        ModalBox.open({ 'url': this.singlePath + 'file-library/image-only/', 'onClose': function(result){
         if(result){
             var data = result;
             var emptyRow;
@@ -206,6 +206,7 @@ Form.Attachments = {
                                 }.bind(this)
                             }
                         }).set('text', delete_button_text),
+//                        new Element('input', {'name': 'uploads[upl_is_main][]', 'type': 'checkbox'}),
                         new Element('input', {'name': 'uploads[upl_id][]', 'type': 'hidden', 'value': data.upl_id})
                         ]),
                         new Element('td').set('html', data.upl_name),
@@ -230,6 +231,9 @@ Form.Attachments = {
             );
 
         }
+    },
+    toggleSelector: function(){
+        
     }
 }
 // Предназначен для последующей имплементации

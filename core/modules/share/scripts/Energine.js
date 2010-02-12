@@ -1,3 +1,89 @@
+/*
+ * Class: ScriptLoader Загружает указанные скрипты из директории scripts.
+ */
+var ScriptLoader = function() {
+    window.top.currentWindow = window;
+    
+    return window.top.ScriptLoader || {
+    request : null,
+    loaded : {},
+    load : function() {
+        var filename;
+        for (var i = 0, len = arguments.length; i < len; i++) {
+            filename = arguments[i];
+            //Проверяем загружен ли файл 
+            if (!this.loaded[filename]) {
+                //Если файл не загружен
+                if (!this.request) {
+                    //И нет XMLHTTRequest - создаем
+                    this.request = window.XMLHttpRequest
+                            ? new XMLHttpRequest
+                            : (Browser.Engine.trident
+                                    ? new ActiveXObject('Microsoft.XMLHTTP')
+                                    : null);
+                }
+                if (!this.request)
+                    throw 'Ajax request is not created';
+
+                this.request
+                        .open('GET', Energine.base
+                                        + 'scripts/'
+                                        + filename
+                                        + '.js'
+                                        + ((Energine.debug) ? '?'
+                                                + Math.random() : ''), false);
+                this.request.send(null);
+                //получаем текст запрашиваемого файла                    
+                if (this.request.status == 200) {
+                    this.loaded[filename] = [];
+                    this.loaded[filename]['code'] = this.request.responseText;
+                }
+            }
+            
+            if(!this.loaded[filename]['code'])
+                throw 'Invalid file code. Filename: ' + filename;
+                
+            //На этот момент у нас есть текст запрашиваемого файла
+            //Но он может быть исполнен в одном из открытых окон а в другом - нет
+                
+           //this.globalEval(this.loaded[filename]['code']);
+                
+            if(!this.loaded[filename]['w'])
+                    this.loaded[filename]['w'] = [];
+            //Текст получен  - но не исполнен ни в одном окне
+            if(
+                !this.isLoadedInCurrentWindow(this.loaded[filename]['w'])
+             ){
+                //исполняем в текущем    
+                this.loaded[filename]['w'].push(window.top.currentWindow);
+                this.globalEval(this.loaded[filename]['code']);
+            }
+            
+        }
+    },
+    isLoadedInCurrentWindow: function(arr){
+        var result = false;
+        for(var i = 0, l = arr.length; i < l; i++){
+            if(arr[i] === window.top.currentWindow){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    },
+    globalEval : function(code) {
+        var w = window.top.currentWindow;
+        if (w.execScript){
+            w.execScript(code, 'javascript');
+            return ;
+        }
+
+//            (function(){w.eval.call(w, code)})();
+            w.eval(code);
+    }
+};
+}();
+
 var isset = function(variable) {
 	return ('undefined' != typeof(variable));
 }
@@ -43,91 +129,40 @@ Energine.request = {
     }
 
 };
-/*
- * Class: ScriptLoader Загружает указанные скрипты из директории scripts.
- */
-var ScriptLoader = function() {
-    window.top.currentWindow = window;
+//TODO - некрасиво это, с глобальной переменной
+var currentImage = false;
+
+Energine.thumbnail = { 
+    showImage: function(event){
+        var event = new Event(event || window.event);
+        
+        var obj = $(event.target);
+        if(obj.get('tag') == 'a'){
+            obj = obj.getElement('img');
+        }
+
+        if (event.stopPropagation) event.stopPropagation();
+        else event.cancelBubble = true;
     
-    return window.top.ScriptLoader || {
-	request : null,
-	loaded : {},
-	load : function() {
-        var filename;
-		for (var i = 0, len = arguments.length; i < len; i++) {
-			filename = arguments[i];
-            //Проверяем загружен ли файл 
-			if (!this.loaded[filename]) {
-                //Если файл не загружен
-				if (!this.request) {
-                    //И нет XMLHTTRequest - создаем
-					this.request = window.XMLHttpRequest
-							? new XMLHttpRequest
-							: (Browser.Engine.trident
-									? new ActiveXObject('Microsoft.XMLHTTP')
-									: null);
-				}
-				if (!this.request)
-					throw 'Ajax request is not created';
-
-				this.request
-						.open('GET', Energine.base
-										+ 'scripts/'
-										+ filename
-										+ ((Energine.debug) ? '?'
-												+ Math.random() : ''), false);
-				this.request.send(null);
-                //получаем текст запрашиваемого файла                    
-				if (this.request.status == 200) {
-					this.loaded[filename] = [];
-                    this.loaded[filename]['code'] = this.request.responseText;
-				}
-			}
-            
-            if(!this.loaded[filename]['code'])
-                throw 'Invalid file code. Filename: ' + filename;
-                
-            //На этот момент у нас есть текст запрашиваемого файла
-            //Но он может быть исполнен в одном из открытых окон а в другом - нет
-                
-           //this.globalEval(this.loaded[filename]['code']);
-                
-            if(!this.loaded[filename]['w'])
-                    this.loaded[filename]['w'] = [];
-            //Текст получен  - но не исполнен ни в одном окне
-            if(
-                !this.isLoadedInCurrentWindow(this.loaded[filename]['w'])
-             ){
-                //исполняем в текущем    
-                this.loaded[filename]['w'].push(window.top.currentWindow);
-                this.globalEval(this.loaded[filename]['code']);
+        if (event.preventDefault) event.preventDefault();
+        else event.returnValue = false;
+    
+    
+        
+        
+        var createImage = function(){
+            currentImage = new EnlargeImage(obj,{duration: 800});
+        }.bind(this);
+            if(currentImage){
+                currentImage.zoomOut(createImage);                    
             }
-            
-		}
-	},
-    isLoadedInCurrentWindow: function(arr){
-        var result = false;
-        for(var i = 0, l = arr.length; i < l; i++){
-            if(arr[i] === window.top.currentWindow){
-                result = true;
-                break;
+            else{
+                createImage();
             }
-        }
-        return result;
-    },
-	globalEval : function(code) {
-        var w = window.top.currentWindow;
-		if (w.execScript){
-			w.execScript(code, 'javascript');
-            return ;
-        }
-
-//            (function(){w.eval.call(w, code)})();
-			w.eval(code);
-	}
-};
-}()
-
+        
+        return false;
+    }
+}
 /*
  * Улучшения: - Проверка уже загруженных стилей; - Загрузка стилей из директории
  * stylesheets.

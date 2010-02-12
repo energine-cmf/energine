@@ -10,9 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
-//require_once('core/framework/DataDescription.class.php');
-//require_once('core/framework/Data.class.php');
 
 /**
  * Построитель.
@@ -156,6 +153,37 @@ abstract class Builder extends DBWorker {
                 $result->appendChild($this->result->importNode($fieldValue,true));
             }
         }
+        elseif(($fieldInfo->getType() == FieldDescription::FIELD_TYPE_IMAGE) && $fieldValue){
+                if(file_exists($fieldValue)){
+                    list($width, $height) = getimagesize($fieldValue);
+                	$img = $this->result->createElement('image');
+	                $img->setAttribute('width', $width);
+	                $img->setAttribute('height', $height);
+	                $img->setAttribute('name', 'main');
+	                $img->nodeValue = $fieldValue;
+	                $result->appendChild($img);
+
+                    foreach($this->getConfigValue('thumbnails.thumbnail') as $thumbnail){
+                    	$thumbnailFile = 
+                    	   FileObject::getThumbFilename(
+                    	       $fieldValue,
+                    	       $width = (int)$thumbnail->width,
+                    	       $height = (int)$thumbnail->height
+                    	   );
+                    	if(file_exists($thumbnailFile)){
+                    	   $img = $this->result->createElement(
+                    	       'image'
+                    	   );
+                    	   $img->setAttribute('width', $width);
+                    	   $img->setAttribute('height', $height);
+                    	   $img->setAttribute('name',(string)$thumbnail['name']);
+                    	   $img->nodeValue = $thumbnailFile;
+                    	   $result->appendChild($img);
+                    	   	
+                    	}
+		            }
+                }
+        }
         elseif ($fieldValue !== false) {
             if (!empty($fieldValue)) {
                 switch ($fieldInfo->getType()) {
@@ -169,16 +197,6 @@ abstract class Builder extends DBWorker {
                             catch (Exception  $dummy){
                             };
                         break;
-                    case FieldDescription::FIELD_TYPE_IMAGE:
-                    	if(file_exists($fieldValue)){
-                    		list($width, $height) = getimagesize($fieldValue);
-                    		$result->setAttribute('width', $width);
-                    		$result->setAttribute('height', $height);
-                    	}
-                    	else{
-                    		$fieldValue = '';
-                    	}
-                    	break;
                     default: // not used
                 }
             }

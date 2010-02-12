@@ -30,6 +30,19 @@
     	</div>
     </xsl:template>
     
+    <!-- Отображение поля типа image для не гридовых элементов формы -->
+    <xsl:template match="field[@type='image'][ancestor::component[@type='form' or @type='list']]">
+        <xsl:variable name="THUMB" select="image[@name='default']"/>
+        <xsl:variable name="MAIN" select="image[@name='main']"/>                        
+        <a href="{$MAIN}" target="_blank" class="thumbnail">
+            <img src="{$THUMB}" width="{$THUMB/@width}" height="{$THUMB/@height}">
+                <xsl:attribute name="nrgn:image_width"  xmlns:nrgn="http://energine.org"><xsl:value-of select="$MAIN/@width"/></xsl:attribute>
+                <xsl:attribute name="nrgn:image_height"  xmlns:nrgn="http://energine.org"><xsl:value-of select="$MAIN/@height"/></xsl:attribute>
+                <xsl:attribute name="nrgn:image_src"  xmlns:nrgn="http://energine.org"><xsl:value-of select="$MAIN"/></xsl:attribute>
+            </img>
+        </a>
+    </xsl:template>
+    
     <!-- 
         Шаблон для необязательного (nullable) поля в админчасти вынесен отдельно. 
         В нем добавляется возможность скрыть/раскрыть необязательное поле. 

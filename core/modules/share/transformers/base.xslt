@@ -125,7 +125,7 @@
     </xsl:template>
 
     <!-- поле для загрузки изображения из репозитория, используется в админчасти (image) -->
-    <xsl:template match="field[@type='image'][ancestor::component[@type='form']]">
+    <xsl:template match="field[@type='image'][ancestor::component[@type='form'][@exttype='grid']]">
         <div class="image">
             <img id="{generate-id(.)}_preview">
                 <xsl:if test=".!=''">

@@ -1018,7 +1018,11 @@ class Grid extends DBDataSet {
         $dd = new DataDescription();
         $f = new FieldDescription('upl_id');
         $dd->addFieldDescription($f);
-
+        /*
+        $f = new FieldDescription('upl_is_main');
+        $f->setType(FieldDescription::FIELD_TYPE_BOOL);
+        $dd->addFieldDescription($f);
+*/
         $f = new FieldDescription('upl_name');
         $dd->addFieldDescription($f);
 

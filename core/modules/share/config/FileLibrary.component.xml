@@ -50,10 +50,10 @@
 			    <field name="upl_id" />
 			    <field name="upl_name" />
 				<field name="upl_path" type="file" title="FIELD_UPL_FILE"/>
-                <field name="generate_thumb" type="boolean" title="TXT_GENERATE_THUMB"/>
+<!--                 <field name="generate_thumb" type="boolean" title="TXT_GENERATE_THUMB"/>
                 <field name="thumb_width" type="integer" title="FIELD_THUMB_WIDTH" length="3"/>
                 <field name="thumb_height" type="integer" title="FIELD_THUMB_HEIGHT" length="3"/>                
-			</fields>
+	-->		</fields>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>

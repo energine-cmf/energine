@@ -178,12 +178,12 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="component[@type='list']/recordset/record/field[@type='image']">
+<!--    <xsl:template match="component[@type='list']/recordset/record/field[@type='image']">
         <div style="width: 100px; height: 100px; overflow: auto;">
             <img src="{$BASE}/{.}" alt=""/>
         </div>
     </xsl:template>
-
+-->
     <xsl:template match="component[@type='list']/recordset/record/field[@type='select']">
         <span>
             <xsl:if test=". = ''">

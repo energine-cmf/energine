@@ -267,8 +267,8 @@ final class FileLibrary extends DataSet {
 
     protected function save() {
         try {
-            $folder = new FileObject();
-            $folder->create($_POST);
+            $file = new FileObject();
+            $file->create($_POST);
 
             $JSONResponse = array(
             'result' => true,
@@ -461,7 +461,7 @@ final class FileLibrary extends DataSet {
             $js .= sprintf(
             'path.parentNode.removeChild(path);'.
             'pb.parentNode.removeChild(pb); '.
-            'iframe.filename.value = "%s"; console.log(window.parent.document.location);'/*.
+            'iframe.filename.value = "%s"; '/*.
             'iframe.parentNode.removeChild(iframe);'*/,
             $_POST['path'].'/'.basename($fileName)
             );

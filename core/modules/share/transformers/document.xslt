@@ -56,7 +56,7 @@
 		        		</xsl:if>
 		        		Energine.base = '<xsl:value-of select="$BASE"/>';
                         try {
-                            ScriptLoader.load(<xsl:for-each select="$COMPONENTS/javascript/include | $COMPONENTS/javascript/object[@name!='PageEditor']">'<xsl:value-of select="@name" />.js'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
+                            ScriptLoader.load(<xsl:for-each select="$COMPONENTS/javascript/include | $COMPONENTS/javascript/object[@name!='PageEditor']">'<xsl:value-of select="@name" />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
                             var pageToolbar = new <xsl:value-of select="$COMPONENTS[@name='pageToolBar']/javascript/object/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$COMPONENTS[@name='pageToolBar']/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$COMPONENTS[@name='pageToolBar']/toolbar/@name"/>');
                             <xsl:for-each select="$COMPONENTS[@name='pageToolBar']/toolbar/control">
@@ -78,7 +78,7 @@
         				</xsl:for-each>
                         <xsl:if test="$COMPONENTS/javascript/object[@name='PageEditor']">
                             <xsl:if test="position()=1">
-                                ScriptLoader.load('PageEditor.js');
+                                ScriptLoader.load('PageEditor');
                                 <xsl:variable name="objectID" select="generate-id($COMPONENTS[javascript/object[@name='PageEditor']]/recordset)"/>
                                 <xsl:value-of select="$objectID"/> = new PageEditor();
                             </xsl:if>

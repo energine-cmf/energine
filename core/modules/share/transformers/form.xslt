@@ -128,7 +128,7 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <tr id="empty_row">
-                            <td colspan="3"  style="text-align:center;">
+                            <td colspan="4"  style="text-align:center;">
                                 <xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>
                             </td>
                         </tr>
@@ -137,7 +137,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="3" style="text-align:right;">
+                        <td colspan="4" style="text-align:right;">
                             <a href="#" onclick="{$JS_OBJECT}.addAttachment(); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
                             <script type="text/javascript">
                                 var delete_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/>';
@@ -157,7 +157,7 @@
         </div>
     </xsl:template>
 
-   
+   <!--
     <xsl:template match="recordset[ancestor::component[@class='FileLibrary'][@type='form' and  @exttype='grid']]">
         <xsl:variable name="FIELDS" select="record/field[@name!= 'thumb_width' and @name !='thumb_height']"></xsl:variable>
         <div class="formContainer">
@@ -195,6 +195,7 @@
             <xsl:apply-templates select="../field[@name='thumb_height']"/>
         </fieldset>
     </xsl:template>
+    -->
     <!-- /компонент FileLibrary -->
 
 

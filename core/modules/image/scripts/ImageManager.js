@@ -1,4 +1,4 @@
-ScriptLoader.load('Form.js', 'ModalBox.js');
+ScriptLoader.load('Form', 'ModalBox');
 
 var ImageManager = new Class({
 	Extends: Form,

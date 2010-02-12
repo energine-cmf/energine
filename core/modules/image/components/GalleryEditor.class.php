@@ -9,7 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/Grid.class.php');
 
 /**
  * Редактор фотогалереи
@@ -34,30 +33,4 @@ class GalleryEditor extends FeedEditor {
         $this->setOrder(array('pg_order_num'=>QAL::ASC));
         $this->setOrderColumn('pg_order_num');
     }
-    /**
-     * При необходимости осуществляем генерацию thumbnail
-     * 
-     *    
-     */
-    protected function saveData(){
-        $result = parent::saveData();
-        list($width, $height) = $this->getParam('thumbnail');
-        
-        if(
-            !($field = $this->getSaver()->getDataDescription()->getFieldDescriptionByName('pg_thumb_img'))
-        ){
-        	$this->generateThumbnail(
-        	   $this->getSaver()->getData()->getFieldByName('pg_photo_img')->getRowData(0),
-        	   'pg_thumb_img',
-        	   $width,
-        	   $height,
-        	   array(
-        	       'pg_id' => ($this->getSaver()->getMode() == QAL::INSERT)? $result:$this->getSaver()->getData()->getFieldByName('pg_id')->getRowData(0)
-        	   )
-        	);
-        }
-        
-        return $result;
-    }
-    
 }

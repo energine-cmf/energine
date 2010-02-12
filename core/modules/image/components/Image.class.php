@@ -266,7 +266,7 @@ class Image extends Object {
             throw new SystemException('ERR_CANT_SAVE_FILE', SystemException::ERR_WARNING, $filename);
         }
         try {
-            @chmod($filename, 0777);
+            @chmod($filename, 0666);
         }
         catch (Exception $e){}
         return $success;

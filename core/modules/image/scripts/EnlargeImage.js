@@ -12,9 +12,9 @@ var EnlargeImage = new Class({
         
         this.image = {};
         this.image.properties = {
-            'width': this.thumbnail.element.getProperty('real_width'),
-            'height': this.thumbnail.element.getProperty('real_height'),
-            'src': this.thumbnail.element.getProperty('main')
+            'width': this.thumbnail.element.getProperty('nrgn:image_width'),
+            'height': this.thumbnail.element.getProperty('nrgn:image_height'),
+            'src': this.thumbnail.element.getProperty('nrgn:image_src')
         };
         this.image.element = new Asset.image(
             this.image.properties.src, {

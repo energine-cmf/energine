@@ -1,5 +1,5 @@
 /*
- * Class: ScriptLoader Загружает указанные скрипты из директории scripts.
+ * Загружает указанные скрипты из директории scripts.
  */
 var ScriptLoader = function() {
     window.top.currentWindow = window;

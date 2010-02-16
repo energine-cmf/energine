@@ -37,15 +37,15 @@
                 <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
                 <xsl:choose>
                     <xsl:when test="document/@debug=1">
-                        <script type="text/javascript" src="scripts/mootools-debug.js"></script>
-                        <script type="text/javascript" src="scripts/mootools-more-debug.js"></script>
+                        <script type="text/javascript" src="{$BASE}scripts/mootools-debug.js"></script>
+                        <script type="text/javascript" src="{$BASE}scripts/mootools-more-debug.js"></script>
                     </xsl:when>
                     <xsl:otherwise>
-                        <script type="text/javascript" src="scripts/mootools.js"></script>
-                        <script type="text/javascript" src="scripts/mootools-more.js"></script>
+                        <script type="text/javascript" src="{$BASE}scripts/mootools.js"></script>
+                        <script type="text/javascript" src="{$BASE}scripts/mootools-more.js"></script>
                     </xsl:otherwise>
                 </xsl:choose>
-        		<script type="text/javascript" src="scripts/Energine.js"></script>
+        		<script type="text/javascript" src="{$BASE}scripts/Energine.js"></script>
 
                 <xsl:call-template name="interface_js"/>
 

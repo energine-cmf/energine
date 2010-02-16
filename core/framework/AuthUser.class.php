@@ -70,7 +70,7 @@ final class AuthUser extends User {
         elseif (isset($_SESSION['userID'])) {
             $id = $_SESSION['userID'];
         }
-        /*
+        
         elseif (isset($_COOKIE['user'])) {
             $response = Response::getInstance();
             try {
@@ -83,7 +83,6 @@ final class AuthUser extends User {
                 $response->deleteCookie('user', $this->getConfigValue('site.root'));
             }
         }
-        */
         elseif (isset($_POST['user']['login']) && isset($_POST['user']['username']) && isset($_POST['user']['password'])) {
             $id = $this->authenticate(
                 $_POST['user']['username'],
@@ -147,7 +146,7 @@ final class AuthUser extends User {
             return false;
         }
         $id = simplifyDBResult($result, 'u_id', true);
-        /*
+        
         if ($remember) {
             $response = Response::getInstance();
             $response->setCookie(
@@ -156,7 +155,7 @@ final class AuthUser extends User {
                 time() + (3600 * 24 * 30),
                 $this->getConfigValue('site.root')
             );
-        }*/
+        }
         
         $_SESSION['userID'] = $id;
         return $id;
@@ -174,10 +173,10 @@ final class AuthUser extends User {
       	if(isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])){
       		$response->deleteCookie(UserSession::DEFAULT_SESSION_NAME, $this->getConfigValue('site.root'));
       	}
-      	/*
+      	
         if (isset($_COOKIE['user'])) {
             $response->deleteCookie('user', $this->getConfigValue('site.root'));
-        }*/
+        }
         session_destroy();
     }
 }

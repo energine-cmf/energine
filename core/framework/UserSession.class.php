@@ -10,8 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
-
 /**
  * Класс управления сеансами пользователей.
  *
@@ -86,6 +84,8 @@ final class UserSession extends DBWorker {
      * @var string имя таблицы сеансов в БД
      */
     private $tableName;
+    
+    private $dataCache;
 
     /**
      * Конструктор класса.
@@ -95,12 +95,12 @@ final class UserSession extends DBWorker {
      */
     public function __construct() {
         parent::__construct();
-
         $this->timeout = $this->getConfigValue('session.timeout');
         $this->lifespan = $this->getConfigValue('session.lifespan');
         $this->userAgent = isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'ROBOT';
         $this->name = self::DEFAULT_SESSION_NAME;
         $this->tableName = 'share_session';
+        $this->dataCache = '';
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
 
         // устанавливаем обработчики сеанса
@@ -118,7 +118,7 @@ final class UserSession extends DBWorker {
 
         // устанавливаем время жизни cookie
         session_set_cookie_params($this->lifespan, $this->getConfigValue('site.root'));
-
+        
         // проверяем существование cookie и корректность его данных
         if (isset($_COOKIE[$this->name])) {
             $this->phpSessId = $_COOKIE[$this->name];
@@ -199,7 +199,7 @@ final class UserSession extends DBWorker {
 	 */
     public function read($phpSessId) {
         $result = '';
-        //dump_log(array($this->phpSessId, $phpSessId), true);
+        
         $this->phpSessId = $phpSessId;
 
         $res = $this->dbh->select(
@@ -224,10 +224,10 @@ final class UserSession extends DBWorker {
                 );
             }
             catch (Exception $e){
-                //dummy exception
+                
             }
         }
-
+  
         return $result;
     }
 

@@ -1,4 +1,4 @@
-ScriptLoader.load('Form.js', 'ModalBox.js');
+ScriptLoader.load('Form', 'ModalBox');
 var DivForm = new Class({
 	Extends: Form,
     Implements: [Form.Label, Form.Attachments],

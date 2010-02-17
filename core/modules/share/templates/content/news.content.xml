@@ -8,9 +8,7 @@
 	</component>
 
     <component name="news" module="share" class="NewsFeed">
-        <params>
-            <param name="recordsPerPage">1</param>
-        </params>
+
     </component>
     <component name="newsEditor" module="share" class="NewsEditor">
 		<params>

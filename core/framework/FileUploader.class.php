@@ -45,6 +45,8 @@ class FileUploader extends Object {
      * @var string имя, под которым загруженный файл сохранен на сервере
      */
     protected $FileObjectName;
+    
+    protected $FileRealName;
 
     /**
      * @access private
@@ -170,7 +172,7 @@ class FileUploader extends Object {
             	
         }
         
-        
+        $this->FileRealName = $this->file['name'];
         $this->FileObjectName = $filePath;
         chmod($this->FileObjectName, 0666);
 
@@ -196,6 +198,10 @@ class FileUploader extends Object {
      */
     public function getFileObjectName() {
         return $this->FileObjectName;
+    }
+    
+    public function getFileRealName() {
+        return $this->FileRealName;
     }
 
     /**

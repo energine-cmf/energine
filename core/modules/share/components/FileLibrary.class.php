@@ -437,6 +437,7 @@ final class FileLibrary extends DataSet {
 	        'var doc = window.parent.document;'."\n".
 	        'var path = doc.getElementById(\'path\');'."\n".
 	        'var pb = doc.getElementById(\'progress_bar\'); '."\n".
+            'var filename = doc.getElementById(\'upl_name\'); '."\n".
 	        'var iframe = doc.getElementById(\'uploader\');'."\n"/*.
         	'var preview = doc.getElementById(iframe.getAttribute("preview"));'."\n"*/;
 
@@ -459,10 +460,12 @@ final class FileLibrary extends DataSet {
             	$js .= 'iframe.preview.src = "images/icons/icon_undefined.gif";';
             }
             $js .= sprintf(
+            'filename.value = "%s";'.
             'path.parentNode.removeChild(path);'.
             'pb.parentNode.removeChild(pb); '.
             'iframe.filename.value = "%s"; '/*.
             'iframe.parentNode.removeChild(iframe);'*/,
+            $uploader->getFileRealName(),
             $_POST['path'].'/'.basename($fileName)
             );
 

@@ -232,12 +232,12 @@ final class Pager extends Object {
             $pager->attachControl($control);
         }
 
-        if ($endPage < $this->numPages - 1) {
+        if ($endPage < $this->numPages - 2) {
+        	if ($endPage != $this->numPages - 1) {
+                $pager->attachControl(new Separator('sep_end'));
+            }
             $control = new Link("page".($this->numPages-1), $this->numPages-1, $this->numPages-1);
             $pager->attachControl($control);
-            if ($endPage != $this->numPages - 2) {
-            	$pager->attachControl(new Separator('sep_end'));
-            }
         }
         if ($endPage < $this->numPages) {
         	$control = new Link("page$this->numPages", $this->numPages, $this->numPages);

@@ -130,18 +130,12 @@
     </xsl:template>
     
     <xsl:template match="control[parent::toolbar[@name='pager']]">
-        <xsl:if test="@end_break">
-            <span class="control break">...</span>
-        </xsl:if>
         <span class="control">
             <a>
                 <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/><xsl:value-of select="../properties/property[@name='additional_url']"/>page-<xsl:value-of select="@action"/>/<xsl:if test="../properties/property[@name='get_string']!=''">?<xsl:value-of select="../properties/property[@name='get_string']"/></xsl:if></xsl:attribute>                            
-                <xsl:value-of select="@tooltip"/>
+                <xsl:value-of select="@title"/>
             </a>
         </span>
-        <xsl:if test="@start_break">
-            <span class="control break">...</span>
-        </xsl:if>
     </xsl:template>
     
     <!-- номер текущей страницы выделен -->
@@ -154,15 +148,7 @@
                 </a>
             </span>
         </xsl:if>
-        <xsl:if test="@end_break">
-            <span class="control break">...</span>
-        </xsl:if>
-        <span class="control current">
-            <xsl:value-of select="@tooltip"/>
-        </span>
-        <xsl:if test="@start_break">
-            <span class="control break">...</span>
-        </xsl:if>
+        <span class="control current"><xsl:value-of select="@title"/></span>
         <xsl:if test="following-sibling::control">
             <span class="control arrow">
                 <a>
@@ -171,6 +157,11 @@
                 </a>
             </span>
         </xsl:if>
+    </xsl:template>
+    
+    <!-- разделитель между группами цифр -->
+    <xsl:template match="control[@type='separator'][parent::toolbar[@name='pager']]">
+        <span class="control break">...</span>
     </xsl:template>
     
     <xsl:template match="properties[parent::toolbar[@name='pager']]"/>

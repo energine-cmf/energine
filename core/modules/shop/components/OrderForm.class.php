@@ -107,9 +107,8 @@ class OrderForm extends DBDataSet {
     protected function createData() {
         $result = false;
         $user = $this->document->getUser();
-
+        $result = new Data();
         if ($user->isAuthenticated()) {
-            $result = new Data();
             foreach (array_keys($user->getFields()) as $fieldName) {
             	$data[$fieldName] = $user->getValue($fieldName);
             }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <project>
+        <name>Energine 2.3.6</name>
+    </project>
+    <database>
+        <host></host>
+        <name></name>
+        <username></username>
+        <password></password>
+        <driverOptions/>
+    </database>
+    <site>
+        <!-- Путь от корня до текущего сайта -->
+        <root></root>
+        <!-- Режим отладки - по умолчанию включен -->
+        <debug>1</debug>
+        <!-- Принудительное отображение кода в формате XML (?debug) -->
+        <asXML>0</asXML>
+        <!-- Режим сжатия -->
+        <compress>0</compress>
+    </site>
+    <!-- Имя базового файла трансформации -->
+    <document>
+        <transformer>main.xslt</transformer>
+    </document>
+    <!-- Настройки времени жизни сессии -->
+    <session>
+        <timeout>6000</timeout>
+        
+        <!-- Время жизни cookie -->
+        <!-- 30 * 60 * 60   = 30 часов -->
+        <lifespan>108000</lifespan>
+    </session>
+    <!-- Настройки почтовых эккаунтов -->
+    <mail>
+       <!-- Поле from -->
+        <from>noreply@eggmen.net</from>
+        <!-- Поле to -->
+        <manager>d.pavka@gmail.com</manager>
+    </mail>
+    <!-- Значения конфигурации thumbnail в файловом репозитории -->
+    <!-- может существовать несколько различных типов thumbnail -->
+    <thumbnails>
+        <thumbnail name="default">
+	        <width>100</width>
+	        <height>100</height>
+        </thumbnail>
+        <thumbnail name="user_defined">
+            <width>150</width>
+            <height>150</height>
+        </thumbnail>
+        
+    </thumbnails>
+    
+    <!-- Путь к ffmpeg для конвертации видео файлов в формат .flv  -->
+    <video>
+       <ffmpeg>/usr/bin/ffmpeg</ffmpeg>
+    </video>
+    <google>
+       <verify/>
+    </google>
+</config>

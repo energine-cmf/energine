@@ -1,0 +1,111 @@
+﻿@charset "utf-8";
+/* CSS Document */
+/* 
+Template
+Name: Common stylesheet
+Description: Общие стили выдаются всем устройствам, которые могут понимать CSS1, здесь содержится простейшее форматирование - цвет фона, цвет, размер и начертание шрифта и заголовков, цвета и поведение ссылок, а также отступы для некоторых элементов. 
+Version: $Id: common.css,v 1.1 2008/04/10 16:12:07 pavka Exp $
+Date: April 2008
+Author: Yuriy Ponomarev (mailto:ponomarev@colocall.net)
+*/
+
+/* ----- common ----- */
+html, body  {
+	background: #fff;
+	font-family: "Lucida Sans Unicode", sans-serif;
+	font-size: 100%;
+	color: #000;
+}
+body {
+	font-size: 0.813em; /* =13px - базовый размер шрифта */
+}
+
+h1, h2, h3, h4, h5, h6 {	
+	margin: 0.5em 0 1em 0;
+	font-family: "Lucida Sans Unicode", sans-serif;	
+}
+h1 {
+	font-size: 2em; /* =26px */
+}
+h2 {
+	font-size: 1.77em; /* =23px */
+}
+h3 {
+	font-size: 1.539em; /* =20px */
+}
+h4 {
+	font-size: 1.308em; /* =17px */
+}
+h5 {
+	font-size: 1.154em; /* =15px */
+}
+h6 {
+	font-size: 1em; /* =13px */
+}
+
+p {
+	margin: 0 0 1em 0;
+}
+
+img, a img, :link img, :visited img {
+	border: 0;
+}
+
+code, tt, pre, kbd {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 1em; /* =13px */
+}
+
+hr {
+	height: 1px;
+	margin: 1em 0;
+	*margin: 0;
+	padding: 0;
+	color: gray;
+	background: gray;
+	border: 0;
+}
+
+q:before, q:after,
+blockquote:before, blockquote:after {
+	content: "";
+}
+/* ----- /common ----- */
+
+/* ----- links ----- */
+a:link { color: #00E; text-decoration: none; }
+a:visited { color: gray; text-decoration: none; }
+a:hover { color: #F00; text-decoration: underline; }
+a:active { color: #F00; text-decoration: underline; }
+a:visited:hover { color: #F00; }
+/* ----- /links ----- */
+
+/* ----- lists ----- */
+ul, ol, dl {
+	margin: 0 0 1em 0;
+}
+ul, ol {
+	padding: 0 0 0 2em; 
+	list-style: square outside;
+}
+ol {
+	list-style: decimal;
+}
+
+ul li, ol li {
+	margin: 2px 0;
+}
+
+dt {
+	margin: 0;
+	font-weight: bold;
+}
+dd {
+	margin: 0 0 1em 0;
+}
+
+ul ul, ol ul, ul ol, ol ol {
+	margin: 0 0 0.3em 0;
+	padding: 0 0 0 1.5em;
+}
+/* ----- /lists ----- */

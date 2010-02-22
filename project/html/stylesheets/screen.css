@@ -1,0 +1,14 @@
+@charset "utf-8";
+/* CSS Document */
+/* 
+Template
+Name: Screen stylesheet
+Description: Таблица импортирует стили для отображения на экране монитора.
+Created: May 2009
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
+*/
+
+@import url("common.css"); /* импорт общих базовых стилей */
+@import url("layout.css"); /* импорт стилей, которые формируют layout страниц */
+@import url("content.css"); /* импорт стилей для элементов и блоков в контенте  */
+@import url("forms.css"); /* импорт стилей для форм */

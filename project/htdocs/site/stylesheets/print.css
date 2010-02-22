@@ -1,0 +1,29 @@
+﻿@charset "utf-8";
+/* CSS Document */
+/* 
+Template
+Name: Print stylesheet
+Description: Таблица содержит стили для печатной версии. Скрыты: меню, боковой блок, хлебные крошки, служебные элементы. Добавлено простейшее форматирование для блока с контентом - отступы и однопиксельные линии сверху и снизу. Установлены меньшие отступы для заголовков.
+Version: $Id: print.css,v 1.1 2008/04/10 16:12:07 pavka Exp $
+Date: April 2008
+Author: Yuriy Ponomarev (mailto:ponomarev@colocall.net)
+*/
+
+body {
+	font-size: 14px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	margin: 0.5em 0;
+}
+
+#breadcrumbs, #sidebar, #pageToolbar, hr.separator {
+	display: none;
+}
+
+#content {
+	padding: 1em 0;
+	margin: 1em 0;
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+}

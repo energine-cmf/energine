@@ -1,0 +1,78 @@
+@charset "utf-8";
+/* CSS Document */
+/* 
+Template
+Name: Layout stylesheet
+Description: Таблица формирует фиксированный по ширине двухколоночный layout.
+Created: May 2009
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
+*/
+
+hr.separator {
+	display: none;
+}
+
+/* ----- clearfix ----- */
+.clearfix:after {
+	content: ".";		
+	clear: both;
+	display: block;
+	height: 0;
+	visibility: hidden;
+}
+/* ----- /clearfix ----- */
+
+/* ----- base ----- */
+.base {
+    width: 980px;
+    margin: 0 auto;
+    padding: 10px;
+	background: #f0f0f0;
+}
+/* ----- /base ----- */
+
+/* ----- header ----- */
+.header {
+	margin: 0 0 1em 0;
+	padding: 10px;
+	background: silver;
+}
+.header h1 {
+	margin: 0;
+}
+/* ----- /header ----- */
+
+/* ----- main menu ----- */
+.main_menu {	
+	margin: 0 0 1em 0;
+	padding: 10px;
+	list-style: none;
+	background: silver;
+}
+.main_menu li {
+	float: left;
+	margin: 0 1em 0 0;
+	padding: 0 1em 0 0;		
+}
+/* ----- /main menu ----- */
+
+/* ----- breadcrumbs ----- */
+
+/* ----- /breadcrumbs ----- */
+
+/* ----- main ----- */
+.main {
+    margin: 0 0 1em 0;
+    background: silver;
+}
+.content {
+    padding: 10px;    
+}
+/* ----- /main ----- */
+
+/* ----- footer ----- */
+.footer {
+    padding: 10px;
+    background: silver;    
+}
+/* ----- /footer ----- */

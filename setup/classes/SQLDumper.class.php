@@ -179,7 +179,7 @@
 
             $this->sql->query("SET NAMES '".FORCED_CHARSET."'");
             /* собираем информацию о таблицах */
-            $this->sql->query("SHOW TABLE STATUS FROM ".$this->dataset['DBName']);
+            $this->sql->query("SHOW TABLE STATUS FROM `".$this->dataset['DBName']."`");
 
             $tbls = $this->sql->fetchHash();
 

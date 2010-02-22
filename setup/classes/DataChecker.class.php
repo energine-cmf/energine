@@ -174,7 +174,7 @@
 
             if($link) {
                 $this->sql->query('CREATE TABLE IF NOT EXISTS `test_table` (`smap_id` int(10) unsigned NOT NULL default \'0\') ENGINE=InnoDB DEFAULT CHARSET=utf8;');
-                $this->sql->query('SHOW TABLE STATUS FROM '.$this->dataset['DBName'].' LIKE \'test_table\'');
+                $this->sql->query('SHOW TABLE STATUS FROM `'.$this->dataset['DBName'].'` LIKE \'test_table\'');
                 $test_table = $this->sql->fetchHash();
 
                 if ($test_table[0]['Engine'] != 'InnoDB') {

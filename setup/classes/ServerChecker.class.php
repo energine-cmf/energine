@@ -63,9 +63,13 @@
          */
         private function isApacheSuitable() {
             $result = true;
-
-            if (strpos(strtolower($_SERVER["SERVER_SOFTWARE"]), 'apache') === false) {
-              	$this->getViewer()->addBlock('На этот сервер невозможно установить Energine.',Viewer::TPL_CHECKER_EXCEPTION);
+            
+            if (!(isset($_SERVER['SCRIPT_FILENAME']) ||
+                    isset($_SERVER['REQUEST_URI']) ||
+                    isset($_SERVER['SERVER_NAME']) ||
+                    isset($_SERVER['SCRIPT_NAME'])
+            )) {
+               $this->getViewer()->addBlock('Это удивительно, но на этот сервер невозможно установить Energine. Свяжитесь с разработчиками и сообщите им об этом прискорбном факте.',Viewer::TPL_CHECKER_EXCEPTION);
               	$result = false;
             } elseif(!$this->silentMode) {
                 $this->getViewer()->addBlock('Подходящий сервер запущен.',Viewer::TPL_CHECKER_CONFIRM);

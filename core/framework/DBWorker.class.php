@@ -35,6 +35,12 @@ abstract class DBWorker extends Object {
      * @var QAL ссылка на self::$dbhInstance (для производных классов)
      */
     protected $dbh;
+    /**
+     * Кеш переводов
+     * (получается за ними по отдельности очень часто нужно обращаться)
+     * @var unknown_type
+     */
+    private static $translations = null;
 
     /**
      * Конструктор класса.
@@ -71,20 +77,64 @@ abstract class DBWorker extends Object {
      * @return string
      */
     public static function _translate($const, $langId = null) {
-        $result = $const;
-        if (!isset($langId)) {
-        	$langId = Language::getInstance()->getCurrent();
-        }
-
-        $res = self::$dbhInstance->selectRequest(
-            'SELECT trans.ltag_value_rtf AS result FROM share_lang_tags ltag '.
+        $currentLangId = intval(Language::getInstance()->getCurrent());
+        //если не закешированы - кешируем переводы для текущего языка
+        //действия по кешированию логичней было бы разместить в конструкторе, 
+        //но на момент его вызова еще не известен дефолтный язык
+        if(is_null(self::$translations)){
+            $res = self::$dbhInstance->selectRequest(
+            'SELECT ltag_name AS const, trans.ltag_value_rtf AS translation FROM share_lang_tags ltag '.
             'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id '.
-            'WHERE ltag.ltag_name = '.self::$dbhInstance->quote(strtoupper($result)).' AND lang_id = '.intval($langId)
-        );
-        if (is_array($res)) {
-        	$result = simplifyDBResult($res, 'result', true);
+            'WHERE lang_id = '.$currentLangId
+            );
+            if(is_array($res)){
+                foreach($res as $row){
+                    self::$translations[$currentLangId][$row['const']] = $row['translation'];
+                }
+            }
+            //вот что должно происходить если в базе нет констант текущего языка?
         }
-
+        //устанавливаем дефолтное возвращаемое значение равным значению константы перевода
+        $result = $const;
+        //
+        //Тут столько хитрых проверок не просто так - а чтобы минимизировать количество обращений к БД
+        //
+        //Если язык - не указан, используем текущий, а информация о константах на нем у нас закеширована
+        if (!isset($langId)) {
+            $langId = $currentLangId;
+            //эта константа есть в переводах для текущего языка?
+        	if(isset(self::$translations[$currentLangId][$const])){
+        	    //тогда возвращаем ее значение
+        	    $result = self::$translations[$currentLangId][$const];
+        	}
+        	else{
+        	    //если не было  - теперь будет
+        	    //а значение возвращается дефолтное
+        	    self::$translations[$currentLangId][$const] = $const;
+        	}
+        }
+        //может все таки есть инфа в кеше?
+        elseif(isset(self::$translations[$langId][$const])){
+            //если да - то чудесно
+            $result = self::$translations[$langId][$const];
+        }
+        else{
+            //лезем за значением в базу
+            $res = self::$dbhInstance->selectRequest(
+                'SELECT trans.ltag_value_rtf AS result FROM share_lang_tags ltag '.
+                'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id '.
+                'WHERE ltag.ltag_name = '.self::$dbhInstance->quote(strtoupper($result)).' AND lang_id = '.intval($langId)
+            );
+            if (is_array($res)) {
+                //если нашли - вернем его
+            	$result = simplifyDBResult($res, 'result', true);
+            }
+            //а если не нашли - будет возвращаться дефолтное значение
+            
+            //нашли - не нашли все равно в кеш записываем 
+            self::$translations[$langId][$const] = $result;
+        }
+        
         return $result;
     }
 

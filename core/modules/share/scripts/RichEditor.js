@@ -94,43 +94,15 @@ var RichEditor = new Class({
 					default : // not used
 				}
 			},
-
-			getSelectionInfo : function() {
-				var selection = {
-					start : -1,
-					end : -1
-				};
-				/*
-				 * if (Browser.Engine.gecko) { selection.start =
-				 * this.textarea.selectionStart; selection.end =
-				 * this.textarea.selectionEnd; } else
-				 */if (Energine.supportContentEdit) {
-					var range = (this.currentRange)
-							? this.currentRange
-							: document.selection.createRange();
-					var dup_range = range.duplicate();
-					dup_range.moveToElementText(this.textarea);
-					dup_range.setEndPoint('EndToEnd', range);
-					selection.start = dup_range.text.length - range.text.length;
-					selection.end = selection.start + range.text.length;
-				}
-				return selection;
-			},
-
 			replaceSelectionWith : function(html) {
-				var sel = this.getSelectionInfo();
+				var sel = this.textarea.getSelectedRange();
 				this.textarea.value = this.textarea.value.substr(0, sel.start)
 						+ html + this.textarea.value.substr(sel.end);
 			},
 
 			wrapSelectionWith : function(tagName, attrs) {
 				attrs = (attrs ? ' ' + attrs : '');
-				var sel = this.getSelectionInfo();
-				var html = this.textarea.value.substr(sel.start, sel.end
-								- sel.start)
-						|| '';
-				this.replaceSelectionWith('<' + tagName + attrs + '>' + html
-						+ '</' + tagName + '>');
+				this.textarea.insertAroundCursor({before: '<' + tagName + attrs + '>' , defaultMiddle: '', after: '</' + tagName + '>'});
 			},
 
 			bold : function() {
@@ -162,22 +134,10 @@ var RichEditor = new Class({
 			},
 
 			imageManager : function() {
-				if (Energine.supportContentEdit) {
+                this.currentRange = false;
+                
+				if (Energine.supportContentEdit && !this.fallback_ie) {
 					this.currentRange = this._getSelection().createRange();
-					// console.log(this.currentRange);
-
-					// TODO Что то тут нужно решить с редактированием
-					// изображения
-
-					/*
-					 * if (document.selection.type == 'Control' &&
-					 * this.currentRange(0).tagName == 'IMG') { var img =
-					 * this.currentRange(0); imageData = { 'upl_path': img.src,
-					 * 'upl_name': img.alt, 'upl_data': { 'width': img.width,
-					 * 'height': img.height }, 'align': img.align, 'hspace':
-					 * img.hspace, 'vspace': img.vspace };
-					 * this.insertImage(imageData); return; }
-					 */
 				}
 
 				ModalBox.open({
@@ -188,8 +148,10 @@ var RichEditor = new Class({
 
 			},
 			fileLibrary : function() {
-				if (Energine.supportContentEdit)
+                this.currentRange = false;
+				if (Energine.supportContentEdit && !this.fallback_ie)
 					this.currentRange = this._getSelection().createRange();
+                    
 				ModalBox.open({
 							url : this.area.getProperty('componentPath')
 									+ 'file-library',
@@ -224,8 +186,7 @@ var RichEditor = new Class({
 									}
 									this.currentRange.select();
 								} else {
-                                   
-									if (Browser.Engine.gecko) {
+									if (Browser.Engine.gecko && !this.fallback_ie) {
 										var imgStr = '<img src="'
 												+ image.filename + '" width="'
 												+ image.width + '" height="'
@@ -244,8 +205,7 @@ var RichEditor = new Class({
 										this.dirty = true;
 										return;
 									} else if (this.fallback_ie) {
-										this
-												.replaceSelectionWith('<img src="'
+										this.textarea.insertAtCursor('<img src="'
 														+ image.filename
 														+ '" width="'
 														+ image.width
@@ -255,7 +215,7 @@ var RichEditor = new Class({
 														+ image.align
 			             								+ '" alt="'
 														+ image.alt
-														+ '" border="0" />');
+														+ '" border="0" />', true);
 										this.dirty = true;
 										return;
 									}
@@ -280,7 +240,11 @@ var RichEditor = new Class({
 				if (!data)
 					return;
 				var filename = data['upl_path'];
-
+                if(this.fallback_ie){
+                    this.textarea.insertAtCursor(
+                        '<a href="' + filename + '">' + data['upl_name'] + '</a>', true);
+                    return;
+                }
 				if (this.currentRange.select)
 					this.currentRange.select();
 

@@ -169,6 +169,7 @@ abstract class DBA extends Object {
         $result = false;
 
         $query = $this->constructQuery(func_get_args());
+        //file_put_contents('logs/sql.log', $query."\n", FILE_APPEND);
         $this->lastQuery = $query;
         $res = $this->pdo->query($query);
 
@@ -341,51 +342,49 @@ abstract class DBA extends Object {
      * @access public
      * @param string $tableName
      * @return array
+     * @staticvar $columnsInfo  - кеш полей таблицы
      */
     public function getColumnsInfo($tableName) {
-        $res = $this->selectRequest("SHOW COLUMNS FROM `$tableName`");
-        if (!is_array($res)) {
-            return false;
-        }
-
-        $result = false;
-
-        foreach ($res as $row) {
-            $name = $row['Field'];
-            $type = strtoupper($row['Type']);
-            $length = false;
-            $nullable = (strtolower($row['Null']) == 'yes' ? true : false);
-            $key = $row['Key'];
-            $index = $key;
-            $default = (empty($row['Default']))?false:$row['Default'];
-
-            // получаем тип и размер поля
-            preg_match('/([A-Z]+)(\(([0-9]+)(,[0-9]+)?\))?/', $type, $matches);
-            if (count($matches) >= 2) {
-                $type = $matches[1];
-                if (isset($matches[3])) {
-                    $length = intval($matches[3]);
-                }
-            }
-            $type = $this->convertType($type);
-
-            // получаем информацию о ключе поля
-            switch ($key) {
-                case 'PRI':
-                    $fk = $this->getForeignKeyInfo($tableName, $name);
-                    $key = ($fk == false ? true : $fk);
-                    break;
-                case 'MUL':
-                    $key = $this->getForeignKeyInfo($tableName, $name);
-                    break;
-                default:
-                    $key = false;
-            }
-
-            $result[$name] = compact('length', 'nullable', 'default', 'key', 'type' , 'tableName', 'index');
-        }
-
-        return $result;
+    	static $columnsInfo;
+    	 
+    	if(!isset($columnsInfo[$tableName])){
+    		$res = $this->selectRequest("SHOW COLUMNS FROM `$tableName`");
+	    	foreach ($res as $row) {
+	            $name = $row['Field'];
+	            $type = strtoupper($row['Type']);
+	            $length = false;
+	            $nullable = (strtolower($row['Null']) == 'yes' ? true : false);
+	            $key = $row['Key'];
+	            $index = $key;
+	            $default = (empty($row['Default']))?false:$row['Default'];
+	
+	            // получаем тип и размер поля
+	            preg_match('/([A-Z]+)(\(([0-9]+)(,[0-9]+)?\))?/', $type, $matches);
+	            if (count($matches) >= 2) {
+	                $type = $matches[1];
+	                if (isset($matches[3])) {
+	                    $length = intval($matches[3]);
+	                }
+	            }
+	            $type = $this->convertType($type);
+	
+	            // получаем информацию о ключе поля
+	            switch ($key) {
+	                case 'PRI':
+	                    $fk = $this->getForeignKeyInfo($tableName, $name);
+	                    $key = ($fk == false ? true : $fk);
+	                    break;
+	                case 'MUL':
+	                    $key = $this->getForeignKeyInfo($tableName, $name);
+	                    break;
+	                default:
+	                    $key = false;
+	            }
+	
+	            $columnsInfo[$tableName][$name] = compact('length', 'nullable', 'default', 'key', 'type' , 'tableName', 'index');
+	        }
+    	}
+        return $columnsInfo[$tableName];
     }
 
     /**
@@ -401,32 +400,24 @@ abstract class DBA extends Object {
      * @param string $tableName имя таблицы
      * @param string $fieldName имя поля
      * @return mixed
+     * @staticvar $foreignKeyInfo кеш результатов
      */
     private function getForeignKeyInfo($tableName, $fieldName) {
-        /*
-        $res = $this->selectRequest("SHOW TABLE STATUS LIKE '$tableName'");
-        $fkinfos = explode(';', $res[0]['Comment']);
-        foreach ($fkinfos as $fkinfo) {
-            if (preg_match('/\(`([^`]+)`\) REFER `([^`]+)\/([^`]+)`(\(`([^`]+)`\))?/', $fkinfo, $matches) && count($matches) >= 4) {
-                $matches[4] = (isset($matches[4]) ? $matches[5] : $matches[1]);
-                if ($fieldName == $matches[1]) {
-                    $result = array('tableName' => $matches[3], 'fieldName' => $matches[4]);
-                    return $result;
-                }
-            }
+        static $foreignKeyInfo;
+        if(!isset($foreignKeyInfo[$tableName][$fieldName])){
+	        $res = $this->selectRequest("SHOW CREATE TABLE `$tableName`");
+	        $res = preg_match_all("/FOREIGN KEY \(`([_a-z0-9]+)`\) REFERENCES `([^`]+)` \(`([^`]+)`\)/m", $res[0]['Create Table'], $matches, PREG_SET_ORDER);
+	        if(!empty($res)){
+	        	foreach($matches as $row){
+	        	  $foreignKeyInfo[$tableName][$row[1]] = array('tableName' => $row[2], 'fieldName' => $row[3]);	
+	        	}
+	        }
         }
-        return false;
-        */
-
-        $res = $this->selectRequest("SHOW CREATE TABLE $tableName");
-        $fkinfos = explode(",", $res[0]['Create Table']);
-        foreach ($fkinfos as $fkinfo) {
-            if (preg_match("/FOREIGN KEY \(`$fieldName`\) REFERENCES `([^`]+)` \(`([^`]+)`\)/", $fkinfo, $matches)/* && sizeof($matches) >= 4*/) {
-                $result = array('tableName' => $matches[1], 'fieldName' => $matches[2]);
-                return $result;
-            }
+        
+        if(!isset($foreignKeyInfo[$tableName][$fieldName])){
+            $foreignKeyInfo[$tableName][$fieldName] = false;
         }
-        return false;
+        return $foreignKeyInfo[$tableName][$fieldName];
     }
 
     /**

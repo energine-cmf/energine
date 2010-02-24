@@ -77,13 +77,15 @@ abstract class DBWorker extends Object {
      * @return string
      */
     public static function _translate($const, $langId = null) {
+    	$const = strtoupper($const);
+    	
         $currentLangId = intval(Language::getInstance()->getCurrent());
         //если не закешированы - кешируем переводы для текущего языка
         //действия по кешированию логичней было бы разместить в конструкторе, 
         //но на момент его вызова еще не известен дефолтный язык
         if(is_null(self::$translations)){
             $res = self::$dbhInstance->selectRequest(
-            'SELECT ltag_name AS const, trans.ltag_value_rtf AS translation FROM share_lang_tags ltag '.
+            'SELECT UPPER(ltag_name) AS const, trans.ltag_value_rtf AS translation FROM share_lang_tags ltag '.
             'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id '.
             'WHERE lang_id = '.$currentLangId
             );
@@ -123,7 +125,7 @@ abstract class DBWorker extends Object {
             $res = self::$dbhInstance->selectRequest(
                 'SELECT trans.ltag_value_rtf AS result FROM share_lang_tags ltag '.
                 'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id '.
-                'WHERE ltag.ltag_name = '.self::$dbhInstance->quote(strtoupper($result)).' AND lang_id = '.intval($langId)
+                'WHERE ltag.ltag_name = '.self::$dbhInstance->quote($result).' AND lang_id = '.intval($langId)
             );
             if (is_array($res)) {
                 //если нашли - вернем его
@@ -134,7 +136,6 @@ abstract class DBWorker extends Object {
             //нашли - не нашли все равно в кеш записываем 
             self::$translations[$langId][$const] = $result;
         }
-        
         return $result;
     }
 

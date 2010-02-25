@@ -22,8 +22,8 @@ require_once('core/framework/utils.func.php');
 
 try {
     UserSession::getInstance()->start();
-    $documentConroller = DocumentController::getInstance();
-    $documentConroller->run();
+    DocumentController::getInstance()->run();
+    Response::getInstance()->commit();
 }
 catch (SystemException $systemException) {
     $systemException->handle();

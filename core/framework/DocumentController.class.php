@@ -127,6 +127,5 @@ final class DocumentController extends Object {
         }
 
         $response->write($result);
-        $response->commit();
     }
 }

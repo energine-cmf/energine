@@ -125,12 +125,12 @@ final class Sitemap extends DBWorker {
 		//Загружаем идентификаторы для последующего формирования древовидной стркутуры
 		//Получаем только идентификаторы разделов
 
-		$res = $this->dbh->selectRequest('
-            SELECT s.smap_id, s.smap_pid FROM share_sitemap s
-            LEFT JOIN share_sitemap_translation st ON st.smap_id = s.smap_id
-            WHERE st.smap_is_disabled = 0 AND st.lang_id = %s 
-            ORDER BY smap_order_num
-        ', $this->langID);
+		$res = $this->dbh->selectRequest(
+            'SELECT s.smap_id, s.smap_pid FROM share_sitemap s '.
+            'LEFT JOIN share_sitemap_translation st ON st.smap_id = s.smap_id '.
+            'WHERE st.smap_is_disabled = 0 AND st.lang_id = %s '. 
+            'ORDER BY smap_order_num'
+        , $this->langID);
 		if ($res === true) {
 			throw new SystemException('ERR_NO_TRANSLATION', SystemException::ERR_CRITICAL);
 		}

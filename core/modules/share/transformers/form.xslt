@@ -109,7 +109,7 @@
                                 <xsl:if test="floor(position() div 2) = position() div 2">
                                     <xsl:attribute name="class">even</xsl:attribute>
                                 </xsl:if>
-                                <td><input type="hidden" name="{@tableName}[upl_id][]" value="{field[@name='upl_id']}"/><a href="#" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']}); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/></a></td>
+                                <td><input type="hidden" name="uploads[upl_id][]" value="{field[@name='upl_id']}"/><a href="#" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']}); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/></a></td>
                                 <td><xsl:value-of select="field[@name='upl_name']"/></td>
                                 <td>
                                     <a href="{field[@name='upl_path']/@real_image}" target="blank">

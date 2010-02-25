@@ -69,16 +69,9 @@ class ProductList extends DBDataSet {
 			$producerIDFD->setType(FieldDescription::FIELD_TYPE_TEXT);
 			$producerIDFD->setProperty('title', $this->translate('TXT_ANOTHER_PRODUCTS'));
 		}
-		if ($result->getFieldDescriptionByName('product_price')) {
-			$discountFD = new FieldDescription('product_price_with_discount');
-			$discountFD->setType(FieldDescription::FIELD_TYPE_FLOAT);
-			$discountFD->setMode(FieldDescription::FIELD_MODE_READ);
-			$result->addFieldDescription($discountFD);
-		}
-		
 		$fd = new FieldDescription('product_images');
-        $fd->setType(FieldDescription::FIELD_TYPE_CUSTOM);
-        $result->addFieldDescription($fd);
+		$fd->setType(FieldDescription::FIELD_TYPE_CUSTOM);
+		$result->addFieldDescription($fd);
 		return $result;
 	}
 
@@ -92,17 +85,26 @@ class ProductList extends DBDataSet {
 	protected function createData() {
 		$result = parent::createData();
 		if ($result) {
-			$f = new Field('product_images');
-            $result->addField($f);
-			
 			$sitemap = Sitemap::getInstance();
+			$this->buildProductImagesField($result);
+			
+			if ($producerIDField = $result->getFieldByName('producer_id')) {
+				$producerData = 
+					convertDBResult(
+					    $this->dbh->select(
+					       'shop_producers', 
+					       array('producer_id','producer_name', 'producer_segment'), 
+					       array('producer_id'=>$producerIDField->getData())
+					    ),
+					    'producer_id',
+					    true
+					);
+			}
 			for ($i = 0; $i < $result->getRowCount(); $i++) {
-				$f->setRowData($i, $this->buildProductImagesField($result->getFieldByName('product_id')->getRowData($i)));
-				if ($producerID = $result->getFieldByName('producer_id')) {
-					list($producerData) = $this->dbh->select('shop_producers', array('producer_name', 'producer_segment'), array('producer_id'=>$producerID->getRowData($i)));
-					$producerID->setRowProperty($i, 'producerID', $producerID->getRowData($i));
-					$producerID->setRowProperty($i, 'producer_segment', $producerData['producer_segment']);
-					$producerID->setRowData($i, $producerData['producer_name']);
+				if($producerIDField && ($producerID = $producerIDField->getRowData($i))){
+					$producerIDField->setRowProperty($i, 'producerID', $producerID);
+					$producerIDField->setRowProperty($i, 'producer_segment', $producerData[$producerID]['producer_segment']);
+					$producerIDField->setRowData($i, $producerData[$producerID]['producer_name']);
 				}
 				if ($smapID = $result->getFieldByName('smap_id')) {
 					$smapInfo = $sitemap->getDocumentInfo($smapID->getRowData($i));
@@ -111,7 +113,7 @@ class ProductList extends DBDataSet {
 				}
 			}
 		}
-		
+
 		return $result;
 	}
 
@@ -144,22 +146,32 @@ class ProductList extends DBDataSet {
 			$converter = CurrencyConverter::getInstance();
 			$currentCurrency = $converter->getCurrent();
 
-			foreach ($result as $key => $row) {
-				$res = $this->dbh->selectRequest(sprintf('SELECT product_price, curr_id FROM shop_product_external_properties
-                    WHERE product_code IN (
-                    SELECT product_code FROM shop_products WHERE product_id = %s
-                    )', $row['product_id']));
-				list($res) = $res;
-				$result[$key]['product_price'] = $converter->convert($res['product_price'], $currentCurrency, $res['curr_id']);
-			}
-		}
-		if (is_array($result) && $this->getDataDescription()->getFieldDescriptionByName('product_price_with_discount')&& $this->getDataDescription()->getFieldDescriptionByName('product_price')) {
-			$discounts = Discounts::getInstance();
-			$this->setProperty('discount', $discounts->getDiscountForGroup());
-			foreach ($result as $key => $row) {
-				$result[$key]['product_price_with_discount'] = $converter->format($discounts->calculateCost($result[$key]['product_price']), $currentCurrency);
-				$result[$key]['product_price'] = $converter->format($result[$key]['product_price'], $currentCurrency);
-			}
+			$res = $this->dbh->selectRequest(
+			 'SELECT product_id, product_price, curr_id '.
+			 'FROM shop_product_external_properties e '.
+			 'LEFT JOIN shop_products p ON p.product_code = e.product_code '.
+			 'WHERE product_id IN('.
+			implode(',',
+			array_map(
+			create_function(
+			             '$row', 'return $row["product_id"];'
+			             ),
+			             $result
+			             )
+			             ).')');
+			             	
+			             if(is_array($res)){
+			             	$res = convertDBResult($res, 'product_id', true);
+			             	foreach ($result as $key => $row) {
+			             		$result[$key]['product_price'] = $converter->format(
+			             		$converter->convert(
+			             		$res[$row['product_id']]['product_price'],
+			             		$currentCurrency,
+			             		$res[$row['product_id']]['curr_id']),
+			             		$currentCurrency
+			             		);
+			             	}
+			             }
 		}
 		return $result;
 	}
@@ -172,7 +184,6 @@ class ProductList extends DBDataSet {
 	 */
 
 	protected function view() {
-
 		$this->setType(self::COMPONENT_TYPE_FORM);
 		list($segment) = $this->getActionParams();
 		$id = simplifyDBResult($this->dbh->select($this->getTableName(), $this->getPK(), array('product_segment' => $segment)), $this->getPK(), true);
@@ -186,41 +197,30 @@ class ProductList extends DBDataSet {
 		//Получаем параметры и их значения
 
 		//Сначала  - набор параметров
-		$res = $this->dbh->selectRequest('
-            SELECT pp.pp_id, pp_name, pp_type
-            FROM `shop_product_params` pp
-            LEFT JOIN shop_product_params_translation ppt ON ppt.pp_id = pp.pp_id
-            WHERE pt_id in(
-                SELECT pt_id from shop_products where product_id = %s
-                )
-            AND lang_id = %s
-            ',
-		$id,
-		$this->document->getLang()
+		$res = $this->dbh->selectRequest(
+			'SELECT pp.pp_id, pp_name, pp_type, pp_value FROM `shop_product_params` pp '. 
+            'LEFT JOIN shop_product_params_translation ppt ON ppt.pp_id = pp.pp_id '. 
+            'LEFT JOIN  shop_products p On p.pt_id = pp.pt_id '.
+            'LEFT JOIN  shop_product_param_values pv On pv.pp_id = pp.pp_id AND pv.product_id = p.product_id '.
+            'WHERE p.product_id = %s  AND lang_id = %s',
+			$id,
+			$this->document->getLang()
 		);
 
-		if(is_array($res))
-		foreach ($res as $row) {
-			$paramName = 'product_param_'.$row['pp_id'];
-			//Для каждого параметра создаем FieldDescription
-			$paramFD = new FieldDescription($paramName);
-			$paramFD->setType($row['pp_type']);
-			$paramFD->setProperty('title', $row['pp_name']);
-			$paramFD->setProperty('param', $this->translate('TXT_PRODUCT_PARAMS'));
-			$this->getDataDescription()->addFieldDescription($paramFD);
-			// находим его значение для данного продукта
-
-			$paramValue = simplifyDBResult($this->dbh->selectRequest(
-            'SELECT pp_value FROM `shop_product_param_values` pp
-                WHERE pp.pp_id = %s and pp.product_id = %s',
-			$row['pp_id'], $id
-			), 'pp_value', true);
-			$paramDD = new Field('product_param_'.$row['pp_id']);
-
-			$paramDD->setData($paramValue);
-			$this->getData()->addField($paramDD);
+		if(is_array($res)){
+			foreach ($res as $row) {
+				$paramName = 'product_param_'.$row['pp_id'];
+				//Для каждого параметра создаем FieldDescription
+				$paramFD = new FieldDescription($paramName);
+				$paramFD->setType($row['pp_type']);
+				$paramFD->setProperty('title', $row['pp_name']);
+				$paramFD->setProperty('param', $this->translate('TXT_PRODUCT_PARAMS'));
+				$this->getDataDescription()->addFieldDescription($paramFD);
+				$paramF = new Field('product_param_'.$row['pp_id']);
+				$paramF->setData($row['pp_value']);
+				$this->getData()->addField($paramF);
 		}
-
+		}
 		foreach ($this->getDataDescription() as $fieldDescription) {
 			$fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
 		}
@@ -235,35 +235,49 @@ class ProductList extends DBDataSet {
 		$this->document->setProperty('title', $this->getData()->getFieldByName('product_name')->getRowData(0));
 	}
 
-	private function buildProductImagesField($productID){
-		$result = false;
-		$images = $this->dbh->selectRequest(
-	       'SELECT spu.product_id, upl_path, upl_name FROM share_uploads su
-            LEFT JOIN `shop_product_uploads` spu ON spu.upl_id = su.upl_id
-            WHERE product_id = '.$productID
-            );
+	private function buildProductImagesField(Data $data){
+		$f = new Field('product_images');
+		$data->addField($f);
 
-            if(is_array($images)){
-                $builder = new SimpleBuilder();
-                $data = new Data();
-                $data->load($images);
-                
-                $dataDescription = new DataDescription();
-                $fd = new FieldDescription('product_id');
-                $dataDescription->addFieldDescription($fd);
-                $fd = new FieldDescription('upl_path');
-                $fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
-                $dataDescription->addFieldDescription($fd);
-                $fd = new FieldDescription('upl_name');
-                $dataDescription->addFieldDescription($fd);
-                $builder->setData($data);
-                $builder->setDataDescription($dataDescription);
-                
-                $builder->build();
-                $result = $builder->getResult();    
-            }
-            
-            return $result;
+		$images = $this->dbh->selectRequest(
+               'SELECT spu.product_id, upl_path, upl_name FROM share_uploads su '.
+               'LEFT JOIN `shop_product_uploads` spu ON spu.upl_id = su.upl_id '.
+               'WHERE product_id IN ('.implode(',', $data->getFieldByName('product_id')->getData()).')'
+               );
+
+               if(is_array($images)){
+                foreach($images as $row){
+                	$productID = $row['product_id'];
+                	if(!isset($imageData[$productID]))
+                	$imageData[$productID] = array();
+                	 
+                	array_push($imageData[$productID], $row);
+                }
+
+                for ($i = 0; $i < $data->getRowCount(); $i++) {
+                	if(isset($imageData[$data->getFieldByName('product_id')->getRowData($i)])){
+                		$builder = new SimpleBuilder();
+                		$localData = new Data();
+                		$localData->load($imageData[$data->getFieldByName('product_id')->getRowData($i)]);
+
+                		$dataDescription = new DataDescription();
+                		$fd = new FieldDescription('product_id');
+                		$dataDescription->addFieldDescription($fd);
+                		$fd = new FieldDescription('upl_path');
+                		$fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
+                		$dataDescription->addFieldDescription($fd);
+                		$fd = new FieldDescription('upl_name');
+                		$dataDescription->addFieldDescription($fd);
+                		$builder->setData($localData);
+                		$builder->setDataDescription($dataDescription);
+
+                		$builder->build();
+
+                		$f->setRowData($i, $builder->getResult());
+                	}
+                }
+
+               }
 	}
 
 	/**

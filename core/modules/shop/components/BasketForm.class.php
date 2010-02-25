@@ -33,7 +33,7 @@ class BasketForm extends DataSet {
      * @access private
      * @var Discounts скидки
      */
-    private $discounts;
+    //private $discounts;
 
     /**
      * Конструктор класса
@@ -47,7 +47,7 @@ class BasketForm extends DataSet {
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->basket = Basket::getInstance();
-        $this->discounts = Discounts::getInstance();
+        //$this->discounts = Discounts::getInstance();
         $this->setType(self::COMPONENT_TYPE_LIST);
     }
 
@@ -88,10 +88,10 @@ class BasketForm extends DataSet {
      */
 
     protected function loadData() {
-        $result = $this->basket->getContents();
+        $result = $this->basket->getFormattedContents();
         //Подсчитываем сумму
         if (!empty($result)) {
-            $this->setProperty('discount', $this->discounts->getDiscountForGroup());
+            //$this->setProperty('discount', $this->discounts->getDiscountForGroup());
             $this->setProperty('summ', $this->basket->getTotal());
             $this->setProperty('summ_with_discount', $this->basket->getTotal(true));
             $this->addTranslation('TXT_DISCOUNT');

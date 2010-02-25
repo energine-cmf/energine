@@ -64,7 +64,7 @@ class UserOrderHistory extends OrderHistory {
 
     protected function view() {
         parent::view();
-        $discounts = Discounts::getInstance();
+        //$discounts = Discounts::getInstance();
         $this->document->componentManager->getComponentByName('breadCrumbs')->addCrumb();
 
         $fieldOrderDetails = $this->getData()->getFieldByName('order_detail');
@@ -85,10 +85,10 @@ class UserOrderHistory extends OrderHistory {
             $summ += $detail['product_summ'];
             $dom_details->appendChild($dom_detail);
         }
-        $dom_details->setAttribute('discount', $discounts->getDiscountForGroup());
+        //$dom_details->setAttribute('discount', $discounts->getDiscountForGroup());
         $dom_details->setAttribute('summ', $summ);
-        $dom_details->setAttribute('summ_with_discount', $discounts->calculateCost($summ));
-        $this->addTranslation('TXT_BASKET_SUMM_WITH_DISCOUNT');
+        //$dom_details->setAttribute('summ_with_discount', $discounts->calculateCost($summ));
+        //$this->addTranslation('TXT_BASKET_SUMM_WITH_DISCOUNT');
         $fieldOrderDetails->setData($dom_details);
         $this->getDataDescription()->getFieldDescriptionByName('order_detail')->setType(FieldDescription::FIELD_TYPE_CUSTOM);
 

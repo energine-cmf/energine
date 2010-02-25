@@ -37,7 +37,7 @@ class BasketList extends DataSet {
 	public function __construct($name, $module, Document $document, array $params = null) {
         parent::__construct($name, $module, $document, $params);
         $this->basket = Basket::getInstance();
-        $this->discounts = Discounts::getInstance();
+        //$this->discounts = Discounts::getInstance();
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->setTitle($this->translate('TXT_BASKET_CONTENTS'));
 	}
@@ -50,7 +50,7 @@ class BasketList extends DataSet {
 	 */
 
 	 protected function loadData() {
-	    $result = $this->basket->getContents();
+	    $result = $this->basket->getFormattedContents();
 	    if (!empty($result)) {
             $this->addTranslation('TXT_BASKET_SUMM2');
             $this->setProperty('summ', $this->basket->getTotal());

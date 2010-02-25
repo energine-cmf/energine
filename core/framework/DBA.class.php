@@ -169,7 +169,7 @@ abstract class DBA extends Object {
         $result = false;
 
         $query = $this->constructQuery(func_get_args());
-        //file_put_contents('logs/sql.log', $query."\n", FILE_APPEND);
+        //simple_log($query);
         $this->lastQuery = $query;
         $res = $this->pdo->query($query);
 
@@ -485,9 +485,14 @@ abstract class DBA extends Object {
      * @return mixed
      */
     public function getTranslationTablename($tableName) {
-        $tableName .= '_translation';
-        $res = $this->selectRequest("SHOW TABLES LIKE '$tableName'");
-        return (empty($res) || $res === true) ? false : $tableName;
+    	static $translationTables;
+    	
+    	if(!isset($translationTables[$tableName])){
+    	   $translationTableName = $tableName.'_translation';
+    	   $res = $this->selectRequest('SHOW TABLES LIKE \''.$translationTableName.'\'');
+    	   $translationTables[$tableName] = (empty($res) || $res === true) ? false : $translationTableName;   	
+    	}
+        return $translationTables[$tableName];
     }
 
     /**

@@ -51,13 +51,13 @@ class Basket extends DBWorker {
 	 * @var array
 	 * @access private
 	 */
-	private $contents = array();
+	private $contents = null;
 
 	/**
 	 * @access private
 	 * @var Discounts скидки
 	 */
-	private $discounts;
+	//private $discounts;
 
 	/**
 	 * Конструктор класса
@@ -68,7 +68,7 @@ class Basket extends DBWorker {
 		parent::__construct();
 		$this->tableName = 'shop_basket';
 		$this->id = UserSession::getInstance()->getID();
-		$this->discounts = Discounts::getInstance();
+		//$this->discounts = Discounts::getInstance();
 
 		$this->refresh();
 	}
@@ -191,7 +191,8 @@ class Basket extends DBWorker {
 	 */
 
 	public function getTotal($withDiscount = false) {
-		$contents = $this->getContents(false);
+		$withDiscount = false;
+		$contents = $this->getContents();
 		$summ = 0;
 		if(is_array($contents)) {
 			foreach ($contents as $row) {
@@ -210,6 +211,8 @@ class Basket extends DBWorker {
 
 		return $converter->format($converter->convert($summ, $HRNID, $contents[0]['curr_id']), $HRNID);
 	}
+	
+	
 
 	/**
 	 * Возвращает содержимое корзины
@@ -220,30 +223,37 @@ class Basket extends DBWorker {
 	 * @see QAL::select()
 	 */
 
-	public function getContents($formattedOutput = true) {
-		$result = $this->dbh->selectRequest(
-        'SELECT main.*, pt.product_name, ext.product_price, ext.product_price*main.basket_count as product_summ, ext.product_price * (1 - dscnt.dscnt_percent / 100) AS product_summ_with_discount, ext.curr_id, product.product_segment, product.product_code '.
-        'FROM '.$this->getTableName().' main '.
-        'LEFT JOIN shop_products product ON product.product_id = main.product_id '.
-        'LEFT JOIN shop_products_translation pt ON pt.product_id = main.product_id '.
-        'LEFT JOIN shop_product_external_properties ext ON ext.product_code = product.product_code '.
-        'LEFT JOIN shop_discounts dscnt ON dscnt.group_id = '.$this->discounts->getDefaultGroup().' '.
-        'WHERE pt.lang_id = %s AND session_id = %s',
-		Language::getInstance()->getCurrent(),
-		$this->id
-		);
-
-		if (is_array($result)) {
-			if($formattedOutput) $result = array_map(array($this, 'prepare'), $result);
-
-			$this->contents = $result;
+	public function getContents() {
+		if(is_null($this->contents)){
+		      $result = $this->dbh->selectRequest(
+		        //'SELECT main.*, pt.product_name, ext.product_price, ext.product_price*main.basket_count as product_summ, ext.product_price * (1 - dscnt.dscnt_percent / 100) AS product_summ_with_discount, ext.curr_id, product.product_segment, product.product_code '.
+		        'SELECT main.*, pt.product_name, ext.product_price, ext.product_price*main.basket_count as product_summ, ext.curr_id, product.product_segment, product.product_code '.
+		        'FROM '.$this->getTableName().' main '.
+		        'LEFT JOIN shop_products product ON product.product_id = main.product_id '.
+		        'LEFT JOIN shop_products_translation pt ON pt.product_id = main.product_id '.
+		        'LEFT JOIN shop_product_external_properties ext ON ext.product_code = product.product_code '.
+		        //'LEFT JOIN shop_discounts dscnt ON dscnt.group_id = '.$this->discounts->getDefaultGroup().' '.
+		        'WHERE pt.lang_id = %s AND session_id = %s',
+		        Language::getInstance()->getCurrent(),
+		        $this->id
+		        );
+		
+		        if (is_array($result)) {
+		            $this->contents = $result;
+		        }
+		        else {
+		            $this->contents = false;
+		        }
 		}
-		else {
-			$this->contents = false;
-		}
-
 		return $this->contents;
 	}
+	
+	public function getFormattedContents(){
+		$contents = $this->getContents(); 
+		
+        return ($contents)?array_map(array($this, 'prepare'), $contents):false; 		
+	}
+	
 
 	/**
 	 * Обработка корзины

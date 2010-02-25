@@ -69,7 +69,7 @@ class OrderForm extends DBDataSet {
      */
 
      protected function main() {
-        if (!Basket::getInstance()->getContents(false)) {
+        if (!Basket::getInstance()->getContents()) {
             throw new SystemException('ERR_BASKET_IS_EMPTY', SystemException::ERR_CRITICAL);
         }
         parent::main();
@@ -313,8 +313,8 @@ class OrderForm extends DBDataSet {
      */
     protected function buildBasketHTML() {
         $converter = CurrencyConverter::getInstance();
-        $discounts = Discounts::getInstance();
-        $contents = $this->order->getBasket()->getContents();
+        //$discounts = Discounts::getInstance();
+        $contents = $this->order->getBasket()->getFormattedContents();
         $basketHTML = '<table border="1">';
         $basketHTML .= '<thead><tr>';
         $basketHTML .= '<td>'.$this->translate('FIELD_PRODUCT_NAME')."</td>\t<td>".$this->translate('FIELD_BASKET_COUNT')."</td>\t<td>".$this->translate('FIELD_PRODUCT_PRICE')."</td>\t<td>".$this->translate('FIELD_PRODUCT_SUMM')."</td>\n";
@@ -332,9 +332,9 @@ class OrderForm extends DBDataSet {
         $basketHTML .= '</tbody>';
         $basketHTML .= '<tfoot>';
         $basketHTML .= '<tr><td colspan="3">'.$this->translate('TXT_BASKET_SUMM')."</td>\t<td>".$converter->format($summ, $converter->getIDByAbbr('HRN')).'</td></tr>';
-        if ($discounts->getDiscountForGroup() > 0) {
+        /*if ($discounts->getDiscountForGroup() > 0) {
             $basketHTML .= '<tr><td colspan="3">'.$this->translate('TXT_BASKET_SUMM_WITH_DISCOUNT').' '.$discounts->getDiscountForGroup().'%</td><td>'.number_format($discounts->calculateCost($summ), 2, '.', ' ').'</td></tr>';
-        }
+        }*/
         $basketHTML .= '</tfoot>';
         $basketHTML .= '</table>';
         return $basketHTML;

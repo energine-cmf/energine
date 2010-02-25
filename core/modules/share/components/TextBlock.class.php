@@ -151,18 +151,21 @@ final class TextBlock extends DataSet {
         else {
             $docID = '';
         }
-
-        $langID = $this->document->getLang();
-        $this->id = $this->getTextBlockID($docID, $this->getParam('num'));
-        $res = false;
-        if ($this->id) {
-            $res = $this->dbh->select($this->tableName.'_translation', array('tb_content'), array('tb_id'=>$this->id, 'lang_id'=>$langID));
+        
+        $res = $this->dbh->selectRequest(
+            'SELECT st.tb_id as id, stt.tb_content as content '.
+            'FROM `share_textblocks`  st '.
+            'LEFT JOIN share_textblocks_translation stt ON st.tb_id = stt.tb_id and lang_id = %s '.
+            'WHERE smap_id '.(($docID)?' = '.$docID:' IS NULL ').' AND tb_num = %s ',
+            $this->document->getLang(),
+            $this->getParam('num')
+        );
+        
+        if(is_array($res)){
+            list($res) = $res;
+            $this->id = $res['id'];
+            $this->content = $res['content'];	
         }
-
-        if (is_array($res)) {
-            $this->content = simplifyDBResult($res, 'tb_content', true);
-        }
-
 
         //Если мы находимся в режиме редактирования содержимого
         if ($this->isEditable) {

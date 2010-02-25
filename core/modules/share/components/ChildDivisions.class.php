@@ -138,19 +138,31 @@ class ChildDivisions extends DataSet  {
 		$result->addField($field);
 		
 		//Делаем выборку из таблицы дополнительных файлов
-		if($result->getFieldByName('Id'))
-			foreach ($result->getFieldByName('Id') as $index => $smapID) {
-				$data = $this->dbh->selectRequest('
-					SELECT upl.*
-					FROM `share_uploads` upl
-					LEFT JOIN share_sitemap_uploads ssu on ssu.upl_id = upl.upl_id
-					WHERE smap_id = %s
-				', $smapID);
-
-				if(is_array($data) && !empty($data)){
-					$result->getFieldByName('AttachedFiles')->setRowData($index, $this->buildAttachedFilesField($data));
-				}
-		    }
+		if($result->getFieldByName('Id')){
+			$res = $this->dbh->selectRequest('
+                    SELECT smap_id, upl.*
+                    FROM `share_uploads` upl
+                    LEFT JOIN share_sitemap_uploads ssu on ssu.upl_id = upl.upl_id
+                    WHERE smap_id IN ('.implode(',', $result->getFieldByName('Id')->getData()).')
+                ');
+            if(is_array($res)){
+            	//конвертируем результат запроса в удобный формат
+            	foreach($res as $row){
+            		$smapID = $row['smap_id'];
+            		unset($row['smap_id']);
+            		if(!isset($uplData[$smapID])){
+            			$uplData[$smapID] = array();
+            		}
+            		array_push($uplData[$smapID], $row);
+            	}
+            	
+				foreach ($result->getFieldByName('Id') as $index => $smapID) {
+					if(!empty($uplData[$smapID])){
+						$result->getFieldByName('AttachedFiles')->setRowData($index, $this->buildAttachedFilesField($uplData[$smapID]));
+					}
+			    }
+            }
+		}
 
 		return $result;
 	}

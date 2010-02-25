@@ -95,7 +95,7 @@ class Order extends DBWorker {
         $data['u_id'] = $this->user->getID();
         $data['os_id'] = OrderStatus::getInstance()->getInitial();
         $data['order_created'] = date('Y-m-d H:i:s');
-        $data['order_detail'] = serialize($this->basket->getContents());
+        $data['order_detail'] = serialize($this->basket->getFormattedContents());
         $data['user_detail'] = serialize($userData);
         $data['order_delivery_comment'] = $userData['order_delivery_comment'];
         $res = $this->dbh->modify(QAL::INSERT, self::ORDER_TABLE_NAME, $data);

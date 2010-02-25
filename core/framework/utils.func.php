@@ -38,6 +38,24 @@ function stop() {
     Response::getInstance()->commit();
 }
 
+function simple_log($var){
+	static $simpleLog;
+	if(!isset($simpleLog)){
+		$simpleLog = 'logs/simple.log';
+		file_put_contents($simpleLog,'');
+	}
+	
+	if(file_exists($simpleLog)){
+	   $flag = 	FILE_APPEND;
+	}
+	$flag = (file_exists($simpleLog))? FILE_APPEND : null;
+	file_put_contents(
+	   $simpleLog,
+	   $var."\n",
+	   $flag
+	);
+}
+
 /**
  * Записывает информацию о переменной в лог-файл.
  * Флаг $append контролирует способ записи:
@@ -59,6 +77,7 @@ function dump_log($var, $append = false) {
         "\ndate: ".date('l dS of F Y h:i:s')."\n\n".$data."\n",
         $flags
     );
+    chmod('logs/debug.log', 0666);
 }
 
 /**
@@ -79,6 +98,7 @@ function ddump_log() {
         'logs/debug.log',
         "\ndate: ".date("l dS of F Y h:i:s")."\n\n".implode("\n", $result)."\n"
     );
+    chmod('logs/debug.log', 0666);
     Response::getInstance()->commit();
 }
 

@@ -128,22 +128,11 @@
 	<!-- <td colspan="2"><h3><xsl:value-of select="."/></h3></td> -->
 </xsl:template>
 
-<xsl:template match="field[ancestor::component[@class='ProductList']][@name='product_thumb_img']">
-    <xsl:if test=".!=''">
-       	<a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{../field[@name='product_segment']}/" ><img src="{$BASE}{.}" alt="" border="0"/></a><br/>
-        <a href="{$BASE}{../field[@name='product_photo_img']}" target="_blank"><img src="{$BASE}images/magnifier.gif" width="16" height="16" border="0" alt=""/></a>
-    </xsl:if>
-</xsl:template>
-
-<xsl:template match="field[ancestor::component[@class='ProductList'][@type='form']][@name='product_thumb_img']">
-    <xsl:if test=".!=''">
-       	<a href="{$BASE}{../field[@name='product_photo_img']}" target="_blank"><img src="{$BASE}{.}" alt="" border="0"/></a><br/>
-        <a href="{$BASE}{../field[@name='product_photo_img']}" target="_blank"><img src="{$BASE}images/magnifier.gif" width="16" height="16" border="0" alt=""/></a>
-    </xsl:if>
-</xsl:template>
 
 <xsl:template match="field[ancestor::component[@class='ProductList']][@name='producer_id']">
-        <span><xsl:value-of select="@title"/>: </span><a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}manufacturer-{@producer_segment}/"><xsl:value-of select="."/></a>
+        <xsl:if test=".!=''">
+            <span><xsl:value-of select="@title"/>: </span><a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}manufacturer-{@producer_segment}/"><xsl:value-of select="."/></a>
+        </xsl:if>
 </xsl:template>
 
 <xsl:template match="field[ancestor::component[@class='ProductList']][@name='smap_id']">

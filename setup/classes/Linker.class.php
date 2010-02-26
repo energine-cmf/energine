@@ -161,6 +161,7 @@
                     foreach(new IteratorIterator(new DirectoryIterator($modulePath.'/'.$folderName)) as $fileInfo){
                         $baseName = $fileInfo->getBasename();
                         if($baseName[0] != '.')
+                        //$this->safeSymlink($modulePath.'/'.$folderName.'/'.$baseName, $this->serverRoot.$folderName.'/'.$baseName);
                         $this->safeSymlink($fileInfo->getRealPath(), $this->serverRoot.$folderName.'/'.$baseName);
                             
                     }

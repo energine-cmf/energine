@@ -164,10 +164,20 @@ class FileUploader extends Object {
             $img = new Image();
             $img->loadFromFile($filePath);
             
-            if(($img->getWidth()> 800) || ($img->getHeight() > 600)){
+            if(($img->getWidth()> 800) && ($img->getHeight() > 600)){
 	            $img->resize(800, 600);
 	            $img->saveToFile($filePath);	
             }
+            /*
+            elseif($img->getWidth()> 800){
+            	$img->resize(800, null);
+                $img->saveToFile($filePath);
+            }
+            elseif($img->getHeight()> 600){
+                $img->resize(null, 600);
+                $img->saveToFile($filePath);
+            }
+            */
           	unset($image);
             	
         }

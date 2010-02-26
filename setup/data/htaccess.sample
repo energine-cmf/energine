@@ -3,6 +3,7 @@
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !\.(jpe?g|gif|png|css|js|swf)
 RewriteRule ^.*$ #{siteRoot}index.php
 
 FileETag MTime Size

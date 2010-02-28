@@ -251,7 +251,10 @@ final class QAL extends DBA {
                         $cond[] = $value;
                     }
                     elseif (is_array($value)) {
-                    	$cond[] = $fieldName.' IN ('.implode(',',array_filter($value)).')';
+                        $value = implode(',',array_filter($value));
+                        if(!empty($value))
+                            $cond[] = $fieldName.' IN ('.$value.')';
+                        else $cond[] = ' FALSE ';    
                     }
                     else {
                         $cond[] = "$fieldName = ".$this->quote($value);

@@ -1,15 +1,15 @@
 SET FOREIGN_KEY_CHECKS=0;
+
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
 SET AUTOCOMMIT=0;
 START TRANSACTION;
 
 
-
---
--- Database: `e236`
---
-
--- --------------------------------------------------------
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Table structure for table `image_photo_gallery`
@@ -26,15 +26,16 @@ CREATE TABLE IF NOT EXISTS `image_photo_gallery` (
   KEY `smap_id` (`smap_id`),
   KEY `pg_photo_img` (`pg_photo_img`),
   KEY `pg_order_num` (`pg_order_num`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
 
 --
 -- Dumping data for table `image_photo_gallery`
 --
 
 INSERT INTO `image_photo_gallery` (`pg_id`, `smap_id`, `pg_thumb_img`, `pg_photo_img`, `pg_order_num`) VALUES
-(11, 350, '', 'uploads/public/12665704674248.gif', 2),
-(12, 350, '', 'uploads/public/12665745065727.gif', 1);
+(11, 350, '', 'uploads/public/12665704674248.gif', 3),
+(12, 350, '', 'uploads/public/12665745065727.gif', 2),
+(13, 350, 'uploads/public/12671938143931.jpg', 'uploads/public/12671938143931.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -62,7 +63,10 @@ INSERT INTO `image_photo_gallery_translation` (`pg_id`, `lang_id`, `pg_title`, `
 (11, 3, 'Energine''s class structure ', NULL),
 (12, 1, 'Опять слонопотам', NULL),
 (12, 2, 'Слонопотам', NULL),
-(12, 3, 'Heffalump', NULL);
+(12, 3, 'Heffalump', NULL),
+(13, 1, 'Танцующий слонопотам', 'То еще зрелище'),
+(13, 2, NULL, NULL),
+(13, 3, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -112,6 +116,7 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (394, 1, 3),
 (395, 1, 3),
 (396, 1, 3),
+(397, 1, 3),
 (80, 3, 1),
 (324, 3, 1),
 (327, 3, 1),
@@ -165,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `share_feedback` (
   `feed_author` varchar(250) DEFAULT NULL,
   `feed_text` text NOT NULL,
   PRIMARY KEY (`feed_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `share_feedback`
@@ -210,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `share_lang_tags` (
   `ltag_name` varchar(70) NOT NULL DEFAULT '',
   PRIMARY KEY (`ltag_id`),
   UNIQUE KEY `ltag_name` (`ltag_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=579 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=589 ;
 
 --
 -- Dumping data for table `share_lang_tags`
@@ -289,6 +294,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (157, 'BTN_VIEW'),
 (60, 'BTN_VIEWMODESWITCHER'),
 (61, 'BTN_VIEWSOURCE'),
+(587, 'BTN_VIEW_DETAILS'),
 (365, 'BTN_VIEW_PROFILE'),
 (469, 'BTN_ZIP_UPLOAD'),
 (422, 'DUMMY_EMAIL'),
@@ -348,6 +354,10 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (394, 'FIELD_NEWS_TEXT_RTF'),
 (391, 'FIELD_NEWS_TITLE'),
 (367, 'FIELD_NEW_PASSWORD'),
+(588, 'FIELD_ORDER_COMMENT'),
+(585, 'FIELD_ORDER_CREATED'),
+(579, 'FIELD_ORDER_DELIVERY_COMMENT'),
+(584, 'FIELD_OS_ID'),
 (519, 'FIELD_OS_NAME'),
 (485, 'FIELD_PG_PHOTO_IMG'),
 (483, 'FIELD_PG_TEXT'),
@@ -493,8 +503,13 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (420, 'TXT_OPEN_FIELD'),
 (548, 'TXT_OR'),
 (83, 'TXT_ORDER'),
+(586, 'TXT_ORDERHISTORY'),
+(581, 'TXT_ORDER_CLIENT_MAIL_BODY'),
 (576, 'TXT_ORDER_CLIENT_SUBJECT'),
+(580, 'TXT_ORDER_FORM'),
+(583, 'TXT_ORDER_MANAGER_MAIL_BODY'),
 (575, 'TXT_ORDER_MANAGER_SUBJECT'),
+(582, 'TXT_ORDER_NEW_CLIENT_MAIL_BODY'),
 (574, 'TXT_ORDER_SEND'),
 (216, 'TXT_PAGES'),
 (529, 'TXT_PARAM_TYPE_INT'),
@@ -1489,7 +1504,37 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (576, 3, 'Order has been sent'),
 (578, 1, 'Оформление заказа не увенчалось успехом Свяжитесь с администратором магазина для решения проблем'),
 (578, 2, 'Оформлення замовлення зазнало невдачі'),
-(578, 3, 'Order is failed');
+(578, 3, 'Order is failed'),
+(579, 1, 'Комментарий'),
+(579, 2, 'Коментар'),
+(579, 3, 'Comment'),
+(580, 1, 'Форма заказа'),
+(580, 2, 'Форма замовлення'),
+(580, 3, 'Order form'),
+(581, 1, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p>Содержание заказа: $basket'),
+(581, 2, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p>Содержание заказа: $basket'),
+(581, 3, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p>Содержание заказа: $basket'),
+(582, 1, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>Теперь вы зарегистрированы в нашем магазине:<ul> <li>Логин: $u_name </li> <li>Пароль: $u_password </li></ul>'),
+(582, 2, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>Теперь вы зарегистрированы в нашем магазине:<ul> <li>Логин: $u_name </li> <li>Пароль: $u_password </li></ul>'),
+(582, 3, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>Теперь вы зарегистрированы в нашем магазине:<ul> <li>Логин: $u_name </li> <li>Пароль: $u_password </li></ul>'),
+(583, 1, '<p> Здравствуйте, администратор.<br/>\r\n В наш електронный магазин поступил новый заказ:<br/>\r\n Номер заказа: <strong>$order_id</strong><br/>\r\n</p><p> Пользователь: $u_fullname ($u_name)<br/>\r\n Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>'),
+(583, 2, '<p> Здравствуйте, администратор.<br/>\r\n В наш електронный магазин поступил новый заказ:<br/>\r\n Номер заказа: <strong>$order_id</strong><br/>\r\n</p><p> Пользователь: $u_fullname ($u_name)<br/>\r\n Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>'),
+(583, 3, '<p> Здравствуйте, администратор.<br/>\r\n В наш електронный магазин поступил новый заказ:<br/>\r\n Номер заказа: <strong>$order_id</strong><br/>\r\n</p><p> Пользователь: $u_fullname ($u_name)<br/>\r\n Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>'),
+(584, 1, 'Статус заказа'),
+(584, 2, 'Статус замовлення'),
+(584, 3, 'Order status'),
+(585, 1, 'Дата заказа'),
+(585, 2, 'Дата замовлення'),
+(585, 3, 'Order date'),
+(586, 1, 'Список заказов'),
+(586, 2, 'Список заказов'),
+(586, 3, 'Список заказов'),
+(587, 1, 'Детали заказа'),
+(587, 2, 'Деталі замовлення'),
+(587, 3, 'Order details'),
+(588, 1, 'Комментарии администратора'),
+(588, 2, 'Коментарі адмінстратора'),
+(588, 3, 'Comments');
 
 -- --------------------------------------------------------
 
@@ -1510,21 +1555,6 @@ CREATE TABLE IF NOT EXISTS `share_news` (
 -- Dumping data for table `share_news`
 --
 
-INSERT INTO `share_news` (`news_id`, `news_date`, `smap_id`) VALUES
-(1, '2010-01-14', 327),
-(2, '2010-01-15', 327),
-(3, '2010-01-20', 327),
-(4, '2010-01-08', 327),
-(5, '2009-11-14', 327),
-(6, '2009-10-06', 327),
-(7, '2010-01-18', 327),
-(8, '2010-01-30', 327),
-(9, '2010-01-21', 327),
-(10, '2010-01-29', 327),
-(11, '2010-01-28', 327),
-(12, '2010-01-29', 327),
-(13, '2010-01-29', 327),
-(14, '2010-01-27', 327);
 
 -- --------------------------------------------------------
 
@@ -1547,49 +1577,6 @@ CREATE TABLE IF NOT EXISTS `share_news_translation` (
 -- Dumping data for table `share_news_translation`
 --
 
-INSERT INTO `share_news_translation` (`news_id`, `lang_id`, `news_title`, `news_announce_rtf`, `news_text_rtf`) VALUES
-(1, 1, 'Новая новость', 'Анонс новости', 'Текст новости'),
-(1, 2, 'Нова новина', 'Нова новина<br/>\r\n', 'Текст новини<br/>\r\n'),
-(1, 3, 'New news', 'New news<br/>\r\n', 'News text<br/>\r\n'),
-(2, 1, 'Еще одна новость', 'Еще одна новость', 'Еще одна новость'),
-(2, 2, 'Ще одна новина', 'Ще одна новина<br/>\r\n', 'Ще одна новина<br/>\r\n'),
-(2, 3, 'Yet another one news', 'Yet another one news', 'Yet another one news'),
-(3, 1, 'И еще одна новость', 'И еще одна новость', NULL),
-(3, 2, 'І ще одна новина', 'І ще одна новина', NULL),
-(3, 3, 'Another news', 'Another news', NULL),
-(4, 1, 'Еще одна новость', 'Еще одна новость', NULL),
-(4, 2, 'Ще одна новина', 'Ще одна новина', NULL),
-(4, 3, 'Yet another news', 'Yet another news', NULL),
-(5, 1, 'Еще одна новость', 'Еще одна новость', NULL),
-(5, 2, 'Ще одна новина', 'Ще одна новина', NULL),
-(5, 3, 'Yet another news', 'Yet another news', NULL),
-(6, 1, 'Еще одна новость', 'Еще одна новость', NULL),
-(6, 2, 'Ще одна новина', 'Ще одна новина', NULL),
-(6, 3, 'Yet another news', 'Yet another news', NULL),
-(7, 1, 'Еще одна новость', 'Еще одна новость<br/>\r\n', NULL),
-(7, 2, 'Ще одна новина', 'Ще одна новина', NULL),
-(7, 3, 'Yet another news', 'Yet another news', NULL),
-(8, 1, NULL, 'ffdfdfd', NULL),
-(8, 2, NULL, 'fdfdfdfd', NULL),
-(8, 3, NULL, 'fdfdfdfd', NULL),
-(9, 1, NULL, 'dsdsds', NULL),
-(9, 2, NULL, 'dsdsds', NULL),
-(9, 3, NULL, 'dsdsds', NULL),
-(10, 1, NULL, '32232323', NULL),
-(10, 2, NULL, '23233223', NULL),
-(10, 3, NULL, '3223232323', NULL),
-(11, 1, NULL, 'fdfdfd', NULL),
-(11, 2, NULL, 'fdfdfd', NULL),
-(11, 3, NULL, 'fdfdfdfd', NULL),
-(12, 1, NULL, 'dsdsdsds', NULL),
-(12, 2, NULL, 'dsdsdsds', NULL),
-(12, 3, NULL, 'dsdsdsdsds', NULL),
-(13, 1, NULL, 'ds', NULL),
-(13, 2, NULL, 'dsdsds', NULL),
-(13, 3, NULL, 'dsdsds', NULL),
-(14, 1, NULL, 'dsdsdsdsds', NULL),
-(14, 2, NULL, 'dsdsdsds', NULL),
-(14, 3, NULL, 'dsdsdsdsds', NULL);
 
 -- --------------------------------------------------------
 
@@ -1607,7 +1594,7 @@ CREATE TABLE IF NOT EXISTS `share_session` (
   `session_data` text,
   PRIMARY KEY (`session_id`),
   UNIQUE KEY `session_native_id` (`session_native_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3030 ;
 
 --
 -- Dumping data for table `share_session`
@@ -1637,7 +1624,7 @@ CREATE TABLE IF NOT EXISTS `share_sitemap` (
   KEY `ref_sitemap_parent_FK` (`smap_pid`),
   KEY `idx_order` (`smap_order_num`),
   KEY `smap_is_system` (`smap_is_system`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=397 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=398 ;
 
 --
 -- Dumping data for table `share_sitemap`
@@ -1652,7 +1639,7 @@ INSERT INTO `share_sitemap` (`smap_id`, `tmpl_id`, `smap_pid`, `smap_segment`, `
 (330, 18, NULL, 'restore-password', 1, 17, '2008-04-02 19:20:45', 0, 0, NULL),
 (331, 19, NULL, 'registration', 0, 8, '2008-04-02 19:29:37', 0, 0, NULL),
 (336, 16, NULL, 'feedback', 0, 7, '2009-10-05 16:46:37', 0, 0, NULL),
-(337, 21, 7, 'feedback-list', 0, 7, '2008-04-08 14:52:50', 0, 0, NULL),
+(337, 21, 7, 'feedback-list', 0, 8, '2008-04-08 14:52:50', 0, 0, NULL),
 (350, 20, NULL, 'gallery', 0, 4, '2009-08-14 18:43:25', 0, 0, NULL),
 (351, 22, NULL, 'google-sitemap', 1, 11, '2009-10-05 16:55:19', 0, 1, NULL),
 (352, 23, NULL, 'shop', 0, 3, '2010-01-14 14:40:06', 0, 0, NULL),
@@ -1665,12 +1652,13 @@ INSERT INTO `share_sitemap` (`smap_id`, `tmpl_id`, `smap_pid`, `smap_segment`, `
 (388, 31, 352, 'order', 1, 4, '2010-02-09 13:12:27', 0, 0, NULL),
 (389, 32, 352, 'basket', 1, 3, '2010-02-09 14:28:58', 0, 0, NULL),
 (390, 23, 352, 'fat-slonopotam', 0, 1, '2010-02-18 17:40:46', 0, 0, NULL),
-(391, 13, 392, 'text-block', 0, 1, '2010-02-19 11:04:24', 0, 0, NULL),
-(392, 3, NULL, 'text-pages', 0, 1, '2010-02-19 11:04:13', 0, 0, NULL),
+(391, 13, 392, 'text-block', 0, 1, '2010-02-25 11:53:29', 0, 0, NULL),
+(392, 3, NULL, 'text-pages', 0, 1, '2010-02-28 13:40:26', 0, 0, NULL),
 (393, 13, 392, 'text-block-2', 0, 2, '2010-02-19 11:05:31', 0, 0, NULL),
-(394, 13, 392, 'text-block-3', 0, 3, '2010-02-19 11:06:59', 0, 0, NULL),
+(394, 13, 392, 'text-block-3', 0, 3, '2010-02-24 18:45:16', 0, 0, NULL),
 (395, 13, 392, 'text-block-redirect', 0, 5, '2010-02-19 12:00:54', 0, 0, 'text-pages/'),
-(396, 23, 352, 'etc', 0, 2, '2010-02-19 12:34:20', 0, 0, NULL);
+(396, 23, 352, 'etc', 0, 2, '2010-02-19 12:34:20', 0, 0, NULL),
+(397, 33, 7, 'order-history', 0, 7, '2010-02-28 15:08:57', 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -1724,6 +1712,7 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (394, 1, 'И еще одна текстовая страница', NULL, NULL, NULL, NULL, 0),
 (395, 1, 'Эта страница - пример переадресации', NULL, NULL, NULL, NULL, 0),
 (396, 1, 'Разное', NULL, NULL, NULL, NULL, 0),
+(397, 1, 'История заказов', NULL, NULL, NULL, NULL, 0),
 (7, 2, 'Управління сайтом', NULL, NULL, NULL, NULL, 0),
 (80, 2, 'Демонстраційна версія CMS Energine', NULL, NULL, NULL, NULL, 1),
 (324, 2, 'Вхід', NULL, NULL, NULL, NULL, 0),
@@ -1751,6 +1740,7 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (394, 2, 'І ще одна текстова сторінка', NULL, NULL, NULL, NULL, 0),
 (395, 2, 'Ця сторінка - приклад переадресування', NULL, NULL, NULL, NULL, 0),
 (396, 2, 'Різне', NULL, NULL, NULL, NULL, 0),
+(397, 2, 'Замовлення', NULL, NULL, NULL, NULL, 0),
 (7, 3, 'Site management', NULL, NULL, NULL, NULL, 0),
 (80, 3, 'Energine demo version', NULL, NULL, NULL, NULL, 0),
 (324, 3, 'Entrance', NULL, NULL, NULL, NULL, 0),
@@ -1773,11 +1763,12 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (389, 3, 'Basket', NULL, NULL, NULL, NULL, 0),
 (390, 3, 'Fat Heffalumps', NULL, NULL, NULL, NULL, 0),
 (391, 3, 'Simple text page', NULL, NULL, NULL, NULL, 0),
-(392, 3, 'Tetx pages', NULL, NULL, NULL, NULL, 0),
+(392, 3, 'Text pages', NULL, NULL, NULL, NULL, 0),
 (393, 3, 'Another text page', NULL, NULL, NULL, NULL, 0),
 (394, 3, 'Another one text page', NULL, NULL, NULL, NULL, 0),
 (395, 3, 'Redirect example', NULL, NULL, NULL, NULL, 0),
-(396, 3, 'Etc', NULL, NULL, NULL, NULL, 0);
+(396, 3, 'Etc', NULL, NULL, NULL, NULL, 0),
+(397, 3, 'Orders', NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -1798,6 +1789,11 @@ CREATE TABLE IF NOT EXISTS `share_sitemap_uploads` (
 -- Dumping data for table `share_sitemap_uploads`
 --
 
+INSERT INTO `share_sitemap_uploads` (`smap_id`, `upl_id`, `upl_is_main`) VALUES
+(391, 45, 0),
+(394, 45, 0),
+(391, 46, 0),
+(391, 48, 0);
 
 -- --------------------------------------------------------
 
@@ -1815,34 +1811,35 @@ CREATE TABLE IF NOT EXISTS `share_templates` (
   `tmpl_is_system` tinyint(1) NOT NULL DEFAULT '0',
   `tmpl_order_num` int(10) unsigned DEFAULT '1',
   PRIMARY KEY (`tmpl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=33 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;
 
 --
 -- Dumping data for table `share_templates`
 --
 
 INSERT INTO `share_templates` (`tmpl_id`, `tmpl_name`, `tmpl_icon`, `tmpl_layout`, `tmpl_content`, `tmpl_is_system`, `tmpl_order_num`) VALUES
-(3, 'Список подразделов', 'templates/icons/divisions_list.icon.gif', 'default.layout.xml', 'childs.content.xml', 0, 12),
-(13, 'Текстовая страница', 'templates/icons/text_page.icon.gif', 'default.layout.xml', 'textblock.content.xml', 0, 11),
-(14, 'Лента новостей', 'templates/icons/feed.icon.gif', 'default.layout.xml', 'news.content.xml', 0, 14),
-(15, 'Форма авторизации', 'templates/icons/login_form.icon.gif', 'default.layout.xml', 'login.content.xml', 0, 16),
-(16, 'Форма контакта', 'templates/icons/feedback_form.icon.gif', 'default.layout.xml', 'feedback_form.content.xml', 0, 15),
-(17, 'Карта сайта', 'templates/icons/sitemap.icon.gif', 'default.layout.xml', 'map.content.xml', 0, 20),
-(18, 'Форма восстановления пароля', 'templates/icons/restore_password_form.icon.gif', 'default.layout.xml', 'restore_password.content.xml', 0, 21),
-(19, 'Форма регистрации/Редактор профиля', 'templates/icons/profile_form.icon.gif', 'default.layout.xml', 'register.content.xml', 0, 22),
-(20, 'Фотогалерея', 'templates/icons/gallery.icon.gif', 'default.layout.xml', 'gallery.content.xml', 0, 13),
-(21, 'Список сообщений', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'feedback_list.content.xml', 0, 23),
-(22, 'Google sitemap', 'templates/icons/google.icon.gif', 'empty.layout.xml', 'google_sitemap.content.xml', 1, 19),
-(23, 'Список товаров', 'templates/icons/divisions_list.icon.gif', 'catalogue.layout.xml', 'product_division_list.content.xml', 0, 10),
-(24, 'Редактор товаров', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_editor.content.xml', 0, 9),
-(25, 'Редактор производителей', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'producer_editor.content.xml', 0, 8),
-(26, 'Редактор статусов товара', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_status_editor.content.xml', 0, 7),
-(27, 'Редактор типов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_type_editor.content.xml', 0, 6),
-(28, 'Редактор статусов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_status.content.xml', 0, 5),
-(29, 'Редактор валюты', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'curr_editor.content.xml', 0, 4),
-(30, 'Главная страница', 'templates/icons/home_page.icon.gif', 'default.layout.xml', 'main.content.xml', 0, 3),
-(31, 'Форма заказа', 'templates/icons/form.icon.gif', 'order.layout.xml', 'order.content.xml', 0, 2),
-(32, 'Корзина', 'templates/icons/form.icon.gif', 'order.layout.xml', 'basket.content.xml', 0, 1);
+(3, 'Список подразделов', 'templates/icons/divisions_list.icon.gif', 'default.layout.xml', 'childs.content.xml', 0, 13),
+(13, 'Текстовая страница', 'templates/icons/text_page.icon.gif', 'default.layout.xml', 'textblock.content.xml', 0, 12),
+(14, 'Лента новостей', 'templates/icons/feed.icon.gif', 'default.layout.xml', 'news.content.xml', 0, 15),
+(15, 'Форма авторизации', 'templates/icons/login_form.icon.gif', 'default.layout.xml', 'login.content.xml', 0, 17),
+(16, 'Форма контакта', 'templates/icons/feedback_form.icon.gif', 'default.layout.xml', 'feedback_form.content.xml', 0, 16),
+(17, 'Карта сайта', 'templates/icons/sitemap.icon.gif', 'default.layout.xml', 'map.content.xml', 0, 21),
+(18, 'Форма восстановления пароля', 'templates/icons/restore_password_form.icon.gif', 'default.layout.xml', 'restore_password.content.xml', 0, 22),
+(19, 'Форма регистрации/Редактор профиля', 'templates/icons/profile_form.icon.gif', 'default.layout.xml', 'register.content.xml', 0, 23),
+(20, 'Фотогалерея', 'templates/icons/gallery.icon.gif', 'default.layout.xml', 'gallery.content.xml', 0, 14),
+(21, 'Список сообщений', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'feedback_list.content.xml', 0, 24),
+(22, 'Google sitemap', 'templates/icons/google.icon.gif', 'empty.layout.xml', 'google_sitemap.content.xml', 1, 20),
+(23, 'Список товаров', 'templates/icons/divisions_list.icon.gif', 'catalogue.layout.xml', 'product_division_list.content.xml', 0, 11),
+(24, 'Редактор товаров', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_editor.content.xml', 0, 10),
+(25, 'Редактор производителей', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'producer_editor.content.xml', 0, 9),
+(26, 'Редактор статусов товара', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_status_editor.content.xml', 0, 8),
+(27, 'Редактор типов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_type_editor.content.xml', 0, 7),
+(28, 'Редактор статусов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_status.content.xml', 0, 6),
+(29, 'Редактор валюты', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'curr_editor.content.xml', 0, 5),
+(30, 'Главная страница', 'templates/icons/home_page.icon.gif', 'default.layout.xml', 'main.content.xml', 0, 4),
+(31, 'Форма заказа', 'templates/icons/form.icon.gif', 'order.layout.xml', 'order.content.xml', 0, 3),
+(32, 'Корзина', 'templates/icons/form.icon.gif', 'order.layout.xml', 'basket.content.xml', 0, 2),
+(33, 'История заказов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_history.content.xml', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -1906,7 +1903,7 @@ CREATE TABLE IF NOT EXISTS `share_textblocks_translation` (
 --
 
 INSERT INTO `share_textblocks_translation` (`tb_id`, `lang_id`, `tb_content`) VALUES
-(16, 1, 'И вот наконец долгожданная версия Energine 2.3.6.<br/>\r\nКак всегда — старые ошибки исправили, новые добавили :)<br/>\r\nНо кроме ошибок добавился еще и <strong>модуль интернет магазина</strong>.<br/>\r\n'),
+(16, 1, 'И вот наконец долгожданная версия Energine 2.3.6.<br/>\r\nКак всегда — старые ошибки исправили, новые добавили :)<br/>\r\nНо кроме ошибок добавился еще и <strong>модуль интернет магазина</strong>.<br/>\r\n<br/>\r\n2.3.6.1 — исправлены проблемы с формой заказа<br/>\r\n2.3.7 — произведена оптимизация производительности (число запросов к базе уменьшилось в среднем в 5 раз, скорость отработки страницы увеличилась процентов на 20%)<br/>\r\n<br/>\r\nВход в режим администратора:<br/>\r\n<ul> <li>Логин: <strong>demo@energine.org</strong> </li> <li>Пароль: <strong>demo</strong> </li></ul>'),
 (16, 2, '<ul> <li>Ім''я користувача: <strong>demo@energine.org</strong> </li> <li>Пароль: <strong>demo</strong> </li></ul>'),
 (16, 3, '<div> <ul> <li>Login: <strong>demo@energine.org</strong> </li> <li>Password: <strong>demo</strong> </li> </ul> <p> Energine is a content management system which allows to support web-applications (including websites) of any level of complexity. Energine is based on Energine CMF — a power full toolkit for web-application development using XML/XSLT transformations. </p> <p> Main features of Energine are: </p> <ol> <li>Multi-language support. Energine supports unbounded quantity of languages with ability to translate not only content of a site, but buttons, emails, captions too. </li> <li>User''s access delimitation. User''s access control system allows to edit user''s rights to access and edit different parts of a website. </li> <li>Visual text editor. A built in WYSIWYG (what you see is what you get) editor is a handy tool to edit web site''s content and preview it. </li> <li>Files. Common file storage allows to use one method to work with files in forms and with a help of text editor. </li> <li>Structure site management. Web site''s structure represented as a tree. User can add, edit and delete it''s nodes to modify parts of a site. </li> </ol></div>'),
 (65, 1, '<span class="copyright">Powered by <a href= "http://energine.org/">Energine</a></span>'),
@@ -1918,7 +1915,7 @@ INSERT INTO `share_textblocks_translation` (`tb_id`, `lang_id`, `tb_content`) VA
 (89, 1, '<p>\n  Раздел "Управление сайтом"\n  предоставляет администратору\n  сайта возможность управлять\n  пользователями, языковыми\n  версиями, интернет-магазином и\n  другими функциональностями.\n</p>'),
 (89, 2, '<p>\n  Розділ "Управління сайтом" надає\n  адміністратору сайту можливість\n  керувати користувачами, мовними\n  версіями, інтернет-магазином та\n  іншими функціональностями.\n</p>'),
 (89, 3, '<br/>\r\n'),
-(109, 1, '<p> <strong>Для редактирования списка новостей вам необходимо (в режиме администратора) перейти в режим редактирования страницы и воспользоваться дополнительной панелью редактирования новостей.</strong><img src="uploads/public/izobrazhenija_dlya_tekstov_na_sajte/12618290089846.png" alt="Панель новостей" style="width: 633px; height: 239px;"/></p>'),
+(109, 1, '<p> <strong>Для редактирования списка новостей вам необходимо (в режиме администратора) перейти в режим редактирования страницы и воспользоваться дополнительной панелью редактирования новостей.</strong></p>'),
 (110, 1, '<p> <strong>Для редактирования фотогалереи вам необходимо (в режиме администратора) перейти в режим редактирования страницы и воспользоваться дополнительной панелью редактирования фотогалереи.</strong></p>'),
 (111, 1, '<p> Введите Ваш логин (в качестве логина используется адрес электронной почты ) и полное имя. Система автоматически сгенерит пароль и отправит вам по указанному адресу.<br/>\r\n</p>'),
 (112, 1, '<p> В режиме администратора на этой странице отображается и форма регистрации нового пользователя и форма редактирования профиля пользователя.</p><p> В режиме пользователя — отображается только форма редактирования профиля.</p>'),
@@ -1942,7 +1939,7 @@ CREATE TABLE IF NOT EXISTS `share_uploads` (
   `upl_data` text,
   PRIMARY KEY (`upl_id`),
   UNIQUE KEY `upl_path` (`upl_path`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=49 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53 ;
 
 --
 -- Dumping data for table `share_uploads`
@@ -1952,7 +1949,10 @@ INSERT INTO `share_uploads` (`upl_id`, `upl_path`, `upl_name`, `upl_data`) VALUE
 (45, 'uploads/public/12665704674248.gif', 'Energine core', NULL),
 (46, 'uploads/public/12665745065727.gif', 'heffalump.gif', NULL),
 (47, 'uploads/public/12665754338542.png', 'Heffalump-2.png', NULL),
-(48, 'uploads/public/12665754906067.png', 'Heffalump-3.png', NULL);
+(48, 'uploads/public/12665754906067.png', 'Heffalump-3.png', NULL),
+(49, 'uploads/public/12671938041279.jpg', 'Huffalump-Lumpy-Dance.jpg', NULL),
+(50, 'uploads/public/12671938143931.jpg', 'Huffalump-Lumpy-Roo.jpg', NULL),
+(51, 'uploads/public/skrinshoty', 'Скриншоты', NULL);
 
 -- --------------------------------------------------------
 
@@ -1969,7 +1969,7 @@ CREATE TABLE IF NOT EXISTS `shop_basket` (
   PRIMARY KEY (`basket_id`),
   UNIQUE KEY `product_id` (`product_id`,`session_id`),
   KEY `basket_ibfk_2` (`session_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `shop_basket`
@@ -2078,14 +2078,15 @@ CREATE TABLE IF NOT EXISTS `shop_orders` (
   PRIMARY KEY (`order_id`),
   KEY `u_id` (`u_id`),
   KEY `os_id` (`os_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `shop_orders`
 --
 
 INSERT INTO `shop_orders` (`order_id`, `u_id`, `os_id`, `order_comment`, `order_delivery_comment`, `order_detail`, `user_detail`, `order_created`) VALUES
-(3, 1, 1, NULL, NULL, 'a:1:{i:0;a:11:{s:9:"basket_id";s:2:"14";s:10:"product_id";s:1:"1";s:10:"session_id";s:3:"325";s:12:"basket_count";s:1:"1";s:12:"product_name";s:29:"Название товара";s:13:"product_price";s:3:"$12";s:12:"product_summ";s:3:"$12";s:26:"product_summ_with_discount";N;s:7:"curr_id";s:1:"2";s:15:"product_segment";s:16:"nazvanije-tovara";s:12:"product_code";s:9:"126766767";}}', 'a:4:{s:4:"u_id";s:1:"1";s:6:"u_name";s:17:"demo@energine.org";s:10:"u_fullname";s:4:"demo";s:22:"order_delivery_comment";s:0:"";}', '2010-02-09 13:23:34');
+(3, 1, 1, NULL, NULL, 'a:1:{i:0;a:11:{s:9:"basket_id";s:2:"14";s:10:"product_id";s:1:"1";s:10:"session_id";s:3:"325";s:12:"basket_count";s:1:"1";s:12:"product_name";s:29:"Название товара";s:13:"product_price";s:3:"$12";s:12:"product_summ";s:3:"$12";s:26:"product_summ_with_discount";N;s:7:"curr_id";s:1:"2";s:15:"product_segment";s:16:"nazvanije-tovara";s:12:"product_code";s:9:"126766767";}}', 'a:4:{s:4:"u_id";s:1:"1";s:6:"u_name";s:17:"demo@energine.org";s:10:"u_fullname";s:4:"demo";s:22:"order_delivery_comment";s:0:"";}', '2010-02-09 13:23:34'),
+(11, 1, 1, NULL, NULL, 'a:2:{i:0;a:10:{s:9:"basket_id";s:1:"8";s:10:"product_id";s:1:"4";s:10:"session_id";s:4:"3029";s:12:"basket_count";s:1:"1";s:12:"product_name";s:35:"Розовый слонопотам";s:13:"product_price";s:13:"12000 грн.";s:12:"product_summ";s:13:"12000 грн.";s:7:"curr_id";s:1:"2";s:15:"product_segment";s:18:"rozovyj-slonopotam";s:12:"product_code";s:3:"123";}i:1;a:10:{s:9:"basket_id";s:1:"9";s:10:"product_id";s:1:"5";s:10:"session_id";s:4:"3029";s:12:"basket_count";s:1:"1";s:12:"product_name";s:37:"Плюшевый слонопотам";s:13:"product_price";s:12:"4500 грн.";s:12:"product_summ";s:12:"4500 грн.";s:7:"curr_id";s:1:"2";s:15:"product_segment";s:21:"plyushevyj-slonopotam";s:12:"product_code";s:6:"211212";}}', 'a:4:{s:4:"u_id";s:1:"1";s:6:"u_name";s:17:"demo@energine.org";s:10:"u_fullname";s:10:"Павка";s:22:"order_delivery_comment";s:0:"";}', '2010-02-28 14:05:10');
 
 -- --------------------------------------------------------
 
@@ -2425,8 +2426,10 @@ CREATE TABLE IF NOT EXISTS `shop_product_uploads` (
 
 INSERT INTO `shop_product_uploads` (`product_id`, `upl_id`, `upl_is_main`) VALUES
 (4, 46, 0),
+(6, 46, 0),
 (5, 47, 0),
-(5, 48, 0);
+(5, 48, 0),
+(6, 48, 0);
 
 -- --------------------------------------------------------
 
@@ -2494,14 +2497,14 @@ CREATE TABLE IF NOT EXISTS `user_users` (
   `u_avatar_prfile` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`u_id`),
   UNIQUE KEY `u_login` (`u_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `user_users`
 --
 
 INSERT INTO `user_users` (`u_id`, `u_name`, `u_password`, `u_is_active`, `u_fullname`, `u_avatar_prfile`) VALUES
-(1, 'demo@energine.org', '89e495e7941cf9e40e6980d14a16bf023ccd4c91', 1, 'demo', NULL);
+(1, 'demo@energine.org', '89e495e7941cf9e40e6980d14a16bf023ccd4c91', 1, 'demo', 'uploads/protected/12673636662855.png');
 
 -- --------------------------------------------------------
 
@@ -2588,8 +2591,8 @@ ALTER TABLE `share_sitemap_translation`
 -- Constraints for table `share_sitemap_uploads`
 --
 ALTER TABLE `share_sitemap_uploads`
-  ADD CONSTRAINT `share_sitemap_uploads_ibfk_4` FOREIGN KEY (`upl_id`) REFERENCES `share_uploads` (`upl_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `share_sitemap_uploads_ibfk_3` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `share_sitemap_uploads_ibfk_3` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `share_sitemap_uploads_ibfk_4` FOREIGN KEY (`upl_id`) REFERENCES `share_uploads` (`upl_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `share_textblocks`
@@ -2713,5 +2716,7 @@ ALTER TABLE `user_groups`
 ALTER TABLE `user_user_groups`
   ADD CONSTRAINT `user_user_groups_ibfk_3` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_user_groups_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `user_groups` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 SET FOREIGN_KEY_CHECKS=1;
+
 COMMIT;

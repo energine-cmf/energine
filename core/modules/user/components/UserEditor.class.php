@@ -81,7 +81,8 @@ class UserEditor extends Grid {
         ){
         	//и ее размеры отличаются от необходимых
         	list($realWidth, $realHeight) = getimagesize($_POST[$this->getTableName()]['u_avatar_prfile']);
-        	list($neededWidth, $neededHeight) = $this->getParam('thumbnail');
+        	list($thumbnailInfo) = $this->getConfigValue('thumbnails.thumbnail');
+        	list($neededWidth, $neededHeight) = array((string)$thumbnailInfo->width, (string)$thumbnailInfo->height);
         	 
         	if(
         	   ($realWidth != $neededWidth) 

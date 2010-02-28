@@ -126,9 +126,8 @@ class OrderForm extends DBDataSet {
      */
 
     protected function save() {
+        $this->dbh->beginTransaction();
         try {
-            $this->dbh->beginTransaction();
-
             if (!isset($_POST[$this->getTableName()])) {
                 throw new SystemException('ERR_DEV_NO_DATA', SystemException::ERR_WARNING);
             }
@@ -146,7 +145,7 @@ class OrderForm extends DBDataSet {
 
 
             $data['order_id'] = $this->order->create(array_merge($userData, array('order_delivery_comment'=>$data['order_delivery_comment'])));
-            $this->sendNotification(array_merge($userData, $data));
+            $this->order->sendNotification(array_merge($userData, $data));
             $_SESSION['order_saved'] = true;
             $this->order->getBasket()->purify();
 
@@ -231,112 +230,5 @@ class OrderForm extends DBDataSet {
         if ($component = $this->document->componentManager->getComponentByName('basket')) {
             $component->disable();
         }
-    }
-
-    /**
-     * Отправка уведомления о заказе
-     *
-     * @param array
-     * @return bool
-     * @access protected
-     */
-
-    protected function sendNotification($data) {
-        $this->sendClientMail($data);
-
-        if ($managerEmail = $this->getConfigValue('mail.manager')) {
-            $this->sendManagerMail($data);
-        
-        }
-
-        return true;
-    }
-
-    /**
-      * Возвращает текст письма отправляемого пользователю при отправке заказа
-      * Вынесено в отдельный метод для облегчения переписывания с потомках
-      *
-      * @return string
-      * @access protected
-      */
-
-    protected function sendClientMail($data) {
-    	$mail = new Mail();
-        $mail->setFrom($this->getConfigValue('mail.from'));
-        $mail->addTo($data['u_name']);
-        $mail->setSubject($this->translate('TXT_ORDER_CLIENT_SUBJECT'));
-        $result = '';
-        if ($this->order->getUser()->getValue('u_password') === true) {
-        	$mail->setText($body);
-            $result = sprintf($this->translate('TXT_ORDER_CLIENT_MAIL_BODY'), $data['order_id'], $data['u_name'], $data['u_fullname'], $data['order_delivery_comment'], $basketHTML);
-        }
-        else {
-        	$mail->setText($body);
-            $result = 
-                sprintf($this->translate('TXT_ORDER_NEW_CLIENT_MAIL_BODY'), $data['u_name'], $this->order->getUser()->getValue('u_password'), $data['order_id'], $data['u_name'], $data['u_fullname'], $data['order_delivery_comment'], $basketHTML);
-        }
-        $mail->send();
-    }
-
-
-    /**
-     * Возвращает текст письма администратору
-     *
-     *
-     * @param array $data
-     * @return string
-     * @access protected
-     */
-    protected function sendManagerMail($data) {
-    	$mail = new Mail();
-        $mail->setFrom($this->getConfigValue('mail.from'));
-        $managerEmails = explode(' ', $managerEmail);
-
-        foreach ($managerEmails as $email) {
-            $mail->addTo($email);
-        }
-        $mail->setSubject($this->translate('TXT_ORDER_MANAGER_SUBJECT'));
-        $body = $this->buildManagerMailBody($data);
-        $mail->setText($body);
-        $mail->send();
-    	
-        $result = '';
-        $basketHTML = $this->buildBasketHTML();
-        $result = sprintf($this->translate('TXT_ORDER_MANAGER_MAIL_BODY'), $data['order_id'], $data['u_name'], $data['u_fullname'], $data['order_delivery_comment'], $basketHTML);
-    }
-
-    /**
-     * Возвращает содержимое корзины в HTML
-     *
-     * @return string
-     * @access protected
-     */
-    protected function buildBasketHTML() {
-        $converter = CurrencyConverter::getInstance();
-        //$discounts = Discounts::getInstance();
-        $contents = $this->order->getBasket()->getFormattedContents();
-        $basketHTML = '<table border="1">';
-        $basketHTML .= '<thead><tr>';
-        $basketHTML .= '<td>'.$this->translate('FIELD_PRODUCT_NAME')."</td>\t<td>".$this->translate('FIELD_BASKET_COUNT')."</td>\t<td>".$this->translate('FIELD_PRODUCT_PRICE')."</td>\t<td>".$this->translate('FIELD_PRODUCT_SUMM')."</td>\n";
-        $basketHTML .= '</tr></thead><tbody>';
-        $summ = 0;
-        foreach ($contents as $key => $productInfo) {
-            $basketHTML .= '<tr>';
-            $basketHTML .= '<td>'.$productInfo['product_name'] .' '.$productInfo['product_code'] ."</td>\t";
-            $basketHTML .= '<td>'.$productInfo['basket_count'] ."</td>\t";
-            $basketHTML .= '<td>'.$productInfo['product_price'] ."</td>\t";
-            $basketHTML .= '<th>'.$productInfo['product_summ'] ."</th>\t";
-            $basketHTML .= "</tr>\n";
-            $summ += $productInfo['product_summ'];
-        }
-        $basketHTML .= '</tbody>';
-        $basketHTML .= '<tfoot>';
-        $basketHTML .= '<tr><td colspan="3">'.$this->translate('TXT_BASKET_SUMM')."</td>\t<td>".$converter->format($summ, $converter->getIDByAbbr('HRN')).'</td></tr>';
-        /*if ($discounts->getDiscountForGroup() > 0) {
-            $basketHTML .= '<tr><td colspan="3">'.$this->translate('TXT_BASKET_SUMM_WITH_DISCOUNT').' '.$discounts->getDiscountForGroup().'%</td><td>'.number_format($discounts->calculateCost($summ), 2, '.', ' ').'</td></tr>';
-        }*/
-        $basketHTML .= '</tfoot>';
-        $basketHTML .= '</table>';
-        return $basketHTML;
     }
 }

@@ -8,7 +8,7 @@
  */
 //Проверяем установлена ли система
 //Отталкиваемся от того факта что содержание .htaccess - создается при установке
-if(!file_exists('.htaccess') || (filesize('.htaccess') === 0)){
+if(!file_exists('.htenergine') || (filesize('.htenergine') === 0)){
     header($_SERVER['SERVER_PROTOCOL']." 200 Ok");
     header("Location: setup/index.php");
     exit();

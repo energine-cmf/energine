@@ -1,18 +1,18 @@
 <?php
 /**
- * Содержит класс CLASS_NAME
+ * Содержит класс JSONDivBuilder
  *
  * @package energine
- * @subpackage MODULE_NAME
+ * @subpackage share
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
 
  /**
-  * CLASS_DESC
+  * Модифицированный постороитель для редактора разделов
   *
   * @package energine
-  * @subpackage MODULE_NAME
+  * @subpackage share
   * @author d.pavka@gmail.com
   */
  class JSONDivBuilder extends JSONBuilder {

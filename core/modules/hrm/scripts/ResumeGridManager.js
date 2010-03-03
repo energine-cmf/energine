@@ -1,4 +1,4 @@
-ScriptLoader.load('GridManager.js');
+ScriptLoader.load('GridManager');
 
 var ResumeGridManager = new Class({
     Extends: GridManager,

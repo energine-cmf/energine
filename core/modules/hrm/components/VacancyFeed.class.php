@@ -28,7 +28,7 @@ class VacancyFeed extends Feed {
      */
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
-        $this->setTableName('aux_vacancies');
+        $this->setTableName('hrm_vacancies');
 
         //Если у текущего пользователя нет прав на редактирование - убираем все все неактивные вакансии
         if ($this->document->getRights() < ACCESS_FULL) {

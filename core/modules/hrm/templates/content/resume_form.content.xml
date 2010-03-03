@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content>
-    <component name="resumeForm" module="misc" class="ResumeForm"></component>
+    <component name="resumeForm" module="hrm" class="ResumeForm"></component>
 </content>

@@ -18,7 +18,7 @@
  * @final
  */
 final class ResumeForm extends DataSet {
-	const RESUME_TABLE_NAME = 'aux_resumes';
+	const RESUME_TABLE_NAME = 'hrm_resumes';
 	private $jevix;
 
 	/**
@@ -113,7 +113,7 @@ final class ResumeForm extends DataSet {
 				//Определяем идентфикатор вакансии 
 				//по сегменту вакансии
 				$vacancyID = simplifyDBResult($this->dbh->select(
-                    'aux_vacancies',
+                    'hrm_vacancies',
                     'vacancy_id',
 				$component->getFilter()
 				), 'vacancy_id', true);

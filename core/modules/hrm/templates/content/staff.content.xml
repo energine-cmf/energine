@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content>
-    <component name="staffFeed" module="misc" class="StaffFeed"></component>
-    <component name="staffFeedEditor" module="misc" class="StaffFeedEditor">
+    <component name="staffFeed" module="hrm" class="StaffFeed"></component>
+    <component name="staffFeedEditor" module="hrm" class="StaffFeedEditor">
         <params>
             <param name="rights">2</param>
             <param name="linkTo">staffFeed</param>

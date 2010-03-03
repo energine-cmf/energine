@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content>
-    <component name="resumeGrid" module="misc" class="Grid">
+    <component name="resumeGrid" module="hrm" class="Grid">
         <params>
-            <param name="configFilename">core/modules/misc/config/ResumeGrid.component.xml</param>
-            <param name="tableName">aux_resumes</param>
+            <param name="configFilename">core/modules/hrm/config/ResumeGrid.component.xml</param>
+            <param name="tableName">hrm_resumes</param>
         </params>
     </component>
 </content>

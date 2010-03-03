@@ -29,7 +29,7 @@
      */
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
-        $this->setTableName('aux_vacancies');
+        $this->setTableName('hrm_vacancies');
     }
 
 

@@ -105,6 +105,9 @@
     		//$this->getViewer()->addBlock('Процесс копирования успешно завершён.', Viewer::TPL_FOOTER);
     		$base = str_replace(array('setup/?state=install', 'setup/index.php?state=install', 'setup/?state=linker', 'setup/index.php?state=linker'),'',$_SERVER['REQUEST_URI']);
     		$this->getViewer()->addBlock('<a href="'.$base.'">Перейти на сайт</a>', Viewer::TPL_FOOTER);
+    		if(!file_exists($htenergine = $this->serverRoot.ENERGINE_LABEL_FILENAME)){
+    			file_put_contents($htenergine, @date(DATE_RFC822));
+    		}
         }
 
        

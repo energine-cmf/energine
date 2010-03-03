@@ -14,7 +14,7 @@
      *
      */
 	define('FORCED_CHARSET','utf8');
-
+    define('ENERGINE_LABEL_FILENAME', '.htenergine');
     ini_set('display_errors',1);
     @set_time_limit(600);
     header('Content-Type: text/html; charset='.FORCED_CHARSET);

@@ -9,10 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DBDataSet.class.php');
-//require_once('core/framework/User.class.php');
-//require_once('core/framework/Mail.class.php');
-
 /**
  * Форма регистрации
  *
@@ -45,6 +41,7 @@ class Register extends DBDataSet {
 		$this->setType(self::COMPONENT_TYPE_FORM_ADD);
 		$this->user = new User();
 		$this->setTableName(User::USER_TABLE_NAME);
+		$this->addTranslation('TXT_ENTER_CAPTCHA');
 	}
 	/**
 	 * Переопределен параметр active
@@ -61,13 +58,44 @@ class Register extends DBDataSet {
 		return $result;
 	}
 	/**
+     * Метод проверки логина
+     * Вызывается AJAXом при заполнении формы регистрации
+     *
+     * @access protected
+     * @return void
+     */
+	protected function checkLogin(){
+		$login = trim($_POST['login']);
+            $result = !(bool)simplifyDBResult(
+                $this->dbh->select(
+                    $this->getTableName(),
+                    array('COUNT(u_id) as number'),
+                    array('u_name' => $login)
+                ),
+                'number', 
+            true
+            );
+            $field = 'login';
+            $message = ($result)?$this->translate('TXT_LOGIN_AVAILABLE'):$this->translate('TXT_LOGIN_ENGAGED');
+            $result = array(
+                'result'=> $result,
+                'message' => $message,
+                'field' => $field,  
+        );
+        $result = json_encode($result);
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write($result);
+        $this->response->commit();
+	}
+	
+	/**
 	 * Метод проверки логина
 	 * Вызывается AJAXом при заполнении формы регистрации
 	 *
 	 * @access protected
 	 * @return void
-	 */
-	protected function check(){
+	 *
+	protected function checkLogin(){
 		if($_SESSION['captchaChecked'] = $result = (
 		isset($_POST['captcha'])
 		&&
@@ -101,6 +129,7 @@ class Register extends DBDataSet {
 		$this->response->write($result);
 		$this->response->commit();
 	}
+	*/
 	/**
 	 * Обработка возможных ошибок сохранения + редирект на страницу результата
 	 *
@@ -109,16 +138,35 @@ class Register extends DBDataSet {
 	 */
 	protected function save() {
 		try {
+			if(
+			 !isset($_SESSION['captchaCode'])
+			 ||
+			 !isset($_POST['captcha'])
+			 ||
+			 ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
+			){
+			     throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL); 	
+			}
 			$this->saveData();
 			$_SESSION['saved'] = true;
 			$this->response->redirectToCurrentSection('success/');
 		}
 		catch (SystemException $e) {
-			$this->generateError(SystemException::ERR_NOTICE, $e->getMessage());
-			$this->setParam('action', 'main');
-			$this->prepare();
+			$this->failure($e->getMessage(), $_POST[$this->getTableName()]);
 		}
 	}
+	
+	protected function failure($errorMessage, $data){
+		$this->config->setCurrentMethod('main');
+	    $this->prepare();
+	    $eFD = new FieldDescription('error_message');
+	    $eFD->setMode(FieldDescription::FIELD_MODE_READ);
+	    $eFD->setType(FieldDescription::FIELD_TYPE_STRING);
+	    $this->getDataDescription()->addFieldDescription($eFD);
+	    $this->getData()->load(array(array_merge(array('error_message' => $errorMessage), $data)));
+	    	
+	}
+	
 
 	/**
 	 * Сохранение данных.

@@ -76,6 +76,14 @@
     </xsl:template>
     <!-- /компонент Register -->
     
+    <!-- компонент UserProfile -->
+    <xsl:template match="component[@class='UserProfile'][@componentAction='success']">
+        <div class="result_message">
+            <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
+        </div>
+    </xsl:template>
+    <!-- /компонент UserProfile -->
+    
     <!-- компонент RoleEditor -->    
     <xsl:template match="field[@name='group_div_rights']">
             <div class="page_rights">

@@ -27,21 +27,13 @@
 				<field name="order_created" mode="1"/>
 				<field name="os_id"/>
 				<field name="order_comment"/>
+				<field name="order_details" tabName="TAB_ORDER_DETAILS" type="custom"/>
 			</fields>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-				<control id="viewDetails" title="BTN_VIEW_DETAILS" type="button" onclick="viewDetails"/>
 				<control id="sep1" type="separator" />
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="showDetails" rights="2">
-			<uri_patterns>
-				<pattern>/[int]/show-details/</pattern>
-				<pattern>/[int]/show-details/[int]/</pattern>
-				<pattern>/[int]/show-details/get-data/</pattern>
-				<pattern>/[int]/show-details/get-data/page-[int]/</pattern>
-			</uri_patterns>
 		</method>
 		<method name="save" rights="2">
 		     <uri_patterns>

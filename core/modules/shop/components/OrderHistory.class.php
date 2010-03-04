@@ -20,13 +20,6 @@
  */
 class OrderHistory extends Grid {
     /**
-      * Детали заказа(список продуктов)
-      *
-      * @var OrderDetails
-      * @access private
-      */
-    private $details;
-    /**
      * Конструктор класса
      *
      * @param string $name
@@ -55,22 +48,6 @@ class OrderHistory extends Grid {
          }
          return $result;
      }
-    /**
-	 * Выводит детали заказа
-	 *
-	 * @return void
-	 * @access protected
-	 */
-
-    protected function showDetails() {
-        $orderID = $this->getActionParams();
-        $orderID = $orderID[0];
-        $this->request->setPathOffset($this->request->getPathOffset() + 2);
-        $this->details = $this->document->componentManager->createComponent('orderDetails', 'shop', 'OrderDetails', array('orderID'=>$orderID), false);
-        $this->details->getAction();
-        $this->details->run();
-    }
-
     /**
      * Для метода вывода информации о заказе доавбляем инфу о данных заказа
      *
@@ -101,21 +78,4 @@ class OrderHistory extends Grid {
         }
 
      }
-
-    /**
-	  * Выводим детали заказа
-	  *
-	  * @return DOMNode
-	  * @access public
-	  */
-
-    public function build() {
-        if ($this->getAction() == 'showDetails') {
-            $result = $this->details->build();
-        }
-        else {
-            $result = parent::build();
-        }
-        return $result;
-    }
 }

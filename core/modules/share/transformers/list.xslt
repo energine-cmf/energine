@@ -252,24 +252,4 @@
             </tbody>
         </table>
     </xsl:template>
-
-    <!-- компонент FileLibrary - файловый репозиторий -->
-    <xsl:template match="recordset[parent::component[@class='FileLibrary'][@type='list']]">
-        <xsl:variable name="TAB_ID" select="generate-id(record[1])"></xsl:variable>
-        <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" file_type="{../@allowed_file_type}">
-            <ul class="tabs">
-                <li>
-                    <a href="#{$TAB_ID}"><xsl:value-of select="record[1]/field[1]/@tabName" /></a>
-                </li>
-            </ul>
-            <div class="paneContainer">
-                <div id="{$TAB_ID}">
-                    <div class="dirArea">
-                        <div class="scrollHelper"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </xsl:template>
-
 </xsl:stylesheet>

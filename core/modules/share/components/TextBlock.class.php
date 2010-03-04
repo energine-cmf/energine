@@ -30,14 +30,6 @@ final class TextBlock extends DataSet {
     private $imageManager;
 
     /**
-     * Компонент библиотеки изображений
-     *
-     * @var ImageLibrary
-     * @access private
-     */
-    private $imageLibrary;
-
-    /**
      * Компонент библиотеки файлов
      *
      * @var FileLibrary
@@ -315,7 +307,6 @@ final class TextBlock extends DataSet {
 
     protected function source() {
         $this->source = $this->document->componentManager->createComponent('textblocksource', 'share', 'TextBlockSource', null);
-        //$this->source->getAction();
         $this->source->run();
     }
 
@@ -326,22 +317,8 @@ final class TextBlock extends DataSet {
      * @access protected
      */
     protected function imageManager() {
-        $this->imageManager  = $this->document->componentManager->createComponent('imagemanager', 'image', 'ImageManager', null);
-        //$this->imageManager->getAction();
+        $this->imageManager  = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
         $this->imageManager->run();
-    }
-
-    /**
-     * Выводит компонент библиотека изображений
-     *
-     * @return void
-     * @access protected
-     */
-    protected function imageLibrary() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->imageLibrary = $this->document->componentManager->createComponent('imagelibrary', 'image', 'ImageLibrary', null);
-        //$this->imageLibrary->getAction();
-        $this->imageLibrary->run();
     }
 
     /**
@@ -353,7 +330,6 @@ final class TextBlock extends DataSet {
      protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', null, false);
-        //$this->fileLibrary->getAction();
         $this->fileLibrary->run();
      }
 
@@ -369,9 +345,6 @@ final class TextBlock extends DataSet {
         	case 'imageManager':
         	    $result = $this->imageManager->build();
         		break;
-        	case 'imageLibrary':
-        	    $result = $this->imageLibrary->build();
-        	    break;
         	case 'fileLibrary':
         	    $result = $this->fileLibrary->build();
         	    break;

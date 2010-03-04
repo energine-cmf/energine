@@ -9,8 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DataSet.class.php');
-//require_once('core/modules/image/components/Image.class.php');
 
 /**
  * Менеджер изображений.

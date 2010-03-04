@@ -9,12 +9,6 @@
  * @version $Id: DataSet.class.php,v 1.32 2008/12/13 14:10:09 pavka Exp $
  */
 
-//require_once('core/framework/Component.class.php');
-//require_once('core/framework/DataDescription.class.php');
-//require_once('core/framework/Data.class.php');
-//require_once('core/framework/SimpleBuilder.class.php');
-//require_once('core/framework/Pager.class.php');
-//require_once('core/modules/share/components/Toolbar.class.php');
 
 /**
  * Предок для формы, списка, и дерева; содержит методы работы с панелью инструментов и набором данных.
@@ -90,15 +84,6 @@ abstract class DataSet extends Component {
 	 * @access private
 	 */
 	private $type;
-
-	/**
-	 * Переводы которые добавляются к форме/списку
-	 *
-	 * @var array
-	 * @access private
-	 */
-	//private $translations = array();
-
 
 	/**
 	 * Список страниц (pager)

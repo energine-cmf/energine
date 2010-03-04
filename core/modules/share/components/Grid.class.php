@@ -673,7 +673,7 @@ class Grid extends DBDataSet {
      * @access protected
      */
     protected function imageManager() {
-        $this->imageManager  = $this->document->componentManager->createComponent('imagemanager', 'image', 'ImageManager', null);
+        $this->imageManager  = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
         //$this->imageManager->getAction();
         $this->imageManager->run();
     }

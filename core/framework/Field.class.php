@@ -87,7 +87,7 @@ class Field extends Object implements Iterator{
      * @return void
      */
     public function setData($data, $setForAll = false) {
-        if ($setForAll) {
+        if ($setForAll && $this->getRowCount()) {
         	$data = array_fill(0, $this->getRowCount(), $data);
         }
         elseif (!is_array($data)) {

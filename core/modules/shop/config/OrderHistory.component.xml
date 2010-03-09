@@ -35,6 +35,15 @@
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</method>
+		<method name="order_details">
+		  <fields>
+		      <field name="product_code" title="FIELD_PRODUCT_CODE"/>
+		      <field name="product_name" title="FIELD_PRODUCT_NAME"/>
+              <field name="product_price" title="FIELD_PRODUCT_PRICE"/>
+		      <field name="basket_count" title="FIELD_BASKET_COUNT"/>
+		      <field name="product_summ" title="FIELD_PRODUCT_SUMM"/>
+		  </fields>
+		</method>
 		<method name="save" rights="2">
 		     <uri_patterns>
 		         <pattern>/save/</pattern>

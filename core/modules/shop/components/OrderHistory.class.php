@@ -48,6 +48,8 @@ class OrderHistory extends Grid {
          }
          return $result;
      }
+     
+     
     /**
      * Для метода вывода информации о заказе доавбляем инфу о данных заказа
      *
@@ -76,6 +78,22 @@ class OrderHistory extends Grid {
                 $this->getData()->addField($field);
             }
         }
-
+        $f = new Field('order_details');
+        $f->setData($this->buildDetailField($orderData), true);
+        $this->getData()->addField($f);
+     }
+     
+     private function buildDetailField($data){
+     	$builder = new SimpleBuilder();
+        $dd = new DataDescription();
+        $dd->loadXML($this->config->getMethodConfig('order_details')->fields);
+        $builder->setDataDescription($dd);
+        
+        $d = new Data();
+        $d->load($data);
+        $builder->setData($d);
+        
+        $builder->build();
+        return $builder->getResult();
      }
 }

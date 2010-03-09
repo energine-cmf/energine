@@ -132,5 +132,40 @@
         </table>
     </xsl:template>
     <!-- /компонент UserOrderHistory -->    
-
+    
+    <xsl:template match="field[@name='order_details'][ancestor::component[@class='OrderHistory']]">
+        <xsl:variable name="RECORDS" select="recordset/record"/>
+        <div class="page_rights">
+            <table width="100%" border="0">
+                <thead>
+                    <tr>
+                        <td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
+                        <xsl:for-each select="$RECORDS[position()=1]/field">
+                            <td style="text-align:center;"><xsl:value-of select="@title"/></td>
+                        </xsl:for-each>
+                    </tr>
+                </thead>
+                <tbody>
+                    <xsl:for-each select="$RECORDS">
+                        <tr>
+                            <xsl:if test="floor(position() div 2) = position() div 2">
+                                <xsl:attribute name="class">even</xsl:attribute>
+                            </xsl:if>
+                            <td class="group_name"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
+                            <xsl:for-each select="field">
+                                <td><xsl:value-of select="."/></td>
+                            </xsl:for-each>
+                        </tr>
+                    </xsl:for-each>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="{count($RECORDS[position()=1]/field)}"></td>
+                        <td><xsl:value-of select="sum($RECORDS/field[@name='product_summ'])"/></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </xsl:template>
+    
 </xsl:stylesheet>

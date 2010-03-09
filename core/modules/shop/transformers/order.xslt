@@ -2,8 +2,11 @@
 <xsl:stylesheet 
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-    xmlns="http://www.w3.org/1999/xhtml">
-    
+    xmlns="http://www.w3.org/1999/xhtml"
+    >
+<!-- xmlns:dyn="http://exslt.org/dynamic"
+    extension-element-prefixes="dyn" -->
+
     <!-- компонент OrderForm -->
     <xsl:template match="component[@class='OrderForm']">
     	<xsl:apply-templates/>
@@ -158,12 +161,13 @@
                         </tr>
                     </xsl:for-each>
                 </tbody>
-                <tfoot>
+<!--                <tfoot>
                     <tr>
                         <td colspan="{count($RECORDS[position()=1]/field)}"></td>
-                        <td><xsl:value-of select="sum($RECORDS/field[@name='product_summ'])"/></td>
+                        <td><xsl:value-of select="dyn:min($RECORDS/field[@name='product_summ'], '.')"/></td>
                     </tr>
                 </tfoot>
+                -->
             </table>
         </div>
     </xsl:template>

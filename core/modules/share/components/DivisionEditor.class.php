@@ -394,6 +394,7 @@ final class DivisionEditor extends Grid {
             $JSONResponse = array_merge(array('result'=>false, 'header'=>$this->translate('TXT_SHIT_HAPPENS')), $message);
 
         }
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
         $this->response->write(json_encode($JSONResponse));
         $this->response->commit();
     }
@@ -412,7 +413,8 @@ final class DivisionEditor extends Grid {
         }
 
         if (isset($_POST[$this->getTableName()]['smap_default']) && $_POST[$this->getTableName()]['smap_default'] !== '0') {
-            $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('smap_default'=>null));
+        	$this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('smap_default'=>0));
+
         }
         if(isset($_POST[$this->getTableName()]['smap_redirect_url']) && !empty($_POST[$this->getTableName()]['smap_redirect_url'])){
             $_POST[$this->getTableName()]['smap_redirect_url'] = str_replace(Request::getInstance()->getBasePath(), '', $_POST[$this->getTableName()]['smap_redirect_url']);        	
@@ -591,6 +593,7 @@ final class DivisionEditor extends Grid {
             $JSONResponse = $this->generateError($e->getCode(), $e->getMessage());
 
         }
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
         $this->response->write(json_encode($JSONResponse));
         $this->response->commit();
     }

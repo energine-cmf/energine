@@ -396,13 +396,13 @@ abstract class DBA extends Object {
      *     )
      * или false, если $tableName.$fieldName не является первичным ключем.
      *
-     * @access private
+     * @access public
      * @param string $tableName имя таблицы
      * @param string $fieldName имя поля
      * @return mixed
      * @staticvar $foreignKeyInfo кеш результатов
      */
-    private function getForeignKeyInfo($tableName, $fieldName) {
+    public function getForeignKeyInfo($tableName, $fieldName) {
         static $foreignKeyInfo;
         if(!isset($foreignKeyInfo[$tableName][$fieldName])){
 	        $res = $this->selectRequest("SHOW CREATE TABLE `$tableName`");

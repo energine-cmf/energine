@@ -66,9 +66,8 @@ class Transformer extends Object {
 		}
 		//При наличии модуля xslcache http://code.nytimes.com/projects/xslcache
 		//используем его
-		if(extension_loaded('xslcache')){
+		if(extension_loaded('xslcache') && ($this->getConfigValue('document.xslcache') == 1)){
 			$xsltProc = new xsltCache;
-			
 			//есть одна проблема с ним
 			//при неправильном xslt - сваливается в корку с 500 ошибкой
 		    $xsltProc->importStyleSheet($this->fileName);

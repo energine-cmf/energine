@@ -3,7 +3,7 @@
 <methods>
 	<method name="main">
 		<uri_patterns>
-			<pattern>/page-[int]/</pattern>
+			<pattern>/page-[pageNumber]/</pattern>
 		</uri_patterns>
 		<fields>
 			<field name="smap_id" length="10" type="integer"/>

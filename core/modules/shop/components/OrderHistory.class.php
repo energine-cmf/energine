@@ -31,7 +31,7 @@ class OrderHistory extends Grid {
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('shop_orders');
-        $this->setOrder(array('order_created'=>QAL::DESC));
+        $this->setOrder('order_created', QAL::DESC);
     }
 
     /**

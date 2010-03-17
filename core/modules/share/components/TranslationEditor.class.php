@@ -31,7 +31,7 @@ class TranslationEditor extends Grid {
 	public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('share_lang_tags');
-        $this->setOrder(array('ltag_name' =>QAL::ASC ));
+        $this->setOrder('ltag_name', QAL::ASC );
 	}
 	
 	protected function prepare(){

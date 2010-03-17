@@ -69,6 +69,7 @@ var GridManager = new Class({
 		this.edit();
 	},
     changeSort: function() {
+        this.loadPage.delay(10, this, 1);
     },
 
     reloadGrid: function() {
@@ -81,13 +82,16 @@ var GridManager = new Class({
 
         this.overlay.show(this.element.getCoordinates());
         this.grid.clear();
-        var postBody = '';
+        var postBody = '', url = this.singlePath + 'get-data/page-' + pageNum;
         if (this.langId) postBody += 'languageID='+this.langId+'&';
         if (this.filter.active && this.filter.query.value.length > 0) {
             var fieldName = this.filter.fields.options[this.filter.fields.selectedIndex].value;
             postBody  += 'filter'+fieldName+'='+this.filter.query.value+'&';
         }
-        this.request(this.singlePath + 'get-data/page-' + pageNum,
+        if(this.grid.sort.order){
+            url = this.singlePath + 'get-data/' + this.grid.sort.field + '-' + this.grid.sort.order + '/page-' + pageNum
+        }
+        this.request(url,
                 postBody, function(result) {
                 if (!this.initialized) {
                     this.grid.setMetadata(result.meta);

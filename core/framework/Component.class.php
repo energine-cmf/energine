@@ -581,11 +581,19 @@ class Component extends DBWorker {
 
     /**
      * Возвращает параметры действия.
-     *
+     * 
+     * @param bool  - возвращает ассоциативный/обычный массив
      * @access protected
      * @return array
+     * 
+     * @todo Тут какой то беспорядок, то false то пустой array
      */
-    protected function getActionParams() {
-        return $this->actionParams;
+    protected function getActionParams($returnAsAssocArray = false) {
+    	if(!$returnAsAssocArray && ($this->actionParams !== false)){
+            return array_values($this->actionParams);
+    	}
+        
+        return $this->actionParams;            	
+        
     }
 }

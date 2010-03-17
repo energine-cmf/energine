@@ -32,7 +32,7 @@ class TemplateEditor extends Grid {
         $this->setTableName('share_templates');
         $this->setTitle($this->translate('TXT_TEMPLATE_EDITOR'));
         $this->setOrderColumn('tmpl_order_num');
-        $this->setOrder(array('tmpl_order_num' =>QAL::ASC));
+        //$this->setOrder(array('tmpl_order_num' =>QAL::ASC));
     }
     
     protected function createDataDescription(){

@@ -543,6 +543,12 @@ class Grid extends DBDataSet {
         }
         elseif ($this->getAction() =='getRawData') {
             $this->applyUserFilter();
+            $actionParams = $this->getActionParams(true);
+            
+            if(isset($actionParams['sortField']) && isset($actionParams['sortDir'])){
+                //подразумевается что sortDir - тоже существует
+                $this->setOrder($actionParams['sortField'], $actionParams['sortDir']);
+            }
             $result = parent::loadData();
         }
         else {
@@ -738,7 +744,7 @@ class Grid extends DBDataSet {
 
     protected function setOrderColumn($columnName) {
         $this->orderColumn = $columnName;
-        $this->setOrder(array($columnName=>QAL::ASC));
+        $this->setOrder($columnName, QAL::ASC);
     }
 
     /**

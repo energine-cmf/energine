@@ -10,12 +10,19 @@ var Grid = new Class({
 
     initialize: function(element, options) {
         Asset.css('grid.css');
+        
+        this.sort = {
+            field: null,
+            order:null
+        };
+        
         this.setOptions(options);
         this.parent(element, this.options);
 		this.headOff = this.element.getElement('.gridContainer thead');
 		this.headOff.setStyle('display', 'none');
         this.tbody = this.element.getElement('.gridContainer tbody');
-
+        this.headers = this.element.getElements('.gridHeadContainer table.gridTable th');
+        this.headers.addEvent('click', this.changeSort.bind(this));
     },
 
     /*
@@ -32,21 +39,11 @@ var Grid = new Class({
     setMetadata: function(metadata) {
         /*
          * Проверяем соответствие видимых полей физической структуре таблицы,
-         * определяем имя ключевого поля, и параметры сортировки.
+         * определяем имя ключевого поля
          */
         var visibleFieldsCount = 0;
         for (var fieldName in metadata) {
             if (metadata[fieldName].key) this.keyFieldName = fieldName;
-            if (metadata[fieldName].visible) {
-                if (typeof metadata[fieldName].sort == 'string') {
-                    if (['asc', 'desc'].test(metadata[fieldName].sort)) {
-                        this.sortOrder = metadata[fieldName].sort;
-                    }
-                    this.changeSort(visibleFieldsCount);
-                }
-
-                visibleFieldsCount++;
-            }
         }
 
         this.parent(metadata);
@@ -93,7 +90,7 @@ var Grid = new Class({
 		this.element.getElement('.gridContainer table.gridTable').setStyle('tableLayout', 'fixed');
 		this.element.getElement('.gridHeadContainer table.gridTable').setStyle('tableLayout', 'fixed');
 		this.headOff.setStyle('display', 'none');
-
+        
     },
 
     isEmpty: function() {
@@ -119,14 +116,6 @@ var Grid = new Class({
 		}.bind(this));
 	},
 
-    getSortFieldName: function() {
-        //return this.headers[this.sortFieldIndex].fieldName;
-    },
-
-    getSortOrder: function() {
-        return this.sortOrder;
-    },
-
     clear: function() {
         this.selectItem(false);
         while (this.tbody.hasChildNodes()) {
@@ -135,7 +124,11 @@ var Grid = new Class({
     },
 
     // Private methods:
-
+    clearHeaders: function(){
+          this.sort.field = null;    
+          this.sort.field = null;
+          this.headers.removeProperty('class');    
+    },
     fitHeaders: function() {
         this.headersContainer.setStyle('visibility', '');
         var firstRow = this.tbody.getFirst();
@@ -214,22 +207,40 @@ var Grid = new Class({
 
     },
 
-    changeSort: function(fieldIndex) {
-        if (typeof this.sortFieldIndex == 'number') {
-            if (fieldIndex == this.sortFieldIndex) {
-                this.headers[this.sortFieldIndex].removeClass(this.sortOrder);
-                this.sortOrder = (this.sortOrder == 'asc' ? 'desc' : 'asc');
-                this.headers[this.sortFieldIndex].addClass(this.sortOrder);
+    changeSort: function(event) {
+        var getNextDirectionOrderItem = function(current){
+            //console.log(current);
+            var sortDirectionOrder = ['', 'asc', 'desc'], result, currentIndex;
+            if((currentIndex = sortDirectionOrder.indexOf(current)) != -1){
+                if((currentIndex + 1) < sortDirectionOrder.length)
+                    result = sortDirectionOrder[currentIndex + 1];
+                else
+                    result = sortDirectionOrder[0];
             }
-            else {
-                this.headers[this.sortFieldIndex].removeClass('sortField').removeClass('asc').removeClass('desc');
+            else{
+                result = sortDirectionOrder[0];
             }
+            
+            return result;
         }
-        if (fieldIndex != this.sortFieldIndex) {
-            this.sortFieldIndex = fieldIndex;
-            this.sortOrder = 'asc';
-            this.headers[this.sortFieldIndex].addClass('sortField').addClass(this.sortOrder);
-        }
-        this.fireEvent('onSortChange');
+
+        var 
+            header = $(event.target), 
+            sortFieldName = header.getProperty('name'),
+            sortDirection  = header.getProperty('class');
+            
+            
+            //проверяем есть ли колонка сортировки в списке колонок    
+            if(
+                this.metadata[sortFieldName] 
+                && 
+                this.metadata[sortFieldName].sort == 1
+             ){
+                this.clearHeaders();
+                this.sort.field = sortFieldName;
+                this.sort.order = getNextDirectionOrderItem(sortDirection);
+                header.addClass(this.sort.order);
+                this.fireEvent('onSortChange');
+            }
     }
 });

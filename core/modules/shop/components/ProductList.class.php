@@ -86,9 +86,11 @@ class ProductList extends DBDataSet {
 		$result = parent::createData();
 		if ($result) {
 			$sitemap = Sitemap::getInstance();
-			$this->buildProductImagesField($result);
+			if($result->getFieldByName('product_id'))
+			 $this->buildProductImagesField($result);
 			
 			if ($producerIDField = $result->getFieldByName('producer_id')) {
+				
 				$producerData = 
 					convertDBResult(
 					    $this->dbh->select(
@@ -311,33 +313,11 @@ class ProductList extends DBDataSet {
 	 */
 
 	protected function createPager() {
-		$recordsPerPage = intval($this->getParam('recordsPerPage'));
-		if ($recordsPerPage > 0) {
-			$this->pager = new Pager($recordsPerPage);
-			if ($this->isActive() && $this->getType() == self::COMPONENT_TYPE_LIST) {
-				$actionParams = $this->getActionParams();
-				if ($this->getAction() == 'showManufacturerProducts') {
-					$paramNum = 1;
-				}
-				else {
-					$paramNum = 0;
-				}
-
-				if (isset($actionParams[$paramNum])) {
-					$page = intval($actionParams[$paramNum]);
-				}
-				else {
-					$page = 1;
-				}
-
-				$this->pager->setCurrentPage($page);
-			}
-
-			$this->pager->setProperty('title', $this->translate('TXT_PAGES'));
-			if ($this->getAction() == 'search') {
-				$this->pager->setProperty('additional_url', 'search-results/');
-			}
+	   parent::createPager();	
+		if ($this->getAction() == 'search') {
+			$this->pager->setProperty('additional_url', 'search-results/');
 		}
+		
 	}
 
 	/**

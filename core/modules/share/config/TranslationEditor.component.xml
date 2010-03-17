@@ -66,7 +66,9 @@
 		<method name="getRawData"  rights="2">
 			<uri_patterns>
 		         <pattern>/get-data/</pattern>
-				 <pattern>/get-data/page-[int]/</pattern>
+				 <pattern>/get-data/page-[pageNumber]/</pattern>
+				 <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+				 <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
 		     </uri_patterns>
 		</method>
 		<method name="imageManager" rights="3">

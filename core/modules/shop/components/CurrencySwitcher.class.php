@@ -36,7 +36,7 @@ class CurrencySwitcher extends DBDataSet {
         $this->setTitle($this->translate('TXT_CURRENT_CURRENCY'));
         $this->setParam('recordsPerPage', false);
         $this->setParam('onlyCurrentLang', true);
-        $this->setOrder(array('curr_order_num' => QAL::ASC));
+        $this->setOrder('curr_order_num', QAL::ASC);
 	}
 
     /**

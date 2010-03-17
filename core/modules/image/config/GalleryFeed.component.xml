@@ -3,7 +3,7 @@
 	<methods>
 		<method name="main">
 			<uri_patterns>
-				<pattern>/page-[int]/</pattern>
+				<pattern>/page-[pageNumber]/</pattern>
 				<pattern>/</pattern>
 		     </uri_patterns>
 		     <javascript>

@@ -323,11 +323,8 @@ abstract class DataSet extends Component {
 		if ($recordsPerPage > 0) {
 			$this->pager = new Pager($recordsPerPage);
 			if ($this->isActive() && $this->getType() == self::COMPONENT_TYPE_LIST) {
-				$actionParams = $this->getActionParams();
-				if (isset($actionParams[0])) {
-					$page = intval($actionParams[0]);
-				}
-				else {
+				$actionParams = $this->getActionParams(true);
+				if (!isset($actionParams['pageNumber']) || !($page = intval($actionParams['pageNumber']))) {
 					$page = 1;
 				}
 				$this->pager->setCurrentPage($page);

@@ -67,8 +67,10 @@ class JSONBuilder extends Builder {
                 'visible' => $fieldInfo->getPropertyValue('key')&&$fieldInfo->getPropertyValue('index')=='PRI' ? false : true,
                 'name' => $fieldInfo->getPropertyValue('tableName')."[$fieldName]",
                 'rights' => $fieldInfo->getRights(),
-                'field' => $fieldName
+                'field' => $fieldName,
+                'sort' => $fieldInfo->getPropertyValue('sort')
             );
+            
         }
 
         if (!$this->data->isEmpty()) {

@@ -367,6 +367,7 @@ class FieldDescription extends DBWorker {
      */
     public function setType($type) {
         $this->type = (string)$type;
+        $this->setProperty('sort', 0);
         switch ($this->type) {
             case self::FIELD_TYPE_PWD :
                 $this->setProperty('pattern', '/^.+$/');
@@ -386,6 +387,7 @@ class FieldDescription extends DBWorker {
                     $regexp = '/^((([^()<>@,;:\\\".\[\] ]+)|("[^"\\\\\r]*"))((\.[^()<>@,;:\\\".\[\] ]+)|(\."[^"\\\\\r]*"))*@(([a-z0-9][a-z0-9\-]+)*[a-z0-9]+\.)+[a-z]{2,})?$/i';
                 }
                 $this->setProperty('pattern', $regexp);
+                $this->setProperty('sort', 1);
                 $this->setProperty('message', $this->translate('MSG_BAD_EMAIL_FORMAT'));
                 $this->setProperty('outputFormat', '%s');
                 break;
@@ -396,6 +398,7 @@ class FieldDescription extends DBWorker {
                 else {
                     $regexp = '/^([0-9\(\)\+\-\. ]{5,25})?$/';
                 }
+                $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('message', $this->translate('MSG_BAD_PHONE_FORMAT'));
                 $this->setProperty('outputFormat', '%s');
@@ -422,6 +425,7 @@ class FieldDescription extends DBWorker {
                 $this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_STRING:
+            	$this->setProperty('sort', 1);
                 if ($this->getPropertyValue('nullable') === false  || is_null($this->getPropertyValue('nullable'))) {
                     $this->setProperty('pattern', '/^.+$/');
                     $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
@@ -440,6 +444,7 @@ class FieldDescription extends DBWorker {
                 else {
                     $regexp = '/^[0-9,\.]{0,'.$this->length.'}$/';
                 }
+                $this->setProperty('sort', 1);
                 $this->setProperty('outputFormat', '%f');
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('message', $this->translate('MSG_BAD_FLOAT_FORMAT'));
@@ -447,6 +452,7 @@ class FieldDescription extends DBWorker {
             case self::FIELD_TYPE_BOOL:
                 $this->length = true;
                 $this->setProperty('outputFormat', '%s');
+                $this->setProperty('sort', 1);
                 break;
             case self::FIELD_TYPE_SELECT:
                 $this->length = true;
@@ -461,6 +467,7 @@ class FieldDescription extends DBWorker {
                         $regexp = '/^\d{0,5}$/';
                         $message = $this->translate('MSG_BAD_INT_FORMAT');
                     }
+                    $this->setProperty('sort', 1);
                     $this->setProperty('pattern', $regexp);
                     $this->setProperty('message', $message);
                     $this->setProperty('outputFormat', '%d');
@@ -482,6 +489,7 @@ class FieldDescription extends DBWorker {
                 else {
                     $regexp = '/^(\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2})?$/';
                 }
+                $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('outputFormat', '%Y-%m-%d %H:%M:%S');
                 $this->setProperty('message', $this->translate('MSG_WRONG_DATETIME_FORMAT'));
@@ -494,6 +502,7 @@ class FieldDescription extends DBWorker {
                 else {
                     $regexp = '/^(\d{4}\-\d{1,2}\-\d{1,2})?$/';
                 }
+                $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('outputFormat', '%Y-%m-%d');
                 $this->setProperty('message', $this->translate('MSG_WRONG_DATE_FORMAT'));

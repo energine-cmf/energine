@@ -67,7 +67,7 @@ final class DivisionEditor extends Grid {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('share_sitemap');
         $this->setTitle($this->translate('TXT_DIVISION_EDITOR'));
-        $this->setOrder(array('smap_order_num'=>QAL::ASC));
+        //$this->setOrder('smap_order_num', QAL::ASC);
 
         $this->setParam('recordsPerPage', false);
         $this->setOrderColumn('smap_order_num');

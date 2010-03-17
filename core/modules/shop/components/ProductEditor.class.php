@@ -47,7 +47,7 @@ class ProductEditor extends Grid {
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('shop_products');
-        $this->setOrder(array('product_id' => QAL::DESC));
+        $this->setOrder('product_id', QAL::DESC);
         $this->externalTableName = 'shop_product_external_properties';
     }
 

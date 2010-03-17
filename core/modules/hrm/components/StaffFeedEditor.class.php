@@ -28,6 +28,6 @@ class StaffFeedEditor extends FeedEditor {
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('hrm_staff');
-        $this->setOrderColumn('staff_order_num');
+        $this->setOrderColumn('staff_order_num', QAL::ASC);
     }
 }

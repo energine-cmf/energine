@@ -29,7 +29,7 @@
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('shop_producers');
-        $this->setOrder(array('producer_name' => QAL::ASC));
+        $this->setOrder('producer_name', QAL::ASC);
     }
     
     protected function add(){

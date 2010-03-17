@@ -227,9 +227,7 @@ class DBDataSet extends DataSet {
                 }
             }
         }
-        if (!is_null($this->getOrder())){
-            $order = $this->dbh->buildOrderCondition($this->getOrder());
-        }
+        
 
         $filterCondition = $this->getFilter();
         if (!empty($filterCondition)) {
@@ -238,7 +236,12 @@ class DBDataSet extends DataSet {
         elseif($this->getDataLanguage() &&  $this->getParam('onlyCurrentLang')) {
             $filter = ' WHERE lang_id = '.$this->getDataLanguage();
         }
-
+        
+        if (!is_null($this->getOrder())){
+        	//inspect($this->getOrder());
+            $order = $this->dbh->buildOrderCondition($this->getOrder());
+        }
+        
         if (!is_null($this->getLimit())) {
             $limit = $this->getLimit();
             $limit = $this->dbh->buildLimitStatement($limit);
@@ -248,13 +251,13 @@ class DBDataSet extends DataSet {
         if ($this->pager) {
             //Определяем общее количество записей
             $request = sprintf(
-            "SELECT COUNT(*) as records_count
+            'SELECT COUNT(*) as records_count
         	       FROM %s
-        	       LEFT JOIN %s ON %s.%s = %s.%s
-        	       %s
-        	       ",
+        	       LEFT JOIN %s ON %2$s.%s = %1$s.%3$s
+        	       %s',
             $this->getTableName(),
-            $this->getTranslationTableName(), $this->getTranslationTableName(), $this->getPK(), $this->getTableName(), $this->getPK(),
+            $this->getTranslationTableName(), 
+            $this->getPK(), 
             $filter
             );
             $recordsCount = $this->dbh->selectRequest($request);
@@ -463,23 +466,21 @@ class DBDataSet extends DataSet {
     /**
      * Устанавливает условие сортровки
      *
-     * @param mixed
+     * @param string Поле сортировки
+     * @param string Направление сортировки
+     * 
      * @return void
      * @access protected
      * @final
      */
 
-    final protected function setOrder($order) {
-        if (is_array($order)) {
-            if (!in_array(current($order), array(QAL::ASC, QAL::DESC))) {
-                throw new SystemException('ERR_DEV_BAD_ORDER_FORMAT', SystemException::ERR_DEVELOPER);
-            }
+    final protected function setOrder($orderField, $orderDirection) {
+        $orderDirection = strtoupper($orderDirection);
+        if (!in_array($orderDirection, array(QAL::ASC, QAL::DESC))) {
+            $orderDirection = QAL::ASC;
         }
-        $this->order = $order;
-
-        /*else {
-            $this->order = array($order=>QAL::ASC);
-        }*/
+        
+        $this->order = array($orderField => $orderDirection);
     }
 
     /**
@@ -629,7 +630,7 @@ class DBDataSet extends DataSet {
             $fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
         }
     }
-
+    
     /**
      * Определяет существует ли запись с идентификатором переданным в параметре
      * Вызывается из методов где нужно быть уверенным в наличии записи(view, edit,delete)

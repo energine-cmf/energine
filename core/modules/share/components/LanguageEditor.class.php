@@ -30,7 +30,7 @@ class LanguageEditor extends Grid {
         $this->setTableName('share_languages');
         $this->setTitle($this->translate('TXT_LANGUAGE_EDITOR'));
         $this->setOrderColumn('lang_order_num');
-        $this->setOrder(array('lang_order_num'=>QAL::ASC));
+        //$this->setOrder(array('lang_order_num'=>QAL::ASC));
     }
 
     /**

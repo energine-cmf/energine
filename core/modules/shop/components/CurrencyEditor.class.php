@@ -32,7 +32,7 @@ class CurrencyEditor extends Grid {
 		parent::__construct($name, $module, $document,  $params);
 		$this->setTableName('shop_currency');
 		$this->setOrderColumn('curr_order_num');
-		$this->setOrder(array('curr_order_num'=>QAL::ASC));
+		//$this->setOrder(array('curr_order_num'=>QAL::ASC));
 	}
 
 	protected function createDataDescription() {

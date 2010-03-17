@@ -35,7 +35,7 @@ class VacancyFeed extends Feed {
             $this->setFilter(array('vacancy_is_active'=>1));
         }
 
-        $this->setOrder(array('vacancy_end_date'=>QAL::DESC, 'vacancy_date'=>QAL::ASC));
+        $this->setOrder('vacancy_date', QAL::ASC);
     }
     
     protected function createDataDescription(){

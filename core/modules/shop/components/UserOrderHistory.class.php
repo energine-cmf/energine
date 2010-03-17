@@ -33,7 +33,7 @@ class UserOrderHistory extends OrderHistory {
         parent::__construct($name, $module, $document,  $params);
         $this->setFilter(array('u_id' => $this->document->getUser()->getID()));
         $this->removeProperty('exttype');
-        $this->setOrder(array('order_created'=>QAL::DESC));
+        $this->setOrder('order_created', QAL::DESC);
     }
 
     /**

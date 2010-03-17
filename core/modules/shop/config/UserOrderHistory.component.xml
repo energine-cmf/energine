@@ -4,7 +4,7 @@
 		<method name="main">
 			<uri_patterns>
 				<pattern>/</pattern>
-				<pattern>/page-[int]/</pattern>
+				<pattern>/page-[pageNumber]/</pattern>
 			</uri_patterns>
 			<fields>
 				<field name="order_id"/>

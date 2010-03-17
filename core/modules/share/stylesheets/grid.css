@@ -48,6 +48,18 @@ background: #eeeedd;
 height: auto !important; 
 height: 1%; /* :KLUGE: добавляет свойство hasLayout для IE6 */
 }
+
+.gridHeadContainer th{
+    background:auto;
+}
+
+.gridHeadContainer th.asc{
+	background:red;
+}
+.gridHeadContainer th.desc{
+    background:green;    
+}
+
 .gridContainer {
 height: 200px;
 overflow: scroll;

@@ -4,7 +4,7 @@
 		<method name="main">
 			<uri_patterns>
 				<pattern>/</pattern>
-				<pattern>/page-[int]/</pattern>
+				<pattern>/page-[pageNumber]/</pattern>
 			</uri_patterns>
 			<javascript>
 				<object name="Product" />
@@ -25,31 +25,10 @@
 				<control id="basket" title="BTN_ADD_TO_BASKET" type="button" click="addToBasket"/>
 			</toolbar>
 		</method>
-		<method name="view">
-			<uri_patterns>
-				<pattern>/[string]/</pattern>
-			</uri_patterns>
-			<javascript>
-				<object name="Product" />
-			</javascript>
-			<fields>
-				<field name="product_id"/>
-				<field name="lang_id"/>
-				<field name="product_name"/>
-				<field name="product_description_rtf"/>
-				<field name="smap_id" type="string"/>
-				<field name="ps_id"/>
-				<field name="producer_id" />
-				<field name="product_price" type="float" title="TXT_PRODUCT_PRICE"/>
-			</fields>
-			<toolbar>
-				<control id="basket" title="BTN_ADD_TO_BASKET" type="button" click="addToBasket"/>
-			</toolbar>
-		</method>
-		<method name="showManufacturerProducts">
+    	<method name="showManufacturerProducts">
 			<uri_patterns>
 				<pattern>/manufacturer-[string]/</pattern>
-				<pattern>/manufacturer-[string]/page-[int]/</pattern>
+				<pattern>/manufacturer-[string]/page-[pageNumber]/</pattern>
 			</uri_patterns>
 			<javascript>
 				<object name="Product" />
@@ -73,7 +52,7 @@
 		<method name="search">
 			<uri_patterns>
 				<pattern>/search-results/</pattern>
-				<pattern>/search-results/page-[int]/</pattern>
+				<pattern>/search-results/page-[pageNumber]/</pattern>
 			</uri_patterns>
 			<javascript>
 				<object name="Product" />
@@ -94,5 +73,27 @@
 				<control id="basket" title="BTN_ADD_TO_BASKET" type="button" click="addToBasket"/>
 			</toolbar>
 		</method>
+		      <method name="view">
+            <uri_patterns>
+                <pattern>/[string]/</pattern>
+            </uri_patterns>
+            <javascript>
+                <object name="Product" />
+            </javascript>
+            <fields>
+                <field name="product_id"/>
+                <field name="lang_id"/>
+                <field name="product_name"/>
+                <field name="product_description_rtf"/>
+                <field name="smap_id" type="string"/>
+                <field name="ps_id"/>
+                <field name="producer_id" />
+                <field name="product_price" type="float" title="TXT_PRODUCT_PRICE"/>
+            </fields>
+            <toolbar>
+                <control id="basket" title="BTN_ADD_TO_BASKET" type="button" click="addToBasket"/>
+            </toolbar>
+        </method>
+		
 	</methods>
 </configuration>

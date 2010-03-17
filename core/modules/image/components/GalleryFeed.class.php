@@ -29,6 +29,6 @@ class GalleryFeed extends Feed {
 	public function __construct($name, $module, Document $document, array $params = null) {
         parent::__construct($name, $module, $document, $params);
         $this->setTableName('image_photo_gallery');
-        $this->setOrder(array('pg_order_num'=>QAL::ASC));
+        $this->setOrder('pg_order_num', QAL::ASC);
 	}
 }

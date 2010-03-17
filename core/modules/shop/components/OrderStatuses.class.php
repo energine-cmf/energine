@@ -32,6 +32,6 @@ class OrderStatuses extends Grid {
         parent::__construct($name, $module, $document, $params);
         $this->setTableName('shop_order_statuses');
         $this->setOrderColumn('os_priority');
-        $this->setOrder(array('os_priority'=>QAL::ASC));
+        //$this->setOrder(array('os_priority'=>QAL::ASC));
 	}
 }

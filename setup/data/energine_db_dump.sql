@@ -1,19 +1,83 @@
 SET FOREIGN_KEY_CHECKS=0;
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
 SET AUTOCOMMIT=0;
 START TRANSACTION;
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
---
--- Table structure for table `image_photo_gallery`
---
+
+DROP TABLE IF EXISTS `hrm_resumes`;
+CREATE TABLE IF NOT EXISTS `hrm_resumes` (
+  `resume_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vacancy_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `resume_date` date NOT NULL,
+  `resume_candidate_name` varchar(250) NOT NULL,
+  `resume_candidate_email` varchar(200) NOT NULL,
+  `resume_text` text,
+  `resume_main_pfile` varchar(250) NOT NULL,
+  PRIMARY KEY (`resume_id`,`vacancy_id`),
+  KEY `vacancy_id` (`vacancy_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+DROP TABLE IF EXISTS `hrm_staff`;
+CREATE TABLE IF NOT EXISTS `hrm_staff` (
+  `staff_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `smap_id` int(10) unsigned NOT NULL,
+  `staff_order_num` int(10) unsigned DEFAULT '1',
+  `staff_photo_img` varchar(250) NOT NULL,
+  PRIMARY KEY (`staff_id`),
+  KEY `smap_id` (`smap_id`,`staff_order_num`,`staff_photo_img`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+DROP TABLE IF EXISTS `hrm_staff_translation`;
+CREATE TABLE IF NOT EXISTS `hrm_staff_translation` (
+  `staff_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
+  `staff_name` varchar(250) NOT NULL,
+  `staff_announce` text NOT NULL,
+  `staff_text_rtf` text,
+  PRIMARY KEY (`staff_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `hrm_vacancies`;
+CREATE TABLE IF NOT EXISTS `hrm_vacancies` (
+  `vacancy_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `smap_id` int(10) unsigned NOT NULL,
+  `vacancy_date` date NOT NULL,
+  `vacancy_end_date` date DEFAULT NULL,
+  `vacancy_is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `vacancy_url_segment` varchar(100) NOT NULL,
+  PRIMARY KEY (`vacancy_id`),
+  KEY `vacancy_date` (`vacancy_date`),
+  KEY `smap_id` (`smap_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+INSERT INTO `hrm_vacancies` (`vacancy_id`, `smap_id`, `vacancy_date`, `vacancy_end_date`, `vacancy_is_active`, `vacancy_url_segment`) VALUES
+(1, 398, '2010-04-09', '2010-04-30', 1, 'sekretary');
+
+DROP TABLE IF EXISTS `hrm_vacancies_translation`;
+CREATE TABLE IF NOT EXISTS `hrm_vacancies_translation` (
+  `vacancy_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
+  `vacancy_name` varchar(250) NOT NULL,
+  `vacancy_annotation` text NOT NULL,
+  `vacancy_text_rtf` text NOT NULL,
+  `vacancy_info_rtf` text,
+  PRIMARY KEY (`vacancy_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `hrm_vacancies_translation` (`vacancy_id`, `lang_id`, `vacancy_name`, `vacancy_annotation`, `vacancy_text_rtf`, `vacancy_info_rtf`) VALUES
+(1, 1, 'Секретарь', 'Секретарь', 'Требования:<br/>\r\nРазмер груди 3-4<br/>\r\n', 'sdfsadf'),
+(1, 2, 'Секретар', 'Секретар', 'Вимоги:<br/>\r\nРозмір бюсту 3-4', 'sdgfasd'),
+(1, 3, '111', '111', '111', 'dsfasdf');
 
 DROP TABLE IF EXISTS `image_photo_gallery`;
 CREATE TABLE IF NOT EXISTS `image_photo_gallery` (
@@ -28,20 +92,10 @@ CREATE TABLE IF NOT EXISTS `image_photo_gallery` (
   KEY `pg_order_num` (`pg_order_num`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
 
---
--- Dumping data for table `image_photo_gallery`
---
-
 INSERT INTO `image_photo_gallery` (`pg_id`, `smap_id`, `pg_thumb_img`, `pg_photo_img`, `pg_order_num`) VALUES
 (11, 350, '', 'uploads/public/12665704674248.gif', 3),
 (12, 350, '', 'uploads/public/12665745065727.gif', 2),
 (13, 350, 'uploads/public/12671938143931.jpg', 'uploads/public/12671938143931.jpg', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `image_photo_gallery_translation`
---
 
 DROP TABLE IF EXISTS `image_photo_gallery_translation`;
 CREATE TABLE IF NOT EXISTS `image_photo_gallery_translation` (
@@ -52,10 +106,6 @@ CREATE TABLE IF NOT EXISTS `image_photo_gallery_translation` (
   PRIMARY KEY (`pg_id`,`lang_id`),
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `image_photo_gallery_translation`
---
 
 INSERT INTO `image_photo_gallery_translation` (`pg_id`, `lang_id`, `pg_title`, `pg_text`) VALUES
 (11, 1, 'Структура классов ядра Energine', NULL),
@@ -68,12 +118,6 @@ INSERT INTO `image_photo_gallery_translation` (`pg_id`, `lang_id`, `pg_title`, `
 (13, 2, NULL, NULL),
 (13, 3, NULL, NULL);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `share_access_level`
---
-
 DROP TABLE IF EXISTS `share_access_level`;
 CREATE TABLE IF NOT EXISTS `share_access_level` (
   `smap_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -83,10 +127,6 @@ CREATE TABLE IF NOT EXISTS `share_access_level` (
   KEY `group_id` (`group_id`),
   KEY `right_id` (`right_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `share_access_level`
---
 
 INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (7, 1, 3),
@@ -117,6 +157,7 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (395, 1, 3),
 (396, 1, 3),
 (397, 1, 3),
+(398, 1, 3),
 (80, 3, 1),
 (324, 3, 1),
 (327, 3, 1),
@@ -136,6 +177,7 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (394, 3, 1),
 (395, 3, 1),
 (396, 3, 1),
+(398, 3, 1),
 (80, 4, 1),
 (324, 4, 1),
 (327, 4, 1),
@@ -154,13 +196,8 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (393, 4, 1),
 (394, 4, 1),
 (395, 4, 1),
-(396, 4, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_feedback`
---
+(396, 4, 1),
+(398, 4, 1);
 
 DROP TABLE IF EXISTS `share_feedback`;
 CREATE TABLE IF NOT EXISTS `share_feedback` (
@@ -172,16 +209,6 @@ CREATE TABLE IF NOT EXISTS `share_feedback` (
   PRIMARY KEY (`feed_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Dumping data for table `share_feedback`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_languages`
---
 
 DROP TABLE IF EXISTS `share_languages`;
 CREATE TABLE IF NOT EXISTS `share_languages` (
@@ -194,20 +221,10 @@ CREATE TABLE IF NOT EXISTS `share_languages` (
   KEY `idx_abbr` (`lang_abbr`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
---
--- Dumping data for table `share_languages`
---
-
 INSERT INTO `share_languages` (`lang_id`, `lang_abbr`, `lang_name`, `lang_default`, `lang_order_num`) VALUES
 (1, 'ru', 'Русский', 1, 1),
 (2, 'ua', 'Українська', 0, 2),
 (3, 'en', 'English', 0, 3);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_lang_tags`
---
 
 DROP TABLE IF EXISTS `share_lang_tags`;
 CREATE TABLE IF NOT EXISTS `share_lang_tags` (
@@ -215,11 +232,7 @@ CREATE TABLE IF NOT EXISTS `share_lang_tags` (
   `ltag_name` varchar(70) NOT NULL DEFAULT '',
   PRIMARY KEY (`ltag_id`),
   UNIQUE KEY `ltag_name` (`ltag_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=589 ;
-
---
--- Dumping data for table `share_lang_tags`
---
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=605 ;
 
 INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (493, 'BTN_ACTIVATE'),
@@ -230,6 +243,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (57, 'BTN_ADD_PAGE'),
 (495, 'BTN_ADD_PHOTO'),
 (563, 'BTN_ADD_TO_BASKET'),
+(602, 'BTN_ADD_VACANCY'),
 (464, 'BTN_ALIGN_CENTER'),
 (465, 'BTN_ALIGN_JUSTIFY'),
 (462, 'BTN_ALIGN_LEFT'),
@@ -243,6 +257,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (428, 'BTN_DELETE_NEWS'),
 (59, 'BTN_DELETE_PAGE'),
 (497, 'BTN_DELETE_PHOTO'),
+(604, 'BTN_DELETE_VACANCY'),
 (448, 'BTN_DEL_FILE'),
 (323, 'BTN_DIV_EDITOR'),
 (546, 'BTN_DOWN'),
@@ -251,6 +266,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (427, 'BTN_EDIT_NEWS'),
 (58, 'BTN_EDIT_PAGE'),
 (496, 'BTN_EDIT_PHOTO'),
+(603, 'BTN_EDIT_VACANCY'),
 (466, 'BTN_FILE_LIBRARY'),
 (357, 'BTN_FILE_REPOSITORY'),
 (214, 'BTN_GO'),
@@ -383,6 +399,10 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (539, 'FIELD_PT_ID'),
 (524, 'FIELD_PT_NAME'),
 (265, 'FIELD_REMEMBER_LOGIN'),
+(599, 'FIELD_RESUME_CANDIDATE_EMAIL'),
+(598, 'FIELD_RESUME_CANDIDATE_NAME'),
+(601, 'FIELD_RESUME_MAIN_PFILE'),
+(600, 'FIELD_RESUME_TEXT'),
 (518, 'FIELD_RIGHT_ID'),
 (127, 'FIELD_SMAP_DEFAULT'),
 (130, 'FIELD_SMAP_DESCRIPTION_RTF'),
@@ -419,6 +439,15 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (50, 'FIELD_U_NAME'),
 (52, 'FIELD_U_PASSWORD'),
 (53, 'FIELD_U_PASSWORD2'),
+(590, 'FIELD_VACANCY_ANNOTATION'),
+(593, 'FIELD_VACANCY_DATE'),
+(594, 'FIELD_VACANCY_END_DATE'),
+(597, 'FIELD_VACANCY_ID'),
+(592, 'FIELD_VACANCY_INFO_RTF'),
+(595, 'FIELD_VACANCY_IS_ACTIVE'),
+(589, 'FIELD_VACANCY_NAME'),
+(591, 'FIELD_VACANCY_TEXT_RTF'),
+(596, 'FIELD_VACANCY_URL_SEGMENT'),
 (470, 'FIELD_ZIP_FILE'),
 (556, 'MSG_BAD_CURR_ABBR'),
 (144, 'MSG_BAD_EMAIL_FORMAT'),
@@ -546,12 +575,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (441, 'TXT_USER_REGISTRED'),
 (110, 'TXT_VIEW_ITEM');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `share_lang_tags_translation`
---
-
 DROP TABLE IF EXISTS `share_lang_tags_translation`;
 CREATE TABLE IF NOT EXISTS `share_lang_tags_translation` (
   `ltag_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -560,10 +583,6 @@ CREATE TABLE IF NOT EXISTS `share_lang_tags_translation` (
   PRIMARY KEY (`ltag_id`,`lang_id`),
   KEY `FK_tranaslatelv_language` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `share_lang_tags_translation`
---
 
 INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf`) VALUES
 (14, 1, 'Значение'),
@@ -1534,13 +1553,55 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (587, 3, 'Order details'),
 (588, 1, 'Комментарии администратора'),
 (588, 2, 'Коментарі адмінстратора'),
-(588, 3, 'Comments');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_news`
---
+(588, 3, 'Comments'),
+(589, 1, 'Название вакансии'),
+(589, 2, 'Назва вакансії'),
+(589, 3, 'Vacancy name'),
+(590, 1, 'Кранкая информация о Вакансии'),
+(590, 2, 'Коротка інформація про вакансію'),
+(590, 3, 'Short description about vacancy'),
+(591, 1, 'Полный текст вакансии'),
+(591, 2, 'Повний текст вакансії'),
+(591, 3, 'Full text about vacancy'),
+(592, 1, 'Дополнительная информация о вакансии'),
+(592, 2, 'Додаткова інформація про вакансію'),
+(592, 3, 'Additional info about vacancy'),
+(593, 1, 'Дата публикации'),
+(593, 2, 'Дата публікації'),
+(593, 3, 'Publication date'),
+(594, 1, 'Вакансия актуальна до'),
+(594, 2, 'Вакансія є актуальною до'),
+(594, 3, 'Vacancy deadline'),
+(595, 1, 'Вакансия активна'),
+(595, 2, 'Вакансія активна'),
+(595, 3, 'Vacancy is active'),
+(596, 1, 'Сегмент URL'),
+(596, 2, 'Сегмент URL'),
+(596, 3, 'URL segment'),
+(597, 1, 'Название должности'),
+(597, 2, 'Назва посади'),
+(597, 3, 'Vacancy name'),
+(598, 1, 'Имя кандидата'),
+(598, 2, 'Ім''я кандидата'),
+(598, 3, 'Candidate name'),
+(599, 1, 'Email кандидата'),
+(599, 2, 'Email кандидата'),
+(599, 3, 'Candidate email'),
+(600, 1, 'Текст резюме'),
+(600, 2, 'Текст резюме'),
+(600, 3, 'Resume text'),
+(601, 1, 'Присоединить файл (резюме)'),
+(601, 2, 'Приєднати файл (резюме)'),
+(601, 3, 'Attach file (resume)'),
+(602, 1, 'Добавить вакансию'),
+(602, 2, 'Додати вакансію'),
+(602, 3, 'Add vacancy'),
+(603, 1, 'Редактировать вакансию'),
+(603, 2, 'Редагувати вакансію'),
+(603, 3, 'Edit vacancy'),
+(604, 1, 'Удалить вакансию'),
+(604, 2, 'Видалити вакансію'),
+(604, 3, 'Delete vacancy');
 
 DROP TABLE IF EXISTS `share_news`;
 CREATE TABLE IF NOT EXISTS `share_news` (
@@ -1551,16 +1612,6 @@ CREATE TABLE IF NOT EXISTS `share_news` (
   KEY `smap_id` (`smap_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
 
---
--- Dumping data for table `share_news`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_news_translation`
---
 
 DROP TABLE IF EXISTS `share_news_translation`;
 CREATE TABLE IF NOT EXISTS `share_news_translation` (
@@ -1573,16 +1624,6 @@ CREATE TABLE IF NOT EXISTS `share_news_translation` (
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `share_news_translation`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_session`
---
 
 DROP TABLE IF EXISTS `share_session`;
 CREATE TABLE IF NOT EXISTS `share_session` (
@@ -1594,18 +1635,10 @@ CREATE TABLE IF NOT EXISTS `share_session` (
   `session_data` text,
   PRIMARY KEY (`session_id`),
   UNIQUE KEY `session_native_id` (`session_native_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3030 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3037 ;
 
---
--- Dumping data for table `share_session`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_sitemap`
---
+INSERT INTO `share_session` (`session_id`, `session_native_id`, `session_last_impression`, `session_created`, `session_user_agent`, `session_data`) VALUES
+(3036, 'eee6926cb8dc03e1af67ec96950bd2d9', '2010-04-09 12:59:00', '2010-04-09 11:29:08', 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.3) Gecko/20100402 Namoroka/3.6.3', 'userID|s:1:"1";feed_smap_id|a:1:{s:19:"vacancy_url_segment";s:9:"sekretary";}');
 
 DROP TABLE IF EXISTS `share_sitemap`;
 CREATE TABLE IF NOT EXISTS `share_sitemap` (
@@ -1624,25 +1657,21 @@ CREATE TABLE IF NOT EXISTS `share_sitemap` (
   KEY `ref_sitemap_parent_FK` (`smap_pid`),
   KEY `idx_order` (`smap_order_num`),
   KEY `smap_is_system` (`smap_is_system`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=398 ;
-
---
--- Dumping data for table `share_sitemap`
---
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=399 ;
 
 INSERT INTO `share_sitemap` (`smap_id`, `tmpl_id`, `smap_pid`, `smap_segment`, `smap_is_final`, `smap_order_num`, `smap_modified`, `smap_default`, `smap_is_system`, `smap_redirect_url`) VALUES
-(7, 3, NULL, 'admin', 0, 18, '2008-02-13 17:46:14', 0, 0, NULL),
+(7, 3, NULL, 'admin', 0, 19, '2008-02-13 17:46:14', 0, 0, NULL),
 (80, 30, NULL, 'main', 0, 5, '2010-01-19 15:59:06', 1, 0, NULL),
-(324, 15, NULL, 'login', 1, 12, '2008-02-13 17:22:54', 0, 0, NULL),
-(327, 14, NULL, 'news', 0, 6, '2008-02-14 18:02:39', 0, 0, NULL),
-(329, 17, NULL, 'sitemap', 0, 9, '2008-04-02 19:24:45', 0, 0, NULL),
-(330, 18, NULL, 'restore-password', 1, 17, '2008-04-02 19:20:45', 0, 0, NULL),
-(331, 19, NULL, 'registration', 0, 8, '2008-04-02 19:29:37', 0, 0, NULL),
-(336, 16, NULL, 'feedback', 0, 7, '2009-10-05 16:46:37', 0, 0, NULL),
+(324, 15, NULL, 'login', 1, 13, '2008-02-13 17:22:54', 0, 0, NULL),
+(327, 14, NULL, 'news', 0, 7, '2008-02-14 18:02:39', 0, 0, NULL),
+(329, 17, NULL, 'sitemap', 0, 10, '2008-04-02 19:24:45', 0, 0, NULL),
+(330, 18, NULL, 'restore-password', 1, 18, '2008-04-02 19:20:45', 0, 0, NULL),
+(331, 19, NULL, 'registration', 0, 9, '2008-04-02 19:29:37', 0, 0, NULL),
+(336, 16, NULL, 'feedback', 0, 8, '2009-10-05 16:46:37', 0, 0, NULL),
 (337, 21, 7, 'feedback-list', 0, 8, '2008-04-08 14:52:50', 0, 0, NULL),
 (350, 20, NULL, 'gallery', 0, 4, '2009-08-14 18:43:25', 0, 0, NULL),
-(351, 22, NULL, 'google-sitemap', 1, 11, '2009-10-05 16:55:19', 0, 1, NULL),
-(352, 23, NULL, 'shop', 0, 3, '2010-01-14 14:40:06', 0, 0, NULL),
+(351, 22, NULL, 'google-sitemap', 1, 12, '2009-10-05 16:55:19', 0, 1, NULL),
+(352, 23, NULL, 'shop', 0, 2, '2010-01-14 14:40:06', 0, 0, NULL),
 (353, 24, 7, 'product-editor', 0, 6, '2010-01-11 14:17:33', 0, 0, NULL),
 (354, 27, 7, 'product-type', 0, 5, '2010-01-11 15:58:28', 0, 0, NULL),
 (355, 25, 7, 'manufacturer-editor', 0, 4, '2010-01-11 16:14:34', 0, 0, NULL),
@@ -1658,13 +1687,8 @@ INSERT INTO `share_sitemap` (`smap_id`, `tmpl_id`, `smap_pid`, `smap_segment`, `
 (394, 13, 392, 'text-block-3', 0, 3, '2010-02-24 18:45:16', 0, 0, NULL),
 (395, 13, 392, 'text-block-redirect', 0, 5, '2010-02-19 12:00:54', 0, 0, 'text-pages/'),
 (396, 23, 352, 'etc', 0, 2, '2010-02-19 12:34:20', 0, 0, NULL),
-(397, 33, 7, 'order-history', 0, 7, '2010-02-28 15:08:57', 0, 0, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_sitemap_translation`
---
+(397, 33, 7, 'order-history', 0, 7, '2010-02-28 15:08:57', 0, 0, NULL),
+(398, 34, NULL, 'vacancies', 0, 6, '2010-04-09 11:36:39', 0, 0, NULL);
 
 DROP TABLE IF EXISTS `share_sitemap_translation`;
 CREATE TABLE IF NOT EXISTS `share_sitemap_translation` (
@@ -1679,10 +1703,6 @@ CREATE TABLE IF NOT EXISTS `share_sitemap_translation` (
   PRIMARY KEY (`lang_id`,`smap_id`),
   KEY `sitemaplv_sitemap_FK` (`smap_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `share_sitemap_translation`
---
 
 INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `smap_description_rtf`, `smap_html_title`, `smap_meta_keywords`, `smap_meta_description`, `smap_is_disabled`) VALUES
 (7, 1, 'Управление сайтом', NULL, 'Управление сайтом', NULL, NULL, 0),
@@ -1713,6 +1733,7 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (395, 1, 'Эта страница - пример переадресации', NULL, NULL, NULL, NULL, 0),
 (396, 1, 'Разное', NULL, NULL, NULL, NULL, 0),
 (397, 1, 'История заказов', NULL, NULL, NULL, NULL, 0),
+(398, 1, 'Вакансии', NULL, NULL, NULL, NULL, 0),
 (7, 2, 'Управління сайтом', NULL, NULL, NULL, NULL, 0),
 (80, 2, 'Демонстраційна версія CMS Energine', NULL, NULL, NULL, NULL, 1),
 (324, 2, 'Вхід', NULL, NULL, NULL, NULL, 0),
@@ -1741,6 +1762,7 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (395, 2, 'Ця сторінка - приклад переадресування', NULL, NULL, NULL, NULL, 0),
 (396, 2, 'Різне', NULL, NULL, NULL, NULL, 0),
 (397, 2, 'Замовлення', NULL, NULL, NULL, NULL, 0),
+(398, 2, 'Вакансії', NULL, NULL, NULL, NULL, 0),
 (7, 3, 'Site management', NULL, NULL, NULL, NULL, 0),
 (80, 3, 'Energine demo version', NULL, NULL, NULL, NULL, 0),
 (324, 3, 'Entrance', NULL, NULL, NULL, NULL, 0),
@@ -1768,13 +1790,8 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (394, 3, 'Another one text page', NULL, NULL, NULL, NULL, 0),
 (395, 3, 'Redirect example', NULL, NULL, NULL, NULL, 0),
 (396, 3, 'Etc', NULL, NULL, NULL, NULL, 0),
-(397, 3, 'Orders', NULL, NULL, NULL, NULL, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_sitemap_uploads`
---
+(397, 3, 'Orders', NULL, NULL, NULL, NULL, 0),
+(398, 3, 'Vacancies', NULL, NULL, NULL, NULL, 0);
 
 DROP TABLE IF EXISTS `share_sitemap_uploads`;
 CREATE TABLE IF NOT EXISTS `share_sitemap_uploads` (
@@ -1785,21 +1802,11 @@ CREATE TABLE IF NOT EXISTS `share_sitemap_uploads` (
   KEY `upl_id` (`upl_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `share_sitemap_uploads`
---
-
 INSERT INTO `share_sitemap_uploads` (`smap_id`, `upl_id`, `upl_is_main`) VALUES
 (391, 45, 0),
 (394, 45, 0),
 (391, 46, 0),
 (391, 48, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_templates`
---
 
 DROP TABLE IF EXISTS `share_templates`;
 CREATE TABLE IF NOT EXISTS `share_templates` (
@@ -1811,41 +1818,32 @@ CREATE TABLE IF NOT EXISTS `share_templates` (
   `tmpl_is_system` tinyint(1) NOT NULL DEFAULT '0',
   `tmpl_order_num` int(10) unsigned DEFAULT '1',
   PRIMARY KEY (`tmpl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;
-
---
--- Dumping data for table `share_templates`
---
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=35 ;
 
 INSERT INTO `share_templates` (`tmpl_id`, `tmpl_name`, `tmpl_icon`, `tmpl_layout`, `tmpl_content`, `tmpl_is_system`, `tmpl_order_num`) VALUES
-(3, 'Список подразделов', 'templates/icons/divisions_list.icon.gif', 'default.layout.xml', 'childs.content.xml', 0, 13),
-(13, 'Текстовая страница', 'templates/icons/text_page.icon.gif', 'default.layout.xml', 'textblock.content.xml', 0, 12),
-(14, 'Лента новостей', 'templates/icons/feed.icon.gif', 'default.layout.xml', 'news.content.xml', 0, 15),
-(15, 'Форма авторизации', 'templates/icons/login_form.icon.gif', 'default.layout.xml', 'login.content.xml', 0, 17),
-(16, 'Форма контакта', 'templates/icons/feedback_form.icon.gif', 'default.layout.xml', 'feedback_form.content.xml', 0, 16),
-(17, 'Карта сайта', 'templates/icons/sitemap.icon.gif', 'default.layout.xml', 'map.content.xml', 0, 21),
-(18, 'Форма восстановления пароля', 'templates/icons/restore_password_form.icon.gif', 'default.layout.xml', 'restore_password.content.xml', 0, 22),
-(19, 'Форма регистрации/Редактор профиля', 'templates/icons/profile_form.icon.gif', 'default.layout.xml', 'register.content.xml', 0, 23),
-(20, 'Фотогалерея', 'templates/icons/gallery.icon.gif', 'default.layout.xml', 'gallery.content.xml', 0, 14),
-(21, 'Список сообщений', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'feedback_list.content.xml', 0, 24),
-(22, 'Google sitemap', 'templates/icons/google.icon.gif', 'empty.layout.xml', 'google_sitemap.content.xml', 1, 20),
-(23, 'Список товаров', 'templates/icons/divisions_list.icon.gif', 'catalogue.layout.xml', 'product_division_list.content.xml', 0, 11),
-(24, 'Редактор товаров', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_editor.content.xml', 0, 10),
-(25, 'Редактор производителей', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'producer_editor.content.xml', 0, 9),
-(26, 'Редактор статусов товара', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_status_editor.content.xml', 0, 8),
-(27, 'Редактор типов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_type_editor.content.xml', 0, 7),
-(28, 'Редактор статусов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_status.content.xml', 0, 6),
-(29, 'Редактор валюты', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'curr_editor.content.xml', 0, 5),
-(30, 'Главная страница', 'templates/icons/home_page.icon.gif', 'default.layout.xml', 'main.content.xml', 0, 4),
-(31, 'Форма заказа', 'templates/icons/form.icon.gif', 'order.layout.xml', 'order.content.xml', 0, 3),
-(32, 'Корзина', 'templates/icons/form.icon.gif', 'order.layout.xml', 'basket.content.xml', 0, 2),
-(33, 'История заказов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_history.content.xml', 0, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `share_textblocks`
---
+(3, 'Список подразделов', 'templates/icons/divisions_list.icon.gif', 'default.layout.xml', 'childs.content.xml', 0, 14),
+(13, 'Текстовая страница', 'templates/icons/text_page.icon.gif', 'default.layout.xml', 'textblock.content.xml', 0, 13),
+(14, 'Лента новостей', 'templates/icons/feed.icon.gif', 'default.layout.xml', 'news.content.xml', 0, 16),
+(15, 'Форма авторизации', 'templates/icons/login_form.icon.gif', 'default.layout.xml', 'login.content.xml', 0, 18),
+(16, 'Форма контакта', 'templates/icons/feedback_form.icon.gif', 'default.layout.xml', 'feedback_form.content.xml', 0, 17),
+(17, 'Карта сайта', 'templates/icons/sitemap.icon.gif', 'default.layout.xml', 'map.content.xml', 0, 22),
+(18, 'Форма восстановления пароля', 'templates/icons/restore_password_form.icon.gif', 'default.layout.xml', 'restore_password.content.xml', 0, 23),
+(19, 'Форма регистрации/Редактор профиля', 'templates/icons/profile_form.icon.gif', 'default.layout.xml', 'register.content.xml', 0, 24),
+(20, 'Фотогалерея', 'templates/icons/gallery.icon.gif', 'default.layout.xml', 'gallery.content.xml', 0, 15),
+(21, 'Список сообщений', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'feedback_list.content.xml', 0, 25),
+(22, 'Google sitemap', 'templates/icons/google.icon.gif', 'empty.layout.xml', 'google_sitemap.content.xml', 1, 21),
+(23, 'Список товаров', 'templates/icons/divisions_list.icon.gif', 'catalogue.layout.xml', 'product_division_list.content.xml', 0, 12),
+(24, 'Редактор товаров', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_editor.content.xml', 0, 11),
+(25, 'Редактор производителей', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'producer_editor.content.xml', 0, 10),
+(26, 'Редактор статусов товара', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_status_editor.content.xml', 0, 9),
+(27, 'Редактор типов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_type_editor.content.xml', 0, 8),
+(28, 'Редактор статусов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_status.content.xml', 0, 7),
+(29, 'Редактор валюты', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'curr_editor.content.xml', 0, 6),
+(30, 'Главная страница', 'templates/icons/home_page.icon.gif', 'default.layout.xml', 'main.content.xml', 0, 5),
+(31, 'Форма заказа', 'templates/icons/form.icon.gif', 'order.layout.xml', 'order.content.xml', 0, 4),
+(32, 'Корзина', 'templates/icons/form.icon.gif', 'order.layout.xml', 'basket.content.xml', 0, 3),
+(33, 'История заказов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_history.content.xml', 0, 2),
+(34, 'Вакансии', NULL, 'default.layout.xml', 'vacancies.content.xml', 0, 1);
 
 DROP TABLE IF EXISTS `share_textblocks`;
 CREATE TABLE IF NOT EXISTS `share_textblocks` (
@@ -1855,10 +1853,6 @@ CREATE TABLE IF NOT EXISTS `share_textblocks` (
   PRIMARY KEY (`tb_id`),
   UNIQUE KEY `smap_id` (`smap_id`,`tb_num`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=118 ;
-
---
--- Dumping data for table `share_textblocks`
---
 
 INSERT INTO `share_textblocks` (`tb_id`, `smap_id`, `tb_num`) VALUES
 (70, NULL, '1'),
@@ -1883,12 +1877,6 @@ INSERT INTO `share_textblocks` (`tb_id`, `smap_id`, `tb_num`) VALUES
 (115, 393, '1'),
 (117, 394, '1');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `share_textblocks_translation`
---
-
 DROP TABLE IF EXISTS `share_textblocks_translation`;
 CREATE TABLE IF NOT EXISTS `share_textblocks_translation` (
   `tb_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1897,10 +1885,6 @@ CREATE TABLE IF NOT EXISTS `share_textblocks_translation` (
   UNIQUE KEY `tb_id` (`tb_id`,`lang_id`),
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `share_textblocks_translation`
---
 
 INSERT INTO `share_textblocks_translation` (`tb_id`, `lang_id`, `tb_content`) VALUES
 (16, 1, 'И вот наконец долгожданная версия Energine 2.3.6.<br/>\r\nКак всегда — старые ошибки исправили, новые добавили :)<br/>\r\nНо кроме ошибок добавился еще и <strong>модуль интернет магазина</strong>.<br/>\r\n<br/>\r\n2.3.6.1 — исправлены проблемы с формой заказа<br/>\r\n2.3.7 — произведена оптимизация производительности (число запросов к базе уменьшилось в среднем в 5 раз, скорость отработки страницы увеличилась процентов на 20%)<br/>\r\n<br/>\r\nВход в режим администратора:<br/>\r\n<ul> <li>Логин: <strong>demo@energine.org</strong> </li> <li>Пароль: <strong>demo</strong> </li></ul>'),
@@ -1925,12 +1909,6 @@ INSERT INTO `share_textblocks_translation` (`tb_id`, `lang_id`, `tb_content`) VA
 (116, 1, '<p> Это — список дочерних страниц, то есть всех страниц находящихся под текущим разделом.<br/>\r\n</p>'),
 (117, 1, '<p> Я не знаю что написать на этой странице.<br/>\r\n</p>');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `share_uploads`
---
-
 DROP TABLE IF EXISTS `share_uploads`;
 CREATE TABLE IF NOT EXISTS `share_uploads` (
   `upl_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1941,10 +1919,6 @@ CREATE TABLE IF NOT EXISTS `share_uploads` (
   UNIQUE KEY `upl_path` (`upl_path`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53 ;
 
---
--- Dumping data for table `share_uploads`
---
-
 INSERT INTO `share_uploads` (`upl_id`, `upl_path`, `upl_name`, `upl_data`) VALUES
 (45, 'uploads/public/12665704674248.gif', 'Energine core', NULL),
 (46, 'uploads/public/12665745065727.gif', 'heffalump.gif', NULL),
@@ -1953,12 +1927,6 @@ INSERT INTO `share_uploads` (`upl_id`, `upl_path`, `upl_name`, `upl_data`) VALUE
 (49, 'uploads/public/12671938041279.jpg', 'Huffalump-Lumpy-Dance.jpg', NULL),
 (50, 'uploads/public/12671938143931.jpg', 'Huffalump-Lumpy-Roo.jpg', NULL),
 (51, 'uploads/public/skrinshoty', 'Скриншоты', NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_basket`
---
 
 DROP TABLE IF EXISTS `shop_basket`;
 CREATE TABLE IF NOT EXISTS `shop_basket` (
@@ -1971,16 +1939,6 @@ CREATE TABLE IF NOT EXISTS `shop_basket` (
   KEY `basket_ibfk_2` (`session_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
---
--- Dumping data for table `shop_basket`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_currency`
---
 
 DROP TABLE IF EXISTS `shop_currency`;
 CREATE TABLE IF NOT EXISTS `shop_currency` (
@@ -1994,21 +1952,11 @@ CREATE TABLE IF NOT EXISTS `shop_currency` (
   UNIQUE KEY `curr_is_main` (`curr_is_main`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
---
--- Dumping data for table `shop_currency`
---
-
 INSERT INTO `shop_currency` (`curr_id`, `curr_is_main`, `curr_abbr`, `curr_rate`, `curr_order_num`) VALUES
 (2, NULL, 'UAH', 1, 1),
 (3, NULL, 'RUR', 3.7, 4),
 (4, 1, 'USD', 0.12, 2),
 (8, NULL, 'EUR', 0.0897, 3);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_currency_translation`
---
 
 DROP TABLE IF EXISTS `shop_currency_translation`;
 CREATE TABLE IF NOT EXISTS `shop_currency_translation` (
@@ -2019,10 +1967,6 @@ CREATE TABLE IF NOT EXISTS `shop_currency_translation` (
   PRIMARY KEY (`curr_id`,`lang_id`),
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `shop_currency_translation`
---
 
 INSERT INTO `shop_currency_translation` (`curr_id`, `lang_id`, `curr_name`, `curr_format`) VALUES
 (2, 1, 'Гривна наличная', '%s грн.'),
@@ -2038,12 +1982,6 @@ INSERT INTO `shop_currency_translation` (`curr_id`, `lang_id`, `curr_name`, `cur
 (8, 2, 'Євро', '%s євро'),
 (8, 3, 'Euro', '€%s');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_discounts`
---
-
 DROP TABLE IF EXISTS `shop_discounts`;
 CREATE TABLE IF NOT EXISTS `shop_discounts` (
   `dscnt_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -2054,16 +1992,6 @@ CREATE TABLE IF NOT EXISTS `shop_discounts` (
   KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Dumping data for table `shop_discounts`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_orders`
---
 
 DROP TABLE IF EXISTS `shop_orders`;
 CREATE TABLE IF NOT EXISTS `shop_orders` (
@@ -2080,19 +2008,9 @@ CREATE TABLE IF NOT EXISTS `shop_orders` (
   KEY `os_id` (`os_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
---
--- Dumping data for table `shop_orders`
---
-
 INSERT INTO `shop_orders` (`order_id`, `u_id`, `os_id`, `order_comment`, `order_delivery_comment`, `order_detail`, `user_detail`, `order_created`) VALUES
 (3, 1, 1, NULL, NULL, 'a:1:{i:0;a:11:{s:9:"basket_id";s:2:"14";s:10:"product_id";s:1:"1";s:10:"session_id";s:3:"325";s:12:"basket_count";s:1:"1";s:12:"product_name";s:29:"Название товара";s:13:"product_price";s:3:"$12";s:12:"product_summ";s:3:"$12";s:26:"product_summ_with_discount";N;s:7:"curr_id";s:1:"2";s:15:"product_segment";s:16:"nazvanije-tovara";s:12:"product_code";s:9:"126766767";}}', 'a:4:{s:4:"u_id";s:1:"1";s:6:"u_name";s:17:"demo@energine.org";s:10:"u_fullname";s:4:"demo";s:22:"order_delivery_comment";s:0:"";}', '2010-02-09 13:23:34'),
 (11, 1, 1, NULL, NULL, 'a:2:{i:0;a:10:{s:9:"basket_id";s:1:"8";s:10:"product_id";s:1:"4";s:10:"session_id";s:4:"3029";s:12:"basket_count";s:1:"1";s:12:"product_name";s:35:"Розовый слонопотам";s:13:"product_price";s:13:"12000 грн.";s:12:"product_summ";s:13:"12000 грн.";s:7:"curr_id";s:1:"2";s:15:"product_segment";s:18:"rozovyj-slonopotam";s:12:"product_code";s:3:"123";}i:1;a:10:{s:9:"basket_id";s:1:"9";s:10:"product_id";s:1:"5";s:10:"session_id";s:4:"3029";s:12:"basket_count";s:1:"1";s:12:"product_name";s:37:"Плюшевый слонопотам";s:13:"product_price";s:12:"4500 грн.";s:12:"product_summ";s:12:"4500 грн.";s:7:"curr_id";s:1:"2";s:15:"product_segment";s:21:"plyushevyj-slonopotam";s:12:"product_code";s:6:"211212";}}', 'a:4:{s:4:"u_id";s:1:"1";s:6:"u_name";s:17:"demo@energine.org";s:10:"u_fullname";s:10:"Павка";s:22:"order_delivery_comment";s:0:"";}', '2010-02-28 14:05:10');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_order_statuses`
---
 
 DROP TABLE IF EXISTS `shop_order_statuses`;
 CREATE TABLE IF NOT EXISTS `shop_order_statuses` (
@@ -2101,18 +2019,8 @@ CREATE TABLE IF NOT EXISTS `shop_order_statuses` (
   PRIMARY KEY (`os_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
---
--- Dumping data for table `shop_order_statuses`
---
-
 INSERT INTO `shop_order_statuses` (`os_id`, `os_priority`) VALUES
 (1, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_order_statuses_translation`
---
 
 DROP TABLE IF EXISTS `shop_order_statuses_translation`;
 CREATE TABLE IF NOT EXISTS `shop_order_statuses_translation` (
@@ -2123,20 +2031,10 @@ CREATE TABLE IF NOT EXISTS `shop_order_statuses_translation` (
   KEY `order_status_translation_ibfk_2` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `shop_order_statuses_translation`
---
-
 INSERT INTO `shop_order_statuses_translation` (`os_id`, `lang_id`, `os_name`) VALUES
 (1, 1, 'Заказан'),
 (1, 2, 'Замовлений'),
 (1, 3, 'Ordered');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_producers`
---
 
 DROP TABLE IF EXISTS `shop_producers`;
 CREATE TABLE IF NOT EXISTS `shop_producers` (
@@ -2146,19 +2044,9 @@ CREATE TABLE IF NOT EXISTS `shop_producers` (
   PRIMARY KEY (`producer_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
---
--- Dumping data for table `shop_producers`
---
-
 INSERT INTO `shop_producers` (`producer_id`, `producer_name`, `producer_segment`) VALUES
 (12, 'Slonopotam Inc.', 'slonopotam-inc'),
 (13, 'Heffalump factory LTD.', 'heffalump-factory-ltd');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_products`
---
 
 DROP TABLE IF EXISTS `shop_products`;
 CREATE TABLE IF NOT EXISTS `shop_products` (
@@ -2177,20 +2065,10 @@ CREATE TABLE IF NOT EXISTS `shop_products` (
   KEY `ps_id` (`ps_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
---
--- Dumping data for table `shop_products`
---
-
 INSERT INTO `shop_products` (`product_id`, `smap_id`, `pt_id`, `producer_id`, `product_code`, `product_segment`, `ps_id`) VALUES
 (4, 390, 41, 13, '123', 'rozovyj-slonopotam', 1),
 (5, 390, 41, 12, '211212', 'plyushevyj-slonopotam', 1),
 (6, 396, 41, NULL, '23444', 'zapasnoj-khobot-dlya-slonopotama', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_products_translation`
---
 
 DROP TABLE IF EXISTS `shop_products_translation`;
 CREATE TABLE IF NOT EXISTS `shop_products_translation` (
@@ -2203,10 +2081,6 @@ CREATE TABLE IF NOT EXISTS `shop_products_translation` (
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `shop_products_translation`
---
-
 INSERT INTO `shop_products_translation` (`product_id`, `lang_id`, `product_name`, `product_short_description_rtf`, `product_description_rtf`) VALUES
 (4, 1, 'Розовый слонопотам', 'Вся информация о повадках и облике слонопотамов известна лишь из высказываний и снов двух персонажей этих рассказов — <a href="http://ru.wikipedia.org/wiki/%D0%92%D0%B8%D0%BD%D0%BD%D0%B8-%D0%9F%D1%83%D1%85">Винни-Пуха</a> и <a href="http://ru.wikipedia.org/wiki/%D0%9F%D1%8F%D1%82%D0%B0%D1%87%D0%BE%D0%BA">Пятачка</a>. Согласно этим персонажам, слонопотамы представляют собой огромных клыкастых рычащих существ, обожающих <a href="http://ru.wikipedia.org/wiki/%D0%9C%D1%91%D0%B4">мёд</a> и <a href="http://ru.wikipedia.org/wiki/%D0%96%D1%91%D0%BB%D1%83%D0%B4%D1%8C">жёлуди</a>. Считается, что слонопотамы любят гулять и при этом мурлыкают себе под нос песенку и постоянно смотрят на небо, а при встрече они говорят «Хо-Хо».<br/>\r\n', 'Вся информация о повадках и облике слонопотамов известна лишь из высказываний и снов двух персонажей этих рассказов — <a href="http://ru.wikipedia.org/wiki/%D0%92%D0%B8%D0%BD%D0%BD%D0%B8-%D0%9F%D1%83%D1%85">Винни-Пуха</a> и <a href="http://ru.wikipedia.org/wiki/%D0%9F%D1%8F%D1%82%D0%B0%D1%87%D0%BE%D0%BA">Пятачка</a>. Согласно этим персонажам, слонопотамы представляют собой огромных клыкастых рычащих существ, обожающих <a href="http://ru.wikipedia.org/wiki/%D0%9C%D1%91%D0%B4">мёд</a> и <a href="http://ru.wikipedia.org/wiki/%D0%96%D1%91%D0%BB%D1%83%D0%B4%D1%8C">жёлуди</a>. Считается, что слонопотамы любят гулять и при этом мурлыкают себе под нос песенку и постоянно смотрят на небо, а при встрече они говорят «Хо-Хо». В настоящее время слонопотамы встречаются редко, особенно весной, однако их всё-таки можно поймать в западню, в виде очень глубокой ямы с приманкой из горшочка с мёдом. Некоторые повадки слонопотамов в книге упоминаются лишь вскользь, поэтому остаётся загадкой, идут ли слонопотамы на свист, едят ли они <a href="http://ru.wikipedia.org/wiki/%D0%A1%D1%8B%D1%80">сыр</a>, и любят ли они поросят.'),
 (4, 2, 'Рожевий слонопотам', 'In the fifth chapter of <a href="http://en.wikipedia.org/wiki/Winnie-the-Pooh_%28book%29">Winnie-the-Pooh</a>, Pooh and <a href="http://en.wikipedia.org/wiki/Piglet_%28Winnie_the_Pooh%29">Piglet</a> attempt bravely to capture a heffalump in a trap. However, no heffalumps are ever caught in their trap, and indeed they never meet a heffalump in the course of the books. The sole actual appearance of heffalumps in the books come as Pooh tries to put himself to sleep: &quot;[H]e tried counting Heffalumps [but] every Heffalump that he counted was making straight for a pot of Pooh''s honey… [and] when the five hundred and eighty-seventh Heffalumps were licking their jaws, and saying to themselves, ''Very good honey this, I don''t know when I''ve tasted better'', Pooh could bear it no longer.&quot; We learn nothing more about the nature of the beasts in the writings.', 'In the fifth chapter of <a href="http://en.wikipedia.org/wiki/Winnie-the-Pooh_%28book%29">Winnie-the-Pooh</a>, Pooh and <a href="http://en.wikipedia.org/wiki/Piglet_%28Winnie_the_Pooh%29">Piglet</a> attempt bravely to capture a heffalump in a trap. However, no heffalumps are ever caught in their trap, and indeed they never meet a heffalump in the course of the books. The sole actual appearance of heffalumps in the books come as Pooh tries to put himself to sleep: &quot;[H]e tried counting Heffalumps [but] every Heffalump that he counted was making straight for a pot of Pooh''s honey… [and] when the five hundred and eighty-seventh Heffalumps were licking their jaws, and saying to themselves, ''Very good honey this, I don''t know when I''ve tasted better'', Pooh could bear it no longer.&quot; We learn nothing more about the nature of the beasts in the writings.'),
@@ -2218,12 +2092,6 @@ INSERT INTO `shop_products_translation` (`product_id`, `lang_id`, `product_name`
 (6, 2, 'Запасний хобот', '<strong>Хобот</strong>, или <strong>хоботок</strong> — непарный вырост на переднем конце тела <a href="http://ru.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D0%BA%D0%BB%D0%B5%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B5">животного</a>, обычно обладающий подвижностью (способностью изгибаться и/или втягиваться). Термин используется в качестве общего названия для <a href="http://ru.wikipedia.org/wiki/%D0%93%D0%BE%D0%BC%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">негомологичных</a> <a href="http://ru.wikipedia.org/wiki/%D0%9E%D1%80%D0%B3%D0%B0%D0%BD_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">органов</a> у многих групп организмов.', '<strong>Хобот</strong>, или <strong>хоботок</strong> — непарный вырост на переднем конце тела <a href="http://ru.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D0%BA%D0%BB%D0%B5%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B5">животного</a>, обычно обладающий подвижностью (способностью изгибаться и/или втягиваться). Термин используется в качестве общего названия для <a href="http://ru.wikipedia.org/wiki/%D0%93%D0%BE%D0%BC%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">негомологичных</a> <a href="http://ru.wikipedia.org/wiki/%D0%9E%D1%80%D0%B3%D0%B0%D0%BD_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">органов</a> у многих групп организмов.'),
 (6, 3, 'Trunk', '<p> The correct Greek plural is <em>proboscides</em>, but in English it is more common to simply add <em>-es</em>, forming <em>proboscises</em>.</p><p> Although the word derives from the Greek «pro-boskein», the Latin spelling «proboscis» is taken in favor of the Greek «proboskis».</p>', '<p> The correct Greek plural is <em>proboscides</em>, but in English it is more common to simply add <em>-es</em>, forming <em>proboscises</em>.</p><p> Although the word derives from the Greek «pro-boskein», the Latin spelling «proboscis» is taken in favor of the Greek «proboskis».</p>');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_product_external_properties`
---
-
 DROP TABLE IF EXISTS `shop_product_external_properties`;
 CREATE TABLE IF NOT EXISTS `shop_product_external_properties` (
   `product_code` char(200) NOT NULL DEFAULT '',
@@ -2234,20 +2102,10 @@ CREATE TABLE IF NOT EXISTS `shop_product_external_properties` (
   KEY `curr_id` (`curr_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `shop_product_external_properties`
---
-
 INSERT INTO `shop_product_external_properties` (`product_code`, `product_price`, `product_count`, `curr_id`) VALUES
 ('123', '12000.00', 2, 2),
 ('211212', '4500.00', 1, 2),
 ('23444', '12.00', 3, 2);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_product_params`
---
 
 DROP TABLE IF EXISTS `shop_product_params`;
 CREATE TABLE IF NOT EXISTS `shop_product_params` (
@@ -2258,21 +2116,11 @@ CREATE TABLE IF NOT EXISTS `shop_product_params` (
   KEY `pt_id` (`pt_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
---
--- Dumping data for table `shop_product_params`
---
-
 INSERT INTO `shop_product_params` (`pp_id`, `pt_id`, `pp_type`) VALUES
 (4, 41, 'string'),
 (5, 41, 'string'),
 (6, 41, 'string'),
 (7, 41, 'string');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_product_params_translation`
---
 
 DROP TABLE IF EXISTS `shop_product_params_translation`;
 CREATE TABLE IF NOT EXISTS `shop_product_params_translation` (
@@ -2282,10 +2130,6 @@ CREATE TABLE IF NOT EXISTS `shop_product_params_translation` (
   PRIMARY KEY (`pp_id`,`lang_id`),
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `shop_product_params_translation`
---
 
 INSERT INTO `shop_product_params_translation` (`pp_id`, `lang_id`, `pp_name`) VALUES
 (4, 1, 'Вес'),
@@ -2301,12 +2145,6 @@ INSERT INTO `shop_product_params_translation` (`pp_id`, `lang_id`, `pp_name`) VA
 (7, 2, 'Довжина хоботу'),
 (7, 3, 'Trunk length');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_product_param_values`
---
-
 DROP TABLE IF EXISTS `shop_product_param_values`;
 CREATE TABLE IF NOT EXISTS `shop_product_param_values` (
   `product_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -2316,10 +2154,6 @@ CREATE TABLE IF NOT EXISTS `shop_product_param_values` (
   KEY `product_id` (`product_id`),
   KEY `pp_id` (`pp_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `shop_product_param_values`
---
 
 INSERT INTO `shop_product_param_values` (`product_id`, `pp_id`, `pp_value`) VALUES
 (4, 4, '12'),
@@ -2331,12 +2165,6 @@ INSERT INTO `shop_product_param_values` (`product_id`, `pp_id`, `pp_value`) VALU
 (5, 6, '45'),
 (5, 7, '123');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_product_statuses`
---
-
 DROP TABLE IF EXISTS `shop_product_statuses`;
 CREATE TABLE IF NOT EXISTS `shop_product_statuses` (
   `ps_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -2346,20 +2174,10 @@ CREATE TABLE IF NOT EXISTS `shop_product_statuses` (
   KEY `gr_id` (`right_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
---
--- Dumping data for table `shop_product_statuses`
---
-
 INSERT INTO `shop_product_statuses` (`ps_id`, `ps_is_default`, `right_id`) VALUES
 (1, 1, 1),
 (2, 0, 1),
 (3, 0, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_product_statuses_translation`
---
 
 DROP TABLE IF EXISTS `shop_product_statuses_translation`;
 CREATE TABLE IF NOT EXISTS `shop_product_statuses_translation` (
@@ -2369,10 +2187,6 @@ CREATE TABLE IF NOT EXISTS `shop_product_statuses_translation` (
   PRIMARY KEY (`ps_id`,`lang_id`),
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `shop_product_statuses_translation`
---
 
 INSERT INTO `shop_product_statuses_translation` (`ps_id`, `lang_id`, `ps_name`) VALUES
 (1, 1, 'В наличии'),
@@ -2385,12 +2199,6 @@ INSERT INTO `shop_product_statuses_translation` (`ps_id`, `lang_id`, `ps_name`) 
 (3, 2, 'Очікується'),
 (3, 3, 'Expected');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_product_types`
---
-
 DROP TABLE IF EXISTS `shop_product_types`;
 CREATE TABLE IF NOT EXISTS `shop_product_types` (
   `pt_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -2398,18 +2206,8 @@ CREATE TABLE IF NOT EXISTS `shop_product_types` (
   PRIMARY KEY (`pt_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=42 ;
 
---
--- Dumping data for table `shop_product_types`
---
-
 INSERT INTO `shop_product_types` (`pt_id`, `pt_name`) VALUES
 (41, 'Слонопотам');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shop_product_uploads`
---
 
 DROP TABLE IF EXISTS `shop_product_uploads`;
 CREATE TABLE IF NOT EXISTS `shop_product_uploads` (
@@ -2420,22 +2218,12 @@ CREATE TABLE IF NOT EXISTS `shop_product_uploads` (
   KEY `upl_id` (`upl_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `shop_product_uploads`
---
-
 INSERT INTO `shop_product_uploads` (`product_id`, `upl_id`, `upl_is_main`) VALUES
 (4, 46, 0),
 (6, 46, 0),
 (5, 47, 0),
 (5, 48, 0),
 (6, 48, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_groups`
---
 
 DROP TABLE IF EXISTS `user_groups`;
 CREATE TABLE IF NOT EXISTS `user_groups` (
@@ -2449,20 +2237,10 @@ CREATE TABLE IF NOT EXISTS `user_groups` (
   KEY `default_access_level` (`group_default_rights`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
---
--- Dumping data for table `user_groups`
---
-
 INSERT INTO `user_groups` (`group_id`, `group_name`, `group_default`, `group_user_default`, `group_default_rights`) VALUES
 (1, 'Администратор', 0, 0, 3),
 (3, 'Гость', 1, 0, 1),
 (4, 'Пользователь', 0, 1, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_group_rights`
---
 
 DROP TABLE IF EXISTS `user_group_rights`;
 CREATE TABLE IF NOT EXISTS `user_group_rights` (
@@ -2472,20 +2250,10 @@ CREATE TABLE IF NOT EXISTS `user_group_rights` (
   PRIMARY KEY (`right_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
---
--- Dumping data for table `user_group_rights`
---
-
 INSERT INTO `user_group_rights` (`right_id`, `right_name`, `right_const`) VALUES
 (1, 'Read only', 'ACCESS_READ'),
 (2, 'Edit', 'ACCESS_EDIT'),
 (3, 'Full control', 'ACCESS_FULL');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_users`
---
 
 DROP TABLE IF EXISTS `user_users`;
 CREATE TABLE IF NOT EXISTS `user_users` (
@@ -2499,18 +2267,8 @@ CREATE TABLE IF NOT EXISTS `user_users` (
   UNIQUE KEY `u_login` (`u_name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
---
--- Dumping data for table `user_users`
---
-
 INSERT INTO `user_users` (`u_id`, `u_name`, `u_password`, `u_is_active`, `u_fullname`, `u_avatar_prfile`) VALUES
 (1, 'demo@energine.org', '89e495e7941cf9e40e6980d14a16bf023ccd4c91', 1, 'demo', 'uploads/protected/12673636662855.png');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_user_groups`
---
 
 DROP TABLE IF EXISTS `user_user_groups`;
 CREATE TABLE IF NOT EXISTS `user_user_groups` (
@@ -2520,203 +2278,130 @@ CREATE TABLE IF NOT EXISTS `user_user_groups` (
   KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `user_user_groups`
---
-
 INSERT INTO `user_user_groups` (`u_id`, `group_id`) VALUES
 (1, 1);
 
---
--- Constraints for dumped tables
---
 
---
--- Constraints for table `image_photo_gallery`
---
+ALTER TABLE `hrm_resumes`
+  ADD CONSTRAINT `hrm_resumes_ibfk_1` FOREIGN KEY (`vacancy_id`) REFERENCES `hrm_vacancies` (`vacancy_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `hrm_staff`
+  ADD CONSTRAINT `hrm_staff_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `hrm_staff_translation`
+  ADD CONSTRAINT `hrm_staff_translation_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `hrm_staff` (`staff_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `hrm_staff_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `hrm_vacancies`
+  ADD CONSTRAINT `hrm_vacancies_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE;
+
+ALTER TABLE `hrm_vacancies_translation`
+  ADD CONSTRAINT `hrm_vacancies_translation_ibfk_1` FOREIGN KEY (`vacancy_id`) REFERENCES `hrm_vacancies` (`vacancy_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `hrm_vacancies_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
+
 ALTER TABLE `image_photo_gallery`
   ADD CONSTRAINT `image_photo_gallery_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `image_photo_gallery_ibfk_2` FOREIGN KEY (`pg_photo_img`) REFERENCES `share_uploads` (`upl_path`) ON DELETE CASCADE ON UPDATE CASCADE;
 
---
--- Constraints for table `image_photo_gallery_translation`
---
 ALTER TABLE `image_photo_gallery_translation`
   ADD CONSTRAINT `image_photo_gallery_translation_ibfk_1` FOREIGN KEY (`pg_id`) REFERENCES `image_photo_gallery` (`pg_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `image_photo_gallery_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `share_access_level`
---
 ALTER TABLE `share_access_level`
   ADD CONSTRAINT `share_access_level_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `share_access_level_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `user_groups` (`group_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `share_access_level_ibfk_3` FOREIGN KEY (`right_id`) REFERENCES `user_group_rights` (`right_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `share_lang_tags_translation`
---
 ALTER TABLE `share_lang_tags_translation`
   ADD CONSTRAINT `FK_Reference_6` FOREIGN KEY (`ltag_id`) REFERENCES `share_lang_tags` (`ltag_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_tranaslatelv_language` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `share_news`
---
 ALTER TABLE `share_news`
   ADD CONSTRAINT `share_news_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `share_news_translation`
---
 ALTER TABLE `share_news_translation`
   ADD CONSTRAINT `share_news_translation_ibfk_1` FOREIGN KEY (`news_id`) REFERENCES `share_news` (`news_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `share_news_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `share_sitemap`
---
 ALTER TABLE `share_sitemap`
   ADD CONSTRAINT `share_sitemap_ibfk_7` FOREIGN KEY (`tmpl_id`) REFERENCES `share_templates` (`tmpl_id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `share_sitemap_ibfk_8` FOREIGN KEY (`smap_pid`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
---
--- Constraints for table `share_sitemap_translation`
---
 ALTER TABLE `share_sitemap_translation`
   ADD CONSTRAINT `FK_sitemaplv_language` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_sitemaplv_sitemap` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `share_sitemap_uploads`
---
 ALTER TABLE `share_sitemap_uploads`
   ADD CONSTRAINT `share_sitemap_uploads_ibfk_3` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `share_sitemap_uploads_ibfk_4` FOREIGN KEY (`upl_id`) REFERENCES `share_uploads` (`upl_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
---
--- Constraints for table `share_textblocks`
---
 ALTER TABLE `share_textblocks`
   ADD CONSTRAINT `share_textblocks_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `share_textblocks_translation`
---
 ALTER TABLE `share_textblocks_translation`
   ADD CONSTRAINT `share_textblocks_translation_ibfk_1` FOREIGN KEY (`tb_id`) REFERENCES `share_textblocks` (`tb_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `share_textblocks_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_basket`
---
 ALTER TABLE `shop_basket`
   ADD CONSTRAINT `shop_basket_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `shop_products` (`product_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_basket_ibfk_2` FOREIGN KEY (`session_id`) REFERENCES `share_session` (`session_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_currency_translation`
---
 ALTER TABLE `shop_currency_translation`
   ADD CONSTRAINT `shop_currency_translation_ibfk_1` FOREIGN KEY (`curr_id`) REFERENCES `shop_currency` (`curr_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_currency_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_discounts`
---
 ALTER TABLE `shop_discounts`
   ADD CONSTRAINT `shop_discounts_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `user_groups` (`group_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_orders`
---
 ALTER TABLE `shop_orders`
   ADD CONSTRAINT `shop_orders_ibfk_1` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `shop_orders_ibfk_2` FOREIGN KEY (`os_id`) REFERENCES `shop_order_statuses` (`os_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_order_statuses_translation`
---
 ALTER TABLE `shop_order_statuses_translation`
   ADD CONSTRAINT `shop_order_statuses_translation_ibfk_1` FOREIGN KEY (`os_id`) REFERENCES `shop_order_statuses` (`os_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_order_statuses_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_products`
---
 ALTER TABLE `shop_products`
   ADD CONSTRAINT `shop_products_ibfk_24` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_products_ibfk_26` FOREIGN KEY (`producer_id`) REFERENCES `shop_producers` (`producer_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_products_ibfk_27` FOREIGN KEY (`ps_id`) REFERENCES `shop_product_statuses` (`ps_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_products_ibfk_28` FOREIGN KEY (`pt_id`) REFERENCES `shop_product_types` (`pt_id`) ON DELETE SET NULL;
 
---
--- Constraints for table `shop_products_translation`
---
 ALTER TABLE `shop_products_translation`
   ADD CONSTRAINT `shop_products_translation_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `shop_products` (`product_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_products_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_product_external_properties`
---
 ALTER TABLE `shop_product_external_properties`
   ADD CONSTRAINT `shop_product_external_properties_ibfk_3` FOREIGN KEY (`product_code`) REFERENCES `shop_products` (`product_code`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `shop_product_external_properties_ibfk_4` FOREIGN KEY (`curr_id`) REFERENCES `shop_currency` (`curr_id`);
 
---
--- Constraints for table `shop_product_params`
---
 ALTER TABLE `shop_product_params`
   ADD CONSTRAINT `shop_product_params_ibfk_1` FOREIGN KEY (`pt_id`) REFERENCES `shop_product_types` (`pt_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_product_params_translation`
---
 ALTER TABLE `shop_product_params_translation`
   ADD CONSTRAINT `shop_product_params_translation_ibfk_1` FOREIGN KEY (`pp_id`) REFERENCES `shop_product_params` (`pp_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_product_params_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_product_param_values`
---
 ALTER TABLE `shop_product_param_values`
   ADD CONSTRAINT `shop_product_param_values_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `shop_products` (`product_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_product_param_values_ibfk_2` FOREIGN KEY (`pp_id`) REFERENCES `shop_product_params` (`pp_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_product_statuses`
---
 ALTER TABLE `shop_product_statuses`
   ADD CONSTRAINT `shop_product_statuses_ibfk_1` FOREIGN KEY (`right_id`) REFERENCES `user_group_rights` (`right_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_product_statuses_translation`
---
 ALTER TABLE `shop_product_statuses_translation`
   ADD CONSTRAINT `shop_product_statuses_translation_ibfk_1` FOREIGN KEY (`ps_id`) REFERENCES `shop_product_statuses` (`ps_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `shop_product_statuses_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `shop_product_uploads`
---
 ALTER TABLE `shop_product_uploads`
   ADD CONSTRAINT `shop_product_uploads_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `shop_products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `shop_product_uploads_ibfk_2` FOREIGN KEY (`upl_id`) REFERENCES `share_uploads` (`upl_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
---
--- Constraints for table `user_groups`
---
 ALTER TABLE `user_groups`
   ADD CONSTRAINT `user_groups_ibfk_1` FOREIGN KEY (`group_default_rights`) REFERENCES `user_group_rights` (`right_id`) ON DELETE CASCADE;
 
---
--- Constraints for table `user_user_groups`
---
 ALTER TABLE `user_user_groups`
   ADD CONSTRAINT `user_user_groups_ibfk_3` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_user_groups_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `user_groups` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
 SET FOREIGN_KEY_CHECKS=1;
-
 COMMIT;

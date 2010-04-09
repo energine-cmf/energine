@@ -24,6 +24,7 @@
 	<xsl:include href="../../core/modules/user/transformers/include.xslt"/>
 	<xsl:include href="../../core/modules/image/transformers/include.xslt"/>
 	<xsl:include href="../../core/modules/shop/transformers/include.xslt"/>
+	<xsl:include href="../../core/modules/hrm/transformers/include.xslt"/>
 	<!-- <xsl:include href="../../core/modules/aux/transformers/include.xslt"/> -->
 
 	<xsl:include href="include.xslt"/>

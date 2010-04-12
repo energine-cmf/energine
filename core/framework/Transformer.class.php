@@ -44,8 +44,10 @@ class Transformer extends Object {
 	 * @param string
 	 * @return void
 	 */
-	public function setFileName($transformerFilename){
-		$transformerFilename = self::MAIN_TRANSFORMER_DIR.$transformerFilename;
+       public function setFileName($transformerFilename, $isAbsolutePath = false){
+               if(!$isAbsolutePath)
+                 $transformerFilename = self::MAIN_TRANSFORMER_DIR.$transformerFilename;
+
 		if (!file_exists($transformerFilename)) {
 			throw new SystemException('ERR_DEV_NO_MAIN_TRANSFORMER', SystemException::ERR_DEVELOPER, $transformerFilename);
 		}

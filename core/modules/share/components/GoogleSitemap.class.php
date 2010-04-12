@@ -28,9 +28,9 @@
      * @access public
      */
     public function __construct($name, $module, Document $document,  array $params = null) {
-    	$params['configFilename'] = 'SitemapTree.component.xml';
+    	
         parent::__construct($name, $module, $document,  $params);
-        DocumentController::getInstance()->getTransformer()->setFileName('google_sitemap.xslt');
+        DocumentController::getInstance()->getTransformer()->setFileName('core/modules/share/transformers/google_sitemap.xslt', true);
         Response::getInstance()->setHeader('Content-Type', 'text/xml; charset=utf-8');
     }
 }

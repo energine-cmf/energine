@@ -98,8 +98,8 @@
                 </xsl:choose>
                 <span class="position"> <xsl:value-of select="field[@name='staff_post']"/></span>
             </h4>
-            <xsl:if test="field[@name='staff_photo_prfile'] != ''">
-                <div class="image"><img src="{$BASE}{field[@name='staff_photo_prfile']}" alt="{field[@name='staff_title']}"/></div>
+            <xsl:if test="field[@name='staff_photo_img'] != ''">
+                <div class="image"><img src="{$BASE}{field[@name='staff_photo_img']/image[@name='default']}" alt="{field[@name='staff_title']}"/></div>
             </xsl:if>
             <div class="announce"><xsl:value-of select="field[@name='staff_announce']" disable-output-escaping="yes"/></div>
         </li>
@@ -112,7 +112,7 @@
                 <span class="position">, <xsl:value-of select="field[@name='staff_post']" /></span>
             </h3>
             <xsl:if test="field[@name='staff_photo_prfile'] != ''">
-                <div class="image"><img src="{$BASE}{field[@name='staff_photo_prfile']}" alt="{field[@name='staff_title']}" /></div>
+                <div class="image"><img src="{$BASE}{field[@name='staff_photo_img']/image[@name='default']}" alt="{field[@name='staff_title']}" /></div>
             </xsl:if>
             <div class="text"><xsl:value-of select="field[@name='staff_text_rtf']" disable-output-escaping="yes" /></div>
             <div class="go_back"><a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}"><xsl:value-of select="../../translations/translation[@const='TXT_STAFF_BACK_LINK']" disable-output-escaping="yes" /></a></div>           

@@ -141,6 +141,7 @@
         <input class="text inp_file" readonly="readonly">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="id"><xsl:value-of select="generate-id(.)" /></xsl:attribute>
+            <xsl:attribute name="value"><xsl:value-of select="image[@name='main']"/></xsl:attribute>
         </input>
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
     </xsl:template>

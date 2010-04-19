@@ -19,7 +19,7 @@
 		</method>
 		<method name="view">
 		     <uri_patterns>
-		         <pattern>/[int]-[int]-[int]/</pattern>
+		         <pattern>/[day]-[month]-[year]/</pattern>
 		     </uri_patterns>
  			<fields>
 				<field name="news_id"/>

@@ -177,6 +177,7 @@ final class Mail extends Object {
             if (is_array($data)) {
             	extract($data);
             }
+            $host = Request::getInstance()->getBasePath();
         	$errorLevel = error_reporting(E_ERROR);
         	$text = addslashes($text);
         	eval("\$text = \"$text\";");

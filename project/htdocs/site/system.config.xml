@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <project>
-        <name>Energine 2.3.6</name>
+        <name>Energine</name>
     </project>
     <database>
         <host></host>
@@ -35,9 +35,10 @@
     <!-- Настройки почтовых эккаунтов -->
     <mail>
        <!-- Поле from -->
-        <from>noreply@eggmen.net</from>
+        <from>demo@energine.org</from>
+        <feedback>demo@energine.org</feedback>
         <!-- Поле to -->
-        <manager>d.pavka@gmail.com</manager>
+        <manager>demo@energine.org</manager>
     </mail>
     <!-- Значения конфигурации thumbnail в файловом репозитории -->
     <!-- может существовать несколько различных типов thumbnail -->

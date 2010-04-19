@@ -183,12 +183,12 @@ class Register extends DBDataSet {
 			$mailer->setFrom($this->getConfigValue('mail.from'));
 			$mailer->setSubject($this->translate('TXT_SUBJ_REGISTER'));
 			$mailer->setText(
-			$this->translate('TXT_BODY_REGISTER'),
-			array(
-			     'login' => $this->user->getValue('u_name'), 
-			     'name' => $this->user->getValue('u_fullname'),
-			     'password' => $password
-			)
+				$this->translate('TXT_BODY_REGISTER'),
+				array(
+				     'login' => $this->user->getValue('u_name'), 
+				     'name' => $this->user->getValue('u_fullname'),
+				     'password' => $password
+				)
 			);
 			$mailer->addTo($this->user->getValue('u_name'));
 			$mailer->send();

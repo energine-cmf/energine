@@ -1,51 +1,12 @@
 ﻿@charset "utf-8";
-/* CSS Document */
 /* 
-Template
 Name: Form stylesheet
-Description: Стили для форм.   
-Version: $Id: forms.css,v 1.1 2008/04/10 16:12:07 pavka Exp $
-Date: April 2008
-Author: Yuriy Ponomarev (mailto:ponomarev@colocall.net)
+Description: Стили для форм.
+Created: April 2010
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
 */
 
 /* ----- default ----- */
-form, fieldset, legend {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-family: "Lucida Sans Unicode", sans-serif;
-	font-size: 1em; /* =13px */
-}
-fieldset {
-	padding: 10px 12px;
-	border: 1px solid gray;
-}
-input, textarea, select, button {
-	height: auto;
-	margin: 0;
-	font-family: "Lucida Sans Unicode", sans-serif;
-	font-size: 1em; /* =13px */
-	color: #000;
-	line-height: normal;
-}
-input.text, textarea, select {
-	/*
-	padding: 1px;
-	border: 1px solid gray; 
-	border-right: 1px solid #cfcfcf;
-	border-bottom: 1px solid #cfcfcf;
-	background: #fff;*/ /* Для изменения стиля элементов форм убрать комментарии */
-}
-select option {
-	/*background: #fff;*/
-}
-input.text:focus, textarea:focus, select:focus {
-	/*border: 1px solid #000;
-	border-right: 1px solid #9f9f9f;
-	border-bottom: 1px solid #9f9f9f;*/
-}
-
 input.radio, input.checkbox {
 	width: auto;
 	vertical-align: middle;
@@ -54,9 +15,14 @@ input.radio, input.checkbox {
 .field {	
 	clear: both;
 	padding: 0 0 0.5em 0;
-	_height: 1%;
 }
-.controlset {
+.captcha_field img, .captcha_field input {
+    vertical-align: top;
+}
+.captcha_field img {
+    margin-right: 5px;
+}
+form .controlset {
 	clear: both;
 	padding-top: 1em;
 }
@@ -71,7 +37,7 @@ form .error {
 	color: #ff0000;
 }
 
-/* base(vertical) form */
+/* base (vertical) form */
 .base_form {
 	margin: 0 0 1em 0;
 }
@@ -81,24 +47,25 @@ form .error {
 .base_form input.file {
 	width: 274px;
 }
+.base_form .captcha_field input.text {
+    width: 100px;
+}
 .base_form textarea {
 	width: 270px;
 	height: 70px;
 }
 .base_form select {
 	width: 274px;
-	*width: 276px;
 }
 /* /base form */
 
-/* level(horizontal) form */
+/* level (horizontal) form */
 .level_form {
 	margin: 0 0 1em 0;
 }
 .level_form .field .name {
 	float: left;
 	width: 150px;
-	_margin-right: -150px; 
 }
 .level_form .field .control {
 	margin-left: 150px;
@@ -109,13 +76,15 @@ form .error {
 .level_form input.file {
 	width: 204px;
 }
+.base_form .captcha_field input.text {
+    width: 100px;
+}
 .level_form textarea {
 	width: 200px;
 	height: 70px;
 }
 .level_form select {
 	width: 204px;
-	*width: 206px;
 }
 /* /level form */
 /* ----- /default ----- */

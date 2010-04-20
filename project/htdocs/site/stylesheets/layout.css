@@ -1,24 +1,14 @@
 ﻿@charset "utf-8";
-/* CSS Document */
-/* 
-Template
+/*
 Name: Layout stylesheet
-Description: Таблица формирует двухколоночный layout методом простых разнонаправленных float'ов. 
-Version: $Id: layout.css,v 1.1 2008/04/10 16:12:07 pavka Exp $
-Date: April 2008
-Author: Yuriy Ponomarev (mailto:ponomarev@colocall.net)
+Description: Таблица формирует двухколоночный layout. 
+Created: April 2010
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
 */
-
-html, body {
-	margin: 0;
-	padding: 0;
-}
 
 body {
 	background: #FFF url(../images/top-bg.png) top left repeat-x;
-	font-size: 0.813em; /* =13px - базовый размер шрифта для страницы */
 	line-height: 150%;
-	_text-align: center;
 }
 
 hr.separator {
@@ -32,6 +22,8 @@ hr.separator {
 	display: block;
 	height: 0;
 	visibility: hidden;
+	line-height: 0;
+	font-size: 0;
 }
 .clearfix {
 	zoom: 1; /* IE5.5+ */
@@ -42,14 +34,13 @@ hr.separator {
 .clearing {
 	clear: both;
 	height: 1px;
-	font-size: 0.01em;
+	font-size: 0;
 }
 /* /clearing */
 
 #container {
     width: 1000px;
-    margin: 0 auto;
-	_text-align: left;	
+    margin: 0 auto;	
 }
 
 /* ----- header ----- */

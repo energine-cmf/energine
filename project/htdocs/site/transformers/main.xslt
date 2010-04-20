@@ -13,11 +13,10 @@
                 indent="yes"/>
 
     <xsl:template name="stylesheets">
-        <link href="stylesheets/common.css" rel="stylesheet" type="text/css" media="all" />
-		<link href="stylesheets/screen.css" rel="stylesheet" type="text/css" media="Screen, projection" />
- 		<link href="stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
-		<link href="stylesheets/handheld.css" rel="stylesheet" type="text/css" media="handheld" />
-		<xsl:comment>[if IE]&gt; &lt;style type="text/css" media="Screen, projection"&gt; @import url("stylesheets/ie.css"); /* IE styles import */ &lt;/style&gt; &lt;![endif]</xsl:comment>
+		<link href="stylesheets/screen.css" rel="stylesheet" type="text/css" media="Screen, projection"/>
+ 		<link href="stylesheets/print.css" rel="stylesheet" type="text/css" media="print"/>
+		<link href="stylesheets/handheld.css" rel="stylesheet" type="text/css" media="handheld"/>
+		<xsl:comment>[if IE]&gt; &lt;link href="stylesheets/ie.css" rel="stylesheet" type="text/css" media="Screen, projection"&gt; &lt;![endif]</xsl:comment>
     </xsl:template>
 
 	<xsl:include href="../../core/modules/share/transformers/include.xslt"/>
@@ -25,7 +24,7 @@
 	<xsl:include href="../../core/modules/image/transformers/include.xslt"/>
 	<xsl:include href="../../core/modules/shop/transformers/include.xslt"/>
 	<xsl:include href="../../core/modules/hrm/transformers/include.xslt"/>
-	<!-- <xsl:include href="../../core/modules/aux/transformers/include.xslt"/> -->
+	<!-- <xsl:include href="../../core/modules/misc/transformers/include.xslt"/> -->
 
 	<xsl:include href="include.xslt"/>
 

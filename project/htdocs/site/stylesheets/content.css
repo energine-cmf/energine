@@ -1,12 +1,9 @@
 ﻿@charset "utf-8";
-/* CSS Document */
-/* 
-Template
+/*
 Name: Content stylesheet
-Description: Стили для контента.   
-Version: $Id: content.css,v 1.1 2008/04/10 16:12:07 pavka Exp $
-Date: April 2008
-Author: Yuriy Ponomarev (mailto:ponomarev@colocall.net)
+Description: Таблица содержит форматирование для всех компонентов в контенте. 
+Created: April 2010
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
 */
 
 /* ----- default common classes using in content ----- */
@@ -73,23 +70,6 @@ Author: Yuriy Ponomarev (mailto:ponomarev@colocall.net)
 
 /* ----- tables ----- */
 /* default */
-table, th, td {
-	font-family: "Lucida Sans Unicode", sans-serif;
-	font-size: 1em; /* =13px */
-}
-caption {
-	padding-bottom: 5px;
-	text-align: left;
-	font-weight: bold;
-}
-th {
-	font-weight: bold;
-	text-align: center;
-}
-tfoot {
-	font-weight: bold;
-}
-
 .base_table {
 	width: 100%;
 	margin: 0 0 1em 0;
@@ -161,12 +141,12 @@ table.basket tbody tr.odd td {
 	background: #f3f3f3;
 }
 /* /basket */
-
 /* ----- /tables ----- */
 
 
-/* pager */
+/* ----- pager ----- */
 .pager {
+    clear: both;
 	margin: 0 0 1em 0;
 }
 .pager a:visited { color: #00E; }
@@ -183,36 +163,57 @@ table.basket tbody tr.odd td {
     background: #0080FF;
     color: #fff; 
 }
-/* /pager */
+/* ----- /pager ----- */
 
-/* news */
-#content ul.news {
-	margin: 0 0 1em 0;
-	padding: 0;	
+/* ----- news ----- */
+.news .name {
+    margin: 0 0 0.5em 0;
+    font-weight: normal;
 }
-#content ul.news li {
-	_height: 1%;
-	margin: 0 0 1em 0;
-	list-style: none;
+.news .text {
+    margin-bottom: 1em;
 }
-.news .title {
-	margin: 0;
-	font-weight: normal;
+.news_list li { 
+    margin: 0 0 1em 0;
 }
-.news .anounce {
-	margin: 0 1em;
+.news_view {
+    margin-bottom: 1em;
 }
-/* /news */
+.news_view .name {
+	margin: 0.5em 0;	
+}
+/* ----- /news ----- */
 
-/* gallery */
-#content .gallery {
+/* ----- vacancies ----- */
+.vacancies .name {
+    margin: 0;
+    font-weight: normal;
+}
+.vacancies .date {
+    margin-bottom: 0.5em;
+}
+.vacancies .text {
+    margin-bottom: 1em;
+}
+.vacancy_list li { 
+    margin: 0 0 1em 0;
+}
+.vacancy_view {
+    margin-bottom: 1em;
+}
+.vacancy_view .name {
+    margin: 0.5em 0;    
+}
+/* ----- /vacancies ----- */
+
+/* ----- gallery ----- */
+.gallery {
 	float: left;
 	width: 100%;
 	margin: 0 0 1em 0;
 	padding: 0;	
 }
-#content .gallery li {
-	_display: inline;
+.gallery li {	
 	float: left;
 	width: 27%;
 	margin: 0 1em 1em 1em;
@@ -220,4 +221,4 @@ table.basket tbody tr.odd td {
 	list-style: none;
 	text-align: center;
 }
-/* /gallery */
+/* ----- /gallery ----- */

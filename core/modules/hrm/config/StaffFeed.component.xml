@@ -27,6 +27,9 @@
                 <field name="staff_post"/>
                 <field name="staff_text_rtf"/>
             </fields>
+            <translations>
+                <translation const="TXT_BACK_TO_LIST"/>
+            </translations>
 		</method>
 	</methods>
 </configuration>

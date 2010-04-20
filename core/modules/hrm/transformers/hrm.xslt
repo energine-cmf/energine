@@ -4,7 +4,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
 
-<!-- Vacancies -->
+    <!-- компонент VacancyFeed -->
     <xsl:template match="component[@class='VacancyFeed']">
         <xsl:if test="not(recordset[@empty])">
             <div class="vacancies">
@@ -25,7 +25,7 @@
                 <xsl:if test="$COMPONENTS[@editable]">
                     <xsl:attribute name="record"><xsl:value-of select="field[@index='PRI']"/></xsl:attribute>
                 </xsl:if>               
-                <div class="name">
+                <h4 class="name">
                     <xsl:choose>
                         <xsl:when test="field[@name='vacancy_text_rtf'] != ''">
                             <a href="{$BASE}{$LANG_ABBR}{../../@template}{field[@name='vacancy_url_segment']}/"><xsl:value-of select="field[@name='vacancy_name']"/></a>                   
@@ -34,11 +34,11 @@
                             <xsl:value-of select="field[@name='vacancy_name']"/>
                         </xsl:otherwise>
                     </xsl:choose>
-                </div>
+                </h4>
                 <div class="date">
-                    <xsl:value-of select="translate(field[@name='vacancy_date'], '/', '.')"/>
+                    <xsl:value-of select="field[@name='vacancy_date']"/>
                     <xsl:if test="field[@name='vacancy_end_date'] != ''">
-                        - <xsl:value-of select="translate(field[@name='vacancy_end_date'], '/', '.')"/>
+                        - <xsl:value-of select="field[@name='vacancy_end_date']"/>
                     </xsl:if>
                 </div>
                 <div class="announce"><xsl:value-of select="field[@name='vacancy_annotation']" disable-output-escaping="yes"/></div>
@@ -56,18 +56,19 @@
     </xsl:template>
    
     <xsl:template match="record[ancestor::component[@class='VacancyFeed'][@type='form']]">       
-        <div class="name"><xsl:value-of select="field[@name='vacancy_name']"/></div>
+        <h3 class="name"><xsl:value-of select="field[@name='vacancy_name']"/></h3>
         <div class="date">
-            <xsl:value-of select="translate(field[@name='vacancy_date'], '/', '.')"/>
+            <xsl:value-of select="field[@name='vacancy_date']"/>
             <xsl:if test="field[@name='vacancy_end_date'] != ''">
-                 - <xsl:value-of select="translate(field[@name='vacancy_end_date'], '/', '.')"/>
+                 - <xsl:value-of select="field[@name='vacancy_end_date']"/>
             </xsl:if>
         </div>
         <div class="text"><xsl:value-of select="field[@name='vacancy_text_rtf']" disable-output-escaping="yes"/></div>
     </xsl:template>
-    <!-- /Vacancies -->
-
-     <xsl:template match="component[@class='StaffFeed']">
+    <!-- /компонент VacancyFeed -->
+    
+    <!-- компонент StaffFeed -->
+    <xsl:template match="component[@class='StaffFeed']">
         <xsl:if test="not(recordset[@empty])">
             <div class="staff">
                 <xsl:apply-templates/>
@@ -81,13 +82,12 @@
         </ul>
     </xsl:template>
 
-
-<xsl:template match="record[ancestor::component[@class='StaffFeed'][@type='list']]">
+    <xsl:template match="record[ancestor::component[@class='StaffFeed'][@type='list']]">
         <li class="clearfix">
             <xsl:if test="$COMPONENTS[@editable]">
                 <xsl:attribute name="record"><xsl:value-of select="field[@index='PRI']"/></xsl:attribute>
             </xsl:if>
-            <h4 class="title">
+            <h4 class="name">
                 <xsl:choose>
                     <xsl:when test="field[@name='staff_text_rtf'] != 1">
                         <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{field[@name='staff_id']}/"><xsl:value-of select="field[@name='staff_title']" /></a>,                   
@@ -107,7 +107,7 @@
    
     <xsl:template match="record[ancestor::component[@class='StaffFeed'][@type='form']]">
         <div class="staff">
-        <h3 class="title">
+            <h3 class="name">
                 <xsl:value-of select="field[@name='staff_title']" />
                 <span class="position">, <xsl:value-of select="field[@name='staff_post']" /></span>
             </h3>
@@ -118,4 +118,6 @@
             <div class="go_back"><a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}"><xsl:value-of select="../../translations/translation[@const='TXT_STAFF_BACK_LINK']" disable-output-escaping="yes" /></a></div>           
         </div>
     </xsl:template>
+    <!-- /компонент StaffFeed -->
+    
 </xsl:stylesheet>

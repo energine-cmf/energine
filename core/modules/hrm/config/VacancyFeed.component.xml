@@ -14,6 +14,9 @@
 		     <uri_patterns>
 		         <pattern>/[string]/</pattern>
 		     </uri_patterns>
+             <translations>
+                <translation const="TXT_BACK_TO_LIST"/>
+            </translations>
 		</method>
 	</methods>
 </configuration>

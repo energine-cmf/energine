@@ -49,15 +49,18 @@ height: auto !important;
 height: 1%; /* :KLUGE: добавляет свойство hasLayout для IE6 */
 }
 
-.gridHeadContainer th{
-    background:auto;
+.gridHeadContainer th {
+    background: auto;
+    cursor: default;
 }
 
-.gridHeadContainer th.asc{
-	background:red;
+.gridHeadContainer th.asc {
+    padding-right: 2em;
+	background: url("../images/desc.gif") 100% 6px no-repeat;
 }
-.gridHeadContainer th.desc{
-    background:green;    
+.gridHeadContainer th.desc {    
+    padding-right: 2em;
+    background: url("../images/asc.gif") 100% 6px no-repeat;
 }
 
 .gridContainer {

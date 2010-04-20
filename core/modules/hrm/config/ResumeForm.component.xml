@@ -11,6 +11,9 @@
 			<toolbar>
 				<control id="send_resume" title="BTN_SEND" type="submit"/>
 			</toolbar>
+            <translations>
+                <translation const="TXT_ENTER_CAPTCHA"/>
+            </translations>
 		</method>
 		<method name="checkCaptcha">
 		  <uri_patterns>

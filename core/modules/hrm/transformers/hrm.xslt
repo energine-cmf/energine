@@ -120,4 +120,18 @@
     </xsl:template>
     <!-- /компонент StaffFeed -->
     
+    <!-- компонент ResumeForm -->
+    <xsl:template match="recordset[parent::component[@class='ResumeForm']]">
+        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
+            <xsl:apply-templates/>
+            <xsl:call-template name="captcha"/>
+        </div>
+        <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
+            <div class="note">
+                <xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
+            </div>
+        </xsl:if>
+    </xsl:template>
+    <!-- /компонент ResumeForm -->  
+    
 </xsl:stylesheet>

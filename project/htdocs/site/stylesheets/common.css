@@ -93,13 +93,12 @@ h6 {
 
 /* ----- links ----- */
 a {
-    color: #00E;
-    text-decoration: underline;
+    text-decoration: none;
+    color: #00e;
 }
-a:link { color: #00E; }
-a:visited { color: gray; }
-a:hover { color: #F00; }
-a:active { color: #F00; }
+a:link { text-decoration: none; color: #00e; }
+a:visited { text-decoration: none; color: gray; }
+a:hover, a:active { text-decoration: underline; color: #f00; }
 /* ----- /links ----- */
 
 /* ----- lists ----- */

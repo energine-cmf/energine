@@ -4,6 +4,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
     
+    <!-- компонент GalleryFeed -->
     <xsl:template match="recordset[parent::component[@class='GalleryFeed'][@type='list']]">
         <xsl:if test="not(@empty)">
             <ul id="{generate-id(.)}" class="gallery">
@@ -21,6 +22,6 @@
             <div class="description"><xsl:value-of select="field[@name='pg_text']"/></div>    
         </li>
     </xsl:template>
-
     <!-- /компонент GalleryFeed -->
+    
 </xsl:stylesheet>

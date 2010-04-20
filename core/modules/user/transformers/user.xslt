@@ -57,23 +57,14 @@
     <xsl:template match="recordset[parent::component[@class='Register']]">
         <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <xsl:apply-templates/>
-            <div class="field captcha_field">                                                                                                                                                                            
-                <div class="name">                                                                                                                                                                                                   
-                    <label for="{@name}"><xsl:value-of select="$TRANSLATION[@const='TXT_ENTER_CAPTCHA']"/></label>                                                                                                                                             
-                    <span class="mark">*</span>                                                                                                                                                                                      
-                </div>                                                                                                                                                                                                               
-                <div class="control" >                                                                                                                                                                                               
-                    <img src="captcha.php" id="captchaImage" />                                                                                                                                                                      
-                    <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text" />                                                                                                    
-                </div>                                                                                                                                                                                                               
-            </div>         
+            <xsl:call-template name="captcha"/>         
         </div>
         <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
             <div class="note">
                 <xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
             </div>
         </xsl:if>
-    </xsl:template>
+    </xsl:template>    
     <!-- /компонент Register -->
     
     <!-- компонент UserProfile -->

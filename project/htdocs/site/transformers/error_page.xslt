@@ -17,11 +17,11 @@
         <html>
         	<head>
                 <title>Errors</title>
-        		<base href="{$BASE}" />
-                <link href="stylesheets/common.css" rel="stylesheet" type="text/css" media="all" />
-				<link href="stylesheets/screen.css" rel="stylesheet" type="text/css" media="Screen" />
-				<link href="stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
-				<link href="stylesheets/handheld.css" rel="stylesheet" type="text/css" media="handheld" />
+        		<base href="{$BASE}"/>
+				<link href="stylesheets/screen.css" rel="stylesheet" type="text/css" media="Screen, projection"/>
+				<link href="stylesheets/print.css" rel="stylesheet" type="text/css" media="print"/>
+				<link href="stylesheets/handheld.css" rel="stylesheet" type="text/css" media="handheld"/>
+                <xsl:comment>[if IE]&gt; &lt;link href="stylesheets/ie.css" rel="stylesheet" type="text/css" media="Screen, projection"&gt; &lt;![endif]</xsl:comment>
         	</head>
         	<body>
         	    <div id="container">

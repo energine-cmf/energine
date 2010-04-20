@@ -13,9 +13,6 @@
     <xsl:template match="recordset[parent::component[@exttype='feed'][@type='list']]">
         <xsl:if test="not(@empty)">
             <ul id="{generate-id(.)}" class="feed">
-    			<xsl:choose>
-    				<xsl:when test="parent::component[@class='NewsFeed']"><xsl:attribute name="class">feed news</xsl:attribute></xsl:when>    				
-    			</xsl:choose>
                 <xsl:apply-templates/>
             </ul>        
         </xsl:if>
@@ -30,19 +27,6 @@
         </li>
     </xsl:template>
     
-    <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='list']]">
-        <li>
-            <xsl:if test="$COMPONENTS[@editable]">
-                <xsl:attribute name="record"><xsl:value-of select="field[@index='PRI']"/></xsl:attribute>
-            </xsl:if>
-    		<div class="date"><strong><xsl:value-of select="field[@name='news_date']"/></strong></div>
-    		<h4 class="title">
-                <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{translate(field[@name='news_date'], '/', '-')}/"><xsl:value-of select="field[@name='news_title']"/></a>
-    		</h4>
-    		<div class="anounce"><xsl:value-of select="field[@name='news_announce_rtf']" disable-output-escaping="yes"/></div>
-        </li>
-    </xsl:template>
-    
     <xsl:template match="toolbar[ancestor::component[@exttype='feed'][@type='list']][@name!='pager']"/>    
     
     <!-- компонент feed в режиме просмотра -->
@@ -53,14 +37,6 @@
     <xsl:template match="record[ancestor::component[@exttype='feed'][@type='form']]">
         <div class="feed">
             <xsl:apply-templates/>
-        </div>
-    </xsl:template>
-    
-    <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='form']]">
-        <div class="feed news_view">
-            <div class="date"><strong><xsl:value-of select="field[@name='news_date']"/></strong></div>
-    		<h4 class="title"><xsl:value-of select="field[@name='news_title']"/></h4>
-    		<div class="text"><xsl:value-of select="field[@name='news_text_rtf']" disable-output-escaping="yes"/></div>
         </div>
     </xsl:template>
     
@@ -81,5 +57,54 @@
             </ul>        
         </xsl:if>
     </xsl:template>
+    
+    <!-- компонент NewsFeed -->
+    <xsl:template match="component[@class='NewsFeed']">
+        <xsl:if test="not(recordset[@empty])">
+            <div class="news">
+                <xsl:apply-templates/>
+            </div>
+        </xsl:if>        
+    </xsl:template>
+    
+    <xsl:template match="recordset[parent::component[@class='NewsFeed'][@type='list']]">
+        <ul id="{generate-id(.)}" class="news_list">
+            <xsl:apply-templates/>
+        </ul>        
+    </xsl:template>
+    
+    <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='list']]">
+        <li>
+            <xsl:if test="$COMPONENTS[@editable]">
+                <xsl:attribute name="record"><xsl:value-of select="field[@index='PRI']"/></xsl:attribute>
+            </xsl:if>
+            <div class="date"><strong><xsl:value-of select="field[@name='news_date']"/></strong></div>            
+            <h4 class="name">
+                <xsl:choose>
+                    <xsl:when test="field[@name='news_text_rtf'] = 1">
+                        <a href="{$BASE}{$LANG_ABBR}{../../@template}{translate(field[@name='news_date'], '/', '-')}/"><xsl:value-of select="field[@name='news_title']"/></a>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="field[@name='news_title']"/>
+                    </xsl:otherwise>
+                </xsl:choose>                
+            </h4>
+            <div class="anounce"><xsl:value-of select="field[@name='news_announce_rtf']" disable-output-escaping="yes"/></div>
+        </li>
+    </xsl:template>
+    
+    <xsl:template match="recordset[parent::component[@class='NewsFeed'][@type='form']]">
+        <div class="news_view">
+            <xsl:apply-templates/>
+            <div class="go_back"><a href="{$BASE}{$LANG_ABBR}{../@template}"><xsl:value-of select="$TRANSLATION[@const='TXT_BACK_TO_LIST']"/></a></div>
+        </div>        
+    </xsl:template>
+    
+    <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='form']]">
+        <div class="date"><strong><xsl:value-of select="field[@name='news_date']"/></strong></div>
+        <h3 class="name"><xsl:value-of select="field[@name='news_title']"/></h3>
+        <div class="text"><xsl:value-of select="field[@name='news_text_rtf']" disable-output-escaping="yes"/></div>        
+    </xsl:template>
+    <!-- /компонент NewsFeed -->    
 
 </xsl:stylesheet>

@@ -386,5 +386,19 @@
     
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->
     <xsl:template name="interface_js"/>
+    
+    <!-- именованный шаблон для подключения captcha в любую форму -->
+    <xsl:template name="captcha">
+        <div class="field captcha_field">
+            <div class="name">
+                <label for="{@name}"><xsl:value-of select="$TRANSLATION[@const='TXT_ENTER_CAPTCHA']"/></label>
+                <span class="mark">*</span>
+            </div>
+            <div class="control" >
+                <img src="captcha.php" id="captchaImage"/>
+                <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text"/>                                                                                                    
+            </div>                                                                                                                                                                                                               
+        </div>
+    </xsl:template>
 
 </xsl:stylesheet>

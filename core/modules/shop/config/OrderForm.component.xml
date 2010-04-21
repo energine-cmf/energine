@@ -10,7 +10,8 @@
 				<control id="send" title="BTN_SEND" type="submit" click="validate"/>
 			</toolbar>
 			<translations>
-				<translation const="TXT_REQUIRED_FIELDS" />
+				<translation const="TXT_REQUIRED_FIELDS"/>
+                <translation const="TXT_ENTER_CAPTCHA"/>
 			</translations>
 		</method>
 		<method name="save">

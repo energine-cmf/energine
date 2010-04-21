@@ -23,12 +23,12 @@
         <xsl:apply-templates select="field[@name='product_name']"/>
     </tr>
     <tr>
-        <td style="vertical-align: top;">
+        <td style="vertical-align: top; padding-right: 10px;">
             <xsl:if test="field[@name='product_images']/recordset">
                 <xsl:apply-templates select="field[@name='product_images']/recordset/record[1]/field[@name='upl_path']"/>
             </xsl:if>
         </td>
-        <td style="text-align: justify; vertical-align: top;">
+        <td style="width: 100%; text-align: justify; vertical-align: top;">
             <xsl:apply-templates select="field[@name='product_short_description_rtf']"/>
             <a href="{$BASE}{$LANG_ABBR}{field[@name='smap_id']/@smap_segment}{field[@name='product_segment']}/"><xsl:value-of select="../../toolbar/control[@id='go']/@title"/></a>
         </td>
@@ -59,7 +59,7 @@
 
 <xsl:template match="record[ancestor::component[@class='ProductList'][@type='form']]">    
     <tr>
-        <td style="vertical-align: top;" rowspan="3">
+        <td style="vertical-align: top; padding-right: 10px;" rowspan="3">
             <xsl:if test="field[@name='product_images']/recordset">
                 <ul>
                     <xsl:for-each select="field[@name='product_images']/recordset/record">
@@ -68,7 +68,7 @@
                 </ul>
             </xsl:if>
         </td>
-        <td style="text-align: justify;"><xsl:value-of select="field[@name='product_description_rtf']" disable-output-escaping="yes"/></td>
+        <td style="text-align: justify; vertical-align: top; width: 100%;"><xsl:value-of select="field[@name='product_description_rtf']" disable-output-escaping="yes"/></td>
     </tr>
     <xsl:if test="count(field[@param])&gt;0">
         <tr>
@@ -108,7 +108,7 @@
 <xsl:template match="field[ancestor::component[@class='ProductList'][@type='list']][@name='product_name']">
 	<td colspan="2">
         <h3>
-            <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{../field[@name='product_segment']}/"><xsl:value-of select="."/></a>
+            <a href="{$BASE}{$LANG_ABBR}{../field[@name='smap_id']/@smap_segment}{../field[@name='product_segment']}/"><xsl:value-of select="."/></a>
         </h3>
     </td>
 </xsl:template>
@@ -157,52 +157,8 @@
 </xsl:template>
 
 <xsl:template match="field[ancestor::component[@class='ProductList']][@name='product_photo_img']"/>
-<xsl:template match="toolbar[ancestor::component[@class='ProductList']][@name!='pager']" />
 
-
-<xsl:template match="toolbar[@name='pager'][ancestor::component[@class='ProductList'][@componentAction='showManufacturerProducts']]">
-    <xsl:if test="count(control)&gt;1">
-        <div class="pager">
-        <xsl:if test="properties/property[@name='title']">
-            <span><xsl:value-of select="properties/property[@name='title']"/>:</span>
-        </xsl:if>
-        <xsl:for-each select="control">
-            <xsl:if test="@disabled">
-                <xsl:if test="position() != 1">
-                <span style="margin:0px 5px 0px 5px;">        
-                    <a><xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/>manufacturer-<xsl:value-of select="../../recordset/record/field[@name='producer_id']/@producer_segment"/>/page-<xsl:value-of select="@action"/>/</xsl:attribute><img src="images/prev_page.gif" align="absmiddle" border="0"/></a>
-                </span>
-                </xsl:if>
-            </xsl:if>
-
-            <span style="margin:0px 5px 0px 5px;">
-            <xsl:if test="@end_break">... </xsl:if>
-            
-            <xsl:element name="a">
-                <xsl:choose>
-                    <xsl:when test="not(@disabled)">
-                        <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/>manufacturer-<xsl:value-of select="../../recordset/record/field[@name='producer_id']/@producer_segment"/>/page-<xsl:value-of select="@action"/>/</xsl:attribute>                
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:attribute name="style">background-color:#0080FF;color:white; padding:0 3px; padding-bottom:1px;</xsl:attribute>                
-                    </xsl:otherwise>
-                </xsl:choose>
-                <xsl:value-of select="@title"/>
-            </xsl:element>
-            <xsl:if test="@start_break"> ...</xsl:if>
-            </span>
-            <xsl:if test="@disabled">
-                <xsl:if test="position() != last()">
-                    <span style="margin:0px 5px 0px 5px;">        
-                        <a><xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/>manufacturer-<xsl:value-of select="../../recordset/record/field[@name='producer_id']/@producer_segment"/>/page-<xsl:value-of select="@action"/>/</xsl:attribute><img src="images/next_page.gif" align="absmiddle" border="0"/></a>
-                    </span>
-                </xsl:if>        
-            </xsl:if>            
-        </xsl:for-each>
-
-        </div>
-    </xsl:if>
-</xsl:template>
+<xsl:template match="toolbar[ancestor::component[@class='ProductList']][@name!='pager']"/>
 
 <xsl:template match="recordset[parent::component[@class='ProductDivisions']]">
 <xsl:if test="record[1]/field[@name='Id']!=''">
@@ -215,15 +171,15 @@
 <xsl:template match="record[parent::recordset[parent::component[@class='ProductDivisions']]]">
 <xsl:if test="field[@name='Segment']!='/shop/order/'">
     <li style="clear: both;">
-        <xsl:element name="a">
+        <a>
             <xsl:if test="field[@name='product_count']&gt;0">
                 <xsl:attribute name="href"><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/></xsl:attribute>
             </xsl:if>
             <xsl:value-of select="field[@name='Name']"/>
-        </xsl:element>
+        </a>
         (<xsl:value-of select="field[@name='product_count']"/>)
         <xsl:if test="field[@name='DescriptionRtf']!=''">
-            <div style="padding:2px 0px 2px 5px;">
+            <div style="padding: 2px 0px 2px 5px;">
                 <xsl:value-of select="field[@name='DescriptionRtf']" disable-output-escaping="yes"/>
             </div>
         </xsl:if>       
@@ -235,28 +191,57 @@
     <form method="GET" action="{$BASE}{$LANG_ABBR}{../@template}{@action}/">
         <fieldset><legend><xsl:value-of select="@title"/></legend>
             <label for="search_field"><input type="string" name='{search_field/@name}' id="search_field" style="width:300px;" value="{search_field}"/></label><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-            <xsl:element name="input">
-            	<xsl:attribute name="type">submit</xsl:attribute>
-                <xsl:attribute name="onclick"><![CDATA[if(document.getElementById('search_field').value.length<4)return false;]]></xsl:attribute>
-                <xsl:attribute name="value"><xsl:value-of select="search_field/@action_title"/></xsl:attribute>
-            </xsl:element>
+            <input type="submit" value="{search_field/@action_title}">
+                <xsl:attribute name="onclick"><![CDATA[if(document.getElementById('search_field').value.length<4)return false;]]></xsl:attribute>                
+            </input>
         </fieldset>
     </form>
 </xsl:template>
 
 <xsl:template match="component[@class='ManufacturerList']">
         <xsl:value-of select="$TRANSLATION[@const='FIELD_PRODUCER']"/>:
-        <xsl:apply-templates />
+        <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="recordset[parent::component[@class='ManufacturerList']]">
     <ul>
-        <xsl:apply-templates />
+        <xsl:apply-templates/>
     </ul>
 </xsl:template>
 
 <xsl:template match="record[ancestor::component[@class='ManufacturerList']]">
     <li><a href="{$BASE}{$LANG_ABBR}{field[@name='producer_segment']}"><xsl:value-of select="field[@name='producer_name']"/></a></li>
 </xsl:template>
+
+    <!-- pager для списка продуктов, который отфильтрован по производителю -->
+    <xsl:template match="control[parent::toolbar[@name='pager'][parent::component[@class='ProductList'][@componentAction='showManufacturerProducts']]]">
+        <span class="control">
+            <a>
+                <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/>manufacturer-<xsl:value-of select="../../recordset/record/field[@name='producer_id']/@producer_segment"/>/<xsl:value-of select="../properties/property[@name='additional_url']"/>page-<xsl:value-of select="@action"/>/<xsl:if test="../properties/property[@name='get_string']!=''">?<xsl:value-of select="../properties/property[@name='get_string']"/></xsl:if></xsl:attribute>                            
+                <xsl:value-of select="@title"/>
+            </a>
+        </span>
+    </xsl:template>
+    
+    <xsl:template match="control[@disabled][parent::toolbar[@name='pager'][parent::component[@class='ProductList'][@componentAction='showManufacturerProducts']]]">
+        <xsl:if test="preceding-sibling::control">
+            <span class="control arrow">
+                <a>
+                    <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/>manufacturer-<xsl:value-of select="../../recordset/record/field[@name='producer_id']/@producer_segment"/>/<xsl:value-of select="../properties/property[@name='additional_url']"/>page-<xsl:value-of select="@action - 1"/>/<xsl:if test="../properties/property[@name='get_string']!=''">?<xsl:value-of select="../properties/property[@name='get_string']"/></xsl:if></xsl:attribute>
+                    <img src="images/prev_page.gif"/>
+                </a>
+            </span>
+        </xsl:if>
+        <span class="control current"><xsl:value-of select="@title"/></span>
+        <xsl:if test="following-sibling::control">
+            <span class="control arrow">
+                <a>
+                    <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/>manufacturer-<xsl:value-of select="../../recordset/record/field[@name='producer_id']/@producer_segment"/>/<xsl:value-of select="../properties/property[@name='additional_url']"/>page-<xsl:value-of select="@action + 1"/>/<xsl:if test="../properties/property[@name='get_string']!=''">?<xsl:value-of select="../properties/property[@name='get_string']"/></xsl:if></xsl:attribute>
+                    <img src="images/next_page.gif"/>
+                </a>
+            </span>
+        </xsl:if>
+    </xsl:template>
+     
 
 </xsl:stylesheet>

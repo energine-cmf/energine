@@ -121,6 +121,12 @@ class FeedbackForm extends DBDataSet {
 
     protected function send() {
     	try{
+    	   if(!isset($_POST[$this->getTableName()])){
+                throw new SystemException('ERR_BAD_DATA', SystemException::ERR_WARNING);
+           }	
+           
+    	   $data[$this->getTableName()] = $_POST[$this->getTableName()];
+    	   	
     	   if(
              !isset($_SESSION['captchaCode'])
              ||
@@ -130,10 +136,6 @@ class FeedbackForm extends DBDataSet {
             ){
                  throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);   
             }
-    		if(!isset($_POST[$this->getTableName()])){
-    			throw new SystemException('ERR_BAD_DATA', SystemException::ERR_WARNING);
-    		}
-			$data[$this->getTableName()] = $_POST[$this->getTableName()];
 
 	        if ($result = $this->saveData($data)) {
 	            $data = $data[$this->getTableName()];
@@ -172,7 +174,7 @@ class FeedbackForm extends DBDataSet {
 
     	}
     	catch (Exception $e){
-    		$this->failure($e->getMessage(), (isset($data))?$data:array());
+    		$this->failure($e->getMessage(), (isset($data[$this->getTableName()]))?$data[$this->getTableName()]:array());
     	}
    }
 }

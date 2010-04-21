@@ -126,10 +126,14 @@ table.basket th, table.basket td {
     padding: 3px;
 	border: 0;
 	border-right: 1px solid #fff;
+	vertical-align: middle;
 }
 table.basket thead th, table.basket tfoot td {
 	padding: 4px 3px;
 	background: silver;
+}
+table.basket th {
+    text-align: center;
 }
 table.basket tfoot td.no_border {
 	border: 0;
@@ -139,6 +143,10 @@ table.basket tbody td {
 }
 table.basket tbody tr.odd td {
 	background: #f3f3f3;
+}
+table.basket img {
+    margin-right: 5px;    
+    vertical-align: middle;
 }
 /* /basket */
 /* ----- /tables ----- */

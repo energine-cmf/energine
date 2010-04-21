@@ -8,36 +8,16 @@
     extension-element-prefixes="dyn" -->
 
     <!-- компонент OrderForm -->
-    <xsl:template match="component[@class='OrderForm']">
-    	<xsl:apply-templates/>
-    </xsl:template>
-    
     <xsl:template match="recordset[parent::component[@class='OrderForm']]">
-        <form action="{../@action}" method="POST" id="{generate-id(.)}" class="base_form order_form">
-        	<xsl:apply-templates/>
+        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
+            <xsl:apply-templates/>
             <xsl:call-template name="captcha"/>
-        	<xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
-        		<div class="note">
-        			<xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
-        		</div>
-        	</xsl:if>
-        </form>
-    </xsl:template>
-    
-    <xsl:template match="control[ancestor::component[@class='OrderForm']]">
-        <xsl:variable name="JS_OBJECT" select="generate-id(ancestor::component[@class='OrderForm']/recordset)"/>
-        <button>
-            <xsl:if test="@click">
-            	<xsl:attribute name="onclick"><xsl:value-of select="$JS_OBJECT"/>.<xsl:value-of select="@click"/>();</xsl:attribute>
-            </xsl:if>
-            <xsl:value-of select="@title"/>
-        </button>        
-    </xsl:template>
-    
-    <xsl:template match="component[@class='OrderForm'][@componentAction='success'] | component[@class='OrderForm'][@componentAction='save']">
-        <div class="result_message">
-            <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>
+        <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
+            <div class="note">
+                <xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
+            </div>
+        </xsl:if>
     </xsl:template>
     <!-- /компонент OrderForm -->
     

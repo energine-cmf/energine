@@ -389,16 +389,18 @@
     
     <!-- именованный шаблон для подключения captcha в любую форму -->
     <xsl:template name="captcha">
-        <div class="field captcha_field">
-            <div class="name">
-                <label for="{@name}"><xsl:value-of select="$TRANSLATION[@const='TXT_ENTER_CAPTCHA']"/></label>
-                <span class="mark">*</span>
+        <xsl:if test="$COMPONENTS[@class='LoginForm'][@componentAction='showLoginForm']">
+            <div class="field captcha_field">
+                <div class="name">
+                    <label for="{@name}"><xsl:value-of select="$TRANSLATION[@const='TXT_ENTER_CAPTCHA']"/></label>
+                    <span class="mark">*</span>
+                </div>
+                <div class="control" >
+                    <img src="captcha.php" id="captchaImage"/>
+                    <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text"/>                                                                                                    
+                </div>                                                                                                                                                                                                               
             </div>
-            <div class="control" >
-                <img src="captcha.php" id="captchaImage"/>
-                <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text"/>                                                                                                    
-            </div>                                                                                                                                                                                                               
-        </div>
+        </xsl:if>        
     </xsl:template>
 
 </xsl:stylesheet>

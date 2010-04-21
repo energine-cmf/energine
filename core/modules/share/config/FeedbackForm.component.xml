@@ -15,7 +15,8 @@
 				<control id="send_letter" title="BTN_SEND" type="submit" onclick="send"/>
 			</toolbar>
 			<translations>
-				<translation const="TXT_REQUIRED_FIELDS" />
+                <translation const="TXT_ENTER_CAPTCHA"/>
+				<translation const="TXT_REQUIRED_FIELDS"/>
 			</translations>
 		</method>
 		<method name="send">

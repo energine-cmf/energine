@@ -151,6 +151,19 @@
         </div>
     </xsl:template>
     
+    <!-- компонент FeedbackForm -->
+    <xsl:template match="recordset[parent::component[@class='FeedbackForm']]">
+        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
+            <xsl:apply-templates/>
+            <xsl:call-template name="captcha"/>
+        </div>
+        <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
+            <div class="note">
+                <xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
+            </div>
+        </xsl:if>
+    </xsl:template>
+    
     <!-- обработка сообщения об отправке данных формы -->
     <xsl:template match="component[@type='form'][@componentAction='send']">
         <div class="result_message">

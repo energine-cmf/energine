@@ -4,6 +4,11 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
     
+    <!-- любой элемент image -->
+    <xsl:template match="image[parent::field[@name='upl_path']]">
+        <img src="{$BASE}{.}" width="{@width}" height="{@height}" alt="{../field[@name='upl_name']}"/>
+    </xsl:template>
+    
     <!-- компонент GalleryFeed -->
     <xsl:template match="recordset[parent::component[@class='GalleryFeed'][@type='list']]">
         <xsl:if test="not(@empty)">

@@ -36,9 +36,9 @@
         </button>        
     </xsl:template>
     
-    <xsl:template match="field[ancestor::component[@type='form'][@class='OrderForm']][@name='message']">
-    	<div class="field textbox">        
-    		<xsl:value-of select="." disable-output-escaping="yes" />
+    <xsl:template match="component[@class='OrderForm'][@componentAction='success'] | component[@class='OrderForm'][@componentAction='save']">
+        <div class="message">
+            <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>
     </xsl:template>
     <!-- /компонент OrderForm -->

@@ -57,7 +57,7 @@
     <xsl:template match="recordset[parent::component[@class='Register']]">
         <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <xsl:apply-templates/>
-            <xsl:call-template name="captcha"/>         
+            <xsl:call-template name="captcha"/>     
         </div>
         <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
             <div class="note">

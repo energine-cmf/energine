@@ -60,7 +60,8 @@ class BasketForm extends DataSet {
     
     protected function createData(){
     	$result = parent::createData();
-    	if($this->getDataDescription()->getFieldDescriptionByName('product_images')){
+    	
+    	if(!$result->isEmpty() && $this->getDataDescription()->getFieldDescriptionByName('product_images')){
     	   $this->buildProductImagesField($result);
     	}
     	

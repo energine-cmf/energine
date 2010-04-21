@@ -18,6 +18,7 @@
                 <xsl:when test="@class='Register'"><xsl:attribute name="class">base_form registration_form</xsl:attribute></xsl:when>
 				<xsl:when test="@class='UserProfile'"><xsl:attribute name="class">base_form profile_form</xsl:attribute></xsl:when>
 				<xsl:when test="@class='ResumeForm'"><xsl:attribute name="class">base_form resume_form</xsl:attribute></xsl:when>
+                <xsl:when test="@class='OrderForm'"><xsl:attribute name="class">base_form order_form</xsl:attribute></xsl:when>
 			</xsl:choose>
             <input type="hidden" name="componentAction" value="{@componentAction}" id="componentAction"/>
     		<xsl:apply-templates/>
@@ -165,7 +166,9 @@
     </xsl:template>
     
     <!-- обработка сообщения об отправке данных формы -->
-    <xsl:template match="component[@type='form'][@componentAction='send']">
+    <xsl:template match="component[@type='form'][@componentAction='send'] 
+                        | component[@type='form'][@componentAction='success'] 
+                        | component[@type='form'][@componentAction='save']">
         <div class="result_message">
             <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>

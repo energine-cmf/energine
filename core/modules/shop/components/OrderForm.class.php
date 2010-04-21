@@ -85,7 +85,11 @@ class OrderForm extends DBDataSet {
     protected function loadDataDescription() {
         $result = parent::loadDataDescription();
         foreach (array_keys($result) as $fieldName) {
-        	if (!in_array($fieldName, array('order_id', 'order_delivery_comment'))) {
+        	if (
+	        	in_array($fieldName, 
+	        	       array('u_id', 'os_id', 'order_comment', 'order_detail', 'user_detail', 'order_created')
+	        	)) 
+	        {
         		unset($result[$fieldName]);
         	}
         }

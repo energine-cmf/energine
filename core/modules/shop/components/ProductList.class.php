@@ -84,7 +84,8 @@ class ProductList extends DBDataSet {
 
 	protected function createData() {
 		$result = parent::createData();
-		if ($result) {
+		
+		if (!$result->isEmpty()) {
 			$sitemap = Sitemap::getInstance();
 			if($result->getFieldByName('product_id'))
 			 $this->buildProductImagesField($result);

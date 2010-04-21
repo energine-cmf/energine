@@ -352,7 +352,10 @@ class ProductEditor extends Grid {
 	            }	
 	        }
         }
-    //записываем данные в таблицу share_sitemap_uploads
+        //Удаляем предыдущие записи из таблицы связей с дополнительными файлами
+        $this->dbh->modify(QAL::DELETE, 'shop_product_uploads', null, array('product_id' => $productID));
+        
+        //записываем данные в таблицу shop_product_uploads
         $this->dbh->modify(QAL::DELETE, 'shop_product_uploads', null, array('product_id' => $productID));
         if(isset($_POST['uploads']['upl_id'])){
             foreach ($_POST['uploads']['upl_id'] as $uplID){

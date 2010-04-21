@@ -72,7 +72,7 @@
 <xsl:template match="field[ancestor::component[@class='BasketForm'][@type='list']][@name='product_name']">
     <td width="50%">
 		<xsl:if test="../field[@name='product_thumb_img']">
-			<a href="{$BASE}{$LANG_ABBR}shop/{../field[@name='product_segment']}/"><img src="{$BASE}{../field[@name='product_thumb_img']}" border="0" style="float: left; margin: 0 5px 0 0; border: 1px solid #eee;" /></a>
+			<a href="{$BASE}{$LANG_ABBR}{../field[@name='product_segment']}/"><img src="{$BASE}{../field[@name='product_thumb_img']}" border="0" style="float: left; margin: 0 5px 0 0; border: 1px solid #eee;" /></a>
 		</xsl:if>		
 		<a href="{$BASE}{$LANG_ABBR}shop/{../field[@name='product_segment']}/"><xsl:value-of select="."/></a>	
 	</td>

@@ -163,8 +163,12 @@ class Order extends DBWorker {
         }
         $mail->setSubject($this->translate('TXT_ORDER_MANAGER_SUBJECT'));
         $basketHTML = $this->buildBasketHTML();
-        $body = sprintf($this->translate('TXT_ORDER_MANAGER_MAIL_BODY'), $data['order_id'], $data['u_name'], $data['u_fullname'], $data['order_delivery_comment'], $basketHTML);
-        $mail->setText($body);
+        $data['basket'] = $basketHTML;
+         
+        $mail->setText(
+            $this->translate('TXT_ORDER_MANAGER_MAIL_BODY'),
+            $data
+        );
         $mail->send();
     }
 

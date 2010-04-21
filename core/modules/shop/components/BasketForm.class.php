@@ -9,10 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DataSet.class.php');
-//require_once('core/modules/shop/components/Basket.class.php');
-//require_once('core/modules/shop/components/Discounts.class.php');
-//require_once('core/modules/shop/components/CurrencyConverter.class.php');
 /**
  * Корзина с выбранными продуктами
  *
@@ -77,8 +73,63 @@ class BasketForm extends DataSet {
         $ProductIDFieldDescription = $result->getFieldDescriptionByName('product_id');
         $ProductIDFieldDescription->setType(FieldDescription::FIELD_TYPE_STRING);
         $ProductIDFieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
+        
+        $fd = new FieldDescription('product_images');
+        $fd->setType(FieldDescription::FIELD_TYPE_CUSTOM);
+        $result->addFieldDescription($fd);
         return $result;
     }
+    
+    protected function createData(){
+    	$result = parent::createData();
+    	$this->buildProductImagesField($result);
+    	
+    	return $result;
+    }
+    private function buildProductImagesField(Data $data){
+        $f = new Field('product_images');
+        $data->addField($f);
+
+        $images = $this->dbh->selectRequest(
+               'SELECT spu.product_id, upl_path, upl_name FROM share_uploads su '.
+               'LEFT JOIN `shop_product_uploads` spu ON spu.upl_id = su.upl_id '.
+               'WHERE product_id IN ('.implode(',', $data->getFieldByName('product_id')->getData()).')'
+               );
+
+               if(is_array($images)){
+                foreach($images as $row){
+                    $productID = $row['product_id'];
+                    if(!isset($imageData[$productID]))
+                    $imageData[$productID] = array();
+                     
+                    array_push($imageData[$productID], $row);
+                }
+
+                for ($i = 0; $i < $data->getRowCount(); $i++) {
+                    if(isset($imageData[$data->getFieldByName('product_id')->getRowData($i)])){
+                        $builder = new SimpleBuilder();
+                        $localData = new Data();
+                        $localData->load($imageData[$data->getFieldByName('product_id')->getRowData($i)]);
+
+                        $dataDescription = new DataDescription();
+                        $fd = new FieldDescription('product_id');
+                        $dataDescription->addFieldDescription($fd);
+                        $fd = new FieldDescription('upl_path');
+                        $fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
+                        $dataDescription->addFieldDescription($fd);
+                        $fd = new FieldDescription('upl_name');
+                        $dataDescription->addFieldDescription($fd);
+                        $builder->setData($localData);
+                        $builder->setDataDescription($dataDescription);
+
+                        $builder->build();
+
+                        $f->setRowData($i, $builder->getResult());
+                    }
+                }
+
+               }
+    }    
 
     /**
      * Загружаем цены
@@ -93,10 +144,7 @@ class BasketForm extends DataSet {
         if (!empty($result)) {
             //$this->setProperty('discount', $this->discounts->getDiscountForGroup());
             $this->setProperty('summ', $this->basket->getTotal());
-            $this->setProperty('summ_with_discount', $this->basket->getTotal(true));
-            $this->addTranslation('TXT_DISCOUNT');
             $this->addTranslation('TXT_BASKET_SUMM');
-            $this->addTranslation('TXT_BASKET_SUMM_WITH_DISCOUNT');
             //Добавляем изображение
             /*
             foreach ($result as $key => $productInfo) {

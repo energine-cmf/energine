@@ -190,26 +190,24 @@ class Basket extends DBWorker {
 	 * @access public
 	 */
 
-	public function getTotal($withDiscount = false) {
-		$withDiscount = false;
+	public function getTotal() {
 		$contents = $this->getContents();
 		$summ = 0;
+		$converter = CurrencyConverter::getInstance();
+        $HRNID = $converter->getCurrent();
+        
 		if(is_array($contents)) {
 			foreach ($contents as $row) {
-				if ($withDiscount) {
-					$summ += $this->discounts->calculateCost($row['product_summ']);
-				}
-				else {
 					//inspect($row['product_summ']);
-					$summ += $row['product_summ'];
-				}
+					$summ += $converter->convert(
+					   $row['product_summ'], $HRNID, $row['curr_id']
+					);
 			}
 		}
 
-		$converter = CurrencyConverter::getInstance();
-		$HRNID = $converter->getCurrent();
+		
 
-		return $converter->format($converter->convert($summ, $HRNID, $contents[0]['curr_id']), $HRNID);
+		return $converter->format($summ, $HRNID);
 	}
 	
 	
@@ -227,7 +225,7 @@ class Basket extends DBWorker {
 		if(is_null($this->contents)){
 		      $result = $this->dbh->selectRequest(
 		        //'SELECT main.*, pt.product_name, ext.product_price, ext.product_price*main.basket_count as product_summ, ext.product_price * (1 - dscnt.dscnt_percent / 100) AS product_summ_with_discount, ext.curr_id, product.product_segment, product.product_code '.
-		        'SELECT main.*, pt.product_name, ext.product_price, ext.product_price*main.basket_count as product_summ, ext.curr_id, product.product_segment, product.product_code '.
+		        'SELECT main.*, pt.product_name, product.smap_id, ext.product_price, ext.product_price*main.basket_count as product_summ, ext.curr_id, product.product_segment, product.product_code '.
 		        'FROM '.$this->getTableName().' main '.
 		        'LEFT JOIN shop_products product ON product.product_id = main.product_id '.
 		        'LEFT JOIN shop_products_translation pt ON pt.product_id = main.product_id '.
@@ -239,12 +237,13 @@ class Basket extends DBWorker {
 		        );
 		
 		        if (is_array($result)) {
-		            $this->contents = $result;
+		        	$this->contents = array_map(create_function('$row', '$row["product_segment"] = Sitemap::getInstance()->getURLByID($row["smap_id"]).$row["product_segment"]; unset($row["smap_id"]);return $row;'), $result);
 		        }
 		        else {
 		            $this->contents = false;
 		        }
 		}
+		
 		return $this->contents;
 	}
 	

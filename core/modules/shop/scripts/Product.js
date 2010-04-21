@@ -5,7 +5,10 @@ var Product = new Class({
     
 	initialize : function(objID) {
 		this.form = $(objID);
-        this.form.getElements('a.thumbnail').addEvent('click', this.showImage.bind(this));
+        if(this.form)
+            this.form.getElements('a.thumbnail').addEvent('click', this.showImage.bind(this));
+            
+        
 	},
 	addToBasket : function(productID, count) {
 		this.form.grab(new Element('input', 

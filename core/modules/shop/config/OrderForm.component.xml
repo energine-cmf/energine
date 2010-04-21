@@ -3,23 +3,28 @@
 	<methods>
 		<method name="main">
 			<javascript>
-				<object name="Order" />
+				<object name="OrderForm" />
 			</javascript>
 			
 			<toolbar>
-				<control id="send" title="BTN_SEND" type="submit" click="validate"/>
+				<control id="order" title="BTN_SEND" type="submit"/>
 			</toolbar>
 			<translations>
 				<translation const="TXT_REQUIRED_FIELDS"/>
                 <translation const="TXT_ENTER_CAPTCHA"/>
 			</translations>
 		</method>
+	    <method name="checkLogin">
+	      <uri_patterns>
+	           <pattern>/check/</pattern>
+	       </uri_patterns>
+	    </method>		
 		<method name="save">
 			<uri_patterns>
 				<pattern>/save-order/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Order" />
+				<object name="OrderForm" />
 			</javascript>
 			<fields>
 				<field name="order_id"/>

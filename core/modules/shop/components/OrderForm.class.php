@@ -70,6 +70,36 @@ class OrderForm extends DBDataSet {
         }
         parent::main();
      }
+    /**
+     * Метод проверки логина
+     * Вызывается AJAXом при заполнении формы регистрации
+     *
+     * @access protected
+     * @return void
+     */
+    protected function checkLogin(){
+        $login = trim($_POST['login']);
+            $result = !(bool)simplifyDBResult(
+                $this->dbh->select(
+                    'user_users',
+                    array('COUNT(u_id) as number'),
+                    array('u_name' => $login)
+                ),
+                'number', 
+            true
+            );
+            $field = 'login';
+            $message = ($result)?$this->translate('TXT_LOGIN_AVAILABLE'):$this->translate('TXT_ORDER_LOGIN_ENGAGED');
+            $result = array(
+                'result'=> $result,
+                'message' => $message,
+                'field' => $field,  
+        );
+        $result = json_encode($result);
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write($result);
+        $this->response->commit();
+    }     
 
     /**
      * Подтягиваем перечень полей из таблицы пользователей
@@ -128,6 +158,15 @@ class OrderForm extends DBDataSet {
     protected function save() {
         $this->dbh->beginTransaction();
         try {
+            if(
+             !isset($_SESSION['captchaCode'])
+             ||
+             !isset($_POST['captcha'])
+             ||
+             ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
+            ){
+                 throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);   
+            }
             if (!isset($_POST[$this->getTableName()])) {
                 throw new SystemException('ERR_DEV_NO_DATA', SystemException::ERR_WARNING);
             }

@@ -59,6 +59,7 @@ class FeedbackForm extends DBDataSet {
 
      protected function saveData($data) {
         $result = false;
+           
         //создаем объект описания данных
         $dataDescriptionObject = new DataDescription();
 
@@ -100,6 +101,16 @@ class FeedbackForm extends DBDataSet {
         return $result;
 
      }
+    protected function failure($errorMessage, $data){
+        $this->config->setCurrentMethod('main');
+        $this->prepare();
+        $eFD = new FieldDescription('error_message');
+        $eFD->setMode(FieldDescription::FIELD_MODE_READ);
+        $eFD->setType(FieldDescription::FIELD_TYPE_STRING);
+        $this->getDataDescription()->addFieldDescription($eFD);
+        $this->getData()->load(array(array_merge(array('error_message' => $errorMessage), $data)));
+            
+    }     
 
     /**
 	 * Записывает обращение в БД, отправляет уведомление пользователю и администратору
@@ -110,6 +121,18 @@ class FeedbackForm extends DBDataSet {
 
     protected function send() {
     	try{
+    	   if(
+             !isset($_SESSION['captchaCode'])
+             ||
+             !isset($_POST['captcha'])
+             ||
+             ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
+            ){
+                 throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);   
+            }
+    		if(!isset($_POST[$this->getTableName()])){
+    			throw new SystemException('ERR_BAD_DATA', SystemException::ERR_WARNING);
+    		}
 			$data[$this->getTableName()] = $_POST[$this->getTableName()];
 
 	        if ($result = $this->saveData($data)) {
@@ -149,7 +172,7 @@ class FeedbackForm extends DBDataSet {
 
     	}
     	catch (Exception $e){
-   			$this->response->redirectToCurrentSection();
+    		$this->failure($e->getMessage(), (isset($data))?$data:array());
     	}
    }
 }

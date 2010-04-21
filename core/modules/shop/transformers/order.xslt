@@ -15,9 +15,7 @@
     <xsl:template match="recordset[parent::component[@class='OrderForm']]">
         <form action="{../@action}" method="POST" id="{generate-id(.)}" class="base_form order_form">
         	<xsl:apply-templates/>
-            <xsl:if test="$COMPONENTS[@class='LoginForm'][@componentAction='showLoginForm']">
-                <xsl:call-template name="captcha"/>
-            </xsl:if>
+            <xsl:call-template name="captcha"/>
         	<xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
         		<div class="note">
         			<xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
@@ -37,7 +35,7 @@
     </xsl:template>
     
     <xsl:template match="component[@class='OrderForm'][@componentAction='success'] | component[@class='OrderForm'][@componentAction='save']">
-        <div class="message">
+        <div class="result_message">
             <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>
     </xsl:template>

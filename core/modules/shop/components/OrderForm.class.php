@@ -9,10 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DBDataSet.class.php');
-//require_once('core/modules/shop/components/Order.class.php');
-//require_once('core/modules/shop/components/CurrencyConverter.class.php');
-//require_once('core/framework/Mail.class.php');
 
 /**
  * Предназначен для формирования заказа пользователем

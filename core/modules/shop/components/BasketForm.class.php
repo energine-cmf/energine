@@ -25,11 +25,6 @@ class BasketForm extends DataSet {
      */
     private $basket;
 
-    /**
-     * @access private
-     * @var Discounts скидки
-     */
-    //private $discounts;
 
     /**
      * Конструктор класса
@@ -43,23 +38,9 @@ class BasketForm extends DataSet {
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->basket = Basket::getInstance();
-        //$this->discounts = Discounts::getInstance();
         $this->setType(self::COMPONENT_TYPE_LIST);
     }
 
-    /**
-	 * Выводим данные корзины
-	 *
-	 * @return void
-	 * @access protected
-	 */
-
-    protected function main() {
-        /*if ($component = $this->document->componentManager->getComponentByName('basketList')) {
-        	$component->disable();
-        }*/
-        parent::main();
-    }
 
     /**
       * Для поля product_id изменяем тип
@@ -74,15 +55,14 @@ class BasketForm extends DataSet {
         $ProductIDFieldDescription->setType(FieldDescription::FIELD_TYPE_STRING);
         $ProductIDFieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
         
-        $fd = new FieldDescription('product_images');
-        $fd->setType(FieldDescription::FIELD_TYPE_CUSTOM);
-        $result->addFieldDescription($fd);
         return $result;
     }
     
     protected function createData(){
     	$result = parent::createData();
-    	$this->buildProductImagesField($result);
+    	if($this->getDataDescription()->getFieldDescriptionByName('product_images')){
+    	   $this->buildProductImagesField($result);
+    	}
     	
     	return $result;
     }
@@ -142,15 +122,8 @@ class BasketForm extends DataSet {
         $result = $this->basket->getFormattedContents();
         //Подсчитываем сумму
         if (!empty($result)) {
-            //$this->setProperty('discount', $this->discounts->getDiscountForGroup());
             $this->setProperty('summ', $this->basket->getTotal());
             $this->addTranslation('TXT_BASKET_SUMM');
-            //Добавляем изображение
-            /*
-            foreach ($result as $key => $productInfo) {
-            	$result[$key]['product_thumb_img'] = simplifyDBResult($this->dbh->select('shop_products', 'product_thumb_img', array('product_id'=>$productInfo['product_id'])), 'product_thumb_img', true);
-            }
-            */
         }
         else {
             //Если корзина пустая - добавляем перевод сообщения

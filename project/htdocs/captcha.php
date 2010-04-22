@@ -8,16 +8,20 @@ require_once('core/framework/utils.func.php');
 //define('DEFAULT_SESSION_NAME', 'NRGNSID');
 define('FONT_SIZE',5);
 
-
 UserSession::getInstance()->start();
 
 //Получаем данные о background в строку
 $background = base64_decode(file_get_contents(__FILE__, false, null, __COMPILER_HALT_OFFSET__));
 
-//Генерация кода из 4 цифр
-$code = rand(100000, 999999);
-$_SESSION['captchaCode'] = sha1($code);
+if(!isset($_SESSION['captchaCode'])) {
+	//Генерация кода из 4 цифр
+	$code = sha1(rand(100000, 999999));
+}
+else{
+	$code = $_SESSION['captchaCode']; 
+}
 
+$_SESSION['captchaCode'] = sha1($code);
 $image = imagecreatefromstring($background);
 $color_white = imagecolorallocate($image, 0xFF, 0xFF, 0xFF);
 
@@ -29,8 +33,6 @@ foreach (str_split($code) as $position => $char) {
     $offsetX = imagefontwidth(FONT_SIZE + 2) * ($position + 1) + rand(0, 2);
     imagestring($image, FONT_SIZE, $posX + $offsetX, $posY + rand(0, 10), $char, $color_white);
 }
-
-
 
 header('Content-type: image/png');
 imagepng($image);

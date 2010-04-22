@@ -5,6 +5,15 @@
 			<javascript>
 				<object name="ResumeForm"/>
 			</javascript>
+            <fields>
+                <field name="resume_id"/>
+                <field name="vacancy_id"/>
+                <field name="resume_candidate_name"/>
+                <field name="resume_candidate_email"/>
+                <field name="resume_text"/>
+                <field name="resume_main_pfile"/>
+                <field name="captcha" type="captcha" title="TXT_ENTER_CAPTCHA"/>
+            </fields>
 			<uri_patterns>
 				<pattern>/</pattern>
 		     </uri_patterns>

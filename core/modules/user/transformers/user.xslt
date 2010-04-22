@@ -47,20 +47,6 @@
     </xsl:template>    
     <!-- /компонент LoginForm  -->
     
-    <!-- компонент Register -->   
-    <xsl:template match="recordset[parent::component[@class='Register']]">
-        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
-            <xsl:apply-templates/>
-            <xsl:call-template name="captcha"/>     
-        </div>
-        <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
-            <div class="note">
-                <xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
-            </div>
-        </xsl:if>
-    </xsl:template>    
-    <!-- /компонент Register -->
-    
     <!-- компонент RoleEditor -->    
     <xsl:template match="field[@name='group_div_rights']">
             <div class="page_rights">

@@ -69,6 +69,9 @@ class OrderForm extends DBDataSet {
             throw new SystemException('ERR_BASKET_IS_EMPTY', SystemException::ERR_CRITICAL);
         }
         parent::main();
+        if($this->document->getUser()->isAuthenticated()){
+        	$this->getDataDescription()->getFieldDescriptionByName('u_name')->setMode(FieldDescription::FIELD_MODE_READ);
+        }
      }
     /**
      * Метод проверки логина

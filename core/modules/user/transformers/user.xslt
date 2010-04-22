@@ -47,13 +47,7 @@
     </xsl:template>    
     <!-- /компонент LoginForm  -->
     
-    <!-- компонент Register -->
-    <xsl:template match="component[@class='Register'][@componentAction='success']">
-        <div class="result_message">
-            <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
-        </div>
-    </xsl:template>
-    
+    <!-- компонент Register -->   
     <xsl:template match="recordset[parent::component[@class='Register']]">
         <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <xsl:apply-templates/>
@@ -66,14 +60,6 @@
         </xsl:if>
     </xsl:template>    
     <!-- /компонент Register -->
-    
-    <!-- компонент UserProfile -->
-    <xsl:template match="component[@class='UserProfile'][@componentAction='success']">
-        <div class="result_message">
-            <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
-        </div>
-    </xsl:template>
-    <!-- /компонент UserProfile -->
     
     <!-- компонент RoleEditor -->    
     <xsl:template match="field[@name='group_div_rights']">

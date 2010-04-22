@@ -39,6 +39,17 @@
     <xsl:template match="record[ancestor::component[@type='form']]">
         <xsl:apply-templates/>
     </xsl:template>
+    
+    <xsl:template match="field[@name='error_message'][ancestor::component[@type='form']]">
+        <div class="error_message">
+            <span><xsl:value-of select="@title"/>:</span>
+            <span><xsl:value-of select="." disable-output-escaping="yes"/></span>            
+        </div>
+    </xsl:template>
+    
+    <xsl:template match="field[@name='captcha'][ancestor::component[@type='form']]">
+        <xsl:call-template name="captcha"/>
+    </xsl:template>
 
     <xsl:template match="javascript[parent::component[@type='form']]">
     	<script type="text/javascript">
@@ -150,27 +161,13 @@
                 </tfoot>
             </table>
         </div>
-    </xsl:template>
+    </xsl:template>    
     
-    <!-- компонент FeedbackForm -->
-    <xsl:template match="recordset[parent::component[@class='FeedbackForm']]">
-        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
-            <xsl:apply-templates/>
-            <xsl:call-template name="captcha"/>
-        </div>
-        <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
-            <div class="note">
-                <xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
-            </div>
-        </xsl:if>
-    </xsl:template>
-    
-    <!-- обработка сообщения об отправке данных формы -->
-    <!--<xsl:template match="component[@type='form'][@componentAction='send'] 
-                        | component[@type='form'][@componentAction='success'] 
-                        | component[@type='form'][@componentAction='save']">
+    <!-- сообщениe о результатах отработки формы -->     
+    <xsl:template match="component[@type='form'][descendant::field[@name='result'] | descendant::field[@name='success_message']]">
         <div class="result_message">
             <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>
-    </xsl:template>-->
+    </xsl:template>
+     
 </xsl:stylesheet>

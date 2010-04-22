@@ -5,17 +5,29 @@
     xmlns="http://www.w3.org/1999/xhtml">
 
 <xsl:template match="component[@class='ProductList']">
-		<xsl:apply-templates />
+		<xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="recordset[parent::component[@class='ProductList']]">
-    <xsl:if test="record/field[@key='1']!=''">
-        <form method="POST" action="" id="{generate-id(.)}" >
-            <table class="product" width="100%" border="0">
-                <xsl:apply-templates />
-            </table>
-        </form>
-    </xsl:if>
+    <xsl:choose>
+        <xsl:when test="record/field[@key='1'] = ''">
+            <xsl:choose>
+                <xsl:when test="../@componentAction='search'">
+                    <p><xsl:value-of select="$TRANSLATION[@const='TXT_NO_PRODUCTS_FOUND']"/></p>
+                </xsl:when>
+                <xsl:otherwise>
+                    <p><xsl:value-of select="$TRANSLATION[@const='TXT_NO_PRODUCTS']"/></p>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+            <form method="POST" action="" id="{generate-id(.)}">
+                <table class="product" width="100%" border="0">
+                    <xsl:apply-templates/>
+                </table>
+            </form>
+        </xsl:otherwise>
+    </xsl:choose>
 </xsl:template>
 
 <xsl:template match="record[ancestor::component[@class='ProductList'][@type='list']]">
@@ -52,7 +64,7 @@
         <td style="font-size: 0.9em;" colspan="2"><xsl:apply-templates select="field[@name='smap_id']"/></td>
     </tr>
     <tr>
-        <td style="border-top: 1px solid #000;" colspan="2"><br /></td>
+        <td style="border-top: 1px solid #000;" colspan="2"><br/></td>
     </tr>
 </xsl:template>
 

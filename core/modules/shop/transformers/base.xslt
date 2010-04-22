@@ -78,8 +78,7 @@
                 <xsl:value-of select="."/>
             </option>
         </optgroup>
-    </xsl:template>
-    
-    <!-- /компонент ProductEditor -->
+    </xsl:template>    
+    <!-- /компонент ProductEditor -->    
 
 </xsl:stylesheet>

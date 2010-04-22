@@ -7,7 +7,7 @@
 				<pattern>/page-[pageNumber]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Product" />
+				<object name="Product"/>
 			</javascript>
 			<fields>
 				<field name="product_id"/>
@@ -17,13 +17,17 @@
 				<field name="smap_id" type="string"/>
 				<field name="ps_id"/>
 				<field name="product_segment"/>
-				<field name="producer_id" />
+				<field name="producer_id"/>
 				<field name="product_price" type="float" title="TXT_PRODUCT_PRICE"/>
 			</fields>
 			<toolbar>
 				<control id="go" title="BTN_GO" type="button" click="showProduct"/>
 				<control id="basket" title="BTN_ADD_TO_BASKET" type="button" click="addToBasket"/>
 			</toolbar>
+            <translations>
+                <translation const="TXT_NO_PRODUCTS"/>
+                <translation const="TXT_NO_PRODUCTS_FOUND"/>
+            </translations>
 		</method>
     	<method name="showManufacturerProducts">
 			<uri_patterns>
@@ -31,7 +35,7 @@
 				<pattern>/manufacturer-[string]/page-[pageNumber]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Product" />
+				<object name="Product"/>
 			</javascript>
 			<fields>
 				<field name="product_id"/>
@@ -41,13 +45,17 @@
 				<field name="smap_id" type="string"/>
 				<field name="ps_id"/>
 				<field name="product_segment"/>
-				<field name="producer_id" />
+				<field name="producer_id"/>
 				<field name="product_price" type="float" title="TXT_PRODUCT_PRICE"/>
 			</fields>
 			<toolbar>
 				<control id="go" title="BTN_GO" type="button"/>
 				<control id="basket" title="BTN_ADD_TO_BASKET" type="button" click="addToBasket"/>
 			</toolbar>
+            <translations>
+                <translation const="TXT_NO_PRODUCTS"/>
+                <translation const="TXT_NO_PRODUCTS_FOUND"/>
+            </translations>
 		</method>
 		<method name="search">
 			<uri_patterns>
@@ -55,7 +63,7 @@
 				<pattern>/search-results/page-[pageNumber]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Product" />
+				<object name="Product"/>
 			</javascript>
 			<fields>
 				<field name="product_id"/>
@@ -65,20 +73,24 @@
 				<field name="smap_id" type="string"/>
 				<field name="ps_id"/>
 				<field name="product_segment"/>
-				<field name="producer_id" />
+				<field name="producer_id"/>
 				<field name="product_price" type="float" title="TXT_PRODUCT_PRICE"/>
 			</fields>
 			<toolbar>
 				<control id="go" title="BTN_GO" type="button" click="showProduct"/>
 				<control id="basket" title="BTN_ADD_TO_BASKET" type="button" click="addToBasket"/>
 			</toolbar>
+            <translations>
+                <translation const="TXT_NO_PRODUCTS"/>
+                <translation const="TXT_NO_PRODUCTS_FOUND"/>
+            </translations>
 		</method>
-		      <method name="view">
+        <method name="view">
             <uri_patterns>
                 <pattern>/[string]/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="Product" />
+                <object name="Product"/>
             </javascript>
             <fields>
                 <field name="product_id"/>
@@ -87,7 +99,7 @@
                 <field name="product_description_rtf"/>
                 <field name="smap_id" type="string"/>
                 <field name="ps_id"/>
-                <field name="producer_id" />
+                <field name="producer_id"/>
                 <field name="product_price" type="float" title="TXT_PRODUCT_PRICE"/>
             </fields>
             <toolbar>

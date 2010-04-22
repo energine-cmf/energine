@@ -4,14 +4,12 @@
 		<method name="main">
 			<javascript>
 				<object name="OrderForm" />
-			</javascript>
-			
+			</javascript>			
 			<toolbar>
 				<control id="order" title="BTN_SEND" type="submit"/>
 			</toolbar>
 			<translations>
 				<translation const="TXT_REQUIRED_FIELDS"/>
-                <translation const="TXT_ENTER_CAPTCHA"/>
 			</translations>
 		</method>
 	    <method name="checkLogin">

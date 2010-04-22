@@ -5,20 +5,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     >
 <!-- xmlns:dyn="http://exslt.org/dynamic"
-    extension-element-prefixes="dyn" -->
-
-    <!-- компонент OrderForm -->
-    <xsl:template match="recordset[parent::component[@class='OrderForm']]">
-        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
-            <xsl:apply-templates/>
-        </div>
-        <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
-            <div class="note">
-                <xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
-            </div>
-        </xsl:if>
-    </xsl:template>
-    <!-- /компонент OrderForm -->
+    extension-element-prefixes="dyn" -->    
     
     <!-- компонент UserOrderHistory -->
     <xsl:template match="field[ancestor::component[@class='UserOrderHistory'][@type='list']][@name='order_created']">

@@ -15,12 +15,6 @@
                 <translation const="TXT_ENTER_CAPTCHA"/>
             </translations>
 		</method>
-		<method name="checkCaptcha">
-		  <uri_patterns>
-		      <pattern>/check-captcha/</pattern>
-		  </uri_patterns>
-		</method>
-		
 		<method name="send">
 		     <uri_patterns>
 		         <pattern>/send-resume/</pattern>

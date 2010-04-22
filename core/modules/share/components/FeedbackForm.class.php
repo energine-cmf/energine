@@ -126,15 +126,7 @@ class FeedbackForm extends DBDataSet {
            
     	   $data[$this->getTableName()] = $_POST[$this->getTableName()];
     	   	
-    	   if(
-             !isset($_SESSION['captchaCode'])
-             ||
-             !isset($_POST['captcha'])
-             ||
-             ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
-            ){
-                 throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);   
-            }
+    	   $this->checkCaptcha();
 
 	        if ($result = $this->saveData($data)) {
 	            $data = $data[$this->getTableName()];

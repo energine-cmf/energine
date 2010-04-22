@@ -126,21 +126,6 @@ final class ResumeForm extends DataSet {
 		return $result;
 	}
 
-	protected function checkCaptcha(){
-		$_SESSION['captchaChecked'] = $result = (
-	        isset($_POST['captcha'])
-	        &&
-	        ($_SESSION['captchaCode'] == sha1($_POST['captcha']))
-        );
-		
-		$result = array(
-		  'result' => $result
-		);
-		$this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
-		$this->response->write(json_encode($result));
-		$this->response->commit();
-	}
-
 	/**
 	 * Отправка резюме
 	 *
@@ -148,15 +133,7 @@ final class ResumeForm extends DataSet {
 	 * @return мщшв
 	 */
 	protected function send() {
-		if(
-             !isset($_SESSION['captchaCode'])
-             ||
-             !isset($_POST['captcha'])
-             ||
-             ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
-         ){
-			throw new SystemException('MSG_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
-		}
+		$this->checkCaptcha();
 		
 		if(!isset($_POST[self::RESUME_TABLE_NAME ])){
 			throw new SystemException('MSG_NO_RESUME_SEND', SystemException::ERR_CRITICAL);

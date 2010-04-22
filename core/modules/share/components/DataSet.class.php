@@ -641,6 +641,25 @@ abstract class DataSet extends Component {
                     $translations
                 ); 
 	}
+	
+	/**
+	  * Проверяет капчу
+	  * 
+	  * @return void
+	  * @access protected
+	  * @throws SystemException
+	  */
+	protected function checkCaptcha(){
+	   if(
+             !isset($_SESSION['captchaCode'])
+             ||
+             !isset($_POST['captcha'])
+             ||
+             ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
+         ){
+            throw new SystemException('MSG_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
+        }
+	}
 
 	/**
 	 * Удаляет потенциально опасный и лишний HTML код

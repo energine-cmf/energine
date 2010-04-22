@@ -164,9 +164,7 @@ class Grid extends DBDataSet {
 
     protected function main() {
         parent::main();
-        $this->addTranslation('TXT_FILTER');
-        $this->addTranslation('BTN_APPLY_FILTER');
-        $this->addTranslation('TXT_RESET_FILTER');
+        $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER');
     }
 
     /**
@@ -971,8 +969,7 @@ class Grid extends DBDataSet {
      * @return void
      */
     private function addToolbarTranslations(){
-    	$this->addTranslation('TXT_OPEN_FIELD');
-        $this->addTranslation('TXT_CLOSE_FIELD');
+    	$this->addTranslation('TXT_OPEN_FIELD', 'TXT_CLOSE_FIELD');
         
         foreach($this->getDataDescription() as $fd){
             if(($fd->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK)){
@@ -1004,8 +1001,7 @@ class Grid extends DBDataSet {
             $field = new Field('attached_files');
 
             //Ссылки на добавление и удаление файла
-            $this->addTranslation('BTN_ADD_FILE');
-            $this->addTranslation('BTN_DEL_FILE');
+            $this->addTranslation('BTN_ADD_FILE', 'BTN_DEL_FILE');
             $attachedFilesData = $this->buildAttachedFiles($data); 
             for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
                 $field->addRowData($attachedFilesData);

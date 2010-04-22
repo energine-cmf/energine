@@ -89,9 +89,7 @@ class LoginForm extends DataSet {
     public function showLogoutForm() {
         $request = Request::getInstance();
         //$this->setTitle($this->translate('TXT_LOGOUT'));
-        $this->addTranslation('TXT_USER_GREETING');
-        $this->addTranslation('TXT_USER_NAME');
-        $this->addTranslation('TXT_ROLE_TEXT');
+        $this->addTranslation('TXT_USER_GREETING', 'TXT_USER_NAME', 'TXT_ROLE_TEXT');
         $this->setDataSetAction($request->getBasePath(), true);
         $this->prepare();
         foreach (UserGroup::getInstance()->getUserGroups($this->document->user->getID()) as $roleID) {

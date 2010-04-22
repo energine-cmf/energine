@@ -84,8 +84,7 @@ class CurrencySwitcher extends DBDataSet {
         	   )
         	);
         }
-        $this->addTranslation('MSG_SWITCHER_TIP');
-		$this->addTranslation('TXT_CURRENCY_RATE');
+        $this->addTranslation('MSG_SWITCHER_TIP', 'TXT_CURRENCY_RATE');
      }
 
 }

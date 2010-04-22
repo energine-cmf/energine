@@ -166,11 +166,11 @@
     </xsl:template>
     
     <!-- обработка сообщения об отправке данных формы -->
-    <xsl:template match="component[@type='form'][@componentAction='send'] 
+    <!--<xsl:template match="component[@type='form'][@componentAction='send'] 
                         | component[@type='form'][@componentAction='success'] 
                         | component[@type='form'][@componentAction='save']">
         <div class="result_message">
             <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>
-    </xsl:template>
+    </xsl:template>-->
 </xsl:stylesheet>

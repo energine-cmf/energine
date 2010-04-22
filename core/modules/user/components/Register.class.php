@@ -41,7 +41,7 @@ class Register extends DBDataSet {
 		$this->setType(self::COMPONENT_TYPE_FORM_ADD);
 		$this->user = new User();
 		$this->setTableName(User::USER_TABLE_NAME);
-		$this->addTranslation('TXT_ENTER_CAPTCHA');
+		$this->addTranslation('TXT_ENTER_CAPTCHA', 'TXT_REQUIRED_FIELDS');
 	}
 	/**
 	 * Переопределен параметр active

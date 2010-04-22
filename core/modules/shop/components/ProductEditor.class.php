@@ -165,8 +165,7 @@ class ProductEditor extends Grid {
 
         
         if (in_array($this->getAction(), array('add', 'edit'))) {
-        	$this->addTranslation('FIELD_PP_NAME');
-        	$this->addTranslation('FIELD_PPV_VALUE');
+        	$this->addTranslation('FIELD_PP_NAME', 'FIELD_PPV_VALUE');
         	$fdPtID = $result->getFieldDescriptionByName('pt_id');
         	$fdPtID->removeProperty('nullable'); 
         	$fdPtID->setProperty('tabName', $this->translate('TAB_PRODUCT_PARAMS'));

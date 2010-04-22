@@ -13,9 +13,6 @@
 		<toolbar>
 			<control id="register" title="BTN_REGISTER" type="submit"/>
 		</toolbar>
-		<translations>
-			<translation const="TXT_REQUIRED_FIELDS" />
-		</translations>
 	</method>
 	<method name="checkLogin">
       <uri_patterns>

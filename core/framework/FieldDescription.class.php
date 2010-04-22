@@ -477,6 +477,9 @@ class FieldDescription extends DBWorker {
                     $this->setProperty('outputFormat', '%d');
                 }
                 break;
+            case self::FIELD_TYPE_CAPTCHA:
+            	$_SESSION['captchaCode'] = rand(100000, 999999);
+                break;
             case self::FIELD_TYPE_TEXT:
             case self::FIELD_TYPE_HTML_BLOCK:
                 if ($this->getPropertyValue('nullable') === false|| is_null($this->getPropertyValue('nullable'))) {

@@ -11,7 +11,6 @@
     <xsl:template match="recordset[parent::component[@class='OrderForm']]">
         <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
             <xsl:apply-templates/>
-            <xsl:call-template name="captcha"/>
         </div>
         <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
             <div class="note">

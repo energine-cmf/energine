@@ -52,6 +52,24 @@ class FeedbackForm extends DBDataSet {
         return $result;
     }
     /**
+      * Для залогиненого пользователя убираем капчу
+      * 
+      * @return void
+      * @access protected
+      */
+    protected function prepare(){
+    	parent::prepare();
+    	if(
+    	   $this->document->getUser()->isAuthenticated() 
+    	   && 
+    	   ($captcha = $this->getDataDescription()->getFieldDescriptionByName('captcha'))
+    	 ){
+    	   $this->getDataDescription()->removeFieldDescription($captcha);
+    	   unset($_SESSION['captchaCode']);
+    	}
+        
+    } 
+    /**
      * Сохраняет данные
      *
      * @return mixed
@@ -63,18 +81,19 @@ class FeedbackForm extends DBDataSet {
         $dataDescriptionObject = new DataDescription();
 
        //получаем описание полей для метода
-        $configDataDescription = $this->config->getMethodConfig($this->getPreviousAction());
+        $configDataDescription = $this->config->getMethodConfig(Component::DEFAULT_ACTION_NAME);
         //если в конфиге есть описание полей для метода - загружаем их
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);
         }
-
+        
         //Создаем объект описания данных взятых из БД
         $DBDataDescription = new DataDescription();
         //Загружаем в него инфу о колонках
         $DBDataDescription->load($this->loadDataDescription());
         $this->setDataDescription($dataDescriptionObject->intersect($DBDataDescription));
-
+      
+        
         $dataObject = new Data();
         $dataObject->load($data);
         $this->setData($dataObject);

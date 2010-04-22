@@ -659,8 +659,10 @@ abstract class DataSet extends Component {
 	             ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
              )
          ){
+         	unset($_SESSION['captchaCode']);
             throw new SystemException('MSG_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
         }
+        unset($_SESSION['captchaCode']);
 	}
 
 	/**

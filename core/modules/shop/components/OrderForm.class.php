@@ -158,7 +158,6 @@ class OrderForm extends DBDataSet {
     protected function save() {
         $this->dbh->beginTransaction();
         try {
-            $this->checkCaptcha();
             if (!isset($_POST[$this->getTableName()])) {
                 throw new SystemException('ERR_DEV_NO_DATA', SystemException::ERR_WARNING);
             }

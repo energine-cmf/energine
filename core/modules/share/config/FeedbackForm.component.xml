@@ -20,13 +20,6 @@
 			<uri_patterns>
 				<pattern>/send/</pattern>
 			</uri_patterns>
-			<fields>
-                <field name="feed_id"/>
-                <field name="feed_email"/>
-                <field name="feed_author"/>
-                <field name="feed_text"/>
-                <field name="captcha" type="captcha" title="TXT_ENTER_CAPTCHA"/>
-			</fields>
 		</method>
         <method name="success">
         <uri_patterns>

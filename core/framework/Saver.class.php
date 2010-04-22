@@ -169,7 +169,6 @@ class Saver extends DBWorker {
         if (!$this->data || !$this->dataDescription) {
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER);
         }
-
         foreach ($this->dataDescription as $fieldName => $fieldDescription) {
             $fieldData = $this->data->getFieldByName($fieldName);
             if ($fieldDescription->getType() == FieldDescription::FIELD_TYPE_BOOL ||

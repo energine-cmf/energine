@@ -25,7 +25,7 @@
     		</xsl:if>   
     		<div class="control" id="control_{@language}_{@name}">                
                 <!-- импорт шаблона, который создает сам HTML-элемент (input, select, etc.) -->
-        		<xsl:apply-imports />
+        		<xsl:apply-imports/>
             </div>
     	</div>
     </xsl:template>
@@ -109,9 +109,30 @@
                     </xsl:otherwise>
                 </xsl:choose>                
                 <!-- импорт шаблона, который создает сам HTML-элемент (input, select, etc.) -->
-                <xsl:apply-imports />
+                <xsl:apply-imports/>
             </div>
         </div>
+    </xsl:template>
+    
+    <!-- полe типа captcha -->
+    <xsl:template match="field[@type='captcha'][ancestor::component[@type='form']]">
+        <xsl:if test="not($COMPONENTS[@class='LoginForm'][@componentAction='showLogoutForm'])">
+            <div class="field captcha_field">
+                <xsl:if test="not(@nullable) and @type != 'boolean'">
+                    <xsl:attribute name="class">field captcha_field required</xsl:attribute>
+                </xsl:if>
+                <xsl:if test="@title and @type != 'boolean'">
+                    <div class="name">
+                        <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
+                        <xsl:if test="not(@nullable) and not(ancestor::component/@exttype = 'grid') and not(ancestor::component[@class='TextBlockSource'])"><span class="mark">*</span></xsl:if>                    
+                    </div>
+                </xsl:if>   
+                <div class="control" id="control_{@language}_{@name}">                
+                    <!-- импорт шаблона, который создает сам HTML-элемент (input, select, etc.) -->
+                    <xsl:apply-imports/>
+                </div>
+            </div>
+        </xsl:if>        
     </xsl:template>
     
     <!-- для любого поля, на которое нет прав на просмотр -->

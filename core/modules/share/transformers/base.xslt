@@ -326,6 +326,12 @@
         </input>
     </xsl:template>
     
+    <!-- поле типа captcha -->
+    <xsl:template match="field[@type='captcha'][ancestor::component[@type='form']]">
+        <img src="captcha.php" id="captchaImage"/>
+        <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text"/>       
+    </xsl:template>
+    
     <!-- именованный шаблон с дефолтным набором атрибутов для элемента формы - НЕ ПЕРЕПИСЫВАТЬ В ДРУГОМ МЕСТЕ! -->
     <xsl:template name="FORM_ELEMENT_ATTRIBUTES">
         <xsl:if test="not(@type='text') and not(@type='htmlblock')">
@@ -385,22 +391,6 @@
     </xsl:template>
     
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->
-    <xsl:template name="interface_js"/>
-    
-    <!-- именованный шаблон для подключения captcha в любую форму -->
-    <xsl:template name="captcha">
-        <xsl:if test="$COMPONENTS[@class='LoginForm'][@componentAction='showLoginForm']">
-            <div class="field captcha_field">
-                <div class="name">
-                    <label for="{@name}"><xsl:value-of select="$TRANSLATION[@const='TXT_ENTER_CAPTCHA']"/></label>
-                    <span class="mark">*</span>
-                </div>
-                <div class="control" >
-                    <img src="captcha.php" id="captchaImage"/>
-                    <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text"/>                                                                                                    
-                </div>                                                                                                                                                                                                               
-            </div>
-        </xsl:if>        
-    </xsl:template>
+    <xsl:template name="interface_js"/>    
 
 </xsl:stylesheet>

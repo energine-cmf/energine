@@ -10,7 +10,7 @@
 				<field name="feed_email"/>
 				<field name="feed_author"/>
 				<field name="feed_text"/>
-                <field name="captcha" type="custom"/>
+                <field name="captcha" type="captcha" title="TXT_ENTER_CAPTCHA"/>
 			</fields>
 			<toolbar>
 				<control id="send_letter" title="BTN_SEND" type="submit" onclick="send"/>
@@ -25,6 +25,7 @@
                 <field name="feed_email"/>
                 <field name="feed_author"/>
                 <field name="feed_text"/>
+                <field name="captcha" type="captcha" title="TXT_ENTER_CAPTCHA"/>
 			</fields>
 		</method>
         <method name="success">

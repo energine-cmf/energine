@@ -46,10 +46,6 @@
             <span><xsl:value-of select="." disable-output-escaping="yes"/></span>            
         </div>
     </xsl:template>
-    
-    <xsl:template match="field[@name='captcha'][ancestor::component[@type='form']]">
-        <xsl:call-template name="captcha"/>
-    </xsl:template>
 
     <xsl:template match="javascript[parent::component[@type='form']]">
     	<script type="text/javascript">

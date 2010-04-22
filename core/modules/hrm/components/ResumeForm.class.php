@@ -96,6 +96,10 @@ final class ResumeForm extends DataSet {
 				);
 			}
 		}
+		if($this->document->getUser()->isAuthenticated() && ($captcha = $result->getFieldDescriptionByName('captcha')) ){
+            $result->removeFieldDescription($captcha);		    	
+		}
+		
 		return $result;
 	}
 

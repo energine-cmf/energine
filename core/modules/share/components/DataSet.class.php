@@ -651,11 +651,13 @@ abstract class DataSet extends Component {
 	  */
 	protected function checkCaptcha(){
 	   if(
-             !isset($_SESSION['captchaCode'])
-             ||
-             !isset($_POST['captcha'])
-             ||
-             ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
+             isset($_SESSION['captchaCode'])
+             &&
+             (
+	             !isset($_POST['captcha'])
+	             ||
+	             ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
+             )
          ){
             throw new SystemException('MSG_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
         }

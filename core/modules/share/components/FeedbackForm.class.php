@@ -34,6 +34,7 @@ class FeedbackForm extends DBDataSet {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->setDataSetAction('send');
         $this->setTitle($this->translate('TXT_FEEDBACK_FORM'));
+        $this->addTranslation('TXT_ENTER_CAPTCHA', 'TXT_REQUIRED_FIELDS');
     }
     /**
 	 * Переопределен параметр active
@@ -56,10 +57,8 @@ class FeedbackForm extends DBDataSet {
      * @return mixed
      * @access protected
      */
-
      protected function saveData($data) {
         $result = false;
-           
         //создаем объект описания данных
         $dataDescriptionObject = new DataDescription();
 
@@ -106,7 +105,7 @@ class FeedbackForm extends DBDataSet {
         $this->prepare();
         $eFD = new FieldDescription('error_message');
         $eFD->setMode(FieldDescription::FIELD_MODE_READ);
-        $eFD->setType(FieldDescription::FIELD_TYPE_STRING);
+        $eFD->setType(FieldDescription::FIELD_TYPE_CUSTOM);
         $this->getDataDescription()->addFieldDescription($eFD);
         $this->getData()->load(array(array_merge(array('error_message' => $errorMessage), $data)));
             
@@ -164,17 +163,44 @@ class FeedbackForm extends DBDataSet {
 
 	        $this->prepare();
 	        
-	        if ($this->getParam('textBlock') && ($textBlock = $this->document->componentManager->getComponentByName($this->getParam('textBlock')))) {
-	        	$textBlock->disable();
-	        }
-
-	        $field = new Field('result');
-	        $field->setData($this->translate('TXT_FEEDBACK_SUCCESS_SEND'));
-	        $this->getData()->addField($field);
+	        $_SESSION['saved'] = true;
+            $this->response->redirectToCurrentSection('success/');
 
     	}
     	catch (Exception $e){
     		$this->failure($e->getMessage(), (isset($data[$this->getTableName()]))?$data[$this->getTableName()]:array());
     	}
    }
+ /**
+     * Выводит результат отправки сообщения
+     *
+     * @return void
+     * @access protected
+     */
+    protected function success() {
+        //если в сессии нет переменной saved значит этот метод пытаются вызвать напрямую. Не выйдет!
+        if (!isset($_SESSION['saved'])) {
+            throw new SystemException('ERR_404', SystemException::ERR_404);
+        }
+        //unset($_SESSION['saved']);
+        if ($this->getParam('textBlock') && ($textBlock = $this->document->componentManager->getComponentByName($this->getParam('textBlock')))) {
+                $textBlock->disable();
+        }
+        $this->setBuilder($this->createBuilder());
+
+        $dataDescription = new DataDescription();
+        $ddi = new FieldDescription('success_message');
+        $ddi->setType(FieldDescription::FIELD_TYPE_TEXT);
+        $ddi->setMode(FieldDescription::FIELD_MODE_READ);
+        $ddi->removeProperty('title');
+        $dataDescription->addFieldDescription($ddi);
+
+        $data = new Data();
+        $di = new Field('success_message');
+        $di->setData($this->translate('TXT_FEEDBACK_SUCCESS_SEND'));
+        $data->addField($di);
+
+        $this->setDataDescription($dataDescription);
+        $this->setData($data);
+    }
 }

@@ -160,7 +160,7 @@
     </xsl:template>    
     
     <!-- сообщениe о результатах отработки формы -->     
-    <xsl:template match="component[@type='form'][descendant::field[@name='result'] | descendant::field[@name='success_message']]">
+    <xsl:template match="component[@type='form'][descendant::field[@name='result'] | descendant::field[@name='success_message'] | descendant::field[@name='restore_password_result']]">
         <div class="result_message">
             <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>

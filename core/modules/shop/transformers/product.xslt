@@ -21,6 +21,16 @@
             </xsl:choose>
         </xsl:when>
         <xsl:otherwise>
+            <script>
+                stopEvent = function(event) {
+                    // stop event
+                    event = event || new Event(window.event);
+                    if (event.stopPropagation) event.stopPropagation();
+                    else event.cancelBubble = true;
+                    if (event.preventDefault) event.preventDefault();
+                    else event.returnValue = false;
+                }
+            </script>
             <form method="POST" action="" id="{generate-id(.)}">
                 <table class="product" width="100%" border="0">
                     <xsl:apply-templates/>
@@ -46,7 +56,7 @@
         </td>
     </tr>
     <tr>
-        <td colspan="2" align="right"><a href="#" onclick="{generate-id(../../recordset)}.{../../toolbar/control[@id='basket']/@click}({field[@name='product_id']}); return false;"><img src="images/cart_put.gif" width="16" height="16" align="baseline" alt="" border="0"/>&#160;<xsl:value-of select="../../toolbar/control[@id='basket']/@title"/></a></td>
+        <td colspan="2" align="right"><a href="#" onclick="stopEvent(event); {generate-id(../../recordset)}.{../../toolbar/control[@id='basket']/@click}({field[@name='product_id']});"><img src="images/cart_put.gif" width="16" height="16" align="baseline" alt="" border="0"/>&#160;<xsl:value-of select="../../toolbar/control[@id='basket']/@title"/></a></td>
     </tr>
     <tr>
         <td colspan="2">
@@ -95,7 +105,7 @@
         </tr>
     </xsl:if>
 	<tr>
-        <td colspan="2" align="right"><a href="#" onclick="{generate-id(../../recordset)}.{../../toolbar/control[@id='basket']/@click}({field[@name='product_id']}); return false;"><img src="images/cart_put.gif" width="16" height="16" align="baseline" alt="" border="0"/>&#160;<xsl:value-of select="../../toolbar/control[@id='basket']/@title"/></a></td>
+        <td colspan="2" align="right"><a href="#" onclick="stopEvent(event); {generate-id(../../recordset)}.{../../toolbar/control[@id='basket']/@click}({field[@name='product_id']});"><img src="images/cart_put.gif" width="16" height="16" align="baseline" alt="" border="0"/>&#160;<xsl:value-of select="../../toolbar/control[@id='basket']/@title"/></a></td>
     </tr>
     <tr>
         <td colspan="4">
@@ -204,7 +214,7 @@
         <fieldset><legend><xsl:value-of select="@title"/></legend>
             <label for="search_field"><input type="string" name='{search_field/@name}' id="search_field" style="width:300px;" value="{search_field}"/></label><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
             <input type="submit" value="{search_field/@action_title}">
-                <xsl:attribute name="onclick"><![CDATA[if(document.getElementById('search_field').value.length<4)return false;]]></xsl:attribute>                
+                <xsl:attribute name="onclick"><![CDATA[if(document.getElementById('search_field').value.length<4)stopEvent(event);]]></xsl:attribute>                
             </input>
         </fieldset>
     </form>

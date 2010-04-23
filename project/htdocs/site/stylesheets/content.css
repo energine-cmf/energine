@@ -215,3 +215,27 @@ table.basket img {
     margin: 0 0 5px 0;
 }
 /* ----- /product list ----- */
+
+/* ----- staff ----- */
+.staff .name {
+    margin: 0 0 0.5em 0;
+    font-weight: normal;
+}
+.staff .position {
+    text-transform: lowercase;
+    font-size: 0.75em;
+}
+.staff .image {
+    float: left;
+    margin: 0 10px 10px 0;
+}
+.staff .text {
+    margin-bottom: 1em;
+}
+.staff_list li { 
+    margin: 0 0 1em 0;
+}
+.staff_view {
+    margin-bottom: 1em;
+}
+/* ----- /staff ----- */

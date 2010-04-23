@@ -88,69 +88,43 @@ Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
 }
 
 .lined_table {
-	width: 100%;
-	margin: 0 0 1em 0;
-	padding: 0 0 0 1px;
-	border-collapse: separate;
-	border-spacing: 0;
-	border: 0;
-	border-top: 1px solid #000;
-	border-bottom: 1px solid #000;
+    margin: 0 0 1em 0;
+    padding: 0;
+    border-spacing: 0;
+    border-collapse: separate; 
+    border: 0;  
+}
+.lined_table th, .lined_table td {
+    padding: 3px;
+    border: 0;
+    border-right: 1px solid #fff;
+    vertical-align: middle;
+}
+.lined_table thead th, .lined_table tfoot td {
+    padding: 4px 3px;
+    background: silver;
 }
 .lined_table th {
-	padding: 2px;
-	border: 0;
-	border-right: 1px solid #fff;
-	background: gray;
+    text-align: center;
 }
-.lined_table td {
-	padding: 2px;
-	border: 0;
-	border-right: 1px solid #fff;
-	background: silver;
+.lined_table tfoot td.no_border {
+    border: 0;
 }
-.lined_table tr.odd td {
-	background: #f1f1f1;
+.lined_table tbody td {
+    background: #fafafa;
+}
+.lined_table tbody tr.odd td {
+    background: #f3f3f3;
 }
 /* /default */
 
 /* basket */
-table.basket {
-	margin: 0 0 1em 0;
-	padding: 0;
-	border-spacing: 0;
-	border-collapse: separate; 
-	border: 0;	
-}
-table.basket th, table.basket td {
-    padding: 3px;
-	border: 0;
-	border-right: 1px solid #fff;
-	vertical-align: middle;
-}
-table.basket thead th, table.basket tfoot td {
-	padding: 4px 3px;
-	background: silver;
-}
-table.basket th {
-    text-align: center;
-}
-table.basket tfoot td.no_border {
-	border: 0;
-}
-table.basket tbody td {
-	background: #fafafa;
-}
-table.basket tbody tr.odd td {
-	background: #f3f3f3;
-}
 table.basket img {
     margin-right: 5px;    
     vertical-align: middle;
 }
 /* /basket */
 /* ----- /tables ----- */
-
 
 /* ----- pager ----- */
 .pager {
@@ -230,3 +204,14 @@ table.basket img {
 	text-align: center;
 }
 /* ----- /gallery ----- */
+
+/* ----- product list ----- */
+.product_image ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.product_image ul li {
+    margin: 0 0 5px 0;
+}
+/* ----- /product list ----- */

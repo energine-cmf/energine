@@ -15,7 +15,7 @@ hr.separator {
 	display: none;
 }
 
-/* clearfix by Andy Budd */
+/* clearfix */
 .clearfix:after {
 	content: ".";		
 	clear: both;
@@ -56,8 +56,7 @@ hr.separator {
 /* ----- breadcrumbs ----- */
 .breadcrumbs {
 	margin: 1em 0;
-    padding-left: 22px;
-	_height: 1%;   
+    padding-left: 22px;  
 }
 /* ----- /breadcrumbs ----- */
 

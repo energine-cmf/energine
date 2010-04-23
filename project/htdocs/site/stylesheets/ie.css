@@ -10,6 +10,10 @@ hr {
 	margin: 0;
 }
 
+.breadcrumbs {
+    _height: 1%;   
+}
+
 /* ----- forms ----- */
 .field {
 	_height: 1%; /* KLUDGE: добавляет свойство hasLayout */

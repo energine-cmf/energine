@@ -129,6 +129,7 @@ final class ResumeForm extends DataSet {
 		}
 		return $result;
 	}
+	
 
 	/**
 	 * Отправка резюме
@@ -137,57 +138,100 @@ final class ResumeForm extends DataSet {
 	 * @return мщшв
 	 */
 	protected function send() {
-		$this->checkCaptcha();
+		try{
+			$this->checkCaptcha();
+			
+			if(!isset($_POST[self::RESUME_TABLE_NAME ])){
+				throw new SystemException('MSG_NO_RESUME_SEND', SystemException::ERR_CRITICAL);
+			}
+			$data = $_POST[self::RESUME_TABLE_NAME ];
+			$data['resume_date'] = date('r');
+	
+			$this->jevix = new Jevix();
+			$this->jevix->cfgSetAutoBrMode(false);
+			$this->jevix->cfgSetAutoLinkMode(false);
+			$this->jevix->cfgSetXHTMLMode(true);
+			$this->jevix->cfgSetTagCutWithContent(array('script', 'iframe'));
+		  
+			$data = array_map(array($this, 'cleanInputData'), $data);
+	
+			if(isset($_FILES['file'])){
+				try {
+					$uploader = new FileUploader();
+					$uploader->setFile($_FILES['file']);
+					$uploader->upload('uploads/private/');
+					$data['resume_main_pfile'] = $uploader->getFileObjectName();
+				}
+				catch (Exception $e){
+					//Если с файлом что то не так
+					//и хрен с ни
+				}
+			}
+			$data['resume_date'] = date('Y-m-d');
+			$this->dbh->modify(QAL::INSERT, self::RESUME_TABLE_NAME, $data);
+	
+			$mail = new Mail();
+			$mail->setFrom($this->getConfigValue('mail.from'));
+			$mail->addTo($this->getConfigValue('mail.vacancy_email'));
+			$mail->setSubject($this->translate('TXT_SUBJ_NEW_RESUME'));
+			$mail->addReplyTo($data['resume_candidate_email'], $data['resume_candidate_name']);
+			$mail->setText($this->translate('TXT_BODY_NEW_RESUME'), $data);
+			if(isset($_FILES['file'])){
+				$mail->addAttachment($_FILES['file']['tmp_name'], $_FILES['file']['name']);
+			}
+	
+			$mail->send();
+			$_SESSION['saved'] = true;
+	        $this->response->redirectToCurrentSection('success/');
+		}
+		catch(SystemException $e){
+			$this->failure($e->getMessage(), (isset($data))?$data:array());
+		}
 		
-		if(!isset($_POST[self::RESUME_TABLE_NAME ])){
-			throw new SystemException('MSG_NO_RESUME_SEND', SystemException::ERR_CRITICAL);
-		}
-		$data = $_POST[self::RESUME_TABLE_NAME ];
-		$data['resume_date'] = date('r');
-
-		$this->jevix = new Jevix();
-		$this->jevix->cfgSetAutoBrMode(false);
-		$this->jevix->cfgSetAutoLinkMode(false);
-		$this->jevix->cfgSetXHTMLMode(true);
-		$this->jevix->cfgSetTagCutWithContent(array('script', 'iframe'));
-	  
-		$data = array_map(array($this, 'cleanInputData'), $data);
-
-		if(isset($_FILES['file'])){
-			try {
-				$uploader = new FileUploader();
-				$uploader->setFile($_FILES['file']);
-				$uploader->upload('uploads/private/');
-				$data['resume_main_pfile'] = $uploader->getFileObjectName();
-			}
-			catch (Exception $e){
-				//Если с файлом что то не так
-				//и хрен с ни
-			}
-		}
-		$data['resume_date'] = date('Y-m-d');
-		$this->dbh->modify(QAL::INSERT, self::RESUME_TABLE_NAME, $data);
-
-		$mail = new Mail();
-		$mail->setFrom($this->getConfigValue('mail.from'));
-		$mail->addTo($this->getConfigValue('mail.vacancy_email'));
-		$mail->setSubject($this->translate('TXT_SUBJ_NEW_RESUME'));
-		$mail->addReplyTo($data['resume_candidate_email'], $data['resume_candidate_name']);
-		$mail->setText($this->translate('TXT_BODY_NEW_RESUME'), $data);
-		if(isset($_FILES['file'])){
-			$mail->addAttachment($_FILES['file']['tmp_name'], $_FILES['file']['name']);
-		}
-
-		$mail->send();
-
-		$this->prepare();
-
-		$data = new Data();
-		$this->setData($data);
-		$field = new Field('result');
-		$field->setData($this->translate('MSG_RESUME_SENT'));
-		$data->addField($field);
 	}
+	
+	protected function failure($errorMessage, $data){
+        $this->config->setCurrentMethod('main');
+        $this->prepare();
+        $eFD = new FieldDescription('error_message');
+        $eFD->setMode(FieldDescription::FIELD_MODE_READ);
+        $eFD->setType(FieldDescription::FIELD_TYPE_CUSTOM);
+        $this->getDataDescription()->addFieldDescription($eFD);
+        $this->getData()->load(array(array_merge(array('error_message' => $errorMessage), $data)));
+            
+    }
+ /**
+     * Выводит результат отправки сообщения
+     *
+     * @return void
+     * @access protected
+     */
+    protected function success() {
+        //если в сессии нет переменной saved значит этот метод пытаются вызвать напрямую. Не выйдет!
+        if (!isset($_SESSION['saved'])) {
+            throw new SystemException('ERR_404', SystemException::ERR_404);
+        }
+        //unset($_SESSION['saved']);
+        if ($this->getParam('textBlock') && ($textBlock = $this->document->componentManager->getComponentByName($this->getParam('textBlock')))) {
+                $textBlock->disable();
+        }
+        $this->setBuilder($this->createBuilder());
+
+        $dataDescription = new DataDescription();
+        $ddi = new FieldDescription('success_message');
+        $ddi->setType(FieldDescription::FIELD_TYPE_TEXT);
+        $ddi->setMode(FieldDescription::FIELD_MODE_READ);
+        $ddi->removeProperty('title');
+        $dataDescription->addFieldDescription($ddi);
+
+        $data = new Data();
+        $di = new Field('success_message');
+        $di->setData($this->translate('MSG_RESUME_SENT'));
+        $data->addField($di);
+
+        $this->setDataDescription($dataDescription);
+        $this->setData($data);
+    }   
 
 	private function cleanInputData($value){
 		$errors = false;

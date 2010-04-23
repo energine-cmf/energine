@@ -171,9 +171,6 @@ class FeedbackForm extends DBDataSet {
 	            }
 	        }
 
-
-	        $this->prepare();
-	        
 	        $_SESSION['saved'] = true;
             $this->response->redirectToCurrentSection('success/');
 

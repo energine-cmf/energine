@@ -7,7 +7,7 @@ var Register  = new Class({
         this.parent(element);
         
         if(this.componentElement){
-            this.loginField = this.form.getElement('#u_name');
+            this.loginField = this.form.getElementById('u_name');
             this.registerButton = this.form.getElement('button[name=register]');
             this.loginField.addEvent('blur', function(event){
                 if(this.validator.validateElement(event.target)){
@@ -18,8 +18,6 @@ var Register  = new Class({
                     this.cancelEvent(event);
                 }
             }.bind(this));
-            this.captchaField = this.form.getElement('#captcha');
-            this.captchaImage = this.form.getElement('#captchaImage');
         }
 	},
     checkLogin: function(loginValue){

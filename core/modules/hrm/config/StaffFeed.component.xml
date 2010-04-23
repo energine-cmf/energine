@@ -10,9 +10,10 @@
 				<field name="staff_id"/>
 				<field name="smap_id"/>
 				<field name="staff_photo_prfile"/>
-				<field name="staff_title"/>
+				<field name="staff_name"/>
 				<field name="staff_post"/>
 				<field name="staff_announce"/>
+                <field name="staff_text_rtf" type="boolean"/>
 			</fields>
 		</method>
 		<method name="view">
@@ -23,7 +24,7 @@
                 <field name="staff_id"/>
                 <field name="smap_id"/>
                 <field name="staff_photo_img"/>
-                <field name="staff_title"/>
+                <field name="staff_name"/>
                 <field name="staff_post"/>
                 <field name="staff_text_rtf"/>
             </fields>

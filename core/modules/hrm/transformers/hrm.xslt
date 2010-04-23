@@ -89,34 +89,38 @@
             </xsl:if>
             <h4 class="name">
                 <xsl:choose>
-                    <xsl:when test="field[@name='staff_text_rtf'] != 1">
-                        <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{field[@name='staff_id']}/"><xsl:value-of select="field[@name='staff_title']" /></a>,                   
+                    <xsl:when test="field[@name='staff_text_rtf'] != 0">
+                        <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{field[@name='staff_id']}/"><xsl:value-of select="field[@name='staff_name']" /></a>,                   
                     </xsl:when>
                     <xsl:otherwise>
-                        <strong><xsl:value-of select="field[@name='staff_title']"/></strong>,
+                        <xsl:value-of select="field[@name='staff_name']"/>,
                     </xsl:otherwise>
                 </xsl:choose>
                 <span class="position"> <xsl:value-of select="field[@name='staff_post']"/></span>
             </h4>
             <xsl:if test="field[@name='staff_photo_img'] != ''">
-                <div class="image"><img src="{$BASE}{field[@name='staff_photo_img']/image[@name='default']}" alt="{field[@name='staff_title']}"/></div>
+                <div class="image"><img src="{$BASE}{field[@name='staff_photo_img']/image[@name='default']}" alt="{field[@name='staff_name']}"/></div>
             </xsl:if>
             <div class="announce"><xsl:value-of select="field[@name='staff_announce']" disable-output-escaping="yes"/></div>
         </li>
     </xsl:template>
+    
+    <xsl:template match="recordset[parent::component[@class='StaffFeed'][@type='form']]">
+        <div class="staff_view">
+            <xsl:apply-templates/>
+            <div class="go_back"><a href="{$BASE}{$LANG_ABBR}{../@template}"><xsl:value-of select="$TRANSLATION[@const='TXT_BACK_TO_LIST']" disable-output-escaping="yes"/></a></div>
+        </div>
+    </xsl:template>
    
     <xsl:template match="record[ancestor::component[@class='StaffFeed'][@type='form']]">
-        <div class="staff">
-            <h3 class="name">
-                <xsl:value-of select="field[@name='staff_title']" />
-                <span class="position">, <xsl:value-of select="field[@name='staff_post']" /></span>
-            </h3>
-            <xsl:if test="field[@name='staff_photo_prfile'] != ''">
-                <div class="image"><img src="{$BASE}{field[@name='staff_photo_img']/image[@name='default']}" alt="{field[@name='staff_title']}" /></div>
-            </xsl:if>
-            <div class="text"><xsl:value-of select="field[@name='staff_text_rtf']" disable-output-escaping="yes" /></div>
-            <div class="go_back"><a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}"><xsl:value-of select="../../translations/translation[@const='TXT_STAFF_BACK_LINK']" disable-output-escaping="yes" /></a></div>           
-        </div>
+        <h3 class="name">
+            <xsl:value-of select="field[@name='staff_name']"/>
+            <span class="position">, <xsl:value-of select="field[@name='staff_post']" /></span>
+        </h3>
+        <xsl:if test="field[@name='staff_photo_img'] != ''">
+            <div class="image"><img src="{$BASE}{field[@name='staff_photo_img']/image[@name='default']}" alt="{field[@name='staff_name']}"/></div>
+        </xsl:if>
+        <div class="text"><xsl:value-of select="field[@name='staff_text_rtf']" disable-output-escaping="yes"/></div>
     </xsl:template>
     <!-- /компонент StaffFeed -->
     

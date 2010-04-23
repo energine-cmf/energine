@@ -25,7 +25,7 @@
     </xsl:template>
 
     <xsl:template match="recordset[parent::component[@class='BasketForm'][@type='list']]">
-		<table width="100%" border="0" cellpadding="2" cellspacing="0" class="basket">
+		<table width="100%" border="0" cellpadding="2" cellspacing="0" class="lined_table basket">
 			<thead>
 				<tr>
 					<xsl:for-each select="record[1]/field[not(@name='product_id') and not(@name='product_segment') and not(@name='product_images')]">

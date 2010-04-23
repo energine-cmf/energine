@@ -81,7 +81,7 @@
 
 <xsl:template match="record[ancestor::component[@class='ProductList'][@type='form']]">    
     <tr>
-        <td style="vertical-align: top; padding-right: 10px;" rowspan="3">
+        <td style="vertical-align: top; padding-right: 10px;" rowspan="3" class="product_image">
             <xsl:if test="field[@name='product_images']/recordset">
                 <ul>
                     <xsl:for-each select="field[@name='product_images']/recordset/record">
@@ -94,13 +94,17 @@
     </tr>
     <xsl:if test="count(field[@param])&gt;0">
         <tr>
-            <td>
-            <table style="width: 100%;" class="bordered">
-                <tr>
-                    <th colspan="2"><xsl:value-of select="field[@param]/@param"/></th>
-                </tr>
-                <xsl:apply-templates select="field[@param]"/>
-            </table>
+            <td style="padding-top: 1em;">
+                <table width="100%" cellspacing="0" class="lined_table">
+                    <thead>
+                        <tr>
+                            <th colspan="2"><xsl:value-of select="field[@param]/@param"/></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <xsl:apply-templates select="field[@param]"/>
+                    </tbody>
+                </table>
             </td>
         </tr>
     </xsl:if>
@@ -123,6 +127,9 @@
 
 <xsl:template match="field[ancestor::component[@class='ProductList']][@param]">
 	<tr>
+        <xsl:if test="position() div 2 = floor(position() div 2)">
+            <xsl:attribute name="class">odd</xsl:attribute>
+        </xsl:if>
         <td style="width: 25%;"><strong><xsl:value-of select="@title"/></strong></td><td style="width: 75%;"><xsl:value-of select="."/></td>
     </tr>
 </xsl:template>

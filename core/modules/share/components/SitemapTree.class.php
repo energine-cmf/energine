@@ -43,7 +43,6 @@ class SitemapTree extends DataSet {
     protected function loadData() {
         $sitemap = Sitemap::getInstance();
         $res = $sitemap->getInfo();
-        $res = array_filter($res, create_function('$element', 'return !$element["isFinal"];'));
 
         foreach ($res as $id => $info) {
         	$result [] = array(

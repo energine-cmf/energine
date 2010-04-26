@@ -25,7 +25,7 @@
     		</xsl:if>   
     		<div class="control" id="control_{@language}_{@name}">                
                 <!-- импорт шаблона, который создает сам HTML-элемент (input, select, etc.) -->
-        		<xsl:apply-imports/>
+        		<xsl:apply-imports />
             </div>
     	</div>
     </xsl:template>
@@ -107,21 +107,9 @@
                             <xsl:attribute name="style">display: none;</xsl:attribute>
                         </xsl:if>
                     </xsl:otherwise>
-                </xsl:choose>
-                <xsl:apply-imports/>
-            </div>
-        </div>
-    </xsl:template>
-    
-    <!-- полe типа captcha -->
-    <xsl:template match="field[@type='captcha'][ancestor::component[@type='form']]">
-        <div class="field captcha_field required">
-            <div class="name">
-                <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
-                <span class="mark">*</span>
-            </div>
-            <div class="control" id="control_{@language}_{@name}">
-                <xsl:apply-imports/>
+                </xsl:choose>                
+                <!-- импорт шаблона, который создает сам HTML-элемент (input, select, etc.) -->
+                <xsl:apply-imports />
             </div>
         </div>
     </xsl:template>

@@ -3,6 +3,7 @@
 	<component name="langSwitcher" module="share" class="LangSwitcher"></component>
     <component name="mainMenu" module="share" class="PageList" >
        <params>
+           <param name="rights">2</param>
            <param name="tags">menu</param>
            <param name="configFilename">core/modules/share/MainMenu.component.xml</param>
        </params>
@@ -13,10 +14,4 @@
 			<param name="num">FooterTextBlock</param> 
 		</params>
 	</component>
-	<component name="adminPanel" module="share" class="DivisionEditor">
-        <params>
-            <param name="action">showPageToolbar</param> 
-            <param name="rights">3</param> 
-        </params>
-    </component>
 </page>

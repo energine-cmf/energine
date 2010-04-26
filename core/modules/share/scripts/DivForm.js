@@ -4,7 +4,7 @@ var DivForm = new Class({
     Implements: [Form.Label, Form.Attachments],
 	initialize: function(element){
 		this.parent(element);
-        this.prepareLabel('list/')
+        this.prepareLabel($('site_id').get('value') + '/list/');
 	},
     save: function() {
         this.richEditors.each(function(editor) { editor.onSaveForm(); });

@@ -8,8 +8,8 @@ var DivSidebar = new Class({
 
         this.element = $(element);
         new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
-            new Element('li').setProperty('id', 'treeRoot').addClass('folder').adopt(
-                new Element('a').setProperty('href', '#').addClass('folder').setStyle('font-weight', 'bold').set('html', TXT_DIVISIONS)
+            new Element('li').setProperty('id', 'treeRoot').adopt(
+                new Element('a').set('html', TXT_DIVISIONS)
             )
         );
         this.langId = this.element.getProperty('lang_id');
@@ -17,6 +17,7 @@ var DivSidebar = new Class({
         this.treeRoot = this.tree.getSelectedNode();
         this.treeRoot.onSelect = this.onSelectNode.bind(this);
         this.singlePath = this.element.getProperty('single_template');
+        this.site = this.element.getProperty('site');    
         $$('html')[0].addClass('e-divtree-panel');
         this.loadTree();  
     },

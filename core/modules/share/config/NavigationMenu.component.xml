@@ -5,6 +5,7 @@
 		<fields>
 			<field name="Id" type="integer" key="1"/>
 			<field name="Pid" type="integer"/>
+			<field name="Name" type="string"/>
 			<field name="Segment" type="string"/>
 		</fields>
 	</method>

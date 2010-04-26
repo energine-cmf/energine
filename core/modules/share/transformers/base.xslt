@@ -141,7 +141,6 @@
         <input class="text inp_file" readonly="readonly">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="id"><xsl:value-of select="generate-id(.)" /></xsl:attribute>
-            <xsl:attribute name="value"><xsl:value-of select="image[@name='main']"/></xsl:attribute>
         </input>
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
     </xsl:template>
@@ -326,12 +325,6 @@
         </input>
     </xsl:template>
     
-    <!-- поле типа captcha -->
-    <xsl:template match="field[@type='captcha'][ancestor::component[@type='form']]">
-        <img src="captcha.php" id="captchaImage"/>
-        <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text"/>       
-    </xsl:template>
-    
     <!-- именованный шаблон с дефолтным набором атрибутов для элемента формы - НЕ ПЕРЕПИСЫВАТЬ В ДРУГОМ МЕСТЕ! -->
     <xsl:template name="FORM_ELEMENT_ATTRIBUTES">
         <xsl:if test="not(@type='text') and not(@type='htmlblock')">
@@ -381,16 +374,27 @@
             <xsl:otherwise>
                 <xsl:for-each select="$COMPONENTS[@class='BreadCrumbs']/recordset/record">
                     <xsl:sort data-type="text" order="descending" select="position()"/>
-                    <xsl:if test="field[@name='Name'] != ''">
-                        <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>           
-                        <xsl:value-of select="field[@name='Name']" />                        
-                    </xsl:if>
+                    <xsl:choose>
+                        <xsl:when test="position() = last()">
+                            <xsl:if test="$ID = field[@name='Id'] and field[@name='Name'] != ''">
+                                <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>           
+                                <xsl:value-of select="field[@name='Name']"/>                        
+                            </xsl:if>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:if test="field[@name='Name'] != ''">
+                                <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>           
+                                <xsl:value-of select="field[@name='Name']"/>                        
+                            </xsl:if>
+                        </xsl:otherwise>
+                    </xsl:choose>                    
                 </xsl:for-each>
+                / <xsl:value-of select="$COMPONENTS[@class='BreadCrumbs']/@site"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
     
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->
-    <xsl:template name="interface_js"/>    
+    <xsl:template name="interface_js"/>
 
 </xsl:stylesheet>

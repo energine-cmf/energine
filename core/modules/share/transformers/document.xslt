@@ -3,12 +3,12 @@
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
-
     <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
     <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
     <xsl:variable name="TRANSLATION" select="/document/translations/translation"/>
     <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']"/>
 	<xsl:variable name="BASE" select="$DOC_PROPS[@name='base']"/>
+    <xsl:variable name="FOLDER" select="$DOC_PROPS[@name='base']/@folder"/>
 	<xsl:variable name="LANG_ID" select="$DOC_PROPS[@name='lang']"/>
 	<xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@abbr"/>
 	<xsl:variable name="NBSP"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></xsl:variable>
@@ -58,8 +58,9 @@
                         try {
                             ScriptLoader.load(<xsl:for-each select="$COMPONENTS/javascript/include | $COMPONENTS/javascript/object[@name!='PageEditor']">'<xsl:value-of select="@name" />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
-                            var pageToolbar = new <xsl:value-of select="$COMPONENTS[@name='pageToolBar']/javascript/object/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$COMPONENTS[@name='pageToolBar']/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$COMPONENTS[@name='pageToolBar']/toolbar/@name"/>');
-                            <xsl:for-each select="$COMPONENTS[@name='pageToolBar']/toolbar/control">
+                            <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
+                            var pageToolbar = new <xsl:value-of select="$PAGE_TOOLBAR/javascript/object/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$PAGE_TOOLBAR/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$PAGE_TOOLBAR/toolbar/@name"/>');
+                            <xsl:for-each select="$PAGE_TOOLBAR/toolbar/control">
                             pageToolbar.appendControl({
                                 <xsl:for-each select="@*[name()!='mode']">
                                     '<xsl:value-of select="name()"/>':'<xsl:value-of select="."/>'

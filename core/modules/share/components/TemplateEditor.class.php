@@ -61,6 +61,7 @@ class TemplateEditor extends Grid {
     
     private function loadIconsData(){
     	$result = array();
+    	
         foreach(glob("templates/icons/*.icon.gif") as $path){
         	$result[] = array(
         	   'key' => $path,

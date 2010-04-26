@@ -9,17 +9,18 @@ var DivManager = new Class({
 
         this.element = $(element);
         this.tabPane = new TabPane(this.element);
+
         this.langId = this.element.getProperty('lang_id');
         new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
-		    new Element('li').setProperty('id', 'treeRoot').addClass('folder').adopt(
-		        new Element('a').setProperty('href', '#').setStyle('font-weight', 'bold').set('html', TXT_DIVISIONS)
-		    )
+		    new Element('li').setProperty('id', 'treeRoot').adopt(
+                new Element('a', {'href': '#'}).set('html', TXT_DIVISIONS)
+            )
 		);
-		this.tree = new TreeView('divTree');
+		this.tree = new TreeView('divTree', {dblClick: this.go.bind(this)});
 		this.treeRoot = this.tree.getSelectedNode();
         //this.treeRoot.onSelect = this.onSelectNode.bind(this);
         this.singlePath = this.element.getProperty('single_template');
-
+        this.site = this.element.getProperty('site');    
         this.loadTree();
     },
 
@@ -28,7 +29,7 @@ var DivManager = new Class({
         this.element.adopt(this.toolbar.getElement());
         this.toolbar.disableControls();
         var btn;
-        ['add', 'select', 'close'].each(function(btnID){
+        ['add', 'select', 'close', 'edit'].each(function(btnID){
             var btn;
             if (btn = this.toolbar.getControlById(btnID)) {
                 btn.enable();
@@ -38,7 +39,7 @@ var DivManager = new Class({
 
     loadTree: function() {
         this.request(
-            this.singlePath+'get-data',
+            this.singlePath + this.site + '/get-data/',
             'languageID='+this.langId,
             function(response) {
                 this.buildTree(response.data, (response.current)?response.current:null);
@@ -55,13 +56,15 @@ var DivManager = new Class({
         }
         
         var lambda = function(nodeId) {
+
             var node = this.tree.getNodeById(nodeId);
             
             //console.log(treeInfo[nodeId], nodeId);
             for (var i = 0, len = treeInfo[nodeId].length; i < len; i++) {
                 var child = treeInfo[nodeId][i];
                 var icon = (child['tmpl_icon'])?Energine.base + child['tmpl_icon']:Energine.base + 'templates/icons/empty.icon.gif';
-                if(child['smap_default']){
+                var childId = child['smap_id'];
+                if(!child['smap_pid']){
                     this.treeRoot.setName(child['smap_name']);
                     this.treeRoot.id = child['smap_id'];
                     this.treeRoot.setData(child);
@@ -69,13 +72,11 @@ var DivManager = new Class({
                     this.treeRoot.addEvent('select', this.onSelectNode.bind(this));
                 }
                 else{
-                    var childId = child['smap_id'];
                     var newNode = new TreeView.Node({ 
                         id: childId, 
                         name: child['smap_name'], 
                         data:{
                             'class':
-                                ((child['smap_is_final'])?'final':'') +
                                 ((childId == currentNodeID)?' current':''),
                             'icon': icon
                         } 
@@ -83,8 +84,8 @@ var DivManager = new Class({
                     newNode.setData(child);
                     newNode.addEvent('select', this.onSelectNode.bind(this));
                     node.adopt(newNode);
-                    if (treeInfo[childId]) lambda(childId);                    
                 }
+                if (treeInfo[childId]) lambda(childId);                    
             }
             
         }.bind(this);
@@ -92,8 +93,9 @@ var DivManager = new Class({
 
         this.tree.setupCssClasses();
         this.treeRoot.expand();
-        this.tree.expandToNode(currentNodeID)
-        this.tree.getNodeById(currentNodeID).select();
+        this.tree.expandToNode(currentNodeID);
+        if(this.tree.getNodeById(currentNodeID))
+            this.tree.getNodeById(currentNodeID).select();
     },
 
     reload: function(really) {
@@ -105,7 +107,7 @@ var DivManager = new Class({
     },
 
 	add: function() {
-		var nodeId = this.tree.getSelectedNode() != this.treeRoot ? this.tree.getSelectedNode().getId() : '';
+		var nodeId = this.tree.getSelectedNode().getId();
         ModalBox.open({
             url: this.singlePath+'add/'+nodeId+'/',
             onClose: function(returnValue){
@@ -177,36 +179,25 @@ var DivManager = new Class({
 
     go: function () {
         var nodeData = this.tree.getSelectedNode().getData();
-        if (nodeData.smap_segment) {
-            window.top.document.location = Energine.base + nodeData.smap_segment;
+
+        if (nodeData.smap_segment || !nodeData.smap_pid) {
+            window.top.document.location = ((nodeData.site)?nodeData.site:Energine.base) + nodeData.smap_segment;
         }
     },
     onSelectNode: function (node) {
-        var data = node.getData();
-        var delBtn = this.toolbar.getControlById('delete');
+        var data = node.getData(), btn;
         var addBtn = this.toolbar.getControlById('add');
+        var editBtn = this.toolbar.getControlById('edit');
         var selectBtn = this.toolbar.getControlById('select');
-        var downBtn = this.toolbar.getControlById('down');
-        var upBtn = this.toolbar.getControlById('up');
-        
-        if (undefined != data) {
+
+        if ((undefined != data) && data.smap_pid) {
             this.toolbar.enableControls();
-            if (data.smap_is_system || data.smap_default) {
-                if (delBtn) delBtn.disable();
-                if(data.smap_default && upBtn && downBtn){
-                    upBtn.disable();
-                    downBtn.disable();
-                }
-            }
-            if (data.smap_is_final) {
-                if (addBtn) addBtn.disable();
-                if(selectBtn)selectBtn.disable();
-            }
         }
         else {
-            this.toolbar.disableControls();
-            if(addBtn) addBtn.enable();
-            if(selectBtn)selectBtn.enable();
+                this.toolbar.disableControls();
+                if(addBtn) addBtn.enable();
+                if(selectBtn)selectBtn.enable();
+                if(editBtn)editBtn.enable();
         }
         
         if (btn = this.toolbar.getControlById('close')) {

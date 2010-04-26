@@ -13,12 +13,9 @@
             	<xsl:attribute name="enctype">multipart/form-data</xsl:attribute>
             </xsl:if>
 			<xsl:choose>
-				<xsl:when test="@class='FeedbackForm'"><xsl:attribute name="class">base_form feedback_form</xsl:attribute></xsl:when>
                 <xsl:when test="@class='RestorePassword'"><xsl:attribute name="class">base_form restore_password_form</xsl:attribute></xsl:when>
                 <xsl:when test="@class='Register'"><xsl:attribute name="class">base_form registration_form</xsl:attribute></xsl:when>
 				<xsl:when test="@class='UserProfile'"><xsl:attribute name="class">base_form profile_form</xsl:attribute></xsl:when>
-				<xsl:when test="@class='ResumeForm'"><xsl:attribute name="class">base_form resume_form</xsl:attribute></xsl:when>
-                <xsl:when test="@class='OrderForm'"><xsl:attribute name="class">base_form order_form</xsl:attribute></xsl:when>
 			</xsl:choose>
             <input type="hidden" name="componentAction" value="{@componentAction}" id="componentAction"/>
     		<xsl:apply-templates/>
@@ -38,13 +35,6 @@
 
     <xsl:template match="record[ancestor::component[@type='form']]">
         <xsl:apply-templates/>
-    </xsl:template>
-    
-    <xsl:template match="field[@name='error_message'][ancestor::component[@type='form']]">
-        <div class="error_message">
-            <span><xsl:value-of select="@title"/>:</span>
-            <span><xsl:value-of select="." disable-output-escaping="yes"/></span>            
-        </div>
     </xsl:template>
 
     <xsl:template match="javascript[parent::component[@type='form']]">
@@ -92,12 +82,12 @@
 
     <xsl:template match="field[@name='attached_files'][@type='custom']">
         <xsl:variable name="JS_OBJECT" select="generate-id(../..)"></xsl:variable>
-        <div class="page_rights">
+        <div class="table_data">
             <table width="100%" id="attached_files">
                 <thead>
                 <tr>
                     <xsl:for-each select="recordset/record[position()=1]/field/@title">
-                        <td style="text-align:center;">
+                        <td>
                             <xsl:choose>
                                 <xsl:when test="position() != 1">
                                     <xsl:value-of select="."/>
@@ -137,7 +127,7 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <tr id="empty_row">
-                            <td colspan="4"  style="text-align:center;">
+                            <td colspan="4">
                                 <xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>
                             </td>
                         </tr>
@@ -157,13 +147,12 @@
                 </tfoot>
             </table>
         </div>
-    </xsl:template>    
+    </xsl:template>
     
-    <!-- сообщениe о результатах отработки формы -->     
-    <xsl:template match="component[@type='form'][descendant::field[@name='result'] | descendant::field[@name='success_message'] | descendant::field[@name='restore_password_result']]">
+    <!-- обработка сообщения об отправке данных формы -->
+    <xsl:template match="component[@type='form'][@componentAction='send']">
         <div class="result_message">
             <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>
     </xsl:template>
-     
 </xsl:stylesheet>

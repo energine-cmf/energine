@@ -536,17 +536,14 @@ abstract class DataSet extends Component {
 
 	/**
 	 * Добавляет переводы
-	 * 
-	 * @param mixed константа/набор констант переводов
+	 *
 	 * @return void
 	 * @access protected
 	 * @final
 	 */
 
-	final protected function addTranslation($tags) {
-		$tags = func_get_args();
-		foreach($tags as $tag)
-		  $this->document->addTranslation($tag, $this);
+	final protected function addTranslation($tag) {
+		$this->document->addTranslation($tag, $this);
 	}
 	/**
 	 * Метод используется для форматирования даты и времени в полях date и datetime
@@ -635,34 +632,10 @@ abstract class DataSet extends Component {
                         'BTN_ALIGN_RIGHT',
                         'BTN_ALIGN_JUSTIFY',
                     );
-                    
-                call_user_func_array(
-                    array($this, 'addTranslation'),
-                    $translations
-                ); 
-	}
-	
-	/**
-	  * Проверяет капчу
-	  * 
-	  * @return void
-	  * @access protected
-	  * @throws SystemException
-	  */
-	protected function checkCaptcha(){
-	   if(
-             isset($_SESSION['captchaCode'])
-             &&
-             (
-	             !isset($_POST['captcha'])
-	             ||
-	             ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
-             )
-         ){
-         	unset($_SESSION['captchaCode']);
-            throw new SystemException('MSG_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
-        }
-        unset($_SESSION['captchaCode']);
+                array_walk(
+                    $translations,
+                    array($this, 'addTranslation')
+                );
 	}
 
 	/**
@@ -767,10 +740,10 @@ abstract class DataSet extends Component {
 
             $errors = false;
             $data = $jewix->parse($data, $errors);
-            //dump_log($errors, true);
+            $base = SiteManager::getInstance()->getCurrentSite()->base;
             $data =
             str_replace(
-            (strpos($data, '%7E'))?str_replace('~', '%7E',Request::getInstance()->getBasePath()):Request::getInstance()->getBasePath(),
+            (strpos($data, '%7E'))?str_replace('~', '%7E', $base):$base,
 	             '',
             $data
             );

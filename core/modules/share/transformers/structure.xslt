@@ -3,13 +3,41 @@
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
+
+    <xsl:template match="component[@class='PageList']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="recordset[parent::component[@class='PageList']]">
+        <xsl:if test="not(@empty)">
+            <ul class="menu clearfix">
+                <xsl:apply-templates/>
+            </ul>
+        </xsl:if>
+    </xsl:template>    
+
+    <xsl:template match="record[ancestor::component[@class='PageList']]">
+        <li style="clear: both;">
+            <a>
+                <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
+                    <xsl:attribute name="href">
+                        <xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/>
+                    </xsl:attribute>
+                </xsl:if>
+                <xsl:value-of select="field[@name='Name']"/>
+            </a>
+            <xsl:if test="field[@name='DescriptionRtf'] != ''">
+                <p><xsl:value-of select="field[@name='DescriptionRtf']" disable-output-escaping="yes"/></p>
+            </xsl:if>
+        </li>
+    </xsl:template>
     
     <!-- компонент MainMenu -->
-    <xsl:template match="component[@class='MainMenu']">
+    <xsl:template match="component[@name='mainMenu']">
     	<xsl:apply-templates/>
     </xsl:template>
     
-    <xsl:template match="recordset[parent::component[@class='MainMenu']]">
+    <xsl:template match="recordset[parent::component[@name='mainMenu']]">
         <xsl:if test="not(@empty)">
             <ul class="main_menu">
                 <xsl:if test="$DOC_PROPS[@name='default'] != 1">
@@ -24,42 +52,15 @@
         </xsl:if>        
     </xsl:template>
 
-    <xsl:template match="record[ancestor::component[@class='MainMenu']]">
+    <xsl:template match="record[ancestor::component[@name='mainMenu']]">
         <li>
             <a href="{$LANG_ABBR}{field[@name='Segment']}"><xsl:value-of select="field[@name='Name']"/></a>
         </li>
     </xsl:template>
     <!-- /компонент MainMenu -->
     
-    <!-- компоненты ChildDivisions и BrotherDivisions -->
-    <xsl:template match="component[@class='ChildDivisions' or @class='BrotherDivisions']">
-        <xsl:apply-templates/>
-    </xsl:template>
-    
-    <xsl:template match="recordset[parent::component[@class='ChildDivisions' or @class='BrotherDivisions']]">
-        <xsl:if test="not(@empty)">
-            <ul class="menu clearfix">
-                <xsl:apply-templates/>
-            </ul>
-        </xsl:if>
-    </xsl:template>    
 
-    <xsl:template match="record[ancestor::component[@class='ChildDivisions' or @class='BrotherDivisions']]">
-        <li style="clear: both;">
-        	<a>
-                <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
-                    <xsl:attribute name="href">
-                        <xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/>
-                    </xsl:attribute>
-                </xsl:if>
-        		<xsl:value-of select="field[@name='Name']"/>
-        	</a>
-            <xsl:if test="field[@name='DescriptionRtf'] != ''">
-                <p><xsl:value-of select="field[@name='DescriptionRtf']" disable-output-escaping="yes"/></p>
-            </xsl:if>
-        </li>
-    </xsl:template>
-    <!-- /компоненты ChildDivisions и BrotherDivisions -->
+
     
     <!-- компонент LangSwitcher -->
     <xsl:template match="component[@class='LangSwitcher']">

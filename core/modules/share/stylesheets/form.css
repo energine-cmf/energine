@@ -58,10 +58,10 @@ form select {
 	width: 250px;
 }
 
-.page_rights {
+.table_data {
 	padding:10px 10px 0px 10px;
 }
-.page_rights table {
+.table_data table {
 	width: 100%;
 	margin: 0;
 	padding: 0;
@@ -69,23 +69,30 @@ form select {
 	border: 1px solid #aaaaaa;
 	font: 11px Tahoma, sans-serif;
 }
-.page_rights table td {
-   padding: 5px 0.5em;
-   border: 1px solid #aaaaaa;
+.table_data table th {
+    text-align: center;
 }
-.page_rights table tr.even td {
+.table_data table td {
+    padding: 5px 0.5em;
+    border: 1px solid #aaaaaa;
+    text-align: center;
+}
+.table_data table .even td {
 	background: #f4f4f4;
 }
-.page_rights table thead td {
+.table_data table thead td {
 	background: #eeeedd;
 	font-weight: bold;
 }
-.page_rights table td.group_name, .page_rights table tr.even td.group_name {
-	background: #eeeedd;
-	font-weight: bold;
+.table_data table td.section_name {
+    text-align: left;
 }
-
-.page_rights table tr td select {
+.table_data table td.group_name, .table_data table .even td.group_name {
+	background: #eeeedd;
+	text-align: left;
+	font-weight: bold;	
+}
+.table_data table td select {
     font: 11px Tahoma, sans-serif;
 	width: 250px;
 	border: 1px solid gray;

@@ -243,7 +243,7 @@ Form.Label = {
         var id = name = segment = segmentObject = '';
         if (typeof(result) != 'undefined') {
             if (result) {
-                id = (result.smap_default)?'':result.smap_id;
+                id = result.smap_id;
                 name = result.smap_name;
                 segment = result.smap_segment;
             }
@@ -262,10 +262,11 @@ Form.Label = {
         if(!arguments[1]){
             restore = false;
         }
-        this.obj = $('sitemap_selector');
-        this.obj.addEvent('click', this.showTree.pass(treeURL, this));
-        if(restore){
-            this.restoreLabel();    
+        if(this.obj = $('sitemap_selector')){        
+            this.obj.addEvent('click', this.showTree.pass(treeURL, this));
+            if(restore){
+                this.restoreLabel();    
+            }
         }
     },
     showTree : function (url) {

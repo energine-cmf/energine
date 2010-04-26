@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<content>
-    <component name="feedbackTextBlock" module="share" class="TextBlock"></component>
-    <component name="feedbackForm" module="share" class="FeedbackForm">
-        <params>
-            <param name="textBlock">feedbackTextBlock</param>
-        </params>
-    </component>
-</content>

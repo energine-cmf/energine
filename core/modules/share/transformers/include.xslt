@@ -15,6 +15,5 @@
     <xsl:include href="divisionEditor.xslt"/>
     <xsl:include href="text.xslt"/>
     <xsl:include href="error.xslt"/>
-    <xsl:include href="feed.xslt"/>
     
 </xsl:stylesheet>

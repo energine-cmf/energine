@@ -1,46 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<methods>
-    	<method name="showTransEditor" rights="3">
-            <uri_patterns>
-                <pattern>/translation/[any]/</pattern>
-            </uri_patterns>
-        </method>
-        <method name="fileLibrary" rights="3">
-            <uri_patterns>
-                <pattern>/file-library/</pattern>
-                <pattern>/file-library/[any]/</pattern>
-            </uri_patterns>
-        </method>
-        <method name="showUserEditor" rights="3">
-            <uri_patterns>
-                <pattern>/user/[any]/</pattern>
-            </uri_patterns>
-        </method>
-        <method name="showRoleEditor" rights="3">
-            <uri_patterns>
-                <pattern>/role/[any]/</pattern>
-            </uri_patterns>
-        </method>               
-        <method name="showLangEditor" rights="3">
-            <uri_patterns>
-                <pattern>/languages/[any]/</pattern>
-            </uri_patterns>
-        </method>        
-        
 		<method name="main">
 			<uri_patterns>
 				<pattern>/show/</pattern>
 				<pattern>/show/[site_id]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="DivSidebar"/>
+				<object name="DivManager"/>
 			</javascript>
 			<fields>
 				<field name="smap_id"/>
 				<field name="smap_pid"/>
 				<field name="lang_id"/>
 				<field name="smap_name"/>
+                <field name="site"/>				
 			</fields>
 			<toolbar name="e-divtree-toolbar">
 				<control id="add" title="BTN_ADD" type="button" icon="images/toolbar/add.gif" onclick="add"/>
@@ -56,8 +30,8 @@
 		</method>
 		<method name="selector">
 			<uri_patterns>
-				<pattern>/[site_id]/list/</pattern>
-				<pattern>/[site_id]/list/[int]/</pattern>
+                <pattern>/[site_id]/list/</pattern>
+                <pattern>/[site_id]/list/[int]/</pattern>
 			</uri_patterns>
 			<javascript>
 				<object name="DivManager"/>
@@ -90,15 +64,15 @@
 		    </uri_patterns>
 			<fields>
 				<field name="smap_id"/>
-				<field name="smap_pid"/>
+				<field name="smap_pid" mode="1"/>
 				<field name="lang_id"/>
-                <field name="site_id" type="hidden"/>				
-				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
+                <field name="site_id" type="hidden"/>	
+    			<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
 				<field name="smap_layout"/>
-                <field name="smap_content"/>				
+                <field name="smap_content"/>
+                <field name="tags" type="string"  title="FIELD_TAGS" nullable="nullable"/>				
 				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
 				<field name="smap_redirect_url"/>
-				<field name="tags" type="string"  title="FIELD_TAGS" nullable="nullable"/>              
 				<field name="smap_is_disabled"/>
                 <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>				
 				<field name="smap_name"/>
@@ -131,13 +105,13 @@
 				<field name="smap_id"/>
 				<field name="smap_pid"/>
 				<field name="lang_id"/>
-                <field name="site_id" type="hidden"/>               				
+                <field name="site_id" type="hidden"/> 
 				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
                 <field name="smap_layout"/>
                 <field name="smap_content"/>
+                <field name="tags" type="string"  title="FIELD_TAGS"  nullable="nullable"/>
 				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
 				<field name="smap_redirect_url" />
-				<field name="tags" type="string"  title="FIELD_TAGS" nullable="nullable"/>              
 				<field name="smap_is_disabled"/>
                 <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>             				
 				<field name="smap_name"/>
@@ -184,28 +158,11 @@
 				<pattern>/imagemanager/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="showPageToolbar" rights="3">
+		<method name="fileLibrary" rights="3">
 			<uri_patterns>
-				<pattern>/show-toolbar/</pattern>
+				<pattern>/file-library/</pattern>
+				<pattern>/file-library/[any]/</pattern>
 			</uri_patterns>
-			<toolbar name="main_toolbar">
-    			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/toolbar/structure.gif" onclick="toggleSidebar"/>
-    			<control id="sep1" type="separator"/>
-				<control id="editMode" title="BTN_EDIT_MODE" type="switcher" onclick="editMode"/>
-				<control id="sep5" type="separator"/>
-<!--				<control id="templateEditor" title="BTN_TMPL_EDITOR" type="button" onclick="showTmplEditor"/>-->
-				<control id="transEditor" title="BTN_TRANS_EDITOR" type="button" onclick="showTransEditor"/>
-				<control id="language" title="BTN_LANG_EDITOR" type="button" onclick="showLangEditor"/>
-				<control id="sep2" type="separator"/>
-                <control id="user" title="BTN_USER_EDITOR" type="button" onclick="showUserEditor"/>
-                <control id="role" title="BTN_ROLE_EDITOR" type="button" onclick="showRoleEditor" />
-				<control id="sep6" type="separator"/>
-				<control id="fileRepository" title="BTN_FILE_REPOSITORY" type="button" onclick="showFileRepository"/>
-			</toolbar>
-			<javascript>
-				<object name="PageToolbar"/>
-				<param name="dock">top</param>
-			</javascript>
 		</method>
 		<method name="cleanup" rights="3">
 			<uri_patterns>

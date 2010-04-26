@@ -1,16 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-<methods>
-	<method name="main">
-		<uri_patterns>
-			<pattern>/page-[pageNumber]/</pattern>
-		</uri_patterns>
-		<fields>
-			<field name="smap_id" length="10" type="integer"/>
-			<field name="smap_segment" length="50" type="string"/>
-			<field name="smap_name" length="100" type="string"/>
-			<field name="smap_description" type="text"/>
-		</fields>
-	</method>
-</methods>
+	<methods>
+		<method name="main">
+			<uri_patterns>
+				<pattern>/page-[pageNumber]/</pattern>
+				<pattern>/</pattern>
+		     </uri_patterns>
+        <fields>
+            <field name="Id" type="integer" key="1"/>
+            <field name="Pid" type="integer"/>
+            <field name="Name" type="string"/>
+            <field name="Segment" type="string"/>
+            <field name="AttachedFiles"/>            
+            <field name="DescriptionRtf" type="string"/>
+        </fields>
+		</method>
+	</methods>
 </configuration>

@@ -22,7 +22,8 @@ class ImageManager extends DataSet {
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setTitle('TXT_IMG_MANAGER');
-        $this->addTranslation('TXT_OPEN_FIELD', 'TXT_CLOSE_FIELD');
+        $this->addTranslation('TXT_OPEN_FIELD');
+        $this->addTranslation('TXT_CLOSE_FIELD');
     }
 
     public function createDataDescription() {

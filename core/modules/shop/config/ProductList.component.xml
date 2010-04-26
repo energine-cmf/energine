@@ -35,7 +35,7 @@
 				<pattern>/manufacturer-[string]/page-[pageNumber]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Product"/>
+				<object name="Product" />
 			</javascript>
 			<fields>
 				<field name="product_id"/>
@@ -45,7 +45,7 @@
 				<field name="smap_id" type="string"/>
 				<field name="ps_id"/>
 				<field name="product_segment"/>
-				<field name="producer_id"/>
+				<field name="producer_id" />
 				<field name="product_price" type="float" title="TXT_PRODUCT_PRICE"/>
 			</fields>
 			<toolbar>
@@ -63,7 +63,7 @@
 				<pattern>/search-results/page-[pageNumber]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Product"/>
+				<object name="Product" />
 			</javascript>
 			<fields>
 				<field name="product_id"/>
@@ -85,12 +85,12 @@
                 <translation const="TXT_NO_PRODUCTS_FOUND"/>
             </translations>
 		</method>
-        <method name="view">
+		      <method name="view">
             <uri_patterns>
                 <pattern>/[string]/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="Product"/>
+                <object name="Product" />
             </javascript>
             <fields>
                 <field name="product_id"/>
@@ -99,7 +99,7 @@
                 <field name="product_description_rtf"/>
                 <field name="smap_id" type="string"/>
                 <field name="ps_id"/>
-                <field name="producer_id"/>
+                <field name="producer_id" />
                 <field name="product_price" type="float" title="TXT_PRODUCT_PRICE"/>
             </fields>
             <toolbar>

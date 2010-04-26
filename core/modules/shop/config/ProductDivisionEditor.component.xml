@@ -9,8 +9,6 @@
                 <field name="smap_name"/>
                 <field name="tmpl_icon"/>
                 <field name="smap_is_final"/>
-                <field name="smap_is_system"/>
-                <field name="smap_default"/>                
             </fields>
         </method>
 		<method name="selector">
@@ -56,7 +54,6 @@
 				<field name="lang_id"/>
 				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
 				<field name="tmpl_id"/>
-				<field name="smap_default"/>
 				<field name="smap_is_final"/>
 				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
 				<field name="smap_redirect_url"/>
@@ -87,7 +84,6 @@
 				<field name="lang_id"/>
 				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
 				<field name="tmpl_id"/>
-				<field name="smap_default"/>
 				<field name="smap_is_final"/>
 				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
 				<field name="smap_redirect_url" />

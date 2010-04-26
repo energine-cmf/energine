@@ -4,13 +4,6 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  
     xmlns="http://www.w3.org/1999/xhtml">
     
-    <!--
-        В этом файле собраны базовые правила обработки с низким приоритетом. Файл импортируется в include.xslt,
-        что позволяет использовать правило apply-imports в шаблонах более высокого уровня.        
-    -->
-    
-    <!-- переопределение fields для компонентов из модуля shop -->
-    
     <xsl:template match="field[ancestor::component[@class='ProductEditor'][@type='form'][@exttype='grid']][@name='pt_id']">
         <xsl:apply-imports/>
         <div class="page_rights" style="padding:10px 10px 10px 0px;">
@@ -27,7 +20,13 @@
           </table>
         </div>
     </xsl:template>
+
+    <!--
+        В этом файле собраны базовые правила обработки с низким приоритетом. Файл импортируется в include.xslt,
+        что позволяет использовать правило apply-imports в шаблонах более высокого уровня.        
+    -->
     
+    <!-- переопределение fields для компонентов из модуля shop -->
     <!-- компонент ProductEditor -->    
     <xsl:template match="field[@name='product_price'][ancestor::component[@type='form']]">
         <input style="width: 50px;">
@@ -78,7 +77,8 @@
                 <xsl:value-of select="."/>
             </option>
         </optgroup>
-    </xsl:template>    
-    <!-- /компонент ProductEditor -->    
+    </xsl:template>
+    
+    <!-- /компонент ProductEditor -->
 
 </xsl:stylesheet>

@@ -27,6 +27,7 @@
             <div class="description"><xsl:value-of select="field[@name='pg_text']"/></div>    
         </li>
     </xsl:template>
+
     <!-- /компонент GalleryFeed -->
     
 </xsl:stylesheet>

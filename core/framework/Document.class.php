@@ -137,7 +137,7 @@ final class Document extends DBWorker {
         $this->componentManager = new ComponentManager($this);
         // получаем идентификатор документа
         if (isset($segments[0]) && $segments[0] == self::SINGLE_SEGMENT) $segments = array();
-        $this->id = $this->sitemap->getIDByURI($segments, true);
+        $this->id = $this->sitemap->getIDByURI($segments);
         if (empty($this->id)) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
@@ -163,11 +163,9 @@ final class Document extends DBWorker {
         //$this->loadComponents($this->documentInfo['templateID']);
 
         // устанавливаем свойства документа
-        $this->setProperty('base', $this->request->getBasePath());
         $this->setProperty('keywords', $this->documentInfo['MetaKeywords']);
         $this->setProperty('description', $this->documentInfo['MetaDescription']);
         $this->setProperty('ID', $this->getID());
-        $this->setProperty('final', $this->documentInfo['isFinal']);
 	    $this->setProperty('default', $this->sitemap->getDefault()==$this->getID());
 	    if(($verifyCode = $this->getConfigValue('google.verify')) && !empty($verifyCode)){
 	    	$this->setProperty('google_verify', $verifyCode);
@@ -222,12 +220,19 @@ final class Document extends DBWorker {
             $dom_documentProperties->appendChild($dom_property);
         }
         $dom_root->appendChild($dom_documentProperties);
-
-        $langProperty = $this->doc->createElement('property', $this->getLang());
-        $langProperty ->setAttribute('name', 'lang');
-        $langProperty ->setAttribute('abbr', $this->request->getLangSegment());
-        $langProperty ->setAttribute('real_abbr', Language::getInstance()->getAbbrByID($this->getLang()));
-        $dom_documentProperties->appendChild($langProperty);
+        
+        //Дополнительные свойства, имеющие параметры
+        $prop = $this->doc->createElement('property', SiteManager::getInstance()->getCurrentSite()->base);
+        $prop ->setAttribute('name', 'base');
+        $prop ->setAttribute('folder', SiteManager::getInstance()->getCurrentSite()->folder);
+        $dom_documentProperties->appendChild($prop);
+        
+        $prop = $this->doc->createElement('property', $this->getLang());
+        $prop ->setAttribute('name', 'lang');
+        $prop ->setAttribute('abbr', $this->request->getLangSegment());
+        $prop ->setAttribute('real_abbr', Language::getInstance()->getAbbrByID($this->getLang()));
+        $dom_documentProperties->appendChild($prop);
+        unset($prop);
         
         $dom_layout = $this->doc->createElement('layout');
         $dom_layout->setAttribute('file', $this->documentInfo['layoutFileName']);
@@ -247,7 +252,7 @@ final class Document extends DBWorker {
 
             if ($this->getRights() >= $component->getMethodRights() && $component->enabled()) {
                 try {
-                        $componentResult = $component->build();
+                    $componentResult = $component->build();
                 }
                 catch (DummyException $dummyException){}
             }
@@ -297,21 +302,14 @@ final class Document extends DBWorker {
      * Определяет компоненты страницы и загружает их в менеджер компонентов.
      *
      * @access public
-     * @param int $templateID идентификатор шаблона страницы
+     * 
      * @return void
      * @todo Полный рефакторинг!
      */
-    public function loadComponents($templateID) {
-        // получаем информацию о шаблоне страницы
-        $res = $this->dbh->select('share_templates', true, array('tmpl_id' => $templateID));
-        if (!is_array($res)) {
-            throw new SystemException('ERR_DEV_NO_TEMPLATE_INFO', SystemException::ERR_CRITICAL);
-        }
-        list($templateInfo) = $res;
-
+    public function loadComponents() {
         // определяем и загружаем описания content- и layout- частей страницы
-        $this->documentInfo['layoutFileName'] = self::TEMPLATES_DIR.'layout/'.$templateInfo['tmpl_layout'];
-        $this->documentInfo['contentFileName'] = self::TEMPLATES_DIR.'content/'.$templateInfo['tmpl_content'];
+        $this->documentInfo['layoutFileName'] = self::TEMPLATES_DIR.'layout/'.$this->documentInfo['Layout'];
+        $this->documentInfo['contentFileName'] = self::TEMPLATES_DIR.'content/'.$this->documentInfo['Content'];
 
         // вызывается ли какой-либо компонент в single режиме?
         $actionParams = $this->request->getPath(Request::PATH_ACTION);
@@ -343,7 +341,7 @@ final class Document extends DBWorker {
             *     - ActionSet
             *     - BreadCrumbs
             */
-            $this->componentManager->addComponent($this->componentManager->createComponent('pageToolBar', 'share', 'DivisionEditor', array('action' => 'showPageToolbar')));
+            //$this->componentManager->addComponent($this->componentManager->createComponent('pageToolBar', 'share', 'DivisionEditor', array('action' => 'showPageToolbar')));
             $this->componentManager->addComponent($this->componentManager->createComponent('breadCrumbs', 'share', 'BreadCrumbs'));
         }
     }
@@ -438,17 +436,6 @@ final class Document extends DBWorker {
             unset($this->properties[$propName]);
         }
     }
-
-    /**
-     * Возвращает абсолютный путь
-     *
-     * @return string
-     * @access public
-     */
-/*
-    public function getSiteRoot() {
-        return dirname($_SERVER['SCRIPT_FILENAME']);
-    }*/
 
     /**
      * Добавляет константу перевода к документу

@@ -10,9 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/SystemConfig.class.php');
-//require_once('core/framework/QAL.class.php');
-
 /**
  * Предоставляет производным классам ссылку на объект для работы с БД.
  *
@@ -41,7 +38,7 @@ abstract class DBWorker extends Object {
      * @var unknown_type
      */
     private static $translations = null;
-
+    
     /**
      * Конструктор класса.
      *
@@ -50,12 +47,12 @@ abstract class DBWorker extends Object {
      */
     public function __construct() {
         parent::__construct();
+
         if (!isset(self::$dbhInstance)) {
-            $dsn = sprintf('mysql:host=%s;dbname=%s', $this->getConfigValue('database.host'), $this->getConfigValue('database.name'));
             self::$dbhInstance = new QAL(
-                $dsn,
-                $this->getConfigValue('database.username'),
-                $this->getConfigValue('database.password'),
+                'mysql:'.$this->getConfigValue('database.master.dsn'),
+                $this->getConfigValue('database.master.username'),
+                $this->getConfigValue('database.master.password'),
                 array(
                     PDO::ATTR_PERSISTENT => false,
                     PDO::ATTR_EMULATE_PREPARES => true,

@@ -28,6 +28,7 @@ final class QAL extends DBA {
     const INSERT = 'INSERT';
     const UPDATE = 'UPDATE';
     const DELETE = 'DELETE';
+    const REPLACE = 'REPLACE';
 
     /**
      * Направления сортировки
@@ -169,11 +170,12 @@ final class QAL extends DBA {
 
         switch ($mode) {
             case self::INSERT:
+            case self::REPLACE:
                 if (!empty($data)) {
                     $fieldNames = array();
                     $fieldValues = array();
-                    foreach ($data as $fieldName => $fieldValue) {
-                        $fieldNames[] = $fieldName;
+                    $fieldNames = array_keys($data);
+                    foreach ($data as $fieldValue) {
                         if ($fieldValue === self::EMPTY_STRING) {
                             $fieldValue = $this->quote('');
                         }
@@ -185,7 +187,7 @@ final class QAL extends DBA {
                         }
                         $fieldValues[] = $fieldValue;
                     }
-                    $sqlQuery = "INSERT INTO `$tableName` (".implode(', ', $fieldNames).') VALUES ('.implode(', ', $fieldValues).')';
+                    $sqlQuery = $mode." INTO `$tableName` (".implode(', ', $fieldNames).') VALUES ('.implode(', ', $fieldValues).')';
                 }
                 else {
                     $sqlQuery = "INSERT INTO `$tableName` VALUES ()";
@@ -251,7 +253,10 @@ final class QAL extends DBA {
                         $cond[] = $value;
                     }
                     elseif (is_array($value)) {
-                        $value = implode(',',array_filter($value));
+                    	$value = array_filter($value);
+
+                        $value = implode(',', array_map(create_function('$row', 'return \'"\'.$row.\'"\';'), $value));
+
                         if(!empty($value))
                             $cond[] = $fieldName.' IN ('.$value.')';
                         else $cond[] = ' FALSE ';    

@@ -21,6 +21,13 @@
  * @final
  */
 final class AuthUser extends User {
+	/**
+	 * Путь к корню сайта, чтоб по 10 раз за ним не обращаться через сайт менеджер
+	 * 
+	 * @access private
+	 * @var string 
+	 */
+	 private $siteRoot;
     /**
      * Флаг показывающий залогинился ли пользователь только что
      *
@@ -61,6 +68,7 @@ final class AuthUser extends User {
      */
     public function __construct($id = false) {
         parent::__construct(false);
+        $this->siteRoot = SiteManager::getInstance()->getCurrentSite()->root;
         //Если пришел флаг  - отлогиниться
         if (isset($_POST['user']['logout']) || isset($_GET['logout'])) {
             //Очищаем информацию о пользователе
@@ -76,11 +84,11 @@ final class AuthUser extends User {
             try {
                 $user = unserialize($_COOKIE['user']);
                 if (isset($user[0], $user[1]) && !$id = $this->authenticate($user[0], $user[1], true)) {
-                    $response->deleteCookie('user', $this->getConfigValue('site.root'));
+                    $response->deleteCookie('user', $this->siteRoot);
                 }
             }
             catch (Exception $e){
-                $response->deleteCookie('user', $this->getConfigValue('site.root'));
+                $response->deleteCookie('user', $this->siteRoot);
             }
         }
         elseif (isset($_POST['user']['login']) && isset($_POST['user']['username']) && isset($_POST['user']['password'])) {
@@ -153,8 +161,7 @@ final class AuthUser extends User {
             $response->setCookie(
                 'user',
                 serialize(array($username, $password)),
-                time() + (3600 * 24 * 30),
-                $this->getConfigValue('site.root')
+                time() + (3600 * 24 * 30)
             );
         }
         
@@ -172,11 +179,11 @@ final class AuthUser extends User {
     	$response = Response::getInstance();
       	unset($_SESSION['userID']);
       	if(isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])){
-      		$response->deleteCookie(UserSession::DEFAULT_SESSION_NAME, $this->getConfigValue('site.root'));
+      		$response->deleteCookie(UserSession::DEFAULT_SESSION_NAME, $this->siteRoot);
       	}
       	
         if (isset($_COOKIE['user'])) {
-            $response->deleteCookie('user', $this->getConfigValue('site.root'));
+            $response->deleteCookie('user', $this->siteRoot);
         }
         session_destroy();
     }

@@ -131,10 +131,6 @@ class FieldDescription extends DBWorker {
      * если установлен ffmpeg - конвертируется из одного из поддерживаемых форматов 
      */
     const FIELD_TYPE_VIDEO = 'video';
-    /**
-     * Поле содержит капчу
-     */
-    const FIELD_TYPE_CAPTCHA = 'captcha';
 
     /*
     * Режимы отображения полей:
@@ -476,9 +472,6 @@ class FieldDescription extends DBWorker {
                     $this->setProperty('message', $message);
                     $this->setProperty('outputFormat', '%d');
                 }
-                break;
-            case self::FIELD_TYPE_CAPTCHA:
-            	$_SESSION['captchaCode'] = rand(100000, 999999);
                 break;
             case self::FIELD_TYPE_TEXT:
             case self::FIELD_TYPE_HTML_BLOCK:

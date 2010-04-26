@@ -68,8 +68,8 @@ final class DocumentController extends Object {
 
         //unset($sitemap);
         $document = new Document($request->getPath());
-        $documentDescription = Sitemap::getInstance()->getDocumentInfo($document->getID()); 
-        $document->loadComponents($documentDescription['templateID']);
+        
+        $document->loadComponents();
         
         // уберём за собой
         unset($request, $language, $documentDescription);

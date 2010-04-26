@@ -7,11 +7,7 @@
  * @subpackage core
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
  */
-
-//require_once('core/framework/DBWorker.class.php');
-//require_once('core/framework/TreeConverter.class.php');
 
 
 /**
@@ -33,7 +29,7 @@ final class Sitemap extends DBWorker {
 	private $tree;
 
 	/**
-	 * @var Sitemap Instance объекта Sitema
+	 * @var array of Sitemap
 	 * @access private
 	 * @static
 	 */
@@ -45,14 +41,6 @@ final class Sitemap extends DBWorker {
 	 * @access private
 	 */
 	private $info = array();
-
-	/**
-	 * Информация обо всех разделах(включая те на которые у текущего юзера нет прав)
-	 *
-	 * @var array
-	 * @access private
-	 */
-	private $allInfo = array();
 
 	/**
 	 * Идентификатор дефолтной страницы
@@ -98,22 +86,55 @@ final class Sitemap extends DBWorker {
 	 */
 	private $cacheAccessLevels = array();
 
+	/**
+	 * Идентификатор текущего сайта 
+	 *
+	 * @access private
+	 * @var int
+	 */
+	private $siteID;
 
 	/**
 	 * Конструктор класса
 	 *
+	 * @param int идентификатор сайта
 	 * @return void
 	 */
-	public function __construct() {
-		//$this->startTimer();
+	public function __construct($siteID) {
 		parent::__construct();
+		$this->siteID = $siteID;
 		$this->langID = Language::getInstance()->getCurrent();
 		$userGroups = array_keys(UserGroup::getInstance()->asArray());
 
+		//Загружаем идентификаторы для последующего формирования древовидной стркутуры
+		//Получаем только идентификаторы разделов
+
+		$res = $this->dbh->selectRequest(
+            'SELECT s.smap_id, s.smap_pid FROM share_sitemap s '.
+            'LEFT JOIN share_sitemap_translation st ON st.smap_id = s.smap_id '.
+            'WHERE st.smap_is_disabled = 0 AND s.site_id = %s AND st.lang_id = %s '.
+		    'AND s.smap_id IN( '.
+		      ' SELECT smap_id '.
+		      ' FROM share_access_level '.
+		      ' WHERE group_id IN ('.implode(',', AuthUser::getInstance()->getGroups()).')) '. 
+            'ORDER BY smap_order_num',
+		$this->siteID,
+		$this->langID
+		);
+
+		if ($res === true) {
+			throw new SystemException('ERR_NO_TRANSLATION', SystemException::ERR_CRITICAL);
+		}
 		//Кешируем уровни доступа к страницам сайта
 		//Формируем матрицу вида
 		//[идентификатор раздела][идентификатор роли] = идентификатор уровня доступа
-		foreach ($this->dbh->select('share_access_level') as $data) {
+		$rightsMatrix = $this->dbh->select('share_access_level', true, array('smap_id' => array_map(create_function('$a', 'return $a["smap_id"];'), $res)));
+
+		if(!is_array($rightsMatrix)){
+			throw new SystemException('ERR_404', SystemException::ERR_404);
+		}
+
+		foreach ($rightsMatrix as $data) {
 			foreach ($userGroups as $groupID) {
 				//todo проверить вариант с пересечением array_diff
 				if (!isset($this->cacheAccessLevels[$data['smap_id']][$groupID]))
@@ -122,32 +143,20 @@ final class Sitemap extends DBWorker {
 			$this->cacheAccessLevels[$data['smap_id']][$data['group_id']] = (int)$data['right_id'];
 		}
 
-		//Загружаем идентификаторы для последующего формирования древовидной стркутуры
-		//Получаем только идентификаторы разделов
-
-		$res = $this->dbh->selectRequest(
-            'SELECT s.smap_id, s.smap_pid FROM share_sitemap s '.
-            'LEFT JOIN share_sitemap_translation st ON st.smap_id = s.smap_id '.
-            'WHERE st.smap_is_disabled = 0 AND st.lang_id = %s '. 
-            'ORDER BY smap_order_num'
-        , $this->langID);
-		if ($res === true) {
-			throw new SystemException('ERR_NO_TRANSLATION', SystemException::ERR_CRITICAL);
-		}
-
-
-		//inspect($this->resetTimer());
-		//Фильтруем перечень идентификаторов отсекая те разделы на которые нет прав
-		$res = array_filter($res, array($this, 'checkPageRights'));
-		//inspect($this->resetTimer());
 		//Загружаем перечень идентификаторов в объект дерева
 		$this->tree = TreeConverter::convert($res, 'smap_id', 'smap_pid');
-		//inspect($this->resetTimer());
-		//Получаем дефолтные meta заголовки
-		$res = $this->dbh->select('share_sitemap_translation', array('smap_meta_keywords', 'smap_meta_description'), array('smap_id' => $this->getDefault(), 'lang_id' => $this->langID));
+
+		$res = $this->dbh->selectRequest('
+		  SELECT s.smap_id,ss.site_meta_keywords, ss.site_meta_description  
+            FROM share_sitemap s
+            LEFT JOIN share_sites_translation ss ON ss.site_id=s.site_id
+            WHERE ss.site_id = %s AND s.smap_pid IS NULL and ss.lang_id = %s
+		', $this->siteID, $this->langID);
 		list($res) = $res;
-		$this->defaultMetaKeywords = $res['smap_meta_keywords'];
-		$this->defaultMetaDescription = $res['smap_meta_description'];
+		$this->defaultID = $res['smap_id']; 
+		$this->defaultMetaKeywords = $res['site_meta_keywords'];
+		$this->defaultMetaDescription = $res['site_meta_description'];
+		
 		$this->getSitemapData(array_keys($this->tree->asList()));
 
 	}
@@ -155,15 +164,39 @@ final class Sitemap extends DBWorker {
 	/**
 	 * Возвращает экземпляр  объекта Sitemap
 	 *
+	 * @param mixed идентификатор сайта
 	 * @access public
 	 * @return Sitemap
 	 * @static
 	 */
-	public static function getInstance() {
-		if (!isset(self::$instance)) {
-			self::$instance = new Sitemap();
+	public static function getInstance($siteID = false) {
+		if(!$siteID){
+			$siteID = SiteManager::getInstance()->getCurrentSite()->id;
 		}
-		return self::$instance;
+		if (!isset(self::$instance[$siteID])) {
+			self::$instance[$siteID] = new Sitemap($siteID);
+		}
+		return self::$instance[$siteID];
+	}
+	
+	/**
+	 * Возвращает идентификатор сайта по идентификатору раздела
+	 * 
+	 * @return int
+	 * @access public
+	 * @static
+	 */
+	public static function getSiteID($pageID){
+		$result = null;
+
+	    foreach (self::$instance as $siteID => $sitemap){
+	    	$siteInfo = $sitemap->getInfo($pageID);
+	    	if(isset($siteInfo[$pageID])){
+	    		return $siteID;
+	    	}
+	    }
+	    
+	    return $result;
 	}
 
 	/**
@@ -184,11 +217,12 @@ final class Sitemap extends DBWorker {
 			$ids = implode(',', $diff);
 			$result = convertDBResult(
 			$this->dbh->selectRequest(
-	                'SELECT s.smap_id, s.smap_pid, s.tmpl_id as templateID, s.smap_segment as Segment, s.smap_is_final as isFinal, st.smap_name, smap_redirect_url, smap_description_rtf, smap_html_title, smap_meta_keywords, smap_meta_description '.
+	                'SELECT s.smap_id, s.smap_pid, s.smap_content, s.smap_layout, s.smap_segment as Segment, st.smap_name, smap_redirect_url, smap_description_rtf, smap_html_title, smap_meta_keywords, smap_meta_description '.
 	                'FROM share_sitemap s '.
 	                'LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id '.
-	                'WHERE st.lang_id = '.$this->langID.' AND s.smap_id IN ('.$ids.')'),
+	                'WHERE st.lang_id = %s AND s.site_id = %s AND s.smap_id IN ('.$ids.')', $this->langID, $this->siteID),
 	            'smap_id', true);
+				
 			$result = array_map(array($this, 'preparePageInfo'), $result);
 			$this->info += $result;
 		}
@@ -197,6 +231,7 @@ final class Sitemap extends DBWorker {
 			foreach ($this->info as $key=>$value){
 				if(in_array($key, $diff))
 				$result[$key] = $value;
+
 			}
 		}
 
@@ -213,10 +248,13 @@ final class Sitemap extends DBWorker {
 	 */
 
 	private function preparePageInfo($current) {
+		//inspect($current);
+		//здесь что то лишнее
+		//@todo А нужно ли вообще обрабатывать все разделы? 
 		$result = convertFieldNames($current,'smap');
 		if(is_null($result['MetaKeywords'])) $result['MetaKeywords'] = $this->defaultMetaKeywords;
 		if(is_null($result['MetaDescription'])) $result['MetaDescription'] = $this->defaultMetaDescription;
-		if($result['RedirectUrl']) $result['RedirectUrl'] = (URI::validate($result['RedirectUrl']))?$result['RedirectUrl']:Request::getInstance()->getBasePath().$result['RedirectUrl'];
+		//if($result['RedirectUrl']) $result['RedirectUrl'] = (URI::validate($result['RedirectUrl']))?$result['RedirectUrl']:SiteManager::getInstance()->getCurrentSite()->base.$result['RedirectUrl'];
 
 		return $result;
 	}
@@ -230,14 +268,6 @@ final class Sitemap extends DBWorker {
 	 */
 
 	public function getDefault() {
-		if (!$this->defaultID) {
-			$result = simplifyDBResult($this->dbh->select('share_sitemap', 'smap_id', array('smap_default' => true)), 'smap_id', true);
-			if ($result === false) {
-				throw new SystemException('ERR_DEV_NO_DEFAULT_PAGE', SystemException::ERR_CRITICAL);
-			}
-
-			$this->defaultID = $result;
-		}
 		return $this->defaultID;
 	}
 
@@ -257,7 +287,7 @@ final class Sitemap extends DBWorker {
 		if (!is_null($node)) {
 			$parents = array_reverse(array_keys($node->getParents()->asList(false)));
 			foreach ($parents as $id) {
-				if (isset($this->info[$id])) {
+				if (isset($this->info[$id]) && $this->info[$id]['Segment']) {
 					$result[] = $this->info[$id]['Segment'];
 				}
 				else {
@@ -270,7 +300,12 @@ final class Sitemap extends DBWorker {
 		$currentSegment = $this->getDocumentInfo($smapID);
 		$currentSegment = $currentSegment['Segment'];
 		$result[] = $currentSegment;
-		$result = implode('/', $result).'/';
+		$result = array_filter($result);
+		if(!empty($result))
+		  $result = implode('/', $result).'/';
+		else {
+			$result = ''; 
+		}
 		return $result;
 	}
 
@@ -282,30 +317,28 @@ final class Sitemap extends DBWorker {
 	 * @access public
 	 */
 
-	public function getIDByURI(array $segments, $useDefaultIfEmpty = false) {
-		$id = null;
-		$i = 1;
+	public function getIDByURI(array $segments) {
 		$request = Request::getInstance();
-
-		if (empty($segments) && $useDefaultIfEmpty) {
-			return $this->getDefault();
+        $id = $this->getDefault();
+		if (empty($segments)){
+		    return $id;
 		}
-
-		foreach ($segments as $segment) {
-			$res = $this->dbh->select('share_sitemap', array('smap_id'), array('smap_segment' => $segment, 'smap_pid' => $id));
-			if (!is_array($res)) {
+		
+		foreach ($segments as $key => $segment) {
+		    $found = false;
+			foreach($this->info as $pageID => $pageInfo){
+				if(($segment == $pageInfo['Segment']) && ($id == $pageInfo['Pid'])){
+				  		$id = $pageID;
+				  		$request->setPathOffset($key+1);
+				  		$found = true;
+				  		break;
+				}
+			}
+			if(!$found){
 				break;
 			}
-            /**
-             * @todo Тут вот херня
-             */
-			$request->setPathOffset($i);
-			list($res) = $res;
-			$id = $res['smap_id'];
-			$i++;
 		}
-
-		return $id;
+		return ($id != $this->getDefault())?$id:false;
 	}
 
 	/**
@@ -328,18 +361,6 @@ final class Sitemap extends DBWorker {
 
 		return max(array_intersect_key($this->cacheAccessLevels[$docID], $groups));
 	}
-
-	/**
-	 * Возвращает меню первого уровн
-	 *
-	 * @return array
-	 * @access public
-	 */
-
-	public function getMainLevel() {
-		return $this->buildPagesMap(array_keys($this->tree->asList(false)));
-	}
-
 
 	/**
 	 * Возвращает все дочерние разделы
@@ -423,11 +444,11 @@ final class Sitemap extends DBWorker {
 
 	public function getDocumentInfo($id) {
 		if(isset($this->info[$id]))
-		  $result = $this->info[$id];
+		$result = $this->info[$id];
 		else{
 			$result = $this->getSitemapData($id);
 			$result = $result[$id];
-		}  
+		}
 		return $result;
 	}
 
@@ -452,19 +473,6 @@ final class Sitemap extends DBWorker {
 
 	public function getInfo() {
 		return $this->info;
-	}
-
-	/**
-	 * Внутренний метод для фильтрации разделов, на которые нет прав
-	 * Вызывется как callback для array_filter
-	 *
-	 * @param array
-	 * @return boolean
-	 * @access private
-	 */
-
-	private function checkPageRights($smapInfo) {
-		return ($this->getDocumentRights($smapInfo['smap_id']) != ACCESS_NONE);
 	}
 }
 

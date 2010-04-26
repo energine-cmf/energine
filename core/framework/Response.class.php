@@ -171,7 +171,16 @@ final class Response extends Object {
      * @param boolean $secure
      * @return void
      */
-    public function setCookie($name, $value = '', $expire = '', $path = '', $domain = '', $secure = false) {
+    public function setCookie($name, $value = '', $expire = '') {
+    	if($this->getConfigValue('site.domain')){
+    		$path = '/';
+    		$domain = '.'.$this->getConfigValue('site.domain');
+    	}
+    	else{
+        	$path = SiteManager::getInstance()->getCurrentSite()->root;
+        	$domain = '';
+    	}
+    	$secure = false;
         $this->cookies[$name] = compact('value', 'expire', 'path', 'domain', 'secure');
     }
 
@@ -185,8 +194,8 @@ final class Response extends Object {
      * @param boolean $secure
      * @return void
      */
-    public function deleteCookie($name, $path = '', $domain = '', $secure = false) {
-        $this->setCookie($name, '', (time() - 1), $path, $domain, $secure);
+    public function deleteCookie($name) {
+        $this->setCookie($name, '', (time() - 1));
     }
 
     /**
@@ -214,7 +223,7 @@ final class Response extends Object {
         }
         $request = Request::getInstance();
         $this->setRedirect(
-        $request->getBasePath()
+        SiteManager::getInstance()->getCurrentSite()->base
         .$request->getLangSegment()
         .$request->getPath(Request::PATH_TEMPLATE, true)
         .$action
@@ -244,7 +253,9 @@ final class Response extends Object {
             foreach ($this->headers as $name => $value) {
                 header("$name: $value");
             }
+            
             foreach ($this->cookies as $name => $params) {
+            	
                 setcookie($name, $params['value'], $params['expire'], $params['path'], $params['domain'], $params['secure']);
             }
         }

@@ -24,7 +24,7 @@ class Transformer extends Object {
 	/**
 	 * Директория, где находится основной трансформер
 	 */
-	const MAIN_TRANSFORMER_DIR = 'site/transformers/';
+	const MAIN_TRANSFORMER_DIR = 'site/%s/transformers/';
 
 	private $fileName;
 
@@ -42,12 +42,15 @@ class Transformer extends Object {
 	 * Устанавливает имя основного файла трансформации
 	 *
 	 * @param string
+	 * @param bool флаг указывающий на что путь абсолютный 
 	 * @return void
 	 */
-       public function setFileName($transformerFilename, $isAbsolutePath = false){
-               if(!$isAbsolutePath)
-                 $transformerFilename = self::MAIN_TRANSFORMER_DIR.$transformerFilename;
-
+	public function setFileName($transformerFilename, $isAbsolutePath = false){
+		if(!$isAbsolutePath)
+		  $transformerFilename = sprintf(self::MAIN_TRANSFORMER_DIR, SiteManager::getInstance()->getCurrentSite()->folder).$transformerFilename;
+		
+		
+		
 		if (!file_exists($transformerFilename)) {
 			throw new SystemException('ERR_DEV_NO_MAIN_TRANSFORMER', SystemException::ERR_DEVELOPER, $transformerFilename);
 		}

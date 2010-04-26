@@ -10,9 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
-//require_once('core/framework/DataDescription.class.php');
-//require_once('core/framework/Data.class.php');
 
 /**
  * Сохранитель данных в БД.
@@ -169,6 +166,7 @@ class Saver extends DBWorker {
         if (!$this->data || !$this->dataDescription) {
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER);
         }
+
         foreach ($this->dataDescription as $fieldName => $fieldDescription) {
             $fieldData = $this->data->getFieldByName($fieldName);
             if ($fieldDescription->getType() == FieldDescription::FIELD_TYPE_BOOL ||
@@ -287,7 +285,7 @@ class Saver extends DBWorker {
             $result = true;
         }
 
-        $this->result = $result;
+        return ($this->result = $result);
     }
 
     /**

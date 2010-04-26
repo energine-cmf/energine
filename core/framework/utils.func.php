@@ -290,3 +290,7 @@ function array_push_before(array $array, $var, $pos) {
     }
     return $result;
 }
+
+function is_assoc($array) {
+    return (is_array($array) && (0 !== count(array_diff_key($array, array_keys(array_keys($array)))) || count($array)==0));
+} 

@@ -197,7 +197,7 @@ class BaseException extends Exception {
 
         $dom_errors = $this->doc->createElement('errors');
         $dom_errors->setAttribute('uri', $request->getPath(Request::PATH_WHOLE, true));
-        $dom_errors->setAttribute('base', $request->getBasePath());
+        $dom_errors->setAttribute('base', SiteManager::getInstance()->getCurrentSite()->base);
         $dom_errors->setAttribute('debug', $this->isDebugEnabled);
 
         $dom_error = $this->doc->createElement('error');

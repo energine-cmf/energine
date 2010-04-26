@@ -7,10 +7,8 @@
  * @subpackage core
  * @author 1m.dm
  * @copyright Energine 2006
- * @version $Id$
  */
 
-//require_once('core/framework/URI.class.php');
 
 /**
  * HTTP-запрос.
@@ -76,8 +74,6 @@ final class Request extends Object {
      * Путь, относящийся к действию
      */
     const PATH_ACTION = 3;
-    
-     private $port = 80;
 
     /**
      * Конструктор класса.
@@ -88,24 +84,9 @@ final class Request extends Object {
     public function __construct() {
         parent::__construct();
 
-        $uri = (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-        $this->uri = new URI($uri);
-        //Определение порта
-        //SERVER_PORT - не катит при использовании проброса из какого то порта на 80
-        $port = explode(':', $_SERVER['HTTP_HOST']);
-        $this->uri->setPort((sizeof($port)>1)?$port[1]:80);
-        
+        $this->uri = URI::create();
         $path = $this->uri->getPath();
-        $rootPath = $this->getConfigValue('site.root');
-        if ($rootPath[strlen($rootPath)-1] != '/') {
-            $rootPath .= '/';
-        }
-        $rootPathLen = strlen($rootPath);
-        $this->rootPath = '';
-        if (strpos($path, $rootPath) === 0) {
-            $this->rootPath = substr($path, 0, $rootPathLen);
-        }
-        $path = array_values(array_diff(explode('/', substr($path, $rootPathLen)), array('')));
+        $path = array_values(array_diff(explode('/', substr($path, strlen(SiteManager::getInstance()->getCurrentSite()->root))), array('')));
         try {
             $language = Language::getInstance();
             $this->lang = (isset($path[0]) && $language->isValidLangAbbr($path[0])) ? array_shift($path) : '';
@@ -138,26 +119,6 @@ final class Request extends Object {
      */
     public function getURI() {
         return $this->uri;
-    }
-
-    /**
-     * Возвращает путь к корню сайта.
-     *
-     * @access public
-     * @return string
-     */
-    public function getRootPath() {
-        return $this->rootPath;
-    }
-
-    /**
-     * Возвращает URI-адрес корня сайта.
-     *
-     * @access public
-     * @return string
-     */
-    public function getBasePath() {
-        return $this->getURI()->getScheme().'://'.$this->getURI()->getHost().((($port = $this->getURI()->getPort()) == 80)?'':':'.$port).$this->getRootPath();
     }
 
     /**

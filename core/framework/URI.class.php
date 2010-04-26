@@ -1,16 +1,13 @@
 <?php
-
 /**
  * Класс URI.
  *
  * @package energine
  * @subpackage core
  * @author 1m
- * @copyright Energine 2006
- * @version $Id$
+ * @copyright Energine 
  */
 
-//require_once('core/framework/Object.class.php');
 
 /**
  * URI (Unified Resource Identifier).
@@ -51,42 +48,82 @@ final class URI extends Object {
      * @var string идентификатор фрагмента документа
      */
     private $fragment;
+    
+    /**
+     * Trick для имитации приватного конструктора
+     * 
+     * @access private
+     * @var bool
+     * @static 
+     */
+     private static $trick;
+    
+    /**
+     * Порт
+     * 
+     * @access private
+     * @var int 
+     */
+     private $port;
+    
+    
 
     /**
      * Конструктор класса.
      *
-     * @access public
+     * @access private
      * @param string $uri
      * @return void
      */
     public function __construct($uri) {
+    	if(is_null(self::$trick)){
+    		throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
+    	}
         parent::__construct();
-
-        if ($validatedURL = self::validate($uri)) {
-            $this->setScheme($validatedURL[1]);
-            $this->setHost($validatedURL[2]);
-            $this->setPath($validatedURL[3]);
-            $this->setQuery(isset($validatedURL[5]) ? $validatedURL[5] : '');
+        $matches = array();
+        
+        if($uri && ($matches = self::validate($uri))){
+            $this->setScheme($matches[0]);
+            $this->setHost($matches[1]);
+            $this->setPort($matches[2]);
+            $this->setPath($matches[3]);
+            $this->setQuery(isset($matches[4]) ? $matches[4] : '');
         }
         else {
             $this->scheme = $this->host = $this->path = $this->query = $this->fragment = '';
         }
+        
     }
     /**
-     * Проверяет является ли переданная строка URLом 
+     * Проверяет правильность URL. ВОзвращает массив, полученный в результате разбора строки
      * 
-     * @param $uri УРЛ
-     * @return mixed array($scheme, $host, $path, $query) || false
+     * @return array
      * @access public
-     * @static   
+     * @static
      */
     public static function validate($uri){
     	$result = false;
-    	if(preg_match('/^(\w+):\/\/([a-z0-9\.\-]+)(\/[^?]*)(\?(.*))?$/i', $uri, $matches) && count($matches) >= 4){
-    	   $result = $matches;	
-    	}
-    	
-    	return $result;
+        if(preg_match('/^(\w+):\/\/([a-z0-9\.\-]+)\:([0-9]{2,5})?(\/[^?]*)[\?]?(.*)?$/i', $uri, $matches) && count($matches) >= 5){
+            array_shift($matches);
+            $result = $matches;
+        }
+        
+        return $result;    
+    }
+    /**
+      * Создает объект URI
+      * 
+      * @return URI
+      * @access public
+      * @static
+      */
+    public static function create($uriString = ''){
+    	self::$trick = true;
+        if(!$uriString){
+            $port = explode(':', $_SERVER['HTTP_HOST']);
+            $uriString = (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.((isset($_SERVER['HTTP_HOST']))?$_SERVER['HTTP_HOST']:$_SERVER['SERVER_NAME']).':'.((sizeof($port)>1)?$port[1]:80).$_SERVER['REQUEST_URI'];
+        }
+        return new URI($uriString);
     }
 
     /**
@@ -138,10 +175,6 @@ final class URI extends Object {
      * @return void
      */
     public function setPort($port) {
-        if (empty($port)) {
-            $port = 80;
-        }
-        
         $this->port = $port;
     }
     /**

@@ -56,7 +56,7 @@ if (get_magic_quotes_gpc()) {
 /**
  * Путь к директории пользовательских компонентов
  */
-define('SITE_COMPONENTS_DIR', 'site/components');
+define('SITE_COMPONENTS_DIR', 'site/*/components');
 
 /**
  * Шаблон пути к директориям компонентов стандартных модулей,

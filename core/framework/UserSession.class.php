@@ -102,7 +102,7 @@ final class UserSession extends DBWorker {
         $this->tableName = 'share_session';
         $this->dataCache = '';
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
-
+        
         // устанавливаем обработчики сеанса
         session_set_save_handler(
             array(&$this, 'open'),
@@ -117,7 +117,15 @@ final class UserSession extends DBWorker {
         session_name($this->name);
 
         // устанавливаем время жизни cookie
-        session_set_cookie_params($this->lifespan, $this->getConfigValue('site.root'));
+        if($this->getConfigValue('site.domain')){
+            $path = '/';
+            $domain = '.'.$this->getConfigValue('site.domain');
+        }
+        else{
+            $path = SiteManager::getInstance()->getCurrentSite()->root;
+            $domain = '';
+        }
+        session_set_cookie_params($this->lifespan, $path, $domain);
         
         // проверяем существование cookie и корректность его данных
         if (isset($_COOKIE[$this->name])) {
@@ -139,14 +147,13 @@ final class UserSession extends DBWorker {
                 $response->setCookie(
                     $this->name,
                     $this->phpSessId,
-                    (time() + $this->lifespan),
-                    $this->getConfigValue('site.root')
+                    (time() + $this->lifespan)
                 );
             }
             else {
                 $this->dbh->modify(QAL::DELETE, $this->tableName, null, "session_native_id = '{$this->phpSessId}'");
                 // удаляем cookie сеанса
-                $response->deleteCookie($this->name, $this->getConfigValue('site.root'));
+                $response->deleteCookie($this->name);
             }
         }
         session_start();

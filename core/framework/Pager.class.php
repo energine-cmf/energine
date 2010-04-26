@@ -205,10 +205,39 @@ final class Pager extends Object {
 
         $pager->setProperty('from', DBWorker::_translate('TXT_FROM'));
         $pager->setProperty('to', DBWorker::_translate('TXT_TO'));
-
-
+        
+        $total = $this->numPages;
+        $current = $this->currentPage;
+        $visible = self::VISIBLE_PAGES_COUNT;
+        
+	    $startSeparator = $endSeparator = false;
+	    
+		for($i = 1; $i<= $total; $i++){
+		    if(
+		           ($i>$visible) &&
+		           ($i < ($current - $visible))
+		    ){
+		        if(!$startSeparator) $pager->attachControl(new Separator('sep_start'));
+		        $startSeparator = true;
+		        continue;
+		    }
+		    elseif(
+		           ($i> $current+$visible) &&
+		           ($i<= ($total - $visible))   
+		    ){
+		        if(!$endSeparator) $pager->attachControl(new Separator('sep_end'));
+		        $endSeparator = true;
+		        continue;
+		    }
+		    else {
+		    	$control = new Link("page".$i, $i, $i);
+		    	if($i == $current) $control->disable();
+                $pager->attachControl($control);
+		    }
+		}
+        /*
         $startPage = (($page = $this->currentPage - self::VISIBLE_PAGES_COUNT) < 1)?1:$page;
-        $endPage  = (($page = $this->currentPage + self::VISIBLE_PAGES_COUNT) > $this->numPages)?$this->numPages:$page;
+        $endPage  = (($page = $this->currentPage + self::VISIBLE_PAGES_COUNT) > $this->numPages)?$this->numPages:$page+1;
 
         if ($startPage > 1) {
             $control = new Link("page1", 1, 1);
@@ -242,7 +271,7 @@ final class Pager extends Object {
         if ($endPage < $this->numPages) {
         	$control = new Link("page$this->numPages", $this->numPages, $this->numPages);
             $pager->attachControl($control);
-        }
+        }*/
 
         return $pager->build();
     }

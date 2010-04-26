@@ -47,15 +47,52 @@
     </xsl:template>    
     <!-- /компонент LoginForm  -->
     
+    <!-- компонент Register -->
+    <xsl:template match="component[@class='Register'][@componentAction='success']">
+        <div class="result_message">
+            <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
+        </div>
+    </xsl:template>
+    
+    <xsl:template match="recordset[parent::component[@class='Register']]">
+        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+            <xsl:apply-templates/>
+            <div class="field captcha_field">                                                                                                                                                                            
+                <div class="name">                                                                                                                                                                                                   
+                    <label for="{@name}"><xsl:value-of select="$TRANSLATION[@const='TXT_ENTER_CAPTCHA']"/></label>                                                                                                                                             
+                    <span class="mark">*</span>                                                                                                                                                                                      
+                </div>                                                                                                                                                                                                               
+                <div class="control" >                                                                                                                                                                                               
+                    <img src="captcha.php" id="captchaImage" />                                                                                                                                                                      
+                    <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text" />                                                                                                    
+                </div>                                                                                                                                                                                                               
+            </div>         
+        </div>
+        <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
+            <div class="note">
+                <xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
+            </div>
+        </xsl:if>
+    </xsl:template>
+    <!-- /компонент Register -->
+    
+    <!-- компонент UserProfile -->
+    <xsl:template match="component[@class='UserProfile'][@componentAction='success']">
+        <div class="result_message">
+            <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
+        </div>
+    </xsl:template>
+    <!-- /компонент UserProfile -->
+    
     <!-- компонент RoleEditor -->    
     <xsl:template match="field[@name='group_div_rights']">
-            <div class="page_rights">
+            <div class="table_data">
                 <table width="100%" border="1">
                     <thead>
                         <tr>
                             <td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
                             <xsl:for-each select="recordset/record[1]/field[@name='RightsId']/options/option">
-                                <td style="text-align: center;"><xsl:value-of select="."/></td>
+                                <td><xsl:value-of select="."/></td>
                             </xsl:for-each>
                         </tr>
                     </thead>
@@ -73,13 +110,18 @@
         <xsl:param name="DATA"/>
         <xsl:param name="LEVEL"/>
         <xsl:for-each select="$DATA/record">
+            <xsl:if test="$LEVEL=0">
+                <tr>
+                    <td colspan="5" class="section_name"><xsl:value-of select="field[@name='Site']"/></td>
+                </tr>
+            </xsl:if>
             <tr>
     			<xsl:if test="floor(position() div 2) = position() div 2">
     				<xsl:attribute name="class">even</xsl:attribute>
     			</xsl:if>
                 <td class="group_name" style="padding-left:{$LEVEL*20 + 5}px;"><xsl:value-of select="field[@name='Name']"/></td>
                 <xsl:for-each select="field[@name='RightsId']/options/option">
-                    <td style="text-align:center;"><input type="radio" style="width:auto; border:0;" name="div_right[{../../../field[@name='Id']}]" value="{@id}">
+                    <td><input type="radio" style="width:auto; border:0;" name="div_right[{../../../field[@name='Id']}]" value="{@id}">
                         <xsl:if test="@selected">
                             <xsl:attribute name="checked">checked</xsl:attribute>    
                         </xsl:if>

@@ -29,6 +29,23 @@
 			
 			</uri_patterns>
 		</method>
+		<method name="add">
+            <uri_patterns>
+                <pattern>/add/</pattern>
+            </uri_patterns>
+            <javascript>
+                <object name="Form"/>
+            </javascript>
+            <toolbar>
+                <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+                <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+            </toolbar>
+        </method>
+        <method name="save">
+            <uri_patterns>
+                <pattern>/save/</pattern>
+            </uri_patterns>
+        </method>
 		<method name="view">
 			<uri_patterns>
 				<pattern>/[int]/</pattern>
@@ -37,18 +54,6 @@
 				<object name="Form"/>
 			</javascript>
 			<toolbar>
-				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
-			</toolbar>
-		</method>
-		<method name="add">
-			<uri_patterns>
-				<pattern>/add/</pattern>
-			</uri_patterns>
-			<javascript>
-				<object name="Form"/>
-			</javascript>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</method>
@@ -63,11 +68,6 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="save">
-			<uri_patterns>
-				<pattern>/save/</pattern>
-			</uri_patterns>
 		</method>
 		<method name="delete">
 			<uri_patterns>

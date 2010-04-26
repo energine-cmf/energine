@@ -41,7 +41,7 @@ class Register extends DBDataSet {
 		$this->setType(self::COMPONENT_TYPE_FORM_ADD);
 		$this->user = new User();
 		$this->setTableName(User::USER_TABLE_NAME);
-		$this->addTranslation('TXT_ENTER_CAPTCHA', 'TXT_REQUIRED_FIELDS');
+		$this->addTranslation('TXT_ENTER_CAPTCHA');
 	}
 	/**
 	 * Переопределен параметр active
@@ -89,6 +89,48 @@ class Register extends DBDataSet {
 	}
 	
 	/**
+	 * Метод проверки логина
+	 * Вызывается AJAXом при заполнении формы регистрации
+	 *
+	 * @access protected
+	 * @return void
+	 *
+	protected function checkLogin(){
+		if($_SESSION['captchaChecked'] = $result = (
+		isset($_POST['captcha'])
+		&&
+		($_SESSION['captchaCode'] == sha1($_POST['captcha']))
+		)){
+			$login = trim($_POST['login']);
+			$result = !(bool)simplifyDBResult(
+			$this->dbh->select(
+			$this->getTableName(),
+			array('COUNT(u_id) as number'),
+			array('u_name' => $login)
+			),
+		        'number', 
+			true
+			);
+			$field = 'login';
+			$message = ($result)?$this->translate('TXT_LOGIN_AVAILABLE'):$this->translate('TXT_LOGIN_ENGAGED');
+		}
+		else{
+			$message = $this->translate('TXT_BAD_CAPTCHA');
+			$field = 'captcha';
+		}
+
+		$result = array(
+                'result'=> $result,
+                'message' => $message,
+		        'field' => $field,  
+		);
+		$result = json_encode($result);
+		$this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+		$this->response->write($result);
+		$this->response->commit();
+	}
+	*/
+	/**
 	 * Обработка возможных ошибок сохранения + редирект на страницу результата
 	 *
 	 * @return void
@@ -96,7 +138,15 @@ class Register extends DBDataSet {
 	 */
 	protected function save() {
 		try {
-			$this->checkCaptcha();
+			if(
+			 !isset($_SESSION['captchaCode'])
+			 ||
+			 !isset($_POST['captcha'])
+			 ||
+			 ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
+			){
+			     throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL); 	
+			}
 			$this->saveData();
 			$_SESSION['saved'] = true;
 			$this->response->redirectToCurrentSection('success/');
@@ -133,12 +183,12 @@ class Register extends DBDataSet {
 			$mailer->setFrom($this->getConfigValue('mail.from'));
 			$mailer->setSubject($this->translate('TXT_SUBJ_REGISTER'));
 			$mailer->setText(
-				$this->translate('TXT_BODY_REGISTER'),
-				array(
-				     'login' => $this->user->getValue('u_name'), 
-				     'name' => $this->user->getValue('u_fullname'),
-				     'password' => $password
-				)
+			$this->translate('TXT_BODY_REGISTER'),
+			array(
+			     'login' => $this->user->getValue('u_name'), 
+			     'name' => $this->user->getValue('u_fullname'),
+			     'password' => $password
+			)
 			);
 			$mailer->addTo($this->user->getValue('u_name'));
 			$mailer->send();

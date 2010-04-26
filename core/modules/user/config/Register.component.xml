@@ -9,11 +9,13 @@
 		  <field name="u_id"/>
 		  <field name="u_name"/>
 		  <field name="u_fullname"/>
-          <field name="captcha" type="captcha" title="TXT_ENTER_CAPTCHA"/>
 		</fields>
 		<toolbar>
 			<control id="register" title="BTN_REGISTER" type="submit"/>
 		</toolbar>
+		<translations>
+			<translation const="TXT_REQUIRED_FIELDS" />
+		</translations>
 	</method>
 	<method name="checkLogin">
       <uri_patterns>

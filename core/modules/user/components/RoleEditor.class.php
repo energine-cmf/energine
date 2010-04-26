@@ -9,8 +9,7 @@
  * @copyright Energine 2006
  * @version $Id$
  */
-//require_once('core/framework/TreeBuilder.class.php');
-//require_once('core/modules/share/components/Grid.class.php');
+
 
 /**
  * Редактор ролей
@@ -110,15 +109,27 @@ class RoleEditor extends Grid {
 
     private function buildDivRightsData() {
         $builder  = new TreeBuilder();
-        $builder->setTree(TreeConverter::convert($this->dbh->select('share_sitemap', array('smap_id', 'smap_pid'), null, array('smap_order_num'=>QAL::ASC)), 'smap_id', 'smap_pid'));
+        $builder->setTree(
+            TreeConverter::convert(
+                $this->dbh->select(
+                    'share_sitemap', 
+                    array('smap_id', 'smap_pid'), 
+                    null, 
+                    array('smap_order_num'=>QAL::ASC)), 'smap_id', 'smap_pid'));
 
         $id = $this->getFilter();
         $id = (!empty($id))?current($id):'';
 
-        $data = convertDBResult($this->dbh->selectRequest('select s.smap_id as Id, smap_pid as Pid, smap_name as Name from share_sitemap s left join share_sitemap_translation st on st.smap_id = s.smap_id where lang_id='.Language::getInstance()->getCurrent()), 'Id');
+        $data = convertDBResult(
+            $this->dbh->selectRequest(
+                'select s.smap_id as Id, smap_pid as Pid, site_id as Site, smap_name as Name '.
+                'from share_sitemap s '.
+                'left join share_sitemap_translation st on st.smap_id = s.smap_id '.
+                'where lang_id='.Language::getInstance()->getCurrent()), 'Id');
 
-        foreach (array_keys($data) as $smapID) {
-            $data[$smapID]['RightsId'] = Sitemap::getInstance()->getDocumentRights($smapID, $id);
+        foreach ($data as $smapID => $smapInfo) {
+            $data[$smapID]['RightsId'] = Sitemap::getInstance($smapInfo['Site'])->getDocumentRights($smapID, $id);
+            $data[$smapID]['Site'] = SiteManager::getInstance()->getSiteByID($smapInfo['Site'])->name;
         }
 
         $dataObject = new Data();
@@ -140,6 +151,10 @@ class RoleEditor extends Grid {
         $f->setType(FieldDescription::FIELD_TYPE_STRING);
         $dataDescriptionObject->addFieldDescription($f);
 
+        $f = new FieldDescription('Site');
+        $f->setType(FieldDescription::FIELD_TYPE_STRING);
+        $dataDescriptionObject->addFieldDescription($f);
+        
         $f = new FieldDescription('RightsId');
         $f->setType(FieldDescription::FIELD_TYPE_SELECT);
         if ($this->getAction() == 'view') {

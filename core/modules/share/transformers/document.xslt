@@ -56,7 +56,7 @@
 		        		</xsl:if>
 		        		Energine.base = '<xsl:value-of select="$BASE"/>';
                         try {
-                            ScriptLoader.load(<xsl:for-each select="$COMPONENTS/javascript/include | $COMPONENTS/javascript/object[@name!='PageEditor']">'<xsl:value-of select="@name" />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
+                            ScriptLoader.load(<xsl:for-each select="$COMPONENTS/javascript/object[@name!='PageEditor']">'<xsl:value-of select="@path" /><xsl:value-of select="@name" />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
                             <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
                             var pageToolbar = new <xsl:value-of select="$PAGE_TOOLBAR/javascript/object/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$PAGE_TOOLBAR/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$PAGE_TOOLBAR/toolbar/@name"/>');

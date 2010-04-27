@@ -19,6 +19,28 @@
 				-->
 			</toolbar>
 		</method>
+        <method name="add">
+            <uri_patterns>
+                <pattern>/add/</pattern>
+            </uri_patterns>
+            <javascript>
+                <object name="Form" />
+            </javascript>
+            <toolbar>
+                <control id="save" title="BTN_SAVE" type="button" onclick="save" />
+                <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
+                    type="select"
+                >
+                    <options>
+                        <option id="close">BTN_CLOSE</option>
+                        <option id="add">BTN_ADD</option>
+                    </options>
+                </control>
+                <control id="sep1" type="separator" />
+                <control id="close" title="BTN_CANCEL" type="button"
+                    onclick="close" />
+            </toolbar>
+        </method>
 		<method name="view">
 			<uri_patterns>
 				<pattern>/[int]/</pattern>
@@ -28,28 +50,6 @@
 			</javascript>
 			<toolbar>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close" />
-			</toolbar>
-		</method>
-		<method name="add">
-			<uri_patterns>
-				<pattern>/add/</pattern>
-			</uri_patterns>
-			<javascript>
-				<object name="Form" />
-			</javascript>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="save" />
-				<control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
-					type="select"
-				>
-					<options>
-						<option id="close">BTN_CLOSE</option>
-						<option id="add">BTN_ADD</option>
-					</options>
-				</control>
-				<control id="sep1" type="separator" />
-				<control id="close" title="BTN_CANCEL" type="button"
-					onclick="close" />
 			</toolbar>
 		</method>
 		<method name="edit">

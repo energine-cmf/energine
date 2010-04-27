@@ -28,7 +28,7 @@ class NewsEditor extends FeedEditor {
      */
 	public function __construct($name, $module, Document $document, array $params = null) {
         parent::__construct($name, $module, $document, $params);
-        $this->setTableName('share_news');
+        $this->setTableName('apps_news');
         $this->setOrder('news_date', QAL::DESC);
 	}
 }

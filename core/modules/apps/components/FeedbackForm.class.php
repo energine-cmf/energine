@@ -30,7 +30,7 @@ class FeedbackForm extends DBDataSet {
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
 
-        $this->setTableName('share_feedback');
+        $this->setTableName('apps_feedback');
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->setDataSetAction('send');
         $this->setTitle($this->translate('TXT_FEEDBACK_FORM'));

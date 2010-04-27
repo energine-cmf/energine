@@ -142,7 +142,10 @@
             			$this->killedLog[] = $dir->getPathname(); 
             		}
             		elseif($dir->isDir()){
-            			
+            		  if(!$this->rmdir($dir->getPathname())){
+                            throw new Exception('Невозможно удалить директорию ('.$dir->getPathname().')!');
+                      }
+                      $this->killedLog[] = $dir->getPathname();
             		}
             		else{
             			if(!@unlink($dir->getPathname())){
@@ -155,24 +158,52 @@
    		}
    		
    		private function createSymLinks(){
-   		    
-	        foreach(array_merge(
-	                glob($this->serverRoot.self::FOLDER_CORE.'/'.self::PATH_MODULES.'/*'),
-	                array($this->serverRoot.self::PATH_SITE)
-            ) as $modulePath){
+	        foreach(
+	                glob($this->serverRoot.self::FOLDER_CORE.'/'.self::PATH_MODULES.'/*', GLOB_ONLYDIR)
+	                
+             as $modulePath){
                 foreach($this->deFoldersList as $folderName){
                     foreach(new IteratorIterator(new DirectoryIterator($modulePath.'/'.$folderName)) as $fileInfo){
                         $baseName = $fileInfo->getBasename();
-                        if($baseName[0] != '.')
+                        if($baseName[0] != '.'){
+                        //var_dump(str_replace($this->serverRoot.self::PATH_SITE.'/', '', $modulePath));
                         //$this->safeSymlink($modulePath.'/'.$folderName.'/'.$baseName, $this->serverRoot.$folderName.'/'.$baseName);
                         $this->safeSymlink($fileInfo->getRealPath(), $this->serverRoot.$folderName.'/'.$baseName);
-                            
+                        }
                     }
-                    
+                }
+            }
+   		   foreach(
+              glob($this->serverRoot.self::PATH_SITE.'/*', GLOB_ONLYDIR) as $modulePath
+           ){
+                foreach($this->deFoldersList as $folderName){
+                    foreach(new IteratorIterator(new DirectoryIterator($modulePath.'/'.$folderName)) as $fileInfo){
+                        $baseName = $fileInfo->getBasename();
+                        if($baseName[0] != '.'){
+	                        //$this->safeSymlink($modulePath.'/'.$folderName.'/'.$baseName, $this->serverRoot.$folderName.'/'.$baseName);
+	                        //$this->safeSymlink($fileInfo->getRealPath(), $this->serverRoot.$folderName.'/'.$baseName);
+	                        $siteName = str_replace($this->serverRoot.self::PATH_SITE.'/', '', $modulePath);
+	                        if(!file_exists($dir = $this->serverRoot.$folderName.'/'.$siteName)){
+	                        	if(!@mkdir($dir, 0755)){
+	                        		throw new Exception('Невозможно создать директорию ('.$dir.')!');
+	                        	}
+	                        }
+                            $this->safeSymlink($fileInfo->getRealPath(), $dir.'/'.$baseName);
+                        }    
+                    }
                 }
             }
             
    		}
+   		private function rmdir($dir) {
+	        //if (!file_exists($dir)) return true;
+	        if (!is_dir($dir)) return @unlink($dir);
+	        foreach (scandir($dir) as $item) {
+	            if ($item == '.' || $item == '..') continue;
+	            if (!$this->rmdir($dir.DIRECTORY_SEPARATOR.$item)) return false;
+	        }
+	        return rmdir($dir);
+        }
    		private function safeSymlink($from, $to){
    		    if(function_exists('symlink')){
    		        //Обычный симлинк

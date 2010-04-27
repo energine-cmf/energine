@@ -1,5 +1,7 @@
 SET FOREIGN_KEY_CHECKS=0;
+
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
 SET AUTOCOMMIT=0;
 START TRANSACTION;
 
@@ -8,143 +10,6 @@ START TRANSACTION;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `hrm_resumes`
---
-
-DROP TABLE IF EXISTS `hrm_resumes`;
-CREATE TABLE IF NOT EXISTS `hrm_resumes` (
-  `resume_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `vacancy_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `resume_date` date NOT NULL,
-  `resume_candidate_name` varchar(250) NOT NULL,
-  `resume_candidate_email` varchar(200) NOT NULL,
-  `resume_text` text,
-  `resume_main_pfile` varchar(250) NOT NULL,
-  PRIMARY KEY (`resume_id`),
-  KEY `vacancy_id` (`vacancy_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `hrm_resumes`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `hrm_staff`
---
-
-DROP TABLE IF EXISTS `hrm_staff`;
-CREATE TABLE IF NOT EXISTS `hrm_staff` (
-  `staff_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `smap_id` int(10) unsigned NOT NULL,
-  `staff_order_num` int(10) unsigned DEFAULT '1',
-  `staff_photo_img` varchar(250) NOT NULL,
-  PRIMARY KEY (`staff_id`),
-  KEY `smap_id` (`smap_id`,`staff_order_num`,`staff_photo_img`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `hrm_staff`
---
-
-INSERT INTO `hrm_staff` (`staff_id`, `smap_id`, `staff_order_num`, `staff_photo_img`) VALUES
-(1, 402, 1, 'uploads/public/12665754338542.png'),
-(2, 402, 2, 'uploads/public/12665745065727.gif');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `hrm_staff_translation`
---
-
-DROP TABLE IF EXISTS `hrm_staff_translation`;
-CREATE TABLE IF NOT EXISTS `hrm_staff_translation` (
-  `staff_id` int(10) unsigned NOT NULL,
-  `lang_id` int(10) unsigned NOT NULL,
-  `staff_name` varchar(250) NOT NULL,
-  `staff_post` varchar(250) NOT NULL,
-  `staff_announce` text NOT NULL,
-  `staff_text_rtf` text,
-  PRIMARY KEY (`staff_id`,`lang_id`),
-  KEY `lang_id` (`lang_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `hrm_staff_translation`
---
-
-INSERT INTO `hrm_staff_translation` (`staff_id`, `lang_id`, `staff_name`, `staff_post`, `staff_announce`, `staff_text_rtf`) VALUES
-(1, 1, 'Имя сотрудника', 'Должность', 'Краткий текст про сотрудника', NULL),
-(1, 2, 'Ім''я співробітника', 'Посада', 'Короткий текст про співробітника', NULL),
-(1, 3, 'Staff name', 'Position', 'Short text', NULL),
-(2, 1, 'Lorem ipsum', 'Главный разработчик', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui do<strong>lorem ipsum</strong>, quia <strong>dolor sit, amet, consectetur, adipisci</strong> v<strong>elit, sed</strong> quia non numquam <strong>eius mod</strong>i <strong>tempor</strong>a <strong>incidunt, ut labore et dolore magna</strong>m <strong>aliqua</strong>m quaerat voluptatem. <strong>Ut enim ad minim</strong>a <strong>veniam, quis nostru</strong>m <strong>exercitation</strong>em <strong>ullam co</strong>rporis suscipit <strong>labori</strong>o<strong>s</strong>am, <strong>nisi ut aliquid ex ea commod</strong>i <strong>consequat</strong>ur? <strong>Quis aute</strong>m vel eum <strong>iure reprehenderit,</strong> qui <strong>in</strong> ea <strong>voluptate velit esse</strong>, quam nihil molestiae <strong>c</strong>onsequatur, vel <strong>illum</strong>, qui <strong>dolore</strong>m <strong>eu</strong>m <strong>fugiat</strong>, quo voluptas <strong>nulla pariatur</strong>? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias <strong>exceptur</strong>i <strong>sint, obcaecat</strong>i <strong>cupiditat</strong>e <strong>non pro</strong>v<strong>ident</strong>, similique <strong>sunt in culpa</strong>, <strong>qui officia deserunt mollit</strong>ia <strong>anim</strong>i, <strong>id est laborum</strong> et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.'),
-(2, 2, 'Lorem ipsum', 'Головний розробник', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui do<strong>lorem ipsum</strong>, quia <strong>dolor sit, amet, consectetur, adipisci</strong> v<strong>elit, sed</strong> quia non numquam <strong>eius mod</strong>i <strong>tempor</strong>a <strong>incidunt, ut labore et dolore magna</strong>m <strong>aliqua</strong>m quaerat voluptatem. <strong>Ut enim ad minim</strong>a <strong>veniam, quis nostru</strong>m <strong>exercitation</strong>em <strong>ullam co</strong>rporis suscipit <strong>labori</strong>o<strong>s</strong>am, <strong>nisi ut aliquid ex ea commod</strong>i <strong>consequat</strong>ur? <strong>Quis aute</strong>m vel eum <strong>iure reprehenderit,</strong> qui <strong>in</strong> ea <strong>voluptate velit esse</strong>, quam nihil molestiae <strong>c</strong>onsequatur, vel <strong>illum</strong>, qui <strong>dolore</strong>m <strong>eu</strong>m <strong>fugiat</strong>, quo voluptas <strong>nulla pariatur</strong>? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias <strong>exceptur</strong>i <strong>sint, obcaecat</strong>i <strong>cupiditat</strong>e <strong>non pro</strong>v<strong>ident</strong>, similique <strong>sunt in culpa</strong>, <strong>qui officia deserunt mollit</strong>ia <strong>anim</strong>i, <strong>id est laborum</strong> et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.'),
-(2, 3, 'Lorem ipsum', 'Senior developer', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui do<strong>lorem ipsum</strong>, quia <strong>dolor sit, amet, consectetur, adipisci</strong> v<strong>elit, sed</strong> quia non numquam <strong>eius mod</strong>i <strong>tempor</strong>a <strong>incidunt, ut labore et dolore magna</strong>m <strong>aliqua</strong>m quaerat voluptatem. <strong>Ut enim ad minim</strong>a <strong>veniam, quis nostru</strong>m <strong>exercitation</strong>em <strong>ullam co</strong>rporis suscipit <strong>labori</strong>o<strong>s</strong>am, <strong>nisi ut aliquid ex ea commod</strong>i <strong>consequat</strong>ur? <strong>Quis aute</strong>m vel eum <strong>iure reprehenderit,</strong> qui <strong>in</strong> ea <strong>voluptate velit esse</strong>, quam nihil molestiae <strong>c</strong>onsequatur, vel <strong>illum</strong>, qui <strong>dolore</strong>m <strong>eu</strong>m <strong>fugiat</strong>, quo voluptas <strong>nulla pariatur</strong>? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias <strong>exceptur</strong>i <strong>sint, obcaecat</strong>i <strong>cupiditat</strong>e <strong>non pro</strong>v<strong>ident</strong>, similique <strong>sunt in culpa</strong>, <strong>qui officia deserunt mollit</strong>ia <strong>anim</strong>i, <strong>id est laborum</strong> et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `hrm_vacancies`
---
-
-DROP TABLE IF EXISTS `hrm_vacancies`;
-CREATE TABLE IF NOT EXISTS `hrm_vacancies` (
-  `vacancy_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `smap_id` int(10) unsigned NOT NULL,
-  `vacancy_date` date NOT NULL,
-  `vacancy_end_date` date DEFAULT NULL,
-  `vacancy_is_active` tinyint(1) NOT NULL DEFAULT '1',
-  `vacancy_url_segment` varchar(100) NOT NULL,
-  PRIMARY KEY (`vacancy_id`),
-  KEY `vacancy_date` (`vacancy_date`),
-  KEY `smap_id` (`smap_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `hrm_vacancies`
---
-
-INSERT INTO `hrm_vacancies` (`vacancy_id`, `smap_id`, `vacancy_date`, `vacancy_end_date`, `vacancy_is_active`, `vacancy_url_segment`) VALUES
-(1, 398, '2010-04-09', '2010-04-30', 1, 'sekretary'),
-(2, 398, '2010-04-20', NULL, 1, 'lorem-ipsum');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `hrm_vacancies_translation`
---
-
-DROP TABLE IF EXISTS `hrm_vacancies_translation`;
-CREATE TABLE IF NOT EXISTS `hrm_vacancies_translation` (
-  `vacancy_id` int(10) unsigned NOT NULL,
-  `lang_id` int(10) unsigned NOT NULL,
-  `vacancy_name` varchar(250) NOT NULL,
-  `vacancy_annotation` text NOT NULL,
-  `vacancy_text_rtf` text NOT NULL,
-  `vacancy_info_rtf` text,
-  PRIMARY KEY (`vacancy_id`,`lang_id`),
-  KEY `lang_id` (`lang_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `hrm_vacancies_translation`
---
-
-INSERT INTO `hrm_vacancies_translation` (`vacancy_id`, `lang_id`, `vacancy_name`, `vacancy_annotation`, `vacancy_text_rtf`, `vacancy_info_rtf`) VALUES
-(1, 1, 'Секретарь', 'Краткая информация про вакансию "Секретарь"', 'Полная информация про вакансию «Секретарь».<br/>\r\nТребования:<br/>\r\nРост 170-180 см.<br/>\r\nРазмер груди 3-4.<br/>\r\n', 'sdfsadf'),
-(1, 2, 'Секретар', 'Коротка інформація про вакансію "Секретар"', 'Повна інформація про вакансію «Секретар».<br/>\r\nВимоги:<br/>\r\nЗріст 170-180 см.<br/>\r\nРозмір бюсту 3-4.', 'sdgfasd'),
-(1, 3, 'Secretary', 'Short info about Secretary vacancy', 'Full info about Secretary vacancy.<br/>\r\n', 'dsfasdf'),
-(2, 1, 'Lorem ipsum', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui do<strong>lorem ipsum</strong>, quia <strong>dolor sit, amet, consectetur, adipisci</strong> v<strong>elit, sed</strong> quia non numquam <strong>eius mod</strong>i <strong>tempor</strong>a <strong>incidunt, ut labore et dolore magna</strong>m <strong>aliqua</strong>m quaerat voluptatem. <strong>Ut enim ad minim</strong>a <strong>veniam, quis nostru</strong>m <strong>exercitation</strong>em <strong>ullam co</strong>rporis suscipit <strong>labori</strong>o<strong>s</strong>am, <strong>nisi ut aliquid ex ea commod</strong>i <strong>consequat</strong>ur? <strong>Quis aute</strong>m vel eum <strong>iure reprehenderit,</strong> qui <strong>in</strong> ea <strong>voluptate velit esse</strong>, quam nihil molestiae <strong>c</strong>onsequatur, vel <strong>illum</strong>, qui <strong>dolore</strong>m <strong>eu</strong>m <strong>fugiat</strong>, quo voluptas <strong>nulla pariatur</strong>? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias <strong>exceptur</strong>i <strong>sint, obcaecat</strong>i <strong>cupiditat</strong>e <strong>non pro</strong>v<strong>ident</strong>, similique <strong>sunt in culpa</strong>, <strong>qui officia deserunt mollit</strong>ia <strong>anim</strong>i, <strong>id est laborum</strong> et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.', NULL),
-(2, 2, 'Lorem ipsum', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui do<strong>lorem ipsum</strong>, quia <strong>dolor sit, amet, consectetur, adipisci</strong> v<strong>elit, sed</strong> quia non numquam <strong>eius mod</strong>i <strong>tempor</strong>a <strong>incidunt, ut labore et dolore magna</strong>m <strong>aliqua</strong>m quaerat voluptatem. <strong>Ut enim ad minim</strong>a <strong>veniam, quis nostru</strong>m <strong>exercitation</strong>em <strong>ullam co</strong>rporis suscipit <strong>labori</strong>o<strong>s</strong>am, <strong>nisi ut aliquid ex ea commod</strong>i <strong>consequat</strong>ur? <strong>Quis aute</strong>m vel eum <strong>iure reprehenderit,</strong> qui <strong>in</strong> ea <strong>voluptate velit esse</strong>, quam nihil molestiae <strong>c</strong>onsequatur, vel <strong>illum</strong>, qui <strong>dolore</strong>m <strong>eu</strong>m <strong>fugiat</strong>, quo voluptas <strong>nulla pariatur</strong>? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias <strong>exceptur</strong>i <strong>sint, obcaecat</strong>i <strong>cupiditat</strong>e <strong>non pro</strong>v<strong>ident</strong>, similique <strong>sunt in culpa</strong>, <strong>qui officia deserunt mollit</strong>ia <strong>anim</strong>i, <strong>id est laborum</strong> et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.', NULL),
-(2, 3, 'Lorem ipsum', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui do<strong>lorem ipsum</strong>, quia <strong>dolor sit, amet, consectetur, adipisci</strong> v<strong>elit, sed</strong> quia non numquam <strong>eius mod</strong>i <strong>tempor</strong>a <strong>incidunt, ut labore et dolore magna</strong>m <strong>aliqua</strong>m quaerat voluptatem. <strong>Ut enim ad minim</strong>a <strong>veniam, quis nostru</strong>m <strong>exercitation</strong>em <strong>ullam co</strong>rporis suscipit <strong>labori</strong>o<strong>s</strong>am, <strong>nisi ut aliquid ex ea commod</strong>i <strong>consequat</strong>ur? <strong>Quis aute</strong>m vel eum <strong>iure reprehenderit,</strong> qui <strong>in</strong> ea <strong>voluptate velit esse</strong>, quam nihil molestiae <strong>c</strong>onsequatur, vel <strong>illum</strong>, qui <strong>dolore</strong>m <strong>eu</strong>m <strong>fugiat</strong>, quo voluptas <strong>nulla pariatur</strong>? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias <strong>exceptur</strong>i <strong>sint, obcaecat</strong>i <strong>cupiditat</strong>e <strong>non pro</strong>v<strong>ident</strong>, similique <strong>sunt in culpa</strong>, <strong>qui officia deserunt mollit</strong>ia <strong>anim</strong>i, <strong>id est laborum</strong> et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.', NULL);
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `image_photo_gallery`
@@ -252,12 +117,6 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (395, 1, 3),
 (396, 1, 3),
 (397, 1, 3),
-(398, 1, 3),
-(399, 1, 3),
-(400, 1, 3),
-(401, 1, 3),
-(402, 1, 3),
-(403, 1, 3),
 (80, 3, 1),
 (324, 3, 1),
 (327, 3, 1),
@@ -277,9 +136,6 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (394, 3, 1),
 (395, 3, 1),
 (396, 3, 1),
-(398, 3, 1),
-(400, 3, 1),
-(402, 3, 1),
 (80, 4, 1),
 (324, 4, 1),
 (327, 4, 1),
@@ -298,11 +154,7 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (393, 4, 1),
 (394, 4, 1),
 (395, 4, 1),
-(396, 4, 1),
-(398, 4, 1),
-(400, 4, 1),
-(401, 4, 1),
-(402, 4, 1);
+(396, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -363,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `share_lang_tags` (
   `ltag_name` varchar(70) NOT NULL DEFAULT '',
   PRIMARY KEY (`ltag_id`),
   UNIQUE KEY `ltag_name` (`ltag_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=634 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=589 ;
 
 --
 -- Dumping data for table `share_lang_tags`
@@ -377,9 +229,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (426, 'BTN_ADD_NEWS'),
 (57, 'BTN_ADD_PAGE'),
 (495, 'BTN_ADD_PHOTO'),
-(626, 'BTN_ADD_STAFF'),
 (563, 'BTN_ADD_TO_BASKET'),
-(602, 'BTN_ADD_VACANCY'),
 (464, 'BTN_ALIGN_CENTER'),
 (465, 'BTN_ALIGN_JUSTIFY'),
 (462, 'BTN_ALIGN_LEFT'),
@@ -393,8 +243,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (428, 'BTN_DELETE_NEWS'),
 (59, 'BTN_DELETE_PAGE'),
 (497, 'BTN_DELETE_PHOTO'),
-(628, 'BTN_DELETE_STAFF'),
-(604, 'BTN_DELETE_VACANCY'),
 (448, 'BTN_DEL_FILE'),
 (323, 'BTN_DIV_EDITOR'),
 (546, 'BTN_DOWN'),
@@ -403,8 +251,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (427, 'BTN_EDIT_NEWS'),
 (58, 'BTN_EDIT_PAGE'),
 (496, 'BTN_EDIT_PHOTO'),
-(627, 'BTN_EDIT_STAFF'),
-(603, 'BTN_EDIT_VACANCY'),
 (466, 'BTN_FILE_LIBRARY'),
 (357, 'BTN_FILE_REPOSITORY'),
 (214, 'BTN_GO'),
@@ -472,7 +318,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (559, 'FIELD_CURR_IS_MAIN'),
 (512, 'FIELD_CURR_NAME'),
 (513, 'FIELD_CURR_RATE'),
-(606, 'FIELD_ERROR_MESSAGE'),
 (437, 'FIELD_FEED_AUTHOR'),
 (442, 'FIELD_FEED_DATE'),
 (438, 'FIELD_FEED_EMAIL'),
@@ -512,7 +357,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (588, 'FIELD_ORDER_COMMENT'),
 (585, 'FIELD_ORDER_CREATED'),
 (579, 'FIELD_ORDER_DELIVERY_COMMENT'),
-(623, 'FIELD_ORDER_DETAIL'),
 (584, 'FIELD_OS_ID'),
 (519, 'FIELD_OS_NAME'),
 (485, 'FIELD_PG_PHOTO_IMG'),
@@ -528,7 +372,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (534, 'FIELD_PRODUCT_CODE'),
 (536, 'FIELD_PRODUCT_COUNT'),
 (541, 'FIELD_PRODUCT_DESCRIPTION_RTF'),
-(618, 'FIELD_PRODUCT_IMAGES'),
 (532, 'FIELD_PRODUCT_NAME'),
 (535, 'FIELD_PRODUCT_PRICE'),
 (533, 'FIELD_PRODUCT_SEGMENT'),
@@ -540,11 +383,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (539, 'FIELD_PT_ID'),
 (524, 'FIELD_PT_NAME'),
 (265, 'FIELD_REMEMBER_LOGIN'),
-(599, 'FIELD_RESUME_CANDIDATE_EMAIL'),
-(598, 'FIELD_RESUME_CANDIDATE_NAME'),
-(613, 'FIELD_RESUME_DATE'),
-(601, 'FIELD_RESUME_MAIN_PFILE'),
-(600, 'FIELD_RESUME_TEXT'),
 (518, 'FIELD_RIGHT_ID'),
 (127, 'FIELD_SMAP_DEFAULT'),
 (130, 'FIELD_SMAP_DESCRIPTION_RTF'),
@@ -560,11 +398,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (122, 'FIELD_SMAP_PID'),
 (467, 'FIELD_SMAP_REDIRECT_URL'),
 (123, 'FIELD_SMAP_SEGMENT'),
-(631, 'FIELD_STAFF_ANNOUNCE'),
-(630, 'FIELD_STAFF_NAME'),
-(629, 'FIELD_STAFF_PHOTO_IMG'),
-(633, 'FIELD_STAFF_POST'),
-(632, 'FIELD_STAFF_TEXT_RTF'),
 (329, 'FIELD_TAGS'),
 (348, 'FIELD_TEXTBLOCK_SOURCE'),
 (77, 'FIELD_TMPL_CONTENT'),
@@ -586,17 +419,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (50, 'FIELD_U_NAME'),
 (52, 'FIELD_U_PASSWORD'),
 (53, 'FIELD_U_PASSWORD2'),
-(590, 'FIELD_VACANCY_ANNOTATION'),
-(593, 'FIELD_VACANCY_DATE'),
-(594, 'FIELD_VACANCY_END_DATE'),
-(597, 'FIELD_VACANCY_ID'),
-(592, 'FIELD_VACANCY_INFO_RTF'),
-(595, 'FIELD_VACANCY_IS_ACTIVE'),
-(589, 'FIELD_VACANCY_NAME'),
-(591, 'FIELD_VACANCY_TEXT_RTF'),
-(596, 'FIELD_VACANCY_URL_SEGMENT'),
 (470, 'FIELD_ZIP_FILE'),
-(622, 'MSG_BAD_CAPTCHA'),
 (556, 'MSG_BAD_CURR_ABBR'),
 (144, 'MSG_BAD_EMAIL_FORMAT'),
 (146, 'MSG_BAD_FLOAT_FORMAT'),
@@ -607,18 +430,15 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (499, 'MSG_DELETE_FILE'),
 (343, 'MSG_EMPTY_SEARCH_RESULT'),
 (136, 'MSG_FIELD_IS_NOT_NULL'),
-(615, 'MSG_FILE_IS_NOT_NULL'),
 (447, 'MSG_NO_ATTACHED_FILES'),
 (261, 'MSG_NO_FILE'),
 (578, 'MSG_ORDER_FAILED'),
 (296, 'MSG_PASSWORD_SENT'),
 (374, 'MSG_PWD_MISMATCH'),
 (424, 'MSG_REQUEST_SENT'),
-(614, 'MSG_RESUME_SENT'),
 (331, 'MSG_START_EDITING'),
 (558, 'MSG_SWITCHER_TIP'),
 (445, 'TAB_ATTACHED_FILES'),
-(620, 'TAB_ORDER_DETAILS'),
 (510, 'TAB_PAGE_RIGHTS'),
 (538, 'TAB_PRODUCT_PARAMS'),
 (320, 'TXT_ACCESS_EDIT'),
@@ -634,15 +454,11 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (175, 'TXT_ALIGN_TOP'),
 (564, 'TXT_ANOTHER_PRODUCTS'),
 (429, 'TXT_BACK_TO_LIST'),
-(621, 'TXT_BAD_CAPTCHA'),
 (302, 'TXT_BAD_SEGMENT_FORMAT'),
 (566, 'TXT_BASKET_CONTENTS'),
 (567, 'TXT_BASKET_EMPTY'),
 (565, 'TXT_BASKET_SUMM'),
 (570, 'TXT_BASKET_SUMM2'),
-(609, 'TXT_BODY_FEEDBACK_ADMIN'),
-(611, 'TXT_BODY_FEEDBACK_USER'),
-(617, 'TXT_BODY_NEW_RESUME'),
 (505, 'TXT_BODY_REGISTER'),
 (294, 'TXT_BODY_RESTORE_PASSWORD'),
 (421, 'TXT_CLOSE_FIELD'),
@@ -655,7 +471,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (121, 'TXT_DIV_EDITOR'),
 (205, 'TXT_DOWNLOAD_FILE'),
 (112, 'TXT_EDIT_ITEM'),
-(605, 'TXT_ENTER_CAPTCHA'),
 (371, 'TXT_ENTER_PASSWORD'),
 (64, 'TXT_ERRORS'),
 (443, 'TXT_FEEDBACKLIST'),
@@ -672,7 +487,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (344, 'TXT_HOME'),
 (255, 'TXT_IMAGE_LIBRARY'),
 (279, 'TXT_LANGUAGE_EDITOR'),
-(607, 'TXT_LOGIN_ENGAGED'),
 (471, 'TXT_MONTH_1'),
 (480, 'TXT_MONTH_10'),
 (481, 'TXT_MONTH_11'),
@@ -685,8 +499,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (477, 'TXT_MONTH_7'),
 (478, 'TXT_MONTH_8'),
 (479, 'TXT_MONTH_9'),
-(625, 'TXT_NO_PRODUCTS'),
-(624, 'TXT_NO_PRODUCTS_FOUND'),
 (156, 'TXT_NO_RIGHTS'),
 (420, 'TXT_OPEN_FIELD'),
 (548, 'TXT_OR'),
@@ -695,7 +507,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (581, 'TXT_ORDER_CLIENT_MAIL_BODY'),
 (576, 'TXT_ORDER_CLIENT_SUBJECT'),
 (580, 'TXT_ORDER_FORM'),
-(619, 'TXT_ORDER_LOGIN_ENGAGED'),
 (583, 'TXT_ORDER_MANAGER_MAIL_BODY'),
 (575, 'TXT_ORDER_MANAGER_SUBJECT'),
 (582, 'TXT_ORDER_NEW_CLIENT_MAIL_BODY'),
@@ -714,7 +525,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (439, 'TXT_REQUIRED_FIELDS'),
 (449, 'TXT_RESET'),
 (328, 'TXT_RESET_FILTER'),
-(612, 'TXT_RESUMEGRID'),
 (341, 'TXT_ROLE_DIV_RIGHTS'),
 (274, 'TXT_ROLE_EDITOR'),
 (488, 'TXT_ROLE_TEXT'),
@@ -722,9 +532,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (342, 'TXT_SEARCH_RESULT'),
 (143, 'TXT_SHIT_HAPPENS'),
 (431, 'TXT_SITEMAP'),
-(608, 'TXT_SUBJ_FEEDBACK_ADMIN'),
-(610, 'TXT_SUBJ_FEEDBACK_USER'),
-(616, 'TXT_SUBJ_NEW_RESUME'),
 (504, 'TXT_SUBJ_REGISTER'),
 (293, 'TXT_SUBJ_RESTORE_PASSWORD'),
 (80, 'TXT_SUCCESS'),
@@ -1089,12 +896,12 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (287, 1, 'Здравствуйте!'),
 (287, 2, 'Доброго дня!'),
 (287, 3, 'Hello!'),
-(293, 1, 'Уведомление о восстановление пароля'),
-(293, 2, 'Повідомлення про відновлення паролю'),
+(293, 1, 'Восстановление пароля'),
+(293, 2, 'Відновлення пароля'),
 (293, 3, 'Restore password'),
-(294, 1, '<p> Здравствуйте.</p><p> Вами был подан запрос на восстановление пароля на сайте $host.<br/>\r\n Ваш новый пароль: $password</p><p> В качестве имени пользователя используйте адрес электронной почты, на которое поступило это письмо.</p>'),
-(294, 2, '<p> Доброго дня.</p><p> Вами було подано запит на відновлення пароля на сайті $host.<br/>\r\n Ваш новый пароль: $password</p><p> В якості імені користувача використовуйте адресу електронної пошти, на яку надійшов цей лист.</p>'),
-(294, 3, '<p> Hello.</p><p> You have sent an order to restore password on $host.<br/>\r\n Your new password is: $password</p><p> Use e-mail address on which you have received this message as login.</p>'),
+(294, 1, '<p> Здравствуйте.</p><p> Вами был подан запрос на восстановление пароля.<br/>\r\n Ваш новый пароль: $password.</p><p> В качестве имени пользователя используйте адрес электронной почты, на которое поступило это письмо.</p><p> С уважением, разработчики Energine.</p>'),
+(294, 2, '<p> Доброго дня.</p><p> Вами було подано запит на відновлення пароля.<br/>\r\n Ваш новый пароль: $password.</p><p> В якості імені користувача використовуйте адресу електронної пошти, на яку надійшов цей лист.</p><p> С повагою, розробники Energine.</p>'),
+(294, 3, '<p> Hello.</p><p> You have sent an order to restore password.<br/>\r\n Your new password is: $password.</p><p> Use e-mail address on which you have received this message as login.</p>'),
 (295, 1, 'Неправильное имя пользователя'),
 (295, 2, 'Невірне ім''я користувача'),
 (295, 3, 'Incorrect user name'),
@@ -1110,9 +917,9 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (302, 1, 'Неправильный формат сегмента URL'),
 (302, 2, 'Неправильний формат сегмента URL'),
 (302, 3, 'Incorrect format of URL segment'),
-(303, 1, '<p> <strong>Пользователь с такими данными уже существует.</strong></p><p> Скорее всего, вы уже зарегистрированы.</p><p> Вам необходимо авторизоваться, перейдя на форму авторизации.</p><p> Если вы забыли свой пароль, воспользуйтесь формой восстановления пароля, расположенной на той же странице.</p>'),
-(303, 2, '<p> <strong>Користувач з такими даними уже існує.</strong></p><p> Скоріш за все, ви вже зареєстровані.</p><p> Вам необхідно авторизуватися за допомогою форми авторизації.</p><p> Якщо ви забули свій пароль, скористайтесь формою відновлення пароля, що знаходиться на тій же сторінці.</p>'),
-(303, 3, '<p> <strong>User with such data already exists.</strong></p><p> Probably you have registered yet.</p><p> You have to authorize using the authorization form.</p>'),
+(303, 1, '<P><STRONG>Пользователь с такими данными уже существует.</STRONG></P>\n<P>Скорее всего вы уже зарегистрированы в нашем магазине. </P>\n<P>Вам необходимо авторизоваться , перейдя на форму авторизации. </P>\n<P>Если вы забыли свой пароль, воспользуйтесь формой восстановления пароля, расположенной на той же странице.</P>'),
+(303, 2, '<P><STRONG>Користувач з такими даними уже існує.</STRONG></P>\n<P>Скоріш за все, ви вже зареєстровані у нашому магазині. </P>\n<P>Вам необхідно авторизуватися за допомогою форми авторизації. </P>\n<P>Якщо ви забули свій пароль, скористайтесь формою відновлення пароля, що знаходиться на тій же сторінці.</P>'),
+(303, 3, '<P><STRONG>User with such data already exists.</STRONG></P>\n<P>Probably you have registered yet in our shop.</P>'),
 (304, 1, 'Группы'),
 (304, 2, 'Групи'),
 (304, 3, 'Groups'),
@@ -1311,7 +1118,7 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (440, 1, 'Ваше сообщение успешно отправлено.'),
 (440, 2, 'Ваше повідомлення успішно відправлено.'),
 (440, 3, 'Your message has been successfully sent.'),
-(441, 1, 'Поздравляем, Вы удачно зарегистрировались. На указанный Вами адрес электронной почты отправлено письмо с параметрами доступа.'),
+(441, 1, 'Поздравляем, Вы удачно зарегистрировались. На указанный Вами адрес электронной почты отправлено письмо с параметрими доступа.'),
 (441, 2, 'Вітаємо, Ви вдало зареєструвалися.'),
 (441, 3, 'Congratulations, you have successfully registered.'),
 (442, 1, 'Дата сообщения'),
@@ -1503,9 +1310,9 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (504, 1, 'Уведомление о регистрации'),
 (504, 2, 'Повідомлення про реєстрацію'),
 (504, 3, 'Registration succeed'),
-(505, 1, '<p> Здравствуйте, $name.</p><p> Вы были зарегистрированы на сайте $host.</p><p> Ваш логин: $login<br/>\r\n Пароль: $password</p>'),
-(505, 2, '<p> Здравствуйте, $name.</p><p> Вы были зарегистрированы на сайте $host.</p><p> Ваш логин: $login<br/>\r\n Пароль: $password</p>'),
-(505, 3, '<p> Hello, $name.</p><p> You have been registered on our site $host.</p><p> Login: $login<br/>\r\n Password: $password</p>'),
+(505, 1, '<p> Здравствуйте, $name.<br/>\r\n Вы были зарегистрированы на сайте.</p><p> Ваш логин: $login<br/>\r\n Пароль: $password</p>'),
+(505, 2, '<div> <p> Здравствуйте, $name.<br/>\r\n Вы были зарегистрированы на сайте. </p> <p> Ваш логин: $login<br/>\r\n Пароль: $password </p></div>'),
+(505, 3, '<div> <p> Hello, $name.<br/>\r\n You had been registered on our site. </p> <p> Login: $login<br/>\r\n Password: $password </p></div>'),
 (506, 1, 'Группы'),
 (506, 2, 'Групи'),
 (506, 3, 'Roles'),
@@ -1665,9 +1472,9 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (566, 1, 'В корзине'),
 (566, 2, 'Вміст кошику'),
 (566, 3, 'Basket'),
-(567, 1, 'Корзина пуста.'),
-(567, 2, 'Кошик порожній.'),
-(567, 3, 'Basket is empty.'),
+(567, 1, 'Корзина пуста'),
+(567, 2, 'Кошик порожній'),
+(567, 3, 'Basket is empty'),
 (568, 1, 'Сумма'),
 (568, 2, 'Сума'),
 (568, 3, 'Summ'),
@@ -1686,33 +1493,33 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (573, 1, 'Перейти в корзину'),
 (573, 2, 'Перейти до кошику'),
 (573, 3, 'Basket'),
-(574, 1, 'Ваш заказ отправлен.'),
-(574, 2, 'Ваше замовлення відправлено.'),
-(574, 3, 'Your order has been sent.'),
-(575, 1, 'Новый заказ в магазине'),
-(575, 2, 'Нове замовлення в магазині'),
-(575, 3, 'New order in shop'),
+(574, 1, 'Ваш заказ отправлен'),
+(574, 2, 'Ваше замовлення відправлено'),
+(574, 3, 'Your order has been sent'),
+(575, 1, 'Сообщение системы электронного магазина'),
+(575, 2, 'Повідомлення системи електронного магазину'),
+(575, 3, 'Message from e-shop'),
 (576, 1, 'Уведомление о оформлении заказа'),
 (576, 2, 'Повідомлення про відправку замолення'),
 (576, 3, 'Order has been sent'),
-(578, 1, '<p> Оформление заказа не увенчалось успехом. Свяжитесь с администратором магазина для решения проблем.</p>'),
-(578, 2, '<p> Оформити замовлення не вдалося. Зв''яжіться з адміністратором магазину для вирішення проблем.</p>'),
-(578, 3, '<p> Order has failed.</p>'),
+(578, 1, 'Оформление заказа не увенчалось успехом Свяжитесь с администратором магазина для решения проблем'),
+(578, 2, 'Оформлення замовлення зазнало невдачі'),
+(578, 3, 'Order is failed'),
 (579, 1, 'Комментарий'),
 (579, 2, 'Коментар'),
 (579, 3, 'Comment'),
 (580, 1, 'Форма заказа'),
 (580, 2, 'Форма замовлення'),
 (580, 3, 'Order form'),
-(581, 1, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ на сайте $host.</p><p> Номер заказа: <strong>$order_id</strong></p><p> Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>'),
-(581, 2, '<p> Доброго дня, $u_fullname.<br/>\r\n Ви оформили замовлення на сайті $host.</p><p> Номер замовлення: <strong>$order_id</strong></p><p> Коментар до замовлення: $order_delivery_comment</p><p> Зміст замовлення: $basket</p>'),
-(581, 3, '<p> Hello, $u_fullname.<br/>\r\n You have created an order on $host.</p><p> Order number: <strong>$order_id</strong></p><p> Comment to order: $order_delivery_comment</p><p> Order contents: $basket</p>'),
-(582, 1, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ на сайте $host.</p><p> Номер заказа: <strong>$order_id</strong></p><p> Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p><p> Теперь вы зарегистрированы в нашем магазине.</p><p> Логин: $u_name<br/>\r\n Пароль: $u_password</p>'),
-(582, 2, '<p> Доброго дня, $u_fullname.<br/>\r\n Ви оформили замовлення на сайті $host.</p><p> Номер замовлення: <strong>$order_id</strong></p><p> Коментар до замовлення: $order_delivery_comment</p><p> Зміст замовлення: $basket</p><p> Тепер ви зареєстровані у нашому магазині.</p><p> Логін: $u_name<br/>\r\n Пароль: $u_password</p>'),
-(582, 3, '<p> Hello, $u_fullname.<br/>\r\n You have created a new order on $host.</p><p> Order number: <strong>$order_id</strong></p><p> Comment to order: $order_delivery_comment</p><p> Order contents: $basket</p><p> You are registered in our shop now.</p><p> Login: $u_name<br/>\r\n Password: $u_password</p>'),
-(583, 1, '<p> Здравствуйте, администратор.<br/>\r\n В магазин на сайте $host поступил новый заказ.</p><p> Номер заказа: <strong>$order_id</strong></p><p> Пользователь: $u_fullname ($u_name)</p><p> Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>'),
-(583, 2, '<p> Доброго дня, адміністратор.<br/>\r\n В магазин на сайті $host надійшло нове замовлення.</p><p> Номер замовлення: <strong>$order_id</strong></p><p> Користувач: $u_fullname ($u_name)</p><p> Коментар до замовлення: $order_delivery_comment</p><p> Зміст замовлення: $basket</p>'),
-(583, 3, '<p> Hallo, admin.<br/>\r\n There is a new order from site $host.</p><p> Order number: <strong>$order_id</strong></p><p> User: $u_fullname ($u_name)</p><p> Order comment: $order_delivery_comment</p><p> Order contents: $basket</p>'),
+(581, 1, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p>Содержание заказа: $basket'),
+(581, 2, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p>Содержание заказа: $basket'),
+(581, 3, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p>Содержание заказа: $basket'),
+(582, 1, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>Теперь вы зарегистрированы в нашем магазине:<ul> <li>Логин: $u_name </li> <li>Пароль: $u_password </li></ul>'),
+(582, 2, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>Теперь вы зарегистрированы в нашем магазине:<ul> <li>Логин: $u_name </li> <li>Пароль: $u_password </li></ul>'),
+(582, 3, '<p> Здравствуйте, $u_fullname.<br/>\r\n Вы оформили заказ в магазине Energine.</p>Номер заказа: <strong>$order_id</strong><br/>\r\n<p> Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>Теперь вы зарегистрированы в нашем магазине:<ul> <li>Логин: $u_name </li> <li>Пароль: $u_password </li></ul>'),
+(583, 1, '<p> Здравствуйте, администратор.<br/>\r\n В наш електронный магазин поступил новый заказ:<br/>\r\n Номер заказа: <strong>$order_id</strong><br/>\r\n</p><p> Пользователь: $u_fullname ($u_name)<br/>\r\n Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>'),
+(583, 2, '<p> Здравствуйте, администратор.<br/>\r\n В наш електронный магазин поступил новый заказ:<br/>\r\n Номер заказа: <strong>$order_id</strong><br/>\r\n</p><p> Пользователь: $u_fullname ($u_name)<br/>\r\n Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>'),
+(583, 3, '<p> Здравствуйте, администратор.<br/>\r\n В наш електронный магазин поступил новый заказ:<br/>\r\n Номер заказа: <strong>$order_id</strong><br/>\r\n</p><p> Пользователь: $u_fullname ($u_name)<br/>\r\n Комментарий к заказу: $order_delivery_comment</p><p> Содержание заказа: $basket</p>'),
 (584, 1, 'Статус заказа'),
 (584, 2, 'Статус замовлення'),
 (584, 3, 'Order status'),
@@ -1727,143 +1534,7 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (587, 3, 'Order details'),
 (588, 1, 'Комментарии администратора'),
 (588, 2, 'Коментарі адмінстратора'),
-(588, 3, 'Comments'),
-(589, 1, 'Название вакансии'),
-(589, 2, 'Назва вакансії'),
-(589, 3, 'Vacancy name'),
-(590, 1, 'Кранкая информация о Вакансии'),
-(590, 2, 'Коротка інформація про вакансію'),
-(590, 3, 'Short description about vacancy'),
-(591, 1, 'Полный текст вакансии'),
-(591, 2, 'Повний текст вакансії'),
-(591, 3, 'Full text about vacancy'),
-(592, 1, 'Дополнительная информация о вакансии'),
-(592, 2, 'Додаткова інформація про вакансію'),
-(592, 3, 'Additional info about vacancy'),
-(593, 1, 'Дата публикации'),
-(593, 2, 'Дата публікації'),
-(593, 3, 'Publication date'),
-(594, 1, 'Вакансия актуальна до'),
-(594, 2, 'Вакансія є актуальною до'),
-(594, 3, 'Vacancy deadline'),
-(595, 1, 'Вакансия активна'),
-(595, 2, 'Вакансія активна'),
-(595, 3, 'Vacancy is active'),
-(596, 1, 'Сегмент URL'),
-(596, 2, 'Сегмент URL'),
-(596, 3, 'URL segment'),
-(597, 1, 'Название должности'),
-(597, 2, 'Назва посади'),
-(597, 3, 'Vacancy name'),
-(598, 1, 'Имя кандидата'),
-(598, 2, 'Ім''я кандидата'),
-(598, 3, 'Candidate name'),
-(599, 1, 'Email кандидата'),
-(599, 2, 'Email кандидата'),
-(599, 3, 'Candidate email'),
-(600, 1, 'Текст резюме'),
-(600, 2, 'Текст резюме'),
-(600, 3, 'Resume text'),
-(601, 1, 'Присоединить файл (резюме)'),
-(601, 2, 'Приєднати файл (резюме)'),
-(601, 3, 'Attach file (resume)'),
-(602, 1, 'Добавить вакансию'),
-(602, 2, 'Додати вакансію'),
-(602, 3, 'Add vacancy'),
-(603, 1, 'Редактировать вакансию'),
-(603, 2, 'Редагувати вакансію'),
-(603, 3, 'Edit vacancy'),
-(604, 1, 'Удалить вакансию'),
-(604, 2, 'Видалити вакансію'),
-(604, 3, 'Delete vacancy'),
-(605, 1, 'Введите цифры, изображенные на картинке'),
-(605, 2, 'Введіть цифри, зображені на картинці'),
-(605, 3, 'Enter figures you see in the picture'),
-(606, 1, 'Произошла ошибка'),
-(606, 2, 'Сталася помилка'),
-(606, 3, 'An error has occured'),
-(607, 1, 'Этот логин занят!'),
-(607, 2, 'Цей логін зайнято!'),
-(607, 3, 'This login is engaged!'),
-(608, 1, 'Новое сообщение'),
-(608, 2, 'Нове повідомлення'),
-(608, 3, 'New message'),
-(609, 1, '<p> Здравствуйте, администратор.<br/>\r\n Пользователь $feed_email оставил новое сообщение на сайте $host.</p><p> Текст сообщения:<br/>\r\n $feed_text</p>'),
-(609, 2, '<p> Доброго дня, адміністратор.<br/>\r\n Користувач $feed_email залишив нове повідомлення на сайті $host.</p><p> Текст повідомлення:<br/>\r\n $feed_text</p>'),
-(609, 3, '<p> Hello, admin.<br/>\r\n User $feed_email has left a new message on $host.</p><p> Message text:<br/>\r\n $feed_text</p>'),
-(610, 1, 'Ваше сообщение успешно доставлено'),
-(610, 2, 'Ваше повідомлення успішно надіслано'),
-(610, 3, 'Your message has been successfully delivered'),
-(611, 1, '<p> Здравствуйте.<br/>\r\n Вы оставили сообщение на сайте $host.</p><p> Ваше сообщение было успешно доставлено.</p><p> Текст сообщения:<br/>\r\n $feed_text</p>'),
-(611, 2, '<p> Доброго дня.<br/>\r\n Ви залишили повідомлення на сайті $host.</p><p> Ваше повідомлення було успішно доставлене.</p><p> Текст повідомлення:<br/>\r\n $feed_text</p>'),
-(611, 3, '<p> Hello.<br/>\r\n You have left a message on $host.</p><p> Your message has been successfully delivered.</p><p> Message text:<br/>\r\n $feed_text</p>'),
-(612, 1, 'Редактор резюме'),
-(612, 2, 'Редактор резюме'),
-(612, 3, 'Resume editor'),
-(613, 1, 'Дата прихода резюме'),
-(613, 2, 'Дата надходження резюме'),
-(613, 3, 'Date of resume receipt'),
-(614, 1, 'Ваше резюме успешно отправлено.'),
-(614, 2, 'Ваше резюме успішно надіслано.'),
-(614, 3, 'Your message has been successfully sent.'),
-(615, 1, 'Файл не загружен.'),
-(615, 2, 'Файл не завантажено.'),
-(615, 3, 'File has not been uploaded.'),
-(616, 1, 'Новое резюме'),
-(616, 2, 'Нове резюме'),
-(616, 3, 'New CV'),
-(617, 1, '<p> Здравствуйте, администратор.<br/>\r\n Пользователь $resume_candidate_name $resume_candidate_email прислал резюме на сайт $host.</p><p> Текст резюме:<br/>\r\n $resume_text</p><p> Файл резюме:<br/>\r\n $host$resume_main_pfile</p>'),
-(617, 2, '<p> Доброго дня, адміністратор.<br/>\r\n Користувач $resume_candidate_name $resume_candidate_email надіслав резюме на сайт $host.</p><p> Текст резюме:<br/>\r\n $resume_text</p><p> Файл резюме:<br/>\r\n $host$resume_main_pfile</p>'),
-(617, 3, '<p> Hello, admin.<br/>\r\n User $resume_candidate_name $resume_candidate_email has sent CV on $host.</p><p> CV text:<br/>\r\n $resume_text</p><p> CV file:<br/>\r\n $host$resume_main_pfile</p>'),
-(618, 1, 'Изображение'),
-(618, 2, 'Зображення'),
-(618, 3, 'Picture'),
-(619, 1, 'Этот логин занят! Возможно, вы уже зарегистрированы в нашем магазине. Попробуйте авторизоваться с помощью формы авторизации. Если вы забыли пароль, воспользуйтесь ссылкой на страницу восстановления пароля.'),
-(619, 2, 'Цей логін зайнято! Можливо, ви вже зареєстровані в нашому магазині. Спробуйте авторизуватися за допомогою форми авторизації. Якщо ви забули пароль, скористуйтеся посиланням на сторінку відновлення пароля.'),
-(619, 3, 'This login is engaged! Probably, you have been already registered in our shop. Try to authorize using the authorization form. If you forgot your password use the link to restore password page.'),
-(620, 1, 'Содержание заказа'),
-(620, 2, 'Зміст замовлення'),
-(620, 3, 'Order contents'),
-(621, 1, 'Введенные цифры не соответствуют изображенным на картинке. Введите их еще раз.'),
-(621, 2, 'Введені цифри не відповідають зображеним на картинці. Введіть їх ще раз.'),
-(621, 3, 'Entered figures do not correspond to the figures on the picture. Enter them again.'),
-(622, 1, 'Введенные цифры не соответствуют изображенным на картинке. Введите их еще раз.'),
-(622, 2, 'Введені цифри не відповідають зображеним на картинці. Введіть їх ще раз.'),
-(622, 3, 'Entered figures do not correspond to the figures on the picture. Enter them again.'),
-(623, 1, 'Подробности заказа'),
-(623, 2, 'Деталі замовлення'),
-(623, 3, 'Order details'),
-(624, 1, 'Не найдено ни одного товара.'),
-(624, 2, 'Не знайдено жодного товару.'),
-(624, 3, 'No products found.'),
-(625, 1, 'Нет товаров.'),
-(625, 2, 'Немає товарів.'),
-(625, 3, 'No products.'),
-(626, 1, 'Добавить сотрудника'),
-(626, 2, 'Додати співробітника');
-INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf`) VALUES
-(626, 3, 'Add staff'),
-(627, 1, 'Редактировать сотрудника'),
-(627, 2, 'Редагувати співробітника'),
-(627, 3, 'Edit staff'),
-(628, 1, 'Удалить сотрудника'),
-(628, 2, 'Видалити співробітника'),
-(628, 3, 'Delete staff'),
-(629, 1, 'Фото сотрудника'),
-(629, 2, 'Фото співробітника'),
-(629, 3, 'Staff photo'),
-(630, 1, 'Имя сотрудника'),
-(630, 2, 'Ім''я співробітника'),
-(630, 3, 'Staff name'),
-(631, 1, 'Краткий текст про сотрудника'),
-(631, 2, 'Короткий текст про співробітника'),
-(631, 3, 'Short text about staff'),
-(632, 1, 'Полный текст про сотрудника'),
-(632, 2, 'Повний текст про співробітника'),
-(632, 3, 'Full text about staff'),
-(633, 1, 'Должность сотрудника'),
-(633, 2, 'Посада співробітника'),
-(633, 3, 'Staff position');
+(588, 3, 'Comments');
 
 -- --------------------------------------------------------
 
@@ -1878,16 +1549,12 @@ CREATE TABLE IF NOT EXISTS `share_news` (
   `smap_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`news_id`),
   KEY `smap_id` (`smap_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
 
 --
 -- Dumping data for table `share_news`
 --
 
-INSERT INTO `share_news` (`news_id`, `news_date`, `smap_id`) VALUES
-(15, '2010-03-04', 327),
-(16, '2010-04-16', 327),
-(17, '2010-04-19', 327);
 
 -- --------------------------------------------------------
 
@@ -1910,16 +1577,6 @@ CREATE TABLE IF NOT EXISTS `share_news_translation` (
 -- Dumping data for table `share_news_translation`
 --
 
-INSERT INTO `share_news_translation` (`news_id`, `lang_id`, `news_title`, `news_announce_rtf`, `news_text_rtf`) VALUES
-(15, 1, 'Lorem ipsum', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.'),
-(15, 2, 'Lorem ipsum', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.'),
-(15, 3, 'Lorem ipsum', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.'),
-(16, 1, 'Новость', 'Анонс новости', 'Текст новости<br/>\r\n'),
-(16, 2, 'Новина', 'Анонс новини<br/>\r\n', 'Текст новини<br/>\r\n'),
-(16, 3, 'News', 'News announce<br/>\r\n', 'News text<br/>\r\n'),
-(17, 1, 'Еще новость', 'Новость состоит из одного анонса.<br/>\r\n', NULL),
-(17, 2, 'Ще новина', 'Новина складається лише з анонсу.', NULL),
-(17, 3, 'One more news', 'News consists of announce only.', NULL);
 
 -- --------------------------------------------------------
 
@@ -1937,7 +1594,7 @@ CREATE TABLE IF NOT EXISTS `share_session` (
   `session_data` text,
   PRIMARY KEY (`session_id`),
   UNIQUE KEY `session_native_id` (`session_native_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=81 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3030 ;
 
 --
 -- Dumping data for table `share_session`
@@ -1967,47 +1624,41 @@ CREATE TABLE IF NOT EXISTS `share_sitemap` (
   KEY `ref_sitemap_parent_FK` (`smap_pid`),
   KEY `idx_order` (`smap_order_num`),
   KEY `smap_is_system` (`smap_is_system`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=404 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=398 ;
 
 --
 -- Dumping data for table `share_sitemap`
 --
 
 INSERT INTO `share_sitemap` (`smap_id`, `tmpl_id`, `smap_pid`, `smap_segment`, `smap_is_final`, `smap_order_num`, `smap_modified`, `smap_default`, `smap_is_system`, `smap_redirect_url`) VALUES
-(7, 3, NULL, 'admin', 0, 21, '2008-02-13 17:46:14', 0, 0, NULL),
-(80, 30, NULL, 'main', 0, 4, '2010-04-23 15:36:30', 1, 0, NULL),
-(324, 15, NULL, 'login', 1, 15, '2008-02-13 17:22:54', 0, 0, NULL),
-(327, 14, NULL, 'news', 0, 8, '2008-02-14 18:02:39', 0, 0, NULL),
-(329, 17, NULL, 'sitemap', 0, 11, '2008-04-02 19:24:45', 0, 0, NULL),
-(330, 18, NULL, 'restore-password', 1, 20, '2008-04-02 19:20:45', 0, 0, NULL),
-(331, 19, NULL, 'registration', 0, 10, '2008-04-02 19:29:37', 0, 0, NULL),
-(336, 16, NULL, 'feedback', 0, 9, '2009-10-05 16:46:37', 0, 0, NULL),
-(337, 21, 7, 'feedback-list', 0, 10, '2010-04-23 13:15:10', 0, 0, NULL),
-(350, 20, NULL, 'gallery', 0, 3, '2009-08-14 18:43:25', 0, 0, NULL),
-(351, 22, NULL, 'google-sitemap', 1, 14, '2009-10-05 16:55:19', 0, 1, NULL),
-(352, 23, NULL, 'shop', 0, 2, '2010-01-14 14:40:06', 0, 0, NULL),
-(353, 24, 403, 'product-editor', 0, 8, '2010-04-23 15:47:03', 0, 0, NULL),
-(354, 27, 403, 'product-type', 0, 7, '2010-04-23 15:46:51', 0, 0, NULL),
-(355, 25, 403, 'manufacturer-editor', 0, 6, '2010-04-23 15:46:39', 0, 0, NULL),
-(356, 28, 403, 'status-editor', 0, 5, '2010-04-23 15:46:26', 0, 0, NULL),
-(381, 26, 403, 'product-status-editor', 0, 4, '2010-04-23 15:46:11', 0, 0, NULL),
-(383, 29, 403, 'currency', 0, 3, '2010-04-23 15:45:56', 0, 0, NULL),
-(388, 31, 352, 'order', 1, 5, '2010-02-09 13:12:27', 0, 0, NULL),
-(389, 32, 352, 'basket', 1, 4, '2010-02-09 14:28:58', 0, 0, NULL),
-(390, 23, 352, 'fat-slonopotam', 0, 2, '2010-02-18 17:40:46', 0, 0, NULL),
+(7, 3, NULL, 'admin', 0, 18, '2008-02-13 17:46:14', 0, 0, NULL),
+(80, 30, NULL, 'main', 0, 5, '2010-01-19 15:59:06', 1, 0, NULL),
+(324, 15, NULL, 'login', 1, 12, '2008-02-13 17:22:54', 0, 0, NULL),
+(327, 14, NULL, 'news', 0, 6, '2008-02-14 18:02:39', 0, 0, NULL),
+(329, 17, NULL, 'sitemap', 0, 9, '2008-04-02 19:24:45', 0, 0, NULL),
+(330, 18, NULL, 'restore-password', 1, 17, '2008-04-02 19:20:45', 0, 0, NULL),
+(331, 19, NULL, 'registration', 0, 8, '2008-04-02 19:29:37', 0, 0, NULL),
+(336, 16, NULL, 'feedback', 0, 7, '2009-10-05 16:46:37', 0, 0, NULL),
+(337, 21, 7, 'feedback-list', 0, 8, '2008-04-08 14:52:50', 0, 0, NULL),
+(350, 20, NULL, 'gallery', 0, 4, '2009-08-14 18:43:25', 0, 0, NULL),
+(351, 22, NULL, 'google-sitemap', 1, 11, '2009-10-05 16:55:19', 0, 1, NULL),
+(352, 23, NULL, 'shop', 0, 3, '2010-01-14 14:40:06', 0, 0, NULL),
+(353, 24, 7, 'product-editor', 0, 6, '2010-01-11 14:17:33', 0, 0, NULL),
+(354, 27, 7, 'product-type', 0, 5, '2010-01-11 15:58:28', 0, 0, NULL),
+(355, 25, 7, 'manufacturer-editor', 0, 4, '2010-01-11 16:14:34', 0, 0, NULL),
+(356, 28, 7, 'status-editor', 0, 3, '2010-01-12 18:42:52', 0, 0, NULL),
+(381, 26, 7, 'product-status-editor', 0, 2, '2010-01-21 12:55:58', 0, 0, NULL),
+(383, 29, 7, 'currency', 0, 1, '2010-01-15 17:03:11', 0, 0, NULL),
+(388, 31, 352, 'order', 1, 4, '2010-02-09 13:12:27', 0, 0, NULL),
+(389, 32, 352, 'basket', 1, 3, '2010-02-09 14:28:58', 0, 0, NULL),
+(390, 23, 352, 'fat-slonopotam', 0, 1, '2010-02-18 17:40:46', 0, 0, NULL),
 (391, 13, 392, 'text-block', 0, 1, '2010-02-25 11:53:29', 0, 0, NULL),
-(392, 3, NULL, 'text-pages', 0, 1, '2010-04-23 12:33:45', 0, 0, NULL),
+(392, 3, NULL, 'text-pages', 0, 1, '2010-02-28 13:40:26', 0, 0, NULL),
 (393, 13, 392, 'text-block-2', 0, 2, '2010-02-19 11:05:31', 0, 0, NULL),
 (394, 13, 392, 'text-block-3', 0, 3, '2010-02-24 18:45:16', 0, 0, NULL),
 (395, 13, 392, 'text-block-redirect', 0, 5, '2010-02-19 12:00:54', 0, 0, 'text-pages/'),
-(396, 23, 352, 'etc', 0, 3, '2010-02-19 12:34:20', 0, 0, NULL),
-(397, 33, 403, 'order-history', 0, 9, '2010-04-23 15:47:17', 0, 0, NULL),
-(398, 34, NULL, 'vacancies', 0, 7, '2010-04-09 11:36:39', 0, 0, NULL),
-(399, 35, 7, 'resume', 0, 2, '2010-04-20 13:33:28', 0, 0, NULL),
-(400, 23, 352, 'ordinary-slonopotam', 0, 1, '2010-04-21 12:29:30', 0, 0, NULL),
-(401, 36, NULL, 'user-order-history', 0, 12, '2010-04-22 16:14:02', 0, 0, NULL),
-(402, 37, NULL, 'staff', 0, 6, '2010-04-23 15:42:44', 0, 0, NULL),
-(403, 3, 7, 'shop', 0, 1, '2010-04-23 15:45:39', 0, 0, NULL);
+(396, 23, 352, 'etc', 0, 2, '2010-02-19 12:34:20', 0, 0, NULL),
+(397, 33, 7, 'order-history', 0, 7, '2010-02-28 15:08:57', 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -2035,14 +1686,14 @@ CREATE TABLE IF NOT EXISTS `share_sitemap_translation` (
 
 INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `smap_description_rtf`, `smap_html_title`, `smap_meta_keywords`, `smap_meta_description`, `smap_is_disabled`) VALUES
 (7, 1, 'Управление сайтом', NULL, 'Управление сайтом', NULL, NULL, 0),
-(80, 1, 'Демонстрационная версия Energine', NULL, NULL, NULL, NULL, 0),
+(80, 1, 'Демонстрационная версия CMF Energine', NULL, NULL, NULL, NULL, 0),
 (324, 1, 'Вход', NULL, NULL, NULL, NULL, 0),
 (327, 1, 'Новости', NULL, NULL, NULL, NULL, 0),
 (329, 1, 'Карта сайта', NULL, NULL, NULL, NULL, 0),
 (330, 1, 'Восстановление пароля', NULL, NULL, NULL, NULL, 0),
 (331, 1, 'Форма регистрации', NULL, NULL, NULL, NULL, 0),
 (336, 1, 'Форма контакта', NULL, NULL, NULL, NULL, 0),
-(337, 1, 'Управление сообщениями', 'Архив сообщений формы контакта', NULL, NULL, NULL, 0),
+(337, 1, 'Список сообщений', 'Архив сообщений формы контакта', NULL, NULL, NULL, 0),
 (350, 1, 'Фотогалерея', NULL, NULL, NULL, NULL, 0),
 (351, 1, 'Google sitemap page', NULL, NULL, NULL, NULL, 0),
 (352, 1, 'Магазин', NULL, NULL, NULL, NULL, 0),
@@ -2056,27 +1707,23 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (389, 1, 'Корзина', NULL, NULL, NULL, NULL, 0),
 (390, 1, 'Толстые слонопотамы', NULL, NULL, NULL, NULL, 0),
 (391, 1, 'Просто текстовая страница', NULL, NULL, NULL, NULL, 0),
-(392, 1, 'Текстовые страницы', NULL, NULL, NULL, NULL, 0),
+(392, 1, 'Раздел состоящий из текстовых страниц', NULL, NULL, NULL, NULL, 0),
 (393, 1, 'Еще одна текстовая страница', NULL, NULL, NULL, NULL, 0),
 (394, 1, 'И еще одна текстовая страница', NULL, NULL, NULL, NULL, 0),
 (395, 1, 'Эта страница - пример переадресации', NULL, NULL, NULL, NULL, 0),
 (396, 1, 'Разное', NULL, NULL, NULL, NULL, 0),
-(397, 1, 'Управление заказами', NULL, NULL, NULL, NULL, 0),
-(398, 1, 'Вакансии', NULL, NULL, NULL, NULL, 0),
-(399, 1, 'Редактор резюме', NULL, NULL, NULL, NULL, 0),
-(400, 1, 'Обыкновенные слонопотамы', NULL, NULL, NULL, NULL, 0),
-(401, 1, 'История заказов', NULL, NULL, NULL, NULL, 0),
+(397, 1, 'История заказов', NULL, NULL, NULL, NULL, 0),
 (402, 1, 'Список сотрудников', NULL, NULL, NULL, NULL, 0),
 (403, 1, 'Управление магазином', NULL, NULL, NULL, NULL, 0),
 (7, 2, 'Управління сайтом', NULL, NULL, NULL, NULL, 0),
-(80, 2, 'Демонстраційна версія  Energine', NULL, NULL, NULL, NULL, 0),
+(80, 2, 'Демонстраційна версія CMS Energine', NULL, NULL, NULL, NULL, 1),
 (324, 2, 'Вхід', NULL, NULL, NULL, NULL, 0),
 (327, 2, 'Новини', NULL, NULL, NULL, NULL, 0),
 (329, 2, 'Карта сайту', NULL, NULL, NULL, NULL, 0),
 (330, 2, 'Поновлення паролю', NULL, NULL, NULL, NULL, 0),
 (331, 2, 'Форма реєстрації', NULL, NULL, NULL, NULL, 0),
 (336, 2, 'Форма контакту', NULL, NULL, NULL, NULL, 0),
-(337, 2, 'Управління повідомленнями', NULL, NULL, NULL, NULL, 0),
+(337, 2, 'Список повідомлень', NULL, NULL, NULL, NULL, 0),
 (350, 2, 'Фотогалерея', NULL, NULL, NULL, NULL, 0),
 (351, 2, 'Google sitemap page', NULL, NULL, NULL, NULL, 0),
 (352, 2, 'Магазин', NULL, NULL, NULL, NULL, 0),
@@ -2090,18 +1737,12 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (389, 2, 'Кошик', NULL, NULL, NULL, NULL, 0),
 (390, 2, 'Огрядні слонопотами', NULL, NULL, NULL, NULL, 0),
 (391, 2, 'Звичайна текстова сторінка', NULL, NULL, NULL, NULL, 0),
-(392, 2, 'Текстові сторінки', NULL, NULL, NULL, NULL, 0),
+(392, 2, 'Розділ з текстових сторінок', NULL, NULL, NULL, NULL, 0),
 (393, 2, 'Ще одна текстова сторінка', NULL, NULL, NULL, NULL, 0),
 (394, 2, 'І ще одна текстова сторінка', NULL, NULL, NULL, NULL, 0),
 (395, 2, 'Ця сторінка - приклад переадресування', NULL, NULL, NULL, NULL, 0),
 (396, 2, 'Різне', NULL, NULL, NULL, NULL, 0),
-(397, 2, 'Управління замовленнями', NULL, NULL, NULL, NULL, 0),
-(398, 2, 'Вакансії', NULL, NULL, NULL, NULL, 0),
-(399, 2, 'Редактор резюме', NULL, NULL, NULL, NULL, 0),
-(400, 2, 'Звичайні слонопотами', NULL, NULL, NULL, NULL, 0),
-(401, 2, 'Історія замовлень', NULL, NULL, NULL, NULL, 0),
-(402, 2, 'Список співробітників', NULL, NULL, NULL, NULL, 0),
-(403, 2, 'Управління магазином', NULL, NULL, NULL, NULL, 0),
+(397, 2, 'Замовлення', NULL, NULL, NULL, NULL, 0),
 (7, 3, 'Site management', NULL, NULL, NULL, NULL, 0),
 (80, 3, 'Energine demo version', NULL, NULL, NULL, NULL, 0),
 (324, 3, 'Entrance', NULL, NULL, NULL, NULL, 0),
@@ -2110,7 +1751,7 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (330, 3, 'Restore password', NULL, NULL, NULL, NULL, 0),
 (331, 3, 'Registration form', NULL, NULL, NULL, NULL, 0),
 (336, 3, 'Contact form', NULL, NULL, NULL, NULL, 0),
-(337, 3, 'Feedback management', NULL, NULL, NULL, NULL, 0),
+(337, 3, 'Feedback list', NULL, NULL, NULL, NULL, 0),
 (350, 3, 'Gallery', NULL, NULL, NULL, NULL, 0),
 (351, 3, 'Google sitemap page', NULL, NULL, NULL, NULL, 0),
 (352, 3, 'Shop', NULL, NULL, NULL, NULL, 0),
@@ -2129,13 +1770,7 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (394, 3, 'Another one text page', NULL, NULL, NULL, NULL, 0),
 (395, 3, 'Redirect example', NULL, NULL, NULL, NULL, 0),
 (396, 3, 'Etc', NULL, NULL, NULL, NULL, 0),
-(397, 3, 'Orders management', NULL, NULL, NULL, NULL, 0),
-(398, 3, 'Vacancies', NULL, NULL, NULL, NULL, 0),
-(399, 3, 'CV editor', NULL, NULL, NULL, NULL, 0),
-(400, 3, 'Ordinary heffalump', NULL, NULL, NULL, NULL, 0),
-(401, 3, 'Order history', NULL, NULL, NULL, NULL, 0),
-(402, 3, 'Staff list', NULL, NULL, NULL, NULL, 0),
-(403, 3, 'Shop admin', NULL, NULL, NULL, NULL, 0);
+(397, 3, 'Orders', NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -2178,39 +1813,35 @@ CREATE TABLE IF NOT EXISTS `share_templates` (
   `tmpl_is_system` tinyint(1) NOT NULL DEFAULT '0',
   `tmpl_order_num` int(10) unsigned DEFAULT '1',
   PRIMARY KEY (`tmpl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;
 
 --
 -- Dumping data for table `share_templates`
 --
 
 INSERT INTO `share_templates` (`tmpl_id`, `tmpl_name`, `tmpl_icon`, `tmpl_layout`, `tmpl_content`, `tmpl_is_system`, `tmpl_order_num`) VALUES
-(3, 'Список подразделов', 'templates/icons/divisions_list.icon.gif', 'default.layout.xml', 'childs.content.xml', 0, 17),
-(13, 'Текстовая страница', 'templates/icons/text_page.icon.gif', 'default.layout.xml', 'textblock.content.xml', 0, 16),
-(14, 'Лента новостей', 'templates/icons/feed.icon.gif', 'default.layout.xml', 'news.content.xml', 0, 19),
-(15, 'Форма авторизации', 'templates/icons/login_form.icon.gif', 'default.layout.xml', 'login.content.xml', 0, 21),
-(16, 'Форма контакта', 'templates/icons/feedback_form.icon.gif', 'default.layout.xml', 'feedback_form.content.xml', 0, 20),
-(17, 'Карта сайта', 'templates/icons/sitemap.icon.gif', 'default.layout.xml', 'map.content.xml', 0, 25),
-(18, 'Форма восстановления пароля', 'templates/icons/restore_password_form.icon.gif', 'default.layout.xml', 'restore_password.content.xml', 0, 26),
-(19, 'Форма регистрации/Редактор профиля', 'templates/icons/profile_form.icon.gif', 'default.layout.xml', 'register.content.xml', 0, 27),
-(20, 'Фотогалерея', 'templates/icons/gallery.icon.gif', 'default.layout.xml', 'gallery.content.xml', 0, 18),
-(21, 'Список сообщений', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'feedback_list.content.xml', 0, 28),
-(22, 'Google sitemap', 'templates/icons/google.icon.gif', 'google_sitemap.layout.xml', 'google_sitemap.content.xml', 1, 24),
-(23, 'Список товаров', 'templates/icons/divisions_list.icon.gif', 'catalogue.layout.xml', 'product_division_list.content.xml', 0, 15),
-(24, 'Редактор товаров', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_editor.content.xml', 0, 14),
-(25, 'Редактор производителей', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'producer_editor.content.xml', 0, 13),
-(26, 'Редактор статусов товара', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_status_editor.content.xml', 0, 12),
-(27, 'Редактор типов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_type_editor.content.xml', 0, 11),
-(28, 'Редактор статусов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_status.content.xml', 0, 10),
-(29, 'Редактор валюты', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'curr_editor.content.xml', 0, 9),
-(30, 'Главная страница', 'templates/icons/home_page.icon.gif', 'default.layout.xml', 'main.content.xml', 0, 8),
-(31, 'Форма заказа', 'templates/icons/form.icon.gif', 'order.layout.xml', 'order.content.xml', 0, 7),
-(32, 'Корзина', 'templates/icons/form.icon.gif', 'order.layout.xml', 'basket.content.xml', 0, 6),
-(33, 'История заказов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_history.content.xml', 0, 5),
-(34, 'Вакансии', 'templates/icons/feed.icon.gif', 'default.layout.xml', 'vacancies.content.xml', 0, 4),
-(35, 'Редактор резюме', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'resume_grid.content.xml', 0, 3),
-(36, 'История заказов пользователя', 'templates/icons/divisions_list.icon.gif', 'default.layout.xml', 'user_order_history.content.xml', 0, 2),
-(37, 'Список сотрудников', 'templates/icons/feed.icon.gif', 'default.layout.xml', 'staff.content.xml', 0, 1);
+(3, 'Список подразделов', 'templates/icons/divisions_list.icon.gif', 'default.layout.xml', 'childs.content.xml', 0, 13),
+(13, 'Текстовая страница', 'templates/icons/text_page.icon.gif', 'default.layout.xml', 'textblock.content.xml', 0, 12),
+(14, 'Лента новостей', 'templates/icons/feed.icon.gif', 'default.layout.xml', 'news.content.xml', 0, 15),
+(15, 'Форма авторизации', 'templates/icons/login_form.icon.gif', 'default.layout.xml', 'login.content.xml', 0, 17),
+(16, 'Форма контакта', 'templates/icons/feedback_form.icon.gif', 'default.layout.xml', 'feedback_form.content.xml', 0, 16),
+(17, 'Карта сайта', 'templates/icons/sitemap.icon.gif', 'default.layout.xml', 'map.content.xml', 0, 21),
+(18, 'Форма восстановления пароля', 'templates/icons/restore_password_form.icon.gif', 'default.layout.xml', 'restore_password.content.xml', 0, 22),
+(19, 'Форма регистрации/Редактор профиля', 'templates/icons/profile_form.icon.gif', 'default.layout.xml', 'register.content.xml', 0, 23),
+(20, 'Фотогалерея', 'templates/icons/gallery.icon.gif', 'default.layout.xml', 'gallery.content.xml', 0, 14),
+(21, 'Список сообщений', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'feedback_list.content.xml', 0, 24),
+(22, 'Google sitemap', 'templates/icons/google.icon.gif', 'empty.layout.xml', 'google_sitemap.content.xml', 1, 20),
+(23, 'Список товаров', 'templates/icons/divisions_list.icon.gif', 'catalogue.layout.xml', 'product_division_list.content.xml', 0, 11),
+(24, 'Редактор товаров', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_editor.content.xml', 0, 10),
+(25, 'Редактор производителей', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'producer_editor.content.xml', 0, 9),
+(26, 'Редактор статусов товара', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_status_editor.content.xml', 0, 8),
+(27, 'Редактор типов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'product_type_editor.content.xml', 0, 7),
+(28, 'Редактор статусов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_status.content.xml', 0, 6),
+(29, 'Редактор валюты', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'curr_editor.content.xml', 0, 5),
+(30, 'Главная страница', 'templates/icons/home_page.icon.gif', 'default.layout.xml', 'main.content.xml', 0, 4),
+(31, 'Форма заказа', 'templates/icons/form.icon.gif', 'order.layout.xml', 'order.content.xml', 0, 3),
+(32, 'Корзина', 'templates/icons/form.icon.gif', 'order.layout.xml', 'basket.content.xml', 0, 2),
+(33, 'История заказов', 'templates/icons/editor.icon.gif', 'admin.layout.xml', 'order_history.content.xml', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -2274,9 +1905,9 @@ CREATE TABLE IF NOT EXISTS `share_textblocks_translation` (
 --
 
 INSERT INTO `share_textblocks_translation` (`tb_id`, `lang_id`, `tb_content`) VALUES
-(16, 1, '<p class="small_margin"> <strong>Перед вами новая версия Energine 2.3.8.</strong></p><p> В новой версии исправлены множество старых багов, а также добавлены следующие нововведения:<br/>\r\n — добавлен модуль hrm (Human Resources Management), который включает фиды «Персонал», «Вакансии» и форму отправки резюме;<br/>\r\n — добавлена CAPTCHA, которую можно прикреплять к любой форме на сайте;<br/>\r\n — сделан механизм автоматического создания превью-изображений в нужных размерах (размеры задаются в system.config.xml) в момент добавления изображения в файловый репозиторий;<br/>\r\n — добавлена сортировка в гридах по нажатию на заголовок столбца.</p><p class="small_margin"> <strong>В предыдущих версиях:</strong></p><p> 2.3.6 — добавлен модуль интернет-магазина.<br/>\r\n 2.3.6.1 — исправлены проблемы с формой заказа.<br/>\r\n 2.3.7 — произведена оптимизация производительности (число запросов к базе уменьшилось в среднем в 5 раз, скорость отработки страницы увеличилась примерно на 20%).</p><br/>\r\n<p class="small_margin"> <strong>Вход в режим администратора:</strong></p><ul> <li>Логин: <strong>demo@energine.org</strong> </li> <li>Пароль: <strong>demo</strong> </li></ul>'),
-(16, 2, '<p> <strong>Перед вами нова версія Energine 2.3.8.</strong></p><br/>\r\n<p class="small_margin"> <strong>Вхід в режим адміністратора:</strong></p><ul> <li>Логін: <strong>demo@energine.org</strong> </li> <li>Пароль: <strong>demo</strong> </li></ul>'),
-(16, 3, '<p> <strong>This is new version of Energine 2.3.8.</strong></p><br/>\r\n<p class="small_margin"> <strong>Use this data to enter into admin mode:</strong></p><ul> <li>Login: <strong>demo@energine.org</strong> </li> <li>Password: <strong>demo</strong> </li></ul>'),
+(16, 1, 'И вот наконец долгожданная версия Energine 2.3.6.<br/>\r\nКак всегда — старые ошибки исправили, новые добавили :)<br/>\r\nНо кроме ошибок добавился еще и <strong>модуль интернет магазина</strong>.<br/>\r\n<br/>\r\n2.3.6.1 — исправлены проблемы с формой заказа<br/>\r\n2.3.7 — произведена оптимизация производительности (число запросов к базе уменьшилось в среднем в 5 раз, скорость отработки страницы увеличилась процентов на 20%)<br/>\r\n<br/>\r\nВход в режим администратора:<br/>\r\n<ul> <li>Логин: <strong>demo@energine.org</strong> </li> <li>Пароль: <strong>demo</strong> </li></ul>'),
+(16, 2, '<ul> <li>Ім''я користувача: <strong>demo@energine.org</strong> </li> <li>Пароль: <strong>demo</strong> </li></ul>'),
+(16, 3, '<div> <ul> <li>Login: <strong>demo@energine.org</strong> </li> <li>Password: <strong>demo</strong> </li> </ul> <p> Energine is a content management system which allows to support web-applications (including websites) of any level of complexity. Energine is based on Energine CMF — a power full toolkit for web-application development using XML/XSLT transformations. </p> <p> Main features of Energine are: </p> <ol> <li>Multi-language support. Energine supports unbounded quantity of languages with ability to translate not only content of a site, but buttons, emails, captions too. </li> <li>User''s access delimitation. User''s access control system allows to edit user''s rights to access and edit different parts of a website. </li> <li>Visual text editor. A built in WYSIWYG (what you see is what you get) editor is a handy tool to edit web site''s content and preview it. </li> <li>Files. Common file storage allows to use one method to work with files in forms and with a help of text editor. </li> <li>Structure site management. Web site''s structure represented as a tree. User can add, edit and delete it''s nodes to modify parts of a site. </li> </ol></div>'),
 (65, 1, '<span class="copyright">Powered by <a href= "http://energine.org/">Energine</a></span>'),
 (65, 2, '<span class="copyright">Powered by <a href="http://energine.org/">Energine</a></span> '),
 (65, 3, '<span class="copyright">Powered by <a href= "http://energine.org/">Energine</a></span>'),
@@ -2310,7 +1941,7 @@ CREATE TABLE IF NOT EXISTS `share_uploads` (
   `upl_data` text,
   PRIMARY KEY (`upl_id`),
   UNIQUE KEY `upl_path` (`upl_path`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=54 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53 ;
 
 --
 -- Dumping data for table `share_uploads`
@@ -2323,8 +1954,7 @@ INSERT INTO `share_uploads` (`upl_id`, `upl_path`, `upl_name`, `upl_data`) VALUE
 (48, 'uploads/public/12665754906067.png', 'Heffalump-3.png', NULL),
 (49, 'uploads/public/12671938041279.jpg', 'Huffalump-Lumpy-Dance.jpg', NULL),
 (50, 'uploads/public/12671938143931.jpg', 'Huffalump-Lumpy-Roo.jpg', NULL),
-(51, 'uploads/public/skrinshoty', 'Скриншоты', NULL),
-(53, 'uploads/public/12718431887342.png', 'resultopotam3.png', NULL);
+(51, 'uploads/public/skrinshoty', 'Скриншоты', NULL);
 
 -- --------------------------------------------------------
 
@@ -2341,7 +1971,7 @@ CREATE TABLE IF NOT EXISTS `shop_basket` (
   PRIMARY KEY (`basket_id`),
   UNIQUE KEY `product_id` (`product_id`,`session_id`),
   KEY `basket_ibfk_2` (`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `shop_basket`
@@ -2450,12 +2080,15 @@ CREATE TABLE IF NOT EXISTS `shop_orders` (
   PRIMARY KEY (`order_id`),
   KEY `u_id` (`u_id`),
   KEY `os_id` (`os_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `shop_orders`
 --
 
+INSERT INTO `shop_orders` (`order_id`, `u_id`, `os_id`, `order_comment`, `order_delivery_comment`, `order_detail`, `user_detail`, `order_created`) VALUES
+(3, 1, 1, NULL, NULL, 'a:1:{i:0;a:11:{s:9:"basket_id";s:2:"14";s:10:"product_id";s:1:"1";s:10:"session_id";s:3:"325";s:12:"basket_count";s:1:"1";s:12:"product_name";s:29:"Название товара";s:13:"product_price";s:3:"$12";s:12:"product_summ";s:3:"$12";s:26:"product_summ_with_discount";N;s:7:"curr_id";s:1:"2";s:15:"product_segment";s:16:"nazvanije-tovara";s:12:"product_code";s:9:"126766767";}}', 'a:4:{s:4:"u_id";s:1:"1";s:6:"u_name";s:17:"demo@energine.org";s:10:"u_fullname";s:4:"demo";s:22:"order_delivery_comment";s:0:"";}', '2010-02-09 13:23:34'),
+(11, 1, 1, NULL, NULL, 'a:2:{i:0;a:10:{s:9:"basket_id";s:1:"8";s:10:"product_id";s:1:"4";s:10:"session_id";s:4:"3029";s:12:"basket_count";s:1:"1";s:12:"product_name";s:35:"Розовый слонопотам";s:13:"product_price";s:13:"12000 грн.";s:12:"product_summ";s:13:"12000 грн.";s:7:"curr_id";s:1:"2";s:15:"product_segment";s:18:"rozovyj-slonopotam";s:12:"product_code";s:3:"123";}i:1;a:10:{s:9:"basket_id";s:1:"9";s:10:"product_id";s:1:"5";s:10:"session_id";s:4:"3029";s:12:"basket_count";s:1:"1";s:12:"product_name";s:37:"Плюшевый слонопотам";s:13:"product_price";s:12:"4500 грн.";s:12:"product_summ";s:12:"4500 грн.";s:7:"curr_id";s:1:"2";s:15:"product_segment";s:21:"plyushevyj-slonopotam";s:12:"product_code";s:6:"211212";}}', 'a:4:{s:4:"u_id";s:1:"1";s:6:"u_name";s:17:"demo@energine.org";s:10:"u_fullname";s:10:"Павка";s:22:"order_delivery_comment";s:0:"";}', '2010-02-28 14:05:10');
 
 -- --------------------------------------------------------
 
@@ -2468,17 +2101,14 @@ CREATE TABLE IF NOT EXISTS `shop_order_statuses` (
   `os_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `os_priority` smallint(5) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`os_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `shop_order_statuses`
 --
 
 INSERT INTO `shop_order_statuses` (`os_id`, `os_priority`) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4);
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -2502,16 +2132,7 @@ CREATE TABLE IF NOT EXISTS `shop_order_statuses_translation` (
 INSERT INTO `shop_order_statuses_translation` (`os_id`, `lang_id`, `os_name`) VALUES
 (1, 1, 'Заказан'),
 (1, 2, 'Замовлений'),
-(1, 3, 'Ordered'),
-(2, 1, 'В обработке'),
-(2, 2, 'В обробці'),
-(2, 3, 'In progress'),
-(3, 1, 'Завершен'),
-(3, 2, 'Завершений'),
-(3, 3, 'Completed'),
-(4, 1, 'Отменен'),
-(4, 2, 'Відмінений'),
-(4, 3, 'Cancelled');
+(1, 3, 'Ordered');
 
 -- --------------------------------------------------------
 
@@ -2556,7 +2177,7 @@ CREATE TABLE IF NOT EXISTS `shop_products` (
   KEY `pt_id` (`pt_id`),
   KEY `producer_id` (`producer_id`),
   KEY `ps_id` (`ps_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `shop_products`
@@ -2565,8 +2186,7 @@ CREATE TABLE IF NOT EXISTS `shop_products` (
 INSERT INTO `shop_products` (`product_id`, `smap_id`, `pt_id`, `producer_id`, `product_code`, `product_segment`, `ps_id`) VALUES
 (4, 390, 41, 13, '123', 'rozovyj-slonopotam', 1),
 (5, 390, 41, 12, '211212', 'plyushevyj-slonopotam', 1),
-(6, 396, 41, NULL, '23444', 'zapasnoj-khobot-dlya-slonopotama', 1),
-(7, 400, 41, 12, '322223', 'slonopotam-obyknovennyj', 1);
+(6, 396, 41, NULL, '23444', 'zapasnoj-khobot-dlya-slonopotama', 1);
 
 -- --------------------------------------------------------
 
@@ -2598,10 +2218,7 @@ INSERT INTO `shop_products_translation` (`product_id`, `lang_id`, `product_name`
 (5, 3, 'Heffalump', '<p> Although this is never explicitly stated, it is generally thought that heffalumps are <a href="http://en.wikipedia.org/wiki/Elephant">elephants</a> from a child''s viewpoint (the word «heffalump» being a child''s attempt at pronouncing «elephant»)<sup><a href="http://en.wikipedia.org/wiki/Heffalump#cite_note-OED-0"><span>[</span>1<span>]</span></a></sup>: <a href="http://en.wikipedia.org/wiki/E._H._Shepard">E. H. Shepard</a>''s illustrations in <a href="http://en.wikipedia.org/wiki/A._A._Milne">A. A. Milne</a>''s original books depict heffalumps (as seen in Piglet''s dreams) as looking very much like elephants.</p>', '<p> Although this is never explicitly stated, it is generally thought that heffalumps are <a href="http://en.wikipedia.org/wiki/Elephant">elephants</a> from a child''s viewpoint (the word «heffalump» being a child''s attempt at pronouncing «elephant»)<sup><a href="http://en.wikipedia.org/wiki/Heffalump#cite_note-OED-0"><span>[</span>1<span>]</span></a></sup>: <a href="http://en.wikipedia.org/wiki/E._H._Shepard">E. H. Shepard</a>''s illustrations in <a href="http://en.wikipedia.org/wiki/A._A._Milne">A. A. Milne</a>''s original books depict heffalumps (as seen in Piglet''s dreams) as looking very much like elephants.</p><p> In Disney''s adaptations of the stories, Heffalumps are first mentioned in the 1968 featurette <em><a href="http://en.wikipedia.org/wiki/Winnie_the_Pooh_and_the_Blustery_Day">Winnie the Pooh and the Blustery Day</a></em>, and seem to be a product of <a href="http://en.wikipedia.org/wiki/Tigger">Tigger</a>''s imagination. Heffalumps first actual appearance was in the television series <em><a href="http://en.wikipedia.org/wiki/The_New_Adventures_of_Winnie_the_Pooh">The New Adventures of Winnie the Pooh</a></em>. In both the animated films and all subsequent television series, they are also depicted as looking like elephants, albeit slightly cuddlier and less fierce than those Pooh imagines in the books and with rabbit-like tails.</p>'),
 (6, 1, 'Запасной хобот для слонопотама', 'Хобот как хобот<br/>\r\n', '<strong>Хобот</strong>, или <strong>хоботок</strong> — непарный вырост на переднем конце тела <a href="http://ru.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D0%BA%D0%BB%D0%B5%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B5">животного</a>, обычно обладающий подвижностью (способностью изгибаться и/или втягиваться). Термин используется в качестве общего названия для <a href="http://ru.wikipedia.org/wiki/%D0%93%D0%BE%D0%BC%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">негомологичных</a> <a href="http://ru.wikipedia.org/wiki/%D0%9E%D1%80%D0%B3%D0%B0%D0%BD_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">органов</a> у многих групп организмов.'),
 (6, 2, 'Запасний хобот', '<strong>Хобот</strong>, или <strong>хоботок</strong> — непарный вырост на переднем конце тела <a href="http://ru.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D0%BA%D0%BB%D0%B5%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B5">животного</a>, обычно обладающий подвижностью (способностью изгибаться и/или втягиваться). Термин используется в качестве общего названия для <a href="http://ru.wikipedia.org/wiki/%D0%93%D0%BE%D0%BC%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">негомологичных</a> <a href="http://ru.wikipedia.org/wiki/%D0%9E%D1%80%D0%B3%D0%B0%D0%BD_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">органов</a> у многих групп организмов.', '<strong>Хобот</strong>, или <strong>хоботок</strong> — непарный вырост на переднем конце тела <a href="http://ru.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D0%BA%D0%BB%D0%B5%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B5">животного</a>, обычно обладающий подвижностью (способностью изгибаться и/или втягиваться). Термин используется в качестве общего названия для <a href="http://ru.wikipedia.org/wiki/%D0%93%D0%BE%D0%BC%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">негомологичных</a> <a href="http://ru.wikipedia.org/wiki/%D0%9E%D1%80%D0%B3%D0%B0%D0%BD_%28%D0%B1%D0%B8%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F%29">органов</a> у многих групп организмов.'),
-(6, 3, 'Trunk', '<p> The correct Greek plural is <em>proboscides</em>, but in English it is more common to simply add <em>-es</em>, forming <em>proboscises</em>.</p><p> Although the word derives from the Greek «pro-boskein», the Latin spelling «proboscis» is taken in favor of the Greek «proboskis».</p>', '<p> The correct Greek plural is <em>proboscides</em>, but in English it is more common to simply add <em>-es</em>, forming <em>proboscises</em>.</p><p> Although the word derives from the Greek «pro-boskein», the Latin spelling «proboscis» is taken in favor of the Greek «proboskis».</p>'),
-(7, 1, 'Слонопотам обыкновенный', '<p> В оригинале на английском языке слонопотам называется <em>heffalump</em> (искажённое англ. <em>elephant</em> — слон). На иллюстрациях Эрнеста Шепарда Heffalump представляет собой, в общем, обычного слона. На русский слово <em>heffalump</em> как слонопотам было переведено Борисом Заходером. По-видимому, оно состоит из двух слов: слон и гиппопотам.В другом, недавнем переводе на русский рассказов о Винни-Пухе, выполненном Виктором Вебером, <em>heffalump</em> был переведён как Хоботун.</p>', '<p> В оригинале на английском языке слонопотам называется <em>heffalump</em> (искажённое англ. <em>elephant</em> — слон). На иллюстрациях Эрнеста Шепарда Heffalump представляет собой, в общем, обычного слона. На русский слово <em>heffalump</em> как слонопотам было переведено Борисом Заходером. По-видимому, оно состоит из двух слов: слон и гиппопотам.В другом, недавнем переводе на русский рассказов о Винни-Пухе, выполненном Виктором Вебером, <em>heffalump</em> был переведён как Хоботун.</p>'),
-(7, 2, 'Слонопотам звичайний', '<p> В оригинале на английском языке слонопотам называется <em>heffalump</em> (искажённое англ. <em>elephant</em> — слон). На иллюстрациях Эрнеста Шепарда Heffalump представляет собой, в общем, обычного слона. На русский слово <em>heffalump</em> как слонопотам было переведено Борисом Заходером. По-видимому, оно состоит из двух слов: слон и гиппопотам.В другом, недавнем переводе на русский рассказов о Винни-Пухе, выполненном Виктором Вебером, <em>heffalump</em> был переведён как Хоботун.</p>', '<p> В оригинале на английском языке слонопотам называется <em>heffalump</em> (искажённое англ. <em>elephant</em> — слон). На иллюстрациях Эрнеста Шепарда Heffalump представляет собой, в общем, обычного слона. На русский слово <em>heffalump</em> как слонопотам было переведено Борисом Заходером. По-видимому, оно состоит из двух слов: слон и гиппопотам.В другом, недавнем переводе на русский рассказов о Винни-Пухе, выполненном Виктором Вебером, <em>heffalump</em> был переведён как Хоботун.</p>'),
-(7, 3, 'Ordinary slonopotam', '<p> В оригинале на английском языке слонопотам называется <em>heffalump</em> (искажённое англ. <em>elephant</em> — слон). На иллюстрациях Эрнеста Шепарда Heffalump представляет собой, в общем, обычного слона. На русский слово <em>heffalump</em> как слонопотам было переведено Борисом Заходером. По-видимому, оно состоит из двух слов: слон и гиппопотам.В другом, недавнем переводе на русский рассказов о Винни-Пухе, выполненном Виктором Вебером, <em>heffalump</em> был переведён как Хоботун.</p>', '<p> В оригинале на английском языке слонопотам называется <em>heffalump</em> (искажённое англ. <em>elephant</em> — слон). На иллюстрациях Эрнеста Шепарда Heffalump представляет собой, в общем, обычного слона. На русский слово <em>heffalump</em> как слонопотам было переведено Борисом Заходером. По-видимому, оно состоит из двух слов: слон и гиппопотам.В другом, недавнем переводе на русский рассказов о Винни-Пухе, выполненном Виктором Вебером, <em>heffalump</em> был переведён как Хоботун.</p>');
+(6, 3, 'Trunk', '<p> The correct Greek plural is <em>proboscides</em>, but in English it is more common to simply add <em>-es</em>, forming <em>proboscises</em>.</p><p> Although the word derives from the Greek «pro-boskein», the Latin spelling «proboscis» is taken in favor of the Greek «proboskis».</p>', '<p> The correct Greek plural is <em>proboscides</em>, but in English it is more common to simply add <em>-es</em>, forming <em>proboscises</em>.</p><p> Although the word derives from the Greek «pro-boskein», the Latin spelling «proboscis» is taken in favor of the Greek «proboskis».</p>');
 
 -- --------------------------------------------------------
 
@@ -2626,8 +2243,7 @@ CREATE TABLE IF NOT EXISTS `shop_product_external_properties` (
 INSERT INTO `shop_product_external_properties` (`product_code`, `product_price`, `product_count`, `curr_id`) VALUES
 ('123', '12000.00', 2, 2),
 ('211212', '4500.00', 1, 2),
-('23444', '12.00', 3, 2),
-('322223', '100.00', 1, 4);
+('23444', '12.00', 3, 2);
 
 -- --------------------------------------------------------
 
@@ -2715,11 +2331,7 @@ INSERT INTO `shop_product_param_values` (`product_id`, `pp_id`, `pp_value`) VALU
 (5, 4, '345'),
 (5, 5, 'хммм'),
 (5, 6, '45'),
-(5, 7, '123'),
-(7, 4, '24'),
-(7, 5, 'синенький в цветочек'),
-(7, 6, 'умеренная'),
-(7, 7, '22');
+(5, 7, '123');
 
 -- --------------------------------------------------------
 
@@ -2819,8 +2431,7 @@ INSERT INTO `shop_product_uploads` (`product_id`, `upl_id`, `upl_is_main`) VALUE
 (6, 46, 0),
 (5, 47, 0),
 (5, 48, 0),
-(6, 48, 0),
-(7, 53, 0);
+(6, 48, 0);
 
 -- --------------------------------------------------------
 
@@ -2888,16 +2499,14 @@ CREATE TABLE IF NOT EXISTS `user_users` (
   `u_avatar_prfile` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`u_id`),
   UNIQUE KEY `u_login` (`u_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=31 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `user_users`
 --
 
 INSERT INTO `user_users` (`u_id`, `u_name`, `u_password`, `u_is_active`, `u_fullname`, `u_avatar_prfile`) VALUES
-(1, 'demo@energine.org', '89e495e7941cf9e40e6980d14a16bf023ccd4c91', 1, 'demo', 'uploads/protected/12673636662855.png'),
-(29, 'yourick.po@gmail.com', 'a26402c66fb27831364810d35c39a586f4e07670', 1, 'yourick', NULL),
-(30, 'galera.t@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', 1, 'Galera', NULL);
+(1, 'demo@energine.org', '89e495e7941cf9e40e6980d14a16bf023ccd4c91', 1, 'demo', 'uploads/protected/12673636662855.png');
 
 -- --------------------------------------------------------
 
@@ -2918,45 +2527,11 @@ CREATE TABLE IF NOT EXISTS `user_user_groups` (
 --
 
 INSERT INTO `user_user_groups` (`u_id`, `group_id`) VALUES
-(1, 1),
-(29, 4),
-(30, 4);
+(1, 1);
 
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `hrm_resumes`
---
-ALTER TABLE `hrm_resumes`
-  ADD CONSTRAINT `hrm_resumes_ibfk_1` FOREIGN KEY (`vacancy_id`) REFERENCES `hrm_vacancies` (`vacancy_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `hrm_staff`
---
-ALTER TABLE `hrm_staff`
-  ADD CONSTRAINT `hrm_staff_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `hrm_staff_translation`
---
-ALTER TABLE `hrm_staff_translation`
-  ADD CONSTRAINT `hrm_staff_translation_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `hrm_staff` (`staff_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `hrm_staff_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `hrm_vacancies`
---
-ALTER TABLE `hrm_vacancies`
-  ADD CONSTRAINT `hrm_vacancies_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `hrm_vacancies_translation`
---
-ALTER TABLE `hrm_vacancies_translation`
-  ADD CONSTRAINT `hrm_vacancies_translation_ibfk_1` FOREIGN KEY (`vacancy_id`) REFERENCES `hrm_vacancies` (`vacancy_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `hrm_vacancies_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `image_photo_gallery`
@@ -3143,5 +2718,7 @@ ALTER TABLE `user_groups`
 ALTER TABLE `user_user_groups`
   ADD CONSTRAINT `user_user_groups_ibfk_3` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_user_groups_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `user_groups` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 SET FOREIGN_KEY_CHECKS=1;
+
 COMMIT;

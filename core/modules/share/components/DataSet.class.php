@@ -557,6 +557,7 @@ abstract class DataSet extends Component {
 	 * @access protected
 	 * @final
 	 */
+	/*
 	final protected function formatDate(){
 		$result = '';
 
@@ -566,7 +567,7 @@ abstract class DataSet extends Component {
 		$this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
 		$this->response->write(json_encode($result));
 		$this->response->commit();
-	}
+	}*/
 
 	/**
 	 * Метод возвращает файл

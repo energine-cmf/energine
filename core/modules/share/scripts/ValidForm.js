@@ -1,7 +1,6 @@
-ScriptLoader.load('Validator', 'Calendar');
+ScriptLoader.load('Validator');
 
 var ValidForm = new Class({
-    Implements:FormCalendar,
     initialize: function(element) {
         this.componentElement = $(element);
         if(this.componentElement && (this.form = this.componentElement.getParent('form'))){

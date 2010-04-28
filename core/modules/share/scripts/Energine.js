@@ -46,7 +46,6 @@ var ScriptLoader = function() {
             //На этот момент у нас есть текст запрашиваемого файла
             //Но он может быть исполнен в одном из открытых окон а в другом - нет
                 
-           //this.globalEval(this.loaded[filename]['code']);
                 
             if(!this.loaded[filename]['w'])
                     this.loaded[filename]['w'] = [];
@@ -83,6 +82,8 @@ var ScriptLoader = function() {
     }
 };
 }();
+
+
 
 var isset = function(variable) {
 	return ('undefined' != typeof(variable));
@@ -163,6 +164,26 @@ Energine.thumbnail = {
         return false;
     }
 }
+
+Energine.createDatePicker = function(datePickerObj){
+    if(!isset(this.datePickerDataLoaded)){
+        Asset.css('datepicker.css');
+        ScriptLoader.load('datepicker');
+        this.datePickerDataLoaded = true;
+    }
+    var props = {
+        format:'j-m-Y',
+        allowEmpty: true,
+        inputOutputFormat: 'Y-m-d'
+    };
+    if(arguments[1]){
+        props.timePicker = true;
+        props.format = 'j-m-Y H:i';
+        props.inputOutputFormat = 'Y-m-d H:i:s';
+        //props.debug = true;
+    }
+    new DatePicker($(datePickerObj), props);
+}
 /*
  * Улучшения: - Проверка уже загруженных стилей; - Загрузка стилей из директории
  * stylesheets.
@@ -177,7 +198,7 @@ Asset.css = function(source, properties) {
 							'rel' : 'stylesheet',
 							'media' : 'screen',
 							'type' : 'text/css',
-							'href' : Energine.base + 'stylesheets/' + source
+							'href' : ((Energine.base)?Energine.base:'') + 'stylesheets/' + source
 						}, properties)).inject(document.head);
 	}
 	return false;

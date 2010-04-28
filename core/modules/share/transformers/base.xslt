@@ -283,34 +283,26 @@
     
     <!-- поле для даты (datetime) - никогда не использовался, устарела верстка -->
     <xsl:template match="field[@type='datetime'][ancestor::component[@type='form']]">
-        <input class="text inp_date" readonly="readonly">
+        <input class="text inp_date">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
-        </input>  
-        <button type="button" onclick="calendarKick({@name},document.body.scrollLeft+event.clientX,document.body.scrollTop+event.clientY,true,null,null,true);" style="height:22px;margin-left:2px;">...</button>
+        </input>
+        <script type="text/javascript">
+            window.addEvent('domready', function(){
+                Energine.createDatePicker($('<xsl:value-of select="@name"/>'), true);
+            })
+        </script>  
     </xsl:template>
     
     <!-- поле для даты (date) -->
     <xsl:template match="field[@type='date'][ancestor::component[@type='form']]">
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
+        <input class="text inp_date">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
         </input>
-        <input type="text" id="date_{@name}" readonly="readonly" class="text inp_date">
-            <xsl:if test="@length">
-                <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
-            </xsl:if>
-        </input>        
-        <xsl:if test=".!=''">
-            <script type="text/javascript">
-                window.addEvent('domready', function(){
-                    <xsl:value-of select="generate-id(../..)"/>.setDate('<xsl:value-of select="@name"/>');
-                });
-            </script>
-        </xsl:if>
-        <span class="calendar_box">
-            <xsl:text> </xsl:text>
-            <img src="images/calendar.gif" class="set_date" onclick="{generate-id(../..)}.showCalendar('{@name}', event); "/>
-        </span>
+        <script type="text/javascript">
+            window.addEvent('domready', function(){
+                Energine.createDatePicker($('<xsl:value-of select="@name"/>'));
+            })
+        </script>  
     </xsl:template>
     
     <!-- поле типа hidden -->

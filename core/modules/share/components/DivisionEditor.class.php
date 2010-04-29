@@ -165,14 +165,6 @@ final class DivisionEditor extends Grid {
 			//$fd->setMode(FieldDescription::FIELD_MODE_READ);
 			
 			$result->getFieldDescriptionByName('smap_name')->removeProperty('nullable');
-
-			foreach (array(self::TMPL_CONTENT, self::TMPL_LAYOUT) as $type)
-			if($f = $result->getFieldDescriptionByName('smap_'.$type)){
-				$f->setType(FieldDescription::FIELD_TYPE_SELECT);
-				$f->loadAvailableValues(
-				$this->loadTemplateData($type),
-                'key','value');                         
-			}
 		}
 		else {
 			//Для режима списка нам нужно выводить не значение а ключ
@@ -191,19 +183,30 @@ final class DivisionEditor extends Grid {
 		}
 		return $result;
 	}
-
-	private function loadTemplateData($type){
+    /**
+     * Возвращает список шаблонов
+     * Этот список загружается в соответствующий FieldDescription 
+     * 
+     * @param string тип шаблона(layout/content)
+     * @param string папка сайта
+     * @return array
+     * @access private
+     */
+	private function loadTemplateData($type, $siteFolder){
 		$result = array();
 		$dirPath = 'templates/'.$type.'/';
+		
 		foreach(
 		array_merge(
-		glob($dirPath."*/*.".$type.".xml"),
+		glob($dirPath.$siteFolder."/*.".$type.".xml"),
 		glob($dirPath."*.".$type.".xml")
 		) as $path){
 			$path = str_replace($dirPath, '', $path);
+			list($name, $tp) = explode('.', substr(basename($path), 0, -4));
+			$name = strtoupper($tp.'_'.$name);
 			$result[] = array(
                'key' => $path,
-               'value' => $path 
+               'value' => $name 
 			);
 		}
 		return $result;
@@ -373,14 +376,22 @@ final class DivisionEditor extends Grid {
         $actionParams = $this->getActionParams(true);
         $this->buildRightsTab($actionParams['pid']);
         
-        $siteID = SiteManager::getInstance()->getSiteByPage($actionParams['pid'])->id;
+        $site = SiteManager::getInstance()->getSiteByPage($actionParams['pid']);
 		$this->addAttFilesField('share_sitemap_uploads');
-		$sitemap = Sitemap::getInstance($siteID);
+		$sitemap = Sitemap::getInstance($site->id);
 		
-		$this->getData()->getFieldByName('site_id')->setData($siteID, true);
+		$this->getData()->getFieldByName('site_id')->setData($site->id, true);
 		
 		$field = $this->getData()->getFieldByName('smap_pid');
 		$smapSegment = $sitemap->getURLByID($actionParams['pid']);
+		
+	    foreach (array(self::TMPL_CONTENT, self::TMPL_LAYOUT) as $type)
+            if($f = $this->getDataDescription()->getFieldDescriptionByName('smap_'.$type)){
+                $f->setType(FieldDescription::FIELD_TYPE_SELECT);
+                $f->loadAvailableValues(
+                $this->loadTemplateData($type, $site->folder),
+                'key','value');                         
+            }
 	       
 		$res =
 		$this->dbh->select(
@@ -419,10 +430,18 @@ final class DivisionEditor extends Grid {
 		);
 		//Выводим УРЛ в поле сегмента 
 		$field = $this->getData()->getFieldByName('smap_pid');
-
+        $site = SiteManager::getInstance()->getSiteByID($this->getData()->getFieldByName('site_id')->getRowData(0));
+        		
+	    foreach (array(self::TMPL_CONTENT, self::TMPL_LAYOUT) as $type)
+            if($f = $this->getDataDescription()->getFieldDescriptionByName('smap_'.$type)){
+                $f->setType(FieldDescription::FIELD_TYPE_SELECT);
+                $f->loadAvailableValues(
+                $this->loadTemplateData($type, $site->folder),
+                'key','value');                         
+            }
 		$smapSegment = '';
 		if($field->getRowData(0) !== null) {
-			$smapSegment = Sitemap::getInstance($this->getData()->getFieldByName('site_id')->getRowData(0))->getURLByID($field->getRowData(0));
+			$smapSegment = Sitemap::getInstance($site->id)->getURLByID($field->getRowData(0));
 		}
 		else{
 			$this->getDataDescription()->getFieldDescriptionByName('smap_pid')->setMode(FieldDescription::FIELD_MODE_READ);	

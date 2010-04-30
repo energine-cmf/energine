@@ -36,11 +36,6 @@ final class PageList extends DataSet {
 	public function __construct($name, $module, Document $document,  array $params = null) {
 		parent::__construct($name, $module, $document,  $params);
 		$this->setType(self::COMPONENT_TYPE_LIST);
-		/*
-		 if ($this->getParam('id')) {
-		 $this->setParam('active', false);
-		 }
-		 */
 		$this->addTranslation('TXT_HOME');
 	}
 	/**
@@ -160,11 +155,14 @@ final class PageList extends DataSet {
 		
 		if (!empty($data)) {
 			$hasDescriptionRtf = (bool)$this->getDataDescription()->getFieldDescriptionByName('DescriptionRtf');
-            $filteredIDs = TagManager::getInstance()->getFilter($this->getParam('tags'), 'share_sitemap_tags');
+			
+			$filteredIDs = array();
+			if($this->getParam('tags'))
+                $filteredIDs = TagManager::getInstance()->getFilter($this->getParam('tags'), 'share_sitemap_tags');
             
 			reset($data);
 			while (list($key, $value) = each($data)) {
-                if($this->getParam('tags') && !in_array($key, $filteredIDs)){
+                if(!empty($filteredIDs) && !in_array($key, $filteredIDs)){
                     unset($data[$key]);
                     continue;    
                 }    

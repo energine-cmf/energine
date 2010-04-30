@@ -4,7 +4,7 @@
             version="1.0"
             encoding="utf-8"
             omit-xml-declaration="no"
-            indent="yes" />
+            indent="no" />
     
     <xsl:variable name="DOC_PROPS" select="/document/properties/property" />
 

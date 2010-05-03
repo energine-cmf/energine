@@ -172,7 +172,7 @@ abstract class Builder extends DBWorker {
                     	   );
                     	if(file_exists($thumbnailFile)){
                     	   $img = $this->result->createElement(
-                    	       'image'
+                    	       'thumbnail'
                     	   );
                     	   $img->setAttribute('width', $width);
                     	   $img->setAttribute('height', $height);
@@ -191,16 +191,23 @@ abstract class Builder extends DBWorker {
                     case FieldDescription::FIELD_TYPE_DATE:
                     case FieldDescription::FIELD_TYPE_HIDDEN:
                             try {
-                            	$result->setAttribute('date', @strftime('%d-%m-%Y-%H-%S', $fieldValue));
+                            	$result->setAttribute('date', @strftime('%d-%m-%Y-%H-%M-%S', $fieldValue));
                                 $fieldValue = @strftime($fieldInfo->getPropertyValue('outputFormat'), $fieldValue);
                             }
                             catch (Exception  $dummy){
                             };
                         break;
+                    case FieldDescription::FIELD_TYPE_STRING:
+                    case FieldDescription::FIELD_TYPE_TEXT:
+                    case FieldDescription::FIELD_TYPE_HTML_BLOCK:
+                        $fieldValue = str_replace('&', '&amp;', $fieldValue);    	
+                    break;
+                    
                     default: // not used
                 }
+                $result->nodeValue = $fieldValue;
             }
-            $result->nodeValue = str_replace('&', '&amp;', $fieldValue);
+            
         }
 
         return $result;

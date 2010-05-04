@@ -35,10 +35,11 @@ abstract class Singleton extends DBWorker {
             throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
         }
         parent::__construct();
+        self::$flag = null;        
     }
     
     /**
-      * _clone
+      * Закрываем возможность клонирования 
       * 
       * @return void
       * @access private

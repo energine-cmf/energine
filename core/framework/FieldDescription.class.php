@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -131,6 +132,10 @@ class FieldDescription extends DBWorker {
      * если установлен ffmpeg - конвертируется из одного из поддерживаемых форматов 
      */
     const FIELD_TYPE_VIDEO = 'video';
+    /**
+     * Поле содержит медиа данные
+     */
+    const FIELD_TYPE_MEDIA = 'media';
 
     /*
     * Режимы отображения полей:

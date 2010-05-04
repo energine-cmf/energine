@@ -198,9 +198,8 @@ final class ComponentManager extends Object {
             $result = new $class($name, $module, $this->document, $params);    
         }
         catch(SystemException $e) {
-            throw new SystemException('ERR_CLASS_NOT_FOUND', SystemException::ERR_DEVELOPER, array(
+            throw new SystemException($e->getMessage(), SystemException::ERR_DEVELOPER, array(
                 'class' => (($module !== 'site')?str_replace('*', $module, CORE_COMPONENTS_DIR):SITE_COMPONENTS_DIR.$module).'/'.$class.'.class.php',
-                'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ));
         }

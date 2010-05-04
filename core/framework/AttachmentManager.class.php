@@ -43,43 +43,61 @@
     public function __construct() {
         parent::__construct();
     }
+    /**
+     * Создает описание поля
+     * 
+     * @return FieldDescription
+     * @access public
+     */
+    public function createFieldDescription(){
+        $f = new FieldDescription('attachments');
+        $f->setType(FieldDescription::FIELD_TYPE_CUSTOM);
+        
+        return $f;
+    }
     
     /**
      * Возвращает поле
      * 
-     * @return DOMNode
+     * @param mixed значение поля
+     * @param string имя поля
+     * @param string имя таблицы
+     * @return Field
      * @access public
      */
-    public function build(){
+    public function createField($mapValue, $mapFieldName, $mapTableName){
+    	//@todo в принципе имя филда можеть быть вычислено через ColumnInfo 
         $f = new Field('attachments');
-        $data->addField($f);
-
+        if(!is_array($mapValue)) {
+        	$mapValue = array($mapValue);
+        }
+        
         $images = $this->dbh->selectRequest(
-               'SELECT spu.product_id, upl_path, upl_name FROM share_uploads su '.
-               'LEFT JOIN `shop_product_uploads` spu ON spu.upl_id = su.upl_id '.
-               'WHERE product_id IN ('.implode(',', $data->getFieldByName('product_id')->getData()).')'
-               );
+	        'SELECT spu.'.$mapFieldName.', upl_path, upl_name FROM share_uploads su '.
+	        'LEFT JOIN `'.$mapTableName.'` spu ON spu.upl_id = su.upl_id '.
+	        'WHERE '.$mapFieldName.' IN ('.implode(',', $mapValue).')'
+        );
 
                if(is_array($images)){
                 foreach($images as $row){
-                    $productID = $row['product_id'];
-                    if(!isset($imageData[$productID]))
-                    $imageData[$productID] = array();
+                    $mapID = $row[$mapFieldName];
+                    if(!isset($imageData[$mapID]))
+                    $imageData[$mapID] = array();
                      
-                    array_push($imageData[$productID], $row);
+                    array_push($imageData[$mapID], $row);
                 }
 
-                for ($i = 0; $i < $data->getRowCount(); $i++) {
-                    if(isset($imageData[$data->getFieldByName('product_id')->getRowData($i)])){
+                for ($i = 0; $i < sizeof($mapValue); $i++) {
+                    if(isset($imageData[$mapValue[$i]])){
                         $builder = new SimpleBuilder();
                         $localData = new Data();
-                        $localData->load($imageData[$data->getFieldByName('product_id')->getRowData($i)]);
+                        $localData->load($imageData[$mapValue[$i]]);
 
                         $dataDescription = new DataDescription();
                         $fd = new FieldDescription('product_id');
                         $dataDescription->addFieldDescription($fd);
                         $fd = new FieldDescription('upl_path');
-                        $fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
+                        $fd->setType(FieldDescription::FIELD_TYPE_MEDIA);
                         $dataDescription->addFieldDescription($fd);
                         $fd = new FieldDescription('upl_name');
                         $dataDescription->addFieldDescription($fd);
@@ -93,6 +111,7 @@
                 }
 
                }
+               return $f; 
     } 
     
 }

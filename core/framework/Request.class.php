@@ -18,14 +18,7 @@
  * @author 1m.dm
  * @final
  */
-final class Request extends Object {
-
-    /**
-     * @access private
-     * @var Request единый в системе экземпляр класса Request (паттерн Singleton)
-     */
-    private static $instance;
-
+final class Request extends Singleton {
     /**
      * @access private
      * @var URI текущий URI запроса
@@ -95,20 +88,6 @@ final class Request extends Object {
             $this->lang = '';
         }
         $this->path = $path;
-    }
-
-    /**
-     * Возвращает единый для всей системы экземпляр класса Request.
-     *
-     * @access public
-     * @return Request
-     * @static
-     */
-    public static function getInstance() {
-        if (!isset(self::$instance)) {
-            self::$instance = new Request;
-        }
-        return self::$instance;
     }
 
     /**

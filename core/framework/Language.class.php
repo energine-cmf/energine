@@ -9,7 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
 
 /**
  * Управляет языками системы.
@@ -19,7 +18,7 @@
  * @author 1m.dm
  * @final
  */
-final class Language extends DBWorker{
+final class Language extends Singleton{
 
     /**
      * @access public
@@ -32,13 +31,6 @@ final class Language extends DBWorker{
      * @var array набор языков, определённых в системе
      */
     private $languages;
-
-    /**
-     * @access private
-     * @static
-     * @var Language единый для всей системы экземпляр класса Language
-     */
-    private static $instance;
 
     /**
      * Конструктор класса.
@@ -59,21 +51,6 @@ final class Language extends DBWorker{
             $this->languages[$langInfo['lang_id']] = $langInfo;
             unset($this->languages[$langInfo['lang_id']]['lang_id']);
         }
-    }
-
-    /**
-     * Возвращает единый для всей системы экземпляр класса Language.
-     * См. паттерн проектирования Singleton.
-     *
-     * @access public
-     * @static
-     * @return Language
-     */
-    public static function getInstance() {
-        if (!isset(self::$instance)) {
-            self::$instance = new Language;
-        }
-        return self::$instance;
     }
 
     /**

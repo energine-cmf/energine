@@ -18,7 +18,7 @@
  * @author dr.Pavka
  * @final
  */
-final class UserSession extends DBWorker {
+final class UserSession extends Singleton {
 
     /**
      * Имя сеанса по-умолчанию.
@@ -59,13 +59,6 @@ final class UserSession extends DBWorker {
      * @access private
      */
     private $lifespan;
-
-    /**
-     * @access private
-     * @static
-     * @var UserSession единый для всей системы экземпляр класса UserSession
-     */
-    private static $instance;
 
     /**
      * @access private
@@ -157,20 +150,6 @@ final class UserSession extends DBWorker {
             }
         }
         session_start();
-    }
-
-    /**
-     * Возвращает единый для всей системы экземпляр класса UserSession.
-     *
-     * @access public
-     * @static
-     * @return UserSession
-     */
-    public static function getInstance() {
-        if (!isset(self::$instance)) {
-            self::$instance = new UserSession;
-        }
-        return self::$instance;
     }
 
     /**

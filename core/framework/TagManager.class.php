@@ -16,66 +16,21 @@
   * @subpackage core
   * @author d.pavka@gmail.com
   */
- class TagManager extends DBWorker {
+ class TagManager extends Singleton {
  	/**
      * Имя таблицы тегов
  	 */
  	const TAG_TABLENAME = 'share_tags';
  	const TAG_SEPARATOR = ',';
  	
- 	/**
- 	 * Инстанс класса
- 	 * 
- 	 * @access private
- 	 * @var TagManager
- 	 * @static 
- 	 */
- 	 private static $instance;
- 	 
- 	 /**
- 	  * Флаг
- 	  * 
- 	  * @access private
- 	  * @var boolean
- 	  * @static 
- 	  */
- 	  private static $flag;
- 	 
     /**
      * Конструктор класса
      *
      * @access public
      */
     public function __construct() {
-    	if(is_null(self::$flag)){
-    		throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
-    	}
         parent::__construct();
     }
-    /**
-      * Пустой метод, необходимый для реализации паттерна синглтон
-      * 
-      * @return void
-      * @access private
-      */
-    private function __clone(){}
-    
-    /**
-     * GetInstance
-     * 
-     * @return TagManager
-     * @access public
-     * @static 
-     */
-    public static function getInstance(){
-    	self::$flag = true;
-        if(!isset(self::$instance)){
-        	self::$instance = new self;
-        }
-        return self::$instance;
-    }
-    
-    
     /**
      * Связывание набора тегов с определенным полем
      * 

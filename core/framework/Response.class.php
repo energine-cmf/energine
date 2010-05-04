@@ -20,14 +20,7 @@
  * @author 1m.dm
  * @final
  */
-final class Response extends Object {
-
-    /**
-     * @access private
-     * @var Response единый для всей системы экземпляр класса Response
-     */
-    private static $instance;
-
+final class Response extends Singleton {
     /**
      * @access private
      * @var string строка статуса ответа
@@ -112,20 +105,6 @@ final class Response extends Object {
         $this->headers = array();
         $this->cookies = array();
         $this->body = '';
-    }
-
-    /**
-     * Возвращает единый для всей системы экземпляр класса Response.
-     *
-     * @access public
-     * @static
-     * @return Response
-     */
-    static public function getInstance() {
-        if (!isset(self::$instance)) {
-            self::$instance = new Response;
-        }
-        return self::$instance;
     }
 
     /**

@@ -17,18 +17,12 @@
  * @author 1m.dm
  * @final
  */
-final class DocumentController extends Object {
+final class DocumentController extends Singleton {
     /**
      * 
      * @var Transformer
      */
 	private static $transformer;
-	/**
-	 * 
-	 * @var DocumentController
-	 */
-	private static $instance;
-
     /**
      * Конструктор класса.
      *
@@ -37,20 +31,6 @@ final class DocumentController extends Object {
      */
     public function __construct() {
         parent::__construct();
-    }
-
-    /**
-     * Возвращает единый для всей системы экземпляр класса DocumentController
-     *
-     * @access public
-     * @static
-     * @return DocumentController
-     */
-    static public function getInstance() {
-        if (!isset(self::$instance)) {
-            self::$instance = new DocumentController();
-        }
-        return self::$instance;
     }
 
     /**

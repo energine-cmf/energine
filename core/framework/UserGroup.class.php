@@ -20,7 +20,7 @@
  * @author 1m.dm
  * @final
  */
-final class UserGroup extends DBWorker {
+final class UserGroup extends Singleton {
 
     /**
      * @access private
@@ -41,12 +41,6 @@ final class UserGroup extends DBWorker {
      */
     private $groups;
 
-    /**
-     * @access private
-     * @static
-     * @var UserGroup единый для всей системы экземпляр класса UserGroup
-     */
-    private static $instance;
 
     /**
      * Конструктор класса.
@@ -64,22 +58,6 @@ final class UserGroup extends DBWorker {
          */
         $this->groups = convertDBResult($this->dbh->select('user_groups'), 'group_id', true);
     }
-
-    /**
-     * Возвращает единый для всей системы экземпляр класса UserGroup.
-     * См. паттерн проектирования Singleton.
-     *
-     * @access public
-     * @static
-     * @return UserGroup
-     */
-    public static function getInstance() {
-        if (!isset(self::$instance)) {
-            self::$instance = new UserGroup;
-        }
-        return self::$instance;
-    }
-
     /**
      * Возвращает перечень групп
      *

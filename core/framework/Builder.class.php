@@ -154,27 +154,28 @@ abstract class Builder extends DBWorker {
 			}
 		}
 		elseif(($fieldInfo->getType() == FieldDescription::FIELD_TYPE_MEDIA) && $fieldValue){
-			if($info = FileInfo::getInstance()->analyze($fieldValue)){
-				$el = $this->result->createElement($info->type);
-				$el->nodeValue = $fieldValue;
-				switch ($info->type){
-					case FileInfo::META_TYPE_IMAGE:
-						$el->setAttribute('width', $info->width);
-						$el->setAttribute('height', $info->height);
-						break;
-					default:
-						break;
-				}
-				$result->appendChild($el);
-				foreach($this->getConfigValue('thumbnails.thumbnail') as $thumbnail){
-					$thumbnailFile =
-					FileObject::getThumbFilename(
-					$fieldValue,
-					$width = (int)$thumbnail->width,
-					$height = (int)$thumbnail->height
-					);
-					if(file_exists($thumbnailFile)){
-						$img = $this->result->createElement(
+			try {
+				if($info = FileInfo::getInstance()->analyze($fieldValue)){
+					$el = $this->result->createElement($info->type);
+					$el->nodeValue = $fieldValue;
+					switch ($info->type){
+						case FileInfo::META_TYPE_IMAGE:
+							$el->setAttribute('width', $info->width);
+							$el->setAttribute('height', $info->height);
+							break;
+						default:
+							break;
+					}
+					$result->appendChild($el);
+					foreach($this->getConfigValue('thumbnails.thumbnail') as $thumbnail){
+						$thumbnailFile =
+						FileObject::getThumbFilename(
+						$fieldValue,
+						$width = (int)$thumbnail->width,
+						$height = (int)$thumbnail->height
+						);
+						if(file_exists($thumbnailFile)){
+							$img = $this->result->createElement(
              'thumbnail'
              );
              $img->setAttribute('width', $width);
@@ -183,8 +184,13 @@ abstract class Builder extends DBWorker {
              $img->nodeValue = $thumbnailFile;
              $result->appendChild($img);
 
+
+						}
 					}
 				}
+			}
+			catch(SystemException $e){
+
 			}
 		}
 		elseif ($fieldValue !== false) {

@@ -66,7 +66,7 @@ var FileManager = new Class({
         var renBtn = this.toolbar.getControlById('rename');
         var selectedItem = this.viewWidget.getSelectedItem();
 
-        var action = selectedItem.obj['upl_mime_type'] == 0 ? 'open' : 'insert';
+        var action = selectedItem.obj['upl_mime_type'] == 'folder' ? 'open' : 'insert';
         if(openBtn)
             openBtn.setAction(action);
 
@@ -98,7 +98,7 @@ var FileManager = new Class({
 
 	open: function() {
 	    var item = this.viewWidget.getSelectedItem();
-	    if (item.obj['upl_mime_type'] == 0) {
+	    if (item.obj['upl_mime_type'] == 'folder') {
             this.load(this.viewWidget.getSelectedItem().obj['upl_path']);
 	    }
 	    else {
@@ -140,8 +140,11 @@ var FileManager = new Class({
     },
 
     insert: function() {
-        ModalBox.setReturnValue(this.viewWidget.getSelectedItem().obj);
-        ModalBox.close();
+        //Вроде как костыль
+        if(ModalBox.getExtraData()){
+            ModalBox.setReturnValue(this.viewWidget.getSelectedItem().obj);
+            ModalBox.close();
+        }
     },
     uploadZip: function(){
 		ModalBox.open({

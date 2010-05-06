@@ -145,13 +145,13 @@ final class FileLibrary extends DataSet {
 
     private function addClass($row) {
         switch ($row['upl_mime_type']) {
-        	case FileSystemObject::IS_FOLDER:
+        	case FileInfo::META_TYPE_FOLDER:
         		$row['className'] = 'folder';
         		break;
-            case FileSystemObject::IS_IMAGE:
+            case FileInfo::META_TYPE_IMAGE:
                 $row['className'] = 'image';
             break;
-            case FileSystemObject::IS_ZIP:
+            case FileInfo::META_TYPE_ZIP:
                 $row['className'] = 'zip';
             break;
         	default:
@@ -450,10 +450,10 @@ final class FileLibrary extends DataSet {
             $uploader->setFile($_FILES['file']);
             $uploader->upload('tmp/');
             $fileName = $uploader->getFileObjectName();
-            if (($fileType = FileSystemObject::getTypeInfo($fileName)) == FileSystemObject::IS_IMAGE) {
+            if (($fileType = FileInfo::getInstance()->analyze($fileName)->type) == FileInfo::META_TYPE_IMAGE) {
             	$js .= 'iframe.preview.src = "'.$fileName.'";';
             }
-            elseif($fileType == FileSystemObject::IS_ZIP){
+            elseif($fileType == FileInfo::META_TYPE_ZIP){
 				$js .= 'iframe.preview.src = "images/icons/icon_zip.gif";';
             }
             else {

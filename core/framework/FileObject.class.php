@@ -10,8 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/FileSystemObject.class.php');
-//require_once('core/modules/image/components/Image.class.php');
 
 /**
  * Класс - модель файла
@@ -21,11 +19,6 @@
  * @author dr.Pavka
  */
 class FileObject extends FileSystemObject {
-	/**
-	 * Имя таблицы thumbnail
-	 */
-//	const THUMB_TABLE_NAME = 'share_uploads_thumbnails';
-
 	/**
 	 * Полный путь к файлу
 	 *
@@ -64,9 +57,9 @@ class FileObject extends FileSystemObject {
 		$fileName = dirname($path).'/.'.basename($path);
 		$data = array();
 		//Для изображений добавляем высоту и ширину
-		if (FileInfo::getInstance($path) == FileInfo::META_TYPE_IMAGE) {
+		$fInfo = FileInfo::getInstance()->analyze($path);
+		if ($fInfo->type == FileInfo::META_TYPE_IMAGE) {
 			try {
-				$imgData = getimagesize($path);
 				if (!file_exists($fileName)) {
 					$thumb = new Image();
 					$thumb->loadFromFile($path);
@@ -79,7 +72,7 @@ class FileObject extends FileSystemObject {
 				//В этом случае ничего делать не нужно
 
 			}
-			$data = array_merge($data, array('width'=>$imgData[0], 'height'=>$imgData[1]));
+			$data = array_merge($data, array('width'=>$fInfo->width, 'height'=>$fInfo->height));
 		}
 
 		$result->setData($data);

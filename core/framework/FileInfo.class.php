@@ -73,6 +73,7 @@
     	}
     	elseif(is_dir($filename)){
     		$result['type'] = self::META_TYPE_FOLDER;
+    		$result['mime'] = 'unknown/mime-type';
     	}
     	else{
     		$mimetype = $this->getMimeType($filename);

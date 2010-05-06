@@ -211,7 +211,7 @@ Form.Attachments = {
                         new Element('td').set('html', data.upl_name),
                         new Element('td').adopt(
                             new Element('a', {'href':data.upl_path, 'target':'blank'}).adopt(
-                                (data.upl_mime_type != 1)? new Element('span').set('html', data.upl_path):new Element('img', {'src':data.upl_data.thumb, 'border': '0'})
+                                (data.upl_mime_type != 'image')? new Element('span').set('html', data.upl_path):new Element('img', {'src':data.upl_data.thumb, 'border': '0'})
                             )
                         )
                     ])

@@ -10,7 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
 
 /**
  * Абстрактный класс  - модель объекта файловой системы
@@ -21,26 +20,6 @@
  * @abstract
  */
 abstract class FileSystemObject extends DBWorker {
-    /**
-     * Файл является папкой
-     *
-     */
-    const IS_FOLDER = 0;
-    /**
-     * Файл - изображение
-     *
-     */
-    const IS_IMAGE = 1;
-    /**
-     * Файл
-     *
-     */
-    const IS_FILE = 2;
-    /**
-	 * Zip файл
-     */
-    const IS_ZIP = 3;
-
     /**
      * Имя таблицы в которой хранится мета описания папки
      *
@@ -99,7 +78,7 @@ abstract class FileSystemObject extends DBWorker {
     public function asArray() {
         $result = array(
         'upl_id'=>$this->id,
-        'upl_mime_type' => self::getTypeInfo($this->path),
+        'upl_mime_type' => FileInfo::getInstance()->analyze($this->path)->type,
         'upl_name' => $this->name,
         'upl_path' => $this->path,
         'upl_data'=>$this->data

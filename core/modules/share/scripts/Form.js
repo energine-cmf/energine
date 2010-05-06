@@ -182,7 +182,7 @@ var Form = new Class({
 });
 Form.Attachments = {
     addAttachment: function(){
-        ModalBox.open({ 'url': this.singlePath + 'file-library/image-only/', 'onClose': function(result){
+        ModalBox.open({ 'url': this.singlePath + 'file-library/media/', 'onClose': function(result){
         if(result){
             var data = result;
             var emptyRow;

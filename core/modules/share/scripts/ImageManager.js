@@ -16,7 +16,7 @@ var ImageManager = new Class({
 
     openImageLib: function() {
         ModalBox.open({
-            url: this.singlePath+'file-library/image-only',
+            url: this.singlePath+'file-library/image/',
             onClose: function(result) {
                 if (result) {
                     this.image = result;

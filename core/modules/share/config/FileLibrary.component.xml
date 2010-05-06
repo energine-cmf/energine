@@ -91,7 +91,7 @@
 	    <method name="main">
             <uri_patterns>
                 <pattern>/</pattern>
-                <pattern>/[string]/</pattern>
+                <pattern>/[allowed_file_type]/</pattern>
             </uri_patterns>
             <javascript>
                 <object name="FileManager" />

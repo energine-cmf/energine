@@ -142,7 +142,7 @@ var RichEditor = new Class({
 
 				ModalBox.open({
 							url : this.area.getProperty('componentPath')
-									+ 'file-library/image-only',
+									+ 'file-library/image/',
 							onClose : this.insertImage.bind(this)
 						});
 

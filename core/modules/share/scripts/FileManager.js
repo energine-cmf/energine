@@ -39,7 +39,7 @@ var FileManager = new Class({
             path = cookiePath;
         }
 		var postBody = path ? 'path='+path+'&' : '';
-        if (this.element.getProperty('file_type') == 'image') {
+        if (this.element.getProperty('file_type') == 'media') {
             postBody += 'onlymedia=true';
         }
         this.request(

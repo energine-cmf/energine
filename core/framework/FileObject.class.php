@@ -64,7 +64,7 @@ class FileObject extends FileSystemObject {
 		$fileName = dirname($path).'/.'.basename($path);
 		$data = array();
 		//Для изображений добавляем высоту и ширину
-		if (self::getTypeInfo($path) == FileSystemObject::IS_IMAGE) {
+		if (FileInfo::getInstance($path) == FileInfo::META_TYPE_IMAGE) {
 			try {
 				$imgData = getimagesize($path);
 				if (!file_exists($fileName)) {
@@ -122,7 +122,7 @@ class FileObject extends FileSystemObject {
 
 		$uplID = $this->dbh->modify(QAL::INSERT, self::TABLE_NAME, $data);
 		
-		if((self::getTypeInfo($sourceFileName) == FileSystemObject::IS_IMAGE) && $this->getConfigValue('thumbnails')){
+		if((FileInfo::getInstance()->analyze($sourceFileName) == FileInfo::META_TYPE_IMAGE) && $this->getConfigValue('thumbnails')){
 			foreach($this->getConfigValue('thumbnails.thumbnail') as $thumbnail){
 				$image = new Image();
                 $image->loadFromFile($sourceFileName);

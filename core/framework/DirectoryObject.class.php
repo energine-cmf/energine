@@ -104,7 +104,7 @@ class DirectoryObject extends FileSystemObject {
             if (substr($fileName, 0, 1) != '.') {
                 $fullPath = $this->getPath().'/'.$fileName;
 
-                if (isset($_POST['imageonly']) && !in_array(self::getTypeInfo($fullPath), array(self::IS_IMAGE, self::IS_FOLDER ))) {
+                if (isset($_POST['onlymedia']) && !in_array(self::getTypeInfo($fullPath), array(self::IS_IMAGE, self::IS_FOLDER ))) {
                     //dummy
                 }
                 else {

@@ -157,38 +157,6 @@ abstract class FileSystemObject extends DBWorker {
     public function getPath() {
         return $this->path;
     }
-
-    /**
-     * Статический метод возвращающий тип файла
-     *
-     * @param string path путь к файлу
-     * @return string
-     * @access public
-     */
-
-    public static function getTypeInfo($path) {
-        $result = self::IS_FILE;
-        if (!file_exists($path)) {
-        	throw new SystemException('ERR_NO_FILE', SystemException::ERR_WARNING, $path);
-        }
-
-        if (is_dir($path)) {
-            $result = self::IS_FOLDER;
-        }
-        elseif(pathinfo($path, PATHINFO_EXTENSION) == 'zip'){
-        	$zip = new ZipArchive();
-        	if($zip->open($path, ZIPARCHIVE::CHECKCONS)){
-				$zip->close();
-				$result = self::IS_ZIP;
-        	}
-        }
-        elseif(@getimagesize($path)) {
-            $result = self::IS_IMAGE;
-        }
-
-        return $result;
-    }
-
     /**
      * Удаление из БД записи о файле
      *

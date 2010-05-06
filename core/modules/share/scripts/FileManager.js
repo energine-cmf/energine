@@ -40,7 +40,7 @@ var FileManager = new Class({
         }
 		var postBody = path ? 'path='+path+'&' : '';
         if (this.element.getProperty('file_type') == 'image') {
-            postBody += 'imageonly=true';
+            postBody += 'onlymedia=true';
         }
         this.request(
             this.element.getProperty('single_template')+'get-data',
@@ -67,7 +67,8 @@ var FileManager = new Class({
         var selectedItem = this.viewWidget.getSelectedItem();
 
         var action = selectedItem.obj['upl_mime_type'] == 0 ? 'open' : 'insert';
-        openBtn.setAction(action);
+        if(openBtn)
+            openBtn.setAction(action);
 
         if (selectedItem.obj['upl_name']== '...') {
             delBtn.disable();

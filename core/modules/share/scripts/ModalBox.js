@@ -66,7 +66,12 @@ var ModalBox = window.top.ModalBox || {
     },
 
     getExtraData: function() {
-        return this.getCurrent().options.extraData;
+        var result = null;
+        if(this.getCurrent()){
+            result = this.getCurrent().options.extraData;
+        }
+        
+        return result;
     },
 
     setReturnValue: function(value) {

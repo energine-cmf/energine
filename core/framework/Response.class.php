@@ -239,7 +239,7 @@ final class Response extends Singleton {
             }
         }
         else {
-            //throw new SystemException('ERR_HEADERS_SENT', SystemException::ERR_CRITICAL, array($filename, $linenum));
+            //throw new SystemException('ERR_HEADERS_SENT', SystemException::ERR_CRITICAL);
         }
         $contents = $this->body;
 

@@ -94,7 +94,7 @@
                         $localData->load($imageData[$mapValue[$i]]);
 
                         $dataDescription = new DataDescription();
-                        $fd = new FieldDescription('product_id');
+                        $fd = new FieldDescription($mapFieldName);
                         $dataDescription->addFieldDescription($fd);
                         $fd = new FieldDescription('upl_path');
                         $fd->setType(FieldDescription::FIELD_TYPE_MEDIA);

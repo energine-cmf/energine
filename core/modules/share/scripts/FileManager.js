@@ -7,7 +7,6 @@ var FileManager = new Class({
     initialized: false,
 
 	initialize: function(element){
-
 		this.element = $(element);
 		this.tabPane = new TabPane(this.element);
 		this.viewWidget = new DirView(this.element.getElement('.dirArea'), {
@@ -141,7 +140,7 @@ var FileManager = new Class({
 
     insert: function() {
         //Вроде как костыль
-        if(ModalBox.getExtraData()){
+        if(this.toolbar.getControlById('open')){
             ModalBox.setReturnValue(this.viewWidget.getSelectedItem().obj);
             ModalBox.close();
         }

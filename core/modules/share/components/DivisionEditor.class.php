@@ -203,7 +203,7 @@ final class DivisionEditor extends Grid {
 		) as $path){
 			$path = str_replace($dirPath, '', $path);
 			list($name, $tp) = explode('.', substr(basename($path), 0, -4));
-			$name = strtoupper($tp.'_'.$name);
+			$name = $this->translate(strtoupper($tp.'_'.$name));
 			$result[] = array(
                'key' => $path,
                'value' => $name 
@@ -402,7 +402,7 @@ final class DivisionEditor extends Grid {
                      'lang_id' => $this->document->getLang()));
 		if (!empty($res)) {
 			$name = simplifyDBResult($res, 'smap_name', true);
-			for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
+			for ($i = 0, $langCount = count(Language::getInstance()->getLanguages()); $i < $langCount; $i++) {
 				$field->setRowData($i, $actionParams['pid']);
 				$field->setRowProperty($i, 'data_name', $name);
 				$field->setRowProperty($i, 'segment', $smapSegment);
@@ -412,6 +412,12 @@ final class DivisionEditor extends Grid {
             //$field->setProperty('nullable', 'nullable');
             $field->removeProperty('pattern');
             $field->removeProperty('message');
+            
+            $field = new Field('tags');
+            for($i = 0; $i<$langCount; $i++){
+                $field->setRowData($i, 'menu');	
+            }
+            $this->getData()->addField($field);
 		}
 		
 	}

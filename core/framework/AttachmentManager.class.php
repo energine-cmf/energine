@@ -73,7 +73,7 @@
         }
         
         $images = $this->dbh->selectRequest(
-	        'SELECT spu.'.$mapFieldName.', upl_path, upl_name FROM share_uploads su '.
+	        'SELECT spu.'.$mapFieldName.', upl_path as file, upl_name as name FROM share_uploads su '.
 	        'LEFT JOIN `'.$mapTableName.'` spu ON spu.upl_id = su.upl_id '.
 	        'WHERE '.$mapFieldName.' IN ('.implode(',', $mapValue).')'
         );
@@ -94,12 +94,10 @@
                         $localData->load($imageData[$mapValue[$i]]);
 
                         $dataDescription = new DataDescription();
-                        $fd = new FieldDescription($mapFieldName);
-                        $dataDescription->addFieldDescription($fd);
-                        $fd = new FieldDescription('upl_path');
+                        $fd = new FieldDescription('file');
                         $fd->setType(FieldDescription::FIELD_TYPE_MEDIA);
                         $dataDescription->addFieldDescription($fd);
-                        $fd = new FieldDescription('upl_name');
+                        $fd = new FieldDescription('name');
                         $dataDescription->addFieldDescription($fd);
                         $builder->setData($localData);
                         $builder->setDataDescription($dataDescription);

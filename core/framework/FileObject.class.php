@@ -127,7 +127,8 @@ class FileObject extends FileSystemObject {
 	
 	public static function getThumbFilename($sourceFileName, $width, $height){
 		list($dirname, $basename, $extension, $filename) = array_values(pathinfo($sourceFileName));
-        return $dirname.'/'.'.'.$filename.'.'.$width.'-'.$height.'.'.$extension;
+        //return $dirname.'/'.'.'.$filename.'.'.$width.'-'.$height.'.'.$extension;
+        return $dirname.'/'.'.'.$filename.'.'.$width.'-'.$height.'.png';
 	}
 
 	public static function getTmpFilePath($filename){

@@ -77,6 +77,7 @@
     	}
     	else{
     		$mimetype = $this->getMimeType($filename);
+    		
     		$result['mime'] = $mimetype;
     		
     		switch ($mimetype){
@@ -90,14 +91,15 @@
     				break;
     			case 'video/x-flv':
     				$result['type'] = self::META_TYPE_VIDEO;
+    				break;
     			case 'application/zip':
     				$result['type'] = self::META_TYPE_ZIP;
+    				break;
     			default:
     				$result['type'] = self::META_TYPE_UNKNOWN;
     				break;  
     		}
     	}
-    	
         return  (object)$result;   
     }
     

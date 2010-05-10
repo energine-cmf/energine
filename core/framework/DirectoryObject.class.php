@@ -109,6 +109,7 @@ class DirectoryObject extends FileSystemObject {
                 }
                 else {
                     $this->files[] = (is_dir($fullPath))?DirectoryObject::loadFrom($fullPath):FileObject::loadFrom($fullPath);
+                    //inspect($this->files);
                 }
             }
         }

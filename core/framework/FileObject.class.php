@@ -115,7 +115,7 @@ class FileObject extends FileSystemObject {
 
 		$uplID = $this->dbh->modify(QAL::INSERT, self::TABLE_NAME, $data);
 		
-		if((FileInfo::getInstance()->analyze($sourceFileName) == FileInfo::META_TYPE_IMAGE) && $this->getConfigValue('thumbnails')){
+		if((FileInfo::getInstance()->analyze($sourceFileName)->type == FileInfo::META_TYPE_IMAGE) && $this->getConfigValue('thumbnails')){
 			foreach($this->getConfigValue('thumbnails.thumbnail') as $thumbnail){
 				$image = new Image();
                 $image->loadFromFile($sourceFileName);

@@ -54,7 +54,10 @@ class FileObject extends FileSystemObject {
 
 		$result = new FileObject();
 		$result->loadData($path);
-		$fileName = dirname($path).'/.'.basename($path);
+		list($dirname,,, $fileName) = array_values(pathinfo($path));
+		
+		$fileName = $dirname.'/.'.$fileName.'.50-50.png';
+		
 		$data = array();
 		//Для изображений добавляем высоту и ширину
 		$fInfo = FileInfo::getInstance()->analyze($path);
@@ -73,6 +76,9 @@ class FileObject extends FileSystemObject {
 
 			}
 			$data = array_merge($data, array('width'=>$fInfo->width, 'height'=>$fInfo->height));
+		}
+		elseif($fInfo->type == FileInfo::META_TYPE_VIDEO){
+			$data = array('thumb'=>$fileName);
 		}
 
 		$result->setData($data);

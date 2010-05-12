@@ -620,7 +620,7 @@ class DBDataSet extends DataSet {
         if (!$this->recordExists($id)) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
-        $this->addFilterCondition(array($this->getPK() => $id));
+        $this->addFilterCondition(array($this->getTableName().'.'.$this->getPK() => $id));
 
         $this->prepare();
         foreach ($this->getDataDescription()->getFieldDescriptions() as $fieldDescription) {

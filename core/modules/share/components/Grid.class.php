@@ -1033,6 +1033,7 @@ class Grid extends DBDataSet {
         $dd->addFieldDescription($f);
 
         $f = new FieldDescription('upl_path');
+        $f->setType(FieldDescription::FIELD_TYPE_MEDIA);
         $f->setProperty('title', $this->translate('FIELD_UPL_FILE'));
         $dd->addFieldDescription($f);
 
@@ -1042,15 +1043,10 @@ class Grid extends DBDataSet {
             $d->load($data);
             $pathField = $d->getFieldByName('upl_path');
             foreach ($pathField as $i => $path) {
-                if(@file_exists($path) && @getimagesize($path)){
-                    $thumbnailPath = dirname($path).'/.'.basename($path);
-                    $pathField->setRowProperty($i, 'real_image', $path);
-                    if(@file_exists($thumbnailPath) && @getimagesize($thumbnailPath)){
-                        $path = $thumbnailPath;
-                    }
-                    $pathField->setRowData($i, $path);
-                    $pathField->setRowProperty($i, 'is_image', true);
-                }
+            	if(in_array(FileInfo::getInstance()->analyze($path)->type, array(FileInfo::META_TYPE_IMAGE, FileInfo::META_TYPE_VIDEO))){
+                    $pathField->setRowData($i, FileObject::getThumbFilename($path, 50, 50));
+                    $pathField->setRowProperty($i, 'is_image', true);            		
+            	}
             }
         }
 

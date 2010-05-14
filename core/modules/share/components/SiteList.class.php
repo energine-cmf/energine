@@ -29,6 +29,15 @@
         parent::__construct($name, $module, $document,  $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
     }
+
+    protected function defineParams() {
+        $result = array_merge(parent::defineParams(),
+        array(
+        'tags' => '',
+        'recordsPerPage' => false
+        ));
+        return $result;
+    }    
     
     /**
       * Загружаем данные SiteManager
@@ -38,15 +47,27 @@
       */
     protected function loadData(){
     	$result = array();
+    	$filteredIDs = true;
     	
+    	if($this->getParam('tags'))
+            $filteredIDs = TagManager::getInstance()->getFilter($this->getParam('tags'), 'share_sites_tags');
+        
+        if(!empty($filteredIDs))    	
         foreach(SiteManager::getInstance() as $siteID => $site){
-            $result[] = array(
-                'site_id' => $site->id,
-                'site_name' => $site->name,
-                'site_host' => $site->protocol.'://'.$site->host.(($site->port != 80)?':'.$site->port:'').$site->root    
-            );    	
+        	if(
+        	   ($filteredIDs !== true)  && in_array($siteID, $filteredIDs)
+        	   ||
+        	   ($filteredIDs === true)
+        	){
+	            $result[] = array(
+	                'site_id' => $site->id,
+	                'site_name' => $site->name,
+	                'site_host' => $site->protocol.'://'.$site->host.(($site->port != 80)?':'.$site->port:'').$site->root    
+                );
+        	}    	
         }
         return $result;
     }
+    
     
 }

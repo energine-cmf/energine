@@ -28,6 +28,7 @@ class SiteEditor extends Grid {
 	public function __construct($name, $module, Document $document,  array $params = null) {
 		parent::__construct($name, $module, $document,  $params);
 		$this->setTableName('share_sites');
+        $this->setSaver(new SiteSaver());		
 	}
 
 	/**
@@ -46,13 +47,28 @@ class SiteEditor extends Grid {
 			$fd = $this->getDataDescription()->getFieldDescriptionByName('site_folder');
 			$fd->setType(FieldDescription::FIELD_TYPE_SELECT);
 			$fd->loadAvailableValues($this->loadFoldersData(), 'key', 'value');
-
 			
 			if($this->getData()->getFieldByName('site_is_default')->getRowData(0) == 1){
 			 	$this->getDataDescription()->getFieldDescriptionByName('site_is_default')->setMode(FieldDescription::FIELD_MODE_READ);
 			}
+			$tagField = new FieldDescription('tags');
+            $tagField->setType(FieldDescription::FIELD_TYPE_STRING);
+            $tagField->removeProperty('pattern');
+            $this->getDataDescription()->addFieldDescription($tagField);
+                
 			if($this->getAction() == 'add'){
 				$this->getData()->getFieldByName('site_port')->setData(80, true);
+				$this->getData()->getFieldByName('site_root')->setData('/', true);
+			}
+			else {
+                $field = new Field('tags');
+		        $fieldData = implode(TagManager::TAG_SEPARATOR.' ', 
+		            array_keys(TagManager::getInstance()->pull($this->getData()->getFieldByName($this->getPK())->getRowData(0), 'share_sites_tags'))
+		        ); 
+		        for($i=0, $langs = count(Language::getInstance()->getLanguages()); $i<$langs; $i++){
+		            $field->setRowData($i, $fieldData);    
+		        }
+		        $this->getData()->addField($field);				
 			}
 		}
 	}
@@ -71,16 +87,4 @@ class SiteEditor extends Grid {
 		}
 		return $result;
 	}
-	
-	/**
-	  * При сохранении данных обрабатываем дефолтный сайт
-	  * 
-	  * @return mixed
-	  * @access protected
-	  */
-	protected function saveData(){
-	    $this->setSaver(new SiteSaver());
-	    return parent::saveData(); 
-	}
-
 }

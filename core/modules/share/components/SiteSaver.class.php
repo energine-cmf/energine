@@ -38,6 +38,12 @@
             $this->dbh->modify(QAL::UPDATE, $mainTableName, array('site_is_default'=>0));
         }
     	$result = parent::save();
+    	$id = ($this->getMode() == QAL::INSERT)?$result:$this->getData()->getFieldByName('site_id')->getRowData(0);
+        
+        //Записываем информацию в таблицу тегов
+        if(isset($_POST['tags'])){
+            TagManager::getInstance()->bind($_POST['tags'], $id, 'share_sites_tags');         
+        } 
             if($this->getMode() == QAL::INSERT){
                $smapId = $this->dbh->modifyRequest(
                'INSERT INTO share_sitemap '.
@@ -45,7 +51,7 @@
                'SELECT %s, smap_layout, smap_content, \'\' '.
                'FROM `share_sitemap` '.
                'WHERE site_id= %s and smap_pid is null',
-               $result,
+               $id,
                ($siteId = SiteManager::getInstance()->getDefaultSite()->id)
            );   
            foreach($_POST[$translationTableName] as $langID => $siteInfo){

@@ -164,6 +164,19 @@ Energine.thumbnail = {
         return false;
     }
 }
+Energine.cancelEvent = function (e) {
+        e = e || window.event;
+        
+        if (e.preventDefault) {
+            e.stopPropagation();
+            e.preventDefault();
+            
+        } else {
+            e.returnValue = false;  
+            e.cancelBubble = true;
+        } 
+        return false;
+    }
 
 Energine.createDatePicker = function(datePickerObj){
     if(!isset(this.datePickerDataLoaded)){

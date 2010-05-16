@@ -21,11 +21,6 @@ var ValidForm = new Class({
         return result;
     },
     cancelEvent: function(event){
-        event = event || window.event;
-        if (event.stopPropagation) event.stopPropagation();
-        else event.cancelBubble = true;
-
-        if (event.preventDefault) event.preventDefault();
-        else event.returnValue = false;
+        return Energine.cancelEvent(event);
     }
 });

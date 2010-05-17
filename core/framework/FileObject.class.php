@@ -19,6 +19,7 @@
  * @author dr.Pavka
  */
 class FileObject extends FileSystemObject {
+	const TEMPORARY_DIR = 'uploads/temp/';
 	/**
 	 * Полный путь к файлу
 	 *
@@ -138,7 +139,7 @@ class FileObject extends FileSystemObject {
 	}
 
 	public static function getTmpFilePath($filename){
-		return 'tmp/'.basename($filename);
+		return self::TEMPORARY_DIR.basename($filename);
 	}
 
 	public static function generateFilename($dirPath, $fileExtension){

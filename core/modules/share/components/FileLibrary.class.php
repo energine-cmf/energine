@@ -459,7 +459,7 @@ final class FileLibrary extends DataSet {
 
             $uploader = new FileUploader();
             $uploader->setFile($_FILES['file']);
-            $uploader->upload('tmp/');
+            $uploader->upload(FileObject::TEMPORARY_DIR);
             $fileName = $uploader->getFileObjectName();
             if (($fileType = FileInfo::getInstance()->analyze($fileName)->type) == FileInfo::META_TYPE_IMAGE) {
             	$js .= 'iframe.preview.src = "'.$fileName.'";';

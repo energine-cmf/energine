@@ -22,6 +22,7 @@ ul.toolbar li {
     cursor: default;
 	clear: none;
 	font: 11px Tahoma, sans-serif;
+	-khtml-user-select: none;
 }
 
 ul.toolbar li.icon {

@@ -104,11 +104,9 @@
 			</uri_patterns>
 		</method>
 		<!--
-			<method name="exportCSV"> <uri_patterns> <pattern>/csv/</pattern>
-			</uri_patterns> </method> <method name="printData"> <uri_patterns>
-			<pattern>/print/</pattern> </uri_patterns> </method> <method
-			name="up" rights="3"> <uri_patterns> <pattern>/[int]/up/</pattern>
-			</uri_patterns> </method> <method name="down" rights="3">
+        <method name="up" rights="3"> <uri_patterns> <pattern>/[int]/up/</pattern>
+			</uri_patterns> </method> 
+	    <method name="down" rights="3">
 			<uri_patterns> <pattern>/[int]/down/</pattern> </uri_patterns>
 			</method>
 		-->

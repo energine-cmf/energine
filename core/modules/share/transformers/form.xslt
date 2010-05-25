@@ -105,10 +105,16 @@
                     <xsl:when test="not(recordset/@empty)">
                         <xsl:for-each select="recordset/record">
                             <tr id="row_{field[@name='upl_id']}">
-                                <xsl:if test="floor(position() div 2) = position() div 2">
+                                <xsl:if test="floor((position()- 1) div 2) = (position() -1) div 2">
                                     <xsl:attribute name="class">even</xsl:attribute>
                                 </xsl:if>
-                                <td><input type="hidden" name="uploads[upl_id][]" value="{field[@name='upl_id']}"/><a href="#" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']}); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/></a></td>
+                                <td>
+                                    <input type="hidden" name="uploads[upl_id][]" value="{field[@name='upl_id']}"/>
+                                    <button type="button" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']});"><xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/></button> 
+                                    <!--<xsl:if test="position()!=1">--><button type="button" onclick="{$JS_OBJECT}.upAttachment({field[@name='upl_id']});"><xsl:value-of select="$TRANSLATION[@const='BTN_UP']"/></button><!--</xsl:if>-->
+                                    <!--<xsl:if test="position()!=last()">--><button type="button" onclick="{$JS_OBJECT}.downAttachment({field[@name='upl_id']});"><xsl:value-of select="$TRANSLATION[@const='BTN_DOWN']"/></button><!--</xsl:if>-->
+                                    </td>
+                                    
                                 <td><xsl:value-of select="field[@name='upl_name']"/></td>
                                 <td>
                                     <a href="{field[@name='upl_path']/@real_image}" target="blank">
@@ -136,11 +142,16 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="4" style="text-align:right;">
+                        <td colspan="2" style="text-align:right;">
+                            <label for="loadFile"><xsl:value-of select="$TRANSLATION[@const='BTN_LOAD_FILE']"/>:</label><input onchange="{$JS_OBJECT}.loadAttachment(this);" id="loadFile" type="file" />
+                        </td>
+                        <td style="text-align:right;">
                             <a href="#" onclick="{$JS_OBJECT}.addAttachment(); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
                             <script type="text/javascript">
-                                var delete_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/>';
-                                var no_attached_files = '<xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>';
+                                var delete_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/>',
+                                up_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_UP']"/>',
+                                down_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_DOWN']"/>',
+                                no_attached_files = '<xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>';
                             </script>
                         </td>
                     </tr>

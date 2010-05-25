@@ -545,8 +545,11 @@ abstract class DataSet extends Component {
 	 * @final
 	 */
 
-	final protected function addTranslation($tag) {
-		$this->document->addTranslation($tag, $this);
+	final protected function addTranslation() {
+		foreach(func_get_args() as $tag){
+		  $this->document->addTranslation($tag, $this);	
+		}
+		
 	}
 	/**
 	 * Метод используется для форматирования даты и времени в полях date и datetime
@@ -636,10 +639,7 @@ abstract class DataSet extends Component {
                         'BTN_ALIGN_RIGHT',
                         'BTN_ALIGN_JUSTIFY',
                     );
-                array_walk(
-                    $translations,
-                    array($this, 'addTranslation')
-                );
+                    call_user_func_array(array($this, 'addTranslation'), $translations);
 	}
 
 	/**

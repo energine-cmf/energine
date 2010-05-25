@@ -75,12 +75,12 @@ class UserEditor extends Grid {
         
         //если задана аватарка
         if(
-            isset($_POST[$this->getTableName()]['u_avatar_prfile'])
+            isset($_POST[$this->getTableName()]['u_avatar_img'])
             &&
-            file_exists($_POST[$this->getTableName()]['u_avatar_prfile'])
+            file_exists($_POST[$this->getTableName()]['u_avatar_img'])
         ){
         	//и ее размеры отличаются от необходимых
-        	list($realWidth, $realHeight) = getimagesize($_POST[$this->getTableName()]['u_avatar_prfile']);
+        	list($realWidth, $realHeight) = getimagesize($_POST[$this->getTableName()]['u_avatar_img']);
         	list($thumbnailInfo) = $this->getConfigValue('thumbnails.thumbnail');
         	list($neededWidth, $neededHeight) = array((string)$thumbnailInfo->width, (string)$thumbnailInfo->height);
         	 
@@ -89,7 +89,7 @@ class UserEditor extends Grid {
         	   || 
         	   ($realHeight != $neededHeight)
         	){
-        		$fileName = $_POST[$this->getTableName()]['u_avatar_prfile'];
+        		$fileName = $_POST[$this->getTableName()]['u_avatar_img'];
                 $image = new Image();
                 $image->loadFromFile($fileName);
                 $image->resize($neededWidth,$neededHeight);

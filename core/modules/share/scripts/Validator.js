@@ -53,6 +53,13 @@ var Validator = new Class({
             if (!eval('field.value.match('+pattern+');')) {
                 //Выводим информацию об ошибке
                 this.showError(field, message);
+                //Вешаем проверку правильности введения данных на onblur
+                if(!field.getProperty('check')){
+                    field.addEvent('blur', this.validateElement.bind(this, field));
+                    field.addEvent('keydown', this.removeError.bind(this, field));
+                    field.setProperty('check', 'check');
+                }
+
                 result = false;
             }
             else{

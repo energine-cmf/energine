@@ -1,5 +1,5 @@
 ScriptLoader.load('ModalBox');
-/**
+/** 
  * WYSIWYG Редактор
  */
 var RichEditor = new Class({

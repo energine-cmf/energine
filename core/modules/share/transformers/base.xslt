@@ -288,7 +288,7 @@
         </input>
         <script type="text/javascript">
             window.addEvent('domready', function(){
-                Energine.createDatePicker($('<xsl:value-of select="@name"/>'), true);
+                Energine.createDateTimePicker($('<xsl:value-of select="@name"/>'), <xsl:value-of select="boolean(@nullable)"/>);
             })
         </script>  
     </xsl:template>
@@ -300,7 +300,10 @@
         </input>
         <script type="text/javascript">
             window.addEvent('domready', function(){
-                Energine.createDatePicker($('<xsl:value-of select="@name"/>'));
+                Energine.createDatePicker(
+                    $('<xsl:value-of select="@name"/>'), 
+                    <xsl:value-of select="boolean(@nullable)"/>
+                );
             })
         </script>  
     </xsl:template>

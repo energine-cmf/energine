@@ -1,5 +1,5 @@
 ScriptLoader.load('TabPane', 'Toolbar', 'Validator', 'RichEditor','ModalBox');
-
+//keydown
 var Form = new Class({
 	Implements : [Energine.request],
 	initialize : function(element) {
@@ -181,6 +181,39 @@ var Form = new Class({
 	}
 });
 Form.Attachments = {
+    upAttachment: function(uplID){
+        this._moveAttachment(uplID, 'up');
+    },
+    downAttachment: function(uplID){
+        this._moveAttachment(uplID, 'down');
+    },
+    _moveAttachment: function(uplID, direction){
+        var currentRow, changeRow, position;
+        if(currentRow = $('row_'+uplID)){
+            
+            if(direction == 'up'){
+                changeRow = currentRow.getPrevious();
+                position = 'before';    
+            }
+            else {
+                changeRow = currentRow.getNext();
+                position = 'after';
+            }
+            
+            if(changeRow){
+                currentRow.inject(changeRow, position);
+            }
+        }
+        this._zebraRows();
+    },
+    _zebraRows: function(){
+        document.getElements('#attached_files tbody tr').removeClass('even');
+        document.getElements('#attached_files tbody tr:even').addClass('even');
+    },
+    loadAttachment: function(object){
+        var object = $(object);
+        
+    },
     addAttachment: function(){
         ModalBox.open({ 'url': this.singlePath + 'file-library/media/', 'onClose': function(result){
         if(result){
@@ -192,19 +225,24 @@ Form.Attachments = {
                 document.getElement('#attached_files tbody').adopt(
                     new Element('tr', {'id': 'row_' + data.upl_id}).adopt([
                         new Element('td').adopt([
-                            new Element('a',
-                                {'href': '#', 'events': {'click': function(event){
-                                    event = event || window.event;
+                            new Element('button',
+                                {'type': 'button', 'events': {'click': function(event){
                                     this.delAttachment(data.upl_id);
-
-                                    if (event.stopPropagation) event.stopPropagation();
-                                    else event.cancelBubble = true;
-
-                                    if (event.preventDefault) event.preventDefault();
-                                    else event.returnValue = false;
                                 }.bind(this)
                             }
                         }).set('text', delete_button_text),
+                        new Element('button',
+                                {'type': 'button', 'events': {'click': function(event){
+                                    this.upAttachment(data.upl_id);
+                                }.bind(this)
+                            }
+                        }).set('text', up_button_text),
+                        new Element('button',
+                                {'type': 'button', 'events': {'click': function(event){
+                                    this.downAttachment(data.upl_id);
+                                }.bind(this)
+                            }
+                        }).set('text', down_button_text),
 //                        new Element('input', {'name': 'uploads[upl_is_main][]', 'type': 'checkbox'}),
                         new Element('input', {'name': 'uploads[upl_id][]', 'type': 'hidden', 'value': data.upl_id})
                         ]),
@@ -218,6 +256,7 @@ Form.Attachments = {
                 )
             }
         }
+       this._zebraRows(); 
        }.bind(this)});
     },
     delAttachment: function(id){
@@ -302,19 +341,19 @@ Form.RichEditor = new Class({
 							this.textarea.name).setProperties({
 								'type' : 'hidden',
 								'value' : '',
-								'pattern' : this.textarea
-										.getProperty('pattern'),
-								'message' : this.textarea
-										.getProperty('message')
+								'nrgn:pattern' : this.textarea
+										.getProperty('nrgn:pattern'),
+								'nrgn:message' : this.textarea
+										.getProperty('nrgn:message')
 							}).injectBefore(this.textarea);
-					this.area = new Element('div').setProperties({
+					this.area = new Element('div').addEvent('blur', function(){this.hidden.value = this.area.innerHTML; this.hidden.fireEvent('blur');}.bind(this)).setProperties({
 								componentPath : this.form.singlePath
 							}).addClass('richEditor').setStyles({
 								clear : 'both',
 								overflow : 'auto'
 							}).set('html', this.textarea.value);
 					this.area.replaces(this.textarea);
-
+                    this.area.addEvent('keydown', function(){this.hidden.fireEvent('keydown')}.bind(this));
 					// document.addEvent('keydown',
 					// this.processKeyEvent.bind(this));
 					this.pasteArea = new Element('div').setStyles({

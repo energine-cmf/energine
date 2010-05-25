@@ -70,7 +70,7 @@
 				<pattern>/rename/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="uploadZip">
+		<!-- <method name="uploadZip">
 			<uri_patterns>
 				<pattern>/upload-zip/</pattern>
 			</uri_patterns>
@@ -89,7 +89,7 @@
 			<uri_patterns>
 				<pattern>/save-zip/</pattern>
 			</uri_patterns>
-		</method>
+		</method>-->
 	    <method name="main">
             <uri_patterns>
                 <pattern>/</pattern>

@@ -178,24 +178,43 @@ Energine.cancelEvent = function (e) {
         return false;
     }
 
-Energine.createDatePicker = function(datePickerObj){
+Energine.createDatePicker = function(datePickerObj, nullable){
+    var props = {
+        format:'j-m-Y',
+        allowEmpty: nullable,
+        inputOutputFormat: 'Y-m-d'
+        
+    };
+    return Energine._createDatePickerObject(datePickerObj, props);
+}
+
+Energine.createDateTimePicker = function(datePickerObj, nullable){   
+    //DateTime
+        var props = {
+            timePicker: true,
+            format: 'j-m-Y H:i',
+            inputOutputFormat: 'Y-m-d H:i',
+            allowEmpty: nullable
+        }
+
+    return Energine._createDatePickerObject(datePickerObj, props);
+}
+
+Energine._createDatePickerObject = function(datePickerObj, props){
+ 
     if(!isset(this.datePickerDataLoaded)){
         Asset.css('datepicker.css');
         ScriptLoader.load('datepicker');
         this.datePickerDataLoaded = true;
     }
-    var props = {
-        format:'j-m-Y',
-        allowEmpty: true,
-        inputOutputFormat: 'Y-m-d'
-    };
-    if(arguments[1]){
-        props.timePicker = true;
-        props.format = 'j-m-Y H:i';
-        props.inputOutputFormat = 'Y-m-d H:i:s';
-        //props.debug = true;
-    }
-    new DatePicker($(datePickerObj), props);
+    var dp = new DatePicker($(datePickerObj), $extend({
+        //debug:true    
+    },
+    props
+    ));
+
+    //dp.input.set('value', dp.visual.get('value'));
+    return dp;
 }
 /*
  * Улучшения: - Проверка уже загруженных стилей; - Загрузка стилей из директории

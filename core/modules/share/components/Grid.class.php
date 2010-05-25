@@ -146,7 +146,7 @@ class Grid extends DBDataSet {
         $this->prepare();
         $fieldDescriptions = $this->getDataDescription()->getFieldDescriptions();
         foreach ($fieldDescriptions as $fieldName => $fieldDescription) {
-            if (($fieldDescription->getType() == FieldDescription::FIELD_TYPE_PRFILE || $fieldDescription->getType() == FieldDescription::FIELD_TYPE_PFILE) && ($fieldData = $this->getData()->getFieldByName($fieldName)->getData())) {
+            if (($fieldDescription->getType() == FieldDescription::FIELD_TYPE_PFILE) && ($fieldData = $this->getData()->getFieldByName($fieldName)->getData())) {
                 $fieldData = $fieldData[0];
                 if (file_exists($fieldData) && @getimagesize($fieldData)) {
                     $this->getDataDescription()->getFieldDescriptionByName($fieldName)->setProperty('is_image', 'is_image');
@@ -893,86 +893,13 @@ class Grid extends DBDataSet {
     }
 
     /**
-      * Метод выводящий данные для печати
-      *
-      * @return void
-      * @access protected
-      */
-
-    protected function printData() {
-        $this->setParam('recordsPerPage', false);
-        $this->setProperty('exttype', 'print');
-        $this->prepare();
-    }
-
-    /**
-     * Выводит список в файл в формате CSV
-     *
-     * @return void
-     * @access protected
-     */
-
-    protected function exportCSV() {
-        //Если у нас есть таблица с переводами то експортить не получится
-        if ($this->getTranslationTableName()) {
-        	throw new SystemException('ERR_CANT_EXPORT', SystemException::ERR_DEVELOPER);
-        }
-
-        $this->setParam('recordsPerPage', false);
-
-        $this->prepare();
-        $data = array();
-        $filename = $this->getTitle().'.csv';
-        $MIMEType = 'application/csv';
-
-        foreach ($this->getDataDescription() as $fieldName => $fieldInfo) {
-              $data[0][] = $fieldInfo->getPropertyValue('title');
-        }
-
-        for ($i=0; $i < $this->getData()->getRowCount(); $i++){
-            foreach ($this->getDataDescription() as $fieldName => $fieldInfo) {
-                $data[$i+1][]= $this->getData()->getFieldByName($fieldName)->getRowData($i);
-            }
-        }
-        $data = array_reduce($data, array($this, 'prepareCSVString'));
-        $this->downloadFile($data, $MIMEType, $filename);
-    }
-
-    /**
-     * Формирует стоку в формате CSV из массива
-     * Callback для array_reduce
-     *
-     * @param $result результирующая строка
-     * @param $nextValue array
-     * @return string
-     * @access private
-     * @see Grid::exportCSV()
-     */
-
-    private function prepareCSVString($result, Array $nextValue) {
-        $separator = '"';
-        $delimiter = ',';
-        $rowDelimiter = "\r\n";
-        if (!empty($result)) {
-        	$result .= $rowDelimiter;
-        }
-        $row = '';
-        foreach ($nextValue as $fieldValue) {
-            $row .= $separator.mb_convert_encoding(str_replace(array($separator, $delimiter),array("''",';'),$fieldValue), 'Windows-1251', 'UTF-8').$separator.$delimiter;
-        }
-        $row = substr($row, 0, -1);
-
-        return $result.$row;
-    }
-    /**
      * Добавляет переводы для WYSIWYG при необходимости 
      * 
      * @access private
      * @return void
      */
     private function addToolbarTranslations(){
-    	$this->addTranslation('TXT_OPEN_FIELD');
-        $this->addTranslation('TXT_CLOSE_FIELD');
+    	$this->addTranslation('TXT_OPEN_FIELD', 'TXT_CLOSE_FIELD');
         
         foreach($this->getDataDescription() as $fd){
             if(($fd->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK)){
@@ -1004,8 +931,8 @@ class Grid extends DBDataSet {
             $field = new Field('attached_files');
 
             //Ссылки на добавление и удаление файла
-            $this->addTranslation('BTN_ADD_FILE');
-            $this->addTranslation('BTN_DEL_FILE');
+            $this->addTranslation('BTN_ADD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN');
+            
             $attachedFilesData = $this->buildAttachedFiles($data); 
             for ($i = 0; $i < count(Language::getInstance()->getLanguages()); $i++) {
                 $field->addRowData($attachedFilesData);

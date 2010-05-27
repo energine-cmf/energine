@@ -13,7 +13,7 @@ var DivManager = new Class({
         this.langId = this.element.getProperty('lang_id');
         new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
 		    new Element('li').setProperty('id', 'treeRoot').adopt(
-                new Element('a', {'href': '#'}).set('html', TXT_DIVISIONS)
+                new Element('a', {'href': '#'}).set('html', Energine.translations.get('TXT_DIVISIONS'))
             )
 		);
 		this.tree = new TreeView('divTree', {dblClick: this.go.bind(this)});

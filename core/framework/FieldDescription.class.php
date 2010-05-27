@@ -81,11 +81,6 @@ class FieldDescription extends DBWorker {
     const FIELD_TYPE_PFILE = 'pfile';
 
     /**
-     * Защищенный файл
-     */
-    const FIELD_TYPE_PRFILE = 'prfile';
-
-    /**
      * Булево значение
      */
     const FIELD_TYPE_BOOL = 'boolean';
@@ -417,7 +412,6 @@ class FieldDescription extends DBWorker {
                 $this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_FILE:
-            case self::FIELD_TYPE_PRFILE:
             case self::FIELD_TYPE_PFILE:
             case self::FIELD_TYPE_VIDEO:            	
                 if ($this->getPropertyValue('nullable') === false) {
@@ -488,14 +482,15 @@ class FieldDescription extends DBWorker {
                 break;
             case self::FIELD_TYPE_DATETIME:
                 if ($this->getPropertyValue('nullable') === false) {
-                    $regexp = '/^\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$/';
+                    //$regexp = '/^\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$/';
+                    $regexp = '/^\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}$/';
                 }
                 else {
-                    $regexp = '/^(\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2})?$/';
+                    $regexp = '/^(\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2})?$/';
                 }
                 $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);
-                $this->setProperty('outputFormat', '%Y-%m-%d %H:%M:%S');
+                $this->setProperty('outputFormat', '%Y-%m-%d %H:%M');
                 $this->setProperty('message', $this->translate('MSG_WRONG_DATETIME_FORMAT'));
                 $this->length = true;
                 break;
@@ -676,9 +671,6 @@ class FieldDescription extends DBWorker {
                 }
                 elseif (strpos($this->name, '_pfile')) {
                     $result = self::FIELD_TYPE_PFILE;
-                }
-                elseif (strpos($this->name, '_prfile')) {
-                    $result = self::FIELD_TYPE_PRFILE;
                 }
                 elseif (strpos($this->name, '_video')) {
                     $result = self::FIELD_TYPE_VIDEO;

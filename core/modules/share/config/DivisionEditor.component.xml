@@ -212,5 +212,7 @@
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>
 		</method>
+		<method name="put">
+        </method>
 	</methods>
 </configuration>

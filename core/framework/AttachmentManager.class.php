@@ -75,7 +75,8 @@
         $images = $this->dbh->selectRequest(
 	        'SELECT spu.'.$mapFieldName.', upl_path as file, upl_name as name FROM share_uploads su '.
 	        'LEFT JOIN `'.$mapTableName.'` spu ON spu.upl_id = su.upl_id '.
-	        'WHERE '.$mapFieldName.' IN ('.implode(',', $mapValue).')'
+	        'WHERE '.$mapFieldName.' IN ('.implode(',', $mapValue).') '.
+            'ORDER by upl_order_num'
         );
 
                if(is_array($images)){

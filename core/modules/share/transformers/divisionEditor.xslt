@@ -10,7 +10,7 @@
     <xsl:template match="document/translations[translation[@component=//component[@class='DivisionEditor']/@name]]">
             <script type="text/javascript">
                 <xsl:for-each select="translation[@component=$COMPONENTS[@class='DivisionEditor']/@name]">
-                    var <xsl:value-of select="@const"/>='<xsl:value-of select="." disable-output-escaping="yes"/>';
+                    Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="." disable-output-escaping="yes"/>');
                 </xsl:for-each>
             </script>
     </xsl:template>    

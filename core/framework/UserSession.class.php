@@ -19,6 +19,8 @@
  * @final
  */
 final class UserSession extends Singleton {
+	
+	
 
     /**
      * Имя сеанса по-умолчанию.
@@ -98,12 +100,12 @@ final class UserSession extends Singleton {
         
         // устанавливаем обработчики сеанса
         session_set_save_handler(
-            array(&$this, 'open'),
-            array(&$this, 'close'),
-            array(&$this, 'read'),
-            array(&$this, 'write'),
-            array(&$this, 'destroy'),
-            array(&$this, 'gc')
+            array($this, 'open'),
+            array($this, 'close'),
+            array($this, 'read'),
+            array($this, 'write'),
+            array($this, 'destroy'),
+            array($this, 'gc')
         );
         //register_shutdown_function('session_write_close');
 
@@ -121,20 +123,22 @@ final class UserSession extends Singleton {
         session_set_cookie_params($this->lifespan, $path, $domain);
         
         // проверяем существование cookie и корректность его данных
-        if (isset($_COOKIE[$this->name])) {
-            $this->phpSessId = $_COOKIE[$this->name];
+        if (isset($_COOKIE[$this->name]) || isset($_POST[$this->name])) {
+            $this->phpSessId = (isset($_COOKIE[$this->name]))?$_COOKIE[$this->name]:$_POST[$this->name];
+            
             // проверяем, действителен ли текущий сеанс
             $res = $this->dbh->selectRequest(
                 "SELECT session_id FROM {$this->tableName}".
                 ' WHERE session_native_id = %s'.
                 ' AND (NOW() - session_created) < %s'.
-                ' AND (NOW() - session_last_impression) <= %s'.
-                ' AND session_user_agent = %s',
+                ' AND (NOW() - session_last_impression) <= %s'/*.
+                ' AND session_user_agent = %s'*/,
                 $this->phpSessId,
                 $this->lifespan,
-                $this->timeout,
-                $this->userAgent
+                $this->timeout/*,
+                $this->userAgent*/
             );
+            
             $response = Response::getInstance();
             if (is_array($res)) {
                 $response->setCookie(
@@ -142,6 +146,7 @@ final class UserSession extends Singleton {
                     $this->phpSessId,
                     (time() + $this->lifespan)
                 );
+                session_id($this->phpSessId);
             }
             else {
                 $this->dbh->modify(QAL::DELETE, $this->tableName, null, "session_native_id = '{$this->phpSessId}'");
@@ -185,7 +190,7 @@ final class UserSession extends Singleton {
 	 */
     public function read($phpSessId) {
         $result = '';
-        
+      
         $this->phpSessId = $phpSessId;
 
         $res = $this->dbh->select(

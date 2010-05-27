@@ -27,7 +27,7 @@
     <xsl:template match="document/translations[translation[@component=//component[@class='TextBlock' and @editable]/@name]]">
             <script type="text/javascript">
                 <xsl:for-each select="translation[@component=$COMPONENTS[@class='TextBlock' and @editable]/@name]">
-                    var <xsl:value-of select="@const"/>='<xsl:value-of select="."/>';
+                    Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="."/>');
                 </xsl:for-each>
             </script>
     </xsl:template>
@@ -47,7 +47,7 @@
     <xsl:template match="document/translations[translation[@component=//component[@class='TextBlockSource']/@name]]">
             <script type="text/javascript">
                 <xsl:for-each select="translation">
-                    var <xsl:value-of select="@const"/>='<xsl:value-of select="."/>';
+                    Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="."/>');
                 </xsl:for-each>
             </script>
     </xsl:template>

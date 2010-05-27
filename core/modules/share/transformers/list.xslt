@@ -33,7 +33,7 @@
     <xsl:template match="document/translations[translation[@component=//component[@type='form' and @exttype='grid'][descendant::field[@type='htmlblock']]/@name]]">
             <script type="text/javascript">
                 <xsl:for-each select="translation[@component=$COMPONENTS[@type='form' and @exttype='grid'][descendant::field[@type='htmlblock']]/@name]">
-                    var <xsl:value-of select="@const"/>='<xsl:value-of select="."/>';
+                    Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="."/>');
                 </xsl:for-each>
             </script>
     </xsl:template>

@@ -91,6 +91,7 @@ var isset = function(variable) {
 var Energine = {
 	debug : false,
 	base : null,
+    translations: new Hash(),
 	supportContentEdit : Browser.Engine.trident || Browser.Engine.gecko || Browser.Engine.presto
 }
 Energine.request = {

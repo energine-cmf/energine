@@ -93,7 +93,7 @@ abstract class FileSystemObject extends DBWorker {
      * @access protected
      */
 
-    protected function loadData($path) {
+    protected function load($path) {
         $this->path = $path;
         $this->name = basename($this->path);
         $res = $this->dbh->select(self::TABLE_NAME, true, array('upl_path'=>$this->path));

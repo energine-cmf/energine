@@ -65,31 +65,13 @@
 				<pattern>/save/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="rename">
+		<method name="put"></method>
+		<!-- 		<method name="rename">
 			<uri_patterns>
 				<pattern>/rename/</pattern>
 			</uri_patterns>
 		</method>
-		<!-- <method name="uploadZip">
-			<uri_patterns>
-				<pattern>/upload-zip/</pattern>
-			</uri_patterns>
-			<javascript>
-				<object name="FileForm"/>
-			</javascript>
-			<fields>
-				<field name="upl_path" type="prfile" title="FIELD_ZIP_FILE"/>
-			</fields>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="saveZip"/>
-				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
-			</toolbar>
-		</method>
-		<method name="saveZip">
-			<uri_patterns>
-				<pattern>/save-zip/</pattern>
-			</uri_patterns>
-		</method>-->
+		-->
 	    <method name="main">
             <uri_patterns>
                 <pattern>/</pattern>

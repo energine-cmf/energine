@@ -46,9 +46,9 @@ class Grid extends DBDataSet {
      * Компонент: библиотека изображений
      *
      * @var FileLibrary
-     * @access private
+     * @access protected
      */
-    private $fileLibrary;
+    protected $fileLibrary;
 
     /**
      * сейвер
@@ -558,120 +558,6 @@ class Grid extends DBDataSet {
         return $result;
     }
 
-    
-    final protected function uploadVideo(){
-    	try{
-        $uploadPath = 'uploads/protected/';
-        $js =
-	        'var doc = window.parent.document;'."\n".
-	        'var pb = doc.getElementById(\'progress_bar\'); '."\n".
-	        'var iframe = doc.getElementById(\'uploader\'); '."\n".
-            'var fieldId = iframe.getAttribute(\'field\');'."\n".
-            'var preview = doc.getElementById(iframe.getAttribute(\'preview\')); '."\n".
-	        'var path = doc.getElementById(fieldId);'."\n";
-        
-            if (empty($_FILES) || !isset($_FILES['file'])) {
-                throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
-            }
-            
-            $uploader = new VideoUploader();
-            $uploader->setFile($_FILES['file']);
-            $uploader->upload($uploadPath);
-            $fileName = $uploader->getFileObjectName();
-            $js .= 
-                "doc.window.insertVideo('".SiteManager::getInstance()->getCurrentSite()->root.$fileName."', fieldId);\n";
-            $js .= sprintf(
-            'path.value ="%s";'.
-            'pb.parentNode.removeChild(pb); '.
-            'iframe.parentNode.removeChild(iframe);',
-            $fileName,
-            $uploadPath.basename($fileName)
-            );
-        }
-        catch (SystemException $e) {
-            $js .=
-            'pb.parentNode.removeChild(pb); '."\n".
-            'alert(\''.$this->translate('TXT_SHIT_HAPPENS').': '.$e->getMessage().'\'); '.
-            'iframe.parentNode.removeChild(iframe); '."\n";
-        }
-        
-        $responseText = '<html><head/><body><script type="text/javascript">'.$js.'</script></body></html>';
-        $response = Response::getInstance();
-        $response->setHeader('Content-Type', 'text/html; charset=UTF-8');
-        $response->setHeader('Cache-Control', 'no-cache');
-        $response->write($responseText);
-        $response->commit();        
-        
-    }
-
-    /**
-     * Метод для заливки файла
-     * Вызывается в невидимом фрейме и должен отдать HTML страницу включающаю скрипт
-     *
-     * @return void
-     * @access protected
-     * @final
-     */
-    final protected function upload() {
-        try {
-            if (isset($_GET['protected'])) {
-                $uploadPath = 'uploads/protected/';
-            }
-            else {
-                $uploadPath = 'uploads/private/';
-            }
-
-            $js =
-            'var doc = window.parent.document;'."\n".
-            'var pb = doc.getElementById(\'progress_bar\'); '."\n".
-            'var iframe = doc.getElementById(\'uploader\'); '."\n".
-            'var path = doc.getElementById(iframe.getAttribute(\'field\'));'."\n".
-            'var link = doc.getElementById(iframe.getAttribute(\'link\')); '."\n".
-            'var preview = doc.getElementById(iframe.getAttribute(\'preview\')); '."\n";
-
-            if (empty($_FILES) || !isset($_FILES['file'])) {
-                throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
-            }
-
-            $uploader = new FileUploader();
-            $uploader->setFile($_FILES['file']);
-            $uploader->upload($uploadPath);
-            $fileName = $uploader->getFileObjectName();
-            if (in_array($uploader->getExtension(), array('gif', 'png', 'jpg', 'jpeg'))) {
-                $js .= "preview.setAttribute('src', '".$fileName."');\n".
-                "preview.style.display = 'block';\n";
-            }
-            else {
-                $js .= "preview.removeAttribute('src');\n".
-                "preview.style.display = 'none';\n";
-            }
-
-            $js .= "link.innerHTML = '".$fileName."';\n".
-            "link.href = '".$fileName."';\n";
-
-            $js .= sprintf(
-            'path.value ="%s";'.
-            'pb.parentNode.removeChild(pb); '.
-            'iframe.parentNode.removeChild(iframe);',
-            $fileName,
-            $uploadPath.basename($fileName)
-            );
-        }
-        catch (SystemException $e) {
-            $js .=
-            'pb.parentNode.removeChild(pb); '."\n".
-            'alert(\''.$this->translate('TXT_SHIT_HAPPENS').': '.$e->getMessage().'\'); '.
-            'iframe.parentNode.removeChild(iframe); '."\n";
-        }
-
-        $responseText = '<html><head/><body><script type="text/javascript">'.$js.'</script></body></html>';
-        $response = Response::getInstance();
-        $response->setHeader('Content-Type', 'text/html; charset=UTF-8');
-        $response->write($responseText);
-        $response->commit();
-    }
-
-
     /**
      * Выводит компонент: менеджер изображений
      *
@@ -986,5 +872,23 @@ class Grid extends DBDataSet {
 
         return $builder->getResult();	
     }
+    /**
+      * Быстрая загрузка аттачмента в репозиторий 
+      * 
+      * @return void
+      * @access protected
+      */
+    protected function put(){
+    	
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->fileLibrary = $this->document->componentManager->createComponent(
+            'filelibrary', 
+            'share', 
+            'FileLibrary', 
+            array('action' => 'put', 'active' => false)
+        );
+        $this->fileLibrary->run();  
+    }
+    
     
 }

@@ -161,13 +161,18 @@ class FileUploader extends Object {
         }
         //Ресайзим изображение
         if(in_array($this->getExtension(), array('gif', 'png', 'jpg', 'jpeg'))){
-            $img = new Image();
+            //@todo Отключено до выяснения
+            /*$img = new Image();
             $img->loadFromFile($filePath);
             
             if(($img->getWidth()> 800) && ($img->getHeight() > 600)){
 	            $img->resize(800, 600);
 	            $img->saveToFile($filePath);	
             }
+            unset($image);
+            
+            */
+        	// ------------------------
             /*
             elseif($img->getWidth()> 800){
             	$img->resize(800, null);
@@ -178,7 +183,7 @@ class FileUploader extends Object {
                 $img->saveToFile($filePath);
             }
             */
-          	unset($image);
+          	
             	
         }
         

@@ -32,9 +32,12 @@ var Form = new Class({
 					'border' : '1px dotted #777',
 					'overflow' : 'auto'
 				});
+        this._prepare();
 
 	},
-
+    _prepare: function(){
+        
+    },
 	attachToolbar : function(toolbar) {
 		this.toolbar = toolbar;
 		this.componentElement.adopt(this.toolbar.getElement());
@@ -187,6 +190,31 @@ Form.Attachments = {
     downAttachment: function(uplID){
         this._moveAttachment(uplID, 'down');
     },
+    _prepare: function(){
+        var swf = new Swiff.Uploader({
+        path: 'scripts/Swiff.Uploader.swf',
+        url: this.singlePath + 'put/',
+        verbose: (Energine.debug)?true:false,
+        queued: false,
+        multiple: false,
+        target: $('add_attachment'),
+        instantStart: true,
+        appendCookieData: true,
+        data:{'NRGNSID':Cookie.read('NRGNSID')},
+        typeFilter: {
+            'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
+            'All files (*.*)': '*.*',
+            'Flash video (*.flv)': '*.flv'
+        },
+        fileSizeMax: 2 * 1024 * 1024,
+        onFileComplete: function(file) {
+            if(!file.response.error){
+                var data = JSON.decode(file.response.text);
+                this._insertRow(data);
+            }
+        }.bind(this)
+    });
+    },
     _moveAttachment: function(uplID, direction){
         var currentRow, changeRow, position;
         if(currentRow = $('row_'+uplID)){
@@ -210,13 +238,9 @@ Form.Attachments = {
         document.getElements('#attached_files tbody tr').removeClass('even');
         document.getElements('#attached_files tbody tr:even').addClass('even');
     },
-    loadAttachment: function(object){
-        var object = $(object);
-        
-    },
-    addAttachment: function(){
-        ModalBox.open({ 'url': this.singlePath + 'file-library/media/', 'onClose': function(result){
+    _insertRow: function(result){
         if(result){
+            console.log(result);
             var data = result;
             var emptyRow;
             if(emptyRow = $('empty_row')) emptyRow.dispose();
@@ -230,19 +254,19 @@ Form.Attachments = {
                                     this.delAttachment(data.upl_id);
                                 }.bind(this)
                             }
-                        }).set('text', delete_button_text),
+                        }).set('text', Energine.translations.get('BTN_DEL_FILE')),
                         new Element('button',
                                 {'type': 'button', 'events': {'click': function(event){
                                     this.upAttachment(data.upl_id);
                                 }.bind(this)
                             }
-                        }).set('text', up_button_text),
+                        }).set('text', Energine.translations.get('BTN_UP')),
                         new Element('button',
                                 {'type': 'button', 'events': {'click': function(event){
                                     this.downAttachment(data.upl_id);
                                 }.bind(this)
                             }
-                        }).set('text', down_button_text),
+                        }).set('text', Energine.translations.get('BTN_DOWN')),
 //                        new Element('input', {'name': 'uploads[upl_is_main][]', 'type': 'checkbox'}),
                         new Element('input', {'name': 'uploads[upl_id][]', 'type': 'hidden', 'value': data.upl_id})
                         ]),
@@ -257,18 +281,21 @@ Form.Attachments = {
             }
         }
        this._zebraRows(); 
-       }.bind(this)});
+    },
+    addAttachment: function(){
+        ModalBox.open({ 'url': this.singlePath + 'file-library/media/', 'onClose': this._insertRow.bind(this)});
     },
     delAttachment: function(id){
         $('row_' + id).dispose();
         if(document.getElement('#attached_files tbody').getChildren().length == 0){
             document.getElement('#attached_files tbody').adopt(
                 new Element('tr', {'id': 'empty_row'}).adopt(
-                    new Element('td', {'colspan': '3'}).set('html', no_attached_files)
+                    new Element('td', {'colspan': '3'}).set('html', Energine.translations.get('MSG_NO_ATTACHED_FILES'))
                 )
             );
 
         }
+        this._zebraRows(); 
     },
     toggleSelector: function(){
         
@@ -378,31 +405,31 @@ Form.RichEditor = new Class({
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'bold',
 							icon : 'images/toolbar/bold.gif',
-							title : BTN_BOLD,
+							title : Energine.translations.get('BTN_BOLD'),
 							action : 'bold'
 						}));
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'italic',
 							icon : 'images/toolbar/italic.gif',
-							title : BTN_ITALIC,
+							title : Energine.translations.get('BTN_ITALIC'),
 							action : 'italic'
 						}));
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'olist',
 							icon : 'images/toolbar/olist.gif',
-							title : BTN_OL,
+							title : Energine.translations.get('BTN_OL'),
 							action : 'olist'
 						}));
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'ulist',
 							icon : 'images/toolbar/ulist.gif',
-							title : BTN_UL,
+							title : Energine.translations.get('BTN_UL'),
 							action : 'ulist'
 						}));
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'link',
 							icon : 'images/toolbar/link.gif',
-							title : BTN_HREF,
+							title : Energine.translations.get('BTN_HREF'),
 							action : 'link'
 						}));
 				this.toolbar.appendControl(new Toolbar.Separator({
@@ -411,25 +438,25 @@ Form.RichEditor = new Class({
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'left',
 							icon : 'images/toolbar/justifyleft.gif',
-							title : BTN_ALIGN_LEFT,
+							title : Energine.translations.get('BTN_ALIGN_LEFT'),
 							action : 'alignLeft'
 						}));
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'center',
 							icon : 'images/toolbar/justifycenter.gif',
-							title : BTN_ALIGN_CENTER,
+							title : Energine.translations.get('BTN_ALIGN_CENTER'),
 							action : 'alignCenter'
 						}));
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'right',
 							icon : 'images/toolbar/justifyright.gif',
-							title : BTN_ALIGN_RIGHT,
+							title : Energine.translations.get('BTN_ALIGN_RIGHT'),
 							action : 'alignRight'
 						}));
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'justify',
 							icon : 'images/toolbar/justifyall.gif',
-							title : BTN_ALIGN_JUSTIFY,
+							title : Energine.translations.get('BTN_ALIGN_JUSTIFY'),
 							action : 'alignJustify'
 						}));
 				if (Energine.supportContentEdit && !this.fallback_ie) {
@@ -439,7 +466,7 @@ Form.RichEditor = new Class({
 					this.toolbar.appendControl(new Toolbar.Button({
 								id : 'source',
 								icon : 'images/toolbar/source.gif',
-								title : BTN_VIEWSOURCE,
+								title : Energine.translations.get('BTN_VIEWSOURCE'),
 								action : 'showSource'
 							}));
 				}
@@ -449,13 +476,13 @@ Form.RichEditor = new Class({
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'filelib',
 							icon : 'images/toolbar/filemngr.gif',
-							title : BTN_FILE_LIBRARY,
+							title : Energine.translations.get('BTN_FILE_LIBRARY'),
 							action : 'fileLibrary'
 						}));
 				this.toolbar.appendControl(new Toolbar.Button({
 							id : 'imgmngr',
 							icon : 'images/toolbar/image.gif',
-							title : BTN_INSERT_IMAGE,
+							title : Energine.translations.get('BTN_INSERT_IMAGE'),
 							action : 'imageManager'
 						}));
 

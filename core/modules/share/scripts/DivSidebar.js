@@ -9,7 +9,7 @@ var DivSidebar = new Class({
         this.element = $(element);
         new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
             new Element('li').setProperty('id', 'treeRoot').adopt(
-                new Element('a').set('html', TXT_DIVISIONS)
+                new Element('a').set('html', Energine.translations.get('TXT_DIVISIONS'))
             )
         );
         this.langId = this.element.getProperty('lang_id');

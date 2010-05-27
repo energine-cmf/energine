@@ -72,7 +72,7 @@ class DirectoryObject extends FileSystemObject {
             throw new SystemException('ERR_DEV_DIR_NOT_WRITABLE', SystemException::ERR_DEVELOPER, $path);
         }
         $result = new DirectoryObject();
-        $result->loadData($path);
+        $result->load($path);
         return $result;
     }
 

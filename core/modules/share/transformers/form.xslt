@@ -81,6 +81,8 @@
     </xsl:template>
 
     <xsl:template match="field[@name='attached_files'][@type='custom']">
+        <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
+        <script type="text/javascript" src="scripts/Fx.ProgressBar.js"></script>
         <xsl:variable name="JS_OBJECT" select="generate-id(../..)"></xsl:variable>
         <div class="table_data">
             <table width="100%" id="attached_files">
@@ -143,15 +145,16 @@
                 <tfoot>
                     <tr>
                         <td colspan="2" style="text-align:right;">
-                            <label for="loadFile"><xsl:value-of select="$TRANSLATION[@const='BTN_LOAD_FILE']"/>:</label><input onchange="{$JS_OBJECT}.loadAttachment(this);" id="loadFile" type="file" />
+                            <a href="#" id="add_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_LOAD_FILE']"/></a>
                         </td>
                         <td style="text-align:right;">
                             <a href="#" onclick="{$JS_OBJECT}.addAttachment(); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
                             <script type="text/javascript">
-                                var delete_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/>',
-                                up_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_UP']"/>',
-                                down_button_text = '<xsl:value-of select="$TRANSLATION[@const='BTN_DOWN']"/>',
-                                no_attached_files = '<xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>';
+                                Energine.translations.extend({
+                                BTN_DEL_FILE: '<xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/>',
+                                BTN_UP: '<xsl:value-of select="$TRANSLATION[@const='BTN_UP']"/>',
+                                BTN_DOWN: '<xsl:value-of select="$TRANSLATION[@const='BTN_DOWN']"/>',
+                                MSG_NO_ATTACHED_FILES: '<xsl:value-of select="$TRANSLATION[@const='MSG_NO_ATTACHED_FILES']"/>'});
                             </script>
                         </td>
                     </tr>

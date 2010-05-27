@@ -383,8 +383,7 @@ final class FileLibrary extends DataSet {
 						}
 
 						$zip->extractTo($this->uploadsDir->getPath(), $currentFile);
-						$f = new FileObject();
-						$f->createFromPath($this->uploadsDir->getPath().'/'.$currentFile, $fileInfo['filename']);
+						FileObject::createFrom($this->uploadsDir->getPath().'/'.$currentFile, $fileInfo['filename']);
 					}
 				}
 				$zip->close();
@@ -495,6 +494,32 @@ final class FileLibrary extends DataSet {
         $response->write($responseText);
         $response->commit();
     }
+    
+    protected function put(){
+    	
+        try {
+            $uploadPath = 'uploads/public';
+            
+            if (empty($_FILES) || !isset($_FILES['Filedata'])) {
+                throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
+            }
+
+            $uploader = new FileUploader();
+            $uploader->setFile($_FILES['Filedata']);
+            $uploader->upload($uploadPath);
+            $fileName = $uploader->getFileObjectName();
+            
+            $result = FileObject::createFrom($fileName)->asArray();
+            
+        }
+        catch (SystemException $e) {
+            $result = $e;
+        }
+        
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write(json_encode($result));
+        $this->response->commit();      
+    }      
 
     /**
      * Переименование файла/папки

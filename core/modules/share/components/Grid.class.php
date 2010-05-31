@@ -879,7 +879,6 @@ class Grid extends DBDataSet {
       * @access protected
       */
     protected function put(){
-    	
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent(
             'filelibrary', 

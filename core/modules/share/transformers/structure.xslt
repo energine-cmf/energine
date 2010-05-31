@@ -18,6 +18,7 @@
 
     <xsl:template match="record[ancestor::component[@class='PageList']]">
         <li style="clear: both;">
+            <xsl:apply-templates select="field[@name='attachments']"/>
             <a>
                 <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
                     <xsl:attribute name="href">

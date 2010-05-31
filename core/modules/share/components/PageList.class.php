@@ -54,67 +54,26 @@ final class PageList extends DataSet {
 		));
 		return $result;
 	}
-
-	protected function createData(){
-		$result = parent::createData();
-		if($this->getDataDescription()->getFieldDescriptionByName('AttachedFiles')){
-			 
-			$field = new Field('AttachedFiles');
-			$result->addField($field);
-
-			//Делаем выборку из таблицы дополнительных файлов
-			if($result->getFieldByName('Id')){
-				$res = $this->dbh->selectRequest('
-	                    SELECT smap_id, upl.*
-	                    FROM `share_uploads` upl
-	                    LEFT JOIN share_sitemap_uploads ssu on ssu.upl_id = upl.upl_id
-	                    WHERE smap_id IN ('.implode(',', $result->getFieldByName('Id')->getData()).')
-	                ');
-				if(is_array($res)){
-					//конвертируем результат запроса в удобный формат
-					foreach($res as $row){
-						$smapID = $row['smap_id'];
-						unset($row['smap_id']);
-						if(!isset($uplData[$smapID])){
-							$uplData[$smapID] = array();
-						}
-						array_push($uplData[$smapID], $row);
-					}
-					 
-					foreach ($result->getFieldByName('Id') as $index => $smapID) {
-						if(!empty($uplData[$smapID])){
-							$result->getFieldByName('AttachedFiles')->setRowData($index, $this->buildAttachedFilesField($uplData[$smapID]));
-						}
-					}
-				}
-			}
-		}
-
-		return $result;
+	/**
+	  * Добавляем информацию о присоединенных файлах
+	  * 
+	  * @return void
+	  * @access protected
+	  */
+	protected function main(){
+        parent::main();
+        
+		if($this->getDataDescription()->getFieldDescriptionByName('attachments')){
+            $this->getDataDescription()->addFieldDescription(AttachmentManager::getInstance()->createFieldDescription());
+            if(!$this->getData()->isEmpty()){
+                $this->getData()->addField(
+                    AttachmentManager::getInstance()->createField(
+                        $this->getData()->getFieldByName('Id')->getData(), 'smap_id', 'share_sitemap_uploads')
+                );
+            }
+        }		
 	}
 
-	private function buildAttachedFilesField($attachedFilesData){
-		$builder = new SimpleBuilder();
-
-		$data = new Data();
-		$data->load($attachedFilesData);
-
-		$dataDescription = new DataDescription();
-		$dataDescription->load($this->dbh->getColumnsInfo('share_uploads'));
-
-		$builder->setData($data);
-		foreach ($data->getFieldByName('upl_path') as $key => $row) {
-			if(file_exists($row)){
-				list($width, $height) = @getimagesize($row);
-				$data->getFieldByName('upl_path')->setRowProperty($key, 'width', $width);
-				$data->getFieldByName('upl_path')->setRowProperty($key, 'height', $height);
-			}
-		}
-		$builder->setDataDescription($dataDescription);
-		$builder->build();
-
-		return $builder->getResult();
-	}
 	/**
 	 * Переопределенный метод загрузки данных
 	 *

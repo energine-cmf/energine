@@ -11,7 +11,7 @@
             <field name="Pid" type="integer"/>
             <field name="Name" type="string"/>
             <field name="Segment" type="string"/>
-            <field name="AttachedFiles"/>            
+            <field name="attachments"/>
             <field name="DescriptionRtf" type="string"/>
         </fields>
 		</method>

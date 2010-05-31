@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<methods>
-		<method name="main">
+    	<method name="main">
 			<uri_patterns>
 				<pattern>/show/</pattern>
 				<pattern>/show/[site_id]/</pattern>
@@ -169,5 +169,12 @@
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>
 		</method>
+		<method name="put">
+            <uri_patterns>
+                <pattern>/put/</pattern>
+            </uri_patterns>     
+        </method>
+		
 	</methods>
+	
 </configuration>

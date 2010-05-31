@@ -45,33 +45,27 @@
 				<pattern>/get-data/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="saveDir">
+		<method name="saveDir" rights="3">
 			<uri_patterns>
 				<pattern>/save-dir/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="delete">
+		<method name="delete" rights="3">
 			<uri_patterns>
 				<pattern>/delete/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="upload" >
+		<method name="upload" rights="3">
 			<uri_patterns>
 				<pattern>/upload/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="save">
+		<method name="save" rights="3">
 			<uri_patterns>
 				<pattern>/save/</pattern>
 			</uri_patterns>
 		</method>
-		<method name="put"></method>
-		<!-- 		<method name="rename">
-			<uri_patterns>
-				<pattern>/rename/</pattern>
-			</uri_patterns>
-		</method>
-		-->
+		<method name="put" rights="3"></method>
 	    <method name="main">
             <uri_patterns>
                 <pattern>/</pattern>

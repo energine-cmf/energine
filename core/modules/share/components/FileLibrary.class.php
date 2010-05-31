@@ -496,7 +496,6 @@ final class FileLibrary extends DataSet {
     }
     
     protected function put(){
-    	
         try {
             $uploadPath = 'uploads/public';
             

@@ -28,7 +28,7 @@ var DivForm = new Class({
 
         
         if (!valid) {
-            alert(ERR_NO_DIV_NAME);
+            alert(Energine.translations.get('ERR_NO_DIV_NAME'));
             return false;
         }
         this.request(

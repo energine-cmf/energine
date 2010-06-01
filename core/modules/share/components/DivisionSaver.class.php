@@ -47,31 +47,7 @@
      * @access public
      */
     public function save(){
-    	/*
-    	$currentSite = SiteManager::getInstance()->getCurrentSite();
-    	 
-        if (!isset($_POST['right_id']) || !is_array($_POST['right_id'])) {
-            throw new SystemException('ERR_BAD_DATA', SystemException::ERR_CRITICAL);
-        }
-
-        if(
-            ($redirectField = $this->getData()->getFieldByName('smap_redirect_url')) && 
-            $redirectField->getRowData(0)
-        ){
-            $redirectField->setData(
-                str_replace(
-	                $currentSite->base, 
-	                '', 
-	                $redirectField->getRowData(0)
-                ),
-                true
-            );
-        }
-        */
-        //$this->getData()->getFieldByName('site_id')->setData($currentSite->id, true);
-        
-
-        //Выставляем фильтр для родительского идентификатора
+    	//Выставляем фильтр для родительского идентификатора
         $PID = $this->getData()->getFieldByName('smap_pid')->getRowData(0);
         if (empty($PID)) {
             $PID = null;
@@ -100,8 +76,8 @@
 
         //записываем данные в таблицу share_sitemap_uploads
         if(isset($_POST['uploads']['upl_id'])){
-            foreach ($_POST['uploads']['upl_id'] as $uplID){
-                $this->dbh->modify(QAL::INSERT, 'share_sitemap_uploads', array('smap_id' => $smapID, 'upl_id' => $uplID));
+            foreach ($_POST['uploads']['upl_id'] as  $uplOrderNum => $uplID){
+                $this->dbh->modify(QAL::INSERT, 'share_sitemap_uploads', array('upl_order_num' => ($uplOrderNum + 1), 'smap_id' => $smapID, 'upl_id' => $uplID));
             }
         }
 

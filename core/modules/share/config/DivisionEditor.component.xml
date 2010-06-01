@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<methods>
-        <method name="put" rights="3">
+        <method name="put">
             <uri_patterns>
                 <pattern>/put/</pattern>
             </uri_patterns>     

@@ -165,9 +165,7 @@ class Grid extends DBDataSet {
 
     protected function main() {
         parent::main();
-        $this->addTranslation('TXT_FILTER');
-        $this->addTranslation('BTN_APPLY_FILTER');
-        $this->addTranslation('TXT_RESET_FILTER');
+        $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER');
     }
 
     /**
@@ -578,7 +576,7 @@ class Grid extends DBDataSet {
      */
     protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', null);
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('configFilename' => 'core/modules/share/config/FileLibraryMin.component.xml'));
         //$this->fileLibrary->getAction();
         $this->fileLibrary->run();
     }

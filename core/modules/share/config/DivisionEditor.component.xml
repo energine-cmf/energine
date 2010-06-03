@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<methods>
-        <method name="put">
-            <uri_patterns>
-                <pattern>/put/</pattern>
-            </uri_patterns>     
-        </method>
     	<method name="showTransEditor" rights="3">
             <uri_patterns>
                 <pattern>/translation/[any]/</pattern>
@@ -217,5 +212,10 @@
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>
 		</method>
+		<method name="put" rights="3">
+            <uri_patterns>
+                <pattern>/put/</pattern>
+            </uri_patterns>     
+        </method>
 	</methods>
 </configuration>

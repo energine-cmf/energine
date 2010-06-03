@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<methods>
+	    <method name="fileLibrary" rights="3">
+            <uri_patterns>
+                <pattern>/file-library/</pattern>
+                <pattern>/file-library/[any]/</pattern>
+            </uri_patterns>
+        </method>
     	<method name="main">
 			<uri_patterns>
 				<pattern>/show/</pattern>
@@ -156,12 +162,6 @@
 		<method name="imageManager" rights="3">
 			<uri_patterns>
 				<pattern>/imagemanager/</pattern>
-			</uri_patterns>
-		</method>
-		<method name="fileLibrary" rights="3">
-			<uri_patterns>
-				<pattern>/file-library/</pattern>
-				<pattern>/file-library/[any]/</pattern>
 			</uri_patterns>
 		</method>
 		<method name="cleanup" rights="3">

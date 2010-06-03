@@ -196,10 +196,16 @@ final class DivisionEditor extends Grid {
 		$result = array();
 		$dirPath = 'templates/'.$type.'/';
 		
+		$folders = array(
+		  glob($dirPath.$siteFolder."/*.".$type.".xml"),
+		  glob($dirPath."*.".$type.".xml")  
+		 );
+		 
+		 foreach($folders as $index=>$folder) if($folder === false) $folders[$index] = array(); 	
+		
 		foreach(
 		array_merge(
-		glob($dirPath.$siteFolder."/*.".$type.".xml"),
-		glob($dirPath."*.".$type.".xml")
+		  $folders[0], $folders[1]
 		) as $path){
 			$path = str_replace($dirPath, '', $path);
 			list($name, $tp) = explode('.', substr(basename($path), 0, -4));

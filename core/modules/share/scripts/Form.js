@@ -240,7 +240,6 @@ Form.Attachments = {
     },
     _insertRow: function(result){
         if(result){
-            console.log(result);
             var data = result;
             var emptyRow;
             if(emptyRow = $('empty_row')) emptyRow.dispose();

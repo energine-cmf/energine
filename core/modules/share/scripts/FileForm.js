@@ -5,10 +5,6 @@ var FileForm = new Class({
     initialize: function(element){
         this.parent(element);
     },
-
-    upload: function(fileField) {
-        this._buildUpload(fileField, 'upload');
-    },
     saveDir: function() {
         if (!this.validator.validate()) {
             return false;

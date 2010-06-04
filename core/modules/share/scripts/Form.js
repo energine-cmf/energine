@@ -32,9 +32,46 @@ var Form = new Class({
 					'border' : '1px dotted #777',
 					'overflow' : 'auto'
 				});
+        this.componentElement.getElements('.uploader').each(this._createUploaders, this);        
         this._prepare();
 
 	},
+    _createUploaders: function(el){
+     var swf = new Swiff.Uploader({
+        path: 'scripts/Swiff.Uploader.swf',
+        url: this.singlePath + 'upload/',
+        verbose: (Energine.debug)?true:false,
+        queued: false,
+        multiple: false,
+        target: el,
+        instantStart: true,
+        appendCookieData: false,
+        data:{'NRGNSID':Cookie.read('NRGNSID'), 'element': el.getProperty('nrgn:input')},
+        typeFilter: {
+            'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
+            'All files (*.*)': '*.*',
+            'Flash video (*.flv)': '*.flv'
+        },
+        fileSizeMax: 2 * 1024 * 1024,
+        onFileComplete: this._show_preview.bind(this)
+        });    
+    },
+    _show_preview: function(file){
+        if(!file.response.error){
+            var data = JSON.decode(file.response.text);
+            if(data.result){
+                var preview, input, previewImg;
+                if((preview = $(data.element + '_preview')) && (input = $(data.element))){
+                    input.set('value', data.file);
+                    if($('upl_name')) $('upl_name').set('value', data.title);
+                    if(!(previewImg = preview.getElement('img'))){
+                        previewImg = new Element('img', {'border':0}).inject(preview);
+                    }
+                    previewImg.setProperty('src', data.preview);
+                }
+            }
+        }    
+    },
     _prepare: function(){
         
     },
@@ -49,14 +86,6 @@ var Form = new Class({
             }
         }        
 	},
-    uploadVideo: function(fileField){
-        var fileField = $(fileField);
-        
-        this._createUploader(
-            fileField,
-            this.singlePath + 'upload-video/'
-        );
-    },
     removeFilePreview: function(fieldId, control){
         var tmpNode;
         $(fieldId).value = '';
@@ -71,68 +100,8 @@ var Form = new Class({
         return false;
     },
 	upload : function(fileField) {
-        var fileField = $(fileField);
-        
-        this._createUploader(
-            fileField,
-            this.singlePath + 'upload/' + (fileField.getProperty('protected')? '?protected':'')
-        );
+       
 	},
-    _createUploader: function(field, iframeAction){
-        var iframe, form, newField;
-        var fileField = $(field);
-        if (Browser.Engine.trident) {
-            iframe = $(document
-                    .createElement('<iframe name="uploader" id="uploader">'));
-            form = $(document
-                    .createElement('<form enctype="multipart/form-data" method="post" target="uploader" action="'
-                            + iframeAction
-                            + '" style="width:0; height:0; border:0; display:none;">'));
-        } else {
-            iframe = new Element('iframe').setProperties({
-                        name : 'uploader',
-                        id : 'uploader'
-                    });
-            form = new Element('form').setStyles({
-                        width : 0,
-                        height : 0,
-                        border : 0,
-                        display : 'none'
-                    });
-            form.setProperties({
-                        action : iframeAction,
-                        target : 'uploader',
-                        method : 'post',
-                        enctype : 'multipart/form-data'
-                    });
-        }    
-        newField = fileField.clone();
-        newField.replaces(fileField);
-        fileField.injectInside(form);
-
-        form.injectInside(document.body);
-        iframe.setStyles({
-                    width : 0,
-                    height : 0,
-                    border : 0,
-                    position: 'absolute'
-                }).injectBefore(this.form);
-                
-        iframe.setProperty('link', fileField.getProperty('link'));
-        iframe.setProperty('field', fileField.getProperty('field'));
-        iframe.setProperty('preview', fileField.getProperty('preview'));
-
-        var progressBar = new Element('img').setProperties({
-                    id : 'progress_bar',
-                    src : 'images/loading.gif'
-                }).inject(newField, 'after');
-
-        form.submit();
-
-        form.dispose();
-        form /* = newField */= null;
-    
-    },
 	save : function() {
 		this.richEditors.each(function(editor) {
 					editor.onSaveForm();
@@ -199,7 +168,7 @@ Form.Attachments = {
         multiple: false,
         target: $('add_attachment'),
         instantStart: true,
-        appendCookieData: true,
+        appendCookieData: false,
         data:{'NRGNSID':Cookie.read('NRGNSID')},
         typeFilter: {
             'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',

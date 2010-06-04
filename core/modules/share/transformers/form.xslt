@@ -21,7 +21,22 @@
     		<xsl:apply-templates/>
         </form>
     </xsl:template>
-
+    
+    <xsl:template match="component[@type='form' and @exttype='grid']">
+        <form method="post" action="{@action}">
+            <xsl:choose>
+                <xsl:when test="@class='RestorePassword'"><xsl:attribute name="class">base_form restore_password_form</xsl:attribute></xsl:when>
+                <xsl:when test="@class='Register'"><xsl:attribute name="class">base_form registration_form</xsl:attribute></xsl:when>
+                <xsl:when test="@class='UserProfile'"><xsl:attribute name="class">base_form profile_form</xsl:attribute></xsl:when>
+            </xsl:choose>
+            <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">
+                <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
+            </xsl:if>
+            <input type="hidden" name="componentAction" value="{@componentAction}" id="componentAction"/>
+            <xsl:apply-templates/>
+        </form>
+    </xsl:template>
+    
     <xsl:template match="recordset[parent::component[@type='form']]">
     	<div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
     		<xsl:apply-templates/>
@@ -52,6 +67,7 @@
     <!-- форма как часть grid-а выводится в другом стиле -->
     <xsl:template match="recordset[parent::component[@type='form' and @exttype='grid']]">
         <xsl:variable name="FIELDS" select="record/field"></xsl:variable>
+        <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
         <div class="formContainer">
             <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
                 <ul class="tabs">
@@ -81,8 +97,6 @@
     </xsl:template>
 
     <xsl:template match="field[@name='attached_files'][@type='custom']">
-        <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
-        <script type="text/javascript" src="scripts/Fx.ProgressBar.js"></script>
         <xsl:variable name="JS_OBJECT" select="generate-id(../..)"></xsl:variable>
         <div class="table_data">
             <table width="100%" id="attached_files">

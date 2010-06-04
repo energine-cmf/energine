@@ -160,6 +160,7 @@
             <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
         </input>
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
+        <a href="#" class="uploader"><xsl:value-of select="@title"/></a>
     </xsl:template>
     
     <!-- поле типа pfile -->
@@ -348,16 +349,17 @@
     <!-- переопределение fields для компонентов из модуля share -->    
     <!-- компонент FileLibrary -->
     <xsl:template match="field[@name='upl_path'][ancestor::component[@class='FileLibrary']]">
-        <div class="image">
-            <img id="{generate-id(.)}_preview"/>
-        </div>
-        <input type="file" id="{@name}" name="file" link="{generate-id(.)}" preview="{generate-id(.)}_preview" onchange="{generate-id(ancestor::recordset)}.upload(this);"/>
-        <input>
+        <div class="preview" 
+             id="{generate-id(.)}_preview"></div>
+         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="type">hidden</xsl:attribute>
             <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
         </input>
+        <a href="#" class="uploader"  nrgn:input="{generate-id(.)}" xmlns:nrgn="http://energine.org"><xsl:value-of select="@title"/></a>    
     </xsl:template>
+    
+    
     <!-- /компонент FileLibrary -->
     
     <!-- именованный шаблон для построения заголовка окна -->

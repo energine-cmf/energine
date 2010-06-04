@@ -99,13 +99,13 @@ form select {
 }
 
 
-form .field .control .image {
+form .field .control .preview {
 	width:90%;
 	overflow:auto;
 	overflow-y:hidden;
 }
 
-form .field .control .image img {
+form .field .control .preview img {
     display: block;
 }
 

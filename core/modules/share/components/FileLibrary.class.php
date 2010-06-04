@@ -273,6 +273,7 @@ final class FileLibrary extends DataSet {
     protected function save() {
         try {
             $file = new FileObject();
+            //stop($_POST);
             $file->create($_POST);
 
             $JSONResponse = array(
@@ -443,69 +444,43 @@ final class FileLibrary extends DataSet {
      * @final
      */
     final protected function upload() {
-        $js =
-	        'var doc = window.parent.document;'."\n".
-	        'var path = doc.getElementById(\'path\');'."\n".
-	        'var pb = doc.getElementById(\'progress_bar\'); '."\n".
-            'var filename = doc.getElementById(\'upl_name\'); '."\n".
-	        'var iframe = doc.getElementById(\'uploader\');'."\n"/*.
-        	'var preview = doc.getElementById(iframe.getAttribute("preview"));'."\n"*/;
-
-    	try {
-            if (empty($_FILES) || !isset($_FILES['file'])) {
-                throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
-            }
-
-            $uploader = new FileUploader();
-            $uploader->setFile($_FILES['file']);
-            $uploader->upload(FileObject::TEMPORARY_DIR);
-            $fileName = $uploader->getFileObjectName();
-            if (($fileType = FileInfo::getInstance()->analyze($fileName)->type) == FileInfo::META_TYPE_IMAGE) {
-            	$js .= 'iframe.preview.src = "'.$fileName.'";';
-            }
-            elseif($fileType == FileInfo::META_TYPE_ZIP){
-				$js .= 'iframe.preview.src = "images/icons/icon_zip.gif";';
+        if (empty($_FILES) || !isset($_POST['Filename']) || !isset($_FILES['Filedata']) || !isset($_POST['element'])) {
+                throw new SystemException('ERR_BAD_FILE', SystemException::ERR_CRITICAL);
+        }
+        $result = array('result' => true, 'element' => $_POST['element']);
+        
+        $uploader = new FileUploader();
+        $uploader->setFile($_FILES['Filedata']);
+        $uploader->upload(FileObject::TEMPORARY_DIR);
+        $fileName = $uploader->getFileObjectName();
+        $result['file'] = FileObject::UPLOAD_DIR.basename($fileName);
+        $result['title'] = $_POST['Filename'];
+            if (
+                in_array(
+                    FileInfo::getInstance()->analyze($fileName)->type, 
+                    array(FileInfo::META_TYPE_IMAGE, FileInfo::META_TYPE_VIDEO)
+                )) {
+                $result['preview'] = $fileName;
             }
             else {
-            	$js .= 'iframe.preview.src = "images/icons/icon_undefined.gif";';
+            	$result['preview'] = 'images/icons/icon_undefined.gif';
+                
             }
-            $js .= sprintf(
-            'filename.value = "%s";'.
-            'path.parentNode.removeChild(path);'.
-            'pb.parentNode.removeChild(pb); '.
-            'iframe.filename.value = "%s"; '/*.
-            'iframe.parentNode.removeChild(iframe);'*/,
-            $uploader->getFileRealName(),
-            $_POST['path'].'/'.basename($fileName)
-            );
-
-        }
-        catch (SystemException $e) {
-            $js .=
-            'path.parentNode.removeChild(path);'."\n".
-            'pb.parentNode.removeChild(pb); '."\n".
-            'alert(\''.$this->translate('TXT_SHIT_HAPPENS').': '.$e->getMessage().'\'); '/*.
-            'iframe.parentNode.removeChild(iframe); '*/."\n";
-        }
-
-        $responseText = '<html><head/><body><script type="text/javascript">'.$js.'</script></body></html>';
-        $response = Response::getInstance();
-        $response->setHeader('Content-Type', 'text/html; charset=UTF-8');
-        $response->write($responseText);
-        $response->commit();
+        
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write(json_encode($result));
+        $this->response->commit();      
     }
     
     protected function put(){
         try {
-            $uploadPath = 'uploads/public';
-            
             if (empty($_FILES) || !isset($_FILES['Filedata'])) {
                 throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
             }
 
             $uploader = new FileUploader();
             $uploader->setFile($_FILES['Filedata']);
-            $uploader->upload($uploadPath);
+            $uploader->upload(FileObject::UPLOAD_DIR);
             $fileName = $uploader->getFileObjectName();
             
             $result = FileObject::createFrom($fileName)->asArray();

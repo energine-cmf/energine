@@ -456,12 +456,11 @@ final class FileLibrary extends DataSet {
         $result['file'] = FileObject::UPLOAD_DIR.basename($fileName);
         $result['title'] = $_POST['Filename'];
             if (
-                in_array(
-                    FileInfo::getInstance()->analyze($fileName)->type, 
-                    array(FileInfo::META_TYPE_IMAGE, FileInfo::META_TYPE_VIDEO)
-                )) {
+                    FileInfo::getInstance()->analyze($fileName)->type ==  FileInfo::META_TYPE_IMAGE
+                ) {
                 $result['preview'] = $fileName;
             }
+            //
             else {
             	$result['preview'] = 'images/icons/icon_undefined.gif';
                 

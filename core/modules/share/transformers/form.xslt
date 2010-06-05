@@ -162,7 +162,7 @@
                             <a href="#" id="add_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_LOAD_FILE']"/></a>
                         </td>
                         <td style="text-align:right;">
-                            <a href="#" onclick="{$JS_OBJECT}.addAttachment(); new Event(arguments[0] || window.event).stop();"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
+                            <a href="#" id="insert_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
                             <script type="text/javascript">
                                 Energine.translations.extend({
                                 BTN_DEL_FILE: '<xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/>',

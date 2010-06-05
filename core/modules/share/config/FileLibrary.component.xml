@@ -65,6 +65,7 @@
 				<pattern>/save/</pattern>
 			</uri_patterns>
 		</method>
+		<method name="put" rights="3"></method>
 	    <method name="main">
             <uri_patterns>
                 <pattern>/</pattern>

@@ -1,10 +1,11 @@
 ScriptLoader.load('Form', 'ModalBox');
 var DivForm = new Class({
 	Extends: Form,
-    Implements: [Form.Label, Form.Attachments],
+    Implements: [Form.Label],
 	initialize: function(element){
 		this.parent(element);
         this.prepareLabel($('site_id').get('value') + '/list/');
+        new Form.AttachmentPane(this.singlePath);
 	},
     save: function() {
         this.richEditors.each(function(editor) { editor.onSaveForm(); });

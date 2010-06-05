@@ -20,6 +20,7 @@
  */
 class FileObject extends FileSystemObject {
 	const TEMPORARY_DIR = 'uploads/temp/';
+	const UPLOAD_DIR = 'uploads/public/';
 	/**
 	 * Полный путь к файлу
 	 *

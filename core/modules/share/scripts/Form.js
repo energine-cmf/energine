@@ -1,80 +1,43 @@
 ScriptLoader.load('TabPane', 'Toolbar', 'Validator', 'RichEditor','ModalBox');
-//keydown
+
 var Form = new Class({
 	Implements : [Energine.request],
 	initialize : function(element) {
 		Asset.css('form.css');
 		this.componentElement = $(element);
 		this.singlePath = this.componentElement.getProperty('single_template');
-
+        /*
 		var control = this.componentElement.getElement('input');
 		if (!control)
 			control = this.componentElement.getElement('textarea');
 		if (!control)
 			control = this.componentElement.getElement('select');
 		this.form = $(control.form).addClass('form');
-
+        */
+        this.form = this.componentElement.getParent('form').addClass('form');
+        
 		this.tabPane = new TabPane(this.componentElement, {
 				// onTabChange: this.onTabChange.bind(this)
 				});
 		this.validator = new Validator(this.form, this.tabPane);
 
 		this.richEditors = [];
-
+        this.uploaders = [];
+        
 		this.form.getElements('textarea.richEditor').each(function(textarea) {
-
 			this.richEditors.push(new Form.RichEditor(textarea, this,
 					this.fallback_ie));
 
 		}, this);
-
+        this.componentElement.getElements('.uploader').each(function(uploader){
+            this.uploaders.push(new Form.Uploader(uploader, this.singlePath + 'upload/'));
+        }, this);        
+        
 		this.componentElement.getElements('.pane').setStyles({
 					'border' : '1px dotted #777',
 					'overflow' : 'auto'
 				});
-        this.componentElement.getElements('.uploader').each(this._createUploaders, this);        
-        this._prepare();
-
 	},
-    _createUploaders: function(el){
-     var swf = new Swiff.Uploader({
-        path: 'scripts/Swiff.Uploader.swf',
-        url: this.singlePath + 'upload/',
-        verbose: (Energine.debug)?true:false,
-        queued: false,
-        multiple: false,
-        target: el,
-        instantStart: true,
-        appendCookieData: false,
-        data:{'NRGNSID':Cookie.read('NRGNSID'), 'element': el.getProperty('nrgn:input')},
-        typeFilter: {
-            'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
-            'All files (*.*)': '*.*',
-            'Flash video (*.flv)': '*.flv'
-        },
-        fileSizeMax: 2 * 1024 * 1024,
-        onFileComplete: this._show_preview.bind(this)
-        });    
-    },
-    _show_preview: function(file){
-        if(!file.response.error){
-            var data = JSON.decode(file.response.text);
-            if(data.result){
-                var preview, input, previewImg;
-                if((preview = $(data.element + '_preview')) && (input = $(data.element))){
-                    input.set('value', data.file);
-                    if($('upl_name')) $('upl_name').set('value', data.title);
-                    if(!(previewImg = preview.getElement('img'))){
-                        previewImg = new Element('img', {'border':0}).inject(preview);
-                    }
-                    previewImg.setProperty('src', data.preview);
-                }
-            }
-        }    
-    },
-    _prepare: function(){
-        
-    },
 	attachToolbar : function(toolbar) {
 		this.toolbar = toolbar;
 		this.componentElement.adopt(this.toolbar.getElement());
@@ -85,22 +48,6 @@ var Form = new Class({
                 afterSaveActionSelect.setSelected(savedActionState);
             }
         }        
-	},
-    removeFilePreview: function(fieldId, control){
-        var tmpNode;
-        $(fieldId).value = '';
-        
-        if(tmpNode = $(fieldId + '_preview')){
-            tmpNode.setProperty('src', '');
-        }
-        
-        if(tmpNode = $(fieldId + '_link')){
-            tmpNode.set('html', '');
-        }
-        return false;
-    },
-	upload : function(fileField) {
-       
 	},
 	save : function() {
 		this.richEditors.each(function(editor) {
@@ -152,37 +99,87 @@ var Form = new Class({
 				});
 	}
 });
-Form.Attachments = {
-    upAttachment: function(uplID){
-        this._moveAttachment(uplID, 'up');
-    },
-    downAttachment: function(uplID){
-        this._moveAttachment(uplID, 'down');
-    },
-    _prepare: function(){
-        var swf = new Swiff.Uploader({
+Form.Uploader = new Class({
+    initialize: function(uploaderElement, path){
+        this.swfUploader =  new Swiff.Uploader({
         path: 'scripts/Swiff.Uploader.swf',
-        url: this.singlePath + 'put/',
+        url: path,
         verbose: (Energine.debug)?true:false,
         queued: false,
         multiple: false,
-        target: $('add_attachment'),
+        target: (this.element = $(uploaderElement)),
         instantStart: true,
         appendCookieData: false,
-        data:{'NRGNSID':Cookie.read('NRGNSID')},
+        data:{'NRGNSID':Cookie.read('NRGNSID'), 'element': this.element.getProperty('nrgn:input')},
         typeFilter: {
             'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
             'All files (*.*)': '*.*',
             'Flash video (*.flv)': '*.flv'
         },
         fileSizeMax: 2 * 1024 * 1024,
-        onFileComplete: function(file) {
-            if(!file.response.error){
-                var data = JSON.decode(file.response.text);
-                this._insertRow(data);
+        onFileComplete: this.afterUpload.bind(this),
+        onFail: this.handleError.bind(this)
+        });           
+    },
+    afterUpload: function(uploadInfo){
+        this._show_preview(uploadInfo);
+    },
+    handleError: function(errorInfo){
+        
+    },
+    _show_preview: function(file){
+        if(!file.response.error){
+            var data = JSON.decode(file.response.text);
+            if(data.result){
+                var preview, input, previewImg;
+                if((preview = $(data.element + '_preview')) && (input = $(data.element))){
+                    input.set('value', data.file);
+                    if($('upl_name') && (!$('upl_name').get('value'))) $('upl_name').set('value', data.title);
+                    if(!(previewImg = preview.getElement('img'))){
+                        previewImg = new Element('img', {'border':0}).inject(preview);
+                    }
+                    previewImg.setProperty('src', data.preview);
+                }
             }
-        }.bind(this)
-    });
+        }    
+    },
+    
+    //todo Сделать удаление файла
+    removeFilePreview: function(fieldId, control){
+        var tmpNode;
+        $(fieldId).value = '';
+        
+        if(tmpNode = $(fieldId + '_preview')){
+            tmpNode.setProperty('src', '');
+        }
+        
+        if(tmpNode = $(fieldId + '_link')){
+            tmpNode.set('html', '');
+        }
+        return false;
+    }
+});
+Form.AttachmentPane =  new Class({
+    Extends: Form.Uploader,
+    initialize: function(singlePath){
+        this.singlePath = singlePath;
+        $('insert_attachment').addEvent('click', function(event){
+            Energine.cancelEvent(event);
+            this.insertAttachment();
+        }.bind(this));
+        this.parent($('add_attachment'), this.singlePath + 'put/');
+    },
+    afterUpload: function(file){
+        if(!file.response.error){
+            var data = JSON.decode(file.response.text);
+            this._insertRow(data);
+        }    
+    },
+    upAttachment: function(uplID){
+        this._moveAttachment(uplID, 'up');
+    },
+    downAttachment: function(uplID){
+        this._moveAttachment(uplID, 'down');
     },
     _moveAttachment: function(uplID, direction){
         var currentRow, changeRow, position;
@@ -250,7 +247,7 @@ Form.Attachments = {
         }
        this._zebraRows(); 
     },
-    addAttachment: function(){
+    insertAttachment: function(){
         ModalBox.open({ 'url': this.singlePath + 'file-library/media/', 'onClose': this._insertRow.bind(this)});
     },
     delAttachment: function(id){
@@ -264,11 +261,8 @@ Form.Attachments = {
 
         }
         this._zebraRows(); 
-    },
-    toggleSelector: function(){
-        
     }
-}
+});
 // Предназначен для последующей имплементации
 // Содержит метод setLabel использующийся для привязки кнопки выбора разделов
 Form.Label = {

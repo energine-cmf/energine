@@ -444,10 +444,11 @@ final class FileLibrary extends DataSet {
      * @final
      */
     final protected function upload() {
+    	try{
         if (empty($_FILES) || !isset($_POST['Filename']) || !isset($_FILES['Filedata']) || !isset($_POST['element'])) {
                 throw new SystemException('ERR_BAD_FILE', SystemException::ERR_CRITICAL);
         }
-        $result = array('result' => true, 'element' => $_POST['element']);
+        $result = array('status' => 1, 'element' => $_POST['element']);
         
         $uploader = new FileUploader();
         $uploader->setFile($_FILES['Filedata']);
@@ -462,10 +463,13 @@ final class FileLibrary extends DataSet {
             }
             //
             else {
-            	$result['preview'] = 'images/icons/icon_undefined.gif';
-                
+                $result['preview'] = 'images/icons/icon_undefined.gif';
             }
-        
+    	}
+    	catch(Exception $e){
+    		$result = array('status' => 0, 'error' => $e->getMessage());
+    	}
+    	
         $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
         $this->response->write(json_encode($result));
         $this->response->commit();      

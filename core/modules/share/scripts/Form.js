@@ -6,14 +6,7 @@ var Form = new Class({
 		Asset.css('form.css');
 		this.componentElement = $(element);
 		this.singlePath = this.componentElement.getProperty('single_template');
-        /*
-		var control = this.componentElement.getElement('input');
-		if (!control)
-			control = this.componentElement.getElement('textarea');
-		if (!control)
-			control = this.componentElement.getElement('select');
-		this.form = $(control.form).addClass('form');
-        */
+
         this.form = this.componentElement.getParent('form').addClass('form');
         
 		this.tabPane = new TabPane(this.componentElement, {
@@ -30,7 +23,7 @@ var Form = new Class({
 
 		}, this);
         this.componentElement.getElements('.uploader').each(function(uploader){
-            this.uploaders.push(new Form.Uploader(uploader, this.singlePath + 'upload/'));
+            this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);        
         
 		this.componentElement.getElements('.pane').setStyles({
@@ -100,10 +93,11 @@ var Form = new Class({
 	}
 });
 Form.Uploader = new Class({
-    initialize: function(uploaderElement, path){
+    initialize: function(uploaderElement, form, path){
+        this.form = form;
         this.swfUploader =  new Swiff.Uploader({
         path: 'scripts/Swiff.Uploader.swf',
-        url: path,
+        url: this.form.singlePath + path,
         verbose: (Energine.debug)?true:false,
         queued: false,
         multiple: false,
@@ -118,19 +112,19 @@ Form.Uploader = new Class({
         },
         fileSizeMax: 2 * 1024 * 1024,
         onFileComplete: this.afterUpload.bind(this),
-        onFail: this.handleError.bind(this)
+        onFail: this.handleError.bind(this),
+        onSelectFail: this.handleError.bind(this)
         });           
     },
     afterUpload: function(uploadInfo){
         this._show_preview(uploadInfo);
     },
-    handleError: function(errorInfo){
-        
+    handleError: function(){
+        this.form.validator.showError(this.element, 'При загрузке файла произошла ошибка');
     },
     _show_preview: function(file){
         if(!file.response.error){
-            var data = JSON.decode(file.response.text);
-            if(data.result){
+            var data = JSON.decode(file.response.text ,true);
                 var preview, input, previewImg;
                 if((preview = $(data.element + '_preview')) && (input = $(data.element))){
                     input.set('value', data.file);
@@ -140,8 +134,10 @@ Form.Uploader = new Class({
                     }
                     previewImg.setProperty('src', data.preview);
                 }
-            }
-        }    
+        }
+        else {
+            
+        }
     },
     
     //todo Сделать удаление файла
@@ -161,13 +157,12 @@ Form.Uploader = new Class({
 });
 Form.AttachmentPane =  new Class({
     Extends: Form.Uploader,
-    initialize: function(singlePath){
-        this.singlePath = singlePath;
+    initialize: function(form){
         $('insert_attachment').addEvent('click', function(event){
             Energine.cancelEvent(event);
             this.insertAttachment();
         }.bind(this));
-        this.parent($('add_attachment'), this.singlePath + 'put/');
+        this.parent($('add_attachment'), this.form,  'put/');
     },
     afterUpload: function(file){
         if(!file.response.error){

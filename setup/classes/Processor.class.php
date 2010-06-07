@@ -96,8 +96,8 @@
         
         static public $uploadsFolders = array(
             'public',
-            'protected',
-            'private'
+            /*'protected',
+            'private'*/
         );
          
         /**

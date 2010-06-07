@@ -162,7 +162,7 @@ Form.AttachmentPane =  new Class({
             Energine.cancelEvent(event);
             this.insertAttachment();
         }.bind(this));
-        this.parent($('add_attachment'), this.form,  'put/');
+        this.parent($('add_attachment'), form,  'put/');
     },
     afterUpload: function(file){
         if(!file.response.error){

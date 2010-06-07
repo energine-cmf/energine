@@ -23,15 +23,6 @@
         <xsl:value-of select="." disable-output-escaping="yes"/>
     </xsl:template>
 
-    <!-- Выводим переводы для WYSIWYG -->
-    <xsl:template match="document/translations[translation[@component=//component[@class='TextBlock' and @editable]/@name]]">
-            <script type="text/javascript">
-                <xsl:for-each select="translation[@component=$COMPONENTS[@class='TextBlock' and @editable]/@name]">
-                    Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="."/>');
-                </xsl:for-each>
-            </script>
-    </xsl:template>
-
     <xsl:template match="component[@class='TextBlock' and @editable]/recordset/record">
         <div id="{generate-id(.)}" class="nrgnEditor" componentPath="{$BASE}{$LANG_ABBR}{../../@single_template}" componentName="{../../@name}" num="{../../@num}">
             <xsl:if test="ancestor::content">

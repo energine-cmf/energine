@@ -127,7 +127,16 @@
     <xsl:template match="layout | content">
         <xsl:apply-templates/>
     </xsl:template>
-
-    <xsl:template match="/document/translations"/>
+    
+    <xsl:template match="/document/translations" />
+    
+    <!-- Выводим переводы для WYSIWYG -->
+    <xsl:template match="/document/translations[translation[@component=//component[@editable]/@name]]">
+            <script type="text/javascript">
+                <xsl:for-each select="translation[@component=$COMPONENTS[@editable]/@name]">
+                    Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="."/>');
+                </xsl:for-each>
+            </script>
+    </xsl:template>
 
 </xsl:stylesheet>

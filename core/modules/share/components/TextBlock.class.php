@@ -87,6 +87,8 @@ final class TextBlock extends DataSet {
         $this->tableName = 'share_textblocks';
         if ($this->isEditable) {
         	$this->addWYSIWYGTranslations();
+        	//выставляем свойство указывающее на то что блок находится в режиме редактирования
+            $this->setProperty('editable', 'editable');
         }
     }
 
@@ -157,17 +159,6 @@ final class TextBlock extends DataSet {
             list($res) = $res;
             $this->id = $res['id'];
             $this->content = $res['content'];	
-        }
-
-        //Если мы находимся в режиме редактирования содержимого
-        if ($this->isEditable) {
-            //Отключаем тулбар страницы если есть
-            if ($component = $this->document->componentManager->getComponentByName('pageToolBar')) {
-                //$component->disable();
-            }
-
-            //выставляем свойство указывающее на то что блок находится в режиме редактирования
-            $this->setProperty('editable', 'editable');
         }
 
         $this->setProperty('num', $this->getParam('num'));

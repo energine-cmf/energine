@@ -434,26 +434,12 @@ abstract class DataSet extends Component {
 		$result = false;
 		if (($config = $this->config->getCurrentMethodConfig()) && $config->javascript) {
 			$result = $this->doc->createElement('javascript');
-			/*
-			foreach ($config->javascript->include as $value) {
-				$JSIncludeXML = $this->doc->createElement('include');
-				$JSIncludeXML->setAttribute('name', $value['name']);
-				$JSIncludeXML->setAttribute('path', 'scripts/');
-				$result->appendChild($JSIncludeXML);
-			}*/
 			foreach ($config->javascript->object as $value) {
 				$JSObjectXML = $this->doc->createElement('object');
 				$JSObjectXML->setAttribute('name', $value['name']);
 				$JSObjectXML->setAttribute('path', ($value['path'])?$value['path'].'/':'');
 				$result->appendChild($JSObjectXML);
 			}
-			/*
-			foreach ($config->javascript->param as $value) {
-				$JSParamXML = $this->doc->createElement('param', $value);
-				$JSParamXML->setAttribute('name', $value['name']);
-				$result->appendChild($JSParamXML);
-			}
-			*/
 		}
 		return $result;
 	}

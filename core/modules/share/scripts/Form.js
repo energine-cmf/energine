@@ -16,22 +16,26 @@ var Form = new Class({
 
 		this.richEditors = [];
         this.uploaders = [];
+        this.textBoxes = [];
         
 		this.form.getElements('textarea.richEditor').each(function(textarea) {
 			this.richEditors.push(new Form.RichEditor(textarea, this,
 					this.fallback_ie));
 
 		}, this);
+        
         this.componentElement.getElements('.uploader').each(function(uploader){
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);        
         
-/*
+        this.componentElement.getElements('.textbox').each(function(textBox){
+            this.textBoxes.push(new TextboxList2(textBox));
+        }, this);   
+        
 		this.componentElement.getElements('.pane').setStyles({
 					'border' : '1px dotted #777',
 					'overflow' : 'auto'
 				});
-*/
 	},
 	attachToolbar : function(toolbar) {    	
 		this.toolbar = toolbar;		
@@ -166,11 +170,13 @@ Form.Uploader = new Class({
 Form.AttachmentPane =  new Class({
     Extends: Form.Uploader,
     initialize: function(form){
+        this.parent($('add_attachment'), form,  'put/');
         $('insert_attachment').addEvent('click', function(event){
             Energine.cancelEvent(event);
-            this.insertAttachment();
+            ModalBox.open(
+                { 'url': form.singlePath + 'file-library/media/', 
+                  'onClose': this._insertRow.bind(this)});
         }.bind(this));
-        this.parent($('add_attachment'), form,  'put/');
     },
     afterUpload: function(file){
         if(!file.response.error){
@@ -249,9 +255,6 @@ Form.AttachmentPane =  new Class({
             }
         }
        this._zebraRows(); 
-    },
-    insertAttachment: function(){
-        ModalBox.open({ 'url': this.singlePath + 'file-library/media/', 'onClose': this._insertRow.bind(this)});
     },
     delAttachment: function(id){
         $('row_' + id).dispose();

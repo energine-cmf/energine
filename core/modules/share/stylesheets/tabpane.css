@@ -31,7 +31,7 @@
     background: white;
     _width: expression(this.parentNode.clientWidth - 20);
 }
-.e-pane-t-toolbar {           
+.e-pane-t-toolbar {
     top: 0;
     padding-top: 10px;
 }
@@ -52,7 +52,7 @@
     height: 24px; 
 }
 .e-pane-has-t-toolbar1 .e-pane-content { 
-    top: 34px; 
+    top: 34px;    
     _height: expression(this.parentNode.clientHeight - 66); 
 }
 /* 2 тулбара вверху */
@@ -101,13 +101,14 @@
     left: 10px;                 
     overflow: hidden;
     border: 1px solid #aaa;
+    background: white;
     padding: 10px;
     _width: expression(this.parentNode.clientWidth - 42);
     _height: expression(this.parentNode.clientHeight - 42);
 }
 .e-singlemode-layout .e-pane-t-toolbar, 
 .e-singlemode-layout .e-pane-b-toolbar, 
-.e-singlemode-layout e-pane-content {
+.e-singlemode-layout .e-pane-content {
     position: fixed;
     _position: absolute;
 }

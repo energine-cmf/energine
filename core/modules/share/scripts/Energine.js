@@ -229,7 +229,7 @@ Asset.css = function(source, properties) {
 		Asset.loaded.css[source] = true;
 		return new Element('link', $merge({
 							'rel' : 'stylesheet',
-							'media' : 'screen',
+							'media' : 'Screen, projection',
 							'type' : 'text/css',
 							'href' : ((Energine.base)?Energine.base:'') + 'stylesheets/' + source
 						}, properties)).inject(document.head);

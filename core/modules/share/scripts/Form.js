@@ -26,14 +26,22 @@ var Form = new Class({
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);        
         
+/*
 		this.componentElement.getElements('.pane').setStyles({
 					'border' : '1px dotted #777',
 					'overflow' : 'auto'
 				});
+*/
 	},
-	attachToolbar : function(toolbar) {
-		this.toolbar = toolbar;
-		this.componentElement.adopt(this.toolbar.getElement());
+	attachToolbar : function(toolbar) {    	
+		this.toolbar = toolbar;		
+		var toolbarContainer = this.componentElement.getElement('.e-pane-b-toolbar');
+		if(toolbarContainer){
+			toolbarContainer.adopt(this.toolbar.getElement());
+		}
+		else {
+			this.componentElement.adopt(this.toolbar.getElement());
+		}		
         var afterSaveActionSelect; 
         if(afterSaveActionSelect = this.toolbar.getControlById('after_save_action')){
             var savedActionState = Cookie.read('after_add_default_action');

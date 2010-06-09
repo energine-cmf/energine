@@ -4,7 +4,10 @@ var ModalBox = window.top.ModalBox || {
 
     init: function() {
         Asset.css('modalbox.css');
-        this.overlay = new Element('div').setProperty('id', 'mb_overlay').injectInside(document.body);
+        this.overlay = new Element('div').setProperties({
+        	'id': 'mb_overlay',
+        	'class': 'e-overlay'
+        }).injectInside(document.body);
         this.fx = new Fx.Tween(this.overlay);
 
         this.overlay.fade();//this.overlay.effect('opacity').hide();
@@ -13,30 +16,28 @@ var ModalBox = window.top.ModalBox || {
         this.initialized = true;
     },
     open: function(options) {
-		var box = new Element('div').addClass('modalbox').injectInside(document.body);
+		var box = new Element('div').addClass('e-modalbox').injectInside(document.body);
 		box.options = {
-            url: null,
-            width: 755,
-            height: 600,
+            url: null,            
             onClose: $empty,//$empty,
             extraData: null
 		};
 		$extend(box.options, $pick(options, {}));
 
-		box.setStyles({
-		    'width': box.options.width + 'px',
-		    'height': box.options.height + 'px',
-		    'left': (Window.getSize().x / 2) - (box.options.width / 2) + 'px'
-		});
-
-		box.iframe =
-			new Element('iframe').setProperties(
-				{
-					'src': box.options.url,
-					'frameBorder': '0',
-					'scrolling': 'no'
-				}
-			).injectInside(box);
+		if (Browser.Engine.trident) {
+			iframe = $(document.createElement('<iframe class="e-modalbox-frame" src="' + box.options.url + '" frameBorder="0" scrolling="no" />'));
+		}
+		else {
+			iframe = new Element('iframe').setProperties(
+					{
+						'src': box.options.url,
+						'frameBorder': '0',
+						'scrolling': 'no',
+						'class': 'e-modalbox-frame'
+					}
+				)
+		}
+		box.iframe = iframe.injectInside(box);
 
 		/*box.iframe = new IFrame({
 			'src': box.options.url,
@@ -45,7 +46,7 @@ var ModalBox = window.top.ModalBox || {
 		}).injectInside(box);
 */
 		//box.iframe.addEvent('keydown', this.keyboardListener.bindWithEvent(this));
-        box.closeButton = new Element('div').addClass('closeButton').injectInside(box);
+        box.closeButton = new Element('div').addClass('e-modalbox-close').injectInside(box);
         box.closeButton.addEvents({
             'click': this.close.bind(this),
             'mouseover': function() { this.addClass('highlighted'); },
@@ -54,7 +55,7 @@ var ModalBox = window.top.ModalBox || {
 
         this.boxes.push(box);
         if (this.boxes.length == 1) {
-            this.position();
+            //this.position();
             this.setup(true);
             this.fx.set('opacity', 0.5);
         }
@@ -104,7 +105,7 @@ var ModalBox = window.top.ModalBox || {
 			case 'esc': this.close(); break;
 		}
 	},
-
+		
 	position: function() {
 		this.overlay.setStyles({ 'height': Window.getHeight() + 'px' });
     },

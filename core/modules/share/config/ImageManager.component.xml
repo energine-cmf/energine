@@ -8,13 +8,11 @@
     		<fields>
     			<field name="filename" type="string" title="FIELD_IMG_FILENAME" length="100" />
     			<field name="width" type="int" title="FIELD_IMG_WIDTH" length="10" nullable="true"/>
-    			<field name="height" type="int" title="FIELD_IMG_HEIGHT" length="10" nullable="true"/>
-    			
+    			<field name="height" type="int" title="FIELD_IMG_HEIGHT" length="10" nullable="true"/>    			
     			<field name="margin-left" type="int" title="FIELD_IMG_MARGIN_LEFT" length="10" nullable="true"/>
     			<field name="margin-right" type="int" title="FIELD_IMG_MARGIN_RIGHT" length="10" nullable="true"/>
     			<field name="margin-top" type="int" title="FIELD_IMG_MARGIN_TOP" length="10" nullable="true"/>
-    			<field name="margin-bottom" type="int" title="FIELD_IMG_MARGIN_BOTTOM" length="10" nullable="true"/>
-    			
+    			<field name="margin-bottom" type="int" title="FIELD_IMG_MARGIN_BOTTOM" length="10" nullable="true"/>    			
     			<field name="align" type="select" title="FIELD_IMG_ALIGN" nullable="true"/>
     			<field name="alt" type="string" title="FIELD_IMG_ALTTEXT" length="100" nullable="true"/>
     		</fields>
@@ -23,6 +21,9 @@
     			<control type="button" id="imagelib" title="BTN_IMAGELIB" onclick="openImageLib" tooltip="Open image library" />
     			<control type="button" id="close" title="BTN_CLOSE" onclick="close" tooltip="Close this window" />
     		</toolbar>
+            <translations>
+                <translation const="TXT_IMG_MANAGER"/>
+            </translations>
     	</method>
     </methods>
 </configuration>

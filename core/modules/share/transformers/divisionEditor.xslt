@@ -15,27 +15,35 @@
             </script>
     </xsl:template>    
     
-    <!-- вывод дерева разделов -->
+    <!-- вывод дерева разделов в модальном окне -->
     <xsl:template match="recordset[parent::component[javascript/object/@name='DivManager'][@class='DivisionEditor'][@type='list']]">
         <xsl:variable name="TAB_ID" select="generate-id(record[1])"/>
-        <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"   lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
-            <ul class="tabs">
-                <li>
-                    <a href="#{$TAB_ID}"><xsl:value-of select="record[1]/field[1]/@tabName" /></a>
-                    <!--<span class="data">{ lang: <xsl:value-of select="$LANG_ID" /> }</span>-->
-                </li>
-            </ul>
-            <div class="paneContainer">
+        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
+            <xsl:if test="../toolbar">
+                <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
+            </xsl:if>
+            <div class="e-pane-t-toolbar">
+                <ul class="e-pane-toolbar e-tabs">
+                    <li>
+                        <a href="#{$TAB_ID}"><xsl:value-of select="record[1]/field[1]/@tabName" /></a>
+                        <!--<span class="data">{ lang: <xsl:value-of select="$LANG_ID" /> }</span>-->
+                    </li>
+                </ul>
+            </div>
+            <div class="e-pane-content">
                 <div id="{$TAB_ID}">
                     <div id="treeContainer" class="e-divtree-select"></div>
                 </div>
             </div>
+            <xsl:if test="../toolbar">
+                <div class="e-pane-b-toolbar"></div>
+            </xsl:if>
         </div>
-    </xsl:template>    
-    
-    <!-- вывод дерева разделов -->
+    </xsl:template>
+        
+    <!-- вывод дерева разделов в боковом тулбаре -->
     <xsl:template match="recordset[parent::component[javascript/object/@name='DivSidebar'][@class='DivisionEditor'][@componentAction='main'][@type='list']]">
-        <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}"  lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
+        <div id="{generate-id(.)}" class="e-divtree-wrapper" template="{$BASE}{$LANG_ABBR}{../@template}"  lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
             <div id="treeContainer" class="e-divtree-main"></div>
         </div>
     </xsl:template>
@@ -99,8 +107,7 @@
         		<button type="button" id="sitemap_selector" hidden_field="h_{$FIELD_ID}" span_field="s_{$FIELD_ID}">...</button>
             </div>
     	</div>
-    </xsl:template>
-    
+    </xsl:template>    
     
     <xsl:template match="field[@name='smap_pid'][@mode='1'][@type!='hidden'][ancestor::component[@class='DivisionEditor'][@type='form']]">
         <div class="field">
@@ -119,7 +126,8 @@
                     </xsl:attribute>
                 </input>
         </div>
-    </xsl:template>    
+    </xsl:template>
+    
     <!-- поле для ввода сегмента раздела -->
     <xsl:template match="field[@name='smap_segment'][ancestor::component[@class='DivisionEditor'][@type='form']]">
     	<div class="field">

@@ -26,7 +26,13 @@ var DivManager = new Class({
 
     attachToolbar: function(toolbar) {
         this.toolbar = toolbar;
-        this.element.adopt(this.toolbar.getElement());
+        var toolbarContainer = this.element.getElement('.e-pane-b-toolbar');
+        if(toolbarContainer){
+			toolbarContainer.adopt(this.toolbar.getElement());
+		}
+		else {
+			this.element.adopt(this.toolbar.getElement());
+		}        
         this.toolbar.disableControls();
         var btn;
         ['add', 'select', 'close', 'edit'].each(function(btnID){

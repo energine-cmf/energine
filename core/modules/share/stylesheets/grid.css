@@ -29,24 +29,22 @@ div.grid div.filter input {
 }
 
 .grid {
-background: #fcfcfc;
-color:black;
-/*border: 1px solid silver;*/
-font-family:tahoma,sans-serif;
-font-size:11px;
-font-size-adjust:none;
-font-stretch:normal;
-font-style:normal;
-font-variant:normal;
+    background: #fcfcfc;
+    color:black;
+    /*border: 1px solid silver;*/
+    font-family:tahoma,sans-serif;
+    font-size:11px;
+    font-size-adjust:none;
+    font-stretch:normal;
+    font-style:normal;
+    font-variant:normal;
 }
 
 .gridHeadContainer {
-padding-right: 17px;
-border: 1px solid #aaaaaa;
-background: #eeeedd;
-
-height: auto !important; 
-height: 1%; /* :KLUGE: добавляет свойство hasLayout для IE6 */
+    padding-right: 17px;
+    border: 1px solid #aaaaaa;
+    background: #eeeedd;
+    _height: 1%; /* добавляет свойство hasLayout для IE6 */
 }
 
 .gridHeadContainer th {
@@ -64,10 +62,10 @@ height: 1%; /* :KLUGE: добавляет свойство hasLayout для IE6 
 }
 
 .gridContainer {
-height: 200px;
-overflow: scroll;
-overflow-x: hidden;
-border: 1px solid #aaaaaa;
+    height: 200px;
+    overflow: scroll;
+    overflow-x: hidden;
+    border: 1px solid #aaaaaa;
 }
 
 table.gridTable, table.gridTable th, table.gridTable td {
@@ -76,40 +74,39 @@ table.gridTable, table.gridTable th, table.gridTable td {
 }
 
 table.gridTable {
-width: 100%;
-margin: 0;
-padding: 0;
-border: 0;
-border-collapse: separate;
-border-spacing: 0;
-line-height: normal;
-
-border-right: expression('17px solid #eeeedd');  /* :KLUGE: исправляет выползание скролла за пределы контейнера в IE */
-margin-right: expression('-17px');
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    line-height: normal;
+    *border-right: 17px solid #eeeedd;  /* исправляет выползание скролла за пределы контейнера в IE */
+    *margin-right: -17px;
 }
 .gridTable th {
-margin: 0;
-padding: 5px 0.5em;
-border: 0;
-border-right: 1px solid #aaaaaa;
-background: #eeeedd;
-text-align: left;
-color:#000000;
-font-weight: bold;
+    margin: 0;
+    padding: 5px 0.5em;
+    border: 0;
+    border-right: 1px solid #aaaaaa;
+    background: #eeeedd;
+    text-align: left;
+    color:#000000;
+    font-weight: bold;
 }
 .gridTable td {
-margin: 0;
-padding: 5px 0.5em;
-border: 0;
-border-right: 1px solid #aaaaaa;
-cursor:default;
-/*border-bottom: 1px solid #aaaaaa;*/
+    margin: 0;
+    padding: 5px 0.5em;
+    border: 0;
+    border-right: 1px solid #aaaaaa;
+    cursor:default;
+    /*border-bottom: 1px solid #aaaaaa;*/
 }
 
 .gridTable tr.even td {
-background: #F4F4F4;
+    background: #F4F4F4;
 }
 
 .gridContainer table.gridTable {
-border-bottom: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
 }

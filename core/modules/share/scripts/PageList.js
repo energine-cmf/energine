@@ -7,7 +7,7 @@ var PageList = new Class({
     initialize: function(options) {
         Asset.css('pagelist.css');
         this.setOptions(options);
-        this.element = new Element('ul').addClass('pagelist').setProperty('unselectable', 'on');
+        this.element = new Element('ul').addClass('e-pane-toolbar e-pagelist').setProperty('unselectable', 'on');
     },
 
     getElement: function() {

@@ -9,7 +9,7 @@ var FileManager = new Class({
 	initialize: function(element){
 		this.element = $(element);
 		this.tabPane = new TabPane(this.element);
-		this.viewWidget = new DirView(this.element.getElement('.dirArea'), {
+		this.viewWidget = new DirView(this.element.getElement('.e-filemanager'), {
             onSelect: this.onSelect.bind(this),
             onEdit: this.onEdit.bind(this),
             onOpen: this.open.bind(this)
@@ -28,8 +28,14 @@ var FileManager = new Class({
     },
 
     attachToolbar: function(toolbar) {
-        this.toolbar = toolbar;
-        this.tabPane.element.adopt(this.toolbar.getElement());
+        this.toolbar = toolbar;        
+        var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
+		if(toolbarContainer){
+			toolbarContainer.adopt(this.toolbar.getElement());
+		}
+		else {
+			this.tabPane.element.adopt(this.toolbar.getElement());
+		}
     },
 
 	load: function(path) {

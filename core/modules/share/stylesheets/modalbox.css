@@ -1,48 +1,59 @@
-div#mb_overlay {
-	position: fixed;
-	_position: absolute;
-	z-index: 1000;
-	top: 0;
-	_top: expression(eval(document.documentElement.scrollTop));
-	left: 0;
-	width: 100%;
-	_width: expression(eval(document.body.clientWidth));
-	background: #000;
+/* ----- overlay ----- */
+.e-overlay {
+    position: fixed;                
+    left: 0;
+    top: 0;            
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: black;
+    _position: absolute;
 }
-
-div.modalbox {
-	position: fixed;
-	_position: absolute;
-	z-index: 1001;
-	top: 50px;
-	_top: expression(eval(document.documentElement.scrollTop + 50));
-	left: 50%;
-	background: #FFF;
+.e-has-topframe1 .e-overlay {
+    _padding-top: 25px;
 }
-
-div.modalbox * {
-    margin: 0;
-    padding: 0;
+.e-has-topframe2 .e-overlay {              
+    _padding-top: 50px;
 }
+.e-has-sideframe .e-overlay {
+    _padding-left: 300px;
+}
+/* ----- /overlay ----- */
 
-div.modalbox div.closeButton {
+/* ----- modalbox ----- */
+.e-modalbox {
+    position: fixed;
+    left: 50%;
+    top: 5%;
+    z-index: 1001;
+    width: 780px;
+    height: 90%;
+    margin-left: -390px;
+    background: white;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
+    _position: absolute;
+}
+.e-modalbox-close {
     position: absolute;
     top: -8px;
     right: -8px;
+    z-index: 1001;
     width: 16px;
     height: 16px;
-    background: #FFF url(../images/close.gif) no-repeat;
+    background: white url(../images/close.gif) no-repeat;
+    line-height: 0;
+    font-size: 0;
     cursor: pointer;
-    cursor: hand;
 }
-
-div.modalbox div.closeButton.highlighted {
-    background-color: #FF8;
+.e-modalbox .highlighted {
+    background-color: #ff8;
 }
-
-div.modalbox iframe {
+.e-modalbox-frame {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
     border: 0;
 }
+/* ----- /modalbox ----- */

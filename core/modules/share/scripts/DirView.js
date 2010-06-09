@@ -12,29 +12,28 @@ var DirView = new Class({
     initialize: function(element, options) {
         Asset.css('filemanager.css');
         this.parent(element, options);
-		this.scrollArea = this.element.getElement('.scrollHelper');
 	},
 
-	build: function() {
+	build: function() {		
 		if (!this.metadata) {
 			alert('View have no metadata.');
 			return;
 		}
-		this.clear();
+		this.clear();		
 		this.data.each(function(record) { this.addRecord(record); }, this);
 
-		var firstChild = this.scrollArea.getFirst();
+		var firstChild = this.element.getFirst();
 	    if (firstChild) this.selectItem(firstChild);
 	},
 
     clear: function() {
         this.selectItem(false);
-        while (this.scrollArea.hasChildNodes()) {
-            this.scrollArea.removeChild(this.scrollArea.firstChild);
+        while (this.element.hasChildNodes()) {
+            this.element.removeChild(this.element.firstChild);
         }
 	},
 
-	addRecord: function(record) {
+	addRecord: function(record) {		
         for (var fieldName in record) {
             if (!this.metadata[fieldName]) {
                 alert('DirView: record doesn\'t conform to metadata.');
@@ -42,7 +41,7 @@ var DirView = new Class({
             }
         }
 
-        var obj = new Element('div').setProperty('title', record['upl_name']).injectInside(this.scrollArea);
+        var obj = new Element('div').setProperty('title', record['upl_name']).injectInside(this.element);
 		new Element('div').addClass('name').set('html', record['upl_name']).injectInside(obj);
 
         if ($type(record['upl_data'].thumb) == 'string') {

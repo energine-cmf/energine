@@ -7,17 +7,17 @@ var TabPane = new Class({
     initialize: function(element, options) {
         Asset.css('tabpane.css');
         this.setOptions(options);
-        this.element = $(element).addClass('tabpane');
+        this.element = $(element);
 
-        this.tabs = this.element.getElement('ul.tabs').addClass('clearfix').getElements('li');
+        this.tabs = this.element.getElement('ul.e-tabs').addClass('clearfix').getElements('li');
         this.tabs.each(function(tab) {
             tab.setProperty('unselectable', 'on');
             var anchor = tab.getElement('a');
-            var paneId = anchor.getProperty('href').slice(anchor.getProperty('href').lastIndexOf('#'));
-            anchor.onclick = function() { this.blur(); return false; }
+            var paneId = anchor.getProperty('href').slice(anchor.getProperty('href').lastIndexOf('#'));            
+            anchor.addEvent('click', function(event) {event = new Event(event || window.event); event.preventDefault(); tab.blur();});
             var tabData = tab.getElement('span.data');
             tab.data = (tabData ? JSON.decode(tabData.firstChild.nodeValue) : {});
-            tab.pane = this.element.getElement('div'+paneId).addClass('pane').setStyle('display', 'none');
+            tab.pane = this.element.getElement('div'+paneId).addClass('e-pane-item').setStyle('display', 'none');
             tab.pane.tab = tab;
 
             var tabpane = this;
@@ -54,7 +54,7 @@ var TabPane = new Class({
     whereIs: function(element) {
         var el = $(element), pane = false;
         while (el = el.getParent()) {
-            if (el.hasClass('pane') && el.tab) {
+            if (el.hasClass('e-pane-item') && el.tab) {
                 pane = el.tab;
                 break;
             }

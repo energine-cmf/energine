@@ -8,7 +8,7 @@ var Grid = new Class({
 	    onDoubleClick: $empty
     },
 
-    initialize: function(element, options) {
+    initialize: function(element, options) {    	
         Asset.css('grid.css');
         
         this.sort = {
@@ -23,6 +23,9 @@ var Grid = new Class({
         this.tbody = this.element.getElement('.gridContainer tbody');
         this.headers = this.element.getElements('.gridHeadContainer table.gridTable th');
         this.headers.addEvent('click', this.changeSort.bind(this));
+        
+        /* добавляем к контейнеру класс, который указывает, что в нем есть грид */
+    	this.element.getParents('.e-pane')[0].addClass('e-grid-pane');
     },
 
     /*
@@ -49,7 +52,7 @@ var Grid = new Class({
         this.parent(metadata);
     },
 
-    build: function() {
+    build: function() {    	
 		var preiouslySelectedRecordKey = this.getSelectedRecordKey();
 
 		this.headOff.setStyle('visibility', 'hidden');
@@ -90,7 +93,41 @@ var Grid = new Class({
 		this.element.getElement('.gridContainer table.gridTable').setStyle('tableLayout', 'fixed');
 		this.element.getElement('.gridHeadContainer table.gridTable').setStyle('tableLayout', 'fixed');
 		this.headOff.setStyle('display', 'none');
+		
+		/* растягиваем gridContainer на высоту родительского элемента минус фильтр и голова грида */		
+		this.paneContent = this.element.getParent('.e-pane-item');
+    	this.filter = this.element.getElement('.filter');
+    	this.gridHeadContainer = this.element.getElement('.gridHeadContainer');
+    	this.gridContainer = this.element.getElement('.gridContainer');
+    	this.fitSize();
+    	window.addEvent('resize', function(){this.fitSize();}.bind(this));
+    	
+    	/* растягиваем всю форму до высоты видимого окна */
+    	/*
+    	this.pane = this.element.getParents('.e-pane')[0];
+    	this.gridTableHeight = this.element.getElement('.gridTable tbody').getSize().y + 194;
+    	var windowHeight = window.getSize().y;
+    	if(!(document.getElement('.e-singlemode-layout'))){
+    		if(this.pane.getStyle('height').toInt() < windowHeight){
+    			if(this.gridTableHeight < windowHeight){
+    				this.pane.setStyle('height', this.gridTableHeight);  				
+    			}
+    			else {
+    				this.pane.setStyle('height', windowHeight);    				
+    			}
+    			this.gridContainer.setStyle('height', this.paneContent.getSize().y - this.filter.getSize().y - this.gridHeadContainer.getSize().y - 34);
+    		}
+    		
+    	}
+    	*/
         
+    },
+    
+    fitSize: function() {
+    	var gridHeight = this.paneContent.getSize().y - this.filter.getSize().y - this.gridHeadContainer.getSize().y - 14;
+    	if(gridHeight > 0){
+    		this.gridContainer.setStyle('height', gridHeight);
+    	}
     },
 
     isEmpty: function() {

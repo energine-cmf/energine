@@ -12,6 +12,9 @@
     			<control type="button" id="update" title="BTN_UPDATE" onclick="update" />
     			<control type="button" id="cancel" title="BTN_CANCEL" onclick="cancel" />
     		</toolbar>
+            <translations>
+                <translation const="TXT_TEXTBLOCK_SOURCE_EDITOR"/>
+            </translations>
     	</method>
     </methods>
 </configuration>

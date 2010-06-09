@@ -8,6 +8,9 @@
 
     <xsl:template match="component[@type='list']">
     	<form method="post" action="{@action}">
+            <xsl:if test="@exttype='grid'">
+                <xsl:attribute name="class">e-grid-form</xsl:attribute>
+            </xsl:if>
             <input type="hidden" name="componentAction" value="{@componentAction}"/>
             <xsl:apply-templates/>
     	</form>
@@ -24,7 +27,10 @@
     </xsl:template>
 
     <xsl:template match="component[@type='list' and @exttype='grid']/recordset">
-        <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+            <xsl:if test="../toolbar">
+                <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
+            </xsl:if>
             <xsl:call-template name="BUILD_GRID"/>
         </div>
     </xsl:template>
@@ -39,31 +45,32 @@
     </xsl:template>
 
     <xsl:template name="BUILD_GRID">
-        <xsl:variable name="FIELDS" select="record/field"></xsl:variable>
-        <xsl:variable name="TAB_ID" select="generate-id(record)"></xsl:variable>
-        <ul class="tabs">
-            <xsl:choose>
-                <xsl:when test="$FIELDS[@language]">
-                    <xsl:for-each select="set:distinct($FIELDS[@language]/@tabName)">
-                        <xsl:variable name="TAB_NAME" select="."/>
-                        <li>
-                            <a href="#{$TAB_ID}"><xsl:value-of select="."/></a>
-                            <span class="data">{ lang: <xsl:value-of select="$FIELDS[@tabName=$TAB_NAME]/@language"/> }</span>
-                        </li>
-                    </xsl:for-each>        
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:for-each select="set:distinct($FIELDS/@tabName)">
-                        <xsl:variable name="TAB_NAME" select="."/>
-                        <li>
-                            <a href="#{$TAB_ID}"><xsl:value-of select="."/></a>
-                        </li>
-                    </xsl:for-each>        
-                </xsl:otherwise>
-            </xsl:choose>
-        </ul>
-
-        <div class="paneContainer">
+        <xsl:variable name="FIELDS" select="record/field"/>
+        <xsl:variable name="TAB_ID" select="generate-id(record)"/>
+        <div class="e-pane-t-toolbar">
+            <ul class="e-pane-toolbar e-tabs">
+                <xsl:choose>
+                    <xsl:when test="$FIELDS[@language]">
+                        <xsl:for-each select="set:distinct($FIELDS[@language]/@tabName)">
+                            <xsl:variable name="TAB_NAME" select="."/>
+                            <li>
+                                <a href="#{$TAB_ID}"><xsl:value-of select="."/></a>
+                                <span class="data">{ lang: <xsl:value-of select="$FIELDS[@tabName=$TAB_NAME]/@language"/> }</span>
+                            </li>
+                        </xsl:for-each>        
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:for-each select="set:distinct($FIELDS/@tabName)">
+                            <xsl:variable name="TAB_NAME" select="."/>
+                            <li>
+                                <a href="#{$TAB_ID}"><xsl:value-of select="."/></a>
+                            </li>
+                        </xsl:for-each>        
+                    </xsl:otherwise>
+                </xsl:choose>
+            </ul>
+        </div>        
+        <div class="e-pane-content">
             <div id="{$TAB_ID}">
                 <div class="grid">
                     <!-- если есть хотя бы одно поле с типом string -->
@@ -167,6 +174,9 @@
                 </div>
             </div>
         </div>
+        <xsl:if test="../toolbar">
+            <div class="e-pane-b-toolbar"></div>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="component[@type='list']/recordset/record/field">

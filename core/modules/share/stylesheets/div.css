@@ -1,3 +1,7 @@
+img {
+    border: 0;
+}
+
 /* дерево подразделов в боковой панели */
 .e-divtree-panel {
     /* 
@@ -17,17 +21,18 @@
     background: #f8f8ed;
     _padding-top: 38px;    
 }
-.e-divtree-panel body {    
+.e-divtree-panel body, .e-divtree-panel .e-singlemode-layout {    
     height: 100%;
     padding: 0;
     background: #fff;
     border: 1px solid #aaaaaa;
+    overflow: visible;
 }
-.e-divtree-panel form {
+.e-divtree-panel .e-grid-form {
     position: relative;   
     height: 100%;
 }
-.e-divtree-panel form div {
+.e-divtree-wrapper {
     height: 100%;
 }
 .e-divtree-main {
@@ -43,7 +48,6 @@
     font-weight: bold;
     color: green;
 }
-
 	
 /* тулбар дерева подразделов в боковой панели */
 .e-divtree-panel .e-divtree-toolbar {
@@ -54,7 +58,7 @@
     width: 100%;
     margin: 0 !important;
     padding: 2px 0 !important;
-    border: 1px solid #aaaaaa;            
+    border: 1px solid #aaaaaa;
 }
 .e-divtree-panel .e-divtree-toolbar li.icon {
     margin: 0 2px !important;
@@ -65,12 +69,5 @@
 
 /* дерево подразделов в модальном окне */
 .e-divtree-select {
-    width: 99%;
-    height: 100%;
-    overflow: auto;
-    padding-left: 4px;
-    border: 1px solid #B1AFA9;
     font: 12px Tahoma, sans-serif;
 }
-img {
-border:0;

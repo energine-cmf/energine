@@ -1,88 +1,69 @@
-div.dirArea {
-    width: 100%;
-	height: 484px;
-}
-
-div.dirArea * {
+/* ----- filemanager ----- */
+.e-filemanager * {
     margin: 0;
     padding: 0;
 }
-
-div.dirArea .scrollHelper {
-    height: 100%;
-    overflow: auto;
-    border: 1px solid #B1AFA9;
+.e-filemanager div {
+	width: 120px;
+	height: 120px;
+	border: 1px solid silver;
+	margin: 10px;
+	float: left;
+	text-align: center;
 }
-
-div.dirArea .scrollHelper div {
-	width:120px;
-	height:120px;
-	border:1px solid silver;
-	margin:10px 10px 10px 10px;
-	float:left;
-	text-align:center;
+.e-filemanager .highlighted {
+	background: #ffa;
 }
-
-div.dirArea .scrollHelper div.highlighted {
-	background: #FFA;
+.e-filemanager .selected {
+	background: #316ac5;
+	color: white;
 }
-
-div.dirArea .scrollHelper div.selected {
-	background: #316AC5;
-	color: #FFF;
+.e-filemanager div div {
+	position: static;
+	float: none;
+	border: none;
+	margin: auto;
+	width: auto;
+	font-family: Tahoma, sans-serif;
+	font-size: 9px;
 }
-
-div.dirArea .scrollHelper div div {
-	position:static;
-	float:none;
-	border:none;
-	margin:auto;
-	width:auto;
-	font-family:Tahoma;
-	font-size:9px;
-}
-
-div.dirArea .scrollHelper div div.undefined {
-	width:60px;
-	height:60px;
+.e-filemanager .undefined {
+	width: 60px;
+	height: 60px;
 	background: url(../images/icons/icon_undefined.gif) no-repeat center center;
 }
-
-div.dirArea .scrollHelper div div.zip {
-	width:60px;
-	height:60px;
+.e-filemanager .zip {
+	width: 60px;
+	height: 60px;
 	background: url(../images/icons/icon_zip.gif) no-repeat center center;
 }
-
-div.dirArea .scrollHelper div div.folder {
-	width:60px;
-	height:60px;
+.e-filemanager .folder {
+	width: 60px;
+	height: 60px;
 	background: url(../images/icons/icon_folder.gif) no-repeat center center;
 }
-
-div.dirArea .scrollHelper div div.image {
-	width:60px;
-	height:60px;
+.e-filemanager .image {
+	width: 60px;
+	height: 60px;
 	background: url(../images/icons/icon_image.gif) no-repeat center center;
 }
-
-div.dirArea .scrollHelper div div.pdf {
-	width:60px;
-	height:60px;
+.e-filemanager .pdf {
+	width: 60px;
+	height: 60px;
 	background: url(../images/icons/icon_pdf.gif) no-repeat center center;
 }
-
-div.dirArea .scrollHelper div div.name {
-	height:30px;
-	overflow:hidden;
-	margin-top:2px;
-	font-size:10px;
-	width:80%;
+.e-filemanager .name {
+	height: 30px;
+	overflow: hidden;
+	margin-top: 2px;
+	font-size: 10px;
+	width: 80%;
 }
-div.dirArea .scrollHelper div input.name {
-	height:auto;
-	border:1px solid red;
-	margin-top:2px;
-	font-size:10px;
-	width:80%;
+.e-filemanager input.name {
+	height: auto;
+	border: 1px solid red;
+	margin-top: 2px;
+	font-size: 10px;
+	width: 80%;
 }
+/* ----- /filemanager ----- */

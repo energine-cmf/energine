@@ -23,12 +23,7 @@
     </xsl:template>
     
     <xsl:template match="component[@type='form' and @exttype='grid']">
-        <form method="post" action="{@action}">
-            <xsl:choose>
-                <xsl:when test="@class='RestorePassword'"><xsl:attribute name="class">base_form restore_password_form</xsl:attribute></xsl:when>
-                <xsl:when test="@class='Register'"><xsl:attribute name="class">base_form registration_form</xsl:attribute></xsl:when>
-                <xsl:when test="@class='UserProfile'"><xsl:attribute name="class">base_form profile_form</xsl:attribute></xsl:when>
-            </xsl:choose>
+        <form method="post" action="{@action}" class="e-grid-form">
             <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">
                 <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
             </xsl:if>
@@ -66,34 +61,39 @@
     
     <!-- форма как часть grid-а выводится в другом стиле -->
     <xsl:template match="recordset[parent::component[@type='form' and @exttype='grid']]">
-        <xsl:variable name="FIELDS" select="record/field"></xsl:variable>
+        <xsl:variable name="FIELDS" select="record/field"/>
         <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
-        <div class="formContainer">
-            <div id="{generate-id(.)}" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
-                <ul class="tabs">
+        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+            <xsl:if test="../toolbar">
+                <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
+            </xsl:if>
+            <div class="e-pane-t-toolbar">
+                <ul class="e-pane-toolbar e-tabs">
                     <xsl:for-each select="set:distinct($FIELDS/@tabName)">
                         <xsl:variable name="TAB_NAME" select="."></xsl:variable>
                         <xsl:if test="count(set:distinct($FIELDS[not(@index='PRI')][@tabName=$TAB_NAME]))&gt;0">
-                            <li><a href="#{generate-id(.)}"><xsl:value-of select="$TAB_NAME" /></a>
+                            <li>
+                                <a href="#{generate-id(.)}"><xsl:value-of select="$TAB_NAME" /></a>
                                 <xsl:if test="$FIELDS[@tabName=$TAB_NAME][1]/@language">
                                     <span class="data">{ lang: <xsl:value-of select="$FIELDS[@tabName=$TAB_NAME][1]/@language" /> }</span>                                
                                 </xsl:if>
                             </li>
                         </xsl:if>
-                     </xsl:for-each>
+                    </xsl:for-each>
                 </ul>
-                <div class="paneContainer">
-                    <xsl:for-each select="set:distinct($FIELDS/@tabName)">
-                        <xsl:variable name="TAB_NAME" select="."></xsl:variable>
-                            <div id="{generate-id(.)}">
-                                <div>
-                                    <xsl:apply-templates select="$FIELDS[@tabName=$TAB_NAME]"/>
-                                </div>
-                            </div>
-                        </xsl:for-each>
-                </div>
+            </div>            
+            <div class="e-pane-content">
+                <xsl:for-each select="set:distinct($FIELDS/@tabName)">
+                    <xsl:variable name="TAB_NAME" select="."/>
+                    <div id="{generate-id(.)}">
+                        <xsl:apply-templates select="$FIELDS[@tabName=$TAB_NAME]"/>
+                    </div>
+                </xsl:for-each>
             </div>
-        </div>
+            <xsl:if test="../toolbar">
+                <div class="e-pane-b-toolbar"></div>
+            </xsl:if>
+        </div>        
     </xsl:template>
 
     <xsl:template match="field[@name='attached_files'][@type='custom']">

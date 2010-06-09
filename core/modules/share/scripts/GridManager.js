@@ -34,14 +34,28 @@ var GridManager = new Class({
             onDoubleClick: this.onDoubleClick.bind(this)
         });
         this.pageList = new PageList({ onPageSelect: this.loadPage.bind(this) });
-        this.tabPane.element.adopt(this.pageList.getElement());
+        var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
+		if(toolbarContainer){
+			toolbarContainer.adopt(this.pageList.getElement());
+			this.tabPane.element.removeClass('e-pane-has-b-toolbar1');
+			this.tabPane.element.addClass('e-pane-has-b-toolbar2');
+		}
+		else {
+			this.tabPane.element.adopt(this.pageList.getElement());
+		}        
         this.overlay = new Overlay;
         this.singlePath = this.element.getProperty('single_template');
     },
 
     attachToolbar: function(toolbar) {
         this.toolbar = toolbar;
-        this.tabPane.element.adopt(this.toolbar.getElement());
+        var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
+		if(toolbarContainer){
+			toolbarContainer.adopt(this.toolbar.getElement());
+		}
+		else {
+			this.tabPane.element.adopt(this.toolbar.getElement());
+		}        
         this.toolbar.disableControls();
 
         /*

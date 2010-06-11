@@ -137,39 +137,41 @@
                     </table>
                     </div>
                     <div class="gridContainer">
-                        <table class="gridTable" cellspacing="0">
-                        <xsl:for-each select="$FIELDS[@type!='hidden']">
-                            <xsl:choose>
-                                <xsl:when test="@index='PRI'"></xsl:when>
-                                <xsl:when test="@language">
-                                    <xsl:if test="@language = $LANG_ID">
+                        <div class="gridBodyContainer">
+                            <table class="gridTable" cellspacing="0">
+                            <xsl:for-each select="$FIELDS[@type!='hidden']">
+                                <xsl:choose>
+                                    <xsl:when test="@index='PRI'"></xsl:when>
+                                    <xsl:when test="@language">
+                                        <xsl:if test="@language = $LANG_ID">
+                                            <col id="col_{position()}a"/>
+                                        </xsl:if>
+                                    </xsl:when>
+                                    <xsl:otherwise>
                                         <col id="col_{position()}a"/>
-                                    </xsl:if>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <col id="col_{position()}a"/>
-                                </xsl:otherwise>
-                            </xsl:choose>
-                         </xsl:for-each>
-                            <thead style="visibility: hidden;">
-                                <tr>
-                                <xsl:for-each select="$FIELDS[@type!='hidden']">
-                                    <xsl:choose>
-                                        <xsl:when test="@index='PRI'"></xsl:when>
-                                        <xsl:when test="@language">
-                                            <xsl:if test="@language = $LANG_ID">
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                             </xsl:for-each>
+                                <thead style="visibility: hidden;">
+                                    <tr>
+                                    <xsl:for-each select="$FIELDS[@type!='hidden']">
+                                        <xsl:choose>
+                                            <xsl:when test="@index='PRI'"></xsl:when>
+                                            <xsl:when test="@language">
+                                                <xsl:if test="@language = $LANG_ID">
+                                                    <th id="col_{position()}"><xsl:value-of select="@title"/></th>
+                                                </xsl:if>
+                                            </xsl:when>
+                                            <xsl:otherwise>
                                                 <th id="col_{position()}"><xsl:value-of select="@title"/></th>
-                                            </xsl:if>
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                            <th id="col_{position()}"><xsl:value-of select="@title"/></th>
-                                        </xsl:otherwise>
-                                    </xsl:choose>
-                                </xsl:for-each>
-                                </tr>
-                            </thead>
-                            <tbody/>
-                        </table>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </xsl:for-each>
+                                    </tr>
+                                </thead>
+                                <tbody/>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

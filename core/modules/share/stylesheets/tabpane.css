@@ -115,27 +115,36 @@
 .e-pane-item {
     /* 
         Для этого блока применяется метод перевода боксовой модели в модель border-box, 
-        что дает возможность создать сверху блока отступ при 100% высоте блока.
-        В IE6-7 этот эффект делается с помощью expression. 
+        что дает возможность создать отступы и бордеры у блока при его 100% высоте.        
+        В IE6 этот эффект делается с помощью expression.
+        В IE7 expressions нельзя использовать, так как будет глючить скрипт, который подгоняет размеры грида,
+        поэтому используется абсолютное позиционирование блока.
     */
     -moz-box-sizing: border-box; /* Firefox 2+ */
     -ms-box-sizing: border-box; /* IE 8 */
     -khtml-box-sizing: border-box; /* Konquerror */
     -webkit-box-sizing: border-box; /* Safari 3+ */
     box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
-    height: 100%;
+    height: 100%;    
     overflow: auto;
     border: 1px dotted #777;
     padding: 10px;
-    *width: expression(this.parentNode.clientWidth - 42);
-    *height: expression(this.parentNode.clientHeight - 42);   
+    *position: absolute;
+    *top: 10px;
+    *right: 10px;
+    *bottom: 10px;
+    *left: 10px;
+    *height: auto;
+    _position: static;
+    _width: expression(this.parentNode.clientWidth - 42);
+    _height: expression(this.parentNode.clientHeight - 42);   
 }
 .e-grid-pane .e-pane-item {
     border: 0;
     padding: 0;
     overflow: hidden;
-    *width: auto;
-    *height: 100%;
+    _width: 100%;
+    _height: 100%;
 }
 
 /* pane tabs */

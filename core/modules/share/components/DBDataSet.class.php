@@ -89,7 +89,8 @@ class DBDataSet extends DataSet {
         parent::defineParams(),
         array(
         'tableName' => false,
-        'onlyCurrentLang' => false
+        'onlyCurrentLang' => false,
+        'editable' => false
         )
         );
     }
@@ -647,6 +648,21 @@ class DBDataSet extends DataSet {
         $res = $this->dbh->select($this->getTableName(), array($fieldName), array($fieldName=>$id));
         return is_array($res);
     }
+    /**
+     * При редактировании выводим Js объек
+     *
+     * @return mixed
+     * @access protected
+     */
+    protected function buildJS(){
+        $result = false;
+        if(($this->getAction() == 'view') && $this->document->isEditable() && $this->getParam('editable')) {
+            $this->addWYSIWYGTranslations();
+            $this->setProperty('editable', 'editable');
+        }
+        $result = parent::buildJS();
+        return $result;
+    }    
 
     /**
      * Возвращает предыдущее действие
@@ -668,5 +684,26 @@ class DBDataSet extends DataSet {
 
         return $this->previousAction;
     }
+    /**
+      * Сохранение текста статьи
+      * 
+      * @return void
+      * @access protected
+      */
+    protected function saveText(){
+        $result = '';
+        if($this->getParam('editable') && isset($_POST['ID']) && isset($_POST['num']) && isset($_POST['data'])){
+            $result = DataSet::cleanupHTML($_POST['data']);
+            $langID = $this->document->getLang();
+            $entityId = (int)$_POST['ID'];
+            $field = $_POST['num'];
+            $this->dbh->modify(QAL::UPDATE, $this->getTranslationTableName(), array($field => $result), array('lang_id' => $langID, $this->getPK() => $entityId));
+            
+        }
+        
+        $this->response->setHeader('Content-Type', 'application/xml; charset=utf-8');
+        $this->response->write($result);
+        $this->response->commit();      
+    }    
 }
 

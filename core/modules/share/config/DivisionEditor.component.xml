@@ -192,14 +192,14 @@
     			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/toolbar/structure.gif" onclick="toggleSidebar"/>
     			<control id="sep1" type="separator"/>
 				<control id="editMode" title="BTN_EDIT_MODE" type="switcher" onclick="editMode"/>
-				<control id="sep5" type="separator"/>
+				<control id="sep2" type="separator"/>
 <!--				<control id="templateEditor" title="BTN_TMPL_EDITOR" type="button" onclick="showTmplEditor"/>-->
 				<control id="transEditor" title="BTN_TRANS_EDITOR" type="button" onclick="showTransEditor"/>
 				<control id="language" title="BTN_LANG_EDITOR" type="button" onclick="showLangEditor"/>
-				<control id="sep2" type="separator"/>
+				<control id="sep4" type="separator"/>
                 <control id="user" title="BTN_USER_EDITOR" type="button" onclick="showUserEditor"/>
                 <control id="role" title="BTN_ROLE_EDITOR" type="button" onclick="showRoleEditor" />
-				<control id="sep6" type="separator"/>
+				<control id="sep5" type="separator"/>
 				<control id="fileRepository" title="BTN_FILE_REPOSITORY" type="button" onclick="showFileRepository"/>
 			</toolbar>
 			<javascript>

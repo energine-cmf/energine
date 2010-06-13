@@ -101,7 +101,7 @@ abstract class DataSet extends Component {
 	public function __construct($name, $module, Document $document,  array $params = null) {
 		parent::__construct($name, $module, $document,  $params);
 		$this->setType(self::COMPONENT_TYPE_FORM);
-		if(!$this->getParam('recordsPerPage'))$this->setParam('recordsPerPage', 20);
+		if(!$this->getParam('recordsPerPage'))$this->setParam('recordsPerPage', Grid::RECORD_PER_PAGE);
 		if($this->getParam('title'))
 		$this->setTitle(
 		$this->translate($this->getParam('title')

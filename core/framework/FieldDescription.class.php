@@ -130,7 +130,10 @@ class FieldDescription extends DBWorker {
      * Поле содержит медиа данные
      */
     const FIELD_TYPE_MEDIA = 'media';
-
+    /**
+     * Поле типа список пунктов, используется для тегов
+     */
+    const FIELD_TYPE_TEXTBOX_LIST = 'textbox';
     /*
     * Режимы отображения полей:
     */
@@ -507,6 +510,9 @@ class FieldDescription extends DBWorker {
                 $this->setProperty('message', $this->translate('MSG_WRONG_DATE_FORMAT'));
                 $this->length = true;
                 break;
+            case self::FIELD_TYPE_TEXTBOX_LIST:
+            	
+            	break;
             case self::FIELD_TYPE_CUSTOM:
                 if ($this->getPropertyValue('nullable') === false) {
                     $this->setProperty('pattern', '/^.+$/');

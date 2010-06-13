@@ -153,6 +153,15 @@ abstract class Builder extends DBWorker {
 				$result->appendChild($this->result->importNode($fieldValue,true));
 			}
 		}
+		elseif($fieldInfo->getType() == FieldDescription::FIELD_TYPE_TEXTBOX_LIST){
+			$fieldValue = $this->createTextBoxItems($fieldValue);
+		    try {
+                $result->appendChild($fieldValue);
+            }
+            catch (Exception $e) {
+                $result->appendChild($this->result->importNode($fieldValue,true));
+            }
+		}
 		elseif(($fieldInfo->getType() == FieldDescription::FIELD_TYPE_MEDIA) && $fieldValue){
 			try {
 				if($info = FileInfo::getInstance()->analyze($fieldValue)){
@@ -248,5 +257,27 @@ abstract class Builder extends DBWorker {
 			$fieldValue->appendChild($dom_option);
 		}
 		return $fieldValue;
+	}
+	
+	/**
+	  * Создает набор значений для поля типа textbox 
+	  * 
+	  * @return mixed
+	  * @access protected
+	  */
+	protected function createTextBoxItems($data = array()){
+	    $fieldValue = $this->result->createElement('items');
+	    if($data === false){
+	    	$data = array();
+	    }
+	    elseif(!is_array($data)) {
+	    	$data = array($data); 
+	    }
+	    
+	    foreach ($data as $itemData){
+	    	$item = $this->result->createElement('item', (string)$itemData);
+	    	$fieldValue->appendChild($item);
+	    }
+	    return $fieldValue;
 	}
 }

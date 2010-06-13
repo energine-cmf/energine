@@ -24,9 +24,13 @@
     
     <xsl:template match="component[@type='form' and @exttype='grid']">
         <form method="post" action="{@action}" class="e-grid-form">
-            <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">
+            <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile'] or descendant::field[@name='attached_files']">
                 <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
             </xsl:if>
+<!--            <xsl:if test="descendant::field[@type='textbox']">
+                <script type="text/javascript" src="scripts/TextboxList.js"></script>
+            </xsl:if>-->
+
             <input type="hidden" name="componentAction" value="{@componentAction}" id="componentAction"/>
             <xsl:apply-templates/>
         </form>
@@ -62,7 +66,6 @@
     <!-- форма как часть grid-а выводится в другом стиле -->
     <xsl:template match="recordset[parent::component[@type='form' and @exttype='grid']]">
         <xsl:variable name="FIELDS" select="record/field"/>
-        <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
         <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <xsl:if test="../toolbar">
                 <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>

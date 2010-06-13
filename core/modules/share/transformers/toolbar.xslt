@@ -51,20 +51,18 @@
     </xsl:template>
     
     <!-- Панель управления для формы -->
-    <xsl:template match="toolbar[parent::component[@exttype='grid'][@type='form'] or parent::component[@exttype='grid'][@type='list']]">
-    	<script type="text/javascript">
-         var toolbar_<xsl:value-of select="generate-id(../recordset)"/>;
-    	    window.addEvent('domready', function(){
-                toolbar_<xsl:value-of select="generate-id(../recordset)"/> = new Toolbar('<xsl:value-of select="@name"/>');
-    	        <xsl:apply-templates />
-                <xsl:value-of select="generate-id(../recordset)"/>.attachToolbar(toolbar_<xsl:value-of select="generate-id(../recordset)"/>);                
-                toolbar_<xsl:value-of select="generate-id(../recordset)"/>.bindTo(<xsl:value-of select="generate-id(../recordset)"/>);
+    <xsl:template match="toolbar[parent::component[@exttype='grid']]">
+        <script type="text/javascript">
+            window.addEvent('domready', function(){
+                    componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>'] = new Toolbar('<xsl:value-of select="@name"/>');
+                <xsl:apply-templates />
+                if(<xsl:value-of select="generate-id(../recordset)"/>)<xsl:value-of select="generate-id(../recordset)"/>.attachToolbar(componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>']);                
             });
-    	</script>
+        </script>
     </xsl:template>    
     
     <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'button']">
-    	toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
+    	componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(
             new Toolbar.Button({
                 id: '<xsl:value-of select="@id"/>',
                 title: '<xsl:value-of select="@title"/>',
@@ -75,7 +73,7 @@
     </xsl:template>
     
     <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'select']">
-        toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
+        componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(
             new Toolbar.Select({
                 id: '<xsl:value-of select="@id"/>',
                 title: '<xsl:value-of select="@title"/>',
@@ -90,31 +88,9 @@
             })
         );
     </xsl:template>
-    <!--
-    <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'checkbox']">
-        toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
-            new Toolbar.Checkbox({
-                id: '<xsl:value-of select="@id"/>',
-                title: '<xsl:value-of select="@title"/>',
-                action: '<xsl:value-of select="@onclick"/>'
-            })
-        );
-    </xsl:template>
-    -->
-    <!--
-    <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'switcher']">
-        toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
-            new Toolbar.Switcher({
-                id: '<xsl:value-of select="@id"/>',
-                title: '<xsl:value-of select="@title"/>',
-                action: '<xsl:value-of select="@onclick"/>',
-                icon: '<xsl:value-of select="@icon"/>'
-            })
-        );
-    </xsl:template>
-    -->    
+  
     <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'separator']">
-    	toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(
+        componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(
             new Toolbar.Separator({ id: '<xsl:value-of select="@id"/>' })
     	);
     </xsl:template>

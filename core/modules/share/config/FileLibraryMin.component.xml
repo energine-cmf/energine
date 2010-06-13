@@ -12,7 +12,7 @@
 			    <field name="upl_id" />
 				<!--<field name="upl_path" message="MSG_BAD_FORMAT" pattern="/^[a-z0-9\-\_]+$/"/>-->
 			    <field name="upl_name" />
-			    <field name="tags" type="string"  title="FIELD_TAGS"/>
+			    <field name="tags" type="textbox"  title="FIELD_TAGS"/>
 			</fields>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="saveDir"/>
@@ -30,7 +30,7 @@
 			    <field name="upl_id" />
 			    <field name="upl_name" />
 				<field name="upl_path" type="file" title="FIELD_UPL_FILE"/>
-				<field name="tags" type="string"  title="FIELD_TAGS"/>
+				<field name="tags" type="textbox"  title="FIELD_TAGS"/>
 <!--                 <field name="generate_thumb" type="boolean" title="TXT_GENERATE_THUMB"/>
                 <field name="thumb_width" type="integer" title="FIELD_THUMB_WIDTH" length="3"/>
                 <field name="thumb_height" type="integer" title="FIELD_THUMB_HEIGHT" length="3"/>                

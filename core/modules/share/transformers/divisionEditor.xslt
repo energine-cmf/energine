@@ -15,7 +15,20 @@
             </script>
     </xsl:template>    
     
-    <!-- вывод дерева разделов в модальном окне -->
+    <xsl:template match="component[@class='DivisionEditor'][parent::content]">
+        <form method="post" action="{@action}" class="div_editor_form">
+            <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
+            <!--
+            <xsl:if test="descendant::field[@type='textbox']">
+                <script type="text/javascript" src="scripts/TextboxList.js"></script>
+            </xsl:if>            
+            -->
+            <input type="hidden" name="componentAction" value="{@componentAction}"/>
+            <xsl:apply-templates/>
+        </form>
+    </xsl:template>    
+    
+    <!-- вывод дерева разделов -->
     <xsl:template match="recordset[parent::component[javascript/object/@name='DivManager'][@class='DivisionEditor'][@type='list']]">
         <xsl:variable name="TAB_ID" select="generate-id(record[1])"/>
         <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">

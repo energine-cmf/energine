@@ -50,6 +50,8 @@
                 <xsl:call-template name="interface_js"/>
 
                 <script type="text/javascript">
+                    var componentToolbars = [];
+                    
                     window.addEvent('domready', function () {
                    		<xsl:if test="document/@debug=1">
 							Energine.debug = true;
@@ -75,7 +77,15 @@
         				</xsl:if>
                         <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
                             <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
-                            <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>($('<xsl:value-of select="$objectID"/>'));
+                            var initComponent = function(){
+                                <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>($('<xsl:value-of select="$objectID"/>'));
+                            };
+                            if(!$('<xsl:value-of select="$objectID"/>')){
+                                initComponent.delay(10);
+                            }
+                            else{
+                                initComponent();
+                            }
         				</xsl:for-each>
                         <xsl:if test="$COMPONENTS/javascript/object[@name='PageEditor']">
                             <xsl:if test="position()=1">
@@ -87,6 +97,7 @@
 
                         }
                         catch (e) {
+                            
                                 console.error(e);
                                 //alert(e.message);
                         }

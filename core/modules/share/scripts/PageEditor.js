@@ -135,10 +135,10 @@ PageEditor.BlockEditor = new Class({
         this.pageEditor = pageEditor;
         this.parent(area);
 
-        this.name  = this.area.getProperty('componentName');
-        this.path  = this.area.getProperty('componentPath');
-        this.docId = this.area.getProperty('docID') ? this.area.getProperty('docID') : false;
-        this.num   = this.area.getProperty('num');
+        this.singlePath  = this.area.getProperty('single_template');
+        this.ID = this.area.getProperty('eID') ? this.area.getProperty('eID') : false;
+        this.num = this.area.getProperty('num') ? this.area.getProperty('num') : false;
+        
 
         if (Energine.supportContentEdit && !this.fallback_ie) {
             document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this));
@@ -178,7 +178,7 @@ PageEditor.BlockEditor = new Class({
     showSource: function() {
         this.blur();
         ModalBox.open({
-            url: this.area.getProperty('componentPath') + 'source',
+            url: this.singlePath + 'source',
             extraData: this.cleanMarkup('dummy', this.area.innerHTML),
             onClose: function(returnValue) {
                 if (returnValue || (returnValue === '')) {
@@ -192,12 +192,13 @@ PageEditor.BlockEditor = new Class({
 
     save: function() {
         this.dirty = false;
-		var data = 'num='+this.num+'&data='+encodeURIComponent(this.area.innerHTML);
-		if (this.docId) data += '&docID='+this.docId;
+		var data = 'data='+encodeURIComponent(this.area.innerHTML);
+		if (this.ID) data += '&ID='+this.ID;
+        if (this.num) data += '&num='+this.num;        
 		//this.overlay.show(document.body.getCoordinates());
 
 		new Request({
-			url: this.path + 'save-text',
+			url: this.singlePath + 'save-text',
             method: 'post',
             'data': data,
             onSuccess: function(response){
@@ -213,6 +214,6 @@ PageEditor.BlockEditor = new Class({
         }
     },
     cleanMarkup: function(dummyPath, data, aggressive) {
-        return this.parent(this.path, data, aggressive);
+        return this.parent(this.singlePath, data, aggressive);
     }
 });

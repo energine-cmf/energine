@@ -11,7 +11,6 @@ var GridManager = new Class({
 	Implements:Energine.request,
     initialize: function(element) {
         this.element = element;
-        this.tabPane = new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });
 
         this.filter = {};
         this.filter.element = this.element.getElement('.filter');
@@ -27,6 +26,8 @@ var GridManager = new Class({
                 }
             });
         }
+
+        this.tabPane = new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });
 
         this.grid = new Grid(this.element.getElement('.grid'), {
             onSelect: this.onSelect.bind(this),
@@ -57,21 +58,21 @@ var GridManager = new Class({
 			this.tabPane.element.adopt(this.toolbar.getElement());
 		}        
         this.toolbar.disableControls();
-
+        toolbar.bindTo(this);
         /*
          * Панель инструментов прикреплена, загружаем первую страницу.
          *
          * Делаем секундную задержку для надёжности:
          * пусть браузер распарсит стили и просчитает размеры элементов.
          */
-        this.reloadGrid.delay(1000, this);
+        //this.reloadGrid.delay(1000, this);
     },
 
     onTabChange: function(tabData) {
         this.langId = tabData.lang;
         // Загружаем первую страницу только если панель инструментов уже прикреплена.
-        if (this.toolbar && this.filter.element) this.removeFilter(true);
-        else if (this.toolbar){
+        if (/*this.toolbar && */this.filter.element) this.removeFilter(true);
+        else /*if (this.toolbar)*/{
             this.reloadGrid();
         }
     },
@@ -92,8 +93,8 @@ var GridManager = new Class({
 
     loadPage: function(pageNum) {
         this.pageList.disable();
-        this.toolbar.disableControls();
 
+        this.toolbar.disableControls();
         this.overlay.show(this.element.getCoordinates());
         this.grid.clear();
         var postBody = '', url = this.singlePath + 'get-data/page-' + pageNum;

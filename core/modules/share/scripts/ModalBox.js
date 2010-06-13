@@ -54,12 +54,14 @@ var ModalBox = window.top.ModalBox || {
         });
 
         this.boxes.push(box);
+
         if (this.boxes.length == 1) {
             //this.position();
             this.setup(true);
             this.fx.set('opacity', 0.5);
         }
-        
+        //alert(2);
+
     },
 
     getCurrent: function() {

@@ -36,6 +36,7 @@ var FileManager = new Class({
 		else {
 			this.tabPane.element.adopt(this.toolbar.getElement());
 		}
+        toolbar.bindTo(this);
     },
 
 	load: function(path) {

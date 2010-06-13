@@ -489,9 +489,7 @@ final class DivisionEditor extends Grid {
 			$field->removeProperty('pattern');
 			$field->removeProperty('message');
 			$field = new Field('tags');
-			$fieldData = implode(TagManager::TAG_SEPARATOR.' ', 
-                  array_keys(TagManager::getInstance()->pull($smapID, 'share_sitemap_tags'))
-            ); 
+			$fieldData = array_keys(TagManager::getInstance()->pull($smapID, 'share_sitemap_tags')); 
 			for($i=0; $i<$langs; $i++){
 			 $field->setRowData($i, $fieldData);	
 			}

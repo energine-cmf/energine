@@ -41,6 +41,7 @@ var DivManager = new Class({
                 btn.enable();
             }
         }, this);
+        toolbar.bindTo(this);
     },
 
     loadTree: function() {
@@ -117,7 +118,6 @@ var DivManager = new Class({
         ModalBox.open({
             url: this.singlePath+'add/'+nodeId+'/',
             onClose: function(returnValue){
-                
                 if(returnValue == 'add'){
                     this.add();   
                 }

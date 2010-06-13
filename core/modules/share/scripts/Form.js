@@ -14,9 +14,7 @@ var Form = new Class({
 				});
 		this.validator = new Validator(this.form, this.tabPane);
 
-		this.richEditors = [];
-        this.uploaders = [];
-        this.textBoxes = [];
+		this.richEditors = [], this.uploaders = [], this.textBoxes = [], this.dateControls = [];
         
 		this.form.getElements('textarea.richEditor').each(function(textarea) {
 			this.richEditors.push(new Form.RichEditor(textarea, this,
@@ -26,12 +24,19 @@ var Form = new Class({
         
         this.componentElement.getElements('.uploader').each(function(uploader){
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
-        }, this);        
+        }, this);
         
+        (this.componentElement.getElements('.inp_date') || []).extend((this.componentElement.getElements('.inp_datetime') || [])).each(function(dateControl){
+            this.dateControls.push(
+                (dateControl.hasClass('inp_date')?Energine.createDatePicker(dateControl):Energine.createDateTimePicker(dateControl))
+            );
+        }, this);
+        
+        /*
         this.componentElement.getElements('.textbox').each(function(textBox){
             this.textBoxes.push(new TextboxList2(textBox));
         }, this);   
-        
+        */
 		this.componentElement.getElements('.pane').setStyles({
 					'border' : '1px dotted #777',
 					'overflow' : 'auto'
@@ -52,7 +57,8 @@ var Form = new Class({
             if(savedActionState){
                 afterSaveActionSelect.setSelected(savedActionState);
             }
-        }        
+        }
+        toolbar.bindTo(this);
 	},
 	save : function() {
 		this.richEditors.each(function(editor) {
@@ -106,6 +112,8 @@ var Form = new Class({
 });
 Form.Uploader = new Class({
     initialize: function(uploaderElement, form, path){
+        if(!(this.element = $(uploaderElement))) return;
+
         this.form = form;
         this.swfUploader =  new Swiff.Uploader({
         path: 'scripts/Swiff.Uploader.swf',
@@ -113,7 +121,7 @@ Form.Uploader = new Class({
         verbose: (Energine.debug)?true:false,
         queued: false,
         multiple: false,
-        target: (this.element = $(uploaderElement)),
+        target: this.element,
         instantStart: true,
         appendCookieData: false,
         data:{'NRGNSID':Cookie.read('NRGNSID'), 'element': this.element.getProperty('nrgn:input')},
@@ -170,6 +178,8 @@ Form.Uploader = new Class({
 Form.AttachmentPane =  new Class({
     Extends: Form.Uploader,
     initialize: function(form){
+        if(!$('add_attachment') || !$('insert_attachment')) return;
+        
         this.parent($('add_attachment'), form,  'put/');
         $('insert_attachment').addEvent('click', function(event){
             Energine.cancelEvent(event);

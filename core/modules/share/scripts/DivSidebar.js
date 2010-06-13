@@ -32,5 +32,6 @@ var DivSidebar = new Class({
         if (selectBtn = this.toolbar.getControlById('select')) {
             selectBtn.enable();
         }
+        toolbar.bindTo(this);
     }
 });

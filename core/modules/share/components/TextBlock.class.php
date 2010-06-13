@@ -261,7 +261,7 @@ final class TextBlock extends DataSet {
                 throw new SystemException('ERR_DEV_NO_DATA', SystemException::ERR_DEVELOPER );
             }
             $langID = $this->document->getLang();
-            $docID = (isset($_POST['docID']))?$_POST['docID']:'';
+            $docID = (isset($_POST['ID']))?$_POST['ID']:'';
             //пытаемся определить есть ли у нас запись о содержимом блока в основной таблице
 
             $tbID = $this->getTextBlockID($docID, $_POST['num']);

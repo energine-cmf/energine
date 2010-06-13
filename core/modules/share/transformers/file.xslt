@@ -49,12 +49,10 @@
     
     <xsl:template match="toolbar[parent::component[@class='ImageManager']]">
         <script type="text/javascript">
-         var toolbar_<xsl:value-of select="generate-id(../recordset)"/>;
             window.addEvent('domready', function(){
-                toolbar_<xsl:value-of select="generate-id(../recordset)"/> = new Toolbar('<xsl:value-of select="@name"/>');
+                componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>'] = new Toolbar('<xsl:value-of select="@name"/>');
                 <xsl:apply-templates/>
-                <xsl:value-of select="generate-id(../recordset)"/>.attachToolbar(toolbar_<xsl:value-of select="generate-id(../recordset)"/>);
-                toolbar_<xsl:value-of select="generate-id(../recordset)"/>.bindTo(<xsl:value-of select="generate-id(../recordset)"/>);
+                if(<xsl:value-of select="generate-id(../recordset)"/>)<xsl:value-of select="generate-id(../recordset)"/>.attachToolbar(componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>']);
             });
         </script>
         <!--
@@ -68,7 +66,7 @@
     
     <xsl:template match="control[ancestor::component[@class='ImageManager']]">
         button = new Toolbar.Button({ id: '<xsl:value-of select="@id"/>', title: '<xsl:value-of select="@title"/>', action: '<xsl:value-of select="@onclick"/>' });
-        toolbar_<xsl:value-of select="generate-id(../../recordset)"/>.appendControl(button);
+        componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(button);
     </xsl:template>
     <!-- /компонент ImageManager -->
 

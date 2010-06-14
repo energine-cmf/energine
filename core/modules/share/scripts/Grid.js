@@ -27,13 +27,14 @@ var Grid = new Class({
         /* добавляем к контейнеру класс, который указывает, что в нем есть грид */
     	this.element.getParents('.e-pane')[0].addClass('e-grid-pane');
     	
+    	/* вешаем пересчет размеров гридовой формы на ресайз окна */
     	if(document.getElement('.e-singlemode-layout')){
     		window.addEvent('resize', this.fitGridSize.bind(this));
     	}
     	else {
-    		if(!(this.element.getParents('.e-pane-content')[0].getStyle('zoom'))){
+    		if(navigator.userAgent.indexOf ('MSIE 6') == -1){
     			window.addEvent('resize', this.fitGridFormSize.bind(this));
-    		}    		
+    		}
     	}    	
     },
 

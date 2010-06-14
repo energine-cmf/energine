@@ -9,7 +9,7 @@ var Grid = new Class({
     },
 
     initialize: function(element, options) {    	
-        Asset.css('grid.css');
+        Asset.css('grid.css');        
         
         this.sort = {
             field: null,
@@ -27,7 +27,14 @@ var Grid = new Class({
         /* добавляем к контейнеру класс, который указывает, что в нем есть грид */
     	this.element.getParents('.e-pane')[0].addClass('e-grid-pane');
     	
-    	window.addEvent('resize', document.getElement('.e-singlemode-layout') ? this.fitGridSize.bind(this) : this.fitGridFormSize.bind(this));
+    	if(document.getElement('.e-singlemode-layout')){
+    		window.addEvent('resize', this.fitGridSize.bind(this));
+    	}
+    	else {
+    		if(!(this.element.getParents('.e-pane-content')[0].getStyle('zoom'))){
+    			window.addEvent('resize', this.fitGridFormSize.bind(this));
+    		}    		
+    	}    	
     },
 
     /*
@@ -106,13 +113,13 @@ var Grid = new Class({
     		this.minGridHeight = this.gridContainer.getStyle('height').toInt();
     	}    	
     	
-    	/* растягиваем всю форму до высоты видимого окна */
+    	/* растягиваем всю форму до высоты видимого окна */    	
     	if(!(document.getElement('.e-singlemode-layout'))){
     		this.pane = this.element.getParents('.e-pane')[0];
         	this.gridBodyContainer = this.element.getElement('.gridBodyContainer');    	    	
         	this.fitGridFormSize();
         	new Fx.Scroll(window).toElement(this.pane);
-    	}        
+    	}    	
     },
     
     fitGridSize: function() {    	
@@ -125,18 +132,21 @@ var Grid = new Class({
     fitGridFormSize: function() {
     	var windowHeight = window.getSize().y - 10;
     	var paneHeight = this.pane.getSize().y;
-    	var gridBodyHeight = this.gridBodyContainer.getSize().y + 2;
+    	var gridBodyHeight = ((this.gridBodyContainer.getSize().y + 2)>this.minGridHeight)?(this.gridBodyContainer.getSize().y + 2):this.minGridHeight;
     	var gridContainerHeight = this.gridContainer.getSize().y;
-    	var paneOthersHeight = paneHeight - gridContainerHeight;    	
+    	var paneOthersHeight = paneHeight - gridContainerHeight;
     	if(windowHeight > (this.minGridHeight + paneOthersHeight)){
     		if((gridBodyHeight + paneOthersHeight) > windowHeight){    				
     			this.pane.setStyle('height', windowHeight);			  				
     		}
     		else {
     			this.pane.setStyle('height', gridBodyHeight + paneOthersHeight);
-    		}
-    		this.fitGridSize();
-    	}    	
+    		}    		
+    	}
+    	else {
+    		this.pane.setStyle('height', this.minGridHeight + paneOthersHeight);	    		
+    	}
+    	this.fitGridSize();
     },
     
     isEmpty: function() {

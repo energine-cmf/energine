@@ -62,7 +62,7 @@ div.grid div.filter input {
 }
 
 .gridContainer {
-    height: 200px;
+    /*height: 200px;*/
     overflow: scroll;
     overflow-x: hidden;
     border: 1px solid #aaaaaa;

@@ -357,6 +357,8 @@ Form.RichEditor = new Class({
 								clear : 'both',
 								overflow : 'auto'
 							}).set('html', this.textarea.value);
+                    if(this.textarea.hasClass('half'))this.area.addClass('half');        
+                    if(this.textarea.hasClass('quarter'))this.area.addClass('quarter');
 					this.area.replaces(this.textarea);
                     this.area.addEvent('keydown', function(){this.hidden.fireEvent('keydown')}.bind(this));
 					// document.addEvent('keydown',

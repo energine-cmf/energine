@@ -40,6 +40,10 @@ abstract class FileSystemObject extends DBWorker {
      * @access private
      */
     private $name;
+    
+    private $description;
+    
+    private $publicationDate;
 
     /**
      * Данные присоединенные к файлу
@@ -81,6 +85,8 @@ abstract class FileSystemObject extends DBWorker {
         'upl_mime_type' => FileInfo::getInstance()->analyze($this->path)->type,
         'upl_name' => $this->name,
         'upl_path' => $this->path,
+        'upl_publication_date' => $this->publicationDate,
+        'upl_description' => $this->description,
         'upl_data'=>$this->data
         );
         return $result;
@@ -101,6 +107,8 @@ abstract class FileSystemObject extends DBWorker {
             list($res) = $res;
             $this->id = $res['upl_id'];
             $this->name = $res['upl_name'];
+            $this->publicationDate = $res['upl_publication_date'];
+            $this->description = $res['upl_description'];
             $this->data = ($res['upl_data'])?unserialize($res['upl_data']):null;
         }
     }

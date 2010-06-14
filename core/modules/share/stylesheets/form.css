@@ -54,6 +54,12 @@ form textarea {
 	height: 200px;
 }
 
+form .half {
+    height: 100px !important;
+}
+form .quarter {
+    height: 50px !important;
+}
 form select {
 	width: 250px;
 }

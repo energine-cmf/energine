@@ -11,29 +11,6 @@ html {
 }
 /* ----- /common ----- */
 
-/* ----- overlay ----- */
-.e-overlay {
-    position: fixed;                
-    left: 0;
-    top: 0;            
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    background: black;
-    _position: absolute;
-    _top: expression(eval(document.documentElement.scrollTop));
-}
-.e-has-topframe1 .e-overlay {
-    _padding-top: 25px;
-}
-.e-has-topframe2 .e-overlay {              
-    _padding-top: 50px;
-}
-.e-has-sideframe .e-overlay {
-    _padding-left: 300px;
-}
-/* ----- /overlay ----- */
-
 /* ----- modalbox ----- */
 .e-modalbox {
     position: fixed;

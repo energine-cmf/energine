@@ -1,47 +1,22 @@
 var Overlay = new Class({
 	Implements: Options,
-	options:{
-            top: null,
-            left: null,
-            width: null,
-            height: null,
+	options:{            
             opacity: 0.5,
             hideObjects: true,
-            indicator: {
-                image: 'images/overlay_loading.gif',
-                width: 32, height: 32
-            }
+            indicator: true
     },
-    initialize: function(options) {
+    
+    initialize: function(parentElement, options) {
+    	Asset.css('overlay.css');
         this.setOptions(options);
-        this.element = new Element('div').setStyles({
-            'position': 'absolute',
-            'z-index': '1000',
-            'background': '#000',
-            'text-align': 'center'
-        }).injectInside(document.body);
+        this.element = new Element('div').addClass('e-overlay e-overlay-loading').injectInside(parentElement ? parentElement : document.body);        
         //this.fx = this.element.effect('opacity', { wait: false }).hide();
         this.element.fade('hide');
-        this.indicator = new Element('img').setProperties({
-            'src': this.options.indicator.image,
-            'width': this.options.indicator.width,
-            'height': this.options.indicator.height
-        }).setStyles({
-            'position': 'absolute', 'top': '50%', 'left': '50%',
-            'margin-top': -(this.options.indicator.height / 2) + 'px',
-            'margin-left': -(this.options.indicator.width / 2) + 'px'
-        }).injectInside(this.element);
+        if(!(this.options.indicator)){this.element.removeClass('e-overlay-loading')};
     },
 
-    show: function(options) {
-        this.setOptions(options);
-        this.element.setStyles({
-            'top': options.top - (Browser.Engine.trident ? $(document.body).getStyle('margin-top').toInt() : 0) + 'px',
-            'left': options.left + 'px',
-            'width': options.width + 'px',
-            'height': options.height + 'px'
-        });
-        this.setupObjects(true);
+    show: function() {    	
+        this.setupObjects(true);        
         this.element.fade(this.options.opacity);
         //this.fx.start(this.options.opacity);
     },
@@ -54,12 +29,13 @@ var Overlay = new Class({
     	fx.start(0);
     },
 
-    setupObjects: function(hide) {
-        if (!this.options.hideObjects) return;
-        var elements = $A(document.body.getElements('object'));
+    setupObjects: function(hide) {   
+    	var body;
+        if (!this.options.hideObjects) return;        
+        var elements = $A((body = $(document.body)).getElements('object'));                
         elements.extend(
-        	$A(document.body.getElements(Browser.Engine.trident ? 'select' : 'embed'))
-        );
-        elements.each(function(element) { element.style.visibility = hide ? 'hidden' : ''; });
+        	$A(body.getElements(Browser.Engine.trident ? 'select' : 'embed'))
+        );        
+        elements.each(function(element) { element.style.visibility = hide ? 'hidden' : ''; });        
     }
 });

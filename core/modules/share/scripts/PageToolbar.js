@@ -19,7 +19,7 @@ var PageToolbar = new Class({
         if((Cookie.read('sidebar')== null) || (Cookie.read('sidebar') == 1))
         $$('html')[0].addClass('e-has-sideframe');
             
-        var currentBody = $(document.body).getChildren().filter(function(element){return (element.id !== 'mb_overlay');});
+        var currentBody = $(document.body).getChildren().filter(function(element){return (!(element.hasClass('e-overlay')));});
         
         var mainFrame = new Element('div', {'class': 'e-mainframe'});
         var topFrame = new Element('div', {'class':'e-topframe'});

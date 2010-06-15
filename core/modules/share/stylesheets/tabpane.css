@@ -39,6 +39,15 @@
     min-height: 0;
     _height: 100%;
 }
+/* оверлей внутри табпейна, его высота вычисляется expression'ом для IE6 в случае, когда высота e-pane задана в пикселах */
+.e-pane .e-overlay {
+    position: absolute;
+    _top: 0;
+    _height: expression(this.parentNode.clientHeight);    
+}
+.e-singlemode-layout .e-pane .e-overlay {
+    _height: 100%;
+}
 
 /* pane toolbars */
 .e-pane-t-toolbar, .e-pane-b-toolbar {
@@ -186,9 +195,9 @@
     border-bottom: 0;
     background: #eed;
 }
-.e-tabs li a { 
+.e-tabs li a, .e-tabs li a:link, .e-tabs li a:visited, .e-tabs li a:hover, .e-tabs li a:active { 
     text-decoration: none;
-    color: black !important;
+    color: black;
 }
 .e-tabs .highlighted {
     background-color: #ff8;

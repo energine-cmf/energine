@@ -1,18 +1,14 @@
+ScriptLoader.load(
+    'Overlay'
+);
+
 var ModalBox = window.top.ModalBox || {
 
     boxes: [],
 
     init: function() {
         Asset.css('modalbox.css');
-        this.overlay = new Element('div').setProperties({
-        	'id': 'mb_overlay',
-        	'class': 'e-overlay'
-        }).injectInside(document.body);
-        this.fx = new Fx.Tween(this.overlay);
-
-        this.overlay.fade();//this.overlay.effect('opacity').hide();
-        //this.eventKeyDown = this.keyboardListener.bindWithEvent(this);
-        this.eventPosition = this.position.bind(this);
+        this.overlay = new Overlay(document.body, {indicator: false});        
         this.initialized = true;
     },
     open: function(options) {
@@ -38,13 +34,7 @@ var ModalBox = window.top.ModalBox || {
 				)
 		}
 		box.iframe = iframe.injectInside(box);
-
-		/*box.iframe = new IFrame({
-			'src': box.options.url,
-			'frameBorder': '0',
-			'scrolling': 'no'
-		}).injectInside(box);
-*/
+		
 		//box.iframe.addEvent('keydown', this.keyboardListener.bindWithEvent(this));
         box.closeButton = new Element('div').addClass('e-modalbox-close').injectInside(box);
         box.closeButton.addEvents({
@@ -56,11 +46,8 @@ var ModalBox = window.top.ModalBox || {
         this.boxes.push(box);
 
         if (this.boxes.length == 1) {
-            //this.position();
-            this.setup(true);
-            this.fx.set('opacity', 0.5);
-        }
-        //alert(2);
+            this.overlay.show();
+        }        
 
     },
 
@@ -97,8 +84,7 @@ var ModalBox = window.top.ModalBox || {
         destroyBox.delay(1);
         
 		if (!this.boxes.length) {
-			this.setup(false);
-    		this.fx.start('opacity', 0);
+			this.overlay.hide();
 		}
     },
 
@@ -106,25 +92,7 @@ var ModalBox = window.top.ModalBox || {
 		switch (event.key) {
 			case 'esc': this.close(); break;
 		}
-	},
-		
-	position: function() {
-		this.overlay.setStyles({ 'height': Window.getHeight() + 'px' });
-    },
-
-    setup: function(open) {
-        var elements = $(document.body).getElements('object');
-
-        elements.extend(
-        	$(document.body).getElements(Browser.Engine.trident ? 'select' : 'embed')
-        );
-        elements.each(function(element) { element.style.visibility = open ? 'hidden' : ''; });
-        /*
-        var fn = open ? 'addEvent' : 'removeEvent';
-        window[fn]('resize', this.eventPosition);
-*/
-        //document[fn]('keydown', this.eventKeyDown);
-    }
+	}
 };
 
 if (!ModalBox.initialized) {

@@ -44,7 +44,7 @@ var GridManager = new Class({
 		else {
 			this.tabPane.element.adopt(this.pageList.getElement());
 		}        
-        this.overlay = new Overlay;
+        this.overlay = new Overlay(this.element);
         this.singlePath = this.element.getProperty('single_template');
     },
 
@@ -95,7 +95,7 @@ var GridManager = new Class({
         this.pageList.disable();
 
         this.toolbar.disableControls();
-        this.overlay.show(this.element.getCoordinates());
+        this.overlay.show();
         this.grid.clear();
         var postBody = '', url = this.singlePath + 'get-data/page-' + pageNum;
         if (this.langId) postBody += 'languageID='+this.langId+'&';

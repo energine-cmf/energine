@@ -661,6 +661,7 @@ class DBDataSet extends DataSet {
             $this->setProperty('editable', 'editable');
         }
         $result = parent::buildJS();
+        
         return $result;
     }    
 

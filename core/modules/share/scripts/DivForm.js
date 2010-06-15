@@ -5,7 +5,7 @@ var DivForm = new Class({
 	initialize: function(element){
 		this.parent(element);
         this.prepareLabel($('site_id').get('value') + '/list/');
-        (function(){new Form.AttachmentPane(this)}).delay(3000, this);
+
 	},
     save: function() {
         this.richEditors.each(function(editor) { editor.onSaveForm(); });

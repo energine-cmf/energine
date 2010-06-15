@@ -32,6 +32,10 @@ var Form = new Class({
             );
         }, this);
         
+        if(this.componentElement.getElement('#attached_files')){
+           (function(){new Form.AttachmentPane(this)}).delay(300, this);
+        }
+        
         /*
         this.componentElement.getElements('.textbox').each(function(textBox){
             this.textBoxes.push(new TextboxList2(textBox));

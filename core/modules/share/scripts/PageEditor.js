@@ -150,7 +150,7 @@ PageEditor.BlockEditor = new Class({
             else if(Browser.Engine.gecko || Browser.Engine.presto) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
         }
         this.switchToViewMode = this.pageEditor.switchToViewMode;
-		//this.overlay = new Overlay();
+		this.overlay = new Overlay();
     },
 
     focus: function() {
@@ -195,7 +195,7 @@ PageEditor.BlockEditor = new Class({
 		var data = 'data='+encodeURIComponent(this.area.innerHTML);
 		if (this.ID) data += '&ID='+this.ID;
         if (this.num) data += '&num='+this.num;        
-		//this.overlay.show(document.body.getCoordinates());
+		this.overlay.show();
 
 		new Request({
 			url: this.singlePath + 'save-text',
@@ -203,7 +203,7 @@ PageEditor.BlockEditor = new Class({
             'data': data,
             onSuccess: function(response){
 				this.area.innerHTML = response;
-				//this.overlay.hide();
+				this.overlay.hide();
 			}.bind(this)
         }).send();
     },

@@ -394,6 +394,12 @@
         <a href="#" class="uploader"  nrgn:input="{generate-id(.)}" xmlns:nrgn="http://energine.org"><xsl:value-of select="@title"/></a>    
     </xsl:template>
     
+    <xsl:template match="field[@type='text'][@name='upl_description']">
+        <textarea  class="quarter">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:value-of select="."/>
+        </textarea>
+    </xsl:template>     
     
     <!-- /компонент FileLibrary -->
     

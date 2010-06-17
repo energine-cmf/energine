@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content>
-    <component name="textBlock_1" module="share" class="TextBlock" />
-    <component name="brotherDivisions" module="share" class="PageList" >
-       <params>
-           <param name="id">parent</param>
-           <param name="configFilename">core/modules/share/ChildDivisions.component.xml</param>
-       </params>
-    </component>
+    <component name="textBlock_1" module="share" class="TextBlock"/>
 </content>

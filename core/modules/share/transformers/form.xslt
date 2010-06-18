@@ -129,9 +129,9 @@
                                 </xsl:if>
                                 <td>
                                     <input type="hidden" name="uploads[upl_id][]" value="{field[@name='upl_id']}"/>
-                                    <button type="button" onclick="{$JS_OBJECT}.delAttachment({field[@name='upl_id']});"><xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/></button> 
-                                    <!--<xsl:if test="position()!=1">--><button type="button" onclick="{$JS_OBJECT}.upAttachment({field[@name='upl_id']});"><xsl:value-of select="$TRANSLATION[@const='BTN_UP']"/></button><!--</xsl:if>-->
-                                    <!--<xsl:if test="position()!=last()">--><button type="button" onclick="{$JS_OBJECT}.downAttachment({field[@name='upl_id']});"><xsl:value-of select="$TRANSLATION[@const='BTN_DOWN']"/></button><!--</xsl:if>-->
+                                    <button type="button" class="delete_attachment" upl_id="{field[@name='upl_id']}"><xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/></button> 
+                                    <button type="button" class="up_attachment" upl_id="{field[@name='upl_id']}"><xsl:value-of select="$TRANSLATION[@const='BTN_UP']"/></button><!--</xsl:if>-->
+                                    <button type="button" class="down_attachment" upl_id="{field[@name='upl_id']}"><xsl:value-of select="$TRANSLATION[@const='BTN_DOWN']"/></button><!--</xsl:if>-->
                                     </td>
                                     
                                 <td><xsl:value-of select="field[@name='upl_name']"/></td>

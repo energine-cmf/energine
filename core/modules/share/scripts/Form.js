@@ -183,7 +183,7 @@ Form.AttachmentPane =  new Class({
     Extends: Form.Uploader,
     initialize: function(form){
         if(!$('add_attachment') || !$('insert_attachment')) return;
-        
+
         this.parent($('add_attachment'), form,  'put/');
         $('insert_attachment').addEvent('click', function(event){
             Energine.cancelEvent(event);
@@ -191,6 +191,20 @@ Form.AttachmentPane =  new Class({
                 { 'url': form.singlePath + 'file-library/media/', 
                   'onClose': this._insertRow.bind(this)});
         }.bind(this));
+
+        this.form.componentElement.getElements('.delete_attachment').addEvent('click', function(event){
+            Energine.cancelEvent(event);
+            this.delAttachment($(event.target).getProperty('upl_id'));
+        }.bind(this));
+        this.form.componentElement.getElements('.up_attachment').addEvent('click', function(event){
+            Energine.cancelEvent(event);
+            this.upAttachment($(event.target).getProperty('upl_id'));
+        }.bind(this));
+        this.form.componentElement.getElements('.down_attachment').addEvent('click', function(event){
+            Energine.cancelEvent(event);
+            this.downAttachment($(event.target).getProperty('upl_id'));
+        }.bind(this));
+
     },
     afterUpload: function(file){
         if(!file.response.error){

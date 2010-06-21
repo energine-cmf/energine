@@ -109,6 +109,11 @@ class FieldDescription extends DBWorker {
      * Дата
      */
     const FIELD_TYPE_DATE = 'date';
+    
+    /**
+     * Время 
+     */
+    const FIELD_TYPE_TIME = 'time';
 
     /**
      * Скрытое поле
@@ -497,6 +502,16 @@ class FieldDescription extends DBWorker {
                 $this->setProperty('message', $this->translate('MSG_WRONG_DATETIME_FORMAT'));
                 $this->length = true;
                 break;
+			case self::FIELD_TYPE_TIME:
+        		if ($this->getPropertyValue('nullable') === false) {
+                    $regexp = '/^\d{1,2}:\d{1,2}(:\d{1,2})?$/';
+                }
+                $this->setProperty('sort', 1);
+                $this->setProperty('pattern', $regexp);
+                $this->setProperty('outputFormat', '%H:%M');
+                $this->setProperty('message', $this->translate('MSG_WRONG_TIME_FORMAT'));
+                $this->length = true;
+                break;
             case self::FIELD_TYPE_DATE:
                 if ($this->getPropertyValue('nullable') === false) {
                     $regexp = '/^\d{4}\-\d{1,2}\-\d{1,2}$/';
@@ -710,6 +725,9 @@ class FieldDescription extends DBWorker {
                 break;
             case DBA::COLTYPE_DATETIME:
                 $result = self::FIELD_TYPE_DATETIME;
+                break;
+            case DBA::COLTYPE_TIME:
+                $result = self::FIELD_TYPE_TIME;
                 break;
             case DBA::COLTYPE_DATE:
                 $result = self::FIELD_TYPE_DATE;

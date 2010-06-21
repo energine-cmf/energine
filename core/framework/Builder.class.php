@@ -207,6 +207,7 @@ abstract class Builder extends DBWorker {
 				switch ($fieldInfo->getType()) {
 					case FieldDescription::FIELD_TYPE_DATETIME:
 					case FieldDescription::FIELD_TYPE_DATE:
+					case FieldDescription::FIELD_TYPE_TIME:
 					case FieldDescription::FIELD_TYPE_HIDDEN:
 						try {
 							$result->setAttribute('date', @strftime('%d-%m-%Y-%H-%M-%S', $fieldValue));

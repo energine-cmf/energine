@@ -26,7 +26,7 @@ var FileManager = new Class({
 
         this.load();
     },
-
+    
     attachToolbar: function(toolbar) {
         this.toolbar = toolbar;        
         var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
@@ -61,11 +61,12 @@ var FileManager = new Class({
                     this.currentFolder = response.currentDirectory;
                     this.tabPane.setTabTitle(this.currentFolder);
                 }
-				this.viewWidget.build();
+				this.viewWidget.build();				
 				Cookie.write(FILE_COOKIE_NAME, path?path:'', {path:new URI(Energine.base).get('directory'), duration:1});
             }.bind(this)
-        );
+        );        
 	},
+	
     onSelect: function() {
         var openBtn = this.toolbar.getControlById('open');
         var delBtn = this.toolbar.getControlById('delete');

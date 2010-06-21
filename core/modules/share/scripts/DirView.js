@@ -12,6 +12,11 @@ var DirView = new Class({
     initialize: function(element, options) {
         Asset.css('filemanager.css');
         this.parent(element, options);
+        
+        /* вешаем пересчет размеров формы на ресайз окна */
+        if(!(document.getElement('.e-singlemode-layout'))){    		
+        	window.addEvent('resize', this.fitFilemanagerFormSize.bind(this));        	
+    	}
 	},
 
 	build: function() {		
@@ -24,7 +29,36 @@ var DirView = new Class({
 
 		var firstChild = this.element.getFirst();
 	    if (firstChild) this.selectItem(firstChild);
+	    	    
+	    /* растягиваем всю форму до высоты видимого окна */			    
+    	if(!(document.getElement('.e-singlemode-layout'))){    		
+    		this.pane = this.element.getParents('.e-pane')[0];
+    		this.paneContent = this.pane.getElement('.e-pane-item');
+        	this.filemanager = this.element;        	
+        	this.minPaneHeight = 300;
+        	this.fitFilemanagerFormSize();
+        	new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
+    	}
 	},
+	
+	fitFilemanagerFormSize: function() {    	  	
+    	var windowHeight = window.getSize().y - 10;
+    	var paneHeight = this.pane.getSize().y;
+    	var filemanagerHeight = this.filemanager.getSize().y;
+    	var paneContentHeight = this.paneContent.getSize().y - 22;    	
+    	var paneOthersHeight = paneHeight - paneContentHeight;    	
+    	if(windowHeight > this.minPaneHeight){
+    		if((filemanagerHeight + paneOthersHeight) > windowHeight){    				
+    			this.pane.setStyle('height', windowHeight);    			
+    		}
+    		else {
+    			this.pane.setStyle('height', filemanagerHeight + paneOthersHeight);    			
+    		}    		
+    	}
+    	else {
+    		this.pane.setStyle('height', this.minPaneHeight);    		
+    	}
+    },
 
     clear: function() {
         this.selectItem(false);

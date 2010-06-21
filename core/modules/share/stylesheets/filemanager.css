@@ -1,4 +1,11 @@
 /* ----- filemanager ----- */
+.e-filemanager {
+    float: left;
+    width: 100%;
+    *float: none;
+    *width: auto;
+    *zoom: 1;
+}
 .e-filemanager * {
     margin: 0;
     padding: 0;

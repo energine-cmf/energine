@@ -119,7 +119,7 @@ var Grid = new Class({
     		this.pane = this.element.getParents('.e-pane')[0];
         	this.gridBodyContainer = this.element.getElement('.gridBodyContainer');    	    	
         	this.fitGridFormSize();
-        	new Fx.Scroll(window).toElement(this.pane);
+        	new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
     	}    	
     },
     
@@ -135,10 +135,10 @@ var Grid = new Class({
     	var paneHeight = this.pane.getSize().y;
     	var gridBodyHeight = ((this.gridBodyContainer.getSize().y + 2)>this.minGridHeight)?(this.gridBodyContainer.getSize().y + 2):this.minGridHeight;
     	var gridContainerHeight = this.gridContainer.getSize().y;
-    	var paneOthersHeight = paneHeight - gridContainerHeight;
+    	var paneOthersHeight = paneHeight - gridContainerHeight;		
     	if(windowHeight > (this.minGridHeight + paneOthersHeight)){
     		if((gridBodyHeight + paneOthersHeight) > windowHeight){    				
-    			this.pane.setStyle('height', windowHeight);			  				
+    			this.pane.setStyle('height', windowHeight);
     		}
     		else {
     			this.pane.setStyle('height', gridBodyHeight + paneOthersHeight);

@@ -289,7 +289,7 @@ final class QAL extends DBA {
      * @todo Подключить фильтрацию
      */
     public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
-        $fkValueName = substr($fkKeyName, 0, strpos($fkKeyName, '_')).'_name';
+        $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')).'_name';
 
         //если существует таблица с переводами для связанной таблицы
         //нужно брать значения оттуда

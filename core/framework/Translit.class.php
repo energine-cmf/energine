@@ -87,6 +87,17 @@ final class Translit{
 
         return $string;
 	}
+	
+	/**
+	 * Приведение к УРЛ
+	 * 
+	 * @return string
+	 * @access public
+	 * @static
+	 */
+	static public function asURLSegment($string){
+	    return strtolower(self::transliterate($string, '-', true));
+	}
 
 }
 

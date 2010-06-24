@@ -362,6 +362,7 @@ Form.RichEditor = new Class({
 				if (Energine.supportContentEdit && !this.fallback_ie) {
 					this.hidden = new Element('input').setProperty('name',
 							this.textarea.name).setProperties({
+                                'class': 'richEditorValue',
 								'type' : 'hidden',
 								'value' : '',
 								'nrgn:pattern' : this.textarea

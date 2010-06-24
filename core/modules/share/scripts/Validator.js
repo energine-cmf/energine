@@ -49,6 +49,8 @@ var Validator = new Class({
             (message = field.getProperty('nrgn:message')) 
             && 
             !field.getProperty('disabled')
+            &&
+            !field.hasClass('novalidation')
         ) {
             if (!eval('field.value.match('+pattern+');')) {
                 //Выводим информацию об ошибке

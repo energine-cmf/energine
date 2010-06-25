@@ -104,46 +104,7 @@
         <label for="{@name}"><xsl:value-of select="concat(' ', @title)" disable-output-escaping="yes" /></label>
     </xsl:template>
     
-    <!-- поле типа видеофайл (video) -->
-    <xsl:template match="field[@type='video'][ancestor::component[@type='form']]">
-        <!-- вынесено в отдельную функцию для того, чтоб была возможность вызвать не в форме -->
-        <script type="text/javascript">
-            if(!insertVideo){
-                var insertVideo = function(videoFile, id){
-                    new Swiff('images/player.swf',
-                        {
-                            'container':id + '_preview',
-                            'id': id + '_preview_video',
-                            'width': 450,
-                            'height': 370,
-                            'vars': {
-                               'beginplay': false,
-                               'vidurl': videoFile 
-                            } 
-                        }
-                    );
-                }
-            }
-        </script>
-        <div class="video" id="{generate-id(.)}_preview"></div>    
-        <xsl:if test=".!=''">
-            <script type="text/javascript">
-                window.addEvent('domready', insertVideo.pass(['<xsl:value-of select="$BASE"/><xsl:value-of select="."/>', '<xsl:value-of select="generate-id(.)"/>']));
-            </script>
-            <a href="#" onclick="return {generate-id(ancestor::recordset)}.removeFilePreview.run(['{generate-id(.)}', this], {generate-id(ancestor::recordset)});">
-                <xsl:value-of select="@deleteFileTitle"/>
-            </a>
-        </xsl:if>
-        <xsl:variable name="FIELD_ID">tmp_<xsl:value-of select="generate-id()"/></xsl:variable>
-        <input type="file" id="{$FIELD_ID}" name="file" field="{generate-id(.)}" preview="{generate-id(.)}_preview" onchange="{generate-id(ancestor::recordset)}.uploadVideo.bind({generate-id(ancestor::recordset)})(this);"/>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>            
-        </input>
-    </xsl:template>
-
-    <!-- поле для загрузки изображения из репозитория, используется в админчасти (image) -->
+   <!-- поле для загрузки изображения из репозитория, используется в админчасти (image) -->
     <xsl:template match="field[@type='image'][ancestor::component[@type='form'][@exttype='grid']]">
         <div class="image">
             <img id="{generate-id(.)}_preview">

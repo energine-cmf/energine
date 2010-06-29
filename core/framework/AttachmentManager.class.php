@@ -65,23 +65,23 @@
      * @return Field
      * @access public
      */
-    public function createField($mapValue, $mapFieldName, $mapTableName){
+    public function createField($mapValue, $mapFieldName, $mapTableName , $returnOnlyFirstAttachment = false){
     	//@todo в принципе имя филда можеть быть вычислено через ColumnInfo 
         $f = new Field('attachments');
         if(!is_array($mapValue)) {
         	$mapValue = array($mapValue);
         }
-        
-        $images = $this->dbh->selectRequest(
-	        'SELECT spu.'.$mapFieldName.', upl_path as file, upl_name as name FROM share_uploads su '.
-	        'LEFT JOIN `'.$mapTableName.'` spu ON spu.upl_id = su.upl_id '.
-	        'WHERE '.$mapFieldName.' IN ('.implode(',', $mapValue).') '.
-            'ORDER by upl_order_num'
-        );
+        $request = 'SELECT spu.'.$mapFieldName.', upl_path as file, upl_name as name FROM share_uploads su '.
+            'LEFT JOIN `'.$mapTableName.'` spu ON spu.upl_id = su.upl_id '.
+            'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.
+            'ORDER by upl_order_num';
+        $images = $this->dbh->selectRequest($request);
 
                if(is_array($images)){
                 foreach($images as $row){
                     $mapID = $row[$mapFieldName];
+                    if($returnOnlyFirstAttachment && isset($imageData[$mapID])) continue;
+                    
                     if(!isset($imageData[$mapID]))
                     $imageData[$mapID] = array();
                      

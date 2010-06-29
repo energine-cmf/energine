@@ -33,6 +33,7 @@
  	 */
  	const META_TYPE_ZIP = 'zip';
  	
+ 	const META_TYPE_TEXT = 'text';
 /**
      * Мета тип папка
      */
@@ -92,6 +93,9 @@
     			case 'video/x-flv':
     				$result['type'] = self::META_TYPE_VIDEO;
     				break;
+                case 'text/csv':
+                    $result['type'] = self::META_TYPE_TEXT;
+                    break;    				
     			case 'application/zip':
     				$result['type'] = self::META_TYPE_ZIP;
     				break;

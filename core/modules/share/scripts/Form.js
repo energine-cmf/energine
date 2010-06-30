@@ -132,6 +132,7 @@ Form.Uploader = new Class({
         typeFilter: {
             'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
             'All files (*.*)': '*.*',
+            'Comma separated files  (*.csv)': '*.csv',
             'Flash video (*.flv)': '*.flv'
         },
         fileSizeMax: 2 * 1024 * 1024,

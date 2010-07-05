@@ -28,8 +28,8 @@
 			</javascript>
 			<fields>
 			    <field name="upl_id" />
+                <field name="upl_path" type="file" title="FIELD_UPL_FILE"/>
 			    <field name="upl_name" />
-				<field name="upl_path" type="file" title="FIELD_UPL_FILE"/>
 				<field name="upl_description" />
                 <field name="upl_publication_date" />
 				<field name="tags" type="textbox"  title="FIELD_TAGS"/>

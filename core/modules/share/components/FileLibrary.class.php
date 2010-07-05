@@ -416,7 +416,7 @@ final class FileLibrary extends DataSet {
     protected function add() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
-        
+        $this->addTranslation('TXT_OPEN_FIELD', 'TXT_CLOSE_FIELD');
         if($field = $this->getDataDescription()->getFieldDescriptionByName('tags')){
             //$field->setProperty('nullable', 'nullable');
             $field->removeProperty('pattern');
@@ -455,7 +455,7 @@ final class FileLibrary extends DataSet {
         $uploader->upload(FileObject::TEMPORARY_DIR);
         $fileName = $uploader->getFileObjectName();
         $result['file'] = FileObject::UPLOAD_DIR.basename($fileName);
-        $result['title'] = $_POST['Filename'];
+        $result['title'] = pathinfo($_POST['Filename'], PATHINFO_FILENAME);
             if (
                     FileInfo::getInstance()->analyze($fileName)->type ==  FileInfo::META_TYPE_IMAGE
                 ) {
@@ -486,7 +486,7 @@ final class FileLibrary extends DataSet {
             $uploader->upload(FileObject::UPLOAD_DIR);
             $fileName = $uploader->getFileObjectName();
             
-            $result = FileObject::createFrom($fileName)->asArray();
+            $result = FileObject::createFrom($fileName, pathinfo($fileName, PATHINFO_FILENAME))->asArray();
             
         }
         catch (SystemException $e) {

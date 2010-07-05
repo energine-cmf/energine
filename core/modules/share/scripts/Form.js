@@ -130,9 +130,8 @@ Form.Uploader = new Class({
         appendCookieData: false,
         data:{'NRGNSID':Cookie.read('NRGNSID'), 'element': this.element.getProperty('nrgn:input')},
         typeFilter: {
-            'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
             'All files (*.*)': '*.*',
-            'Comma separated files  (*.csv)': '*.csv',
+            'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',            
             'Flash video (*.flv)': '*.flv'
         },
         fileSizeMax: 2 * 1024 * 1024,
@@ -486,8 +485,7 @@ Form.RichEditor = new Class({
 							action : 'imageManager'
 						}));
 
-				$pick(this.area, this.textarea).getParent().adopt(this.toolbar
-						.getElement());
+				$pick(this.area, this.textarea).getParent().grab(this.toolbar.getElement(), 'top');
 
 				this.toolbar.element.setStyle('width', '650px');
 				this.toolbar.bindTo(this);

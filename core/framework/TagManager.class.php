@@ -44,8 +44,13 @@
         if(!$this->dbh->tableExists($mapTableName)) {
             throw new SystemException('ERR_WRONG_TABLE_NAME', SystemException::ERR_DEVELOPER, $mapTableName);    
         }
-        
         $tags = array_filter(array_map(create_function('$tag', 'return mb_convert_case(trim($tag), MB_CASE_LOWER, "UTF-8");'), explode(self::TAG_SEPARATOR, $tags)));
+        //Анализируем структуру таблицы
+        $columns = array_keys($this->dbh->getColumnsInfo($mapTableName));
+        unset($columns['tag_id']);
+        list($mapFieldName) = $columns;        
+        $this->dbh->modify(QAL::DELETE, $mapTableName, null, array($mapFieldName => $mapValue));
+        
         if(!empty($tags)){
 	        foreach($tags as $tag){
 	        	try{
@@ -56,15 +61,9 @@
 	        	}
 	        }
 	        $tagIDs = array_keys($this->getID($tags));
-	        //Анализируем структуру таблицы
-	        $columns = array_keys($this->dbh->getColumnsInfo($mapTableName));
-	        unset($columns['tag_id']);
-	        list($mapFieldName) = $columns;
-	        $this->dbh->modify(QAL::DELETE, $mapTableName, null, array($mapFieldName => $mapValue));
 	        foreach($tagIDs as $tagID){
 	        	$this->dbh->modify(QAL::INSERT, $mapTableName, array($mapFieldName => $mapValue, 'tag_id' => $tagID));
 	        }
-	        
         }
     }
     /**

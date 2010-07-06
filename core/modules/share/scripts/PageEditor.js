@@ -15,9 +15,9 @@ var PageEditor = new Class({
 
         document.addEvent('click', this.processClick.bindWithEvent(this));
 
-        window.addEvent('unload', function() {
+        window.addEvent('beforeunload', function() {
             if (this.activeEditor) {
-                this.activeEditor.saveWithConfirmation();
+                this.activeEditor.save();
             }
         }.bind(this));
 
@@ -27,8 +27,8 @@ var PageEditor = new Class({
 	createToolbar: function(){
 		var toolbar = new Toolbar('wysiwyg_toolbar');
         toolbar.dock();
-		toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: Energine.translations.get('BTN_SAVE'), action: 'save' }));
-		toolbar.appendControl(new Toolbar.Separator({ id: 'sep2' }));
+		/*toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: Energine.translations.get('BTN_SAVE'), action: 'save' }));
+		toolbar.appendControl(new Toolbar.Separator({ id: 'sep2' }));*/
 		toolbar.appendControl(new Toolbar.Button({ id: 'bold', icon: 'images/toolbar/bold.gif', title: Energine.translations.get('BTN_BOLD'), action: 'bold' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'italic', icon: 'images/toolbar/italic.gif', title: Energine.translations.get('BTN_ITALIC'), action: 'italic' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'olist', icon: 'images/toolbar/olist.gif', title: Energine.translations.get('BTN_OL'), action: 'olist' }));
@@ -58,7 +58,6 @@ var PageEditor = new Class({
             document.getElement('.e-topframe')
         );
         this.toolbar.disableControls();
-		//this.toolbar.getControlById('viewModeSwitcher').enable();
         
         var html = $$('html')[0];
         if(html.hasClass('e-has-topframe2')) {
@@ -121,10 +120,6 @@ var PageEditor = new Class({
         if (this.activeEditor) {
             this.activeEditor.dirty = true;
         }
-    },
-    switchToViewMode: function() {
-        if (this.saveWithConfirmation) this.saveWithConfirmation();
-        window.location = window.location;
     }
 });
 
@@ -141,7 +136,7 @@ PageEditor.BlockEditor = new Class({
         
 
         if (Energine.supportContentEdit && !this.fallback_ie) {
-            document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this));
+            document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this.pageEditor));
             if(!(this.pasteArea = $('pasteArea'))){
                 this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility': 'hidden', 'width': '0', 'height': '0', 'font-size': '0', 'line-height': '0' }).injectInside(document.body);
             }
@@ -149,7 +144,7 @@ PageEditor.BlockEditor = new Class({
             if(Browser.Engine.trident) this.area.onpaste = this.processPaste.bindWithEvent(this);
             else if(Browser.Engine.gecko || Browser.Engine.presto) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
         }
-        this.switchToViewMode = this.pageEditor.switchToViewMode;
+        //this.switchToViewMode = this.pageEditor.switchToViewMode;
 		this.overlay = new Overlay();
     },
 
@@ -157,21 +152,22 @@ PageEditor.BlockEditor = new Class({
         this.area.addClass('activeEditor');
         var toolbar = this.pageEditor.toolbar.bindTo(this);
         if (!Energine.supportContentEdit) {
-            if (this.dirty) toolbar.getControlById('save').enable();
+//            if (this.dirty) toolbar.getControlById('save').enable();
             return;
         }
         toolbar.enableControls();
+//        toolbar.getControlById('save').disable();
         this.area.contentEditable = true;
     },
 
     blur: function() {
-        //this.saveWithConfirmation();
         this.area.removeClass('activeEditor');
-        var toolbar = this.pageEditor.toolbar.bindTo(this.pageEditor).disableControls();
-        //toolbar.getControlById('viewModeSwitcher').enable();
+        this.pageEditor.toolbar.bindTo(this.pageEditor).disableControls();
         if (!Energine.supportContentEdit) {
             return;
         }
+        if(this.dirty) this.save();
+        //this.pageEditor.toolbar.getControlById('save').disable();
         this.area.contentEditable = 'false';
     },
 

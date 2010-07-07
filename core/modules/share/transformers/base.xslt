@@ -104,6 +104,17 @@
         <label for="{@name}"><xsl:value-of select="concat(' ', @title)" disable-output-escaping="yes" /></label>
     </xsl:template>
     
+    <xsl:template match="field[@type='image'][ancestor::component[@type='form'][not(@exttype='grid')]]">
+        <xsl:variable name="FIELD_NAME">
+            <xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName" /><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
+        <input type="file" name="{$FIELD_NAME}" id="{@name}"></input>
+    </xsl:template>
+    
    <!-- поле для загрузки изображения из репозитория, используется в админчасти (image) -->
     <xsl:template match="field[@type='image'][ancestor::component[@type='form'][@exttype='grid']]">
         <div class="image">

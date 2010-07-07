@@ -175,11 +175,35 @@ class User extends DBWorker {
                 throw new SystemException('ERR_NOT_UNIQUE_DATA', SystemException::ERR_WARNING);
             }
         }
+        
         $this->info = $data;
         //$this->info['u_password'] = $data['u_password'];
         $data['u_password'] = sha1($data['u_password']);
         $this->id = $this->dbh->modify(QAL::INSERT, self::USER_TABLE_NAME , $data);
         $this->setGroups(array($this->userGroup->getDefaultUserGroup()));
+    }
+    
+    /**
+     * Добавляет аватарку пользователю
+     * 
+     * @return void
+     * @access public
+     */
+    public function createAvatar($avatarUploadedFilename){
+    	$result = false;
+        if($this->id){
+            $fu = new FileUploader();
+            $fu->setFile($avatarUploadedFilename);
+            $fu->upload($dir = 'uploads/avatars');	
+            $result = $fu->getFileObjectName();
+            $im = new Image();
+            $im->loadFromFile($result);
+            $im->resize(50, 50);
+            $im->saveToFile($result);
+            $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, array('u_avatar_img' => $result), array('u_id' => $this->id));
+        }
+        
+        return $result;
     }
 
     /**

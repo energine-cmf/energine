@@ -55,6 +55,7 @@
     </xsl:template>
     
     <xsl:template match="recordset[parent::component[@class='Register']]">
+        <div><xsl:value-of select="$TRANSLATION[@const='TXT_REGISTRATION_TEXT']" disable-output-escaping="yes"/></div>
         <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <xsl:apply-templates/>
             <div class="field captcha_field">                                                                                                                                                                            
@@ -116,9 +117,9 @@
                 </tr>
             </xsl:if>
             <tr>
-    			<xsl:if test="floor(position() div 2) = position() div 2">
-    				<xsl:attribute name="class">even</xsl:attribute>
-    			</xsl:if>
+                <xsl:if test="floor(position() div 2) = position() div 2">
+                    <xsl:attribute name="class">even</xsl:attribute>
+                </xsl:if>
                 <td class="group_name" style="padding-left:{$LEVEL*20 + 5}px;"><xsl:value-of select="field[@name='Name']"/></td>
                 <xsl:for-each select="field[@name='RightsId']/options/option">
                     <td><input type="radio" style="width:auto; border:0;" name="div_right[{../../../field[@name='Id']}]" value="{@id}">

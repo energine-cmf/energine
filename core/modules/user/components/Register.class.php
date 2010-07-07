@@ -88,48 +88,7 @@ class Register extends DBDataSet {
         $this->response->commit();
 	}
 	
-	/**
-	 * Метод проверки логина
-	 * Вызывается AJAXом при заполнении формы регистрации
-	 *
-	 * @access protected
-	 * @return void
-	 *
-	protected function checkLogin(){
-		if($_SESSION['captchaChecked'] = $result = (
-		isset($_POST['captcha'])
-		&&
-		($_SESSION['captchaCode'] == sha1($_POST['captcha']))
-		)){
-			$login = trim($_POST['login']);
-			$result = !(bool)simplifyDBResult(
-			$this->dbh->select(
-			$this->getTableName(),
-			array('COUNT(u_id) as number'),
-			array('u_name' => $login)
-			),
-		        'number', 
-			true
-			);
-			$field = 'login';
-			$message = ($result)?$this->translate('TXT_LOGIN_AVAILABLE'):$this->translate('TXT_LOGIN_ENGAGED');
-		}
-		else{
-			$message = $this->translate('TXT_BAD_CAPTCHA');
-			$field = 'captcha';
-		}
-
-		$result = array(
-                'result'=> $result,
-                'message' => $message,
-		        'field' => $field,  
-		);
-		$result = json_encode($result);
-		$this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
-		$this->response->write($result);
-		$this->response->commit();
-	}
-	*/
+	
 	/**
 	 * Обработка возможных ошибок сохранения + редирект на страницу результата
 	 *
@@ -178,7 +137,10 @@ class Register extends DBDataSet {
 		$password = $_POST[$this->getTableName()]['u_password'] = User::generatePassword();
 		try {
 			$result = $this->user->create($_POST[$this->getTableName()]);
-
+			
+            if(isset($_FILES[$this->getTableName()])){
+            	$this->user->createAvatar(array_map(function($row){return $row['u_avatar_img'];}, $_FILES[$this->getTableName()]));
+            }
 			$mailer = new Mail();
 			$mailer->setFrom($this->getConfigValue('mail.from'));
 			$mailer->setSubject($this->translate('TXT_SUBJ_REGISTER'));

@@ -34,27 +34,8 @@ var DivForm = new Class({
         }
         this.request(
             this.singlePath + 'save',
-            this.form.toQueryString(),
-            function(response) {
-                ModalBox.setReturnValue(true); 
-                if (response.mode == 'insert') {
-                    var nextActionSelector;
-                    if(nextActionSelector = this.toolbar.getControlById('after_save_action')){
-                        Cookie.write('after_add_default_action', nextActionSelector.getValue(), {path:new URI(Energine.base).get('directory'), duration:1});
-                        switch (nextActionSelector.getValue()){
-                            case 'go':
-                                window.top.location.href = Energine.base + response.url;
-                                break;
-                            case 'add':
-                                    ModalBox.setReturnValue('add'); 
-                                    break;                                
-                            case 'close':
-                                break;
-                        }
-                    }                    
-                }
-                this.close();
-            }.bind(this)
+            this.form.toQueryString(), 
+            this.processServerResponse.bind(this)
         );
     }
 });

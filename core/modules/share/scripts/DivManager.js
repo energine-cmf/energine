@@ -116,13 +116,18 @@ var DivManager = new Class({
 	add: function() {
 		var nodeId = this.tree.getSelectedNode().getId();
         ModalBox.open({
-            url: this.singlePath+'add/'+nodeId+'/',
+            url: this.singlePath+'add/' + nodeId + '/',
             onClose: function(returnValue){
-                if(returnValue == 'add'){
-                    this.add();   
-                }
-                else if(returnValue){
-                    this.reload(true);
+                if(returnValue){
+                    if(returnValue.afterClose == 'add'){
+                        this.add();   
+                    }
+                    else if(returnValue.afterClose == 'go') {
+                        window.top.location.href = Energine.base + returnValue.url;    
+                    }
+                    else {
+                        this.reloadGrid();
+                    }                    
                 }
             }.bind(this),
             extraData: this.tree.getSelectedNode()

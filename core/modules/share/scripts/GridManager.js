@@ -159,11 +159,13 @@ var GridManager = new Class({
         ModalBox.open({
             url: this.singlePath + 'add/',
             onClose: function(returnValue){
-                if(returnValue == 'add'){
-                    this.add();   
-                }
-                else if(returnValue){
-                    this.reloadGrid();
+                if(returnValue){
+                    if(returnValue.afterClose == 'add'){
+                        this.add();   
+                    }
+                    else {
+                        this.reloadGrid();
+                    }                    
                 }
             }.bind(this)
         });

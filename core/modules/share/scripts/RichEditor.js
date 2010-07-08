@@ -141,7 +141,7 @@ var RichEditor = new Class({
 				}
 
 				ModalBox.open({
-							url : this.area.getProperty('componentPath')
+							url : this.area.getProperty('single_template')
 									+ 'file-library/image/',
 							onClose : this.insertImage.bind(this)
 						});
@@ -153,7 +153,7 @@ var RichEditor = new Class({
 					this.currentRange = this._getSelection().createRange();
                     
 				ModalBox.open({
-							url : this.area.getProperty('componentPath')
+							url : this.area.getProperty('single_template')
 									+ 'file-library',
 							onClose : this.insertFileLink.bind(this)
 						});
@@ -165,7 +165,7 @@ var RichEditor = new Class({
 					return;
 
 				ModalBox.open({
-							url : this.area.getProperty('componentPath')
+							url : this.area.getProperty('single_template')
 									+ 'imagemanager',
 							onClose : function(image) {
                                  //TODO Fix image margins in IE

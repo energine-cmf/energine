@@ -211,9 +211,10 @@ abstract class Builder extends DBWorker {
 					case FieldDescription::FIELD_TYPE_HIDDEN:
 						try {
 							$result->setAttribute('date', @strftime('%d-%m-%Y-%H-%M-%S', $fieldValue));
-							$fieldValue = @strftime($fieldInfo->getPropertyValue('outputFormat'), $fieldValue);
+							$fieldValue = self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'));
 						}
 						catch (Exception  $dummy){
+							
 						};
 						break;
 					case FieldDescription::FIELD_TYPE_STRING:
@@ -230,6 +231,54 @@ abstract class Builder extends DBWorker {
 		}
 
 		return $result;
+	}
+	/**
+	 * Форматирование даты
+	 * 
+	 * @return string
+	 * @access public
+	 * @static
+	 */
+	static public function enFormatDate($date, $format){
+		if($format != '%E'){
+			$result = @strftime($format, $date);
+		}
+		else{
+			$result = '';
+			
+            //$date = new DateTime('@'.$date);
+            $tdate = new DateTime();
+            $date = $tdate->setTimestamp($date);
+            unset($tdate);
+            
+           // $date = new DateTime('2010-07-12');
+            $now = new DateTime();
+            $interval = $date->diff($now, true);
+            
+            switch ((int)$interval->format('%d')){
+            	case 0:
+            		$result .= DBWorker::_translate('TXT_TODAY');
+            	   break;
+            	case 1:
+            		$result .= DBWorker::_translate('TXT_YESTERDAY');
+            		break;
+            	default:
+            		$result .= $date->format('j').' '.(DBWorker::_translate('TXT_MONTH_'.$date->format('n')));
+            		//inspect($interval->format('%y'), $date);
+            		if((int)$interval->format('%y')){
+            			$result .= ' '.$date->format('Y');
+            		}
+            		break;
+            }	
+            
+            //Если часы и минуты = 0, считаем что это просто дата, без времени
+            if(!(((int)$date->format('G') == 0) && ((int)$date->format('i') == 0))){
+                $result .= ', ';
+                $result .= $date->format('G').':'.$date->format('i');
+            }	  	
+		}
+		
+	    return $result;
 	}
 
 	/**

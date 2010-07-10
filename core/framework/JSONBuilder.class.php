@@ -82,7 +82,7 @@ class JSONBuilder extends Builder {
                         case FieldDescription::FIELD_TYPE_DATETIME:
                         case FieldDescription::FIELD_TYPE_DATE:
                             if (!empty($fieldValue)) {
-                                $fieldValue = strftime($fieldInfo->getPropertyValue('outputFormat'), $fieldValue);
+                                $fieldValue = self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'));
                             }
                             break;
                         case FieldDescription::FIELD_TYPE_IMAGE:

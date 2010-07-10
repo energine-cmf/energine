@@ -75,7 +75,7 @@
                 $this->setProperty('linkedComponent', $param);
             }
             $result = Component::build();
-            if (($component = $this->document->componentManager->getComponentByName($param)) && ($component->getAction() != 'view') && $this->isEditable) {
+            if (($component = $this->document->componentManager->getComponentByName($param)) /*&& ($component->getAction() != 'view')*/ && $this->isEditable) {
                 if ($this->js) {
                     $result->documentElement->appendChild($result->importNode($this->js, true));
                 }

@@ -102,16 +102,38 @@ var Toolbar = new Class({
     },
 
     disableControls: function() {
-        this.controls.each(function(control) {
-			if(control.properties.id != 'close')control.disable();
-        });
+        if(!arguments.length){
+            this.controls.each(function(control) {
+    			if(control.properties.id != 'close') control.disable();
+            });
+        }
+        else {
+            var control;
+            //Перечисляем идентификаторы контролов которые необходимо активировать
+            $A(arguments).each(function(controlID){
+                if(control = this.getControlById(controlID)){
+                    control.disable();
+                }
+            }, this);
+        }
         return this;
     },
 
     enableControls: function() {
-        this.controls.each(function(control) {
-            control.enable();
-        });
+        if(!arguments.length) {
+            this.controls.each(function(control) {
+                control.enable();
+            });
+        }
+        else {
+            var control;
+            //Перечисляем идентификаторы контролов которые необходимо активировать
+            $A(arguments).each(function(controlID){
+                if(control = this.getControlById(controlID)){
+                    control.enable();
+                }
+            }, this);
+        }
         return this;
     },
 

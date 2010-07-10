@@ -10,6 +10,9 @@ var FeedToolbar = new Class({
         this.parent('feed_toolbar');
         this.bindTo(this);
         this.dock();
+        this.feedElementType = false;
+        
+        
         this.element.injectInside(
             document.getElement('.e-topframe')
         );
@@ -26,15 +29,24 @@ var FeedToolbar = new Class({
 
 		this.load(Container);
 		this.singlePath = Container.getProperty('single_template');
-		this._prepareDataSet(Container.getProperty('linkedTo'));
+        var feedElement = $(Container.getProperty('linkedTo'));
+        this.disableControls();
+        
+        if(feedElement){
+            this._prepareDataSet(feedElement);
+            if(this.selected = feedElement.getProperty('current')){
+                this.feedElementType = 'form';
+                this.enableControls('add', 'edit'/*, 'delete'*/);
+            }
+            else {
+                this.feedElementType = 'list';
+                this.enableControls('add');
+                this.selected = false;
+            }
+        }
 		Container.dispose();
-		this.selected = false;
+
 		this.previous = false;
-		var component;
-		this.disableControls();
-		if(component = this.getControlById('add')){
-			component.enable();
-		}
     },
     
 	add: function() {
@@ -95,10 +107,7 @@ var FeedToolbar = new Class({
 
 		if (this.previous == element){
 			this.selected = this.previous = false;
-			this.disableControls();
-			if(component = this.getControlById('add')){
-				component.enable();
-			}
+            this.disableControls(), this.enableControls('add');
 		}
 		else {
 			this.previous = element;
@@ -108,16 +117,18 @@ var FeedToolbar = new Class({
 		}
 	},
 	_prepareDataSet: function (linkID){
-		var linkID;
-		if (linkID = $(linkID)) {
-			linkID.addClass('active_component');
-			linkID.fade(0.7);
-			linkID.getElements('[record]').each(function(element){
-				element.addEvent('mouseover', function(){this.addClass('record_highlight')});
-				element.addEvent('mouseout', function(){this.removeClass('record_highlight')});
-				element.addEvent('click', this._select.bindWithEvent(this, element));
-			}, this);
-		}
+		var linkID, linkChilds;
+            linkChilds = linkID.getElements('[record]');
+            if(linkChilds.length){
+    			//список
+                linkID.addClass('active_component');
+    			linkID.fade(0.7);
+    			linkChilds.each(function(element){
+    				element.addEvent('mouseover', function(){this.addClass('record_highlight')});
+    				element.addEvent('mouseout', function(){this.removeClass('record_highlight')});
+    				element.addEvent('click', this._select.bindWithEvent(this, element));
+    			}, this);
+		  }
 	},
 	_reload: function(data){
 		if (data) {

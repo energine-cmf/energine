@@ -51,13 +51,19 @@
     </xsl:template>
     
     <xsl:template match="record[ancestor::component[@exttype='feed'][@type='form']]">
-        <div class="feed">
+        <div class="feed" id="{generate-id(../.)}">
+            <xsl:if test="$COMPONENTS[@editable]">
+                <xsl:attribute name="current"><xsl:value-of select="field[@index='PRI']"/></xsl:attribute>
+            </xsl:if>
             <xsl:apply-templates/>
         </div>
     </xsl:template>
     
     <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='form']]">
-        <div class="feed news_view">
+        <div class="feed news_view" id="{generate-id(../.)}">
+            <xsl:if test="$COMPONENTS[@editable]">
+                <xsl:attribute name="current"><xsl:value-of select="field[@index='PRI']"/></xsl:attribute>
+            </xsl:if>
             <div class="date"><strong><xsl:value-of select="field[@name='news_date']"/></strong></div>
     		<h4 class="title"><xsl:value-of select="field[@name='news_title']"/></h4>
     		<div class="text"><xsl:value-of select="field[@name='news_text_rtf']" disable-output-escaping="yes"/></div>

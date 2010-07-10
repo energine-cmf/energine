@@ -10,10 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/ComponentConfig.class.php');
-//require_once('core/framework/DBWorker.class.php');
-//require_once('core/framework/Request.class.php');
-//require_once('core/framework/Builder.class.php');
 
 /**
  * Компонент страницы.

@@ -240,6 +240,7 @@ abstract class Builder extends DBWorker {
 	 * @static
 	 */
 	static public function enFormatDate($date, $format){
+		$date = intval($date);
 		if($format != '%E'){
 			$result = @strftime($format, $date);
 		}

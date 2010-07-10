@@ -8,22 +8,14 @@
 		<fields>
 		  <field name="u_id"/>
 		  <field name="u_name"/>
-		  <field name="u_nick"/>
 		  <field name="u_fullname"/>
-          <field name="u_is_male" type="int"/>        
-          <field name="u_birthday"/>
-          <field name="u_place"/>                              
-          <field name="u_avatar_img"/>          
 		</fields>
 		<toolbar>
 			<control id="register" title="BTN_REGISTER" type="submit"/>
 		</toolbar>
-        <translations>
-            <translation const="TXT_REQUIRED_FIELDS" />
-            <translation const="TXT_MALE" />
-            <translation const="TXT_FEMALE" />
-            <translation const="TXT_REGISTRATION_TEXT" />
-        </translations>
+		<translations>
+			<translation const="TXT_REQUIRED_FIELDS" />
+		</translations>
 	</method>
 	<method name="checkLogin">
       <uri_patterns>

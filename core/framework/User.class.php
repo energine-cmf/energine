@@ -192,15 +192,23 @@ class User extends DBWorker {
     public function createAvatar($avatarUploadedFilename){
     	$result = false;
         if($this->id){
-            $fu = new FileUploader();
-            $fu->setFile($avatarUploadedFilename);
-            $fu->upload($dir = 'uploads/avatars');	
-            $result = $fu->getFileObjectName();
-            $im = new Image();
-            $im->loadFromFile($result);
-            $im->resize(50, 50);
-            $im->saveToFile($result);
-            $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, array('u_avatar_img' => $result), array('u_id' => $this->id));
+        	try {
+	            $fu = new FileUploader();
+	            $fu->setFile($avatarUploadedFilename);
+	            $fu->upload($dir = 'uploads/avatars');	
+	            $result = $fu->getFileObjectName();
+	            $im = new Image();
+	            $im->loadFromFile($result);
+	            $im->resize(50, 50);
+	            $im->saveToFile($result);
+	            $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, array('u_avatar_img' => $result), array('u_id' => $this->id));
+        	}
+        	catch (SystemException $e) {
+        		//Notice генерирурется в случае с отсутствием файла, в данном случае это не принципиально
+        		if($e->getCode() != SystemException::ERR_NOTICE) {
+        			throw $e;
+        		}
+        	}
         }
         
         return $result;

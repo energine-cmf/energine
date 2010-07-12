@@ -100,6 +100,14 @@ class FileUploader extends Object {
         if (!isset($file['name'], $file['size'], $file['tmp_name'], $file['error'])) {
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER, $file);
         }
+        
+        if ($file['error'] == UPLOAD_ERR_NO_FILE){
+            throw new SystemException('ERR_NO_FILE', SystemException::ERR_NOTICE, $file);                    
+        }
+        
+        if($file['error'] != UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'])) {
+            throw new SystemException('ERR_UPLOAD_FAILED', SystemException::ERR_WARNING, $file['error']);
+        }
         $this->file = $file;
         
         $this->validate();
@@ -119,9 +127,7 @@ class FileUploader extends Object {
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER, $this->file['name']);
         }
 
-        if ($this->file['error'] != UPLOAD_ERR_OK || !is_uploaded_file($this->file['tmp_name'])) {
-            throw new SystemException('ERR_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file['error']);
-        }
+       
         
         $dummy = explode('.', $this->file['name']);
         $this->ext = array_pop($dummy);
@@ -145,9 +151,6 @@ class FileUploader extends Object {
     public function upload($dir) {
         if (!$this->validated) {
             $this->validate();
-        }
-        if(!is_uploaded_file($this->file['tmp_name'])){
-        	throw new SystemException('ERR_BAD_UPLOAD', SystemException::ERR_WARNING, $this->file['name']);
         }
         
         $filePath = $this->generateFilename($dir, $this->ext);

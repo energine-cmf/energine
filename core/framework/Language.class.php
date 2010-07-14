@@ -75,6 +75,7 @@ final class Language extends Singleton{
 
         foreach ($this->languages as $langID => $langInfo) {
         	if ($langID == $currentLangID) {
+        		setlocale(LC_ALL, $langInfo['lang_locale']);
         	    $result = true;
         		break;
         	}

@@ -372,8 +372,16 @@
             <xsl:value-of select="."/>
         </textarea>
     </xsl:template>     
-    
     <!-- /компонент FileLibrary -->
+    
+    <!-- Поле копирования структуры в редакторе сайтов -->
+    <xsl:template match="field[@type='select'][@name='copy_site_structure']">
+        <input type="checkbox" onchange="document.getElementById('{@name}').disabled = !this.checked;"/>
+        <select id="{@name}" disabled="disabled">
+            <xsl:attribute name="name"><xsl:value-of select="@name" /></xsl:attribute>
+            <xsl:apply-templates />
+        </select>
+    </xsl:template>
     
     <!-- именованный шаблон для построения заголовка окна -->
     <xsl:template name="build_title">

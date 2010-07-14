@@ -72,7 +72,7 @@ final class SiteManager extends DBWorker implements Iterator {
 				$realPathSegments = array_values(array_filter(explode('/',$site->root)));
 				$pathSegments = array_slice($uri->getPath(false), 0, sizeof($realPathSegments));
 				
-				if($realPathSegments == $pathSegments) {
+				if(($realPathSegments == $pathSegments) && $site->isActive) {
 					$this->currentSiteID = $site->id;
 				}
 			}

@@ -18,6 +18,10 @@
  * @final
  */
 final class CalendarObject extends Object implements Iterator {
+	const PERIOD_CURRENT = 'current';
+	const PERIOD_PREVIOUS = 'previous';
+	const PERIOD_NEXT = 'next';
+	
 	/**
 	 * позиция итерации
 	 * 
@@ -29,18 +33,21 @@ final class CalendarObject extends Object implements Iterator {
 	 * Сегодня
 	 *
 	 * Сделано публичным, поскольку его изменение после вызова констурктора не приводит ни к чему плохому
-	 * @access public
+	 * @access private
 	 * @var DateTime
 	 */
-	public $today;
+	private $today;
 	/**
-     * Первый день месяца 
+     * Первый день календарного месяца 
      *
-     * Сделано публичным, поскольку его изменение после вызова констурктора не приводит ни к чему плохому
-     * @access public
+     * @access private
      * @var DateTime
      */
-    public $first;
+    private $firstDayOfPeriod;
+    /**
+     * @var DatePeriod
+     */
+    private $currentPeriod;
     
 	/**
 	 * Собственно матрица
@@ -58,13 +65,7 @@ final class CalendarObject extends Object implements Iterator {
 	 * @var array
 	 */
 	private $index = array();
-	/**
-	 * Итераторы
-	 * 
-	 * @access private
-	 * @var array 
-	 */
-	 private $rowIterators;
+	
 	/**
 	 * Констурктор создает матрицу
 	 *
@@ -80,19 +81,20 @@ final class CalendarObject extends Object implements Iterator {
 		//Определяем день начала календаря
 		//Это последний понедельник предыдущего месяца
 		//кроме случая когда 1 е число нужно месяца  - понедельник
-		$firstDayOfMonth = DateTime::createFromFormat('j-n-Y', '1-'.$monthID.'-'.$year);
+		$this->firstDayOfPeriod = DateTime::createFromFormat('j-n-Y', '1-'.$monthID.'-'.$year);
 
-		$this->first = clone $firstDayOfMonth;
+		$firstDayOfCalendar = clone $this->firstDayOfPeriod;
 		//У буржуев Воскресенье - первый день недели
-		if($firstDayOfMonth->format('w') != 1) {
-			$this->first->modify('last Monday');
+		if($this->firstDayOfPeriod->format('w') != 1) {
+			$firstDayOfCalendar->modify('last Monday');
 		}
-		$date = clone $this->first;
-
+		$date = clone $firstDayOfCalendar;
+        
+		        
 		for ($row = 0; $row < 5; $row ++){
 			for ($day = 0; $day < 7; $day ++){
 				$ci = new CalendarItem($date);
-				if((int)$date->format('n') == (int)$firstDayOfMonth->format('n')){
+				if((int)$date->format('n') == (int)$this->firstDayOfPeriod->format('n')){
 					$ci->setProperty('current', 'current');
 				}
 				if($date == $this->today) {
@@ -105,27 +107,62 @@ final class CalendarObject extends Object implements Iterator {
 			}
 		}
 	}
+	
+	/**
+	 * Возвращает данные о предыдущем периоде
+	 * 
+	 * @return Object
+	 * @access public
+	 */
+	public function getPeriod($periodType){
+	   $tmp = clone $this->firstDayOfPeriod;
+		switch ($periodType){
+	       case self::PERIOD_NEXT:
+	       	$tmp->modify('+1 month');
+	       break;
+	       case self::PERIOD_PREVIOUS:
+	           $tmp->modify('-1 day');    	
+	       	break;
+		}
+	   return (object)array('month' => $tmp->format('n'), 'monthName' => strftime('%B', $tmp->format('U')), 'year' => $tmp->format('Y')); 
+	}
+	
+	
 
 	/**
 	 * Возвращает флаг указывающий на то, существует ли такая дата в календаре
 	 *
 	 * @param DateTime дата
+	 * Или
+	 * @param int идентификатор строки
+	 * @param int идентификатор дня
+	 * 
 	 * @return boolean
-	 * @access public
+	 * @access protected
 	 */
-	public function itemExists(DateTime $date){
-		return isset($this->index[$date->format('Y-m-d')]);
+	protected function itemExists(){
+		$result = null;
+		$args = func_get_args();
+		if(sizeof($args) == 2) {
+			list($row, $day) = $args;
+			$result = isset($this->calendar[$row][$day]);
+		}
+		elseif((sizeof($args) == 1) && is_a($args[0], 'DateTime')) {
+			$result = isset($this->index[$args[0]->format('Y-m-d')]);
+		}
+		
+		return $result;
 	}
 	
 	/**
-	 * Возвращает обїект календарного дня по индексу
+	 * Возвращает объект календарного дня по индексу
 	 * 
 	 * @return CalendarItem
 	 * @access public
 	 */
 	public function getItemByIndex($row, $day){
 	    $result = null;
-	    if (isset($this->calendar[$row][$day])) {
+	    if ($this->itemExists($row, $day)) {
 	    	$result = $this->calendar[$row][$day];
 	    }
 	    return $result;
@@ -149,23 +186,33 @@ final class CalendarObject extends Object implements Iterator {
 	}
 	
 	
-	
+	/**
+	 * @see Iterator 
+	 */
     function rewind() {
         $this->position = 0;
     }
-
+    /**
+     * @see Iterator
+     */
     function current() {
         return /*new IteratorIterator(new ArrayObject(*/$this->calendar[$this->position]/*))*/;
     }
-
+    /**
+     * @see Iterator
+     */
     function key() {
         return $this->position;
     }
-
+    /**
+     * @see Iterator
+     */
     function next() {
         ++$this->position;
     }
-
+    /**
+     * @see Iterator
+     */
     function valid() {
         return isset($this->calendar[$this->position]);
     }	

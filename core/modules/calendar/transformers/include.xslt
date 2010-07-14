@@ -6,6 +6,10 @@
     
     <xsl:template match="component[@exttype='calendar']">
         <xsl:if test="not(recordset/@empty)">
+            <div id="{generate-id(recordset)}" single_template="{$BASE}{$LANG_ABBR}{@single_template}">
+            <button id="previous" date="{toolbar/control[@id='previous']/@month}-{toolbar/control[@id='previous']/@year}">&lt;</button>
+            <strong><xsl:value-of select="toolbar/control[@id='current']/@monthName"/>, <xsl:value-of select="toolbar/control[@id='current']/@year"/></strong>
+            <button id="next" date="{toolbar/control[@id='next']/@month}-{toolbar/control[@id='next']/@year}">&gt;</button>
             <table>
                 <thead>
                     <tr>
@@ -25,6 +29,7 @@
                 </tbody>
                 
             </table>
+            </div>
         </xsl:if>
     </xsl:template>
 </xsl:stylesheet>

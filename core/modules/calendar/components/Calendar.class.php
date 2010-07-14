@@ -108,12 +108,16 @@
     protected function main(){
         parent::main();
         $toolbar = new Toolbar('navigation');
-        $control = new Link('previous');
-        $control->setAttribute('month', $this->calendar->first->modify('-1 day')->format('n'));
-        $toolbar->attachControl($control);
-        $control = new Link('next');
-        $control->setAttribute('month', $this->calendar->first->modify('next month')->format('n'));
-        $toolbar->attachControl($control);
+        foreach(array(
+            CalendarObject::PERIOD_CURRENT, CalendarObject::PERIOD_PREVIOUS, CalendarObject::PERIOD_NEXT
+        ) as $periodType) {
+        	$period = $this->getCalendar()->getPeriod($periodType);
+            $control = new Link($periodType);
+	        $control->setAttribute('month', $period->month);
+	        $control->setAttribute('monthName', $period->monthName);
+	        $control->setAttribute('year', $period->year);    
+            $toolbar->attachControl($control);    	
+        }
         $this->addToolbar(
             $toolbar
         );

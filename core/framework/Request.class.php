@@ -79,7 +79,27 @@ final class Request extends Singleton {
 
         $this->uri = URI::create();
         $path = $this->uri->getPath();
-        $path = array_values(array_diff(explode('/', substr($path, strlen(SiteManager::getInstance()->getCurrentSite()->root))), array('')));
+        
+        if(strpos($path, SiteManager::getInstance()->getCurrentSite()->root) !== false) {
+	        $path = array_values(
+	            array_diff(
+	                explode(
+	                    '/', 
+	                    substr(
+	                        $path, 
+	                        strlen(
+	                            SiteManager::getInstance()->getCurrentSite()->root
+	                        )
+	                    )
+	                 ), 
+	                 array('')
+	              )
+	        );
+        }
+        else {
+        	$path = array();
+        }
+        
         try {
             $language = Language::getInstance();
             $this->lang = (isset($path[0]) && $language->isValidLangAbbr($path[0])) ? array_shift($path) : '';
@@ -144,6 +164,7 @@ final class Request extends Singleton {
         if ($asString) {
             $path = (empty($path) ? '' : implode('/', $path).'/');
         }
+        
         return $path;
     }
 

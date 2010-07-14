@@ -258,13 +258,16 @@ class Component extends DBWorker {
 
         // если новое значение пустое - оставляем значение по-умолчанию
         if (!empty($value) || $value === false) {
-        	if(!is_array($value)){
+        	if(is_scalar($value)){
 	        	//ОБрабатываем случай передачи массива-строки в параметры
 	        	$value = explode('|', $value);
 	            $this->params[$name] = (sizeof($value) == 1)?current($value):$value;
         	}
-        	else{
+        	elseif(is_array($value)){
         		$this->params[$name] = array_values($value);
+        	}
+        	else {
+        		$this->params[$name] = $value;
         	}
         }
     }

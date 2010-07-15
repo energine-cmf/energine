@@ -12,7 +12,7 @@
 	 <component name="galleryEditor" module="image" class="GalleryEditor">
 		<params>
 			<param name="rights">3</param>
-			<param name="linkTo">gallery</param>
+			<param name="bind">gallery</param>
 		</params>
     </component>
 </content>

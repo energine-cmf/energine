@@ -15,7 +15,7 @@
     <component name="newsEditor" module="apps" class="NewsEditor">
 		<params>
 			<param name="rights">2</param>
-			<param name="linkTo">news</param>
+			<param name="bind">news</param>
 		</params>
     </component>
 </content>

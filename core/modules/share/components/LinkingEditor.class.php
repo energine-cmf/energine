@@ -42,7 +42,7 @@
         return array_merge(
         parent::defineParams(),
         array(
-        'linkTo' => false
+        'bind' => false
         )
         );
     }    
@@ -56,7 +56,7 @@
     protected function main() {
         $_SESSION[$this->getPK()] =
             $this->document->componentManager->getComponentByName(
-	           $this->getParam('linkTo')
+	           $this->getParam('bind')
 	        )->getFilter();
         $this->addToolbar($this->createToolbar());
         $this->js = $this->buildJS();
@@ -71,7 +71,7 @@
 
     public function build() {
         if ($this->getAction() == 'main') {
-            if ($param = $this->getParam('linkTo')) {
+            if ($param = $this->getParam('bind')) {
                 $this->setProperty('linkedComponent', $param);
             }
             $result = Component::build();

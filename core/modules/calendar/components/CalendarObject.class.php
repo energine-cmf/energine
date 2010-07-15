@@ -110,7 +110,8 @@ final class CalendarObject extends Object implements Iterator {
 	
 	/**
 	 * Возвращает данные о предыдущем периоде
-	 * 
+	 * Используется для создания тулбара календаря
+	 *  
 	 * @return Object
 	 * @access public
 	 */
@@ -125,6 +126,16 @@ final class CalendarObject extends Object implements Iterator {
 	       	break;
 		}
 	   return (object)array('month' => $tmp->format('n'), 'monthName' => strftime('%B', $tmp->format('U')), 'year' => $tmp->format('Y')); 
+	}
+	
+	/**
+	 * Возвращает данные о начальной и конечной датах текущего календаря
+	 * 
+	 * @return Object
+	 * @access public
+	 */
+	public function getRange(){
+	    return (object)array('start' => $this->calendar[0][0]->getDate(), 'end' => $this->calendar[4][6]->getDate());
 	}
 	
 	

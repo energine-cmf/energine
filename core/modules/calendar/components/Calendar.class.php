@@ -41,9 +41,9 @@
       * Возвращаем объект календаря
       * 
       * @return CalendarObject
-      * @access protected
+      * @access public
       */
-    protected function getCalendar(){
+    public function getCalendar(){
         if(!isset($this->calendar)) {
         	$this->calendar = new CalendarObject();
         }
@@ -54,9 +54,9 @@
       * 
       * @param CalendarObject
       * @return void
-      * @access protected
+      * @access public
       */
-    protected function setCalendar(CalendarObject  $calendar){
+    public function setCalendar(CalendarObject  $calendar){
         $this->calendar = $calendar;
     }
     /**

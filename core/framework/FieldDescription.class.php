@@ -370,7 +370,7 @@ class FieldDescription extends DBWorker {
      *
      * @access public
      * @param string $type
-     * @return void
+     * @return FieldDescription
      */
     public function setType($type) {
         $this->type = (string)$type;
@@ -537,6 +537,8 @@ class FieldDescription extends DBWorker {
             default:
                 break;
         }
+        
+        return $this;
     }
 
     /**
@@ -577,10 +579,11 @@ class FieldDescription extends DBWorker {
      *
      * @access public
      * @param int $mode
-     * @return void
+     * @return FieldDescription
      */
     public function setMode($mode) {
         $this->mode = $mode;
+        return $this;
     }
 
     /**
@@ -620,13 +623,14 @@ class FieldDescription extends DBWorker {
      * @access public
      * @param string $name
      * @param mixed $value
-     * @return void
+     * @return FieldDescription
      */
     public function setProperty($name, $value) {
         if ($name == 'nullable') {
             $value = (bool)$value;
         }
         $this->additionalProperties[$name] = $value;
+        return $this;
     }
 
     /**
@@ -634,10 +638,11 @@ class FieldDescription extends DBWorker {
      *
      * @access public
      * @param string $name
-     * @return void
+     * @return FieldDescription
      */
     public function removeProperty($name) {
         unset($this->additionalProperties[$name]);
+        return $this;
     }
 
     /**
@@ -831,6 +836,8 @@ class FieldDescription extends DBWorker {
             }
         }
         $this->availableValues = $result;
+        
+        return $this;
     }
 
     /**

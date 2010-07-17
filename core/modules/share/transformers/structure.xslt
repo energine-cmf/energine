@@ -4,11 +4,11 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
 
-    <xsl:template match="component[@class='PageList']">
+    <xsl:template match="component[@class='PageList' or @class='NavigationMenu']">
         <xsl:apply-templates/>
     </xsl:template>
     
-    <xsl:template match="recordset[parent::component[@class='PageList']]">
+    <xsl:template match="recordset[parent::component[@class='PageList'] or ancestor::component[@class='NavigationMenu']]">
         <xsl:if test="not(@empty)">
             <ul class="menu clearfix">
                 <xsl:apply-templates/>
@@ -30,6 +30,20 @@
             <xsl:if test="field[@name='DescriptionRtf'] != ''">
                 <p><xsl:value-of select="field[@name='DescriptionRtf']" disable-output-escaping="yes"/></p>
             </xsl:if>
+        </li>
+    </xsl:template>
+    
+    <xsl:template match="record[ancestor::component[@class='NavigationMenu']]">
+        <li style="clear: both;">
+            <a>
+                <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
+                    <xsl:attribute name="href">
+                        <xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/>
+                    </xsl:attribute>
+                </xsl:if>
+                <xsl:value-of select="field[@name='Name']"/>
+            </a>
+            <xsl:apply-templates select="recordset"></xsl:apply-templates>
         </li>
     </xsl:template>
     

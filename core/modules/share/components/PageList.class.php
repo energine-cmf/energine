@@ -115,13 +115,14 @@ final class PageList extends DataSet {
 		if (!empty($data)) {
 			$hasDescriptionRtf = (bool)$this->getDataDescription()->getFieldDescriptionByName('DescriptionRtf');
 			
-			$filteredIDs = array();
+			//По умолчанию - фильтрация отсутствует 
+			$filteredIDs = true;
 			if($this->getParam('tags'))
                 $filteredIDs = TagManager::getInstance()->getFilter($this->getParam('tags'), 'share_sitemap_tags');
             
 			reset($data);
 			while (list($key, $value) = each($data)) {
-                if(!empty($filteredIDs) && !in_array($key, $filteredIDs)){
+                if(($filteredIDs !== true) &&  !in_array($key, $filteredIDs)){
                     unset($data[$key]);
                     continue;    
                 }    

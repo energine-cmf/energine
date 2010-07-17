@@ -16,7 +16,14 @@
  * @author d.pavka@gmail.com
  * @final
  */
-final class NavigationMenu extends SitemapTree {
+final class NavigationMenu extends DataSet {
+	/**
+	 * Отфильтрованные идентифкаторы
+	 * 
+	 * @access private
+	 * @var array | boolean 
+	 */
+	 private $filteredIDs;
 	/**
 	 * Конструктор класса
 	 *
@@ -30,8 +37,54 @@ final class NavigationMenu extends SitemapTree {
 		$params['configFilename'] = sprintf(ComponentConfig::CORE_CONFIG_DIR, $module).get_class($this).'.component.xml';
 		parent::__construct($name, $module, $document,  $params);
 	}
-
+    protected function defineParams() {
+        $result = array_merge(parent::defineParams(),
+        array(
+        'tags' => '',
+        ));
+        return $result;
+    }	
+    /**
+      * Накладіваем ограничения по тегам
+      * 
+      * @return array | false
+      * @access protected
+      */
+    protected function loadData(){
+    	$sitemap = Sitemap::getInstance();
+    	
+    	$data = $sitemap->getInfo(); 
+    	$this->filteredIDs = true;
+        if (!empty($data)) {
+            if($this->getParam('tags'))
+                $this->filteredIDs = TagManager::getInstance()->getFilter($this->getParam('tags'), 'share_sitemap_tags');
+                
+            if(!empty($this->filteredIDs)) {
+	            reset($data);
+	            while (list($key, $value) = each($data)) {
+	                if(($this->filteredIDs !== true) && !in_array($key, $this->filteredIDs)){
+	                    unset($data[$key]);
+	                    continue;    
+	                }    
+	                if($key == $sitemap->getDefault()) {
+	                    unset($data[$key]);
+	                }
+	                else {
+	                    $data[$key]['Id'] = $key;
+	                    $data[$key]['Segment'] = $sitemap->getURLByID($key);
+	                    $data[$key]['Name'] = $value['Name'];
+	                }
+	            }
+            }
+            else {
+            	$data = array();
+            }
+        }
+            
+        return $data;    
+    }
 	protected function createBuilder() {
+		
 		$tree = Sitemap::getInstance()->getTree();
 
 		$treeData = array();
@@ -49,14 +102,7 @@ final class NavigationMenu extends SitemapTree {
 				    WHERE smap_pid  = '.$nodeID.' AND smap_is_disabled = 0 AND lang_id = '.Language::getInstance()->getCurrent().'
 				    ORDER BY smap_order_num ASC
 				');
-				/*
-				$nodeChilds = $this->dbh->select(
-                      'share_sitemap', 
-				array('smap_id', 'smap_pid'),
-				array('smap_pid' => $nodeID),
-				array('smap_order_num' => QAL::ASC)
-				);
-*/
+				
 				if(is_array($nodeChilds)){
 					$nodeChilds = array_map(
 					create_function(
@@ -93,7 +139,7 @@ final class NavigationMenu extends SitemapTree {
 			
 		$builder  = new TreeBuilder();
 		$builder->setTree($tree);
-
+		
 		return $builder;
 	}
 }

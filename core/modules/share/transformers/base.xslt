@@ -74,7 +74,7 @@
     </xsl:template>
 
     <!-- поле пароля (password) -->
-    <xsl:template match="field[@type='password'][ancestor::component[@type='form']]">
+    <xsl:template match="field[@type='password' and ancestor::component[@type='form']]">
         <input class="text inp_password">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
             <xsl:attribute name="type">password</xsl:attribute>

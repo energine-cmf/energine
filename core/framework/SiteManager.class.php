@@ -30,7 +30,7 @@ final class SiteManager extends DBWorker implements Iterator {
 	 * Данные о всех зарегистрированных сайтах 
 	 *
 	 * @access private
-	 * @var array
+	 * @var Site[]
 	 */
 	private $data;
 	/**
@@ -134,7 +134,7 @@ final class SiteManager extends DBWorker implements Iterator {
 	/**
 	  * Returns current's site
 	  * 
-	  * @return string
+	  * @return Site
 	  * @access public
 	  */
 	public function getCurrentSite(){

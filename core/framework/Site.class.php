@@ -41,7 +41,7 @@
     /**
      * Magic method возврщающий свойства сайта
      * 
-     * @return mixed
+     * @return Object
      * @access public
      */
     public function __get($propName){

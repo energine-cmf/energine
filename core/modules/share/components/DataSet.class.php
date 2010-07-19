@@ -290,7 +290,7 @@ abstract class DataSet extends Component {
 	/**
 	 * Создание панелей инструментов
 	 *
-	 * @return array
+	 * @return Toolbar[]
 	 * @access protected
 	 */
 	protected function createToolbar() {

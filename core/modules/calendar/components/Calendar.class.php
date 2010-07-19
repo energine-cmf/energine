@@ -35,7 +35,14 @@
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setProperty('exttype', 'calendar');
-        //$this->setBuilder(new CalendarBuilder());
+    }
+    /**
+     * Построитель календаря более простой чем обычно
+     * 
+     * @return CalendarBuilder
+     */
+    protected function createBuilder() {
+        return new CalendarBuilder();
     }
     /**
       * Возвращаем объект календаря
@@ -102,11 +109,10 @@
     /**
       * Добавляем тулбар
       * 
-      * @return void
+      * @return Toolbar[]
       * @access protected
       */
-    protected function main(){
-        parent::main();
+    protected function createToolbar(){
         $toolbar = new Toolbar('navigation');
         foreach(array(
             CalendarObject::PERIOD_CURRENT, CalendarObject::PERIOD_PREVIOUS, CalendarObject::PERIOD_NEXT
@@ -118,9 +124,7 @@
 	        $control->setAttribute('year', $period->year);    
             $toolbar->attachControl($control);    	
         }
-        $this->addToolbar(
-            $toolbar
-        );
+        return array($toolbar);
     }
     
 }

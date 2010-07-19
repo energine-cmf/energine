@@ -33,10 +33,10 @@ final class CalendarObject extends Object implements Iterator {
 	 * Сегодня
 	 *
 	 * Сделано публичным, поскольку его изменение после вызова констурктора не приводит ни к чему плохому
-	 * @access private
+	 * @access public
 	 * @var DateTime
 	 */
-	private $today;
+	public $today;
 	/**
      * Первый день календарного месяца 
      *
@@ -44,10 +44,6 @@ final class CalendarObject extends Object implements Iterator {
      * @var DateTime
      */
     private $firstDayOfPeriod;
-    /**
-     * @var DatePeriod
-     */
-    private $currentPeriod;
     
 	/**
 	 * Собственно матрица
@@ -67,7 +63,7 @@ final class CalendarObject extends Object implements Iterator {
 	private $index = array();
 	
 	/**
-	 * Констурктор создает матрицу
+	 * Конструктор создает матрицу
 	 *
 	 * @return void
 	 * @access public
@@ -195,6 +191,31 @@ final class CalendarObject extends Object implements Iterator {
 
 		return $result;
 	}
+        /**
+     * Вычисляем информацию о текущей неделе
+     *
+     * @param DateTime информация о текущем дн
+     * @return DateTime[]
+     * @access public
+     * @static
+     */
+    static public function getWeek(DateTime $dateObj) {
+        $result = array();
+        $tmpDateObj = clone $dateObj;
+
+        //Ищем дату ближайшего понедельника
+
+        //Если сегодня не понедельник
+        if ($tmpDateObj->format('w') != 1) {
+            $tmpDateObj->modify('last Monday');
+        }
+
+        for ($i = 1; $i <= 7; $i++) {
+            $result[] = clone $tmpDateObj;
+            $tmpDateObj->modify('+1 day');
+        }
+        return $result;
+    }
 	
 	
 	/**

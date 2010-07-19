@@ -110,7 +110,7 @@
     </xsl:template>
 
     <xsl:template match="field[@name='attached_files'][@type='custom']">
-        <xsl:variable name="JS_OBJECT" select="generate-id(../..)"></xsl:variable>
+        <!--<xsl:variable name="JS_OBJECT" select="generate-id(../..)"></xsl:variable>-->
         <div class="table_data">
             <table width="100%" id="attached_files">
                 <thead>

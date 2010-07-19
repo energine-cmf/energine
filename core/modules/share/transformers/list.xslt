@@ -61,7 +61,7 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:for-each select="set:distinct($FIELDS/@tabName)">
-                            <xsl:variable name="TAB_NAME" select="."/>
+                            <!--<xsl:variable name="TAB_NAME" select="."/>-->
                             <li>
                                 <a href="#{$TAB_ID}"><xsl:value-of select="."/></a>
                             </li>

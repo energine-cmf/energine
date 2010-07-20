@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <methods>
+        <method name="main">
+            <uri_patterns>
+                <pattern>/page-[pageNumber]/</pattern>
+                <pattern>/</pattern>
+             </uri_patterns>
+             <fields>
+                <field name="post_id"/>
+                <field name="blog_id"/>
+                <field name="post_created" outputFormat="%d.%m.%Y %H:%M"/>                
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>                                                
+            </fields>             
+            <toolbar>
+                <control id="view" title="BTN_GO" type="link"/>
+            </toolbar>
+        </method>
+        <method name="viewBlog">
+            <uri_patterns>
+            	<pattern>/blog/[blogID]/</pattern>
+                <pattern>/blog/[blogID]/page-[pageNumber]/</pattern>
+             </uri_patterns>
+             <fields>
+                <field name="post_id"/>
+                <field name="blog_id"/>
+                <field name="post_created" outputFormat="%d.%m.%Y %H:%M"/>                
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>                                                
+            </fields>             
+            <toolbar>
+                <control id="view" title="BTN_GO" type="link"/>
+            </toolbar>
+        </method>
+        <method name="create">
+        	<uri_patterns>
+                 <pattern>/post/create/</pattern>
+            </uri_patterns>
+            <javascript>
+            	<object name="ValidForm" />
+            </javascript>
+            <fields>
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>
+            </fields>
+            <toolbar>
+            	<control id="savePost" title="BTN_SAVE" type="submit"  />
+            </toolbar>
+        </method>
+        <method name="edit">
+        	<uri_patterns>
+                 <pattern>/post/[postID]/edit/</pattern>
+            </uri_patterns>
+            <javascript>
+            	<object name="ValidForm" />
+            </javascript>
+            <fields>
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>
+            </fields>
+            <toolbar>
+            	<control id="savePost" title="BTN_SAVE" type="submit"  />
+            </toolbar>
+        </method>
+        <method name="save">
+        	<uri_patterns>
+                 <pattern>/post/[postID]/save/</pattern>
+                 <pattern>/post/save/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="view">
+             <uri_patterns>
+                 <pattern>/post/[postID]/</pattern>
+             </uri_patterns>
+            <fields>
+                <field name="post_id"/>
+                <field name="blog_id"/>
+                <field name="post_created" outputFormat="%d.%m.%Y  %H:%M"/>                
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>
+            </fields>             
+             <translations>
+                <translation const="TXT_BACK_TO_LIST"/>
+            </translations>
+        </method>
+
+    </methods>
+</configuration>

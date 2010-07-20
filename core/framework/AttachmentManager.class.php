@@ -100,7 +100,7 @@ class AttachmentManager extends Singleton {
 
                 for ($i = 0; $i < sizeof($mapValue); $i++) {
                     if (isset($imageData[$mapValue[$i]])) {
-                        $builder = new SimpleBuilder();
+                        $builder = new Builder();
                         $localData = new Data();
                         $localData->load($imageData[$mapValue[$i]]);
 

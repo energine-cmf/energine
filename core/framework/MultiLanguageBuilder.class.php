@@ -7,10 +7,8 @@
  * @subpackage core
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
  */
 
-//require_once('core/framework/Builder.class.php');
 
 /**
  * Построитель для мультиязычных компонентов.
@@ -19,7 +17,7 @@
  * @subpackage core
  * @author dr.Pavka
  */
-class MultiLanguageBuilder extends Builder {
+class MultiLanguageBuilder extends AbstractBuilder {
 
     /**
      * Конструктор класса.
@@ -47,7 +45,7 @@ class MultiLanguageBuilder extends Builder {
 
         // для режима списка и режима редактирования (когда есть данные)
         if (!$this->data->isEmpty()) {
-            foreach ($this->dataDescription->getFieldDescriptions() as $fieldName => $fieldInfo) {
+            foreach ($this->dataDescription as $fieldName => $fieldInfo) {
                 $fieldData = $this->data->getFieldByName($fieldName);
                 // если это первичный ключ
                 if ($fieldInfo->getPropertyValue('key') === true) {
@@ -128,7 +126,7 @@ class MultiLanguageBuilder extends Builder {
         // для режима вставки (когда данные отсутствуют)
         else {
             $dom_record = $this->result->createElement('record');
-            foreach ($this->dataDescription->getFieldDescriptions() as $fieldName => $fieldInfo) {
+            foreach ($this->dataDescription as $fieldName => $fieldInfo) {
                 if ($fieldInfo->isMultilanguage()) {
                     //$title = $fieldInfo->getPropertyValue('title');
                     foreach (array_keys($lang->getLanguages()) as $langID) {

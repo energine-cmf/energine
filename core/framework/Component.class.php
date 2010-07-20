@@ -114,7 +114,7 @@ class Component extends DBWorker {
 
     /**
      * @access private
-     * @var Builder построитель результата работы компонента
+     * @var AbstractBuilder построитель результата работы компонента
      */
     private $builder = false;
 
@@ -202,10 +202,10 @@ class Component extends DBWorker {
      *
      * @access protected
      * @final
-     * @param Builder $builder
+     * @param AbstractBuilder $builder
      * @return void
      */
-    final protected function setBuilder(Builder $builder) {
+    final protected function setBuilder(AbstractBuilder $builder) {
         $this->builder = $builder;
     }
 
@@ -214,7 +214,7 @@ class Component extends DBWorker {
      *
      * @access protected
      * @final
-     * @return Builder
+     * @return AbstractBuilder
      */
     final protected function getBuilder() {
         return $this->builder;

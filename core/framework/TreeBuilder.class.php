@@ -20,7 +20,7 @@
  * @subpackage core
  * @author dr.Pavka
  */
-class TreeBuilder extends Builder  {
+class TreeBuilder extends AbstractBuilder  {
     /**
      * Имя поля содержащего ключевой идентификатор
      *

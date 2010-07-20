@@ -19,7 +19,7 @@
  * @subpackage core
  * @author dr.Pavka
  */
-class JSONBuilder extends Builder {
+class JSONBuilder extends AbstractBuilder {
     /**
      * Листалка
      *
@@ -58,8 +58,7 @@ class JSONBuilder extends Builder {
             throw new SystemException('ERR_DEV_NO_DATA_DESCRIPTION', SystemException::ERR_DEVELOPER);
         }
 
-        $fields = $this->dataDescription->getFieldDescriptions();
-        foreach ($fields as $fieldName => $fieldInfo) {
+        foreach ($this->dataDescription as $fieldName => $fieldInfo) {
             $result['meta'][$fieldName] = array(
                 'title' => $fieldInfo->getPropertyValue('title'),
                 'type' => $fieldInfo->getType(),
@@ -75,7 +74,7 @@ class JSONBuilder extends Builder {
 
         if (!$this->data->isEmpty()) {
             for ($i = 0; $i < $this->data->getRowCount(); $i++) {
-                foreach ($fields as $fieldName => $fieldInfo) {
+                foreach ($this->dataDescription as $fieldName => $fieldInfo) {
                     $fieldType = $fieldInfo->getType();
                     $fieldValue = $this->data->getFieldByName($fieldName)->getRowData($i);
                     switch ($fieldType) {

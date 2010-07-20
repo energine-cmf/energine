@@ -7,10 +7,8 @@
  * @subpackage core
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
 
 /**
  * Описание поля данных.
@@ -19,7 +17,20 @@
  * @subpackage core
  * @author dr.Pavka
  */
-class FieldDescription extends DBWorker {
+class FieldDescription extends DBWorker implements Iterator{
+    /**
+     * Используется в функциях итерации
+     * Инициализируется в rewind
+     * Вынесен в отдельную переменную чтоб не дергать во время итерации array_keys
+     *
+     * @var array
+     */
+    private $additionalPropertiesNames;
+    /**
+     * Текущий индекс для итерации по $additionalProperties
+     * @var int 
+     */
+    private $propertiesIndex;
     /**
      * Имя поля для которого не указано имя :)
      *
@@ -215,6 +226,7 @@ class FieldDescription extends DBWorker {
 
     /**
      * Хэш вида array(propertyName => propertyValue).
+     * По нему происходит итерация
      *
      * @access private
      * @var Object дополнительные свойства поля
@@ -881,4 +893,24 @@ class FieldDescription extends DBWorker {
         Return $result;
     }
 
+    public function current() {
+        return $this->additionalProperties[$this->additionalPropertiesNames[$this->propertiesIndex]];
+    }
+
+    public function key() {
+        return $this->additionalPropertiesNames[$this->propertiesIndex];
+    }
+
+    public function next() {
+        $this->propertiesIndex ++;
+    }
+
+    public function rewind() {
+        $this->additionalPropertiesNames = array_keys($this->additionalProperties);
+        $this->propertiesIndex = 0;
+    }
+
+    public function valid() {
+        return isset($this->additionalPropertiesNames[$this->propertiesIndex]);
+    }
 }

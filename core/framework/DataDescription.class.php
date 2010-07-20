@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Класс DataDescription.
  *
@@ -7,11 +6,7 @@
  * @subpackage core
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
  */
-
-//require_once('core/framework/Object.class.php');
-//require_once('core/framework/FieldDescription.class.php');
 
 /**
  * Мета-данные.
@@ -30,12 +25,6 @@ class DataDescription extends Object implements Iterator {
 
     /**
      * @access private
-     * @var int количество полей данных
-     */
-    private $length;
-
-    /**
-     * @access private
      * @var int индекс текущего элемента (используется для итерации)
      */
     private $currentIndex = 0;
@@ -48,9 +37,7 @@ class DataDescription extends Object implements Iterator {
      */
     public function __construct() {
         parent::__construct();
-
         $this->fieldDescriptions = array();
-        $this->length = 0;
     }
 
     /**
@@ -95,7 +82,6 @@ class DataDescription extends Object implements Iterator {
      */
     public function addFieldDescription(FieldDescription $fieldDescription) {
         $this->fieldDescriptions[$fieldDescription->getName()] = $fieldDescription;
-        $this->length++;
     }
 
     /**
@@ -106,10 +92,7 @@ class DataDescription extends Object implements Iterator {
      * @return void
      */
     public function removeFieldDescription(FieldDescription $fieldDescription) {
-        if (isset($this->fieldDescriptions[$fieldDescription->getName()])) {
         	unset($this->fieldDescriptions[$fieldDescription->getName()]);
-        	$this->length--;
-        }
     }
 
     /**
@@ -129,16 +112,6 @@ class DataDescription extends Object implements Iterator {
     }
 
     /**
-     * Возвращает описания полей данных.
-     *
-     * @access public
-     * @return array
-     */
-    public function getFieldDescriptions() {
-        return $this->fieldDescriptions;
-    }
-
-    /**
      * Возвращает список имён полей данных.
      *
      * @return array
@@ -154,8 +127,8 @@ class DataDescription extends Object implements Iterator {
      * @access public
      * @return int
      */
-    public function getLength() {
-        return $this->length;
+    public function isEmpty() {
+        return !(bool)sizeof($this->fieldDescriptions);
     }
 
     /**
@@ -167,7 +140,7 @@ class DataDescription extends Object implements Iterator {
      */
     public function intersect(DataDescription $otherDataDescr) {
         $result = false;
-        if ($this->getLength() == 0) {
+        if ($this->isEmpty()) {
         	$result = $otherDataDescr;
         }
         else {
@@ -242,6 +215,7 @@ class DataDescription extends Object implements Iterator {
      * @return boolean
      */
     public function valid() {
-        return ($this->currentIndex < $this->length);
+        $fieldNames = $this->getFieldDescriptionList();
+        return isset($fieldNames[$this->currentIndex]);
     }
 }

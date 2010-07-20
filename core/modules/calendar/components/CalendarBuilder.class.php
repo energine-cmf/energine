@@ -16,7 +16,7 @@
  * @subpackage calendar
  * @author d.pavka@gmail.com
  */
-class CalendarBuilder extends SimpleBuilder {
+class CalendarBuilder extends Builder {
     /**
      * Конструктор класса
      *
@@ -39,9 +39,9 @@ class CalendarBuilder extends SimpleBuilder {
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
         $result = $this->result->createElement('field');
 
-        foreach ($fieldInfo->getPropertyNames() as $propName) {
+        foreach ($fieldInfo as $propName => $propValue) {
             if(!in_array($propName, array('pattern', 'message', 'sort', 'outputFormat', 'tabName'))) {
-                $result->setAttribute($propName, $fieldInfo->getPropertyValue($propName));
+                $result->setAttribute($propName, $propValue);
             }
         }
 

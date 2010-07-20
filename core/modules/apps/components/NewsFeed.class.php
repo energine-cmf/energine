@@ -67,7 +67,7 @@ class NewsFeed extends Feed {
         
         $this->addToolbar($this->createToolbar());
         
-        foreach ($this->getDataDescription()->getFieldDescriptions() as $fieldDescription) {
+        foreach ($this->getDataDescription() as $fieldDescription) {
             $fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
         }
 

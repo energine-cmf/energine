@@ -77,7 +77,7 @@ final class DivisionEditor extends Grid {
 	 */
 
 	private function buildRightsTab($id) {
-		$builder = new SimpleBuilder($this->getTitle());
+		$builder = new Builder($this->getTitle());
 
 		//получаем информацию о всех группах имеющихся в системе
 		$groups = $this->dbh->select('user_groups', array('group_id', 'group_name'));
@@ -293,7 +293,7 @@ final class DivisionEditor extends Grid {
 	/**
 	 * Подменяем построитель для метода setPageRights
 	 *
-	 * @return Builder
+	 * @return AbstractBuilder
 	 * @access protected
 	 */
 

@@ -217,9 +217,9 @@ abstract class DataSet extends Component {
 		}
 
 		// Описание данных не должно быть пустым
-		if ($this->dataDescription->getLength() == 0) {
+		/*if ($this->dataDescription->isEmpty()) {
 			//throw new SystemException('ERR_DEV_EMPTY_DATA_DESCRIPTION', SystemException::ERR_DEVELOPER, $this->getName());
-		}
+		}*/
 
 		return $this->dataDescription;
 	}
@@ -250,11 +250,11 @@ abstract class DataSet extends Component {
 	/**
 	 * Создает построитель
 	 *
-	 * @return Builder
+	 * @return AbstractBuilder
 	 * @access protected
 	 */
 	protected function createBuilder() {
-		return new SimpleBuilder($this->getTitle());
+		return new Builder($this->getTitle());
 	}
 
 	/**

@@ -142,7 +142,7 @@ class DBDataSet extends DataSet {
         //Если не существует таблицы с переводами, то выбираем данные из основной таблицы
         if (!$this->getTranslationTableName()) {
             $dbFields = array();
-            foreach ($this->getDataDescription()->getFieldDescriptions() as $fieldName => $field) {
+            foreach ($this->getDataDescription() as $fieldName => $field) {
                 if (is_null($field->getPropertyValue('customField'))) {
                     if(
                        ($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
@@ -208,7 +208,7 @@ class DBDataSet extends DataSet {
         $dbFields = array();
         $filter = $order = $limit = '';
         //Создаем перечень полей  в формате array('имя основной таблицы' => array('имя поля'=>'имя таблицы.имя поля'), 'имя таблицыпереводов' => array('имя поля'=>'имя таблицы.имя поля'))
-        foreach ($this->getDataDescription()->getFieldDescriptions() as $fieldName => $field) {
+        foreach ($this->getDataDescription() as $fieldName => $field) {
             //Не включаем в набор идентификатор языка
             if (!$field->getPropertyValue('languageID') && $field->getPropertyValue('key') !== true) {
                 //не включаем в набор поля полученные  из конфигурации
@@ -546,7 +546,7 @@ class DBDataSet extends DataSet {
      * Для мультиязычного грида
      * подменяем построитель
      *
-     * @return Builder
+     * @return AbstractBuilder
      * @access protected
      */
 
@@ -569,7 +569,7 @@ class DBDataSet extends DataSet {
 
     protected function createDataDescription() {
         $result = parent::createDataDescription();
-        foreach ($result->getFieldDescriptions() as $fieldName => $fieldMetaData) {
+        foreach ($result as $fieldName => $fieldMetaData) {
             $keyInfo = $fieldMetaData->getPropertyValue('key');
             //Если это внешний ключ
             if (is_array($keyInfo) && in_array($fieldMetaData->getType(), array(FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_MULTI))) {
@@ -624,7 +624,7 @@ class DBDataSet extends DataSet {
         $this->addFilterCondition(array($this->getTableName().'.'.$this->getPK() => $id));
 
         $this->prepare();
-        foreach ($this->getDataDescription()->getFieldDescriptions() as $fieldDescription) {
+        foreach ($this->getDataDescription() as $fieldDescription) {
             $fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
         }
     }

@@ -145,8 +145,9 @@ class Grid extends DBDataSet {
         $this->setFilter($id);
 
         $this->prepare();
-        $fieldDescriptions = $this->getDataDescription()->getFieldDescriptions();
-        foreach ($fieldDescriptions as $fieldName => $fieldDescription) {
+        
+        foreach ($this->getDataDescription() as $fieldName => $fieldDescription) {
+            //@todo Тут можно упростить
             if (($fieldDescription->getType() == FieldDescription::FIELD_TYPE_PFILE) && ($fieldData = $this->getData()->getFieldByName($fieldName)->getData())) {
                 $fieldData = $fieldData[0];
                 if (file_exists($fieldData) && @getimagesize($fieldData)) {
@@ -832,7 +833,7 @@ class Grid extends DBDataSet {
      */
     
     private function buildAttachedFiles($data){
-        $builder = new SimpleBuilder();
+        $builder = new Builder();
         $dd = new DataDescription();
         $f = new FieldDescription('upl_id');
         $dd->addFieldDescription($f);

@@ -41,10 +41,10 @@ class SimpleBuilder extends Builder {
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
         foreach(
             array(
-                'outputFormat',
                 'pattern',
                 'message',
                 'tabName',
+                'tableName',
                 'sort'
             ) as $propertyName
         ) {

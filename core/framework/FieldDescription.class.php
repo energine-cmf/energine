@@ -391,12 +391,12 @@ class FieldDescription extends DBWorker implements Iterator{
             case self::FIELD_TYPE_PWD :
                 $this->setProperty('pattern', '/^.+$/');
                 $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
-                $this->setProperty('outputFormat', '%s');
+                //$this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_HIDDEN :
-                if (is_null($this->getPropertyValue('outputFormat'))) {
+                /*if (is_null($this->getPropertyValue('outputFormat'))) {
                 	$this->setProperty('outputFormat', '%s');
-                }
+                }*/
                 break;
             case self::FIELD_TYPE_EMAIL:
                 if (($this->getPropertyValue('nullable') === false) || is_null($this->getPropertyValue('nullable'))) {
@@ -408,7 +408,7 @@ class FieldDescription extends DBWorker implements Iterator{
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('sort', 1);
                 $this->setProperty('message', $this->translate('MSG_BAD_EMAIL_FORMAT'));
-                $this->setProperty('outputFormat', '%s');
+                //$this->setProperty('outputFormat', '%s');
                 break;
             case  self::FIELD_TYPE_PHONE:
                 if ($this->getPropertyValue('nullable') === false || is_null($this->getPropertyValue('nullable'))) {
@@ -420,7 +420,7 @@ class FieldDescription extends DBWorker implements Iterator{
                 $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('message', $this->translate('MSG_BAD_PHONE_FORMAT'));
-                $this->setProperty('outputFormat', '%s');
+                //$this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_IMAGE:
                 if ($this->getPropertyValue('nullable') === false) {
@@ -428,7 +428,7 @@ class FieldDescription extends DBWorker implements Iterator{
                     $this->setProperty('message', $this->translate('MSG_IMG_IS_NOT_NULL'));
                 }
                 $this->length = true;
-                $this->setProperty('outputFormat', '%s');
+                //$this->setProperty('outputFormat', '%s');
                 $this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_FILE:
@@ -439,7 +439,7 @@ class FieldDescription extends DBWorker implements Iterator{
                     $this->setProperty('message', $this->translate('MSG_FILE_IS_NOT_NULL'));
                 }
                 $this->length = true;
-                $this->setProperty('outputFormat', '%s');
+                //$this->setProperty('outputFormat', '%s');
                 $this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_STRING:
@@ -448,7 +448,7 @@ class FieldDescription extends DBWorker implements Iterator{
                     $this->setProperty('pattern', '/^.+$/');
                     $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
                 }
-                $this->setProperty('outputFormat', '%s');
+                //$this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_FLOAT:
                 $this->length = 10;
@@ -463,7 +463,7 @@ class FieldDescription extends DBWorker implements Iterator{
                     $regexp = '/^[0-9,\.]{0,'.$this->length.'}$/';
                 }
                 $this->setProperty('sort', 1);
-                $this->setProperty('outputFormat', '%f');
+                //$this->setProperty('outputFormat', '%f');
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('message', $this->translate('MSG_BAD_FLOAT_FORMAT'));
                 break;
@@ -488,7 +488,7 @@ class FieldDescription extends DBWorker implements Iterator{
                     $this->setProperty('sort', 1);
                     $this->setProperty('pattern', $regexp);
                     $this->setProperty('message', $message);
-                    $this->setProperty('outputFormat', '%d');
+                    //$this->setProperty('outputFormat', '%d');
                 }
                 break;
             case self::FIELD_TYPE_TEXT:
@@ -497,7 +497,7 @@ class FieldDescription extends DBWorker implements Iterator{
                     $this->setProperty('pattern', '/^.+$/m');
                     $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
                 }
-                $this->setProperty('outputFormat', '%s');
+                //$this->setProperty('outputFormat', '%s');
                 $this->length = true;
                 break;
             case self::FIELD_TYPE_DATETIME:

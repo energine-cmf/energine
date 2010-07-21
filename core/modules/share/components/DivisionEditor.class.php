@@ -496,7 +496,7 @@ final class DivisionEditor extends Grid {
 		    
 			$this->getData()->addField($field);
 		}
-		
+
 	}
 
 	/**

@@ -67,6 +67,9 @@ final class BreadCrumbs extends DataSet {
 
         return $result;
     }
+    protected function createBuilder() {
+        return new SimpleBuilder();
+    }    
     /**
      * Переопределенный метод загрузки данных
      *

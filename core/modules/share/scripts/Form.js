@@ -8,54 +8,54 @@ var Form = new Class({
 		this.singlePath = this.componentElement.getProperty('single_template');
 
         this.form = this.componentElement.getParent('form').addClass('form');
-        
+
 		this.tabPane = new TabPane(this.componentElement, {
 				// onTabChange: this.onTabChange.bind(this)
 				});
 		this.validator = new Validator(this.form, this.tabPane);
 
 		this.richEditors = [], this.uploaders = [], this.textBoxes = [], this.dateControls = [];
-        
+
 		this.form.getElements('textarea.richEditor').each(function(textarea) {
 			this.richEditors.push(new Form.RichEditor(textarea, this,
 					this.fallback_ie));
 
 		}, this);
-        
+
         this.componentElement.getElements('.uploader').each(function(uploader){
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
-        
+
         (this.componentElement.getElements('.inp_date') || []).extend((this.componentElement.getElements('.inp_datetime') || [])).each(function(dateControl){
             this.dateControls.push(
                 (dateControl.hasClass('inp_date')?Energine.createDatePicker(dateControl):Energine.createDateTimePicker(dateControl))
             );
         }, this);
-        
+
         if(this.componentElement.getElement('#attached_files')){
            (function(){new Form.AttachmentPane(this)}).delay(300, this);
         }
-        
+
         /*
         this.componentElement.getElements('.textbox').each(function(textBox){
             this.textBoxes.push(new TextboxList2(textBox));
-        }, this);   
+        }, this);
         */
 		this.componentElement.getElements('.pane').setStyles({
 					'border' : '1px dotted #777',
 					'overflow' : 'auto'
 				});
 	},
-	attachToolbar : function(toolbar) {    	
-		this.toolbar = toolbar;		
+	attachToolbar : function(toolbar) {
+		this.toolbar = toolbar;
 		var toolbarContainer = this.componentElement.getElement('.e-pane-b-toolbar');
 		if(toolbarContainer){
 			toolbarContainer.adopt(this.toolbar.getElement());
 		}
 		else {
 			this.componentElement.adopt(this.toolbar.getElement());
-		}		
-        var afterSaveActionSelect; 
+		}
+        var afterSaveActionSelect;
         if(afterSaveActionSelect = this.toolbar.getControlById('after_save_action')){
             var savedActionState = Cookie.read('after_add_default_action');
             if(savedActionState){
@@ -79,9 +79,9 @@ var Form = new Class({
             if(nextActionSelector = this.toolbar.getControlById('after_save_action')){
                 Cookie.write('after_add_default_action', nextActionSelector.getValue(), {path:new URI(Energine.base).get('directory'), duration:1});
                 response.afterClose = nextActionSelector.getValue();
-            }                    
+            }
         }
-        ModalBox.setReturnValue(response); 
+        ModalBox.setReturnValue(response);
         this.close();
     },
 	close : function() {
@@ -124,14 +124,14 @@ Form.Uploader = new Class({
         data:{'NRGNSID':Cookie.read('NRGNSID'), 'element': this.element.getProperty('nrgn:input')},
         typeFilter: {
             'All files (*.*)': '*.*',
-            'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',            
+            'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
             'Flash video (*.flv)': '*.flv'
         },
         fileSizeMax: 2 * 1024 * 1024,
         onFileComplete: this.afterUpload.bind(this),
         onFail: this.handleError.bind(this),
         onSelectFail: this.handleError.bind(this)
-        });           
+        });
     },
     afterUpload: function(uploadInfo){
         this._show_preview(uploadInfo);
@@ -153,19 +153,19 @@ Form.Uploader = new Class({
                 }
         }
         else {
-            
+
         }
     },
-    
+
     //todo Сделать удаление файла
     removeFilePreview: function(fieldId, control){
         var tmpNode;
         $(fieldId).value = '';
-        
+
         if(tmpNode = $(fieldId + '_preview')){
             tmpNode.setProperty('src', '');
         }
-        
+
         if(tmpNode = $(fieldId + '_link')){
             tmpNode.set('html', '');
         }
@@ -181,7 +181,7 @@ Form.AttachmentPane =  new Class({
         $('insert_attachment').addEvent('click', function(event){
             Energine.cancelEvent(event);
             ModalBox.open(
-                { 'url': form.singlePath + 'file-library/media/', 
+                { 'url': form.singlePath + 'file-library/media/',
                   'onClose': this._insertRow.bind(this)});
         }.bind(this));
 
@@ -203,7 +203,7 @@ Form.AttachmentPane =  new Class({
         if(!file.response.error){
             var data = JSON.decode(file.response.text);
             this._insertRow(data);
-        }    
+        }
     },
     upAttachment: function(uplID){
         this._moveAttachment(uplID, 'up');
@@ -214,16 +214,16 @@ Form.AttachmentPane =  new Class({
     _moveAttachment: function(uplID, direction){
         var currentRow, changeRow, position;
         if(currentRow = $('row_'+uplID)){
-            
+
             if(direction == 'up'){
                 changeRow = currentRow.getPrevious();
-                position = 'before';    
+                position = 'before';
             }
             else {
                 changeRow = currentRow.getNext();
                 position = 'after';
             }
-            
+
             if(changeRow){
                 currentRow.inject(changeRow, position);
             }
@@ -245,7 +245,7 @@ Form.AttachmentPane =  new Class({
                     new Element('tr', {'id': 'row_' + data.upl_id}).adopt([
                         new Element('td').adopt([
                             new Element('button',
-                                {'type': 'button', 'events': {'click': function(event){
+                                {'type': 'button', 'events': {'click': function( event){
                                     this.delAttachment(data.upl_id);
                                 }.bind(this)
                             }
@@ -275,7 +275,7 @@ Form.AttachmentPane =  new Class({
                 )
             }
         }
-       this._zebraRows(); 
+       this._zebraRows();
     },
     delAttachment: function(id){
         $('row_' + id).dispose();
@@ -287,7 +287,7 @@ Form.AttachmentPane =  new Class({
             );
 
         }
-        this._zebraRows(); 
+        this._zebraRows();
     }
 });
 // Предназначен для последующей имплементации
@@ -306,20 +306,20 @@ Form.Label = {
             if (segmentObject = $('smap_pid_segment'))
                 segmentObject.innerHTML = segment;
             Cookie.write(
-                'last_selected_smap', 
+                'last_selected_smap',
                 JSON.encode({'id':id, 'name': name, 'segment': segment}),
                 {path:new URI(Energine.base).get('directory'), duration:1}
-            );    
+            );
         }
     },
     prepareLabel: function(treeURL, restore){
         if(!arguments[1]){
             restore = false;
         }
-        if(this.obj = $('sitemap_selector')){        
+        if(this.obj = $('sitemap_selector')){
             this.obj.addEvent('click', this.showTree.pass(treeURL, this));
             if(restore){
-                this.restoreLabel();    
+                this.restoreLabel();
             }
         }
     },
@@ -369,7 +369,7 @@ Form.RichEditor = new Class({
 								clear : 'both',
 								overflow : 'auto'
 							}).set('html', this.textarea.value);
-                    if(this.textarea.hasClass('half'))this.area.addClass('half');        
+                    if(this.textarea.hasClass('half'))this.area.addClass('half');
                     if(this.textarea.hasClass('quarter'))this.area.addClass('quarter');
 					this.area.replaces(this.textarea);
                     this.area.addEvent('keydown', function(){this.hidden.fireEvent('keydown')}.bind(this));
@@ -499,9 +499,9 @@ Form.RichEditor = new Class({
 					this.textarea.replaces(this.area);
 				} else {
 					this.fallback_ie = false;
-					this.area.set('html', 
+					this.area.set('html',
                         this.cleanMarkup(
-                            this.form.singlePath,      
+                            this.form.singlePath,
                             this.textarea.value,
                             false
                         )

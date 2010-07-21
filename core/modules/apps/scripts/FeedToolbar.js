@@ -31,7 +31,7 @@ var FeedToolbar = new Class({
 		this.singlePath = Container.getProperty('single_template');
         var feedElement = $(Container.getProperty('linkedTo'));
         this.disableControls();
-        
+
         if(feedElement){
             this._prepareDataSet(feedElement);
             if(this.selected = feedElement.getProperty('current')){

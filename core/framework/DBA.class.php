@@ -195,7 +195,6 @@ abstract class DBA extends Object {
 		$result = false;
 
 		$query = $this->constructQuery(func_get_args());
-		//simple_log($query);
 		$this->lastQuery = $query;
 		$res = $this->slavePdo->query($query);
 
@@ -429,10 +428,12 @@ abstract class DBA extends Object {
 	 * @staticvar $foreignKeyInfo кеш результатов
 	 */
 	public function getForeignKeyInfo($tableName, $fieldName) {
-		static $foreignKeyInfo;
+		static $foreignKeyInfo, $createTableInfo;
+        if(!isset($createTableInfo[$tableName])){
+            $createTableInfo[$tableName] = $this->selectRequest("SHOW CREATE TABLE `$tableName`"); 
+        }
 		if(!isset($foreignKeyInfo[$tableName][$fieldName])){
-			$res = $this->selectRequest("SHOW CREATE TABLE `$tableName`");
-			$res = preg_match_all("/FOREIGN KEY \(`([_a-z0-9]+)`\) REFERENCES `([^`]+)` \(`([^`]+)`\)/m", $res[0]['Create Table'], $matches, PREG_SET_ORDER);
+			$res = preg_match_all("/FOREIGN KEY \(`([_a-z0-9]+)`\) REFERENCES `([^`]+)` \(`([^`]+)`\)/m", $createTableInfo[$tableName][0]['Create Table'], $matches, PREG_SET_ORDER);
 			if(!empty($res)){
 				foreach($matches as $row){
 					$foreignKeyInfo[$tableName][$row[1]] = array('tableName' => $row[2], 'fieldName' => $row[3]);

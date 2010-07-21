@@ -126,7 +126,7 @@ var DivManager = new Class({
                         window.top.location.href = Energine.base + returnValue.url;    
                     }
                     else {
-                        this.reloadGrid();
+                        this.reload(true);
                     }                    
                 }
             }.bind(this),

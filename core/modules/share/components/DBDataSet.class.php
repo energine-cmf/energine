@@ -78,7 +78,7 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Добавлен параметр tableName
+     * Добавлены параметры tableName, onlyCurrentLang, editable
      *
      * @return type
      * @access protected

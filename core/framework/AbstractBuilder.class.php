@@ -239,6 +239,7 @@ abstract class AbstractBuilder extends DBWorker {
 
                     default: // not used
                 }
+                
                 $result->nodeValue = $fieldValue;
             }
 
@@ -258,6 +259,9 @@ abstract class AbstractBuilder extends DBWorker {
         $date = intval($date);
         if ($format != '%E') {
             $result = @strftime($format, $date);
+            if(!$result) {
+                $result = $date;
+            }
         }
         else {
             $result = '';

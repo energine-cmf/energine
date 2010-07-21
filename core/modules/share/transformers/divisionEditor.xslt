@@ -176,51 +176,6 @@
     	</div>
     </xsl:template>
     
-    <!-- поле выбора шаблона -->
-    <!--<xsl:template match="field[@name='tmpl_id'][ancestor::component[@class='DivisionEditor'][@type='form']]">
-        <div class="field">
-    	    <xsl:if test="not(@nullable)">
-                <xsl:attribute name="class">field required</xsl:attribute>
-            </xsl:if>
-            <xsl:if test="@title">
-                <div class="name">
-                    <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes"/></label>
-                </div>
-            </xsl:if>
-    		<div class="control">
-                <select id="{@name}">
-                    <xsl:attribute name="name"><xsl:choose>
-                        <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name" />]</xsl:when>
-                        <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
-                    </xsl:choose></xsl:attribute>
-                    <xsl:if test="@nullable='1'">
-                        <option></option>
-                    </xsl:if>
-                    <xsl:for-each select="options/option[@tmpl_is_system='']">
-                    	<xsl:sort select="@tmpl_order_num" order="ascending" data-type="number"/>
-                        <option value="{@id}">
-                            <xsl:if test="@selected">
-                                <xsl:attribute name="selected">selected</xsl:attribute>
-                            </xsl:if>
-                            <xsl:value-of select="."/>
-                        </option>
-                    </xsl:for-each>
-                    <optgroup label="System templates">
-                    <xsl:for-each select="options/option[@tmpl_is_system='1']">
-                    	<xsl:sort select="@tmpl_order_num" order="ascending" data-type="number"/>
-                        <option disabled="disabled" value="{@id}">
-                            <xsl:if test="@selected">
-                                <xsl:attribute name="selected">selected</xsl:attribute>
-                            </xsl:if>
-                            <xsl:value-of select="."/>
-                        </option>
-                    </xsl:for-each>
-                    </optgroup>
-                </select>
-            </div>
-    	</div>
-    </xsl:template>-->
-    
     <xsl:template match="record[parent::recordset[parent::component[@class='DivisionEditor'][@type='list']]]"/>
     <!-- /компонент DivisionEditor -->
     

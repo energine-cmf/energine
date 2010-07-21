@@ -16,7 +16,7 @@
                     <xsl:for-each select="recordset/record">
                        <li id="{field[@name='comment_id']}_comment">
                             <xsl:if test="field[@name='u_avatar_img'] != ''">
-                                <img widht="50" height="50" src="{field[@name='u_avatar_img']}" />
+                                <img width="50" height="50" src="{field[@name='u_avatar_img']}" />
                             </xsl:if>
                             <span><xsl:value-of select="field[@name='comment_created']"/> - <xsl:value-of select="field[@name='u_fullname']"/></span>
                             <p><xsl:value-of select="field[@name='comment_name']"/></p>

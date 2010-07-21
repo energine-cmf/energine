@@ -43,6 +43,8 @@ class BlogPost extends DBDataSet {
 	}
 	
 	protected function edit(){
+        $this->checkAccess();
+        
         if($postId = $this->getActionParams()){
 			// редактируем существующий пост
         	list($postId) = $postId;
@@ -51,9 +53,17 @@ class BlogPost extends DBDataSet {
 			throw new SystemException('ERR_404', SystemException::ERR_404);
 		}
 
-        $this->setProperty('action', "/~sign/p1/blogs/post/$postId/save/");
+        $this->setDataSetAction("post/$postId/save/");
+
 		$this->prepare();
 	}
+
+    private function checkAccess(){
+        if(!AuthUser::getInstance()->isAuthenticated()){
+			// @todo add SystemException::ERR_401
+			throw new SystemException('ERR_404', SystemException::ERR_404);
+		}
+    }
 
     /**
      * Сохранить пост
@@ -64,10 +74,7 @@ class BlogPost extends DBDataSet {
      * @return void
      */
 	protected function save(){
-		if(!AuthUser::getInstance()->isAuthenticated()){
-			// @todo add SystemException::ERR_401
-			throw new SystemException('ERR_404', SystemException::ERR_404);
-		}
+		$this->checkAccess();
 		
 		if(!isset($_POST['blog_post'])){
 			// @todo redirect to edit|create
@@ -121,13 +128,10 @@ class BlogPost extends DBDataSet {
 	 * @throws SystemException Если юзер не авторизован или если он не завёл себе блог
 	 */
 	protected function create(){
-		if(!AuthUser::getInstance()->isAuthenticated()){
-			// @todo add SystemException::ERR_401
-			throw new SystemException('ERR_404', SystemException::ERR_404);
-		}
+		$this->checkAccess();
 		
         $this->setType(self::COMPONENT_TYPE_FORM);
-        $this->setProperty('action', '/~sign/p1/blogs/post/save/');
+        $this->setDataSetAction("post/save/");
 
         $this->prepare();
 	}
@@ -297,6 +301,7 @@ class BlogPost extends DBDataSet {
     		$this->getDataDescription()->getFieldDescriptionByName('blog_id')->setType(FieldDescription::FIELD_TYPE_INT);
     	}
     	else{
+			$this->getDataDescription()->getFieldDescriptionByName('post_text_rtf')->setType(FieldDescription::FIELD_TYPE_HTML_BLOCK);
     		$this->setType(self::COMPONENT_TYPE_FORM);
     	}
     	

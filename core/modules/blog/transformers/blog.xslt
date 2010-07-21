@@ -41,7 +41,7 @@
                    <xsl:value-of select="field[@name='post_name']"/>
                 </a>
         	</h4>
-            <p><xsl:value-of select="field[@name='post_text_rtf']"/></p>
+            <p><xsl:value-of select="field[@name='post_text_rtf']" disable-output-escaping="yes"/></p>
             
             <span>Комментариев  
 			    <xsl:value-of select="field[@name='comments_num']"/>
@@ -70,7 +70,7 @@
        	<h4>
                <xsl:value-of select="field[@name='post_name']"/>
        	</h4>
-        <p><xsl:value-of select="field[@name='post_text_rtf']"/></p>
+        <p><xsl:value-of select="field[@name='post_text_rtf']" disable-output-escaping="yes"/></p>
         
         <div class="blog_comments">
                 <xsl:if test="field[@name='comments'] != ''">
@@ -83,7 +83,13 @@
                 </div>
             </xsl:if>
         </div>
-
     </xsl:template>
+
+<!--    <xsl:template match="record[ancestor::component[@class='BlogPost'][@componentAction='edit']]">
+        <form action="{$BASE}{$LANG_ABBR}blogs/post/{@post_id}/save/" method="post" class="form">
+            <xsl:apply-templates/>
+        </form>
+
+    </xsl:template>-->
 
 </xsl:stylesheet>

@@ -38,7 +38,7 @@
                  <pattern>/post/create/</pattern>
             </uri_patterns>
             <javascript>
-            	<object name="ValidForm" />
+            	<object name="BlogForm" />
             </javascript>
             <fields>
                 <field name="post_name"/>

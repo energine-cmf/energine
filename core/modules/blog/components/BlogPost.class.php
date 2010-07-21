@@ -41,7 +41,13 @@ class BlogPost extends DBDataSet {
     protected function viewBlog(){
     	$this->prepare();
 	}
-	
+
+    /**
+     * Редактируем пост
+     *
+     * @throws SystemException если пост не существует
+     * @return void
+     */
 	protected function edit(){
         $this->checkAccess();
         
@@ -292,16 +298,17 @@ class BlogPost extends DBDataSet {
      * @return void
      */
     protected function prepare(){
+        // добавляем id текущего пользователя
     	if(AuthUser::getInstance()->isAuthenticated()){
     		$this->setProperty('curr_user_id', AuthUser::getInstance()->getID());
     	}
     	parent::prepare();
-    	
+
+        // в выводе методов main, view etc - blog_id представлен как список - отменяем
     	if($this->getAction() != 'create' and $this->getAction() != 'edit'){
     		$this->getDataDescription()->getFieldDescriptionByName('blog_id')->setType(FieldDescription::FIELD_TYPE_INT);
     	}
     	else{
-			$this->getDataDescription()->getFieldDescriptionByName('post_text_rtf')->setType(FieldDescription::FIELD_TYPE_HTML_BLOCK);
     		$this->setType(self::COMPONENT_TYPE_FORM);
     	}
     	
@@ -322,7 +329,7 @@ class BlogPost extends DBDataSet {
     }
     
    /**
-     * Просмотр поста комментариями
+     * Просмотр поста с комментариями
      *
      * @access protected
      * @return void

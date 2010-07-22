@@ -13,8 +13,7 @@
                 Комментарии (<span><xsl:value-of select="count(recordset/record)"/></span>)
                 <ul>
                     <xsl:call-template name="COMMENT">
-                        <xsl:with-param name="recordset" select="./recordset" />
-                        <xsl:with-param name="IS_SHOW_COMMENT_LINK" select="$IS_SHOW_COMMENT_LINK" />                      
+                        <xsl:with-param name="IS_SHOW_COMMENT_LINK" select="$IS_SHOW_COMMENT_LINK" />
                     </xsl:call-template>
                 </ul>
             </div>
@@ -22,7 +21,6 @@
     </xsl:template>
 
     <xsl:template name="COMMENT">
-        <xsl:param name="recordset" />
         <xsl:param name="IS_SHOW_COMMENT_LINK" />
         <xsl:for-each select="recordset/record">
            <li id="{field[@name='comment_id']}_comment">
@@ -35,15 +33,13 @@
                 <p>
                     <xsl:value-of select="field[@name='comment_name']"/>
                 </p>
-
-                <xsl:if test="$IS_SHOW_COMMENT_LINK">
+                <xsl:if test="$IS_SHOW_COMMENT_LINK='1'">
                     <span><a href="#">Комментировать</a></span>
                 </xsl:if>
 
                 <xsl:if test="recordset">
                     <ul>
                         <xsl:call-template name="COMMENT">
-                            <xsl:with-param name="recordset" select="./recordset" />
                             <xsl:with-param name="IS_SHOW_COMMENT_LINK" select="$IS_SHOW_COMMENT_LINK" />
                         </xsl:call-template>
                     </ul>

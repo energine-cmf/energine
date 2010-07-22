@@ -16,6 +16,21 @@
  */
 class BlogPost extends DBDataSet {
     /**
+     * Календарь
+     *
+     * @access private
+     * @var Calendar
+     */
+    private $calendar;
+
+    /**
+     * sql-фрагмент  условия запроса выборки записей в блогах
+     * @see BlogPost::loadPosts()
+     * @var string
+     */
+    private $calendarFilter = '';
+
+    /**
      * Конструктор класса
      *
      * @param string $name
@@ -29,8 +44,85 @@ class BlogPost extends DBDataSet {
         $this->setTableName('blog_post');
 //        $this->setFilter(array('post_is_draft'=>0));
         $this->setParam('onlyCurrentLang', true);
-        
         $this->setOrder('post_created', QAL::DESC);
+
+        if (in_array($this->getAction(), array('main', 'view', 'viewBlog'))) {
+            $calendarParams = array();
+            //наполняем $additionalFilter и $calendarParams
+            if($additionalFilter = $this->createCalendarFilters($calendarParams)){
+                // $this->addFilterCondition() бесполезен  - @see BlogPost::loadPosts()
+                $this->calendarFilter = $additionalFilter;
+            }
+
+            if ($this->getParam('showCalendar')) {
+                //Создаем компонент календаря новостей
+                $this->document->componentManager->addComponent(
+                    $this->calendar =
+                            $this->document->componentManager->createComponent('blogCalendar', 'blog', 'BlogCalendar', $calendarParams)
+                );
+            }
+        }
+    }
+
+    /**
+     * Корректируем запросы по параметрам календаря из ActionParams
+     *
+     * @param  array $calendarParams Параметры запроса построения календаря
+     * @return string where-часть запроса выборки постов
+     */
+    protected function createCalendarFilters(array &$calendarParams){
+        $additionalFilter = '';
+
+        $ap = $this->getActionParams(true);
+        if (in_array($this->getAction(), array('main', 'viewBlog'))) {
+            $dateFieldName = 'p.post_created';
+            if (isset($ap['year']) && isset($ap['month']) &&
+                    isset($ap['day'])) {
+                if ($this->getParam('showCalendar')) {
+                    $calendarParams['month'] = $ap['month'];
+                    $calendarParams['year'] = $ap['year'];
+                }
+                //Фильтр будет добавлен позже, после того как будет обработан календарь, который использует фильтры компонента
+                $additionalFilter =
+                        'DAY('.$dateFieldName.') = "' . $ap['day'] .
+                                '" AND MONTH('.$dateFieldName.') = "' .
+                                $ap['month'] .
+                                '" AND YEAR('.$dateFieldName.') = "' .
+                                $ap['year'] . '"';
+            }
+            elseif (isset($ap['year']) && isset($ap['month'])) {
+                if ($this->getParam('showCalendar')) {
+                    $calendarParams['month'] = $ap['month'];
+                    $calendarParams['year'] = $ap['year'];
+                }
+                $additionalFilter =
+                        'MONTH('.$dateFieldName.') = "' . $ap['month'] .
+                                '" AND YEAR('.$dateFieldName.') = "' .
+                                $ap['year'] . '"';
+            }
+            elseif (isset($ap['year'])) {
+                if ($this->getParam('showCalendar')) {
+                    $calendarParams['year'] = $ap['year'];
+                }
+                $additionalFilter =
+                        'YEAR('.$dateFieldName.') = "' . $ap['year'] . '"';
+            }
+
+            if (($this->getAction() == 'viewBlog') && ($this->getParam('showCalendar'))){
+                // ищем посты только одного блога
+                $blogId = $this->getActionParams();
+                list($blogId) = $blogId;
+                $calendarParams['blog_id'] = $blogId;
+                $calendarParams['template'] = "blogs/blog/$blogId/";
+            }
+        }
+        elseif (($this->getAction() == 'view') && ($this->getParam('showCalendar'))){
+            $calendarParams['month'] = $ap['month'];
+            $calendarParams['year'] = $ap['year'];
+            $calendarParams['date'] = DateTime::createFromFormat('Y-m-d', $ap['year'].'-'.$ap['month'].'-'.$ap['day']);
+        }
+        
+        return $additionalFilter;
     }
     
     /**
@@ -127,6 +219,26 @@ class BlogPost extends DBDataSet {
 		}
 		$this->response->redirectToCurrentSection("post/$postId/edit/");
 	}
+
+    /**
+     * Действие по-умолчанию.
+     *
+     * @access protected
+     * @return boolean
+     */
+    protected function main(){
+        $res = parent::main();
+
+        if ($f = $this->getData()->getFieldByName('post_created')) {
+            foreach ($f as $fieldIndex => $date) {
+                $f->setRowProperty($fieldIndex, 'year', date('Y', $date));
+                $f->setRowProperty($fieldIndex, 'month', date('n', $date));
+                $f->setRowProperty($fieldIndex, 'day', date('j', $date));
+            }
+        }
+
+        return $res;
+    }
 	
 	/**
 	 * Создать новый пост
@@ -218,6 +330,10 @@ class BlogPost extends DBDataSet {
     	if($blogId){
     		$where .= ' and b.blog_id ='. intval($blogId);
     	}
+        if($this->calendarFilter){
+            // фильтры календаря, должны использоваться только в self::main() и self::viewBlog()
+            $where .= " and ({$this->calendarFilter})";
+        }
         if($limit) $limit = ' LIMIT '. $limit;
          
         $sql = "SELECT p.*, b.blog_name, u.u_fullname, u.u_nick, u.u_avatar_img, u.u_id 
@@ -326,7 +442,8 @@ class BlogPost extends DBDataSet {
         return array_merge(
         parent::defineParams(),
         array(
-        'active' => true
+        'active' => true,
+        'showCalendar' => 1
         )
         );
     }

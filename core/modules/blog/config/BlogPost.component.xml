@@ -1,26 +1,40 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <methods>
-        <method name="main">
-            <uri_patterns>
-                <pattern>/page-[pageNumber]/</pattern>
-                <pattern>/</pattern>
-             </uri_patterns>
-             <fields>
-                <field name="post_id"/>
-                <field name="blog_id"/>
-                <field name="post_created" outputFormat="%d.%m.%Y %H:%M"/>                
-                <field name="post_name"/>
-                <field name="post_text_rtf"/>                                                
-            </fields>             
-            <toolbar>
-                <control id="view" title="BTN_GO" type="link"/>
-            </toolbar>
-        </method>
         <method name="viewBlog">
             <uri_patterns>
             	<pattern>/blog/[blogID]/</pattern>
                 <pattern>/blog/[blogID]/page-[pageNumber]/</pattern>
+
+                <pattern>/blog/[blogID]/[year]/</pattern>
+                <pattern>/blog/[blogID]/[year]/page-[pageNumber]/</pattern>
+                <pattern>/blog/[blogID]/[year]/[month]/</pattern>
+                <pattern>/blog/[blogID]/[year]/[month]/page-[pageNumber]/</pattern>
+                <pattern>/blog/[blogID]/[year]/[month]/[day]/</pattern>
+                <pattern>/blog/[blogID]/[year]/[month]/[day]/page-[pageNumber]/</pattern>
+             </uri_patterns>
+             <fields>
+                <field name="post_id"/>
+                <field name="blog_id"/>
+                <field name="post_created" outputFormat="%d.%m.%Y %H:%M"/>
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>
+            </fields>
+            <toolbar>
+                <control id="view" title="BTN_GO" type="link"/>
+            </toolbar>
+        </method>
+        
+        <method name="main">
+            <uri_patterns>
+                <pattern>/page-[pageNumber]/</pattern>
+                <pattern>/</pattern>
+                <pattern>/[year]/</pattern>
+                <pattern>/[year]/page-[pageNumber]/</pattern>
+                <pattern>/[year]/[month]/</pattern>
+                <pattern>/[year]/[month]/page-[pageNumber]/</pattern>
+                <pattern>/[year]/[month]/[day]/</pattern>
+                <pattern>/[year]/[month]/[day]/page-[pageNumber]/</pattern> 
              </uri_patterns>
              <fields>
                 <field name="post_id"/>
@@ -33,6 +47,7 @@
                 <control id="view" title="BTN_GO" type="link"/>
             </toolbar>
         </method>
+
         <method name="create">
         	<uri_patterns>
                  <pattern>/post/create/</pattern>

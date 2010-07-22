@@ -3,20 +3,23 @@
 	<methods>
 		<method name="main">
 			<javascript>
-				<object name="GridManager" />
+				<object name="SiteManager" />
 			</javascript>
             <fields>
-                <field name="site_id"></field>
-                <field name="site_protocol"></field>
-                <field name="site_host"></field>
-                <field name="site_root"></field>
-                <field name="site_name"></field>
+                <field name="site_id"/>
+                <field name="site_protocol"/>
+                <field name="site_host"/>
+                <field name="site_port" type="hidden"/>
+                <field name="site_root"/>
+                <field name="site_name"/>
             </fields>			
 			<toolbar>
 				<control id="add" title="BTN_ADD" type="button" onclick="add" />
-				<control id="edit" title="BTN_EDIT" type="button" onclick="edit" />
-				<control id="delete" title="BTN_DELETE" type="button"
-					onclick="del" />
+                <control id="edit" title="BTN_EDIT" type="button" onclick="edit" />
+                <control id="sep01" type="separator" />
+                <control id="go" title="BTN_GO" type="button" onclick="go" />
+                <control id="sep02" type="separator" />
+                <control id="delete" title="BTN_DELETE" type="button" onclick="del" />
 				<!--
 					<control type="button" id="up" title="BTN_MOVE_UP" onclick="up" />
 					<control type="button" id="down" title="BTN_MOVE_DOWN"

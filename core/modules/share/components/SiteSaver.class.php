@@ -104,7 +104,7 @@
         if(is_array($source)){
            $oldtoNewMAP = $this->copyRows($source, null, '', $destinationSiteID);
            foreach ($oldtoNewMAP as $oldID => $newID) {
-            $this->dbh->selectRequest('
+            $this->dbh->modifyRequest('
                 INSERT INTO share_sitemap_translation( 
                     smap_id, 
                     lang_id, 
@@ -127,7 +127,14 @@
                  WHERE smap_id = %s
                  ', $newID, $oldID
             );
-            $this->dbh->selectRequest(
+            $this->dbh->modifyRequest(
+                'INSERT INTO share_sitemap_tags(smap_id, tag_id)
+                 SELECT %s, tag_id
+                    FROM share_sitemap_tags
+                    WHERE smap_id = %s
+                ', $newID, $oldID
+            );
+            $this->dbh->modifyRequest(
                 'INSERT INTO share_access_level '.
                 '(smap_id, right_id, group_id) '.
                 'SELECT %s, al.right_id, al.group_id '.
@@ -140,7 +147,7 @@
     }
     
     /**
-      * Рекурсивный итератор по набору данніх для копирования 
+      * Рекурсивный итератор по набору данных для копирования 
       * 
       * @return void
       * @access private

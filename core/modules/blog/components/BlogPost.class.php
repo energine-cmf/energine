@@ -161,6 +161,7 @@ class BlogPost extends DBDataSet {
     	$data = false;
     	
     	if($this->getAction() == 'main') {
+            // все последние посты
 	    	if(is_array($res = $this->loadLastPosts())){
 				$data = $res;
 				$this->addUserInfoDataDescription();
@@ -168,6 +169,7 @@ class BlogPost extends DBDataSet {
 	        }
     	}
     	elseif($this->getAction() == 'viewBlog') {
+            // все посты одного блога
     		$blogId = $this->getActionParams();
         	list($blogId) = $blogId;
 	    	if(is_array($data = $this->loadBlog($blogId))){
@@ -177,6 +179,7 @@ class BlogPost extends DBDataSet {
 	        else $data = false;
     	}
     	elseif($this->getAction() == 'view') {
+            // один пост
     		$postId = $this->getActionParams();
         	list($postId) = $postId;
 	    	if(is_array($data = $this->loadPosts($postId))){
@@ -200,7 +203,7 @@ class BlogPost extends DBDataSet {
     /**
      * Записи в блогах
      * 
-     * Безпараметров возвращает все записи в блогах
+     * Без параметров возвращает все записи в блогах
      * 
      * @param int $postId
      * @param int $blogId

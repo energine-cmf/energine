@@ -19,7 +19,7 @@
  * @author dr.Pavka
  * @final
  */
-final class ComponentManager extends Object {
+final class ComponentManager extends Object  {
 
     /**
      * @access private

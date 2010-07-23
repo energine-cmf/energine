@@ -49,6 +49,10 @@ abstract class DBA extends Object {
 	 * @var PDO
 	 */
 	private $slavePdo;
+    /**
+     * @var DBStructureInfo
+     */
+    private $dbCache;
 
 	/*
 	 * Типы полей таблиц БД:
@@ -157,6 +161,7 @@ abstract class DBA extends Object {
 			else{
 				$this->slavePdo = $this->pdo;
 			}
+            $this->dbCache = new DBStructureInfo($this->pdo);
 			 
 		}
 		catch (PDOException $e) {
@@ -370,7 +375,7 @@ abstract class DBA extends Object {
 	 * @staticvar $columnsInfo  - кеш полей таблицы
 	 */
 	public function getColumnsInfo($tableName) {
-		static $columnsInfo;
+/*		static $columnsInfo;
 
 		if(!isset($columnsInfo[$tableName])){
 			$res = $this->selectRequest("SHOW COLUMNS FROM `$tableName`");
@@ -409,7 +414,13 @@ abstract class DBA extends Object {
 				$columnsInfo[$tableName][$name] = compact('length', 'nullable', 'default', 'key', 'type' , 'tableName', 'index');
 			}
 		}
-		return $columnsInfo[$tableName];
+		return $columnsInfo[$tableName];*/
+
+        //return $this->dbCache->getTableMeta($tableName);
+
+        $result = $this->dbCache->getTableMeta($tableName);
+//inspect($result);
+        return $result;
 	}
 
 	/**
@@ -427,7 +438,7 @@ abstract class DBA extends Object {
 	 * @return mixed
 	 * @staticvar $foreignKeyInfo кеш результатов
 	 */
-	public function getForeignKeyInfo($tableName, $fieldName) {
+/*	public function getForeignKeyInfo($tableName, $fieldName) {
 		static $foreignKeyInfo, $createTableInfo;
         if(!isset($createTableInfo[$tableName])){
             $createTableInfo[$tableName] = $this->selectRequest("SHOW CREATE TABLE `$tableName`"); 
@@ -445,7 +456,7 @@ abstract class DBA extends Object {
 			$foreignKeyInfo[$tableName][$fieldName] = false;
 		}
 		return $foreignKeyInfo[$tableName][$fieldName];
-	}
+	}*/
 
 	/**
 	 * Конвертирует тип данных из описания БД (MySQL) в наш, системный тип.
@@ -454,7 +465,7 @@ abstract class DBA extends Object {
 	 * @param string $mysqlType
 	 * @return string
 	 */
-	private function convertType($mysqlType) {
+/*	private function convertType($mysqlType) {
 		$result = $mysqlType;
 		switch ($mysqlType) {
 			case 'TINYINT':
@@ -501,7 +512,7 @@ abstract class DBA extends Object {
 			default: // не используется
 		}
 		return $result;
-	}
+	}*/
 
 	/**
 	 * Возвращает для таблицы $tableName имя таблицы с переводами,
@@ -510,15 +521,16 @@ abstract class DBA extends Object {
 	 * @access public
 	 * @param string $tableName
 	 * @return mixed
-	 * @staticvar $translationTables array кеш имен таблиц-переводов
 	 */
 	public function getTranslationTablename($tableName) {
-		static $translationTables;
+/*		static $translationTables;
 		 
 		if(!isset($translationTables[$tableName])){
 			$translationTables[$tableName] = $this->tableExists($tableName.'_translation');
 		}
 		return $translationTables[$tableName];
+*/
+        return $this->tableExists($tableName.'_translation');  
 	}
 	
 	/**
@@ -527,17 +539,17 @@ abstract class DBA extends Object {
 	 * @param $tableName string имя таблицы
 	 * @return boolean
 	 * @access public
-	 * @staticvar $tables array кеш существующих таблиц
 	 */
 	public function tableExists($tableName){
-		static $tables;
+		/*static $tables;
 		
 		if(!isset($tables[$tableName])){
             $res = $this->selectRequest('SHOW TABLES LIKE \''.$tableName.'\'');
             $tables[$tableName] = (empty($res) || $res === true) ? false : $tableName;
 		}
 		
-		return $tables[$tableName]; 
+		return $tables[$tableName];*/
+		return ($this->dbCache->tableExists($tableName))?$tableName:false;
 	}
 
 	/**

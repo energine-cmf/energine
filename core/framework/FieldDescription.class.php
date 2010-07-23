@@ -768,6 +768,7 @@ class FieldDescription extends DBWorker implements Iterator{
     public static function intersect(FieldDescription $configFieldDescription, FieldDescription $dbFieldDescription) {
         $type = $configFieldDescription->getType();
         $mode = $configFieldDescription->getMode();
+
         if (!is_null($type)) {
         	$dbFieldDescription->setProperty('origType', $dbFieldDescription->getType());
             //меняем тип

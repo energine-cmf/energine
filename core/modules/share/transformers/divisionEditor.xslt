@@ -45,6 +45,7 @@
             </div>
             <div class="e-pane-content">
                 <div id="{$TAB_ID}">
+                    <xsl:apply-templates select="$COMPONENTS[@class='SiteList']" mode="insideEditor"/>
                     <div id="treeContainer" class="e-divtree-select"></div>
                 </div>
             </div>
@@ -178,7 +179,8 @@
     
     <xsl:template match="record[parent::recordset[parent::component[@class='DivisionEditor'][@type='list']]]"/>
     <!-- /компонент DivisionEditor -->
-    
+
+    <!--Обычный список сайтов-->
     <xsl:template match="component[@class='SiteList']">
         <xsl:if test="not(recordset[@empty])">
             <div class="site_list_box">
@@ -201,5 +203,18 @@
             <a href="{$BASE}{$LANG_ABBR}{../../@template}show/{field[@name='site_id']}/"><xsl:value-of select="field[@name='site_name']"/></a>
         </li>
     </xsl:template>
-    
+
+    <xsl:template match="component[@class='SiteList' and (following::component[@class='DivisionEditor'] or preceding::component[@class='DivisionEditor'])]" />
+
+    <xsl:template match="component[@class='SiteList' and (following::component[@class='DivisionEditor'] or preceding::component[@class='DivisionEditor'])]"  mode="insideEditor">
+        <select onchange="document.location = '{$BASE}{$LANG_ABBR}{@single_template}show/' + this.options[this.selectedIndex].value + '/';">
+            <xsl:for-each select="recordset/record">
+                <option value="{field[@name='site_id']}">
+                    <xsl:if test="field[@name='site_id'] = $COMPONENTS[@class='DivisionEditor']/@site">
+                        <xsl:attribute name="selected">selected</xsl:attribute>
+                    </xsl:if>
+                    <xsl:value-of select="field[@name='site_name']"/></option>
+            </xsl:for-each>
+        </select>
+    </xsl:template>
 </xsl:stylesheet>

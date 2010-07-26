@@ -11,6 +11,10 @@ var ModalBox = window.top.ModalBox || {
         this.overlay = new Overlay(document.body, {indicator: false});        
         this.initialized = true;
     },
+    /**
+     *
+     * @param Object options
+     */
     open: function(options) {
 		var box = new Element('div').addClass('e-modalbox').injectInside(document.body);
 		box.options = {

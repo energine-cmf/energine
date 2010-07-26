@@ -47,17 +47,20 @@ var ScriptLoader = function() {
             //Но он может быть исполнен в одном из открытых окон а в другом - нет
                 
                 
-            if(!this.loaded[filename]['w'])
-                    this.loaded[filename]['w'] = [];
+            /*if(!this.loaded[filename]['w'])
+                    this.loaded[filename]['w'] = [];*/
+//            console.log(filename, this.isLoadedInCurrentWindow(this.loaded[filename]['w']));
             //Текст получен  - но не исполнен ни в одном окне
-            if(
+            /*if(
                 !this.isLoadedInCurrentWindow(this.loaded[filename]['w'])
              ){
-                //исполняем в текущем    
-                this.loaded[filename]['w'].push(window.top.currentWindow);
+                //исполняем в текущем
                 this.globalEval(this.loaded[filename]['code']);
-            }
-            
+                this.loaded[filename]['w'].push(window.top.currentWindow);
+
+            }*/
+            this.globalEval(this.loaded[filename]['code']);
+            /*this.loaded[filename]['w'].push(window.top.currentWindow);*/
         }
     },
     isLoadedInCurrentWindow: function(arr){

@@ -50,7 +50,7 @@ final class DBStructureInfo extends Object {
             }
             else {
                 $this->structure = unserialize($str);
-                inspect($this->structure);
+                //$this->memcache->delete('structure');
             }
         }
     }
@@ -104,17 +104,29 @@ final class DBStructureInfo extends Object {
      * @return array|mixed
      */
     public function getTableMeta($tableName) {
+        //inspect($this->analyzeCreateTableSQL($this->pdo->query("SHOW CREATE TABLE `$tableName`")->fetchColumn(1)));
+        
 		if(!isset($this->structure[$tableName]) || ($this->structure[$tableName] === array())){
 			$res = $this->pdo->query("SHOW COLUMNS FROM `$tableName`");
             if($res) {
                 $this->structure[$tableName] = array();
                 while($row = $res->fetch(PDO::FETCH_ASSOC)){
                     $name = $row['Field'];
-                    
-                    $type = self::convertType(strstr($row['Type'], '(', true));
+                    //$type = strtoupper(strstr($row['Type'], '(', true));
+
                     $nullable = (strtolower($row['Null']) == 'yes' ? true : false);
                     $index = $row['Key'];
-                    $length = 10; 
+                    $length = false;
+
+                    preg_match('/([A-Z]+)(\(([0-9]+)(,[0-9]+)?\))?/', strtoupper($row['Type']), $matches);
+                    if (count($matches) >= 2) {
+                        $type = $matches[1];
+                        if (isset($matches[3])) {
+                            $length = intval($matches[3]);
+                        }
+                    }
+                    $type = self::convertType($type);
+                    
                     switch ($index) {
 					case 'PRI':
 						$fk = $this->getForeignKeyInfo($tableName, $name);
@@ -134,6 +146,54 @@ final class DBStructureInfo extends Object {
 
         return $this->structure[$tableName];
     }
+    
+    private function analyzeCreateTableSQL($sql){
+        $res = array();
+        $s = strpos($sql, '(');
+        $l = strrpos($sql, ')') - $s;
+        $fields = substr($sql, $s+1, $l);
+        $fields = str_replace("\n", '', $fields);
+        $fields = explode(',', $fields);
+
+        $trimQ = function($s) { return trim($s, '`'); };
+
+        $pattern = '/PRIMARY KEY \(([^\)]*)\)/';
+        if(preg_match($pattern, $sql, $matches)){
+            $res['pri'] = array_map($trimQ, explode(',', $matches[1]));
+        }
+
+        foreach($fields as $field){
+            $pattern = '/^`(?<name>\w+)`'. // field name
+                    '\s+(?<type>\w+)'.  //field type
+                    '(?:\((?<len>\w+)\))?'. //field len
+                    '(?:\s+(?<unsigned>unsigned))?'.
+                    '(?:\s*(?<is_null>(?:NOT )?NULL))?'.
+                    '(?:\s+DEFAULT (?<default>(?:NULL|\'[^\']+\')))?'.
+                    '.*/i';
+
+            if(preg_match($pattern, trim($field), $matches)){
+                $res[$matches['name']] = $matches;
+                continue;
+            }
+            $pattern = '/CONSTRAINT `\w+` FOREIGN KEY \(`(?<name>\w+)`\) REFERENCES `(?<table>\w+)` \(`(?<fieldName>\w+)`\).*/';
+            if(preg_match($pattern, trim($field), $matches)){
+                if(!array_key_exists('key', $res))$res['key'] = array();
+                $res['key'][$matches['name']] = $matches;
+                continue;
+            }
+
+            $pattern = '/^KEY\s+`\w+`\s+\(([^\)]*)\)/';
+            if(preg_match($pattern, trim($field), $matches)){
+                if(!array_key_exists('mul', $res)) $res['mul'] = array();
+                $res['mul'] = array_merge(
+                    $res['mul'],
+                    array_map($trimQ, explode(',', $matches[1]))
+                );
+            }
+        }
+        return $res;
+    }
+
     /**
      * Возвращает информацию о  внешних ключах
      *

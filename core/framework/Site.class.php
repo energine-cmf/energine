@@ -50,6 +50,7 @@
     		$result = $this->data[$propName];
     	}
     	elseif(strtolower($propName) == 'name'){
+            //@todo - нужно бы получать информацию обо всех сайтах, проблема в том что на момент первого обращения не известен текущий язык
     		$result = 
     		$this->data[$propName] = 
     		simplifyDBResult(

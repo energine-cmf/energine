@@ -51,7 +51,7 @@ function simple_log($var){
 	$flag = (file_exists($simpleLog))? FILE_APPEND : null;
 	file_put_contents(
 	   $simpleLog,
-	   $var."\n",
+	   str_replace("\n", ' ', $var)."\n",
 	   $flag
 	);
 }

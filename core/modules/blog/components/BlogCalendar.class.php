@@ -11,6 +11,8 @@
 /**
  * Новостной календарь
  *
+ * Посты опубликованные в будущем - не публикуются
+ *
  * @package energine
  * @subpackage blog
  * @author d.pavka@gmail.com
@@ -34,20 +36,30 @@ class BlogCalendar extends Calendar {
         //Отмечаем использованные даты календаря
         $range = $this->calendar->getRange();
 
+        $dateFormat = '"Y-m-d"';
+        // Если диапазон календаря заканчивается в будущем - отсекаем до текущего момента
+        if($range->end->getTimestamp() > time()){
+                $endRange = date($dateFormat);
+        }
+        else{
+            $endRange = $range->end->format($dateFormat);
+        }
+
         $conditions = array_merge(
             array(
                 'post_created>=' .
-                        $range->start->format('"Y-m-d"') .
+                        $range->start->format($dateFormat) .
                         ' AND post_created<=' .
-                        $range->end->format('"Y-m-d"')),
+                        $endRange),
             $this->getParam('filter')
         );
+
         if($blogId = (int)$this->getParam('blog_id')){
             $conditions['blog_id'] = $blogId;
         }
         $existingDates = simplifyDBResult(
             $this->dbh->selectRequest(
-                'SELECT DATE_FORMAT(post_created, "%X-%c-%e") as post_date FROM blog_post'.
+                'SELECT DISTINCT DATE_FORMAT(post_created, "%X-%c-%e") as post_date FROM blog_post'.
                 $this->dbh->buildWhereCondition($conditions)
             ),
             'post_date'

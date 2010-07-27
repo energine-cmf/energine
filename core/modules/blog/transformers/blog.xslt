@@ -47,7 +47,7 @@
 			    <xsl:value-of select="field[@name='comments_num']"/>
 			    <xsl:if test="field[@name='comments_num'] = ''">0</xsl:if>
 			</span>
-			<xsl:if test="../../@curr_user_id = field[@name='u_id']">
+			<xsl:if test="(../../@curr_user_id = field[@name='u_id']) or  ../../@curr_user_is_admin">
 				<a href="{$BASE}{$LANG_ABBR}blogs/post/{field[@name='post_id']}/edit/">Редактировать</a>
 			</xsl:if>
 			</li>
@@ -70,6 +70,9 @@
        	<h4>
                <xsl:value-of select="field[@name='post_name']"/>
        	</h4>
+        <xsl:if test="(../../@curr_user_id = field[@name='u_id']) or  ../../@curr_user_is_admin">
+            <a href="{$BASE}{$LANG_ABBR}blogs/post/{field[@name='post_id']}/edit/">Редактировать</a>
+        </xsl:if>
         <p><xsl:value-of select="field[@name='post_text_rtf']" disable-output-escaping="yes"/></p>
         
         <div class="blog_comments">

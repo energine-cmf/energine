@@ -1,6 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <content>
-	<component name="blogPostAll" module="blog" class="BlogPost" />
+	<component name="blogPostAll" module="blog" class="BlogPost">
+       <params>
+	       <param name="showCalendar">1</param>
+	   </params>
+    </component>
 	<component name="commentsForm" module="stb" class="CommentsForm">
 		<params>
 		    <param name="comment_tables">blog_post_comment</param>

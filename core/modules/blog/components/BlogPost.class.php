@@ -9,6 +9,8 @@
 
  /**
  * Посты блога
+  *
+  * Посты опубликованные в будущем - не публикуются
  *
  * @package energine
  * @subpackage blog
@@ -24,11 +26,17 @@ class BlogPost extends DBDataSet {
     private $calendar;
 
     /**
-     * sql-фрагмент  условия запроса выборки записей в блогах
+     * sql-фрагмент  условия запроса выборки записей в блогах по календарю
      * @see BlogPost::loadPosts()
      * @var string
      */
     private $calendarFilter = '';
+
+    /**
+     * Параметры построения календаря
+     * @var array
+     */
+    private $calendarParams = array();
 
     /**
      * Конструктор класса
@@ -46,26 +54,23 @@ class BlogPost extends DBDataSet {
         $this->setParam('onlyCurrentLang', true);
         $this->setOrder('post_created', QAL::DESC);
 
-        if (in_array($this->getAction(), array('main', 'view', 'viewBlog'))) {
-            $calendarParams = array();
-            //наполняем $additionalFilter и $calendarParams
-            if($additionalFilter = $this->createCalendarFilters($calendarParams)){
-                // $this->addFilterCondition() бесполезен  - @see BlogPost::loadPosts()
-                $this->calendarFilter = $additionalFilter;
-            }
-
-            if ($this->getParam('showCalendar')) {
-                //Создаем компонент календаря новостей
-                $this->document->componentManager->addComponent(
-                    $this->calendar =
-                            $this->document->componentManager->createComponent('blogCalendar', 'blog', 'BlogCalendar', $calendarParams)
-                );
-            }
+        if ($this->getParam('showCalendar') and in_array($this->getAction(), array('main', 'viewBlog'))) {
+            //наполняем $this->additionalFilter и $this->calendarParams
+            // $this->addFilterCondition() бесполезен  - @see BlogPost::loadPosts()
+            $this->calendarFilter = $this->createCalendarFilters($this->calendarParams);
+            // а  для метода view параметры календаря - @see self::prepare()
         }
     }
 
     /**
      * Корректируем запросы по параметрам календаря из ActionParams
+     * при выполнении методов main() и viewBlog
+     * только если установлен параметер компонента showCalendar
+     *
+     * при просмотре одной записи блога в календаре будут даты блога этого поста, как у списка постов
+     * но id блога вычисляется не здесь а после извлечения данных @see self::prepare()
+     *
+     * метод должен выполниться до вызова self::prepare()
      *
      * @param  array $calendarParams Параметры запроса построения календаря
      * @return string where-часть запроса выборки постов
@@ -73,8 +78,8 @@ class BlogPost extends DBDataSet {
     protected function createCalendarFilters(array &$calendarParams){
         $additionalFilter = '';
 
+        if (in_array($this->getAction(), array('main', 'viewBlog')) and $this->getParam('showCalendar')) {
         $ap = $this->getActionParams(true);
-        if (in_array($this->getAction(), array('main', 'viewBlog'))) {
             $dateFieldName = 'p.post_created';
             if (isset($ap['year']) && isset($ap['month']) &&
                     isset($ap['day'])) {
@@ -108,18 +113,13 @@ class BlogPost extends DBDataSet {
                         'YEAR('.$dateFieldName.') = "' . $ap['year'] . '"';
             }
 
-            if (($this->getAction() == 'viewBlog') && ($this->getParam('showCalendar'))){
+            if ($this->getAction() == 'viewBlog'){
                 // ищем посты только одного блога
                 $blogId = $this->getActionParams();
                 list($blogId) = $blogId;
                 $calendarParams['blog_id'] = $blogId;
                 $calendarParams['template'] = "blogs/blog/$blogId/";
             }
-        }
-        elseif (($this->getAction() == 'view') && ($this->getParam('showCalendar'))){
-            $calendarParams['month'] = $ap['month'];
-            $calendarParams['year'] = $ap['year'];
-            $calendarParams['date'] = DateTime::createFromFormat('Y-m-d', $ap['year'].'-'.$ap['month'].'-'.$ap['day']);
         }
         
         return $additionalFilter;
@@ -141,8 +141,6 @@ class BlogPost extends DBDataSet {
      * @return void
      */
 	protected function edit(){
-        $this->checkAccess();
-        
         if($postId = $this->getActionParams()){
 			// редактируем существующий пост
         	list($postId) = $postId;
@@ -154,10 +152,21 @@ class BlogPost extends DBDataSet {
         $this->setDataSetAction("post/$postId/save/");
 
 		$this->prepare();
+        $this->getDataDescription()->getFieldDescriptionByName('blog_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
 	}
 
-    private function checkAccess(){
-        if(!AuthUser::getInstance()->isAuthenticated()){
+    /**
+     * Изменять посты могут их владельцы и администраторы
+     *
+     * @throws SystemException при отсутствии доступа
+     * @param  int $blogUid
+     * @return void
+     */
+    private function checkAccess($blogUid){
+        $user = AuthUser::getInstance();
+        if(!$user->isAuthenticated()
+            or (($user->getID() != $blogUid) and (!in_array('1', $user->getGroups())))
+        ){
 			// @todo add SystemException::ERR_401
 			throw new SystemException('ERR_404', SystemException::ERR_404);
 		}
@@ -168,28 +177,45 @@ class BlogPost extends DBDataSet {
      *
      * Ожидает $_POST['blog_post']
      *
+     * после сохранения - перенаправление на просмотр
+     *
      * @throws SystemException для неавторизированного пользователя и для 
      * @return void
      */
 	protected function save(){
-		$this->checkAccess();
-		
 		if(!isset($_POST['blog_post'])){
 			// @todo redirect to edit|create
 			throw new SystemException('ERR_404', SystemException::ERR_404);
 		}
 			
 		$data = $_POST['blog_post'];
-		
-		// целой блог
-		$blogId = $this->dbh->select('blog_title', 'blog_id', 
-			array('u_id' => AuthUser::getInstance()->getID())
-		);
-		if(!$blogId){
-			// блог не существует - юзер не завёл себе блог
-			throw new SystemException('ERR_404', SystemException::ERR_404);
-		}
-		list($blogId) = $blogId;
+
+        if(!isset($data['blog_id'])){
+            if(!AuthUser::getInstance()->isAuthenticated() or
+                !$blogId = $this->dbh->select('blog_title', array('blog_id'),
+                array('u_id' => AuthUser::getInstance()->getID())
+            )){
+                throw new SystemException('ERR_404', SystemException::ERR_404);
+            }
+            else{
+                list($blogId) = $blogId;
+            }
+        }
+        else{
+            $blogId = (int)$data['blog_id'];
+            if(!$blogUid = $this->dbh->select('blog_title', array('u_id'),
+                array('blog_id' => $blogId)
+            )){
+                // блог не существует - юзер не завёл себе блог
+                throw new SystemException('ERR_404', SystemException::ERR_404);
+            }
+            // владелец блога
+            list($blogUid) = $blogUid;
+
+            $this->checkAccess($blogUid);
+        }
+
+
 		
 		if($postId = $this->getActionParams()){
 			// редактируем существующий пост
@@ -217,7 +243,7 @@ class BlogPost extends DBDataSet {
 		if(!$postId){
 			$postId = (int)$res;
 		}
-		$this->response->redirectToCurrentSection("post/$postId/edit/");
+		$this->response->redirectToCurrentSection("post/$postId/");
 	}
 
     /**
@@ -246,7 +272,17 @@ class BlogPost extends DBDataSet {
 	 * @throws SystemException Если юзер не авторизован или если он не завёл себе блог
 	 */
 	protected function create(){
-		$this->checkAccess();
+        if(!AuthUser::getInstance()->isAuthenticated()){
+			// @todo add SystemException::ERR_401
+			throw new SystemException('ERR_404', SystemException::ERR_404);
+		}
+        
+        if(!$blogId = $this->dbh->select('blog_title', array('blog_id'),
+			array('u_id' => AuthUser::getInstance()->getID())
+		)){
+			// блог не существует - юзер не завёл себе блог
+			throw new SystemException('ERR_404', SystemException::ERR_404);
+		}
 		
         $this->setType(self::COMPONENT_TYPE_FORM);
         $this->setDataSetAction("post/save/");
@@ -294,7 +330,7 @@ class BlogPost extends DBDataSet {
             // один пост
     		$postId = $this->getActionParams();
         	list($postId) = $postId;
-	    	if(is_array($data = $this->loadPosts($postId))){
+	    	if(is_array($data = $this->loadPost($postId))){
 				$this->addUserInfoDataDescription();
 	        }
 	        else $data = false;
@@ -316,6 +352,8 @@ class BlogPost extends DBDataSet {
      * Записи в блогах
      * 
      * Без параметров возвращает все записи в блогах
+     *
+     * Посты опубликованные в будущем - не публикуются
      * 
      * @param int $postId
      * @param int $blogId
@@ -323,6 +361,7 @@ class BlogPost extends DBDataSet {
      * @return array
      */
     private function loadPosts($postId=0, $blogId=0, $limit=''){
+    	$where = 'p.post_created < now() ';
     	$where = '1 ';
     	if($postId){
     		$where .= ' and p.post_id ='.intval($postId);
@@ -386,7 +425,18 @@ class BlogPost extends DBDataSet {
      * @return array
      */
     private function loadPost($postId){
-    	return $this->loadPosts($postId, 0, 1);
+    	$item = $this->loadPosts($postId, 0, 1);
+
+        if($item && $this->getParam('showCalendar')){
+            // извлекаем из поста дату для календаря
+            $date = new DateTime();
+            $date->setTimestamp($item[0]['post_created']);
+            $this->calendarParams['month'] = $date->format('m');
+            $this->calendarParams['year'] = $date->format('Y');
+//                $calendarParams['date'] = DateTime::createFromFormat('Y-m-d', $ap['year'].'-'.$ap['month'].'-'.$ap['day']);
+                $this->calendarParams['date'] = $date;
+        }
+        return $item;
     }
     
     /**
@@ -417,9 +467,13 @@ class BlogPost extends DBDataSet {
      * @return void
      */
     protected function prepare(){
-        // добавляем id текущего пользователя
+        // добавляем id текущего пользователя - что бы вывести ему ссылки create/edit/delete в его блоге
     	if(AuthUser::getInstance()->isAuthenticated()){
     		$this->setProperty('curr_user_id', AuthUser::getInstance()->getID());
+    	}
+        // признак админа - выводим ему ссылки edit/delete во всех блогах
+        if(in_array('1', AuthUser::getInstance()->getGroups())){
+    		$this->setProperty('curr_user_is_admin', '1');
     	}
     	parent::prepare();
 
@@ -430,7 +484,24 @@ class BlogPost extends DBDataSet {
     	else{
     		$this->setType(self::COMPONENT_TYPE_FORM);
     	}
-    	
+
+        // параметры календаря $this->calendarParams наполняются восновном в конструкторе
+        // но для метода self::view() параметры можно определить лишь после извлечения поста - нам нужна дата поста
+        // @see BlogPost::loadPost
+        if ($this->getParam('showCalendar')) {
+            // фильтр календаря при просмотре одного поста
+            if(($this->getAction() == 'view') and !$this->getData()->isEmpty()){
+                $this->calendarParams['blog_id'] = $this->getData()->getFieldByName('blog_id')->getData();
+            }
+
+            //Создаем компонент календаря новостей
+            $this->document->componentManager->addComponent(
+                $this->calendar = $this->document->componentManager->createComponent(
+                    'blogCalendar', 'blog', 'BlogCalendar', $this->calendarParams
+                )
+            );
+            $this->calendar->run();
+        }
     }
     
    /**
@@ -443,7 +514,7 @@ class BlogPost extends DBDataSet {
         parent::defineParams(),
         array(
         'active' => true,
-        'showCalendar' => 1
+        'showCalendar' => 0
         )
         );
     }

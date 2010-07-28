@@ -62,44 +62,58 @@ class JSONBuilder extends AbstractBuilder {
             $result['meta'][$fieldName] = array(
                 'title' => $fieldInfo->getPropertyValue('title'),
                 'type' => $fieldInfo->getType(),
-                'key' => $fieldInfo->getPropertyValue('key')&&$fieldInfo->getPropertyValue('index')=='PRI'? true: false,
-                'visible' => $fieldInfo->getPropertyValue('key')&&$fieldInfo->getPropertyValue('index')=='PRI' ? false : true,
-                'name' => $fieldInfo->getPropertyValue('tableName')."[$fieldName]",
+                'key' => $fieldInfo->getPropertyValue('key') &&
+                        $fieldInfo->getPropertyValue('index') ==
+                                'PRI' ? true : false,
+                'visible' => $fieldInfo->getPropertyValue('key') &&
+                        $fieldInfo->getPropertyValue('index') ==
+                                'PRI' ? false : true,
+                'name' =>
+                $fieldInfo->getPropertyValue('tableName') . "[$fieldName]",
                 'rights' => $fieldInfo->getRights(),
                 'field' => $fieldName,
                 'sort' => $fieldInfo->getPropertyValue('sort')
             );
-            
+
         }
 
         if (!$this->data->isEmpty()) {
             for ($i = 0; $i < $this->data->getRowCount(); $i++) {
                 foreach ($this->dataDescription as $fieldName => $fieldInfo) {
                     $fieldType = $fieldInfo->getType();
-                    $fieldValue = $this->data->getFieldByName($fieldName)->getRowData($i);
-                    switch ($fieldType) {
-                        case FieldDescription::FIELD_TYPE_DATETIME:
-                        case FieldDescription::FIELD_TYPE_DATE:
-                            if (!empty($fieldValue)) {
-                                $fieldValue = self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'));
-                            }
-                            break;
-                        case FieldDescription::FIELD_TYPE_IMAGE:
-                            if ($fieldValue) {
-                                if(file_exists(dirname($fieldValue).'/.'.basename($fieldValue)))
-                                    $fieldValue = dirname($fieldValue).'/.'.basename($fieldValue);    
-                            }
-                        	break;    
-                        case FieldDescription::FIELD_TYPE_SELECT:
-                            $value = $fieldInfo->getAvailableValues();
-                            if (isset($value[$fieldValue])) {
-                                $fieldValue = $value[$fieldValue]['value'];
-                            }
-                            break;
-                        default: // not used
-                    }
-                    if (is_null($fieldValue)) {
-                        $fieldValue = '';
+                    $fieldValue = null;
+                    if ($this->data->getFieldByName($fieldName)) {
+                        $fieldValue =
+                                $this->data->getFieldByName($fieldName)->getRowData($i);
+                        switch ($fieldType) {
+                            case FieldDescription::FIELD_TYPE_DATETIME:
+                            case FieldDescription::FIELD_TYPE_DATE:
+                                if (!empty($fieldValue)) {
+                                    $fieldValue =
+                                            self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'));
+                                }
+                                break;
+                            case FieldDescription::FIELD_TYPE_IMAGE:
+                                if ($fieldValue) {
+                                    if (file_exists(
+                                        dirname($fieldValue) . '/.' .
+                                                basename($fieldValue)))
+                                        $fieldValue =
+                                                dirname($fieldValue) . '/.' .
+                                                        basename($fieldValue);
+                                }
+                                break;
+                            case FieldDescription::FIELD_TYPE_SELECT:
+                                $value = $fieldInfo->getAvailableValues();
+                                if (isset($value[$fieldValue])) {
+                                    $fieldValue = $value[$fieldValue]['value'];
+                                }
+                                break;
+                            default: // not used
+                        }
+                        if (is_null($fieldValue)) {
+                            $fieldValue = '';
+                        }
                     }
                     $result['data'][$i][$fieldName] = $fieldValue;
                 }
@@ -123,10 +137,10 @@ class JSONBuilder extends AbstractBuilder {
     public function getResult() {
         $result = $this->result;
         if (!is_null($this->pager)) {
-        	$result['pager'] = array(
-        	   'current' => $this->pager->getCurrentPage(),
-        	   'count' => $this->pager->getNumPages()
-        	);
+            $result['pager'] = array(
+                'current' => $this->pager->getCurrentPage(),
+                'count' => $this->pager->getNumPages()
+            );
         }
         $result = json_encode($result);
         return $result;

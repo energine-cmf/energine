@@ -20,32 +20,5 @@
        </xsl:if>
     </xsl:template>
 
-    <xsl:template name="COMMENT">
-        <xsl:param name="IS_SHOW_COMMENT_LINK" />
-        <xsl:for-each select="recordset/record">
-           <li id="{field[@name='comment_id']}_comment">
-                <xsl:if test="field[@name='u_avatar_img'] != ''">
-                    <img width="50" height="50" src="{field[@name='u_avatar_img']}" alt="" />
-                </xsl:if>
-                <span>
-                    <xsl:value-of select="field[@name='comment_created']"/> - <xsl:value-of select="field[@name='u_fullname']"/>
-                </span>
-                <p>
-                    <xsl:value-of select="field[@name='comment_name']"/>
-                </p>
-                <xsl:if test="$IS_SHOW_COMMENT_LINK='1'">
-                    <span><a href="#">Комментировать</a></span>
-                </xsl:if>
-
-                <xsl:if test="recordset">
-                    <ul>
-                        <xsl:call-template name="COMMENT">
-                            <xsl:with-param name="IS_SHOW_COMMENT_LINK" select="$IS_SHOW_COMMENT_LINK" />
-                        </xsl:call-template>
-                    </ul>
-                </xsl:if>
-           </li>
-        </xsl:for-each>
-    </xsl:template>
 
 </xsl:stylesheet>

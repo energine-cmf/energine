@@ -5,7 +5,7 @@
 	       <param name="showCalendar">1</param>
 	   </params>
     </component>
-	<component name="commentsForm" module="stb" class="CommentsForm">
+	<component name="commentsForm" module="comments" class="CommentsForm">
 		<params>
 		    <param name="comment_tables">blog_post_comment</param>
 		    <param name="is_tree">1</param>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="commentsEdit" module="comments" class="CommentsEditor">
+       <params>
+           <param name="comment_tables">stb_news_comment</param>
+<!--           <param name="configFilename">site/admin/config/LanguageEditor.component.xml</param> -->
+       </params>        
+    </component>
+</content>

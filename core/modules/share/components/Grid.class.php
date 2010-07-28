@@ -88,7 +88,7 @@ class Grid extends DBDataSet {
     /**
 	 * Переопределен параметр configFilename
 	 *
-	 * @return int
+	 * @return array
 	 * @access protected
 	 */
 

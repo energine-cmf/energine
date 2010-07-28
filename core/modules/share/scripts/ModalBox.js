@@ -69,7 +69,7 @@ var ModalBox = window.top.ModalBox || {
     },
 
     setReturnValue: function(value) {
-        this.getCurrent().returnValue = value;
+        this.getCurrent().store('returnValue', value);
     },
 
     close: function() {
@@ -77,7 +77,7 @@ var ModalBox = window.top.ModalBox || {
             return;
         }
         var box = this.boxes.pop();
-        box.options.onClose(box.returnValue);
+        box.options.onClose(box.retrieve('returnValue'));
 
         var destroyBox = function(){
         	box.iframe.setProperty('src', 'about:blank');

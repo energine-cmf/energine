@@ -26,17 +26,18 @@ var Toolbar = new Class({
     initialize: function(toolbarName) {
         Asset.css('toolbar.css');
         this.name = toolbarName;
-        this.element = new Element('ul').addClass('toolbar').addClass('clearfix');
-        if(this.name){
+        this.element =
+                new Element('ul').addClass('toolbar').addClass('clearfix');
+        if (this.name) {
             this.element.addClass(this.name);
         }
         this.controls = [];
-	},
-    dock: function(){
+    },
+    dock: function() {
         this.element.addClass('docked_toolbar');
     },
-    undock: function(){
-        this.element.removeClass('docked_toolbar');        
+    undock: function() {
+        this.element.removeClass('docked_toolbar');
     },
     getElement: function() {
         return this.element;
@@ -47,13 +48,15 @@ var Toolbar = new Class({
         return this;
     },
 
-	load: function(toolbarDescr) {
+    load: function(toolbarDescr) {
         $A(toolbarDescr.childNodes).each(function(elem) {
             if (elem.nodeType == 1) {
                 var control = null;
                 switch (elem.getAttribute('type')) {
-                    case 'button':       control = new Toolbar.Button;       break;
-                    case 'separator':    control = new Toolbar.Separator;    break;
+                    case 'button':       control =
+                            new Toolbar.Button;       break;
+                    case 'separator':    control =
+                            new Toolbar.Separator;    break;
                 }
                 if (control) {
                     control.load(elem);
@@ -63,12 +66,12 @@ var Toolbar = new Class({
         }.bind(this));
     },
     appendControl: function(control) {
-        if($chk(control.type) && $chk(control.id)){
+        if ($chk(control.type) && $chk(control.id)) {
             control.action = control.onclick;
             delete control.onclick;
             control = new Toolbar[control.type.capitalize()](control);
         }
-        
+
         if (control instanceof Toolbar.Control) {
             control.toolbar = this;
             control.build();
@@ -102,16 +105,16 @@ var Toolbar = new Class({
     },
 
     disableControls: function() {
-        if(!arguments.length){
+        if (!arguments.length) {
             this.controls.each(function(control) {
-    			if(control.properties.id != 'close') control.disable();
+                if (control.properties.id != 'close') control.disable();
             });
         }
         else {
             var control;
             //Перечисляем идентификаторы контролов которые необходимо активировать
-            $A(arguments).each(function(controlID){
-                if(control = this.getControlById(controlID)){
+            $A(arguments).each(function(controlID) {
+                if (control = this.getControlById(controlID)) {
                     control.disable();
                 }
             }, this);
@@ -120,7 +123,7 @@ var Toolbar = new Class({
     },
 
     enableControls: function() {
-        if(!arguments.length) {
+        if (!arguments.length) {
             this.controls.each(function(control) {
                 control.enable();
             });
@@ -128,8 +131,8 @@ var Toolbar = new Class({
         else {
             var control;
             //Перечисляем идентификаторы контролов которые необходимо активировать
-            $A(arguments).each(function(controlID){
-                if(control = this.getControlById(controlID)){
+            $A(arguments).each(function(controlID) {
+                if (control = this.getControlById(controlID)) {
                     control.enable();
                 }
             }, this);
@@ -162,26 +165,30 @@ Toolbar.Control = new Class({
         $extend(this.properties, $pick(properties, {}));
     },
     load: function(controlDescr) {
-        this.properties.id       = controlDescr.getAttribute('id')		 || '';
-        this.properties.icon      = controlDescr.getAttribute('icon')     || '';
-        this.properties.title    = controlDescr.getAttribute('title')   || '';
-        this.properties.action   = controlDescr.getAttribute('action')  || '';
-        this.properties.tooltip  = controlDescr.getAttribute('tooltip') || '';
-        this.properties.disabled = controlDescr.getAttribute('disabled') ? true : false;
+        this.properties.id = controlDescr.getAttribute('id') || '';
+        this.properties.icon = controlDescr.getAttribute('icon') || '';
+        this.properties.title = controlDescr.getAttribute('title') || '';
+        this.properties.action = controlDescr.getAttribute('action') || '';
+        this.properties.tooltip = controlDescr.getAttribute('tooltip') || '';
+        this.properties.disabled =
+                controlDescr.getAttribute('disabled') ? true : false;
     },
 
     build: function() {
-		if (!this.toolbar || !this.properties.id) {
+        if (!this.toolbar || !this.properties.id) {
             return false;
         }
         this.element = new Element('li').setProperty('unselectable', 'on');
         if (this.properties.icon) {
             this.element.addClass('icon')
-				.setProperty('id', this.toolbar.name + this.properties.id)
-                .setProperty('title', this.properties.title + (this.properties.tooltip ? ' ('+this.properties.tooltip+')' : ''))
-                .setStyle('-moz-user-select','none')
-                .setStyle('background-image', 'url(' + Energine.base + this.toolbar.imagesPath + this.properties.icon + ')');
-                //.setHTML('&#160;');
+                    .setProperty('id', this.toolbar.name + this.properties.id)
+                    .setProperty('title', this.properties.title +
+                    (this.properties.tooltip ? ' (' + this.properties.tooltip +
+                            ')' : ''))
+                    .setStyle('-moz-user-select', 'none')
+                    .setStyle('background-image', 'url(' + Energine.base +
+                    this.toolbar.imagesPath + this.properties.icon + ')');
+            //.setHTML('&#160;');
         }
         else {
             this.element.setProperty('title', this.properties.tooltip).appendText(this.properties.title);
@@ -212,36 +219,46 @@ Toolbar.Control = new Class({
 });
 
 Toolbar.Button = new Class({
-	Extends:Toolbar.Control,
+    Extends:Toolbar.Control,
     build: function() {
         this.parent();
         var control = this;
         this.element.addEvents({
-            'mouseover': function() { if (!control.properties.disabled) { this.addClass('highlighted'); } },
-            'mouseout':  function() { this.removeClass('highlighted'); },
-            'click':     function() { if (!control.properties.disabled) { control.toolbar._callAction(control.properties.action); } }
+            'mouseover': function() {
+                if (!control.properties.disabled) {
+                    this.addClass('highlighted');
+                }
+            },
+            'mouseout':  function() {
+                this.removeClass('highlighted');
+            },
+            'click':     function() {
+                if (!control.properties.disabled) {
+                    control.toolbar._callAction(control.properties.action);
+                }
+            }
         });
     }
 });
 Toolbar.Switcher = new Class({
     Extends:Toolbar.Button,
-    build: function(){
+    build: function() {
         this.parent();
-        if (this.properties.state == 1){
+        if (this.properties.state == 1) {
             this.element.addClass('pressed');
         }
     },
-    getState: function(){
+    getState: function() {
         return this.properties.state;
     }
     /*toggle: function(){
-        this.element.toggleClass('pressed');
-        this.properties.state = this.
-    }*/
+     this.element.toggleClass('pressed');
+     this.properties.state = this.
+     }*/
 });
 
 Toolbar.Separator = new Class({
-	Extends:Toolbar.Control,
+    Extends:Toolbar.Control,
     build: function() {
         this.parent();
         this.element.addClass('separator');
@@ -253,11 +270,11 @@ Toolbar.Separator = new Class({
 });
 
 Toolbar.Select = new Class({
-	Extends:Toolbar.Control,
-	select:null,
-	toolbar:null,
+    Extends:Toolbar.Control,
+    select:null,
+    toolbar:null,
 
-	initialize: function(properties, options) {
+    initialize: function(properties, options) {
         this.properties = {
             id: null,
             title: '',
@@ -267,7 +284,7 @@ Toolbar.Select = new Class({
         };
         $extend(this.properties, $pick(properties, {}));
 
-		this.options = options || {};
+        this.options = options || {};
     },
 
     build: function() {
@@ -275,25 +292,26 @@ Toolbar.Select = new Class({
             return false;
         }
 
-        this.element = new Element('li').setProperty('unselectable', 'on').addClass('select');
-        if(this.properties.title) this.element.adopt(new Element('span').addClass('label').set('text', this.properties.title));
-		this.select = new Element('select');
+        this.element =
+                new Element('li').setProperty('unselectable', 'on').addClass('select');
+        if (this.properties.title) this.element.adopt(new Element('span').addClass('label').set('text', this.properties.title));
+        this.select = new Element('select');
 
-		var control = this;
-		this.select.addEvent('change', function(){
-			control.toolbar._callAction(control.properties.action, control);
-		});
+        var control = this;
+        this.select.addEvent('change', function() {
+            control.toolbar._callAction(control.properties.action, control);
+        });
 
-		this.element.adopt(this.select);
+        this.element.adopt(this.select);
 
         if (this.properties.disabled) {
             this.disable();
         }
 
-//		if(Energine.supportContentEdit)
-			$H(this.options).each(function(value, key){
-				control.select.adopt(new Element('option').setProperties({'value': key}).set('text', value));
-			});
+        //		if(Energine.supportContentEdit)
+        $H(this.options).each(function(value, key) {
+            control.select.adopt(new Element('option').setProperties({'value': key}).set('text', value));
+        });
     },
 
     disable: function() {
@@ -306,32 +324,33 @@ Toolbar.Select = new Class({
     enable: function() {
         if (this.properties.disabled) {
             this.properties.disabled = false;
-			this.select.removeProperty('disabled');
+            this.select.removeProperty('disabled');
         }
     },
 
     setAction: function(action) {
         this.properties.action = action;
     },
-    getValue: function(){
+    getValue: function() {
         return this.select.getSelected().getLast().get('value');
     },
     /**
      * Устанавливает выделенный элемент
      * @param int itemId
      */
-    setSelected: function(itemId){
+    setSelected: function(itemId) {
         //Если существует такая опция
-        if(this.options[itemId]){
+        if (this.options[itemId]) {
             //Элемент уже построен
-            if(this.select){
-                this.select.getElement('option[value=' + itemId + ']').setProperty('selected', 'selected');    
+            if (this.select) {
+                this.select.getElement('option[value=' + itemId +
+                        ']').setProperty('selected', 'selected');
             }
-            else{
-                
+            else {
+
             }
         }
     }
-    
+
 
 });

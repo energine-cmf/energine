@@ -238,8 +238,11 @@ abstract class DBA extends Object {
 			$result = true;
 		}
 
-		$this->lastResult = $result;
-		return $result;
+        if($this->getConfigValue('site.debug') == 1 ){
+            $this->lastResult = $result;
+        }
+        
+        return $result;
 	}
 
 	/**

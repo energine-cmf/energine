@@ -41,16 +41,11 @@
                     onclick="close" />
             </toolbar>
         </method>
-		<method name="view">
+        <method name="fileLibrary" rights="3">
 			<uri_patterns>
-				<pattern>/[int]/</pattern>
+				<pattern>/file-library/</pattern>
+				<pattern>/file-library/[string]/</pattern>
 			</uri_patterns>
-			<javascript>
-				<object name="Form" />
-			</javascript>
-			<toolbar>
-				<control id="list" title="BTN_CLOSE" type="button" onclick="close" />
-			</toolbar>
 		</method>
 		<method name="edit">
 			<uri_patterns>
@@ -102,6 +97,17 @@
 			<uri_patterns>
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>
+		</method>
+        <method name="view">
+			<uri_patterns>
+				<pattern>/[int]/</pattern>
+			</uri_patterns>
+			<javascript>
+				<object name="Form" />
+			</javascript>
+			<toolbar>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close" />
+			</toolbar>
 		</method>
 		<!--
         <method name="up" rights="3"> <uri_patterns> <pattern>/[int]/up/</pattern>

@@ -518,10 +518,13 @@ class FieldDescription extends DBWorker implements Iterator{
         		if ($this->getPropertyValue('nullable') === false) {
                     $regexp = '/^\d{1,2}:\d{1,2}(:\d{1,2})?$/';
                 }
-                $this->setProperty('sort', 1);
+                else {
+                    $regexp = '/^\d{1,2}:\d{1,2}(:\d{1,2})?$/';
+                }
                 $this->setProperty('pattern', $regexp);
-                $this->setProperty('outputFormat', '%H:%M');
                 $this->setProperty('message', $this->translate('MSG_WRONG_TIME_FORMAT'));
+                $this->setProperty('sort', 1);
+                $this->setProperty('outputFormat', '%H:%M');
                 $this->length = true;
                 break;
             case self::FIELD_TYPE_DATE:

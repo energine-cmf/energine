@@ -220,11 +220,11 @@ inspect($tableName, $this->structure[$tableName]);
                 foreach ($matches['name'] as $index => $fieldName) {
                     if (!$fieldName) continue;
                     $res[$fieldName] = array(
-                        'type' => self::convertType($matches['type'][$index]),
-                        'length' => (int)$matches['len'][$index],
                         'nullable' => (
                                 $matches['is_null'][$index] != 'NOT NULL'),
+                        'length' => (int)$matches['len'][$index],
                         'default' => trim($matches['default'][$index], "'"),
+                        'type' => self::convertType($matches['type'][$index]),
                         'key' => false,
                         'index' => false
                     );
@@ -249,7 +249,6 @@ inspect($tableName, $this->structure[$tableName]);
                 }
             }
         }
-
         return $res;
     }
 
@@ -262,7 +261,7 @@ inspect($tableName, $this->structure[$tableName]);
      * @staticvar array $foreignKeyInfo
      * @staticvar array $createTableInfo
      */
-    private function getForeignKeyInfo($tableName, $fieldName) {
+    /*private function getForeignKeyInfo($tableName, $fieldName) {
         static $foreignKeyInfo, $createTableInfo;
         if (!isset($createTableInfo[$tableName])) {
             $createTableInfo[$tableName] =
@@ -283,7 +282,7 @@ inspect($tableName, $this->structure[$tableName]);
         }
 
         return $foreignKeyInfo[$tableName][$fieldName];
-    }
+    }*/
 
     /**
      * Конвертирует MYSQL типы полей в Energine типы полей

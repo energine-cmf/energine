@@ -60,7 +60,7 @@ class Remover extends Component {
             (
 	            $this->document->getRights() != ACCESS_FULL 
 	            && 
-	            $component = $this->document->componentManager->getComponentByName($this->getParam('componentName'))
+	            $component = $this->document->componentManager->getBlockByName($this->getParam('componentName'))
             )
         ) {
         	$component->disable();

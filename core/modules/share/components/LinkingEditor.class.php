@@ -55,7 +55,7 @@
 
     protected function main() {
         $_SESSION[$this->getPK()] =
-            $this->document->componentManager->getComponentByName(
+            $this->document->componentManager->getBlockByName(
 	           $this->getParam('bind')
 	        )->getFilter();
         $this->addToolbar($this->createToolbar());
@@ -75,7 +75,7 @@
                 $this->setProperty('linkedComponent', $param);
             }
             $result = Component::build();
-            if (($component = $this->document->componentManager->getComponentByName($param)) /*&& ($component->getAction() != 'view')*/ && $this->isEditable) {
+            if (($component = $this->document->componentManager->getBlockByName($param)) /*&& ($component->getAction() != 'view')*/ && $this->isEditable) {
                 if ($this->js) {
                     $result->documentElement->appendChild($result->importNode($this->js, true));
                 }

@@ -196,7 +196,7 @@ class Register extends DBDataSet {
 			throw new SystemException('ERR_404', SystemException::ERR_404);
 		}
 		//unset($_SESSION['saved']);
-		if ($textBlock = $this->document->componentManager->getComponentByName('RegTextBlock')) {
+		if ($textBlock = $this->document->componentManager->getBlockByName('RegTextBlock')) {
 			$textBlock->disable();
 		}
 		$this->setBuilder($this->createBuilder());

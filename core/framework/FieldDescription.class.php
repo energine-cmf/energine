@@ -641,9 +641,13 @@ class FieldDescription extends DBWorker implements Iterator{
      * @return FieldDescription
      */
     public function setProperty($name, $value) {
+/*
         if ($name == 'nullable') {
+
             $value = (bool)$value;
         }
+ * 
+ */
         $this->additionalProperties[$name] = $value;
         return $this;
     }

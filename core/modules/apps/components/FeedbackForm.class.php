@@ -139,7 +139,7 @@ class FeedbackForm extends DBDataSet {
 
 	        $this->prepare();
 	        
-	        if ($this->getParam('textBlock') && ($textBlock = $this->document->componentManager->getComponentByName($this->getParam('textBlock')))) {
+	        if ($this->getParam('textBlock') && ($textBlock = $this->document->componentManager->getBlockByName($this->getParam('textBlock')))) {
 	        	$textBlock->disable();
 	        }
 

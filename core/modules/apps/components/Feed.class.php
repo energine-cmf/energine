@@ -84,7 +84,7 @@ class Feed extends DBDataSet {
      protected function view() {
         parent::view();
         $this->addFilterCondition(array('smap_id' => $this->document->getID()));
-        $this->document->componentManager->getComponentByName('breadCrumbs')->addCrumb();
+        $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
      }
     /**
      * Делаем компонент активным

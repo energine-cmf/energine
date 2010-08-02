@@ -6,10 +6,8 @@
  * @subpackage share
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
  */
 
-//require_once('core/modules/share/components/DataSet.class.php');
 
 /**
  * "Хлебные крошки"

@@ -46,8 +46,9 @@
                     </xsl:otherwise>
                 </xsl:choose>
         		<script type="text/javascript" src="{$BASE}scripts/Energine.js"></script>
-
-                <xsl:call-template name="interface_js"/>
+                <xsl:if test="not($DOC_PROPS[@name='single'])"  >
+                    <xsl:call-template name="interface_js"/>
+                </xsl:if>
 
                 <script type="text/javascript">
                     var componentToolbars = [];
@@ -136,7 +137,7 @@
         <xsl:apply-templates select="//component"/>
     </xsl:template>
 
-    <xsl:template match="layout | content">
+    <xsl:template match="layout | content | container">
         <xsl:apply-templates/>
     </xsl:template>
     

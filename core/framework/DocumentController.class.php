@@ -52,7 +52,7 @@ final class DocumentController extends Singleton {
         $document->loadComponents();
         
         // уберём за собой
-        unset($request, $language, $documentDescription);
+        unset($request, $language);
         
        /*
         * Если в каком-либо компоненте происходит ошибка, не позволяющая ему

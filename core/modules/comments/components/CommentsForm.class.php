@@ -50,7 +50,7 @@ class CommentsForm extends DataSet {
 		if(!$this->commentTable){
 			throw new SystemException('Not defined param `comment_tables`');
 		}
-		$this->bindComponent = $this->document->componentManager->getComponentByName($this->getParam('bind'));
+		$this->bindComponent = $this->document->componentManager->getBlockByName($this->getParam('bind'));
 		$this->isTree = $this->getParam('is_tree');
 	}
 	

@@ -59,7 +59,7 @@ class NewsFeed extends Feed {
         if ($data instanceof Data) {
             $this->setData($data);
             list($newsTitle) = $data->getFieldByName('news_title')->getData();
-            $this->document->componentManager->getComponentByName('breadCrumbs')->addCrumb('', $newsTitle);
+            $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb('', $newsTitle);
         }
         else {
             throw new SystemException('ERR_404', SystemException::ERR_404);

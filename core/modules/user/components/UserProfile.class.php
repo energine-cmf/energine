@@ -156,7 +156,7 @@ class UserProfile extends DBDataSet {
         $di->setData($this->translate('TXT_USER_PROFILE_SAVED'));
         $d->addField($di);
 
-        $this->document->componentManager->getComponentByName('breadCrumbs')->addCrumb();
+        $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
     }
 
 
@@ -193,7 +193,7 @@ class UserProfile extends DBDataSet {
         $di->setData($this->translate('TXT_USER_PROFILE_WRONG_PWD'));
         $d->addField($di);
 
-        $this->document->componentManager->getComponentByName('breadCrumbs')->addCrumb();
+        $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
     }
 
     /**

@@ -233,7 +233,7 @@ final class Document extends DBWorker {
         $prop ->setAttribute('real_abbr', Language::getInstance()->getAbbrByID($this->getLang()));
         $dom_documentProperties->appendChild($prop);
         unset($prop);
-        
+        /*
         $dom_layout = $this->doc->createElement('layout');
         $dom_layout->setAttribute('file', $this->documentInfo['layoutFileName']);
         $dom_content = $this->doc->createElement('content');
@@ -241,33 +241,36 @@ final class Document extends DBWorker {
 
         $dom_root->appendChild($dom_layout);
         $dom_root->appendChild($dom_content);
+*/
 
 
-
-        foreach ($this->componentManager->getComponents() as $componentInfo) {
-            $component = $componentInfo['component'];
-
+        foreach ($this->componentManager as $component) {
             $componentResult = false;
             $dom_errors = false;
-
-            if ($this->getRights() >= $component->getMethodRights() && $component->enabled()) {
-                try {
-                    $componentResult = $component->build();
-                }
-                catch (DummyException $dummyException){}
+            try {
+                $componentResult = $component->build();
+            }
+            catch (DummyException $dummyException){
             }
 
-            if ($componentResult) {
+
+            if (!empty($componentResult)) {
+                try{
                 $componentResult = $this->doc->importNode(
                 $componentResult->documentElement,
                 true
                 );
-
+                }
+                        catch(Exception $e){
+                            stop($e->getTraceAsString());
+                }
                 if ($dom_errors) {
                     $componentResult->insertBefore($dom_errors, $componentResult->firstChild);
                 }
 
-                if ($componentInfo['file'] == $this->documentInfo['layoutFileName']) {
+                $dom_root->appendChild($componentResult);
+
+                /*if ($componentInfo['file'] == $this->documentInfo['layoutFileName']) {
                 	$dom_layout->appendChild($componentResult);
                 }
                 elseif ($componentInfo['file'] == $this->documentInfo['contentFileName']) {
@@ -275,7 +278,7 @@ final class Document extends DBWorker {
                 }
                 else {
                     $dom_root->appendChild($componentResult);
-                }
+                }*/
 
             }
             elseif ($dom_errors) {
@@ -310,7 +313,6 @@ final class Document extends DBWorker {
         // определяем и загружаем описания content- и layout- частей страницы
         $this->documentInfo['layoutFileName'] = self::TEMPLATES_DIR.'layout/'.$this->documentInfo['Layout'];
         $this->documentInfo['contentFileName'] = self::TEMPLATES_DIR.'content/'.$this->documentInfo['Content'];
-
         // вызывается ли какой-либо компонент в single режиме?
         $actionParams = $this->request->getPath(Request::PATH_ACTION);
         if (sizeof($actionParams) > 1 && $actionParams[0] == self::SINGLE_SEGMENT) {
@@ -322,28 +324,58 @@ final class Document extends DBWorker {
                 $this->request->setPathOffset($this->request->getPathOffset() + 2);
                 $this->setProperty('single', 'single');
                 if ($actionParams[1] == 'pageToolBar') {
-                	$this->componentManager->addComponent($this->componentManager->createComponent('pageToolBar', 'share', 'DivisionEditor', array('action' => 'showPageToolbar')));
+                	$this->componentManager->addComponent(
+                        $this->componentManager->createComponent(
+                            'pageToolBar',
+                            'share',
+                            'DivisionEditor',
+                            array('action' => 'showPageToolbar')
+                        )
+                    );
                 }
                 // существует ли запрошенный компонент среди компонентов страницы?
-                elseif (
-                    !$this->componentManager->loadComponentsFromFile($this->documentInfo['layoutFileName'], $actionParams[1])
-                    && !$this->componentManager->loadComponentsFromFile($this->documentInfo['contentFileName'], $actionParams[1])
-                ) {
-                    throw new SystemException('ERR_NO_SINGLE_COMPONENT', SystemException::ERR_CRITICAL);
+                else {
+                    if(
+                        !(
+                            $blockDescription = ComponentManager::findBlockByName(
+                                ComponentManager::getDescriptionFromFile($this->documentInfo['layoutFileName']),
+                                $actionParams[1]
+                            )
+                        )
+                    &&
+                        !(
+                            $blockDescription = ComponentManager::findBlockByName(
+                                ComponentManager::getDescriptionFromFile($this->documentInfo['contentFileName']),
+                                $actionParams[1]
+                            )
+                        )
+                    ){
+                        throw new SystemException('ERR_NO_SINGLE_COMPONENT', SystemException::ERR_CRITICAL, $actionParams[1]);
+                    }
+                    $this->componentManager->add(
+                        ComponentManager::createBlockFromDescription($blockDescription)
+                    );
                 }
         }
         else {
-            $this->componentManager->loadComponentsFromFile($this->documentInfo['layoutFileName']);
-            $this->componentManager->loadComponentsFromFile($this->documentInfo['contentFileName']);
+            foreach(array(
+                $this->documentInfo['layoutFileName'],
+                $this->documentInfo['contentFileName']
+            ) as $fileName){
+                $this->componentManager->add(
+                    ComponentManager::createBlockFromDescription(
+                        ComponentManager::getDescriptionFromFile($fileName)
+                    )
+                );
+            }
             /*
             * Добавляем к набору компонентов страницы
             * обязательные стандартные компоненты:
-            *     - ActionSet
             *     - BreadCrumbs
             */
-            //$this->componentManager->addComponent($this->componentManager->createComponent('pageToolBar', 'share', 'DivisionEditor', array('action' => 'showPageToolbar')));
             $this->componentManager->addComponent($this->componentManager->createComponent('breadCrumbs', 'share', 'BreadCrumbs'));
         }
+        
     }
 
     /**
@@ -353,8 +385,8 @@ final class Document extends DBWorker {
      * @return void
      */
     public function runComponents() {
-        foreach ($this->componentManager->getComponents() as $componentInfo) {
-            $component = $componentInfo['component'];
+        foreach ($this->componentManager as $block) {
+                $block->run();
             /*
             * Запускаем определение текущего действия компонента
             * и загрузку конфигурационной информации.
@@ -362,9 +394,7 @@ final class Document extends DBWorker {
             //$component->getAction();
 
             // если у пользователя достаточно прав - запускаем работу компонента
-            if ($this->getRights() >= $component->getMethodRights()) {
-                $component->run();
-            }
+
         }
     }
 

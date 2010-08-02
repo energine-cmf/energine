@@ -41,6 +41,7 @@ class SimpleBuilder extends Builder {
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
         foreach(
             array(
+                'nullable',
                 'pattern',
                 'message',
                 'tabName',

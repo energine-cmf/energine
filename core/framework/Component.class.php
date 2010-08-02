@@ -7,7 +7,6 @@
  * @subpackage core
  * @author 1m.dm
  * @copyright Energine 2006
- * @version $Id$
  */
 
 
@@ -18,7 +17,7 @@
  * @subpackage core
  * @author 1m.dm
  */
-class Component extends DBWorker {
+class Component extends DBWorker implements Block{
 
     /**
      * Имя действия по-умолчанию.
@@ -153,14 +152,13 @@ class Component extends DBWorker {
          * @todo Проверить, можно ли перенести в build
          */
         $this->doc = new DOMDocument('1.0', 'UTF-8');
-
+        $this->document->componentManager->register($this);
         $this->setProperty('template', $template = $this->request->getPath(Request::PATH_TEMPLATE, true));
         $this->setProperty(
             'single_template',
             ($this->document->getProperty('single') ? $template : $template.'single/'.$this->getName().'/')
         );
         $this->config = new ComponentConfig($this->getParam('configFilename'), get_class($this), $this->module);
-
         $this->determineAction();
     }
 /*    
@@ -368,14 +366,16 @@ class Component extends DBWorker {
      * @return void
      */
     final public function run() {
-        if (!method_exists($this, $this->getAction())) {
-            throw new SystemException(
-                'ERR_DEV_NO_ACTION',
-                SystemException::ERR_DEVELOPER,
-                array($this->getAction(), $this->getName())
-            );
+        if($this->document->getRights() >= $this->getMethodRights()){
+            if (!method_exists($this, $this->getAction())) {
+                throw new SystemException(
+                    'ERR_DEV_NO_ACTION',
+                    SystemException::ERR_DEVELOPER,
+                    array($this->getAction(), $this->getName())
+                );
+            }
+            $this->{$this->getAction()}();
         }
-        $this->{$this->getAction()}();
     }
 
     /**
@@ -480,31 +480,34 @@ class Component extends DBWorker {
      * @return DOMDocument
      */
     public function build() {
-        $result = $this->doc->createElement('component');
-        $result->setAttribute('name', $this->getName());
-        $result->setAttribute('module', $this->module);
-        $result->setAttribute('componentAction', $this->getAction());
-        $result->setAttribute('class', get_class($this));
+        $result = false;
+        if($this->document->getRights() >= $this->getMethodRights() && $this->enabled()) {
+            $result = $this->doc->createElement('component');
+            $result->setAttribute('name', $this->getName());
+            $result->setAttribute('module', $this->module);
+            $result->setAttribute('componentAction', $this->getAction());
+            $result->setAttribute('class', get_class($this));
 
-        foreach ($this->properties as $propName => $propValue) {
-            $result->setAttribute($propName, $propValue);
+            foreach ($this->properties as $propName => $propValue) {
+                $result->setAttribute($propName, $propValue);
+            }
+
+            /*
+             * Существует ли построитель и правильно ли он отработал?
+             * Построитель может не существовать, если мы создаем компонент в котором нет данных.
+             */
+            if ($this->getBuilder() && $this->getBuilder()->build()) {
+                $result->appendChild(
+                    $this->doc->importNode(
+                        $this->getBuilder()->getResult(),
+                        true
+                    )
+                );
+            }
+
+            $this->doc->appendChild($result);
+            $result = $this->doc;
         }
-
-        /*
-         * Существует ли построитель и правильно ли он отработал?
-         * Построитель может не существовать, если мы создаем компонент в котором нет данных.
-         */
-        if ($this->getBuilder() && $this->getBuilder()->build()) {
-            $result->appendChild(
-                $this->doc->importNode(
-                    $this->getBuilder()->getResult(),
-                    true
-                )
-            );
-        }
-
-        $this->doc->appendChild($result);
-        $result = $this->doc;
         return $result;
     }
 

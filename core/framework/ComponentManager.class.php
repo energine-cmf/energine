@@ -1,13 +1,12 @@
 <?php
 
 /**
- * Класс ComponentManager.
+ * Содержит класс ComponentManager и интерфейс Block
  *
  * @package energine
  * @subpackage core
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
  */
 
 
@@ -19,19 +18,42 @@
  * @author dr.Pavka
  * @final
  */
-final class ComponentManager extends Object  {
+final class ComponentManager extends Object implements Iterator {
 
     /**
+     * Массив компонентов
+     * используется для быстрого поиска компонента функцией getComponentByName
+     * Наполняется  при добавлении компонента в поток
+     *
      * @access private
      * @var array набор компонентов
      */
-    private $components = array();
+    private $registeredBlocks = array();
 
     /**
      * @access private
      * @var Document документ
+     * @static
      */
-    private $document;
+    static private $document;
+
+    /**
+     * Содержит как компоненты так и контейнеры
+     * @var Block[] Массив блоков
+     */
+    private $blocks = array();
+    /**
+     * Массив имен блоков
+     * заполняется в функции rewind
+     * используется для ускорения итерации
+     * @var array
+     */
+    private $blockNames = array();
+    /**
+     * Текщий индекс итерации
+     * @var int
+     */
+    private $iteratorIndex = 0;
 
     /**
      * Конструктор класса.
@@ -42,114 +64,88 @@ final class ComponentManager extends Object  {
      */
     public function __construct(Document $document) {
         parent::__construct();
+        self::$document = $document;
+    }
 
-        $this->document = $document;
+    public function register(Block $block) {
+        $this->registeredBlocks[$block->getName()]  = $block;
+    }
+
+    /**
+     * Добавляет блок в список блоков
+     * @param Block $block
+     * @return void
+     */
+    public function add(Block $block) {
+        $this->blocks[$block->getName()] = $block;
+/*
+        $iterateContainer = function(Block $block) use(&$iterateContainer) {
+            $result = array();
+            if ($block instanceof ComponentContainer) {
+                foreach ($block as $blockChildName => $blockChild) {
+                    $result[$blockChildName] = $blockChild;
+                    $result = array_merge($result, $iterateContainer($blockChild));
+                }
+            }
+            else {
+                 $result[$block->getName()] = $block;
+            }
+            return $result;
+        };
+
+        $this->blockCache = array_merge($this->blockCache, $iterateContainer($block));
+ *
+ */
     }
 
 
     /**
-	 * Добавляет компонент.
-	 *
-	 * @access public
-	 * @param Component $component
-	 * @param string имя файла шаблона в котором находится компонент
-	 * @return void
-	 */
-    public function addComponent(Component $component, $fileName = false) {
-        $this->components[$component->getName()] = array(
-        'component' => $component,
-        'file' => $fileName
-        );
+     * Добавляет компонент.
+     *
+     * @access public
+     * @param Component $component
+     * @return void
+     * @deprecated С поялением концепции блоков нужно использовать ComponentManager::add
+     */
+    public function addComponent(Component $component) {
+        $this->add($component);
     }
 
     /**
-     * Возвращает компонент с указанным именем.
+     * Возвращает блок с указанным именем.
      *
      * @access public
      * @param string $name имя компонента
      * @return Component
      */
-    public function getComponentByName($name) {
+    public function getBlockByName($name) {
         $result = false;
-        if (isset($this->components[$name])) {
-            $result = $this->components[$name]['component'];
+        if (isset($this->registeredBlocks[$name])) {
+            $result = $this->registeredBlocks[$name];
         }
         return $result;
-    }
-
-    /**
-     * Возвращает набор компонентов по имени класса.
-     *
-     * @access public
-     * @param string $className имя класса
-     * @return array
-     */
-    public function getComponentsByClassName($className) {
-        $result = array();
-        foreach ($this->components as $componentName => $component) {
-            if (get_class($component['component']) == $className) {
-                $result[$componentName] = $component['component'];
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Загружает описания компонентов из файла шаблона(layout или content)
-     *
-     * @param string имя файла content'а или layout'а
-     * @param string имя компонента который нужно загрузить
-     * @return bool Возвращает флаг указівающий на то загружены ли компоненты
-     * @access public
-     */
-
-    public function loadComponentsFromFile($fileName, $onlyComponent = false) {
-        $result = false;
-        //проверяем существует ли такой файл
-        if (!file_exists($fileName)) {
-            throw new SystemException('ERR_DEV_NO_TEMPLATE_FILE', SystemException::ERR_CRITICAL, $fileName);
-        }
-        //и можно ли из него загрузить данные
-        if (!($file = simplexml_load_file($fileName))) {
-            throw new SystemException('ERR_DEV_BAD_TEMPLATE_FILE', SystemException::ERR_CRITICAL, $fileName);
-        }
-        if ($onlyComponent) {
-            $components = $file->xpath("/*/component[@name='".$onlyComponent."']");
-        }
-        else {
-            $components = $file->children();
-            //$components = $file->xpath('/*/component');
-        }
-        if (!empty($components)) {
-            $result = true;
-            foreach ($components as $componentDescription) {
-                $this->addComponent($this->createComponentFromXML($componentDescription), $fileName);
-            }
-        }
-
-        return $result;
-
     }
 
     /**
      * Создание компонента из XML описания
      *
      * @param SimpleXMLElement описание компонента
-     * @return Component
+     * @return Object
      * @access public
+     * @static
      */
 
-    public function createComponentFromXML(SimpleXMLElement $componentDescription) {
+    static public function createComponentFromDescription(SimpleXMLElement $componentDescription) {
         // перечень необходимых атрибутов компонента
         $requiredAttributes = array('name', 'module', 'class');
 
+        $name = $class = $module = null;
         //после отработки итератора должны получить $name, $module, $class
         foreach ($requiredAttributes as $attrName) {
             if (!isset($componentDescription[$attrName])) {
                 throw new SystemException("ERR_DEV_NO_REQUIRED_ATTRIB $attrName", SystemException::ERR_DEVELOPER);
             }
-            $$attrName = (string)$componentDescription[$attrName];
+            $$attrName = (string) $componentDescription[$attrName];
         }
 
 
@@ -160,13 +156,14 @@ final class ComponentManager extends Object  {
             foreach ($componentDescription->params->param as $tagName => $paramDescr) {
                 if ($tagName == 'param') {
                     if (isset($paramDescr['name'])) {
-                        $paramName = (string)$paramDescr['name'];
-                        $paramValue = (string)$paramDescr;
+                        $paramName = (string) $paramDescr['name'];
+                        $paramValue = (string) $paramDescr;
 
                         //Если в массиве параметров уже существует параметр с таким именем, превращаем этот параметр в массив
                         if (isset($params[$paramName])) {
                             if (!is_array($params[$paramName])) {
-                            	$params[$paramName] = array($params[$paramName]);
+                                $params[$paramName] =
+                                        array($params[$paramName]);
                             }
                             array_push($params[$paramName], $paramValue);
                         }
@@ -177,14 +174,12 @@ final class ComponentManager extends Object  {
                 }
             }
         }
-
-        $component = $this->createComponent($name, $module, $class, $params);
-
-        return $component;
+        return self::_createComponent($name, $module, $class, $params);
     }
 
     /**
      * Создает компонент.
+     * Использует
      *
      * @access public
      * @param string $name
@@ -194,26 +189,172 @@ final class ComponentManager extends Object  {
      * @return Component
      */
     public function createComponent($name, $module, $class, $params = null) {
-        try {
-            $result = new $class($name, $module, $this->document, $params);    
+        return call_user_func_array(array('ComponentManager', '_createComponent'), func_get_args());
+    }
+
+    /**
+     * Осуществляет поиск блока в описании
+     *
+     * @static
+     * @param SimpleXMLElement $containerXMLDescription
+     * @param  $blockName
+     * @return Block|bool
+     */
+    static public function findBlockByName(SimpleXMLElement $containerXMLDescription, $blockName) {
+        $blocks = $containerXMLDescription->xpath(
+            'descendant-or-self::*[name()="container" or name() = "component"]' .
+                    '[@name="' . $blockName . '"]'
+        );
+        if (!empty($blocks)) {
+            list($blocks) = $blocks;
         }
-        catch(SystemException $e) {
+        else {
+            $blocks = false;
+        }
+
+        return $blocks;
+    }
+
+    /**
+     * Осуществляет загрузку описания блока из файла
+     *
+     * @static
+     * @throws SystemException
+     * @param  $blockDescriptionFileName
+     * @return SimpleXMLElement
+     */
+    static public function getDescriptionFromFile($blockDescriptionFileName) {
+        if (!file_exists($blockDescriptionFileName)) {
+            throw new SystemException('ERR_DEV_NO_CONTAINER_FILE', SystemException::ERR_CRITICAL, $blockDescriptionFileName);
+        }
+        if (!(
+        $blockDescription = simplexml_load_file($blockDescriptionFileName))) {
+            throw new SystemException('ERR_DEV_BAD_CONTAINER_FILE', SystemException::ERR_CRITICAL, $blockDescriptionFileName);
+        }
+
+        return $blockDescription;
+    }
+
+    /**
+     * Создает блок по его описанию
+     *
+     * @static
+     * @throws SystemException
+     * @param SimpleXMLElement $blockDescription
+     * @return Block
+     */
+    static public function createBlockFromDescription(SimpleXMLElement $blockDescription) {
+        $result = false;
+        switch ($blockDescription->getName()) {
+            case 'content':
+                $result =
+                        ComponentContainer::createFromDescription($blockDescription, self::$document, array('tag' => 'content'));
+                break;
+            case 'page':
+                $result =
+                        ComponentContainer::createFromDescription($blockDescription, self::$document, array('tag' => 'layout'));
+                break;
+            case 'container':
+                $result =
+                        ComponentContainer::createFromDescription($blockDescription, self::$document);
+                break;
+            case 'component':
+                $result =
+                        self::createComponentFromDescription($blockDescription);
+                break;
+            default:
+                throw new SystemException('ERR_UNKNOWN_BLOCKTYPE', SystemException::ERR_CRITICAL);
+                break;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Создает компонент по переданнім параметрам
+     *
+     * @static
+     * @throws SystemException
+     * @param  $name
+     * @param  $module
+     * @param  $class
+     * @param  $params
+     * @return
+     */
+    static private function _createComponent($name, $module, $class, $params = null) {
+        try {
+            $result = new $class($name, $module, self::$document, $params);
+        }
+        catch (SystemException $e) {
             throw new SystemException($e->getMessage(), SystemException::ERR_DEVELOPER, array(
-                'class' => (($module !== 'site')?str_replace('*', $module, CORE_COMPONENTS_DIR):SITE_COMPONENTS_DIR.$module).'/'.$class.'.class.php',
+                'class' => (($module !==
+                        'site') ? str_replace('*', $module, CORE_COMPONENTS_DIR) :
+                        SITE_COMPONENTS_DIR . $module) . '/' . $class .
+                        '.class.php',
                 'trace' => $e->getTraceAsString()
             ));
         }
         return $result;
     }
-    /**
-     * Возвращает набор компонентов
-     *
-     * @return array
-     * @access public
-     */
 
-    public function getComponents() {
-        return $this->components;
+    /**
+     * Загружает массив имен блоков в переменную blockNames
+     *
+     * @return void
+     */
+    public function rewind() {
+        $this->blockNames = array_keys($this->blocks);
+        $this->iteratorIndex = 0;
     }
 
+    /**
+     * @return boolean
+     */
+    public function valid() {
+        return isset($this->blockNames[$this->iteratorIndex]);
+    }
+
+    /**
+     * @return string
+     */
+    public function key() {
+        return $this->blockNames[$this->iteratorIndex];
+    }
+
+    /**
+     * @return void
+     */
+    public function next() {
+        $this->iteratorIndex++;
+    }
+
+    /**
+     * @return Block
+     */
+    public function current() {
+        return $this->blocks[$this->blockNames[$this->iteratorIndex]];
+    }
+}
+
+/**
+ *
+ */
+interface Block {
+    /**
+     * @abstract
+     * @return void
+     */
+    public function run();
+
+    /**
+     * @abstract
+     * @return DOMDocument
+     */
+    public function build();
+
+    /**
+     * @abstract
+     * @return string
+     */
+    public function getName();
 }

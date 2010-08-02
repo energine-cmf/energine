@@ -562,12 +562,14 @@ final class DivisionEditor extends Grid {
 				$result = false;
 				// вызываем родительский метод построения
 				$result = Component::build();
-				$result->documentElement->appendChild($result->importNode($this->buildJS(), true));
-				$tbs = $this->getToolbar();
-				if(!empty($tbs))
-				foreach($tbs as $toolbar){
-					$result->documentElement->appendChild($result->importNode($toolbar->build(), true));
-				}
+                if($result instanceof DOMDocument) {
+                    $result->documentElement->appendChild($result->importNode($this->buildJS(), true));
+                    $tbs = $this->getToolbar();
+                    if(!empty($tbs))
+                    foreach($tbs as $toolbar){
+                        $result->documentElement->appendChild($result->importNode($toolbar->build(), true));
+                    }
+                }
 				break;
 			case 'showTransEditor':
 				$result = $this->transEditor->build();

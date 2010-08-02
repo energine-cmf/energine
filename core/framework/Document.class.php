@@ -253,7 +253,6 @@ final class Document extends DBWorker {
             catch (DummyException $dummyException){
             }
 
-
             if (!empty($componentResult)) {
                 try{
                 $componentResult = $this->doc->importNode(
@@ -267,19 +266,7 @@ final class Document extends DBWorker {
                 if ($dom_errors) {
                     $componentResult->insertBefore($dom_errors, $componentResult->firstChild);
                 }
-
                 $dom_root->appendChild($componentResult);
-
-                /*if ($componentInfo['file'] == $this->documentInfo['layoutFileName']) {
-                	$dom_layout->appendChild($componentResult);
-                }
-                elseif ($componentInfo['file'] == $this->documentInfo['contentFileName']) {
-                	$dom_content->appendChild($componentResult);
-                }
-                else {
-                    $dom_root->appendChild($componentResult);
-                }*/
-
             }
             elseif ($dom_errors) {
                 $dom_root->appendChild($dom_errors);

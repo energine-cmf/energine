@@ -17,7 +17,7 @@
  * @subpackage core
  * @author 1m.dm
  */
-class Component extends DBWorker implements Block{
+class Component extends DBWorker implements Block {
 
     /**
      * Имя действия по-умолчанию.
@@ -153,46 +153,50 @@ class Component extends DBWorker implements Block{
          */
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->document->componentManager->register($this);
-        $this->setProperty('template', $template = $this->request->getPath(Request::PATH_TEMPLATE, true));
+        $this->setProperty('template',
+            $template = $this->request->getPath(Request::PATH_TEMPLATE, true));
         $this->setProperty(
             'single_template',
-            ($this->document->getProperty('single') ? $template : $template.'single/'.$this->getName().'/')
+            ($this->document->getProperty('single') ? $template :
+                    $template . 'single/' . $this->getName() . '/')
         );
-        $this->config = new ComponentConfig($this->getParam('configFilename'), get_class($this), $this->module);
+        $this->config =
+                new ComponentConfig($this->getParam('configFilename'), get_class($this), $this->module);
         $this->determineAction();
     }
-/*    
+
+/*
     protected function __set($name, $value){
-    	if($name == 'params'){
-    		$this->setParam($name, $value);
-    	}
-    	else{
-    		throw new SystemException('ERR_BAD_VARIABLE', SystemException::ERR_DEVELOPER, $name);
-    	}
-    }
-    protected function __get($name){
-    	$result = null;
         if($name == 'params'){
-            $result =  $this->_params[$name];      	
+            $this->setParam($name, $value);
         }
         else{
-        	throw new SystemException('ERR_BAD_VARIABLE', SystemException::ERR_DEVELOPER, $name);
+            throw new SystemException('ERR_BAD_VARIABLE', SystemException::ERR_DEVELOPER, $name);
+        }
+    }
+    protected function __get($name){
+        $result = null;
+        if($name == 'params'){
+            $result =  $this->_params[$name];
+        }
+        else{
+            throw new SystemException('ERR_BAD_VARIABLE', SystemException::ERR_DEVELOPER, $name);
         }
 
         
     }
 */
-     /**
-      * Возвращает флаг активности компонента
-      *
-      * @return bool
-      * @access protected
-      * @final
-      */
+    /**
+     * Возвращает флаг активности компонента
+     *
+     * @return bool
+     * @access protected
+     * @final
+     */
 
-      final protected function isActive() {
-         return $this->params['active'];
-      }
+    final protected function isActive() {
+        return $this->params['active'];
+    }
 
 
     /**
@@ -247,8 +251,8 @@ class Component extends DBWorker implements Block{
         if (!isset($this->params[$name])) {
             throw new SystemException('ERR_DEV_NO_PARAM', SystemException::ERR_DEVELOPER, $name);
         }
-        if($name == 'active'){
-        	$value = (bool)$value;
+        if ($name == 'active') {
+            $value = (bool) $value;
         }
         /*if (in_array($name, array('action','configFilename', 'active'))) {
             throw new SystemException('ERR_DEV_INVARIANT_PARAM', SystemException::ERR_DEVELOPER, $name);
@@ -256,17 +260,18 @@ class Component extends DBWorker implements Block{
 
         // если новое значение пустое - оставляем значение по-умолчанию
         if (!empty($value) || $value === false) {
-        	if(is_scalar($value)){
-	        	//ОБрабатываем случай передачи массива-строки в параметры
-	        	$value = explode('|', $value);
-	            $this->params[$name] = (sizeof($value) == 1)?current($value):$value;
-        	}
-        	elseif(is_array($value)){
-        		$this->params[$name] = array_values($value);
-        	}
-        	else {
-        		$this->params[$name] = $value;
-        	}
+            if (is_scalar($value)) {
+                //ОБрабатываем случай передачи массива-строки в параметры
+                $value = explode('|', $value);
+                $this->params[$name] =
+                        (sizeof($value) == 1) ? current($value) : $value;
+            }
+            elseif (is_array($value)) {
+                $this->params[$name] = array_values($value);
+            }
+            else {
+                $this->params[$name] = $value;
+            }
         }
     }
 
@@ -290,7 +295,7 @@ class Component extends DBWorker implements Block{
      * @access private
      */
 
-    protected  function determineAction() {
+    protected function determineAction() {
         //Текущее действие берем из параметров
         //По умолчанию оно равно self::DEFAULT_ACTION_NAME
         $this->action = $this->getParam('action');
@@ -302,14 +307,15 @@ class Component extends DBWorker implements Block{
             }
 
             // определяем действие по запрошенному URI
-            $action = $this->config->getActionByURI($this->request->getPath(Request::PATH_ACTION, true));
+            $action =
+                    $this->config->getActionByURI($this->request->getPath(Request::PATH_ACTION, true));
             if ($action !== false) {
                 $this->action = $action['name'];
                 $this->actionParams = $action['params'];
             }
 
         }
-        // если имя действия указано в POST-запросе - используем его
+            // если имя действия указано в POST-запросе - используем его
         elseif (isset($_POST[$this->getName()]['action'])) {
             $this->action = $_POST[$this->getName()]['action'];
         }
@@ -317,8 +323,9 @@ class Component extends DBWorker implements Block{
         if (!$this->config->isEmpty()) {
             $this->config->setCurrentMethod($this->getAction());
 
-            if (!is_null($rights = $this->config->getCurrentMethodConfig()->getAttribute('rights'))) {
-                $this->rights = (int)$rights;
+            if (!is_null($rights =
+                    $this->config->getCurrentMethodConfig()->getAttribute('rights'))) {
+                $this->rights = (int) $rights;
             }
         }
 
@@ -344,7 +351,7 @@ class Component extends DBWorker implements Block{
      * @return int
      */
     final public function getMethodRights() {
-        return (int)$this->rights;
+        return (int) $this->rights;
     }
 
     /**
@@ -366,7 +373,7 @@ class Component extends DBWorker implements Block{
      * @return void
      */
     final public function run() {
-        if($this->document->getRights() >= $this->getMethodRights()){
+        if ($this->document->getRights() >= $this->getMethodRights()) {
             if (!method_exists($this, $this->getAction())) {
                 throw new SystemException(
                     'ERR_DEV_NO_ACTION',
@@ -374,7 +381,9 @@ class Component extends DBWorker implements Block{
                     array($this->getAction(), $this->getName())
                 );
             }
-            $this->{$this->getAction()}();
+            $this->{
+            $this->getAction()
+            }();
         }
     }
 
@@ -396,43 +405,45 @@ class Component extends DBWorker implements Block{
      * @access protected
      * @return void
      */
-     protected function prepare() {
-     }
-     /**
-      * Отключает отображение компонента
-      *
-      * @return void
-      * @access public
-      * @final
-      */
+    protected function prepare() {
+    }
 
-     final public function disable() {
-         $this->enabled = false;
-     }
+    /**
+     * Отключает отображение компонента
+     *
+     * @return void
+     * @access public
+     * @final
+     */
 
-     /**
-      * Включает отображение компонента
-      *
-      * @return void
-      * @access public
-      * @final
-      */
+    final public function disable() {
+        $this->enabled = false;
+    }
 
-     final public function enable() {
-         $this->enabled = true;
-     }
+    /**
+     * Включает отображение компонента
+     *
+     * @return void
+     * @access public
+     * @final
+     */
 
-     /**
-      * Возвращает активность компонента
-      *
-      * @return boolean
-      * @access public
-      * @final
-      */
+    final public function enable() {
+        $this->enabled = true;
+    }
 
-     final public function enabled() {
-         return $this->enabled;
-     }
+    /**
+     * Возвращает активность компонента
+     *
+     * @return boolean
+     * @access public
+     * @final
+     */
+
+    final public function enabled() {
+        return $this->enabled;
+    }
+
     /**
      * Устанавливает значение свойства компонента.
      *
@@ -473,6 +484,7 @@ class Component extends DBWorker implements Block{
     final protected function removeProperty($propName) {
         unset($this->properties[$propName]);
     }
+
     /**
      * Строит результат работы компонента используя определённый построитель.
      *
@@ -480,37 +492,36 @@ class Component extends DBWorker implements Block{
      * @return DOMDocument
      */
     public function build() {
-        $result = false;
-        if($this->document->getRights() >= $this->getMethodRights() && $this->enabled()) {
-            $result = $this->doc->createElement('component');
-            $result->setAttribute('name', $this->getName());
-            $result->setAttribute('module', $this->module);
-            $result->setAttribute('componentAction', $this->getAction());
-            $result->setAttribute('class', get_class($this));
 
-            foreach ($this->properties as $propName => $propValue) {
-                $result->setAttribute($propName, $propValue);
-            }
 
-            /*
-             * Существует ли построитель и правильно ли он отработал?
-             * Построитель может не существовать, если мы создаем компонент в котором нет данных.
-             */
-            if ($this->getBuilder() && $this->getBuilder()->build()) {
-                $result->appendChild(
-                    $this->doc->importNode(
-                        $this->getBuilder()->getResult(),
-                        true
-                    )
-                );
-            }
+        $result = $this->doc->createElement('component');
+        $result->setAttribute('name', $this->getName());
+        $result->setAttribute('module', $this->module);
+        $result->setAttribute('componentAction', $this->getAction());
+        $result->setAttribute('class', get_class($this));
 
-            $this->doc->appendChild($result);
-            $result = $this->doc;
+        foreach ($this->properties as $propName => $propValue) {
+            $result->setAttribute($propName, $propValue);
         }
+
+        /*
+        * Существует ли построитель и правильно ли он отработал?
+        * Построитель может не существовать, если мы создаем компонент в котором нет данных.
+        */
+        if ($this->getBuilder() && $this->getBuilder()->build()) {
+            $result->appendChild(
+                $this->doc->importNode(
+                    $this->getBuilder()->getResult(),
+                    true
+                )
+            );
+        }
+
+        $this->doc->appendChild($result);
+        $result = $this->doc;
+
         return $result;
     }
-
 
 
     /**
@@ -553,7 +564,8 @@ class Component extends DBWorker implements Block{
             $dom_errors = $dom_errorDoc->createElement('errors');
             $dom_errors->setAttribute('title', $this->translate('TXT_ERRORS'));
             foreach ($this->errors as $errorInfo) {
-                $dom_error = $dom_errorDoc->createElement('error', $errorInfo['message']);
+                $dom_error =
+                        $dom_errorDoc->createElement('error', $errorInfo['message']);
                 $dom_error->setAttribute('type', $errorInfo['type']);
                 /**
                  * @todo выводить дополнительную информацию только в debug-режиме.
@@ -567,7 +579,8 @@ class Component extends DBWorker implements Block{
                     }
 
                     if (!empty($customMessage)) {
-                        $dom_error->nodeValue = "{$errorInfo['message']} [ $customMessage ]";
+                        $dom_error->nodeValue =
+                                "{$errorInfo['message']} [ $customMessage ]";
                     }
                     else {
                         $dom_error->nodeValue = $errorInfo['message'];
@@ -583,19 +596,19 @@ class Component extends DBWorker implements Block{
 
     /**
      * Возвращает параметры действия.
-     * 
+     *
      * @param bool  - возвращает ассоциативный/обычный массив
      * @access public
      * @return array
-     * 
+     *
      * @todo Тут какой то беспорядок, то false то пустой array
      */
     public function getActionParams($returnAsAssocArray = false) {
-    	if(!$returnAsAssocArray && ($this->actionParams !== false)){
+        if (!$returnAsAssocArray && ($this->actionParams !== false)) {
             return array_values($this->actionParams);
-    	}
-        
-        return $this->actionParams;            	
-        
+        }
+
+        return $this->actionParams;
+
     }
 }

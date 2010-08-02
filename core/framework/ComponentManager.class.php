@@ -174,7 +174,18 @@ final class ComponentManager extends Object implements Iterator {
                 }
             }
         }
-        return self::_createComponent($name, $module, $class, $params);
+/*        $result = false;
+        if(
+            !isset($params['rights'])
+            ||
+            (isset($params['rights']) && self::$document->getRights() >= $params['rights'])
+        ) {
+            $result = self::_createComponent($name, $module, $class, $params);
+        }*/
+
+        $result = self::_createComponent($name, $module, $class, $params);
+
+        return $result;
     }
 
     /**

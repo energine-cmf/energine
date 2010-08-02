@@ -52,6 +52,7 @@ final class DBStructureInfo extends Object {
             }
             else {
                 $this->structure = unserialize($str);
+                //inspect($this->structure);
             }
             //$this->memcache->delete('structure');
         }
@@ -224,9 +225,9 @@ inspect($tableName, $this->structure[$tableName]);
                                 $matches['is_null'][$index] != 'NOT NULL'),
                         'length' => (int)$matches['len'][$index],
                         'default' => trim($matches['default'][$index], "'"),
-                        'type' => self::convertType($matches['type'][$index]),
                         'key' => false,
-                        'index' => false
+                        'type' => self::convertType($matches['type'][$index]),
+                        'index' => false,
                     );
 
                     // входит ли поле в индекс

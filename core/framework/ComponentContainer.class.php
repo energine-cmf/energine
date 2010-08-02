@@ -134,10 +134,22 @@ class ComponentContainer extends Object implements Block, Iterator{
             }
         }
         foreach($this->blocks as $block) {
-            $blockDOM = $block->build();
-            if($blockDOM instanceof DOMDocument) {
-                $blockDOM = $doc->importNode($blockDOM->documentElement, true);
-                $containerDOM->appendChild($blockDOM);
+            if(
+                $block instanceof ComponentContainer
+                ||
+                (
+                    $block instanceof Component
+                    &&
+                    $block->enabled()
+                    &&
+                    ($this->document->getRights()>= $block->getMethodRights())
+                )
+            ) {
+                $blockDOM = $block->build();
+                if($blockDOM instanceof DOMDocument) {
+                    $blockDOM = $doc->importNode($blockDOM->documentElement, true);
+                    $containerDOM->appendChild($blockDOM);
+                }
             }
         }
 

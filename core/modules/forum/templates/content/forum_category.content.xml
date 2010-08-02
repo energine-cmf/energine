@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<content>
+	<component name="forumCategory" module="forum" class="ForumCategory"/>
+</content>

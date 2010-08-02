@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+        <method name="view">
+             <uri_patterns>
+                 <pattern>/category/[categoryID]/</pattern>
+             </uri_patterns>
+            <fields>
+                <field name="category_id"/>
+                <field name="category_name"/>
+                <field name="category_desc"/>
+            </fields>
+        </method>
+        <method name="main">
+            <uri_patterns>
+                <!--<pattern>/page-[pageNumber]/</pattern>-->
+                <pattern>/</pattern>
+             </uri_patterns>
+             <fields>
+                <field name="category_id"/>
+                <field name="category_name"/>
+                <field name="category_desc"/>
+            </fields>
+            <toolbar>
+                <control id="view" title="BTN_GO" type="link"/>
+            </toolbar>
+        </method>
+    </methods>
+</configuration>

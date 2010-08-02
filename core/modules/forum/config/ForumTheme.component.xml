@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+        <method name="save">
+        	<uri_patterns>
+                 <pattern>/[postID]/save-theme/</pattern>
+                 <pattern>/save-theme/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="remove">
+        	<uri_patterns>
+                 <pattern>/[postID]/remove/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="create">
+        	<uri_patterns>
+                 <pattern>/[categoryID]/create/</pattern>
+            </uri_patterns>
+            <javascript>
+            	<object name="ForumForm" />
+            </javascript>
+            <fields>
+                <field name="category_id"/>
+                <field name="theme_name"/>
+                <field name="theme_text"/>
+            </fields>
+            <toolbar>
+            	<control id="savePost" title="BTN_SAVE" type="submit"  />
+            </toolbar>
+        </method>
+        <method name="modify">
+        	<uri_patterns>
+                 <pattern>/[postID]/modify/</pattern>
+            </uri_patterns>
+            <javascript>
+                <object name="ForumForm" />
+            </javascript>
+            <fields>
+                <field name="theme_id"/>
+                <field name="theme_name"/>
+                <field name="theme_text"/>
+            </fields>
+            <toolbar>
+            	<control id="savePost" title="BTN_SAVE" type="submit"  />
+            </toolbar>
+        </method>
+
+        <method name="view">
+             <uri_patterns>
+                 <pattern>/[themeID]/</pattern>
+             </uri_patterns>
+            <fields>
+                <field name="theme_id"/>
+                <field name="category_id"/>
+                <field name="u_id"/>
+                <field name="theme_name"/>
+                <field name="theme_text"/>
+                <field name="theme_created"/>
+                <field name="theme_closed"/>
+            </fields>
+        </method>
+        <method name="main">
+            <uri_patterns>
+                <!--<pattern>/page-[pageNumber]/</pattern>-->
+                <pattern>/</pattern>
+             </uri_patterns>
+             <fields>
+                <field name="theme_id"/>
+                <field name="category_id"/>
+                <field name="u_id"/>
+                <field name="theme_name"/>
+                <field name="theme_text"/>
+                <field name="theme_created"/>
+                <field name="theme_closed"/>
+			</fields>
+            <toolbar>
+                <control id="view" title="BTN_GO" type="link"/>
+            </toolbar>
+        </method>
+    </methods>
+</configuration>

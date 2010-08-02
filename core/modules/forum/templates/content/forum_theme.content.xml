@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<content>
+	<component name="forumTheme" module="forum" class="ForumTheme"/>
+	<component name="commentsForm" module="comments" class="CommentsForm">
+		<params>
+    		<param name="bind">forumTheme</param>
+		    <param name="comment_tables">forum_theme_comment</param>
+		</params>
+	</component>
+</content>

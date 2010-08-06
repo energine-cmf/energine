@@ -96,7 +96,7 @@
     public function getID($tag){
     	$result = null;
         if(!is_array($tag)){
-        	$tag = array($tag);
+        	$tag = explode(self::TAG_SEPARATOR, $tag);
         }
         $res = $this->dbh->select(self::TAG_TABLENAME, true, array('tag_name' => $tag));
         if(is_array($res)){

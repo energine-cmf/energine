@@ -98,7 +98,7 @@ final class DBStructureInfo extends Object {
             }
         }
         else {
-            $result = true;
+            $result = (boolean)$this->structure[$tableName];
         }
         return $result;
     }

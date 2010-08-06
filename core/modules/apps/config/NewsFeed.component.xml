@@ -15,7 +15,7 @@
 				<field name="news_text_rtf" type="boolean"/>
 			</fields>
 			<toolbar>
-				<control id="view" title="BTN_GO" type="link"/>
+				<control id="view" title="TXT_READ_MORE" type="link"/>
 			</toolbar>
 		</method>
 		<method name="view">

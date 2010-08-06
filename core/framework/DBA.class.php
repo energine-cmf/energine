@@ -526,13 +526,6 @@ abstract class DBA extends Object {
 	 * @return mixed
 	 */
 	public function getTranslationTablename($tableName) {
-/*		static $translationTables;
-		 
-		if(!isset($translationTables[$tableName])){
-			$translationTables[$tableName] = $this->tableExists($tableName.'_translation');
-		}
-		return $translationTables[$tableName];
-*/
         return $this->tableExists($tableName.'_translation');  
 	}
 	
@@ -544,14 +537,6 @@ abstract class DBA extends Object {
 	 * @access public
 	 */
 	public function tableExists($tableName){
-		/*static $tables;
-		
-		if(!isset($tables[$tableName])){
-            $res = $this->selectRequest('SHOW TABLES LIKE \''.$tableName.'\'');
-            $tables[$tableName] = (empty($res) || $res === true) ? false : $tableName;
-		}
-		
-		return $tables[$tableName];*/
 		return ($this->dbCache->tableExists($tableName))?$tableName:false;
 	}
 

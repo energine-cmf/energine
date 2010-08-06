@@ -73,7 +73,7 @@
                 <field name="post_text_rtf"/>
             </fields>
             <toolbar>
-                <control id="view" title="BTN_GO" type="link"/>
+                <control id="view" title="TXT_READ_MORE" type="link"/>
             </toolbar>
         </method>
         
@@ -96,7 +96,7 @@
                 <field name="post_text_rtf"/>                                                
             </fields>             
             <toolbar>
-                <control id="view" title="BTN_GO" type="link"/>
+                <control id="view" title="TXT_READ_MORE" type="link"/>
             </toolbar>
         </method>
 

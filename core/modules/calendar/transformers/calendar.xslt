@@ -4,7 +4,8 @@
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns="http://www.w3.org/1999/xhtml">
 
-    <xsl:template match="component[@exttype='calendar']">
+
+    <xsl:template match="component[@exttype='calendar']" >
         <xsl:if test="not(recordset/@empty)">
             <div id="{generate-id(recordset)}">
                 <!-- single_template="{$BASE}{$LANG_ABBR}{@single_template}"-->
@@ -37,7 +38,7 @@
             <xsl:apply-templates/>
         </tr>
     </xsl:template>
-    
+
     <xsl:template match="field[ancestor::component[@exttype='calendar']]">
         <td>
             <xsl:if test="@today">

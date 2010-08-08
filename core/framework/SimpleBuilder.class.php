@@ -46,7 +46,8 @@ class SimpleBuilder extends Builder {
                 'message',
                 'tabName',
                 'tableName',
-                'sort'
+                'sort',
+                'customField'
             ) as $propertyName
         ) {
             $fieldInfo->removeProperty($propertyName);

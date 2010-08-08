@@ -68,7 +68,10 @@ final class PageList extends DataSet {
      */
     protected function main() {
         parent::main();
-
+        $siteFD = new FieldDescription('Site');
+        $siteFD->setType(FieldDescription::FIELD_TYPE_STRING);
+        $this->getDataDescription()->addFieldDescription($siteFD);
+        
         if ($this->getDataDescription()->getFieldDescriptionByName('attachments')) {
             $this->getDataDescription()->addFieldDescription(AttachmentManager::getInstance()->createFieldDescription());
             if (!$this->getData()->isEmpty()) {
@@ -141,6 +144,7 @@ final class PageList extends DataSet {
                     $data[$key]['Id'] = $key;
                     $data[$key]['Segment'] = $value['Segment'];
                     $data[$key]['Name'] = $value['Name'];
+                    $data[$key]['Site'] = SiteManager::getInstance()->getSiteByID($data[$key]['site'])->base;
                     if ($hasDescriptionRtf)$data[$key]['DescriptionRtf'] =
                             $value['DescriptionRtf'];
                 }

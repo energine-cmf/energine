@@ -73,15 +73,15 @@ class AttachmentManager extends Singleton {
         if (!is_array($mapValue)) {
             $mapValue = array($mapValue);
         }
-        if ($mapValue = array_filter(array_values($mapValue))) {
 
+        if ($filteredMapValue = array_filter(array_values($mapValue))) {
             $request = 'SELECT spu.' . $mapFieldName .
                     ', upl_path as file, upl_name as name FROM share_uploads su ' .
                     'LEFT JOIN `' . $mapTableName .
                     '` spu ON spu.upl_id = su.upl_id ' .
                     //'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.
                     'WHERE ' . $mapFieldName . ' IN (' .
-                    implode(',', $mapValue) .
+                    implode(',', $filteredMapValue) .
                     ') ' .
                     'ORDER by upl_order_num';
             $images = $this->dbh->selectRequest($request);
@@ -97,12 +97,13 @@ class AttachmentManager extends Singleton {
 
                     array_push($imageData[$mapID], $row);
                 }
-
+                
                 for ($i = 0; $i < sizeof($mapValue); $i++) {
                     if (isset($imageData[$mapValue[$i]])) {
                         $builder = new Builder();
                         $localData = new Data();
-                        $localData->load($imageData[$mapValue[$i]]);
+                        if(isset($imageData[$mapValue[$i]]))
+                            $localData->load($imageData[$mapValue[$i]]);
 
                         $dataDescription = new DataDescription();
                         $fd = new FieldDescription('file');

@@ -8,7 +8,17 @@
  */
 
 /**
- * ...
+ * Вывод комментариев и формы комментирования
+ *
+ * Пример использования в *.content.xml
+ * <component name="commentsForm" module="comments" class="CommentsForm">
+		<params>
+    		<param name="bind">newsArchive</param>
+		    <param name="comment_tables">stb_news_comment</param>
+		    <param name="show_comments">1</param>
+		    <param name="show_form">1</param>
+		</params>
+	</component>
  *
  * @package energine
  * @subpackage comments
@@ -19,21 +29,32 @@ class CommentsForm extends DataSet {
 	 * связанный компонент
 	 * 
 	 * @access private
-	 * @var Component|boolean 
+	 * @var DBDataSet|boolean 
 	 */
 	 private $bindComponent;
 	 
-   /**
+    /**
     * Таблица с комментариями - должна быть задана как параметер компонента
     * @var string
-    */ 
-   private $commentTable = '';
-   
+    */
+    private $commentTable = '';
+
+    /**
+     * Комментируемая таблица
+     * @var string
+     */
+    private $targetTable = '';
+
    /**
     * Комментарии древовидные? определяется параметром is_tree 
     * @var bool
     */
    private $isTree = false;
+
+    /**
+     * @var bool
+     */
+    private $isExistsTables = null;
     
 	/**
 	 * Конструктор класса
@@ -45,22 +66,42 @@ class CommentsForm extends DataSet {
 	 * @access public
 	 */
 	public function __construct($name, $module, Document $document,  array $params = null) {
+        // если комментарии скрыты то бессмысленно показывать форму
+        if(!isset($params['show_comments']) or !$params['show_comments']){
+            $params['show_form'] = 0;
+        }
 		parent::__construct($name, $module, $document, $params);
+
 		$this->commentTable = $this->getParam('comment_tables');
-		if(!$this->commentTable){
-			throw new SystemException('Not defined param `comment_tables`');
-		}
+        $this->targetTable = substr($this->commentTable, 0, strrpos($this->commentTable, '_'));
+
 		$this->bindComponent = $this->document->componentManager->getBlockByName($this->getParam('bind'));
 		$this->isTree = $this->getParam('is_tree');
 	}
+
+    /**
+     * Существуют ли комментируемая таблица и таблица комментариев
+     * @return bool
+     */
+    protected function isExistsNeedTables (){
+        if(is_null($this->isExistsTables)){
+            $this->isExistsTables = (bool)$this->dbh->tableExists($this->commentTable) && (bool)$this->dbh->tableExists($this->targetTable);
+        }
+        return $this->isExistsTables;
+    }
 	
 	/**
 	 * Сохраняем комментарий и отдаём json
+         *  отключается параметром компонента show_form
 	 * 
 	 * Только для авторизованных пользователей
 	 */
 	protected function saveComment(){
 		try {
+            if(!$this->getParam('show_form')){
+				throw new Exception('Adding comments has been disabled');
+			}
+
 			if(!$this->document->user->isAuthenticated()){
 				throw new Exception('Add comment can auth user only');	
 			}
@@ -102,7 +143,9 @@ class CommentsForm extends DataSet {
 	        'comment_tables' => '',
 			'active'         => true,
 			'is_tree'		 => false,
-		    'bind'           => false 
+		    'bind'           => false,
+            'show_comments'  => false,
+            'show_form'      => false,
         ));
         return $result;
 	}
@@ -112,7 +155,11 @@ class CommentsForm extends DataSet {
 	 * 
 	 */
 	protected function prepare(){
-		if($this->document->user->isAuthenticated() && ($this->bindComponent && $this->bindComponent->getAction() == 'view') && ($this->getAction() == 'main')){
+		if(($this->bindComponent && $this->bindComponent->getAction() == 'view') && ($this->getAction() == 'main')
+                && $this->getParam('show_form') && $this->getParam('show_comments')
+                && $this->document->user->isAuthenticated()
+                && $this->isExistsNeedTables())
+        {
             parent::prepare();
 			$this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
 			//ID комментируемого элемента
@@ -126,9 +173,11 @@ class CommentsForm extends DataSet {
 		else {
 			$this->disable();
 		}
+
+        if($this->getParam('show_comments') && $this->isExistsNeedTables()){
+            $this->showComments();
+        }
 	}
-	
-	
 
 	/**
 	 * Add to DB
@@ -174,6 +223,7 @@ class CommentsForm extends DataSet {
 			'u_avatar_img' => $userAvatar
 		);
 	}
+
 	/**
 	 * Имя и аватар юзера
 	 * 
@@ -266,4 +316,22 @@ class CommentsForm extends DataSet {
 
         return $result;
 	}
+
+    /**
+     * Показываем комментарии
+     * @return void
+     */
+    protected function showComments(){
+        $priFieldName = $this->bindComponent->getPK();
+
+        $commentsParams = array(
+            'table_name' => $this->targetTable,
+            'is_tree' => false,
+            'target_ids' => $this->bindComponent->getData()->getFieldByName($priFieldName)->getData()
+        );
+
+        $commentsList = $this->document->componentManager->createComponent('commentsList', 'comments', 'CommentsList', $commentsParams);
+        $commentsList->run();
+        $this->document->componentManager->addComponent($commentsList);
+    }
 }

@@ -4,9 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml" 
     version="1.0">
 
-    <xsl:template match="field[@name='comments'][ancestor::component[@class='News'][@type='form']]
-                        | field[@name='comments'][ancestor::component[@class='CastingDigest'][@type='form']]
-                        | field[@name='comments'][ancestor::component[@class='StaffFeed'][@type='form']]">
+    <xsl:template match=" component[@class='CommentsList']">
         <xsl:if test="not(recordset[@empty])">
             <xsl:variable name="IS_SHOW_COMMENT_LINK"><xsl:if test="@is_tree='1' and @is_editable='1'">1</xsl:if></xsl:variable>
             <div class="comments">

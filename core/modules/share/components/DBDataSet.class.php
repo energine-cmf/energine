@@ -516,7 +516,7 @@ class DBDataSet extends DataSet {
      * @final
      */
 
-    final protected function getPK() {
+    final public function getPK() {
         if (!$this->pk) {
             $res = $this->dbh->getColumnsInfo($this->getTableName());
             if (is_array($res)) {

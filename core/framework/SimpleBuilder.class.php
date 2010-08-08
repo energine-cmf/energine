@@ -47,7 +47,8 @@ class SimpleBuilder extends Builder {
                 'tabName',
                 'tableName',
                 'sort',
-                'customField'
+                'customField',
+                'deleteFileTitle'
             ) as $propertyName
         ) {
             $fieldInfo->removeProperty($propertyName);

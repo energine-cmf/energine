@@ -78,7 +78,8 @@ final class DBStructureInfo extends Object {
 
     /**
      * Проверка таблицы на существование
-     *
+     * $this->structure[$tableName] может быть или массив или false ну или null
+     * 
      * @param  string $tableName
      * @return bool
      */
@@ -98,7 +99,8 @@ final class DBStructureInfo extends Object {
             }
         }
         else {
-            $result = (boolean)$this->structure[$tableName];
+            $result = is_array($this->structure[$tableName]) ;
+
         }
         return $result;
     }

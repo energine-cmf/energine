@@ -375,15 +375,15 @@ class DBDataSet extends DataSet {
 
         parent::setParam($name, $value);
     }
+
     /**
      * Возвращает имя таблицы
      *
      * @return string
-     * @access protected
+     * @access public
      * @final
      */
-
-    final protected function getTableName() {
+    final public function getTableName() {
         if (!$this->getParam('tableName')) {
             throw new SystemException('ERR_DEV_NO_TABLENAME', SystemException::ERR_DEVELOPER);
         }

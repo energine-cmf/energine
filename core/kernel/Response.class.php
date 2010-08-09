@@ -10,8 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/Object.class.php');
-
 /**
  * HTTP-ответ.
  *

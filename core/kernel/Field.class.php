@@ -10,7 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/Object.class.php');
 
 /**
  * Поле данных.

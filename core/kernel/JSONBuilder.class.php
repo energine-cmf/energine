@@ -10,7 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/Builder.class.php');
 
 /**
  * Построитель данных в формат JSON (JavaScript Object Notation).

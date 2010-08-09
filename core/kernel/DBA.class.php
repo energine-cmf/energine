@@ -10,7 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/SystemConfig.class.php');
 
 /**
  * Database Abstraction Layer.

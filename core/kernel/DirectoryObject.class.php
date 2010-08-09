@@ -10,8 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/FileSystemObject.class.php');
-//require_once('core/framework/FileObject.class.php');
 
 /**
  * Класс предназначенный для обработки набора FileObject

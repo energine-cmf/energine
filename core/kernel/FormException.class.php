@@ -10,7 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/BaseException.class.php');
 
 /**
  * Исключение формы.

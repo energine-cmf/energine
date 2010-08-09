@@ -10,8 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
-//require_once('core/framework/UserGroup.class.php');
 /**
  * Класс для работы с пользователем
  * Возвращает информацию о пользователе, сохраняет данные

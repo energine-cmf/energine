@@ -10,8 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/DBA.class.php');
-
 /**
  * Query Abstraction Layer.
  *

@@ -10,8 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/SystemConfig.class.php');
-
 /**
  * Трансформер XML-документа страницы.
  *

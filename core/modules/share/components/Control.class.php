@@ -9,7 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/Object.class.php');
 
 /**
  * Элемент управления панели инструментов

@@ -10,8 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/Builder.class.php');
-
 /**
  * Построитель древовидных данных.
  * Кроме Data и DataDescription имеет еще и Tree c помощью которого определяется структура

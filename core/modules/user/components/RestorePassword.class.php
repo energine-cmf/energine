@@ -9,8 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DataSet.class.php');
-//require_once('core/framework/Mail.class.php');
 
 /**
  * Форма восстановления пароля

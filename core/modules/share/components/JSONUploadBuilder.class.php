@@ -9,7 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/JSONBuilder.class.php');
 
 /**
  * Класс для построения JSON ответа

@@ -9,7 +9,6 @@
  * @version $Id: Remover.class.php,v 1.5 2008/08/27 15:39:16 chyk Exp $
  */
 
-//require_once('core/framework/Component.class.php');
 
 /**
  * Класс которому передается имя компонента, который необходимо удалить

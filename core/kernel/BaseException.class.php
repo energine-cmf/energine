@@ -10,11 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/DBWorker.class.php');
-//require_once('core/framework/Transformer.class.php');
-//require_once('core/framework/Response.class.php');
-//require_once('core/framework/Mail.class.php');
-//require_once('core/framework/Language.class.php');
 /**
  * Базовое исключение.
  *

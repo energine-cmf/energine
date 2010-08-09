@@ -67,7 +67,7 @@ define('CORE_COMPONENTS_DIR', 'core/modules/*/components');
 /**
  * Путь к директории ядра системы
  */
-define('CORE_FRAMEWORK_DIR', 'core/framework');
+define('CORE_FRAMEWORK_DIR', 'core/kernel');
 
 
 /**

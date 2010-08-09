@@ -9,8 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DBDataSet.class.php');
-//require_once('core/framework/AuthUser.class.php');
 
 /**
  * Форма редактирования данных пользователя

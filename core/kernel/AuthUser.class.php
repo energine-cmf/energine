@@ -10,7 +10,6 @@
  * @version $Id$
  */
 
-//require_once('core/framework/User.class.php');
 
 /**
  * Аутентифицированный пользователь.

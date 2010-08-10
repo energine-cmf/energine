@@ -31,6 +31,9 @@ class Feed extends DBDataSet {
         $this->setProperty('title', $this->translate('TXT_'.strtoupper($this->getName())));
         $this->setProperty('exttype', 'feed');
         $this->setParam('onlyCurrentLang', true);
+        if($this->getParam('editable') && $this->document->isEditable()) {
+            $this->setProperty('editable', 'editable');
+        }
 	}
 	/**
 	 * Убираем smap_id
@@ -89,7 +92,7 @@ class Feed extends DBDataSet {
     /**
      * Делаем компонент активным
      *
-     * @return type
+     * @return array
      * @access protected
      */
 
@@ -100,7 +103,8 @@ class Feed extends DBDataSet {
         'active' => true,
         'showAll' =>false,
 		'id' => false,
-        'limit' => false
+        'limit' => false,
+        'editable' => false    
         )
         );
     }

@@ -45,6 +45,7 @@ final class DBStructureInfo extends Object {
 
         if ($this->getConfigValue('cache.enable')) {
             $this->memcache = new Memcached();
+/*            inspect($this->memcache->addServer($this->getConfigValue('cache.host').'abc', $this->getConfigValue('cache.port')));*/
             $this->memcache->addServer($this->getConfigValue('cache.host'), $this->getConfigValue('cache.port'));
             if (!($str = $this->memcache->get('structure'))) {
                 $this->memcache->set('structure', serialize(
@@ -52,7 +53,6 @@ final class DBStructureInfo extends Object {
             }
             else {
                 $this->structure = unserialize($str);
-                //inspect($this->structure);
             }
             //$this->memcache->delete('structure');
         }
@@ -87,6 +87,7 @@ final class DBStructureInfo extends Object {
         $result = false;
         //Если не существует в кеше
         if (!isset($this->structure[$tableName])) {
+            //dump_log('tableExists '.$tableName, true);
             //если существует в списке таблиц
             if ($this->pdo->query(
                 'SHOW TABLES LIKE \'' . $tableName . '\'')->rowCount()) {
@@ -163,7 +164,7 @@ inspect($tableName, $this->structure[$tableName]);
                 ($this->structure[$tableName] === array())) {
             $this->structure[$tableName] = $this->analyzeCreateTableSQL($this->pdo->query("SHOW CREATE TABLE `$tableName`")->fetchColumn(1));
             $this->structure[$tableName] = array_map(function($row) use($tableName){ $row['tableName'] = $tableName; return $row;}, $this->structure[$tableName]);
-            //inspect($tableName, $this->structure[$tableName]);
+            //dump_log('getTableMeta '.$tableName, true);
         }
         return $this->structure[$tableName];
     }

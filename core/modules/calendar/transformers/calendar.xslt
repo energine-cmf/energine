@@ -13,7 +13,7 @@
                     <i class="rcbox_tr"></i>
                 </div>
                 <div class="rcbox_header clearfix">
-                    <h2 class="rcbox_name">Календар ТБ-програми</h2>
+                    <h2 class="rcbox_name"></h2>
                 </div>
                 <div class="rcbox_content clearfix">
 
@@ -118,7 +118,7 @@
         <td>
             <xsl:attribute name="class">day <xsl:if test="position() = last()"> last_day</xsl:if><xsl:if test="@today"> current_day</xsl:if><xsl:if test="not(@current)"> foreign_day</xsl:if>
                 <xsl:choose>
-                    <xsl:when test="@selected"> active_day</xsl:when>
+                    <xsl:when test="@marked"> active_day</xsl:when>
                     <xsl:otherwise> inactive_day</xsl:otherwise>
                 </xsl:choose></xsl:attribute>
                     <a>

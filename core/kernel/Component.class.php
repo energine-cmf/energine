@@ -267,7 +267,8 @@ class Component extends DBWorker implements Block {
                         (sizeof($value) == 1) ? current($value) : $value;
             }
             elseif (is_array($value)) {
-                $this->params[$name] = array_values($value);
+                //$this->params[$name] = array_values($value);
+                $this->params[$name] = $value;
             }
             else {
                 $this->params[$name] = $value;

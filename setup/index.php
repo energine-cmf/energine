@@ -29,6 +29,7 @@
     require_once('classes/SQLDumper.class.php');
     require_once('classes/Processor.class.php');
     require_once('classes/Linker.class.php');
+    require_once('classes/Flusher.class.php');
     require_once('classes/ViewOptions.class.php');
     require_once('classes/CheckerException.class.php');
     require_once('classes/SystemConfig.class.php');
@@ -163,6 +164,11 @@
                 $checker->run();
 
                 $linker = new Linker();
+            	$linker->setViewer($viewer);
+            	$linker->run();
+                break;
+            case 'memcacheflusher':
+                $linker = new Flusher();
             	$linker->setViewer($viewer);
             	$linker->run();
                 break;

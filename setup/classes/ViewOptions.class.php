@@ -40,6 +40,7 @@ class ViewOptions extends Model {
                     'Восстановление базы данных' => array('Восстановление базы данных из резервной копии','?state=sqlrestore'),
                     'Создать дамп базы' => array('Создание резервной копии базы данных','?state=sqldump'),
                     'Линкер' => array('Создание симлинков для сбора информации из модулей','?state=linker'),
+                    'Очистка кеша' => array('Очистка MemCache ','?state=memcacheflusher'),
                 )
             );	
         }        

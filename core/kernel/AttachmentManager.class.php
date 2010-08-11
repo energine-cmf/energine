@@ -76,7 +76,7 @@ class AttachmentManager extends Singleton {
 
         if ($filteredMapValue = array_filter(array_values($mapValue))) {
             $request = 'SELECT spu.' . $mapFieldName .
-                    ',spu.' . $mapFieldName. ' as id, '.
+                    ',spu.upl_id as id, '.
                     'upl_path as file, upl_name as name FROM share_uploads su ' .
                     'LEFT JOIN `' . $mapTableName .
                     '` spu ON spu.upl_id = su.upl_id ' .

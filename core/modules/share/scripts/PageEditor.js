@@ -9,7 +9,7 @@ var PageEditor = new Class({
     initialize: function() {
         Asset.css('pagetoolbar.css');
         Asset.css('pageeditor.css');
-        $(document.body).getElements('div.' + this.editorClassName).each(function(element) {
+        $(document.body).getElements('.' + this.editorClassName).each(function(element) {
             this.editors.push(new PageEditor.BlockEditor(this, element));
         }, this);
 

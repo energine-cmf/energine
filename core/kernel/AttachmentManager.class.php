@@ -76,7 +76,8 @@ class AttachmentManager extends Singleton {
 
         if ($filteredMapValue = array_filter(array_values($mapValue))) {
             $request = 'SELECT spu.' . $mapFieldName .
-                    ', upl_path as file, upl_name as name FROM share_uploads su ' .
+                    ',spu.' . $mapFieldName. ' as id, '.
+                    'upl_path as file, upl_name as name FROM share_uploads su ' .
                     'LEFT JOIN `' . $mapTableName .
                     '` spu ON spu.upl_id = su.upl_id ' .
                     //'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.
@@ -106,6 +107,9 @@ class AttachmentManager extends Singleton {
                             $localData->load($imageData[$mapValue[$i]]);
 
                         $dataDescription = new DataDescription();
+                        $fd = new FieldDescription('id');
+                        $dataDescription->addFieldDescription($fd);
+
                         $fd = new FieldDescription('file');
                         $fd->setType(FieldDescription::FIELD_TYPE_MEDIA);
                         $dataDescription->addFieldDescription($fd);

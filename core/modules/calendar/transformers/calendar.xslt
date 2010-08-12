@@ -116,11 +116,7 @@
 
     <xsl:template match="field[ancestor::component[@exttype='calendar']]">
         <td>
-            <xsl:attribute name="class">day <xsl:if test="position() = last()"> last_day</xsl:if><xsl:if test="@today"> current_day</xsl:if><xsl:if test="not(@current)"> foreign_day</xsl:if>
-                <xsl:choose>
-                    <xsl:when test="@marked"> active_day</xsl:when>
-                    <xsl:otherwise> inactive_day</xsl:otherwise>
-                </xsl:choose></xsl:attribute>
+            <xsl:attribute name="class">day <xsl:if test="position() = last()"> last_day</xsl:if><xsl:if test="@today"> current_day</xsl:if><xsl:if test="not(@current)"> foreign_day</xsl:if><xsl:if test="@marked"> active_day</xsl:if><xsl:if test="not(@selected) and not(@marked)"> inactive_day</xsl:if></xsl:attribute>
                     <a>
                         <xsl:if test="@selected">
                             <xsl:attribute name="href">

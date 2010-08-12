@@ -185,6 +185,10 @@ abstract class AbstractBuilder extends DBWorker {
                         case FileInfo::META_TYPE_IMAGE:
                             $el->setAttribute('width', $info->width);
                             $el->setAttribute('height', $info->height);
+                            $el->setAttribute('image', $fieldValue);
+                            break;
+                        case FileInfo::META_TYPE_VIDEO:
+                            $el->setAttribute('image', FileObject::getVideoImageFilename($fieldValue));
                             break;
                         default:
                             break;

@@ -169,7 +169,10 @@ class FileObject extends FileSystemObject {
 		list($dirname, $basename, $extension, $filename) = array_values(pathinfo($sourceFileName));
         return $dirname.'/'.'.'.$filename.'.'.$width.'-'.$height.'.png';
 	}
-
+    public static function getVideoImageFilename($sourceFileName){
+		list($dirname, $basename, $extension, $filename) = array_values(pathinfo($sourceFileName));
+        return $dirname.'/'.'.'.$filename.'.png';
+	}
 	public static function getTmpFilePath($filename){
 		return self::TEMPORARY_DIR.basename($filename);
 	}

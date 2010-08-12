@@ -448,13 +448,19 @@ final class FileLibrary extends DataSet {
         if (empty($_FILES) || !isset($_POST['Filename']) || !isset($_FILES['Filedata']) || !isset($_POST['element'])) {
                 throw new SystemException('ERR_BAD_FILE', SystemException::ERR_CRITICAL);
         }
+
+        $additionalPath = '';
+        if(isset($_POST['path']) && !empty($_POST['path'])) {
+            $additionalPath = str_replace(FileObject::UPLOAD_DIR, '', $_POST['path']).'/';
+        }
+        
         $result = array('status' => 1, 'element' => $_POST['element']);
         
         $uploader = new FileUploader();
         $uploader->setFile($_FILES['Filedata']);
         $uploader->upload(FileObject::TEMPORARY_DIR);
         $fileName = $uploader->getFileObjectName();
-        $result['file'] = FileObject::UPLOAD_DIR.basename($fileName);
+        $result['file'] = FileObject::UPLOAD_DIR.$additionalPath.basename($fileName);
         $result['title'] = pathinfo($_POST['Filename'], PATHINFO_FILENAME);
             if (
                     FileInfo::getInstance()->analyze($fileName)->type ==  FileInfo::META_TYPE_IMAGE

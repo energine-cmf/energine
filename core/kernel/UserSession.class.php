@@ -147,7 +147,6 @@ final class UserSession extends Singleton {
                     (time() + $this->lifespan)
                 );
                 session_id($this->phpSessId);
-                session_start();
             }
             else {
                 $this->dbh->modify(QAL::DELETE, $this->tableName, null, "session_native_id = '{$this->phpSessId}'");
@@ -155,7 +154,7 @@ final class UserSession extends Singleton {
                 $response->deleteCookie($this->name);
             }
         }
-
+        session_start();
     }
 
     /**

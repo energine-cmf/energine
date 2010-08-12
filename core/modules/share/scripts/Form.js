@@ -129,13 +129,13 @@ Form.Uploader = new Class({
             target: this.element,
             instantStart: true,
             appendCookieData: false,
-            data:{'NRGNSID':Cookie.read('NRGNSID'), 'element': this.element.getProperty('nrgn:input')},
+            data:{'NRGNSID':Cookie.read('NRGNSID'),'path': ModalBox.getExtraData(), 'element': this.element.getProperty('nrgn:input')},
             typeFilter: {
                 'All files (*.*)': '*.*',
                 'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
                 'Flash video (*.flv)': '*.flv'
             },
-            fileSizeMax: 2 * 1024 * 1024,
+            //fileSizeMax: 2 * 1024 * 1024,
             onFileComplete: this.afterUpload.bind(this),
             onFail: this.handleError.bind(this),
             onSelectFail: this.handleError.bind(this)

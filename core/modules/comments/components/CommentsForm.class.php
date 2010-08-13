@@ -174,7 +174,7 @@ class CommentsForm extends DataSet {
 			$this->disable();
 		}
 
-        if($this->getParam('show_comments') && $this->isExistsNeedTables()){
+        if($this->getParam('show_comments') && $this->isExistsNeedTables() && !$this->bindComponent->getData()->isEmpty()){
             $this->showComments();
         }
 	}

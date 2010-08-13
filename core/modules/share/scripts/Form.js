@@ -129,7 +129,7 @@ Form.Uploader = new Class({
             target: this.element,
             instantStart: true,
             appendCookieData: false,
-            data:{'NRGNSID':Cookie.read('NRGNSID'),'path': ModalBox.getExtraData(), 'element': this.element.getProperty('nrgn:input')},
+            data:{'NRGNSID':Cookie.read('NRGNSID'),'path': (ModalBox.getExtraData())?ModalBox.getExtraData():'', 'element': this.element.getProperty('nrgn:input')},
             typeFilter: {
                 'All files (*.*)': '*.*',
                 'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',

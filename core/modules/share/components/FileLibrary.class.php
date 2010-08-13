@@ -48,12 +48,14 @@ final class FileLibrary extends DataSet {
         $this->setTitle($this->translate('TXT_'.strtoupper($this->getName())));
         //Отключили pager
         $this->setParam('recordsPerPage', false);
-        if (!isset($_POST['path'])) {
+
+        if (!isset($_POST['path']) || empty($_POST['path'])) {
             $path = self::UPLOADS_MAIN_DIR;
         }
         else {
             $path = $_POST['path'];
         }
+
         $this->uploadsDir = DirectoryObject::loadFrom($path);
     }
 

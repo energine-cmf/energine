@@ -73,9 +73,9 @@ class Transformer extends Object {
 			$xsltProc = new xsltCache;
 			//есть одна проблема с ним
 			//при неправильном xslt - сваливается в корку с 500 ошибкой
-		    $xsltProc->importStyleSheet($this->fileName);
-			$result =  $xsltProc->transformToXML($document);
-		}
+            $xsltProc->importStyleSheet($this->fileName);
+            $result = $xsltProc->transformToXML($document);
+        }
 		else {
 			$xsltProc = new XSLTProcessor;
 			$xsltDoc = new DOMDocument('1.0', 'UTF-8');
@@ -86,7 +86,7 @@ class Transformer extends Object {
                 $xsltProc->setProfiling('logs/xslt_profile.log');
             }
 			$xsltProc->importStylesheet($xsltDoc);
-			$result = $xsltProc->transformToXml($document);
+            $result = $xsltProc->transformToXml($document);
 		}
 		return $result;
 	}

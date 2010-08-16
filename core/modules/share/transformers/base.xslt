@@ -363,7 +363,9 @@
             <xsl:attribute name="type">hidden</xsl:attribute>
             <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
         </input>
-        <a href="#" class="uploader"  nrgn:input="{generate-id(.)}" xmlns:nrgn="http://energine.org"><xsl:value-of select="@title"/></a>    
+        <a href="#" class="uploader"  nrgn:input="{generate-id(.)}" xmlns:nrgn="http://energine.org"><xsl:value-of select="@additionalTitle"/></a>
+        <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
+        <span class="progress_indicator hidden" id="indicator">0%</span>
     </xsl:template>
     
     <xsl:template match="field[@type='text'][@name='upl_description']">

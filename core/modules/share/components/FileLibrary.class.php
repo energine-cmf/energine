@@ -418,11 +418,13 @@ final class FileLibrary extends DataSet {
     protected function add() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
-        $this->addTranslation('TXT_OPEN_FIELD', 'TXT_CLOSE_FIELD');
         if($field = $this->getDataDescription()->getFieldDescriptionByName('tags')){
             //$field->setProperty('nullable', 'nullable');
             $field->removeProperty('pattern');
             $field->removeProperty('message');
+        }
+        if($field = $this->getDataDescription()->getFieldDescriptionByName('upl_description')){
+            $field->setProperty('nullable', 'nullable');
         }
     }
 

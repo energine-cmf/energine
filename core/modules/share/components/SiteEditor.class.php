@@ -69,9 +69,12 @@ class SiteEditor extends Grid {
 			}
 			else {
                 $field = new Field('tags');
-		        $fieldData = implode(TagManager::TAG_SEPARATOR.' ', 
+/*		        $fieldData = implode(TagManager::TAG_SEPARATOR.' ',
 		            array_keys(TagManager::getInstance()->pull($this->getData()->getFieldByName($this->getPK())->getRowData(0), 'share_sites_tags'))
-		        ); 
+		        );*/
+                $fieldData = implode(TagManager::TAG_SEPARATOR.' ',
+		            TagManager::getInstance()->pull($this->getData()->getFieldByName($this->getPK())->getRowData(0), 'share_sites_tags')
+		        );
 		        for($i=0, $langs = count(Language::getInstance()->getLanguages()); $i<$langs; $i++){
 		            $field->setRowData($i, $fieldData);    
 		        }

@@ -242,7 +242,8 @@ var Grid = new Class({
 				if (record[fieldName]){
 					var fieldValue = record[fieldName].clean();
                 }
-                if (fieldValue != '') cell.appendText(fieldValue);
+                if (fieldValue != '') cell.set('html', fieldValue);
+                //if (fieldValue != '') cell.appendText(fieldValue);
                 else cell.set('html', '&#160;');
             }
         }

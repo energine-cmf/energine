@@ -785,8 +785,6 @@ class Grid extends DBDataSet {
      * @return void
      */
     private function addToolbarTranslations(){
-    	$this->addTranslation('TXT_OPEN_FIELD', 'TXT_CLOSE_FIELD');
-        
         foreach($this->getDataDescription() as $fd){
             if(($fd->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK)){
                 $this->addWYSIWYGTranslations();       

@@ -131,18 +131,26 @@ abstract class AbstractBuilder extends DBWorker {
         }
         $result->setAttribute('mode', $fieldInfo->getMode());
 
+        if($fieldInfo->getType() == FieldDescription::FIELD_TYPE_FILE){
+            $fieldInfo->setProperty('additionalTitle', $this->translate('MSG_LOAD_FILE'));
+            
+        }
+        elseif($fieldInfo->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK) {
+            $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));
+            $fieldInfo->setProperty('msgCloseField', $this->translate('TXT_CLOSE_FIELD'));
+        }
+
         foreach ($fieldInfo as $propName => $propValue) {
             if ($propValue && !is_array($propValue)) {
                 $result->setAttribute($propName, $propValue);
             }
         }
-
         if ($fieldProperties) {
             foreach ($fieldProperties as $propName => $propValue) {
                 $result->setAttribute($propName, $propValue);
             }
         }
-        
+
         return $this->buildFieldValue($result, $fieldInfo, $fieldValue);
     }
     /**

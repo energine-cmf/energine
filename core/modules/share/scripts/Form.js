@@ -135,8 +135,10 @@ Form.Uploader = new Class({
                 'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
                 'Flash video (*.flv)': '*.flv'
             },
-            //fileSizeMax: 2 * 1024 * 1024,
             onFileComplete: this.afterUpload.bind(this),
+            onFileProgress: function(uploadInfo){form.form.getElementById('indicator').set('text', uploadInfo.progress.percentLoaded + "%")},
+            onFileOpen: function(){form.form.getElementById('loader').removeClass('hidden'); form.form.getElementById('indicator').removeClass('hidden');},
+            onComplete: function(){form.form.getElementById('loader').addClass('hidden');form.form.getElementById('indicator').addClass('hidden');},
             onFail: this.handleError.bind(this),
             onSelectFail: this.handleError.bind(this)
         });
@@ -148,6 +150,7 @@ Form.Uploader = new Class({
         this.form.validator.showError(this.element, 'При загрузке файла произошла ошибка');
     },
     _show_preview: function(file) {
+        console.log(file);
         if (!file.response.error) {
             var data = JSON.decode(file.response.text, true);
             var preview, input, previewImg;
@@ -164,7 +167,8 @@ Form.Uploader = new Class({
             }
         }
         else {
-
+            console.log(file);
+            this.form.validator.showError(this.element, 'При загрузке файла произошла ошибка');
         }
     },
 

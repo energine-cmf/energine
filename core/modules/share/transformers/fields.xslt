@@ -54,46 +54,22 @@
             <xsl:if test="@title">
                 <div class="name">
                     <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>                    
-                    (<a href="#" message1="{$TRANSLATION[@const='TXT_OPEN_FIELD']}" message0="{$TRANSLATION[@const='TXT_CLOSE_FIELD']}">
+                    (<a href="#" message1="{@msgOpenField}" message0="{@msgCloseField}">
                         <xsl:attribute name="onclick">return showhideField(this, '<xsl:value-of select="@name"/>'<xsl:if test="@language">, <xsl:value-of select="@language"/></xsl:if>);</xsl:attribute>
                         <xsl:attribute name="is_hidden">
-                            <xsl:choose>
-                                <xsl:when test="@type='select'">
-                                    <xsl:choose>
-                                        <xsl:when test="not(options/option/@selected)">1</xsl:when>
-                                        <xsl:otherwise>0</xsl:otherwise>
-                                    </xsl:choose>
-                                </xsl:when>
-                                <xsl:otherwise>
                                     <xsl:choose>
                                         <xsl:when test=".=''">1</xsl:when>
                                         <xsl:otherwise>0</xsl:otherwise>
                                     </xsl:choose>
-                                </xsl:otherwise>
-                            </xsl:choose>
                         </xsl:attribute>
-                        <xsl:choose>
-                            <xsl:when test="@type='select'">
-                                <xsl:choose>
-                                    <xsl:when test="not(options/option/@selected)">
-                                        <xsl:value-of select="$TRANSLATION[@const='TXT_OPEN_FIELD']"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="$TRANSLATION[@const='TXT_CLOSE_FIELD']"/>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:when>
-                            <xsl:otherwise>
                                 <xsl:choose>
                                     <xsl:when test=".=''">
-                                        <xsl:value-of select="$TRANSLATION[@const='TXT_OPEN_FIELD']"/>
+                                        <xsl:value-of select="@msgOpenField"/>
                                     </xsl:when>
                                     <xsl:otherwise>
-                                        <xsl:value-of select="$TRANSLATION[@const='TXT_CLOSE_FIELD']"/>
+                                        <xsl:value-of select="@msgCloseField"/>
                                     </xsl:otherwise>
                                 </xsl:choose>
-                            </xsl:otherwise>
-                        </xsl:choose>
                     </a>)
                 </div>
             </xsl:if>    

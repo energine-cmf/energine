@@ -74,16 +74,37 @@
      * @return $tags array
      * @access public
      */
-    public function pull($mapValue, $mapTableName){
+    public function pull($mapValue, $mapTableName, $asString = false){
         if(!$this->dbh->tableExists($mapTableName)) {
             throw new SystemException('ERR_WRONG_TABLE_NAME', SystemException::ERR_DEVELOPER, $mapTableName);    
-        }        
+        }
+
         $columns = array_keys($this->dbh->getColumnsInfo($mapTableName));
         $mapFieldName = '';
         unset($columns['tag_id']);
         list($mapFieldName) = $columns;
-        $res = $this->dbh->select($mapTableName, array('tag_id'), array($mapFieldName => $mapValue));
-        return $this->getTags(simplifyDBResult($res, 'tag_id'));
+        $res = $this->dbh->select($mapTableName, array('tag_id', $mapFieldName), array($mapFieldName => $mapValue));
+
+        if(is_array($res)) {
+            $result = array();
+            foreach($res as $row) {
+                if(!isset($result[$row[$mapFieldName]])){
+                    $result[$row[$mapFieldName]] = array();
+                }
+                $result[$row[$mapFieldName]][] = $row['tag_id'];
+            }
+        }
+
+        foreach((array)$mapValue as $targetID) {
+            if(isset($result[$targetID])){
+                $data[] = $this->getTags($result[$targetID], $asString);
+            }
+            else {
+                $data[] = array();
+            }
+        }
+
+        return (is_array($mapValue))?$data:current($data);
     }
     
     /**
@@ -111,23 +132,19 @@
     /**
      * Возвращает перечень тегов 
      * 
-     * @return array
+     * @return array | string
      * @access public
      */
-    public function getTags($tagID){
+    public function getTags($tagID, $asSting = false){
     	$result = array(); 
         if(!is_array($tagID)){
             $tagID = array($tagID);
         }
         
         $res = $this->dbh->select(self::TAG_TABLENAME, true, array('tag_id' => $tagID));
-        if(is_array($res)){
-            foreach($res as $row){
-                $result[$row['tag_name']] = $row['tag_id'];
-            }   
-        }
+        $result = simplifyDBResult($res, 'tag_name');
         
-        return $result;
+        return ($asSting && is_array($result))?implode(self::TAG_SEPARATOR, $result):$result;
     }
     
     /**

@@ -1,17 +1,22 @@
 *[unselectable="on"] { -moz-user-select: none;}
 
+/* ----- clearfix ----- */
 .clearfix:after {
-    content: ".";
-    display: block;
-    height: 0;
     clear: both;
+    display: block;
     visibility: hidden;
+    height: 0;
+    content: ".";
+    line-height: 0;
+    font-size: 0;
 }
 .clearfix {
-	zoom: 1; /* IE5.5+ */
-	_height: 1%; /* IE5-6 */
+    *zoom: 1; /* IE7 */
+    _height: 1%; /* IE6 */
 }
 
 code{
     white-space: pre;
 }
+.hidden { display: none; }
+

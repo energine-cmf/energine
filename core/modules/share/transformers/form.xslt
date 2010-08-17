@@ -173,6 +173,8 @@
                     <tr>
                         <td colspan="2" style="text-align:right;">
                             <a href="#" id="add_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_LOAD_FILE']"/></a>
+                            <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
+                            <span class="progress_indicator hidden" id="indicator">0%</span>                            
                         </td>
                         <td style="text-align:right;">
                             <a href="#" id="insert_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>

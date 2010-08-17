@@ -303,7 +303,7 @@ final class FileLibrary extends DataSet {
     protected function delete() {
         try {
             if (!isset($_POST['file'])) {
-
+                throw new SystemException('ERR_NO_FILE');
             }
             if (($fileType = key($_POST['file'])) == 'folder') {
                 $file = DirectoryObject::loadFrom($_POST['file'][$fileType]);
@@ -455,7 +455,7 @@ final class FileLibrary extends DataSet {
 
         $additionalPath = '';
         if(isset($_POST['path']) && !empty($_POST['path'])) {
-            $additionalPath = str_replace(FileObject::UPLOAD_DIR, '', $_POST['path']).'/';
+            $additionalPath = str_replace(self::UPLOADS_MAIN_DIR, '', $_POST['path']).'/';
         }
         
         $result = array('status' => 1, 'element' => $_POST['element']);
@@ -464,7 +464,7 @@ final class FileLibrary extends DataSet {
         $uploader->setFile($_FILES['Filedata']);
         $uploader->upload(FileObject::TEMPORARY_DIR);
         $fileName = $uploader->getFileObjectName();
-        $result['file'] = FileObject::UPLOAD_DIR.$additionalPath.basename($fileName);
+        $result['file'] = self::UPLOADS_MAIN_DIR.$additionalPath.basename($fileName);
         $result['title'] = pathinfo($_POST['Filename'], PATHINFO_FILENAME);
             if (
                     FileInfo::getInstance()->analyze($fileName)->type ==  FileInfo::META_TYPE_IMAGE
@@ -493,10 +493,10 @@ final class FileLibrary extends DataSet {
 
             $uploader = new FileUploader();
             $uploader->setFile($_FILES['Filedata']);
-            $uploader->upload(FileObject::UPLOAD_DIR);
+            $uploader->upload(self::UPLOADS_MAIN_DIR.'/');
             $fileName = $uploader->getFileObjectName();
             
-            $result = FileObject::createFrom($fileName, pathinfo($fileName, PATHINFO_FILENAME))->asArray();
+            $result = FileObject::createFrom($fileName, pathinfo($_FILES['Filedata']['name'], PATHINFO_FILENAME))->asArray();
             
         }
         catch (SystemException $e) {

@@ -20,7 +20,6 @@
  */
 class FileObject extends FileSystemObject {
 	const TEMPORARY_DIR = 'uploads/temp/';
-	const UPLOAD_DIR = 'uploads/public/';
 	/**
 	 * Полный путь к файлу
 	 *
@@ -70,7 +69,7 @@ class FileObject extends FileSystemObject {
 
     public static function createFrom($path, $name = false) {
         $result = new FileObject();
-        $result->insert(array('upl_path'=>$path, 'upl_name'=>(!$name)?basename($path):$name));
+        $result->insert(array('upl_path'=>$path, 'upl_name'=>(!$name)?basename($path):$name, 'upl_publication_date' => date('Y-m-d h:i:s')));
         $result->load($path);
         
         return $result;

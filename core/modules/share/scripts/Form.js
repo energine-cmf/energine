@@ -150,7 +150,6 @@ Form.Uploader = new Class({
         this.form.validator.showError(this.element, 'При загрузке файла произошла ошибка');
     },
     _show_preview: function(file) {
-        console.log(file);
         if (!file.response.error) {
             var data = JSON.decode(file.response.text, true);
             var preview, input, previewImg;
@@ -167,7 +166,6 @@ Form.Uploader = new Class({
             }
         }
         else {
-            console.log(file);
             this.form.validator.showError(this.element, 'При загрузке файла произошла ошибка');
         }
     },

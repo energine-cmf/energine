@@ -49,7 +49,7 @@
         Шаблон для необязательного (nullable) поля в админчасти вынесен отдельно. 
         В нем добавляется возможность скрыть/раскрыть необязательное поле. 
     -->
-    <xsl:template match="field[@nullable and @type='htmlblock'][ancestor::component[@type='form'][@exttype = 'grid']]">
+    <xsl:template match="field[@nullable and (@type='htmlblock' or @type='text')][ancestor::component[@type='form'][@exttype = 'grid']]">
         <div class="field">
             <xsl:if test="@title">
                 <div class="name">

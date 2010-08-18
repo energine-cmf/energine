@@ -363,7 +363,7 @@ abstract class DataSet extends Component {
 	 * @access public
 	 */
 	public function build() {
-		if (!$this->getBuilder()) {
+    	if (!$this->getBuilder()) {
 			throw new SystemException('ERR_DEV_NO_BUILDER', SystemException::ERR_CRITICAL, $this->getName());
 		}
 

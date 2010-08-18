@@ -50,7 +50,7 @@ final class FileLibrary extends DataSet {
         $this->setParam('recordsPerPage', false);
 
         if (!isset($_POST['path']) || empty($_POST['path'])) {
-            $path = self::UPLOADS_MAIN_DIR;
+            $path = $this->getParam('base');
         }
         else {
             $path = $_POST['path'];
@@ -69,7 +69,8 @@ final class FileLibrary extends DataSet {
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
         array(
-        'active'=>true,
+            'active'=>true,
+            'base' => self::UPLOADS_MAIN_DIR
         ));
         return $result;
     }
@@ -113,7 +114,7 @@ final class FileLibrary extends DataSet {
     public function loadData() {
         if ($this->getAction() == 'getRawData') {
             $result = array();
-            if ($this->uploadsDir->getPath() != self::UPLOADS_MAIN_DIR) {
+            if ($this->uploadsDir->getPath() != $this->getParam('base')) {
                 $result = $this->uploadsDir->asArray();
                 $result['upl_path'] = dirname($result['upl_path']);
                 $result['upl_name'] = '...';
@@ -275,7 +276,6 @@ final class FileLibrary extends DataSet {
     protected function save() {
         try {
             $file = new FileObject();
-            //stop($_POST);
             $file->create($_POST);
 
             $JSONResponse = array(
@@ -449,23 +449,23 @@ final class FileLibrary extends DataSet {
      */
     final protected function upload() {
     	try{
-        if (empty($_FILES) || !isset($_POST['Filename']) || !isset($_FILES['Filedata']) || !isset($_POST['element'])) {
-                throw new SystemException('ERR_BAD_FILE', SystemException::ERR_CRITICAL);
-        }
+            if (empty($_FILES) || !isset($_POST['Filename']) || !isset($_FILES['Filedata']) || !isset($_POST['element'])) {
+                    throw new SystemException('ERR_BAD_FILE', SystemException::ERR_CRITICAL);
+            }
 
-        $additionalPath = '';
-        if(isset($_POST['path']) && !empty($_POST['path'])) {
-            $additionalPath = str_replace(self::UPLOADS_MAIN_DIR, '', $_POST['path']).'/';
-        }
-        
-        $result = array('status' => 1, 'element' => $_POST['element']);
-        
-        $uploader = new FileUploader();
-        $uploader->setFile($_FILES['Filedata']);
-        $uploader->upload(FileObject::TEMPORARY_DIR);
-        $fileName = $uploader->getFileObjectName();
-        $result['file'] = self::UPLOADS_MAIN_DIR.$additionalPath.basename($fileName);
-        $result['title'] = pathinfo($_POST['Filename'], PATHINFO_FILENAME);
+            $additionalPath = '';
+            if(isset($_POST['path']) && !empty($_POST['path'])) {
+                $additionalPath = str_replace($this->getParam('base'), '', $_POST['path']).'/';
+            }
+            
+            $result = array('status' => 1, 'element' => $_POST['element']);
+
+            $uploader = new FileUploader();
+            $uploader->setFile($_FILES['Filedata']);
+            $uploader->upload(FileObject::TEMPORARY_DIR);
+            $fileName = $uploader->getFileObjectName();
+            $result['file'] = $this->getParam('base').$additionalPath.basename($fileName);
+            $result['title'] = pathinfo($_POST['Filename'], PATHINFO_FILENAME);
             if (
                     FileInfo::getInstance()->analyze($fileName)->type ==  FileInfo::META_TYPE_IMAGE
                 ) {
@@ -493,7 +493,7 @@ final class FileLibrary extends DataSet {
 
             $uploader = new FileUploader();
             $uploader->setFile($_FILES['Filedata']);
-            $uploader->upload(self::UPLOADS_MAIN_DIR.'/');
+            $uploader->upload($this->getParam('base').'/');
             $fileName = $uploader->getFileObjectName();
             
             $result = FileObject::createFrom($fileName, pathinfo($_FILES['Filedata']['name'], PATHINFO_FILENAME))->asArray();

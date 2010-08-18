@@ -118,7 +118,6 @@ var Form = new Class({
 Form.Uploader = new Class({
     initialize: function(uploaderElement, form, path) {
         if (!(this.element = $(uploaderElement))) return;
-
         this.form = form;
         this.swfUploader = new Swiff.Uploader({
             path: 'scripts/Swiff.Uploader.swf',
@@ -129,7 +128,7 @@ Form.Uploader = new Class({
             target: this.element,
             instantStart: true,
             appendCookieData: false,
-            data:{'NRGNSID':Cookie.read('NRGNSID'),'path': (ModalBox.getExtraData())?ModalBox.getExtraData():'', 'element': this.element.getProperty('nrgn:input')},
+            data:{'NRGNSID':Cookie.read('NRGNSID'),'path': ($type(ModalBox.getExtraData()) == 'string')?ModalBox.getExtraData():'', 'element': this.element.getProperty('nrgn:input')},
             typeFilter: {
                 'All files (*.*)': '*.*',
                 'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',

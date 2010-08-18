@@ -138,20 +138,16 @@
     
     <!-- поле типа file -->
     <xsl:template match="field[@type='file'][ancestor::component[@type='form']]">
-        <div id="{generate-id(.)}_preview" class="file"></div>
-        <xsl:if test=".!=''">
-            <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
-            <a href="#" onclick="return {generate-id(ancestor::recordset)}.removeFilePreview.run(['{generate-id(.)}', this], {generate-id(ancestor::recordset)});">
-                <xsl:value-of select="@deleteFileTitle"/>
-            </a>
-        </xsl:if>
-        <div></div>
-        <input class="text inp_file" readonly="readonly">
+        <div class="preview"
+             id="{generate-id(.)}_preview"></div>
+         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">hidden</xsl:attribute>
             <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
         </input>
-        <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
-        <a href="#" class="uploader"><xsl:value-of select="@title"/></a>
+        <a href="#" class="uploader"  nrgn:input="{generate-id(.)}" xmlns:nrgn="http://energine.org"><xsl:value-of select="@additionalTitle"/></a>
+        <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
+        <span class="progress_indicator hidden" id="indicator">0%</span>
     </xsl:template>
     
     <!-- поле типа pfile -->

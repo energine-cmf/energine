@@ -17,8 +17,8 @@
     
     <xsl:template match="component[@class='DivisionEditor'][parent::content]">
         <form method="post" action="{@action}" class="div_editor_form">
-            <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
-            <!--
+            <!--<script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
+
             <xsl:if test="descendant::field[@type='textbox']">
                 <script type="text/javascript" src="scripts/TextboxList.js"></script>
             </xsl:if>            

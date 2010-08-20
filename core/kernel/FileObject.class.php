@@ -147,11 +147,8 @@ class FileObject extends FileSystemObject {
 
 	public function create($data) {
 		$data = $data[self::TABLE_NAME];
-		$sourceFileName = $data['upl_path'];
 		//Копируем файл из временной директории на нужное место
-		@copy($tmpFile = self::getTmpFilePath($sourceFileName), $sourceFileName);
-		@unlink($tmpFile);
-
+        $this->moveToUploads($data['upl_path']);
 		$this->insert($data);
 		/*
 		if((FileInfo::getInstance()->analyze($sourceFileName)->type == FileInfo::META_TYPE_IMAGE) && $this->getConfigValue('thumbnails')){
@@ -163,6 +160,17 @@ class FileObject extends FileSystemObject {
 			}
 		}*/
 	}
+
+    public function moveToUploads($sourceFileName){
+        try {
+            @copy($tmpFile =
+                    self::getTmpFilePath($sourceFileName), $sourceFileName);
+            @unlink($tmpFile);
+        }
+        catch (Exception $e) {
+            //глушим, поскольку не сильно интересно произошли действия или нет 
+        }
+    }
 	
 	public static function getThumbFilename($sourceFileName, $width, $height){
 		list($dirname, $basename, $extension, $filename) = array_values(pathinfo($sourceFileName));

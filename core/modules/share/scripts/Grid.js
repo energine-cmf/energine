@@ -103,7 +103,7 @@ var Grid = new Class({
 		this.element.getElement('.gridContainer table.gridTable').setStyle('tableLayout', 'fixed');
 		this.element.getElement('.gridHeadContainer table.gridTable').setStyle('tableLayout', 'fixed');
 		this.headOff.setStyle('display', 'none');
-		
+
 		/* растягиваем gridContainer на высоту родительского элемента минус фильтр и голова грида */		
 		this.paneContent = this.element.getParent('.e-pane-item');
     	this.filter = this.element.getElement('.filter');
@@ -113,7 +113,7 @@ var Grid = new Class({
     	if(!(this.minGridHeight)){
     		this.minGridHeight = this.gridContainer.getStyle('height').toInt();
     	}    	
-    	
+
     	/* растягиваем всю форму до высоты видимого окна */    	
     	if(!(document.getElement('.e-singlemode-layout'))){
     		this.pane = this.element.getParents('.e-pane')[0];
@@ -123,9 +123,9 @@ var Grid = new Class({
     	}    	
     },
     
-    fitGridSize: function() {    	
-    	var gridHeight = this.paneContent.getSize().y - this.filter.getSize().y - this.gridHeadContainer.getSize().y - 14;    	
-    	if(gridHeight > 0){
+    fitGridSize: function() {
+        var gridHeight = this.paneContent.getSize().y - ((this.filter)?this.filter.getSize().y:0) - this.gridHeadContainer.getSize().y - 14;
+        if(gridHeight > 0){
     		this.gridContainer.setStyle('height', gridHeight);    		
     	}
     },

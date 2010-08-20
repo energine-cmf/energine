@@ -138,8 +138,11 @@
     
     <!-- поле типа file -->
     <xsl:template match="field[@type='file'][ancestor::component[@type='form']]">
-        <div class="preview"
-             id="{generate-id(.)}_preview"></div>
+        <div class="preview" id="{generate-id(.)}_preview">
+            <xsl:if test=". != ''">
+                <img src="{.}" alt=""/>
+            </xsl:if>
+        </div>
          <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="type">hidden</xsl:attribute>

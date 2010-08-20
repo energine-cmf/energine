@@ -248,7 +248,14 @@ final class Document extends DBWorker {
             $componentResult = false;
             $dom_errors = false;
             try {
-                $componentResult = $component->build();
+                if($component instanceof Component) {
+                    if($component->enabled() && $this->getRights()>= $component->getMethodRights()){
+                        $componentResult = $component->build();
+                    }
+                }
+                else {
+                    $componentResult = $component->build();
+                }
             }
             catch (DummyException $dummyException){
             }

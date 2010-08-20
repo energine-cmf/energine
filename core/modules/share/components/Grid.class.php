@@ -886,6 +886,4 @@ class Grid extends DBDataSet {
         );
         $this->fileLibrary->run();  
     }
-    
-    
 }

@@ -29,8 +29,6 @@ class BlogCalendar extends Calendar {
      */
     public function __construct($name, $module, Document $document, array $params = null) {
         parent::__construct($name, $module, $document, $params);
-
-        $this->setProperty('template', $this->getParam('template'));
         $this->setCalendar(new CalendarObject($this->getParam('month'), $this->getParam('year')));
 
         //Отмечаем использованные даты календаря
@@ -81,7 +79,7 @@ class BlogCalendar extends Calendar {
                 'date' => new DateTime(),
                 'filter' => array(),
                 'blog_id' => false,
-                'template'=> 'blogs/'
+                'template'=> 'blogs'
             )
         );
     }

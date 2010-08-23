@@ -99,14 +99,17 @@ abstract class DataSet extends Component {
 	 * @return void
 	 */
 	public function __construct($name, $module, Document $document,  array $params = null) {
-		parent::__construct($name, $module, $document,  $params);
-		$this->setType(self::COMPONENT_TYPE_FORM);
-		if(!$this->getParam('recordsPerPage'))$this->setParam('recordsPerPage', Grid::RECORD_PER_PAGE);
-		if($this->getParam('title'))
-		$this->setTitle(
-		$this->translate($this->getParam('title')
-		)
-		);
+        parent::__construct($name, $module, $document, $params);
+        $this->setType(self::COMPONENT_TYPE_FORM);
+        if (!$this->getParam('recordsPerPage'))$this->setParam('recordsPerPage', Grid::RECORD_PER_PAGE);
+        if ($this->getParam('template')) {
+            $this->setProperty('template', $this->getParam('template') . '/');
+        }
+        if ($this->getParam('title'))
+            $this->setTitle(
+                $this->translate($this->getParam('title')
+                )
+            );
 	}
 
 	/**
@@ -118,15 +121,16 @@ abstract class DataSet extends Component {
 	 * @access protected
 	 */
 	protected function defineParams() {
-		$this->setProperty('action', '');
-		return array_merge(
-		parent::defineParams(),
-		array(
-        'datasetAction' => '',
-        'recordsPerPage' => false,
-        'title' => false
-		)
-		);
+        $this->setProperty('action', '');
+        return array_merge(
+            parent::defineParams(),
+            array(
+                'datasetAction' => '',
+                'recordsPerPage' => false,
+                'title' => false,
+                'template' => false,
+            )
+        );
 	}
 
 	/**

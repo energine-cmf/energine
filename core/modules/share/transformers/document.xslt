@@ -98,10 +98,10 @@
 
                         }
                         catch (e) {
-                            
-                                console.error(e);
-                                //alert(e.message);
-                        }
+                    <xsl:if test="document/@debug=1">
+                        console.error(e);
+                    </xsl:if>
+                    }
                     });
         		</script>
                 <xsl:apply-templates select="document/translations"/>

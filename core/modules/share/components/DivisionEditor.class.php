@@ -210,9 +210,10 @@ final class DivisionEditor extends Grid {
 			$path = str_replace($dirPath, '', $path);
 			list($name, $tp) = explode('.', substr(basename($path), 0, -4));
 			$name = $this->translate(strtoupper($tp.'_'.$name));
+            
 			$result[] = array(
                'key' => $path,
-               'value' => $name 
+               'value' => $name.((dirname($path) == '.')?' (Общий)':'')
 			);
 		}
 		return $result;

@@ -202,7 +202,7 @@ final class DivisionEditor extends Grid {
 		 );
 		 
 		 foreach($folders as $index=>$folder) if($folder === false) $folders[$index] = array(); 	
-		
+
 		foreach(
 		array_merge(
 		  $folders[0], $folders[1]
@@ -216,6 +216,7 @@ final class DivisionEditor extends Grid {
                'value' => $name.((dirname($path) == '.')?' (Общий)':'')
 			);
 		}
+        usort($result, function($rowA, $rowB){return $rowA['value']>$rowB['value'];});
 		return $result;
 	}
 

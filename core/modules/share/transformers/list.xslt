@@ -217,17 +217,6 @@
         <span><b><xsl:value-of select="."/></b> </span>
     </xsl:template>
 
-    <xsl:template match="component[@type='list']/javascript">
-    	<script type="text/javascript">
-    		<xsl:apply-templates/>
-    	</script>
-    </xsl:template>
-
-    <xsl:template match="component[@class!='PageToolBar']/javascript/object">
-    	var <xsl:value-of select="generate-id(../../recordset)"/>;
-    </xsl:template>
-
-
     <xsl:template match="component[@type='list'][@exttype='print']">
         <style type="text/css">
             THEAD { display: table-header-group; }

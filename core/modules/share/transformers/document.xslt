@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet 
     version="1.0" 
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:set="http://exslt.org/sets"
     xmlns="http://www.w3.org/1999/xhtml">
     <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
     <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
@@ -52,14 +53,16 @@
 
                 <script type="text/javascript">
                     var componentToolbars = [];
-                    
+                    <xsl:if test="count($COMPONENTS/javascript/object[@name!='PageEditor']) &gt; 0">
+                        var <xsl:for-each select="$COMPONENTS[recordset]/javascript[object[@name!='PageEditor']]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
+                    </xsl:if>
                     window.addEvent('domready', function () {
                    		<xsl:if test="document/@debug=1">
 							Energine.debug = true;
 		        		</xsl:if>
 		        		Energine.base = '<xsl:value-of select="$BASE"/>';
                         try {
-                            ScriptLoader.load(<xsl:for-each select="$COMPONENTS/javascript/object[@name!='PageEditor']">'<xsl:value-of select="@path" /><xsl:value-of select="@name" />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
+                        ScriptLoader.load(<xsl:for-each select="set:distinct($COMPONENTS/javascript/object[@name!='PageEditor']/@name)">'<xsl:value-of select="../@path" /><xsl:value-of select="." />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
                             <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
                             var pageToolbar = new <xsl:value-of select="$PAGE_TOOLBAR/javascript/object/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$PAGE_TOOLBAR/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$PAGE_TOOLBAR/toolbar/@name"/>');
@@ -142,6 +145,8 @@
     </xsl:template>
     
     <xsl:template match="/document/translations" />
+
+    <xsl:template match="component/javascript" />
     
     <!-- Выводим переводы для WYSIWYG -->
     <xsl:template match="/document/translations[translation[@component=//component[@editable]/@name]]">
@@ -151,5 +156,8 @@
                 </xsl:for-each>
             </script>
     </xsl:template>
+
+
+
 
 </xsl:stylesheet>

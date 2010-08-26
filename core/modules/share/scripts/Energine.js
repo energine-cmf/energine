@@ -294,7 +294,7 @@ if (typeof console == 'undefined') {
 			var args = arguments;
 			var result = '';
 			for (var i = 0; i < args.length; i++) {
-				result += args[i];
+				result += console._dump(args[i]);
 			}
 			alert(result);
 		}

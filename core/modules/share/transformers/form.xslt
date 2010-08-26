@@ -61,11 +61,6 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="javascript[parent::component[@type='form']]">
-    	<script type="text/javascript">
-    		<xsl:apply-templates/>
-    	</script>
-    </xsl:template>
     
     <xsl:template match="toolbar[parent::component[@type='form']]">
         <div class="controlset">

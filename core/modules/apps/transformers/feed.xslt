@@ -76,9 +76,6 @@
     
     <xsl:template match="component[@exttype='feededitor'][@type='list']">
         <xsl:if test="recordset">
-            <script type="text/javascript">
-                var <xsl:value-of select="generate-id(recordset)"/>;
-            </script>
             <xsl:variable name="LINK"><xsl:value-of select="@linkedComponent"/></xsl:variable>
             <ul id="{generate-id(recordset)}" style="display:none;" single_template="{$BASE}{$LANG_ABBR}{@single_template}" linkedTo="{generate-id($COMPONENTS[@name=$LINK]/recordset)}">
                 <xsl:for-each select="toolbar/control">

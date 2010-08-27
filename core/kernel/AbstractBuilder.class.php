@@ -131,11 +131,11 @@ abstract class AbstractBuilder extends DBWorker {
         }
         $result->setAttribute('mode', $fieldInfo->getMode());
 
-        if($fieldInfo->getType() == FieldDescription::FIELD_TYPE_FILE){
+        if ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_FILE) {
             $fieldInfo->setProperty('additionalTitle', $this->translate('MSG_LOAD_FILE'));
-            
+
         }
-        elseif(in_array($fieldInfo->getType() , array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
+        elseif (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
             $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));
             $fieldInfo->setProperty('msgCloseField', $this->translate('TXT_CLOSE_FIELD'));
         }
@@ -153,6 +153,7 @@ abstract class AbstractBuilder extends DBWorker {
 
         return $this->buildFieldValue($result, $fieldInfo, $fieldValue);
     }
+
     /**
      * Создание значения поля
      * Значение обрабатывается и записывается в переданный DOMElement
@@ -163,7 +164,7 @@ abstract class AbstractBuilder extends DBWorker {
      *
      * @return DOMElement
      */
-    protected function buildFieldValue(DOMElement $result, FieldDescription $fieldInfo, $fieldValue){
+    protected function buildFieldValue(DOMElement $result, FieldDescription $fieldInfo, $fieldValue) {
         if (($fieldValue instanceof DOMNode) ||
                 ($fieldValue instanceof DOMElement)) {
             try {
@@ -209,16 +210,17 @@ abstract class AbstractBuilder extends DBWorker {
                                     $width = (int) $thumbnail->width,
                                     $height = (int) $thumbnail->height
                                 );
-                        if (file_exists($thumbnailFile)) {
-                            $img = $this->result->createElement(
-                                'thumbnail'
-                            );
-                            $img->setAttribute('width', $width);
-                            $img->setAttribute('height', $height);
-                            $img->setAttribute('name', (string) $thumbnail['name']);
-                            $img->nodeValue = $thumbnailFile;
-                            $result->appendChild($img);
+                        if (!file_exists($thumbnailFile)) {
+                            $thumbnailFile = (string)$thumbnail->gag;
                         }
+                        $img = $this->result->createElement(
+                            'thumbnail'
+                        );
+                        $img->setAttribute('width', $width);
+                        $img->setAttribute('height', $height);
+                        $img->setAttribute('name', (string) $thumbnail['name']);
+                        $img->nodeValue = $thumbnailFile;
+                        $result->appendChild($img);
                     }
                 }
             }
@@ -251,7 +253,7 @@ abstract class AbstractBuilder extends DBWorker {
 
                     default: // not used
                 }
-                
+
                 $result->nodeValue = $fieldValue;
             }
 
@@ -271,7 +273,7 @@ abstract class AbstractBuilder extends DBWorker {
         $date = intval($date);
         if ($format != '%E') {
             $result = @strftime($format, $date);
-            if(!$result) {
+            if (!$result) {
                 $result = $date;
             }
         }

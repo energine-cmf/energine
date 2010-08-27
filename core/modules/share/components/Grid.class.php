@@ -766,7 +766,7 @@ class Grid extends DBDataSet {
             $fieldName = key($_POST['filter'][$tableName]);
             $value = trim($_POST['filter'][$tableName][$fieldName]);
             //получили текущий фильтр
-            $currentFilter = $this->getFilter();
+            /*$currentFilter = $this->getFilter();
             if ($currentFilter) {
                 $currentFilter =str_replace('WHERE', '',$this->dbh->buildWhereCondition($currentFilter)).' AND ';
             }
@@ -775,6 +775,8 @@ class Grid extends DBDataSet {
             }
             //к текущему фильтру присоединяем пользовательский
             $this->setFilter($currentFilter.$tableName.'.'.$fieldName.' LIKE \'%'.$value.'%\' ');
+             */
+            $this->addFilterCondition($tableName.'.'.$fieldName.' LIKE \'%'.$value.'%\' ');
         }
     }
 

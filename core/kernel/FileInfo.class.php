@@ -69,8 +69,8 @@
      */
     public function analyze($filename){
     	if(!file_exists($filename)){
-    		//$result = false;
-    		throw new SystemException('ERR_NO_FILE', SystemException::ERR_WARNING);
+    		$result['type'] = self::META_TYPE_UNKNOWN;
+    		$result['mime'] = 'unknown/mime-type';
     	}
     	elseif(is_dir($filename)){
     		$result['type'] = self::META_TYPE_FOLDER;

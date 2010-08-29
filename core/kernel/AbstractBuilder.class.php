@@ -288,8 +288,7 @@ abstract class AbstractBuilder extends DBWorker {
             // $date = new DateTime('2010-07-12');
             $now = new DateTime();
             $interval = $date->diff($now, true);
-
-            switch ((int) $interval->format('%d')) {
+            switch ((int) $interval->format('%a')) {
                 case 0:
                     $result .= DBWorker::_translate('TXT_TODAY');
                     break;

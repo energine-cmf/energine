@@ -40,7 +40,7 @@ var ScriptLoader = function() {
                 }
             }
             
-            if(!this.loaded[filename]['code'])
+            if(!this.loaded[filename] || !this.loaded[filename]['code'])
                 throw 'Invalid file code. Filename: ' + filename;
                 
             //На этот момент у нас есть текст запрашиваемого файла

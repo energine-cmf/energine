@@ -9,6 +9,7 @@ var FileManager = new Class({
 	initialize: function(element){
 		this.element = $(element);
 		this.tabPane = new TabPane(this.element);
+        this.overlay = new Overlay(this.element);
 		this.viewWidget = new DirView(this.element.getElement('.e-filemanager'), {
             onSelect: this.onSelect.bind(this),
             onEdit: this.onEdit.bind(this),
@@ -41,6 +42,7 @@ var FileManager = new Class({
 
 	load: function(path) {
         var cookiePath;
+        this.overlay.show();
         if (!path && (cookiePath = Cookie.read(FILE_COOKIE_NAME))) {
             path = cookiePath;
         }
@@ -52,6 +54,7 @@ var FileManager = new Class({
             this.element.getProperty('single_template')+'get-data',
             postBody,
             function(response) {
+                this.overlay.hide();
                 if (!this.initialized) {
                     this.viewWidget.setMetadata(response.meta);
                     this.initialized = true;

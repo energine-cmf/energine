@@ -190,13 +190,13 @@ abstract class AbstractBuilder extends DBWorker {
                 if ($info = FileInfo::getInstance()->analyze($fieldValue)) {
                     $el = $this->result->createElement($info->type);
 //                    $el->nodeValue = $fieldValue;
-                    $el->nodeValue = str_replace("%2F", "/", urlencode($fieldValue));
+                    $el->nodeValue = $this->fixUrl($fieldValue);
                     switch ($info->type) {
                         case FileInfo::META_TYPE_IMAGE:
                             $el->setAttribute('width', $info->width);
                             $el->setAttribute('height', $info->height);
 //                            $el->setAttribute('image', $fieldValue);
-                            $el->setAttribute('image', str_replace("%2F", "/", urlencode($fieldValue)));
+                            $el->setAttribute('image', $this->fixUrl($fieldValue));
                             break;
                         case FileInfo::META_TYPE_VIDEO:
                             $el->setAttribute('image', FileObject::getVideoImageFilename($fieldValue));
@@ -222,7 +222,7 @@ abstract class AbstractBuilder extends DBWorker {
                         $img->setAttribute('height', $height);
                         $img->setAttribute('name', (string) $thumbnail['name']);
 //                        $img->nodeValue = $thumbnailFile;
-                        $img->nodeValue =  str_replace("%2F", "/", urlencode($thumbnailFile));
+                        $img->nodeValue = $this->fixUrl($thumbnailFile);
                         $result->appendChild($img);
                     }
                 }
@@ -263,6 +263,18 @@ abstract class AbstractBuilder extends DBWorker {
         }
 
         return $result;
+    }
+
+    /**
+     * @param  string $url
+     * @return string
+     */
+    protected function fixUrl($url){
+        return str_replace(
+            array('%2F', '+'),
+            array('/', '%20'),
+            urlencode($url)
+        );
     }
 
     /**

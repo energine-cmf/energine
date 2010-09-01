@@ -96,6 +96,7 @@ class AttachmentManager extends Singleton {
                     if (!isset($imageData[$mapID]))
                         $imageData[$mapID] = array();
 
+                    $row['file'] = urlencode($row['file']);
                     array_push($imageData[$mapID], $row);
                 }
                 

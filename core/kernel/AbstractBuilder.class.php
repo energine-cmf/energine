@@ -190,13 +190,13 @@ abstract class AbstractBuilder extends DBWorker {
                 if ($info = FileInfo::getInstance()->analyze($fieldValue)) {
                     $el = $this->result->createElement($info->type);
 //                    $el->nodeValue = $fieldValue;
-                    $el->nodeValue = urlencode($fieldValue);
+                    $el->nodeValue = str_replace("%2F", "/", urlencode($fieldValue));
                     switch ($info->type) {
                         case FileInfo::META_TYPE_IMAGE:
                             $el->setAttribute('width', $info->width);
                             $el->setAttribute('height', $info->height);
 //                            $el->setAttribute('image', $fieldValue);
-                            $el->setAttribute('image', urlencode($fieldValue));
+                            $el->setAttribute('image', str_replace("%2F", "/", urlencode($fieldValue)));
                             break;
                         case FileInfo::META_TYPE_VIDEO:
                             $el->setAttribute('image', FileObject::getVideoImageFilename($fieldValue));
@@ -222,7 +222,7 @@ abstract class AbstractBuilder extends DBWorker {
                         $img->setAttribute('height', $height);
                         $img->setAttribute('name', (string) $thumbnail['name']);
 //                        $img->nodeValue = $thumbnailFile;
-                        $img->nodeValue = urlencode($thumbnailFile);
+                        $img->nodeValue =  str_replace("%2F", "/", urlencode($thumbnailFile));
                         $result->appendChild($img);
                     }
                 }

@@ -212,9 +212,9 @@ abstract class AbstractBuilder extends DBWorker {
                                     $width = (int) $thumbnail->width,
                                     $height = (int) $thumbnail->height
                                 );
-                        if (!file_exists($thumbnailFile)) {
-                            $thumbnailFile = (string)$thumbnail->gag;
-                        }
+//                        if (!file_exists($thumbnailFile)) {
+//                            $thumbnailFile = (string)$thumbnail->gag;
+//                        }
                         $img = $this->result->createElement(
                             'thumbnail'
                         );

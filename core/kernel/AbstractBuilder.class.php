@@ -280,6 +280,9 @@ abstract class AbstractBuilder extends DBWorker {
     /**
      * Форматирование даты
      *
+     * @param int $date timstamp
+     * @param string $format
+     *
      * @return string
      * @access public
      * @static
@@ -295,36 +298,26 @@ abstract class AbstractBuilder extends DBWorker {
         else {
             $result = '';
 
-            //$date = new DateTime('@'.$date);
-            $tdate = new DateTime();
-            $date = $tdate->setTimestamp($date);
-            unset($tdate);
+            $today = strtotime("midnight");
+            $tomorrow = strtotime("midnight +1 day");
+            $yesterday = strtotime("midnight -1 day");
 
-            // $date = new DateTime('2010-07-12');
-            $now = new DateTime();
-            $interval = $date->diff($now, true);
-            switch ((int) $interval->format('%a')) {
-                case 0:
-                    $result .= DBWorker::_translate('TXT_TODAY');
-                    break;
-                case 1:
-                    $result .= DBWorker::_translate('TXT_YESTERDAY');
-                    break;
-                default:
-                    $result .= $date->format('j') . ' ' . (DBWorker::_translate(
-                        'TXT_MONTH_' . $date->format('n')));
-                    //inspect($interval->format('%y'), $date);
-                    if ((int) $interval->format('%y')) {
-                        $result .= ' ' . $date->format('Y');
-                    }
-                    break;
+            if($date >= $today and $date < $tomorrow){
+                $result .= DBWorker::_translate('TXT_TODAY');
             }
-
+            elseif($date < $today and $date >= $yesterday){
+                $result .= DBWorker::_translate('TXT_YESTERDAY');
+            }
+            else{
+                $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                if(date('Y',$date) != date('Y')){
+                    $result .= ' ' . date('Y', $date);
+                }
+            }
             //Если часы и минуты = 0, считаем что это просто дата, без времени
-            if (!(((int) $date->format('G') == 0) &&
-                    ((int) $date->format('i') == 0))) {
+            if(date('G', $date) != 0 and date('i', $date) != 0){
                 $result .= ', ';
-                $result .= $date->format('G') . ':' . $date->format('i');
+                $result .= date('G', $date) . ':' . date('i', $date);
             }
         }
 

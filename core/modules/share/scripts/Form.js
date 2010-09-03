@@ -516,17 +516,18 @@ Form.RichEditor = new Class({
             }).injectInside(document.body);
             //addEvent('paste' работать не захотело
             if (Browser.Engine.trident) this.area.onpaste =
-                    this.processPaste.bindWithEvent(this);
+                    this.processPasteFF.bindWithEvent(this);
             else if (Browser.Engine.gecko) this.area.onpaste =
                     this.processPasteFF.bindWithEvent(this);
             //this.area.onpaste = this.processPaste.bindWithEvent(this);
 
             this.area.contentEditable = 'true';
         } else {
-            this.area = this.textarea.setProperty('componentPath',
-                    this.form.singlePath);
+            this.area = this.textarea.setProperty('componentPath',this.form.singlePath);
         }
+        //@todo тут какие то непонятки с componentpath и single_Template
 
+        this.area.setProperty('single_template',this.form.singlePath);
         this.toolbar = new Toolbar(this.textarea.name);
         this.toolbar.appendControl(new Toolbar.Button({
             id : 'bold',

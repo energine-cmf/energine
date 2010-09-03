@@ -28,7 +28,8 @@ class SiteEditor extends Grid {
 	public function __construct($name, $module, Document $document,  array $params = null) {
 		parent::__construct($name, $module, $document,  $params);
 		$this->setTableName('share_sites');
-        $this->setSaver(new SiteSaver());		
+        $this->setSaver(new SiteSaver());
+        //$this->setOrderColumn('site_order_num')
 	}
 
 	/**

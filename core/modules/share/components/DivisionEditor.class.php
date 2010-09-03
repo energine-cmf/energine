@@ -65,7 +65,7 @@ final class DivisionEditor extends Grid {
 		//$this->setOrder('smap_order_num', QAL::ASC);
 
 		$this->setParam('recordsPerPage', false);
-		$this->setOrderColumn('smap_order_num');
+		//$this->setOrderColumn('smap_order_num');
 	}
 
 	/**

@@ -139,7 +139,6 @@ var RichEditor = new Class({
 				if (Energine.supportContentEdit && !this.fallback_ie) {
 					this.currentRange = this._getSelection().createRange();
 				}
-
 				ModalBox.open({
 							url : this.area.getProperty('single_template')
 									+ 'file-library/image/',
@@ -275,41 +274,34 @@ var RichEditor = new Class({
 				}
 			},
 			processPaste : function(event) {
+                //event = new Event(event);
 				// TODO если заработает копирование в ФФ - не забыть почистить
+                //вы
 				var selection = this._getSelection();
 
 				var orig_tr = selection.createRange();
-				var new_tr = (Browser.Engine.gecko)
-						? document.createRange()
-						: document.body.createTextRange();
+				var new_tr = document.body.createTextRange();
 
 				this.pasteArea.innerHTML = '';
-				if (Browser.Engine.trident) {
 					new_tr.moveToElementText(this.pasteArea);
 					new_tr.select();
 					document.execCommand('paste', false, null);
 					orig_tr.select();
+
 					orig_tr.pasteHTML(this.cleanMarkup(this.area
 									.getProperty('componentPath'),
 							this.pasteArea.innerHTML, true));
-				} else {
-					// orig_tr.selectNode(this.pasteArea);
-					var markup = this.cleanMarkup(this.area
-									.getProperty('componentPath'),
-							this.pasteArea.innerHTML, true);
-
-					document.execCommand('inserthtml', false, markup);
-				}
-
+			
 				/* this.pasteArea.setHTML(''); */
 				this.pasteArea.innerHTML = '';
-				event.stop();
+				//event.stop();
 			},
 			processPasteFF : function(event) {
 (function		() {
 					this.area.innerHTML = this.cleanMarkup(this.area
 									.getProperty('componentPath'),
 							this.area.innerHTML, true);
+
 				}).delay(300, this);
 
 				// event.stop();

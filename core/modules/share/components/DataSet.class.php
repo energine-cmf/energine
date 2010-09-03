@@ -643,8 +643,8 @@ abstract class DataSet extends Component {
 
 	public static function cleanupHTML($data) {
 		$aggressive = isset($_GET['aggressive']);
-		//dump_log($data);
 		//Если подключено расширение tidy
+
 		if(function_exists('tidy_get_output')){
 			try {
 				$tidy = new tidy();
@@ -657,27 +657,31 @@ abstract class DataSet extends Component {
 			        'numeric-entities' => true,
 			        'show-body-only' => true,
 		            'quote-nbsp' => false,
-		            'indent' => true,  
-		            'wrap' => 0,
+		            'indent' => 'auto',  
+		            'wrap' => 72,
+                    'output-html' => true,
 				);
 				if($aggressive){
 					$config = array_merge(
 					$config,
 					array(
 		        	     'clean'=> true,
-		        	     'word-2000' => true
+		        	     'word-2000' => true,
+                         'drop-empty-paras' => true
 					)
 					);
 				}
 				$data = $tidy->repairString($data, $config, 'utf8');
+
 			}
 			catch(Exception $dummyError){
-				//Никаких действий предпринимать нет необходимости	
+				//inspect($dummyError);
 			}
 			unset($tidy);
-		}
-		//dump_log($data, true);
 
+		}
+
+/*
 		$jewix = new Jevix();
 		$jewix->cfgSetXHTMLMode(true);
 		$jewix->cfgSetAutoBrMode(false);
@@ -734,6 +738,8 @@ abstract class DataSet extends Component {
 
             $errors = false;
             $data = $jewix->parse($data, $errors);
+ *
+ */
             $base = SiteManager::getInstance()->getCurrentSite()->base;
             $data =
             str_replace(
@@ -742,7 +748,7 @@ abstract class DataSet extends Component {
             $data
             );
             //$data = str_replace('&amp;', '&', $data);
-            //dump_log($data, true);
+           // stop($data);
             return $data;
 	}
 }

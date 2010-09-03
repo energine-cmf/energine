@@ -64,7 +64,7 @@ class Grid extends DBDataSet {
      * @var string
      * @access private
      */
-    private $orderColumn = false;
+    private $orderColumn = null;
 
 
     /**
@@ -641,6 +641,16 @@ class Grid extends DBDataSet {
       */
 
     protected function getOrderColumn() {
+        if(is_null($this->orderColumn)) {
+            $this->orderColumn = false;
+            $columns = $this->dbh->getColumnsInfo($this->getTableName());
+            foreach(array_keys($columns) as $columnName){
+                if(strpos($columnName, '_order_num')){
+                    $this->setOrderColumn($columnName);
+                    break;
+                }
+            }
+        }
         return $this->orderColumn;
     }
 

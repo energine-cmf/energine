@@ -547,7 +547,7 @@ class Grid extends DBDataSet {
             
             if(isset($actionParams['sortField']) && isset($actionParams['sortDir'])){
                 //подразумевается что sortDir - тоже существует
-                $this->setOrder($actionParams['sortField'], $actionParams['sortDir']);
+                $this->setOrder(array($actionParams['sortField'] => $actionParams['sortDir']));
             }
             $result = parent::loadData();
         }
@@ -630,7 +630,7 @@ class Grid extends DBDataSet {
 
     protected function setOrderColumn($columnName) {
         $this->orderColumn = $columnName;
-        $this->setOrder($columnName, QAL::ASC);
+        $this->setOrder(array($columnName => QAL::ASC));
     }
 
     /**

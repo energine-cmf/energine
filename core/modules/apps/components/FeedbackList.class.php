@@ -31,6 +31,6 @@ class FeedbackList extends Grid {
 	public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setTableName('apps_feedback');
-        $this->setOrder('feed_date', QAL::DESC);
+        $this->setOrder(array('feed_date'=> QAL::DESC));
 	}
 }

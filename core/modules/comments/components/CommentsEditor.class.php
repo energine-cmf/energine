@@ -46,7 +46,7 @@ class CommentsEditor extends Grid
         }
         
 		$this->changeTableName();
-		$this->setOrder('comment_approved', QAL::ASC);
+		$this->setOrder(array('comment_approved' => QAL::ASC));
 		$this->setParam('onlyCurrentLang', true);
     }
     

@@ -52,7 +52,7 @@ class BlogPost extends DBDataSet {
         $this->setTableName('blog_post');
 //        $this->setFilter(array('post_is_draft'=>0));
         $this->setParam('onlyCurrentLang', true);
-        $this->setOrder('post_created', QAL::DESC);
+        $this->setOrder(array('post_created' => QAL::DESC));
 
         if ($this->getParam('showCalendar') and in_array($this->getAction(), array('main', 'viewBlog'))) {
             //наполняем $this->additionalFilter и $this->calendarParams

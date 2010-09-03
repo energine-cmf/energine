@@ -288,7 +288,14 @@ final class QAL extends DBA {
      */
     public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
         $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')).'_name';
-
+        $columns = $this->getColumnsInfo($fkTableName);
+        $order = '';
+        foreach(array_keys($columns) as $columnName) {
+            if(strpos($columnName, '_order_num')){
+                $order = $columnName.' '.QAL::ASC;
+                break;
+            }
+        }
         //если существует таблица с переводами для связанной таблицы
         //нужно брать значения оттуда
         if ($transTableName = $this->getTranslationTablename($fkTableName)) {
@@ -304,7 +311,7 @@ final class QAL extends DBA {
                     %2$s.*, %3$s.%s 
                     FROM %s %2$s 
                     LEFT JOIN %s %3$s on %3$s.%s = %2$s.%s 
-                    WHERE lang_id =%s'.$filter, 
+                    WHERE lang_id =%s'.$filter.(($order)?' ORDER BY '.$order:''),
                 $fkValueName, 
                 $fkTableName, 
                 $transTableName, 
@@ -315,11 +322,12 @@ final class QAL extends DBA {
             $res = $this->selectRequest($request);
         }
         else {
-            $columns = $this->getColumnsInfo($fkTableName);
+            //$columns = $this->getColumnsInfo($fkTableName);
             $columns = array_filter($columns,
                 create_function('$value', 'return !($value["type"] == QAL::COLTYPE_TEXT);')
             );
-            $res = $this->select($fkTableName, array_keys($columns), $filter, array($fkValueName=>QAL::ASC));
+            $res = $this->select($fkTableName, array_keys($columns), $filter, $order);
+            //$res = $this->selectRequest('SELECT '.implode(',', array_keys($columns)).' FROM '.$fkTableName.)
         }
 
         return array($res, $fkKeyName, $fkValueName);
@@ -334,20 +342,22 @@ final class QAL extends DBA {
      * @see QAL::selectRequest()
      */
     public function buildOrderCondition($clause) {
-        $orderClause = ' ORDER BY ';
+        $orderClause = '';
+        if(!empty($clause)) {
+            $orderClause = ' ORDER BY ';
 
-        if (is_array($clause)) {
-            $cls = array();
-            foreach ($clause as $fieldName => $direction) {
-                //$fieldName = strtolower($fieldName);
-                $cls[] = "$fieldName ".constant("self::$direction");
+            if (is_array($clause)) {
+                $cls = array();
+                foreach ($clause as $fieldName => $direction) {
+                    //$fieldName = strtolower($fieldName);
+                    $cls[] = "$fieldName ".constant("self::$direction");
+                }
+                $orderClause .= implode(', ', $cls);
             }
-            $orderClause .= implode(', ', $cls);
+            else {
+                $orderClause .= $clause;
+            }
         }
-        else {
-            $orderClause .= $clause;
-        }
-
         return $orderClause;
     }
 

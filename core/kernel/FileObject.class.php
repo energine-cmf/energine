@@ -174,11 +174,11 @@ class FileObject extends FileSystemObject {
 	
 	public static function getThumbFilename($sourceFileName, $width, $height){
 		list($dirname, $basename, $extension, $filename) = array_values(pathinfo($sourceFileName));
-        return $dirname.'/'.'.'.$filename.'.'.$width.'-'.$height.'.png';
+        return $dirname.'/'.'.'.$filename.'.'.$width.'-'.$height.'.jpg';
 	}
     public static function getVideoImageFilename($sourceFileName){
 		list($dirname, $basename, $extension, $filename) = array_values(pathinfo($sourceFileName));
-        return $dirname.'/'.'.'.$filename.'.png';
+        return $dirname.'/'.'.'.$filename.'.jpg';
 	}
 	public static function getTmpFilePath($filename){
 		return self::TEMPORARY_DIR.basename($filename);

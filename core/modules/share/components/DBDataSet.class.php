@@ -464,21 +464,19 @@ class DBDataSet extends DataSet {
     /**
      * Устанавливает условие сортровки
      *
-     * @param string Поле сортировки
-     * @param string Направление сортировки
-     * 
+     * @param array Параметры сортировки array($orderFieldName => $orderDirection)
      * @return void
      * @access protected
      * @final
      */
 
-    final protected function setOrder($orderField, $orderDirection) {
-        $orderDirection = strtoupper($orderDirection);
+    final protected function setOrder(array $order) {
+        /*$orderDirection = strtoupper($orderDirection);
         if (!in_array($orderDirection, array(QAL::ASC, QAL::DESC))) {
             $orderDirection = QAL::ASC;
         }
-        
-        $this->order = array($orderField => $orderDirection);
+        */
+        $this->order = $order;
     }
 
     /**

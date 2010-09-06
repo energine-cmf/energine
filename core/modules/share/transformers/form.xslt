@@ -26,16 +26,18 @@
         <form method="post" action="{@action}" class="e-grid-form">
             <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile'] or descendant::field[@name='attached_files']">
                 <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
-                <script type="text/javascript">
+
+                <!--<script type="text/javascript">
+
                     window.addEvent('beforeunload', function(){
-                    window.__flash__removeCallback = 
+                    window.__flash__removeCallback =
                        (function() {
                           return function(instance, name) {
-                             if (instance) instance[name] = null;
+                             if (instance <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> (typeof instance[name] != 'unknown')) instance[name] = null;
                           }; // IE 6 dangling semicolon needed
-                    })(); // force another closure to prevent IE memory leaks  
+                    })(); // force another closure to prevent IE memory leaks
                     });
-                </script>
+                </script>-->
             </xsl:if>
 <!--            <xsl:if test="descendant::field[@type='textbox']">
                 <script type="text/javascript" src="scripts/TextboxList.js"></script>

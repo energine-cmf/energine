@@ -271,12 +271,12 @@ Swiff.Uploader = new Class({
 
 	start: function() {
 		this.fireEvent('beforeStart');
-		this.remote('start');
+		this.remote('UploadStart');
 	},
 
 	stop: function() {
 		this.fireEvent('beforeStop');
-		this.remote('stop');
+		this.remote('UploadStop');
 	},
 
 	remove: function() {

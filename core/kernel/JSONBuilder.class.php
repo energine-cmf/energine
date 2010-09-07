@@ -94,12 +94,14 @@ class JSONBuilder extends AbstractBuilder {
                                 break;
                             case FieldDescription::FIELD_TYPE_IMAGE:
                                 if ($fieldValue) {
-                                    if (file_exists(
+                                    $fieldValue = FileObject::getThumbFilename($fieldValue, 50, 50);
+                                    /*if (file_exists(
                                         dirname($fieldValue) . '/.' .
                                                 basename($fieldValue)))
                                         $fieldValue =
                                                 dirname($fieldValue) . '/.' .
                                                         basename($fieldValue);
+                                    */
                                 }
                                 break;
                             case FieldDescription::FIELD_TYPE_SELECT:

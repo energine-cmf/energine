@@ -146,7 +146,7 @@ class Grid extends DBDataSet {
 
         $this->prepare();
         
-        foreach ($this->getDataDescription() as $fieldName => $fieldDescription) {
+        /*foreach ($this->getDataDescription() as $fieldName => $fieldDescription) {
             //@todo Тут можно упростить
             if (($fieldDescription->getType() == FieldDescription::FIELD_TYPE_PFILE) && ($fieldData = $this->getData()->getFieldByName($fieldName)->getData())) {
                 $fieldData = $fieldData[0];
@@ -154,7 +154,7 @@ class Grid extends DBDataSet {
                     $this->getDataDescription()->getFieldDescriptionByName($fieldName)->setProperty('is_image', 'is_image');
                 }
             }
-        }
+        }*/
 		$this->addToolbarTranslations();
     }
 

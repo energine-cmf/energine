@@ -31,11 +31,43 @@ class ForumTheme extends DBDataSet {
     }
 
     /**
-     * Переходим на список категорий форума -  список тем сам по себе не имеет смысла
+     * Список тем по  smap_id  с последним комментом и инфой об авторе коммента
+     * @param  int $smapId
+     * @param  array $limit int[]{2}
+     * @return mixed
+     */
+    private function loadThemeBySmapid($smapId, array $limit = null){
+        $limitStr = $limit ? 'LIMIT '. implode(',', $limit) : '';
+        $sql =
+            'SELECT t.*, c.comment_created, c.comment_name, u.u_id,
+                IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_name) u_name,
+                u.u_avatar_img
+            FROM forum_theme t
+                LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id
+                LEFT JOIN user_users u ON u.u_id = c.u_id
+            WHERE t.smap_id = %s
+        ';
+        return $this->dbh->selectRequest($sql, $smapId);
+    }
+
+    /**
      * @return void
      */
-    protected function main(){
-        $this->response->redirectToCurrentSection("../");
+    protected function prepare(){
+        parent::prepare();
+        if(in_array($this->getAction(), array('main', 'view'))){
+            $this->getDataDescription()->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_INT);
+            $this->getDataDescription()->getFieldDescriptionByName('u_id')->setType(FieldDescription::FIELD_TYPE_INT);
+
+            $this->addDescription();
+
+            if(AuthUser::getInstance()->isAuthenticated()){
+                $this->setProperty('is_can_create_theme', 1);
+            }
+        }
+        elseif(in_array($this->getAction(), array('modify'))){
+            $this->getDataDescription()->getFieldDescriptionByName('theme_text')->setType(FieldDescription::FIELD_TYPE_TEXT);
+        }
     }
 
 
@@ -51,11 +83,6 @@ class ForumTheme extends DBDataSet {
                 $this->getData()->getFieldByName('theme_id')->getData()
             );
         }
-        $this->getDataDescription()->getFieldDescriptionByName('u_id')->setType(FieldDescription::FIELD_TYPE_INT);
-        $this->getDataDescription()->getFieldDescriptionByName('category_id')->setType(FieldDescription::FIELD_TYPE_INT);
-
-        // добавляем описание извлечённых полей
-        $this->addDescription();
     }
 
     protected function loadData(){
@@ -65,51 +92,58 @@ class ForumTheme extends DBDataSet {
         	list($themeId) = $themeId;
             $data = $this->loadTheme($themeId);
         }
+        if($this->getAction() == 'main'){
+            $smapId = $this->document->getID();
+            $data = $this->loadThemeBySmapid($smapId);
+        }
         else{
             $data = parent::loadData();
         }
         return $data;
     }
 
+    /**
+     * Одна тема с последним комментом и инфой об авторе коммента
+     * @param  int $themeId
+     * @return array|bool
+     */
     private function loadTheme($themeId){
+        $langId = Language::getInstance()->getCurrent();
         $sql = 'SELECT t.*, c.comment_created, c.comment_name,
-            fc.category_name,
+            st.smap_name category_name,
             u.u_id,
             IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_name) u_name,
             u.u_avatar_img
         FROM forum_theme t
-            JOIN forum_category fc ON fc.category_id = t.category_id
+            JOIN share_sitemap_translation  st ON st.smap_id = t.smap_id
             LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id
             LEFT JOIN user_users u ON u.u_id = c.u_id
-        WHERE t.theme_id = %s
+        WHERE t.theme_id = %s and st.lang_id = %s
         ';
-        return $this->dbh->selectRequest($sql, $themeId);
+        return $this->dbh->selectRequest($sql, $themeId, $langId);
     }
 
+    /**
+     * Добавляем к теме дополнительные поля
+     * @return void
+     */
     private function addDescription(){
-        $fd = new FieldDescription('category_name');
-        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-        $this->getDataDescription()->addFieldDescription($fd);
+        $descriptions =  array(
+            'u_id' =>           FieldDescription::FIELD_TYPE_INT,
+            'category_name' =>     FieldDescription::FIELD_TYPE_STRING,
+            'comment_num' =>    FieldDescription::FIELD_TYPE_INT,
+//            'comment_id' =>     FieldDescription::FIELD_TYPE_INT,
+            'comment_created' =>FieldDescription::FIELD_TYPE_DATETIME,
+            'comment_name' =>   FieldDescription::FIELD_TYPE_TEXT,
+            'u_name' =>         FieldDescription::FIELD_TYPE_STRING,
+            'u_avatar_img' =>   FieldDescription::FIELD_TYPE_IMAGE,
+        );
 
-        $fd = new FieldDescription('u_id');
-        $fd->setType(FieldDescription::FIELD_TYPE_INT);
-        $this->getDataDescription()->addFieldDescription($fd);
-
-        $fd = new FieldDescription('comment_created');
-        $fd->setType(FieldDescription::FIELD_TYPE_DATETIME);
-        $this->getDataDescription()->addFieldDescription($fd);
-
-        $fd = new FieldDescription('comment_name');
-        $fd->setType(FieldDescription::FIELD_TYPE_TEXT);
-        $this->getDataDescription()->addFieldDescription($fd);
-
-        $fd = new FieldDescription('u_name');
-        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-        $this->getDataDescription()->addFieldDescription($fd);
-
-        $fd = new FieldDescription('u_avatar_img');
-        $fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
-        $this->getDataDescription()->addFieldDescription($fd);
+        foreach($descriptions as $name => $fieldType){
+            $fd = new FieldDescription($name);
+            $fd->setType($fieldType);
+            $this->getDataDescription()->addFieldDescription($fd);
+        }
     }
 
 
@@ -119,19 +153,11 @@ class ForumTheme extends DBDataSet {
 			throw new SystemException('ERR_404', SystemException::ERR_404);
 		}
 
-        $categoryId = $this->getActionParams();
-        list($categoryId) = $categoryId;
-        if(!$categoryId){
-            throw new SystemException('ERR_404', SystemException::ERR_404);
-		}
-
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
         $this->setDataSetAction("save-theme/");
 
         $this->getDataDescription()->getFieldDescriptionByName('theme_text')->setType(FieldDescription::FIELD_TYPE_HTML_BLOCK);
-        $this->getDataDescription()->getFieldDescriptionByName('category_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
-        $this->getData()->getFieldByName('category_id')->setData($categoryId);
 	}
 
     protected function save(){
@@ -154,9 +180,12 @@ class ForumTheme extends DBDataSet {
                 // @todo add SystemException::ERR_401
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
+            unset($data['smap_id']);
         }
         else{
+            // создаём тему
             $themeId = 0;
+            $data['smap_id'] = $this->document->getID();
             $data['theme_created'] = date('Y-m-d H:i:s');
             $condition = null;
             $data['u_id'] = AuthUser::getInstance()->getID();
@@ -180,18 +209,18 @@ class ForumTheme extends DBDataSet {
     /**
      * Редактируем тему
      *
-     * @throws SystemException если тема не существует
+     * @throws SystemException если тема не задана
      * @return void
      */
 	protected function modify(){
 
-        if($themeId = $this->getActionParams()){
-			// редактируем существующий пост
-        	list($themeId) = $themeId;
-		}
-		else{
+        $themeId = $this->getActionParams();
+       	list($themeId) = $themeId;
+
+        if(!$this->isCanEditTheme($themeId)){
+            // @todo add SystemException::ERR_401
 			throw new SystemException('ERR_404', SystemException::ERR_404);
-		}
+        }
 
         $this->addFilterCondition(array('theme_id' => $themeId));
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
@@ -202,7 +231,7 @@ class ForumTheme extends DBDataSet {
 	}
 
     /**
-     * Информация о текущем пользователеле
+     * Информация о текущем пользователеле (автор, админ?)
      * @see forum.xslt
      * @return void
      */

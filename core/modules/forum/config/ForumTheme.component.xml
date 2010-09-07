@@ -14,13 +14,12 @@
         </method>
         <method name="create">
         	<uri_patterns>
-                 <pattern>/[categoryID]/create/</pattern>
+                 <pattern>/create/</pattern>
             </uri_patterns>
             <javascript>
             	<object name="ForumForm" />
             </javascript>
             <fields>
-                <field name="category_id"/>
                 <field name="theme_name"/>
                 <field name="theme_text"/>
             </fields>
@@ -51,7 +50,7 @@
              </uri_patterns>
             <fields>
                 <field name="theme_id"/>
-                <field name="category_id"/>
+                <field name="smap_id"/>
                 <field name="u_id"/>
                 <field name="theme_name"/>
                 <field name="theme_text"/>
@@ -63,10 +62,10 @@
             <uri_patterns>
                 <!--<pattern>/page-[pageNumber]/</pattern>-->
                 <pattern>/</pattern>
-             </uri_patterns>
-             <fields>
+            </uri_patterns>
+            <fields>
                 <field name="theme_id"/>
-                <field name="category_id"/>
+                <field name="smap_id"/>
                 <field name="u_id"/>
                 <field name="theme_name"/>
                 <field name="theme_text"/>

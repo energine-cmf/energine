@@ -235,7 +235,7 @@ class DBDataSet extends DataSet {
             $filter = ' WHERE lang_id = '.$this->getDataLanguage();
         }
         
-        if (!is_null($this->getOrder())){
+        if ($this->getOrder()){
         	//inspect($this->getOrder());
             $order = $this->dbh->buildOrderCondition($this->getOrder());
         }
@@ -458,6 +458,17 @@ class DBDataSet extends DataSet {
      */
 
     final protected function getOrder() {
+        if(is_null($this->order)){
+            $this->order = false;
+            $columns = $this->dbh->getColumnsInfo($this->getTableName());
+            foreach(array_keys($columns) as $columnName){
+                if(strpos($columnName, '_order_num')){
+                    $this->setOrder(array($columnName => QAL::ASC));
+                    break;
+                }
+            }
+        }
+
         return $this->order;
     }
 

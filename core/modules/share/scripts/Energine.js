@@ -1,6 +1,7 @@
 /*
  * Загружает указанные скрипты из директории scripts.
  */
+
 var ScriptLoader = function() {
     window.top.currentWindow = window;
     
@@ -45,22 +46,7 @@ var ScriptLoader = function() {
                 
             //На этот момент у нас есть текст запрашиваемого файла
             //Но он может быть исполнен в одном из открытых окон а в другом - нет
-                
-                
-            /*if(!this.loaded[filename]['w'])
-                    this.loaded[filename]['w'] = [];*/
-//            console.log(filename, this.isLoadedInCurrentWindow(this.loaded[filename]['w']));
-            //Текст получен  - но не исполнен ни в одном окне
-            /*if(
-                !this.isLoadedInCurrentWindow(this.loaded[filename]['w'])
-             ){
-                //исполняем в текущем
-                this.globalEval(this.loaded[filename]['code']);
-                this.loaded[filename]['w'].push(window.top.currentWindow);
-
-            }*/
             this.globalEval(this.loaded[filename]['code']);
-            /*this.loaded[filename]['w'].push(window.top.currentWindow);*/
         }
     },
     isLoadedInCurrentWindow: function(arr){
@@ -85,7 +71,6 @@ var ScriptLoader = function() {
     }
 };
 }();
-
 
 
 var isset = function(variable) {

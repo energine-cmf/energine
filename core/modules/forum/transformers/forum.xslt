@@ -13,7 +13,7 @@
                 <xsl:value-of select="$TRANSLATION[@const='FORUM_CREATE_THEME']"/>
             </a>
         </xsl:if>
-        <xsl:call-template name="FORUM_SUBCATEGORY_LIST"/>
+        <xsl:apply-templates select="component[@name='forumSubCategory'][@class='PageList'][@type='list']" mode="formCategory" />
         <ul>
             <xsl:for-each select="recordset/record">
                 <li>
@@ -38,7 +38,8 @@
     </xsl:template>
 
     <!-- Подкатегории -->
-    <xsl:template name="FORUM_SUBCATEGORY_LIST">
+    <xsl:template match="component[@name='forumSubCategory'][@class='PageList'][@type='list']"/>
+    <xsl:template match="component[@name='forumSubCategory'][@class='PageList'][@type='list']" mode="formCategory">
         <xsl:if test="$COMPONENTS[@name='forumSubCategory'][@class='PageList'][@type='list']/recordset/record">
             <h2>
                 <xsl:value-of select="$TRANSLATION[@const='FORUM_SUBCATEGORY']"/>

@@ -68,6 +68,11 @@ class ForumTheme extends DBDataSet {
         elseif(in_array($this->getAction(), array('modify'))){
             $this->getDataDescription()->getFieldDescriptionByName('theme_text')->setType(FieldDescription::FIELD_TYPE_TEXT);
         }
+
+        // отключаем подкатегории
+        if($this->getAction() != 'main'){
+            $this->document->componentManager->getBlockByName('forumSubCategory')->disable();
+        }
     }
 
     /**

@@ -11,4 +11,11 @@
 
 		</params>
 	</component>
+    <component name="forumSubCategory" module="share" class="PageList" >
+           <params>
+               <param name="id">current</param>
+               <param name="configFilename">core/modules/share/ChildDivisions.component.xml</param>
+           </params>
+        </component>
+    
 </content>

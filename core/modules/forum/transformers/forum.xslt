@@ -10,13 +10,16 @@
         <xsl:if test="@is_can_create_theme">
             <br/>
             <a href="{$BASE}{$LANG_ABBR}{@template}create/">
-                Создать тему
+                <xsl:value-of select="$TRANSLATION[@const='FORUM_CREATE_THEME']"/>
             </a>
         </xsl:if>
+        <xsl:call-template name="FORUM_SUBCATEGORY_LIST"/>
         <ul>
             <xsl:for-each select="recordset/record">
                 <li>
-                    <span title="создано"><xsl:value-of select="field[@name='theme_created']"/></span>
+                    <span title="{$TRANSLATION[@const='FORUM_CREATED']}">
+                        <xsl:value-of select="field[@name='theme_created']"/>
+                    </span>
                     <h2>
                         <a href="{$BASE}{$LANG_ABBR}{../../@template}{field[@name='theme_id']}"><xsl:value-of select="field[@name='theme_name']"/></a>
                     </h2>
@@ -24,7 +27,7 @@
                         <p><xsl:value-of select="field[@name='theme_text']"/></p>
                     </xsl:if>
                     <xsl:if test="field[@name='comment_num'] != ''">
-                        Последний пост:
+                        <xsl:value-of select="$TRANSLATION[@const='FORUM_LAST_POST']"/>:
                         <span><xsl:value-of select="field[@name='u_name']"/></span> :
                         <span><xsl:value-of select="field[@name='comment_name']"/></span>
                         (<span><xsl:value-of select="field[@name='comment_created']"/></span>)
@@ -34,15 +37,31 @@
         </ul>
     </xsl:template>
 
+    <!-- Подкатегории -->
+    <xsl:template name="FORUM_SUBCATEGORY_LIST">
+        <xsl:if test="$COMPONENTS[@name='forumSubCategory'][@class='PageList'][@type='list']/recordset/record">
+            <h2>
+                <xsl:value-of select="$TRANSLATION[@const='FORUM_SUBCATEGORY']"/>
+            </h2>
+            <ul>
+                <xsl:for-each select="$COMPONENTS[@name='forumSubCategory'][@class='PageList'][@type='list']/recordset/record">
+                    <li>
+                        <a href="{$BASE}{$LANG_ABBR}{field[@name='Segment']}"><xsl:value-of select="field[@name='Name']"/></a>
+                    </li>
+                </xsl:for-each>
+            </ul>
+        </xsl:if>
+    </xsl:template>
+
     <!--просмотр темы-->
     <xsl:template match="record[ancestor::component[@class='ForumTheme'][@componentAction='view']]">
         <xsl:if test="../../@curr_user_is_admin or ../../@curr_user_id=field[@name='u_id']">
             <a href="{$BASE}{$LANG_ABBR}{../../@template}{field[@name='theme_id']}/remove/">
-                Удалить тему
+                <xsl:value-of select="$TRANSLATION[@const='FORUM_DELETE_THEME']"/>
             </a>
             
             <a href="{$BASE}{$LANG_ABBR}{../../@template}{field[@name='theme_id']}/modify/">
-                Редактировать
+                <xsl:value-of select="$TRANSLATION[@const='FORUM_EDIT_THEME']"/>
             </a>
             <br/>
         </xsl:if>
@@ -59,7 +78,7 @@
             </xsl:if>
             <xsl:if test="field[@name='comments'] = ''">
                 <div class="comments" style="display:none">
-                        Ответы (<span></span>)
+                        <xsl:value-of select="$TRANSLATION[@const='FORUM_ANSWERS']"/> (<span></span>)
                         <ul/>
                 </div>
             </xsl:if>

@@ -76,13 +76,22 @@ class ForumTheme extends DBDataSet {
     }
 
     /**
-     * @return SimpleBuilder
+     * @return Builder|SimpleBuilder
      */
     protected function createBuilder() {
-		return new SimpleBuilder($this->getTitle());
+        // Для методов modify и create нужны более сложные формы
+        if(in_array($this->getAction(), array('modify', 'create'))){
+            $res = parent::createBuilder();
+        }
+        else{
+            $res = new SimpleBuilder($this->getTitle());
+        }
+        return $res;
 	}
 
-
+    /**
+     * @return void
+     */
     protected function view(){
         $this->addPropertyCurrUser();
         parent::view();
@@ -176,6 +185,7 @@ class ForumTheme extends DBDataSet {
         // нечего сохранять
 		if(!isset($_POST['forum_theme'])){
 			// @todo redirect to edit|create
+inspect($_POST);
 			throw new SystemException('ERR_404', SystemException::ERR_404);
 		}
         $data = $_POST['forum_theme'];

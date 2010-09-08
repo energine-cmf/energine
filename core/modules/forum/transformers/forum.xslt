@@ -24,7 +24,7 @@
                         <a href="{$BASE}{$LANG_ABBR}{../../@template}{field[@name='theme_id']}"><xsl:value-of select="field[@name='theme_name']"/></a>
                     </h2>
                     <xsl:if test="field[@name='theme_text']">
-                        <p><xsl:value-of select="field[@name='theme_text']"/></p>
+                        <p><xsl:value-of select="field[@name='theme_text']" disable-output-escaping="yes"/></p>
                     </xsl:if>
                     <xsl:if test="field[@name='comment_num'] != ''">
                         <xsl:value-of select="$TRANSLATION[@const='FORUM_LAST_POST']"/>:
@@ -70,7 +70,7 @@
             (<xsl:value-of select="field[@name='theme_created']"/>)
         </span>
         <h2><xsl:value-of select="field[@name='theme_name']"/></h2>
-        <p><xsl:value-of select="field[@name='theme_text']"/></p>
+        <p><xsl:value-of select="field[@name='theme_text']" disable-output-escaping="yes"/></p>
 
         <div class="forum_comments">
                 <xsl:if test="field[@name='comments'] != ''">

@@ -64,18 +64,6 @@ class ForumTheme extends DBDataSet {
             if(AuthUser::getInstance()->isAuthenticated()){
                 $this->setProperty('is_can_create_theme', 1);
             }
-
-            if($this->getAction() == 'main'){
-                $this->addTranslation('FORUM_SUBCATEGORY');
-                $this->addTranslation('FORUM_CREATE_THEME');
-                $this->addTranslation('FORUM_LAST_POST');
-                $this->addTranslation('FORUM_CREATED');
-            }
-            elseif($this->getAction() == 'view'){
-                $this->addTranslation('FORUM_DELETE_THEME');
-                $this->addTranslation('FORUM_EDIT_THEME');
-                $this->addTranslation('FORUM_ANSWERS');
-            }
         }
         elseif(in_array($this->getAction(), array('modify'))){
             $this->getDataDescription()->getFieldDescriptionByName('theme_text')->setType(FieldDescription::FIELD_TYPE_TEXT);

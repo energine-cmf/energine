@@ -25,7 +25,7 @@ class CommentsHelper extends Comments
 	 * @param string $tableName Комментируемая таблица
 	 * @return CommentsHelper|NULL
 	 */
-	public static function createInsatceFor($tableName, $isTree=false){
+	public static function createInstanceFor($tableName, $isTree=false){
 		
 		if($commentTable = DocumentController::getInstance()->dbh->tableExists($tableName. '_comment')){
 			return new CommentsHelper($commentTable, $isTree);

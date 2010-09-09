@@ -75,7 +75,7 @@ class Comments extends DBWorker
 	 * @param string $tableName Комментируемая таблица
 	 * @return Comments|NULL
 	 */
-	public static function createInsatceFor($tableName, $isTree=false){
+	public static function createInstanceFor($tableName, $isTree=false){
 		if($commentTable = DocumentController::getInstance()->dbh->tableExists($tableName. '_comment')){
 			return new Comments($commentTable, $isTree);
 		}

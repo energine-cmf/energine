@@ -370,10 +370,30 @@ final class Sitemap extends DBWorker {
 	 * @access public
 	 */
 
-	public function getChilds($smapID) {
+	public function getChilds($smapID, $returnAsTreeNodeList = false) {
 		$result = array();
 		if ($node = $this->tree->getNodeById($smapID)) {
-			$result = $this->buildPagesMap(array_keys($node->getChildren()->asList(false)));
+            if(!$returnAsTreeNodeList){
+			    $result = $this->buildPagesMap(array_keys($node->getChildren()->asList(false)));
+            }
+            else {
+                $result = $node->getChildren();
+            }
+		}
+		return $result;
+	}
+	/**
+	 * Возвращает всех потомков
+	 *
+	 * @param int идентификатор раздела
+	 * @return array
+	 * @access public
+	 */
+
+	public function getDescendants($smapID) {
+		$result = array();
+		if ($node = $this->tree->getNodeById($smapID)) {
+            $result = $this->buildPagesMap(array_keys($node->getChildren()->asList()));
 		}
 		return $result;
 	}

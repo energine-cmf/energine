@@ -13,7 +13,7 @@ var ValidForm = new Class({
     validateForm: function(event) {
         var result = false;
         if (!this.validator.validate()) {
-            this.cancelEvent(event);            
+            this.cancelEvent(event);
         }
         else{
         	result = true;

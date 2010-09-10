@@ -7,13 +7,13 @@
  * @author sign
  */
 
- /**
-  * Темы форума
-  *
-  * @package energine
-  * @subpackage forum
-  * @author sign
-  */
+/**
+ * Темы форума
+ *
+ * @package energine
+ * @subpackage forum
+ * @author sign
+ */
 class ForumTheme extends DBDataSet {
     /**
      * Конструктор класса
@@ -24,9 +24,9 @@ class ForumTheme extends DBDataSet {
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, Document $document,  array $params = null) {
+    public function __construct($name, $module, Document $document, array $params = null) {
         $params['active'] = true;
-        parent::__construct($name, $module, $document,  $params);
+        parent::__construct($name, $module, $document, $params);
         $this->setTableName('forum_theme');
     }
 
@@ -36,10 +36,10 @@ class ForumTheme extends DBDataSet {
      * @param  array $limit int[]{2}
      * @return mixed
      */
-    private function loadThemeBySmapid($smapId, array $limit = null){
-        $limitStr = $limit ? 'LIMIT '. implode(',', $limit) : '';
+    private function loadThemeBySmapid($smapId, array $limit = null) {
+        $limitStr = $limit ? 'LIMIT ' . implode(',', $limit) : '';
         $sql =
-            'SELECT t.*, c.comment_created, c.comment_name, u.u_id,
+                'SELECT t.*, c.comment_created, c.comment_name, u.u_id,
                 IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_name) u_name,
                 u.u_avatar_img
             FROM forum_theme t
@@ -53,26 +53,26 @@ class ForumTheme extends DBDataSet {
     /**
      * @return void
      */
-    protected function prepare(){
+    protected function prepare() {
         parent::prepare();
-        if(in_array($this->getAction(), array('main', 'view'))){
+        if (in_array($this->getAction(), array('main', 'view'))) {
             $this->getDataDescription()->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_INT);
             $this->getDataDescription()->getFieldDescriptionByName('u_id')->setType(FieldDescription::FIELD_TYPE_INT);
 
             $this->addDescription();
 
-            if(AuthUser::getInstance()->isAuthenticated()){
+            if (AuthUser::getInstance()->isAuthenticated()) {
                 $this->setProperty('is_can_create_theme', 1);
             }
         }
-        elseif(in_array($this->getAction(), array('modify'))){
+        elseif (in_array($this->getAction(), array('modify'))) {
             $this->getDataDescription()->getFieldDescriptionByName('theme_text')->setType(FieldDescription::FIELD_TYPE_TEXT);
         }
 
         // отключаем подкатегории
-        if($this->getAction() != 'main'){
+        /*if($this->getAction() != 'main'){
             $this->document->componentManager->getBlockByName('forumSubCategory')->disable();
-        }
+        }*/
     }
 
     /**
@@ -80,24 +80,25 @@ class ForumTheme extends DBDataSet {
      */
     protected function createBuilder() {
         // Для методов modify и create нужны более сложные формы
-        if(in_array($this->getAction(), array('modify', 'create'))){
+        if (in_array($this->getAction(), array('modify', 'create'))) {
             $res = parent::createBuilder();
         }
-        else{
+        else {
             $res = new SimpleBuilder($this->getTitle());
         }
         return $res;
-	}
+    }
 
     /**
      * @return void
      */
-    protected function view(){
+    protected function view() {
         $this->addPropertyCurrUser();
         parent::view();
 
         // добавляем комментарии
-        if($comments = CommentsHelper::createInstanceFor($this->getTableName())) {
+        if (
+        $comments = CommentsHelper::createInstanceFor($this->getTableName())) {
             $comments->createAndAddField(
                 $this->getDataDescription(),
                 $this->getData(),
@@ -106,18 +107,18 @@ class ForumTheme extends DBDataSet {
         }
     }
 
-    protected function loadData(){
+    protected function loadData() {
         $data = false;
-        if($this->getAction() == 'view'){
+        if ($this->getAction() == 'view') {
             $themeId = $this->getActionParams();
-        	list($themeId) = $themeId;
+            list($themeId) = $themeId;
             $data = $this->loadTheme($themeId);
         }
-        if($this->getAction() == 'main'){
+        if ($this->getAction() == 'main') {
             $smapId = $this->document->getID();
             $data = $this->loadThemeBySmapid($smapId);
         }
-        else{
+        else {
             $data = parent::loadData();
         }
         return $data;
@@ -128,7 +129,7 @@ class ForumTheme extends DBDataSet {
      * @param  int $themeId
      * @return array|bool
      */
-    private function loadTheme($themeId){
+    private function loadTheme($themeId) {
         $langId = Language::getInstance()->getCurrent();
         $sql = 'SELECT t.*, c.comment_created, c.comment_name,
             st.smap_name category_name,
@@ -148,63 +149,66 @@ class ForumTheme extends DBDataSet {
      * Добавляем к теме дополнительные поля
      * @return void
      */
-    private function addDescription(){
-        $descriptions =  array(
-            'u_id' =>           FieldDescription::FIELD_TYPE_INT,
-            'category_name' =>     FieldDescription::FIELD_TYPE_STRING,
-            'comment_num' =>    FieldDescription::FIELD_TYPE_INT,
+    private function addDescription() {
+        $descriptions = array(
+            'u_id' => FieldDescription::FIELD_TYPE_INT,
+            'category_name' => FieldDescription::FIELD_TYPE_STRING,
+            'comment_num' => FieldDescription::FIELD_TYPE_INT,
 //            'comment_id' =>     FieldDescription::FIELD_TYPE_INT,
-            'comment_created' =>FieldDescription::FIELD_TYPE_DATETIME,
-            'comment_name' =>   FieldDescription::FIELD_TYPE_TEXT,
-            'u_name' =>         FieldDescription::FIELD_TYPE_STRING,
-            'u_avatar_img' =>   FieldDescription::FIELD_TYPE_IMAGE,
+            'comment_created' => FieldDescription::FIELD_TYPE_DATETIME,
+            'comment_name' => FieldDescription::FIELD_TYPE_TEXT,
+            'u_name' => FieldDescription::FIELD_TYPE_STRING,
+            'u_avatar_img' => FieldDescription::FIELD_TYPE_IMAGE,
         );
 
-        foreach($descriptions as $name => $fieldType){
+        foreach ($descriptions as $name => $fieldType) {
             $fd = new FieldDescription($name);
             $fd->setType($fieldType);
+            if ($fieldType == FieldDescription::FIELD_TYPE_DATETIME) {
+                $fd->setProperty('outputFormat', '%E');
+            }
             $this->getDataDescription()->addFieldDescription($fd);
         }
     }
 
 
-	protected function create(){
-        if(!AuthUser::getInstance()->isAuthenticated()){
-			// @todo add SystemException::ERR_401
-			throw new SystemException('ERR_404', SystemException::ERR_404);
-		}
+    protected function create() {
+        if (!AuthUser::getInstance()->isAuthenticated()) {
+            // @todo add SystemException::ERR_401
+            throw new SystemException('ERR_404', SystemException::ERR_404);
+        }
 
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
         $this->setDataSetAction("save-theme/");
 
         $this->getDataDescription()->getFieldDescriptionByName('theme_text')->setType(FieldDescription::FIELD_TYPE_HTML_BLOCK);
-	}
+    }
 
-    protected function save(){
+    protected function save() {
         // нечего сохранять
-		if(!isset($_POST['forum_theme'])){
-			// @todo redirect to edit|create
-inspect($_POST);
-			throw new SystemException('ERR_404', SystemException::ERR_404);
-		}
+        if (!isset($_POST['forum_theme'])) {
+            // @todo redirect to edit|create
+            inspect($_POST);
+            throw new SystemException('ERR_404', SystemException::ERR_404);
+        }
         $data = $_POST['forum_theme'];
 
         // не авторизованый юзер
-        if(!AuthUser::getInstance()->isAuthenticated()){
-			// @todo add SystemException::ERR_401
-			throw new SystemException('ERR_404', SystemException::ERR_404);
-		}
+        if (!AuthUser::getInstance()->isAuthenticated()) {
+            // @todo add SystemException::ERR_401
+            throw new SystemException('ERR_404', SystemException::ERR_404);
+        }
 
-        if(isset($data['theme_id']) and $themeId = intval($data['theme_id'])){
+        if (isset($data['theme_id']) and $themeId = intval($data['theme_id'])) {
             $condition = array('theme_id' => $themeId);
-            if(!$this->isCanEditTheme($themeId)){
+            if (!$this->isCanEditTheme($themeId)) {
                 // @todo add SystemException::ERR_401
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
             unset($data['smap_id']);
         }
-        else{
+        else {
             // создаём тему
             $themeId = 0;
             $data['smap_id'] = $this->document->getID();
@@ -213,20 +217,20 @@ inspect($_POST);
             $data['u_id'] = AuthUser::getInstance()->getID();
         }
 
-		$data['theme_id'] = (int)$themeId;
+        $data['theme_id'] = (int) $themeId;
 
-		$res = $this->dbh->modify(
-			$themeId ? QAL::UPDATE : QAL::INSERT,
-			$this->getTableName(),
-			$data,
+        $res = $this->dbh->modify(
+            $themeId ? QAL::UPDATE : QAL::INSERT,
+            $this->getTableName(),
+            $data,
             $condition
-		);
+        );
 
-		if(!$themeId){
-			$themeId = (int)$res;
-		}
-		$this->response->redirectToCurrentSection("$themeId/");
-	}
+        if (!$themeId) {
+            $themeId = (int) $res;
+        }
+        $this->response->redirectToCurrentSection("$themeId/");
+    }
 
     /**
      * Редактируем тему
@@ -234,37 +238,37 @@ inspect($_POST);
      * @throws SystemException если тема не задана
      * @return void
      */
-	protected function modify(){
+    protected function modify() {
 
         $themeId = $this->getActionParams();
-       	list($themeId) = $themeId;
+        list($themeId) = $themeId;
 
-        if(!$this->isCanEditTheme($themeId)){
+        if (!$this->isCanEditTheme($themeId)) {
             // @todo add SystemException::ERR_401
-			throw new SystemException('ERR_404', SystemException::ERR_404);
+            throw new SystemException('ERR_404', SystemException::ERR_404);
         }
 
         $this->addFilterCondition(array('theme_id' => $themeId));
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->setDataSetAction("$themeId/save-theme/");
 
-		$this->prepare();
+        $this->prepare();
         $this->getDataDescription()->getFieldDescriptionByName('theme_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
-	}
+    }
 
     /**
      * Информация о текущем пользователеле (автор, админ?)
      * @see forum.xslt
      * @return void
      */
-    private function addPropertyCurrUser(){
-        if(AuthUser::getInstance()->isAuthenticated()){
-    		$this->setProperty('curr_user_id', AuthUser::getInstance()->getID());
-    	}
+    private function addPropertyCurrUser() {
+        if (AuthUser::getInstance()->isAuthenticated()) {
+            $this->setProperty('curr_user_id', AuthUser::getInstance()->getID());
+        }
         // признак админа - выводим ему ссылки edit/delete во всех блогах
-        if(in_array('1', AuthUser::getInstance()->getGroups())){
-    		$this->setProperty('curr_user_is_admin', '1');
-    	}
+        if (in_array('1', AuthUser::getInstance()->getGroups())) {
+            $this->setProperty('curr_user_is_admin', '1');
+        }
     }
 
     /**
@@ -272,16 +276,16 @@ inspect($_POST);
      * @throws SystemException
      * @return void
      */
-    protected function remove(){
+    protected function remove() {
         $themeId = $this->getActionParams();
         list($themeId) = $themeId;
 
-        if(!$this->isCanEditTheme($themeId)){
+        if (!$this->isCanEditTheme($themeId)) {
             // @todo add SystemException::ERR_401
-			throw new SystemException('ERR_404', SystemException::ERR_404);
+            throw new SystemException('ERR_404', SystemException::ERR_404);
         }
 
-        $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, array('theme_id'=>$themeId));
+        $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, array('theme_id' => $themeId));
 
         $this->response->redirectToCurrentSection("/../../");
     }
@@ -292,22 +296,23 @@ inspect($_POST);
      * @param  $themeId
      * @return bool
      */
-    private function isCanEditTheme($themeId){
+    private function isCanEditTheme($themeId) {
         $access = false;
 
-        if(!$themeId or !AuthUser::getInstance()->isAuthenticated())
-		    return false;
+        if (!$themeId or !AuthUser::getInstance()->isAuthenticated())
+            return false;
 
         // администратор
-        if(in_array('1', AuthUser::getInstance()->getGroups())){
-    		$access = true;
-    	}
-        else{
+        if (in_array('1', AuthUser::getInstance()->getGroups())) {
+            $access = true;
+        }
+        else {
             // создатель темы?
             $uid = AuthUser::getInstance()->getID();
-            if($themeUId = $this->dbh->select($this->getTableName(),'u_id', array('theme_id' => $themeId))){
-                if($themeUId[0]['u_id'] == $uid){
-                    $access =  true;
+            if ($themeUId =
+                    $this->dbh->select($this->getTableName(), 'u_id', array('theme_id' => $themeId))) {
+                if ($themeUId[0]['u_id'] == $uid) {
+                    $access = true;
                 }
             }
         }

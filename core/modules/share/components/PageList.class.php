@@ -14,9 +14,8 @@
  * @package energine
  * @subpackage share
  * @author dr.Pavka
- * @final
  */
-final class PageList extends DataSet {
+class PageList extends DataSet {
     const CURRENT_PAGE = 'current';
     const PARENT_PAGE = 'parent';
     const ALL_PAGES = 'all';
@@ -40,11 +39,21 @@ final class PageList extends DataSet {
     }
 
     protected function createBuilder() {
-        return new SimpleBuilder();
+        if ($this->getParam('recursive')) {
+            $builder = new TreeBuilder();
+        }
+        else {
+            $builder = new SimpleBuilder();
+        }
+
+        return $builder;
     }
 
     /**
-     * Добавлен параметр tags
+     * Добавлены параметр tags - теги
+     * id - идентификатор страницы или CURRENT_PAGE | PARENT_PAGE | ALL_PAGES
+     * site - идентфиикатор сайта
+     * recursive - рекурсивно
      *
      * @return int
      * @access protected
@@ -55,7 +64,8 @@ final class PageList extends DataSet {
             array(
                 'tags' => '',
                 'id' => false,
-                'site' => SiteManager::getInstance()->getCurrentSite()->id
+                'site' => SiteManager::getInstance()->getCurrentSite()->id,
+                'recursive' => false
             ));
         return $result;
     }
@@ -71,7 +81,7 @@ final class PageList extends DataSet {
         $siteFD = new FieldDescription('Site');
         $siteFD->setType(FieldDescription::FIELD_TYPE_STRING);
         $this->getDataDescription()->addFieldDescription($siteFD);
-        
+
         if ($this->getDataDescription()->getFieldDescriptionByName('attachments')) {
             $this->getDataDescription()->addFieldDescription(AttachmentManager::getInstance()->createFieldDescription());
             if (!$this->getData()->isEmpty()) {
@@ -93,35 +103,39 @@ final class PageList extends DataSet {
     protected function loadData() {
         $sitemap = Sitemap::getInstance($this->getParam('site'));
 
+        $methodName = 'getChilds';
+        if ($this->getParam('recursive')) {
+            $methodName = 'getDescendants';
+        }
         //Выводим siblin
         if ($this->getParam('id') == self::PARENT_PAGE) {
-            $data = $sitemap->getChilds(
-                $sitemap->getParent(
-                    $this->document->getID()
-                )
-            );
+            $param = $sitemap->getParent($this->document->getID());
         }
             //выводим child текуще
         elseif ($this->getParam('id') == self::CURRENT_PAGE) {
-            $data = $sitemap->getChilds(
-                $this->document->getID()
-            );
+            $param = $this->document->getID();
         }
             //выводим все разделы
         elseif ($this->getParam('id') == self::ALL_PAGES) {
-            $data = $sitemap->getInfo();
+            $methodName = 'getInfo';
+            $param = null;
         }
             //если пустой
             //выводим главное меню
         elseif (!$this->getParam('id')) {
-            $data = $sitemap->getChilds($sitemap->getDefault());
+            $param = $sitemap->getDefault();
         }
             //выводим child переданной в параметре
         else {
-            $data = $sitemap->getChilds((int) $this->getParam('id'));
+            $param = (int) $this->getParam('id');
         }
 
+        $data = call_user_func(array($sitemap, $methodName), $param);
+
         if (!empty($data)) {
+            if ($this->getParam('recursive')) {
+                $this->getBuilder()->setTree($sitemap->getChilds($param, true));
+            }
             $hasDescriptionRtf =
                     (bool) $this->getDataDescription()->getFieldDescriptionByName('DescriptionRtf');
 
@@ -144,12 +158,16 @@ final class PageList extends DataSet {
                     $data[$key]['Id'] = $key;
                     $data[$key]['Segment'] = $value['Segment'];
                     $data[$key]['Name'] = $value['Name'];
-                    $data[$key]['Site'] = SiteManager::getInstance()->getSiteByID($data[$key]['site'])->base;
+                    $data[$key]['Site'] =
+                            SiteManager::getInstance()->getSiteByID($data[$key]['site'])->base;
                     if ($hasDescriptionRtf)$data[$key]['DescriptionRtf'] =
                             $value['DescriptionRtf'];
                 }
 
             }
+        }
+        else {
+            $this->setBuilder(new SimpleBuilder());
         }
         return $data;
     }

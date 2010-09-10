@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<methods>
-        <method name="save">
+        <method name="save" rights="2">
         	<uri_patterns>
                  <pattern>/[postID]/save-theme/</pattern>
                  <pattern>/save-theme/</pattern>
             </uri_patterns>
         </method>
-        <method name="remove">
+        <method name="remove" rights="2">
         	<uri_patterns>
                  <pattern>/[postID]/remove/</pattern>
             </uri_patterns>
         </method>
-        <method name="create">
+        <method name="cleanup" rights="2">
+            <uri_patterns>
+                <pattern>/cleanup/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="create" rights="2">
         	<uri_patterns>
                  <pattern>/create/</pattern>
             </uri_patterns>
@@ -27,7 +32,7 @@
             	<control id="savePost" title="BTN_SAVE" type="submit"  />
             </toolbar>
         </method>
-        <method name="modify">
+        <method name="modify" rights="2">
         	<uri_patterns>
                  <pattern>/[postID]/modify/</pattern>
             </uri_patterns>
@@ -54,13 +59,14 @@
                 <field name="u_id"/>
                 <field name="theme_name"/>
                 <field name="theme_text"/>
-                <field name="theme_created"/>
+                <field name="theme_created" outputFormat="%E"/>
                 <field name="theme_closed"/>
             </fields>
             <translations>
                 <translation const="FORUM_ANSWERS"/>
                 <translation const="FORUM_EDIT_THEME"/>
                 <translation const="FORUM_DELETE_THEME"/>
+                <translation const="FORUM_CREATE_THEME"/>
             </translations>
         </method>
         <method name="main">
@@ -73,8 +79,7 @@
                 <field name="smap_id"/>
                 <field name="u_id"/>
                 <field name="theme_name"/>
-                <field name="theme_text"/>
-                <field name="theme_created"/>
+                <field name="theme_created" outputFormat="%E"/>
                 <field name="theme_closed"/>
 			</fields>
             <toolbar>

@@ -2,6 +2,10 @@
 <configuration>
 	<methods>
 		<method name="main">
+			<uri_patterns>
+				<pattern>/page-[pageNumber]/</pattern>
+				<pattern>/</pattern>
+		     </uri_patterns>
         <fields>
             <field name="Id" type="integer" key="1"/>
             <field name="Pid" type="integer"/>

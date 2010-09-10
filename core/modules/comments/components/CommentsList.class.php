@@ -65,7 +65,7 @@ class CommentsList extends DataSet
         $this->setProperty('exttype', 'comments');
         $this->setProperty('type', 'list');
 
-        $commentTable = DocumentController::getInstance()->dbh->tableExists($this->getParam('table_name'). '_comment');
+        $commentTable = $this->dbh->tableExists($this->getParam('table_name'). '_comment');
 
 		$this->isTree = $this->getParam('is_tree');
         $this->targetIds = $this->getParam('target_ids');
@@ -102,7 +102,7 @@ class CommentsList extends DataSet
 		$dataDescription->addFieldDescription($fd);
 
 		$fd = new FieldDescription('comment_created');
-		$fd->setType(FieldDescription::FIELD_TYPE_DATETIME);
+		$fd->setType(FieldDescription::FIELD_TYPE_DATETIME)->setProperty('outputFormat', '%E');
 		$dataDescription->addFieldDescription($fd);
 
 		$fd = new FieldDescription('comment_name');

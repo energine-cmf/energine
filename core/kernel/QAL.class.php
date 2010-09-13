@@ -349,7 +349,7 @@ final class QAL extends DBA {
             if (is_array($clause)) {
                 $cls = array();
                 foreach ($clause as $fieldName => $direction) {
-                    //$fieldName = strtolower($fieldName);
+                    $direction = strtoupper($direction);
                     $cls[] = "$fieldName ".constant("self::$direction");
                 }
                 $orderClause .= implode(', ', $cls);

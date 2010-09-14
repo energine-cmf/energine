@@ -183,6 +183,7 @@ final class Response extends Singleton {
      * @access public
      */
     public function setRedirect($location) {
+	$this->setStatus(302);
         $this->setHeader('Location', $location);
         $this->commit();
     }
@@ -199,9 +200,8 @@ final class Response extends Singleton {
             $action .= '/';
         }
         $request = Request::getInstance();
-        $this->setRedirect(
-        SiteManager::getInstance()->getCurrentSite()->base
-        .$request->getLangSegment()
+        $this->setRedirect( 
+        SiteManager::getInstance()->getCurrentSite()->base.$request->getLangSegment()
         .$request->getPath(Request::PATH_TEMPLATE, true)
         .$action
         );
@@ -230,9 +230,7 @@ final class Response extends Singleton {
             foreach ($this->headers as $name => $value) {
                 header("$name: $value");
             }
-            
             foreach ($this->cookies as $name => $params) {
-            	
                 setcookie($name, $params['value'], $params['expire'], $params['path'], $params['domain'], $params['secure']);
             }
         }
@@ -241,12 +239,11 @@ final class Response extends Singleton {
         }
         $contents = $this->body;
 
-        if ((bool)Object::_getConfigValue('site.compress') && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)) {
+        /*if ((bool)Object::_getConfigValue('site.compress') && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)) {
             header("Vary: Accept-Encoding");
             header("Content-Encoding: gzip");
             $contents = gzencode($contents, 6);
-        }
-
+        }*/
         echo $contents;
         session_write_close();
         exit;

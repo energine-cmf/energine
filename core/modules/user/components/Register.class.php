@@ -102,9 +102,9 @@ class Register extends DBDataSet {
 			 ||
 			 !isset($_POST['captcha'])
 			 ||
-			 ($_SESSION['captchaCode'] != sha1($_POST['captcha']))
+			 ($_SESSION['captchaCode'] != sha1(trim($_POST['captcha'])))
 			){
-			     throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL); 	
+			     throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
 			}
 			$this->saveData();
 			$_SESSION['saved'] = true;

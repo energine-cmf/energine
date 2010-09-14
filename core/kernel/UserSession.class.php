@@ -218,7 +218,6 @@ final class UserSession extends Singleton {
                 
             }
         }
-  
         return $result;
     }
 
@@ -231,7 +230,8 @@ final class UserSession extends Singleton {
 	 * @return mixed
 	 */
     public function write($phpSessId, $data) {
-        $this->dbh->modify(QAL::UPDATE, $this->tableName, array('session_data' => $data), array('session_native_id' => $phpSessId));
+        if(!empty($data))
+            $this->dbh->modify(QAL::UPDATE, $this->tableName, array('session_data' => $data), array('session_native_id' => $phpSessId));
         return true;
     }
 

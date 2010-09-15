@@ -142,7 +142,7 @@ class CommentsForm extends DataSet {
 		$result = array_merge(parent::defineParams(), array(
 	        'comment_tables' => '',
 			'active'         => true,
-			'is_tree'		 => false,
+			'is_tree'		 => 1,
 		    'bind'           => false,
             'show_comments'  => false,
             'show_form'      => false,
@@ -329,7 +329,7 @@ class CommentsForm extends DataSet {
 
         $commentsParams = array(
             'table_name' => $this->targetTable,
-            'is_tree' => false,
+            'is_tree' => $this->getParam('is_tree'),
             'target_ids' => $this->bindComponent->getData()->getFieldByName($priFieldName)->getData()
         );
 

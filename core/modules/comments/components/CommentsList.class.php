@@ -68,6 +68,10 @@ class CommentsList extends DataSet
         $commentTable = $this->dbh->tableExists($this->getParam('table_name'). '_comment');
 
 		$this->isTree = $this->getParam('is_tree');
+
+        $this->setProperty('is_tree', $this->isTree);
+        $this->setProperty('is_editable', (int)AuthUser::getInstance()->isAuthenticated());
+
         $this->targetIds = $this->getParam('target_ids');
 
         $this->comments = new Comments($commentTable, $this->isTree);
@@ -132,7 +136,15 @@ class CommentsList extends DataSet
      * @return Builder|TreeBuilder
      */
     protected function createBuilder(){
-        return $this->isTree && !$this->loadData()? new TreeBuilder() : new Builder();
+        if($this->isTree and is_array($data = $this->loadData())){
+            $builder = new TreeBuilder();
+            $tree = TreeConverter::convert($data, 'comment_id', 'comment_parent_id');
+            $builder->setTree($tree);
+        }
+        else{
+            $builder = parent::createBuilder();
+        }
+        return $builder;
     }
 
     /**
@@ -144,6 +156,9 @@ class CommentsList extends DataSet
         if(is_null($this->loadedData)){
             $this->loadedData =  $this->comments->getListByIds($this->targetIds);
             $this->loadedData = $this->addUsersInfo($this->loadedData);
+
+            // количество комментариев
+            $this->setProperty('comment_count', is_array($this->loadedData)?count($this->loadedData):0);
         }
         return $this->loadedData;
     }
@@ -157,7 +172,7 @@ class CommentsList extends DataSet
             parent::defineParams(),
             array(
                 'table_name' => '',
-                'is_tree' => false,
+                'is_tree' => 1,
                 'target_ids' => array(),
             )
         );

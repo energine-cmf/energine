@@ -4,7 +4,10 @@ var CommentsForm = new Class({
 	Implements: Energine.request,
 	initialize : function(element) {
 		this.parent(element)
-		$$('div.comments ul li span a').addEvent('click', this.show_form.bind(this))
+        this.form = this.componentElement.getParent('form').addClass('form');
+		$$('li.comment_item span.btn_content').addEvent('click', this.show_form.bind(this))
+		$$('div.comments div.comment_inputblock a.link_comment').addEvent('click', this.show_form_base.bind(this))
+		this.form.getElement('a.btn_comment').addEvent('click', this.validateForm.bind(this))
 	},
     validateForm: function(event) {
     	this.parent(event);
@@ -30,39 +33,54 @@ var CommentsForm = new Class({
     		alert(response.errors)
     	}
     	else if(response.data){
-    		var item = response.data[0]
-        	var li = new Element('li', {'id': item['comment_id'] + '_comment'})
-        	var span = new Element('span'); span.appendText(item['comment_created'] + ' - '+ item['u_fullname'])
-        	li.grab(span)
-        	if(item['u_avatar_img']){
-        		li.grab(new Element('img', {'src':item['u_avatar_img'], 'width': 50, 'height':50}))
-        	}
-        	li.grab((new Element('p')).appendText(item['comment_name']))
-        	
-        	if(item['is_tree']){
-        		var l = new Element('a', {'href': '#', 'html': 'Комментировать'})
-        		l.addEvent('click', this.show_form.bind(this))
-        		li.grab(l)
-        	}
+            var item = response.data[0]
+
+            var li = $$('li.comment_item.hidden')[0].clone().removeClass('hidden')
+            li.setAttribute('id', item['comment_id'] + '_comment')
+            li.getElement('div.comment_text').set('html', item['comment_name'])
+            li.getElement('div.comment_userpic a').grab(new Element('img', {'src':item['u_avatar_img'], 'width': 50, 'height':50}))
+            li.getElement('div.comment_username a').set('text', item['u_fullname'])
+            li.getElement('div.comment_date').set('text', item['comment_created'])
+
+            if(item['is_tree'] &&  li.getElement('div.comment_inputblock')){
+                li.getElement('div.comment_inputblock span.btn_content').addEvent('click', this.show_form.bind(this))
+            }
+            else{
+                li.getElement('div.comment_inputblock').addClass('hidden')
+            }
+
         	if(item['comment_parent_id']){
         		var parentCommentLiName = item['comment_parent_id'] + '_comment'
         		var parentCommentLi = $$('div.comments ul li#'+parentCommentLiName+'')
         		var ul = parentCommentLi.getElement('ul')
         		if(!ul[0]){
         			ul = new Element('ul')
-        			parentCommentLi.grab(ul)
+                    ul.setAttribute('class', 'comment_list')
+
+                    var d = new Element('div')
+                    d.addClass('comment_thread').grab(ul)
+
+                    var i = new Element('i', {'class': 'icon20x20 comment_thread_icon'})
+                    i.grab(new Element('i'))
+                    d.grab(i)
+                    parentCommentLi.grab(d)
         		}
         		ul.grab(li)
         	}
         	else $$('div.comments').show().getElement('ul').grab(li);
-        	$$('div.comments span')[0].innerHTML = $$('div.comments ul li').length
-        	
+        	$$('div.comments span')[0].innerHTML = '('+ ($$('div.comments ul li').length - 1) + ')'
+
+            this.form.addClass('hidden');
+            $$('li.comment_item').getElement('div.comment_inputblock').removeClass('hidden')
         	this.componentElement.getElement('textarea[name=comment_name]').value = ''
     	}
     },
     show_form: function(event){
-    	this.try_add_link_to_comment_all()
-    	event.target.getParent().grab(this.form)
+        this.form.removeClass('hidden');
+    	event.target.getParent('li').grab(this.form)
+        this.form.getElement('textarea').focus()
+        $$('li.comment_item').getElement('div.comment_inputblock').removeClass('hidden')
+    	event.target.getParent('div.comment_inputblock').addClass('hidden')
     	var parentId = this.form.getElement('input[name="parent_id"]')
     	if(!parentId){
 	    	parentId = new Element('input', {'type':'hidden', 'name':'parent_id'})
@@ -72,24 +90,13 @@ var CommentsForm = new Class({
     	
     	return false
     },
-    try_add_link_to_comment_all: function(){
-    	var c = $$('div.comments div.baseForm a')
-    	if(!c[0]){
-    		c = new Element('div', {'class':'baseForm'})
-    		var l = new Element('a', {'href': '#', 'html': 'Комментировать Новость'})
-    		l.addEvent('click', this.show_form_base.bind(this))
-    		c.grab(l)
-    		$$('div.comments').grab(c)
-    	}
-    	else{
-    		$$('div.comments div').show()
-    	}
-    },
     show_form_base: function(){
-    	$$('div.comments div.baseForm').hide()
+        this.form.removeClass('hidden');
+        $$('li.comment_item').getElement('div.comment_inputblock').removeClass('hidden')
     	var parentId = this.form.getElement('input[name="parent_id"]')
     	if(parentId) parentId.dispose()
     	$$('div.comments').grab(this.form)
+        this.form.getElement('textarea').focus()
     	
     	return false
     }

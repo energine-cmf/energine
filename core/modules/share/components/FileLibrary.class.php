@@ -276,7 +276,7 @@ final class FileLibrary extends DataSet {
     protected function save() {
         try {
             $file = new FileObject();
-            $file->create($_POST);
+            $file->create($_POST, (bool)$_POST['upl_resize_image']);
 
             $JSONResponse = array(
             'result' => true,
@@ -418,6 +418,14 @@ final class FileLibrary extends DataSet {
     protected function add() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
+        $f = new FieldDescription('upl_resize_image');
+        $f->setType(FieldDescription::FIELD_TYPE_BOOL);
+        $this->getDataDescription()->addFieldDescription($f);
+
+        $f = new Field('upl_resize_image');
+        $f->setData(true, true);
+        $this->getData()->addField($f);
+        
         if($field = $this->getDataDescription()->getFieldDescriptionByName('tags')){
             //$field->setProperty('nullable', 'nullable');
             $field->removeProperty('pattern');

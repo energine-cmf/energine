@@ -44,4 +44,14 @@ class ForumCategories extends PageList {
             ));
         return $result;
     }
+
+/*    protected function loadData(){
+        $result = parent::loadData();
+        $sm = Sitemap::getInstance();
+
+        foreach(array_keys($result) as $themeID){
+            inspect($sm->getChilds($themeID));
+        }
+        return $result;
+    }*/
 }

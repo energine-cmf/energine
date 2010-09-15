@@ -120,7 +120,7 @@
         <div class="image">
             <img id="{generate-id(.)}_preview">
                 <xsl:if test=".!=''">
-                    <xsl:attribute name="src"><xsl:value-of select="image[@name='default']"/></xsl:attribute>
+                    <xsl:attribute name="src"><xsl:value-of select="."/></xsl:attribute>
                 </xsl:if>
             </img>
         </div>

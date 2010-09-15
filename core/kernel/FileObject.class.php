@@ -20,6 +20,7 @@
  */
 class FileObject extends FileSystemObject {
 	const TEMPORARY_DIR = 'uploads/temp/';
+    const NORESIZE_SUFFIX = '.nrs';
 	/**
 	 * Полный путь к файлу
 	 *
@@ -141,14 +142,21 @@ class FileObject extends FileSystemObject {
 	 * Сохранение файла
 	 *
 	 * @param array
-	 * @return boolean
+	 * @return void
 	 * @access public
 	 */
 
-	public function create($data) {
+	public function create($data, $resizeImage = true) {
 		$data = $data[self::TABLE_NAME];
 		//Копируем файл из временной директории на нужное место
-        $this->moveToUploads($data['upl_path']);
+        if(!$resizeImage){
+            $pathInfo = pathinfo($data['upl_path']);
+            $newName = $pathInfo['dirname'].'/'.$pathInfo['filename'].self::NORESIZE_SUFFIX.'.'.$pathInfo['extension'];
+        }
+        else {
+            $newName = $data['upl_path'];
+        }
+        $this->moveToUploads($data['upl_path'], $newName);
 		$this->insert($data);
 		/*
 		if((FileInfo::getInstance()->analyze($sourceFileName)->type == FileInfo::META_TYPE_IMAGE) && $this->getConfigValue('thumbnails')){
@@ -161,10 +169,11 @@ class FileObject extends FileSystemObject {
 		}*/
 	}
 
-    public function moveToUploads($sourceFileName){
+    public function moveToUploads($sourceFileName, $newName = false){
+        if(!$newName)$newName = $sourceFileName;
         try {
             @copy($tmpFile =
-                    self::getTmpFilePath($sourceFileName), $sourceFileName);
+                    self::getTmpFilePath($sourceFileName), $newName);
             @unlink($tmpFile);
         }
         catch (Exception $e) {

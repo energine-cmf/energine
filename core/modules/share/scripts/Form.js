@@ -404,7 +404,12 @@ Form.AttachmentPane = new Class({
         this._zebraRows();
     },
     delAttachment: function(id) {
-        $('row_' + id).dispose();
+        if($('row_' + id)){
+            $('row_' + id).dispose();
+        }
+        else{
+            $('row_').dispose();
+        }
         if (document.getElement('#attached_files tbody').getChildren().length ==
                 0) {
             document.getElement('#attached_files tbody').adopt(

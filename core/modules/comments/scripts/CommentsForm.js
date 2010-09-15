@@ -8,7 +8,9 @@ var CommentsForm = new Class({
 		$$('li.comment_item span.btn_content').addEvent('click', this.show_form.bind(this))
 		$$('div.comments div.comment_inputblock a.link_comment').addEvent('click', this.show_form_base.bind(this))
 		this.form.getElement('a.btn_comment').addEvent('click', this.validateForm.bind(this))
+        this.form.getElement('textarea').addEvent('keyup', this.countOut.bind(this))
 	},
+    maxSymbol: 250,
     validateForm: function(event) {
     	this.parent(event);
         this.cancelEvent(event); 
@@ -99,6 +101,12 @@ var CommentsForm = new Class({
         this.form.getElement('textarea').focus()
     	
     	return false
+    },
+    countOut: function(event){
+        if(event.target.value.length >= this.maxSymbol){
+            event.target.value = event.target.value.substr(0, this.maxSymbol)
+        }
+        event.target.form.getElements('span.note span')[0].set('text', this.maxSymbol-event.target.value.length)
     }
 })
 	

@@ -74,7 +74,10 @@ var CommentsForm = new Class({
 
             this.form.addClass('hidden');
             $$('li.comment_item').getElement('div.comment_inputblock').removeClass('hidden')
-        	this.componentElement.getElement('textarea[name=comment_name]').value = ''
+
+            var t = this.componentElement.getElement('textarea[name=comment_name]')
+        	t.value = ''
+            t.fireEvent('keyup', {target: t}, 1)
     	}
     },
     show_form: function(event){

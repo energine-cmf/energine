@@ -11,7 +11,7 @@ var ForumForm = new Class({
 
 		this.validator = new Validator(this.form);
 
-		this.richEditors = [], this.uploaders = [], this.textBoxes = [], this.dateControls = [];
+		this.richEditors = [];
 
         this.form.getElements('textarea.richEditor').each(function(textarea) {
             var e = new Form.RichEditor(textarea, this, this.fallback_ie);

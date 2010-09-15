@@ -28,6 +28,7 @@ class ForumCategories extends PageList {
     public function __construct($name, $module, Document $document, array $params = null) {
         parent::__construct($name, $module, $document, $params);
     }
+
     /**
      * Значения параметров выставлены
      *
@@ -45,13 +46,18 @@ class ForumCategories extends PageList {
         return $result;
     }
 
-/*    protected function loadData(){
+    /*protected function loadData() {
         $result = parent::loadData();
-        $sm = Sitemap::getInstance();
-
-        foreach(array_keys($result) as $themeID){
-            inspect($sm->getChilds($themeID));
+        foreach($result as $smapID => $smapInfo){
+            $categoryInfo = $this->dbh->selectRequest('
+                SELECT COUNT(ft.theme_id) as theme_count, SUM(comment_num) as comment_count, ft.comment_id '.
+                    ' FROM forum_theme ft'.
+                    ' LEFT JOIN forum_theme_comment ftc ON ft.comment_id=ftc.comment_id'.
+                    ' WHERE smap_id = %s', $smapID);
+inspect($categoryInfo);
+            //$result[$smapID]['ThemeCount'] = simplifyDBResult(, 'theme',true);
         }
+//inspect($result);
         return $result;
     }*/
 }

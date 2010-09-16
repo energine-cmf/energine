@@ -141,7 +141,7 @@ PageEditor.BlockEditor = new Class({
                 this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility': 'hidden', 'width': '0', 'height': '0', 'font-size': '0', 'line-height': '0' }).injectInside(document.body);
             }
 			//addEvent('paste' работать не захотело
-            if(Browser.Engine.trident) this.area.onpaste = this.processPaste.bindWithEvent(this);
+            if(Browser.Engine.trident) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
             else if(Browser.Engine.gecko || Browser.Engine.presto) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
         }
         //this.switchToViewMode = this.pageEditor.switchToViewMode;

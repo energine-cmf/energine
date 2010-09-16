@@ -247,15 +247,35 @@ class CommentsForm extends DataSet {
 	private function getUserInfo($uId){
 		$result =  array('u_fullname'=>'', 'u_avatar_img'=>'');
 		$userInfo = $this->dbh->select('user_users',
-			array('u_fullname','u_avatar_img'),
+			array('u_fullname','u_avatar_img','u_is_male'),
 			array('u_id' => $uId),
 			null, array(1)
 		);
 		if($userInfo){
 			$result =  $userInfo[0];
+            if(!$result['u_avatar_img']){
+                $result['u_avatar_img'] = $this->getNotExistsAvatar($uId, $result['u_is_male']);
+            }
 		}
+        unset($result['u_is_male']);
 		return $result;		
 	}
+
+    /**
+     * Путь к несуществующей аватарке
+     * @param  int $uid
+     * @param  boolean $sex
+     * @return string
+     *
+     * @see CommentsList::getNotExistsAvatar()
+     */
+    private function getNotExistsAvatar($uid, $sex = null){
+        $addDir = '';
+        if(!is_null($sex)){
+            $addDir = intval((bool)$sex). '/';
+        }
+        return 'uploads/avatars/auto/'.$addDir. md5($uid). '.jpg';
+    }
 
 	/**
 	 * Билдим результаты как JSON

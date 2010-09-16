@@ -192,11 +192,32 @@ class CommentsList extends DataSet
 			foreach($data as &$item){
 				$user = $usersInfo[$item['u_id']];
 				$item['u_fullname'] = $user['u_fullname'];
-				$item['u_avatar_img'] = $user['u_avatar_img'];
+                if($user['u_avatar_img']){
+				    $item['u_avatar_img'] = $user['u_avatar_img'];
+                }
+                else{
+                    $item['u_avatar_img'] = $this->getNotExistsAvatar($item['u_id'], $user['u_is_male']);
+                }
 			}
 		}
 		return $data;
 	}
+
+    /**
+     * Путь к несуществующей аватарке
+     * @param  int $uid
+     * @param  boolean $sex
+     * @return string
+     *
+     * @see CommentsForm::getNotExistsAvatar()
+     */
+    private function getNotExistsAvatar($uid, $sex = null){
+        $addDir = '';
+        if(!is_null($sex)){
+            $addDir = intval((bool)$sex). '/';
+        }
+        return 'uploads/avatars/auto/'.$addDir. md5($uid). '.jpg';
+    }
 
 	/**
 	 * Информация о юзерах оставивших комментарии

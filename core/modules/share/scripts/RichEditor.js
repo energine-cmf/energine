@@ -301,7 +301,6 @@ var RichEditor = new Class({
         //event.stop();
     },
     processPasteFF : function(event) {
-        if (this.area.getProperty('componentPath'))
             (function() {
                 this.area.innerHTML = this.cleanMarkup(this.area
                         .getProperty('componentPath'),

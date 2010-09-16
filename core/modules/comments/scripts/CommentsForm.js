@@ -11,6 +11,7 @@ var CommentsForm = new Class({
         this.form.getElement('textarea').addEvent('keyup', this.countOut.bind(this))
 	},
     maxSymbol: 250,
+    trans: null, 
     validateForm: function(event) {
     	this.parent(event);
         this.cancelEvent(event); 
@@ -109,7 +110,23 @@ var CommentsForm = new Class({
         if(event.target.value.length >= this.maxSymbol){
             event.target.value = event.target.value.substr(0, this.maxSymbol)
         }
-        event.target.form.getElements('span.note span')[0].set('text', this.maxSymbol-event.target.value.length)
+        event.target.form.getElements('span.note').set('text', this.countText(this.maxSymbol-event.target.value.length))
+    },
+    countText: function(num){
+//        this.trans = ['символ', 'символа', 'символiв', 'Залишилось']
+        if(!this.trans){
+            var div = $$('div.comments')[0]
+            this.trans = [div.get('comment_symbol1'),div.get('comment_symbol2'),div.get('comment_symbol3'),div.get('comment_remain')]
+        }
+        var symbol = this.trans[1];
+        if(num.toString().length > 1)
+            var c1 = num.toString().substring(num.toString().length - 2, 1);
+        if(num.toString().length > 0)
+            var c2 = num.toString().substring(num.toString().length - 1);
+        if(c1==1 || c2==0 || (c1!=1 && c2>4)) symbol = this.trans[2];
+        if(c2==1) symbol = this.trans[0];
+
+        return this.trans[3] + ' ' + num +' ' + symbol;
     }
 })
 	

@@ -169,6 +169,15 @@ class CommentsForm extends DataSet {
 			$f = new Field('target_id');
 			$f->setData($targetId);
 			$this->getData()->addField($f);
+
+            // добавляем переводы для формы
+            $this->addTranslation('COMMENTS'); // коментирии
+            $this->addTranslation('COMMENT_DO'); // коментировать
+            $this->addTranslation('COMMENT_DO_NEWS'); // коментировать новость
+            $this->addTranslation('COMMENT_REMAIN'); // осталось
+            $this->addTranslation('COMMENT_SYMBOL1'); // символ
+            $this->addTranslation('COMMENT_SYMBOL2'); // символа
+            $this->addTranslation('COMMENT_SYMBOL3'); // символов
 		}
 		else {
 			$this->disable();

@@ -108,6 +108,9 @@
                     });
         		</script>
                 <xsl:apply-templates select="document/translations"/>
+                <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
+                    <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
+                </xsl:if>
         	</head>
         	<body>
         		<xsl:apply-templates select="document"/>

@@ -170,6 +170,13 @@ final class Document extends DBWorker {
 	    if(($verifyCode = $this->getConfigValue('google.verify')) && !empty($verifyCode)){
 	    	$this->setProperty('google_verify', $verifyCode);
 	    }
+        if(($this->getRights() != ACCESS_FULL) && ($analyticsCode = $this->getConfigValue('google.analytics')) && !empty($analyticsCode)){
+	    	if ($analyticsCode instanceof SimpleXMLElement){
+                $analyticsCode = $analyticsCode->children();
+                $analyticsCode = $analyticsCode[0]->asXML();
+            }
+            $this->setProperty('google_analytics', $analyticsCode);
+	    }
 	    unset($verifyCode);
     }
 

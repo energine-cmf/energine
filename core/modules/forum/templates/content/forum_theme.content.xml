@@ -16,7 +16,8 @@
             <param name="title">TXT_ANSWER</param>
 		    <param name="show_comments">1</param>
 		    <param name="show_form">1</param>
-
+            <param name="is_tree">0</param>
+            <param name="recordsPerPage">20</param>
 		</params>
 	</component>
     </container>

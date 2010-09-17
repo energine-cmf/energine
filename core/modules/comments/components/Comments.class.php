@@ -95,7 +95,7 @@ class Comments extends DBWorker
 	 * @param mixed $targetIds int|int[]
 	 * @return array
 	 */
-	public function getListByIds($targetIds){
+	public function getListByIds($targetIds, $limitArr=null){
 		if(!$targetIds)
 			return array();
 			
@@ -106,12 +106,20 @@ class Comments extends DBWorker
 		else{
 			$cond = 'target_id = '. intval($targetIds);
 		}
-		
+
+        if($limitArr){
+            $limit = 'limit '. implode(',', $limitArr);
+        }
+        else{
+            $limit = '';
+        }
+
 		$comments = $this->dbh->selectRequest(
 			"SELECT * 
 			 FROM {$this->commentTable}
 			 WHERE $cond
-			 ORDER BY comment_created"
+			 ORDER BY comment_created
+			 $limit"
 		);
 		return $comments;
 	}

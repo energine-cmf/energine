@@ -42,9 +42,16 @@ class CommentsList extends DataSet
     private $loadedData = null;
 
     /**
-     * @var CommentsHelper
+     * @var Comments
      */
     protected $comments = null;
+
+    private $commentsFieldName = '';
+
+    /**
+     * @var Component
+     */
+    private $bindComponent = null;
 
     /**
      * Конструктор
@@ -144,7 +151,18 @@ class CommentsList extends DataSet
         else{
             $builder = parent::createBuilder();
         }
-        return $builder;
+        $this->builder = $builder;
+        return $this->builder;
+    }
+
+    /**
+     * Создаём педжер только один раз
+     * @return void
+     */
+    protected function createPager() {
+       if(!$this->pager){
+           parent::createPager();
+       }
     }
 
     /**
@@ -154,11 +172,15 @@ class CommentsList extends DataSet
      */
     protected function loadData(){
         if(is_null($this->loadedData)){
-            $this->loadedData =  $this->comments->getListByIds($this->targetIds);
-            $this->loadedData = $this->addUsersInfo($this->loadedData);
+            $this->createPager();
 
-            // количество комментариев
-            $this->setProperty('comment_count', is_array($this->loadedData)?count($this->loadedData):0);
+            $limitArr = null;
+            if(!$this->isTree and $this->pager) {
+                // pager существует -- загружаем только часть данных, текущую страницу
+                $limitArr = $this->pager->getLimit();
+            }
+            $this->loadedData = $this->comments->getListByIds($this->targetIds, $limitArr);
+            $this->loadedData = $this->addUsersInfo($this->loadedData);
         }
         return $this->loadedData;
     }
@@ -172,8 +194,10 @@ class CommentsList extends DataSet
             parent::defineParams(),
             array(
                 'table_name' => '',
-                'is_tree' => 1,
+                'is_tree' => 0,
                 'target_ids' => array(),
+                'bind' => '',
+                'commentsFieldName' => 'comments',
             )
         );
     }
@@ -245,6 +269,86 @@ class CommentsList extends DataSet
 			}
 		}
 		return $result;
+	}
+
+    /**
+     * Если задан связаный компонент (параметер bind)
+     * то добавляем ему поле comments (имя задаётся параметром commentsFieldName)
+     *
+     * @return void
+     */
+    protected function main(){
+        parent::main();
+
+        if($this->getParam('bind')){
+            $this->bindComponent = $this->document->componentManager->getBlockByName($this->getParam('bind'));
+            $this->createAndAddField(
+                $this->bindComponent->getDataDescription(),
+                $this->bindComponent->getData(),
+                $this->targetIds,
+                $this->getParam('commentsFieldName')
+            );
+        }
+    }
+
+    /**
+	 * Получить комментарии, сбилдить и встроить как поле $fieldName в Data и DataDescription
+	 *
+	 * @param DataDescription $desc
+	 * @param Data $data
+	 * @param mixed $targetIds int|int[] айдишники комментируемых сущностей
+	 * @param string $fieldName имя поля в Dom
+	 * @return void
+	 */
+	public function createAndAddField(DataDescription $desc, Data $data, $targetIds, $fieldName='comments'){
+		$desc->addFieldDescription($this->createFieldDescription($fieldName));
+		$data->addField($this->createField($targetIds));
+	}
+
+    /**
+	 * Описание поля коментариев
+	 *
+	 * @param string $fieldName
+	 * @return FieldDescription
+	 */
+	protected function createFieldDescription($fieldName=''){
+		if($fieldName){
+			$this->commentsFieldName = $fieldName;
+		}
+		$fd = new FieldDescription($this->commentsFieldName);
+		$fd->setSystemType(FieldDescription::FIELD_TYPE_CUSTOM);
+		return $fd;
+	}
+
+	/**
+	 * Извлекаем комментарии и помещаем в Field
+	 *
+	 * @param mixed $targetIds int|int[]
+	 * @return Field
+	 */
+	protected function createField($targetIds){
+		 $f = new Field($this->commentsFieldName);
+		 $f->setRowProperty(0, 'is_tree', (bool)$this->isTree);
+		 $f->setRowProperty(0, 'is_editable', (int)AuthUser::getInstance()->isAuthenticated());
+
+		 $data = $this->getBuildedListByIds($targetIds);
+
+		 $f->setData($data);
+
+         // количество комментариев
+         $f->setRowProperty(0, 'comment_count', is_array($this->loadedData) ? count($this->loadedData) : 0);
+		 return $f;
+	}
+
+    /**
+	 *
+	 * @param mixed $targetIds int|int[]
+	 * @return  DOMNode
+	 */
+	public function getBuildedListByIds($targetIds){
+        $this->loadData();
+        $this->build();
+        return $this->builder->getResult();
 	}
 }
 

@@ -142,7 +142,7 @@ class CommentsForm extends DataSet {
 		$result = array_merge(parent::defineParams(), array(
 	        'comment_tables' => '',
 			'active'         => true,
-			'is_tree'		 => 1,
+			'is_tree'		 => 0,
 		    'bind'           => false,
             'show_comments'  => false,
             'show_form'      => false,
@@ -359,11 +359,15 @@ class CommentsForm extends DataSet {
         $commentsParams = array(
             'table_name' => $this->targetTable,
             'is_tree' => $this->getParam('is_tree'),
+            'bind' => $this->getParam('bind'),
+            'recordsPerPage' => $this->getParam('recordsPerPage'),
             'target_ids' => $this->bindComponent->getData()->getFieldByName($priFieldName)->getData()
         );
 
+        $this->setProperty('bind', $this->getParam('bind'));
+
+        /** @var $commentsList CommentsList */
         $commentsList = $this->document->componentManager->createComponent('commentsList', 'comments', 'CommentsList', $commentsParams);
         $commentsList->run();
-        $this->document->componentManager->addComponent($commentsList);
     }
 }

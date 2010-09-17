@@ -115,8 +115,7 @@ var CommentsForm = new Class({
     countText: function(num){
 //        this.trans = ['символ', 'символа', 'символiв', 'Залишилось']
         if(!this.trans){
-            var div = $$('div.comments')[0]
-            this.trans = [div.get('comment_symbol1'),div.get('comment_symbol2'),div.get('comment_symbol3'),div.get('comment_remain')]
+            this.trans = [this.form.get('comment_symbol1'), this.form.get('comment_symbol2'), this.form.get('comment_symbol3'),this.form.get('comment_remain')]
         }
         var symbol = this.trans[1];
         if(num.toString().length > 1)

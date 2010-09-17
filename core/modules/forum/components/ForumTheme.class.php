@@ -95,16 +95,6 @@ class ForumTheme extends DBDataSet {
     protected function view() {
         $this->addPropertyCurrUser();
         parent::view();
-
-        // добавляем комментарии
-        if (
-        $comments = CommentsHelper::createInstanceFor($this->getTableName())) {
-            $comments->createAndAddField(
-                $this->getDataDescription(),
-                $this->getData(),
-                $this->getData()->getFieldByName('theme_id')->getData()
-            );
-        }
     }
 
     protected function loadData() {

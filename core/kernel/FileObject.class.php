@@ -50,9 +50,9 @@ class FileObject extends FileSystemObject {
 		if (!file_exists($path)) {
 			throw new SystemException('ERR_DEV_NO_FILE', SystemException::ERR_DEVELOPER, $path);
 		}
-		if (!is_writeable($path)) {
+		/*if (!is_writeable($path)) {
 			throw new SystemException('ERR_DEV_UPLOADS_FILE_NOT_WRITABLE', SystemException::ERR_DEVELOPER, $path);
-		}
+		}*/
 
 		$result = new FileObject();
 		$result->load($path);
@@ -157,6 +157,7 @@ class FileObject extends FileSystemObject {
             $newName = $data['upl_path'];
         }
         $this->moveToUploads($data['upl_path'], $newName);
+        $data['upl_path'] = $newName;
 		$this->insert($data);
 		/*
 		if((FileInfo::getInstance()->analyze($sourceFileName)->type == FileInfo::META_TYPE_IMAGE) && $this->getConfigValue('thumbnails')){

@@ -152,7 +152,7 @@ abstract class FileSystemObject extends DBWorker {
      */
 
     public function delete() {
-        $this->dbh->modify(QAL::DELETE, self::TABLE_NAME, null, array('upl_path'=>$this->getPath()));
+        $this->dbh->modify(QAL::DELETE, self::TABLE_NAME, null, array('upl_id'=>$this->id));
     }
 
     /**

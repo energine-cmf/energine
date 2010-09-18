@@ -67,6 +67,9 @@
                 <translation const="FORUM_EDIT_THEME"/>
                 <translation const="FORUM_DELETE_THEME"/>
                 <translation const="FORUM_CREATE_THEME"/>
+                <translation const="TITLE_GENDER"/>
+                <translation const="TITLE_PLACE"/>
+                <translation const="BTN_CITE"/>
             </translations>
         </method>
         <method name="main">

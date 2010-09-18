@@ -39,14 +39,16 @@ class ForumTheme extends DBDataSet {
     private function loadThemeBySmapid($smapId, array $limit = null) {
         $limitStr = $limit ? 'LIMIT ' . implode(',', $limit) : '';
         $sql =
-                'SELECT t.*, c.comment_created, c.comment_name, u.u_id,
-                IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_name) u_name,
-                u.u_avatar_img
-            FROM forum_theme t
-                LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id
-                LEFT JOIN user_users u ON u.u_id = c.u_id
-            WHERE t.smap_id = %s
-        ';
+                'SELECT t.*, c.comment_created, c.comment_name, u.u_id, '.
+                ' IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_name, '.
+                ' u.u_avatar_img, '.
+                ' CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, '.
+                ' u.u_place '.
+            ' FROM forum_theme t '.
+                ' LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id '.
+                ' LEFT JOIN user_users u ON u.u_id = c.u_id '.
+            'WHERE t.smap_id = %s';
+
         return $this->dbh->selectRequest($sql, $smapId);
     }
 
@@ -104,13 +106,14 @@ class ForumTheme extends DBDataSet {
             list($themeId) = $themeId;
             $data = $this->loadTheme($themeId);
         }
-        if ($this->getAction() == 'main') {
+        elseif ($this->getAction() == 'main') {
             $smapId = $this->document->getID();
             $data = $this->loadThemeBySmapid($smapId);
         }
         else {
             $data = parent::loadData();
         }
+        //inspect($data);
         return $data;
     }
 
@@ -120,19 +123,18 @@ class ForumTheme extends DBDataSet {
      * @return array|bool
      */
     private function loadTheme($themeId) {
-        $langId = Language::getInstance()->getCurrent();
-        $sql = 'SELECT t.*, c.comment_created, c.comment_name,
-            st.smap_name category_name,
-            u.u_id,
-            IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_name) u_name,
-            u.u_avatar_img
+        $sql = 'SELECT t.*, st.smap_name category_name,
+            IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) AS u_name,'.
+            ' CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, '.
+            ' u.u_place, '.                
+            ' u.u_avatar_img
         FROM forum_theme t
             JOIN share_sitemap_translation  st ON st.smap_id = t.smap_id
-            LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id
-            LEFT JOIN user_users u ON u.u_id = c.u_id
-        WHERE t.theme_id = %s and st.lang_id = %s
+            LEFT JOIN user_users u ON u.u_id = t.u_id
+        WHERE t.theme_id = %s AND st.lang_id = %s
         ';
-        return $this->dbh->selectRequest($sql, $themeId, $langId);
+        $result = $this->dbh->selectRequest($sql, $themeId, $this->document->getLang());
+        return $result;
     }
 
     /**
@@ -148,6 +150,8 @@ class ForumTheme extends DBDataSet {
             'comment_created' => FieldDescription::FIELD_TYPE_DATETIME,
             'comment_name' => FieldDescription::FIELD_TYPE_TEXT,
             'u_name' => FieldDescription::FIELD_TYPE_STRING,
+            'u_place' => FieldDescription::FIELD_TYPE_STRING,
+            'u_sex' => FieldDescription::FIELD_TYPE_STRING,
             'u_avatar_img' => FieldDescription::FIELD_TYPE_IMAGE,
         );
 

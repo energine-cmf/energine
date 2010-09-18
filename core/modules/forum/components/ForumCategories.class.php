@@ -48,23 +48,28 @@ class ForumCategories extends PageList {
 
     protected function loadData() {
         $result = parent::loadData();
-        foreach($result as $smapID => $smapInfo){
-            $categoryInfo = $this->dbh->selectRequest('
-                SELECT COUNT(ft.theme_id) as theme_count, SUM(comment_num) as comment_count,'.
-                    ' CASE WHEN ft.comment_id IS NULL THEN ut.u_nick ELSE uc.u_nick END as nick,'.
-                    ' CASE WHEN ft.comment_id IS NULL THEN ft.theme_created ELSE ftc.comment_created END as comment_created'.
-                    ' FROM forum_theme ft'.
-                    ' LEFT JOIN forum_theme_comment ftc ON ft.comment_id=ftc.comment_id '.
-                    ' LEFT JOIN user_users uc ON uc.u_id = ftc.u_id '.
-                    ' LEFT JOIN user_users ut ON ut.u_id = ft.u_id '.
-                    ' WHERE smap_id = %s', $smapID);
+        if (is_array($result) && !empty($result)) {
+            $smapIDs = array_keys($result);
+            $categoryInfo = convertDBResult($this->dbh->selectRequest('
+                SELECT smap_id, COUNT(ft.theme_id) as theme_count, SUM(comment_num) as comment_count,' .
+                    ' CASE WHEN ft.comment_id IS NULL THEN ut.u_nick ELSE uc.u_nick END as nick,' .
+                    ' CASE WHEN ft.comment_id IS NULL THEN ft.theme_created ELSE ftc.comment_created END as comment_created' .
+                    ' FROM forum_theme ft' .
+                    ' LEFT JOIN forum_theme_comment ftc ON ft.comment_id=ftc.comment_id ' .
+                    ' LEFT JOIN user_users uc ON uc.u_id = ftc.u_id ' .
+                    ' LEFT JOIN user_users ut ON ut.u_id = ft.u_id ' .
+                    ' WHERE smap_id IN (' . implode(',', $smapIDs) . ')' .
+                    ' GROUP BY smap_id'), 'smap_id', true);
 
-            $result[$smapID]['ThemeCount'] = simplifyDBResult($categoryInfo, 'theme_count',true);
-            $result[$smapID]['CommentCount'] = simplifyDBResult($categoryInfo, 'comment_count',true);
-            $result[$smapID]['CommentCreated'] = simplifyDBResult($categoryInfo, 'comment_created',true);
-            $result[$smapID]['Nick'] = simplifyDBResult($categoryInfo, 'nick',true);
+            foreach($smapIDs as $smapID){
+                if(isset($categoryInfo[$smapID])){
+                    $result[$smapID]['ThemeCount'] = $categoryInfo[$smapID]['theme_count'];
+                    $result[$smapID]['CommentCount'] = $categoryInfo[$smapID]['comment_count'];
+                    $result[$smapID]['CommentCreated'] = $categoryInfo[$smapID]['comment_created'];
+                    $result[$smapID]['Nick'] = $categoryInfo[$smapID]['nick'];
+                }
+            }
         }
-//inspect($result);
         return $result;
     }
 }

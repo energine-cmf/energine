@@ -15,7 +15,6 @@
             <field name="CommentCount" type="string"/>
             <field name="Nick" type="string"/>
             <field name="CommentCreated" type="datetime" outputFormat="%E"/>
-            <field name="attachments"/>
             <field name="DescriptionRtf" type="string"/>
         </fields>
 		</method>

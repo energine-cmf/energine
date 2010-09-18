@@ -17,22 +17,9 @@
  */
 class ForumCategories extends PageList {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param Document $document
-     * @param array $params
-     * @access public
-     */
-    public function __construct($name, $module, Document $document, array $params = null) {
-        parent::__construct($name, $module, $document, $params);
-    }
-
-    /**
      * Значения параметров выставлены
      *
-     * @return int
+     * @return array
      * @access protected
      */
 
@@ -62,12 +49,14 @@ class ForumCategories extends PageList {
                     ' GROUP BY smap_id'), 'smap_id', true);
 
             foreach($smapIDs as $smapID){
-                if(isset($categoryInfo[$smapID])){
-                    $result[$smapID]['ThemeCount'] = $categoryInfo[$smapID]['theme_count'];
-                    $result[$smapID]['CommentCount'] = $categoryInfo[$smapID]['comment_count'];
-                    $result[$smapID]['CommentCreated'] = $categoryInfo[$smapID]['comment_created'];
-                    $result[$smapID]['Nick'] = $categoryInfo[$smapID]['nick'];
+                if(!isset($categoryInfo[$smapID])){
+                    $categoryInfo[$smapID]['theme_count'] = $categoryInfo[$smapID]['comment_count'] = 0;
+                    $categoryInfo[$smapID]['comment_created'] = $categoryInfo[$smapID]['nick'] = '';
                 }
+                $result[$smapID]['ThemeCount'] = $categoryInfo[$smapID]['theme_count'];
+                $result[$smapID]['CommentCount'] = $categoryInfo[$smapID]['comment_count'];
+                $result[$smapID]['CommentCreated'] = $categoryInfo[$smapID]['comment_created'];
+                $result[$smapID]['Nick'] = $categoryInfo[$smapID]['nick'];
             }
         }
         return $result;

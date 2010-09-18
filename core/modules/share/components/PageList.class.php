@@ -55,7 +55,7 @@ class PageList extends DataSet {
      * site - идентфиикатор сайта
      * recursive - рекурсивно
      *
-     * @return int
+     * @return array
      * @access protected
      */
 
@@ -81,7 +81,6 @@ class PageList extends DataSet {
         $siteFD = new FieldDescription('Site');
         $siteFD->setType(FieldDescription::FIELD_TYPE_STRING);
         $this->getDataDescription()->addFieldDescription($siteFD);
-
         if ($this->getDataDescription()->getFieldDescriptionByName('attachments')) {
             $this->getDataDescription()->addFieldDescription(AttachmentManager::getInstance()->createFieldDescription());
             if (!$this->getData()->isEmpty()) {

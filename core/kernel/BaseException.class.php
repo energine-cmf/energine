@@ -138,9 +138,11 @@ class BaseException extends Exception {
         }
         elseif ($code == self::ERR_403) {
         	$this->response->setStatus(403);
+            $message = DBWorker::_translate($message, Language::getInstance()->getCurrent());
         }
         elseif ($code == self::ERR_404) {
         	$this->response->setStatus(404);
+            $message = DBWorker::_translate($message, Language::getInstance()->getCurrent());
         }
         elseif ($code != self::ERR_DB ) {
             $message = DBWorker::_translate($message, Language::getInstance()->getCurrent());
@@ -231,9 +233,9 @@ class BaseException extends Exception {
 	 * @return void
 	 */
     public function handle() {
-        if (!in_array($this->getCode(), array(self::ERR_403, self::ERR_404, self::ERR_NOTICE, self::ERR_WARNING)) && !$this->isDebugEnabled) {
+        /*if (!in_array($this->getCode(), array(self::ERR_403, self::ERR_404, self::ERR_NOTICE, self::ERR_WARNING)) && !$this->isDebugEnabled) {
             $this->sendNotification();
-        }
+        }*/
 
         $this->build();
 

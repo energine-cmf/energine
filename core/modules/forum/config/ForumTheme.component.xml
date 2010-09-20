@@ -51,6 +51,7 @@
 
         <method name="view">
              <uri_patterns>
+                 <pattern>/[themeID]/page-[pageNumber]</pattern>
                  <pattern>/[themeID]/</pattern>
              </uri_patterns>
             <fields>

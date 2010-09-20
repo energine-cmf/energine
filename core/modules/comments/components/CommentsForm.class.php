@@ -214,6 +214,8 @@ class CommentsForm extends DataSet {
         }
         else $userSex = $this->translate('TXT_UNKNOWN');
 
+        $userPlace = array_shift($userInfo);
+
 		$created = time();// для JSONBuilder
 		$createdStr = date('Y-m-d H:i:s', $created); // для запроса
 		
@@ -238,7 +240,8 @@ class CommentsForm extends DataSet {
 			'comment_approved' => 0,
 			'u_nick' => $userName,
 			'u_avatar_img' => $userAvatar,
-			'u_sex' => $userSex
+			'u_sex' => $userSex,
+			'u_place' => $userPlace
 		);
 	}
 
@@ -253,7 +256,7 @@ class CommentsForm extends DataSet {
 	private function getUserInfo($uId){
 		$result =  array('u_nick'=>'', 'u_avatar_img'=>'');
 		$userInfo = $this->dbh->select('user_users',
-			array('u_nick','u_avatar_img','u_is_male'),
+			array('u_nick','u_avatar_img','u_is_male, u_place'),
 			array('u_id' => $uId),
 			null, array(1)
 		);
@@ -346,6 +349,10 @@ class CommentsForm extends DataSet {
 		$dataDescription->addFieldDescription($fd);
 
         $fd = new FieldDescription('u_sex');
+		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
+		$dataDescription->addFieldDescription($fd);
+
+        $fd = new FieldDescription('u_place');
 		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
 		$dataDescription->addFieldDescription($fd);
 

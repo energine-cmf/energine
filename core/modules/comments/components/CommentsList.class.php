@@ -137,6 +137,10 @@ class CommentsList extends DataSet
 		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
 		$dataDescription->addFieldDescription($fd);
 
+        $fd = new FieldDescription('u_place');
+		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
+		$dataDescription->addFieldDescription($fd);
+
 		return $dataDescription;
     }
 
@@ -227,6 +231,7 @@ class CommentsList extends DataSet
 				$user = $usersInfo[$item['u_id']];
 				$item['u_nick'] = $user['u_nick'];
                 $item['u_sex'] = $user['u_sex'];
+                $item['u_place'] = $user['u_place'];
                 if($user['u_avatar_img']){
 				    $item['u_avatar_img'] = $user['u_avatar_img'];
                 }

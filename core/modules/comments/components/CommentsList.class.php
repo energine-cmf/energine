@@ -288,6 +288,11 @@ class CommentsList extends DataSet
 
         if($this->getParam('bind')){
             $this->bindComponent = $this->document->componentManager->getBlockByName($this->getParam('bind'));
+
+            if(!$this->isTree and $this->pager) {
+                $subUrl = '';
+                $this->pager->setProperty('additional_url', $subUrl);
+            }
         }
     }
 }

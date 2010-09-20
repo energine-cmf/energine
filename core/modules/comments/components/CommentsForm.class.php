@@ -194,7 +194,7 @@ class CommentsForm extends DataSet {
 	/**
 	 * Add to DB
 	 * 
-	 * Возвращает комментарий в виде массива добавив к нему два поля (u_fullname иu_avatar_img)
+	 * Возвращает комментарий в виде массива добавив к нему два поля (u_nick иu_avatar_img)
 	 * с информацией о юзере
 	 * 
 	 * @param int $targetId       Комментируемая запись
@@ -206,9 +206,14 @@ class CommentsForm extends DataSet {
 		$uId = $this->document->user->getID();
 	
 		$userInfo = $this->getUserInfo($uId);
-		$userFullName = array_shift($userInfo);
+		$userName = array_shift($userInfo);
 		$userAvatar = array_shift($userInfo);
-		
+		$userGender = array_shift($userInfo);
+        if(is_bool($userGender)){
+             $userGender = $this->translate($userGender ? 'TXT_MALE' : 'TXT_FEMALE');
+        }
+        else $userGender = '';
+
 		$created = time();// для JSONBuilder
 		$createdStr = date('Y-m-d H:i:s', $created); // для запроса
 		
@@ -231,23 +236,24 @@ class CommentsForm extends DataSet {
 			'comment_created' => $created,
 			'comment_name' => $commentName,
 			'comment_approved' => 0,
-			'u_fullname' => $userFullName,
-			'u_avatar_img' => $userAvatar
+			'u_nick' => $userName,
+			'u_avatar_img' => $userAvatar,
+			'u_gender' => $userGender
 		);
 	}
 
 	/**
 	 * Имя и аватар юзера
 	 * 
-	 * Возврвщает массив с полями 'u_fullname','u_avatar_img'
+	 * Возврвщает массив с полями 'u_nick','u_avatar_img'
 	 *
 	 * @param int $uId
 	 * @return array string[]
 	 */
 	private function getUserInfo($uId){
-		$result =  array('u_fullname'=>'', 'u_avatar_img'=>'');
+		$result =  array('u_nick'=>'', 'u_avatar_img'=>'');
 		$userInfo = $this->dbh->select('user_users',
-			array('u_fullname','u_avatar_img','u_is_male'),
+			array('u_nick','u_avatar_img','u_is_male'),
 			array('u_id' => $uId),
 			null, array(1)
 		);
@@ -257,7 +263,7 @@ class CommentsForm extends DataSet {
                 $result['u_avatar_img'] = $this->getNotExistsAvatar($uId, $result['u_is_male']);
             }
 		}
-        unset($result['u_is_male']);
+//        unset($result['u_is_male']);
 		return $result;		
 	}
 
@@ -331,12 +337,16 @@ class CommentsForm extends DataSet {
         $builder->setDataDescription($dataDescription);
         
         //добавляем поля о прокоментировавшем
-		$fd = new FieldDescription('u_fullname');
+		$fd = new FieldDescription('u_nick');
 		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
 		$dataDescription->addFieldDescription($fd);
 		
 		$fd = new FieldDescription('u_avatar_img');
 		$fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
+		$dataDescription->addFieldDescription($fd);
+
+        $fd = new FieldDescription('u_gender');
+		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
 		$dataDescription->addFieldDescription($fd);
 
         if($builder->build()){

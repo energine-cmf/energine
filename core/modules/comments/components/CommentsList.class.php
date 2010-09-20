@@ -125,7 +125,7 @@ class CommentsList extends DataSet
 		$dataDescription->addFieldDescription($fd);
 
 		// Инфа о юзере
-		$fd = new FieldDescription('u_fullname');
+		$fd = new FieldDescription('u_nick');
 		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
 		$dataDescription->addFieldDescription($fd);
 
@@ -221,7 +221,7 @@ class CommentsList extends DataSet
 
 			foreach($data as &$item){
 				$user = $usersInfo[$item['u_id']];
-				$item['u_fullname'] = $user['u_fullname'];
+				$item['u_nick'] = $user['u_nick'];
                 if($user['u_avatar_img']){
 				    $item['u_avatar_img'] = $user['u_avatar_img'];
                 }

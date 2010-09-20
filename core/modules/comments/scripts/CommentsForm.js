@@ -42,7 +42,7 @@ var CommentsForm = new Class({
             li.setAttribute('id', item['comment_id'] + '_comment')
             li.getElement('div.comment_text').set('html', item['comment_name'])
             li.getElement('div.comment_userpic a').grab(new Element('img', {'src':item['u_avatar_img'], 'width': 50, 'height':50}))
-            li.getElement('div.comment_username a').set('text', item['u_fullname'])
+            li.getElement('div.comment_username a').set('text', item['u_nick'])
             li.getElement('div.comment_date').set('text', item['comment_created'])
 
             if(item['is_tree'] &&  li.getElement('div.comment_inputblock')){

@@ -180,7 +180,13 @@ class CommentsList extends DataSet
                 $limitArr = $this->pager->getLimit();
             }
             $this->loadedData = $this->comments->getListByIds($this->targetIds, $limitArr);
+            if($this->pager and $limitArr){
+                $this->setType(self::COMPONENT_TYPE_LIST);
+                $this->pager->setRecordsCount($this->comments->getCountByLastList());
+            }
             $this->loadedData = $this->addUsersInfo($this->loadedData);
+
+            $this->setProperty('comment_count', is_array($this->loadedData) ? count($this->loadedData) : 0);
         }
         return $this->loadedData;
     }
@@ -282,73 +288,7 @@ class CommentsList extends DataSet
 
         if($this->getParam('bind')){
             $this->bindComponent = $this->document->componentManager->getBlockByName($this->getParam('bind'));
-            $this->createAndAddField(
-                $this->bindComponent->getDataDescription(),
-                $this->bindComponent->getData(),
-                $this->targetIds,
-                $this->getParam('commentsFieldName')
-            );
         }
     }
-
-    /**
-	 * Получить комментарии, сбилдить и встроить как поле $fieldName в Data и DataDescription
-	 *
-	 * @param DataDescription $desc
-	 * @param Data $data
-	 * @param mixed $targetIds int|int[] айдишники комментируемых сущностей
-	 * @param string $fieldName имя поля в Dom
-	 * @return void
-	 */
-	public function createAndAddField(DataDescription $desc, Data $data, $targetIds, $fieldName='comments'){
-		$desc->addFieldDescription($this->createFieldDescription($fieldName));
-		$data->addField($this->createField($targetIds));
-	}
-
-    /**
-	 * Описание поля коментариев
-	 *
-	 * @param string $fieldName
-	 * @return FieldDescription
-	 */
-	protected function createFieldDescription($fieldName=''){
-		if($fieldName){
-			$this->commentsFieldName = $fieldName;
-		}
-		$fd = new FieldDescription($this->commentsFieldName);
-		$fd->setSystemType(FieldDescription::FIELD_TYPE_CUSTOM);
-		return $fd;
-	}
-
-	/**
-	 * Извлекаем комментарии и помещаем в Field
-	 *
-	 * @param mixed $targetIds int|int[]
-	 * @return Field
-	 */
-	protected function createField($targetIds){
-		 $f = new Field($this->commentsFieldName);
-		 $f->setRowProperty(0, 'is_tree', (bool)$this->isTree);
-		 $f->setRowProperty(0, 'is_editable', (int)AuthUser::getInstance()->isAuthenticated());
-
-		 $data = $this->getBuildedListByIds($targetIds);
-
-		 $f->setData($data);
-
-         // количество комментариев
-         $f->setRowProperty(0, 'comment_count', is_array($this->loadedData) ? count($this->loadedData) : 0);
-		 return $f;
-	}
-
-    /**
-	 *
-	 * @param mixed $targetIds int|int[]
-	 * @return  DOMNode
-	 */
-	public function getBuildedListByIds($targetIds){
-        $this->loadData();
-        $this->build();
-        return $this->builder->getResult();
-	}
 }
 

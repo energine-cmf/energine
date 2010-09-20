@@ -369,5 +369,6 @@ class CommentsForm extends DataSet {
         /** @var $commentsList CommentsList */
         $commentsList = $this->document->componentManager->createComponent('commentsList', 'comments', 'CommentsList', $commentsParams);
         $commentsList->run();
+        $this->document->componentManager->addComponent($commentsList);
     }
 }

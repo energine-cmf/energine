@@ -57,6 +57,12 @@ class Comments extends DBWorker
 	 * @var bool
 	 */
 	protected $isTree = false;
+
+    /**
+     *
+     * @var int
+     */
+    protected $countLastList = null;
 	
 	/**
 	 * 
@@ -91,7 +97,10 @@ class Comments extends DBWorker
 	}
 	
 	/**
-	 * 
+	 * Список комментариев
+     *
+     * @see Comments::getCountByLastList()
+     *
 	 * @param mixed $targetIds int|int[]
 	 * @return array
 	 */
@@ -114,18 +123,48 @@ class Comments extends DBWorker
             $limit = '';
         }
 
-		$comments = $this->dbh->selectRequest(
-			"SELECT * 
-			 FROM {$this->commentTable}
-			 WHERE $cond
-			 ORDER BY comment_created
-			 $limit"
-		);
+        if($limit){
+            $comments = $this->dbh->selectRequest(
+                "SELECT SQL_CALC_FOUND_ROWS *
+                 FROM {$this->commentTable}
+                 WHERE $cond
+                 ORDER BY comment_created
+                 $limit"
+            );
+            if(is_array($this->countLastList = $this->dbh->selectRequest('SELECT FOUND_ROWS() as c'))){
+                list($this->countLastList) = $this->countLastList;
+                $this->countLastList = $this->countLastList['c'];
+            }
+            else $this->countLastList = 0;
+        }
+        else{
+            $comments = $this->dbh->selectRequest(
+                "SELECT *
+                 FROM {$this->commentTable}
+                 WHERE $cond
+                 ORDER BY comment_created
+                 $limit"
+            );
+            $this->countLastList = null;
+        }
 		return $comments;
 	}
 
+    /**
+     * Результат SELECT FOUND_ROWS() после getListByIds() с лимитом
+     *
+     * поле запроса без лимита возвращает null
+     * @see Comments::getListByIds()
+     * @return int|null
+     */
+    public function getCountByLastList(){
+        return $this->countLastList;
+    }
+
 	/**
 	 * Количество комментариев
+     *
+     * Для получения количества коментов после запроса с лимитом @see Comments::getCountByLastList()
 	 * 
 	 * @param mixed $targetIds int|int[]
 	 * @param bool $singleRow Возвращать ли лишь первый результат как int, 

@@ -40,7 +40,7 @@ class ForumTheme extends DBDataSet {
         $limitStr = $limit ? 'LIMIT ' . implode(',', $limit) : '';
         $sql =
                 'SELECT t.*, c.comment_created, c.comment_name, u.u_id, '.
-                ' IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_name, '.
+                ' u.u_nick, '.
                 ' u.u_avatar_img, '.
                 ' CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, '.
                 ' u.u_place '.
@@ -113,7 +113,6 @@ class ForumTheme extends DBDataSet {
         else {
             $data = parent::loadData();
         }
-        //inspect($data);
         return $data;
     }
 
@@ -124,9 +123,9 @@ class ForumTheme extends DBDataSet {
      */
     private function loadTheme($themeId) {
         $sql = 'SELECT t.*, st.smap_name category_name,
-            IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) AS u_name,'.
+            u_nick,'.
             ' CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, '.
-            ' u.u_place, '.                
+            ' u.u_place, '.
             ' u.u_avatar_img
         FROM forum_theme t
             JOIN share_sitemap_translation  st ON st.smap_id = t.smap_id
@@ -149,7 +148,7 @@ class ForumTheme extends DBDataSet {
 //            'comment_id' =>     FieldDescription::FIELD_TYPE_INT,
             'comment_created' => FieldDescription::FIELD_TYPE_DATETIME,
             'comment_name' => FieldDescription::FIELD_TYPE_TEXT,
-            'u_name' => FieldDescription::FIELD_TYPE_STRING,
+            'u_nick' => FieldDescription::FIELD_TYPE_STRING,
             'u_place' => FieldDescription::FIELD_TYPE_STRING,
             'u_sex' => FieldDescription::FIELD_TYPE_STRING,
             'u_avatar_img' => FieldDescription::FIELD_TYPE_IMAGE,

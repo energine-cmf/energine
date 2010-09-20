@@ -213,7 +213,6 @@ class CommentsForm extends DataSet {
              $userSex = $this->translate($userSex ? 'TXT_MALE' : 'TXT_FEMALE');
         }
         else $userSex = $this->translate('TXT_UNKNOWN');
-        $userSex = $this->translate('TITLE_GENDER'). ': '.  $userSex;
 
 		$created = time();// для JSONBuilder
 		$createdStr = date('Y-m-d H:i:s', $created); // для запроса

@@ -133,6 +133,10 @@ class CommentsList extends DataSet
 		$fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
 		$dataDescription->addFieldDescription($fd);
 
+        $fd = new FieldDescription('u_sex');
+		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
+		$dataDescription->addFieldDescription($fd);
+
 		return $dataDescription;
     }
 
@@ -222,6 +226,7 @@ class CommentsList extends DataSet
 			foreach($data as &$item){
 				$user = $usersInfo[$item['u_id']];
 				$item['u_nick'] = $user['u_nick'];
+                $item['u_sex'] = $user['u_sex'];
                 if($user['u_avatar_img']){
 				    $item['u_avatar_img'] = $user['u_avatar_img'];
                 }
@@ -268,9 +273,10 @@ class CommentsList extends DataSet
 			if($userIds){
 				$userIds = implode(',', $userIds);
 				$result = $this->dbh->selectRequest(
-					"SELECT *
-					 FROM user_users
-					 WHERE u_id in($userIds)"
+					'SELECT u.*, '.
+                    ' CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex '.
+					" FROM user_users u
+					 WHERE u.u_id in($userIds)"
 				);
 			}
 		}

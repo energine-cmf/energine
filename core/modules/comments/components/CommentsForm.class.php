@@ -268,7 +268,7 @@ class CommentsForm extends DataSet {
     private function getUserInfo($uId) {
         $result = array('u_nick' => '', 'u_avatar_img' => '');
         $userInfo = $this->dbh->select('user_users',
-            array('u_nick', 'u_avatar_img', 'u_is_male, u_place'),
+            array('u_nick', 'u_avatar_img', 'u_is_male, u_place','u_fullname'),
             array('u_id' => $uId),
             null, array(1)
         );
@@ -278,8 +278,11 @@ class CommentsForm extends DataSet {
                 $result['u_avatar_img'] =
                         $this->getNotExistsAvatar($uId, $result['u_is_male']);
             }
+            if(!$result['u_nick']){
+                $result['u_nick'] = $result['u_fullname'];
+            }
+            unset($result['u_fullname']);
         }
-//        unset($result['u_is_male']);
         return $result;
     }
 

@@ -229,7 +229,7 @@ class CommentsList extends DataSet
 
 			foreach($data as &$item){
 				$user = $usersInfo[$item['u_id']];
-				$item['u_nick'] = $user['u_nick'];
+				$item['u_nick'] = trim($user['u_nick']) ? trim($user['u_nick']) : $user['u_fullname'];
                 $item['u_sex'] = $user['u_sex'];
                 $item['u_place'] = $user['u_place'];
                 if($user['u_avatar_img']){

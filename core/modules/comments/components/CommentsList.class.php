@@ -70,7 +70,7 @@ class CommentsList extends DataSet
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
         $this->setProperty('exttype', 'comments');
-        $this->setProperty('type', 'list');
+        $this->setType(self::COMPONENT_TYPE_LIST);
 
         $commentTable = $this->dbh->tableExists($this->getParam('table_name'). '_comment');
 
@@ -301,7 +301,11 @@ class CommentsList extends DataSet
             $this->bindComponent = $this->document->componentManager->getBlockByName($this->getParam('bind'));
 
             if(!$this->isTree and $this->pager) {
+                $ap = $this->bindComponent->getActionParams(true);
                 $subUrl = '';
+                if(isset($ap['themeID'])){
+                    $subUrl = $ap['themeID'].'/';
+                }
                 $this->pager->setProperty('additional_url', $subUrl);
             }
         }

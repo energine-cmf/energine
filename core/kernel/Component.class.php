@@ -612,4 +612,8 @@ class Component extends DBWorker implements Block {
         return $this->actionParams;
 
     }
+
+    public function addActionParam($paramName, $paramValue){
+        $this->actionParams[$paramName] = $paramValue;
+    }
 }

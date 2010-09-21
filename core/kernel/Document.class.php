@@ -275,7 +275,7 @@ final class Document extends DBWorker {
                 );
                 }
                         catch(Exception $e){
-                            stop($e->getTraceAsString());
+                            //stop($e->getTraceAsString());
                 }
                 if ($dom_errors) {
                     $componentResult->insertBefore($dom_errors, $componentResult->firstChild);

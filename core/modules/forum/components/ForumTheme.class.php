@@ -40,7 +40,7 @@ class ForumTheme extends DBDataSet {
         $limitStr = $limit ? 'LIMIT ' . implode(',', $limit) : '';
         $sql =
                 'SELECT t.*, c.comment_created, c.comment_name, u.u_id, '.
-                ' u.u_nick, '.
+                ' IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_nick, '.
                 ' u.u_avatar_img, '.
                 ' CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, '.
                 ' u.u_place '.
@@ -123,7 +123,7 @@ class ForumTheme extends DBDataSet {
      */
     private function loadTheme($themeId) {
         $sql = 'SELECT t.*, st.smap_name category_name,
-            u_nick,'.
+            IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_nick , '.
             ' CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, '.
             ' u.u_place, '.
             ' u.u_avatar_img

@@ -20,7 +20,7 @@
         	<head>
                 <title><xsl:call-template name="build_title"/></title>
         		<base href="{$BASE}"/>
-                <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+                <link rel="shortcut icon" href="{$BASE}images/favicon.ico" type="image/x-icon"/>
         		<xsl:choose>
             		<xsl:when test="not($DOC_PROPS[@name='single'])">
             		    <xsl:call-template name="stylesheets"/>

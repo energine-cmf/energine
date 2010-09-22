@@ -69,5 +69,6 @@ img {
 
 /* дерево подразделов в модальном окне */
 .e-divtree-select {
+	padding: 1px 0;
     font: 12px Tahoma, sans-serif;
 }

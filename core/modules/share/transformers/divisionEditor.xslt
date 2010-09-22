@@ -13,20 +13,7 @@
                     Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="." disable-output-escaping="yes"/>');
                 </xsl:for-each>
             </script>
-    </xsl:template>    
-    
-    <xsl:template match="component[@class='DivisionEditor'][parent::content]">
-        <form method="post" action="{@action}" class="div_editor_form">
-            <!--<script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
-
-            <xsl:if test="descendant::field[@type='textbox']">
-                <script type="text/javascript" src="scripts/TextboxList.js"></script>
-            </xsl:if>            
-            -->
-            <input type="hidden" name="componentAction" value="{@componentAction}"/>
-            <xsl:apply-templates/>
-        </form>
-    </xsl:template>    
+    </xsl:template>
     
     <!-- вывод дерева разделов -->
     <xsl:template match="recordset[parent::component[javascript/object/@name='DivManager'][@class='DivisionEditor'][@type='list']]">
@@ -44,9 +31,10 @@
                 </ul>
             </div>
             <div class="e-pane-content">
-                <div id="{$TAB_ID}">
-                    <xsl:apply-templates select="$COMPONENTS[@class='SiteList']" mode="insideEditor"/>
-                    <div id="treeContainer" class="e-divtree-select"></div>
+                <div id="{$TAB_ID}">                    
+                    <div id="treeContainer" class="e-divtree-select">
+                        <xsl:apply-templates select="$COMPONENTS[@class='SiteList']" mode="insideEditor"/>
+                    </div>
                 </div>
             </div>
             <xsl:if test="../toolbar">

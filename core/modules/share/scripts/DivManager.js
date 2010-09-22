@@ -22,6 +22,11 @@ var DivManager = new Class({
         this.singlePath = this.element.getProperty('single_template');
         this.site = this.element.getProperty('site');    
         this.loadTree();
+
+		/* вешаем пересчет размеров формы на ресайз окна */
+        if(!(document.getElement('.e-singlemode-layout'))){    		
+        	window.addEvent('resize', this.fitTreeFormSize.bind(this));        	
+    	}
     },
 
     attachToolbar: function(toolbar) {
@@ -50,9 +55,20 @@ var DivManager = new Class({
             'languageID='+this.langId,
             function(response) {
                 this.buildTree(response.data, (response.current)?response.current:null);
+				
+				/* растягиваем всю форму до высоты видимого окна */			    
+				if(!(document.getElement('.e-singlemode-layout'))){					
+					this.pane = this.element;
+					this.paneContent = this.pane.getElement('.e-pane-item');
+					this.treeContainer = this.pane.getElement('.e-divtree-select');
+					this.minPaneHeight = 300;
+					this.fitTreeFormSize();
+					new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
+				}
             }.bind(this)
-        );
+        );		
     },
+
     buildTree: function(nodes, currentNodeID) {
         var treeInfo = {};
         for (var i = 0, len = nodes.length; i < len; i++) {
@@ -103,6 +119,25 @@ var DivManager = new Class({
         this.tree.expandToNode(currentNodeID);
         if(this.tree.getNodeById(currentNodeID))
             this.tree.getNodeById(currentNodeID).select();
+    },
+
+	fitTreeFormSize: function() {		
+    	var windowHeight = window.getSize().y - 10;		
+    	var paneHeight = this.pane.getSize().y;
+    	var treeContainerHeight = this.treeContainer.getSize().y;		
+    	var paneContentHeight = this.paneContent.getSize().y - 22;    	
+    	var paneOthersHeight = paneHeight - paneContentHeight;    	
+    	if(windowHeight > this.minPaneHeight){
+    		if((treeContainerHeight + paneOthersHeight) > windowHeight){    				
+    			this.pane.setStyle('height', windowHeight);    			
+    		}
+    		else {
+    			this.pane.setStyle('height', treeContainerHeight + paneOthersHeight);    			
+    		}    		
+    	}
+    	else {
+    		this.pane.setStyle('height', this.minPaneHeight);    		
+    	}
     },
 
     reload: function(really) {

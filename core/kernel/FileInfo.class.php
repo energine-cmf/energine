@@ -75,39 +75,61 @@ class FileInfo extends Singleton {
               $result['mime'] = 'unknown/mime-type';
           }
           else*/
-        $result['type'] = self::META_TYPE_UNKNOWN;
-        $result['mime'] = 'unknown/mime-type';
-
-        if (is_dir($filename)) {
-            $result['type'] = self::META_TYPE_FOLDER;
-            $result['mime'] = 'unknown/mime-type';
+        $data = array();
+        $data['upl_internal_type'] = $result['type'] = self::META_TYPE_UNKNOWN;
+        $data['upl_mime_type'] = $result['mime'] = 'unknown/mime-type';
+        $fileInfo =
+                $this->dbh->select('share_uploads', array('upl_internal_type as type', 'upl_mime_type as mime', 'upl_width as width', 'upl_height as height'), array('upl_path' => $filename));
+        if (is_array($fileInfo) && !empty($fileInfo) && $fileInfo[0]['type']) {
+            list($fileInfo) = $fileInfo;
+                //Если есть информация в этом поле значит уже обращались к нему
+                $result = array_filter($fileInfo);
         }
         else {
             try {
-                switch ($result['mime'] = $this->getMimeType($filename)) {
-                    case 'image/jpeg':
-                    case 'image/png':
-                    case 'image/gif':
-                        $tmp = getimagesize($filename);
-                        $result['type'] = self::META_TYPE_IMAGE;
-                        $result['width'] = $tmp[0];
-                        $result['height'] = $tmp[1];
-                        break;
-                    case 'video/x-flv':
-                        $result['type'] = self::META_TYPE_VIDEO;
-                        break;
-                    case 'text/csv':
-                        $result['type'] = self::META_TYPE_TEXT;
-                        break;
-                    case 'application/zip':
-                        $result['type'] = self::META_TYPE_ZIP;
-                        break;
-                    default:
-                        $result['type'] = self::META_TYPE_UNKNOWN;
-                        break;
+                if (is_dir($filename)) {
+                    $data['upl_internal_type'] =
+                            $result['type'] = self::META_TYPE_FOLDER;
+                    $data['upl_mime_type'] =
+                            $result['mime'] = 'unknown/mime-type';
+                }
+                else {
+                    switch (
+                    $data['upl_mime_type'] = $result['mime'] =
+                            $this->getMimeType($filename)) {
+                        case 'image/jpeg':
+                        case 'image/png':
+                        case 'image/gif':
+                            $tmp = getimagesize($filename);
+                            $data['upl_internal_type'] =
+                                    $result['type'] = self::META_TYPE_IMAGE;
+                            $data['upl_width'] = $result['width'] = $tmp[0];
+                            $data['upl_height'] =
+                                    $result['height'] = $tmp[1];
+                            break;
+                        case 'video/x-flv':
+                            $data['upl_internal_type'] =
+                                    $result['type'] = self::META_TYPE_VIDEO;
+                            break;
+                        case 'text/csv':
+                            $data['upl_internal_type'] =
+                                    $result['type'] = self::META_TYPE_TEXT;
+                            break;
+                        case 'application/zip':
+                            $data['upl_internal_type'] =
+                                    $result['type'] = self::META_TYPE_ZIP;
+                            break;
+                        default:
+                            $data['upl_internal_type'] = $result['type'] =
+                                    self::META_TYPE_UNKNOWN;
+                            break;
+                    }
+                    //stop($data);
+                    $this->dbh->modify(QAL::UPDATE, 'share_uploads', $data, array('upl_path' => $filename));
                 }
             }
             catch (Exception $e) {
+
             }
 
         }

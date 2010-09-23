@@ -94,6 +94,7 @@
 				<field name="lang_id"/>
                 <field name="site_id" type="hidden"/>
                 <field name="back_id"/>
+                <field name="mini_id"/>
 				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
 				<field name="smap_layout"/>
                 <field name="smap_content"/>				
@@ -134,6 +135,7 @@
 				<field name="lang_id"/>
                 <field name="site_id" type="hidden"/>
                 <field name="back_id"/>
+                <field name="mini_id"/>
 				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
                 <field name="smap_layout"/>
                 <field name="smap_content"/>

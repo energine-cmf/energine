@@ -359,7 +359,12 @@ final class Sitemap extends DBWorker {
 
 		$groups = array_combine($groups, $groups);
 
-		return max(array_intersect_key($this->cacheAccessLevels[$docID], $groups));
+        $result = 0;
+        if(isset($this->cacheAccessLevels[$docID])){
+            $result = max(array_intersect_key($this->cacheAccessLevels[$docID], $groups));
+        }
+        
+		return $result;
 	}
 
 	/**

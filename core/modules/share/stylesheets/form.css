@@ -90,13 +90,13 @@ form select {
 	background: #eeeedd;
 	font-weight: bold;
 }
-.table_data table td.section_name {
-    text-align: left;
+.table_data table tr.section_name {
+    font-weight:bold;
+    background-color:#E3E9FF;
 }
 .table_data table td.group_name, .table_data table .even td.group_name {
 	background: #eeeedd;
 	text-align: left;
-	font-weight: bold;	
 }
 .table_data table td select {
     font: 11px Tahoma, sans-serif;

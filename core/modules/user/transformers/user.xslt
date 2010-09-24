@@ -97,12 +97,12 @@
                             </xsl:for-each>
                         </tr>
                     </thead>
-                    <tbody>
+
                         <xsl:call-template name="BUILD_DIV_TREE">
                             <xsl:with-param name="DATA" select="recordset"/>
                             <xsl:with-param name="LEVEL" select="0"/>
                         </xsl:call-template>
-                    </tbody>
+                    
                 </table>
            </div>
     </xsl:template>
@@ -111,9 +111,15 @@
         <xsl:param name="DATA"/>
         <xsl:param name="LEVEL"/>
         <xsl:for-each select="$DATA/record">
+            <xsl:if test="$DATA/parent::field">
+                <xsl:text disable-output-escaping="yes">&lt;tbody&gt;</xsl:text>
+            </xsl:if>
             <xsl:if test="$LEVEL=0">
-                <tr>
-                    <td colspan="5" class="section_name"><xsl:value-of select="field[@name='Site']"/></td>
+                <tr class="section_name">
+                    <td><xsl:value-of select="field[@name='Site']"/></td>
+                    <xsl:for-each select="field[@name='RightsId']/options/option">
+                        <td class="col_{position()}"><input type="radio" class="groupRadio" name=""></input></td>    
+                    </xsl:for-each>
                 </tr>
             </xsl:if>
             <tr>
@@ -122,19 +128,26 @@
                 </xsl:if>
                 <td class="group_name" style="padding-left:{$LEVEL*20 + 5}px;"><xsl:value-of select="field[@name='Name']"/></td>
                 <xsl:for-each select="field[@name='RightsId']/options/option">
-                    <td><input type="radio" style="width:auto; border:0;" name="div_right[{../../../field[@name='Id']}]" value="{@id}">
+                    <td class="col_{position()}"><input type="radio" style="width:auto; border:0;" name="div_right[{../../../field[@name='Id']}]" value="{@id}">
                         <xsl:if test="@selected">
                             <xsl:attribute name="checked">checked</xsl:attribute>    
+                        </xsl:if>
+                        <xsl:if test="../../@mode=1">
+                            <xsl:attribute name="disabled">disabled</xsl:attribute>
                         </xsl:if>
                     </input></td>
                 </xsl:for-each>
             </tr>
+
             <xsl:if test="recordset">
                 <xsl:call-template name="BUILD_DIV_TREE">
                     <xsl:with-param name="DATA" select="recordset"/>
                     <xsl:with-param name="LEVEL" select="$LEVEL+1"/>
                 </xsl:call-template>
             </xsl:if>
+                 <xsl:if test="$DATA/parent::field">
+                    <xsl:text disable-output-escaping="yes">&lt;/tbody&gt;</xsl:text>
+                </xsl:if>
         </xsl:for-each>
     </xsl:template>
     <!-- /компонент RoleEditor -->

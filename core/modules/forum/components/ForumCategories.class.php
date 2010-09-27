@@ -42,12 +42,12 @@ class ForumCategories extends PageList {
                     ' CASE WHEN ft.comment_id IS NULL THEN ut.u_nick ELSE uc.u_nick END as nick,' .
                     ' CASE WHEN ft.comment_id IS NULL THEN ft.theme_created ELSE ftc.comment_created END as comment_created' .
                     ' FROM forum_theme ft' .
-                    ' LEFT JOIN forum_theme_comment ftc ON ft.comment_id=ftc.comment_id ' .
+                    ' LEFT JOIN forum_theme_comment ftc USING(comment_id) ' .
                     ' LEFT JOIN user_users uc ON uc.u_id = ftc.u_id ' .
                     ' LEFT JOIN user_users ut ON ut.u_id = ft.u_id ' .
                     ' WHERE smap_id IN (' . implode(',', $smapIDs) . ')' .
-                    ' GROUP BY smap_id'), 'smap_id', true);
-
+                    ' GROUP BY smap_id '.
+                    ' ORDER BY comment_created DESC'), 'smap_id', true);
             foreach($smapIDs as $smapID){
                 if(!isset($categoryInfo[$smapID])){
                     $categoryInfo[$smapID]['theme_count'] = $categoryInfo[$smapID]['comment_count'] = 0;

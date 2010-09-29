@@ -26,6 +26,7 @@ class ForumTheme extends DBDataSet {
      */
     public function __construct($name, $module, Document $document, array $params = null) {
         $params['active'] = true;
+        $params['recordsPerPage'] = 20;
         parent::__construct($name, $module, $document, $params);
         $this->setTableName('forum_theme');
     }
@@ -47,7 +48,9 @@ class ForumTheme extends DBDataSet {
             ' FROM forum_theme t '.
                 ' LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id '.
                 ' LEFT JOIN user_users u ON u.u_id = c.u_id '.
-            'WHERE t.smap_id = %s';
+            'WHERE t.smap_id = %s
+             ORDER BY c.comment_created DESC
+            ';
 
         return $this->dbh->selectRequest($sql, $smapId);
     }

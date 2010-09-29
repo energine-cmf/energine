@@ -79,6 +79,7 @@ class CommentsForm extends DataSet {
         $this->bindComponent =
                 $this->document->componentManager->getBlockByName($this->getParam('bind'));
         $this->isTree = $this->getParam('is_tree');
+        $this->setProperty('limit', $this->getParam('textLimit'));
     }
 
     /**
@@ -155,6 +156,7 @@ class CommentsForm extends DataSet {
             'bind' => false,
             'show_comments' => false,
             'show_form' => false,
+            'textLimit' => 250
         ));
         return $result;
     }

@@ -46,8 +46,8 @@ class ForumCategories extends PageList {
                     ' LEFT JOIN user_users uc ON uc.u_id = ftc.u_id ' .
                     ' LEFT JOIN user_users ut ON ut.u_id = ft.u_id ' .
                     ' WHERE smap_id IN (' . implode(',', $smapIDs) . ')' .
-                    ' GROUP BY smap_id '.
-                    ' ORDER BY comment_created DESC'), 'smap_id', true);
+                    ' GROUP BY smap_id '/*.
+                    ' ORDER BY comment_created DESC'*/), 'smap_id', true);
             foreach($smapIDs as $smapID){
                 if(!isset($categoryInfo[$smapID])){
                     $categoryInfo[$smapID]['theme_count'] = $categoryInfo[$smapID]['comment_count'] = 0;

@@ -27,7 +27,5 @@
      */
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
-        /*$this->setTableName('forum_theme');
-        $this->setFilter(array('smap_id' => $this->document->getID()));*/
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Содержит класс ForumСategoriesEditor
+ * Содержит класс ForumCommentsEditor
  *
  * @package energine
  * @subpackage forum
@@ -9,13 +9,13 @@
  */
 
  /**
-  * редаткор категорий
+  * Редактор комментариев форума
   *
   * @package energine
   * @subpackage forum
   * @author d.pavka@gmail.com
   */
- class ForumCategoriesEditor extends Grid {
+ class ForumCommentsEditor extends Grid {
     /**
      * Конструктор класса
      *
@@ -27,6 +27,7 @@
      */
     public function __construct($name, $module, Document $document,  array $params = null) {
         parent::__construct($name, $module, $document,  $params);
-        $this->setTableName('forum_categories');
+        $this->setTableName('forum_theme_comment');
+        $this->setOrder(array('comment_created'=>QAL::DESC));
     }
 }

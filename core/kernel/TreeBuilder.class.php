@@ -90,12 +90,16 @@ class TreeBuilder extends AbstractBuilder  {
             $num = $data[$id];
             $dom_record = $this->result->createElement('record');
             foreach ($this->dataDescription as $fieldName => $fieldDescription) {
-                $fieldValue = $this->data->getFieldByName($fieldName)->getRowData($num);
-                $fieldProperties = $this->data->getFieldByName($fieldName)->getRowProperties($num);
-                if ($fieldDescription->getType() == FieldDescription::FIELD_TYPE_SELECT ) {
-                	$fieldValue = $this->createOptions($fieldDescription, array($fieldValue));
-                }
+                $fieldProperties = array();
+                $fieldValue = '';
 
+                if($f = $this->data->getFieldByName($fieldName)){
+                    $fieldValue = $this->data->getFieldByName($fieldName)->getRowData($num);
+                    $fieldProperties = $this->data->getFieldByName($fieldName)->getRowProperties($num);
+                    if ($fieldDescription->getType() == FieldDescription::FIELD_TYPE_SELECT ) {
+                	    $fieldValue = $this->createOptions($fieldDescription, array($fieldValue));
+                    }
+                }
             	$dom_field = $this->createField($fieldName, $fieldDescription, $fieldValue, $fieldProperties);
             	$dom_record->appendChild($dom_field);
             }

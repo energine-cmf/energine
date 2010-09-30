@@ -176,9 +176,15 @@ class CommentsForm extends DataSet {
             parent::prepare();
             $this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
             //ID комментируемого элемента
-            $ap = $this->bindComponent->getActionParams();
-            //Тут костыль рассчитаный на то что идентификатор всегда идет последним параметром - не факт что это так
-            $targetId = $ap[sizeof($ap) - 1];
+            $ap = $this->bindComponent->getActionParams(true);
+            //Тут костыль
+            $apk = array_keys($ap);
+            $apName = $apk[sizeof($apk)-1];
+            if($apName == 'pageNumber'){
+                $apName = $apk[sizeof($apk)-2];
+            }
+            $targetId = $ap[$apName];
+
             $f = new Field('target_id');
             $f->setData($targetId);
             $this->getData()->addField($f);

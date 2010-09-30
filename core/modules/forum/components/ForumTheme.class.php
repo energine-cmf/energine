@@ -250,6 +250,8 @@ class ForumTheme extends DBDataSet {
 
         $this->prepare();
         $this->getDataDescription()->getFieldDescriptionByName('theme_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+
+        $this->getDataDescription()->getFieldDescriptionByName('theme_text')->setType(FieldDescription::FIELD_TYPE_HTML_BLOCK);
     }
 
     /**
@@ -283,7 +285,7 @@ class ForumTheme extends DBDataSet {
 
         $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, array('theme_id' => $themeId));
 
-        $this->response->redirectToCurrentSection("/../../");
+        $this->response->redirectToCurrentSection("/../");
     }
 
     /**

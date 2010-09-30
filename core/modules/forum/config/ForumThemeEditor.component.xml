@@ -8,9 +8,10 @@
 			<fields>
                 <field name="theme_id"/>
                 <field name="theme_created" outputFormat="%E"/>
+                <field name="smap_id"/>
                 <field name="theme_name"/>
                 <field name="u_id"/>
-                <field name="theme_closed"/>
+                <!--<field name="theme_closed"/>-->
 			</fields>
 			<toolbar>
 				<control id="add" title="BTN_ADD" type="button" onclick="add" />

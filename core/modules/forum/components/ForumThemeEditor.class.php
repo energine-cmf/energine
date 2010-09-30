@@ -29,4 +29,13 @@
         $this->setTableName('forum_theme');
         $this->setOrder(array('theme_created'=>QAL::DESC));
     }
+
+     protected function loadDataDescription(){
+         $result = parent::loadDataDescription();
+         if(in_array($this->getAction(), array('edit'))){
+             unset($result['comment_id']);
+         }
+         return $result;
+
+     }
 }

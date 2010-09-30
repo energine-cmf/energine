@@ -14,32 +14,9 @@
                 <!--<field name="theme_closed"/>-->
 			</fields>
 			<toolbar>
-				<control id="add" title="BTN_ADD" type="button" onclick="add" />
 				<control id="edit" title="BTN_EDIT" type="button" onclick="edit" />
 				<control id="delete" title="BTN_DELETE" type="button"
 					onclick="del" />
-			</toolbar>
-		</method>
-		<method name="add">
-			<uri_patterns>
-				<pattern>/add/</pattern>
-			</uri_patterns>
-			<javascript>
-				<object name="Form" />
-			</javascript>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="save" />
-				<control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
-					type="select"
-				>
-					<options>
-						<option id="close">BTN_CLOSE</option>
-						<option id="add">BTN_ADD</option>
-					</options>
-				</control>
-				<control id="sep1" type="separator" />
-				<control id="close" title="BTN_CANCEL" type="button"
-					onclick="close" />
 			</toolbar>
 		</method>
 		<method name="edit">
@@ -93,12 +70,6 @@
 			<uri_patterns>
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>
-		</method>
-        <method name="up" rights="3">
-            <uri_patterns> <pattern>/[int]/up/</pattern></uri_patterns> 
-        </method> 
-	    <method name="down" rights="3">
-			<uri_patterns> <pattern>/[int]/down/</pattern> </uri_patterns>
 		</method>
 	</methods>
 </configuration>

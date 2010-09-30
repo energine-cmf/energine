@@ -7,11 +7,9 @@
 			</javascript>
 			<fields>
                 <field name="theme_id"/>
-                <field name="category_id"/>
-                <field name="u_id"/>
+                <field name="theme_created" outputFormat="%E"/>
                 <field name="theme_name"/>
-                <field name="theme_text"/>
-                <field name="theme_created"/>
+                <field name="u_id"/>
                 <field name="theme_closed"/>
 			</fields>
 			<toolbar>

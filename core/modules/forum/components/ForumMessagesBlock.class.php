@@ -76,7 +76,7 @@ class ForumMessagesBlock extends DataSet {
     protected function loadData() {
         $result = false;
         $result = $this->dbh->selectRequest('
-            SELECT c.`comment_id`, SUBSTR(comment_name FROM 1 FOR 50) as comment_name, comment_created, theme_name, theme_id, smap_id as theme_url, u_nick as user_name
+            SELECT c.`comment_id`, SUBSTR(comment_name FROM 1 FOR 70) as comment_name, comment_created, theme_name, theme_id, smap_id as theme_url, u_nick as user_name
             FROM `forum_theme_comment` c
             LEFT JOIN forum_theme t ON c.target_id=t.theme_id
             LEFT JOIN user_users u ON c.u_id=u.u_id

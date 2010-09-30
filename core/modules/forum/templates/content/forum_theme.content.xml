@@ -2,12 +2,6 @@
 <content layout="colset1">
 
     <container name="contentContainer" rounded="rounded">
-        <component name="forumCategories" module="forum" class="ForumCategories" >
-       <!--<params>
-           <param name="recursive">1</param>
-           <param name="id">current</param>
-       </params>-->
-    </component>
 	<component name="forumTheme" module="forum" class="ForumTheme"/>
 	<component name="commentsForm" module="comments" class="CommentsForm">
 		<params>

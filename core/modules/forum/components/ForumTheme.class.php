@@ -29,6 +29,8 @@ class ForumTheme extends DBDataSet {
         $params['recordsPerPage'] = 20;
         parent::__construct($name, $module, $document, $params);
         $this->setTableName('forum_theme');
+        if(AuthUser::getInstance()->isAuthenticated())
+            $this->document->setProperty('CURRENT_UID', AuthUser::getInstance()->getID());
     }
 
     /**

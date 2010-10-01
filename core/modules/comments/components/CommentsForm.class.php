@@ -111,25 +111,39 @@ class CommentsForm extends DataSet {
                 throw new Exception('Add comment can auth user only');
             }
 
-            if (!isset($_POST['target_id']) or
-                    !($targetId = (int) $_POST['target_id']))
+            if (!isset($_POST['target_id']) or !($targetId = (int) $_POST['target_id']))
                 throw new Exception('Mistake targetId');
 
-            if (isset($_POST['comment_name']) and
-                    $commentName = trim($_POST['comment_name'])) {
+            if (isset($_POST['comment_name']) and $commentName = trim($_POST['comment_name'])) {
                 if ($this->isTree and isset($_POST['parent_id'])) {
                     $parentId = intval($_POST['parent_id']);
                 }
                 else $parentId = 0;
 
-                $comment =
-                        $this->addComment($targetId, $commentName, $parentId);
+                if(isset($_POST['comment_id']) and $commentId = intval($_POST['comment_id'])){
+                    // отредактированный коммент
+                    if(!$isUpdated = $this->updateComment($targetId, $commentName, $commentId))
+                        throw new Exception('Save error');
+                }
+                else{
+                    // новый коммент
+                    $comment = $this->addComment($targetId, $commentName, $parentId);
+                }
             }
             else {
                 throw new Exception('Comment is empty');
             }
 
-            $result = $this->buildResult(array($comment));
+            if(!empty($isUpdated)){
+                $result = json_encode(array(
+                    'result'=>true,
+                    'mode' => 'update',
+                    'data' => array('comment_name' => $commentName))
+                );   
+            }
+            else{
+                $result = $this->buildResult(array($comment));
+            }
         }
         catch (SystemException $e) {
             $message['errors'][] = array('message' =>
@@ -141,6 +155,69 @@ class CommentsForm extends DataSet {
         $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
         $this->response->write($result);
         $this->response->commit();
+    }
+
+    protected function updateComment($targetId, $commentName, $commentId){
+        // @todo add check access
+        return $this->dbh->modify(QAL::UPDATE, $this->commentTable,
+            array('comment_name' => $commentName),
+            array('comment_id' => $commentId)
+        );
+    }
+
+    protected function deleteComment() {
+        try {
+            if (!$this->getParam('show_form')) {
+                throw new Exception('Adding comments has been disabled');
+            }
+
+            if (!$this->document->user->isAuthenticated()) {
+                throw new Exception('Add comment can auth user only');
+            }
+
+            if (!isset($_POST['comment_id']) or !($commentId = (int) $_POST['comment_id']))
+                throw new Exception('Mistake arg');
+
+            $result = json_encode(array(
+                'mode' => 'delete',
+                'result' => $this->removeComment($commentId)
+            ));
+        }
+        catch (SystemException $e) {
+            $message['errors'][] = array('message' =>
+            $e->getMessage() . current($e->getCustomMessage()));
+            $result = json_encode(array_merge(
+                array('result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')),
+                $message)
+            );
+        }
+
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write($result);
+        $this->response->commit();
+    }
+
+    /**
+     * Удалить комментарий
+     *
+     * @param  int $id
+     * @return bool
+     */
+    private function removeComment($id){
+        if (!in_array('1', AuthUser::getInstance()->getGroups())) {
+            // если не админ -  проверяем авторство
+            $comments = $this->dbh->select($this->commentTable, true, array('comment_id' => $id));
+            if(!$comments){ // уже удалён
+                return true;
+            }
+            $comment = $comments[0];
+            if(AuthUser::getInstance()->getID() != $comment['u_id']){
+                // не автор - запретить!
+                return false;
+            }
+        }
+
+        return $this->dbh->modify(QAL::DELETE, $this->commentTable, null, array('comment_id' => $id));
     }
 
     /**
@@ -166,48 +243,53 @@ class CommentsForm extends DataSet {
      *
      */
     protected function prepare() {
-        if (($this->bindComponent &&
-                $this->bindComponent->getAction() == 'view') &&
-                ($this->getAction() == 'main')
-                && $this->getParam('show_form') &&
-                $this->getParam('show_comments')
-                && $this->document->user->isAuthenticated()
-                && $this->isExistsNeedTables()) {
-            parent::prepare();
-            $this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
-            //ID комментируемого элемента
-            $ap = $this->bindComponent->getActionParams(true);
-            //Тут костыль
-            $apk = array_keys($ap);
-            $apName = $apk[sizeof($apk)-1];
-            if($apName == 'pageNumber'){
-                $apName = $apk[sizeof($apk)-2];
+        if($this->getAction() == 'deleteComment'){
+            ;;
+        }
+        else{
+            if (($this->bindComponent &&
+                    $this->bindComponent->getAction() == 'view') &&
+                    ($this->getAction() == 'main')
+                    && $this->getParam('show_form') &&
+                    $this->getParam('show_comments')
+                    && $this->document->user->isAuthenticated()
+                    && $this->isExistsNeedTables()) {
+                parent::prepare();
+                $this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+                //ID комментируемого элемента
+                $ap = $this->bindComponent->getActionParams(true);
+                //Тут костыль
+                $apk = array_keys($ap);
+                $apName = $apk[sizeof($apk)-1];
+                if($apName == 'pageNumber'){
+                    $apName = $apk[sizeof($apk)-2];
+                }
+                $targetId = $ap[$apName];
+    
+                $f = new Field('target_id');
+                $f->setData($targetId);
+                $this->getData()->addField($f);
+    
+                // добавляем переводы для формы
+                $this->addTranslation('COMMENTS'); // коментирии
+                $this->addTranslation('COMMENT_DO'); // коментировать
+                $this->addTranslation('COMMENT_DO_NEWS'); // коментировать новость
+                $this->addTranslation('COMMENT_REMAIN'); // осталось
+                $this->addTranslation('COMMENT_SYMBOL1'); // символ
+                $this->addTranslation('COMMENT_SYMBOL2'); // символа
+                $this->addTranslation('COMMENT_SYMBOL3'); // символов
             }
-            $targetId = $ap[$apName];
-
-            $f = new Field('target_id');
-            $f->setData($targetId);
-            $this->getData()->addField($f);
-
-            // добавляем переводы для формы
-            $this->addTranslation('COMMENTS'); // коментирии
-            $this->addTranslation('COMMENT_DO'); // коментировать
-            $this->addTranslation('COMMENT_DO_NEWS'); // коментировать новость
-            $this->addTranslation('COMMENT_REMAIN'); // осталось
-            $this->addTranslation('COMMENT_SYMBOL1'); // символ
-            $this->addTranslation('COMMENT_SYMBOL2'); // символа
-            $this->addTranslation('COMMENT_SYMBOL3'); // символов
-        }
-        else {
-            $this->disable();
-        }
-
-        if ($this->getParam('show_comments') && $this->isExistsNeedTables() &&
-                is_object($this->bindComponent) &&
-                $this->bindComponent->getAction() == 'view'
-                && $this->bindComponent->getData() &&
-                !$this->bindComponent->getData()->isEmpty()) {
-            $this->showComments();
+            else {
+                $this->disable();
+            }
+    
+            if ($this->getParam('show_comments') && $this->isExistsNeedTables() &&
+                    is_object($this->bindComponent) &&
+                    $this->bindComponent->getAction() == 'view'
+                    && $this->bindComponent->getData() &&
+                    !$this->bindComponent->getData()->isEmpty()) {
+                $this->showComments();
+            }
         }
     }
 

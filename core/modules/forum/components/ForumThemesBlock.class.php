@@ -80,7 +80,7 @@ class ForumThemesBlock extends DataSet {
             SELECT  theme_id, theme_name, smap_id as theme_url, comment_num, SUBSTR(comment_name FROM 1 FOR 50) as comment_name , comment_created
             FROM `forum_theme` t
             LEFT JOIN forum_theme_comment c ON c.comment_id=t.comment_id
-            WHERE t.comment_id IS NOT NULL and theme_closed =0  AND c.comment_created > (NOW() - INTERVAL 2 DAY)
+            WHERE t.comment_id IS NOT NULL and theme_closed =0  AND c.comment_created > (NOW() - INTERVAL 1 DAY)
             ORDER BY comment_num DESC
             LIMIT 0, ' . $this->getParam('limit') . '
         ');

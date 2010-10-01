@@ -79,7 +79,7 @@ abstract class FileSystemObject extends DBWorker {
      * @access public
      */
 
-    public function asArray() {
+    public function asArray($from = false, $length = false) {
         $result = array(
         'upl_id'=>$this->id,
         'upl_mime_type' => FileInfo::getInstance()->analyze($this->path)->type,

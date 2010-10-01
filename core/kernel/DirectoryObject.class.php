@@ -137,7 +137,9 @@ class DirectoryObject extends FileSystemObject {
         if (!file_exists($data['upl_path'])) {
             $result = @mkdir($data['upl_path']);
         }
-
+        $data['upl_internal_type'] = FileInfo::META_TYPE_FOLDER;
+        $data['upl_mime_type'] = 'unknown/mime-type';
+        
         if ($result) {
             $this->dbh->modify(QAL::INSERT, self::TABLE_NAME, $data);
         }
@@ -212,6 +214,10 @@ class DirectoryObject extends FileSystemObject {
         return !empty($this->dirHandle) && $this->iterator<sizeof($this->files);
     }
 
+    public function getFileCount(){
+        return sizeof($this->files);    
+    }
+
     /**
      * Возвращает объект в виде массива
      * Если он не открыт, возвращается информация о самом объексте - иначе, о всех вложенных объектах
@@ -220,12 +226,15 @@ class DirectoryObject extends FileSystemObject {
      * @access public
      */
 
-    public function asArray() {
+    public function asArray($from = false, $length = false) {
         $result = array();
         if (empty($this->dirHandle)) {
             $result = parent::asArray();
         }
         else {
+            if($from && $length){
+                $this->files = array_slice($this->files, $from, $length);
+            }
         	foreach ($this->files as $file) {
         	    $data = $file->asArray();
         		$result[] = $data;

@@ -88,6 +88,7 @@ class ForumMessagesBlock extends DataSet {
         ');
         if(!empty($result) && is_array($result)){
             $result = array_map(function($row){
+                $row['comment_name'] = strip_tags($row['comment_name']);
                 $row['theme_url'] = Sitemap::getInstance()->getURLByID($row['theme_url']).$row['theme_id'].'/';
                 $row['comment_url'] = $row['theme_url'].'page-'.$row['comment_page'].'/#'.$row['comment_id'];
                 unset($row['theme_id'], $row['comment_page']);

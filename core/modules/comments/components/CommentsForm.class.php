@@ -278,6 +278,7 @@ class CommentsForm extends DataSet {
                 $this->addTranslation('COMMENT_SYMBOL1'); // символ
                 $this->addTranslation('COMMENT_SYMBOL2'); // символа
                 $this->addTranslation('COMMENT_SYMBOL3'); // символов
+                $this->addTranslation('COMMENT_REALY_REMOVE'); // Действительно удалить комментарий? 
             }
             else {
                 $this->disable();

@@ -67,7 +67,7 @@ class ForumTheme extends DBDataSet {
             $this->addDescription();
 
             if (AuthUser::getInstance()->isAuthenticated()) {
-                $this->setProperty('is_can_create_theme', 1);
+                $this->setProperty('is_can_create_theme', intval($this->document->getRights() > 1));
             }
         }
         elseif (in_array($this->getAction(), array('modify'))) {
@@ -310,7 +310,7 @@ class ForumTheme extends DBDataSet {
             if ($themeUId =
                     $this->dbh->select($this->getTableName(), 'u_id', array('theme_id' => $themeId))) {
                 if ($themeUId[0]['u_id'] == $uid) {
-                    $access = true;
+                    $access = intval($this->document->getRights() > 1);
                 }
             }
         }

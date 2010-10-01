@@ -86,8 +86,9 @@ class ForumThemesBlock extends DataSet {
         ');
         if(!empty($result) && is_array($result)){
             $result = array_map(function($row){
+                //inspect($row['theme_url']);
                 $row['comment_name'] = strip_tags($row['comment_name']);
-                $row['theme_url'] = Sitemap::getInstance()->getURLByID($row['theme_url']).$row['theme_id'].'/';
+                $row['theme_url'] = Sitemap::getInstance(SiteManager::getInstance()->getDefaultSite()->id)->getURLByID($row['theme_url']).$row['theme_id'].'/';
                 return $row;
             }, $result);
         }

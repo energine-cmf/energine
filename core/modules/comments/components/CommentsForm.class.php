@@ -158,7 +158,18 @@ class CommentsForm extends DataSet {
     }
 
     protected function updateComment($targetId, $commentName, $commentId){
-        // @todo add check access
+        if (!in_array('1', AuthUser::getInstance()->getGroups())) {
+            // если не админ -  проверяем авторство
+            $comments = $this->dbh->select($this->commentTable, true, array('comment_id' => $commentId));
+            if(!$comments){ // удалён
+                return false;
+            }
+            $comment = $comments[0];
+            if(AuthUser::getInstance()->getID() != $comment['u_id']){
+                // не автор - запретить!
+                return false;
+            }
+        }
         return $this->dbh->modify(QAL::UPDATE, $this->commentTable,
             array('comment_name' => $commentName),
             array('comment_id' => $commentId)

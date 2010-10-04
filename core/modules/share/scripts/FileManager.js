@@ -1,9 +1,9 @@
-ScriptLoader.load('TabPane', 'Toolbar', 'ModalBox', 'DirView');
+ScriptLoader.load('TabPane', 'Toolbar', 'ModalBox', 'DirView', 'PageList');
 var FILE_COOKIE_NAME = 'lastPath';
 
 var FileManager = new Class({
 	Implements: Energine.request,
-    currentFolder: false,
+    currentPath: false,
     initialized: false,
 
 	initialize: function(element){
@@ -15,7 +15,9 @@ var FileManager = new Class({
             onEdit: this.onEdit.bind(this),
             onOpen: this.open.bind(this)
         });
+        this.pageList = new PageList({ onPageSelect: this.load.bind(this) });
 
+        /*
         var path = ModalBox.getExtraData();
         if (path) {
             var index = path.lastIndexOf('/');
@@ -24,7 +26,17 @@ var FileManager = new Class({
                 return;
             }
         }
+        */
 
+        var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
+        if (toolbarContainer) {
+            toolbarContainer.adopt(this.pageList.getElement());
+            this.tabPane.element.removeClass('e-pane-has-b-toolbar1');
+            this.tabPane.element.addClass('e-pane-has-b-toolbar2');
+        }
+        else {
+            this.tabPane.element.adopt(this.pageList.getElement());
+        }
         this.load();
     },
     
@@ -40,18 +52,21 @@ var FileManager = new Class({
         toolbar.bindTo(this);
     },
 
-	load: function(path) {
+	load: function(pageNum) {
+        if(!pageNum)pageNum=1;
+        
         var cookiePath;
         this.overlay.show();
-        if (!path && (cookiePath = Cookie.read(FILE_COOKIE_NAME))) {
-            path = cookiePath;
+        if (!this.currentPath && (cookiePath = Cookie.read(FILE_COOKIE_NAME))) {
+            this.currentPath = cookiePath;
         }
-		var postBody = path ? 'path='+path+'&' : '';
+		var postBody = this.currentPath ? 'path='+this.currentPath+'&' : '';
         if (this.element.getProperty('file_type') == 'media') {
             postBody += 'onlymedia=true';
         }
+        var url = this.element.getProperty('single_template') + 'get-data/page-' + pageNum + '/';
         this.request(
-            this.element.getProperty('single_template')+'get-data',
+            url,
             postBody,
             function(response) {
                 this.overlay.hide();
@@ -59,13 +74,14 @@ var FileManager = new Class({
                     this.viewWidget.setMetadata(response.meta);
                     this.initialized = true;
                 }
+                this.pageList.build(response.pager.count, response.pager.current);
                 this.viewWidget.setData(response.data || []);
                 if (typeof response.currentDirectory != 'undefined') {
-                    this.currentFolder = response.currentDirectory;
-                    this.tabPane.setTabTitle(this.currentFolder);
+                    this.currentPath = response.currentDirectory;
+                    this.tabPane.setTabTitle(this.currentPath);
                 }
 				this.viewWidget.build();				
-				Cookie.write(FILE_COOKIE_NAME, path?path:'', {path:new URI(Energine.base).get('directory'), duration:1});
+				Cookie.write(FILE_COOKIE_NAME, this.currentPath?this.currentPath:'', {path:new URI(Energine.base).get('directory'), duration:1});
             }.bind(this)
         );        
 	},
@@ -91,7 +107,7 @@ var FileManager = new Class({
     },
 
     onActionComplete: function(entryChanged) {
-        if (entryChanged) this.load(this.currentFolder);
+        if (entryChanged) this.load();
     },
 
     onEdit: function() {
@@ -109,7 +125,8 @@ var FileManager = new Class({
 	open: function() {
 	    var item = this.viewWidget.getSelectedItem();
 	    if (item.obj['upl_mime_type'] == 'folder') {
-            this.load(this.viewWidget.getSelectedItem().obj['upl_path']);
+            this.currentPath = this.viewWidget.getSelectedItem().obj['upl_path'];
+            this.load();
 	    }
 	    else {
 	        this.insert();
@@ -120,7 +137,7 @@ var FileManager = new Class({
         ModalBox.open({
             url: this.element.getProperty('single_template')+'add-dir',
             onClose: this.onActionComplete.bind(this),
-            extraData: this.currentFolder
+            extraData: this.currentPath
         });
     },
 
@@ -136,7 +153,7 @@ var FileManager = new Class({
         ModalBox.open({
             url: this.element.getProperty('single_template')+'add',
             onClose: this.onActionComplete.bind(this),
-            extraData: this.currentFolder
+            extraData: this.currentPath
         });
     },
 
@@ -160,7 +177,7 @@ var FileManager = new Class({
 		ModalBox.open({
             url: this.element.getProperty('single_template')+'upload-zip',
             onClose: this.onActionComplete.bind(this),
-            extraData: this.currentFolder
+            extraData: this.currentPath
         });
     }
 });

@@ -47,7 +47,7 @@ final class FileLibrary extends DataSet {
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->setTitle($this->translate('TXT_'.strtoupper($this->getName())));
         //Отключили pager
-        $this->setParam('recordsPerPage', false);
+        //$this->setParam('recordsPerPage', false);
 
         if (!isset($_POST['path']) || empty($_POST['path'])) {
             $path = $this->getParam('base');
@@ -115,17 +115,20 @@ final class FileLibrary extends DataSet {
         if ($this->getAction() == 'getRawData') {
             $result = array();
             if ($this->uploadsDir->getPath() != $this->getParam('base')) {
-                $result = $this->uploadsDir->asArray();
+                $result = call_user_func_array(array($this->uploadsDir, 'asArray'), $this->pager->getLimit());
                 $result['upl_path'] = dirname($result['upl_path']);
                 $result['upl_name'] = '...';
             }
+            //inspect($result);
             $this->uploadsDir->open();
-
+            if($this->pager){
+                $this->pager->setRecordsCount($this->uploadsDir->getFileCount());
+            }
             if (!empty($result)) {
-                $result = array_merge(array($result), $this->uploadsDir->asArray());
+                $result = array_merge(array($result), call_user_func_array(array($this->uploadsDir, 'asArray'), $this->pager->getLimit()));
             }
             else {
-            	$result = $this->uploadsDir->asArray();
+            	$result = call_user_func_array(array($this->uploadsDir, 'asArray'), $this->pager->getLimit());
             }
 
             $result = array_map(array($this, 'addClass'), $result);
@@ -175,13 +178,14 @@ final class FileLibrary extends DataSet {
         try {
             $this->config->setCurrentMethod(self::DEFAULT_ACTION_NAME);
             $this->setBuilder(new JSONUploadBuilder());
-
-
             $this->setDataDescription($this->createDataDescription());
             $this->getBuilder()->setDataDescription($this->getDataDescription());
             $this->getBuilder()->setCurrentDir($this->uploadsDir->getPath());
 
+            $this->createPager();
             $data = $this->createData();
+            $this->getBuilder()->setPager($this->pager);
+            
             if ($data instanceof Data) {
                 $this->setData($data);
                 $this->getBuilder()->setData($this->getData());

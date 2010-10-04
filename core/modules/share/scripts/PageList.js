@@ -8,6 +8,7 @@ var PageList = new Class({
         Asset.css('pagelist.css');
         this.setOptions(options);
         this.element = new Element('ul').addClass('e-pane-toolbar e-pagelist').setProperty('unselectable', 'on');
+        this.currentPage = 1;
     },
 
     getElement: function() {

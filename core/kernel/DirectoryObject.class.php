@@ -54,13 +54,13 @@ class DirectoryObject extends FileSystemObject {
     }
 
     /**
-	 * Статический метод загрузки возвращающий self
-	 *
-	 * @param string путь к файлу
-	 * @return DirectoryObject
-	 * @access public
-	 * @static
-	 */
+     * Статический метод загрузки возвращающий self
+     *
+     * @param string путь к файлу
+     * @return DirectoryObject
+     * @access public
+     * @static
+     */
 
     public static function loadFrom($path) {
         if (!file_exists($path) || !is_dir($path)) {
@@ -75,15 +75,15 @@ class DirectoryObject extends FileSystemObject {
     }
 
     /**
-	 * Деструктор закрывает открытый ресурс
-	 *
-	 * @return void
-	 * @access public
-	 */
+     * Деструктор закрывает открытый ресурс
+     *
+     * @return void
+     * @access public
+     */
 
     public function __destruct() {
         if (!empty($this->dirHandle)) {
-        	closedir($this->dirHandle);
+            closedir($this->dirHandle);
         }
     }
 
@@ -100,13 +100,15 @@ class DirectoryObject extends FileSystemObject {
         }
         while (false !== ($fileName = readdir($this->dirHandle))) {
             if (substr($fileName, 0, 1) != '.') {
-                $fullPath = $this->getPath().'/'.$fileName;
+                $fullPath = $this->getPath() . '/' . $fileName;
 
-                if (isset($_POST['onlymedia']) && !in_array(FileInfo::getInstance()->analyze($fullPath)->type, array(FileInfo::META_TYPE_IMAGE, FileInfo::META_TYPE_FOLDER, FileInfo::META_TYPE_VIDEO))) {
+                if (isset($_POST['onlymedia']) &&
+                        !in_array(FileInfo::getInstance()->analyze($fullPath)->type, array(FileInfo::META_TYPE_IMAGE, FileInfo::META_TYPE_FOLDER, FileInfo::META_TYPE_VIDEO))) {
                     //dummy
                 }
                 else {
-                    $this->files[] = (is_dir($fullPath))?DirectoryObject::loadFrom($fullPath):FileObject::loadFrom($fullPath);
+                    $this->files[] =
+                            (is_dir($fullPath)) ? DirectoryObject::loadFrom($fullPath) : FileObject::loadFrom($fullPath);
                     //inspect($this->files);
                 }
             }
@@ -124,13 +126,15 @@ class DirectoryObject extends FileSystemObject {
     public function create($data) {
         $result = false;
         if (!isset($data[self::TABLE_NAME])) {
-        	throw new SystemException('ERR_DEV_INSUFFICIENT_DATA', SystemException::ERR_DEVELOPER);
+            throw new SystemException('ERR_DEV_INSUFFICIENT_DATA', SystemException::ERR_DEVELOPER);
         }
 
-        if(!isset($data[self::TABLE_NAME]['upl_path'])){
-			$data[self::TABLE_NAME]['upl_path'] = Translit::transliterate($data[self::TABLE_NAME]['upl_name'], '_', true);
-		}
-        $data[self::TABLE_NAME]['upl_path'] = $data['path'].'/'.$data[self::TABLE_NAME]['upl_path'];
+        if (!isset($data[self::TABLE_NAME]['upl_path'])) {
+            $data[self::TABLE_NAME]['upl_path'] =
+                    Translit::transliterate($data[self::TABLE_NAME]['upl_name'], '_', true);
+        }
+        $data[self::TABLE_NAME]['upl_path'] =
+                $data['path'] . '/' . $data[self::TABLE_NAME]['upl_path'];
         unset($data['path']);
         $data = $data[self::TABLE_NAME];
 
@@ -139,7 +143,7 @@ class DirectoryObject extends FileSystemObject {
         }
         $data['upl_internal_type'] = FileInfo::META_TYPE_FOLDER;
         $data['upl_mime_type'] = 'unknown/mime-type';
-        
+
         if ($result) {
             $this->dbh->modify(QAL::INSERT, self::TABLE_NAME, $data);
         }
@@ -211,17 +215,24 @@ class DirectoryObject extends FileSystemObject {
      */
 
     public function valid() {
-        return !empty($this->dirHandle) && $this->iterator<sizeof($this->files);
+        return !empty($this->dirHandle) &&
+                $this->iterator < sizeof($this->files);
     }
-
-    public function getFileCount(){
-        return sizeof($this->files);    
+    /**
+     * Возвращает количество файлов в текущей директории
+     *
+     * @return int количество файлов в текущей директории
+     */
+    public function getFileCount() {
+        return sizeof($this->files);
     }
 
     /**
      * Возвращает объект в виде массива
      * Если он не открыт, возвращается информация о самом объексте - иначе, о всех вложенных объектах
      *
+     * @param $from int | boolean
+     * @param $length int | boolean
      * @return array
      * @access public
      */
@@ -232,27 +243,34 @@ class DirectoryObject extends FileSystemObject {
             $result = parent::asArray();
         }
         else {
-            if($from && $length){
-                $this->files = array_slice($this->files, $from, $length);
+            $directories = $files = array();
+            //Разбиваем отдельно на массив директорий и массив файлов
+
+            foreach ($this->files as $file) {
+                $data = $file->asArray();
+                if($data['upl_mime_type'] == 'folder'){
+                    $directories[] = $data;
+                }
+                else {
+                    $files[] = $data;
+                }
             }
-        	foreach ($this->files as $file) {
-        	    $data = $file->asArray();
-        		$result[] = $data;
-        	}
-        	usort($result, array($this, 'sortFileNames'));
+            //Функция сортироваки по имени
+            $cmpFunc = function($current, $next) {
+                return strcasecmp($current['upl_name'], $next['upl_name']);
+            };
+            //Сортируем по имени оба массива
+            usort($directories, $cmpFunc);usort($files, $cmpFunc);
+
+            //Мержим вместе
+            $result = array_merge($directories, $files);
+            //Если заданы параметры пейджинга  - обрезаем массив до нужных размеров
+            if ($from !== false && $length !== false) {
+                $result = array_slice($result, $from, $length);
+            }
         }
         return $result;
     }
 
-    /**
-     * Сортировка содержимого папки по алфавиту
-     *
-     * @return int
-     * @access private
-     */
-
-    private function sortFileNames($current, $next) {
-        return strcasecmp($current['upl_name'], $next['upl_name']);
-    }
 }
 

@@ -104,7 +104,9 @@ final class CalendarObject extends Object implements Iterator {
                 // либо это последний день выводимого месяца
                 if((($date->format('d') == $lastDayOfMonth) and ($date->format('n') == $monthID))
                     // либо уже следующий месяц
-                    or ($date->format('n') > $monthID))
+                    or ($date->format('n') > $monthID)
+                    // либо уже следующий год
+                    or ($date->format('n') < $monthID))
                         break;
 
             $date = clone $date;

@@ -136,12 +136,14 @@ final class CalendarObject extends Object implements Iterator {
 	
 	/**
 	 * Возвращает данные о начальной и конечной датах текущего календаря
+     *
+     * $this->calendar - список недель, из последней берём седьмой день
 	 * 
 	 * @return Object
 	 * @access public
 	 */
 	public function getRange(){
-	    return (object)array('start' => $this->calendar[0][0]->getDate(), 'end' => $this->calendar[4][6]->getDate());
+	    return (object)array('start' => $this->calendar[0][0]->getDate(), 'end' => $this->calendar[count($this->calendar)-1][6]->getDate());
 	}
 	
 	

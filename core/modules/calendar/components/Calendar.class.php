@@ -92,17 +92,22 @@
     protected function createData(){
         $result = new Data();
         $cal = $this->getCalendar();
-        for($i = 0; $i < 7; $i++) {
-        	$f = new Field('DOW_'.$i);
-        	for ($row = 0; $row < 5; $row++) {
-        		$ci = $cal->getItemByIndex($row, $i);
-        		$f->setRowData($row, $ci);
-        		foreach ($ci as $propertyName => $propertyValue) {
-        			$f->setRowProperty($row, $propertyName, $propertyValue);
-        		}
-        	}
-        	$result->addField($f);
+
+        $fields = array();
+        for($i=0; $i<7; $i++) $fields[$i] = new Field('DOW_'.$i);
+        foreach ($this->calendar as $row=>$rowItems){
+            for($i = 0; $i < 7; $i++) {
+                if($ci = $cal->getItemByIndex($row, $i)){
+                    $fields[$i]->setRowData($row, $ci);
+                    foreach ($ci as $propertyName => $propertyValue) {
+                        $fields[$i]->setRowProperty($row, $propertyName, $propertyValue);
+                    }
+                }
+            }
         }
+        array_map(function($f) use($result) {$result->addField($f);},
+            $fields
+        );
         return $result;
     }
     

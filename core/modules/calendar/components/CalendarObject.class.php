@@ -85,23 +85,31 @@ final class CalendarObject extends Object implements Iterator {
 			$firstDayOfCalendar->modify('last Monday');
 		}
 		$date = clone $firstDayOfCalendar;
-        
-		        
-		for ($row = 0; $row < 5; $row ++){
-			for ($day = 0; $day < 7; $day ++){
-				$ci = new CalendarItem($date);
-				if((int)$date->format('n') == (int)$this->firstDayOfPeriod->format('n')){
-					$ci->setProperty('current', 'current');
-				}
-				if($date == $this->today) {
-					$ci->setProperty('today', 'today');
-				}
-				$this->calendar[$row][$day] = $ci;
-				$this->index[$date->format('Y-m-d')] = array($row, $day);
-				$date = clone $date;
-				$date->modify('+1 day');
-			}
-		}
+
+        $lastDayOfMonth = $this->firstDayOfPeriod->format('t');
+        for($go=true,$i=0; true; $i++){
+            $row = floor($i/7); $day = floor($i%7);
+
+            $ci = new CalendarItem($date);
+            if((int)$date->format('n') == (int)$this->firstDayOfPeriod->format('n')){
+                $ci->setProperty('current', 'current');
+            }
+            if($date == $this->today) {
+                $ci->setProperty('today', 'today');
+            }
+            $this->calendar[$row][$day] = $ci;
+            $this->index[$date->format('Y-m-d')] = array($row, $day);
+            // цикл заканчивается в последний день недели
+            if($date->format('w') == 0)
+                // либо это последний день выводимого месяца
+                if((($date->format('d') == $lastDayOfMonth) and ($date->format('n') == $monthID))
+                    // либо уже следующий месяц
+                    or ($date->format('n') > $monthID))
+                        break;
+
+            $date = clone $date;
+            $date->modify('+1 day');
+        }
 	}
 	
 	/**

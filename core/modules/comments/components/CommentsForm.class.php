@@ -263,10 +263,9 @@ class CommentsForm extends DataSet {
                     ($this->getAction() == 'main')
                     && $this->getParam('show_form') &&
                     $this->getParam('show_comments')
-                    && $this->document->user->isAuthenticated()
                     && $this->isExistsNeedTables()) {
                 parent::prepare();
-                $this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+
                 //ID комментируемого элемента
                 $ap = $this->bindComponent->getActionParams(true);
                 //Тут костыль
@@ -276,20 +275,28 @@ class CommentsForm extends DataSet {
                     $apName = $apk[sizeof($apk)-2];
                 }
                 $targetId = $ap[$apName];
-    
-                $f = new Field('target_id');
-                $f->setData($targetId);
-                $this->getData()->addField($f);
-    
-                // добавляем переводы для формы
-                $this->addTranslation('COMMENTS'); // коментирии
-                $this->addTranslation('COMMENT_DO'); // коментировать
-                $this->addTranslation('COMMENT_DO_NEWS'); // коментировать новость
-                $this->addTranslation('COMMENT_REMAIN'); // осталось
-                $this->addTranslation('COMMENT_SYMBOL1'); // символ
-                $this->addTranslation('COMMENT_SYMBOL2'); // символа
-                $this->addTranslation('COMMENT_SYMBOL3'); // символов
-                $this->addTranslation('COMMENT_REALY_REMOVE'); // Действительно удалить комментарий? 
+
+                if($this->document->user->isAuthenticated()){
+                    $this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+                    
+                    $f = new Field('target_id');
+                    $f->setData($targetId);
+                    $this->getData()->addField($f);
+
+                    // добавляем переводы для формы
+                    $this->addTranslation('COMMENTS'); // коментирии
+                    $this->addTranslation('COMMENT_DO'); // коментировать
+                    $this->addTranslation('COMMENT_DO_NEWS'); // коментировать новость
+                    $this->addTranslation('COMMENT_REMAIN'); // осталось
+                    $this->addTranslation('COMMENT_SYMBOL1'); // символ
+                    $this->addTranslation('COMMENT_SYMBOL2'); // символа
+                    $this->addTranslation('COMMENT_SYMBOL3'); // символов
+                    $this->addTranslation('COMMENT_REALY_REMOVE'); // Действительно удалить комментарий?
+                }
+                else{
+                    // форма нужна только для вывода списка комментариев
+                    $this->setProperty('hide_form', 1);
+                }
             }
             else {
                 $this->disable();

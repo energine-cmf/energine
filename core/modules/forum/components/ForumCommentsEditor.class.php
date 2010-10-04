@@ -17,6 +17,11 @@
  */
 class ForumCommentsEditor extends Grid {
     /**
+     * @var ForumThemeEditor
+     */
+    private $themeEditor;
+
+    /**
      * Конструктор класса
      *
      * @param string $name
@@ -31,13 +36,59 @@ class ForumCommentsEditor extends Grid {
         $this->setOrder(array('comment_created' => QAL::DESC));
     }
 
-    protected function loadDataDescription(){
+    protected function loadDataDescription() {
         $result = parent::loadDataDescription();
-        if($this->getAction() == 'edit'){
+        if ($this->getAction() == 'edit') {
             unset($result['comment_parent_id']);
+            $result['u_id']['key'] = false;
+            $result['u_id']['type'] = QAL::COLTYPE_STRING;
+            $result['target_id']['key'] = false;
         }
         return $result;
     }
 
-    
+    protected function prepare() {
+        parent::prepare();
+        if($this->getAction() !== 'getRawData' && $this->getAction() != 'main'){
+        $UIDFD = $this->getDataDescription()->getFieldDescriptionByName('u_id');
+        $UIDFD->setMode(1);
+        $UIDFD->removeProperty('tableName');
+
+        $UID = $this->getData()->getFieldByName('u_id');
+        $UID->setRowData(0,
+            simplifyDBResult(
+                $this->dbh->select(
+                    'user_users',
+                    'u_fullname',
+                    array('u_id' => $UID->getRowData(0))
+                ),
+                'u_fullname',
+                true));
+        }
+    }
+
+    protected function edit() {
+        parent::edit();
+    }
+
+    protected function showThemeEditor() {
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->themeEditor =
+                $this->document->componentManager->createComponent('themeEditor', 'forum', 'ForumThemeEditor', null);
+        $this->themeEditor->run();
+    }
+
+    public function build() {
+        switch ($this->getAction()) {
+            case 'showThemeEditor':
+                $result = $this->themeEditor->build();
+                break;
+            default:
+                $result = parent::build();
+        }
+
+        return $result;
+    }
+
+
 }

@@ -95,7 +95,7 @@
 		<method name="fileLibrary" rights="3">
 			<uri_patterns>
 				<pattern>/file-library/</pattern>
-				<pattern>/file-library/[string]/</pattern>
+				<pattern>/file-library/[any]/</pattern>
 			</uri_patterns>
 		</method>
 		<method name="cleanup" rights="3">

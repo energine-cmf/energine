@@ -157,6 +157,17 @@ class CommentsForm extends DataSet {
         $this->response->commit();
     }
 
+    /**
+     * @param  int $targetId
+     * @return bool
+     */
+    protected function isTargetEditable($targetId){
+        if(!AuthUser::getInstance()->isAuthenticated()) return false;
+
+        $right = Sitemap::getInstance()->getDocumentRights($targetId);
+        return $right > 2;
+    }
+
     protected function updateComment($targetId, $commentName, $commentId){
         if (!in_array('1', AuthUser::getInstance()->getGroups())) {
             // если не админ -  проверяем авторство
@@ -284,7 +295,7 @@ class CommentsForm extends DataSet {
                     $this->getData()->addField($f);
 
                     // добавляем переводы для формы
-                    $this->addTranslation('COMMENTS'); // коментирии
+
                     $this->addTranslation('COMMENT_DO'); // коментировать
                     $this->addTranslation('COMMENT_DO_NEWS'); // коментировать новость
                     $this->addTranslation('COMMENT_REMAIN'); // осталось
@@ -297,6 +308,7 @@ class CommentsForm extends DataSet {
                     // форма нужна только для вывода списка комментариев
                     $this->setProperty('hide_form', 1);
                 }
+                $this->addTranslation('COMMENTS'); // коментирии
             }
             else {
                 $this->disable();

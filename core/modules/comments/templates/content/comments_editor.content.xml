@@ -3,7 +3,6 @@
     <component name="commentsEdit" module="comments" class="CommentsEditor">
        <params>
            <param name="comment_tables">stb_news_comment</param>
-<!--           <param name="configFilename">site/admin/config/LanguageEditor.component.xml</param> -->
-       </params>        
+       </params>
     </component>
 </content>

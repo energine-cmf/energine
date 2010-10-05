@@ -124,11 +124,7 @@ class CommentsForm extends DataSet {
                 }
                 else $parentId = 0;
 
-                $commentName = preg_replace(
-                    array('%<\s*script\s*%', '%<\s*/\s*script\s*>%'),
-                    array('<strong ', '</strong>'),
-                    $commentName
-                );
+                $commentName = $this->clearPost($commentName);
 
                 if(isset($_POST['comment_id']) and $commentId = intval($_POST['comment_id'])){
                     // отредактированный коммент
@@ -165,6 +161,23 @@ class CommentsForm extends DataSet {
         $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
         $this->response->write($result);
         $this->response->commit();
+    }
+
+    /**
+     * Чистим ввод пользователя
+     *
+     * @param  string $s
+     * @return string
+     */
+    protected function clearPost($s){
+//        $s = preg_replace(
+//            array('%<\s*script\s*%', '%<\s*/\s*script\s*>%'),
+//            array('<strong ', '</strong>'),
+//            $s
+//        );
+        $allowTags = implode(array('<b><strong><em><i><div>'));
+        $s = strip_tags($s, $allowTags);
+        return nl2br($s);
     }
 
     /**

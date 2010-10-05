@@ -114,6 +114,10 @@ class CommentsForm extends DataSet {
             if (!isset($_POST['target_id']) or !($targetId = (int) $_POST['target_id']))
                 throw new Exception('Mistake targetId');
 
+            if(!$this->isTargetEditable()){
+                throw new SystemException('read only');
+            }
+
             if (isset($_POST['comment_name']) and $commentName = trim($_POST['comment_name'])) {
                 if ($this->isTree and isset($_POST['parent_id'])) {
                     $parentId = intval($_POST['parent_id']);
@@ -158,18 +162,21 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * @param  int $targetId
+     * Права на текущий раздел текущего пользователя больше чем "Read only"
      * @return bool
      */
-    protected function isTargetEditable($targetId){
-        if(!AuthUser::getInstance()->isAuthenticated()) return false;
-
-        $right = Sitemap::getInstance()->getDocumentRights($targetId);
-        return $right > 2;
+    protected function isTargetEditable(){
+        if(!AuthUser::getInstance()->isAuthenticated())
+            return false;
+        $right = Sitemap::getInstance()->getDocumentRights($this->document->getID());
+        return $right > ACCESS_READ;
     }
 
     protected function updateComment($targetId, $commentName, $commentId){
         if (!in_array('1', AuthUser::getInstance()->getGroups())) {
+            if(!$this->isTargetEditable()){ // юзеру доступно только чтение
+                return false;
+            }
             // если не админ -  проверяем авторство
             $comments = $this->dbh->select($this->commentTable, true, array('comment_id' => $commentId));
             if(!$comments){ // удалён
@@ -227,6 +234,9 @@ class CommentsForm extends DataSet {
      */
     private function removeComment($id){
         if (!in_array('1', AuthUser::getInstance()->getGroups())) {
+            if(!$this->isTargetEditable()){ // юзеру доступно только чтение
+                return false;
+            }
             // если не админ -  проверяем авторство
             $comments = $this->dbh->select($this->commentTable, true, array('comment_id' => $id));
             if(!$comments){ // уже удалён
@@ -287,7 +297,7 @@ class CommentsForm extends DataSet {
                 }
                 $targetId = $ap[$apName];
 
-                if($this->document->user->isAuthenticated()){
+                if($this->isTargetEditable()){
                     $this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
                     
                     $f = new Field('target_id');

@@ -18,6 +18,11 @@
 				<pattern>/save-comment/</pattern>
 			</uri_patterns>
 		</method>
+        <method name="deleteComment">
+			<uri_patterns>
+				<pattern>/delete-comment/</pattern>
+			</uri_patterns>
+		</method>
 		<!--
 		<method name="view">
 			<uri_patterns>

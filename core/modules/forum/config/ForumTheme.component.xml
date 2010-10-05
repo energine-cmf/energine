@@ -64,13 +64,18 @@
                 <field name="theme_closed"/>
             </fields>
             <translations>
-                <translation const="FORUM_ANSWERS"/>
-                <translation const="FORUM_EDIT_THEME"/>
-                <translation const="FORUM_DELETE_THEME"/>
-                <translation const="FORUM_CREATE_THEME"/>
-                <translation const="TITLE_GENDER"/>
-                <translation const="TITLE_PLACE"/>
+                <translation const="TXT_FORUM_THEME_COUNT"/>
+                <translation const="TXT_FORUM_COMMENT_COUNT"/>
+                <translation const="TXT_FORUM_LAST_COMMENT"/>
+                <translation const="TXT_FORUM_EDIT_THEME"/>
+                <translation const="TXT_FORUM_DELETE_THEME"/>
+                <translation const="TXT_FORUM_CREATE_THEME"/>
+                <translation const="TXT_GENDER"/>
+                <translation const="TXT_PLACE"/>
+                <translation const="TXT_EDIT"/>
+                <translation const="TXT_DELETE"/>
                 <translation const="BTN_CITE"/>
+                <translation const="TXT_NO_COMMENTS"/>
             </translations>
         </method>
         <method name="main">
@@ -90,10 +95,11 @@
                 <control id="view" title="BTN_GO" type="link"/>
             </toolbar>
             <translations>
-                <translation const="FORUM_CREATED"/>
-                <translation const="FORUM_LAST_POST"/>
-                <translation const="FORUM_CREATE_THEME"/>
-                <translation const="FORUM_SUBCATEGORY"/>
+                <translation const="TXT_FORUM_THEME_COUNT"/>
+                <translation const="TXT_FORUM_COMMENT_COUNT"/>
+                <translation const="TXT_FORUM_LAST_COMMENT"/>
+                <translation const="TXT_FORUM_CREATE_THEME"/>
+                <translation const="TXT_NO_COMMENTS"/>
             </translations>
         </method>
     </methods>

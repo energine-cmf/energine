@@ -16,7 +16,13 @@
                 <field name="CommentCount" type="int" title="FIELD_COMMENT_COUNT"/>
                 <field name="CommentCreated" type="date" outputFormat="%E" title="FIELD_COMMENT_CREATED"/>
                 <field name="Nick" type="string"  title="FIELD_NICK"/>
-             </fields>
+            </fields>
+            <translations>
+                <translation const="TXT_FORUM_THEME_COUNT"/>
+                <translation const="TXT_FORUM_COMMENT_COUNT"/>
+                <translation const="TXT_FORUM_LAST_COMMENT"/>
+                <translation const="TXT_NO_COMMENTS"/>
+            </translations>
         </method>
         <!--<method name="cleanup" rights="2">
             <uri_patterns>

@@ -124,6 +124,12 @@ class CommentsForm extends DataSet {
                 }
                 else $parentId = 0;
 
+                $commentName = preg_replace(
+                    array('%<\s*script\s*%', '%<\s*/\s*script\s*>%'),
+                    array('<strong ', '</strong>'),
+                    $commentName
+                );
+
                 if(isset($_POST['comment_id']) and $commentId = intval($_POST['comment_id'])){
                     // отредактированный коммент
                     if(!$isUpdated = $this->updateComment($targetId, $commentName, $commentId))

@@ -161,7 +161,7 @@ class Component extends DBWorker implements Block {
                     $template . 'single/' . $this->getName() . '/')
         );
         $this->config =
-                new ComponentConfig($this->getParam('configFilename'), get_class($this), $this->module);
+                new ComponentConfig($this->getParam('config'), get_class($this), $this->module);
         $this->determineAction();
     }
 
@@ -233,7 +233,7 @@ class Component extends DBWorker implements Block {
         return array(
             'action' => $this->action,
             'rights' => $this->document->getRights(),
-            'configFilename' => false,
+            'config' => false,
             'active' => false,
         );
     }

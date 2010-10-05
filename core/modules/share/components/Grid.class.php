@@ -86,7 +86,7 @@ class Grid extends DBDataSet {
         $this->setTitle($this->translate('TXT_'.strtoupper($this->getName())));
     }
     /**
-	 * Переопределен параметр configFilename
+	 * Переопределен параметр config
 	 *
 	 * @return array
 	 * @access protected
@@ -94,18 +94,18 @@ class Grid extends DBDataSet {
 
     protected function defineParams() {
         $params = array();
-        if (!$this->params['configFilename']) {
+        if (!$this->params['config']) {
         	$fileName = get_class($this).'.component.xml';
             $fileConf = sprintf(ComponentConfig::SITE_CONFIG_DIR, SiteManager::getInstance()->getCurrentSite()->folder).$fileName;
             $coreConf = sprintf(ComponentConfig::CORE_CONFIG_DIR, $this->module).$fileName;
             if (file_exists($fileConf)) {
-                $params['configFilename'] = $fileConf;
+                $params['config'] = $fileConf;
             }
             elseif (file_exists($coreConf)) {
-                $params['configFilename'] = $coreConf;
+                $params['config'] = $coreConf;
             }
             else {
-                $params['configFilename'] = sprintf(ComponentConfig::CORE_CONFIG_DIR, 'share/').'Grid.component.xml';
+                $params['config'] = sprintf(ComponentConfig::CORE_CONFIG_DIR, 'share/').'Grid.component.xml';
             }
         }
         $params['active'] = true;
@@ -578,7 +578,7 @@ class Grid extends DBDataSet {
      */
     protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('configFilename' => 'core/modules/share/config/FileLibraryMin.component.xml'));
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('config' => 'core/modules/share/config/FileLibraryMin.component.xml'));
         //$this->fileLibrary->getAction();
         $this->fileLibrary->run();
     }

@@ -162,6 +162,7 @@ class FileUploader extends Object {
             throw new SystemException('ERR_DEV_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file['name']);
         }
         //Ресайзим изображение
+        /*
         if(in_array($this->getExtension(), array('gif', 'png', 'jpg', 'jpeg'))){
             //@todo Отключено до выяснения
             /*$img = new Image();
@@ -184,10 +185,10 @@ class FileUploader extends Object {
                 $img->resize(null, 600);
                 $img->saveToFile($filePath);
             }
-            */
+            
           	
             	
-        }
+        }*/
         
         $this->FileRealName = $this->file['name'];
         $this->FileObjectName = $filePath;

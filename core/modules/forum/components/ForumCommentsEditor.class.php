@@ -34,6 +34,7 @@ class ForumCommentsEditor extends Grid {
         parent::__construct($name, $module, $document, $params);
         $this->setTableName('forum_theme_comment');
         $this->setOrder(array('comment_created' => QAL::DESC));
+        $this->setSaver(new ForumCommentsEditorSaver());
     }
 
     protected function loadDataDescription() {
@@ -47,12 +48,10 @@ class ForumCommentsEditor extends Grid {
         return $result;
     }
 
-    protected function prepare() {
-        parent::prepare();
-        if($this->getAction() !== 'getRawData' && $this->getAction() != 'main'){
-        $UIDFD = $this->getDataDescription()->getFieldDescriptionByName('u_id');
-        $UIDFD->setMode(1);
-        $UIDFD->removeProperty('tableName');
+
+    protected function edit() {
+        parent::edit();
+        $this->getDataDescription()->getFieldDescriptionByName('u_id')->setMode(ACCESS_READ);
 
         $UID = $this->getData()->getFieldByName('u_id');
         $UID->setRowData(0,
@@ -64,17 +63,24 @@ class ForumCommentsEditor extends Grid {
                 ),
                 'u_fullname',
                 true));
-        }
-    }
-
-    protected function edit() {
-        parent::edit();
+        $this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_CUSTOM)->setProperty('title', $this->translate('FIELD_THEME_NAME2'));
+        $themeID = $this->getData()->getFieldByName('target_id');
+        $themeID->setRowProperty(0,
+            'text',
+            simplifyDBResult(
+                $this->dbh->select(
+                    'forum_theme',
+                    'theme_name',
+                    array('theme_id' => $themeID->getRowData(0))
+                ),
+                'theme_name',
+                true));
     }
 
     protected function showThemeEditor() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->themeEditor =
-                $this->document->componentManager->createComponent('themeEditor', 'forum', 'ForumThemeEditor', null);
+                $this->document->componentManager->createComponent('themeEditor', 'forum', 'ForumThemeEditor', array('config'=>'core/modules/forum/config/ModalForumThemeEditor.component.xml'));
         $this->themeEditor->run();
     }
 

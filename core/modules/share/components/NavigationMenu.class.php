@@ -34,7 +34,7 @@ final class NavigationMenu extends DataSet {
 	 * @access public
 	 */
 	public function __construct($name, $module, Document $document,  array $params = null) {
-		$params['configFilename'] = sprintf(ComponentConfig::CORE_CONFIG_DIR, $module).get_class($this).'.component.xml';
+		$params['config'] = sprintf(ComponentConfig::CORE_CONFIG_DIR, $module).get_class($this).'.component.xml';
 		parent::__construct($name, $module, $document,  $params);
 	}
     protected function defineParams() {

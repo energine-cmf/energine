@@ -460,6 +460,7 @@ final class FileLibrary extends DataSet {
      * @final
      */
     final protected function upload() {
+        
     	try{
             if (empty($_FILES) || !isset($_POST['Filename']) || !isset($_FILES['Filedata']) || !isset($_POST['element'])) {
                     throw new SystemException('ERR_BAD_FILE', SystemException::ERR_CRITICAL);
@@ -502,7 +503,6 @@ final class FileLibrary extends DataSet {
             if (empty($_FILES) || !isset($_FILES['Filedata'])) {
                 throw new SystemException('ERR_NO_FILE', SystemException::ERR_CRITICAL);
             }
-
             $uploader = new FileUploader();
             $uploader->setFile($_FILES['Filedata']);
             $uploader->upload($this->getParam('base').'/');

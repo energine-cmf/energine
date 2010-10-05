@@ -4,7 +4,7 @@
     <component name="childDivisions" module="share" class="PageList" >
        <params>
            <param name="id">current</param> 
-           <param name="configFilename">core/modules/share/ChildDivisions.component.xml</param>
+           <param name="config">core/modules/share/ChildDivisions.component.xml</param>
        </params>
     </component>
 </content>

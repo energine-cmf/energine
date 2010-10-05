@@ -14,7 +14,7 @@
                 <field name="comment_id"/>
                 <field name="comment_created" outputFormat="%E"/>
                 <field name="u_id"/>
-                <field name="target_id"/>
+                <field name="target_id" title="FIELD_THEME_NAME2"/>
                 <field name="comment_name"/>
             </fields>
             <toolbar>

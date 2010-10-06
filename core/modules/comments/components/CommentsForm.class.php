@@ -170,12 +170,7 @@ class CommentsForm extends DataSet {
      * @return string
      */
     protected function clearPost($s){
-//        $s = preg_replace(
-//            array('%<\s*script\s*%', '%<\s*/\s*script\s*>%'),
-//            array('<strong ', '</strong>'),
-//            $s
-//        );
-        $allowTags = implode(array('<b><strong><em><i><div>'));
+        $allowTags = implode(array('<b><strong><em><i><div><ul><ol><li>'));
         $s = strip_tags($s, $allowTags);
         return nl2br($s);
     }

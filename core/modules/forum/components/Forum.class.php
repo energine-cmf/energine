@@ -56,17 +56,15 @@ class Forum extends DataSet {
 
         if (!empty($categories)) {
                 $categoryInfo = convertDBResult($this->dbh->selectRequest('
-                SELECT smap_id, COUNT(ft.theme_id) as theme_count, SUM(comment_num) as comment_count,' .
-                    ' IF(ft.comment_id, uc.u_nick, ut.u_nick) as nick,' .
-                    ' IF(ft.comment_id, ftc.comment_created,ft.theme_created) as comment_created' .
-                    ' FROM forum_theme ft' .
-                    ' LEFT JOIN forum_theme_comment ftc USING(comment_id) ' .
-                    ' LEFT JOIN user_users uc ON uc.u_id = ftc.u_id ' .
-                    ' LEFT JOIN user_users ut ON ut.u_id = ft.u_id ' .
-                    ' WHERE smap_id IN (' .
-                    implode(',', array_keys($categories)) . ')' .
-                    ' GROUP BY smap_id '), 'smap_id', true);
-                
+                SELECT smap_id, COUNT(ft.theme_id) as theme_count, SUM(comment_num) as comment_count,
+                    IF(ft.comment_id, uc.u_nick, ut.u_nick) as nick,
+                    IF(max(ftc.comment_created), max(ftc.comment_created), ft.theme_created) as comment_created
+                FROM forum_theme ft
+                    LEFT JOIN forum_theme_comment ftc USING(comment_id)
+                    LEFT JOIN user_users uc ON uc.u_id = ftc.u_id
+                    LEFT JOIN user_users ut ON ut.u_id = ft.u_id
+                WHERE smap_id IN ('. implode(',', array_keys($categories)) . ')
+                GROUP BY smap_id '), 'smap_id', true);
                 foreach ($categories as $subID => $subInfo) {
                     $additionalInfo = array(
                         'ThemeCount' => 0,

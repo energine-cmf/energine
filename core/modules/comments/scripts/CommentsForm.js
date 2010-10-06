@@ -4,11 +4,13 @@ var CommentsForm = new Class({
 	Implements: Energine.request,
 	initialize : function(element) {
         this.parent(element)
-        this.form = this.componentElement.getParent('form').addClass('form');
-		$$('li.comment_item span.btn_content').addEvent('click', this.show_form.bind(this))
-		$$('div.comments div.comment_inputblock a.link_comment').addEvent('click', this.show_form_base.bind(this))
-		this.form.getElement('a.btn_comment').addEvent('click', this.validateForm.bind(this))
-        this.form.getElement('textarea').addEvent('keyup', this.countOut.bind(this));
+        if(this.componentElement && this.componentElement.getParent('form')){
+            this.form = this.componentElement.getParent('form').addClass('form');
+            $$('li.comment_item span.btn_content').addEvent('click', this.show_form.bind(this))
+            $$('div.comments div.comment_inputblock a.link_comment').addEvent('click', this.show_form_base.bind(this))
+            this.form.getElement('a.btn_comment').addEvent('click', this.validateForm.bind(this))
+            this.form.getElement('textarea').addEvent('keyup', this.countOut.bind(this));
+        }
 	},
     maxSymbol: 250,
     trans: null, 

@@ -176,10 +176,10 @@ class CommentsForm extends DataSet {
         // все ньюлайн уже преобразованы, убираем случайные что бы они не помешали нам парсить ссылки
         $s = str_replace(array("\n", "\r"), array('', ''), $s);
         
-        $s = preg_replace_callback('|<a\s+(.*)>(.*)</a>|i',
+        $s = preg_replace_callback('|<a\s+([^>]*)>(.*)</a>|i',
             function($matches){
                 $m = array();
-                if(!strlen(trim($matches[2])) or !preg_match('%href\s*=\s*(?:"|\')(.*)(?:"|\')%i', $matches[1], $m))
+                if(!strlen(trim($matches[2])) or !preg_match('%href\s*=\s*(?:"|\')([^\'"]*)(?:"|\')%i', $matches[1], $m))
                     return '';
                 return '<a href="'. $m[1]. '">'. $matches[2]. '</a>';
             },
@@ -199,7 +199,7 @@ class CommentsForm extends DataSet {
         return $right > ACCESS_READ;
     }
 
-    protected function updateComment($targetId, $commentName, $commentId){
+    private function updateComment($targetId, $commentName, $commentId){
         if (!in_array('1', AuthUser::getInstance()->getGroups())) {
             if(!$this->isTargetEditable()){ // юзеру доступно только чтение
                 return false;

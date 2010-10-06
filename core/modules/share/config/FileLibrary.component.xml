@@ -85,7 +85,6 @@
                 <!--<control id="rename" title="BTN_RENAME" type="button" onclick="rename"/>-->
                 <control id="sep02" type="separator"/>
                 <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
-                <control id="zip_upload" title="BTN_ZIP_UPLOAD" type="button" onclick="uploadZip"/>
                 <control id="sep03" type="separator"/>
                 <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
             </toolbar>

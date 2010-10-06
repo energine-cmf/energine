@@ -91,10 +91,11 @@ class UserProfile extends DBDataSet {
 
         $this->prepare();
         $fields = $this->getDataDescription()->getFieldDescriptionList();
+        /*
         if (array_diff($fields, array_keys($_POST[$this->getTableName()])) != array()) {
             throw new SystemException('ERR_BAD_DATA', SystemException::ERR_CRITICAL);
         }
-
+        */
         $data = $_POST[$this->getTableName()];
 
         try {

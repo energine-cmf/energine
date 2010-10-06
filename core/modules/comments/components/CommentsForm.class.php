@@ -164,15 +164,28 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Чистим ввод пользователя
+     * Чистим переимущетвенно текстовый ввод пользователя
      *
      * @param  string $s
      * @return string
      */
     protected function clearPost($s){
-        $allowTags = implode(array('<b><strong><em><i><div><ul><ol><li>'));
+        $allowTags = implode(array('<br><b><strong><em><i><div><ul><ol><li><a>'));
         $s = strip_tags($s, $allowTags);
-        return nl2br($s);
+        $s = nl2br($s);
+        // все ньюлайн уже преобразованы, убираем случайные что бы они не помешали нам парсить ссылки
+        $s = str_replace(array("\n", "\r"), array('', ''), $s);
+        
+        $s = preg_replace_callback('|<a\s+(.*)>(.*)</a>|i',
+            function($matches){
+                $m = array();
+                if(!strlen(trim($matches[2])) or !preg_match('%href\s*=\s*(?:"|\')(.*)(?:"|\')%i', $matches[1], $m))
+                    return '';
+                return '<a href="'. $m[1]. '">'. $matches[2]. '</a>';
+            },
+            $s
+        );
+        return $s;
     }
 
     /**

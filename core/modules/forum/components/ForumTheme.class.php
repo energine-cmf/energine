@@ -183,6 +183,30 @@ class ForumTheme extends DBDataSet {
         $this->getDataDescription()->getFieldDescriptionByName('theme_text')->setType(FieldDescription::FIELD_TYPE_HTML_BLOCK);
     }
 
+    /**
+     * Чистим html ввод пользователя
+     *
+     * теги A без аттрибута HREF игнорируются (остальные аттрибуты удаляются)
+     *  
+     * @param  string $s
+     * @return string
+     */
+    protected function clearPost($s){
+        $allowTags = implode(array('<b><strong><em><i><div><li><ul><ol><br><a>'));
+        $s = strip_tags($s, $allowTags);
+        $s = str_replace(array("\n", "\r"), array(' ', ' '), $s);
+        $s = preg_replace_callback('|<a\s+(.*)>(.*)</a>|i',
+            function($matches){
+                $m = array();
+                if(!strlen(trim($matches[2])) or !preg_match('%href\s*=\s*(?:"|\')([^\'"]*)(?:"|\')%i', $matches[1], $m))
+                    return '';
+                return '<a href="'. $m[1]. '">'. $matches[2]. '</a>';
+            },
+            $s
+        );
+        return $s;
+    }
+
     protected function save() {
         // нечего сохранять
         if (!isset($_POST['forum_theme'])) {
@@ -214,6 +238,9 @@ class ForumTheme extends DBDataSet {
             $condition = null;
             $data['u_id'] = AuthUser::getInstance()->getID();
         }
+
+        $data['theme_text'] = $this->clearPost($data['theme_text']);
+        $data['theme_name'] = strip_tags($data['theme_name'], '');
 
         $data['theme_id'] = (int) $themeId;
 

@@ -315,7 +315,7 @@ abstract class AbstractBuilder extends DBWorker {
                 }
             }
             //Если часы и минуты = 0, считаем что это просто дата, без времени
-            if(date('G', $date) != 0 and date('i', $date) != 0){
+            if((date('G', $date) != 0) || (date('i', $date) != 0)){
                 $result .= ', ';
                 $result .= date('G', $date) . ':' . date('i', $date);
             }

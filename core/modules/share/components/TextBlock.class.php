@@ -77,8 +77,8 @@ final class TextBlock extends DataSet {
      * @return void
      * @access public
      */
-    public function __construct($name, $module, Document $document,  array $params = null) {
-        parent::__construct($name, $module, $document,  $params);
+    public function __construct($name, $module,   array $params = null) {
+        parent::__construct($name, $module,  $params);
         /**
          * @todo Не забыть убрать $_REQUEST или переделать чтобы для режима отладки  -_REQUEST а так  - _POST
          *

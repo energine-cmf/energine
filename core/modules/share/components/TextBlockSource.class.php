@@ -20,8 +20,8 @@
  */
 class TextBlockSource extends DataSet {
 
-    public function __construct($name, $module, Document $document,  array $params = null) {
-        parent::__construct($name, $module, $document,  $params);
+    public function __construct($name, $module,   array $params = null) {
+        parent::__construct($name, $module,  $params);
         $this->addWYSIWYGTranslations();
     }
 }

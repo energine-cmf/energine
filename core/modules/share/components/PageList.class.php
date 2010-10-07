@@ -32,8 +32,8 @@ class PageList extends DataSet {
      *
      * @return void
      */
-    public function __construct($name, $module, Document $document, array $params = null) {
-        parent::__construct($name, $module, $document, $params);
+    public function __construct($name, $module,  array $params = null) {
+        parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->addTranslation('TXT_HOME');
     }

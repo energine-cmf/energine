@@ -183,7 +183,7 @@ final class Response extends Singleton {
      * @access public
      */
     public function setRedirect($location) {
-	$this->setStatus(302);
+	    $this->setStatus(302);
         $this->setHeader('Location', $location);
         $this->commit();
     }

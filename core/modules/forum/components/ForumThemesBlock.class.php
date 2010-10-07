@@ -21,12 +21,12 @@ class ForumThemesBlock extends DataSet {
      *
      * @param string $name
      * @param string $module
-     * @param Document $document
+
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, Document $document, array $params = null) {
-        parent::__construct($name, $module, $document, $params);
+    public function __construct($name, $module,  array $params = null) {
+        parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->setProperty('exttype', 'feed');
         $this->addTranslation('TXT_READ_ALL_THEMES', 'TXT_COMMENT_NUM', 'TXT_LAST_COMMENT_DATE');

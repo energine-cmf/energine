@@ -61,16 +61,16 @@ class CommentsForm extends DataSet {
      *
      * @param string $name
      * @param string $module
-     * @param Document $document
+
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, Document $document, array $params = null) {
+    public function __construct($name, $module,  array $params = null) {
         // если комментарии скрыты то бессмысленно показывать форму
         if (!isset($params['show_comments']) or !$params['show_comments']) {
             $params['show_form'] = 0;
         }
-        parent::__construct($name, $module, $document, $params);
+        parent::__construct($name, $module, $params);
 
         $this->commentTable = $this->getParam('comment_tables');
         $this->targetTable =

@@ -59,7 +59,7 @@ final class ComponentManager extends Object implements Iterator {
      * Конструктор класса.
      *
      * @access public
-     * @param Document $document
+
      * @return void
      */
     public function __construct(Document $document) {
@@ -259,15 +259,15 @@ final class ComponentManager extends Object implements Iterator {
         switch ($blockDescription->getName()) {
             case 'content':
                 $result =
-                        ComponentContainer::createFromDescription($blockDescription, self::$document, array('tag' => 'content'));
+                        ComponentContainer::createFromDescription($blockDescription, array('tag' => 'content'));
                 break;
             case 'page':
                 $result =
-                        ComponentContainer::createFromDescription($blockDescription, self::$document, array('tag' => 'layout'));
+                        ComponentContainer::createFromDescription($blockDescription, array('tag' => 'layout'));
                 break;
             case 'container':
                 $result =
-                        ComponentContainer::createFromDescription($blockDescription, self::$document);
+                        ComponentContainer::createFromDescription($blockDescription);
                 break;
             case 'component':
                 $result =
@@ -294,7 +294,7 @@ final class ComponentManager extends Object implements Iterator {
      */
     static private function _createComponent($name, $module, $class, $params = null) {
         try {
-            $result = new $class($name, $module, self::$document, $params);
+            $result = new $class($name, $module, $params);
         }
         catch (SystemException $e) {
             throw new SystemException($e->getMessage(), SystemException::ERR_DEVELOPER, array(

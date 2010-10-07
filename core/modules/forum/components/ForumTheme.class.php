@@ -20,14 +20,14 @@ class ForumTheme extends DBDataSet {
      *
      * @param string $name
      * @param string $module
-     * @param Document $document
+
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, Document $document, array $params = null) {
+    public function __construct($name, $module,  array $params = null) {
         $params['active'] = true;
         $params['recordsPerPage'] = 20;
-        parent::__construct($name, $module, $document, $params);
+        parent::__construct($name, $module, $params);
         $this->setTableName('forum_theme');
         if(AuthUser::getInstance()->isAuthenticated())
             $this->document->setProperty('CURRENT_UID', AuthUser::getInstance()->getID());

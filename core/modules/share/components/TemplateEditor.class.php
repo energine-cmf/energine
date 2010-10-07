@@ -27,8 +27,8 @@ class TemplateEditor extends Grid {
      *
      * @return void
      */
-    public function __construct($name, $module, Document $document,  array $params = null) {
-        parent::__construct($name, $module, $document,  $params);
+    public function __construct($name, $module,   array $params = null) {
+        parent::__construct($name, $module,  $params);
         $this->setTableName('share_templates');
         $this->setTitle($this->translate('TXT_TEMPLATE_EDITOR'));
         //$this->setOrderColumn('tmpl_order_num');

@@ -18,7 +18,7 @@
  * @author dr.Pavka
  * @final
  */
-final class Document extends DBWorker {
+final class Document extends Singleton {
     /**
      * Зарезервированный сегмент URL для single-режима
      */
@@ -103,7 +103,7 @@ final class Document extends DBWorker {
      * @var array
      * @access private
      */
-    private $layoutComponents = array();
+    //private $layoutComponents = array();
 
     /**
      * Перечень компонентов content'а
@@ -111,7 +111,7 @@ final class Document extends DBWorker {
      * @var array
      * @access private
      */
-    private $contentComponents = array();
+    //private $contentComponents = array();
 
     /**
      * Массив констант для перевода
@@ -127,13 +127,14 @@ final class Document extends DBWorker {
      * @access public
      * @return void
      */
-    public function __construct($segments) {
+    public function __construct() {
         parent::__construct();
         $this->user = AuthUser::getInstance();
         $this->language = Language::getInstance();
         $this->lang = $this->language->getCurrent();
         $this->sitemap = Sitemap::getInstance();
         $this->request = Request::getInstance();
+        $segments = $this->request->getPath();
         $this->componentManager = new ComponentManager($this);
         // получаем идентификатор документа
         if (isset($segments[0]) && $segments[0] == self::SINGLE_SEGMENT) $segments = array();

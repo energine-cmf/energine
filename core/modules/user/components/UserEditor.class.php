@@ -27,8 +27,8 @@ class UserEditor extends Grid {
      *
      * @return void
      */
-    public function __construct($name, $module, Document $document,  array $params = null) {
-        parent::__construct($name, $module, $document,  $params);
+    public function __construct($name, $module,   array $params = null) {
+        parent::__construct($name, $module,  $params);
         $this->setTableName('user_users');
         $this->setTitle($this->translate('TXT_USER_EDITOR'));
     }

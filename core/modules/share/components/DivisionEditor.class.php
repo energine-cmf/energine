@@ -58,8 +58,8 @@ final class DivisionEditor extends Grid {
 	 *
 	 * @return void
 	 */
-	public function __construct($name, $module, Document $document,  array $params = null) {
-		parent::__construct($name, $module, $document,  $params);
+	public function __construct($name, $module,   array $params = null) {
+		parent::__construct($name, $module,  $params);
 		$this->setTableName('share_sitemap');
 		$this->setTitle($this->translate('TXT_DIVISION_EDITOR'));
 		//$this->setOrder('smap_order_num', QAL::ASC);

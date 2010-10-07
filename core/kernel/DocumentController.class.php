@@ -47,7 +47,7 @@ final class DocumentController extends Singleton {
         $language->setCurrent($language->getIDByAbbr($request->getLang(), true));
 
         //unset($sitemap);
-        $document = new Document($request->getPath());
+        $document = Document::getInstance();
         
         $document->loadComponents();
         

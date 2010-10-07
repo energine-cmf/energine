@@ -28,9 +28,9 @@ class LoginForm extends DataSet {
 	 * @param string $name
 	 * @param string $module
 	 */
-    public function __construct($name, $module, Document $document,  array $params = null) {
-        $params['action'] = $document->user->isAuthenticated()?'showLogoutForm':'showLoginForm';
-        parent::__construct($name, $module, $document,  $params);
+    public function __construct($name, $module,   array $params = null) {
+        $params['action'] = Document::getInstance()->user->isAuthenticated()?'showLogoutForm':'showLoginForm';
+        parent::__construct($name, $module,  $params);
         if (
             $this->document->user->isAuthenticated() 
             && $this->document->user->isNowAuthenticated()

@@ -129,16 +129,16 @@ class Component extends DBWorker implements Block {
      * @access public
      * @param string $name
      * @param string $module
-     * @param Document $document
+
      * @param array $params
      * @return void
      */
-    public function __construct($name, $module, Document $document, array $params = null) {
+    public function __construct($name, $module,  array $params = null) {
         parent::__construct();
 
         $this->name = $name;
         $this->module = $module;
-        $this->document = $document;
+        $this->document = Document::getInstance();
         $this->params = $this->defineParams();
         if (is_array($params)) {
             foreach ($params as $name => $value) {

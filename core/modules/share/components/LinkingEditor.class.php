@@ -21,12 +21,12 @@
      *
      * @param string $name
      * @param string $module
-     * @param Document $document
+
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, Document $document,  array $params = null) {
-        parent::__construct($name, $module, $document,  $params);
+    public function __construct($name, $module,   array $params = null) {
+        parent::__construct($name, $module,  $params);
         $this->isEditable = $this->document->isEditable();
         $this->setProperty('exttype', 'feededitor');
     }

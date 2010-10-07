@@ -34,8 +34,8 @@ class CommentsEditor extends Grid
 	 * @param array $params
 	 * @throws SystemException если параметер comment_tables не задан
 	 */
-    public function __construct($name, $module, Document $document,  array $params = null) {
-    	parent::__construct($name, $module, $document,  $params);
+    public function __construct($name, $module,   array $params = null) {
+    	parent::__construct($name, $module,  $params);
 
         $this->commentTables = $this->getParam('comment_tables');
         if(!$this->commentTables){

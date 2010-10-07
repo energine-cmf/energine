@@ -25,8 +25,8 @@ class LanguageEditor extends Grid {
      *
      * @return void
      */
-    public function __construct($name, $module, Document $document,  array $params = null) {
-        parent::__construct($name, $module, $document,  $params);
+    public function __construct($name, $module,   array $params = null) {
+        parent::__construct($name, $module,  $params);
         $this->setTableName('share_languages');
         $this->setTitle($this->translate('TXT_LANGUAGE_EDITOR'));
         //$this->setOrderColumn('lang_order_num');

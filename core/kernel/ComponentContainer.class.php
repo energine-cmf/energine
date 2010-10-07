@@ -44,14 +44,14 @@ class ComponentContainer extends Object implements Block, Iterator{
     private $document;
     /**
      * @param  $name string
-     * @param Document $document
+
      * @param  $properties array
      * @return void
      */
-    public function __construct($name, Document $document, array $properties = array()){
+    public function __construct($name, array $properties = array()){
         parent::__construct();
         $this->name = $name;
-        $this->document = $document;
+        $this->document = Document::getInstance();
 
         $this->properties = $properties;
         if(!isset($this->properties['tag'])) {
@@ -67,10 +67,10 @@ class ComponentContainer extends Object implements Block, Iterator{
      * @static
      * @throws SystemException
      * @param SimpleXMLElement $containerDescription
-     * @param Document $document
+
      * @return Container
      */
-    static public function createFromDescription(SimpleXMLElement $containerDescription,Document $document, array $additionalAttributes = array()){
+    static public function createFromDescription(SimpleXMLElement $containerDescription, array $additionalAttributes = array()){
         $attributes = $containerDescription->attributes();
         if(in_array($containerDescription->getName(), array('page', 'content'))){
             $properties['name'] = $containerDescription->getName();
@@ -85,7 +85,7 @@ class ComponentContainer extends Object implements Block, Iterator{
         unset($properties['name']);
         $properties = array_merge($properties, $additionalAttributes);
 
-        $result = new ComponentContainer($name, $document, $properties);
+        $result = new ComponentContainer($name, $properties);
 
         foreach($containerDescription->children() as $blockDescription) {
             $result->add(ComponentManager::createBlockFromDescription($blockDescription));

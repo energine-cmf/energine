@@ -24,8 +24,8 @@ class UserProfile extends DBDataSet {
      * @return void
      * @access public
      */
-    public function __construct($name, $module, Document $document,  array $params = null) {
-        parent::__construct($name, $module, $document,  $params);
+    public function __construct($name, $module,   array $params = null) {
+        parent::__construct($name, $module,  $params);
         $this->setTableName('user_users');
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
     }

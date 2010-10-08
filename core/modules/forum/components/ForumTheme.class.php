@@ -289,13 +289,9 @@ class ForumTheme extends DBDataSet {
      * @return void
      */
     private function addPropertyCurrUser() {
-        if (AuthUser::getInstance()->isAuthenticated()) {
-            $this->setProperty('curr_user_id', AuthUser::getInstance()->getID());
-        }
-        // признак админа - выводим ему ссылки edit/delete во всех блогах
-        if (in_array('1', AuthUser::getInstance()->getGroups())) {
-            $this->setProperty('curr_user_is_admin', '1');
-        }
+        $right = $this->document->getRights();
+        $this->setProperty('is_editable', (int)($right > 1)); // добавлять и править/удалять своё
+        $this->setProperty('is_admin', (int)($right > 2));    // godmode
     }
 
     /**
@@ -330,16 +326,15 @@ class ForumTheme extends DBDataSet {
             return false;
 
         // администратор
-        if (in_array('1', AuthUser::getInstance()->getGroups())) {
+        if ($this->document->getRights() > 2) {
             $access = true;
         }
         else {
-            // создатель темы?
-            $uid = AuthUser::getInstance()->getID();
-            if ($themeUId =
-                    $this->dbh->select($this->getTableName(), 'u_id', array('theme_id' => $themeId))) {
-                if ($themeUId[0]['u_id'] == $uid) {
-                    $access = intval($this->document->getRights() > 1);
+            // создатель открытой темы?
+            if ($this->document->getRights() > 1) {
+                $uid = AuthUser::getInstance()->getID();
+                if ($themeUId = $this->dbh->select($this->getTableName(), 'u_id', array('theme_id' => $themeId))) {
+                    $access = ($themeUId[0]['u_id'] == $uid);
                 }
             }
         }

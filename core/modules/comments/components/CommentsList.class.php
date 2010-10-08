@@ -77,7 +77,11 @@ class CommentsList extends DataSet
 		$this->isTree = $this->getParam('is_tree');
 
         $this->setProperty('is_tree', $this->isTree);
-        $this->setProperty('is_editable', (int)AuthUser::getInstance()->isAuthenticated());
+
+        $right = $this->document->getRights();
+        $this->setProperty('is_editable', (int)($right > 1)); // добавлять и править/удалять своё
+        $this->setProperty('is_admin', (int)($right > 2));    // godmode
+
 
         $this->targetIds = $this->getParam('target_ids');
 

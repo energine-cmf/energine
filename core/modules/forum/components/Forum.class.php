@@ -58,7 +58,7 @@ class Forum extends DataSet {
                 $categoryInfo = convertDBResult($this->dbh->selectRequest('
                 SELECT smap_id, COUNT(ft.theme_id) as theme_count, SUM(comment_num) as comment_count,
                     IF(ft.comment_id, uc.u_nick, ut.u_nick) as nick,
-                    IF(max(ftc.comment_created), max(ftc.comment_created), ft.theme_created) as comment_created
+                    IF(ft.comment_id, max(ftc.comment_created), ft.theme_created) as comment_created
                 FROM forum_theme ft
                     LEFT JOIN forum_theme_comment ftc USING(comment_id)
                     LEFT JOIN user_users uc ON uc.u_id = ftc.u_id

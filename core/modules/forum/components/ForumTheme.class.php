@@ -41,18 +41,17 @@ class ForumTheme extends DBDataSet {
      */
     private function loadThemeBySmapid($smapId, array $limit = null) {
         $limitStr = $limit ? 'LIMIT ' . implode(',', $limit) : '';
-        $sql =
-                'SELECT t.*, c.comment_created, c.comment_name, u.u_id, '.
-                ' IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_nick, '.
-                ' u.u_avatar_img, '.
-                ' CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, '.
-                ' u.u_place '.
-            ' FROM forum_theme t '.
-                ' LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id '.
-                ' LEFT JOIN user_users u ON u.u_id = c.u_id '.
-            'WHERE t.smap_id = %s
-             ORDER BY c.comment_created DESC
-            ';
+        $sql = 'SELECT t.*, c.comment_created, c.comment_name, u.u_id,
+                 IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_nick,
+                 u.u_avatar_img,
+                 CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, 
+                 u.u_place,
+                 (SELECT CEIL(COUNT(comment_id)/20) FROM forum_theme_comment c2 WHERE c2.target_id=t.theme_id) as comment_page
+             FROM forum_theme t
+                 LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id
+                 LEFT JOIN user_users u ON u.u_id = c.u_id
+            WHERE t.smap_id = %s
+             ORDER BY c.comment_created DESC';
 
         return $this->dbh->selectRequest($sql, $smapId);
     }
@@ -157,6 +156,7 @@ class ForumTheme extends DBDataSet {
             'u_place' => FieldDescription::FIELD_TYPE_STRING,
             'u_sex' => FieldDescription::FIELD_TYPE_STRING,
             'u_avatar_img' => FieldDescription::FIELD_TYPE_IMAGE,
+            'comment_page' => FieldDescription::FIELD_TYPE_INT
         );
 
         foreach ($descriptions as $name => $fieldType) {

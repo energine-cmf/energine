@@ -423,6 +423,8 @@ final class Document extends Singleton {
     /**
      * Возвращает права пользователя на документ.
      *
+     * one of [ACCESS_NONE=0, ACCESS_READ=1, ACCESS_EDIT=2, ACCESS_FULL=3]
+     * 
      * @access public
      * @return int
      */

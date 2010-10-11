@@ -20,5 +20,15 @@ var ForumForm = new Class({
             });
 			this.richEditors.push(e);
 		}, this);
+
+        this.form.onsubmit = function(){
+            this.richEditors.each(function(editor) {
+                editor.onSaveForm();
+            });
+            if (!this.validator.validate()) {
+                return false;
+            }
+        }.bind(this)
+
     }
 });

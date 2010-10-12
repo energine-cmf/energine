@@ -67,6 +67,15 @@ class DBDataSet extends DataSet {
      */
     private $previousAction = false;
 
+    /*
+     * @var FileLibrary
+     */
+    private $fileLibrary;
+    /*
+     * @var ImageManager
+     */
+    private $imageManager;
+
     /**
      * Конструктор класса
      *
@@ -714,6 +723,45 @@ class DBDataSet extends DataSet {
         $this->response->setHeader('Content-Type', 'application/xml; charset=utf-8');
         $this->response->write($result);
         $this->response->commit();      
-    }    
+    }
+    /**
+     * Выводит компонент: библиотека изображений
+     *
+     * @return void
+     * @access protected
+     */
+    protected function fileLibrary() {
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('config' => 'core/modules/share/config/FileLibraryMin.component.xml'));
+        //$this->fileLibrary->getAction();
+        $this->fileLibrary->run();
+    }
+    /**
+     * Выводит компонент: менеджер изображений
+     *
+     * @return void
+     * @access protected
+     */
+    protected function imageManager() {
+        $this->imageManager  = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
+        //$this->imageManager->getAction();
+        $this->imageManager->run();
+    }
+
+    public function build() {
+        switch ($this->getAction()) {
+            case 'imageManager':
+                return $this->imageManager->build();
+                break;
+            case 'fileLibrary':
+                return $this->fileLibrary->build();
+                break;
+            default:
+                // do nothing
+        }
+
+        $result = parent::build();
+        return $result;
+    }
 }
 

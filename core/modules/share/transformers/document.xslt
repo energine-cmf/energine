@@ -53,7 +53,7 @@
 
                 <script type="text/javascript">
                     var componentToolbars = [];
-                    <xsl:if test="count($COMPONENTS/javascript/object[@name!='PageEditor']) &gt; 0">
+                    <xsl:if test="count($COMPONENTS[recordset]/javascript/object[@name!='PageEditor']) &gt; 0">
                         var <xsl:for-each select="$COMPONENTS[recordset]/javascript[object[@name!='PageEditor']]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
                     </xsl:if>
                     window.addEvent('domready', function () {

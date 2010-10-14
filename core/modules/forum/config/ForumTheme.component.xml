@@ -75,6 +75,7 @@
                 <translation const="TXT_EDIT"/>
                 <translation const="TXT_DELETE"/>
                 <translation const="BTN_CITE"/>
+                <translation const="BTN_REPLY"/>
                 <translation const="TXT_NO_COMMENTS"/>
             </translations>
         </method>

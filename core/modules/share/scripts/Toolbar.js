@@ -180,7 +180,7 @@ Toolbar.Control = new Class({
         }
         this.element = new Element('li').setProperty('unselectable', 'on');
         if (this.properties.icon) {
-            this.element.addClass('icon')
+            this.element.addClass('icon unselectable')
                     .setProperty('id', this.toolbar.name + this.properties.id)
                     .setProperty('title', this.properties.title +
                     (this.properties.tooltip ? ' (' + this.properties.tooltip +

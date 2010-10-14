@@ -170,6 +170,7 @@ class CommentsForm extends DataSet {
      * @return string
      */
     protected function clearPost($s){
+        /*
         $allowTags = implode(array('<br><b><strong><em><i><div><ul><ol><li><a>'));
         $s = strip_tags($s, $allowTags);
         $s = nl2br($s);
@@ -186,6 +187,36 @@ class CommentsForm extends DataSet {
             $s
         );
         return $s;
+         */
+        $jewix = new Jevix();
+		$jewix->cfgSetXHTMLMode(true);
+		$jewix->cfgSetAutoBrMode(false);
+		$jewix->cfgSetAutoLinkMode(true);
+        
+		$allowedTags = array(
+            'br' => array(),
+            'ul' => array('class'),
+            'ol' => array('class'),
+            'li' => array(),
+            'img' => array('class', 'src'),
+            'b' => array(),
+            'div' => array('class'),
+            'em' =>array(),
+            'i' => array(),
+            'span' => array('class'),
+            'p' => array('class'),
+            'a' => array('class', 'href', 'target')
+            );
+        $jewix->cfgAllowTags(array_keys($allowedTags));
+        $jewix->cfgSetTagShort(array('br', 'img'));
+        $jewix->cfgSetTagNoAutoBr(array('ul', 'ol', 'span', 'div'));
+        foreach($allowedTags as $tagName => $tagParams)$jewix->cfgAllowTagParams($tagName, $tagParams);
+        $jewix->cfgSetTagCutWithContent(array('script', 'iframe', 'object', 'embed'));
+        $errors = false;
+        $data = $jewix->parse($s, $errors);
+        //$data = SmileTransform::txt2html($data);
+        
+        return $data;
     }
 
     /**

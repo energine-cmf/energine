@@ -85,8 +85,16 @@ var Energine = {
             Browser.Engine.presto
 }
 Energine.request = {
-    request : function(uri, data, onSuccess, onUserError) {
+    request : function(uri, data, onSuccess, onUserError, onServerError) {
+        onServerError = onServerError || function(responseText){
+
+        };
         var callbackFunction = function(response, responseText) {
+            if(!response){
+                onServerError(responseText);
+                return;
+            }
+
             if (response.result) {
                 onSuccess(response);
             } else {

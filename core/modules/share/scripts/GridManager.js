@@ -111,7 +111,10 @@ var GridManager = new Class({
                     this.grid.sort.order + '/page-' + pageNum
         }
         this.request(url,
-                postBody, this.processServerResponse.bind(this)
+                postBody,
+                this.processServerResponse.bind(this),
+                null,
+                this.processServerError.bind(this)
                 );
     },
     processServerResponse: function(result) {
@@ -132,6 +135,10 @@ var GridManager = new Class({
             this.toolbar.enableControls();
             this.pageList.enable();
         }
+    },
+    processServerError: function(responseText){
+        alert(responseText);
+        this.overlay.hide();
     },
     applyFilter: function() {
         if (this.filter.query.value.length > 0) {

@@ -1,4 +1,4 @@
-*[unselectable="on"] { -moz-user-select: none;}
+*[unselectable="on"], .unselectable {-moz-user-select: none;-khtml-user-select: none;-webkit-user-select: none;user-select: none;}
 
 /* ----- clearfix ----- */
 .clearfix:after {

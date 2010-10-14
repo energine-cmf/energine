@@ -498,7 +498,7 @@ class CommentsForm extends DataSet {
      * @return mixed
      */
     private function buildResult($comment) {
-        $builder = new JSONBuilder();
+        $builder = new CommentsJSONBuilder();
 
         $dataDescription = new DataDescription();
         $localData = new Data();

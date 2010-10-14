@@ -197,7 +197,7 @@ class User extends DBWorker {
 	            $result = $fu->getFileObjectName();
 	            $im = new Image();
 	            $im->loadFromFile($result);
-	            $im->resize(50, 50);
+	            $im->resize(100, 100);
 	            $im->saveToFile($result);
 	            $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, array('u_avatar_img' => $result), array('u_id' => $this->id));
         	}

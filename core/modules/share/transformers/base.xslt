@@ -111,7 +111,11 @@
                 <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-
+        <xsl:if test=".!=''">
+            <div>
+                <img src="{.}" alt="{.}"/>
+            </div>
+        </xsl:if>
         <input type="file" name="{$FIELD_NAME}" id="{@name}"></input>
     </xsl:template>
     

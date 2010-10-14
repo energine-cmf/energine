@@ -214,7 +214,7 @@ class CommentsForm extends DataSet {
         $jewix->cfgSetTagCutWithContent(array('script', 'iframe', 'object', 'embed'));
         $errors = false;
         $data = $jewix->parse($s, $errors);
-        //$data = SmileTransform::txt2html($data);
+        $data = SmileTransform::wrapSmileToTemplate($data);
         
         return $data;
     }

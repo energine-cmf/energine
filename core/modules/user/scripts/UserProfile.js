@@ -10,10 +10,7 @@ var UserProfile = new Class({
         var field2 = $('u_password2');
 
         if ((field.value != field2.value)) {
-            if (!field.hasClass('invalid')) {
-                field.addClass('invalid');
-                new Element('div').addClass('error').appendText('^ '+field.getProperty('message2')).inject(field.parentNode, 'after');
-            }
+            this.validator.showError(field, field.getProperty('nrgn:message2'));
             this.cancelEvent(event);
         }
         else{

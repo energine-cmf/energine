@@ -46,8 +46,8 @@ class UserProfile extends DBDataSet {
         
         $this->setDataSetAction('save-user');
         $this->setTitle($this->translate('TXT_USER_PROFILE'));
-        $this->addTranslation('MSG_PWD_MISMATCH');
         $this->prepare();
+
     }
 
     /**

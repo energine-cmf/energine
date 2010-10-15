@@ -353,6 +353,9 @@
         <xsl:if test="@message">
             <xsl:attribute name="nrgn:message"  xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
+        <xsl:if test="@message2">
+            <xsl:attribute name="nrgn:message2"  xmlns:nrgn="http://energine.org"><xsl:value-of select="@message2"/></xsl:attribute>
+        </xsl:if>
     </xsl:template>    
     <!-- /default form elements -->
     

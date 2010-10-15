@@ -51,7 +51,7 @@ class ForumTheme extends DBDataSet {
                  LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id
                  LEFT JOIN user_users u ON u.u_id = c.u_id
             WHERE t.smap_id = %s
-             ORDER BY c.comment_created DESC';
+            ORDER BY IF(t.comment_id IS NULL, t.theme_created, c.comment_created) DESC';
 
         return $this->dbh->selectRequest($sql, $smapId);
     }

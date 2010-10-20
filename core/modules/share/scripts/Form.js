@@ -31,7 +31,7 @@ var Form = new Class({
                 []).extend((this.componentElement.getElements('.inp_datetime') ||
                 [])).each(function(dateControl) {
             this.dateControls.push(
-                    (dateControl.hasClass('inp_date') ? Energine.createDatePicker(dateControl) : Energine.createDateTimePicker(dateControl))
+                    (dateControl.hasClass('inp_date') ? Energine.createDatePicker(dateControl, !dateControl.getParent('.field').hasClass('required')) : Energine.createDateTimePicker(dateControl))
                     );
         }, this);
 

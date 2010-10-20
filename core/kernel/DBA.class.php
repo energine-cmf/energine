@@ -287,6 +287,31 @@ abstract class DBA extends Object {
 		return $result;
 	}
 
+    /**
+     * Вызов процедуры
+     *
+     * @param  string $name
+     * @param  array $args
+     * @return array|bool
+     */
+    public function call($name, &$args=null){
+        if(!$args){
+            $res = $this->pdo->query("call $name();", PDO::FETCH_NAMED);
+        }
+        else{
+            $argString = implode(',', array_fill(0, count($args), '?'));
+            $stmt = $this->pdo->prepare("CALL $name($argString)");
+            foreach($args as $index=>&$value){
+                $stmt->bindParam($index+1, $value);
+            }
+
+            if($res = $stmt->execute()){
+                $res = $stmt->fetchAll();
+            }
+        }
+        return $res;
+    }
+
 	/**
 	 * Ставит кавычки вокруг входной строки (если необходимо) и экранирует
 	 * специальные символы внутри входной строки.

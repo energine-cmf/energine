@@ -83,7 +83,7 @@ class AttachmentManager extends Singleton {
                     //'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.
                     'WHERE ' . $mapFieldName . ' IN (' .
                     implode(',', $filteredMapValue) .
-                    ') ' .
+                    ') AND su.upl_is_ready=1 ' .
                     'ORDER by upl_order_num';
             $images = $this->dbh->selectRequest($request);
 

@@ -48,6 +48,39 @@ class ForumCommentsEditor extends Grid {
         return $result;
     }
 
+    /**
+     * Для списка загружаем ещё и ники юзеров
+     * 
+     * @return array|false
+     */
+    protected function loadData(){
+        if(in_array($this->getAction(), array('main', 'getRawData'))){
+            if ($this->pager) {
+                $limit = ' limit '. implode(',', $this->pager->getLimit());
+            }
+            else $limit = '';
+
+            $sql = 'select c .*, u.u_nick
+            from forum_theme_comment c
+                join user_users u using(u_id)
+            '. $limit;
+            $res = $this->dbh->selectRequest($sql);
+
+            // после сего надругательствecho добавляем поле ника
+            $f = new FieldDescription('u_nick');
+            $this->getDataDescription()->addFieldDescription($f);
+
+            if ($this->pager) {
+                $recordCount = simplifyDBResult($this->dbh->select($this->getTableName(), 'count(*) as recordsCount', $this->getFilter()), 'recordsCount', true);
+                $this->pager->setRecordsCount($recordCount);
+            }
+        }
+        else{
+            $res = parent::loadData();
+        }
+        return $res;
+    }
+
 
     protected function edit() {
         parent::edit();

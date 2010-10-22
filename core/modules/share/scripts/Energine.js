@@ -134,19 +134,12 @@ var currentImage = false;
 
 Energine.thumbnail = {
     showImage: function(event) {
+        Energine.cancelEvent(event);
         var event = new Event(event || window.event);
-
         var obj = $(event.target);
         if (obj.get('tag') == 'a') {
             obj = obj.getElement('img');
         }
-
-        if (event.stopPropagation) event.stopPropagation();
-        else event.cancelBubble = true;
-
-        if (event.preventDefault) event.preventDefault();
-        else event.returnValue = false;
-
 
         var createImage = function() {
             currentImage = new EnlargeImage(obj, {duration: 800});

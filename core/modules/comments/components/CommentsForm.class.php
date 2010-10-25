@@ -144,7 +144,7 @@ class CommentsForm extends DataSet {
                 $result = json_encode(array(
                     'result'=>true,
                     'mode' => 'update',
-                    'data' => array('comment_name' => $commentName))
+                    'data' => array('comment_name' => $commentName, 'comment_id'=>$commentId))
                 );   
             }
             else{

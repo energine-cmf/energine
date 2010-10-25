@@ -6,10 +6,15 @@ var CommentsForm = new Class({
         this.parent(element)
         if(this.componentElement && this.componentElement.getParent('form')){
             this.form = this.componentElement.getParent('form').addClass('form');
-            $$('li.comment_item span.btn_content').addEvent('click', this.show_form.bind(this))
             $$('div.comments div.comment_inputblock a.link_comment').addEvent('click', this.show_form_base.bind(this))
             this.form.getElement('a.btn_comment').addEvent('click', this.validateForm.bind(this))
             this.form.getElement('textarea').addEvent('keyup', this.countOut.bind(this));
+
+            $$('li.comment_item div.comment_inputblock').each(function(el){
+                el.getElements('a.btn.edit').addEvent('click', this.editComment.bind(this))
+                el.getElements('a.btn.delete').addEvent('click', this.deleteComment.bind(this))
+                el.getElements('a.btn.comment_do span.btn_content').addEvent('click', this.show_form.bind(this))
+            }.bind(this))
         }
 	},
     maxSymbol: 250,
@@ -17,21 +22,23 @@ var CommentsForm = new Class({
     validateForm: function(event) {
     	this.parent(event);
         this.cancelEvent(event); 
-        
-        var data = {target_id:this.componentElement.getElement('input[name=target_id]').value, 
-					comment_name:this.componentElement.getElement('textarea[name=comment_name]').value}
-        
-        var parentId = this.form.getElement('input[name="parent_id"]')
-        if(parentId){
-        	data['parent_id'] = parentId.value
-        }
-	
-	    this.request(
-	    	this.singlePath + 'save-comment/',
-	        data,
-	        function(response){this.show_result(response)}.bind(this),
-	        function(){this.show_error(response)}.bind(this)
-	    );
+
+        this.request(
+            this.singlePath + 'save-comment/',
+            this.form.toQueryString(),
+            function(response) {
+                if (response.mode == 'update') {
+                    var li = $$('li.comment_item[id=' + response.data.comment_id + '_comment]')
+                    li.getElement('div.hidden.comment_text').set('html', response.data.comment_name)
+
+                    this.show_form_base(true)
+                    this.form.getElement('textarea').set('value','')
+                }
+                else {
+                    this.show_result(response)
+                }
+            }.bind(this)
+        );
     },
     show_result: function(response){
     	if(response.errors){
@@ -47,11 +54,15 @@ var CommentsForm = new Class({
             li.getElement('div.comment_username a').set('text', item['u_nick'])
             li.getElement('div.comment_date').set('text', item['comment_created'])
 
-            if(item['is_tree'] &&  li.getElement('div.comment_inputblock')){
-                li.getElement('div.comment_inputblock span.btn_content').addEvent('click', this.show_form.bind(this))
-            }
-            else{
-                li.getElement('div.comment_inputblock').addClass('hidden')
+            if(li.getElement('div.comment_inputblock')){
+                if(item['is_tree']){
+                    li.getElement('div.comment_inputblock span.btn_content').addEvent('click', this.show_form.bind(this))
+                }
+                else{
+                    li.getElement('div.comment_inputblock').addClass('hidden')
+                }
+                li.getElements('a.btn.edit').addEvent('click', this.editComment.bind(this))
+                li.getElements('a.btn.delete').addEvent('click', this.deleteComment.bind(this))
             }
 
         	if(item['comment_parent_id']){
@@ -84,29 +95,45 @@ var CommentsForm = new Class({
     	}
     },
     show_form: function(event){
-        this.form.removeClass('hidden');
-    	event.target.getParent('li').grab(this.form)
+        this.preShowForm()
+        var li = event.target.getParent('li')
+
+        var text = li.getElement('div.comment_text')
+        this.form.inject(text, 'after');
+
         this.form.getElement('textarea').focus()
-        $$('li.comment_item').getElement('div.comment_inputblock').removeClass('hidden')
-    	event.target.getParent('div.comment_inputblock').addClass('hidden')
+
+        li.getChildren('div.comment_inputblock').addClass('hidden')
+
     	var parentId = this.form.getElement('input[name="parent_id"]')
     	if(!parentId){
 	    	parentId = new Element('input', {'type':'hidden', 'name':'parent_id'})
 	    	this.form.grab(parentId)
     	}
     	parentId.setProperty('value', parseInt(event.target.getParent('li').id))
-    	
+    	this.showCancelBt()
     	return false
     },
-    show_form_base: function(){
-        this.form.removeClass('hidden');
-        $$('li.comment_item').getElement('div.comment_inputblock').removeClass('hidden')
+    show_form_base: function(notSetFocus){
+        this.preShowForm()
+
+        if(this.form.getElements('div.comment_controlset a.btn_comment.cancel').length) {
+            this.form.getElements('div.comment_controlset a.btn_comment.cancel').addClass('hidden')
+        }
+
     	var parentId = this.form.getElement('input[name="parent_id"]')
     	if(parentId) parentId.dispose()
     	$$('div.comments').grab(this.form)
-        this.form.getElement('textarea').focus()
-    	
+
+        if(!notSetFocus) this.form.getElement('textarea').focus()
     	return false
+    },
+    preShowForm: function(){
+        this.setFormCId(0);
+        this.form.removeClass('hidden');
+
+        $$('li.comment_item div.hidden.comment_inputblock').removeClass('hidden')
+        $$('li.comment_item div.comment_text').removeClass('hidden')
     },
     countOut: function(event){
         if(event.target.value.length >= this.maxSymbol){
@@ -128,6 +155,59 @@ var CommentsForm = new Class({
         if(c2==1) symbol = this.trans[0];
 
         return this.trans[3] + ' ' + num +' ' + symbol;
+    },
+    editComment: function(event) {
+        this.show_form(event)
+        var li = event.target.getParent('li')
+        li.getElement('div.comment_text').addClass('hidden')
+
+        this.form.getElement('textarea').set('html', li.getElement('div.comment_text').get('html'))
+
+        this.setFormCId(parseInt(li.id))
+        return false
+    },
+    showCancelBt: function(){
+        if(this.form.getElements('div.comment_controlset a.btn_comment.hidden.cancel').length) {
+            this.form.getElements('div.comment_controlset a.btn_comment.hidden.cancel').removeClass('hidden')
+        }
+        else if(!this.form.getElements('div.comment_controlset a.btn_comment.cancel').length) {
+            var a = this.form.getElement('div.comment_controlset a.btn_comment').clone()
+            a.addClass('cancel')
+            a.addEvent('click', this.show_form_base.bind(this))
+            a.getElement('span.btn_content').set('text', 'Отменить')
+            this.form.getElement('div.comment_controlset').grab(a)
+        }
+    },
+    setFormCId: function(id){
+        var cId = null;
+        if (!(cId = this.form.getElement('input[name=comment_id]'))) {
+            cId = new Element('input', {'type':'hidden', 'name':'comment_id'})
+            this.form.grab(cId)
+        }
+        cId.set('value', id)
+    },
+    deleteComment: function(event) {
+        if (confirm($(this.form).get('comment_realy_remove'))) {
+            if (this.isEditState) this.showBaseForm();
+            var event = new Event(event || window.event);
+            var cId = parseInt(event.target.getParent('li').id)
+            this.request(
+                    this.singlePath + 'delete-comment/',
+            {'comment_id': cId},
+                    function(response) {
+                        if (response.mode == 'delete') {
+                            $(event.target.getParent('li')).destroy()
+                            var spanNum = $$('div.comments .comments_title span.figure')[0]
+                            var num = parseInt((spanNum.get('text')).substr(1))
+                            spanNum.set('text', '('+ (num?num-1:0) +')')
+                        }
+                    }.bind(this),
+                    function() {
+                        this.showError(response)
+                    }.bind(this)
+                    );
+        }
+        return false
     }
 })
 	

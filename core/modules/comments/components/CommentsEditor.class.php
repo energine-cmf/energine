@@ -235,10 +235,25 @@ class CommentsEditor extends Grid
             $columns = array_filter($columns,
                 create_function('$value', 'return !($value["type"] == QAL::COLTYPE_TEXT);')
             );
-            $res = $this->dbh->select($fkTableName, array_keys($columns), $filter, array($fkValueName=>QAL::ASC));
+            $ordering = $this->getOrderingByTable($fkTableName, $fkValueName);
+            $res = $this->dbh->select($fkTableName, array_keys($columns), $filter, $ordering);
         }
 
         return array($res, $fkKeyName, $fkValueName);
+    }
+
+    /**
+     * Сортировка для таблицы
+     *
+     * Метод для переопределенияв потомках для таблиц с нестандартной структурой без таблицы переводов
+     * @see STBCommentsEditor::getOrderingByTable()
+     *
+     * @param  string $fkTableName
+     * @param  string $fkValueName
+     * @return array
+     */
+    protected function getOrderingByTable($fkTableName, $fkValueName){
+        return array($fkValueName=>QAL::ASC);
     }
     
 	/**

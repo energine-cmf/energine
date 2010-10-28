@@ -161,7 +161,7 @@ var CommentsForm = new Class({
         var li = event.target.getParent('li')
         li.getElement('div.comment_text').addClass('hidden')
 
-        this.form.getElement('textarea').set('html', li.getElement('div.comment_text').get('html'))
+        this.form.getElement('textarea').set('value', li.getElement('div.comment_text').get('html'))
 
         this.setFormCId(parseInt(li.id))
         return false

@@ -61,5 +61,14 @@ var CommentsManager = new Class({
         		if(result['result']) selectedItem.setProperty('src','images/checkbox_on.png')
             }.bind(this)
         );
+    },
+    del: function() {
+        var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
+                'Do you really want to delete selected record?';
+        if (confirm(MSG_CONFIRM_DELETE)) {
+            this.request(this.singlePath + this.grid.getSelectedRecordKey() +
+                    '/delete/' + this.getNumCurrTab() + '/tab', 
+                    null, this.loadPage.pass(this.pageList.currentPage, this));
+        }
     }
 })

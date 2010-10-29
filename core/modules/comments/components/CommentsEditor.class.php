@@ -272,4 +272,13 @@ class CommentsEditor extends Grid
         ));
         return $result;
 	}
+
+    protected function delete() {
+        $tab = $this->getActionParams();
+        if($tab){
+        	$tab = (int)array_pop($tab);
+        	$this->changeTableName($tab);
+        }
+        return parent::delete();
+    }
 }

@@ -61,7 +61,8 @@ class SiteEditor extends Grid {
 				$this->getData()->getFieldByName('site_port')->setData(80, true);
 				$this->getData()->getFieldByName('site_root')->setData('/', true);
 				$this->getData()->getFieldByName('site_is_active')->setData(1, true);
-				
+				$this->getData()->getFieldByName('site_is_indexed')->setData(1, true);
+
 				//Добавляем селект позволяющий скопировать структуру одного из существующих сайтов в новый
 				$fd = new FieldDescription('copy_site_structure');
 				$fd->setType(FieldDescription::FIELD_TYPE_SELECT);

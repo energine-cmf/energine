@@ -6,11 +6,7 @@
             omit-xml-declaration="no"
             indent="no" />
     
-    <xsl:variable name="DOC_PROPS" select="/document/properties/property" />
-
-    <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']" />
-    <xsl:variable name="BASE" select="$DOC_PROPS[@name='base']" />
-    <xsl:variable name="LANG" select="$DOC_PROPS[@name='lang']" />
+    <xsl:variable name="LANG" select="/document/properties/property[@name='lang']" />
 
     <xsl:template match="/">
         <xsl:apply-templates select="//component[@class='GoogleSitemap']"></xsl:apply-templates>
@@ -29,7 +25,7 @@
             <xsl:for-each select="/document/layout/component[@class='LangSwitcher']/recordset/record">
                 <url>
                     <loc>
-                        <xsl:value-of select="$BASE"/>
+                        <xsl:value-of select="$RECORD/field[@name='Site']"/>
                         <xsl:if test="$LANG/@real_abbr != field[@name='lang_abbr']">
                         <xsl:value-of select="field[@name='lang_abbr']"/>/</xsl:if><xsl:value-of select="$RECORD/field[@name='Segment']"/>
                     </loc>

@@ -31,7 +31,7 @@
          * @return void
          * @access public
          */
-        public function __construct($message='',$template='') {
+        public function __construct($message='', $template='') {
             parent::__construct();
 			$this->message = $message;
             if ($template) {

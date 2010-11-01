@@ -165,8 +165,8 @@
             }
 
             $htaccessPath = $this->dataset['serverRoot'].'/.htaccess';
-            $htaccessUploadsProtectedPath = $this->dataset['serverRoot'].'/uploads/protected/.htaccess';
-            $htaccessUploadsPrivatePath = $this->dataset['serverRoot'].'/uploads/private/.htaccess';
+            //$htaccessUploadsProtectedPath = $this->dataset['serverRoot'].'/uploads/protected/.htaccess';
+            //$htaccessUploadsPrivatePath = $this->dataset['serverRoot'].'/uploads/private/.htaccess';
             $robotsTxtPath = $this->dataset['serverRoot'].'/robots.txt';
             
             if (
@@ -184,7 +184,7 @@
                 $this->getViewer()->addBlock('Файл .htaccess успешно обновлен.',Viewer::TPL_CHECKER_CONFIRM);
             }
             
-            if (!@file_put_contents(
+           /* if (!@file_put_contents(
 	            $htaccessUploadsProtectedPath, 
 	            str_replace(
 	               array(
@@ -201,9 +201,9 @@
                 throw new CheckerException(array('Невозможно создать файл uploads/protected/.htaccess! Проверьте уровень прав.','Необходимо изменить права на корневую директорию для продолжения инсталяции.'),Viewer::TPL_ERROR);
             } else {
                 $this->getViewer()->addBlock('Файл uploads/protected/.htaccess успешно обновлен.',Viewer::TPL_CHECKER_CONFIRM);
-            }
+            }*/
             
-            if (!@file_put_contents(
+            /*if (!@file_put_contents(
                 $htaccessUploadsPrivatePath, 
                 str_replace(
                    array(
@@ -220,7 +220,7 @@
                 throw new CheckerException(array('Невозможно создать файл uploads/private/.htaccess! Проверьте уровень прав.','Необходимо изменить права на корневую директорию для продолжения инсталяции.'),Viewer::TPL_ERROR);
             } else {
                 $this->getViewer()->addBlock('Файл uploads/private/.htaccess успешно обновлен.',Viewer::TPL_CHECKER_CONFIRM);
-            }
+            }*/
             
             if (!@file_put_contents(
                 $robotsTxtPath, 

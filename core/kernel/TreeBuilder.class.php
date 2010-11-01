@@ -56,6 +56,10 @@ class TreeBuilder extends AbstractBuilder  {
         $this->tree = $tree;
     }
 
+    public function getTree() {
+        return $this->tree;
+    }
+
     /**
 	 * Построение результата.
 	 *

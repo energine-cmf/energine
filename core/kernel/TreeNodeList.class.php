@@ -55,6 +55,11 @@ class TreeNodeList implements Iterator{
         $this->nodeList[$node->getID()] = $node;
         return $node;
     }
+    public function getRoot(){
+        $k = array_keys($this->nodeList);
+        $k = current($k);
+        return $this->nodeList[$k];
+    }
 
     /**
      * Вставляет узел перед указанным узлом

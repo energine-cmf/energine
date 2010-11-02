@@ -122,6 +122,7 @@ class BaseException extends Exception {
         $this->isDebugEnabled = (bool)Object::_getConfigValue('site.debug');
 
         $this->response = Response::getInstance();
+        $this->response->setHeader('X-Accel-Expires', 0);
         $this->isXML = isset($_GET['debug']);
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         if (isset($customMessages)) {
@@ -137,11 +138,13 @@ class BaseException extends Exception {
             $message = DBWorker::_translate($message, Language::getInstance()->getDefault());
         }
         elseif ($code == self::ERR_403) {
-        	$this->response->setStatus(403);
+            $this->response->setStatus(403);
+            $this->response->setHeader('X-Accel-Expires', 900);
             $message = DBWorker::_translate($message, Language::getInstance()->getCurrent());
         }
         elseif ($code == self::ERR_404) {
-        	$this->response->setStatus(404);
+            $this->response->setStatus(404);
+            $this->response->setHeader('X-Accel-Expires', 900);
             $message = DBWorker::_translate($message, Language::getInstance()->getCurrent());
         }
         elseif ($code != self::ERR_DB ) {

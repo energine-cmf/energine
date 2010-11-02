@@ -185,6 +185,7 @@ final class Response extends Singleton {
     public function setRedirect($location) {
 	    $this->setStatus(302);
         $this->setHeader('Location', $location);
+        $this->setHeader('Content-Length', 0);
         $this->commit();
     }
 

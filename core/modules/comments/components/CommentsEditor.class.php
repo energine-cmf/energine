@@ -122,8 +122,8 @@ class CommentsEditor extends Grid
     protected function main(){
     	parent::main();
     	
-    	$this->getDataDescription()->getFieldDescriptionByName('u_id')->setType(FieldDescription::FIELD_TYPE_STRING);
-    	$this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_STRING);
+    	if($f = $this->getDataDescription()->getFieldDescriptionByName('u_id'))$f->setType(FieldDescription::FIELD_TYPE_STRING);
+    	if($f = $this->getDataDescription()->getFieldDescriptionByName('target_id'))$f->setType(FieldDescription::FIELD_TYPE_STRING);
 		
     	foreach($this->commentTables as $i=>$table){
     		//пропускаем текущую таблицу - для неё уже создана нулевая вкладка

@@ -6,7 +6,7 @@
      * @subpackage configurator
      * @author Tigrenok
      * @copyright Energine 2007
-     * @version $Id: index.php,v 1.17 2007/11/26 14:11:07 tigrenok Exp $
+
      */
 
     /**

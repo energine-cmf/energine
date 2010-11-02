@@ -6,7 +6,7 @@
      * @subpackage configurator
      * @author Tigrenok
      * @copyright Energine 2007
-     * @version $Id: CheckerException.class.php,v 1.2 2007/11/05 17:55:09 tigrenok Exp $
+
      */
 
     /**
@@ -31,7 +31,7 @@
          * @return void
          * @access public
          */
-        public function __construct($message='', $template='') {
+        public function __construct($message = array(), $template='') {
             parent::__construct();
 			$this->message = $message;
             if ($template) {

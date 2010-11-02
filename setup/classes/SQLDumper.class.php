@@ -6,7 +6,7 @@
      * @subpackage configurator
      * @author Tigrenok
      * @copyright Energine 2007
-     * @version $Id: SQLDumper.class.php,v 1.21 2007/11/23 14:38:32 tigrenok Exp $
+
      */
 
     require_once('Model.class.php');

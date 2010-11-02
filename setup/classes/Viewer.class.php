@@ -6,7 +6,7 @@
      * @subpackage configurator
      * @author Tigrenok
      * @copyright Energine 2007
-     * @version $Id: Viewer.class.php,v 1.5 2007/11/12 15:15:56 tigrenok Exp $
+
      */
 
     /**

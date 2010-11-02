@@ -6,7 +6,7 @@
      * @subpackage configurator
      * @author Tigrenok
      * @copyright ColoCall 2007
-     * @version $Id: Processor.class.php,v 1.6 2008/08/01 14:21:06 pavka Exp $
+
      */
 
     require_once('Model.class.php');
@@ -184,7 +184,7 @@
                 $this->getViewer()->addBlock('Файл .htaccess успешно обновлен.',Viewer::TPL_CHECKER_CONFIRM);
             }
             
-           /* if (!@file_put_contents(
+            /*if (!@file_put_contents(
 	            $htaccessUploadsProtectedPath, 
 	            str_replace(
 	               array(

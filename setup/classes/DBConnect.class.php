@@ -6,7 +6,7 @@
      * @subpackage configurator
      * @author Tigrenok
      * @copyright Energine 2007
-     * @version $Id: DBConnect.class.php,v 1.5 2007/11/23 14:38:32 tigrenok Exp $
+
      */
 
     /**

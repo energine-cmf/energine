@@ -6,7 +6,7 @@
  * @subpackage configurator
  * @author Tigrenok
  * @copyright Energine 2007
- * @version $Id: ViewOptions.class.php,v 1.6 2008/04/11 10:31:19 pavka Exp $
+
  */
 
 require_once('Model.class.php');

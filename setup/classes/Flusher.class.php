@@ -6,7 +6,7 @@
      * @subpackage configurator
      * @author Tigrenok
      * @copyright Energine 2007
-     * @version $Id: Linker.class.php,v 1.14 2008/08/05 09:48:49 pavka Exp $
+
      */
 
     require_once('Model.class.php');

@@ -6,7 +6,7 @@
      * @subpackage configurator
      * @author Tigrenok
      * @copyright Energine 2007
-     * @version $Id: ServerChecker.class.php,v 1.12 2007/11/26 14:13:59 tigrenok Exp $
+
      */
 
     require_once('Model.class.php');

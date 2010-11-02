@@ -6,7 +6,7 @@
      * @subpackage configurator
      * @author Tigrenok
      * @copyright Energine 2007
-     * @version $Id: SystemConfig.class.php,v 1.5 2007/11/26 14:11:07 tigrenok Exp $
+
      */
 
     /**

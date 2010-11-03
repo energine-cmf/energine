@@ -29,8 +29,12 @@ class FeedbackForm extends DBDataSet {
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
-
-        $this->setTableName('apps_feedback');
+        $tableName = $this->getParam('tableName');
+        if(!($tableName)){
+            $this->setTableName('apps_feedback');
+        }else {
+            $this->setTableName($tableName);
+        }
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->setDataSetAction('send');
         $this->setTitle($this->translate('TXT_FEEDBACK_FORM'));
@@ -46,7 +50,12 @@ class FeedbackForm extends DBDataSet {
         $result = array_merge(parent::defineParams(),
         array(
         'active'=>true,
-        'textBlock' => false
+        'textBlock' => false,
+        'recipientEmail' => 'mail.feedback',
+        'userSubject' => 'TXT_SUBJ_FEEDBACK_USER',
+        'userBody' => 'TXT_BODY_FEEDBACK_USER',
+        'adminSubject' => 'TXT_SUBJ_FEEDBACK_ADMIN',
+        'adminBody' => 'TXT_BODY_FEEDBACK_ADMIN',
         ));
         return $result;
     }
@@ -118,19 +127,25 @@ class FeedbackForm extends DBDataSet {
 
 	            $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('feed_date'=>date('Y-m-d H:i:s')), array($this->getPK()=>$result));
 
+                $userSubject = $this->getParam('userSubject');
+                $userBody = $this->getParam('userBody');
+                $adminSubject = $this->getParam('adminSubject');
+                $adminBody = $this->getParam('adminBody');
+                $recipientEmail = $this->getRecipientEmail();
+
 	            $mailer = new Mail();
 	            $mailer->setFrom($this->getConfigValue('mail.from'))->
-	                setSubject($this->translate('TXT_SUBJ_FEEDBACK_USER'))->
-	                setText($this->translate('TXT_BODY_FEEDBACK_USER'), $data)->
+	                setSubject($this->translate($userSubject))->
+	                setText($this->translate($userBody), $data)->
 	                addTo($senderEmail, $senderEmail)
 	                ->send();
 	            try {
 	            	$mailer = new Mail();
 	            	$data['feed_email']  = $senderEmail;
 	                $mailer->setFrom($this->getConfigValue('mail.from'))->
-	                    setSubject($this->translate('TXT_SUBJ_FEEDBACK_ADMIN'))->
-	                    setText($this->translate('TXT_BODY_FEEDBACK_ADMIN'),$data)->
-	                    addTo($this->getConfigValue('mail.feedback'))->send();
+	                    setSubject($this->translate($adminSubject))->
+	                    setText($this->translate($adminBody),$data)->
+	                    addTo($recipientEmail)->send();
 	            }
 	            catch (Exception $e){
 	            }
@@ -152,4 +167,15 @@ class FeedbackForm extends DBDataSet {
    			$this->response->redirectToCurrentSection();
     	}
    }
+
+/**
+     * Визначає адресу отримувача
+     *
+     * @return string
+     * @access private
+     */
+   protected function getRecipientEmail(){
+        return $this->getConfigValue($this->getParam('recipientEmail'));
+   }
+
 }

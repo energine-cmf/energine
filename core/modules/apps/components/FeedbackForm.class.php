@@ -124,7 +124,10 @@ class FeedbackForm extends DBDataSet {
     protected function send() {
     	try{
 			$data[$this->getTableName()] = $_POST[$this->getTableName()];
-            $this->checkCaptcha();
+
+            if(!$this->document->getUser()->isAuthenticated()){
+                $this->checkCaptcha();
+            }
 
 	        if ($result = $this->saveData($data)) {
 	            $data = $data[$this->getTableName()];

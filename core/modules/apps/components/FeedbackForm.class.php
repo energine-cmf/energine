@@ -38,6 +38,7 @@ class FeedbackForm extends DBDataSet {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->setDataSetAction('send');
         $this->setTitle($this->translate('TXT_FEEDBACK_FORM'));
+        $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
     /**
 	 * Переопределен параметр active
@@ -59,6 +60,7 @@ class FeedbackForm extends DBDataSet {
         ));
         return $result;
     }
+
     /**
      * Сохраняет данные
      *
@@ -120,6 +122,7 @@ class FeedbackForm extends DBDataSet {
     protected function send() {
     	try{
 			$data[$this->getTableName()] = $_POST[$this->getTableName()];
+            $this->checkCaptcha();
 
 	        if ($result = $this->saveData($data)) {
 	            $data = $data[$this->getTableName()];
@@ -158,13 +161,11 @@ class FeedbackForm extends DBDataSet {
 	        	$textBlock->disable();
 	        }
 
-	        $field = new Field('result');
-	        $field->setData($this->translate('TXT_FEEDBACK_SUCCESS_SEND'));
-	        $this->getData()->addField($field);
+            $this->response->redirectToCurrentSection('success/');
 
     	}
     	catch (Exception $e){
-   			$this->response->redirectToCurrentSection();
+            $this->failure($e->getMessage(), $data[$this->getTableName()]);
     	}
    }
 
@@ -177,5 +178,68 @@ class FeedbackForm extends DBDataSet {
    protected function getRecipientEmail(){
         return $this->getConfigValue($this->getParam('recipientEmail'));
    }
+   /*
+    * Викликаємо у випадку помилки з captcha 
+    */
+   protected function failure($errorMessage, $data){
+        $this->config->setCurrentMethod('main');
+        $this->prepare();
+        $eFD = new FieldDescription('error_message');
+        $eFD->setMode(FieldDescription::FIELD_MODE_READ);
+        $eFD->setType(FieldDescription::FIELD_TYPE_CUSTOM);
+        $this->getDataDescription()->addFieldDescription($eFD);
+        $this->getData()->load(array(array_merge(array('error_message' => $errorMessage), $data)));
+        $this->getDataDescription()->getFieldDescriptionByName('error_message')->removeProperty('title');
+    }
+
+    /*
+     * Перевіряє капчу
+     */
+    protected function checkCaptcha(){
+        if(
+			 !isset($_SESSION['captchaCode'])
+			 ||
+			 !isset($_POST['captcha'])
+			 ||
+			 ($_SESSION['captchaCode'] != sha1(trim($_POST['captcha'])))
+			){
+                 //unset($_SESSION['captchaCode']);
+			     throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
+        }
+        unset($_SESSION['captchaCode']);
+        //stop($_SESSION);
+    }
+
+    protected function prepare(){
+    	parent::prepare();
+    	if(
+    	   $this->document->getUser()->isAuthenticated()
+    	   &&
+    	   ($captcha = $this->getDataDescription()->getFieldDescriptionByName('captcha'))
+    	 ){
+    	   $this->getDataDescription()->removeFieldDescription($captcha);
+    	   unset($_SESSION['captchaCode']);
+    	}
+    }
+
+    protected function success() {
+		$this->setBuilder($this->createBuilder());
+
+        $dataDescription = new DataDescription();
+		$ddi = new FieldDescription('result');
+		$ddi->setType(FieldDescription::FIELD_TYPE_TEXT);
+		$ddi->setMode(FieldDescription::FIELD_MODE_READ);
+		$ddi->removeProperty('title');
+		$dataDescription->addFieldDescription($ddi);
+
+		$data = new Data();
+		$di = new Field('result');
+		$di->setData($this->translate('TXT_FEEDBACK_SUCCESS_SEND'));
+		$data->addField($di);
+
+		$this->setDataDescription($dataDescription);
+		$this->setData($data);
+
+	}
 
 }

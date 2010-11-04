@@ -123,7 +123,7 @@ class Register extends DBDataSet {
 	    $eFD->setType(FieldDescription::FIELD_TYPE_STRING);
 	    $this->getDataDescription()->addFieldDescription($eFD);
 	    $this->getData()->load(array(array_merge(array('error_message' => $errorMessage), $data)));
-	    	
+        $this->getDataDescription()->getFieldDescriptionByName('error_message')->removeProperty('title');
 	}
 	
 
@@ -216,4 +216,6 @@ class Register extends DBDataSet {
 		$this->setDataDescription($dataDescription);
 		$this->setData($data);
 	}
+
+
 }

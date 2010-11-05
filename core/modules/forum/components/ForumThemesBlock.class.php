@@ -77,7 +77,7 @@ class ForumThemesBlock extends DataSet {
     protected function loadData() {
         $result = false;
         $result = $this->dbh->selectRequest('
-            SELECT  theme_id, theme_name, smap_id as theme_url, comment_num, SUBSTR(comment_name FROM 1 FOR 50) as comment_name , comment_created
+            SELECT  theme_id, theme_name, smap_id as theme_url, comment_num, comment_name , comment_created
             FROM `forum_theme` t
             LEFT JOIN forum_theme_comment c ON c.comment_id=t.comment_id
             WHERE t.comment_id IS NOT NULL and theme_closed =0  AND c.comment_created > (NOW() - INTERVAL 1 DAY)
@@ -86,8 +86,7 @@ class ForumThemesBlock extends DataSet {
         ');
         if(!empty($result) && is_array($result)){
             $result = array_map(function($row){
-                //inspect($row['theme_url']);
-                $row['comment_name'] = strip_tags($row['comment_name']);
+                $row['comment_name'] = substr(strip_tags($row['comment_name']), 0, 50);
                 $row['theme_url'] = Sitemap::getInstance(SiteManager::getInstance()->getDefaultSite()->id)->getURLByID($row['theme_url']).$row['theme_id'].'/';
                 return $row;
             }, $result);

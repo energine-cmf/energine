@@ -13,7 +13,7 @@
 	<xsl:variable name="LANG_ID" select="$DOC_PROPS[@name='lang']"/>
 	<xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@abbr"/>
 	<xsl:variable name="NBSP"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></xsl:variable>
-    
+    <xsl:variable name="STATIC_URL"><xsl:value-of select="$DOC_PROPS[@name='base']/@static"/></xsl:variable>
 
     <xsl:template match="/" xmlns:nrgn="http://energine.org" xmlns="http://www.w3.org/1999/xhtml">
         <html>
@@ -61,6 +61,7 @@
 							Energine.debug = true;
 		        		</xsl:if>
 		        		Energine.base = '<xsl:value-of select="$BASE"/>';
+                        Energine.static = '<xsl:value-of select="$STATIC_URL"/>';
                         try {
                         ScriptLoader.load(<xsl:for-each select="set:distinct($COMPONENTS/javascript/object[@name!='PageEditor']/@name)">'<xsl:value-of select="../@path" /><xsl:value-of select="." />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">

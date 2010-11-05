@@ -223,7 +223,7 @@ Asset.css = function(source, properties) {
             'rel' : 'stylesheet',
             'media' : 'Screen, projection',
             'type' : 'text/css',
-            'href' : ((Energine.base) ? Energine.base : '') + 'stylesheets/' +
+            'href' : ((Energine.static) ? Energine.static : '') + 'stylesheets/' +
                     source
         }, properties)).inject(document.head);
     }

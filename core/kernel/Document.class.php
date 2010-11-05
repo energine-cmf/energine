@@ -230,8 +230,9 @@ final class Document extends Singleton {
         $dom_root->appendChild($dom_documentProperties);
         
         //Дополнительные свойства, имеющие параметры
-        $prop = $this->doc->createElement('property', SiteManager::getInstance()->getCurrentSite()->base);
+        $prop = $this->doc->createElement('property', ($baseURL = SiteManager::getInstance()->getCurrentSite()->base));
         $prop ->setAttribute('name', 'base');
+        $prop ->setAttribute('static', (($staticURL = $this->getConfigValue('site.static'))?$staticURL:$baseURL));
         $prop ->setAttribute('folder', SiteManager::getInstance()->getCurrentSite()->folder);
         $dom_documentProperties->appendChild($prop);
         
@@ -240,7 +241,7 @@ final class Document extends Singleton {
         $prop ->setAttribute('abbr', $this->request->getLangSegment());
         $prop ->setAttribute('real_abbr', Language::getInstance()->getAbbrByID($this->getLang()));
         $dom_documentProperties->appendChild($prop);
-        unset($prop);
+        unset($prop, $staticURL, $baseURL);
         /*
         $dom_layout = $this->doc->createElement('layout');
         $dom_layout->setAttribute('file', $this->documentInfo['layoutFileName']);

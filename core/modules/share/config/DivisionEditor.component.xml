@@ -103,6 +103,7 @@
                 <field name="smap_adocean_300_250"/>
                 <field name="smap_adocean_728_90"/>
                 <field name="smap_adocean_richmedia"/>
+                <field name="smap_adocean_video"/>
                 <field name="tags" type="textbox"  title="FIELD_TAGS" nullable="nullable"/>              
 				<field name="smap_is_disabled"/>
                 <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>				
@@ -147,6 +148,7 @@
                 <field name="smap_adocean_300_250"/>
                 <field name="smap_adocean_728_90"/>
                 <field name="smap_adocean_richmedia"/>
+                <field name="smap_adocean_video"/>
 				<field name="tags" type="textbox"  title="FIELD_TAGS" nullable="nullable"/>              
 				<field name="smap_is_disabled"/>
                 <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>             				

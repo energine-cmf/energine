@@ -79,7 +79,7 @@ class ForumMessagesBlock extends DataSet {
     protected function loadData() {
         $result = false;
         $result = $this->dbh->selectRequest('
-            SELECT c.`comment_id`, SUBSTR(comment_name FROM 1 FOR 70) as comment_name, (SELECT CEIL(COUNT(comment_id)/20) FROM forum_theme_comment c2 WHERE c2.target_id=c.target_id) as comment_page, comment_created, theme_name, theme_id, smap_id as theme_url, u_nick as user_name
+            SELECT c.`comment_id`, comment_name, (SELECT CEIL(COUNT(comment_id)/20) FROM forum_theme_comment c2 WHERE c2.target_id=c.target_id) as comment_page, comment_created, theme_name, theme_id, smap_id as theme_url, u_nick as user_name
             FROM `forum_theme_comment` c
             LEFT JOIN forum_theme t ON c.target_id=t.theme_id
             LEFT JOIN user_users u ON c.u_id=u.u_id
@@ -88,7 +88,7 @@ class ForumMessagesBlock extends DataSet {
         ');
         if(!empty($result) && is_array($result)){
             $result = array_map(function($row){
-                $row['comment_name'] = strip_tags($row['comment_name']);
+                $row['comment_name'] = substr(strip_tags($row['comment_name']), 0, 70);
                 $row['theme_url'] = Sitemap::getInstance(SiteManager::getInstance()->getDefaultSite()->id)->getURLByID($row['theme_url']).$row['theme_id'].'/';
                 $row['comment_url'] = $row['theme_url'].'page-'.$row['comment_page'].'/#'.$row['comment_id'];
                 unset($row['theme_id'], $row['comment_page']);

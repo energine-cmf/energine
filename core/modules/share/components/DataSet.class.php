@@ -655,47 +655,39 @@ abstract class DataSet extends Component {
     public static function cleanupHTML($data) {
         $aggressive = isset($_GET['aggressive']);
         //Если подключено расширение tidy
-        $data = trim($data);
-        if (function_exists('tidy_get_output') && $aggressive) {
+
+        if (function_exists('tidy_get_output')) {
             try {
                 $tidy = new tidy();
                 $config = array(
-                    'join-classes' => false,
-                    'merge-divs' => false,
-                    'merge-spans' => false,
-                    'clean' => false,
-                    'bare' => false,
+                    'bare' => true,
                     'drop-font-tags' => true,
                     'drop-proprietary-attributes' => true,
                     'hide-comments' => true,
-                    'logical-emphasis' => false,
+                    'logical-emphasis' => true,
                     'numeric-entities' => true,
                     'show-body-only' => true,
                     'quote-nbsp' => false,
                     'indent' => 'auto',
                     'wrap' => 72,
                     'output-html' => true,
-                    'new-empty-tags' => 'i,a,span'
                 );
-                //if ($aggressive) {
+                if ($aggressive) {
                     $config = array_merge(
                         $config,
                         array(
-                            'bare' => true,
                             'clean' => true,
                             'word-2000' => true,
-                            'drop-empty-paras' => true,
-                            'join-classes' => true,
-                            'logical-emphasis' => true,
-                            'merge-divs' => true,
-                            'merge-spans' => true,
-                            //'new-empty-tags' => ''
+                            'drop-empty-paras' => true
                         )
                     );
-                //}
+                }
                 $data = $tidy->repairString($data, $config, 'utf8');
+
             }
-            catch (Exception $dummyError) {}
+            catch (Exception $dummyError) {
+                //inspect($dummyError);
+            }
             unset($tidy);
 
         }
@@ -714,7 +706,7 @@ abstract class DataSet extends Component {
             'p', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup','pre',
             'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
             );
-             
+
             if (!$aggressive) {
             	$allowedTags = array_merge($allowedTags, array(
                 'img',
@@ -743,10 +735,10 @@ abstract class DataSet extends Component {
             	array_walk($allowedTags, create_function('$element, $key, $jewix', '$jewix->cfgAllowTagParams($element, array("id", "class", "style"));'), $jewix);
             	$jewix->cfgAllowTagParams('img',
             	array(
-	                'align', 
-	                'alt', 
-	                'src', 
-	                'vspace', 
+	                'align',
+	                'alt',
+	                'src',
+	                'vspace',
 	                'width',
 	                'hspace',
 	                'height',

@@ -42,10 +42,13 @@ final class LangSwitcher extends DataSet {
         $lang = Language::getInstance();
         $data = $lang->getLanguages();
 
-        foreach ($data as $langID => $LangInfo) {
-            $result[$langID] = $LangInfo;
+        foreach ($data as $langID => $langInfo) {
+            if($langInfo['lang_default']){
+                $langInfo['lang_abbr'] = '';
+            }
+            $result[$langID] = $langInfo;
             $result[$langID]['lang_id'] = $langID;
-            $result[$langID]['lang_url'] = $result[$langID]['lang_abbr'] . '/' .
+            $result[$langID]['lang_url'] = $result[$langID]['lang_abbr'] . (($result[$langID]['lang_abbr'])?'/':'') .
                     Request::getInstance()->getPath(Request::PATH_WHOLE, true);
         }
         return $result;

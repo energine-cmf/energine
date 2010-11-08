@@ -656,7 +656,7 @@ abstract class DataSet extends Component {
         $aggressive = isset($_GET['aggressive']);
         //Если подключено расширение tidy
 
-        if (function_exists('tidy_get_output')) {
+        if (function_exists('tidy_get_output') && $aggressive) {
             try {
                 $tidy = new tidy();
                 $config = array(
@@ -672,7 +672,7 @@ abstract class DataSet extends Component {
                     'wrap' => 72,
                     'output-html' => true,
                 );
-                if ($aggressive) {
+                //if ($aggressive) {
                     $config = array_merge(
                         $config,
                         array(
@@ -681,7 +681,7 @@ abstract class DataSet extends Component {
                             'drop-empty-paras' => true
                         )
                     );
-                }
+                //}
                 $data = $tidy->repairString($data, $config, 'utf8');
 
             }

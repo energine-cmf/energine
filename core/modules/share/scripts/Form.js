@@ -30,8 +30,9 @@ var Form = new Class({
         (this.componentElement.getElements('.inp_date') ||
                 []).extend((this.componentElement.getElements('.inp_datetime') ||
                 [])).each(function(dateControl) {
+            var isNullable = !dateControl.getParent('.field').hasClass('required');
             this.dateControls.push(
-                    (dateControl.hasClass('inp_date') ? Energine.createDatePicker(dateControl, !dateControl.getParent('.field').hasClass('required')) : Energine.createDateTimePicker(dateControl))
+                    (dateControl.hasClass('inp_date') ? Energine.createDatePicker(dateControl, isNullable) : Energine.createDateTimePicker(dateControl, isNullable))
                     );
         }, this);
 

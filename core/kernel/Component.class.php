@@ -374,18 +374,17 @@ class Component extends DBWorker implements Block {
      * @return void
      */
     final public function run() {
-        if ($this->document->getRights() >= $this->getMethodRights()) {
-            if (!method_exists($this, $this->getAction())) {
-                throw new SystemException(
-                    'ERR_DEV_NO_ACTION',
-                    SystemException::ERR_DEVELOPER,
-                    array($this->getAction(), $this->getName())
-                );
-            }
-            $this->{
-            $this->getAction()
-            }();
+        if (!method_exists($this, $this->getAction())) {
+            throw new SystemException(
+                'ERR_DEV_NO_ACTION',
+                SystemException::ERR_DEVELOPER,
+                array($this->getAction(), $this->getName())
+            );
         }
+        $this->{
+        $this->getAction()
+        }();
+
     }
 
     /**

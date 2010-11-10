@@ -15,7 +15,7 @@
  * @subpackage core
  * @author dr.Pavka
  */
-class ComponentContainer extends Object implements Block, Iterator{
+class ComponentContainer extends Object implements Block, Iterator {
     /**
      * Свойства контейнера
      *
@@ -42,19 +42,20 @@ class ComponentContainer extends Object implements Block, Iterator{
      * @var Document
      */
     private $document;
+
     /**
      * @param  $name string
 
      * @param  $properties array
      * @return void
      */
-    public function __construct($name, array $properties = array()){
+    public function __construct($name, array $properties = array()) {
         parent::__construct();
         $this->name = $name;
         $this->document = Document::getInstance();
 
         $this->properties = $properties;
-        if(!isset($this->properties['tag'])) {
+        if (!isset($this->properties['tag'])) {
             $this->properties['tag'] = 'container';
         }
         $this->document->componentManager->register($this);
@@ -63,6 +64,7 @@ class ComponentContainer extends Object implements Block, Iterator{
     public function add(Block $block) {
         $this->blocks[$block->getName()] = $block;
     }
+
     /**
      * @static
      * @throws SystemException
@@ -70,16 +72,16 @@ class ComponentContainer extends Object implements Block, Iterator{
 
      * @return Container
      */
-    static public function createFromDescription(SimpleXMLElement $containerDescription, array $additionalAttributes = array()){
+    static public function createFromDescription(SimpleXMLElement $containerDescription, array $additionalAttributes = array()) {
         $attributes = $containerDescription->attributes();
-        if(in_array($containerDescription->getName(), array('page', 'content'))){
+        if (in_array($containerDescription->getName(), array('page', 'content'))) {
             $properties['name'] = $containerDescription->getName();
         }
-        elseif(!isset($attributes['name'])){
+        elseif (!isset($attributes['name'])) {
             throw new SystemException('ERR_NO_CONTAINER_NAME', SystemException::ERR_DEVELOPER);
         }
-        foreach($attributes as $propertyName => $propertyValue) {
-            $properties[(string)$propertyName] = (string)$propertyValue;
+        foreach ($attributes as $propertyName => $propertyValue) {
+            $properties[(string) $propertyName] = (string) $propertyValue;
         }
         $name = $properties['name'];
         unset($properties['name']);
@@ -87,16 +89,17 @@ class ComponentContainer extends Object implements Block, Iterator{
 
         $result = new ComponentContainer($name, $properties);
 
-        foreach($containerDescription->children() as $blockDescription) {
+        foreach ($containerDescription->children() as $blockDescription) {
             $result->add(ComponentManager::createBlockFromDescription($blockDescription));
         }
 
         return $result;
     }
 
-    public function isEmpty(){
-        return (boolean)sizeof($this->childs);
+    public function isEmpty() {
+        return (boolean) sizeof($this->childs);
     }
+
     /**
      * @return string
      */
@@ -105,12 +108,12 @@ class ComponentContainer extends Object implements Block, Iterator{
     }
 
     public function setProperty($propertyName, $propertyValue) {
-        $this->properties[(string)$propertyName] = (string)$propertyValue;
+        $this->properties[(string) $propertyName] = (string) $propertyValue;
     }
 
     public function getProperty($propertyName) {
         $result = null;
-        if(isset($this->properties[$propertyName])) {
+        if (isset($this->properties[$propertyName])) {
             $result = $this->properties[$propertyName];
         }
         return $result;
@@ -128,26 +131,21 @@ class ComponentContainer extends Object implements Block, Iterator{
         $containerDOM = $doc->createElement($this->properties['tag']);
         $containerDOM->setAttribute('name', $this->getName());
         $doc->appendChild($containerDOM);
-        foreach($this->properties as $propertyName => $propertyValue) {
-            if($propertyName != 'tag') {
+        foreach ($this->properties as $propertyName => $propertyValue) {
+            if ($propertyName != 'tag') {
                 $containerDOM->setAttribute($propertyName, $propertyValue);
             }
         }
-        foreach($this->blocks as $block) {
-            if(
-                $block instanceof ComponentContainer
-                ||
-                (
-                    $block instanceof Component
-                    &&
+        foreach ($this->blocks as $block) {
+            if (
                     $block->enabled()
                     &&
-                    ($this->document->getRights()>= $block->getMethodRights())
-                )
+                    ($this->document->getRights() >= $block->getMethodRights())
             ) {
                 $blockDOM = $block->build();
-                if($blockDOM instanceof DOMDocument) {
-                    $blockDOM = $doc->importNode($blockDOM->documentElement, true);
+                if ($blockDOM instanceof DOMDocument) {
+                    $blockDOM =
+                            $doc->importNode($blockDOM->documentElement, true);
                     $containerDOM->appendChild($blockDOM);
                 }
             }
@@ -155,12 +153,19 @@ class ComponentContainer extends Object implements Block, Iterator{
 
         return $doc;
     }
+
     /**
      * @return void
      */
     public function run() {
-        foreach($this->blocks as $block) {
-            $block->run();
+        foreach ($this->blocks as $block) {
+            if (
+                $block->enabled()
+                &&
+                ($this->document->getRights() >= $block->getMethodRights())
+            ) {
+                $block->run();
+            }
         }
     }
 
@@ -178,11 +183,30 @@ class ComponentContainer extends Object implements Block, Iterator{
     }
 
     public function next() {
-        $this->iteratorIndex ++;
+        $this->iteratorIndex++;
     }
 
     public function current() {
         return $this->blocks[$this->childNames[$this->iteratorIndex]];
     }
 
+    /**
+     * Метод всегда возвращает true
+     * Используется для единообразного вызова наследников Block
+     *
+     * @return bool
+     */
+    public function enabled() {
+        return true;
+    }
+
+    /**
+     * Всегда возвращает минимальное значение прав
+     * Используется для единообразного вызова наследников Block
+     *
+     * @return int
+     */
+    public function getMethodRights() {
+        return 0;
+    }
 }

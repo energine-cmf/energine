@@ -356,6 +356,17 @@ interface Block {
      * @return void
      */
     public function run();
+    
+    /**
+     * @abstract
+     * @return bool
+     */
+    public function enabled();
+    /**
+     * @abstract
+     * @return void
+     */
+    public function getMethodRights();
 
     /**
      * @abstract

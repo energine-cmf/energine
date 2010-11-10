@@ -7,7 +7,6 @@
  * @subpackage core
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
  */
 
 /**
@@ -257,14 +256,7 @@ final class Document extends Singleton {
             $componentResult = false;
             $dom_errors = false;
             try {
-                if($component instanceof Component) {
-                    if($component->enabled() && $this->getRights()>= $component->getMethodRights()){
-                        $componentResult = $component->build();
-                    }
-                }
-                else {
-                    $componentResult = $component->build();
-                }
+                $componentResult = $component->build();
             }
             catch (DummyException $dummyException){
             }
@@ -389,7 +381,13 @@ final class Document extends Singleton {
      */
     public function runComponents() {
         foreach ($this->componentManager as $block) {
-                $block->run();
+                if(
+                    $block->enabled()
+                    &&
+                    ($this->getRights()>= $block->getMethodRights())
+                ){
+                    $block->run();
+                }
             /*
             * Запускаем определение текущего действия компонента
             * и загрузку конфигурационной информации.

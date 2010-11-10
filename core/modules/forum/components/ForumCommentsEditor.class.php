@@ -39,7 +39,11 @@ class ForumCommentsEditor extends Grid {
 
     protected function loadDataDescription() {
         $result = parent::loadDataDescription();
-        if ($this->getAction() == 'edit') {
+        if($this->getAction() == 'main'){
+            $result['u_id']['key'] = false;
+            $result['target_id']['key'] = false;
+        }
+        elseif ($this->getAction() == 'edit') {
             unset($result['comment_parent_id']);
             $result['u_id']['key'] = false;
             $result['u_id']['type'] = QAL::COLTYPE_STRING;
@@ -53,30 +57,14 @@ class ForumCommentsEditor extends Grid {
      * 
      * @return array|false
      */
-    protected function loadData(){
-        if(in_array($this->getAction(), array('main', 'getRawData'))){
-            if ($this->pager) {
-                $limit = ' limit '. implode(',', $this->pager->getLimit());
-            }
-            else $limit = '';
-
-            $sql = 'select c .*, u.u_nick
-            from forum_theme_comment c
-                join user_users u using(u_id)
-            '. $limit;
-            $res = $this->dbh->selectRequest($sql);
-
-            // после сего надругательствecho добавляем поле ника
-            $f = new FieldDescription('u_nick');
-            $this->getDataDescription()->addFieldDescription($f);
-
-            if ($this->pager) {
-                $recordCount = simplifyDBResult($this->dbh->select($this->getTableName(), 'count(*) as recordsCount', $this->getFilter()), 'recordsCount', true);
-                $this->pager->setRecordsCount($recordCount);
-            }
-        }
-        else{
-            $res = parent::loadData();
+    protected function getFKData($fkTableName, $fkKeyName){
+        $res = parent::getFKData($fkTableName, $fkKeyName);
+        if(
+            in_array($this->getAction(), array('main', 'getRawData'))
+            &&
+            ($fkKeyName == 'u_id')
+        ){
+            $res[2] = 'u_nick';
         }
         return $res;
     }

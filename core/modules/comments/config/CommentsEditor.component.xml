@@ -9,8 +9,8 @@
 				<field name="comment_approved"></field>
                 <field name="comment_id"></field>
                 <!-- <field name="comment_parent_id"></field> -->
-                <field name="target_id"></field>
-                <field name="u_id"></field>
+                <!--<field name="target_id"></field>-->
+                <!--<field name="u_id"></field>-->
                 <field name="comment_created"></field>
                 <field name="comment_name" type="text" pattern="/^.+$/m"></field>
                 

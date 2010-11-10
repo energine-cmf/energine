@@ -232,6 +232,7 @@ final class Document extends Singleton {
         $prop = $this->doc->createElement('property', ($baseURL = SiteManager::getInstance()->getCurrentSite()->base));
         $prop ->setAttribute('name', 'base');
         $prop ->setAttribute('static', (($staticURL = $this->getConfigValue('site.static'))?$staticURL:$baseURL));
+        $prop ->setAttribute('media', (($mediaURL = $this->getConfigValue('site.media'))?$mediaURL:$baseURL));
         $prop ->setAttribute('folder', SiteManager::getInstance()->getCurrentSite()->folder);
         $dom_documentProperties->appendChild($prop);
         

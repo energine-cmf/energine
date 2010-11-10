@@ -13,7 +13,8 @@
 	<xsl:variable name="LANG_ID" select="$DOC_PROPS[@name='lang']"/>
 	<xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@abbr"/>
 	<xsl:variable name="NBSP"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></xsl:variable>
-    <xsl:variable name="STATIC_URL"><xsl:value-of select="$DOC_PROPS[@name='base']/@static"/></xsl:variable>
+    <xsl:variable name="STATIC_URL"><xsl:value-of select="$BASE/@static"/></xsl:variable>
+    <xsl:variable name="MEDIA_URL"><xsl:value-of select="$BASE/@media"/></xsl:variable>
 
     <xsl:template match="/" xmlns:nrgn="http://energine.org" xmlns="http://www.w3.org/1999/xhtml">
         <html>
@@ -30,7 +31,7 @@
                         <script type="text/javascript">window.singleMode = true;</script>
             		</xsl:otherwise>
         		</xsl:choose>
-			<link rel="stylesheet" type="text/css" href="/stylesheets/energine.css"/>
+			<link rel="stylesheet" type="text/css" href="{$STATIC_URL}/stylesheets/energine.css"/>
                 <xsl:if test="$DOC_PROPS[@name='google_verify']">
                     <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
                 </xsl:if>
@@ -38,15 +39,15 @@
                 <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
                 <xsl:choose>
                     <xsl:when test="document/@debug=1">
-                        <script type="text/javascript" src="/scripts/mootools-debug.js"></script>
-                        <script type="text/javascript" src="/scripts/mootools-more-debug.js"></script>
+                        <script type="text/javascript" src="{$STATIC_URL}/scripts/mootools-debug.js"></script>
+                        <script type="text/javascript" src="{$STATIC_URL}/scripts/mootools-more-debug.js"></script>
                     </xsl:when>
                     <xsl:otherwise>
-                        <script type="text/javascript" src="/scripts/mootools.js"></script>
-                        <script type="text/javascript" src="/scripts/mootools-more.js"></script>
+                        <script type="text/javascript" src="{$STATIC_URL}/scripts/mootools.js"></script>
+                        <script type="text/javascript" src="{$STATIC_URL}/scripts/mootools-more.js"></script>
                     </xsl:otherwise>
                 </xsl:choose>
-        		<script type="text/javascript" src="/scripts/Energine.js"></script>
+        		<script type="text/javascript" src="{$STATIC_URL}/scripts/Energine.js"></script>
                 <xsl:if test="not($DOC_PROPS[@name='single'])"  >
                     <xsl:call-template name="interface_js"/>
                 </xsl:if>

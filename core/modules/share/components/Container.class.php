@@ -9,7 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/Control.class.php');
 
 /**
  * Выпадающее меню

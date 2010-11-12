@@ -163,10 +163,6 @@ class DBDataSet extends DataSet {
             }
             //Если не пустой массив полей для отбора
             if (!empty($dbFields)) {
-                if ($this->pager) {
-                    $recordCount = simplifyDBResult($this->dbh->select($this->getTableName(), 'count(*) as recordsCount', $this->getFilter()), 'recordsCount', true);
-                    $this->pager->setRecordsCount($recordCount);
-                }
                 if ($this->getType() == self::COMPONENT_TYPE_FORM_ADD ) {
                     $dbFields = array_flip($dbFields);
                     foreach ($dbFields as $key => $value) {
@@ -175,10 +171,16 @@ class DBDataSet extends DataSet {
                     $res = array($dbFields);
                 }
                 else {
-                    $res = $this->dbh->select($this->getTableName(), $dbFields, $this->getFilter(), $this->getOrder(), $this->getLimit());
+                    $res = $this->dbh->select($this->getTableName(), (($this->pager)?' SQL_CALC_FOUND_ROWS ':'').implode(',',$dbFields), $this->getFilter(), $this->getOrder(), $this->getLimit());
                 }
                 if (is_array($res)) {
                     $data = $res;
+                    if($this->pager){
+                        if(!($recordsCount = simplifyDBResult($this->dbh->selectRequest('SELECT FOUND_ROWS() as c'), 'c', true))){
+                            $recordsCount = 0;
+                        }
+                        $this->pager->setRecordsCount($recordsCount);
+                    }
                 }
             }
         }
@@ -255,26 +257,11 @@ class DBDataSet extends DataSet {
         }
 
         //Если существует листалка указываем ей количество записей
-        if ($this->pager) {
-            //Определяем общее количество записей
-            $request = sprintf(
-            'SELECT COUNT(*) as records_count
-        	       FROM %s
-        	       LEFT JOIN %s ON %2$s.%s = %1$s.%3$s
-        	       %s',
-            $this->getTableName(),
-            $this->getTranslationTableName(), 
-            $this->getPK(), 
-            $filter
-            );
-            $recordsCount = $this->dbh->selectRequest($request);
-            $recordsCount = simplifyDBResult($recordsCount, 'records_count', true);
-            $this->pager->setRecordsCount($recordsCount);
-        }
+
         if ($this->getType() != self::COMPONENT_TYPE_FORM_ADD) {
             $request=sprintf(
-            'SELECT
-        	       %s.%s, %s.lang_id,
+            'SELECT '. (($this->pager)?' SQL_CALC_FOUND_ROWS ':'').
+        	       ' %s.%s, %s.lang_id,
         	       %s
         	       %s
         	       FROM %1$s
@@ -291,7 +278,12 @@ class DBDataSet extends DataSet {
             $limit
             );
             $data = $this->dbh->selectRequest($request);
-
+            if($this->pager){
+                if(!($recordsCount = simplifyDBResult($this->dbh->selectRequest('SELECT FOUND_ROWS() as c'), 'c', true))){
+                    $recordsCount = 0;
+                }
+                $this->pager->setRecordsCount($recordsCount);
+            }
             //Если данные не только для текущего языка
             if (is_array($data) &&(!$this->getDataLanguage() || $this->getDataLanguage()&&!$this->getParam('onlyCurrentLang') && isset($dbFields[$this->getTranslationTableName()]))) {
 

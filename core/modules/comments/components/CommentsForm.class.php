@@ -114,9 +114,9 @@ class CommentsForm extends DataSet {
             if (!isset($_POST['target_id']) or !($targetId = (int) $_POST['target_id']))
                 throw new Exception('Mistake targetId');
 
-            /*if(!$this->isTargetEditable()){
+            if(!$this->isTargetEditable()){
                 throw new SystemException('read only');
-            }*/
+            }
 
             if (isset($_POST['comment_name']) and $commentName = trim($_POST['comment_name'])) {
                 if ($this->isTree and isset($_POST['parent_id'])) {
@@ -126,8 +126,7 @@ class CommentsForm extends DataSet {
 
                 $commentName = $this->clearPost($commentName);
 
-                //if(isset($_POST['comment_id']) and $commentId = intval($_POST['comment_id'])){
-                if(isset($_POST['comment_id']) and $commentId = intval($_POST['comment_id']) && $this->isTargetEditable()){
+                if(isset($_POST['comment_id']) and $commentId = intval($_POST['comment_id'])){
                     // отредактированный коммент
                     if(!$isUpdated = $this->updateComment($targetId, $commentName, $commentId))
                         throw new Exception('Save error');
@@ -229,14 +228,6 @@ class CommentsForm extends DataSet {
             return false;
         $right = Sitemap::getInstance()->getDocumentRights($this->document->getID());
         return $right > ACCESS_READ;
-    }
-
-    /**
-     * Коментувати може будь-який авторизований юзер
-     * @return bool
-     */
-    protected function canPostComment(){
-        return $this->document->user->isAuthenticated();
     }
 
     private function updateComment($targetId, $commentName, $commentId){
@@ -364,8 +355,7 @@ class CommentsForm extends DataSet {
                 }
                 $targetId = $ap[$apName];
 
-                //if($this->isTargetEditable()){
-                if($this->canPostComment()){
+                if($this->isTargetEditable()){
                     $this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
                     
                     $f = new Field('target_id');
@@ -384,7 +374,7 @@ class CommentsForm extends DataSet {
                 }
                 else{
                     // форма нужна только для вывода списка комментариев
-                        $this->setProperty('hide_form', 1);
+                    $this->setProperty('hide_form', 1);
                 }
                 $this->addTranslation('COMMENTS'); // коментирии
             }

@@ -8,6 +8,7 @@
  * @copyright d.pavka@gmail.com
  */
 
+require_once('DBWorker.class.php');
  /**
   * Абстрактный класс предок для всех синглтонов
   *

@@ -96,6 +96,7 @@ define('ACCESS_EDIT', 2);
  */
 define('ACCESS_FULL', 3);
 
+require_once('Memcacher.class.php');
 
 /**
  * Функция автозагрузки файлов классов
@@ -106,14 +107,20 @@ define('ACCESS_FULL', 3);
  */
 function __autoload($className){
     static $paths = array();
-    //если массив путей не заполнен - заполняем
+    //если массив путей не заполнен
     if (empty($paths)) {
-        $tmp = glob(
-            '{'.implode(',', array(CORE_FRAMEWORK_DIR, CORE_COMPONENTS_DIR, SITE_COMPONENTS_DIR)).'}/*.class.php',
-            GLOB_BRACE
-        );
-        foreach ($tmp as $fileName) {
-        	$paths[substr(strrchr($fileName,'/'), 1, -10)] = $fileName;
+        //Если мемкеш не заенейблен или значения путей в нем нет
+        $mc = Memcacher::getInstance();
+        if(!$mc->isEnabled() || !($paths = $mc->retrieve('class_structure'))){
+            //собираем в статическую переменную
+            $tmp = glob(
+                '{'.implode(',', array(CORE_FRAMEWORK_DIR, CORE_COMPONENTS_DIR, SITE_COMPONENTS_DIR)).'}/*.class.php',
+                GLOB_BRACE
+            );
+            foreach ($tmp as $fileName) {
+                $paths[substr(strrchr($fileName,'/'), 1, -10)] = $fileName;
+            }
+            $mc->store('class_structure', $paths);
         }
     }
 

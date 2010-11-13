@@ -7,9 +7,8 @@
  * @subpackage core
  * @author 1m.dm
  * @copyright Energine 2006
- * @version $Id$
  */
-
+require_once('Object.class.php');
 /**
  * Предоставляет производным классам ссылку на объект для работы с БД.
  *

@@ -201,7 +201,6 @@ abstract class DBA extends Object {
 		$query = $this->constructQuery(func_get_args());
 		$this->lastQuery = $query;
 		$res = $this->slavePdo->query($query);
-
 		if (!($res instanceof PDOStatement)) {
 			$errorInfo = $this->slavePdo->errorInfo();
 			throw new SystemException(self::ERR_BAD_REQUEST, SystemException::ERR_DB, array($this->getLastRequest(), $errorInfo[2]));

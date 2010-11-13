@@ -24,11 +24,6 @@ final class DBStructureInfo extends Object {
      */
     private $structure;
     /**
-     * ОБъект мемкеш
-     * @var Memcached
-     */
-    private $memcache;
-    /**
      * Объект pdo - передается из DBA
      * @var PDO
      */
@@ -42,19 +37,11 @@ final class DBStructureInfo extends Object {
     public function __construct(PDO $pdo) {
         parent::__construct();
         $this->pdo = $pdo;
-
-        if ($this->getConfigValue('cache.enable')) {
-            $this->memcache = new Memcached();
-/*            inspect($this->memcache->addServer($this->getConfigValue('cache.host').'abc', $this->getConfigValue('cache.port')));*/
-            $this->memcache->addServer($this->getConfigValue('cache.host'), $this->getConfigValue('cache.port'));
-            if (!($str = $this->memcache->get('structure'))) {
-                $this->memcache->set('structure', serialize(
-                    $this->structure = $this->collectDBInfo()));
+        $mc = Memcacher::getInstance();
+        if($mc->isEnabled()){
+            if(!($this->structure = $mc->retrieve('structure'))){
+                $mc->store('structure', $this->structure = $this->collectDBInfo());
             }
-            else {
-                $this->structure = unserialize($str);
-            }
-            //$this->memcache->delete('structure');
         }
     }
 
@@ -106,59 +93,6 @@ final class DBStructureInfo extends Object {
         return $result;
     }
 
-    /**
-     * Возвращает информацию о колонках таблицы
-     * Записывает данные в $this->structure для последующего использования
-     *
-     * @param  string $tableName
-     * @return array|mixed
-     */
- /*   public function getTableMeta($tableName) {
-        if (!isset($this->structure[$tableName]) ||
-                ($this->structure[$tableName] === array())) {
-            $res = $this->pdo->query("SHOW COLUMNS FROM `$tableName`");
-            if ($res) {
-                $this->structure[$tableName] = array();
-                while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-                    $name = $row['Field'];
-                    //$type = strtoupper(strstr($row['Type'], '(', true));
-
-                    $nullable =
-                            (strtolower($row['Null']) == 'yes' ? true : false);
-                    $index = $row['Key'];
-                    $length = false;
-
-                    preg_match('/([A-Z]+)(\(([0-9]+)(,[0-9]+)?\))?/', strtoupper($row['Type']), $matches);
-                    if (count($matches) >= 2) {
-                        $type = $matches[1];
-                        if (isset($matches[3])) {
-                            $length = intval($matches[3]);
-                        }
-                    }
-                    $type = self::convertType($type);
-
-                    switch ($index) {
-                        case 'PRI':
-                            $fk = $this->getForeignKeyInfo($tableName, $name);
-                            $key = ($fk == false ? true : $fk);
-                            break;
-                        case 'MUL':
-                            $key = $this->getForeignKeyInfo($tableName, $name);
-                            break;
-                        default:
-                            $key = false;
-                    }
-                    $default =
-                            (empty($row['Default'])) ? false : $row['Default'];
-                    $this->structure[$tableName][$name] =
-                            compact('nullable', 'length', 'default', 'key', 'type', 'tableName', 'index');
-                }
-            }
-        }
-inspect($tableName, $this->structure[$tableName]);
-        return $this->structure[$tableName];
-    }
-*/
     public function getTableMeta($tableName) {
         if (!isset($this->structure[$tableName]) ||
                 ($this->structure[$tableName] === array())) {
@@ -255,38 +189,6 @@ inspect($tableName, $this->structure[$tableName]);
         }
         return $res;
     }
-
-    /**
-     * Возвращает информацию о  внешних ключах
-     *
-     * @param  string$tableName
-     * @param  string $fieldName
-     * @return array | bool
-     * @staticvar array $foreignKeyInfo
-     * @staticvar array $createTableInfo
-     */
-    /*private function getForeignKeyInfo($tableName, $fieldName) {
-        static $foreignKeyInfo, $createTableInfo;
-        if (!isset($createTableInfo[$tableName])) {
-            $createTableInfo[$tableName] =
-                    $this->pdo->query("SHOW CREATE TABLE `$tableName`")->fetchColumn(1);
-        }
-        if (!isset($foreignKeyInfo[$tableName][$fieldName])) {
-            $res =
-                    preg_match_all("/FOREIGN KEY \(`([_a-z0-9]+)`\) REFERENCES `([^`]+)` \(`([^`]+)`\)/m", $createTableInfo[$tableName], $matches, PREG_SET_ORDER);
-            if (!empty($res)) {
-                foreach ($matches as $row) {
-                    $foreignKeyInfo[$tableName][$row[1]] =
-                            array('tableName' => $row[2], 'fieldName' => $row[3]);
-                }
-            }
-        }
-        if (!isset($foreignKeyInfo[$tableName][$fieldName])) {
-            $foreignKeyInfo[$tableName][$fieldName] = false;
-        }
-
-        return $foreignKeyInfo[$tableName][$fieldName];
-    }*/
 
     /**
      * Конвертирует MYSQL типы полей в Energine типы полей

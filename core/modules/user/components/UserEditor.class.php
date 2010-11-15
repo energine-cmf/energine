@@ -142,6 +142,141 @@ class UserEditor extends Grid {
         $this->response->write(json_encode($JSONResponse));
         $this->response->commit();        
     }
+    /**
+     * @return void
+     * @access protected
+     */
+    protected function ban(){
+        /*$this->setTableName('user_users_ban');
+        $this->prepare();*/
+        $ap = $this->getActionParams();
+
+
+
+        $this->setBuilder(new Builder());
+        $this->setData(new Data());
+        $this->setDataDescription(new DataDescription());
+        $this->setType(self::COMPONENT_TYPE_FORM);
+        
+        $banDate = simplifyDBResult($this->dbh->select('user_users_ban','ban_date','u_id = '.intval($ap[0])),'ban_date',true);
+        $userInfo = $this->dbh->select('user_users','u_name, u_nick','u_id = '.intval($ap[0]));
+
+
+        $f = new Field('u_id');
+        $f->setData($ap[0]);
+        $this->getData()->addField($f);
+
+        $fd = new FieldDescription('u_id');
+        $fd->setType(FieldDescription::FIELD_TYPE_INT);
+        $fd->setMode(FieldDescription::FIELD_MODE_READ);
+        $fd->setProperty('tabName','TXT_USER_BAN_EDITOR');
+        $this->getDataDescription()->addFieldDescription($fd);
+
+        $f = new Field('u_name');
+        $f->setData($userInfo[0]['u_name']);
+        $this->getData()->addField($f);
+
+        $fd = new FieldDescription('u_name');
+        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+        $fd->setMode(FieldDescription::FIELD_MODE_READ);
+        $fd->setProperty('tabName','TXT_USER_BAN_EDITOR');
+        $this->getDataDescription()->addFieldDescription($fd);
+
+        $f = new Field('u_nick');
+        $f->setData($userInfo[0]['u_nick']);
+        $this->getData()->addField($f);
+
+        $fd = new FieldDescription('u_nick');
+        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+        $fd->setMode(FieldDescription::FIELD_MODE_READ);
+        $fd->setProperty('tabName','TXT_USER_BAN_EDITOR');
+        $this->getDataDescription()->addFieldDescription($fd);
+
+        $f = new Field('ban_date');
+        $this->getData()->addField($f);
+
+        $fd = new FieldDescription('ban_date');
+        $fd->setType(FieldDescription::FIELD_TYPE_SELECT);
+        $fd->setProperty('tabName','TXT_USER_BAN_EDITOR');
+        $this->getDataDescription()->addFieldDescription($fd);
+
+        $f = new Field('delete_ban');
+        $this->getData()->addField($f);
+
+        $fd = new FieldDescription('delete_ban');
+        $fd->setType(FieldDescription::FIELD_TYPE_BOOL);
+        $fd->setProperty('tabName','TXT_USER_BAN_EDITOR');
+        $this->getDataDescription()->addFieldDescription($fd);
+
+
+        if(!$banDate){
+            $fdValues = BanDateTransform::getFormattedFDValues();
+            foreach($fd = $this->getDataDescription()->getFieldDescriptionByName('ban_date') as $key=>$value){
+                $fd = $this->getDataDescription()->getFieldDescriptionByName('ban_date');
+                $fd->loadAvailableValues($fdValues,'date_key','date_value');
+            }
+        } else {
+            $this->getDataDescription()->getFieldDescriptionByName('ban_date')->setType(FieldDescription::FIELD_TYPE_DATE);
+            $this->getData()->getFieldByName('ban_date')->setRowData(0,$banDate);
+        }
+        $this->js = $this->buildJS();
+        $this->addToolbar($this->createToolbar());
+    }
+
+    /**
+     * @return void
+     * @access protected
+     */
+    protected function saveban(){
+        $this->setBuilder(new JSONBuilder());
+        $this->setData(new Data());
+        $this->setDataDescription(new DataDescription());
+        $result = false;
+
+        if(isset($_POST['u_id']) && isset($_POST['ban_date']) && isset($_POST['delete_ban'])) {
+            switch (intval($_POST['delete_ban'])){
+                case 0:
+                    $userAlreadyBanned = simplifyDBResult(
+                        $this->dbh->select(
+                            'user_users_ban',
+                            'COUNT(*) AS cnt',
+                            'u_id = '.intval($_POST['u_id'])),
+                            'cnt',true
+                    );
+                    if($userAlreadyBanned){
+                        $result = $this->dbh->modify(
+                            QAL::UPDATE,
+                            'user_users_ban',
+                            array('ban_date' => $_POST['ban_date']),
+                            'u_id = '.intval($_POST['u_id']));
+                    } else {
+                        $result = $this->dbh->modify(
+                            QAL::INSERT,
+                            'user_users_ban',
+                            array('u_id' => intval($_POST['u_id']),
+                                  'ban_date' => BanDateTransform::getFormattedBanDate($_POST['ban_date'])));
+                    }
+                    break;
+                case 1:
+                    $result = $this->dbh->modify(
+                            QAL::DELETE,
+                            'user_users_ban',
+                            null,
+                            'u_id = '.intval($_POST['u_id']));
+                    break;
+                default:
+                    break;
+        }
+        }
+        $JSONResponse = array(
+            'data'=>json_encode($_POST['u_id']),
+            'result' => true,
+            'mode' => $result
+        );
+        $this->response->setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        $this->response->write(json_encode($JSONResponse));
+        $this->response->commit();
+   }
 
     /**
      * Для метода редактирования убирается пароль

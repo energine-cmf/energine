@@ -78,8 +78,18 @@ class FileInfo extends Singleton {
         $data = array();
         $data['upl_internal_type'] = $result['type'] = self::META_TYPE_UNKNOWN;
         $data['upl_mime_type'] = $result['mime'] = 'unknown/mime-type';
-        $fileInfo =
-                $this->dbh->select('share_uploads', array('upl_internal_type as type', 'upl_mime_type as mime', 'upl_width as width', 'upl_height as height'), array('upl_path' => $filename));
+        $mc = Memcacher::getInstance();
+        if($mc->isEnabled()){
+            if(!($fileInfo = $mc->retrieve('info.'.$filename))){
+                $fileInfo = $this->dbh->select('share_uploads', array('upl_internal_type as type', 'upl_mime_type as mime', 'upl_width as width', 'upl_height as height'), array('upl_path' => $filename));
+                $mc->store('info.'.$filename, $fileInfo);
+            }
+        }
+        else {
+            $fileInfo =
+                    $this->dbh->select('share_uploads', array('upl_internal_type as type', 'upl_mime_type as mime', 'upl_width as width', 'upl_height as height'), array('upl_path' => $filename));
+        }
+
         if (is_array($fileInfo) && !empty($fileInfo) && $fileInfo[0]['type']) {
             list($fileInfo) = $fileInfo;
                 //Если есть информация в этом поле значит уже обращались к нему
@@ -126,6 +136,9 @@ class FileInfo extends Singleton {
                     }
                     //stop($data);
                     $this->dbh->modify(QAL::UPDATE, 'share_uploads', $data, array('upl_path' => $filename));
+                    if($mc->isEnabled()){
+                        $mc->store('info.'.$filename, array($result));
+                    }
                 }
             }
             catch (Exception $e) {

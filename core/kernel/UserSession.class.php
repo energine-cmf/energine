@@ -258,7 +258,7 @@ final class UserSession extends Singleton {
             QAL::DELETE, 
             $this->tableName, 
             null, 
-            '((NOW() - session_created) > '.$this->lifespan.') OR ((NOW() - session_last_impression) > '.$this->timeout.')'
+            '(session_created < (NOW() - '.$this->lifespan.')) OR (session_last_impression  < (NOW() - '.$this->timeout.'))'
         );
         return true;
     }

@@ -2,6 +2,11 @@
 <configuration>
 	<methods>
 		<method name="main">
+            <translations>
+                <translation const="BTN_EDIT"/>
+                <translation const="BTN_DELETE"/>
+                <translation const="BTN_CANCEL"/>
+            </translations>
 		</method>
 	</methods>
 </configuration>

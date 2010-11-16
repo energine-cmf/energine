@@ -242,19 +242,32 @@ Toolbar.Button = new Class({
 });
 Toolbar.Switcher = new Class({
     Extends:Toolbar.Button,
+    initialize: function(props) {
+        this.parent(props);
+        this.properties.state =
+                new Boolean(this.properties.state.toInt()).valueOf();
+    },
     build: function() {
         this.parent();
-        if (this.properties.state == 1) {
-            this.element.addClass('pressed');
-        }
+        var toggle = (function() {
+            if (this.properties.state) {
+                this.element.addClass('pressed');
+            }
+            else {
+                this.element.removeClass('pressed');
+            }
+        }).bind(this);
+        this.element.addEvent('click', function() {
+            if (!this.properties.disabled) {
+                this.properties.state = (!this.properties.state);
+                toggle();
+            }
+        }.bind(this));
+        toggle();
     },
     getState: function() {
         return this.properties.state;
     }
-    /*toggle: function(){
-     this.element.toggleClass('pressed');
-     this.properties.state = this.
-     }*/
 });
 
 Toolbar.Separator = new Class({

@@ -197,12 +197,16 @@ var CommentsForm = new Class({
                     function(response) {
                         if (response.mode == 'delete') {
                             if (commentLi.getSiblings('li').length){
-                                if (commentLi.hasClass('first_item')) commentLi.getNext().addClass('first_item')
-                                if (commentLi.hasClass('last_item')) commentLi.getPrevious().addClass('last_item')
+                                if ((!commentLi.getNext() || commentLi.getNext().hasClass('hidden')) && (commentLi.getPrevious() && !commentLi.getPrevious().hasClass('hidden'))){
+                                    commentLi.getPrevious().addClass('last_item')
+                                }
+                                if ((!commentLi.getPrevious() || commentLi.getPrevious().hasClass('hidden')) && (commentLi.getNext() && !commentLi.getNext().hasClass('hidden'))){
+                                    commentLi.getNext().addClass('first_item')
+                                }
                                 commentLi.destroy();
                             }
                             else {
-                                commentLi.getParents('.comment_thread')[0].destroy();
+                                commentLi.getParents('.comment_thread')[0].destroy()
                             }
                             var spanNum = $$('div.comments .comments_title span.figure')[0]
                             var num = parseInt((spanNum.get('text')).substr(1))

@@ -87,7 +87,7 @@ var CommentsForm = new Class({
         	else $$('div.comments').show().getElement('ul').grab(li);
         	$$('div.comments span')[0].innerHTML = '('+ ($$('div.comments ul li').length - 1) + ')'
 
-            if(li.getPrevious('li')){
+            if(li.getPrevious('li') && !(li.getPrevious('li').hasClass('hidden'))){
                 li.getPrevious('li').removeClass('last_item')
             }
             else {

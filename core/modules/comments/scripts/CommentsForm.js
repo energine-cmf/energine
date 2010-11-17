@@ -217,3 +217,4 @@ var CommentsForm = new Class({
         return false
     }
 })
+	

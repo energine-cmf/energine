@@ -72,7 +72,7 @@ var CommentsForm = new Class({
         		var ul = parentCommentLi.getElement('ul')
         		if(!ul[0]){
         			ul = new Element('ul')
-                    ul.setAttribute('class', 'comment_list')
+                    ul.addClass('comment_list')
 
                     var d = new Element('div')
                     d.addClass('comment_thread').grab(ul)
@@ -109,7 +109,7 @@ var CommentsForm = new Class({
     },
     show_form: function(event){
         this.preShowForm()
-        var li = event.target.getParent('li')
+        var li = $(event.target).getParent('li')
 
         var text = li.getElement('div.comment_text')
         this.form.inject(text, 'after');
@@ -217,4 +217,3 @@ var CommentsForm = new Class({
         return false
     }
 })
-	

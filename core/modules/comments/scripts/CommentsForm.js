@@ -1,4 +1,4 @@
-ScriptLoader.load('ValidForm');
+ScriptLoader.load('ValidForm', 'Overlay');
 var CommentsForm = new Class({
 	Extends: ValidForm,
 	Implements: Energine.request,
@@ -21,6 +21,7 @@ var CommentsForm = new Class({
     maxSymbol: 250,
     trans: null, 
     validateForm: function(event) {
+        this.showOverlay();
     	this.parent(event);
         this.cancelEvent(event); 
 
@@ -38,6 +39,7 @@ var CommentsForm = new Class({
                 else {
                     this.show_result(response)
                 }
+                this.overlay.hide();
             }.bind(this)
         );
     },
@@ -187,6 +189,7 @@ var CommentsForm = new Class({
     },
     deleteComment: function(event) {
         if (confirm($(this.form).get('comment_realy_remove'))) {
+            this.showOverlay();
             if (this.isEditState) this.showBaseForm();
             var event = new Event(event || window.event);
             var commentLi = $(event.target).getParent('li')
@@ -212,13 +215,19 @@ var CommentsForm = new Class({
                             var num = parseInt((spanNum.get('text')).substr(1))
                             spanNum.set('text', '('+ (num?num-1:0) +')')
                         }
+                        this.overlay.hide();
                     }.bind(this),
                     function() {
+                        this.overlay.hide();
                         this.showError(response)
                     }.bind(this)
                     );
         }
         return false
+    },
+    showOverlay: function() {
+        if (!this.overlay) this.overlay = new Overlay(document.getElement('.comments'));
+        this.overlay.show();
     }
 })
 	

@@ -48,7 +48,30 @@
             	<control id="savePost" title="BTN_SAVE" type="submit"  />
             </toolbar>
         </method>
-
+        <method name="main">
+            <uri_patterns>
+               <pattern>/page-[pageNumber]/</pattern>
+                <pattern>/</pattern>
+            </uri_patterns>
+            <fields>
+                <field name="theme_id"/>
+                <field name="smap_id"/>
+                <field name="u_id" type="int"/>
+                <field name="theme_name"/>
+                <field name="theme_created" outputFormat="%E"/>
+                <field name="theme_closed"/>
+			</fields>
+            <toolbar>
+                <control id="view" title="BTN_GO" type="link"/>
+            </toolbar>
+            <translations>
+                <translation const="TXT_FORUM_THEME_COUNT"/>
+                <translation const="TXT_FORUM_COMMENT_COUNT"/>
+                <translation const="TXT_FORUM_LAST_COMMENT"/>
+                <translation const="TXT_FORUM_CREATE_THEME"/>
+                <translation const="TXT_NO_COMMENTS"/>
+            </translations>
+        </method>
         <method name="view">
              <uri_patterns>
                  <pattern>/[themeID]/page-[pageNumber]/</pattern>
@@ -76,30 +99,6 @@
                 <translation const="TXT_DELETE"/>
                 <translation const="BTN_CITE"/>
                 <translation const="BTN_REPLY"/>
-                <translation const="TXT_NO_COMMENTS"/>
-            </translations>
-        </method>
-        <method name="main">
-            <uri_patterns>
-               <!-- <pattern>/page-[pageNumber]/</pattern>-->
-                <pattern>/</pattern>
-            </uri_patterns>
-            <fields>
-                <field name="theme_id"/>
-                <field name="smap_id"/>
-                <field name="u_id" type="int"/>
-                <field name="theme_name"/>
-                <field name="theme_created" outputFormat="%E"/>
-                <field name="theme_closed"/>
-			</fields>
-            <toolbar>
-                <control id="view" title="BTN_GO" type="link"/>
-            </toolbar>
-            <translations>
-                <translation const="TXT_FORUM_THEME_COUNT"/>
-                <translation const="TXT_FORUM_COMMENT_COUNT"/>
-                <translation const="TXT_FORUM_LAST_COMMENT"/>
-                <translation const="TXT_FORUM_CREATE_THEME"/>
                 <translation const="TXT_NO_COMMENTS"/>
             </translations>
         </method>

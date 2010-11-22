@@ -24,36 +24,49 @@ class ForumTheme extends DBDataSet {
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module,  array $params = null) {
+    public function __construct($name, $module, array $params = null) {
         $params['active'] = true;
-        $params['recordsPerPage'] = 20;
+        $params['recordsPerPage'] = 30;
         parent::__construct($name, $module, $params);
         $this->setTableName('forum_theme');
-        if(AuthUser::getInstance()->isAuthenticated())
+        if (AuthUser::getInstance()->isAuthenticated())
             $this->document->setProperty('CURRENT_UID', AuthUser::getInstance()->getID());
     }
 
     /**
      * Список тем по  smap_id  с последним комментом и инфой об авторе коммента
      * @param  int $smapId
-     * @param  array $limit int[]{2}
+     * @param  int $pageNumber
      * @return mixed
      */
-    private function loadThemeBySmapid($smapId, array $limit = null) {
-        $limitStr = $limit ? 'LIMIT ' . implode(',', $limit) : '';
-        $sql = 'SELECT t.*, c.comment_created, c.comment_name, u.u_id,
+    private function loadThemeBySmapid($smapId) {
+        $limit = '';
+        if ($this->pager) {
+            $limit = $this->dbh->buildLimitStatement($this->pager->getLimit());
+        }
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS t.*, c.comment_created, c.comment_name, u.u_id,
                  IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_nick,
                  u.u_avatar_img,
-                 CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, 
+                 CASE WHEN u_is_male = 1 THEN "' .
+                $this->translate('TXT_MALE') . '" ELSE "' .
+                $this->translate('TXT_FEMALE') . '" END as u_sex,
                  u.u_place,
                  (SELECT CEIL(COUNT(comment_id)/20) FROM forum_theme_comment c2 WHERE c2.target_id=t.theme_id) as comment_page
              FROM forum_theme t
                  LEFT JOIN forum_theme_comment c ON c.comment_id = t.comment_id
                  LEFT JOIN user_users u ON u.u_id = c.u_id
             WHERE t.smap_id = %s
-            ORDER BY IF(t.comment_id IS NULL, t.theme_created, c.comment_created) DESC';
-
-        return $this->dbh->selectRequest($sql, $smapId);
+            ORDER BY IF(t.comment_id IS NULL, t.theme_created, c.comment_created) DESC ' .
+                $limit;
+        $res = $this->dbh->selectRequest($sql, $smapId);
+        if ($this->pager) {
+            if (!($recordsCount =
+                    simplifyDBResult($this->dbh->selectRequest('SELECT FOUND_ROWS() as c'), 'c', true))) {
+                $recordsCount = 0;
+            }
+            $this->pager->setRecordsCount($recordsCount);
+        }
+        return $res;
     }
 
     /**
@@ -68,7 +81,8 @@ class ForumTheme extends DBDataSet {
             $this->addDescription();
 
             if (AuthUser::getInstance()->isAuthenticated()) {
-                $this->setProperty('is_can_create_theme', intval($this->document->getRights() > 1));
+                $this->setProperty('is_can_create_theme', intval(
+                    $this->document->getRights() > 1));
             }
         }
         elseif (in_array($this->getAction(), array('modify'))) {
@@ -127,16 +141,21 @@ class ForumTheme extends DBDataSet {
      */
     private function loadTheme($themeId) {
         $sql = 'SELECT t.*, st.smap_name category_name,
-            IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_nick , '.
-            ' CASE WHEN u.u_is_male IS NULL THEN "'.$this->translate('TXT_UNKNOWN').'" WHEN u_is_male = 1 THEN "'.$this->translate('TXT_MALE').'" ELSE "'.$this->translate('TXT_FEMALE').'" END as u_sex, '.
-            ' u.u_place, '.
-            ' u.u_avatar_img
+            IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_nick , ' .
+                ' CASE WHEN u.u_is_male IS NULL THEN "' .
+                $this->translate('TXT_UNKNOWN') .
+                '" WHEN u_is_male = 1 THEN "' . $this->translate('TXT_MALE') .
+                '" ELSE "' . $this->translate('TXT_FEMALE') .
+                '" END as u_sex, ' .
+                ' u.u_place, ' .
+                ' u.u_avatar_img
         FROM forum_theme t
             JOIN share_sitemap_translation  st ON st.smap_id = t.smap_id
             LEFT JOIN user_users u ON u.u_id = t.u_id
         WHERE t.theme_id = %s AND st.lang_id = %s
         ';
-        $result = $this->dbh->selectRequest($sql, $themeId, $this->document->getLang());
+        $result =
+                $this->dbh->selectRequest($sql, $themeId, $this->document->getLang());
         return $result;
     }
 
@@ -187,20 +206,22 @@ class ForumTheme extends DBDataSet {
      * Чистим html ввод пользователя
      *
      * теги A без аттрибута HREF игнорируются (остальные аттрибуты удаляются)
-     *  
+     *
      * @param  string $s
      * @return string
      */
-    protected function clearPost($s){
-        $allowTags = implode(array('<b><strong><em><i><div><li><ul><ol><br><a>'));
+    protected function clearPost($s) {
+        $allowTags =
+                implode(array('<b><strong><em><i><div><li><ul><ol><br><a>'));
         $s = strip_tags($s, $allowTags);
         $s = str_replace(array("\n", "\r"), array(' ', ' '), $s);
         $s = preg_replace_callback('|<a\s+(.*)>(.*)</a>|i',
-            function($matches){
+            function($matches) {
                 $m = array();
-                if(!strlen(trim($matches[2])) or !preg_match('%href\s*=\s*(?:"|\')([^\'"]*)(?:"|\')%i', $matches[1], $m))
+                if (!strlen(trim($matches[2])) or
+                        !preg_match('%href\s*=\s*(?:"|\')([^\'"]*)(?:"|\')%i', $matches[1], $m))
                     return '';
-                return '<a href="'. $m[1]. '">'. $matches[2]. '</a>';
+                return '<a href="' . $m[1] . '">' . $matches[2] . '</a>';
             },
             $s
         );
@@ -290,8 +311,9 @@ class ForumTheme extends DBDataSet {
      */
     private function addPropertyCurrUser() {
         $right = $this->document->getRights();
-        $this->setProperty('is_editable', (int)($right > 1)); // добавлять и править/удалять своё
-        $this->setProperty('is_admin', (int)($right > 2));    // godmode
+        $this->setProperty('is_editable', (int) (
+                $right > 1)); // добавлять и править/удалять своё
+        $this->setProperty('is_admin', (int) ($right > 2)); // godmode
     }
 
     /**
@@ -333,7 +355,8 @@ class ForumTheme extends DBDataSet {
             // создатель открытой темы?
             if ($this->document->getRights() > 1) {
                 $uid = AuthUser::getInstance()->getID();
-                if ($themeUId = $this->dbh->select($this->getTableName(), 'u_id', array('theme_id' => $themeId))) {
+                if ($themeUId =
+                        $this->dbh->select($this->getTableName(), 'u_id', array('theme_id' => $themeId))) {
                     $access = ($themeUId[0]['u_id'] == $uid);
                 }
             }

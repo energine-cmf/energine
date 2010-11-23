@@ -102,22 +102,6 @@ function ddump_log() {
     Response::getInstance()->commit();
 }
 
-/**
- * Конвертирует строку формата DATETIME (YYYY-MM-DD HH:MM:SS) в UNIX timestamp.
- * Возвращает timestamp (int) в случае успеха, или false в случае неудачи.
- *
- * @param string $datetime
- * @return mixed
- */
-function convertDatetimeToTimestamp($datetime) {
-    $result = false;
-    $datetime = sscanf($datetime, '%d-%d-%d %d:%d:%d');
-    if (sizeof($datetime) == 6) {
-        list($year, $month, $day, $hour, $min, $sec) = $datetime;
-        $result = mktime($hour, $min, $sec, $month, $day, $year);
-    }
-    return $result;
-}
 
 /**
  * Выбирает значения указанного поля из двумерного ассоциативного массива

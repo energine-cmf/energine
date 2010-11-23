@@ -215,7 +215,6 @@ abstract class DBA extends Object {
 				if (isset($fieldMeta['native_type'])) {
 					if ($fieldMeta['native_type'] == self::COLTYPE_DATETIME ||
 					$fieldMeta['native_type'] == self::COLTYPE_DATE) {
-						//$fieldValue = convertDatetimeToTimestamp($fieldValue);
                         $fieldValue = strtotime($fieldValue);
 					}
 					elseif (in_array($fieldMeta['native_type'], array(self::COLTYPE_STRING1, self::COLTYPE_STRING2))) {

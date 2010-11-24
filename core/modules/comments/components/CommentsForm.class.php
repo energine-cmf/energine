@@ -25,6 +25,8 @@
  * @author sign
  */
 class CommentsForm extends DataSet {
+
+    private $userEditor;
     /**
      * связанный компонент
      *
@@ -603,5 +605,21 @@ class CommentsForm extends DataSet {
             }
         }
         $commentsList->run();
+    }
+
+    protected function ban(){
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->userEditor = $this->document->componentManager->createComponent('ue','user','UserEditor');
+        $this->userEditor->run();
+    }
+
+    public function build(){
+        $result = '';
+        if($this->getAction()=='ban')
+            $result = $this->userEditor->build();
+        else
+            $result = parent::build();
+
+        return $result;
     }
 }

@@ -7,7 +7,6 @@
  * @subpackage core
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
  */
 
 /**
@@ -80,8 +79,6 @@ final class UserSession extends Singleton {
      */
     private $tableName;
     
-    private $dataCache;
-
     /**
      * Конструктор класса.
      *
@@ -89,13 +86,20 @@ final class UserSession extends Singleton {
      * @return void
      */
     public function __construct() {
+        if (
+                (isset($_POST['user']['login']) &&
+                        isset($_POST['user']['username']) &&
+                        isset($_POST['user']['password']))
+            ||
+                (isset($_COOKIE[self::DEFAULT_SESSION_NAME]))
+
+        ) {
         parent::__construct();
         $this->timeout = $this->getConfigValue('session.timeout');
         $this->lifespan = $this->getConfigValue('session.lifespan');
         $this->userAgent = isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'ROBOT';
         $this->name = self::DEFAULT_SESSION_NAME;
         $this->tableName = 'share_session';
-        $this->dataCache = '';
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
         
         // устанавливаем обработчики сеанса
@@ -155,6 +159,7 @@ final class UserSession extends Singleton {
             }
         }
         session_start();
+        }
     }
 
     /**

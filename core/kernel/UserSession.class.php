@@ -17,7 +17,7 @@
  * @author dr.Pavka
  * @final
  */
-final class UserSession extends Singleton {
+final class UserSession extends DBWorker {
 	
 	
 
@@ -32,6 +32,14 @@ final class UserSession extends Singleton {
      * Например, 10 / 100 означает 10%-вероятность вызова СМ.
      */
     const DEFAULT_PROBABILITY = 10;
+     /**
+      * Флаг использующийся для имитации приватного конструктора
+      *
+      * @access private
+      * @var boolean
+      * @static
+      */
+      private static $flag;
 
     /**
      * @access private
@@ -82,16 +90,23 @@ final class UserSession extends Singleton {
     /**
      * Конструктор класса.
      *
+     * @param $forceStart boolean - старт сессие принудительно
      * @access private
      * @return void
      */
-    public function __construct() {
+    public function __construct($forceStart) {
+        if(is_null(self::$flag)){
+            throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
+        }
+        self::$flag = null;  
         if (
                 (isset($_POST['user']['login']) &&
                         isset($_POST['user']['username']) &&
                         isset($_POST['user']['password']))
             ||
                 (isset($_COOKIE[self::DEFAULT_SESSION_NAME]))
+            ||
+                $forceStart
 
         ) {
         parent::__construct();
@@ -162,6 +177,29 @@ final class UserSession extends Singleton {
         }
     }
 
+    /**
+     *
+     * @access public
+     * @return self
+     * @static
+     * @final
+     */
+    final public static function getInstance($forceStart = false){
+    	static $instance;
+
+        self::$flag = true;
+        if(!isset($instance)){
+            $instance = new UserSession($forceStart);
+        }
+        return $instance;
+    }
+    /**
+      * Закрываем возможность клонирования
+      *
+      * @return void
+      * @access private
+      */
+    private function __clone(){}
     /**
 	 * Открывает сеанс.
 	 *

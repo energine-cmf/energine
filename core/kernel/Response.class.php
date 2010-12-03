@@ -161,6 +161,19 @@ final class Response extends Singleton {
         $this->cookies[$name] = compact('value', 'expire', 'path', 'domain', 'secure');
     }
 
+    public function sendCookies(){
+        foreach ($this->cookies as $name => $params) {
+            setcookie($name, $params['value'], $params['expire'], $params['path'], $params['domain'], $params['secure']);
+        }        
+    }
+
+    public function sendHeaders(){
+        header($this->statusLine);
+        foreach ($this->headers as $name => $value) {
+            header("$name: $value");
+        }
+    }
+
     /**
      * Удаляет cookie.
      *
@@ -227,13 +240,8 @@ final class Response extends Singleton {
      */
     public function commit() {
         if (!headers_sent($filename, $linenum)) {
-            header($this->statusLine);
-            foreach ($this->headers as $name => $value) {
-                header("$name: $value");
-            }
-            foreach ($this->cookies as $name => $params) {
-                setcookie($name, $params['value'], $params['expire'], $params['path'], $params['domain'], $params['secure']);
-            }
+            $this->sendHeaders();
+            $this->sendCookies();
         }
         else {
             //throw new SystemException('ERR_HEADERS_SENT', SystemException::ERR_CRITICAL);

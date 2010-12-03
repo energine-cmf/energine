@@ -176,7 +176,9 @@ final class AuthUser extends User {
      */
     public function clearInfo() {
     	$response = Response::getInstance();
-      	unset($_SESSION['userID']);
+        if(isset($_SESSION))
+      	    unset($_SESSION['userID']);
+        
       	if(isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])){
       		$response->deleteCookie(UserSession::DEFAULT_SESSION_NAME, $this->siteRoot);
       	}
@@ -184,6 +186,7 @@ final class AuthUser extends User {
         if (isset($_COOKIE['user'])) {
             $response->deleteCookie('user', $this->siteRoot);
         }
-        session_destroy();
+        if(isset($_SESSION))
+            session_destroy();
     }
 }

@@ -18,8 +18,8 @@
  * @final
  */
 final class UserSession extends DBWorker {
-	
-	
+
+
 
     /**
      * Имя сеанса по-умолчанию.
@@ -86,7 +86,7 @@ final class UserSession extends DBWorker {
      * @var string имя таблицы сеансов в БД
      */
     private $tableName;
-    
+
     /**
      * Конструктор класса.
      *
@@ -106,8 +106,9 @@ final class UserSession extends DBWorker {
             ||
                 (isset($_COOKIE[self::DEFAULT_SESSION_NAME]))
             ||
+                $forceStart
+            ||
                 (isset($_POST[self::DEFAULT_SESSION_NAME]))
-
         ) {
         parent::__construct();
         $this->timeout = $this->getConfigValue('session.timeout');
@@ -116,7 +117,7 @@ final class UserSession extends DBWorker {
         $this->name = self::DEFAULT_SESSION_NAME;
         $this->tableName = 'share_session';
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
-        
+
         // устанавливаем обработчики сеанса
         session_set_save_handler(
             array($this, 'open'),
@@ -140,11 +141,11 @@ final class UserSession extends DBWorker {
             $domain = '';
         }
         session_set_cookie_params($this->lifespan, $path, $domain);
-        
+
         // проверяем существование cookie и корректность его данных
         if (isset($_COOKIE[$this->name]) || isset($_POST[$this->name])) {
             $this->phpSessId = (isset($_COOKIE[$this->name]))?$_COOKIE[$this->name]:$_POST[$this->name];
-            
+
             // проверяем, действителен ли текущий сеанс
             $res = $this->dbh->selectRequest(
                 "SELECT session_id FROM {$this->tableName}".
@@ -157,7 +158,7 @@ final class UserSession extends DBWorker {
                 $this->timeout/*,
                 $this->userAgent*/
             );
-            
+
             $response = Response::getInstance();
             if (is_array($res)) {
                 $response->setCookie(
@@ -233,7 +234,7 @@ final class UserSession extends DBWorker {
 	 */
     public function read($phpSessId) {
         $result = '';
-      
+
         $this->phpSessId = $phpSessId;
 
         $res = $this->dbh->select(
@@ -258,7 +259,7 @@ final class UserSession extends DBWorker {
                 );
             }
             catch (Exception $e){
-                
+
             }
         }
         return $result;
@@ -298,9 +299,9 @@ final class UserSession extends DBWorker {
 	 */
     public function gc($maxLifeTime) {
         $this->dbh->modify(
-            QAL::DELETE, 
-            $this->tableName, 
-            null, 
+            QAL::DELETE,
+            $this->tableName,
+            null,
             '(session_created < (NOW() - '.$this->lifespan.')) OR (session_last_impression  < (NOW() - '.$this->timeout.'))'
         );
         return true;

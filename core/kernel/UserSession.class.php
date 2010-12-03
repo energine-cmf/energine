@@ -98,7 +98,7 @@ final class UserSession extends DBWorker {
         if(is_null(self::$flag)){
             throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
         }
-        self::$flag = null;  
+        self::$flag = null;
         if (
                 (isset($_POST['user']['login']) &&
                         isset($_POST['user']['username']) &&
@@ -106,7 +106,7 @@ final class UserSession extends DBWorker {
             ||
                 (isset($_COOKIE[self::DEFAULT_SESSION_NAME]))
             ||
-                $forceStart
+                (isset($_POST[self::DEFAULT_SESSION_NAME]))
 
         ) {
         parent::__construct();

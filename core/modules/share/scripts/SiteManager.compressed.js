@@ -1,0 +1,1 @@
+ScriptLoader.load("GridManager");var SiteManager=new Class({Extends:GridManager,initialize:function(a){this.parent(a)},go:function(){var a=this.grid.getSelectedRecord();window.location.href=a.site_protocol+"://"+a.site_host+":"+a.site_port+a.site_root}});

@@ -1,0 +1,1 @@
+ScriptLoader.load("GridManager");var ThemeSelectorManager=new Class({Extends:GridManager,initialize:function(a){this.parent(a)},onDoubleClick:function(){this.select()},select:function(){var a=this.grid.getSelectedRecord();if(a){ModalBox.setReturnValue({id:a.theme_id,name:a.theme_name})}ModalBox.close()}});

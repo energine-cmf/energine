@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+        <method name="main">
+            <!-- Метод выводящий список категорий-->
+        	<uri_patterns>
+                 <pattern>/</pattern>
+            </uri_patterns>
+            <fields>
+                <field name="Id" type="integer" key="1"/>
+                <field name="Pid" type="integer"/>
+                <field name="Name" type="string"/>
+                <field name="Segment" type="string"/>
+                <field name="DescriptionRtf" type="string"/>
+                <field name="ThemeCount" type="int" title="FIELD_THEME_COUNT"/>
+                <field name="CommentCount" type="int" title="FIELD_COMMENT_COUNT"/>
+                <field name="CommentCreated" type="date" outputFormat="%E" title="FIELD_COMMENT_CREATED"/>
+                <field name="CommentID" type="int"/>
+                <field name="ThemeID" type="int"/>
+                <field name="Nick" type="string"  title="FIELD_NICK"/>
+             </fields>
+            <translations>
+                <translation const="TXT_FORUM_THEME_COUNT"/>
+                <translation const="TXT_FORUM_COMMENT_COUNT"/>
+                <translation const="TXT_FORUM_LAST_COMMENT"/>
+                <translation const="TXT_NO_COMMENTS"/>
+            </translations>
+        </method>
+    </methods>
+</configuration>

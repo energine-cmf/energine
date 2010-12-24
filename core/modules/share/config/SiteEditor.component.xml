@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <methods>
+        <method name="main">
+            <javascript>
+                <object name="SiteManager"/>
+            </javascript>
+            <fields>
+                <field name="site_id"/>
+                <field name="site_protocol"/>
+                <field name="site_host"/>
+                <field name="site_port" type="hidden"/>
+                <field name="site_root"/>
+                <field name="site_name"/>
+            </fields>
+            <toolbar>
+                <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+                <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+                <control id="sep01" type="separator"/>
+                <control id="go" title="BTN_GO" type="button" onclick="go"/>
+                <control id="sep03" type="separator"/>
+                <control type="button" id="up" title="BTN_MOVE_UP" onclick="up"/>
+                <control type="button" id="down" title="BTN_MOVE_DOWN" onclick="down"/>
+                <control id="sep02" type="separator"/>
+                <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+                <control id="sep04" type="separator"/>
+                <control id="reset" title="BTN_RESET_TEMPLATES" type="button" onclick="reset"/>
+            </toolbar>
+            <translations>
+                <translation const="MSG_CONFIRM_TEMPLATES_RESET"/>
+                <translation const="MSG_TEMPLATES_RESET"/>
+            </translations>
+        </method>
+        <method name="add">
+            <uri_patterns>
+                <pattern>/add/</pattern>
+            </uri_patterns>
+            <javascript>
+                <object name="Form"/>
+            </javascript>
+            <toolbar>
+                <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+                <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
+                         type="select"
+                        >
+                    <options>
+                        <option id="close">BTN_CLOSE</option>
+                        <option id="add">BTN_ADD</option>
+                    </options>
+                </control>
+                <control id="sep1" type="separator"/>
+                <control id="close" title="BTN_CANCEL" type="button"
+                         onclick="close"/>
+            </toolbar>
+        </method>
+        <method name="edit">
+            <uri_patterns>
+                <pattern>/[int]/edit/</pattern>
+            </uri_patterns>
+            <javascript>
+                <object name="Form"/>
+            </javascript>
+            <toolbar>
+                <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+                <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+            </toolbar>
+        </method>
+        <method name="save" rights="3">
+            <uri_patterns>
+                <pattern>/save/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="upload" rights="2">
+            <uri_patterns>
+                <pattern>/upload/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="delete" rights="2">
+            <uri_patterns>
+                <pattern>/[int]/delete/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="up" rights="3">
+            <uri_patterns>
+                <pattern>/[int]/up/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="down" rights="3">
+            <uri_patterns>
+                <pattern>/[int]/down/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="reset" rights="3">
+            <uri_patterns>
+                <pattern>/reset/[int]/reset-templates/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="getRawData" rights="2">
+            <uri_patterns>
+                <pattern>/get-data/</pattern>
+                <pattern>/get-data/page-[pageNumber]/</pattern>
+                <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+                <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="imageManager" rights="3">
+            <uri_patterns>
+                <pattern>/imagemanager/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="fileLibrary" rights="3">
+            <uri_patterns>
+                <pattern>/file-library/</pattern>
+                <pattern>/file-library/[any]/</pattern>
+            </uri_patterns>
+        </method>
+        <method name="cleanup" rights="3">
+            <uri_patterns>
+                <pattern>/cleanup/</pattern>
+            </uri_patterns>
+        </method>
+    </methods>
+</configuration>

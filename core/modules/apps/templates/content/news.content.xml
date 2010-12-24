@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<component name="newsTextBlock" module="share" class="TextBlock" />
+	<component name="childDivisions" module="share" class="PageList" >
+       <params>
+           <param name="id">current</param> 
+           <param name="config">core/modules/share/ChildDivisions.component.xml</param>
+       </params>
+    </component>
+	
+
+    <component name="news" module="apps" class="NewsFeed">
+
+    </component>
+    <component name="newsEditor" module="apps" class="NewsEditor">
+		<params>
+			<param name="rights">2</param>
+			<param name="bind">news</param>
+		</params>
+    </component>
+</content>

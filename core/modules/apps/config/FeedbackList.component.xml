@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<methods>
+		<method name="main">
+			<javascript>
+				<object name="GridManager" />
+			</javascript>
+			<fields>
+				<field name="feed_id"/>
+				<field name="feed_date" outputFormat="%d/%m/%Y %H:%M:%S"/>
+				<field name="feed_author"/>
+				<field name="feed_email"/>
+			</fields>
+			<toolbar>
+ 				<control id="view" title="BTN_VIEW" type="button" onclick="view"/>
+				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+			</toolbar>
+		</method>
+		<method name="view">
+		     <uri_patterns>
+		         <pattern>/[int]/</pattern>
+		     </uri_patterns>
+			<javascript>
+				<object name="Form"/>
+			</javascript>
+			<toolbar>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+		</method>
+		<method name="delete"  rights="2">
+		     <uri_patterns>
+		         <pattern>/[int]/delete/</pattern>
+		     </uri_patterns>
+		</method>
+		<method name="getRawData"  rights="2">
+			<uri_patterns>
+		         <pattern>/get-data/</pattern>
+                <pattern>/get-data/page-[pageNumber]/</pattern>
+                <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+                <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+                
+		     </uri_patterns>
+		</method>
+	</methods>
+</configuration>

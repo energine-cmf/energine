@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<component name="blogPostAll" module="blog" class="BlogPost">
+       <params>
+	       <param name="showCalendar">1</param>
+	   </params>
+    </component>
+	<component name="commentsForm" module="comments" class="CommentsForm">
+		<params>
+		    <param name="comment_tables">blog_post_comment</param>
+		    <param name="is_tree">1</param>
+		    <param name="bind">blogPostAll</param>
+		</params>
+	</component>
+</content>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+<methods>
+	<method name="main">
+		<fields>
+			<field name="Id" type="integer" key="1"/>
+			<field name="Pid" type="integer"/>
+			<field name="Segment" type="string"/>
+            <field name="Site" type="string"/>
+		</fields>
+	</method>
+</methods>
+</configuration>

@@ -29,7 +29,7 @@ abstract class Object {
     /**
      * Имя файла конфигурации
      */
-    const CONFIG_FILE = 'system.config.xml';
+    const CONFIG_FILE = 'system.config.php';
 
     /**
      * @access private
@@ -37,13 +37,6 @@ abstract class Object {
      * @var SimpleXMLElement конфигурация системы
      */
     private static $systemConfig;
-    /**
-     * @access private
-     * @static 
-     * @var array кеш для значений конфига
-     */
-    private static $values = array();
-
 
     /**
      * @access private
@@ -118,29 +111,18 @@ abstract class Object {
      * @return string
      */
     public static function _getConfigValue($paramPath) {
-    	$value = null;
-    	
-        //при первом обращении загружает SimpleXML данные в  статическую переменную $systemConfig
-        if (!isset(self::$systemConfig)) {
-            if (!file_exists(self::CONFIG_DIR.self::CONFIG_FILE)) {
-            	trigger_error('ERR_DEV_NO_CONFIG', E_USER_ERROR);
+        if(is_null(self::$systemConfig)) self::$systemConfig = include_once(self::CONFIG_DIR.self::CONFIG_FILE);
+        $result = self::$systemConfig;
+        $paramPath = explode('.', $paramPath);
+        foreach($paramPath as $segment) {
+            if(isset($result[$segment]))
+                $result = $result[$segment];
+            else {
+                return null;
             }
-            self::$systemConfig = simplexml_load_file(self::CONFIG_DIR.self::CONFIG_FILE);
         }
-        $paramPath = str_replace('.', '->', trim($paramPath));
-        
-        if(!isset(self::$values[$paramPath])){
-	        eval("\$value = self::\$systemConfig->$paramPath;");
-	        if($value && !count($value->children())){
-	        	$value = (string)$value;
-	        }
-	        self::$values[$paramPath] = $value;
-        }
-        else{
-        	$value = self::$values[$paramPath];
-        }
-        
-        return $value;
+
+        return $result;
     }
 
     /**

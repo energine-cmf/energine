@@ -205,12 +205,12 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
                             break;
                     }
                     $result->appendChild($el);
-                    foreach ($this->getConfigValue('thumbnails.thumbnail') as $thumbnail) {
+                    foreach ($this->getConfigValue('thumbnails') as $thumbName => $thumbnail) {
                         $thumbnailFile =
                                 FileObject::getThumbFilename(
                                     $fieldValue,
-                                    $width = (int) $thumbnail->width,
-                                    $height = (int) $thumbnail->height
+                                    $width = (int) $thumbnail['width'],
+                                    $height = (int) $thumbnail['height']
                                 );
 //                        if (!file_exists($thumbnailFile)) {
 //                            $thumbnailFile = (string)$thumbnail->gag;
@@ -220,7 +220,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
                         );
                         $img->setAttribute('width', $width);
                         $img->setAttribute('height', $height);
-                        $img->setAttribute('name', (string) $thumbnail['name']);
+                        $img->setAttribute('name', $thumbName);
 //                        $img->nodeValue = $thumbnailFile;
                         $img->nodeValue = $this->fixUrl($thumbnailFile);
                         $result->appendChild($img);

@@ -55,7 +55,7 @@ if (get_magic_quotes_gpc()) {
 /**
  * Путь к директории пользовательских компонентов
  */
-define('SITE_COMPONENTS_DIR', 'site/*/components');
+define('SITE_COMPONENTS_DIR', 'site/modules/*/components');
 /**
  * Путь к директории пользовательских PHP файлов
  */
@@ -73,7 +73,9 @@ define('CORE_GEARS_DIR', 'core/modules/*/gears');
  * Путь к директории ядра системы
  */
 define('CORE_KERNEL_DIR', 'core/kernel');
-
+/**
+ * Путь к директории ядра проекта
+ */
 define('SITE_KERNEL_DIR', 'site/kernel');
 
 
@@ -102,6 +104,9 @@ define('ACCESS_EDIT', 2);
  *
  */
 define('ACCESS_FULL', 3);
+/**
+ * Подключаем реестр и мемкешер, нужные нам для автолоадера
+ */
 require_once('Registry.class.php');
 require_once('Memcacher.class.php');
 

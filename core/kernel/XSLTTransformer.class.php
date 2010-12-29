@@ -22,7 +22,7 @@ class XSLTTransformer extends Object implements ITransformer {
     /**
      * Директория, где находится основной трансформер
      */
-    const MAIN_TRANSFORMER_DIR = 'site/%s/transformers/';
+    const MAIN_TRANSFORMER_DIR = 'site/modules/%s/transformers/';
 
     /**
      * Имя файла трансформации

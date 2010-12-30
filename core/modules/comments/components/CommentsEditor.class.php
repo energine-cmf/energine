@@ -51,7 +51,7 @@ class CommentsEditor extends Grid {
 
     protected function loadDataDescription() {
         $result = parent::loadDataDescription();
-        if ($this->getAction() == 'edit') {
+        if ($this->getState() == 'edit') {
             unset($result['comment_parent_id'], $result['target_id']);
             $result['u_id']['key'] = false;
             $result['u_id']['type'] = QAL::COLTYPE_STRING;
@@ -66,7 +66,7 @@ class CommentsEditor extends Grid {
      */
     private function changeTableName($index = 0) {
         // для метода save имя таблицы ищем в $_POST
-        if ($this->getAction() == 'save') {
+        if ($this->getState() == 'save') {
             if (isset($_POST['componentAction']) &&
                     $_POST['componentAction'] == 'edit') {
                 foreach ($_POST as $key => $value) {

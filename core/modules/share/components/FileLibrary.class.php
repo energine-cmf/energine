@@ -112,7 +112,7 @@ final class FileLibrary extends DataSet {
      */
 
     public function loadData() {
-        if ($this->getAction() == 'getRawData') {
+        if ($this->getState() == 'getRawData') {
             $result = array();
             if ($this->uploadsDir->getPath() != $this->getParam('base')) {
                 $result =
@@ -136,7 +136,7 @@ final class FileLibrary extends DataSet {
 
             $result = array_map(array($this, 'addClass'), $result);
         }
-        elseif ($this->getAction() == self::DEFAULT_ACTION_NAME) {
+        elseif ($this->getState() == self::DEFAULT_STATE_NAME) {
             $result = false;
         }
         else {
@@ -178,7 +178,7 @@ final class FileLibrary extends DataSet {
      */
 
     protected function getRawData() {
-        $this->config->setCurrentMethod(self::DEFAULT_ACTION_NAME);
+        $this->config->setCurrentMethod(self::DEFAULT_STATE_NAME);
         $this->setBuilder(new JSONUploadBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->getBuilder()->setDataDescription($this->getDataDescription());

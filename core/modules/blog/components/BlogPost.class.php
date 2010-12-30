@@ -54,7 +54,7 @@ class BlogPost extends DBDataSet {
         $this->setParam('onlyCurrentLang', true);
         $this->setOrder(array('post_created' => QAL::DESC));
 
-        if ($this->getParam('showCalendar') and in_array($this->getAction(), array('main', 'viewBlog'))) {
+        if ($this->getParam('showCalendar') and in_array($this->getState(), array('main', 'viewBlog'))) {
             //наполняем $this->additionalFilter и $this->calendarParams
             // $this->addFilterCondition() бесполезен  - @see BlogPost::loadPosts()
             $this->calendarFilter = $this->createCalendarFilters($this->calendarParams);
@@ -78,7 +78,7 @@ class BlogPost extends DBDataSet {
     protected function createCalendarFilters(array &$calendarParams){
         $additionalFilter = '';
 
-        if (in_array($this->getAction(), array('main', 'viewBlog')) and $this->getParam('showCalendar')) {
+        if (in_array($this->getState(), array('main', 'viewBlog')) and $this->getParam('showCalendar')) {
         $ap = $this->getActionParams(true);
             $dateFieldName = 'p.post_created';
             if (isset($ap['year']) && isset($ap['month']) &&
@@ -113,7 +113,7 @@ class BlogPost extends DBDataSet {
                         'YEAR('.$dateFieldName.') = "' . $ap['year'] . '"';
             }
 
-            if ($this->getAction() == 'viewBlog'){
+            if ($this->getState() == 'viewBlog'){
                 // ищем посты только одного блога
                 $blogId = $this->getActionParams();
                 list($blogId) = $blogId;
@@ -291,7 +291,7 @@ class BlogPost extends DBDataSet {
 	}
 	
 	protected function createData() {
-		if($this->getAction() == 'create'){
+		if($this->getState() == 'create'){
 			$result =  new Data();
 		}
 		else{
@@ -308,7 +308,7 @@ class BlogPost extends DBDataSet {
     protected function loadData(){
     	$data = false;
     	
-    	if($this->getAction() == 'main') {
+    	if($this->getState() == 'main') {
             // все последние посты
 	    	if(is_array($res = $this->loadLastPosts())){
 				$data = $res;
@@ -316,7 +316,7 @@ class BlogPost extends DBDataSet {
 				$this->loadCommentCount($data);
 	        }
     	}
-    	elseif($this->getAction() == 'viewBlog') {
+    	elseif($this->getState() == 'viewBlog') {
             // все посты одного блога
     		$blogId = $this->getActionParams();
         	list($blogId) = $blogId;
@@ -326,7 +326,7 @@ class BlogPost extends DBDataSet {
 	        }
 	        else $data = false;
     	}
-    	elseif($this->getAction() == 'view') {
+    	elseif($this->getState() == 'view') {
             // один пост
     		$postId = $this->getActionParams();
         	list($postId) = $postId;
@@ -335,7 +335,7 @@ class BlogPost extends DBDataSet {
 	        }
 	        else $data = false;
     	}
-        elseif($this->getAction() == 'edit') {
+        elseif($this->getState() == 'edit') {
     		$postId = $this->getActionParams();
         	list($postId) = $postId;
 	    	if(!is_array($data = $this->loadPosts($postId))){
@@ -478,7 +478,7 @@ class BlogPost extends DBDataSet {
     	parent::prepare();
 
         // в выводе методов main, view etc - blog_id представлен как список - отменяем
-    	if($this->getAction() != 'create' and $this->getAction() != 'edit'){
+    	if($this->getState() != 'create' and $this->getState() != 'edit'){
     		$this->getDataDescription()->getFieldDescriptionByName('blog_id')->setType(FieldDescription::FIELD_TYPE_INT);
     	}
     	else{
@@ -490,7 +490,7 @@ class BlogPost extends DBDataSet {
         // @see BlogPost::loadPost
         if ($this->getParam('showCalendar')) {
             // фильтр календаря при просмотре одного поста
-            if(($this->getAction() == 'view') and !$this->getData()->isEmpty()){
+            if(($this->getState() == 'view') and !$this->getData()->isEmpty()){
                 $this->calendarParams['blog_id'] = $this->getData()->getFieldByName('blog_id')->getData();
             }
 

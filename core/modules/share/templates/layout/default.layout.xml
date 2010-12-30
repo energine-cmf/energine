@@ -15,7 +15,7 @@
 	</component>
     <component name="adminPanel" module="share" class="DivisionEditor">
         <params>
-            <param name="action">showPageToolbar</param> 
+            <param name="state">showPageToolbar</param>
             <param name="rights">3</param> 
         </params>
     </component>

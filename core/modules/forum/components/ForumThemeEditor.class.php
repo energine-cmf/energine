@@ -32,7 +32,7 @@ class ForumThemeEditor extends Grid {
 
     protected function loadDataDescription() {
         $result = parent::loadDataDescription();
-        if (in_array($this->getAction(), array('edit'))) {
+        if (in_array($this->getState(), array('edit'))) {
             unset($result['comment_id']);
             $result['u_id']['key'] = false;
             $result['smap_id']['key'] = false;
@@ -42,7 +42,7 @@ class ForumThemeEditor extends Grid {
     }
 
     protected function loadData() {
-        if ($this->getAction() == 'getRawData') {
+        if ($this->getState() == 'getRawData') {
             $data = false;
             $this->applyUserFilter();
             $actionParams = $this->getActionParams(true);

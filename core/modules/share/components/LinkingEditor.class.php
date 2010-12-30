@@ -70,12 +70,12 @@
     }
 
     public function build() {
-        if ($this->getAction() == 'main') {
+        if ($this->getState() == 'main') {
             if ($param = $this->getParam('bind')) {
                 $this->setProperty('linkedComponent', $param);
             }
             $result = Component::build();
-            if (($component = $this->document->componentManager->getBlockByName($param)) /*&& ($component->getAction() != 'view')*/ && $this->isEditable) {
+            if (($component = $this->document->componentManager->getBlockByName($param)) /*&& ($component->getState() != 'view')*/ && $this->isEditable) {
                 if ($this->js) {
                     $result->documentElement->appendChild($result->importNode($this->js, true));
                 }

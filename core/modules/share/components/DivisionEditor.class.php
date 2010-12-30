@@ -168,7 +168,7 @@ final class DivisionEditor extends Grid {
         $result = parent::createDataDescription();
 
         //для редактирования и добавления нужно сформировать "красивое дерево разделов"
-        if (in_array($this->getAction(), array('add', 'edit'))) {
+        if (in_array($this->getState(), array('add', 'edit'))) {
             $fd = $result->getFieldDescriptionByName('smap_pid');
             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
             //$fd->setMode(FieldDescription::FIELD_MODE_READ);
@@ -184,7 +184,7 @@ final class DivisionEditor extends Grid {
                     $smapPIDFieldDescription->setType(FieldDescription::FIELD_TYPE_INT);
                 }
             }
-            if ($this->getAction() == 'getRawData') {
+            if ($this->getState() == 'getRawData') {
                 $field = new FieldDescription('smap_segment');
                 $field->setType(FieldDescription::FIELD_TYPE_STRING);
                 $field->setProperty('tableName', $this->getTableName());
@@ -243,7 +243,7 @@ final class DivisionEditor extends Grid {
 
     protected function loadData() {
         $result = parent::loadData();
-        if ($result && $this->getAction() == 'getRawData') {
+        if ($result && $this->getState() == 'getRawData') {
             //Используется GLOBALS поскольку нет другой возможности передать
             //в runtime created function посторонее значение
             /*$GLOBALS['__SMAP2ICONS'] = convertDBResult($this->dbh->selectRequest('
@@ -274,7 +274,7 @@ final class DivisionEditor extends Grid {
         return $result;
     }
 
-    protected function getRawData($baseMethod = self::DEFAULT_ACTION_NAME) {
+    protected function getRawData($baseMethod = self::DEFAULT_STATE_NAME) {
         $params = $this->getActionParams(true);
         $this->setFilter(array('site_id' => $params['site_id']));
 
@@ -306,7 +306,7 @@ final class DivisionEditor extends Grid {
 
     protected function prepare() {
         parent::prepare();
-        if (in_array($this->getAction(), array('add', 'edit'))) {
+        if (in_array($this->getState(), array('add', 'edit'))) {
             $this->addTranslation('ERR_NO_DIV_NAME');
             list($pageID) = $this->getActionParams();
             $this->getDataDescription()->getFieldDescriptionByName('smap_pid')->setProperty('base', SiteManager::getInstance()->getSiteByPage($pageID)->base);
@@ -584,7 +584,7 @@ final class DivisionEditor extends Grid {
      */
 
     public function build() {
-        switch ($this->getAction()) {
+        switch ($this->getState()) {
             case 'showPageToolbar':
                 $result = false;
                 // вызываем родительский метод построения

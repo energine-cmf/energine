@@ -87,7 +87,7 @@
     </xsl:template>
 
 <!--    <xsl:template match="record[ancestor::component[@class='BlogPost'][@componentAction='edit']]">
-        <form action="{$BASE}{$LANG_ABBR}blogs/post/{@post_id}/save/" method="post" class="form">
+        <form state="{$BASE}{$LANG_ABBR}blogs/post/{@post_id}/save/" method="post" class="form">
             <xsl:apply-templates/>
         </form>
 

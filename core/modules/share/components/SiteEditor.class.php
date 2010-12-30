@@ -45,7 +45,7 @@ class SiteEditor extends Grid {
 	 */
 	protected function prepare(){
 		parent::prepare();
-		if(in_array($this->getAction(), array('add', 'edit'))){
+		if(in_array($this->getState(), array('add', 'edit'))){
 			$fd = $this->getDataDescription()->getFieldDescriptionByName('site_protocol');
 			$fd->setType(FieldDescription::FIELD_TYPE_SELECT);
 			$fd->loadAvailableValues(array(array('key' => 'http', 'value' => 'http://'), array('key' => 'https', 'value' => 'https://')), 'key', 'value');
@@ -62,7 +62,7 @@ class SiteEditor extends Grid {
             $tagField->removeProperty('pattern');
             $this->getDataDescription()->addFieldDescription($tagField);
                 
-			if($this->getAction() == 'add'){
+			if($this->getState() == 'add'){
 				$this->getData()->getFieldByName('site_port')->setData(80, true);
 				$this->getData()->getFieldByName('site_root')->setData('/', true);
 				$this->getData()->getFieldByName('site_is_active')->setData(1, true);
@@ -97,7 +97,7 @@ class SiteEditor extends Grid {
     }
 
     public function build(){
-        if($this->getAction() == 'reset'){
+        if($this->getState() == 'reset'){
             $result = $this->divEditor->build();
         }
         else {

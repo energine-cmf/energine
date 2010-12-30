@@ -50,9 +50,9 @@ class ErrorDocument extends Object implements IDocument {
         $vm = E()->getController()->getViewMode();
         if ($vm == DocumentController::TRANSFORM_JSON) {
             $errors = array(array('message' => $this->e->getMessage()));
-            $customMessages = $this->e->getCustomMessage(); 
+            $customMessages = $this->e->getCustomMessage();
             if(is_array($customMessages) && !empty($customMessages)){
-                array_push($errors, $customMessages);    
+                array_push($errors, $customMessages);
             }
             $data = array(
                 'result' => false,
@@ -67,7 +67,12 @@ class ErrorDocument extends Object implements IDocument {
             $error->appendChild($this->doc->createElement('message', $this->e->getMessage()));
             $error->setAttribute('file', $this->e->getFile());
             $error->setAttribute('line', $this->e->getLine());
-
+            $customMessages = $this->e->getCustomMessage();
+            if(is_array($customMessages) && !empty($customMessages)){
+                foreach($customMessages as $message){
+                    $error->appendChild($this->doc->createElement('customMessage', $message));
+                }
+            }
             if ($vm == DocumentController::TRANSFORM_HTML) {
                 E()->getController()->getTransformer()->setFileName('error_page.xslt');
             }

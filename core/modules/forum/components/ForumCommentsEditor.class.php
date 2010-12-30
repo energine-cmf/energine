@@ -39,11 +39,11 @@ class ForumCommentsEditor extends Grid {
 
     protected function loadDataDescription() {
         $result = parent::loadDataDescription();
-        if ($this->getAction() == 'main') {
+        if ($this->getState() == 'main') {
             $result['u_id']['key'] = false;
             $result['target_id']['key'] = false;
         }
-        elseif ($this->getAction() == 'edit') {
+        elseif ($this->getState() == 'edit') {
             unset($result['comment_parent_id']);
             $result['u_id']['key'] = false;
             $result['u_id']['type'] = QAL::COLTYPE_STRING;
@@ -53,7 +53,7 @@ class ForumCommentsEditor extends Grid {
     }
 
     protected function loadData() {
-        if ($this->getAction() == 'getRawData') {
+        if ($this->getState() == 'getRawData') {
             $data = false;
             $this->applyUserFilter();
             if ($this->pager) {
@@ -102,7 +102,7 @@ class ForumCommentsEditor extends Grid {
     protected function getFKData($fkTableName, $fkKeyName) {
         $res = parent::getFKData($fkTableName, $fkKeyName);
         if (
-                in_array($this->getAction(), array('main', 'getRawData'))
+                in_array($this->getState(), array('main', 'getRawData'))
                 &&
                 ($fkKeyName == 'u_id')
         ) {
@@ -148,7 +148,7 @@ class ForumCommentsEditor extends Grid {
     }
 
     public function build() {
-        switch ($this->getAction()) {
+        switch ($this->getState()) {
             case 'showThemeEditor':
                 $result = $this->themeEditor->build();
                 break;

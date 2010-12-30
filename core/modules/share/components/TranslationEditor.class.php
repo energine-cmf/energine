@@ -34,7 +34,7 @@ class TranslationEditor extends Grid {
 	
 	protected function prepare(){
 		parent::prepare();
-		if(in_array($this->getAction(), array('add', 'edit'))){
+		if(in_array($this->getState(), array('add', 'edit'))){
 			$this->getDataDescription()->getFieldDescriptionByName('ltag_value_rtf')->setType(FieldDescription::FIELD_TYPE_TEXT);
 		}
 	}

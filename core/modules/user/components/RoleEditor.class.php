@@ -67,7 +67,7 @@ class RoleEditor extends Grid {
 
     protected function loadData() {
         $result = parent::loadData();
-        if ($this->getAction() == 'save') {
+        if ($this->getState() == 'save') {
             foreach ($this->uniqueFields as $fieldName) {
                 if (isset($result[0][$fieldName]) && $result[0][$fieldName]) {
                     $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array($fieldName=>null));
@@ -156,7 +156,7 @@ class RoleEditor extends Grid {
         
         $f = new FieldDescription('RightsId');
         $f->setType(FieldDescription::FIELD_TYPE_SELECT);
-        if ($this->getAction() == 'view') {
+        if ($this->getState() == 'view') {
             $f->setMode(FieldDescription::FIELD_MODE_READ);
         }
         $rights = $this->dbh->select('user_group_rights', array('right_id', 'right_const'));

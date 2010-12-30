@@ -665,7 +665,7 @@ class DBDataSet extends DataSet {
      */
     protected function buildJS(){
         $result = false;
-        if(($this->getAction() == 'view') && $this->document->isEditable() && $this->getParam('editable')) {
+        if(($this->getState() == 'view') && $this->document->isEditable() && $this->getParam('editable')) {
             $this->addWYSIWYGTranslations();
             $this->setProperty('editable', 'editable');
         }
@@ -724,7 +724,7 @@ class DBDataSet extends DataSet {
     protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('config' => 'core/modules/share/config/FileLibraryMin.component.xml'));
-        //$this->fileLibrary->getAction();
+        //$this->fileLibrary->getState();
         $this->fileLibrary->run();
     }
     /**
@@ -735,12 +735,12 @@ class DBDataSet extends DataSet {
      */
     protected function imageManager() {
         $this->imageManager  = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
-        //$this->imageManager->getAction();
+        //$this->imageManager->getState();
         $this->imageManager->run();
     }
 
     public function build() {
-        switch ($this->getAction()) {
+        switch ($this->getState()) {
             case 'imageManager':
                 return $this->imageManager->build();
                 break;

@@ -345,14 +345,14 @@ class CommentsForm extends DataSet {
      *
      */
     protected function prepare() {
-        if ($this->getAction() == 'deleteComment') {
+        if ($this->getState() == 'deleteComment') {
             ;
             ;
         }
         else {
             if (($this->bindComponent &&
-                    $this->bindComponent->getAction() == 'view') &&
-                    ($this->getAction() == 'main')
+                    $this->bindComponent->getState() == 'view') &&
+                    ($this->getState() == 'main')
                     && $this->getParam('show_form') &&
                     $this->getParam('show_comments')
                     && $this->isExistsNeedTables()) {
@@ -398,7 +398,7 @@ class CommentsForm extends DataSet {
             if ($this->getParam('show_comments') &&
                     $this->isExistsNeedTables() &&
                     is_object($this->bindComponent) &&
-                    $this->bindComponent->getAction() == 'view'
+                    $this->bindComponent->getState() == 'view'
                     && $this->bindComponent->getData() &&
                     !$this->bindComponent->getData()->isEmpty()) {
                 $this->showComments();
@@ -623,7 +623,7 @@ class CommentsForm extends DataSet {
 
     public function build(){
         $result = '';
-        switch($this->getAction()){
+        switch($this->getState()){
             case 'ban':
                 $result = $this->userEditor->build();
                 break;

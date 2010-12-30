@@ -235,7 +235,7 @@ class Grid extends DBDataSet {
      */
 
     protected function getDataLanguage() {
-        if (isset($_POST['languageID']) && $this->getAction()=='getRawData') {
+        if (isset($_POST['languageID']) && $this->getState()=='getRawData') {
             $langID = $_POST['languageID'];
             if (!E()->getLanguage()->isValidLangID($langID)) {
                 throw new SystemException('ERR_BAD_LANG_ID', SystemException::ERR_WARNING);
@@ -254,7 +254,7 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function getRawData($baseMethod = self::DEFAULT_ACTION_NAME) {
+    protected function getRawData($baseMethod = self::DEFAULT_STATE_NAME) {
 
             $this->setParam('onlyCurrentLang', true);
             $this->config->setCurrentMethod($baseMethod);
@@ -319,15 +319,15 @@ class Grid extends DBDataSet {
      */
 
     protected function createDataDescription() {
-        if (in_array($this->getAction(), array('printData', 'exportCSV'))) {
-            $previousAction = $this->getAction();
-            $this->config->setCurrentMethod(self::DEFAULT_ACTION_NAME);
+        if (in_array($this->getState(), array('printData', 'exportCSV'))) {
+            $previousAction = $this->getState();
+            $this->config->setCurrentMethod(self::DEFAULT_STATE_NAME);
             $result = parent::createDataDescription();
             $this->config->setCurrentMethod($previousAction);
         }
         else {
             $result = parent::createDataDescription();
-            if (in_array($this->getAction(), array('main', 'edit', 'add', 'save', 'getRawData')) && ($col = $this->getOrderColumn()) && ($field = $result->getFieldDescriptionByName($col))) {
+            if (in_array($this->getState(), array('main', 'edit', 'add', 'save', 'getRawData')) && ($col = $this->getOrderColumn()) && ($field = $result->getFieldDescriptionByName($col))) {
                 $result->removeFieldDescription($field);
             }
         }
@@ -461,7 +461,7 @@ class Grid extends DBDataSet {
      */
 
     public function build() {
-        switch ($this->getAction()) {
+        switch ($this->getState()) {
             case 'imageManager':
                 return $this->imageManager->build();
                 break;
@@ -489,10 +489,10 @@ class Grid extends DBDataSet {
      */
 
     protected function loadData() {
-        if ($this->getAction() == self::DEFAULT_ACTION_NAME) {
+        if ($this->getState() == self::DEFAULT_STATE_NAME) {
             $result = false;
         }
-        elseif ($this->getAction() == 'save') {
+        elseif ($this->getState() == 'save') {
             if (!isset($_POST[$this->getTableName()])) {
                 throw new SystemException('ERR_NO_DATA', SystemException::ERR_CRITICAL);
             }
@@ -516,7 +516,7 @@ class Grid extends DBDataSet {
             }
 
         }
-        elseif ($this->getAction() =='getRawData') {
+        elseif ($this->getState() =='getRawData') {
             $this->applyUserFilter();
             $actionParams = $this->getActionParams(true);
             
@@ -541,7 +541,7 @@ class Grid extends DBDataSet {
      */
     protected function imageManager() {
         $this->imageManager  = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
-        //$this->imageManager->getAction();
+        //$this->imageManager->getState();
         $this->imageManager->run();
     }
 
@@ -554,7 +554,7 @@ class Grid extends DBDataSet {
     protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('config' => 'core/modules/share/config/FileLibraryMin.component.xml'));
-        //$this->fileLibrary->getAction();
+        //$this->fileLibrary->getState();
         $this->fileLibrary->run();
     }
 
@@ -859,7 +859,7 @@ class Grid extends DBDataSet {
             'filelibrary', 
             'share', 
             'FileLibrary', 
-            array('action' => 'put', 'active' => false)
+            array('state' => 'put', 'active' => false)
         );
         $this->fileLibrary->run();  
     }

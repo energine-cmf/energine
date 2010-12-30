@@ -12,13 +12,14 @@
  * не катит
  */
 if (ini_get('register_globals')) {
-	die('Register_globals directive must be turned off.');
+    die('Register_globals directive must be turned off.');
 }
 /**
  * Хак для cgi mode, где SCRIPT_FILENAME возвращает путь к PHP, вместо пути к текущему исполняемому файлу
  */
 if (isset($_SERVER['SCRIPT_FILENAME'])) {
-    $_SERVER['SCRIPT_FILENAME'] = (isset($_SERVER['PATH_TRANSLATED']))?$_SERVER['PATH_TRANSLATED']:$_SERVER['SCRIPT_FILENAME'];
+    $_SERVER['SCRIPT_FILENAME'] =
+            (isset($_SERVER['PATH_TRANSLATED'])) ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME'];
 }
 
 /**
@@ -40,14 +41,16 @@ ini_set('html_errors', 0);
  * поскольку magic_quotes_gpc в runtime отключить нельзя, идем на ухищрение
  */
 if (get_magic_quotes_gpc()) {
-   function recursiveStripslashes($value) {
-       $value = is_array($value)?array_map('recursiveStripslashes', $value):stripslashes($value);
-       return $value;
-   }
-   $_POST = array_map('recursiveStripslashes', $_POST);
-   $_GET = array_map('recursiveStripslashes', $_GET);
-   $_COOKIE = array_map('recursiveStripslashes', $_COOKIE);
-   $_REQUEST = array_map('recursiveStripslashes', $_REQUEST);
+    function recursiveStripslashes($value) {
+        $value =
+                is_array($value) ? array_map('recursiveStripslashes', $value) : stripslashes($value);
+        return $value;
+    }
+
+    $_POST = array_map('recursiveStripslashes', $_POST);
+    $_GET = array_map('recursiveStripslashes', $_GET);
+    $_COOKIE = array_map('recursiveStripslashes', $_COOKIE);
+    $_REQUEST = array_map('recursiveStripslashes', $_REQUEST);
 }
 
 @date_default_timezone_set('Europe/Kiev');
@@ -117,37 +120,34 @@ require_once('Memcacher.class.php');
  * @return void
  * @staticvar array $paths массив путей к файлам классов вида [имя класса]=>путь к файлу класса
  */
-function __autoload($className){
+function __autoload($className) {
     static $paths = array();
     //если массив путей не заполнен - заполняем
     if (empty($paths)) {
         //Если мемкеш не заенейблен или значения путей в нем нет
         $mc = E()->getCache();
-        if(!$mc->isEnabled() || !($paths = $mc->retrieve('class_structure'))){
+        if (!$mc->isEnabled() || !($paths = $mc->retrieve('class_structure'))) {
             //собираем в статическую переменную
             $tmp = glob(
-            '{' . implode(',', array(
-                CORE_KERNEL_DIR,
-                CORE_COMPONENTS_DIR,
-                CORE_GEARS_DIR,
-                SITE_KERNEL_DIR,
-                SITE_COMPONENTS_DIR,
-                SITE_GEARS_DIR
-            )) . '}/*.class.php',
+                '{' . implode(',', array(
+                    CORE_KERNEL_DIR,
+                    CORE_COMPONENTS_DIR,
+                    CORE_GEARS_DIR,
+                    SITE_KERNEL_DIR,
+                    SITE_COMPONENTS_DIR,
+                    SITE_GEARS_DIR
+                )) . '}/*.class.php',
                 GLOB_BRACE
             );
             foreach ($tmp as $fileName) {
-                $paths[substr(strrchr($fileName,'/'), 1, -10)] = $fileName;
+                $paths[substr(strrchr($fileName, '/'), 1, -10)] = $fileName;
             }
             $mc->store('class_structure', $paths);
         }
     }
 
-    if (isset($paths[$className])) {
-    	require($paths[$className]);
-    }
-    else {
-        trigger_error('no class '.$className.' found');
+    if (!isset($paths[$className]) || !@require($paths[$className])) {
+        stop('no class ' . $className . ' found');
     }
 }
 
@@ -165,9 +165,17 @@ set_error_handler('nrgnErrorHandler');
  * @return void
  */
 function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext) {
-    $e = new SystemException(
-        $message,
-        SystemException::ERR_DEVELOPER
-    );
-    throw $e->setFile($file)->setLine($line);
+    try {
+        $e = new SystemException(
+            $message,
+            SystemException::ERR_DEVELOPER
+        );
+        throw $e->setFile($file)->setLine($line);
+    }
+    catch (Exception $e) {
+        //Если ошибка произошла здесь
+        //то капец
+        var_dump($message, $file, $line);
+        exit;
+    }
 }

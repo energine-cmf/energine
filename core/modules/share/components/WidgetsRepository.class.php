@@ -97,7 +97,7 @@ class WidgetsRepository extends Grid {
     }
 
     public function build() {
-        switch ($this->getAction()) {
+        switch ($this->getState()) {
             case 'buildWidget':
                 $result = $this->tmpComponent->build();
                 break;

@@ -217,7 +217,7 @@ class UserProfile extends DBDataSet {
         $result->removeFieldDescription($field);
         $result->addFieldDescription($field);
 
-        if ($this->getAction() !== 'save') {
+        if ($this->getState() !== 'save') {
         	$field = new FieldDescription('u_password2');
             $field->setProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
             $field->setType(FieldDescription::FIELD_TYPE_PWD);

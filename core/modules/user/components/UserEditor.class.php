@@ -292,16 +292,16 @@ class UserEditor extends Grid {
     protected function loadData() {
         $result = parent::loadData();
 
-        /*if ($this->getAction() == 'save') {
+        /*if ($this->getState() == 'save') {
             $result[0]['u_password'] = sha1($result[0]['u_password']);
         }
-        else*/if ($this->getAction() == 'getRawData' && $result) {
+        else*/if ($this->getState() == 'getRawData' && $result) {
             $result = array_map(array($this, 'printUserGroups'), $result);
         }
-        elseif ($this->getAction() == 'edit') {
+        elseif ($this->getState() == 'edit') {
             $result[0]['u_password'] = '';
         }
-        elseif ($this->getAction() == 'view') {
+        elseif ($this->getState() == 'view') {
             $result[0]['u_password'] = '';
         }
         return $result;
@@ -337,7 +337,7 @@ class UserEditor extends Grid {
     protected function createDataDescription() {
         $result = parent::createDataDescription();
 
-        if (in_array($this->getAction(), array('add', 'edit'))) {
+        if (in_array($this->getState(), array('add', 'edit'))) {
             foreach ($result as $fieldDescription) {
                 $fieldDescription->setProperty('tabName', $this->translate('TXT_USER_EDITOR'));
             }
@@ -378,7 +378,7 @@ class UserEditor extends Grid {
 
      protected function loadDataDescription() {
         $result = parent::loadDataDescription();
-        if ($this->getAction() == 'save' && isset($result['u_password'])) {
+        if ($this->getState() == 'save' && isset($result['u_password'])) {
            	$result['u_password']['nullable'] = true;
         }
 

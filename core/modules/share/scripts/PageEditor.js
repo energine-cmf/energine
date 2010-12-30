@@ -27,7 +27,7 @@ var PageEditor = new Class({
 	createToolbar: function(){
 		var toolbar = new Toolbar('wysiwyg_toolbar');
         toolbar.dock();
-		/*toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: Energine.translations.get('BTN_SAVE'), action: 'save' }));
+		/*toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: Energine.translations.get('BTN_SAVE'), state: 'save' }));
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep2' }));*/
 		toolbar.appendControl(new Toolbar.Button({ id: 'bold', icon: 'images/toolbar/bold.gif', title: Energine.translations.get('BTN_BOLD'), action: 'bold' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'italic', icon: 'images/toolbar/italic.gif', title: Energine.translations.get('BTN_ITALIC'), action: 'italic' }));
@@ -47,7 +47,7 @@ var PageEditor = new Class({
 		toolbar.appendControl(new Toolbar.Button({ id: 'imagemngr', icon: 'images/toolbar/image.gif', title:Energine.translations.get('BTN_INSERT_IMAGE'), action: 'imageManager' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'filemngr', icon: 'images/toolbar/filemngr.gif', title: Energine.translations.get('BTN_FILE_LIBRARY'), action: 'fileLibrary' }));
 		/*toolbar.appendControl(new Toolbar.Separator({ id: 'sep6' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'viewModeSwitcher', title: TXT_PREVIEW, action: 'switchToViewMode' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'viewModeSwitcher', title: TXT_PREVIEW, state: 'switchToViewMode' }));
 */
 		toolbar.bindTo(this);
 		return toolbar;

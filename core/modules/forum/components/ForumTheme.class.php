@@ -73,7 +73,7 @@ class ForumTheme extends DBDataSet {
      */
     protected function prepare() {
         parent::prepare();
-        if (in_array($this->getAction(), array('main', 'view'))) {
+        if (in_array($this->getState(), array('main', 'view'))) {
             $this->getDataDescription()->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_INT);
             $this->getDataDescription()->getFieldDescriptionByName('u_id')->setType(FieldDescription::FIELD_TYPE_INT);
 
@@ -84,12 +84,12 @@ class ForumTheme extends DBDataSet {
                     $this->document->getRights() > 1));
             }
         }
-        elseif (in_array($this->getAction(), array('modify'))) {
+        elseif (in_array($this->getState(), array('modify'))) {
             $this->getDataDescription()->getFieldDescriptionByName('theme_text')->setType(FieldDescription::FIELD_TYPE_TEXT);
         }
 
         // отключаем подкатегории
-        /*if($this->getAction() != 'main'){
+        /*if($this->getState() != 'main'){
             $this->document->componentManager->getBlockByName('forumSubCategory')->disable();
         }*/
     }
@@ -99,7 +99,7 @@ class ForumTheme extends DBDataSet {
      */
     protected function createBuilder() {
         // Для методов modify и create нужны более сложные формы
-        if (in_array($this->getAction(), array('modify', 'create'))) {
+        if (in_array($this->getState(), array('modify', 'create'))) {
             $res = parent::createBuilder();
         }
         else {
@@ -118,12 +118,12 @@ class ForumTheme extends DBDataSet {
 
     protected function loadData() {
         $data = false;
-        if ($this->getAction() == 'view') {
+        if ($this->getState() == 'view') {
             $themeId = $this->getActionParams();
             list($themeId) = $themeId;
             $data = $this->loadTheme($themeId);
         }
-        elseif ($this->getAction() == 'main') {
+        elseif ($this->getState() == 'main') {
             $smapId = $this->document->getID();
             $data = $this->loadThemeBySmapid($smapId);
         }

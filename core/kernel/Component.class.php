@@ -22,7 +22,7 @@ class Component extends DBWorker implements IBlock {
     /**
      * Имя действия по-умолчанию.
      */
-    const DEFAULT_ACTION_NAME = 'main';
+    const DEFAULT_STATE_NAME = 'main';
     /**
      * @access protected
      * @var DOMDocument DOM-документ компонента
@@ -107,9 +107,9 @@ class Component extends DBWorker implements IBlock {
 
     /**
      * @access private
-     * @var string имя текущего действия компонента
+     * @var string имя текущего состояния компонента
      */
-    private $action = self::DEFAULT_ACTION_NAME;
+    private $state = self::DEFAULT_STATE_NAME;
 
     /**
      * @access protected
@@ -210,7 +210,7 @@ class Component extends DBWorker implements IBlock {
      */
     protected function defineParams() {
         return array(
-            'action' => $this->action,
+            'state' => $this->state,
             'rights' => $this->document->getRights(),
             'config' => false,
             'active' => false,
@@ -233,7 +233,7 @@ class Component extends DBWorker implements IBlock {
         if ($name == 'active') {
             $value = (bool) $value;
         }
-        /*if (in_array($name, array('action','configFilename', 'active'))) {
+        /*if (in_array($name, array('state','configFilename', 'active'))) {
             throw new SystemException('ERR_DEV_INVARIANT_PARAM', SystemException::ERR_DEVELOPER, $name);
         }*/
 
@@ -278,7 +278,7 @@ class Component extends DBWorker implements IBlock {
     protected function determineAction() {
         //Текущее действие берем из параметров
         //По умолчанию оно равно self::DEFAULT_ACTION_NAME
-        $this->action = $this->getParam('action');
+        $this->state = $this->getParam('state');
 
         // если это основной компонент страницы, должен быть конфигурационный файл
         if ($this->isActive()) {
@@ -290,18 +290,18 @@ class Component extends DBWorker implements IBlock {
             $action =
                     $this->config->getActionByURI($this->request->getPath(Request::PATH_ACTION, true));
             if ($action !== false) {
-                $this->action = $action['name'];
+                $this->state = $action['name'];
                 $this->actionParams = $action['params'];
             }
 
         }
             // если имя действия указано в POST-запросе - используем его
-        elseif (isset($_POST[$this->getName()]['action'])) {
-            $this->action = $_POST[$this->getName()]['action'];
+        elseif (isset($_POST[$this->getName()]['state'])) {
+            $this->state = $_POST[$this->getName()]['state'];
         }
         // устанавливаем права на действие из конфигурации, если определены
         if (!$this->config->isEmpty()) {
-            $this->config->setCurrentMethod($this->getAction());
+            $this->config->setCurrentMethod($this->getState());
 
             if (!is_null($rights =
                     $this->config->getCurrentMethodConfig()->getAttribute('rights'))) {
@@ -312,14 +312,14 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Определяет имя текущего действия компонента.
+     * Определяет имя текущего состояния компонента.
      *
      * @access public
      * @return string
      * @final
      */
-    final public function getAction() {
-        return $this->action;
+    final public function getState() {
+        return $this->state;
     }
 
     /**
@@ -358,15 +358,15 @@ class Component extends DBWorker implements IBlock {
                 &&
                 ($this->document->getRights() >= $this->getMethodRights())
         ) {
-            if (!method_exists($this, $this->getAction())) {
+            if (!method_exists($this, $this->getState())) {
                 throw new SystemException(
                     'ERR_DEV_NO_ACTION',
                     SystemException::ERR_DEVELOPER,
-                    array($this->getAction(), $this->getName())
+                    array($this->getState(), $this->getName())
                 );
             }
             $this->{
-            $this->getAction()
+            $this->getState()
             }();
         }
     }
@@ -485,7 +485,7 @@ class Component extends DBWorker implements IBlock {
             $result = $this->doc->createElement('component');
             $result->setAttribute('name', $this->getName());
             $result->setAttribute('module', $this->module);
-            $result->setAttribute('componentAction', $this->getAction());
+            $result->setAttribute('componentAction', $this->getState());
             $result->setAttribute('class', get_class($this));
 
             foreach ($this->properties as $propName => $propValue) {

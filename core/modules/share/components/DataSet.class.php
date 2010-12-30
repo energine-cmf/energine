@@ -120,7 +120,7 @@ abstract class DataSet extends Component {
      * @access protected
      */
     protected function defineParams() {
-        $this->setProperty('action', '');
+        $this->setProperty('state', '');
         return array_merge(
             parent::defineParams(),
             array(
@@ -373,7 +373,7 @@ abstract class DataSet extends Component {
      */
     public function build() {
         if (!$this->getBuilder()) {
-            throw new SystemException('ERR_DEV_NO_BUILDER:'. $this->getName().': '.$this->getAction(), SystemException::ERR_CRITICAL, $this->getName());
+            throw new SystemException('ERR_DEV_NO_BUILDER:'. $this->getName().': '.$this->getState(), SystemException::ERR_CRITICAL, $this->getName());
         }
 
         // передаем данные и описание данных построителю
@@ -481,7 +481,7 @@ abstract class DataSet extends Component {
 
 
         $this->setParam('datasetAction', $action);
-        $this->setProperty('action', $action);
+        $this->setProperty('state', $action);
     }
 
     /**

@@ -328,7 +328,7 @@ final class TextBlock extends DataSet {
      */
 
     public function build() {
-        switch ($this->getAction()) {
+        switch ($this->getState()) {
         	case 'imageManager':
         	    $result = $this->imageManager->build();
         		break;

@@ -39,7 +39,7 @@ class TemplateEditor extends Grid {
         
         if($f = $result->getFieldDescriptionByName('tmpl_icon')){
 	        $f->setType(FieldDescription::FIELD_TYPE_IMAGE);
-        	if(in_array($this->getAction(), array('add', 'edit'))){
+        	if(in_array($this->getState(), array('add', 'edit'))){
 	            $f->setType(FieldDescription::FIELD_TYPE_SELECT);
                 $f->loadAvailableValues(
                 $this->loadIconsData(),            
@@ -48,7 +48,7 @@ class TemplateEditor extends Grid {
         }
         
         foreach (array(self::TMPL_CONTENT, self::TMPL_LAYOUT) as $type)
-	        if(($f = $result->getFieldDescriptionByName('tmpl_'.$type)) && in_array($this->getAction(), array('add', 'edit'))){
+	        if(($f = $result->getFieldDescriptionByName('tmpl_'.$type)) && in_array($this->getState(), array('add', 'edit'))){
 		        $f->setType(FieldDescription::FIELD_TYPE_SELECT);
 		        $f->loadAvailableValues(
 		        $this->loadTemplateData($type),            

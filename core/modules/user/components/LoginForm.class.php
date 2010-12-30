@@ -27,7 +27,7 @@ class LoginForm extends DataSet {
 	 * @param string $module
 	 */
     public function __construct($name, $module,   array $params = null) {
-        $params['action'] = E()->getDocument()->user->isAuthenticated()?'showLogoutForm':'showLoginForm';
+        $params['state'] = E()->getDocument()->user->isAuthenticated()?'showLogoutForm':'showLoginForm';
         parent::__construct($name, $module,  $params);
         /*if (
             $this->document->user->isAuthenticated() 
@@ -103,7 +103,7 @@ class LoginForm extends DataSet {
 
     protected function loadData() {
         $result = false;
-        switch ($this->getAction()) {
+        switch ($this->getState()) {
             case 'showLogoutForm':
                 foreach ($this->getDataDescription()->getFieldDescriptionList() as $fieldName) {
                     

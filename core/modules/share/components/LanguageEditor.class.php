@@ -97,7 +97,7 @@ class LanguageEditor extends Grid {
 
     public function loadData() {
         $result = parent::loadData();
-        if ($this->getAction() == 'save' && isset($result[0]['lang_default']) && $result[0]['lang_default'] !== '0') {
+        if ($this->getState() == 'save' && isset($result[0]['lang_default']) && $result[0]['lang_default'] !== '0') {
             $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('lang_default'=>null));
         }
 

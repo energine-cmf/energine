@@ -34,7 +34,7 @@ class BanIPEditor extends Grid {
 	}
 
     protected function loadData(){
-        if($this->getAction() == 'getRawData'){
+        if($this->getState() == 'getRawData'){
             $this->applyUserFilter();
             $actionParams = $this->getActionParams(true);
 

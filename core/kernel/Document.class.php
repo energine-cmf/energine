@@ -325,7 +325,7 @@ final class Document extends DBWorker implements IDocument {
                         'pageToolBar',
                         'share',
                         'DivisionEditor',
-                        array('action' => 'showPageToolbar')
+                        array('state' => 'showPageToolbar')
                     )
                 );
             }
@@ -408,7 +408,7 @@ final class Document extends DBWorker implements IDocument {
             * Запускаем определение текущего действия компонента
             * и загрузку конфигурационной информации.
             */
-            //$component->getAction();
+            //$component->getState();
 
             // если у пользователя достаточно прав - запускаем работу компонента
 

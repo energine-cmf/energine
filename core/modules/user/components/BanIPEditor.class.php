@@ -36,7 +36,7 @@ class BanIPEditor extends Grid {
     protected function loadData(){
         if($this->getState() == 'getRawData'){
             $this->applyUserFilter();
-            $actionParams = $this->getActionParams(true);
+            $actionParams = $this->getStateParams(true);
 
             if(isset($actionParams['sortField']) && isset($actionParams['sortDir'])){
                 //подразумевается что sortDir - тоже существует
@@ -98,7 +98,7 @@ class BanIPEditor extends Grid {
     }
 
     protected function banUserIP(){
-        $UID = $this->getActionParams();
+        $UID = $this->getStateParams();
         $UID = $UID[0];
         if(!intval($UID)){
             throw new SystemException('Invalid UserID');
@@ -135,7 +135,7 @@ class BanIPEditor extends Grid {
     }
 
     protected function editBanUserIP(){
-        $ap = $this->getActionParams(true);
+        $ap = $this->getStateParams(true);
         $BID = $ap['ban_ip_id'];
         if(!$BID){
             throw new SystemException('ERR_NOT_VALID_BAN_IP_ID');

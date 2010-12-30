@@ -207,7 +207,7 @@ final class FileLibrary extends DataSet {
     protected function main() {
         parent::main();
         $this->setProperty('allowed_file_type', 'all');
-        if ($params = $this->getActionParams(true)) {
+        if ($params = $this->getStateParams(true)) {
             if (is_array($params) && !empty($params) &&
                     in_array($params['allowed_file_type'], array('media', 'image'))) {
                 $this->setProperty('allowed_file_type', $params['allowed_file_type']);

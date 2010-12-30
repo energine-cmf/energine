@@ -115,7 +115,7 @@ class UserEditor extends Grid {
         $b = new JSONCustomBuilder();
         $this->setBuilder($b);
         try {
-            list($id) = $this->getActionParams();
+            list($id) = $this->getStateParams();
             if (!$this->recordExists($id)) {
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
@@ -149,7 +149,7 @@ class UserEditor extends Grid {
      * @access protected
      */
     protected function ban(){
-        $ap = $this->getActionParams();
+        $ap = $this->getStateParams();
 
 
 

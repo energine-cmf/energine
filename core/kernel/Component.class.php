@@ -18,9 +18,8 @@
  * @author 1m.dm
  */
 class Component extends DBWorker implements IBlock {
-
     /**
-     * Имя действия по-умолчанию.
+     * Имя состояния по-умолчанию.
      */
     const DEFAULT_STATE_NAME = 'main';
     /**
@@ -588,7 +587,7 @@ class Component extends DBWorker implements IBlock {
     }*/
 
     /**
-     * Возвращает параметры действия.
+     * Возвращает параметры состояния.
      *
      * @param bool  - возвращает ассоциативный/обычный массив
      * @access public
@@ -596,7 +595,7 @@ class Component extends DBWorker implements IBlock {
      *
      * @todo Тут какой то беспорядок, то false то пустой array
      */
-    public function getActionParams($returnAsAssocArray = false) {
+    public function getStateParams($returnAsAssocArray = false) {
         if (!$returnAsAssocArray && ($this->actionParams !== false)) {
             return array_values($this->actionParams);
         }

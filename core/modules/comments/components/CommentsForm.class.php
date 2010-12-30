@@ -359,7 +359,7 @@ class CommentsForm extends DataSet {
                 parent::prepare();
 
                 //ID комментируемого элемента
-                $ap = $this->bindComponent->getActionParams(true);
+                $ap = $this->bindComponent->getStateParams(true);
                 //Тут костыль
                 $apk = array_keys($ap);
                 $apName = $apk[sizeof($apk) - 1];
@@ -607,7 +607,7 @@ class CommentsForm extends DataSet {
 
         if ($this->getParam('bind') && $forumTheme =
                 $this->document->componentManager->getBlockByName($this->getParam('bind'))) {
-            $ap = $forumTheme->getActionParams(true);
+            $ap = $forumTheme->getStateParams(true);
             if (isset($ap['pageNumber'])) {
                 $commentsList->addActionParam('pageNumber', $ap['pageNumber']);
             }

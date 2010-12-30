@@ -119,7 +119,7 @@ class ForumTheme extends DBDataSet {
     protected function loadData() {
         $data = false;
         if ($this->getState() == 'view') {
-            $themeId = $this->getActionParams();
+            $themeId = $this->getStateParams();
             list($themeId) = $themeId;
             $data = $this->loadTheme($themeId);
         }
@@ -285,7 +285,7 @@ class ForumTheme extends DBDataSet {
      */
     protected function modify() {
 
-        $themeId = $this->getActionParams();
+        $themeId = $this->getStateParams();
         list($themeId) = $themeId;
 
         if (!$this->isCanEditTheme($themeId)) {
@@ -321,7 +321,7 @@ class ForumTheme extends DBDataSet {
      * @return void
      */
     protected function remove() {
-        $themeId = $this->getActionParams();
+        $themeId = $this->getStateParams();
         list($themeId) = $themeId;
 
         if (!$this->isCanEditTheme($themeId)) {

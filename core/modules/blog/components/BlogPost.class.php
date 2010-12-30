@@ -79,7 +79,7 @@ class BlogPost extends DBDataSet {
         $additionalFilter = '';
 
         if (in_array($this->getState(), array('main', 'viewBlog')) and $this->getParam('showCalendar')) {
-        $ap = $this->getActionParams(true);
+        $ap = $this->getStateParams(true);
             $dateFieldName = 'p.post_created';
             if (isset($ap['year']) && isset($ap['month']) &&
                     isset($ap['day'])) {
@@ -115,7 +115,7 @@ class BlogPost extends DBDataSet {
 
             if ($this->getState() == 'viewBlog'){
                 // ищем посты только одного блога
-                $blogId = $this->getActionParams();
+                $blogId = $this->getStateParams();
                 list($blogId) = $blogId;
                 $calendarParams['blog_id'] = $blogId;
                 $calendarParams['template'] = "blogs/blog/$blogId/";
@@ -141,7 +141,7 @@ class BlogPost extends DBDataSet {
      * @return void
      */
 	protected function edit(){
-        if($postId = $this->getActionParams()){
+        if($postId = $this->getStateParams()){
 			// редактируем существующий пост
         	list($postId) = $postId;
 		}
@@ -217,7 +217,7 @@ class BlogPost extends DBDataSet {
 
 
 		
-		if($postId = $this->getActionParams()){
+		if($postId = $this->getStateParams()){
 			// редактируем существующий пост
         	list($postId) = $postId;
             $condition = array('post_id'=>$postId);
@@ -318,7 +318,7 @@ class BlogPost extends DBDataSet {
     	}
     	elseif($this->getState() == 'viewBlog') {
             // все посты одного блога
-    		$blogId = $this->getActionParams();
+    		$blogId = $this->getStateParams();
         	list($blogId) = $blogId;
 	    	if(is_array($data = $this->loadBlog($blogId))){
 				$this->addUserInfoDataDescription();
@@ -328,7 +328,7 @@ class BlogPost extends DBDataSet {
     	}
     	elseif($this->getState() == 'view') {
             // один пост
-    		$postId = $this->getActionParams();
+    		$postId = $this->getStateParams();
         	list($postId) = $postId;
 	    	if(is_array($data = $this->loadPost($postId))){
 				$this->addUserInfoDataDescription();
@@ -336,7 +336,7 @@ class BlogPost extends DBDataSet {
 	        else $data = false;
     	}
         elseif($this->getState() == 'edit') {
-    		$postId = $this->getActionParams();
+    		$postId = $this->getStateParams();
         	list($postId) = $postId;
 	    	if(!is_array($data = $this->loadPosts($postId))){
 				$data = false;

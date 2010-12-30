@@ -45,7 +45,7 @@ class ForumThemeEditor extends Grid {
         if ($this->getState() == 'getRawData') {
             $data = false;
             $this->applyUserFilter();
-            $actionParams = $this->getActionParams(true);
+            $actionParams = $this->getStateParams(true);
 
             if (isset($actionParams['sortField']) &&
                     isset($actionParams['sortDir'])) {

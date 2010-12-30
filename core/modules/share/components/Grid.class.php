@@ -136,7 +136,7 @@ class Grid extends DBDataSet {
     protected function edit() {
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
 
-        $id = $this->getActionParams();
+        $id = $this->getStateParams();
         list($id) = $id;
         if (!$this->recordExists($id)) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
@@ -180,7 +180,7 @@ class Grid extends DBDataSet {
     protected function delete() {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
-            list($id) = $this->getActionParams();
+            list($id) = $this->getStateParams();
             if (!$this->recordExists($id)) {
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
@@ -518,7 +518,7 @@ class Grid extends DBDataSet {
         }
         elseif ($this->getState() =='getRawData') {
             $this->applyUserFilter();
-            $actionParams = $this->getActionParams(true);
+            $actionParams = $this->getStateParams(true);
             
             if(isset($actionParams['sortField']) && isset($actionParams['sortDir'])){
                 //подразумевается что sortDir - тоже существует
@@ -667,7 +667,7 @@ class Grid extends DBDataSet {
                 throw new SystemException('ERR_NO_ORDER_COLUMN', SystemException::ERR_DEVELOPER);
             }
 
-            $currentID = $this->getActionParams();
+            $currentID = $this->getStateParams();
             list($currentID) = $currentID;
 
             //Определяем order_num текущей страницы

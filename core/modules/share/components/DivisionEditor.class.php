@@ -252,7 +252,7 @@ final class DivisionEditor extends Grid {
                '), 'smap_id', true);
 
                */
-            $params = $this->getActionParams(true);
+            $params = $this->getStateParams(true);
             $result = array_map(
                 create_function(
                     '$val',
@@ -275,7 +275,7 @@ final class DivisionEditor extends Grid {
     }
 
     protected function getRawData($baseMethod = self::DEFAULT_STATE_NAME) {
-        $params = $this->getActionParams(true);
+        $params = $this->getStateParams(true);
         $this->setFilter(array('site_id' => $params['site_id']));
 
         $this->setParam('onlyCurrentLang', true);
@@ -308,7 +308,7 @@ final class DivisionEditor extends Grid {
         parent::prepare();
         if (in_array($this->getState(), array('add', 'edit'))) {
             $this->addTranslation('ERR_NO_DIV_NAME');
-            list($pageID) = $this->getActionParams();
+            list($pageID) = $this->getStateParams();
             $this->getDataDescription()->getFieldDescriptionByName('smap_pid')->setProperty('base', SiteManager::getInstance()->getSiteByPage($pageID)->base);
         }
     }
@@ -362,7 +362,7 @@ final class DivisionEditor extends Grid {
     protected function add() {
         parent::add();
         //@todo Тут пришлось пойти на извращение
-        $actionParams = $this->getActionParams(true);
+        $actionParams = $this->getStateParams(true);
         $this->buildRightsTab($actionParams['pid']);
 
         $site = SiteManager::getInstance()->getSiteByPage($actionParams['pid']);
@@ -522,7 +522,7 @@ final class DivisionEditor extends Grid {
 
     protected function main() {
         parent::main();
-        $params = $this->getActionParams(true);
+        $params = $this->getStateParams(true);
 
         if ($params) {
             $siteID = $params['site_id'];
@@ -676,7 +676,7 @@ final class DivisionEditor extends Grid {
     protected function selector() {
         $this->addTranslation('TXT_DIVISIONS');
         $this->prepare();
-        $params = $this->getActionParams(true);
+        $params = $this->getStateParams(true);
 
         if ($params) {
             $siteID = $params['site_id'];
@@ -753,7 +753,7 @@ final class DivisionEditor extends Grid {
      * @return void
      */
     protected function resetTemplates() {
-        $ap = $this->getActionParams(true);
+        $ap = $this->getStateParams(true);
         $filter = null;
         if (isset($ap['site_id'])) {
             $filter = array('site_id' => $ap['site_id']);
@@ -796,7 +796,7 @@ final class DivisionEditor extends Grid {
 
     protected function changeOrder($direction) {
 
-        $id = $this->getActionParams();
+        $id = $this->getStateParams();
         list($id) = $id;
         if (!$this->recordExists($id)) {
             throw new SystemException('ERR_404', SystemException::ERR_404);

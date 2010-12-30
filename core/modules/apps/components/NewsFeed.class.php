@@ -43,7 +43,7 @@ class NewsFeed extends Feed {
 	 */
 
     protected function view() {
-        $params = array_reverse(array_map(function($int){ return intval($int);}, $this->getActionParams()));
+        $params = array_reverse(array_map(function($int){ return intval($int);}, $this->getStateParams()));
         array_unshift($params, '%s-%s-%s');
         $this->addFilterCondition(
         	array('news_date'=>call_user_func_array('sprintf', $params))

@@ -90,7 +90,7 @@ class CommentsEditor extends Grid {
     }
 
     protected function edit() {
-        $tab = $this->getActionParams();
+        $tab = $this->getStateParams();
         if ($tab) {
             $tab = (int) array_pop($tab);
             $this->changeTableName($tab);
@@ -117,7 +117,7 @@ class CommentsEditor extends Grid {
             throw new Exception('Add comment can auth user only');
         }
 
-        list($commentId) = $this->getActionParams();
+        list($commentId) = $this->getStateParams();
 
         $tabIndex = intval($_POST['tab_index']);
         $currTableName = $this->commentTables[$tabIndex];
@@ -302,7 +302,7 @@ class CommentsEditor extends Grid {
     }
 
     protected function delete() {
-        $tab = $this->getActionParams();
+        $tab = $this->getStateParams();
         if ($tab) {
             $tab = (int) array_pop($tab);
             $this->changeTableName($tab);

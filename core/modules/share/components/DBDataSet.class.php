@@ -625,7 +625,7 @@ class DBDataSet extends DataSet {
     protected function view() {
         $this->setType(self::COMPONENT_TYPE_FORM);
         //$this->addCrumb('TXT_VIEW_ITEM');
-        $id = $this->getActionParams();
+        $id = $this->getStateParams();
         list($id) = $id;
         if (!$this->recordExists($id)) {
             throw new SystemException('ERR_404', SystemException::ERR_404);

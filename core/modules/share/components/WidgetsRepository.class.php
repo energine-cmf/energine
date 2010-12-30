@@ -51,7 +51,7 @@ class WidgetsRepository extends Grid {
             throw new SystemException('ERR_INSUFFICIENT_DATA');
 }        if (!$widgetXML = simplexml_load_string($_POST['modalBoxData'])) {
             throw new SystemException('ERR_BAD_XML_DESCR');
-}        list($componentName) = $this->getActionParams();
+}        list($componentName) = $this->getStateParams();
         $component =
                 ComponentManager::findBlockByName($widgetXML, $componentName);
         $dd = new DataDescription();

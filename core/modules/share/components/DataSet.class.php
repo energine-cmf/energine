@@ -331,7 +331,7 @@ abstract class DataSet extends Component {
             $this->pager = new Pager($recordsPerPage);
             if ($this->isActive() &&
                     $this->getType() == self::COMPONENT_TYPE_LIST) {
-                $actionParams = $this->getActionParams(true);
+                $actionParams = $this->getStateParams(true);
                 if (!isset($actionParams['pageNumber']) ||
                         !($page = intval($actionParams['pageNumber']))) {
                     $page = 1;
@@ -481,7 +481,7 @@ abstract class DataSet extends Component {
 
 
         $this->setParam('datasetAction', $action);
-        $this->setProperty('state', $action);
+        $this->setProperty('action', $action);
     }
 
     /**

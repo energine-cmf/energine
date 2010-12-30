@@ -183,7 +183,7 @@ class CommentsList extends DataSet {
                 $this->pager = new Pager($recordsPerPage);
                 if ($this->isActive() &&
                         $this->getType() == self::COMPONENT_TYPE_LIST) {
-                    $actionParams = $this->getActionParams(true);
+                    $actionParams = $this->getStateParams(true);
                     if (
                             !isset($actionParams['pageNumber'])
                             ||
@@ -342,7 +342,7 @@ class CommentsList extends DataSet {
                     $this->document->componentManager->getBlockByName($this->getParam('bind'));
 
             if (!$this->isTree and $this->pager) {
-                $ap = $this->bindComponent->getActionParams(true);
+                $ap = $this->bindComponent->getStateParams(true);
                 $subUrl = '';
                 if (isset($ap['themeID'])) {
                     $subUrl = $ap['themeID'] . '/';

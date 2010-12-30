@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-		<method name="addDir">
+		<state name="addDir">
 			<uri_patterns>
 				<pattern>/add-dir/</pattern>
 			</uri_patterns>
@@ -18,8 +17,8 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="saveDir"/>
 				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="add">
+		</state>
+		<state name="add">
 			<uri_patterns>
 				<pattern>/add/</pattern>
 			</uri_patterns>
@@ -41,35 +40,35 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="getRawData">
+		</state>
+		<state name="getRawData">
 			<uri_patterns>
 				<pattern>/get-data/</pattern>
                 <pattern>/get-data/page-[pageNumber]/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="saveDir" rights="3">
+		</state>
+		<state name="saveDir" rights="3">
 			<uri_patterns>
 				<pattern>/save-dir/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="delete" rights="3">
+		</state>
+		<state name="delete" rights="3">
 			<uri_patterns>
 				<pattern>/delete/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="upload" rights="3">
+		</state>
+		<state name="upload" rights="3">
 			<uri_patterns>
 				<pattern>/upload/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="save" rights="3">
+		</state>
+		<state name="save" rights="3">
 			<uri_patterns>
 				<pattern>/save/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="put" rights="3"></method>
-	    <method name="main">
+		</state>
+		<state name="put" rights="3"></state>
+	    <state name="main">
             <uri_patterns>
                 <pattern>/</pattern>
                 <pattern>/[allowed_file_type]/</pattern>
@@ -88,6 +87,5 @@
                 <control id="sep03" type="separator"/>
                 <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
             </toolbar>
-        </method>
-	</methods>
+        </state>
 </configuration>

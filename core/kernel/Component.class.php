@@ -300,10 +300,10 @@ class Component extends DBWorker implements IBlock {
         }
         // устанавливаем права на действие из конфигурации, если определены
         if (!$this->config->isEmpty()) {
-            $this->config->setCurrentMethod($this->getState());
+            $this->config->setCurrentState($this->getState());
 
             if (!is_null($rights =
-                    $this->config->getCurrentMethodConfig()->getAttribute('rights'))) {
+                    $this->config->getCurrentStateConfig()->getAttribute('rights'))) {
                 $this->rights = (int) $rights;
             }
         }

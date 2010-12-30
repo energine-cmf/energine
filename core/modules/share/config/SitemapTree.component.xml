@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-<methods>
-	<method name="main">
+	<state name="main">
 		<fields>
 			<field name="Id" type="integer" key="1"/>
 			<field name="Pid" type="integer"/>
 			<field name="Name" type="string"/>
 			<field name="Segment" type="string"/>
 		</fields>
-	</method>
-</methods>
+	</state>
 </configuration>

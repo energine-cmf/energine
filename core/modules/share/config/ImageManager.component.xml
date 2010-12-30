@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-    <methods>
-    	<method name="main">
+
+    	<state name="main">
     	   <javascript>
     	       <object name="ImageManager" />
     	   </javascript>
@@ -24,6 +24,6 @@
             <translations>
                 <translation const="TXT_IMG_MANAGER"/>
             </translations>
-    	</method>
-    </methods>
+    	</state>
+
 </configuration>

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-        <method name="ban" rights="3">
+        <state name="ban" rights="3">
             <uri_patterns>
                 <pattern>/ban/[any]/</pattern>
             </uri_patterns>
-        </method>
-        <method name="banip" rights="3">
+        </state>
+        <state name="banip" rights="3">
             <uri_patterns>
                 <pattern>/banip/[any]/</pattern>
             </uri_patterns>
-        </method>
-		<method name="main">
+        </state>
+		<state name="main">
 			<javascript>
 				<object name="CommentsForm" />
 			</javascript>
@@ -22,19 +21,19 @@
             <toolbar>
             	<control id="saveComment" title="BTN_SEND" type="submit"  />
             </toolbar>
-		</method>
-		<method name="saveComment">
+		</state>
+		<state name="saveComment">
 			<uri_patterns>
 				<pattern>/save-comment/</pattern>
 			</uri_patterns>
-		</method>
-        <method name="deleteComment">
+		</state>
+        <state name="deleteComment">
 			<uri_patterns>
 				<pattern>/delete-comment/</pattern>
 			</uri_patterns>
-		</method>
+		</state>
 		<!--
-		<method name="view">
+		<state name="view">
 			<uri_patterns>
 				<pattern>/[voteID]/</pattern>
 			</uri_patterns>
@@ -46,7 +45,6 @@
             <translations>
                 <translation const="TXT_BACK_TO_LIST"/>
             </translations>            	
-		</method>
+		</state>
 		-->
-	</methods>
 </configuration>

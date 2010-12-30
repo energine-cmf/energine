@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-        <method name="main">
+        <state name="main">
             <!-- Метод выводящий список категорий-->
         	<uri_patterns>
                  <pattern>/</pattern>
@@ -25,6 +24,6 @@
                 <translation const="TXT_FORUM_LAST_COMMENT"/>
                 <translation const="TXT_NO_COMMENTS"/>
             </translations>
-        </method>
-    </methods>
+        </state>
+
 </configuration>

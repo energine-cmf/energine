@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-        <method name="create" rights="2">
+        <state name="create" rights="2">
         	<uri_patterns>
                  <pattern>/create/</pattern>
             </uri_patterns>
@@ -15,24 +14,24 @@
             <toolbar>
             	<control id="savePost" title="BTN_SAVE" type="submit"  />
             </toolbar>
-        </method>
-        <method name="cleanup" rights="2">
+        </state>
+        <state name="cleanup" rights="2">
             <uri_patterns>
                 <pattern>/cleanup/</pattern>
             </uri_patterns>
-        </method>
-        <method name="save" rights="2">
+        </state>
+        <state name="save" rights="2">
         	<uri_patterns>
                  <pattern>/[postID]/save-theme/</pattern>
                  <pattern>/save-theme/</pattern>
             </uri_patterns>
-        </method>
-        <method name="remove" rights="2">
+        </state>
+        <state name="remove" rights="2">
         	<uri_patterns>
                  <pattern>/[postID]/remove/</pattern>
             </uri_patterns>
-        </method>
-        <method name="modify" rights="2">
+        </state>
+        <state name="modify" rights="2">
         	<uri_patterns>
                  <pattern>/[postID]/modify/</pattern>
             </uri_patterns>
@@ -47,8 +46,8 @@
             <toolbar>
             	<control id="savePost" title="BTN_SAVE" type="submit"  />
             </toolbar>
-        </method>
-        <method name="main">
+        </state>
+        <state name="main">
             <uri_patterns>
                <pattern>/page-[pageNumber]/</pattern>
                <pattern>/</pattern>
@@ -71,8 +70,8 @@
                 <translation const="TXT_FORUM_CREATE_THEME"/>
                 <translation const="TXT_NO_COMMENTS"/>
             </translations>
-        </method>
-        <method name="view">
+        </state>
+        <state name="view">
              <uri_patterns>
                  <pattern>/[themeID]/page-[pageNumber]/</pattern>
                  <pattern>/[themeID]/</pattern>
@@ -103,6 +102,6 @@
                 <translation const="BTN_REPLY"/>
                 <translation const="TXT_NO_COMMENTS"/>
             </translations>
-        </method>
-    </methods>
+        </state>
+
 </configuration>

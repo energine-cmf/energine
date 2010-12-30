@@ -272,8 +272,8 @@ abstract class DataSet extends Component {
     protected function createDataDescription() {
         // описание данных из конфигурации
         $configDataDescriptionObject = new DataDescription();
-        if ($this->config->getCurrentMethodConfig()) {
-            $configDataDescriptionObject->loadXML($this->config->getCurrentMethodConfig()->fields);
+        if ($this->config->getCurrentStateConfig()) {
+            $configDataDescriptionObject->loadXML($this->config->getCurrentStateConfig()->fields);
         }
 
 
@@ -302,7 +302,7 @@ abstract class DataSet extends Component {
      */
     protected function createToolbar() {
         $result = array();
-        if ($config = $this->config->getCurrentMethodConfig()) {
+        if ($config = $this->config->getCurrentStateConfig()) {
             foreach ($config->toolbar as $toolbarDescription) {
                 $toolbarName = ((string) $toolbarDescription['name']) ?
                         (string) $toolbarDescription['name'] :
@@ -407,7 +407,7 @@ abstract class DataSet extends Component {
         }
 
         //Работа с константами переводов
-        if (($methodConfig = $this->config->getCurrentMethodConfig()) &&
+        if (($methodConfig = $this->config->getCurrentStateConfig()) &&
                 $methodConfig->translations) {
             foreach ($methodConfig->translations->translation as $translation) {
                 $this->addTranslation((string) $translation['const']);
@@ -445,7 +445,7 @@ abstract class DataSet extends Component {
      */
     protected function buildJS() {
         $result = false;
-        if (($config = $this->config->getCurrentMethodConfig()) &&
+        if (($config = $this->config->getCurrentStateConfig()) &&
                 $config->javascript) {
             $result = $this->doc->createElement('javascript');
             foreach ($config->javascript->object as $value) {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-		<method name="main">
+		<state name="main">
 			<javascript>
 				<object name="ValidForm" />
 			</javascript>
@@ -17,14 +16,13 @@
 			<translations>
 				<translation const="TXT_REQUIRED_FIELDS" />
 			</translations>
-		</method>
-		<method name="send">
+		</state>
+		<state name="send">
 			<uri_patterns>
 				<pattern>/send/</pattern>
 			</uri_patterns>
 			<fields>
 				<field name="result" mode="1"/>
 			</fields>
-		</method>
-	</methods>
+		</state>
 </configuration>

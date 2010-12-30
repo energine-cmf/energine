@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-		<method name="main">
+		<state name="main">
 			<javascript>
 				<object name="WidgetGridManager" />
 			</javascript>
@@ -20,8 +19,8 @@
                 <control id="sep02" type="separator" />
                 <control id="close" title="BTN_CLOSE" type="button" onclick="close" />
 			</toolbar>
-		</method>
-        <method name="add">
+		</state>
+        <state name="add">
             <uri_patterns>
                 <pattern>/add/</pattern>
             </uri_patterns>
@@ -39,8 +38,8 @@
                 <control id="sep1" type="separator" />
                 <control id="close" title="BTN_CANCEL" type="button" onclick="close" />
             </toolbar>
-        </method>
-		<method name="edit">
+        </state>
+		<state name="edit">
 			<uri_patterns>
 				<pattern>/[int]/edit/</pattern>
 			</uri_patterns>
@@ -51,42 +50,42 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="save" />
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close" />
 			</toolbar>
-		</method>
-		<method name="save" rights="3">
+		</state>
+		<state name="save" rights="3">
 			<uri_patterns>
 				<pattern>/save/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="delete" rights="2">
+		</state>
+		<state name="delete" rights="2">
 			<uri_patterns>
 				<pattern>/[int]/delete/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="getRawData" rights="2">
+		</state>
+		<state name="getRawData" rights="2">
 			<uri_patterns>
 				<pattern>/get-data/</pattern>
 				<pattern>/get-data/page-[pageNumber]/</pattern>
 				<pattern>/get-data/[sortField]-[sortDir]/</pattern>
 				<pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
 			</uri_patterns>
-		</method>
-        <method name="imageManager" rights="3">
+		</state>
+        <state name="imageManager" rights="3">
             <uri_patterns>
                 <pattern>/imagemanager/</pattern>
             </uri_patterns>
-        </method>
-        <method name="fileLibrary" rights="3">
+        </state>
+        <state name="fileLibrary" rights="3">
             <uri_patterns>
                 <pattern>/file-library/</pattern>
                 <pattern>/file-library/[any]/</pattern>
             </uri_patterns>
-        </method>
-        <method name="upload"  rights="2">
+        </state>
+        <state name="upload"  rights="2">
 		     <uri_patterns>
 		         <pattern>/upload/</pattern>
 		     </uri_patterns>
-		</method>
-        <method name="buildParamsForm" rights="3">
+		</state>
+        <state name="buildParamsForm" rights="3">
             <uri_patterns>
                 <pattern>/edit-params/[componentName]/</pattern>
             </uri_patterns>
@@ -97,26 +96,25 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-        </method>
-        <method name="buildWidget" rights="3">
+        </state>
+        <state name="buildWidget" rights="3">
             <uri_patterns>
                 <pattern>/build-widget/</pattern>
             </uri_patterns>
-        </method>
-        <method name="addWidget" rights="3">
+        </state>
+        <state name="addWidget" rights="3">
             <uri_patterns>
                 <pattern>/add-widget/</pattern>
             </uri_patterns>
-        </method>
-        <method name="deleteWidget" rights="3">
+        </state>
+        <state name="deleteWidget" rights="3">
             <uri_patterns>
                 <pattern>/delete-widget/</pattern>
             </uri_patterns>
-        </method>
-        <method name="saveContent" rights="3">
+        </state>
+        <state name="saveContent" rights="3">
             <uri_patterns>
                 <pattern>/save-content/</pattern>
             </uri_patterns>
-        </method>
-	</methods>
+        </state>
 </configuration>

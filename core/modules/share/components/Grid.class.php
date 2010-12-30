@@ -257,7 +257,7 @@ class Grid extends DBDataSet {
     protected function getRawData($baseMethod = self::DEFAULT_STATE_NAME) {
 
             $this->setParam('onlyCurrentLang', true);
-            $this->config->setCurrentMethod($baseMethod);
+            $this->config->setCurrentState($baseMethod);
             $this->setBuilder(new JSONBuilder());
 
             $this->setDataDescription($this->createDataDescription());
@@ -321,9 +321,9 @@ class Grid extends DBDataSet {
     protected function createDataDescription() {
         if (in_array($this->getState(), array('printData', 'exportCSV'))) {
             $previousAction = $this->getState();
-            $this->config->setCurrentMethod(self::DEFAULT_STATE_NAME);
+            $this->config->setCurrentState(self::DEFAULT_STATE_NAME);
             $result = parent::createDataDescription();
-            $this->config->setCurrentMethod($previousAction);
+            $this->config->setCurrentState($previousAction);
         }
         else {
             $result = parent::createDataDescription();

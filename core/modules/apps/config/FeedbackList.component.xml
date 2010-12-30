@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-		<method name="main">
+		<state name="main">
 			<javascript>
 				<object name="GridManager" />
 			</javascript>
@@ -15,8 +14,8 @@
  				<control id="view" title="BTN_VIEW" type="button" onclick="view"/>
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
 			</toolbar>
-		</method>
-		<method name="view">
+		</state>
+		<state name="view">
 		     <uri_patterns>
 		         <pattern>/[int]/</pattern>
 		     </uri_patterns>
@@ -26,13 +25,13 @@
 			<toolbar>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="delete"  rights="2">
+		</state>
+		<state name="delete"  rights="2">
 		     <uri_patterns>
 		         <pattern>/[int]/delete/</pattern>
 		     </uri_patterns>
-		</method>
-		<method name="getRawData"  rights="2">
+		</state>
+		<state name="getRawData"  rights="2">
 			<uri_patterns>
 		         <pattern>/get-data/</pattern>
                 <pattern>/get-data/page-[pageNumber]/</pattern>
@@ -40,6 +39,5 @@
                 <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
                 
 		     </uri_patterns>
-		</method>
-	</methods>
+		</state>
 </configuration>

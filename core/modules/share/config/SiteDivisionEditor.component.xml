@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-	    <method name="fileLibrary" rights="3">
+	    <state name="fileLibrary" rights="3">
             <uri_patterns>
                 <pattern>/file-library/</pattern>
                 <pattern>/file-library/[any]/</pattern>
             </uri_patterns>
-        </method>
-    	<method name="main">
+        </state>
+    	<state name="main">
 			<uri_patterns>
 				<pattern>/show/</pattern>
 				<pattern>/show/[site_id]/</pattern>
@@ -33,8 +32,8 @@
 				<!-- <control id="sep2" type="separator"/>
 				<control id="close" title="BTN_ClOSE" type="button" onclick="close"/>-->
 			</toolbar>
-		</method>
-		<method name="selector">
+		</state>
+		<state name="selector">
 			<uri_patterns>
                 <pattern>/[site_id]/list/</pattern>
                 <pattern>/[site_id]/list/[int]/</pattern>
@@ -52,26 +51,26 @@
 				<control id="select" title="BTN_SELECT" type="button" onclick="select"/>
 				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="getRawData">
+		</state>
+		<state name="getRawData">
 			<uri_patterns>
 				<pattern>/[site_id]/get-data/</pattern>
 				<pattern>/[site_id]/get-data/[string]/</pattern>
 		     </uri_patterns>
-		</method>
-		<method name="resetTemplates" rights="3">
+		</state>
+		<state name="resetTemplates" rights="3">
 		    <uri_patterns>
 		        <pattern>/[site_id]/reset-templates/</pattern>
                 <pattern>/reset-templates/[smap_id]/</pattern>
                 <pattern>/reset-templates/</pattern>
 		    </uri_patterns>
-		</method>
-		<method name="getProperties">
+		</state>
+		<state name="getProperties">
 			<uri_patterns>
 				<pattern>/get-node-data/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="add" rights="3">
+		</state>
+		<state name="add" rights="3">
 		    <uri_patterns>
 				<pattern>/add/[pid]/</pattern>
 		    </uri_patterns>
@@ -115,8 +114,8 @@
                 <control id="sep1" type="separator" />
 				<control id="list" title="BTN_CANCEL" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="edit" rights="3">
+		</state>
+		<state name="edit" rights="3">
 		    <uri_patterns>
 		        <pattern>/[int]/edit/</pattern>
 		    </uri_patterns>
@@ -152,48 +151,47 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="save" rights="3">
+		</state>
+		<state name="save" rights="3">
 		    <uri_patterns>
 		        <pattern>/save/</pattern>
 		    </uri_patterns>
-		</method>
-		<method name="upload">
+		</state>
+		<state name="upload">
 		     <uri_patterns>
 		         <pattern>/upload/</pattern>
 		     </uri_patterns>
-		</method>
-		<method name="delete">
+		</state>
+		<state name="delete">
 		     <uri_patterns>
 		         <pattern>/[int]/delete/</pattern>
 		     </uri_patterns>
-		</method>
-		<method name="up">
+		</state>
+		<state name="up">
 			<uri_patterns>
 				<pattern>/[int]/up/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="down">
+		</state>
+		<state name="down">
 			<uri_patterns>
 				<pattern>/[int]/down/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="imageManager" rights="3">
+		</state>
+		<state name="imageManager" rights="3">
 			<uri_patterns>
 				<pattern>/imagemanager/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="cleanup" rights="3">
+		</state>
+		<state name="cleanup" rights="3">
 			<uri_patterns>
 				<pattern>/cleanup/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="put">
+		</state>
+		<state name="put">
             <uri_patterns>
                 <pattern>/put/</pattern>
             </uri_patterns>     
-        </method>
+        </state>
 		
-	</methods>
-	
+
 </configuration>

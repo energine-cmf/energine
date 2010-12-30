@@ -178,7 +178,7 @@ final class FileLibrary extends DataSet {
      */
 
     protected function getRawData() {
-        $this->config->setCurrentMethod(self::DEFAULT_STATE_NAME);
+        $this->config->setCurrentState(self::DEFAULT_STATE_NAME);
         $this->setBuilder(new JSONUploadBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->getBuilder()->setDataDescription($this->getDataDescription());

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-<methods>
-	<method name="main">
+	<state name="main">
 		<javascript>
 			<object name="Register" />
 		</javascript>
@@ -16,21 +15,20 @@
 		<translations>
 			<translation const="TXT_REQUIRED_FIELDS" />
 		</translations>
-	</method>
-	<method name="checkLogin">
+	</state>
+	<state name="checkLogin">
       <uri_patterns>
            <pattern>/check/</pattern>
        </uri_patterns>
-	</method>
-	<method name="save">
+	</state>
+	<state name="save">
 	    <uri_patterns>
 	        <pattern>/save-new-user/</pattern>
 	    </uri_patterns>
-	</method>
-	<method name="success">
+	</state>
+	<state name="success">
 	    <uri_patterns>
 	        <pattern>/success/</pattern>
 	    </uri_patterns>
-	</method>
-</methods>
+	</state>
 </configuration>

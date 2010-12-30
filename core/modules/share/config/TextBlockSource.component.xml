@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-    <methods>
-    	<method name="main">
+
+    	<state name="main">
     	    <javascript>
     	        <object name="TextBlockSource" />
     	    </javascript>
@@ -15,6 +15,6 @@
             <translations>
                 <translation const="TXT_TEXTBLOCK_SOURCE_EDITOR"/>
             </translations>
-    	</method>
-    </methods>
+    	</state>
+
 </configuration>

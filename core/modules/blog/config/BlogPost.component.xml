@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    <methods>
-        <method name="create">
+
+        <state name="create">
         	<uri_patterns>
                  <pattern>/post/create/</pattern>
             </uri_patterns>
@@ -15,8 +15,8 @@
             <toolbar>
             	<control id="savePost" title="BTN_SAVE" type="submit"  />
             </toolbar>
-        </method>
-        <method name="edit">
+        </state>
+        <state name="edit">
         	<uri_patterns>
                  <pattern>/post/[postID]/edit/</pattern>
             </uri_patterns>
@@ -31,14 +31,14 @@
             <toolbar>
             	<control id="savePost" title="BTN_SAVE" type="submit"  />
             </toolbar>
-        </method>
-        <method name="save">
+        </state>
+        <state name="save">
         	<uri_patterns>
                  <pattern>/post/[postID]/save/</pattern>
                  <pattern>/post/save/</pattern>
             </uri_patterns>
-        </method>
-        <method name="view">
+        </state>
+        <state name="view">
              <uri_patterns>
                  <pattern>/post/[postID]/</pattern>
              </uri_patterns>
@@ -52,8 +52,8 @@
              <translations>
                 <translation const="TXT_BACK_TO_LIST"/>
             </translations>
-        </method>
-        <method name="viewBlog">
+        </state>
+        <state name="viewBlog">
             <uri_patterns>
             	<pattern>/blog/[blogID]/</pattern>
                 <pattern>/blog/[blogID]/page-[pageNumber]/</pattern>
@@ -75,9 +75,9 @@
             <toolbar>
                 <control id="view" title="TXT_READ_MORE" type="link"/>
             </toolbar>
-        </method>
+        </state>
         
-        <method name="main">
+        <state name="main">
             <uri_patterns>
                 <pattern>/page-[pageNumber]/</pattern>
                 <pattern>/</pattern>
@@ -98,12 +98,12 @@
             <toolbar>
                 <control id="view" title="TXT_READ_MORE" type="link"/>
             </toolbar>
-        </method>
+        </state>
 
 
 
 
 
 
-    </methods>
+
 </configuration>

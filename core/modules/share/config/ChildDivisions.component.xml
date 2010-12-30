@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-		<method name="main">
+		<state name="main">
 			<uri_patterns>
 				<pattern>/page-[pageNumber]/</pattern>
 				<pattern>/</pattern>
@@ -14,6 +13,5 @@
             <field name="AttachedFiles"/>            
             <field name="DescriptionRtf" type="string"/>
         </fields>
-		</method>
-	</methods>
+		</state>
 </configuration>

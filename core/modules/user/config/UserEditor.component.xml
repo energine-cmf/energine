@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-		<method name="main">
+		<state name="main">
 			<javascript>
 				<object name="UserManager"/>
 			</javascript>
@@ -21,8 +20,8 @@
 				<control id="sep2" type="separator"></control>
                 <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="add" >
+		</state>
+		<state name="add" >
 			<uri_patterns>
 				<pattern>/add/</pattern>
 			</uri_patterns>
@@ -33,8 +32,8 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-		<method name="edit" >
+		</state>
+		<state name="edit" >
 			<uri_patterns>
 				<pattern>/[int]/edit/</pattern>
 			</uri_patterns>
@@ -45,8 +44,8 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-        <method name="ban" >
+		</state>
+        <state name="ban" >
 			<uri_patterns>
 				<pattern>/[int]/ban/</pattern>
 			</uri_patterns>
@@ -57,50 +56,49 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
-		</method>
-        <method name="saveban" >
+		</state>
+        <state name="saveban" >
 			<uri_patterns>
 				<pattern>/saveban/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="save">
+		</state>
+		<state name="save">
 			<uri_patterns>
 				<pattern>/save/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="getRawData">
+		</state>
+		<state name="getRawData">
 			<uri_patterns>
 				<pattern>/get-data/</pattern>
 				<pattern>/get-data/page-[pageNumber]/</pattern>
                 <pattern>/get-data/[sortField]-[sortDir]/</pattern>
                 <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
 			</uri_patterns>
-		</method>
-		<method name="delete">
+		</state>
+		<state name="delete">
 			<uri_patterns>
 				<pattern>/[int]/delete/</pattern>
 			</uri_patterns>
-		</method>
-        <method name="upload"  rights="3">
+		</state>
+        <state name="upload"  rights="3">
              <uri_patterns>
                  <pattern>/upload/</pattern>
              </uri_patterns>
-        </method>
-        <method name="imageManager" rights="3">
+        </state>
+        <state name="imageManager" rights="3">
             <uri_patterns>
                 <pattern>/imagemanager/</pattern>
             </uri_patterns>
-        </method>
-        <method name="fileLibrary" rights="3">
+        </state>
+        <state name="fileLibrary" rights="3">
             <uri_patterns>
                 <pattern>/file-library/</pattern>
                 <pattern>/file-library/[any]/</pattern>
             </uri_patterns>
-        </method>
-        <method name="activate" rights="3">
+        </state>
+        <state name="activate" rights="3">
             <uri_patterns>
                 <pattern>/[int]/activate/</pattern>
             </uri_patterns>
-        </method>
-	</methods>
+        </state>
 </configuration>

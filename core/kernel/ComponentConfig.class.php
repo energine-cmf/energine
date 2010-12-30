@@ -21,7 +21,7 @@ final class ComponentConfig extends Object {
 	/**
 	 * Путь к директории, содержащей пользовательские файлы конфигурации для компонентов
 	 */
-	const SITE_CONFIG_DIR = 'site/%s/config/';
+	const SITE_CONFIG_DIR = 'site/modules/%s/config/';
 
 	/**
 	 * Путь к директории, содержащей файлы конфигурации для стандартных компонентов
@@ -43,7 +43,7 @@ final class ComponentConfig extends Object {
 	 * @var ConfigElement
 	 * @access private
 	 */
-	private $currentMethod = false;
+	private $currentState = false;
 
 	/**
 	 * Конструктор класса
@@ -95,8 +95,8 @@ final class ComponentConfig extends Object {
 	 * @access public
 	 */
 
-	public function setCurrentMethod($methodName) {
-		if(!($this->currentMethod = $this->getMethodConfig($methodName))){
+	public function setCurrentState($methodName) {
+		if(!($this->currentState = $this->getStateConfig($methodName))){
 			throw new SystemException('ERR_NO_METHOD', SystemException::ERR_DEVELOPER);
 		}
 	}
@@ -108,8 +108,8 @@ final class ComponentConfig extends Object {
 	 * @access public
 	 */
 
-	public function getCurrentMethodConfig() {
-		return $this->currentMethod;
+	public function getCurrentStateConfig() {
+		return $this->currentState;
 	}
 
 	/**
@@ -135,7 +135,7 @@ final class ComponentConfig extends Object {
 		$path = '/'.$path;
 
 		$patterns = array();
-		foreach ($this->config->methods->method as $method) {
+		foreach ($this->config->state as $method) {
 			if (isset($method->uri_patterns->pattern)) {
 				foreach ($method->uri_patterns->pattern as $pattern) {
 					$patterns[$pattern->getValue()] = $method->getAttribute('name');
@@ -185,16 +185,16 @@ final class ComponentConfig extends Object {
 	}
 
 	/**
-	 * Возвращает конфигурацию для указанного метода
+	 * Возвращает конфигурацию для указанного состояния
 	 *
 	 * @access public
 	 * @param string $methodName имя метода
 	 * @return SimpleXMLElement
 	 */
-	public function getMethodConfig($methodName) {
+	public function getStateConfig($methodName) {
 		$result = false;
 		if (!$this->isEmpty()) {
-			$methodConfig = $this->config->xpath(sprintf('/configuration/methods/method[@name=\'%s\']', $methodName));
+			$methodConfig = $this->config->xpath(sprintf('/configuration/state[@name=\'%s\']', $methodName));
 			if (!empty($methodConfig)) {
 				$result = $methodConfig[0];
 			}

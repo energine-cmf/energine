@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-		<method name="main">
+		<state name="main">
             <translations>
                 <translation const="BTN_EDIT"/>
                 <translation const="BTN_DELETE"/>
                 <translation const="BTN_CANCEL"/>
             </translations>
-		</method>
-	</methods>
+		</state>
 </configuration>

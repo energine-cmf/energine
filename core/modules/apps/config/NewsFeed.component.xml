@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<methods>
-		<method name="main">
+		<state name="main">
 			<uri_patterns>
 				<pattern>/page-[pageNumber]/</pattern>
 				<pattern>/</pattern>
@@ -17,8 +16,8 @@
 			<toolbar>
 				<control id="view" title="TXT_READ_MORE" type="link"/>
 			</toolbar>
-		</method>
-		<method name="view">
+		</state>
+		<state name="view">
 		     <uri_patterns>
 		         <pattern>/[day]-[month]-[year]/</pattern>
 		     </uri_patterns>
@@ -29,6 +28,5 @@
 				<field name="news_title"/>
 				<field name="news_text_rtf"/>
 			</fields>
-		</method>
-	</methods>
+		</state>
 </configuration>

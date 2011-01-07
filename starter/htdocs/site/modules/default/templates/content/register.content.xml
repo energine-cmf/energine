@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<content>
+    <container name="contentContainer" layout="content" column="column">
+        <container name="regFormContainer" rounded="rounded" widget="static">
+            <component name="regForm" module="user" class="Register">
+               <params>
+                   <param name="config">core/modules/stb/config/Register.component.xml</param>
+               </params>
+            </component>
+        </container>
+    </container>
+</content>

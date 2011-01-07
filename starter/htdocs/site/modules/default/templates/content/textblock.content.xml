@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content layout="colset22 clearfix">
+    <container name="contentContainer" layout="content" column="column">
+        <container rounded="rounded" name="textBlockContainer" widget="static">
+            <component name="textBlock_1" module="share" class="TextBlock"/>
+        </container>
+    </container>
+    <container name="rightSideBar" layout="sidebar2" column="column">
+        <container name="photoContainer" rounded="rounded" widget="widget">
+            <component name="photo" module="stb" class="PhotoList">
+                <params>
+                    <param name="site" type="select" values="all|current">all</param>
+                    <param name="order" type="select" values="date|popular">date</param>
+                    <param name="title">TXT_NEW_PHOTO</param>
+                    <param name="config" type="hidden">core/modules/stb/config/PhotoBlock.component.xml</param>
+                    <param name="recordsPerTab" type="integer">4</param>
+                    <param name="tabCount" type="integer">3</param>
+                </params>
+            </component>
+        </container>
+        <container rounded="rounded" name="videoBlockContainer1" widget="widget">
+            <component class="VideoGallery" module="stb" name="newVideo">
+                <params>
+                    <param name="title">TXT_NEW_VIDEO</param>
+                    <param name="site" type="select" values="all|current">all</param>
+                    <param name="active" type="hidden">0</param>
+                    <param name="order" type="select" values="date|popular">date</param>
+                    <param name="config" type="hidden">core/modules/stb/config/VideoBlock.component.xml</param>
+                    <param name="recordsPerTab" type="integer">4</param>
+                    <param name="tabCount" type="integer">3</param>
+                </params>
+            </component>
+        </container>
+        <container name="vacanciesContainer" rounded="rounded" widget="widget">
+            <component name="vacancies" module="stb" class="Vacancies">
+                <params>
+                    <param name="title">TXT_VACANCIES_BLOCK</param>
+                    <param name="active" type="hidden">0</param>
+                    <param name="config" type="hidden">core/modules/stb/config/VacanciesBlock.component.xml</param>
+                    <param name="recordsPerTab" type="integer">4</param>
+                    <param name="tabCount" type="integer">3</param>
+                </params>
+            </component>
+        </container>
+    </container>
+</content>

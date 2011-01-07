@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<content>
+    <container name="contentContainer" layout="content" column="column">
+        <container name="loginFormContainer" rounded="rounded" widget="static">
+            <component name="loginForm" module="user" class="LoginForm"/>
+        </container>
+    </container>
+</content>

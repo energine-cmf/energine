@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Test" default="setup">
+    <property name="htdocs_folder" value="${project.basedir}/htdocs"/>
+    <property name="site_modules_folder" value="${htdocs_folder}/site/modules"/>
+    <property name="core_modules_folder" value="${htdocs_folder}/core/modules"/>
+
+    <target name="iterate" description="shared main target for stylesheets, images, scripts">
+        <property name="full_path" value="${htdocs_folder}/${current_folder}" override="yes" />
+        <delete dir="${full_path}" includeemptydirs="true" />
+        <mkdir dir="${full_path}"/>
+
+        <foreach param="path" absparam="filepath" target="symlink_core">
+            <fileset dir="${core_modules_folder}">
+                <include name="*/${current_folder}/*.*"/>
+                <include name="*/${current_folder}/*/"/>
+                <exclude name="*/${current_folder}/.*"/>
+            </fileset>
+        </foreach>
+
+        <foreach param="path" absparam="filepath" target="symlink_site">
+            <fileset dir="${site_modules_folder}">
+                <include name="*/${current_folder}/*.*"/>
+                <exclude name="*/${current_folder}/.*"/>
+            </fileset>
+        </foreach>
+    </target>
+    
+    <target name="symlink_core" description="shared target for making symlinks from core">
+        <php function="basename" returnProperty="filename">
+            <param value="${filepath}"/>
+        </php>
+        <echo msg="${filename}" />
+        <delete file="${full_path}/${filename}"/>
+        <symlink target="${filepath}" link="${full_path}/${filename}"/>
+    </target>
+
+    <target name="symlink_site" description="shared target for making symlinks from site">
+        <php function="basename" returnProperty="filename">
+            <param value="${filepath}"/>
+        </php>
+        <php function="dirname" returnProperty="dirname">
+            <param value="${filepath}"/>
+        </php>
+        <php function="str_replace" returnProperty="dirname">
+            <param value="${site_modules_folder}/"/>
+            <param value=""/>
+            <param value="${dirname}"/>
+        </php>
+        <php function="str_replace" returnProperty="dirname">
+            <param value="/${current_folder}"/>
+            <param value=""/>
+            <param value="${dirname}"/>
+        </php>
+        <mkdir dir="${full_path}/${dirname}"/>
+        <symlink target="${filepath}" link="${full_path}/${dirname}/${filename}"/>
+    </target>
+    
+
+
+
+    <!-- ============================================  -->
+    <!-- (DEFAULT) Target: setup                        -->
+    <!-- ============================================  -->
+    <target name="setup" description="initial setup">
+        <phingcall target="check"/>
+        <phingcall target="database"/>
+    </target>
+
+    <!-- ============================================  -->
+    <!--  Target: check server environment             -->
+    <!-- ============================================  -->
+    <target name="check" description="checks the environment">
+        <echo msg="Checks server environment"/>
+    </target>
+
+    <!-- ============================================  -->
+    <!--  Target: check server environment             -->
+    <!-- ============================================  -->
+    <target name="database" description="checks database connect">
+        <echo msg="Initial database"/>
+    </target>
+
+    <target name="linker" description="makes symlinks to templates, stylesheets and scripts. Compress stylesheets and symlinks">
+        <property name="current_folder" value="stylesheets"  override="true"/>
+        <phingcall target="iterate"/>
+        <property name="current_folder" value="scripts"  override="true"/>
+        <phingcall target="iterate"/>
+        <property name="current_folder" value="images"  override="true"/>
+        <phingcall target="iterate"/>
+
+        <property name="current_folder" value="templates/content"  override="true"/>
+        <phingcall target="iterate"/>
+        <property name="current_folder" value="templates/layout"  override="true"/>
+        <phingcall target="iterate"/>
+        <property name="current_folder" value="templates/icons"  override="true"/>
+        <phingcall target="iterate"/>
+
+    </target>
+
+
+</project>

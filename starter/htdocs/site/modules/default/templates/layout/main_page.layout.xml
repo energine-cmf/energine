@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+    <container name="head">
+        <component name="miniatures" module="stb" class="Miniatures">
+            <params>
+                <param name="high">1</param>
+            </params>
+        </component>
+        <component name="langSwitcher" module="share" class="LangSwitcher"/>
+        <component name="mainMenu" module="share" class="PageList">
+            <params>
+                <param name="tags">верхнее меню</param>
+                <param name="config">core/modules/stb/config/MainMenu.component.xml</param>
+            </params>
+        </component>
+        <component name="programShortcuts" class="ProgramShortcuts" module="stb"/>
+        
+        <component name="loginForm" module="user" class="LoginForm">
+			<params>
+	           <param name="config">core/modules/stb/config/LoginForm.component.xml</param>
+            </params>
+		</component>
+        <component name="currentPrograms" class="TVProgramNow" module="stb"/>
+        <component name="headerTextBlock" module="share" class="TextBlock">
+            <params>
+                <param name="num">HeaderTextBlock</param>
+            </params>
+        </component>
+    </container>
+
+
+    <container name="footer">
+        <component name="FooterTextBlock" module="share" class="TextBlock">
+            <params>
+                <param name="num">FooterTextBlock</param>
+            </params>
+        </component>
+        <component name="footerMenu" module="stb" class="Shortcuts">
+        </component>
+    </container>
+
+    <component class="Background" module="stb" name="background"/>
+    <component class="AdOceanBanners" module="stb" name="adOcean"/>
+    
+    <component name="adminPanel" module="share" class="DivisionEditor">
+        <params>
+            <param name="state">showPageToolbar</param>
+            <param name="rights">3</param>
+            <param name="config">core/modules/stb/config/DivisionEditor.component.xml</param>
+        </params>
+    </component>
+</page>

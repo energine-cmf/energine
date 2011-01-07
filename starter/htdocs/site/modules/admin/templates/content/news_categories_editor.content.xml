@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="newsCategoriesEditor" module="stb" class="NewsCategoriesEditor">
+       <params>
+           <param name="rights">3</param>
+       </params>        
+    </component>
+</content>

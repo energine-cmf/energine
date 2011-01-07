@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="newsRepo" module="stb" class="NewsRepository">
+       <params>
+           <param name="rights">3</param>
+<!--           <param name="config">site/admin/config/LanguageEditor.component.xml</param> -->
+       </params>        
+    </component>
+</content>

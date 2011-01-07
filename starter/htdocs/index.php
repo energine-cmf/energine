@@ -14,10 +14,6 @@ if (!file_exists('.htenergine') || (filesize('.htenergine') === 0)) {
     exit();
 }
 
-//подключаем и создаем специфический для СТБ класс авторизации
-//Вынесено из try по причине конфликта Energine автолоадера с проверкой class_exist использующейся в IPB
-require_once('site/kernel/IPBAuthUser.class.php');
-$userObj = new IPBAuthUser();
 
 try {
     //подключаем инициализационные функции
@@ -27,7 +23,6 @@ try {
     require_once('core/kernel/utils.func.php');
 
     $reg = E();
-    $reg->setAUser($userObj);
     $reg->getSession()->start();
     $reg->getController()->run();
     $reg->getResponse()->commit();

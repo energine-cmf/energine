@@ -8,11 +8,11 @@
  */
 //Проверяем установлена ли система
 //Отталкиваемся от того факта что содержание .htaccess - создается при установке
-if (!file_exists('.htenergine') || (filesize('.htenergine') === 0)) {
+/*if (!file_exists('.htenergine') || (filesize('.htenergine') === 0)) {
     header($_SERVER['SERVER_PROTOCOL'] . " 200 Ok");
     header("Location: setup/index.php");
     exit();
-}
+}*/
 
 
 try {
@@ -23,7 +23,8 @@ try {
     require_once('core/kernel/utils.func.php');
 
     $reg = E();
-    $reg->getSession()->start();
+    UserSession::start();
+    
     $reg->getController()->run();
     $reg->getResponse()->commit();
 }

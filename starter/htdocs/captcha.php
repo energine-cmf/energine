@@ -8,7 +8,7 @@ require_once('core/kernel/utils.func.php');
 //define('DEFAULT_SESSION_NAME', 'NRGNSID');
 define('FONT_SIZE', 21);
 
-UserSession::getInstance(true)->start();
+UserSession::start(true);
 
 //Генерация кода из 4 цифр
 $code = rand(100000, 999999);

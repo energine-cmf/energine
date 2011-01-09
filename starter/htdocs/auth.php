@@ -4,23 +4,12 @@ if (!isset($_SERVER['HTTP_REFERER'])) {
     //не местных  - в сад
     exit;
 }
-/**
- * Отправка куки полученных при авторизации/отлогинивании
- * @param  $cookiedata
- * @return void
- */
-function sendCookies($cookiedata) {
-    if (is_array($cookiedata))
-        foreach ($cookiedata as $cookieProps) {
-            if ($cookieProps['sticky'] == 1) {
-                $cookieProps['expires'] = time() + 60 * 60 * 24 * 365;
-            }
+//подключаем инициализационные функции
+require_once('core/kernel/ini.func.php');
 
-            $cookieProps['path'] =
-                    $cookieProps['path'] ? $cookieProps['path'] : '/';
-            setcookie($cookieProps['name'], $cookieProps['value'], $cookieProps['expires'], $cookieProps['path'], $cookieProps['domain']);
-        }
-}
+//подключаем служебные(вспомогательные) функции
+require_once('core/kernel/utils.func.php');
+
 
 if (
         ($login = (isset($_POST['user']['login']) &&
@@ -29,24 +18,31 @@ if (
         ||
         ($logout = (isset($_POST['user']['logout']) || isset($_GET['logout'])))
 ) {
-    require('site/kernel/IPBAuthUser.class.php');
+    $response = E()->getResponse();
 
     if ($login) {
-        //если аутентифициорванный пользователь
-        if ($cookiedata =
-                IPBAuthUser::authenticate($_POST['user']['username'], $_POST['user']['password'])) {
-            //бросаем ему куки
-            sendCookies($cookiedata);
+        if ($UID = AuthUser::authenticate(
+            $_POST['user']['username'],
+            $_POST['user']['password']
+        )) {
+            /**
+             * $response->addCookie()
+             */
+            call_user_func_array(
+                array($response, 'addCookie'),
+                UserSession::manuallyCreateSessionInfo($UID)
+            );
         }
+        else{
+            $response->addCookie('login_attempt_failed', 'bad auth data', time()+60);    
+        }
+        //о том прошла ли аутентификация успешно LoginForm узнает из куков
+
+
     }
     elseif ($logout) {
-        $user = new IPBAuthUser();
-        if ($cookiedata = $user->logout()) {
-            //бросаем ему куки
-            sendCookies($cookiedata);
-        }
+
     }
 }
-header('Location: ' . $_SERVER['HTTP_REFERER']);
-exit;
 
+$response->goBack();

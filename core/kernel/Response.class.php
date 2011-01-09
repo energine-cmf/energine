@@ -43,53 +43,6 @@ final class Response extends Object {
     private $body;
 
     /**
-     * @access private
-     * @var array описание кодов ответа
-     */
-    private $reasonPhrases = array(
-        100 => 'Continue',
-        101 => 'Switching Protocols',
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Found',
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
-        307 => 'Temporary Redirect',
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Time-out',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Large',
-        415 => 'Unsupported Media Type',
-        416 => 'Requested range not satisfiable',
-        417 => 'Expectation Failed',
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Time-out',
-        505 => 'HTTP Version not supported'
-    );
-
-    /**
      * Конструктор класса.
      *
      * @access public
@@ -102,6 +55,29 @@ final class Response extends Object {
         $this->headers = array();
         $this->cookies = array();
         $this->body = '';
+    }
+    /**
+     * @see reasonPhrases.inc.php
+     * @param  $key string
+     * @return array | null
+     */
+    public function __get($key){
+        $result = null;
+        if($key == 'reasonPhrases'){
+            $result = include_once('reasonPhrases.inc.php');
+        }
+        return $result;
+    }
+    /**
+     * @param  $key string
+     * @return bool
+     */
+    public function __isset($key){
+        $result = false;
+        if($key == 'reasonPhrases'){
+            $result = file_exists('reasonPhrases.inc.php');
+        }
+        return $result;
     }
 
     /**
@@ -144,12 +120,9 @@ final class Response extends Object {
      * @param string $name
      * @param string $value
      * @param int $expire
-     * @param string $path
-     * @param string $domain
-     * @param boolean $secure
      * @return void
      */
-    public function setCookie($name, $value = '', $expire = '') {
+    public function addCookie($name = UserSession::DEFAULT_SESSION_NAME, $value = '', $expire = '') {
         if ($this->getConfigValue('site.domain')) {
             $path = '/';
             $domain = '.' . $this->getConfigValue('site.domain');
@@ -162,7 +135,16 @@ final class Response extends Object {
         $this->cookies[$name] =
                 compact('value', 'expire', 'path', 'domain', 'secure');
     }
-
+    /**
+     * Отправляет куки добавленные в список
+     * используется только в commit
+     * сделан публичным для того чтобы можно было вызвать из капчи
+     * но это исключение
+     *
+     * @see captcha.php
+     * @return void
+     * @access private
+     */
     public function sendCookies() {
         foreach ($this->cookies as $name => $params) {
             setcookie($name, $params['value'], $params['expire'], $params['path'], $params['domain'], $params['secure']);
@@ -187,7 +169,7 @@ final class Response extends Object {
      * @return void
      */
     public function deleteCookie($name) {
-        $this->setCookie($name, '', (time() - 1));
+        $this->addCookie($name, '', (time() - 1));
     }
 
     /**
@@ -236,13 +218,24 @@ final class Response extends Object {
     }
 
     /**
+     * Возвращаемся туда откуда пришли
+     * @see auth.php
+     * @return void
+     */
+    public function goBack(){
+        $this->setHeader('Location', $_SERVER['HTTP_REFERER']);
+        $this->commit();
+    }
+
+    /**
      * Отправляет ответ клиенту и завершает работу программы.
+     * это - точка выхода
      *
      * @access public
      * @return void
      */
     public function commit() {
-        if (!headers_sent($filename, $linenum)) {
+        if (!headers_sent()) {
             $this->sendHeaders();
             $this->sendCookies();
         }

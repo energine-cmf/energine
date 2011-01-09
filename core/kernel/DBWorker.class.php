@@ -45,20 +45,7 @@ abstract class DBWorker extends Object {
      */
     public function __construct() {
         parent::__construct();
-
-        if (!isset(self::$dbhInstance)) {
-            self::$dbhInstance = new QAL(
-                'mysql:'.$this->getConfigValue('database.master.dsn'),
-                $this->getConfigValue('database.master.username'),
-                $this->getConfigValue('database.master.password'),
-                array(
-                    PDO::ATTR_PERSISTENT => false,
-                    PDO::ATTR_EMULATE_PREPARES => true,
-                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-                )
-            );
-        }
-        $this->dbh = self::$dbhInstance;
+        $this->dbh = E()->getDB();
     }
 
     /**
@@ -79,7 +66,7 @@ abstract class DBWorker extends Object {
         //действия по кешированию логичней было бы разместить в конструкторе, 
         //но на момент его вызова еще не известен дефолтный язык
         if(is_null(self::$translations)){
-            $res = self::$dbhInstance->selectRequest(
+            $res = E()->getDB()->selectRequest(
             'SELECT UPPER(ltag_name) AS const, trans.ltag_value_rtf AS translation FROM share_lang_tags ltag '.
             'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id '.
             'WHERE lang_id = '.$currentLangId
@@ -117,10 +104,10 @@ abstract class DBWorker extends Object {
         }
         else{
             //лезем за значением в базу
-            $res = self::$dbhInstance->selectRequest(
+            $res = E()->getDB()->selectRequest(
                 'SELECT trans.ltag_value_rtf AS result FROM share_lang_tags ltag '.
                 'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id '.
-                'WHERE ltag.ltag_name = '.self::$dbhInstance->quote($result).' AND lang_id = '.intval($langId)
+                'WHERE ltag.ltag_name = '.E()->getDB()->quote($result).' AND lang_id = '.intval($langId)
             );
             if (is_array($res)) {
                 //если нашли - вернем его

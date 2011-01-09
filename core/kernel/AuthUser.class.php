@@ -56,45 +56,9 @@ class AuthUser extends User {
             $id = $_SESSION['userID'];
         }
 
-        elseif (isset($_COOKIE['user'])) {
-            $response = E()->getResponse();
-            try {
-                $user = unserialize($_COOKIE['user']);
-                if (isset($user[0], $user[1]) &&
-                        !$id = $this->authenticate($user[0], $user[1], true)) {
-                    $response->deleteCookie('user', $this->siteRoot);
-                }
-            }
-            catch (Exception $e) {
-                $response->deleteCookie('user', $this->siteRoot);
-            }
-        }
-        elseif (isset($_POST['user']['login']) &&
-                isset($_POST['user']['username']) &&
-                isset($_POST['user']['password'])) {
-            $id = $this->authenticate(
-                $_POST['user']['username'],
-                sha1($_POST['user']['password']),
-                (empty($_POST['user']['remember']) ? false : true)
-            );
-            //stop($_POST['user']['remember']);
-            $this->isJustNowAuthenticated = true;
-        }
-
         if ($id)
             $this->loadInfo($id);
     }
-
-    /**
-     * Возвращает значение isJustNowAuthenticated
-     *
-     * @return bool
-     * @access public
-     */
-
-    /*public function isNowAuthenticated() {
-        return $this->isJustNowAuthenticated;
-    }*/
 
     /**
      * Возвращает флаг успеха аутентификации:
@@ -108,125 +72,70 @@ class AuthUser extends User {
         return ($this->getID() === false) ? false : true;
     }
 
+
     /**
      * Аутентифицирует пользователя по его имени и SHA-1 хэшу пароля.
-     * Если флаг $remember установлен в true, при успешной аутентификации
-     * клиенту устанавливаются cookie с информацией о его аккаунте на 30 дней,
-     * для автоматизации процедуры входа при последующих посещениях сайта.
-     * Возвращает флаг успеха аутентификации.
-     *
+     *      *
      * @access public
      * @param string $username имя пользовате
      * @param string $password SHA-1 хэш пароля
-     * @param boolean $remember
-     * @return mixed
+     * @return bool | int
+     * @static
      */
-    public function authenticate($username, $password, $remember = false) {
+    public static function authenticate($username, $password) {
         $username = trim($username);
+        $password = sha1(trim($password));
         //Проверяем совпадает ли имя/пароль в SHA1 с данными в таблице
-        $result = convertDBResult($this->dbh->select(
-            'user_users', array('u_id', 'u_is_active'),
+        if($id = simplifyDBResult(E()->getDB()->select(
+            'user_users', array('u_id'),
             array(
                 'u_name' => $username,
-                'u_password' => $password
+                'u_password' => $password,
+                'u_is_active' => 1
             )
-        ), 'u_id', true);
-        if (!is_array($result)) {
-            //Нет, не совпадает - дальше нет смысла проверять
-            return false;
+        ), 'u_id', true)) {
+            return (int)$id; 
         }
         else {
-            $id = key($result);
-            //может пользователь с таким IP находится в таблице забаненых по IP?
-            if ($this->isBannedIP()) {
-                //Да. он там
-                return false;
-            }
-            //А пользователь активирован?
-
-            if (!($isActive = $result[$id]['u_is_active'])) {
-                //Нет, пользователь не активен, смотрим дальше
-
-                //Может он в таблице забаненых пользователей?
-                if ($isBanned = $this->isBannedUser($id)) {
-                    return false;
-                }
-                else {
-                    $this->dbh->modify(QAL::UPDATE, 'user_users', array('u_is_active' => 1), array('u_id' => $id));
-                }
-
-            }
-
-            //Да, активирован - значит все ок
-            if ($remember) {
-                $response = E()->getResponse();
-                $response->setCookie(
-                    'user',
-                    serialize(array($username, $password)),
-                        time() + (3600 * 24 * 30)
-                );
-            }
-
-            $_SESSION['userID'] = $id;
-            return $id;
-        }
-
-
-        //Да, он там
-
-        //А не истекло ли время бана
-
-    }
-
-    /**
-     * Проверка забанен ли IP адрес пользователя
-     *
-     * @param bool | IP string $ip
-     * @return bool
-     */
-    private function isBannedIP($ip = false) {
-        if (!$ip) {
-            $ip = E()->getRequest()->getClientIP();
-        }
-        $result =
-                $this->dbh->selectRequest('SELECT ban_ip_id as ban_id, ban_ip_end_date as ban_date FROM user_ban_ips WHERE ban_ip=INET_ATON(%s)', $ip);
-        //А есть ли он в списке
-        if (is_array($result)) {
-            //Таки есть
-            list($result) = $result;
-            //Может время бана истекло?
-            if ($result['ban_date'] <= time()) {
-                //Да, таки истекло
-                //Удаляем из списка забаненых
-                $this->dbh->modify(QAL::DELETE, 'user_ban_ips', null, array('ban_ip_id' => $result['ban_id']));
-                return false;
-            }
-            else {
-                //Забанен
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private function isBannedUser($UID) {
-        $result =
-                simplifyDBResult($this->dbh->select('user_users_ban', 'ban_date', array('u_id' => $UID)), 'ban_date', true);
-
-        if (!$result) {
-            //Не, он не в забаненых
-            return null;
-        }
-        //Да, он там
-        //А не истекло ли время бана
-        if ($result <= time()) {
-            //Истекло
-            $this->dbh->modify(QAL::DELETE, 'user_users_ban', null, array('u_id' => $UID));
-            $this->dbh->modify(QAL::UPDATE, 'user_users', array('u_is_active' => 1), array('u_id' => $UID));
             return false;
         }
-        return true;
     }
+
+    public static function createSession($UID){
+        $setECookie = function($cookieValue, $cookieExpires, $cookieName = UserSession::DEFAULT_SESSION_NAME){
+            if ($domain = Object::_getConfigValue('site.domain')) {
+                $path = '/';
+                $domain = '.' . $domain;
+            }
+            else {
+                $path = SiteManager::getInstance()->getCurrentSite()->root;
+                $domain = '';
+            }
+
+            E()->getResponse()->addCookie(
+                $cookieName,
+                $cookieValue,
+                $cookieExpires,
+                $path,
+                $domain
+            );
+        };
+
+        if($UID){
+            
+        }
+        else{
+            //В случае если !$UID
+            //бросаем
+            //1.Просроченную куку для удаления аутентификационной инфы
+            $setECookie('', 0);
+            //2.куки с ифнормацией о том что вход не удался
+            $setECookie('Ошибка авторизации', time() + 60, 'login_attempt');
+            //- сессия в БД не создается
+
+        }
+    }
+
 
     /**
      * Очищает всю информацию о пользователе из сессии, cookie.

@@ -8,9 +8,10 @@ require('Object.class.php');
  * Shortcut для Registry::getInstance
  * @return Registry
  */
-function E(){
+function E() {
     return Registry::getInstance();
 }
+
 /**
  * Реестр приложения
  *
@@ -91,8 +92,8 @@ final class Registry extends Object {
             //поскольку предполагается хранить синглтоны, пробуем создать соответствующий класс ориентируясь на имя
         else {
             $result = $this->entities[$className] = new $className();
-
         }
+
 
         return $result;
     }
@@ -120,14 +121,17 @@ final class Registry extends Object {
     public function __unset($entityName) {
 
     }
+
     /**
      * @return AuthUser
      */
-    public function getAUser(){
+    public function getAUser() {
         return $this->get('AuthUser');
     }
-    public function setAUser(/*AuthUser */$anotherAuthUserObject){
-        if(isset($this->entities['AuthUser'])){
+
+    public function setAUser( /*AuthUser */
+        $anotherAuthUserObject) {
+        if (isset($this->entities['AuthUser'])) {
             throw new Exception ('AuthUser object is already used. You can not substitute it here.');
         }
         $this->entities['AuthUser'] = $anotherAuthUserObject;
@@ -137,13 +141,13 @@ final class Registry extends Object {
      * Пока непонятно что с ним делать
      *
      * public function substitute($object){
-        if(!($className = get_class($object))){
-            throw new Exception((string)$object.' is not an object');
-        }
-        if(isset($this->entities[$className])){
-            throw new Exception($className.' is already used. You can not substitute it here.');
-        }
-        return $this->get($className);
+    if(!($className = get_class($object))){
+    throw new Exception((string)$object.' is not an object');
+    }
+    if(isset($this->entities[$className])){
+    throw new Exception($className.' is already used. You can not substitute it here.');
+    }
+    return $this->get($className);
     }*/
 
     /**
@@ -166,23 +170,40 @@ final class Registry extends Object {
     public function getDocument() {
         return $this->get('Document');
     }
+
     /**
      * @return Language
      */
     public function getLanguage() {
         return $this->get('Language');
     }
+
     /**
      * @return DocumentController
      */
-    public function getController(){
+    public function getController() {
         return $this->get('DocumentController');
     }
+
+   
     /**
-     * @return UserSession
+     * @return QAL
      */
-    public function getSession(){
-        return $this->get('UserSession');
+    public function getDB() {
+        if (!isset($this->entities['QAL'])) {
+            $this->entities['QAL'] = new QAL(
+                'mysql:' . $this->getConfigValue('database.master.dsn'),
+                $this->getConfigValue('database.master.username'),
+                $this->getConfigValue('database.master.password'),
+                array(
+                    PDO::ATTR_PERSISTENT => false,
+                    PDO::ATTR_EMULATE_PREPARES => true,
+                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+                )
+            );
+        }
+
+        return $this->entities['QAL'];
     }
 
     /**

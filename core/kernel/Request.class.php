@@ -192,14 +192,16 @@ final class Request extends Object {
     /**
      * Возвращает IP-адрес клиента.
      *
+     * @param $returnAsInt bool
      * @access public
      * @return string
      */
-    public function getClientIP() {
+    public function getClientIP($returnAsInt = false) {
         $ip = $_SERVER['REMOTE_ADDR'];
         if (isset($_ENV['HTTP_X_FORWARDED_FOR']) && ip2long($_ENV['HTTP_X_FORWARDED_FOR']) != -1) {
             $ip = $_ENV['HTTP_X_FORWARDED_FOR'];
         }
+        if($returnAsInt) $ip = ip2long($ip);
         return $ip;
     }
 }

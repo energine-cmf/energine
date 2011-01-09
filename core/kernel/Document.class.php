@@ -528,7 +528,7 @@ final class Document extends DBWorker implements IDocument {
             return $result;
         };
         if (!($templateData =
-                self::$dbhInstance->select('share_sitemap', array('smap_content_xml as content', 'smap_layout_xml as layout', 'smap_content as content_file', 'smap_layout as layout_file'), array('smap_id' => $documentID)))) {
+                E()->getDB()->select('share_sitemap', array('smap_content_xml as content', 'smap_layout_xml as layout', 'smap_content as content_file', 'smap_layout as layout_file'), array('smap_id' => $documentID)))) {
             throw new SystemException('ERR_BAD_DOC_ID');
         }
         list($templateData) = $templateData;
@@ -548,7 +548,7 @@ final class Document extends DBWorker implements IDocument {
                     //Если не удалось - берем из файла
                     $templateData[$type] = $loadDataFromFile($templateData[$type.'_file'], $type);
                     //и очищаем 
-                    self::$dbhInstance->modify(QAL::UPDATE, 'share_sitemap', array('smap_'.$type.'_xml' => ''), array('smap_id' => $documentID));
+                    E()->getDB()->modify(QAL::UPDATE, 'share_sitemap', array('smap_'.$type.'_xml' => ''), array('smap_id' => $documentID));
                 }
             }
             unset($templateData[$type.'_file']);

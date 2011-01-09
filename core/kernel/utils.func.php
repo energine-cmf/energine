@@ -35,7 +35,7 @@ function inspect() {
 function stop() {
     $args = func_get_args();
     call_user_func_array('inspect', $args);
-    E()->getResponse()->commit();
+    die();
 }
 
 function simple_log($var){

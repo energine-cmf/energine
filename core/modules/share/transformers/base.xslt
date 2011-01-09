@@ -440,5 +440,7 @@
     
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->
     <xsl:template name="interface_js"/>
+    
+    <xsl:template name="stylesheets"/>
 
 </xsl:stylesheet>

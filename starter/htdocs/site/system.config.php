@@ -3,16 +3,16 @@ return array(
     'project' => 'Platform 2.6',
     'database' => array(
         'master' => array(
-            'dsn' => 'host=localhost;port=3306;dbname=',
-            'username' => '',
-            'password' => ''
+            'dsn' => 'host=localhost;port=3306;dbname=energine-2.6',
+            'username' => 'root',
+            'password' => 'qwerqaz123'
         )
     ),
     'site' => array(
-        'domain' => 'eggmen.net',
+        'domain' => 'energine-2.6.dev',
         'debug' => 1,
         'asXML' => 0,
-        'compress' => 0,
+        'compress' => 1,
         'root' => '/'
     ),
     'cache' => array(
@@ -73,19 +73,7 @@ return array(
     ),
     'google' => array(
         'verify' => '',
-        'analytics' => <<<'EOT'
-            <script type="text/javascript">
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-4596660-4']);
-      _gaq.push(['_setDomainName', '.stb.ua']);
-      _gaq.push(['_trackPageview']);
-      (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-EOT
+        'analytics' => ''
     )
 );
 

@@ -13,13 +13,8 @@
                 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
                 indent="yes"/>
 
-    <xsl:include href="../../../../core/modules/stb/transformers/common.xslt"/>
     <xsl:include href="../../../../core/modules/share/transformers/include.xslt"/>
     <xsl:include href="../../../../core/modules/user/transformers/include.xslt"/>
-    <xsl:include href="../../../../core/modules/stb/transformers/include.xslt"/>
-    <!--<xsl:include href="../../../core/modules/comments/transformers/include.xslt"/>-->    
-    <xsl:include href="../../../../core/modules/blog/transformers/include.xslt"/>
-    <!--<xsl:include href="../../../core/modules/forum/transformers/include.xslt"/>-->
     <xsl:include href="include.xslt"/>
 
 </xsl:stylesheet>

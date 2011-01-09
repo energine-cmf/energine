@@ -1,96 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <content layout="colset3 clearfix">
     <container name="leftSideBar" layout="sidebar1" column="column">
-        <container name="newsContainer" rounded="rounded" widget="widget">
-            <component name="mainViknaNews" module="stb" class="ViknaNews">
-                <params>
-                    <param name="title">TXT_VIKNA_NEWS</param>
-                    <param name="limit" type="hidden">15</param>
-                    <param name="active" type="hidden">0</param>
-                    <param name="template">news</param>
-                    <param name="config" type="hidden">core/modules/stb/config/ViknaNewsBlock.component.xml</param>
-                    <param name="recordsPerTab" type="integer">5</param>
-                    <param name="tabCount" type="integer">3</param>
-                </params>
-            </component>
-        </container>
-	
-        <container rounded="rounded" name="videoBlockContainer" widget="widget">
-            <component class="VideoGallery" module="stb" name="topVideo">
-                <params>
-                    <param name="title">TXT_TOP_VIDEO</param>
-                    <param name="site" type="select" values="all|current">all</param>
-                    <param name="active" type="hidden">0</param>
-                    <param name="order" type="select" values="popular|date">popular</param>
-                    <param name="config" type="hidden">core/modules/stb/config/VideoBlock.component.xml</param>
-                    <param name="recordsPerTab" type="integer">4</param>
-                    <param name="tabCount" type="integer">3</param>
-                </params>
-            </component>
-        </container>
-        <container name="castingContainer" rounded="rounded" widget="widget">
-            <component name="castingBlock" module="stb" class="CastingDigest">
-                <params>
-                    <param name="title">TXT_CASTING_BLOCK</param>
-                    <param name="active" type="hidden">0</param>
-                    <param name="limit" type="hidden">6</param>
-                    <param name="top" type="boolean">1</param>
-                    <param name="config" type="hidden">core/modules/stb/config/CastingBlock.component.xml</param>
-                    <param name="recordsPerTab" type="integer">4</param>
-                    <param name="tabCount" type="integer">3</param>
-                </params>
-            </component>
-        </container>
     </container>
     <container name="page_content" layout="content" column="column">
-        <container name="centerColumn"  widget="widget">
-        <component name="mainNews" module="stb" class="News">
-            <params>
-                <param name="gravity">1---</param>
-                <param name="limit" type="integer">5</param>
-                <param name="active" type="hidden">0</param>
-                <param name="template" type="string">news</param>
-                <param name="config" type="hidden">core/modules/stb/config/TopNews.component.xml</param>
-            </params>
-        </component>
-    </container>
     </container>
     <container name="rightSideBar" layout="sidebar2" column="column">
-        <container name="advertise1" rounded="rounded" widget="widget">
-            <component name="adBlock1" module="stb" class="AdBlock">
-                <params>
-                    <param name="id">NB1</param>
-                </params>
-            </component>
-        </container>
-		<container name="advertise2" rounded="rounded" widget="widget">
-            <component name="adBlock2" module="stb" class="AdBlock">
-                <params>
-                    <param name="id">NB2</param>
-                </params>
-            </component>
-        </container>	
-        <container rounded="rounded" name="videoNewBlockContainer" widget="widget">
-            <component class="VideoGallery" module="stb" name="newVideo">
-                <params>
-                    <param name="title">TXT_NEW_VIDEO</param>
-                    <param name="site" type="select" values="all|current">all</param>
-                    <param name="active" type="hidden">0</param>
-                    <param name="order" type="select" values="date|popular">date</param>
-                    <param name="config" type="hidden">core/modules/stb/config/VideoBlock.component.xml</param>
-                    <param name="recordsPerTab" type="integer">4</param>
-                    <param name="tabCount" type="integer">3</param>
-                </params>
-            </component>
-        </container>
-        <container name="forumContainer" rounded="rounded" widget="widget">
-            <component name="forumBlock" module="forum" class="ForumMessagesBlock">
-                <params>
-                    <param name="limit" type="integer">4</param>
-                    <param name="template">forum</param>
-                    <param name="title">TXT_LAST_FORUM_MESSAGES</param>
-                </params>
-            </component>
-        </container>
     </container>
 </content>

@@ -17,7 +17,7 @@ var PageEditor = new Class({
         
         window.addEvent('beforeunload', function(e) {
             if (this.activeEditor) {
-                this.activeEditor.save();
+                this.activeEditor.save(false);
             }
         }.bind(this));
 
@@ -186,21 +186,22 @@ PageEditor.BlockEditor = new Class({
         });
     },
 
-    save: function() {
+    save: function(async) {
+        if(async == undefined) async = true;
         this.dirty = false;
 		var data = 'data='+encodeURIComponent(this.area.innerHTML);
 		if (this.ID) data += '&ID='+this.ID;
-        if (this.num) data += '&num='+this.num;        
-		this.overlay.show();
+        if (this.num) data += '&num='+this.num;
+        if(!async) this.overlay.show();
 
 		new Request({
 			url: this.singlePath + 'save-text',
-            async: false,
+            'async': async,
             method: 'post',
             'data': data,
             onSuccess: function(response){
 				this.area.innerHTML = response;
-				this.overlay.hide();
+				if(!async)this.overlay.hide();
 			}.bind(this)
         }).send();
     },

@@ -95,7 +95,6 @@ final class Mail extends Object {
      * @return void
      */
 	public function __construct() {
-		parent::__construct();
         $this->sender = $this->getConfigValue('mail.from');
 	}
 

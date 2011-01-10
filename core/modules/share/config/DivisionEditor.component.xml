@@ -98,18 +98,11 @@
 				<field name="smap_pid"/>
 				<field name="lang_id"/>
                 <field name="site_id" type="hidden"/>
-                <field name="back_id"/>
-                <field name="mini_id"/>
 				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
 				<field name="smap_layout"/>
                 <field name="smap_content"/>				
 				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
-				<field name="smap_redirect_url"/>
-                <field name="smap_adocean_300_250"/>
-                <field name="smap_adocean_728_90"/>
-                <field name="smap_adocean_richmedia"/>
-                <field name="smap_adocean_video"/>
-                <field name="tags" type="textbox"  title="FIELD_TAGS" nullable="nullable"/>              
+                <field name="tags" type="textbox"  title="FIELD_TAGS" nullable="nullable"/>
 				<field name="smap_is_disabled"/>
                 <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>				
 				<field name="smap_name"/>
@@ -143,18 +136,12 @@
 				<field name="smap_pid"/>
 				<field name="lang_id"/>
                 <field name="site_id" type="hidden"/>
-                <field name="back_id"/>
-                <field name="mini_id"/>
 				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
                 <field name="smap_layout"/>
                 <field name="smap_content"/>
 				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
 				<field name="smap_redirect_url" />
-                <field name="smap_adocean_300_250"/>
-                <field name="smap_adocean_728_90"/>
-                <field name="smap_adocean_richmedia"/>
-                <field name="smap_adocean_video"/>
-				<field name="tags" type="textbox"  title="FIELD_TAGS" nullable="nullable"/>              
+				<field name="tags" type="textbox"  title="FIELD_TAGS" nullable="nullable"/>
 				<field name="smap_is_disabled"/>
                 <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>             				
 				<field name="smap_name"/>
@@ -210,7 +197,8 @@
     			<control id="sep1" type="separator"/>
 				<control id="editMode" title="BTN_EDIT_MODE" type="switcher" onclick="editMode"/>
 				<control id="sep2" type="separator"/>
-<!--				<control id="templateEditor" title="BTN_TMPL_EDITOR" type="button" onclick="showTmplEditor"/>-->
+                <control id="editBlocks" title="BTN_EDIT_BLOCKS" type="switcher" onclick="editBlocks" disabled="disabled"/>
+                <control id="sep3" type="separator"/>
 				<control id="transEditor" title="BTN_TRANS_EDITOR" type="button" onclick="showTransEditor"/>
 				<control id="language" title="BTN_LANG_EDITOR" type="button" onclick="showLangEditor"/>
 				<control id="sep4" type="separator"/>

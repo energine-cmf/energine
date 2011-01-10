@@ -43,7 +43,6 @@ class XSLTTransformer extends Object implements ITransformer {
      * @return void
      */
     public function __construct() {
-        parent::__construct();
         $this->setFileName($this->getConfigValue('document.transformer'));
     }
 

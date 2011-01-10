@@ -36,7 +36,6 @@ class DataDescription extends Object implements Iterator {
      * @return void
      */
     public function __construct() {
-        parent::__construct();
         $this->fieldDescriptions = array();
     }
 

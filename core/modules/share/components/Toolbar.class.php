@@ -78,7 +78,6 @@ class Toolbar extends Object {
      * @access public
      */
     public function __construct($name, $imageDir = false) {
-        parent::__construct();
         $this->name = $name;
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->imageDir = $imageDir;

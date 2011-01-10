@@ -48,7 +48,6 @@ final class Registry extends Object {
         if (is_null(self::$flag)) {
             throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
         }
-        parent::__construct();
         self::$flag = null;
     }
 

@@ -63,7 +63,6 @@ final class ComponentManager extends Object implements Iterator {
      * @return void
      */
     public function __construct(Document $document) {
-        parent::__construct();
         self::$document = $document;
     }
 

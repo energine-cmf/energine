@@ -49,7 +49,6 @@ class ComponentContainer extends Object implements IBlock, Iterator{
      * @return void
      */
     public function __construct($name, array $properties = array()) {
-        parent::__construct();
         $this->name = $name;
         $this->document = E()->getDocument();
 

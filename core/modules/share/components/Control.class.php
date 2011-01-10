@@ -82,7 +82,6 @@ abstract class Control extends Object {
      * @access public
      */
     public function __construct($id) {
-        parent::__construct();
         $this->setAttribute('id', $id);
         $this->doc = new DOMDocument('1.0', 'UTF-8');
     }

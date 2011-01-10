@@ -38,16 +38,6 @@ class Data extends Object {
     private $rows = 0;
 
     /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
-    public function __construct() {
-        parent::__construct();
-    }
-
-    /**
      * Загружает набор данных, полученных из БД.
      *
      * @access public

@@ -97,15 +97,6 @@ class Image extends Object {
 
     ////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
-    public function __construct() {
-        parent::__construct();
-    }
 
     /**
 	 * Создание изображения заданной ширины и высоты.

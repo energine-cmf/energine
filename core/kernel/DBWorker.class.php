@@ -44,7 +44,6 @@ abstract class DBWorker extends Object {
      * @return void
      */
     public function __construct() {
-        parent::__construct();
         $this->dbh = E()->getDB();
     }
 

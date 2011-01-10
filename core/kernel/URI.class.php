@@ -79,7 +79,6 @@ final class URI extends Object {
     	if(is_null(self::$trick)){
     		throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
     	}
-        parent::__construct();
         $matches = array();
         
         if($uri && ($matches = self::validate($uri))){

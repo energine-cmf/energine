@@ -135,7 +135,6 @@ abstract class DBA extends Object {
 	 * @return void
 	 */
 	public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
-		parent::__construct();
 		try {
 			$this->pdo = new PDO($dsn, $username, $password, $driverOptions);
 			$this->pdo->query('SET NAMES '.$charset);

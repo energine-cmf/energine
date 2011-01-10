@@ -69,7 +69,6 @@ final class CalendarObject extends Object implements Iterator {
 	 * @access public
 	 */
 	public function __construct($monthID = false, $year = false){
-		parent::__construct();
 		$this->today = new DateTime();
 		 
 		$monthID = (int)((!$monthID)?$this->today->format('n'):$monthID);
@@ -309,7 +308,6 @@ final class CalendarItem extends Object implements Iterator {
      * @access public
      */
     public function __construct(DateTime $date){
-    	parent::__construct();
         $this->date = $date;
         $this->setTitle($this->date->format('j'));
         $this->setProperty('day', $this->date->format('j'));

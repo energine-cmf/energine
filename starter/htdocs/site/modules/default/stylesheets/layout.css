@@ -1,294 +1,167 @@
 @charset "utf-8";
-/*
-Name: Color stylesheet
-Description: Таблица стилей для сайта в цветовой схеме по-умолчанию.
-Created: June 2010
-Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
+/* CSS Document */
+/* 
+Template
+Name: Layout stylesheet
+Description: Таблица формирует двухколоночный layout методом простых разнонаправленных float'ов. 
+Version: $Id: layout.css,v 1.1 2008/04/10 16:12:07 pavka Exp $
+Date: April 2008
+Author: Yuriy Ponomarev (mailto:ponomarev@colocall.net)
 */
 
-/* -------------------- COMMON -------------------- */
-/* ----- default forms ----- */
-.rcbox .base_form .field .name, .rcbox .level_form .field .name {
-    color: #950c1c;
+html, body {
+	margin: 0;
+	padding: 0;
 }
-.rcbox .base_form .captcha_field .name, .rcbox .level_form .captcha_field .name {
-    color: #565253;
-}
-/* ----- /default forms ----- */
 
-/* ----- btn ----- */
-/* type1 */
-.btn_s_type1 {
-    background-image: url("../../images/btn_s_yellow_active.png");
+body {
+	background: #FFF url(../../images/default/top-bg.png) top left repeat-x;
+	font-size: 0.813em; /* =13px - базовый размер шрифта для страницы */
+	line-height: 150%;
+	_text-align: center;
 }
-.btn_m_type1 {
-    background-image: url("../../images/btn_m_yellow_active.png");
-}
-.btn_s_type1 .btn_content, .btn_m_type1 .btn_content {
-    background-color: #ffc000;
-}
-.btn_s_type1:hover .btn_content, .btn_m_type1:hover .btn_content {
-    background-color: #ffda68;
-}
-.btn_s_type1 .btn_tl, .btn_s_type1 .btn_tr, .btn_s_type1 .btn_bl, .btn_s_type1 .btn_br, 
-.btn_s_type1 .btn_tc, .btn_s_type1 .btn_bc, .btn_s_type1 .btn_ml, .btn_s_type1 .btn_mr, .btn_s_type1 .btn_content {
-    background-image: url("../../images/btn_s_yellow.png");    
-}
-.btn_s_type1:hover .btn_tl, .btn_s_type1:hover .btn_tr, .btn_s_type1:hover .btn_bl, .btn_s_type1:hover .btn_br, 
-.btn_s_type1:hover .btn_tc, .btn_s_type1:hover .btn_bc, .btn_s_type1:hover .btn_ml, .btn_s_type1:hover .btn_mr, .btn_s_type1:hover .btn_content {
-    background-image: url("../../images/btn_s_yellow_active.png");
-}
-.btn_m_type1 .btn_tl, .btn_m_type1 .btn_tr, .btn_m_type1 .btn_bl, .btn_m_type1 .btn_br, 
-.btn_m_type1 .btn_tc, .btn_m_type1 .btn_bc, .btn_m_type1 .btn_ml, .btn_m_type1 .btn_mr, .btn_m_type1 .btn_content {
-    background-image: url("../../images/btn_m_yellow.png");
-}
-.btn_m_type1:hover .btn_tl, .btn_m_type1:hover .btn_tr, .btn_m_type1:hover .btn_bl, .btn_m_type1:hover .btn_br, 
-.btn_m_type1:hover .btn_tc, .btn_m_type1:hover .btn_bc, .btn_m_type1:hover .btn_ml, .btn_m_type1:hover .btn_mr, .btn_m_type1:hover .btn_content {
-    background-image: url("../../images/btn_m_yellow_active.png");
-}
-.btn_s_type1 .btn_s-r, .btn_m_type1 .btn_s-r {
-    background-position: -2px 0;
-}
-/* type2 */
-.btn_s_type2 {
-    background-image: url("../../images/btn_s_red_active.png");
-}
-.btn_m_type2 {
-    background-image: url("../../images/btn_m_red_active.png");
-}
-.btn_s_type2 .btn_content, .btn_m_type2 .btn_content {
-    background-color: #c92e2b;
-    color: white;
-}
-.btn_s_type2:hover .btn_content, .btn_m_type2:hover .btn_content {
-    background-color: #e76664;
-}
-.btn_s_type2 .btn_tl, .btn_s_type2 .btn_tr, .btn_s_type2 .btn_bl, .btn_s_type2 .btn_br, 
-.btn_s_type2 .btn_tc, .btn_s_type2 .btn_bc, .btn_s_type2 .btn_ml, .btn_s_type2 .btn_mr, .btn_s_type2 .btn_content {
-    background-image: url("../../images/btn_s_red.png");    
-}
-.btn_s_type2:hover .btn_tl, .btn_s_type2:hover .btn_tr, .btn_s_type2:hover .btn_bl, .btn_s_type2:hover .btn_br, 
-.btn_s_type2:hover .btn_tc, .btn_s_type2:hover .btn_bc, .btn_s_type2:hover .btn_ml, .btn_s_type2:hover .btn_mr, .btn_s_type2:hover .btn_content {
-    background-image: url("../../images/btn_s_red_active.png");
-}
-.btn_m_type2 .btn_tl, .btn_m_type2 .btn_tr, .btn_m_type2 .btn_bl, .btn_m_type2 .btn_br, 
-.btn_m_type2 .btn_tc, .btn_m_type2 .btn_bc, .btn_m_type2 .btn_ml, .btn_m_type2 .btn_mr, .btn_m_type2 .btn_content {
-    background-image: url("../../images/btn_m_red.png");
-}
-.btn_m_type2:hover .btn_tl, .btn_m_type2:hover .btn_tr, .btn_m_type2:hover .btn_bl, .btn_m_type2:hover .btn_br, 
-.btn_m_type2:hover .btn_tc, .btn_m_type2:hover .btn_bc, .btn_m_type2:hover .btn_ml, .btn_m_type2:hover .btn_mr, .btn_m_type2:hover .btn_content {
-    background-image: url("../../images/btn_m_red_active.png");
-}
-.btn_s_type2 .btn_s-r, .btn_m_type2 .btn_s-r {
-    background-position: -4px 0;
-}
-/* type3 */
-.btn_s_type3 {
-    background-image: url("../../images/btn_s_yellow_active.png");
-}
-.btn_m_type3 {
-    background-image: url("../../images/btn_m_yellow_active.png");
-}
-.btn_s_type3 .btn_content, .btn_m_type3 .btn_content {
-    background-color: #ffc000;
-}
-.btn_s_type3:hover .btn_content, .btn_m_type3:hover .btn_content {
-    background-color: #ffda68;
-}
-.btn_s_type3 .btn_tl, .btn_s_type3 .btn_tr, .btn_s_type3 .btn_bl, .btn_s_type3 .btn_br,
-.btn_s_type3 .btn_tc, .btn_s_type3 .btn_bc, .btn_s_type3 .btn_ml, .btn_s_type3 .btn_mr, .btn_s_type3 .btn_content {
-    background-image: url("../../images/btn_s_yellow.png");
-}
-.btn_s_type3:hover .btn_tl, .btn_s_type3:hover .btn_tr, .btn_s_type3:hover .btn_bl, .btn_s_type3:hover .btn_br,
-.btn_s_type3:hover .btn_tc, .btn_s_type3:hover .btn_bc, .btn_s_type3:hover .btn_ml, .btn_s_type3:hover .btn_mr, .btn_s_type3:hover .btn_content {
-    background-image: url("../../images/btn_s_yellow_active.png");
-}
-.btn_m_type3 .btn_tl, .btn_m_type3 .btn_tr, .btn_m_type3 .btn_bl, .btn_m_type3 .btn_br,
-.btn_m_type3 .btn_tc, .btn_m_type3 .btn_bc, .btn_m_type3 .btn_ml, .btn_m_type3 .btn_mr, .btn_m_type3 .btn_content {
-    background-image: url("../../images/btn_m_yellow.png");
-}
-.btn_m_type3:hover .btn_tl, .btn_m_type3:hover .btn_tr, .btn_m_type3:hover .btn_bl, .btn_m_type3:hover .btn_br,
-.btn_m_type3:hover .btn_tc, .btn_m_type3:hover .btn_bc, .btn_m_type3:hover .btn_ml, .btn_m_type3:hover .btn_mr, .btn_m_type3:hover .btn_content {
-    background-image: url("../../images/btn_m_yellow_active.png");
-}
-.btn_s_type3 .btn_s-r, .btn_m_type3 .btn_s-r {
-    background-position: -2px 0;
-}
-/* ----- /btn ----- */
 
-/* ----- icons ----- */
-.icon_arrow1_r, .icon_arrow1_l, 
-.rcbox_header .actionset .sorter .active .icon_arrow2,  
-.play_icon, 
-.comment_thread_icon, 
-.icon_bullet1 {
-    background-image: url("../../images/default/icons.png");
+hr.separator {
+	display: none;
 }
-.icon_arrow1_r { background-position: -16px 0; }
-.icon_arrow1_l { background-position: -24px 0; }
-.play_icon { background-position: 0 -108px; }
-a:hover .play_icon, a:active .play_icon { background-position: -32px -108px; }
-.rcbox_header .actionset .sorter .desc .icon_arrow2 { background-position: 0 -12px; }
-.rcbox_header .actionset .sorter .asc .icon_arrow2 { background-position: -8px -12px; }
-.comment_thread_icon { background-position: 0 -68px; }
-.icon_bullet1 { background-position: 0 -24px; }
-/* ----- /icons ----- */
-/* -------------------- /COMMON -------------------- */
 
-/* -------------------- LAYOUT -------------------- */
-/* ----- base ----- */
-.base {
-    background: #950c1c; /* изменяемый (цвет фона основной области сайта) */
+/* clearfix by Andy Budd */
+.clearfix:after {
+	content: ".";		
+	clear: both;
+	display: block;
+	height: 0;
+	visibility: hidden;
 }
-.footer_t {
-    background: #950c1c; /* изменяемый (цвет фона основной области сайта) */ 
+.clearfix {
+	zoom: 1; /* IE5.5+ */
+	_height: 1%; /* IE5-6 */
+}	
+/* /clearfix */
+/* clearing */
+.clearing {
+	clear: both;
+	height: 1px;
+	font-size: 0.01em;
 }
-/* ----- /base ----- */
+/* /clearing */
+
+#container {
+    width: 1000px;
+    margin: 0 auto;
+    padding-top: 1px;
+	_text-align: left;	
+}
 
 /* ----- header ----- */
-.header_aux {
-    background: #780513 url("../../images/default/header_aux_bg.gif") 0 0 repeat-x; /* изменяемый (цвет подложки полосы под визуалом) */
-    color: #eaced2; /* изменяемый */
+#header h1 {
+	margin: 0;
+	padding: 25px 0;
 }
-.header_aux a:link, .header_aux a:visited {
-    color: #eaced2; /* изменяемый */
-}
-.header_aux a:hover, .header_aux a:active {
-    color: #eaced2; /* изменяемый */
-}
-
-.lang_switcher li, .lang_switcher a {
-    background: #d64204 url("../../images/default/lang_switcher_item_bg.gif") 0 0 repeat-x; /* изменяемый (цвет неактивных кнопок переключателя языков) */
-}
-.lang_switcher li {
-    background-position: 0 -3px;
-}
-.lang_switcher a, .lang_switcher a:link, .lang_switcher a:visited, .lang_switcher a:hover, .lang_switcher a:active {
-    color: #231f1f; /* изменяемый */
-}
-.lang_switcher .hover {
-    background: #ca1300; /* изменяемый (цвет кнопки переключателя языков при наведении) */
-}
-.lang_switcher .active {
-    background: #e96e1d url("../../images/default/lang_switcher_item_active_bg.gif") 0 0 repeat-x; /* изменяемый (цвет активной кнопки переключателя языков) */
-}
-.lang_switcher .hover a, .lang_switcher .active a {
-    background: none;
-}
-.lang_switcher .hover a, .lang_switcher .hover a:link, .lang_switcher .hover a:visited, .lang_switcher .hover a:hover, .lang_switcher .hover a:active, 
-.lang_switcher .active a, .lang_switcher .active a:link, .lang_switcher .active a:visited, .lang_switcher .active a:hover, .lang_switcher .active a:active {
-    color: #231f1f; /* изменяемый */
-}
-
-.header_aux .top_event_sh {
-    background: #780513 url("../../images/default/header_aux_bg.gif") 0 0 repeat-x; /* изменяемый (цвет подложки полосы под визуалом) */
-}
-.header_aux .top_event_sh i {
-    background: url("../../images/default/header_aux_sh.png") 0 0 no-repeat; /* изменяемый (цвет тени, которая скрывает длинную строку) */
+#header h1 img {
+	display: block;
 }
 /* ----- /header ----- */
 
-/* ----- main ----- */
-.main {    
-    background: url("../../images/default/main_bg.gif") 0 0 no-repeat; /* изменяемый (полоска со срезанными уголками над основным контентом) */
+/* ----- breadcrumbs ----- */
+.breadcrumbs {
+	margin: 1em 0;
+    padding-left: 22px;
+	_height: 1%;   
+}
+/* ----- /breadcrumbs ----- */
+
+/* ----- content ----- */
+#main {	
+	float: left;
+	width: 100%;
+	padding-bottom: 2em;
+}
+#content {	
+    width: 667px;
+    float: right;
+	padding: 0 0 0 12px;
+	_width: 679px; /* IE6 */
+	_w\idth: 667px; /* IE5 */
+	_margin-left: 321px;	
+}
+#page_title {	
+	margin: 0 0 0.5em -12px;
+    font-size: 2.154em; /* =28px */
+	font-weight: normal;
+	line-height: normal;
+	color: #65961A;
+	_height: 1%;	
+}
+.textbox {
+    margin: 0 0 1em 0;
+}
+.textblock {
+	margin: 0 0 1em 0;
+}
+/* ----- /content ----- */
+
+/* ----- sidebar ----- */
+#sidebar {
+    width: 296px;
+    float: left;
+	_clear: left;
+	_margin-right: -100%;
+}
+#sidebar .box {
+	margin: 0 0 1em 0;
+    padding: 8px 10px;
+    background: #EEE;
 }
 
-.sec_menu_wr1 {
-    background: #ac111a url("../../images/default/sec_menu_b_bg.gif") 0 100% repeat-x; /* изменяемый (цвет нижней части подложки подменю) */
-    color: white; /* изменяемый (цвет текста подменю) */
+/* language switcher */
+.lang_switcher {
+	margin: 10px 0 10px 14px;
+	list-style: disc outside;
 }
-.sec_menu_wr2 {
-    background: url("../../images/default/sec_menu_t_bg.gif") 0 0 repeat-x; /* изменяемый (цвет верхней части подложки подменю) */
-}
-.sec_menu li {    
-    border-right: 1px solid #ca1924; /* изменяемый (цвет правой границы пункта подменю) */
-}
-.sec_menu a {
-    border-right: 1px solid #2e0000; /* изменяемый (цвет правой границы пункта подменю) */
-}
-.sec_menu a, .sec_menu a:link, .sec_menu a:visited, .sec_menu a:hover, .sec_menu a:active {
-    color: white; /* изменяемый (цвет ссылок подменю) */
-}
-.sec_menu .tl {
-    background: url("../../images/default/sec_menu_tl.gif") 0 4px no-repeat; /* изменяемый (левый уголок активного пункта подменю) */
-}
-.sec_menu .hover .tl {
-    background-position: 0 0;
-}
-.sec_menu .active .tl {
-    background-position: 0 -4px;
-}
-.sec_menu .active {
-    color: black; /* изменяемый (цвет текста активного пункта подменю) */
-}
-.sec_menu .hover span {
-    background: #b32d35; /* изменяемый (цвет подложки пункта подменю при наведении) */ 
-}
-.sec_menu .active span {
-    background: #f8c100; /* изменяемый (цвет подложки активного пункта подменю) */
-}
-.sec_menu .active a, .sec_menu .active a:link, .sec_menu .active a:visited, .sec_menu .active a:hover, .sec_menu .active a:active {
-    color: black; /* изменяемый (цвет ссылок активного пункта подменю) */
+.lang_switcher a:visited { color: #00E; }
+.lang_switcher a:hover { color: #F00; }
+.lang_switcher a:active { color: #F00; }
+/* /language switcher */
+
+/* menu */
+.main_menu {
+    padding-top: 10px;
+	padding-bottom: 10px;
+    background: #EEE;
 }
 
-.sec_submenu_wr {
-    background: #f8c100; /* изменяемый (цвет подложки подподменю) */
-    color: #212021; /* изменяемый (цвет текста подподменю) */
+.main_menu li {
+    margin: 3px 0;
+	padding: 0 0 0 4px;
 }
-.sec_submenu li {
-    border-right: 1px solid #212021; /* изменяемый (разделитель в подподменю) */
-}
-.sec_submenu a, .sec_submenu a:link, .sec_submenu a:visited, .sec_submenu a:hover, .sec_submenu a:active {
-    color: #212021; /* изменяемый (цвет ссылок подподменю) */
-}
-.sec_submenu .active {
-    color: #6b090d; /* изменяемый (цвет активного пункта подподменю) */
-}
-.sec_submenu .active a, .sec_submenu .active a:link, .sec_submenu .active a:visited, .sec_submenu .active a:hover, .sec_submenu .active a:active {    
-    color: #6b090d; /* изменяемый (цвет активного пункта подподменю) */
-}
-/* ----- /main ----- */
-/* -------------------- /LAYOUT -------------------- */
+.main_menu a:visited { color: #00E; }
+.main_menu a:hover, .main_menu a:active { color: #F00; }
 
-/* -------------------- CONTENT -------------------- */
-/* ----- calendar ------ */
-.calendar_header_t, .calendar_header_tl, .calendar_header_tr, .calendar_header_c {
-    background-image: url("../../images/default/calendar.png");
-}
-/* ----- /calendar ------ */
+.menu a:visited { color: #00E; }
+.menu a:hover, .menu a:active { color: #F00; }
+/* /menu */
 
-/* ----- player ----- */
-.player_block .player_box {    
-    background: url("../../images/default/player_box_bg.gif") 0 0 no-repeat;
+#sidebar #userForm, #sidebar #currencySwitcher, #sidebar .basket_list {
+    margin: 0 0 10px 0;
+    padding: 8px 10px;
+    background: #EEE;
 }
-/* ----- /player ----- */
 
-/* ----- feed ------ */
-.main_feed .feed_item {
-    background: url("../../images/default/main_feed_item_bg.gif") 0 100% repeat-x;
-}
-.main_feed .last_item {
-    background: none;
-}
-/* ----- /feed ------ */
+/* ----- /sidebar ----- */
 
-/* ----- comments ----- */
-.comments_title .figure {
-    color: #fec200;
+/* ----- footer ----- */
+#footer {
+    clear: both;
+    padding: 1em;
+    border-top: 1px dotted #777;
+    color: #777;
+    font-size: 11px;
+    text-align: center;
+	_height: 1%;
 }
-.comment_item {    
-    background: url("../../images/default/comment_item_bg.gif") 0 0 repeat-x;
-}
-.comment_thread .comment_list {    
-    background: url("../../images/default/comment_item_bg.gif") 0 7px repeat-x;
-}
-/* ----- /comments ----- */
-/* -------------------- /CONTENT -------------------- */
 
-/* -------------------- FORMS -------------------- */
-/* ----- vote form ----- */
-.rcbox .vote_form .field .name {
-    color: black;
+#footer p {
+    margin: 0;
 }
-/* ----- /vote form ----- */
-/* -------------------- /FORMS -------------------- */
+/* ----- /footer ----- */

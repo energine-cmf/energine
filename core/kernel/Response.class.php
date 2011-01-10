@@ -49,8 +49,6 @@ final class Response extends Object {
      * @return void
      */
     public function __construct() {
-        parent::__construct();
-
         $this->setStatus(200);
         $this->headers = array();
         $this->cookies = array();

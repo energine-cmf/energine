@@ -59,8 +59,6 @@ class Field extends Object implements Iterator{
      * @param string $name иям поля
      */
     public function __construct($name) {
-        parent::__construct();
-
         $this->name = $name;
     }
 

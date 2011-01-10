@@ -18,6 +18,20 @@
  * @final
  */
 final class UserSession extends DBWorker {
+    /**
+     * Имя куки которое бросается при неудачной попытке входа
+     * @see auth.php
+     * Вообще то должо находиться в LoginForm
+     * Но изза неудобства вызова перенесена сюда
+     * @todo Все таки надо как то ей указать надлежащее место
+     */
+    const FAILED_LOGIN_COOKIE_NAME = 'failed_login';
+    /**
+     * Флаг не позволяющий вызвать объект UserSession напрямую
+     * только через UserSession::start
+     * а приватный конструктор  для 
+     * @var bool
+     */
     private static $instance = false;
     /**
      * Имя сеанса по-умолчанию.

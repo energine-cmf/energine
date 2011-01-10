@@ -67,7 +67,6 @@ final class Pager extends Object {
      * @return void
      */
     public function __construct($recordsPerPage = 0, $currentPage = 1) {
-        parent::__construct();
 
         $this->setRecordsPerPage($recordsPerPage);
         $this->setCurrentPage($currentPage);

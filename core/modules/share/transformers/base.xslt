@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet 
-    version="1.0" 
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  
+<xsl:stylesheet
+    version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml">
 
     <!--
@@ -11,7 +11,7 @@
         в нужный модуль. Также здесь собраны некоторые именованные шаблоны - импортирование позволяет переопределять
         их позже в site/transformers.
     -->
-    
+
     <!-- 
         Default form elements
         В этой секции собраны дефолтные правила вывода полей формы, которые создают сам html-элемент (input, select, etc.).
@@ -19,7 +19,7 @@
     <!-- строковое поле (string), или поле, к которому не нашлось шаблона -->
     <xsl:template match="field[ancestor::component[@type='form']]">
         <input class="text inp_string">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>        	
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
     </xsl:template>
 
@@ -35,8 +35,8 @@
         <input class="text inp_phone">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
-    </xsl:template> 
-       
+    </xsl:template>
+
     <xsl:template match="field[@type='textbox'][ancestor::component[@type='form']]">
 <!--        <div class="textbox">
             <input class="text"/>
@@ -54,12 +54,12 @@
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="value"><xsl:for-each select="items/item"><xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each></xsl:attribute>
         </input>
-    </xsl:template> 
-    
+    </xsl:template>
+
     <!-- числовое поле (integer) -->
     <xsl:template match="field[@type='integer'][ancestor::component[@type='form']]">
         <input length="5" class="text inp_integer">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:if test="@length">
                 <xsl:attribute name="maxlength">5</xsl:attribute>
             </xsl:if>
@@ -69,21 +69,21 @@
     <!-- числовое поле (float) -->
     <xsl:template match="field[@type='float'][ancestor::component[@type='form']]">
         <input class="text inp_float">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
     </xsl:template>
 
     <!-- поле пароля (password) -->
     <xsl:template match="field[@type='password' and ancestor::component[@type='form']]">
         <input class="text inp_password">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="type">password</xsl:attribute>
             <xsl:attribute name="name">
                 <xsl:choose>
                     <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
                     <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
                 </xsl:choose>
-            </xsl:attribute>            
+            </xsl:attribute>
         </input>
     </xsl:template>
 
@@ -103,7 +103,7 @@
         </input>
         <label for="{@name}"><xsl:value-of select="concat(' ', @title)" disable-output-escaping="yes" /></label>
     </xsl:template>
-    
+
     <xsl:template match="field[@type='image'][ancestor::component[@type='form'][not(@exttype='grid')]]">
         <xsl:variable name="FIELD_NAME">
             <xsl:choose>
@@ -118,7 +118,7 @@
         </xsl:if>
         <input type="file" name="{$FIELD_NAME}" id="{@name}"></input>
     </xsl:template>
-    
+
    <!-- поле для загрузки изображения из репозитория, используется в админчасти (image) -->
     <xsl:template match="field[@type='image'][ancestor::component[@type='form'][@exttype='grid']]">
         <div class="image">
@@ -139,7 +139,7 @@
         </input>
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
     </xsl:template>
-    
+
     <!-- поле типа file -->
     <xsl:template match="field[@type='file'][ancestor::component[@type='form']]">
         <div class="preview" id="{generate-id(.)}_preview">
@@ -156,7 +156,7 @@
         <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
         <span class="progress_indicator hidden" id="indicator">0%</span>
     </xsl:template>
-    
+
     <!-- поле типа pfile -->
     <xsl:template match="field[@type='pfile'][ancestor::component[@type='form']]">
         <div class="image">
@@ -178,14 +178,14 @@
             <a href="{.}" target="_blank" id='{generate-id(.)}_link'><xsl:value-of select="."/></a>
         </div>
         <xsl:variable name="FIELD_ID">tmp_<xsl:value-of select="generate-id()"/></xsl:variable>
-        <input type="file" id="{$FIELD_ID}" name="file" field="{generate-id(.)}" link="{generate-id(.)}_link" preview="{generate-id(.)}_preview" onchange="{generate-id(ancestor::recordset)}.upload.bind({generate-id(ancestor::recordset)})(this);"/>       
+        <input type="file" id="{$FIELD_ID}" name="file" field="{generate-id(.)}" link="{generate-id(.)}_link" preview="{generate-id(.)}_preview" onchange="{generate-id(ancestor::recordset)}.upload.bind({generate-id(ancestor::recordset)})(this);"/>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="type">hidden</xsl:attribute>
             <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
         </input>
     </xsl:template>
-    
+
     <!-- поле типа prfile -->
     <xsl:template match="field[@type='prfile'][ancestor::component[@type='form']]">
         <div class="image">
@@ -197,7 +197,7 @@
                     </xsl:if>
                 </xsl:if>
             </img>
-        </div>    
+        </div>
         <div style="margin-bottom: 5px;">
             <a href="{.}" target="_blank" id='{generate-id(.)}_link'><xsl:value-of select="."/></a>
         </div>
@@ -205,13 +205,13 @@
             <a href="#" onclick="return {generate-id(ancestor::recordset)}.removeFilePreview.run(['{generate-id(.)}', this], {generate-id(ancestor::recordset)});">
                 <xsl:value-of select="@deleteFileTitle"/>
             </a>
-        </xsl:if>    
+        </xsl:if>
         <xsl:variable name="FIELD_ID">tmp_<xsl:value-of select="generate-id()"/></xsl:variable>
         <input type="file" id="{$FIELD_ID}" name="file" field="{generate-id(.)}" link="{generate-id(.)}_link" preview="{generate-id(.)}_preview" protected="protected" onchange="{generate-id(ancestor::recordset)}.upload.bind({generate-id(ancestor::recordset)})(this);"/>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>            
+            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
         </input>
     </xsl:template>
 
@@ -230,7 +230,7 @@
             <xsl:apply-templates />
         </select>
     </xsl:template>
-    
+
     <xsl:template match="option[ancestor::field[@type='select'][ancestor::component[@type='form']]]">
         <option value="{@id}">
             <xsl:if test="@selected">
@@ -266,7 +266,7 @@
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:value-of select="."/>
         </textarea>
-    </xsl:template>    
+    </xsl:template>
 
     <!-- поле типа rtf текст (htmlblock) -->
     <xsl:template match="field[@type='htmlblock'][ancestor::component[@type='form']]">
@@ -275,50 +275,50 @@
             <xsl:value-of select="."/>
         </textarea>
     </xsl:template>
-    
+
     <!-- поле для даты (datetime) - никогда не использовался, устарела верстка -->
     <xsl:template match="field[@type='datetime'][ancestor::component[@type='form']]">
         <input class="text inp_datetime">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
         <script type="text/javascript">
             window.addEvent('domready', function(){
                 Energine.createDateTimePicker($('<xsl:value-of select="@name"/>'), <xsl:value-of select="boolean(@nullable)"/>);
             });
-        </script>  
+        </script>
     </xsl:template>
-    
+
     <!-- поле для даты (date) -->
     <xsl:template match="field[@type='date'][ancestor::component[@type='form']]">
         <input class="text inp_date">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
         <script type="text/javascript">
             window.addEvent('domready', function(){
                 Energine.createDatePicker(
-                    $('<xsl:value-of select="@name"/>'), 
+                    $('<xsl:value-of select="@name"/>'),
                     <xsl:value-of select="boolean(@nullable)"/>
                 );
             });
-        </script>  
+        </script>
     </xsl:template>
-    
+
     <!-- Для полей даты как части стандартной формы навешиваение DatePicker реализуется в js -->
-    
+
     <!-- поле для даты (datetime) - никогда не использовался, устарела верстка -->
     <xsl:template match="field[@type='datetime'][ancestor::component[@type='form' and @exttype='grid']]">
         <input class="text inp_datetime">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
     </xsl:template>
-    
+
     <!-- поле для даты (date) -->
     <xsl:template match="field[@type='date'][ancestor::component[@type='form' and @exttype='grid']]">
         <input class="text inp_date">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>            
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
     </xsl:template>
-    
+
     <!-- поле типа hidden -->
     <xsl:template match="field[@type='hidden'][ancestor::component[@type='form']]">
         <input type="hidden" id="{@name}" value="{.}">
@@ -330,7 +330,7 @@
             </xsl:attribute>
         </input>
     </xsl:template>
-    
+
     <!-- именованный шаблон с дефолтным набором атрибутов для элемента формы - НЕ ПЕРЕПИСЫВАТЬ В ДРУГОМ МЕСТЕ! -->
     <xsl:template name="FORM_ELEMENT_ATTRIBUTES">
         <xsl:if test="not(@type='text') and not(@type='htmlblock')">
@@ -356,13 +356,13 @@
         <xsl:if test="@message2">
             <xsl:attribute name="nrgn:message2"  xmlns:nrgn="http://energine.org"><xsl:value-of select="@message2"/></xsl:attribute>
         </xsl:if>
-    </xsl:template>    
+    </xsl:template>
     <!-- /default form elements -->
-    
-    <!-- переопределение fields для компонентов из модуля share -->    
+
+    <!-- переопределение fields для компонентов из модуля share -->
     <!-- компонент FileLibrary -->
     <xsl:template match="field[@name='upl_path'][ancestor::component[@class='FileLibrary']]">
-        <div class="preview" 
+        <div class="preview"
              id="{generate-id(.)}_preview"></div>
          <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
@@ -373,15 +373,15 @@
         <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
         <span class="progress_indicator hidden" id="indicator">0%</span>
     </xsl:template>
-    
+
     <xsl:template match="field[@type='text'][@name='upl_description']">
         <textarea  class="quarter">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:value-of select="."/>
         </textarea>
-    </xsl:template>     
+    </xsl:template>
     <!-- /компонент FileLibrary -->
-    
+
     <!-- Поле копирования структуры в редакторе сайтов -->
     <xsl:template match="field[@type='select'][@name='copy_site_structure']">
         <input type="checkbox" onchange="document.getElementById('{@name}').disabled = !this.checked;"/>
@@ -421,26 +421,37 @@
                     <xsl:choose>
                         <xsl:when test="position() = last()">
                             <xsl:if test="$ID = field[@name='Id'] and field[@name='Name'] != ''">
-                                <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>           
-                                <xsl:value-of select="field[@name='Name']"/>                        
+                                <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>
+                                <xsl:value-of select="field[@name='Name']"/>
                             </xsl:if>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:if test="field[@name='Name'] != ''">
-                                <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>           
-                                <xsl:value-of select="field[@name='Name']"/>                        
+                                <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>
+                                <xsl:value-of select="field[@name='Name']"/>
                             </xsl:if>
                         </xsl:otherwise>
-                    </xsl:choose>                    
+                    </xsl:choose>
                 </xsl:for-each>
                 / <xsl:value-of select="$COMPONENTS[@class='BreadCrumbs']/@site"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->
     <xsl:template name="interface_js"/>
-    
-    <xsl:template name="stylesheets"/>
+
+    <xsl:template name="stylesheets">
+
+        <!-- файлы стилей для текущего варианта дизайна -->
+        <link href="{$STATIC_URL}stylesheets/{$FOLDER}/screen.css" rel="stylesheet" type="text/css"
+              media="Screen, projection"/>
+        <!-- отдельный файл стилей для IE подключается через условные комментарии -->
+        <xsl:text disable-output-escaping="yes">&lt;!--[if IE]&gt;</xsl:text>
+        <link href="{$STATIC_URL}stylesheets/{$FOLDER}/ie.css" rel="stylesheet" type="text/css"
+              media="Screen, projection"/>
+        <xsl:text disable-output-escaping="yes">&lt;![endif]--&gt;</xsl:text>
+
+    </xsl:template>
 
 </xsl:stylesheet>

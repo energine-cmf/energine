@@ -75,8 +75,6 @@ final class Request extends Object {
      * @return void
      */
     public function __construct() {
-        parent::__construct();
-
         $this->uri = URI::create();
         $path = $this->uri->getPath();
         

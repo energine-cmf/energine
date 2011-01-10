@@ -33,10 +33,6 @@ final class BanDateTransform extends Object {
                                                'FOREVER'=>'2030-04-01');
 
 
-	public function __construct(){
-		parent::__construct();
-	}
-
     /**
      * Форматуємо (повертаємо іншій) масив інтервалів у масив для loadAvailableValues
      * @param  $values array

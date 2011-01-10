@@ -35,7 +35,6 @@ final class DBStructureInfo extends Object {
      * @return void
      */
     public function __construct(PDO $pdo) {
-        parent::__construct();
         $this->pdo = $pdo;
         $mc = E()->getCache();
         if($mc->isEnabled()){

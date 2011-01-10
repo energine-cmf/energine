@@ -1,12 +1,11 @@
 <?php
-
 /**
  * Класс AuthUser.
  *
  * @package energine
  * @subpackage core
- * @author 1m.dm
- * @copyright Energine 2006
+ * @author d.pavka
+ * @copyright Energine 2011
  */
 
 
@@ -15,17 +14,9 @@
  *
  * @package energine
  * @subpackage core
- * @author 1m.dm
+ * @author d.pavka
  */
 class AuthUser extends User {
-    /**
-     * Путь к корню сайта, чтоб по 10 раз за ним не обращаться через сайт менеджер
-     *
-     * @access private
-     * @var string
-     */
-    private $siteRoot;
-
     /**
      * Конструктор класса.
      * параметр введен только для избежания strict ошибки
@@ -36,16 +27,13 @@ class AuthUser extends User {
      * @todo избавиться от hardcoded имен полей формы?
      */
     public function __construct($id = false) {
-        parent::__construct(false);
-        $this->siteRoot = SiteManager::getInstance()->getCurrentSite()->root;
         //Если есть в сессии данные о юзере
         //это означает что сессия правильная
         if (isset($_SESSION['userID'])) {
             $id = $_SESSION['userID'];
         }
 
-        if ($id)
-            $this->loadInfo($id);
+        parent::__construct($id);
     }
 
     /**
@@ -87,33 +75,5 @@ class AuthUser extends User {
         else {
             return false;
         }
-    }
-
-
-    /**
-     * Очищает всю информацию о пользователе из сессии, cookie.
-     *
-     * @access public
-     * @return boolean
-     */
-    public function clearInfo() {
-        $response = E()->getResponse();
-        $UID = false;
-        if (isset($_SESSION['userID'])) {
-            $UID = $_SESSION['userID'];
-            unset($_SESSION['userID']);
-        }
-
-        if (isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])) {
-            $response->deleteCookie(UserSession::DEFAULT_SESSION_NAME, $this->siteRoot);
-        }
-
-        if (isset($_COOKIE['user'])) {
-            $response->deleteCookie('user', $this->siteRoot);
-        }
-        if ($UID)
-            $this->dbh->modify(QAL::DELETE, 'share_session', null, array('u_id' => $UID));
-        if (isset($_SESSION))
-            session_destroy();
     }
 }

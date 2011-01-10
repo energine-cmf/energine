@@ -67,7 +67,6 @@ class FileUploader extends Object {
      * @return void
      */
     public function __construct(Array $restrictions = array()) {
-        parent::__construct();
         $this->restrictions = $restrictions;
     }
 

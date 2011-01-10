@@ -15,7 +15,7 @@ html, body {
 }
 
 body {
-	background: #FFF url(../images/top-bg.png) top left repeat-x;
+	background: #FFF url(../images/default/top-bg.png) top left repeat-x;
 	font-size: 0.813em; /* =13px - базовый размер шрифта для страницы */
 	line-height: 150%;
 	_text-align: center;

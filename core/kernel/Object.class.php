@@ -45,17 +45,6 @@ abstract class Object {
     private $executionTime;
 
     /**
-      * Пустой конструктор
-      *
-      * @return void
-      * @access public
-      */
-
-     public function __construct() {
-
-     }
-
-    /**
      * Запускает счетчик времени выполнения.
      *
      * @access public

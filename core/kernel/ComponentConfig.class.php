@@ -53,7 +53,6 @@ final class ComponentConfig extends Object {
 	 */
 
 	public function __construct($configFileName, $className, $moduleName) {
-		parent::__construct();
 		$configFileName = ($param = $this->getConfigPath($configFileName, $moduleName))?$param:$this->getConfigPath($className.'.component.xml', $moduleName);
 
 		if ($configFileName) {

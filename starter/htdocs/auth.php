@@ -34,7 +34,7 @@ if (
             );
         }
         else{
-            $response->addCookie('login_attempt_failed', 'bad auth data', time()+60);    
+            $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, 'bad auth data', time()+60);    
         }
         //о том прошла ли аутентификация успешно LoginForm узнает из куков
 

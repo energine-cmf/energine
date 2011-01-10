@@ -18,8 +18,6 @@
  * @author dr.Pavka
  */
 class LoginForm extends DataSet {
-
-
     /**
 	 * Конструктор
 	 *
@@ -29,14 +27,7 @@ class LoginForm extends DataSet {
     public function __construct($name, $module,   array $params = null) {
         $params['state'] = E()->getDocument()->user->isAuthenticated()?'showLogoutForm':'showLoginForm';
         parent::__construct($name, $module,  $params);
-        /*if (
-            $this->document->user->isAuthenticated() 
-            && $this->document->user->isNowAuthenticated()
-            && ($this->getParam('successAction') !== false)
-        ) {
-            $this->response->redirectToCurrentSection($this->getParam('successAction'));
-        }*/
-		$this->setTitle($this->translate('TXT_LOGIN_FORM'));
+ 		$this->setTitle($this->translate('TXT_LOGIN_FORM'));
         $this->setDataSetAction(SiteManager::getInstance()->getCurrentSite()->base.'auth.php', true);
     }
 
@@ -65,7 +56,7 @@ class LoginForm extends DataSet {
 
     public function showLoginForm() {
         $this->prepare();
-        if (isset($_POST['user']['login'])) {
+        if (isset($_COOKIE[UserSession::FAILED_LOGIN_COOKIE_NAME])) {
             $messageField = new FieldDescription('message');
             $messageField->setType(FieldDescription::FIELD_TYPE_STRING);
         	$this->getDataDescription()->addFieldDescription($messageField);
@@ -74,6 +65,7 @@ class LoginForm extends DataSet {
         	$messageField = new Field('message');
         	$messageField->addRowData($this->translate('ERR_BAD_LOGIN'));
         	$this->getData()->addField($messageField);
+            E()->getResponse()->deleteCookie(UserSession::FAILED_LOGIN_COOKIE_NAME);
         }
     }
 
@@ -88,17 +80,15 @@ class LoginForm extends DataSet {
     public function showLogoutForm() {
         //$request = E()->getRequest();
         //$this->setTitle($this->translate('TXT_LOGOUT'));
-        $this->addTranslation('TXT_USER_GREETING');
-        $this->addTranslation('TXT_USER_NAME');
-        $this->addTranslation('TXT_ROLE_TEXT');
+        $this->addTranslation('TXT_USER_GREETING','TXT_USER_NAME','TXT_ROLE_TEXT');
         //$this->setDataSetAction(SiteManager::getInstance()->getCurrentSite()->base, true);
         $this->prepare();
-        /*foreach (E()->UserGroup->getUserGroups($this->document->user->getID()) as $roleID) {
+        foreach (E()->UserGroup->getUserGroups($this->document->user->getID()) as $roleID) {
             $tmp = E()->UserGroup->getInfo($roleID);
             $data[] = $tmp['group_name'];
         }
 
-        $this->getData()->getFieldByName('role_name')->setData(implode(', ', $data));*/
+        $this->getData()->getFieldByName('role_name')->setData(implode(', ', $data));
     }
 
     protected function loadData() {

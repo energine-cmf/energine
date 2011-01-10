@@ -1,132 +1,37 @@
-﻿@charset "utf-8";
-/*
-Name: Special stylesheet for IE
-Description: Таблица стилей для корректировки особенностей отображения IE.
-Created: June 2010
+@charset "utf-8";
+/* CSS Document */
+/* 
+Template
+Name: Special stylesheet for IE(all versions)
+Description: Таблица стилей для корректировки особенностей отображения IE версии 6 и выше.
+Created: May 2009
 Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
 */
 
-/* -------------------- COMMON -------------------- */
-/* ----- rcbox ------ */
-.rcbox_tl, .rcbox_tr, .rcbox_bl, .rcbox_br {
-    _background-image: url("../../images/default/rcbox.gif");
+hr {
+	margin: 0;
 }
-/* ----- /rcbox ------ */
 
-/* ----- btn ------ */
-/* type1 */
-.btn_s_type1 {
-    _background-image: url("../../images/btn_s_yellow_active.gif");
-}
-.btn_m_type1 {
-    _background-image: url("../../images/btn_m_yellow_active.gif");
-}
-.btn_s_type1 .btn_tl, .btn_s_type1 .btn_tr, .btn_s_type1 .btn_bl, .btn_s_type1 .btn_br, 
-.btn_s_type1 .btn_tc, .btn_s_type1 .btn_bc, .btn_s_type1 .btn_ml, .btn_s_type1 .btn_mr, .btn_s_type1 .btn_content {
-    _background-image: url("../../images/btn_s_yellow.gif");    
-}
-.btn_s_type1:hover .btn_tl, .btn_s_type1:hover .btn_tr, .btn_s_type1:hover .btn_bl, .btn_s_type1:hover .btn_br, 
-.btn_s_type1:hover .btn_tc, .btn_s_type1:hover .btn_bc, .btn_s_type1:hover .btn_ml, .btn_s_type1:hover .btn_mr, .btn_s_type1:hover .btn_content {
-    _background-image: url("../../images/btn_s_yellow_active.gif");
-}
-.btn_m_type1 .btn_tl, .btn_m_type1 .btn_tr, .btn_m_type1 .btn_bl, .btn_m_type1 .btn_br, 
-.btn_m_type1 .btn_tc, .btn_m_type1 .btn_bc, .btn_m_type1 .btn_ml, .btn_m_type1 .btn_mr, .btn_m_type1 .btn_content {
-    _background-image: url("../../images/btn_m_yellow.gif");
-}
-.btn_m_type1:hover .btn_tl, .btn_m_type1:hover .btn_tr, .btn_m_type1:hover .btn_bl, .btn_m_type1:hover .btn_br, 
-.btn_m_type1:hover .btn_tc, .btn_m_type1:hover .btn_bc, .btn_m_type1:hover .btn_ml, .btn_m_type1:hover .btn_mr, .btn_m_type1:hover .btn_content {
-    _background-image: url("../../images/btn_m_yellow_active.gif");
-}
-/* type2 */
-.btn_s_type2 {
-    _background-image: url("../../images/btn_s_red_active.gif");
-}
-.btn_m_type2 {
-    _background-image: url("../../images/btn_m_red_active.gif");
-}
-.btn_s_type2 .btn_tl, .btn_s_type2 .btn_tr, .btn_s_type2 .btn_bl, .btn_s_type2 .btn_br, 
-.btn_s_type2 .btn_tc, .btn_s_type2 .btn_bc, .btn_s_type2 .btn_ml, .btn_s_type2 .btn_mr, .btn_s_type2 .btn_content {
-    _background-image: url("../../images/btn_s_red.gif");    
-}
-.btn_s_type2:hover .btn_tl, .btn_s_type2:hover .btn_tr, .btn_s_type2:hover .btn_bl, .btn_s_type2:hover .btn_br, 
-.btn_s_type2:hover .btn_tc, .btn_s_type2:hover .btn_bc, .btn_s_type2:hover .btn_ml, .btn_s_type2:hover .btn_mr, .btn_s_type2:hover .btn_content {
-    _background-image: url("../../images/btn_s_red_active.gif");
-}
-.btn_m_type2 .btn_tl, .btn_m_type2 .btn_tr, .btn_m_type2 .btn_bl, .btn_m_type2 .btn_br, 
-.btn_m_type2 .btn_tc, .btn_m_type2 .btn_bc, .btn_m_type2 .btn_ml, .btn_m_type2 .btn_mr, .btn_m_type2 .btn_content {
-    _background-image: url("../../images/btn_m_red.gif");
-}
-.btn_m_type2:hover .btn_tl, .btn_m_type2:hover .btn_tr, .btn_m_type2:hover .btn_bl, .btn_m_type2:hover .btn_br, 
-.btn_m_type2:hover .btn_tc, .btn_m_type2:hover .btn_bc, .btn_m_type2:hover .btn_ml, .btn_m_type2:hover .btn_mr, .btn_m_type2:hover .btn_content {
-    _background-image: url("../../images/btn_m_red_active.gif");
-}
-/* type3 */
-.btn_s_type3 {
-    _background-image: url("../../images/btn_s_yellow_active.gif");
-}
-.btn_m_type3 {
-    _background-image: url("../../images/btn_m_yellow_active.gif");
-}
-.btn_s_type3 .btn_tl, .btn_s_type3 .btn_tr, .btn_s_type3 .btn_bl, .btn_s_type3 .btn_br,
-.btn_s_type3 .btn_tc, .btn_s_type3 .btn_bc, .btn_s_type3 .btn_ml, .btn_s_type3 .btn_mr, .btn_s_type3 .btn_content {
-    _background-image: url("../../images/btn_s_yellow.gif");
-}
-.btn_s_type3:hover .btn_tl, .btn_s_type3:hover .btn_tr, .btn_s_type3:hover .btn_bl, .btn_s_type3:hover .btn_br,
-.btn_s_type3:hover .btn_tc, .btn_s_type3:hover .btn_bc, .btn_s_type3:hover .btn_ml, .btn_s_type3:hover .btn_mr, .btn_s_type3:hover .btn_content {
-    _background-image: url("../../images/btn_s_yellow_active.gif");
-}
-.btn_m_type3 .btn_tl, .btn_m_type3 .btn_tr, .btn_m_type3 .btn_bl, .btn_m_type3 .btn_br,
-.btn_m_type3 .btn_tc, .btn_m_type3 .btn_bc, .btn_m_type3 .btn_ml, .btn_m_type3 .btn_mr, .btn_m_type3 .btn_content {
-    _background-image: url("../../images/btn_m_yellow.gif");
-}
-.btn_m_type3:hover .btn_tl, .btn_m_type3:hover .btn_tr, .btn_m_type3:hover .btn_bl, .btn_m_type3:hover .btn_br,
-.btn_m_type3:hover .btn_tc, .btn_m_type3:hover .btn_bc, .btn_m_type3:hover .btn_ml, .btn_m_type3:hover .btn_mr, .btn_m_type3:hover .btn_content {
-    _background-image: url("../../images/btn_m_yellow_active.gif");
-}
-/* ----- /btn ------ */
+/* ----- clearfix ----- */
+.clearfix {
+	*zoom: 1; /* IE5.5+ */
+	_height: 1%; /* IE5 */
+}	
+/* ----- /clearfix ----- */
 
-/* ----- icons ----- */
-.icon_arrow1_r, .icon_arrow1_l, 
-.rcbox_header .actionset .sorter .active .icon_arrow2,  
-.play_icon, 
-.comment_thread_icon, 
-.icon_bullet1 {
-    _background: none;
+body {
+	_text-align: center; /* KLUDGE: выравнивание base по центру в IE младше 6 */
 }
-.icon_arrow1_r i, .icon_arrow1_l i, 
-.rcbox_header .actionset .sorter .active .icon_arrow2 i,  
-.play_icon i, 
-.comment_thread_icon i, 
-.icon_bullet1 i {
-    _background-image: url("../../images/default/icons.png");
-}
-.icon_arrow1_r i { _top: 0; _left: -16px; }
-.icon_arrow1_l i { _top: 0; _left: -24px; }
-.play_icon i { _top: -108px; _left: 0; }
-a:hover .play_icon i, a:active .play_icon i { _left: -32px; }
-.rcbox_header .actionset .sorter .desc .icon_arrow2 i { _top: -12px; _left: 0; }
-.rcbox_header .actionset .sorter .asc .icon_arrow2 i { _top: -12px; _left: -8px; }
-.comment_thread_icon i { _top: -68px; _left: 0; }
-.icon_bullet1 i { _top: -24px; _left: 0; }
-/* ----- /icons ----- */
-/* -------------------- /COMMON -------------------- */
 
-/* -------------------- LAYOUT -------------------- */
-.header_aux .top_event_actions {
-    _background: #780513 url("../../images/default/header_aux_bg.gif") 0 0 repeat-x;
+.base {
+    _text-align: left; /* KLUDGE: сброс выравнивания base по центру в IE младше 6 */
 }
-/* -------------------- /LAYOUT -------------------- */
 
-/* -------------------- CONTENT -------------------- */
-/* ----- calendar ------ */
-.calendar_header_t, .calendar_header_tl, .calendar_header_tr, .calendar_header_c {
-    _background-image: url("../../images/default/calendar.gif");
+/* ----- forms ----- */
+.field {
+	_height: 1%; /* KLUDGE: добавляет свойство hasLayout */
 }
-/* ----- /calendar ------ */
-
-/* ----- blocks ----- */
-.tvguide_block .rcbox_bl {    
-    _background-image: url("../../images/default/rcbox1.gif");
+.level_form .field .name {
+	_margin-right: -140px; /* KLUDGE: устраняет 3-пиксельное смещение в IE5-6  */ 
 }
-/* ----- /blocks ----- */
-/* -------------------- /CONTENT -------------------- */
+/* ----- /forms ----- */

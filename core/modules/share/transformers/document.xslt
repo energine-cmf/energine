@@ -122,7 +122,7 @@
     <xsl:template match="document">
         <div id="container">
             <div id="header">
-                <img id="logo" src="images/energine_logo.png" width="246" height="64" alt="Energine"/>
+                <img id="logo" src="images/{$FOLDER}/energine_logo.png" width="246" height="64" alt="Energine"/>
                 <xsl:apply-templates select="$COMPONENTS[@class='LangSwitcher']"/>
             </div>
             <xsl:apply-templates select="$COMPONENTS[@class='BreadCrumbs']"/>

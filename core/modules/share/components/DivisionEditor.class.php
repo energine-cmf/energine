@@ -279,7 +279,7 @@ final class DivisionEditor extends Grid {
         $this->setFilter(array('site_id' => $params['site_id']));
 
         $this->setParam('onlyCurrentLang', true);
-        $this->config->setCurrentMethod($baseMethod);
+        $this->config->setCurrentState($baseMethod);
         $this->setBuilder(new JSONDivBuilder());
 
         $this->setDataDescription($this->createDataDescription());
@@ -658,7 +658,7 @@ final class DivisionEditor extends Grid {
      */
 
     protected function showPageToolbar() {
-        if (!$this->config->getCurrentMethodConfig()) {
+        if (!$this->config->getCurrentStateConfig()) {
             throw new SystemException('ERR_DEV_TOOLBAR_MUST_HAVE_CONFIG', SystemException::ERR_DEVELOPER);
         }
         $this->addToolbar($this->createToolbar());

@@ -95,6 +95,7 @@ class Register extends DBDataSet {
 	 * @access protected
 	 */
 	protected function save() {
+        //inspect($_SESSION);
 		try {
 			if(
 			 !isset($_SESSION['captchaCode'])

@@ -396,7 +396,7 @@ class Grid extends DBDataSet {
         }
 
         //получаем описание полей для метода
-        $configDataDescription = $this->config->getMethodConfig($this->getPreviousAction());
+        $configDataDescription = $this->config->getStateConfig($this->getPreviousAction());
         //если в конфиге есть описание полей для метода - загружаем их
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);

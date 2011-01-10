@@ -22,9 +22,8 @@ try {
     //подключаем служебные(вспомогательные) функции
     require_once('core/kernel/utils.func.php');
 
-    $reg = E();
     UserSession::start();
-    
+    $reg = E();
     $reg->getController()->run();
     $reg->getResponse()->commit();
 }

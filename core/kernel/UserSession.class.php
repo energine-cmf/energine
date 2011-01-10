@@ -18,6 +18,7 @@
  * @final
  */
 final class UserSession extends DBWorker {
+    private static $instance = false;
     /**
      * Имя сеанса по-умолчанию.
      */
@@ -35,12 +36,6 @@ final class UserSession extends DBWorker {
      * @var string идентификатор сеанса
      */
     private $phpSessId;
-
-    /**
-     * @access private
-     * @var int идентификатор сеанса в БД
-     */
-    private $id = false;
 
     /**
      * Если период между запросами превышает эту величину, сеанс становится недействительным.
@@ -72,14 +67,13 @@ final class UserSession extends DBWorker {
     /**
      * Данные сеанса
      * false - сеанс существует но данных нет
-     * mixed - сеанс существует и данные такие
+     * string - сеанс существует и данные такие
      * null - сеанса нет существует
      *
-     * @var mixed
+     * @var string
      */
     private $data = null;
 
-    private $isActive = false;
 
     /**
      * Конструктор класса.
@@ -87,7 +81,11 @@ final class UserSession extends DBWorker {
      * @access private
      * @return void
      */
-    public function __construct() {
+    public function __construct($force = false) {
+        if (!self::$instance) {
+            throw new SystemException('ERR_NO_CONSTRUCTOR');
+        }
+
         parent::__construct();
         $this->timeout = $this->getConfigValue('session.timeout');
         $this->lifespan = $this->getConfigValue('session.lifespan');
@@ -104,6 +102,42 @@ final class UserSession extends DBWorker {
             array($this, 'gc')
         );
         session_name(self::DEFAULT_SESSION_NAME);
+        $this->data = false;
+
+        if (
+                (isset($_COOKIE[self::DEFAULT_SESSION_NAME]))
+                ||
+                (isset($_POST[self::DEFAULT_SESSION_NAME]))
+        ) {
+            $this->phpSessId = (isset($_COOKIE[self::DEFAULT_SESSION_NAME])) ? $_COOKIE[self::DEFAULT_SESSION_NAME] : $_POST[self::DEFAULT_SESSION_NAME];
+
+            $this->data = $this->isSessionValid($this->phpSessId);
+            //Если сессия валидная
+            if (!is_null($this->data)) {
+                E()->getDB()->modifyRequest('UPDATE ' . $this->tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
+            }
+            elseif ($force) {
+                //создаем ее вручную
+                $sessInfo = self::manuallyCreateSessionInfo();
+                $this->phpSessId = $sessInfo[1];
+            }
+            //сессия невалидная
+            else{
+                $this->dbh->modify(QAL::DELETE, $this->tableName, null, array("session_native_id" => addslashes($this->phpSessId)));
+                // удаляем cookie сеанса
+                E()->getResponse()->deleteCookie(self::DEFAULT_SESSION_NAME);
+                return;
+            }
+        }
+        elseif($force){
+            //создаем ее вручную
+            $sessInfo = self::manuallyCreateSessionInfo();
+            $this->phpSessId = $sessInfo[1];
+        }
+        else {
+            return;
+        }
+
         // устанавливаем время жизни cookie
         if ($this->getConfigValue('site.domain')) {
             $path = '/';
@@ -113,36 +147,16 @@ final class UserSession extends DBWorker {
             $path = SiteManager::getInstance()->getCurrentSite()->root;
             $domain = '';
         }
-        $expires = time();
-
-        if (
-            (isset($_COOKIE[self::DEFAULT_SESSION_NAME]))
-            ||
-            (isset($_POST[self::DEFAULT_SESSION_NAME]))
-        ) {
-            $this->phpSessId = (isset($_COOKIE[self::DEFAULT_SESSION_NAME])) ? $_COOKIE[self::DEFAULT_SESSION_NAME] : $_POST[self::DEFAULT_SESSION_NAME];
-            $response = E()->getResponse();
-
-            if ($this->data = $this->isSessionValid($this->phpSessId)) {
-
-                $expires += $this->lifespan;
-                $this->isActive = true;
-                E()->getDB()->modifyRequest('UPDATE ' . $this->tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = %s WHERE session_native_id = %s', $this->phpSessId, $expires);
-                session_id($this->phpSessId);
-            }
-            else {
-                $this->dbh->modify(QAL::DELETE, $this->tableName, null, array("session_native_id" => addslashes($this->phpSessId)));
-                // удаляем cookie сеанса
-                $response->deleteCookie(self::DEFAULT_SESSION_NAME);
-            }
-
-        }
-        session_set_cookie_params($expires, $path, $domain);
+        session_set_cookie_params($this->lifespan, $path, $domain);
+        session_id($this->phpSessId);
+        session_start();
     }
 
     /**
      * Проверям , действителен ли сеанс с этим идентификатором
      * если да - то возвращает еще и данные сеанса
+     * может не очень красиво, но выгоднее, чтоб секономить на запросах
+     *
      * @param  $sessID
      * @return mixed | false
      */
@@ -155,8 +169,9 @@ final class UserSession extends DBWorker {
                 ' AND session_user_agent = %s'*/,
             addslashes($sessID)
         );
-        return (!is_array($res))?false:$res[0]['session_data'];
+        return (!is_array($res)) ? false : $res[0]['session_data'];
     }
+
     /**
      * Создает в БД информацию о новой сессии
      * возвращает информацию о куках для нее
@@ -169,23 +184,35 @@ final class UserSession extends DBWorker {
      */
     public static function manuallyCreateSessionInfo($UID = false, $expires = false) {
         //Записали данные в БД
-        $data['session_native_id'] = sha1(time() + rand(0, 10000));
+        $data['session_native_id'] = self::createIdentifier();
         $data['session_created'] = $data['session_last_impression'] = time();
-        if(!$expires)
+        if (!$expires)
             $data['session_expires'] = $data['session_created'] + 60;
         else
             $data['session_expires'] = $expires;
 
-        if($UID) {
+        if ($UID) {
             $data['u_id'] = $UID;
-            $data['session_data'] = serialize(array('userID'=> $UID));
+            //Финт ушами поскольку стандартно в РНР сериализированные данные сессии содержат еще и имя переменной
+            $data['session_data'] = 'userID|' . serialize($UID);
         }
 
         $data['session_ip'] = E()->getRequest()->getClientIP(true);
         E()->getDB()->modify(QAL::INSERT, 'share_session', $data);
         $_COOKIE[self::DEFAULT_SESSION_NAME] = $data['session_native_id'];
-        
+
         return array(self::DEFAULT_SESSION_NAME, $data['session_native_id'], $data['session_expires']);
+    }
+
+    /**
+     * @static
+     * @return void
+     */
+    public static function manuallyDeleteSessionInfo() {
+        if (isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])) {
+            $sessID = $_COOKIE[UserSession::DEFAULT_SESSION_NAME];
+            E()->getDB()->modify(QAL::DELETE, 'share_session', null, array('session_native_id' => $sessID));
+        }
     }
 
     /**
@@ -202,18 +229,17 @@ final class UserSession extends DBWorker {
      * @return void
      */
     public static function start($force = false) {
-        if($force){
-            UserSession::manuallyCreateSessionInfo();
+        if (self::$instance) {
+            throw new SystemException('ERR_SESSION_ALREADY_STARTED');
         }
-        
-        $sess = new UserSession();
+        self::$instance = true;
 
-        if ($sess->isActive || $force) {
-            session_start();
-        }
+        new UserSession($force);
+    }
 
-
-    }    
+    private static function createIdentifier() {
+        return sha1(time() + rand(0, 10000));
+    }
 
     /**
      * Открывает сеанс.
@@ -293,18 +319,8 @@ final class UserSession extends DBWorker {
             QAL::DELETE,
             $this->tableName,
             null,
-                '(session_created < (NOW() - ' . $this->lifespan . ')) OR (session_last_impression  < (NOW() - ' . $this->timeout . '))'
+            'session_expires < UNIX_TIMESTAMP()'
         );
         return true;
-    }
-
-    /**
-     * Возвращает идентификатор сеанса.
-     *
-     * @access public
-     * @return int
-     */
-    public function getID() {
-        return $this->id;
     }
 }

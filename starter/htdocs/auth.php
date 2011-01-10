@@ -41,7 +41,9 @@ if (
 
     }
     elseif ($logout) {
-
+        UserSession::manuallyDeleteSessionInfo();
+        //просто удаляем куку
+        $response->deleteCookie(UserSession::DEFAULT_SESSION_NAME);
     }
 }
 

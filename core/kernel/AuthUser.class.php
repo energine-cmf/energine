@@ -25,14 +25,6 @@ class AuthUser extends User {
      * @var string
      */
     private $siteRoot;
-    /**
-     * Флаг показывающий залогинился ли пользователь только что
-     *
-     * @var bool
-     * @access private
-     */
-    private $isJustNowAuthenticated = false;
-
 
     /**
      * Конструктор класса.
@@ -46,13 +38,9 @@ class AuthUser extends User {
     public function __construct($id = false) {
         parent::__construct(false);
         $this->siteRoot = SiteManager::getInstance()->getCurrentSite()->root;
-        //Если пришел флаг  - отлогиниться
-        if (isset($_POST['user']['logout']) || isset($_GET['logout'])) {
-            //Очищаем информацию о пользователе
-            $this->clearInfo();
-            return;
-        }
-        elseif (isset($_SESSION['userID'])) {
+        //Если есть в сессии данные о юзере
+        //это означает что сессия правильная
+        if (isset($_SESSION['userID'])) {
             $id = $_SESSION['userID'];
         }
 
@@ -98,41 +86,6 @@ class AuthUser extends User {
         }
         else {
             return false;
-        }
-    }
-
-    public static function createSession($UID){
-        $setECookie = function($cookieValue, $cookieExpires, $cookieName = UserSession::DEFAULT_SESSION_NAME){
-            if ($domain = Object::_getConfigValue('site.domain')) {
-                $path = '/';
-                $domain = '.' . $domain;
-            }
-            else {
-                $path = SiteManager::getInstance()->getCurrentSite()->root;
-                $domain = '';
-            }
-
-            E()->getResponse()->addCookie(
-                $cookieName,
-                $cookieValue,
-                $cookieExpires,
-                $path,
-                $domain
-            );
-        };
-
-        if($UID){
-            
-        }
-        else{
-            //В случае если !$UID
-            //бросаем
-            //1.Просроченную куку для удаления аутентификационной инфы
-            $setECookie('', 0);
-            //2.куки с ифнормацией о том что вход не удался
-            $setECookie('Ошибка авторизации', time() + 60, 'login_attempt');
-            //- сессия в БД не создается
-
         }
     }
 

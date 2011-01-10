@@ -14,8 +14,8 @@ var PageEditor = new Class({
         }, this);
 
         document.addEvent('click', this.processClick.bindWithEvent(this));
-
-        window.addEvent('beforeunload', function() {
+        
+        window.addEvent('beforeunload', function(e) {
             if (this.activeEditor) {
                 this.activeEditor.save();
             }
@@ -195,6 +195,7 @@ PageEditor.BlockEditor = new Class({
 
 		new Request({
 			url: this.singlePath + 'save-text',
+            async: false,
             method: 'post',
             'data': data,
             onSuccess: function(response){

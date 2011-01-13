@@ -11,14 +11,14 @@
     
     <!-- компонент feed в режиме списка -->
     <xsl:template match="recordset[parent::component[@exttype='feed'][@type='list']]">
-        <xsl:if test="not(@empty)">
+
             <ul id="{generate-id(.)}" class="feed">
     			<xsl:choose>
     				<xsl:when test="parent::component[@class='NewsFeed']"><xsl:attribute name="class">feed news</xsl:attribute></xsl:when>    				
     			</xsl:choose>
                 <xsl:apply-templates/>
             </ul>        
-        </xsl:if>
+        
     </xsl:template>
     
     <xsl:template match="record[ancestor::component[@exttype='feed'][@type='list']]">
@@ -37,7 +37,7 @@
             </xsl:if>
     		<div class="date"><strong><xsl:value-of select="field[@name='news_date']"/></strong></div>
     		<h4 class="title">
-                <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{translate(field[@name='news_date'], '/', '-')}/"><xsl:value-of select="field[@name='news_title']"/></a>
+                <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{field[@name='news_id']}--{field[@name='news_segment']}/"><xsl:value-of select="field[@name='news_title']"/></a>
     		</h4>
     		<div class="anounce"><xsl:value-of select="field[@name='news_announce_rtf']" disable-output-escaping="yes"/></div>
         </li>
@@ -66,7 +66,7 @@
             </xsl:if>
             <div class="date"><strong><xsl:value-of select="field[@name='news_date']"/></strong></div>
     		<h4 class="title"><xsl:value-of select="field[@name='news_title']"/></h4>
-    		<div class="text"><xsl:value-of select="field[@name='news_text_rtf']" disable-output-escaping="yes"/></div>
+    		<xsl:apply-templates select="field[(@name!='news_date') or (@name!='news_title')]" />
         </div>
     </xsl:template>
     
@@ -84,5 +84,22 @@
             </ul>        
         </xsl:if>
     </xsl:template>
+
+    <xsl:template match="field[@type='htmlblock' and ancestor::component[@exttype='feed' and @type='form']]">
+           <div class="feed_text">
+               <xsl:if test="ancestor::component/@editable">
+                   <xsl:attribute name="class">nrgnEditor feed_text</xsl:attribute>
+                   <xsl:attribute name="num"><xsl:value-of select="@name"/></xsl:attribute>
+                   <xsl:attribute name="single_template"><xsl:value-of select="$BASE"/><xsl:value-of
+                               select="$LANG_ABBR"/><xsl:value-of
+                               select="ancestor::component/@single_template"/></xsl:attribute>
+                       <xsl:attribute name="eID">
+                           <xsl:value-of select="../field[@index='PRI']"/>
+                       </xsl:attribute>
+               </xsl:if>
+               <xsl:value-of select="." disable-output-escaping="yes"/>
+           </div>
+       </xsl:template>
+    
 
 </xsl:stylesheet>

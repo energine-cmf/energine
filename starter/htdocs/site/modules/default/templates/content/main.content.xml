@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<content layout="colset3 clearfix">
-    <container name="leftSideBar" layout="sidebar1" column="column">
-    </container>
-    <container name="page_content" layout="content" column="column">
-    </container>
-    <container name="rightSideBar" layout="sidebar2" column="column">
-    </container>
-</content>

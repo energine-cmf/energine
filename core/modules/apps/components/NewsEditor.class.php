@@ -30,5 +30,11 @@ class NewsEditor extends FeedEditor {
         parent::__construct($name, $module, $params);
         $this->setTableName('apps_news');
         $this->setOrder(array('news_date' => QAL::DESC));
+        $this->setSaver(new NewsEditorSaver());
 	}
+
+    protected function add(){
+        parent::add();
+        $this->getDataDescription()->getFieldDescriptionByName('news_segment')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+    }
 }

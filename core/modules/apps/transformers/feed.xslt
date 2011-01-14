@@ -51,6 +51,9 @@
                     <xsl:value-of select="field[@name='news_title']"/>
                 </a>
             </h4>
+            <xsl:if test="field[@name='attachments'] and field[@name='attachments']/recordset/record">
+                <img src="{$MEDIA_URL}slir/slir/w90-h68-c90:68/{field[@name='attachments']/recordset/record/field[@name='file']/image}" alt="" width="90" height="68"/>
+            </xsl:if>
             <div class="anounce">
                 <xsl:value-of select="field[@name='news_announce_rtf']" disable-output-escaping="yes"/>
             </div>
@@ -94,13 +97,6 @@
         </div>
     </xsl:template>
 
-    <xsl:template
-            match="field[ancestor::component[@exttype='feed'][@type='form']][@type='htmlblock'] | field[ancestor::component[@exttype='feed'][@type='form']][@type='htmlblock']">
-        <div>
-            <xsl:value-of select="." disable-output-escaping="yes"/>
-        </div>
-    </xsl:template>
-
     <xsl:template match="component[@exttype='feededitor'][@type='list']">
         <xsl:if test="recordset">
             <xsl:variable name="LINK">
@@ -137,8 +133,9 @@
     </xsl:template>
 
     <xsl:template match="field[@name='attachments'][ancestor::component[@type='form' and @exttype='feed']]">
-        <xsl:if test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">
-            <div class="feed_media">
+        <xsl:choose>
+            <xsl:when test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">
+                <div class="feed_media">
                 <script type="text/javascript" src="scripts/Carousel.js"></script>
 
                 <script type="text/javascript">
@@ -163,7 +160,7 @@
                                             <a href="{field[@name='file']/video | field[@name='file']/image}"
                                                xmlns:nrgn="http://energine.org"
                                                nrgn:media_type="{name(field[@name='file']/child::*[1])}">
-                                                <img src="{$STATIC_URL}slir/w90-h68-c90:68/{field[@name='file']/image}"
+                                                <img src="{$MEDIA_URL}slir/w90-h68-c90:68/{field[@name='file']/image}"
                                                      width="90" height="68"
                                                      alt="{field[@name='name']}"/>
                                                 <xsl:if test="field[@name='file']/video">
@@ -185,12 +182,17 @@
                         </a>
                     </div>
                 </div>
-                <div class="player_box" id="playerBox">
-                    <img src="{$STATIC_URL}slir/w640-h480-c640:480/{recordset/record[1]/field[@name='file']/child::*[1]/@image}"
+
+            </div>
+            </xsl:when>
+            <xsl:otherwise>
+
+            </xsl:otherwise>
+        </xsl:choose>
+        <div class="player_box" id="playerBox">
+                    <img src="{$MEDIA_URL}slir/w640-h480-c640:480/{recordset/record[1]/field[@name='file']/child::*[1]/@image}"
                          alt=""/>
                 </div>
-            </div>
-        </xsl:if>
     </xsl:template>
 
 

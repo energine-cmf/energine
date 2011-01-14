@@ -1,0 +1,14 @@
+# $Id: .htaccess 27 2009-03-12 17:31:36Z joe.lencioni $
+# $Date: 2009-03-12 12:31:36 -0500 (Thu, 12 Mar 2009) $
+# $Revision: 27 $
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule . index.php [L]
+</IfModule>
+
+# Prevent viewing of the error log file in its default location
+<Files slir-error-log>
+Order Deny,Allow
+Deny from All
+</Files>

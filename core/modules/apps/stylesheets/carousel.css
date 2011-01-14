@@ -1,0 +1,100 @@
+@charset "utf-8";
+/*
+Name: Carousel stylesheet
+Description: Стили для "карусели" изображений.
+Created: August 2010
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
+*/
+
+/* ----- carousel ----- */
+.carousel {
+    position: relative;
+    width: 592px;
+    height: 88px;
+    margin: 0 auto;
+    background: white;
+}
+.carousel .next_control, .carousel .previous_control {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    z-index: 2;
+    width: 14px;
+    height: 20px;
+    overflow: hidden;
+    margin-top: -10px;
+    outline: 0;
+    -moz-user-select: none;
+}
+.carousel .next_control {
+    left: -14px;
+    margin-left: 100%;
+}
+.carousel .previous_control {
+        background-position: -32px -92px;
+}
+.carousel .next_control {
+        background-position: -48px -92px;
+}
+.carousel .previous_control i {
+    _top: -92px;
+    _left: -32px;
+}
+.carousel .next_control i {
+    _top: -92px;
+    _left: -48px;
+}
+.carousel_viewbox {
+    position: relative;
+    width: 550px;
+    height: 88px;
+    overflow: hidden;
+    margin: auto;
+    border-left: 1px solid #afafaf;
+    border-right: 1px solid #afafaf;
+}
+.carousel_viewbox ul {
+    position: absolute;
+    top: 3px;
+    left: -110px;
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.carousel_viewbox ul li {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 98px;
+    margin: 0;
+    padding: 0 6px;
+}
+.carousel_image {
+    position: relative;
+    width: 92px;
+    padding: 3px;
+    background: #fff;
+}
+.carousel .active .carousel_image {
+    background: #fdd34e;
+}
+.carousel_image img {
+    display: block;
+    border: 1px solid #878787;
+}
+.carousel_image .play_icon {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    margin: -16px 0 0 -16px;
+}
+.carousel .viewbox a:link, .carousel .viewbox a:visited, .carousel .viewbox a:hover, .carousel .viewbox a:active {
+    text-decoration: none;
+        outline: 0;
+}
+/* ----- /carousel ----- */

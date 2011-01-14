@@ -7,9 +7,7 @@
        </params>
     </component>
 
-    <component name="news" module="apps" class="NewsFeed">
-
-    </component>
+    <component name="news" module="apps" class="NewsFeed"></component>
     <component name="newsEditor" module="apps" class="NewsEditor">
 		<params>
 			<param name="rights">3</param>

@@ -66,7 +66,7 @@
             </xsl:if>
             <div class="date"><strong><xsl:value-of select="field[@name='news_date']"/></strong></div>
     		<h4 class="title"><xsl:value-of select="field[@name='news_title']"/></h4>
-    		<xsl:apply-templates select="field[(@name!='news_date') or (@name!='news_title')]" />
+    		<xsl:apply-templates select="field[(@name!='news_date') and (@name!='news_title')]" />
         </div>
     </xsl:template>
     
@@ -100,6 +100,60 @@
                <xsl:value-of select="." disable-output-escaping="yes"/>
            </div>
        </xsl:template>
-    
+
+<xsl:template match="field[@name='attachments'][ancestor::component[@type='form' and @exttype='feed']]">
+        <xsl:if test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">
+        <div class="feed_media">
+        <script type="text/javascript" src="scripts/Carousel.js"></script>
+        
+        <script type="text/javascript">
+            var carousel, playlist;
+
+            window.addEvent('domready', function() {
+                carousel = new Carousel('playlist');
+
+            });
+        </script>
+        <!-- Тут идет формирование плейлиста -->
+        <div class="player_box" id="playerBox">
+            <img src="{$STATIC_URL}slir/w640-h480-c640:480/{recordset/record[1]/field[@name='file']/child::*[1]/@image}" alt="" />
+        </div>
+        <div class="carousel_box">
+            <xsl:if test="count(recordset/record) = 1">
+                    <xsl:attribute name="style">display:none;</xsl:attribute>
+               </xsl:if>
+            <div class="carousel_title"><xsl:value-of select="@title"/></div>
+            <div class="carousel" id="playlist">
+               <div class="carousel_viewbox viewbox">
+                    <ul>
+                        <xsl:for-each select="recordset/record">
+                            <li>
+                                <div class="carousel_image" id="{field[@name='id']}_imgc">
+                                    <a href="{field[@name='file']/video | field[@name='file']/image}"
+                                       xmlns:nrgn="http://energine.org"
+                                       nrgn:media_type="{name(field[@name='file']/child::*[1])}">
+                                        <img src="{$STATIC_URL}slir/w90-h68-c90:68/{field[@name='file']/image}"
+                                             width="90" height="68"
+                                             alt="{field[@name='name']}"/>
+                                        <xsl:if test="field[@name='file']/video">
+                                            <i class="icon32x32 play_icon">
+                                                <i></i>
+                                            </i>
+                                        </xsl:if>
+                                    </a>
+                                </div>
+                            </li>
+                        </xsl:for-each>
+                    </ul>
+                </div>
+                <a class="icon20x20 previous_control previous" href="#"><i></i></a>
+                <a class="icon20x20 next_control next" href="#"><i></i></a>
+            </div>
+        </div>
+            </div>
+        </xsl:if>
+    </xsl:template>
+
+
 
 </xsl:stylesheet>

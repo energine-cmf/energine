@@ -9,8 +9,6 @@
  * @version $Id$
  */
 
-//require_once('core/modules/share/components/DBDataSet.class.php');
-
 /**
  * Лента новостей
  *
@@ -19,6 +17,14 @@
  * @author dr.Pavka
  */
 class NewsFeed extends Feed {
+    /**
+     * Таблица приаттаченных файлов
+     *
+     * @access private
+     * @var string
+     */
+    private $uploadsTable;
+
     /**
      * Конструктор класса
      *
@@ -41,6 +47,25 @@ class NewsFeed extends Feed {
                 'editable' => true,
             )
         );
+    }
+
+    protected function setParam($name, $value) {
+        if ($name == 'tableName') {
+            if ($this->dbh->tableExists($value . '_uploads')) {
+                $this->uploadsTable = $value . '_uploads';
+            }
+        }
+        parent::setParam($name, $value);
+    }
+
+    /**
+     * Возвращает имя таблицы аттачментов
+     *
+     * @return string
+     * @access protected
+     */
+    protected function getUploadsTablename() {
+        return $this->uploadsTable;
     }
 
     protected function createData() {
@@ -71,6 +96,12 @@ class NewsFeed extends Feed {
             }
         }
         parent::main();
+        if ($this->getUploadsTablename()) {
+            $this->getDataDescription()->addFieldDescription(E()->AttachmentManager->createFieldDescription());
+            if (!$this->getData()->isEmpty()) {
+                $this->getData()->addField(E()->AttachmentManager->createField($this->getData()->getFieldByName($this->getPK())->getData(), $this->getPK(), $this->getUploadsTablename(), true));
+            }
+        }
     }
 
 
@@ -107,6 +138,11 @@ class NewsFeed extends Feed {
 
         foreach ($this->getDataDescription() as $fieldDescription) {
             $fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
+        }
+        if ($this->getUploadsTablename()) {
+
+            $this->getDataDescription()->addFieldDescription(E()->AttachmentManager->createFieldDescription());
+            $this->getData()->addField(E()->AttachmentManager->createField($this->getData()->getFieldByName($this->getPK())->getData(), $this->getPK(), $this->getUploadsTablename()));
         }
 
     }

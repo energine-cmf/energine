@@ -205,6 +205,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
                             break;
                     }
                     $result->appendChild($el);
+                    if($this->getConfigValue('thumbnails'))
                     foreach ($this->getConfigValue('thumbnails') as $thumbName => $thumbnail) {
                         $thumbnailFile =
                                 FileObject::getThumbFilename(

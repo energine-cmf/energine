@@ -27,6 +27,7 @@
             <pattern>/file-library/[any]/</pattern>
         </uri_patterns>
     </state>
+
     <state name="view">
         <uri_patterns>
             <pattern>/[id]--[segment]/</pattern>
@@ -34,7 +35,7 @@
         <fields>
             <field name="news_id"/>
             <field name="smap_id"/>
-            <field name="news_date" outputFormat="%d/%m/%Y"/>
+            <field name="news_date" outputFormat="%E"/>
             <field name="news_title"/>
             <field name="news_text_rtf"/>
         </fields>

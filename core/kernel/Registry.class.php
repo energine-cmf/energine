@@ -80,7 +80,7 @@ final class Registry extends Object {
      * @return mixed
      */
     public function __get($className) {
-        if($className == 'SiteMap'){
+        if($className == 'Sitemap'){
             throw new Exception('Use Registry::getMap($siteID) instead.');
         }
         return $this->get($className);

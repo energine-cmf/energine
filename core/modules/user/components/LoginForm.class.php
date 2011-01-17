@@ -83,12 +83,12 @@ class LoginForm extends DataSet {
         $this->addTranslation('TXT_USER_GREETING','TXT_USER_NAME','TXT_ROLE_TEXT');
         //$this->setDataSetAction(SiteManager::getInstance()->getCurrentSite()->base, true);
         $this->prepare();
-        foreach (E()->UserGroup->getUserGroups($this->document->user->getID()) as $roleID) {
+        /*foreach (E()->UserGroup->getUserGroups($this->document->user->getID()) as $roleID) {
             $tmp = E()->UserGroup->getInfo($roleID);
             $data[] = $tmp['group_name'];
         }
 
-        $this->getData()->getFieldByName('role_name')->setData(implode(', ', $data));
+        $this->getData()->getFieldByName('role_name')->setData(implode(', ', $data));*/
     }
 
     protected function loadData() {

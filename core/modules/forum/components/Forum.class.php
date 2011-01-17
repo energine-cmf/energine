@@ -52,7 +52,7 @@ class Forum extends DataSet {
             $groupID = $this->document->getID();
         }
                 
-        $categories = Sitemap::getInstance()->getChilds($groupID);
+        $categories = E()->getMap()->getChilds($groupID);
 
         if (!empty($categories)) {
                 $categoryInfo = convertDBResult($this->dbh->selectRequest('

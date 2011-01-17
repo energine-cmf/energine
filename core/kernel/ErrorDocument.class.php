@@ -30,9 +30,9 @@ class ErrorDocument extends Object implements IDocument {
         $dom_documentProperties = $this->doc->createElement('properties');
         $dom_root->appendChild($dom_documentProperties);
         $prop =
-                $this->doc->createElement('property', SiteManager::getInstance()->getCurrentSite()->base);
+                $this->doc->createElement('property', E()->getSiteManager()->getCurrentSite()->base);
         $prop ->setAttribute('name', 'base');
-        $prop ->setAttribute('folder', SiteManager::getInstance()->getCurrentSite()->folder);
+        $prop ->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
         $dom_documentProperties->appendChild($prop);
 
         $prop = $this->doc->createElement('property',

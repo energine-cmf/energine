@@ -60,7 +60,7 @@
                    'FROM `share_sitemap` '.
                    'WHERE site_id= %s and smap_pid is null',
                    $id,
-                   ($siteId = SiteManager::getInstance()->getDefaultSite()->id)
+                   ($siteId = E()->getSiteManager()->getDefaultSite()->id)
                );   
                foreach($_POST[$translationTableName] as $langID => $siteInfo){
                    $this->dbh->modify(

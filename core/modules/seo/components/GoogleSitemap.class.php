@@ -34,9 +34,9 @@ class GoogleSitemap extends SitemapTree {
     }
 
     protected function loadData() {
-        foreach (SiteManager::getInstance() as $siteID => $site) {
+        foreach (E()->getSiteManager() as $siteID => $site) {
             if ($site->isIndexed) {
-                $sitemap = Sitemap::getInstance($siteID);
+                $sitemap = E()->getMap($siteID);
                 $res = $sitemap->getInfo();
                 foreach ($res as $id => $info) {
                     $result [] = array(
@@ -54,12 +54,12 @@ class GoogleSitemap extends SitemapTree {
 
     protected function createBuilder() {
         $builder = new TreeBuilder();
-        $sm = SiteManager::getInstance();
+        $sm = E()->getSiteManager();
         $defaultSiteID = $sm->getDefaultSite()->id;
-        $mainSiteTree = Sitemap::getInstance($defaultSiteID)->getTree();
+        $mainSiteTree = E()->getMap($defaultSiteID)->getTree();
         foreach ($sm as $siteID => $site) {
             if ($siteID != $defaultSiteID && $site->isIndexed) {
-                $mainSiteTree->add(Sitemap::getInstance($siteID)->getTree()->getRoot());
+                $mainSiteTree->add(E()->getMap($siteID)->getTree()->getRoot());
             }
         }
         $builder->setTree($mainSiteTree);

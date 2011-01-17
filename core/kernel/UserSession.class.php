@@ -158,7 +158,7 @@ final class UserSession extends DBWorker {
             $domain = '.' . $this->getConfigValue('site.domain');
         }
         else {
-            $path = SiteManager::getInstance()->getCurrentSite()->root;
+            $path = E()->getSiteManager()->getCurrentSite()->root;
             $domain = '';
         }
         session_set_cookie_params($this->lifespan, $path, $domain);

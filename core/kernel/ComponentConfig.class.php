@@ -76,7 +76,7 @@ final class ComponentConfig extends Object {
 		$file = false;
 		if ($configFilename && !file_exists($file = $configFilename)){
 			//Смотрим в директории текущего сайта с пользовательскими конфигами
-			if (!file_exists($file = sprintf(self::SITE_CONFIG_DIR.$configFilename, SiteManager::getInstance()->getCurrentSite()->folder))) {
+			if (!file_exists($file = sprintf(self::SITE_CONFIG_DIR.$configFilename, E()->getSiteManager()->getCurrentSite()->folder))) {
 				if(!file_exists($file = sprintf(self::CORE_CONFIG_DIR, $moduleName).$configFilename)){
 					//если файла с указанным именем нет ни в папке с пользовательскими конфигами, ни в папке модуля с конфигами
 					//throw new SystemException('ERR_DEV_NO_CONFIG', SystemException::ERR_DEVELOPER, $configFilename);

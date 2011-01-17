@@ -236,7 +236,6 @@ class DBDataSet extends DataSet {
             }
         }
         
-
         $filterCondition = $this->getFilter();
         if (!empty($filterCondition)) {
             $filter = $this->dbh->buildWhereCondition($filterCondition).($this->getParam('onlyCurrentLang')?' AND lang_id = '.$this->getDataLanguage():'');

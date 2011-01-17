@@ -35,13 +35,13 @@ final class SiteManager extends DBWorker implements Iterator {
 	private $data;
 	/**
 	 * Индекс используемый при итерации
-	 * Заодно используется как флаг для паттерна синглтон 
+	 *  
 	 * 
 	 * @access private
 	 * @var int 
 	 * @static
 	 */
-	 private static $index = null;
+	 private static $index = 0;
 	
 	/**
 	 * Идентификатор текущего сайта
@@ -56,11 +56,9 @@ final class SiteManager extends DBWorker implements Iterator {
 	 *
 	 * @access private
 	 */
-	public function __construct(URI $uri) {
-		if(is_null(self::$index)){
-			throw new Exception('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
-		}
+	public function __construct() {
 		parent::__construct();
+        $uri = URI::create();
 		$tmpData = $this->dbh->select('share_sites');
 		foreach($tmpData as $siteData){
 			$site = $this->data[$siteData['site_id']] = new Site($siteData);
@@ -86,20 +84,6 @@ final class SiteManager extends DBWorker implements Iterator {
 			}
 		}
 		
-	}
-	/**
-	 * Возвращает синглтон
-	 *
-	 * @return SiteManager
-	 * @access public
-	 * @static
-	 */
-	public static function getInstance() {
-		self::$index = 0;
-		if (!isset(self::$instance)) {
-			self::$instance = new SiteManager(URI::create());
-		}
-		return self::$instance;
 	}
 	/**
 	 * Возвращает екземпляр объекта Site по идентификатору

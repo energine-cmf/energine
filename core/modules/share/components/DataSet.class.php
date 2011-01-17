@@ -712,7 +712,7 @@ abstract class DataSet extends Component {
             $data = $jewix->parse($data, $errors);
  *
  */
-        $base = SiteManager::getInstance()->getCurrentSite()->base;
+        $base = E()->getSiteManager()->getCurrentSite()->base;
         $data =
                 str_replace(
                     (strpos($data, '%7E')) ? str_replace('~', '%7E', $base) : $base,

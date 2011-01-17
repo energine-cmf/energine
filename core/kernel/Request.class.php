@@ -78,7 +78,7 @@ final class Request extends Object {
         $this->uri = URI::create();
         $path = $this->uri->getPath();
         
-        if(strpos($path, SiteManager::getInstance()->getCurrentSite()->root) !== false) {
+        if(strpos($path, E()->getSiteManager()->getCurrentSite()->root) !== false) {
 	        $path = array_values(
 	            array_diff(
 	                explode(
@@ -86,7 +86,7 @@ final class Request extends Object {
 	                    substr(
 	                        $path, 
 	                        strlen(
-	                            SiteManager::getInstance()->getCurrentSite()->root
+	                            E()->getSiteManager()->getCurrentSite()->root
 	                        )
 	                    )
 	                 ), 

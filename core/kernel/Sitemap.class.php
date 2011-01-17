@@ -33,7 +33,7 @@ final class Sitemap extends DBWorker {
 	 * @access private
 	 * @static
 	 */
-	private static $instance;
+	//private static $instance;
 
 	/**
 	 * Информация о тех разделах, на которіе у юзера есть права
@@ -123,7 +123,7 @@ final class Sitemap extends DBWorker {
 		);
 
 		if ($res === true) {
-			throw new SystemException('ERR_NO_TRANSLATION', SystemException::ERR_CRITICAL);
+			throw new SystemException('ERR_NO_TRANSLATION', SystemException::ERR_CRITICAL, $this->dbh->getLastRequest());
 		}
 		//Кешируем уровни доступа к страницам сайта
 		//Формируем матрицу вида
@@ -169,15 +169,15 @@ final class Sitemap extends DBWorker {
 	 * @return Sitemap
 	 * @static
 	 */
-	public static function getInstance($siteID = false) {
+	/*public static function getInstance($siteID = false) {
 		if(!$siteID){
-			$siteID = SiteManager::getInstance()->getCurrentSite()->id;
+			$siteID = E()->getSiteManager()->getCurrentSite()->id;
 		}
 		if (!isset(self::$instance[$siteID])) {
 			self::$instance[$siteID] = new Sitemap($siteID);
 		}
 		return self::$instance[$siteID];
-	}
+	}*/
 	
 	/**
 	 * Возвращает идентификатор сайта по идентификатору раздела
@@ -187,16 +187,11 @@ final class Sitemap extends DBWorker {
 	 * @static
 	 */
 	public static function getSiteID($pageID){
-		$result = null;
-
-	    foreach (self::$instance as $siteID => $sitemap){
-	    	$siteInfo = $sitemap->getInfo($pageID);
-	    	if(isset($siteInfo[$pageID])){
-	    		return $siteID;
-	    	}
-	    }
-	    
-	    return $result;
+        return simplifyDBResult(
+            E()->getDB()->select('share_sitemap', 'site_id', array('smap_id' => (int)$pageID)),
+            'site_id',
+            true
+        );
 	}
 
 	/**
@@ -267,7 +262,7 @@ final class Sitemap extends DBWorker {
 		$result = convertFieldNames($current,'smap');
 		if(is_null($result['MetaKeywords'])) $result['MetaKeywords'] = $this->defaultMetaKeywords;
 		if(is_null($result['MetaDescription'])) $result['MetaDescription'] = $this->defaultMetaDescription;
-		//if($result['RedirectUrl']) $result['RedirectUrl'] = (URI::validate($result['RedirectUrl']))?$result['RedirectUrl']:SiteManager::getInstance()->getCurrentSite()->base.$result['RedirectUrl'];
+		//if($result['RedirectUrl']) $result['RedirectUrl'] = (URI::validate($result['RedirectUrl']))?$result['RedirectUrl']:E()->getSiteManager()->getCurrentSite()->base.$result['RedirectUrl'];
 
 		return $result;
 	}

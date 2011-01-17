@@ -40,7 +40,7 @@ class SitemapTree extends DataSet {
      */
 
     protected function loadData() {
-        $sitemap = Sitemap::getInstance();
+        $sitemap = E()->getMap();
         $res = $sitemap->getInfo();
 
         foreach ($res as $id => $info) {
@@ -63,7 +63,7 @@ class SitemapTree extends DataSet {
 
     protected function createBuilder() {
         $builder  = new TreeBuilder();
-        $builder->setTree(Sitemap::getInstance()->getTree());
+        $builder->setTree(E()->getMap()->getTree());
         return $builder;
     }
 }

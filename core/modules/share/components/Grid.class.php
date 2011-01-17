@@ -95,7 +95,7 @@ class Grid extends DBDataSet {
         $params = array();
         if (!$this->params['config']) {
         	$fileName = get_class($this).'.component.xml';
-            $fileConf = sprintf(ComponentConfig::SITE_CONFIG_DIR, SiteManager::getInstance()->getCurrentSite()->folder).$fileName;
+            $fileConf = sprintf(ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder).$fileName;
             $coreConf = sprintf(ComponentConfig::CORE_CONFIG_DIR, $this->module).$fileName;
             if (file_exists($fileConf)) {
                 $params['config'] = $fileConf;

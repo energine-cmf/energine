@@ -53,7 +53,7 @@
             $filteredIDs = E()->TagManager->getFilter($this->getParam('tags'), 'share_sites_tags');
         
         if(!empty($filteredIDs))    	
-        foreach(SiteManager::getInstance() as $siteID => $site){
+        foreach(E()->getSiteManager() as $siteID => $site){
         	if(
         	   ($filteredIDs !== true)  && in_array($siteID, $filteredIDs)
         	   ||

@@ -115,7 +115,7 @@ final class Document extends DBWorker implements IDocument {
         $this->user = E()->getAUser();
         $this->language = E()->getLanguage();
         $this->lang = $this->language->getCurrent();
-        $this->sitemap = Sitemap::getInstance();
+        $this->sitemap = E()->getMap();
         $this->request = E()->getRequest();
         $segments = $this->request->getPath();
         $this->componentManager = new ComponentManager($this);
@@ -222,13 +222,13 @@ final class Document extends DBWorker implements IDocument {
 
         //Дополнительные свойства, имеющие параметры
         $prop = $this->doc->createElement('property', (
-        $baseURL = SiteManager::getInstance()->getCurrentSite()->base));
+        $baseURL = E()->getSiteManager()->getCurrentSite()->base));
         $prop ->setAttribute('name', 'base');
         $prop ->setAttribute('static', (($staticURL =
                 $this->getConfigValue('site.static')) ? $staticURL : $baseURL));
         $prop ->setAttribute('media', (($mediaURL =
                 $this->getConfigValue('site.media')) ? $mediaURL : $baseURL));
-        $prop ->setAttribute('folder', SiteManager::getInstance()->getCurrentSite()->folder);
+        $prop ->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
         $dom_documentProperties->appendChild($prop);
 
         $prop = $this->doc->createElement('property', $this->getLang());

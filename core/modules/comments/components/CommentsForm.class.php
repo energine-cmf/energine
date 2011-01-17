@@ -234,7 +234,7 @@ class CommentsForm extends DataSet {
         if (!E()->getAUser()->isAuthenticated())
             return false;
         $right =
-                Sitemap::getInstance()->getDocumentRights($this->document->getID());
+                E()->getMap()->getDocumentRights($this->document->getID());
         return $right > ACCESS_READ;
     }
 

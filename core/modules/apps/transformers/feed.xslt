@@ -47,12 +47,12 @@
                 </strong>
             </div>
             <h4 class="title">
-                <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{field[@name='news_id']}--{field[@name='news_segment']}/">
+                <a href="{$BASE}{$LANG_ABBR}{field[@name='smap_id']}{field[@name='news_id']}--{field[@name='news_segment']}/">
                     <xsl:value-of select="field[@name='news_title']"/>
                 </a>
             </h4>
             <xsl:if test="field[@name='attachments'] and field[@name='attachments']/recordset/record">
-                <img src="{$MEDIA_URL}slir/slir/w90-h68-c90:68/{field[@name='attachments']/recordset/record/field[@name='file']/image}" alt="" width="90" height="68"/>
+                <img src="{$MEDIA_URL}slir/w90-h68-c90:68/{field[@name='attachments']/recordset/record/field[@name='file']/image}" alt="" width="90" height="68"/>
             </xsl:if>
             <div class="anounce">
                 <xsl:value-of select="field[@name='news_announce_rtf']" disable-output-escaping="yes"/>
@@ -93,7 +93,7 @@
             <h4 class="title">
                 <xsl:value-of select="field[@name='news_title']"/>
             </h4>
-            <xsl:apply-templates select="field[(@name!='news_date') and (@name!='news_title')]"/>
+            <xsl:apply-templates select="field[(@name!='news_date') and (@name!='news_title') and(@name!='smap_id')]"/>
         </div>
     </xsl:template>
 
@@ -133,6 +133,7 @@
     </xsl:template>
 
     <xsl:template match="field[@name='attachments'][ancestor::component[@type='form' and @exttype='feed']]">
+        <xsl:if test="recordset">
         <xsl:choose>
             <xsl:when test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">
                 <div class="feed_media">
@@ -193,6 +194,7 @@
                     <img src="{$MEDIA_URL}slir/w640-h480-c640:480/{recordset/record[1]/field[@name='file']/child::*[1]/@image}"
                          alt=""/>
                 </div>
+        </xsl:if>
     </xsl:template>
 
 

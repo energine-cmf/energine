@@ -64,7 +64,7 @@ class PageList extends DataSet {
             array(
                 'tags' => '',
                 'id' => false,
-                'site' => SiteManager::getInstance()->getCurrentSite()->id,
+                'site' => E()->getSiteManager()->getCurrentSite()->id,
                 'recursive' => false
             ));
         return $result;
@@ -100,7 +100,7 @@ class PageList extends DataSet {
      */
 
     protected function loadData() {
-        $sitemap = Sitemap::getInstance($this->getParam('site'));
+        $sitemap = E()->getMap($this->getParam('site'));
 
         $methodName = 'getChilds';
         if ($this->getParam('recursive')) {
@@ -130,7 +130,7 @@ class PageList extends DataSet {
         }
 
         $data = call_user_func(array($sitemap, $methodName), $param);
-
+//inspect($data);
         if (!empty($data)) {
             if ($this->getParam('recursive')) {
                 $this->getBuilder()->setTree($sitemap->getChilds($param, true));
@@ -158,12 +158,13 @@ class PageList extends DataSet {
                     $data[$key]['Segment'] = $value['Segment'];
                     $data[$key]['Name'] = $value['Name'];
                     $data[$key]['Site'] =
-                            SiteManager::getInstance()->getSiteByID($data[$key]['site'])->base;
+                            E()->getSiteManager()->getSiteByID($data[$key]['site'])->base;
                     if ($hasDescriptionRtf)$data[$key]['DescriptionRtf'] =
                             $value['DescriptionRtf'];
                 }
 
             }
+            //stop($data);
         }
         else {
             $this->setBuilder(new SimpleBuilder());

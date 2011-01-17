@@ -51,7 +51,7 @@ final class NavigationMenu extends DataSet {
       * @access protected
       */
     protected function loadData(){
-    	$sitemap = Sitemap::getInstance();
+    	$sitemap = E()->getMap();
     	
     	$data = $sitemap->getInfo(); 
     	$this->filteredIDs = true;
@@ -85,12 +85,12 @@ final class NavigationMenu extends DataSet {
     }
 	protected function createBuilder() {
 		
-		$tree = Sitemap::getInstance()->getTree();
+		$tree = E()->getMap()->getTree();
 
 		$treeData = array();
 		
         //если у нас не раздел 1го уровня
-		if($parents = Sitemap::getInstance()->getParents($this->document->getID())){
+		if($parents = E()->getMap()->getParents($this->document->getID())){
 			$ancestorID = key($parents);
 			//проходимся по всем прямым предкам
 			foreach ($parents as $nodeID => $node){

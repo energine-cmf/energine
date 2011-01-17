@@ -53,7 +53,6 @@
         </uri_patterns>
         <fields>
             <field name="news_id"/>
-            <field name="smap_id"/>
             <field name="news_date" outputFormat="%E"/>
             <field name="news_segment"/>
             <field name="news_title"/>

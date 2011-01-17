@@ -3,11 +3,22 @@
 	<component name="childDivisions" module="share" class="PageList" >
        <params>
            <param name="id">current</param> 
-           <param name="config">core/modules/share/ChildDivisions.component.xml</param>
        </params>
     </component>
 
-    <component name="news" module="apps" class="NewsFeed"></component>
+	<!--<component name="childDivisions1" module="share" class="PageList" >
+       <params>
+           <param name="id">parent</param> 
+       </params>
+    </component>-->
+    <component name="news" module="apps" class="NewsFeed">
+        <params>
+            <param name="showAll">1</param>
+        </params>
+    </component>
+
+
+
     <component name="newsEditor" module="apps" class="NewsEditor">
 		<params>
 			<param name="rights">3</param>

@@ -126,7 +126,7 @@ final class Response extends Object {
             $domain = '.' . $this->getConfigValue('site.domain');
         }
         else {
-            $path = SiteManager::getInstance()->getCurrentSite()->root;
+            $path = E()->getSiteManager()->getCurrentSite()->root;
             $domain = '';
         }
         $secure = false;
@@ -197,7 +197,7 @@ final class Response extends Object {
         }
         $request = E()->getRequest();
         $this->setRedirect(
-            SiteManager::getInstance()->getCurrentSite()->base .
+            E()->getSiteManager()->getCurrentSite()->base .
                     $request->getLangSegment()
                     . $request->getPath(Request::PATH_TEMPLATE, true)
                     . $action

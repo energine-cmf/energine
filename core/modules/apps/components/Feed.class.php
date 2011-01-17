@@ -64,7 +64,7 @@ class Feed extends DBDataSet {
 
         if ($this->getParam('showAll')) {
    	        $descendants = array_keys(
-   	            Sitemap::getInstance()->getTree()->getNodeById($id)->getDescendants()->asList(false)
+   	            E()->getMap()->getTree()->getNodeById($id)->getDescendants()->asList(false)
    	        );
             $id = array_merge(array($id), $descendants);
         }

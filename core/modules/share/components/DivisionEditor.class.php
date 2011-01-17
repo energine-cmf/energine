@@ -257,11 +257,11 @@ final class DivisionEditor extends Grid {
                 create_function(
                     '$val',
                         '
-                    $val["smap_segment"] = SiteMap::getInstance(' .
+                    $val["smap_segment"] = E()->getMap(' .
                                 $params['site_id'] . ')->getURLByID($val["smap_id"]);
                     ' .
                                 (($this->getDataDescription()->getFieldDescriptionByName('site')) ?
-                                        '$val["site"] = SiteManager::getInstance()->getSiteByID(' .
+                                        '$val["site"] = E()->getSiteManager()->getSiteByID(' .
                                                 $params['site_id'] .
                                                 ')->base;' : '') . '
                     return $val;
@@ -309,7 +309,7 @@ final class DivisionEditor extends Grid {
         if (in_array($this->getState(), array('add', 'edit'))) {
             $this->addTranslation('ERR_NO_DIV_NAME');
             list($pageID) = $this->getStateParams();
-            $this->getDataDescription()->getFieldDescriptionByName('smap_pid')->setProperty('base', SiteManager::getInstance()->getSiteByPage($pageID)->base);
+            $this->getDataDescription()->getFieldDescriptionByName('smap_pid')->setProperty('base', E()->getSiteManager()->getSiteByPage($pageID)->base);
         }
     }
 
@@ -340,8 +340,8 @@ final class DivisionEditor extends Grid {
                     $this->getSaver()->getData()->getFieldByName('smap_pid')->getRowData(0);
             $url = $_POST[$this->getTableName()]['smap_segment'] . '/';
             if ($smapPID) {
-                $url = Sitemap::getInstance(
-                    SiteManager::getInstance()->getSiteByPage($smapPID)->id
+                $url = E()->getMap(
+                    E()->getSiteManager()->getSiteByPage($smapPID)->id
                 )->getURLByID($smapPID) . $url;
             }
         }
@@ -350,7 +350,7 @@ final class DivisionEditor extends Grid {
             $id = $this->getFilter();
             $id = $id['smap_id'];
             $url =
-                    Sitemap::getInstance(SiteManager::getInstance()->getSiteByPage($id)->id)->getURLByID($id);
+                    E()->getMap(E()->getSiteManager()->getSiteByPage($id)->id)->getURLByID($id);
         }
 
 
@@ -365,9 +365,9 @@ final class DivisionEditor extends Grid {
         $actionParams = $this->getStateParams(true);
         $this->buildRightsTab($actionParams['pid']);
 
-        $site = SiteManager::getInstance()->getSiteByPage($actionParams['pid']);
+        $site = E()->getSiteManager()->getSiteByPage($actionParams['pid']);
         $this->addAttFilesField('share_sitemap_uploads');
-        $sitemap = Sitemap::getInstance($site->id);
+        $sitemap = E()->getMap($site->id);
 
         $this->getData()->getFieldByName('site_id')->setData($site->id, true);
 
@@ -431,7 +431,7 @@ final class DivisionEditor extends Grid {
         //Выводим УРЛ в поле сегмента
         $field = $this->getData()->getFieldByName('smap_pid');
         $site =
-                SiteManager::getInstance()->getSiteByID($this->getData()->getFieldByName('site_id')->getRowData(0));
+                E()->getSiteManager()->getSiteByID($this->getData()->getFieldByName('site_id')->getRowData(0));
 
         foreach (array(self::TMPL_CONTENT, self::TMPL_LAYOUT) as $type)
             if ($f = $this->getDataDescription()->getFieldDescriptionByName(
@@ -459,7 +459,7 @@ final class DivisionEditor extends Grid {
         $smapSegment = '';
         if ($field->getRowData(0) !== null) {
             $smapSegment =
-                    Sitemap::getInstance($site->id)->getURLByID($field->getRowData(0));
+                    E()->getMap($site->id)->getURLByID($field->getRowData(0));
         }
         else {
             $this->getDataDescription()->getFieldDescriptionByName('smap_pid')
@@ -492,7 +492,7 @@ final class DivisionEditor extends Grid {
         $field = $this->getData()->getFieldByName('smap_redirect_url');
         if ($field->getRowData(0)) {
             $field->setRowData(0,
-                    SiteManager::getInstance()->getCurrentSite()->base .
+                    E()->getSiteManager()->getCurrentSite()->base .
                             $field->getRowData(0));
         }
         if ($field =
@@ -528,7 +528,7 @@ final class DivisionEditor extends Grid {
             $siteID = $params['site_id'];
         }
         else {
-            $siteID = SiteManager::getInstance()->getCurrentSite()->id;
+            $siteID = E()->getSiteManager()->getCurrentSite()->id;
         }
 
         $this->setProperty('site', $siteID);
@@ -682,7 +682,7 @@ final class DivisionEditor extends Grid {
             $siteID = $params['site_id'];
         }
         else {
-            $siteID = SiteManager::getInstance()->getCurrentSite()->id;
+            $siteID = E()->getSiteManager()->getCurrentSite()->id;
         }
 
         $this->setProperty('site', $siteID);

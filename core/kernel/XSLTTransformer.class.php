@@ -56,7 +56,7 @@ class XSLTTransformer extends Object implements ITransformer {
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
         if (!$isAbsolutePath)
             $transformerFilename =
-                    sprintf(self::MAIN_TRANSFORMER_DIR, SiteManager::getInstance()->getCurrentSite()->folder) .
+                    sprintf(self::MAIN_TRANSFORMER_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
                             $transformerFilename;
         if (!file_exists($transformerFilename)) {
             throw new SystemException('ERR_DEV_NO_MAIN_TRANSFORMER', SystemException::ERR_DEVELOPER, $transformerFilename);

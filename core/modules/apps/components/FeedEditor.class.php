@@ -59,10 +59,10 @@ class FeedEditor extends LinkingEditor {
 
 		$result = parent::createData();
 		if (in_array($this->getType(), array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER))) {
-			$info = Sitemap::getInstance()->getDocumentInfo($this->document->getID());
+			$info = E()->getMap()->getDocumentInfo($this->document->getID());
 			$field = $result->getFieldByName('smap_id');
 			for($i=0; $i<sizeof(E()->getLanguage()->getLanguages()); $i++) {
-				$field->setRowProperty($i, 'segment', Sitemap::getInstance()->getURLByID($this->document->getID()));
+				$field->setRowProperty($i, 'segment', E()->getMap()->getURLByID($this->document->getID()));
 				$field->setRowData($i, $info['Name']);
 			}
 		}

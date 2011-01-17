@@ -127,8 +127,8 @@ class RoleEditor extends Grid {
                 'where lang_id='.E()->getLanguage()->getCurrent()), 'Id');
 
         foreach ($data as $smapID => $smapInfo) {
-            $data[$smapID]['RightsId'] = Sitemap::getInstance($smapInfo['Site'])->getDocumentRights($smapID, $id);
-            $data[$smapID]['Site'] = SiteManager::getInstance()->getSiteByID($smapInfo['Site'])->name;
+            $data[$smapID]['RightsId'] = E()->getMap($smapInfo['Site'])->getDocumentRights($smapID, $id);
+            $data[$smapID]['Site'] = E()->getSiteManager()->getSiteByID($smapInfo['Site'])->name;
         }
 
         $dataObject = new Data();

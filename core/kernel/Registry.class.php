@@ -80,6 +80,9 @@ final class Registry extends Object {
      * @return mixed
      */
     public function __get($className) {
+        if($className == 'SiteMap'){
+            throw new Exception('Use Registry::getMap($siteID) instead.');
+        }
         return $this->get($className);
     }
 
@@ -175,6 +178,28 @@ final class Registry extends Object {
      */
     public function getLanguage() {
         return $this->get('Language');
+    }
+    /**
+     * @return SiteManager
+     */
+    public function getSiteManager() {
+        return $this->get('SiteManager');
+    }
+    
+    /**
+     * Объект карты сайта
+     * На самом деле этих объектов несколько
+     *
+     *
+     * @param bool $siteID идентификатор сайта
+     * @return Sitemap
+     */
+    public function getMap($siteID = false) {
+        if(!$siteID) $siteID = E()->getSiteManager()->getCurrentSite()->id;
+        if(!isset($this->entities['Sitemap'][$siteID])){
+            $this->entities['Sitemap'][$siteID] = new Sitemap($siteID); 
+        }
+        return $this->entities['Sitemap'][$siteID];
     }
 
     /**

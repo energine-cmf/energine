@@ -34,7 +34,7 @@ final class BreadCrumbs extends DataSet {
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
-        $this->setProperty('site', SiteManager::getInstance()->getCurrentSite()->name);
+        $this->setProperty('site', E()->getSiteManager()->getCurrentSite()->name);
     }
 
     /**
@@ -75,7 +75,7 @@ final class BreadCrumbs extends DataSet {
      * @access protected
      */
     protected function loadData() {
-        $sitemap = Sitemap::getInstance();
+        $sitemap = E()->getMap();
         $result = array();
         $parents = $sitemap->getParents($this->document->getID());
         foreach ($parents as $id => $current) {

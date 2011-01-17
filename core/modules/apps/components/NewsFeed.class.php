@@ -68,10 +68,35 @@ class NewsFeed extends Feed {
         return $this->uploadsTable;
     }
 
+    protected function createDataDescription() {
+        $res = DBDataSet::createDataDescription();
+        if(!$res->getFieldDescriptionByName('smap_id')){
+            $f = new FieldDescription('smap_id');
+            $f->setType(FieldDescription::FIELD_TYPE_STRING)->setProperty('tableName', $this->getTableName())->setLength(100);
+            $res->addFieldDescription($f);
+        }
+        return $res;
+    }
+
+    protected function loadDataDescription() {
+        $res = parent::loadDataDescription();
+        if (isset($res['smap_id'])) {
+            $res['smap_id']['type'] = QAL::COLTYPE_STRING;
+            $res['smap_id']['key'] = false;
+        }
+        return $res;
+    }
+
+    protected function loadData(){
+        $result = parent::loadData();
+        if(is_array($result))
+            foreach($result as $rowID => $row){
+                $result[$rowID]['smap_id'] =E()->getMap()->getURLByID($result[$rowID]['smap_id']);
+            }
+        return $result;
+    }
+
     protected function createData() {
-        $this->addFilterCondition(
-            array('smap_id' => $this->document->getID())
-        );
         if ($this->document->getRights() < ACCESS_EDIT) {
             $this->addFilterCondition(
                 'news_date <= NOW()'

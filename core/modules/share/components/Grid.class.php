@@ -655,7 +655,7 @@ class Grid extends DBDataSet {
      * Изменяет порядок следования
      *
      * @param string  - направление
-     * @return JSON String
+     * @return void
      * @access protected
      */
 

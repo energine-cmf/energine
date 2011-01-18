@@ -49,9 +49,12 @@ class NewsEditorSaver extends Saver {
 
     public function save() {
         $result = parent::save();
+        $entityID = ($this->getMode() == QAL::INSERT) ? $result : $this->getData()->getFieldByName($this->pk)->getRowData(0);
+        //Записываем информацию в таблицу тегов
+        if (isset($_POST['tags'])) {
+            E()->TagManager->bind($_POST['tags'], $entityID, 'apps_news_tags');
+        }
         if ($this->uploadsTableName) {
-            $entityID = ($this->getMode() == QAL::INSERT) ? $result : $this->getData()->getFieldByName($this->pk)->getRowData(0);
-
             //Удаляем предыдущие записи из таблицы связей с дополнительными файлам
             $this->dbh->modify(QAL::DELETE, $this->uploadsTableName, null, array($this->pk => $entityID));
 

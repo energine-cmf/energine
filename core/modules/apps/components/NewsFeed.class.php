@@ -72,7 +72,12 @@ class NewsFeed extends Feed {
         $res = DBDataSet::createDataDescription();
         if(!$res->getFieldDescriptionByName('smap_id')){
             $f = new FieldDescription('smap_id');
-            $f->setType(FieldDescription::FIELD_TYPE_STRING)->setProperty('tableName', $this->getTableName())->setLength(100);
+            $f->setType(FieldDescription::FIELD_TYPE_INT)->setProperty('tableName', $this->getTableName());
+            $res->addFieldDescription($f);
+        }
+        if(!$res->getFieldDescriptionByName('category')){
+            $f = new FieldDescription('category');
+            $f->setType(FieldDescription::FIELD_TYPE_STRING);
             $res->addFieldDescription($f);
         }
         return $res;
@@ -81,19 +86,9 @@ class NewsFeed extends Feed {
     protected function loadDataDescription() {
         $res = parent::loadDataDescription();
         if (isset($res['smap_id'])) {
-            $res['smap_id']['type'] = QAL::COLTYPE_STRING;
             $res['smap_id']['key'] = false;
         }
         return $res;
-    }
-
-    protected function loadData(){
-        $result = parent::loadData();
-        if(is_array($result))
-            foreach($result as $rowID => $row){
-                $result[$rowID]['smap_id'] =E()->getMap()->getURLByID($result[$rowID]['smap_id']);
-            }
-        return $result;
     }
 
     protected function createData() {
@@ -102,7 +97,21 @@ class NewsFeed extends Feed {
                 'news_date <= NOW()'
             );
         }
-        return parent::createData();
+        $res = parent::createData();
+        if(!($categoryField = $res->getFieldByName('category'))){
+            $categoryField = new Field('category');
+            $res->addField($categoryField);
+        }
+        
+        if($f = $res->getFieldByName('smap_id')){
+            $map = E()->getMap();
+            foreach($f as $i => $row){
+                $catInfo = $map->getDocumentInfo($row);
+                $categoryField->setRowData($i, $catInfo['Name']);
+                $categoryField->setRowProperty($i, 'url', $map->getURLByID($row));
+            }
+        }
+        return $res;
     }
 
     protected function main() {

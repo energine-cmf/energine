@@ -47,7 +47,7 @@
                 </strong>
             </div>
             <h4 class="title">
-                <a href="{$BASE}{$LANG_ABBR}{field[@name='smap_id']}{field[@name='news_id']}--{field[@name='news_segment']}/">
+                <a href="{$BASE}{$LANG_ABBR}{field[@name='category']/@url}{field[@name='news_id']}--{field[@name='news_segment']}/">
                     <xsl:value-of select="field[@name='news_title']"/>
                 </a>
             </h4>
@@ -113,6 +113,12 @@
     </xsl:template>
 
     <xsl:template match="field[@type='htmlblock' and ancestor::component[@exttype='feed' and @type='form']]">
+        <xsl:variable name="FIELD_VALUE">
+            <xsl:choose>
+                <xsl:when test="ancestor::component/@editable and (.='')"><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></xsl:when>
+                <xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
         <div class="feed_text">
             <xsl:if test="ancestor::component/@editable">
                 <xsl:attribute name="class">nrgnEditor feed_text</xsl:attribute>
@@ -128,7 +134,7 @@
                     <xsl:value-of select="../field[@index='PRI']"/>
                 </xsl:attribute>
             </xsl:if>
-            <xsl:value-of select="." disable-output-escaping="yes"/>
+            <xsl:value-of select="$FIELD_VALUE" disable-output-escaping="yes"/>
         </div>
     </xsl:template>
 

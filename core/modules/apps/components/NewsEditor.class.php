@@ -72,8 +72,8 @@ class NewsEditor extends FeedEditor {
 
     protected function edit() {
         parent::edit();
+        $entityID = $this->getData()->getFieldByName($this->getPK())->getRowData(0);
         if ($this->getUploadsTablename()) {
-            $entityID = $this->getData()->getFieldByName($this->getPK())->getRowData(0);
             $this->addAttFilesField(
                 $this->getUploadsTablename(),
                 $this->dbh->selectRequest('
@@ -85,5 +85,29 @@ class NewsEditor extends FeedEditor {
                         ', $entityID)
             );
         }
+        $field = new Field('tags');
+        $fieldData = E()->TagManager->pull($entityID, 'apps_news_tags');
+        //$fieldData = array_keys(E()->TagManager->pull($newsID, 'stb_news_tags'));
+        for ($i = 0, $langs = count(E()->getLanguage()->getLanguages());
+             $i < $langs; $i++) {
+            $field->setRowData($i, $fieldData);
+        }
+        $this->getData()->addField($field);
     }
+    /**
+     * Для формы добавляем поле тегов
+     *
+     * @return DataDescription
+     * @access protected
+     */
+    protected function createDataDescription() {
+        $result = parent::createDataDescription();
+        if (in_array($this->getState(), array('add', 'edit'))) {
+            $fd = new FieldDescription('tags');
+            $fd->setType(FieldDescription::FIELD_TYPE_TEXTBOX_LIST);
+            $result->addFieldDescription($fd);
+        }
+        return $result;
+
+    }    
 }

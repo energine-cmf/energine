@@ -329,7 +329,7 @@ class Component extends DBWorker implements IBlock {
      * @final
      * @return int
      */
-    final public function getMethodRights() {
+    final public function getCurrentStateRights() {
         return (int) $this->rights;
     }
 
@@ -355,7 +355,7 @@ class Component extends DBWorker implements IBlock {
         if (
                 $this->enabled()
                 &&
-                ($this->document->getRights() >= $this->getMethodRights())
+                ($this->document->getRights() >= $this->getCurrentStateRights())
         ) {
             if (!method_exists($this, $this->getState())) {
                 throw new SystemException(
@@ -479,7 +479,7 @@ class Component extends DBWorker implements IBlock {
         if (
                 $this->enabled()
                 &&
-                ($this->document->getRights() >= $this->getMethodRights())
+                ($this->document->getRights() >= $this->getCurrentStateRights())
         ) {
             $result = $this->doc->createElement('component');
             $result->setAttribute('name', $this->getName());

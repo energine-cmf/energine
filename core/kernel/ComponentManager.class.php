@@ -365,7 +365,7 @@ interface IBlock {
      * @abstract
      * @return void
      */
-    public function getMethodRights();
+    public function getCurrentStateRights();
 
     /**
      * @abstract

@@ -136,7 +136,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
             if (
                     $block->enabled()
                     &&
-                    ($this->document->getRights() >= $block->getMethodRights())
+                    ($this->document->getRights() >= $block->getCurrentStateRights())
             ) {
                 $blockDOM = $block->build();
                 if ($blockDOM instanceof DOMDocument) {
@@ -157,7 +157,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
             if (
                 $block->enabled()
                 &&
-                ($this->document->getRights() >= $block->getMethodRights())
+                ($this->document->getRights() >= $block->getCurrentStateRights())
             ) {
                 $block->run();
             }
@@ -201,7 +201,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
      *
      * @return int
      */
-    public function getMethodRights() {
+    public function getCurrentStateRights() {
         return 0;
     }
 }

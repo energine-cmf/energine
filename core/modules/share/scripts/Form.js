@@ -108,6 +108,12 @@ var Form = new Class({
                 if (result) {
                     button = $(button);
                     $(button.getProperty('link')).value = result['upl_path'];
+
+                    if(btnDF = $('btn_download_file')){
+                            btnDF.setProperty('href',Energine.base + result['upl_path'])
+                                 .setStyle('visibility','visible');
+                    }
+
                     if (image = $(button.getProperty('preview'))) {
                         image.setProperty('src', result['upl_path']);
                     }

@@ -147,12 +147,25 @@
                 <img src="{.}" alt=""/>
             </xsl:if>
         </div>
-         <input>
+        <input class="text inp_file" readonly="readonly">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)" /></xsl:attribute>
         </input>
-        <a href="#" class="uploader"  nrgn:input="{generate-id(.)}" xmlns:nrgn="http://energine.org"><xsl:value-of select="@additionalTitle"/></a>
+        <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
+        <br/>
+        <a href="{$BASE}{.}" id="btn_download_file" target="_blank">
+            <xsl:attribute name="style">
+                <xsl:choose>
+                    <xsl:when test=".!=''">
+                        visibility: visible;
+                    </xsl:when>
+                    <xsl:otherwise>
+                        visibility: hidden;    
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+            <xsl:value-of select="$TRANSLATION[@const='TXT_DOWNLOAD_FILE']"/>
+        </a>
         <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
         <span class="progress_indicator hidden" id="indicator">0%</span>
     </xsl:template>

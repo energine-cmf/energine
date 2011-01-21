@@ -1,10 +1,11 @@
-ScriptLoader.load('TabPane', 'Toolbar', 'Validator', 'RichEditor', 'ModalBox');
+ScriptLoader.load('TabPane', 'Toolbar', 'Validator', 'RichEditor', 'ModalBox', 'Overlay');
 
 var Form = new Class({
     Implements : [Energine.request],
     initialize : function(element) {
         Asset.css('form.css');
         this.componentElement = $(element);
+        this.overlay = null;
         this.singlePath = this.componentElement.getProperty('single_template');
 
         this.form = this.componentElement.getParent('form').addClass('form');
@@ -36,7 +37,7 @@ var Form = new Class({
                     );
         }, this);
 
-        if (this.componentElement.getElement('#attached_files')) {
+        if (this.componentElement.getElementById('attached_files')) {
             (function() {
                 new Form.AttachmentPane(this)
             }).delay(300, this);
@@ -78,8 +79,12 @@ var Form = new Class({
         if (!this.validator.validate()) {
             return false;
         }
+        this._getOverlay().show();
         this.request(this.singlePath +
                 'save', this.form.toQueryString(), this.processServerResponse.bind(this));
+    },
+    _getOverlay:function(){
+        return (!this.overlay)?this.overlay = new Overlay():this.overlay;        
     },
     processServerResponse: function(response) {
         if (response && (response.mode == 'insert')) {
@@ -91,6 +96,7 @@ var Form = new Class({
             }
         }
         ModalBox.setReturnValue(response);
+        this._getOverlay().hide();
         this.close();
     },
     close : function() {

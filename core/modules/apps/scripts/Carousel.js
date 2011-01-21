@@ -14,16 +14,10 @@ var Carousel = new Class({
         this.setOptions($pick(options, {}));
         Asset.css(this.options.css);
 
-        var carousel = $(element), nextButtonHandler,  previousButtonHandler;
+        var carousel = $(element);
         this.element = carousel.getElement('.viewbox');
         this.holder = this.element.getElement('ul');
-        this.effectCompleted = true;
-
-        //стек невидимых елементов
-        this.deck = [];
-        //перечень елементов
-        var items = this.holder.getElements('li');
-        var buttonsInfo = {
+        var items = this.holder.getElements('li'), buttonsInfo = {
             previous:{
                 button:carousel.getElement('.previous'),
                 handler: Energine.cancelEvent
@@ -33,6 +27,10 @@ var Carousel = new Class({
                 handler: Energine.cancelEvent
             }
         };
+        this.effectCompleted = true;
+
+        //стек невидимых елементов
+        this.deck = [];
 
 
         //На тот случай когда у нас реальных видимых елементов меньше чем заданных в конфигурации
@@ -101,9 +99,9 @@ var Carousel = new Class({
         //поскольку функция вызывается с задержкой через delay,
         //а аргументом у нас должен выступать массив,
         //то превращаем набор аргументов в массив
-        var items = $A(arguments);
+        var items = $A(arguments),
         //количество скроллируемых елементов всегда равно количеству видимых + 1 тот который выезжает справа или слева
-        var scrollerItemsCount = this.options.visibleItems + 1;
+        scrollerItemsCount = this.options.visibleItems + 1;
 
         // Вычисляем ширину пункта
         this.width = 110;

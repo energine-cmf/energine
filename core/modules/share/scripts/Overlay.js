@@ -9,7 +9,10 @@ var Overlay = new Class({
     initialize: function(parentElement, options) {
     	Asset.css('overlay.css');
         this.setOptions(options);
-        this.element = new Element('div').addClass('e-overlay e-overlay-loading').injectInside(parentElement ? parentElement : document.body);        
+        parentElement = parentElement ? parentElement : document.body;
+        if(!(this.element = parentElement.getElement('.e-overlay'))){
+            this.element = new Element('div').addClass('e-overlay e-overlay-loading').injectInside(parentElement);
+        }
         //this.fx = this.element.effect('opacity', { wait: false }).hide();
         this.element.fade('hide');
         if(!(this.options.indicator)){this.element.removeClass('e-overlay-loading')};

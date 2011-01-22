@@ -8,7 +8,7 @@
         <xsl:apply-templates/>
     </xsl:template>
     
-    <xsl:template match="recordset[parent::component[@class='PageList'] or ancestor::component[@class='NavigationMenu']]">
+    <xsl:template match="recordset[ancestor::component[@class='PageList'] or ancestor::component[@class='NavigationMenu']]">
         <xsl:if test="not(@empty)">
             <ul class="menu clearfix">
                 <xsl:apply-templates/>
@@ -29,6 +29,9 @@
             </a>
             <xsl:if test="field[@name='DescriptionRtf'] != ''">
                 <p><xsl:value-of select="field[@name='DescriptionRtf']" disable-output-escaping="yes"/></p>
+            </xsl:if>
+            <xsl:if test="recordset">
+                <xsl:apply-templates />
             </xsl:if>
         </li>
     </xsl:template>
@@ -51,7 +54,15 @@
     <xsl:template match="component[@name='mainMenu']">
     	<xsl:apply-templates/>
     </xsl:template>
-    
+
+    <xsl:template match="recordset[ancestor::component[@name='mainMenu']]">
+        <xsl:if test="not(@empty)">
+            <ul class="main_menu">
+                <xsl:apply-templates/>
+            </ul>
+        </xsl:if>
+    </xsl:template>
+
     <xsl:template match="recordset[parent::component[@name='mainMenu']]">
         <xsl:if test="not(@empty)">
             <ul class="main_menu">
@@ -70,6 +81,9 @@
     <xsl:template match="record[ancestor::component[@name='mainMenu']]">
         <li>
             <a href="{$LANG_ABBR}{field[@name='Segment']}"><xsl:value-of select="field[@name='Name']"/></a>
+            <xsl:if test="recordset">
+                <xsl:apply-templates select="recordset"/>
+            </xsl:if>
         </li>
     </xsl:template>
     <!-- /компонент MainMenu -->

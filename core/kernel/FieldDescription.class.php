@@ -361,10 +361,11 @@ class FieldDescription extends DBWorker implements Iterator{
      *
      * @access public
      * @param int $length
-     * @return void
+     * @return FieldDescription
      */
     public function setLength($length) {
         $this->length = (int)$length;
+        return $this;
     }
 
     /**

@@ -327,7 +327,9 @@ final class QAL extends DBA {
         else {
             //$columns = $this->getColumnsInfo($fkTableName);
             $columns = array_filter($columns,
-                create_function('$value', 'return !($value["type"] == QAL::COLTYPE_TEXT);')
+                function($value){
+                    return !($value["type"] == QAL::COLTYPE_TEXT);    
+                }
             );
             $res = $this->select($fkTableName, array_keys($columns), $filter, $order);
             //$res = $this->selectRequest('SELECT '.implode(',', array_keys($columns)).' FROM '.$fkTableName.)

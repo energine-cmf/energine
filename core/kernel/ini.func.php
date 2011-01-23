@@ -62,7 +62,7 @@ define('SITE_COMPONENTS_DIR', 'site/modules/*/components');
 /**
  * Путь к директории пользовательских PHP файлов
  */
-define('SITE_GEARS_DIR', 'site/*/gears');
+define('SITE_GEARS_DIR', 'site/modules/*/gears');
 
 /**
  * Шаблон пути к директориям компонентов стандартных модулей,

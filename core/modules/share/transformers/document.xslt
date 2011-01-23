@@ -126,12 +126,15 @@
                 <xsl:apply-templates select="$COMPONENTS[@class='LangSwitcher']"/>
             </div>
             <xsl:apply-templates select="$COMPONENTS[@class='BreadCrumbs']"/>
-            <xsl:apply-templates select="$COMPONENTS[@name='mainMenu']"/>
+            <div id="sidebar">
+                <xsl:apply-templates select="$COMPONENTS[@name='mainMenu']"/>
+                <xsl:apply-templates select="$COMPONENTS[@class='LoginForm']"/>
+            </div>
             <div id="content">
                 <h1><xsl:value-of select="$DOC_PROPS[@name='title']"/></h1>
                 <xsl:apply-templates select="content" />
             </div>
-            <xsl:apply-templates select="$COMPONENTS[@class='LoginForm']"/>
+
             <div id="footer">
                 <xsl:apply-templates select="$COMPONENTS[@name='FooterTextBlock']"/>
             </div>

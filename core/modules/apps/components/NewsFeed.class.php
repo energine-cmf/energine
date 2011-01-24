@@ -98,7 +98,7 @@ class NewsFeed extends Feed {
             );
         }
         $res = parent::createData();
-        if(!($categoryField = $res->getFieldByName('category'))){
+        if(!$res->isEmpty() && !($categoryField = $res->getFieldByName('category'))){
             $categoryField = new Field('category');
             $res->addField($categoryField);
         }

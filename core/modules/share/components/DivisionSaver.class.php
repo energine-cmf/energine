@@ -66,21 +66,7 @@
         $smapID = ($this->getMode() ==
                 QAL::INSERT) ? $result : $this->getData()->getFieldByName('smap_id')->getRowData(0);
 
-        if ($this->getMode() == QAL::INSERT) {
-            $this->dbh->modify(
-                QAL::UPDATE,
-                'share_sitemap',
-                array(
-                    'smap_layout_xml' => file_get_contents(
-                        Document::TEMPLATES_DIR . DivisionEditor::TMPL_LAYOUT.'/' .
-                                $this->getData()->getFieldByName('smap_layout')->getRowData(0)),
-                    'smap_content_xml' => file_get_contents(
-                        Document::TEMPLATES_DIR . DivisionEditor::TMPL_CONTENT.'/' .
-                                $this->getData()->getFieldByName('smap_content')->getRowData(0))),
-                array('smap_id' => $smapID)
-            );
-        }
-        else {
+        if ($this->getMode() !== QAL::INSERT) {
             $data = array();
             //Для апдейта - проверяем не изменился ли лейаут
             if ($prevTemplateData['smap_layout'] !=

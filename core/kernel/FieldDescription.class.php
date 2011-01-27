@@ -749,6 +749,7 @@ class FieldDescription extends DBWorker implements Iterator{
                 }
                 break;
             case DBA::COLTYPE_DATETIME:
+            case DBA::COLTYPE_TIMESTAMP:
                 $result = self::FIELD_TYPE_DATETIME;
                 break;
             case DBA::COLTYPE_TIME:

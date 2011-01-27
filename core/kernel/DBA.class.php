@@ -206,8 +206,7 @@ abstract class DBA extends Object {
 			foreach ($row as $fieldName => $fieldValue) {
 				$fieldMeta = @$res->getColumnMeta($fieldNum);
 				if (isset($fieldMeta['native_type'])) {
-					if ($fieldMeta['native_type'] == self::COLTYPE_DATETIME ||
-					$fieldMeta['native_type'] == self::COLTYPE_DATE) {
+					if (in_array($fieldMeta['native_type'], array(self::COLTYPE_DATETIME,self::COLTYPE_DATE, self::COLTYPE_TIMESTAMP))){
                         $fieldValue = strtotime($fieldValue);
 					}
 					elseif (in_array($fieldMeta['native_type'], array(self::COLTYPE_STRING1, self::COLTYPE_STRING2))) {

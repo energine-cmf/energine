@@ -80,8 +80,13 @@ var Form = new Class({
             return false;
         }
         this._getOverlay().show();
+
+        var errorFunc = function(responseText){
+            this._getOverlay().hide();
+        }.bind(this);
+
         this.request(this.singlePath +
-                'save', this.form.toQueryString(), this.processServerResponse.bind(this));
+                'save', this.form.toQueryString(), this.processServerResponse.bind(this), errorFunc, errorFunc);
     },
     _getOverlay:function(){
         return (!this.overlay)?this.overlay = new Overlay():this.overlay;        

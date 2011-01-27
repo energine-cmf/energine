@@ -82,7 +82,9 @@ class Grid extends DBDataSet {
         if (!$this->getParam('recordsPerPage')) {
             $this->setParam('recordsPerPage', self::RECORD_PER_PAGE);
         }
-        $this->setTitle($this->translate('TXT_'.strtoupper($this->getName())));
+
+        if(!$this->getTitle())
+            $this->setTitle($this->translate('TXT_'.strtoupper($this->getName())));
     }
     /**
 	 * Переопределен параметр config

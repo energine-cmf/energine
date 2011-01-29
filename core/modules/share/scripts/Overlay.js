@@ -25,14 +25,14 @@ var Overlay = new Class({
     },
 
     hide: function() {
-		var fx = new Fx.Tween(this.element, {property: 'opacity'})
+		var fx = new Fx.Tween(this.element, {property: 'opacity'});
+        this.setupObjects(false);
     	fx.start(this.options.opacity, 0).chain(
-    		this.setupObjects.pass(false, this)
+            function(){this.start(0);}
     	);
-    	fx.start(0);
     },
+    setupObjects: function(hide) {
 
-    setupObjects: function(hide) {   
     	var body;
         if (!this.options.hideObjects) return;        
         var elements = $A((body = $(document.body)).getElements('object'));                

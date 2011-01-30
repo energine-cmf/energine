@@ -124,7 +124,9 @@ var GridManager = new Class({
         }
         this.grid.setData(result.data || []);
         this.grid.build();
-        this.pageList.build(result.pager.count, result.pager.current);
+        
+        if(result.pager)
+            this.pageList.build(result.pager.count, result.pager.current);
 
         this.overlay.hide();
 

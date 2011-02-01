@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+
     	<state name="showTransEditor" rights="3">
             <uri_patterns>
                 <pattern>/translation/[any]/</pattern>
@@ -222,4 +223,5 @@
                 <pattern>/put/</pattern>
             </uri_patterns>     
         </state>
+    
 </configuration>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+
 		<state name="main">
 			<uri_patterns>
 				<pattern>/page-[pageNumber]/</pattern>
@@ -14,4 +15,5 @@
             <field name="DescriptionRtf" type="string"/>
         </fields>
 		</state>
+
 </configuration>

@@ -54,7 +54,7 @@ final class ComponentConfig extends Object {
 
 	public function __construct($configFileName, $className, $moduleName) {
 		$configFileName = ($param = $this->getConfigPath($configFileName, $moduleName))?$param:$this->getConfigPath($className.'.component.xml', $moduleName);
-
+$this->c = $configFileName;
 		if ($configFileName) {
 			try {
 				$this->config = simplexml_load_file($configFileName, 'ConfigElement');
@@ -96,6 +96,7 @@ final class ComponentConfig extends Object {
 
 	public function setCurrentState($methodName) {
 		if(!($this->currentState = $this->getStateConfig($methodName))){
+            inspect($this->c, $this->config->xpath(sprintf('/configuration/state[@name=\'%s\']', $methodName)));
 			throw new SystemException('ERR_NO_METHOD', SystemException::ERR_DEVELOPER);
 		}
 	}

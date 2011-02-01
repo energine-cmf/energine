@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+
 		<state name="addDir">
 			<uri_patterns>
 				<pattern>/add-dir/</pattern>
@@ -88,4 +89,5 @@
                 <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
             </toolbar>
         </state>
+    
 </configuration>

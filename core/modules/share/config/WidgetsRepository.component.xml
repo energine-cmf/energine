@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+
 		<state name="main">
 			<javascript>
 				<object name="WidgetGridManager" />
@@ -81,4 +82,5 @@
 		         <pattern>/upload/</pattern>
 		     </uri_patterns>
 		</state>
+    
 </configuration>

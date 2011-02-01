@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+
 		<state name="main">
 			<javascript>
 				<object name="PageEditor"/>
@@ -31,4 +32,5 @@
 				<pattern>/file-library/[any]/</pattern>
 			</uri_patterns>
 		</state>
+
 </configuration>

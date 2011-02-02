@@ -80,7 +80,7 @@ class Field extends Object implements Iterator{
      * @param bool $setForAll - установить для всех строчек
      *  только для перепределения данных
      *  в случае если поле только создано то нужно заполнять через итератор 
-     * @return void
+     * @return Field
      */
     public function setData($data, $setForAll = false) {
         if ($setForAll && $this->getRowCount()) {
@@ -90,6 +90,7 @@ class Field extends Object implements Iterator{
             $data = array($data);
         }
         $this->data = $data;
+        return $this;
     }
 
     /**

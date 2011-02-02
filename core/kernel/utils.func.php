@@ -274,6 +274,21 @@ function array_push_before(array $array, $var, $pos) {
     }
     return $result;
 }
+/**
+ * @return array
+ * @param array $src
+ * @param array $in
+ * @param int|string $pos
+*/
+function array_push_after($src,$in,$pos){
+    if(is_int($pos)) $R=array_merge(array_slice($src,0,$pos+1), $in, array_slice($src,$pos+1));
+    else{
+        foreach($src as $k=>$v){
+            $R[$k]=$v;
+            if($k==$pos)$R=array_merge($R,$in);
+        }
+    }return $R;
+}
 
 /*function is_assoc($array) {
     return (is_array($array) && (0 !== count(array_diff_key($array, array_keys(array_keys($array)))) || count($array)==0));

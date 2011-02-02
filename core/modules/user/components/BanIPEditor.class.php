@@ -36,12 +36,7 @@ class BanIPEditor extends Grid {
     protected function loadData(){
         if($this->getState() == 'getRawData'){
             $this->applyUserFilter();
-            $actionParams = $this->getStateParams(true);
-
-            if(isset($actionParams['sortField']) && isset($actionParams['sortDir'])){
-                //подразумевается что sortDir - тоже существует
-                $this->setOrder(array($actionParams['sortField'] => $actionParams['sortDir']));
-            }
+            $this->applyUserSort();
             if ($this->pager) {
                 // pager существует -- загружаем только часть данных, текущую страницу
                 $this->setLimit($this->pager->getLimit());

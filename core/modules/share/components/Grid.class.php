@@ -520,12 +520,7 @@ class Grid extends DBDataSet {
         }
         elseif ($this->getState() =='getRawData') {
             $this->applyUserFilter();
-            $actionParams = $this->getStateParams(true);
-            
-            if(isset($actionParams['sortField']) && isset($actionParams['sortDir'])){
-                //подразумевается что sortDir - тоже существует
-                $this->setOrder(array($actionParams['sortField'] => $actionParams['sortDir']));
-            }
+            $this->applyUserSort();
             $result = parent::loadData();
         }
         else {
@@ -742,19 +737,17 @@ class Grid extends DBDataSet {
             $tableName = key($_POST['filter']);
             $fieldName = key($_POST['filter'][$tableName]);
             $value = trim($_POST['filter'][$tableName][$fieldName]);
-            //получили текущий фильтр
-            /*$currentFilter = $this->getFilter();
-            if ($currentFilter) {
-                $currentFilter =str_replace('WHERE', '',$this->dbh->buildWhereCondition($currentFilter)).' AND ';
-            }
-            else {
-                $currentFilter = '';
-            }
-            //к текущему фильтру присоединяем пользовательский
-            $this->setFilter($currentFilter.$tableName.'.'.$fieldName.' LIKE \'%'.$value.'%\' ');
-             */
-            $this->addFilterCondition($tableName.'.'.$fieldName.' LIKE \'%'.$value.'%\' ');
+            $tableName = ($tableName)? $tableName.'.':'';  
+            $this->addFilterCondition($tableName.$fieldName.' LIKE \'%'.$value.'%\' ');
         }
+    }
+
+    protected function applyUserSort(){
+            $actionParams = $this->getStateParams(true);
+            if(isset($actionParams['sortField']) && isset($actionParams['sortDir'])){
+                //подразумевается что sortDir - тоже существует
+                $this->setOrder(array($actionParams['sortField'] => $actionParams['sortDir']));
+            }
     }
 
     /**

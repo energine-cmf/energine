@@ -79,8 +79,17 @@ class DataDescription extends Object implements Iterator {
      * @param FieldDescription $fieldDescription
      * @return void
      */
-    public function addFieldDescription(FieldDescription $fieldDescription) {
-        $this->fieldDescriptions[$fieldDescription->getName()] = $fieldDescription;
+    public function addFieldDescription(FieldDescription $fieldDescription, $location = 'bottom', $targetFDName = null) {
+        if($location == 'after' && $targetFDName && array_key_exists($targetFDName, $this->fieldDescriptions)){
+            $this->fieldDescriptions = array_push_after($this->fieldDescriptions, array($fieldDescription->getName() => $fieldDescription), $targetFDName);
+        }
+       /* elseif($location == 'before' ){
+
+        }*/
+        else {
+            $this->fieldDescriptions[$fieldDescription->getName()] = $fieldDescription;    
+        }
+
     }
 
     /**

@@ -95,15 +95,41 @@ final class DBStructureInfo extends Object {
     public function getTableMeta($tableName) {
         if (!isset($this->structure[$tableName]) ||
                 ($this->structure[$tableName] === array())) {
-            $this->structure[$tableName] = $this->analyzeCreateTableSQL($this->pdo->query("SHOW CREATE TABLE `$tableName`")->fetchColumn(1));
+            $this->structure[$tableName] = $this->analyzeTable($tableName);
+            if(empty($this->structure[$tableName])){
+                //Скорее всего это view
+                //анализируем его
+                $this->structure[$tableName] = $this->analyzeView($tableName);
+            }
+
             $this->structure[$tableName] = array_map(function($row) use($tableName){ $row['tableName'] = $tableName; return $row;}, $this->structure[$tableName]);
-            //dump_log('getTableMeta '.$tableName, true);
+            inspect($this->structure[$tableName]);
         }
         return $this->structure[$tableName];
     }
 
+    private function analyzeView($viewName){
+        if(!($res = $this->pdo->query('SHOW COLUMNS FROM `'.$viewName.'`')->fetchAll(PDO::FETCH_ASSOC))) return false;
+        //Считаем что первое поле - PK
 
-    private function analyzeCreateTableSQL($sql) {
+        foreach($res as $rowIndex => $fieldData){
+            $matches = array();
+            preg_match('/\w+/', $fieldData['Type'], $matches);
+            $type = self::convertType($matches[0]);
+            $result[$fieldData['Field']] = array(
+                'key' => ($rowIndex === 0)?true:false,
+                'nullable' => (strtolower($fieldData['Null']) == 'yes')?true: false,
+                'type'=> $type,
+                'length' => ($type == DBA::COLTYPE_STRING)?100:10,
+                'index' => ($rowIndex === 0)?'PRI': false,
+                'default' => ''
+            );
+        }
+        return $result;
+    }
+    private function analyzeTable($tableName) {
+        $sql = $this->pdo->query("SHOW CREATE TABLE `$tableName`")->fetchColumn(1);
+        
         $res = array();
         $s = strpos($sql, '(');
         $l = strrpos($sql, ')') - $s;

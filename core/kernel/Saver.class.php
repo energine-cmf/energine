@@ -282,7 +282,7 @@ class Saver extends DBWorker {
             	}
             }
             if($pkName)
-                $result = $this->getData()->getFieldByName($pkName);
+                $result = $this->getData()->getFieldByName($pkName)->getRowData(0);
             else $result = true;
         }
 

@@ -103,7 +103,6 @@ final class DBStructureInfo extends Object {
             }
 
             $this->structure[$tableName] = array_map(function($row) use($tableName){ $row['tableName'] = $tableName; return $row;}, $this->structure[$tableName]);
-            inspect($this->structure[$tableName]);
         }
         return $this->structure[$tableName];
     }

@@ -16,6 +16,8 @@
  * @author dr.Pavka
  */
 class DataDescription extends Object implements Iterator {
+    const FIELD_POSITION_AFTER = 'after';
+    const FIELD_POSITION_BEFORE = 'before';
 
     /**
      * @access private
@@ -80,7 +82,7 @@ class DataDescription extends Object implements Iterator {
      * @return void
      */
     public function addFieldDescription(FieldDescription $fieldDescription, $location = 'bottom', $targetFDName = null) {
-        if($location == 'after' && $targetFDName && array_key_exists($targetFDName, $this->fieldDescriptions)){
+        if($location == self::FIELD_POSITION_AFTER && $targetFDName && array_key_exists($targetFDName, $this->fieldDescriptions)){
             $this->fieldDescriptions = array_push_after($this->fieldDescriptions, array($fieldDescription->getName() => $fieldDescription), $targetFDName);
         }
        /* elseif($location == 'before' ){

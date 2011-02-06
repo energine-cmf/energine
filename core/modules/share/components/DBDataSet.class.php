@@ -579,12 +579,14 @@ class DBDataSet extends DataSet {
         $result = parent::createDataDescription();
         foreach ($result as $fieldName => $fieldMetaData) {
             $keyInfo = $fieldMetaData->getPropertyValue('key');
-            //Если это внешний ключ
+            //Если это внешний ключ и не в режиме списка
             if (is_array($keyInfo) && in_array($fieldMetaData->getType(), array(FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_MULTI))) {
                 $fkTableName = $keyInfo['tableName'];
                 $fkKeyName = $keyInfo['fieldName'];
                 //загружаем информацию о возможных значениях
-                call_user_func_array(array($fieldMetaData, 'loadAvailableValues'), $this->getFKData($fkTableName, $fkKeyName));
+                $values = $this->getFKData($fkTableName, $fkKeyName);
+                if(!empty($values))
+                    call_user_func_array(array($fieldMetaData, 'loadAvailableValues'), $values);
 
             }
         }

@@ -216,7 +216,7 @@ var GridManager = new Class({
     print: function() {
         window.open(this.element.getProperty('single_template') + 'print/');
     },
-    exportCSV: function() {
+    csv: function() {
         document.location.href =
                 this.element.getProperty('single_template') + 'csv/';
     }

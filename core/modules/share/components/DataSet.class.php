@@ -258,7 +258,7 @@ abstract class DataSet extends Component {
      * @access protected
      */
     protected function createBuilder() {
-        if(!isset($this->builder) || !$this->builder)
+        if (!isset($this->builder) || !$this->builder)
             return new Builder($this->getTitle());
         else return $this->builder;
     }
@@ -373,16 +373,18 @@ abstract class DataSet extends Component {
      */
     public function build() {
         if (!$this->getBuilder()) {
-            throw new SystemException('ERR_DEV_NO_BUILDER:'. $this->getName().': '.$this->getState(), SystemException::ERR_CRITICAL, $this->getName());
+            throw new SystemException(
+                'ERR_DEV_NO_BUILDER:' . $this->getName() . ': ' .
+                        $this->getState(), SystemException::ERR_CRITICAL, $this->getName());
         }
 
         // передаем данные и описание данных построителю
-		if ($this->getData() && method_exists($this->getBuilder(), 'setData')) {
+        if ($this->getData() && method_exists($this->getBuilder(), 'setData')) {
             $this->getBuilder()->setData($this->getData());
         }
 
-        if(method_exists($this->getBuilder(), 'setDataDescription'))
-        $this->getBuilder()->setDataDescription($this->getDataDescription());
+        if (method_exists($this->getBuilder(), 'setDataDescription'))
+            $this->getBuilder()->setDataDescription($this->getDataDescription());
 
         // вызываем родительский метод построения
         $result = parent::build();
@@ -553,6 +555,26 @@ abstract class DataSet extends Component {
     }
 
     /**
+     * Метод возвращает файл
+     *
+     * @param $data string данные файла
+     * @param $MIMEType string тип файла
+     * @param $fileName string имя файла
+     *
+     * @return void
+     * @access protected
+     * @final
+     */
+
+    final protected function downloadFile($data, $MIMEType, $fileName) {
+        $this->response->setHeader('Content-Type', $MIMEType);
+        $this->response->setHeader('Content-Disposition',
+                ': attachment; filename="' . $fileName . '"');
+        $this->response->write($data);
+        $this->response->commit();
+    }
+
+    /**
      * Чистка от лишних и вердоносных html тегов
      * Вызывается в single режиме
      *
@@ -567,6 +589,7 @@ abstract class DataSet extends Component {
         $this->response->write($data);
         $this->response->commit();
     }
+
     /**
      * Добавляет переводы для тулбара WYSIWYG
      * вызывается в потомках
@@ -634,14 +657,14 @@ abstract class DataSet extends Component {
                     'output-html' => true,
                 );
                 //if ($aggressive) {
-                    $config = array_merge(
-                        $config,
-                        array(
-                            'clean' => true,
-                            'word-2000' => true,
-                            'drop-empty-paras' => true
-                        )
-                    );
+                $config = array_merge(
+                    $config,
+                    array(
+                        'clean' => true,
+                        'word-2000' => true,
+                        'drop-empty-paras' => true
+                    )
+                );
                 //}
                 $data = $tidy->repairString($data, $config, 'utf8');
 

@@ -131,23 +131,33 @@ class FeedbackForm extends DBDataSet {
 
 	        if ($result = $this->saveData($data)) {
 	            $data = $data[$this->getTableName()];
-	            $senderEmail = $data['feed_email'];
+	            $senderEmail = '';
+                if(isset($data['feed_email'])){
+                    $senderEmail = $data['feed_email'];
+                } else {
+                    $data['feed_email'] = $this->translate('TXT_NO_EMAIL_ENTERED');
+                }
 
 	            $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('feed_date'=>date('Y-m-d H:i:s')), array($this->getPK()=>$result));
-
-	            $mailer = new Mail();
-	            $mailer->setFrom($this->getConfigValue('mail.from'))->
-	                setSubject($this->translate($this->getParam('userSubject')))->
-	                setText($this->translate($this->getParam('userBody')), $data)->
-	                addTo($senderEmail, $senderEmail)
-	                ->send();
+                if($senderEmail){
+                    $mailer = new Mail();
+                    $mailer->setFrom($this->getConfigValue('mail.from'))->
+                        setSubject($this->translate($this->getParam('userSubject')))->
+                        setText($this->translate($this->getParam('userBody')), $data)->
+                        addTo($senderEmail, $senderEmail)
+                        ->send();
+                }
 	            try {
 	            	$mailer = new Mail();
-	            	$data['feed_email']  = $senderEmail;
+                    $recipientID = false;
+                    if(isset($data['feed_type']) && intval($data['feed_type'])){
+                        $recipientID = $data['feed_type'];    
+                    }
+
 	                $mailer->setFrom($this->getConfigValue('mail.from'))->
 	                    setSubject($this->translate($this->getParam('adminSubject')))->
 	                    setText($this->translate($this->getParam('adminBody')),$data)->
-	                    addTo($this->getRecipientEmail())->send();
+	                    addTo($this->getRecipientEmail($recipientID))->send();
 	            }
 	            catch (Exception $e){
 	            }
@@ -174,7 +184,7 @@ class FeedbackForm extends DBDataSet {
      * @return string
      * @access private
      */
-   protected function getRecipientEmail(){
+   protected function getRecipientEmail($options = false){
         return $this->getConfigValue($this->getParam('recipientEmail'));
    }
    /*

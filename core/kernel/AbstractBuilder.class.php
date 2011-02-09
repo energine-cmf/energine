@@ -240,9 +240,11 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
                     case FieldDescription::FIELD_TYPE_TIME:
                     case FieldDescription::FIELD_TYPE_HIDDEN:
                         try {
+                            if(is_long($fieldValue)){
                             $result->setAttribute('date', @strftime('%d-%m-%Y-%H-%M-%S', $fieldValue));
                             $fieldValue =
                                     self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'));
+                            }
                         }
                         catch (Exception  $dummy) {
 

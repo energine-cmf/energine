@@ -200,9 +200,9 @@ class Image extends Object {
 
         $image = null;
         switch ($type) {
-            case self::TYPE_PNG:  $image = imagecreatefrompng($filename);  break;
-            case self::TYPE_GIF:  $image = imagecreatefromgif($filename);  break;
-            case self::TYPE_JPEG: $image = imagecreatefromjpeg($filename); break;
+            case self::TYPE_PNG:  $image = @imagecreatefrompng($filename);  break;
+            case self::TYPE_GIF:  $image = @imagecreatefromgif($filename);  break;
+            case self::TYPE_JPEG: $image = @imagecreatefromjpeg($filename); break;
             default: // unreachable
         }
 

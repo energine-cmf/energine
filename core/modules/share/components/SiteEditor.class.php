@@ -115,8 +115,8 @@ class SiteEditor extends Grid {
 	 */
 	private function loadFoldersData(){
 		$result = array();
-		foreach(glob('site/*', GLOB_ONLYDIR) as $folder){
-			$folder = str_replace('site/', '', $folder);
+		foreach(glob('site/modules/*', GLOB_ONLYDIR) as $folder){
+			$folder = str_replace('site/modules/', '', $folder);
 			$result[] = array('key' => $folder, 'value' => $folder);
 		}
 		return $result;

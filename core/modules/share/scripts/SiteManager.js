@@ -22,7 +22,7 @@ var SiteManager = new Class({
     },
     go: function () {
         var site = this.grid.getSelectedRecord();
-        window.location.href =
+        window.top.location.href =
                 site.site_protocol + '://' + site.site_host + ':' +
                         site.site_port + site.site_root;
     }

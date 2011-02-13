@@ -89,6 +89,9 @@ var PageToolbar = new Class({
     showFileRepository: function() {
         ModalBox.open({ 'url': this.componentPath + 'file-library' });
     },
+    showSiteEditor: function() {
+        ModalBox.open({ 'url': this.componentPath + 'sites' });
+    },
     editBlocks: function() {
         if (!this.getControlById('editBlocks').getState()) {
             this.layoutManager = new LayoutManager(this.componentPath);

@@ -21,7 +21,11 @@
 final class DivisionEditor extends Grid {
     const TMPL_CONTENT = 'content';
     const TMPL_LAYOUT = 'layout';
-
+    /**
+     * Редактор сайтов
+     * @var SiteEditor
+     */
+    private $siteEditor;
     /**
      * Редактор переводов
      *
@@ -610,6 +614,9 @@ final class DivisionEditor extends Grid {
             case 'showLangEditor':
                 $result = $this->langEditor->build();
                 break;
+            case 'showSiteEditor':
+                $result = $this->siteEditor->build();
+                break;
             case 'showWidgetEditor':
                 $result = $this->widgetEditor->build();
                 break;
@@ -746,7 +753,19 @@ final class DivisionEditor extends Grid {
                 $this->document->componentManager->createComponent('langEditor', 'share', 'LanguageEditor', null);
         $this->langEditor->run();
     }
+/**
+     * Вывод редактора сайтов
+     *
+     * @return void
+     * @access protected
+     */
 
+    protected function showSiteEditor() {
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->siteEditor =
+                $this->document->componentManager->createComponent('siteEditor', 'share', 'SiteEditor', array('config' => 'core/modules/share/config/SiteEditorModal.component.xml'));
+        $this->siteEditor->run();
+    }
     /**
      * Сброс шаблона контента
      * При вызове метода XML код контента берется из файла

@@ -103,6 +103,7 @@ class SystemException extends Exception {
         
         if ($code == self::ERR_LANG) {
             $this->response->setStatus(503);
+            $this->response->setHeader('Retry-After', 20);
             $message = DBWorker::_translate($message, E()->getLanguage()->getDefault());
         }
         elseif ($code == self::ERR_403) {
@@ -113,10 +114,10 @@ class SystemException extends Exception {
         	$this->response->setStatus(404);
             $message = DBWorker::_translate($message, E()->getLanguage()->getCurrent());
         }
-        else {
+        /*else {
             $this->response->setStatus(503);
             $this->response->setHeader('Retry-After', 20);
-        }
+        }*/
         /*elseif ($code != self::ERR_DB ) {
             $message = DBWorker::_translate($message, E()->getLanguage()->getCurrent());
         }*/

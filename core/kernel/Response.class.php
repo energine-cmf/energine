@@ -245,6 +245,8 @@ final class Response extends Object {
         if (
                 (bool) Object::_getConfigValue('site.compress')
                 &&
+                isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+                &&
                 (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)
                 &&
                 !(bool) Object::_getConfigValue('site.debug')

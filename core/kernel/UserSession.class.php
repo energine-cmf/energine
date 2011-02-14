@@ -121,8 +121,12 @@ final class UserSession extends DBWorker {
         if (
                 (isset($_COOKIE[self::DEFAULT_SESSION_NAME]))
                 ||
-                (isset($_POST[self::DEFAULT_SESSION_NAME]))
+                (isset($_POST['NRGNCookie']))
         ) {
+            if(isset($_POST['NRGNCookie']) && preg_match("/".self::DEFAULT_SESSION_NAME."=([a-h0-9]{40})/i", $_POST['NRGNCookie'], $matches)){
+                $_POST[self::DEFAULT_SESSION_NAME] = $matches[1];
+            }
+            
             $this->phpSessId = (isset($_COOKIE[self::DEFAULT_SESSION_NAME])) ? $_COOKIE[self::DEFAULT_SESSION_NAME] : $_POST[self::DEFAULT_SESSION_NAME];
 
             $this->data = $this->isSessionValid($this->phpSessId);

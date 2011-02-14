@@ -103,6 +103,11 @@ class FileInfo extends DBWorker {
                     $data['upl_mime_type'] =
                             $result['mime'] = 'unknown/mime-type';
                 }
+                elseif(!file_exists($filename)){
+                    $result['mime'] = 'unknown/mime-type';
+                    $result['type'] =
+                                    self::META_TYPE_UNKNOWN;
+                }
                 else {
                     switch (
                     $data['upl_mime_type'] = $result['mime'] =

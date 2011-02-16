@@ -58,6 +58,11 @@
 				<pattern>/delete/</pattern>
 			</uri_patterns>
 		</state>
+        <state name="rename" rights="3">
+			<uri_patterns>
+				<pattern>/rename/</pattern>
+			</uri_patterns>
+		</state>
 		<state name="upload" rights="3">
 			<uri_patterns>
 				<pattern>/upload/</pattern>
@@ -82,7 +87,7 @@
                 <control id="sep01" type="separator"/>
                 <control id="add" title="BTN_ADD" type="button" onclick="add"/>
                 <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
-                <!--<control id="rename" title="BTN_RENAME" type="button" onclick="rename"/>-->
+                <control id="rename" title="BTN_RENAME" type="button" onclick="rename"/>
                 <control id="sep02" type="separator"/>
                 <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
                 <control id="sep03" type="separator"/>

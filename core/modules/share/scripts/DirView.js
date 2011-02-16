@@ -105,7 +105,13 @@ var DirView = new Class({
 
             inputElem.select();
             inputElem.focus();
-            inputElem.addEvent('blur', this.edit.bind(this));
+            inputElem.addEvent('blur', this.edit.bind(this)).addEvent('keydown', function(event){
+                event = new Event(event || window.event);
+                if(event.key == 'enter'){
+                    Energine.cancelEvent(event);
+                    this.edit();
+                }
+            }.bind(this));
         }
         else {
             var inputElem = this.getSelectedItem().getElement('input.name');

@@ -87,7 +87,10 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 
         $context = stream_context_create($opts);
 
-        $fs = stream_socket_client("tcp://".$host.":".$port, $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context);
+        if(false == ($fs = stream_socket_client("tcp://" . $host . ":" .
+                $port, $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context))){
+            die ('Could not open socket');
+        }
 
         fwrite($fs, $http_request);
 

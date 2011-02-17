@@ -219,7 +219,7 @@ class FeedbackForm extends DBDataSet {
             $_POST["recaptcha_response_field"]);
 
         if (!$resp->is_valid) {
-            throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
+            throw new SystemException($this->translate('TXT_BAD_CAPTCHA'), SystemException::ERR_CRITICAL);
         }
     }
 

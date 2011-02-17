@@ -27,10 +27,10 @@ class FeedbackForm extends DBDataSet {
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
+    public function __construct($name, $module, array $params = null) {
+        parent::__construct($name, $module, $params);
         //$tableName = $this->getParam('tableName');
-        
+
         /*if(!($tableName)){
             $this->setTableName('apps_feedback');
         }else {
@@ -41,25 +41,26 @@ class FeedbackForm extends DBDataSet {
         $this->setTitle($this->translate('TXT_FEEDBACK_FORM'));
         $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
+
     /**
-	 * Переопределен параметр active
-	 *
-	 * @return int
-	 * @access protected
-	 */
+     * Переопределен параметр active
+     *
+     * @return int
+     * @access protected
+     */
 
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
-        array(
-        'active'=>true,
-        'textBlock' => false,
-        'tableName' => 'apps_feedback',    
-        'recipientEmail' => 'mail.feedback',
-        'userSubject' => 'TXT_SUBJ_FEEDBACK_USER',
-        'userBody' => 'TXT_BODY_FEEDBACK_USER',
-        'adminSubject' => 'TXT_SUBJ_FEEDBACK_ADMIN',
-        'adminBody' => 'TXT_BODY_FEEDBACK_ADMIN',
-        ));
+            array(
+                'active' => true,
+                'textBlock' => false,
+                'tableName' => 'apps_feedback',
+                'recipientEmail' => 'mail.feedback',
+                'userSubject' => 'TXT_SUBJ_FEEDBACK_USER',
+                'userBody' => 'TXT_BODY_FEEDBACK_USER',
+                'adminSubject' => 'TXT_SUBJ_FEEDBACK_ADMIN',
+                'adminBody' => 'TXT_BODY_FEEDBACK_ADMIN',
+            ));
         return $result;
     }
 
@@ -70,13 +71,14 @@ class FeedbackForm extends DBDataSet {
      * @access protected
      */
 
-     protected function saveData($data) {
+    protected function saveData($data) {
         $result = false;
         //создаем объект описания данных
         $dataDescriptionObject = new DataDescription();
 
-       //получаем описание полей для метода
-        $configDataDescription = $this->config->getStateConfig($this->getPreviousAction());
+        //получаем описание полей для метода
+        $configDataDescription =
+                $this->config->getStateConfig($this->getPreviousAction());
         //если в конфиге есть описание полей для метода - загружаем их
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);
@@ -99,7 +101,7 @@ class FeedbackForm extends DBDataSet {
         $this->saver->setDataDescription($this->getDataDescription());
         $this->saver->setData($this->getData());
 
-        if($this->saver->validate() === true) {
+        if ($this->saver->validate() === true) {
             $this->saver->setFilter($this->getFilter());
             $this->saver->save();
             $result = $this->saver->getResult();
@@ -112,85 +114,89 @@ class FeedbackForm extends DBDataSet {
 
         return $result;
 
-     }
+    }
 
     /**
-	 * Записывает обращение в БД, отправляет уведомление пользователю и администратору
-	 *
-	 * @return void
-	 * @access protected
-	 */
+     * Записывает обращение в БД, отправляет уведомление пользователю и администратору
+     *
+     * @return void
+     * @access protected
+     */
 
     protected function send() {
-    	try{
-			$data[$this->getTableName()] = $_POST[$this->getTableName()];
+        try {
+            $data[$this->getTableName()] = $_POST[$this->getTableName()];
 
-            if(!$this->document->getUser()->isAuthenticated()){
+            if (!$this->document->getUser()->isAuthenticated()) {
                 $this->checkCaptcha();
             }
 
-	        if ($result = $this->saveData($data)) {
-	            $data = $data[$this->getTableName()];
-	            $senderEmail = '';
-                if(isset($data['feed_email'])){
+            if ($result = $this->saveData($data)) {
+                $data = $data[$this->getTableName()];
+                $senderEmail = '';
+                if (isset($data['feed_email'])) {
                     $senderEmail = $data['feed_email'];
                 } else {
-                    $data['feed_email'] = $this->translate('TXT_NO_EMAIL_ENTERED');
+                    $data['feed_email'] =
+                            $this->translate('TXT_NO_EMAIL_ENTERED');
                 }
 
-	            $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('feed_date'=>date('Y-m-d H:i:s')), array($this->getPK()=>$result));
-                if($senderEmail){
+                $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('feed_date' => date('Y-m-d H:i:s')), array($this->getPK() => $result));
+                if ($senderEmail) {
                     $mailer = new Mail();
                     $mailer->setFrom($this->getConfigValue('mail.from'))->
-                        setSubject($this->translate($this->getParam('userSubject')))->
-                        setText($this->translate($this->getParam('userBody')), $data)->
-                        addTo($senderEmail, $senderEmail)
-                        ->send();
+                            setSubject($this->translate($this->getParam('userSubject')))->
+                            setText($this->translate($this->getParam('userBody')), $data)->
+                            addTo($senderEmail, $senderEmail)
+                            ->send();
                 }
-	            try {
-	            	$mailer = new Mail();
+                try {
+                    $mailer = new Mail();
                     $recipientID = false;
-                    if(isset($data['feed_type']) && intval($data['feed_type'])){
-                        $recipientID = $data['feed_type'];    
+                    if (isset($data['feed_type']) &&
+                            intval($data['feed_type'])) {
+                        $recipientID = $data['feed_type'];
                     }
 
-	                $mailer->setFrom($this->getConfigValue('mail.from'))->
-	                    setSubject($this->translate($this->getParam('adminSubject')))->
-	                    setText($this->translate($this->getParam('adminBody')),$data)->
-	                    addTo($this->getRecipientEmail($recipientID))->send();
-	            }
-	            catch (Exception $e){
-	            }
-	        }
+                    $mailer->setFrom($this->getConfigValue('mail.from'))->
+                            setSubject($this->translate($this->getParam('adminSubject')))->
+                            setText($this->translate($this->getParam('adminBody')), $data)->
+                            addTo($this->getRecipientEmail($recipientID))->send();
+                }
+                catch (Exception $e) {
+                }
+            }
 
 
-	        $this->prepare();
-	        
-	        if ($this->getParam('textBlock') && ($textBlock = $this->document->componentManager->getBlockByName($this->getParam('textBlock')))) {
-	        	$textBlock->disable();
-	        }
+            $this->prepare();
+
+            if ($this->getParam('textBlock') && ($textBlock =
+                    $this->document->componentManager->getBlockByName($this->getParam('textBlock')))) {
+                $textBlock->disable();
+            }
 
             $this->response->redirectToCurrentSection('success/');
 
-    	}
-    	catch (Exception $e){
+        }
+        catch (Exception $e) {
             $this->failure($e->getMessage(), $data[$this->getTableName()]);
-    	}
-   }
+        }
+    }
 
-/**
+    /**
      * Визначає адресу отримувача
      *
      * @return string
      * @access private
      */
-   protected function getRecipientEmail($options = false){
+    protected function getRecipientEmail($options = false) {
         return $this->getConfigValue($this->getParam('recipientEmail'));
-   }
-   /*
+    }
+
+    /*
     * Викликаємо у випадку помилки з captcha 
     */
-   protected function failure($errorMessage, $data){
+    protected function failure($errorMessage, $data) {
         $this->config->setCurrentState('main');
         $this->prepare();
         $eFD = new FieldDescription('error_message');
@@ -204,49 +210,50 @@ class FeedbackForm extends DBDataSet {
     /*
      * Перевіряє капчу
      */
-    protected function checkCaptcha(){
-        if(
-			 !isset($_SESSION['captchaCode'])
-			 ||
-			 !isset($_POST['captcha'])
-			 ||
-			 ($_SESSION['captchaCode'] != sha1(trim($_POST['captcha'])))
-			){
-			     throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
+    protected function checkCaptcha() {
+        require_once('core/kernel/recaptchalib.php');
+        $privatekey = $this->getConfigValue('recaptcha.private');
+        $resp = recaptcha_check_answer($privatekey,
+            $_SERVER["REMOTE_ADDR"],
+            $_POST["recaptcha_challenge_field"],
+            $_POST["recaptcha_response_field"]);
+
+        if (!$resp->is_valid) {
+            throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
         }
-        unset($_SESSION['captchaCode']);
     }
 
-    protected function prepare(){
-    	parent::prepare();
-    	if(
-    	   $this->document->getUser()->isAuthenticated()
-    	   &&
-    	   ($captcha = $this->getDataDescription()->getFieldDescriptionByName('captcha'))
-    	 ){
-    	   $this->getDataDescription()->removeFieldDescription($captcha);
-    	   unset($_SESSION['captchaCode']);
-    	}
+    protected function prepare() {
+        parent::prepare();
+        if (
+            $this->document->getUser()->isAuthenticated()
+            &&
+            ($captcha =
+                    $this->getDataDescription()->getFieldDescriptionByName('captcha'))
+        ) {
+            $this->getDataDescription()->removeFieldDescription($captcha);
+            if (isset($_SESSION['captchaCode'])) unset($_SESSION['captchaCode']);
+        }
     }
 
     protected function success() {
-		$this->setBuilder($this->createBuilder());
+        $this->setBuilder($this->createBuilder());
 
         $dataDescription = new DataDescription();
-		$ddi = new FieldDescription('result');
-		$ddi->setType(FieldDescription::FIELD_TYPE_TEXT);
-		$ddi->setMode(FieldDescription::FIELD_MODE_READ);
-		$ddi->removeProperty('title');
-		$dataDescription->addFieldDescription($ddi);
+        $ddi = new FieldDescription('result');
+        $ddi->setType(FieldDescription::FIELD_TYPE_TEXT);
+        $ddi->setMode(FieldDescription::FIELD_MODE_READ);
+        $ddi->removeProperty('title');
+        $dataDescription->addFieldDescription($ddi);
 
-		$data = new Data();
-		$di = new Field('result');
-		$di->setData($this->translate('TXT_FEEDBACK_SUCCESS_SEND'));
-		$data->addField($di);
+        $data = new Data();
+        $di = new Field('result');
+        $di->setData($this->translate('TXT_FEEDBACK_SUCCESS_SEND'));
+        $data->addField($di);
 
-		$this->setDataDescription($dataDescription);
-		$this->setData($data);
+        $this->setDataDescription($dataDescription);
+        $this->setData($data);
 
-	}
+    }
 
 }

@@ -60,6 +60,10 @@ class FieldDescription extends DBWorker implements Iterator{
      * E-mail
      */
     const FIELD_TYPE_EMAIL = 'email';
+    /**
+     * Поле типа капча
+     */
+    const FIELD_TYPE_CAPTCHA = 'captcha';
 
     /**
      * Телефонный номер
@@ -472,6 +476,9 @@ class FieldDescription extends DBWorker implements Iterator{
                 $this->length = true;
                 $this->setProperty('outputFormat', '%s');
                 $this->setProperty('sort', 1);
+                break;
+            case self::FIELD_TYPE_CAPTCHA:
+                $this->setProperty('customField', 'customField');
                 break;
             case self::FIELD_TYPE_SELECT:
                 $this->length = true;

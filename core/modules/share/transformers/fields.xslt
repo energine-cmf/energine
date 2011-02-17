@@ -339,4 +339,15 @@
         <xsl:apply-imports/>
     </xsl:template>
 
+    <xsl:template match="field[@type='captcha'][ancestor::component[@type='list']]"></xsl:template>
+
+    <xsl:template match="field[@type='captcha'][ancestor::component[@type='form']]">
+        <script type="text/javascript">
+            var RecaptchaOptions = {
+               lang : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
+            };
+        </script>
+        <xsl:value-of select="." disable-output-escaping="yes"/>
+    </xsl:template>
+
 </xsl:stylesheet>

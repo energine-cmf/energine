@@ -29,6 +29,9 @@
         parent::__construct($name, $module,  $params);
         $this->isEditable = $this->document->isEditable();
         $this->setProperty('exttype', 'feededitor');
+        if(!in_array($this->getState(),  array('up', 'down')) && isset($_COOKIE[md5($this->getName())])){
+            E()->getResponse()->deleteCookie(md5($this->getName()));
+        }
     }
 
     /**
@@ -54,18 +57,19 @@
      */
 
     protected function main() {
-        $_SESSION[$this->getPK()] =
-            $this->document->componentManager->getBlockByName(
-	           $this->getParam('bind')
-	        )->getFilter();
+        if($this->getFilter())
+            E()->getResponse()->addCookie(md5($this->getName()), convert_uuencode($this->document->componentManager->getBlockByName(
+                   $this->getParam('bind')
+                )->getFilter()));
         $this->addToolbar($this->createToolbar());
         $this->js = $this->buildJS();
     }
 
     protected function changeOrder($direction){
-        $this->setFilter($_SESSION[$this->getPK()]);
-        //unset($_SESSION['feed_smap_id']);
-
+        if(isset($_COOKIE[md5($this->getName())])){
+            $this->setFilter(convert_uudecode($_COOKIE[md5($this->getName())]));
+            E()->getResponse()->deleteCookie(md5($this->getName()));
+        }
         return parent::changeOrder($direction);
     }
 

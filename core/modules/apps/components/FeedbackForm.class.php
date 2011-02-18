@@ -235,7 +235,6 @@ class FeedbackForm extends DBDataSet {
                     $this->getDataDescription()->getFieldDescriptionByName('captcha'))
         ) {
             $this->getDataDescription()->removeFieldDescription($captcha);
-            if (isset($_SESSION['captchaCode'])) unset($_SESSION['captchaCode']);
         }
     }
 

@@ -346,12 +346,12 @@ class Grid extends DBDataSet {
         }
         else {
             $result = parent::createDataDescription();
-            if (
-                in_array($this->getState(), array('main', 'edit', 'add', 'save', 'getRawData')) &&
-                ($col = $this->getOrderColumn()) && (
-                $field = $result->getFieldDescriptionByName($col))) {
-                $result->removeFieldDescription($field);
-            }
+        }
+        
+        if (
+            ($col = $this->getOrderColumn()) && (
+            $field = $result->getFieldDescriptionByName($col))) {
+            $result->removeFieldDescription($field);
         }
         return $result;
     }
@@ -638,7 +638,8 @@ class Grid extends DBDataSet {
      */
     protected function printData() {
         $this->setParam('recordsPerPage', false);
-        if(E()->getController()->getViewMode() == DocumentController::TRANSFORM_HTML)
+        if (E()->getController()->getViewMode() ==
+                DocumentController::TRANSFORM_HTML)
             E()->getController()->getTransformer()->setFileName('print.xslt');
         $this->prepare();
     }
@@ -849,7 +850,7 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Метод применеющий фильтр
+     * Метод применяющий фильтр в гриде
      *
      * @return void
      * @access protected
@@ -867,7 +868,11 @@ class Grid extends DBDataSet {
                 $tableName . $fieldName . ' LIKE \'%' . $value . '%\' ');
         }
     }
-
+    /**
+     * Применение сортировки
+     * 
+     * @return void
+     */
     protected function applyUserSort() {
         $actionParams = $this->getStateParams(true);
         if (isset($actionParams['sortField']) &&

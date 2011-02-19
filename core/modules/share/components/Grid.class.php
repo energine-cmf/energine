@@ -347,9 +347,9 @@ class Grid extends DBDataSet {
         else {
             $result = parent::createDataDescription();
             if (
-                    in_array($this->getState(), array('main', 'edit', 'add', 'save', 'getRawData')) &&
-                            ($col = $this->getOrderColumn()) && (
-                    $field = $result->getFieldDescriptionByName($col))) {
+                in_array($this->getState(), array('main', 'edit', 'add', 'save', 'getRawData')) &&
+                ($col = $this->getOrderColumn()) && (
+                $field = $result->getFieldDescriptionByName($col))) {
                 $result->removeFieldDescription($field);
             }
         }
@@ -366,8 +366,9 @@ class Grid extends DBDataSet {
 
     protected function getFKData($fkTableName, $fkKeyName) {
         $result = array();
-        if($this->getState() !== self::DEFAULT_STATE_NAME)
-            $result = $this->dbh->getForeignKeyData($fkTableName, $fkKeyName, $this->document->getLang());
+        if ($this->getState() !== self::DEFAULT_STATE_NAME)
+            $result =
+                    $this->dbh->getForeignKeyData($fkTableName, $fkKeyName, $this->document->getLang());
 
         return $result;
     }
@@ -584,20 +585,22 @@ class Grid extends DBDataSet {
      */
 
     protected function exportCSV() {
-        $prepareCSVString =  function ($result, Array $nextValue) {
+        $prepareCSVString = function ($result, Array $nextValue) {
             $separator = '"';
             $delimiter = ';';
             $rowDelimiter = "\r\n";
             if (!empty($result)) {
-                    $result .= $rowDelimiter;
+                $result .= $rowDelimiter;
             }
             $row = '';
             foreach ($nextValue as $fieldValue) {
-                $row .= $separator.mb_convert_encoding(str_replace(array($separator, $delimiter),array("''",','),$fieldValue), 'Windows-1251', 'UTF-8').$separator.$delimiter;
+                $row .= $separator .
+                        mb_convert_encoding(str_replace(array($separator, $delimiter), array("''", ','), $fieldValue), 'Windows-1251', 'UTF-8') .
+                        $separator . $delimiter;
             }
             $row = substr($row, 0, -1);
 
-            return $result.$row;
+            return $result . $row;
         };
 
         //Если у нас есть таблица с переводами то експортить не получится
@@ -617,13 +620,27 @@ class Grid extends DBDataSet {
         }
         for ($i = 0; $i < $this->getData()->getRowCount(); $i++) {
             foreach ($this->getDataDescription() as $fieldName => $fieldInfo) {
-                $value = $this->getData()->getFieldByName($fieldName)->getRowData($i); 
-                if($format = $fieldInfo->getPropertyValue('outputFormat')) $value = strftime($format, $value);
+                $value =
+                        $this->getData()->getFieldByName($fieldName)->getRowData($i);
+                if ($format = $fieldInfo->getPropertyValue('outputFormat'))
+                    $value = strftime($format, $value);
                 $data[$i + 1][] = $value;
             }
         }
         $data = array_reduce($data, $prepareCSVString);
         $this->downloadFile($data, $MIMEType, $filename);
+    }
+
+    /**
+     * Формирует список для печати
+     *
+     * @return void
+     */
+    protected function printData() {
+        $this->setParam('recordsPerPage', false);
+        if(E()->getController()->getViewMode() == DocumentController::TRANSFORM_HTML)
+            E()->getController()->getTransformer()->setFileName('print.xslt');
+        $this->prepare();
     }
 
 
@@ -675,13 +692,13 @@ class Grid extends DBDataSet {
                     $dirname . '/' . '.' . $filename . '.' . $width . '-' .
                             $height . '.' . $extension;
             if (
-                    (
-                            file_exists($fullDestFileName =
-                                    dirname($_SERVER['SCRIPT_FILENAME']) . '/' .
-                                    $destFileName)
-                            && $rewrite
-                    )
-                    || !file_exists($fullDestFileName)
+                (
+                        file_exists($fullDestFileName =
+                                dirname($_SERVER['SCRIPT_FILENAME']) . '/' .
+                                $destFileName)
+                        && $rewrite
+                )
+                || !file_exists($fullDestFileName)
             ) {
                 $image = new Image();
                 $image->loadFromFile($sourceFileName);

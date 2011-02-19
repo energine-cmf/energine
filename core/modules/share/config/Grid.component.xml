@@ -87,10 +87,9 @@
                 <pattern>/imagemanager/</pattern>
             </uri_patterns>
         </state>
-        <state name="fileLibrary" rights="3">
+        <state name="printData" rights="3">
             <uri_patterns>
-                <pattern>/file-library/</pattern>
-                <pattern>/file-library/[any]/</pattern>
+                <pattern>/print/</pattern>
             </uri_patterns>
         </state>
         <state name="cleanup" rights="3">

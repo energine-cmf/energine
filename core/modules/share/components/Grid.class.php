@@ -178,7 +178,7 @@ class Grid extends DBDataSet {
 
     protected function main() {
         parent::main();
-        $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER');
+        $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS');
     }
 
     /**
@@ -860,12 +860,21 @@ class Grid extends DBDataSet {
         //Формат фильтра
         //$_POST['filter'][$tableName][$fieldName] = значение фильтра
         if (isset($_POST['filter'])) {
+            $condition = $_POST['filter']['condition'];
+            $conditionPatterns = array(
+                'like' => 'LIKE \'%%%s%%\'',
+                '=' => '=%s',
+                '<' => '<%s',
+                '>' => '>%s',
+                'between' => 'BETWEEN %s AND %s'
+            );
+            unset($_POST['filter']['condition']);
             $tableName = key($_POST['filter']);
             $fieldName = key($_POST['filter'][$tableName]);
             $value = trim($_POST['filter'][$tableName][$fieldName]);
             $tableName = ($tableName) ? $tableName . '.' : '';
             $this->addFilterCondition(
-                $tableName . $fieldName . ' LIKE \'%' . $value . '%\' ');
+                $tableName . $fieldName . ' '.sprintf($conditionPatterns[$condition], $value).' ');
         }
     }
     /**

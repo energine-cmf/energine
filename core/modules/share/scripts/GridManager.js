@@ -188,14 +188,20 @@ GridManager.Filter = new Class({
         this.gm = gridManager;
         this.element = this.gm.element.getElement('.filter');
         this.fields = false;
-        this.query = false;
+        this.inputs = false;
         this.active = false;
         var applyButton =  this.element.getElement('.f_apply'), resetLink = this.element.getElement('.f_reset');
         if (this.element) {
-            this.fields = this.element.getElement('select');
-            this.query = this.element.getElement('input');
+            this.fields = this.element.getElement('.f_fields');
+            this.inputs = $H(this.element.getElements('input'));
+
+            this.condition = this.element.getElement('.f_condition');
+
             applyButton.addEvent('click', function(){this.use(); this.gm.reloadGrid.apply(this.gm);}.bind(this));
             resetLink.addEvent('click', function(e){Energine.cancelEvent(e); this.remove();this.gm.reloadGrid.apply(this.gm);}.bind(this));
+            this.condition.addEvent('change', function(event){
+
+            });
             this.query.addEvent('keydown', function(event) {
                 event = new Event(event);
                 if ((event.key == 'enter') && (event.target.value != '')) {
@@ -231,9 +237,11 @@ GridManager.Filter = new Class({
     getValue: function(){
         var result = '';
         if (this.active && this.query.value.length > 0) {
-            var fieldName = this.fields.options[this.fields.selectedIndex].value;
+            var
+                fieldName = this.fields.options[this.fields.selectedIndex].value,
+                fieldCondition = this.condition.options[this.condition.selectedIndex].value;
             result =
-                    'filter' + fieldName + '=' + this.query.value + '&';
+                    'filter' + fieldName + '=' + this.query.value + '&filter[condition]=' + fieldCondition + '&';
         }
         return result;
     }

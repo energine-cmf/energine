@@ -77,7 +77,7 @@
                     <xsl:if test="$FIELDS[@type = 'string' or @type='date' or @type='datetime' or @type='float' or @type='integer']">
                         <div class="filter">
                             <xsl:value-of select="$TRANSLATION[@const = 'TXT_FILTER']" />:<xsl:text>&#160;</xsl:text>
-                            <select name="fieldName">
+                            <select name="fieldName" class="f_fields">
                                 <xsl:for-each select="$FIELDS[@type!='hidden']">
                                     <xsl:choose>
                                         <xsl:when test="@index='PRI'"></xsl:when>
@@ -93,6 +93,14 @@
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </xsl:for-each>
+                            </select>
+                            <xsl:text>&#160;</xsl:text>
+                            <select name="condition" class="f_condition">
+                                <option value="like"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_CONTAINS']"/></option>
+                                <option value="=">=</option>
+                                <option value="&lt;"><xsl:text>&lt;</xsl:text></option>
+                                <option value="&gt;"><xsl:text>&gt;</xsl:text></option>
+                                <option value="between"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_BETWEEN']"/></option>
                             </select>
                             <xsl:text>&#160;</xsl:text>
                             <input type="text" name="query"/>

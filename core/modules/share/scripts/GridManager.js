@@ -60,10 +60,8 @@ var GridManager = new Class({
     onTabChange: function(tabData) {
         this.langId = tabData.lang;
         // Загружаем первую страницу только если панель инструментов уже прикреплена.
-        if (this.filter.exists) this.removeFilter(true);
-        else /*if (this.toolbar)*/{
-            this.reloadGrid();
-        }
+        this.filter.remove();
+        this.reloadGrid();
     },
 
     onSelect: function() {
@@ -88,11 +86,7 @@ var GridManager = new Class({
         this.grid.clear();
         var postBody = '', url = this.singlePath + 'get-data/page-' + pageNum;
         if (this.langId) postBody += 'languageID=' + this.langId + '&';
-        if (this.filter.active && this.filter.query.value.length > 0) {
-            var fieldName = this.filter.fields.options[this.filter.fields.selectedIndex].value;
-            postBody +=
-                    'filter' + fieldName + '=' + this.filter.query.value + '&';
-        }
+        postBody += this.filter.getValue();
         if (this.grid.sort.order) {
             url = this.singlePath + 'get-data/' + this.grid.sort.field + '-' +
                     this.grid.sort.order + '/page-' + pageNum
@@ -129,26 +123,6 @@ var GridManager = new Class({
         alert(responseText);
         this.overlay.hide();
     },
-    applyFilter: function() {
-        if (this.filter.query.value.length > 0) {
-            this.filter.element.addClass('active');
-            this.filter.active = true;
-            this.reloadGrid();
-        }
-        else if (this.filter.active) {
-            this.removeFilter();
-        }
-    },
-
-    removeFilter: function(force) {
-        this.filter.query.value = '';
-        this.filter.element.removeClass('active');
-        if (this.filter.active || force) {
-            this.filter.active = false;
-            this.reloadGrid();
-        }
-    },
-
     // Actions:
 
     view: function() {
@@ -211,29 +185,56 @@ var GridManager = new Class({
 
 GridManager.Filter = new Class({
     initialize:function(gridManager){
-        this.element = gridManager.element.getElement('.filter');
+        this.gm = gridManager;
+        this.element = this.gm.element.getElement('.filter');
         this.fields = false;
         this.query = false;
+        this.active = false;
+        var applyButton =  this.element.getElement('.f_apply'), resetLink = this.element.getElement('.f_reset');
         if (this.element) {
             this.fields = this.element.getElement('select');
             this.query = this.element.getElement('input');
+            applyButton.addEvent('click', function(){this.use(); this.gm.reloadGrid.apply(this.gm);}.bind(this));
+            resetLink.addEvent('click', function(e){Energine.cancelEvent(e); this.remove();this.gm.reloadGrid.apply(this.gm);}.bind(this));
             this.query.addEvent('keydown', function(event) {
                 event = new Event(event);
-                if ((event.key == 'enter') && (event.control.value != '')) {
-                    event.stop();
-                    var button = element.getElement('.filter button');
-                    button.click();
+                if ((event.key == 'enter') && (event.target.value != '')) {
+                    Energine.cancelEvent(event);
+                    applyButton.click();
                 }
             });
         }
     },
-    exists: function(){
-        return (this.element)?true:false;
+    remove: function(){
+        if(this.element) {
+            this.query.value = '';
+            this.element.removeClass('active');
+            this.active = false;
+        }
     },
-    remove: function(force){
+    use: function(){
+        var reloadOnExit = true;
 
+        if (this.query.value.length > 0) {
+            this.element.addClass('active');
+            this.active = true;
+        }
+        else if (this.active) {
+            this.remove();
+        }
+        else {
+            reloadOnExit = false;
+        }
+
+        return reloadOnExit;
     },
-    'apply': function(){
-
+    getValue: function(){
+        var result = '';
+        if (this.active && this.query.value.length > 0) {
+            var fieldName = this.fields.options[this.fields.selectedIndex].value;
+            result =
+                    'filter' + fieldName + '=' + this.query.value + '&';
+        }
+        return result;
     }
 });

@@ -97,9 +97,9 @@
                             <xsl:text>&#160;</xsl:text>
                             <input type="text" name="query"/>
                             <xsl:text>&#160;</xsl:text>
-                            <button type="button" onclick="{generate-id(.)}.applyFilter();"><xsl:value-of select="$TRANSLATION[@const = 'BTN_APPLY_FILTER']"/></button>
+                            <button type="button" class="f_apply"><xsl:value-of select="$TRANSLATION[@const = 'BTN_APPLY_FILTER']"/></button>
                             <xsl:text>&#160;</xsl:text>
-                            <a href="javascript:{generate-id(.)}.removeFilter();"><xsl:value-of select="$TRANSLATION[@const = 'TXT_RESET_FILTER']"/></a>
+                            <a href="#" class="f_reset"><xsl:value-of select="$TRANSLATION[@const = 'TXT_RESET_FILTER']"/></a>
                         </div>
                     </xsl:if>
                     <div class="gridHeadContainer">

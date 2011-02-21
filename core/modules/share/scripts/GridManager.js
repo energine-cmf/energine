@@ -12,20 +12,7 @@ var GridManager = new Class({
     initialize: function(element) {
         this.element = element;
 
-        this.filter = {};
-        this.filter.element = this.element.getElement('.filter');
-        if (this.filter.element) {
-            this.filter.fields = this.filter.element.getElement('select');
-            this.filter.query = this.filter.element.getElement('input');
-            this.filter.query.addEvent('keydown', function(event) {
-                event = new Event(event);
-                if ((event.key == 'enter') && (event.control.value != '')) {
-                    event.stop();
-                    var button = element.getElement('.filter button');
-                    button.click();
-                }
-            });
-        }
+        this.filter = new GridManager.Filter(this);
 
         this.tabPane =
                 new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });
@@ -73,7 +60,7 @@ var GridManager = new Class({
     onTabChange: function(tabData) {
         this.langId = tabData.lang;
         // Загружаем первую страницу только если панель инструментов уже прикреплена.
-        if (/*this.toolbar && */this.filter.element) this.removeFilter(true);
+        if (this.filter.exists) this.removeFilter(true);
         else /*if (this.toolbar)*/{
             this.reloadGrid();
         }
@@ -219,5 +206,34 @@ var GridManager = new Class({
     csv: function() {
         document.location.href =
                 this.element.getProperty('single_template') + 'csv/';
+    }
+});
+
+GridManager.Filter = new Class({
+    initialize:function(gridManager){
+        this.element = gridManager.element.getElement('.filter');
+        this.fields = false;
+        this.query = false;
+        if (this.element) {
+            this.fields = this.element.getElement('select');
+            this.query = this.element.getElement('input');
+            this.query.addEvent('keydown', function(event) {
+                event = new Event(event);
+                if ((event.key == 'enter') && (event.control.value != '')) {
+                    event.stop();
+                    var button = element.getElement('.filter button');
+                    button.click();
+                }
+            });
+        }
+    },
+    exists: function(){
+        return (this.element)?true:false;
+    },
+    remove: function(force){
+
+    },
+    'apply': function(){
+
     }
 });

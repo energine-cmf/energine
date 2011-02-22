@@ -193,16 +193,61 @@ GridManager.Filter = new Class({
         var applyButton =  this.element.getElement('.f_apply'), resetLink = this.element.getElement('.f_reset');
         if (this.element) {
             this.fields = this.element.getElement('.f_fields');
-            this.inputs = $H(this.element.getElements('input'));
+            this.inputs = this.element.getElements('input');
 
+            this.inputs.hasValues = function(){
+                return this.some(function(el){ return ($(el))?el.get('value'):false});
+            };
+            this.inputs.getValues = function(fieldName){
+                var str = '';
+                this.each(function(el, index, els){
+                    if(el.get('value')) str += fieldName + '[]=' + el.get('value');
+                    if(index != (els.length -1)) str += '&';
+                });
+                return str;
+            };
+            this.inputs.empty = function(){
+                this.each(function(el){el.set('value', '')});
+            }
             this.condition = this.element.getElement('.f_condition');
+
+            /*var prepareInputs = function(){
+            if(['date', 'datetime', 'time'].contains(this.fields.options[this.fields.selectedIndex].getAttribute('type'))){
+                this.inputs.each(function(el){
+                    el.store('dp', Energine.createDatePicker(el, true));
+                })
+            }
+            else {
+                this.inputs.each(function(el){
+                    var dp = el.retrieve('dp');
+                    if(dp){
+                        console.log(dp);
+                        dp.destroy();
+                        el.eliminate('dp');
+                    }
+                })
+            }}.bind(this);
+            //prepareInputs();
+
+            this.fields.addEvent('change', prepareInputs);*/
 
             applyButton.addEvent('click', function(){this.use(); this.gm.reloadGrid.apply(this.gm);}.bind(this));
             resetLink.addEvent('click', function(e){Energine.cancelEvent(e); this.remove();this.gm.reloadGrid.apply(this.gm);}.bind(this));
-            this.condition.addEvent('change', function(event){
 
-            });
-            this.query.addEvent('keydown', function(event) {
+            this.condition.addEvent('change', function(event){
+                var condition = $(event.target).get('value');
+
+                if(condition == 'between'){
+                    this.inputs.addClass('small');
+                    this.inputs[1].removeClass('hidden');
+                }
+                else {
+                    this.inputs.removeClass('small');
+                    this.inputs[1].addClass('hidden');
+                }
+            }.bind(this));
+
+            this.inputs.addEvent('keydown', function(event) {
                 event = new Event(event);
                 if ((event.key == 'enter') && (event.target.value != '')) {
                     Energine.cancelEvent(event);
@@ -213,15 +258,14 @@ GridManager.Filter = new Class({
     },
     remove: function(){
         if(this.element) {
-            this.query.value = '';
+            this.inputs.empty();
             this.element.removeClass('active');
             this.active = false;
         }
     },
     use: function(){
         var reloadOnExit = true;
-
-        if (this.query.value.length > 0) {
+        if (this.inputs.hasValues()) {
             this.element.addClass('active');
             this.active = true;
         }
@@ -236,12 +280,11 @@ GridManager.Filter = new Class({
     },
     getValue: function(){
         var result = '';
-        if (this.active && this.query.value.length > 0) {
+        if (this.active && this.inputs.hasValues()) {
             var
                 fieldName = this.fields.options[this.fields.selectedIndex].value,
                 fieldCondition = this.condition.options[this.condition.selectedIndex].value;
-            result =
-                    'filter' + fieldName + '=' + this.query.value + '&filter[condition]=' + fieldCondition + '&';
+            result = this.inputs.getValues('filter' + fieldName) + '&filter[condition]=' + fieldCondition + '&';
         }
         return result;
     }

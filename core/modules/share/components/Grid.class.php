@@ -871,10 +871,11 @@ class Grid extends DBDataSet {
             unset($_POST['filter']['condition']);
             $tableName = key($_POST['filter']);
             $fieldName = key($_POST['filter'][$tableName]);
-            $value = trim($_POST['filter'][$tableName][$fieldName]);
+            $values = $_POST['filter'][$tableName][$fieldName];
             $tableName = ($tableName) ? $tableName . '.' : '';
             $this->addFilterCondition(
-                $tableName . $fieldName . ' '.sprintf($conditionPatterns[$condition], $value).' ');
+                $tableName . $fieldName . ' '.call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]),  $values)).' '
+            );
         }
     }
     /**

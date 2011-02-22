@@ -88,7 +88,7 @@
                                         </xsl:when>
                                         <xsl:otherwise>
                                             <xsl:if test="@type = 'string' or @type = 'htmlblock' or @type='email'  or @type='date' or @type='datetime' or @type='float' or @type='integer'">
-                                                <option value="[{@tableName}][{@name}]"><xsl:value-of select="@title"/></option>
+                                                <option value="[{@tableName}][{@name}]" type="{@type}"><xsl:value-of select="@title"/></option>
                                             </xsl:if>
                                         </xsl:otherwise>
                                     </xsl:choose>
@@ -102,9 +102,7 @@
                                 <option value="&gt;"><xsl:text>&gt;</xsl:text></option>
                                 <option value="between"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_BETWEEN']"/></option>
                             </select>
-                            <xsl:text>&#160;</xsl:text>
-                            <input type="text" name="query"/>
-                            <xsl:text>&#160;</xsl:text>
+                            <span class="f_query_container"><input type="text"/><input type="text" class="hidden"/></span>
                             <button type="button" class="f_apply"><xsl:value-of select="$TRANSLATION[@const = 'BTN_APPLY_FILTER']"/></button>
                             <xsl:text>&#160;</xsl:text>
                             <a href="#" class="f_reset"><xsl:value-of select="$TRANSLATION[@const = 'TXT_RESET_FILTER']"/></a>

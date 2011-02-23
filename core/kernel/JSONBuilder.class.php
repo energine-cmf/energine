@@ -63,9 +63,9 @@ class JSONBuilder extends AbstractBuilder {
                 'key' => $fieldInfo->getPropertyValue('key') &&
                         $fieldInfo->getPropertyValue('index') ==
                                 'PRI' ? true : false,
-                'visible' => $fieldInfo->getPropertyValue('key') &&
+                'visible' => true /*$fieldInfo->getPropertyValue('key') &&
                         $fieldInfo->getPropertyValue('index') ==
-                                'PRI' ? false : true,
+                                'PRI' ? false : true*/,
                 'name' =>
                 $fieldInfo->getPropertyValue('tableName') . "[$fieldName]",
                 'rights' => $fieldInfo->getRights(),

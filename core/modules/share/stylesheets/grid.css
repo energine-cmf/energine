@@ -24,19 +24,29 @@ div.grid div.filter select, div.grid div.filter input, div.grid div.filter butto
 	margin:0px;
 }
 
-div.grid div.filter .f_query_container{
+div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_container{
     margin-left:10px;
 }
 
 div.grid div.filter input {
     width: 200px;
     margin-right:5px;
+    vertical-align:middle;
 }
 
 div.grid div.filter input.small {
     width: 94px;
     margin-right:5px;
+    /*vertical-align:middle;*/
 }
+.f_datepicker {
+    /*vertical-align:middle;*/
+    margin-left:-23px;
+    padding-right:5px;
+    position:relative;
+    top:3px;
+}
+
 .grid {
     background: #fcfcfc;
     color:black;

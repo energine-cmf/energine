@@ -178,7 +178,7 @@ class Grid extends DBDataSet {
 
     protected function main() {
         parent::main();
-        $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS');
+        $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
     }
 
     /**
@@ -353,6 +353,7 @@ class Grid extends DBDataSet {
             $field = $result->getFieldDescriptionByName($col))) {
             $result->removeFieldDescription($field);
         }
+        
         return $result;
     }
 
@@ -863,10 +864,12 @@ class Grid extends DBDataSet {
             $condition = $_POST['filter']['condition'];
             $conditionPatterns = array(
                 'like' => 'LIKE \'%%%s%%\'',
-                '=' => '=%s',
-                '<' => '<%s',
-                '>' => '>%s',
-                'between' => 'BETWEEN %s AND %s'
+                'notlike' => 'NOT LIKE \'%%%s%%\'',
+                '=' => '= \'%s\'',
+                '!=' => '!= \'%s\'',
+                '<' => '<\'%s\'',
+                '>' => '>\'%s\'',
+                'between' => 'BETWEEN \'%s\' AND \'%s\''
             );
             unset($_POST['filter']['condition']);
             $tableName = key($_POST['filter']);

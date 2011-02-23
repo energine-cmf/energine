@@ -291,6 +291,9 @@ class FieldDescription extends DBWorker implements Iterator{
                     $this->setProperty($propName, $propValue);
             }
         }
+        if(isset($fieldInfo['index']) && ($fieldInfo['index'] == 'PRI')){
+            $this->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+        }
         return $result;
     }
 
@@ -784,7 +787,9 @@ class FieldDescription extends DBWorker implements Iterator{
     public static function intersect(FieldDescription $configFieldDescription, FieldDescription $dbFieldDescription) {
         $type = $configFieldDescription->getType();
         $mode = $configFieldDescription->getMode();
-
+        if($dbFieldDescription->getPropertyValue('index') == 'PRI'){
+            $dbFieldDescription->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+        }
         if (!is_null($type)) {
         	$dbFieldDescription->setProperty('origType', $dbFieldDescription->getType());
             //меняем тип
@@ -807,7 +812,6 @@ class FieldDescription extends DBWorker implements Iterator{
                 $dbFieldDescription->setProperty($propertyName, $propertyValue);
             }
         }
-
         return $dbFieldDescription;
     }
 

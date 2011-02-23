@@ -105,8 +105,8 @@ var GridManager = new Class({
         }
         this.grid.setData(result.data || []);
         this.grid.build();
-        
-        if(result.pager)
+
+        if (result.pager)
             this.pageList.build(result.pager.count, result.pager.current);
 
         this.overlay.hide();
@@ -119,7 +119,7 @@ var GridManager = new Class({
             this.pageList.enable();
         }
     },
-    processServerError: function(responseText){
+    processServerError: function(responseText) {
         alert(responseText);
         this.overlay.hide();
     },
@@ -184,86 +184,64 @@ var GridManager = new Class({
 });
 
 GridManager.Filter = new Class({
-    initialize:function(gridManager){
+    initialize:function(gridManager) {
         this.gm = gridManager;
         this.element = this.gm.element.getElement('.filter');
         this.fields = false;
         this.inputs = false;
         this.active = false;
-        var applyButton =  this.element.getElement('.f_apply'), resetLink = this.element.getElement('.f_reset');
+        var applyButton = this.element.getElement('.f_apply'), resetLink = this.element.getElement('.f_reset');
         if (this.element) {
             this.fields = this.element.getElement('.f_fields');
-            this.inputs = this.element.getElements('input');
-
-            this.inputs.hasValues = function(){
-                return this.some(function(el){ return ($(el))?el.get('value'):false});
-            };
-            this.inputs.getValues = function(fieldName){
-                var str = '';
-                this.each(function(el, index, els){
-                    if(el.get('value')) str += fieldName + '[]=' + el.get('value');
-                    if(index != (els.length -1)) str += '&';
-                });
-                return str;
-            };
-            this.inputs.empty = function(){
-                this.each(function(el){el.set('value', '')});
-            }
-            this.condition = this.element.getElement('.f_condition');
-
-            /*var prepareInputs = function(){
-            if(['date', 'datetime', 'time'].contains(this.fields.options[this.fields.selectedIndex].getAttribute('type'))){
-                this.inputs.each(function(el){
-                    el.store('dp', Energine.createDatePicker(el, true));
-                })
-            }
-            else {
-                this.inputs.each(function(el){
-                    var dp = el.retrieve('dp');
-                    if(dp){
-                        console.log(dp);
-                        dp.destroy();
-                        el.eliminate('dp');
-                    }
-                })
-            }}.bind(this);
-            //prepareInputs();
-
-            this.fields.addEvent('change', prepareInputs);*/
-
-            applyButton.addEvent('click', function(){this.use(); this.gm.reloadGrid.apply(this.gm);}.bind(this));
-            resetLink.addEvent('click', function(e){Energine.cancelEvent(e); this.remove();this.gm.reloadGrid.apply(this.gm);}.bind(this));
-
-            this.condition.addEvent('change', function(event){
-                var condition = $(event.target).get('value');
-
-                if(condition == 'between'){
-                    this.inputs.addClass('small');
-                    this.inputs[1].removeClass('hidden');
-                }
-                else {
-                    this.inputs.removeClass('small');
-                    this.inputs[1].addClass('hidden');
-                }
+            applyButton.addEvent('click', function() {
+                this.use();
+                this.gm.reloadGrid.apply(this.gm);
+            }.bind(this));
+            resetLink.addEvent('click', function(e) {
+                Energine.cancelEvent(e);
+                this.remove();
+                this.gm.reloadGrid.apply(this.gm);
             }.bind(this));
 
-            this.inputs.addEvent('keydown', function(event) {
-                event = new Event(event);
-                if ((event.key == 'enter') && (event.target.value != '')) {
-                    Energine.cancelEvent(event);
-                    applyButton.click();
+            this.inputs =
+                    new GridManager.Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
+            this.condition = this.element.getElement('.f_condition');
+
+             /*var prepareInputs = function(){
+             //this.inputs.empty();
+             if(['date', 'datetime', 'time'].contains(this.fields.options[this.fields.selectedIndex].getAttribute('type'))){
+                this.inputs.asDateSelector();
+             }
+             else {
+                this.inputs.asTextSelector();
+             }
+             }.bind(this);
+             prepareInputs();
+
+             this.fields.addEvent('change', prepareInputs);*/
+
+
+            this.condition.addEvent('change', function(event) {
+                //prepareInputs();
+                var condition = $(event.target).get('value');
+
+                if (condition == 'between') {
+                    this.inputs.asPeriod();
                 }
-            });
+                else {
+                    this.inputs.asScalar();
+                }
+            }.bind(this));
         }
     },
-    remove: function(){
-        if(this.element) {
+    remove: function() {
+        if (this.element) {
             this.inputs.empty();
             this.element.removeClass('active');
             this.active = false;
         }
     },
-    use: function(){
+    use: function() {
         var reloadOnExit = true;
         if (this.inputs.hasValues()) {
             this.element.addClass('active');
@@ -278,14 +256,79 @@ GridManager.Filter = new Class({
 
         return reloadOnExit;
     },
-    getValue: function(){
+    getValue: function() {
         var result = '';
         if (this.active && this.inputs.hasValues()) {
             var
-                fieldName = this.fields.options[this.fields.selectedIndex].value,
-                fieldCondition = this.condition.options[this.condition.selectedIndex].value;
-            result = this.inputs.getValues('filter' + fieldName) + '&filter[condition]=' + fieldCondition + '&';
+                    fieldName = this.fields.options[this.fields.selectedIndex].value,
+                    fieldCondition = this.condition.options[this.condition.selectedIndex].value;
+            result = this.inputs.getValues('filter' + fieldName) +
+                    '&filter[condition]=' + fieldCondition + '&';
         }
         return result;
+    }
+});
+
+GridManager.Filter.QueryControls = new Class({
+    initialize: function(els, applyAction) {
+        this.containers = els;
+        this.inputs = [];
+        this.dps = [];
+        this.containers.each(function(el) {
+            this.inputs.push(el.getElement('input'));
+            this.dps.push(el.getElement('.f_datepicker'));
+        }.bind(this));
+
+        this.inputs = new Elements(this.inputs);
+        this.dps = new Elements(this.dps);
+        /*this.dps.each(function(el, index){
+            Energine._createDatePickerObject(el, {
+                format:'j-m-Y',
+                allowEmpty: true,
+                inputOutputFormat: 'Y-m-d',
+                toggleElements: this.inputs[index]
+            })
+        }.bind(this));*/
+
+
+        this.inputs.addEvent('keydown', function(event) {
+            event = new Event(event);
+            if ((event.key == 'enter') && (event.target.value != '')) {
+                Energine.cancelEvent(event);
+                applyAction.click();
+            }
+        });
+    },
+    hasValues: function() {
+        return this.inputs.some(function(el) {
+            return ($(el)) ? el.get('value') : false
+        });
+    },
+    empty:function() {
+        this.inputs.each(function(el) {
+            el.set('value', '')
+        });
+    },
+    getValues: function(fieldName) {
+        var str = '';
+        this.inputs.each(function(el, index, els) {
+            if (el.get('value')) str += fieldName + '[]=' + el.get('value');
+            if (index != (els.length - 1)) str += '&';
+        });
+        return str;
+    },
+    asDateSelector: function() {
+        //this.dps.removeClass('hidden').setStyle('display', '');
+    },
+    asTextSelector:function() {
+        //this.dps.addClass('hidden');
+    },
+    asPeriod: function() {
+        this.containers.removeClass('hidden');
+        this.inputs.addClass('small');
+    },
+    asScalar: function() {
+        this.containers[1].addClass('hidden');
+        this.inputs.removeClass('small');
     }
 });

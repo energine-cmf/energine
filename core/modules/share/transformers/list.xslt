@@ -80,7 +80,7 @@
                             <select name="fieldName" class="f_fields">
                                 <xsl:for-each select="$FIELDS[@type!='hidden']">
                                     <xsl:choose>
-                                        <xsl:when test="@index='PRI'"></xsl:when>
+                                        <!--<xsl:when test="@index='PRI'"></xsl:when>-->
                                         <xsl:when test="@language">
                                             <xsl:if test="(@language = $LANG_ID) and (@type = 'string' or @type = 'htmlblock')">
                                                 <option value="[{@tableName}][{@name}]"><xsl:value-of select="@title"/></option>
@@ -97,12 +97,26 @@
                             <xsl:text>&#160;</xsl:text>
                             <select name="condition" class="f_condition">
                                 <option value="like"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_CONTAINS']"/></option>
+                                <option value="notlike"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_NOT_CONTAINS']"/></option>
                                 <option value="=">=</option>
+                                <option value="!=">!=</option>
                                 <option value="&lt;"><xsl:text>&lt;</xsl:text></option>
                                 <option value="&gt;"><xsl:text>&gt;</xsl:text></option>
                                 <option value="between"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_BETWEEN']"/></option>
                             </select>
-                            <span class="f_query_container"><input type="text"/><input type="text" class="hidden"/></span>
+                            <span class="f_query_container">
+                                <input type="text" class="query"/>
+                                <span class="f_datepicker hidden">
+                                    <img src="images/calendar.gif" alt=""/>
+                                </span>
+                            </span>
+                            <span class="f_query_container hidden">
+                                <input type="text" class="query"/>
+                                <span class="f_datepicker hidden">
+                                    <img src="images/calendar.gif" alt=""/>
+                                </span>
+                            </span>
+                            <!--<span class="f_query_date_container hidden"><input type="text" class="query"/><input type="text" class="hidden query"/></span>-->
                             <button type="button" class="f_apply"><xsl:value-of select="$TRANSLATION[@const = 'BTN_APPLY_FILTER']"/></button>
                             <xsl:text>&#160;</xsl:text>
                             <a href="#" class="f_reset"><xsl:value-of select="$TRANSLATION[@const = 'TXT_RESET_FILTER']"/></a>
@@ -112,7 +126,7 @@
                     <table class="gridTable" cellspacing="0">
                         <xsl:for-each select="$FIELDS[@type!='hidden']">
                             <xsl:choose>
-                                <xsl:when test="@index='PRI'"></xsl:when>
+                                <!--<xsl:when test="@index='PRI'"></xsl:when>-->
                                 <xsl:when test="@language">
                                     <xsl:if test="@language = $LANG_ID">
                                         <col id="col_1{position()}"/>
@@ -127,7 +141,7 @@
                             <tr>
                                 <xsl:for-each select="$FIELDS[@type!='hidden']">
                                     <xsl:choose>
-                                        <xsl:when test="@index='PRI'"></xsl:when>
+                                        <!--<xsl:when test="@index='PRI'"></xsl:when>-->
                                         <xsl:when test="@language">
                                             <xsl:if test="@language = $LANG_ID">
                                                 <th name="{@name}"><xsl:value-of select="@title"/></th>
@@ -147,7 +161,7 @@
                             <table class="gridTable" cellspacing="0">
                             <xsl:for-each select="$FIELDS[@type!='hidden']">
                                 <xsl:choose>
-                                    <xsl:when test="@index='PRI'"></xsl:when>
+                                    <!--<xsl:when test="@index='PRI'"></xsl:when>-->
                                     <xsl:when test="@language">
                                         <xsl:if test="@language = $LANG_ID">
                                             <col id="col_{position()}a"/>
@@ -162,7 +176,7 @@
                                     <tr>
                                     <xsl:for-each select="$FIELDS[@type!='hidden']">
                                         <xsl:choose>
-                                            <xsl:when test="@index='PRI'"></xsl:when>
+                                            <!--<xsl:when test="@index='PRI'"></xsl:when>-->
                                             <xsl:when test="@language">
                                                 <xsl:if test="@language = $LANG_ID">
                                                     <th id="col_{position()}"><xsl:value-of select="@title"/></th>

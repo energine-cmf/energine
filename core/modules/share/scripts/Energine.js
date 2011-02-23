@@ -178,7 +178,7 @@ Energine.createDatePicker = function(datePickerObj, nullable) {
         inputOutputFormat: 'Y-m-d'
 
     };
-    return Energine._createDatePickerObject(datePickerObj, props);
+    return Energine._createDatePickerObject($(datePickerObj), props);
 }
 
 Energine.createDateTimePicker = function(datePickerObj, nullable) {
@@ -190,7 +190,7 @@ Energine.createDateTimePicker = function(datePickerObj, nullable) {
         allowEmpty: nullable
     }
 
-    return Energine._createDatePickerObject(datePickerObj, props);
+    return Energine._createDatePickerObject($(datePickerObj), props);
 }
 
 Energine._createDatePickerObject = function(datePickerObj, props) {
@@ -200,7 +200,7 @@ Energine._createDatePickerObject = function(datePickerObj, props) {
         ScriptLoader.load('datepicker');
         this.datePickerDataLoaded = true;
     }
-    var dp = new DatePicker($(datePickerObj), $extend({
+    var dp = new DatePicker(datePickerObj, $extend({
         //debug:true    
     },
             props

@@ -491,7 +491,17 @@ final class FileLibrary extends DataSet {
             }
             $uploader = new FileUploader();
             $uploader->setFile($_FILES['Filedata']);
-            $uploader->upload($this->getParam('base') . '/');
+            if(!file_exists($this->getParam('base').'/'.($dirName = date('Ymd')))){
+                $dirObject  = new DirectoryObject();
+                $dirObject->create(array(
+                    'path' => $this->getParam('base'),
+                    FileSystemObject::TABLE_NAME =>
+                    array(
+                    'upl_path' => $dirName,
+                    'upl_name' => date('!Y-m-d')
+                )));
+            }
+            $uploader->upload($this->getParam('base') . '/'.$dirName.'/');
             $fileName = $uploader->getFileObjectName();
 
 

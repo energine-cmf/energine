@@ -22,4 +22,13 @@ class XMLTransformer implements ITransformer{
     public function setDocument(DOMDocument $document){
         $this->document = $document;        
     }
+    /**
+     * Введено для совместимти в режиме отладки
+     *
+     * @param  $dummy
+     * @return void
+     */
+    public function setFileName($dummy){
+        
+    }
 }

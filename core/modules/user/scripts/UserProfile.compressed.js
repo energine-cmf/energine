@@ -1,1 +1,0 @@
-ScriptLoader.load("ValidForm");var UserProfile=new Class({Extends:ValidForm,initialize:function(a){this.parent(a)},validateForm:function(a){var b=$("u_password");var c=$("u_password2");if((b.value!=c.value)){this.validator.showError(b,b.getProperty("nrgn:message2"));this.cancelEvent(a)}else{this.parent(a)}}});

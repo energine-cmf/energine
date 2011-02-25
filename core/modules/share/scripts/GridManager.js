@@ -190,8 +190,8 @@ GridManager.Filter = new Class({
         this.fields = false;
         this.inputs = false;
         this.active = false;
-        var applyButton = this.element.getElement('.f_apply'), resetLink = this.element.getElement('.f_reset');
         if (this.element) {
+            var applyButton = this.element.getElement('.f_apply'), resetLink = this.element.getElement('.f_reset');
             this.fields = this.element.getElement('.f_fields');
             applyButton.addEvent('click', function() {
                 this.use();

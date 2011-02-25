@@ -29,13 +29,13 @@ div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_contai
 }
 
 div.grid div.filter input {
-    width: 200px;
+    width: 165px;
     margin-right:5px;
     vertical-align:middle;
 }
 
 div.grid div.filter input.small {
-    width: 94px;
+    width: 72px;
     margin-right:5px;
     /*vertical-align:middle;*/
 }

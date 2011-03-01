@@ -10,6 +10,7 @@ var Overlay = new Class({
     	Asset.css('overlay.css');
         this.setOptions(options);
         parentElement = parentElement ? parentElement : document.body;
+        if(!parentElement.getElement) parentElement = document;
         if(!(this.element = parentElement.getElement('.e-overlay'))){
             this.element = new Element('div').addClass('e-overlay e-overlay-loading').injectInside(parentElement);
         }

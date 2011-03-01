@@ -142,25 +142,27 @@ var Grid = new Class({
     },
 
     fitGridFormSize: function() {
-        var windowHeight = window.getSize().y - 10;
-        var paneHeight = this.pane.getSize().y;
-        var gridBodyHeight = ((this.gridBodyContainer.getSize().y + 2) >
-                this.minGridHeight) ? (this.gridBodyContainer.getSize().y +
-                2) : this.minGridHeight;
-        var gridContainerHeight = this.gridContainer.getSize().y;
-        var paneOthersHeight = paneHeight - gridContainerHeight;
-        if (windowHeight > (this.minGridHeight + paneOthersHeight)) {
-            if ((gridBodyHeight + paneOthersHeight) > windowHeight) {
-                this.pane.setStyle('height', windowHeight);
+        if(this.pane){
+            var windowHeight = window.getSize().y - 10;
+            var paneHeight = this.pane.getSize().y;
+            var gridBodyHeight = ((this.gridBodyContainer.getSize().y + 2) >
+                    this.minGridHeight) ? (this.gridBodyContainer.getSize().y +
+                    2) : this.minGridHeight;
+            var gridContainerHeight = this.gridContainer.getSize().y;
+            var paneOthersHeight = paneHeight - gridContainerHeight;
+            if (windowHeight > (this.minGridHeight + paneOthersHeight)) {
+                if ((gridBodyHeight + paneOthersHeight) > windowHeight) {
+                    this.pane.setStyle('height', windowHeight);
+                }
+                else {
+                    this.pane.setStyle('height', gridBodyHeight + paneOthersHeight);
+                }
             }
             else {
-                this.pane.setStyle('height', gridBodyHeight + paneOthersHeight);
+                this.pane.setStyle('height', this.minGridHeight + paneOthersHeight);
             }
+            this.fitGridSize();
         }
-        else {
-            this.pane.setStyle('height', this.minGridHeight + paneOthersHeight);
-        }
-        this.fitGridSize();
     },
 
     isEmpty: function() {

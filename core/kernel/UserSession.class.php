@@ -117,7 +117,6 @@ final class UserSession extends DBWorker {
         );
         session_name(self::DEFAULT_SESSION_NAME);
         $this->data = false;
-
         if (
                 (isset($_COOKIE[self::DEFAULT_SESSION_NAME]))
                 ||
@@ -127,7 +126,7 @@ final class UserSession extends DBWorker {
                 $_POST[self::DEFAULT_SESSION_NAME] = $matches[1];
             }
             
-            $this->phpSessId = (isset($_COOKIE[self::DEFAULT_SESSION_NAME])) ? $_COOKIE[self::DEFAULT_SESSION_NAME] : $_POST[self::DEFAULT_SESSION_NAME];
+            $this->phpSessId = (isset($_POST[self::DEFAULT_SESSION_NAME])) ? $_POST[self::DEFAULT_SESSION_NAME]: $_COOKIE[self::DEFAULT_SESSION_NAME];
 
             $this->data = $this->isSessionValid($this->phpSessId);
             //Если сессия валидная
@@ -205,7 +204,7 @@ final class UserSession extends DBWorker {
         $data['session_native_id'] = self::createIdentifier();
         $data['session_created'] = $data['session_last_impression'] = time();
         if (!$expires)
-            $data['session_expires'] = $data['session_created'] + 60;
+            $data['session_expires'] = $data['session_created'] + 15 * 60;
         else
             $data['session_expires'] = $expires;
 

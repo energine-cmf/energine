@@ -2,7 +2,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !\.(jpe?g|gif|png|css|js|swf)
-RewriteRule ^.*$ /index.php
+RewriteRule ^.*$ /~pavka/energine-2.6/index.php
 
 FileETag MTime Size
 

@@ -143,7 +143,7 @@ final class Document extends DBWorker implements IDocument {
         //Если URL редиректа не пустой  - осуществляем редирект по нему
         if (!empty($this->documentInfo['RedirectUrl'])) {
             E()->getResponse()->setStatus('301');
-            E()->getResponse()->setRedirect($this->documentInfo['RedirectUrl']);
+            E()->getResponse()->setRedirect(str_replace('%lang%', E()->getLanguage()->getAbbrByID($this->lang), $this->documentInfo['RedirectUrl']));
         }
         // загружаем компоненты страницы
         //$this->loadComponents($this->documentInfo['templateID']);

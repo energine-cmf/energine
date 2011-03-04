@@ -282,7 +282,6 @@ final class Sitemap extends DBWorker {
 	/**
 	 * Возвращает часть строки УРЛ по идентификатор
 	 *
-	 * @todo Ошибка с вычислением URL для конечных разделов
 	 *
 	 * @param int
 	 * @return string

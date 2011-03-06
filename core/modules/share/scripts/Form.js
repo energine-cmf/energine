@@ -143,7 +143,7 @@ Form.Uploader = new Class({
         this.swfUploader = new Swiff.Uploader({
             path: 'scripts/Swiff.Uploader.swf',
             url: this.form.singlePath + path +'?json',
-            verbose: (Energine.debug) ? true : false,
+            verbose: true,//(Energine.debug) ? true : false,
             queued: false,
             multiple: false,
             target: this.element,

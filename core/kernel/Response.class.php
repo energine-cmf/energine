@@ -172,6 +172,7 @@ final class Response extends Object {
 
     /**
      * Устанавливает адрес для переадресации.
+     * и собственно переадресовывает
      *
      * @param string $location
      * @return void

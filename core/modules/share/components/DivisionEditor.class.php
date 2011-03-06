@@ -514,7 +514,7 @@ final class DivisionEditor extends Grid {
 
             $this->getData()->addField($field);
         }
-
+        $this->getDataDescription()->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_INT)->setMode(FieldDescription::FIELD_MODE_READ);
     }
 
     /**

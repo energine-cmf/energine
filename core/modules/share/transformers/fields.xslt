@@ -323,7 +323,7 @@
     </xsl:template>
     
     <!-- для PK  -->
-    <xsl:template match="field[@key='1'][ancestor::component[@type='form']]">
+    <xsl:template match="field[@key='1' and @type='hidden'][ancestor::component[@type='form']]">
         <input type="hidden" id="{@name}" value="{.}" primary="primary">
             <xsl:attribute name="name">
                 <xsl:choose>

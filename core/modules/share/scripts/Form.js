@@ -143,12 +143,13 @@ Form.Uploader = new Class({
         this.swfUploader = new Swiff.Uploader({
             path: 'scripts/Swiff.Uploader.swf',
             url: this.form.singlePath + path +'?json',
-            verbose: true,//(Energine.debug) ? true : false,
+            verbose: (Energine.debug) ? true : false,
             queued: false,
             multiple: false,
             target: this.element,
             instantStart: true,
             appendCookieData: false,
+            timeLimit:0,
             data:{'NRGNCookie':document.cookie,'path': ($type(ModalBox.getExtraData()) == 'string')?ModalBox.getExtraData():'', 'element': this.element.getProperty('nrgn:input')},
             typeFilter: {
                 'All files (*.*)': '*.*',

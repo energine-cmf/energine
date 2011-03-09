@@ -38,6 +38,7 @@ class WidgetsRepository extends Grid {
 	public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
         $this->setTableName('share_widgets');
+        $this->setOrder(array('widget_name' => QAL::ASC));
 	}
     /**
      * Постройка формы редактирования параметров компонента

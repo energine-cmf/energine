@@ -77,20 +77,11 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
         $http_request .= $req;
 
         $response = '';
-        /**
+
         if( false == ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
                 die ('Could not open socket');
         }
-         */
-        //Чисто СТБшный прикол
-        $opts = array('socket' => array('bindto' => gethostbyname('sourceip').':0'));
 
-        $context = stream_context_create($opts);
-
-        if(false == ($fs = stream_socket_client("tcp://" . $host . ":" .
-                $port, $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context))){
-            die ('Could not open socket');
-        }
 
         fwrite($fs, $http_request);
 

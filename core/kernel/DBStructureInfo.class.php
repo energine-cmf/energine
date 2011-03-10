@@ -95,6 +95,8 @@ final class DBStructureInfo extends Object {
     public function getTableMeta($tableName) {
         if (!isset($this->structure[$tableName]) ||
                 ($this->structure[$tableName] === array())) {
+            //@todo тут все нужно свести только к вызову метода анализа таблицы
+
             $this->structure[$tableName] = $this->analyzeTable($tableName);
             if(empty($this->structure[$tableName])){
                 //Скорее всего это view
@@ -106,7 +108,7 @@ final class DBStructureInfo extends Object {
         }
         return $this->structure[$tableName];
     }
-
+    //@todo спрятать внутрь analyzeTable
     private function analyzeView($viewName){
         if(!($res = $this->pdo->query('SHOW COLUMNS FROM `'.$viewName.'`')->fetchAll(PDO::FETCH_ASSOC))) return false;
         //Считаем что первое поле - PK

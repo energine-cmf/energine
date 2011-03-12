@@ -215,7 +215,7 @@ class Saver extends DBWorker {
      * @return void
      */
     public function addError($fieldName) {
-        array_push($this->errors, $fieldName);
+        array_push($this->errors, $this->translate('FIELD_'.$fieldName));
     }
 
     /**

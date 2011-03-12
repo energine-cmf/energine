@@ -176,6 +176,14 @@ final class Request extends Object {
     public function setPathOffset($offset) {
         $this->offset = $offset;
     }
+    /**
+     * Сдвигает смещение :) на offset пунктов
+     * @param  $offset
+     * @return void
+     */
+    public function shiftPath($offset){
+        $this->setPathOffset($this->getPathOffset() + $offset);
+    }
 
     /**
      * Возвращает смещение в пути.

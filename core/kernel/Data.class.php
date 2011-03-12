@@ -94,10 +94,10 @@ class Data extends Object {
     public function changeRow($rowIndex, array $rowData) {
         $result = false;
         foreach ($rowData as $fieldName => $fieldValue) {
-        	$field = $this->getFieldByName($fieldName);
-        	if ($field) {
-        		$result = $field->setRowData($rowIndex, $fieldValue);
-        	}
+            $field = $this->getFieldByName($fieldName);
+            if ($field) {
+                $result = $field->setRowData($rowIndex, $fieldValue);
+            }
         }
         return $result;
     }
@@ -123,8 +123,8 @@ class Data extends Object {
      */
     public function removeField(Field $field) {
         if (isset($this->fields[$field->getName()])) {
-        	unset($this->fields[$field->getName()]);
-        	$this->length--;
+            unset($this->fields[$field->getName()]);
+            $this->length--;
         }
     }
 
@@ -163,12 +163,12 @@ class Data extends Object {
         return $this->length;
     }
     /**
-     * Возвращает флаг указывающий на то является ли объект данных пустым 
-     * 
+     * Возвращает флаг указывающий на то является ли объект данных пустым
+     *
      * @return bool
      */
-    public function isEmpty(){
-    	return empty($this->fields);
+    public function isEmpty() {
+        return empty($this->fields);
     }
 
     /**
@@ -184,5 +184,25 @@ class Data extends Object {
             $this->rows = $this->getFieldByName($firstFieldName)->getRowCount();
         }
         return $this->rows;
+    }
+
+    public function asArray($groupedByFields = false) {
+        $result = array();
+        $res = array();
+
+        foreach ($this->fields as $fieldName => $field) {
+            $result[$fieldName] = $field->getData();
+        }
+        if($groupedByFields){
+            return $result;
+        }
+        
+        $fieldNames = array_keys($this->fields);
+        for($i=0; $i<=$this->rows; $i++){
+            foreach($fieldNames as $fieldName){
+                $res[$i][$fieldName] = $result[$fieldName][$i];
+            }
+        }
+        return $res;
     }
 }

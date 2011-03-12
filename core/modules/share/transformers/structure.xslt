@@ -80,7 +80,16 @@
 
     <xsl:template match="record[ancestor::component[@name='mainMenu']]">
         <li>
-            <a href="{$LANG_ABBR}{field[@name='Segment']}"><xsl:value-of select="field[@name='Name']"/></a>
+            <a>
+                <xsl:choose>
+                    <xsl:when test="field[@name='Id']!=$ID">
+                        <xsl:attribute name="href"><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/></xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:attribute name="class">active</xsl:attribute>
+                    </xsl:otherwise>
+                </xsl:choose>
+             <xsl:value-of select="field[@name='Name']"/></a>
             <xsl:if test="recordset">
                 <xsl:apply-templates select="recordset"/>
             </xsl:if>

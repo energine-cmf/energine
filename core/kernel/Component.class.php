@@ -603,8 +603,15 @@ class Component extends DBWorker implements IBlock {
         return $this->actionParams;
 
     }
-
-    public function addActionParam($paramName, $paramValue) {
+    /**
+     * Устанавливает параметр состояния
+     * Обычно такое требуется при динамическом создании компонента и передаче ему параметров стостяния из другого компонента
+     *
+     * @param  $paramName string
+     * @param  $paramValue mixed
+     * @return void
+     */
+    public function setStateParam($paramName, $paramValue) {
         $this->actionParams[$paramName] = $paramValue;
     }
 

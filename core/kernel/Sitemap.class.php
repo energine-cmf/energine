@@ -69,6 +69,13 @@ final class Sitemap extends DBWorker {
 	 * @see Sitemap::defaultMetaKeywords
 	 */
 	private $defaultMetaDescription;
+    /**
+	 * Дефолтное meta robots
+	 *
+	 * @var string
+	 * @access private
+	 */
+	private $defaultMetaRobots;
 
 	/**
 	 * Идентификатор текущего языка
@@ -147,16 +154,18 @@ final class Sitemap extends DBWorker {
 		$this->tree = TreeConverter::convert($res, 'smap_id', 'smap_pid');
 
 		$res = $this->dbh->selectRequest('
-		  SELECT s.smap_id,ss.site_meta_keywords, ss.site_meta_description  
+		  SELECT s.smap_id,ss.site_meta_keywords, ss.site_meta_description, sss.site_meta_robots 
             FROM share_sitemap s
             LEFT JOIN share_sites_translation ss ON ss.site_id=s.site_id
+            LEFT JOIN share_sites sss ON sss.site_id=s.site_id 
             WHERE ss.site_id = %s AND s.smap_pid IS NULL and ss.lang_id = %s
 		', $this->siteID, $this->langID);
 		list($res) = $res;
 		$this->defaultID = $res['smap_id']; 
 		$this->defaultMetaKeywords = $res['site_meta_keywords'];
 		$this->defaultMetaDescription = $res['site_meta_description'];
-		
+        $this->defaultMetaRobots = $res['site_meta_robots'];
+
 		$this->getSitemapData(array_keys($this->tree->asList()));
 
 	}
@@ -216,6 +225,7 @@ final class Sitemap extends DBWorker {
 	                    s.smap_pid,
 	                    s.site_id as site,
 	                    s.smap_segment as Segment,
+	                    s.smap_meta_robots,
 	                    st.smap_name,
 	                    smap_redirect_url,
 	                    smap_description_rtf,
@@ -230,7 +240,6 @@ final class Sitemap extends DBWorker {
                     $this->siteID
                 ),
 	            'smap_id', true);
-				
 			$result = array_map(array($this, 'preparePageInfo'), $result);
 			$this->info += $result;
 		}
@@ -262,6 +271,7 @@ final class Sitemap extends DBWorker {
 		$result = convertFieldNames($current,'smap');
 		if(is_null($result['MetaKeywords'])) $result['MetaKeywords'] = $this->defaultMetaKeywords;
 		if(is_null($result['MetaDescription'])) $result['MetaDescription'] = $this->defaultMetaDescription;
+        if(is_null($result['MetaRobots']) || empty($result['MetaRobots'])) $result['MetaRobots'] = $this->defaultMetaRobots;
 		//if($result['RedirectUrl']) $result['RedirectUrl'] = (URI::validate($result['RedirectUrl']))?$result['RedirectUrl']:E()->getSiteManager()->getCurrentSite()->base.$result['RedirectUrl'];
 
 		return $result;

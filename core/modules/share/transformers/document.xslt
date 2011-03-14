@@ -37,6 +37,9 @@
                 </xsl:if>
                 <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
                 <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
+                <xsl:if test="$DOC_PROPS[@name='robots']!=''">
+                    <meta name="robots" content="{$DOC_PROPS[@name='robots']}"/>
+                </xsl:if>
                 <xsl:choose>
                     <xsl:when test="document/@debug=1">
                         <script type="text/javascript" src="{$STATIC_URL}/scripts/mootools-debug.js"></script>

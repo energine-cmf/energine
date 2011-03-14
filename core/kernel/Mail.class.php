@@ -175,6 +175,7 @@ final class Mail extends Object {
             if (is_array($data)) {
             	extract($data);
             }
+            $host = E()->getSiteManager()->getDefaultSite()->base;
         	$errorLevel = error_reporting(E_ERROR);
         	$text = addslashes($text);
         	eval("\$text = \"$text\";");

@@ -681,8 +681,10 @@ final class DivisionEditor extends Grid {
      */
 
     protected function selector() {
+
         $this->addTranslation('TXT_DIVISIONS');
         $this->prepare();
+
         $params = $this->getStateParams(true);
 
         if ($params) {
@@ -695,7 +697,7 @@ final class DivisionEditor extends Grid {
         $this->setProperty('site', $siteID);
         $this->setFilter(array('site_id' => $siteID));
 
-    }
+   }
 
 
     /**

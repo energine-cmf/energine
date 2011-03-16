@@ -105,13 +105,14 @@
                     </label><xsl:text> </xsl:text>
                 </xsl:if>
                 <span class="read"><xsl:value-of select="." disable-output-escaping="yes" /></span>
-                <input type="hidden" value="{.}">
+                <input type="hidden" value="{.}" id="{@name}">
                     <xsl:attribute name="name">
                         <xsl:choose>
                             <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name" />]</xsl:when>
                             <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
+
                 </input>
             </div>
         </xsl:if>

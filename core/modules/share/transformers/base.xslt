@@ -455,7 +455,6 @@
     <xsl:template name="interface_js"/>
 
     <xsl:template name="stylesheets">
-
         <!-- файлы стилей для текущего варианта дизайна -->
         <link href="{$STATIC_URL}stylesheets/{$FOLDER}/screen.css" rel="stylesheet" type="text/css"
               media="Screen, projection"/>

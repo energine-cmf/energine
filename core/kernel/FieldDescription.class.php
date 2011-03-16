@@ -262,7 +262,8 @@ class FieldDescription extends DBWorker implements Iterator{
 
         // формируем название поля добавляя префикс 'FIELD_'
         if ($name!=self::EMPTY_FIELD_NAME ) {
-            $this->setProperty('title', $this->translate('FIELD_'.$name));
+            $this->setProperty('title', 'FIELD_'.$name);
+            //$this->setProperty('title', $this->translate('FIELD_'.$name));
         }
 
     }
@@ -323,9 +324,9 @@ class FieldDescription extends DBWorker implements Iterator{
                     $this->setMode($attrValue);
                     break;
                 default:
-                	if(in_array($attrName, array('title', 'message', 'tabName'))){
+                	/*if(in_array($attrName, array('title', 'message', 'tabName'))){
                 		$attrValue = $this->translate($attrValue);
-                	}
+                	}*/
                     $this->setProperty($attrName, $attrValue);
             }
         }
@@ -398,7 +399,7 @@ class FieldDescription extends DBWorker implements Iterator{
         switch ($this->type) {
             case self::FIELD_TYPE_PWD :
                 $this->setProperty('pattern', '/^.+$/');
-                $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                $this->setProperty('message', 'MSG_FIELD_IS_NOT_NULL'/*$this->translate('MSG_FIELD_IS_NOT_NULL')*/);
                 //$this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_HIDDEN :
@@ -415,7 +416,8 @@ class FieldDescription extends DBWorker implements Iterator{
                 }
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('sort', 1);
-                $this->setProperty('message', $this->translate('MSG_BAD_EMAIL_FORMAT'));
+                //$this->setProperty('message', $this->translate('MSG_BAD_EMAIL_FORMAT'));
+                $this->setProperty('message', 'MSG_BAD_EMAIL_FORMAT');
                 //$this->setProperty('outputFormat', '%s');
                 break;
             case  self::FIELD_TYPE_PHONE:
@@ -427,13 +429,15 @@ class FieldDescription extends DBWorker implements Iterator{
                 }
                 $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);
-                $this->setProperty('message', $this->translate('MSG_BAD_PHONE_FORMAT'));
+                //$this->setProperty('message', $this->translate('MSG_BAD_PHONE_FORMAT'));
+                $this->setProperty('message', 'MSG_BAD_PHONE_FORMAT');
                 //$this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_IMAGE:
                 if ($this->getPropertyValue('nullable') === false) {
                     $this->setProperty('pattern', '/^.+$/');
-                    $this->setProperty('message', $this->translate('MSG_IMG_IS_NOT_NULL'));
+                    //$this->setProperty('message', $this->translate('MSG_IMG_IS_NOT_NULL'));
+                    $this->setProperty('message', 'MSG_IMG_IS_NOT_NULL');
                 }
                 $this->length = true;
                 //$this->setProperty('outputFormat', '%s');
@@ -444,7 +448,8 @@ class FieldDescription extends DBWorker implements Iterator{
             case self::FIELD_TYPE_VIDEO:            	
                 if ($this->getPropertyValue('nullable') === false) {
                     $this->setProperty('pattern', '/^.+$/');
-                    $this->setProperty('message', $this->translate('MSG_FILE_IS_NOT_NULL'));
+                    //$this->setProperty('message', $this->translate('MSG_FILE_IS_NOT_NULL'));
+                    $this->setProperty('message', 'MSG_FILE_IS_NOT_NULL');
                 }
                 $this->length = true;
                 //$this->setProperty('outputFormat', '%s');
@@ -454,7 +459,8 @@ class FieldDescription extends DBWorker implements Iterator{
             	$this->setProperty('sort', 1);
                 if ($this->getPropertyValue('nullable') === false  || is_null($this->getPropertyValue('nullable'))) {
                     $this->setProperty('pattern', '/^.+$/');
-                    $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                    //$this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                    $this->setProperty('message', 'MSG_FIELD_IS_NOT_NULL');
                 }
                 //$this->setProperty('outputFormat', '%s');
                 break;
@@ -473,7 +479,8 @@ class FieldDescription extends DBWorker implements Iterator{
                 $this->setProperty('sort', 1);
                 //$this->setProperty('outputFormat', '%f');
                 $this->setProperty('pattern', $regexp);
-                $this->setProperty('message', $this->translate('MSG_BAD_FLOAT_FORMAT'));
+                //$this->setProperty('message', $this->translate('MSG_BAD_FLOAT_FORMAT'));
+                $this->setProperty('message', 'MSG_BAD_FLOAT_FORMAT');
                 break;
             case self::FIELD_TYPE_BOOL:
                 $this->length = true;
@@ -490,11 +497,13 @@ class FieldDescription extends DBWorker implements Iterator{
                 if (!$this->getPropertyValue('key')) {
                     if ($this->getPropertyValue('nullable') === false) {
                         $regexp = '/^\d{1,5}$/';
-                        $message = $this->translate('MSG_BAD_INT_FORMAT_OR_NULL');
+                        //$message = $this->translate('MSG_BAD_INT_FORMAT_OR_NULL');
+                        $message = 'MSG_BAD_INT_FORMAT_OR_NULL';
                     }
                     else {
                         $regexp = '/^\d{0,5}$/';
-                        $message = $this->translate('MSG_BAD_INT_FORMAT');
+                        //$message = $this->translate('MSG_BAD_INT_FORMAT');
+                        $message = 'MSG_BAD_INT_FORMAT';
                     }
                     $this->setProperty('sort', 1);
                     $this->setProperty('pattern', $regexp);
@@ -506,7 +515,8 @@ class FieldDescription extends DBWorker implements Iterator{
             case self::FIELD_TYPE_HTML_BLOCK:
                 if ($this->getPropertyValue('nullable') === false|| is_null($this->getPropertyValue('nullable'))) {
                     $this->setProperty('pattern', '/^.+$/m');
-                    $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                    //$this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                    $this->setProperty('message', 'MSG_FIELD_IS_NOT_NULL');
                 }
                 //$this->setProperty('outputFormat', '%s');
                 $this->length = true;
@@ -522,7 +532,8 @@ class FieldDescription extends DBWorker implements Iterator{
                 $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('outputFormat', '%Y-%m-%d %H:%M');
-                $this->setProperty('message', $this->translate('MSG_WRONG_DATETIME_FORMAT'));
+                //$this->setProperty('message', $this->translate('MSG_WRONG_DATETIME_FORMAT'));
+                $this->setProperty('message', 'MSG_WRONG_DATETIME_FORMAT');
                 $this->length = true;
                 break;
 			case self::FIELD_TYPE_TIME:
@@ -533,7 +544,8 @@ class FieldDescription extends DBWorker implements Iterator{
                     $regexp = '/^\d{1,2}:\d{1,2}(:\d{1,2})?$/';
                 }
                 $this->setProperty('pattern', $regexp);
-                $this->setProperty('message', $this->translate('MSG_WRONG_TIME_FORMAT'));
+                //$this->setProperty('message', $this->translate('MSG_WRONG_TIME_FORMAT'));
+                $this->setProperty('message', 'MSG_WRONG_TIME_FORMAT');
                 $this->setProperty('sort', 1);
                 $this->setProperty('outputFormat', '%H:%M');
                 $this->length = true;
@@ -548,7 +560,8 @@ class FieldDescription extends DBWorker implements Iterator{
                 $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('outputFormat', '%Y-%m-%d');
-                $this->setProperty('message', $this->translate('MSG_WRONG_DATE_FORMAT'));
+                //$this->setProperty('message', $this->translate('MSG_WRONG_DATE_FORMAT'));
+                $this->setProperty('message', 'MSG_WRONG_DATE_FORMAT');
                 $this->length = true;
                 break;
             case self::FIELD_TYPE_TEXTBOX_LIST:
@@ -557,7 +570,8 @@ class FieldDescription extends DBWorker implements Iterator{
             case self::FIELD_TYPE_CUSTOM:
                 if ($this->getPropertyValue('nullable') === false) {
                     $this->setProperty('pattern', '/^.+$/');
-                    $this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                    //$this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
+                    $this->setProperty('message', 'MSG_FIELD_IS_NOT_NULL');
                 }
                 break;
             default:
@@ -652,13 +666,9 @@ class FieldDescription extends DBWorker implements Iterator{
      * @return FieldDescription
      */
     public function setProperty($name, $value) {
-/*
-        if ($name == 'nullable') {
-
-            $value = (bool)$value;
+        if(in_array($name, array('title', 'message', 'tabName'))){
+            $value = $this->translate($value);
         }
- * 
- */
         $this->additionalProperties[$name] = $value;
         return $this;
     }
@@ -805,9 +815,9 @@ class FieldDescription extends DBWorker implements Iterator{
             $propertyValue = $configFieldDescription->getPropertyValue($propertyName);
 
             if (!is_null($propertyValue) && !($propertyName == 'title' && $propertyValue == 'FIELD_'.self::EMPTY_FIELD_NAME)) {
-                if ($propertyName == 'message') {
+/*                if ($propertyName == 'message') {
                     $propertyValue = $configFieldDescription->translate($propertyValue);
-                }
+                }*/
 
                 $dbFieldDescription->setProperty($propertyName, $propertyValue);
             }

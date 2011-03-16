@@ -222,7 +222,8 @@ class UserProfile extends DBDataSet {
             $field->setProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
             $field->setType(FieldDescription::FIELD_TYPE_PWD);
             $field->setProperty('customField', true);
-            $field->setProperty('title', $this->translate('FIELD_U_PASSWORD2'));
+            //$field->setProperty('title', $this->translate('FIELD_U_PASSWORD2'));
+            $field->setProperty('title', 'FIELD_U_PASSWORD2');
             $result->addFieldDescription($field);
         }
 

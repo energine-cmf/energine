@@ -963,7 +963,8 @@ class Grid extends DBDataSet {
 
         $f = new FieldDescription('upl_path');
         $f->setType(FieldDescription::FIELD_TYPE_STRING);
-        $f->setProperty('title', $this->translate('FIELD_UPL_FILE'));
+        //$f->setProperty('title', $this->translate('FIELD_UPL_FILE'));
+        $f->setProperty('title', 'FIELD_UPL_FILE');
         $dd->addFieldDescription($f);
 
         $d = new Data();

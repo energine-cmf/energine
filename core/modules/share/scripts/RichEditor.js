@@ -1,15 +1,6 @@
 ScriptLoader.load('ModalBox');
-/**
- * WYSIWYG Редактор
- */
 var RichEditor = new Class({
-    /**
-     * Аттрибут указывающий на то что блок был изменен
-     */
     dirty : false,
-    /**
-     * Режим HTML source
-     */
     fallback_ie : false,
 
     initialize : function(area) {
@@ -57,7 +48,6 @@ var RichEditor = new Class({
     },
 
     fallback : function(cmd) {
-        // Предполагается наличие textarea.
         switch (cmd) {
             case 'Bold' :
                 this.wrapSelectionWith('strong');
@@ -278,9 +268,6 @@ var RichEditor = new Class({
         }
     },
     processPaste : function(event) {
-        //event = new Event(event);
-        // TODO если заработает копирование в ФФ - не забыть почистить
-        //вы
         var selection = this._getSelection();
 
         var orig_tr = selection.createRange();
@@ -296,9 +283,7 @@ var RichEditor = new Class({
                 .getProperty('componentPath'),
                 this.pasteArea.innerHTML, true));
 
-        /* this.pasteArea.setHTML(''); */
         this.pasteArea.innerHTML = '';
-        //event.stop();
     },
     processPasteFF : function(event) {
             (function() {
@@ -307,8 +292,6 @@ var RichEditor = new Class({
                         this.area.innerHTML, true);
 
             }).delay(300, this);
-
-        // event.stop();
     },
     cleanMarkup : function(path, data, aggressive) {
         var result;
@@ -340,22 +323,13 @@ var RichEditor = new Class({
             selection.type = 'Text';
         }
         if (!isset(selection.createRange)) {
-            /**
-             * Для FF имитируем присутствие IE ф-ций
-             */
             selection.createRange = function() {
                 var range = this.getRangeAt(0);
 
                 range.parentElement = function() {
                     // var result = this.startContainer;
                     var result = this.commonAncestorContainer;
-                    /**
-                     * Если предком является елемент #text
-                     */
                     if (result.nodeType == 3) {
-                        /**
-                         * Нужно получить родительский узел
-                         */
                         result = result.parentNode;
                     }
                     return result;
@@ -366,5 +340,4 @@ var RichEditor = new Class({
         }
         return selection;
     }
-
 });

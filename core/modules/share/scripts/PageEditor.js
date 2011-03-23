@@ -1,9 +1,7 @@
 ScriptLoader.load('Toolbar', 'RichEditor', 'ModalBox', 'Overlay');
 
 var PageEditor = new Class({
-
     editorClassName: 'nrgnEditor',
-
     editors: [],
 
     initialize: function() {
@@ -46,9 +44,6 @@ var PageEditor = new Class({
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep5' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'imagemngr', icon: 'images/toolbar/image.gif', title:Energine.translations.get('BTN_INSERT_IMAGE'), action: 'imageManager' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'filemngr', icon: 'images/toolbar/filemngr.gif', title: Energine.translations.get('BTN_FILE_LIBRARY'), action: 'fileLibrary' }));
-		/*toolbar.appendControl(new Toolbar.Separator({ id: 'sep6' }));
-		toolbar.appendControl(new Toolbar.Button({ id: 'viewModeSwitcher', title: TXT_PREVIEW, state: 'switchToViewMode' }));
-*/
 		toolbar.bindTo(this);
 		return toolbar;
 	},
@@ -85,11 +80,6 @@ var PageEditor = new Class({
         var element = $(event.target);
 
         if (element.get('tag') == 'td') {
-            /*
-             * Если клик был на таблице, СОДЕРЖАЩЕЙ редактируемый блок,
-             * тогда ищем этот <div /> внутри неё. Иначе, если клик был на таблице,
-             * СОДЕРЖАЩЕЙСЯ в редактируемом блоке, тогда оставляем всё как есть.
-             */
             element = element.getElement('div.' + this.editorClassName) || element;
         }
 

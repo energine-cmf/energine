@@ -154,7 +154,7 @@ final class DBStructureInfo extends Object {
                         '.*$)';
         $mul = '(?:^\s*(?:UNIQUE\s*)?KEY\s+`\w+`\s+\((?<muls>.*)\),?$)';
 
-        $pri = '(?:PRIMARY KEY \((?<pri>[^\)]*)\))';
+        $pri = '(?:PRIMARY KEY\s+\((?<pri>[^\)]*)\))';
 
         $pattern = "/(?:$row|$constraint|$mul|$pri)/im";
 

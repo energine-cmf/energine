@@ -315,6 +315,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
             elseif($date < $today and $date >= $yesterday){
                 $result .= DBWorker::_translate('TXT_YESTERDAY');
             }
+            elseif($date>$tomorrow){
+                $result .= DBWorker::_translate('TXT_TOMORROW');
+            }
             else{
                 $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
                 if(date('Y',$date) != date('Y')){

@@ -266,9 +266,8 @@ LayoutManager.Widget = new Class({
             tb.appendControl(new Toolbar.Button({id:'edit', 'icon': 'images/toolbar/edit.gif', title: 'Edit', action:'editProps'}));
         if(!this.static)
             tb.appendControl(new Toolbar.Button({id:'delete', 'icon': 'images/toolbar/delete.gif', title: 'Delete', action:'delWidget'}));
-        if(/*this.element.getElement('.rcbox_content')*/ true){
-            tb.appendControl(new Toolbar.Switcher({id:'resize', 'icon': 'images/toolbar/minimize.gif','aicon': 'images/toolbar/restore.gif', title: 'Minimize/Expand', action:'resizeWidget'}));
-        }
+
+        tb.appendControl(new Toolbar.Switcher({id:'resize', 'icon': 'images/toolbar/minimize.gif','aicon': 'images/toolbar/restore.gif', title: 'Minimize/Expand', action:'resizeWidget'}));
         tb.getElement().inject(this.container, 'top');
         tb.bindTo(this);
         return tb;

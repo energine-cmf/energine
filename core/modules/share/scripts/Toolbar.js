@@ -236,7 +236,8 @@ Toolbar.Button = new Class({
             'mouseout':  function() {
                 this.removeClass('highlighted');
             },
-            'click':     function() {
+            'mousedown':function(event) {
+                if (event.rightClick) return;
                 if (!control.properties.disabled) {
                     control.toolbar._callAction(control.properties.action);
                 }

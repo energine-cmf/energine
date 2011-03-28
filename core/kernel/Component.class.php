@@ -161,7 +161,7 @@ class Component extends DBWorker implements IBlock {
         );
         $this->config =
                 new ComponentConfig($this->getParam('config'), get_class($this), $this->module);
-        $this->determineAction();
+        $this->determineState();
     }
 
     /**
@@ -272,9 +272,10 @@ class Component extends DBWorker implements IBlock {
      *
      * @return void
      * @access private
+     * @final
      */
 
-    protected function determineAction() {
+    final private function determineState() {
         //Текущее действие берем из параметров
         //По умолчанию оно равно self::DEFAULT_ACTION_NAME
         $this->state = $this->getParam('state');
@@ -517,74 +518,6 @@ class Component extends DBWorker implements IBlock {
         return $result;
     }
 
-
-    /**
-     * Генерирует ошибку и добавляет её в список ошибок компонента.
-     *
-     * @access protected
-     * @param int $errorType тип ошибки
-     * @param string $errorMessage сообщение об ошибке
-     * @param mixed $errorCustomInfo дополнительная информация об ошибке
-     * @return void
-     */
-    /*protected function generateError($errorType, $errorMessage, $errorCustomInfo = false) {
-        $errorInfo = array(
-            'type' => $errorType,
-            'message' => $errorMessage,
-            'custom' => $errorCustomInfo
-        );
-
-        array_push($this->errors, $errorInfo);
-
-        // если ошибка не позволяет продолжить работу компонента, возбуждаем фиктивное исключение
-        if ($errorType == SystemException::ERR_WARNING) {
-            throw new DummyException;
-        }
-    }
-*/
-    /**
-     * Обрабатывает ошибки, произошедшие во время работы компонента.
-     * Возвращает DOMDocument, представляющий ошибки компонента, или
-     * false, если никаких ошибок не произошло.
-     *
-     * @access public
-     * @final
-     * @return mixed
-     */
-    /*final public function handleErrors() {
-        $result = false;
-        if (sizeof($this->errors) > 0) {
-            $dom_errorDoc = new DOMDocument('1.0', 'UTF-8');
-            $dom_errors = $dom_errorDoc->createElement('errors');
-            $dom_errors->setAttribute('title', $this->translate('TXT_ERRORS'));
-            foreach ($this->errors as $errorInfo) {
-                $dom_error =
-                        $dom_errorDoc->createElement('error', $errorInfo['message']);
-                $dom_error->setAttribute('type', $errorInfo['type']);
-
-                if (isset($errorInfo['custom'])) {
-                    if (is_array($errorInfo['custom'])) {
-                        $customMessage = implode('. ', $errorInfo['custom']);
-                    }
-                    else {
-                        $customMessage = $errorInfo['custom'];
-                    }
-
-                    if (!empty($customMessage)) {
-                        $dom_error->nodeValue =
-                                "{$errorInfo['message']} [ $customMessage ]";
-                    }
-                    else {
-                        $dom_error->nodeValue = $errorInfo['message'];
-                    }
-                }
-                $dom_errors->appendChild($dom_error);
-            }
-            $dom_errorDoc->appendChild($dom_errors);
-            $result = $dom_errorDoc;
-        }
-        return $result;
-    }*/
 
     /**
      * Возвращает параметры состояния.

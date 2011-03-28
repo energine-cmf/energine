@@ -468,7 +468,7 @@ abstract class DataSet extends Component {
      * @param bool
      * @access public
      */
-    final protected function setDataSetAction($action, $isFullURI = false) {
+    final protected function setAction($action, $isFullURI = false) {
         // если у нас не полностью сформированный путь, то добавляем информацию о языке + путь к шаблону
         if (!$isFullURI) {
             $action = $this->request->getLangSegment() .

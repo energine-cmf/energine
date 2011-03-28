@@ -37,7 +37,7 @@ class Register extends DBDataSet {
 	 */
 	public function __construct($name, $module,   array $params = null) {
 		parent::__construct($name, $module,  $params);
-		$this->setDataSetAction('save-new-user');
+		$this->setAction('save-new-user');
 		$this->setType(self::COMPONENT_TYPE_FORM_ADD);
 		$this->user = new User();
 		$this->setTableName(User::USER_TABLE_NAME);

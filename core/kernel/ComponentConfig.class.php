@@ -96,8 +96,8 @@ $this->c = $configFileName;
 
 	public function setCurrentState($methodName) {
 		if(!($this->currentState = $this->getStateConfig($methodName))){
-            inspect($this->c, $this->config->xpath(sprintf('/configuration/state[@name=\'%s\']', $methodName)));
-			throw new SystemException('ERR_NO_METHOD', SystemException::ERR_DEVELOPER);
+            //inspect($this->c, $this->config->xpath(sprintf('/configuration/state[@name=\'%s\']', $methodName)));
+			throw new SystemException('ERR_NO_METHOD '.$methodName, SystemException::ERR_DEVELOPER, $methodName);
 		}
 	}
 

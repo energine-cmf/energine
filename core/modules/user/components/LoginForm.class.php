@@ -28,7 +28,7 @@ class LoginForm extends DataSet {
         $params['state'] = E()->getDocument()->user->isAuthenticated()?'showLogoutForm':'showLoginForm';
         parent::__construct($name, $module,  $params);
  		$this->setTitle($this->translate('TXT_LOGIN_FORM'));
-        $this->setDataSetAction(E()->getSiteManager()->getCurrentSite()->base.'auth.php', true);
+        $this->setAction(E()->getSiteManager()->getCurrentSite()->base.'auth.php', true);
     }
 
     /**
@@ -81,7 +81,7 @@ class LoginForm extends DataSet {
         //$request = E()->getRequest();
         //$this->setTitle($this->translate('TXT_LOGOUT'));
         $this->addTranslation('TXT_USER_GREETING','TXT_USER_NAME','TXT_ROLE_TEXT');
-        //$this->setDataSetAction(E()->getSiteManager()->getCurrentSite()->base, true);
+        //$this->setAction(E()->getSiteManager()->getCurrentSite()->base, true);
         $this->prepare();
         /*foreach (E()->UserGroup->getUserGroups($this->document->user->getID()) as $roleID) {
             $tmp = E()->UserGroup->getInfo($roleID);

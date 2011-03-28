@@ -44,7 +44,7 @@ class UserProfile extends DBDataSet {
         }
         $this->setFilter($this->document->user->getID());
         
-        $this->setDataSetAction('save-user');
+        $this->setAction('save-user');
         $this->setTitle($this->translate('TXT_USER_PROFILE'));
         $this->prepare();
 

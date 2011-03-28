@@ -36,12 +36,7 @@ var Form = new Class({
                     (dateControl.hasClass('inp_date') ? Energine.createDatePicker(dateControl, isNullable) : Energine.createDateTimePicker(dateControl, isNullable))
                     );
         }, this);
-
-        if (this.componentElement.getElementById('attached_files')) {
-            (function() {
-                new Form.AttachmentPane(this)
-            }).delay(300, this);
-        }
+        this.buildAttachmentPane();
 
         /*
          this.componentElement.getElements('.textbox').each(function(textBox){
@@ -52,6 +47,13 @@ var Form = new Class({
             'border' : '1px dotted #777',
             'overflow' : 'auto'
         });
+    },
+    buildAttachmentPane: function(){
+        if (this.componentElement.getElementById('attached_files')) {
+            (function() {
+                new Form.AttachmentPane(this)
+            }).delay(300, this);
+        }
     },
     attachToolbar : function(toolbar) {
         this.toolbar = toolbar;

@@ -142,7 +142,7 @@ var Grid = new Class({
     },
 
     fitGridFormSize: function() {
-        if(this.pane){
+        if (this.pane) {
             var windowHeight = window.getSize().y - 10;
             var paneHeight = this.pane.getSize().y;
             var gridBodyHeight = ((this.gridBodyContainer.getSize().y + 2) >
@@ -155,11 +155,13 @@ var Grid = new Class({
                     this.pane.setStyle('height', windowHeight);
                 }
                 else {
-                    this.pane.setStyle('height', gridBodyHeight + paneOthersHeight);
+                    this.pane.setStyle('height', gridBodyHeight +
+                            paneOthersHeight);
                 }
             }
             else {
-                this.pane.setStyle('height', this.minGridHeight + paneOthersHeight);
+                this.pane.setStyle('height', this.minGridHeight +
+                        paneOthersHeight);
             }
             this.fitGridSize();
         }
@@ -237,6 +239,7 @@ var Grid = new Class({
                 2)) ? 'odd' : 'even').setProperty('unselectable', 'on').injectInside(this.tbody);
         // Сохраняем запись в объекте строки.
         row.record = record;
+        var prevRow;
 
         for (var fieldName in record) {
             // Пропускаем невидимые поля.
@@ -261,6 +264,18 @@ var Grid = new Class({
                 var fieldValue = '';
                 if (record[fieldName]) {
                     var fieldValue = record[fieldName].clean();
+                }
+                if (
+                        (this.metadata[fieldName].type == 'select')
+                        &&
+                        (row.getFirst() == cell)
+                        &&
+                        (prevRow = row.getPrevious())
+                        &&
+                        (prevRow.record[fieldName] == record[fieldName])
+                ) {
+                    fieldValue = '';
+                    prevRow.getFirst().setStyle('font-weight', 'bold');
                 }
                 if (fieldValue != '') cell.set('html', fieldValue);
                 //if (fieldValue != '') cell.appendText(fieldValue);

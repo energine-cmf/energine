@@ -17,9 +17,12 @@
     </xsl:template>
 
     <xsl:template match="component[@type='list']/recordset">
-        <xsl:if test="not(@empty)">
-            <ol><xsl:apply-templates/></ol>
-        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="not(@empty)">
+                <ol><xsl:apply-templates/></ol>
+            </xsl:when>
+            <xsl:otherwise><b><xsl:value-of select="@empty"/></b></xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="component[@type='list']/recordset/record">

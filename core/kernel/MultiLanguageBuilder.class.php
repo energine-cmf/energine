@@ -153,7 +153,7 @@ class MultiLanguageBuilder extends AbstractBuilder {
                     $dom_record->appendChild($this->createField($fieldName, $fieldInfo, $fieldValue));
                 }
             }
-            $dom_recordSet->setAttribute('empty', 'empty');
+            $dom_recordSet->setAttribute('empty', $this->translate('MSG_EMPTY_RECORDSET'));
             $dom_recordSet->appendChild($dom_record);
         }
     }

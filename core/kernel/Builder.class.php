@@ -48,7 +48,7 @@ class Builder extends AbstractBuilder {
         $dom_recordSet = $this->result->createElement('recordset');
         $this->result->appendChild($dom_recordSet);
         if ($this->data->isEmpty() || !$this->data->getRowCount()) {
-        	$dom_recordSet->setAttribute('empty', 'empty');
+        	$dom_recordSet->setAttribute('empty', $this->translate('MSG_EMPTY_RECORDSET'));
         }
         $rowCount = 0;
         $i = 0;

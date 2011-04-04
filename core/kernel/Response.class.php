@@ -130,6 +130,7 @@ final class Response extends Object {
             $domain = '';
         }
         $secure = false;
+        $_COOKIE[$name] = $value;
         $this->cookies[$name] =
                 compact('value', 'expire', 'path', 'domain', 'secure');
     }

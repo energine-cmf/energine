@@ -120,7 +120,7 @@ final class Response extends Object {
      * @param int $expire
      * @return void
      */
-    public function addCookie($name = UserSession::DEFAULT_SESSION_NAME, $value = '', $expire = '') {
+    public function addCookie($name = UserSession::DEFAULT_SESSION_NAME, $value = '', $expire = 0) {
         if ($this->getConfigValue('site.domain')) {
             $path = '/';
             $domain = '.' . $this->getConfigValue('site.domain');

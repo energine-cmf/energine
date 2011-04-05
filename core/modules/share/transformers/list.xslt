@@ -80,7 +80,7 @@
                 <div id="{$TAB_ID}">
                     <div class="grid">
                         <!-- если есть хотя бы одно поле с типом string -->
-                        <xsl:if test="$FIELDS[@type = 'string' or @type='date' or @type='datetime' or @type='float' or @type='integer']">
+                        <xsl:if test="$FIELDS[@type = 'string' or @type='date' or @type='datetime' or @type='float' or @type='integer' or @type='select']">
                             <div class="filter">
                                 <xsl:value-of select="$TRANSLATION[@const = 'TXT_FILTER']" />:<xsl:text>&#160;</xsl:text>
                                 <select name="fieldName" class="f_fields">
@@ -94,6 +94,9 @@
                                             </xsl:when>
                                             <xsl:otherwise>
                                                 <xsl:if test="@type = 'string' or @type = 'htmlblock' or @type='email'  or @type='date' or @type='datetime' or @type='float' or @type='integer'">
+                                                    <option value="[{@tableName}][{@name}]" type="{@type}"><xsl:value-of select="@title"/></option>
+                                                </xsl:if>
+                                                <xsl:if test="@type='select'">
                                                     <option value="[{@tableName}][{@name}]" type="{@type}"><xsl:value-of select="@title"/></option>
                                                 </xsl:if>
                                             </xsl:otherwise>

@@ -874,11 +874,26 @@ class Grid extends DBDataSet {
             unset($_POST['filter']['condition']);
             $tableName = key($_POST['filter']);
             $fieldName = key($_POST['filter'][$tableName]);
+            $tableInfo = $this->dbh->getColumnsInfo($tableName);
             $values = $_POST['filter'][$tableName][$fieldName];
-            $tableName = ($tableName) ? $tableName . '.' : '';
-            $this->addFilterCondition(
-                $tableName . $fieldName . ' '.call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]),  $values)).' '
-            );
+
+            if(isset($tableInfo[$fieldName]) && is_array($tableInfo[$fieldName]['key']) ){
+                $fkTranslationTableName = $this->dbh->getTranslationTablename($tableInfo[$fieldName]['key']['tableName']);
+                $fkTableName = ($fkTranslationTableName) ? $fkTranslationTableName : $tableInfo[$fieldName]['key']['tableName'];
+                $fkValueField = substr($fkKeyName = $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')).'_name';
+                if($res = simplifyDBResult($this->dbh->select($fkTableName, $fkKeyName, $fkTableName .'.'. $fkValueField . ' '.call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]),  $values)).' '), $fkKeyName)){
+                    $this->addFilterCondition(array($tableName.'.'.$fieldName => $res));
+                }
+                else {
+                    $this->addFilterCondition(' FALSE');
+                }
+            }
+            else {
+                $tableName = ($tableName) ? $tableName . '.' : '';
+                $this->addFilterCondition(
+                    $tableName . $fieldName . ' '.call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]),  $values)).' '
+                );
+            }
         }
     }
     /**

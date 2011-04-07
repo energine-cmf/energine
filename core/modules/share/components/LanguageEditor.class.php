@@ -9,7 +9,6 @@
  * @copyright Energine 2006
  */
 
-//require_once('core/modules/share/components/Grid.class.php');
 
 /**
  * Редактор переводов
@@ -18,18 +17,18 @@
  * @subpackage share
  * @author dr.Pavka
  */
-class LanguageEditor extends Grid {
+class LanguageEditor extends Grid
+{
     /**
      * Конструктор класса
      *
      * @return void
      */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
+    public function __construct($name, $module, array $params = null)
+    {
+        parent::__construct($name, $module, $params);
         $this->setTableName('share_languages');
         $this->setTitle($this->translate('TXT_LANGUAGE_EDITOR'));
-        //$this->setOrderColumn('lang_order_num');
-        //$this->setOrder(array('lang_order_num'=>QAL::ASC));
     }
 
     /**
@@ -39,17 +38,19 @@ class LanguageEditor extends Grid {
      * @access protected
      */
 
-     protected function createDataDescription() {
+    protected function createDataDescription()
+    {
         $dataDescription = parent::createDataDescription();
 
         if ($this->getType() !== self::COMPONENT_TYPE_LIST) {
-            $langAbbr = $dataDescription->getFieldDescriptionByName('lang_abbr');
+            $langAbbr =
+                    $dataDescription->getFieldDescriptionByName('lang_abbr');
             $langAbbr->setProperty('pattern', '/^[a-z]{2}$/');
             $langAbbr->setProperty('message', 'MSG_BAD_LANG_ABBR');
         }
 
         return $dataDescription;
-     }
+    }
 
     /**
      * При создании нового языка не даем возможности сделать его дефолтным
@@ -58,14 +59,13 @@ class LanguageEditor extends Grid {
      * @access protected
      */
 
-    protected function add() {
+    protected function add()
+    {
         parent::add();
-        if($fd = $this->getDataDescription()->getFieldDescriptionByName('lang_default')){
-            $fd->setMode(FieldDescription::FIELD_MODE_READ);
+        if ($fd =
+                $this->getDataDescription()->getFieldDescriptionByName('lang_default')) {
+            $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
         }
-        $field = new Field('lang_default');
-        $field->setData(0);
-        $this->getData()->addField($field);
     }
 
     /**
@@ -76,10 +76,13 @@ class LanguageEditor extends Grid {
      * @access public
      */
 
-    public function build() {
-        if ($this->getType() == self::COMPONENT_TYPE_FORM_ALTER ) {
+    public function build()
+    {
+        if ($this->getType() == self::COMPONENT_TYPE_FORM_ALTER) {
             //Если это язык по умолчанию - делаем неактивным
-            if ($this->getData()->getFieldByName('lang_default')->getRowData(0) === true) {
+            if (
+                $this->getData()->getFieldByName('lang_default')->getRowData(0) ===
+                true) {
                 $this->getDataDescription()->getFieldDescriptionByName('lang_default')->setMode(FieldDescription::FIELD_MODE_READ);
             }
         }
@@ -88,33 +91,38 @@ class LanguageEditor extends Grid {
     }
 
     /**
-      * Переопределенный метод сохранения
-      *
-      * @param array
-      * @return void
-      * @access public
-      */
+     * Переопределенный метод сохранения
+     *
+     * @param array
+     * @return void
+     * @access public
+     */
 
-    public function loadData() {
+    public function loadData()
+    {
         $result = parent::loadData();
-        if ($this->getState() == 'save' && isset($result[0]['lang_default']) && $result[0]['lang_default'] !== '0') {
-            $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('lang_default'=>null));
+        if ($this->getState() == 'save' && isset($result[0]['lang_default']) &&
+            $result[0]['lang_default'] !== '0') {
+            $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('lang_default' => null));
         }
 
         return $result;
     }
-    /**
-	 * Переопределенный родительский метод
-	 *
-	 *
-	 * @return boolean
-	 * @access public
-	 */
 
-    public function deleteData($id) {
+    /**
+     * Переопределенный родительский метод
+     *
+     *
+     * @return boolean
+     * @access public
+     */
+
+    public function deleteData($id)
+    {
         //если мы пытаемся удалить текущий язык
         //генерим ошибку
-        if ($this->document->getLang() == $id || $id == E()->getLanguage()->getDefault()) {
+        if ($this->document->getLang() == $id ||
+            $id == E()->getLanguage()->getDefault()) {
             throw new SystemException('ERR_CANT_DELETE', SystemException::ERR_CRITICAL);
         }
         parent::deleteData($id);
@@ -127,16 +135,33 @@ class LanguageEditor extends Grid {
      * @access protected
      */
 
-    protected function saveData() {
+    protected function saveData()
+    {
+        if (isset($_POST[$this->getTableName()][$this->getPK()]) &&
+            empty($_POST[$this->getTableName()][$this->getPK()])) {
+
+            $_POST[$this->getTableName()]['lang_default'] = '0';
+        }
+
         $langID = parent::saveData();
         if ($this->saver->getMode() == QAL::INSERT) {
-            $this->dbh->modifyRequest('INSERT INTO share_sitemap_translation(smap_id, lang_id, smap_name) SELECT smap_id, %s, concat(\'--\',smap_name, \'--\') as smap_name from share_sitemap_translation WHERE lang_id = (select lang_id from share_languages where lang_default=1)', $langID);
-            $this->dbh->modifyRequest('INSERT INTO share_lang_tags_translation(ltag_id, lang_id, ltag_value_rtf) SELECT ltag_id, %s, ltag_name from share_lang_tags', $langID);
-
-            /**
-             * @todo По хорошему, при добавлении нового языка нужно вносить данные во все _translation таблицы
-             */
-
+            //При создании нового языка для всех таблиц переводов
+            //создаем переводы копируя данные из дефолтного языка
+            if ($translationTables =
+                    $this->dbh->selectRequest('SHOW TABLES LIKE "%_translation"')) {
+                $defaultLangID = E()->getLanguage()->getDefault();
+                foreach ($translationTables as $row) {
+                    $tableName = current($row);
+                    $fields =
+                            array_keys($this->dbh->getColumnsInfo($tableName));
+                    $fields[1] = $langID;
+                    $this->dbh->modifyRequest('
+                        INSERT INTO ' . $tableName . ' SELECT ' .
+                                              implode(',', $fields) . ' FROM ' .$tableName .
+                                              ' WHERE lang_id=%s', $defaultLangID
+                    );
+                }
+            }
         }
         return $langID;
     }

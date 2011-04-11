@@ -1,5 +1,0 @@
-## Energine config Directives 
-
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.*$ #{siteRoot}download.php#{mode}

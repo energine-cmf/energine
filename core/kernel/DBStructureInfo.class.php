@@ -129,7 +129,11 @@ final class DBStructureInfo extends Object {
         return $result;
     }
     private function analyzeTable($tableName) {
-        $sql = $this->pdo->query("SHOW CREATE TABLE `$tableName`")->fetchColumn(1);
+        $res = $this->pdo->query("SHOW CREATE TABLE `$tableName`");
+        if(!$res){
+            throw new SystemException('BAD_TABLE_NAME '.$tableName, SystemException::ERR_DB, $tableName);
+        }
+        $sql = $res->fetchColumn(1);
         
         $res = array();
         $s = strpos($sql, '(');

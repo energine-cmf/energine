@@ -1,1 +1,0 @@
-<div class="confirm"><?php echo $outData ?></div>

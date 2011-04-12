@@ -4,9 +4,7 @@ var DivManager = new Class({
     Implements: Energine.request,
 
     initialize: function(element) {
-        Asset.css('treeview.css');
         Asset.css('div.css');
-
         this.element = $(element);
         this.tabPane = new TabPane(this.element);
 

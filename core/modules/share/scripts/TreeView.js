@@ -2,10 +2,11 @@ var TreeView = new Class({
     options: {
         dblClick:$empty
     },
-    Implements: Options,
+    Implements: [Options, Events],
     selectedNode: null,
 
     initialize: function(element, options) {
+        Asset.css('treeview.css');
         this.element = $(element);
         this.options.dblClick = this.nodeToggleListener;
         this.setOptions(options);
@@ -115,7 +116,7 @@ var TreeView = new Class({
 
             if ((0 > x || x > 8) || (4 > y || y > 12)) return; // a little magic here ))
         }
-
+        this.fireEvent('toggle', node);
         node.toggle();
     },
 
@@ -124,6 +125,7 @@ var TreeView = new Class({
         event.stop();
 
         var node = event.target.getParent().retrieve('treeNode');
+        this.fireEvent('select', node);
         node.select();
     }
 });

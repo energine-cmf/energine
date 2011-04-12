@@ -3,7 +3,6 @@ var DivSidebar = new Class({
     Extends: DivManager,
 
     initialize: function(element) {
-        Asset.css('treeview.css');
         Asset.css('div.css');
 
         this.element = $(element);

@@ -496,12 +496,12 @@ class FieldDescription extends DBWorker implements Iterator{
             case self::FIELD_TYPE_INT:
                 if (!$this->getPropertyValue('key')) {
                     if ($this->getPropertyValue('nullable') === false) {
-                        $regexp = '/^\d{1,5}$/';
+                        $regexp = '/^\d{1,7}$/';
                         //$message = $this->translate('MSG_BAD_INT_FORMAT_OR_NULL');
                         $message = 'MSG_BAD_INT_FORMAT_OR_NULL';
                     }
                     else {
-                        $regexp = '/^\d{0,5}$/';
+                        $regexp = '/^\d{0,7}$/';
                         //$message = $this->translate('MSG_BAD_INT_FORMAT');
                         $message = 'MSG_BAD_INT_FORMAT';
                     }

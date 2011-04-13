@@ -71,9 +71,9 @@ class Feed extends DBDataSet
     protected function createDataDescription()
     {
         $result = parent::createDataDescription();
-        if ($smapField = $result->getFieldDescriptionByName('smap_id')) {
+        /*if ($smapField = $result->getFieldDescriptionByName('smap_id')) {
             $result->removeFieldDescription($smapField);
-        }
+        }*/
 
         return $result;
     }

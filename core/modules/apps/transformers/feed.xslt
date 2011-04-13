@@ -11,7 +11,6 @@
 
     <!-- компонент feed в режиме списка -->
     <xsl:template match="recordset[parent::component[@exttype='feed'][@type='list']]">
-
         <ul id="{generate-id(.)}" class="feed">
             <xsl:choose>
                 <xsl:when test="parent::component[@class='NewsFeed']">
@@ -31,6 +30,9 @@
                 </xsl:attribute>
             </xsl:if>
             <xsl:apply-templates/>
+            <xsl:if test="../../toolbar[@name!='pager']">
+                <xsl:apply-templates select="../../toolbar[@name!='pager']/control" />
+            </xsl:if>
         </li>
     </xsl:template>
 
@@ -61,6 +63,10 @@
     </xsl:template>
 
     <xsl:template match="toolbar[ancestor::component[@exttype='feed'][@type='list']][@name!='pager']"/>
+
+    <xsl:template match="control[parent::toolbar[@name!='pager' and ancestor::component[@exttype='feed'][@type='list']]]">
+        <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}"><xsl:value-of select="@title"/></a>
+    </xsl:template>
 
     <!-- компонент feed в режиме просмотра -->
     <xsl:template match="recordset[parent::component[@exttype='feed'][@type='form']]">

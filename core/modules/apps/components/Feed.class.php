@@ -15,8 +15,15 @@
  * @package energine
  * @subpackage share
  * @author dr.Pavka
-  */
-class Feed extends DBDataSet {
+ */
+class Feed extends DBDataSet
+{
+    /**
+     * @var array | int
+     * фильтр по идентификаторам
+     */
+    protected $filterID;
+
     /**
      * Конструктор класса
      *
@@ -26,55 +33,49 @@ class Feed extends DBDataSet {
      * @param array $params
      * @access public
      */
-	public function __construct($name, $module,  array $params = null) {
+    public function __construct($name, $module, array $params = null)
+    {
         parent::__construct($name, $module, $params);
-        $this->setProperty('title', $this->translate('TXT_'.strtoupper($this->getName())));
+        $this->setProperty('title', $this->translate(
+            'TXT_' . strtoupper($this->getName())));
         $this->setProperty('exttype', 'feed');
         $this->setParam('onlyCurrentLang', true);
-        if($this->getParam('editable') && $this->document->isEditable()) {
+        if ($this->getParam('editable') && $this->document->isEditable()) {
             $this->setProperty('editable', 'editable');
         }
-	}
-	/**
-	 * Убираем smap_id
-	 *
-	 * @access protected
-	 * @return DataDescription
-	 */
-	protected function createDataDescription() {
-	    $result = parent::createDataDescription();
-	    if($smapField = $result->getFieldDescriptionByName('smap_id')){
-	    	$result->removeFieldDescription($smapField);
-	    }
+        if ($this->getState() == 'main') {
+            if (!($this->filterID = $this->getParam('id'))) {
+                $this->filterID = $this->document->getID();
+            }
 
-	    return $result;
-	}
+            if ($this->getParam('showAll')) {
+                $descendants = array_keys(
+                    E()->getMap()->getTree()->getNodeById($this->filterID)->getDescendants()->asList(false)
+                );
+                $this->filterID = array_merge(array($this->filterID), $descendants);
+            }
+            $this->addFilterCondition(array('smap_id' => $this->filterID));
+            if ($limit = $this->getParam('limit')) {
+                $this->setLimit(array(0, $limit));
+                $this->setParam('recordsPerPage', false);
+            }
+        }
+    }
+
     /**
-     * Фильтруем по разделам
+     * Убираем smap_id
      *
-     * @return void
      * @access protected
+     * @return DataDescription
      */
-
-    protected function main() {
-
-		if(!($id = $this->getParam('id'))){
-			$id = $this->document->getID();
-		}
-
-        if ($this->getParam('showAll')) {
-   	        $descendants = array_keys(
-   	            E()->getMap()->getTree()->getNodeById($id)->getDescendants()->asList(false)
-   	        );
-            $id = array_merge(array($id), $descendants);
-        }
-        $this->addFilterCondition(array('smap_id'=>$id));
-        if ($limit = $this->getParam('limit')){
-        	$this->setLimit(array(0,$limit));
-        	$this->setParam('recordsPerPage', false);
+    protected function createDataDescription()
+    {
+        $result = parent::createDataDescription();
+        if ($smapField = $result->getFieldDescriptionByName('smap_id')) {
+            $result->removeFieldDescription($smapField);
         }
 
-        parent::main();
+        return $result;
     }
 
     /**
@@ -84,11 +85,13 @@ class Feed extends DBDataSet {
      * @access protected
      */
 
-     protected function view() {
+    protected function view()
+    {
         parent::view();
         $this->addFilterCondition(array('smap_id' => $this->document->getID()));
         $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
-     }
+    }
+
     /**
      * Делаем компонент активным
      *
@@ -96,16 +99,17 @@ class Feed extends DBDataSet {
      * @access protected
      */
 
-    protected function defineParams() {
+    protected function defineParams()
+    {
         return array_merge(
-        parent::defineParams(),
-        array(
-        'active' => true,
-        'showAll' =>false,
-		'id' => false,
-        'limit' => false,
-        'editable' => false    
-        )
+            parent::defineParams(),
+            array(
+                 'active' => true,
+                 'showAll' => false,
+                 'id' => false,
+                 'limit' => false,
+                 'editable' => false
+            )
         );
     }
 }

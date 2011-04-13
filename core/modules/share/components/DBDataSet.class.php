@@ -88,7 +88,7 @@ class DBDataSet extends DataSet {
     /**
      * Добавлены параметры tableName, onlyCurrentLang, editable
      *
-     * @return type
+     * @return array
      * @access protected
      */
 

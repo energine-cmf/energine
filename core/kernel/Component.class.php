@@ -78,9 +78,9 @@ class Component extends DBWorker implements IBlock {
     private $enabled = true;
     /**
      * @access private
-     * @var array параметры действия
+     * @var array параметры состояния
      */
-    private $actionParams = false;
+    private $stateParams = false;
 
     /**
      * @access private
@@ -291,7 +291,7 @@ class Component extends DBWorker implements IBlock {
                     $this->config->getActionByURI($this->request->getPath(Request::PATH_ACTION, true));
             if ($action !== false) {
                 $this->state = $action['name'];
-                $this->actionParams = $action['params'];
+                $this->stateParams = $action['params'];
             }
 
         }
@@ -529,11 +529,11 @@ class Component extends DBWorker implements IBlock {
      * @todo Тут какой то беспорядок, то false то пустой array
      */
     public function getStateParams($returnAsAssocArray = false) {
-        if (!$returnAsAssocArray && ($this->actionParams !== false)) {
-            return array_values($this->actionParams);
+        if (!$returnAsAssocArray && ($this->stateParams !== false)) {
+            return array_values($this->stateParams);
         }
 
-        return $this->actionParams;
+        return $this->stateParams;
 
     }
     /**
@@ -545,7 +545,7 @@ class Component extends DBWorker implements IBlock {
      * @return void
      */
     public function setStateParam($paramName, $paramValue) {
-        $this->actionParams[$paramName] = $paramValue;
+        $this->stateParams[$paramName] = $paramValue;
     }
 
 }

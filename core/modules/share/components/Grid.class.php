@@ -16,7 +16,8 @@
  * @subpackage share
  * @author dr.Pavka
  */
-class Grid extends DBDataSet {
+class Grid extends DBDataSet
+{
     /**
      * Направление вверх
      *
@@ -75,7 +76,8 @@ class Grid extends DBDataSet {
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name, $module, array $params = null)
+    {
         parent::__construct($name, $module, $params);
 
         $this->setProperty('exttype', 'grid');
@@ -85,7 +87,7 @@ class Grid extends DBDataSet {
 
         if (!$this->getTitle())
             $this->setTitle($this->translate(
-                'TXT_' . strtoupper($this->getName())));
+                                'TXT_' . strtoupper($this->getName())));
     }
 
     /**
@@ -95,16 +97,17 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function defineParams() {
+    protected function defineParams()
+    {
         $params = array();
         if (!$this->params['config']) {
             $fileName = get_class($this) . '.component.xml';
             $fileConf =
                     sprintf(ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
-                            $fileName;
+                    $fileName;
             $coreConf =
                     sprintf(ComponentConfig::CORE_CONFIG_DIR, $this->module) .
-                            $fileName;
+                    $fileName;
             if (file_exists($fileConf)) {
                 $params['config'] = $fileConf;
             }
@@ -114,7 +117,7 @@ class Grid extends DBDataSet {
             else {
                 $params['config'] =
                         sprintf(ComponentConfig::CORE_CONFIG_DIR, 'share/') .
-                                'Grid.component.xml';
+                        'Grid.component.xml';
             }
         }
         $params['active'] = true;
@@ -131,7 +134,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function add() {
+    protected function add()
+    {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
         $this->addToolbarTranslations();
@@ -145,7 +149,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function edit() {
+    protected function edit()
+    {
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
 
         $id = $this->getStateParams();
@@ -176,7 +181,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function main() {
+    protected function main()
+    {
         parent::main();
         $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
     }
@@ -189,7 +195,8 @@ class Grid extends DBDataSet {
      * @see Grid::save()
      */
 
-    protected function delete() {
+    protected function delete()
+    {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
             list($id) = $this->getStateParams();
@@ -221,15 +228,17 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function deleteData($id) {
+    protected function deleteData($id)
+    {
         if ($orderColumn = $this->getOrderColumn()) {
             $deletedOrderNum =
                     simplifyDBResult($this->dbh->select($this->getTableName(), $this->getOrderColumn(), array($this->getPK() => $id)), $this->getOrderColumn(), true);
 
             $ids =
                     simplifyDBResult($this->dbh->select($this->getTableName(), array($this->getPK()), array_merge($this->getFilter(), array(
-                        $orderColumn . ' > ' .
-                                $deletedOrderNum)), array($orderColumn => QAL::ASC)), $this->getPK());
+                                                                                                                                           $orderColumn .
+                                                                                                                                           ' > ' .
+                                                                                                                                           $deletedOrderNum)), array($orderColumn => QAL::ASC)), $this->getPK());
 
         }
         $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, array($this->getPK() => $id));
@@ -239,8 +248,8 @@ class Grid extends DBDataSet {
             $this->addFilterCondition(array($this->getPK() => $ids));
             $request =
                     'UPDATE ' . $this->getTableName() . ' SET ' . $orderColumn .
-                            ' = ' . $orderColumn . ' - 1 ' .
-                            $this->dbh->buildWhereCondition($this->getFilter());
+                    ' = ' . $orderColumn . ' - 1 ' .
+                    $this->dbh->buildWhereCondition($this->getFilter());
 
             $this->dbh->modifyRequest($request);
         }
@@ -253,7 +262,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function getDataLanguage() {
+    protected function getDataLanguage()
+    {
         if (isset($_POST['languageID']) && $this->getState() == 'getRawData') {
             $langID = $_POST['languageID'];
             if (!E()->getLanguage()->isValidLangID($langID)) {
@@ -273,7 +283,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function getRawData($baseMethod = self::DEFAULT_STATE_NAME) {
+    protected function getRawData($baseMethod = self::DEFAULT_STATE_NAME)
+    {
 
         $this->setParam('onlyCurrentLang', true);
         $this->config->setCurrentState($baseMethod);
@@ -282,21 +293,14 @@ class Grid extends DBDataSet {
         $this->setDataDescription($this->createDataDescription());
         $this->createPager();
 
+        $this->applyUserFilter();
+        $this->applyUserSort();
+        
         $data = $this->createData();
         if ($data instanceof Data) {
             $this->setData($data);
         }
         if ($this->pager) $this->getBuilder()->setPager($this->pager);
-
-        /*
-        if ($this->getBuilder()->build()) {
-
-            $result = $this->getBuilder()->getResult();
-        }
-        else {
-            $result = $this->getBuilder()->getErrors();
-        }
-        */
     }
 
     /**
@@ -307,7 +311,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function save() {
+    protected function save()
+    {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
             $result = $this->saveData();
@@ -316,10 +321,10 @@ class Grid extends DBDataSet {
 
             $b = new JSONCustomBuilder();
             $b->setProperties(array(
-                'data' => (is_int($result)) ? $result : (int) $_POST[$this->getTableName()][$this->getPK()],
-                'result' => true,
-                'mode' => (is_int($result)) ? 'insert' : 'update'
-            ));
+                                   'data' => (is_int($result)) ? $result : (int)$_POST[$this->getTableName()][$this->getPK()],
+                                   'result' => true,
+                                   'mode' => (is_int($result)) ? 'insert' : 'update'
+                              ));
             $this->setBuilder($b);
         }
         catch (SystemException $e) {
@@ -337,7 +342,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function createDataDescription() {
+    protected function createDataDescription()
+    {
         if (in_array($this->getState(), array('printData', 'exportCSV'))) {
             $previousAction = $this->getState();
             $this->config->setCurrentState(self::DEFAULT_STATE_NAME);
@@ -347,13 +353,13 @@ class Grid extends DBDataSet {
         else {
             $result = parent::createDataDescription();
         }
-        
+
         if (
             ($col = $this->getOrderColumn()) && (
             $field = $result->getFieldDescriptionByName($col))) {
             $result->removeFieldDescription($field);
         }
-        
+
         return $result;
     }
 
@@ -365,7 +371,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function getFKData($fkTableName, $fkKeyName) {
+    protected function getFKData($fkTableName, $fkKeyName)
+    {
         $result = array();
         if ($this->getState() !== self::DEFAULT_STATE_NAME)
             $result =
@@ -384,7 +391,8 @@ class Grid extends DBDataSet {
      * @return void
      * @access protected
      */
-    protected function generateError($errorType, $errorMessage, $errorCustomInfo = false) {
+    protected function generateError($errorType, $errorMessage, $errorCustomInfo = false)
+    {
         $message['errors'][] = array('message' => $errorMessage);
         $response =
                 array_merge(array('result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')), $message);
@@ -400,7 +408,8 @@ class Grid extends DBDataSet {
      * @access protected
      * @final
      */
-    final protected function getSaver() {
+    final protected function getSaver()
+    {
         if (is_null($this->saver)) {
             $this->saver = new Saver();
         }
@@ -408,7 +417,8 @@ class Grid extends DBDataSet {
         return $this->saver;
     }
 
-    final protected function setSaver(Saver $saver) {
+    final protected function setSaver(Saver $saver)
+    {
         $this->saver = $saver;
     }
 
@@ -419,11 +429,12 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function saveData() {
+    protected function saveData()
+    {
         $result = false;
         //если в POST не пустое значение значение первичного ключа - значит мы находимся в режиме редактирования
         if (isset($_POST[$this->getTableName()][$this->getPK()]) &&
-                !empty($_POST[$this->getTableName()][$this->getPK()])) {
+            !empty($_POST[$this->getTableName()][$this->getPK()])) {
             $mode = self::COMPONENT_TYPE_FORM_ALTER;
             $this->setFilter(array($this->getPK() => $_POST[$this->getTableName()][$this->getPK()]));
         }
@@ -487,12 +498,12 @@ class Grid extends DBDataSet {
 
         //Если у нас режим вставки и определена колонка для порядка следования, изменяем порядок следования
         if (($orderColumn = $this->getOrderColumn()) &&
-                ($mode == self::COMPONENT_TYPE_FORM_ADD)) {
+            ($mode == self::COMPONENT_TYPE_FORM_ADD)) {
             $this->addFilterCondition(array($this->getPK() . '!=' . $result));
             $request =
                     'UPDATE ' . $this->getTableName() . ' SET ' . $orderColumn .
-                            '=' . $orderColumn . '+1 ' .
-                            $this->dbh->buildWhereCondition($this->getFilter());
+                    '=' . $orderColumn . '+1 ' .
+                    $this->dbh->buildWhereCondition($this->getFilter());
             $this->dbh->modifyRequest($request);
         }
 
@@ -509,7 +520,8 @@ class Grid extends DBDataSet {
      * @access public
      */
 
-    public function build() {
+    public function build()
+    {
         switch ($this->getState()) {
             case 'imageManager':
                 return $this->imageManager->build();
@@ -538,7 +550,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function loadData() {
+    protected function loadData()
+    {
         if ($this->getState() == self::DEFAULT_STATE_NAME) {
             $result = false;
         }
@@ -566,11 +579,6 @@ class Grid extends DBDataSet {
             }
 
         }
-        elseif ($this->getState() == 'getRawData') {
-            $this->applyUserFilter();
-            $this->applyUserSort();
-            $result = parent::loadData();
-        }
         else {
             $result = parent::loadData();
         }
@@ -585,8 +593,10 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function exportCSV() {
-        $prepareCSVString = function ($result, Array $nextValue) {
+    protected function exportCSV()
+    {
+        $prepareCSVString = function ($result, Array $nextValue)
+        {
             $separator = '"';
             $delimiter = ';';
             $rowDelimiter = "\r\n";
@@ -637,10 +647,11 @@ class Grid extends DBDataSet {
      *
      * @return void
      */
-    protected function printData() {
+    protected function printData()
+    {
         $this->setParam('recordsPerPage', false);
         if (E()->getController()->getViewMode() ==
-                DocumentController::TRANSFORM_HTML)
+            DocumentController::TRANSFORM_HTML)
             E()->getController()->getTransformer()->setFileName('print.xslt');
         $this->prepare();
     }
@@ -652,7 +663,8 @@ class Grid extends DBDataSet {
      * @return void
      * @access protected
      */
-    protected function imageManager() {
+    protected function imageManager()
+    {
         $this->imageManager =
                 $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
         //$this->imageManager->getState();
@@ -665,7 +677,8 @@ class Grid extends DBDataSet {
      * @return void
      * @access protected
      */
-    protected function fileLibrary() {
+    protected function fileLibrary()
+    {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary =
                 $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('config' => 'core/modules/share/config/FileLibraryMin.component.xml'));
@@ -686,18 +699,21 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function generateThumbnail($sourceFileName, $destFieldName, $width, $height, $filter, $rewrite = true) {
+    protected function generateThumbnail($sourceFileName, $destFieldName, $width, $height, $filter, $rewrite = true)
+    {
         $destFileName = false;
         if (!empty($sourceFileName)) {
-            list($dirname, $basename, $extension, $filename) = array_values(pathinfo($sourceFileName));
+            list($dirname, $basename, $extension, $filename) =
+                    array_values(pathinfo($sourceFileName));
             $destFileName =
                     $dirname . '/' . '.' . $filename . '.' . $width . '-' .
-                            $height . '.' . $extension;
+                    $height . '.' . $extension;
             if (
                 (
                         file_exists($fullDestFileName =
-                                dirname($_SERVER['SCRIPT_FILENAME']) . '/' .
-                                $destFileName)
+                                            dirname($_SERVER['SCRIPT_FILENAME']) .
+                                            '/' .
+                                            $destFileName)
                         && $rewrite
                 )
                 || !file_exists($fullDestFileName)
@@ -722,7 +738,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function setOrderColumn($columnName) {
+    protected function setOrderColumn($columnName)
+    {
         $this->orderColumn = $columnName;
         $this->setOrder(array($columnName => QAL::ASC));
     }
@@ -734,7 +751,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function getOrderColumn() {
+    protected function getOrderColumn()
+    {
         if (is_null($this->orderColumn)) {
             $this->orderColumn = false;
             $columns = $this->dbh->getColumnsInfo($this->getTableName());
@@ -755,7 +773,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function up() {
+    protected function up()
+    {
         $this->changeOrder(Grid::DIR_UP);
     }
 
@@ -766,7 +785,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function down() {
+    protected function down()
+    {
         $this->changeOrder(Grid::DIR_DOWN);
     }
 
@@ -778,7 +798,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function changeOrder($direction) {
+    protected function changeOrder($direction)
+    {
 
 
         if (!$this->getOrderColumn()) {
@@ -793,8 +814,8 @@ class Grid extends DBDataSet {
         $currentOrderNum = simplifyDBResult(
             $this->dbh->selectRequest(
                 'SELECT ' . $this->getOrderColumn() . ' ' .
-                        'FROM ' . $this->getTableName() . ' ' .
-                        'WHERE ' . $this->getPK() . ' = %s',
+                'FROM ' . $this->getTableName() . ' ' .
+                'WHERE ' . $this->getPK() . ' = %s',
                 $currentID
             ),
             $this->getOrderColumn(),
@@ -807,7 +828,7 @@ class Grid extends DBDataSet {
 
         if (!empty($baseFilter)) {
             $baseFilter = ' AND ' .
-                    str_replace('WHERE', '', $this->dbh->buildWhereCondition($this->getFilter()));
+                          str_replace('WHERE', '', $this->dbh->buildWhereCondition($this->getFilter()));
         }
         else {
             $baseFilter = '';
@@ -816,12 +837,12 @@ class Grid extends DBDataSet {
         //Определяем идентификатор записи которая находится рядом с текущей
         $request =
                 'SELECT ' . $this->getPK() . ' as neighborID, ' .
-                        $this->getOrderColumn() . ' as neighborOrderNum ' .
-                        'FROM ' . $this->getTableName() . ' ' .
-                        'WHERE ' . $this->getOrderColumn() . ' ' . $direction .
-                        ' ' . $currentOrderNum . ' ' . $baseFilter .
-                        'ORDER BY ' . $this->getOrderColumn() . ' ' .
-                        $orderDirection . ' Limit 1';
+                $this->getOrderColumn() . ' as neighborOrderNum ' .
+                'FROM ' . $this->getTableName() . ' ' .
+                'WHERE ' . $this->getOrderColumn() . ' ' . $direction .
+                ' ' . $currentOrderNum . ' ' . $baseFilter .
+                'ORDER BY ' . $this->getOrderColumn() . ' ' .
+                $orderDirection . ' Limit 1';
 
         $data =
                 convertDBResult($this->dbh->selectRequest($request), 'neighborID');
@@ -844,9 +865,9 @@ class Grid extends DBDataSet {
         }
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
-            'result' => true,
-            'dir' => $direction
-        ));
+                               'result' => true,
+                               'dir' => $direction
+                          ));
         $this->setBuilder($b);
     }
 
@@ -857,7 +878,8 @@ class Grid extends DBDataSet {
      * @access protected
      */
 
-    protected function applyUserFilter() {
+    protected function applyUserFilter()
+    {
         //Формат фильтра
         //$_POST['filter'][$tableName][$fieldName] = значение фильтра
         if (isset($_POST['filter'])) {
@@ -877,12 +899,24 @@ class Grid extends DBDataSet {
             $tableInfo = $this->dbh->getColumnsInfo($tableName);
             $values = $_POST['filter'][$tableName][$fieldName];
 
-            if(isset($tableInfo[$fieldName]) && is_array($tableInfo[$fieldName]['key']) ){
-                $fkTranslationTableName = $this->dbh->getTranslationTablename($tableInfo[$fieldName]['key']['tableName']);
-                $fkTableName = ($fkTranslationTableName) ? $fkTranslationTableName : $tableInfo[$fieldName]['key']['tableName'];
-                $fkValueField = substr($fkKeyName = $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')).'_name';
-                if($res = simplifyDBResult($this->dbh->select($fkTableName, $fkKeyName, $fkTableName .'.'. $fkValueField . ' '.call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]),  $values)).' '), $fkKeyName)){
-                    $this->addFilterCondition(array($tableName.'.'.$fieldName => $res));
+            if (isset($tableInfo[$fieldName]) &&
+                is_array($tableInfo[$fieldName]['key'])) {
+                $fkTranslationTableName =
+                        $this->dbh->getTranslationTablename($tableInfo[$fieldName]['key']['tableName']);
+                $fkTableName =
+                        ($fkTranslationTableName) ? $fkTranslationTableName : $tableInfo[$fieldName]['key']['tableName'];
+                $fkValueField = substr($fkKeyName =
+                                               $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
+                                '_name';
+                if ($res =
+                        simplifyDBResult($this->dbh->select($fkTableName, $fkKeyName,
+                                                            $fkTableName . '.' .
+                                                            $fkValueField .
+                                                            ' ' .
+                                                            call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
+                                                            ' '), $fkKeyName)) {
+                    $this->addFilterCondition(array($tableName . '.' .
+                                                    $fieldName => $res));
                 }
                 else {
                     $this->addFilterCondition(' FALSE');
@@ -891,20 +925,24 @@ class Grid extends DBDataSet {
             else {
                 $tableName = ($tableName) ? $tableName . '.' : '';
                 $this->addFilterCondition(
-                    $tableName . $fieldName . ' '.call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]),  $values)).' '
+                    $tableName . $fieldName . ' ' .
+                    call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
+                    ' '
                 );
             }
         }
     }
+
     /**
      * Применение сортировки
-     * 
+     *
      * @return void
      */
-    protected function applyUserSort() {
+    protected function applyUserSort()
+    {
         $actionParams = $this->getStateParams(true);
         if (isset($actionParams['sortField']) &&
-                isset($actionParams['sortDir'])) {
+            isset($actionParams['sortDir'])) {
             //подразумевается что sortDir - тоже существует
             $this->setOrder(array($actionParams['sortField'] => $actionParams['sortDir']));
         }
@@ -916,7 +954,8 @@ class Grid extends DBDataSet {
      * @access private
      * @return void
      */
-    private function addToolbarTranslations() {
+    private function addToolbarTranslations()
+    {
         foreach ($this->getDataDescription() as $fd) {
             if (($fd->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK)) {
                 $this->addWYSIWYGTranslations();
@@ -936,7 +975,8 @@ class Grid extends DBDataSet {
      * @access protected
      * @return void
      */
-    protected function addAttFilesField($tableName, $data = true) {
+    protected function addAttFilesField($tableName, $data = true)
+    {
         $field = new FieldDescription('attached_files');
         $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
         $field->setProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
@@ -963,7 +1003,8 @@ class Grid extends DBDataSet {
      * @return DOMNode
      */
 
-    private function buildAttachedFiles($data) {
+    private function buildAttachedFiles($data)
+    {
         $builder = new Builder();
         $dd = new DataDescription();
         $f = new FieldDescription('upl_id');
@@ -1011,7 +1052,8 @@ class Grid extends DBDataSet {
      * @return void
      * @access protected
      */
-    protected function put() {
+    protected function put()
+    {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent(
             'filelibrary',

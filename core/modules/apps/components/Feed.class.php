@@ -88,12 +88,14 @@ class Feed extends DBDataSet
     protected function createDataDescription()
     {
         $result = parent::createDataDescription();
-        if(!($fd = $result->getFieldDescriptionByName('smap_id'))){
-            $fd = new FieldDescription('smap_id');
-            $fd->setProperty('tableName',$this->getTableName());
-            $result->addFieldDescription($fd);
+        if($this->getState()=='main'){
+            if(!($fd = $result->getFieldDescriptionByName('smap_id'))){
+                $fd = new FieldDescription('smap_id');
+                $fd->setProperty('tableName',$this->getTableName());
+                $result->addFieldDescription($fd);
+            }
+            $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
         }
-        $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
         return $result;
     }
     /*

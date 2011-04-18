@@ -212,29 +212,30 @@ final class DivisionEditor extends Grid {
         $dirPath = Document::TEMPLATES_DIR . $type . '/';
 
         $folders = array(
+            glob($dirPath . "*." . $type . ".xml"),
             glob($dirPath . $siteFolder . "/*." . $type . ".xml"),
-            glob($dirPath . "*." . $type . ".xml")
         );
 
-        foreach ($folders as $index => $folder) if ($folder === false)
-            $folders[$index] = array();
-
-        foreach (
-            array_merge(
-                $folders[0], $folders[1]
-            ) as $path) {
+        foreach ($folders as $index => $folder) {
+            if ($folder === false) $folders[$index] = array();
+            foreach($folder as $folderPath){
+                $r[basename($folderPath)] = $folderPath;
+            }
+        }
+        foreach ($r as $path) {
             $path = str_replace($dirPath, '', $path);
             list($name, $tp) = explode('.', substr(basename($path), 0, -4));
             $name = $this->translate(strtoupper($tp . '_' . $name));
 
             $result[] = array(
                 'key' => $path,
-                'value' => $name . ((dirname($path) == '.') ? ' (Общий)' : '')
+                'value' => $name
             );
         }
         usort($result, function($rowA, $rowB) {
             return $rowA['value'] > $rowB['value'];
         });
+
         return $result;
     }
 

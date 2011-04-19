@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content>
-    <component name="feedbackTextBlock" module="share" class="TextBlock"></component>
-    <component name="feedbackForm" module="apps" class="FeedbackForm">
-        <params>
-            <param name="textBlock">feedbackTextBlock</param>
-        </params>
-    </component>
+<content html_class="colset">
+    <container name="center" column="column">
+        <container name="feedbackFormContainer" block="alfa" widget="static">
+            <component name="feedbackTextBlock" module="share" class="TextBlock"/>
+            <component name="feedbackForm" module="apps" class="FeedbackForm">
+                <params>
+                    <param name="textBlock">feedbackTextBlock</param>
+                </params>
+            </component>
+        </container>
+    </container>
 </content>

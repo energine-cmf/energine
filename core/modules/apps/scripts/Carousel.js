@@ -14,10 +14,10 @@ var Carousel = new Class({
         this.setOptions($pick(options, {}));
         Asset.css(this.options.css);
 
-        var carousel = $(element);
+        var carousel = this.carousel = $(element);
         this.element = carousel.getElement('.viewbox');
         this.holder = this.element.getElement('ul');
-        var items = this.holder.getElements('li'), buttonsInfo = {
+        var items = this.items = this.holder.getElements('li'), buttonsInfo = {
             previous:{
                 button:carousel.getElement('.previous'),
                 handler: Energine.cancelEvent
@@ -45,13 +45,13 @@ var Carousel = new Class({
             // Если элементы с такими классами существуют
             buttonsInfo.next.handler = function(event) {
                     if (this.effectCompleted) {
-                        this.scrollRight();
+                        this.scrollLeft();
                     }
                     event.stop();
                 }.bind(this);
             buttonsInfo.previous.handler = function(event) {
                     if (this.effectCompleted) {
-                        this.scrollLeft();
+                        this.scrollRight();
                     }
                     event.stop();
                 }.bind(this);
@@ -79,7 +79,7 @@ var Carousel = new Class({
         this.holder.grab(el, 'bottom');
         //после скроллинга - удаляем елемент
         this._scrollEffect(itemsToScroll, effects, function(){
-            this.deck[this.deck.length - 1].dispose();
+            this.deck[(this.deck.length - 1)].dispose();
         }.bind(this));
     },
     scrollRight : function() {
@@ -119,7 +119,7 @@ var Carousel = new Class({
         });
 
 
-        this.deck = $$(items.slice(this.options.visibleItems).reverse());
+        this.deck = $$(items.slice(this.options.visibleItems));
         
         this.deck.dispose();
         this.deck.setStyle('left', 0);    
@@ -127,6 +127,7 @@ var Carousel = new Class({
         for (var i = 0; i < this.options.visibleItems; i++) {
             this.element.getElements('ul li')[i].setStyle('left', (i+1)*this.width)
         }
+        this.carousel.setStyle('display', 'block');
     },
     _scrollEffect : function(elements, effects, afterEffectFunction) {
         this.effectCompleted = false;

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<content>
-	<component name="regForm" module="user" class="Register"/>
+<content html_class="colset">
+    <container name="center" column="column">
+        <container name="regFormContainer" block="alfa" widget="static">
+            <component name="regForm" module="user" class="Register"/>
+        </container>
+    </container>
 </content>

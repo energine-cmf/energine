@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<content>
-	<component name="userProfile" module="user"  class="UserProfile"></component>
+<content html_class="colset">
+    <container name="center" column="column">
+        <container name="userProfileContainer" block="alfa" widget="static">
+            <component name="userProfile" module="user" class="UserProfile"/>
+        </container>
+    </container>
 </content>

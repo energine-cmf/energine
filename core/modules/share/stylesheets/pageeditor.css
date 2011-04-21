@@ -1,7 +1,7 @@
 .nrgnEditor {
-    border: 1px dashed #F00;
+    outline: 1px dashed #F00;
 }
 
 .nrgnEditor.activeEditor {
-    border-color: #0D0;
+    outline-color: #0D0;
 }

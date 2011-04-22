@@ -67,6 +67,11 @@ class LoginForm extends DataSet {
         	$this->getData()->addField($messageField);
             E()->getResponse()->deleteCookie(UserSession::FAILED_LOGIN_COOKIE_NAME);
         }
+        
+        //Во избежание появления empty рекордсета
+        $f = new Field('username');
+        $f->setData('');
+        $this->getData()->addField($f);
     }
 
 

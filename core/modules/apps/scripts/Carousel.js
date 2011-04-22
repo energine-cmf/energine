@@ -106,7 +106,7 @@ var Carousel = new Class({
         scrollerItemsCount = this.options.visibleItems + 1;
 
         // Вычисляем ширину пункта
-        this.width = 102;
+        this.width = 110;
         //this.width = this.holder.getElement('li img').getSize().x.toInt();
         // Ширина окна скролла равна ширине все видимых елементов
         this.element.setStyle('width', this.width * this.options.visibleItems);

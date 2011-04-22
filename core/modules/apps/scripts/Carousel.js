@@ -19,11 +19,11 @@ var Carousel = new Class({
         this.holder = this.element.getElement('ul');
         var items = this.items = this.holder.getElements('li'), buttonsInfo = {
             previous:{
-                button:carousel.getElement('.previous'),
+                button:carousel.getElement('.previous_control'),
                 handler: Energine.cancelEvent
             },
             next:{
-                button:carousel.getElement('.next'),
+                button:carousel.getElement('.next_control'),
                 handler: Energine.cancelEvent
             }
         };
@@ -39,9 +39,11 @@ var Carousel = new Class({
         if (items.length <= this.options.visibleItems) {
             this.options.visibleItems = items.length;
             this.options.scrollItems = 0;
+            buttonsInfo.next.button.addClass('hidden');
+            buttonsInfo.previous.button.addClass('hidden');
         }
         else {
-            // Вешаем обработчики событий на кнопки с классами next и previous
+            // Вешаем обработчики событий на кнопки с классами next_control и previous_control
             // Если элементы с такими классами существуют
             buttonsInfo.next.handler = function(event) {
                     if (this.effectCompleted) {
@@ -104,7 +106,7 @@ var Carousel = new Class({
         scrollerItemsCount = this.options.visibleItems + 1;
 
         // Вычисляем ширину пункта
-        this.width = 110;
+        this.width = 102;
         //this.width = this.holder.getElement('li img').getSize().x.toInt();
         // Ширина окна скролла равна ширине все видимых елементов
         this.element.setStyle('width', this.width * this.options.visibleItems);

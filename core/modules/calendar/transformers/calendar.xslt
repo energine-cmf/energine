@@ -36,9 +36,11 @@
 
     </xsl:template>
 
-    <xsl:template match="record[ancestor::component[@exttype='calendar']]">
-        <!--current_week-->
+    <xsl:template match="record[ancestor::component[@exttype='calendar']]">        
         <tr class="week">
+            <xsl:if test="field[@today='today']">
+                <xsl:attribute name="class">week current_week</xsl:attribute>
+            </xsl:if>
             <td><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></td>
             <xsl:for-each select="field">
                 <td>

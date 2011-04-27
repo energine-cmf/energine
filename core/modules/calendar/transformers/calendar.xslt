@@ -7,33 +7,30 @@
 
     <xsl:template match="component[@exttype='calendar']">
         <xsl:if test="not(recordset/@empty)">
-                    <div class="calendar">
-                        <xsl:apply-templates select="toolbar"/>
-                        <xsl:apply-templates select="recordset"/>
-                    </div>
-
+            <div class="calendar">
+                <xsl:apply-templates select="toolbar"/>
+                <xsl:apply-templates select="recordset"/>
+            </div>
         </xsl:if>
     </xsl:template>
 
     <xsl:template match="recordset[parent::component[@exttype='calendar']]">
         <div class="calendar_content">
-           <table  cellspacing="0" border="1" width="100%" class="calendar_table">
-            <tbody>
-                <tr  class="names">
-                    <td><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></td>
-                    <xsl:for-each select="record[1]/field">
-                        <td class="day">
-                            <a><xsl:value-of select="@title"/></a>
-                        </td>
-                    </xsl:for-each>
-                    <td class="last"><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></td>
-                </tr>
-                <xsl:apply-templates/>
-            </tbody>
-
-        </table>
-                        </div>
-
+           <table cellspacing="0" border="1" width="100%" class="calendar_table">
+               <tbody>
+                   <tr class="names">
+                       <td><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></td>
+                       <xsl:for-each select="record[1]/field">
+                           <td class="day">
+                               <a><xsl:value-of select="@title"/></a>
+                           </td>
+                       </xsl:for-each>
+                       <td class="last"><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></td>
+                   </tr>
+                   <xsl:apply-templates/>
+               </tbody>
+           </table>
+        </div>
     </xsl:template>
 
     <xsl:template match="record[ancestor::component[@exttype='calendar']]">        
@@ -61,14 +58,13 @@
 
     <xsl:template match="toolbar[parent::component[@exttype='calendar']]">
         <div class="calendar_header">
-                <xsl:apply-templates select="control[@id='previous']"/>
-                <xsl:apply-templates select="control[@id='current']"/>
-                <xsl:apply-templates select="control[@id='next']"/>
+            <xsl:apply-templates select="control[@id='previous']"/>
+            <xsl:apply-templates select="control[@id='current']"/>
+            <xsl:apply-templates select="control[@id='next']"/>
         </div>
     </xsl:template>
 
-    <xsl:template
-            match="control[parent::toolbar[parent::component[@exttype='calendar']]]">
+    <xsl:template match="control[parent::toolbar[parent::component[@exttype='calendar']]]">
         <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}{@year}/{@month}/">
             <xsl:choose>
                 <xsl:when test="@id='current'">

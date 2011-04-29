@@ -64,7 +64,7 @@ class DBDataSet extends DataSet {
      * @var string
      * @access private
      */
-    private $previousAction = false;
+    private $previousState = false;
 
     /*
      * @var FileLibrary
@@ -683,17 +683,17 @@ class DBDataSet extends DataSet {
      * @final
      */
 
-    final protected function getPreviousAction() {
-        if (!$this->previousAction) {
+    final protected function getPreviousState() {
+        if (!$this->previousState) {
             if (!isset($_POST['componentAction'])) {
                 throw new SystemException('ERR_NO_COMPONENT_ACTION', SystemException::ERR_CRITICAL);
             }
             else {
-                $this->previousAction = $_POST['componentAction'];
+                $this->previousState = $_POST['componentAction'];
             }
         }
 
-        return $this->previousAction;
+        return $this->previousState;
     }
     /**
       * Сохранение текста статьи

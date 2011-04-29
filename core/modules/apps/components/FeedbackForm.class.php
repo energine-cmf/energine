@@ -78,7 +78,7 @@ class FeedbackForm extends DBDataSet {
 
         //получаем описание полей для метода
         $configDataDescription =
-                $this->config->getStateConfig($this->getPreviousAction());
+                $this->config->getStateConfig($this->getPreviousState());
         //если в конфиге есть описание полей для метода - загружаем их
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);

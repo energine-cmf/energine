@@ -445,13 +445,13 @@ class Grid extends DBDataSet
         //создаем объект описания данных
         $dataDescriptionObject = new DataDescription();
 
-        if (!method_exists($this, $this->getPreviousAction())) {
+        if (!method_exists($this, $this->getPreviousState())) {
             throw new SystemException('ERR_NO_ACTION', SystemException::ERR_CRITICAL);
         }
 
         //получаем описание полей для метода
         $configDataDescription =
-                $this->config->getStateConfig($this->getPreviousAction());
+                $this->config->getStateConfig($this->getPreviousState());
         //если в конфиге есть описание полей для метода - загружаем их
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);
@@ -595,25 +595,6 @@ class Grid extends DBDataSet
 
     protected function exportCSV()
     {
-        $prepareCSVString = function ($result, Array $nextValue)
-        {
-            $separator = '"';
-            $delimiter = ';';
-            $rowDelimiter = "\r\n";
-            if (!empty($result)) {
-                $result .= $rowDelimiter;
-            }
-            $row = '';
-            foreach ($nextValue as $fieldValue) {
-                $row .= $separator .
-                        mb_convert_encoding(str_replace(array($separator, $delimiter), array("''", ','), $fieldValue), 'Windows-1251', 'UTF-8') .
-                        $separator . $delimiter;
-            }
-            $row = substr($row, 0, -1);
-
-            return $result . $row;
-        };
-
         //Если у нас есть таблица с переводами то експортить не получится
         if ($this->getTranslationTableName()) {
             throw new SystemException('ERR_CANT_EXPORT', SystemException::ERR_DEVELOPER);
@@ -631,14 +612,23 @@ class Grid extends DBDataSet
         }
         for ($i = 0; $i < $this->getData()->getRowCount(); $i++) {
             foreach ($this->getDataDescription() as $fieldName => $fieldInfo) {
-                $value =
-                        $this->getData()->getFieldByName($fieldName)->getRowData($i);
-                if ($format = $fieldInfo->getPropertyValue('outputFormat'))
+                $value = '';
+                if($f = $this->getData()->getFieldByName($fieldName))
+                    $value = $f->getRowData($i);
+
+                if (
+                    $format = $fieldInfo->getPropertyValue('outputFormat')
+                    &&
+                    (
+                        in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_DATETIME))
+                    )
+                )
                     $value = strftime($format, $value);
                 $data[$i + 1][] = $value;
             }
         }
-        $data = array_reduce($data, $prepareCSVString);
+        $data = array_reduce($data, 'prepareCSVString');
+
         $this->downloadFile($data, $MIMEType, $filename);
     }
 

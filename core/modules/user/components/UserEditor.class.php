@@ -60,7 +60,7 @@ class UserEditor extends Grid {
         //При сохранении данных из формы редактирования
         //Если не пришел пароль - не трогаем его
 
-        if ($this->getPreviousAction() == 'edit' && $_POST[$this->getTableName()]['u_password'] === '') {
+        if ($this->getPreviousState() == 'edit' && $_POST[$this->getTableName()]['u_password'] === '') {
             unset($_POST[$this->getTableName()]['u_password']);
         }
         else {

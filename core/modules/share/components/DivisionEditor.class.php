@@ -358,6 +358,10 @@ final class DivisionEditor extends Grid {
                     E()->getMap(E()->getSiteManager()->getSiteByPage($id)->id)->getURLByID($id);
         }
 
+        //Ads
+//        $ads = new AdsManager($result, $this->getState());
+//        $adsID = $ads->save();
+
 
         $transactionStarted = !($this->dbh->commit());
         $b = $this->getBuilder();
@@ -418,6 +422,12 @@ final class DivisionEditor extends Grid {
             $this->getData()->addField($field);
         }
 
+        //Ads
+//        $ads = new AdsManager(null, $this->getState());
+//        $adsFieldsDescriptions = $ads->getFieldsDescriptions();
+//        if ($adsFieldsDescriptions)
+//            foreach ($adsFieldsDescriptions as $key => $value)
+//                $this->getDataDescription()->addFieldDescription($value);
     }
 
     protected function edit() {
@@ -516,6 +526,30 @@ final class DivisionEditor extends Grid {
             $this->getData()->addField($field);
         }
         $this->getDataDescription()->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_INT)->setMode(FieldDescription::FIELD_MODE_READ);
+
+//        //Ads
+//        $ads = new AdsManager($this->getData()->getFieldByName('smap_id')->getRowData(0), $this->getState());
+//        $adsFieldsDescriptions = $ads->getFieldsDescriptions();
+//        if ($adsFieldsDescriptions)
+//            foreach ($adsFieldsDescriptions as $key => $value)
+//                $this->getDataDescription()->addFieldDescription($value);
+//        //@TODO Переробити так, щоб можна було нормально використати $data->load;
+//        if(is_array($adsFields = $ads->getFields())){
+//            foreach($adsFields as $key=>$value){
+//                $this->getData()->addField(new Field($key));
+//                $this->getData()->getFieldByName($key)->setData($value, true);
+//            }
+//        }
+//
+//
+//        $f = new Field('fake_field');
+//        $this->getData()->addField($f);
+//
+//        $fd = new FieldDescription('fake_field');
+//        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+//        $fd->setProperty('tabName','TXT_ADS');
+//        $this->getDataDescription()->addFieldDescription($fd);
+
     }
 
     /**

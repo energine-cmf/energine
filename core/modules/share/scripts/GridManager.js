@@ -511,8 +511,17 @@ var GridManager = new Class({
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
                 'Do you really want to delete selected record?';
         if (confirm(MSG_CONFIRM_DELETE)) {
+            this.overlay.show();
             this.request(this.singlePath + this.grid.getSelectedRecordKey() +
-                    '/delete/', null, this.loadPage.pass(this.pageList.currentPage, this));
+                    '/delete/', null,
+                    function(){
+                        this.overlay.hide();
+                        this.loadPage(this.pageList.currentPage);
+                    },
+                    function(responseText){
+                        this.overlay.hide();
+                    }.bind(this)
+            );
         }
     },
 

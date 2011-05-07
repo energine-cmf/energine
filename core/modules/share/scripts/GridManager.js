@@ -473,26 +473,40 @@ var GridManager = new Class({
     add: function() {
         ModalBox.open({
             url: this.singlePath + 'add/',
-            onClose: function(returnValue) {
-                if (returnValue) {
-                    if (returnValue.afterClose == 'add') {
-                        this.add();
-                    }
-                    else {
-                        this.reloadGrid();
-                    }
-                }
-            }.bind(this)
+            onClose: this._processAfterCloseAction.bind(this)
         });
     },
 
     edit: function() {
         ModalBox.open({
             url: this.singlePath + this.grid.getSelectedRecordKey() + '/edit',
-            onClose: this.loadPage.pass(this.pageList.currentPage, this)
+            onClose: this._processAfterCloseAction.bind(this)
         });
     },
-
+    _processAfterCloseAction: function(returnValue){
+        if(returnValue) {
+            if(returnValue.afterClose && this[returnValue.afterClose]){
+                this[returnValue.afterClose].attempt(null, this);
+            }
+            else {
+                this.loadPage.pass(this.pageList.currentPage, this)
+            }
+        }
+    },
+    editPrev: function(){
+        var prevRow;
+        if(this.grid.getSelectedItem() && (prevRow = this.grid.getSelectedItem().getPrevious())){
+            this.grid.selectItem(prevRow);
+            this.edit();
+        }
+    },
+    editNext: function(){
+        var nextRow;
+        if(this.grid.getSelectedItem() && (nextRow = this.grid.getSelectedItem().getNext())){
+            this.grid.selectItem(nextRow);
+            this.edit();
+        }
+    },
     del: function() {
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
                 'Do you really want to delete selected record?';

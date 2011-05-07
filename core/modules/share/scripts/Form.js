@@ -94,13 +94,11 @@ var Form = new Class({
         return (!this.overlay)?this.overlay = new Overlay():this.overlay;        
     },
     processServerResponse: function(response) {
-        if (response && (response.mode == 'insert')) {
-            var nextActionSelector;
-            if (nextActionSelector =
-                    this.toolbar.getControlById('after_save_action')) {
+        var nextActionSelector;
+        if (response && (nextActionSelector =
+                    this.toolbar.getControlById('after_save_action'))) {
                 Cookie.write('after_add_default_action', nextActionSelector.getValue(), {path:new URI(Energine.base).get('directory'), duration:1});
                 response.afterClose = nextActionSelector.getValue();
-            }
         }
         ModalBox.setReturnValue(response);
         this._getOverlay().hide();

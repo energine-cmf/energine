@@ -517,7 +517,7 @@ var GridManager = new Class({
                     function(){
                         this.overlay.hide();
                         this.loadPage(this.pageList.currentPage);
-                    },
+                    }.bind(this),
                     function(responseText){
                         this.overlay.hide();
                     }.bind(this)

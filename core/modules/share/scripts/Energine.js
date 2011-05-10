@@ -85,10 +85,11 @@ var Energine = {
             Browser.Engine.presto
 }
 Energine.request = {
-    request : function(uri, data, onSuccess, onUserError, onServerError) {
+    request : function(uri, data, onSuccess, onUserError, onServerError, method) {
         onServerError = onServerError || function(responseText){
 
         };
+        method = method || 'post';
         var callbackFunction = function(response, responseText) {
             if(!response){
                 onServerError(responseText);
@@ -119,11 +120,12 @@ Energine.request = {
         };
         new Request.JSON({
             'url' : uri,
-            'method' : 'post',
+            'method' : method,
             'data' : data,
             // 'noCache': true,
             'evalResponse' : false,
-            'onComplete' : callbackFunction
+            'onComplete' : callbackFunction,
+            'onFailure': function(e){console.log(arguments)}
         }).send();
 
     }
@@ -219,13 +221,18 @@ Asset.loaded = {
 Asset.css = function(source, properties) {
     if (!Asset.loaded.css[source]) {
         Asset.loaded.css[source] = true;
-        return new Element('link', $merge({
+        properties = properties || {};
+
+        var result = new Element('link');
+        result.setProperties($merge({
             'rel' : 'stylesheet',
             'media' : 'Screen, projection',
             'type' : 'text/css',
             'href' : ((Energine.static) ? Energine.static : '') + 'stylesheets/' +
                     source
-        }, properties)).inject(document.head);
+            }, properties));
+        result.inject(document.head);
+        return result;
     }
     return false;
 }

@@ -489,7 +489,7 @@ var GridManager = new Class({
                 this[returnValue.afterClose].attempt(null, this);
             }
             else {
-                this.loadPage.pass(this.pageList.currentPage, this)
+                this.loadPage(this.pageList.currentPage);
             }
         }
     },

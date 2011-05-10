@@ -17,16 +17,18 @@
     <xsl:template match="recordset[parent::component[@exttype='calendar']]">
         <div class="calendar_content">
            <table cellspacing="0" border="1" width="100%" class="calendar_table">
-               <tbody>
+               <thead>
                    <tr class="names">
-                       <td><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></td>
+                       <th><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></th>
                        <xsl:for-each select="record[1]/field">
-                           <td class="day">
+                           <th class="day">
                                <a><xsl:value-of select="@title"/></a>
-                           </td>
+                           </th>
                        </xsl:for-each>
-                       <td class="last"><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></td>
-                   </tr>
+                       <th class="last"><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></th>
+                   </tr>                   
+               </thead>
+               <tbody>
                    <xsl:apply-templates/>
                </tbody>
            </table>

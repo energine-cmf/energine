@@ -16,62 +16,47 @@
  */
 class AdsManager extends DBWorker {
 
-    private $tableName = 'share_ads';
-    private $componentAction;
-    private $columnsInfo;
-    private $columns;
+    const TABLE_NAME = 'share_ads';
 
-    public function __construct($smapID, $componentAction = 'edit') {
+    public function __construct() {
         parent::__construct();
-        $this->componentAction = $componentAction;
-        $this->loadColumnsInfo();
-        $this->smapID = $smapID;
     }
 
-
-    public function save(){
-        if(isset($_POST['componentAction']) && isset($_POST['share_sitemap']) && isset($_POST[$this->tableName])){
-            $this->componentAction = $_POST['componentAction'];
-            $ads = $_POST[$this->tableName];
-            $ads['smap_id'] = $this->smapID;
-            switch($this->componentAction){
-                case 'add':
-                    $result = $this->dbh->modify(QAL::INSERT,$this->tableName,$ads);
-                    break;
-                case 'edit':
-                    break;
-                default:
-                    break;
-            }
-            return $result;
-        }
-    }
-
-    public function getFieldsDescriptions(){
-        $fds = $this->columnsInfo;
-        foreach ($fds as $key => $value) {
+    public function add($dd){
+        $fds = $this->dbh->getColumnsInfo(self::TABLE_NAME);
+        unset($fds['smap_id']);
+        unset($fds['ad_id']);
+        foreach ($fds as $key => $value)
             $fds[$key]['tabName'] = 'TXT_ADS';
-            if (in_array($key, array('ad_id')))
-                $fds[$key]['key'] = false;
-        }
-        $dd = new DataDescription();
         $dd->load($fds);
-        return $dd;
     }
 
-    public function getFields(){
-        if ($this->componentAction == 'edit') {
-            $fields = $this->columns;
-            $result = $this->dbh->select($this->tableName, $fields, array('smap_id' => $this->smapID));
-            return $result[0];
+    public function edit($d, $dd){
+        $fds = $this->dbh->getColumnsInfo(self::TABLE_NAME);
+        unset($fds['smap_id']);
+        $fds['ad_id']['key'] = false;
+        foreach ($fds as $key => $value)
+            $fds[$key]['tabName'] = 'TXT_ADS';
+        $dd->load($fds);
+
+        $data = $this->dbh->select(self::TABLE_NAME, array_keys($fds), array('smap_id' => $d->getFieldByName('smap_id')->getRowData(0)));
+        $d->load($data);
+    }
+
+    public function save($data){
+        $result = false;
+        if(isset($data['ad_id']) && intval($adID = $data['ad_id'])){
+            unset($data['ad_id']);
+            $result = $this->dbh->modify(QAL::UPDATE, self::TABLE_NAME, $data, array('ad_id' => $adID));
+        } else {
+            $result = $this->dbh->modify(QAL::INSERT, self::TABLE_NAME, $data);
         }
+        return $result;
     }
 
-    private function loadColumnsInfo(){
-        $this->columnsInfo = $this->dbh->getColumnsInfo($this->tableName);
-        unset($this->columnsInfo['smap_id']);
-        if($this->componentAction=='add')
-            unset($this->columnsInfo['ad_id']);
-        $this->columns = array_keys($this->columnsInfo);
+    public function isActive(){
+        if($this->dbh->tableExists(self::TABLE_NAME))
+            return true;
+        return false;
     }
 }

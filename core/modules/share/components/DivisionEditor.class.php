@@ -423,11 +423,9 @@ final class DivisionEditor extends Grid {
         }
 
         //Ads
-//        $ads = new AdsManager(null, $this->getState());
-//        $adsFieldsDescriptions = $ads->getFieldsDescriptions();
-//        if ($adsFieldsDescriptions)
-//            foreach ($adsFieldsDescriptions as $key => $value)
-//                $this->getDataDescription()->addFieldDescription($value);
+        $ads = new AdsManager();
+        if($ads->isActive())
+            $ads->add($this->getDataDescription());
     }
 
     protected function edit() {
@@ -527,29 +525,10 @@ final class DivisionEditor extends Grid {
         }
         $this->getDataDescription()->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_INT)->setMode(FieldDescription::FIELD_MODE_READ);
 
-//        //Ads
-//        $ads = new AdsManager($this->getData()->getFieldByName('smap_id')->getRowData(0), $this->getState());
-//        $adsFieldsDescriptions = $ads->getFieldsDescriptions();
-//        if ($adsFieldsDescriptions)
-//            foreach ($adsFieldsDescriptions as $key => $value)
-//                $this->getDataDescription()->addFieldDescription($value);
-//        //@TODO Переробити так, щоб можна було нормально використати $data->load;
-//        if(is_array($adsFields = $ads->getFields())){
-//            foreach($adsFields as $key=>$value){
-//                $this->getData()->addField(new Field($key));
-//                $this->getData()->getFieldByName($key)->setData($value, true);
-//            }
-//        }
-//
-//
-//        $f = new Field('fake_field');
-//        $this->getData()->addField($f);
-//
-//        $fd = new FieldDescription('fake_field');
-//        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-//        $fd->setProperty('tabName','TXT_ADS');
-//        $this->getDataDescription()->addFieldDescription($fd);
-
+        //Ads
+        $ads = new AdsManager();
+        if($ads->isActive())
+            $ads->edit($this->getData(), $this->getDataDescription());
     }
 
     /**

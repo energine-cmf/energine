@@ -89,7 +89,8 @@
         //Записываем информацию в таблицу тегов
         if(isset($_POST['tags'])){
         	E()->TagManager->bind($_POST['tags'], $smapID, 'share_sitemap_tags');
-        } 
+        }
+
         //Удаляем все предыдущие записи в таблице прав
         $this->dbh->modify(QAL::DELETE , 'share_access_level', null, array('smap_id' => $smapID));
         foreach ($rights as $groupID => $rightID) {
@@ -106,6 +107,12 @@
             foreach ($_POST['uploads']['upl_id'] as  $uplOrderNum => $uplID){
                 $this->dbh->modify(QAL::INSERT, 'share_sitemap_uploads', array('upl_order_num' => ($uplOrderNum + 1), 'smap_id' => $smapID, 'upl_id' => $uplID));
             }
+        }
+        //Save ads
+        $ads = new AdsManager();
+        if($ads->isActive() && is_array($adsData = $_POST[AdsManager::TABLE_NAME])){
+            $adsData['smap_id'] = $smapID;
+            $ads->save($adsData);
         }
 
         return $result;

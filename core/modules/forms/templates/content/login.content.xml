@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<content html_class="colset">
-    <container name="center" column="column">
-        <container name="loginFormContainer" block="alfa" widget="static">
-            <component name="loginForm" module="user" class="LoginForm"/>
-        </container>
-    </container>
-</content>

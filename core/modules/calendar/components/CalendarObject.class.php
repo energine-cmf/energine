@@ -70,7 +70,8 @@ final class CalendarObject extends Object implements Iterator {
 	 */
 	public function __construct($monthID = false, $year = false){
 		$this->today = new DateTime();
-		 
+        $this->today->setTime(0, 0, 0);
+
 		$monthID = (int)((!$monthID)?$this->today->format('n'):$monthID);
 		$year = (int)((!$year)?$this->today->format('Y'):$year);
 		//Определяем день начала календаря

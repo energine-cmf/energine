@@ -295,7 +295,7 @@ class Grid extends DBDataSet
 
         $this->applyUserFilter();
         $this->applyUserSort();
-        
+
         $data = $this->createData();
         if ($data instanceof Data) {
             $this->setData($data);
@@ -613,21 +613,21 @@ class Grid extends DBDataSet
         for ($i = 0; $i < $this->getData()->getRowCount(); $i++) {
             foreach ($this->getDataDescription() as $fieldName => $fieldInfo) {
                 $value = '';
-                if($f = $this->getData()->getFieldByName($fieldName))
+                if ($f = $this->getData()->getFieldByName($fieldName))
                     $value = $f->getRowData($i);
 
                 if (
                     $format = $fieldInfo->getPropertyValue('outputFormat')
-                    &&
-                    (
-                        in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_DATETIME))
-                    )
+                              &&
+                              (
+                              in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_DATETIME))
+                              )
                 )
                     $value = strftime($format, $value);
                 $data[$i + 1][] = $value;
             }
         }
-        $data = array_reduce($data, 'prepareCSVString');
+        $data = array_reduce($data, array($this, 'prepareCSVString'));
 
         $this->downloadFile($data, $MIMEType, $filename);
     }
@@ -644,6 +644,25 @@ class Grid extends DBDataSet
             DocumentController::TRANSFORM_HTML)
             E()->getController()->getTransformer()->setFileName('print.xslt');
         $this->prepare();
+    }
+
+    protected function prepareCSVString($result, Array $nextValue){
+        $separator = '"';
+        $delimiter = ';';
+        $rowDelimiter = "\r\n";
+        if (!empty($result)) {
+            $result .= $rowDelimiter;
+        }
+        $row = '';
+        foreach ($nextValue as $fieldValue) {
+            $row .= $separator .
+                    //mb_convert_encoding(str_replace(array($separator, $delimiter), array("''", ','), $fieldValue), 'Windows-1251', 'UTF-8') .
+                    str_replace(array($separator, $delimiter), array("''", ','), $fieldValue).
+                    $separator . $delimiter;
+        }
+        $row = substr($row, 0, -1);
+
+        return $result . $row;
     }
 
 

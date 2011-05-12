@@ -36,7 +36,7 @@
                     type="select"
                 >
                     <options>
-                        <option id="close">BTN_CLOSE</option>
+                        <option id="reload">BTN_CLOSE</option>
                         <option id="add">BTN_ADD</option>
                     </options>
                 </control>

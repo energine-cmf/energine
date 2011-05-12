@@ -5,8 +5,13 @@
             <javascript>
                 <object name="GridManager"/>
             </javascript>
+            <fields>
+                <field name="form_id"/>
+                <field name="form_is_active"/>
+                <field name="form_creation_date" outputFormat="%E"/>
+                <field name="form_name"/>
+            </fields>
             <toolbar>
-                <control id="view" title="BTN_VIEW" type="button" onclick="view"/>
                 <control id="add" title="BTN_ADD" type="button" onclick="add"/>
                 <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
                 <control id="delete" title="BTN_DELETE" type="button"

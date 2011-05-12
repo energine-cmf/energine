@@ -394,14 +394,14 @@ var GridManager = new Class({
          * Делаем секундную задержку для надёжности:
          * пусть браузер распарсит стили и просчитает размеры элементов.
          */
-        //this.reloadGrid.delay(1000, this);
+        //this.reload.delay(1000, this);
     },
 
     onTabChange: function(tabData) {
         this.langId = tabData.lang;
         // Загружаем первую страницу только если панель инструментов уже прикреплена.
         this.filter.remove();
-        this.reloadGrid();
+        this.reload();
     },
 
     onSelect: function() {
@@ -414,7 +414,7 @@ var GridManager = new Class({
         this.loadPage.delay(10, this, 1);
     },
 
-    reloadGrid: function() {
+    reload: function() {
         this.loadPage.delay(10, this, 1);
     },
 
@@ -558,12 +558,12 @@ GridManager.Filter = new Class({
             this.fields = this.element.getElement('.f_fields');
             applyButton.addEvent('click', function() {
                 this.use();
-                this.gm.reloadGrid.apply(this.gm);
+                this.gm.reload.apply(this.gm);
             }.bind(this));
             resetLink.addEvent('click', function(e) {
                 Energine.cancelEvent(e);
                 this.remove();
-                this.gm.reloadGrid.apply(this.gm);
+                this.gm.reload.apply(this.gm);
             }.bind(this));
 
             this.inputs =

@@ -101,7 +101,7 @@
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
                 <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
                     <options>
-                        <option id="close">BTN_CLOSE</option>
+                        <option id="reload">BTN_CLOSE</option>
                         <option id="add">BTN_ADD</option>
                         <option id="go">BTN_GO</option>
                     </options>

@@ -9,7 +9,7 @@ var UserManager  = new Class({
     ban: function() {
         ModalBox.open({
             url: this.singlePath + this.grid.getSelectedRecordKey() + '/ban/',
-            onClose:this.reloadGrid.bind(this)
+            onClose:this.reload.bind(this)
         });
     }
 });

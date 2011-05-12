@@ -40,7 +40,8 @@ class AdsManager extends DBWorker {
         $dd->load($fds);
 
         $data = $this->dbh->select(self::TABLE_NAME, array_keys($fds), array('smap_id' => $d->getFieldByName('smap_id')->getRowData(0)));
-        $d->load($data);
+        if(is_array($data))
+            $d->load($data);
     }
 
     public function save($data){

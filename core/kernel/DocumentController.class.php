@@ -36,6 +36,9 @@ class DocumentController extends Object {
                 $this->getConfigValue('site.asXML')) {
             $result = self::TRANSFORM_DEBUG_XML;
         }
+        elseif(isset($_GET[self::TRANSFORM_HTML])){
+            $result = self::TRANSFORM_HTML;
+        }
         elseif (isset($_GET[self::TRANSFORM_STRUCTURE_XML])) {
             $result = self::TRANSFORM_STRUCTURE_XML;
         }

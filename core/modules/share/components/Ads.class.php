@@ -16,22 +16,8 @@
  * @subpackage share
  * @author spacelord
  */
-class Ads extends DataSet
-{
-    const TABLE_NAME = 'share_ads';
-    /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
-     */
-    public function __construct($name, $module, array $params = null)
-    {
-        parent::__construct($name, $module, $params);
-    }
+class Ads extends DataSet{
+    
     protected function main(){
         parent::main();
 
@@ -39,7 +25,7 @@ class Ads extends DataSet
         $IDs[] = $this->document->getID();
         
         //Get segment ads or ads of his next parent
-        $result = $this->dbh->select(self::TABLE_NAME, true, array('smap_id' => $IDs), array('smap_id' => QAL::DESC), 1);
+        $result = $this->dbh->select(AdsManager::TABLE_NAME, true, array('smap_id' => $IDs), array('smap_id' => QAL::DESC), 1);
 
         if(is_array($result)){
             //We don't need smap_id, so don't write it to Data

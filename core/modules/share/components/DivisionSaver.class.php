@@ -108,13 +108,16 @@
                 $this->dbh->modify(QAL::INSERT, 'share_sitemap_uploads', array('upl_order_num' => ($uplOrderNum + 1), 'smap_id' => $smapID, 'upl_id' => $uplID));
             }
         }
-        //Save ads
-        $ads = new AdsManager();
-        if($ads->isActive() && is_array($adsData = $_POST[AdsManager::TABLE_NAME])){
+        if(
+            AdsManager::isActive()
+            && isset($_POST[AdsManager::TABLE_NAME])
+            && is_array($adsData = $_POST[AdsManager::TABLE_NAME])
+        ){
+            $ads = new AdsManager();
             $adsData['smap_id'] = $smapID;
             $ads->save($adsData);
         }
-
+        
         return $result;
     }
 }

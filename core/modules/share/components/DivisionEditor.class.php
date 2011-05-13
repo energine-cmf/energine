@@ -423,9 +423,10 @@ final class DivisionEditor extends Grid {
         }
 
         //Ads
-        $ads = new AdsManager();
-        if($ads->isActive())
+        if(AdsManager::isActive()){
+            $ads = new AdsManager();
             $ads->add($this->getDataDescription());
+        }
     }
 
     protected function edit() {
@@ -525,10 +526,10 @@ final class DivisionEditor extends Grid {
         }
         $this->getDataDescription()->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_INT)->setMode(FieldDescription::FIELD_MODE_READ);
 
-        //Ads
-        $ads = new AdsManager();
-        if($ads->isActive())
-            $ads->edit($this->getData(), $this->getDataDescription());
+        if(AdsManager::isActive()){
+            $ads = new AdsManager();
+            $ads->add($this->getData(), $this->getDataDescription());
+        }
     }
 
     /**

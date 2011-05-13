@@ -15,14 +15,19 @@
  * @author spacelord.5@gmail.com
  */
 class AdsManager extends DBWorker {
-
+    /**
+     * имя таблицы
+     */
     const TABLE_NAME = 'share_ads';
 
-    public function __construct() {
-        parent::__construct();
-    }
-
-    public function add($dd){
+    /**
+     * Модифицирует переданный ему объект DataDescription
+     * добавляя к нему информацию рекламных полях
+     *
+     * @param DataDescription $dd
+     * @return void
+     */
+    public function add(DataDescription $dd){
         $fds = $this->dbh->getColumnsInfo(self::TABLE_NAME);
         unset($fds['smap_id']);
         unset($fds['ad_id']);
@@ -30,8 +35,15 @@ class AdsManager extends DBWorker {
             $fds[$key]['tabName'] = 'TXT_ADS';
         $dd->load($fds);
     }
-
-    public function edit($d, $dd){
+    /**
+     * Модифицирует переданные объекты Data DataDescription
+     * добавляя информацию о рекламе
+     *
+     * @param Data $d
+     * @param DataDescription $dd
+     * @return void
+     */
+    public function edit(Data $d, DataDescription $dd){
         $fds = $this->dbh->getColumnsInfo(self::TABLE_NAME);
         unset($fds['smap_id']);
         $fds['ad_id']['key'] = false;
@@ -43,8 +55,13 @@ class AdsManager extends DBWorker {
         if(is_array($data))
             $d->load($data);
     }
-
-    public function save($data){
+    /**
+     * Сохраняет информацию о рекламе
+     * 
+     * @param array $data
+     * @return array|bool
+     */
+    public function save(array $data){
         $result = false;
         if(isset($data['ad_id']) && intval($adID = $data['ad_id'])){
             unset($data['ad_id']);
@@ -54,10 +71,14 @@ class AdsManager extends DBWorker {
         }
         return $result;
     }
-
-    public function isActive(){
-        if($this->dbh->tableExists(self::TABLE_NAME))
-            return true;
+    /**
+     * Если таблицы не существует
+     * значит и рекламы никакой нет
+     * @static
+     * @return bool
+     */
+    public static function isActive(){
+        if(E()->getDB()->tableExists(self::TABLE_NAME)) return true;
         return false;
     }
 }

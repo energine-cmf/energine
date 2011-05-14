@@ -38,6 +38,7 @@
                 <caption></caption>
                 <thead>
                     <tr>
+                        <th>...</th>
                         <xsl:for-each select="recordset/record[1]/field[not(@type = 'hidden') and not(@index = 'PRI')]">
                             <th><xsl:value-of select="@title"/></th>
                         </xsl:for-each>
@@ -46,6 +47,7 @@
                 <tbody>
                     <xsl:for-each select="recordset/record">
                         <tr>
+                        <td><xsl:value-of select="position()"/></td>
                         <xsl:for-each select="field[not(@type = 'hidden') and not(@index = 'PRI')]">
                             <td><xsl:apply-templates select="."/></td>
                         </xsl:for-each>

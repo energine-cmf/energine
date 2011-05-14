@@ -205,18 +205,4 @@
             </xsl:for-each>
         </select>
     </xsl:template>
-
-    <xsl:template match="component[@type='list' and @class='SiteEditor']">
-    	<form method="post" action="{@action}">
-            <xsl:if test="@exttype='grid'">
-                <xsl:attribute name="class">e-grid-form</xsl:attribute>
-            </xsl:if>
-            <input type="hidden" name="componentAction" value="{@componentAction}"/>
-            <xsl:apply-templates/>
-            <script type="text/javascript">
-                Energine.translations.set('MSG_TEMPLATES_RESET', "<xsl:value-of select="$TRANSLATION[@const='MSG_TEMPLATES_RESET']"/>");
-                Energine.translations.set('MSG_CONFIRM_TEMPLATES_RESET', "<xsl:value-of select="$TRANSLATION[@const='MSG_CONFIRM_TEMPLATES_RESET']"/>");
-            </script>
-    	</form>
-    </xsl:template>
 </xsl:stylesheet>

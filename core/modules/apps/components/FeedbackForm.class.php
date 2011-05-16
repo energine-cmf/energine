@@ -55,7 +55,7 @@ class FeedbackForm extends DBDataSet {
                 'active' => true,
                 'textBlock' => false,
                 'tableName' => 'apps_feedback',
-                'recipientEmail' => 'mail.feedback',
+                'recipientEmail' => false,
                 'userSubject' => 'TXT_SUBJ_FEEDBACK_USER',
                 'userBody' => 'TXT_BODY_FEEDBACK_USER',
                 'adminSubject' => 'TXT_SUBJ_FEEDBACK_ADMIN',
@@ -124,6 +124,7 @@ class FeedbackForm extends DBDataSet {
      */
 
     protected function send() {
+
         if(!isset($_POST[$this->getTableName()])){
             E()->getResponse()->redirectToCurrentSection();
         }
@@ -133,7 +134,6 @@ class FeedbackForm extends DBDataSet {
             if (!$this->document->getUser()->isAuthenticated()) {
                 $this->checkCaptcha();
             }
-
             if ($result = $this->saveData($data)) {
                 $data = $data[$this->getTableName()];
                 $senderEmail = '';
@@ -160,7 +160,6 @@ class FeedbackForm extends DBDataSet {
                             intval($data['feed_type'])) {
                         $recipientID = $data['feed_type'];
                     }
-
                     $mailer->setFrom($this->getConfigValue('mail.from'))->
                             setSubject($this->translate($this->getParam('adminSubject')))->
                             setText($this->translate($this->getParam('adminBody')), $data)->
@@ -193,7 +192,7 @@ class FeedbackForm extends DBDataSet {
      * @access private
      */
     protected function getRecipientEmail($options = false) {
-        return $this->getConfigValue($this->getParam('recipientEmail'));
+        return $this->getParam('recipientEmail');
     }
 
     /*
@@ -255,7 +254,5 @@ class FeedbackForm extends DBDataSet {
 
         $this->setDataDescription($dataDescription);
         $this->setData($data);
-
     }
-
 }

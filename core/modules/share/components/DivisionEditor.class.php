@@ -528,7 +528,7 @@ final class DivisionEditor extends Grid {
 
         if(AdsManager::isActive()){
             $ads = new AdsManager();
-            $ads->add($this->getData(), $this->getDataDescription());
+            $ads->edit($this->getData(), $this->getDataDescription());
         }
     }
 

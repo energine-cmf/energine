@@ -106,11 +106,8 @@ final class QAL extends DBA {
             throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB, array($tableName, $fields, $condition, $order, $limit));
         }
 
-        if ($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
-            $tableName = "`$tableName`";
-        }
 
-        $sqlQuery = "SELECT $fields FROM $tableName";
+        $sqlQuery = "SELECT $fields FROM ".DBA::getFQTableName($tableName);
 
         if (isset($condition)) {
             $sqlQuery .= $this->buildWhereCondition($condition);
@@ -166,7 +163,8 @@ final class QAL extends DBA {
         if (empty($mode) || empty($tableName)) {
             throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
         }
-
+        $tableName = DBA::getFQTableName($tableName);
+        
         $sqlQuery = '';
 
         switch ($mode) {
@@ -188,10 +186,10 @@ final class QAL extends DBA {
                         }
                         $fieldValues[] = $fieldValue;
                     }
-                    $sqlQuery = $mode." INTO `$tableName` (".implode(', ', $fieldNames).') VALUES ('.implode(', ', $fieldValues).')';
+                    $sqlQuery = $mode.' INTO '.$tableName.' ('.implode(', ', $fieldNames).') VALUES ('.implode(', ', $fieldValues).')';
                 }
                 else {
-                    $sqlQuery = "INSERT INTO `$tableName` VALUES ()";
+                    $sqlQuery = 'INSERT INTO '.$tableName.' VALUES ()';
                 }
                 break;
             case self::UPDATE:
@@ -209,14 +207,14 @@ final class QAL extends DBA {
                         }
                         $fields[] = "$fieldName = $fieldValue";
                     }
-                    $sqlQuery = "UPDATE `$tableName` SET ".implode(', ', $fields);
+                    $sqlQuery = 'UPDATE '.$tableName.' SET '.implode(', ', $fields);
                 }
                 else {
                     throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
                 }
                 break;
             case self::DELETE:
-                $sqlQuery = "DELETE FROM `$tableName`";
+                $sqlQuery = 'DELETE FROM '.$tableName;
                 break;
             default:
                 throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);

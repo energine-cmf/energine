@@ -71,12 +71,16 @@ final class DBStructureInfo extends Object {
      */
     public function tableExists($tableName) {
         $result = false;
+        
         //Если не существует в кеше
         if (!isset($this->structure[$tableName])) {
-            //dump_log('tableExists '.$tableName, true);
+
+            $FQTableName = DBA::getFQTableName($tableName, true);
+
+            $query = 'SHOW TABLES '.((sizeof($FQTableName) == 2)?' FROM `'.reset($FQTableName).'` ':'').' LIKE \''.end($FQTableName).'\'';
+
             //если существует в списке таблиц
-            if ($this->pdo->query(
-                'SHOW TABLES LIKE \'' . $tableName . '\'')->rowCount()) {
+            if ($this->pdo->query($query)->rowCount()) {
                 $result = true;
                 $this->structure[$tableName] = array();
             }
@@ -129,7 +133,7 @@ final class DBStructureInfo extends Object {
         return $result;
     }
     private function analyzeTable($tableName) {
-        $res = $this->pdo->query("SHOW CREATE TABLE `$tableName`");
+        $res = $this->pdo->query("SHOW CREATE TABLE $tableName");
         if(!$res){
             throw new SystemException('BAD_TABLE_NAME '.$tableName, SystemException::ERR_DB, $tableName);
         }

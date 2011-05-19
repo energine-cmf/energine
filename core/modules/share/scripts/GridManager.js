@@ -520,6 +520,10 @@ var GridManager = new Class({
                     }.bind(this),
                     function(responseText){
                         this.overlay.hide();
+                    }.bind(this),
+                    function(responseText){
+                        alert(responseText);
+                        this.overlay.hide();
                     }.bind(this)
             );
         }

@@ -124,6 +124,11 @@ class FormEditor extends DataSet
         $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
     }
 
+    protected function delete(){
+        list($fieldIndex) = $this->getStateParams();
+        $this->constructor->delete($fieldIndex);
+    }
+
     protected function save(){
         if(isset($_POST)){
            $this->constructor->save($_POST);

@@ -11,14 +11,14 @@ class FormConstructor extends DBWorker
     /**
      * @var string
      */
-    private $db;
+    private $fDBName;
 
     public function __construct($formID)
     {
         parent::__construct();
-        $this->db = $this->getConfigValue('forms.database');
+        $this->fDBName = $this->getConfigValue('forms.database');
         $this->tableName = DBA::getFQTableName(
-            $this->db . '.' . self::TABLE_PREFIX . $formID);
+            $this->fDBName . '.' . self::TABLE_PREFIX . $formID);
         $this->dbh->modifyRequest(
             'CREATE TABLE IF NOT EXISTS ' . $this->tableName .
             ' (pk_id int(10) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY (`pk_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ');
@@ -56,7 +56,7 @@ class FormConstructor extends DBWorker
                      'key' => false,
                      'type' => FieldDescription::FIELD_TYPE_STRING,
                      'index' => false,
-                     'tableName' => 'share_translations',
+                     'tableName' => 'share_lang_tags_translation',
                      'isMultilanguage' => true,
                  ),
                  'field_type' => array(
@@ -124,14 +124,14 @@ class FormConstructor extends DBWorker
         $result = new Data();
         if (empty($filter)) {
             $dataArray = array();
+            $i = 0;
             foreach ($this->dbh->getColumnsInfo($this->tableName) as $rowName => $rowValue) {
                 array_push($dataArray,
                            array(
-                                'field_id' => $rowName,
+                                'field_id' => ++$i,
                                 'lang_id' => $langID,
                                 'field_type' => FieldDescription::convertType($rowValue['type'], $rowName, $rowValue['length'], $rowValue),
-                                'field_name' => $this->translate(
-                                    'FIELD_' . $rowName, $langID),
+                                'field_name' => $this->translate($this->getFieldLTag($rowName), $langID),
                                 'field_is_nullable' => $rowValue['nullable']
                            )
                 );
@@ -170,10 +170,33 @@ class FormConstructor extends DBWorker
                 break;
         }
         $query .= ' ' . ((!$fieldIsNullable) ? ' NOT NULL ' : ' NULL ');
+        $this->dbh->beginTransaction();
+        if ($this->dbh->modifyRequest($query)) {
+            list(,$tblName) = DBA::getFQTableName($this->tableName, true);
+            $ltagName = $this->getFieldLTag($fieldName);
 
-        if (!$this->dbh->modifyRequest($query)) {
+            $this->dbh->modifyRequest('DELETE FROM share_lang_tags WHERE ltag_name=%s', $ltagName);
+
+            $ltagID = $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $ltagName));
+            
+            foreach($_POST['share_lang_tags_translation'] as $langID=>$value){
+                $this->dbh->modify(QAL::INSERT, 'share_lang_tags_translation', array('ltag_value_rtf' => $value['field_name'], 'ltag_id' => $ltagID, 'lang_id' => $langID));
+
+            }
 
         }
+        $this->dbh->commit();
+    }
+    public function delete($fieldIndex){
+        stop($fieldIndex);
+        if($fieldIndex == 1){
+            throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);
+        }
 
+    }
+
+    private function getFieldLTag($fieldName){
+        list(,$tblName) = DBA::getFQTableName($this->tableName, true);
+        return 'FIELD_'.$tblName.'_'.$fieldName;
     }
 }

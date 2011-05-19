@@ -127,6 +127,8 @@ class FormEditor extends DataSet
     protected function delete(){
         list($fieldIndex) = $this->getStateParams();
         $this->constructor->delete($fieldIndex);
+        
+        $this->setBuilder(new JSONCustomBuilder());
     }
 
     protected function save(){

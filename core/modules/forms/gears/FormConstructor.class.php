@@ -3,6 +3,9 @@
 
 class FormConstructor extends DBWorker
 {
+    /**
+     * 
+     */
     const TABLE_PREFIX = 'form_';
     /**
      * @var string
@@ -12,7 +15,9 @@ class FormConstructor extends DBWorker
      * @var string
      */
     private $fDBName;
-
+    /**
+     * @param  $formID
+     */
     public function __construct($formID)
     {
         parent::__construct();
@@ -24,7 +29,9 @@ class FormConstructor extends DBWorker
             ' (pk_id int(10) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY (`pk_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ');
 
     }
-
+    /**
+     * @return DataDescription
+     */
     public function getDataDescription()
     {
         $result = new DataDescription();
@@ -43,7 +50,7 @@ class FormConstructor extends DBWorker
                      'nullable' => false,
                      'length' => 10,
                      'default' => '',
-                     'key' => true,
+                     'key' => false,
                      'type' => FieldDescription::FIELD_TYPE_INT,
                      'index' => 'PRI',
                      'tableName' => 'table_name',
@@ -118,7 +125,11 @@ class FormConstructor extends DBWorker
 
         return $result;
     }
-
+    /**
+     * @param  $langID
+     * @param null $filter
+     * @return Data
+     */
     public function getData($langID, $filter = null)
     {
         $result = new Data();
@@ -140,7 +151,10 @@ class FormConstructor extends DBWorker
         }
         return $result;
     }
-
+    /**
+     * @param  $data
+     * @return void
+     */
     public function save($data)
     {
         $fieldType = $data['table_name']['field_type'];
@@ -172,12 +186,7 @@ class FormConstructor extends DBWorker
         $query .= ' ' . ((!$fieldIsNullable) ? ' NOT NULL ' : ' NULL ');
         $this->dbh->beginTransaction();
         if ($this->dbh->modifyRequest($query)) {
-            list(,$tblName) = DBA::getFQTableName($this->tableName, true);
-            $ltagName = $this->getFieldLTag($fieldName);
-
-            $this->dbh->modifyRequest('DELETE FROM share_lang_tags WHERE ltag_name=%s', $ltagName);
-
-            $ltagID = $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $ltagName));
+            $ltagID = $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $this->deleteFieldLTag($fieldName)));
             
             foreach($_POST['share_lang_tags_translation'] as $langID=>$value){
                 $this->dbh->modify(QAL::INSERT, 'share_lang_tags_translation', array('ltag_value_rtf' => $value['field_name'], 'ltag_id' => $ltagID, 'lang_id' => $langID));
@@ -187,16 +196,42 @@ class FormConstructor extends DBWorker
         }
         $this->dbh->commit();
     }
+    /**
+     * @throws SystemException
+     * @param  $fieldIndex
+     * @return void
+     */
     public function delete($fieldIndex){
-        stop($fieldIndex);
         if($fieldIndex == 1){
             throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);
         }
+        $cols = array_keys($this->dbh->getColumnsInfo($this->tableName));
+        if(!isset($cols[$fieldIndex - 1])){
+            throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);
+        }
+        $fieldName = $cols[$fieldIndex - 1];
 
+        $this->dbh->beginTransaction();
+        $this->deleteFieldLTag($fieldName);
+        $query = 'ALTER TABLE '.$this->tableName.' DROP '.$fieldName;
+        $this->dbh->modifyRequest($query);
+        $this->dbh->commit();
     }
-
+    /**
+     * @param  $fieldName
+     * @return string
+     */
     private function getFieldLTag($fieldName){
         list(,$tblName) = DBA::getFQTableName($this->tableName, true);
         return 'FIELD_'.$tblName.'_'.$fieldName;
+    }
+    /**
+     * @param  $fieldName
+     * @return string
+     */
+    private function deleteFieldLTag($fieldName){
+        $ltagName = $this->getFieldLTag($fieldName);
+        $this->dbh->modifyRequest('DELETE FROM share_lang_tags WHERE ltag_name=%s', $ltagName);
+        return $ltagName;
     }
 }

@@ -132,10 +132,26 @@ final class DBStructureInfo extends Object {
         }
         return $result;
     }
+    /**
+     * Анализ структуры таблицы
+     *
+     * @throws SystemException
+     * @param  $tableName
+     * @return array|PDOStatement|string
+     */
     private function analyzeTable($tableName) {
-        $res = $this->pdo->query("SHOW CREATE TABLE $tableName");
+        $dTableName = DBA::getFQTableName($tableName, true);
+        $query = 'SHOW CREATE TABLE '.implode('.', $dTableName);
+
+        $dbName = '';
+        if(sizeof($dTableName) == 2){
+            $dbName = $dTableName[0];     
+        }
+
+        $res = $this->pdo->query($query);
+
         if(!$res){
-            throw new SystemException('BAD_TABLE_NAME '.$tableName, SystemException::ERR_DB, $tableName);
+            throw new SystemException('BAD_TABLE_NAME '.$tableName, SystemException::ERR_DB, $query);
         }
         $sql = $res->fetchColumn(1);
         
@@ -209,12 +225,11 @@ final class DBStructureInfo extends Object {
                     elseif (in_array($fieldName, $muls)) {
                         $res[$fieldName]['index'] = 'MUL';
                     }
-
                     // внешний ключ
                     $cIndex = array_search($fieldName, $matches['cname']);
                     if ($cIndex !== false) {
                         $res[$fieldName]['key'] = array(
-                            'tableName' => $matches['tableName'][$cIndex],
+                            'tableName' => (($dbName) ? $dbName.'.' : '').$matches['tableName'][$cIndex],
                             'fieldName' => $matches['fieldName'][$cIndex],
                         );
                     }

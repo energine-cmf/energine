@@ -16,7 +16,7 @@
     </xsl:template>
     
     <!-- вывод дерева разделов -->
-    <xsl:template match="recordset[parent::component[javascript/object/@name='DivManager'][@class='DivisionEditor'][@type='list']]">
+    <xsl:template match="recordset[parent::component[javascript/behavior/@name='DivManager'][@class='DivisionEditor'][@type='list']]">
         <xsl:variable name="TAB_ID" select="generate-id(record[1])"/>
         <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
             <xsl:if test="../toolbar">
@@ -44,7 +44,7 @@
     </xsl:template>
         
     <!-- вывод дерева разделов в боковом тулбаре -->
-    <xsl:template match="recordset[parent::component[javascript/object/@name='DivSidebar'][@class='DivisionEditor'][@componentAction='main'][@type='list']]">
+    <xsl:template match="recordset[parent::component[javascript/behavior/@name='DivSidebar'][@class='DivisionEditor'][@componentAction='main'][@type='list']]">
         <div id="{generate-id(.)}" class="e-divtree-wrapper" template="{$BASE}{$LANG_ABBR}{../@template}"  lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
             <div id="treeContainer" class="e-divtree-main"></div>
         </div>

@@ -12,7 +12,7 @@
 				<pattern>/show/[site_id]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="DivManager"/>
+				<behavior name="DivManager"/>
 			</javascript>
 			<fields>
 				<field name="smap_id"/>
@@ -39,7 +39,7 @@
                 <pattern>/[site_id]/list/[int]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="DivManager"/>
+				<behavior name="DivManager"/>
 			</javascript>
 			<fields>
 				<field name="smap_id"/>
@@ -95,7 +95,7 @@
 				<field name="smap_meta_description"/>
 			</fields>
 			<javascript>
-				<object name="DivForm"/>
+				<behavior name="DivForm"/>
 			</javascript>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -135,7 +135,7 @@
 				<field name="smap_meta_description"/>
 			</fields>
 			<javascript>
-				<object name="DivForm"/>
+				<behavior name="DivForm"/>
 			</javascript>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>

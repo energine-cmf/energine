@@ -3,7 +3,7 @@
 
     	<state name="main">
     	    <javascript>
-    	        <object name="TextBlockSource" />
+    	        <behavior name="TextBlockSource" />
     	    </javascript>
     		<fields>
                 <field name="html" type="htmlblock" title="FIELD_TEXTBLOCK_SOURCE" />

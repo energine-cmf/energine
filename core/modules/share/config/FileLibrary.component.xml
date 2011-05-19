@@ -6,7 +6,7 @@
 				<pattern>/add-dir/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="FileForm"/>
+				<behavior name="FileForm"/>
 			</javascript>
 			<fields>
 			    <field name="upl_id" />
@@ -24,7 +24,7 @@
 				<pattern>/add/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="FileForm"/>
+				<behavior name="FileForm"/>
 			</javascript>
 			<fields>
 			    <field name="upl_id" />
@@ -80,7 +80,7 @@
                 <pattern>/[allowed_file_type]/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="FileManager" />
+                <behavior name="FileManager" />
             </javascript>
             <toolbar>
                 <control id="open" title="BTN_OPEN" type="button" onclick="open"/>

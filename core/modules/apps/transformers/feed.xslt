@@ -209,7 +209,7 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="field[ancestor::component[@exttype='feed'] and @name='smap_id']" />
+    <xsl:template match="field[ancestor::component[@exttype='feed' and @type='form']][@name='smap_id']" />
 
 
 </xsl:stylesheet>

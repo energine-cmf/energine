@@ -57,20 +57,22 @@
 
                 <script type="text/javascript">
                     var componentToolbars = [];
-                    <xsl:if test="count($COMPONENTS[recordset]/javascript/object[@name!='PageEditor']) &gt; 0">
-                        var <xsl:for-each select="$COMPONENTS[recordset]/javascript[object[@name!='PageEditor']]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
+                    <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@name!='PageEditor']) &gt; 0">
+                        var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[@name!='PageEditor']]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
                     </xsl:if>
                     window.addEvent('domready', function () {
-                   		<xsl:if test="document/@debug=1">
-							Energine.debug = true;
-		        		</xsl:if>
-		        		Energine.base = '<xsl:value-of select="$BASE"/>';
-                        Energine.static = '<xsl:value-of select="$STATIC_URL"/>';
+                        $extend(Energine, {
+                            <xsl:if test="document/@debug=1">
+                                debug :true,
+                            </xsl:if>
+                            base : '<xsl:value-of select="$BASE"/>',
+                            static : '<xsl:value-of select="$STATIC_URL"/>'
+                        });
                         try {
-                        ScriptLoader.load(<xsl:for-each select="set:distinct($COMPONENTS/javascript/object[@name!='PageEditor']/@name)">'<xsl:value-of select="../@path" /><xsl:value-of select="." />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
+                        ScriptLoader.load(<xsl:for-each select="set:distinct($COMPONENTS/javascript/behavior[@name!='PageEditor']/@name)">'<xsl:value-of select="../@path" /><xsl:value-of select="." />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
                             <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
-                            var pageToolbar = new <xsl:value-of select="$PAGE_TOOLBAR/javascript/object/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$PAGE_TOOLBAR/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$PAGE_TOOLBAR/toolbar/@name"/>', [
+                            var pageToolbar = new <xsl:value-of select="$PAGE_TOOLBAR/javascript/behavior/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$PAGE_TOOLBAR/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$PAGE_TOOLBAR/toolbar/@name"/>', [
                             <xsl:for-each select="$PAGE_TOOLBAR/toolbar/control">
                                 {
                                 <xsl:for-each select="@*[name()!='mode']">
@@ -83,7 +85,7 @@
                                 pageToolbar.getControlById('editMode').disable();
                             </xsl:if>
         				</xsl:if>
-                        <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/object[@name!='PageEditor']">
+                        <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[@name!='PageEditor']">
                             <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
                             var initComponent = function(){
                                 <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>($('<xsl:value-of select="$objectID"/>'));
@@ -95,10 +97,10 @@
                                 initComponent();
                             }
         				</xsl:for-each>
-                        <xsl:if test="$COMPONENTS/javascript/object[@name='PageEditor']">
+                        <xsl:if test="$COMPONENTS/javascript/behavior[@name='PageEditor']">
                             <xsl:if test="position()=1">
                                 ScriptLoader.load('PageEditor');
-                                <xsl:variable name="objectID" select="generate-id($COMPONENTS[javascript/object[@name='PageEditor']]/recordset)"/>
+                                <xsl:variable name="objectID" select="generate-id($COMPONENTS[javascript/behavior[@name='PageEditor']]/recordset)"/>
                                 <xsl:value-of select="$objectID"/> = new PageEditor();
                             </xsl:if>
                         </xsl:if>

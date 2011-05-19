@@ -38,7 +38,7 @@
 				<pattern>/show/[site_id]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="DivSidebar"/>
+				<behavior name="DivSidebar"/>
 			</javascript>
 			<fields>
 				<field name="smap_id"/>
@@ -64,7 +64,7 @@
 				<pattern>/[site_id]/list/[int]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="DivManager"/>
+				<behavior name="DivManager"/>
 			</javascript>
 			<fields>
 				<field name="smap_id"/>
@@ -117,13 +117,13 @@
 				<field name="smap_meta_description"/>
 			</fields>
 			<javascript>
-				<object name="DivForm"/>
+				<behavior name="DivForm"/>
 			</javascript>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
                 <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
                     <options>
-                        <option id="close">BTN_CLOSE</option>
+                        <option id="reload">BTN_CLOSE</option>
                         <option id="add">BTN_ADD</option>
                         <option id="go">BTN_GO</option>
                     </options>
@@ -157,7 +157,7 @@
 				<field name="smap_meta_description"/>
 			</fields>
 			<javascript>
-				<object name="DivForm"/>
+				<behavior name="DivForm"/>
 			</javascript>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -203,7 +203,7 @@
     			<control id="sep1" type="separator"/>
 				<control id="editMode" title="BTN_EDIT_MODE" type="switcher" onclick="editMode"/>
 				<control id="sep2" type="separator"/>
-                <control id="editBlocks" title="BTN_EDIT_BLOCKS" type="switcher" onclick="editBlocks" disabled="disabled"/>
+                <control id="editBlocks" title="BTN_EDIT_BLOCKS" type="switcher" onclick="editBlocks" /> <!--disabled="disabled"-->
                 <control id="sep3" type="separator"/>
 				<control id="transEditor" title="BTN_TRANS_EDITOR" type="button" onclick="showTransEditor"/>
 				<control id="language" title="BTN_LANG_EDITOR" type="button" onclick="showLangEditor"/>
@@ -216,7 +216,7 @@
 				<control id="siteEditor" title="BTN_SITE_EDITOR" type="button" onclick="showSiteEditor"/>
 			</toolbar>
 			<javascript>
-				<object name="PageToolbar"/>
+				<behavior name="PageToolbar"/>
 				<param name="dock">top</param>
 			</javascript>
 		</state>

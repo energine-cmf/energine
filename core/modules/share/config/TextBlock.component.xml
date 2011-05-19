@@ -3,7 +3,7 @@
 
 		<state name="main">
 			<javascript>
-				<object name="PageEditor"/>
+				<behavior name="PageEditor"/>
 			</javascript>
 	    </state>
 		<state name="save" rights="3">

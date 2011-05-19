@@ -601,7 +601,7 @@ class FieldDescription extends DBWorker implements Iterator{
      */
     public function setSystemType($systemType) {
         $this->systemType = $systemType;
-        $this->setType($this->convertType($systemType));
+        $this->setType(self::convertType($systemType, $this->name, $this->length, $this->additionalProperties));
     }
 
     /**
@@ -713,32 +713,33 @@ class FieldDescription extends DBWorker implements Iterator{
     /**
      * Конвертирует тип поля из системного типа в визуальный.
      *
-     * @access protected
+     * @access public
      * @param string $systemType
      * @return string
+     * @static
      */
-    protected function convertType($systemType) {
+    static public function convertType($systemType, $name, $length = 1, $props = array()) {
         switch ($systemType) {
             case DBA::COLTYPE_STRING:
-                if (strpos($this->name, '_password')) {
+                if (strpos($name, '_password')) {
                     $result = self::FIELD_TYPE_PWD;
                 }
-                elseif (strpos($this->name, '_email')) {
+                elseif (strpos($name, '_email')) {
                     $result = self::FIELD_TYPE_EMAIL;
                 }
-                elseif (strpos($this->name, '_phone')) {
+                elseif (strpos($name, '_phone')) {
                     $result = self::FIELD_TYPE_PHONE;
                 }
-                elseif (strpos($this->name, '_img')) {
+                elseif (strpos($name, '_img')) {
                     $result = self::FIELD_TYPE_IMAGE;
                 }
-                elseif (strpos($this->name, '_file')) {
+                elseif (strpos($name, '_file')) {
                     $result = self::FIELD_TYPE_FILE;
                 }
-                elseif (strpos($this->name, '_pfile')) {
+                elseif (strpos($name, '_pfile')) {
                     $result = self::FIELD_TYPE_PFILE;
                 }
-                elseif (strpos($this->name, '_video')) {
+                elseif (strpos($name, '_video')) {
                     $result = self::FIELD_TYPE_VIDEO;
                 }
                 else {
@@ -749,11 +750,11 @@ class FieldDescription extends DBWorker implements Iterator{
                 $result = self::FIELD_TYPE_FLOAT;
                 break;
             case DBA::COLTYPE_INTEGER:
-                if ($this->length == 1) {
+                if ($length == 1) {
                     $result = self::FIELD_TYPE_BOOL;
                 }
                 // обрабатываем внешний ключ
-                elseif (is_array($this->getPropertyValue('key'))) {
+                elseif (isset($props['key']) && is_array($props['key'])) {
                     $result = self::FIELD_TYPE_SELECT;
                 }
                 else {
@@ -761,7 +762,7 @@ class FieldDescription extends DBWorker implements Iterator{
                 }
                 break;
             case DBA::COLTYPE_TEXT:
-                if (strpos($this->name, '_rtf')) {
+                if (strpos($name, '_rtf')) {
                     $result = self::FIELD_TYPE_HTML_BLOCK;
                 }
                 else {
@@ -850,6 +851,13 @@ class FieldDescription extends DBWorker implements Iterator{
      */
     public function isMultilanguage() {
         return $this->isMultilanguage;
+    }
+    /**
+     * Устанавливает флаг мультиязычности
+     * @return void
+     */
+    public function markMultilanguage(){
+        $this->isMultilanguage = true;
     }
 
     /**

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <uri_patterns>
+            <pattern>/</pattern>
+        </uri_patterns>
+        <toolbar>
+            <control id="send" title="BTN_SEND" type="button" onclick="SEND"/>
+            <control id="reset" title="BTN_RESET" type="button" onclick="add"/>
+        </toolbar>
+    </state>
+    <state name="save">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

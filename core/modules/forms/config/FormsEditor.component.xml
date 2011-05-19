@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    
         <state name="main">
             <javascript>
-                <object name="GridManager"/>
+                <behavior name="FormsManager"/>
             </javascript>
             <fields>
                 <field name="form_id"/>
@@ -12,8 +11,9 @@
                 <field name="form_name"/>
             </fields>
             <toolbar>
-                <control id="add" title="BTN_ADD" type="button" onclick="add"/>
-                <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+                <control id="add" title="BTN_CREATE" type="button" onclick="add"/>
+                <control id="edit" title="BTN_EDIT_PROPERTIES" type="button" onclick="edit"/>
+                <control id="edit_form" title="BTN_EDIT_FORM" type="button" onclick="editForm"/>
                 <control id="delete" title="BTN_DELETE" type="button"
                          onclick="del"/>
                 <!--
@@ -29,7 +29,7 @@
                 <pattern>/add/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="Form"/>
+                <behavior name="Form"/>
             </javascript>
             <toolbar>
                 <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -57,7 +57,7 @@
                 <pattern>/[int]/edit/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="Form"/>
+                <behavior name="Form"/>
             </javascript>
             <toolbar>
                 <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -110,23 +110,9 @@
                 <pattern>/cleanup/</pattern>
             </uri_patterns>
         </state>
-        <state name="view">
+        <state name="editForm">
             <uri_patterns>
-                <pattern>/[int]/</pattern>
+                <pattern>/[int]/edit-form/[any]/</pattern>
             </uri_patterns>
-            <javascript>
-                <object name="Form"/>
-            </javascript>
-            <toolbar>
-                <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
-            </toolbar>
         </state>
-        <!--
-          <state name="up" rights="3"> <uri_patterns> <pattern>/[int]/up/</pattern>
-              </uri_patterns> </state>
-          <state name="down" rights="3">
-              <uri_patterns> <pattern>/[int]/down/</pattern> </uri_patterns>
-              </state>
-          -->
-
 </configuration>

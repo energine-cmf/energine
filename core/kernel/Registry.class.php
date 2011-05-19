@@ -139,6 +139,11 @@ final class Registry extends Object {
         $this->entities['AuthUser'] = $anotherAuthUserObject;
     }
 
+    public function getSystemComponents(){
+
+    }
+
+
     /**
      * Пока непонятно что с ним делать
      *

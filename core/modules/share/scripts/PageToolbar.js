@@ -1,7 +1,7 @@
 ScriptLoader.load('Toolbar', 'ModalBox');
 
 var PageToolbar = new Class({
-	Extends: Toolbar,
+    Extends: Toolbar,
     initialize: function(componentPath, documentId, toolbarName, controlsDesc) {
         this.parent(toolbarName);
         Asset.css('pagetoolbar.css');
@@ -19,14 +19,16 @@ var PageToolbar = new Class({
 
         this.setupLayout();
     },
-    setupLayout: function(){
+    setupLayout: function() {
         var html = $$('html')[0];
-        if(!html.hasClass('e-has-topframe1')) html.addClass('e-has-topframe1');
-        if((Cookie.read('sidebar')== null) || (Cookie.read('sidebar') == 1))
-        $$('html')[0].addClass('e-has-sideframe');
-            
-        var currentBody = $(document.body).getChildren().filter(function(element){return (!(element.hasClass('e-overlay')));});
-        
+        if (!html.hasClass('e-has-topframe1')) html.addClass('e-has-topframe1');
+        if ((Cookie.read('sidebar') == null) || (Cookie.read('sidebar') == 1))
+            $$('html')[0].addClass('e-has-sideframe');
+
+        var currentBody = $(document.body).getChildren().filter(function(element) {
+            return (!(element.hasClass('e-overlay')));
+        });
+
         var mainFrame = new Element('div', {'class': 'e-mainframe'});
         var topFrame = new Element('div', {'class':'e-topframe'});
         var sidebarFrame = new Element('div', {'class':'e-sideframe'});
@@ -36,24 +38,29 @@ var PageToolbar = new Class({
         mainFrame.adopt(currentBody);
         sidebarFrame.adopt([sidebarFrameContent, sidebarFrameBorder]);
         topFrame.grab(this.element);
-        
+
         new Element('iframe').setProperties({
-                    'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
-                    'frameBorder': '0'
-       }).injectInside(sidebarFrameContent);
-        if (this.getControlById('editMode')&&(this.getControlById('editMode').getState() == 1)&&(this.getControlById('editBlocks'))) {
+            'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
+            'frameBorder': '0'
+        }).injectInside(sidebarFrameContent);
+
+        if ((this.getControlById('editBlocks'))) {
             ScriptLoader.load('LayoutManager');
-            this.getControlById('editBlocks').enable();
         }
+        if(this.getControlById('editMode').getState()){
+            this.getControlById('editBlocks').disable();
+        }
+
     },
 
     // Actions:
 
     editMode: function() {
-        if(this.getControlById('editMode') && (this.getControlById('editMode').getState() == 0)){
+        if (this.getControlById('editMode') &&
+                (this.getControlById('editMode').getState() == 0)) {
             this._reloadWindowInEditMode();
         }
-        else{
+        else {
             window.location = window.location;
         }
     },
@@ -62,14 +69,15 @@ var PageToolbar = new Class({
         ModalBox.open({ 'url': this.componentPath + 'add/' + this.documentId });
     },
 
-	edit: function() {
-	    ModalBox.open({ 'url': this.componentPath + this.documentId + '/edit' });
-	},
+    edit: function() {
+        ModalBox.open({ 'url': this.componentPath + this.documentId +
+                '/edit' });
+    },
 
-	toggleSidebar: function() {
+    toggleSidebar: function() {
         $$('html')[0].toggleClass('e-has-sideframe');
-        Cookie.write('sidebar', $$('html')[0].hasClass('e-has-sideframe')?1:0, {path:new URI(Energine.base).get('directory'), duration:1});
-	},
+        Cookie.write('sidebar', $$('html')[0].hasClass('e-has-sideframe') ? 1 : 0, {path:new URI(Energine.base).get('directory'), duration:1});
+    },
 
     showTmplEditor: function() {
         ModalBox.open({ 'url': this.componentPath + 'template' });
@@ -93,9 +101,10 @@ var PageToolbar = new Class({
         ModalBox.open({ 'url': this.componentPath + 'sites' });
     },
     editBlocks: function() {
+
         if (!this.getControlById('editBlocks').getState()) {
             this.layoutManager = new LayoutManager(this.componentPath);
-    }
+        }
         else {
             if (this.layoutManager && LayoutManager.changed) {
                 new Request.JSON({
@@ -106,7 +115,7 @@ var PageToolbar = new Class({
                             '<?xml version="1.0" encoding="utf-8" ?>' +
                             XML.hashToHTML(XML.nodeToHash(this.layoutManager.xml)),
                     onSuccess: function(response) {
-                        if(response.result){
+                        if (response.result) {
                             this._reloadWindowInEditMode();
                         }
 

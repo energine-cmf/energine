@@ -2,7 +2,7 @@
 <configuration>
 		<state name="main">
 			<javascript>
-				<object name="ValidForm" />
+				<behavior name="ValidForm" />
 			</javascript>
 			<fields>
 				<field name="feed_id"/>

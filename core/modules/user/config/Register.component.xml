@@ -2,7 +2,7 @@
 <configuration>
 	<state name="main">
 		<javascript>
-			<object name="Register" />
+			<behavior name="Register" />
 		</javascript>
 		<fields>
 		  <field name="u_id"/>

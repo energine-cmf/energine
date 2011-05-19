@@ -450,8 +450,8 @@ abstract class DataSet extends Component {
         if (($config = $this->config->getCurrentStateConfig()) &&
                 $config->javascript) {
             $result = $this->doc->createElement('javascript');
-            foreach ($config->javascript->object as $value) {
-                $JSObjectXML = $this->doc->createElement('object');
+            foreach ($config->javascript->behavior as $value) {
+                $JSObjectXML = $this->doc->createElement('behavior');
                 $JSObjectXML->setAttribute('name', $value['name']);
                 $JSObjectXML->setAttribute('path', ($value['path']) ?
                         $value['path'] . '/' : '');
@@ -585,7 +585,7 @@ abstract class DataSet extends Component {
     protected function cleanup() {
         $data = isset($_POST['data']) ? $_POST['data'] : '';
         $data = self::cleanupHTML($data);
-        $this->response->setHeader('Content-Type', 'application/xml; charset=utf-8');
+        $this->response->setHeader('Content-Type', 'text/html; charset=utf-8');
         $this->response->write($data);
         $this->response->commit();
     }

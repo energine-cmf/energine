@@ -4,7 +4,7 @@
     
         <state name="main">
             <javascript>
-                <object name="ImageManager"/>
+                <behavior name="ImageManager"/>
             </javascript>
             <fields>
                 <field name="filename" type="string" title="FIELD_IMG_FILENAME" length="100"/>

@@ -2,7 +2,7 @@
 <configuration>
 	<state name="main">
 		<javascript>
-			<object name="UserProfile" />
+			<behavior name="UserProfile" />
 		</javascript>
 		<toolbar>
 			<control id="change" title="BTN_CHANGE" type="submit" />

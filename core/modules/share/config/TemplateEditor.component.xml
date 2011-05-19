@@ -2,7 +2,7 @@
 <configuration>
 		<state name="main">
 			<javascript>
-				<object name="GridManager" />
+				<behavior name="GridManager" />
 			</javascript>
 			<toolbar>
 				<control id="add" title="BTN_ADD" type="button" onclick="add" />
@@ -22,7 +22,7 @@
 				<pattern>/add/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Form" />
+				<behavior name="Form" />
 			</javascript>
 			<fields>
 				<field name="tmpl_id" />
@@ -51,7 +51,7 @@
 				<pattern>/[int]/edit/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Form" />
+				<behavior name="Form" />
 			</javascript>
 			<fields>
 				<field name="tmpl_id" />

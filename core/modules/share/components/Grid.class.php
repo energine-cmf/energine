@@ -582,7 +582,6 @@ class Grid extends DBDataSet
         else {
             $result = parent::loadData();
         }
-
         return $result;
     }
 

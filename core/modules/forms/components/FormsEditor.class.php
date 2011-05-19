@@ -16,7 +16,10 @@
  * @author d.pavka@gmail.com
  */
 class FormsEditor extends Grid {
-    private $formDB;
+    /**
+     * @var FormEditor
+     */
+    private $form;
     /**
      * Конструктор класса
      *
@@ -29,16 +32,43 @@ class FormsEditor extends Grid {
     {
         parent::__construct($name, $module, $params);
         $this->setTableName('frm_forms');
-        $this->formDB = $this->getConfigValue('forms.database');
+        $this->setSaver(new FormsSaver());
+    }
+
+    protected function createDataDescription(){
+        $result = parent::createDataDescription();
+        if(in_array($this->getState(), array('main', 'getRawData'))){
+            $result->getFieldDescriptionByName('form_id')->setType(FieldDescription::FIELD_TYPE_INT);
+        }
+
+        return $result;
     }
 
     protected function add(){
         parent::add();
         $this->getDataDescription()->getFieldDescriptionByName('form_creation_date')->setMode(FieldDescription::FIELD_MODE_READ);
+        
     }
 
     protected function edit(){
         parent::edit();
         $this->getDataDescription()->getFieldDescriptionByName('form_creation_date')->setMode(FieldDescription::FIELD_MODE_READ);
+    }
+
+    protected function editForm(){
+        list($formID) = $this->getStateParams();
+        E()->getRequest()->shiftPath(2);
+        $this->form = $this->document->componentManager->createComponent('form', 'forms', 'FormEditor', array('form_id' => $formID));
+        $this->form->run();
+    }
+
+    public function build(){
+        if($this->getState() == 'editForm'){
+            $result = $this->form->build();
+        }
+        else {
+            $result = parent::build();
+        }
+        return $result;
     }
 }

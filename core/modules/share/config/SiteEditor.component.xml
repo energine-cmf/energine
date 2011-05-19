@@ -3,7 +3,7 @@
 
         <state name="main">
             <javascript>
-                <object name="SiteManager"/>
+                <behavior name="SiteManager"/>
             </javascript>
             <fields>
                 <field name="site_id"/>
@@ -36,7 +36,7 @@
                 <pattern>/add/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="Form"/>
+                <behavior name="Form"/>
             </javascript>
             <toolbar>
                 <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -58,7 +58,7 @@
                 <pattern>/[int]/edit/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="Form"/>
+                <behavior name="Form"/>
             </javascript>
             <toolbar>
                 <control id="save" title="BTN_SAVE" type="button" onclick="save"/>

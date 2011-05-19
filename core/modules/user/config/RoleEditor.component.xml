@@ -2,7 +2,7 @@
 <configuration>
 		<state name="main">
 			<javascript>
-				<object name="GridManager"/>
+				<behavior name="GridManager"/>
 			</javascript>
 			<fields>
 				<field name="group_id"/>
@@ -33,7 +33,7 @@
                 <pattern>/add/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="GroupForm"/>
+                <behavior name="GroupForm"/>
             </javascript>
             <toolbar>
                 <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -50,7 +50,7 @@
 				<pattern>/[int]/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="GroupForm"/>
+				<behavior name="GroupForm"/>
 			</javascript>
 			<toolbar>
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
@@ -61,7 +61,7 @@
 				<pattern>/[int]/edit/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="GroupForm"/>
+				<behavior name="GroupForm"/>
 			</javascript>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>

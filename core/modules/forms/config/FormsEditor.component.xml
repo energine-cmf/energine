@@ -14,6 +14,8 @@
                 <control id="add" title="BTN_CREATE" type="button" onclick="add"/>
                 <control id="edit" title="BTN_EDIT_PROPERTIES" type="button" onclick="edit"/>
                 <control id="edit_form" title="BTN_EDIT_FORM" type="button" onclick="editForm"/>
+                <control id="view_form" title="BTN_VIEW_FORM" type="button" onclick="viewForm"/>
+                <control id="sep1" type="separator"/>
                 <control id="delete" title="BTN_DELETE" type="button"
                          onclick="del"/>
                 <!--
@@ -70,6 +72,17 @@
                 </control>
                 <control id="sep1" type="separator" />
                 <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+            </toolbar>
+        </state>
+        <state name="viewForm">
+            <uri_patterns>
+                <pattern>/[int]/viewForm/</pattern>
+            </uri_patterns>
+            <javascript>
+                <behavior name="Form"/>
+            </javascript>
+            <toolbar>
+                <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
             </toolbar>
         </state>
         <state name="save" rights="3">

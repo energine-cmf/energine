@@ -83,7 +83,6 @@ class Form extends DBDataSet
         }
     }
 
-    
     protected function createDataDescription(){
         $result = parent::createDataDescription();
         //Create captcha field for main state - when displaying form.
@@ -161,7 +160,7 @@ class Form extends DBDataSet
             if ($result = $this->saveData($data)) {
                 $data = $data[$this->getTableName()];
 
-
+            
 //                $senderEmail = '';
 //                if (isset($data['feed_email'])) {
 //                    $senderEmail = $data['feed_email'];
@@ -203,8 +202,6 @@ class Form extends DBDataSet
                     foreach($data as $value){
                         $body .= $value['translation'].': '.$value['value'].'<br>';
                     }
-                    inspect($subject);
-                    stop($body);
                     $mailer->setFrom($this->getConfigValue('mail.from'))->
                             setSubject($subject)->
                             setText($body)->
@@ -234,7 +231,6 @@ class Form extends DBDataSet
      * Перевіряє капчу
      */
     protected function checkCaptcha() {
-        die('test');
         require_once('core/kernel/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');
         $resp = recaptcha_check_answer($privatekey,
@@ -278,4 +274,5 @@ class Form extends DBDataSet
                                    true);
         return $result;
     }
+
 }

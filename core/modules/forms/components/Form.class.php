@@ -83,6 +83,18 @@ class Form extends DBDataSet
         }
     }
 
+    
+    protected function createDataDescription(){
+        $result = parent::createDataDescription();
+        //Create captcha field for main state - when displaying form.
+        if(!in_array($this->getState(), array('send', 'save', 'success'))){
+            $fd = new FieldDescription('captcha');
+            $fd->setType(FieldDescription::FIELD_TYPE_CAPTCHA);
+            $result->addFieldDescription($fd);
+        }
+        return $result;
+    }
+
     /**
      * Сохраняет данные
      *
@@ -222,6 +234,7 @@ class Form extends DBDataSet
      * Перевіряє капчу
      */
     protected function checkCaptcha() {
+        die('test');
         require_once('core/kernel/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');
         $resp = recaptcha_check_answer($privatekey,

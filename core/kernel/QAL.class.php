@@ -290,6 +290,10 @@ final class QAL extends DBA {
     public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
         $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')).'_name';
         $columns = $this->getColumnsInfo($fkTableName);
+
+        //Если не существует поля с name берем в качестве поля со значением то же самое поле что и с id
+        if(!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
+        
         $order = '';
         foreach(array_keys($columns) as $columnName) {
             if(strpos($columnName, '_order_num')){

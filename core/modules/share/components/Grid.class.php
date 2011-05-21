@@ -916,6 +916,8 @@ class Grid extends DBDataSet
                 $fkValueField = substr($fkKeyName =
                                                $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
                                 '_name';
+                if(!isset($tableInfo[$fkValueField])) $fkValueField = $fkKeyName;
+                
                 if ($res =
                         simplifyDBResult($this->dbh->select($fkTableName, $fkKeyName,
                                                             $fkTableName . '.' .

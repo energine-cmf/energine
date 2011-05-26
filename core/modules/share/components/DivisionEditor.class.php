@@ -217,7 +217,7 @@ final class DivisionEditor extends Grid {
         );
 
         foreach ($folders as $index => $folder) {
-            if ($folder === false) $folders[$index] = array();
+            if ($folder === false) $folder = array();
             foreach($folder as $folderPath){
                 $r[basename($folderPath)] = $folderPath;
             }

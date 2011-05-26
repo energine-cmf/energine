@@ -21,6 +21,11 @@ class Form extends DBDataSet
      * Form identifier
      */
     private $formID;
+    /*
+     * Form info
+     */
+    private $form;
+
     /**
      * Конструктор класса
      *
@@ -38,7 +43,6 @@ class Form extends DBDataSet
                 true
             );
         }
-
         if(!$this->formID || !$this->dbh->tableExists($tableName = $this->getConfigValue('forms.database').'.'.FormConstructor::TABLE_PREFIX.$this->formID)){
             throw new SystemException('ERR_NO_FORM', SystemException::ERR_404, $this->getParam('id'));
         }
@@ -273,6 +277,51 @@ class Form extends DBDataSet
                                    'form_email_adresses',
                                    true);
         return $result;
+    }
+
+    protected function main(){
+        parent::main();
+        $result = $this->dbh->select('frm_forms_translation',
+                                     array('form_name', 'form_annotation_rtf'),
+                                     array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
+        if(is_array($result)){
+            $d = new Data();
+            $dd = new DataDescription();
+
+            $f = new Field('form_name');
+            $f->setData($result[0]['form_name'], true);
+            $fd = new FieldDescription('form_name');
+            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+            $fd->setMode(FieldDescription::FIELD_MODE_READ);
+            $d->addField($f);
+            $dd->addFieldDescription($fd);
+
+            $f = new Field('form_annotation_rtf');
+            $f->setData($result[0]['form_annotation_rtf'], true);
+            $fd = new FieldDescription('form_annotation_rtf');
+            $fd->setType(FieldDescription::FIELD_TYPE_TEXT);
+            $fd->setMode(FieldDescription::FIELD_MODE_READ);
+            $d->addField($f);
+            $dd->addFieldDescription($fd);
+            unset($result);
+
+            $smBuilder = new SimpleBuilder();
+            $smBuilder->setData($d);
+            $smBuilder->setDataDescription($dd);
+            $smBuilder->build();
+            $result = $smBuilder->getResult();
+
+
+            $f = new Field('form_description');
+            $fd = new FieldDescription('form_description');
+            $fd->setType(FieldDescription::FIELD_TYPE_CUSTOM);
+            $f->setData($result, true);
+
+            $this->getData()->addField($f);
+            $this->getDataDescription()->addFieldDescription($fd);
+        }
+
+
     }
 
 }

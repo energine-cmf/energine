@@ -6,7 +6,6 @@
         </uri_patterns>
         <toolbar>
             <control id="send" title="BTN_SEND" type="submit" onclick="SEND"/>
-            <control id="reset" title="BTN_RESET" type="button" onclick="add"/>
         </toolbar>
         <javascript>
             <behavior name="FormBehavior"/>

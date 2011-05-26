@@ -8,6 +8,7 @@
             <toolbar>
                 <control id="view" title="BTN_VIEW" type="button" onclick="view"/>
                 <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+                <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
             </toolbar>
         </state>
 

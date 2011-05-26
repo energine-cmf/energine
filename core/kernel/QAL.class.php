@@ -291,9 +291,6 @@ final class QAL extends DBA {
         $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')).'_name';
         $columns = $this->getColumnsInfo($fkTableName);
 
-        //Если не существует поля с name берем в качестве поля со значением то же самое поле что и с id
-        if(!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
-        
         $order = '';
         foreach(array_keys($columns) as $columnName) {
             if(strpos($columnName, '_order_num')){
@@ -304,6 +301,9 @@ final class QAL extends DBA {
         //если существует таблица с переводами для связанной таблицы
         //нужно брать значения оттуда
         if ($transTableName = $this->getTranslationTablename($fkTableName)) {
+            $columns = $this->getColumnsInfo($transTableName);
+            if(!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
+
         	if($filter){
         	   $filter = ' AND '.str_replace('WHERE', '', $this->buildWhereCondition($filter));	
         	}
@@ -327,7 +327,9 @@ final class QAL extends DBA {
             $res = $this->selectRequest($request);
         }
         else {
-            //$columns = $this->getColumnsInfo($fkTableName);
+            //Если не существует поля с name берем в качестве поля со значением то же самое поле что и с id
+            if(!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
+            
             $columns = array_filter($columns,
                 function($value){
                     return !($value["type"] == QAL::COLTYPE_TEXT);    
@@ -336,6 +338,8 @@ final class QAL extends DBA {
             $res = $this->select($fkTableName, array_keys($columns), $filter, $order);
             //$res = $this->selectRequest('SELECT '.implode(',', array_keys($columns)).' FROM '.$fkTableName.)
         }
+
+
 
         return array($res, $fkKeyName, $fkValueName);
     }

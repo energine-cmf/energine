@@ -20,6 +20,10 @@ class FormsEditor extends Grid {
      * @var FormEditor
      */
     private $form;
+    /**
+     * @var FormResults
+     */
+    private $results;
 
     private $formComponent;
     /**
@@ -35,6 +39,7 @@ class FormsEditor extends Grid {
         parent::__construct($name, $module, $params);
         $this->setTableName('frm_forms');
         $this->setSaver(new FormsSaver());
+        $this->setOrder(array('form_creation_date' => QAL::DESC));
     }
 
     protected function createDataDescription(){
@@ -62,6 +67,12 @@ class FormsEditor extends Grid {
         E()->getRequest()->shiftPath(2);
         $this->form = $this->document->componentManager->createComponent('form', 'forms', 'FormEditor', array('form_id' => $formID));
         $this->form->run();
+    }
+    protected function showResult(){
+        list($formID) = $this->getStateParams();
+        E()->getRequest()->shiftPath(2);
+        $this->results = $this->document->componentManager->createComponent('form', 'forms', 'FormResults', array('form_id' => $formID));
+        $this->results->run();
     }
     /*
      * Method viewForm for Form preview in FormsEditor
@@ -102,7 +113,11 @@ class FormsEditor extends Grid {
     public function build(){
         if($this->getState() == 'editForm'){
             $result = $this->form->build();
-        }else {
+        }
+        elseif($this->getState() == 'showResult'){
+    	    $result = $this->results->build();
+        }
+        else {
             $result = parent::build();
         }
         return $result;

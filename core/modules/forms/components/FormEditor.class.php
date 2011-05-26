@@ -124,10 +124,32 @@ class FormEditor extends DataSet
         $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
     }
 
+    protected function up(){
+        list($fieldIndex) = $this->getStateParams();
+        $this->constructor->changeOrder(Grid::DIR_UP, $fieldIndex);
+        $b = new JSONCustomBuilder();
+        $b->setProperties(array(
+               'result' => true,
+               'dir' => Grid::DIR_UP
+          ));
+        $this->setBuilder($b);
+    }
+
+    protected function down(){
+        list($fieldIndex) = $this->getStateParams();
+        $this->constructor->changeOrder(Grid::DIR_DOWN, $fieldIndex);
+        $b = new JSONCustomBuilder();
+        $b->setProperties(array(
+               'result' => true,
+               'dir' => Grid::DIR_DOWN
+          ));
+        $this->setBuilder($b);
+    }
+
     protected function delete(){
         list($fieldIndex) = $this->getStateParams();
         $this->constructor->delete($fieldIndex);
-        
+
         $this->setBuilder(new JSONCustomBuilder());
     }
 

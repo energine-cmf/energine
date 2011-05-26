@@ -11,5 +11,10 @@ var FormsManager = new Class({
         ModalBox.open({
             url:this.singlePath + this.grid.getSelectedRecordKey() + '/viewForm/'
         });
+    },
+    showResults: function(){
+        ModalBox.open({
+            url:this.singlePath + this.grid.getSelectedRecordKey() + '/results/'
+        });
     }
 });

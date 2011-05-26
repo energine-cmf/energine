@@ -43,12 +43,14 @@ var PageToolbar = new Class({
             'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
             'frameBorder': '0'
         }).injectInside(sidebarFrameContent);
+        var editBlocksButton = this.getControlById('editBlocks');
 
-        if ((this.getControlById('editBlocks'))) {
+        if (editBlocksButton) {
             ScriptLoader.load('LayoutManager');
         }
-        if(this.getControlById('editMode').getState()){
-            this.getControlById('editBlocks').disable();
+
+        if(this.getControlById('editMode').getState() && editBlocksButton){
+            editBlocksButton.disable();
         }
 
     },
@@ -116,14 +118,14 @@ var PageToolbar = new Class({
                             XML.hashToHTML(XML.nodeToHash(this.layoutManager.xml)),
                     onSuccess: function(response) {
                         if (response.result) {
-                            this._reloadWindowInEditMode();
+                            document.location = document.location.href;
                         }
 
                     }.bind(this)
                 }).send();
             }
             else {
-                this._reloadWindowInEditMode();
+                document.location = document.location.href;
             }
         }
     },

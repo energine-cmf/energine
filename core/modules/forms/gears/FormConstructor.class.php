@@ -1,6 +1,14 @@
 <?php
-
-
+/**
+ * Хреново получилось
+ * так и хочется все переписать
+ *
+ *
+ */
+/**
+ * @throws SystemException
+ *
+ */
 class FormConstructor extends DBWorker
 {
     /**
@@ -159,30 +167,12 @@ class FormConstructor extends DBWorker
     {
         $fieldType = $data['table_name']['field_type'];
         $fieldIsNullable = $data['table_name']['field_is_nullable'];
-
-        $fieldName =
-                'field_' . sizeof($this->dbh->getColumnsInfo($this->tableName));
-        $query = 'ALTER TABLE ' . $this->tableName . ' ADD ' . $fieldName . ' ';
-        switch ($fieldType) {
-            case FieldDescription::FIELD_TYPE_STRING:
-                $query .= 'VARCHAR(255)';
-                break;
-            case FieldDescription::FIELD_TYPE_INT:
-                $query .= 'INT(10)';
-                break;
-            case FieldDescription::FIELD_TYPE_BOOL:
-                $query .= 'BOOL';
-                break;
-            case FieldDescription::FIELD_TYPE_TEXT:
-                $query .= 'TEXT';
-                break;
-            case FieldDescription::FIELD_TYPE_DATE:
-                $query .= 'DATE';
-                break;
-            case FieldDescription::FIELD_TYPE_DATETIME:
-                $query .= 'DATETIME';
-                break;
+        $fieldIndex = sizeof($cols = array_keys($this->dbh->getColumnsInfo($this->tableName)));
+        while(in_array($fieldName = 'field_' . $fieldIndex, $cols)){
+            $fieldIndex ++;
         }
+        $query = 'ALTER TABLE ' . $this->tableName . ' ADD ' . $fieldName . ' ';
+        $query .= self::getFDAsSQLString($fieldType);
         $query .= ' ' . ((!$fieldIsNullable) ? ' NOT NULL ' : ' NULL ');
         $this->dbh->beginTransaction();
         if ($this->dbh->modifyRequest($query)) {
@@ -233,5 +223,46 @@ class FormConstructor extends DBWorker
         $ltagName = $this->getFieldLTag($fieldName);
         $this->dbh->modifyRequest('DELETE FROM share_lang_tags WHERE ltag_name=%s', $ltagName);
         return $ltagName;
+    }
+
+    public function changeOrder($direction, $fieldIndex){
+        $fieldIndex --;
+        $cols = array_keys($colsInfo = $this->dbh->getColumnsInfo($this->tableName));
+        $srcField = $cols[$fieldIndex];
+        $destFieldIndex = $fieldIndex +(($direction == Grid::DIR_UP)?-2:1);
+        if(($destFieldIndex <= 0) || ($destFieldIndex==sizeof($cols))){
+    	    return;
+        }
+
+        $destColField = $cols[$destFieldIndex];
+        $query = 'ALTER TABLE '.$this->tableName.' MODIFY '.$srcField.' '.
+         self::getFDAsSQLString(FieldDescription::convertType($colsInfo[$srcField]['type'], $srcField, $colsInfo[$srcField]['length'], $colsInfo[$srcField])).
+        ' AFTER '.$destColField;
+        $this->dbh->modifyRequest($query);
+    }
+
+    private static function getFDAsSQLString($fieldType){
+
+        switch ($fieldType) {
+            case FieldDescription::FIELD_TYPE_INT:
+                $result = 'INT(10) UNSIGNED';
+                break;
+            case FieldDescription::FIELD_TYPE_BOOL:
+                $result = 'BOOL';
+                break;
+            case FieldDescription::FIELD_TYPE_TEXT:
+                $result = 'TEXT';
+                break;
+            case FieldDescription::FIELD_TYPE_DATE:
+                $result = 'DATE';
+                break;
+            case FieldDescription::FIELD_TYPE_DATETIME:
+                $result = 'DATETIME';
+                break;
+            case FieldDescription::FIELD_TYPE_STRING:
+            default:
+                $result = 'VARCHAR(255)';
+        }
+        return $result;
     }
 }

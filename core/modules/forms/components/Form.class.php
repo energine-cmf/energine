@@ -43,10 +43,14 @@ class Form extends DBDataSet
                 true
             );
         }
-        if(!$this->formID || !$this->dbh->tableExists($tableName = $this->getConfigValue('forms.database').'.'.FormConstructor::TABLE_PREFIX.$this->formID)){
-            throw new SystemException('ERR_NO_FORM', SystemException::ERR_404, $this->getParam('id'));
-        }
-        $this->setTableName($tableName);
+
+        //If formID is actual number, but we don't have table with name form_$formID, then set formID to false.
+        //Otherwiste setTableName.
+        if(!$this->formID || !$this->dbh->tableExists($tableName = $this->getConfigValue('forms.database').'.'.FormConstructor::TABLE_PREFIX.$this->formID))
+            $this->formID = false;
+        else
+            $this->setTableName($tableName);
+
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->setAction('send');
         $this->addTranslation('TXT_ENTER_CAPTCHA');
@@ -287,48 +291,74 @@ class Form extends DBDataSet
     }
 
     protected function main(){
-        parent::main();
-        $result = $this->dbh->select('frm_forms_translation',
-                                     array('form_name', 'form_annotation_rtf'),
-                                     array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
-        if(is_array($result)){
-            $d = new Data();
-            $dd = new DataDescription();
+        //If we don't have such form - return recodset with error
+        //Otherwise run main method
+        if(!$this->formID)
+            $this->returnEmptyRecordset();
+        else {
+            parent::main();
 
-            $f = new Field('form_name');
-            $f->setData($result[0]['form_name'], true);
-            $fd = new FieldDescription('form_name');
-            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-            $fd->setMode(FieldDescription::FIELD_MODE_READ);
-            $d->addField($f);
-            $dd->addFieldDescription($fd);
+            $result = $this->dbh->select('frm_forms_translation',
+                                         array('form_name', 'form_annotation_rtf'),
+                                         array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
+            if (is_array($result)) {
+                $d = new Data();
+                $dd = new DataDescription();
 
-            $f = new Field('form_annotation_rtf');
-            $f->setData($result[0]['form_annotation_rtf'], true);
-            $fd = new FieldDescription('form_annotation_rtf');
-            $fd->setType(FieldDescription::FIELD_TYPE_TEXT);
-            $fd->setMode(FieldDescription::FIELD_MODE_READ);
-            $d->addField($f);
-            $dd->addFieldDescription($fd);
-            unset($result);
+                $f = new Field('form_name');
+                $f->setData($result[0]['form_name'], true);
+                $fd = new FieldDescription('form_name');
+                $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+                $fd->setMode(FieldDescription::FIELD_MODE_READ);
+                $d->addField($f);
+                $dd->addFieldDescription($fd);
 
-            $smBuilder = new SimpleBuilder();
-            $smBuilder->setData($d);
-            $smBuilder->setDataDescription($dd);
-            $smBuilder->build();
-            $result = $smBuilder->getResult();
+                $f = new Field('form_annotation_rtf');
+                $f->setData($result[0]['form_annotation_rtf'], true);
+                $fd = new FieldDescription('form_annotation_rtf');
+                $fd->setType(FieldDescription::FIELD_TYPE_TEXT);
+                $fd->setMode(FieldDescription::FIELD_MODE_READ);
+                $d->addField($f);
+                $dd->addFieldDescription($fd);
+                unset($result);
+
+                $smBuilder = new SimpleBuilder();
+                $smBuilder->setData($d);
+                $smBuilder->setDataDescription($dd);
+                $smBuilder->build();
+                $result = $smBuilder->getResult();
 
 
-            $f = new Field('form_description');
-            $fd = new FieldDescription('form_description');
-            $fd->setType(FieldDescription::FIELD_TYPE_CUSTOM);
-            $f->setData($result, true);
+                $f = new Field('form_description');
+                $fd = new FieldDescription('form_description');
+                $fd->setType(FieldDescription::FIELD_TYPE_CUSTOM);
+                $f->setData($result, true);
 
-            $this->getData()->addField($f);
-            $this->getDataDescription()->addFieldDescription($fd);
+                $this->getData()->addField($f);
+                $this->getDataDescription()->addFieldDescription($fd);
+            }
         }
-
-
     }
+
+    private function returnEmptyRecordset(){
+        $f = new Field('error_msg');
+        $fd = new FieldDescription('error_msg');
+        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+        $fd->setMode(FieldDescription::FIELD_MODE_READ);
+        $f->setData('ERROR_NO_FORM', true);
+
+        $d = new Data();
+        $dd = new DataDescription();
+        $d->addField($f);
+        $dd->addFieldDescription($fd);
+
+        $this->setData($d);
+        $this->setDataDescription($dd);
+
+        $this->setBuilder(new SimpleBuilder());
+        
+    }
+
+
 
 }

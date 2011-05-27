@@ -254,7 +254,7 @@ LayoutManager.Widget = new Class({
         this.static = new Boolean(this.element.getProperty('static')).valueOf();
         if (this.static) this.container.addClass('e-lm-static-widget'); 
         var c;
-        if ((c = this.xml.getElement('component')) && !this.static) {
+        if ((c = this.xml.getElement('component')) /*&& !this.static*/) {
             this.component = new LayoutManager.Component(c, this.element);
         }
     },

@@ -94,7 +94,14 @@ class Form extends DBDataSet
             $fd = new FieldDescription('captcha');
             $fd->setType(FieldDescription::FIELD_TYPE_CAPTCHA);
             $result->addFieldDescription($fd);
+
+            foreach($result as $fd){
+                if($fd->getType() == FieldDescription::FIELD_TYPE_BOOL){
+                    $fd->setProperty('yes', $this->translate('TXT_YES'))->setProperty('no', $this->translate('TXT_NO'));
+                }
+            }
         }
+
         return $result;
     }
 

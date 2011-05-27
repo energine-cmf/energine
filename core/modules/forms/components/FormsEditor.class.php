@@ -94,6 +94,7 @@ class FormsEditor extends Grid {
         }
         $dd = new DataDescription();
         $dd->load($columnsInfo);
+
         $this->setDataDescription($dd);
 
         $d = new Data();

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content html_class="colset">
     <container name="center" column="column">
-        <container name="formEditorContainer" block="alfa" widget="static">
-            <component name="form" class="Form" module="forms" ></component>
+        <container name="formEditorContainer" block="alfa"  layout="content" widget="static" rounded="rounded">
+            <component name="form" class="Form" module="forms" >
+                <params>
+                    <param name="id">3</param>
+                </params>
+            </component>
         </container>
     </container>
 </content>

@@ -444,20 +444,23 @@ var GridManager = new Class({
             this.initialized = true;
         }
         this.grid.setData(result.data || []);
-        this.grid.build();
+
 
         if (result.pager)
             this.pageList.build(result.pager.count, result.pager.current);
 
-        this.overlay.hide();
+        
 
-        if (this.grid.isEmpty()) {
-            if (control = this.toolbar.getControlById('add')) control.enable();
-        }
-        else {
+        if (!this.grid.isEmpty()) {
             this.toolbar.enableControls();
             this.pageList.enable();
         }
+
+
+        if (control = this.toolbar.getControlById('add')) control.enable();
+        this.grid.build();
+        
+        this.overlay.hide();
     },
     processServerError: function(responseText) {
         alert(responseText);

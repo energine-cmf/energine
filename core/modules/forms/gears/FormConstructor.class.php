@@ -115,6 +115,10 @@ class FormConstructor extends DBWorker
                      'value' => $this->translate('FIELD_TYPE_TEXT')
                  ),
                  array(
+                     'key' => FieldDescription::FIELD_TYPE_MULTI,
+                     'value' => $this->translate('FIELD_TYPE_MULTI')
+                 ),
+                 array(
                      'key' => FieldDescription::FIELD_TYPE_SELECT,
                      'value' => $this->translate('FIELD_TYPE_SELECT')
                  ),
@@ -182,25 +186,39 @@ class FormConstructor extends DBWorker
                 $this->dbh->modify(QAL::INSERT, 'share_lang_tags_translation', array('ltag_value_rtf' => $value['field_name'], 'ltag_id' => $ltagID, 'lang_id' => $langID));
 
             }
+            if($fieldType == FieldDescription::FIELD_TYPE_SELECT){
+                $query = array();
+                $query[] = 'ALTER TABLE '.$this->tableName.' ADD INDEX ( '.$fieldName.' ) ';
 
+
+                //create foreign key table
+                $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkTableName =
+                        DBA::getFQTableName(
+                            $this->tableName . '_' . $fieldName)).'( fk_id int(11) unsigned NOT NULL AUTO_INCREMENT, fk_order_num int(10) UNSIGNED  DEFAULT \'1\', PRIMARY KEY (`fk_id`), KEY `fk_order_num`(`fk_order_num`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
+
+                //add fk info
+                $query[] = 'ALTER TABLE '.$this->tableName.' ADD FOREIGN KEY ( '.$fieldName.' ) REFERENCES '.$fkTableName.' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE ;';
+
+
+                $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($langTableName =
+                        DBA::getFQTableName(
+                            $fkTableName.'_translation')).'( fk_id int(11) unsigned NOT NULL , lang_id int(11) UNSIGNED  NOT NULL, fk_name VARCHAR(255) NOT NULL, PRIMARY KEY (`fk_id`, `lang_id`), KEY `lang_id` (`lang_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
+                //add fk info
+                $query[] = 'ALTER TABLE '.$langTableName.' ADD FOREIGN KEY (`lang_id`) REFERENCES '.$this->getConfigValue('database.master.db').'.`share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE, ADD FOREIGN KEY ( fk_id ) REFERENCES '.$fkTableName.' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
+                
+                foreach($query as $request)
+                    $this->dbh->modifyRequest($request);
+
+            }
         }
         $this->dbh->commit();
     }
     /**
-     * @throws SystemException
+     * @throws SystemException  
      * @param  $fieldIndex
      * @return void
      */
-    public function delete($fieldIndex){
-        if($fieldIndex == 1){
-            throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);
-        }
-        $cols = array_keys($this->dbh->getColumnsInfo($this->tableName));
-        if(!isset($cols[$fieldIndex - 1])){
-            throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);
-        }
-        $fieldName = $cols[$fieldIndex - 1];
-
+    public function delete($fieldName){
         $this->dbh->beginTransaction();
         $this->deleteFieldLTag($fieldName);
         $query = 'ALTER TABLE '.$this->tableName.' DROP '.$fieldName;
@@ -245,7 +263,8 @@ class FormConstructor extends DBWorker
 
         switch ($fieldType) {
             case FieldDescription::FIELD_TYPE_INT:
-                $result = 'INT(10) UNSIGNED';
+            case FieldDescription::FIELD_TYPE_SELECT:
+                $result = 'INT(11) UNSIGNED';
                 break;
             case FieldDescription::FIELD_TYPE_BOOL:
                 $result = 'BOOL';

@@ -4,11 +4,24 @@ var FormEditor = new Class({
     initialize: function(element){
         this.parent(element);
     },
+    editProps: function(){
+
+    },
     onSelect: function(){
-	/*var curr = this.grid.getSelectedRecord();
-	
-	if(curr.field_id == 1){
-	    this.toolbar.disableControls();
-	}*/
+        this.parent();
+        var curr = this.grid.getSelectedRecord();
+        if(curr.field_id == 1){
+            this.toolbar.disableControls();
+        }
+        else {
+            this.toolbar.enableControls();
+            var b;
+            if((curr.field_type != 'FIELD_TYPE_SELECT') && (curr.field_type !=
+                    'FIELD_TYPE_MULTI'))
+                this.toolbar.disableControls('editProps');
+        }
+        this.toolbar.enableControls('add');
     }
+    
+
 });

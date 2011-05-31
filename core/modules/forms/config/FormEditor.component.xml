@@ -7,8 +7,10 @@
         </javascript>
         <toolbar>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
-            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+            <control id="editProps" title="BTN_EDIT_VALUES" type="button" onclick="editProps"/>
             <control id="sep01" type="separator"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+            <control id="sep03" type="separator"/>
             <control id="up" title="BTN_UP" type="button" onclick="up"/>
             <control id="down" title="BTN_DOWN" type="button" onclick="down"/>
             <control id="sep02" type="separator"/>

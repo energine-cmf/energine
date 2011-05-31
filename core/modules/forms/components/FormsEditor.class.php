@@ -21,6 +21,10 @@ class FormsEditor extends Grid {
      */
     private $form;
     /**
+     * @var $formPreview
+     */
+    private $formPreview;
+    /**
      * @var FormResults
      */
     private $results;
@@ -78,37 +82,41 @@ class FormsEditor extends Grid {
      * Method viewForm for Form preview in FormsEditor
      */
     protected function viewForm(){
-        $this->setType(self::COMPONENT_TYPE_FORM);
-
-        $formID = $this->getStateParams();
-        if(!$formID = intval($formID[0]))
-            throw new SystemException('ERR_INVALID_FORM_ID');
-
-        $tableName = $this->getConfigValue('forms.database').'.form_'.$formID;
-        if(!$this->dbh->tableExists($tableName))
-            throw new SystemException('ERR_NO_FORM_TABLE_FOUND');
-
-        $columnsInfo = $this->dbh->getColumnsInfo($tableName);
-        foreach($columnsInfo as $key=>$value){
-            $columnsInfo[$key]['tabName'] = $this->translate('TXT_TAB_FORM');
-        }
-        $dd = new DataDescription();
-        $dd->load($columnsInfo);
-
-        $this->setDataDescription($dd);
-
-        $d = new Data();
-        $f = new Field('pk_id');
-        $f->setData(1, true);
-        $d->addField($f);
-        $this->setData($d);
-
-        $this->setBuilder(new Builder());
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
-        $this->js = $this->buildJS();
+        $this->formPreview = $this->document->componentManager->createComponent('formPreview','forms','Form', array('id' => 6));
+        $this->formPreview->run();
+        //Альтернативна обробка й вивід форми для попереднього перегляду.
+        //Про всяк випадок поки нехай буде закоментовано.
+//        $this->setType(self::COMPONENT_TYPE_FORM);
+//
+//        $formID = $this->getStateParams();
+//        if(!$formID = intval($formID[0]))
+//            throw new SystemException('ERR_INVALID_FORM_ID');
+//
+//        $tableName = $this->getConfigValue('forms.database').'.form_'.$formID;
+//        if(!$this->dbh->tableExists($tableName))
+//            throw new SystemException('ERR_NO_FORM_TABLE_FOUND');
+//
+//        $columnsInfo = $this->dbh->getColumnsInfo($tableName);
+//        foreach($columnsInfo as $key=>$value){
+//            $columnsInfo[$key]['tabName'] = $this->translate('TXT_TAB_FORM');
+//        }
+//        $dd = new DataDescription();
+//        $dd->load($columnsInfo);
+//
+//        $this->setDataDescription($dd);
+//
+//        $d = new Data();
+//        $f = new Field('pk_id');
+//        $f->setData(1, true);
+//        $d->addField($f);
+//        $this->setData($d);
+//
+//        $this->setBuilder(new Builder());
+//        $toolbars = $this->createToolbar();
+//        if (!empty($toolbars)) {
+//            $this->addToolbar($toolbars);
+//        }
+//        $this->js = $this->buildJS();
     }
 
     public function build(){
@@ -117,6 +125,9 @@ class FormsEditor extends Grid {
         }
         elseif($this->getState() == 'showResult'){
     	    $result = $this->results->build();
+        }
+        elseif($this->getState() == 'viewForm'){
+    	    $result = $this->formPreview->build();
         }
         else {
             $result = parent::build();

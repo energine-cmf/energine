@@ -17,7 +17,6 @@
  */
 class FormResults extends Grid
 {
-
     /**
      * Конструктор класса
      *
@@ -40,8 +39,19 @@ class FormResults extends Grid
         return array_merge(
             parent::defineParams(),
             array(
-                 'form_id' => false,
+                 'form_id' => false
             )
         );
     }
+
+    protected function loadDataDescription(){
+        $result = parent::loadDataDescription();
+        //Якщо у конфігі вказано обмеження на кількість полів, які мають відображатися у Grid'і (state main), то застосувати його.
+        //Інакше відобразити всі поля.
+        if(in_array($this->getState(), array('main')))
+            if (intval(FormsEditor::$RESULT_NUM_FIELDS) > 0 && (count($result) > FormsEditor::$RESULT_NUM_FIELDS))
+                $result = array_splice($result, 0, FormsEditor::$RESULT_NUM_FIELDS + 1);
+        return $result;
+    }
+
 }

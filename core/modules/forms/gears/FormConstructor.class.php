@@ -172,7 +172,8 @@ class FormConstructor extends DBWorker
         $fieldType = $data['table_name']['field_type'];
         $fieldIsNullable = $data['table_name']['field_is_nullable'];
         $fieldIndex = sizeof($cols = array_keys($this->dbh->getColumnsInfo($this->tableName)));
-        while(in_array($fieldName = 'field_' . $fieldIndex, $cols)){
+        list(,$tblName) = DBA::getFQTableName($this->tableName, true);
+        while(in_array($fieldName = $tblName.'_field_' . $fieldIndex, $cols)){
             $fieldIndex ++;
         }
         $query = 'ALTER TABLE ' . $this->tableName . ' ADD ' . $fieldName . ' ';
@@ -231,7 +232,7 @@ class FormConstructor extends DBWorker
      */
     private function getFieldLTag($fieldName){
         list(,$tblName) = DBA::getFQTableName($this->tableName, true);
-        return 'FIELD_'.$tblName.'_'.$fieldName;
+        return 'FIELD_'.$fieldName;
     }
     /**
      * @param  $fieldName

@@ -301,14 +301,14 @@ class Form extends DBDataSet
             $result = $this->dbh->select('frm_forms_translation',
                                          array('form_name', 'form_annotation_rtf'),
                                          array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
+            
             if (is_array($result)) {
                 $this->setTitle($result[0]['form_name']);
 
                 $f = new Field('form_description');
                 $f->setData($result[0]['form_annotation_rtf'], true);
                 $fd = new FieldDescription('form_description');
-                $fd->setType(FieldDescription::FIELD_TYPE_TEXT);
-                $fd->setMode(FieldDescription::FIELD_MODE_READ);
+                $fd->setType(FieldDescription::FIELD_TYPE_TEXT)->setMode(FieldDescription::FIELD_MODE_READ);
                 $this->getData()->addField($f);
                 $this->getDataDescription()->addFieldDescription($fd);
             }

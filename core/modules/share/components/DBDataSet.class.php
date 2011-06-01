@@ -74,6 +74,10 @@ class DBDataSet extends DataSet {
      * @var ImageManager
      */
     private $imageManager;
+    /*
+     * @var source
+     */
+    private $source;
 
     /**
      * Конструктор класса
@@ -739,6 +743,17 @@ class DBDataSet extends DataSet {
         //$this->imageManager->getState();
         $this->imageManager->run();
     }
+    /**
+     * Displays source of text.
+     * Usage: editing news and most of feeds in view mode.
+     * @return void
+     * @access protected
+     * @TODO: move this method to more suitable place.
+     */
+    protected function source() {
+        $this->source = $this->document->componentManager->createComponent('textblocksource', 'share', 'TextBlockSource', null);
+        $this->source->run();
+    }
 
     public function build() {
         switch ($this->getState()) {
@@ -747,6 +762,9 @@ class DBDataSet extends DataSet {
                 break;
             case 'fileLibrary':
                 return $this->fileLibrary->build();
+                break;
+            case 'source':
+                return $this->source->build();
                 break;
             default:
                 // do nothing

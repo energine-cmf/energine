@@ -46,11 +46,12 @@ class FormResults extends Grid
 
     protected function loadDataDescription(){
         $result = parent::loadDataDescription();
-        //Якщо у конфігі вказано обмеження на кількість полів, які мають відображатися у Grid'і (state main), то застосувати його.
+        //Якщо у конфігі вказано обмеження на кількість полів, які мають відображатися у Grid'і (states: main, getRawData), то застосувати його.
         //Інакше відобразити всі поля.
-        if(in_array($this->getState(), array('main')))
-            if (intval(FormsEditor::$RESULT_NUM_FIELDS) > 0 && (count($result) > FormsEditor::$RESULT_NUM_FIELDS))
-                $result = array_splice($result, 0, FormsEditor::$RESULT_NUM_FIELDS + 1);
+        if(in_array($this->getState(), array('main', 'getRawData')))
+            if (count($result) > $this->getConfigValue('forms.result_num_fields'))
+                $result = array_splice($result, 0, $this->getConfigValue('forms.result_num_fields'));
+
         return $result;
     }
 

@@ -31,11 +31,6 @@ class FormsEditor extends Grid {
 
     private $formComponent;
     /**
-     * @var $RESULT_NUM_FIELDS
-     * зберігає значення кількості полів для відображення у Grid'і результатів заповнення форми
-     */
-    public static $RESULT_NUM_FIELDS;
-    /**
      * Конструктор класса
      *
      * @param string $name
@@ -49,16 +44,6 @@ class FormsEditor extends Grid {
         $this->setTableName('frm_forms');
         $this->setSaver(new FormsSaver());
         $this->setOrder(array('form_creation_date' => QAL::DESC));
-        self::$RESULT_NUM_FIELDS = $this->getParam('numFields');
-    }
-
-    protected function defineParams() {
-        return array_merge(
-        parent::defineParams(),
-        array(
-        'numFields' => false
-        )
-        );
     }
 
     protected function createDataDescription(){

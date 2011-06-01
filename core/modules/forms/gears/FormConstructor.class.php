@@ -243,6 +243,9 @@ class FormConstructor extends DBWorker
         return $ltagName;
     }
 
+    public function getTableName(){
+        return $this->tableName;    
+    }
     public function changeOrder($direction, $fieldIndex){
         $fieldIndex --;
         $cols = array_keys($colsInfo = $this->dbh->getColumnsInfo($this->tableName));

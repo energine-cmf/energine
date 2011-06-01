@@ -5,7 +5,9 @@ var FormEditor = new Class({
         this.parent(element);
     },
     editProps: function(){
-
+        ModalBox.open({
+            url: this.singlePath + this.grid.getSelectedRecordKey() + '/values/'
+        });
     },
     onSelect: function(){
         this.parent();

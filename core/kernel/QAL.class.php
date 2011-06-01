@@ -314,12 +314,12 @@ final class QAL extends DBA {
             $request = sprintf(
                 'SELECT 
                     %2$s.*, %3$s.%s 
-                    FROM %s %2$s 
-                    LEFT JOIN %s %3$s on %3$s.%s = %2$s.%s 
+                    FROM %s
+                    LEFT JOIN %s on %3$s.%s = %2$s.%s
                     WHERE lang_id =%s'.$filter.(($order)?' ORDER BY '.$order:''),
                 $fkValueName, 
-                $fkTableName, 
-                $transTableName, 
+                DBA::getFQTableName($fkTableName),
+                DBA::getFQTableName($transTableName),
                 $fkKeyName, 
                 $fkKeyName, 
                 $currentLangID

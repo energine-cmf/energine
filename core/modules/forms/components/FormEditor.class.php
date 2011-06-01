@@ -154,9 +154,11 @@ class FormEditor extends DataSet
     protected function editSelector(){
         list($fieldIndex) = $this->getStateParams();
         E()->getRequest()->shiftPath(2);
-        $fieldInfo = $this->getFieldnameByIndex($fieldIndex);
+        $fieldInfo = $this->getFieldnameByIndex($fieldIndex, true);
 
-        $this->SVEditor = $this->document->componentManager->createComponent('form', 'forms', 'SelectorValuesEditor', array('field_name' => ($fieldName = key($fieldInfo)), 'table_name' => $fieldInfo[$fieldName]  ));
+        $tableName = current($fieldInfo);
+        $tableName = $tableName['key']['tableName'];
+        $this->SVEditor = $this->document->componentManager->createComponent('form', 'forms', 'SelectorValuesEditor', array('table_name' => $tableName));
         $this->SVEditor->run();
 
     }
@@ -175,11 +177,22 @@ class FormEditor extends DataSet
         $this->setBuilder(new JSONCustomBuilder());
     }
 
+    public function build(){
+        if($this->getState() == 'editSelector'){
+            $result = $this->SVEditor->build();
+        }
+        else {
+            $result = parent::build();
+        }
+
+        return $result;
+    }
+
     private function getFieldnameByIndex($fieldIndex, $asArray = false){
         if($fieldIndex == 1){
             throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);
         }
-        $colsInfo = $this->dbh->getColumnsInfo($this->tableName);
+        $colsInfo = $this->dbh->getColumnsInfo($this->constructor->getTableName());
         $cols = array_keys($colsInfo);
         if(!isset($cols[$fieldIndex - 1])){
             throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);
@@ -187,7 +200,7 @@ class FormEditor extends DataSet
 
         if($asArray){
             return array(
-                $cols[$fieldIndex - 1] => $colsInfo[]
+                $cols[$fieldIndex - 1] => $colsInfo[$cols[$fieldIndex - 1]]
             );
         }
         else {

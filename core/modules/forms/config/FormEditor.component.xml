@@ -73,4 +73,9 @@
             <pattern>/[int]/down/</pattern>
         </uri_patterns>
     </state>
+    <state name="editSelector" rights="3">
+        <uri_patterns>
+            <pattern>/[int]/values/[any]/</pattern>
+        </uri_patterns>
+    </state>
 </configuration>

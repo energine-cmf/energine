@@ -220,7 +220,7 @@ class Form extends DBDataSet
                     $mailer->setFrom($this->getConfigValue('mail.from'))->
                             setSubject($subject)->
                             setText($body)->
-                            addTo($this->getRecipientEmail())->send();
+                            addTo(($recp = $this->getRecipientEmail())?$recp:$this->getConfigValue('mail.manager'))->send();
                 }
                 catch (Exception $e) {
                 }

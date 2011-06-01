@@ -19,8 +19,6 @@
  * @author d.pavka@gmail.com
  */
 class SelectorValuesEditor extends Grid {
-    private $mainTableName;
-
     /**
      * Конструктор класса
      *
@@ -53,7 +51,15 @@ class SelectorValuesEditor extends Grid {
 
 
 function getRealPOST() {
+    /**
+     * @param  $result
+     * @param  $k
+     * @param  $arrayKeys
+     * @param  $value
+     * @return
+     */
     function parse_query_string_array(&$result, $k, $arrayKeys, $value) {
+        $value = urldecode($value);
         if (!preg_match_all('/\[([^\]]*)\]/', $arrayKeys, $matches))
             return $value;
         if (!isset($result[$k])) {
@@ -77,7 +83,12 @@ function getRealPOST() {
             $temp[urldecode($last)] = $value;
         }
     }
-
+    /**
+     * @param  $a
+     * @param string $delim
+     * @param bool $default
+     * @return bool|string
+     */
     function string_pair(&$a, $delim = '.', $default = false) {
         $n = strpos($a, $delim);
         if ($n === false)
@@ -86,7 +97,11 @@ function getRealPOST() {
         $a = substr($a, 0, $n);
         return $result;
     }
-
+    /**
+     * @param  $url
+     * @param bool $qmark
+     * @return array|bool
+     */
     function parse_query_string($url, $qmark = false) {
         if ($qmark) {
             $pos = strpos($url, "?");

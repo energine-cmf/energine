@@ -124,10 +124,8 @@ class Form extends DBDataSet {
         //Обрабатываем аплоадсы
 
         if (isset($_FILES) && !empty($_FILES)) {
-
             list($dbName, $tName) =
                     DBA::getFQTableName($this->getTableName(), true);
-
             if (isset($_FILES[$phpTableName = $dbName . '_' . $tName])) {
                 $fileData = array();
                 //Переворачиваем пришедший массив в удобный для нас вид
@@ -138,10 +136,13 @@ class Form extends DBDataSet {
                 }
                 $uploader = new FileUploader();
                 foreach($fileData as $fieldName => $fileInfo){
-                    $uploader->setFile($fileInfo);
-                    $uploader->upload('uploads/forms');
-                    $data[$this->getTableName()][$fieldName] = $uploader->getFileObjectName();
-                    $uploader->cleanUp();
+                    //Завантажувати лише якщо файл дійсно завантажили
+                    if(!empty($fileInfo['name']) && $fileInfo['size']>0){
+                        $uploader->setFile($fileInfo);
+                        $uploader->upload('uploads/forms');
+                        $data[$this->getTableName()][$fieldName] = $uploader->getFileObjectName();
+                        $uploader->cleanUp();
+                    }
                 }
             }
         }
@@ -176,6 +177,7 @@ class Form extends DBDataSet {
         $this->saver->setData($this->getData());
 
         if ($this->saver->validate() === true) {
+
             $this->saver->setFilter($this->getFilter());
             $this->saver->save();
             $result = $this->saver->getResult();
@@ -201,6 +203,7 @@ class Form extends DBDataSet {
             if (!$this->document->getUser()->isAuthenticated()) {
                 $this->checkCaptcha();
             }
+
             if ($result = $this->saveData($data)) {
                 $data = $data[$this->getTableName()];
 
@@ -226,10 +229,8 @@ class Form extends DBDataSet {
                 //Unset pk_id field, because we don't need it in body of message to send
                 unset($data['pk_id']);
                 foreach ($data as $key => $value) {
-                    $data[$key] = array('translation' => $this->translate(
-//                        'FIELD_FORM_' . $this->formID . '_' .
-//                    $this->formID . '_' .
-                        'FIELD_'.$key), 'value' => $value);
+                    $data[$key] = array('translation' => $this->translate('FIELD_'.$key),
+                                        'value' => $value);
                 }
 
                 try {

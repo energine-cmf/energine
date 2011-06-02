@@ -18,8 +18,7 @@
  * @author 1m.dm
  * @abstract
  */
-abstract class DBA extends Object
-{
+abstract class DBA extends Object {
 
     /**
      * @access protected
@@ -135,15 +134,18 @@ abstract class DBA extends Object
      * @param array $driverOptions специфические параметры драйвера БД
      * @return void
      */
-    public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8')
-    {
+    public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         try {
             $this->pdo = new PDO($dsn, $username, $password, $driverOptions);
             $this->pdo->query('SET NAMES ' . $charset);
 
             if ($this->getConfigValue('database.slave')) {
                 $this->slavePdo = new PDO(
-                    'mysql:' . $this->getConfigValue('database.slave.dsn'),
+                    sprintf('mysql:host=%s;port=%s;dbname=%s',
+                            $this->getConfigValue('database.slave.host'),
+                            $this->getConfigValue('database.slave.port'),
+                            $this->getConfigValue('database.slave.db')
+                    ),
                     $this->getConfigValue('database.slave.username'),
                     $this->getConfigValue('database.slave.password'),
                     $driverOptions
@@ -185,8 +187,7 @@ abstract class DBA extends Object
      * @return mixed
      * @see printf()
      */
-    public function selectRequest($query)
-    {
+    public function selectRequest($query) {
         if (!is_string($query) || strlen($query) == 0) {
             return false;
         }
@@ -251,8 +252,7 @@ abstract class DBA extends Object
      * @return mixed
      * @see printf()
      */
-    public function modifyRequest($query)
-    {
+    public function modifyRequest($query) {
         if (!is_string($query) || strlen($query) == 0) {
             return false;
         }
@@ -284,8 +284,7 @@ abstract class DBA extends Object
      * @param  array $args
      * @return array|bool
      */
-    public function call($name, &$args = null)
-    {
+    public function call($name, &$args = null) {
         if (!$args) {
             $res = $this->pdo->query("call $name();", PDO::FETCH_NAMED);
         }
@@ -311,8 +310,7 @@ abstract class DBA extends Object
      * @param string $string
      * @return string
      */
-    public function quote($string)
-    {
+    public function quote($string) {
         return $this->pdo->quote($string);
     }
 
@@ -322,8 +320,7 @@ abstract class DBA extends Object
      * @access public
      * @return string
      */
-    public function getLastRequest()
-    {
+    public function getLastRequest() {
         return $this->lastQuery;
     }
 
@@ -334,18 +331,17 @@ abstract class DBA extends Object
      * @access public
      */
 
-    public function getLastError()
-    {
+    public function getLastError() {
         return $this->pdo->errorInfo();
     }
+
     /**
      * Стартует транзакцию.
      *
      * @access public
      * @return boolean
      */
-    public function beginTransaction()
-    {
+    public function beginTransaction() {
         return $this->pdo->beginTransaction();
     }
 
@@ -355,8 +351,7 @@ abstract class DBA extends Object
      * @access public
      * @return boolean
      */
-    public function commit()
-    {
+    public function commit() {
         return $this->pdo->commit();
     }
 
@@ -366,8 +361,7 @@ abstract class DBA extends Object
      * @access public
      * @return boolean
      */
-    public function rollback()
-    {
+    public function rollback() {
         return $this->pdo->rollBack();
     }
 
@@ -388,8 +382,7 @@ abstract class DBA extends Object
      * @param string $tableName
      * @return array
      */
-    public function getColumnsInfo($tableName)
-    {
+    public function getColumnsInfo($tableName) {
         $result = $this->dbCache->getTableMeta($tableName);
         return $result;
     }
@@ -403,8 +396,7 @@ abstract class DBA extends Object
      * @param string $tableName
      * @return mixed
      */
-    public function getTranslationTablename($tableName)
-    {
+    public function getTranslationTablename($tableName) {
         return $this->tableExists($tableName . '_translation');
     }
 
@@ -415,8 +407,7 @@ abstract class DBA extends Object
      * @return boolean
      * @access public
      */
-    public function tableExists($tableName)
-    {
+    public function tableExists($tableName) {
         return ($this->dbCache->tableExists($tableName)) ? $tableName : false;
     }
 
@@ -428,7 +419,7 @@ abstract class DBA extends Object
      * @param bool Возвращать как массив
      * @return string | array
      */
-    public static function getFQTableName($tableName, $returnAsArray = false){
+    public static function getFQTableName($tableName, $returnAsArray = false) {
         $result = array();
 
         $tableName = str_replace('`', '', $tableName);
@@ -438,7 +429,9 @@ abstract class DBA extends Object
             $tableName = substr($tableName, $pos + 1);
         }
         array_push($result, $tableName);
-        return (!$returnAsArray)?implode('.', array_map(function($row){ return '`'.$row.'`';}, $result)): $result;
+        return (!$returnAsArray) ? implode('.', array_map(function($row) {
+            return '`' . $row . '`';
+        }, $result)) : $result;
     }
 
     /**
@@ -450,8 +443,7 @@ abstract class DBA extends Object
      * @see DBA::selectRequest()
      * @see DBA::modifyRequest()
      */
-    private function constructQuery(array $args)
-    {
+    private function constructQuery(array $args) {
         if (sizeof($args) > 1) {
             $query = array_shift($args); // отбрасываем первый аргумент $query
             foreach ($args as &$arg) {

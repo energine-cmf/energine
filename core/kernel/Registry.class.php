@@ -221,7 +221,11 @@ final class Registry extends Object {
     public function getDB() {
         if (!isset($this->entities['QAL'])) {
             $this->entities['QAL'] = new QAL(
-                'mysql:' . $this->getConfigValue('database.master.dsn'),
+                sprintf('mysql:host=%s;port=%s;dbname=%s',
+                        $this->getConfigValue('database.master.host'),
+                        $this->getConfigValue('database.master.port'),
+                        $this->getConfigValue('database.master.db')
+                ),
                 $this->getConfigValue('database.master.username'),
                 $this->getConfigValue('database.master.password'),
                 array(

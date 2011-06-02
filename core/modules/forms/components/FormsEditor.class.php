@@ -82,7 +82,9 @@ class FormsEditor extends Grid {
      * Method viewForm for Form preview in FormsEditor
      */
     protected function viewForm(){
-        $this->formPreview = $this->document->componentManager->createComponent('formPreview','forms','Form', array('id' => 6));
+        list($formID) = $this->getStateParams();
+        E()->getRequest()->shiftPath(2);
+        $this->formPreview = $this->document->componentManager->createComponent('formPreview','forms','Form', array('id' => $formID));
         $this->formPreview->run();
         //Альтернативна обробка й вивід форми для попереднього перегляду.
         //Про всяк випадок поки нехай буде закоментовано.

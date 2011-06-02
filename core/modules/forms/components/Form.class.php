@@ -227,8 +227,9 @@ class Form extends DBDataSet {
                 unset($data['pk_id']);
                 foreach ($data as $key => $value) {
                     $data[$key] = array('translation' => $this->translate(
-                        'FIELD_FORM_' . $this->formID . '_' .
-                        $key), 'value' => $value);
+//                        'FIELD_FORM_' . $this->formID . '_' .
+//                    $this->formID . '_' .
+                        'FIELD_'.$key), 'value' => $value);
                 }
 
                 try {

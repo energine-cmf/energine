@@ -102,10 +102,10 @@ class FormConstructor extends DBWorker
                      'key' => FieldDescription::FIELD_TYPE_STRING,
                      'value' => $this->translate('FIELD_TYPE_STRING')
                  ),
-                 array(
+                 /*array(
                      'key' => FieldDescription::FIELD_TYPE_INT,
                      'value' => $this->translate('FIELD_TYPE_INT')
-                 ),
+                 ),*/
                  array(
                      'key' => FieldDescription::FIELD_TYPE_BOOL,
                      'value' => $this->translate('FIELD_TYPE_BOOL')
@@ -129,6 +129,10 @@ class FormConstructor extends DBWorker
                  array(
                      'key' => FieldDescription::FIELD_TYPE_DATETIME,
                      'value' => $this->translate('FIELD_TYPE_DATETIME')
+                 ),
+                 array(
+                     'key' => FieldDescription::FIELD_TYPE_FILE,
+                     'value' => $this->translate('FIELD_TYPE_FILE')
                  ),
             ),
             'key',
@@ -176,6 +180,13 @@ class FormConstructor extends DBWorker
         while(in_array($fieldName = $tblName.'_field_' . $fieldIndex, $cols)){
             $fieldIndex ++;
         }
+        if($fieldType == FieldDescription::FIELD_TYPE_MULTI){
+            $fieldName .='_multi';
+        }
+        elseif($fieldType == FieldDescription::FIELD_TYPE_FILE) {
+            $fieldName .= '_file';
+        }
+
         $query = 'ALTER TABLE ' . $this->tableName . ' ADD ' . $fieldName . ' ';
         $query .= self::getFDAsSQLString($fieldType);
         $query .= ' ' . ((!$fieldIsNullable) ? ' NOT NULL ' : ' NULL ');
@@ -209,6 +220,9 @@ class FormConstructor extends DBWorker
                 
                 foreach($query as $request)
                     $this->dbh->modifyRequest($request);
+
+            }
+            elseif($fieldType == FieldDescription::FIELD_TYPE_MULTI){
 
             }
         }
@@ -270,6 +284,7 @@ class FormConstructor extends DBWorker
             case FieldDescription::FIELD_TYPE_SELECT:
                 $result = 'INT(11) UNSIGNED';
                 break;
+            case FieldDescription::FIELD_TYPE_MULTI:
             case FieldDescription::FIELD_TYPE_BOOL:
                 $result = 'BOOL';
                 break;
@@ -283,6 +298,7 @@ class FormConstructor extends DBWorker
                 $result = 'DATETIME';
                 break;
             case FieldDescription::FIELD_TYPE_STRING:
+            case FieldDescription::FIELD_TYPE_FILE:
             default:
                 $result = 'VARCHAR(255)';
         }

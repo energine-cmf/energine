@@ -751,7 +751,7 @@ class FieldDescription extends DBWorker implements Iterator{
                 break;
             case DBA::COLTYPE_INTEGER:
                 if ($length == 1) {
-                    $result = self::FIELD_TYPE_BOOL;
+                    $result = (strpos($name, '_multi'))?self::FIELD_TYPE_MULTI:self::FIELD_TYPE_BOOL;
                 }
                 // обрабатываем внешний ключ
                 elseif (isset($props['key']) && is_array($props['key'])) {

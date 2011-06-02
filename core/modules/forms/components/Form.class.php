@@ -15,8 +15,7 @@
  * @subpackage forms
  * @author d.pavka@gmail.com
  */
-class Form extends DBDataSet
-{
+class Form extends DBDataSet {
     /*
      * Form identifier
      */
@@ -34,9 +33,9 @@ class Form extends DBDataSet
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, array $params = null){
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
-        if(!($this->formID = $this->getParam('id'))){
+        if (!($this->formID = $this->getParam('id'))) {
             $this->formID = simplifyDBResult(
                 $this->dbh->selectRequest('SELECT form_id FROM frm_forms WHERE form_is_active = 1 ORDER BY RAND() LIMIT 1'),
                 'form_id',
@@ -46,7 +45,11 @@ class Form extends DBDataSet
 
         //If formID is actual number, but we don't have table with name form_$formID, then set formID to false.
         //Otherwiste setTableName.
-        if(!$this->formID || !$this->dbh->tableExists($tableName = $this->getConfigValue('forms.database').'.'.FormConstructor::TABLE_PREFIX.$this->formID))
+        if (!$this->formID || !$this->dbh->tableExists($tableName =
+                                                               $this->getConfigValue('forms.database') .
+                                                               '.' .
+                                                               FormConstructor::TABLE_PREFIX .
+                                                               $this->formID))
             $this->formID = false;
         else
             $this->setTableName($tableName);
@@ -55,12 +58,13 @@ class Form extends DBDataSet
         $this->setAction('send');
         $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
-    protected function defineParams(){
+
+    protected function defineParams() {
         return array_merge(
             parent::defineParams(),
             array(
-                'id' => false,
-                'active' => true
+                 'id' => false,
+                 'active' => true
             )
         );
     }
@@ -77,8 +81,8 @@ class Form extends DBDataSet
         $this->getDataDescription()->addFieldDescription($eFD);
         $this->getData()->load(array(array_merge(array('error_message' => $errorMessage), $data)));
         $this->getDataDescription()->getFieldDescriptionByName('error_message')->removeProperty('title');
-    }    
-    
+    }
+
     protected function prepare() {
         parent::prepare();
         if (
@@ -91,16 +95,16 @@ class Form extends DBDataSet
         }
     }
 
-    protected function createDataDescription(){
+    protected function createDataDescription() {
         $result = parent::createDataDescription();
         //Create captcha field for main state - when displaying form.
-        if(!in_array($this->getState(), array('send', 'save', 'success'))){
+        if (!in_array($this->getState(), array('send', 'save', 'success'))) {
             $fd = new FieldDescription('captcha');
             $fd->setType(FieldDescription::FIELD_TYPE_CAPTCHA);
             $result->addFieldDescription($fd);
 
-            foreach($result as $fd){
-                if($fd->getType() == FieldDescription::FIELD_TYPE_BOOL){
+            foreach ($result as $fd) {
+                if ($fd->getType() == FieldDescription::FIELD_TYPE_BOOL) {
                     $fd->setProperty('yes', $this->translate('TXT_YES'))->setProperty('no', $this->translate('TXT_NO'));
                 }
             }
@@ -117,6 +121,31 @@ class Form extends DBDataSet
      */
 
     protected function saveData($data) {
+        //Обрабатываем аплоадсы
+
+        if (isset($_FILES) && !empty($_FILES)) {
+
+            list($dbName, $tName) =
+                    DBA::getFQTableName($this->getTableName(), true);
+
+            if (isset($_FILES[$phpTableName = $dbName . '_' . $tName])) {
+                $fileData = array();
+                //Переворачиваем пришедший массив в удобный для нас вид
+                foreach ($_FILES[$phpTableName] as $fParam => $fileInfo) {
+                    foreach ($fileInfo as $fName => $val) {
+                        $fileData[$fName][$fParam] = $val;
+                    }
+                }
+                $uploader = new FileUploader();
+                foreach($fileData as $fieldName => $fileInfo){
+                    $uploader->setFile($fileInfo);
+                    $uploader->upload('uploads/forms');
+                    $data[$this->getTableName()][$fieldName] = $uploader->getFileObjectName();
+                    $uploader->cleanUp();
+                }
+            }
+        }
+
         $result = false;
         //создаем объект описания данных
         $dataDescriptionObject = new DataDescription();
@@ -162,8 +191,8 @@ class Form extends DBDataSet
     }
 
     protected function send() {
-        $postTableName = str_replace('.','_',$this->getTableName());
-        if(!isset($_POST[$postTableName])){
+        $postTableName = str_replace('.', '_', $this->getTableName());
+        if (!isset($_POST[$postTableName])) {
             E()->getResponse()->redirectToCurrentSection();
         }
         try {
@@ -175,52 +204,58 @@ class Form extends DBDataSet
             if ($result = $this->saveData($data)) {
                 $data = $data[$this->getTableName()];
 
-            
-//                $senderEmail = '';
-//                if (isset($data['feed_email'])) {
-//                    $senderEmail = $data['feed_email'];
-//                } else {
-//                    $data['feed_email'] =
-//                            $this->translate('TXT_NO_EMAIL_ENTERED');
-//                }
 
-//                $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('feed_date' => date('Y-m-d H:i:s')), array($this->getPK() => $result));
-//                if ($senderEmail) {
-//                    $mailer = new Mail();
-//                    $mailer->setFrom($this->getConfigValue('mail.from'))->
-//                            setSubject($this->translate($this->getParam('userSubject')))->
-//                            setText($this->translate($this->getParam('userBody')), $data)->
-//                            addTo($senderEmail, $senderEmail)
-//                            ->send();
-//                }
+                //                $senderEmail = '';
+                //                if (isset($data['feed_email'])) {
+                //                    $senderEmail = $data['feed_email'];
+                //                } else {
+                //                    $data['feed_email'] =
+                //                            $this->translate('TXT_NO_EMAIL_ENTERED');
+                //                }
+
+                //                $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('feed_date' => date('Y-m-d H:i:s')), array($this->getPK() => $result));
+                //                if ($senderEmail) {
+                //                    $mailer = new Mail();
+                //                    $mailer->setFrom($this->getConfigValue('mail.from'))->
+                //                            setSubject($this->translate($this->getParam('userSubject')))->
+                //                            setText($this->translate($this->getParam('userBody')), $data)->
+                //                            addTo($senderEmail, $senderEmail)
+                //                            ->send();
+                //                }
 
                 //Unset pk_id field, because we don't need it in body of message to send
                 unset($data['pk_id']);
-                foreach($data as $key=>$value){
-                    $data[$key] = array('translation' => $this->translate('FIELD_FORM_'.$this->formID.'_'.$key), 'value' => $value);
+                foreach ($data as $key => $value) {
+                    $data[$key] = array('translation' => $this->translate(
+                        'FIELD_FORM_' . $this->formID . '_' .
+                        $key), 'value' => $value);
                 }
 
                 try {
                     $mailer = new Mail();
                     //Get subject
                     $subject = simplifyDBResult(
-                                    $this->dbh->select(
-                                        'frm_forms_translation',
-                                        array('form_name'),
-                                        array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent())),
-                                    'form_name',
-                                    true);
-                    $subject = $this->translate('TXT_EMAIL_FROM_FORM').' '.$subject;
+                        $this->dbh->select(
+                            'frm_forms_translation',
+                            array('form_name'),
+                            array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent())),
+                        'form_name',
+                        true);
+                    $subject = $this->translate('TXT_EMAIL_FROM_FORM') . ' ' .
+                               $subject;
 
                     //Create text to send. The last one will contain: translations of variables and  variables.
                     $body = '';
-                    foreach($data as $value){
-                        $body .= $value['translation'].': '.$value['value'].'<br>';
+                    foreach ($data as $value) {
+                        $body .=
+                                $value['translation'] . ': ' . $value['value'] .
+                                '<br>';
                     }
                     $mailer->setFrom($this->getConfigValue('mail.from'))->
                             setSubject($subject)->
                             setText($body)->
-                            addTo(($recp = $this->getRecipientEmail())?$recp:$this->getConfigValue('mail.manager'))->send();
+                            addTo(($recp =
+                            $this->getRecipientEmail()) ? $recp : $this->getConfigValue('mail.manager'))->send();
                 }
                 catch (Exception $e) {
                 }
@@ -249,14 +284,14 @@ class Form extends DBDataSet
         require_once('core/kernel/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');
         $resp = recaptcha_check_answer($privatekey,
-            $_SERVER["REMOTE_ADDR"],
-            $_POST["recaptcha_challenge_field"],
-            $_POST["recaptcha_response_field"]);
+                                       $_SERVER["REMOTE_ADDR"],
+                                       $_POST["recaptcha_challenge_field"],
+                                       $_POST["recaptcha_response_field"]);
 
         if (!$resp->is_valid) {
             throw new SystemException($this->translate('TXT_BAD_CAPTCHA'), SystemException::ERR_CRITICAL);
         }
-    }    
+    }
 
     protected function success() {
         $this->setBuilder($this->createBuilder());
@@ -284,16 +319,17 @@ class Form extends DBDataSet
      * @access private
      */
     protected function getRecipientEmail($options = false) {
-        $result = simplifyDBResult($this->dbh->select('frm_forms', array('form_email_adresses'), array('form_id' => $this->formID)),
-                                   'form_email_adresses',
-                                   true);
+        $result =
+                simplifyDBResult($this->dbh->select('frm_forms', array('form_email_adresses'), array('form_id' => $this->formID)),
+                                 'form_email_adresses',
+                                 true);
         return $result;
     }
 
-    protected function main(){
+    protected function main() {
         //If we don't have such form - return recodset with error
         //Otherwise run main method
-        if(!$this->formID)
+        if (!$this->formID)
             $this->returnEmptyRecordset();
         else {
             parent::main();
@@ -301,7 +337,7 @@ class Form extends DBDataSet
             $result = $this->dbh->select('frm_forms_translation',
                                          array('form_name', 'form_annotation_rtf'),
                                          array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
-            
+
             if (is_array($result)) {
                 $this->setTitle($result[0]['form_name']);
 
@@ -315,7 +351,7 @@ class Form extends DBDataSet
         }
     }
 
-    private function returnEmptyRecordset(){
+    private function returnEmptyRecordset() {
         $f = new Field('error_msg');
         $fd = new FieldDescription('error_msg');
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
@@ -331,9 +367,8 @@ class Form extends DBDataSet
         $this->setDataDescription($dd);
 
         $this->setBuilder(new SimpleBuilder());
-        
-    }
 
+    }
 
 
 }

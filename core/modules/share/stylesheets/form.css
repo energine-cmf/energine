@@ -67,6 +67,9 @@ form select {
 form .inp_datetime{
     width:90px;
 }
+form .inp_date{
+    width:90px;
+}
 .table_data {
 	padding:10px 10px 0px 10px;
 }

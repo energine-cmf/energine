@@ -98,7 +98,7 @@ class Form extends DBDataSet {
     protected function createDataDescription() {
         $result = parent::createDataDescription();
         //Create captcha field for main state - when displaying form.
-        if (!in_array($this->getState(), array('send', 'save', 'success'))) {
+        if (!in_array($this->getState(), array('save', 'success'))) {
             $fd = new FieldDescription('captcha');
             $fd->setType(FieldDescription::FIELD_TYPE_CAPTCHA);
             $result->addFieldDescription($fd);
@@ -289,6 +289,7 @@ class Form extends DBDataSet {
                                        $_SERVER["REMOTE_ADDR"],
                                        $_POST["recaptcha_challenge_field"],
                                        $_POST["recaptcha_response_field"]);
+
 
         if (!$resp->is_valid) {
             throw new SystemException($this->translate('TXT_BAD_CAPTCHA'), SystemException::ERR_CRITICAL);

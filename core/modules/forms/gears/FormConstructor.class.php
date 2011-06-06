@@ -9,10 +9,9 @@
  * @throws SystemException
  *
  */
-class FormConstructor extends DBWorker
-{
+class FormConstructor extends DBWorker {
     /**
-     * 
+     *
      */
     const TABLE_PREFIX = 'form_';
     /**
@@ -23,11 +22,11 @@ class FormConstructor extends DBWorker
      * @var string
      */
     private $fDBName;
+
     /**
      * @param  $formID
      */
-    public function __construct($formID)
-    {
+    public function __construct($formID) {
         parent::__construct();
         $this->fDBName = $this->getConfigValue('forms.database');
         $this->tableName = DBA::getFQTableName(
@@ -37,11 +36,11 @@ class FormConstructor extends DBWorker
             ' (pk_id int(10) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY (`pk_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ');
 
     }
+
     /**
      * @return DataDescription
      */
-    public function getDataDescription()
-    {
+    public function getDataDescription() {
         $result = new DataDescription();
         $result->load(
             array(
@@ -141,13 +140,13 @@ class FormConstructor extends DBWorker
 
         return $result;
     }
+
     /**
      * @param  $langID
      * @param null $filter
      * @return Data
      */
-    public function getData($langID, $filter = null)
-    {
+    public function getData($langID, $filter = null) {
         $result = new Data();
         if (empty($filter)) {
             $dataArray = array();
@@ -167,23 +166,25 @@ class FormConstructor extends DBWorker
         }
         return $result;
     }
+
     /**
      * @param  $data
      * @return void
      */
-    public function save($data)
-    {
+    public function save($data) {
         $fieldType = $data['table_name']['field_type'];
         $fieldIsNullable = $data['table_name']['field_is_nullable'];
-        $fieldIndex = sizeof($cols = array_keys($this->dbh->getColumnsInfo($this->tableName)));
-        list(,$tblName) = DBA::getFQTableName($this->tableName, true);
-        while(in_array($fieldName = $tblName.'_field_' . $fieldIndex, $cols)){
-            $fieldIndex ++;
+        $fieldIndex = sizeof(
+            $cols = array_keys($this->dbh->getColumnsInfo($this->tableName)));
+        list(, $tblName) = DBA::getFQTableName($this->tableName, true);
+        while (in_array(
+            $fieldName = $tblName . '_field_' . $fieldIndex, $cols)) {
+            $fieldIndex++;
         }
-        if($fieldType == FieldDescription::FIELD_TYPE_MULTI){
-            $fieldName .='_multi';
+        if ($fieldType == FieldDescription::FIELD_TYPE_MULTI) {
+            $fieldName .= '_multi';
         }
-        elseif($fieldType == FieldDescription::FIELD_TYPE_FILE) {
+        elseif ($fieldType == FieldDescription::FIELD_TYPE_FILE) {
             $fieldName .= '_file';
         }
 
@@ -192,92 +193,110 @@ class FormConstructor extends DBWorker
         $query .= ' ' . ((!$fieldIsNullable) ? ' NOT NULL ' : ' NULL ');
         $this->dbh->beginTransaction();
         if ($this->dbh->modifyRequest($query)) {
-            $ltagID = $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $this->deleteFieldLTag($fieldName)));
-            
-            foreach($_POST['share_lang_tags_translation'] as $langID=>$value){
+            $ltagID =
+                    $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $this->deleteFieldLTag($fieldName)));
+
+            foreach ($_POST['share_lang_tags_translation'] as $langID => $value) {
                 $this->dbh->modify(QAL::INSERT, 'share_lang_tags_translation', array('ltag_value_rtf' => $value['field_name'], 'ltag_id' => $ltagID, 'lang_id' => $langID));
 
             }
-            if($fieldType == FieldDescription::FIELD_TYPE_SELECT){
+            if ($fieldType == FieldDescription::FIELD_TYPE_SELECT) {
                 $query = array();
-                $query[] = 'ALTER TABLE '.$this->tableName.' ADD INDEX ( '.$fieldName.' ) ';
+                $query[] = 'ALTER TABLE ' . $this->tableName . ' ADD INDEX ( ' .
+                           $fieldName . ' ) ';
 
 
                 //create foreign key table
                 $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkTableName =
                         DBA::getFQTableName(
-                            $this->tableName . '_' . $fieldName)).'( fk_id int(11) unsigned NOT NULL AUTO_INCREMENT, fk_order_num int(10) UNSIGNED  DEFAULT \'1\', PRIMARY KEY (`fk_id`), KEY `fk_order_num`(`fk_order_num`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
+                            $this->tableName . '_' . $fieldName)) .
+                           '( fk_id int(11) unsigned NOT NULL AUTO_INCREMENT, fk_order_num int(10) UNSIGNED  DEFAULT \'1\', PRIMARY KEY (`fk_id`), KEY `fk_order_num`(`fk_order_num`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
 
                 //add fk info
-                $query[] = 'ALTER TABLE '.$this->tableName.' ADD FOREIGN KEY ( '.$fieldName.' ) REFERENCES '.$fkTableName.' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE ;';
+                $query[] = 'ALTER TABLE ' . $this->tableName .
+                           ' ADD FOREIGN KEY ( ' . $fieldName .
+                           ' ) REFERENCES ' . $fkTableName .
+                           ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE ;';
 
 
                 $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($langTableName =
                         DBA::getFQTableName(
-                            $fkTableName.'_translation')).'( fk_id int(11) unsigned NOT NULL , lang_id int(11) UNSIGNED  NOT NULL, fk_name VARCHAR(255) NOT NULL, PRIMARY KEY (`fk_id`, `lang_id`), KEY `lang_id` (`lang_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
+                            $fkTableName . '_translation')) .
+                           '( fk_id int(11) unsigned NOT NULL , lang_id int(11) UNSIGNED  NOT NULL, fk_name VARCHAR(255) NOT NULL, PRIMARY KEY (`fk_id`, `lang_id`), KEY `lang_id` (`lang_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
                 //add fk info
-                $query[] = 'ALTER TABLE '.$langTableName.' ADD FOREIGN KEY (`lang_id`) REFERENCES '.$this->getConfigValue('database.master.db').'.`share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE, ADD FOREIGN KEY ( fk_id ) REFERENCES '.$fkTableName.' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
-                
-                foreach($query as $request)
+                $query[] = 'ALTER TABLE ' . $langTableName .
+                           ' ADD FOREIGN KEY (`lang_id`) REFERENCES ' .
+                           $this->getConfigValue('database.master.db') .
+                           '.`share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE, ADD FOREIGN KEY ( fk_id ) REFERENCES ' .
+                           $fkTableName .
+                           ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
+
+                foreach ($query as $request)
                     $this->dbh->modifyRequest($request);
 
             }
-            elseif($fieldType == FieldDescription::FIELD_TYPE_MULTI){
+            elseif ($fieldType == FieldDescription::FIELD_TYPE_MULTI) {
 
             }
         }
         $this->dbh->commit();
     }
+
     /**
-     * @throws SystemException  
+     * @throws SystemException
      * @param  $fieldIndex
      * @return void
      */
-    public function delete($fieldName){
+    public function delete($fieldName) {
         $this->dbh->beginTransaction();
         $this->deleteFieldLTag($fieldName);
-        $query = 'ALTER TABLE '.$this->tableName.' DROP '.$fieldName;
+        $query = 'ALTER TABLE ' . $this->tableName . ' DROP ' . $fieldName;
         $this->dbh->modifyRequest($query);
         $this->dbh->commit();
     }
+
     /**
      * @param  $fieldName
      * @return string
      */
-    private function getFieldLTag($fieldName){
-        list(,$tblName) = DBA::getFQTableName($this->tableName, true);
-        return 'FIELD_'.$fieldName;
+    private function getFieldLTag($fieldName) {
+        list(, $tblName) = DBA::getFQTableName($this->tableName, true);
+        return 'FIELD_' . $fieldName;
     }
+
     /**
      * @param  $fieldName
      * @return string
      */
-    private function deleteFieldLTag($fieldName){
+    private function deleteFieldLTag($fieldName) {
         $ltagName = $this->getFieldLTag($fieldName);
         $this->dbh->modifyRequest('DELETE FROM share_lang_tags WHERE ltag_name=%s', $ltagName);
         return $ltagName;
     }
 
-    public function getTableName(){
-        return $this->tableName;    
+    public function getTableName() {
+        return $this->tableName;
     }
-    public function changeOrder($direction, $fieldIndex){
-        $fieldIndex --;
-        $cols = array_keys($colsInfo = $this->dbh->getColumnsInfo($this->tableName));
+
+    public function changeOrder($direction, $fieldIndex) {
+        $fieldIndex--;
+        $cols = array_keys(
+            $colsInfo = $this->dbh->getColumnsInfo($this->tableName));
         $srcField = $cols[$fieldIndex];
-        $destFieldIndex = $fieldIndex +(($direction == Grid::DIR_UP)?-2:1);
-        if(($destFieldIndex <= 0) || ($destFieldIndex==sizeof($cols))){
-    	    return;
+        $destFieldIndex = $fieldIndex + (($direction == Grid::DIR_UP) ? -2 : 1);
+        if (($destFieldIndex <= 0) || ($destFieldIndex == sizeof($cols))) {
+            return;
         }
 
         $destColField = $cols[$destFieldIndex];
-        $query = 'ALTER TABLE '.$this->tableName.' MODIFY '.$srcField.' '.
-         self::getFDAsSQLString(FieldDescription::convertType($colsInfo[$srcField]['type'], $srcField, $colsInfo[$srcField]['length'], $colsInfo[$srcField])).
-        ' AFTER '.$destColField;
+        $query = 'ALTER TABLE ' . $this->tableName . ' MODIFY ' . $srcField .
+                 ' ' .
+                 self::getFDAsSQLString(FieldDescription::convertType($colsInfo[$srcField]['type'], $srcField, $colsInfo[$srcField]['length'], $colsInfo[$srcField])) .
+                 ' AFTER ' . $destColField;
         $this->dbh->modifyRequest($query);
     }
 
-    private static function getFDAsSQLString($fieldType){
+    private static function getFDAsSQLString($fieldType) {
 
         switch ($fieldType) {
             case FieldDescription::FIELD_TYPE_INT:

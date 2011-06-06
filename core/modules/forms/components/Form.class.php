@@ -81,6 +81,8 @@ class Form extends DBDataSet {
         $this->getDataDescription()->addFieldDescription($eFD);
         $this->getData()->load(array(array_merge(array('error_message' => $errorMessage), $data)));
         $this->getDataDescription()->getFieldDescriptionByName('error_message')->removeProperty('title');
+
+        $this->addFormDescription();
     }
 
     protected function prepare() {

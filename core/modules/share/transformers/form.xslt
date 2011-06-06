@@ -191,9 +191,16 @@
     </xsl:template>
     
     <!-- обработка сообщения об отправке данных формы -->
-    <xsl:template match="component[@type='form'][@componentAction='send']">
-        <div class="result_message">
-            <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
-        </div>
+    <xsl:template match="component[@type='form'][@componentAction='send']" mode="custom">
+        <xsl:choose>
+            <xsl:when test="recordset/record/field[@name='error_message']!=''">
+                <xsl:apply-templates select="."/>
+            </xsl:when>
+            <xsl:otherwise>
+                <div class="result_message">
+                    <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
+                </div>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>

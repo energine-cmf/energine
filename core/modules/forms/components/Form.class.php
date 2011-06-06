@@ -313,6 +313,8 @@ class Form extends DBDataSet {
 
         $this->setDataDescription($dataDescription);
         $this->setData($data);
+
+        $this->addFormDescription();
     }
 
     /**
@@ -336,21 +338,7 @@ class Form extends DBDataSet {
             $this->returnEmptyRecordset();
         else {
             parent::main();
-
-            $result = $this->dbh->select('frm_forms_translation',
-                                         array('form_name', 'form_annotation_rtf'),
-                                         array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
-
-            if (is_array($result)) {
-                $this->setTitle($result[0]['form_name']);
-
-                $f = new Field('form_description');
-                $f->setData($result[0]['form_annotation_rtf'], true);
-                $fd = new FieldDescription('form_description');
-                $fd->setType(FieldDescription::FIELD_TYPE_TEXT)->setMode(FieldDescription::FIELD_MODE_READ);
-                $this->getData()->addField($f);
-                $this->getDataDescription()->addFieldDescription($fd);
-            }
+            $this->addFormDescription();
         }
     }
 
@@ -372,6 +360,26 @@ class Form extends DBDataSet {
         $this->setBuilder(new SimpleBuilder());
 
     }
+    /*
+     * Додає опис форми: назву й інформацію про форму.
+     *
+     * @return void
+     * @access private
+     */
+    private function addFormDescription(){
+        $result = $this->dbh->select('frm_forms_translation',
+                                     array('form_name', 'form_annotation_rtf'),
+                                     array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
 
+        if (is_array($result)) {
+            $this->setTitle($result[0]['form_name']);
 
+            $f = new Field('form_description');
+            $f->setData($result[0]['form_annotation_rtf'], true);
+            $fd = new FieldDescription('form_description');
+            $fd->setType(FieldDescription::FIELD_TYPE_TEXT)->setMode(FieldDescription::FIELD_MODE_READ);
+            $this->getData()->addField($f);
+            $this->getDataDescription()->addFieldDescription($fd);
+        }
+    }
 }

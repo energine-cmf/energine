@@ -35,21 +35,23 @@ class Form extends DBDataSet {
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
-        if (!($this->formID = $this->getParam('id'))) {
-            $this->formID = simplifyDBResult(
-                $this->dbh->selectRequest('SELECT form_id FROM frm_forms WHERE form_is_active = 1 ORDER BY RAND() LIMIT 1'),
-                'form_id',
-                true
-            );
+        $filter = array('form_is_active' => 1);
+        if ($formID = $this->getParam('id')) {
+            $filter['form_id'] = $formID;
         }
-
+        $this->formID = simplifyDBResult(
+            $this->dbh->select('frm_forms', 'form_id', $filter, 'RAND()', 1),
+            'form_id',
+            true
+        );
         //If formID is actual number, but we don't have table with name form_$formID, then set formID to false.
         //Otherwiste setTableName.
         if (!$this->formID || !$this->dbh->tableExists($tableName =
                                                                $this->getConfigValue('forms.database') .
                                                                '.' .
                                                                FormConstructor::TABLE_PREFIX .
-                                                               $this->formID))
+                                                               $this->formID)
+        )
             $this->formID = false;
         else
             $this->setTableName($tableName);
@@ -137,12 +139,13 @@ class Form extends DBDataSet {
                     }
                 }
                 $uploader = new FileUploader();
-                foreach($fileData as $fieldName => $fileInfo){
+                foreach ($fileData as $fieldName => $fileInfo) {
                     //Завантажувати лише якщо файл дійсно завантажили
-                    if(!empty($fileInfo['name']) && $fileInfo['size']>0){
+                    if (!empty($fileInfo['name']) && $fileInfo['size'] > 0) {
                         $uploader->setFile($fileInfo);
                         $uploader->upload('uploads/forms');
-                        $data[$this->getTableName()][$fieldName] = $uploader->getFileObjectName();
+                        $data[$this->getTableName()][$fieldName] =
+                                $uploader->getFileObjectName();
                         $uploader->cleanUp();
                     }
                 }
@@ -231,7 +234,8 @@ class Form extends DBDataSet {
                 //Unset pk_id field, because we don't need it in body of message to send
                 unset($data['pk_id']);
                 foreach ($data as $key => $value) {
-                    $data[$key] = array('translation' => $this->translate('FIELD_'.$key),
+                    $data[$key] = array('translation' => $this->translate(
+                        'FIELD_' . $key),
                                         'value' => $value);
                 }
 
@@ -259,7 +263,8 @@ class Form extends DBDataSet {
                             setSubject($subject)->
                             setText($body)->
                             addTo(($recp =
-                            $this->getRecipientEmail()) ? $recp : $this->getConfigValue('mail.manager'))->send();
+                                          $this->getRecipientEmail()) ? $recp
+                                          : $this->getConfigValue('mail.manager'))->send();
                 }
                 catch (Exception $e) {
                 }
@@ -269,7 +274,8 @@ class Form extends DBDataSet {
             $this->prepare();
 
             if ($this->getParam('textBlock') && ($textBlock =
-                    $this->document->componentManager->getBlockByName($this->getParam('textBlock')))) {
+                    $this->document->componentManager->getBlockByName($this->getParam('textBlock')))
+            ) {
                 $textBlock->disable();
             }
 

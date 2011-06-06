@@ -49,6 +49,15 @@
                             <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
+                    <xsl:if test="@pattern">
+                        <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="@message">
+                        <xsl:attribute name="nrgn:message"  xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="@message2">
+                        <xsl:attribute name="nrgn:message2"  xmlns:nrgn="http://energine.org"><xsl:value-of select="@message2"/></xsl:attribute>
+                    </xsl:if>
                 </input>
             </div>
     	</div>

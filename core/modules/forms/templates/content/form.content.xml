@@ -4,7 +4,7 @@
         <container name="formEditorContainer" block="alfa"  layout="content" widget="static" rounded="rounded">
             <component name="form" class="Form" module="forms" >
                 <params>
-                    <param name="id">3</param>
+                    <param name="id">1</param>
                 </params>
             </component>
         </container>

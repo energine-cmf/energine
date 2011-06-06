@@ -15,8 +15,7 @@
  * @subpackage forms
  * @author d.pavka@gmail.com
  */
-class FormResults extends Grid
-{
+class FormResults extends Grid {
     /**
      * Конструктор класса
      *
@@ -25,17 +24,16 @@ class FormResults extends Grid
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, array $params = null)
-    {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         if (!$this->getParam('form_id')) {
             throw new SystemException('ERR_BAD_FORM_ID');
         }
-        $this->setTableName($this->getConfigValue('forms.database') . '.form_' .$this->getParam('form_id'));
+        $this->setTableName($this->getConfigValue('forms.database') . '.form_' .
+                            $this->getParam('form_id'));
     }
 
-    protected function defineParams()
-    {
+    protected function defineParams() {
         return array_merge(
             parent::defineParams(),
             array(
@@ -44,13 +42,16 @@ class FormResults extends Grid
         );
     }
 
-    protected function loadDataDescription(){
+    protected function loadDataDescription() {
         $result = parent::loadDataDescription();
         //Якщо у конфігі вказано обмеження на кількість полів, які мають відображатися у Grid'і (states: main, getRawData), то застосувати його.
         //Інакше відобразити всі поля.
-        if(in_array($this->getState(), array('main', 'getRawData')))
-            if (count($result) > $this->getConfigValue('forms.result_num_fields'))
-                $result = array_splice($result, 0, $this->getConfigValue('forms.result_num_fields'));
+        if (in_array($this->getState(), array('main', 'getRawData'))) {
+            $numFields = ($this->getConfigValue('forms.result_num_fields'))
+                    ? $this->getConfigValue('forms.result_num_fields') : 6;
+            if (count($result) > $numFields)
+                $result = array_splice($result, 0, $numFields);
+        }
 
         return $result;
     }

@@ -16,6 +16,11 @@
  * @author d.pavka@gmail.com
  */
 class FormResults extends Grid {
+    /*
+     * @var
+     */
+    private $formID;
+
     /**
      * Конструктор класса
      *
@@ -26,11 +31,11 @@ class FormResults extends Grid {
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
-        if (!$this->getParam('form_id')) {
-            throw new SystemException('ERR_BAD_FORM_ID');
-        }
-        $this->setTableName($this->getConfigValue('forms.database') . '.form_' .
-                            $this->getParam('form_id'));
+        //Якщо ідентифікатор форми вказаний невірно або не вказаний, то не вивалювати помилку, а красиво показати.
+        if (!$this->formID = $this->getParam('form_id'))
+            $this->formID = false;
+        else
+            $this->setTableName($this->getConfigValue('forms.database') . '.form_' .$this->formID);
     }
 
     protected function defineParams() {
@@ -56,4 +61,32 @@ class FormResults extends Grid {
         return $result;
     }
 
+    protected function main(){
+        if(!$this->formID)
+            $this->returnEmptyRecordset();
+        else
+            parent::main();
+    }
+
+    private function returnEmptyRecordset(){
+        //Тип форми змінюється для того, щоб xslt опрацював помилку не в Grid'і.
+        $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
+        $this->removeProperty('exttype');
+
+        $f = new Field('error_msg');
+        $fd = new FieldDescription('error_msg');
+        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+        $fd->setMode(FieldDescription::FIELD_MODE_READ);
+        $f->setData('ERROR_NO_FORM', true);
+
+        $d = new Data();
+        $dd = new DataDescription();
+        $d->addField($f);
+        $dd->addFieldDescription($fd);
+
+        $this->setData($d);
+        $this->setDataDescription($dd);
+
+        $this->setBuilder(new SimpleBuilder());
+    }
 }

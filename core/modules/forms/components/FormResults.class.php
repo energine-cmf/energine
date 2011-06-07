@@ -77,7 +77,7 @@ class FormResults extends Grid {
         $fd = new FieldDescription('error_msg');
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
         $fd->setMode(FieldDescription::FIELD_MODE_READ);
-        $f->setData('ERROR_NO_FORM', true);
+        $f->setData($this->translate('ERROR_NO_FORM'), true);
 
         $d = new Data();
         $dd = new DataDescription();

@@ -17,7 +17,7 @@
  */
 class FormResults extends Grid {
     /*
-     * @var
+     * @var formID
      */
     private $formID;
 

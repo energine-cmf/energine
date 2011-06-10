@@ -1,7 +1,6 @@
 ScriptLoader.load('Form', 'ModalBox');
 var DivForm = new Class({
 	Extends: Form,
-    Implements: [Form.Label],
 	initialize: function(element){
 		this.parent(element);
         this.prepareLabel($('site_id').get('value') + '/list/');
@@ -53,3 +52,4 @@ var DivForm = new Class({
         );
     }
 });
+DivForm.implement(Form.Label);

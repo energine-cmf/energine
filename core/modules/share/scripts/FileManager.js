@@ -2,7 +2,6 @@ ScriptLoader.load('TabPane', 'Toolbar', 'ModalBox', 'DirView', 'PageList');
 var FILE_COOKIE_NAME = 'lastPath';
 
 var FileManager = new Class({
-	Implements: Energine.request,
     currentPath: false,
     initialized: false,
 
@@ -181,3 +180,4 @@ var FileManager = new Class({
         });
     }
 });
+FileManager.implement(Energine.request);

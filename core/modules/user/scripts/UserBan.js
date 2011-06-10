@@ -2,7 +2,6 @@ ScriptLoader.load('Form');
 
 var UserBan = new Class({
     Extends: Form,
-    Implements: Energine.request,
     /*initialize: function(element){
         this.parent(element);
         this.form.getElementById('save').addEvent('click', this.save.bind(this));
@@ -15,3 +14,5 @@ var UserBan = new Class({
                 'saveban', this.form.toQueryString(), this.processServerResponse.bind(this));
     }
 });
+
+UserBan.implement(Energine.request);

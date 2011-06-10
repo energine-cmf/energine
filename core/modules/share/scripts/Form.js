@@ -1,7 +1,6 @@
 ScriptLoader.load('TabPane', 'Toolbar', 'Validator', 'RichEditor', 'ModalBox', 'Overlay');
 
 var Form = new Class({
-    Implements : [Energine.request],
     initialize : function(element) {
         Asset.css('form.css');
         this.componentElement = $(element);
@@ -133,6 +132,7 @@ var Form = new Class({
         });
     }
 });
+Form.implement(Energine.request);
 Form.Uploader = new Class({
     initialize: function(uploaderElement, form, path) {
         if (!(this.element = $(uploaderElement))) return;
@@ -689,3 +689,4 @@ Form.RichEditor = new Class({
         this.toolbar.enableControls();
     }
 });
+

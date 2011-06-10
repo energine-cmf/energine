@@ -1,5 +1,4 @@
 ScriptLoader.load('XML', 'Overlay');
-
 /**
  * Редактор лейаута
  */
@@ -145,6 +144,7 @@ LayoutManager.Column = new Class({
         return this.widgets.get(widgetName) || {};
     }
 });
+
 LayoutManager.DummyWidget = new Class({
     initialize: function(column) {
         this.column = column;
@@ -204,11 +204,11 @@ LayoutManager.DummyWidget = new Class({
         });
     }
 });
+
 /**
  * Виджет
  */
 LayoutManager.Widget = new Class({
-    Implements:Energine.request,
     /**
      *
      * @param xmlDescr DOMNode
@@ -397,6 +397,9 @@ LayoutManager.Widget = new Class({
                 (y <= (pos.y + size.y / 4))) ? 'before' : 'after';
     }
 });
+
+LayoutManager.Widget.implement(Energine.request);
+
 LayoutManager.Widget.DragBehavior = new Class({
     initialize: function(widget) {
         this.widget = widget;

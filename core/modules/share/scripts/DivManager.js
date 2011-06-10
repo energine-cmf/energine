@@ -1,8 +1,6 @@
 ScriptLoader.load('TabPane', 'Toolbar', 'ModalBox', 'TreeView');
 
 var DivManager = new Class({
-    Implements: Energine.request,
-
     initialize: function(element) {
         Asset.css('div.css');
         this.element = $(element);
@@ -283,3 +281,5 @@ var DivManager = new Class({
                 );
     }
 });
+
+DivManager.implement(Energine.request);

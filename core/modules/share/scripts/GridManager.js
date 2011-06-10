@@ -348,7 +348,6 @@ var Grid = new Class({
 });
 
 var GridManager = new Class({
-    Implements:Energine.request,
     initialize: function(element) {
         this.element = element;
 
@@ -702,3 +701,4 @@ GridManager.Filter.QueryControls = new Class({
         this.inputs.removeClass('small');
     }
 });
+GridManager.implement(Energine.request);

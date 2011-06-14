@@ -1,0 +1,22 @@
+/* ----- common ----- */
+html, body {
+    height: 100%;            
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: white;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
+}
+.e-singlemode-layout {
+    overflow: hidden;
+}
+/* ----- /common ----- */
+
+/* ----- grid form ----- */
+.e-grid-form {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+/* ----- /grid form ----- */

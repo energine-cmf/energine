@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Базовая конфигурация для сетки  -->
+<!-- Включает основные методы и панели инструментов -->
+<configuration>
+    
+        <state name="main">
+            <fields>
+                <field name="lang_id"/>
+                <field name="lang_name"/>
+                <field name="lang_default"/>
+            </fields>
+            <javascript>
+                <behavior name="GridManager"/>
+            </javascript>
+            <toolbar>
+                <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+                <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+                <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+                <control type="button" id="up" title="BTN_MOVE_UP" onclick="up"/>
+                <control type="button" id="down" title="BTN_MOVE_DOWN" onclick="down"/>
+                <control id="sep1" type="separator"></control>
+                <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+            </toolbar>
+        </state>
+        <state name="getRawData">
+            <uri_patterns>
+                <pattern>/get-data/</pattern>
+                <pattern>/get-data/page-[pageNumber]/</pattern>
+                <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+                <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="add">
+            <uri_patterns>
+                <pattern>/add/</pattern>
+            </uri_patterns>
+            <fields>
+                <field name="lang_id"/>
+                <field name="lang_abbr"/>
+                <field name="lang_name"/>
+                <field name="lang_default"/>
+            </fields>
+            <javascript>
+                <behavior name="Form"/>
+            </javascript>
+            <toolbar>
+                <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+                <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+            </toolbar>
+        </state>
+        <state name="edit">
+            <uri_patterns>
+                <pattern>/[int]/edit/</pattern>
+            </uri_patterns>
+            <fields>
+                <field name="lang_id"/>
+                <field name="lang_abbr"/>
+                <field name="lang_name"/>
+                <field name="lang_default"/>
+            </fields>
+            <javascript>
+                <behavior name="Form"/>
+            </javascript>
+            <toolbar>
+                <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+                <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+            </toolbar>
+        </state>
+        <state name="save">
+            <uri_patterns>
+                <pattern>/save/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="delete">
+            <uri_patterns>
+                <pattern>/[int]/delete/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="up" rights="3">
+            <uri_patterns>
+                <pattern>/[int]/up/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="down" rights="3">
+            <uri_patterns>
+                <pattern>/[int]/down/</pattern>
+            </uri_patterns>
+        </state>
+
+</configuration>

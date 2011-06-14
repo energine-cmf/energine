@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <uri_patterns>
+            <pattern>/</pattern>
+        </uri_patterns>
+        <toolbar>
+            <control id="send" title="BTN_SEND" type="submit" onclick="SEND"/>
+        </toolbar>
+        <javascript>
+            <behavior name="FormBehavior"/>
+        </javascript>
+    </state>
+    <state name="send">
+        <uri_patterns>
+            <pattern>/send/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="save">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="success">
+        <uri_patterns>
+            <pattern>/success/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+        <state name="ban" rights="3">
+            <uri_patterns>
+                <pattern>/ban/[any]/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="banip" rights="3">
+            <uri_patterns>
+                <pattern>/banip/[any]/</pattern>
+            </uri_patterns>
+        </state>
+		<state name="main">
+			<javascript>
+				<object name="CommentsForm" />
+			</javascript>
+			<fields>
+               <field name="target_id"/>
+	           <field name="comment_name" type="text" pattern="/^.+$/m" message="MSG_FIELD_IS_NOT_NULL"/>
+            </fields>
+            <toolbar>
+            	<control id="saveComment" title="BTN_SEND" type="submit"  />
+            </toolbar>
+		</state>
+		<state name="saveComment">
+			<uri_patterns>
+				<pattern>/save-comment/</pattern>
+			</uri_patterns>
+		</state>
+        <state name="deleteComment">
+			<uri_patterns>
+				<pattern>/delete-comment/</pattern>
+			</uri_patterns>
+		</state>
+		<!--
+		<state name="view">
+			<uri_patterns>
+				<pattern>/[voteID]/</pattern>
+			</uri_patterns>
+            <fields>
+               <field name="vote_id"/>
+	           <field name="vote_name"/>
+               <field name="vote_annotation_rtf"/>
+            </fields>
+            <translations>
+                <translation const="TXT_BACK_TO_LIST"/>
+            </translations>            	
+		</state>
+		-->
+</configuration>

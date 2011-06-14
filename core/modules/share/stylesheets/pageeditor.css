@@ -1,0 +1,7 @@
+.nrgnEditor {
+    outline: 1px dashed #F00;
+}
+
+.nrgnEditor.activeEditor {
+    outline-color: #0D0;
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="commentsEdit" module="comments" class="CommentsEditor">
+       <params>
+           <param name="comment_tables">stb_news_comment|stb_vikna_news_comment</param>
+       </params>
+    </component>
+</content>

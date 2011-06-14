@@ -1,0 +1,37 @@
+@charset "utf-8";
+/* CSS Document */
+/* 
+Template
+Name: Special stylesheet for IE(all versions)
+Description: Таблица стилей для корректировки особенностей отображения IE версии 6 и выше.
+Created: May 2009
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
+*/
+
+hr {
+	margin: 0;
+}
+
+/* ----- clearfix ----- */
+.clearfix {
+	*zoom: 1; /* IE5.5+ */
+	_height: 1%; /* IE5 */
+}	
+/* ----- /clearfix ----- */
+
+body {
+	_text-align: center; /* KLUDGE: выравнивание base по центру в IE младше 6 */
+}
+
+.base {
+    _text-align: left; /* KLUDGE: сброс выравнивания base по центру в IE младше 6 */
+}
+
+/* ----- forms ----- */
+.field {
+	_height: 1%; /* KLUDGE: добавляет свойство hasLayout */
+}
+.level_form .field .name {
+	_margin-right: -140px; /* KLUDGE: устраняет 3-пиксельное смещение в IE5-6  */ 
+}
+/* ----- /forms ----- */

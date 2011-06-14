@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+    <state name="main">
+        <javascript>
+            <behavior name="FormEditor"/>
+        </javascript>
+        <toolbar>
+            <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+            <control id="editProps" title="BTN_EDIT_VALUES" type="button" onclick="editProps"/>
+            <control id="sep01" type="separator"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+            <control id="sep03" type="separator"/>
+            <control id="up" title="BTN_UP" type="button" onclick="up"/>
+            <control id="down" title="BTN_DOWN" type="button" onclick="down"/>
+            <control id="sep02" type="separator"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/add/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
+                     type="select"
+                    >
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="add">BTN_ADD</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
+            <control id="close" title="BTN_CANCEL" type="button"
+                     onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="fileLibrary" rights="3">
+        <uri_patterns>
+            <pattern>/file-library/</pattern>
+            <pattern>/file-library/[any]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="save" rights="3">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete" rights="2">
+        <uri_patterns>
+            <pattern>/[int]/delete/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getRawData" rights="2">
+        <uri_patterns>
+            <pattern>/get-data/</pattern>
+            <pattern>/get-data/page-[pageNumber]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="up" rights="3">
+        <uri_patterns>
+            <pattern>/[int]/up/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="down" rights="3">
+        <uri_patterns>
+            <pattern>/[int]/down/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="editSelector" rights="3">
+        <uri_patterns>
+            <pattern>/[int]/values/[any]/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

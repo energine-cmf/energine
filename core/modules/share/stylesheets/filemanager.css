@@ -1,0 +1,76 @@
+/* ----- filemanager ----- */
+.e-filemanager {
+    float: left;
+    width: 100%;
+    *float: none;
+    *width: auto;
+    *zoom: 1;
+}
+.e-filemanager * {
+    margin: 0;
+    padding: 0;
+}
+.e-filemanager div {
+	width: 120px;
+	height: 120px;
+	border: 1px solid silver;
+	margin: 10px;
+	float: left;
+	text-align: center;
+}
+.e-filemanager .highlighted {
+	background: #ffa;
+}
+.e-filemanager .selected {
+	background: #316ac5;
+	color: white;
+}
+.e-filemanager div div {
+	position: static;
+	float: none;
+	border: none;
+	margin: auto;
+	width: auto;
+	font-family: Tahoma, sans-serif;
+	font-size: 9px;
+}
+.e-filemanager .undefined {
+	width: 60px;
+	height: 60px;
+	background: url(../images/icons/icon_undefined.gif) no-repeat center center;
+}
+.e-filemanager .zip {
+	width: 60px;
+	height: 60px;
+	background: url(../images/icons/icon_zip.gif) no-repeat center center;
+}
+.e-filemanager .folder {
+	width: 60px;
+	height: 60px;
+	background: url(../images/icons/icon_folder.gif) no-repeat center center;
+}
+.e-filemanager .image {
+	width: 60px;
+	height: 60px;
+	background: url(../images/icons/icon_image.gif) no-repeat center center;
+}
+.e-filemanager .pdf {
+	width: 60px;
+	height: 60px;
+	background: url(../images/icons/icon_pdf.gif) no-repeat center center;
+}
+.e-filemanager .name {
+	height: 30px;
+	overflow: hidden;
+	margin-top: 2px;
+	font-size: 10px;
+	width: 80%;
+}
+.e-filemanager input.name {
+	height: auto;
+	border: 1px solid red;
+	margin-top: 2px;
+	font-size: 10px;
+	width: 80%;
+}
+/* ----- /filemanager ----- */

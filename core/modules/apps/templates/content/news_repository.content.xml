@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content html_class="colset">
+    <container name="center" column="column">
+        <container name="newsRepoContainer" block="alfa" widget="static">
+            <component name="newsRepo" module="apps" class="NewsRepository"/>
+        </container>
+    </container>
+</content>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+        <state name="main">
+            <javascript>
+                <behavior name="FormsManager"/>
+            </javascript>
+            <fields>
+                <field name="form_id"/>
+                <field name="form_is_active"/>
+                <field name="form_creation_date" outputFormat="%E"/>
+                <field name="form_name"/>
+            </fields>
+            <toolbar>
+                <control id="add" title="BTN_CREATE" type="button" onclick="add"/>
+                <control id="edit" title="BTN_EDIT_PROPERTIES" type="button" onclick="edit"/>
+                <control id="edit_form" title="BTN_EDIT_FORM" type="button" onclick="editForm"/>
+                <control id="view_form" title="BTN_VIEW_FORM" type="button" onclick="viewForm"/>
+                <control id="show_results" title="BTN_SHOW_RESULTS" type="button" onclick="showResults"/>
+                <control id="sep1" type="separator"/>
+                <control id="delete" title="BTN_DELETE" type="button"
+                         onclick="del"/>
+                <!--
+                        <control type="button" id="up" title="BTN_MOVE_UP" onclick="up" />
+                        <control type="button" id="down" title="BTN_MOVE_DOWN"
+                        onclick="down" /> <control id="print" title="BTN_PRINT"
+                        type="button" onclick="print"/>
+                    -->
+            </toolbar>
+        </state>
+        <state name="add">
+            <uri_patterns>
+                <pattern>/add/</pattern>
+            </uri_patterns>
+            <javascript>
+                <behavior name="Form"/>
+            </javascript>
+            <toolbar>
+                <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+                <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
+                         type="select"
+                        >
+                    <options>
+                        <option id="reload">BTN_CLOSE</option>
+                        <option id="add">BTN_ADD</option>
+                    </options>
+                </control>
+                <control id="sep1" type="separator"/>
+                <control id="close" title="BTN_CANCEL" type="button"
+                         onclick="close"/>
+            </toolbar>
+        </state>
+        <state name="fileLibrary" rights="3">
+            <uri_patterns>
+                <pattern>/file-library/</pattern>
+                <pattern>/file-library/[any]/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="edit">
+            <uri_patterns>
+                <pattern>/[int]/edit/</pattern>
+            </uri_patterns>
+            <javascript>
+                <behavior name="Form"/>
+            </javascript>
+            <toolbar>
+                <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+                <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
+                    <options>
+                        <option id="reload">BTN_CLOSE</option>
+                        <option id="editNext">BTN_EDIT_NEXT</option>
+                        <option id="editPrev">BTN_EDIT_PREV</option>
+                    </options>
+                </control>
+                <control id="sep1" type="separator" />
+                <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+            </toolbar>
+        </state>
+        <state name="viewForm">
+            <uri_patterns>
+                <pattern>/[int]/viewForm/</pattern>
+            </uri_patterns>
+            <javascript>
+                <behavior name="Form"/>
+            </javascript>
+            <toolbar>
+                <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+            </toolbar>
+        </state>
+        <state name="save" rights="3">
+            <uri_patterns>
+                <pattern>/save/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="upload" rights="2">
+            <uri_patterns>
+                <pattern>/upload/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="delete" rights="2">
+            <uri_patterns>
+                <pattern>/[int]/delete/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="getRawData" rights="2">
+            <uri_patterns>
+                <pattern>/get-data/</pattern>
+                <pattern>/get-data/page-[pageNumber]/</pattern>
+                <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+                <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="imageManager" rights="3">
+            <uri_patterns>
+                <pattern>/imagemanager/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="printData" rights="3">
+            <uri_patterns>
+                <pattern>/print/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="cleanup" rights="3">
+            <uri_patterns>
+                <pattern>/cleanup/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="editForm">
+            <uri_patterns>
+                <pattern>/[int]/edit-form/[any]/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="showResult">
+            <uri_patterns>
+                <pattern>/[int]/results/[any]/</pattern>
+            </uri_patterns>
+        </state>
+</configuration>

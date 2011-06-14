@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+		<state name="main">
+			<javascript>
+				<behavior name="WidgetGridManager" />
+			</javascript>
+            <fields>
+				<field name="widget_id"/>
+				<field name="widget_name"/>
+				<field name="widget_xml" type="hidden"/>
+				<field name="widget_icon_img"/>
+			</fields>
+			<toolbar>
+                <control id="open" title="BTN_INSERT_WIDGET" type="button" onclick="insert" />
+                <control id="sep01" type="separator" />
+				<control id="add" title="BTN_ADD" type="button" onclick="add" />
+				<control id="edit" title="BTN_EDIT" type="button" onclick="edit" />
+				<control id="delete" title="BTN_DELETE" type="button" onclick="del" />
+                <control id="sep02" type="separator" />
+                <control id="close" title="BTN_CLOSE" type="button" onclick="close" />
+			</toolbar>
+		</state>
+        <state name="add">
+            <uri_patterns>
+                <pattern>/add/</pattern>
+            </uri_patterns>
+            <javascript>
+                <behavior name="Form" />
+            </javascript>
+            <toolbar>
+                <control id="save" title="BTN_SAVE" type="button" onclick="save" />
+                <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
+                    <options>
+                        <option id="reload">BTN_CLOSE</option>
+                        <option id="add">BTN_ADD</option>
+                    </options>
+                </control>
+                <control id="sep1" type="separator" />
+                <control id="close" title="BTN_CANCEL" type="button" onclick="close" />
+            </toolbar>
+        </state>
+		<state name="edit">
+			<uri_patterns>
+				<pattern>/[int]/edit/</pattern>
+			</uri_patterns>
+			<javascript>
+				<behavior name="Form" />
+			</javascript>
+			<toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save" />
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close" />
+			</toolbar>
+		</state>
+		<state name="save" rights="3">
+			<uri_patterns>
+				<pattern>/save/</pattern>
+			</uri_patterns>
+		</state>
+		<state name="delete" rights="2">
+			<uri_patterns>
+				<pattern>/[int]/delete/</pattern>
+			</uri_patterns>
+		</state>
+		<state name="getRawData" rights="2">
+			<uri_patterns>
+				<pattern>/get-data/</pattern>
+				<pattern>/get-data/page-[pageNumber]/</pattern>
+				<pattern>/get-data/[sortField]-[sortDir]/</pattern>
+				<pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+			</uri_patterns>
+		</state>
+        <state name="imageManager" rights="3">
+            <uri_patterns>
+                <pattern>/imagemanager/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="fileLibrary" rights="3">
+            <uri_patterns>
+                <pattern>/file-library/</pattern>
+                <pattern>/file-library/[any]/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="upload"  rights="2">
+		     <uri_patterns>
+		         <pattern>/upload/</pattern>
+		     </uri_patterns>
+		</state>
+        <state name="buildParamsForm" rights="3">
+            <uri_patterns>
+                <pattern>/edit-params/[componentName]/</pattern>
+            </uri_patterns>
+            <javascript>
+				<behavior name="ComponentParamsForm"/>
+			</javascript>
+            <toolbar>
+				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+			</toolbar>
+        </state>
+        <state name="buildWidget" rights="3">
+            <uri_patterns>
+                <pattern>/build-widget/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="addWidget" rights="3">
+            <uri_patterns>
+                <pattern>/add-widget/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="deleteWidget" rights="3">
+            <uri_patterns>
+                <pattern>/delete-widget/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="saveContent" rights="3">
+            <uri_patterns>
+                <pattern>/save-content/</pattern>
+            </uri_patterns>
+        </state>
+</configuration>

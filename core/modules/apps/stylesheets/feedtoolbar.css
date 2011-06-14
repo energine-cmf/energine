@@ -1,0 +1,10 @@
+.record_highlight{
+	background-color:#FF8 !important;
+}
+.record_select{
+	background-color: green !important;
+}
+.active_component{
+	outline: 1px dashed #0D0;
+	cursor:default;
+}

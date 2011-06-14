@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+        <state name="create">
+        	<uri_patterns>
+                 <pattern>/post/create/</pattern>
+            </uri_patterns>
+            <javascript>
+            	<object name="BlogForm" />
+            </javascript>
+            <fields>
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>
+            </fields>
+            <toolbar>
+            	<control id="savePost" title="BTN_SAVE" type="submit"  />
+            </toolbar>
+        </state>
+        <state name="edit">
+        	<uri_patterns>
+                 <pattern>/post/[postID]/edit/</pattern>
+            </uri_patterns>
+            <javascript>
+                <object name="BlogForm" />
+            </javascript>
+            <fields>
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>
+                <field name="blog_id"/>
+            </fields>
+            <toolbar>
+            	<control id="savePost" title="BTN_SAVE" type="submit"  />
+            </toolbar>
+        </state>
+        <state name="save">
+        	<uri_patterns>
+                 <pattern>/post/[postID]/save/</pattern>
+                 <pattern>/post/save/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="view">
+             <uri_patterns>
+                 <pattern>/post/[postID]/</pattern>
+             </uri_patterns>
+            <fields>
+                <field name="post_id"/>
+                <field name="blog_id"/>
+                <field name="post_created"/>
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>
+            </fields>
+             <translations>
+                <translation const="TXT_BACK_TO_LIST"/>
+            </translations>
+        </state>
+        <state name="viewBlog">
+            <uri_patterns>
+            	<pattern>/blog/[blogID]/</pattern>
+                <pattern>/blog/[blogID]/page-[pageNumber]/</pattern>
+
+                <pattern>/blog/[blogID]/[year]/</pattern>
+                <pattern>/blog/[blogID]/[year]/page-[pageNumber]/</pattern>
+                <pattern>/blog/[blogID]/[year]/[month]/</pattern>
+                <pattern>/blog/[blogID]/[year]/[month]/page-[pageNumber]/</pattern>
+                <pattern>/blog/[blogID]/[year]/[month]/[day]/</pattern>
+                <pattern>/blog/[blogID]/[year]/[month]/[day]/page-[pageNumber]/</pattern>
+             </uri_patterns>
+             <fields>
+                <field name="post_id"/>
+                <field name="blog_id"/>
+                <field name="post_created" outputFormat="%d.%m.%Y %H:%M"/>
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>
+            </fields>
+            <toolbar>
+                <control id="view" title="TXT_READ_MORE" type="link"/>
+            </toolbar>
+        </state>
+        
+        <state name="main">
+            <uri_patterns>
+                <pattern>/page-[pageNumber]/</pattern>
+                <pattern>/</pattern>
+                <pattern>/[year]/</pattern>
+                <pattern>/[year]/page-[pageNumber]/</pattern>
+                <pattern>/[year]/[month]/</pattern>
+                <pattern>/[year]/[month]/page-[pageNumber]/</pattern>
+                <pattern>/[year]/[month]/[day]/</pattern>
+                <pattern>/[year]/[month]/[day]/page-[pageNumber]/</pattern> 
+             </uri_patterns>
+             <fields>
+                <field name="post_id"/>
+                <field name="blog_id"/>
+                <field name="post_created" outputFormat="%d.%m.%Y %H:%M"/>                
+                <field name="post_name"/>
+                <field name="post_text_rtf"/>                                                
+            </fields>             
+            <toolbar>
+                <control id="view" title="TXT_READ_MORE" type="link"/>
+            </toolbar>
+        </state>
+
+
+
+
+
+
+
+</configuration>

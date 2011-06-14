@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content html_class="colset">
+    <container name="center" column="column">
+        <container name="feedbackListContainer" block="alfa" widget="static">
+            <component name="feedbackList" module="apps" class="FeedbackList"/>
+        </container>
+    </container>
+</content>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="fileRepo" module="share" class="FileLibrary">
+       <params>
+           <param name="rights">3</param>
+           <param name="config">core/modules/stb/config/AltFileLibrary.component.xml</param>
+       </params>        
+    </component>
+</content>

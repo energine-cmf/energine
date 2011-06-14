@@ -1,1 +1,0 @@
-ScriptLoader.load("Form");var UserBan=new Class({Extends:Form,Implements:Energine.request,save:function(){if(!this.validator.validate()){return false}this.request(this.singlePath+"saveban",this.form.toQueryString(),this.processServerResponse.bind(this))}});

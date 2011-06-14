@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<content>
-   	<component name="discountsEditor" module="shop" class="DiscountsEditor" />
-	<component name="discountsEditorTextBlock" module="share" class="TextBlock"/>
-</content>

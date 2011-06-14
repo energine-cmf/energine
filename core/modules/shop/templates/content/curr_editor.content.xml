@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<content>
-    <component name="currSwitcher" module="shop" class="CurrencySwitcher"></component>    
-    <component name="currEditor" module="shop" class="CurrencyEditor"></component>
-	<component name="currEditorTextBlock" module="share" class="TextBlock"/>
-</content>

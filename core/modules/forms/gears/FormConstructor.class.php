@@ -82,6 +82,14 @@ class FormConstructor extends DBWorker {
                      'index' => true,
                      'tableName' => 'table_name'
                  ),
+                'field_type_name' => array(
+                     'nullable' => false,
+                     'length' => 255,
+                     'default' => '',
+                     'key' => false,
+                     'type' => FieldDescription::FIELD_TYPE_HIDDEN,
+                     'index' => true
+                 ),
                  'field_is_nullable' => array(
                      'nullable' => false,
                      'length' => 1,

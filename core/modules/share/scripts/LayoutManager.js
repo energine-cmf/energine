@@ -413,9 +413,16 @@ LayoutManager.Widget.DragBehavior = new Class({
             handle: this.widget.toolbar.getElement(),
             onBeforeStart: function() {
                 var mFrame = LayoutManager.mFrame;
-
                 this.position = this.widget.container.getPosition(mFrame);
 
+                //Непонятного происхождения костыль
+                //для 1.3
+                /**
+                 * @todo проверить при следующих обновлениях библиотеки
+                 */
+                this.position.y += mFrame.getScrollTop();
+                //end of kostyly
+                
                 this.widget.container.setStyles({
                     width:this.size.x + 'px',
                     height:this.size.y + 'px',
@@ -425,6 +432,7 @@ LayoutManager.Widget.DragBehavior = new Class({
                 this.strut.replaces(this.widget.container);
                 this.widget.container.setPosition(this.position);
                 this.widget.container.inject(mFrame);
+
             }.bind(this),
             onComplete: function() {
                 var w;

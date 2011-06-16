@@ -136,7 +136,6 @@
                 <xsl:apply-templates select="$COMPONENTS[@class='LoginForm']"/>
             </div>
             <div id="content">
-                <h1><xsl:value-of select="$DOC_PROPS[@name='title']"/></h1>
                 <xsl:apply-templates select="content" />
             </div>
 

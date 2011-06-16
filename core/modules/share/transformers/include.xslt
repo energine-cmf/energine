@@ -6,6 +6,7 @@
     
     <xsl:import href="base.xslt"/>
     <xsl:include href="document.xslt"/>
+    <xsl:include href="container.xslt"/>
     <xsl:include href="list.xslt"/>
     <xsl:include href="fields.xslt"/>
     <xsl:include href="form.xslt"/>

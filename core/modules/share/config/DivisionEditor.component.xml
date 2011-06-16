@@ -6,6 +6,11 @@
                 <pattern>/translation/[any]/</pattern>
             </uri_patterns>
         </state>
+        <state name="showWidgetEditor" rights="3">
+            <uri_patterns>
+                <pattern>/widgets/[any]/</pattern>
+            </uri_patterns>
+        </state>
         <state name="fileLibrary" rights="3">
             <uri_patterns>
                 <pattern>/file-library/</pattern>

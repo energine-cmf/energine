@@ -134,6 +134,11 @@ class FieldDescription extends DBWorker implements Iterator{
      * Скрытое поле
      */
     const FIELD_TYPE_HIDDEN = 'hidden';
+    /**
+     * Additional info field
+     */
+    const FIELD_TYPE_INFO = 'info';
+
 
     /**
      * Пользовательский тип поля (может содержать любые данные)
@@ -741,8 +746,7 @@ class FieldDescription extends DBWorker implements Iterator{
                 }
                 elseif (strpos($name, '_video')) {
                     $result = self::FIELD_TYPE_VIDEO;
-                }
-                else {
+                } else {
                     $result = self::FIELD_TYPE_STRING;
                 }
                 break;
@@ -751,7 +755,11 @@ class FieldDescription extends DBWorker implements Iterator{
                 break;
             case DBA::COLTYPE_INTEGER:
                 if ($length == 1) {
-                    $result = (strpos($name, '_multi'))?self::FIELD_TYPE_MULTI:self::FIELD_TYPE_BOOL;
+                    if(strpos($name, '_info')){
+                        $result = self::FIELD_TYPE_INFO;
+                    } else {
+                        $result = (strpos($name, '_multi'))?self::FIELD_TYPE_MULTI:self::FIELD_TYPE_BOOL;
+                    }
                 }
                 // обрабатываем внешний ключ
                 elseif (isset($props['key']) && is_array($props['key'])) {

@@ -141,6 +141,10 @@ class FormConstructor extends DBWorker {
                      'key' => FieldDescription::FIELD_TYPE_FILE,
                      'value' => $this->translate('FIELD_TYPE_FILE')
                  ),
+                array(
+                     'key' => FieldDescription::FIELD_TYPE_INFO,
+                     'value' => $this->translate('FIELD_TYPE_INFO')
+                 ),
             ),
             'key',
             'value'
@@ -195,10 +199,17 @@ class FormConstructor extends DBWorker {
         elseif ($fieldType == FieldDescription::FIELD_TYPE_FILE) {
             $fieldName .= '_file';
         }
+        elseif ($fieldType == FieldDescription::FIELD_TYPE_INFO) {
+            $fieldName .= '_info';
+        }
 
         $query = 'ALTER TABLE ' . $this->tableName . ' ADD ' . $fieldName . ' ';
         $query .= self::getFDAsSQLString($fieldType);
-        $query .= ' ' . ((!$fieldIsNullable) ? ' NOT NULL ' : ' NULL ');
+        if($fieldType == FieldDescription::FIELD_TYPE_INFO) {
+            $query .= ' NULL ';
+        } else {
+            $query .= ' ' . ((!$fieldIsNullable) ? ' NOT NULL ' : ' NULL ');
+        }
         $this->dbh->beginTransaction();
         if ($this->dbh->modifyRequest($query)) {
             $ltagID =
@@ -323,6 +334,9 @@ class FormConstructor extends DBWorker {
                 break;
             case FieldDescription::FIELD_TYPE_DATETIME:
                 $result = 'DATETIME';
+                break;
+            case FieldDescription::FIELD_TYPE_INFO:
+                $result = 'TINYINT(1)';
                 break;
             case FieldDescription::FIELD_TYPE_STRING:
             case FieldDescription::FIELD_TYPE_FILE:

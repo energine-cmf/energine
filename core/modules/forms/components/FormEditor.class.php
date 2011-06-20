@@ -60,7 +60,65 @@ class FormEditor extends DataSet
 
     protected function createDataDescription()
     {
-        return $this->constructor->getDataDescription();
+        //We work with other fields when we edit field - so create other DataDescription.
+        if(in_array($this->getState(), array('edit'))){
+            $dd = new DataDescription();
+            $dd->load(array(
+                 'ltag_id' => array(
+                     'nullable' => false,
+                     'length' => 10,
+                     'default' => '',
+                     'key' => true,
+                     'type' => FieldDescription::FIELD_TYPE_INT,
+                     'index' => 'PRI',
+                     'tableName' => 'share_lang_tags',
+                     'languageID' => false,
+                 ),
+                 'lang_id' => array(
+                     'nullable' => false,
+                     'length' => 10,
+                     'default' => '',
+                     'key' => false,
+                     'type' => FieldDescription::FIELD_TYPE_INT,
+                     'index' => 'PRI',
+                     'tableName' => 'share_lang_tags_translation',
+                     'languageID' => true,
+                     'isMultilanguage' => true
+                 ),
+                'field_type' => array(
+                     'nullable' => false,
+                     'length' => 255,
+                     'default' => '',
+                     'key' => false,
+                     'type' => FieldDescription::FIELD_TYPE_STRING,
+                     'mode' => FieldDescription::FIELD_MODE_READ,
+                     'index' => false,
+                     'languageID' => false
+                 ),
+                 'ltag_name' => array(
+                     'nullable' => false,
+                     'length' => 255,
+                     'default' => '',
+                     'key' => false,
+                     'type' => FieldDescription::FIELD_TYPE_STRING,
+                     'index' => false,
+                     'languageID' => false
+                 ),
+                'ltag_value_rtf' => array(
+                     'nullable' => false,
+                     'length' => 1024,
+                     'default' => '',
+                     'key' => false,
+                     'type' => FieldDescription::FIELD_TYPE_TEXT,
+                     'index' => false,
+                     'tableName' => 'share_lang_tags_translation',
+                     'isMultilanguage' => true
+                 )));
+            $dd->getFieldDescriptionByName('ltag_name')->setMode(FieldDescription::FIELD_MODE_READ);
+            return $dd;
+        } else {
+            return $this->constructor->getDataDescription();
+        }
     }
 
     protected function createBuilder() {
@@ -102,12 +160,46 @@ class FormEditor extends DataSet
         }
         $this->js = $this->buildJS();
     }
-
+    /*
+     * @access protected
+     * edit() function gets information about selected field to modal form, so user can edit it.
+     *
+     * */
     protected function edit(){
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->setBuilder($this->createBuilder());
-        $this->setDataDescription($this->createDataDescription());
-        $this->setData($this->createData());
+
+        $fieldID = $this->getStateParams();
+        if(!is_array($fieldID) || !$fieldID[0]){
+            throw new SystemException('ERR_WRONG_FIELD_ID');
+        }
+        $fieldName = $this->getFieldnameByIndex($fieldID[0]);
+        //Get field translations
+        $result = $this->dbh->selectRequest(
+                'SELECT * FROM share_lang_tags lt
+                    LEFT JOIN share_lang_tags_translation ltt ON lt.ltag_id=ltt.ltag_id 
+                    WHERE lt.ltag_name = %s','FIELD_'.strtoupper($fieldName));
+
+        if(is_array($result)){
+            //Load field translations, translation tag and ID.
+            $this->setDataDescription($this->createDataDescription());
+            $d = new Data();
+            $d->load($result);
+            $this->setData($d);
+            //Load information about field type.
+            $fieldsInfo = $this->dbh->getColumnsInfo($this->getConfigValue('forms.database').'.form_'.$this->getParam('form_id'));
+            $fieldInfo = $fieldsInfo[strtolower($fieldName)];
+            $fieldInfo = FieldDescription::convertType($fieldInfo['type'], $fieldName, $fieldInfo['length']);
+            $fieldInfo = 'FIELD_TYPE_'.strtoupper($fieldInfo);
+            //Destroy unused variables.
+            unset($fieldsInfo, $fieldName, $fieldID);
+            //Create field FIELD_TYPE.
+            $f = new Field('field_type');
+            $f->setRowData(1,$this->translate($fieldInfo));
+            $this->getData()->addField($f);
+            $this->getDataDescription()->getFieldDescriptionByName('field_type')->setProperty('tabName','TXT_PROPERTIES');
+        }
+        //Create toolbar and JS.
         $toolbars = $this->createToolbar();
         if (!empty($toolbars)) {
             $this->addToolbar($toolbars);
@@ -163,6 +255,7 @@ class FormEditor extends DataSet
 
     }
 
+
     protected function delete(){
         list($fieldIndex) = $this->getStateParams();
         $this->constructor->delete($this->getFieldnameByIndex($fieldIndex));
@@ -173,6 +266,24 @@ class FormEditor extends DataSet
     protected function save(){
         if(isset($_POST)){
            $this->constructor->save($_POST);
+        }
+        $this->setBuilder(new JSONCustomBuilder());
+    }
+
+    protected function saveField(){
+        $tableName = 'share_lang_tags_translation';
+        if(isset($_POST) && isset($_POST[$tableName]) && isset($_POST['share_lang_tags'])){
+            $translations = $_POST[$tableName];
+            if(is_array($translations)){
+                foreach($translations as $key=>$value){
+                    $result = $this->dbh->modify(
+                                QAL::UPDATE,
+                                $tableName,
+                                array('ltag_value_rtf' => $value['ltag_value_rtf']),
+                                array('ltag_id' => $_POST['share_lang_tags'], 'lang_id' => $value['lang_id']));
+                }
+            }
+
         }
         $this->setBuilder(new JSONCustomBuilder());
     }
@@ -207,4 +318,5 @@ class FormEditor extends DataSet
             return $cols[$fieldIndex - 1];
         }
     }
+
 }

@@ -9,6 +9,7 @@
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
             <control id="editProps" title="BTN_EDIT_VALUES" type="button" onclick="editProps"/>
             <control id="sep01" type="separator"/>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
             <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
             <control id="sep03" type="separator"/>
             <control id="up" title="BTN_UP" type="button" onclick="up"/>
@@ -49,6 +50,23 @@
         <uri_patterns>
             <pattern>/save/</pattern>
         </uri_patterns>
+    </state>
+    <state name="saveField" rights="3">
+        <uri_patterns>
+            <pattern>/saveField/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="edit" rights="2">
+        <javascript>
+            <behavior name="FormBehavior"/>
+        </javascript>
+        <uri_patterns>
+            <pattern>/[int]/edit/</pattern>
+        </uri_patterns>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="saveField"/>
+            <control id="close" title="BTN_CANCEL" type="button" onclick="close"/>
+        </toolbar>
     </state>
     <state name="delete" rights="2">
         <uri_patterns>

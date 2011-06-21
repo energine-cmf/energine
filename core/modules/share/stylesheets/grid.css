@@ -39,6 +39,9 @@ div.grid div.filter input.small {
     margin-right:5px;
     /*vertical-align:middle;*/
 }
+div.grid .f_fields {
+    width: 150px;
+}
 .f_datepicker {
     /*vertical-align:middle;*/
     margin-left:-23px;

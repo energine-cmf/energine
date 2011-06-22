@@ -451,9 +451,15 @@
         </xsl:choose>
     </xsl:template>
 
+    <!-- именованный шаблон для подключения значка сайта -->
+    <xsl:template name="favicon">
+        <link rel="shortcut icon" href="{$BASE}images/energine.ico" type="image/x-icon"/>
+    </xsl:template>
+
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->
     <xsl:template name="interface_js"/>
 
+    <!-- именованный шаблон для подключения файлов стилей -->
     <xsl:template name="stylesheets">
         <!-- файлы стилей для текущего варианта дизайна -->
         <link href="{$STATIC_URL}stylesheets/{$FOLDER}/screen.css" rel="stylesheet" type="text/css"
@@ -463,7 +469,6 @@
         <link href="{$STATIC_URL}stylesheets/{$FOLDER}/ie.css" rel="stylesheet" type="text/css"
               media="Screen, projection"/>
         <xsl:text disable-output-escaping="yes">&lt;![endif]--&gt;</xsl:text>
-
     </xsl:template>
 
 </xsl:stylesheet>

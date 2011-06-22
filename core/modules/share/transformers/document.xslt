@@ -21,7 +21,7 @@
         	<head>
                 <title><xsl:call-template name="build_title"/></title>
         		<base href="{$BASE}"/>
-                <link rel="shortcut icon" href="{$BASE}images/favicon.ico" type="image/x-icon"/>
+                <xsl:call-template name="favicon"/>                
         		<xsl:choose>
             		<xsl:when test="not($DOC_PROPS[@name='single'])">
             		    <xsl:call-template name="stylesheets"/>
@@ -31,7 +31,7 @@
                         <script type="text/javascript">window.singleMode = true;</script>
             		</xsl:otherwise>
         		</xsl:choose>
-			<link rel="stylesheet" type="text/css" href="{$STATIC_URL}stylesheets/energine.css"/>
+                <link rel="stylesheet" type="text/css" href="{$STATIC_URL}stylesheets/energine.css"/>
                 <xsl:if test="$DOC_PROPS[@name='google_verify']">
                     <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
                 </xsl:if>

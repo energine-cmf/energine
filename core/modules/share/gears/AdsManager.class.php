@@ -52,8 +52,18 @@ class AdsManager extends DBWorker {
         $dd->load($fds);
 
         $data = $this->dbh->select(self::TABLE_NAME, array_keys($fds), array('smap_id' => $d->getFieldByName('smap_id')->getRowData(0)));
-        if(is_array($data))
-            $d->load($data);
+
+        if(is_array($data)){
+            //Тут как всегда проблема с загрузкой значений в мультиязычный билдер
+            foreach($data[0] as $fieldName => $fieldData){
+                $f = new Field($fieldName);
+                for($i=0, $l=sizeof(E()->getLanguage()->getLanguages()); $i<$l; $i++) {
+                    $f->setRowData($i, $fieldData);
+                }
+                $d->addField($f);
+            }
+        }
+
     }
     /**
      * Сохраняет информацию о рекламе

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<content layout="colset22 clearfix">
+    <container name="contentContainer" layout="content" column="column">
+        <container name="mainContent" rounded="rounded" widget="static">
+            <component name="formResults" module="forms" class="FormResults">
+                <params>
+                    <param name="form_id">0</param>
+                    <param name="config" type="hidden">core/modules/forms/config/FormResultsSimple.component.xml</param>
+                </params>
+            </component>
+        </container>
+    </container>
+</content>

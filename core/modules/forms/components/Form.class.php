@@ -385,7 +385,7 @@ class Form extends DBDataSet {
             $f = new Field('form_description');
             $f->setData($result[0]['form_annotation_rtf'], true);
             $fd = new FieldDescription('form_description');
-            $fd->setType(FieldDescription::FIELD_TYPE_TEXT)->setMode(FieldDescription::FIELD_MODE_READ);
+            $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN)->setMode(FieldDescription::FIELD_MODE_READ);
             $this->getData()->addField($f);
             $this->getDataDescription()->addFieldDescription($fd);
         }

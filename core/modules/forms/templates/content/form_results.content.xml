@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<content layout="colset22 clearfix">
+<content >
     <container name="contentContainer" layout="content" column="column">
         <container name="mainContent" rounded="rounded" widget="static">
             <component name="formResults" module="forms" class="FormResults">

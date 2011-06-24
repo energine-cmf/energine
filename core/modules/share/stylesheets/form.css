@@ -6,22 +6,18 @@ form .invalid {
 form div.error {
     padding: 0.5em;
     color: #F00;
-    font: 11px Tahoma, sans-serif;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
 }
 
 form .field {
     margin: 15px 0 0 10px;
-    font: 11px Tahoma, sans-serif;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
 }
 form .field button {
-	font: 11px Tahoma, sans-serif;
-}
-form .field .name {
-    /**/
-}
-
-form .field label {
-    font-weight: normal;
+	font-family: Tahoma, sans-serif;
+    font-size: 11px;
 }
 
 form .field.required label {
@@ -32,7 +28,8 @@ form input, form textarea, form select {
     margin: 1px 0;
     padding: 1px;
     border: 1px solid gray;
-    font: 11px Tahoma, sans-serif;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
 	width: 250px;
 	height:auto;
 }
@@ -79,7 +76,8 @@ form .inp_date{
 	padding: 0;
 	border-collapse: collapse;
 	border: 1px solid #aaaaaa;
-	font: 11px Tahoma, sans-serif;
+	font-family: Tahoma, sans-serif;
+    font-size: 11px;
 }
 .table_data table th {
     text-align: center;
@@ -105,7 +103,8 @@ form .inp_date{
 	text-align: left;
 }
 .table_data table td select {
-    font: 11px Tahoma, sans-serif;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
 	width: 250px;
 	border: 1px solid gray;
 }
@@ -149,7 +148,8 @@ form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
 	border: 1px solid gray;
 }
 .tool-text{
-	font: 11px Tahoma, sans-serif;
+	font-family: Tahoma, sans-serif;
+    font-size: 11px ;
 }
 /*
 .formContainer fieldset{

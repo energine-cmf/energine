@@ -6,20 +6,23 @@
 
     <!-- обработка компонента типа feed -->
     <xsl:template match="component[@exttype='feed']">
-        <xsl:apply-templates/>
+        <div class="feed">
+            <xsl:choose>
+                <xsl:when test="recordset/@empty">
+                    <div class="empty_message"><xsl:value-of select="recordset/@empty" disable-output-escaping="yes"/></div>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </div>
     </xsl:template>
 
     <!-- компонент feed в режиме списка -->
     <xsl:template match="recordset[parent::component[@exttype='feed'][@type='list']]">
-        <ul id="{generate-id(.)}" class="feed">
-            <xsl:choose>
-                <xsl:when test="parent::component[@class='NewsFeed']">
-                    <xsl:attribute name="class">feed news</xsl:attribute>
-                </xsl:when>
-            </xsl:choose>
+        <ul id="{generate-id(.)}" class="feed_list">
             <xsl:apply-templates/>
         </ul>
-
     </xsl:template>
 
     <xsl:template match="record[ancestor::component[@exttype='feed'][@type='list']]">
@@ -36,32 +39,6 @@
         </li>
     </xsl:template>
 
-    <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='list']]">
-        <li>
-            <xsl:if test="$COMPONENTS[@editable]">
-                <xsl:attribute name="record">
-                    <xsl:value-of select="field[@index='PRI']"/>
-                </xsl:attribute>
-            </xsl:if>
-            <div class="date">
-                <strong>
-                    <xsl:value-of select="field[@name='news_date']"/>
-                </strong>
-            </div>
-            <h4 class="title">
-                <a href="{$BASE}{$LANG_ABBR}{field[@name='category']/@url}{field[@name='news_id']}--{field[@name='news_segment']}/">
-                    <xsl:value-of select="field[@name='news_title']"/>
-                </a>
-            </h4>
-            <xsl:if test="field[@name='attachments'] and field[@name='attachments']/recordset/record">
-                <img src="{$MEDIA_URL}slir/w90-h68-c90:68/{field[@name='attachments']/recordset/record/field[@name='file']/image}" alt="" width="90" height="68"/>
-            </xsl:if>
-            <div class="anounce">
-                <xsl:value-of select="field[@name='news_announce_rtf']" disable-output-escaping="yes"/>
-            </div>
-        </li>
-    </xsl:template>
-
     <xsl:template match="toolbar[ancestor::component[@exttype='feed'][@type='list']][@name!='pager']"/>
 
     <xsl:template match="control[parent::toolbar[@name!='pager' and ancestor::component[@exttype='feed'][@type='list']]]">
@@ -74,32 +51,13 @@
     </xsl:template>
 
     <xsl:template match="record[ancestor::component[@exttype='feed'][@type='form']]">
-        <div class="feed" id="{generate-id(../.)}">
+        <div class="feed_view" id="{generate-id(../.)}">
             <xsl:if test="$COMPONENTS[@editable]">
                 <xsl:attribute name="current">
                     <xsl:value-of select="field[@index='PRI']"/>
                 </xsl:attribute>
             </xsl:if>
             <xsl:apply-templates/>
-        </div>
-    </xsl:template>
-
-    <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='form']]">
-        <div class="feed news_view" id="{generate-id(../.)}">
-            <xsl:if test="$COMPONENTS[@editable]">
-                <xsl:attribute name="current">
-                    <xsl:value-of select="field[@index='PRI']"/>
-                </xsl:attribute>
-            </xsl:if>
-            <div class="date">
-                <strong>
-                    <xsl:value-of select="field[@name='news_date']"/>
-                </strong>
-            </div>
-            <h4 class="title">
-                <xsl:value-of select="field[@name='news_title']"/>
-            </h4>
-            <xsl:apply-templates select="field[(@name!='news_date') and (@name!='news_title') and(@name!='smap_id')]"/>
         </div>
     </xsl:template>
 
@@ -144,72 +102,165 @@
         </div>
     </xsl:template>
 
-    <xsl:template match="field[@name='attachments'][ancestor::component[@type='form' and @exttype='feed']]">
-        <xsl:if test="recordset">
-        <xsl:choose>
-            <xsl:when test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">
-                <div class="feed_media">
-                <script type="text/javascript" src="scripts/Carousel.js"></script>
+    <xsl:template match="field[ancestor::component[@exttype='feed' and @type='form']][@name='smap_id']"/>
 
-                <script type="text/javascript">
-                    var carousel, playlist;
-
-                    window.addEvent('domready', function() {
-                        carousel = new Carousel('playlist');
-
-                    });
-                </script>
-                <!-- Тут идет формирование плейлиста -->
-                <div class="carousel_box">
-                    <div class="carousel_title">
-                        <xsl:value-of select="@title"/>
-                    </div>
-                    <div class="carousel" id="playlist">
-                        <div class="carousel_viewbox viewbox">
-                            <ul>
-                                <xsl:for-each select="recordset/record">
-                                    <li>
-                                        <div class="carousel_image" id="{field[@name='id']}_imgc">
-                                            <a href="{field[@name='file']/video | field[@name='file']/image}"
-                                               xmlns:nrgn="http://energine.org"
-                                               nrgn:media_type="{name(field[@name='file']/child::*[1])}">
-                                                <img src="{$MEDIA_URL}slir/w90-h68-c90:68/{field[@name='file']/image}"
-                                                     width="90" height="68"
-                                                     alt="{field[@name='name']}"/>
-                                                <xsl:if test="field[@name='file']/video">
-                                                    <i class="icon32x32 play_icon">
-                                                        <i></i>
-                                                    </i>
-                                                </xsl:if>
-                                            </a>
-                                        </div>
-                                    </li>
-                                </xsl:for-each>
-                            </ul>
-                        </div>
-                        <a class="icon20x20 previous_control previous" href="#">
-                            <i></i>
-                        </a>
-                        <a class="icon20x20 next_control next" href="#">
-                            <i></i>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-            </xsl:when>
-            <xsl:otherwise>
-
-            </xsl:otherwise>
-        </xsl:choose>
-        <div class="player_box" id="playerBox">
-                    <img src="{$MEDIA_URL}slir/w640-h480-c640:480/{recordset/record[1]/field[@name='file']/child::*[1]/@image}"
-                         alt=""/>
-                </div>
+    <!-- обработка attachments для компонента feed -->
+    <!-- в виде превью -->
+    <xsl:template match="field[@name='attachments'][ancestor::component[@exttype='feed']]" mode="preview">
+        <xsl:param name="PREVIEW_WIDTH"/>
+        <xsl:param name="PREVIEW_HEIGHT"/>
+        <xsl:variable name="URL"><xsl:choose>
+            <xsl:when test="name(recordset/record[1]/field[@name='file']/*[1])='video'"><xsl:value-of select="$VIDEO_RESIZER_URL"/>w<xsl:value-of select="$PREVIEW_WIDTH"/>-h<xsl:value-of select="$PREVIEW_HEIGHT"/>-c<xsl:value-of select="$PREVIEW_WIDTH"/>:<xsl:value-of select="$PREVIEW_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/>.png</xsl:when>
+            <xsl:otherwise><xsl:value-of select="$IMAGE_RESIZER_URL"/>?w=<xsl:value-of select="$PREVIEW_WIDTH"/>&amp;h=<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;c=<xsl:value-of select="$PREVIEW_WIDTH"/>:<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:otherwise>
+        </xsl:choose></xsl:variable>
+        <img width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}">
+            <xsl:choose>
+                <xsl:when test="recordset">
+                    <xsl:attribute name="src"><xsl:value-of select="$URL"/></xsl:attribute>
+                    <xsl:attribute name="alt"><xsl:value-of select="recordset/record[1]/field[@name='name']"/></xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="src"><xsl:value-of select="$MEDIA_URL"/>images/default_<xsl:value-of select="$PREVIEW_WIDTH"/>x<xsl:value-of select="$PREVIEW_HEIGHT"/>.png</xsl:attribute>
+                    <xsl:attribute name="alt"><xsl:value-of select="$TRANSLATION[@const='TXT_NO_IMAGE']"/></xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
+        </img>
+        <xsl:if test="recordset/record[1]/field[@name='file']/video">
+            <i class="icon play_icon"></i>
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="field[ancestor::component[@exttype='feed' and @type='form']][@name='smap_id']" />
+    <!-- в виде плеера -->
+    <xsl:template match="field[@name='attachments'][ancestor::component[@exttype='feed']]" mode="player">
+        <xsl:param name="PLAYER_WIDTH"/>
+        <xsl:param name="PLAYER_HEIGHT"/>
+        <xsl:if test="recordset">
+            <!--<xsl:if test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">-->
 
+                <div class="feed_media">
+                    <!--<xsl:if test="count(recordset/record) &gt; 1">-->
+                        <script type="text/javascript" src="scripts/Carousel.js"></script>
+                        <script type="text/javascript" src="scripts/Playlist.js"></script>
+
+                        <script type="text/javascript">
+                            var carousel, playlist;
+
+                            window.addEvent('domready', function() {
+                                    carousel = new Carousel('playlist', {visibleItems : 6, css : 'carousel.css'});
+                                    playlist = new Playlist('playlist', 'player', 'playerBox');
+                            });
+                        </script>
+                    <!--</xsl:if>-->
+                </div>
+            <!--</xsl:if>-->
+            <div class="player_box" id="playerBox">
+                <xsl:variable name="URL"><xsl:choose>
+                    <xsl:when test="name(recordset/record[1]/field[@name='file']/*[1])='video'"><xsl:value-of select="$VIDEO_RESIZER_URL"/>w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>-c<xsl:value-of select="$PLAYER_WIDTH"/>:<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/>.png</xsl:when>
+                    <xsl:otherwise><xsl:value-of select="$IMAGE_RESIZER_URL"/>?w=<xsl:value-of select="$PLAYER_WIDTH"/>&amp;h=<xsl:value-of select="$PLAYER_HEIGHT"/>&amp;c=<xsl:value-of select="$PLAYER_WIDTH"/>:<xsl:value-of select="$PLAYER_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:otherwise>
+                </xsl:choose></xsl:variable>
+                <div class="player" id="player" style="width: {$PLAYER_WIDTH}px; height: {$PLAYER_HEIGHT}px; background: url({$URL}) 50% 50% no-repeat;">
+                    <xsl:if test="recordset/record[1]/field[@name='file']/video or count(recordset/record) &gt; 1">
+                        <a href="#" class="play_button"></a>
+                    </xsl:if>
+                </div>
+            </div>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- в виде карусели -->
+    <xsl:template match="field[@name='attachments'][ancestor::component[@exttype='feed']]" mode="carousel">
+        <xsl:param name="PREVIEW_WIDTH"/>
+        <xsl:param name="PREVIEW_HEIGHT"/>
+        <xsl:if test="(count(recordset/record) &gt; 1) or not(recordset/record/field[@name='file']/image)">
+            <div class="carousel_box">
+                <xsl:if test="not(recordset/record/field[@name='file']/image)">
+                    <xsl:attribute name="style">display:none;</xsl:attribute>
+                </xsl:if>
+                <!--<div class="carousel_title">
+                    <xsl:value-of select="@title"/>
+                </div>-->
+                <div class="carousel" id="playlist">
+                    <div class="carousel_viewbox viewbox">
+                        <ul>
+                            <xsl:for-each select="recordset/record">
+                                <li>
+                                    <div class="carousel_image" id="{field[@name='id']}_imgc">
+                                        <a href="{field[@name='file']/video | field[@name='file']/image}" xmlns:nrgn="http://energine.org" nrgn:media_type="{name(field[@name='file']/*[1])}">
+                                            <xsl:choose>
+                                                <xsl:when test="field[@name='file']/video"><img src="{$VIDEO_RESIZER_URL}w{$PREVIEW_WIDTH}-h{$PREVIEW_HEIGHT}-c{$PREVIEW_WIDTH}:{$PREVIEW_HEIGHT}/{field[@name='file']/*[1]}.png" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:when>
+                                                <xsl:otherwise><img src="{$IMAGE_RESIZER_URL}?w={$PREVIEW_WIDTH}&amp;h={$PREVIEW_HEIGHT}&amp;c={$PREVIEW_WIDTH}:{$PREVIEW_HEIGHT}&amp;i={field[@name='file']/*[1]/@image}" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:otherwise>
+                                            </xsl:choose>
+                                             <xsl:if test="field[@name='file']/video">
+                                                 <i class="icon play_icon"></i>
+                                             </xsl:if>
+                                         </a>
+                                     </div>
+                                 </li>
+                             </xsl:for-each>
+                         </ul>
+                     </div>
+                     <a class="previous_control" href="#"><i></i></a>
+                     <a class="next_control" href="#"><i></i></a>
+                 </div>
+             </div>
+        </xsl:if>
+    </xsl:template>
+    <!-- /обработка attachments для для компонента feed -->
+
+    <!-- фид новостей -->
+    <xsl:template match="component[@class='NewsFeed']">
+        <div class="feed news">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='list']]">
+        <li>
+            <xsl:if test="$COMPONENTS[@editable]">
+                <xsl:attribute name="record">
+                    <xsl:value-of select="field[@index='PRI']"/>
+                </xsl:attribute>
+            </xsl:if>
+            <div class="feed_date">
+                <strong>
+                    <xsl:value-of select="field[@name='news_date']"/>
+                </strong>
+            </div>
+            <h4 class="feed_name">
+                <a href="{$BASE}{$LANG_ABBR}{field[@name='category']/@url}{field[@name='news_id']}--{field[@name='news_segment']}/">
+                    <xsl:value-of select="field[@name='news_title']"/>
+                </a>
+            </h4>
+            <div class="feed_image">
+                <xsl:apply-templates select="field[@name='attachments']" mode="preview">
+                    <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
+                    <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                </xsl:apply-templates>
+            </div>
+            <div class="feed_announce">
+                <xsl:value-of select="field[@name='news_announce_rtf']" disable-output-escaping="yes"/>
+            </div>
+        </li>
+    </xsl:template>
+
+    <xsl:template match="record[ancestor::component[@class='NewsFeed'][@type='form']]">
+        <div class="feed_view" id="{generate-id(../.)}">
+            <xsl:if test="$COMPONENTS[@editable]">
+                <xsl:attribute name="current">
+                    <xsl:value-of select="field[@index='PRI']"/>
+                </xsl:attribute>
+            </xsl:if>
+            <div class="feed_date">
+                <strong>
+                    <xsl:value-of select="field[@name='news_date']"/>
+                </strong>
+            </div>
+            <h4 class="feed_name">
+                <xsl:value-of select="field[@name='news_title']"/>
+            </h4>
+            <xsl:apply-templates select="field[(@name!='news_date') and (@name!='news_title') and(@name!='smap_id')]"/>
+        </div>
+    </xsl:template>
+    <!-- /фид новостей -->
 
 </xsl:stylesheet>

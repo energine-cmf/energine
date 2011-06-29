@@ -10,7 +10,7 @@
         Это сделано для того, чтобы разместить поля в две колонки.
         Hidden-поля могут быть только первыми или последними, иначе собьется последовательность.
     -->
-    <xsl:template match="field[(@type != 'hidden' and @type != 'captcha') and ancestor::component[@class='Form']]">
+    <xsl:template match="field[(@type != 'hidden' and @type != 'captcha' and @type != 'custom') and ancestor::component[@class='Form' and (@componentAction !='success')]]">
     	<div class="field">
             <xsl:attribute name="class">field<xsl:if test="not(@nullable) and @type != 'boolean'"> required</xsl:if><xsl:choose>
                 <xsl:when test="position() div 2 = floor(position() div 2)"> first_field</xsl:when>

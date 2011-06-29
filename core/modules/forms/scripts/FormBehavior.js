@@ -1,17 +1,8 @@
-ScriptLoader.load('Form');
+ScriptLoader.load('ValidForm');
 var FormBehavior = new Class({
-    Extends:Form,
+    Extends:ValidForm,
     initialize: function(element){
         this.parent(element);
         this.componentElement = $(element);
-
-
-    },
-    saveField: function(){
-        this.request(this.singlePath +
-                'saveField', this.form.toQueryString(), this.processServerResponse.bind(this));
-
     }
-
-
 });

@@ -1,5 +1,9 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet
+        version="1.0"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns:nrgn="http://energine.org"
+        >
 
     <!--
         Все поля для анкет отмечаются по очереди css-классами first_field и second_field.

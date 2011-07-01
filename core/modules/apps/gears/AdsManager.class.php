@@ -3,22 +3,22 @@
  * Содержит класс AdsManager
  *
  * @package energine
- * @subpackage share
+ * @subpackage apps
  * @author spacelord
  * @copyright spacelord.5@gmail.com
  */
 
 /**
- *
+ * Класс по работе с рекламой
  * @package energine
- * @subpackage share
+ * @subpackage apps
  * @author spacelord.5@gmail.com
  */
 class AdsManager extends DBWorker {
     /**
      * имя таблицы
      */
-    const TABLE_NAME = 'share_ads';
+    const TABLE_NAME = 'apps_ads';
 
     /**
      * Модифицирует переданный ему объект DataDescription
@@ -72,12 +72,22 @@ class AdsManager extends DBWorker {
      * @return array|bool
      */
     public function save(array $data){
-        $result = false;
+        $checkIfDataExists = function($data) {
+            //Что либо предпринимаем только в том случае когда хотя бы одно из значимых полей заполнено
+            unset($data['ad_id'], $data['smap_id']);
+            return (bool)array_filter($data);
+        };
+        $result = true;
+
         if(isset($data['ad_id']) && intval($adID = $data['ad_id'])){
             unset($data['ad_id']);
-            $result = $this->dbh->modify(QAL::UPDATE, self::TABLE_NAME, $data, array('ad_id' => $adID));
+            if($checkIfDataExists($data))
+                $result = $this->dbh->modify(QAL::UPDATE, self::TABLE_NAME, $data, array('ad_id' => $adID));
+            else
+                $result = $this->dbh->modify(QAL::DELETE, self::TABLE_NAME, null, array('ad_id' => $adID));
         } else {
-            $result = $this->dbh->modify(QAL::INSERT, self::TABLE_NAME, $data);
+            if($checkIfDataExists($data))
+                $result = $this->dbh->modify(QAL::INSERT, self::TABLE_NAME, $data);
         }
         return $result;
     }
@@ -88,7 +98,6 @@ class AdsManager extends DBWorker {
      * @return bool
      */
     public static function isActive(){
-        if(E()->getDB()->tableExists(self::TABLE_NAME)) return true;
-        return false;
+        return (bool)E()->getDB()->tableExists(self::TABLE_NAME);
     }
 }

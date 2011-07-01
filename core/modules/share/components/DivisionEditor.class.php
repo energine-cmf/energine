@@ -63,6 +63,9 @@ final class DivisionEditor extends Grid {
     /**
      * Конструктор класса
      *
+     * @param string
+     * @param string
+     * @param array 
      * @return void
      */
     public function __construct($name, $module, array $params = null) {
@@ -79,8 +82,7 @@ final class DivisionEditor extends Grid {
      * Строит вкладку прав
      *
      * @param int идентификатор раздела(при создании раздела используем родительский идентификатор)
-     * @return DOMNode
-     * @access private
+     * @return void
      */
 
     private function buildRightsTab($id) {

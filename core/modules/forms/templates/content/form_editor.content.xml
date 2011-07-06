@@ -2,7 +2,11 @@
 <content html_class="colset">
     <container name="center" column="column">
         <container name="formEditorContainer" block="alfa" widget="static">
-            <component name="formEditor" class="FormsEditor" module="forms" ></component>
+            <component name="formEditor" class="FormsEditor" module="forms">
+                <params>
+                    <param name="rights">3</param>
+                </params>
+            </component>
         </container>
     </container>
 </content>

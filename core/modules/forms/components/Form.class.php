@@ -216,24 +216,6 @@ class Form extends DBDataSet {
                 $data = $data[$this->getTableName()];
 
 
-                //                $senderEmail = '';
-                //                if (isset($data['feed_email'])) {
-                //                    $senderEmail = $data['feed_email'];
-                //                } else {
-                //                    $data['feed_email'] =
-                //                            $this->translate('TXT_NO_EMAIL_ENTERED');
-                //                }
-
-                //                $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('feed_date' => date('Y-m-d H:i:s')), array($this->getPK() => $result));
-                //                if ($senderEmail) {
-                //                    $mailer = new Mail();
-                //                    $mailer->setFrom($this->getConfigValue('mail.from'))->
-                //                            setSubject($this->translate($this->getParam('userSubject')))->
-                //                            setText($this->translate($this->getParam('userBody')), $data)->
-                //                            addTo($senderEmail, $senderEmail)
-                //                            ->send();
-                //                }
-
                 //Unset pk_id field, because we don't need it in body of message to send
                 unset($data['pk_id']);
                 foreach ($data as $key => $value) {

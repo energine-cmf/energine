@@ -125,33 +125,6 @@ class Form extends DBDataSet {
      */
 
     protected function saveData($data) {
-        //Обрабатываем аплоадсы
-
-        if (isset($_FILES) && !empty($_FILES)) {
-            list($dbName, $tName) =
-                    DBA::getFQTableName($this->getTableName(), true);
-            if (isset($_FILES[$phpTableName = $dbName . '_' . $tName])) {
-                $fileData = array();
-                //Переворачиваем пришедший массив в удобный для нас вид
-                foreach ($_FILES[$phpTableName] as $fParam => $fileInfo) {
-                    foreach ($fileInfo as $fName => $val) {
-                        $fileData[$fName][$fParam] = $val;
-                    }
-                }
-                $uploader = new FileUploader();
-                foreach ($fileData as $fieldName => $fileInfo) {
-                    //Завантажувати лише якщо файл дійсно завантажили
-                    if (!empty($fileInfo['name']) && $fileInfo['size'] > 0) {
-                        $uploader->setFile($fileInfo);
-                        $uploader->upload('uploads/forms');
-                        $data[$this->getTableName()][$fieldName] =
-                                $uploader->getFileObjectName();
-                        $uploader->cleanUp();
-                    }
-                }
-            }
-        }
-
         $result = false;
         //создаем объект описания данных
         $dataDescriptionObject = new DataDescription();
@@ -187,10 +160,40 @@ class Form extends DBDataSet {
             $this->saver->save();
             $result = $this->saver->getResult();
 
+
+            //Обрабатываем аплоадсы
+
+            if (isset($_FILES) && !empty($_FILES)) {
+                list($dbName, $tName) =
+                        DBA::getFQTableName($this->getTableName(), true);
+                if (isset($_FILES[$phpTableName = $dbName . '_' . $tName])) {
+                    $fileData = array();
+                    //Переворачиваем пришедший массив в удобный для нас вид
+                    foreach ($_FILES[$phpTableName] as $fParam => $fileInfo) {
+                        foreach ($fileInfo as $fName => $val) {
+                            $fileData[$fName][$fParam] = $val;
+                        }
+                    }
+                    $uploader = new FileUploader();
+                    foreach ($fileData as $fieldName => $fileInfo) {
+                        //Завантажувати лише якщо файл дійсно завантажили
+                        if (!empty($fileInfo['name']) && $fileInfo['size'] > 0
+                        ) {
+                            $uploader->setFile($fileInfo);
+                            $uploader->upload('uploads/forms');
+                            $data[$this->getTableName()][$fieldName] =
+                                    $uploader->getFileObjectName();
+                            $uploader->cleanUp();
+                        }
+                    }
+                }
+            }
+
         }
         else {
             //выдвигается пустой exception который перехватывается в методе save
-            throw new FormException();
+            //выдвигается exception который перехватывается в методе save
+            throw new SystemException('ERR_VALIDATE_FORM', SystemException::ERR_WARNING, $this->saver->getErrors());
         }
 
         return $result;
@@ -368,13 +371,14 @@ class Form extends DBDataSet {
         $this->setBuilder(new SimpleBuilder());
 
     }
+
     /*
-     * Додає опис форми: назву й інформацію про форму.
-     *
-     * @return void
-     * @access private
-     */
-    private function addFormDescription(){
+    * Додає опис форми: назву й інформацію про форму.
+    *
+    * @return void
+    * @access private
+    */
+    private function addFormDescription() {
         $result = $this->dbh->select('frm_forms_translation',
                                      array('form_name', 'form_annotation_rtf'),
                                      array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));

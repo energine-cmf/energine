@@ -8,7 +8,7 @@ var FormBehavior = new Class({
     },
     validateForm: function(event){
         var result;
-        if(Recaptcha && !Recaptcha.get_response()) {
+        if((typeof Recaptcha !== 'undefined') && !Recaptcha.get_response()) {
             this.validator.showError($('recaptcha_widget_div'), 'Необходимо ввести значения');
             Energine.cancelEvent(event);
             return false;

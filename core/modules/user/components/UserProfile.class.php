@@ -109,7 +109,7 @@ class UserProfile extends DBDataSet {
             $this->response->redirectToCurrentSection('success/');
         }
         //Отлавливаем все ошибки которые могли произойти при сохранении в БД, чтобы вывести нужную информацию об ошибке на уровне компонента
-        catch (FormException $formError) {
+        /*catch (FormException $formError) {
             $errors = $this->saver->getErrors();
             foreach ($errors as $errorFieldName) {
                 $message = $this->saver->getDataDescription()->getFieldDescriptionByName($errorFieldName)->getPropertyValue('message');
@@ -117,7 +117,7 @@ class UserProfile extends DBDataSet {
             }
             //переадресация
             //$this->response->redirectToCurrentSection();
-        }
+        }*/
         catch (SystemException $e){
             stop($e);
             $this->generateError(SystemException::ERR_NOTICE, $e->getMessage(), $e->getCustomMessage());

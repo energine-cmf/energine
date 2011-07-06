@@ -109,7 +109,7 @@ class FeedbackForm extends DBDataSet {
         }
         else {
             //выдвигается пустой exception который перехватывается в методе save
-            throw new FormException();
+            throw new SystemException('ERR_VALIDATE_FORM', SystemException::ERR_WARNING, $this->saver->getErrors());
         }
 
         return $result;

@@ -171,6 +171,9 @@ class Form extends DBDataSet {
         $this->setDataDescription($dataDescriptionObject->intersect($DBDataDescription));
 
         $dataObject = new Data();
+        foreach ($data[$this->getTableName()] as $key => $value) {
+            $data[$this->getTableName()][$key] = strip_tags($value);
+        }
         $dataObject->load($data);
         $this->setData($dataObject);
 
@@ -187,7 +190,7 @@ class Form extends DBDataSet {
             $this->saver->save();
             $result = $this->saver->getResult();
 
-                        }
+        }
         else {
             //выдвигается пустой exception который перехватывается в методе save
             //выдвигается exception который перехватывается в методе save
@@ -351,6 +354,7 @@ class Form extends DBDataSet {
         $this->setBuilder(new SimpleBuilder());
 
     }
+
     /*
     * Додає опис форми: назву й інформацію про форму.
     *

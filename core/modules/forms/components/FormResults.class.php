@@ -36,6 +36,8 @@ class FormResults extends Grid {
             $this->formID = false;
         else
             $this->setTableName($this->getConfigValue('forms.database') . '.form_' .$this->formID);
+
+        $this->setOrder(array('pk_id' => QAL::DESC));
     }
 
     protected function defineParams() {

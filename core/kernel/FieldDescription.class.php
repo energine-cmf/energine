@@ -467,6 +467,12 @@ class FieldDescription extends DBWorker implements Iterator{
                     //$this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
                     $this->setProperty('message', 'MSG_FIELD_IS_NOT_NULL');
                 }
+                else {
+                    //Убирается на случай если мы приводим к этому типу
+                    //по хорошему такое нужно для всех типов делать
+                    $this->removeProperty('pattern');
+                    $this->removeProperty('message');
+                }
                 //$this->setProperty('outputFormat', '%s');
                 break;
             case self::FIELD_TYPE_FLOAT:

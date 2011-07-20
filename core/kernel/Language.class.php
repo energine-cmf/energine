@@ -168,7 +168,7 @@ final class Language extends DBWorker{
             }
         }
         if ($result == false) {
-            throw new SystemException('ERR_BAD_LANG_ID', SystemException::ERR_LANG, $abbr);
+            throw new SystemException('ERR_BAD_LANG_ID', SystemException::ERR_LANG, $id);
         }
         return $result;
     }

@@ -51,20 +51,13 @@ class FormsEditor extends Grid {
         if(in_array($this->getState(), array('main', 'getRawData'))){
             $result->getFieldDescriptionByName('form_id')->setType(FieldDescription::FIELD_TYPE_INT);
         }
-
+        elseif(in_array($this->getState(), array('add', 'edit'))){
+            $result->getFieldDescriptionByName('form_creation_date')->setMode(FieldDescription::FIELD_MODE_READ);
+            $result->getFieldDescriptionByName('form_email_adresses')->setType(FieldDescription::FIELD_TYPE_STRING);
+        }
         return $result;
     }
 
-    protected function add(){
-        parent::add();
-        $this->getDataDescription()->getFieldDescriptionByName('form_creation_date')->setMode(FieldDescription::FIELD_MODE_READ);
-        
-    }
-
-    protected function edit(){
-        parent::edit();
-        $this->getDataDescription()->getFieldDescriptionByName('form_creation_date')->setMode(FieldDescription::FIELD_MODE_READ);
-    }
 
     protected function editForm(){
         list($formID) = $this->getStateParams();

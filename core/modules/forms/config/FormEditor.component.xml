@@ -58,13 +58,13 @@
     </state>
     <state name="edit" rights="2">
         <javascript>
-            <behavior name="FormBehavior"/>
+            <behavior name="Form"/>
         </javascript>
         <uri_patterns>
             <pattern>/[int]/edit/</pattern>
         </uri_patterns>
         <toolbar>
-            <control id="save" title="BTN_SAVE" type="button" onclick="saveField"/>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
             <control id="close" title="BTN_CANCEL" type="button" onclick="close"/>
         </toolbar>
     </state>

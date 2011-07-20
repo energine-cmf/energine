@@ -198,7 +198,8 @@ class FormEditor extends DataSet
         }
         $this->getData()->addField($f);
         $this->getDataDescription()->getFieldDescriptionByName('field_type')->setProperty('tabName', 'TXT_PROPERTIES');
-
+        $this->getDataDescription()->getFieldDescriptionByName('ltag_name')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+        
         $result = $this->dbh->selectRequest(
             'SELECT * FROM share_lang_tags lt
                     LEFT JOIN share_lang_tags_translation ltt ON lt.ltag_id=ltt.ltag_id

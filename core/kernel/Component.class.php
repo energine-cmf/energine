@@ -270,11 +270,14 @@ class Component extends DBWorker implements IBlock {
     /**
      * Определяет текущее действие
      *
+     * @todo Если компонент активный - то передача значения в параметре state - ни на что не влияет,
+     * @todo все равно используется состояние определяемое конфигом
+     * @todo непонятно то ли это фича то ли бага
+     *
      * @return void
      * @access private
      * @final
      */
-
     final private function determineState() {
         //Текущее действие берем из параметров
         //По умолчанию оно равно self::DEFAULT_ACTION_NAME
@@ -302,10 +305,10 @@ class Component extends DBWorker implements IBlock {
         // устанавливаем права на действие из конфигурации, если определены
         if (!$this->config->isEmpty()) {
             $this->config->setCurrentState($this->getState());
+            $sc = $this->config->getCurrentStateConfig();
 
-            if (!is_null($rights =
-                    $this->config->getCurrentStateConfig()->getAttribute('rights'))) {
-                $this->rights = (int) $rights;
+            if (isset($sc['rights'])) {
+                $this->rights = (int) $sc['rights'];
             }
         }
 

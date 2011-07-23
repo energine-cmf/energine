@@ -217,7 +217,6 @@ final class DivisionEditor extends Grid {
             glob($dirPath . "*." . $type . ".xml"),
             glob($dirPath . $siteFolder . "/*." . $type . ".xml"),
         );
-
         foreach ($folders as $folder) {
             if ($folder === false) $folder = array();
             foreach($folder as $folderPath){

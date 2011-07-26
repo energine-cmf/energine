@@ -157,7 +157,13 @@ final class ComponentManager extends Object implements Iterator {
                     if (isset($paramDescr['name'])) {
                         $paramName = (string) $paramDescr['name'];
                         //Если count больше ноля значит это вложенный SimpleXML елемент
-                        $paramValue = (!$paramDescr->count())?(string) $paramDescr:$paramDescr->children();
+                        if(!$paramDescr->count()){
+                            $paramValue = (string)$paramDescr;
+                        }
+                        else {
+                            list($paramValue) = $paramDescr->children();
+                        }
+
                         //$paramValue = (string) $paramDescr;
 
                         //Если в массиве параметров уже существует параметр с таким именем, превращаем этот параметр в массив

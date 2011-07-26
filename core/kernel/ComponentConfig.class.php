@@ -215,7 +215,7 @@ final class ComponentConfig
     {
         $result = false;
         if (!$this->isEmpty()) {
-            $methodConfig = $this->config->xpath(sprintf('//state[@name=\'%s\']', $methodName));
+            $methodConfig = $this->config->xpath(sprintf('state[@name=\'%s\'][parent::configuration]', $methodName));
             if (!empty($methodConfig)) {
                 $result = $methodConfig[0];
             }

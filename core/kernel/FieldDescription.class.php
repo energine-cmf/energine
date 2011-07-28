@@ -670,6 +670,7 @@ class FieldDescription extends DBWorker implements Iterator{
 
     /**
      * Добавляет свойство поля.
+     * Для предопределенный свойств и значений содержащих зарезервированную конструкцию trans(), происходит автоматический перевод
      *
      * @access public
      * @param string $name
@@ -679,6 +680,9 @@ class FieldDescription extends DBWorker implements Iterator{
     public function setProperty($name, $value) {
         if(in_array($name, array('title', 'message', 'tabName'))){
             $value = $this->translate($value);
+        }
+        elseif(is_scalar($value) && (strpos($value, 'trans(') !== false)){
+            $value = $this->translate(str_replace(array('trans', '(', ')'), '', $value));
         }
         $this->additionalProperties[$name] = $value;
         return $this;

@@ -24,7 +24,6 @@ class Form extends DBDataSet {
      * Form info
      */
     private $form;
-
     /**
      * Конструктор класса
      *
@@ -172,7 +171,8 @@ class Form extends DBDataSet {
 
         $dataObject = new Data();
         foreach ($data[$this->getTableName()] as $key => $value) {
-            $data[$this->getTableName()][$key] = strip_tags($value);
+            if(is_scalar($value))
+                $data[$this->getTableName()][$key] = strip_tags($value);
         }
         $dataObject->load($data);
         $this->setData($dataObject);

@@ -319,10 +319,10 @@ class FormConstructor extends DBWorker {
 
         switch ($fieldType) {
             case FieldDescription::FIELD_TYPE_INT:
+            case FieldDescription::FIELD_TYPE_MULTI:
             case FieldDescription::FIELD_TYPE_SELECT:
                 $result = 'INT(11) UNSIGNED';
                 break;
-            case FieldDescription::FIELD_TYPE_MULTI:
             case FieldDescription::FIELD_TYPE_BOOL:
                 $result = 'BOOL';
                 break;

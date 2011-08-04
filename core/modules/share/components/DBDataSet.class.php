@@ -583,16 +583,54 @@ class DBDataSet extends DataSet {
         $result = parent::createDataDescription();
         foreach ($result as $fieldName => $fieldMetaData) {
             $keyInfo = $fieldMetaData->getPropertyValue('key');
+            $values = false;
             //Если это внешний ключ и не в режиме списка
-            if (is_array($keyInfo) && in_array($fieldMetaData->getType(), array(FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_MULTI))) {
-                $fkTableName = $keyInfo['tableName'];
-                $fkKeyName = $keyInfo['fieldName'];
-                //загружаем информацию о возможных значениях
-                $values = $this->getFKData($fkTableName, $fkKeyName);
-                if(!empty($values))
-                    call_user_func_array(array($fieldMetaData, 'loadAvailableValues'), $values);
+            if(is_array($keyInfo)){
+                if($fieldMetaData->getType() == FieldDescription::FIELD_TYPE_SELECT){
+                    $fkTableName = $keyInfo['tableName'];
+                    $fkKeyName = $keyInfo['fieldName'];
+                    //загружаем информацию о возможных значениях
+                    $values = $this->getFKData($fkTableName, $fkKeyName);
+                }
+                elseif($fieldMetaData->getType() == FieldDescription::FIELD_TYPE_MULTI){
+                    
+                    $m2mTableName = $keyInfo['tableName'];
+                    $m2mPKName = $keyInfo['fieldName'];
+                    //Если существует таблица связанная
+                    if($this->dbh->tableExists($m2mTableName)){
+                        $tableInfo = $this->dbh->getColumnsInfo($m2mTableName);
+                        unset($tableInfo[$m2mPKName]);
+                        $m2mValueFieldInfo = current($tableInfo);
+                        if(isset($m2mValueFieldInfo['key']) && is_array($m2mValueFieldInfo)){
+                            $values = $this->getFKData($m2mValueFieldInfo['key']['tableName'], $m2mValueFieldInfo['key']['fieldName']);
+                        }
+                    }
+                    //если нет значит это забота программиста наполнить значениями
+                }
 
+                if(!empty($values))
+                call_user_func_array(array($fieldMetaData, 'loadAvailableValues'), $values);
             }
+
+            /*if (is_array($keyInfo) && ($fieldMetaData->getType() == FieldDescription::FIELD_TYPE_SELECT)){
+
+                    $fkTableName = $keyInfo['tableName'];
+                    $fkKeyName = $keyInfo['fieldName'];
+                    //загружаем информацию о возможных значениях
+                    $values = $this->getFKData($fkTableName, $fkKeyName);
+            }
+            elseif($fieldMetaData->getType() == FieldDescription::FIELD_TYPE_MULTI) {
+                //Если существует таблица связанная
+                if($this->dbh->tableExists($multiTableName = $fieldName)){
+                    $tableInfo = $this->dbh->getColumnsInfo($multiTableName);
+                    stop($tableInfo);
+                }
+                //если нет значит это забота программиста наполнить значениями
+            }
+
+            if(!empty($values))
+                call_user_func_array(array($fieldMetaData, 'loadAvailableValues'), $values);*/
+
         }
         return $result;
     }

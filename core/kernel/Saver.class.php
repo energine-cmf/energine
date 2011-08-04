@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Класс Saver.
+ * Класс Saver
  *
  * @package energine
  * @subpackage core
@@ -17,7 +17,7 @@
  * @subpackage core
  * @author dr.Pavka
  */
-class Saver extends DBWorker {
+class Saver extends DBWorker{
     /**
      * @access private
      * @var array имена полей, в которых произошли ошибки
@@ -51,10 +51,10 @@ class Saver extends DBWorker {
      */
     protected $data = false;
 
-   /**
-    * @access private
-    * @var mixed результат сохранения
-    */
+    /**
+     * @access private
+     * @var mixed результат сохранения
+     */
     private $result = false;
 
     /**
@@ -63,7 +63,8 @@ class Saver extends DBWorker {
      * @access public
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -74,7 +75,8 @@ class Saver extends DBWorker {
      * @param DataDescription $dataDescription
      * @return void
      */
-    public function setDataDescription(DataDescription $dataDescription) {
+    public function setDataDescription(DataDescription $dataDescription)
+    {
         $this->dataDescription = $dataDescription;
     }
 
@@ -84,7 +86,8 @@ class Saver extends DBWorker {
      * @access public
      * @return DataDescription
      */
-    public function getDataDescription() {
+    public function getDataDescription()
+    {
         return $this->dataDescription;
     }
 
@@ -95,7 +98,8 @@ class Saver extends DBWorker {
      * @access public
      */
 
-    public function getData() {
+    public function getData()
+    {
         return $this->data;
     }
 
@@ -106,7 +110,8 @@ class Saver extends DBWorker {
      * @param Data $data
      * @return void
      */
-    public function setData(Data $data) {
+    public function setData(Data $data)
+    {
         $this->data = $data;
     }
 
@@ -117,7 +122,8 @@ class Saver extends DBWorker {
      * @param string
      * @return void
      */
-    public function setMode($mode) {
+    public function setMode($mode)
+    {
         $this->mode = $mode;
     }
 
@@ -127,7 +133,8 @@ class Saver extends DBWorker {
      * @access public
      * @return string
      */
-    public function getMode() {
+    public function getMode()
+    {
         return $this->mode;
     }
 
@@ -137,7 +144,8 @@ class Saver extends DBWorker {
      * @access public
      * @return mixed
      */
-    public function getFilter() {
+    public function getFilter()
+    {
         return $this->filter;
     }
 
@@ -148,7 +156,8 @@ class Saver extends DBWorker {
      * @param mixed $filter
      * @return void
      */
-    public function setFilter($filter) {
+    public function setFilter($filter)
+    {
         $this->filter = $filter;
     }
 
@@ -159,7 +168,8 @@ class Saver extends DBWorker {
      * @return boolean
      * @todo возможность передачи в объект callback функции для пользовательской валидации
      */
-    public function validate() {
+    public function validate()
+    {
         $result = false;
 
         if (!$this->getData() || !$this->getDataDescription()) {
@@ -175,10 +185,10 @@ class Saver extends DBWorker {
                 $fieldName == 'lang_id' ||
                 !is_null($fieldDescription->getPropertyValue('customField'))
                 || $fieldDescription->getPropertyValue('nullable')
-                ){
+            ) {
                 continue;
             }
-            // если нет данных в POST-запросе для какого-либо из полей
+                // если нет данных в POST-запросе для какого-либо из полей
             elseif ($fieldData == false && $fieldName != 'lang_id') {
                 $this->addError($fieldName);
                 $result = false;
@@ -204,7 +214,8 @@ class Saver extends DBWorker {
      * @access public
      * @return array
      */
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
 
@@ -215,8 +226,9 @@ class Saver extends DBWorker {
      * @param string $fieldName
      * @return void
      */
-    public function addError($fieldName) {
-        array_push($this->errors, $this->translate('FIELD_'.$fieldName));
+    public function addError($fieldName)
+    {
+        array_push($this->errors, $this->translate('FIELD_' . $fieldName));
     }
 
     /**
@@ -225,67 +237,108 @@ class Saver extends DBWorker {
      * @access public
      * @return void
      */
-    public function save() {
+    public function save()
+    {
+        //Основные данные для сохранения
         $data = array();
-
+        //Данные для сохранения в связанные таблицы
+        //Начальное значение false, поскольку пустой массив будет говорить о том что поле существует. но ничего не выбрано
+        $m2mData = false;
         for ($i = 0; $i < $this->getData()->getRowCount(); $i++) {
             foreach ($this->getDataDescription() as $fieldName => $fieldInfo) {
-            	// исключаем поля, которым нет соответствия в БД
+                // исключаем поля, которым нет соответствия в БД
                 if (is_null($fieldInfo->getPropertyValue('customField')) && $this->getData()->getFieldByName($fieldName)) {
                     $fieldValue = $this->getData()->getFieldByName($fieldName)->getRowData($i);
-                    if($fieldInfo->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK){
-                    	$fieldValue = DataSet::cleanupHTML($fieldValue);
-                    }    
-            		// сохраняем поля из основной таблицы
-            		if ($fieldInfo->isMultilanguage() == false && $fieldInfo->getPropertyValue('key') !== true && $fieldInfo->getPropertyValue('languageID') == false) {
-            		    //Для типа флоат меняем запятые на точки
-            		    if ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_FLOAT) {
-                            $fieldValue = str_replace(',', '.', $fieldValue);
-            		    }
-            			$data[$fieldInfo->getPropertyValue('tableName')][$fieldName] = $fieldValue;
-            		}
-            		elseif ($fieldInfo->isMultilanguage() || $fieldInfo->getPropertyValue('languageID')) {
-            		    $data[$fieldInfo->getPropertyValue('tableName')][$this->data->getFieldByName('lang_id')->getRowData($i)][$fieldName] = $fieldValue;
-            		}
-            		elseif ($fieldInfo->getPropertyValue('key') === true) {
-            		    $pkName = $fieldName; // имя первичного ключа
-            		    $mainTableName = $fieldInfo->getPropertyValue('tableName'); // имя основной таблицы
-            		}
-            	}
+                    if ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_HTML_BLOCK) {
+                        $fieldValue = DataSet::cleanupHTML($fieldValue);
+                    }
+                    // сохраняем поля из основной таблицы
+                    if ($fieldInfo->isMultilanguage() == false && $fieldInfo->getPropertyValue('key') !== true && $fieldInfo->getPropertyValue('languageID') == false) {
+                        switch ($fieldInfo->getType()) {
+                            case FieldDescription::FIELD_TYPE_FLOAT:
+                                $fieldValue = str_replace(',', '.', $fieldValue);
+                                break;
+                            case FieldDescription::FIELD_TYPE_MULTI:
+                                $m2mValues = $fieldValue;
+                                //Поскольку мультиполе реально фейковое
+                                //записываем в него NULL
+                                $fieldValue = '';
+                                //Определяем имя m2m таблицы
+                                list($m2mTableName, $m2mPKName) = array_values($fieldInfo->getPropertyValue('key'));
+                                //Определяем имя поля
+                                $m2mInfo = $this->dbh->getColumnsInfo($m2mTableName);
+                                unset($m2mInfo[$m2mPKName]);
+                                foreach ($m2mValues as $val) {
+                                    $m2mData[$m2mTableName]['pk'] = $m2mPKName;
+                                    $m2mData[$m2mTableName][key($m2mInfo)][] = $val;
+                                }
+                                unset($m2mValues, $m2mPKName, $m2mInfo, $m2mTableName);
+                                break;
+                        }
+
+                        $data[$fieldInfo->getPropertyValue('tableName')][$fieldName] = $fieldValue;
+                    }
+                    elseif ($fieldInfo->isMultilanguage() || $fieldInfo->getPropertyValue('languageID')) {
+                        $data[$fieldInfo->getPropertyValue('tableName')][$this->data->getFieldByName('lang_id')->getRowData($i)][$fieldName] = $fieldValue;
+                    }
+                    elseif ($fieldInfo->getPropertyValue('key') === true) {
+                        $pkName = $fieldName; // имя первичного ключа
+                        $mainTableName = $fieldInfo->getPropertyValue('tableName'); // имя основной таблицы
+                    }
+                }
             }
         }
 
         if ($this->getMode() == QAL::INSERT) {
-            $data[$mainTableName] = (!isset($data[$mainTableName]))?array():$data[$mainTableName];
+            $data[$mainTableName] = (!isset($data[$mainTableName])) ? array() : $data[$mainTableName];
             $id = $this->dbh->modify(QAL::INSERT, $mainTableName, $data[$mainTableName]);
             unset($data[$mainTableName]);
-        	foreach ($data as $tableName => $langRow) {
+            foreach ($data as $tableName => $langRow) {
                 foreach ($langRow as $row) {
                     $row[$pkName] = $id;
-                	$result = $this->dbh->modify(QAL::INSERT, $tableName, $row);
+                    /*$result = */
+                    $this->dbh->modify(QAL::INSERT, $tableName, $row);
 
                 }
-        	}
+            }
             $result = $id;
+            if (is_array($m2mData)) {
+                foreach ($m2mData as $tableName => $m2mInfo) {
+                    $this->dbh->modify(QAL::DELETE, $tableName, null, array($m2mInfo['pk'] => $id));
+                }
+            }
         }
         else {
             if (isset($data[$mainTableName])) {
-                $result = $this->dbh->modify(QAL::UPDATE, $mainTableName, $data[$mainTableName], $this->getFilter());
-            	unset($data[$mainTableName]);
+                /*$result = */
+                $this->dbh->modify(QAL::UPDATE, $mainTableName, $data[$mainTableName], $this->getFilter());
+                unset($data[$mainTableName]);
             }
             foreach ($data as $tableName => $langRow) {
-            	foreach ($langRow as $langID => $row) {
-            	    try {
-                        $result = $this->dbh->modify(QAL::INSERT, $tableName, array_merge($row, $this->getFilter()));
-            	    }
-            	    catch (Exception $e) {
-                        $result = $this->dbh->modify(QAL::UPDATE , $tableName, $row, array_merge($this->getFilter(), array('lang_id' => $langID)));
-            	    }
-            	}
+                foreach ($langRow as $langID => $row) {
+                    try {
+                        /*$result = */
+                        $this->dbh->modify(QAL::INSERT, $tableName, array_merge($row, $this->getFilter()));
+                    }
+                    catch (Exception $e) {
+                        /*$result = */
+                        $this->dbh->modify(QAL::UPDATE, $tableName, $row, array_merge($this->getFilter(), array('lang_id' => $langID)));
+                    }
+                }
             }
-            if($pkName)
+            if ($pkName)
                 $result = $this->getData()->getFieldByName($pkName)->getRowData(0);
             else $result = true;
+        }
+        
+        if (is_array($m2mData) && !empty($m2mData)) {
+            foreach ($m2mData as $tableName => $m2mInfo) {
+                $pk = $m2mInfo['pk'];
+                unset($m2mInfo['pk']);
+                foreach (current($m2mInfo) as $fieldValue) {
+                    $this->dbh->modify(QAL::INSERT, $tableName, array(key($m2mInfo) => $fieldValue, $pk => $id));
+                }
+            }
         }
 
         return ($this->result = $result);
@@ -297,7 +350,9 @@ class Saver extends DBWorker {
      * @access public
      * @return mixed
      */
-    public function getResult() {
+    public function getResult()
+    {
         return $this->result;
     }
 }
+

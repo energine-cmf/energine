@@ -15,15 +15,22 @@
  * @subpackage forms
  * @author d.pavka@gmail.com
  */
-class Form extends DBDataSet {
+class Form extends DBDataSet
+{
     /*
      * Form identifier
      */
     private $formID;
-    /*
+    /**
      * Form info
+     * @var Saver
      */
-    private $form;
+    private $saver;
+    /**
+     * @var FormResults
+     */
+    //private $results;
+
     /**
      * Конструктор класса
      *
@@ -32,7 +39,8 @@ class Form extends DBDataSet {
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name, $module, array $params = null)
+    {
         parent::__construct($name, $module, $params);
         $filter = array('form_is_active' => 1);
         if ($formID = $this->getParam('id')) {
@@ -60,7 +68,8 @@ class Form extends DBDataSet {
         $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
 
-    protected function defineParams() {
+    protected function defineParams()
+    {
         return array_merge(
             parent::defineParams(),
             array(
@@ -73,7 +82,8 @@ class Form extends DBDataSet {
     /*
     * Викликаємо у випадку помилки з captcha
     */
-    protected function failure($errorMessage, $data) {
+    protected function failure($errorMessage, $data)
+    {
         $this->config->setCurrentState('main');
         $this->prepare();
         $eFD = new FieldDescription('error_message');
@@ -86,7 +96,8 @@ class Form extends DBDataSet {
         $this->addFormDescription();
     }
 
-    protected function prepare() {
+    protected function prepare()
+    {
         parent::prepare();
         if (
             $this->document->getUser()->isAuthenticated()
@@ -98,7 +109,8 @@ class Form extends DBDataSet {
         }
     }
 
-    protected function createDataDescription() {
+    protected function createDataDescription()
+    {
         $result = parent::createDataDescription();
         //Create captcha field for main state - when displaying form.
         if (!in_array($this->getState(), array('save', 'success'))) {
@@ -123,7 +135,8 @@ class Form extends DBDataSet {
      * @access protected
      */
 
-    protected function saveData($data) {
+    protected function saveData($data)
+    {
         //Обрабатываем аплоадсы
 
         if (isset($_FILES) && !empty($_FILES)) {
@@ -171,7 +184,7 @@ class Form extends DBDataSet {
 
         $dataObject = new Data();
         foreach ($data[$this->getTableName()] as $key => $value) {
-            if(is_scalar($value))
+            if (is_scalar($value))
                 $data[$this->getTableName()][$key] = strip_tags($value);
         }
         $dataObject->load($data);
@@ -201,7 +214,8 @@ class Form extends DBDataSet {
 
     }
 
-    protected function send() {
+    protected function send()
+    {
         $postTableName = str_replace('.', '_', $this->getTableName());
         if (!isset($_POST[$postTableName])) {
             E()->getResponse()->redirectToCurrentSection();
@@ -214,6 +228,7 @@ class Form extends DBDataSet {
             }
 
             if ($result = $this->saveData($data)) {
+
                 $data = $data[$this->getTableName()];
 
 
@@ -223,6 +238,25 @@ class Form extends DBDataSet {
                     $data[$key] = array('translation' => $this->translate(
                         'FIELD_' . $key),
                                         'value' => $value);
+                    if ($fd = $this->saver->getDataDescription()->getFieldDescriptionByName($key)) {
+                        if (($fd->getType() == FieldDescription::FIELD_TYPE_MULTI) && is_array($keyInfo = $fd->getPropertyValue('key'))) {
+                            $m2mTableName = $keyInfo['tableName'];
+                            $m2mPKName = $keyInfo['fieldName'];
+                            //Если существует таблица связанная
+                            if ($this->dbh->tableExists($m2mTableName)) {
+                                $tableInfo = $this->dbh->getColumnsInfo($m2mTableName);
+                                unset($tableInfo[$m2mPKName]);
+                                $m2mValueFieldInfo = current($tableInfo);
+                                if (isset($m2mValueFieldInfo['key']) && is_array($m2mValueFieldInfo)) {
+                                    list($values,,) = $this->dbh->getForeignKeyData($m2mValueFieldInfo['key']['tableName'], $m2mValueFieldInfo['key']['fieldName'], E()->getLanguage()->getCurrent(), array($m2mValueFieldInfo['key']['tableName'].'.'.$m2mValueFieldInfo['key']['fieldName'] => $value));
+                                    if(is_array($values)){
+                                        $data[$key]['value'] = implode(',', array_map(function($row){ return $row['fk_name'];}, $values));
+                                    }
+                                }
+
+                            }
+                        }
+                    }
                 }
 
                 try {
@@ -240,6 +274,7 @@ class Form extends DBDataSet {
 
                     //Create text to send. The last one will contain: translations of variables and  variables.
                     $body = '';
+
                     foreach ($data as $value) {
                         $body .=
                                 $value['translation'] . ': ' . $value['value'] .
@@ -269,14 +304,15 @@ class Form extends DBDataSet {
 
         }
         catch (Exception $e) {
-            $this->failure($e->getMessage(), $data[$this->getTableName()]);
+            $this->failure($e->getMessage(), $data);
         }
     }
 
     /*
      * Перевіряє капчу
      */
-    protected function checkCaptcha() {
+    protected function checkCaptcha()
+    {
         require_once('core/kernel/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');
         $resp = recaptcha_check_answer($privatekey,
@@ -290,7 +326,8 @@ class Form extends DBDataSet {
         }
     }
 
-    protected function success() {
+    protected function success()
+    {
         $this->setBuilder($this->createBuilder());
 
         $dataDescription = new DataDescription();
@@ -317,7 +354,8 @@ class Form extends DBDataSet {
      * @return string
      * @access private
      */
-    protected function getRecipientEmail($options = false) {
+    protected function getRecipientEmail($options = false)
+    {
         $result =
                 simplifyDBResult($this->dbh->select('frm_forms', array('form_email_adresses'), array('form_id' => $this->formID)),
                                  'form_email_adresses',
@@ -325,7 +363,8 @@ class Form extends DBDataSet {
         return $result;
     }
 
-    protected function main() {
+    protected function main()
+    {
         //If we don't have such form - return recodset with error
         //Otherwise run main method
         if (!$this->formID)
@@ -336,7 +375,8 @@ class Form extends DBDataSet {
         }
     }
 
-    private function returnEmptyRecordset() {
+    private function returnEmptyRecordset()
+    {
         $f = new Field('error_msg');
         $fd = new FieldDescription('error_msg');
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
@@ -361,7 +401,8 @@ class Form extends DBDataSet {
     * @return void
     * @access private
     */
-    private function addFormDescription() {
+    private function addFormDescription()
+    {
         $result = $this->dbh->select('frm_forms_translation',
                                      array('form_name', 'form_annotation_rtf'),
                                      array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
@@ -377,4 +418,21 @@ class Form extends DBDataSet {
             $this->getDataDescription()->addFieldDescription($fd);
         }
     }
+
+    /*protected function showResult(){
+        $this->request->shiftPath(1);
+        $this->results =
+                $this->document->componentManager->createComponent('formResults', 'forms', 'FormResults', array('form_id' => $this->formID, 'config' => 'core/modules/forms/config/FormResultsSimple.component.xml'));
+        $this->results->run();
+    }
+
+    public function build(){
+        if($this->getState() == 'showResult'){
+            $result = $this->results->build();
+        }
+        else {
+            $result = parent::build();
+        }
+        return $result;
+    }*/
 }

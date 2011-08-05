@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content html_class="colset">
-    <container name="center" column="column">
+    <container name="center" column="column" ><!--layout="content"-->
         <container name="formEditorContainer" block="alfa"  layout="content" widget="static" rounded="rounded">
             <component name="form" class="Form" module="forms" >
                 <params>
-                    <param name="id">1</param>
+                    <param name="id">0</param>
                 </params>
             </component>
         </container>

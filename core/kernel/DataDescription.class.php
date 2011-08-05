@@ -120,10 +120,27 @@ class DataDescription extends Object implements Iterator {
         }
         return $fieldDescription;
     }
+    /**
+     * Возвращает перечень описаний полей определнного типа/ов
+     *
+     * @param $types string|array
+     * @return FieldDescription[]
+     */
+    public function getFieldDescriptionsByType($types){
+        $result = array();
+        if(!is_array($types)) $types = array($types);
+        foreach($this->fieldDescriptions as $fieldDescription){
+            if(in_array($fieldDescription->getType(), $types)){
+                array_push($result, $fieldDescription);
+            }
+        }
+        return $result;
+    }
+
 
     /**
      * Возвращает список имён полей данных.
-     *
+     * @todo Не очень красивый метод, нужно бы как то без него обойтись
      * @return array
      * @access public
      */

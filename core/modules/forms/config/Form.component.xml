@@ -26,4 +26,10 @@
             <pattern>/success/</pattern>
         </uri_patterns>
     </state>
+    <!--<state name="showResult">
+        <uri_patterns>
+            <pattern>/results/</pattern>
+            <pattern>/results/[any]/</pattern>
+        </uri_patterns>
+    </state>-->
 </configuration>

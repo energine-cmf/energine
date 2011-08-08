@@ -105,7 +105,7 @@
     </xsl:template>
 
     <!-- Заголовок блока по-умолчанию -->
-    <xsl:template match="component" mode="block_header">
+    <xsl:template match="container | component" mode="block_header">
         <xsl:if test="@title">
             <div class="block_header clearfix">                
                 <h2 class="block_title"><xsl:value-of select="@title"/></h2>
@@ -114,8 +114,8 @@
     </xsl:template>
 
     <!-- Контент блока по-умолчанию -->
-    <xsl:template match="component" mode="block_content">
+    <xsl:template match="container | component" mode="block_content">
         <xsl:apply-templates select="."/>
-    </xsl:template>
+    </xsl:template>    
     
 </xsl:stylesheet>

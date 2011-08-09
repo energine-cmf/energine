@@ -7,6 +7,7 @@
             </javascript>
             <toolbar>
                 <control id="view" title="BTN_VIEW" type="button" onclick="view"/>
+                <control id="csv" title="BTN_EXPORT" type="button" onclick="csv"/>
                 <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
                 <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
             </toolbar>
@@ -27,7 +28,11 @@
                 <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
             </uri_patterns>
         </state>
-
+        <state name="exportCSV" rights="3">
+            <uri_patterns>
+                <pattern>/csv/</pattern>
+            </uri_patterns>
+        </state>
         <state name="printData" rights="3">
             <uri_patterns>
                 <pattern>/print/</pattern>

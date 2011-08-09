@@ -7,7 +7,7 @@
             <toolbar>
                 <control id="view" title="BTN_VIEW" type="button" onclick="view"/>
                 <control id="sep02" type="separator"/>
-                <control id="csv" title="BTN_EXPORT" type="button" onclick="csv"/>
+                <control id="csv" title="BTN_EXPORT_CSV" type="button" onclick="csv"/>
                 <control id="sep01" type="separator"/>
                 <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
             </toolbar>

@@ -623,6 +623,19 @@ class Grid extends DBDataSet
                               )
                 )
                     $value = strftime($format, $value);
+                elseif($fieldInfo->getType() == FieldDescription::FIELD_TYPE_MULTI ){
+                    if(is_array($value)){
+                        $fvalues = $fieldInfo->getAvailableValues();
+                        $tmpValue = $value;
+                        $value = array();
+                        foreach($tmpValue as $v){
+                            if(isset($fvalues[$v])){
+                                array_push($value, $fvalues[$v]['value']);
+                            }
+                        }
+                        $value = implode(', ', $value);
+                    }
+                }
                 $data[$i + 1][] = $value;
             }
         }

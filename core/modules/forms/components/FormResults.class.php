@@ -66,8 +66,9 @@ class FormResults extends Grid {
     protected function main(){
         if(!$this->formID)
             $this->returnEmptyRecordset();
-        else
+        else{
             parent::main();
+        }
     }
 
     private function returnEmptyRecordset(){

@@ -616,13 +616,15 @@ class Grid extends DBDataSet
                     $value = $f->getRowData($i);
 
                 if (
-                    $format = $fieldInfo->getPropertyValue('outputFormat')
+                    ($format = $fieldInfo->getPropertyValue('outputFormat'))
                               &&
                               (
                               in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_DATETIME))
                               )
-                )
+                ){
                     $value = strftime($format, $value);
+
+                }
                 elseif($fieldInfo->getType() == FieldDescription::FIELD_TYPE_MULTI ){
                     if(is_array($value)){
                         $fvalues = $fieldInfo->getAvailableValues();

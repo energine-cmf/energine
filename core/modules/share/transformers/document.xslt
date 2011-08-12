@@ -54,7 +54,6 @@
                 <xsl:if test="not($DOC_PROPS[@name='single'])"  >
                     <xsl:call-template name="interface_js"/>
                 </xsl:if>
-
                 <script type="text/javascript">
                     var componentToolbars = [];
                     <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@name!='PageEditor']) &gt; 0">
@@ -66,7 +65,8 @@
                                 debug :true,
                             </xsl:if>
                             base : '<xsl:value-of select="$BASE"/>',
-                            static : '<xsl:value-of select="$STATIC_URL"/>'
+                            static : '<xsl:value-of select="$STATIC_URL"/>',
+                            lang : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
                         });
                         try {
                         ScriptLoader.load(<xsl:for-each select="set:distinct($COMPONENTS/javascript/behavior[@name!='PageEditor']/@name)">'<xsl:value-of select="../@path" /><xsl:value-of select="." />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);

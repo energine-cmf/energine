@@ -33,10 +33,11 @@ class SelectorValuesEditor extends Grid {
          * "." на "_"
          * поэтому мы получаем POST по хитрому
          */
-        
+
         $_POST = getRealPOST();
         parent::__construct($name, $module, $params);
         $this->setTableName($this->getParam('table_name'));
+        //stop(file_get_contents("php://input"), $_POST, $_POST[$this->getTableName()]);
     }
 
     protected function defineParams() {
@@ -47,6 +48,7 @@ class SelectorValuesEditor extends Grid {
             )
         );
     }
+    
 }
 
 
@@ -113,12 +115,14 @@ function getRealPOST() {
             return false;
         $tokens = explode("&", $url);
         $urlVars = array();
+
         foreach ($tokens as $token) {
             $value = string_pair($token, "=", "");
+            $token = urldecode($token);
             if (preg_match('/^([^\[]*)(\[.*\])$/', $token, $matches)) {
                 parse_query_string_array($urlVars, $matches[1], $matches[2], $value);
             } else {
-                $urlVars[urldecode($token)] = urldecode($value);
+                $urlVars[$token] = urldecode($value);
             }
         }
         return $urlVars;

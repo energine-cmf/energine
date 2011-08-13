@@ -20,7 +20,7 @@ var GroupForm = new Class({
         event = new Event(event || window.event);
 
         if (!radio.hasClass('groupRadio')) {
-            console.log(radio.getParent('tbody').getElement('tr.section_name td.' + radio.getParent('td').getProperty('class') + ' input[type=radio]'));
+            //console.log(radio.getParent('tbody').getElement('tr.section_name td.' + radio.getParent('td').getProperty('class') + ' input[type=radio]'));
             radio.getParent('tbody').getElement('tr.section_name td.' +
                     radio.getParent('td').getProperty('class') +
                     ' input[type=radio]').removeProperty('checked');

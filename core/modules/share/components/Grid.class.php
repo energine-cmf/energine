@@ -588,6 +588,7 @@ class Grid extends DBDataSet
     /**
      * Выводит список в файл в формате CSV
      *
+     * @todo не подхватывает фильтр, а должен
      * @return void
      * @access protected
      */

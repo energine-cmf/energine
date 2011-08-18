@@ -249,7 +249,7 @@ var showhideField = function(obj, fieldName, fieldLanguage) {
 }
 
 // Для IE создаем console.log
-if (typeof console == 'undefined') {
+/*if (typeof console == 'undefined') {
     var console = {
         _dump : function(d, l) {
             if (l == null)
@@ -296,4 +296,4 @@ if (typeof console == 'undefined') {
             alert(result);
         }
     }
-}
+}*/

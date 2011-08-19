@@ -44,6 +44,7 @@ var PageEditor = new Class({
 		toolbar.appendControl(new Toolbar.Separator({ id: 'sep5' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'imagemngr', icon: 'images/toolbar/image.gif', title:Energine.translations.get('BTN_INSERT_IMAGE'), action: 'imageManager' }));
 		toolbar.appendControl(new Toolbar.Button({ id: 'filemngr', icon: 'images/toolbar/filemngr.gif', title: Energine.translations.get('BTN_FILE_LIBRARY'), action: 'fileLibrary' }));
+		toolbar.appendControl(new Toolbar.Button({ id: 'extflash', icon: 'images/toolbar/embed.gif', title: Energine.translations.get('BTN_EXT_FLASH'), action: 'insertExtFlash' }));
 		toolbar.bindTo(this);
 		return toolbar;
 	},

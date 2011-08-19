@@ -63,24 +63,24 @@ var RichEditor = new Class({
                 break;
             case 'CreateLink' :
                 this.wrapSelectionWith('a', 'href="'
-                        + window.prompt('URL') + '"');
+                    + window.prompt('URL') + '"');
                 break;
             case 'JustifyLeft' :
                 this
-                        .wrapSelectionWith('p',
-                        'style="text-align: left;"');
+                    .wrapSelectionWith('p',
+                    'style="text-align: left;"');
                 break;
             case 'JustifyCenter' :
                 this.wrapSelectionWith('p',
-                        'style="text-align: center;"');
+                    'style="text-align: center;"');
                 break;
             case 'JustifyRight' :
                 this.wrapSelectionWith('p',
-                        'style="text-align: right;"');
+                    'style="text-align: right;"');
                 break;
             case 'JustifyFull' :
                 this.wrapSelectionWith('p',
-                        'style="text-align: justify;"');
+                    'style="text-align: justify;"');
                 break;
             default : // not used
         }
@@ -88,13 +88,13 @@ var RichEditor = new Class({
     replaceSelectionWith : function(html) {
         var sel = this.textarea.getSelectedRange();
         this.textarea.value = this.textarea.value.substr(0, sel.start)
-                + html + this.textarea.value.substr(sel.end);
+            + html + this.textarea.value.substr(sel.end);
     },
 
     wrapSelectionWith : function(tagName, attrs) {
         attrs = (attrs ? ' ' + attrs : '');
         this.textarea.insertAroundCursor({before: '<' + tagName + attrs +
-                '>' , defaultMiddle: '', after: '</' + tagName + '>'});
+            '>' , defaultMiddle: '', after: '</' + tagName + '>'});
     },
 
     bold : function() {
@@ -133,7 +133,7 @@ var RichEditor = new Class({
         }
         ModalBox.open({
             url : this.area.getProperty('single_template')
-                    + 'file-library/image/',
+                + 'file-library/image/',
             onClose : this.insertImage.bind(this)
         });
 
@@ -145,7 +145,7 @@ var RichEditor = new Class({
 
         ModalBox.open({
             url : this.area.getProperty('single_template')
-                    + 'file-library',
+                + 'file-library',
             onClose : this.insertFileLink.bind(this)
         });
     },
@@ -157,7 +157,7 @@ var RichEditor = new Class({
 
         ModalBox.open({
             url : this.area.getProperty('single_template')
-                    + 'imagemanager',
+                + 'imagemanager',
             onClose : function(image) {
                 //TODO Fix image margins in IE
 
@@ -179,35 +179,35 @@ var RichEditor = new Class({
                 } else {
                     if (Browser.Engine.gecko && !this.fallback_ie) {
                         var imgStr = '<img src="'
-                                + image.filename + '" width="'
-                                + image.width + '" height="'
-                                + image.height + '" align="'
-                                + image.align + '" alt="'
-                                + image.alt + '" border="0" style="';
+                            + image.filename + '" width="'
+                            + image.width + '" height="'
+                            + image.height + '" align="'
+                            + image.align + '" alt="'
+                            + image.alt + '" border="0" style="';
                         ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'].each(function(marginProp) {
                             if (image[marginProp] != 0) {
                                 imgStr += marginProp + ':' + image[marginProp] +
-                                        'px;';
+                                    'px;';
                             }
 
                         });
                         imgStr += '" />';
                         document.execCommand('inserthtml',
-                                false, imgStr);
+                            false, imgStr);
                         this.dirty = true;
                         return;
                     } else if (this.fallback_ie) {
                         this.textarea.insertAtCursor('<img src="'
-                                + image.filename
-                                + '" width="'
-                                + image.width
-                                + '" height="'
-                                + image.height
-                                + '" align="'
-                                + image.align
-                                + '" alt="'
-                                + image.alt
-                                + '" border="0" />', true);
+                            + image.filename
+                            + '" width="'
+                            + image.width
+                            + '" height="'
+                            + image.height
+                            + '" align="'
+                            + image.align
+                            + '" alt="'
+                            + image.alt
+                            + '" border="0" />', true);
                         this.dirty = true;
                         return;
                     }
@@ -215,11 +215,11 @@ var RichEditor = new Class({
                     this.currentRange.select();
                     if (this.validateParent(this.currentRange)) {
                         var imgStr = '<img src="'
-                                + image.filename + '" width="'
-                                + image.width + '" height="'
-                                + image.height + '" align="'
-                                + image.align + '" alt="'
-                                + image.alt + '" border="0" />';
+                            + image.filename + '" width="'
+                            + image.width + '" height="'
+                            + image.height + '" align="'
+                            + image.align + '" alt="'
+                            + image.alt + '" border="0" />';
                         this.currentRange.pasteHTML(imgStr);
                         this.dirty = true;
                     }
@@ -234,8 +234,8 @@ var RichEditor = new Class({
         var filename = data['upl_path'];
         if (this.fallback_ie) {
             this.textarea.insertAtCursor(
-                    '<a href="' + filename + '">' + data['upl_name'] +
-                            '</a>', true);
+                '<a href="' + filename + '">' + data['upl_name'] +
+                    '</a>', true);
             return;
         }
         if (this.currentRange.select)
@@ -246,10 +246,10 @@ var RichEditor = new Class({
             if (this.currentRange.pasteHTML) {
                 if (this.currentRange.text != '') {
                     this.currentRange.pasteHTML('<a href="' + filename
-                            + '">' + this.currentRange.text + '</a>');
+                        + '">' + this.currentRange.text + '</a>');
                 } else {
                     this.currentRange.pasteHTML('<a href="' + filename
-                            + '">' + filename + '</a>');
+                        + '">' + filename + '</a>');
                 }
             }
             // FF
@@ -257,15 +257,62 @@ var RichEditor = new Class({
                 var str;
                 if (this.currentRange.toString())
                     str = '<a href="' + filename + '">'
-                            + this.currentRange.toString() + '</a>';
+                        + this.currentRange.toString() + '</a>';
                 else
                     str = '<a href="' + filename + '">' + filename
-                            + '</a>';
+                        + '</a>';
 
                 document.execCommand('inserthtml', false, str);
             }
             this.dirty = true;
         }
+    },
+    insertExtFlash: function() {
+        this.currentRange = false;
+        if (Energine.supportContentEdit && !this.fallback_ie)
+            this.currentRange = this._getSelection().createRange();
+
+        ModalBox.open({
+            onClose : function(result) {
+                if (result && result.result) {
+                    result = result.result;
+                    if (this.fallback_ie) {
+                                this.textarea.insertAtCursor(result, true);
+                                return;
+                            }
+                    if (this.currentRange.select)
+                        this.currentRange.select();
+
+                    if (this.validateParent(this.currentRange)) {
+                        // IE
+                        if (this.currentRange.pasteHTML) {
+                            if (this.currentRange.text != '') {
+                                this.currentRange.pasteHTML(result);
+                            } else {
+                                this.currentRange.pasteHTML(result);
+                            }
+                        }
+                        // FF
+                        else {
+                            document.execCommand('inserthtml', false, result);
+                        }
+                        this.dirty = true;
+                    }
+                }
+            }.bind(this),
+            'form': {
+                title: Energine.translations.get('TXT_INSERT_EMBED_CODE'),
+                field:
+                {
+                    'name':'source',
+                    'type':'textarea',
+                    'title':Energine.translations.get('FIELD_EMBED_CODE')
+                }
+                /*,
+                 'toolbar':toolbar*/
+
+            }
+        });
     },
     processPaste : function(event) {
         var selection = this._getSelection();
@@ -280,24 +327,24 @@ var RichEditor = new Class({
         orig_tr.select();
 
         orig_tr.pasteHTML(this.cleanMarkup(this.area
-                .getProperty('componentPath'),
-                this.pasteArea.innerHTML, true));
+            .getProperty('componentPath'),
+            this.pasteArea.innerHTML, true));
 
         this.pasteArea.innerHTML = '';
     },
     processPasteFF : function(event) {
-            (function() {
-                this.area.innerHTML = this.cleanMarkup(this.area
-                        .getProperty('componentPath'),
-                        this.area.innerHTML, true);
+        (function() {
+            this.area.innerHTML = this.cleanMarkup(this.area
+                .getProperty('componentPath'),
+                this.area.innerHTML, true);
 
-            }).delay(300, this);
+        }).delay(300, this);
     },
     cleanMarkup : function(path, data, aggressive) {
         var result;
         new Request({
             url : path + 'cleanup'
-                    + (aggressive ? '?aggressive=1' : ''),
+                + (aggressive ? '?aggressive=1' : ''),
             method : 'post',
             async : false,
             onSuccess : function(responseText) {
@@ -312,7 +359,7 @@ var RichEditor = new Class({
             document.execCommand("FormatBlock", false, '<P>');
         } else {
             document.execCommand("FormatBlock", false, '<'
-                    + selectedOption + '>');
+                + selectedOption + '>');
         }
         control.select.value = '';
     },

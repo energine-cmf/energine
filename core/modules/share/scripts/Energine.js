@@ -77,12 +77,18 @@ var ScriptLoader = function() {
 var isset = function(variable) {
     return ('undefined' != typeof(variable));
 }
+/*
+var $chk = function(obj){
+    return !!(obj || obj === 0);
+};
+*/
+
 var Energine = {
     debug : false,
     base : null,
     translations: new Hash(),
-    supportContentEdit : Browser.Engine.trident || Browser.Engine.gecko ||
-            Browser.Engine.presto
+    supportContentEdit : Browser.ie || Browser.firefox ||
+            Browser.opera || Browser.chrome
 }
 Energine.request = {
     request : function(uri, data, onSuccess, onUserError, onServerError, method) {

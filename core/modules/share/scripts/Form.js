@@ -639,7 +639,14 @@ Form.RichEditor = new Class({
             title : Energine.translations.get('BTN_INSERT_IMAGE'),
             action : 'imageManager'
         }));
-
+        this.toolbar.appendControl(
+            new Toolbar.Button({
+                id: 'extflash',
+                icon: 'images/toolbar/embed.gif',
+                title: Energine.translations.get('BTN_EXT_FLASH'),
+                action: 'insertExtFlash'
+            })
+        );
         $pick(this.area, this.textarea).getParent().grab(this.toolbar.getElement(), 'top');
 
         this.toolbar.element.setStyle('width', '650px');

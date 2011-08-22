@@ -275,9 +275,16 @@ class Form extends DBDataSet
                     //Create text to send. The last one will contain: translations of variables and  variables.
                     $body = '';
 
-                    foreach ($data as $value) {
+                    foreach ($data as $fieldname=>$value) {
+                        if($this->getDataDescription()->getFieldDescriptionByName($fieldname)->getType()!= FieldDescription::FIELD_TYPE_BOOL){
+                            $val = $value['value'];
+                        }
+                        else {
+                            $val = $this->translate(((int)$value['value'] === 0)?'TXT_NO':'TXT_YES');
+                        }
+
                         $body .=
-                                $value['translation'] . ': ' . $value['value'] .
+                                '<strong>'.$value['translation'] . '</strong>: ' . $val .
                                 '<br>';
                     }
                     $mailer->setFrom($this->getConfigValue('mail.from'))->

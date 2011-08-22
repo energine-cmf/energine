@@ -595,6 +595,14 @@ class Grid extends DBDataSet
 
     protected function exportCSV()
     {
+        $sp = $this->getStateParams(true);
+        if(isset($sp['encoding'])){
+            $encoding = $sp['encoding'];
+        }
+        else {
+            $encoding = 'utf-8';
+        }
+
         //Если у нас есть таблица с переводами то експортить не получится
         if ($this->getTranslationTableName()) {
             throw new SystemException('ERR_CANT_EXPORT', SystemException::ERR_DEVELOPER);
@@ -643,7 +651,9 @@ class Grid extends DBDataSet
             }
         }
         $data = array_reduce($data, array($this, 'prepareCSVString'));
-
+        if($encoding != 'utf-8'){
+            $data = iconv('utf-8', $encoding, $data);
+        }
         $this->downloadFile($data, $MIMEType, $filename);
     }
 

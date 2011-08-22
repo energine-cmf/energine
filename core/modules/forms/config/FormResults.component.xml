@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    
         <state name="main">
             <javascript>
                 <behavior name="GridManager"/>
@@ -12,9 +11,6 @@
                 <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
             </toolbar>
         </state>
-
-
-
         <state name="delete" rights="2">
             <uri_patterns>
                 <pattern>/[int]/delete/</pattern>
@@ -29,6 +25,9 @@
             </uri_patterns>
         </state>
         <state name="exportCSV" rights="3">
+            <params>
+                <param name="encoding">cp1251</param>
+            </params>
             <uri_patterns>
                 <pattern>/csv/</pattern>
             </uri_patterns>
@@ -38,7 +37,6 @@
                 <pattern>/print/</pattern>
             </uri_patterns>
         </state>
-
         <state name="view">
             <uri_patterns>
                 <pattern>/[int]/</pattern>

@@ -222,6 +222,26 @@ final class ComponentConfig
         }
         return $result;
     }
+    /**
+     * Возвращает перечень параметров состояния заданных в конфигурационном файле
+     * @return array || bool
+     */
+    public function getCurrentStateParams(){
+        $result = false;
+        //Если уже задано текущее состояние
+        // и конфиг не пуст
+        //и в нем есть узел параметров
+        //и в этом узле есть дочерние
+        if($this->currentState && !$this->isEmpty() && isset($this->currentState->params) && sizeof($this->currentState->params->children())){
+            $result = array();
+            foreach($this->currentState->params->param as $tagName=>$param){
+                if(($tagName == 'param') && isset($param['name'])){
+                    $result[(string)$param['name']] = (string)$param;
+                }
+            }
+        }
+        return $result;
+    }
 
     /**
      * Возвращает флаг, указывающий какой из предложенных паттернов более специфичен

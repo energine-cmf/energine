@@ -302,6 +302,7 @@ class Component extends DBWorker implements IBlock {
         elseif (isset($_POST[$this->getName()]['state'])) {
             $this->state = $_POST[$this->getName()]['state'];
         }
+
         // устанавливаем права на действие из конфигурации, если определены
         if (!$this->config->isEmpty()) {
             $this->config->setCurrentState($this->getState());
@@ -309,6 +310,10 @@ class Component extends DBWorker implements IBlock {
 
             if (isset($sc['rights'])) {
                 $this->rights = (int) $sc['rights'];
+            }
+            
+            if($csp = $this->config->getCurrentStateParams()){
+                $this->stateParams = array_merge($this->stateParams, $csp);
             }
         }
 

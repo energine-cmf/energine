@@ -29,6 +29,9 @@
             <uri_patterns>
                 <pattern>/csv/</pattern>
             </uri_patterns>
+            <params>
+                <param name="encoding">cp1251</param>
+            </params>
         </state>
         <state name="printData" rights="2">
             <uri_patterns>

@@ -14,7 +14,7 @@
                 <control id="add" title="BTN_CREATE" type="button" onclick="add"/>
                 <control id="edit" title="BTN_EDIT_PROPERTIES" type="button" onclick="edit"/>
                 <control id="edit_form" title="BTN_EDIT_FORM" type="button" onclick="editForm"/>
-                <control id="view_form" title="BTN_VIEW_FORM" type="button" onclick="viewForm"/>
+                <!--<control id="view_form" title="BTN_VIEW_FORM" type="button" onclick="viewForm"/>-->
                 <control id="show_results" title="BTN_SHOW_RESULTS" type="button" onclick="showResults"/>
                 <control id="sep1" type="separator"/>
                 <control id="delete" title="BTN_DELETE" type="button"

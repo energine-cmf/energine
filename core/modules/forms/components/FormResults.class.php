@@ -15,7 +15,8 @@
  * @subpackage forms
  * @author d.pavka@gmail.com
  */
-class FormResults extends Grid {
+class FormResults extends Grid
+{
     /*
      * @var formID
      */
@@ -29,18 +30,20 @@ class FormResults extends Grid {
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name, $module, array $params = null)
+    {
         parent::__construct($name, $module, $params);
         //Якщо ідентифікатор форми вказаний невірно або не вказаний, то не вивалювати помилку, а красиво показати.
         if (!$this->formID = $this->getParam('form_id'))
             $this->formID = false;
         else
-            $this->setTableName($this->getConfigValue('forms.database') . '.form_' .$this->formID);
+            $this->setTableName($this->getConfigValue('forms.database') . '.form_' . $this->formID);
 
         $this->setOrder(array('pk_id' => QAL::DESC));
     }
 
-    protected function defineParams() {
+    protected function defineParams()
+    {
         return array_merge(
             parent::defineParams(),
             array(
@@ -49,7 +52,8 @@ class FormResults extends Grid {
         );
     }
 
-    protected function loadDataDescription() {
+    protected function loadDataDescription()
+    {
         $result = parent::loadDataDescription();
         //Якщо у конфігі вказано обмеження на кількість полів, які мають відображатися у Grid'і (states: main, getRawData), то застосувати його.
         //Інакше відобразити всі поля.
@@ -63,15 +67,25 @@ class FormResults extends Grid {
         return $result;
     }
 
-    protected function main(){
-        if(!$this->formID)
+    protected function main()
+    {
+        if (!$this->formID)
             $this->returnEmptyRecordset();
-        else{
+        else {
             parent::main();
         }
     }
 
-    private function returnEmptyRecordset(){
+    protected function createDataDescription(){
+        $result = parent::createDataDescription();
+        if(in_array($this->getState(), array('main', 'getRawData') )){
+            $result->getFieldDescriptionByName('pk_id')->setType(FieldDescription::FIELD_TYPE_INT);
+        }
+        return $result;
+    }
+
+    private function returnEmptyRecordset()
+    {
         //Тип форми змінюється для того, щоб xslt опрацював помилку не в Grid'і.
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->removeProperty('exttype');

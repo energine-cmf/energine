@@ -113,7 +113,8 @@ class Form extends DBDataSet
     {
         $result = parent::createDataDescription();
         //Create captcha field for main state - when displaying form.
-        if (!in_array($this->getState(), array('save', 'success'))) {
+        if (!in_array($this->getState(), array('send', 'success'))) {
+            $result->removeFieldDescription($result->getFieldDescriptionByName('form_date'));
             $fd = new FieldDescription('captcha');
             $fd->setType(FieldDescription::FIELD_TYPE_CAPTCHA);
             $result->addFieldDescription($fd);
@@ -180,7 +181,8 @@ class Form extends DBDataSet
         //Загружаем в него инфу о колонках
         $DBDataDescription->load($this->loadDataDescription());
         $this->setDataDescription($dataDescriptionObject->intersect($DBDataDescription));
-
+        $this->getDataDescription()->removeFieldDescription($this->getDataDescription()->getFieldDescriptionByName('form_date'));
+        
         $dataObject = new Data();
         foreach ($data[$this->getTableName()] as $key => $value) {
             if (is_scalar($value))
@@ -303,14 +305,7 @@ class Form extends DBDataSet
             }
 
 
-            $this->prepare();
-
-            if ($this->getParam('textBlock') && ($textBlock =
-                    $this->document->componentManager->getBlockByName($this->getParam('textBlock')))
-            ) {
-                $textBlock->disable();
-            }
-
+            //$this->prepare();
             $this->response->redirectToCurrentSection('success/');
 
         }
@@ -356,7 +351,12 @@ class Form extends DBDataSet
         $this->setDataDescription($dataDescription);
         $this->setData($data);
 
-        $this->addFormDescription();
+         if($result = simplifyDBResult(
+             $this->dbh->select('frm_forms_translation',
+                                     array('form_name'),
+                                     array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent())), 'form_name', true)){
+         }
+        $this->setTitle($result);
     }
 
     /**

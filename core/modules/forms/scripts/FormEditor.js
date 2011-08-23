@@ -12,7 +12,8 @@ var FormEditor = new Class({
     onSelect: function(){
         this.parent();
         var curr = this.grid.getSelectedRecord();
-        if(curr.field_id == 1){
+
+        if(curr.field_id <= 2){
             this.toolbar.disableControls();
         }
         else {

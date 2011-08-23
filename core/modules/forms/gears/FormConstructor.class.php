@@ -33,7 +33,7 @@ class FormConstructor extends DBWorker {
             $this->fDBName . '.' . self::TABLE_PREFIX . $formID);
         $this->dbh->modifyRequest(
             'CREATE TABLE IF NOT EXISTS ' . $this->tableName .
-            ' (pk_id int(10) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY (`pk_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ');
+            ' (pk_id int(10) unsigned NOT NULL AUTO_INCREMENT,form_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`pk_id`), INDEX(form_date)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ');
 
     }
 

@@ -16,11 +16,6 @@
             <pattern>/send/</pattern>
         </uri_patterns>
     </state>
-    <state name="save">
-        <uri_patterns>
-            <pattern>/save/</pattern>
-        </uri_patterns>
-    </state>
     <state name="success">
         <uri_patterns>
             <pattern>/success/</pattern>

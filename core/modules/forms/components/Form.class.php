@@ -131,14 +131,14 @@ class Form extends DBDataSet
     /**
      * Сохраняет данные
      *
-     * @return mixed
+     * @return $result
      * @access protected
      */
 
-    protected function saveData($data)
+    protected function saveData(&$data)
     {
         //Обрабатываем аплоадсы
-
+        $result = false;
         if (isset($_FILES) && !empty($_FILES)) {
             list($dbName, $tName) =
                     DBA::getFQTableName($this->getTableName(), true);
@@ -164,7 +164,6 @@ class Form extends DBDataSet
             }
         }
 
-        $result = false;
         //создаем объект описания данных
         $dataDescriptionObject = new DataDescription();
 
@@ -233,7 +232,7 @@ class Form extends DBDataSet
 
 
                 //Unset pk_id field, because we don't need it in body of message to send
-                unset($data['pk_id']);
+                $data['pk_id'] = $result;
                 foreach ($data as $key => $value) {
                     $data[$key] = array('translation' => $this->translate(
                         'FIELD_' . $key),
@@ -274,13 +273,18 @@ class Form extends DBDataSet
 
                     //Create text to send. The last one will contain: translations of variables and  variables.
                     $body = '';
-
+                    if(!($url = $this->getConfigValue('site.media')))
+                        $url = E()->getSiteManager()->getCurrentSite()->base;
                     foreach ($data as $fieldname=>$value) {
-                        if($this->getDataDescription()->getFieldDescriptionByName($fieldname)->getType()!= FieldDescription::FIELD_TYPE_BOOL){
-                            $val = $value['value'];
+                        $type = $this->getDataDescription()->getFieldDescriptionByName($fieldname)->getType();
+                        if($type == FieldDescription::FIELD_TYPE_FILE){
+                            $val = $url .$value['value'];
+                        }
+                        elseif($type == FieldDescription::FIELD_TYPE_BOOL){
+                            $val = $this->translate(((int)$value['value'] === 0)?'TXT_NO':'TXT_YES');
                         }
                         else {
-                            $val = $this->translate(((int)$value['value'] === 0)?'TXT_NO':'TXT_YES');
+                            $val = $value['value'];
                         }
 
                         $body .=

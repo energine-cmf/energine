@@ -178,7 +178,7 @@ class FormEditor extends DataSet
         if (!is_array($fieldID) || !$fieldID[0]) {
             throw new SystemException('ERR_WRONG_FIELD_ID');
         }
-        $fieldName = $this->getFieldnameByIndex($fieldID[0]);
+        $fieldName = $this->getFieldInfoByIndex($fieldID[0]);
         //Get field translations
 
         $this->setDataDescription($this->createDataDescription());
@@ -272,10 +272,16 @@ class FormEditor extends DataSet
     {
         list($fieldIndex) = $this->getStateParams();
         E()->getRequest()->shiftPath(2);
-        $fieldInfo = $this->getFieldnameByIndex($fieldIndex, true);
-
+        $fieldInfo = $this->getFieldInfoByIndex($fieldIndex, true);
+        $fieldName = key($fieldInfo);
         $tableName = current($fieldInfo);
-        $tableName = $tableName['key']['tableName'];
+        if(!strpos($fieldName, '_multi')){
+            $tableName = $tableName['key']['tableName'];
+        }
+        else {
+            $tableName = $this->getConfigValue('forms.database').'.'.$fieldName.'_values';
+        }
+
         $this->SVEditor = $this->document->componentManager->createComponent('form', 'forms', 'SelectorValuesEditor', array('table_name' => $tableName));
         $this->SVEditor->run();
 
@@ -285,7 +291,7 @@ class FormEditor extends DataSet
     protected function delete()
     {
         list($fieldIndex) = $this->getStateParams();
-        $this->constructor->delete($this->getFieldnameByIndex($fieldIndex));
+        $this->constructor->delete($this->getFieldInfoByIndex($fieldIndex));
 
         $this->setBuilder(new JSONCustomBuilder());
     }
@@ -331,7 +337,7 @@ class FormEditor extends DataSet
         return $result;
     }
 
-    private function getFieldnameByIndex($fieldIndex, $asArray = false)
+    private function getFieldInfoByIndex($fieldIndex, $asArray = false)
     {
         if ($fieldIndex == 1) {
             throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);

@@ -344,6 +344,7 @@ class FormConstructor extends DBWorker
         $this->deleteFieldLTag($fieldName);
         
         $query = 'ALTER TABLE ' . $this->tableName . ' DROP ' . $fieldName;
+        
         $this->dbh->modifyRequest($query);
         $this->dbh->commit();
     }

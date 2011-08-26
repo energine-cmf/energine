@@ -417,6 +417,7 @@ class FormConstructor extends DBWorker {
         $query = 'ALTER TABLE ' . $this->tableName . ' MODIFY ' . $srcField .
                  ' ' .
                  self::getFDAsSQLString(FieldDescription::convertType($colsInfo[$srcField]['type'], $srcField, $colsInfo[$srcField]['length'], $colsInfo[$srcField])) .
+                ((!$colsInfo[$srcField]['nullable'])?' NOT NULL ':'').
                  ' AFTER ' . $destColField;
         $this->dbh->modifyRequest($query);
     }

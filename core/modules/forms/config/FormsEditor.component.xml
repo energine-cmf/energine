@@ -75,17 +75,6 @@
                 <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
             </toolbar>
         </state>
-        <state name="viewForm">
-            <uri_patterns>
-                <pattern>/[int]/viewForm/</pattern>
-            </uri_patterns>
-            <javascript>
-                <behavior name="Form"/>
-            </javascript>
-            <toolbar>
-                <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
-            </toolbar>
-        </state>
         <state name="save" rights="3">
             <uri_patterns>
                 <pattern>/save/</pattern>

@@ -15,8 +15,7 @@
  * @subpackage forms
  * @author d.pavka@gmail.com
  */
-class FormEditor extends DataSet
-{
+class FormEditor extends DataSet {
     /**
      * @var SelectorValuesEditor
      */
@@ -35,8 +34,7 @@ class FormEditor extends DataSet
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module, array $params = null)
-    {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         if (!$this->getParam('form_id')) {
             throw new SystemException('ERR_BAD_FORM_ID');
@@ -47,8 +45,7 @@ class FormEditor extends DataSet
 
     }
 
-    protected function defineParams()
-    {
+    protected function defineParams() {
         return array_merge(
             parent::defineParams(),
             array(
@@ -58,8 +55,7 @@ class FormEditor extends DataSet
         );
     }
 
-    protected function createDataDescription()
-    {
+    protected function createDataDescription() {
         //We work with other fields when we edit field - so create other DataDescription.
         if (in_array($this->getState(), array('edit'))) {
             $dd = new DataDescription();
@@ -90,7 +86,7 @@ class FormEditor extends DataSet
                                'length' => 255,
                                'default' => '',
                                'key' => false,
-                               'type' => FieldDescription::FIELD_TYPE_STRING,
+                               'type' => FieldDescription::FIELD_TYPE_HIDDEN,
                                'mode' => FieldDescription::FIELD_MODE_READ,
                                'index' => false,
                                'languageID' => false
@@ -116,29 +112,26 @@ class FormEditor extends DataSet
                            )));
             $dd->getFieldDescriptionByName('ltag_name')->setMode(FieldDescription::FIELD_MODE_READ);
             return $dd;
-        } else {
+        }
+        else {
             return $this->constructor->getDataDescription();
         }
     }
 
-    protected function createBuilder()
-    {
+    protected function createBuilder() {
         return new MultiLanguageBuilder();
     }
 
-    protected function loadData()
-    {
+    protected function loadData() {
         return false;
     }
 
-    protected function createData()
-    {
+    protected function createData() {
         return $this->constructor->getData((isset($_POST['languageID'])) ? $_POST['languageID']
                                                    : E()->getLanguage()->getDefault());
     }
 
-    protected function getRawData()
-    {
+    protected function getRawData() {
         $this->setBuilder(new JSONBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->createPager();
@@ -151,8 +144,7 @@ class FormEditor extends DataSet
         if ($this->pager) $this->getBuilder()->setPager($this->pager);
     }
 
-    protected function add()
-    {
+    protected function add() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
@@ -169,8 +161,7 @@ class FormEditor extends DataSet
    * edit() function gets information about selected field to modal form, so user can edit it.
    *
    * */
-    protected function edit()
-    {
+    protected function edit() {
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->setBuilder($this->createBuilder());
 
@@ -193,24 +184,24 @@ class FormEditor extends DataSet
 
         //Create field FIELD_TYPE.
         $f = new Field('field_type');
-        for($i=0, $l=sizeof(E()->getLanguage()->getLanguages()); $i<$l; $i++){
+        for ($i = 0, $l = sizeof(E()->getLanguage()->getLanguages()); $i < $l; $i++) {
             $f->setRowData($i, $this->translate($fieldInfo));
         }
         $this->getData()->addField($f);
         $this->getDataDescription()->getFieldDescriptionByName('field_type')->setProperty('tabName', 'TXT_PROPERTIES');
         $this->getDataDescription()->getFieldDescriptionByName('ltag_name')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
-        
+
         $result = $this->dbh->selectRequest(
             'SELECT * FROM share_lang_tags lt
                     LEFT JOIN share_lang_tags_translation ltt ON lt.ltag_id=ltt.ltag_id
                     WHERE lt.ltag_name = %s', $ltagName = 'FIELD_' . strtoupper($fieldName));
 
-        if(!is_array($result)){
+        if (!is_array($result)) {
             $result = array();
             $ltagID = $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $ltagName));
-            foreach(array_keys(E()->getLanguage()->getLanguages()) as $langID){
+            foreach (array_keys(E()->getLanguage()->getLanguages()) as $langID) {
                 $this->dbh->modify(QAL::INSERT, 'share_lang_tags_translation', array('lang_id' => $langID, 'ltag_id' => $ltagID, 'ltag_value_rtf' => $ltagName));
-                $result[] = array('ltag_id' => $ltagID, 'lang_id' => $langID, 'ltag_value_rtf' => $ltagName, 'ltag_name' => $ltagName );
+                $result[] = array('ltag_id' => $ltagID, 'lang_id' => $langID, 'ltag_value_rtf' => $ltagName, 'ltag_name' => $ltagName);
             }
         }
 
@@ -230,8 +221,7 @@ class FormEditor extends DataSet
         //inspect($this->getDataDescription());
     }
 
-    protected function main()
-    {
+    protected function main() {
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->createPager();
@@ -244,8 +234,7 @@ class FormEditor extends DataSet
         $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
     }
 
-    protected function up()
-    {
+    protected function up() {
         list($fieldIndex) = $this->getStateParams();
         $this->constructor->changeOrder(Grid::DIR_UP, $fieldIndex);
         $b = new JSONCustomBuilder();
@@ -256,8 +245,7 @@ class FormEditor extends DataSet
         $this->setBuilder($b);
     }
 
-    protected function down()
-    {
+    protected function down() {
         list($fieldIndex) = $this->getStateParams();
         $this->constructor->changeOrder(Grid::DIR_DOWN, $fieldIndex);
         $b = new JSONCustomBuilder();
@@ -268,18 +256,17 @@ class FormEditor extends DataSet
         $this->setBuilder($b);
     }
 
-    protected function editSelector()
-    {
+    protected function editSelector() {
         list($fieldIndex) = $this->getStateParams();
         E()->getRequest()->shiftPath(2);
         $fieldInfo = $this->getFieldInfoByIndex($fieldIndex, true);
         $fieldName = key($fieldInfo);
         $tableName = current($fieldInfo);
-        if(!strpos($fieldName, '_multi')){
+        if (!strpos($fieldName, '_multi')) {
             $tableName = $tableName['key']['tableName'];
         }
         else {
-            $tableName = $this->getConfigValue('forms.database').'.'.$fieldName.'_values';
+            $tableName = $this->getConfigValue('forms.database') . '.' . $fieldName . '_values';
         }
 
         $this->SVEditor = $this->document->componentManager->createComponent('form', 'forms', 'SelectorValuesEditor', array('table_name' => $tableName));
@@ -288,17 +275,15 @@ class FormEditor extends DataSet
     }
 
 
-    protected function delete()
-    {
+    protected function delete() {
         list($fieldIndex) = $this->getStateParams();
         $this->constructor->delete($this->getFieldInfoByIndex($fieldIndex));
 
         $this->setBuilder(new JSONCustomBuilder());
     }
 
-    protected function save()
-    {
-        if ($_POST['componentAction'] !='edit') {
+    protected function save() {
+        if ($_POST['componentAction'] != 'edit') {
             $this->constructor->save($_POST);
         }
         else {
@@ -307,8 +292,7 @@ class FormEditor extends DataSet
         $this->setBuilder(new JSONCustomBuilder());
     }
 
-    protected function saveField()
-    {
+    protected function saveField() {
         $tableName = 'share_lang_tags_translation';
         if (isset($_POST) && isset($_POST[$tableName]) && isset($_POST['share_lang_tags'])) {
             $translations = $_POST[$tableName];
@@ -325,8 +309,7 @@ class FormEditor extends DataSet
         }
     }
 
-    public function build()
-    {
+    public function build() {
         if ($this->getState() == 'editSelector') {
             $result = $this->SVEditor->build();
         }
@@ -337,8 +320,7 @@ class FormEditor extends DataSet
         return $result;
     }
 
-    private function getFieldInfoByIndex($fieldIndex, $asArray = false)
-    {
+    private function getFieldInfoByIndex($fieldIndex, $asArray = false) {
         if ($fieldIndex == 1) {
             throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);
         }

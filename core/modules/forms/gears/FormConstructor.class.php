@@ -9,8 +9,7 @@
  * @throws SystemException
  *
  */
-class FormConstructor extends DBWorker
-{
+class FormConstructor extends DBWorker {
     /**
      *
      */
@@ -27,8 +26,7 @@ class FormConstructor extends DBWorker
     /**
      * @param  $formID
      */
-    public function __construct($formID)
-    {
+    public function __construct($formID) {
         parent::__construct();
         $this->fDBName = $this->getConfigValue('forms.database');
         $this->tableName = DBA::getFQTableName(
@@ -42,8 +40,7 @@ class FormConstructor extends DBWorker
     /**
      * @return DataDescription
      */
-    public function getDataDescription()
-    {
+    public function getDataDescription() {
         $result = new DataDescription();
         $result->load(
             array(
@@ -81,16 +78,16 @@ class FormConstructor extends DBWorker
                      'length' => 255,
                      'default' => '',
                      'key' => false,
-                     'type' => FieldDescription::FIELD_TYPE_STRING,
+                     'type' => FieldDescription::FIELD_TYPE_HIDDEN,
                      'index' => true,
                      'tableName' => 'table_name'
                  ),
-                 'field_type_name' => array(
+                 'field_type_real' => array(
                      'nullable' => false,
                      'length' => 255,
                      'default' => '',
                      'key' => false,
-                     'type' => FieldDescription::FIELD_TYPE_HIDDEN,
+                     'type' => FieldDescription::FIELD_TYPE_STRING,
                      'index' => true
                  ),
                  'field_is_nullable' => array(
@@ -161,8 +158,7 @@ class FormConstructor extends DBWorker
      * @param null $filter
      * @return Data
      */
-    public function getData($langID, $filter = null)
-    {
+    public function getData($langID, $filter = null) {
         $result = new Data();
         if (empty($filter)) {
             $dataArray = array();
@@ -173,6 +169,7 @@ class FormConstructor extends DBWorker
                                 'field_id' => ++$i,
                                 'lang_id' => $langID,
                                 'field_type' => FieldDescription::convertType($rowValue['type'], $rowName, $rowValue['length'], $rowValue),
+                               'field_type_real' => FieldDescription::convertType($rowValue['type'], $rowName, $rowValue['length'], $rowValue),
                                 'field_name' => $this->translate($this->getFieldLTag($rowName), $langID),
                                 'field_is_nullable' => $rowValue['nullable']
                            )
@@ -187,8 +184,7 @@ class FormConstructor extends DBWorker
      * @param  $data
      * @return void
      */
-    public function save($data)
-    {
+    public function save($data) {
         $fieldType = $data['table_name']['field_type'];
         $fieldIsNullable = $data['table_name']['field_is_nullable'];
         $fieldIndex = sizeof(
@@ -215,7 +211,7 @@ class FormConstructor extends DBWorker
         $query .= ' ' . ((!$fieldIsNullable) ? ' NOT NULL ' : ' NULL ');
 
         $this->dbh->beginTransaction();
-        
+
         if ($this->dbh->modifyRequest($query)) {
             $ltagID =
                     $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $this->deleteFieldLTag($fieldName)));
@@ -233,104 +229,107 @@ class FormConstructor extends DBWorker
         }
         $this->dbh->commit();
     }
+
     /**
      * Создание multi поля
      *
      * @param $fieldName
      * @return void
      */
-    private function createMultiField($fieldName){
+    private function createMultiField($fieldName) {
         $query = array();
-                //Добавляем индекс
-                $query[] = 'ALTER TABLE ' . $this->tableName . ' ADD INDEX ( ' .
-                           $fieldName . ' ) ';
+        //Добавляем индекс
+        $query[] = 'ALTER TABLE ' . $this->tableName . ' ADD INDEX ( ' .
+                   $fieldName . ' ) ';
 
 
-                //Создаем таблицу связку
-                $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkTableName =
-                        DBA::getFQTableName(
-                            $this->fDBName . '.' . $fieldName)) .
-                           '( pk_id int(11) unsigned NOT NULL , fk_id int(11) UNSIGNED  , PRIMARY KEY (`pk_id`, `fk_id`), KEY `fk_id`(`fk_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
+        //Создаем таблицу связку
+        $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkTableName =
+                DBA::getFQTableName(
+                    $this->fDBName . '.' . $fieldName)) .
+                   '( pk_id int(11) unsigned NOT NULL , fk_id int(11) UNSIGNED  , PRIMARY KEY (`pk_id`, `fk_id`), KEY `fk_id`(`fk_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
 
-                //Создаем таблицу с значениями
-                $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkValuesFQTableName =
-                        DBA::getFQTableName(
-                            $this->fDBName . '.' . ($fkValuesTableName = $fieldName.'_values'))) .
-                           '( fk_id int(11) unsigned NOT NULL AUTO_INCREMENT, fk_order_num int(10) UNSIGNED  DEFAULT \'1\', PRIMARY KEY (`fk_id`), KEY `fk_order_num`(`fk_order_num`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
+        //Создаем таблицу с значениями
+        $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkValuesFQTableName =
+                DBA::getFQTableName(
+                    $this->fDBName . '.' . ($fkValuesTableName = $fieldName . '_values'))) .
+                   '( fk_id int(11) unsigned NOT NULL AUTO_INCREMENT, fk_order_num int(10) UNSIGNED  DEFAULT \'1\', PRIMARY KEY (`fk_id`), KEY `fk_order_num`(`fk_order_num`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
 
-                //Добавляем фейковую связку в основную таблицу
-                $query[] = 'ALTER TABLE ' . $this->tableName .
-                           ' ADD FOREIGN KEY ( ' . $fieldName .
-                           ' ) REFERENCES ' . $fkTableName .
-                           ' (pk_id) ON DELETE NO ACTION ON UPDATE NO ACTION ;';
+        //Добавляем фейковую связку в основную таблицу
+        $query[] = 'ALTER TABLE ' . $this->tableName .
+                   ' ADD FOREIGN KEY ( ' . $fieldName .
+                   ' ) REFERENCES ' . $fkTableName .
+                   ' (pk_id) ON DELETE NO ACTION ON UPDATE NO ACTION ;';
 
-                //СВязываем таблицу-связку с основной таблицей
-                $query[] = 'ALTER TABLE ' . $fkTableName .
-                           ' ADD FOREIGN KEY ( pk_id ) REFERENCES ' . $this->tableName .
-                           ' (pk_id) ON DELETE CASCADE ON UPDATE CASCADE ;';
+        //СВязываем таблицу-связку с основной таблицей
+        $query[] = 'ALTER TABLE ' . $fkTableName .
+                   ' ADD FOREIGN KEY ( pk_id ) REFERENCES ' . $this->tableName .
+                   ' (pk_id) ON DELETE CASCADE ON UPDATE CASCADE ;';
 
-                //СВязываем таблицу-связку с таблицей значений
-                $query[] = 'ALTER TABLE ' . $fkTableName .
-                           ' ADD FOREIGN KEY (fk_id) REFERENCES ' . $fkValuesFQTableName .
-                           ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE ;';
-        
-                //Создаем таблицу с переводами для значений
-                $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($langTableName =
-                        DBA::getFQTableName(
-                            $this->fDBName . '.' . $fkValuesTableName. '_translation')) .
-                           '( fk_id int(11) unsigned NOT NULL , lang_id int(11) UNSIGNED  NOT NULL, fk_name VARCHAR(255) NOT NULL, PRIMARY KEY (`fk_id`, `lang_id`), KEY `lang_id` (`lang_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
-        
-                //add fk info
-                $query[] = 'ALTER TABLE ' . $langTableName .
-                           ' ADD FOREIGN KEY (`lang_id`) REFERENCES ' .
-                           $this->getConfigValue('database.master.db') .
-                           '.`share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE, ADD FOREIGN KEY ( fk_id ) REFERENCES ' .
-                           $fkValuesFQTableName .
-                           ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
+        //СВязываем таблицу-связку с таблицей значений
+        $query[] = 'ALTER TABLE ' . $fkTableName .
+                   ' ADD FOREIGN KEY (fk_id) REFERENCES ' . $fkValuesFQTableName .
+                   ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE ;';
 
-                foreach ($query as $request)
-                    $this->dbh->modifyRequest($request);
+        //Создаем таблицу с переводами для значений
+        $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($langTableName =
+                DBA::getFQTableName(
+                    $this->fDBName . '.' . $fkValuesTableName . '_translation')) .
+                   '( fk_id int(11) unsigned NOT NULL , lang_id int(11) UNSIGNED  NOT NULL, fk_name VARCHAR(255) NOT NULL, PRIMARY KEY (`fk_id`, `lang_id`), KEY `lang_id` (`lang_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
+
+        //add fk info
+        $query[] = 'ALTER TABLE ' . $langTableName .
+                   ' ADD FOREIGN KEY (`lang_id`) REFERENCES ' .
+                   $this->getConfigValue('database.master.db') .
+                   '.`share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE, ADD FOREIGN KEY ( fk_id ) REFERENCES ' .
+                   $fkValuesFQTableName .
+                   ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
+
+        foreach ($query as $request)
+            $this->dbh->modifyRequest($request);
     }
+
     /**
      * Создание поля select
      * @param $fieldName
      * @return void
      */
-    private function createSelectField($fieldName){
+    private function createSelectField($fieldName) {
         $query = array();
-
-                $query[] = 'ALTER TABLE ' . $this->tableName . ' ADD INDEX ( ' .
-                           $fieldName . ' ) ';
-
-
-                //create foreign key table
-                $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkTableName =
-                        DBA::getFQTableName(
-                            $this->fDBName . '.' . $fieldName)) .
-                           '( fk_id int(11) unsigned NOT NULL AUTO_INCREMENT, fk_order_num int(10) UNSIGNED  DEFAULT \'1\', PRIMARY KEY (`fk_id`), KEY `fk_order_num`(`fk_order_num`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
-
-                //add fk info
-                $query[] = 'ALTER TABLE ' . $this->tableName .
-                           ' ADD FOREIGN KEY ( ' . $fieldName .
-                           ' ) REFERENCES ' . $fkTableName .
-                           ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE ;';
+        $query[] = 'SET FOREIGN_KEY_CHECKS=0;';
+        
+        $query[] = 'ALTER TABLE ' . $this->tableName . ' ADD INDEX ( ' .
+                   $fieldName . ' ) ';
 
 
-                $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($langTableName =
-                        DBA::getFQTableName(
-                            $this->fDBName . '.' . $fieldName. '_translation')) .
-                           '( fk_id int(11) unsigned NOT NULL , lang_id int(11) UNSIGNED  NOT NULL, fk_name VARCHAR(255) NOT NULL, PRIMARY KEY (`fk_id`, `lang_id`), KEY `lang_id` (`lang_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
+        //create foreign key table
+        $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkTableName =
+                DBA::getFQTableName(
+                    $this->fDBName . '.' . $fieldName)) .
+                   '( fk_id int(11) unsigned NOT NULL AUTO_INCREMENT, fk_order_num int(10) UNSIGNED  DEFAULT \'1\', PRIMARY KEY (`fk_id`), KEY `fk_order_num`(`fk_order_num`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
 
-                //add fk info
-                $query[] = 'ALTER TABLE ' . $langTableName .
-                           ' ADD FOREIGN KEY (`lang_id`) REFERENCES ' .
-                           $this->getConfigValue('database.master.db') .
-                           '.`share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE, ADD FOREIGN KEY ( fk_id ) REFERENCES ' .
-                           $fkTableName .
-                           ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
-//stop($query);
-                foreach ($query as $request)
-                    $this->dbh->modifyRequest($request);
+        //add fk info
+        $query[] = 'ALTER TABLE ' . $this->tableName .
+                   ' ADD FOREIGN KEY ( ' . $fieldName .
+                   ' ) REFERENCES ' . $fkTableName .
+                   ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE ;';
+
+
+        $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($langTableName =
+                DBA::getFQTableName(
+                    $this->fDBName . '.' . $fieldName . '_translation')) .
+                   '( fk_id int(11) unsigned NOT NULL , lang_id int(11) UNSIGNED  NOT NULL, fk_name VARCHAR(255) NOT NULL, PRIMARY KEY (`fk_id`, `lang_id`), KEY `lang_id` (`lang_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
+
+        //add fk info
+        $query[] = 'ALTER TABLE ' . $langTableName .
+                   ' ADD FOREIGN KEY (`lang_id`) REFERENCES ' .
+                   $this->getConfigValue('database.master.db') .
+                   '.`share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE, ADD FOREIGN KEY ( fk_id ) REFERENCES ' .
+                   $fkTableName .
+                   ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
+        //stop($query);
+        foreach ($query as $request)
+            $this->dbh->modifyRequest($request);
     }
 
     /**
@@ -338,23 +337,54 @@ class FormConstructor extends DBWorker
      * @param  $fieldIndex
      * @return void
      */
-    public function delete($fieldName)
-    {
-        $this->dbh->beginTransaction();
-        $this->deleteFieldLTag($fieldName);
-        
-        $query = 'ALTER TABLE ' . $this->tableName . ' DROP ' . $fieldName;
-        
-        $this->dbh->modifyRequest($query);
-        $this->dbh->commit();
+    public function delete($fieldName) {
+        $info = $this->dbh->getColumnsInfo($this->tableName);
+        if (isset($info[$fieldName])) {
+            $queries = array();
+            $this->dbh->beginTransaction();
+            $this->deleteFieldLTag($fieldName);
+
+            $info = $info[$fieldName];
+            //Если есть инфа о связях 
+            //значит связи нужно подчистить перед тем как удалять само поле
+            if (isset($info['key']) && is_array($info['key'])) {
+                //в любом случае удаляем внешний ключ
+                $queries[] = 'ALTER TABLE ' . $this->tableName . ' DROP FOREIGN KEY ' . $info['key']['constraint'];
+
+                if (strpos($fieldName, '_multi')) {
+                    //мультиселект
+                    //мы можем тупо по имени поля получить имя таблицы значений
+                    //но это как то неспортивно
+
+                    //удаляем m2m таблицу
+                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName']);
+                    //удаляем переводы
+                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName'] . '_values_translation');
+                    //значения
+                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName'] . '_values');
+                }
+                else {
+                    //селект
+                    //удаляем таблицу с переводами
+                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName'] . '_translation');
+                    //удаляем таблицу с значениями
+                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName']);
+                }
+            }
+            $queries[] = 'ALTER TABLE ' . $this->tableName . ' DROP ' . $fieldName;
+            foreach($queries as $query){
+                $this->dbh->modifyRequest($query);
+            }
+
+            $this->dbh->commit();
+        }
     }
 
     /**
      * @param  $fieldName
      * @return string
      */
-    private function getFieldLTag($fieldName)
-    {
+    private function getFieldLTag($fieldName) {
         list(, $tblName) = DBA::getFQTableName($this->tableName, true);
         return 'FIELD_' . $fieldName;
     }
@@ -363,20 +393,17 @@ class FormConstructor extends DBWorker
      * @param  $fieldName
      * @return string
      */
-    private function deleteFieldLTag($fieldName)
-    {
+    private function deleteFieldLTag($fieldName) {
         $ltagName = $this->getFieldLTag($fieldName);
         $this->dbh->modifyRequest('DELETE FROM share_lang_tags WHERE ltag_name=%s', $ltagName);
         return $ltagName;
     }
 
-    public function getTableName()
-    {
+    public function getTableName() {
         return $this->tableName;
     }
 
-    public function changeOrder($direction, $fieldIndex)
-    {
+    public function changeOrder($direction, $fieldIndex) {
         $fieldIndex--;
         $cols = array_keys(
             $colsInfo = $this->dbh->getColumnsInfo($this->tableName));
@@ -394,14 +421,13 @@ class FormConstructor extends DBWorker
         $this->dbh->modifyRequest($query);
     }
 
-    private static function getFDAsSQLString($fieldType)
-    {
+    private static function getFDAsSQLString($fieldType) {
 
         switch ($fieldType) {
             case FieldDescription::FIELD_TYPE_INT:
             case FieldDescription::FIELD_TYPE_MULTI:
             case FieldDescription::FIELD_TYPE_SELECT:
-                $result = 'INT(11) UNSIGNED';
+                $result = 'INT(11) UNSIGNED ';
                 break;
             case FieldDescription::FIELD_TYPE_BOOL:
                 $result = 'BOOL';

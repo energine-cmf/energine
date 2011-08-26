@@ -18,9 +18,8 @@ var FormEditor = new Class({
         }
         else {
             this.toolbar.enableControls();
-            var b;
-            if((curr.field_type != 'FIELD_TYPE_SELECT') && (curr.field_type !=
-                    'FIELD_TYPE_MULTI'))
+            var t = curr.field_type_real;
+            if((t != 'select') && (t != 'multi'))
                 this.toolbar.disableControls('editProps');
         }
         this.toolbar.enableControls('add');

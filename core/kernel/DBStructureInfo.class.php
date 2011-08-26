@@ -174,7 +174,7 @@ final class DBStructureInfo extends Object {
                 '(?:\s+DEFAULT (?<default>(?:NULL|\'[^\']+\')))?' .
                 '.*$)';
         $constraint =
-                '(?:^\s*CONSTRAINT `\w+` FOREIGN KEY \(`(?<cname>\w+)`\) REFERENCES `(?<tableName>\w+)` \(`(?<fieldName>\w+)`\)' .
+                '(?:^\s*CONSTRAINT `(?<constraint>\w+)` FOREIGN KEY \(`(?<cname>\w+)`\) REFERENCES `(?<tableName>\w+)` \(`(?<fieldName>\w+)`\)' .
                         '.*$)';
         $mul = '(?:^\s*(?:UNIQUE\s*)?KEY\s+`\w+`\s+\((?<muls>.*)\),?$)';
 
@@ -231,6 +231,7 @@ final class DBStructureInfo extends Object {
                         $res[$fieldName]['key'] = array(
                             'tableName' => (($dbName) ? $dbName.'.' : '').$matches['tableName'][$cIndex],
                             'fieldName' => $matches['fieldName'][$cIndex],
+                            'constraint' => $matches['constraint'][$cIndex],
                         );
                     }
                 }

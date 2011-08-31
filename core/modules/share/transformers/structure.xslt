@@ -174,5 +174,8 @@
 
     <xsl:template match="field[ancestor::component[@class='SitemapTree']]"/>
     <!-- /компонент SitemapTree -->
-    
+
+    <xsl:template match="component[@class='PageMedia']">
+        <xsl:apply-templates select="recordset/record[1]/field[@name='attachments']" mode="carousel"/>
+    </xsl:template>
 </xsl:stylesheet>

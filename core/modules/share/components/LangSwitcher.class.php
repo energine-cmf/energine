@@ -43,14 +43,17 @@ final class LangSwitcher extends DataSet {
         $data = $lang->getLanguages();
 
         foreach ($data as $langID => $langInfo) {
+            $abbr = $langInfo['lang_abbr'];
             if($langInfo['lang_default']){
                 $langInfo['lang_abbr'] = '';
             }
             $result[$langID] = $langInfo;
+            $result[$langID]['lang_real_abbr'] = $abbr;
             $result[$langID]['lang_id'] = $langID;
             $result[$langID]['lang_url'] = $result[$langID]['lang_abbr'] . (($result[$langID]['lang_abbr'])?'/':'') .
                     E()->getRequest()->getPath(Request::PATH_WHOLE, true);
         }
+        //inspect($result);
         return $result;
     }
 
@@ -76,6 +79,10 @@ final class LangSwitcher extends DataSet {
         $result->addFieldDescription($f);
 
         $f = new FieldDescription('lang_url');
+        $f->setType(FieldDescription::FIELD_TYPE_STRING);
+        $result->addFieldDescription($f);
+
+        $f = new FieldDescription('lang_real_abbr');
         $f->setType(FieldDescription::FIELD_TYPE_STRING);
         $result->addFieldDescription($f);
 

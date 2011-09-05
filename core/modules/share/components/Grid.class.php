@@ -927,14 +927,18 @@ class Grid extends DBDataSet
                 '>' => '>\'%s\'',
                 'between' => 'BETWEEN \'%s\' AND \'%s\''
             );
+            
             unset($_POST['filter']['condition']);
             $tableName = key($_POST['filter']);
             $fieldName = key($_POST['filter'][$tableName]);
-            $tableInfo = $this->dbh->getColumnsInfo($tableName);
             $values = $_POST['filter'][$tableName][$fieldName];
-
-            if (isset($tableInfo[$fieldName]) &&
-                is_array($tableInfo[$fieldName]['key'])) {
+            
+            if (
+                $this->dbh->tableExists($tableName) &&
+                ($tableInfo = $this->dbh->getColumnsInfo($tableName)) &&
+                isset($tableInfo[$fieldName]) &&
+                is_array($tableInfo[$fieldName]['key'])
+            ) {
                 $fkTranslationTableName =
                         $this->dbh->getTranslationTablename($tableInfo[$fieldName]['key']['tableName']);
                 $fkTableName =

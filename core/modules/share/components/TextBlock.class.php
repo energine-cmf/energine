@@ -73,8 +73,8 @@ final class TextBlock extends DataSet {
      * @return void
      * @access public
      */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
+    public function __construct($name, $module, array $params = null) {
+        parent::__construct($name, $module, $params);
         /**
          * @todo Не забыть убрать $_REQUEST или переделать чтобы для режима отладки  -_REQUEST а так  - _POST
          *
@@ -82,8 +82,8 @@ final class TextBlock extends DataSet {
         $this->isEditable = $this->document->isEditable();
         $this->tableName = 'share_textblocks';
         if ($this->isEditable) {
-        	$this->addWYSIWYGTranslations();
-        	//выставляем свойство указывающее на то что блок находится в режиме редактирования
+            $this->addWYSIWYGTranslations();
+            //выставляем свойство указывающее на то что блок находится в режиме редактирования
             $this->setProperty('editable', 'editable');
         }
     }
@@ -97,11 +97,11 @@ final class TextBlock extends DataSet {
 
     protected function defineParams() {
         return array_merge(
-        parent::defineParams(),
-        array(
-            'num' => 1,
-            'active' => true,
-        )
+            parent::defineParams(),
+            array(
+                 'num' => 1,
+                 'active' => true,
+            )
         );
     }
 
@@ -114,10 +114,10 @@ final class TextBlock extends DataSet {
      * @access protected
      */
 
-    protected function getTextBlockID($smapID , $num) {
-        $smapID = (empty($smapID))?null:$smapID;
+    protected function getTextBlockID($smapID, $num) {
+        $smapID = (empty($smapID)) ? null : $smapID;
         $result = false;
-        $res = $this->dbh->select($this->tableName, array('tb_id'), array('smap_id'=>$smapID, 'tb_num'=>$num));
+        $res = $this->dbh->select($this->tableName, array('tb_id'), array('smap_id' => $smapID, 'tb_num' => $num));
         if (is_array($res)) {
             $result = simplifyDBResult($res, 'tb_id', true);
         }
@@ -125,36 +125,36 @@ final class TextBlock extends DataSet {
     }
 
     /**
-	 * Загрузка данных
-	 *
-	 * @return void
-	 * @access protected
-	 */
+     * Загрузка данных
+     *
+     * @return void
+     * @access protected
+     */
     protected function main() {
         /**
          * @todo Тут вообще получается ограничение, что num лейаутного текстового блока не должен быть цифрой
          */
 
-        if (intval($this->getParam('num'))!==0) {
+        if (intval($this->getParam('num')) !== 0) {
             $docID = $this->document->getID();
         }
         else {
             $docID = '';
         }
-        
+
         $res = $this->dbh->selectRequest(
-            'SELECT st.tb_id as id, stt.tb_content as content '.
-            'FROM `share_textblocks`  st '.
-            'LEFT JOIN share_textblocks_translation stt ON st.tb_id = stt.tb_id and lang_id = %s '.
-            'WHERE smap_id '.(($docID)?' = '.$docID:' IS NULL ').' AND tb_num = %s ',
+            'SELECT st.tb_id as id, stt.tb_content as content ' .
+            'FROM `share_textblocks`  st ' .
+            'LEFT JOIN share_textblocks_translation stt ON st.tb_id = stt.tb_id and lang_id = %s ' .
+            'WHERE smap_id ' . (($docID) ? ' = ' . $docID : ' IS NULL ') . ' AND tb_num = %s ',
             $this->document->getLang(),
             $this->getParam('num')
         );
-        
-        if(is_array($res)){
+
+        if (is_array($res)) {
             list($res) = $res;
             $this->id = $res['id'];
-            $this->content = $res['content'];	
+            $this->content = $res['content'];
         }
 
         $this->setProperty('num', $this->getParam('num'));
@@ -254,31 +254,36 @@ final class TextBlock extends DataSet {
         try {
 
             if (!isset($_POST['data']) && !isset($_POST['num'])) {
-                throw new SystemException('ERR_DEV_NO_DATA', SystemException::ERR_DEVELOPER );
+                throw new SystemException('ERR_DEV_NO_DATA', SystemException::ERR_DEVELOPER);
             }
             $langID = $this->document->getLang();
-            $docID = (isset($_POST['ID']))?$_POST['ID']:'';
+            $docID = (isset($_POST['ID'])) ? $_POST['ID'] : '';
             //пытаемся определить есть ли у нас запись о содержимом блока в основной таблице
 
             $tbID = $this->getTextBlockID($docID, $_POST['num']);
             $result = DataSet::cleanupHTML($_POST['data']);
             //$result = $_POST['data'];
+            if (trim($result)) {
+                if (!$tbID) {
+                    $tbID = $this->dbh->modify(QAL::INSERT, $this->tableName, array('smap_id' => $docID, 'tb_num' => $_POST['num']));
+                }
+                $tableName = $this->tableName . '_translation';
 
-            if (!$tbID) {
-                $tbID = $this->dbh->modify(QAL::INSERT, 'share_textblocks', array('smap_id'=>$docID, 'tb_num'=>$_POST['num']));
-            }
-            $tableName = $this->tableName.'_translation';
+                $res = $this->dbh->select($tableName, array('tb_id'), array('tb_id' => $tbID, 'lang_id' => $langID));
+                //если есть запись в таблице переводов - апдейтим
+                if (is_array($res)) {
 
-            $res = $this->dbh->select($tableName, array('tb_id'), array('tb_id'=>$tbID, 'lang_id'=>$langID));
-            //если есть запись в таблице переводов - апдейтим
-            if (is_array($res)) {
+                    $res = $this->dbh->modify(QAL::UPDATE, $tableName, array('tb_content' => $result), array('tb_id' => $tbID, 'lang_id' => $langID));
+                }
+                elseif ($res === true) {
+                    //если нет - вставляем
+                    $res = $this->dbh->modify(QAL::INSERT, $tableName, array('tb_content' => $result, 'tb_id' => $tbID, 'lang_id' => $langID));
+                }
+            }
+            elseif($tbID) {
+                $this->dbh->modifyRequest(QAL::DELETE, $this->tableName, null, array('tb_id' => $tbID));
+            }
 
-                $res = $this->dbh->modify(QAL::UPDATE, $tableName, array('tb_content'=>$result), array('tb_id'=>$tbID, 'lang_id'=>$langID));
-            }
-            elseif ($res === true) {
-                //если нет - вставляем
-                $res = $this->dbh->modify(QAL::INSERT, $tableName, array('tb_content'=>$result, 'tb_id'=>$tbID, 'lang_id'=>$langID));
-            }
 
             $this->dbh->commit();
         }
@@ -304,7 +309,7 @@ final class TextBlock extends DataSet {
      * @access protected
      */
     protected function imageManager() {
-        $this->imageManager  = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
+        $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
         $this->imageManager->run();
     }
 
@@ -314,11 +319,11 @@ final class TextBlock extends DataSet {
      * @return void
      * @access protected
      */
-     protected function fileLibrary() {
+    protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', null, false);
         $this->fileLibrary->run();
-     }
+    }
 
     /**
      * Для метода вывода редактора изображений вызывает построитель редактора изоборажений во всех других случаях - свой
@@ -329,18 +334,18 @@ final class TextBlock extends DataSet {
 
     public function build() {
         switch ($this->getState()) {
-        	case 'imageManager':
-        	    $result = $this->imageManager->build();
-        		break;
-        	case 'fileLibrary':
-        	    $result = $this->fileLibrary->build();
-        	    break;
+            case 'imageManager':
+                $result = $this->imageManager->build();
+                break;
+            case 'fileLibrary':
+                $result = $this->fileLibrary->build();
+                break;
             case 'source':
                 $result = $this->source->build();
                 break;
-        	default:
+            default:
                 $result = parent::build();
-        		break;
+                break;
         }
         return $result;
     }

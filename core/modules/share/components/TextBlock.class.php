@@ -281,7 +281,7 @@ final class TextBlock extends DataSet {
                 }
             }
             elseif($tbID) {
-                $this->dbh->modifyRequest(QAL::DELETE, $this->tableName, null, array('tb_id' => $tbID));
+                $this->dbh->modify(QAL::DELETE, $this->tableName, null, array('tb_id' => $tbID));
             }
 
 

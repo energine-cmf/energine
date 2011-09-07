@@ -129,9 +129,9 @@ class DataDescription extends Object implements Iterator {
     public function getFieldDescriptionsByType($types){
         $result = array();
         if(!is_array($types)) $types = array($types);
-        foreach($this->fieldDescriptions as $fieldDescription){
+        foreach($this->fieldDescriptions as $name => $fieldDescription){
             if(in_array($fieldDescription->getType(), $types)){
-                array_push($result, $fieldDescription);
+                $result[$name] = $fieldDescription;
             }
         }
         return $result;

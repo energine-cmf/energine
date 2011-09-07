@@ -30,8 +30,8 @@ error_reporting(E_ALL | E_STRICT);
 /**
  * включаем вывод ошибок и отключаем вывод в HTML
  */
-ini_set('display_errors', 1);
-ini_set('html_errors', 0);
+@ini_set('display_errors', 1);
+@ini_set('html_errors', 0);
 
 /**
  * отключаем magic_quotes_runtime
@@ -54,32 +54,38 @@ if (get_magic_quotes_gpc()) {
 }
 
 @date_default_timezone_set('Europe/Kiev');
-
+/**
+ * Путь к директории пользовательских модулей
+ */
+define('SITE_DIR', 'site');
 /**
  * Путь к директории пользовательских компонентов
  */
-define('SITE_COMPONENTS_DIR', 'site/modules/*/components');
+define('SITE_COMPONENTS_DIR', SITE_DIR.'/modules/*/components');
 /**
  * Путь к директории пользовательских PHP файлов
  */
-define('SITE_GEARS_DIR', 'site/modules/*/gears');
-
+define('SITE_GEARS_DIR', SITE_DIR.'/modules/*/gears');
+/**
+ * Путь к директории модулей ядра
+ */
+define('CORE_DIR', 'core');
 /**
  * Шаблон пути к директориям компонентов стандартных модулей,
  * где * заменяется именем модуля
  */
-define('CORE_COMPONENTS_DIR', 'core/modules/*/components');
+define('CORE_COMPONENTS_DIR', CORE_DIR.'/modules/*/components');
 
-define('CORE_GEARS_DIR', 'core/modules/*/gears');
+define('CORE_GEARS_DIR', CORE_DIR.'/modules/*/gears');
 
 /**
  * Путь к директории ядра системы
  */
-define('CORE_KERNEL_DIR', 'core/kernel');
+define('CORE_KERNEL_DIR', CORE_DIR.'/kernel');
 /**
  * Путь к директории ядра проекта
  */
-define('SITE_KERNEL_DIR', 'site/kernel');
+define('SITE_KERNEL_DIR', SITE_DIR.'/kernel');
 
 
 /**
@@ -175,7 +181,7 @@ function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext) {
     catch (Exception $e) {
         //Если ошибка произошла здесь
         //то капец
-        var_dump($message, $file, $line);
+        echo 'Message:', $message, PHP_EOL, 'File:', $file,PHP_EOL, 'Line:', $line, PHP_EOL;
         exit;
     }
 }

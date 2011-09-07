@@ -61,8 +61,8 @@ class JSONBuilder extends AbstractBuilder {
                 'title' => $fieldInfo->getPropertyValue('title'),
                 'type' => $fieldInfo->getType(),
                 'key' => $fieldInfo->getPropertyValue('key') &&
-                        $fieldInfo->getPropertyValue('index') ==
-                                'PRI' ? true : false,
+                         $fieldInfo->getPropertyValue('index') ==
+                         'PRI' ? true : false,
                 'visible' => true /*$fieldInfo->getPropertyValue('key') &&
                         $fieldInfo->getPropertyValue('index') ==
                                 'PRI' ? false : true*/,
@@ -109,6 +109,18 @@ class JSONBuilder extends AbstractBuilder {
                                     $fieldValue = $value[$fieldValue]['value'];
                                 }
                                 break;
+                            case FieldDescription::FIELD_TYPE_MULTI:
+                                if (is_array($fieldValue) && !empty($fieldValue)) {
+                                    $values = $fieldInfo->getAvailableValues();
+                                    $res = array();
+                                    foreach ($fieldValue as $val) {
+                                        if (isset($values[$val])) {
+                                            array_push($res, $values[$val]['value']);
+                                        }
+                                    }
+                                    $fieldValue = implode(', ', $res);
+                                }
+                                break;
                             default: // not used
                         }
                         if (is_null($fieldValue)) {
@@ -142,7 +154,7 @@ class JSONBuilder extends AbstractBuilder {
                 'count' => $this->pager->getNumPages()
             );
         }
-        $result = json_encode($result, JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
+        $result = json_encode($result, JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
         return $result;
     }
 
@@ -154,7 +166,7 @@ class JSONBuilder extends AbstractBuilder {
      * @todo зачем это!?
      */
     public function getErrors() {
-        return json_encode($this->errors, JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
+        return json_encode($this->errors, JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
     }
 
     /**

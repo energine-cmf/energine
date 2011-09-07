@@ -103,10 +103,10 @@ class Grid extends DBDataSet
         if (!$this->params['config']) {
             $fileName = get_class($this) . '.component.xml';
             $fileConf =
-                    sprintf(ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
+                    sprintf(SITE_DIR.ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
                     $fileName;
             $coreConf =
-                    sprintf(ComponentConfig::CORE_CONFIG_DIR, $this->module) .
+                    sprintf(CORE_DIR.ComponentConfig::CORE_CONFIG_DIR, $this->module) .
                     $fileName;
             if (file_exists($fileConf)) {
                 $params['config'] = $fileConf;
@@ -116,7 +116,7 @@ class Grid extends DBDataSet
             }
             else {
                 $params['config'] =
-                        sprintf(ComponentConfig::CORE_CONFIG_DIR, 'share/') .
+                        sprintf(CORE_DIR.ComponentConfig::CORE_CONFIG_DIR, 'share/') .
                         'Grid.component.xml';
             }
         }

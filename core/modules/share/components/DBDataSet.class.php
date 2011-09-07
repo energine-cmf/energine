@@ -15,8 +15,7 @@
  * @subpackage share
  * @author dr.Pavka
  */
-class DBDataSet extends DataSet
-{
+class DBDataSet extends DataSet {
 
     /**
      * Имя таблицы содержащей переводы
@@ -85,8 +84,7 @@ class DBDataSet extends DataSet
      *
      * @return void
      */
-    public function __construct($name, $module, array $params = null)
-    {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
     }
@@ -98,8 +96,7 @@ class DBDataSet extends DataSet
      * @access protected
      */
 
-    protected function defineParams()
-    {
+    protected function defineParams() {
         return array_merge(
             parent::defineParams(),
             array(
@@ -117,8 +114,7 @@ class DBDataSet extends DataSet
      * @return array
      * @access protected
      */
-    protected function loadDataDescription()
-    {
+    protected function loadDataDescription() {
         $result = $this->dbh->getColumnsInfo($this->getTableName());
         if ($this->getTranslationTableName()) {
             $transColumnsDescription = $this->dbh->getColumnsInfo($this->getTranslationTableName());
@@ -149,65 +145,52 @@ class DBDataSet extends DataSet
      * @return array
      * @access protected
      */
-    protected function loadData()
-    {
-        $data = false;
-        //Перечень мультиполей
-        $multiFields = false;
-
+    protected function loadData() {
         if ($this->pager) {
             // pager существует -- загружаем только часть данных, текущую страницу
             $this->setLimit($this->pager->getLimit());
         }
-        //Если не существует таблицы с переводами, то выбираем данные из основной таблицы
-        if (!$this->getTranslationTableName()) {
-            $dbFields = array();
-            foreach ($this->getDataDescription() as $fieldName => $field) {
-                if (is_null($field->getPropertyValue('customField'))) {
-                    if (
-                        ($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
-                    ) {
-                        $fieldName = ' IF((' . $fieldName . ' IS NOT NULL) AND (' . $fieldName . ' <> ""), 1, 0) AS ' . $fieldName;
-                    }
-                    array_push($dbFields, $fieldName);
 
-                    //Поскольку все равно ниже будем проверять на существование мульти полей, то лучше сделаем это в одной итерации
-                    if($field->getType() == FieldDescription::FIELD_TYPE_MULTI) $multiFields[] = $field;
-                }
-            }
-            //Если не пустой массив полей для отбора
-            if (!empty($dbFields)) {
-                if ($this->getType() == self::COMPONENT_TYPE_FORM_ADD) {
-                    $dbFields = array_flip($dbFields);
-                    foreach ($dbFields as $key => $value) {
-                        $dbFields[$key] = '';
-                    }
-                    $res = array($dbFields);
-                }
-                else {
-                    $res = $this->dbh->select($this->getTableName(), (($this->pager) ? ' SQL_CALC_FOUND_ROWS '
-                            : '') . implode(',', $dbFields), $this->getFilter(), $this->getOrder(), $this->getLimit());
-                }
-                if (is_array($res)) {
-                    $data = $res;
-                    if ($this->pager) {
-                        if (!($recordsCount = simplifyDBResult($this->dbh->selectRequest('SELECT FOUND_ROWS() as c'), 'c', true))) {
-                            $recordsCount = 0;
-                        }
-                        $this->pager->setRecordsCount($recordsCount);
-                    }
-                }
-            }
+        //Если не существует таблицы с переводами, то выбираем данные из основной таблицы
+        //Для мультиязычной таблицы - дергаем отдельный хитрый(сложный) метод загрузки
+        $data = $this->loadm2mData(
+            (!$this->getTranslationTableName()) ?
+                    $this->commonLoadData() :
+                    $this->multiLoadData()
+        );
+
+        return $data;
+    }
+
+    /**
+     * Возвращает язык на которм берутся данные
+     *
+     * @return int
+     * @access protected
+     */
+
+    protected function getDataLanguage() {
+        $result = false;
+        if ($this->getParam('onlyCurrentLang')) {
+            $result = $this->document->getLang();
         }
-        else {
-            //Для мультиязычной таблицы - дергаем отдельный метод загрузки данных
-            $data = $this->multiLoadData();
-        }
+        return $result;
+    }
+
+    /**
+     * Модифицирует набор данных добавляя в него значений из m2m таблиц
+     *
+     * @param $data array | false
+     * @return array | false
+     */
+    private function loadm2mData($data) {
+        //Перечень мультиполей
+        $multiFields = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_MULTI);
         //Загрузка значений из м2м таблиц
         if (is_array($data) && !empty($multiFields)) {
             $m2mData = array();
             $pks = simplifyDBResult($data, $this->getPK());
-            
+
             //Загружаем в $m2mData значения всех мульти полей
             //формат array($MultiFieldName => array($pk => $values))
             foreach ($multiFields as $mfd) {
@@ -220,8 +203,9 @@ class DBDataSet extends DataSet
                              $this->getPK() => $pks
                         )
                     );
+
                     if (is_array($res)) {
-                        foreach($res as $row){
+                        foreach ($res as $row) {
                             $pk = $row[$relInfo['fieldName']];
                             unset($row[$relInfo['fieldName']]);
                             $m2mData[$mfd->getName()][$pk][] = current($row);
@@ -229,14 +213,19 @@ class DBDataSet extends DataSet
                     }
                 }
             }
-            //формируем промежуточную структуру с помощью которой можно сопоставить индекс значению первичного ключа
-            foreach($data as $key=>$value){
-                $tmp[$value[$this->getPK()]]=$key;
-            }
-            //Используя промеежуточную сттруктуру записываем данные в $data
-            foreach($m2mData as $fieldName=>$values){
-                foreach($values as $pk=>$m2mValues){
-                    $data[$tmp[$pk]][$fieldName] = $m2mValues;
+            //Проходимся по всем данным
+            foreach ($data as $key => $row) {
+                //потом по multi полям
+                foreach ($m2mData as $fieldName => $m2mValues) {
+                    //Если в списке полей данных существует мультиполе с этим именем
+                    if (array_key_exists($fieldName, $row)) {
+                        //
+                        foreach ($m2mValues as $pk => $values) {
+                            if ($row[$this->getPK()] == $pk) {
+                                $data[$key][$fieldName] = $values;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -245,30 +234,60 @@ class DBDataSet extends DataSet
     }
 
     /**
-     * Возвращает язык на которм берутся данные
+     * Загрузка значений из обычной таблицы
      *
-     * @return int
-     * @access protected
+     * @return array | bool
      */
+    private function commonLoadData() {
+        $dbFields = array();
+        $data = false;
 
-    protected function getDataLanguage()
-    {
-        $result = false;
-        if ($this->getParam('onlyCurrentLang')) {
-            $result = $this->document->getLang();
+        foreach ($this->getDataDescription() as $fieldName => $field) {
+            if (is_null($field->getPropertyValue('customField'))) {
+                if (
+                    ($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
+                ) {
+                    $fieldName = ' IF((' . $fieldName . ' IS NOT NULL) AND (' . $fieldName . ' <> ""), 1, 0) AS ' . $fieldName;
+                }
+                array_push($dbFields, $fieldName);
+
+                //Поскольку все равно ниже будем проверять на существование мульти полей, то лучше сделаем это в одной итерации
+                if ($field->getType() == FieldDescription::FIELD_TYPE_MULTI) $multiFields[] = $field;
+            }
         }
-        return $result;
+        //Если не пустой массив полей для отбора
+        if (!empty($dbFields)) {
+            if ($this->getType() == self::COMPONENT_TYPE_FORM_ADD) {
+                $dbFields = array_flip($dbFields);
+                foreach ($dbFields as $key => $value) {
+                    $dbFields[$key] = '';
+                }
+                $res = array($dbFields);
+            }
+            else {
+                $res = $this->dbh->select($this->getTableName(), (($this->pager) ? ' SQL_CALC_FOUND_ROWS '
+                        : '') . implode(',', $dbFields), $this->getFilter(), $this->getOrder(), $this->getLimit());
+            }
+            if (is_array($res)) {
+                $data = $res;
+                if ($this->pager) {
+                    if (!($recordsCount = simplifyDBResult($this->dbh->selectRequest('SELECT FOUND_ROWS() as c'), 'c', true))) {
+                        $recordsCount = 0;
+                    }
+                    $this->pager->setRecordsCount($recordsCount);
+                }
+            }
+        }
+
+        return $data;
     }
 
     /**
      * Загрузка мультиязычных данных
      *
-     * @return array
-     * @access private
+     * @return array|bool|mixed
      */
-
-    private function multiLoadData()
-    {
+    private function multiLoadData() {
         $data = false;
         $lang = E()->getLanguage();
         $lang = $lang->getLanguages();
@@ -276,15 +295,18 @@ class DBDataSet extends DataSet
         $filter = $order = $limit = '';
         //Создаем перечень полей  в формате array('имя основной таблицы' => array('имя поля'=>'имя таблицы.имя поля'), 'имя таблицыпереводов' => array('имя поля'=>'имя таблицы.имя поля'))
         foreach ($this->getDataDescription() as $fieldName => $field) {
-            //Не включаем в набор идентификатор языка
+            //Не включаем в набор идентификатор языка и PK
             if (!$field->getPropertyValue('languageID') && $field->getPropertyValue('key') !== true) {
+
                 //не включаем в набор поля полученные  из конфигурации
                 if (is_null($field->getPropertyValue('customField'))) {
+                    //поля не приведенные к булеану
                     if (
                         !($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
                     ) {
                         $dbFields[$field->getPropertyValue('tableName')][$fieldName] = $field->getPropertyValue('tableName') . '.' . $fieldName;
                     }
+                        //поля приведенные к булеану из родного типа данных
                     else {
                         $dbFields[$field->getPropertyValue('tableName')][$fieldName] =
                                 ' IF((' . $field->getPropertyValue('tableName') . '.' . $fieldName . ' IS NOT NULL) AND (' . $field->getPropertyValue('tableName') . '.' . $fieldName . ' <> ""), 1, 0) AS ' . $fieldName;
@@ -416,8 +438,7 @@ class DBDataSet extends DataSet
      * @access protected
      */
 
-    protected function setTableName($tableName)
-    {
+    protected function setTableName($tableName) {
         $this->setParam('tableName', $tableName);
     }
 
@@ -430,8 +451,7 @@ class DBDataSet extends DataSet
      * @access protected
      */
 
-    protected function setParam($name, $value)
-    {
+    protected function setParam($name, $value) {
         if ($name == 'tableName') {
             $this->translationTableName = $this->dbh->getTranslationTablename($value);
         }
@@ -446,8 +466,7 @@ class DBDataSet extends DataSet
      * @access public
      * @final
      */
-    final public function getTableName()
-    {
+    final public function getTableName() {
         if (!$this->getParam('tableName')) {
             throw new SystemException('ERR_DEV_NO_TABLENAME', SystemException::ERR_DEVELOPER);
         }
@@ -463,8 +482,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final public function getFilter()
-    {
+    final public function getFilter() {
         return $this->filter;
     }
 
@@ -478,8 +496,7 @@ class DBDataSet extends DataSet
      * @see QAL::select()
      */
 
-    final protected function setFilter($filter)
-    {
+    final protected function setFilter($filter) {
         $this->clearFilter();
         if (!empty($filter)) {
             $this->addFilterCondition($filter);
@@ -493,8 +510,7 @@ class DBDataSet extends DataSet
      * @access protected
      */
 
-    protected function addFilterCondition($filter)
-    {
+    protected function addFilterCondition($filter) {
         if (is_numeric($filter)) {
             $filter = array($this->getTableName() . '.' . $this->getPK() => $filter);
         }
@@ -512,8 +528,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final protected function clearFilter()
-    {
+    final protected function clearFilter() {
         $this->filter = array();
     }
 
@@ -525,8 +540,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final protected function getOrder()
-    {
+    final protected function getOrder() {
         if (is_null($this->order)) {
             $this->order = false;
             $columns = $this->dbh->getColumnsInfo($this->getTableName());
@@ -550,8 +564,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final protected function setOrder(array $order)
-    {
+    final protected function setOrder(array $order) {
         /*$orderDirection = strtoupper($orderDirection);
         if (!in_array($orderDirection, array(QAL::ASC, QAL::DESC))) {
             $orderDirection = QAL::ASC;
@@ -568,8 +581,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final protected function getLimit()
-    {
+    final protected function getLimit() {
         return $this->limit;
     }
 
@@ -582,8 +594,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final protected function setLimit(array $limit)
-    {
+    final protected function setLimit(array $limit) {
         $this->limit = $limit;
     }
 
@@ -596,8 +607,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final public function getPK()
-    {
+    final public function getPK() {
         if (!$this->pk) {
             $res = $this->dbh->getColumnsInfo($this->getTableName());
             if (is_array($res)) {
@@ -619,8 +629,7 @@ class DBDataSet extends DataSet
         return $this->pk;
     }
 
-    final protected function setPK($primaryColumnName)
-    {
+    final protected function setPK($primaryColumnName) {
         $this->pk = $primaryColumnName;
     }
 
@@ -632,8 +641,7 @@ class DBDataSet extends DataSet
      * @access protected
      */
 
-    protected function createBuilder()
-    {
+    protected function createBuilder() {
         if (!$this->getTranslationTableName()) {
             $result = parent::createBuilder();
         }
@@ -650,8 +658,7 @@ class DBDataSet extends DataSet
      * @access protected
      */
 
-    protected function createDataDescription()
-    {
+    protected function createDataDescription() {
         $result = parent::createDataDescription();
         foreach ($result as $fieldName => $fieldMetaData) {
             $keyInfo = $fieldMetaData->getPropertyValue('key');
@@ -714,8 +721,7 @@ class DBDataSet extends DataSet
      * @access protected
      */
 
-    protected function getFKData($fkTableName, $fkKeyName)
-    {
+    protected function getFKData($fkTableName, $fkKeyName) {
         return $this->dbh->getForeignKeyData($fkTableName, $fkKeyName, $this->document->getLang());
     }
 
@@ -727,8 +733,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final protected function getTranslationTableName()
-    {
+    final protected function getTranslationTableName() {
         return $this->translationTableName;
     }
 
@@ -739,8 +744,7 @@ class DBDataSet extends DataSet
      * @access protected
      */
 
-    protected function view()
-    {
+    protected function view() {
         $this->setType(self::COMPONENT_TYPE_FORM);
         //$this->addCrumb('TXT_VIEW_ITEM');
         $id = $this->getStateParams();
@@ -767,8 +771,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final protected function recordExists($id, $fieldName = false)
-    {
+    final protected function recordExists($id, $fieldName = false) {
         if (!$fieldName) {
             $fieldName = $this->getPK();
         }
@@ -783,8 +786,7 @@ class DBDataSet extends DataSet
      * @return mixed
      * @access protected
      */
-    protected function buildJS()
-    {
+    protected function buildJS() {
         $result = false;
         if (($this->getState() == 'view') && $this->document->isEditable() && $this->getParam('editable')) {
             $this->addWYSIWYGTranslations();
@@ -803,8 +805,7 @@ class DBDataSet extends DataSet
      * @final
      */
 
-    final protected function getPreviousState()
-    {
+    final protected function getPreviousState() {
         if (!$this->previousState) {
             if (!isset($_POST['componentAction'])) {
                 throw new SystemException('ERR_NO_COMPONENT_ACTION', SystemException::ERR_CRITICAL);
@@ -823,8 +824,7 @@ class DBDataSet extends DataSet
      * @return void
      * @access protected
      */
-    protected function saveText()
-    {
+    protected function saveText() {
         $result = '';
         if ($this->getParam('editable') && isset($_POST['ID']) && isset($_POST['num']) && isset($_POST['data'])) {
             $result = DataSet::cleanupHTML($_POST['data']);
@@ -846,8 +846,7 @@ class DBDataSet extends DataSet
      * @return void
      * @access protected
      */
-    protected function fileLibrary()
-    {
+    protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('config' => 'core/modules/share/config/FileLibraryMin.component.xml'));
         //$this->fileLibrary->getState();
@@ -860,8 +859,7 @@ class DBDataSet extends DataSet
      * @return void
      * @access protected
      */
-    protected function imageManager()
-    {
+    protected function imageManager() {
         $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
         //$this->imageManager->getState();
         $this->imageManager->run();
@@ -874,14 +872,12 @@ class DBDataSet extends DataSet
      * @access protected
      * @TODO: move this method to more suitable place.
      */
-    protected function source()
-    {
+    protected function source() {
         $this->source = $this->document->componentManager->createComponent('textblocksource', 'share', 'TextBlockSource', null);
         $this->source->run();
     }
 
-    public function build()
-    {
+    public function build() {
         switch ($this->getState()) {
             case 'imageManager':
                 return $this->imageManager->build();

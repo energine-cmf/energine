@@ -17,7 +17,7 @@
  * @subpackage core
  * @author dr.Pavka
  */
-class Saver extends DBWorker{
+class Saver extends DBWorker {
     /**
      * @access private
      * @var array имена полей, в которых произошли ошибки
@@ -63,8 +63,7 @@ class Saver extends DBWorker{
      * @access public
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -75,8 +74,7 @@ class Saver extends DBWorker{
      * @param DataDescription $dataDescription
      * @return void
      */
-    public function setDataDescription(DataDescription $dataDescription)
-    {
+    public function setDataDescription(DataDescription $dataDescription) {
         $this->dataDescription = $dataDescription;
     }
 
@@ -86,8 +84,7 @@ class Saver extends DBWorker{
      * @access public
      * @return DataDescription
      */
-    public function getDataDescription()
-    {
+    public function getDataDescription() {
         return $this->dataDescription;
     }
 
@@ -98,8 +95,7 @@ class Saver extends DBWorker{
      * @access public
      */
 
-    public function getData()
-    {
+    public function getData() {
         return $this->data;
     }
 
@@ -110,8 +106,7 @@ class Saver extends DBWorker{
      * @param Data $data
      * @return void
      */
-    public function setData(Data $data)
-    {
+    public function setData(Data $data) {
         $this->data = $data;
     }
 
@@ -122,8 +117,7 @@ class Saver extends DBWorker{
      * @param string
      * @return void
      */
-    public function setMode($mode)
-    {
+    public function setMode($mode) {
         $this->mode = $mode;
     }
 
@@ -133,8 +127,7 @@ class Saver extends DBWorker{
      * @access public
      * @return string
      */
-    public function getMode()
-    {
+    public function getMode() {
         return $this->mode;
     }
 
@@ -144,8 +137,7 @@ class Saver extends DBWorker{
      * @access public
      * @return mixed
      */
-    public function getFilter()
-    {
+    public function getFilter() {
         return $this->filter;
     }
 
@@ -156,8 +148,7 @@ class Saver extends DBWorker{
      * @param mixed $filter
      * @return void
      */
-    public function setFilter($filter)
-    {
+    public function setFilter($filter) {
         $this->filter = $filter;
     }
 
@@ -168,8 +159,7 @@ class Saver extends DBWorker{
      * @return boolean
      * @todo возможность передачи в объект callback функции для пользовательской валидации
      */
-    public function validate()
-    {
+    public function validate() {
         $result = false;
 
         if (!$this->getData() || !$this->getDataDescription()) {
@@ -214,8 +204,7 @@ class Saver extends DBWorker{
      * @access public
      * @return array
      */
-    public function getErrors()
-    {
+    public function getErrors() {
         return $this->errors;
     }
 
@@ -226,8 +215,7 @@ class Saver extends DBWorker{
      * @param string $fieldName
      * @return void
      */
-    public function addError($fieldName)
-    {
+    public function addError($fieldName) {
         array_push($this->errors, $this->translate('FIELD_' . $fieldName));
     }
 
@@ -237,13 +225,26 @@ class Saver extends DBWorker{
      * @access public
      * @return void
      */
-    public function save()
-    {
+    public function save() {
         //Основные данные для сохранения
         $data = array();
         //Данные для сохранения в связанные таблицы
         //Начальное значение false, поскольку пустой массив будет говорить о том что поле существует. но ничего не выбрано
         $m2mData = false;
+        $m2mFDs = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_MULTI);
+        if (!empty($m2mFDs)) {
+            foreach ($m2mFDs as $fieldInfo) {
+                if (is_null($fieldInfo->getPropertyValue('customField'))) {
+                    //Определяем имя m2m таблицы
+                    list($m2mTableName, $m2mPKName) = array_values($fieldInfo->getPropertyValue('key'));
+                    //Определяем имя поля
+                    $m2mInfo = $this->dbh->getColumnsInfo($m2mTableName);
+                    unset($m2mInfo[$m2mPKName]);
+                    $m2mData[$m2mTableName]['pk'] = $m2mPKName;
+                }
+            }
+        }
+
         for ($i = 0; $i < $this->getData()->getRowCount(); $i++) {
             foreach ($this->getDataDescription() as $fieldName => $fieldInfo) {
                 // исключаем поля, которым нет соответствия в БД
@@ -263,6 +264,11 @@ class Saver extends DBWorker{
                                 //Поскольку мультиполе реально фейковое
                                 //записываем в него NULL
                                 $fieldValue = '';
+
+                                /**
+                                 * @todo необходимо оптимизировать алгоритм, а то произошло дублирование кода
+                                 *
+                                 */
                                 //Определяем имя m2m таблицы
                                 list($m2mTableName, $m2mPKName) = array_values($fieldInfo->getPropertyValue('key'));
                                 //Определяем имя поля
@@ -302,11 +308,6 @@ class Saver extends DBWorker{
                 }
             }
             $result = $id;
-            if (is_array($m2mData)) {
-                foreach ($m2mData as $tableName => $m2mInfo) {
-                    $this->dbh->modify(QAL::DELETE, $tableName, null, array($m2mInfo['pk'] => $id));
-                }
-            }
         }
         else {
             if (isset($data[$mainTableName])) {
@@ -330,16 +331,24 @@ class Saver extends DBWorker{
                 $result = $this->getData()->getFieldByName($pkName)->getRowData(0);
             else $result = true;
         }
-        
-        if (is_array($m2mData) && !empty($m2mData)) {
+
+        if (is_array($m2mData) && is_numeric($result)) {
+            foreach ($m2mData as $tableName => $m2mInfo) {
+                $this->dbh->modify(QAL::DELETE, $tableName, null, array($m2mInfo['pk'] => $result));
+            }
+
             foreach ($m2mData as $tableName => $m2mInfo) {
                 $pk = $m2mInfo['pk'];
                 unset($m2mInfo['pk']);
-                foreach (current($m2mInfo) as $fieldValue) {
-                    $this->dbh->modify(QAL::INSERT, $tableName, array(key($m2mInfo) => $fieldValue, $pk => $id));
-                }
+
+                if ($m2mInfo)
+                    foreach (current($m2mInfo) as $fieldValue) {
+                        $this->dbh->modify(QAL::INSERT_IGNORE, $tableName, array(key($m2mInfo) => $fieldValue, $pk => $result));
+                    }
             }
+
         }
+
 
         return ($this->result = $result);
     }
@@ -350,8 +359,7 @@ class Saver extends DBWorker{
      * @access public
      * @return mixed
      */
-    public function getResult()
-    {
+    public function getResult() {
         return $this->result;
     }
 }

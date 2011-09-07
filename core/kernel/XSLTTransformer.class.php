@@ -22,7 +22,7 @@ class XSLTTransformer extends Object implements ITransformer {
     /**
      * Директория, где находится основной трансформер
      */
-    const MAIN_TRANSFORMER_DIR = 'site/modules/%s/transformers/';
+    const MAIN_TRANSFORMER_DIR = '/modules/%s/transformers/';
 
     /**
      * Имя файла трансформации
@@ -56,7 +56,7 @@ class XSLTTransformer extends Object implements ITransformer {
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
         if (!$isAbsolutePath)
             $transformerFilename =
-                    sprintf(self::MAIN_TRANSFORMER_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
+                    sprintf(SITE_DIR.self::MAIN_TRANSFORMER_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
                             $transformerFilename;
         if (!file_exists($transformerFilename)) {
             throw new SystemException('ERR_DEV_NO_MAIN_TRANSFORMER', SystemException::ERR_DEVELOPER, $transformerFilename);

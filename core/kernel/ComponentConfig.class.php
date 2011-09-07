@@ -21,13 +21,13 @@ final class ComponentConfig
     /**
      * Путь к директории, содержащей пользовательские файлы конфигурации для компонентов
      */
-    const SITE_CONFIG_DIR = 'site/modules/%s/config/';
+    const SITE_CONFIG_DIR = '/modules/%s/config/';
 
     /**
      * Путь к директории, содержащей файлы конфигурации для стандартных компонентов
      * (вместо %s будет подставлено имя модуля, содержащего компонент)
      */
-    const CORE_CONFIG_DIR = 'core/modules/%s/config/';
+    const CORE_CONFIG_DIR = '/modules/%s/config/';
 
     /**
      * Конфигурационный файл
@@ -92,8 +92,8 @@ final class ComponentConfig
         $file = false;
         if ($configFilename && !file_exists($file = $configFilename)) {
             //Смотрим в директории текущего сайта с пользовательскими конфигами
-            if (!file_exists($file = sprintf(self::SITE_CONFIG_DIR . $configFilename, E()->getSiteManager()->getCurrentSite()->folder))) {
-                if (!file_exists($file = sprintf(self::CORE_CONFIG_DIR, $moduleName) . $configFilename)) {
+            if (!file_exists($file = sprintf(SITE_DIR.self::SITE_CONFIG_DIR . $configFilename, E()->getSiteManager()->getCurrentSite()->folder))) {
+                if (!file_exists($file = sprintf(CORE_DIR.self::CORE_CONFIG_DIR, $moduleName) . $configFilename)) {
                     //если файла с указанным именем нет ни в папке с пользовательскими конфигами, ни в папке модуля с конфигами
                     //throw new SystemException('ERR_DEV_NO_CONFIG', SystemException::ERR_DEVELOPER, $configFilename);
                     $file = false;

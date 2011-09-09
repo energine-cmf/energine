@@ -23,6 +23,7 @@ final class QAL extends DBA {
      * Режимы модифицирующих операций
      */
     const INSERT = 'INSERT';
+    const INSERT_IGNORE = 'INSERT IGNORE';
     const UPDATE = 'UPDATE';
     const DELETE = 'DELETE';
     const REPLACE = 'REPLACE';
@@ -169,6 +170,7 @@ final class QAL extends DBA {
 
         switch ($mode) {
             case self::INSERT:
+            case self::INSERT_IGNORE:
             case self::REPLACE:
                 if (!empty($data)) {
                     $fieldNames = array();

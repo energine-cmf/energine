@@ -32,7 +32,7 @@ class PageList extends DataSet {
      *
      * @return void
      */
-    public function __construct($name, $module,  array $params = null) {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->addTranslation('TXT_HOME');
@@ -61,12 +61,12 @@ class PageList extends DataSet {
 
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
-            array(
-                'tags' => '',
-                'id' => false,
-                'site' => E()->getSiteManager()->getCurrentSite()->id,
-                'recursive' => false
-            ));
+                              array(
+                                   'tags' => '',
+                                   'id' => false,
+                                   'site' => E()->getSiteManager()->getCurrentSite()->id,
+                                   'recursive' => false
+                              ));
         return $result;
     }
 
@@ -78,9 +78,12 @@ class PageList extends DataSet {
      */
     protected function main() {
         parent::main();
-        $siteFD = new FieldDescription('Site');
-        $siteFD->setType(FieldDescription::FIELD_TYPE_STRING);
-        $this->getDataDescription()->addFieldDescription($siteFD);
+        foreach (array('Site', 'Redirect') as $fieldName) {
+            $FD = new FieldDescription($fieldName);
+            $FD->setType(FieldDescription::FIELD_TYPE_STRING);
+            $this->getDataDescription()->addFieldDescription($FD);
+        }
+
         if ($this->getDataDescription()->getFieldDescriptionByName('attachments')) {
             $this->getDataDescription()->addFieldDescription(E()->AttachmentManager->createFieldDescription());
             if (!$this->getData()->isEmpty()) {
@@ -126,17 +129,17 @@ class PageList extends DataSet {
         }
             //выводим child переданной в параметре
         else {
-            $param = (int) $this->getParam('id');
+            $param = (int)$this->getParam('id');
         }
 
         $data = call_user_func(array($sitemap, $methodName), $param);
-//inspect($data);
+
         if (!empty($data)) {
             if ($this->getParam('recursive')) {
                 $this->getBuilder()->setTree($sitemap->getChilds($param, true));
             }
             $hasDescriptionRtf =
-                    (bool) $this->getDataDescription()->getFieldDescriptionByName('DescriptionRtf');
+                    (bool)$this->getDataDescription()->getFieldDescriptionByName('DescriptionRtf');
 
             //По умолчанию - фильтрация отсутствует
             $filteredIDs = true;
@@ -157,9 +160,10 @@ class PageList extends DataSet {
                     $data[$key]['Id'] = $key;
                     $data[$key]['Segment'] = $value['Segment'];
                     $data[$key]['Name'] = $value['Name'];
+                    $data[$key]['Redirect'] = Response::prepareRedirectURL($value['RedirectUrl']);
                     $data[$key]['Site'] =
                             E()->getSiteManager()->getSiteByID($data[$key]['site'])->base;
-                    if ($hasDescriptionRtf)$data[$key]['DescriptionRtf'] =
+                    if ($hasDescriptionRtf) $data[$key]['DescriptionRtf'] =
                             $value['DescriptionRtf'];
                 }
 

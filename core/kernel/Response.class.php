@@ -77,6 +77,29 @@ final class Response extends Object {
         }
         return $result;
     }
+    
+    /**
+     * Метод вызываемый при переадресации
+     * заменяет паттерны lang и site на соответствующие значения
+     * @static
+     * @param $redirectURL string
+     * @return string
+     */
+    public static function prepareRedirectURL($redirectURL){
+        if(empty($redirectURL)) return $redirectURL;
+        $lang =E()->getLanguage();
+        
+        return str_replace(
+                    array(
+                        '%lang%',
+                        '%site%'
+                    ),
+                    array(
+                        $lang->getAbbrByID($lang->getCurrent()),
+                        E()->getSiteManager()->getCurrentSite()->base
+                    ),
+                    $redirectURL);
+    }
 
     /**
      * Устанавливает статус ответа.

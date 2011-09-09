@@ -6,6 +6,7 @@
 			<field name="Pid" type="integer"/>
 			<field name="Name" type="string"/>
 			<field name="Segment" type="string"/>
+			<field name="Redirect" type="string"/>
 		</fields>
 	</state>
 </configuration>

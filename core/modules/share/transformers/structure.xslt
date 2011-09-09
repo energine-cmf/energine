@@ -22,7 +22,10 @@
             <a>
                 <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
                     <xsl:attribute name="href">
-                        <xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/>
+                        <xsl:choose>
+                            <xsl:when test="field[@name='Redirect']=''"><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/></xsl:when>
+                            <xsl:otherwise><xsl:value-of select="field[@name='Redirect']"/></xsl:otherwise>
+                        </xsl:choose>
                     </xsl:attribute>
                 </xsl:if>
                 <xsl:value-of select="field[@name='Name']"/>
@@ -41,8 +44,11 @@
             <a>
                 <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
                     <xsl:attribute name="href">
-                        <xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/>
-                    </xsl:attribute>
+                                <xsl:choose>
+                                    <xsl:when test="field[@name='Redirect']=''"><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/></xsl:when>
+                                    <xsl:otherwise><xsl:value-of select="field[@name='Redirect']"/></xsl:otherwise>
+                                </xsl:choose>
+                            </xsl:attribute>
                 </xsl:if>
                 <xsl:value-of select="field[@name='Name']"/>
             </a>
@@ -83,7 +89,10 @@
             <a>
                 <xsl:choose>
                     <xsl:when test="field[@name='Id']!=$ID">
-                        <xsl:attribute name="href"><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/></xsl:attribute>
+                        <xsl:attribute name="href"><xsl:choose>
+                                    <xsl:when test="field[@name='Redirect']=''"><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/></xsl:when>
+                                    <xsl:otherwise><xsl:value-of select="field[@name='Redirect']"/></xsl:otherwise>
+                                </xsl:choose></xsl:attribute>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:attribute name="class">active</xsl:attribute>

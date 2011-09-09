@@ -37,15 +37,20 @@ final class NavigationMenu extends DataSet {
 		$params['config'] = sprintf(CORE_DIR.ComponentConfig::CORE_CONFIG_DIR, $module).get_class($this).'.component.xml';
 		parent::__construct($name, $module,  $params);
 	}
+    /**
+     * Добавлен параметр tags позволяющий ограничивать выборку определенными тегами
+     *
+     * @return array
+     */
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
         array(
         'tags' => '',
         ));
         return $result;
-    }	
+    }
     /**
-      * Накладіваем ограничения по тегам
+      * Накладываем ограничения по тегам
       * 
       * @return array | false
       * @access protected
@@ -73,6 +78,7 @@ final class NavigationMenu extends DataSet {
 	                    $data[$key]['Id'] = $key;
 	                    $data[$key]['Segment'] = $sitemap->getURLByID($key);
 	                    $data[$key]['Name'] = $value['Name'];
+                        $data[$key]['Redirect'] = Response::prepareRedirectURL($value['RedirectUrl']);
 	                }
 	            }
             }

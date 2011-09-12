@@ -60,6 +60,7 @@ class FeedbackForm extends DBDataSet {
                 'userBody' => 'TXT_BODY_FEEDBACK_USER',
                 'adminSubject' => 'TXT_SUBJ_FEEDBACK_ADMIN',
                 'adminBody' => 'TXT_BODY_FEEDBACK_ADMIN',
+                'noCaptcha' => false
             ));
         return $result;
     }
@@ -130,8 +131,8 @@ class FeedbackForm extends DBDataSet {
         }
         try {
             $data[$this->getTableName()] = $_POST[$this->getTableName()];
-
-            if (!$this->document->getUser()->isAuthenticated()) {
+            
+            if (!$this->document->getUser()->isAuthenticated() && !$this->getParam('noCaptcha')) {
                 $this->checkCaptcha();
             }
             if ($result = $this->saveData($data)) {

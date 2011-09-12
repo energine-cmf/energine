@@ -177,7 +177,7 @@ var RichEditor = new Class({
                     }
                     this.currentRange.select();
                 } else {
-                    if (Browser.Engine.gecko && !this.fallback_ie) {
+                    if (!Browser.chrome && !this.fallback_ie) {
                         var imgStr = '<img src="'
                             + image.filename + '" width="'
                             + image.width + '" height="'
@@ -196,7 +196,13 @@ var RichEditor = new Class({
                             false, imgStr);
                         this.dirty = true;
                         return;
-                    } else if (this.fallback_ie) {
+                    }
+                    else if(Browser.chrome){
+                        this.currentRange.insertNode(new Element('img', {'src': image.filename, 'width': image.width, 'height': image.height, 'align': image.align, 'alt': image.alt, 'border':0}));
+                        this.dirty = true;
+                        return;
+                    }
+                    else if (this.fallback_ie) {
                         this.textarea.insertAtCursor('<img src="'
                             + image.filename
                             + '" width="'

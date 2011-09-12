@@ -93,9 +93,6 @@ class XSLTTransformer extends Object implements ITransformer {
             if (!@$xsltDoc->load($this->fileName)) {
                 throw new SystemException('ERR_DEV_NOT_WELL_FORMED_XSLT', SystemException::ERR_DEVELOPER);
             }
-            if ($this->getConfigValue('document.xslprofile') == 1) {
-                $xsltProc->setProfiling('logs/xslt_profile.log');
-            }
             $xsltProc->importStylesheet($xsltDoc);
             $result = $xsltProc->transformToXml($this->document);
         }

@@ -140,6 +140,8 @@ final class TextBlock extends DataSet {
         }
         else {
             $docID = '';
+            //Блок - глобальный
+            $this->setProperty('global', 'global');
         }
 
         $res = $this->dbh->selectRequest(

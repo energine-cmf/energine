@@ -226,6 +226,7 @@ Toolbar.Control = new Class({
     }
 });
 
+
 Toolbar.Button = new Class({
     Extends:Toolbar.Control,
     build: function() {
@@ -240,14 +241,27 @@ Toolbar.Button = new Class({
             'mouseout':  function() {
                 this.removeClass('highlighted');
             }});
+        if (Browser.chrome) {
+            this.element.addEvents({
+                'click':function(event) {
+                    if (!control.properties.disabled) {
+                        control.toolbar._callAction(control.properties.action);
+                    }
+                },
+                'mousedown': function() {
+                    return false;
+                }
+            })
+        }
+        else {
+            this.element.addEvent('mousedown', function(event) {
+                if (event.rightClick) return;
+                if (!control.properties.disabled) {
+                    control.toolbar._callAction(control.properties.action);
+                }
 
-        this.element.addEvent(((Browser.chrome)?'click':'mousedown'), function(event) {
-            if (event.rightClick) return;
-            if (!control.properties.disabled) {
-                control.toolbar._callAction(control.properties.action);
-            }
-
-        });
+            });
+        }
     }
 });
 Toolbar.Switcher = new Class({

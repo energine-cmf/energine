@@ -27,7 +27,7 @@ var Toolbar = new Class({
         Asset.css('toolbar.css');
         this.name = toolbarName;
         this.element =
-                new Element('ul').addClass('toolbar').addClass('clearfix');
+            new Element('ul').addClass('toolbar').addClass('clearfix');
         if (this.name) {
             this.element.addClass(this.name);
         }
@@ -53,10 +53,14 @@ var Toolbar = new Class({
             if (elem.nodeType == 1) {
                 var control = null;
                 switch (elem.getAttribute('type')) {
-                    case 'button':       control =
-                            new Toolbar.Button;       break;
-                    case 'separator':    control =
-                            new Toolbar.Separator;    break;
+                    case 'button':
+                        control =
+                            new Toolbar.Button;
+                        break;
+                    case 'separator':
+                        control =
+                            new Toolbar.Separator;
+                        break;
                 }
                 if (control) {
                     control.load(elem);
@@ -171,17 +175,17 @@ Toolbar.Control = new Class({
         this.properties.action = controlDescr.getAttribute('action') || '';
         this.properties.tooltip = controlDescr.getAttribute('tooltip') || '';
         this.properties.disabled =
-                controlDescr.getAttribute('disabled') ? true : false;
+            controlDescr.getAttribute('disabled') ? true : false;
     },
-    buildAsIcon: function(icon){
+    buildAsIcon: function(icon) {
         this.element.addClass('icon unselectable')
-                    .setProperty('id', this.toolbar.name + this.properties.id)
-                    .setProperty('title', this.properties.title +
-                    (this.properties.tooltip ? ' (' + this.properties.tooltip +
-                            ')' : ''))
-                    .setStyle('-moz-user-select', 'none')
-                    .setStyle('background-image', 'url(' + Energine.base +
-                    this.toolbar.imagesPath + icon + ')');
+            .setProperty('id', this.toolbar.name + this.properties.id)
+            .setProperty('title', this.properties.title +
+            (this.properties.tooltip ? ' (' + this.properties.tooltip +
+                ')' : ''))
+            .setStyle('-moz-user-select', 'none')
+            .setStyle('background-image', 'url(' + Energine.base +
+            this.toolbar.imagesPath + icon + ')');
     },
     build: function() {
         if (!this.toolbar || !this.properties.id) {
@@ -204,17 +208,17 @@ Toolbar.Control = new Class({
     disable: function() {
         /*if (!this.properties.disabled) {
 
-        }*/
-            this.properties.disabled = true;
-            this.element.addClass('disabled').setOpacity(0.25);
+         }*/
+        this.properties.disabled = true;
+        this.element.addClass('disabled').setOpacity(0.25);
     },
 
     enable: function() {
-            this.properties.disabled = false;
-            this.element.removeClass('disabled').setOpacity(1);
+        this.properties.disabled = false;
+        this.element.removeClass('disabled').setOpacity(1);
         /*if (this.properties.disabled) {
 
-        }*/
+         }*/
     },
 
     setAction: function(action) {
@@ -235,13 +239,14 @@ Toolbar.Button = new Class({
             },
             'mouseout':  function() {
                 this.removeClass('highlighted');
-            },
-            'mousedown':function(event) {
-                if (event.rightClick) return;
-                if (!control.properties.disabled) {
-                    control.toolbar._callAction(control.properties.action);
-                }
+            }});
+
+        this.element.addEvent(((Browser.chrome)?'click':'mousedown'), function(event) {
+            if (event.rightClick) return;
+            if (!control.properties.disabled) {
+                control.toolbar._callAction(control.properties.action);
             }
+
         });
     }
 });
@@ -250,25 +255,25 @@ Toolbar.Switcher = new Class({
     initialize: function(props) {
         this.parent(props);
         this.properties.state =
-                new Boolean((this.properties.state || 0).toInt()).valueOf();
+            new Boolean((this.properties.state || 0).toInt()).valueOf();
     },
-    load: function(controlDescr){
+    load: function(controlDescr) {
         this.parent(controlDescr);
-        this.properties.aicon  = controlDescr.getAttribute('aicon') || '';
-        this.properties.state  = controlDescr.getAttribute('state') || 0;
+        this.properties.aicon = controlDescr.getAttribute('aicon') || '';
+        this.properties.state = controlDescr.getAttribute('state') || 0;
     },
     build: function() {
         this.parent();
         var toggle = (function() {
             if (this.properties.state) {
-                if(this.properties.aicon)
+                if (this.properties.aicon)
                     this.buildAsIcon(this.properties.aicon);
                 else
                     this.element.addClass('pressed');
 
             }
             else {
-                if(this.properties.icon)
+                if (this.properties.icon)
                     this.buildAsIcon(this.properties.icon);
                 else
                     this.element.removeClass('pressed');
@@ -323,7 +328,7 @@ Toolbar.Select = new Class({
         }
 
         this.element =
-                new Element('li').setProperty('unselectable', 'on').addClass('select');
+            new Element('li').setProperty('unselectable', 'on').addClass('select');
         if (this.properties.title) this.element.adopt(new Element('span').addClass('label').set('text', this.properties.title));
         this.select = new Element('select');
 
@@ -374,7 +379,7 @@ Toolbar.Select = new Class({
             //Элемент уже построен
             if (this.select) {
                 this.select.getElement('option[value=' + itemId +
-                        ']').setProperty('selected', 'selected');
+                    ']').setProperty('selected', 'selected');
             }
             else {
 

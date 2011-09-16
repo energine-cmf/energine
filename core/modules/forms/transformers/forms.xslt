@@ -2,41 +2,24 @@
 <xsl:stylesheet
         version="1.0"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-        xmlns:nrgn="http://energine.org"
-        >
-
-    <!--
-        Все поля для анкет отмечаются по очереди css-классами first_field и second_field.
-        Это сделано для того, чтобы разместить поля в две колонки.
-        Hidden-поля могут быть только первыми или последними, иначе собьется последовательность.
-    -->
-    <xsl:template match="field[(@type != 'hidden' and @type != 'captcha' and @type != 'custom') and ancestor::component[@class='Form' and (@componentAction !='success')]]">
-    	<div class="field">
-            <xsl:attribute name="class">field<xsl:if test="not(@nullable) and @type != 'boolean'"> required</xsl:if><xsl:choose>
-                <xsl:when test="position() div 2 = floor(position() div 2)"> first_field</xsl:when>
-                <xsl:otherwise> second_field</xsl:otherwise>
-            </xsl:choose></xsl:attribute>
-    		<xsl:if test="@title and @type != 'boolean'">
-    		    <div class="name">
-        			<label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
-    				<xsl:if test="not(@nullable) and not(ancestor::component/@exttype = 'grid') and not(ancestor::component[@class='TextBlockSource'])"><span class="mark">*</span></xsl:if>
-    			</div>
-    		</xsl:if>
-    		<div class="control" id="control_{@language}_{@name}">                
-        		<xsl:apply-imports/>
-            </div>
-    	</div>
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:nrgn="http://energine.org">
+        
+    <xsl:template match="record[ancestor::component[@class='Form']]">
+        <xsl:if test="ancestor::component/@componentAction='main' and field[@name='form_description']!=''">
+            <div class="textblock"><xsl:value-of select="field[@name='form_description']" disable-output-escaping="yes"/></div>
+        </xsl:if>
+        <xsl:apply-templates/>
     </xsl:template>
+
+    <xsl:template match="field[@name='form_description' and ancestor::component[@class='Form']]"/>
 
     <xsl:template match="field[@type='boolean' and ancestor::component[@class='Form']]">
         <div class="field">
-    	    <xsl:attribute name="class">field<xsl:if test="not(@nullable)"> required</xsl:if><xsl:choose>
-                <xsl:when test="position() div 2 = floor(position() div 2)"> first_field</xsl:when>
-                <xsl:otherwise> second_field</xsl:otherwise>
-            </xsl:choose></xsl:attribute>
+    	    <xsl:attribute name="class">field<xsl:if test="not(@nullable)"> required</xsl:if></xsl:attribute>
     		<xsl:if test="@title ">
     		    <div class="name">
-        			<label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
+        			<label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes"/></label>
     				<xsl:if test="not(@nullable)"><span class="mark">*</span></xsl:if>
     			</div>
     		</xsl:if>
@@ -44,8 +27,8 @@
                 <select id="{@name}">
                     <xsl:attribute name="name">
                         <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
                     <xsl:if test="@nullable='1'">
@@ -60,22 +43,19 @@
     
     <xsl:template match="field[@type='file' and ancestor::component[@class='Form']]">
         <div class="field">
-    	    <xsl:attribute name="class">field<xsl:if test="not(@nullable)"> required</xsl:if><xsl:choose>
-                <xsl:when test="position() div 2 = floor(position() div 2)"> first_field</xsl:when>
-                <xsl:otherwise> second_field</xsl:otherwise>
-            </xsl:choose></xsl:attribute>
+    	    <xsl:attribute name="class">field<xsl:if test="not(@nullable)"> required</xsl:if></xsl:attribute>
     		<xsl:if test="@title ">
     		    <div class="name">
-        			<label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
+        			<label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes"/></label>
     				<xsl:if test="not(@nullable)"><span class="mark">*</span></xsl:if>
     			</div>
     		</xsl:if>
     		<div class="control" id="control_{@language}_{@name}">
-                <input type="file" >
+                <input type="file">
                     <xsl:attribute name="name">
                         <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName" />[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name" /></xsl:otherwise>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:attribute>
                     <xsl:if test="@pattern">

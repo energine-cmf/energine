@@ -10,6 +10,9 @@
         <javascript>
             <behavior name="FormBehavior"/>
         </javascript>
+        <translations>
+            <translation const="TXT_REQUIRED_FIELDS"/>
+        </translations>
     </state>
     <state name="send">
         <uri_patterns>

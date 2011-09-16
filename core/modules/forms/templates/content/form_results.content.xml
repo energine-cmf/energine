@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<content >
-    <container name="contentContainer" layout="content" column="column">
-        <container name="mainContent" rounded="rounded" widget="static">
+<content html_class="colset">
+    <container name="center" column="column" html_class="col col1 last_col">
+        <container name="formResultsContainer" block="alfa" widget="static">
             <component name="formResults" module="forms" class="FormResults">
                 <params>
                     <param name="form_id">0</param>

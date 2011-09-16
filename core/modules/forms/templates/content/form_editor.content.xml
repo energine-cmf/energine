@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content html_class="colset">
-    <container name="center" column="column">
+    <container name="center" column="column" html_class="col col1 last_col">
         <container name="formEditorContainer" block="alfa" widget="static">
             <component name="formEditor" class="FormsEditor" module="forms">
                 <params>

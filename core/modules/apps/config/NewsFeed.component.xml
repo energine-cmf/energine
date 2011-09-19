@@ -39,6 +39,9 @@
             <field name="news_title"/>
             <field name="news_text_rtf"/>
         </fields>
+        <translations>
+            <translation const="TXT_BACK_TO_LIST"/>
+        </translations>
     </state>
     <state name="main">
         <uri_patterns>
@@ -62,6 +65,9 @@
         <toolbar>
             <control id="view" title="TXT_READ_MORE" type="link"/>
         </toolbar>
+        <translations>
+            <translation const="TXT_ALL_NEWS"/>
+        </translations>
     </state>
 
 </configuration>

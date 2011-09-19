@@ -1,0 +1,690 @@
+@charset "utf-8";
+/*
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
+*/
+
+/* -------------------- BASE -------------------- */
+/* ----- reset ----- */
+html, body, iframe, address, blockquote, p, pre, h1, h2, h3, h4, h5, h6, hr,        /* блочные элементы кроме div */
+dd, dl, dt, ul, ol, li,                                                             /* списки */
+a, abbr, acronym, b, cite, code, del, dfn, em, i,                                   /* строчные элементы кроме span */
+ins, kbd, q, samp, strong, tt, var,                                                 /* строчные элементы */
+img, object,                                                                        /* картинки и объекты */
+caption, table, tbody, td, tfoot, th, thead, tr,                                    /* табличные элементы */
+form, fieldset, legend, label,                                                      /* элементы формы кроме контролов */
+u, font, s, center, dir, menu, strike, xmp                                          /* устаревшие элементы */
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+    text-indent: 0;
+    font-family: inherit;
+    font-size: 1em;
+}
+/* ----- /reset ----- */
+
+/* ----- common ----- */
+html, body  {
+    background: white;
+    font-family: Arial, sans-serif;
+    font-size: 100.01%;
+    color: black;
+}
+body {
+    font-size: 0.813em; /* =13px - базовый размер шрифта */
+}
+p {
+    margin: 0 0 1em 0;
+}
+img, a img {
+    border: 0;
+}
+code, kbd, pre, samp, tt, var {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1em;
+}
+pre {
+    margin: 0 0 1em 0;
+    white-space: pre;
+}
+hr {
+    height: 1px;
+    margin: 1em 0;
+    padding: 0;
+    color: gray;
+    background: gray;
+    border: 0;
+}
+q:before, q:after,
+blockquote:before, blockquote:after {
+    content: "";
+}
+/* ----- /common ----- */
+
+/* ----- headers ----- */
+h1, h2, h3, h4, h5, h6 {
+    margin: 1em 0 0.3em 0;
+}
+h1 {
+    font-size: 2em; /* =26px */
+    font-weight: normal;
+}
+h2 {
+    font-size: 1.693em; /* =22px */
+    font-weight: normal;
+}
+h3 {
+    font-size: 1.462em; /* =19px */
+    font-weight: normal;
+}
+h4 {
+    font-size: 1.231em; /* =16px */
+}
+h5 {
+    font-size: 1.077em; /* =14px */
+}
+h6 {
+    font-size: 0.924em; /* =12px */
+}
+/* ----- /headers ----- */
+
+/* ----- links ----- */
+a:link {
+    text-decoration: underline;
+    color: #00e;
+}
+a:visited {
+    text-decoration: underline;
+    color: gray;
+}
+a[href]:hover, a[href]:active {
+    text-decoration: none;
+    color: #f00;
+}
+/* ----- /links ----- */
+
+/* ----- lists ----- */
+ul, ol, dl {
+    margin: 0 0 1em 0;
+}
+ul, ol {
+    padding: 0 0 0 2em;
+    list-style-position: outside;
+}
+ol {
+    list-style-type: decimal;
+}
+ul li, ol li {
+    margin: 0.2em 0;
+}
+dt {
+    margin: 0;
+    font-weight: bold;
+}
+dd {
+    margin: 0 0 1em 0;
+}
+ul ul, ol ul, ul ol, ol ol {
+    margin: 0 0 0.3em 0;
+    padding: 0 0 0 1.5em;
+}
+/* ----- /lists ----- */
+
+/* ----- tables ----- */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    vertical-align: top;
+    font-family: Arial, sans-serif;
+    font-size: 1em;
+}
+caption {
+    padding-bottom: 0.5em;
+    text-align: left;
+}
+th {
+    vertical-align: top;
+    text-align: left;
+    font-weight: bold;
+}
+td {
+    vertical-align: top;
+}
+tfoot {
+    font-weight: bold;
+}
+/* ----- /tables ----- */
+
+/* ----- forms ----- */
+form {
+    margin: 0 0 1em 0;
+    font-family: Arial, sans-serif;
+}
+fieldset {
+    padding: 12px;
+    border: 1px solid gray;
+}
+input, textarea, select, button {
+    height: auto;
+    margin: 0;
+    vertical-align: middle;
+    line-height: normal;
+    font-family: Arial, sans-serif;
+    font-size: 1em;
+    color: black;
+}
+input.text, textarea, select {
+    border: 1px solid gray;
+    background: white;
+}
+input.text, textarea {
+    padding: 3px;
+}
+textarea {
+    vertical-align: top;
+}
+select {
+    padding: 2px;
+}
+select option {
+    background: white;
+}
+optgroup {
+    color: black;
+    background: white;
+}
+optgroup option {
+    padding-left: 22px;
+}
+/* ----- /forms ----- */
+/* -------------------- /BASE -------------------- */
+
+/* -------------------- COMMON -------------------- */
+/* ----- clearfix ----- */
+.clearfix:after, .colset:after {
+    clear: both;
+    display: block;
+    visibility: hidden;
+    height: 0;
+    content: ".";
+    line-height: 0;
+    font-size: 0;
+}
+.clearfix, .colset {
+    *zoom: 1; /* IE7 */
+}
+/* ----- /clearfix ----- */
+
+/* ----- misc ----- */
+.small_margin {
+	margin: 0 0 0.5em 0;
+}
+.no_margin {
+	margin: 0;
+}
+.clear {
+	clear: both;
+}
+.align_left {
+	text-align: left;
+}
+.align_right {
+	text-align: right;
+}
+.align_center {
+	text-align: center;
+}
+.align_justify {
+	text-align: justify;
+}
+.error, .error_message {
+    color: red;
+}
+.play_button {
+    display: block;
+    left: 50%;
+    margin: -16px 0 0 -16px;
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    top: 50%;
+    z-index: 1;
+    background: url("../../images/play_button_small.png") left top no-repeat;
+}
+.image_info {
+    display: block;
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    z-index: 1;
+    padding: 1px 4px;
+    background: black;
+    text-decoration: none;
+    font-size: 0.847em; /* =11px */
+    color: white;
+}
+/* ----- /misc ----- */
+
+/* ----- block ----- */
+.block {
+    padding-bottom: 10px;
+}
+.block_header {
+    padding: 5px 10px 3px 10px;
+    background: silver;
+}
+.block_title {
+    margin: 0;
+	font-weight: normal;
+    font-size: 1.847em; /* =24px */    
+}
+.block_content {
+    padding: 10px;
+    border: 1px solid silver;
+}
+/* ----- /block ----- */
+
+/* ----- default forms ----- */
+input.radio, input.checkbox {
+    width: auto;
+    vertical-align: middle;
+}
+.field {
+    clear: both;
+    padding: 5px 0;
+}
+.controlset {
+    padding: 10px 0;
+}
+.mark {
+    color: #ff6000;
+}
+.note {
+    padding: 5px 0;
+    color: gray;
+}
+.date_field input.text {
+    width: 40px;
+    vertical-align: middle;
+}
+.date_field select {
+    width: 100px;
+    vertical-align: middle;
+}
+.captcha_field {
+    padding: 10px 0;
+}
+.captcha_field input.text {
+    display: block;
+    width: 92px;
+    margin-top: 5px;
+}
+.captcha_field .name {
+    padding-bottom: 5px;
+}
+/* base form */
+.base_form {
+    margin: 0 0 1em 0;
+}
+.base_form input.text {
+    width: 270px;
+}
+.base_form textarea {
+    width: 270px;
+    height: 70px;
+}
+.base_form select, .base_form input.file {
+    width: 278px;
+}
+.base_form .date_field input.text {
+    width: 40px;
+}
+.base_form .date_field select {
+    width: 100px;
+}
+.base_form .captcha_field input.text {
+    width: 92px;
+}
+.base_form .captcha_field .name {
+    padding-bottom: 5px;
+}
+/* /base form */
+/* ----- /default forms ----- */
+/* -------------------- /COMMON -------------------- */
+
+/* -------------------- LAYOUT -------------------- */
+/* ----- base ----- */
+body, html {
+	background: #e0e0e0;	
+}
+.base {
+    width: 1000px;
+    margin: 0 auto 20px auto;
+    background: white;
+    box-shadow: 0 0 10px #a0a0a0;
+}
+.top_adblock {
+    padding: 10px 0;
+    text-align: center;
+}
+.left_adblock {
+    padding: 0 0 10px 0;
+    text-align: center;
+}
+/* ----- /base ----- */
+
+/* ----- header ----- */
+.header .logo {
+    float: left;
+	margin: 0;
+	padding: 10px;
+}
+.header .logo img {
+	display: block;
+}
+/* ----- /header ----- */
+
+/* ----- breadcrumbs ----- */
+.breadcrumbs {
+	padding: 0 10px 10px 10px;
+    font-size: 0.924em; /* =12px */
+}
+/* ----- /breadcrumbs ----- */
+
+/* ----- content ----- */
+.main {
+    clear: both;
+	padding: 10px;
+}
+/* 1 column */
+.colset > .col {
+    float: left;
+    width: 100%;
+    padding-right: 10px;
+}
+.colset > .last_col {
+    padding-right: 0;
+}
+/* 2 columns */
+.colset2 > .col1 {
+    width: 280px
+}
+.colset2 > .col2 {
+    width: 690px
+}
+.colset2 > .col2 > .colset2 > .col2 {
+    width: 400px;
+}
+/* 3 columns */
+.colset3 > .col1 {
+    width: 280px
+}
+.colset3 > .col2 {
+    width: 400px
+}
+.colset3 > .col3 {
+    width: 280px
+}
+/* ----- /content ----- */
+
+/* ----- language switcher ----- */
+.lang_switcher {
+    clear: both;
+    margin: 0;
+	padding: 7px 10px;
+    background: silver;
+    list-style: none;
+    text-align: right;
+    font-size: 0.924em; /* =12px */
+}
+.lang_switcher li {
+    display: inline;
+    margin-right: 7px;
+}
+.lang_switcher a:visited {
+    color: #00e;
+}
+.lang_switcher a[href]:hover, .lang_switcher a[href]:active {
+    text-decoration: none;
+    color: #f00;
+}
+/* ----- /language switcher ----- */
+
+/* ----- main menu ----- */
+.main_menu {
+    margin-bottom: 0;    
+}
+.main_menu a:visited {    
+    color: #00e;
+}
+.main_menu a[href]:hover, .main_menu a[href]:active {
+    text-decoration: none;
+    color: #f00;
+}
+/* ----- /main menu ----- */
+
+/* ----- footer ----- */
+.footer {
+    clear: both;
+    margin: 0 10px;
+    padding: 10px;
+    border-top: 1px dotted silver;
+    color: gray;
+    font-size: 0.924em; /* =12px */
+    text-align: center;
+}
+.footer p {
+    margin: 0;
+}
+/* ----- /footer ----- */
+/* -------------------- /LAYOUT -------------------- */
+
+/* -------------------- CONTENT -------------------- */
+/* ----- textblock ----- */
+.textbox, .textblock {
+    clear: both;
+    margin: 0 0 1em 0;
+}
+/* ----- /textblock ----- */
+
+/* ----- pager ----- */
+.pager {
+	margin: 0 0 1em 0;
+}
+.pager a:visited {
+    color: #00E;
+}
+.pager a:hover, .pager a:active {
+    color: #F00;
+}
+.pager .control {
+    margin: 0 5px;
+}
+.pager .arrow img {
+    vertical-align: middle;
+}
+.pager .current {
+    padding: 0 3px 1px 3px;
+    background: #0080FF;
+    color: #fff;
+}
+/* ----- /pager ----- */
+
+/* ----- player ----- */
+.media_box {
+    margin-bottom: 1em;
+}
+.player_box {    
+    padding: 1px;
+    border: 1px solid silver;
+}
+.player {
+    position: relative;
+    background: black;
+}
+.player .play_button {
+    margin: -50px 0 0 -50px;
+    width: 100px;
+    height: 100px;
+    background: url("../../images/play_button_large.png") left top no-repeat;
+}
+.carousel_box {
+    margin-top: 1px;
+    border: 1px solid silver;
+}
+/* ----- /player ----- */
+
+/* ----- feed ----- */
+.feed_list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.feed_item {
+    clear: both;
+    float: left;
+    width: 100%;
+    margin: 0 0 10px 0;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.feed_image {
+    float: left;
+    position: relative;
+    margin: 0 10px 2px 0;
+    padding: 1px;
+    border: 1px solid silver;
+    background: white;
+}
+.feed_image a {
+    text-decoration: none; /* для Webkit */
+}
+.feed_image img {
+    display: block;
+}
+.feed_date {
+    padding-bottom: 1px;
+    font-size: 0.924em; /* =12px */
+    color: gray;        
+}
+.feed_name {
+    margin: 0;
+    padding-bottom: 4px;
+    font-size: 1em; /* =13px */
+}
+.feed_text {
+    margin-bottom: 1em;
+}
+.feed .read_more {
+    text-transform: lowercase;
+}
+.feed_view .feed_name {
+    padding-bottom: 8px;
+    font-weight: normal;
+    font-size: 1.539em; /* =20px */
+}
+.feed_view .go_back {
+    margin-top: 5px;
+}
+/* short feed */
+.short_feed .feed_list > li {
+    margin-bottom: 0;
+    border-bottom: 0;
+}
+/* ----- /feed ----- */
+
+/* ----- menu ----- */
+.menu {
+    margin: 0;
+    padding: 10px;
+    list-style: none;
+    border: 1px solid #e0e0e0;
+    background: #f5f5f5;
+}
+.menu_item {
+    clear: both;
+    float: left;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 10px 0;
+}
+.menu_image {
+    float: left;
+    position: relative;
+    margin: 0 10px 2px 0;
+    padding: 1px;
+    border: 1px solid silver;
+    background: white;
+}
+.menu_image a {
+    text-decoration: none; /* для Webkit */
+}
+.menu_image img {
+    display: block;
+}
+.menu_name {
+    margin: 0;
+    padding-bottom: 5px;
+    font-size: 1.231em; /* =16px */
+}
+/* ----- /menu ----- */
+
+/* ----- site list ----- */
+.site_list_box {
+    float: left;
+    width: 26%;
+    margin-right: 4%;
+}
+.site_list .active {
+    font-weight: bold;
+}
+/* ----- /site list ----- */
+
+/* ----- div editor ----- */
+.div_editor_form {
+    float: left;
+    width: 70%;
+}
+/* ----- /div editor ----- */
+
+/* ----- error page ----- */
+.error_item {
+    padding-bottom: 10px;
+}
+.error_name {
+    margin: 0 0 10px 0;
+    color: red;
+}
+.error_text {
+    margin: 0 0 1em 0;
+}
+.error_page .go_back {
+    padding-bottom: 10px;   
+}
+/* ----- /error page ----- */
+/* -------------------- /CONTENT -------------------- */
+
+/* -------------------- FORMS -------------------- */
+/* ----- login form ----- */
+.login_form .controlset {
+    padding-top: 0.5em;
+}
+.login_form input.text {
+	width: 213px;
+}
+.login_form input.checkbox {
+	width: auto;
+	margin: 0 5px;
+}
+.login_form .restore_link {
+    margin-top: 5px;
+}
+.login_form .error_message {
+    margin: 2px 0;
+    padding: 5px;
+    border: 2px solid red;
+    font-weight: bold;
+}
+/* ----- /login form ----- */
+/* -------------------- /FORMS -------------------- */

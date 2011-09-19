@@ -12,10 +12,12 @@
                 doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
                 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
                 indent="yes"/>
+
     <xsl:include href="../../../../core/modules/share/transformers/include.xslt"/>
-    <xsl:include href="../../../../core/modules/calendar/transformers/include.xslt"/>
     <xsl:include href="../../../../core/modules/user/transformers/include.xslt"/>
+    <xsl:include href="../../../../core/modules/calendar/transformers/include.xslt"/>    
     <xsl:include href="../../../../core/modules/apps/transformers/include.xslt"/>
+    <xsl:include href="../../../../core/modules/forms/transformers/include.xslt"/>
     
     <xsl:include href="include.xslt"/>
 

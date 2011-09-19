@@ -4,6 +4,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
 
+    <!-- компоненты PageList и NavigationMenu -->
     <xsl:template match="component[@class='PageList' or @class='NavigationMenu']">
         <xsl:apply-templates/>
     </xsl:template>
@@ -17,30 +18,48 @@
     </xsl:template>    
 
     <xsl:template match="record[ancestor::component[@class='PageList']]">
-        <li style="clear: both;">
-            <xsl:apply-templates select="field[@name='attachments']"/>
-            <a>
-                <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
-                    <xsl:attribute name="href">
-                        <xsl:choose>
-                            <xsl:when test="field[@name='Redirect']=''"><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/></xsl:when>
-                            <xsl:otherwise><xsl:value-of select="field[@name='Redirect']"/></xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:attribute>
-                </xsl:if>
-                <xsl:value-of select="field[@name='Name']"/>
-            </a>
+        <li class="menu_item">
+            <h4 class="menu_name">
+                <a>
+                    <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
+                        <xsl:attribute name="href">
+                            <xsl:choose>
+                                <xsl:when test="field[@name='Redirect']=''"><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/></xsl:when>
+                                <xsl:otherwise><xsl:value-of select="field[@name='Redirect']"/></xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:attribute>
+                    </xsl:if>
+                    <xsl:value-of select="field[@name='Name']"/>
+                </a>
+            </h4>
+            <xsl:if test="field[@name='attachments']/recordset">
+                <div class="menu_image">
+                    <a>
+                        <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
+                            <xsl:attribute name="href">
+                                <xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="field[@name='Segment']"/>
+                            </xsl:attribute>
+                        </xsl:if>
+                        <xsl:apply-templates select="field[@name='attachments']" mode="preview">
+                            <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
+                            <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                        </xsl:apply-templates>
+                    </a>
+                </div>
+            </xsl:if>
             <xsl:if test="field[@name='DescriptionRtf'] != ''">
-                <p><xsl:value-of select="field[@name='DescriptionRtf']" disable-output-escaping="yes"/></p>
+                <div class="menu_announce">
+                    <xsl:value-of select="field[@name='DescriptionRtf']" disable-output-escaping="yes"/>
+                </div>
             </xsl:if>
             <xsl:if test="recordset">
-                <xsl:apply-templates />
+                <xsl:apply-templates/>
             </xsl:if>
         </li>
     </xsl:template>
     
     <xsl:template match="record[ancestor::component[@class='NavigationMenu']]">
-        <li style="clear: both;">
+        <li class="menu_item">
             <a>
                 <xsl:if test="$DOC_PROPS[@name='ID']!=field[@name='Id']">
                     <xsl:attribute name="href">
@@ -52,9 +71,10 @@
                 </xsl:if>
                 <xsl:value-of select="field[@name='Name']"/>
             </a>
-            <xsl:apply-templates select="recordset"></xsl:apply-templates>
+            <xsl:apply-templates select="recordset"/>
         </li>
     </xsl:template>
+    <!-- /компоненты PageList и NavigationMenu -->
     
     <!-- компонент MainMenu -->
     <xsl:template match="component[@name='mainMenu']">
@@ -106,9 +126,6 @@
     </xsl:template>
     <!-- /компонент MainMenu -->
     
-
-
-    
     <!-- компонент LangSwitcher -->
     <xsl:template match="component[@class='LangSwitcher']">
         <xsl:apply-templates/>
@@ -124,15 +141,12 @@
 
     <xsl:template match="record[ancestor::component[@class='LangSwitcher']]">
         <li>
-            <xsl:choose>
-                <xsl:when test="$LANG_ID = field[@name='lang_id']">
-                    <xsl:attribute name="class">current</xsl:attribute>
-                    <span><xsl:value-of select="field[@name='lang_name']"/></span>                    
-                </xsl:when>
-                <xsl:otherwise>
-                    <a href="{field[@name='lang_url']}"><xsl:value-of select="field[@name='lang_name']"/></a>                    
-                </xsl:otherwise>
-            </xsl:choose>
+            <a>
+                <xsl:if test="$LANG_ID != field[@name='lang_id']">
+                    <xsl:attribute name="href"><xsl:value-of select="field[@name='lang_url']"/></xsl:attribute>
+                </xsl:if>
+                <xsl:value-of select="field[@name='lang_name']"/>
+            </a>    
         </li>
     </xsl:template>
     <!-- /компонент LangSwitcher -->
@@ -184,7 +198,21 @@
     <xsl:template match="field[ancestor::component[@class='SitemapTree']]"/>
     <!-- /компонент SitemapTree -->
 
+    <!-- компонент PageMedia -->
     <xsl:template match="component[@class='PageMedia']">
-        <xsl:apply-templates select="recordset/record[1]/field[@name='attachments']" mode="carousel"/>
+        <xsl:if test="recordset/record[1]/field[@name='attachments']/recordset">
+            <div class="media_box">
+                <xsl:apply-templates select="recordset/record[1]/field[@name='attachments']" mode="player">
+                    <xsl:with-param name="PLAYER_WIDTH">664</xsl:with-param>
+                    <xsl:with-param name="PLAYER_HEIGHT">498</xsl:with-param>
+                </xsl:apply-templates>
+                <xsl:apply-templates select="recordset/record[1]/field[@name='attachments']" mode="carousel">
+                    <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
+                    <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                </xsl:apply-templates>
+            </div>
+        </xsl:if>
     </xsl:template>
+    <!-- /компонент PageMedia -->
+
 </xsl:stylesheet>

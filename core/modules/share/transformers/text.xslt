@@ -4,14 +4,13 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/1999/xhtml">
 
-    <!-- Компонент TextBlock в нормальном режиме -->
+    <!-- Компонент TextBlock -->
     <xsl:template match="component[@class='TextBlock']">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-    <!-- Компонент TextBlock в режиме редактирования -->
-    <xsl:template match="component[@class='TextBlock' and @editable]">
-	    <xsl:apply-templates/>
+        <xsl:if test="@editable or recordset/record/field != ''">
+            <div class="textblock">
+                <xsl:apply-templates/>
+            </div>
+        </xsl:if>
     </xsl:template>
 
     <!-- Набор данных компонента -->
@@ -27,7 +26,7 @@
         <div id="{generate-id(.)}" class="nrgnEditor" single_template="{$BASE}{$LANG_ABBR}{../../@single_template}" num="{../../@num}">
             <xsl:if test="not(../../@global)">
                 <xsl:attribute name="eID"><xsl:value-of select="$ID"/></xsl:attribute>
-            </xsl:if>
+            </xsl:if>            
             <xsl:if test=". = ''">
                 <p><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></p>
             </xsl:if>

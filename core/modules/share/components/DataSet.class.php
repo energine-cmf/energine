@@ -623,6 +623,7 @@ abstract class DataSet extends Component {
             'BTN_ALIGN_CENTER',
             'BTN_ALIGN_RIGHT',
             'BTN_ALIGN_JUSTIFY',
+            'BTN_EXT_FLASH'
         );
         call_user_func_array(array($this, 'addTranslation'), $translations);
     }

@@ -116,6 +116,15 @@
     <!-- Контент блока по-умолчанию -->
     <xsl:template match="container | component" mode="block_content">
         <xsl:apply-templates select="."/>
-    </xsl:template>    
+    </xsl:template>
+
+    <!-- Рекламный блок в левой колонке -->
+    <xsl:template match="container[@name='leftAdBlock']">
+        <xsl:if test="$COMPONENTS[@class='Ads']/recordset/record/field[@name='ad_left_250_250'] != ''">
+            <div class="left_adblock">
+                <xsl:value-of select="$COMPONENTS[@class='Ads']/recordset/record/field[@name='ad_left_250_250']" disable-output-escaping="yes"/>
+            </div>
+        </xsl:if>
+    </xsl:template>
     
 </xsl:stylesheet>

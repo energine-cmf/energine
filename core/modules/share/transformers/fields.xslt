@@ -358,4 +358,106 @@
         <div class="error"><xsl:value-of select="."/></div>
     </xsl:template>
 
+    <!-- обработка attachments -->
+    <!-- в виде превью -->
+    <xsl:template match="field[@name='attachments']" mode="preview">
+        <xsl:param name="PREVIEW_WIDTH"/>
+        <xsl:param name="PREVIEW_HEIGHT"/>
+        <xsl:variable name="URL"><xsl:choose>
+            <xsl:when test="name(recordset/record[1]/field[@name='file']/*[1])='video'"><xsl:value-of select="$VIDEO_RESIZER_URL"/>w<xsl:value-of select="$PREVIEW_WIDTH"/>-h<xsl:value-of select="$PREVIEW_HEIGHT"/>-c<xsl:value-of select="$PREVIEW_WIDTH"/>:<xsl:value-of select="$PREVIEW_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/>.png</xsl:when>
+            <xsl:otherwise><xsl:value-of select="$IMAGE_RESIZER_URL"/>?w=<xsl:value-of select="$PREVIEW_WIDTH"/>&amp;h=<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;c=<xsl:value-of select="$PREVIEW_WIDTH"/>:<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:otherwise>
+        </xsl:choose></xsl:variable>
+        <img width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}">
+            <xsl:choose>
+                <xsl:when test="recordset">
+                    <xsl:attribute name="src"><xsl:value-of select="$URL"/></xsl:attribute>
+                    <xsl:attribute name="alt"><xsl:value-of select="recordset/record[1]/field[@name='name']"/></xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="src"><xsl:value-of select="$MEDIA_URL"/>images/default_<xsl:value-of select="$PREVIEW_WIDTH"/>x<xsl:value-of select="$PREVIEW_HEIGHT"/>.png</xsl:attribute>
+                    <xsl:attribute name="alt"><xsl:value-of select="$TRANSLATION[@const='TXT_NO_IMAGE']"/></xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
+        </img>
+        <xsl:if test="recordset/record[1]/field[@name='file']/video">
+            <i class="play_button"></i>
+            <span class="image_info">00:00</span>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- в виде плеера -->
+    <xsl:template match="field[@name='attachments']" mode="player">
+        <xsl:param name="PLAYER_WIDTH"/>
+        <xsl:param name="PLAYER_HEIGHT"/>
+        <xsl:if test="recordset">
+            <!--<xsl:if test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">-->            
+                <!--<xsl:if test="count(recordset/record) &gt; 1">-->
+                    <script type="text/javascript" src="{$STATIC_URL}scripts/flowplayer-3.2.6.min.js"></script>
+                    <script type="text/javascript" src="{$STATIC_URL}scripts/Carousel.js"></script>
+                    <script type="text/javascript" src="{$STATIC_URL}scripts/Playlist.js"></script>
+
+                    <script type="text/javascript">
+                        var carousel, playlist;
+
+                        window.addEvent('domready', function() {
+                                carousel = new Carousel('playlist', {visibleItems : 6, css : 'carousel.css'});
+                                playlist = new Playlist('playlist', 'player', 'playerBox');
+                        });
+                    </script>
+                <!--</xsl:if>-->
+            <!--</xsl:if>-->
+            <div class="player_box" id="playerBox">
+                <xsl:variable name="URL"><xsl:choose>
+                    <xsl:when test="name(recordset/record[1]/field[@name='file']/*[1])='video'"><xsl:value-of select="$VIDEO_RESIZER_URL"/>w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>-c<xsl:value-of select="$PLAYER_WIDTH"/>:<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/>.png</xsl:when>
+                    <xsl:otherwise><xsl:value-of select="$IMAGE_RESIZER_URL"/>?w=<xsl:value-of select="$PLAYER_WIDTH"/>&amp;h=<xsl:value-of select="$PLAYER_HEIGHT"/>&amp;c=<xsl:value-of select="$PLAYER_WIDTH"/>:<xsl:value-of select="$PLAYER_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:otherwise>
+                </xsl:choose></xsl:variable>
+                <div class="player" id="player" style="width: {$PLAYER_WIDTH}px; height: {$PLAYER_HEIGHT}px; background: black url({$URL}) 50% 50% no-repeat;">
+                    <xsl:if test="recordset/record[1]/field[@name='file']/video or count(recordset/record) &gt; 1">
+                        <a href="#" class="play_button"></a>
+                    </xsl:if>
+                </div>
+            </div>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- в виде карусели -->
+    <xsl:template match="field[@name='attachments']" mode="carousel">
+        <xsl:param name="PREVIEW_WIDTH"/>
+        <xsl:param name="PREVIEW_HEIGHT"/>
+        <xsl:if test="(count(recordset/record) &gt; 1) or not(recordset/record/field[@name='file']/image)">
+            <div class="carousel_box">
+                <xsl:if test="not(recordset/record/field[@name='file']/image)">
+                    <xsl:attribute name="style">display:none;</xsl:attribute>
+                </xsl:if>
+                <!--<div class="carousel_title">
+                    <xsl:value-of select="@title"/>
+                </div>-->
+                <div class="carousel" id="playlist">
+                    <div class="carousel_viewbox viewbox">
+                        <ul>
+                            <xsl:for-each select="recordset/record">
+                                <li>
+                                    <div class="carousel_image" id="{field[@name='id']}_imgc">
+                                        <a href="{field[@name='file']/video | field[@name='file']/image}" xmlns:nrgn="http://energine.org" nrgn:media_type="{name(field[@name='file']/*[1])}">
+                                            <xsl:choose>
+                                                <xsl:when test="field[@name='file']/video"><img src="{$VIDEO_RESIZER_URL}w{$PREVIEW_WIDTH}-h{$PREVIEW_HEIGHT}-c{$PREVIEW_WIDTH}:{$PREVIEW_HEIGHT}/{field[@name='file']/*[1]}.png" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:when>
+                                                <xsl:otherwise><img src="{$IMAGE_RESIZER_URL}?w={$PREVIEW_WIDTH}&amp;h={$PREVIEW_HEIGHT}&amp;c={$PREVIEW_WIDTH}:{$PREVIEW_HEIGHT}&amp;i={field[@name='file']/*[1]/@image}" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:otherwise>
+                                            </xsl:choose>
+                                             <xsl:if test="field[@name='file']/video">
+                                                 <i class="icon play_icon"></i>
+                                             </xsl:if>
+                                         </a>
+                                     </div>
+                                 </li>
+                             </xsl:for-each>
+                         </ul>
+                     </div>
+                     <a class="previous_control" href="#"><xsl:text disable-output-escaping="yes">&amp;lt;</xsl:text></a>
+                     <a class="next_control" href="#"><xsl:text disable-output-escaping="yes">&amp;gt;</xsl:text></a>
+                 </div>
+             </div>
+        </xsl:if>
+    </xsl:template>
+    <!-- /обработка attachments -->
+
 </xsl:stylesheet>

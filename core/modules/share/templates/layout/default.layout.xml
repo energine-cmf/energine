@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
-	<component name="langSwitcher" module="share" class="LangSwitcher"></component>
-    <component name="mainMenu" module="share" class="PageList" >
-       <params>
-           <param name="tags">menu</param>
-           <param name="recursive">1</param>
-           <param name="config">core/modules/share/MainMenu.component.xml</param>
-       </params>
-    </component>
-	<component name="loginForm" module="user" class="LoginForm" />
-	<component name="FooterTextBlock" module="share" class="TextBlock">
+    <component name="ads" module="share" class="Ads"/>
+	<component name="langSwitcher" module="share" class="LangSwitcher"/>
+	<component name="footerTextBlock" module="share" class="TextBlock">
 		<params>
-			<param name="num">FooterTextBlock</param> 
+			<param name="num">footerTextBlock</param> 
 		</params>
-	</component>
+	</component>    
     <component name="adminPanel" module="share" class="DivisionEditor">
         <params>
             <param name="state">showPageToolbar</param>

@@ -128,22 +128,29 @@
     </xsl:template>
 
     <xsl:template match="document">
-        <div id="container">
-            <div id="header">
-                <img id="logo" src="images/{$FOLDER}/energine_logo.png" width="246" height="64" alt="Energine"/>
+        <xsl:if test="$COMPONENTS[@class='Ads']/recordset/record/field[@name='ad_top_728_90']">
+            <div class="top_adblock">
+                <xsl:value-of select="$COMPONENTS[@class='Ads']/recordset/record/field[@name='ad_top_728_90']" disable-output-escaping="yes"/>
+            </div>
+        </xsl:if>
+        <div class="base">
+            <div class="header">
+                <h1 class="logo">
+                    <a>
+                        <xsl:if test="$DOC_PROPS[@name='default']!=1">
+                            <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/></xsl:attribute>
+                        </xsl:if>
+                        <img src="images/{$FOLDER}/energine_logo.png" width="246" height="64" alt="Energine"/>
+                    </a>
+                </h1>
                 <xsl:apply-templates select="$COMPONENTS[@class='LangSwitcher']"/>
             </div>
-            <xsl:apply-templates select="$COMPONENTS[@class='BreadCrumbs']"/>
-            <div id="sidebar">
-                <xsl:apply-templates select="$COMPONENTS[@name='mainMenu']"/>
-                <xsl:apply-templates select="$COMPONENTS[@class='LoginForm']"/>
+            <div class="main">
+                <xsl:apply-templates select="$COMPONENTS[@class='BreadCrumbs']"/>
+                <xsl:apply-templates select="content"/>
             </div>
-            <div id="content">
-                <xsl:apply-templates select="content" />
-            </div>
-
-            <div id="footer">
-                <xsl:apply-templates select="$COMPONENTS[@name='FooterTextBlock']"/>
+            <div class="footer">
+                <xsl:apply-templates select="$COMPONENTS[@name='footerTextBlock']"/>
             </div>
         </div>
     </xsl:template>
@@ -158,9 +165,9 @@
         <xsl:apply-templates/>
     </xsl:template>
     
-    <xsl:template match="/document/translations" />
+    <xsl:template match="/document/translations"/>
 
-    <xsl:template match="component/javascript" />
+    <xsl:template match="component/javascript"/>
     
     <!-- Выводим переводы для WYSIWYG -->
     <xsl:template match="/document/translations[translation[@component=//component[@editable]/@name]]">
@@ -170,8 +177,5 @@
                 </xsl:for-each>
             </script>
     </xsl:template>
-
-
-
 
 </xsl:stylesheet>

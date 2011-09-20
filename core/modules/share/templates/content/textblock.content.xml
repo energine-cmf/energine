@@ -17,7 +17,11 @@
     </container>
     <container name="center" column="column" html_class="col col2 last_col">
         <container name="textBlockContainer" block="alfa" widget="static">
-            <component name="textBlock_1" module="share" class="TextBlock"/>
+            <component name="textBlock_1" module="share" class="TextBlock">
+                <params>
+                    <param name="num">1</param>
+                </params>
+            </component>
         </container>
     </container>
 </content>

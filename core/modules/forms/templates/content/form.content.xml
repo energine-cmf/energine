@@ -17,7 +17,7 @@
     </container>
     <container name="center" column="column" html_class="col col2 last_col">
         <container name="formEditorContainer" block="alfa"  widget="static">
-            <component name="form" class="Form" module="forms" >
+            <component name="form" class="Form" module="forms">
                 <params>
                     <param name="id">0</param>
                 </params>

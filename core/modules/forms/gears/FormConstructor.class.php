@@ -280,7 +280,7 @@ class FormConstructor extends DBWorker {
         //add fk info
         $query[] = 'ALTER TABLE ' . $langTableName .
                    ' ADD FOREIGN KEY (`lang_id`) REFERENCES ' .
-                   $this->getConfigValue('database.master.db') .
+                   $this->getConfigValue('database.db') .
                    '.`share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE, ADD FOREIGN KEY ( fk_id ) REFERENCES ' .
                    $fkValuesFQTableName .
                    ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
@@ -323,7 +323,7 @@ class FormConstructor extends DBWorker {
         //add fk info
         $query[] = 'ALTER TABLE ' . $langTableName .
                    ' ADD FOREIGN KEY (`lang_id`) REFERENCES ' .
-                   $this->getConfigValue('database.master.db') .
+                   $this->getConfigValue('database.db') .
                    '.`share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE, ADD FOREIGN KEY ( fk_id ) REFERENCES ' .
                    $fkTableName .
                    ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';

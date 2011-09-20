@@ -222,12 +222,12 @@ final class Registry extends Object {
         if (!isset($this->entities['QAL'])) {
             $this->entities['QAL'] = new QAL(
                 sprintf('mysql:host=%s;port=%s;dbname=%s',
-                        $this->getConfigValue('database.master.host'),
-                        $this->getConfigValue('database.master.port'),
-                        $this->getConfigValue('database.master.db')
+                        $this->getConfigValue('database.host'),
+                        $this->getConfigValue('database.port'),
+                        $this->getConfigValue('database.db')
                 ),
-                $this->getConfigValue('database.master.username'),
-                $this->getConfigValue('database.master.password'),
+                $this->getConfigValue('database.username'),
+                $this->getConfigValue('database.password'),
                 array(
                     PDO::ATTR_PERSISTENT => false,
                     PDO::ATTR_EMULATE_PREPARES => true,

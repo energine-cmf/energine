@@ -1,19 +1,28 @@
 <?php
 return array(
     'project' => 'Platform 2.6',
+    'modules' => array(
+        'share',
+        'user',
+        'apps',
+        'forms',
+        'seo',
+        'calendar'
+    ),
     'database' => array(
-        'master' => array(
-            'dsn' => 'host=localhost;port=3306;dbname=energine-2.6',
-            'username' => '',
-            'password' => ''
-        )
+        'host' => 'localhost',
+        'port' => '3306',
+        'db' => 'pavka_e28',
+        'username' => 'pavka',
+        'password' => 'Nes5moCoo8ju'
     ),
     'site' => array(
-        'domain' => 'energine-2.6.dev',
+        'domain' => 'pavka.eggmen.net',
+        'root' => '/starter/',
         'debug' => 1,
+
         'asXML' => 0,
-        'compress' => 1,
-        'root' => '/'
+        'compress' => 0,
     ),
     'cache' => array(
         'enable' => 0,
@@ -23,7 +32,6 @@ return array(
     'document' => array(
         'transformer' => 'main.xslt',
         'xslcache' => 0,
-        'xslprofile' => 0
     ),
     'session' => array(
         'timeout' => 6000,
@@ -33,9 +41,6 @@ return array(
         'from' => 'noreply@energine.org',
         'manager' => 'demo@energine.org',
         'feedback' => 'demo@energine.org'
-    ),
-    'video' => array(
-        'ffmpeg' => '/usr/bin/ffmpeg'
     ),
     'google' => array(
         'verify' => '',

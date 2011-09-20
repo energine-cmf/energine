@@ -163,7 +163,6 @@ final class Response extends Object {
      * сделан публичным для того чтобы можно было вызвать из капчи
      * но это исключение
      *
-     * @see captcha.php
      * @return void
      * @access private
      */

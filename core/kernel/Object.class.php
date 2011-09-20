@@ -95,7 +95,7 @@ abstract class Object {
      * @return string
      */
     public static function _getConfigValue($paramPath) {
-        if(is_null(self::$systemConfig)) self::$systemConfig = include_once(SITE_DIR.'/'.self::CONFIG_FILE);
+        if(is_null(self::$systemConfig)) self::$systemConfig = include_once(self::CONFIG_FILE);
         $result = self::$systemConfig;
         $paramPath = explode('.', $paramPath);
         foreach($paramPath as $segment) {

@@ -1,0 +1,29 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !\.(jpe?g|gif|png|css|js|swf)
+
+RewriteRule ^.*$ #А вот тут нужно написать путь к index.php от корня
+
+FileETag MTime Size
+
+<IfModule mod_expires.c>
+    <FilesMatch "\.(jpg|gif|png|css|js)$">
+        ExpiresActive on
+	    ExpiresDefault "access plus 1 year"
+    </FilesMatch>
+</IfModule>
+                   
+<FilesMatch "\.(xml|xslt)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+                           
+<FilesMatch "(\.svn|entries|-base)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+Options FollowSymLinks
+AddDefaultCharset utf-8
+DirectoryIndex index.php

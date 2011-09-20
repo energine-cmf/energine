@@ -1,0 +1,46 @@
+#NGINX PHP-FPM config example
+
+server {
+        listen                      ;
+        server_name                 ;
+        server_name_in_redirect off;
+
+        error_log  /var/log/nginx/energine_error.log;
+        access_log  /var/log/nginx/energine.log;
+
+        root /home/energine/public_html;
+        index index.php;
+
+        location / {
+            location /project/ {
+                fastcgi_pass   unix:///var/run/php-fpm/php-fpm-energine.sock;
+                fastcgi_index  index.php;
+                fastcgi_param  SCRIPT_FILENAME  /home/pavka/public_html/project/index.php;
+                fastcgi_param  DOCUMENT_ROOT      /home/pavka/public_html/project/;
+                include        fastcgi_params;
+                location /project/scripts/ {
+                    try_files $uri $uri/ =404;
+                }
+                location /project/stylesheets/ {
+                    try_files $uri $uri/ =404;
+                }
+                location /project/images/ {
+                    try_files $uri $uri/ =404;
+                }
+                location /project/uploads/ {
+                    try_files $uri $uri/ =404;
+                }
+            }
+            location ~ ^(?P<dir>/[^/]*/)application {
+                deny all;
+            }
+
+            location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_pass   unix:///var/run/php-fpm/php-fpm-energine.sock;
+                fastcgi_index  index.php;
+                fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+                include        fastcgi_params;
+            }
+        }
+    }

@@ -63,8 +63,7 @@
                     <label for="{@name}"><xsl:value-of select="$TRANSLATION[@const='TXT_ENTER_CAPTCHA']"/></label>                                                                                                                                             
                     <span class="mark">*</span>                                                                                                                                                                                      
                 </div>                                                                                                                                                                                                               
-                <div class="control" >                                                                                                                                                                                               
-                    <img src="captcha.php" id="captchaImage" />                                                                                                                                                                      
+                <div class="control" >                                                                                                                                               
                     <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text" />                                                                                                    
                 </div>                                                                                                                                                                                                               
             </div>         

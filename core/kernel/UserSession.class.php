@@ -240,7 +240,6 @@ final class UserSession extends DBWorker {
      *
      * @param $force bool создавать сессию даже когда в этом нет необходимости
      * @see index.php
-     * @see captcha.php
      * @see auth.php
      * @access public
      * @return void

@@ -49,14 +49,14 @@ function doLinker() {
                     if (!in_array($file, array('.', '..'))) {
                         if (is_dir($file = $dir . DIRECTORY_SEPARATOR . $file)) {
                             cleaner($file);
-                            echo 'Удаляем директорию ', realpath($file), PHP_EOL; 
+                            echo 'Удаляем директорию ', $file, PHP_EOL;
                             if(!@rmdir($file)){
                                 //может это симлинка
                                 unlink($file);
                             }
                         }
                         else {
-                            echo 'Удаляем файл ', realpath($file), PHP_EOL;
+                            echo 'Удаляем файл ', $file, PHP_EOL;
                             unlink($file);
                         }
                     }

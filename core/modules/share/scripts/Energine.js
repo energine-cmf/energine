@@ -137,31 +137,7 @@ Energine.request = {
     }
 
 };
-//TODO - некрасиво это, с глобальной переменной
-var currentImage = false;
 
-Energine.thumbnail = {
-    showImage: function(event) {
-        Energine.cancelEvent(event);
-        var event = new Event(event || window.event);
-        var obj = $(event.target);
-        if (obj.get('tag') == 'a') {
-            obj = obj.getElement('img');
-        }
-
-        var createImage = function() {
-            currentImage = new EnlargeImage(obj, {duration: 800});
-        }.bind(this);
-        if (currentImage) {
-            currentImage.zoomOut(createImage);
-        }
-        else {
-            createImage();
-        }
-
-        return false;
-    }
-}
 Energine.cancelEvent = function (e) {
     e = e || window.event;
     try {

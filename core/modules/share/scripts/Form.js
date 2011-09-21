@@ -660,24 +660,16 @@ Form.RichEditor = new Class({
     },
 
     showSource : function() {
-        this.sourceMode = !this.sourceMode;
-        if (this.sourceMode) {
-            this.fallback_ie = true;
-            this.textarea.value = this.area.innerHTML;
-            // this.area.replaceWith(this.textarea);
-            this.textarea.replaces(this.area);
-        } else {
-            this.fallback_ie = false;
-            this.area.set('html',
-                    this.cleanMarkup(
-                            this.form.singlePath,
-                            this.textarea.value,
-                            false
-                            )
-                    );
-            // this.textarea.replaceWith(this.area);
-            this.area.replaces(this.textarea);
-        }
+        //this.blur();
+        ModalBox.open({
+            url: this.form.singlePath + 'source',
+            extraData: this.area.innerHTML,
+            onClose: function(returnValue) {
+                if (returnValue) {
+                    this.area.set('html', returnValue);
+                }
+            }.bind(this)
+        });
     },
 
     disable : function() {

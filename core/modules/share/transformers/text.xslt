@@ -44,6 +44,14 @@
     </xsl:template>
     
     <xsl:template match="component[@class='TextBlockSource']">
+        <link rel="stylesheet" href="scripts/codemirror/lib/codemirror.css" />
+        <script type="text/javascript" src="scripts/codemirror/lib/codemirror.js"></script>
+        <script type="text/javascript" src="scripts/codemirror/mode/xml/xml.js"></script>
+        <script  type="text/javascript" src="scripts/codemirror/mode/javascript/javascript.js"></script>
+        <script  type="text/javascript" src="scripts/codemirror/mode/css/css.js"></script>
+        <link rel="stylesheet" href="scripts/codemirror/theme/default.css" />
+        <script  type="text/javascript" src="scripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+        <link rel="stylesheet" href="scripts/codemirror/css/docs.css" />
         <form method="post" action="{@action}" class="e-grid-form">
             <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">
                 <xsl:attribute name="enctype">multipart/form-data</xsl:attribute>

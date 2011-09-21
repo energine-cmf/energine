@@ -139,23 +139,6 @@ abstract class DBA extends Object {
             $this->pdo = new PDO($dsn, $username, $password, $driverOptions);
             $this->pdo->query('SET NAMES ' . $charset);
 
-            if ($this->getConfigValue('database.slave')) {
-                $this->slavePdo = new PDO(
-                    sprintf('mysql:host=%s;port=%s;dbname=%s',
-                            $this->getConfigValue('database.slave.host'),
-                            $this->getConfigValue('database.slave.port'),
-                            $this->getConfigValue('database.slave.db')
-                    ),
-                    $this->getConfigValue('database.slave.username'),
-                    $this->getConfigValue('database.slave.password'),
-                    $driverOptions
-                );
-
-                $this->slavePdo->query('SET NAMES ' . $charset);
-            }
-            else {
-                $this->slavePdo = $this->pdo;
-            }
             $this->dbCache = new DBStructureInfo($this->pdo);
 
         }

@@ -1,7 +1,7 @@
 <?php
 ob_start();
-
-header('Content-Type: text/plain; charset=utf-8');
+define('CHARSET', 'UTF-8');
+header('Content-Type: text/plain; charset=' . CHARSET);
 //Минимальная версия РНР
 define('MIN_PHP_VERSION', 5.3);
 
@@ -18,7 +18,7 @@ function say($data) {
     echo PHP_EOL, $data, PHP_EOL, PHP_EOL;
 }
 
-function prettyPrint($text){
+function prettyPrint($text) {
     echo str_repeat('*', 80), PHP_EOL, $text, PHP_EOL, str_repeat('*', 80), PHP_EOL;
 }
 
@@ -36,7 +36,7 @@ function doLinker() {
     //Название директории в которой содержатся модули(как ядра, так и модули проекта)
     define('MODULES', 'modules');
     prettyPrint('Создание символических ссылок');
-    
+
     /**
      * Очищаем папку от того что в ней было
      * @param $dir
@@ -50,7 +50,7 @@ function doLinker() {
                         if (is_dir($file = $dir . DIRECTORY_SEPARATOR . $file)) {
                             cleaner($file);
                             echo 'Удаляем директорию ', $file, PHP_EOL;
-                            if(!@rmdir($file)){
+                            if (!@rmdir($file)) {
                                 //может это симлинка
                                 unlink($file);
                             }
@@ -163,8 +163,57 @@ function doLinker() {
  * @return void
  */
 function doInstall() {
+    installDB();
     doLinker();
     prettyPrint('Установка завершена успешно');
+}
+
+function installDB() {
+    prettyPrint('Перенос данных');
+    if (!isset($GLOBALS['config']['database']) || empty($GLOBALS['config']['database'])) {
+        throw new Exception('В конфиге нет информации о подключении к базе данных');
+    }
+    $dbInfo = $GLOBALS['config']['database'];
+
+    //валидируем все скопом
+    foreach (array('host' => 'адрес хоста', 'db' => 'имя БД', 'username' => 'имя пользователя', 'password' => 'пароль') as $key => $description) {
+        if (!isset($dbInfo[$key]) && empty($dbInfo[$key])) {
+            throw new Exception('Удивительно, но не указан параметр: ' . $description . '  (["database"]["' . $key . '"])');
+        }
+    }
+    try {
+        //Поскольку ошибка при конструировании ПДО объекта генерит кроме исключения еще и варнинги
+        //используем пустой обработчик ошибки с запретом всплывания(return true)
+        //все это сделано только для того чтобы не выводился варнинг
+
+        set_error_handler(function() { return true; });
+        $connect = new PDO(
+            sprintf(
+                'mysql:host=%s;port=%s;dbname=%s',
+
+                $dbInfo['host'],
+                (isset($dbInfo['port']) && !empty($dbInfo['port'])) ? $dbInfo['port'] : 3306,
+                $dbInfo['db']
+            ),
+            $dbInfo['username'],
+            $dbInfo['password'],
+            array(
+                 PDO::ATTR_PERSISTENT => false,
+                 PDO::ATTR_EMULATE_PREPARES => true,
+                 PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+            ));
+    }
+    catch (Exception $e) {
+        throw new Exception('Не удалось соединиться с БД по причине: ' . $e->getMessage());
+    }
+    restore_error_handler();
+    $connect->query('SET NAMES utf8');
+
+    echo 'Соединение с БД ',$dbInfo['db'],' успешно установлено',PHP_EOL;
+    if(!file_exists('sql/data.sql')){
+        echo 'Файл sql/data.sql не найден. Ну наверное так и задумано, поэтому продолжаем работу',PHP_EOL;
+    }
+    $dump = file_get_contents('sql/data.sql');
 }
 
 //Смотрим а как запущен сетап(консоль/веб)
@@ -187,12 +236,12 @@ if (!empty($args) && in_array($args[0], $acceptableActions)) {
 
 try {
     prettyPrint('Проверка системного окружения');
-    
+
     //А что за PHP версия используется?
     if (floatval(phpversion()) < MIN_PHP_VERSION) {
         throw new Exception('Вашему РНР нужно еще немного подрости. Минимальная допустимая версия ' . MIN_PHP_VERSION);
     }
-    echo 'Версия РНР ', floatval(phpversion()), ' соответствует требованиям',PHP_EOL;
+    echo 'Версия РНР ', floatval(phpversion()), ' соответствует требованиям', PHP_EOL;
 
     //При любом действии без конфига нам не обойтись
     if (!file_exists($configName = 'system.config.php')) {
@@ -210,7 +259,7 @@ try {
         throw new Exception('В конфиге ничего не сказано о режиме отладки. Это плохо. Так я работать не буду.');
     }
     echo 'Конфигурационный файл подключен и проверен', PHP_EOL;
-    
+
     //Если режим отладки отключен - то и говорить дальше не о чем
     if (!$config['site']['debug']) {
         throw new Exception('Нет. С отключенным режимом отладки я работать не буду, и не просите. Запускайте меня после того как исправите в конфиге ["site"]["debug"] с 0 на 1.');
@@ -221,9 +270,9 @@ try {
     if (!isset($config['modules']) && empty($config['modules'])) {
         throw new Exception('Странно. Отсутствует перечень модулей. Я могу конечно и сам посмотреть, что находится в папке core/modules, но как то это не кузяво будет. ');
     }
-    echo 'Перечень модулей:', implode(PHP_EOL, $installedModules = $config['modules']),PHP_EOL;
+    echo 'Перечень модулей:', implode(PHP_EOL, $installedModules = $config['modules']), PHP_EOL;
 
-    
+
     //Ну вроде как все проверили
     //на этот момент у нас есть вся необходимая информация
     //как для инсталляции так и для линкера

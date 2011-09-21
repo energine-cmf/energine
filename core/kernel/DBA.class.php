@@ -33,15 +33,6 @@ abstract class DBA extends Object {
     protected $lastQuery;
 
     /**
-     * При наличии slave сервера, в єтой переменной хранится коннект к нему
-     * Используется для осуществления запросов на выборку
-     * Если сервер - один, то эта переменная равна $this->pdo
-     *
-     * @access private
-     * @var PDO
-     */
-    private $slavePdo;
-    /**
      * @var DBStructureInfo
      */
     private $dbCache;
@@ -179,10 +170,10 @@ abstract class DBA extends Object {
 
         $query = $this->constructQuery(func_get_args());
         $this->lastQuery = $query;
-        $res = $this->slavePdo->query($query);
+        $res = $this->pdo->query($query);
 
         if (!($res instanceof PDOStatement)) {
-            $errorInfo = $this->slavePdo->errorInfo();
+            $errorInfo = $this->pdo->errorInfo();
             throw new SystemException($errorInfo[2], SystemException::ERR_DB, array($this->getLastRequest()));
         }
 

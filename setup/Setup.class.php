@@ -83,7 +83,7 @@ class Setup {
             //используем пустой обработчик ошибки с запретом всплывания(return true)
             //все это сделано только для того чтобы не выводился варнинг
 
-            set_error_handler(function() { return true; });
+            set_error_handler(create_function('', 'return true;'));
             $connect = new PDO(
                 sprintf(
                     'mysql:host=%s;port=%s;dbname=%s',

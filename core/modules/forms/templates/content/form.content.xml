@@ -20,6 +20,7 @@
             <component name="form" class="Form" module="forms">
                 <params>
                     <param name="id">0</param>
+                    <param name="noCaptcha">1</param>
                 </params>
             </component>
         </container>

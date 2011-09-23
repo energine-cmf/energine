@@ -308,9 +308,11 @@ LayoutManager.Widget = new Class({
                         onSuccess: function(text) {
                             var container = new Element('div'), result;
                             container.set('html', text);
-                            result = container.getElement('div').clone();
+                            if(container.getElement('div')){
+                                result = container.getElement('div').clone();
+                                new LayoutManager.Widget(XML.hashToElement(XMLHash), this.column, result, this);
+                            }
                             container.destroy();
-                            new LayoutManager.Widget(XML.hashToElement(XMLHash), this.column, result, this);
                         }.bind(this)
                     }).send();
                 }
@@ -335,9 +337,10 @@ LayoutManager.Widget = new Class({
                     }.bind(this));
                     this.reload();
                     LayoutManager.changed = true;
-                } else {                    
-                    this.overlay.element.removeClass('e-overlay-loading');    
                 }
+                
+                this.overlay.element.removeClass('e-overlay-loading');
+
             }.bind(this)
         });
     },

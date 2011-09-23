@@ -53,9 +53,6 @@
         <script  type="text/javascript" src="scripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
         <link rel="stylesheet" href="scripts/codemirror/css/docs.css" />
         <form method="post" action="{@action}" class="e-grid-form">
-            <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">
-                <xsl:attribute name="enctype">multipart/form-data</xsl:attribute>
-            </xsl:if>
             <input type="hidden" name="componentAction" value="{@componentAction}" id="componentAction"/>
             <xsl:apply-templates/>
         </form>    

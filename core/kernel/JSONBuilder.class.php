@@ -88,7 +88,7 @@ class JSONBuilder extends AbstractBuilder {
                             case FieldDescription::FIELD_TYPE_DATE:
                                 if (!empty($fieldValue)) {
                                     $fieldValue =
-                                            self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'));
+                                            self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldType);
                                 }
                                 break;
                             case FieldDescription::FIELD_TYPE_IMAGE:

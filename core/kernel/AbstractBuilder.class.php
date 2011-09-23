@@ -247,7 +247,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
                             if(is_long($fieldValue)){
                             $result->setAttribute('date', @strftime('%d-%m-%Y-%H-%M-%S', $fieldValue));
                             $fieldValue =
-                                    self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'));
+                                    self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
                             }
                         }
                         catch (Exception  $dummy) {
@@ -294,7 +294,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
      * @access public
      * @static
      */
-    static public function enFormatDate($date, $format) {
+    static public function enFormatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
         $date = intval($date);
         if ($format != '%E') {
             $result = @strftime($format, $date);
@@ -326,7 +326,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
                 }
             }
             //Если часы и минуты = 0, считаем что это просто дата, без времени
-            if((date('G', $date) != 0) || (date('i', $date) != 0)){
+            if(in_array($type, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_HIDDEN))){
                 $result .= ', ';
                 $result .= date('G', $date) . ':' . date('i', $date);
             }

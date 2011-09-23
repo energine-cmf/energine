@@ -1,98 +1,119 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+    <state name="uploadZip" rights="3">
+        <uri_patterns>
+            <pattern>/upload-zip/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FileForm"/>
+        </javascript>
+        <fields>
+            <field name="upl_path" type="file" title="FIELD_ZIP_FILE"/>
+        </fields>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="saveZip"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="saveZip" rights="3">
+        <uri_patterns>
+            <pattern>/save-zip/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="addDir">
+        <uri_patterns>
+            <pattern>/add-dir/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FileForm"/>
+        </javascript>
+        <fields>
+            <field name="upl_id"/>
+            <!--<field name="upl_path" message="MSG_BAD_FORMAT" pattern="/^[a-z0-9\-\_]+$/"/>-->
+            <field name="upl_name"/>
+            <field name="tags" type="textbox" title="FIELD_TAGS"/>
+        </fields>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="saveDir"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/add/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FileForm"/>
+        </javascript>
+        <fields>
+            <field name="upl_id"/>
+            <field name="upl_path" type="file" title="FIELD_UPL_FILE"/>
+            <field name="upl_name"/>
+            <field name="upl_description"/>
+            <field name="upl_publication_date"/>
+            <field name="tags" type="textbox" title="FIELD_TAGS"/>
+            <!--                 <field name="generate_thumb" type="boolean" title="TXT_GENERATE_THUMB"/>
+                   <field name="thumb_width" type="integer" title="FIELD_THUMB_WIDTH" length="3"/>
+                   <field name="thumb_height" type="integer" title="FIELD_THUMB_HEIGHT" length="3"/>
+       -->
+        </fields>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="getRawData">
+        <uri_patterns>
+            <pattern>/get-data/</pattern>
+            <pattern>/get-data/page-[pageNumber]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="saveDir" rights="3">
+        <uri_patterns>
+            <pattern>/save-dir/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete" rights="3">
+        <uri_patterns>
+            <pattern>/delete/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="rename" rights="3">
+        <uri_patterns>
+            <pattern>/rename/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="upload" rights="3">
+        <uri_patterns>
+            <pattern>/upload/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="save" rights="3">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="put" rights="3"></state>
+    <state name="main">
+        <uri_patterns>
+            <pattern>/</pattern>
+            <pattern>/[allowed_file_type]/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FileManager"/>
+        </javascript>
+        <toolbar>
+            <control id="open" title="BTN_OPEN" type="button" onclick="open"/>
+            <control id="sep01" type="separator"/>
+            <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+            <control id="addZip" title="BTN_ZIP_UPLOAD" type="button" onclick="uploadZip"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+            <control id="rename" title="BTN_RENAME" type="button" onclick="rename"/>
+            <control id="sep02" type="separator"/>
+            <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
+            <control id="sep03" type="separator"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
 
-		<state name="addDir">
-			<uri_patterns>
-				<pattern>/add-dir/</pattern>
-			</uri_patterns>
-			<javascript>
-				<behavior name="FileForm"/>
-			</javascript>
-			<fields>
-			    <field name="upl_id" />
-				<!--<field name="upl_path" message="MSG_BAD_FORMAT" pattern="/^[a-z0-9\-\_]+$/"/>-->
-			    <field name="upl_name" />
-			    <field name="tags" type="textbox"  title="FIELD_TAGS"/>
-			</fields>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="saveDir"/>
-				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
-			</toolbar>
-		</state>
-		<state name="add">
-			<uri_patterns>
-				<pattern>/add/</pattern>
-			</uri_patterns>
-			<javascript>
-				<behavior name="FileForm"/>
-			</javascript>
-			<fields>
-			    <field name="upl_id" />
-                <field name="upl_path" type="file" title="FIELD_UPL_FILE"/>
-			    <field name="upl_name" />
-				<field name="upl_description" />
-                <field name="upl_publication_date" />
-				<field name="tags" type="textbox"  title="FIELD_TAGS"/>
-<!--                 <field name="generate_thumb" type="boolean" title="TXT_GENERATE_THUMB"/>
-                <field name="thumb_width" type="integer" title="FIELD_THUMB_WIDTH" length="3"/>
-                <field name="thumb_height" type="integer" title="FIELD_THUMB_HEIGHT" length="3"/>                
-	-->		</fields>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
-			</toolbar>
-		</state>
-		<state name="getRawData">
-			<uri_patterns>
-				<pattern>/get-data/</pattern>
-                <pattern>/get-data/page-[pageNumber]/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="saveDir" rights="3">
-			<uri_patterns>
-				<pattern>/save-dir/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="delete" rights="3">
-			<uri_patterns>
-				<pattern>/delete/</pattern>
-			</uri_patterns>
-		</state>
-        <state name="rename" rights="3">
-			<uri_patterns>
-				<pattern>/rename/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="upload" rights="3">
-			<uri_patterns>
-				<pattern>/upload/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="save" rights="3">
-			<uri_patterns>
-				<pattern>/save/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="put" rights="3"></state>
-	    <state name="main">
-            <uri_patterns>
-                <pattern>/</pattern>
-                <pattern>/[allowed_file_type]/</pattern>
-            </uri_patterns>
-            <javascript>
-                <behavior name="FileManager" />
-            </javascript>
-            <toolbar>
-                <control id="open" title="BTN_OPEN" type="button" onclick="open"/>
-                <control id="sep01" type="separator"/>
-                <control id="add" title="BTN_ADD" type="button" onclick="add"/>
-                <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
-                <control id="rename" title="BTN_RENAME" type="button" onclick="rename"/>
-                <control id="sep02" type="separator"/>
-                <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
-                <control id="sep03" type="separator"/>
-                <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
-            </toolbar>
-        </state>
-    
 </configuration>

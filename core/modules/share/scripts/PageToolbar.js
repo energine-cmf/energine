@@ -22,7 +22,7 @@ var PageToolbar = new Class({
     setupLayout: function() {
         var html = $$('html')[0];
         if (!html.hasClass('e-has-topframe1')) html.addClass('e-has-topframe1');
-        if ((Cookie.read('sidebar') == null) || (Cookie.read('sidebar') == 1))
+        if (/*(Cookie.read('sidebar') == null) || */(Cookie.read('sidebar') == 1))
             $$('html')[0].addClass('e-has-sideframe');
 
         var currentBody = $(document.body).getChildren().filter(function(element) {
@@ -78,7 +78,13 @@ var PageToolbar = new Class({
 
     toggleSidebar: function() {
         $$('html')[0].toggleClass('e-has-sideframe');
-        Cookie.write('sidebar', $$('html')[0].hasClass('e-has-sideframe') ? 1 : 0, {path:new URI(Energine.base).get('directory'), duration:1});
+        var url = new URI(Energine.base), domainChunks = url.get('host').split('.'), domain;
+        if(domainChunks.length > 2){
+            domainChunks.shift();
+        }
+        domain = '.' + domainChunks.join('.');
+        Cookie.write('sidebar', $$('html')[0].hasClass('e-has-sideframe') ? 1 : 0, {'domain': domain,
+            path:url.get('directory'), duration:30});
     },
 
     showTmplEditor: function() {

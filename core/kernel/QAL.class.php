@@ -82,7 +82,7 @@ final class QAL extends DBA {
      * Возвращает массив результата выборки или true, если результат пустой.
      *
      * @access public
-     * @param string $tableName имя таблицы
+     * @param string $tableName имя таблицы или SQL текст запроса, в этом случае все последующие параметры  - идут как переменные
      * @param mixed $fields массив имен полей ИЛИ имя одного поля ИЛИ true для выборки всех полей таблицы
      * @param mixed $condition условие выборки
      * @param mixed $order порядок сортировки результата
@@ -92,7 +92,14 @@ final class QAL extends DBA {
      */
     public function select($tableName, $fields = true, $condition = null, $order = null, $limit = null) {
         //$tableName = strtolower($tableName);
-
+        $tableName = trim($tableName);
+        
+        if(strpos($tableName, ' ')){
+            //если в имени таблицы есть пробелы
+            //будем считать что это просто SQL код
+            return call_user_func_array(array($this, 'selectRequest'), func_get_args());
+        }
+        
         if (is_array($fields) && !empty($fields)) {
             $fields = array_map('strtolower', $fields);
             $fields = implode(', ', $fields);

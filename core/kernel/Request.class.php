@@ -77,32 +77,32 @@ final class Request extends Object {
     public function __construct() {
         $this->uri = URI::create();
         $path = $this->uri->getPath();
-        
-        if(strpos($path, E()->getSiteManager()->getCurrentSite()->root) !== false) {
-	        $path = array_values(
-	            array_diff(
-	                explode(
-	                    '/', 
-	                    substr(
-	                        $path, 
-	                        strlen(
-	                            E()->getSiteManager()->getCurrentSite()->root
-	                        )
-	                    )
-	                 ), 
-	                 array('')
-	              )
-	        );
+
+        if (strpos($path, E()->getSiteManager()->getCurrentSite()->root) !== false) {
+            $path = array_values(
+                array_diff(
+                    explode(
+                        '/',
+                        substr(
+                            $path,
+                            strlen(
+                                E()->getSiteManager()->getCurrentSite()->root
+                            )
+                        )
+                    ),
+                    array('')
+                )
+            );
         }
         else {
-        	$path = array();
+            $path = array();
         }
-        
+
         try {
             $language = E()->getLanguage();
             $this->lang = (isset($path[0]) && $language->isValidLangAbbr($path[0])) ? array_shift($path) : '';
         }
-        catch (SystemException $e){
+        catch (SystemException $e) {
             $this->lang = '';
         }
         $this->path = $path;
@@ -135,7 +135,7 @@ final class Request extends Object {
      * @return string
      */
     public function getLangSegment() {
-        return (empty($this->lang) ? '' : $this->lang.'/');
+        return (empty($this->lang) ? '' : $this->lang . '/');
     }
 
     /**
@@ -160,9 +160,9 @@ final class Request extends Object {
                 break;
         }
         if ($asString) {
-            $path = (empty($path) ? '' : implode('/', $path).'/');
+            $path = (empty($path) ? '' : implode('/', $path) . '/');
         }
-        
+
         return $path;
     }
 
@@ -176,12 +176,13 @@ final class Request extends Object {
     public function setPathOffset($offset) {
         $this->offset = $offset;
     }
+
     /**
      * Сдвигает смещение :) на offset пунктов
      * @param  $offset
      * @return void
      */
-    public function shiftPath($offset){
+    public function shiftPath($offset) {
         $this->setPathOffset($this->getPathOffset() + $offset);
     }
 
@@ -207,7 +208,7 @@ final class Request extends Object {
         if (isset($_ENV['HTTP_X_FORWARDED_FOR']) && ip2long($_ENV['HTTP_X_FORWARDED_FOR']) != -1) {
             $ip = $_ENV['HTTP_X_FORWARDED_FOR'];
         }
-        if($returnAsInt) $ip = ip2long($ip);
+        if ($returnAsInt) $ip = ip2long($ip);
         return $ip;
     }
 }

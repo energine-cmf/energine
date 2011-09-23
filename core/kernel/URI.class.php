@@ -119,8 +119,17 @@ final class URI extends Object {
     public static function create($uriString = ''){
     	self::$trick = true;
         if(!$uriString){
-            $port = explode(':', $_SERVER['HTTP_HOST']);
-            $uriString = (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.((isset($_SERVER['HTTP_HOST']))?$_SERVER['HTTP_HOST']:$_SERVER['SERVER_NAME']).':'.((sizeof($port)>1)?$port[1]:80).$_SERVER['REQUEST_URI'];
+            $host = explode(':', ((isset($_SERVER['HTTP_HOST']))?$_SERVER['HTTP_HOST']:$_SERVER['SERVER_NAME']));
+            $protocol = (isset($_SERVER['HTTPS']) ? 'https' : 'http');
+
+            if(sizeof($host) == 1){
+                $port = ($protocol == 'http')?80:443;
+            }
+            else{
+                list($host, $port) = $host;
+            }
+
+            $uriString = $protocol.'://'.$host.':'.$port.$_SERVER['REQUEST_URI'];
         }
         return new URI($uriString);
     }

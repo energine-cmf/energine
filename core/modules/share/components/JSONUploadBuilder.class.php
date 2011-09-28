@@ -3,7 +3,7 @@
  * Содержит класс JSONUploadBuilder
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Используется для FileLibrary
  *
  * @package energine
- * @subpackage core
+ * @subpackage share
  * @author dr.Pavka
  */
 class JSONUploadBuilder extends JSONBuilder {

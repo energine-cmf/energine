@@ -3,7 +3,7 @@
  * Содержит класс Remover
  *
  * @package energine
- * @subpackage core
+ * @subpackage share
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -14,19 +14,14 @@
  * Класс используется для случаев, когда пользователи с разными правми должны видеть разные компоненты
  *
  * @package energine
- * @subpackage core
+ * @subpackage share
  * @author dr.Pavka
  */
 class Remover extends Component {
     /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @return void
+     * @param $name
+     * @param $module
+     * @param array|null $params
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);

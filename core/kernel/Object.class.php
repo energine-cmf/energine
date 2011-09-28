@@ -92,9 +92,10 @@ abstract class Object {
      * @access public
      * @static
      * @param string $paramPath путь к параметру в дереве конфигурации
+     * @param mixed $initial Дефолтное значение - будет использоваться если запрошенного значения не существует
      * @return string
      */
-    public static function _getConfigValue($paramPath) {
+    public static function _getConfigValue($paramPath, $initial = null) {
         if(is_null(self::$systemConfig)) self::$systemConfig = include_once(self::CONFIG_FILE);
         $result = self::$systemConfig;
         $paramPath = explode('.', $paramPath);
@@ -102,7 +103,7 @@ abstract class Object {
             if(isset($result[$segment]))
                 $result = $result[$segment];
             else {
-                return null;
+                return $initial;
             }
         }
 
@@ -115,10 +116,11 @@ abstract class Object {
      *
      * @access public
      * @param string $paramPath путь к параметру в дереве конфигурации
-     * @return string
+     * @param mixed $initial дефолтное значение
+     * @return mixed
      * @see Object::_getConfigValue()
      */
-    public function getConfigValue($paramPath) {
-        return self::_getConfigValue($paramPath);
+    public function getConfigValue($paramPath, $initial = null) {
+        return self::_getConfigValue($paramPath, $initial);
     }
 }

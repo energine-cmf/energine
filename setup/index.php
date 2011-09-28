@@ -16,9 +16,11 @@ $acceptableActions = array(
     'linker'
 );
 
+//вариант запуска приложения
+$isConsole = false;
+
 //действие по умолчанию
 $action = 'install';
-
 
 /**
  * Для stylesheets scripts images templates/content templates/layout
@@ -67,6 +69,7 @@ $action = 'install';
 if (isset($argv)) {
     $args = $argv;
     //консоль
+    $isConsole = true;
     array_shift($args);
 }
 else {
@@ -82,7 +85,7 @@ if (!empty($args) && in_array($args[0], $acceptableActions)) {
 
 try {
     require_once('Setup.class.php');
-    $setup = new Setup();
+    $setup = new Setup($isConsole);
     $setup->execute($action);
 
 

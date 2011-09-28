@@ -7,9 +7,38 @@
  * To change this template use File | Settings | File Templates.
  */
 
+
+/**
+ * Основной функционал установки системы.
+ *
+ * @package energine
+ * @subpackage setup
+ * @author dr.Pavka
+ */
 class Setup {
 
+    /**
+     * @access private
+     * @var bool  true - установка запущенна из консоли false - с браузера
+     */
+    private $isFromConsole;
+
+    /**
+     * @access private
+     * @var array конфиг системы
+     */
     private $config;
+
+    /**
+     * @access private
+     * @var PDO Подключение к БД
+     */
+    private $dbConnect;
+
+    /**
+     * @access private
+     * @var array директории для последующего создания символических ссылок
+     */
     private $htdocsDirs = array(
         'images',
         'scripts',
@@ -19,11 +48,75 @@ class Setup {
         'templates/layout'
     );
 
-    function __construct() {
+    /**
+     * Конструктор класса.
+     * 
+     * @param bool $consoleRun Вид вызова сценария установки
+     * @access public
+     */
+
+    function __construct($consoleRun) {
         header('Content-Type: text/plain; charset=' . CHARSET);
         $this->title('Средство настройки CMF Energine');
+        $this->isFromConsole = $consoleRun;
         $this->checkEnvironment();
     }
+
+    /**
+     * Очистка переменных для предотвращения возможных атак.
+     * Если входящяя строка содержит символы помимо
+     * Букв, цифр, -, . , /
+     * Будет возвращена строка error
+     *
+     * @param string $var
+     * @return string
+     * @access private
+     */
+
+    private function filterInput($var) {
+        if(preg_match('/^[\-0-9a-zA-Z\/\.]+$/i', "dom-ain.com//"))
+            return $var;
+        else
+            return "error";
+    }
+
+    /**
+     * Возвращает хост, на котором работае система.
+     * 
+     * @return string
+     * @access private
+     */
+
+    private function getSiteHost(){
+        if(!isset($_SERVER['HTTP_HOST'])
+            ||$_SERVER['HTTP_HOST']=="")
+            return $this->filterInput($_SERVER['SERVER_NAME']);
+        else
+            return $this->filterInput($_SERVER['HTTP_HOST']);
+    }
+
+    /**
+     * Возвращает корневую директорию системы.
+     * 
+     * @return string
+     * @access private
+     */
+
+    private function getSiteRoot(){
+        $siteRoot = $this->filterInput($_SERVER['PHP_SELF']);
+        $siteRoot = str_replace("setup/", "", $siteRoot);
+        $siteRoot = str_replace("index.php", "", $siteRoot);
+        return $siteRoot;
+    }
+
+    /**
+     * Функция для проверки параметров системы,
+     * таких как версия PHP, наличие конфигурационного
+     * файла Energine а также файла перечня модулей системы.
+     *
+     * @return void
+     * @access public
+     */
 
     public function checkEnvironment() {
         $this->title('Проверка системного окружения');
@@ -41,6 +134,12 @@ class Setup {
 
         $this->config = include_once($configName);
 
+        // Если скрипт запущен не с консоли, необходимо вычислить хост сайта и его рут директорию
+        if (!$this->isFromConsole) {
+            $this->config['site']['domain'] = $this->getSiteHost();
+            $this->config['site']['root'] = $this->getSiteRoot();
+        }
+        
         if (!is_array($this->config)) {
             throw new Exception('Странный какой то конфиг. Пользуясь ним я не могу ничего сконфигурить. Или возьмите нормальный конфиг, или - извините.');
         }
@@ -64,6 +163,25 @@ class Setup {
         $this->text('Перечень модулей:', implode(PHP_EOL, $this->config['modules']));
     }
 
+    /**
+     * Обновляет Host и Root сайта в таблице share_sites.
+     *
+     * @return void
+     * @access private
+     */
+
+    private function updateSitesTable(){
+        $this->text("Обновляем таблицу share_sites...");
+        $this->dbConnect->query("UPDATE share_sites SET site_host = '".$this->config['site']['domain']."',"
+                                ."site_root = '".$this->config['site']['root']."' WHERE 1");
+    }
+
+    /**
+     * Проверка возможности соединения с БД.
+     *
+     * @return void
+     * @access public
+     */
 
     public function checkDBConnection() {
         $this->title('Настройки базы данных');
@@ -99,6 +217,8 @@ class Setup {
                      PDO::ATTR_EMULATE_PREPARES => true,
                      PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
                 ));
+            
+           $this->dbConnect = $connect;
         }
         catch (Exception $e) {
             throw new Exception('Не удалось соединиться с БД по причине: ' . $e->getMessage());
@@ -109,6 +229,16 @@ class Setup {
         $this->text('Соединение с БД ', $dbInfo['db'], ' успешно установлено');
     }
 
+    /**
+     * Функция для вызова метода класса.
+     * Фактически, запускает один из режимов
+     * установки системы.
+     *
+     * @param string $action
+     * @return void
+     * @access public
+     */
+
     public function execute($action) {
         if (!method_exists($this, $action)) {
             throw new Exception('Подозрительно все это... Либо программисты че то не учли, либо.... произошло непоправимое.');
@@ -118,10 +248,28 @@ class Setup {
         }();
     }
 
+    /**
+     * Запуск полной установки системы,
+     * включающей генерацию symlinks и
+     * проверку соединения с БД.
+     * 
+     * @return void
+     * @access private
+     */
+
     private function install() {
         $this->checkDBConnection();
+        $this->updateSitesTable();
         $this->linker();
     }
+
+    /**
+     * Запуск установки системы,
+     * включающей генерацию symlinks.
+     *
+     * @return void
+     * @access private
+     */
 
     private function linker() {
 
@@ -160,6 +308,14 @@ class Setup {
         $this->text('Символические ссылки расставлены');
     }
 
+    /**
+     * Очищаем папку от того что в ней было
+     * 
+     * @param $dir
+     * @return void
+     * @access private
+     */
+
     private function cleaner($dir) {
         if (is_dir($dir)) {
             if ($dh = opendir($dir)) {
@@ -183,6 +339,16 @@ class Setup {
             }
         }
     }
+
+    /**
+     * Расставляем симлинки для модулей ядра
+     *
+     * @param string $globPattern - паттерн для выбора файлов
+     * @param string $module путь к модулю ядра
+     * @param int $level - финт ушами для формирования относительных путей для симлинков, при рекурсии инкрементируется
+     * @return void
+     * @access private
+     */
 
     private function linkCore($globPattern, $module, $level = 1) {
 
@@ -210,6 +376,15 @@ class Setup {
         }
     }
 
+    /**
+     * Создание symlinks для модулей сайта.
+     *
+     * @param string $globPattern
+     * @param string $dir
+     * @return void
+     * @access private
+     */
+
     private function linkSite($globPattern, $dir) {
         $fileList = glob($globPattern);
         //Тут тоже хитрый финт ушами с относительным путем вычисляющимся как количество уровней вложенности исходной папки + еще один
@@ -230,9 +405,25 @@ class Setup {
         }
     }
 
+    /**
+     * Вывод названия текущего действия установки.
+     *
+     * @param string $text
+     * @return void
+     * @access private
+     */
+
     private function title($text) {
         echo str_repeat('*', 80), PHP_EOL, $text, PHP_EOL, PHP_EOL;
     }
+
+    /**
+     * Выводит все переданные ей параметры в виде строки.
+     *
+     * @param string $text
+     * @return void
+     * @access private
+     */
 
     private function text() {
         foreach (func_get_args() as $text) {

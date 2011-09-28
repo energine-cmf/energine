@@ -3,17 +3,16 @@
  * Класс Image.
  *
  * @package energine
- * @subpackage image
+ * @subpackage share
  * @author 1m.dm
  * @copyright Energine 2006
- * @version $Id$
  */
 
 /**
  * Класс для работы с изображениями.
  *
  * @package energine
- * @subpackage image
+ * @subpackage share
  * @author 1m.dm
  */
 class Image extends Object {

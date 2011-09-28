@@ -3,7 +3,7 @@
  * Класс ImageManager.
  *
  * @package energine
- * @subpackage image
+ * @subpackage share
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -13,7 +13,7 @@
  * Менеджер изображений.
  *
  * @package energine
- * @subpackage image
+ * @subpackage share
  * @author 1m.dm
  */
 class ImageManager extends DataSet {

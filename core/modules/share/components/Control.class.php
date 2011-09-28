@@ -13,6 +13,7 @@
  * Элемент управления панели инструментов
  *
  * @package energine
+ * @subpackage share
  * @abstract
  * @author dr.Pavka
  */

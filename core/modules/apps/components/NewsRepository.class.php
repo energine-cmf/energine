@@ -3,7 +3,7 @@
  * Содержит класс LinkingEditor
  *
  * @package energine
- * @subpackage stb
+ * @subpackage apps
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
@@ -12,7 +12,7 @@
   * Редактор 
   *
   * @package energine
-  * @subpackage stb
+  * @subpackage apps
   * @author d.pavka@gmail.com
   */
  class NewsRepository extends NewsEditor {

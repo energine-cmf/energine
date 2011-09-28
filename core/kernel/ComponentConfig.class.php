@@ -3,7 +3,7 @@
  * Содержит класс ComponentConfig
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2007
  */
@@ -12,7 +12,7 @@
  * Класс реализующий работу с конфигурационным файлом компонента
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @final
  */

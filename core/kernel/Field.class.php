@@ -4,7 +4,7 @@
  * Класс Field.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Поле данных.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class Field extends Object implements Iterator{

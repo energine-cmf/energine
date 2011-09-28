@@ -4,7 +4,7 @@
  * Содержит класс FileObject и интерфейс FileSystemObject
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Класс - модель файла
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class FileObject extends FileSystemObject {

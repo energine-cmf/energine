@@ -3,7 +3,7 @@
  * Класс PageStructureDocument
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka@gmail.com
  * @copyright Energine 2010
  */

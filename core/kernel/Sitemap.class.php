@@ -4,7 +4,7 @@
  * Содержит класс Sitemap
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -17,7 +17,7 @@
  * @todo проблема с конечными страницами
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @final
  */

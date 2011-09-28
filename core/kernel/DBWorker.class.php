@@ -4,7 +4,7 @@
  * Класс DBWorker.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -12,7 +12,7 @@
  * Предоставляет производным классам ссылку на объект для работы с БД.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @abstract
  */

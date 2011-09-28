@@ -3,7 +3,7 @@
  * Содержит класс Translit
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2008
  * @copyright YURiQUE (Yuriy Malchenko) jmalchenko@gmail.com, 2005
@@ -13,7 +13,7 @@
  * Служебный класс для транслитерации строки
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @final
  */

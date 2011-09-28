@@ -4,7 +4,7 @@
  * Класс JSONBuilder
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Построитель данных в формат JSON (JavaScript Object Notation).
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class JSONBuilder extends AbstractBuilder {

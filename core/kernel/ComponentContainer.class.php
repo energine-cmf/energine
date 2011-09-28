@@ -3,7 +3,7 @@
  * Содержит класс Container
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2010
  */
@@ -12,7 +12,7 @@
  * Контейнер компонентов
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class ComponentContainer extends Object implements IBlock, Iterator{

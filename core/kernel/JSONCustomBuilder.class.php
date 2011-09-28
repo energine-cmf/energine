@@ -1,11 +1,20 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: pavka
- * Date: Oct 19, 2010
- * Time: 4:51:52 PM
- * To change this template use File | Settings | File Templates.
+ * Содержит класс JSONCustomBuilder
+ *
+ * @package energine
+ * @subpackage kernel
+ * @author d.pavka
+ * @copyright d.pavka@gmail.com
  */
+
+ /**
+  * Упрощенный JSON билдер
+  *
+  * @package energine
+  * @subpackage kernel
+  * @author d.pavka@gmail.com
+  */
  
 class JSONCustomBuilder extends Object implements IBuilder{
     public $properties = array();

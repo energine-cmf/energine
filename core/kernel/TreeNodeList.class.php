@@ -4,7 +4,7 @@
  * Содержит классы TreeNodeList и TreeNode
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2007
  */
@@ -14,7 +14,7 @@
  * Набор узлов
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class TreeNodeList implements Iterator{
@@ -254,7 +254,7 @@ class TreeNodeList implements Iterator{
  * Класс реализующий работу с узлом дерева
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @final
  */

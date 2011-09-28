@@ -3,7 +3,7 @@
  * Класс JSONTransformer
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author pavka
  * @copyright Energine 2010
  */
@@ -24,6 +24,9 @@ class JSONTransformer implements ITransformer{
     public function transform() {
         E()->getResponse()->setHeader('Content-Type', 'text/javascript; charset=utf-8');
         $component = $this->document->getElementById('result');
+        if(!$component){
+            throw new SystemException('ERR_BAD_OPERATION_RESULT', SystemException::ERR_CRITICAL, $this->document->saveHTML());
+        }
         return $component->nodeValue;
     }
 }

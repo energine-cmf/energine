@@ -4,7 +4,7 @@
  * Содержит класс TagManager
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
@@ -13,7 +13,7 @@
  * Класс реализующий функциональность по управлению тегами
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka@gmail.com
  */
 class TagManager extends DBWorker {

@@ -3,7 +3,7 @@
  * Содержит класс SimpleBuilder.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2010
  */
@@ -13,7 +13,7 @@
  * выводить все аттрибуты поля
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class SimpleBuilder extends Builder {

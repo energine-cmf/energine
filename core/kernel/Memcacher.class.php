@@ -1,5 +1,20 @@
 <?php
+/**
+ * Содержит класс Memcacher
+ *
+ * @package energine
+ * @subpackage kernel
+ * @author d.pavka
+ * @copyright d.pavka@gmail.com
+ */
 
+ /**
+  * Обвязка вокруг мемкеша(используется модуль Memcached)
+  *
+  * @package energine
+  * @subpackage kernel
+  * @author d.pavka@gmail.com
+  */
 class Memcacher extends Object{
     const PERSISTENT_ID = 'nrgnCache';
     /**

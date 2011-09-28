@@ -4,7 +4,7 @@
  * Содержит класс TreeConverter
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2007
  */
@@ -16,7 +16,7 @@
  * По сути представляет из себя контейнер статических методов
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @final
  */

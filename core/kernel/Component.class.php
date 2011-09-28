@@ -4,7 +4,7 @@
  * Класс Component.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Компонент страницы.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  */
 class Component extends DBWorker implements IBlock {

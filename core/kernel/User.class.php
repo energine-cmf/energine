@@ -4,7 +4,7 @@
  * Содержит класс User
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Возвращает информацию о пользователе, сохраняет данные
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class User extends DBWorker {

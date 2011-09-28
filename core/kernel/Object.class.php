@@ -4,7 +4,7 @@
  * Класс Object.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -16,7 +16,7 @@
  * измерение времени выполнения и загрузку данных из конфигурационного файла
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @abstract
  */

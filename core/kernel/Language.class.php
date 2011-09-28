@@ -3,7 +3,7 @@
  * Класс Language.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -13,7 +13,7 @@
  * Управляет языками системы.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @final
  */

@@ -3,7 +3,7 @@
  * Класс DataDescription.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -12,7 +12,7 @@
  * Мета-данные.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class DataDescription extends Object implements Iterator {

@@ -4,7 +4,7 @@
  * Класс Pager
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Список страниц для навигации при постраничном выводе.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @final
  */

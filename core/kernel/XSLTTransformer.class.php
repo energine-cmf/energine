@@ -4,7 +4,7 @@
  * Класс Transformer
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
 
@@ -14,7 +14,7 @@
  * Трансформер XML-документа страницы.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class XSLTTransformer extends Object implements ITransformer {

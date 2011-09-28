@@ -3,7 +3,7 @@
  * Содержит класс DBStructureInfo
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka@gmail.com
  * @copyright Energine 2010
  */
@@ -13,7 +13,7 @@
  * Имеет возможность хранить данные в кеше
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @final
  */
 final class DBStructureInfo extends Object {

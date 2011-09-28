@@ -3,7 +3,7 @@
  * Содержит набор инициализационных функций и констант
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author pavka
  * @copyright Energine 2007
  */

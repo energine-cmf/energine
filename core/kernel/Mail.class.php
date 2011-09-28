@@ -4,7 +4,7 @@
  * Содержит класс Mail
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2007
  */
@@ -14,7 +14,7 @@
  * Отправщик сообщения
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @final
  */

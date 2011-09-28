@@ -3,7 +3,7 @@
  * Содержит класс AttachmentManager
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */

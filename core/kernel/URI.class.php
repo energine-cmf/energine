@@ -3,7 +3,7 @@
  * Класс URI.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m
  * @copyright Energine 
  */
@@ -13,7 +13,7 @@
  * URI (Unified Resource Identifier).
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m
  * @final
  */

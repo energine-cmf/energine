@@ -4,7 +4,7 @@
  * Класс SystemException
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -13,7 +13,7 @@
  * Базовое исключение.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  */
 class SystemException extends Exception {

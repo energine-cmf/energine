@@ -3,7 +3,7 @@
  * Содержит класс FileInfo
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
@@ -12,7 +12,7 @@
  * Синглтон возвращающий информацию о типе файла
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka@gmail.com
  */
 class FileInfo extends DBWorker {

@@ -4,7 +4,7 @@
  * Класс VideoUploader.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author pavka
  * @copyright Energine 2006
  */

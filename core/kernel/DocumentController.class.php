@@ -4,7 +4,7 @@
  * Класс DocumentController  и  интерфейс Transformer.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -13,7 +13,7 @@
  * Отвечает за подготовку среды и запуск работы объекта Document.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  */
 class DocumentController extends Object {

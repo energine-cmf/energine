@@ -4,7 +4,7 @@
  * Класс MultiLanguageBuilder.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Построитель для мультиязычных компонентов.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class MultiLanguageBuilder extends AbstractBuilder {

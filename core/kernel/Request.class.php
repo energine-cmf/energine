@@ -4,7 +4,7 @@
  * Класс Request.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * HTTP-запрос.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @final
  */

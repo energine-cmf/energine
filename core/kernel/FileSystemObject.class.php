@@ -4,7 +4,7 @@
  * Содержит класс FileSystemObject
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Абстрактный класс  - модель объекта файловой системы
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @abstract
  */

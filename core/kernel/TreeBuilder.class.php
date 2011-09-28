@@ -4,7 +4,7 @@
  * Класс TreeBuilder.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Кроме Data и DataDescription имеет еще и Tree c помощью которого определяется структура
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  */
 class TreeBuilder extends AbstractBuilder  {

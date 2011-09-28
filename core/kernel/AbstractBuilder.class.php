@@ -4,7 +4,7 @@
  * Класс AbstractBuilder.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2006
  */
@@ -15,7 +15,7 @@
  * Создаёт XML-документ основываясь на переданных ему данных и мета-данных.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @abstract
  */

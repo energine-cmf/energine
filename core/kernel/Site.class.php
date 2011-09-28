@@ -3,7 +3,7 @@
  * Содержит класс Site
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
@@ -12,7 +12,7 @@
   * Работа с сайтом
   *
   * @package energine
-  * @subpackage core
+  * @subpackage kernel
   * @author d.pavka@gmail.com
   */
  class Site extends DBWorker {

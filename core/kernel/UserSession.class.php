@@ -4,7 +4,7 @@
  * Класс UserSession.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @copyright Energine 2011
  */
@@ -13,7 +13,7 @@
  * Класс управления сеансами пользователей.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author dr.Pavka
  * @final
  */

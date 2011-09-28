@@ -4,7 +4,7 @@
  * Класс FileUploader.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Загрузчик файлов на сервер.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  */
 class FileUploader extends Object {

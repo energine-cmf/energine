@@ -4,7 +4,7 @@
  * Класс Builder.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
@@ -14,7 +14,7 @@
  * Построитель XML-документа.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author 1m.dm
  */
 class Builder extends AbstractBuilder {

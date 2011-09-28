@@ -3,7 +3,7 @@
  * Класс AuthUser.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka
  * @copyright Energine 2011
  */
@@ -13,7 +13,7 @@
  * Аутентифицированный пользователь.
  *
  * @package energine
- * @subpackage core
+ * @subpackage kernel
  * @author d.pavka
  */
 class AuthUser extends User {

@@ -1,11 +1,20 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: pavka
- * Date: Oct 27, 2010
- * Time: 11:34:40 AM
- * To change this template use File | Settings | File Templates.
+ * Содержит класс ErrorDocument
+ *
+ * @package energine
+ * @subpackage apps
+ * @author d.pavka
+ * @copyright d.pavka@gmail.com
  */
+
+ /**
+  * Документ ошибки
+  *
+  * @package energine
+  * @subpackage apps
+  * @author d.pavka@gmail.com
+  */
 
 class ErrorDocument extends Object implements IDocument {
     /**

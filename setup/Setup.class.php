@@ -74,10 +74,10 @@ class Setup {
      */
 
     private function filterInput($var) {
-        if(preg_match('/^[\-0-9a-zA-Z\/\.]+$/i', "dom-ain.com//"))
+        if(preg_match('/^[\-0-9a-zA-Z\/\.]+$/i', $var))
             return $var;
         else
-            return "error";
+            throw new Exception('Некорректные данные системных переменных, возможна атака на сервер.');
     }
 
     /**
@@ -89,7 +89,7 @@ class Setup {
 
     private function getSiteHost(){
         if(!isset($_SERVER['HTTP_HOST'])
-            ||$_SERVER['HTTP_HOST']=="")
+            ||$_SERVER['HTTP_HOST']=='')
             return $this->filterInput($_SERVER['SERVER_NAME']);
         else
             return $this->filterInput($_SERVER['HTTP_HOST']);
@@ -104,8 +104,7 @@ class Setup {
 
     private function getSiteRoot(){
         $siteRoot = $this->filterInput($_SERVER['PHP_SELF']);
-        $siteRoot = str_replace("setup/", "", $siteRoot);
-        $siteRoot = str_replace("index.php", "", $siteRoot);
+        $siteRoot = str_replace('setup/index.php', '', $siteRoot);
         return $siteRoot;
     }
 
@@ -171,9 +170,9 @@ class Setup {
      */
 
     private function updateSitesTable(){
-        $this->text("Обновляем таблицу share_sites...");
+        $this->text('Обновляем таблицу share_sites...');
         $this->dbConnect->query("UPDATE share_sites SET site_host = '".$this->config['site']['domain']."',"
-                                ."site_root = '".$this->config['site']['root']."' WHERE 1");
+                                ."site_root = '".$this->config['site']['root']."'");
     }
 
     /**

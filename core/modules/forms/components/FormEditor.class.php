@@ -176,7 +176,7 @@ class FormEditor extends DataSet {
         $this->setData(new Data());
 
         //Load information about field type.
-        $fieldsInfo = $this->dbh->getColumnsInfo($this->getConfigValue('forms.database') . '.form_' . $this->getParam('form_id'));
+        $fieldsInfo = $this->dbh->getColumnsInfo(FormConstructor::getDatabase() . '.form_' . $this->getParam('form_id'));
         $fieldInfo = $fieldsInfo[strtolower($fieldName)];
         $fieldInfo = FieldDescription::convertType($fieldInfo['type'], $fieldName, $fieldInfo['length']);
         $fieldInfo = 'FIELD_TYPE_' . strtoupper($fieldInfo);
@@ -266,7 +266,7 @@ class FormEditor extends DataSet {
             $tableName = $tableName['key']['tableName'];
         }
         else {
-            $tableName = $this->getConfigValue('forms.database') . '.' . $fieldName . '_values';
+            $tableName = FormConstructor::getDatabase() . '.' . $fieldName . '_values';
         }
 
         $this->SVEditor = $this->document->componentManager->createComponent('form', 'forms', 'SelectorValuesEditor', array('table_name' => $tableName));

@@ -37,7 +37,7 @@ class FormResults extends Grid
         if (!$this->formID = $this->getParam('form_id'))
             $this->formID = false;
         else
-            $this->setTableName($this->getConfigValue('forms.database') . '.form_' . $this->formID);
+            $this->setTableName(FormConstructor::getDatabase() . '.form_' . $this->formID);
 
         $this->setOrder(array('pk_id' => QAL::DESC));
     }
@@ -58,8 +58,7 @@ class FormResults extends Grid
         //Якщо у конфігі вказано обмеження на кількість полів, які мають відображатися у Grid'і (states: main, getRawData), то застосувати його.
         //Інакше відобразити всі поля.
         if (in_array($this->getState(), array('main', 'getRawData'))) {
-            $numFields = ($this->getConfigValue('forms.result_num_fields'))
-                    ? $this->getConfigValue('forms.result_num_fields') : 6;
+            $numFields = $this->getConfigValue('forms.result_num_fields', 6);
             if (count($result) > $numFields)
                 $result = array_splice($result, 0, $numFields);
         }

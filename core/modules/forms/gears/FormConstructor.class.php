@@ -28,7 +28,7 @@ class FormConstructor extends DBWorker {
      */
     public function __construct($formID) {
         parent::__construct();
-        $this->fDBName = $this->getConfigValue('forms.database');
+        $this->fDBName = FormConstructor::getDatabase();
         $this->tableName = DBA::getFQTableName(
             $this->fDBName . '.' . self::TABLE_PREFIX . $formID);
         $this->dbh->modifyRequest(
@@ -420,6 +420,16 @@ class FormConstructor extends DBWorker {
                 ((!$colsInfo[$srcField]['nullable'])?' NOT NULL ':'').
                  ' AFTER ' . $destColField;
         $this->dbh->modifyRequest($query);
+    }
+    /**
+     * Обвязка для случая когда имя бд форм не указано в конфиге
+     * в этом случае берем текущую БД
+     * 
+     * @static
+     * @return string
+     */
+    public static function getDatabase(){
+        return Object::_getConfigValue('forms.database', Object::_getConfigValue('database.db'));
     }
 
     private static function getFDAsSQLString($fieldType) {

@@ -53,7 +53,7 @@ class Form extends DBDataSet {
         //If formID is actual number, but we don't have table with name form_$formID, then set formID to false.
         //Otherwiste setTableName.
         if (!$this->formID || !$this->dbh->tableExists($tableName =
-                                                               $this->getConfigValue('forms.database') .
+                                                               FormConstructor::getDatabase() .
                                                                '.' .
                                                                FormConstructor::TABLE_PREFIX .
                                                                $this->formID)

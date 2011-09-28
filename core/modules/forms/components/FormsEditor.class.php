@@ -71,12 +71,12 @@ class FormsEditor extends Grid {
 
     protected function deleteData($id) {
         parent::deleteData($id);
-        $res = $this->dbh->selectRequest('SHOW FULL TABLES FROM `' . $this->getConfigValue('forms.database') . '` LIKE "%form_' . $id . '%"');
+        $res = $this->dbh->selectRequest('SHOW FULL TABLES FROM `' . FormConstructor::getDatabase() . '` LIKE "%form_' . $id . '%"');
         if (is_array($res)) {
             $tables = array_map(function($row) { return current($row); }, $res);
             $this->dbh->modifyRequest('SET FOREIGN_KEY_CHECKS=0;');
             foreach ($tables as $tableName) {
-                $this->dbh->modifyRequest('DROP TABLE `' . $this->getConfigValue('forms.database') . '`.' . $tableName);
+                $this->dbh->modifyRequest('DROP TABLE `' . FormConstructor::getDatabase() . '`.' . $tableName);
             }
         }
     }

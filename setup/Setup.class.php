@@ -74,14 +74,14 @@ class Setup {
      */
 
     private function filterInput($var) {
-        if(preg_match('/^[\-0-9a-zA-Z\/\.]+$/i', $var))
+        if(preg_match('/^[\-0-9a-zA-Z\/\.\_]+$/i', $var))
             return $var;
         else
-            throw new Exception('Некорректные данные системных переменных, возможна атака на сервер.');
+            throw new Exception('Некорректные данные системных переменных, возможна атака на сервер.'.$var);
     }
 
     /**
-     * Возвращает хост, на котором работае система.
+     * Возвращает хост, на котором работает система.
      * 
      * @return string
      * @access private
@@ -179,10 +179,10 @@ class Setup {
      * Проверка возможности соединения с БД.
      *
      * @return void
-     * @access public
+     * @access private
      */
 
-    public function checkDBConnection() {
+    private function checkDBConnection() {
         $this->title('Настройки базы данных');
         if (!isset($this->config['database']) || empty($this->config['database'])) {
             throw new Exception('В конфиге нет информации о подключении к базе данных');
@@ -249,8 +249,9 @@ class Setup {
 
     /**
      * Запуск полной установки системы,
-     * включающей генерацию symlinks и
-     * проверку соединения с БД.
+     * включающей генерацию symlinks,
+     * проверку соединения с БД и обновление
+     * таблицы share_sites.
      * 
      * @return void
      * @access private
@@ -308,7 +309,7 @@ class Setup {
     }
 
     /**
-     * Очищаем папку от того что в ней было
+     * Очищаем папку от того что в ней было.
      * 
      * @param $dir
      * @return void
@@ -367,7 +368,7 @@ class Setup {
                     }
                     $this->text('Создаем симлинк ', str_repeat('..' . DIRECTORY_SEPARATOR, $level) . $fo, ' --> ', $dest);
                     if(!@symlink(str_repeat('..' . DIRECTORY_SEPARATOR, $level-1) . $fo, $dest)){
-                        throw new Exception('Не удлось создать символическую ссылку с '.str_repeat('..' . DIRECTORY_SEPARATOR, $level-1) . $fo.' на '. $dest);
+                        throw new Exception('Не удалось создать символическую ссылку с '.str_repeat('..' . DIRECTORY_SEPARATOR, $level-1) . $fo.' на '. $dest);
                     }
 
                 }
@@ -405,7 +406,7 @@ class Setup {
     }
 
     /**
-     * Вывод названия текущего действия установки.
+     * Вывод заголовок текущего действия установки.
      *
      * @param string $text
      * @return void

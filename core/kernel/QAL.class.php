@@ -168,6 +168,12 @@ final class QAL extends DBA {
      * @see DBA::modifyRequest()
      */
     public function modify($mode, $tableName, array $data = null, $condition = null) {
+
+        //Если в первом параметре не один из зарегистрированных режимов - считаем что это запрос
+        if(!in_array($mode, array(self::INSERT, self::INSERT_IGNORE, self::REPLACE, self::DELETE, self::UPDATE))){
+            return call_user_func_array(array($this, 'modifyRequest'), func_get_args());
+        }
+
         if (empty($mode) || empty($tableName)) {
             throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
         }

@@ -114,7 +114,15 @@ var PageToolbar = new Class({
             this.layoutManager = new LayoutManager(this.componentPath);
         }
         else {
-            if (this.layoutManager && LayoutManager.changed) {
+            if (this.layoutManager && LayoutManager.changed){
+                if(!confirm('На странице есть несохраненные изменения. Вы уверены что хотите выйти?')){
+                    return;
+                }
+            }
+
+            document.location = document.location.href;
+
+            /*if (this.layoutManager && LayoutManager.changed) {
                 new Request.JSON({
                     url:this.componentPath + 'widgets/save-content/',
                     method: 'post',
@@ -132,7 +140,7 @@ var PageToolbar = new Class({
             }
             else {
                 document.location = document.location.href;
-            }
+            }*/
         }
     },
     _reloadWindowInEditMode: function() {

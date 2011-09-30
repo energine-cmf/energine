@@ -49,7 +49,7 @@ var Toolbar = new Class({
     },
 
     load: function(toolbarDescr) {
-        $A(toolbarDescr.childNodes).each(function(elem) {
+        Array.each(toolbarDescr.childNodes, function(elem) {
             if (elem.nodeType == 1) {
                 var control = null;
                 switch (elem.getAttribute('type')) {
@@ -67,21 +67,25 @@ var Toolbar = new Class({
                     this.appendControl(control);
                 }
             }
-        }.bind(this));
-    },
-    appendControl: function(control) {
-        if ($chk(control.type) && $chk(control.id)) {
-            control.action = control.onclick;
-            delete control.onclick;
-            control = new Toolbar[control.type.capitalize()](control);
-        }
+        }, this);
 
-        if (control instanceof Toolbar.Control) {
-            control.toolbar = this;
-            control.build();
-            this.element.adopt(control.element);
-            this.controls.push(control);
-        }
+    },
+    appendControl: function() {
+        Array.each(arguments, function(control) {
+            if (control.type && control.id) {
+                control.action = control.onclick;
+                delete control.onclick;
+                control = new Toolbar[control.type.capitalize()](control);
+            }
+
+            if (control instanceof Toolbar.Control) {
+                control.toolbar = this;
+                control.build();
+                this.element.adopt(control.element);
+                this.controls.push(control);
+            }
+        }, this);
+
         return this;
     },
 
@@ -317,13 +321,19 @@ Toolbar.Separator = new Class({
         // Separator cannot be disabled.
     }
 });
-
+Toolbar.Text = new Class({
+    Extends:Toolbar.Control,
+    build: function() {
+        this.parent();
+        this.element.addClass('text');
+    }
+});
 Toolbar.Select = new Class({
     Extends:Toolbar.Control,
     select:null,
     toolbar:null,
 
-    initialize: function(properties, options) {
+    initialize: function(properties, options, initialValue) {
         this.properties = {
             id: null,
             title: '',
@@ -334,6 +344,7 @@ Toolbar.Select = new Class({
         $extend(this.properties, $pick(properties, {}));
 
         this.options = options || {};
+        this.initial = initialValue || false;
     },
 
     build: function() {
@@ -356,11 +367,17 @@ Toolbar.Select = new Class({
         if (this.properties.disabled) {
             this.disable();
         }
+        var props = {};
+        Object.each(this.options, function(value, key) {
+            props = {'value': key};
+            if (key == this.initial) {
+                props.selected = 'selected';
+            }
+            control.select.adopt(
+                new Element('option').setProperties(props).set('text', value));
 
-        //		if(Energine.supportContentEdit)
-        $H(this.options).each(function(value, key) {
-            control.select.adopt(new Element('option').setProperties({'value': key}).set('text', value));
-        });
+        }, this);
+
     },
 
     disable: function() {

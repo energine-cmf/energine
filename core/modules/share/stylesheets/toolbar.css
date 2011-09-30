@@ -53,10 +53,18 @@ ul.toolbar li.disabled {}
 
 ul.toolbar .label {
     margin-right: 5px;
+    margin-left: 5px;
+}
+
+ul.toolbar .text{
+    color: #757177;
+    padding-right:0px;
+    padding-left:0px;
 }
 
 ul.toolbar li select{
 	font: 11px Tahoma, sans-serif;
 	width:150px;
+    margin-bottom:4px;
 }
 

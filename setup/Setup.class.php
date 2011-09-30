@@ -368,7 +368,7 @@ class Setup {
                     }
                     $this->text('Создаем симлинк ', str_repeat('..' . DIRECTORY_SEPARATOR, $level) . $fo, ' --> ', $dest);
                     if(!@symlink(str_repeat('..' . DIRECTORY_SEPARATOR, $level-1) . $fo, $dest)){
-                        throw new Exception('Не удалось создать символическую ссылку с '.str_repeat('..' . DIRECTORY_SEPARATOR, $level-1) . $fo.' на '. $dest);
+                        throw new Exception('Не удалось создать символическую ссылку с '.str_repeat('..' . DIRECTORY_SEPARATOR, $level - 1) . $fo.' на '. $dest);
                     }
 
                 }

@@ -25,3 +25,6 @@
     margin-bottom: 10px;
     border: 2px dashed gray;
 }
+.e-has-sideframe ul.block_management_toolbar{
+    margin-left: 300px !important;
+}

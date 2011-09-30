@@ -29,6 +29,7 @@ var LayoutManager = new Class({
      */
     setup: function(xml) {
         Asset.css('layout_manager.css');
+        this.createToolbar();
         /**
          * нас интересует только узел content
          */
@@ -41,6 +42,132 @@ var LayoutManager = new Class({
             }
         }, this);
     },
+    /*changeContent: function() {
+     console.log(arguments)
+     },*/
+    createToolbar: function () {
+        this.toolbar = new Toolbar('block_management_toolbar');
+
+        this.toolbar.dock();
+        this.toolbar.getElement().injectInside(
+            document.getElement('.e-topframe')
+        );
+        this.toolbar.bindTo(this);
+        var html = $$('html')[0];
+        if (html.hasClass('e-has-topframe2')) {
+            html.removeClass('e-has-topframe2');
+            html.addClass('e-has-topframe3');
+        }
+        else if (html.hasClass('e-has-topframe1')) {
+            html.removeClass('e-has-topframe1');
+            html.addClass('e-has-topframe2');
+        }
+        //получаем данные селекта с вариантами содержимого
+        new Request.JSON({
+            url:LayoutManager.singlePath + 'get-template-info/',
+            method: 'get',
+            onSuccess: function(result) {
+                if (result.result) {
+                    this.toolbar.appendControl(
+                        new Toolbar.Text({id:'text3', 'title':result.data.layout.title}),
+                        new Toolbar.Text({id:'text4', 'title':result.data.layout.name, 'tooltip':result.data.layout.file}),
+                        new Toolbar.Text({id:'text1', 'title':result.data.content.title}),
+                        new Toolbar.Text({id:'text2', 'title':result.data.content.name + ((result.data.content.modified) ? ' (' + result.data.content.modified + ')' : ''), 'tooltip':result.data.content.file}),
+                        new Toolbar.Separator({id:'sep1'}),
+                        new Toolbar.Select({id: 'actionSelector', title:result.data.actionSelectorText}, result.data.actionSelector, 'save'),
+                        new Toolbar.Button({id: 'save', 'title':result.data.saveText, 'action': 'applyChanges'}),
+                        new Toolbar.Separator({id:'sep2'}),
+                        new Toolbar.Button({id: 'reset', 'title':result.data.cancelText, 'action':'resetChanges'})
+                    );
+
+                    //для красоты
+                    this.toolbar.getElement().getElement('select').setStyle('width', 'auto')
+
+                }
+            }.bind(this)
+        }).send();
+
+    },
+    applyChanges: function() {
+        var
+            fReset = function() {
+                new Request.JSON({
+                    url:LayoutManager.singlePath + 'reset-templates/',
+                    method: 'post',
+                    evalScripts: false,
+                    onSuccess: function(response) {
+                        if (response.result) {
+                            document.location = document.location.href;
+                        }
+                    }
+                }).send();
+            },
+            fSaveTemplate = function() {
+                new Request.JSON({
+                    url:LayoutManager.singlePath + 'widgets/save-template/',
+                    method: 'post',
+                    evalScripts: false,
+                    data: 'xml=' + '<?xml version="1.0" encoding="utf-8" ?>' + XML.hashToHTML(XML.nodeToHash(this.xml)),
+                    onSuccess: function(response) {
+                        if (response.result) {
+                            document.location = document.location.href;
+                        }
+                    }
+                }).send();
+            },
+            fSaveNewTemplate = function() {
+                ModalBox.open({
+                    url: LayoutManager.singlePath + 'widgets/show-new-template-form/',
+                    onClose: function(result) {
+                        if (!result) return;
+                        new Request.JSON({
+                            url:LayoutManager.singlePath + 'widgets/save-new-template/',
+                            method: 'post',
+                            evalScripts: false,
+                            data: 'xml=' +
+                                '<?xml version="1.0" encoding="utf-8" ?>' +
+                                XML.hashToHTML(XML.nodeToHash(this.xml)) + '&title=' + result,
+                            onSuccess: function(response) {
+                                if (response.result) {
+                                    document.location = document.location.href;
+                                }
+                            }
+                        }).send();
+                    }.bind(this)
+                });
+            },
+            fSave = function() {
+                new Request.JSON({
+                    url:LayoutManager.singlePath + 'widgets/save-content/',
+                    method: 'post',
+                    evalScripts: false,
+                    data: 'xml=' +
+                        '<?xml version="1.0" encoding="utf-8" ?>' +
+                        XML.hashToHTML(XML.nodeToHash(this.xml)),
+                    onSuccess: function(response) {
+                        if (response.result) {
+                            document.location = document.location.href;
+                        }
+                    }
+                }).send();
+            };
+        switch (this.toolbar.getElement().getElement('select').get('value')) {
+            case 'reset':
+                fReset.apply(this);
+                break;
+            case 'saveTemplate':
+                fSaveTemplate.apply(this);
+                break;
+            case 'saveNewTemplate':
+                fSaveNewTemplate.apply(this);
+                break;
+            default:
+                fSave.apply(this);
+        }
+    },
+    resetChanges: function() {
+        document.location = document.location.href;
+    },
     findWidgetByCoords: function(x, y, currentWidget) {
         var cl, mFrame = LayoutManager.mFrame;
         this.columns.some(function(clm) {
@@ -49,8 +176,8 @@ var LayoutManager = new Class({
                 if ((wdg != currentWidget) && wdg.visible) {
                     var pos = wdg.container.getPosition(mFrame), size = wdg.container.getSize();
                     if (res = ((x >= pos.x) && (x <= (pos.x + size.x)))
-                            &&
-                            ((y >= pos.y) && (y <= (pos.y + size.y)))) {
+                        &&
+                        ((y >= pos.y) && (y <= (pos.y + size.y)))) {
                         cl = wdg;
                     }
                 }
@@ -100,7 +227,7 @@ LayoutManager.Column = new Class({
         var widget = null;
         if (widgetXML.getProperty('widget')) {
             this.widgets.set(widgetXML.getProperty('name'), widget =
-                    new LayoutManager.Widget(widgetXML, this))
+                new LayoutManager.Widget(widgetXML, this))
         }
         return widget;
     },
@@ -119,7 +246,7 @@ LayoutManager.Column = new Class({
                 location = 'after';
             }
             this.widgets.set(injectedWidget.name, injectedWidget, this);
-            if(sourceWidget.xml) {
+            if (sourceWidget.xml) {
                 injectedWidget.xml.inject(sourceWidget.xml, location);
             }
             else {
@@ -171,11 +298,11 @@ LayoutManager.DummyWidget = new Class({
                     var XMLHash;
                     var changeNames = function(hash) {
                         if (hash.tag == 'container' ||
-                                hash.tag == 'component') {
+                            hash.tag == 'component') {
                             if (hash.attributes['name'] !== undefined) {
                                 hash.attributes['name'] +=
-                                        Math.floor(Math.random() *
-                                                10001).toString();
+                                    Math.floor(Math.random() *
+                                        10001).toString();
                                 if (hash.children.length) {
                                     hash.children.each(changeNames);
                                 }
@@ -183,18 +310,18 @@ LayoutManager.DummyWidget = new Class({
                         }
                     }
                     changeNames(XMLHash =
-                            XML.rootToHashes(XML.rootFromString(response))[0]);
+                        XML.rootToHashes(XML.rootFromString(response))[0]);
                     new Request({
                         url:LayoutManager.singlePath + 'widgets/build-widget/',
                         method: 'post',
                         evalScripts: false,
                         data: 'xml=' +
-                                '<?xml version="1.0" encoding="utf-8" ?>' +
-                                XML.hashToHTML(XMLHash),
+                            '<?xml version="1.0" encoding="utf-8" ?>' +
+                            XML.hashToHTML(XMLHash),
                         onSuccess: function(text) {
                             var container = new Element('div'), result;
                             container.set('html', text);
-                            if(container.getElement('div')){
+                            if (container.getElement('div')) {
                                 result = container.getElement('div').clone();
                                 new LayoutManager.Widget(XML.hashToElement(XMLHash), this.column, result, this);
                             }
@@ -223,19 +350,19 @@ LayoutManager.Widget = new Class({
         this.visible = false;
         this.static = false;
         htmlElement = htmlElement ||
-                document.getElement('[widget=' + this.name + ']');
+            document.getElement('[widget=' + this.name + ']');
         if (this.element = $(htmlElement)) {
             this.bindElement(this.element);
             if (injectBeforeThisWidget) {
                 this.column.injectWidget(this, injectBeforeThisWidget, 'before');
             }
             this.toolbar = this._buildToolbar();
-            if(!this.static) this.dragger = new LayoutManager.Widget.DragBehavior(this);
+            if (!this.static) this.dragger = new LayoutManager.Widget.DragBehavior(this);
             if (!this.element.hasClass('e-widget')) this.element.addClass('e-widget');
             this.overlay = new Overlay(this.element);
             this.overlay.element.removeClass('e-overlay-loading');
             this.overlay.show();
-            this.visible = true;            
+            this.visible = true;
         }
     },
     /**
@@ -247,14 +374,14 @@ LayoutManager.Widget = new Class({
     bindElement: function(element) {
         //Создаем елемент контейнера  - содержащего тулбар виджета
         this.container =
-                new Element('div', {class:'e-lm-widget'/*, styles:{'position': 'relative'}*/});
+            new Element('div', {class:'e-lm-widget'/*, styles:{'position': 'relative'}*/});
         if (this.element.getParent())
             this.container.wraps(this.element);
         else {
             this.container.grab(this.element);
         }
         this.static = new Boolean(this.element.getProperty('static')).valueOf();
-        if (this.static) this.container.addClass('e-lm-static-widget'); 
+        if (this.static) this.container.addClass('e-lm-static-widget');
         var c;
         if ((c = this.xml.getElement('component')) /*&& !this.static*/) {
             this.component = new LayoutManager.Component(c, this.element);
@@ -262,11 +389,11 @@ LayoutManager.Widget = new Class({
     },
     _buildToolbar: function() {
         var tb = new Toolbar('widgetToolbar_' + this.name);
-        if(!this.static)
+        if (!this.static)
             tb.appendControl(new Toolbar.Button({id:'add', 'icon': 'images/toolbar/add.gif', title: 'Add', action:'addWidget'}));
-        if(this.component && this.component.params.getLength())
+        if (this.component && this.component.params.getLength())
             tb.appendControl(new Toolbar.Button({id:'edit', 'icon': 'images/toolbar/edit.gif', title: 'Edit', action:'editProps'}));
-        if(!this.static)
+        if (!this.static)
             tb.appendControl(new Toolbar.Button({id:'delete', 'icon': 'images/toolbar/delete.gif', title: 'Delete', action:'delWidget'}));
 
         tb.appendControl(new Toolbar.Switcher({id:'resize', 'icon': 'images/toolbar/minimize.gif','aicon': 'images/toolbar/restore.gif', title: 'Minimize/Expand', action:'resizeWidget'}));
@@ -285,11 +412,11 @@ LayoutManager.Widget = new Class({
                     var XMLHash;
                     var changeNames = function(hash) {
                         if (hash.tag == 'container' ||
-                                hash.tag == 'component') {
+                            hash.tag == 'component') {
                             if (hash.attributes['name'] !== undefined) {
                                 hash.attributes['name'] +=
-                                        Math.floor(Math.random() *
-                                                10001).toString();
+                                    Math.floor(Math.random() *
+                                        10001).toString();
                                 if (hash.children.length) {
                                     hash.children.each(changeNames);
                                 }
@@ -297,18 +424,18 @@ LayoutManager.Widget = new Class({
                         }
                     }
                     changeNames(XMLHash =
-                            XML.rootToHashes(XML.rootFromString(response))[0]);
+                        XML.rootToHashes(XML.rootFromString(response))[0]);
                     new Request({
                         url:LayoutManager.singlePath + 'widgets/build-widget/',
                         method: 'post',
                         evalScripts: false,
                         data: 'xml=' +
-                                '<?xml version="1.0" encoding="utf-8" ?>' +
-                                XML.hashToHTML(XMLHash),
+                            '<?xml version="1.0" encoding="utf-8" ?>' +
+                            XML.hashToHTML(XMLHash),
                         onSuccess: function(text) {
                             var container = new Element('div'), result;
                             container.set('html', text);
-                            if(container.getElement('div')){
+                            if (container.getElement('div')) {
                                 result = container.getElement('div').clone();
                                 new LayoutManager.Widget(XML.hashToElement(XMLHash), this.column, result, this);
                             }
@@ -325,10 +452,10 @@ LayoutManager.Widget = new Class({
     editProps: function() {
         ModalBox.open({
             post:'<?xml version="1.0" encoding="utf-8" ?>' +
-                    XML.hashToHTML(XML.nodeToHash(this.xml)),
+                XML.hashToHTML(XML.nodeToHash(this.xml)),
             url:LayoutManager.singlePath + 'widgets/edit-params/' +
-                    this.component.name +
-                    '/',
+                this.component.name +
+                '/',
             onClose: function(result) {
                 this.overlay.element.addClass('e-overlay-loading');
                 if (result) {
@@ -338,7 +465,7 @@ LayoutManager.Widget = new Class({
                     this.reload();
                     LayoutManager.changed = true;
                 }
-                
+
                 this.overlay.element.removeClass('e-overlay-loading');
 
             }.bind(this)
@@ -352,26 +479,26 @@ LayoutManager.Widget = new Class({
         this.container.destroy();
         LayoutManager.changed = true;
     },
-    resizeWidget: function(){
+    resizeWidget: function() {
         this.element.toggleClass('minimized');
-        if(this.dragger){
+        if (this.dragger) {
             this.dragger.recalculateSize();
         }
     },
     /**
      * Перегружает HTML предеставление виджета
      */
-    reload: function() {                
+    reload: function() {
         new Request({
             url:LayoutManager.singlePath + 'widgets/build-widget/',
             method: 'post',
             evalScripts: false,
             data: 'xml=' + '<?xml version="1.0" encoding="utf-8" ?>' +
-                    XML.hashToHTML(XML.nodeToHash(this.xml)),
+                XML.hashToHTML(XML.nodeToHash(this.xml)),
             onSuccess: function(text) {
                 var container = new Element('div'), result;
                 container.set('html', text);
-                if(container.getElement('div')){
+                if (container.getElement('div')) {
                     result = container.getElement('div').clone();
                     this.replaceElement(result);
                 }
@@ -399,9 +526,9 @@ LayoutManager.Widget = new Class({
     },
     findDirection:function(y) {
         var pos = this.container.getPosition(LayoutManager.mFrame), size = this.container.getSize();
-        if(this.static) return 'after';
+        if (this.static) return 'after';
         return ((y >= pos.y) &&
-                (y <= (pos.y + size.y / 4))) ? 'before' : 'after';
+            (y <= (pos.y + size.y / 4))) ? 'before' : 'after';
     }
 });
 
@@ -411,9 +538,9 @@ LayoutManager.Widget.DragBehavior = new Class({
     initialize: function(widget) {
         this.widget = widget;
         this.strut =
-                new Element('div', {class:'e-lm-strut'});
+            new Element('div', {class:'e-lm-strut'});
         this.recalculateSize();
-        
+
         this.drag = new Drag(this.widget.container, {
             grid:6,
             snap:6,
@@ -429,7 +556,7 @@ LayoutManager.Widget.DragBehavior = new Class({
                  */
                 this.position.y += mFrame.getScrollTop();
                 //end of kostyly
-                
+
                 this.widget.container.setStyles({
                     width:this.size.x + 'px',
                     height:this.size.y + 'px',
@@ -454,10 +581,10 @@ LayoutManager.Widget.DragBehavior = new Class({
                 this.widget.container.replaces(this.strut);
                 this.size = this.widget.container.getSize();
                 if (w = this.strut.retrieve('widget')) {
-                    if(w.xml){
+                    if (w.xml) {
                         this.widget.xml.inject(w.xml, this.strut.retrieve('direction'));
                     }
-                    else{
+                    else {
                         w.column.xml.grab(this.widget.xml);
                     }
                     if (w.column != this.widget.column) {
@@ -497,7 +624,7 @@ LayoutManager.Widget.DragBehavior = new Class({
                 /* координата Y центра блока сделана равной pos.y + 25 (число 25 найдено методом подбора, при этом блоки ведут себя наиболее ожидаемо) */
                 cy = (pos.y + (this.size.y < 100 ? (this.size.y) / 4 : 25)).toInt();
                 if (w =
-                        this.widget.column.layoutManager.findWidgetByCoords(cx, cy, this.widget)) {
+                    this.widget.column.layoutManager.findWidgetByCoords(cx, cy, this.widget)) {
                     this.strut.inject(w.container, dir = w.findDirection(cy));
                     this.strut.store('widget', w);
                     this.strut.store('direction', dir);
@@ -505,7 +632,7 @@ LayoutManager.Widget.DragBehavior = new Class({
             }.bind(this)
         });
     },
-    recalculateSize: function(){
+    recalculateSize: function() {
         this.size = this.widget.container.getSize();
         this.strut.setStyle('height', (this.size.y - 14) + 'px'); //от высоты контейнера отнимаем 14px, 10px это padding-bottom, 4px это бордеры внизу и вверху страта  
     }

@@ -1,244 +1,251 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+    <state name="showTransEditor" rights="3">
+        <uri_patterns>
+            <pattern>/translation/[any]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="showWidgetEditor" rights="3">
+        <uri_patterns>
+            <pattern>/widgets/[any]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="fileLibrary" rights="3">
+        <uri_patterns>
+            <pattern>/file-library/</pattern>
+            <pattern>/file-library/[any]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="showUserEditor" rights="3">
+        <uri_patterns>
+            <pattern>/user/[any]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="showRoleEditor" rights="3">
+        <uri_patterns>
+            <pattern>/role/[any]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="showLangEditor" rights="3">
+        <uri_patterns>
+            <pattern>/languages/[any]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="showSiteEditor" rights="3">
+        <uri_patterns>
+            <pattern>/sites/[any]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="main">
+        <uri_patterns>
+            <pattern>/show/</pattern>
+            <pattern>/show/[site_id]/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="DivSidebar"/>
+        </javascript>
+        <fields>
+            <field name="smap_id"/>
+            <field name="smap_pid"/>
+            <field name="lang_id"/>
+            <field name="smap_name"/>
+        </fields>
+        <toolbar name="e-divtree-toolbar">
+            <control id="add" title="BTN_ADD" type="button" icon="images/toolbar/add.gif" onclick="add"/>
+            <control id="edit" title="BTN_EDIT" type="button" icon="images/toolbar/edit.gif" onclick="edit"/>
+            <control id="delete" title="BTN_DELETE" type="button" icon="images/toolbar/delete.gif" onclick="del"/>
+            <!-- <control id="go" title="BTN_GO" type="button" onclick="go"/>-->
+            <control id="sep1" type="separator"/>
+            <control id="up" title="BTN_MOVE_UP" type="button" icon="images/toolbar/up.gif" onclick="up"/>
+            <control id="down" title="BTN_MOVE_DOWN" type="button" icon="images/toolbar/down.gif" onclick="down"/>
+            <!-- <control id="sep2" type="separator"/>
+                   <control id="close" title="BTN_ClOSE" type="button" onclick="close"/>-->
+        </toolbar>
+    </state>
+    <state name="selector">
+        <uri_patterns>
+            <pattern>/[site_id]/list/</pattern>
+            <pattern>/[site_id]/list/[int]/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="DivManager"/>
+        </javascript>
+        <fields>
+            <field name="smap_id"/>
+            <field name="smap_pid"/>
+            <field name="lang_id"/>
+            <field name="smap_name"/>
+        </fields>
+        <toolbar>
+            <control id="select" title="BTN_SELECT" type="button" onclick="select"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="getRawData">
+        <uri_patterns>
+            <pattern>/[site_id]/get-data/</pattern>
+            <pattern>/[site_id]/get-data/[string]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="resetTemplates" rights="3">
+        <uri_patterns>
+            <pattern>/[site_id]/reset-templates/</pattern>
+            <pattern>/reset-templates/[smap_id]/</pattern>
+            <pattern>/reset-templates/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getProperties">
+        <uri_patterns>
+            <pattern>/get-node-data/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getTemplateInfo" rights="3">
+        <uri_patterns>
+            <pattern>/get-template-info/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="add" rights="3">
+        <uri_patterns>
+            <pattern>/add/[pid]/</pattern>
+        </uri_patterns>
+        <fields>
+            <field name="smap_id"/>
+            <field name="smap_pid"/>
+            <field name="lang_id"/>
+            <field name="site_id" type="hidden"/>
+            <field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
+            <field name="smap_layout"/>
+            <field name="smap_content"/>
+            <!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
+            <field name="tags" type="textbox" title="FIELD_TAGS" nullable="nullable"/>
+            <field name="smap_is_disabled"/>
+            <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>
+            <field name="smap_name"/>
+            <field name="smap_description_rtf"/>
+            <field name="smap_html_title"/>
+            <field name="smap_meta_keywords"/>
+            <field name="smap_meta_description"/>
+        </fields>
+        <javascript>
+            <behavior name="DivForm"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="add">BTN_ADD</option>
+                    <option id="go">BTN_GO</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
+            <control id="list" title="BTN_CANCEL" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="edit" rights="3">
+        <uri_patterns>
+            <pattern>/[int]/edit/</pattern>
+        </uri_patterns>
+        <fields>
+            <field name="smap_id"/>
+            <field name="smap_pid"/>
+            <field name="lang_id"/>
+            <field name="site_id" type="hidden"/>
+            <field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
+            <field name="smap_layout"/>
+            <field name="smap_content"/>
+            <!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
+            <field name="smap_redirect_url"/>
+            <field name="smap_meta_robots"/>
+            <field name="tags" type="textbox" title="FIELD_TAGS" nullable="nullable"/>
+            <field name="smap_is_disabled"/>
+            <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>
+            <field name="smap_name"/>
+            <field name="smap_description_rtf"/>
+            <field name="smap_html_title"/>
+            <field name="smap_meta_keywords"/>
+            <field name="smap_meta_description"/>
+        </fields>
+        <javascript>
+            <behavior name="DivForm"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="save" rights="3">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="upload" rights="3">
+        <uri_patterns>
+            <pattern>/upload/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete" rights="3">
+        <uri_patterns>
+            <pattern>/[int]/delete/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="up">
+        <uri_patterns>
+            <pattern>/[int]/up/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="down" rights="3">
+        <uri_patterns>
+            <pattern>/[int]/down/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="imageManager" rights="3">
+        <uri_patterns>
+            <pattern>/imagemanager/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="showPageToolbar" rights="3">
+        <uri_patterns>
+            <pattern>/show-toolbar/</pattern>
+        </uri_patterns>
+        <toolbar name="main_toolbar">
+            <control id="showSidebar" title="BTN_SIDEBAR" type="button" icon="images/toolbar/structure.gif"
+                     onclick="toggleSidebar"/>
+            <control id="sep1" type="separator"/>
+            <control id="editMode" title="BTN_EDIT_MODE" type="switcher" onclick="editMode"/>
+            <control id="sep2" type="separator"/>
+            <control id="editBlocks" title="BTN_EDIT_BLOCKS" type="switcher" onclick="editBlocks"/>
+            <!--disabled="disabled"-->
+            <control id="sep3" type="separator"/>
+            <control id="transEditor" title="BTN_TRANS_EDITOR" type="button" onclick="showTransEditor"/>
+            <control id="language" title="BTN_LANG_EDITOR" type="button" onclick="showLangEditor"/>
+            <control id="sep4" type="separator"/>
+            <control id="user" title="BTN_USER_EDITOR" type="button" onclick="showUserEditor"/>
+            <control id="role" title="BTN_ROLE_EDITOR" type="button" onclick="showRoleEditor"/>
+            <control id="sep5" type="separator"/>
+            <control id="fileRepository" title="BTN_FILE_REPOSITORY" type="button" onclick="showFileRepository"/>
+            <control id="sep6" type="separator"/>
+            <control id="siteEditor" title="BTN_SITE_EDITOR" type="button" onclick="showSiteEditor"/>
+        </toolbar>
+        <javascript>
+            <behavior name="PageToolbar"/>
+            <param name="dock">top</param>
+        </javascript>
+    </state>
+    <state name="source" rights="3">
+        <uri_patterns>
+            <pattern>/source/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="cleanup" rights="3">
+        <uri_patterns>
+            <pattern>/cleanup/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="put" rights="3">
+        <uri_patterns>
+            <pattern>/put/</pattern>
+        </uri_patterns>
+    </state>
 
-    	<state name="showTransEditor" rights="3">
-            <uri_patterns>
-                <pattern>/translation/[any]/</pattern>
-            </uri_patterns>
-        </state>
-        <state name="showWidgetEditor" rights="3">
-            <uri_patterns>
-                <pattern>/widgets/[any]/</pattern>
-            </uri_patterns>
-        </state>
-        <state name="fileLibrary" rights="3">
-            <uri_patterns>
-                <pattern>/file-library/</pattern>
-                <pattern>/file-library/[any]/</pattern>
-            </uri_patterns>
-        </state>
-        <state name="showUserEditor" rights="3">
-            <uri_patterns>
-                <pattern>/user/[any]/</pattern>
-            </uri_patterns>
-        </state>
-        <state name="showRoleEditor" rights="3">
-            <uri_patterns>
-                <pattern>/role/[any]/</pattern>
-            </uri_patterns>
-        </state>
-        <state name="showLangEditor" rights="3">
-            <uri_patterns>
-                <pattern>/languages/[any]/</pattern>
-            </uri_patterns>
-        </state>
-        <state name="showSiteEditor" rights="3">
-            <uri_patterns>
-                <pattern>/sites/[any]/</pattern>
-            </uri_patterns>
-        </state>
-		<state name="main">
-			<uri_patterns>
-				<pattern>/show/</pattern>
-				<pattern>/show/[site_id]/</pattern>
-			</uri_patterns>
-			<javascript>
-				<behavior name="DivSidebar"/>
-			</javascript>
-			<fields>
-				<field name="smap_id"/>
-				<field name="smap_pid"/>
-				<field name="lang_id"/>
-				<field name="smap_name"/>
-			</fields>
-			<toolbar name="e-divtree-toolbar">
-				<control id="add" title="BTN_ADD" type="button" icon="images/toolbar/add.gif" onclick="add"/>
-				<control id="edit" title="BTN_EDIT" type="button" icon="images/toolbar/edit.gif" onclick="edit"/>
-				<control id="delete" title="BTN_DELETE" type="button" icon="images/toolbar/delete.gif" onclick="del"/>
-				<!-- <control id="go" title="BTN_GO" type="button" onclick="go"/>-->
-				<control id="sep1" type="separator"/>
-				<control id="up" title="BTN_MOVE_UP" type="button" icon="images/toolbar/up.gif" onclick="up"/>
-				<control id="down" title="BTN_MOVE_DOWN" type="button" icon="images/toolbar/down.gif" onclick="down"/>
-				<!-- <control id="sep2" type="separator"/>
-				<control id="close" title="BTN_ClOSE" type="button" onclick="close"/>-->
-			</toolbar>
-		</state>
-		<state name="selector">
-			<uri_patterns>
-				<pattern>/[site_id]/list/</pattern>
-				<pattern>/[site_id]/list/[int]/</pattern>
-			</uri_patterns>
-			<javascript>
-				<behavior name="DivManager"/>
-			</javascript>
-			<fields>
-				<field name="smap_id"/>
-				<field name="smap_pid"/>
-				<field name="lang_id"/>
-				<field name="smap_name"/>
-			</fields>
-			<toolbar>
-				<control id="select" title="BTN_SELECT" type="button" onclick="select"/>
-				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
-			</toolbar>
-		</state>
-		<state name="getRawData">
-			<uri_patterns>
-				<pattern>/[site_id]/get-data/</pattern>
-				<pattern>/[site_id]/get-data/[string]/</pattern>
-		     </uri_patterns>
-		</state>
-        <state name="resetTemplates" rights="3">
-		    <uri_patterns>
-		        <pattern>/[site_id]/reset-templates/</pattern>
-                <pattern>/reset-templates/[smap_id]/</pattern>
-		    </uri_patterns>
-		</state>
-		<state name="getProperties">
-			<uri_patterns>
-				<pattern>/get-node-data/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="add" rights="3">
-		    <uri_patterns>
-				<pattern>/add/[pid]/</pattern>
-		    </uri_patterns>
-			<fields>
-				<field name="smap_id"/>
-				<field name="smap_pid"/>
-				<field name="lang_id"/>
-                <field name="site_id" type="hidden"/>
-				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT" />
-				<field name="smap_layout"/>
-                <field name="smap_content"/>				
-				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
-                <field name="tags" type="textbox"  title="FIELD_TAGS" nullable="nullable"/>
-				<field name="smap_is_disabled"/>
-                <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>				
-				<field name="smap_name"/>
-				<field name="smap_description_rtf"/>
-				<field name="smap_html_title"/>
-				<field name="smap_meta_keywords"/>
-				<field name="smap_meta_description"/>
-			</fields>
-			<javascript>
-				<behavior name="DivForm"/>
-			</javascript>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-                <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
-                    <options>
-                        <option id="reload">BTN_CLOSE</option>
-                        <option id="add">BTN_ADD</option>
-                        <option id="go">BTN_GO</option>
-                    </options>
-                </control>
-                <control id="sep1" type="separator" />
-				<control id="list" title="BTN_CANCEL" type="button" onclick="close"/>
-			</toolbar>
-		</state>
-		<state name="edit" rights="3">
-		    <uri_patterns>
-		        <pattern>/[int]/edit/</pattern>
-		    </uri_patterns>
-			<fields>
-				<field name="smap_id"/>
-				<field name="smap_pid"/>
-				<field name="lang_id"/>
-                <field name="site_id" type="hidden"/>
-				<field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
-                <field name="smap_layout"/>
-                <field name="smap_content"/>
-				<!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
-				<field name="smap_redirect_url" />
-                <field name="smap_meta_robots" />
-				<field name="tags" type="textbox"  title="FIELD_TAGS" nullable="nullable"/>
-				<field name="smap_is_disabled"/>
-                <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>             				
-				<field name="smap_name"/>
-				<field name="smap_description_rtf"/>
-				<field name="smap_html_title"/>
-				<field name="smap_meta_keywords"/>
-				<field name="smap_meta_description"/>
-			</fields>
-			<javascript>
-				<behavior name="DivForm"/>
-			</javascript>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
-			</toolbar>
-		</state>
-		<state name="save" rights="3">
-		    <uri_patterns>
-		        <pattern>/save/</pattern>
-		    </uri_patterns>
-		</state>
-		<state name="upload">
-		     <uri_patterns>
-		         <pattern>/upload/</pattern>
-		     </uri_patterns>
-		</state>
-		<state name="delete">
-		     <uri_patterns>
-		         <pattern>/[int]/delete/</pattern>
-		     </uri_patterns>
-		</state>
-		<state name="up">
-			<uri_patterns>
-				<pattern>/[int]/up/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="down">
-			<uri_patterns>
-				<pattern>/[int]/down/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="imageManager" rights="3">
-			<uri_patterns>
-				<pattern>/imagemanager/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="showPageToolbar" rights="3">
-			<uri_patterns>
-				<pattern>/show-toolbar/</pattern>
-			</uri_patterns>
-			<toolbar name="main_toolbar">
-    			<control id="showSidebar"  title="BTN_SIDEBAR" type="button" icon="images/toolbar/structure.gif" onclick="toggleSidebar"/>
-    			<control id="sep1" type="separator"/>
-				<control id="editMode" title="BTN_EDIT_MODE" type="switcher" onclick="editMode"/>
-				<control id="sep2" type="separator"/>
-                <control id="editBlocks" title="BTN_EDIT_BLOCKS" type="switcher" onclick="editBlocks" /> <!--disabled="disabled"-->
-                <control id="sep3" type="separator"/>
-				<control id="transEditor" title="BTN_TRANS_EDITOR" type="button" onclick="showTransEditor"/>
-				<control id="language" title="BTN_LANG_EDITOR" type="button" onclick="showLangEditor"/>
-				<control id="sep4" type="separator"/>
-                <control id="user" title="BTN_USER_EDITOR" type="button" onclick="showUserEditor"/>
-                <control id="role" title="BTN_ROLE_EDITOR" type="button" onclick="showRoleEditor" />
-				<control id="sep5" type="separator"/>
-				<control id="fileRepository" title="BTN_FILE_REPOSITORY" type="button" onclick="showFileRepository"/>
-                <control id="sep6" type="separator"/>
-				<control id="siteEditor" title="BTN_SITE_EDITOR" type="button" onclick="showSiteEditor"/>
-			</toolbar>
-			<javascript>
-				<behavior name="PageToolbar"/>
-				<param name="dock">top</param>
-			</javascript>
-		</state>
-        <state name="source" rights="3">
-            <uri_patterns>
-                <pattern>/source/</pattern>
-            </uri_patterns>
-        </state>
-		<state name="cleanup" rights="3">
-			<uri_patterns>
-				<pattern>/cleanup/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="put" rights="3">
-            <uri_patterns>
-                <pattern>/put/</pattern>
-            </uri_patterns>     
-        </state>
-    
 </configuration>

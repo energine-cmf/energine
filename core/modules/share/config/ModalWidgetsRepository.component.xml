@@ -117,4 +117,29 @@
                 <pattern>/save-content/</pattern>
             </uri_patterns>
         </state>
+        <state name="showNewTemplateForm" rights="3">
+            <uri_patterns>
+                <pattern>/show-new-template-form/</pattern>
+            </uri_patterns>
+            <javascript>
+                <behavior name="NewTemplateForm"/>
+            </javascript>
+            <fields>
+                <field name="content_file_title" type="string" title="FIELD_CONTENT_TITLE"/>
+            </fields>
+            <toolbar>
+                <control type="button" id="save" onclick="save" title="BTN_SAVE"/>
+                <control type="button" id="close" onclick="close" title="BTN_CLOSE"/>
+            </toolbar>
+        </state>
+        <state name="saveTemplate" rights="3">
+            <uri_patterns>
+                <pattern>/save-template/</pattern>
+            </uri_patterns>
+        </state>
+        <state name="saveNewTemplate" rights="3">
+            <uri_patterns>
+                <pattern>/save-new-template/</pattern>
+            </uri_patterns>
+        </state>
 </configuration>

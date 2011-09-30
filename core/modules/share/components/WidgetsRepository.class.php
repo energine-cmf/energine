@@ -11,7 +11,7 @@
 
 
 /**
- * Список виджетов (компонентов)
+ * Работа с виджетами (компонентов)
  *
  * @package energine
  * @subpackage share
@@ -86,7 +86,12 @@ class WidgetsRepository extends Grid {
         }
         $this->addToolbar($this->createToolbar());
     }
-
+    /**
+     * Создание виджета по переданному описанию
+     *
+     * @throws SystemException
+     * @return void
+     */
     public function buildWidget() {
         if (!isset($_POST['xml'])) {
             throw new SystemException('ERR_BAD_DATA');
@@ -99,13 +104,22 @@ class WidgetsRepository extends Grid {
                 ComponentManager::createBlockFromDescription($xml);
         $this->tmpComponent->run();
     }
-
+    /**
+     * Для формы ввода имени для нового шаблона контента
+     * отключаем получение данных
+     * а какие там могут быть данные  - в самом то деле
+     * @return bool|mixed
+     */
     protected function loadData() {
         if ($this->getState() == 'showNewTemplateForm') return false;
 
         return parent::loadData();
     }
-
+    /**
+     * Для состояния buildWidget
+     * возвращаем код динамического компонента
+     * @return DOMDocument|void
+     */
     public function build() {
         switch ($this->getState()) {
             case 'buildWidget':
@@ -119,10 +133,11 @@ class WidgetsRepository extends Grid {
         return $result;
     }
 
-/*    protected function deleteWidget() {
-        inspect($_POST);
-    }*/
-
+    /**
+     * Сохраняет content для текущей страницы
+     * @throws SystemException
+     * @return void
+     */
     protected function saveContent() {
         if (!isset($_POST['xml'])) {
             throw new SystemException('ERR_INSUFFICIENT_DATA');
@@ -140,12 +155,26 @@ class WidgetsRepository extends Grid {
                           ));
         $this->setBuilder($b);
     }
-
+    /**
+     * Выводит форму ввода имени нового шаблона
+     * @return void
+     */
     protected function showNewTemplateForm() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
     }
-
+    /**
+     * Сохраняет расположение блоков
+     * в текущем шаблоне
+     *
+     * если это шаблон из ядра
+     * то создает новый одноименный шаблон
+     * и переназначает его для текущей страницы
+     * а также для всех страниц созданных по этому шаблону
+     *
+     * @throws SystemException
+     * @return void
+     */
     protected function saveTemplate() {
         if (!isset($_POST['xml'])) {
             throw new SystemException('ERR_INSUFFICIENT_DATA');
@@ -184,7 +213,14 @@ class WidgetsRepository extends Grid {
                           ));
         $this->setBuilder($b);
     }
-
+    /**
+     * Создает симлинк
+     * 
+     * @static
+     * @param $fileName имя файла
+     * @param $module имя модуля
+     * @return string
+     */
     private static function createSymlink($fileName, $module) {
         if (!file_exists($dir = 'templates'.DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR . $module)) {
             //создаем ее
@@ -207,7 +243,12 @@ class WidgetsRepository extends Grid {
 
         return $module.DIRECTORY_SEPARATOR.$fileName;
     }
-
+    /**
+     * Создает новый шаблон
+     *
+     * @throws SystemException
+     * @return void
+     */
     protected function saveNewTemplate() {
         if (!isset($_POST['xml'])) {
             throw new SystemException('ERR_INSUFFICIENT_DATA');

@@ -7,6 +7,7 @@
             indent="no" />
     
     <xsl:variable name="LANG" select="/document/properties/property[@name='lang']" />
+    <xsl:variable name="ID" select="/document/properties/property[@name='ID']" />
 
     <xsl:template match="/">
         <xsl:apply-templates select="//component[@class='GoogleSitemap']"></xsl:apply-templates>
@@ -23,13 +24,15 @@
         <xsl:for-each select="recordset/record">
             <xsl:variable name="RECORD" select="." />
             <xsl:for-each select="/document/layout/component[@class='LangSwitcher']/recordset/record">
-                <url>
-                    <loc>
-                        <xsl:value-of select="$RECORD/field[@name='Site']"/>
-                        <xsl:if test="$LANG/@real_abbr != field[@name='lang_abbr']">
-                        <xsl:value-of select="field[@name='lang_abbr']"/>/</xsl:if><xsl:value-of select="$RECORD/field[@name='Segment']"/>
-                    </loc>
-                </url>
+                <xsl:if test="$RECORD/field[@name='Id']!=$ID">
+                    <url>
+                        <loc>
+                            <xsl:value-of select="$RECORD/field[@name='Site']"/>
+                            <xsl:if test="$LANG/@abbr != field[@name='lang_abbr']">
+                            <xsl:value-of select="field[@name='lang_abbr']"/>/</xsl:if><xsl:value-of select="$RECORD/field[@name='Segment']"/>
+                        </loc>
+                    </url>
+                </xsl:if>
                 </xsl:for-each>
                 <xsl:if test="recordset">
                     <xsl:call-template name="TREE_BUILDER"></xsl:call-template>

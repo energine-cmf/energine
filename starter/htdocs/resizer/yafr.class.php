@@ -8,6 +8,9 @@
  */
 
 class YAFR {
+    const ffmpeg = 'ffmpeg';
+    const imConvert = 'convert';
+    
     function __construct() {
         $path = $_GET['i'];
 
@@ -15,8 +18,7 @@ class YAFR {
         $width = $_GET['w'];
         $height = $_GET['h'];
 
-        $ffmpeg = 'ffmpeg';
-        $imConvert = 'convert';
+
         $cacheDir = '../../image-cache' . '/';
 
 
@@ -29,7 +31,7 @@ class YAFR {
             echo file_get_contents($cacheDir . $cachedFilename);
         }
         else {
-            $cmdString = $ffmpeg . ' -i ' . $path . '  -ss 5 -y -vframes 1 -f image2 -vcodec png - | ' . $imConvert . ' -  -thumbnail ' . $width * $height . '@ -gravity center  -extent ' . $width . 'x' . $height . ' - | tee ' . $cacheDir . $cachedFilename;
+            $cmdString = self::ffmpeg . ' -i ' . $path . '  -ss 5 -y -vframes 1 -f image2 -vcodec png - | ' . self::imConvert . ' -  -thumbnail ' . $width * $height . '@ -gravity center  -extent ' . $width . 'x' . $height . ' - | tee ' . $cacheDir . $cachedFilename;
 
             //die($cmdString);
 

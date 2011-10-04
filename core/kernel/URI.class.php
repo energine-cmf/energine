@@ -124,6 +124,7 @@ final class URI extends Object {
 
             if(sizeof($host) == 1){
                 $port = ($protocol == 'http')?80:443;
+                list($host) = $host;
             }
             else{
                 list($host, $port) = $host;

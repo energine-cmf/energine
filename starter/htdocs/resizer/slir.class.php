@@ -17,14 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright Copyright © 2010, Joe Lencioni
+ * @copyright Copyright ï¿½ 2010, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public
  * License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
  */
  
-/* $Id: slir.class.php 129 2010-12-22 19:43:06Z joe.lencioni $ */
+/* $Id: resizer.class.php 129 2010-12-22 19:43:06Z joe.lencioni $ */
 
 /**
  * SLIR (Smart Lencioni Image Resizer)
@@ -35,8 +35,8 @@
  * I love to hear when my work is being used, so if you decide to use this,
  * feel encouraged to send me an email. I would appreciate it if you would
  * include a link on your site back to Shifting Pixel (either the SLIR page or
- * shiftingpixel.com), but don’t worry about including a big link on each page
- * if you don’t want to–one will do just nicely. Feel free to contact me to
+ * shiftingpixel.com), but donï¿½t worry about including a big link on each page
+ * if you donï¿½t want toï¿½one will do just nicely. Feel free to contact me to
  * discuss any specifics (joe@shiftingpixel.com).
  *
  * REQUIREMENTS:
@@ -48,7 +48,7 @@
  *
  * USAGE:
  * To use, place an img tag with the src pointing to the path of SLIR (typically
- * "/slir/") followed by the parameters, followed by the path to the source
+ * "/resizer/") followed by the parameters, followed by the path to the source
  * image to resize. All parameters follow the pattern of a one-letter code and
  * then the parameter value:
  *     - Maximum width = w
@@ -66,23 +66,23 @@
  * EXAMPLES:
  *
  * Resizing a JPEG to a max width of 100 pixels and a max height of 100 pixels:
- * <code><img src="/slir/w100-h100/path/to/image.jpg" alt="Don't forget your alt
+ * <code><img src="/resizer/w100-h100/path/to/image.jpg" alt="Don't forget your alt
  * text" /></code>
  *
  * Resizing and cropping a JPEG into a square:
- * <code><img src="/slir/w100-h100-c1:1/path/to/image.jpg" alt="Don't forget
+ * <code><img src="/resizer/w100-h100-c1:1/path/to/image.jpg" alt="Don't forget
  * your alt text" /></code>
  *
  * Resizing a JPEG without interlacing (for use in Flash):
- * <code><img src="/slir/w100-p0/path/to/image.jpg" alt="Don't forget your alt
+ * <code><img src="/resizer/w100-p0/path/to/image.jpg" alt="Don't forget your alt
  * text" /></code>
  *
  * Matting a PNG with #990000:
- * <code><img src="/slir/b900/path/to/image.png" alt="Don't forget your alt
+ * <code><img src="/resizer/b900/path/to/image.png" alt="Don't forget your alt
  * text" /></code>
  *
  * Without mod_rewrite (not recommended)
- * <code><img src="/slir/?w=100&amp;h=100&amp;c=1:1&amp;i=/path/to/image.jpg"
+ * <code><img src="/resizer/?w=100&amp;h=100&amp;c=1:1&amp;i=/path/to/image.jpg"
  * alt="Don't forget your alt text" /></code>
  *
  * @author Joe Lencioni <joe@shiftingpixel.com>
@@ -1505,4 +1505,4 @@ class SLIR
 // a frog jumps
 // the sound of water
 
-// —Matsuo Basho
+// ï¿½Matsuo Basho

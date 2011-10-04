@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * @copyright Copyright © 2010, Joe Lencioni
+ * @copyright Copyright ï¿½ 2010, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
@@ -38,7 +38,12 @@ require_once 'slirconfigdefaults.class.php';
  */
 class SLIRConfig extends SLIRConfigDefaults
 {
-	// override configuration values here
+	public static $errorImages	= true;
+	public static $SLIRDir	= '/home/pavka/projects/starter/htdocs/resizer';
+    public static $documentRoot	= '/home/pavka/projects/starter/htdocs';
+    public static $cacheDir	= '/home/pavka/projects/starter/image-cache';
+    public static $cacheDirName	= '/image-cache';
+    public static $forceQueryString	= true;
 
 	public static function init()
 	{

@@ -359,8 +359,8 @@ LayoutManager.Widget = new Class({
             this.toolbar = this._buildToolbar();
             if (!this.static) this.dragger = new LayoutManager.Widget.DragBehavior(this);
             if (!this.element.hasClass('e-widget')) this.element.addClass('e-widget');
-            this.overlay = new Overlay(this.element);
-            this.overlay.element.removeClass('e-overlay-loading');
+            this.overlay = new Overlay(this.element, {indicator:false});
+            
             this.overlay.show();
             this.visible = true;
         }
@@ -520,8 +520,8 @@ LayoutManager.Widget = new Class({
         el.replaces(this.element);
         this.element = el;
         this.element.addClass('e-widget');
-        this.overlay = new Overlay(this.element);
-        this.overlay.element.removeClass('e-overlay-loading');
+        this.overlay = new Overlay(this.element, {indicator: false});
+        //this.overlay.getElement().removeClass('e-overlay-loading');
         this.overlay.show();
     },
     findDirection:function(y) {

@@ -159,8 +159,8 @@ Energine.createDatePicker = function(datePickerObj, nullable) {
     var props = {
         format:'j-m-Y',
         allowEmpty: nullable,
-        inputOutputFormat: 'Y-m-d'
-
+        inputOutputFormat: 'Y-m-d',
+        useFadeInOut: false
     };
     return Energine._createDatePickerObject($(datePickerObj), props);
 }
@@ -171,7 +171,8 @@ Energine.createDateTimePicker = function(datePickerObj, nullable) {
         timePicker: true,
         format: 'j-m-Y H:i',
         inputOutputFormat: 'Y-m-d H:i',
-        allowEmpty: nullable
+        allowEmpty: nullable,
+        useFadeInOut: false
     }
 
     return Energine._createDatePickerObject($(datePickerObj), props);

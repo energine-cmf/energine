@@ -26,7 +26,6 @@ var Overlay = new Class({
     },
 
     hide: function() {
-        var athis = this;
         var fx = new Fx.Tween(this.element, {property: 'opacity'});
         this.setupObjects(false);
         fx.start(this.options.opacity, 0).chain(

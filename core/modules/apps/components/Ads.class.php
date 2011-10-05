@@ -21,6 +21,13 @@
  * @author spacelord
  */
 class Ads extends DataSet{
+    public function __construct($name, $module, array $params = null){
+        parent::__construct($name, $module, $params);
+        if(!AdsManager::isActive()){
+            $this->disable();
+        }
+    }
+
     protected function main(){
         parent::main();
         //Сначала проверили есть ли свой код баннера

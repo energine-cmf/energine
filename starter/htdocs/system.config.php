@@ -12,12 +12,12 @@ return array(
     'database' => array(
         'host' => 'localhost',
         'port' => '3306',
-        'db' => 'pavka_e28',
-        'username' => 'pavka',
-        'password' => 'Nes5moCoo8ju'
+        'db' => 'noer_starter',
+        'username' => 'noer',
+        'password' => 'yohS4uadaose'
     ),
     'site' => array(
-        'domain' => 'pavka.eggmen.net',
+        'domain' => 'noer2.eggmen.net',
         'root' => '/starter/',
         'debug' => 1,
 

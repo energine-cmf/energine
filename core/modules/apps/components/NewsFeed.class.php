@@ -96,7 +96,11 @@ class NewsFeed extends Feed {
             $this->addFilterCondition(
                 'news_date <= NOW()'
             );
+            // NOER: if !is editable - add filter condition for only active news
+            $this->addFilterCondition(array('news_status' => '1'));
+            // END NOER
         }
+
         $res = parent::createData();
         if(!$res->isEmpty() && !($categoryField = $res->getFieldByName('category'))){
             $categoryField = new Field('category');

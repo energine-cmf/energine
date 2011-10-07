@@ -44,6 +44,7 @@ class FeedEditor extends LinkingEditor {
 			$field = $result->getFieldDescriptionByName('smap_id');
 			$field->setType(FieldDescription::FIELD_TYPE_STRING);
 			$field->setMode(FieldDescription::FIELD_MODE_READ);
+
 		}
 		return $result;
 	}

@@ -63,6 +63,8 @@ class NewsEditor extends FeedEditor {
     protected function add() {
         parent::add();
         $this->getDataDescription()->getFieldDescriptionByName('news_segment')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+         $this->getData()->getFieldByName('news_status')->setData(1,true);
+
 
         if ($this->getUploadsTablename())
             $this->addAttFilesField(
@@ -107,6 +109,12 @@ class NewsEditor extends FeedEditor {
             $fd->setType(FieldDescription::FIELD_TYPE_TEXTBOX_LIST);
             $result->addFieldDescription($fd);
         }
+
+        // NOER: change data desc for field news_status to bool
+        $news_status = $result->getFieldDescriptionByName('news_status');
+        $news_status->setType(FieldDescription::FIELD_TYPE_BOOL);
+        // END NOER: change data desc for field news_status to bool
+
         return $result;
 
     }    

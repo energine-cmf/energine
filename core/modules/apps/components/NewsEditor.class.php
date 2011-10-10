@@ -114,7 +114,7 @@ class NewsEditor extends FeedEditor {
         // NOER: change data desc for field news_status to bool
         $news_status = $result->getFieldDescriptionByName('news_status');
         $news_status->setType(FieldDescription::FIELD_TYPE_BOOL);
-        // END NOER 
+        // END NOER (svn test)
 
         return $result;
 

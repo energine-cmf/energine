@@ -665,7 +665,7 @@ Form.RichEditor = new Class({
             url: this.form.singlePath + 'source',
             extraData: this.area.innerHTML,
             onClose: function(returnValue) {
-                if (returnValue) {
+                if (returnValue != null) {
                     this.area.set('html', returnValue);
                 }
             }.bind(this)

@@ -9,7 +9,6 @@
  * @version $Id: FeedbackList.class.php,v 1.6 2008/08/27 15:39:16 chyk Exp $
  */
 
-//require_once('core/modules/share/components/Grid.class.php');
 
 /**
  * Спсиок сообщений поступивших с формы связи
@@ -28,9 +27,19 @@ class FeedbackList extends Grid {
      * @param array $params
      * @access public
      */
-	public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
-        $this->setTableName('apps_feedback');
-        $this->setOrder(array('feed_date'=> QAL::DESC));
-	}
+    public function __construct($name, $module, array $params = null) {
+        parent::__construct($name, $module, $params);
+        //$this->setTableName('apps_feedback');
+        $this->setOrder(array('feed_date' => QAL::DESC));
+    }
+
+    protected function defineParams() {
+        $result = array_merge(
+            parent::defineParams(),
+            array(
+                 'tableName' => 'apps_feedback',
+            )
+        );
+        return $result;
+    }
 }

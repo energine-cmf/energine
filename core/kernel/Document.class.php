@@ -309,6 +309,8 @@ final class Document extends DBWorker implements IDocument
         $templateData = Document::getTemplatesData($this->getID());
         $contentXML = $templateData->content;
         $layoutXML = $templateData->layout;
+        $contentFile =  $templateData->contentFile;
+        $layoutFile =  $templateData->layoutFile;
         unset($templateData);
 
         // вызывается ли какой-либо компонент в single режиме?
@@ -377,7 +379,7 @@ final class Document extends DBWorker implements IDocument
                 $contentXML
             ) as $XML) {
                 $this->componentManager->add(
-                    ComponentManager::createBlockFromDescription($XML)
+                    ComponentManager::createBlockFromDescription($XML,array('file' => ($XML == $contentXML)?$contentFile:$layoutFile))
                 );
 
             }
@@ -574,6 +576,7 @@ final class Document extends DBWorker implements IDocument
                                                                             '_xml' => ''), array('smap_id' => $documentID));
                 }
             }
+            $templateData[$type.'File'] = $templateData[$type . '_file'];
             unset($templateData[$type . '_file']);
         }
 

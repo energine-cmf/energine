@@ -261,16 +261,18 @@ final class ComponentManager extends Object implements Iterator {
      * @param SimpleXMLElement $blockDescription
      * @return IBlock
      */
-    static public function createBlockFromDescription(SimpleXMLElement $blockDescription) {
+    static public function createBlockFromDescription(SimpleXMLElement $blockDescription, $additionalProps = array()) {
         $result = false;
         switch ($blockDescription->getName()) {
             case 'content':
+                $props = array_merge(array('tag' => 'content'), $additionalProps);
                 $result =
-                        ComponentContainer::createFromDescription($blockDescription, array('tag' => 'content'));
+                        ComponentContainer::createFromDescription($blockDescription, $props);
                 break;
             case 'page':
+                $props = array_merge(array('tag' => 'layout'), $additionalProps);
                 $result =
-                        ComponentContainer::createFromDescription($blockDescription, array('tag' => 'layout'));
+                        ComponentContainer::createFromDescription($blockDescription, $props);
                 break;
             case 'container':
                 $result =

@@ -499,7 +499,6 @@ Form.RichEditor = new Class({
     Extends : RichEditor,
 
     initialize : function(textarea, form, fallback_ie) {
-
         this.fallback_ie = fallback_ie;
         if (!Energine.supportContentEdit)
             return;
@@ -511,12 +510,16 @@ Form.RichEditor = new Class({
                     this.textarea.name).setProperties({
                 'class': 'richEditorValue',
                 'type' : 'hidden',
-                'value' : '',
-                'nrgn:pattern' : this.textarea
-                        .getProperty('nrgn:pattern'),
-                'nrgn:message' : this.textarea
-                        .getProperty('nrgn:message')
+                'value' : ''
             }).injectBefore(this.textarea);
+            var prop;
+            if(prop = this.textarea.getProperty('nrgn:pattern')){
+                this.hidden.setProperty('nrgn:pattern', prop);
+            }
+            if(prop = this.textarea.getProperty('nrgn:message')){
+                this.hidden.setProperty('nrgn:message', prop);
+            }
+
             this.area = new Element('div').addEvent('blur', function() {
                 this.hidden.value = this.area.innerHTML;
                 this.hidden.fireEvent('blur');

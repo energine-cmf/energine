@@ -46,6 +46,16 @@
             <pattern>/file-library/[any]/</pattern>
         </uri_patterns>
     </state>
+    <state name="source" rights="3">
+        <uri_patterns>
+            <pattern>/source/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="cleanup" rights="3">
+        <uri_patterns>
+            <pattern>/cleanup/</pattern>
+        </uri_patterns>
+    </state>
     <state name="save" rights="3">
         <uri_patterns>
             <pattern>/save/</pattern>

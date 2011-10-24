@@ -84,15 +84,14 @@ class PageList extends DataSet {
             $this->getDataDescription()->addFieldDescription($FD);
         }
 
-        if ($this->getDataDescription()->getFieldDescriptionByName('attachments')) {
-            $this->getDataDescription()->addFieldDescription(E()->AttachmentManager->createFieldDescription());
-            if (!$this->getData()->isEmpty()) {
-                $this->getData()->addField(
-                    E()->AttachmentManager->createField(
-                        $this->getData()->getFieldByName('Id')->getData(), 'smap_id', 'share_sitemap_uploads')
-                );
-            }
-        }
+        $am = new AttachmentManager(
+            $this->getDataDescription(),
+            $this->getData(),
+            'share_sitemap'
+        );
+        $am->createFieldDescription();
+        if($f = $this->getData()->getFieldByName('Id'))
+            $am->createField('smap_id', true, $f->getData());
     }
 
     /**
@@ -145,7 +144,7 @@ class PageList extends DataSet {
             $filteredIDs = true;
             if ($this->getParam('tags'))
                 $filteredIDs =
-                        E()->TagManager->getFilter($this->getParam('tags'), 'share_sitemap_tags');
+                        TagManager::getFilter($this->getParam('tags'), 'share_sitemap_tags');
 
             reset($data);
             while (list($key, $value) = each($data)) {

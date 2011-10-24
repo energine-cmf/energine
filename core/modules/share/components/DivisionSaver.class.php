@@ -86,11 +86,6 @@
 
         $rights = $_POST['right_id'];
 
-        //Записываем информацию в таблицу тегов
-        if(isset($_POST['tags'])){
-        	E()->TagManager->bind($_POST['tags'], $smapID, 'share_sitemap_tags');
-        }
-
         //Удаляем все предыдущие записи в таблице прав
         $this->dbh->modify(QAL::DELETE , 'share_access_level', null, array('smap_id' => $smapID));
         foreach ($rights as $groupID => $rightID) {
@@ -98,16 +93,12 @@
                 $this->dbh->modify(QAL::INSERT, 'share_access_level', array('smap_id'=>$smapID, 'right_id'=>$rightID, 'group_id'=>$groupID));
             }
         }
-
-        //Удаляем предыдущие записи из таблицы связей с дополнительными файлам
-        $this->dbh->modify(QAL::DELETE, 'share_sitemap_uploads', null, array('smap_id' => $smapID));
-
-        //записываем данные в таблицу share_sitemap_uploads
-        if(isset($_POST['uploads']['upl_id'])){
-            foreach ($_POST['uploads']['upl_id'] as  $uplOrderNum => $uplID){
-                $this->dbh->modify(QAL::INSERT, 'share_sitemap_uploads', array('upl_order_num' => ($uplOrderNum + 1), 'smap_id' => $smapID, 'upl_id' => $uplID));
-            }
-        }
+        
+        $m = new AttachmentManager($this->dataDescription, $this->data, 'share_sitemap');
+        $m->save($smapID);
+        $m = new TagManager($this->dataDescription, $this->data, 'share_sitemap');
+        $m->save($smapID);
+        
         if(
             AdsManager::isActive()
             && isset($_POST[AdsManager::TABLE_NAME])

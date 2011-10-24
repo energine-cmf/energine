@@ -286,7 +286,7 @@ final class DivisionEditor extends Grid {
         $this->setFilter(array('site_id' => $params['site_id']));
 
         $this->setParam('onlyCurrentLang', true);
-        $this->config->setCurrentState($baseMethod);
+        $this->getConfig()->setCurrentState($baseMethod);
         $this->setBuilder(new JSONDivBuilder());
 
         $this->setDataDescription($this->createDataDescription());
@@ -377,7 +377,7 @@ final class DivisionEditor extends Grid {
         $this->buildRightsTab($actionParams['pid']);
 
         $site = E()->getSiteManager()->getSiteByPage($actionParams['pid']);
-        $this->addAttFilesField('share_sitemap_uploads');
+        $this->addAttFilesField('share_sitemap');
         $sitemap = E()->getMap($site->id);
 
         $this->getData()->getFieldByName('site_id')->setData($site->id, true);
@@ -412,19 +412,10 @@ final class DivisionEditor extends Grid {
                 $field->setRowProperty($i, 'segment', $smapSegment);
             }
         }
-        if ($field =
-                $this->getDataDescription()->getFieldDescriptionByName('tags')
-        ) {
-            //$field->setProperty('nullable', 'nullable');
-            $field->removeProperty('pattern');
-            $field->removeProperty('message');
 
-            $field = new Field('tags');
-            for ($i = 0; $i < $langCount; $i++) {
-                $field->setRowData($i, 'menu');
-            }
-            $this->getData()->addField($field);
-        }
+        $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
+        $tm->createFieldDescription();
+        $tm->createField('menu');
 
         //Ads
         if (AdsManager::isActive()) {
@@ -437,15 +428,7 @@ final class DivisionEditor extends Grid {
         parent::edit();
         $this->buildRightsTab($smapID =
                                       $this->getData()->getFieldByName('smap_id')->getRowData(0));
-        $this->addAttFilesField(
-            'share_sitemap_uploads',
-            $this->dbh->selectRequest('
-                    SELECT files.upl_id, upl_path, upl_name
-                    FROM `share_sitemap_uploads` s2f
-                    LEFT JOIN `share_uploads` files ON s2f.upl_id=files.upl_id
-                    WHERE smap_id = %s
-                ', $smapID)
-        );
+        $this->addAttFilesField('share_sitemap');
         //Выводим УРЛ в поле сегмента
         $field = $this->getData()->getFieldByName('smap_pid');
         $site =
@@ -514,22 +497,15 @@ final class DivisionEditor extends Grid {
                                E()->getSiteManager()->getCurrentSite()->base .
                                $field->getRowData(0));
         }
-        if ($field =
-                $this->getDataDescription()->getFieldDescriptionByName('tags')
-        ) {
-            //$field->setProperty('nullable', 'nullable');
-            $field->removeProperty('pattern');
-            $field->removeProperty('message');
-            $field = new Field('tags');
-            $fieldData =
-                    E()->TagManager->pull($smapID, 'share_sitemap_tags');
-            //$fieldData = array_keys(E()->TagManager->pull($smapID, 'share_sitemap_tags'));
-            for ($i = 0; $i < $langs; $i++) {
-                $field->setRowData($i, $fieldData);
-            }
 
-            $this->getData()->addField($field);
-        }
+        $tm = new TagManager(
+            $this->getDataDescription(),
+            $this->getData(),
+            $this->getTableName()
+        );
+        $tm->createFieldDescription();
+        $tm->createField();
+
         $this->getDataDescription()->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_INT)->setMode(FieldDescription::FIELD_MODE_READ);
 
         if (AdsManager::isActive()) {
@@ -677,6 +653,7 @@ final class DivisionEditor extends Grid {
         $b->setProperty('data', $result);
         $this->setBuilder($b);
     }
+
     protected function getTemplateInfo() {
         $res = $this->dbh->select('SELECT smap_layout, smap_content, IF(smap_content_xml<>"", 1,0 ) as modified FROM share_sitemap WHERE smap_id = %s', $this->document->getID());
         if (!empty($res)) {
@@ -689,24 +666,35 @@ final class DivisionEditor extends Grid {
                 'content' => array(
                     'title' => $this->translate('TXT_CONTENT'),
                     'file' => $res['smap_content'],
-                    'name' => $this->translate('CONTENT_'.$contentTitle),
-                    'modified' => ((bool)$res['modified'])?$this->translate('TXT_CHANGED'):false
+                    'name' => $this->translate('CONTENT_' . $contentTitle),
+                    'modified' => ((bool)$res['modified']) ? $this->translate('TXT_CHANGED') : false
                 ),
                 'layout' => array(
                     'title' => $this->translate('TXT_LAYOUT'),
                     'file' => $res['smap_layout'],
-                    'name' => $this->translate('LAYOUT_'.$layoutTitle),
+                    'name' => $this->translate('LAYOUT_' . $layoutTitle),
                 ),
                 'actionSelector' => array(
                     'reset' => $this->translate('TXT_RESET_CONTENT'),
                     'save' => $this->translate('TXT_SAVE_CONTENT'),
-                    'saveTemplate' =>$this->translate('TXT_SAVE_TO_CURRENT_CONTENT'),
+                    'saveTemplate' => $this->translate('TXT_SAVE_TO_CURRENT_CONTENT'),
                     'saveNewTemplate' => $this->translate('TXT_SAVE_TO_NEW_CONTENT')
                 ),
                 'actionSelectorText' => $this->translate('TXT_ACTION_SELECTOR'),
-                'saveText'=>$this->translate('BTN_APPLY'),
-                'cancelText'=>$this->translate('BTN_CANCEL')
+                'saveText' => $this->translate('BTN_APPLY'),
+                'cancelText' => $this->translate('BTN_CANCEL')
             );
+            //С точкой это хитрый POSIX стандарт
+            //То есть если страница создана не по шаблону из ядра
+            //и существует одноименный шаблон ядра
+            //то добавляется опция возможности откатиться к шаблону ядра
+            if(
+                (dirname($res['smap_content']) != '.')
+                &&
+                file_exists('templates/content/'.basename($res['smap_content']))
+            ){
+                $result['actionSelector']['revert'] = $this->translate('TXT_REVERT_CONTENT');
+            }
         }
         $b = new JSONCustomBuilder();
         $b->setProperty('result', true);
@@ -722,7 +710,7 @@ final class DivisionEditor extends Grid {
      */
 
     protected function showPageToolbar() {
-        if (!$this->config->getCurrentStateConfig()) {
+        if (!$this->getConfig()->getCurrentStateConfig()) {
             throw new SystemException('ERR_DEV_TOOLBAR_MUST_HAVE_CONFIG', SystemException::ERR_DEVELOPER);
         }
         $this->addToolbar($this->createToolbar());

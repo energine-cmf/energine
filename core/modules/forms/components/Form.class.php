@@ -82,7 +82,7 @@ class Form extends DBDataSet {
     * Викликаємо у випадку помилки з captcha
     */
     protected function failure($errorMessage, $data) {
-        $this->config->setCurrentState('main');
+        $this->getConfig()->setCurrentState('main');
         $this->prepare();
         $eFD = new FieldDescription('error_message');
         $eFD->setMode(FieldDescription::FIELD_MODE_READ);
@@ -168,7 +168,7 @@ class Form extends DBDataSet {
 
         //получаем описание полей для метода
         $configDataDescription =
-                $this->config->getStateConfig($this->getPreviousState());
+                $this->getConfig()->getStateConfig($this->getPreviousState());
         //если в конфиге есть описание полей для метода - загружаем их
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);

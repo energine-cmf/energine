@@ -41,9 +41,9 @@
         $id = ($this->getMode() == QAL::INSERT)?$result:$this->getData()->getFieldByName('site_id')->getRowData(0);
         
         //Записываем информацию в таблицу тегов
-        if(isset($_POST['tags'])){
-            E()->TagManager->bind($_POST['tags'], $id, 'share_sites_tags');
-        } 
+        $tm = new TagManager($this->dataDescription, $this->dataDescription, 'share_sites');
+        $tm->save($id);
+
         
         if($this->getMode() == QAL::INSERT){
             //При создании нового проекта   ищем параметр конфигурации указывающий на идентификатор 

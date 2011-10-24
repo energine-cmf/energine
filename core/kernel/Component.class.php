@@ -159,8 +159,7 @@ class Component extends DBWorker implements IBlock {
             ($this->document->getProperty('single') ? $template :
                     $template . 'single/' . $this->getName() . '/')
         );
-        $this->config =
-                new ComponentConfig($this->getParam('config'), get_class($this), $this->module);
+        //$this->config = new ComponentConfig($this->getParam('config'), get_class($this), $this->module);
         $this->determineState();
     }
 
@@ -176,6 +175,18 @@ class Component extends DBWorker implements IBlock {
         return $this->params['active'];
     }
 
+    /**
+     * Возвращает конфиг компонента
+     * Метод введен для возможности переопределения конфига в потомках
+     *
+     * @return ComponentConfig
+     */
+    protected function getConfig(){
+        if(!$this->config){
+            $this->config = new ComponentConfig($this->getParam('config'), get_class($this), $this->module);
+        }
+        return $this->config;
+    }
 
     /**
      * Устанавливает построитель компонента.
@@ -285,34 +296,34 @@ class Component extends DBWorker implements IBlock {
 
         // если это основной компонент страницы, должен быть конфигурационный файл
         if ($this->isActive()) {
-            if ($this->config->isEmpty()) {
+            if ($this->getConfig()->isEmpty()) {
                 throw new SystemException('ERR_DEV_NO_COMPONENT_CONFIG', SystemException::ERR_DEVELOPER, $this->getName());
             }
 
             // определяем действие по запрошенному URI
             $action =
-                    $this->config->getActionByURI($this->request->getPath(Request::PATH_ACTION, true));
+                    $this->getConfig()->getActionByURI($this->request->getPath(Request::PATH_ACTION, true));
             if ($action !== false) {
                 $this->state = $action['name'];
                 $this->stateParams = $action['params'];
             }
 
         }
-            // если имя действия указано в POST-запросе - используем его
+        // если имя действия указано в POST-запросе - используем его
         elseif (isset($_POST[$this->getName()]['state'])) {
             $this->state = $_POST[$this->getName()]['state'];
         }
 
         // устанавливаем права на действие из конфигурации, если определены
-        if (!$this->config->isEmpty()) {
-            $this->config->setCurrentState($this->getState());
-            $sc = $this->config->getCurrentStateConfig();
+        if (!$this->getConfig()->isEmpty()) {
+            $this->getConfig()->setCurrentState($this->getState());
+            $sc = $this->getConfig()->getCurrentStateConfig();
 
             if (isset($sc['rights'])) {
                 $this->rights = (int) $sc['rights'];
             }
             
-            if($csp = $this->config->getCurrentStateParams()){
+            if($csp = $this->getConfig()->getCurrentStateParams()){
                 $this->stateParams = array_merge($this->stateParams, $csp);
             }
         }

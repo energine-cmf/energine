@@ -70,11 +70,6 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <state name="upload" rights="2">
-        <uri_patterns>
-            <pattern>/upload/</pattern>
-        </uri_patterns>
-    </state>
     <state name="delete" rights="2">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
@@ -103,26 +98,4 @@
             <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
         </uri_patterns>
     </state>
-    <state name="imageManager" rights="3">
-        <uri_patterns>
-            <pattern>/imagemanager/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="fileLibrary" rights="3">
-        <uri_patterns>
-            <pattern>/file-library/</pattern>
-            <pattern>/file-library/[any]/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="source" rights="3">
-        <uri_patterns>
-            <pattern>/source/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="cleanup" rights="3">
-        <uri_patterns>
-            <pattern>/cleanup/</pattern>
-        </uri_patterns>
-    </state>
-
 </configuration>

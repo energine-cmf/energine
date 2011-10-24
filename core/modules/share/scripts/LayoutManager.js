@@ -90,6 +90,18 @@ var LayoutManager = new Class({
     },
     applyChanges: function() {
         var
+            fRevert = function() {
+                new Request.JSON({
+                    url:LayoutManager.singlePath + 'widgets/revert-template/',
+                    method: 'post',
+                    evalScripts: false,
+                    onSuccess: function(response) {
+                        if (response.result) {
+                            //document.location = document.location.href;
+                        }
+                    }
+                }).send();
+            },
             fReset = function() {
                 new Request.JSON({
                     url:LayoutManager.singlePath + 'reset-templates/',
@@ -152,6 +164,9 @@ var LayoutManager = new Class({
                 }).send();
             };
         switch (this.toolbar.getElement().getElement('select').get('value')) {
+            case 'revert':
+                fRevert.apply(this);
+                break;
             case 'reset':
                 fReset.apply(this);
                 break;
@@ -360,7 +375,7 @@ LayoutManager.Widget = new Class({
             if (!this.static) this.dragger = new LayoutManager.Widget.DragBehavior(this);
             if (!this.element.hasClass('e-widget')) this.element.addClass('e-widget');
             this.overlay = new Overlay(this.element, {indicator:false});
-            
+
             this.overlay.show();
             this.visible = true;
         }

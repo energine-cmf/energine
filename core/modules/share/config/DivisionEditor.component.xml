@@ -10,12 +10,6 @@
             <pattern>/widgets/[any]/</pattern>
         </uri_patterns>
     </state>
-    <state name="fileLibrary" rights="3">
-        <uri_patterns>
-            <pattern>/file-library/</pattern>
-            <pattern>/file-library/[any]/</pattern>
-        </uri_patterns>
-    </state>
     <state name="showUserEditor" rights="3">
         <uri_patterns>
             <pattern>/user/[any]/</pattern>
@@ -117,7 +111,6 @@
             <field name="smap_layout"/>
             <field name="smap_content"/>
             <!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
-            <field name="tags" type="textbox" title="FIELD_TAGS" nullable="nullable"/>
             <field name="smap_is_disabled"/>
             <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>
             <field name="smap_name"/>
@@ -157,7 +150,6 @@
             <!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
             <field name="smap_redirect_url"/>
             <field name="smap_meta_robots"/>
-            <field name="tags" type="textbox" title="FIELD_TAGS" nullable="nullable"/>
             <field name="smap_is_disabled"/>
             <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>
             <field name="smap_name"/>
@@ -179,11 +171,6 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <state name="upload" rights="3">
-        <uri_patterns>
-            <pattern>/upload/</pattern>
-        </uri_patterns>
-    </state>
     <state name="delete" rights="3">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
@@ -197,11 +184,6 @@
     <state name="down" rights="3">
         <uri_patterns>
             <pattern>/[int]/down/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="imageManager" rights="3">
-        <uri_patterns>
-            <pattern>/imagemanager/</pattern>
         </uri_patterns>
     </state>
     <state name="showPageToolbar" rights="3">
@@ -232,20 +214,4 @@
             <param name="dock">top</param>
         </javascript>
     </state>
-    <state name="source" rights="3">
-        <uri_patterns>
-            <pattern>/source/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="cleanup" rights="3">
-        <uri_patterns>
-            <pattern>/cleanup/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="put" rights="3">
-        <uri_patterns>
-            <pattern>/put/</pattern>
-        </uri_patterns>
-    </state>
-
 </configuration>

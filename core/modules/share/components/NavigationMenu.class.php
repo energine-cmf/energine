@@ -62,7 +62,7 @@ final class NavigationMenu extends DataSet {
     	$this->filteredIDs = true;
         if (!empty($data)) {
             if($this->getParam('tags'))
-                $this->filteredIDs = E()->TagManager->getFilter($this->getParam('tags'), 'share_sitemap_tags');
+                $this->filteredIDs = TagManager::getFilter($this->getParam('tags'), 'share_sitemap_tags');
                 
             if(!empty($this->filteredIDs)) {
 	            reset($data);

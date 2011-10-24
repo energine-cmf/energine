@@ -116,7 +116,7 @@ class Register extends DBDataSet {
 	}
 	
 	protected function failure($errorMessage, $data){
-		$this->config->setCurrentState('main');
+		$this->getConfig()->setCurrentState('main');
 	    $this->prepare();
 	    $eFD = new FieldDescription('error_message');
 	    $eFD->setMode(FieldDescription::FIELD_MODE_READ);

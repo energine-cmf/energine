@@ -14,10 +14,8 @@
  * @package energine
  * @subpackage kernel
  * @author dr.Pavka
- * @final
  */
-final class ComponentConfig
-{
+class ComponentConfig {
     /**
      * Путь к директории, содержащей пользовательские файлы конфигурации для компонентов
      */
@@ -44,6 +42,12 @@ final class ComponentConfig
      * @access private
      */
     private $currentState = false;
+    /**
+     * Перечень "приклееных состояний"
+     *
+     * @var array
+     */
+    private $stickedStates = array();
 
     /**
      * Инициализирует конфигурацию
@@ -54,8 +58,7 @@ final class ComponentConfig
      * @return \ComponentConfig
      *
      */
-    public function __construct($config, $className, $moduleName)
-    {
+    public function __construct($config, $className, $moduleName) {
         //Если это строка(с именем файла) или false
         if (!$config || is_string($config)) {
             $config = ($param = $this->getConfigPath($config, $moduleName)) ? $param
@@ -87,13 +90,12 @@ final class ComponentConfig
      * @param $moduleName
      * @return bool|string
      */
-    private function getConfigPath($configFilename, $moduleName)
-    {
+    private function getConfigPath($configFilename, $moduleName) {
         $file = false;
         if ($configFilename && !file_exists($file = $configFilename)) {
             //Смотрим в директории текущего сайта с пользовательскими конфигами
-            if (!file_exists($file = sprintf(SITE_DIR.self::SITE_CONFIG_DIR . $configFilename, E()->getSiteManager()->getCurrentSite()->folder))) {
-                if (!file_exists($file = sprintf(CORE_DIR.self::CORE_CONFIG_DIR, $moduleName) . $configFilename)) {
+            if (!file_exists($file = sprintf(SITE_DIR . self::SITE_CONFIG_DIR . $configFilename, E()->getSiteManager()->getCurrentSite()->folder))) {
+                if (!file_exists($file = sprintf(CORE_DIR . self::CORE_CONFIG_DIR, $moduleName) . $configFilename)) {
                     //если файла с указанным именем нет ни в папке с пользовательскими конфигами, ни в папке модуля с конфигами
                     //throw new SystemException('ERR_DEV_NO_CONFIG', SystemException::ERR_DEVELOPER, $configFilename);
                     $file = false;
@@ -110,11 +112,32 @@ final class ComponentConfig
      * @param $methodName
      * @return void
      */
-    public function setCurrentState($methodName)
-    {
+    public function setCurrentState($methodName) {
         if (!($this->currentState = $this->getStateConfig($methodName))) {
             //inspect($this->c, $this->config->xpath(sprintf('/configuration/state[@name=\'%s\']', $methodName)));
             throw new SystemException('ERR_NO_METHOD ' . $methodName, SystemException::ERR_DEVELOPER, $methodName);
+        }
+    }
+
+    /**
+     * @param $methodName string имя метода
+     * @param $patterns array|string набор паттернов
+     * @param bool int $rights
+     * @return void
+     */
+    protected function registerState($methodName, $patterns, $rights = false) {
+        if ($this->config) {
+            $newState = $this->config->addChild('state');
+            $newState->addAttribute('name', $methodName);
+            $newState->addAttribute('weight', true);
+            if($rights){
+                $newState->addAttribute('rights', $rights);
+            }
+            if(!is_array($patterns))$patterns = array($patterns);
+            $uriPatterns = $newState->addChild('uri_patterns');
+            foreach($patterns as $pattern){
+                $uriPatterns->addChild('pattern', $pattern);
+            }
         }
     }
 
@@ -124,8 +147,7 @@ final class ComponentConfig
      * @return ConfigElement
      * @access public
      */
-    public function getCurrentStateConfig()
-    {
+    public function getCurrentStateConfig() {
         return $this->currentState;
     }
 
@@ -136,8 +158,7 @@ final class ComponentConfig
      * @access public
      */
 
-    public function isEmpty()
-    {
+    public function isEmpty() {
         return ($this->config) ? false : true;
     }
 
@@ -148,23 +169,42 @@ final class ComponentConfig
      * @access public
      * @return array
      */
-    public function getActionByURI($path)
-    {
+    public function getActionByURI($path) {
         $actionName = false;
         $actionParams = array();
         $path = '/' . $path;
 
         $patterns = array();
+        //счетчик приоритета паттерна
+        $weightInc = $maxWeightInc = sizeof($this->config->state);
+
+        //Дальше идет что то мутное
+        //наша цель расставиьт приоритеты паттернов состояний
         foreach ($this->config->state as $method) {
             if (isset($method->uri_patterns->pattern)) {
+
+                $weightInc --;
+                //А это счетчик приоритета внутри набора паттернов
+                $maxPatternPriority = sizeof($method->uri_patterns->pattern) - 1;
+                //вообщем в результате мы получаем что у нас приоритеты выставлены как нужно
+                //то есть чем выше - тем важнее
                 foreach ($method->uri_patterns->pattern as $pattern) {
-                    $patterns[(string)$pattern] = (string)$method['name'];
+                    $patterns[(string)$pattern] = array(
+                        'method' => (string)$method['name'],
+                        //'rights' => ((isset($method['rights']))?(int)$method['rights']),
+                        'weight' => ((!isset($method['weight']))?($weightInc + $maxPatternPriority * 0.1):($maxWeightInc++))
+                    );
+                    $maxPatternPriority --;
                 }
             }
         }
+        //сортируем  по приоритету
+        uasort($patterns, function($a, $b){
+            return $a['weight'] < $b['weight'];
+        });
 
-        foreach ($patterns as $pattern => $methodName) {
-            $resPattern = $pattern;
+        foreach ($patterns as $pattern => $methodInfo) {
+            $methodName = $methodInfo['method'];
             try {
                 $resPattern = preg_replace(
                     array('/\[any\]\//', '/\//', '/\[[a-zA-Z_]+\]/'),
@@ -176,11 +216,9 @@ final class ComponentConfig
                 $resPattern = $pattern;
             }
             $matches = array();
-            //inspect($resPattern);
             if (preg_match($resPattern = "/^$resPattern$/", $path, $matches)) {
                 array_shift($matches);
                 $actionName = $methodName;
-
                 if (!empty($matches)) {
                     if (strpos($pattern, '[any]') === false) {
                         preg_match($resPattern, $pattern, $varNames);
@@ -211,8 +249,7 @@ final class ComponentConfig
      * @param string $methodName имя метода
      * @return SimpleXMLElement
      */
-    public function getStateConfig($methodName)
-    {
+    public function getStateConfig($methodName) {
         $result = false;
         if (!$this->isEmpty()) {
             $methodConfig = $this->config->xpath(sprintf('state[@name=\'%s\'][parent::configuration]', $methodName));
@@ -222,54 +259,26 @@ final class ComponentConfig
         }
         return $result;
     }
+
     /**
      * Возвращает перечень параметров состояния заданных в конфигурационном файле
      * @return array || bool
      */
-    public function getCurrentStateParams(){
+    public function getCurrentStateParams() {
         $result = false;
         //Если уже задано текущее состояние
         // и конфиг не пуст
         //и в нем есть узел параметров
         //и в этом узле есть дочерние
-        if($this->currentState && !$this->isEmpty() && isset($this->currentState->params) && sizeof($this->currentState->params->children())){
+        if ($this->currentState && !$this->isEmpty() && isset($this->currentState->params) && sizeof($this->currentState->params->children())) {
             $result = array();
-            foreach($this->currentState->params->param as $tagName=>$param){
-                if(($tagName == 'param') && isset($param['name'])){
+            foreach ($this->currentState->params->param as $tagName => $param) {
+                if (($tagName == 'param') && isset($param['name'])) {
                     $result[(string)$param['name']] = (string)$param;
                 }
             }
         }
         return $result;
     }
-
-    /**
-     * Возвращает флаг, указывающий какой из предложенных паттернов более специфичен
-     * Вызывается как callback для uksort
-     *
-     * @access private
-     * @param string $patternA
-     * @param string $patternB
-     * @return int
-     * @static
-     */
-
-    static private function uriPatternsCmp($patternA, $patternB)
-    {
-        $placeholders = array('/[int]/', '/[string]/', '/[any]/');
-        //inspect($patternA, $patternB);
-        if (in_array($patternA, $placeholders)) {
-            $result = 1;
-        }
-        elseif (in_array($patternB, $placeholders)) {
-            $result = -1;
-        }
-        else {
-            $result = -(strlen($patternA) - strlen($patternB));
-        }
-
-        return $result;
-    }
-
 }
 

@@ -86,6 +86,7 @@ class WidgetsRepository extends Grid {
         }
         $this->addToolbar($this->createToolbar());
     }
+
     /**
      * Создание виджета по переданному описанию
      *
@@ -104,6 +105,7 @@ class WidgetsRepository extends Grid {
                 ComponentManager::createBlockFromDescription($xml);
         $this->tmpComponent->run();
     }
+
     /**
      * Для формы ввода имени для нового шаблона контента
      * отключаем получение данных
@@ -115,6 +117,7 @@ class WidgetsRepository extends Grid {
 
         return parent::loadData();
     }
+
     /**
      * Для состояния buildWidget
      * возвращаем код динамического компонента
@@ -155,6 +158,7 @@ class WidgetsRepository extends Grid {
                           ));
         $this->setBuilder($b);
     }
+
     /**
      * Выводит форму ввода имени нового шаблона
      * @return void
@@ -163,6 +167,7 @@ class WidgetsRepository extends Grid {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
     }
+
     /**
      * Сохраняет расположение блоков
      * в текущем шаблоне
@@ -213,16 +218,17 @@ class WidgetsRepository extends Grid {
                           ));
         $this->setBuilder($b);
     }
+
     /**
      * Создает симлинк
-     * 
+     *
      * @static
      * @param $fileName имя файла
      * @param $module имя модуля
      * @return string
      */
     private static function createSymlink($fileName, $module) {
-        if (!file_exists($dir = 'templates'.DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR . $module)) {
+        if (!file_exists($dir = 'templates' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $module)) {
             //создаем ее
             mkdir($dir);
         }
@@ -232,17 +238,18 @@ class WidgetsRepository extends Grid {
         //создаем симлинк, не запускать же в самом деле сетап ради одной ссылки
         //как то так ../../../site/modules/[имя модуля]/templates/content/[имя файла]
         symlink(
-            str_repeat('..'.DIRECTORY_SEPARATOR, 3) .
-            'site'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR .
-            $module . DIRECTORY_SEPARATOR.'templates'.
-            DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR .
+            str_repeat('..' . DIRECTORY_SEPARATOR, 3) .
+            'site' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR .
+            $module . DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR .
             $fileName,
 
             $symlink
         );
 
-        return $module.DIRECTORY_SEPARATOR.$fileName;
+        return $module . DIRECTORY_SEPARATOR . $fileName;
     }
+
     /**
      * Создает новый шаблон
      *
@@ -264,7 +271,7 @@ class WidgetsRepository extends Grid {
         file_put_contents(($target = 'site/modules/' . ($moduleName = E()->getSiteManager()->getCurrentSite()->folder) . '/templates/content/' . $contentFileName), $xml);
 
         $symlink = self::createSymlink($contentFileName, $moduleName);
-        
+
         //изменяем шаблон страницы
         $this->dbh->modify(QAL::UPDATE, 'share_sitemap', array('smap_content_xml' => QAL::EMPTY_STRING, 'smap_content' => $symlink), array('smap_id' => $this->document->getID()));
 
@@ -281,6 +288,24 @@ class WidgetsRepository extends Grid {
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
                                'xml' => $xml,
+                               'result' => true,
+                               'mode' => 'none'
+                          ));
+        $this->setBuilder($b);
+    }
+
+    protected function revertTemplate() {
+        $content = simplifyDBResult(
+            $this->dbh->select(
+                'SELECT  smap_content as content FROM share_sitemap WHERE smap_id = %s', $this->document->getID()),
+            'content',
+            true);
+        if ((dirname($content) == '.') || !file_exists('templates/content/' . basename($content))) {
+            throw new SystemException('ERR_CONTENT_NOT_REVERTED', SystemException::ERR_CRITICAL, $content);
+        }
+        $this->dbh->modify(QAL::UPDATE, 'share_sitemap', array('smap_content' => basename($content), 'smap_content_xml' => QAL::EMPTY_STRING), array('smap_content' => $content));
+        $b = new JSONCustomBuilder();
+        $b->setProperties(array(
                                'result' => true,
                                'mode' => 'none'
                           ));

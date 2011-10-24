@@ -9,7 +9,7 @@
         <div class="feed">
             <xsl:choose>
                 <xsl:when test="recordset/@empty">
-                    <div class="empty_message"><xsl:value-of select="recordset/@empty" disable-output-escaping="yes"/></div>
+                    <div class="empty_message" id="{generate-id(recordset)}"><xsl:value-of select="recordset/@empty" disable-output-escaping="yes"/></div>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates/>

@@ -1,3 +1,40 @@
+var Words = function(initialValue, sep) {
+    this._elements = initialValue.split(this.separator = sep);
+    this.currentIndex = 0;
+    this.setCurrentIndex =  function(index){
+        if(this._elements[index]){
+            this.currentIndex = index;
+        }
+    }
+    this.asString = function() {
+        return this._elements.join(this.separator);
+    }
+    this.getLength = function() {
+        return this._elements.length;
+    }
+    this.getAt = function(index) {
+        var res;
+        if (res = this._elements[index]) {
+            return res;
+        }
+
+        return '';
+    }
+    this.setAt = function(index, value) {
+        this._elements[index.toInt()] = value
+    }
+    this.findWord = function(curPos) {
+        var leftMargin = 0, rightMargin = 0;
+        for (var i = 0, l = this._elements.length; i < l; i++) {
+            rightMargin = leftMargin + this._elements[i].length;
+
+            if ((curPos >= leftMargin) && (curPos <= rightMargin)) return {index: i, 'string': this._elements[i]};
+            leftMargin += this._elements[i].length + 1;
+        }
+        return {index: this._elements.length, 'string': ''};
+    }
+}
+
 var ActiveList = new Class({
     Implements: Events,
     initialize: function(container) {
@@ -57,7 +94,6 @@ var ActiveList = new Class({
             this.fireEvent('choose', this.items[this.selected]);
             e.stopPropagation();
         }
-
     },
     selectItem: function(itemNum) {
         if (!itemNum) itemNum = 0;
@@ -126,20 +162,21 @@ var DropBoxList = new Class({
 var AcplField = new Class({
     Implements: [Options,Events],
     options: {
-        startFrom: 1,
-        separator: ','
+        startFrom: 1
     },
     initialize: function(element, options) {
         this.element = $(element);
-        this.container  = new Element('div', {'class': '', 'styles': {'position': 'relative'}}).wraps(this.element);
+        this.container = new Element('div', {'class': '', 'styles': {'position': 'relative'}}).wraps(this.element);
 
+        this.words = false;
         this.list = new DropBoxList(this.element);
         this.list.addEvent('choose', this.select.bind(this));
         this.list.get().inject(this.element, 'after');
 
 
         Asset.css('acpl.css');
-        this.url = this.element.getProperty('url');
+        this.url = this.element.getProperty('nrgn:url');
+        this.separator = this.element.getProperty('nrgn:separator');
         this.setOptions(options);
         this.value = '';
 
@@ -156,25 +193,44 @@ var AcplField = new Class({
      this.focused = true;
      },*/
     _enter: function(e) {
-        var key = e.key, val = this.element.value;
+        var getCaret = function(el) {
 
-        if (((key == 'up') || (key == 'down') || (key == 'enter'))) {
+            if (el.selectionStart) {
+                return el.selectionStart;
+            } else if (document.selection) {
+                var r = document.selection.createRange();
+                if (r == null) {
+                    return 0;
+                }
+
+                var re = el.createTextRange(),
+                    rc = re.duplicate();
+                re.moveToBookmark(r.getBookmark());
+                rc.setEndPoint('EndToStart', re);
+
+                return rc.text.length;
+            }
+            return 0;
+        }
+        var key = e.key, val = this.element.value;
+        if (key == 'esc') {
+            this.list.hide();
+            this.list.empty();
+        }
+        else if (((key == 'up') || (key == 'down') || (key == 'enter'))) {
             this.list.keyPressed.call(this.list, e);
         }
-        else if ((val > this.options.startFrom) && (this.value != val)) {
-            this.requestValues(this.value = val);
+        else {
+            this.value = val;
+            this.words = new Words(this.value, this.separator);
+            var word = this.words.findWord(getCaret(this.element));
+            if ((word['string'].length > this.options.startFrom) /*&& (val.length  && (this.value != val))*/) {
+                this.words.setCurrentIndex(word.index);
+                this.requestValues(word.string);
+            }
         }
-        //Это ввели какое то значение
-        /*if(key.length == 1){
-         val +=  key;
-         }
-         else if(key == 'backspace'){
-
-         }*/
-
-
     },
-    _prepareData: function(result) {
+        _prepareData: function(result) {
         this.setValues(result.data);
     },
     /**
@@ -183,10 +239,12 @@ var AcplField = new Class({
      * return Object | false
      */
     requestValues: function(str) {
-        new Request.JSON({url: this.url, onSuccess: this._prepareData.bind(this)}).send({
-            method: 'post',
-            data: 'value=' + str
-        });
+        if (this.url) {
+            new Request.JSON({url: this.url, onSuccess: this._prepareData.bind(this)}).send({
+                method: 'post',
+                data: 'value=' + str
+            });
+        }
     },
     /**
      *
@@ -194,7 +252,6 @@ var AcplField = new Class({
      */
     setValues: function(data) {
         this.list.empty();
-
         if (data.length) {
             data.each(function(row) {
                 this.list.add(this.list.create(row));
@@ -203,8 +260,13 @@ var AcplField = new Class({
         }
         this.list.show();
     },
-    select: function(li){
-        this.element.set('value', li.get('text'));
+    select: function(li) {
+        var text = li.get('text');
+
+        if ((this.list.selected !== false)&& this.list.items[this.list.selected]) {
+            this.words.setAt(this.words.currentIndex, text);
+            this.element.set('value', this.words.asString());
+        }
         this.list.hide();
     }
 

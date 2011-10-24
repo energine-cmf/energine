@@ -2,6 +2,7 @@
 <xsl:stylesheet
     version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:nrgn="http://energine.org"
     xmlns="http://www.w3.org/1999/xhtml">
 
     <!--
@@ -38,22 +39,20 @@
     </xsl:template>
 
     <xsl:template match="field[@type='textbox'][ancestor::component[@type='form']]">
-<!--        <div class="textbox">
-            <input class="text"/>
-            <div class="textbox_items">
-                <div class="default"></div>
-                    <ul>
-                        <xsl:for-each select="items/item">
-                            <li><xsl:value-of select="."/></li>
-                        </xsl:for-each>
-                    </ul>
-            </div>
-        </div>
-        -->
-        <input class="text inp_textbox">
+        <xsl:variable name="SEPARATOR" select="@separator"/>
+        <script type="text/javascript" src="scripts/AcplField.js"></script>
+        <input class="text acpl">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="nrgn:url" xmlns:nrgn="http://energine.org"><xsl:value-of select="$BASE"/><xsl:value-of
+                    select="ancestor::component/@single_template"/><xsl:value-of select="@url"/></xsl:attribute>
+            <xsl:attribute name="nrgn:separator" xmlns:nrgn="http://energine.org"><xsl:value-of select="$SEPARATOR"/></xsl:attribute>
+            <xsl:attribute name="value"><xsl:for-each select="items/item"><xsl:value-of select="."/><xsl:if test="position()!=last()"><xsl:value-of
+                    select="$SEPARATOR"/></xsl:if></xsl:for-each></xsl:attribute>
+        </input>
+        <!--<input class="text inp_textbox">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="value"><xsl:for-each select="items/item"><xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each></xsl:attribute>
-        </input>
+        </input>-->
     </xsl:template>
 
     <!-- числовое поле (integer) -->

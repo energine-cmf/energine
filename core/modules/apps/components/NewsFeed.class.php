@@ -16,17 +16,11 @@
  * @subpackage share
  * @author dr.Pavka
  */
-class NewsFeed extends Feed {
-    /**
-     * Таблица приаттаченных файлов
-     *
-     * @access private
-     * @var string
-     */
-    private $uploadsTable;
+class NewsFeed extends ExtendedFeed {
 
     /**
      * Конструктор класса
+     * Жестко привязываемя к таблице новостей
      *
      * @param string $name
      * @param string $module
@@ -39,82 +33,19 @@ class NewsFeed extends Feed {
         $this->setTableName('apps_news');
         $this->setOrder(array('news_date' => QAL::DESC));
     }
-
-    protected function defineParams() {
-        return array_merge(
-            parent::defineParams(),
-            array(
-                'editable' => true,
-            )
-        );
-    }
-
-    protected function setParam($name, $value) {
-        if ($name == 'tableName') {
-            if ($this->dbh->tableExists($value . '_uploads')) {
-                $this->uploadsTable = $value . '_uploads';
-            }
-        }
-        parent::setParam($name, $value);
-    }
-
     /**
-     * Возвращает имя таблицы аттачментов
+     * Все новости которые имеют будущую дату выводятся только админам
      *
-     * @return string
-     * @access protected
+     * @return Data
      */
-    protected function getUploadsTablename() {
-        return $this->uploadsTable;
-    }
-
-    protected function createDataDescription() {
-        $res = DBDataSet::createDataDescription();
-        if(!$res->getFieldDescriptionByName('smap_id')){
-            $f = new FieldDescription('smap_id');
-            $f->setType(FieldDescription::FIELD_TYPE_INT)->setProperty('tableName', $this->getTableName());
-            $res->addFieldDescription($f);
-        }
-        if(!$res->getFieldDescriptionByName('category')){
-            $f = new FieldDescription('category');
-            $f->setType(FieldDescription::FIELD_TYPE_STRING);
-            $res->addFieldDescription($f);
-        }
-        return $res;
-    }
-
-    protected function loadDataDescription() {
-        $res = parent::loadDataDescription();
-        if (isset($res['smap_id'])) {
-            $res['smap_id']['key'] = false;
-        }
-        return $res;
-    }
-
     protected function createData() {
         if ($this->document->getRights() < ACCESS_EDIT) {
             $this->addFilterCondition(
                 'news_date <= NOW()'
             );
-            // NOER: if !is editable - add filter condition for only active news
-            $this->addFilterCondition(array('news_status' => '1'));
-            // END NOER
         }
 
         $res = parent::createData();
-        if(!$res->isEmpty() && !($categoryField = $res->getFieldByName('category'))){
-            $categoryField = new Field('category');
-            $res->addField($categoryField);
-        }
-        
-        if($f = $res->getFieldByName('smap_id')){
-            $map = E()->getMap();
-            foreach($f as $i => $row){
-                $catInfo = $map->getDocumentInfo($row);
-                $categoryField->setRowData($i, $catInfo['Name']);
-                $categoryField->setRowProperty($i, 'url', $map->getURLByID($row));
-            }
-        }
         return $res;
     }
 
@@ -134,19 +65,13 @@ class NewsFeed extends Feed {
             }
         }
         parent::main();
-        if ($this->getUploadsTablename()) {
-            $this->getDataDescription()->addFieldDescription(E()->AttachmentManager->createFieldDescription());
-            if (!$this->getData()->isEmpty()) {
-                $this->getData()->addField(E()->AttachmentManager->createField($this->getData()->getFieldByName($this->getPK())->getData(), $this->getPK(), $this->getUploadsTablename(), true));
-            }
-        }
     }
 
 
     /**
-     * View
+     * Переписан под специфический сегмент УРЛ
      *
-     * @return type
+     * @return void
      * @access protected
      */
 
@@ -177,11 +102,9 @@ class NewsFeed extends Feed {
         foreach ($this->getDataDescription() as $fieldDescription) {
             $fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
         }
-        if ($this->getUploadsTablename()) {
-
-            $this->getDataDescription()->addFieldDescription(E()->AttachmentManager->createFieldDescription());
-            $this->getData()->addField(E()->AttachmentManager->createField($this->getData()->getFieldByName($this->getPK())->getData(), $this->getPK(), $this->getUploadsTablename()));
-        }
+        $am = new AttachmentManager($this->getDataDescription(), $this->getData(), $this->getTableName());
+        $am->createFieldDescription();
+        $am->createField();
 
     }
 }

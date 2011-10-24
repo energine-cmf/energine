@@ -21,15 +21,73 @@ class TagManager extends DBWorker {
      * Имя таблицы тегов
      */
     const TAG_TABLENAME = 'share_tags';
+    /**
+     * Разделитель тегов
+     */
     const TAG_SEPARATOR = ',';
+    /**
+     * @var DataDescription
+     */
+    private $dataDescription;
+    /**
+     * @var Data
+     */
+    private $data;
+    /**
+     * @var Имя таблицы тегов
+     */
+    private $tableName;
+    /**
+     * Флаг активности
+     * @var bool
+     */
+    private $isActive;
 
     /**
-     * Конструктор класса
-     *
-     * @access public
+     * @var FieldDescription
      */
-    public function __construct() {
+    private $pk;
+
+    public function __construct($dataDescription, $data, $tableName) {
         parent::__construct();
+        if ($this->isActive = $this->dbh->tableExists($this->tableName = $tableName . '_tags')) {
+            $this->dataDescription = $dataDescription;
+            $this->data = $data;
+
+            foreach ($this->dataDescription as $fd) {
+                if ($fd->getPropertyValue('key')) {
+                    $this->pk = $fd;
+                    break;
+                }
+            }
+        }
+    }
+
+    public function createFieldDescription() {
+        if ($this->isActive) {
+            $fd = new FieldDescription('tags');
+            $fd->setType(FieldDescription::FIELD_TYPE_TEXTBOX_LIST)->setProperty('url', 'tag-autocomplete')->setProperty('separator', TagManager::TAG_SEPARATOR);
+            $this->dataDescription->addFieldDescription($fd);
+        }
+    }
+
+    public function createField() {
+        $field = new Field('tags');
+        if ($this->isActive && !$this->data->isEmpty()) {
+            $fieldData = $this->pull($this->data->getFieldByName($this->pk->getName())->getData(), $this->tableName);
+            for ($i = 0, $langs = count(E()->getLanguage()->getLanguages());
+                $i < $langs; $i++) {
+                $field->setRowData($i, $fieldData);
+            }
+
+        }
+        $this->data->addField($field);
+    }
+
+    public function save($id){
+        if($this->isActive && isset($_POST['tags'])){
+             $this->bind($_POST['tags'], $id, $this->tableName);
+        }
     }
 
     /**
@@ -62,7 +120,7 @@ class TagManager extends DBWorker {
 
                 }
             }
-            $tagIDs = array_keys($this->getID($tags));
+            $tagIDs = array_keys(self::getID($tags));
             foreach ($tagIDs as $tagID) {
                 $this->dbh->modify(QAL::INSERT, $mapTableName, array($mapFieldName => $mapValue, 'tag_id' => $tagID));
             }
@@ -72,10 +130,11 @@ class TagManager extends DBWorker {
     /**
      * Вытягивает имена тегов по переданной информации из связующей таблицы
      *
-     * @param $mapValues string
+     * @throws SystemException
+     * @param $mapValue
      * @param $mapTableName
-     * @return $tags array
-     * @access public
+     * @param bool $asString
+     * @return array|mixed
      */
     public function pull($mapValue, $mapTableName, $asString = false) {
         if (!$this->dbh->tableExists($mapTableName)) {
@@ -99,16 +158,16 @@ class TagManager extends DBWorker {
             }
         }
 
-        foreach ((array) $mapValue as $targetID) {
+        foreach ((array)$mapValue as $targetID) {
             if (isset($result[$targetID])) {
-                $data[] = $this->getTags($result[$targetID], $asString);
+                $data[] = self::getTags($result[$targetID], $asString);
             }
             else {
                 $data[] = array();
             }
         }
 
-        return (is_array($mapValue)) ? $data : current($data);
+        return /*(is_array($mapValue)) ? $data : */current($data);
     }
 
     /**
@@ -117,14 +176,14 @@ class TagManager extends DBWorker {
      * @param $tag mixed
      * @return array
      * @access public
+     * @static
      */
-    public function getID($tag) {
+    static public function getID($tag) {
         $result = null;
         if (!is_array($tag)) {
             $tag = explode(self::TAG_SEPARATOR, $tag);
         }
-        $res =
-                $this->dbh->select(self::TAG_TABLENAME, true, array('tag_name' => $tag));
+        $res = E()->getDB()->select(self::TAG_TABLENAME, true, array('tag_name' => $tag));
         if (is_array($res)) {
             foreach ($res as $row) {
                 $result[$row['tag_id']] = $row['tag_name'];
@@ -133,21 +192,48 @@ class TagManager extends DBWorker {
 
         return $result;
     }
-
     /**
      * Возвращает перечень тегов
-     *
-     * @return array | string
-     * @access public
+     * 
+     * @static
+     * @param $str начальные буквы тега
+     * @param bool | int $limit ограничение по количеству
+     * @return array
      */
-    public function getTags($tagID, $asSting = false) {
+    static public function getTagStartedWith($str, $limit = false){
         $result = array();
+        $str = trim($str);
+        
+        if($limit){
+            $limit = array($limit);
+        }
+        else $limit = null;
+
+        $res =
+                E()->getDB()->select(self::TAG_TABLENAME, 'tag_name', 'tag_name LIKE "'.mysql_real_escape_string($str).'%"', array('tag_name' => QAL::DESC),  $limit);
+        $result = simplifyDBResult($res, 'tag_name');
+        
+        return $result;
+    }
+
+
+    /**
+     * Возвращает перечень тегов по переданным идентфикатором
+     *
+     * @param $tagID int[] | int идентфикатор(ы) тегов
+     * @param bool $asSting вернуть как строку с разделителем
+     *
+     * @return array|mixed|string
+     * @static
+     */
+    static public function getTags($tagID, $asSting = false) {
+        
         if (!is_array($tagID)) {
             $tagID = array($tagID);
         }
 
         $res =
-                $this->dbh->select(self::TAG_TABLENAME, true, array('tag_id' => $tagID));
+                E()->getDB()->select(self::TAG_TABLENAME, true, array('tag_id' => $tagID));
         $result = simplifyDBResult($res, 'tag_name');
 
         return ($asSting &&
@@ -155,26 +241,25 @@ class TagManager extends DBWorker {
     }
 
     /**
-     * Возвращает набор ключей связок ассоциированных с тегом
-     *
-     * @return array
-     * @access public
+     * @throws SystemException
+     * @param $tags
+     * @param $mapTableName
+     * @return array|mixed
+     * @static
      */
-    public function getFilter($tags, $mapTableName) {
-        if (!$this->dbh->tableExists($mapTableName)) {
+    static public function getFilter($tags, $mapTableName) {
+        if (!E()->getDB()->tableExists($mapTableName)) {
             throw new SystemException('ERR_WRONG_TABLE_NAME', SystemException::ERR_DEVELOPER, $mapTableName);
         }
         $result = array();
-        $tagInfo = $this->getID($tags);
+        $tagInfo = self::getID($tags);
         if (!empty($tagInfo)) {
-            $columns = array_keys($this->dbh->getColumnsInfo($mapTableName));
-            $mapFieldName = '';
+            $columns = array_keys(E()->getDB()->getColumnsInfo($mapTableName));
             unset($columns['tag_id']);
             list($mapFieldName) = $columns;
             $result =
-                    simplifyDBResult($this->dbh->select($mapTableName, array($mapFieldName), array('tag_id' => array_keys($tagInfo))), $mapFieldName);
+                    simplifyDBResult(E()->getDB()->select($mapTableName, array($mapFieldName), array('tag_id' => array_keys($tagInfo))), $mapFieldName);
         }
         return $result;
     }
-
 }

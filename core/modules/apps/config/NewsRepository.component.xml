@@ -15,12 +15,6 @@
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
             <control id="delete" title="BTN_DELETE" type="button"
                      onclick="del"/>
-            <!--
-                       <control type="button" id="up" title="BTN_MOVE_UP" onclick="up" />
-                       <control type="button" id="down" title="BTN_MOVE_DOWN"
-                       onclick="down" /> <control id="print" title="BTN_PRINT"
-                       type="button" onclick="print"/>
-                   -->
         </toolbar>
     </state>
     <state name="add">
@@ -45,12 +39,6 @@
                      onclick="close"/>
         </toolbar>
     </state>
-    <state name="fileLibrary" rights="3">
-        <uri_patterns>
-            <pattern>/file-library/</pattern>
-            <pattern>/file-library/[any]/</pattern>
-        </uri_patterns>
-    </state>
     <state name="edit">
         <uri_patterns>
             <pattern>/[int]/edit/</pattern>
@@ -68,11 +56,11 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <state name="upload" rights="2">
+    <!--<state name="upload" rights="2">
         <uri_patterns>
             <pattern>/upload/</pattern>
         </uri_patterns>
-    </state>
+    </state>-->
     <state name="delete" rights="2">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
@@ -86,43 +74,20 @@
             <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
         </uri_patterns>
     </state>
-    <state name="imageManager" rights="3">
-        <uri_patterns>
-            <pattern>/imagemanager/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="fileLibrary" rights="3">
+    <!--<state name="fileLibrary" rights="3">
         <uri_patterns>
             <pattern>/file-library/</pattern>
             <pattern>/file-library/[any]/</pattern>
         </uri_patterns>
-    </state>
-    <state name="source" rights="3">
+    </state>-->
+    <!--<state name="source" rights="3">
         <uri_patterns>
             <pattern>/source/</pattern>
         </uri_patterns>
-    </state>
-    <state name="cleanup" rights="3">
+    </state>-->
+    <!--<state name="cleanup" rights="3">
         <uri_patterns>
             <pattern>/cleanup/</pattern>
         </uri_patterns>
-    </state>
-    <state name="view">
-        <uri_patterns>
-            <pattern>/[int]/</pattern>
-        </uri_patterns>
-        <javascript>
-            <behavior name="Form"/>
-        </javascript>
-        <toolbar>
-            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
-        </toolbar>
-    </state>
-    <!--
-         <state name="up" rights="3"> <uri_patterns> <pattern>/[int]/up/</pattern>
-             </uri_patterns> </state>
-         <state name="down" rights="3">
-             <uri_patterns> <pattern>/[int]/down/</pattern> </uri_patterns>
-             </state>
-         -->
+    </state>-->
 </configuration>

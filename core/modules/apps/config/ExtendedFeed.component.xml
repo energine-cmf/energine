@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="cleanup" rights="3">
+        <uri_patterns>
+            <pattern>/cleanup/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="saveText" rights="3">
+        <uri_patterns>
+            <pattern>/save-text/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="source" rights="3">
+        <uri_patterns>
+            <pattern>/source/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="imageManager" rights="3">
+        <uri_patterns>
+            <pattern>/imagemanager/</pattern>
+        </uri_patterns>
+    </state>
+    <!-- Сквозной метод -->
+    <state name="fileLibrary" rights="3">
+        <uri_patterns>
+            <pattern>/file-library/</pattern>
+            <pattern>/file-library/[any]/</pattern>
+        </uri_patterns>
+    </state>
+
+    <state name="view">
+        <uri_patterns>
+            <pattern>/[id]/</pattern>
+        </uri_patterns>
+        <!--<fields>
+            <field name="news_id"/>
+            <field name="smap_id"/>
+            <field name="news_date" outputFormat="%E"/>
+            <field name="news_title"/>
+            <field name="news_text_rtf"/>
+        </fields>-->
+        <translations>
+            <translation const="TXT_BACK_TO_LIST"/>
+        </translations>
+    </state>
+    <state name="main">
+        <uri_patterns>
+            <pattern>/</pattern>
+            <pattern>/page-[pageNumber]/</pattern>
+            <pattern>/[year]/</pattern>
+            <pattern>/[year]/page-[pageNumber]/</pattern>
+            <pattern>/[year]/[month]/</pattern>
+            <pattern>/[year]/[month]/page-[pageNumber]/</pattern>
+            <pattern>/[year]/[month]/[day]/</pattern>
+            <pattern>/[year]/[month]/[day]/page-[pageNumber]/</pattern>
+        </uri_patterns>
+        <toolbar>
+            <control id="view" title="TXT_READ_MORE" type="link"/>
+        </toolbar>
+        <translations>
+            <translation const="TXT_ALL_NEWS"/>
+        </translations>
+    </state>
+
+</configuration>

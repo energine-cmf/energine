@@ -5,9 +5,9 @@
             <behavior name="FeedToolbar"/>
         </javascript>
         <toolbar>
-            <control id="add" title="BTN_ADD_NEWS" type="button" onclick="add"/>
-            <control id="edit" title="BTN_EDIT_NEWS" type="button" onclick="edit"/>
-            <control id="delete" title="BTN_DELETE_NEWS" type="button" onclick="del"/>
+            <control id="add" title="BTN_ADD_ARTICLE" type="button" onclick="add"/>
+            <control id="edit" title="BTN_EDIT_ARTICLE" type="button" onclick="edit"/>
+            <control id="delete" title="BTN_DELETE_ARTICLE" type="button" onclick="del"/>
         </toolbar>
     </state>
     <state name="add">
@@ -44,6 +44,11 @@
     <state name="save" rights="3">
         <uri_patterns>
             <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="autoCompleteTags">
+        <uri_patterns>
+            <pattern>/tag-autocomplete/</pattern>
         </uri_patterns>
     </state>
     <state name="delete" rights="3">

@@ -37,15 +37,8 @@
       */
     protected function main(){
         $this->prepare();
-        $this->getDataDescription()->addFieldDescription(
-            E()->AttachmentManager->createFieldDescription()
-        );
-        $this->getData()->addField(
-            E()->AttachmentManager->createField(
-                $this->document->getID(),
-                'smap_id',
-                'share_sitemap_uploads'
-            )
-        );
+        $am = new AttachmentManager($this->getDataDescription(), $this->getData(), 'share_sitemap');
+        $am->createFieldDescription();
+        $am->createField('smap_id', false, $this->document->getID());
     }
 }

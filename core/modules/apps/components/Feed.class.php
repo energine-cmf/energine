@@ -55,10 +55,6 @@ class Feed extends DBDataSet
                 $this->filterID = array_merge(array($this->filterID), $descendants);
             }
             $this->addFilterCondition(array('smap_id' => $this->filterID));
-
-
-
-
             if ($limit = $this->getParam('limit')) {
                 $this->setLimit(array(0, $limit));
                 $this->setParam('recordsPerPage', false);
@@ -77,7 +73,6 @@ class Feed extends DBDataSet
         if(isset($result['smap_id'])){
             $result['smap_id']['key'] = false;
         }
-
         return $result;
     }
 
@@ -93,9 +88,8 @@ class Feed extends DBDataSet
     protected function createDataDescription()
     {
         $result = parent::createDataDescription();
-
-        if($this->getState()=='main'){
-            if(!($fd = $result->getFieldDescriptionByName('smap_id'))){
+        if ($this->getState() == 'main') {
+            if (!($fd = $result->getFieldDescriptionByName('smap_id'))) {
                 $fd = new FieldDescription('smap_id');
                 $fd->setProperty('tableName',$this->getTableName());
                 $result->addFieldDescription($fd);

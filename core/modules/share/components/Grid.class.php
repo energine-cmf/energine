@@ -126,6 +126,19 @@ class Grid extends DBDataSet
 
         return array_merge(parent::defineParams(), $params);
     }
+    /**
+     * @return GridConfig
+     */
+    protected function getConfig(){
+        if(!$this->config){
+            $this->config = new GridConfig(
+                $this->getParam('config'),
+                get_class($this),
+                $this->module
+            );
+        }
+        return $this->config;
+    }
 
     /**
      * Метод выводящий форму добавления
@@ -287,7 +300,7 @@ class Grid extends DBDataSet
     {
 
         $this->setParam('onlyCurrentLang', true);
-        $this->config->setCurrentState($baseMethod);
+        $this->getConfig()->setCurrentState($baseMethod);
         $this->setBuilder(new JSONBuilder());
 
         $this->setDataDescription($this->createDataDescription());
@@ -346,9 +359,9 @@ class Grid extends DBDataSet
     {
         if (in_array($this->getState(), array('printData', 'exportCSV'))) {
             $previousAction = $this->getState();
-            $this->config->setCurrentState(self::DEFAULT_STATE_NAME);
+            $this->getConfig()->setCurrentState(self::DEFAULT_STATE_NAME);
             $result = parent::createDataDescription();
-            $this->config->setCurrentState($previousAction);
+            $this->getConfig()->setCurrentState($previousAction);
         }
         else {
             $result = parent::createDataDescription();
@@ -451,7 +464,7 @@ class Grid extends DBDataSet
 
         //получаем описание полей для метода
         $configDataDescription =
-                $this->config->getStateConfig($this->getPreviousState());
+                $this->getConfig()->getStateConfig($this->getPreviousState());
         //если в конфиге есть описание полей для метода - загружаем их
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);
@@ -1017,76 +1030,19 @@ class Grid extends DBDataSet
      * @access protected
      * @return void
      */
-    protected function addAttFilesField($tableName, $data = true)
+    protected function addAttFilesField($tableName, $data = false)
     {
-        $field = new FieldDescription('attached_files');
-        $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
-        $field->setProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
-        $field->setProperty('tableName', $tableName);
-        $this->getDataDescription()->addFieldDescription($field);
-
-        //Добавляем поле с дополнительными файлами
-        $field = new Field('attached_files');
-
+        $am = new AttachmentManager(
+            $this->getDataDescription(),
+            $this->getData(),
+            $tableName
+        );
+        $am->createAttachmentTab($data);
+        
         //Ссылки на добавление и удаление файла
-        $this->addTranslation('BTN_ADD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN');
-
-        $attachedFilesData = $this->buildAttachedFiles($data);
-        for ($i = 0; $i < count(E()->getLanguage()->getLanguages()); $i++) {
-            $field->addRowData($attachedFilesData);
-        }
-        $this->getData()->addField($field);
+        $this->addTranslation('BTN_ADD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
     }
 
-    /**
-     * @param $data Данные
-     *
-     * @access private
-     * @return DOMNode
-     */
-
-    private function buildAttachedFiles($data)
-    {
-        $builder = new Builder();
-        $dd = new DataDescription();
-        $f = new FieldDescription('upl_id');
-        $dd->addFieldDescription($f);
-        /*
-        $f = new FieldDescription('upl_is_main');
-        $f->setType(FieldDescription::FIELD_TYPE_BOOL);
-        $dd->addFieldDescription($f);
-*/
-        $f = new FieldDescription('upl_name');
-        $dd->addFieldDescription($f);
-
-        $f = new FieldDescription('upl_path');
-        $f->setType(FieldDescription::FIELD_TYPE_STRING);
-        //$f->setProperty('title', $this->translate('FIELD_UPL_FILE'));
-        $f->setProperty('title', 'FIELD_UPL_FILE');
-        $dd->addFieldDescription($f);
-
-        $d = new Data();
-
-        if (is_array($data)) {
-            $d->load($data);
-            $pathField = $d->getFieldByName('upl_path');
-            foreach ($pathField as $i => $path) {
-                if (in_array(E()->FileInfo->analyze($path)->type, array(FileInfo::META_TYPE_IMAGE, FileInfo::META_TYPE_VIDEO))) {
-                    $pathField->setRowData($i, FileObject::getThumbFilename($path, 50, 50));
-                    $pathField->setRowProperty($i, 'is_image', true);
-                }
-            }
-        }
-
-        $this->addTranslation('MSG_NO_ATTACHED_FILES');
-
-        $builder->setData($d);
-        $builder->setDataDescription($dd);
-
-        $builder->build();
-
-        return $builder->getResult();
-    }
 
     /**
      * Быстрая загрузка аттачмента в репозиторий

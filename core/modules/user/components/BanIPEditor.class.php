@@ -122,8 +122,8 @@ class BanIPEditor extends Grid {
 
         } else {
             $this->setStateParam('ban_ip_id',$IPAlreadyBanned);
-            if (!$this->config->isEmpty()) {
-                $this->config->setCurrentState('editBanUserIP');
+            if (!$this->getConfig()->isEmpty()) {
+                $this->getConfig()->setCurrentState('editBanUserIP');
             }
             $this->editBanUserIP();
         }

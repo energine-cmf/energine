@@ -142,4 +142,9 @@
                 <pattern>/save-new-template/</pattern>
             </uri_patterns>
         </state>
+        <state name="revertTemplate" rights="3">
+            <uri_patterns>
+                <pattern>/revert-template/</pattern>
+            </uri_patterns>
+        </state>
 </configuration>

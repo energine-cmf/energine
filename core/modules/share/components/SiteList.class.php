@@ -50,7 +50,7 @@
     	$filteredIDs = true;
     	
     	if($this->getParam('tags'))
-            $filteredIDs = E()->TagManager->getFilter($this->getParam('tags'), 'share_sites_tags');
+            $filteredIDs = TagManager::getFilter($this->getParam('tags'), 'share_sites_tags');
         
         if(!empty($filteredIDs))    	
         foreach(E()->getSiteManager() as $siteID => $site){

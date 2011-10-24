@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    <state name="fileLibrary" rights="3">
-        <uri_patterns>
-            <pattern>/file-library/</pattern>
-            <pattern>/file-library/[any]/</pattern>
-        </uri_patterns>
-    </state>
     <state name="main">
         <uri_patterns>
             <pattern>/show/</pattern>
@@ -82,7 +76,6 @@
             <field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
             <field name="smap_layout"/>
             <field name="smap_content"/>
-            <field name="tags" type="textbox" title="FIELD_TAGS" nullable="nullable"/>
             <!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
             <field name="smap_redirect_url"/>
             <field name="smap_meta_robots"/>
@@ -122,7 +115,6 @@
             <field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
             <field name="smap_layout"/>
             <field name="smap_content"/>
-            <field name="tags" type="textbox" title="FIELD_TAGS" nullable="nullable"/>
             <!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
             <field name="smap_redirect_url"/>
             <field name="smap_meta_robots"/>
@@ -147,11 +139,6 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <state name="upload">
-        <uri_patterns>
-            <pattern>/upload/</pattern>
-        </uri_patterns>
-    </state>
     <state name="delete">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
@@ -167,26 +154,4 @@
             <pattern>/[int]/down/</pattern>
         </uri_patterns>
     </state>
-    <state name="imageManager" rights="3">
-        <uri_patterns>
-            <pattern>/imagemanager/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="source" rights="3">
-        <uri_patterns>
-            <pattern>/source/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="cleanup" rights="3">
-        <uri_patterns>
-            <pattern>/cleanup/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="put">
-        <uri_patterns>
-            <pattern>/put/</pattern>
-        </uri_patterns>
-    </state>
-
-
 </configuration>

@@ -25,7 +25,7 @@
             <component name="news" module="apps" class="ExtendedFeed">
                 <params>
                     <param name="showAll">1</param>
-                    <param name="tableName">test_feed</param>
+                    <param name="tableName">apps_feed</param>
                     <param name="recordsPerPage">10</param>
                 </params>
             </component>

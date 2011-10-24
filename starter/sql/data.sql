@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 3.4.2
--- http://www.phpmyadmin.net
---
--- Хост: localhost
--- Время создания: Сен 27 2011 г., 12:03
--- Версия сервера: 5.5.13
--- Версия PHP: 5.3.6
-
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT=0;
@@ -19,15 +10,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
---
--- База данных: `ponomarev_energine28`
---
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `apps_ads`
---
 
 DROP TABLE IF EXISTS `apps_ads`;
 CREATE TABLE IF NOT EXISTS `apps_ads` (
@@ -37,14 +19,35 @@ CREATE TABLE IF NOT EXISTS `apps_ads` (
   `ad_left_250_250` text,
   PRIMARY KEY (`ad_id`),
   KEY `smap_id` (`smap_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
---
--- Дамп данных таблицы `apps_ads`
---
 
 INSERT INTO `apps_ads` (`ad_id`, `smap_id`, `ad_top_728_90`, `ad_left_250_250`) VALUES
 (3, 1263, '<a href="#"><img src="uploads/public/reklama/13149771465189.nrs.gif" alt="728x90" style="" align="bottom" border="0" height="90" width="728"/></a>', '<a href="#"><img src="uploads/public/reklama/13149795553664.nrs.gif" alt="250x250" style="" align="bottom" border="0" height="250" width="250"/></a>');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `apps_feed`
+--
+
+DROP TABLE IF EXISTS `apps_feed`;
+CREATE TABLE IF NOT EXISTS `apps_feed` (
+  `tf_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `smap_id` int(10) unsigned NOT NULL,
+  `tf_order_num` int(10) unsigned DEFAULT '1',
+  PRIMARY KEY (`tf_id`),
+  KEY `smap_id` (`smap_id`),
+  KEY `tf_order_num` (`tf_order_num`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Дамп данных таблицы `apps_feed`
+--
+
+INSERT INTO `apps_feed` (`tf_id`, `smap_id`, `tf_order_num`) VALUES
+(1, 1272, 2),
+(2, 1272, 1);
 
 -- --------------------------------------------------------
 
@@ -61,6 +64,85 @@ CREATE TABLE IF NOT EXISTS `apps_feedback` (
   `feed_text` text NOT NULL,
   PRIMARY KEY (`feed_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `apps_feed_tags`
+--
+
+DROP TABLE IF EXISTS `apps_feed_tags`;
+CREATE TABLE IF NOT EXISTS `apps_feed_tags` (
+  `tf_id` int(10) unsigned NOT NULL,
+  `tag_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`tf_id`,`tag_id`),
+  KEY `tag_id` (`tag_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `apps_feed_tags`
+--
+
+INSERT INTO `apps_feed_tags` (`tf_id`, `tag_id`) VALUES
+(2, 27),
+(2, 83),
+(1, 87);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `apps_feed_translation`
+--
+
+DROP TABLE IF EXISTS `apps_feed_translation`;
+CREATE TABLE IF NOT EXISTS `apps_feed_translation` (
+  `tf_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
+  `tf_name` varchar(256) NOT NULL,
+  `tf_annotation_rtf` text NOT NULL,
+  `tf_text_rtf` text NOT NULL,
+  PRIMARY KEY (`tf_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `apps_feed_translation`
+--
+
+INSERT INTO `apps_feed_translation` (`tf_id`, `lang_id`, `tf_name`, `tf_annotation_rtf`, `tf_text_rtf`) VALUES
+(1, 1, 'Заголовок статьи', 'Текст аннотации<br>', 'Полный текст<br>'),
+(1, 2, 'Заголовок статті', 'текст аннотації<br>', 'Повний текст<br>'),
+(2, 1, 'Вторая статья', 'аннотация второй статьи<br>', 'Текст второй статьи<br>'),
+(2, 2, 'Друга стаття', 'анотація другої статті<br>', 'повний текст другої статті<br>');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `apps_feed_uploads`
+--
+
+DROP TABLE IF EXISTS `apps_feed_uploads`;
+CREATE TABLE IF NOT EXISTS `apps_feed_uploads` (
+  `tf_id` int(10) unsigned NOT NULL,
+  `upl_id` int(10) unsigned NOT NULL,
+  `upl_order_num` int(10) unsigned DEFAULT '1',
+  PRIMARY KEY (`tf_id`,`upl_id`),
+  KEY `upl_order_num` (`upl_order_num`),
+  KEY `upl_id` (`upl_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `apps_feed_uploads`
+--
+
+INSERT INTO `apps_feed_uploads` (`tf_id`, `upl_id`, `upl_order_num`) VALUES
+(1, 125, 1),
+(2, 128, 1),
+(1, 126, 2),
+(2, 129, 2),
+(1, 128, 3),
+(2, 131, 3),
+(1, 129, 4);
 
 -- --------------------------------------------------------
 
@@ -110,13 +192,6 @@ CREATE TABLE IF NOT EXISTS `apps_news_tags` (
   PRIMARY KEY (`news_id`,`tag_id`),
   KEY `tag_id` (`tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `apps_news_tags`
---
-
-INSERT INTO `apps_news_tags` (`news_id`, `tag_id`) VALUES
-(14, 27);
 
 -- --------------------------------------------------------
 
@@ -188,7 +263,6 @@ CREATE TABLE IF NOT EXISTS `apps_news_uploads` (
 
 INSERT INTO `apps_news_uploads` (`news_id`, `upl_id`, `upl_order_num`) VALUES
 (19, 16, 2),
-(14, 23, 7),
 (17, 23, 7),
 (16, 24, 1),
 (11, 25, 1),
@@ -197,7 +271,6 @@ INSERT INTO `apps_news_uploads` (`news_id`, `upl_id`, `upl_order_num`) VALUES
 (8, 28, 2),
 (9, 30, 1),
 (9, 31, 2),
-(15, 31, 2),
 (9, 33, 3),
 (17, 34, 2),
 (12, 35, 1),
@@ -207,26 +280,19 @@ INSERT INTO `apps_news_uploads` (`news_id`, `upl_id`, `upl_order_num`) VALUES
 (9, 40, 5),
 (17, 40, 3),
 (19, 41, 1),
-(14, 43, 1),
-(14, 45, 2),
 (11, 46, 3),
 (13, 48, 1),
 (9, 51, 6),
 (18, 54, 1),
-(14, 55, 6),
 (9, 57, 7),
-(14, 58, 5),
-(14, 59, 3),
 (8, 61, 3),
 (12, 64, 2),
 (17, 64, 5),
 (19, 64, 3),
 (17, 65, 6),
-(15, 66, 1),
 (11, 67, 4),
-(15, 68, 3),
-(14, 69, 4),
-(10, 71, 1);
+(10, 123, 1),
+(14, 123, 1);
 
 -- --------------------------------------------------------
 
@@ -243,15 +309,7 @@ CREATE TABLE IF NOT EXISTS `frm_forms` (
   PRIMARY KEY (`form_id`),
   KEY `form_creation_date` (`form_creation_date`),
   KEY `form_is_active` (`form_is_active`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
-
---
--- Дамп данных таблицы `frm_forms`
---
-
-INSERT INTO `frm_forms` (`form_id`, `form_creation_date`, `form_is_active`, `form_email_adresses`) VALUES
-(28, '2011-09-08 15:17:00', 1, 'demo@energine.org'),
-(29, '2011-09-09 09:12:00', 1, 'demo@energine.org');
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=31 ;
 
 -- --------------------------------------------------------
 
@@ -268,16 +326,6 @@ CREATE TABLE IF NOT EXISTS `frm_forms_translation` (
   PRIMARY KEY (`form_id`,`lang_id`),
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `frm_forms_translation`
---
-
-INSERT INTO `frm_forms_translation` (`form_id`, `lang_id`, `form_name`, `form_annotation_rtf`) VALUES
-(28, 1, 'Обратная связь', 'Эта форма создана с помощью специального модуля системы - конструктора\nформ. Этот модуль позволяет сгенерировать форму с произвольным набором\nполей различных типов, используя только веб-интерфейс административной\nчасти сайта. Чтобы создать форму, необходимо авторизоваться на сайте и\nперейти в подраздел "Управление сайтом" - "<a href="admin/forms/">Управление формами</a>". После сохранения формы нужно создать страницу по шаблону "Конструктор форм: форма", перейти на эту страницу и включить режим "Редактирование блоков". В этом режиме нужно отредактировать свойства блока, в котором содержится форма, а именно указать идентификатор новой формы.<br>'),
-(28, 2, 'Зворотній зв''язок', 'Ця форма створена за допомогою спеціального модуля системи - конструктора форм. Цей модуль дозволяє згенерувати форму з довільним набором полів різних типів, використовуючи лише веб-інтерфейс адміністративної частини сайту. Щоб створити форму, необхідно авторизуватися на сайті і перейти до розділу "Управління сайтом" - "<a href="admin/forms/">Управління формами</a>". Після збереження форми треба створити сторінку за шаблоном "Конструктор форм: форма", перейти на цю сторінку і ввімкнути режим "Редагування блоків". В цьому режимі треба відредагувати властивості блока, в якому знаходиться форма, а саме вказати ідентифікатор нової форми.<br>'),
-(29, 1, 'Анкета', 'Эта форма создана с помощью специального модуля системы - конструктора\nформ. Этот модуль позволяет сгенерировать форму с произвольным набором\nполей различных типов, используя только веб-интерфейс административной\nчасти сайта. Чтобы создать форму, необходимо авторизоваться на сайте и\nперейти в подраздел "Управление сайтом" - "<a href="admin/forms/">Управление формами</a>". После сохранения формы нужно\nсоздать страницу по шаблону "Конструктор форм: форма", перейти на эту\nстраницу и включить режим "Редактирование блоков". В этом режиме нужно\nотредактировать свойства блока, в котором содержится форма, а именно\nуказать идентификатор новой формы.'),
-(29, 2, 'Анкета', 'Ця форма створена за допомогою спеціального модуля системи -\nконструктора форм. Цей модуль дозволяє згенерувати форму з довільним\nнабором полів різних типів, використовуючи лише веб-інтерфейс\nадміністративної частини сайту. Щоб створити форму, необхідно\nавторизуватися на сайті і перейти до розділу "Управління сайтом" -\n"<a href="admin/forms">Управління формами</a>". Після збереження форми треба створити сторінку за\nшаблоном "Конструктор форм: форма", перейти на цю сторінку і ввімкнути\nрежим "Редагування блоків". В цьому режимі треба відредагувати\nвластивості блока, в якому знаходиться форма, а саме вказати\nідентифікатор нової форми.');
 
 -- --------------------------------------------------------
 
@@ -341,6 +389,7 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (331, 1, 3),
 (351, 1, 1),
 (483, 1, 3),
+(1254, 1, 3),
 (1255, 1, 3),
 (1256, 1, 3),
 (1257, 1, 3),
@@ -357,11 +406,14 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (1268, 1, 3),
 (1269, 1, 3),
 (1270, 1, 3),
+(1272, 1, 3),
+(1273, 1, 3),
 (80, 3, 1),
 (329, 3, 1),
 (330, 3, 1),
 (331, 3, 1),
 (351, 3, 1),
+(1254, 3, 1),
 (1255, 3, 1),
 (1256, 3, 1),
 (1257, 3, 1),
@@ -371,17 +423,17 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (1261, 3, 1),
 (1262, 3, 1),
 (1263, 3, 1),
-(1264, 3, 1),
 (1265, 3, 1),
-(1266, 3, 1),
 (1267, 3, 1),
 (1269, 3, 1),
+(1272, 3, 1),
 (80, 4, 1),
 (329, 4, 1),
 (330, 4, 1),
 (331, 4, 2),
 (351, 4, 1),
 (483, 4, 1),
+(1254, 4, 1),
 (1255, 4, 1),
 (1256, 4, 1),
 (1257, 4, 1),
@@ -392,12 +444,14 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (1262, 4, 1),
 (1263, 4, 1),
 (1264, 4, 1),
-(1265, 4, 1),
+(1265, 4, 2),
 (1266, 4, 1),
 (1267, 4, 1),
 (1268, 4, 1),
 (1269, 4, 1),
-(1270, 4, 1);
+(1270, 4, 1),
+(1272, 4, 1),
+(1273, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -437,7 +491,7 @@ CREATE TABLE IF NOT EXISTS `share_lang_tags` (
   `ltag_name` varchar(70) NOT NULL DEFAULT '',
   PRIMARY KEY (`ltag_id`),
   UNIQUE KEY `ltag_name` (`ltag_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1209 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1219 ;
 
 --
 -- Дамп данных таблицы `share_lang_tags`
@@ -458,6 +512,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (465, 'BTN_ALIGN_JUSTIFY'),
 (462, 'BTN_ALIGN_LEFT'),
 (463, 'BTN_ALIGN_RIGHT'),
+(1208, 'BTN_APPLY'),
 (327, 'BTN_APPLY_FILTER'),
 (701, 'BTN_APPROVE'),
 (457, 'BTN_BOLD'),
@@ -548,6 +603,9 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (1145, 'CONTENT_MAIN'),
 (609, 'CONTENT_MAP'),
 (1146, 'CONTENT_MEDIA_TEXTBLOCK'),
+(1210, 'CONTENT_MOD'),
+(1217, 'CONTENT_MOD1'),
+(1209, 'CONTENT_MODIFICIROVANNAJA-GLAVNAJA'),
 (610, 'CONTENT_NEWS'),
 (856, 'CONTENT_NEWS_CATEGORIES_EDITOR'),
 (612, 'CONTENT_NEWS_REPOSITORY'),
@@ -658,6 +716,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (1194, 'FIELD_form_29_field_6'),
 (1195, 'FIELD_form_29_field_7'),
 (1196, 'FIELD_form_29_field_8_file'),
+(1218, 'FIELD_form_30_field_2'),
 (1164, 'FIELD_FORM_ANNOTATION_RTF'),
 (1155, 'FIELD_FORM_CREATION_DATE'),
 (1175, 'FIELD_FORM_DATE'),
@@ -729,7 +788,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (876, 'FIELD_NEWS_TOP'),
 (367, 'FIELD_NEW_PASSWORD'),
 (935, 'FIELD_NICK'),
-(1208, 'FIELD_NOCAPTCHA'),
 (1150, 'FIELD_NUM'),
 (1053, 'FIELD_ORDER'),
 (584, 'FIELD_ORDER_COMMENT'),
@@ -963,6 +1021,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (320, 'TXT_ACCESS_EDIT'),
 (319, 'TXT_ACCESS_FULL'),
 (321, 'TXT_ACCESS_READ'),
+(1213, 'TXT_ACTION_SELECTOR'),
 (456, 'TXT_ADDRESS'),
 (549, 'TXT_ADD_MANUFACTURER'),
 (1028, 'TXT_ADD_TO_FAVORITES'),
@@ -1010,6 +1069,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (939, 'TXT_COMMENT_NUM'),
 (432, 'TXT_CONTACTS'),
 (419, 'TXT_CONTACTS_TITLE'),
+(1212, 'TXT_CONTENT'),
 (560, 'TXT_CURRENCY_RATE'),
 (883, 'TXT_DAY_MAIN_NEWS'),
 (943, 'TXT_DELETE'),
@@ -1066,6 +1126,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (279, 'TXT_LANGUAGE_EDITOR'),
 (940, 'TXT_LAST_COMMENT_DATE'),
 (936, 'TXT_LAST_FORUM_MESSAGES'),
+(1211, 'TXT_LAYOUT'),
 (954, 'TXT_LOCATION'),
 (580, 'TXT_LOGIN_ENGAGED'),
 (1137, 'TXT_LOGIN_FORM'),
@@ -1134,6 +1195,9 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (341, 'TXT_ROLE_DIV_RIGHTS'),
 (274, 'TXT_ROLE_EDITOR'),
 (488, 'TXT_ROLE_TEXT'),
+(1214, 'TXT_SAVE_CONTENT'),
+(1216, 'TXT_SAVE_TO_CURRENT_CONTENT'),
+(1215, 'TXT_SAVE_TO_NEW_CONTENT'),
 (511, 'TXT_SEARCH_CATALOGUE'),
 (978, 'TXT_SEARCH_ON_STB'),
 (342, 'TXT_SEARCH_RESULT'),
@@ -2558,8 +2622,8 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (1129, 2, 'Тільки популярні'),
 (1134, 1, 'Сайты'),
 (1134, 2, 'Сайти'),
-(1135, 1, 'Редактировать блоки'),
-(1135, 2, 'Редагувати блоки'),
+(1135, 1, 'Управление блоками'),
+(1135, 2, 'Керування блоками'),
 (1136, 1, 'Категория'),
 (1136, 2, 'Категорія'),
 (1137, 1, 'Вход'),
@@ -2698,12 +2762,30 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (1204, 2, 'XML-код блока'),
 (1205, 1, 'Новый текстовый блок'),
 (1205, 2, 'Новий текстовий блок'),
-(1206, 1, 'Параметры индексирования страницы (содержимое meta robots)'),
-(1206, 2, 'Параметри індексування сторінки (значення meta robots)'),
+(1206, 1, 'Параметры индексирования страницы (содержимое meta-тега robots)'),
+(1206, 2, 'Параметри індексування сторінки (значення meta-тега robots)'),
 (1207, 1, 'Вставить embed код'),
 (1207, 2, 'Вставити embed код'),
-(1208, 1, 'Не выводить reCAPTCHA (тест для распознавания людей)'),
-(1208, 2, 'Не виводити reCAPTCHA (тест для розпізнавання людей)');
+(1208, 1, 'Применить'),
+(1208, 2, 'Применить'),
+(1210, 1, 'Мод'),
+(1210, 2, 'Мод'),
+(1211, 1, 'Макет страницы:'),
+(1211, 2, 'Макет сторінки:'),
+(1212, 1, 'Содержимое страницы:'),
+(1212, 2, 'Вміст сторінки:'),
+(1213, 1, 'Действие:'),
+(1213, 2, 'Дія:'),
+(1214, 1, 'Сохранить только для этой страницы'),
+(1214, 2, 'Зберегти для поточної'),
+(1215, 1, 'Сохранить как новое'),
+(1215, 2, 'Зберегти як нове'),
+(1216, 1, 'Сохранить в текущем шаблоне'),
+(1216, 2, 'Збререгти в шаблоні сторінки'),
+(1217, 1, 'Мод1'),
+(1217, 2, 'Мод1'),
+(1218, 1, 'Хуйло'),
+(1218, 2, 'Хуйло');
 
 -- --------------------------------------------------------
 
@@ -2727,16 +2809,15 @@ CREATE TABLE IF NOT EXISTS `share_session` (
   KEY `i_session_u_id` (`u_id`),
   KEY `i_session_ip` (`session_ip`),
   KEY `session_expires` (`session_expires`)
-) ENGINE=MEMORY  DEFAULT CHARSET=utf8 AUTO_INCREMENT=32 ;
+) ENGINE=MEMORY  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 --
 -- Дамп данных таблицы `share_session`
 --
 
 INSERT INTO `share_session` (`session_id`, `session_native_id`, `session_last_impression`, `session_created`, `session_expires`, `session_ip`, `session_user_agent`, `u_id`, `session_data`) VALUES
-(31, '1cab61edc55dbac840cb211fdd4e570b08e4c9da', 1317105848, 1317105848, 1317106748, 0, '', 22, 'userID|i:22;'),
-(29, 'e01bff7e7996a3c30cfa627fc57754c5e01842ed', 1317037362, 1317027980, 1317145362, 1532629676, '', 22, 'userID|i:22;'),
-(30, 'db14d65fa9a5af8492de5a65dd4de9538d38c1a1', 1317105835, 1317105835, 1317106735, 0, '', 22, 'userID|i:22;');
+(10, '93100c4bae557d55993556de7703fa85d5eda053', 1319471043, 1319471043, 1319579043, 1532629676, '', 22, 'userID|i:22;'),
+(11, 'd61d41a8d510d0a428064eac9f668bebc99ae497', 1319471080, 1319471043, 1319579080, 1532629676, '', 22, 'userID|i:22;');
 
 -- --------------------------------------------------------
 
@@ -2761,35 +2842,37 @@ CREATE TABLE IF NOT EXISTS `share_sitemap` (
   UNIQUE KEY `smap_pid` (`smap_pid`,`site_id`,`smap_segment`),
   KEY `site_id` (`site_id`),
   KEY `smap_order_num` (`smap_order_num`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1272 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1274 ;
 
 --
 -- Дамп данных таблицы `share_sitemap`
 --
 
 INSERT INTO `share_sitemap` (`smap_id`, `site_id`, `smap_layout`, `smap_layout_xml`, `smap_content`, `smap_content_xml`, `smap_pid`, `smap_segment`, `smap_order_num`, `smap_redirect_url`, `smap_meta_robots`) VALUES
-(80, 1, 'default.layout.xml', '', 'main.content.xml', '', NULL, '', 239, NULL, NULL),
-(329, 1, 'default.layout.xml', '', 'map.content.xml', '', 80, 'sitemap', 16, NULL, NULL),
-(330, 1, 'default.layout.xml', '', 'restore_password.content.xml', '', 80, 'restore-password', 220, NULL, NULL),
-(331, 1, 'default.layout.xml', '', 'register.content.xml', '', 80, 'registration', 188, NULL, NULL),
-(351, 1, 'google_sitemap.layout.xml', '', 'google_sitemap.content.xml', '', 80, 'google-sitemap', 221, NULL, NULL),
-(483, 1, 'default.layout.xml', '', 'user_profile.content.xml', '', 80, 'profile', 219, NULL, NULL),
-(1255, 1, 'default.layout.xml', '', 'news.content.xml', '', 80, 'news', 10, NULL, NULL),
-(1256, 1, 'default.layout.xml', '', 'textblock.content.xml', '', 80, 'text', 6, NULL, NULL),
-(1257, 1, 'default.layout.xml', '', 'childs.content.xml', '', 80, 'subdivisions', 8, NULL, NULL),
-(1258, 1, 'default.layout.xml', '', 'media_textblock.content.xml', '', 1257, 'subdivisions1', 12, NULL, NULL),
-(1259, 1, 'default.layout.xml', '', 'media_textblock.content.xml', '', 1257, 'subdivisions2', 13, NULL, NULL),
-(1260, 1, 'default.layout.xml', '', 'media_textblock.content.xml', '', 1257, 'subdivisions3', 14, NULL, NULL),
-(1261, 1, 'default.layout.xml', '', 'textblock.content.xml', '', 80, 'photo', 11, NULL, NULL),
-(1262, 1, 'default.layout.xml', '', 'textblock.content.xml', '', 80, 'video', 15, NULL, NULL),
-(1263, 1, 'default.layout.xml', '', 'textblock.content.xml', '', 80, 'ad', 9, NULL, NULL),
-(1264, 1, 'default.layout.xml', '', 'childs.content.xml', '', 80, 'admin', 224, NULL, NULL),
-(1265, 1, 'default.layout.xml', '', 'form_editor.content.xml', '', 1264, 'forms', 6, NULL, NULL),
-(1266, 1, 'default.layout.xml', '', 'childs.content.xml', '', 80, 'forms', 223, NULL, NULL),
-(1267, 1, 'default.layout.xml', '', 'form.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formEditorContainer" block="alfa" widget="static"><component name="form" class="Form" module="forms"><params><param name="id">28</param>\n<param name="noCaptcha">1</param></params></component></container></container></content>', 1266, 'feedback', 3, NULL, NULL),
-(1268, 1, 'default.layout.xml', '', 'form_results.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formResultsContainer" block="alfa" widget="static"><component name="formResults" module="forms" class="FormResults"><params><param name="form_id">28</param>\n<param name="config" type="hidden">core/modules/forms/config/FormResultsSimple.component.xml</param></params></component></container></container></content>', 1267, 'results', 4, NULL, NULL),
-(1269, 1, 'default.layout.xml', '', 'form.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formEditorContainer" block="alfa" widget="static"><component name="form" class="Form" module="forms"><params><param name="id">29</param>\n<param name="noCaptcha">1</param></params></component></container></container></content>', 1266, 'form', 5, NULL, NULL),
-(1270, 1, 'default.layout.xml', '', 'form_results.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formResultsContainer" block="alfa" widget="static"><component name="formResults" module="forms" class="FormResults"><params><param name="form_id">29</param>\n<param name="config" type="hidden">core/modules/forms/config/FormResultsSimple.component.xml</param></params></component></container></container></content>', 1269, 'results', 2, NULL, NULL);
+(80, 1, 'default.layout.xml', '', 'main.content.xml', '', NULL, '', 241, NULL, NULL),
+(329, 1, 'default.layout.xml', '', 'map.content.xml', '', 80, 'sitemap', 18, NULL, NULL),
+(330, 1, 'default.layout.xml', '', 'restore_password.content.xml', '', 80, 'restore-password', 222, NULL, NULL),
+(331, 1, 'default.layout.xml', '', 'register.content.xml', '', 80, 'registration', 190, NULL, NULL),
+(351, 1, 'google_sitemap.layout.xml', '', 'google_sitemap.content.xml', '', 80, 'google-sitemap', 223, NULL, NULL),
+(483, 1, 'default.layout.xml', '', 'user_profile.content.xml', '', 80, 'profile', 221, NULL, NULL),
+(1255, 1, 'default.layout.xml', '', 'news.content.xml', '', 80, 'news', 12, NULL, NULL),
+(1256, 1, 'default.layout.xml', '', 'textblock.content.xml', '', 80, 'text', 8, NULL, NULL),
+(1257, 1, 'default.layout.xml', '', 'childs.content.xml', '', 80, 'subdivisions', 10, NULL, NULL),
+(1258, 1, 'default.layout.xml', '', 'media_textblock.content.xml', '', 1257, 'subdivisions1', 14, NULL, NULL),
+(1259, 1, 'default.layout.xml', '', 'media_textblock.content.xml', '', 1257, 'subdivisions2', 15, NULL, NULL),
+(1260, 1, 'default.layout.xml', '', 'media_textblock.content.xml', '', 1257, 'subdivisions3', 16, NULL, NULL),
+(1261, 1, 'default.layout.xml', '', 'textblock.content.xml', '', 80, 'photo', 13, NULL, NULL),
+(1262, 1, 'default.layout.xml', '', 'textblock.content.xml', '', 80, 'video', 17, NULL, NULL),
+(1263, 1, 'default.layout.xml', '', 'textblock.content.xml', '', 80, 'ad', 11, NULL, NULL),
+(1264, 1, 'default.layout.xml', '', 'childs.content.xml', '', 80, 'admin', 226, NULL, NULL),
+(1265, 1, 'default.layout.xml', '', 'form_editor.content.xml', '', 1264, 'forms', 8, NULL, NULL),
+(1266, 1, 'default.layout.xml', '', 'childs.content.xml', '', 80, 'forms', 225, NULL, NULL),
+(1267, 1, 'default.layout.xml', '', 'form.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formEditorContainer" block="alfa" widget="static"><component name="form" class="Form" module="forms"><params><param name="id">28</param>\n<param name="noCaptcha">1</param></params></component></container></container></content>', 1266, 'feedback', 5, NULL, NULL),
+(1268, 1, 'default.layout.xml', '', 'form_results.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formResultsContainer" block="alfa" widget="static"><component name="formResults" module="forms" class="FormResults"><params><param name="form_id">28</param>\n<param name="config" type="hidden">core/modules/forms/config/FormResultsSimple.component.xml</param></params></component></container></container></content>', 1267, 'results', 6, NULL, NULL),
+(1269, 1, 'default.layout.xml', '', 'form.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formEditorContainer" block="alfa" widget="static"><component name="form" class="Form" module="forms"><params><param name="id">29</param>\n<param name="noCaptcha">1</param></params></component></container></container></content>', 1266, 'form', 7, NULL, NULL),
+(1270, 1, 'default.layout.xml', '', 'form_results.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formResultsContainer" block="alfa" widget="static"><component name="formResults" module="forms" class="FormResults"><params><param name="form_id">29</param>\n<param name="config" type="hidden">core/modules/forms/config/FormResultsSimple.component.xml</param></params></component></container></container></content>', 1269, 'results', 4, NULL, NULL),
+(1272, 1, 'default.layout.xml', '', 'extfeed.content.xml', '', 80, 'efeed', 2, NULL, NULL),
+(1273, 1, 'google_sitemap.layout.xml', '', 'news_repository.content.xml', '', 1264, 'news', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2811,6 +2894,7 @@ CREATE TABLE IF NOT EXISTS `share_sitemap_tags` (
 
 INSERT INTO `share_sitemap_tags` (`smap_id`, `tag_id`) VALUES
 (329, 1),
+(1254, 1),
 (1255, 1),
 (1256, 1),
 (1257, 1),
@@ -2826,7 +2910,8 @@ INSERT INTO `share_sitemap_tags` (`smap_id`, `tag_id`) VALUES
 (1267, 1),
 (1268, 1),
 (1269, 1),
-(1270, 1);
+(1270, 1),
+(1272, 1);
 
 -- --------------------------------------------------------
 
@@ -2859,6 +2944,7 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (331, 1, 'Регистрация', NULL, NULL, NULL, NULL, 0),
 (351, 1, 'Google sitemap page', NULL, NULL, NULL, NULL, 0),
 (483, 1, 'Профиль', NULL, NULL, NULL, NULL, 0),
+(1254, 1, 'Обратная связь', NULL, NULL, NULL, NULL, 0),
 (1255, 1, 'Новости', NULL, NULL, NULL, NULL, 0),
 (1256, 1, 'Текстовая страница', NULL, NULL, NULL, NULL, 0),
 (1257, 1, 'Подразделы', NULL, NULL, NULL, NULL, 0),
@@ -2875,12 +2961,15 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (1268, 1, 'Результаты', NULL, NULL, NULL, NULL, 0),
 (1269, 1, 'Анкета', NULL, NULL, NULL, NULL, 0),
 (1270, 1, 'Результаты', NULL, NULL, NULL, NULL, 0),
+(1272, 1, 'Фид', NULL, NULL, NULL, NULL, 0),
+(1273, 1, 'Редактор новостей', NULL, NULL, NULL, NULL, 0),
 (80, 2, 'Головна сторінка', NULL, NULL, NULL, '<meta name=''yandex-verification'' content=''421f31c92020f4c9'' />', 0),
 (329, 2, 'Карта сайту', NULL, NULL, NULL, NULL, 0),
 (330, 2, 'Поновлення паролю', NULL, NULL, NULL, NULL, 0),
 (331, 2, 'Реєстрація', NULL, NULL, NULL, NULL, 0),
 (351, 2, 'Google sitemap page', NULL, NULL, NULL, NULL, 0),
 (483, 2, 'Профіль', NULL, NULL, NULL, NULL, 0),
+(1254, 2, 'Зворотній зв''язок', NULL, NULL, NULL, NULL, 0),
 (1255, 2, 'Новини', NULL, NULL, NULL, NULL, 0),
 (1256, 2, 'Текстова сторінка', NULL, NULL, NULL, NULL, 0),
 (1257, 2, 'Підрозділи', NULL, NULL, NULL, NULL, 0),
@@ -2896,7 +2985,9 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (1267, 2, 'Зворотній зв''язок', NULL, NULL, NULL, NULL, 0),
 (1268, 2, 'Результати', NULL, NULL, NULL, NULL, 0),
 (1269, 2, 'Анкета', NULL, NULL, NULL, NULL, 0),
-(1270, 2, 'Результати', NULL, NULL, NULL, NULL, 0);
+(1270, 2, 'Результати', NULL, NULL, NULL, NULL, 0),
+(1272, 2, 'Фід', NULL, NULL, NULL, NULL, 0),
+(1273, 2, 'Редактор новин', NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -2929,7 +3020,7 @@ INSERT INTO `share_sitemap_uploads` (`smap_id`, `upl_id`, `upl_order_num`) VALUE
 (1260, 50, 3),
 (1259, 60, 7),
 (1259, 61, 8),
-(1258, 63, 1);
+(1258, 125, 1);
 
 -- --------------------------------------------------------
 
@@ -2959,7 +3050,7 @@ CREATE TABLE IF NOT EXISTS `share_sites` (
 --
 
 INSERT INTO `share_sites` (`site_id`, `site_is_active`, `site_is_indexed`, `site_protocol`, `site_host`, `site_port`, `site_root`, `site_is_default`, `site_folder`, `site_order_num`, `site_meta_robots`) VALUES
-(1, 1, 1, 'http', 'demo.energine.org', 80, '/', 1, 'default', 1, NULL);
+(1, 1, 1, 'http', 'yoursite.com', 80, '/', 1, 'default', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -3012,15 +3103,14 @@ CREATE TABLE IF NOT EXISTS `share_tags` (
   `tag_name` char(100) NOT NULL,
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `tag_name` (`tag_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=61 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=101 ;
 
 --
 -- Дамп данных таблицы `share_tags`
 --
 
 INSERT INTO `share_tags` (`tag_id`, `tag_name`) VALUES
-(1, 'menu'),
-(27, 'топ');
+(1, 'menu');
 
 -- --------------------------------------------------------
 
@@ -3083,7 +3173,7 @@ INSERT INTO `share_textblocks_translation` (`tb_id`, `lang_id`, `tb_content`) VA
 (2, 1, '<strong>Energine</strong> (<em>от англ. energy - энергия, engine -\nдвижок</em>) - <strong>Open Source система управления\nсодержанием</strong> (Energine CMS), позволяющая поддерживать\nweb-приложения (в том числе и сайты) любого уровня сложности.\nБазируется на одноименном компонентом фреймворке (Energine CMF),\nпредоставляющем удобный инструментарий для создания web приложений.<br>\n<h2>Основные возможности</h2>\n<ol>\n<li>\n<div>Поддержка\nмногоязычности - система поддерживает неограниченное количество\nязыков, с возможностью удобного перевода не только содержимого сайта,\nно и подписей, кнопок, текстов писем и прочего.</div>\n</li>\n<li>\n<div>Разграничение\nправ - система контроля прав позволяет администратору настроить\nкаждой группе пользователей необходимый уровень доступа к различным\nчастям сайта.</div>\n</li>\n<li>\n<div>Визуальный\nредактор текста - для редактирования текста страниц предусмотрен\nвстроенный WYSIWYG редактор, не только упрощающий редактирование\nтекста, но и позволяющий увидеть как будет выглядеть текст для\nпользователя.</div>\n</li>\n<li>\n<div>Работа с\nфайлами - единое хранилище файлов позволяет по одному принципу\nработать с файлами как в формах, так и в редакторе текста.</div>\n</li>\n<li>\n<div>Управление\nструктурой сайта - структура сайта представлена в виде дерева.\nПользователь может добавлять, изменять и удалять узлы этого дерева,\nизменяя тем самым разделы сайта.</div>\n</li>\n\n</ol>\n<h2>Особенности Energine</h2>\n<ul>\n<li>Полностью Человеко Понятный УРЛ(ЧПУ) - все страницы сайта имеют\nпонятный человеку адрес. Использование ЧПУ облегчает задачу\nиндексирования сайта поисковыми роботами.</li>\n<li>Использование технологии AJAX в части\nуправления сайтом позволяет не только ускорить работу сайта, но и\nсоздавать более удобные пользовательские интерфейсы.</li>\n<li>Использование технологий XML и XSLT позволяет выводить данные не\nтолько в формате HTML, но и в любом структурированном виде (WML, RTF,\nRSS).</li>\n<li>Возможность расширения существующих и написания пользовательских\nкомпонентов.</li>\n</ul>'),
 (2, 2, '<strong>Energine</strong> (<em>от англ. energy - энергия, engine -\nдвижок</em>) - <strong>Open Source система управления\nсодержанием</strong> (Energine CMS), позволяющая поддерживать\nweb-приложения (в том числе и сайты) любого уровня сложности.\nБазируется на одноименном компонентом фреймворке (Energine CMF),\nпредоставляющем удобный инструментарий для создания web приложений.<br>\n<h2>Основные возможности</h2>\n<ol>\n<li>\n<div>Поддержка\nмногоязычности - система поддерживает неограниченное количество\nязыков, с возможностью удобного перевода не только содержимого сайта,\nно и подписей, кнопок, текстов писем и прочего.</div>\n</li>\n<li>\n<div>Разграничение\nправ - система контроля прав позволяет администратору настроить\nкаждой группе пользователей необходимый уровень доступа к различным\nчастям сайта.</div>\n</li>\n<li>\n<div>Визуальный\nредактор текста - для редактирования текста страниц предусмотрен\nвстроенный WYSIWYG редактор, не только упрощающий редактирование\nтекста, но и позволяющий увидеть как будет выглядеть текст для\nпользователя.</div>\n</li>\n<li>\n<div>Работа с\nфайлами - единое хранилище файлов позволяет по одному принципу\nработать с файлами как в формах, так и в редакторе текста.</div>\n</li>\n<li>\n<div>Управление\nструктурой сайта - структура сайта представлена в виде дерева.\nПользователь может добавлять, изменять и удалять узлы этого дерева,\nизменяя тем самым разделы сайта.</div>\n</li>\n\n</ol>\n<h2>Особенности Energine</h2>\n<ul>\n<li>Полностью Человеко Понятный УРЛ(ЧПУ) - все страницы сайта имеют\nпонятный человеку адрес. Использование ЧПУ облегчает задачу\nиндексирования сайта поисковыми роботами.</li>\n<li>Использование технологии AJAX в части\nуправления сайтом позволяет не только ускорить работу сайта, но и\nсоздавать более удобные пользовательские интерфейсы.</li>\n<li>Использование технологий XML и XSLT позволяет выводить данные не\nтолько в формате HTML, но и в любом структурированном виде (WML, RTF,\nRSS).</li>\n<li>Возможность расширения существующих и написания пользовательских\nкомпонентов.</li>\n</ul>\n'),
 (4, 1, '\n          <p>&nbsp;</p>\n        '),
-(5, 1, '<p>Кожух стабилизирует механический уход гироскопа, действуя в\nрассматриваемой механической системе. Согласно теории устойчивости\nдвижения ракета даёт более простую систему дифференциальных уравнений,\nесли исключить подшипник подвижного объекта, что является очевидным.\nОтклонение позволяет исключить из рассмотрения нестационарный\nгироинтегратор, что обусловлено малыми углами карданового подвеса.\nРасчеты предсказывают, что проекция угловых скоростей зависима.\nУстановившийся режим, согласно уравнениям Лагранжа, не входит своими\nсоставляющими, что очевидно, в силы нормальных реакций связей, так же\nкак и нестационарный подвес, как и видно из системы дифференциальных\nуравнений.</p>\n<p>Внутреннее кольцо, как можно показать с помощью не совсем\nтривиальных вычислений, трансформирует ускоряющийся объект, учитывая\nсмещения центра масс системы по оси ротора. Малое колебание известно.\nУгловая скорость даёт большую проекцию на оси, чем математический\nмаятник в соответствии с системой уравнений. В самом общем случае\nволчок косвенно связывает астатический момент до полного прекращения\nвращения.</p>\n<p>Движение спутника, в первом приближении, активно. Ротор представляет\nсобой нестационарный установившийся режим, от чего сильно зависит\nвеличина систематического ухода гироскопа. Внутреннее кольцо вращает\nуспокоитель качки, исходя из определения обобщённых координат.\nГироскопический прибор, в соответствии с основным законом динамики,\nтрансформирует периодический волчок с учётом интеграла собственного\nкинетического момента ротора.</p>\n'),
+(5, 1, '<p>Кожух стабилизирует механический уход гироскопа, действуя в\nрассматриваемой механической системе. Согласно теории устойчивости\nдвижения ракета даёт более простую систему дифференциальных уравнений,\nесли исключить подшипник подвижного объекта, что является очевидным.\nОтклонение позволяет исключить из рассмотрения нестационарный\nгироинтегратор, что обусловлено малыми углами карданового подвеса.\nРасчеты предсказывают, что проекция угловых скоростей зависима.\nУстановившийся режим, согласно уравнениям Лагранжа, не входит своими\nсоставляющими, что очевидно, в силы нормальных реакций связей, так же\nкак и <b>нестационарный</b> подвес, как и видно из системы дифференциальных\nуравнений</p>\n<strong></strong>\n<p>Внутреннее кольцо, как можно показать с помощью не совсем\nтривиальных вычислений, трансформирует ускоряющийся объект, учитывая\nсмещения центра масс системы по оси ротора. Малое колебание известно.\nУгловая скорость даёт большую проекцию на оси, чем математический\nмаятник в соответствии с системой уравнений. В самом общем случае\nволчок косвенно связывает астатический момент до полного прекращения\nвращения.</p>\n<p>Движение спутника, в первом приближении, активно. Ротор представляет\nсобой нестационарный установившийся режим, от чего сильно зависит\nвеличина систематического ухода гироскопа. Внутреннее кольцо вращает\nуспокоитель качки, исходя из определения обобщённых координат.\nГироскопический прибор, в соответствии с основным законом динамики,\nтрансформирует периодический волчок с учётом интеграла собственного\nкинетического момента ротора.</p>\n'),
 (6, 1, 'Погрешность изготовления влияет на составляющие гироскопического\nмомента больше, чем механический момент сил, что видно из уравнения\nкинетической энергии ротора. Система координат представляет собой\nальтиметр, не забывая о том, что интенсивность диссипативных сил,\nхарактеризующаяся величиной коэффициента D, должна лежать в\nопределённых пределах.<br>'),
 (8, 1, '<p>Первое уравнение позволяет найти закон, по которому видно, что\nуравнение возмущенного движения интегрирует гироскопический\nстабилизатоор, что нельзя рассматривать без изменения системы\nкоординат. Уравнение Эйлера вращает силовой трёхосный гироскопический\nстабилизатор, что является очевидным. Динамическое уравнение Эйлера\nбезусловно учитывает механический тангаж, что неправильно при большой\nинтенсивности диссипативных сил. Согласно теории устойчивости движения\nпрямолинейное равноускоренное движение основания характеризует\nпрецессионный установившийся режим с учётом интеграла собственного\nкинетического момента ротора.</p>\n<p>Подвижный объект влияет на составляющие гироскопического момента\nбольше, чем ускоряющийся период, что явно видно по фазовой траектории.\nСуммарный поворот нелинеен. Направление неподвижно требует перейти к\nпоступательно перемещающейся системе координат, чем и характеризуется\nуспокоитель качки, действуя в рассматриваемой механической системе.\nУравнение возмущенного движения участвует в погрешности определения\nкурса меньше, чем газообразный подшипник подвижного объекта, даже если\nрамки подвеса буду ориентированы под прямым углом. Управление полётом\nсамолёта представляет собой гироскопический прибор в соответствии с\nсистемой уравнений.</p>\n<p>Внешнее кольцо, несмотря на внешние воздействия, поступательно не\nзависит от скорости вращения внутреннего кольца подвеса, что не кажется\nстранным, если вспомнить о том, что мы не исключили из рассмотрения\nкрен, пользуясь последними системами уравнений. Прямолинейное\nравноускоренное движение основания, в соответствии с основным законом\nдинамики, представляет собой угол курса, используя имеющиеся в этом\nслучае первые интегралы. Уравнение возмущенного движения, согласно\nтретьему закону Ньютона, велико. Система координат недетерминировано\nпозволяет исключить из рассмотрения динамический гироскопический\nстабилизатоор, даже если рамки подвеса буду ориентированы под прямым\nуглом. Следуя механической логике, гировертикаль различна.\nНеустойчивость, как известно, быстро разивается, если система координат\nучаствует в погрешности определения курса меньше, чем ПИГ, даже если не\nучитывать выбег гироскопа.</p>\n<p>Первое уравнение позволяет найти закон, по которому видно, что\nуравнение возмущенного движения интегрирует гироскопический\nстабилизатоор, что нельзя рассматривать без изменения системы\nкоординат. Уравнение Эйлера вращает силовой трёхосный гироскопический\nстабилизатор, что является очевидным. Динамическое уравнение Эйлера\nбезусловно учитывает механический тангаж, что неправильно при большой\nинтенсивности диссипативных сил. Согласно теории устойчивости движения\nпрямолинейное равноускоренное движение основания характеризует\nпрецессионный установившийся режим с учётом интеграла собственного\nкинетического момента ротора.</p>\n<p>Подвижный объект влияет на составляющие гироскопического момента\nбольше, чем ускоряющийся период, что явно видно по фазовой траектории.\nСуммарный поворот нелинеен. Направление неподвижно требует перейти к\nпоступательно перемещающейся системе координат, чем и характеризуется\nуспокоитель качки, действуя в рассматриваемой механической системе.\nУравнение возмущенного движения участвует в погрешности определения\nкурса меньше, чем газообразный подшипник подвижного объекта, даже если\nрамки подвеса буду ориентированы под прямым углом. Управление полётом\nсамолёта представляет собой гироскопический прибор в соответствии с\nсистемой уравнений.</p>'),
 (12, 1, '\n                    <p>&nbsp;</p>\n                  '),
@@ -3126,7 +3216,7 @@ CREATE TABLE IF NOT EXISTS `share_uploads` (
   KEY `upl_publication_date_index` (`upl_publication_date`),
   KEY `abc` (`upl_id`,`upl_is_ready`,`upl_views`),
   KEY `abcd` (`upl_id`,`upl_is_ready`,`upl_views`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=669 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=132 ;
 
 --
 -- Дамп данных таблицы `share_uploads`
@@ -3219,560 +3309,35 @@ INSERT INTO `share_uploads` (`upl_id`, `upl_path`, `upl_name`, `upl_description`
 (98, 'uploads/public/foto/13159179219387.jpg', 'a_150042_r', NULL, NULL, NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
 (99, 'uploads/public/foto/13159179335248.jpg', 'a_150449_r', NULL, NULL, NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
 (100, 'uploads/public/foto/13159179472695.jpg', 'a_151076_r', NULL, NULL, NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(101, 'uploads/public/arkhiv_test', 'Архив тест', NULL, NULL, NULL, 0, 'folder', 'unknown/mime-type', NULL, NULL, 1, NULL),
-(102, 'uploads/public/arkhiv_test/content_images2', 'content_images2', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
-(103, 'uploads/public/arkhiv_test/content_images2/13167928202869.jpg', '05_train', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 700, 486, 1, NULL),
-(104, 'uploads/public/arkhiv_test/content_images2/13167928227856.jpg', '05_train_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 648, 486, 1, NULL),
-(105, 'uploads/public/arkhiv_test/content_images2/13167928236834.jpg', '104_apoc', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 492, 1, NULL),
-(106, 'uploads/public/arkhiv_test/content_images2/13167928243688.jpg', '104_apoc_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(107, 'uploads/public/arkhiv_test/content_images2/1316792824803.jpg', '105_baken', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 458, 1, NULL),
-(108, 'uploads/public/arkhiv_test/content_images2/13167928252411.jpg', '105_baken_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(109, 'uploads/public/arkhiv_test/content_images2/13167928273146.jpg', '111852', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(110, 'uploads/public/arkhiv_test/content_images2/13167928274321.jpg', '111852_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(111, 'uploads/public/arkhiv_test/content_images2/131679282831.jpg', '113_sea', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 494, 1, NULL),
-(112, 'uploads/public/arkhiv_test/content_images2/13167928293778.jpg', '113_sea_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(113, 'uploads/public/arkhiv_test/content_images2/13167928298785.jpg', '114_sea2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 515, 1, NULL),
-(115, 'uploads/public/arkhiv_test/content_images2/13167928309310.jpg', '114_sea2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(116, 'uploads/public/arkhiv_test/content_images2/13167928301598.jpg', '115_cemetary', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 710, 521, 1, NULL),
-(117, 'uploads/public/arkhiv_test/content_images2/13167928315091.jpg', '115_cemetary_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(118, 'uploads/public/arkhiv_test/content_images2/13167928321632.jpg', '119_chembalo', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 820, 522, 1, NULL),
-(119, 'uploads/public/arkhiv_test/content_images2/13167928325025.jpg', '119_chembalo_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(120, 'uploads/public/arkhiv_test/content_images2/13167928337146.jpg', '122_uneasy', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 571, 650, 1, NULL),
-(121, 'uploads/public/arkhiv_test/content_images2/13167928331954.jpg', '125_dreamland', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(122, 'uploads/public/arkhiv_test/content_images2/13167928333124.jpg', '125_dreamland_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(123, 'uploads/public/arkhiv_test/content_images2/13167928346201.jpg', '126_carpat2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(124, 'uploads/public/arkhiv_test/content_images2/13167928347268.jpg', '126_carpat2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(125, 'uploads/public/arkhiv_test/content_images2/13167928357263.jpg', '127_osen', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(126, 'uploads/public/arkhiv_test/content_images2/13167928359461.jpg', '127_osen_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(127, 'uploads/public/arkhiv_test/content_images2/13167928353978.jpg', '129_lviv', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 421, 650, 1, NULL),
-(128, 'uploads/public/arkhiv_test/content_images2/1316792836563.jpg', '130_void', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 595, 1, NULL),
-(129, 'uploads/public/arkhiv_test/content_images2/13167928366956.jpg', '132437', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 736, 700, 1, NULL),
-(130, 'uploads/public/arkhiv_test/content_images2/1316792837910.jpg', '132437_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(131, 'uploads/public/arkhiv_test/content_images2/13167928379464.jpg', '132688-1', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 506, 1, NULL),
-(132, 'uploads/public/arkhiv_test/content_images2/13167928377569.jpg', '132688-1_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(133, 'uploads/public/arkhiv_test/content_images2/13167928387336.jpg', '132_bwQirim', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 591, 1, NULL),
-(134, 'uploads/public/arkhiv_test/content_images2/13167928381970.jpg', '133468', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 543, 1, NULL),
-(135, 'uploads/public/arkhiv_test/content_images2/1316792839437.jpg', '133468_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(136, 'uploads/public/arkhiv_test/content_images2/13167928395192.jpg', '133_panorama_balaklava', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 950, 455, 1, NULL),
-(137, 'uploads/public/arkhiv_test/content_images2/13167928408804.jpg', '133_panorama_balaklava_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(138, 'uploads/public/arkhiv_test/content_images2/13167928404125.jpg', '135312', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 519, 1, NULL),
-(139, 'uploads/public/arkhiv_test/content_images2/13167928415994.jpg', '135312_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(140, 'uploads/public/arkhiv_test/content_images2/13167928411214.jpg', '135937', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 840, 525, 1, NULL),
-(141, 'uploads/public/arkhiv_test/content_images2/13167928447271.jpg', '135937_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(142, 'uploads/public/arkhiv_test/content_images2/1316792845314.jpg', '136131-2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 830, 500, 1, NULL),
-(143, 'uploads/public/arkhiv_test/content_images2/13167928451245.jpg', '136131-2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(144, 'uploads/public/arkhiv_test/content_images2/13167928451048.jpg', '137_ufo', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 522, 1, NULL),
-(145, 'uploads/public/arkhiv_test/content_images2/13167928469099.jpg', '137_ufo_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(146, 'uploads/public/arkhiv_test/content_images2/1316792846554.jpg', '142_tuman', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(147, 'uploads/public/arkhiv_test/content_images2/13167928462646.jpg', '142_tuman_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(148, 'uploads/public/arkhiv_test/content_images2/13167928474189.jpg', '144366', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 656, 570, 1, NULL),
-(149, 'uploads/public/arkhiv_test/content_images2/13167928472186.jpg', '144366_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(150, 'uploads/public/arkhiv_test/content_images2/13167928487670.jpg', '150_OoO', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 494, 650, 1, NULL),
-(151, 'uploads/public/arkhiv_test/content_images2/13167928481335.jpg', '155_waves', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 557, 1, NULL),
-(152, 'uploads/public/arkhiv_test/content_images2/13167928484139.jpg', '155_waves_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(153, 'uploads/public/arkhiv_test/content_images2/1316792848794.jpg', '156_arol', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 1303, 709, 1, NULL),
-(154, 'uploads/public/arkhiv_test/content_images2/13167928497535.jpg', '156_arol_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(155, 'uploads/public/arkhiv_test/content_images2/13167928491407.jpg', '159_mmm', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 500, 1, NULL),
-(156, 'uploads/public/arkhiv_test/content_images2/13167928498056.jpg', '159_mmm_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(157, 'uploads/public/arkhiv_test/content_images2/13167928506996.jpg', '15_frol', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 554, 1, NULL),
-(158, 'uploads/public/arkhiv_test/content_images2/13167928505384.jpg', '15_frol_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 739, 554, 1, NULL),
-(159, 'uploads/public/arkhiv_test/content_images2/13167928508618.jpg', '161sunKaradag', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 601, 1, NULL),
-(160, 'uploads/public/arkhiv_test/content_images2/13167928503951.jpg', '161sunKaradag_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(161, 'uploads/public/arkhiv_test/content_images2/13167928516294.jpg', '165_tumanTepe', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(162, 'uploads/public/arkhiv_test/content_images2/13167928518081.jpg', '165_tumanTepe_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(163, 'uploads/public/arkhiv_test/content_images2/13167928511519.jpg', '16_shadow', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 700, 498, 1, NULL),
-(164, 'uploads/public/arkhiv_test/content_images2/13167928513630.jpg', '16_shadow_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 664, 498, 1, NULL),
-(165, 'uploads/public/arkhiv_test/content_images2/131679285150.jpg', '186_elektrovoz', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 580, 1, NULL),
-(166, 'uploads/public/arkhiv_test/content_images2/13167928521956.jpg', '186_elektrovoz_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(167, 'uploads/public/arkhiv_test/content_images2/13167928528821.jpg', '191_crane', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 589, 1, NULL),
-(168, 'uploads/public/arkhiv_test/content_images2/13167928538854.jpg', '191_crane_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(169, 'uploads/public/arkhiv_test/content_images2/13167928536080.jpg', '193_orion', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 419, 630, 1, NULL),
-(170, 'uploads/public/arkhiv_test/content_images2/13167928534815.jpg', '195_treeVAR', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(171, 'uploads/public/arkhiv_test/content_images2/131679285468.jpg', '195_treeVAR_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(172, 'uploads/public/arkhiv_test/content_images2/13167928543350.jpg', '199_path', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 830, 552, 1, NULL),
-(173, 'uploads/public/arkhiv_test/content_images2/13167928545129.jpg', '199_path_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(174, 'uploads/public/arkhiv_test/content_images2/13167928551312.jpg', '203_tree', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 432, 650, 1, NULL),
-(175, 'uploads/public/arkhiv_test/content_images2/13167928554398.jpg', '204_field', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 534, 1, NULL),
-(176, 'uploads/public/arkhiv_test/content_images2/13167928554227.jpg', '204_field_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(177, 'uploads/public/arkhiv_test/content_images2/13167928561866.jpg', '205_snow', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 520, 1, NULL),
-(178, 'uploads/public/arkhiv_test/content_images2/13167928567044.jpg', '205_snow_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(179, 'uploads/public/arkhiv_test/content_images2/13167928568416.jpg', '206_snowTree', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(180, 'uploads/public/arkhiv_test/content_images2/13167928574051.jpg', '206_snowTree_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(181, 'uploads/public/arkhiv_test/content_images2/13167928574714.jpg', '209_mar', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(182, 'uploads/public/arkhiv_test/content_images2/13167928579750.jpg', '209_mar_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(183, 'uploads/public/arkhiv_test/content_images2/13167928588189.jpg', '20_cloud', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 700, 525, 1, NULL),
-(184, 'uploads/public/arkhiv_test/content_images2/13167928585507.jpg', '215_asol', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 790, 525, 1, NULL),
-(185, 'uploads/public/arkhiv_test/content_images2/13167928587284.jpg', '215_asol_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(186, 'uploads/public/arkhiv_test/content_images2/13167928589596.jpg', '216_utomlennoye', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 535, 1, NULL),
-(187, 'uploads/public/arkhiv_test/content_images2/13167928593562.jpg', '216_utomlennoye_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(188, 'uploads/public/arkhiv_test/content_images2/13167928594279.jpg', '219_Jolki', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 825, 515, 1, NULL),
-(189, 'uploads/public/arkhiv_test/content_images2/13167928594979.jpg', '219_Jolki_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(190, 'uploads/public/arkhiv_test/content_images2/13167928592180.jpg', '223_varta', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 529, 1, NULL),
-(191, 'uploads/public/arkhiv_test/content_images2/13167928608230.jpg', '223_varta_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(192, 'uploads/public/arkhiv_test/content_images2/13167928601272.jpg', '225_sosna', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 567, 1, NULL),
-(193, 'uploads/public/arkhiv_test/content_images2/1316792860260.jpg', '225_sosna_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(194, 'uploads/public/arkhiv_test/content_images2/13167928619749.jpg', '234_kamni', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 546, 1, NULL),
-(195, 'uploads/public/arkhiv_test/content_images2/13167928614902.jpg', '234_kamni_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(196, 'uploads/public/arkhiv_test/content_images2/1316792861310.jpg', '237_gory', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 820, 525, 1, NULL),
-(197, 'uploads/public/arkhiv_test/content_images2/13167928611704.jpg', '237_gory_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(198, 'uploads/public/arkhiv_test/content_images2/13167928623722.jpg', '23_apples', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 506, 620, 1, NULL),
-(199, 'uploads/public/arkhiv_test/content_images2/13167928629163.jpg', '241_gory', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 488, 1, NULL),
-(200, 'uploads/public/arkhiv_test/content_images2/13167928627784.jpg', '245_shunjata', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(201, 'uploads/public/arkhiv_test/content_images2/13167928628536.jpg', '245_shunjata_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(202, 'uploads/public/arkhiv_test/content_images2/13167928639231.jpg', '253_bwJolki', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 830, 552, 1, NULL),
-(203, 'uploads/public/arkhiv_test/content_images2/13167928631134.jpg', '253_bwJolki_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(204, 'uploads/public/arkhiv_test/content_images2/13167928643664.jpg', '259_svet', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 820, 528, 1, NULL),
-(205, 'uploads/public/arkhiv_test/content_images2/1316792864542.jpg', '259_svet_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(206, 'uploads/public/arkhiv_test/content_images2/13167928645532.jpg', '260_pan2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 1000, 568, 1, NULL),
-(207, 'uploads/public/arkhiv_test/content_images2/13167928657891.jpg', '260_pan2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(208, 'uploads/public/arkhiv_test/content_images2/13167928652408.jpg', '263_jolki', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 770, 573, 1, NULL),
-(209, 'uploads/public/arkhiv_test/content_images2/13167928662575.jpg', '263_jolki_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(210, 'uploads/public/arkhiv_test/content_images2/13167928666306.jpg', '264_tuchka', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 546, 1, NULL),
-(211, 'uploads/public/arkhiv_test/content_images2/13167928666458.jpg', '264_tuchka_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(212, 'uploads/public/arkhiv_test/content_images2/13167928667288.jpg', '266_piz', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 530, 1, NULL),
-(213, 'uploads/public/arkhiv_test/content_images2/13167928676056.jpg', '266_piz_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(214, 'uploads/public/arkhiv_test/content_images2/13167928674647.jpg', '269_aja', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 529, 1, NULL),
-(215, 'uploads/public/arkhiv_test/content_images2/13167928672795.jpg', '269_aja_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(216, 'uploads/public/arkhiv_test/content_images2/13167928683340.jpg', '272_pizazh', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 524, 1, NULL),
-(217, 'uploads/public/arkhiv_test/content_images2/13167928694242.jpg', '272_pizazh_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(218, 'uploads/public/arkhiv_test/content_images2/13167928706356.jpg', '277_8mar', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(219, 'uploads/public/arkhiv_test/content_images2/13167928707618.jpg', '277_8mar_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(220, 'uploads/public/arkhiv_test/content_images2/13167928719221.jpg', '306_gory', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(221, 'uploads/public/arkhiv_test/content_images2/13167928718535.jpg', '306_gory_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(222, 'uploads/public/arkhiv_test/content_images2/13167928725848.jpg', '318_hmary', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 790, 552, 1, NULL),
-(223, 'uploads/public/arkhiv_test/content_images2/1316792872493.jpg', '318_hmary_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(224, 'uploads/public/arkhiv_test/content_images2/13167928738795.jpg', '31_builders', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 700, 503, 1, NULL),
-(225, 'uploads/public/arkhiv_test/content_images2/13167928735597.jpg', '31_builders_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(226, 'uploads/public/arkhiv_test/content_images2/13167928735394.jpg', '320_tree', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 810, 539, 1, NULL),
-(227, 'uploads/public/arkhiv_test/content_images2/13167928749104.jpg', '320_tree_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(228, 'uploads/public/arkhiv_test/content_images2/13167928747301.jpg', '322_krym', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 540, 1, NULL),
-(229, 'uploads/public/arkhiv_test/content_images2/13167928749116.jpg', '322_krym_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(230, 'uploads/public/arkhiv_test/content_images2/13167928758267.jpg', '323_derevo', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 640, 575, 1, NULL),
-(231, 'uploads/public/arkhiv_test/content_images2/13167928755084.jpg', '323_derevo_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(232, 'uploads/public/arkhiv_test/content_images2/13167928757651.jpg', '324_kamen i derevo', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 620, 577, 1, NULL),
-(233, 'uploads/public/arkhiv_test/content_images2/13167928757498.jpg', '325_elochki', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 569, 1, NULL),
-(234, 'uploads/public/arkhiv_test/content_images2/13167928766218.jpg', '325_elochki_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(235, 'uploads/public/arkhiv_test/content_images2/13167928761315.jpg', '326_derevce', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 519, 1, NULL),
-(236, 'uploads/public/arkhiv_test/content_images2/13167928768040.jpg', '331_desert', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 491, 1, NULL),
-(237, 'uploads/public/arkhiv_test/content_images2/13167928771750.jpg', '331_desert_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(238, 'uploads/public/arkhiv_test/content_images2/13167928779205.jpg', '334_elka', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 640, 426, 1, NULL),
-(239, 'uploads/public/arkhiv_test/content_images2/1316792877447.jpg', '41_tree_bw', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 524, 1, NULL),
-(240, 'uploads/public/arkhiv_test/content_images2/13167928784324.jpg', '41_tree_bw_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(241, 'uploads/public/arkhiv_test/content_images2/13167928785511.jpg', '49_autumn', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 740, 555, 1, NULL),
-(242, 'uploads/public/arkhiv_test/content_images2/13167928786904.jpg', '50_andr', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 500, 1, NULL),
-(243, 'uploads/public/arkhiv_test/content_images2/13167928791612.jpg', '50_andr_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(244, 'uploads/public/arkhiv_test/content_images2/13167928791567.jpg', '52_youtFuture', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 563, 1, NULL),
-(245, 'uploads/public/arkhiv_test/content_images2/13167928791551.jpg', '56_birds', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 900, 565, 1, NULL),
-(246, 'uploads/public/arkhiv_test/content_images2/13167928794406.jpg', '56_birds_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(247, 'uploads/public/arkhiv_test/content_images2/13167928804906.jpg', '58_blackcolor', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 900, 584, 1, NULL),
-(248, 'uploads/public/arkhiv_test/content_images2/13167928805792.jpg', '58_blackcolor_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(249, 'uploads/public/arkhiv_test/content_images2/1316792881762.jpg', '92_waves', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 484, 1, NULL),
-(250, 'uploads/public/arkhiv_test/content_images2/13167928812524.jpg', '92_waves_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(251, 'uploads/public/arkhiv_test/content_images2/13167928825013.jpg', '96_kiev', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 610, 570, 1, NULL),
-(252, 'uploads/public/arkhiv_test/content_images2/13167928849296.jpg', '96_kiev_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 610, 468, 1, NULL),
-(253, 'uploads/public/arkhiv_test/content_images2/a', 'a', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
-(254, 'uploads/public/arkhiv_test/content_images2/a/13167928858372.jpg', 'a_058745-3', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 557, 1, NULL),
-(255, 'uploads/public/arkhiv_test/content_images2/a/13167928855505.jpg', 'a_058745-3_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(256, 'uploads/public/arkhiv_test/content_images2/a/13167928868091.jpg', 'a_080461-2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 536, 1, NULL),
-(257, 'uploads/public/arkhiv_test/content_images2/a/13167928863968.jpg', 'a_080461-2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(258, 'uploads/public/arkhiv_test/content_images2/a/1316792887899.jpg', 'a_092055-2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 544, 1, NULL),
-(259, 'uploads/public/arkhiv_test/content_images2/a/13167928887195.jpg', 'a_092055-2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(260, 'uploads/public/arkhiv_test/content_images2/a/13167928881268.jpg', 'a_093040-1', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 648, 1, NULL),
-(261, 'uploads/public/arkhiv_test/content_images2/a/131679288814.jpg', 'a_093040-1_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(262, 'uploads/public/arkhiv_test/content_images2/a/13167928895462.jpg', 'a_094297-1', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 571, 1, NULL),
-(263, 'uploads/public/arkhiv_test/content_images2/a/13167928896352.jpg', 'a_094297-1_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(264, 'uploads/public/arkhiv_test/content_images2/a/13167928897665.jpg', 'a_112062-1', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 528, 1, NULL),
-(265, 'uploads/public/arkhiv_test/content_images2/a/13167928902959.jpg', 'a_112062-1_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(266, 'uploads/public/arkhiv_test/content_images2/a/13167928902570.jpg', 'a_133290', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 720, 619, 1, NULL),
-(267, 'uploads/public/arkhiv_test/content_images2/a/13167928908979.jpg', 'a_133290_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(268, 'uploads/public/arkhiv_test/content_images2/a/1316792890998.jpg', 'a_135581', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 652, 1, NULL),
-(269, 'uploads/public/arkhiv_test/content_images2/a/13167928914319.jpg', 'a_135581_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(270, 'uploads/public/arkhiv_test/content_images2/a/13167928918184.jpg', 'a_136636', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 729, 1, NULL),
-(271, 'uploads/public/arkhiv_test/content_images2/a/13167928911444.jpg', 'a_136636_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 772, 1, NULL),
-(272, 'uploads/public/arkhiv_test/content_images2/a/13167928928642.jpg', 'a_139002', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 565, 1, NULL),
-(273, 'uploads/public/arkhiv_test/content_images2/a/13167928923695.jpg', 'a_139002_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(274, 'uploads/public/arkhiv_test/content_images2/a/13167928938348.jpg', 'a_145366', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 540, 1, NULL),
-(275, 'uploads/public/arkhiv_test/content_images2/a/1316792893254.jpg', 'a_145366_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(276, 'uploads/public/arkhiv_test/content_images2/a/13167928935261.jpg', 'a_149455', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 728, 1, NULL),
-(277, 'uploads/public/arkhiv_test/content_images2/a/13167928949898.jpg', 'a_149455_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(278, 'uploads/public/arkhiv_test/content_images2/a/13167928944660.jpg', 'a_149598', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 616, 1, NULL),
-(279, 'uploads/public/arkhiv_test/content_images2/a/1316792894167.jpg', 'a_149598_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(280, 'uploads/public/arkhiv_test/content_images2/a/13167928945690.jpg', 'a_150042', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 684, 1, NULL),
-(281, 'uploads/public/arkhiv_test/content_images2/a/13167928955421.jpg', 'a_150042_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(282, 'uploads/public/arkhiv_test/content_images2/a/13167928952690.jpg', 'a_150449', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 726, 1, NULL),
-(283, 'uploads/public/arkhiv_test/content_images2/a/1316792895702.jpg', 'a_150449_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(284, 'uploads/public/arkhiv_test/content_images2/a/13167928964717.jpg', 'a_151076', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 711, 1, NULL),
-(285, 'uploads/public/arkhiv_test/content_images2/a/13167928961061.jpg', 'a_151076_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(286, 'uploads/public/arkhiv_test/content_images2/a/13167928966207.jpg', 'a_152271-1', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 700, 1, NULL),
-(287, 'uploads/public/arkhiv_test/content_images2/a/13167928972807.jpg', 'a_166332', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 738, 690, 1, NULL),
-(288, 'uploads/public/arkhiv_test/content_images2/a/13167928975028.jpg', 'a_167388-1', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 527, 1, NULL),
-(289, 'uploads/public/arkhiv_test/content_images2/a/13167928987105.jpg', 'a_181907', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 721, 720, 1, NULL),
-(290, 'uploads/public/arkhiv_test/content_images2/13167928981.jpg', 'Cartman-sp', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 100, 100, 1, NULL),
-(291, 'uploads/public/arkhiv_test/content_images2/13167928986296.jpg', 'Kyle2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 100, 100, 1, NULL),
-(292, 'uploads/public/arkhiv_test/xata', 'xata', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
-(293, 'uploads/public/arkhiv_test/xata/13167928997118.jpg', '_MG_6937', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 4368, 2912, 1, NULL),
-(294, 'uploads/public/arkhiv_test/xata/13167929055462.jpg', '_MG_6943', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 4368, 2912, 1, NULL),
-(295, 'uploads/public/arkhiv_test_2', 'Архив тест 2', NULL, NULL, NULL, 0, 'folder', 'unknown/mime-type', NULL, NULL, 1, NULL),
-(296, 'uploads/public/arkhiv_test_2/content_images2', 'content_images2', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
-(297, 'uploads/public/arkhiv_test_2/content_images2/13167934176757.jpg', '05_train', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 700, 486, 1, NULL),
-(298, 'uploads/public/arkhiv_test_2/content_images2/13167934176516.jpg', '05_train_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 648, 486, 1, NULL),
-(299, 'uploads/public/arkhiv_test_2/content_images2/13167934179441.jpg', '104_apoc', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 492, 1, NULL),
-(300, 'uploads/public/arkhiv_test_2/content_images2/13167934182033.jpg', '104_apoc_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(301, 'uploads/public/arkhiv_test_2/content_images2/13167934182930.jpg', '105_baken', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 458, 1, NULL),
-(302, 'uploads/public/arkhiv_test_2/content_images2/13167934187488.jpg', '105_baken_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(303, 'uploads/public/arkhiv_test_2/content_images2/13167934188900.jpg', '111852', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(304, 'uploads/public/arkhiv_test_2/content_images2/13167934194964.jpg', '111852_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(305, 'uploads/public/arkhiv_test_2/content_images2/13167934199350.jpg', '113_sea', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 494, 1, NULL),
-(306, 'uploads/public/arkhiv_test_2/content_images2/13167934198564.jpg', '113_sea_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(307, 'uploads/public/arkhiv_test_2/content_images2/13167934209789.jpg', '114_sea2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 515, 1, NULL),
-(308, 'uploads/public/arkhiv_test_2/content_images2/13167934208847.jpg', '114_sea2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(309, 'uploads/public/arkhiv_test_2/content_images2/1316793420109.jpg', '115_cemetary', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 710, 521, 1, NULL),
-(310, 'uploads/public/arkhiv_test_2/content_images2/13167934203241.jpg', '115_cemetary_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(311, 'uploads/public/arkhiv_test_2/content_images2/13167934213151.jpg', '119_chembalo', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 820, 522, 1, NULL),
-(312, 'uploads/public/arkhiv_test_2/content_images2/13167934215349.jpg', '119_chembalo_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(313, 'uploads/public/arkhiv_test_2/content_images2/13167934226968.jpg', '122_uneasy', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 571, 650, 1, NULL),
-(314, 'uploads/public/arkhiv_test_2/content_images2/13167934234896.jpg', '125_dreamland', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(315, 'uploads/public/arkhiv_test_2/content_images2/13167934243784.jpg', '125_dreamland_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(316, 'uploads/public/arkhiv_test_2/content_images2/13167934241631.jpg', '126_carpat2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(317, 'uploads/public/arkhiv_test_2/content_images2/13167934256303.jpg', '126_carpat2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(318, 'uploads/public/arkhiv_test_2/content_images2/13167934258299.jpg', '127_osen', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(319, 'uploads/public/arkhiv_test_2/content_images2/13167934265377.jpg', '127_osen_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(320, 'uploads/public/arkhiv_test_2/content_images2/13167934269433.jpg', '129_lviv', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 421, 650, 1, NULL),
-(321, 'uploads/public/arkhiv_test_2/content_images2/13167934274477.jpg', '130_void', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 595, 1, NULL),
-(322, 'uploads/public/arkhiv_test_2/content_images2/1316793427662.jpg', '132437', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 736, 700, 1, NULL),
-(323, 'uploads/public/arkhiv_test_2/content_images2/13167934278107.jpg', '132437_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(324, 'uploads/public/arkhiv_test_2/content_images2/13167934284710.jpg', '132688-1', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 506, 1, NULL),
-(325, 'uploads/public/arkhiv_test_2/content_images2/13167934288728.jpg', '132688-1_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(326, 'uploads/public/arkhiv_test_2/content_images2/131679342842.jpg', '132_bwQirim', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 591, 1, NULL),
-(327, 'uploads/public/arkhiv_test_2/content_images2/13167934298760.jpg', '133468', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 543, 1, NULL),
-(328, 'uploads/public/arkhiv_test_2/content_images2/13167934295484.jpg', '133468_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(329, 'uploads/public/arkhiv_test_2/content_images2/13167934296557.jpg', '133_panorama_balaklava', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 950, 455, 1, NULL),
-(330, 'uploads/public/arkhiv_test_2/content_images2/13167934298200.jpg', '133_panorama_balaklava_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(331, 'uploads/public/arkhiv_test_2/content_images2/13167934307516.jpg', '135312', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 519, 1, NULL),
-(332, 'uploads/public/arkhiv_test_2/content_images2/13167934309487.jpg', '135312_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(333, 'uploads/public/arkhiv_test_2/content_images2/13167934305688.jpg', '135937', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 840, 525, 1, NULL),
-(334, 'uploads/public/arkhiv_test_2/content_images2/13167934316415.jpg', '135937_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(335, 'uploads/public/arkhiv_test_2/content_images2/13167934314451.jpg', '136131-2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 830, 500, 1, NULL),
-(336, 'uploads/public/arkhiv_test_2/content_images2/13167934315037.jpg', '136131-2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(337, 'uploads/public/arkhiv_test_2/content_images2/13167934314978.jpg', '137_ufo', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 522, 1, NULL),
-(338, 'uploads/public/arkhiv_test_2/content_images2/13167934324239.jpg', '137_ufo_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(339, 'uploads/public/arkhiv_test_2/content_images2/13167934323884.jpg', '142_tuman', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(340, 'uploads/public/arkhiv_test_2/content_images2/13167934325086.jpg', '142_tuman_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(341, 'uploads/public/arkhiv_test_2/content_images2/13167934337480.jpg', '144366', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 656, 570, 1, NULL),
-(342, 'uploads/public/arkhiv_test_2/content_images2/13167934337035.jpg', '144366_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(343, 'uploads/public/arkhiv_test_2/content_images2/1316793433435.jpg', '150_OoO', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 494, 650, 1, NULL),
-(344, 'uploads/public/arkhiv_test_2/content_images2/13167934344447.jpg', '155_waves', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 557, 1, NULL),
-(345, 'uploads/public/arkhiv_test_2/content_images2/13167934341930.jpg', '155_waves_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(346, 'uploads/public/arkhiv_test_2/content_images2/13167934344218.jpg', '156_arol', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 1303, 709, 1, NULL),
-(347, 'uploads/public/arkhiv_test_2/content_images2/13167934356077.jpg', '156_arol_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(348, 'uploads/public/arkhiv_test_2/content_images2/13167934358233.jpg', '159_mmm', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 500, 1, NULL),
-(349, 'uploads/public/arkhiv_test_2/content_images2/13167934352516.jpg', '159_mmm_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(350, 'uploads/public/arkhiv_test_2/content_images2/13167934361454.jpg', '15_frol', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 554, 1, NULL),
-(351, 'uploads/public/arkhiv_test_2/content_images2/13167934367666.jpg', '15_frol_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 739, 554, 1, NULL),
-(352, 'uploads/public/arkhiv_test_2/content_images2/13167934376993.jpg', '161sunKaradag', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 601, 1, NULL),
-(353, 'uploads/public/arkhiv_test_2/content_images2/13167934372115.jpg', '161sunKaradag_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL);
-INSERT INTO `share_uploads` (`upl_id`, `upl_path`, `upl_name`, `upl_description`, `upl_publication_date`, `upl_data`, `upl_views`, `upl_internal_type`, `upl_mime_type`, `upl_width`, `upl_height`, `upl_is_ready`, `upl_duration`) VALUES
-(354, 'uploads/public/arkhiv_test_2/content_images2/13167934375773.jpg', '165_tumanTepe', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(355, 'uploads/public/arkhiv_test_2/content_images2/13167934381703.jpg', '165_tumanTepe_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(356, 'uploads/public/arkhiv_test_2/content_images2/1316793438843.jpg', '16_shadow', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 700, 498, 1, NULL),
-(357, 'uploads/public/arkhiv_test_2/content_images2/13167934385814.jpg', '16_shadow_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 664, 498, 1, NULL),
-(358, 'uploads/public/arkhiv_test_2/content_images2/1316793439462.jpg', '186_elektrovoz', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 580, 1, NULL),
-(359, 'uploads/public/arkhiv_test_2/content_images2/13167934396326.jpg', '186_elektrovoz_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(360, 'uploads/public/arkhiv_test_2/content_images2/13167934392371.jpg', '191_crane', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 589, 1, NULL),
-(361, 'uploads/public/arkhiv_test_2/content_images2/13167934408662.jpg', '191_crane_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(362, 'uploads/public/arkhiv_test_2/content_images2/13167934403841.jpg', '193_orion', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 419, 630, 1, NULL),
-(363, 'uploads/public/arkhiv_test_2/content_images2/13167934401857.jpg', '195_treeVAR', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(364, 'uploads/public/arkhiv_test_2/content_images2/13167934424349.jpg', '195_treeVAR_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(365, 'uploads/public/arkhiv_test_2/content_images2/1316793442256.jpg', '199_path', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 830, 552, 1, NULL),
-(366, 'uploads/public/arkhiv_test_2/content_images2/13167934436307.jpg', '199_path_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(367, 'uploads/public/arkhiv_test_2/content_images2/13167934439386.jpg', '203_tree', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 432, 650, 1, NULL),
-(368, 'uploads/public/arkhiv_test_2/content_images2/13167934435234.jpg', '204_field', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 850, 534, 1, NULL),
-(369, 'uploads/public/arkhiv_test_2/content_images2/1316793443546.jpg', '204_field_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(370, 'uploads/public/arkhiv_test_2/content_images2/13167934443269.jpg', '205_snow', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 520, 1, NULL),
-(371, 'uploads/public/arkhiv_test_2/content_images2/1316793444320.jpg', '205_snow_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(372, 'uploads/public/arkhiv_test_2/content_images2/13167934458025.jpg', '206_snowTree', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(373, 'uploads/public/arkhiv_test_2/content_images2/1316793445304.jpg', '206_snowTree_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(374, 'uploads/public/arkhiv_test_2/content_images2/1316793445754.jpg', '209_mar', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(375, 'uploads/public/arkhiv_test_2/content_images2/13167934462472.jpg', '209_mar_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(376, 'uploads/public/arkhiv_test_2/content_images2/13167934462233.jpg', '20_cloud', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 700, 525, 1, NULL),
-(377, 'uploads/public/arkhiv_test_2/content_images2/13167934464971.jpg', '215_asol', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 790, 525, 1, NULL),
-(378, 'uploads/public/arkhiv_test_2/content_images2/13167934468548.jpg', '215_asol_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(379, 'uploads/public/arkhiv_test_2/content_images2/1316793447466.jpg', '216_utomlennoye', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 535, 1, NULL),
-(380, 'uploads/public/arkhiv_test_2/content_images2/13167934477487.jpg', '216_utomlennoye_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(381, 'uploads/public/arkhiv_test_2/content_images2/13167934472.jpg', '219_Jolki', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 825, 515, 1, NULL),
-(382, 'uploads/public/arkhiv_test_2/content_images2/13167934488131.jpg', '219_Jolki_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(383, 'uploads/public/arkhiv_test_2/content_images2/13167934484480.jpg', '223_varta', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 529, 1, NULL),
-(384, 'uploads/public/arkhiv_test_2/content_images2/13167934482116.jpg', '223_varta_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(385, 'uploads/public/arkhiv_test_2/content_images2/13167934483903.jpg', '225_sosna', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 567, 1, NULL),
-(386, 'uploads/public/arkhiv_test_2/content_images2/13167934496182.jpg', '225_sosna_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(387, 'uploads/public/arkhiv_test_2/content_images2/13167934492958.jpg', '234_kamni', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 546, 1, NULL),
-(388, 'uploads/public/arkhiv_test_2/content_images2/13167934499717.jpg', '234_kamni_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(389, 'uploads/public/arkhiv_test_2/content_images2/13167934506644.jpg', '237_gory', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 820, 525, 1, NULL),
-(390, 'uploads/public/arkhiv_test_2/content_images2/13167934509284.jpg', '237_gory_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(391, 'uploads/public/arkhiv_test_2/content_images2/13167934502087.jpg', '23_apples', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 506, 620, 1, NULL),
-(392, 'uploads/public/arkhiv_test_2/content_images2/13167934505305.jpg', '241_gory', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 488, 1, NULL),
-(393, 'uploads/public/arkhiv_test_2/content_images2/13167934513125.jpg', '245_shunjata', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(394, 'uploads/public/arkhiv_test_2/content_images2/13167934513944.jpg', '245_shunjata_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(395, 'uploads/public/arkhiv_test_2/content_images2/13167934519654.jpg', '253_bwJolki', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 830, 552, 1, NULL),
-(396, 'uploads/public/arkhiv_test_2/content_images2/13167934513380.jpg', '253_bwJolki_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(397, 'uploads/public/arkhiv_test_2/content_images2/1316793452251.jpg', '259_svet', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 820, 528, 1, NULL),
-(398, 'uploads/public/arkhiv_test_2/content_images2/13167934529040.jpg', '259_svet_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(399, 'uploads/public/arkhiv_test_2/content_images2/13167934538613.jpg', '260_pan2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 1000, 568, 1, NULL),
-(400, 'uploads/public/arkhiv_test_2/content_images2/1316793453797.jpg', '260_pan2_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(401, 'uploads/public/arkhiv_test_2/content_images2/13167934532309.jpg', '263_jolki', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 770, 573, 1, NULL),
-(402, 'uploads/public/arkhiv_test_2/content_images2/13167934548932.jpg', '263_jolki_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(403, 'uploads/public/arkhiv_test_2/content_images2/13167934548821.jpg', '264_tuchka', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 546, 1, NULL),
-(404, 'uploads/public/arkhiv_test_2/content_images2/13167934542612.jpg', '264_tuchka_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(405, 'uploads/public/arkhiv_test_2/content_images2/13167934549686.jpg', '266_piz', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 530, 1, NULL),
-(406, 'uploads/public/arkhiv_test_2/content_images2/13167934551293.jpg', '266_piz_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(407, 'uploads/public/arkhiv_test_2/content_images2/13167934554844.jpg', '269_aja', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 529, 1, NULL),
-(408, 'uploads/public/arkhiv_test_2/content_images2/13167934564657.jpg', '269_aja_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(409, 'uploads/public/arkhiv_test_2/content_images2/13167934569841.jpg', '272_pizazh', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 524, 1, NULL),
-(410, 'uploads/public/arkhiv_test_2/content_images2/13167934565310.jpg', '272_pizazh_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(411, 'uploads/public/arkhiv_test_2/content_images2/13167934572144.jpg', '277_8mar', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(412, 'uploads/public/arkhiv_test_2/content_images2/13167934579842.jpg', '277_8mar_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(413, 'uploads/public/arkhiv_test_2/content_images2/13167934573440.jpg', '306_gory', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(414, 'uploads/public/arkhiv_test_2/content_images2/13167934576623.jpg', '306_gory_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(415, 'uploads/public/arkhiv_test_2/content_images2/13167934581958.jpg', '318_hmary', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 790, 552, 1, NULL),
-(416, 'uploads/public/arkhiv_test_2/content_images2/13167934587343.jpg', '318_hmary_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(417, 'uploads/public/arkhiv_test_2/content_images2/13167934582805.jpg', '31_builders', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 700, 503, 1, NULL),
-(418, 'uploads/public/arkhiv_test_2/content_images2/13167934584915.jpg', '31_builders_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(419, 'uploads/public/arkhiv_test_2/content_images2/13167934597060.jpg', '320_tree', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 810, 539, 1, NULL),
-(420, 'uploads/public/arkhiv_test_2/content_images2/13167934599448.jpg', '320_tree_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(421, 'uploads/public/arkhiv_test_2/content_images2/13167934594199.jpg', '322_krym', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 540, 1, NULL),
-(422, 'uploads/public/arkhiv_test_2/content_images2/13167934609146.jpg', '322_krym_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(423, 'uploads/public/arkhiv_test_2/content_images2/13167934604753.jpg', '323_derevo', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 640, 575, 1, NULL),
-(424, 'uploads/public/arkhiv_test_2/content_images2/13167934607323.jpg', '323_derevo_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(425, 'uploads/public/arkhiv_test_2/content_images2/13167934603090.jpg', '324_kamen i derevo', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 620, 577, 1, NULL),
-(426, 'uploads/public/arkhiv_test_2/content_images2/13167934614406.jpg', '325_elochki', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 569, 1, NULL),
-(427, 'uploads/public/arkhiv_test_2/content_images2/1316793461702.jpg', '325_elochki_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(428, 'uploads/public/arkhiv_test_2/content_images2/13167934613340.jpg', '326_derevce', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 780, 519, 1, NULL),
-(429, 'uploads/public/arkhiv_test_2/content_images2/13167934613446.jpg', '331_desert', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 491, 1, NULL),
-(430, 'uploads/public/arkhiv_test_2/content_images2/13167934629315.jpg', '331_desert_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(431, 'uploads/public/arkhiv_test_2/content_images2/13167934624136.jpg', '334_elka', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 640, 426, 1, NULL),
-(432, 'uploads/public/arkhiv_test_2/content_images2/13167934625754.jpg', '41_tree_bw', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 524, 1, NULL),
-(433, 'uploads/public/arkhiv_test_2/content_images2/13167934628247.jpg', '41_tree_bw_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(434, 'uploads/public/arkhiv_test_2/content_images2/13167934632957.jpg', '49_autumn', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 740, 555, 1, NULL),
-(435, 'uploads/public/arkhiv_test_2/content_images2/13167934638365.jpg', '50_andr', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 500, 1, NULL),
-(436, 'uploads/public/arkhiv_test_2/content_images2/13167934637933.jpg', '50_andr_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(437, 'uploads/public/arkhiv_test_2/content_images2/13167934644249.jpg', '52_youtFuture', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 563, 1, NULL),
-(438, 'uploads/public/arkhiv_test_2/content_images2/13167934643209.jpg', '56_birds', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 900, 565, 1, NULL),
-(439, 'uploads/public/arkhiv_test_2/content_images2/13167934642589.jpg', '56_birds_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(440, 'uploads/public/arkhiv_test_2/content_images2/13167934644089.jpg', '58_blackcolor', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 900, 584, 1, NULL),
-(441, 'uploads/public/arkhiv_test_2/content_images2/13167934658518.jpg', '58_blackcolor_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(442, 'uploads/public/arkhiv_test_2/content_images2/13167934654732.jpg', '92_waves', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 484, 1, NULL),
-(443, 'uploads/public/arkhiv_test_2/content_images2/13167934653930.jpg', '92_waves_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(444, 'uploads/public/arkhiv_test_2/content_images2/13167934671958.jpg', '96_kiev', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 610, 570, 1, NULL),
-(445, 'uploads/public/arkhiv_test_2/content_images2/13167934671355.jpg', '96_kiev_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 610, 468, 1, NULL),
-(446, 'uploads/public/arkhiv_test_2/content_images2/a', 'a', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
-(458, 'uploads/public/arkhiv_test_2/content_images2/a/13167934752765.jpg', 'a_112062-1_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(459, 'uploads/public/arkhiv_test_2/content_images2/a/13167934763025.jpg', 'a_133290', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 720, 619, 1, NULL),
-(460, 'uploads/public/arkhiv_test_2/content_images2/a/13167934761934.jpg', 'a_133290_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(461, 'uploads/public/arkhiv_test_2/content_images2/a/13167934766210.jpg', 'a_135581', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 652, 1, NULL),
-(462, 'uploads/public/arkhiv_test_2/content_images2/a/13167934772339.jpg', 'a_135581_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(463, 'uploads/public/arkhiv_test_2/content_images2/a/13167934786069.jpg', 'a_136636', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 729, 1, NULL),
-(464, 'uploads/public/arkhiv_test_2/content_images2/a/13167934781963.jpg', 'a_136636_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 772, 1, NULL),
-(465, 'uploads/public/arkhiv_test_2/content_images2/a/1316793478586.jpg', 'a_139002', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 565, 1, NULL),
-(466, 'uploads/public/arkhiv_test_2/content_images2/a/13167934799026.jpg', 'a_139002_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(467, 'uploads/public/arkhiv_test_2/content_images2/a/1316793479327.jpg', 'a_145366', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 540, 1, NULL),
-(468, 'uploads/public/arkhiv_test_2/content_images2/a/13167934798518.jpg', 'a_145366_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(469, 'uploads/public/arkhiv_test_2/content_images2/a/13167934803274.jpg', 'a_149455', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 728, 1, NULL),
-(470, 'uploads/public/arkhiv_test_2/content_images2/a/13167934803535.jpg', 'a_149455_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(471, 'uploads/public/arkhiv_test_2/content_images2/a/13167934811107.jpg', 'a_149598', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 616, 1, NULL),
-(472, 'uploads/public/arkhiv_test_2/content_images2/a/13167934817363.jpg', 'a_149598_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(473, 'uploads/public/arkhiv_test_2/content_images2/a/13167934822053.jpg', 'a_150042', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 684, 1, NULL),
-(474, 'uploads/public/arkhiv_test_2/content_images2/a/13167934825838.jpg', 'a_150042_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(475, 'uploads/public/arkhiv_test_2/content_images2/a/13167934831293.jpg', 'a_150449', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 726, 1, NULL),
-(476, 'uploads/public/arkhiv_test_2/content_images2/a/13167934844010.jpg', 'a_150449_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(477, 'uploads/public/arkhiv_test_2/content_images2/a/13167934847193.jpg', 'a_151076', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 711, 1, NULL),
-(478, 'uploads/public/arkhiv_test_2/content_images2/a/13167934857180.jpg', 'a_151076_r', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(479, 'uploads/public/arkhiv_test_2/content_images2/a/13167934853310.jpg', 'a_152271-1', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 700, 1, NULL),
-(480, 'uploads/public/arkhiv_test_2/content_images2/a/13167934851351.jpg', 'a_166332', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 738, 690, 1, NULL),
-(481, 'uploads/public/arkhiv_test_2/content_images2/a/13167934867982.jpg', 'a_167388-1', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 750, 527, 1, NULL),
-(482, 'uploads/public/arkhiv_test_2/content_images2/a/13167934869670.jpg', 'a_181907', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 721, 720, 1, NULL),
-(483, 'uploads/public/arkhiv_test_2/content_images2/13167934864958.jpg', 'Cartman-sp', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 100, 100, 1, NULL),
-(484, 'uploads/public/arkhiv_test_2/content_images2/13167934862982.jpg', 'Kyle2', NULL, '2011-09-23', NULL, 0, 'image', 'image/jpeg', 100, 100, 1, NULL),
-(485, 'uploads/public/arkhiv_test_2/xata', 'xata', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
-(489, 'uploads/public/arkhiv_test_3', 'Архив тест 3', NULL, NULL, NULL, 0, 'folder', 'unknown/mime-type', NULL, NULL, 1, NULL),
-(490, 'uploads/public/arkhiv_test_3/xata2/13170310973809.jpg', '_MG_6937', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 4368, 2912, 1, NULL),
-(491, 'uploads/public/arkhiv_test_3/xata2/13170311024474.jpg', '_MG_6943', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 4368, 2912, 1, NULL),
-(492, 'uploads/public/arkhiv_test_3/xata2/13170311065119.jpg', '_MG_6944', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 2912, 4368, 1, NULL),
-(493, 'uploads/public/arkhiv_test_3/banners2/13170311092203.gif', '250x250', NULL, '2011-09-26', NULL, 0, 'image', 'image/gif', 250, 250, 1, NULL),
-(494, 'uploads/public/arkhiv_test_3/banners2/13170311108741.gif', '728x90', NULL, '2011-09-26', NULL, 0, 'image', 'image/gif', 728, 90, 1, NULL),
-(495, 'uploads/public/arkhiv_test_3/banners2/banner_old', 'banner_old', NULL, '2011-09-26', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
-(496, 'uploads/public/arkhiv_test_3/banners2/banner_old/13170311108862.gif', '240x400', NULL, '2011-09-26', NULL, 0, 'image', 'image/gif', 240, 400, 1, NULL),
-(497, 'uploads/public/arkhiv_test_3/content_images2/13170311109797.jpg', '05_train', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 700, 486, 1, NULL),
-(498, 'uploads/public/arkhiv_test_3/content_images2/13170311101866.jpg', '05_train_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 648, 486, 1, NULL),
-(499, 'uploads/public/arkhiv_test_3/content_images2/13170311102567.jpg', '104_apoc', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 492, 1, NULL),
-(500, 'uploads/public/arkhiv_test_3/content_images2/13170311118183.jpg', '104_apoc_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(501, 'uploads/public/arkhiv_test_3/content_images2/13170311114644.jpg', '105_baken', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 458, 1, NULL),
-(502, 'uploads/public/arkhiv_test_3/content_images2/13170311114202.jpg', '105_baken_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(503, 'uploads/public/arkhiv_test_3/content_images2/13170311127920.jpg', '113_sea', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 494, 1, NULL),
-(504, 'uploads/public/arkhiv_test_3/content_images2/13170311122392.jpg', '113_sea_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(505, 'uploads/public/arkhiv_test_3/content_images2/13170311127211.jpg', '114_sea2', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 515, 1, NULL),
-(506, 'uploads/public/arkhiv_test_3/content_images2/1317031113167.jpg', '114_sea2_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(507, 'uploads/public/arkhiv_test_3/content_images2/13170311137693.jpg', '115_cemetary', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 710, 521, 1, NULL),
-(508, 'uploads/public/arkhiv_test_3/content_images2/13170311137326.jpg', '115_cemetary_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(509, 'uploads/public/arkhiv_test_3/content_images2/13170311131579.jpg', '119_chembalo', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 820, 522, 1, NULL),
-(510, 'uploads/public/arkhiv_test_3/content_images2/13170311142484.jpg', '119_chembalo_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(511, 'uploads/public/arkhiv_test_3/content_images2/13170311147361.jpg', '122_uneasy', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 571, 650, 1, NULL),
-(512, 'uploads/public/arkhiv_test_3/content_images2/13170311142418.jpg', '125_dreamland', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(513, 'uploads/public/arkhiv_test_3/content_images2/13170311155910.jpg', '125_dreamland_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(514, 'uploads/public/arkhiv_test_3/content_images2/13170311153954.jpg', '126_carpat2', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(515, 'uploads/public/arkhiv_test_3/content_images2/1317031115261.jpg', '126_carpat2_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(516, 'uploads/public/arkhiv_test_3/content_images2/13170311153607.jpg', '127_osen', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(517, 'uploads/public/arkhiv_test_3/content_images2/13170311164089.jpg', '127_osen_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(518, 'uploads/public/arkhiv_test_3/content_images2/13170311161181.jpg', '129_lviv', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 421, 650, 1, NULL),
-(519, 'uploads/public/arkhiv_test_3/content_images2/13170311161286.jpg', '130_void', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 595, 1, NULL),
-(520, 'uploads/public/arkhiv_test_3/content_images2/13170311176689.jpg', '132_bwQirim', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 591, 1, NULL),
-(521, 'uploads/public/arkhiv_test_3/content_images2/13170311171205.jpg', '15_frol', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 554, 1, NULL),
-(522, 'uploads/public/arkhiv_test_3/content_images2/13170311185095.jpg', '15_frol_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 739, 554, 1, NULL),
-(523, 'uploads/public/arkhiv_test_3/content_images2/13170311191162.jpg', '16_shadow', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 700, 498, 1, NULL),
-(524, 'uploads/public/arkhiv_test_3/content_images2/13170311196323.jpg', '16_shadow_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 664, 498, 1, NULL),
-(525, 'uploads/public/arkhiv_test_3/content_images2/13170311217297.jpg', '20_cloud', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 700, 525, 1, NULL),
-(526, 'uploads/public/arkhiv_test_3/content_images2/13170311229902.jpg', '23_apples', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 506, 620, 1, NULL),
-(527, 'uploads/public/arkhiv_test_3/content_images2/13170311225185.jpg', '31_builders', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 700, 503, 1, NULL),
-(528, 'uploads/public/arkhiv_test_3/content_images2/13170311237094.jpg', '31_builders_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(529, 'uploads/public/arkhiv_test_3/content_images2/13170311231768.jpg', '41_tree_bw', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 524, 1, NULL),
-(530, 'uploads/public/arkhiv_test_3/content_images2/13170311247752.jpg', '41_tree_bw_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(531, 'uploads/public/arkhiv_test_3/content_images2/13170311245276.jpg', '49_autumn', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 740, 555, 1, NULL),
-(532, 'uploads/public/arkhiv_test_3/content_images2/13170311246411.jpg', '50_andr', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 500, 1, NULL),
-(533, 'uploads/public/arkhiv_test_3/content_images2/13170311241953.jpg', '50_andr_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(534, 'uploads/public/arkhiv_test_3/content_images2/13170311253196.jpg', '52_youtFuture', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 563, 1, NULL),
-(535, 'uploads/public/arkhiv_test_3/content_images2/13170311258803.jpg', '56_birds', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 900, 565, 1, NULL),
-(536, 'uploads/public/arkhiv_test_3/content_images2/13170311259164.jpg', '56_birds_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(537, 'uploads/public/arkhiv_test_3/content_images2/13170311263362.jpg', '58_blackcolor', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 900, 584, 1, NULL),
-(538, 'uploads/public/arkhiv_test_3/content_images2/13170311266496.jpg', '58_blackcolor_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(539, 'uploads/public/arkhiv_test_3/content_images2/13170311266489.jpg', '92_waves', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 484, 1, NULL),
-(540, 'uploads/public/arkhiv_test_3/content_images2/13170311274940.jpg', '92_waves_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(541, 'uploads/public/arkhiv_test_3/content_images2/13170311278980.jpg', '96_kiev', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 610, 570, 1, NULL),
-(542, 'uploads/public/arkhiv_test_3/content_images2/13170311273850.jpg', '96_kiev_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 610, 468, 1, NULL),
-(543, 'uploads/public/arkhiv_test_3/content_images2/a', 'a', NULL, '2011-09-26', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
-(544, 'uploads/public/arkhiv_test_3/content_images2/a/13170311287357.jpg', 'a_058745-3', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 557, 1, NULL),
-(545, 'uploads/public/arkhiv_test_3/content_images2/a/13170311284889.jpg', 'a_058745-3_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(546, 'uploads/public/arkhiv_test_3/content_images2/a/13170311287803.jpg', 'a_080461-2', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 536, 1, NULL),
-(547, 'uploads/public/arkhiv_test_3/content_images2/a/13170311287618.jpg', 'a_080461-2_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(548, 'uploads/public/arkhiv_test_3/content_images2/a/13170311298496.jpg', 'a_092055-2', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 544, 1, NULL),
-(549, 'uploads/public/arkhiv_test_3/content_images2/a/13170311291892.jpg', 'a_092055-2_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(550, 'uploads/public/arkhiv_test_3/content_images2/a/13170311298798.jpg', 'a_093040-1', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 648, 1, NULL),
-(551, 'uploads/public/arkhiv_test_3/content_images2/a/13170311309782.jpg', 'a_093040-1_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(552, 'uploads/public/arkhiv_test_3/content_images2/a/13170311308580.jpg', 'a_094297-1', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 571, 1, NULL),
-(553, 'uploads/public/arkhiv_test_3/content_images2/a/13170311302.jpg', 'a_094297-1_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(554, 'uploads/public/arkhiv_test_3/content_images2/a/13170311304876.jpg', 'a_112062-1', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 528, 1, NULL),
-(555, 'uploads/public/arkhiv_test_3/content_images2/a/13170311319741.jpg', 'a_112062-1_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(556, 'uploads/public/arkhiv_test_3/content_images2/a/13170311316324.jpg', 'a_133290', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 720, 619, 1, NULL),
-(557, 'uploads/public/arkhiv_test_3/content_images2/a/13170311322173.jpg', 'a_133290_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(558, 'uploads/public/arkhiv_test_3/content_images2/a/13170311329643.jpg', 'a_135581', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 652, 1, NULL),
-(559, 'uploads/public/arkhiv_test_3/content_images2/a/13170311331509.jpg', 'a_135581_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(560, 'uploads/public/arkhiv_test_3/content_images2/a/13170311339266.jpg', 'a_136636', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 729, 1, NULL),
-(561, 'uploads/public/arkhiv_test_3/content_images2/a/13170311331410.jpg', 'a_136636_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 772, 1, NULL),
-(562, 'uploads/public/arkhiv_test_3/content_images2/a/13170311349260.jpg', 'a_139002', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 565, 1, NULL),
-(563, 'uploads/public/arkhiv_test_3/content_images2/a/13170311344542.jpg', 'a_139002_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(564, 'uploads/public/arkhiv_test_3/content_images2/a/13170311347821.jpg', 'a_145366', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 540, 1, NULL),
-(565, 'uploads/public/arkhiv_test_3/content_images2/a/13170311351213.jpg', 'a_145366_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(566, 'uploads/public/arkhiv_test_3/content_images2/a/13170311357737.jpg', 'a_149455', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 728, 1, NULL),
-(567, 'uploads/public/arkhiv_test_3/content_images2/a/13170311356623.jpg', 'a_149455_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(568, 'uploads/public/arkhiv_test_3/content_images2/a/1317031136377.jpg', 'a_149598', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 616, 1, NULL),
-(569, 'uploads/public/arkhiv_test_3/content_images2/a/13170311361098.jpg', 'a_149598_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(570, 'uploads/public/arkhiv_test_3/content_images2/a/13170311373118.jpg', 'a_150042', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 684, 1, NULL),
-(571, 'uploads/public/arkhiv_test_3/content_images2/a/13170311386866.jpg', 'a_150042_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(572, 'uploads/public/arkhiv_test_3/content_images2/a/13170311386037.jpg', 'a_150449', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 726, 1, NULL),
-(573, 'uploads/public/arkhiv_test_3/content_images2/a/13170311392097.jpg', 'a_150449_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(574, 'uploads/public/arkhiv_test_3/content_images2/a/1317031139715.jpg', 'a_151076', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 711, 1, NULL),
-(575, 'uploads/public/arkhiv_test_3/content_images2/a/13170311403394.jpg', 'a_151076_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(576, 'uploads/public/arkhiv_test_3/content_images2/a/13170311406986.jpg', 'a_152271-1', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 700, 1, NULL),
-(577, 'uploads/public/arkhiv_test_3/content_images2/a/13170311418517.jpg', 'a_166332', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 738, 690, 1, NULL),
-(578, 'uploads/public/arkhiv_test_3/content_images2/a/13170311411011.jpg', 'a_167388-1', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 527, 1, NULL),
-(579, 'uploads/public/arkhiv_test_3/content_images2/a/13170311425482.jpg', 'a_181907', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 721, 720, 1, NULL),
-(580, 'uploads/public/testovyj_arkhiv_4', 'Тестовый архив 4', NULL, NULL, NULL, 0, 'folder', 'unknown/mime-type', NULL, NULL, 1, NULL),
-(581, 'uploads/public/testovyj_arkhiv_4/xata/13170313906852.jpg', '_MG_6937', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 4368, 2912, 1, NULL),
-(582, 'uploads/public/testovyj_arkhiv_4/xata/13170313933554.jpg', '_MG_6943', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 4368, 2912, 1, NULL),
-(583, 'uploads/public/testovyj_arkhiv_4/xata/1317031397630.jpg', '_MG_6944', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 2912, 4368, 1, NULL),
-(584, 'uploads/public/testovyj_arkhiv_4/xata/13170314014912.jpg', '_MG_6945', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 2912, 4368, 1, NULL),
-(585, 'uploads/public/testovyj_arkhiv_4/xata/13170314058367.jpg', '_MG_6947', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 4368, 2912, 1, NULL),
-(586, 'uploads/public/testovyj_arkhiv_4/xata/13170314098118.jpg', '_MG_6949', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 4368, 2912, 1, NULL),
-(587, 'uploads/public/testovyj_arkhiv_4/banners2/13170314141123.gif', '250x250', NULL, '2011-09-26', NULL, 0, 'image', 'image/gif', 250, 250, 1, NULL),
-(588, 'uploads/public/testovyj_arkhiv_4/banners2/13170314152022.gif', '728x90', NULL, '2011-09-26', NULL, 0, 'image', 'image/gif', 728, 90, 1, NULL),
-(589, 'uploads/public/testovyj_arkhiv_4/banners2/banner_old', 'banner_old', NULL, '2011-09-26', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
-(590, 'uploads/public/testovyj_arkhiv_4/banners2/banner_old/13170314158203.gif', '240x400', NULL, '2011-09-26', NULL, 0, 'image', 'image/gif', 240, 400, 1, NULL),
-(591, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314152738.jpg', '05_train', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 700, 486, 1, NULL),
-(592, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314168377.jpg', '05_train_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 648, 486, 1, NULL),
-(593, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314168816.jpg', '104_apoc', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 492, 1, NULL),
-(594, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314167406.jpg', '104_apoc_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(595, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314162906.jpg', '105_baken', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 458, 1, NULL),
-(596, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314172570.jpg', '105_baken_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(597, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314175663.jpg', '111852', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(598, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314174532.jpg', '111852_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(599, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314173718.jpg', '113_sea', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 494, 1, NULL),
-(600, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314186333.jpg', '113_sea_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(601, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314182135.jpg', '114_sea2', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 515, 1, NULL),
-(602, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314182380.jpg', '114_sea2_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(603, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314185474.jpg', '115_cemetary', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 710, 521, 1, NULL),
-(604, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314195167.jpg', '115_cemetary_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(605, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314198629.jpg', '119_chembalo', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 820, 522, 1, NULL),
-(606, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314201102.jpg', '119_chembalo_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(607, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314203294.jpg', '122_uneasy', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 571, 650, 1, NULL),
-(608, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314209974.jpg', '125_dreamland', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(609, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314211653.jpg', '125_dreamland_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(610, 'uploads/public/testovyj_arkhiv_4/content_images2/1317031421877.jpg', '126_carpat2', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(611, 'uploads/public/testovyj_arkhiv_4/content_images2/1317031421567.jpg', '126_carpat2_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(612, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314217874.jpg', '127_osen', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(613, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314227728.jpg', '127_osen_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(614, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314224120.jpg', '129_lviv', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 421, 650, 1, NULL),
-(615, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314228503.jpg', '130_void', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 595, 1, NULL),
-(616, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314222640.jpg', '132_bwQirim', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 591, 1, NULL),
-(617, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314232486.jpg', '132437', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 736, 700, 1, NULL),
-(618, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314236621.jpg', '132437_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(619, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314233762.jpg', '132688-1', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 506, 1, NULL),
-(620, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314244508.jpg', '132688-1_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(621, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314244823.jpg', '133_panorama_balaklava', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 950, 455, 1, NULL),
-(622, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314246500.jpg', '133_panorama_balaklava_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(623, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314242885.jpg', '133468', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 543, 1, NULL),
-(624, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314253639.jpg', '133468_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(625, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314263905.jpg', '135312', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 780, 519, 1, NULL),
-(626, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314265790.jpg', '135312_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(627, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314266208.jpg', '135937', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 840, 525, 1, NULL),
-(628, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314269567.jpg', '135937_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(629, 'uploads/public/testovyj_arkhiv_4/content_images2/1317031427321.jpg', '136131-2', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 830, 500, 1, NULL),
-(630, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314279925.jpg', '136131-2_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(631, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314275899.jpg', '137_ufo', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 522, 1, NULL),
-(632, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314282456.jpg', '137_ufo_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(633, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314282305.jpg', '142_tuman', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(634, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314281372.jpg', '142_tuman_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(635, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314287623.jpg', '144366', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 656, 570, 1, NULL),
-(636, 'uploads/public/testovyj_arkhiv_4/content_images2/1317031429933.jpg', '144366_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(637, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314292474.jpg', '15_frol', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 554, 1, NULL),
-(638, 'uploads/public/testovyj_arkhiv_4/content_images2/1317031430916.jpg', '15_frol_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 739, 554, 1, NULL),
-(639, 'uploads/public/testovyj_arkhiv_4/content_images2/1317031430907.jpg', '150_OoO', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 494, 650, 1, NULL),
-(640, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314304127.jpg', '155_waves', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 557, 1, NULL),
-(641, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314311793.jpg', '155_waves_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(642, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314311473.jpg', '156_arol', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 1303, 709, 1, NULL),
-(643, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314312000.jpg', '156_arol_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(644, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314329521.jpg', '159_mmm', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 500, 1, NULL),
-(645, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314325592.jpg', '159_mmm_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(646, 'uploads/public/testovyj_arkhiv_4/content_images2/1317031432502.jpg', '16_shadow', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 700, 498, 1, NULL),
-(647, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314332160.jpg', '16_shadow_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 664, 498, 1, NULL),
-(648, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314338078.jpg', '161sunKaradag', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 601, 1, NULL),
-(649, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314337123.jpg', '161sunKaradag_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(650, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314335921.jpg', '165_tumanTepe', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(651, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314342585.jpg', '165_tumanTepe_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(652, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314341946.jpg', '186_elektrovoz', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 750, 580, 1, NULL),
-(653, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314342420.jpg', '186_elektrovoz_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(654, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314345470.jpg', '191_crane', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 589, 1, NULL),
-(655, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314355584.jpg', '191_crane_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(656, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314356325.jpg', '193_orion', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 419, 630, 1, NULL),
-(657, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314351259.jpg', '195_treeVAR', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 565, 1, NULL),
-(658, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314361792.jpg', '195_treeVAR_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(659, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314365891.jpg', '199_path', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 830, 552, 1, NULL),
-(660, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314361580.jpg', '199_path_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(661, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314361717.jpg', '20_cloud', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 700, 525, 1, NULL),
-(662, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314371790.jpg', '203_tree', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 432, 650, 1, NULL),
-(663, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314374035.jpg', '204_field', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 850, 534, 1, NULL),
-(664, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314374022.jpg', '204_field_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(665, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314373162.jpg', '205_snow', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 520, 1, NULL),
-(666, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314381658.jpg', '205_snow_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL),
-(667, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314384954.jpg', '206_snowTree', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 532, 1, NULL),
-(668, 'uploads/public/testovyj_arkhiv_4/content_images2/13170314385636.jpg', '206_snowTree_r', NULL, '2011-09-26', NULL, 0, 'image', 'image/jpeg', 800, 600, 1, NULL);
+(101, 'uploads/public/papka', 'папка', NULL, NULL, NULL, 0, 'folder', 'unknown/mime-type', NULL, NULL, 1, NULL),
+(103, 'uploads/public/allMK/.svn/text-base/13167915697800.svn-base', 'allmk.xml', NULL, '2011-09-23', NULL, 0, 'unknown', 'text/x-c', NULL, NULL, 1, NULL),
+(104, 'uploads/public/allMK/.svn/text-base/13167915698909.svn-base', 'EXTDICT_535', NULL, '2011-09-23', NULL, 0, 'unknown', 'application/octet-stream', NULL, NULL, 1, NULL),
+(105, 'uploads/public/allMK/.svn/text-base/13167915697782.svn-base', 'allmk.txt', NULL, '2011-09-23', NULL, 0, 'unknown', 'text/plain', NULL, NULL, 1, NULL),
+(106, 'uploads/public/allMK/.svn/prop-base/13167915707631.svn-base', 'EXTDICT_535', NULL, '2011-09-23', NULL, 0, 'unknown', 'text/plain', NULL, NULL, 1, NULL),
+(107, 'uploads/public/allMK/.svn/entries', 'entries', NULL, '2011-09-23', NULL, 0, 'unknown', 'text/plain', NULL, NULL, 1, NULL),
+(108, 'uploads/public/allMK/13167915705794.xml', 'allmk', NULL, '2011-09-23', NULL, 0, 'unknown', 'text/x-c', NULL, NULL, 1, NULL),
+(109, 'uploads/public/allMK/EXTDICT_535', 'EXTDICT_535', NULL, '2011-09-23', NULL, 0, 'unknown', 'application/octet-stream', NULL, NULL, 1, NULL),
+(110, 'uploads/public/allMK/131679157050.txt', 'allmk', NULL, '2011-09-23', NULL, 0, 'unknown', 'text/plain', NULL, NULL, 1, NULL),
+(111, 'uploads/public/allMK/.svn/tmp/text-base', 'text-base', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
+(112, 'uploads/public/allMK/.svn/tmp/prop-base', 'prop-base', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
+(113, 'uploads/public/allMK/.svn/tmp/props', 'props', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
+(114, 'uploads/public/allMK/.svn/text-base', 'text-base', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
+(115, 'uploads/public/allMK/.svn/prop-base', 'prop-base', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
+(116, 'uploads/public/allMK/.svn/props', 'props', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
+(117, 'uploads/public/allMK/.svn/tmp', 'tmp', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
+(118, 'uploads/public/allMK/13167915715784.svn', '13167915715784.svn', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
+(119, 'uploads/public/allMK', 'allMK', NULL, '2011-09-23', NULL, 0, NULL, NULL, NULL, NULL, 1, NULL),
+(120, 'uploads/public/allMK/13172135957617.gif', 'bm2034', NULL, '2011-09-01', NULL, 0, 'image', 'image/gif', 660, 450, 1, NULL),
+(121, 'uploads/public/20110930', '!2011-09-30', NULL, NULL, NULL, 0, 'folder', 'unknown/mime-type', NULL, NULL, 1, NULL),
+(123, 'uploads/public/20110930/13173959861640.flv', 'Morshinska', NULL, '2011-09-30', NULL, 0, 'video', 'video/x-flv', NULL, NULL, 1, NULL),
+(124, 'uploads/public/20111006', '!2011-10-06', NULL, NULL, NULL, 0, 'folder', 'unknown/mime-type', NULL, NULL, 1, NULL),
+(125, 'uploads/public/20111006/13179117669663.jpg', '_ORL0820', NULL, '2011-10-06', NULL, 0, 'image', 'image/jpeg', 2832, 4256, 1, NULL),
+(126, 'uploads/public/20111006/13179117923139.jpg', '_ORL0924', NULL, NULL, NULL, 0, 'image', 'image/jpeg', 4256, 2832, 1, NULL),
+(127, 'uploads/public/20111007', '!2011-10-07', NULL, NULL, NULL, 0, 'folder', 'unknown/mime-type', NULL, NULL, 1, NULL),
+(128, 'uploads/public/20111007/13179757278003.jpg', '_ORL0927', NULL, '2011-10-07', NULL, 0, 'image', 'image/jpeg', 2832, 4256, 1, NULL),
+(129, 'uploads/public/20111007/13179757538125.jpg', '_ORL0931', NULL, NULL, NULL, 0, 'image', 'image/jpeg', 4256, 2832, 1, NULL),
+(130, 'uploads/public/20111019', '!2011-10-19', NULL, NULL, NULL, 0, 'folder', 'unknown/mime-type', NULL, NULL, 1, NULL),
+(131, 'uploads/public/20111019/1319018057930.PNG', 'somick_logo', NULL, '2011-10-19', NULL, 0, 'image', 'image/png', 404, 262, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -3840,7 +3405,7 @@ CREATE TABLE IF NOT EXISTS `user_groups` (
   `group_user_default` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`group_id`),
   KEY `group_default` (`group_default`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Дамп данных таблицы `user_groups`
@@ -3898,7 +3463,7 @@ CREATE TABLE IF NOT EXISTS `user_users` (
 --
 
 INSERT INTO `user_users` (`u_id`, `u_name`, `u_password`, `u_is_active`, `u_fullname`, `u_nick`, `u_avatar_img`) VALUES
-(22, 'demo@energine.org', '89e495e7941cf9e40e6980d14a16bf023ccd4c91', 1, 'Admin', 'Admins', 'uploads/avatars/12871413545331.jpg');
+(22, 'demo@energine.org', '89e495e7941cf9e40e6980d14a16bf023ccd4c91', 1, 'Admin', 'Admins', NULL);
 
 -- --------------------------------------------------------
 
@@ -3944,6 +3509,33 @@ INSERT INTO `user_user_groups` (`u_id`, `group_id`) VALUES
 --
 ALTER TABLE `apps_ads`
   ADD CONSTRAINT `apps_ads_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `apps_feed`
+--
+ALTER TABLE `apps_feed`
+  ADD CONSTRAINT `apps_feed_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `apps_feed_tags`
+--
+ALTER TABLE `apps_feed_tags`
+  ADD CONSTRAINT `apps_feed_tags_ibfk_1` FOREIGN KEY (`tf_id`) REFERENCES `apps_feed` (`tf_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `apps_feed_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `share_tags` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `apps_feed_translation`
+--
+ALTER TABLE `apps_feed_translation`
+  ADD CONSTRAINT `apps_feed_translation_ibfk_1` FOREIGN KEY (`tf_id`) REFERENCES `apps_feed` (`tf_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `apps_feed_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `apps_feed_uploads`
+--
+ALTER TABLE `apps_feed_uploads`
+  ADD CONSTRAINT `apps_feed_uploads_ibfk_1` FOREIGN KEY (`tf_id`) REFERENCES `apps_feed` (`tf_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `apps_feed_uploads_ibfk_2` FOREIGN KEY (`upl_id`) REFERENCES `share_uploads` (`upl_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ограничения внешнего ключа таблицы `apps_news`

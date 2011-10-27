@@ -256,7 +256,7 @@ var Grid = new Class({
             }
             else if(this.metadata[fieldName].type == 'textbox'){
                 if(record[fieldName] && record[fieldName].length){
-                    cell.set('html', record[fieldName].join(','));
+                    cell.set('html', record[fieldName].join(', '));
                 }
                 else {
                     cell.set('html', '&nbsp;');

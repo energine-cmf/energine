@@ -99,7 +99,7 @@ class AttachmentManager extends DBWorker {
      * @return void
      */
     public function createField($mapFieldName = false, $returnOnlyFirstAttachment = false, $mapValue = false) {
-        if ($this->isActive) {
+        if ($this->isActive && !$this->data->isEmpty()) {
             if(!$mapFieldName){
                 $mapFieldName = $this->pk->getName();
             }
@@ -213,12 +213,13 @@ class AttachmentManager extends DBWorker {
 
             //Добавляем поле с дополнительными файлами
             $field = new Field('attached_files');
-            if (!$data) {
+            if (!$data && !$this->data->isEmpty()) {
                 $data = $this->data->getFieldByName($this->pk->getName())->getRowData(0);
                 $request = 'SELECT files.upl_id, upl_path, upl_name
                       FROM `' . $this->tableName . '` s2f
                     LEFT JOIN `' . self::ATTACH_TABLENAME . '` files ON s2f.upl_id=files.upl_id
-                    WHERE ' . $this->pk->getName() . ' = %s AND upl_is_ready=1';
+                    WHERE ' . $this->pk->getName() . ' = %s AND upl_is_ready=1
+                    ORDER BY upl_order_num';
                 $data = $this->dbh->select($request, $data);
             }
 

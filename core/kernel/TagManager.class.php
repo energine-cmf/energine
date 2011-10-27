@@ -65,28 +65,31 @@ class TagManager extends DBWorker {
 
     public function createFieldDescription() {
         if ($this->isActive) {
-            $fd = new FieldDescription('tags');
+            if(!($fd = $this->dataDescription->getFieldDescriptionByName('tags'))){
+                $fd = new FieldDescription('tags');
+                $this->dataDescription->addFieldDescription($fd);
+            }
             $fd->setType(FieldDescription::FIELD_TYPE_TEXTBOX_LIST)->setProperty('url', 'tag-autocomplete')->setProperty('separator', TagManager::TAG_SEPARATOR);
-            $this->dataDescription->addFieldDescription($fd);
         }
     }
 
     public function createField() {
         $field = new Field('tags');
-        if ($this->isActive && !$this->data->isEmpty()) {
+        if ($this->isActive && !$this->data->isEmpty() && $this->data->getFieldByName($this->pk->getName())) {
             $fieldData = $this->pull($this->data->getFieldByName($this->pk->getName())->getData(), $this->tableName);
-            for ($i = 0, $langs = count(E()->getLanguage()->getLanguages());
-                $i < $langs; $i++) {
+            //inspect($fieldData);
+            $field->setData($fieldData);
+            /*for ($i = 0, $langs = count(E()->getLanguage()->getLanguages()); $i < $langs; $i++) {
                 $field->setRowData($i, $fieldData);
-            }
+            }*/
 
         }
         $this->data->addField($field);
     }
 
-    public function save($id){
-        if($this->isActive && isset($_POST['tags'])){
-             $this->bind($_POST['tags'], $id, $this->tableName);
+    public function save($id) {
+        if ($this->isActive && isset($_POST['tags'])) {
+            $this->bind($_POST['tags'], $id, $this->tableName);
         }
     }
 
@@ -167,7 +170,8 @@ class TagManager extends DBWorker {
             }
         }
 
-        return /*(is_array($mapValue)) ? $data : */current($data);
+        //return current($data);
+        return $data;
     }
 
     /**
@@ -192,27 +196,28 @@ class TagManager extends DBWorker {
 
         return $result;
     }
+
     /**
      * Возвращает перечень тегов
-     * 
+     *
      * @static
      * @param $str начальные буквы тега
      * @param bool | int $limit ограничение по количеству
      * @return array
      */
-    static public function getTagStartedWith($str, $limit = false){
+    static public function getTagStartedWith($str, $limit = false) {
         $result = array();
         $str = trim($str);
-        
-        if($limit){
+
+        if ($limit) {
             $limit = array($limit);
         }
         else $limit = null;
 
         $res =
-                E()->getDB()->select(self::TAG_TABLENAME, 'tag_name', 'tag_name LIKE "'.mysql_real_escape_string($str).'%"', array('tag_name' => QAL::DESC),  $limit);
+                E()->getDB()->select(self::TAG_TABLENAME, 'tag_name', 'tag_name LIKE "' . mysql_real_escape_string($str) . '%"', array('tag_name' => QAL::DESC), $limit);
         $result = simplifyDBResult($res, 'tag_name');
-        
+
         return $result;
     }
 
@@ -227,7 +232,7 @@ class TagManager extends DBWorker {
      * @static
      */
     static public function getTags($tagID, $asSting = false) {
-        
+
         if (!is_array($tagID)) {
             $tagID = array($tagID);
         }

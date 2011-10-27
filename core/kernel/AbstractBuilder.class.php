@@ -19,7 +19,7 @@
  * @author dr.Pavka
  * @abstract
  */
-abstract class AbstractBuilder extends DBWorker implements IBuilder{
+abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
     /**
      * @access protected
@@ -139,8 +139,8 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
             $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));
             $fieldInfo->setProperty('msgCloseField', $this->translate('TXT_CLOSE_FIELD'));
         }
-        elseif($fieldInfo->getType() == FieldDescription::FIELD_TYPE_CAPTCHA){
-            require_once(CORE_DIR.'/kernel/recaptchalib.php');
+        elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_CAPTCHA) {
+            require_once(CORE_DIR . '/kernel/recaptchalib.php');
             $fieldValue = recaptcha_get_html($this->getConfigValue('recaptcha.public'));
         }
 
@@ -170,7 +170,8 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
      */
     protected function buildFieldValue(DOMElement $result, FieldDescription $fieldInfo, $fieldValue) {
         if (($fieldValue instanceof DOMNode) ||
-                ($fieldValue instanceof DOMElement)) {
+            ($fieldValue instanceof DOMElement)
+        ) {
             try {
                 $result->appendChild($fieldValue);
             }
@@ -179,21 +180,24 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
             }
         }
         elseif ($fieldInfo->getType() ==
-                FieldDescription::FIELD_TYPE_TEXTBOX_LIST) {
-            $fieldValue = $this->createTextBoxItems($fieldValue);
-            try {
-                $result->appendChild($fieldValue);
-            }
-            catch (Exception $e) {
-                $result->appendChild($this->result->importNode($fieldValue, true));
+                FieldDescription::FIELD_TYPE_TEXTBOX_LIST
+        ) {
+            if ($fieldValue = $this->createTextBoxItems($fieldValue)) {
+                try {
+                    $result->appendChild($fieldValue);
+                }
+                catch (Exception $e) {
+                    $result->appendChild($this->result->importNode($fieldValue, true));
+                }
             }
         }
         elseif (($fieldInfo->getType() == FieldDescription::FIELD_TYPE_MEDIA) &&
-                $fieldValue) {
+                $fieldValue
+        ) {
             try {
                 if ($info = E()->FileInfo->analyze($fieldValue)) {
                     $el = $this->result->createElement($info->type);
-//                    $el->nodeValue = $fieldValue;
+                    //                    $el->nodeValue = $fieldValue;
                     $el->nodeValue = $this->fixUrl($fieldValue);
                     switch ($info->type) {
                         case FileInfo::META_TYPE_IMAGE:
@@ -209,27 +213,27 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
                             break;
                     }
                     $result->appendChild($el);
-                    if($this->getConfigValue('thumbnails'))
-                    foreach ($this->getConfigValue('thumbnails') as $thumbName => $thumbnail) {
-                        $thumbnailFile =
-                                FileObject::getThumbFilename(
-                                    $fieldValue,
-                                    $width = (int) $thumbnail['width'],
-                                    $height = (int) $thumbnail['height']
-                                );
-//                        if (!file_exists($thumbnailFile)) {
-//                            $thumbnailFile = (string)$thumbnail->gag;
-//                        }
-                        $img = $this->result->createElement(
-                            'thumbnail'
-                        );
-                        $img->setAttribute('width', $width);
-                        $img->setAttribute('height', $height);
-                        $img->setAttribute('name', $thumbName);
-//                        $img->nodeValue = $thumbnailFile;
-                        $img->nodeValue = $this->fixUrl($thumbnailFile);
-                        $result->appendChild($img);
-                    }
+                    if ($this->getConfigValue('thumbnails'))
+                        foreach ($this->getConfigValue('thumbnails') as $thumbName => $thumbnail) {
+                            $thumbnailFile =
+                                    FileObject::getThumbFilename(
+                                        $fieldValue,
+                                        $width = (int)$thumbnail['width'],
+                                        $height = (int)$thumbnail['height']
+                                    );
+                            //                        if (!file_exists($thumbnailFile)) {
+                            //                            $thumbnailFile = (string)$thumbnail->gag;
+                            //                        }
+                            $img = $this->result->createElement(
+                                'thumbnail'
+                            );
+                            $img->setAttribute('width', $width);
+                            $img->setAttribute('height', $height);
+                            $img->setAttribute('name', $thumbName);
+                            //                        $img->nodeValue = $thumbnailFile;
+                            $img->nodeValue = $this->fixUrl($thumbnailFile);
+                            $result->appendChild($img);
+                        }
                 }
             }
             catch (SystemException $e) {
@@ -244,10 +248,10 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
                     case FieldDescription::FIELD_TYPE_TIME:
                     case FieldDescription::FIELD_TYPE_HIDDEN:
                         try {
-                            if(is_long($fieldValue)){
-                            $result->setAttribute('date', @strftime('%d-%m-%Y-%H-%M-%S', $fieldValue));
-                            $fieldValue =
-                                    self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
+                            if (is_long($fieldValue)) {
+                                $result->setAttribute('date', @strftime('%d-%m-%Y-%H-%M-%S', $fieldValue));
+                                $fieldValue =
+                                        self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
                             }
                         }
                         catch (Exception  $dummy) {
@@ -276,7 +280,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
      * @param  string $url
      * @return string
      */
-    protected function fixUrl($url){
+    protected function fixUrl($url) {
         return str_replace(
             array('%2F', '+'),
             array('/', '%20'),
@@ -310,23 +314,23 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
             $dayAfterTomorrow = strtotime("midnight +2 day");
             $yesterday = strtotime("midnight -1 day");
 
-            if($date >= $today and $date < $tomorrow){
+            if ($date >= $today and $date < $tomorrow) {
                 $result .= DBWorker::_translate('TXT_TODAY');
             }
-            elseif($date < $today and $date >= $yesterday){
+            elseif ($date < $today and $date >= $yesterday) {
                 $result .= DBWorker::_translate('TXT_YESTERDAY');
             }
-            elseif($date>=$tomorrow && $date<$dayAfterTomorrow){
+            elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
                 $result .= DBWorker::_translate('TXT_TOMORROW');
             }
-            else{
+            else {
                 $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
-                if(date('Y',$date) != date('Y')){
+                if (date('Y', $date) != date('Y')) {
                     $result .= ' ' . date('Y', $date);
                 }
             }
             //Если часы и минуты = 0, считаем что это просто дата, без времени
-            if(in_array($type, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_HIDDEN))){
+            if (in_array($type, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_HIDDEN))) {
                 $result .= ', ';
                 $result .= date('G', $date) . ':' . date('i', $date);
             }
@@ -372,17 +376,21 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder{
      * @access protected
      */
     protected function createTextBoxItems($data = array()) {
-        $fieldValue = $this->result->createElement('items');
+        $fieldValue = false;
+
         if ($data === false) {
-            $data = array();
+            return false;
         }
         elseif (!is_array($data)) {
             $data = array($data);
         }
 
-        foreach ($data as $itemData) {
-            $item = $this->result->createElement('item', (string) $itemData);
-            $fieldValue->appendChild($item);
+        if (!empty($data)) {
+            $fieldValue = $this->result->createElement('items');
+            foreach ($data as $itemData) {
+                $item = $this->result->createElement('item', (string)$itemData);
+                $fieldValue->appendChild($item);
+            }
         }
         return $fieldValue;
     }

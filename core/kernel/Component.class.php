@@ -372,11 +372,11 @@ class Component extends DBWorker implements IBlock {
      * @return void
      */
     final public function run() {
-        if (
+        /*if (
                 $this->enabled()
                 &&
                 ($this->document->getRights() >= $this->getCurrentStateRights())
-        ) {
+        ) {*/
             if (!method_exists($this, $this->getState())) {
                 throw new SystemException(
                     'ERR_DEV_NO_ACTION',
@@ -387,7 +387,7 @@ class Component extends DBWorker implements IBlock {
             $this->{
             $this->getState()
             }();
-        }
+        //}
     }
 
     /**
@@ -495,12 +495,12 @@ class Component extends DBWorker implements IBlock {
      * @return DOMDocument
      */
     public function build() {
-        $result = false;
+        /*$result = false;
         if (
                 $this->enabled()
                 &&
                 ($this->document->getRights() >= $this->getCurrentStateRights())
-        ) {
+        ) {*/
             $result = $this->doc->createElement('component');
             $result->setAttribute('name', $this->getName());
             $result->setAttribute('module', $this->module);
@@ -533,7 +533,7 @@ class Component extends DBWorker implements IBlock {
             }
             $this->doc->appendChild($result);
             $result = $this->doc;
-        }
+        //}
         return $result;
     }
 

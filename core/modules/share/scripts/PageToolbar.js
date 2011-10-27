@@ -115,7 +115,7 @@ var PageToolbar = new Class({
         }
         else {
             if (this.layoutManager && LayoutManager.changed){
-                if(!confirm('На странице есть несохраненные изменения. Вы уверены что хотите выйти?')){
+                if(!confirm('The page has unsaved changes. Are you sure you want to quit and lost all changes?'))   {
                     return;
                 }
             }

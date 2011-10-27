@@ -131,7 +131,7 @@ Energine.request = {
             // 'noCache': true,
             'evalResponse' : false,
             'onComplete' : callbackFunction,
-            'onFailure': function(e){console.log(arguments)}
+            'onFailure': function(e){/*console.log(arguments)*/}
         }).send();
 
     }

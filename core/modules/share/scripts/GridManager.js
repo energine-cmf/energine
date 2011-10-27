@@ -254,6 +254,14 @@ var Grid = new Class({
                 }).injectInside(cell);
                 cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
             }
+            else if(this.metadata[fieldName].type == 'textbox'){
+                if(record[fieldName] && record[fieldName].length){
+                    cell.set('html', record[fieldName].join(','));
+                }
+                else {
+                    cell.set('html', '&nbsp;');
+                }
+            }
             else if (this.metadata[fieldName].type == 'image') {
                 if (record[fieldName]) {
                     var image = new Element('img').setProperties({ 'src': record[fieldName], 'width':50, 'height':50 }).injectInside(cell);

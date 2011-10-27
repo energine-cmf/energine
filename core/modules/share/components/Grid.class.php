@@ -940,12 +940,12 @@ class Grid extends DBDataSet
                 '>' => '>\'%s\'',
                 'between' => 'BETWEEN \'%s\' AND \'%s\''
             );
-            
+
             unset($_POST['filter']['condition']);
             $tableName = key($_POST['filter']);
             $fieldName = key($_POST['filter'][$tableName]);
             $values = $_POST['filter'][$tableName][$fieldName];
-            
+
             if (
                 $this->dbh->tableExists($tableName) &&
                 ($tableInfo = $this->dbh->getColumnsInfo($tableName)) &&
@@ -961,7 +961,7 @@ class Grid extends DBDataSet
                                 '_name';
                 $fkTableInfo = $this->dbh->getColumnsInfo($fkTableName);
                 if(!isset($fkTableInfo[$fkValueField])) $fkValueField = $fkKeyName;
-                
+
                 if ($res =
                         simplifyDBResult($this->dbh->select($fkTableName, $fkKeyName,
                                                             $fkTableName . '.' .
@@ -1038,7 +1038,7 @@ class Grid extends DBDataSet
             $tableName
         );
         $am->createAttachmentTab($data);
-        
+
         //Ссылки на добавление и удаление файла
         $this->addTranslation('BTN_ADD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
     }

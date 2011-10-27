@@ -1,8 +1,8 @@
 var Words = function(initialValue, sep) {
     this._elements = initialValue.split(this.separator = sep);
     this.currentIndex = 0;
-    this.setCurrentIndex =  function(index){
-        if(this._elements[index]){
+    this.setCurrentIndex = function(index) {
+        if (this._elements[index]) {
             this.currentIndex = index;
         }
     }
@@ -179,6 +179,7 @@ var AcplField = new Class({
         this.separator = this.element.getProperty('nrgn:separator');
         this.setOptions(options);
         this.value = '';
+        this.queue = [];
 
         //this.element.addEvent('focus', this._focus.bind(this));
         //this.element.addEvent('blur', this._blur.bind(this));
@@ -193,45 +194,55 @@ var AcplField = new Class({
      this.focused = true;
      },*/
     _enter: function(e) {
-        var getCaret = function(el) {
+        if (this.url) {
+            var getCaret = function(el) {
 
-            if (el.selectionStart) {
-                return el.selectionStart;
-            } else if (document.selection) {
-                var r = document.selection.createRange();
-                if (r == null) {
-                    return 0;
+                if (el.selectionStart) {
+                    return el.selectionStart;
+                } else if (document.selection) {
+                    var r = document.selection.createRange();
+                    if (r == null) {
+                        return 0;
+                    }
+
+                    var re = el.createTextRange(),
+                        rc = re.duplicate();
+                    re.moveToBookmark(r.getBookmark());
+                    rc.setEndPoint('EndToStart', re);
+
+                    return rc.text.length;
                 }
-
-                var re = el.createTextRange(),
-                    rc = re.duplicate();
-                re.moveToBookmark(r.getBookmark());
-                rc.setEndPoint('EndToStart', re);
-
-                return rc.text.length;
+                return 0;
             }
-            return 0;
-        }
-        var key = e.key, val = this.element.value;
-        if (key == 'esc') {
-            this.list.hide();
-            this.list.empty();
-        }
-        else if (((key == 'up') || (key == 'down') || (key == 'enter'))) {
-            this.list.keyPressed.call(this.list, e);
-        }
-        else {
-            this.value = val;
-            this.words = new Words(this.value, this.separator);
-            var word = this.words.findWord(getCaret(this.element));
-            if ((word['string'].length > this.options.startFrom) /*&& (val.length  && (this.value != val))*/) {
-                this.words.setCurrentIndex(word.index);
-                this.requestValues(word.string);
+            var key = e.key, val = this.element.value;
+            if (key == 'esc') {
+                this.list.hide();
+                this.list.empty();
+            }
+            else if (((key == 'up') || (key == 'down') || (key == 'enter'))) {
+                this.list.keyPressed.call(this.list, e);
+            }
+            else {
+                this.value = val;
+                this.words = new Words(this.value, this.separator);
+                var word = this.words.findWord(getCaret(this.element));
+                if ((word['string'].length > this.options.startFrom) /*&& (val.length  && (this.value != val))*/) {
+                    this.words.setCurrentIndex(word.index);
+                    this.putInQueue(word.string, this.value);
+                    //this.requestValues(word.string);
+                }
             }
         }
     },
-        _prepareData: function(result) {
+    _prepareData: function(result) {
         this.setValues(result.data);
+    },
+    putInQueue: function(str, val) {
+        (function(string, value){
+            if(this.value == value){
+                this.requestValues(string);
+            }
+        }).delay(900, this, [str, val]);
     },
     /**
      *
@@ -239,12 +250,10 @@ var AcplField = new Class({
      * return Object | false
      */
     requestValues: function(str) {
-        if (this.url) {
-            new Request.JSON({url: this.url, onSuccess: this._prepareData.bind(this)}).send({
-                method: 'post',
-                data: 'value=' + str
-            });
-        }
+        new Request.JSON({url: this.url, onSuccess: this._prepareData.bind(this)}).send({
+            method: 'post',
+            data: 'value=' + str
+        });
     },
     /**
      *
@@ -263,7 +272,7 @@ var AcplField = new Class({
     select: function(li) {
         var text = li.get('text');
 
-        if ((this.list.selected !== false)&& this.list.items[this.list.selected]) {
+        if ((this.list.selected !== false) && this.list.items[this.list.selected]) {
             this.words.setAt(this.words.currentIndex, text);
             this.element.set('value', this.words.asString());
         }

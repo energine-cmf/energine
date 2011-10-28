@@ -215,7 +215,7 @@ class TagManager extends DBWorker {
         else $limit = null;
 
         $res =
-                E()->getDB()->select(self::TAG_TABLENAME, 'tag_name', 'tag_name LIKE "' . addslashes($str) . '%"', array('tag_name' => QAL::DESC), $limit);
+                E()->getDB()->select(self::TAG_TABLENAME, 'tag_name', 'tag_name LIKE "%' . addslashes($str) . '%"', array('tag_name' => QAL::DESC), $limit);
         $result = simplifyDBResult($res, 'tag_name');
 
         return $result;

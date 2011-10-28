@@ -218,8 +218,9 @@ class AttachmentManager extends DBWorker {
                 $request = 'SELECT files.upl_id, upl_path, upl_name
                       FROM `' . $this->tableName . '` s2f
                     LEFT JOIN `' . self::ATTACH_TABLENAME . '` files ON s2f.upl_id=files.upl_id
-                    WHERE ' . $this->pk->getName() . ' = %s AND upl_is_ready=1
+                    WHERE ' . $this->pk->getName() . ' = %s  
                     ORDER BY upl_order_num';
+                //AND upl_is_ready=1
                 $data = $this->dbh->select($request, $data);
             }
 

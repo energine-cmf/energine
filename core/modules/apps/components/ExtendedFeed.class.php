@@ -102,8 +102,9 @@ class ExtendedFeed extends Feed {
      */
 
     protected function view() {
-        parent::view();
-        
+        $this->addFilterCondition(array('smap_id' => $this->document->getID()));
+        DBDataSet::view();
+        $this->addTranslation('BTN_RETURN_LIST');
         $am = new AttachmentManager($this->getDataDescription(), $this->getData(), $this->getTableName());
         $am->createFieldDescription();
         $am->createField();

@@ -372,22 +372,14 @@ class Component extends DBWorker implements IBlock {
      * @return void
      */
     final public function run() {
-        /*if (
-                $this->enabled()
-                &&
-                ($this->document->getRights() >= $this->getCurrentStateRights())
-        ) {*/
-            if (!method_exists($this, $this->getState())) {
-                throw new SystemException(
-                    'ERR_DEV_NO_ACTION',
-                    SystemException::ERR_DEVELOPER,
-                    array($this->getState(), $this->getName())
-                );
-            }
-            $this->{
-            $this->getState()
-            }();
-        //}
+        if (!method_exists($this, $this->getState())) {
+            throw new SystemException(
+                'ERR_DEV_NO_ACTION',
+                SystemException::ERR_DEVELOPER,
+                array($this->getState(), $this->getName())
+            );
+        }
+        $this->{$this->getState()}();
     }
 
     /**

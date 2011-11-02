@@ -8,7 +8,7 @@ var Form = new Class({
         this.singlePath = this.componentElement.getProperty('single_template');
 
         this.form = this.componentElement.getParent('form').addClass('form');
-
+        this.state = this.form.getElementById('componentAction').get('value');
         this.tabPane = new TabPane(this.componentElement, {
             // onTabChange: this.onTabChange.bind(this)
         });

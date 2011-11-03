@@ -6,10 +6,9 @@
     xmlns:set="http://exslt.org/sets"
     extension-element-prefixes="set">
 
-    <!-- компонент DivisionEditor -->
-    <xsl:template match="document/translations[translation[@component=//component[@class='DivisionEditor']/@name]]">
+    <xsl:template match="document/translations[translation[@component=//component[@class='DivisionEditor' or @class='SiteEditor']/@name]]">
             <script type="text/javascript">
-                <xsl:for-each select="translation[@component=$COMPONENTS[@class='DivisionEditor']/@name]">
+                <xsl:for-each select="translation[@component=$COMPONENTS[@class='DivisionEditor' or @class='SiteEditor']/@name]">
                     Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="." disable-output-escaping="yes"/>');
                 </xsl:for-each>
             </script>

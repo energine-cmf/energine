@@ -3,31 +3,14 @@
 
     <state name="main">
         <javascript>
-            <behavior name="SiteManager"/>
+            <behavior name="GridManager"/>
         </javascript>
-        <fields>
-            <field name="site_id"/>
-            <field name="site_name"/>
-        </fields>
         <toolbar>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
-            <control id="sep01" type="separator"/>
-            <control id="go" title="BTN_GO" type="button" onclick="go"/>
-            <control id="sep03" type="separator"/>
-            <control type="button" id="up" title="BTN_MOVE_UP" onclick="up"/>
-            <control type="button" id="down" title="BTN_MOVE_DOWN" onclick="down"/>
-            <control id="sep02" type="separator"/>
-            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
-            <control id="sep04" type="separator"/>
-            <control id="reset" title="BTN_RESET_TEMPLATES" type="button" onclick="reset"/>
-            <control id="sep05" type="separator"/>
-            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+            <control id="delete" title="BTN_DELETE" type="button"
+                     onclick="del"/>
         </toolbar>
-        <translations>
-            <translation const="MSG_CONFIRM_TEMPLATES_RESET"/>
-            <translation const="MSG_TEMPLATES_RESET"/>
-        </translations>
     </state>
     <state name="add">
         <uri_patterns>
@@ -60,6 +43,14 @@
         </javascript>
         <toolbar>
             <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="editNext">BTN_EDIT_NEXT</option>
+                    <option id="editPrev">BTN_EDIT_PREV</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
             <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
@@ -68,24 +59,14 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
+    <state name="upload" rights="2">
+        <uri_patterns>
+            <pattern>/upload/</pattern>
+        </uri_patterns>
+    </state>
     <state name="delete" rights="2">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="up" rights="3">
-        <uri_patterns>
-            <pattern>/[int]/up/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="down" rights="3">
-        <uri_patterns>
-            <pattern>/[int]/down/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="reset" rights="3">
-        <uri_patterns>
-            <pattern>/reset/[int]/reset-templates/</pattern>
         </uri_patterns>
     </state>
     <state name="getRawData" rights="2">

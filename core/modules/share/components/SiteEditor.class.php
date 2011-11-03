@@ -20,13 +20,16 @@ class SiteEditor extends Grid {
      * @var DivisionEditor
      */
     private $divEditor;
+    /**
+     * @var DomainEditor
+     */
+    private $domainEditor;
     
 	/**
 	 * Конструктор класса
 	 *
 	 * @param string $name
 	 * @param string $module
-	 * @param Document $document
 	 * @param array $params
 	 * @access public
 	 */
@@ -34,8 +37,20 @@ class SiteEditor extends Grid {
 		parent::__construct($name, $module,  $params);
 		$this->setTableName('share_sites');
         $this->setSaver(new SiteSaver());
-        //$this->setOrderColumn('site_order_num')
 	}
+    /**
+     * @return GridConfig
+     */
+    protected function getConfig(){
+        if(!$this->config){
+            $this->config = new SiteEditorConfig(
+                $this->getParam('config'),
+                get_class($this),
+                $this->module
+            );
+        }
+        return $this->config;
+    }
 
 	/**
 	 * Изменяем типы филдов
@@ -46,10 +61,7 @@ class SiteEditor extends Grid {
 	protected function prepare(){
 		parent::prepare();
 		if(in_array($this->getState(), array('add', 'edit'))){
-			$fd = $this->getDataDescription()->getFieldDescriptionByName('site_protocol');
-			$fd->setType(FieldDescription::FIELD_TYPE_SELECT);
-			$fd->loadAvailableValues(array(array('key' => 'http', 'value' => 'http://'), array('key' => 'https', 'value' => 'https://')), 'key', 'value');
-				
+            $this->addTranslation('TAB_DOMAINS');
 			$fd = $this->getDataDescription()->getFieldDescriptionByName('site_folder');
 			$fd->setType(FieldDescription::FIELD_TYPE_SELECT);
 			$fd->loadAvailableValues($this->loadFoldersData(), 'key', 'value');
@@ -63,8 +75,6 @@ class SiteEditor extends Grid {
             $this->getDataDescription()->addFieldDescription($tagField);
                 
 			if($this->getState() == 'add'){
-				$this->getData()->getFieldByName('site_port')->setData(80, true);
-				$this->getData()->getFieldByName('site_root')->setData('/', true);
 				$this->getData()->getFieldByName('site_is_active')->setData(1, true);
 				$this->getData()->getFieldByName('site_is_indexed')->setData(1, true);
 
@@ -87,10 +97,31 @@ class SiteEditor extends Grid {
         $this->divEditor = $this->document->componentManager->createComponent('dEditor', 'share', 'DivisionEditor');
         $this->divEditor->run();
     }
+    /**
+     * Формирование IFRAME для вклдаки с перечнем доменов
+     * @return void
+     */
+    protected function domains(){
+        $sp = $this->getStateParams(true);
+        $domainEditorParams = array();
+        
+        if(isset($sp['site_id'])){
+            $this->request->shiftPath(2);
+            $domainEditorParams = array('siteID' => $sp['site_id']);
+        }
+        else {
+            $this->request->shiftPath(1);
+        }
+        $this->domainEditor = $this->document->componentManager->createComponent('domainEditor', 'share', 'DomainEditor', $domainEditorParams);
+        $this->domainEditor->run();
+    }
 
     public function build(){
         if($this->getState() == 'reset'){
             $result = $this->divEditor->build();
+        }
+        elseif($this->getState() == 'domains'){
+            $result = $this->domainEditor->build();
         }
         else {
             $result = parent::build();

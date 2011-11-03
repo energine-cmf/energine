@@ -1,11 +1,11 @@
 ScriptLoader.load(
-        'View',
-        'TabPane',
-        'PageList',
-        'Toolbar',
-        'Overlay',
-        'ModalBox'
-        );
+    'View',
+    'TabPane',
+    'PageList',
+    'Toolbar',
+    'Overlay',
+    'ModalBox'
+);
 
 var Grid = new Class({
     Extends: View,
@@ -29,7 +29,7 @@ var Grid = new Class({
         this.headOff.setStyle('display', 'none');
         this.tbody = this.element.getElement('.gridContainer tbody');
         this.headers =
-                this.element.getElements('.gridHeadContainer table.gridTable th');
+            this.element.getElements('.gridHeadContainer table.gridTable th');
         this.headers.addEvent('click', this.changeSort.bind(this));
 
         /* добавляем к контейнеру класс, который указывает, что в нем есть грид */
@@ -81,11 +81,11 @@ var Grid = new Class({
                 preiouslySelectedRecordKey = false;
             }
             this.data.each(
-                    function(record, key) {
-                        this.addRecord(record, key, preiouslySelectedRecordKey);
-                    },
-                    this
-                    );
+                function(record, key) {
+                    this.addRecord(record, key, preiouslySelectedRecordKey);
+                },
+                this
+            );
             if (!preiouslySelectedRecordKey) {
                 this.selectItem(this.tbody.getFirst());
             }
@@ -118,15 +118,24 @@ var Grid = new Class({
         this.gridHeadContainer = this.element.getElement('.gridHeadContainer');
         this.gridContainer = this.element.getElement('.gridContainer');
         this.fitGridSize();
+
         if (!(this.minGridHeight)) {
-            this.minGridHeight = this.gridContainer.getStyle('height').toInt();
+            var h = this.gridContainer.getStyle('height');
+            //Если грид запустился внутри вкладки формы
+            if (h) {
+                this.minGridHeight = h.toInt();
+            }
+            else {
+                //отфонарное на самом деле значение
+                this.minGridHeight = 300;//h.toInt();
+            }
         }
 
         /* растягиваем всю форму до высоты видимого окна */
         if (!(document.getElement('.e-singlemode-layout'))) {
             this.pane = this.element.getParents('.e-pane')[0];
             this.gridBodyContainer =
-                    this.element.getElement('.gridBodyContainer');
+                this.element.getElement('.gridBodyContainer');
             this.fitGridFormSize();
             new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
         }
@@ -134,8 +143,8 @@ var Grid = new Class({
 
     fitGridSize: function() {
         var gridHeight = this.paneContent.getSize().y -
-                ((this.filter) ? this.filter.getSize().y : 0) -
-                this.gridHeadContainer.getSize().y - 14;
+            ((this.filter) ? this.filter.getSize().y : 0) -
+            this.gridHeadContainer.getSize().y - 14;
         if (gridHeight > 0) {
             this.gridContainer.setStyle('height', gridHeight);
         }
@@ -146,8 +155,8 @@ var Grid = new Class({
             var windowHeight = window.getSize().y - 10;
             var paneHeight = this.pane.getSize().y;
             var gridBodyHeight = ((this.gridBodyContainer.getSize().y + 2) >
-                    this.minGridHeight) ? (this.gridBodyContainer.getSize().y +
-                    2) : this.minGridHeight;
+                this.minGridHeight) ? (this.gridBodyContainer.getSize().y +
+                2) : this.minGridHeight;
             var gridContainerHeight = this.gridContainer.getSize().y;
             var paneOthersHeight = paneHeight - gridContainerHeight;
             if (windowHeight > (this.minGridHeight + paneOthersHeight)) {
@@ -156,12 +165,12 @@ var Grid = new Class({
                 }
                 else {
                     this.pane.setStyle('height', gridBodyHeight +
-                            paneOthersHeight);
+                        paneOthersHeight);
                 }
             }
             else {
                 this.pane.setStyle('height', this.minGridHeight +
-                        paneOthersHeight);
+                    paneOthersHeight);
             }
             this.fitGridSize();
         }
@@ -211,11 +220,11 @@ var Grid = new Class({
             // Увеличиваем дельту на 16px (размер полосы прокрутки) если это последняя колонка и грид не пустой.
             if (i == firstRow.childNodes.length - 1) {
                 delta += ((this.data.length ||
-                        this.prevDataLength > 0) ? 16 : 0);
+                    this.prevDataLength > 0) ? 16 : 0);
                 this.prevDataLength = this.data.length;
             }
             header.setStyle('width', firstRow.childNodes[i].getSize().size.x +
-                    delta + 'px');
+                delta + 'px');
         }, this);
         if (!this.data.length) this.tbody.getFirst().dispose();
     },
@@ -236,7 +245,7 @@ var Grid = new Class({
 
         // Создаем новую строку в таблице.
         var row = new Element('tr').addClass(((key / 2) == Math.ceil(key /
-                2)) ? 'odd' : 'even').setProperty('unselectable', 'on').injectInside(this.tbody);
+            2)) ? 'odd' : 'even').setProperty('unselectable', 'on').injectInside(this.tbody);
         // Сохраняем запись в объекте строки.
         row.record = record;
         var prevRow;
@@ -244,18 +253,18 @@ var Grid = new Class({
         for (var fieldName in record) {
             // Пропускаем невидимые поля.
             if (!this.metadata[fieldName].visible ||
-                    this.metadata[fieldName].type == 'hidden') continue;
+                this.metadata[fieldName].type == 'hidden') continue;
             var cell = new Element('td').injectInside(row);
             if (this.metadata[fieldName].type == 'boolean') {
                 var checkbox = new Element('img').setProperties({
                     'src': 'images/checkbox_' +
-                            (record[fieldName] == true ? 'on' : 'off') + '.png',
+                        (record[fieldName] == true ? 'on' : 'off') + '.png',
                     'width': '13', 'height': '13'
                 }).injectInside(cell);
                 cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
             }
-            else if(this.metadata[fieldName].type == 'textbox'){
-                if(record[fieldName] && record[fieldName].length){
+            else if (this.metadata[fieldName].type == 'textbox') {
+                if (record[fieldName] && record[fieldName].length) {
                     cell.set('html', record[fieldName].join(', '));
                 }
                 else {
@@ -274,14 +283,14 @@ var Grid = new Class({
                     var fieldValue = record[fieldName].clean();
                 }
                 if (
-                        (this.metadata[fieldName].type == 'select')
+                    (this.metadata[fieldName].type == 'select')
                         &&
                         (row.getFirst() == cell)
                         &&
                         (prevRow = row.getPrevious())
                         &&
                         (prevRow.record[fieldName] == record[fieldName])
-                ) {
+                    ) {
                     fieldValue = '';
                     prevRow.getFirst().setStyle('font-weight', 'bold');
                 }
@@ -302,7 +311,7 @@ var Grid = new Class({
         row.addEvents({
             'mouseover': function() {
                 if (this !=
-                        grid.getSelectedItem()) this.addClass('highlighted');
+                    grid.getSelectedItem()) this.addClass('highlighted');
             },
             'mouseout': function() {
                 this.removeClass('highlighted');
@@ -335,17 +344,17 @@ var Grid = new Class({
         }
 
         var
-                header = $(event.target),
-                sortFieldName = header.getProperty('name'),
-                sortDirection = header.getProperty('class');
+            header = $(event.target),
+            sortFieldName = header.getProperty('name'),
+            sortDirection = header.getProperty('class');
 
 
         //проверяем есть ли колонка сортировки в списке колонок
         if (
-                this.metadata[sortFieldName]
-                        &&
-                        this.metadata[sortFieldName].sort == 1
-                ) {
+            this.metadata[sortFieldName]
+                &&
+                this.metadata[sortFieldName].sort == 1
+            ) {
             this.clearHeaders();
             this.sort.field = sortFieldName;
             this.sort.order = getNextDirectionOrderItem(sortDirection);
@@ -362,7 +371,7 @@ var GridManager = new Class({
         this.filter = new GridManager.Filter(this);
 
         this.tabPane =
-                new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });
+            new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });
 
         this.grid = new Grid(this.element.getElement('.grid'), {
             onSelect: this.onSelect.bind(this),
@@ -370,7 +379,7 @@ var GridManager = new Class({
             onDoubleClick: this.onDoubleClick.bind(this)
         });
         this.pageList =
-                new PageList({ onPageSelect: this.loadPage.bind(this) });
+            new PageList({ onPageSelect: this.loadPage.bind(this) });
         var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
         if (toolbarContainer) {
             toolbarContainer.adopt(this.pageList.getElement());
@@ -436,14 +445,14 @@ var GridManager = new Class({
         postBody += this.filter.getValue();
         if (this.grid.sort.order) {
             url = this.singlePath + 'get-data/' + this.grid.sort.field + '-' +
-                    this.grid.sort.order + '/page-' + pageNum
+                this.grid.sort.order + '/page-' + pageNum
         }
         this.request(url,
-                postBody,
-                this.processServerResponse.bind(this),
-                null,
-                this.processServerError.bind(this)
-                );
+            postBody,
+            this.processServerResponse.bind(this),
+            null,
+            this.processServerError.bind(this)
+        );
     },
     processServerResponse: function(result) {
         if (!this.initialized) {
@@ -456,7 +465,6 @@ var GridManager = new Class({
         if (result.pager)
             this.pageList.build(result.pager.count, result.pager.current);
 
-        
 
         if (!this.grid.isEmpty()) {
             this.toolbar.enableControls();
@@ -466,7 +474,6 @@ var GridManager = new Class({
 
         if (control = this.toolbar.getControlById('add')) control.enable();
         this.grid.build();
-        
         this.overlay.hide();
     },
     processServerError: function(responseText) {
@@ -477,7 +484,7 @@ var GridManager = new Class({
 
     view: function() {
         ModalBox.open({ url: this.singlePath +
-                this.grid.getSelectedRecordKey() });
+            this.grid.getSelectedRecordKey() });
     },
 
     add: function() {
@@ -493,9 +500,9 @@ var GridManager = new Class({
             onClose: this._processAfterCloseAction.bind(this)
         });
     },
-    _processAfterCloseAction: function(returnValue){
-        if(returnValue) {
-            if(returnValue.afterClose && this[returnValue.afterClose]){
+    _processAfterCloseAction: function(returnValue) {
+        if (returnValue) {
+            if (returnValue.afterClose && this[returnValue.afterClose]) {
                 this[returnValue.afterClose].attempt(null, this);
             }
             else {
@@ -503,38 +510,38 @@ var GridManager = new Class({
             }
         }
     },
-    editPrev: function(){
+    editPrev: function() {
         var prevRow;
-        if(this.grid.getSelectedItem() && (prevRow = this.grid.getSelectedItem().getPrevious())){
+        if (this.grid.getSelectedItem() && (prevRow = this.grid.getSelectedItem().getPrevious())) {
             this.grid.selectItem(prevRow);
             this.edit();
         }
     },
-    editNext: function(){
+    editNext: function() {
         var nextRow;
-        if(this.grid.getSelectedItem() && (nextRow = this.grid.getSelectedItem().getNext())){
+        if (this.grid.getSelectedItem() && (nextRow = this.grid.getSelectedItem().getNext())) {
             this.grid.selectItem(nextRow);
             this.edit();
         }
     },
     del: function() {
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
-                'Do you really want to delete selected record?';
+            'Do you really want to delete selected record?';
         if (confirm(MSG_CONFIRM_DELETE)) {
             this.overlay.show();
             this.request(this.singlePath + this.grid.getSelectedRecordKey() +
-                    '/delete/', null,
-                    function(){
-                        this.overlay.hide();
-                        this.loadPage(this.pageList.currentPage);
-                    }.bind(this),
-                    function(responseText){
-                        this.overlay.hide();
-                    }.bind(this),
-                    function(responseText){
-                        alert(responseText);
-                        this.overlay.hide();
-                    }.bind(this)
+                '/delete/', null,
+                function() {
+                    this.overlay.hide();
+                    this.loadPage(this.pageList.currentPage);
+                }.bind(this),
+                function(responseText) {
+                    this.overlay.hide();
+                }.bind(this),
+                function(responseText) {
+                    alert(responseText);
+                    this.overlay.hide();
+                }.bind(this)
             );
         }
     },
@@ -544,19 +551,19 @@ var GridManager = new Class({
     },
     up: function() {
         this.request(this.singlePath + this.grid.getSelectedRecordKey() +
-                '/up/', '', this.loadPage.pass(this.pageList.currentPage, this));
+            '/up/', '', this.loadPage.pass(this.pageList.currentPage, this));
     },
 
     down: function() {
         this.request(this.singlePath + this.grid.getSelectedRecordKey() +
-                '/down/', '', this.loadPage.pass(this.pageList.currentPage, this));
+            '/down/', '', this.loadPage.pass(this.pageList.currentPage, this));
     },
     print: function() {
         window.open(this.element.getProperty('single_template') + 'print/');
     },
     csv: function() {
         document.location.href =
-                this.element.getProperty('single_template') + 'csv/';
+            this.element.getProperty('single_template') + 'csv/';
     }
 });
 
@@ -581,7 +588,7 @@ GridManager.Filter = new Class({
             }.bind(this));
 
             this.inputs =
-                    new GridManager.Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
+                new GridManager.Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
             this.condition = this.element.getElement('.f_condition');
 
             /*var prepareInputs = function(){
@@ -637,10 +644,10 @@ GridManager.Filter = new Class({
         var result = '';
         if (this.active && this.inputs.hasValues()) {
             var
-                    fieldName = this.fields.options[this.fields.selectedIndex].value,
-                    fieldCondition = this.condition.options[this.condition.selectedIndex].value;
+                fieldName = this.fields.options[this.fields.selectedIndex].value,
+                fieldCondition = this.condition.options[this.condition.selectedIndex].value;
             result = this.inputs.getValues('filter' + fieldName) +
-                    '&filter[condition]=' + fieldCondition + '&';
+                '&filter[condition]=' + fieldCondition + '&';
         }
         return result;
     }

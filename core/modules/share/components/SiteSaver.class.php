@@ -39,11 +39,19 @@
         }
         $result = parent::save();
         $id = ($this->getMode() == QAL::INSERT)?$result:$this->getData()->getFieldByName('site_id')->getRowData(0);
+        //Сохраняем информацию о доменах
+        $domainIDs = simplifyDBResult($this->dbh->select('SELECT domain_id FROM share_domains WHERE domain_id NOT IN (SELECT domain_id FROM share_domain2site)'), 'domain_id');
+
+        if(!empty($domainIDs)){
+            foreach($domainIDs as $domainID){
+                $this->dbh->modify(QAL::INSERT, 'share_domain2site',array('site_id' => $id, 'domain_id' => $domainID));
+            }
+        }
         
         //Записываем информацию в таблицу тегов
         $tm = new TagManager($this->dataDescription, $this->dataDescription, 'share_sites');
         $tm->save($id);
-
+        
         
         if($this->getMode() == QAL::INSERT){
             //При создании нового проекта   ищем параметр конфигурации указывающий на идентификатор 

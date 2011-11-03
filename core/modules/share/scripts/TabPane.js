@@ -8,12 +8,12 @@ var TabPane = new Class({
         Asset.css('tabpane.css');
         this.setOptions(options);
         this.element = $(element);
-
+        
         this.tabs = this.element.getElement('ul.e-tabs').addClass('clearfix').getElements('li');
         this.tabs.each(function(tab) {
             tab.setProperty('unselectable', 'on');
             var anchor = tab.getElement('a');
-            var paneId = anchor.getProperty('href').slice(anchor.getProperty('href').lastIndexOf('#'));            
+            var paneId = anchor.getProperty('href').slice(anchor.getProperty('href').lastIndexOf('#'));
             anchor.addEvent('click', function(event) {event = new Event(event || window.event); event.preventDefault(); tab.blur();});
             var tabData = tab.getElement('span.data');
             tab.data = (tabData ? JSON.decode(tabData.firstChild.nodeValue) : {});
@@ -45,12 +45,29 @@ var TabPane = new Class({
     getCurrentTab: function() {
         return this.currentTab;
     },
-
     setTabTitle: function(title, tab) {
         tab = $pick(tab, this.getCurrentTab());
         tab.getElement('a').set('html', title);
     },
+    createNewTab: function(tabTitle){
+        var tabID = 'id' + Math.floor(Math.random()*101),
+            titleElement = new Element('a', {'href':'#'+tabID, 'html': tabTitle}),
+            tabPane = new Element('div', {'id':tabID, 'class': 'e-pane-item', 'styles':{'display':'none'}}).inject(this.element.getElement('.e-pane-content')),
+            tabElement = new Element('li', {'unselectable': 'on'}).grab(titleElement);
+        this.element.getElement('ul.e-tabs').grab(tabElement);
+        this.tabs.push(tabElement);
+        titleElement.addEvent('click', function(event) {event = new Event(event || window.event); event.preventDefault(); tabElement.blur();});
+        tabElement.pane = tabPane;
+        tabElement.pane.tab = tabElement;
 
+        var tabpane = this;
+            tabElement.addEvents({
+                'mouseover': function() { if (this != tabpane.currentTab) this.addClass('highlighted'); },
+                'mouseout': function() { this.removeClass('highlighted'); },
+                'click': function() { if (this != tabpane.currentTab) tabpane.show(this); }
+            });
+        return tabElement;
+    },
     whereIs: function(element) {
         var el = $(element), pane = false;
         while (el = el.getParent()) {

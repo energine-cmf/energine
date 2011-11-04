@@ -160,6 +160,7 @@ abstract class DBA extends Object {
      * @param mixed $var, ...
      * @return mixed
      * @see printf()
+     * @deprecated 
      */
     public function selectRequest($query) {
         if (!is_string($query) || strlen($query) == 0) {

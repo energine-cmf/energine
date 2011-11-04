@@ -65,7 +65,7 @@ class TagManager extends DBWorker {
 
     public function createFieldDescription() {
         if ($this->isActive) {
-            if(!($fd = $this->dataDescription->getFieldDescriptionByName('tags'))){
+            if (!($fd = $this->dataDescription->getFieldDescriptionByName('tags'))) {
                 $fd = new FieldDescription('tags');
                 $this->dataDescription->addFieldDescription($fd);
             }
@@ -73,16 +73,29 @@ class TagManager extends DBWorker {
         }
     }
 
-    public function createField() {
+    /**
+     * @param $initialValue mixed начальное значение
+     * @return void
+     */
+    public function createField($initialValue = null) {
         $field = new Field('tags');
-        if ($this->isActive && !$this->data->isEmpty() && $this->data->getFieldByName($this->pk->getName())) {
-            $fieldData = $this->pull($this->data->getFieldByName($this->pk->getName())->getData(), $this->tableName);
-            //inspect($fieldData);
-            $field->setData($fieldData);
-            /*for ($i = 0, $langs = count(E()->getLanguage()->getLanguages()); $i < $langs; $i++) {
-                $field->setRowData($i, $fieldData);
-            }*/
+        if ($this->isActive) {
+            if (
+                is_null($initialValue)
+            ) {
+                if (
+                    !$this->data->isEmpty()
+                    && ($currentData = $this->data->getFieldByName($this->pk->getName()))
+                ) {
+                    $field->setData($this->pull($currentData->getData(), $this->tableName));
+                }
+            }
+            else {
+                for($i=0; $i<count(E()->getLanguage()->getLanguages()); $i++){
+                    $field->setRowData($i, (is_array($initialValue))?$initialValue:array($initialValue));
+                }
 
+            }
         }
         $this->data->addField($field);
     }

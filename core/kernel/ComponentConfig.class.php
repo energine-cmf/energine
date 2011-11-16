@@ -216,11 +216,12 @@ class ComponentConfig {
                 $resPattern = $pattern;
             }
             $matches = array();
+
             if (preg_match($resPattern = "/^$resPattern$/", $path, $matches)) {
                 array_shift($matches);
                 $actionName = $methodName;
                 if (!empty($matches)) {
-                    if (strpos($pattern, '[any]') === false) {
+                    /*if (strpos($pattern, '[any]') === false) {
                         preg_match($resPattern, $pattern, $varNames);
                         array_shift($varNames);
                         $varNames = str_replace(array('[', ']'), '', $varNames);
@@ -228,7 +229,11 @@ class ComponentConfig {
                     }
                     else {
                         $actionParams = array('any' => $matches[0]);
-                    }
+                    }*/
+                    preg_match($resPattern, $pattern, $varNames);
+                    array_shift($varNames);
+                    $varNames = str_replace(array('[', ']'), '', $varNames);
+                    $actionParams = array_combine($varNames, $matches);
                 }
 
                 break;

@@ -21,9 +21,6 @@ var SiteManager = new Class({
 
     },
     go: function () {
-        var site = this.grid.getSelectedRecord();
-        window.top.location.href =
-                site.site_protocol + '://' + site.site_host + ':' +
-                        site.site_port + site.site_root;
+        window.top.location.href = this.singlePath + 'go/' + this.grid.getSelectedRecordKey() + '/';
     }
 });

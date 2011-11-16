@@ -21,6 +21,7 @@ class SiteEditorConfig extends GridConfig {
     public function __construct($config, $className, $moduleName){
         parent::__construct($config, $className, $moduleName);
         $this->registerState('domains', array('/domains/[any]/', '/[site_id]/domains/[any]/'));
+        $this->registerState('go', array('/goto/[site_id]/'));
     }
 
 }

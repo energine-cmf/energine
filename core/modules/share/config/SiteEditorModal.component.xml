@@ -34,7 +34,7 @@
             <pattern>/add/</pattern>
         </uri_patterns>
         <javascript>
-            <behavior name="Form"/>
+            <behavior name="SiteForm"/>
         </javascript>
         <toolbar>
             <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -56,7 +56,7 @@
             <pattern>/[int]/edit/</pattern>
         </uri_patterns>
         <javascript>
-            <behavior name="Form"/>
+            <behavior name="SiteForm"/>
         </javascript>
         <toolbar>
             <control id="save" title="BTN_SAVE" type="button" onclick="save"/>

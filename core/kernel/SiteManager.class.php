@@ -66,8 +66,14 @@ final class SiteManager extends DBWorker implements Iterator {
           LEFT JOIN share_domain2site d2c
           USING ( domain_id ) ';
         $res = $this->dbh->select($request);
+        if(empty($res)){
+            throw new SystemException('ERR_NO_SITE', SystemException::ERR_DEVELOPER);
+        }
         foreach ($res as $domainData) {
             $domainData = convertFieldNames($domainData, 'domain_');
+            if(!isset($domainData['site'])){
+                throw new SystemException('ERR_NO_SITE_DOMAIN', SystemException::ERR_DEVELOPER);
+            }
             if($domainData['isDefault']){
                 $tmp = $domainData;
                 unset($tmp['isDefault'], $tmp['id'], $tmp['site']);

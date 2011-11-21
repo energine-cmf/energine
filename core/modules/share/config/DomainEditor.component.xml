@@ -59,11 +59,6 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <state name="upload" rights="2">
-        <uri_patterns>
-            <pattern>/upload/</pattern>
-        </uri_patterns>
-    </state>
     <state name="delete" rights="2">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>

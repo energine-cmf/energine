@@ -52,9 +52,31 @@ class DomainEditor extends Grid {
                 $this->getData()->getFieldByName('domain_port')->setData(80, true);
                 $this->getData()->getFieldByName('domain_root')->setData('/', true);
             }
+            //Если редактирование и дефолтный домен
+            elseif($this->getData()->getFieldByName('domain_is_default')->getRowData(0)) {
+                $this->getDataDescription()->getFieldDescriptionByName('domain_is_default')->setMode(FieldDescription::FIELD_MODE_READ);
+            }
         }
     }
+    /**
+     * При сохранении данных
+     * сбрасываем флаг дефолтности
+     * @return mixed
+     */
+    protected function loadData(){
+        $result = parent::loadData();
+        if ($this->getState() == 'save' && isset($result[0]['domain_is_default']) &&
+            $result[0]['domain_is_default'] !== '0') {
+            $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('domain_is_default' => null));
+        }
 
+        return $result;
+    }
+    /**
+     * Добавлеям параметр идентификатор сайта
+     *
+     * @return array
+     */
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -62,5 +84,18 @@ class DomainEditor extends Grid {
                  'siteID' => false,
             )
         );
+    }
+    /**
+     * Нет смысла создавать отдельный сейвер
+     * Проверяем на правильность заполнянеия поля корня сайта
+     *
+     * @return mixed
+     */
+    protected function saveData(){
+
+        if(isset($_POST[$this->getTableName()]['domain_root']) && (substr($_POST[$this->getTableName()]['domain_root'], -1) != '/')){
+            $_POST[$this->getTableName()]['domain_root'] .= '/';
+        }
+        return parent::saveData();
     }
 }

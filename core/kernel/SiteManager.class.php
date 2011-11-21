@@ -71,10 +71,11 @@ final class SiteManager extends DBWorker implements Iterator {
         }
         foreach ($res as $domainData) {
             $domainData = convertFieldNames($domainData, 'domain_');
-            if(!isset($domainData['site'])){
+            
+            /*if(!isset($domainData['site'])){
                 throw new SystemException('ERR_NO_SITE_DOMAIN', SystemException::ERR_DEVELOPER);
-            }
-            if($domainData['isDefault']){
+            }*/
+            if($domainData['isDefault'] && isset($domainData['site'])){
                 $tmp = $domainData;
                 unset($tmp['isDefault'], $tmp['id'], $tmp['site']);
                 $this->data[$domainData['site']]->setDomain($tmp);

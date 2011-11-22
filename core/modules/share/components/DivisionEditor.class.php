@@ -281,12 +281,12 @@ final class DivisionEditor extends Grid {
         return $result;
     }
 
-    protected function getRawData($baseMethod = self::DEFAULT_STATE_NAME) {
+    protected function getRawData() {
         $params = $this->getStateParams(true);
         $this->setFilter(array('site_id' => $params['site_id']));
 
         $this->setParam('onlyCurrentLang', true);
-        $this->getConfig()->setCurrentState($baseMethod);
+        $this->getConfig()->setCurrentState(self::DEFAULT_STATE_NAME);
         $this->setBuilder(new JSONDivBuilder());
 
         $this->setDataDescription($this->createDataDescription());

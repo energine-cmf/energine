@@ -153,7 +153,7 @@ class Component extends DBWorker implements IBlock {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->document->componentManager->register($this);
         $this->setProperty('template',
-            $template = $this->request->getPath(Request::PATH_TEMPLATE, true));
+                           $template = $this->request->getPath(Request::PATH_TEMPLATE, true));
         $this->setProperty(
             'single_template',
             ($this->document->getProperty('single') ? $template :
@@ -181,8 +181,8 @@ class Component extends DBWorker implements IBlock {
      *
      * @return ComponentConfig
      */
-    protected function getConfig(){
-        if(!$this->config){
+    protected function getConfig() {
+        if (!$this->config) {
             $this->config = new ComponentConfig($this->getParam('config'), get_class($this), $this->module);
         }
         return $this->config;
@@ -241,7 +241,7 @@ class Component extends DBWorker implements IBlock {
             throw new SystemException('ERR_DEV_NO_PARAM', SystemException::ERR_DEVELOPER, $name);
         }
         if ($name == 'active') {
-            $value = (bool) $value;
+            $value = (bool)$value;
         }
         /*if (in_array($name, array('state','configFilename', 'active'))) {
             throw new SystemException('ERR_DEV_INVARIANT_PARAM', SystemException::ERR_DEVELOPER, $name);
@@ -309,7 +309,7 @@ class Component extends DBWorker implements IBlock {
             }
 
         }
-        // если имя действия указано в POST-запросе - используем его
+            // если имя действия указано в POST-запросе - используем его
         elseif (isset($_POST[$this->getName()]['state'])) {
             $this->state = $_POST[$this->getName()]['state'];
         }
@@ -320,10 +320,10 @@ class Component extends DBWorker implements IBlock {
             $sc = $this->getConfig()->getCurrentStateConfig();
 
             if (isset($sc['rights'])) {
-                $this->rights = (int) $sc['rights'];
+                $this->rights = (int)$sc['rights'];
             }
-            
-            if($csp = $this->getConfig()->getCurrentStateParams()){
+
+            if ($csp = $this->getConfig()->getCurrentStateParams()) {
                 $this->stateParams = array_merge($this->stateParams, $csp);
             }
         }
@@ -350,7 +350,7 @@ class Component extends DBWorker implements IBlock {
      * @return int
      */
     final public function getCurrentStateRights() {
-        return (int) $this->rights;
+        return (int)$this->rights;
     }
 
     /**
@@ -379,7 +379,14 @@ class Component extends DBWorker implements IBlock {
                 array($this->getState(), $this->getName())
             );
         }
-        $this->{$this->getState()}();
+        $params = $this->getStateParams();
+        if(empty($params)){
+            $this->{$this->getState()}();
+        }
+        else {
+            call_user_func_array(array($this, $this->getState()), $params);
+        }
+
     }
 
     /**
@@ -493,38 +500,38 @@ class Component extends DBWorker implements IBlock {
                 &&
                 ($this->document->getRights() >= $this->getCurrentStateRights())
         ) {*/
-            $result = $this->doc->createElement('component');
-            $result->setAttribute('name', $this->getName());
-            $result->setAttribute('module', $this->module);
-            $result->setAttribute('componentAction', $this->getState());
-            $result->setAttribute('class', get_class($this));
+        $result = $this->doc->createElement('component');
+        $result->setAttribute('name', $this->getName());
+        $result->setAttribute('module', $this->module);
+        $result->setAttribute('componentAction', $this->getState());
+        $result->setAttribute('class', get_class($this));
 
-            foreach ($this->properties as $propName => $propValue) {
-                $result->setAttribute($propName, $propValue);
-            }
+        foreach ($this->properties as $propName => $propValue) {
+            $result->setAttribute($propName, $propValue);
+        }
 
-            /*
-            * Существует ли построитель и правильно ли он отработал?
-            * Построитель может не существовать, если мы создаем компонент в котором нет данных.
-            */
-            if ($this->getBuilder() && $this->getBuilder()->build()) {
-                $builderResult = $this->getBuilder()->getResult();
-                if ($builderResult instanceof DOMNode) {
-                    $result->appendChild(
-                        $this->doc->importNode(
-                            $builderResult,
-                            true
-                        )
-                    );
-                }
-                else {
-                    $el = $this->doc->createElement('result', $builderResult);
-                    $el->setAttribute('xml:id', 'result');
-                    $result->appendChild($el);
-                }
+        /*
+        * Существует ли построитель и правильно ли он отработал?
+        * Построитель может не существовать, если мы создаем компонент в котором нет данных.
+        */
+        if ($this->getBuilder() && $this->getBuilder()->build()) {
+            $builderResult = $this->getBuilder()->getResult();
+            if ($builderResult instanceof DOMNode) {
+                $result->appendChild(
+                    $this->doc->importNode(
+                        $builderResult,
+                        true
+                    )
+                );
             }
-            $this->doc->appendChild($result);
-            $result = $this->doc;
+            else {
+                $el = $this->doc->createElement('result', $builderResult);
+                $el->setAttribute('xml:id', 'result');
+                $result->appendChild($el);
+            }
+        }
+        $this->doc->appendChild($result);
+        $result = $this->doc;
         //}
         return $result;
     }
@@ -547,9 +554,10 @@ class Component extends DBWorker implements IBlock {
         return $this->stateParams;
 
     }
+
     /**
      * Устанавливает параметр состояния
-     * Обычно такое требуется при динамическом создании компонента и передаче ему параметров стостяния из другого компонента
+     * Обычно такое требуется при динамическом создании компонента и передаче ему параметров состояния из другого компонента
      *
      * @param  $paramName string
      * @param  $paramValue mixed

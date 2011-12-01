@@ -623,9 +623,8 @@ class Grid extends DBDataSet {
                 }
                 elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_SELECT) {
                     $fvalues = $fieldInfo->getAvailableValues();
-                    stop($fvalues);
-                    foreach ($fvalues as $row) {
-                        if ($row['key'] == $value) {
+                    foreach ($fvalues as $key => $row) {
+                        if ($key == $value) {
                             $value = $row['value'];
                             break;
                         }

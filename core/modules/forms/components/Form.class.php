@@ -407,7 +407,7 @@ class Form extends DBDataSet {
     */
     private function addFormDescription() {
         $result = $this->dbh->select('frm_forms_translation',
-                                     array('form_name', 'form_annotation_rtf'),
+                                     array('form_name', 'form_annotation_rtf' , 'form_post_annotation_rtf'),
                                      array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
 
         if (is_array($result)) {
@@ -416,6 +416,13 @@ class Form extends DBDataSet {
             $f = new Field('form_description');
             $f->setData($result[0]['form_annotation_rtf'], true);
             $fd = new FieldDescription('form_description');
+            $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN)->setMode(FieldDescription::FIELD_MODE_READ);
+            $this->getData()->addField($f);
+            $this->getDataDescription()->addFieldDescription($fd);
+
+            $f = new Field('form_post_description');
+            $f->setData($result[0]['form_post_annotation_rtf'], true);
+            $fd = new FieldDescription('form_post_description');
             $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN)->setMode(FieldDescription::FIELD_MODE_READ);
             $this->getData()->addField($f);
             $this->getDataDescription()->addFieldDescription($fd);

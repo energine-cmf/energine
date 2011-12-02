@@ -10,10 +10,13 @@
             <div class="textblock"><xsl:value-of select="field[@name='form_description']" disable-output-escaping="yes"/></div>
         </xsl:if>
         <xsl:apply-templates/>
+        <xsl:if test="ancestor::component/@componentAction='main' and field[@name='form_post_description']!=''">
+            <div class="textblock"><xsl:value-of select="field[@name='form_post_description']" disable-output-escaping="yes"/></div>
+        </xsl:if>
     </xsl:template>
 
-    <xsl:template match="field[@name='form_description' and ancestor::component[@class='Form']]"/>
-
+    <xsl:template match="field[(@name='form_description' or @name='form_post_description') and ancestor::component[@class='Form']]"/>
+    
     <xsl:template match="field[@type='boolean' and ancestor::component[@class='Form']]">
         <div class="field">
     	    <xsl:attribute name="class">field<xsl:if test="not(@nullable)"> required</xsl:if></xsl:attribute>

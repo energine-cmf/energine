@@ -601,14 +601,17 @@ class Grid extends DBDataSet {
         $data = array();
         $filename = $this->getTitle() . '.csv';
         $MIMEType = 'application/csv';
+        $dd = $this->getDataDescription();
+        $d = $this->getData();
+        $dataRowCount = $d->getRowCount();
 
-        foreach ($this->getDataDescription() as $fieldInfo) {
+        foreach ($dd as $fieldInfo) {
             $data[0][] = $fieldInfo->getPropertyValue('title');
         }
-        for ($i = 0; $i < $this->getData()->getRowCount(); $i++) {
-            foreach ($this->getDataDescription() as $fieldName => $fieldInfo) {
+        for ($i = 0; $i < $dataRowCount; $i++) {
+            foreach ($dd as $fieldName => $fieldInfo) {
                 $value = '';
-                if ($f = $this->getData()->getFieldByName($fieldName))
+                if ($f = $d->getFieldByName($fieldName))
                     $value = $f->getRowData($i);
 
                 if (
@@ -651,7 +654,7 @@ class Grid extends DBDataSet {
         }
         $data = array_reduce($data, array($this, 'prepareCSVString'));
         if ($encoding != 'utf-8') {
-            $data = iconv('utf-8', $encoding, $data);
+            $data = iconv('utf-8', $encoding.'//TRANSLIT', $data);
         }
         $this->downloadFile($data, $MIMEType, $filename);
     }

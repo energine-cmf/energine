@@ -189,7 +189,8 @@ class DBDataSet extends DataSet {
         //Загрузка значений из м2м таблиц
         if (is_array($data) && !empty($multiFields)) {
             $m2mData = array();
-            $pks = simplifyDBResult($data, $this->getPK());
+            $primaryKeyName = $this->getPK();
+            $pks = simplifyDBResult($data, $primaryKeyName);
 
             //Загружаем в $m2mData значения всех мульти полей
             //формат array($MultiFieldName => array($pk => $values))
@@ -200,7 +201,7 @@ class DBDataSet extends DataSet {
                         $relInfo['tableName'],
                         true,
                         array(
-                             $this->getPK() => $pks
+                             $primaryKeyName => $pks
                         )
                     );
 
@@ -221,7 +222,7 @@ class DBDataSet extends DataSet {
                     if (array_key_exists($fieldName, $row)) {
                         //
                         foreach ($m2mValues as $pk => $values) {
-                            if ($row[$this->getPK()] == $pk) {
+                            if ($row[$primaryKeyName] == $pk) {
                                 $data[$key][$fieldName] = $values;
                             }
                         }

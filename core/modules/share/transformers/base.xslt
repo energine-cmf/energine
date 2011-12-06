@@ -423,31 +423,30 @@
 
     <!-- именованный шаблон для построения заголовка окна -->
     <xsl:template name="build_title">
-        <xsl:choose>
-            <xsl:when test="$DOC_PROPS[@name='title']/@alt!=''">
-                <xsl:value-of select="$DOC_PROPS[@name='title']/@alt"/>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:for-each select="$COMPONENTS[@class='BreadCrumbs']/recordset/record">
-                    <xsl:sort data-type="text" order="descending" select="position()"/>
-                    <xsl:choose>
-                        <xsl:when test="position() = last()">
-                            <xsl:if test="$ID = field[@name='Id'] and field[@name='Name'] != ''">
-                                <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>
-                                <xsl:value-of select="field[@name='Name']"/>
-                            </xsl:if>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:if test="field[@name='Name'] != ''">
-                                <xsl:if test="following-sibling::record/field[@name='Name'] != ''"> / </xsl:if>
-                                <xsl:value-of select="field[@name='Name']"/>
-                            </xsl:if>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:for-each>
-                / <xsl:value-of select="$COMPONENTS[@class='BreadCrumbs']/@site"/>
-            </xsl:otherwise>
-        </xsl:choose>
+        <xsl:for-each select="$COMPONENTS[@class='BreadCrumbs']/recordset/record">
+            <xsl:sort data-type="text" order="descending" select="position()"/>
+            <xsl:choose>
+                <xsl:when test="position() = last()">
+                    <xsl:if test="$ID = field[@name='Id'] and (field[@name='Name'] != '' or field[@name='Title'] != '')">
+                        <xsl:choose>
+                            <xsl:when test="field[@name='Title'] != ''"><xsl:value-of select="field[@name='Title']"/></xsl:when>
+                            <xsl:otherwise><xsl:value-of select="field[@name='Name']"/></xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:text> / </xsl:text>
+                    </xsl:if>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:if test="field[@name='Name'] != '' or field[@name='Title'] != ''">
+                        <xsl:choose>
+                            <xsl:when test="field[@name='Title'] != ''"><xsl:value-of select="field[@name='Title']"/></xsl:when>
+                            <xsl:otherwise><xsl:value-of select="field[@name='Name']"/></xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:text> / </xsl:text>
+                    </xsl:if>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:for-each>
+        <xsl:value-of select="$COMPONENTS[@class='BreadCrumbs']/@site"/>
     </xsl:template>
 
     <!-- именованный шаблон для подключения значка сайта -->

@@ -19,16 +19,16 @@
  */
 class LoginForm extends DataSet {
     /**
-	 * Конструктор
-	 *
-	 * @param string $name
-	 * @param string $module
-	 */
-    public function __construct($name, $module,   array $params = null) {
-        $params['state'] = E()->getDocument()->user->isAuthenticated()?'showLogoutForm':'showLoginForm';
-        parent::__construct($name, $module,  $params);
- 		$this->setTitle($this->translate('TXT_LOGIN_FORM'));
-        $this->setAction(E()->getSiteManager()->getCurrentSite()->base.'auth.php', true);
+     * Конструктор
+     *
+     * @param string $name
+     * @param string $module
+     */
+    public function __construct($name, $module, array $params = null) {
+        $params['state'] = E()->getDocument()->user->isAuthenticated() ? 'showLogoutForm' : 'showLoginForm';
+        parent::__construct($name, $module, $params);
+        $this->setTitle($this->translate('TXT_LOGIN_FORM'));
+        $this->setAction(E()->getSiteManager()->getCurrentSite()->base . 'auth.php', true);
     }
 
     /**
@@ -40,10 +40,11 @@ class LoginForm extends DataSet {
      */
     protected function defineParams() {
         return array_merge(
-        parent::defineParams(),
-        array(
-        'successAction' => false
-        )
+            parent::defineParams(),
+            array(
+                'successAction' => false,
+                //'facebookAppID' => false
+            )
         );
     }
 
@@ -59,33 +60,39 @@ class LoginForm extends DataSet {
         if (isset($_COOKIE[UserSession::FAILED_LOGIN_COOKIE_NAME])) {
             $messageField = new FieldDescription('message');
             $messageField->setType(FieldDescription::FIELD_TYPE_STRING);
-        	$this->getDataDescription()->addFieldDescription($messageField);
-        	$messageField->setRights(FieldDescription::FIELD_MODE_READ);
+            $this->getDataDescription()->addFieldDescription($messageField);
+            $messageField->setRights(FieldDescription::FIELD_MODE_READ);
 
-        	$messageField = new Field('message');
-        	$messageField->addRowData($this->translate('ERR_BAD_LOGIN'));
-        	$this->getData()->addField($messageField);
+            $messageField = new Field('message');
+            $messageField->addRowData($this->translate('ERR_BAD_LOGIN'));
+            $this->getData()->addField($messageField);
             E()->getResponse()->deleteCookie(UserSession::FAILED_LOGIN_COOKIE_NAME);
         }
-        
+
         //Во избежание появления empty рекордсета
         $f = new Field('username');
         $f->setData('');
         $this->getData()->addField($f);
+        //Если есть информация о авторизации через фейсбук
+        if($this->getConfigValue('auth.facebook')){
+            $fbAppID = $this->getConfigValue('auth.facebook.appID');
+            $this->setProperty('fbAppID', $fbAppID);
+            $this->addTranslation('TXT_FB_LOGIN');
+        }
     }
 
 
     /**
-	  * Вывод формы logout
-	  *
-	  * @return type
-	  * @access public
-	  */
+     * Вывод формы logout
+     *
+     * @return type
+     * @access public
+     */
 
     public function showLogoutForm() {
         //$request = E()->getRequest();
         //$this->setTitle($this->translate('TXT_LOGOUT'));
-        $this->addTranslation('TXT_USER_GREETING','TXT_USER_NAME','TXT_ROLE_TEXT');
+        $this->addTranslation('TXT_USER_GREETING', 'TXT_USER_NAME', 'TXT_ROLE_TEXT');
         //$this->setAction(E()->getSiteManager()->getCurrentSite()->base, true);
         $this->prepare();
         /*foreach (E()->UserGroup->getUserGroups($this->document->user->getID()) as $roleID) {
@@ -101,8 +108,8 @@ class LoginForm extends DataSet {
         switch ($this->getState()) {
             case 'showLogoutForm':
                 foreach ($this->getDataDescription()->getFieldDescriptionList() as $fieldName) {
-                    
-                    $result[] = array($fieldName=>$this->document->user->getValue($fieldName));
+
+                    $result[] = array($fieldName => $this->document->user->getValue($fieldName));
                 }
                 break;
             default:

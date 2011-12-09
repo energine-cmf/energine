@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet 
-    version="1.0" 
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+<xsl:stylesheet
+    version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml">
-    
+
     <!-- компонент LoginForm  -->
     <!-- режим гостя -->
     <xsl:template match="component[@class='LoginForm']">
@@ -11,14 +11,23 @@
             <input type="hidden" name="componentAction" value="{@componentAction}" />
             <xsl:apply-templates/>
         </form>
+
+        <xsl:if test="@fbAppID and (@componentAction='showLoginForm')">
+            <a href="#" id="fbAuth" onclick="return false;"><xsl:value-of select="$TRANSLATION[@const='TXT_FB_LOGIN']"/></a>
+            <script type="text/javascript" src="scripts/FBAuth.js"/>
+            <script type="text/javascript">
+                FBL.set('<xsl:value-of select="@fbAppID"/>');
+            </script>
+            <div id="fb-root"></div>
+        </xsl:if>
     </xsl:template>
-    
+
     <xsl:template match="recordset[parent::component[@class='LoginForm']]">
         <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
             <xsl:apply-templates/>
         </div>
     </xsl:template>
-    
+
     <xsl:template match="control[@id='restore'][ancestor::component[@class='LoginForm']]">
         <xsl:if test="@mode != 0">
             <div class="restore_link">
@@ -32,7 +41,7 @@
             <xsl:apply-templates/>
         </div>
     </xsl:template>
-    
+
     <!-- режим пользователя за логином -->
     <xsl:template match="recordset[parent::component[@class='LoginForm'][@componentAction='showLogoutForm']]">
         <div>
@@ -44,29 +53,29 @@
         <span class="user_greeting"><xsl:value-of select="$TRANSLATION[@const='TXT_USER_GREETING']"/></span><xsl:value-of select="$NBSP" disable-output-escaping="yes" />
         <span class="user_name"><xsl:value-of select="$TRANSLATION[@const='TXT_USER_NAME']"/>:<xsl:value-of select="$NBSP" disable-output-escaping="yes" /><strong><xsl:value-of select="field[@name='u_name']"/></strong></span><br/>
         <span class="user_role"><xsl:value-of select="$TRANSLATION[@const='TXT_ROLE_TEXT']"/>:<xsl:value-of select="$NBSP" disable-output-escaping="yes" /><strong><xsl:value-of select="field[@name='role_name']"/></strong></span>
-    </xsl:template>    
+    </xsl:template>
     <!-- /компонент LoginForm  -->
-    
+
     <!-- компонент Register -->
     <xsl:template match="component[@class='Register'][@componentAction='success']">
         <div class="result_message">
             <xsl:value-of select="recordset/record/field" disable-output-escaping="yes"/>
         </div>
     </xsl:template>
-    
+
     <xsl:template match="recordset[parent::component[@class='Register']]">
         <div><xsl:value-of select="$TRANSLATION[@const='TXT_REGISTRATION_TEXT']" disable-output-escaping="yes"/></div>
         <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <xsl:apply-templates/>
-            <div class="field captcha_field">                                                                                                                                                                            
-                <div class="name">                                                                                                                                                                                                   
-                    <label for="{@name}"><xsl:value-of select="$TRANSLATION[@const='TXT_ENTER_CAPTCHA']"/></label>                                                                                                                                             
-                    <span class="mark">*</span>                                                                                                                                                                                      
-                </div>                                                                                                                                                                                                               
-                <div class="control" >                                                                                                                                               
-                    <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text" />                                                                                                    
-                </div>                                                                                                                                                                                                               
-            </div>         
+            <div class="field captcha_field">
+                <div class="name">
+                    <label for="{@name}"><xsl:value-of select="$TRANSLATION[@const='TXT_ENTER_CAPTCHA']"/></label>
+                    <span class="mark">*</span>
+                </div>
+                <div class="control" >
+                    <input type="text" id="captcha" name="captcha" xmlns:nrgn="http://energine.org" nrgn:pattern="/^.+$/" nrgn:message="{$TRANSLATION[@const='TXT_ENTER_CAPTCHA']}" class="text" />
+                </div>
+            </div>
         </div>
         <xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
             <div class="note">
@@ -75,7 +84,7 @@
         </xsl:if>
     </xsl:template>
     <!-- /компонент Register -->
-    
+
     <!-- компонент UserProfile -->
     <xsl:template match="component[@class='UserProfile'][@componentAction='success']">
         <div class="result_message">
@@ -83,8 +92,8 @@
         </div>
     </xsl:template>
     <!-- /компонент UserProfile -->
-    
-    <!-- компонент RoleEditor -->    
+
+    <!-- компонент RoleEditor -->
     <xsl:template match="field[@name='group_div_rights']">
             <div class="table_data">
                 <table width="100%" border="1">
@@ -101,7 +110,7 @@
                             <xsl:with-param name="DATA" select="recordset"/>
                             <xsl:with-param name="LEVEL" select="0"/>
                         </xsl:call-template>
-                    
+
                 </table>
            </div>
     </xsl:template>
@@ -117,7 +126,7 @@
                 <tr class="section_name">
                     <td><xsl:value-of select="field[@name='Site']"/></td>
                     <xsl:for-each select="field[@name='RightsId']/options/option">
-                        <td class="col_{position()}"><input type="radio" class="groupRadio" name=""></input></td>    
+                        <td class="col_{position()}"><input type="radio" class="groupRadio" name=""></input></td>
                     </xsl:for-each>
                 </tr>
             </xsl:if>
@@ -129,7 +138,7 @@
                 <xsl:for-each select="field[@name='RightsId']/options/option">
                     <td class="col_{position()}"><input type="radio" style="width:auto; border:0;" name="div_right[{../../../field[@name='Id']}]" value="{@id}">
                         <xsl:if test="@selected">
-                            <xsl:attribute name="checked">checked</xsl:attribute>    
+                            <xsl:attribute name="checked">checked</xsl:attribute>
                         </xsl:if>
                         <xsl:if test="../../@mode=1">
                             <xsl:attribute name="disabled">disabled</xsl:attribute>
@@ -150,5 +159,5 @@
         </xsl:for-each>
     </xsl:template>
     <!-- /компонент RoleEditor -->
-    
+
 </xsl:stylesheet>

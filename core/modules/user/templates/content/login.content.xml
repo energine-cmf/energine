@@ -11,9 +11,6 @@
             </component>
         </container>
         <container name="leftAdBlock"/>
-        <container name="loginFormContainer" block="beta" widget="widget">
-            <component name="loginForm" module="user" class="LoginForm"/>
-        </container>
     </container>
     <container name="center" column="column" html_class="col col2 last_col">
         <container name="loginFormContainer" block="alfa" widget="static">

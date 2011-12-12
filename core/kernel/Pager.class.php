@@ -201,7 +201,8 @@ final class Pager extends Object {
 
         $pager->setProperty('from', DBWorker::_translate('TXT_FROM'));
         $pager->setProperty('to', DBWorker::_translate('TXT_TO'));
-        
+        //$pager->setProperty('total', DBWorker::_translate('TXT_TOTAL'));
+        $pager->setProperty('records', $this->recordsCount);
         $total = $this->numPages;
         $current = $this->currentPage;
         $visible = self::VISIBLE_PAGES_COUNT;

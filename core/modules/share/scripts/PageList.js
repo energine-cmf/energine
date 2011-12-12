@@ -48,7 +48,7 @@ var PageList = new Class({
         }
         return listItem;
     },
-    build: function(numPages, currentPage) {
+    build: function(numPages, currentPage, totalRecords) {
         this.currentPage = currentPage;
         this.clear();
         var VISIBLE_PAGES_COUNT = 2
@@ -106,6 +106,7 @@ var PageList = new Class({
         if (endPage < numPages) {
             this._createPageLink(numPages, numPages).injectInside(this.element)
         }
+        this.element.grab(new Element('span', {'styles': {'padding-left':'20px'}, 'text': totalRecords}));
     },
 
     // Private methods:

@@ -463,7 +463,7 @@ var GridManager = new Class({
 
 
         if (result.pager)
-            this.pageList.build(result.pager.count, result.pager.current);
+            this.pageList.build(result.pager.count, result.pager.current, result.pager.records);
 
 
         if (!this.grid.isEmpty()) {

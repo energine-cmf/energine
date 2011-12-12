@@ -106,7 +106,9 @@ var PageList = new Class({
         if (endPage < numPages) {
             this._createPageLink(numPages, numPages).injectInside(this.element)
         }
-        this.element.grab(new Element('span', {'styles': {'padding-left':'20px'}, 'text': totalRecords}));
+
+        if(numPages)
+            this.element.grab(new Element('span', {'styles': {'padding-left':'20px'}, 'text': totalRecords}));
     },
 
     // Private methods:

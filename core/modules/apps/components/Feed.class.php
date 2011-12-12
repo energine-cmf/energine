@@ -36,8 +36,11 @@ class Feed extends DBDataSet
     public function __construct($name, $module, array $params = null)
     {
         parent::__construct($name, $module, $params);
-        $this->setProperty('title', $this->translate(
-            'TXT_' . strtoupper($this->getName())));
+        //Если title не указан  - устанавливаем дефолтный
+        if(!$this->getProperty('title')){
+            $this->setProperty('title', $this->translate(
+                        'TXT_' . strtoupper($this->getName())));
+        }
         $this->setProperty('exttype', 'feed');
         $this->setParam('onlyCurrentLang', true);
         if ($this->getParam('editable') && $this->document->isEditable()) {

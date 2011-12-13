@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+	<state name="main">
+	</state>
+    <state name="map">
+        <uri_patterns>
+            <pattern>/map/[mapNumber]/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

@@ -107,7 +107,7 @@ var PageList = new Class({
             this._createPageLink(numPages, numPages).injectInside(this.element)
         }
 
-        if(numPages)
+        if(numPages && totalRecords)
             this.element.grab(new Element('span', {'styles': {'padding-left':'20px'}, 'text': totalRecords}));
     },
 

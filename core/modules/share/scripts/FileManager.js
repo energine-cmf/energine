@@ -73,7 +73,7 @@ var FileManager = new Class({
                     this.viewWidget.setMetadata(response.meta);
                     this.initialized = true;
                 }
-                this.pageList.build(response.pager.count, response.pager.current, result.pager.records);
+                this.pageList.build(response.pager.count, response.pager.current);
                 this.viewWidget.setData(response.data || []);
                 if (typeof response.currentDirectory != 'undefined') {
                     this.currentPath = response.currentDirectory;

@@ -78,8 +78,9 @@ class TagManager extends DBWorker {
      * @return void
      */
     public function createField($initialValue = null) {
-        $field = new Field('tags');
+
         if ($this->isActive) {
+            $field = new Field('tags');
             if (
                 is_null($initialValue)
             ) {
@@ -88,16 +89,18 @@ class TagManager extends DBWorker {
                     && ($currentData = $this->data->getFieldByName($this->pk->getName()))
                 ) {
                     $field->setData($this->pull($currentData->getData(), $this->tableName));
+                    $this->data->addField($field);
                 }
             }
             else {
                 for($i=0; $i<count(E()->getLanguage()->getLanguages()); $i++){
                     $field->setRowData($i, (is_array($initialValue))?$initialValue:array($initialValue));
                 }
-
+                $this->data->addField($field);
             }
+
         }
-        $this->data->addField($field);
+
     }
 
     public function save($id) {

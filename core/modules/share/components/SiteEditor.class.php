@@ -86,6 +86,7 @@ class SiteEditor extends Grid {
                 $this->getDataDescription()->addFieldDescription($fd);
             }
             else {
+                $this->getDataDescription()->getFieldDescriptionByName($this->getPK())->setType(FieldDescription::FIELD_TYPE_INT)->setMode(FieldDescription::FIELD_MODE_READ);
                 $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
                 $tm->createFieldDescription();
                 $tm->createField();

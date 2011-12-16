@@ -9,6 +9,9 @@
         <xsl:if test="ancestor::component/@componentAction='main' and field[@name='form_description']!=''">
             <div class="textblock"><xsl:value-of select="field[@name='form_description']" disable-output-escaping="yes"/></div>
         </xsl:if>
+        <xsl:if test="field[@name='form_error_message']">
+            <xsl:apply-templates select="field[@name='form_error_message']" mode="custom"/>
+        </xsl:if>
         <xsl:apply-templates/>
         <xsl:if test="ancestor::component/@componentAction='main' and field[@name='form_post_description']!=''">
             <div class="textblock"><xsl:value-of select="field[@name='form_post_description']" disable-output-escaping="yes"/></div>
@@ -37,8 +40,8 @@
                     <xsl:if test="@nullable='1'">
                         <option></option>
                     </xsl:if>
-                    <option value="1"><xsl:value-of select="@yes"/></option>
-                    <option value="0"><xsl:value-of select="@no"/></option>
+                    <option value="1"><xsl:if test=".=1"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if><xsl:value-of select="@yes"/></option>
+                    <option value="0"><xsl:if test="not(.)"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if><xsl:value-of select="@no"/></option>
                 </select>
             </div>
     	</div>
@@ -74,5 +77,12 @@
             </div>
     	</div>
     </xsl:template>
+
+    <xsl:template match="field[@name='form_error_message' and ancestor::component[@class='Form']]" mode="custom">
+        <h2 class="error"><xsl:value-of select="@title"/>: <xsl:value-of select="."/></h2>
+        <hr/>
+    </xsl:template>
+
+    <xsl:template match="field[@name='form_error_message' and ancestor::component[@class='Form']]"/>
 
 </xsl:stylesheet>

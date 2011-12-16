@@ -2,9 +2,9 @@
 <configuration>
 	<state name="main">
 	</state>
-    <state name="map">
+    <state name="videomap">
         <uri_patterns>
-            <pattern>/map/[mapNumber]/</pattern>
+            <pattern>/videomap/[mapNumber]/</pattern>
         </uri_patterns>
     </state>
 </configuration>

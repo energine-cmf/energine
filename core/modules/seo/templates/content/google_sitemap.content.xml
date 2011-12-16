@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content>
-    <component name="googleSitemap" module="seo" class="GoogleSitemap" />
+    <component name="googleSitemap" module="seo" class="GoogleSitemap" >
+        <params>
+            <param name="config">core/modules/seo/config/GoogleSitemap.component.xml</param>
+            <param name="active">1</param>
+        </params>
+    </component>
 </content>
 

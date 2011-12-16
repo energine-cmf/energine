@@ -10,10 +10,10 @@
     <xsl:variable name="ID" select="/document/properties/property[@name='ID']" />
 
     <xsl:template match="/">
-        <xsl:apply-templates select="//component[@class='GoogleVideoSitemap']"></xsl:apply-templates>
+        <xsl:apply-templates select="//component[@class='GoogleSitemap']"></xsl:apply-templates>
     </xsl:template>
 
-    <xsl:template match="component[@class='GoogleVideoSitemap']">
+    <xsl:template match="component[@class='GoogleSitemap']">
         <sitemapindex>
             <xsl:attribute name="xmlns">http://www.sitemaps.org/schemas/sitemap/0.9</xsl:attribute>
             <xsl:call-template name="SITEMAP_PATH"></xsl:call-template>

@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
 	<state name="main">
-		<fields>
-			<field name="Id" type="integer" key="1"/>
-			<field name="Pid" type="integer"/>
-			<field name="Segment" type="string"/>
-            <field name="Site" type="string"/>
-		</fields>
 	</state>
+    <state name="map">
+        <uri_patterns>
+            <pattern>/map/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="videomap">
+        <uri_patterns>
+            <pattern>/videomap/[mapNumber]/</pattern>
+        </uri_patterns>
+    </state>
 </configuration>

@@ -74,7 +74,8 @@ class TreeBuilder extends AbstractBuilder  {
         if (!$this->idFieldName) {
         	throw new SystemException('ERR_DEV_NO_TREE_IDENT', SystemException::ERR_DEVELOPER, array($this->idFieldName));
         }
-        $this->result->appendChild($this->treeBuild($this->tree));
+        if(!$this->data->isEmpty())
+            $this->result->appendChild($this->treeBuild($this->tree));
     }
 
     /**

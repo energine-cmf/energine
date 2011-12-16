@@ -261,6 +261,74 @@ class Setup {
         $this->checkDBConnection();
         $this->updateSitesTable();
         $this->linker();
+        $this->robots();
+    }
+
+
+    /**
+     * Генерация файла robots.txt
+     * Создаем ссылки на sitemap всех поддоменов
+     *
+     * @return void
+     * @access private
+     */
+    private function robots(){
+        $this->checkDBConnection();
+        $this->title('Генерация файла robots.txt');
+        $this->generateRobotsTxt();
+        $this->title('Добавление информации о сегменте');
+        $this->createSitemapSegment();
+    }
+
+    /**
+     * Создаем сегмент google sitemap в share_sitemap
+     * и даем на него права на просмотр для не авторизированных
+     * пользователей. Имя сегмента следует указать в конфиге.
+     *
+     * @return void
+     * @access private
+     */
+    private function createSitemapSegment(){
+        $this->dbConnect->query('INSERT INTO share_sitemap(site_id,smap_layout,smap_content,smap_segment) '
+                                                .'SELECT site_id,\''.$this->config['seo']['sitemapTemplate'].'.layout.xml\','
+                                                .'\''.$this->config['seo']['sitemapTemplate'].'.content.xml\','
+                                                .'\''.$this->config['seo']['sitemapSegment'].'\' '
+                                                .'FROM share_sites WHERE site_is_indexed');
+        $smIdsInfo = $this->dbConnect->query('SELECT smap_id FROM share_sitemap WHERE '
+                                              .'smap_segment = \''.$this->config['seo']['sitemapSegment'].'\' '
+                                              .'AND smap_pid IS NULL');
+        while($smIdInfo = $smIdsInfo->fetch()) {
+            $this->dbConnect->query('INSERT INTO share_access_level VALUES '
+                                    .'('.$smIdInfo[0].', '
+                                    .'(SELECT group_id FROM `user_groups` WHERE group_default), '
+                                    .'(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\')'
+                                    .')');
+        }
+    }
+
+
+    /**
+     * Заполняем файл robots.txt
+     * Ссылками на sitemaps
+     * Sitemap: http://example.com/sm.xml
+     *
+     * @return void
+     * @access private
+     */
+    private function generateRobotsTxt(){
+        if(!is_writable('../')){
+            throw new Exception('Невозможно создать файл robots.txt');
+        }
+        $file = '../robots.txt';
+        file_put_contents($file,'User-agent: *'.PHP_EOL.'Allow: /'.PHP_EOL);
+        $domainsInfo = $this->dbConnect->query('SELECT ss.site_id,sd.domain_protocol,sd.domain_host,sd.domain_root FROM share_sites ss '
+                                 .'INNER JOIN share_domain2site d2s ON ss.site_id = d2s.site_id '
+                                 .'INNER JOIN share_domains sd ON  sd.domain_id = d2s.domain_id WHERE ss.site_is_indexed');
+        while($domainInfo = $domainsInfo->fetch()){
+            file_put_contents($file, 'Sitemap: '.$domainInfo['domain_protocol'].'://'.$domainInfo['domain_host']
+                                                .$domainInfo['domain_root'].$this->config['seo']['sitemapSegment']
+                                                .PHP_EOL,FILE_APPEND);
+        }
     }
 
     /**

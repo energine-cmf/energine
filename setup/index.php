@@ -13,7 +13,8 @@ define('MODULES', 'modules');
 
 $acceptableActions = array(
     'install',
-    'linker'
+    'linker',
+    'robots'
 );
 
 //вариант запуска приложения

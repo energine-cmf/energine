@@ -290,7 +290,7 @@ LayoutManager.Column = new Class({
 LayoutManager.DummyWidget = new Class({
     initialize: function(column) {
         this.column = column;
-        this.element = this.container = new Element('div', {class:'e-lm-dummy-widget'});
+        this.element = this.container = new Element('div', {'class':'e-lm-dummy-widget'});
         this.column.element.grab(this.element);
         this.visible = true;
         this.toolbar = this._buildToolbar();
@@ -389,7 +389,7 @@ LayoutManager.Widget = new Class({
     bindElement: function(element) {
         //Создаем елемент контейнера  - содержащего тулбар виджета
         this.container =
-            new Element('div', {class:'e-lm-widget'/*, styles:{'position': 'relative'}*/});
+            new Element('div', {'class':'e-lm-widget'/*, styles:{'position': 'relative'}*/});
         if (this.element.getParent())
             this.container.wraps(this.element);
         else {
@@ -553,7 +553,7 @@ LayoutManager.Widget.DragBehavior = new Class({
     initialize: function(widget) {
         this.widget = widget;
         this.strut =
-            new Element('div', {class:'e-lm-strut'});
+            new Element('div', {'class':'e-lm-strut'});
         this.recalculateSize();
 
         this.drag = new Drag(this.widget.container, {

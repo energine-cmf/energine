@@ -253,7 +253,7 @@ final class UserSession extends DBWorker {
         new UserSession($force);
     }
 
-    private static function createIdentifier() {
+    public static function createIdentifier() {
         return sha1(time() + rand(0, 10000));
     }
 

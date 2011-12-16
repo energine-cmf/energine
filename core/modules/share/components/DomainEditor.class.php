@@ -52,25 +52,7 @@ class DomainEditor extends Grid {
                 $this->getData()->getFieldByName('domain_port')->setData(80, true);
                 $this->getData()->getFieldByName('domain_root')->setData('/', true);
             }
-            //Если редактирование и дефолтный домен
-            elseif($this->getData()->getFieldByName('domain_is_default')->getRowData(0)) {
-                $this->getDataDescription()->getFieldDescriptionByName('domain_is_default')->setMode(FieldDescription::FIELD_MODE_READ);
-            }
         }
-    }
-    /**
-     * При сохранении данных
-     * сбрасываем флаг дефолтности
-     * @return mixed
-     */
-    protected function loadData(){
-        $result = parent::loadData();
-        if ($this->getState() == 'save' && isset($result[0]['domain_is_default']) &&
-            $result[0]['domain_is_default'] !== '0') {
-            $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('domain_is_default' => null));
-        }
-
-        return $result;
     }
     /**
      * Добавлеям параметр идентификатор сайта

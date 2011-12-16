@@ -157,7 +157,7 @@ class SiteEditor extends Grid {
                 LEFT JOIN share_domain2site
                 USING ( domain_id )
                 WHERE (site_id = %s)
-                AND (domain_is_default =1)', $siteID), 'url', true))){
+                LIMIT 1', $siteID), 'url', true))){
             throw new SystemException('ERR_BAD_URL', SystemException::ERR_CRITICAL, $this->dbh->getLastRequest());
         }
         E()->getResponse()->setRedirect($url);

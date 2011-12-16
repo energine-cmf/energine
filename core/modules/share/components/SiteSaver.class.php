@@ -82,7 +82,7 @@
                    );   
                }
                $this->dbh->modifyRequest(
-                   'INSERT INTO share_access_level '.
+                   'INSERT IGNORE INTO share_access_level '.
                    '(smap_id, right_id, group_id) '.
                    'SELECT %s, al.right_id, al.group_id '.
                    'FROM `share_access_level` al '.

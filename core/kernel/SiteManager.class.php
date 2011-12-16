@@ -69,15 +69,16 @@ final class SiteManager extends DBWorker implements Iterator {
         if(empty($res)){
             throw new SystemException('ERR_NO_SITE', SystemException::ERR_DEVELOPER);
         }
-        foreach ($res as $domainData) {
+        foreach ($res as $rowNum => $domainData) {
             $domainData = convertFieldNames($domainData, 'domain_');
             
             /*if(!isset($domainData['site'])){
                 throw new SystemException('ERR_NO_SITE_DOMAIN', SystemException::ERR_DEVELOPER);
             }*/
-            if($domainData['isDefault'] && isset($domainData['site'])){
+            //первый встреченный сайт записываем как базовый
+            if(!$rowNum && isset($domainData['site'])){
                 $tmp = $domainData;
-                unset($tmp['isDefault'], $tmp['id'], $tmp['site']);
+                unset($tmp['id'], $tmp['site']);
                 $this->data[$domainData['site']]->setDomain($tmp);
                 unset($tmp);
             }
@@ -90,7 +91,7 @@ final class SiteManager extends DBWorker implements Iterator {
                 $pathSegments = array_slice($uri->getPath(false), 0, sizeof($realPathSegments));
                 if ($realPathSegments == $pathSegments) {
                     $this->currentSiteID = $domainData['site'];
-                    unset($domainData['isDefault'], $domainData['id'], $domainData['site']);
+                    unset($domainData['id'], $domainData['site']);
                     $this->data[$this->currentSiteID]->setDomain($domainData);
                 }
             }

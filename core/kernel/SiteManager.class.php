@@ -69,14 +69,12 @@ final class SiteManager extends DBWorker implements Iterator {
         if(empty($res)){
             throw new SystemException('ERR_NO_SITE', SystemException::ERR_DEVELOPER);
         }
-        foreach ($res as $rowNum => $domainData) {
+
+        foreach ($res as $domainData) {
             $domainData = convertFieldNames($domainData, 'domain_');
-            
-            /*if(!isset($domainData['site'])){
-                throw new SystemException('ERR_NO_SITE_DOMAIN', SystemException::ERR_DEVELOPER);
-            }*/
-            //первый встреченный сайт записываем как базовый
-            if(!$rowNum && isset($domainData['site'])){
+            //Если не установлен уже домен - для сайта - дописываем
+            //по сути первый домен будет дефолтным
+            if(isset($domainData['site']) && is_null($this->data[$domainData['site']]->base)){
                 $tmp = $domainData;
                 unset($tmp['id'], $tmp['site']);
                 $this->data[$domainData['site']]->setDomain($tmp);

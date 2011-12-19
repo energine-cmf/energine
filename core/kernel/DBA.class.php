@@ -139,6 +139,18 @@ abstract class DBA extends Object {
 
     }
 
+    /*
+     * Возвращает обьект ПДО для
+     * работы с БД напрямую.
+     *
+     * @access public
+     * @return PDO
+     */
+
+    public function getPDO(){
+        return $this->pdo;
+    }
+
     /**
      * Выполняет SELECT-запрос к БД.
      *

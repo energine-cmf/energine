@@ -48,9 +48,13 @@ class Data extends Object {
     public function load(array $data) {
         $data = inverseDBResult($data);
         foreach ($data as $fieldName => $fieldValues) {
-            $fieldObject = new Field($fieldName);
+            //Если такого поля не существует еще, то создаем
+            if(!($fieldObject = $this->getFieldByName($fieldName))){
+                $fieldObject = new Field($fieldName);
+                $this->addField($fieldObject);
+            }
+            //и заносим в него данные
             $fieldObject->setData($fieldValues);
-            $this->addField($fieldObject);
         }
     }
 

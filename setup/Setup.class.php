@@ -273,6 +273,9 @@ class Setup {
      * @access private
      */
     private function robots(){
+        if(!array_key_exists('seo',$this->config)){
+            throw new Exception('Не сконфигурирован СЕО модуль, генерация robots.txt невозможна.');
+        }
         $this->checkDBConnection();
         $this->title('Генерация файла robots.txt');
         $this->generateRobotsTxt();
@@ -293,7 +296,11 @@ class Setup {
                                                 .'SELECT site_id,\''.$this->config['seo']['sitemapTemplate'].'.layout.xml\','
                                                 .'\''.$this->config['seo']['sitemapTemplate'].'.content.xml\','
                                                 .'\''.$this->config['seo']['sitemapSegment'].'\' '
-                                                .'FROM share_sites WHERE site_is_indexed');
+                                                .'FROM share_sites sso '
+                                                .'WHERE site_is_indexed AND site_is_active '
+                                                .'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
+                                                .'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
+                                                .'WHERE ssm.smap_segment = \''.$this->config['seo']['sitemapSegment'].'\' AND ssi.site_id = sso.site_id) = 0');
         $smIdsInfo = $this->dbConnect->query('SELECT smap_id FROM share_sitemap WHERE '
                                               .'smap_segment = \''.$this->config['seo']['sitemapSegment'].'\' '
                                               .'AND smap_pid IS NULL');

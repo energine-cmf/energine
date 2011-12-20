@@ -274,12 +274,14 @@ class Setup {
      */
     private function robots(){
         if(!array_key_exists('seo',$this->config)){
-            throw new Exception('Не сконфигурирован СЕО модуль, генерация robots.txt невозможна.');
+            $this->title('Не сконфигурирован СЕО модуль. Robots.txt генерируется для запрета индексации сайта.');
+            $this->generateRobotsTxt(false);
+            return;
         }
         $this->checkDBConnection();
         $this->title('Генерация файла robots.txt');
         $this->generateRobotsTxt();
-        $this->title('Добавление информации о сегменте');
+        $this->title('Добавление информации о сегменте '.$this->config['seo']['sitemapSegment']);
         $this->createSitemapSegment();
     }
 
@@ -319,14 +321,19 @@ class Setup {
      * Ссылками на sitemaps
      * Sitemap: http://example.com/sm.xml
      *
+     * @param $allowRobots
      * @return void
      * @access private
      */
-    private function generateRobotsTxt(){
+    private function generateRobotsTxt($allowRobots = true){
+        $file = '../robots.txt';
         if(!is_writable('../')){
             throw new Exception('Невозможно создать файл robots.txt');
         }
-        $file = '../robots.txt';
+        if(!$allowRobots){
+            file_put_contents($file,'User-agent: *'.PHP_EOL.'Disallow: /'.PHP_EOL);
+            return;
+        }
         file_put_contents($file,'User-agent: *'.PHP_EOL.'Allow: /'.PHP_EOL);
         $domainsInfo = $this->dbConnect->query('SELECT ss.site_id,sd.domain_protocol,sd.domain_host,sd.domain_root FROM share_sites ss '
                                  .'INNER JOIN share_domain2site d2s ON ss.site_id = d2s.site_id '

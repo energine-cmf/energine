@@ -264,6 +264,28 @@ class Setup {
         $this->robots();
     }
 
+    /**
+     * Проверка конфигурации модуля СЕО
+     * Для правильной работы он должен иметь
+     * следующие параметры:
+     * sitemapSegment - имя сегмента карты сайта (по умолчанию google-sitemap)
+     * sitemapTemplate - имя файла шаблона карты сайта (по умолчанию google_sitemap)
+     * maxVideosInMap - максимальное количество записей
+     * в карте расположения видео сайта (по умолчанию 5000)
+     * @return void
+     * @access private
+     */
+    private function isSeoConfigured(){
+        if(!array_key_exists('seo',$this->config)){
+            return false;
+        }
+        foreach (array('sitemapSegment','sitemapTemplate','maxVideosInMap') as $seoParam){
+            if(!array_key_exists($seoParam,$this->config['seo'])){
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Генерация файла robots.txt
@@ -273,7 +295,8 @@ class Setup {
      * @access private
      */
     private function robots(){
-        if(!array_key_exists('seo',$this->config)){
+        if(!$this->isSeoConfigured())
+        {
             $this->title('Не сконфигурирован СЕО модуль. Robots.txt генерируется для запрета индексации сайта.');
             $this->generateRobotsTxt(false);
             return;
@@ -294,24 +317,23 @@ class Setup {
      * @access private
      */
     private function createSitemapSegment(){
-        $this->dbConnect->query('INSERT INTO share_sitemap(site_id,smap_layout,smap_content,smap_segment) '
-                                                .'SELECT site_id,\''.$this->config['seo']['sitemapTemplate'].'.layout.xml\','
+        $this->dbConnect->query('INSERT INTO share_sitemap(site_id,smap_layout,smap_content,smap_segment,smap_pid) '
+                                                .'SELECT sso.site_id,\''.$this->config['seo']['sitemapTemplate'].'.layout.xml\','
                                                 .'\''.$this->config['seo']['sitemapTemplate'].'.content.xml\','
-                                                .'\''.$this->config['seo']['sitemapSegment'].'\' '
+                                                .'\''.$this->config['seo']['sitemapSegment'].'\','
+                                                .'(SELECT smap_id FROM share_sitemap ss2 WHERE ss2.site_id = sso.site_id AND smap_pid IS NULL LIMIT 0,1) '
                                                 .'FROM share_sites sso '
                                                 .'WHERE site_is_indexed AND site_is_active '
                                                 .'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
                                                 .'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
                                                 .'WHERE ssm.smap_segment = \''.$this->config['seo']['sitemapSegment'].'\' AND ssi.site_id = sso.site_id) = 0');
         $smIdsInfo = $this->dbConnect->query('SELECT smap_id FROM share_sitemap WHERE '
-                                              .'smap_segment = \''.$this->config['seo']['sitemapSegment'].'\' '
-                                              .'AND smap_pid IS NULL');
+                                              .'smap_segment = \''.$this->config['seo']['sitemapSegment'].'\'');
         while($smIdInfo = $smIdsInfo->fetch()) {
-            $this->dbConnect->query('INSERT INTO share_access_level VALUES '
-                                    .'('.$smIdInfo[0].', '
-                                    .'(SELECT group_id FROM `user_groups` WHERE group_default), '
-                                    .'(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\')'
-                                    .')');
+            $this->dbConnect->query('INSERT INTO share_access_level SELECT '.$smIdInfo[0].',group_id,'
+                                    .'(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\') FROM `user_groups` ');
+            $this->dbConnect->query('INSERT INTO share_sitemap_translation(smap_id,lang_id,smap_name,smap_is_disabled) '
+                    .'VALUES ('.$smIdInfo[0].',(SELECT lang_id FROM `share_languages` WHERE lang_default),\'Google sitemap\',0)');
         }
     }
 
@@ -320,6 +342,8 @@ class Setup {
      * Заполняем файл robots.txt
      * Ссылками на sitemaps
      * Sitemap: http://example.com/sm.xml
+     * Если не сконфигурирован модуль СЕО, то запрещаем
+     * индексацию сайта.
      *
      * @param $allowRobots
      * @return void

@@ -70,12 +70,12 @@ class User extends DBWorker {
     }
 
     /**
-	 * Загрузка информации из БД
-	 *
-	 * @param int идентификатор пользователя
-	 * @return void
-	 * @access protected
-	 */
+     * Загрузка информации из БД
+     *
+     * @param int идентификатор пользователя
+     * @return void
+     * @access protected
+     */
 
     protected function loadInfo($UID) {
         $result = $this->dbh->select(self::USER_TABLE_NAME, true, array('u_id' => $UID));
@@ -109,6 +109,7 @@ class User extends DBWorker {
     public function getID() {
         return $this->id;
     }
+
     /**
      * Возвращает значение поля
      *
@@ -123,6 +124,7 @@ class User extends DBWorker {
         }
         return $result;
     }
+
     /**
      * Возвращает перечень полей
      *
@@ -134,6 +136,7 @@ class User extends DBWorker {
         $result = $this->dbh->getColumnsInfo(self::USER_TABLE_NAME);
         return $result;
     }
+
     /**
      * Создание нового пользователя
      *
@@ -165,49 +168,49 @@ class User extends DBWorker {
         if (!empty($uniqueFields)) {
             $condition = array();
             foreach ($uniqueFields as $fieldname) {
-                $condition[] = $fieldname.' = "'.$data[$fieldname].'"';
+                $condition[] = $fieldname . ' = "' . $data[$fieldname] . '"';
             }
             $condition = implode(' OR ', $condition);
-            if (simplifyDBResult($this->dbh->select(self::USER_TABLE_NAME, 'COUNT(u_id) as num', $condition), 'num', true)>0) {
+            if (simplifyDBResult($this->dbh->select(self::USER_TABLE_NAME, 'COUNT(u_id) as num', $condition), 'num', true) > 0) {
                 throw new SystemException('ERR_NOT_UNIQUE_DATA', SystemException::ERR_WARNING);
             }
         }
-        
+
         $this->info = $data;
         //$this->info['u_password'] = $data['u_password'];
         $data['u_password'] = sha1($data['u_password']);
-        $this->id = $this->dbh->modify(QAL::INSERT, self::USER_TABLE_NAME , $data);
+        $this->id = $this->dbh->modify(QAL::INSERT, self::USER_TABLE_NAME, $data);
         $this->setGroups(array($this->userGroup->getDefaultUserGroup()));
     }
-    
+
     /**
      * Добавляет аватарку пользователю
-     * 
+     *
      * @return void
      * @access public
      */
-    public function createAvatar($avatarUploadedFilename){
-    	$result = false;
-        if($this->id){
-        	try {
-	            $fu = new FileUploader();
-	            $fu->setFile($avatarUploadedFilename);
-	            $fu->upload($dir = 'uploads/avatars');	
-	            $result = $fu->getFileObjectName();
-	            $im = new Image();
-	            $im->loadFromFile($result);
-	            $im->resize(100, 100);
-	            $im->saveToFile($result);
-	            $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, array('u_avatar_img' => $result), array('u_id' => $this->id));
-        	}
-        	catch (SystemException $e) {
-        		//Notice генерирурется в случае с отсутствием файла, в данном случае это не принципиально
-        		if($e->getCode() != SystemException::ERR_NOTICE) {
-        			throw $e;
-        		}
-        	}
+    public function createAvatar($avatarUploadedFilename) {
+        $result = false;
+        if ($this->id) {
+            try {
+                $fu = new FileUploader();
+                $fu->setFile($avatarUploadedFilename);
+                $fu->upload($dir = 'uploads/avatars');
+                $result = $fu->getFileObjectName();
+                $im = new Image();
+                $im->loadFromFile($result);
+                $im->resize(100, 100);
+                $im->saveToFile($result);
+                $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, array('u_avatar_img' => $result), array('u_id' => $this->id));
+            }
+            catch (SystemException $e) {
+                //Notice генерирурется в случае с отсутствием файла, в данном случае это не принципиально
+                if ($e->getCode() != SystemException::ERR_NOTICE) {
+                    throw $e;
+                }
+            }
         }
-        
+
         return $result;
     }
 
@@ -219,10 +222,10 @@ class User extends DBWorker {
      * @access public
      */
 
-    public function update($data){
+    public function update($data) {
         $result = false;
         if ($this->getID()) {
-            $result = $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME , $data, array('u_id'=>$this->getID()));
+            $result = $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, $data, array('u_id' => $this->getID()));
         }
         return $result;
     }
@@ -240,9 +243,9 @@ class User extends DBWorker {
         if ($this->getID()) {
             //$this->dbh->beginTransaction();
             try {
-                $this->dbh->modify(QAL::DELETE, self::GROUP_TABLE_NAME, null, array('u_id'=>$this->getID()));
+                $this->dbh->modify(QAL::DELETE, self::GROUP_TABLE_NAME, null, array('u_id' => $this->getID()));
                 foreach ($groups as $groupID) {
-                    $this->dbh->modify(QAL::INSERT, self::GROUP_TABLE_NAME, array('u_id'=>$this->getID(), 'group_id'=>$groupID));
+                    $this->dbh->modify(QAL::INSERT, self::GROUP_TABLE_NAME, array('u_id' => $this->getID(), 'group_id' => $groupID));
                 }
                 //$this->dbh->commit();
             }
@@ -252,6 +255,19 @@ class User extends DBWorker {
                 throw new SystemException($e->getMessage(), $e->getCode(), $e->getCustomMessage());
             }
         }
+    }
+    /**
+     * Поиск юзера по идентфикатору ФБ
+     * @static
+     * @param $fbID
+     * @return bool|User
+     */
+    public static function getFBUser($fbID) {
+        $result = false;
+        if ($UID = simplifyDBResult(E()->getDB()->select(self::USER_TABLE_NAME, 'u_id', array('u_fbid' => $fbID, 'u_is_active' => 1)), 'u_id', true)) {
+            return new User($UID);
+        }
+        return $result;
     }
 
     /**

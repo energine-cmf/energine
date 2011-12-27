@@ -109,6 +109,14 @@ class FormConstructor extends DBWorker {
                      'key' => FieldDescription::FIELD_TYPE_STRING,
                      'value' => $this->translate('FIELD_TYPE_STRING')
                  ),
+                 array(
+                     'key' => FieldDescription::FIELD_TYPE_EMAIL,
+                     'value' => $this->translate('FIELD_TYPE_EMAIL')
+                 ),
+                 array(
+                     'key' => FieldDescription::FIELD_TYPE_PHONE,
+                     'value' => $this->translate('FIELD_TYPE_PHONE')
+                 ),
                  /*array(
                      'key' => FieldDescription::FIELD_TYPE_INT,
                      'value' => $this->translate('FIELD_TYPE_INT')
@@ -204,6 +212,12 @@ class FormConstructor extends DBWorker {
         elseif ($fieldType == FieldDescription::FIELD_TYPE_INFO) {
             $fieldName .= '_info';
             $fieldIsNullable = true;
+        }
+        elseif ($fieldType == FieldDescription::FIELD_TYPE_PHONE) {
+            $fieldName .= '_phone';
+        }
+        elseif ($fieldType == FieldDescription::FIELD_TYPE_EMAIL) {
+            $fieldName .= '_email';
         }
 
         $query = 'ALTER TABLE ' . $this->tableName . ' ADD ' . $fieldName . ' ';

@@ -44,7 +44,7 @@
     
     <xsl:template match="toolbar/control[@type='link']">
         <xsl:if test="@mode != 0">
-            <a href="{$BASE}{$LANG_ABBR}{@click}">
+            <a href="{$BASE}{$LANG_ABBR}{@click}" id="{@id}">
                 <xsl:value-of select="@title"/>
             </a>
         </xsl:if>

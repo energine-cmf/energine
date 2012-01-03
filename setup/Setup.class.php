@@ -263,8 +263,8 @@ class Setup {
     private function installAction() {
         $this->checkDBConnection();
         $this->updateSitesTable();
-        $this->linker();
-        $this->robots();
+        $this->linkerAction();
+        $this->robotsAction();
     }
 
     /**

@@ -451,7 +451,7 @@
 
     <!-- именованный шаблон для подключения значка сайта -->
     <xsl:template name="favicon">
-        <link rel="shortcut icon" href="{$BASE}images/energine.ico" type="image/x-icon"/>
+        <link rel="shortcut icon" href="{$STATIC_URL}images/energine.ico" type="image/x-icon"/>
     </xsl:template>
 
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->

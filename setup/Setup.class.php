@@ -74,7 +74,7 @@ class Setup {
      */
 
     private function filterInput($var) {
-        if(preg_match('/^[\-0-9a-zA-Z\/\.\_]+$/i', $var))
+        if(preg_match('/^[\~\-0-9a-zA-Z\/\.\_]+$/i', $var))
             return $var;
         else
             throw new Exception('Некорректные данные системных переменных, возможна атака на сервер.'.$var);

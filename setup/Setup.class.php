@@ -239,12 +239,15 @@ class Setup {
      */
 
     public function execute($action) {
-        if (!method_exists($this, $action)) {
+        if (!method_exists($this, $methodName = $action.'Action')) {
             throw new Exception('Подозрительно все это... Либо программисты че то не учли, либо.... произошло непоправимое.');
         }
-        $this->{
-        $action
-        }();
+        $this->{$methodName}();
+    }
+
+    private function clearCacheAction(){
+        //@todo Тут нужно реализовать очистку кеша + че то нужно решить с путем к папке кеша
+
     }
 
     /**
@@ -257,7 +260,7 @@ class Setup {
      * @access private
      */
 
-    private function install() {
+    private function installAction() {
         $this->checkDBConnection();
         $this->updateSitesTable();
         $this->linker();
@@ -294,7 +297,7 @@ class Setup {
      * @return void
      * @access private
      */
-    private function robots(){
+    private function robotsAction(){
         if(!$this->isSeoConfigured())
         {
             $this->title('Не сконфигурирован СЕО модуль. Robots.txt генерируется для запрета индексации сайта.');
@@ -377,7 +380,7 @@ class Setup {
      * @access private
      */
 
-    private function linker() {
+    private function linkerAction() {
 
         $this->title('Создание символических ссылок');
 

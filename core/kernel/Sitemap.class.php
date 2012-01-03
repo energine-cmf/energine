@@ -14,7 +14,6 @@
  * Класс - синглтон
  * Содержит методы по работе со структурой сайта
  *
- * @todo проблема с конечными страницами
  *
  * @package energine
  * @subpackage kernel
@@ -29,14 +28,7 @@ final class Sitemap extends DBWorker {
 	private $tree;
 
 	/**
-	 * @var array of Sitemap
-	 * @access private
-	 * @static
-	 */
-	//private static $instance;
-
-	/**
-	 * Информация о тех разделах, на которіе у юзера есть права
+	 * Информация о тех разделах, на которые у юзера есть права
 	 * @var array
 	 * @access private
 	 */
@@ -114,7 +106,6 @@ final class Sitemap extends DBWorker {
 		$userGroups = array_keys(E()->UserGroup->asArray());
 
 		//Загружаем идентификаторы для последующего формирования древовидной стркутуры
-		//Получаем только идентификаторы разделов
 
 		$res = $this->dbh->selectRequest(
             'SELECT s.smap_id, s.smap_pid FROM share_sitemap s '.
@@ -171,30 +162,10 @@ final class Sitemap extends DBWorker {
 	}
 
 	/**
-	 * Возвращает экземпляр  объекта Sitemap
-	 *
-	 * @param mixed идентификатор сайта
-	 * @access public
-	 * @return Sitemap
-	 * @static
-	 */
-	/*public static function getInstance($siteID = false) {
-		if(!$siteID){
-			$siteID = E()->getSiteManager()->getCurrentSite()->id;
-		}
-		if (!isset(self::$instance[$siteID])) {
-			self::$instance[$siteID] = new Sitemap($siteID);
-		}
-		return self::$instance[$siteID];
-	}*/
-	
-	/**
-	 * Возвращает идентификатор сайта по идентификатору раздела
-	 * 
-	 * @return int
-	 * @access public
-	 * @static
-	 */
+     * @static
+     * @param $pageID
+     * @return mixed
+     */
 	public static function getSiteID($pageID){
         return simplifyDBResult(
             E()->getDB()->select('share_sitemap', 'site_id', array('smap_id' => (int)$pageID)),

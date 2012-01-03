@@ -43,8 +43,8 @@ class Cache {
      * @return bool
      */
     public function store($key, $value) {
-        $fileName = self::CACHE_DIR.$key .'.cache.php';
-        $content = '<?php'.PHP_EOL.'return '.var_export($value, true).';';
+        $fileName = self::CACHE_DIR . $key . '.cache.php';
+        $content = '<?php' . PHP_EOL . 'return ' . var_export($value, true) . ';';
         return (bool)file_put_contents($fileName, $content);
     }
 
@@ -55,10 +55,28 @@ class Cache {
      */
     public function retrieve($key) {
         $result = null;
-        if(file_exists($fileName = self::CACHE_DIR.$key .'.cache.php')){
+        if ($fileName = $this->cacheFileExists($key)) {
             $result = include_once($fileName);
         }
 
         return $result;
+    }
+    /**
+     * @param $key string Имя ключа
+     */
+    public function dispose($key) {
+        if ($fileName = $this->cacheFileExists($key)) {
+            @unlink($fileName);
+        }
+    }
+    /**
+     * @param $key string имя ключа
+     * @return string полное имя и путь к файлу кеша | false если не существует
+     */
+    private function cacheFileExists($key) {
+        if (file_exists($fileName = self::CACHE_DIR . $key . '.cache.php')) {
+            return $fileName;
+        }
+        return false;
     }
 }

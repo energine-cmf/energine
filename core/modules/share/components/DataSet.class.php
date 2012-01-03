@@ -100,7 +100,7 @@ abstract class DataSet extends Component {
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_FORM);
-        if (!$this->getParam('recordsPerPage'))$this->setParam('recordsPerPage', Grid::RECORD_PER_PAGE);
+        if (!$this->getParam('recordsPerPage')) $this->setParam('recordsPerPage', Grid::RECORD_PER_PAGE);
         if ($this->getParam('template')) {
             $this->setProperty('template', $this->getParam('template') . '/');
         }
@@ -304,8 +304,8 @@ abstract class DataSet extends Component {
         $result = array();
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
             foreach ($config->toolbar as $toolbarDescription) {
-                $toolbarName = ((string) $toolbarDescription['name']) ?
-                        (string) $toolbarDescription['name'] :
+                $toolbarName = ((string)$toolbarDescription['name']) ?
+                        (string)$toolbarDescription['name'] :
                         self::TB_PREFIX . $this->getName();
 
                 $toolbar = new Toolbar($toolbarName);
@@ -330,10 +330,12 @@ abstract class DataSet extends Component {
         if ($recordsPerPage > 0) {
             $this->pager = new Pager($recordsPerPage);
             if ($this->isActive() &&
-                    $this->getType() == self::COMPONENT_TYPE_LIST) {
+                    $this->getType() == self::COMPONENT_TYPE_LIST
+            ) {
                 $actionParams = $this->getStateParams(true);
                 if (!isset($actionParams['pageNumber']) ||
-                        !($page = intval($actionParams['pageNumber']))) {
+                        !($page = intval($actionParams['pageNumber']))
+                ) {
                     $page = 1;
                 }
                 $this->pager->setCurrentPage($page);
@@ -389,30 +391,34 @@ abstract class DataSet extends Component {
         // вызываем родительский метод построения
         $result = parent::build();
 
+        if ($result instanceof DOMNode) {
+            if ($this->js) {
+                $result->documentElement->appendChild($result->importNode($this->js, true));
+            }
+            $toolbars = $this->getToolbar();
 
-        if ($this->js) {
-            $result->documentElement->appendChild($result->importNode($this->js, true));
+            if (!empty($toolbars))
+                foreach ($toolbars as $tb)
+                    if ($toolbar = $tb->build()) {
+                        $result->documentElement->appendChild(
+                            $result->importNode($toolbar, true)
+                        );
+                    }
+            if (
+                $this->pager && $this->getType() == self::COMPONENT_TYPE_LIST
+                &&
+                $pagerData = $this->pager->build()
+            ) {
+                $pager = $result->importNode($pagerData, true);
+                $result->documentElement->appendChild($pager);
+            }
         }
-        $toolbars = $this->getToolbar();
-
-        if (!empty($toolbars))
-            foreach ($toolbars as $tb)
-                if ($toolbar = $tb->build()) {
-                    $result->documentElement->appendChild(
-                        $result->importNode($toolbar, true)
-                    );
-                }
-        if ($this->pager && $this->getType() == self::COMPONENT_TYPE_LIST &&
-                $pagerData = $this->pager->build()) {
-            $pager = $result->importNode($pagerData, true);
-            $result->documentElement->appendChild($pager);
-        }
-
         //Работа с константами переводов
         if (($methodConfig = $this->getConfig()->getCurrentStateConfig()) &&
-                $methodConfig->translations) {
+                $methodConfig->translations
+        ) {
             foreach ($methodConfig->translations->translation as $translation) {
-                $this->addTranslation((string) $translation['const']);
+                $this->addTranslation((string)$translation['const']);
             }
         }
 
@@ -448,7 +454,8 @@ abstract class DataSet extends Component {
     protected function buildJS() {
         $result = false;
         if (($config = $this->getConfig()->getCurrentStateConfig()) &&
-                $config->javascript) {
+                $config->javascript
+        ) {
             $result = $this->doc->createElement('javascript');
             foreach ($config->javascript->behavior as $value) {
                 $JSObjectXML = $this->doc->createElement('behavior');
@@ -677,65 +684,65 @@ abstract class DataSet extends Component {
 
         }
 
-/*
-		$jewix = new Jevix();
-		$jewix->cfgSetXHTMLMode(true);
-		$jewix->cfgSetAutoBrMode(false);
-		$jewix->cfgSetAutoLinkMode(false);
+        /*
+               $jewix = new Jevix();
+               $jewix->cfgSetXHTMLMode(true);
+               $jewix->cfgSetAutoBrMode(false);
+               $jewix->cfgSetAutoLinkMode(false);
 
-		$shortTags  = array('br', 'hr');
-		$allowedTags = array(
-            'a', 'abbr', 'acronym', 'address', 'b', 'big', 'blockquote', 'br', 'cite',
-            'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em',
-            'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'ins', 'kbd', 'li', 'ol',
-            'p', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup','pre',
-            'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
-            );
+               $shortTags  = array('br', 'hr');
+               $allowedTags = array(
+                   'a', 'abbr', 'acronym', 'address', 'b', 'big', 'blockquote', 'br', 'cite',
+                   'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em',
+                   'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'ins', 'kbd', 'li', 'ol',
+                   'p', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup','pre',
+                   'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
+                   );
 
-            if (!$aggressive) {
-            	$allowedTags = array_merge($allowedTags, array(
-                'img',
-                'object',
-                'param',
-                'embed',
-                'map',
-                'area'
-                ));
-                array_push($shortTags, 'img');
-            }
-            $jewix->cfgAllowTags($allowedTags);
-            $jewix->cfgSetTagShort($shortTags);
+                   if (!$aggressive) {
+                       $allowedTags = array_merge($allowedTags, array(
+                       'img',
+                       'object',
+                       'param',
+                       'embed',
+                       'map',
+                       'area'
+                       ));
+                       array_push($shortTags, 'img');
+                   }
+                   $jewix->cfgAllowTags($allowedTags);
+                   $jewix->cfgSetTagShort($shortTags);
 
-            $jewix->cfgSetTagNoTypography(array('code', 'pre', 'blockquote'));
-            $jewix->cfgSetTagPreformatted(array('code', 'pre', 'blockquote'));
+                   $jewix->cfgSetTagNoTypography(array('code', 'pre', 'blockquote'));
+                   $jewix->cfgSetTagPreformatted(array('code', 'pre', 'blockquote'));
 
-            $jewix->cfgAllowTagParams('table', array('cellpadding', 'cellspacing'));
-            $jewix->cfgAllowTagParams('td', array('colspan', 'rowspan'));
-            $jewix->cfgAllowTagParams('th', array('colspan', 'rowspan'));
-            $jewix->cfgAllowTagParams('a', array('href', 'target'));
+                   $jewix->cfgAllowTagParams('table', array('cellpadding', 'cellspacing'));
+                   $jewix->cfgAllowTagParams('td', array('colspan', 'rowspan'));
+                   $jewix->cfgAllowTagParams('th', array('colspan', 'rowspan'));
+                   $jewix->cfgAllowTagParams('a', array('href', 'target'));
 
 
-            $jewix->cfgSetTagCutWithContent(array('script', 'iframe'));
-            if(!$aggressive){
-            	array_walk($allowedTags, create_function('$element, $key, $jewix', '$jewix->cfgAllowTagParams($element, array("id", "class", "style"));'), $jewix);
-            	$jewix->cfgAllowTagParams('img',
-            	array(
-	                'align',
-	                'alt',
-	                'src',
-	                'vspace',
-	                'width',
-	                'hspace',
-	                'height',
-	                'border'
-	                )
-	                );
-            }
+                   $jewix->cfgSetTagCutWithContent(array('script', 'iframe'));
+                   if(!$aggressive){
+                       array_walk($allowedTags, create_function('$element, $key, $jewix', '$jewix->cfgAllowTagParams($element, array("id", "class", "style"));'), $jewix);
+                       $jewix->cfgAllowTagParams('img',
+                       array(
+                           'align',
+                           'alt',
+                           'src',
+                           'vspace',
+                           'width',
+                           'hspace',
+                           'height',
+                           'border'
+                           )
+                           );
+                   }
 
-            $errors = false;
-            $data = $jewix->parse($data, $errors);
- *
- */
+                   $errors = false;
+                   $data = $jewix->parse($data, $errors);
+        *
+        */
         $base = E()->getSiteManager()->getCurrentSite()->base;
         $data =
                 str_replace(

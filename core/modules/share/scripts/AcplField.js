@@ -261,13 +261,12 @@ var AcplField = new Class({
      */
     setValues: function(data) {
         this.list.empty();
-        if (data.length) {
+        if (data && data.length) {
             data.each(function(row) {
                 this.list.add(this.list.create(row));
             }, this);
-
+            this.list.show();
         }
-        this.list.show();
     },
     select: function(li) {
         var text = li.get('text');

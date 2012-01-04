@@ -13,6 +13,10 @@ class Cache {
      */
     const CACHE_DIR = '../cache/';
 
+    const TRANSLATIONS_KEY = 'translations';
+
+    const CLASS_STRUCTURE_KEY = 'class_structure';
+
     /**
      *
      */

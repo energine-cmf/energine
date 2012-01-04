@@ -40,6 +40,10 @@ class TranslationEditor extends Grid {
 	}
 
 	protected function saveData(){
+        $c = E()->getCache();
+        if($c->isEnabled()){
+            $c->dispose(Cache::TRANSLATIONS_KEY);
+        }
         //обрезаем лишние незначащие пробелы и прочее в самих тегах и в переводах
         //в переводах - сделано на случай вывода в джаваскрипт
 		$_POST[$this->getTableName()]['ltag_name'] = strtoupper(trim($_POST[$this->getTableName()]['ltag_name']));

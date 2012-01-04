@@ -64,14 +64,14 @@ abstract class DBWorker extends Object {
         $c = E()->getCache();
         if ($c->isEnabled()) {
             if (is_null(self::$translations)) {
-                if (!(self::$translations = $c->retrieve('translations'))) {
+                if (!(self::$translations = $c->retrieve(Cache::TRANSLATIONS_KEY))) {
                     $query = 'SELECT UPPER(ltag_name) AS const, lang_id,trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans USING (ltag_id)';
                     $dbh = E()->getDB()->getPDO();
                     $res = $dbh->query($query);
                     while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
                         self::$translations[$row['const']][$row['lang_id']] = $row['translation'];
                     }
-                    $c->store('translations', self::$translations);
+                    $c->store(Cache::TRANSLATIONS_KEY, self::$translations);
                 }
 
             }

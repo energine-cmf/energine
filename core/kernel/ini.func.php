@@ -132,7 +132,7 @@ function __autoload($className) {
     if (empty($paths)) {
         //Если мемкеш не заенейблен или значения путей в нем нет
         $mc = E()->getCache();
-        if (!$mc->isEnabled() || !($paths = $mc->retrieve('class_structure'))) {
+        if (!$mc->isEnabled() || !($paths = $mc->retrieve(Cache::CLASS_STRUCTURE_KEY))) {
             //собираем в статическую переменную
             $tmp = glob(
                 '{' . implode(',', array(
@@ -149,7 +149,7 @@ function __autoload($className) {
                 $paths[substr(strrchr($fileName, '/'), 1, -10)] = $fileName;
             }
             if($mc->isEnabled())
-                $mc->store('class_structure', $paths);
+                $mc->store(Cache::CLASS_STRUCTURE_KEY, $paths);
         }
     }
 

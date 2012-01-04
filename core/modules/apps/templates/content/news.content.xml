@@ -27,16 +27,32 @@
                    <param name="id">parent</param>
                </params>
             </component>-->
-            <component name="news" module="apps" class="NewsFeed">
+            <component name="news" module="apps" class="TRKUNewsFeed">
                 <params>
                     <param name="showAll">1</param>
                     <param name="recordsPerPage">10</param>
+                    <param name="config">core/modules/trku/config/TRKUNewsFeed.component.xml</param>
                 </params>
             </component>
         </container>
     </container>
-    <component name="newsEditor" module="apps" class="NewsEditor">
+    <container name="right" column="column" html_class="col col3 last_col">
+        <container name="topNewsContainer" block="beta" widget="widget">
+            <component name="topNews" module="apps" class="TRKUNewsFeed">
+                <params>
+                    <param name="title">TXT_TOP_NEWS</param>
+                    <param name="limit" type="hidden">5</param>
+                    <param name="showAll">1</param>
+                    <param name="active" type="hidden">0</param>
+                    <param name="template">news</param>
+                    <param name="config">core/modules/trku/config/TRKUNewsBlock.component.xml</param>
+                </params>
+            </component>
+        </container>
+    </container>
+    <component name="newsEditor" module="apps" class="TRKUNewsEditor">
 		<params>
+            <param name="config">core/modules/apps/config/NewsEditor.component.xml</param>
 			<param name="rights">3</param>
 			<param name="bind">news</param>
 		</params>

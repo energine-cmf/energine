@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content html_class="colset colset2">
+    <container name="center" column="column" html_class="col col2 last_col">
+        <component name="bEditor" module="share" class="Grid">
+            <params>
+                <param name="rights">3</param>
+                <param name="tableName">apps_branding</param>
+            </params>
+        </component>
+    </container>
+</content>

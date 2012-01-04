@@ -16,6 +16,7 @@ class Cache {
     const TRANSLATIONS_KEY = 'translations';
 
     const CLASS_STRUCTURE_KEY = 'class_structure';
+    const DB_STRUCTURE_KEY = 'db_structure';
 
     /**
      *

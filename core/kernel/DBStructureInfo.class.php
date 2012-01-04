@@ -38,8 +38,8 @@ final class DBStructureInfo extends Object {
         $this->pdo = $pdo;
         $mc = E()->getCache();
         if($mc->isEnabled()){
-            if(!($this->structure = $mc->retrieve('structure'))){
-                $mc->store('structure', $this->structure = $this->collectDBInfo());
+            if(!($this->structure = $mc->retrieve(Cache::DB_STRUCTURE_KEY))){
+                $mc->store(Cache::DB_STRUCTURE_KEY, $this->structure = $this->collectDBInfo());
             }
         }
     }

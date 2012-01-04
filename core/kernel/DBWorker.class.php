@@ -36,7 +36,7 @@ abstract class DBWorker extends Object {
      * @var unknown_type
      */
     private static $translations = null;
-    
+
     /**
      * Конструктор класса.
      *
@@ -58,64 +58,83 @@ abstract class DBWorker extends Object {
      * @return string
      */
     public static function _translate($const, $langId = null) {
-    	$const = strtoupper($const);
-    	
+        if (empty($const)) return $const;
+        $const = strtoupper($const);
         $currentLangId = intval(E()->getLanguage()->getCurrent());
-        //если не закешированы - кешируем переводы для текущего языка
-        //действия по кешированию логичней было бы разместить в конструкторе, 
-        //но на момент его вызова еще не известен дефолтный язык
-        if(is_null(self::$translations)){
-            $res = E()->getDB()->selectRequest(
-            'SELECT UPPER(ltag_name) AS const, trans.ltag_value_rtf AS translation FROM share_lang_tags ltag '.
-            'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id '.
-            'WHERE lang_id = '.$currentLangId
-            );
-            if(is_array($res)){
-                foreach($res as $row){
-                    self::$translations[$currentLangId][$row['const']] = $row['translation'];
+        $c = E()->getCache();
+        if ($c->isEnabled()) {
+            if (is_null(self::$translations)) {
+                if (!(self::$translations = $c->retrieve('translations'))) {
+                    $query = 'SELECT UPPER(ltag_name) AS const, lang_id,trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans USING (ltag_id)';
+                    $dbh = E()->getDB()->getPDO();
+                    $res = $dbh->query($query);
+                    while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+                        self::$translations[$row['const']][$row['lang_id']] = $row['translation'];
+                    }
+                    $c->store('translations', self::$translations);
+                }
+
+            }
+
+            if (!isset($langId)) $langId = $currentLangId;
+
+            return (isset(self::$translations[$const][$langId])) ? self::$translations[$const][$langId] : $const;
+
+        }
+        else {
+            //если не закешированы - кешируем переводы для текущего языка
+            //действия по кешированию логичней было бы разместить в конструкторе,
+            //но на момент его вызова еще не известен дефолтный язык
+            if (is_null(self::$translations)) {
+                $res = E()->getDB()->selectRequest(
+                    'SELECT UPPER(ltag_name) AS const, trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id  WHERE lang_id = ' . $currentLangId
+                );
+                if (is_array($res)) {
+                    foreach ($res as $row) {
+                        self::$translations[$currentLangId][$row['const']] = $row['translation'];
+                    }
+                }
+                //вот что должно происходить если в базе нет констант текущего языка?
+            }
+            //устанавливаем дефолтное возвращаемое значение равным значению константы перевода
+            $result = $const;
+            //
+            //Тут столько хитрых проверок не просто так - а чтобы минимизировать количество обращений к БД
+            //
+            //Если язык - не указан, используем текущий, а информация о константах на нем у нас закеширована
+            if (!isset($langId)) {
+                //эта константа есть в переводах для текущего языка?
+                if (isset(self::$translations[$currentLangId][$const])) {
+                    //тогда возвращаем ее значение
+                    $result = self::$translations[$currentLangId][$const];
+                }
+                else {
+                    //если не было  - теперь будет
+                    //а значение возвращается дефолтное
+                    self::$translations[$currentLangId][$const] = $const;
                 }
             }
-            //вот что должно происходить если в базе нет констант текущего языка?
-        }
-        //устанавливаем дефолтное возвращаемое значение равным значению константы перевода
-        $result = $const;
-        //
-        //Тут столько хитрых проверок не просто так - а чтобы минимизировать количество обращений к БД
-        //
-        //Если язык - не указан, используем текущий, а информация о константах на нем у нас закеширована
-        if (!isset($langId)) {
-            $langId = $currentLangId;
-            //эта константа есть в переводах для текущего языка?
-        	if(isset(self::$translations[$currentLangId][$const])){
-        	    //тогда возвращаем ее значение
-        	    $result = self::$translations[$currentLangId][$const];
-        	}
-        	else{
-        	    //если не было  - теперь будет
-        	    //а значение возвращается дефолтное
-        	    self::$translations[$currentLangId][$const] = $const;
-        	}
-        }
-        //может все таки есть инфа в кеше?
-        elseif(isset(self::$translations[$langId][$const])){
-            //если да - то чудесно
-            $result = self::$translations[$langId][$const];
-        }
-        else{
-            //лезем за значением в базу
-            $res = E()->getDB()->selectRequest(
-                'SELECT trans.ltag_value_rtf AS result FROM share_lang_tags ltag '.
-                'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id '.
-                'WHERE ltag.ltag_name = '.E()->getDB()->quote($result).' AND lang_id = '.intval($langId)
-            );
-            if (is_array($res)) {
-                //если нашли - вернем его
-            	$result = simplifyDBResult($res, 'result', true);
+            //может все таки есть инфа в кеше?
+            elseif (isset(self::$translations[$langId][$const])) {
+                //если да - то чудесно
+                $result = self::$translations[$langId][$const];
             }
-            //а если не нашли - будет возвращаться дефолтное значение
-            
-            //нашли - не нашли все равно в кеш записываем 
-            self::$translations[$langId][$const] = $result;
+            else {
+                //лезем за значением в базу
+                $res = E()->getDB()->selectRequest(
+                    'SELECT trans.ltag_value_rtf AS result FROM share_lang_tags ltag ' .
+                            'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id ' .
+                            'WHERE ltag.ltag_name = ' . E()->getDB()->quote($result) . ' AND lang_id = ' . intval($langId)
+                );
+                if (is_array($res)) {
+                    //если нашли - вернем его
+                    $result = simplifyDBResult($res, 'result', true);
+                }
+                //а если не нашли - будет возвращаться дефолтное значение
+
+                //нашли - не нашли все равно в кеш записываем
+                self::$translations[$langId][$const] = $result;
+            }
         }
         return $result;
     }
@@ -129,9 +148,9 @@ abstract class DBWorker extends Object {
      * @return string
      * @static
      */
-    public static function _dateToString($year, $month, $day){
-		$result = (int)$day.' '.self::_translate('TXT_MONTH_'.(int)$month).' '.$year;
-		return $result;
+    public static function _dateToString($year, $month, $day) {
+        $result = (int)$day . ' ' . self::_translate('TXT_MONTH_' . (int)$month) . ' ' . $year;
+        return $result;
     }
 
     /**
@@ -157,9 +176,9 @@ abstract class DBWorker extends Object {
      * @return string
      * @see DBWorker::_dateToString
      */
-    public function dateToString($date, $format='%d-%d-%d'){
-    	list($year, $month, $day) = sscanf($date, $format);
-		return self::_dateToString($year, $month, $day);
+    public function dateToString($date, $format = '%d-%d-%d') {
+        list($year, $month, $day) = sscanf($date, $format);
+        return self::_dateToString($year, $month, $day);
     }
 
 }

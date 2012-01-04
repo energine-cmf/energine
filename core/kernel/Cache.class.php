@@ -20,10 +20,11 @@ class Cache {
         $this->enabled =
                 (bool)Object::_getConfigValue('site.cache')
                         &&
+                        (!(bool)Object::_getConfigValue('site.debug'))
+                        &&
                         is_dir(self::CACHE_DIR)
                         &&
                         is_writable(self::CACHE_DIR);
-
     }
 
     /**
@@ -60,6 +61,7 @@ class Cache {
 
         return $result;
     }
+
     /**
      * @param $key string Имя ключа
      */
@@ -68,10 +70,12 @@ class Cache {
             @unlink($fileName);
         }
     }
-    private function getCacheFileByKey($key){
+
+    private function getCacheFileByKey($key) {
         return self::CACHE_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $key) . '.cache.php';
 
     }
+
     /**
      * @param $key string имя ключа
      * @return string полное имя и путь к файлу кеша | false если не существует

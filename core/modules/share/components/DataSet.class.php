@@ -391,28 +391,28 @@ abstract class DataSet extends Component {
         // вызываем родительский метод построения
         $result = parent::build();
 
-        if ($result instanceof DOMNode) {
-            if ($this->js) {
-                $result->documentElement->appendChild($result->importNode($this->js, true));
-            }
-            $toolbars = $this->getToolbar();
 
-            if (!empty($toolbars))
-                foreach ($toolbars as $tb)
-                    if ($toolbar = $tb->build()) {
-                        $result->documentElement->appendChild(
-                            $result->importNode($toolbar, true)
-                        );
-                    }
-            if (
-                $this->pager && $this->getType() == self::COMPONENT_TYPE_LIST
-                &&
-                $pagerData = $this->pager->build()
-            ) {
-                $pager = $result->importNode($pagerData, true);
-                $result->documentElement->appendChild($pager);
-            }
+        if ($this->js) {
+            $result->documentElement->appendChild($result->importNode($this->js, true));
         }
+        $toolbars = $this->getToolbar();
+
+        if (!empty($toolbars))
+            foreach ($toolbars as $tb)
+                if ($toolbar = $tb->build()) {
+                    $result->documentElement->appendChild(
+                        $result->importNode($toolbar, true)
+                    );
+                }
+        if (
+            $this->pager && $this->getType() == self::COMPONENT_TYPE_LIST
+            &&
+            $pagerData = $this->pager->build()
+        ) {
+            $pager = $result->importNode($pagerData, true);
+            $result->documentElement->appendChild($pager);
+        }
+
         //Работа с константами переводов
         if (($methodConfig = $this->getConfig()->getCurrentStateConfig()) &&
                 $methodConfig->translations

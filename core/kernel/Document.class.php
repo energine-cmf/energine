@@ -66,7 +66,7 @@ final class Document extends DBWorker implements IDocument {
 
     /**
      * @access private
-     * @var string | DOMDocument результирующий документ
+     * @var DOMDocument результирующий документ
      */
     private $doc;
 
@@ -198,108 +198,94 @@ final class Document extends DBWorker implements IDocument {
      */
     public function build() {
         //Если у нас не режим json
-        if (E()->getController()->getViewMode() != DocumentController::TRANSFORM_JSON) {
-            $this->doc = new DOMDocument('1.0', 'UTF-8');
-            $dom_root = $this->doc->createElement('document');
-            $dom_root->setAttribute('debug', $this->getConfigValue('site.debug'));
-            $dom_root->setAttribute('editable', $this->isEditable());
-            $this->setProperty('url', (string)$this->request->getURI());
 
-            $this->doc->appendChild($dom_root);
-            if (!isset($this->properties['title'])) {
-                $this->setProperty('title', $this->documentInfo['Name']);
-            }
-            $dom_documentProperties = $this->doc->createElement('properties');
-            foreach ($this->properties as $propName => $propValue) {
-                $dom_property =
-                        $this->doc->createElement('property', str_replace('&', '&amp;', $propValue));
-                $dom_property->setAttribute('name', $propName);
-                if ($propName == 'title') {
-                    $dom_property->setAttribute('alt', $this->documentInfo['HtmlTitle']);
-                }
-                $dom_documentProperties->appendChild($dom_property);
-            }
-            $dom_root->appendChild($dom_documentProperties);
+        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $dom_root = $this->doc->createElement('document');
+        $dom_root->setAttribute('debug', $this->getConfigValue('site.debug'));
+        $dom_root->setAttribute('editable', $this->isEditable());
+        $this->setProperty('url', (string)$this->request->getURI());
 
-            //Дополнительные свойства, имеющие параметры
-            $prop = $this->doc->createElement('property', (
-            $baseURL = E()->getSiteManager()->getCurrentSite()->base));
-            $prop->setAttribute('name', 'base');
-            $prop->setAttribute('static', (($staticURL =
-                    $this->getConfigValue('site.static')) ? $staticURL : $baseURL));
-            $prop->setAttribute('media', (($mediaURL =
-                    $this->getConfigValue('site.media')) ? $mediaURL : $baseURL));
-            $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
-            $dom_documentProperties->appendChild($prop);
-
-            $prop = $this->doc->createElement('property', $this->getLang());
-            $prop->setAttribute('name', 'lang');
-            $prop->setAttribute('abbr', $this->request->getLangSegment());
-            $prop->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($this->getLang()));
-            $dom_documentProperties->appendChild($prop);
-            unset($prop, $staticURL, $baseURL);
-
-            foreach ($this->componentManager as $component) {
-                $componentResult = false;
-                $dom_errors = false;
-                try {
-                    if ($component->enabled()
-                            &&
-                            ($this->getRights() >= $component->getCurrentStateRights())
-                    ) {
-
-                        $componentResult = $component->build();
-                    }
-                }
-                catch (DummyException $dummyException) {
-                }
-
-                if (!empty($componentResult)) {
-                    try {
-                        $componentResult = $this->doc->importNode(
-                            $componentResult->documentElement,
-                            true
-                        );
-                    }
-                    catch (Exception $e) {
-                        //stop($e->getTraceAsString());
-                    }
-                    if ($dom_errors) {
-                        $componentResult->insertBefore($dom_errors, $componentResult->firstChild);
-                    }
-                    $dom_root->appendChild($componentResult);
-                }
-                elseif ($dom_errors) {
-                    $dom_root->appendChild($dom_errors);
-                }
-            }
-
-            if (!empty($this->translations)) {
-                $dom_translations = $this->doc->createElement('translations');
-                $dom_root->appendChild($dom_translations);
-
-                foreach ($this->translations as $const => $componentName) {
-                    $dom_translation =
-                            $this->doc->createElement('translation', $this->translate($const));
-                    $dom_translation->setAttribute('const', $const);
-                    if (!is_null($componentName)) {
-                        $dom_translation->setAttribute('component', $componentName);
-                    }
-                    $dom_translations->appendChild($dom_translation);
-                }
-            }
+        $this->doc->appendChild($dom_root);
+        if (!isset($this->properties['title'])) {
+            $this->setProperty('title', $this->documentInfo['Name']);
         }
-        else {
-            //Реально здесь только один буудет компонент
-            //@todo Но все равно не по людски как то
-            foreach ($this->componentManager as $component) {
+        $dom_documentProperties = $this->doc->createElement('properties');
+        foreach ($this->properties as $propName => $propValue) {
+            $dom_property =
+                    $this->doc->createElement('property', str_replace('&', '&amp;', $propValue));
+            $dom_property->setAttribute('name', $propName);
+            if ($propName == 'title') {
+                $dom_property->setAttribute('alt', $this->documentInfo['HtmlTitle']);
+            }
+            $dom_documentProperties->appendChild($dom_property);
+        }
+        $dom_root->appendChild($dom_documentProperties);
+
+        //Дополнительные свойства, имеющие параметры
+        $prop = $this->doc->createElement('property', (
+        $baseURL = E()->getSiteManager()->getCurrentSite()->base));
+        $prop->setAttribute('name', 'base');
+        $prop->setAttribute('static', (($staticURL =
+                $this->getConfigValue('site.static')) ? $staticURL : $baseURL));
+        $prop->setAttribute('media', (($mediaURL =
+                $this->getConfigValue('site.media')) ? $mediaURL : $baseURL));
+        $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
+        $dom_documentProperties->appendChild($prop);
+
+        $prop = $this->doc->createElement('property', $this->getLang());
+        $prop->setAttribute('name', 'lang');
+        $prop->setAttribute('abbr', $this->request->getLangSegment());
+        $prop->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($this->getLang()));
+        $dom_documentProperties->appendChild($prop);
+        unset($prop, $staticURL, $baseURL);
+
+        foreach ($this->componentManager as $component) {
+            $componentResult = false;
+            $dom_errors = false;
+            try {
                 if ($component->enabled()
                         &&
                         ($this->getRights() >= $component->getCurrentStateRights())
                 ) {
 
-                    $this->doc = $component->build();
+                    $componentResult = $component->build();
                 }
+            }
+            catch (DummyException $dummyException) {
+            }
+
+            if (!empty($componentResult)) {
+                try {
+                    $componentResult = $this->doc->importNode(
+                        $componentResult->documentElement,
+                        true
+                    );
+                }
+                catch (Exception $e) {
+                    //stop($e->getTraceAsString());
+                }
+                if ($dom_errors) {
+                    $componentResult->insertBefore($dom_errors, $componentResult->firstChild);
+                }
+                $dom_root->appendChild($componentResult);
+            }
+            elseif ($dom_errors) {
+                $dom_root->appendChild($dom_errors);
+            }
+        }
+
+        if (!empty($this->translations)) {
+            $dom_translations = $this->doc->createElement('translations');
+            $dom_root->appendChild($dom_translations);
+
+            foreach ($this->translations as $const => $componentName) {
+                $dom_translation =
+                        $this->doc->createElement('translation', $this->translate($const));
+                $dom_translation->setAttribute('const', $const);
+                if (!is_null($componentName)) {
+                    $dom_translation->setAttribute('component', $componentName);
+                }
+                $dom_translations->appendChild($dom_translation);
             }
         }
     }

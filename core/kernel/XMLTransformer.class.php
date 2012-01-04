@@ -7,10 +7,10 @@
  * @author pavka
  * @copyright Energine 2010
  */
- 
+
 class XMLTransformer implements ITransformer{
     /**
-     * @var Document
+     * @var DOMDocument
      */
     private $document;
 
@@ -19,8 +19,8 @@ class XMLTransformer implements ITransformer{
         return trim($this->document->saveXML());
     }
 
-    public function setDocument(Document $document){
-        $this->document = $document->getResult();
+    public function setDocument(DOMDocument $document){
+        $this->document = $document;
     }
     /**
      * Введено для совместимти в режиме отладки
@@ -29,6 +29,8 @@ class XMLTransformer implements ITransformer{
      * @return void
      */
     public function setFileName($dummy){
-        
+
     }
 }
+
+

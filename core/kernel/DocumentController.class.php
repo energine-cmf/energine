@@ -129,7 +129,7 @@ class DocumentController extends Object {
      * @return void
      */
     private function transform($document) {
-        $this->getTransformer()->setDocument($document);
+        $this->getTransformer()->setDocument($document->getResult());
         $result = $this->getTransformer()->transform();
         return $result;
     }
@@ -138,7 +138,7 @@ class DocumentController extends Object {
 interface ITransformer {
     public function transform();
 
-    public function setDocument(Document $document);
+    public function setDocument(DOMDocument $document);
 }
 
 interface IDocument {

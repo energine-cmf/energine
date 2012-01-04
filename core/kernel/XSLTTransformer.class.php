@@ -32,7 +32,7 @@ class XSLTTransformer extends Object implements ITransformer {
 
     /**
      * Документ
-     * @var Document
+     * @var DOMDocument
      */
     private $document;
 
@@ -64,7 +64,7 @@ class XSLTTransformer extends Object implements ITransformer {
         $this->fileName = $transformerFilename;
     }
 
-    public function setDocument(Document $document) {
+    public function setDocument(DOMDocument $document) {
         $this->document = $document;
     }
 
@@ -94,10 +94,11 @@ class XSLTTransformer extends Object implements ITransformer {
                 throw new SystemException('ERR_DEV_NOT_WELL_FORMED_XSLT', SystemException::ERR_DEVELOPER);
             }
             $xsltProc->importStylesheet($xsltDoc);
-            $result = $xsltProc->transformToXml($this->document->getResult());
+            $result = $xsltProc->transformToXml($this->document);
         }
         E()->getResponse()->setHeader('Content-Type', 'text/html; charset=UTF-8', false);
         return $result;
     }
 }
+
 

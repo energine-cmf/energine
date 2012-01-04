@@ -102,7 +102,7 @@ class Component extends DBWorker implements IBlock {
      * @access private
      * @var mixed результат работы компонента
      */
-    private $result;
+    //private $result;
 
     /**
      * @access private
@@ -493,46 +493,39 @@ class Component extends DBWorker implements IBlock {
      * @return DOMDocument
      */
     public function build() {
-        $result = false;
+        $result = $this->doc->createElement('component');
+        $result->setAttribute('name', $this->getName());
+        $result->setAttribute('module', $this->module);
+        $result->setAttribute('componentAction', $this->getState());
+        $result->setAttribute('class', get_class($this));
 
-        if (E()->getController()->getViewMode() != DocumentController::TRANSFORM_JSON) {
-            $result = $this->doc->createElement('component');
-            $result->setAttribute('name', $this->getName());
-            $result->setAttribute('module', $this->module);
-            $result->setAttribute('componentAction', $this->getState());
-            $result->setAttribute('class', get_class($this));
-
-            foreach ($this->properties as $propName => $propValue) {
-                $result->setAttribute($propName, $propValue);
-            }
-
-            /*
-            * Существует ли построитель и правильно ли он отработал?
-            * Построитель может не существовать, если мы создаем компонент в котором нет данных.
-            */
-            if ($this->getBuilder() && $this->getBuilder()->build()) {
-                $builderResult = $this->getBuilder()->getResult();
-                if ($builderResult instanceof DOMNode) {
-                    $result->appendChild(
-                        $this->doc->importNode(
-                            $builderResult,
-                            true
-                        )
-                    );
-                }
-                else {
-                    $el = $this->doc->createElement('result', $builderResult);
-                    $el->setAttribute('xml:id', 'result');
-                    $result->appendChild($el);
-                }
-            }
-            $this->doc->appendChild($result);
-            $result = $this->doc;
+        foreach ($this->properties as $propName => $propValue) {
+            $result->setAttribute($propName, $propValue);
         }
-        //Для JSON документа у которого все хорошо
-        elseif ($this->getBuilder() && $this->getBuilder()->build()) {
-                $result = $this->getBuilder()->getResult();
+
+        /*
+        * Существует ли построитель и правильно ли он отработал?
+        * Построитель может не существовать, если мы создаем компонент в котором нет данных.
+        */
+        if ($this->getBuilder() && $this->getBuilder()->build()) {
+            $builderResult = $this->getBuilder()->getResult();
+            if ($builderResult instanceof DOMNode) {
+                $result->appendChild(
+                    $this->doc->importNode(
+                        $builderResult,
+                        true
+                    )
+                );
+            }
+            else {
+                $el = $this->doc->createElement('result', $builderResult);
+                $el->setAttribute('xml:id', 'result');
+                $result->appendChild($el);
+            }
         }
+        $this->doc->appendChild($result);
+        $result = $this->doc;
+
         return $result;
     }
 

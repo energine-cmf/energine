@@ -16,6 +16,15 @@
  * @author dr.Pavka
  */
 class ExtendedFeedEditor extends FeedEditor {
+
+    /**
+     * Имя поля - идентификатора публикации
+     *
+     * @access private
+     * @var string
+     */
+    private $publishFieldName = false;
+
     /**
      * Конструктор класса
      *
@@ -30,6 +39,17 @@ class ExtendedFeedEditor extends FeedEditor {
         $this->setSaver(new ExtendedFeedSaver());
     }
 
+    protected function setParam($name, $value) {
+        if ($name == 'tableName') {
+            foreach (array_keys($this->dbh->getColumnsInfo($value)) as $columnName) {
+                if (strpos($columnName, '_is_published')) {
+                    $this->publishFieldName = $columnName;
+                    $this->addTranslation('BTN_PUBLISH', 'BTN_UNPUBLISH');
+                }
+            }
+        }
+        parent::setParam($name, $value);
+    }
 
     protected function add() {
         parent::add();
@@ -84,6 +104,25 @@ class ExtendedFeedEditor extends FeedEditor {
         }
 
         $b->setProperties($result);
+    }
+
+    /**
+     * Публицация \ депубликация материала.
+     *
+     * @return void
+     */
+
+    protected function publish() {
+        list($id) = $this->getStateParams();
+        $this->dbh->modifyRequest('UPDATE ' . $this->getTableName() . ' SET ' . $this->publishFieldName . ' = NOT ' . $this->publishFieldName . ' WHERE ' . $this->getPK() . ' = %s', $id);
+
+        $b = new JSONCustomBuilder();
+        $b->setProperties(
+            array(
+                'result' => true
+            )
+        );
+        $this->setBuilder($b);
     }
 
 }

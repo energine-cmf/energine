@@ -245,9 +245,16 @@ class Setup {
         $this->{$methodName}();
     }
 
-    private function clearCacheAction(){
-        //@todo Тут нужно реализовать очистку кеша + че то нужно решить с путем к папке кеша
 
+    /**
+     * Очищает папку Cache от ее содержимого.
+     * @TODO определится с именем папки
+     * @return void
+     * @access private
+     */
+    private function clearCacheAction(){
+        $this->title('Очищаем кеш');
+        $this->cleaner('../../cache');
     }
 
     /**

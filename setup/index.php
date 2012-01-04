@@ -14,6 +14,7 @@ define('MODULES', 'modules');
 $acceptableActions = array(
     'install',
     'linker',
+    'clearCache',
     'robots'
 );
 

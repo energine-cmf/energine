@@ -568,7 +568,7 @@ class FieldDescription extends DBWorker implements Iterator
                 //$this->setProperty('message', $this->translate('MSG_WRONG_TIME_FORMAT'));
                 $this->setProperty('message', 'MSG_WRONG_TIME_FORMAT');
                 $this->setProperty('sort', 1);
-                $this->setProperty('outputFormat', '%H:%M');
+                $this->setProperty('outputFormat', '%H:%M:%S');
                 $this->length = true;
                 break;
             case self::FIELD_TYPE_DATE:

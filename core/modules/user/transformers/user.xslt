@@ -20,6 +20,13 @@
             </script>
             <div id="fb-root"></div>
         </xsl:if>
+        <xsl:if test="@vkAppID and (@componentAction='showLoginForm')">
+            <a href="#" id="vkAuth" onclick="return false;"><xsl:value-of select="$TRANSLATION[@const='TXT_VK_LOGIN']"/></a>
+            <script type="text/javascript" src="scripts/VKAuth.js"/>
+            <script type="text/javascript">
+
+            </script>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="recordset[parent::component[@class='LoginForm']]">

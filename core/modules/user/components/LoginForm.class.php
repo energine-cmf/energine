@@ -74,10 +74,15 @@ class LoginForm extends DataSet {
         $f->setData('');
         $this->getData()->addField($f);
         //Если есть информация о авторизации через фейсбук
-        if($this->getConfigValue('auth.facebook')){
+        if ($this->getConfigValue('auth.facebook')) {
             $fbAppID = $this->getConfigValue('auth.facebook.appID');
             $this->setProperty('fbAppID', $fbAppID);
             $this->addTranslation('TXT_FB_LOGIN');
+        }
+        if ($this->getConfigValue('auth.vk')) {
+            $vkAppID = $this->getConfigValue('auth.vk.appID');
+            $this->setProperty('vkAppID', $vkAppID);
+            $this->addTranslation('TXT_VK_LOGIN');
         }
     }
 

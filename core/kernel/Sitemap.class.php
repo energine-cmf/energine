@@ -119,6 +119,16 @@ final class Sitemap extends DBWorker {
 		$this->siteID,
 		$this->langID
 		);
+        //@todo Нужно бы накладывать ограничение в подзапросе на сайт, не факт правда что это увеличит быстродействие
+
+        /*
+        SELECT s.smap_id, s.smap_pid FROM share_sitemap s LEFT JOIN share_sitemap_translation st ON st.smap_id = s.smap_id WHERE st.smap_is_disabled = 0 AND s.site_id = '6' AND st.lang_id = '1' AND s.smap_id IN(
+        SELECT a.smap_id
+        FROM share_access_level  a
+        LEFT JOIN share_sitemap s USING(smap_id)
+        WHERE group_id IN (1) AND s.site_id=6
+        ) ORDER BY smap_order_num
+        */
 
 		if ($res === true) {
 			throw new SystemException('ERR_NO_TRANSLATION', SystemException::ERR_CRITICAL, $this->dbh->getLastRequest());

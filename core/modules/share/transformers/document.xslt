@@ -51,9 +51,7 @@
                     </xsl:otherwise>
                 </xsl:choose>
         		<script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
-                <xsl:if test="not($DOC_PROPS[@name='single'])"  >
-                    <xsl:call-template name="interface_js"/>
-                </xsl:if>
+                <xsl:call-template name="scripts"/>
                 <script type="text/javascript">
                     var componentToolbars = [];
                     <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@name!='PageEditor']) &gt; 0">

@@ -87,6 +87,7 @@ var Energine = {
     debug : false,
     base : null,
     translations: new Hash(),
+    forceJSON: false,
     supportContentEdit : Browser.ie || Browser.firefox ||
             Browser.opera || Browser.chrome
 }
@@ -125,7 +126,7 @@ Energine.request = {
             }
         };
         new Request.JSON({
-            'url' : uri,
+            'url' : uri + ((Energine.forceJSON)?'?json':''),
             'method' : method,
             'data' : data,
             // 'noCache': true,

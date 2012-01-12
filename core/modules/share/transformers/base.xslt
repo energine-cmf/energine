@@ -455,7 +455,9 @@
     </xsl:template>
 
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->
-    <xsl:template name="interface_js"/>
+    <xsl:template name="scripts">
+        <xsl:if test="not($DOC_PROPS[@name='single'])"  ><!-- User JS is here--></xsl:if>
+    </xsl:template>
 
     <!-- именованный шаблон для подключения файлов стилей -->
     <xsl:template name="stylesheets">

@@ -27,10 +27,14 @@
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
-        $this->isEditable = $this->document->isEditable();
-        $this->setProperty('exttype', 'feededitor');
-        if(!in_array($this->getState(),  array('up', 'down')) && isset($_COOKIE[md5($this->getName())])){
-            E()->getResponse()->deleteCookie(md5($this->getName()));
+        if(!($this->isEditable = $this->document->isEditable()) && ($this->getState() == self::DEFAULT_STATE_NAME)){
+           $this->disable();
+        }
+        else {
+            $this->setProperty('exttype', 'feededitor');
+            if(!in_array($this->getState(),  array('up', 'down')) && isset($_COOKIE[md5($this->getName())])){
+                E()->getResponse()->deleteCookie(md5($this->getName()));
+            }
         }
     }
 

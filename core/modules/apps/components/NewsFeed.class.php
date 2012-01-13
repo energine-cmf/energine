@@ -107,4 +107,31 @@ class NewsFeed extends ExtendedFeed {
         $am->createField();
 
     }
+
+    /**
+     * Выводим новости, соответствующие
+     * определенному тэгу.
+     *
+     * @return void
+     * @access protected
+     */
+
+    protected function tag(){
+        $tagID = $this->getStateParams(true);
+        $tagID = (int)$tagID['tagID'];
+        $newsIDs = $this->dbh->select($this->getTableName().'_tags','news_id',array('tag_id' => $tagID));
+        if(is_array($newsIDs)){
+            $newsIDs = array_keys(convertDBResult($newsIDs,'news_id',true));
+            $this->addFilterCondition(array($this->getTableName().'.news_id' => $newsIDs));
+            $tagName = simplifyDBResult(
+                $this->dbh->select('share_tags','tag_name',array('tag_id' => $tagID)),
+                'tag_name',
+                true);
+            $pageTitle = $this->translate('TXT_NEWS_BY_TAG').': '.$tagName;
+            E()->getDocument()->componentManager->getBlockByName('breadCrumbs')->addCrumb(null,$pageTitle);
+            E()->getDocument()->setProperty('title',$pageTitle);
+        }
+        $this->main();
+        $this->pager->setProperty('additional_url','tag/'.$tagID.'/');
+    }
 }

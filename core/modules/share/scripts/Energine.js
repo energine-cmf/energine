@@ -27,7 +27,7 @@ var ScriptLoader = function() {
                         throw 'Ajax request is not created';
 
                     this.request
-                            .open('GET', Energine.base
+                            .open('GET', ((Energine.base)?Energine.base:'')
                             + 'scripts/'
                             + filename
                             + '.js'

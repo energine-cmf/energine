@@ -255,7 +255,11 @@ class TagManager extends DBWorker {
 
         $res =
                 E()->getDB()->select(self::TAG_TABLENAME, true, array('tag_id' => $tagID));
-        $result = simplifyDBResult($res, 'tag_name');
+        if(is_array($res)){
+            foreach ($res as $resVal){
+                $result[$resVal['tag_id']] = $resVal['tag_name'];
+            }
+        }
 
         return ($asSting &&
                 is_array($result)) ? implode(self::TAG_SEPARATOR, $result) : $result;

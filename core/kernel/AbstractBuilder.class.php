@@ -387,8 +387,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
         if (!empty($data)) {
             $fieldValue = $this->result->createElement('items');
-            foreach ($data as $itemData) {
+            foreach ($data as $itemId => $itemData) {
                 $item = $this->result->createElement('item', (string)$itemData);
+                $item->setAttribute('id',$itemId);
                 $fieldValue->appendChild($item);
             }
         }

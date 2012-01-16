@@ -110,7 +110,8 @@ class NewsFeed extends ExtendedFeed {
 
     /**
      * Выводим новости, соответствующие
-     * определенному тэгу.
+     * определенному тэгу. Если задан несуществующий тег,
+     * то убираем все ранее полученные данные.
      *
      * @return void
      * @access protected
@@ -132,6 +133,9 @@ class NewsFeed extends ExtendedFeed {
             E()->getDocument()->setProperty('title',$pageTitle);
         }
         $this->main();
+        if($newsIDs===true){
+            $this->setData(new Data());
+        }
         $this->pager->setProperty('additional_url','tag/'.$tagID.'/');
     }
 }

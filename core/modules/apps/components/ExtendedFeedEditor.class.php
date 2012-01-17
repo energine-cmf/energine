@@ -45,6 +45,7 @@ class ExtendedFeedEditor extends FeedEditor {
                 if (strpos($columnName, '_is_published')) {
                     $this->publishFieldName = $columnName;
                     $this->addTranslation('BTN_PUBLISH', 'BTN_UNPUBLISH');
+                    break;
                 }
             }
         }

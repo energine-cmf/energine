@@ -256,6 +256,7 @@ class User extends DBWorker {
             }
         }
     }
+
     /**
      * Поиск юзера по идентфикатору ФБ
      * @static
@@ -265,6 +266,20 @@ class User extends DBWorker {
     public static function getFBUser($fbID) {
         $result = false;
         if ($UID = simplifyDBResult(E()->getDB()->select(self::USER_TABLE_NAME, 'u_id', array('u_fbid' => $fbID, 'u_is_active' => 1)), 'u_id', true)) {
+            return new User($UID);
+        }
+        return $result;
+    }
+
+    /**
+     * Поиск юзера по идентфикатору Вконтакте
+     * @static
+     * @param $vkID
+     * @return bool|User
+     */
+    public static function getVKUser($vkID) {
+        $result = false;
+        if ($UID = simplifyDBResult(E()->getDB()->select(self::USER_TABLE_NAME, 'u_id', array('u_vkid' => $vkID, 'u_is_active' => 1)), 'u_id', true)) {
             return new User($UID);
         }
         return $result;

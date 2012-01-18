@@ -15,7 +15,7 @@ function vkAuth(response) {
     if (response.session) {
         /* Пользователь успешно авторизовался */
         if (response.status == "connected") {
-            window.location.href = Energine.base + 'auth.php?vkAuth&' + Object.toQueryString(response.session.user);
+            window.location.href = Energine.base + 'auth.php?vkAuth';
         }
     } else {
         /* Пользователь нажал кнопку Отмена в окне авторизации, пока ничего с этим не делаем. */

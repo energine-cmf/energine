@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <fields>
+            <field name="news_id"/>
+            <field name="site_id"/>
+            <field name="news_title"/>
+            <field name="news_date"/>
+        </fields>
+        <translations>
+            <translation const="TXT_READ_ALL_NEWS"/>
+        </translations>
+    </state>
+</configuration>

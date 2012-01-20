@@ -39,7 +39,7 @@ var FileForm = new Class({
     _buildUpload: function(fileField, savePath){
     	var iframe = $('uploader');
         if(!iframe){
-            if (Browser.Engine.trident) {
+            if (Browser.Engine.trident && (Browser.version < 9)) {
                 iframe = $(document.createElement('<iframe name="uploader" id="uploader">'));
             }
             else {

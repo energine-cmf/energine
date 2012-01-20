@@ -18,7 +18,7 @@ var ModalBox = window.top.ModalBox || {
     open: function(options) {
         var createIframe = function(mbName, iframeSrc) {
             var iframe;
-            if (Browser.Engine.trident) {
+            if (Browser.Engine.trident && (Browser.version < 9)) {
                 iframe = $(document.createElement('<iframe class="e-modalbox-frame" src="' + iframeSrc + '" frameBorder="0" name="' + mbName + '" scrolling="no" />'));
             }
             else {

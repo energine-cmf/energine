@@ -92,7 +92,7 @@ var LayoutManager = new Class({
         var
             fRevert = function() {
                 new Request.JSON({
-                    url:LayoutManager.singlePath + 'widgets/revert-template/',
+                    url:LayoutManager.singlePath + 'widgets/revert-template/' + ((Energine.forceJSON)?'?json':''),
                     method: 'post',
                     evalScripts: false,
                     onSuccess: function(response) {
@@ -104,7 +104,7 @@ var LayoutManager = new Class({
             },
             fReset = function() {
                 new Request.JSON({
-                    url:LayoutManager.singlePath + 'reset-templates/',
+                    url:LayoutManager.singlePath + 'reset-templates/' + ((Energine.forceJSON)?'?json':''),
                     method: 'post',
                     evalScripts: false,
                     onSuccess: function(response) {
@@ -116,7 +116,7 @@ var LayoutManager = new Class({
             },
             fSaveTemplate = function() {
                 new Request.JSON({
-                    url:LayoutManager.singlePath + 'widgets/save-template/',
+                    url:LayoutManager.singlePath + 'widgets/save-template/' + ((Energine.forceJSON)?'?json':''),
                     method: 'post',
                     evalScripts: false,
                     data: 'xml=' + '<?xml version="1.0" encoding="utf-8" ?>' + XML.hashToHTML(XML.nodeToHash(this.xml)),
@@ -133,7 +133,7 @@ var LayoutManager = new Class({
                     onClose: function(result) {
                         if (!result) return;
                         new Request.JSON({
-                            url:LayoutManager.singlePath + 'widgets/save-new-template/',
+                            url:LayoutManager.singlePath + 'widgets/save-new-template/' + ((Energine.forceJSON)?'?json':''),
                             method: 'post',
                             evalScripts: false,
                             data: 'xml=' +
@@ -150,7 +150,7 @@ var LayoutManager = new Class({
             },
             fSave = function() {
                 new Request.JSON({
-                    url:LayoutManager.singlePath + 'widgets/save-content/',
+                    url:LayoutManager.singlePath + 'widgets/save-content/' + ((Energine.forceJSON)?'?json':''),
                     method: 'post',
                     evalScripts: false,
                     data: 'xml=' +

@@ -9,7 +9,7 @@ var SiteForm = new Class({
     },
     loadData: function() {
         var iframe, url = this.singlePath + ((this.state !== 'add') ? this.componentElement.getElementById('site_id').get('value') : '') + '/domains/';
-        if (Browser.Engine.trident) {
+        if (Browser.Engine.trident && (Browser.version < 9)) {
             iframe = $(document.createElement('<iframe src="'+url+'" frameBorder="0" scrolling="no" style="width:99%; height:99%;"/>'));
         }
         else {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Содержит класс LinkingEditor
  *
@@ -8,25 +8,25 @@
  * @copyright d.pavka@gmail.com
  */
 
- /**
-  * Редактор 
-  *
-  * @package energine
-  * @subpackage apps
-  * @author d.pavka@gmail.com
-  */
- class NewsRepository extends NewsEditor {
+/**
+ * Редактор
+ *
+ * @package energine
+ * @subpackage apps
+ * @author d.pavka@gmail.com
+ */
+class NewsRepository extends NewsEditor {
     /**
      * Конструктор класса
      *
      * @param string $name
      * @param string $module
-
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
+    public function __construct($name, $module, array $params = null) {
+        parent::__construct($name, $module, $params);
+        $this->enable();
         $this->setProperty('exttype', 'grid');
         $this->setSaver(new NewsEditorSaver());
     }
@@ -40,12 +40,13 @@
 
     protected function defineParams() {
         return array_merge(
-        parent::defineParams(),
-        array(
-        'bind' => false
-        )
+            parent::defineParams(),
+            array(
+                'bind' => false
+            )
         );
-    }    
+    }
+
     /**
      * Убираем все лишнее
      *
@@ -57,12 +58,12 @@
         Grid::main();
     }
 
-    protected function changeOrder($direction){
+    protected function changeOrder($direction) {
         Grid::changeOrder($direction);
     }
 
     public function build() {
         return Grid::build();
     }
-    
+
 }

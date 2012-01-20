@@ -62,9 +62,9 @@
                             <xsl:if test="document/@debug=1">
                                 debug :true,
                             </xsl:if>
-                            base : '<xsl:value-of select="$BASE"/>',
-                            static : '<xsl:value-of select="$STATIC_URL"/>',
-                            lang : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
+                            'base' : '<xsl:value-of select="$BASE"/>',
+                            'static' : '<xsl:value-of select="$STATIC_URL"/>',
+                            'lang' : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
                         });
                         try {
                         <xsl:variable name="SCRIPTS" select="set:distinct($COMPONENTS/javascript/behavior[@name!='PageEditor']/@name)"/>

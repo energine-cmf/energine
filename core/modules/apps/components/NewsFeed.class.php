@@ -34,6 +34,24 @@ class NewsFeed extends ExtendedFeed {
         $this->setOrder(array('news_date' => QAL::DESC));
     }
     /**
+     * Определяет допустимые параметры компонента и их значения по-умолчанию
+     * в виде массива array(paramName => defaultValue).
+     *
+     * @access protected
+     * @return array
+     */
+    protected function defineParams() {
+        $result = array_merge(parent::defineParams(),
+            array(
+                'hasCalendar' => false
+            ));
+        return $result;
+    }
+
+    protected function createBuilder(){
+        return new SimpleBuilder();
+    }
+    /**
      * Все новости которые имеют будущую дату выводятся только админам
      *
      * @return Data

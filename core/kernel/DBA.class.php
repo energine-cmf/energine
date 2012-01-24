@@ -222,6 +222,21 @@ abstract class DBA extends Object {
         return $result;
     }
 
+    public function get($query) {
+        if (!is_string($query) || strlen($query) == 0) {
+            return false;
+        }
+
+        $query = $this->constructQuery(func_get_args());
+        $this->lastQuery = $query;
+        $res = $this->pdo->query($query);
+        if ($res instanceof PDOStatement) {
+            return $res;
+        }
+
+        return false;
+    }
+
     /**
      * Выполняет модифицирующую (INSERT, UPDATE, DELETE) операцию в БД.
      *

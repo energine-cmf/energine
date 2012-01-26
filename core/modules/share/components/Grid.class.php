@@ -335,7 +335,7 @@ class Grid extends DBDataSet {
      */
 
     protected function createDataDescription() {
-        if (in_array($this->getState(), array('printData', 'exportCSV'))) {
+        if (in_array($this->getState(), array('printData' /*, 'exportCSV'*/))) {
             $previousAction = $this->getState();
             $this->getConfig()->setCurrentState(self::DEFAULT_STATE_NAME);
             $result = parent::createDataDescription();
@@ -595,66 +595,108 @@ class Grid extends DBDataSet {
             throw new SystemException('ERR_CANT_EXPORT', SystemException::ERR_DEVELOPER);
         }
 
-        $this->setParam('recordsPerPage', false);
+        $this->setDataDescription($dd = $this->createDataDescription());
 
-        $this->prepare();
-        $data = array();
-        $filename = $this->getTitle() . '.csv';
-        $MIMEType = 'application/csv';
-        $dd = $this->getDataDescription();
-        $d = $this->getData();
-        $dataRowCount = $d->getRowCount();
-
-        foreach ($dd as $fieldInfo) {
-            $data[0][] = $fieldInfo->getPropertyValue('title');
-        }
-        for ($i = 0; $i < $dataRowCount; $i++) {
-            foreach ($dd as $fieldName => $fieldInfo) {
-                $value = '';
-                if ($f = $d->getFieldByName($fieldName))
-                    $value = $f->getRowData($i);
-
-                if (
-                    ($format = $fieldInfo->getPropertyValue('outputFormat'))
-                    &&
-                    (
-                    in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_DATETIME))
-                    )
-                ) {
-                    $value = strftime($format, $value);
-
-                }
-                elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_SELECT) {
-                    $fvalues = $fieldInfo->getAvailableValues();
-                    foreach ($fvalues as $key => $row) {
-                        if ($key == $value) {
-                            $value = $row['value'];
-                            break;
-                        }
-                    }
-                }
-                elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_BOOL) {
-                    $value = ($value) ? $this->translate('TXT_YES') : $this->translate('TXT_NO');
-                }
-                elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_MULTI) {
-                    if (is_array($value)) {
-                        $fvalues = $fieldInfo->getAvailableValues();
-                        $tmpValue = $value;
-                        $value = array();
-                        foreach ($tmpValue as $v) {
-                            if (isset($fvalues[$v])) {
-                                array_push($value, $fvalues[$v]['value']);
-                            }
-                        }
-                        $value = implode(', ', $value);
-                    }
-                }
-                $data[$i + 1][] = $value;
+        $selectFields = $multiFields = array();
+        //собираем перечень всех селект полей
+        if ($sf = $dd->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_SELECT)) {
+            foreach ($sf as $name => $fd) {
+                $selectFields[$name] = $fd->getAvailableValues();
             }
         }
-        $data = array_reduce($data, array($this, 'prepareCSVString'));
+        //Собираем перечень всех мультиполей
+        if ($mf = $dd->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_MULTI)) {
+            foreach ($mf as $name => $fd) {
+                //значения мультиполей
+                $multiFieldValues[$name] = $fd->getAvailableValues();
+                //Для замены имени поля в списке полей
+                $multiFields[$name] = 'GROUP_CONCAT(fk_id) as ' . $name;
+            }
+        }
+
+        $data = '';
+        $titles = array();
+        //первая строка(заголовки полей)
+        foreach ($dd as $fieldInfo) {
+            $titles[] = $fieldInfo->getPropertyValue('title');
+        }
+        $data .= $this->prepareCSVString($titles);
+
+        if ($fields = $dd->getFieldDescriptionList()) {
+            //Хитросделанная конструкция чтобы получить список полей с замещенными названиями для мультиполей
+            $fields = array_values(
+                array_merge(
+                    array_combine(
+                        $fields, $fields
+                    ),
+                    $multiFields
+                )
+            );
+
+            $request = 'SELECT ' . implode(',', $fields) . ' FROM ' . $this->getTableName() . '';
+            //Для мультиполей добавляем JOIN и группировку по первичному ключу, для того чтобы можно было использовать GROUP_CONCAT
+            if (!empty($multiFields)) {
+                foreach (array_keys($multiFields) as $fieldName) {
+                    $request .= ' LEFT JOIN ' . $fieldName . ' USING(' . $this->getPK() . ')';
+                }
+
+                $request .= ' GROUP BY ' . $this->getPK();
+            }
+            //в $data накапливаем строки
+            $res = $this->dbh->get($request);
+            if ($res->rowCount()) {
+                while ($row = $res->fetch(PDO::FETCH_LAZY)) {
+                    $tmpRow = array();
+                    foreach ($row as $fieldName => $fieldValue) {
+                        if ($fd = $dd->getFieldDescriptionByName($fieldName)) {
+                            switch ($fd->getType()) {
+                                case FieldDescription::FIELD_TYPE_DATE:
+                                case FieldDescription::FIELD_TYPE_TIME:
+                                case FieldDescription::FIELD_TYPE_DATETIME:
+                                    if ($format = $fieldInfo->getPropertyValue('outputFormat')) {
+                                        $fieldValue = AbstractBuilder::enFormatDate($fieldValue, $format, $fd->getType());
+                                    }
+                                    break;
+                                case FieldDescription::FIELD_TYPE_SELECT:
+                                    if (isset($selectFields[$fieldName][$fieldValue])) {
+                                        $fieldValue = $selectFields[$fieldName][$fieldValue]['value'];
+                                    }
+                                    break;
+
+                                case FieldDescription::FIELD_TYPE_BOOL:
+                                    $fieldValue = ($fieldValue) ? $this->translate('TXT_YES') : $this->translate('TXT_NO');
+                                    break;
+                                case FieldDescription::FIELD_TYPE_MULTI:
+
+                                    if ($fieldValue && isset($multiFieldValues[$fieldName])) {
+                                        $value = explode(',', $fieldValue);
+                                        $fieldValue = array();
+                                        foreach ($value as $v) {
+                                            if (isset($multiFieldValues[$fieldName][$v])) {
+                                                array_push($fieldValue, $multiFieldValues[$fieldName][$v]['value']);
+                                            }
+                                        }
+                                        $fieldValue = implode(', ', $fieldValue);
+                                    }
+                                    break;
+                            }
+
+                            $tmpRow[] = $fieldValue;
+                        }
+
+                    }
+                    if ($tmpRow)
+                        $data .= $this->prepareCSVString($tmpRow);
+                }
+            }
+
+        }
+
+        $filename = $this->getTitle() . '.csv';
+        $MIMEType = 'application/csv';
+
         if ($encoding != 'utf-8') {
-            $data = iconv('utf-8', $encoding.'//TRANSLIT', $data);
+            $data = iconv('utf-8', $encoding . '//TRANSLIT', $data);
         }
         $this->downloadFile($data, $MIMEType, $filename);
     }
@@ -673,13 +715,10 @@ class Grid extends DBDataSet {
         $this->prepare();
     }
 
-    protected function prepareCSVString($result, Array $nextValue) {
+    protected function prepareCSVString(Array $nextValue) {
         $separator = '"';
         $delimiter = ';';
         $rowDelimiter = "\r\n";
-        if (!empty($result)) {
-            $result .= $rowDelimiter;
-        }
         $row = '';
         foreach ($nextValue as $fieldValue) {
             $row .= $separator .
@@ -689,7 +728,7 @@ class Grid extends DBDataSet {
         }
         $row = substr($row, 0, -1);
 
-        return $result . $row;
+        return $row . $rowDelimiter;
     }
 
 

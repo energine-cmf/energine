@@ -170,7 +170,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      */
     protected function buildFieldValue(DOMElement $result, FieldDescription $fieldInfo, $fieldValue) {
         if (($fieldValue instanceof DOMNode) ||
-            ($fieldValue instanceof DOMElement)
+                ($fieldValue instanceof DOMElement)
         ) {
             try {
                 $result->appendChild($fieldValue);
@@ -246,18 +246,10 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     case FieldDescription::FIELD_TYPE_DATETIME:
                     case FieldDescription::FIELD_TYPE_DATE:
                     case FieldDescription::FIELD_TYPE_TIME:
-                    case FieldDescription::FIELD_TYPE_HIDDEN:
-                        try {
-                            if (is_long($fieldValue)) {
-                                $result->setAttribute('date', @strftime('%d-%m-%Y-%H-%M-%S', $fieldValue));
-                                $fieldValue =
-                                        self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
-                            }
-                        }
-                        catch (Exception  $dummy) {
+                        $result->setAttribute('date', $fieldValue);
+                        $fieldValue =
+                                self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
 
-                        }
-                        ;
                         break;
                     case FieldDescription::FIELD_TYPE_STRING:
                     case FieldDescription::FIELD_TYPE_TEXT:
@@ -299,7 +291,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      * @static
      */
     static public function enFormatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
-        $date = intval($date);
+        $date = strtotime($date);
         if ($format != '%E') {
             $result = @strftime($format, $date);
             if (!$result) {
@@ -389,7 +381,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             $fieldValue = $this->result->createElement('items');
             foreach ($data as $itemId => $itemData) {
                 $item = $this->result->createElement('item', (string)$itemData);
-                $item->setAttribute('id',$itemId);
+                $item->setAttribute('id', $itemId);
                 $fieldValue->appendChild($item);
             }
         }

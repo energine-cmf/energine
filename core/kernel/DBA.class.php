@@ -79,8 +79,8 @@ abstract class DBA extends Object {
     /**
      * Типы строк только для внутреннего использования. Без комментариев :)
      */
-    const COLTYPE_STRING1 = 'STRING';
-    const COLTYPE_STRING2 = 'VAR_STRING';
+    //const COLTYPE_STRING1 = 'STRING';
+    //const COLTYPE_STRING2 = 'VAR_STRING';
 
     /**
      * Текст
@@ -191,28 +191,9 @@ abstract class DBA extends Object {
         }
 
         $result = array();
-        $rowCount = 0;
+
         while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-            $fieldNum = 0;
-            foreach ($row as $fieldName => $fieldValue) {
-                $fieldMeta = @$res->getColumnMeta($fieldNum);
-                if (isset($fieldMeta['native_type'])) {
-                    if (in_array($fieldMeta['native_type'], array(self::COLTYPE_DATETIME, self::COLTYPE_DATE, self::COLTYPE_TIMESTAMP))) {
-                        $fieldValue = strtotime($fieldValue);
-                    }
-                    elseif (in_array($fieldMeta['native_type'], array(self::COLTYPE_STRING1, self::COLTYPE_STRING2))) {
-                        $fieldValue = stripslashes($fieldValue);
-                    }
-                }
-                else {
-                    if ($fieldMeta['len'] == 1) {
-                        $fieldValue = (intval($fieldValue) == 0 ? false : true);
-                    }
-                }
-                $result[$rowCount][$fieldName] = $fieldValue;
-                $fieldNum++;
-            }
-            $rowCount++;
+            array_push($result, $row);
         }
 
         if (empty($result)) {
@@ -220,21 +201,6 @@ abstract class DBA extends Object {
         }
 
         return $result;
-    }
-
-    public function get($query) {
-        if (!is_string($query) || strlen($query) == 0) {
-            return false;
-        }
-
-        $query = $this->constructQuery(func_get_args());
-        $this->lastQuery = $query;
-        $res = $this->pdo->query($query);
-        if ($res instanceof PDOStatement) {
-            return $res;
-        }
-
-        return false;
     }
 
     /**
@@ -302,6 +268,26 @@ abstract class DBA extends Object {
             }
         }
         return $res;
+    }
+    /**
+     * Метод для получения данных с последующей итерацией
+     *
+     * @param $query SQL запрос
+     * @return bool|PDOStatement
+     */
+    public function get($query) {
+        if (!is_string($query) || strlen($query) == 0) {
+            return false;
+        }
+
+        $query = $this->constructQuery(func_get_args());
+        $this->lastQuery = $query;
+        $res = $this->pdo->query($query);
+        if ($res instanceof PDOStatement) {
+            return $res;
+        }
+
+        return false;
     }
 
     /**

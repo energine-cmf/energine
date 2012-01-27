@@ -245,7 +245,16 @@ final class Response extends Object {
      * @return void
      */
     public function goBack(){
-        $this->setHeader('Location', $_SERVER['HTTP_REFERER']);
+        if(isset($_SERVER['HTTP_REFERER'])){
+            $url = $_SERVER['HTTP_REFERER'];
+        }
+        elseif(isset($_GET['return'])){
+            $url = $_GET['return'];
+        }
+        else {
+            $url = E()->getSiteManager()->getCurrentSite()->root;
+        }
+        $this->setHeader('Location', $url);
         $this->commit();
     }
 

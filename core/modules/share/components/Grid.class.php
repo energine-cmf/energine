@@ -608,7 +608,7 @@ class Grid extends DBDataSet {
         if ($mf = $dd->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_MULTI)) {
             foreach ($mf as $name => $fd) {
                 //значения мультиполей
-                $multiFieldValues[$name] = $fd->getAvailableValues();
+                $multiFieldsData[$name] = $fd;
                 //Для замены имени поля в списке полей
                 $multiFields[$name] = 'GROUP_CONCAT(fk_id) as ' . $name;
             }
@@ -636,15 +636,18 @@ class Grid extends DBDataSet {
             $request = 'SELECT ' . implode(',', $fields) . ' FROM ' . $this->getTableName() . '';
             //Для мультиполей добавляем JOIN и группировку по первичному ключу, для того чтобы можно было использовать GROUP_CONCAT
             if (!empty($multiFields)) {
-                foreach (array_keys($multiFields) as $fieldName) {
-                    $request .= ' LEFT JOIN ' . $fieldName . ' USING(' . $this->getPK() . ')';
+                foreach (array_values($multiFieldsData) as $fieldProps) {
+                    $mTableName =  $fieldProps->getPropertyValue('key');
+                    $mTableName= $mTableName['tableName'];
+                    $request .= ' LEFT JOIN ' .$mTableName. ' USING(' . $this->getPK() . ')';
                 }
 
                 $request .= ' GROUP BY ' . $this->getPK();
             }
             //в $data накапливаем строки
             $res = $this->dbh->get($request);
-            if ($res->rowCount()) {
+
+            if ($res && $res->rowCount()) {
                 while ($row = $res->fetch(PDO::FETCH_LAZY)) {
                     $tmpRow = array();
                     foreach ($row as $fieldName => $fieldValue) {
@@ -668,12 +671,13 @@ class Grid extends DBDataSet {
                                     break;
                                 case FieldDescription::FIELD_TYPE_MULTI:
 
-                                    if ($fieldValue && isset($multiFieldValues[$fieldName])) {
+                                    if ($fieldValue && isset($multiFieldsData[$fieldName])) {
                                         $value = explode(',', $fieldValue);
                                         $fieldValue = array();
+                                        $multiFieldValues = $multiFieldsData[$fieldName]->getAvailableValues();
                                         foreach ($value as $v) {
-                                            if (isset($multiFieldValues[$fieldName][$v])) {
-                                                array_push($fieldValue, $multiFieldValues[$fieldName][$v]['value']);
+                                            if (isset($multiFieldValues[$v])) {
+                                                array_push($fieldValue, $multiFieldValues[$v]['value']);
                                             }
                                         }
                                         $fieldValue = implode(', ', $fieldValue);

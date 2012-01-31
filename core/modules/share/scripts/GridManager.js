@@ -142,11 +142,13 @@ var Grid = new Class({
     },
 
     fitGridSize: function() {
-        var gridHeight = this.paneContent.getSize().y -
-            ((this.filter) ? this.filter.getSize().y : 0) -
-            this.gridHeadContainer.getSize().y - 14;
-        if (gridHeight > 0) {
-            this.gridContainer.setStyle('height', gridHeight);
+        if(this.paneContent){
+            var gridHeight = this.paneContent.getSize().y -
+                ((this.filter) ? this.filter.getSize().y : 0) -
+                this.gridHeadContainer.getSize().y - 14;
+            if (gridHeight > 0) {
+                this.gridContainer.setStyle('height', gridHeight);
+            }
         }
     },
 

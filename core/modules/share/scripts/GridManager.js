@@ -266,8 +266,8 @@ var Grid = new Class({
                 cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
             }
             else if (this.metadata[fieldName].type == 'textbox') {
-                if (record[fieldName] && record[fieldName].length) {
-                    cell.set('html', record[fieldName].join(', '));
+                if (record[fieldName] && Object.getLength(record[fieldName])) {
+                    cell.set('html', Object.values(record[fieldName]).join(', '));
                 }
                 else {
                     cell.set('html', '&nbsp;');

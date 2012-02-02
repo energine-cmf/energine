@@ -155,18 +155,24 @@ final class Document extends DBWorker implements IDocument {
         $this->setProperty('ID', $this->getID());
         $this->setProperty('default',
                 $this->sitemap->getDefault() == $this->getID());
-        if (($verifyCode = $this->getConfigValue('google.verify')) &&
-                !empty($verifyCode)
-        ) {
-            $this->setProperty('google_verify', $verifyCode);
+
+        //Если сайт - индексируемый
+        if(E()->getSiteManager()->getCurrentSite()->isIndexed){
+            //и сущестует код гугловерификации
+            if (($verifyCode = $this->getConfigValue('google.verify')) &&
+                    !empty($verifyCode)
+            ) {
+                //то выводим его
+                $this->setProperty('google_verify', $verifyCode);
+            }
+            //а может существует код гуглоаналитикса?
+            if (($analyticsCode = $this->getConfigValue('google.analytics')) &&
+                    !empty($analyticsCode)
+            ) {
+                //тогда выводим его
+                $this->setProperty('google_analytics', $analyticsCode);
+            }
         }
-        if (($this->getRights() != ACCESS_FULL) &&
-                ($analyticsCode = $this->getConfigValue('google.analytics')) &&
-                !empty($analyticsCode)
-        ) {
-            $this->setProperty('google_analytics', $analyticsCode);
-        }
-        unset($verifyCode);
     }
 
     /**

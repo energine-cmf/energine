@@ -202,7 +202,8 @@ class Data extends Object {
         }
         
         $fieldNames = array_keys($this->fields);
-        for($i=0; $i<=$this->rows; $i++){
+        $rows = $this->getRowCount();
+        for($i=0; $i<$rows; $i++){
             foreach($fieldNames as $fieldName){
                 $res[$i][$fieldName] = $result[$fieldName][$i];
             }

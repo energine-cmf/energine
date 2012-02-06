@@ -130,6 +130,7 @@ class SimilarNews extends DBDataSet {
         if ($this->getData()->getFieldByName('news_date')) {
             foreach ($f =
                              $this->getData()->getFieldByName('news_date') as $rowID => $date) {
+                $date = intval($date);
                 $f->setRowProperty($rowID, 'year', date('Y', $date));
                 $f->setRowProperty($rowID, 'month', date('n', $date));
                 $f->setRowProperty($rowID, 'day', date('j', $date));

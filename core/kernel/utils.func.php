@@ -27,6 +27,36 @@ function inspect() {
 
 
 /**
+ * Возвращает дату, разделенную на год,
+ * месяц, день месяца и время.
+ *
+ * @param $date
+ * @return array
+ */
+
+function splitDate($date) {
+    $timeInfo =
+        $dateInfo = array('','','');
+    $dateArray = explode(' ',$date);
+    if(is_array($dateArray)){
+        $dateInfo = explode('-',$dateArray[0]);
+        if(isset($dateArray[1])){
+            $timeInfo = explode(':',$dateArray[1]);
+        }
+    }
+    return array(
+                'year' => $dateInfo[0],
+                'month' => $dateInfo[1],
+                'day' => $dateInfo[2],
+                'time' => array(
+                    'h' => $timeInfo[0],
+                    'm' => $timeInfo[1],
+                    's' => $timeInfo[2]
+                )
+            );
+}
+
+/**
  * Аналог функции inspect, с завершением работы программы сразу после вывода.
  *
  * @param mixed $var, ...

@@ -19,10 +19,17 @@ class SimilarNews extends DBDataSet {
     /**
      * Дефолтное имя компонента, к которому
      * следует биндится.
+     *
+     * @var string
+     * @access private
      */
+
     const DEFAULT_LINK_TO = 'news';
     /**
      * Разделитель имен тэгов
+     *
+     * @var string
+     * @access private
      */
     const TAG_SEPARATOR = ',';
 

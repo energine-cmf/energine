@@ -19,6 +19,14 @@
 class NewsFeed extends ExtendedFeed {
 
     /**
+     * Календарь
+     *
+     * @access private
+     * @var Calendar
+     */
+    private $calendar;
+
+    /**
      * Конструктор класса
      * Жестко привязываемя к таблице новостей
      *
@@ -32,6 +40,8 @@ class NewsFeed extends ExtendedFeed {
         parent::__construct($name, $module, $params);
         $this->setTableName('apps_news');
         $this->setOrder(array('news_date' => QAL::DESC));
+        if (!$this->document->getProperty('single') && $this->getParam('hasCalendar'))
+            $this->createCalendar();
     }
     /**
      * Определяет допустимые параметры компонента и их значения по-умолчанию
@@ -155,5 +165,90 @@ class NewsFeed extends ExtendedFeed {
             $this->setData(new Data());
         }
         $this->pager->setProperty('additional_url','tag/'.$tagID.'/');
+    }
+
+    /**
+     * Функция для генерация компонента календарь,
+     * который помогает осуществлять навигацию по новостям.
+     *
+     * @access private
+     * @var Calendar
+     */
+    protected function createCalendar() {
+        $calendarParams = array();
+        $ap = $this->getStateParams(true);
+        if ($this->getState() == 'main') {
+            if (isset($ap['year']) && isset($ap['month']) &&
+                    isset($ap['day'])
+            ) {
+                if ($this->getParam('hasCalendar')) {
+                    $calendarParams['month'] = $ap['month'];
+                    $calendarParams['year'] = $ap['year'];
+                    $calendarParams['date'] =
+                            DateTime::createFromFormat('Y-m-d',
+                                    $ap['year'] . '-' . $ap['month'] . '-' .
+                                            $ap['day']);
+                }
+
+                $additionalFilter =
+                        'DAY(news_date) = "' . $ap['day'] .
+                                '" AND MONTH(news_date) = "' .
+                                $ap['month'] .
+                                '" AND YEAR(news_date) = "' .
+                                $ap['year'] . '"';
+            }
+            elseif (isset($ap['year']) && isset($ap['month'])) {
+                if ($this->getParam('hasCalendar')) {
+                    $calendarParams['month'] = $ap['month'];
+                    $calendarParams['year'] = $ap['year'];
+                }
+                $additionalFilter =
+                        'MONTH(news_date) = "' . $ap['month'] .
+                                '" AND YEAR(news_date) = "' .
+                                $ap['year'] . '"';
+            }
+            elseif (isset($ap['year'])) {
+                if ($this->getParam('hasCalendar')) {
+                    $calendarParams['year'] = $ap['year'];
+                }
+                $additionalFilter =
+                        'YEAR(news_date) = "' . $ap['year'] . '"';
+            }
+
+            if ($this->getParam('tags')) {
+
+                $filteredIDs = TagManager::getFilter($this->getParam('tags'), $this->tagsTableName);
+
+                if (!empty($filteredIDs)) {
+                    $this->addFilterCondition(array('trku_news.news_id' => $filteredIDs));
+
+                }
+                else {
+                    $this->addFilterCondition(array('trku_news.news_id' => 0));
+                }
+            }
+        }
+        elseif (($this->getState() == 'view') &&
+                ($this->getParam('hasCalendar'))
+        ) {
+            $calendarParams['month'] = $ap['month'];
+            $calendarParams['year'] = $ap['year'];
+            $calendarParams['date'] = DateTime::createFromFormat('Y-m-d',
+                    $ap['year'] . '-' . $ap['month'] . '-' . $ap['day']);
+        }
+
+        if ($this->getParam('hasCalendar')) {
+            $calendarParams['filter'] = $this->getFilter();
+            $calendarParams['tableName'] = $this->getTableName();
+            //Создаем компонент календаря новостей
+            $this->document->componentManager->addComponent(
+                $this->calendar =
+                        $this->document->componentManager->createComponent('calendar', 'apps', 'NewsCalendar', $calendarParams)
+            );
+        }
+
+        if (isset($additionalFilter)) {
+            $this->addFilterCondition($additionalFilter);
+        }
     }
 }

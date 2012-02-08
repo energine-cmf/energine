@@ -1,6 +1,6 @@
 <?php
 /**
- * Содержит класс LinkingEditor
+ * Содержит класс NewsRepository
  *
  * @package energine
  * @subpackage apps

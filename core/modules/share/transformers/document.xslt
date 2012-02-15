@@ -31,6 +31,7 @@
                         <script type="text/javascript">window.singleMode = true;</script>
             		</xsl:otherwise>
         		</xsl:choose>
+                <link rel="stylesheet" type="text/css" href="{$STATIC_URL}plashka/cache/css/plashka.css"/>
                 <link rel="stylesheet" type="text/css" href="{$STATIC_URL}stylesheets/energine.css"/>
                 <xsl:if test="$DOC_PROPS[@name='google_verify']">
                     <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
@@ -51,7 +52,7 @@
                     </xsl:otherwise>
                 </xsl:choose>
         		<script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
-                <xsl:call-template name="scripts"/>
+                <!--<xsl:call-template name="scripts"/>-->
                 <script type="text/javascript">
                     var componentToolbars = [];
                     <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@name!='PageEditor']) &gt; 0">

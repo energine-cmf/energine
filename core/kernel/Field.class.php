@@ -141,8 +141,12 @@ class Field extends Object implements Iterator{
      * @param mixed $data
      * @return void
      */
-    public function addRowData($data) {
-        $this->data[] = $data;
+    public function addRowData($data, $toEnd = true) {
+        if($toEnd)
+            $this->data[] = $data;
+        else {
+            array_unshift($this->data, $data);
+        }
     }
 
     /**

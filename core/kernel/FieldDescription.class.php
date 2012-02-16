@@ -95,6 +95,10 @@ class FieldDescription extends DBWorker implements Iterator
      * Приватный файл
      */
     const FIELD_TYPE_PFILE = 'pfile';
+    /**
+     * Thumbnail
+     */
+    const FIELD_TYPE_THUMB = 'thumb';
 
     /**
      * Булево значение

@@ -8,18 +8,18 @@ ScriptLoader.load(
 );
 
 var Grid = new Class({
-    Extends: View,
+    Extends:View,
     options:{
-        onSelect: $empty,
-        onSortChange: $empty,
-        onDoubleClick: $empty
+        onSelect:$empty,
+        onSortChange:$empty,
+        onDoubleClick:$empty
     },
 
-    initialize: function(element, options) {
+    initialize:function (element, options) {
         Asset.css('grid.css');
 
         this.sort = {
-            field: null,
+            field:null,
             order:null
         };
 
@@ -57,7 +57,7 @@ var Grid = new Class({
      *     ...
      * }
      */
-    setMetadata: function(metadata) {
+    setMetadata:function (metadata) {
         /*
          * Проверяем соответствие видимых полей физической структуре таблицы,
          * определяем имя ключевого поля
@@ -70,7 +70,7 @@ var Grid = new Class({
         this.parent(metadata);
     },
 
-    build: function() {
+    build:function () {
         var preiouslySelectedRecordKey = this.getSelectedRecordKey();
 
         this.headOff.setStyle('visibility', 'hidden');
@@ -81,7 +81,7 @@ var Grid = new Class({
                 preiouslySelectedRecordKey = false;
             }
             this.data.each(
-                function(record, key) {
+                function (record, key) {
                     this.addRecord(record, key, preiouslySelectedRecordKey);
                 },
                 this
@@ -95,16 +95,16 @@ var Grid = new Class({
         }
 
         var headers = new Array();
-        this.headOff.getElements('th').each(function(element, key) {
+        this.headOff.getElements('th').each(function (element, key) {
             headers[key] = element.clientWidth;
         })
 
 
-        this.element.getElements('.gridHeadContainer col').each(function(element, key) {
+        this.element.getElements('.gridHeadContainer col').each(function (element, key) {
             element.setStyle('width', headers[key]);
         });
 
-        this.element.getElements('.gridContainer col').each(function(element, key) {
+        this.element.getElements('.gridContainer col').each(function (element, key) {
             element.setStyle('width', headers[key]);
         });
 
@@ -141,8 +141,8 @@ var Grid = new Class({
         }
     },
 
-    fitGridSize: function() {
-        if(this.paneContent){
+    fitGridSize:function () {
+        if (this.paneContent) {
             var gridHeight = this.paneContent.getSize().y -
                 ((this.filter) ? this.filter.getSize().y : 0) -
                 this.gridHeadContainer.getSize().y - 14;
@@ -152,7 +152,7 @@ var Grid = new Class({
         }
     },
 
-    fitGridFormSize: function() {
+    fitGridFormSize:function () {
         if (this.pane) {
             var windowHeight = window.getSize().y - 10;
             var paneHeight = this.pane.getSize().y;
@@ -178,30 +178,30 @@ var Grid = new Class({
         }
     },
 
-    isEmpty: function() {
+    isEmpty:function () {
         return !this.data.length;
     },
 
-    getSelectedRecord: function() {
+    getSelectedRecord:function () {
         if (!this.getSelectedItem()) return false;
         return this.getSelectedItem().record;
     },
 
-    getSelectedRecordKey: function() {
+    getSelectedRecordKey:function () {
         if (!this.keyFieldName) return false;
         return this.getSelectedRecord()[this.keyFieldName];
     },
 
-    dataKeyExists: function(key) {
+    dataKeyExists:function (key) {
         if (!this.data) return false;
         if (!this.keyFieldName) return false;
 
-        return this.data.some(function(item, index) {
+        return this.data.some(function (item, index) {
             return (item[this.keyFieldName] == key);
         }.bind(this));
     },
 
-    clear: function() {
+    clear:function () {
         this.selectItem(false);
         while (this.tbody.hasChildNodes()) {
             this.tbody.removeChild(this.tbody.firstChild);
@@ -209,15 +209,15 @@ var Grid = new Class({
     },
 
     // Private methods:
-    clearHeaders: function() {
+    clearHeaders:function () {
         this.sort.field = null;
         this.sort.field = null;
         this.headers.removeProperty('class');
     },
-    fitHeaders: function() {
+    fitHeaders:function () {
         this.headersContainer.setStyle('visibility', '');
         var firstRow = this.tbody.getFirst();
-        this.headers.each(function(header, i) {
+        this.headers.each(function (header, i) {
             var delta = -(i == 0 ? 27 : 28);
             // Увеличиваем дельту на 16px (размер полосы прокрутки) если это последняя колонка и грид не пустой.
             if (i == firstRow.childNodes.length - 1) {
@@ -231,7 +231,7 @@ var Grid = new Class({
         if (!this.data.length) this.tbody.getFirst().dispose();
     },
 
-    addRecord: function(record, key, currentKey) {
+    addRecord:function (record, key, currentKey) {
 
         if (!record) {
             var row = new Element('tr').injectInside(this.tbody);
@@ -253,53 +253,7 @@ var Grid = new Class({
         var prevRow;
 
         for (var fieldName in record) {
-            // Пропускаем невидимые поля.
-            if (!this.metadata[fieldName].visible ||
-                this.metadata[fieldName].type == 'hidden') continue;
-            var cell = new Element('td').injectInside(row);
-            if (this.metadata[fieldName].type == 'boolean') {
-                var checkbox = new Element('img').setProperties({
-                    'src': 'images/checkbox_' +
-                        (record[fieldName] == true ? 'on' : 'off') + '.png',
-                    'width': '13', 'height': '13'
-                }).injectInside(cell);
-                cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
-            }
-            else if (this.metadata[fieldName].type == 'textbox') {
-                if (record[fieldName] && Object.getLength(record[fieldName])) {
-                    cell.set('html', Object.values(record[fieldName]).join(', '));
-                }
-                else {
-                    cell.set('html', '&nbsp;');
-                }
-            }
-            else if (this.metadata[fieldName].type == 'image') {
-                if (record[fieldName]) {
-                    var image = new Element('img').setProperties({ 'src': record[fieldName], 'width':50, 'height':50 }).injectInside(cell);
-                    cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
-                }
-            }
-            else {
-                var fieldValue = '';
-                if (record[fieldName]) {
-                    var fieldValue = record[fieldName].clean();
-                }
-                if (
-                    (this.metadata[fieldName].type == 'select')
-                        &&
-                        (row.getFirst() == cell)
-                        &&
-                        (prevRow = row.getPrevious())
-                        &&
-                        (prevRow.record[fieldName] == record[fieldName])
-                    ) {
-                    fieldValue = '';
-                    prevRow.getFirst().setStyle('font-weight', 'bold');
-                }
-                if (fieldValue != '') cell.set('html', fieldValue);
-                //if (fieldValue != '') cell.appendText(fieldValue);
-                else cell.set('html', '&#160;');
-            }
+            this.iterateFields(record, fieldName, row);
         }
 
         // Помечаем первую ячейку строки.
@@ -311,25 +265,73 @@ var Grid = new Class({
 
         var grid = this;
         row.addEvents({
-            'mouseover': function() {
+            'mouseover':function () {
                 if (this !=
                     grid.getSelectedItem()) this.addClass('highlighted');
             },
-            'mouseout': function() {
+            'mouseout':function () {
                 this.removeClass('highlighted');
             },
-            'click': function() {
+            'click':function () {
                 if (this != grid.getSelectedItem()) grid.selectItem(this);
             },
-            'dblclick': function() {
+            'dblclick':function () {
                 this.fireEvent('onDoubleClick');
             }.bind(this)
         });
 
     },
-
-    changeSort: function(event) {
-        var getNextDirectionOrderItem = function(current) {
+    iterateFields:function (record, fieldName, row) {
+        // Пропускаем невидимые поля.
+        if (!this.metadata[fieldName].visible ||
+            this.metadata[fieldName].type == 'hidden') return;
+        var cell = new Element('td').injectInside(row);
+        if (this.metadata[fieldName].type == 'boolean') {
+            var checkbox = new Element('img').setProperties({
+                'src':'images/checkbox_' +
+                    (record[fieldName] == true ? 'on' : 'off') + '.png',
+                'width':'13', 'height':'13'
+            }).injectInside(cell);
+            cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
+        }
+        else if (this.metadata[fieldName].type == 'textbox') {
+            if (record[fieldName] && Object.getLength(record[fieldName])) {
+                cell.set('html', Object.values(record[fieldName]).join(', '));
+            }
+            else {
+                cell.set('html', '&nbsp;');
+            }
+        }
+        else if (this.metadata[fieldName].type == 'image') {
+            if (record[fieldName]) {
+                var image = new Element('img').setProperties({ 'src':record[fieldName], 'width':50, 'height':50 }).injectInside(cell);
+                cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
+            }
+        }
+        else {
+            var fieldValue = '';
+            if (record[fieldName]) {
+                var fieldValue = record[fieldName].clean();
+            }
+            if (
+                (this.metadata[fieldName].type == 'select')
+                    &&
+                    (row.getFirst() == cell)
+                    &&
+                    (prevRow = row.getPrevious())
+                    &&
+                    (prevRow.record[fieldName] == record[fieldName])
+                ) {
+                fieldValue = '';
+                prevRow.getFirst().setStyle('font-weight', 'bold');
+            }
+            if (fieldValue != '') cell.set('html', fieldValue);
+            //if (fieldValue != '') cell.appendText(fieldValue);
+            else cell.set('html', '&#160;');
+        }
+    },
+    changeSort:function (event) {
+        var getNextDirectionOrderItem = function (current) {
             //console.log(current);
             var sortDirectionOrder = ['', 'asc', 'desc'], result, currentIndex;
             if ((currentIndex = sortDirectionOrder.indexOf(current)) != -1) {
@@ -367,21 +369,21 @@ var Grid = new Class({
 });
 
 var GridManager = new Class({
-    initialize: function(element) {
+    initialize:function (element) {
         this.element = element;
 
         this.filter = new GridManager.Filter(this);
 
         this.tabPane =
-            new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });
+            new TabPane(this.element, { onTabChange:this.onTabChange.bind(this) });
 
         this.grid = new Grid(this.element.getElement('.grid'), {
-            onSelect: this.onSelect.bind(this),
-            onSortChange: this.changeSort.bind(this),
-            onDoubleClick: this.onDoubleClick.bind(this)
+            onSelect:this.onSelect.bind(this),
+            onSortChange:this.changeSort.bind(this),
+            onDoubleClick:this.onDoubleClick.bind(this)
         });
         this.pageList =
-            new PageList({ onPageSelect: this.loadPage.bind(this) });
+            new PageList({ onPageSelect:this.loadPage.bind(this) });
         var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
         if (toolbarContainer) {
             toolbarContainer.adopt(this.pageList.getElement());
@@ -395,7 +397,7 @@ var GridManager = new Class({
         this.singlePath = this.element.getProperty('single_template');
     },
 
-    attachToolbar: function(toolbar) {
+    attachToolbar:function (toolbar) {
         this.toolbar = toolbar;
         var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
         if (toolbarContainer) {
@@ -415,28 +417,28 @@ var GridManager = new Class({
         //this.reload.delay(1000, this);
     },
 
-    onTabChange: function(tabData) {
+    onTabChange:function (tabData) {
         this.langId = tabData.lang;
         // Загружаем первую страницу только если панель инструментов уже прикреплена.
         this.filter.remove();
         this.reload();
     },
 
-    onSelect: function() {
+    onSelect:function () {
 
     },
-    onDoubleClick: function() {
+    onDoubleClick:function () {
         this.edit();
     },
-    changeSort: function() {
+    changeSort:function () {
         this.loadPage.delay(10, this, 1);
     },
 
-    reload: function() {
+    reload:function () {
         this.loadPage.delay(10, this, 1);
     },
 
-    loadPage: function(pageNum) {
+    loadPage:function (pageNum) {
         this.pageList.disable();
 
         this.toolbar.disableControls();
@@ -456,7 +458,7 @@ var GridManager = new Class({
             this.processServerError.bind(this)
         );
     },
-    processServerResponse: function(result) {
+    processServerResponse:function (result) {
         if (!this.initialized) {
             this.grid.setMetadata(result.meta);
             this.initialized = true;
@@ -478,31 +480,31 @@ var GridManager = new Class({
         this.grid.build();
         this.overlay.hide();
     },
-    processServerError: function(responseText) {
+    processServerError:function (responseText) {
         alert(responseText);
         this.overlay.hide();
     },
     // Actions:
 
-    view: function() {
-        ModalBox.open({ url: this.singlePath +
+    view:function () {
+        ModalBox.open({ url:this.singlePath +
             this.grid.getSelectedRecordKey() });
     },
 
-    add: function() {
+    add:function () {
         ModalBox.open({
-            url: this.singlePath + 'add/',
-            onClose: this._processAfterCloseAction.bind(this)
+            url:this.singlePath + 'add/',
+            onClose:this._processAfterCloseAction.bind(this)
         });
     },
 
-    edit: function() {
+    edit:function () {
         ModalBox.open({
-            url: this.singlePath + this.grid.getSelectedRecordKey() + '/edit',
-            onClose: this._processAfterCloseAction.bind(this)
+            url:this.singlePath + this.grid.getSelectedRecordKey() + '/edit',
+            onClose:this._processAfterCloseAction.bind(this)
         });
     },
-    _processAfterCloseAction: function(returnValue) {
+    _processAfterCloseAction:function (returnValue) {
         if (returnValue) {
             if (returnValue.afterClose && this[returnValue.afterClose]) {
                 this[returnValue.afterClose].attempt(null, this);
@@ -512,35 +514,35 @@ var GridManager = new Class({
             }
         }
     },
-    editPrev: function() {
+    editPrev:function () {
         var prevRow;
         if (this.grid.getSelectedItem() && (prevRow = this.grid.getSelectedItem().getPrevious())) {
             this.grid.selectItem(prevRow);
             this.edit();
         }
     },
-    editNext: function() {
+    editNext:function () {
         var nextRow;
         if (this.grid.getSelectedItem() && (nextRow = this.grid.getSelectedItem().getNext())) {
             this.grid.selectItem(nextRow);
             this.edit();
         }
     },
-    del: function() {
+    del:function () {
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
             'Do you really want to delete selected record?';
         if (confirm(MSG_CONFIRM_DELETE)) {
             this.overlay.show();
             this.request(this.singlePath + this.grid.getSelectedRecordKey() +
                 '/delete/', null,
-                function() {
+                function () {
                     this.overlay.hide();
                     this.loadPage(this.pageList.currentPage);
                 }.bind(this),
-                function(responseText) {
+                function (responseText) {
                     this.overlay.hide();
                 }.bind(this),
-                function(responseText) {
+                function (responseText) {
                     alert(responseText);
                     this.overlay.hide();
                 }.bind(this)
@@ -548,29 +550,29 @@ var GridManager = new Class({
         }
     },
 
-    close: function() {
+    close:function () {
         ModalBox.close();
     },
-    up: function() {
+    up:function () {
         this.request(this.singlePath + this.grid.getSelectedRecordKey() +
             '/up/', '', this.loadPage.pass(this.pageList.currentPage, this));
     },
 
-    down: function() {
+    down:function () {
         this.request(this.singlePath + this.grid.getSelectedRecordKey() +
             '/down/', '', this.loadPage.pass(this.pageList.currentPage, this));
     },
-    print: function() {
+    print:function () {
         window.open(this.element.getProperty('single_template') + 'print/');
     },
-    csv: function() {
+    csv:function () {
         document.location.href =
             this.element.getProperty('single_template') + 'csv/';
     }
 });
 
 GridManager.Filter = new Class({
-    initialize:function(gridManager) {
+    initialize:function (gridManager) {
         this.gm = gridManager;
         this.element = this.gm.element.getElement('.filter');
         this.fields = false;
@@ -579,11 +581,11 @@ GridManager.Filter = new Class({
         if (this.element) {
             var applyButton = this.element.getElement('.f_apply'), resetLink = this.element.getElement('.f_reset');
             this.fields = this.element.getElement('.f_fields');
-            applyButton.addEvent('click', function() {
+            applyButton.addEvent('click', function () {
                 this.use();
                 this.gm.reload.apply(this.gm);
             }.bind(this));
-            resetLink.addEvent('click', function(e) {
+            resetLink.addEvent('click', function (e) {
                 Energine.cancelEvent(e);
                 this.remove();
                 this.gm.reload.apply(this.gm);
@@ -607,7 +609,7 @@ GridManager.Filter = new Class({
              this.fields.addEvent('change', prepareInputs);*/
 
 
-            this.condition.addEvent('change', function(event) {
+            this.condition.addEvent('change', function (event) {
                 //prepareInputs();
                 var condition = $(event.target).get('value');
 
@@ -620,14 +622,14 @@ GridManager.Filter = new Class({
             }.bind(this));
         }
     },
-    remove: function() {
+    remove:function () {
         if (this.element) {
             this.inputs.empty();
             this.element.removeClass('active');
             this.active = false;
         }
     },
-    use: function() {
+    use:function () {
         var reloadOnExit = true;
         if (this.inputs.hasValues()) {
             this.element.addClass('active');
@@ -642,7 +644,7 @@ GridManager.Filter = new Class({
 
         return reloadOnExit;
     },
-    getValue: function() {
+    getValue:function () {
         var result = '';
         if (this.active && this.inputs.hasValues()) {
             var
@@ -656,11 +658,11 @@ GridManager.Filter = new Class({
 });
 
 GridManager.Filter.QueryControls = new Class({
-    initialize: function(els, applyAction) {
+    initialize:function (els, applyAction) {
         this.containers = els;
         this.inputs = [];
         this.dps = [];
-        this.containers.each(function(el) {
+        this.containers.each(function (el) {
             this.inputs.push(el.getElement('input'));
             this.dps.push(el.getElement('.f_datepicker'));
         }.bind(this));
@@ -677,7 +679,7 @@ GridManager.Filter.QueryControls = new Class({
          }.bind(this));*/
 
 
-        this.inputs.addEvent('keydown', function(event) {
+        this.inputs.addEvent('keydown', function (event) {
             event = new Event(event);
             if ((event.key == 'enter') && (event.target.value != '')) {
                 Energine.cancelEvent(event);
@@ -685,35 +687,35 @@ GridManager.Filter.QueryControls = new Class({
             }
         });
     },
-    hasValues: function() {
-        return this.inputs.some(function(el) {
+    hasValues:function () {
+        return this.inputs.some(function (el) {
             return ($(el)) ? el.get('value') : false
         });
     },
-    empty:function() {
-        this.inputs.each(function(el) {
+    empty:function () {
+        this.inputs.each(function (el) {
             el.set('value', '')
         });
     },
-    getValues: function(fieldName) {
+    getValues:function (fieldName) {
         var str = '';
-        this.inputs.each(function(el, index, els) {
+        this.inputs.each(function (el, index, els) {
             if (el.get('value')) str += fieldName + '[]=' + el.get('value');
             if (index != (els.length - 1)) str += '&';
         });
         return str;
     },
-    asDateSelector: function() {
+    asDateSelector:function () {
         //this.dps.removeClass('hidden').setStyle('display', '');
     },
-    asTextSelector:function() {
+    asTextSelector:function () {
         //this.dps.addClass('hidden');
     },
-    asPeriod: function() {
+    asPeriod:function () {
         this.containers.removeClass('hidden');
         this.inputs.addClass('small');
     },
-    asScalar: function() {
+    asScalar:function () {
         this.containers[1].addClass('hidden');
         this.inputs.removeClass('small');
     }

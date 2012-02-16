@@ -122,7 +122,7 @@ class AttachmentManager extends DBWorker {
             if ($filteredMapValue = array_filter(array_values($mapValue))) {
                 $request = 'SELECT spu.' . $mapFieldName .
                            ',spu.upl_id as id, ' .
-                           'upl_path as file, upl_name as name FROM share_uploads su ' .
+                           'upl_path as file, upl_name as name FROM '.self::ATTACH_TABLENAME.' su ' .
                            'LEFT JOIN `' . $mapTableName .
                            '` spu ON spu.upl_id = su.upl_id ' .
                            //'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.

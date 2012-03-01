@@ -11,6 +11,31 @@ var FileRepoForm = new Class({
         if (this.thumbs = this.componentElement.getElements('img.thumb')) {
             this.thumbReader = new FileReader();
             this.componentElement.getElements('input.thumb').addEvent('change', this.showThumbPreview.bind(this));
+            var altPreview;
+            if (altPreview = this.componentElement.getElements('input.preview')) {
+                altPreview.addEvent('change', this.showAltPreview.bind(this));
+            }
+        }
+        this.tabPane.disableTab(1);
+    },
+    showAltPreview:function (evt) {
+        var el = $(evt.target);
+        var files = evt.target.files;
+        var createTemporaryFile = this.createTemporaryFile.bind(this);
+
+        for (var i = 0, f; f = files[i]; i++) {
+            if (f.type.match('image.*')) {
+                this.thumbReader.onload = (function (file) {
+                    return function (e) {
+                        var previewElement = $(el.getProperty('preview')), dataElement = $(el.getProperty('data'));
+                        if (previewElement) previewElement.removeClass('hidden').setProperty('src', e.target.result);
+                        if (dataElement) dataElement.set('value', e.target.result);
+
+                        createTemporaryFile.attempt([e.target.result, file.name, file.type, true]);
+                    }
+                })(f);
+                this.thumbReader.readAsDataURL(f);
+            }
         }
     },
     showThumbPreview:function (evt) {
@@ -19,17 +44,17 @@ var FileRepoForm = new Class({
         //var binaryReader = new FileReader();
 
         for (var i = 0, f; f = files[i]; i++) {
-            this.thumbReader.onload = (function (file) {
-                return function (e) {
-                    if (file.type.match('image.*')) {
+            if (f.type.match('image.*')) {
+                this.thumbReader.onload = (function (file) {
+                    return function (e) {
                         var previewElement = $(el.getProperty('preview')), dataElement = $(el.getProperty('data'));
 
                         if (previewElement) previewElement.removeClass('hidden').setProperty('src', e.target.result);
                         if (dataElement) dataElement.set('value', e.target.result);
                     }
-                }
-            })(f);
-            this.thumbReader.readAsDataURL(f);
+                })(f);
+                this.thumbReader.readAsDataURL(f);
+            }
         }
 
 
@@ -41,28 +66,34 @@ var FileRepoForm = new Class({
                 el.setProperty('src', Energine.base + 'resizer/w' + el.getProperty('width') + '-h' + el.getProperty('height') + '/' + tmpFileName);
             });
     },
+    createTemporaryFile:function (data, filename, type, isAlts) {
+        data = {
+            'data':data,
+            'name':filename
+        };
+        if(isAlts){
+            data = Object.append(data, {'alts':1});
+        }
+        data = Object.toQueryString(data);
+        this.request(this.singlePath + 'temp-file/', data, function (response) {
+            if (response.result && (type.match('image.*') || type.match('video.*'))) {
+                if (type.match('video.*')) {
+                    document.getElementById('preview').removeClass('hidden').setProperty('src', Energine.base + 'resizer/w0-h0/' + response.data);
+                }
+                this.generatePreviews(response.data)
+            }
+        }.bind(this)
+        )
+        ;
+    },
     showPreview:function (evt) {
         var previewElement = document.getElementById('preview')
         previewElement.removeProperty('src').addClass('hidden');
         if (this.thumbs)this.thumbs.removeProperty('src').addClass('hidden');
         previewElement.removeClass('hidden').setProperty('src', Energine.base + 'images/loading.gif');
-
+        var createTemporaryFile = this.createTemporaryFile.bind(this);
         var files = evt.target.files;
-        var createTemporaryFile = function (data, filename, type) {
-            this.request(this.singlePath + 'temp-file/', Object.toQueryString({
-                'data':data,
-                'name':filename
-            }), function (response) {
-                if (response.result && (type.match('image.*') || type.match('video.*'))) {
-                    if(type.match('video.*')){
-                        document.getElementById('preview').removeClass('hidden').setProperty('src', Energine.base + 'resizer/w0-h0/' + response.data);
-                    }
-
-                    this.generatePreviews(response.data)
-                }
-            }.bind(this));
-        }.bind(this);
-
+        var enableTab = this.tabPane.enableTab.pass(1, this.tabPane);
         for (var i = 0, f; f = files[i]; i++) {
             this.reader.onload = (function (theFile) {
                 return function (e) {
@@ -74,11 +105,12 @@ var FileRepoForm = new Class({
 
                     if (theFile.type.match('image.*')) {
                         previewElement.removeClass('hidden').setProperty('src', e.target.result);
-                        createTemporaryFile(e.target.result, theFile.name, theFile.type);
+                        createTemporaryFile.attempt([e.target.result, theFile.name, theFile.type]);
                     }
                     else if (theFile.type.match('video.*')) {
-                        createTemporaryFile(e.target.result, theFile.name, theFile.type);
+                        createTemporaryFile.attempt([e.target.result, theFile.name, theFile.type]);
                     }
+                    enableTab();
                 };
             })(f);
             this.reader.readAsDataURL(f);

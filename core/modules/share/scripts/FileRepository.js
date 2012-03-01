@@ -1,6 +1,8 @@
 ScriptLoader.load(
     'GridManager'
 );
+var FILE_COOKIE_NAME = 'NRGNFRPID';
+
 Grid.implement({
     iterateFields:function (record, fieldName, row) {
 // Пропускаем невидимые поля.
@@ -15,7 +17,7 @@ Grid.implement({
                     image.setProperty('src', 'images/icons/icon_folder.gif');
                     break;
                 case 'repo':
-                    image.setProperty('src', 'images/icons/icon_undefined.gif');
+                    image.setProperty('src', 'images/icons/icon_repository.gif');
                     break;
                 case 'folderup':
                     image.setProperty('src', 'images/icons/icon_folder_up.gif');
@@ -51,11 +53,11 @@ var FileRepository = new Class({
         this.open();
     },
     onSelect:function () {
-        var r = this.grid.getSelectedRecord();
+        var r = this.grid.getSelectedRecord(), control;
         this.toolbar.enableControls();
         switch (r.upl_internal_type) {
             case 'folder':
-                this.toolbar.getControlById('open').enable()
+                this.toolbar.getControlById('open').enable();
                 break;
             case 'folderup':
                 this.toolbar.disableControls();
@@ -68,7 +70,7 @@ var FileRepository = new Class({
                 this.toolbar.getControlById('open').enable()
                 break;
             default:
-                this.toolbar.getControlById('open').disable();
+                //this.toolbar.getControlById('open').disable();
                 break;
         }
     },
@@ -81,6 +83,8 @@ var FileRepository = new Class({
         if (!result.data) {
             result.data = [];
         }
+        if(this.currentPID)
+            Cookie.write(FILE_COOKIE_NAME, this.currentPID, {path:new URI(Energine.base).get('directory'), duration:1});
         /*if (this.currentPID) {
          result.data.unshift({'upl_id':0, 'upl_internal_type':'folderup', 'upl_path':'', 'upl_pid':'', 'upl_title':'...'});
          }*/
@@ -95,8 +99,11 @@ var FileRepository = new Class({
             this.pageList.enable();
         }
 
+        var controlsEnabledByDefault = ['add'];
+        for (var i = 0, l = controlsEnabledByDefault.length; i < l; i++) {
+            if (control = this.toolbar.getControlById(controlsEnabledByDefault[i])) control.enable();
+        }
 
-        if (control = this.toolbar.getControlById('add')) control.enable();
         this.grid.build();
         this.overlay.hide();
     },
@@ -111,6 +118,10 @@ var FileRepository = new Class({
             case 'folderup':
                 this.currentPID = r.upl_id;
                 this.loadPage(1);
+                break;
+            default:
+                ModalBox.setReturnValue(r);
+                ModalBox.close();
                 break;
         }
     },
@@ -139,10 +150,16 @@ var FileRepository = new Class({
         this.toolbar.disableControls();
         this.overlay.show();
         this.grid.clear();
-        var level = '';
+        var level = '', cookiePID;
+
         if (this.currentPID) {
             level = this.currentPID + '/';
         }
+        else if (cookiePID = Cookie.read(FILE_COOKIE_NAME)) {
+            this.currentPID = cookiePID;
+            level = this.currentPID + '/';
+        }
+
         var postBody = '', url = this.singlePath + level + 'get-data/' + 'page-' + pageNum + '/';
         //if (this.langId) postBody += 'languageID=' + this.langId + '&';
         postBody += this.filter.getValue();

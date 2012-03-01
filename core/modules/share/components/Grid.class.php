@@ -758,7 +758,7 @@ class Grid extends DBDataSet {
     protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary =
-                $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('config' => 'core/modules/share/config/FileLibraryMin.component.xml'));
+                $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository'/*, array('config' => 'core/modules/share/config/FileLibraryMin.component.xml')*/);
         //$this->fileLibrary->getState();
         $this->fileLibrary->run();
     }

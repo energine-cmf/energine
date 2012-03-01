@@ -203,39 +203,24 @@
     <!-- поле типа pfile -->
     <xsl:template match="field[@type='thumb'][ancestor::component[@type='form']]">
         <div class="preview">
-            <img border="0" id="preview_{@name}" data="data_{@name}" class="hidden thumb" width="{@width}" height="{@height}"/>
+            <img border="0" id="preview_{@name}" data="data_{@name}"  width="{@width}" height="{@height}">
+                <xsl:attribute name="class">hidden<xsl:if test="@name!='preview'"> thumb</xsl:if></xsl:attribute>
+            </img>
         </div>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="type">hidden</xsl:attribute>
             <xsl:attribute name="id">data_<xsl:value-of select="@name"/></xsl:attribute>
         </input>
-        <input type="file" id="uploader_{@name}" class="thumb" preview="preview_{@name}" data="data_{@name}"/>
-        <!--<div class="image">
-            <img alt="" border="0" id="{generate-id(.)}_preview">
-                <xsl:if test="@is_image">
-                    <xsl:attribute name="style">display: hidden;</xsl:attribute>
-                    <xsl:if test=".!=''">
-                        <xsl:attribute name="src"><xsl:value-of select="."/></xsl:attribute>
-                    </xsl:if>
-                </xsl:if>
-            </img>
-        </div>
-        <xsl:if test=".!=''">
-            <a href="#" onclick="return {generate-id(ancestor::recordset)}.removeFilePreview.run(['{generate-id(.)}', '{generate-id(.)}_preview', this], {generate-id(ancestor::recordset)});">
-                <xsl:value-of select="@deleteFileTitle"/>
-            </a>
+        <input type="file" id="uploader_{@name}" preview="preview_{@name}" data="data_{@name}">
+            <xsl:choose>
+                <xsl:when test="@name='preview'"><xsl:attribute name="class">preview</xsl:attribute></xsl:when>
+                <xsl:otherwise><xsl:attribute name="class">thumb</xsl:attribute></xsl:otherwise>
+            </xsl:choose>
+        </input>
+        <xsl:if test="@name='preview'">
+            <hr/>
         </xsl:if>
-        <div style="margin-bottom: 5px;">
-            <a href="{.}" target="_blank" id='{generate-id(.)}_link'><xsl:value-of select="."/></a>
-        </div>
-        <xsl:variable name="FIELD_ID">tmp_<xsl:value-of select="generate-id()"/></xsl:variable>
-        <input type="file" id="{$FIELD_ID}" name="file" field="{generate-id(.)}" link="{generate-id(.)}_link" preview="{generate-id(.)}_preview" onchange="{generate-id(ancestor::recordset)}.upload.bind({generate-id(ancestor::recordset)})(this);"/>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
-        </input>-->
     </xsl:template>
 
     <!-- поле типа prfile -->

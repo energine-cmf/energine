@@ -21,9 +21,9 @@
 
 var Toolbar = new Class({
 
-    imagesPath: '',
+    imagesPath:'',
 
-    initialize: function(toolbarName) {
+    initialize:function (toolbarName) {
         Asset.css('toolbar.css');
         this.name = toolbarName;
         this.element =
@@ -33,23 +33,23 @@ var Toolbar = new Class({
         }
         this.controls = [];
     },
-    dock: function() {
+    dock:function () {
         this.element.addClass('docked_toolbar');
     },
-    undock: function() {
+    undock:function () {
         this.element.removeClass('docked_toolbar');
     },
-    getElement: function() {
+    getElement:function () {
         return this.element;
     },
 
-    bindTo: function(object) {
+    bindTo:function (object) {
         this.boundTo = object;
         return this;
     },
 
-    load: function(toolbarDescr) {
-        Array.each(toolbarDescr.childNodes, function(elem) {
+    load:function (toolbarDescr) {
+        Array.each(toolbarDescr.childNodes, function (elem) {
             if (elem.nodeType == 1) {
                 var control = null;
                 switch (elem.getAttribute('type')) {
@@ -70,8 +70,8 @@ var Toolbar = new Class({
         }, this);
 
     },
-    appendControl: function() {
-        Array.each(arguments, function(control) {
+    appendControl:function () {
+        Array.each(arguments, function (control) {
             if (control.type && control.id) {
                 control.action = control.onclick;
                 delete control.onclick;
@@ -89,12 +89,12 @@ var Toolbar = new Class({
         return this;
     },
 
-    removeControl: function(control) {
+    removeControl:function (control) {
         if ($type(control) == 'string') {
             control = this.getControlById(control);
         }
         if (control instanceof Toolbar.Control) {
-            this.controls.each(function(ctrl, index) {
+            this.controls.each(function (ctrl, index) {
                 if (ctrl == control) {
                     ctrl.toolbar = null;
                     ctrl.element.dispose();
@@ -105,23 +105,23 @@ var Toolbar = new Class({
         return this;
     },
 
-    getControlById: function(id) {
+    getControlById:function (id) {
         for (var i = 0; i < this.controls.length; i++) {
             if (this.controls[i].properties.id == id) return this.controls[i];
         }
         return false;
     },
 
-    disableControls: function() {
+    disableControls:function () {
         if (!arguments.length) {
-            this.controls.each(function(control) {
+            this.controls.each(function (control) {
                 if (control.properties.id != 'close') control.disable();
             });
         }
         else {
             var control;
             //Перечисляем идентификаторы контролов которые необходимо активировать
-            $A(arguments).each(function(controlID) {
+            $A(arguments).each(function (controlID) {
                 if (control = this.getControlById(controlID)) {
                     control.disable();
                 }
@@ -130,16 +130,16 @@ var Toolbar = new Class({
         return this;
     },
 
-    enableControls: function() {
+    enableControls:function () {
         if (!arguments.length) {
-            this.controls.each(function(control) {
+            this.controls.each(function (control) {
                 control.enable();
             });
         }
         else {
             var control;
             //Перечисляем идентификаторы контролов которые необходимо активировать
-            $A(arguments).each(function(controlID) {
+            $A(arguments).each(function (controlID) {
                 if (control = this.getControlById(controlID)) {
                     control.enable();
                 }
@@ -150,7 +150,7 @@ var Toolbar = new Class({
 
     // Private methods:
 
-    _callAction: function(action, control) {
+    _callAction:function (action, control) {
         if (this.boundTo && $type(this.boundTo[action]) == 'function') {
             this.boundTo[action](control);
         }
@@ -159,20 +159,20 @@ var Toolbar = new Class({
 
 Toolbar.Control = new Class({
 
-    toolbar: null,
+    toolbar:null,
 
-    initialize: function(properties) {
+    initialize:function (properties) {
         this.properties = {
-            id: null,
-            icon: null,
-            title: '',
-            tooltip: '',
-            action: null,
-            disabled: false
+            id:null,
+            icon:null,
+            title:'',
+            tooltip:'',
+            action:null,
+            disabled:false
         };
         $extend(this.properties, $pick(properties, {}));
     },
-    load: function(controlDescr) {
+    load:function (controlDescr) {
         this.properties.id = controlDescr.getAttribute('id') || '';
         this.properties.icon = controlDescr.getAttribute('icon') || '';
         this.properties.title = controlDescr.getAttribute('title') || '';
@@ -181,7 +181,7 @@ Toolbar.Control = new Class({
         this.properties.disabled =
             controlDescr.getAttribute('disabled') ? true : false;
     },
-    buildAsIcon: function(icon) {
+    buildAsIcon:function (icon) {
         this.element.addClass('icon unselectable')
             .setProperty('id', this.toolbar.name + this.properties.id)
             .setProperty('title', this.properties.title +
@@ -191,7 +191,7 @@ Toolbar.Control = new Class({
             .setStyle('background-image', 'url(' + Energine.base +
             this.toolbar.imagesPath + icon + ')');
     },
-    build: function() {
+    build:function () {
         if (!this.toolbar || !this.properties.id) {
             return false;
         }
@@ -209,23 +209,19 @@ Toolbar.Control = new Class({
         }
     },
 
-    disable: function() {
-        /*if (!this.properties.disabled) {
-
-         }*/
+    disable:function () {
         this.properties.disabled = true;
         this.element.addClass('disabled').setOpacity(0.25);
+        return this;
     },
 
-    enable: function() {
+    enable:function () {
         this.properties.disabled = false;
         this.element.removeClass('disabled').setOpacity(1);
-        /*if (this.properties.disabled) {
-
-         }*/
+        return this;
     },
 
-    setAction: function(action) {
+    setAction:function (action) {
         this.properties.action = action;
     }
 });
@@ -233,32 +229,32 @@ Toolbar.Control = new Class({
 
 Toolbar.Button = new Class({
     Extends:Toolbar.Control,
-    build: function() {
+    build:function () {
         this.parent();
         var control = this;
         this.element.addEvents({
-            'mouseover': function() {
+            'mouseover':function () {
                 if (!control.properties.disabled) {
                     this.addClass('highlighted');
                 }
             },
-            'mouseout':  function() {
+            'mouseout':function () {
                 this.removeClass('highlighted');
             }});
         if (Browser.chrome) {
             this.element.addEvents({
-                'click':function(event) {
+                'click':function (event) {
                     if (!control.properties.disabled) {
                         control.toolbar._callAction(control.properties.action);
                     }
                 },
-                'mousedown': function() {
+                'mousedown':function () {
                     return false;
                 }
             })
         }
         else {
-            this.element.addEvent('mousedown', function(event) {
+            this.element.addEvent('mousedown', function (event) {
                 if (event.rightClick) return;
                 if (!control.properties.disabled) {
                     control.toolbar._callAction(control.properties.action);
@@ -270,19 +266,19 @@ Toolbar.Button = new Class({
 });
 Toolbar.Switcher = new Class({
     Extends:Toolbar.Button,
-    initialize: function(props) {
+    initialize:function (props) {
         this.parent(props);
         this.properties.state =
             new Boolean((this.properties.state || 0).toInt()).valueOf();
     },
-    load: function(controlDescr) {
+    load:function (controlDescr) {
         this.parent(controlDescr);
         this.properties.aicon = controlDescr.getAttribute('aicon') || '';
         this.properties.state = controlDescr.getAttribute('state') || 0;
     },
-    build: function() {
+    build:function () {
         this.parent();
-        var toggle = (function() {
+        var toggle = (function () {
             if (this.properties.state) {
                 if (this.properties.aicon)
                     this.buildAsIcon(this.properties.aicon);
@@ -297,7 +293,7 @@ Toolbar.Switcher = new Class({
                     this.element.removeClass('pressed');
             }
         }).bind(this);
-        this.element.addEvent('click', function() {
+        this.element.addEvent('click', function () {
             if (!this.properties.disabled) {
                 this.properties.state = (!this.properties.state);
                 toggle();
@@ -305,25 +301,25 @@ Toolbar.Switcher = new Class({
         }.bind(this));
         toggle();
     },
-    getState: function() {
+    getState:function () {
         return this.properties.state;
     }
 });
 
 Toolbar.Separator = new Class({
     Extends:Toolbar.Control,
-    build: function() {
+    build:function () {
         this.parent();
         this.element.addClass('separator');
     },
 
-    disable: function() {
+    disable:function () {
         // Separator cannot be disabled.
     }
 });
 Toolbar.Text = new Class({
     Extends:Toolbar.Control,
-    build: function() {
+    build:function () {
         this.parent();
         this.element.addClass('text');
     }
@@ -333,13 +329,13 @@ Toolbar.Select = new Class({
     select:null,
     toolbar:null,
 
-    initialize: function(properties, options, initialValue) {
+    initialize:function (properties, options, initialValue) {
         this.properties = {
-            id: null,
-            title: '',
-            tooltip: '',
-            action: null,
-            disabled: false
+            id:null,
+            title:'',
+            tooltip:'',
+            action:null,
+            disabled:false
         };
         $extend(this.properties, $pick(properties, {}));
 
@@ -347,7 +343,7 @@ Toolbar.Select = new Class({
         this.initial = initialValue || false;
     },
 
-    build: function() {
+    build:function () {
         if (!this.toolbar || !this.properties.id) {
             return false;
         }
@@ -358,7 +354,7 @@ Toolbar.Select = new Class({
         this.select = new Element('select');
 
         var control = this;
-        this.select.addEvent('change', function() {
+        this.select.addEvent('change', function () {
             control.toolbar._callAction(control.properties.action, control);
         });
 
@@ -368,8 +364,8 @@ Toolbar.Select = new Class({
             this.disable();
         }
         var props = {};
-        Object.each(this.options, function(value, key) {
-            props = {'value': key};
+        Object.each(this.options, function (value, key) {
+            props = {'value':key};
             if (key == this.initial) {
                 props.selected = 'selected';
             }
@@ -380,31 +376,31 @@ Toolbar.Select = new Class({
 
     },
 
-    disable: function() {
+    disable:function () {
         if (!this.properties.disabled) {
             this.properties.disabled = true;
             this.select.setProperty('disabled', 'disabled');
         }
     },
 
-    enable: function() {
+    enable:function () {
         if (this.properties.disabled) {
             this.properties.disabled = false;
             this.select.removeProperty('disabled');
         }
     },
 
-    setAction: function(action) {
+    setAction:function (action) {
         this.properties.action = action;
     },
-    getValue: function() {
+    getValue:function () {
         return this.select.getSelected().getLast().get('value');
     },
     /**
      * Устанавливает выделенный элемент
      * @param int itemId
      */
-    setSelected: function(itemId) {
+    setSelected:function (itemId) {
         //Если существует такая опция
         if (this.options[itemId]) {
             //Элемент уже построен

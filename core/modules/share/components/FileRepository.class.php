@@ -16,30 +16,28 @@
  * @author dr.Pavka
  */
 class FileRepository extends Grid {
+    //путь к кешу ресайзера
     const IMAGE_CACHE = 'uploads/resizer/';
+    //Путь к кешу для альтернативных картинок
+    const IMAGE_ALT_CACHE = 'uploads/alts/';
     //const TYPE_FOLDER = 'folder';
     //Фейковый тип для перехода на уровень выше
     const TYPE_FOLDER_UP = 'folderup';
+    const STORED_PID = 'NRGNFRPID';
 
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName('share_uploads_copy');
         $this->setFilter(array('upl_is_active' => 1));
         $this->setOrder(array('upl_childs_count' => QAL::DESC));
-
     }
 
     protected function edit() {
         $sp = $this->getStateParams();
         $uplID = $sp[0];
-        if (simplifyDBResult(
-            $this->dbh->select(
-                $this->getTableName(),
-                'upl_internal_type',
-                array('upl_id' => $uplID)
-            ),
+        if ($this->dbh->getScalar($this->getTableName(),
             'upl_internal_type',
-            true) == FileRepoInfo::META_TYPE_FOLDER
+            array('upl_id' => $uplID)) == FileRepoInfo::META_TYPE_FOLDER
         ) {
             $this->editDir($uplID);
         }
@@ -197,20 +195,29 @@ class FileRepository extends Grid {
     }
 
     private function saveThumbs($thumbsData, $baseFileName) {
-
         $thumbProps = $this->getConfigValue('thumbnails');
         foreach ($thumbsData as $thumbName => $thumbData) {
             if ($thumbData) {
-                $thumbPath = 'w0-h0/';
-                if (isset($thumbProps[$thumbName])) {
-                    $thumbPath = 'w' . $thumbProps[$thumbName]['width'] . '-h' . $thumbProps[$thumbName]['height'] . '/';
+                if ($thumbName != 'preview') {
+                    $thumbPath = 'w0-h0/';
+                    if (isset($thumbProps[$thumbName])) {
+                        $thumbPath = 'w' . $thumbProps[$thumbName]['width'] . '-h' . $thumbProps[$thumbName]['height'] . '/';
+                    }
+                    $dir = self::IMAGE_CACHE . $thumbPath . dirname($baseFileName) . '/';
+                    $fullFileName = self::IMAGE_CACHE . $thumbPath . $baseFileName;
                 }
-                $dir = self::IMAGE_CACHE . $thumbPath . dirname($baseFileName) . '/';
+                else {
+                    $thumbPath = '';
+                    $dir = self::IMAGE_ALT_CACHE . $thumbPath . dirname($baseFileName) . '/';
+                    $fullFileName = self::IMAGE_ALT_CACHE . $thumbPath . $baseFileName;
+                }
+
                 if (!file_exists($dir)) {
+//                    stop($dir);
                     mkdir($dir, 0777, true);
                 }
-                if (!file_put_contents(self::IMAGE_CACHE . $thumbPath . $baseFileName, self::cleanFileData($thumbData))) {
-                    stop(self::IMAGE_CACHE . $thumbPath . $baseFileName, $thumbData);
+                if (!file_put_contents($fullFileName, self::cleanFileData($thumbData))) {
+                    stop($fullFileName);
                 }
             }
         }
@@ -298,8 +305,11 @@ class FileRepository extends Grid {
         }
         $this->js = $this->buildJS();
         $this->setAction('save/');
+
         if ($this->getConfigValue('thumbnails')) {
             $thumbs = $this->getConfigValue('thumbnails');
+            //            array_unshift($thumbs, array('alt' => array('width' => 0, 'height'=>0)));
+            $thumbs = array('preview' => array('width' => 0, 'height' => 0)) + $thumbs;
             $tabName = $this->translate('TXT_THUMBS');
             foreach ($thumbs as $name => $data) {
                 $fd = new FieldDescription($name);
@@ -318,19 +328,30 @@ class FileRepository extends Grid {
         $sp = $this->getStateParams(true);
 
         if (!isset($sp['pid'])) {
+            jump:
             $this->addFilterCondition('(upl_pid IS NULL)');
             $uplPID = '';
         }
         else {
-            $this->addFilterCondition(array('upl_pid' => ($uplPID = (int)$sp['pid'])));
+            $uplPID = (int)$sp['pid'];
+
+            if (isset($_COOKIE[self::STORED_PID])) {
+
+                if (!$this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_pid' => $uplPID))) {
+                    /* $site = E()->getSiteManager()->getCurrentSite();
+              setcookie(self::STORED_PID, '', time() - 3600, $site->root, $site->protocol.'://'.$site->host);*/
+                    goto jump;
+                }
+            }
+            $this->addFilterCondition(array('upl_pid' => $uplPID));
         }
 
         parent::getRawData();
 
-        if (isset($sp['pid'])) {
+        if ($uplPID) {
             $data = $this->getData();
             $newData = array(
-                'upl_id' => $uplID = simplifyDBResult($this->dbh->select($this->getTableName(), 'upl_pid', array('upl_id' => $sp['pid'])), 'upl_pid', true),
+                'upl_id' => ($uplID = $this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_id' => $sp['pid']))),
                 'upl_pid' => $uplPID,
                 'upl_title' => '...',
                 'upl_internal_type' => self::TYPE_FOLDER_UP
@@ -346,7 +367,7 @@ class FileRepository extends Grid {
         }
     }
 
-    private static function cleanFileData($data, $mime=false) {
+    private static function cleanFileData($data, $mime = false) {
         $tmp = explode(';base64,', $data);
         return base64_decode($tmp[1]);
     }

@@ -292,7 +292,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      */
     static public function enFormatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
         $date = strtotime($date);
-        if ($format != '%E') {
+        if (!in_array($format, array('%E', '%f'))) {
             $result = @strftime($format, $date);
             if (!$result) {
                 $result = $date;
@@ -305,18 +305,25 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             $tomorrow = strtotime("midnight +1 day");
             $dayAfterTomorrow = strtotime("midnight +2 day");
             $yesterday = strtotime("midnight -1 day");
-
-            if ($date >= $today and $date < $tomorrow) {
-                $result .= DBWorker::_translate('TXT_TODAY');
-            }
-            elseif ($date < $today and $date >= $yesterday) {
-                $result .= DBWorker::_translate('TXT_YESTERDAY');
-            }
-            elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
-                $result .= DBWorker::_translate('TXT_TOMORROW');
+            if ($format == '%E') {
+                if ($date >= $today and $date < $tomorrow) {
+                    $result .= DBWorker::_translate('TXT_TODAY');
+                }
+                elseif ($date < $today and $date >= $yesterday) {
+                    $result .= DBWorker::_translate('TXT_YESTERDAY');
+                }
+                elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
+                    $result .= DBWorker::_translate('TXT_TOMORROW');
+                }
+                else {
+                    $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                    if (date('Y', $date) != date('Y')) {
+                        $result .= ' ' . date('Y', $date);
+                    }
+                }
             }
             else {
-                $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                $result .= DBWorker::_translate('TXT_WEEKDAY_'.date('w', $date)).', '.date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
                 if (date('Y', $date) != date('Y')) {
                     $result .= ' ' . date('Y', $date);
                 }

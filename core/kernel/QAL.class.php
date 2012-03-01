@@ -89,52 +89,16 @@ final class QAL extends DBA {
      * @param mixed $limit лимит выборки
      * @return array
      * @see DBA::selectRequest()
+     * @see DBA::buildSQL
      */
-    public function select($tableName, $fields = true, $condition = null, $order = null, $limit = null) {
-        //$tableName = strtolower($tableName);
-        $tableName = trim($tableName);
-        
-        if(strpos($tableName, ' ')){
+    public function select() {
+        $args = func_get_args();
+        if (strpos($args[0], ' ')) {
             //если в имени таблицы есть пробелы
             //будем считать что это просто SQL код
-            return call_user_func_array(array($this, 'selectRequest'), func_get_args());
+            return call_user_func_array(array($this, 'selectRequest'), $args);
         }
-        
-        if (is_array($fields) && !empty($fields)) {
-            $fields = array_map('strtolower', $fields);
-            $fields = implode(', ', $fields);
-        }
-        elseif (is_string($fields)) {
-            $fields = strtolower($fields);
-        }
-        elseif ($fields === true) {
-            $fields = '*';
-        }
-        else {
-            throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB, array($tableName, $fields, $condition, $order, $limit));
-        }
-
-
-        $sqlQuery = "SELECT $fields FROM ".DBA::getFQTableName($tableName);
-
-        if (isset($condition)) {
-            $sqlQuery .= $this->buildWhereCondition($condition);
-        }
-
-        if (isset($order)) {
-            $sqlQuery .= $this->buildOrderCondition($order);
-        }
-
-        if (isset($limit)) {
-            if (is_array($limit)) {
-                $sqlQuery .= ' LIMIT '.implode(', ', $limit);
-            }
-            else {
-                $sqlQuery .= " LIMIT $limit";
-            }
-        }
-
-        return $this->selectRequest($sqlQuery);
+        return $this->selectRequest(call_user_func_array(array($this, 'buildSQL'), $args));
     }
 
     /**
@@ -170,7 +134,7 @@ final class QAL extends DBA {
     public function modify($mode, $tableName = null, $data = null, $condition = null) {
 
         //Если в первом параметре не один из зарегистрированных режимов - считаем что это запрос
-        if(!in_array($mode, array(self::INSERT, self::INSERT_IGNORE, self::REPLACE, self::DELETE, self::UPDATE))){
+        if (!in_array($mode, array(self::INSERT, self::INSERT_IGNORE, self::REPLACE, self::DELETE, self::UPDATE))) {
             return call_user_func_array(array($this, 'modifyRequest'), func_get_args());
         }
 
@@ -178,7 +142,7 @@ final class QAL extends DBA {
             throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
         }
         $tableName = DBA::getFQTableName($tableName);
-        
+
         $sqlQuery = '';
 
         switch ($mode) {
@@ -201,10 +165,10 @@ final class QAL extends DBA {
                         }
                         $fieldValues[] = $fieldValue;
                     }
-                    $sqlQuery = $mode.' INTO '.$tableName.' ('.implode(', ', $fieldNames).') VALUES ('.implode(', ', $fieldValues).')';
+                    $sqlQuery = $mode . ' INTO ' . $tableName . ' (' . implode(', ', $fieldNames) . ') VALUES (' . implode(', ', $fieldValues) . ')';
                 }
                 else {
-                    $sqlQuery = 'INSERT INTO '.$tableName.' VALUES ()';
+                    $sqlQuery = 'INSERT INTO ' . $tableName . ' VALUES ()';
                 }
                 break;
             case self::UPDATE:
@@ -222,14 +186,14 @@ final class QAL extends DBA {
                         }
                         $fields[] = "$fieldName = $fieldValue";
                     }
-                    $sqlQuery = 'UPDATE '.$tableName.' SET '.implode(', ', $fields);
+                    $sqlQuery = 'UPDATE ' . $tableName . ' SET ' . implode(', ', $fields);
                 }
                 else {
                     throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
                 }
                 break;
             case self::DELETE:
-                $sqlQuery = 'DELETE FROM '.$tableName;
+                $sqlQuery = 'DELETE FROM ' . $tableName;
                 break;
             default:
                 throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
@@ -267,16 +231,16 @@ final class QAL extends DBA {
                         $cond[] = $value;
                     }
                     elseif (is_array($value)) {
-                    	$value = array_filter($value);
+                        $value = array_filter($value);
 
                         $value = implode(',', array_map(create_function('$row', 'return \'"\'.$row.\'"\';'), $value));
 
-                        if(!empty($value))
-                            $cond[] = $fieldName.' IN ('.$value.')';
-                        else $cond[] = ' FALSE ';    
+                        if (!empty($value))
+                            $cond[] = $fieldName . ' IN (' . $value . ')';
+                        else $cond[] = ' FALSE ';
                     }
                     else {
-                        $cond[] = "$fieldName = ".$this->quote($value);
+                        $cond[] = "$fieldName = " . $this->quote($value);
                     }
                 }
                 $result .= implode(' AND ', $cond);
@@ -303,13 +267,13 @@ final class QAL extends DBA {
      * @todo Подключить фильтрацию
      */
     public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
-        $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')).'_name';
+        $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')) . '_name';
         $columns = $this->getColumnsInfo($fkTableName);
 
         $order = '';
-        foreach(array_keys($columns) as $columnName) {
-            if(strpos($columnName, '_order_num')){
-                $order = $columnName.' '.QAL::ASC;
+        foreach (array_keys($columns) as $columnName) {
+            if (strpos($columnName, '_order_num')) {
+                $order = $columnName . ' ' . QAL::ASC;
                 break;
             }
         }
@@ -317,43 +281,42 @@ final class QAL extends DBA {
         //нужно брать значения оттуда
         if ($transTableName = $this->getTranslationTablename($fkTableName)) {
             $columns = $this->getColumnsInfo($transTableName);
-            if(!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
+            if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
 
-        	if($filter){
-        	   $filter = ' AND '.str_replace('WHERE', '', $this->buildWhereCondition($filter));	
-        	}
-        	else{
-        		$filter = '';
-        	}
-        	
+            if ($filter) {
+                $filter = ' AND ' . str_replace('WHERE', '', $this->buildWhereCondition($filter));
+            }
+            else {
+                $filter = '';
+            }
+
             $request = sprintf(
                 'SELECT 
                     %2$s.*, %3$s.%s 
                     FROM %s
                     LEFT JOIN %s on %3$s.%s = %2$s.%s
-                    WHERE lang_id =%s'.$filter.(($order)?' ORDER BY '.$order:''),
-                $fkValueName, 
+                    WHERE lang_id =%s' . $filter . (($order) ? ' ORDER BY ' . $order : ''),
+                $fkValueName,
                 DBA::getFQTableName($fkTableName),
                 DBA::getFQTableName($transTableName),
-                $fkKeyName, 
-                $fkKeyName, 
+                $fkKeyName,
+                $fkKeyName,
                 $currentLangID
             );
             $res = $this->selectRequest($request);
         }
         else {
             //Если не существует поля с name берем в качестве поля со значением то же самое поле что и с id
-            if(!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
-            
+            if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
+
             $columns = array_filter($columns,
-                function($value){
-                    return !($value["type"] == QAL::COLTYPE_TEXT);    
+                function($value) {
+                    return !($value["type"] == QAL::COLTYPE_TEXT);
                 }
             );
             $res = $this->select($fkTableName, array_keys($columns), $filter, $order);
             //$res = $this->selectRequest('SELECT '.implode(',', array_keys($columns)).' FROM '.$fkTableName.)
         }
-
 
 
         return array($res, $fkKeyName, $fkValueName);
@@ -369,14 +332,14 @@ final class QAL extends DBA {
      */
     public function buildOrderCondition($clause) {
         $orderClause = '';
-        if(!empty($clause)) {
+        if (!empty($clause)) {
             $orderClause = ' ORDER BY ';
 
             if (is_array($clause)) {
                 $cls = array();
                 foreach ($clause as $fieldName => $direction) {
                     $direction = strtoupper($direction);
-                    $cls[] = "$fieldName ".constant("self::$direction");
+                    $cls[] = "$fieldName " . constant("self::$direction");
                 }
                 $orderClause .= implode(', ', $cls);
             }
@@ -405,5 +368,66 @@ final class QAL extends DBA {
         }
 
         return $limitClause;
+    }
+
+    protected function buildSQL($tableName, $fields = true, $condition = null, $order = null, $limit = null) {
+        if (is_array($fields) && !empty($fields)) {
+            $fields = array_map('strtolower', $fields);
+            $fields = implode(', ', $fields);
+        }
+        elseif (is_string($fields)) {
+            $fields = strtolower($fields);
+        }
+        elseif ($fields === true) {
+            $fields = '*';
+        }
+        else {
+            throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB, array($tableName, $fields, $condition, $order, $limit));
+        }
+
+
+        $sqlQuery = "SELECT $fields FROM " . DBA::getFQTableName($tableName);
+
+        if (isset($condition)) {
+            $sqlQuery .= $this->buildWhereCondition($condition);
+        }
+
+        if (isset($order)) {
+            $sqlQuery .= $this->buildOrderCondition($order);
+        }
+
+        if (isset($limit)) {
+            if (is_array($limit)) {
+                $sqlQuery .= ' LIMIT ' . implode(', ', $limit);
+            }
+            else {
+                $sqlQuery .= " LIMIT $limit";
+            }
+        }
+        return $sqlQuery;
+    }
+
+    public function getScalar() {
+        $args = func_get_args();
+
+        if (strpos($args[0], ' ')) {
+            //Считаем что у нас SQL код
+            $handlerMethod = 'constructQuery';
+            $args = array($args);
+        }
+        else {
+            $handlerMethod = 'buildSQL';
+        }
+
+        $query = call_user_func_array(array($this, $handlerMethod), $args);
+        if (!is_string($query) || strlen($query) == 0) {
+            return null;
+        }
+        $res = $this->pdo->query($this->lastQuery = $query);
+        if ($res instanceof PDOStatement) {
+            return $res->fetchColumn();
+        }
+
+        return null;
     }
 }

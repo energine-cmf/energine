@@ -425,13 +425,12 @@ abstract class DBA extends Object {
     /**
      * Формирует строку запроса к БД.
      *
-     * @access private
      * @param array $args массив аргументов, переданных в методы selectRequest и modifyRequest
      * @return string
      * @see DBA::selectRequest()
      * @see DBA::modifyRequest()
      */
-    private function constructQuery(array $args) {
+    protected function constructQuery(array $args) {
         if (sizeof($args) > 1) {
             $query = array_shift($args); // отбрасываем первый аргумент $query
             foreach ($args as &$arg) {

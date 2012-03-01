@@ -86,6 +86,7 @@ class JSONBuilder extends AbstractBuilder {
                         switch ($fieldType) {
                             case FieldDescription::FIELD_TYPE_DATETIME:
                             case FieldDescription::FIELD_TYPE_DATE:
+                            case FieldDescription::FIELD_TYPE_TIME:
                                 if (!empty($fieldValue)) {
                                     $fieldValue =
                                             self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldType);

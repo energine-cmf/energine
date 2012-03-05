@@ -92,18 +92,18 @@ class JSONBuilder extends AbstractBuilder {
                                             self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldType);
                                 }
                                 break;
-                            case FieldDescription::FIELD_TYPE_IMAGE:
+                            /*case FieldDescription::FIELD_TYPE_IMAGE:
                                 if ($fieldValue) {
                                     $fieldValue = FileObject::getThumbFilename($fieldValue, 50, 50);
-                                    /*if (file_exists(
+                                    if (file_exists(
                                         dirname($fieldValue) . '/.' .
                                                 basename($fieldValue)))
                                         $fieldValue =
                                                 dirname($fieldValue) . '/.' .
                                                         basename($fieldValue);
-                                    */
+
                                 }
-                                break;
+                                break;*/
                             case FieldDescription::FIELD_TYPE_SELECT:
                                 $value = $fieldInfo->getAvailableValues();
                                 if (isset($value[$fieldValue])) {

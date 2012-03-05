@@ -19,7 +19,7 @@ class AttachmentManager extends DBWorker {
     /**
      * Имя базовой таблицы аплоадсов
      */
-    const ATTACH_TABLENAME = 'share_uploads_copy';
+    const ATTACH_TABLENAME = 'share_uploads';
     /**
      * @var Data
      */
@@ -122,7 +122,7 @@ class AttachmentManager extends DBWorker {
             if ($filteredMapValue = array_filter(array_values($mapValue))) {
                 $request = 'SELECT spu.' . $mapFieldName .
                            ',spu.upl_id as id, ' .
-                           'upl_path as file, upl_name as name FROM '.self::ATTACH_TABLENAME.' su ' .
+                           'upl_path as file, upl_name as name, upl_internal_type as type FROM '.self::ATTACH_TABLENAME.' su ' .
                            'LEFT JOIN `' . $mapTableName .
                            '` spu ON spu.upl_id = su.upl_id ' .
                            //'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.
@@ -158,8 +158,13 @@ class AttachmentManager extends DBWorker {
                             $dataDescription->addFieldDescription($fd);
 
                             $fd = new FieldDescription('file');
-                            $fd->setType(FieldDescription::FIELD_TYPE_MEDIA);
+                            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
                             $dataDescription->addFieldDescription($fd);
+
+                            $fd = new FieldDescription('type');
+                            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+                            $dataDescription->addFieldDescription($fd);
+
                             $fd = new FieldDescription('name');
                             $dataDescription->addFieldDescription($fd);
                             $builder->setData($localData);
@@ -215,7 +220,7 @@ class AttachmentManager extends DBWorker {
             $field = new Field('attached_files');
             if (!$data && !$this->data->isEmpty()) {
                 $data = $this->data->getFieldByName($this->pk->getName())->getRowData(0);
-                $request = 'SELECT files.upl_id, upl_path, upl_name
+                $request = 'SELECT files.upl_id, upl_path, upl_name, upl_internal_type
                       FROM `' . $this->tableName . '` s2f
                     LEFT JOIN `' . self::ATTACH_TABLENAME . '` files ON s2f.upl_id=files.upl_id
                     WHERE ' . $this->pk->getName() . ' = %s  
@@ -252,6 +257,10 @@ class AttachmentManager extends DBWorker {
         $f = new FieldDescription('upl_name');
         $dd->addFieldDescription($f);
 
+        $f = new FieldDescription('upl_internal_type');
+        $f->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+        $dd->addFieldDescription($f);
+
         $f = new FieldDescription('upl_path');
         $f->setType(FieldDescription::FIELD_TYPE_STRING);
         //$f->setProperty('title', $this->translate('FIELD_UPL_FILE'));
@@ -262,13 +271,13 @@ class AttachmentManager extends DBWorker {
 
         if (is_array($data)) {
             $d->load($data);
-            $pathField = $d->getFieldByName('upl_path');
+            /*$pathField = $d->getFieldByName('upl_path');
             foreach ($pathField as $i => $path) {
                 if (in_array(E()->FileInfo->analyze($path)->type, array(FileInfo::META_TYPE_IMAGE, FileInfo::META_TYPE_VIDEO))) {
                     $pathField->setRowData($i, FileObject::getThumbFilename($path, 50, 50));
                     $pathField->setRowProperty($i, 'is_image', true);
                 }
-            }
+            }*/
         }
 
         $builder->setData($d);

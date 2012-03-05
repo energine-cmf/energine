@@ -26,8 +26,8 @@
     
     <xsl:template match="component[@type='form' and @exttype='grid']">
         <form method="post" action="{@action}" class="e-grid-form">
-            <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile'] or descendant::field[@name='attached_files']">
-                <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>
+            <!--<xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile'] or descendant::field[@name='attached_files']">
+                <script type="text/javascript" src="scripts/Swiff.Uploader.js"></script>-->
 
                 <!--<script type="text/javascript">
 
@@ -40,7 +40,7 @@
                     })(); // force another closure to prevent IE memory leaks
                     });
                 </script>-->
-            </xsl:if>
+            <!--</xsl:if>-->
 <!--            <xsl:if test="descendant::field[@type='textbox']">
                 <script type="text/javascript" src="scripts/TextboxList.js"></script>
             </xsl:if>-->
@@ -114,7 +114,7 @@
             <table width="100%" id="attached_files">
                 <thead>
                 <tr>
-                    <xsl:for-each select="recordset/record[position()=1]/field/@title">
+                    <xsl:for-each select="recordset/record[position()=1]/field[@type!='hidden']/@title">
                         <td>
                             <xsl:choose>
                                 <xsl:when test="position() != 1">
@@ -147,8 +147,8 @@
                                 <td>
                                     <a href="{field[@name='upl_path']/@real_image}" target="blank">
                                         <xsl:choose>
-                                            <xsl:when test="field[@name='upl_path']/@is_image">
-                                                <img src="{field[@name='upl_path']}" border="0"/>
+                                            <xsl:when test="(field[@name='upl_internal_type']='image') or (field[@name='upl_internal_type']='video')">
+                                                <img src="{$IMAGE_RESIZER_URL}w100-h100/{field[@name='upl_path']}" border="0" width="150" height="150" alt=""/>
                                             </xsl:when>
                                             <xsl:otherwise>
                                                 <xsl:value-of select="field[@name='upl_path']"/>
@@ -170,12 +170,12 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="2" style="text-align:right;">
+                       <!-- <td colspan="2" style="text-align:right;">
                             <a href="#" id="add_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_LOAD_FILE']"/></a>
                             <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
-                            <span class="progress_indicator hidden" id="indicator">0%</span>                            
-                        </td>
-                        <td style="text-align:right;">
+                            <span class="progress_indicator hidden" id="indicator">0%</span>
+                        </td>-->
+                        <td colspan="4" style="text-align:right;">
                             <a href="#" id="insert_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
                             <script type="text/javascript">
                                 Energine.translations.extend({

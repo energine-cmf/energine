@@ -27,7 +27,7 @@ class FileRepository extends Grid {
 
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
-        $this->setTableName('share_uploads_copy');
+        $this->setTableName('share_uploads');
         $this->setFilter(array('upl_is_active' => 1));
         $this->setOrder(array('upl_childs_count' => QAL::DESC));
     }
@@ -336,8 +336,8 @@ class FileRepository extends Grid {
             $uplPID = (int)$sp['pid'];
 
             if (isset($_COOKIE[self::STORED_PID])) {
-
-                if (!$this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_pid' => $uplPID))) {
+                //проверям а есть ли такое?
+                if (!($this->dbh->getScalar($this->getTableName(), 'upl_id', array('upl_id' => $uplPID)))) {
                     /* $site = E()->getSiteManager()->getCurrentSite();
               setcookie(self::STORED_PID, '', time() - 3600, $site->root, $site->protocol.'://'.$site->host);*/
                     goto jump;

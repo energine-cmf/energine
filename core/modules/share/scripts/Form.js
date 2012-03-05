@@ -331,9 +331,10 @@ Form.Sked = new Class({
 Form.AttachmentPane = new Class({
     Extends:Form.Uploader,
     initialize:function (form) {
-        if (!$('add_attachment') || !$('insert_attachment')) return;
+        if (/*!$('add_attachment') || */!$('insert_attachment')) return;
 
-        this.parent($('add_attachment'), form, 'put/');
+        this.form = form;
+        //this.parent($('add_attachment'), form, 'put/');
         $('insert_attachment').addEvent('click', function (event) {
             Energine.cancelEvent(event);
             ModalBox.open(
@@ -399,7 +400,7 @@ Form.AttachmentPane = new Class({
                     switch (fileData.upl_internal_type){
                         case 'image':
                         case 'video':
-                                thumb.setProperty('src', Energine.static + 'resizer/w40-h40/'+fileData.upl_path)
+                                thumb.setProperty('src', Energine.static + 'resizer/w100-h100/'+fileData.upl_path)
                             break;
                         default:
 

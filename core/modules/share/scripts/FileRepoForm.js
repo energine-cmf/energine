@@ -106,11 +106,15 @@ var FileRepoForm = new Class({
                     if (theFile.type.match('image.*')) {
                         previewElement.removeClass('hidden').setProperty('src', e.target.result);
                         createTemporaryFile.attempt([e.target.result, theFile.name, theFile.type]);
+                        enableTab();
                     }
                     else if (theFile.type.match('video.*')) {
                         createTemporaryFile.attempt([e.target.result, theFile.name, theFile.type]);
+                        enableTab();
                     }
-                    enableTab();
+                    else {
+                        previewElement.removeClass('hidden').setProperty('src', Energine.static + 'images/icons/icon_undefined.gif');
+                    }
                 };
             })(f);
             this.reader.readAsDataURL(f);

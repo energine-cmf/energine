@@ -11,9 +11,9 @@
  * опыт показывает что есть еще люди  пользующиеся register_globals = On
  * не катит
  */
-if (ini_get('register_globals')) {
+/*if (ini_get('register_globals')) {
     die('Register_globals directive must be turned off.');
-}
+}*/
 /**
  * Хак для cgi mode, где SCRIPT_FILENAME возвращает путь к PHP, вместо пути к текущему исполняемому файлу
  */
@@ -36,11 +36,11 @@ error_reporting(E_ALL | E_STRICT);
 /**
  * отключаем magic_quotes_runtime
  */
-@set_magic_quotes_runtime(1);
+//@set_magic_quotes_runtime(1);
 /**
  * поскольку magic_quotes_gpc в runtime отключить нельзя, идем на ухищрение
  */
-if (get_magic_quotes_gpc()) {
+/*if (get_magic_quotes_gpc()) {
     function recursiveStripslashes($value) {
         $value =
                 is_array($value) ? array_map('recursiveStripslashes', $value) : stripslashes($value);
@@ -51,7 +51,7 @@ if (get_magic_quotes_gpc()) {
     $_GET = array_map('recursiveStripslashes', $_GET);
     $_COOKIE = array_map('recursiveStripslashes', $_COOKIE);
     $_REQUEST = array_map('recursiveStripslashes', $_REQUEST);
-}
+}*/
 
 @date_default_timezone_set('Europe/Kiev');
 /**

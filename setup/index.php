@@ -15,7 +15,8 @@ $acceptableActions = array(
     'install',
     'linker',
     'clearCache',
-    'robots'
+    'robots',
+    'syncUploads'
 );
 
 //вариант запуска приложения

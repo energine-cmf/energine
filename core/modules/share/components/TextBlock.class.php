@@ -23,7 +23,7 @@ final class TextBlock extends DataSet {
      * @var ImageManager
      * @access private
      */
-    private $imageManager;
+    //private $imageManager;
 
     /**
      * Компонент библиотеки файлов
@@ -31,7 +31,7 @@ final class TextBlock extends DataSet {
      * @var FileLibrary
      * @access private
      */
-    private $fileLibrary;
+    //private $fileLibrary;
 
     /**
      * Имя основной таблицы
@@ -299,10 +299,10 @@ final class TextBlock extends DataSet {
         $this->response->commit();
     }
 
-    protected function source() {
+   /* protected function source() {
         $this->source = $this->document->componentManager->createComponent('textblocksource', 'share', 'TextBlockSource', null);
         $this->source->run();
-    }
+    }*/
 
     /**
      * Выводит компонент менеджер изображений
@@ -310,22 +310,11 @@ final class TextBlock extends DataSet {
      * @return void
      * @access protected
      */
-    protected function imageManager() {
+/*    protected function imageManager() {
         $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
         $this->imageManager->run();
-    }
+    }*/
 
-    /**
-     * Выводит компонент библиотеки файлов
-     *
-     * @return void
-     * @access protected
-     */
-    protected function fileLibrary() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', null, false);
-        $this->fileLibrary->run();
-    }
 
     /**
      * Для метода вывода редактора изображений вызывает построитель редактора изоборажений во всех других случаях - свой
@@ -334,23 +323,17 @@ final class TextBlock extends DataSet {
      * @access public
      */
 
-    public function build() {
+/*    public function build() {
         switch ($this->getState()) {
             case 'imageManager':
                 $result = $this->imageManager->build();
-                break;
-            case 'fileLibrary':
-                $result = $this->fileLibrary->build();
-                break;
-            case 'source':
-                $result = $this->source->build();
                 break;
             default:
                 $result = parent::build();
                 break;
         }
         return $result;
-    }
+    }*/
 
 }
 

@@ -1,14 +1,14 @@
 ScriptLoader.load('ModalBox');
 var RichEditor = new Class({
-    dirty : false,
-    fallback_ie : false,
+    dirty:false,
+    fallback_ie:false,
 
-    initialize : function(area) {
+    initialize:function (area) {
         this.area = $(area);
 
     },
 
-    validateParent : function(range) {
+    validateParent:function (range) {
         var element = $(range.parentElement()) || null;
         while ($type(element) == 'element' && element != this.area) {
             element = element.getParent();
@@ -16,7 +16,7 @@ var RichEditor = new Class({
         return (element == this.area);
     },
 
-    action : function(cmd, showUI, value) {
+    action:function (cmd, showUI, value) {
         if (/* Browser.Engine.gecko || */this.fallback_ie)
             return this.fallback(cmd);
         var selection = this._getSelection();
@@ -39,7 +39,7 @@ var RichEditor = new Class({
                 try {
                     document.execCommand(cmd, (showUI || false), value);
                 }
-                catch(e) {
+                catch (e) {
                 }
 
             }
@@ -47,7 +47,7 @@ var RichEditor = new Class({
         }
     },
 
-    fallback : function(cmd) {
+    fallback:function (cmd) {
         switch (cmd) {
             case 'Bold' :
                 this.wrapSelectionWith('strong');
@@ -85,80 +85,78 @@ var RichEditor = new Class({
             default : // not used
         }
     },
-    replaceSelectionWith : function(html) {
+    replaceSelectionWith:function (html) {
         var sel = this.textarea.getSelectedRange();
         this.textarea.value = this.textarea.value.substr(0, sel.start)
             + html + this.textarea.value.substr(sel.end);
     },
 
-    wrapSelectionWith : function(tagName, attrs) {
+    wrapSelectionWith:function (tagName, attrs) {
         attrs = (attrs ? ' ' + attrs : '');
-        this.textarea.insertAroundCursor({before: '<' + tagName + attrs +
-            '>' , defaultMiddle: '', after: '</' + tagName + '>'});
+        this.textarea.insertAroundCursor({before:'<' + tagName + attrs +
+            '>', defaultMiddle:'', after:'</' + tagName + '>'});
     },
 
-    bold : function() {
+    bold:function () {
         this.action('Bold');
     },
-    italic : function() {
+    italic:function () {
         this.action('Italic');
     },
-    olist : function() {
+    olist:function () {
         this.action('InsertOrderedList');
     },
-    ulist : function() {
+    ulist:function () {
         this.action('InsertUnorderedList');
     },
-    link : function() {
+    link:function () {
         this.action('CreateLink', true);
     },
-    alignLeft : function() {
+    alignLeft:function () {
         this.action('JustifyLeft');
     },
-    alignCenter : function() {
+    alignCenter:function () {
         this.action('JustifyCenter');
     },
-    alignRight : function() {
+    alignRight:function () {
         this.action('JustifyRight');
     },
-    alignJustify : function() {
+    alignJustify:function () {
         this.action('JustifyFull');
     },
 
-    imageManager : function() {
+    imageManager:function () {
         this.currentRange = false;
 
         if (Energine.supportContentEdit && !this.fallback_ie) {
             this.currentRange = this._getSelection().createRange();
         }
         ModalBox.open({
-            url : this.area.getProperty('single_template')
-                + 'file-library/image/',
-            onClose : this.insertImage.bind(this)
+            url:this.area.getProperty('single_template') + 'file-library/image/',
+            onClose:this.insertImage.bind(this)
         });
 
     },
-    fileLibrary : function() {
+    fileLibrary:function () {
         this.currentRange = false;
         if (Energine.supportContentEdit && !this.fallback_ie)
             this.currentRange = this._getSelection().createRange();
 
         ModalBox.open({
-            url : this.area.getProperty('single_template')
+            url:this.area.getProperty('single_template')
                 + 'file-library',
-            onClose : this.insertFileLink.bind(this)
+            onClose:this.insertFileLink.bind(this)
         });
     },
 
     // private methods
-    insertImage : function(imageData) {
+    insertImage:function (imageData) {
         if (!imageData)
             return;
 
         ModalBox.open({
-            url : this.area.getProperty('single_template')
-                + 'imagemanager',
-            onClose : function(image) {
+            url:this.area.getProperty('single_template') + 'imagemanager',
+            onClose:function (image) {
                 //TODO Fix image margins in IE
 
                 if (!image) return;
@@ -184,7 +182,7 @@ var RichEditor = new Class({
                             + image.height + '" align="'
                             + image.align + '" alt="'
                             + image.alt + '" border="0" style="';
-                        ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'].each(function(marginProp) {
+                        ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'].each(function (marginProp) {
                             if (image[marginProp] != 0) {
                                 imgStr += marginProp + ':' + image[marginProp] +
                                     'px;';
@@ -197,8 +195,8 @@ var RichEditor = new Class({
                         this.dirty = true;
                         return;
                     }
-                    else if(Browser.chrome){
-                        this.currentRange.insertNode(new Element('img', {'src': image.filename, 'width': image.width, 'height': image.height, 'align': image.align, 'alt': image.alt, 'border':0}));
+                    else if (Browser.chrome) {
+                        this.currentRange.insertNode(new Element('img', {'src':image.filename, 'width':image.width, 'height':image.height, 'align':image.align, 'alt':image.alt, 'border':0}));
                         this.dirty = true;
                         return;
                     }
@@ -231,10 +229,10 @@ var RichEditor = new Class({
                     }
                 }
             }.bind(this),
-            extraData : imageData
+            extraData:imageData
         });
     },
-    insertFileLink : function(data) {
+    insertFileLink:function (data) {
         if (!data)
             return;
         var filename = data['upl_path'];
@@ -273,19 +271,19 @@ var RichEditor = new Class({
             this.dirty = true;
         }
     },
-    insertExtFlash: function() {
+    insertExtFlash:function () {
         this.currentRange = false;
         if (Energine.supportContentEdit && !this.fallback_ie)
             this.currentRange = this._getSelection().createRange();
 
         ModalBox.open({
-            onClose : function(result) {
+            onClose:function (result) {
                 if (result && result.result) {
                     result = result.result;
                     if (this.fallback_ie) {
-                                this.textarea.insertAtCursor(result, true);
-                                return;
-                            }
+                        this.textarea.insertAtCursor(result, true);
+                        return;
+                    }
                     if (this.currentRange.select)
                         this.currentRange.select();
 
@@ -306,10 +304,9 @@ var RichEditor = new Class({
                     }
                 }
             }.bind(this),
-            'form': {
-                title: Energine.translations.get('TXT_INSERT_EMBED_CODE'),
-                field:
-                {
+            'form':{
+                title:Energine.translations.get('TXT_INSERT_EMBED_CODE'),
+                field:{
                     'name':'source',
                     'type':'textarea',
                     'title':Energine.translations.get('FIELD_EMBED_CODE')
@@ -320,7 +317,7 @@ var RichEditor = new Class({
             }
         });
     },
-    processPaste : function(event) {
+    processPaste:function (event) {
         var selection = this._getSelection();
 
         var orig_tr = selection.createRange();
@@ -338,28 +335,28 @@ var RichEditor = new Class({
 
         this.pasteArea.innerHTML = '';
     },
-    processPasteFF : function(event) {
-        (function() {
+    processPasteFF:function (event) {
+        (function () {
             this.area.innerHTML = this.cleanMarkup(this.area
                 .getProperty('componentPath'),
                 this.area.innerHTML, true);
 
         }).delay(300, this);
     },
-    cleanMarkup : function(path, data, aggressive) {
+    cleanMarkup:function (path, data, aggressive) {
         var result;
         new Request({
-            url : path + 'cleanup'
+            url:path + 'cleanup'
                 + (aggressive ? '?aggressive=1' : ''),
-            method : 'post',
-            async : false,
-            onSuccess : function(responseText) {
+            method:'post',
+            async:false,
+            onSuccess:function (responseText) {
                 result = responseText;
             }
         }).send('data=' + encodeURIComponent(data));
         return result;
     },
-    changeFormat : function(control) {
+    changeFormat:function (control) {
         var selectedOption = control.select.value;
         if (selectedOption == 'reset') {
             document.execCommand("FormatBlock", false, '<P>');
@@ -369,17 +366,17 @@ var RichEditor = new Class({
         }
         control.select.value = '';
     },
-    _getSelection : function() {
+    _getSelection:function () {
         var selection = (document.selection || window.getSelection());
 
         if (!isset(selection.type)) {
             selection.type = 'Text';
         }
         if (!isset(selection.createRange)) {
-            selection.createRange = function() {
+            selection.createRange = function () {
                 var range = this.getRangeAt(0);
 
-                range.parentElement = function() {
+                range.parentElement = function () {
                     // var result = this.startContainer;
                     var result = this.commonAncestorContainer;
                     if (result.nodeType == 3) {

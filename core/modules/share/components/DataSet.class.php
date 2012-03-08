@@ -18,6 +18,19 @@
  * @abstract
  */
 abstract class DataSet extends Component {
+    /**
+     * @var FileRepository
+     */
+    private $fileLibrary;
+
+    /**
+     * @var ImageManager
+     */
+    private $imageManager;
+    /**
+     * @var TextBlockSource
+     */
+    private $source;
 
     /**
      * Тип компонента - список
@@ -374,54 +387,64 @@ abstract class DataSet extends Component {
      * @access public
      */
     public function build() {
-        if (!$this->getBuilder()) {
-            throw new SystemException(
-                'ERR_DEV_NO_BUILDER:' . $this->getName() . ': ' .
-                        $this->getState(), SystemException::ERR_CRITICAL, $this->getName());
+        if ($this->getState() == 'fileLibrary') {
+            $result = $this->fileLibrary->build();
         }
-
-        // передаем данные и описание данных построителю
-        if ($this->getData() && method_exists($this->getBuilder(), 'setData')) {
-            $this->getBuilder()->setData($this->getData());
+        elseif ($this->getState() == 'imageManager') {
+            $result = $this->imageManager->build();
         }
-
-        if (method_exists($this->getBuilder(), 'setDataDescription'))
-            $this->getBuilder()->setDataDescription($this->getDataDescription());
-
-        // вызываем родительский метод построения
-        $result = parent::build();
-
-
-        if ($this->js) {
-            $result->documentElement->appendChild($result->importNode($this->js, true));
+        elseif ($this->getState() == 'source') {
+            $result = $this->source->build();
         }
-        $toolbars = $this->getToolbar();
+        else {
+            if (!$this->getBuilder()) {
+                throw new SystemException(
+                    'ERR_DEV_NO_BUILDER:' . $this->getName() . ': ' .
+                            $this->getState(), SystemException::ERR_CRITICAL, $this->getName());
+            }
 
-        if (!empty($toolbars))
-            foreach ($toolbars as $tb)
-                if ($toolbar = $tb->build()) {
-                    $result->documentElement->appendChild(
-                        $result->importNode($toolbar, true)
-                    );
+            // передаем данные и описание данных построителю
+            if ($this->getData() && method_exists($this->getBuilder(), 'setData')) {
+                $this->getBuilder()->setData($this->getData());
+            }
+
+            if (method_exists($this->getBuilder(), 'setDataDescription'))
+                $this->getBuilder()->setDataDescription($this->getDataDescription());
+
+            // вызываем родительский метод построения
+            $result = parent::build();
+
+
+            if ($this->js) {
+                $result->documentElement->appendChild($result->importNode($this->js, true));
+            }
+            $toolbars = $this->getToolbar();
+
+            if (!empty($toolbars))
+                foreach ($toolbars as $tb)
+                    if ($toolbar = $tb->build()) {
+                        $result->documentElement->appendChild(
+                            $result->importNode($toolbar, true)
+                        );
+                    }
+            if (
+                $this->pager && $this->getType() == self::COMPONENT_TYPE_LIST
+                &&
+                $pagerData = $this->pager->build()
+            ) {
+                $pager = $result->importNode($pagerData, true);
+                $result->documentElement->appendChild($pager);
+            }
+
+            //Работа с константами переводов
+            if (($methodConfig = $this->getConfig()->getCurrentStateConfig()) &&
+                    $methodConfig->translations
+            ) {
+                foreach ($methodConfig->translations->translation as $translation) {
+                    $this->addTranslation((string)$translation['const']);
                 }
-        if (
-            $this->pager && $this->getType() == self::COMPONENT_TYPE_LIST
-            &&
-            $pagerData = $this->pager->build()
-        ) {
-            $pager = $result->importNode($pagerData, true);
-            $result->documentElement->appendChild($pager);
-        }
-
-        //Работа с константами переводов
-        if (($methodConfig = $this->getConfig()->getCurrentStateConfig()) &&
-                $methodConfig->translations
-        ) {
-            foreach ($methodConfig->translations->translation as $translation) {
-                $this->addTranslation((string)$translation['const']);
             }
         }
-
         return $result;
     }
 
@@ -633,6 +656,34 @@ abstract class DataSet extends Component {
             'BTN_EXT_FLASH'
         );
         call_user_func_array(array($this, 'addTranslation'), $translations);
+    }
+
+    /**
+     * Выводит компонент библиотеки файлов
+     *
+     * @return void
+     * @access protected
+     */
+    protected function fileLibrary() {
+        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
+        $this->fileLibrary->run();
+    }
+
+    protected function source() {
+        $this->source = $this->document->componentManager->createComponent('textblocksource', 'share', 'TextBlockSource', null);
+        $this->source->run();
+    }
+
+    /**
+     * Выводит компонент менеджер изображений
+     *
+     * @return void
+     * @access protected
+     */
+    protected function imageManager() {
+        $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
+        $this->imageManager->run();
     }
 
     /**

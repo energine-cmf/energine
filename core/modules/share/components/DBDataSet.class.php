@@ -67,17 +67,17 @@ class DBDataSet extends DataSet {
     private $previousState = false;
 
     /*
-     * @var FileLibrary
+     * @var FileRepository
      */
-    private $fileLibrary;
+    //private $fileLibrary;
     /*
      * @var ImageManager
      */
-    private $imageManager;
+    //private $imageManager;
     /*
      * @var source
      */
-    private $source;
+    //private $source;
 
     /**
      * Конструктор класса
@@ -847,12 +847,12 @@ class DBDataSet extends DataSet {
      * @return void
      * @access protected
      */
-    protected function fileLibrary() {
+    /*protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileLibrary', array('config' => 'core/modules/share/config/FileLibraryMin.component.xml'));
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
         //$this->fileLibrary->getState();
         $this->fileLibrary->run();
-    }
+    }*/
 
     /**
      * Выводит компонент: менеджер изображений
@@ -860,11 +860,11 @@ class DBDataSet extends DataSet {
      * @return void
      * @access protected
      */
-    protected function imageManager() {
+    /*protected function imageManager() {
         $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
         //$this->imageManager->getState();
         $this->imageManager->run();
-    }
+    }*/
 
     /**
      * Displays source of text.
@@ -873,12 +873,12 @@ class DBDataSet extends DataSet {
      * @access protected
      * @TODO: move this method to more suitable place.
      */
-    protected function source() {
+    /*protected function source() {
         $this->source = $this->document->componentManager->createComponent('textblocksource', 'share', 'TextBlockSource', null);
         $this->source->run();
-    }
+    }*/
 
-    public function build() {
+    /*public function build() {
         switch ($this->getState()) {
             case 'imageManager':
                 return $this->imageManager->build();
@@ -895,6 +895,6 @@ class DBDataSet extends DataSet {
 
         $result = parent::build();
         return $result;
-    }
+    }*/
 }
 

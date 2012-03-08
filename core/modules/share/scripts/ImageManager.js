@@ -28,22 +28,18 @@ var ImageManager = new Class({
     },
 
     updateForm: function() {
-		if (this.image.insertThumbnail) {
-			$('filename').value = this.image.thumbnail;
-			$('thumbnail').src  = this.image.filename;
-		}
-		else {
-			$('filename').value = this.image['upl_path'];
-			$('thumbnail').src  = this.image['upl_data'].thumb;
-		}
-		$('width').value  = this.image['upl_data'].width || 0;
-		$('height').value = this.image['upl_data'].height || 0;
+        console.log(this.image)
+		$('filename').value = this.image['upl_path'];
+		$('thumbnail').src  = Energine.static + 'resizer/w40-h40/' + this.image['upl_path'];
+
+		$('width').value  = this.image['upl_width'] || 0;
+		$('height').value = this.image['upl_height'] || 0;
 		$('align').value  = $('align').value  || this.image.align || '';
         this.imageMargins.each(function(propertyName){
             $(propertyName).value = $(propertyName).value || this.image['propertyName'] || '0';            
             
         }, this);
-		$('alt').value    = $('alt').value    || this.image['upl_name'] || '';
+		$('alt').value    = $('alt').value    || this.image['upl_title'] || '';
 		//$('insThumbnail').checked = this.image.insertThumbnail;
     },
 

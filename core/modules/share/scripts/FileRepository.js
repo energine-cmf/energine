@@ -152,7 +152,10 @@ var FileRepository = new Class({
         this.grid.clear();
         var level = '', cookiePID;
 
-        if (this.currentPID) {
+        if (this.currentPID === 0) {
+            level = '';
+        }
+        else if (this.currentPID) {
             level = this.currentPID + '/';
         }
         else if (cookiePID = Cookie.read(FILE_COOKIE_NAME)) {

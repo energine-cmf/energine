@@ -213,7 +213,7 @@ class FileRepository extends Grid {
                 }
 
                 if (!file_exists($dir)) {
-//                    stop($dir);
+                    //                    stop($dir);
                     mkdir($dir, 0777, true);
                 }
                 if (!file_put_contents($fullFileName, self::cleanFileData($thumbData))) {
@@ -350,8 +350,12 @@ class FileRepository extends Grid {
 
         if ($uplPID) {
             $data = $this->getData();
+            $uplID = $this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_id' => $sp['pid']));
+            if(is_null($uplID)){
+                $uplID = 0;
+            }
             $newData = array(
-                'upl_id' => ($uplID = $this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_id' => $sp['pid']))),
+                'upl_id' => $uplID,
                 'upl_pid' => $uplPID,
                 'upl_title' => '...',
                 'upl_internal_type' => self::TYPE_FOLDER_UP

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <uri_patterns>
+            <pattern>/show/</pattern>
+            <pattern>/show/[site_id]/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="DivSelector"/>
+        </javascript>
+        <fields>
+            <field name="smap_id"/>
+            <field name="smap_pid"/>
+            <field name="lang_id"/>
+            <field name="smap_name"/>
+            <field name="site"/>
+        </fields>
+        <toolbar>
+            <control id="select" title="BTN_SELECT" type="button" onclick="select"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="getRawData">
+        <uri_patterns>
+            <pattern>/[site_id]/get-data/</pattern>
+            <pattern>/[site_id]/get-data/[string]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getProperties">
+        <uri_patterns>
+            <pattern>/get-node-data/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

@@ -323,7 +323,11 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                 }
             }
             else {
-                $result .= DBWorker::_translate('TXT_WEEKDAY_'.date('w', $date)).', '.date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                $dayNum = date('w', $date);
+                if($dayNum == 0){
+                    $dayNum = 7;
+                }
+                $result .= DBWorker::_translate('TXT_WEEKDAY_'.$dayNum).', '.date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
                 if (date('Y', $date) != date('Y')) {
                     $result .= ' ' . date('Y', $date);
                 }

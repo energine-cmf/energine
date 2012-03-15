@@ -1,18 +1,18 @@
 ScriptLoader.load('TabPane', 'Toolbar', 'ModalBox', 'TreeView');
 
 var DivManager = new Class({
-    initialize: function(element) {
+    initialize:function (element) {
         Asset.css('div.css');
         this.element = $(element);
         this.tabPane = new TabPane(this.element);
 
         this.langId = this.element.getProperty('lang_id');
         new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
-                new Element('li').setProperty('id', 'treeRoot').adopt(
-                        new Element('a', {'href': '#'}).set('html', Energine.translations.get('TXT_DIVISIONS'))
-                        )
-                );
-        this.tree = new TreeView('divTree', {dblClick: this.go.bind(this)});
+            new Element('li').setProperty('id', 'treeRoot').adopt(
+                new Element('a', {'href':'#'}).set('html', Energine.translations.get('TXT_DIVISIONS'))
+            )
+        );
+        this.tree = new TreeView('divTree', {dblClick:this.go.bind(this)});
         this.treeRoot = this.tree.getSelectedNode();
         //this.treeRoot.onSelect = this.onSelectNode.bind(this);
         this.singlePath = this.element.getProperty('single_template');
@@ -25,7 +25,7 @@ var DivManager = new Class({
         }
     },
 
-    attachToolbar: function(toolbar) {
+    attachToolbar:function (toolbar) {
         this.toolbar = toolbar;
         var toolbarContainer = this.element.getElement('.e-pane-b-toolbar');
         if (toolbarContainer) {
@@ -36,7 +36,7 @@ var DivManager = new Class({
         }
         this.toolbar.disableControls();
         var btn;
-        ['add', 'select', 'close', 'edit'].each(function(btnID) {
+        ['add', 'select', 'close', 'edit'].each(function (btnID) {
             var btn;
             if (btn = this.toolbar.getControlById(btnID)) {
                 btn.enable();
@@ -45,28 +45,28 @@ var DivManager = new Class({
         toolbar.bindTo(this);
     },
 
-    loadTree: function() {
+    loadTree:function () {
         this.request(
-                this.singlePath + this.site + '/get-data/',
-                'languageID=' + this.langId,
-                function(response) {
-                    this.buildTree(response.data, (response.current) ? response.current : null);
+            this.singlePath + this.site + '/get-data/',
+            'languageID=' + this.langId,
+            function (response) {
+                this.buildTree(response.data, (response.current) ? response.current : null);
 
-                    /* растягиваем всю форму до высоты видимого окна */
-                    if (!(document.getElement('.e-singlemode-layout'))) {
-                        this.pane = this.element;
-                        this.paneContent = this.pane.getElement('.e-pane-item');
-                        this.treeContainer =
-                                this.pane.getElement('.e-divtree-select');
-                        this.minPaneHeight = 300;
-                        this.fitTreeFormSize();
-                        new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
-                    }
-                }.bind(this)
-                );
+                /* растягиваем всю форму до высоты видимого окна */
+                if (!(document.getElement('.e-singlemode-layout'))) {
+                    this.pane = this.element;
+                    this.paneContent = this.pane.getElement('.e-pane-item');
+                    this.treeContainer =
+                        this.pane.getElement('.e-divtree-select');
+                    this.minPaneHeight = 300;
+                    this.fitTreeFormSize();
+                    new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
+                }
+            }.bind(this)
+        );
     },
 
-    buildTree: function(nodes, currentNodeID) {
+    buildTree:function (nodes, currentNodeID) {
         var treeInfo = {};
         for (var i = 0, len = nodes.length; i < len; i++) {
             var node = nodes[i];
@@ -75,7 +75,7 @@ var DivManager = new Class({
             treeInfo[pid].push(node);
         }
 
-        var lambda = function(nodeId) {
+        var lambda = function (nodeId) {
 
             var node = this.tree.getNodeById(nodeId);
 
@@ -83,8 +83,8 @@ var DivManager = new Class({
             for (var i = 0, len = treeInfo[nodeId].length; i < len; i++) {
                 var child = treeInfo[nodeId][i];
                 var icon = (child['tmpl_icon']) ? Energine.base +
-                        child['tmpl_icon'] : Energine.base +
-                        'templates/icons/empty.icon.gif';
+                    child['tmpl_icon'] : Energine.base +
+                    'templates/icons/empty.icon.gif';
                 var childId = child['smap_id'];
                 if (!child['smap_pid']) {
                     this.treeRoot.setName(child['smap_name']);
@@ -95,13 +95,12 @@ var DivManager = new Class({
                 }
                 else {
                     var newNode = new TreeView.Node({
-                        id: childId,
-                        name: child['smap_name'],
+                        id:childId,
+                        name:child['smap_name'],
                         data:{
-                            'class':
-                                    ((childId ==
-                                            currentNodeID) ? ' current' : ''),
-                            'icon': icon
+                            'class':((childId ==
+                                currentNodeID) ? ' current' : ''),
+                            'icon':icon
                         }
                     }, this.tree);
                     newNode.setData(child);
@@ -121,7 +120,7 @@ var DivManager = new Class({
             this.tree.getNodeById(currentNodeID).select();
     },
 
-    fitTreeFormSize: function() {
+    fitTreeFormSize:function () {
         var windowHeight = window.getSize().y - 10;
         var paneHeight = this.pane.getSize().y;
         var treeContainerHeight = this.treeContainer.getSize().y;
@@ -133,7 +132,7 @@ var DivManager = new Class({
             }
             else {
                 this.pane.setStyle('height', treeContainerHeight +
-                        paneOthersHeight);
+                    paneOthersHeight);
             }
         }
         else {
@@ -141,7 +140,7 @@ var DivManager = new Class({
         }
     },
 
-    reload: function(really) {
+    reload:function (really) {
         if (really) {
             this.treeRoot.removeChilds();
             this.treeRoot.id = 'treeRoot';
@@ -149,54 +148,54 @@ var DivManager = new Class({
         }
     },
 
-    add: function() {
+    add:function () {
         var nodeId = this.tree.getSelectedNode().getId();
         ModalBox.open({
-            url: this.singlePath + 'add/' + nodeId + '/',
-            onClose: function(returnValue) {
+            url:this.singlePath + 'add/' + nodeId + '/',
+            onClose:function (returnValue) {
                 if (returnValue) {
                     if (returnValue.afterClose == 'add') {
                         this.add();
                     }
                     else if (returnValue.afterClose == 'go') {
                         window.top.location.href =
-                                Energine.base + returnValue.url;
+                            Energine.base + returnValue.url;
                     }
                     else {
                         this.reload(true);
                     }
                 }
             }.bind(this),
-            extraData: this.tree.getSelectedNode()
+            extraData:this.tree.getSelectedNode()
         });
     },
 
-    edit: function() {
+    edit:function () {
         var nodeId = this.tree.getSelectedNode().getId();
         ModalBox.open({
-            url: this.singlePath + nodeId + '/edit',
-            onClose: this.refreshNode.bind(this),
-            extraData: this.tree.getSelectedNode()
+            url:this.singlePath + nodeId + '/edit',
+            onClose:this.refreshNode.bind(this),
+            extraData:this.tree.getSelectedNode()
         });
     },
 
-    del: function() {
+    del:function () {
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
-                'Do you really want to delete record?';
+            'Do you really want to delete record?';
         if (!confirm(MSG_CONFIRM_DELETE)) return;
 
         var nodeId = this.tree.getSelectedNode().getId();
         this.request(
-                this.singlePath + nodeId + '/delete',
-                '',
-                function(response) {
-                    this.tree.getSelectedNode().remove();
-                    this.treeRoot.select();
-                }.bind(this)
-                );
+            this.singlePath + nodeId + '/delete',
+            '',
+            function (response) {
+                this.tree.getSelectedNode().remove();
+                this.treeRoot.select();
+            }.bind(this)
+        );
     },
 
-    changeOrder: function(response) {
+    changeOrder:function (response) {
         if (!response.result) return;
         if (response.dir == '<') {
             this.tree.getSelectedNode().moveUp();
@@ -206,38 +205,42 @@ var DivManager = new Class({
         }
     },
 
-    up: function() {
+    up:function () {
         var nodeId = this.tree.getSelectedNode().getId();
         this.request(this.singlePath + nodeId +
-                '/up', '', this.changeOrder.bind(this));
+            '/up', '', this.changeOrder.bind(this));
     },
 
-    down: function() {
+    down:function () {
         var nodeId = this.tree.getSelectedNode().getId();
         this.request(this.singlePath + nodeId +
-                '/down', '', this.changeOrder.bind(this));
+            '/down', '', this.changeOrder.bind(this));
     },
 
-    select: function() {
+    select:function () {
         var nodeData = this.tree.getSelectedNode().getData();
+        if ($('site_selector') && nodeData) {
+            nodeData.site_name = $('site_selector').getSelected()[0].get('text');
+        }
+
         ModalBox.setReturnValue(nodeData);
         ModalBox.close();
     },
 
-    close: function() {
+    close:function () {
         ModalBox.close();
     },
 
-    go: function () {
+    go:function () {
         var nodeData = this.tree.getSelectedNode().getData();
 
         if (nodeData.smap_segment || !nodeData.smap_pid) {
             window.top.document.location =
-                    ((nodeData.site) ? nodeData.site : Energine.base) +
-                            nodeData.smap_segment;
+                ((nodeData.site) ? nodeData.site : Energine.base) +
+                    nodeData.smap_segment;
         }
     },
-    onSelectNode: function (node) {
+    onSelectNode:function (node) {
         if (this.toolbar) {
             var data = node.getData(), btn;
             var addBtn = this.toolbar.getControlById('add');
@@ -259,26 +262,26 @@ var DivManager = new Class({
             }
         }
     },
-    refreshNode: function() {
+    refreshNode:function () {
         var nodeId = this.tree.getSelectedNode().getId();
         this.request(
-                this.singlePath + 'get-node-data',
-                'languageID=' + this.langId + '&id=' + nodeId,
-                function(response) {
-                    if (response.data.smap_pid == null) {
-                        response.data.smap_pid = '';
-                    }
-                    var smapPid = response.data.smap_pid;
-                    var currentNode = this.tree.getSelectedNode();
-                    if (smapPid != currentNode.getData().smap_pid) {
-                        var parentNode = (smapPid) ? this.tree.getNodeById(smapPid) : this.treeRoot;
-                        this.tree.expandToNode(parentNode);
-                        currentNode.injectInside(parentNode);
-                    }
-                    currentNode.setData(response.data);
-                    currentNode.setName(response.data.smap_name);
-                }.bind(this)
-                );
+            this.singlePath + 'get-node-data',
+            'languageID=' + this.langId + '&id=' + nodeId,
+            function (response) {
+                if (response.data.smap_pid == null) {
+                    response.data.smap_pid = '';
+                }
+                var smapPid = response.data.smap_pid;
+                var currentNode = this.tree.getSelectedNode();
+                if (smapPid != currentNode.getData().smap_pid) {
+                    var parentNode = (smapPid) ? this.tree.getNodeById(smapPid) : this.treeRoot;
+                    this.tree.expandToNode(parentNode);
+                    currentNode.injectInside(parentNode);
+                }
+                currentNode.setData(response.data);
+                currentNode.setName(response.data.smap_name);
+            }.bind(this)
+        );
     }
 });
 

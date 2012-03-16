@@ -30,8 +30,8 @@
             </div>
             <div class="e-pane-content">
                 <div id="{$IDD}">
-                    <div>
-                        <img id="thumbnail" width="50" height="50" alt=""  style="border: thin inset; width: auto; display: block;"/>
+                    <div style="max-height:300px; max-width:650px; overflow:auto;border: thin inset; width: auto;">
+                        <img id="thumbnail" alt=""  style="display: block;"/>
                     </div>
                     <!--
                     <div style="padding-top:20px;">

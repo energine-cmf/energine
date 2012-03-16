@@ -30,7 +30,7 @@ var ImageManager = new Class({
     updateForm: function() {
         console.log(this.image)
 		$('filename').value = this.image['upl_path'];
-		$('thumbnail').src  = Energine.static + 'resizer/w40-h40/' + this.image['upl_path'];
+		$('thumbnail').src  = Energine.static /*+ 'resizer/w40-h40/'*/ + this.image['upl_path'];
 
 		$('width').value  = this.image['upl_width'] || 0;
 		$('height').value = this.image['upl_height'] || 0;

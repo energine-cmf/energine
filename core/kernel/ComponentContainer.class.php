@@ -16,6 +16,7 @@
  * @author dr.Pavka
  */
 class ComponentContainer extends Object implements IBlock, Iterator{
+    private  $enabled= true;
     /**
      * Свойства контейнера
      *
@@ -185,6 +186,13 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         return $this->blocks[$this->childNames[$this->iteratorIndex]];
     }
 
+    public function disable(){
+        $this->enabled = false;
+
+        foreach ($this->blocks as $block) {
+            $block->disable();
+        }
+    }
     /**
      * Метод всегда возвращает true
      * Используется для единообразного вызова наследников Block
@@ -192,7 +200,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
      * @return bool
      */
     public function enabled() {
-        return true;
+        return $this->enabled;
     }
 
     /**

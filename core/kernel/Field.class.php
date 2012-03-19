@@ -17,7 +17,7 @@
  * @subpackage kernel
  * @author dr.Pavka
  */
-class Field extends Object implements Iterator{
+class Field extends Object implements Iterator {
 
     /**
      * @access private
@@ -79,12 +79,19 @@ class Field extends Object implements Iterator{
      * @param mixed $data
      * @param bool $setForAll - установить для всех строчек
      *  только для перепределения данных
-     *  в случае если поле только создано то нужно заполнять через итератор 
+     *  в случае если поле только создано то нужно заполнять через итератор
      * @return Field
      */
     public function setData($data, $setForAll = false) {
         if ($setForAll && $this->getRowCount()) {
-        	$data = array_fill(0, $this->getRowCount(), $data);
+            $data = array_fill(0, $this->getRowCount(), $data);
+        }
+        elseif ($setForAll && !$this->getRowCount() && !is_array($data)) {
+            $rowData = $data;
+            $data = array();
+            for ($i = 0; $i < sizeof(E()->getLanguage()->getLanguages()); $i++) {
+                $data[$i] = $rowData;
+            }
         }
         elseif (!is_array($data)) {
             $data = array($data);
@@ -128,8 +135,8 @@ class Field extends Object implements Iterator{
     public function removeRowData($rowIndex) {
         $result = false;
         if (isset($this->data[$rowIndex])) {
-        	unset($this->data[$rowIndex]);
-        	$result = true;
+            unset($this->data[$rowIndex]);
+            $result = true;
         }
         return $result;
     }
@@ -142,7 +149,7 @@ class Field extends Object implements Iterator{
      * @return void
      */
     public function addRowData($data, $toEnd = true) {
-        if($toEnd)
+        if ($toEnd)
             $this->data[] = $data;
         else {
             array_unshift($this->data, $data);
@@ -160,8 +167,8 @@ class Field extends Object implements Iterator{
     public function setRowData($rowIndex, $newData) {
         $result = false;
         //if (isset($this->data[$rowIndex])) {
-            $this->data[$rowIndex] = $newData;
-            $result = true;
+        $this->data[$rowIndex] = $newData;
+        $result = true;
         //}
         return $result;
     }

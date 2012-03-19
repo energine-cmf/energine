@@ -164,6 +164,11 @@ class FieldDescription extends DBWorker implements Iterator
      * Поле типа список пунктов, используется для тегов
      */
     const FIELD_TYPE_TEXTBOX_LIST = 'textbox';
+    /**
+     * Поле - выбор раздела
+     * Должен быть предусмотрен проброс через /selector/
+     */
+    const FIELD_TYPE_SMAP_SELECTOR = 'smap';
     /*
     * Режимы отображения полей:
     */

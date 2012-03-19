@@ -102,7 +102,7 @@ class FileRepoInfo extends Object {
                         $result['height'] = $tmp[1];
                         break;
                     case 'video/x-flv':
-
+                    case 'video/mp4':
                         $result['type'] = self::META_TYPE_VIDEO;
                         break;
                     case 'text/csv':

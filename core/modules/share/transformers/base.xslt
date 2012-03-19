@@ -149,12 +149,12 @@
                 </xsl:if>
             </img>
         </div>
-        <xsl:if test=".!=''">
+        <!--<xsl:if test=".!=''">
             <a href="#"
                onclick="{generate-id(ancestor::recordset)}.removeFilePreview.run(['{generate-id(.)}', '{generate-id(.)}_preview', this], {generate-id(ancestor::recordset)}); $(this).destroy();new Event(arguments[0] || window.event).stop();">
                 <xsl:value-of select="@deleteFileTitle"/>
             </a>
-        </xsl:if>
+        </xsl:if>-->
         <input class="text inp_file" readonly="readonly">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="id">
@@ -452,6 +452,17 @@
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:value-of select="."/>
         </textarea>
+    </xsl:template>
+
+    <xsl:template match="field[(@type='smap') and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]">
+        <input>
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">hidden</xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
+        </input>
+        <input type="text" id="{generate-id(.)}_name" value="{@smap_name}" readonly="readonly" class="text inp_string" style="width:200px;"/>
+        <button type="button" style="width:48px;" class="smap_selector" smap_name="{generate-id(.)}_name" smap_id="{generate-id(.)}_id" field="{@name}">...
+        </button>
     </xsl:template>
 
     <!-- /компонент FileLibrary -->

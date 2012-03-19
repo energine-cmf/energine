@@ -221,6 +221,7 @@ var DivManager = new Class({
         var nodeData = this.tree.getSelectedNode().getData();
         if ($('site_selector') && nodeData) {
             nodeData.site_name = $('site_selector').getSelected()[0].get('text');
+            nodeData.site_id = $('site_selector').getSelected()[0].get('value');
         }
 
         ModalBox.setReturnValue(nodeData);

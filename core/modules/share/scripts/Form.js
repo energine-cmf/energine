@@ -15,12 +15,16 @@ var Form = new Class({
         this.validator = new Validator(this.form, this.tabPane);
 
         this.richEditors = [], this.uploaders = [], this.textBoxes =
-            [], this.dateControls = [];
+            [], this.dateControls = []/*, this.smapSelectors = []*/;
 
         this.form.getElements('textarea.richEditor').each(function (textarea) {
             this.richEditors.push(new Form.RichEditor(textarea, this,
                 this.fallback_ie));
 
+        }, this);
+
+        this.form.getElements('.smap_selector').each(function(el){
+            new Form.SmapSelector(el, this);
         }, this);
 
         this.componentElement.getElements('.uploader').each(function (uploader) {
@@ -328,6 +332,41 @@ Form.Sked = new Class({
         this._zebraRows();
     }
 });
+
+Form.SmapSelector = new Class({
+    initialize:function (selector, form) {
+        var selector = $(selector);
+        this.form = form;
+        this.field = selector.getProperty('field');
+
+        selector.addEvent('click', function (e) {
+            Energine.cancelEvent(e);
+            this.smapName = $($(e.target).getProperty('smap_name'));
+            this.smapId = $($(e.target).getProperty('smap_id'));
+            this.showSelector.apply(this);
+        }.bind(this));
+    },
+
+    showSelector:function () {
+        ModalBox.open({
+            url:this.form.componentElement.getProperty('template') + 'selector/',
+            onClose:this.setName.bind(this)
+        });
+    },
+    setName:function (result) {
+        if (result) {
+            var name = '';
+            if(result.site_name){
+                name += result.site_name + ' : ';
+            }
+            name += result.smap_name;
+            this.smapName.set('value',name);
+            this.smapId.set('value',result.smap_id);
+        }
+
+    }
+});
+
 Form.AttachmentPane = new Class({
     Extends:Form.Uploader,
     initialize:function (form) {

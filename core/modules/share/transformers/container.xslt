@@ -56,9 +56,9 @@
     <!-- Блок - контейнер для визуального отделения одного или группы компонентов -->
     <xsl:template match="container[@block]">
         <xsl:param name="HOLDER_NAME"/>
-        <xsl:if test="($COMPONENTS[@name='adminPanel']) or (component[not(@class='TextBlock') and not(recordset[@empty])]) or (component[@class='TextBlock' and (@editable or recordset/record/field != '')])">
+        <xsl:if test="($COMPONENTS[@name='adminPanel']) or (@block='alfa') or (component[not(@class='TextBlock') and not(recordset[@empty])]) or (component[@class='TextBlock' and (@editable or recordset/record/field != '')])">
             <div>
-                <xsl:attribute name="class">block<xsl:if test="@html_class"><xsl:text disable-output-escaping="yes"> </xsl:text><xsl:value-of select="@html_class"/></xsl:if><xsl:if test="@widget and $COMPONENTS[@name='adminPanel']"> e-widget</xsl:if></xsl:attribute>
+                <xsl:attribute name="class">block<xsl:if test="@block='alfa'"> alfa_block</xsl:if><xsl:if test="@html_class"><xsl:text> </xsl:text><xsl:value-of select="@html_class"/></xsl:if><xsl:if test="@widget and $COMPONENTS[@name='adminPanel']"> e-widget</xsl:if></xsl:attribute>
                 <xsl:if test="@widget and $COMPONENTS[@name='adminPanel']">
                     <xsl:attribute name="widget">
                         <xsl:choose>
@@ -70,39 +70,10 @@
                         <xsl:attribute name="static">static</xsl:attribute>
                     </xsl:if>
                 </xsl:if>
-                <xsl:apply-templates select="component[1]" mode="block_header"/>
-                <div class="block_content clearfix">
-                    <xsl:apply-templates mode="block_content"/>
-                </div>
+                <xsl:apply-templates select="." mode="block_header"/>
+                <xsl:apply-templates select="." mode="block_content"/>
             </div>
         </xsl:if>
-    </xsl:template>
-
-    <!-- Блок alfa - главный на странице, в него выводится заголовок страницы -->
-    <xsl:template match="container[@block='alfa']">
-        <xsl:param name="HOLDER_NAME"/>
-        <div>
-            <xsl:attribute name="class">block alfa_block<xsl:if test="@html_class"><xsl:text disable-output-escaping="yes"> </xsl:text><xsl:value-of select="@html_class"/></xsl:if><xsl:if test="@widget and $COMPONENTS[@name='adminPanel']"> e-widget</xsl:if></xsl:attribute>
-            <xsl:if test="@widget and $COMPONENTS[@name='adminPanel']">
-                <xsl:attribute name="widget">
-                    <xsl:choose>
-                        <xsl:when test="$HOLDER_NAME"><xsl:value-of select="$HOLDER_NAME"/></xsl:when>
-                        <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
-                    </xsl:choose>
-                </xsl:attribute>
-                <xsl:if test="@widget='static'">
-                    <xsl:attribute name="static">static</xsl:attribute>
-                </xsl:if>
-            </xsl:if>
-            <xsl:if test="$DOC_PROPS[@name='default'] != '1'">
-                <div class="block_header clearfix">
-                    <h1 class="block_title"><xsl:value-of select="$DOC_PROPS[@name='title']"/></h1>
-                </div>
-            </xsl:if>
-            <div class="block_content clearfix">
-                <xsl:apply-templates mode="block_content"/>
-            </div>
-        </div>
     </xsl:template>
 
     <!--
@@ -117,17 +88,29 @@
     </xsl:template>
 
     <!-- Заголовок блока по-умолчанию -->
-    <xsl:template match="container | component" mode="block_header">
-        <xsl:if test="@title">
+    <xsl:template match="container[@block]" mode="block_header">
+        <xsl:variable name="MAIN_COMPONENT" select="component[1]"/>
+        <xsl:if test="$MAIN_COMPONENT/@title">
             <div class="block_header clearfix">                
-                <h2 class="block_title"><xsl:value-of select="@title"/></h2>
+                <h2 class="block_title"><xsl:value-of select="$MAIN_COMPONENT/@title"/></h2>
             </div>
         </xsl:if>
     </xsl:template>
 
     <!-- Контент блока по-умолчанию -->
-    <xsl:template match="container | component" mode="block_content">
-        <xsl:apply-templates select="."/>
+    <xsl:template match="container[@block]" mode="block_content">
+        <div class="block_content clearfix">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+
+    <!-- Заголовок alfa-блока -->
+    <xsl:template match="container[@block='alfa']" mode="block_header">
+        <xsl:if test="$DOC_PROPS[@name='default'] != 1">
+            <div class="block_header clearfix">
+                <h1 class="block_title"><xsl:value-of select="$DOC_PROPS[@name='title']"/></h1>
+            </div>
+        </xsl:if>
     </xsl:template>
 
     <!-- Рекламный блок в левой колонке -->

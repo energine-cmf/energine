@@ -33,7 +33,8 @@ var LayoutManager = new Class({
         /**
          * нас интересует только узел content
          */
-        this.xml = $(xml).getElement('content');
+
+        this.xml = $(xml.getElementsByTagName('content')[0]);
         //Проходимся по всем контейнерам контента
         this.xml.getElements('container').each(function(xml) {
             //И создаем для каждого контейнера, который выступает в качестве колонки  - соответствующий объект колонки

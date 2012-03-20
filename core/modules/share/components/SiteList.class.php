@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Содержит класс SiteList
  *
@@ -37,22 +37,22 @@
         'recordsPerPage' => false
         ));
         return $result;
-    }    
-    
+    }
+
     /**
       * Загружаем данные SiteManager
-      * 
+      *
       * @return array
       * @access protected
       */
     protected function loadData(){
     	$result = array();
     	$filteredIDs = true;
-    	
+
     	if($this->getParam('tags'))
             $filteredIDs = TagManager::getFilter($this->getParam('tags'), 'share_sites_tags');
-        
-        if(!empty($filteredIDs))    	
+
+        if(!empty($filteredIDs))
         foreach(E()->getSiteManager() as $siteID => $site){
         	if(
         	   ($filteredIDs !== true)  && in_array($siteID, $filteredIDs)
@@ -62,12 +62,12 @@
 	            $result[] = array(
 	                'site_id' => $site->id,
 	                'site_name' => $site->name,
-	                'site_host' => $site->protocol.'://'.$site->host.(($site->port != 80)?':'.$site->port:'').$site->root    
+	                'site_host' => $site->protocol.'://'.$site->host.(($site->port != 80)?':'.$site->port:'').$site->root
                 );
-        	}    	
+        	}
         }
         return $result;
     }
-    
-    
+
+
 }

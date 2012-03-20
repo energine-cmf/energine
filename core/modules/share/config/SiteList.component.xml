@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-		<state name="main">
-			<fields>
-				<field name="site_id" type="int"></field>
-                <field name="site_name" type="string"></field>				
-                <field name="site_host" type="string"></field>
-			</fields>
-		</state>
-
+    <state name="main">
+        <fields>
+            <field name="site_id" type="int"></field>
+            <field name="site_name" type="string"></field>
+            <field name="site_host" type="string"></field>
+        </fields>
+    </state>
 </configuration>

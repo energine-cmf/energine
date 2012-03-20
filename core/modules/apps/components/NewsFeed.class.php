@@ -32,7 +32,6 @@ class NewsFeed extends ExtendedFeed {
      *
      * @param string $name
      * @param string $module
-
      * @param array $params
      * @access public
      */
@@ -43,6 +42,7 @@ class NewsFeed extends ExtendedFeed {
         if (!$this->document->getProperty('single') && $this->getParam('hasCalendar'))
             $this->createCalendar();
     }
+
     /**
      * Определяет допустимые параметры компонента и их значения по-умолчанию
      * в виде массива array(paramName => defaultValue).
@@ -58,9 +58,10 @@ class NewsFeed extends ExtendedFeed {
         return $result;
     }
 
-    protected function createBuilder(){
+    protected function createBuilder() {
         return new SimpleBuilder();
     }
+
     /**
      * Все новости которые имеют будущую дату выводятся только админам
      *
@@ -77,9 +78,15 @@ class NewsFeed extends ExtendedFeed {
         return $res;
     }
 
+    /**
+     * Перед вызовом родителя
+     * добавляем ограничения
+     * После вызова - добавляем в пейджер
+     */
     protected function main() {
         $ap = $this->getStateParams(true);
-        foreach (array(
+
+        foreach ($dateArr = array(
             'year' => 'YEAR(%s)',
             'month' => 'MONTH(%s)',
             'day' => 'DAY(%s)'
@@ -93,6 +100,25 @@ class NewsFeed extends ExtendedFeed {
             }
         }
         parent::main();
+        if ($this->pager) {
+            $additionalURL = array();
+            foreach (array_keys($dateArr) as $parameterName) {
+                if (isset($ap[$parameterName])) {
+                    array_push($additionalURL, $ap[$parameterName]);
+                }
+                else {
+                    break;
+                }
+            }
+            if ($additionalURL) {
+                unset($ap['pageNumber']);
+                $pageTitle = $this->translate('TXT_NEWS_BY_DATE') . ': ' . implode('/', array_reverse($ap));
+                E()->getDocument()->componentManager->getBlockByName('breadCrumbs')->addCrumb(null, $pageTitle);
+                E()->getDocument()->setProperty('title', $pageTitle);
+                $additionalURL = implode('/', $additionalURL) . '/';
+                $this->pager->setProperty('additional_url', $additionalURL);
+            }
+        }
     }
 
 
@@ -145,26 +171,26 @@ class NewsFeed extends ExtendedFeed {
      * @access protected
      */
 
-    protected function tag(){
+    protected function tag() {
         $tagID = $this->getStateParams(true);
         $tagID = (int)$tagID['tagID'];
-        $newsIDs = $this->dbh->select($this->getTableName().'_tags','news_id',array('tag_id' => $tagID));
-        if(is_array($newsIDs)){
-            $newsIDs = array_keys(convertDBResult($newsIDs,'news_id',true));
-            $this->addFilterCondition(array($this->getTableName().'.news_id' => $newsIDs));
+        $newsIDs = $this->dbh->select($this->getTableName() . '_tags', 'news_id', array('tag_id' => $tagID));
+        if (is_array($newsIDs)) {
+            $newsIDs = array_keys(convertDBResult($newsIDs, 'news_id', true));
+            $this->addFilterCondition(array($this->getTableName() . '.news_id' => $newsIDs));
             $tagName = simplifyDBResult(
-                $this->dbh->select('share_tags','tag_name',array('tag_id' => $tagID)),
+                $this->dbh->select('share_tags', 'tag_name', array('tag_id' => $tagID)),
                 'tag_name',
                 true);
-            $pageTitle = $this->translate('TXT_NEWS_BY_TAG').': '.$tagName;
-            E()->getDocument()->componentManager->getBlockByName('breadCrumbs')->addCrumb(null,$pageTitle);
-            E()->getDocument()->setProperty('title',$pageTitle);
+            $pageTitle = $this->translate('TXT_NEWS_BY_TAG') . ': ' . $tagName;
+            E()->getDocument()->componentManager->getBlockByName('breadCrumbs')->addCrumb(null, $pageTitle);
+            E()->getDocument()->setProperty('title', $pageTitle);
         }
         $this->main();
-        if($newsIDs===true){
+        if ($newsIDs === true) {
             $this->setData(new Data());
         }
-        $this->pager->setProperty('additional_url','tag/'.$tagID.'/');
+        $this->pager->setProperty('additional_url', 'tag/' . $tagID . '/');
     }
 
     /**

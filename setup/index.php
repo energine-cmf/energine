@@ -41,13 +41,19 @@ else {
 //то считаем, что это оно и есть
 if (!empty($args) && in_array($args[0], $acceptableActions)) {
     list($action) = $args;
+    $addtionalArgs  = array();
+
+    if(sizeof($args)>1){
+        $addtionalArgs = $args;
+        unset($addtionalArgs[0]);
+    }
 }
 
 
 try {
     require_once('Setup.class.php');
     $setup = new Setup($isConsole);
-    $setup->execute($action);
+    $setup->execute($action, $addtionalArgs);
 
 
     //Ну вроде как все проверили

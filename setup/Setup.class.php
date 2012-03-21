@@ -32,12 +32,6 @@ class Setup {
 
     /**
      * @access private
-     * @var PDO Подключение к БД
-     */
-    private $dbConnect;
-
-    /**
-     * @access private
      * @var array директории для последующего создания символических ссылок
      */
     private $htdocsDirs = array(
@@ -236,15 +230,17 @@ class Setup {
      * установки системы.
      *
      * @param string $action
+     * @param array $arguments
      * @return void
      * @access public
      */
 
-    public function execute($action) {
+    public function execute($action, $arguments) {
         if (!method_exists($this, $methodName = $action . 'Action')) {
             throw new Exception('Подозрительно все это... Либо программисты че то не учли, либо.... произошло непоправимое.');
         }
-        $this->{$methodName}();
+        call_user_func_array(array($this, $methodName), $arguments);
+        //$this->{$methodName}();
     }
 
 
@@ -459,6 +455,7 @@ class Setup {
                                 $uplHeight = $tmp[1];
                                 break;
                             case 'video/x-flv':
+                            case 'video/mp4':
                                 $internalType = 'video';
                                 break;
                             case 'text/csv':
@@ -484,7 +481,7 @@ class Setup {
 
                     $r = $this->dbConnect->query($q = sprintf('INSERT INTO ' . self::UPLOADS_TABLE . ' (upl_pid, upl_childs_count, upl_path, upl_filename, upl_name, upl_title,upl_internal_type, upl_mime_type, upl_width, upl_height) VALUES(%s, %s, "%s", "%s", "%s", "%s", "%s", "%s", %s, %s)', $PID, $childsCount, $uplPath, $filename, $title, $title, $internalType, $mimeType, $uplWidth, $uplHeight));
                     if(!$r) throw new Exception('ERROR INSERTING');
-                    $this->text($q);
+                    //$this->text($uplPath);
                     if($fileinfo->isDir()){
                         $newPID = $this->dbConnect->lastInsertId();
                     }
@@ -504,14 +501,26 @@ class Setup {
         }
     }
 
-    private function syncUploadsAction() {
+    private function syncUploadsAction($uploadsPath = self::UPLOADS_PATH) {
         $this->checkDBConnection();
         $this->title('Синхронизация папки с загрузками');
         $this->dbConnect->beginTransaction();
+        if(substr($uploadsPath, -1) == '/'){
+            $uploadsPath = substr($uploadsPath, 0, -1);
+        }
+        $r = $this->dbConnect->query('SELECT upl_id FROM '.self::UPLOADS_TABLE.' WHERE upl_path LIKE "'.$uploadsPath.'"');
+        if(!$r){
+            throw new Exception('Репозиторий по такому пути не существует');
+        }
+        $PID = $r->fetchColumn();
+        if(!$PID){
+            throw new Exception('Странный какой то идентификатор родительский.');
+        }
+        $uploadsPath .= '/';
 
         try {
-            $this->dbConnect->query('UPDATE ' . self::UPLOADS_TABLE . ' SET upl_is_active=0');
-            $this->iterateUploads('../' . self::UPLOADS_PATH);
+            $this->dbConnect->query('UPDATE ' . self::UPLOADS_TABLE . ' SET upl_is_active=0 WHERE upl_path LIKE "'.$uploadsPath.'%"');
+            $this->iterateUploads('../' . $uploadsPath, $PID);
             $this->dbConnect->commit();
         }
         catch (Exception $e) {

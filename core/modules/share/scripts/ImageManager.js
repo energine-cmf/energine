@@ -28,7 +28,6 @@ var ImageManager = new Class({
     },
 
     updateForm: function() {
-        console.log(this.image)
 		$('filename').value = this.image['upl_path'];
 		$('thumbnail').src  = Energine.static /*+ 'resizer/w40-h40/'*/ + this.image['upl_path'];
 

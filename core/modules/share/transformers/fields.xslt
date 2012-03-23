@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet 
-    version="1.0" 
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+<xsl:stylesheet
+    version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml">
-    
+
     <!--
         Шаблон - контроллер для любого поля из компонента типа форма.
         Создает стандартную обвязку вокруг элемента формы:
@@ -20,20 +20,20 @@
     		<xsl:if test="@title and @type != 'boolean'">
     		    <div class="name">
         			<label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
-    				<xsl:if test="not(@nullable) and not(ancestor::component/@exttype = 'grid') and not(ancestor::component[@class='TextBlockSource'])"><span class="mark">*</span></xsl:if>                    
+    				<xsl:if test="not(@nullable) and not(ancestor::component/@exttype = 'grid') and not(ancestor::component[@class='TextBlockSource'])"><span class="mark">*</span></xsl:if>
     			</div>
-    		</xsl:if>   
-    		<div class="control" id="control_{@language}_{@name}">                
+    		</xsl:if>
+    		<div class="control" id="control_{@language}_{@name}">
                 <!-- импорт шаблона, который создает сам HTML-элемент (input, select, etc.) -->
         		<xsl:apply-imports />
             </div>
     	</div>
     </xsl:template>
-    
+
     <!-- Отображение поля типа image для не гридовых элементов формы -->
 <!--    <xsl:template match="field[@type='image'][ancestor::component[@type='form' or @type='list'][not(@exttype='grid')]]">
         <xsl:variable name="THUMB" select="image[@name='default']"/>
-        <xsl:variable name="MAIN" select="image[@name='main']"/>                        
+        <xsl:variable name="MAIN" select="image[@name='main']"/>
         <a href="{$MAIN}" target="_blank" class="thumbnail">
             <img src="{$THUMB}" width="{$THUMB/@width}" height="{$THUMB/@height}">
                 <xsl:attribute name="nrgn:image_width"  xmlns:nrgn="http://energine.org"><xsl:value-of select="$MAIN/@width"/></xsl:attribute>
@@ -41,10 +41,10 @@
                 <xsl:attribute name="nrgn:image_src"  xmlns:nrgn="http://energine.org"><xsl:value-of select="$MAIN"/></xsl:attribute>
             </img>
         </a>
-    
+
 
     </xsl:template>    -->
-    
+
     <!--
         Шаблон для необязательного (nullable) поля в админчасти вынесен отдельно.
         В нем добавляется возможность скрыть/раскрыть необязательное поле.
@@ -53,7 +53,7 @@
         <div class="field">
             <xsl:if test="@title">
                 <div class="name">
-                    <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>                    
+                    <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
                     (<a href="#" message1="{@msgOpenField}" message0="{@msgCloseField}">
                         <xsl:attribute name="onclick">return showhideField(this, '<xsl:value-of select="@name"/>'<xsl:if test="@language">, <xsl:value-of select="@language"/></xsl:if>);</xsl:attribute>
                         <xsl:attribute name="is_hidden">
@@ -72,7 +72,7 @@
                                 </xsl:choose>
                     </a>)
                 </div>
-            </xsl:if>    
+            </xsl:if>
             <div class="control" id="control_{@language}_{@name}">
                 <xsl:choose>
                     <xsl:when test="@type='select'">
@@ -85,16 +85,16 @@
                             <xsl:attribute name="style">display: none;</xsl:attribute>
                         </xsl:if>
                     </xsl:otherwise>
-                </xsl:choose>                
+                </xsl:choose>
                 <!-- импорт шаблона, который создает сам HTML-элемент (input, select, etc.) -->
                 <xsl:apply-imports />
             </div>
         </div>
     </xsl:template>
-    
+
     <!-- для любого поля, на которое нет прав на просмотр -->
     <xsl:template match="field[@mode=0][ancestor::component[@type='form']]"/>
-    
+
     <!-- для любого поля, на которое права только чтение -->
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
@@ -117,7 +117,7 @@
             </div>
         </xsl:if>
     </xsl:template>
-    
+
     <!-- read-only поле логического типа -->
     <xsl:template match="field[@type='boolean'][@mode=1][ancestor::component[@exttype='grid'][@type='form']]">
         <div class="field">
@@ -140,7 +140,7 @@
             </input>
         </div>
     </xsl:template>
-    
+
     <!-- для поля HTMLBLOCK на которое права только чтение -->
     <xsl:template match="field[@type='htmlblock'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
@@ -162,13 +162,13 @@
             </div>
         </xsl:if>
     </xsl:template>
-    
+
     <!-- для поля TEXT на которое права только на чтение -->
     <xsl:template match="field[@type='text'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
             <div class="field">
                 <xsl:if test="@title">
-                    <label for="{@name}">                    
+                    <label for="{@name}">
                         <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes"/>
                     </label><xsl:text> </xsl:text>
                 </xsl:if>
@@ -184,7 +184,7 @@
             </div>
         </xsl:if>
     </xsl:template>
-    
+
     <!-- для поля EMAIL на которое права только чтение -->
     <xsl:template match="field[@type='email'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
@@ -206,7 +206,7 @@
             </div>
         </xsl:if>
     </xsl:template>
-    
+
     <!-- для поля FILE на которое права только чтение -->
     <xsl:template match="
         field[@type='file'][@mode='1'][ancestor::component[@type='form']] 
@@ -231,7 +231,7 @@
             </input>
         </div>
     </xsl:template>
-    
+
     <!-- read-only поле типа select -->
     <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]">
         <div class="field">
@@ -251,7 +251,7 @@
             </input>
         </div>
     </xsl:template>
-    
+
     <!-- read-only поле типа multiselect -->
     <xsl:template match="field[@type='multi'][@mode='1'][ancestor::component[@type='form']]">
         <div class="field">
@@ -275,7 +275,7 @@
             </div>
         </div>
     </xsl:template>
-    
+
     <!-- read-only поле типа image -->
     <xsl:template match="field[@type='image'][@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test="@title">
@@ -297,7 +297,7 @@
             </div>
         </xsl:if>
     </xsl:template>
-    
+
     <!-- read-only поле типа date и datetime -->
     <xsl:template match="
         field[@type='date'][@mode='1'][ancestor::component[@type='form']] 
@@ -322,7 +322,7 @@
             </div>
         </xsl:if>
     </xsl:template>
-    
+
     <!-- для PK  -->
     <xsl:template match="field[@key='1' and @type='hidden'][ancestor::component[@type='form']]">
         <input type="hidden" id="{@name}" value="{.}" primary="primary">
@@ -334,7 +334,7 @@
             </xsl:attribute>
         </input>
     </xsl:template>
-    
+
     <!-- для поля hidden -->
     <xsl:template match="field[@type='hidden'][ancestor::component[@type='form']]">
         <xsl:apply-imports/>
@@ -356,6 +356,28 @@
     <!-- поле error -->
     <xsl:template match="field[@name='error_message'][ancestor::component[@type='form']]">
         <div class="error"><xsl:value-of select="."/></div>
+    </xsl:template>
+
+
+    <xsl:template
+            match="field[@name='upl_path' and @mode='1' and ancestor::component[@class='FileRepository' and @type='form']]">
+        <div class="field">
+            <div class="name">
+                <label for="{@name}">
+                    <xsl:value-of select="@title" disable-output-escaping="yes"/>
+                </label>
+            </div>
+            <div class="control" >
+                <div class="preview">
+                    <img border="0" id="preview" src="{$IMAGE_RESIZER_URL}w200-h200/{.}" alt=""/>
+                </div>
+                <input>
+                    <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+                    <xsl:attribute name="type">hidden</xsl:attribute>
+                    <xsl:attribute name="id">data</xsl:attribute>
+                </input>
+            </div>
+        </div>
     </xsl:template>
 
     <!-- обработка attachments -->
@@ -390,7 +412,7 @@
         <xsl:param name="PLAYER_WIDTH"/>
         <xsl:param name="PLAYER_HEIGHT"/>
         <xsl:if test="recordset">
-            <!--<xsl:if test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">-->            
+            <!--<xsl:if test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">-->
                 <!--<xsl:if test="count(recordset/record) &gt; 1">-->
                     <script type="text/javascript" src="{$STATIC_URL}scripts/flowplayer-3.2.6.min.js"></script>
                     <script type="text/javascript" src="{$STATIC_URL}scripts/Carousel.js"></script>

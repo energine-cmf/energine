@@ -16,7 +16,8 @@ var FileRepoForm = new Class({
                 altPreview.addEvent('change', this.showAltPreview.bind(this));
             }
         }
-        this.tabPane.disableTab(1);
+        if(this.componentElement.getElementById('data') && !(this.componentElement.getElementById('data').get('value')))
+            this.tabPane.disableTab(1);
     },
     showAltPreview:function (evt) {
         var el = $(evt.target);

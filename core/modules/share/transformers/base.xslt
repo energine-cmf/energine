@@ -200,28 +200,6 @@
         <span class="progress_indicator hidden" id="indicator">0%</span>
     </xsl:template>
 
-    <!-- поле типа pfile -->
-    <xsl:template match="field[@type='thumb'][ancestor::component[@type='form']]">
-        <div class="preview">
-            <img border="0" id="preview_{@name}" data="data_{@name}"  width="{@width}" height="{@height}">
-                <xsl:attribute name="class">hidden<xsl:if test="@name!='preview'"> thumb</xsl:if></xsl:attribute>
-            </img>
-        </div>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id">data_<xsl:value-of select="@name"/></xsl:attribute>
-        </input>
-        <input type="file" id="uploader_{@name}" preview="preview_{@name}" data="data_{@name}">
-            <xsl:choose>
-                <xsl:when test="@name='preview'"><xsl:attribute name="class">preview</xsl:attribute></xsl:when>
-                <xsl:otherwise><xsl:attribute name="class">thumb</xsl:attribute></xsl:otherwise>
-            </xsl:choose>
-        </input>
-        <xsl:if test="@name='preview'">
-            <hr/>
-        </xsl:if>
-    </xsl:template>
 
     <!-- поле типа prfile -->
     <xsl:template match="field[@type='prfile'][ancestor::component[@type='form']]">
@@ -429,24 +407,6 @@
     <!-- /default form elements -->
 
     <!-- переопределение fields для компонентов из модуля share -->
-    <!-- компонент FileLibrary -->
-    <xsl:template match="field[@name='upl_path'][ancestor::component[@class='FileLibrary']]">
-        <div class="preview"
-             id="{generate-id(.)}_preview"></div>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id">
-                <xsl:value-of select="generate-id(.)"/>
-            </xsl:attribute>
-        </input>
-        <a href="#" class="uploader" nrgn:input="{generate-id(.)}" xmlns:nrgn="http://energine.org">
-            <xsl:value-of select="@additionalTitle"/>
-        </a>
-        <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
-        <span class="progress_indicator hidden" id="indicator">0%</span>
-    </xsl:template>
-
     <xsl:template match="field[@type='text'][@name='upl_description']">
         <textarea class="quarter">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
@@ -476,6 +436,36 @@
             <xsl:attribute name="id">data</xsl:attribute>
         </input>
         <input type="file" id="uploader"/>
+    </xsl:template>
+
+    <!-- поле типа thumb используется только в FileRepository -->
+    <xsl:template match="field[@type='thumb'][ancestor::component[@type='form']]">
+        <div class="preview">
+            <img border="0" id="preview_{@name}" data="data_{@name}"  width="{@width}" height="{@height}">
+                <xsl:choose>
+                    <xsl:when test="../field[@name='upl_path']=''">
+                        <xsl:attribute name="class">hidden<xsl:if test="@name!='preview'"> thumb</xsl:if></xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:attribute name="src"><xsl:value-of select="$IMAGE_RESIZER_URL"/>w<xsl:value-of select="@width"/>-h<xsl:value-of select="@height"/>/<xsl:value-of  select="../field[@name='upl_path']"/></xsl:attribute>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </img>
+        </div>
+        <input>
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">hidden</xsl:attribute>
+            <xsl:attribute name="id">data_<xsl:value-of select="@name"/></xsl:attribute>
+        </input>
+        <input type="file" id="uploader_{@name}" preview="preview_{@name}" data="data_{@name}">
+            <xsl:choose>
+                <xsl:when test="@name='preview'"><xsl:attribute name="class">preview</xsl:attribute></xsl:when>
+                <xsl:otherwise><xsl:attribute name="class">thumb</xsl:attribute></xsl:otherwise>
+            </xsl:choose>
+        </input>
+        <xsl:if test="@name='preview'">
+            <hr/>
+        </xsl:if>
     </xsl:template>
 
     <!-- Поле копирования структуры в редакторе сайтов -->

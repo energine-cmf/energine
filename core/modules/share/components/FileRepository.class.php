@@ -23,6 +23,7 @@ class FileRepository extends Grid {
     //const TYPE_FOLDER = 'folder';
     //Фейковый тип для перехода на уровень выше
     const TYPE_FOLDER_UP = 'folderup';
+    //Имя куки в которой хранится идентификатор папки к которой в последний раз обращались
     const STORED_PID = 'NRGNFRPID';
 
     public function __construct($name, $module, array $params = null) {
@@ -32,6 +33,10 @@ class FileRepository extends Grid {
         $this->setOrder(array('upl_childs_count' => QAL::DESC));
     }
 
+    /**
+     * прокси метод для редактирования
+     * разбрасывает по методам редактирования директории и файла
+     */
     protected function edit() {
         $sp = $this->getStateParams();
         $uplID = $sp[0];
@@ -42,13 +47,16 @@ class FileRepository extends Grid {
             $this->editDir($uplID);
         }
         else {
-            parent::edit();
+            $this->editFile($uplID);
         }
     }
 
-
-    protected function editDir($uplID) {
-
+    /**
+     * Редактирование директории
+     *
+     * @param int $uplID идентификатор аплоада
+     */
+    private function editDir($uplID) {
         $this->setFilter(array('upl_id' => $uplID));
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->setBuilder($this->createBuilder());
@@ -80,6 +88,47 @@ class FileRepository extends Grid {
         $this->setAction('save-dir/');
     }
 
+    /**
+     * Редактирование файла
+     * @param $uplID
+     */
+    private function editFile($uplID) {
+        $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
+        $this->setBuilder($this->createBuilder());
+        $this->setDataDescription($this->createDataDescription());
+        $this->addFilterCondition(array('upl_id' => $uplID));
+        $this->setData($this->createData());
+
+        $toolbars = $this->createToolbar();
+        if (!empty($toolbars)) {
+            $this->addToolbar($toolbars);
+        }
+        $this->js = $this->buildJS();
+        $this->setAction('save/');
+
+        $this->createThumbFields();
+    }
+
+    private function createThumbFields() {
+        if ($thumbs = $this->getConfigValue('thumbnails')) {
+            $thumbs = array('preview' => array('width' => 0, 'height' => 0)) + $thumbs;
+            $tabName = $this->translate('TXT_THUMBS');
+            foreach ($thumbs as $name => $data) {
+                $fd = new FieldDescription($name);
+                $fd->setType(FieldDescription::FIELD_TYPE_THUMB);
+                $this->getDataDescription()->addFieldDescription($fd);
+                $fd->setProperty('tabName', $tabName);
+                $fd->setProperty('tableName', 'thumbs');
+                foreach ($data as $attrName => $attrValue) {
+                    $fd->setProperty($attrName, $attrValue);
+                }
+            }
+        }
+    }
+
+    /**
+     * Создание директории
+     */
     protected function addDir() {
         $sp = $this->getStateParams(true);
         if (isset($sp['pid'])) {
@@ -105,6 +154,12 @@ class FileRepository extends Grid {
         $this->setAction('save-dir/');
     }
 
+    /**
+     * Создание временного файла
+     * Используется для генерации превью
+     *
+     * @throws SystemException
+     */
     protected function createTemporaryFile() {
 
         $b = new JSONCustomBuilder();
@@ -137,6 +192,10 @@ class FileRepository extends Grid {
 
     }
 
+    /**
+     * Сохранеие данных директории
+     * @throws SystemException
+     */
     protected function saveDir() {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
@@ -194,6 +253,12 @@ class FileRepository extends Grid {
         }
     }
 
+    /**
+     * Сохранение thumbов
+     *
+     * @param $thumbsData
+     * @param $baseFileName
+     */
     private function saveThumbs($thumbsData, $baseFileName) {
         $thumbProps = $this->getConfigValue('thumbnails');
         foreach ($thumbsData as $thumbName => $thumbData) {
@@ -217,12 +282,16 @@ class FileRepository extends Grid {
                     mkdir($dir, 0777, true);
                 }
                 if (!file_put_contents($fullFileName, self::cleanFileData($thumbData))) {
-                    stop($fullFileName);
+                    throw new SystemException('ERR_CANT_SAVE_THUMB', SystemException::ERR_WARNING, $fullFileName);
                 }
             }
         }
     }
 
+    /**
+     * Сохранение файла
+     * @throws SystemException
+     */
     protected function save() {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
@@ -259,10 +328,16 @@ class FileRepository extends Grid {
 
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data);
 
-                if (isset($_POST['thumbs'])) {
-                    $this->saveThumbs($_POST['thumbs'], $data['upl_path']);
-                }
             }
+            elseif($mode == QAL::UPDATE){
+                $pk = $data[$this->getPK()];
+
+                $result = $this->dbh->modify($mode, $this->getTableName(), $data, array($this->getPK() => $pk));
+            }
+            if (isset($_POST['thumbs'])) {
+                $this->saveThumbs($_POST['thumbs'], $data['upl_path']);
+            }
+
             $transactionStarted = !($this->dbh->commit());
 
             $b = new JSONCustomBuilder();
@@ -282,6 +357,9 @@ class FileRepository extends Grid {
 
     }
 
+    /**
+     * Форма добавления файла
+     */
     protected function add() {
         $sp = $this->getStateParams(true);
         if (isset($sp['pid'])) {
@@ -306,22 +384,7 @@ class FileRepository extends Grid {
         $this->js = $this->buildJS();
         $this->setAction('save/');
 
-        if ($this->getConfigValue('thumbnails')) {
-            $thumbs = $this->getConfigValue('thumbnails');
-            //            array_unshift($thumbs, array('alt' => array('width' => 0, 'height'=>0)));
-            $thumbs = array('preview' => array('width' => 0, 'height' => 0)) + $thumbs;
-            $tabName = $this->translate('TXT_THUMBS');
-            foreach ($thumbs as $name => $data) {
-                $fd = new FieldDescription($name);
-                $fd->setType(FieldDescription::FIELD_TYPE_THUMB);
-                $this->getDataDescription()->addFieldDescription($fd);
-                $fd->setProperty('tabName', $tabName);
-                $fd->setProperty('tableName', 'thumbs');
-                foreach ($data as $attrName => $attrValue) {
-                    $fd->setProperty($attrName, $attrValue);
-                }
-            }
-        }
+        $this->createThumbFields();
     }
 
     protected function getRawData() {
@@ -351,7 +414,7 @@ class FileRepository extends Grid {
         if ($uplPID) {
             $data = $this->getData();
             $uplID = $this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_id' => $sp['pid']));
-            if(is_null($uplID)){
+            if (is_null($uplID)) {
                 $uplID = 0;
             }
             $newData = array(
@@ -371,6 +434,13 @@ class FileRepository extends Grid {
         }
     }
 
+    /**
+     * Очистка пришедших из JS FileReader
+     * @static
+     * @param $data
+     * @param bool $mime
+     * @return string
+     */
     private static function cleanFileData($data, $mime = false) {
         $tmp = explode(';base64,', $data);
         return base64_decode($tmp[1]);

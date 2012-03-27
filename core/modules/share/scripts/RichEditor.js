@@ -131,6 +131,7 @@ var RichEditor = new Class({
         if (Energine.supportContentEdit && !this.fallback_ie) {
             this.currentRange = this._getSelection().createRange();
         }
+
         ModalBox.open({
             url:this.area.getProperty('single_template') + 'file-library/image/',
             onClose:this.insertImage.bind(this)
@@ -189,7 +190,7 @@ var RichEditor = new Class({
                             }
 
                         });
-                        imgStr += '" />';
+                        imgStr += '"/>';
                         document.execCommand('inserthtml',
                             false, imgStr);
                         this.dirty = true;

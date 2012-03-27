@@ -62,7 +62,7 @@ var Grid = new Class({
          * Проверяем соответствие видимых полей физической структуре таблицы,
          * определяем имя ключевого поля
          */
-        var visibleFieldsCount = 0;
+        //var visibleFieldsCount = 0;
         for (var fieldName in metadata) {
             if (metadata[fieldName].key) this.keyFieldName = fieldName;
         }

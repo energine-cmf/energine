@@ -62,6 +62,9 @@ class SiteEditor extends Grid {
     protected function prepare() {
         parent::prepare();
         if (in_array($this->getState(), array('add', 'edit'))) {
+            if($this->getDataDescription()->getFieldDescriptionByName('site_logo')){
+                $this->getDataDescription()->getFieldDescriptionByName('site_logo')->setType(FieldDescription::FIELD_TYPE_IMAGE);
+            }
             $this->addTranslation('TAB_DOMAINS');
             $fd = $this->getDataDescription()->getFieldDescriptionByName('site_folder');
             $fd->setType(FieldDescription::FIELD_TYPE_SELECT);
@@ -74,6 +77,7 @@ class SiteEditor extends Grid {
             $tagField->setType(FieldDescription::FIELD_TYPE_STRING);
             $tagField->removeProperty('pattern');
             $this->getDataDescription()->addFieldDescription($tagField);
+
 
             if ($this->getState() == 'add') {
                 $this->getData()->getFieldByName('site_is_active')->setData(1, true);

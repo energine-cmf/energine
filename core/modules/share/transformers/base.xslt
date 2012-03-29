@@ -270,16 +270,10 @@
 
     <!-- поле множественного выбора (multi) -->
     <xsl:template match="field[@type='multi'][ancestor::component[@type='form']]">
-        <xsl:variable name="NAME">
-            <xsl:choose>
-                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="@name"/>
-                </xsl:otherwise>
-            </xsl:choose>
-            []
-        </xsl:variable>
+        <xsl:variable name="NAME"><xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+            </xsl:choose>[]</xsl:variable>
         <div class="checkbox_set">
             <xsl:for-each select="options/option">
                 <div>

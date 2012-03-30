@@ -638,6 +638,7 @@ abstract class DataSet extends Component {
             'TXT_PREVIEW',
             'BTN_FILE_LIBRARY',
             'BTN_INSERT_IMAGE',
+            'BTN_INSERT_IMAGE_URL',
             'BTN_VIEWSOURCE',
             'TXT_PREVIEW',
             'TXT_RESET',

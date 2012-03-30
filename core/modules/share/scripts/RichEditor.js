@@ -32,7 +32,7 @@ var RichEditor = new Class({
             if (isset(range.execCommand))
                 range.execCommand(cmd, (showUI || false), value);
             else {
-                if (cmd == 'CreateLink') {
+                if ((cmd == 'CreateLink') || (cmd == 'insertImage')) {
                     value = prompt("Enter a URL:", "http://");
                     showUI = false;
                 }
@@ -137,6 +137,9 @@ var RichEditor = new Class({
             onClose:this.insertImage.bind(this)
         });
 
+    },
+    insertImageURL: function(){
+        this.action('insertImage');
     },
     fileLibrary:function () {
         this.currentRange = false;

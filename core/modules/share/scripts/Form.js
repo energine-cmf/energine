@@ -703,6 +703,12 @@ Form.RichEditor = new Class({
             title:Energine.translations.get('BTN_INSERT_IMAGE'),
             action:'imageManager'
         }));
+        this.toolbar.appendControl(new Toolbar.Button({
+            id:'imgURL',
+            icon:'images/toolbar/imageurl.gif',
+            title:Energine.translations.get('BTN_INSERT_IMAGE_URL'),
+            action:'insertImageURL'
+        }));
         this.toolbar.appendControl(
             new Toolbar.Button({
                 id:'extflash',

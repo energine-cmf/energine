@@ -289,6 +289,12 @@ class FormEditor extends DataSet {
         else {
             $this->saveField();
         }
+
+        $c = E()->getCache();
+        if ($c->isEnabled()) {
+            $c->dispose(Cache::TRANSLATIONS_KEY);
+        }
+
         $this->setBuilder(new JSONCustomBuilder());
     }
 

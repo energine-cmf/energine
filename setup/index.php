@@ -37,15 +37,17 @@ else {
     //веб
     $args = array_keys($_GET);
 }
+
+$additionalArgs  = array();
 //если нам в параметрах пришло что то очень похожее на допустимое действие
 //то считаем, что это оно и есть
 if (!empty($args) && in_array($args[0], $acceptableActions)) {
     list($action) = $args;
-    $addtionalArgs  = array();
+
 
     if(sizeof($args)>1){
-        $addtionalArgs = $args;
-        unset($addtionalArgs[0]);
+        $additionalArgs = $args;
+        unset($additionalArgs[0]);
     }
 }
 
@@ -53,7 +55,7 @@ if (!empty($args) && in_array($args[0], $acceptableActions)) {
 try {
     require_once('Setup.class.php');
     $setup = new Setup($isConsole);
-    $setup->execute($action, $addtionalArgs);
+    $setup->execute($action, $additionalArgs);
 
 
     //Ну вроде как все проверили

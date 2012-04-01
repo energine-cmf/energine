@@ -125,24 +125,26 @@
                     <xsl:value-of select="field[@index='PRI']"/>
                 </xsl:attribute>
             </xsl:if>
-            <div class="feed_image">
-                <xsl:choose>
-                    <xsl:when test="field[@name='news_text_rtf']=1">
-                        <a href="{$BASE}{$LANG_ABBR}{field[@name='category']/@url}{field[@name='news_id']}--{field[@name='news_segment']}/">
+            <xsl:if test="field[@name='attachments']/recordset">
+                <div class="feed_image">
+                    <xsl:choose>
+                        <xsl:when test="field[@name='news_text_rtf']=1">
+                            <a href="{$BASE}{$LANG_ABBR}{field[@name='category']/@url}{field[@name='news_id']}--{field[@name='news_segment']}/">
+                                <xsl:apply-templates select="field[@name='attachments']" mode="preview">
+                                    <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
+                                    <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                                </xsl:apply-templates>
+                            </a>
+                        </xsl:when>
+                        <xsl:otherwise>
                             <xsl:apply-templates select="field[@name='attachments']" mode="preview">
                                 <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
                                 <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
                             </xsl:apply-templates>
-                        </a>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:apply-templates select="field[@name='attachments']" mode="preview">
-                            <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
-                            <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
-                        </xsl:apply-templates>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </div>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </div>
+            </xsl:if>
             <div class="feed_date">
                 <xsl:value-of select="field[@name='news_date']"/>
             </div>
@@ -175,12 +177,14 @@
                 <xsl:value-of select="field[@name='news_date']"/>
             </div>
             <xsl:apply-templates select="field[@name='news_title']"/>
-            <div class="feed_image">
-                <xsl:apply-templates select="field[@name='attachments']" mode="preview">
-                    <xsl:with-param name="PREVIEW_WIDTH">260</xsl:with-param>
-                    <xsl:with-param name="PREVIEW_HEIGHT">195</xsl:with-param>
-                </xsl:apply-templates>
-            </div>
+            <xsl:if test="field[@name='attachments']/recordset">
+                <div class="feed_image">
+                    <xsl:apply-templates select="field[@name='attachments']" mode="preview">
+                        <xsl:with-param name="PREVIEW_WIDTH">260</xsl:with-param>
+                        <xsl:with-param name="PREVIEW_HEIGHT">195</xsl:with-param>
+                    </xsl:apply-templates>
+                </div>
+            </xsl:if>
             <xsl:apply-templates select="field[@name='news_text_rtf']"/>
             <xsl:if test="field[@name='attachments']/recordset">
                 <div class="media_box">

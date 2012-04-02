@@ -201,19 +201,19 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     $el->nodeValue = $this->fixUrl($fieldValue);
                     switch ($info->type) {
                         case FileInfo::META_TYPE_IMAGE:
-                            $el->setAttribute('width', $info->width);
-                            $el->setAttribute('height', $info->height);
+                            //$el->setAttribute('width', $info->width);
+                            //$el->setAttribute('height', $info->height);
 //                            $el->setAttribute('image', $fieldValue);
-                            $el->setAttribute('image', $this->fixUrl($fieldValue));
+                            //$el->setAttribute('image', $this->fixUrl($fieldValue));
                             break;
                         case FileInfo::META_TYPE_VIDEO:
-                            $el->setAttribute('image', FileObject::getVideoImageFilename($fieldValue));
+                            //$el->setAttribute('image', FileObject::getVideoImageFilename($fieldValue));
                             break;
                         default:
                             break;
                     }
                     $result->appendChild($el);
-                    if ($this->getConfigValue('thumbnails'))
+                    /*if ($this->getConfigValue('thumbnails'))
                         foreach ($this->getConfigValue('thumbnails') as $thumbName => $thumbnail) {
                             $thumbnailFile =
                                     FileObject::getThumbFilename(
@@ -233,7 +233,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                             //                        $img->nodeValue = $thumbnailFile;
                             $img->nodeValue = $this->fixUrl($thumbnailFile);
                             $result->appendChild($img);
-                        }
+                        }*/
                 }
             }
             catch (SystemException $e) {

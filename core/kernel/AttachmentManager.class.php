@@ -122,7 +122,7 @@ class AttachmentManager extends DBWorker {
             if ($filteredMapValue = array_filter(array_values($mapValue))) {
                 $request = 'SELECT spu.' . $mapFieldName .
                            ',spu.upl_id as id, ' .
-                           'upl_path as file, upl_name as name, upl_internal_type as type FROM '.self::ATTACH_TABLENAME.' su ' .
+                           'upl_path as file, upl_name as name, upl_internal_type as type,upl_mime_type as mime FROM '.self::ATTACH_TABLENAME.' su ' .
                            'LEFT JOIN `' . $mapTableName .
                            '` spu ON spu.upl_id = su.upl_id ' .
                            //'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.
@@ -162,6 +162,10 @@ class AttachmentManager extends DBWorker {
                             $dataDescription->addFieldDescription($fd);
 
                             $fd = new FieldDescription('type');
+                            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+                            $dataDescription->addFieldDescription($fd);
+
+                            $fd = new FieldDescription('mime');
                             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
                             $dataDescription->addFieldDescription($fd);
 
@@ -271,13 +275,6 @@ class AttachmentManager extends DBWorker {
 
         if (is_array($data)) {
             $d->load($data);
-            /*$pathField = $d->getFieldByName('upl_path');
-            foreach ($pathField as $i => $path) {
-                if (in_array(E()->FileInfo->analyze($path)->type, array(FileInfo::META_TYPE_IMAGE, FileInfo::META_TYPE_VIDEO))) {
-                    $pathField->setRowData($i, FileObject::getThumbFilename($path, 50, 50));
-                    $pathField->setRowProperty($i, 'is_image', true);
-                }
-            }*/
         }
 
         $builder->setData($d);

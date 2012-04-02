@@ -332,8 +332,9 @@ var Grid = new Class({
     },
     changeSort:function (event) {
         var getNextDirectionOrderItem = function (current) {
-            //console.log(current);
+            if(!current)current = '';
             var sortDirectionOrder = ['', 'asc', 'desc'], result, currentIndex;
+
             if ((currentIndex = sortDirectionOrder.indexOf(current)) != -1) {
                 if ((currentIndex + 1) < sortDirectionOrder.length)
                     result = sortDirectionOrder[currentIndex + 1];

@@ -16,8 +16,6 @@
             <field name="upl_pid" type="hidden"/>
             <field name="upl_childs_count" type="hidden"/>
             <field name="upl_internal_type" type="hidden"/>
-            <field name="upl_width" type="hidden"/>
-            <field name="upl_height" type="hidden"/>
         </fields>
         <toolbar>
                     <control id="open" title="BTN_OPEN" type="button" onclick="open"/>

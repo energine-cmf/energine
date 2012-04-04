@@ -18,14 +18,14 @@
             <field name="upl_internal_type" type="hidden"/>
         </fields>
         <toolbar>
-                    <control id="open" title="BTN_OPEN" type="button" onclick="open"/>
-                    <control id="sep01" type="separator"/>
-                    <control id="add" title="BTN_UPLOAD" type="button" onclick="add"/>
-                    <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
-                    <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
-                    <control id="sep02" type="separator"/>
-                    <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
-                </toolbar>
+            <control id="open" title="BTN_OPEN" type="button" onclick="open"/>
+            <control id="sep01" type="separator"/>
+            <control id="add" title="BTN_UPLOAD" type="button" onclick="add"/>
+            <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="sep02" type="separator"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+        </toolbar>
     </state>
     <state name="addDir">
         <uri_patterns>
@@ -85,6 +85,14 @@
         <javascript>
             <behavior name="FileRepoForm"/>
         </javascript>
+        <fields>
+            <field name="upl_id"/>
+            <field name="upl_pid" type="hidden"/>
+            <field name="upl_title"/>
+            <field name="upl_path" type="file" title="FIELD_UPL_PATH_READ" mode="1"/>
+            <field name="upl_name"/>
+            <field name="upl_filename" type="hidden"/>
+        </fields>
         <toolbar>
             <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
             <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>

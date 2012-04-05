@@ -221,13 +221,18 @@ Asset.css = function(source, properties) {
     return false;
 }
 
-var showhideField = function(obj, fieldName, fieldLanguage) {
-    var fieldLanguage = fieldLanguage || '';
-    var obj = $(obj);
-    var currentStatus = Number(!Boolean(Number(obj.getProperty('is_hidden'))));
-    obj.innerHTML = obj.getProperty('message' + currentStatus);
-    obj.setProperty('is_hidden', currentStatus);
-    $('control_' + fieldLanguage + '_' + fieldName).setStyle('display',
-            ((currentStatus) ? 'none' : 'block'));
+var showhideField = function(obj, event) {
+    Energine.cancelEvent(event);
+    var field = $(obj).getParents('.field')[0];
+    if (field.hasClass('min')){
+        field.removeClass('min').addClass('max');
+        var richEditor = field.getElement('.richEditor');
+        if (richEditor) richEditor.focus();
+        var textarea = field.getElement('textarea');
+        if (textarea) textarea.focus();
+    }
+    else if (field.hasClass('max')) {
+        field.removeClass('max').addClass('min');
+    }
     return false;
 }

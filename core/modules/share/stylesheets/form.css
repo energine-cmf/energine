@@ -11,6 +11,7 @@ form div.error {
 }
 
 form .field {
+    clear: both;
     margin: 12px 0 0 10px;
     font-family: Tahoma, sans-serif;
     font-size: 11px;
@@ -22,6 +23,24 @@ form .field button {
 
 form .field.required label {
     font-weight: bold;
+}
+
+form .field .icon_min_max {
+    position: relative;
+    top: 2px;
+    display: inline-block;
+    width: 13px;
+    height: 9px;
+}
+form .field.min .icon_min_max {
+    background: url(../images/asc.gif) -5px -2px no-repeat;
+}
+form .field.max .icon_min_max {
+    background: url(../images/desc.gif) -5px -2px no-repeat;
+}
+form .field.min .richEditor,
+form .field.min textarea {
+    height: 30px;
 }
 
 form input, form textarea, form select {

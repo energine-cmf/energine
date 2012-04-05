@@ -50,42 +50,26 @@
         В нем добавляется возможность скрыть/раскрыть необязательное поле.
     -->
     <xsl:template match="field[@nullable and (@type='htmlblock' or @type='text')][ancestor::component[@type='form'][@exttype = 'grid']]">
-        <div class="field">
+        <div>
+            <xsl:attribute name="class">field clearfix<xsl:choose>
+                <xsl:when test=".=''"> min</xsl:when>
+                <xsl:otherwise> max</xsl:otherwise>
+            </xsl:choose></xsl:attribute>
             <xsl:if test="@title">
                 <div class="name">
                     <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
-                    (<a href="#" message1="{@msgOpenField}" message0="{@msgCloseField}">
-                        <xsl:attribute name="onclick">return showhideField(this, '<xsl:value-of select="@name"/>'<xsl:if test="@language">, <xsl:value-of select="@language"/></xsl:if>);</xsl:attribute>
+                    <a href="#" class="icon_min_max">
+                        <xsl:attribute name="onclick">return showhideField(this);</xsl:attribute>
                         <xsl:attribute name="is_hidden">
-                                    <xsl:choose>
-                                        <xsl:when test=".=''">1</xsl:when>
-                                        <xsl:otherwise>0</xsl:otherwise>
-                                    </xsl:choose>
+                            <xsl:choose>
+                                <xsl:when test=".=''">1</xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
                         </xsl:attribute>
-                                <xsl:choose>
-                                    <xsl:when test=".=''">
-                                        <xsl:value-of select="@msgOpenField"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="@msgCloseField"/>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                    </a>)
+                    </a>
                 </div>
             </xsl:if>
             <div class="control" id="control_{@language}_{@name}">
-                <xsl:choose>
-                    <xsl:when test="@type='select'">
-                        <xsl:if test="not(options/option/@selected)">
-                            <xsl:attribute name="style">display: none;</xsl:attribute>
-                        </xsl:if>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:if test=".=''">
-                            <xsl:attribute name="style">display: none;</xsl:attribute>
-                        </xsl:if>
-                    </xsl:otherwise>
-                </xsl:choose>
                 <!-- импорт шаблона, который создает сам HTML-элемент (input, select, etc.) -->
                 <xsl:apply-imports />
             </div>

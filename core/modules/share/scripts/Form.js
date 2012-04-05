@@ -439,7 +439,7 @@ Form.AttachmentPane = new Class({
                     switch (fileData.upl_internal_type){
                         case 'image':
                         case 'video':
-                                thumb.setProperty('src', Energine.static + 'resizer/w100-h100/'+fileData.upl_path)
+                                thumb.setProperty('src', Energine.static + 'resizer/w150-h150/'+fileData.upl_path)
                             break;
                         default:
 

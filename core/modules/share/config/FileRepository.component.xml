@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+    <state name="uploadZip" rights="3">
+        <uri_patterns>
+            <pattern>/upload-zip/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FileRepoForm"/>
+        </javascript>
+        <fields>
+            <field name="upl_id"/>
+            <field name="upl_pid" type="hidden"/>
+            <field name="upl_path" type="file" title="FIELD_ZIP_FILE"/>
+            <field name="upl_filename" type="hidden"/>
+        </fields>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="saveZip"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
     <state name="createTemporaryFile" rights="3">
         <uri_patterns>
             <pattern>/temp-file/</pattern>
@@ -21,6 +39,7 @@
             <control id="open" title="BTN_OPEN" type="button" onclick="open"/>
             <control id="sep01" type="separator"/>
             <control id="add" title="BTN_UPLOAD" type="button" onclick="add"/>
+            <control id="addZip" title="BTN_ZIP_UPLOAD" type="button" onclick="uploadZip"/>
             <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
             <control id="sep02" type="separator"/>
@@ -111,6 +130,11 @@
     <state name="upload" rights="2">
         <uri_patterns>
             <pattern>/upload/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="saveZip" rights="3">
+        <uri_patterns>
+            <pattern>/save-zip/</pattern>
         </uri_patterns>
     </state>
     <state name="delete" rights="2">

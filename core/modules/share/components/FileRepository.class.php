@@ -469,6 +469,96 @@ class FileRepository extends Grid {
     }
 
     /**
+     * Выводим форму загрузки Zip файла содержащего набор файлов
+     *
+     * @return void
+     * @access protected
+     */
+    protected function uploadZip() {
+        $this->setType(self::COMPONENT_TYPE_FORM_ADD);
+        $this->prepare();
+    }
+
+    /**
+     * Распаковка залитого zip файла
+     *
+     * @return void
+     * @access protected
+     */
+    protected function saveZip() {
+        $builder = new JSONCustomBuilder();
+        $this->setBuilder($builder);
+        try {
+            $filename =
+                    FileObject::getTmpFilePath($_POST['share_uploads']['upl_path']);
+
+            if (file_exists($filename)) {
+                //setlocale(LC_CTYPE, "uk_UA.UTF-8");
+                $zip = new ZipArchive();
+                $zip->open($filename);
+
+                for ($i = 0; $i < $zip->numFiles; $i++) {
+
+                    $currentFile = $zip->statIndex($i);
+
+                    $currentFile = $currentFile['name'];
+                    $fileInfo = pathinfo($currentFile);
+                    /*if($fileInfo['filename'] === ''){
+
+                         }
+                         else*/
+                    if (
+                        !(
+                                (substr($fileInfo['filename'], 0, 1) === '.')
+                                        ||
+                                        (strpos($currentFile, 'MACOSX') !== false)
+                        )
+                    ) {
+                        if ($fileInfo['dirname'] == '.') {
+                            $path = '';
+                        }
+                        else {
+                            $path =
+                                    Translit::transliterate(addslashes($fileInfo['dirname'])) .
+                                            '/';
+                        }
+
+
+                        //Directory
+                        if (!isset($fileInfo['extension'])) {
+
+                            $zip->renameIndex(
+                                $i,
+                                $currentFile = $path .
+                                        Translit::transliterate($fileInfo['filename'])
+                            );
+                        }
+                        else {
+                            $zip->renameIndex(
+                                $i,
+                                $currentFile = $path .
+                                        FileObject::generateFilename('', $fileInfo['extension'])
+                            );
+                        }
+
+                        $zip->extractTo($this->uploadsDir->getPath(), $currentFile);
+                        FileObject::createFrom(
+                            $this->uploadsDir->getPath() . '/' .
+                                    $currentFile, $fileInfo['filename']);
+                    }
+                }
+                $zip->close();
+            }
+            $builder->setProperty('result', true)->setProperty('mode', 'insert');
+        }
+        catch (SystemException $e) {
+            $message['errors'][] = array('message' =>
+            $e->getMessage() . current($e->getCustomMessage()));
+            $builder->setProperties(array_merge(array('result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')), $message));
+        }
+    }
+
+    /**
      * Очистка пришедших из JS FileReader
      * @static
      * @param $data

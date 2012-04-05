@@ -33,9 +33,13 @@ abstract class DBWorker extends Object {
     /**
      * Кеш переводов
      * (получается за ними по отдельности очень часто нужно обращаться)
-     * @var unknown_type
+     * @var array
      */
     private static $translations = null;
+    /**
+     * @var PDOStatement
+     */
+    private static $findTranslationSQL;
 
     /**
      * Конструктор класса.
@@ -45,6 +49,7 @@ abstract class DBWorker extends Object {
      */
     public function __construct() {
         $this->dbh = E()->getDB();
+        self::$findTranslationSQL = $this->dbh->getPDO()->prepare('SELECT trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id  WHERE (ltag.ltag_name = ?) AND (lang_id = ?)');
     }
 
     /**
@@ -60,82 +65,26 @@ abstract class DBWorker extends Object {
     public static function _translate($const, $langId = null) {
         if (empty($const)) return $const;
         $const = strtoupper($const);
-        $currentLangId = intval(E()->getLanguage()->getCurrent());
-        $c = E()->getCache();
-        if ($c->isEnabled()) {
-            if (is_null(self::$translations)) {
-                if (!(self::$translations = $c->retrieve(Cache::TRANSLATIONS_KEY))) {
-                    $query = 'SELECT UPPER(ltag_name) AS const, lang_id,trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans USING (ltag_id)';
-                    $dbh = E()->getDB()->getPDO();
-                    $res = $dbh->query($query);
-                    while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-                        self::$translations[$row['const']][$row['lang_id']] = $row['translation'];
-                    }
-                    $c->store(Cache::TRANSLATIONS_KEY, self::$translations);
-                }
-
+        if(is_null($langId)){
+            $langId = intval(E()->getLanguage()->getCurrent());
+        }
+        $result = $const;
+        //Мы еще не обращались за этим переводом
+        if(!isset(self::$translations[$langId][$const])){
+            //Если что то пошло не так - нет смысл генерить ошибку, отдадим просто константу
+            if(self::$findTranslationSQL->execute(array($const, $langId))){
+                //записали в кеш
+                self::$translations[$langId][$const] = $result = self::$findTranslationSQL->fetchColumn();
             }
-
-            if (!isset($langId)) $langId = $currentLangId;
-
-            return (isset(self::$translations[$const][$langId])) ? self::$translations[$const][$langId] : $const;
 
         }
-        else {
-            //если не закешированы - кешируем переводы для текущего языка
-            //действия по кешированию логичней было бы разместить в конструкторе,
-            //но на момент его вызова еще не известен дефолтный язык
-            if (is_null(self::$translations)) {
-                $res = E()->getDB()->selectRequest(
-                    'SELECT UPPER(ltag_name) AS const, trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id  WHERE lang_id = ' . $currentLangId
-                );
-                if (is_array($res)) {
-                    foreach ($res as $row) {
-                        self::$translations[$currentLangId][$row['const']] = $row['translation'];
-                    }
-                }
-                //вот что должно происходить если в базе нет констант текущего языка?
-            }
-            //устанавливаем дефолтное возвращаемое значение равным значению константы перевода
-            $result = $const;
-            //
-            //Тут столько хитрых проверок не просто так - а чтобы минимизировать количество обращений к БД
-            //
-            //Если язык - не указан, используем текущий, а информация о константах на нем у нас закеширована
-            if (!isset($langId)) {
-                //эта константа есть в переводах для текущего языка?
-                if (isset(self::$translations[$currentLangId][$const])) {
-                    //тогда возвращаем ее значение
-                    $result = self::$translations[$currentLangId][$const];
-                }
-                else {
-                    //если не было  - теперь будет
-                    //а значение возвращается дефолтное
-                    self::$translations[$currentLangId][$const] = $const;
-                }
-            }
-            //может все таки есть инфа в кеше?
-            elseif (isset(self::$translations[$langId][$const])) {
-                //если да - то чудесно
-                $result = self::$translations[$langId][$const];
-            }
-            else {
-                //лезем за значением в базу
-                $res = E()->getDB()->selectRequest(
-                    'SELECT trans.ltag_value_rtf AS result FROM share_lang_tags ltag ' .
-                            'LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id ' .
-                            'WHERE ltag.ltag_name = ' . E()->getDB()->quote($result) . ' AND lang_id = ' . intval($langId)
-                );
-                if (is_array($res)) {
-                    //если нашли - вернем его
-                    $result = simplifyDBResult($res, 'result', true);
-                }
-                //а если не нашли - будет возвращаться дефолтное значение
-
-                //нашли - не нашли все равно в кеш записываем
-                self::$translations[$langId][$const] = $result;
-            }
+        //За переводом уже обращались  Он есть
+        elseif(self::$translations[$langId][$const]){
+            $result = self::$translations[$langId][$const];
         }
+        //Неявный случай - за переводом уже обращались но его нету
+        //Отдаем константу
+
         return $result;
     }
 

@@ -135,10 +135,10 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             $fieldInfo->setProperty('additionalTitle', $this->translate('MSG_LOAD_FILE'));
 
         }
-        elseif (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
+        /*elseif (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
             $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));
             $fieldInfo->setProperty('msgCloseField', $this->translate('TXT_CLOSE_FIELD'));
-        }
+        }*/
         elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_CAPTCHA) {
             require_once(CORE_DIR . '/kernel/recaptchalib.php');
             $fieldValue = recaptcha_get_html($this->getConfigValue('recaptcha.public'));
@@ -198,6 +198,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                 $result->nodeValue = $fieldValue;
                 if ($info = E()->FileInfo->analyze($fieldValue)) {
                     $result->setAttribute('media_type', $info->type);
+                    $result->setAttribute('mime', $info->mime);
                 }
             }
             catch (SystemException $e) {

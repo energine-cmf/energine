@@ -195,45 +195,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                 $fieldValue
         ) {
             try {
+                $result->nodeValue = $fieldValue;
                 if ($info = E()->FileInfo->analyze($fieldValue)) {
-                    $el = $this->result->createElement($info->type);
-                    //                    $el->nodeValue = $fieldValue;
-                    $el->nodeValue = $this->fixUrl($fieldValue);
-                    switch ($info->type) {
-                        case FileInfo::META_TYPE_IMAGE:
-                            //$el->setAttribute('width', $info->width);
-                            //$el->setAttribute('height', $info->height);
-//                            $el->setAttribute('image', $fieldValue);
-                            //$el->setAttribute('image', $this->fixUrl($fieldValue));
-                            break;
-                        case FileInfo::META_TYPE_VIDEO:
-                            //$el->setAttribute('image', FileObject::getVideoImageFilename($fieldValue));
-                            break;
-                        default:
-                            break;
-                    }
-                    $result->appendChild($el);
-                    /*if ($this->getConfigValue('thumbnails'))
-                        foreach ($this->getConfigValue('thumbnails') as $thumbName => $thumbnail) {
-                            $thumbnailFile =
-                                    FileObject::getThumbFilename(
-                                        $fieldValue,
-                                        $width = (int)$thumbnail['width'],
-                                        $height = (int)$thumbnail['height']
-                                    );
-                            //                        if (!file_exists($thumbnailFile)) {
-                            //                            $thumbnailFile = (string)$thumbnail->gag;
-                            //                        }
-                            $img = $this->result->createElement(
-                                'thumbnail'
-                            );
-                            $img->setAttribute('width', $width);
-                            $img->setAttribute('height', $height);
-                            $img->setAttribute('name', $thumbName);
-                            //                        $img->nodeValue = $thumbnailFile;
-                            $img->nodeValue = $this->fixUrl($thumbnailFile);
-                            $result->appendChild($img);
-                        }*/
+                    $result->setAttribute('media_type', $info->type);
                 }
             }
             catch (SystemException $e) {

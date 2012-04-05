@@ -78,17 +78,8 @@ class FileInfo extends DBWorker {
         $data = array();
         $data['upl_internal_type'] = $result['type'] = self::META_TYPE_UNKNOWN;
         $data['upl_mime_type'] = $result['mime'] = 'unknown/mime-type';
-        $mc = E()->getCache();
-        if($mc->isEnabled()){
-            if(!($fileInfo = $mc->retrieve('info.'.$filename))){
-                $fileInfo = $this->dbh->select('share_uploads', array('upl_internal_type as type', 'upl_mime_type as mime', 'upl_width as width', 'upl_height as height'), array('upl_path' => $filename));
-                $mc->store('info.'.$filename, $fileInfo);
-            }
-        }
-        else {
-            $fileInfo =
-                    $this->dbh->select('share_uploads', array('upl_internal_type as type', 'upl_mime_type as mime', 'upl_width as width', 'upl_height as height'), array('upl_path' => $filename));
-        }
+        $fileInfo = $this->dbh->select('share_uploads', array('upl_internal_type as type', 'upl_mime_type as mime', 'upl_width as width', 'upl_height as height'), array('upl_path' => $filename));
+
 
         if (is_array($fileInfo) && !empty($fileInfo) && $fileInfo[0]['type']) {
             list($fileInfo) = $fileInfo;
@@ -141,9 +132,6 @@ class FileInfo extends DBWorker {
                     }
                     //stop($data);
                     $this->dbh->modify(QAL::UPDATE, 'share_uploads', $data, array('upl_path' => $filename));
-                    if($mc->isEnabled()){
-                        $mc->store('info.'.$filename, array($result));
-                    }
                 }
             }
             catch (Exception $e) {

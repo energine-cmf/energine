@@ -69,12 +69,18 @@ abstract class DBWorker extends Object {
             $langId = intval(E()->getLanguage()->getCurrent());
         }
         $result = $const;
+
         //Мы еще не обращались за этим переводом
         if(!isset(self::$translations[$langId][$const])){
             //Если что то пошло не так - нет смысл генерить ошибку, отдадим просто константу
             if(self::$findTranslationSQL->execute(array($const, $langId))){
                 //записали в кеш
-                self::$translations[$langId][$const] = $result = self::$findTranslationSQL->fetchColumn();
+                if($result = self::$findTranslationSQL->fetchColumn()){
+                    self::$translations[$langId][$const] = $result;
+                }
+                else {
+                    $result = $const;
+                }
             }
 
         }

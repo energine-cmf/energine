@@ -94,3 +94,7 @@ class Button extends Control {
         return $this->getAttribute('tooltip');
     }
 }
+
+class File extends Button{
+
+}

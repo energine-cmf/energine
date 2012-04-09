@@ -353,7 +353,6 @@ var Grid = new Class({
             sortFieldName = header.getProperty('name'),
             sortDirection = header.getProperty('class');
 
-
         //проверяем есть ли колонка сортировки в списке колонок
         if (
             this.metadata[sortFieldName]
@@ -363,6 +362,7 @@ var Grid = new Class({
             this.clearHeaders();
             this.sort.field = sortFieldName;
             this.sort.order = getNextDirectionOrderItem(sortDirection);
+
             header.addClass(this.sort.order);
             this.fireEvent('onSortChange');
         }

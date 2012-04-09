@@ -55,19 +55,20 @@ var FileRepository = new Class({
     onSelect:function () {
         var r = this.grid.getSelectedRecord(), control;
         this.toolbar.enableControls();
+        var openBtn = this.toolbar.getControlById('open');
         switch (r.upl_internal_type) {
             case 'folder':
-                this.toolbar.getControlById('open').enable();
+                if(openBtn)openBtn.enable();
                 break;
             case 'folderup':
                 this.toolbar.disableControls();
-                this.toolbar.getControlById('open').enable();
+                if(openBtn)openBtn.enable();
                 this.toolbar.getControlById('addDir').enable();
                 this.toolbar.getControlById('add').enable()
                 break;
             case 'repo':
                 this.toolbar.disableControls();
-                this.toolbar.getControlById('open').enable()
+                if(openBtn)openBtn.enable();
                 break;
             default:
                 //this.toolbar.getControlById('open').disable();
@@ -83,7 +84,7 @@ var FileRepository = new Class({
         if (!result.data) {
             result.data = [];
         }
-        if(this.currentPID)
+        if (this.currentPID)
             Cookie.write(FILE_COOKIE_NAME, this.currentPID, {path:new URI(Energine.base).get('directory'), duration:1});
         /*if (this.currentPID) {
          result.data.unshift({'upl_id':0, 'upl_internal_type':'folderup', 'upl_path':'', 'upl_pid':'', 'upl_title':'...'});
@@ -145,6 +146,12 @@ var FileRepository = new Class({
             url:this.singlePath + pid + 'add-dir/',
             onClose:this._processAfterCloseAction.bind(this)
         });
+    },
+    uploadZip: function(data){
+        this.request(this.singlePath + 'upload-zip', 'PID='+this.grid.getSelectedRecord().upl_pid+'&data='+encodeURIComponent(data.result), function(response){
+            console.log(response)
+        });
+        //this.singlePath + 'upload-zip',
     },
     loadPage:function (pageNum) {
         this.pageList.disable();

@@ -16,6 +16,7 @@
  * @author dr.Pavka
  */
 class FileRepository extends Grid {
+    const TEMPORARY_DIR = 'uploads/temp/';
     //путь к кешу ресайзера
     const IMAGE_CACHE = 'uploads/resizer/';
     //Путь к кешу для альтернативных картинок
@@ -471,90 +472,75 @@ class FileRepository extends Grid {
     /**
      * Выводим форму загрузки Zip файла содержащего набор файлов
      *
+     * @todo доделать
      * @return void
      * @access protected
      */
     protected function uploadZip() {
-        $this->setType(self::COMPONENT_TYPE_FORM_ADD);
-        $this->prepare();
-    }
-
-    /**
-     * Распаковка залитого zip файла
-     *
-     * @return void
-     * @access protected
-     */
-    protected function saveZip() {
         $builder = new JSONCustomBuilder();
         $this->setBuilder($builder);
+        $transactionStarted = false;
         try {
-            $filename =
-                    FileObject::getTmpFilePath($_POST['share_uploads']['upl_path']);
-
-            if (file_exists($filename)) {
-                //setlocale(LC_CTYPE, "uk_UA.UTF-8");
-                $zip = new ZipArchive();
-                $zip->open($filename);
-
-                for ($i = 0; $i < $zip->numFiles; $i++) {
-
-                    $currentFile = $zip->statIndex($i);
-
-                    $currentFile = $currentFile['name'];
-                    $fileInfo = pathinfo($currentFile);
-                    /*if($fileInfo['filename'] === ''){
-
-                         }
-                         else*/
-                    if (
-                        !(
-                                (substr($fileInfo['filename'], 0, 1) === '.')
-                                        ||
-                                        (strpos($currentFile, 'MACOSX') !== false)
-                        )
-                    ) {
-                        if ($fileInfo['dirname'] == '.') {
-                            $path = '';
-                        }
-                        else {
-                            $path =
-                                    Translit::transliterate(addslashes($fileInfo['dirname'])) .
-                                            '/';
-                        }
-
-
-                        //Directory
-                        if (!isset($fileInfo['extension'])) {
-
-                            $zip->renameIndex(
-                                $i,
-                                $currentFile = $path .
-                                        Translit::transliterate($fileInfo['filename'])
-                            );
-                        }
-                        else {
-                            $zip->renameIndex(
-                                $i,
-                                $currentFile = $path .
-                                        FileObject::generateFilename('', $fileInfo['extension'])
-                            );
-                        }
-
-                        $zip->extractTo($this->uploadsDir->getPath(), $currentFile);
-                        FileObject::createFrom(
-                            $this->uploadsDir->getPath() . '/' .
-                                    $currentFile, $fileInfo['filename']);
-                    }
-                }
-                $zip->close();
+            if (!isset($_POST['data']) || !isset($_POST['PID'])) {
+                throw new SystemException('ERR_BAD_DATA', SystemException::ERR_CRITICAL);
             }
-            $builder->setProperty('result', true)->setProperty('mode', 'insert');
+            $fileName = tempnam(self::TEMPORARY_DIR, "zip");
+            $data = self::cleanFileData($_POST['data']);
+
+            if (!file_put_contents($fileName, $data)) {
+                throw new SystemException('ERR_CANT_CREATE_FILE', SystemException::ERR_CRITICAL);
+            }
+            $uplPID = $_POST['PID'];
+            $transactionStarted = $this->dbh->beginTransaction();
+            $extractPath = $this->dbh->getScalar($this->getTableName(), 'upl_path', array('upl_id' => $uplPID));
+
+            $zip = new ZipArchive();
+            $zip->open($fileName);
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $currentFile = $zip->statIndex($i);
+                $currentFile = $currentFile['name'];
+                $fileInfo = pathinfo($currentFile);
+                inspect($fileInfo);
+                if (
+                    !((substr($fileInfo['filename'], 0, 1) === '.') || (strpos($currentFile, 'MACOSX') !== false)
+                    )
+                ) {
+                    if ($fileInfo['dirname'] == '.') {
+                        $path = '';
+                    }
+                    else {
+                        $path = Translit::transliterate(addslashes($fileInfo['dirname'])) . '/';
+                    }
+
+                    //Directory
+                    if (!isset($fileInfo['extension'])) {
+                        $zip->renameIndex(
+                            $i,
+                            $currentFile = $path .
+                                    Translit::transliterate($fileInfo['filename'])
+                        );
+                    }
+                    else {
+                        $zip->renameIndex(
+                            $i,
+                            $currentFile = $path .FileObject::generateFilename('', $fileInfo['extension'])
+                        );
+                    }
+                    //inspect($currentFile, $extractPath);
+                    /*$zip->extractTo($this->uploadsDir->getPath(), $currentFile);
+                    FileObject::createFrom(
+                        $this->uploadsDir->getPath() . '/' .
+                                $currentFile, $fileInfo['filename']);*/
+                }
+            }
+            $zip->close();
+            throw new SystemException('ERR_FAKE');
+            $this->dbh->commit();
         }
         catch (SystemException $e) {
-            $message['errors'][] = array('message' =>
-            $e->getMessage() . current($e->getCustomMessage()));
-            $builder->setProperties(array_merge(array('result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')), $message));
+            if ($transactionStarted) {
+                $this->dbh->rollback();
+            }
         }
     }
 
@@ -565,10 +551,9 @@ class FileRepository extends Grid {
      * @param bool $mime
      * @return string
      */
-    private static function cleanFileData($data, $mime = false) {
+    public static function cleanFileData($data) {
         $tmp = explode(';base64,', $data);
         return base64_decode($tmp[1]);
     }
-
 
 }

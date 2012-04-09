@@ -68,3 +68,9 @@ ul.toolbar li select{
     margin-bottom:4px;
 }
 
+ul.toolbar li input[type="file"]{
+    visibility:hidden;
+    position:absolute;
+    top:-50;
+    left:-50;
+}

@@ -71,7 +71,18 @@
             })
     	);
     </xsl:template>
-    
+
+    <xsl:template match="component[@exttype='grid']/toolbar/control[@type='file']">
+    	componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(
+            new Toolbar.File({
+                id: '<xsl:value-of select="@id"/>',
+                title: '<xsl:value-of select="@title"/>',
+                action: '<xsl:value-of select="@onclick"/>',
+                icon: '<xsl:value-of select="@icon"/>'
+            })
+    	);
+    </xsl:template>
+
     <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'select']">
         componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(
             new Toolbar.Select({

@@ -150,9 +150,9 @@ var Toolbar = new Class({
 
     // Private methods:
 
-    _callAction:function (action, control) {
+    _callAction:function (action, data) {
         if (this.boundTo && $type(this.boundTo[action]) == 'function') {
-            this.boundTo[action](control);
+            this.boundTo[action](data);
         }
     }
 });
@@ -229,6 +229,11 @@ Toolbar.Control = new Class({
 
 Toolbar.Button = new Class({
     Extends:Toolbar.Control,
+    callAction:function (data) {
+        if (!this.properties.disabled) {
+            this.toolbar._callAction(this.properties.action, data);
+        }
+    },
     build:function () {
         this.parent();
         var control = this;
@@ -243,11 +248,7 @@ Toolbar.Button = new Class({
             }});
         if (Browser.chrome) {
             this.element.addEvents({
-                'click':function (event) {
-                    if (!control.properties.disabled) {
-                        control.toolbar._callAction(control.properties.action);
-                    }
-                },
+                'click':this.callAction.bind(this),
                 'mousedown':function () {
                     return false;
                 }
@@ -256,14 +257,38 @@ Toolbar.Button = new Class({
         else {
             this.element.addEvent('mousedown', function (event) {
                 if (event.rightClick) return;
-                if (!control.properties.disabled) {
-                    control.toolbar._callAction(control.properties.action);
-                }
-
-            });
+                this.callAction();
+            }.bind(this));
         }
+
     }
 });
+
+Toolbar.File = new Class({
+    Extends:Toolbar.Button,
+    callAction:function () {
+        this.element.getElementById(this.properties.id).click();
+    },
+    build:function () {
+        this.parent();
+        var obj = this;
+        this.element.grab(new Element('input', {'type':'file', 'id':this.properties.id, 'events':{
+            'change':function (evt) {
+                var file = evt.target.files[0];
+                var reader = new FileReader();
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        if(!obj.properties.disabled)
+                            obj.toolbar._callAction(obj.properties.action, e.target);
+                    }
+                })(file);
+                reader.readAsDataURL(file);
+            }.bind(this)
+        }
+        }));
+    }
+});
+
 Toolbar.Switcher = new Class({
     Extends:Toolbar.Button,
     initialize:function (props) {

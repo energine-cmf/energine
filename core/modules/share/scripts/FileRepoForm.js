@@ -61,6 +61,7 @@ var FileRepoForm = new Class({
 
     },
     generatePreviews:function (tmpFileName) {
+
         if (this.thumbs)
             this.thumbs.each(function (el) {
                 el.removeClass('hidden');

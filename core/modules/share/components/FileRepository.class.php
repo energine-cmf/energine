@@ -31,7 +31,7 @@ class FileRepository extends Grid {
         parent::__construct($name, $module, $params);
         $this->setTableName('share_uploads');
         $this->setFilter(array('upl_is_active' => 1));
-        $this->setOrder(array('upl_publication_date' => QAL::DESC));
+        $this->setOrder(array('upl_title' => QAL::ASC));
     }
 
     /**

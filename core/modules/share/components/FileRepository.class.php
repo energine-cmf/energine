@@ -31,7 +31,7 @@ class FileRepository extends Grid {
         parent::__construct($name, $module, $params);
         $this->setTableName('share_uploads');
         $this->setFilter(array('upl_is_active' => 1));
-        $this->setOrder(array('upl_date' => QAL::DESC));
+        $this->setOrder(array('upl_publication_date' => QAL::DESC));
     }
 
     /**
@@ -326,7 +326,7 @@ class FileRepository extends Grid {
                 $data['upl_internal_type'] = $fi->type;
                 $data['upl_width'] = $fi->width;
                 $data['upl_height'] = $fi->height;
-                $data['upl_date'] = date('Y-m-d H:i:s');
+                $data['upl_publication_date'] = date('Y-m-d H:i:s');
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data);
 
             }

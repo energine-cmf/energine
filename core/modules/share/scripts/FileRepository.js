@@ -115,7 +115,7 @@ var FileRepository = new Class({
             case 'folder':
                 this.currentPID = r.upl_id;
                 this.filter.remove();
-                this.loadPage(this.pageList.currentPage);
+                this.loadPage(1);
                 break;
             case 'folderup':
                 this.currentPID = r.upl_id;

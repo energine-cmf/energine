@@ -22,15 +22,20 @@
 class EmptyBuilder implements IBuilder {
     /**
      * Метод реализован
+     * @return true
      */
-    public function build() {}
+    public function build() {
+        return true;
+    }
 
     /**
-     * Мне нечего сказать миру
+     * Создаем пустой рекордсет требующийся для привязки к JS
      *
      * @return bool
      */
     public function getResult() {
-        return false;
+        $doc = new DOMDocument('1.0', 'UTF-8');
+        $dom_recordSet = $doc->createElement('recordset');
+        return $dom_recordSet;
     }
 }

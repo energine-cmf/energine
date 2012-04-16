@@ -37,6 +37,7 @@
             <field name="smap_id"/>
             <field name="news_date" outputFormat="%E"/>
             <field name="news_title"/>
+            <field name="news_announce_rtf"/>
             <field name="news_text_rtf"/>
         </fields>
         <translations>

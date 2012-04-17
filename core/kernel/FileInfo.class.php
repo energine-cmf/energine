@@ -113,6 +113,7 @@ class FileInfo extends DBWorker {
                             $data['upl_height'] =
                                     $result['height'] = $tmp[1];
                             break;
+                        case 'video/mp4':
                         case 'video/x-flv':
                             $data['upl_internal_type'] =
                                     $result['type'] = self::META_TYPE_VIDEO;

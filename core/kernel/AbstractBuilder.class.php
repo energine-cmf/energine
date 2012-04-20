@@ -269,7 +269,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             $today = strtotime("midnight");
             $tomorrow = strtotime("midnight +1 day");
             $dayAfterTomorrow = strtotime("midnight +2 day");
+            $tomorrowPlus3 = strtotime("midnight +3 day");
             $yesterday = strtotime("midnight -1 day");
+            $beforeYesterday = strtotime("midnight -2 day");
             if ($format == '%E') {
                 if ($date >= $today and $date < $tomorrow) {
                     $result .= DBWorker::_translate('TXT_TODAY');
@@ -277,8 +279,14 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                 elseif ($date < $today and $date >= $yesterday) {
                     $result .= DBWorker::_translate('TXT_YESTERDAY');
                 }
+                elseif ($date < $yesterday and $date >= $beforeYesterday) {
+                    $result .= DBWorker::_translate('TXT_BEFORE_YESTERDAY');
+                }
                 elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
                     $result .= DBWorker::_translate('TXT_TOMORROW');
+                }
+                elseif ($date >= $dayAfterTomorrow && $date < $tomorrowPlus3) {
+                    $result .= DBWorker::_translate('TXT_AFTER_TOMORROW');
                 }
                 else {
                     $dayNum = date('w', $date);

@@ -116,15 +116,21 @@ class VKApi {
      * @return array
      */
     public function getUserInfo() {
-        $res = $this->apiRequest('getProfiles', array('uids'=>$this->m_uid,"fields"=>"uid,first_name,last_name,sex,country,photo"));
+        $res = $this->apiRequest('getProfiles', array('uids'=>$this->m_uid,"fields"=>"uid,first_name,last_name,sex,city,country,photo"));
         if(is_array($res['response'])){
             $userInfo = array(
                 'u_name' => $res['response'][0]['uid'].'@vk.com',
                 'u_vkid' => $res['response'][0]['uid'],
                 'u_password' => User::generatePassword(),
+                'u_city' => (isset($res['response'][0]['city']))?$res['response'][0]['city']:'',
+                'u_country' => (isset($res['response'][0]['country']))?$res['response'][0]['country']:'',
                 'u_fullname' => $res['response'][0]['first_name'] . ' ' . $res['response'][0]['last_name'],
                 'u_avatar_img' => $res['response'][0]['photo']
             );
+            if(isset($res['response'][0]['city'])){
+                $userInfo['u_city'] = $res['response'][0]['city'];
+                $userInfo['u_country'] = $res['response'][0]['country'];
+            }
         }
         else{
             $userInfo = false;

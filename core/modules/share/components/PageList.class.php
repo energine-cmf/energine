@@ -61,12 +61,12 @@ class PageList extends DataSet {
 
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
-                              array(
-                                   'tags' => '',
-                                   'id' => false,
-                                   'site' => E()->getSiteManager()->getCurrentSite()->id,
-                                   'recursive' => false
-                              ));
+            array(
+                'tags' => '',
+                'id' => false,
+                'site' => E()->getSiteManager()->getCurrentSite()->id,
+                'recursive' => false
+            ));
         return $result;
     }
 
@@ -83,15 +83,18 @@ class PageList extends DataSet {
             $FD->setType(FieldDescription::FIELD_TYPE_STRING);
             $this->getDataDescription()->addFieldDescription($FD);
         }
+        if ($this->getDataDescription()->getFieldDescriptionByName('attachments')) {
+            $am = new AttachmentManager(
+                $this->getDataDescription(),
+                $this->getData(),
+                'share_sitemap'
+            );
+            //$am->createFieldDescription();
+            if ($f = $this->getData()->getFieldByName('Id'))
+                $am->createField('smap_id', true, $f->getData());
+        }
 
-        $am = new AttachmentManager(
-            $this->getDataDescription(),
-            $this->getData(),
-            'share_sitemap'
-        );
-        $am->createFieldDescription();
-        if($f = $this->getData()->getFieldByName('Id'))
-            $am->createField('smap_id', true, $f->getData());
+
     }
 
     /**
@@ -112,21 +115,21 @@ class PageList extends DataSet {
         if ($this->getParam('id') == self::PARENT_PAGE) {
             $param = $sitemap->getParent($this->document->getID());
         }
-            //выводим child текуще
+        //выводим child текуще
         elseif ($this->getParam('id') == self::CURRENT_PAGE) {
             $param = $this->document->getID();
         }
-            //выводим все разделы
+        //выводим все разделы
         elseif ($this->getParam('id') == self::ALL_PAGES) {
             $methodName = 'getInfo';
             $param = null;
         }
-            //если пустой
-            //выводим главное меню
+        //если пустой
+        //выводим главное меню
         elseif (!$this->getParam('id')) {
             $param = $sitemap->getDefault();
         }
-            //выводим child переданной в параметре
+        //выводим child переданной в параметре
         else {
             $param = (int)$this->getParam('id');
         }

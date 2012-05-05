@@ -144,7 +144,14 @@ var FileRepository = new Class({
         }
         ModalBox.open({
             url:this.singlePath + pid + 'add-dir/',
-            onClose:this._processAfterCloseAction.bind(this)
+            //onClose:this._processAfterCloseAction.bind(this)
+            onClose: function(response){
+                if(response && response.result){
+                    this.currentPID = response.data;
+                    this._processAfterCloseAction(response);
+                }
+
+            }.bind(this)
         });
     },
     uploadZip: function(data){

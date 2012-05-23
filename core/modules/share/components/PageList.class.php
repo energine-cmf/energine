@@ -36,6 +36,9 @@ class PageList extends DataSet {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->addTranslation('TXT_HOME');
+        if($this->getParam('site') == 'default'){
+            $this->setParam('site', E()->getSiteManager()->getDefaultSite()->id);
+        }
     }
 
     protected function createBuilder() {

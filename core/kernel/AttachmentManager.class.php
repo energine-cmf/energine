@@ -224,7 +224,7 @@ class AttachmentManager extends DBWorker {
             $field = new Field('attached_files');
             if (!$data && !$this->data->isEmpty()) {
                 $data = $this->data->getFieldByName($this->pk->getName())->getRowData(0);
-                $request = 'SELECT files.upl_id, upl_path, upl_name, upl_internal_type
+                $request = 'SELECT files.upl_id, upl_path, upl_name, upl_title, upl_internal_type
                       FROM `' . $this->tableName . '` s2f
                     LEFT JOIN `' . self::ATTACH_TABLENAME . '` files ON s2f.upl_id=files.upl_id
                     WHERE ' . $this->pk->getName() . ' = %s  
@@ -258,7 +258,11 @@ class AttachmentManager extends DBWorker {
         $f->setType(FieldDescription::FIELD_TYPE_BOOL);
         $dd->addFieldDescription($f);
 */
+        $f = new FieldDescription('upl_title');
+        $dd->addFieldDescription($f);
+
         $f = new FieldDescription('upl_name');
+        $f->setType(FieldDescription::FIELD_TYPE_HIDDEN);
         $dd->addFieldDescription($f);
 
         $f = new FieldDescription('upl_internal_type');

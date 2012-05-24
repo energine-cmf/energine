@@ -143,7 +143,7 @@
                                     <button type="button" class="down_attachment" upl_id="{field[@name='upl_id']}"><xsl:value-of select="$TRANSLATION[@const='BTN_DOWN']"/></button><!--</xsl:if>-->
                                     </td>
                                     
-                                <td><xsl:value-of select="field[@name='upl_name']"/></td>
+                                <td><xsl:value-of select="field[@name='upl_title']"/></td>
                                 <td>
                                     <a href="{field[@name='upl_path']/@real_image}" target="blank">
                                         <xsl:choose>

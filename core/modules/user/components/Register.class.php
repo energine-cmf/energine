@@ -197,9 +197,9 @@ class Register extends DBDataSet {
      */
     protected function success() {
         //если в сессии нет переменной saved значит этот метод пытаются вызвать напрямую. Не выйдет!
-        if (!isset($_SESSION['saved'])) {
+        /*if (!isset($_SESSION['saved'])) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
-        }
+        }*/
         //unset($_SESSION['saved']);
         if ($textBlock = $this->document->componentManager->getBlockByName('RegTextBlock')) {
             $textBlock->disable();

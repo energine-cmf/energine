@@ -93,7 +93,8 @@ final class Registry extends Object {
         }
             //поскольку предполагается хранить синглтоны, пробуем создать соответствующий класс ориентируясь на имя
         else {
-            $result = $this->entities[$className] = new $className();
+            $result = new $className();
+            $this->entities[$className] = $result;
         }
 
 

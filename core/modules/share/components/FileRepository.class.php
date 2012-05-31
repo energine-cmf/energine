@@ -171,7 +171,7 @@ class FileRepository extends Grid {
                 throw new SystemException('ERR_BAD_DATA');
             }
             $fileData = self::cleanFileData($_POST['data']);
-            if (!file_put_contents(($result = FileObject::getTmpFilePath($_POST['name'])), $fileData)) {
+            if (!@file_put_contents(($result = FileObject::getTmpFilePath($_POST['name'])), $fileData)) {
                 throw new SystemException('ERR_CREATE_FILE');
             }
             $b->setProperties(array(

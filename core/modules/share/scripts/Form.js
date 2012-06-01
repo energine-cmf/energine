@@ -110,6 +110,14 @@ var Form = new Class({
     close:function () {
         ModalBox.close();
     },
+    clearFileField: function(fieldId,lnk){
+        var preview;
+        this.form.getElementById(fieldId).set('value','');
+        if(preview = this.form.getElementById(fieldId + '_preview')){
+            preview.hide();
+        }
+        lnk.hide();
+    },
     openFileLib:function (button) {
         var path = $($(button).getProperty('link')).get('value');
         if (path == '') {
@@ -119,6 +127,7 @@ var Form = new Class({
             url:this.singlePath + 'file-library/',
             extraData:path,
             onClose:function (result) {
+                var image, btnDF;
                 if (result) {
                     button = $(button);
                     $(button.getProperty('link')).value = result['upl_path'];
@@ -128,9 +137,11 @@ var Form = new Class({
                             .setStyle('visibility', 'visible');
                     }
 
-                    if (image = $(button.getProperty('preview'))) {
+                    if (image = $(button.getProperty('preview')).getElement('img')) {
                         image.setProperty('src', result['upl_path']);
+                        $(button.getProperty('preview')).show();
                     }
+                    button.getNext('.lnk_clear').show('inline');
                 }
             }
         });

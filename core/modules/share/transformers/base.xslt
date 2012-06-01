@@ -169,9 +169,10 @@
     <!-- поле типа file -->
     <xsl:template match="field[@type='file'][ancestor::component[@type='form']]">
         <div class="preview" id="{generate-id(.)}_preview">
-            <xsl:if test=". != ''">
-                <img src="{.}" alt=""/>
+            <xsl:if test=". = ''">
+                <xsl:attribute name="style">display:none;</xsl:attribute>
             </xsl:if>
+            <img src="{.}" alt=""/>
         </div>
         <input class="text inp_file" readonly="readonly">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
@@ -182,6 +183,12 @@
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}"
                 preview="{generate-id(.)}_preview">...
         </button>
+        <a class="lnk_clear" href="#" onclick="{generate-id(../..)}.clearFileField('{generate-id(.)}',this);return false;">
+            <xsl:if test=". = ''">
+                <xsl:attribute name="style">display:none;</xsl:attribute>
+            </xsl:if>
+            <xsl:value-of select="$TRANSLATION[@const='TXT_CLEAR']"/>
+        </a>
         <br/>
         <a href="{$BASE}{.}" id="btn_download_file" target="_blank">
             <xsl:attribute name="style">

@@ -133,7 +133,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
         if ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_FILE) {
             $fieldInfo->setProperty('additionalTitle', $this->translate('MSG_LOAD_FILE'));
-
+            E()->getDocument()->addTranslation('TXT_CLEAR');
         }
         /*elseif (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
             $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-
-		<state name="main">
+    <state name="main">
         <fields>
             <field name="Id" type="integer" key="1"/>
             <field name="Pid" type="integer"/>
@@ -10,6 +9,5 @@
             <field name="attachments"/>
             <field name="DescriptionRtf" type="string"/>
         </fields>
-		</state>
-    
+    </state>
 </configuration>

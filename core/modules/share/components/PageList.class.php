@@ -81,11 +81,24 @@ class PageList extends DataSet {
      */
     protected function main() {
         parent::main();
-        foreach (array('Site', 'Redirect') as $fieldName) {
-            $FD = new FieldDescription($fieldName);
-            $FD->setType(FieldDescription::FIELD_TYPE_STRING);
-            $this->getDataDescription()->addFieldDescription($FD);
+        if($this->getDataDescription()->isEmpty()){
+            $this->getDataDescription()->loadXML(
+                new SimpleXMLElement('<fields>
+                            <field name="Id" type="integer" key="1"/>
+                            <field name="Pid" type="integer"/>
+                            <field name="Name" type="string"/>
+                            <field name="Segment" type="string"/>
+                            <field name="DescriptionRtf" type="string"/>
+                        </fields>')
+            );
         }
+        if(!$this->getData()->isEmpty())
+            foreach (array('Site', 'Redirect') as $fieldName) {
+                $FD = new FieldDescription($fieldName);
+                $FD->setType(FieldDescription::FIELD_TYPE_STRING);
+                $this->getDataDescription()->addFieldDescription($FD);
+            }
+
         if ($this->getDataDescription()->getFieldDescriptionByName('attachments')) {
             $am = new AttachmentManager(
                 $this->getDataDescription(),

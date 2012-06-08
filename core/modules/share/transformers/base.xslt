@@ -164,6 +164,12 @@
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}"
                 preview="{generate-id(.)}_preview">...
         </button>
+        <a class="lnk_clear" href="#" onclick="{generate-id(../..)}.clearFileField('{generate-id(.)}',this);return false;">
+            <xsl:if test=". = ''">
+                <xsl:attribute name="style">display:none;</xsl:attribute>
+            </xsl:if>
+            <xsl:value-of select="$TRANSLATION[@const='TXT_CLEAR']"/>
+        </a>
     </xsl:template>
 
     <!-- поле типа file -->

@@ -136,8 +136,10 @@ var Form = new Class({
                         btnDF.setProperty('href', Energine.base + result['upl_path'])
                             .setStyle('visibility', 'visible');
                     }
-
-                    if (image = $(button.getProperty('preview')).getElement('img')) {
+                    image = ($(button.getProperty('preview')).get('tag')=='img')
+                                ? $(button.getProperty('preview'))
+                                : $(button.getProperty('preview')).getElement('img');
+                    if(image) {
                         image.setProperty('src', result['upl_path']);
                         $(button.getProperty('preview')).show();
                     }

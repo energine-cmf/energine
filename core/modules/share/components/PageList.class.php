@@ -32,16 +32,21 @@ class PageList extends DataSet {
      *
      * @return void
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name, $module, array $params = null)
+    {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->addTranslation('TXT_HOME');
-        if($this->getParam('site') == 'default'){
+        if ($this->getParam('site') == 'default') {
             $this->setParam('site', E()->getSiteManager()->getDefaultSite()->id);
+        }
+        elseif ($this->getParam('site') == 'current') {
+            $this->setParam('site', E()->getSiteManager()->getCurrentSite()->id);
         }
     }
 
-    protected function createBuilder() {
+    protected function createBuilder()
+    {
         if ($this->getParam('recursive')) {
             $builder = new TreeBuilder();
         }
@@ -62,12 +67,13 @@ class PageList extends DataSet {
      * @access protected
      */
 
-    protected function defineParams() {
+    protected function defineParams()
+    {
         $result = array_merge(parent::defineParams(),
             array(
                 'tags' => '',
                 'id' => false,
-                'site' => E()->getSiteManager()->getCurrentSite()->id,
+                'site' => false,
                 'recursive' => false
             ));
         return $result;
@@ -79,9 +85,10 @@ class PageList extends DataSet {
      * @return void
      * @access protected
      */
-    protected function main() {
+    protected function main()
+    {
         parent::main();
-        if($this->getDataDescription()->isEmpty()){
+        if ($this->getDataDescription()->isEmpty()) {
             $this->getDataDescription()->loadXML(
                 new SimpleXMLElement('<fields>
                             <field name="Id" type="integer" key="1"/>
@@ -92,7 +99,7 @@ class PageList extends DataSet {
                         </fields>')
             );
         }
-        if(!$this->getData()->isEmpty())
+        if (!$this->getData()->isEmpty())
             foreach (array('Site', 'Redirect') as $fieldName) {
                 $FD = new FieldDescription($fieldName);
                 $FD->setType(FieldDescription::FIELD_TYPE_STRING);
@@ -120,13 +127,15 @@ class PageList extends DataSet {
      * @access protected
      */
 
-    protected function loadData() {
-        $sitemap = E()->getMap($this->getParam('site'));
+    protected function loadData()
+    {
+        $sitemap = E()->getMap();
 
         $methodName = 'getChilds';
         if ($this->getParam('recursive')) {
             $methodName = 'getDescendants';
         }
+
         //Выводим siblin
         if ($this->getParam('id') == self::PARENT_PAGE) {
             $param = $sitemap->getParent($this->document->getID());
@@ -139,15 +148,22 @@ class PageList extends DataSet {
         elseif ($this->getParam('id') == self::ALL_PAGES) {
             $methodName = 'getInfo';
             $param = null;
+            if (!($siteId = $this->getParam('site'))) {
+                $siteId = E()->getSiteManager()->getCurrentSite()->id;
+            }
+            $sitemap = E()->getMap($siteId);
         }
-        //если пустой
-        //выводим главное меню
+        //если пустой id
         elseif (!$this->getParam('id')) {
+            if ($this->getParam('site')){
+                $sitemap = E()->getMap($this->getParam('site'));
+            }
             $param = $sitemap->getDefault();
         }
         //выводим child переданной в параметре
         else {
             $param = (int)$this->getParam('id');
+            $sitemap = E()->getMap(E()->getSiteManager()->getSiteByPage($param)->id);
         }
 
         $data = call_user_func(array($sitemap, $methodName), $param);

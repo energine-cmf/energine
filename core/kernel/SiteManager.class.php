@@ -138,11 +138,7 @@ final class SiteManager extends DBWorker implements Iterator {
      */
     public function getSiteByPage($pageID) {
         return $this->getSiteByID(
-            simplifyDBResult(
-                $this->dbh->select('share_sitemap', 'site_id', array('smap_id' => $pageID)),
-                'site_id',
-                true
-            )
+            $this->dbh->getScalar('share_sitemap', 'site_id', array('smap_id' => $pageID))
         );
     }
 

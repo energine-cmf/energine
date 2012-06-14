@@ -192,7 +192,7 @@ final class Registry extends Object {
      * На самом деле этих объектов несколько
      *
      *
-     * @param bool $siteID идентификатор сайта
+     * @param bool | int $siteID идентификатор сайта
      * @return Sitemap
      */
     public function getMap($siteID = false) {

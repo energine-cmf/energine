@@ -206,7 +206,8 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             }
         }
         elseif ($fieldValue !== false) {
-            if (!empty($fieldValue)) {
+            // empty() не пропускает значиния 0 и '0'
+            if (!empty($fieldValue) || ($fieldValue === 0) || ($fieldValue === '0')) {
                 switch ($fieldInfo->getType()) {
                     case FieldDescription::FIELD_TYPE_DATETIME:
                     case FieldDescription::FIELD_TYPE_DATE:

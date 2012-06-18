@@ -164,7 +164,7 @@
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}"
                 preview="{generate-id(.)}_preview">...
         </button>
-        <xsl:if test="not(@nullable)">
+        <xsl:if test="@nullable">
             <a class="lnk_clear" href="#"
                onclick="{generate-id(../..)}.clearFileField('{generate-id(.)}',this);return false;">
                 <xsl:if test=". = ''">
@@ -193,7 +193,7 @@
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}"
                 preview="{generate-id(.)}_preview">...
         </button>
-        <xsl:if test="not(@nullable)">
+        <xsl:if test="@nullable">
             <a class="lnk_clear" href="#"
                onclick="{generate-id(../..)}.clearFileField('{generate-id(.)}',this);return false;">
                 <xsl:if test=". = ''">

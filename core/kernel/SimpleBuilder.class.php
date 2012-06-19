@@ -48,7 +48,7 @@ class SimpleBuilder extends Builder {
                 'tableName',
                 'sort',
                 'customField',
-                'deleteFileTitle',
+                //'deleteFileTitle',
                 /*'msgOpenField',
                 'msgCloseField',*/
                 'default'

@@ -90,10 +90,6 @@ class Builder extends AbstractBuilder {
                 else {
                     $fieldValue = false;
                 }
-                if(in_array($fieldInfo->getType(),array(FieldDescription::FIELD_TYPE_IMAGE,FieldDescription::FIELD_TYPE_FILE))){
-                    E()->getDocument()->addTranslation('TXT_DOWNLOAD_FILE');
-                }
-
                 $dom_field = $this->createField($fieldName, $fieldInfo, $fieldValue, $fieldProperties);
                 $dom_record->appendChild($dom_field);
             }

@@ -114,7 +114,7 @@ var Form = new Class({
         var preview;
         this.form.getElementById(fieldId).set('value','');
         if(preview = this.form.getElementById(fieldId + '_preview')){
-            preview.hide();
+            preview.removeProperty('href').hide();
         }
         lnk.hide();
     },
@@ -129,19 +129,27 @@ var Form = new Class({
             onClose:function (result) {
                 var image, btnDF;
                 if (result) {
+
                     button = $(button);
                     $(button.getProperty('link')).value = result['upl_path'];
 
-                    if (btnDF = $('btn_download_file')) {
-                        btnDF.setProperty('href', Energine.base + result['upl_path'])
-                            .setStyle('visibility', 'visible');
-                    }
                     image = ($(button.getProperty('preview')).get('tag')=='img')
                                 ? $(button.getProperty('preview'))
                                 : $(button.getProperty('preview')).getElement('img');
                     if(image) {
-                        image.setProperty('src', result['upl_path']);
-                        $(button.getProperty('preview')).show();
+                        var src;
+                        if(result['upl_internal_type'] == 'image'){
+                            src = result['upl_path'];
+                        }
+                        else if(result['upl_internal_type'] == 'video'){
+                            src = 'resizer/w0-h0/' + result['upl_path'];
+                        }
+                        else {
+                            src = 'images/icons/icon_undefined.gif';
+                        }
+                        src = Energine.static + src;
+                        image.setProperty('src', src);
+                        $(button.getProperty('preview')).setProperty('href', Energine.static + result['upl_path']).show();
                     }
                     if(button.getNext('.lnk_clear')) {
                         button.getNext('.lnk_clear').show('inline');

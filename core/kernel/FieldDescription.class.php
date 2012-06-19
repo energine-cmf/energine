@@ -84,7 +84,7 @@ class FieldDescription extends DBWorker implements Iterator
     /**
      * Изображение
      */
-    const FIELD_TYPE_IMAGE = 'image';
+    //const FIELD_TYPE_IMAGE = 'image';
 
     /**
      * Файл
@@ -94,7 +94,7 @@ class FieldDescription extends DBWorker implements Iterator
     /**
      * Приватный файл
      */
-    const FIELD_TYPE_PFILE = 'pfile';
+    //const FIELD_TYPE_PFILE = 'pfile';
     /**
      * Thumbnail
      */
@@ -457,7 +457,7 @@ class FieldDescription extends DBWorker implements Iterator
                 $this->setProperty('message', 'MSG_BAD_PHONE_FORMAT');
                 //$this->setProperty('outputFormat', '%s');
                 break;
-            case self::FIELD_TYPE_IMAGE:
+            /*case self::FIELD_TYPE_IMAGE:
                 if ($this->getPropertyValue('nullable') === false) {
                     $this->setProperty('pattern', '/^.+$/');
                     //$this->setProperty('message', $this->translate('MSG_IMG_IS_NOT_NULL'));
@@ -466,9 +466,9 @@ class FieldDescription extends DBWorker implements Iterator
                 $this->length = true;
                 //$this->setProperty('outputFormat', '%s');
                 $this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
-                break;
+                break;*/
             case self::FIELD_TYPE_FILE:
-            case self::FIELD_TYPE_PFILE:
+            //case self::FIELD_TYPE_PFILE:
             case self::FIELD_TYPE_VIDEO:
                 if ($this->getPropertyValue('nullable') === false) {
                     $this->setProperty('pattern', '/^.+$/');
@@ -477,7 +477,7 @@ class FieldDescription extends DBWorker implements Iterator
                 }
                 $this->length = true;
                 //$this->setProperty('outputFormat', '%s');
-                $this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
+                //$this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_STRING:
                 $this->setProperty('sort', 1);
@@ -776,15 +776,15 @@ class FieldDescription extends DBWorker implements Iterator
                 elseif (strpos($name, '_phone')) {
                     $result = self::FIELD_TYPE_PHONE;
                 }
-                elseif (strpos($name, '_img')) {
+                /*elseif (strpos($name, '_img')) {
                     $result = self::FIELD_TYPE_IMAGE;
-                }
-                elseif (strpos($name, '_file')) {
+                }*/
+                elseif (strpos($name, '_file') || strpos($name, '_img')) {
                     $result = self::FIELD_TYPE_FILE;
                 }
-                elseif (strpos($name, '_pfile')) {
+                /*elseif (strpos($name, '_pfile')) {
                     $result = self::FIELD_TYPE_PFILE;
-                }
+                }*/
                 elseif (strpos($name, '_video')) {
                     $result = self::FIELD_TYPE_VIDEO;
                 }

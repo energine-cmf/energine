@@ -7,9 +7,11 @@
     extension-element-prefixes="set">
     
     <!-- обработка компонента типа form -->
+    <!--or descendant::field[@type='pfile']
+     or descendant::field[@type='prfile']-->
     <xsl:template match="component[@type='form']">
         <form method="post" action="{@action}">
-            <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">
+            <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file']">
             	<xsl:attribute name="enctype">multipart/form-data</xsl:attribute>
             </xsl:if>
 			<xsl:choose>
@@ -170,11 +172,6 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                       <!-- <td colspan="2" style="text-align:right;">
-                            <a href="#" id="add_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_LOAD_FILE']"/></a>
-                            <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
-                            <span class="progress_indicator hidden" id="indicator">0%</span>
-                        </td>-->
                         <td colspan="4" style="text-align:right;">
                             <a href="#" id="insert_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
                             <script type="text/javascript">

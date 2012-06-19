@@ -169,7 +169,7 @@ class Saver extends DBWorker {
         foreach ($this->getDataDescription() as $fieldName => $fieldDescription) {
             $fieldData = $this->getData()->getFieldByName($fieldName);
             if ($fieldDescription->getType() == FieldDescription::FIELD_TYPE_BOOL ||
-                $fieldDescription->getType() == FieldDescription::FIELD_TYPE_PFILE ||
+                //$fieldDescription->getType() == FieldDescription::FIELD_TYPE_PFILE ||
                 $fieldDescription->getType() == FieldDescription::FIELD_TYPE_FILE ||
                 $fieldDescription->getType() == FieldDescription::FIELD_TYPE_CAPTCHA ||
                 $fieldName == 'lang_id' ||

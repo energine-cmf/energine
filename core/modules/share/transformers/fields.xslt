@@ -191,13 +191,13 @@
         </xsl:if>
     </xsl:template>
 
+    <!--field[@type='pfile'][@mode='1'][ancestor::component[@type='form']]
+            |
+|
+        field[@type='prfile'][@mode='1'][ancestor::component[@type='form']]
+            -->
     <!-- для поля FILE на которое права только чтение -->
-    <xsl:template match="
-        field[@type='file'][@mode='1'][ancestor::component[@type='form']] 
-        | 
-        field[@type='pfile'][@mode='1'][ancestor::component[@type='form']]
-        |
-        field[@type='prfile'][@mode='1'][ancestor::component[@type='form']]">
+    <xsl:template match="field[@type='file'][@mode='1'][ancestor::component[@type='form']]">
         <div class="field">
             <xsl:if test="@title">
                 <label for="{@name}">

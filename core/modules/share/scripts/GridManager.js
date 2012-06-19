@@ -302,7 +302,7 @@ var Grid = new Class({
                 cell.set('html', '&nbsp;');
             }
         }
-        else if (this.metadata[fieldName].type == 'image') {
+        else if (this.metadata[fieldName].type == 'file') {
             if (record[fieldName]) {
                 var image = new Element('img').setProperties({ 'src':Energine.static + 'resizer/w40-h40/' + record[fieldName], 'width':50, 'height':50 }).injectInside(cell);
                 cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });

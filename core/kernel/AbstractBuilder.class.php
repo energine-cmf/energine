@@ -131,9 +131,20 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         }
         $result->setAttribute('mode', $fieldInfo->getMode());
 
-        if (in_array($fieldInfo->getType(),array(FieldDescription::FIELD_TYPE_FILE,FieldDescription::FIELD_TYPE_IMAGE))) {
-            $fieldInfo->setProperty('additionalTitle', $this->translate('MSG_LOAD_FILE'));
+        if (in_array($fieldInfo->getType(),array(FieldDescription::FIELD_TYPE_FILE/*,FieldDescription::FIELD_TYPE_IMAGE*/))) {
+            //$fieldInfo->setProperty('additionalTitle', $this->translate('MSG_LOAD_FILE'));
             E()->getDocument()->addTranslation('TXT_CLEAR');
+            if($fieldValue){
+                try {
+                    if ($info = E()->FileInfo->analyze($fieldValue)) {
+                        $result->setAttribute('media_type', $info->type);
+                        $result->setAttribute('mime', $info->mime);
+                    }
+                }
+                catch (SystemException $e) {
+
+                }
+            }
         }
         /*elseif (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
             $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));

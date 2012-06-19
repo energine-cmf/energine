@@ -5,9 +5,13 @@
     xmlns="http://www.w3.org/1999/xhtml">
     
     <!-- компонент ImageManager (редактор изображения при вставке в текстовый блок, выводится в модальное окно) -->
+    <!--
+    or descendant::field[@type='pfile']
+     or descendant::field[@type='prfile']
+     -->
     <xsl:template match="component[@class='ImageManager']">
         <form method="post" action="{@action}" class="e-grid-form">
-            <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file'] or descendant::field[@type='pfile'] or descendant::field[@type='prfile']">
+            <xsl:if test="descendant::field[@type='image'] or descendant::field[@type='file']">
                 <xsl:attribute name="enctype">multipart/form-data</xsl:attribute>
             </xsl:if>
             <input type="hidden" name="componentAction" value="{@componentAction}" id="componentAction"/>

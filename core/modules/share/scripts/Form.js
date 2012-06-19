@@ -143,7 +143,9 @@ var Form = new Class({
                         image.setProperty('src', result['upl_path']);
                         $(button.getProperty('preview')).show();
                     }
-                    button.getNext('.lnk_clear').show('inline');
+                    if(button.getNext('.lnk_clear')) {
+                        button.getNext('.lnk_clear').show('inline');
+                    }
                 }
             }
         });

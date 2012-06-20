@@ -221,18 +221,3 @@ Asset.css = function (source, properties) {
     return false;
 }
 
-var showhideField = function (obj, event) {
-    Energine.cancelEvent(event);
-    var field = $(obj).getParents('.field')[0];
-    if (field.hasClass('min')) {
-        field.removeClass('min').addClass('max');
-        var richEditor = field.getElement('.richEditor');
-        if (richEditor) richEditor.focus();
-        var textarea = field.getElement('textarea');
-        if (textarea) textarea.focus();
-    }
-    else if (field.hasClass('max')) {
-        field.removeClass('max').addClass('min');
-    }
-    return false;
-}

@@ -23,7 +23,19 @@ var Form = new Class({
 
         }, this);
 
-        this.form.getElements('.smap_selector').each(function(el){
+        var showHideFunc = function (e) {
+            Energine.cancelEvent(e);
+            var field, el = $(e.target);
+            if (field = el.getParent('.field')) {
+                if(field.hasClass('min'))field.swapClass('min', 'max');
+                else if(el.hasClass('icon_min_max') && field.hasClass('max'))field.swapClass('max', 'min');
+            }
+        }
+
+        this.form.getElements('.field .control.toggle').addEvent('click', showHideFunc);
+        this.form.getElements('.icon_min_max').addEvent('click', showHideFunc);
+
+        this.form.getElements('.smap_selector').each(function (el) {
             new Form.SmapSelector(el, this);
         }, this);
 
@@ -110,10 +122,10 @@ var Form = new Class({
     close:function () {
         ModalBox.close();
     },
-    clearFileField: function(fieldId,lnk){
+    clearFileField:function (fieldId, lnk) {
         var preview;
-        this.form.getElementById(fieldId).set('value','');
-        if(preview = this.form.getElementById(fieldId + '_preview')){
+        this.form.getElementById(fieldId).set('value', '');
+        if (preview = this.form.getElementById(fieldId + '_preview')) {
             preview.removeProperty('href').hide();
         }
         lnk.hide();
@@ -133,15 +145,15 @@ var Form = new Class({
                     button = $(button);
                     $(button.getProperty('link')).value = result['upl_path'];
 
-                    image = ($(button.getProperty('preview')).get('tag')=='img')
-                                ? $(button.getProperty('preview'))
-                                : $(button.getProperty('preview')).getElement('img');
-                    if(image) {
+                    image = ($(button.getProperty('preview')).get('tag') == 'img')
+                        ? $(button.getProperty('preview'))
+                        : $(button.getProperty('preview')).getElement('img');
+                    if (image) {
                         var src;
-                        if(result['upl_internal_type'] == 'image'){
+                        if (result['upl_internal_type'] == 'image') {
                             src = result['upl_path'];
                         }
-                        else if(result['upl_internal_type'] == 'video'){
+                        else if (result['upl_internal_type'] == 'video') {
                             src = 'resizer/w0-h0/' + result['upl_path'];
                         }
                         else {
@@ -151,7 +163,7 @@ var Form = new Class({
                         image.setProperty('src', src);
                         $(button.getProperty('preview')).setProperty('href', Energine.static + result['upl_path']).show();
                     }
-                    if(button.getNext('.lnk_clear')) {
+                    if (button.getNext('.lnk_clear')) {
                         button.getNext('.lnk_clear').show('inline');
                     }
                 }
@@ -379,12 +391,12 @@ Form.SmapSelector = new Class({
     setName:function (result) {
         if (result) {
             var name = '';
-            if(result.site_name){
+            if (result.site_name) {
                 name += result.site_name + ' : ';
             }
             name += result.smap_name;
-            this.smapName.set('value',name);
-            this.smapId.set('value',result.smap_id);
+            this.smapName.set('value', name);
+            this.smapId.set('value', result.smap_id);
         }
 
     }
@@ -455,14 +467,14 @@ Form.AttachmentPane = new Class({
     },
     _insertRow:function (result) {
         if (result) {
-            var createThumb = function(fileData){
+            var createThumb = function (fileData) {
                 var thumb = new Element('img', {'border':'0'});
 
-                if(fileData){
-                    switch (fileData.upl_internal_type){
+                if (fileData) {
+                    switch (fileData.upl_internal_type) {
                         case 'image':
                         case 'video':
-                                thumb.setProperty('src', Energine.static + 'resizer/w150-h150/'+fileData.upl_path)
+                            thumb.setProperty('src', Energine.static + 'resizer/w150-h150/' + fileData.upl_path)
                             break;
                         default:
 

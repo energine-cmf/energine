@@ -30,26 +30,11 @@
     	</div>
     </xsl:template>
 
-    <!-- Отображение поля типа image для не гридовых элементов формы -->
-<!--    <xsl:template match="field[@type='image'][ancestor::component[@type='form' or @type='list'][not(@exttype='grid')]]">
-        <xsl:variable name="THUMB" select="image[@name='default']"/>
-        <xsl:variable name="MAIN" select="image[@name='main']"/>
-        <a href="{$MAIN}" target="_blank" class="thumbnail">
-            <img src="{$THUMB}" width="{$THUMB/@width}" height="{$THUMB/@height}">
-                <xsl:attribute name="nrgn:image_width"  xmlns:nrgn="http://energine.org"><xsl:value-of select="$MAIN/@width"/></xsl:attribute>
-                <xsl:attribute name="nrgn:image_height"  xmlns:nrgn="http://energine.org"><xsl:value-of select="$MAIN/@height"/></xsl:attribute>
-                <xsl:attribute name="nrgn:image_src"  xmlns:nrgn="http://energine.org"><xsl:value-of select="$MAIN"/></xsl:attribute>
-            </img>
-        </a>
-
-
-    </xsl:template>    -->
-
     <!--
         Шаблон для необязательного (nullable) поля в админчасти вынесен отдельно.
         В нем добавляется возможность скрыть/раскрыть необязательное поле.
     -->
-    <xsl:template match="field[@nullable and (@type='htmlblock' or @type='text')][ancestor::component[@type='form'][@exttype = 'grid']]">
+    <xsl:template match="field[(@type='htmlblock' or @type='text')][ancestor::component[@type='form'][@exttype = 'grid']]">
         <div>
             <xsl:attribute name="class">field clearfix<xsl:choose>
                 <xsl:when test=".=''"> min</xsl:when>
@@ -58,18 +43,10 @@
             <xsl:if test="@title">
                 <div class="name">
                     <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes" /></label>
-                    <a href="#" class="icon_min_max">
-                        <xsl:attribute name="onclick">return showhideField(this);</xsl:attribute>
-                        <xsl:attribute name="is_hidden">
-                            <xsl:choose>
-                                <xsl:when test=".=''">1</xsl:when>
-                                <xsl:otherwise>0</xsl:otherwise>
-                            </xsl:choose>
-                        </xsl:attribute>
-                    </a>
+                    <a href="#" class="icon_min_max"></a>
                 </div>
             </xsl:if>
-            <div class="control" id="control_{@language}_{@name}">
+            <div class="control toggle" id="control_{@language}_{@name}">
                 <!-- импорт шаблона, который создает сам HTML-элемент (input, select, etc.) -->
                 <xsl:apply-imports />
             </div>

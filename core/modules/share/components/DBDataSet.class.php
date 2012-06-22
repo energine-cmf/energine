@@ -731,10 +731,9 @@ class DBDataSet extends DataSet {
      *
      * @return string
      * @access protected
-     * @final
      */
 
-    final protected function getTranslationTableName() {
+    protected function getTranslationTableName() {
         return $this->translationTableName;
     }
 

@@ -129,7 +129,7 @@ final class Document extends DBWorker implements IDocument {
 
         // получаем права пользователя на документ
         $this->rights =
-                $this->sitemap->getDocumentRights($this->getID(), $this->user->getGroups());
+            $this->sitemap->getDocumentRights($this->getID(), $this->user->getGroups());
         if ($this->getRights() == ACCESS_NONE) {
             throw new SystemException('ERR_403', SystemException::ERR_403);
         }
@@ -154,22 +154,21 @@ final class Document extends DBWorker implements IDocument {
         $this->setProperty('robots', $this->documentInfo['MetaRobots']);
         $this->setProperty('ID', $this->getID());
         $this->setProperty('default',
-                $this->sitemap->getDefault() == $this->getID());
+            $this->sitemap->getDefault() == $this->getID());
 
         //Если сайт - индексируемый
-        if(E()->getSiteManager()->getCurrentSite()->isIndexed){
+        $currentSite = E()->getSiteManager()->getCurrentSite();
+        if ($currentSite->isIndexed) {
             //и сущестует код гугловерификации
             if (($verifyCode = $this->getConfigValue('google.verify')) &&
-                    !empty($verifyCode)
+                !empty($verifyCode)
             ) {
                 //то выводим его
                 $this->setProperty('google_verify', $verifyCode);
             }
-            //а может существует код гуглоаналитикса?
-            if (($analyticsCode = $this->getConfigValue('google.analytics')) &&
-                    !empty($analyticsCode)
+            if (($analyticsCode = $currentSite->gaCode) || (($analyticsCode = $this->getConfigValue('google.analytics')) &&
+                !empty($analyticsCode))
             ) {
-                //тогда выводим его
                 $this->setProperty('google_analytics', $analyticsCode);
             }
         }
@@ -218,7 +217,7 @@ final class Document extends DBWorker implements IDocument {
         $dom_documentProperties = $this->doc->createElement('properties');
         foreach ($this->properties as $propName => $propValue) {
             $dom_property =
-                    $this->doc->createElement('property', str_replace('&', '&amp;', $propValue));
+                $this->doc->createElement('property', str_replace('&', '&amp;', $propValue));
             $dom_property->setAttribute('name', $propName);
             if ($propName == 'title') {
                 $dom_property->setAttribute('alt', $this->documentInfo['HtmlTitle']);
@@ -232,9 +231,9 @@ final class Document extends DBWorker implements IDocument {
         $baseURL = E()->getSiteManager()->getCurrentSite()->base));
         $prop->setAttribute('name', 'base');
         $prop->setAttribute('static', (($staticURL =
-                $this->getConfigValue('site.static')) ? $staticURL : $baseURL));
+            $this->getConfigValue('site.static')) ? $staticURL : $baseURL));
         $prop->setAttribute('media', (($mediaURL =
-                $this->getConfigValue('site.media')) ? $mediaURL : $baseURL));
+            $this->getConfigValue('site.media')) ? $mediaURL : $baseURL));
         $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
         $prop->setAttribute('default', E()->getSiteManager()->getDefaultSite()->base);
         $dom_documentProperties->appendChild($prop);
@@ -251,14 +250,13 @@ final class Document extends DBWorker implements IDocument {
             $dom_errors = false;
             try {
                 if ($component->enabled()
-                        &&
-                        ($this->getRights() >= $component->getCurrentStateRights())
+                    &&
+                    ($this->getRights() >= $component->getCurrentStateRights())
                 ) {
 
                     $componentResult = $component->build();
                 }
-            }
-            catch (DummyException $dummyException) {
+            } catch (DummyException $dummyException) {
             }
 
             if (!empty($componentResult)) {
@@ -267,16 +265,14 @@ final class Document extends DBWorker implements IDocument {
                         $componentResult->documentElement,
                         true
                     );
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                     //stop($e->getTraceAsString());
                 }
                 if ($dom_errors) {
                     $componentResult->insertBefore($dom_errors, $componentResult->firstChild);
                 }
                 $dom_root->appendChild($componentResult);
-            }
-            elseif ($dom_errors) {
+            } elseif ($dom_errors) {
                 $dom_root->appendChild($dom_errors);
             }
         }
@@ -287,7 +283,7 @@ final class Document extends DBWorker implements IDocument {
 
             foreach ($this->translations as $const => $componentName) {
                 $dom_translation =
-                        $this->doc->createElement('translation', $this->translate($const));
+                    $this->doc->createElement('translation', $this->translate($const));
                 $dom_translation->setAttribute('const', $const);
                 if (!is_null($componentName)) {
                     $dom_translation->setAttribute('component', $componentName);
@@ -317,7 +313,7 @@ final class Document extends DBWorker implements IDocument {
         // вызывается ли компонент в single режиме?
         $actionParams = $this->request->getPath(Request::PATH_ACTION);
         if (sizeof($actionParams) > 1 &&
-                $actionParams[0] == self::SINGLE_SEGMENT
+            $actionParams[0] == self::SINGLE_SEGMENT
         ) {
             /*
             * Устанавливаем смещение пути на количество существующих
@@ -335,8 +331,7 @@ final class Document extends DBWorker implements IDocument {
                         array('state' => 'showPageToolbar')
                     )
                 );
-            }
-            // существует ли запрошенный компонент среди компонентов страницы?
+            } // существует ли запрошенный компонент среди компонентов страницы?
             else {
                 if (
                     !(
@@ -356,7 +351,7 @@ final class Document extends DBWorker implements IDocument {
                     throw new SystemException('ERR_NO_SINGLE_COMPONENT', SystemException::ERR_CRITICAL, $actionParams[1]);
                 }
                 if (E()->getController()->getViewMode() ==
-                        DocumentController::TRANSFORM_STRUCTURE_XML
+                    DocumentController::TRANSFORM_STRUCTURE_XML
                 ) {
                     $int = new IRQ();
                     $int->addBlock($blockDescription);
@@ -367,10 +362,9 @@ final class Document extends DBWorker implements IDocument {
                 );
             }
 
-        }
-        else {
+        } else {
             if (E()->getController()->getViewMode() ==
-                    DocumentController::TRANSFORM_STRUCTURE_XML
+                DocumentController::TRANSFORM_STRUCTURE_XML
             ) {
                 $int = new IRQ();
                 $int->addBlock($layoutXML);
@@ -384,7 +378,7 @@ final class Document extends DBWorker implements IDocument {
                      ) as $XML) {
                 $this->componentManager->add(
                     ComponentManager::createBlockFromDescription($XML, array('file' => ($XML == $contentXML)
-                            ? $contentFile : $layoutFile))
+                        ? $contentFile : $layoutFile))
                 );
 
             }
@@ -393,7 +387,10 @@ final class Document extends DBWorker implements IDocument {
             * обязательные стандартные компоненты:
             *     - BreadCrumbs
             */
-            $this->componentManager->addComponent($this->componentManager->createComponent('breadCrumbs', 'share', 'BreadCrumbs'));
+            $this->componentManager->add($this->componentManager->createComponent('breadCrumbs', 'share', 'BreadCrumbs'));
+
+            /*if(!$this->user->isAuthenticated())
+                $this->componentManager->add($this->componentManager->createComponent('cdAuth', 'share', 'CrossDomainAuth'));*/
         }
 
     }
@@ -508,14 +505,13 @@ final class Document extends DBWorker implements IDocument {
 
     public function addTranslation($const, Component $component = null) {
         $this->translations[$const] =
-                (!is_null($component)) ? $component->getName() : null;
+            (!is_null($component)) ? $component->getName() : null;
     }
 
     public function isEditable() {
         if ($this->getRights() > 2) {
             return ($this->getConfigValue('site.debug')) ? isset($_REQUEST['editMode']) : isset($_POST['editMode']);
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -532,17 +528,17 @@ final class Document extends DBWorker implements IDocument {
         $loadDataFromFile = function($fileName, $type) {
             if (!($result = simplexml_load_string(file_get_contents_stripped(
                 Document::TEMPLATES_DIR .
-                        constant(
-                            'DivisionEditor::TMPL_' .
-                                    strtoupper($type)) .
-                        '/' . $fileName)))
+                    constant(
+                        'DivisionEditor::TMPL_' .
+                            strtoupper($type)) .
+                    '/' . $fileName)))
             ) {
                 throw new SystemException('ERR_WRONG_' . strtoupper($type));
             }
             return $result;
         };
         if (!($templateData =
-                E()->getDB()->select('share_sitemap', array('smap_content_xml as content', 'smap_layout_xml as layout', 'smap_content as content_file', 'smap_layout as layout_file'), array('smap_id' => $documentID)))
+            E()->getDB()->select('share_sitemap', array('smap_content_xml as content', 'smap_layout_xml as layout', 'smap_content as content_file', 'smap_layout as layout_file'), array('smap_id' => $documentID)))
         ) {
             throw new SystemException('ERR_BAD_DOC_ID');
         }
@@ -554,22 +550,21 @@ final class Document extends DBWorker implements IDocument {
             if (!$templateData[$type]) {
                 //Берем из файла
                 $templateData[$type] = $loadDataFromFile($templateData[$type .
-                        '_file'], $type);
-            }
-            else {
+                    '_file'], $type);
+            } else {
                 //Если есть данные в поле
                 //Пытаемся распарсить
                 if (!($templateData[$type] =
-                        simplexml_load_string(stripslashes($templateData[$type])))
+                    simplexml_load_string(stripslashes($templateData[$type])))
                 ) {
                     //Если не удалось - берем из файла
                     $templateData[$type] = $loadDataFromFile($templateData[$type .
-                            '_file'], $type);
+                        '_file'], $type);
                     //и очищаем 
                     E()->getDB()->modify(QAL::UPDATE, 'share_sitemap', array(
                         'smap_' .
-                                $type .
-                                '_xml' => ''), array('smap_id' => $documentID));
+                            $type .
+                            '_xml' => ''), array('smap_id' => $documentID));
                 }
             }
             $templateData[$type . 'File'] = $templateData[$type . '_file'];

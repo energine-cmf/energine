@@ -28,9 +28,13 @@ class LoginForm extends DataSet {
         $params['state'] = E()->getDocument()->user->isAuthenticated() ? 'showLogoutForm' : 'showLoginForm';
         parent::__construct($name, $module, $params);
         $this->setTitle($this->translate('TXT_LOGIN_FORM'));
+        $base = E()->getSiteManager()->getCurrentSite()->base;
+        if(strpos($currDomain = E()->getSiteManager()->getCurrentSite()->host, Object::_getConfigValue('site.domain')) === false){
+            $base = 'http://'.Object::_getConfigValue('site.domain').'/';
+        }
 
         $this->setAction(
-            E()->getSiteManager()->getCurrentSite()->base . 'auth.php'.((isset($_SERVER['HTTP_REFERER']))?'':'?return='.E()->getRequest()->getURI()),
+            $base . 'auth.php'.((isset($_SERVER['HTTP_REFERER']))?'':'?return='.E()->getRequest()->getURI()),
             true
         );
     }

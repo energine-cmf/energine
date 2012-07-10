@@ -18,6 +18,8 @@
  * @final
  */
 final class Response extends Object {
+
+    private $reasonPhrases;
     /**
      * @access private
      * @var string строка статуса ответа
@@ -49,34 +51,13 @@ final class Response extends Object {
      * @return void
      */
     public function __construct() {
+        $this->reasonPhrases = include_once('reasonPhrases.inc.php');
         $this->setStatus(200);
         $this->headers = array();
         $this->cookies = array();
         $this->body = '';
     }
-    /**
-     * @see reasonPhrases.inc.php
-     * @param  $key string
-     * @return array | null
-     */
-    public function __get($key){
-        $result = null;
-        if($key == 'reasonPhrases'){
-            $result = include_once('reasonPhrases.inc.php');
-        }
-        return $result;
-    }
-    /**
-     * @param  $key string
-     * @return bool
-     */
-    public function __isset($key){
-        $result = false;
-        if($key == 'reasonPhrases'){
-            $result = file_exists('reasonPhrases.inc.php');
-        }
-        return $result;
-    }
+
     
     /**
      * Метод вызываемый при переадресации
@@ -110,7 +91,7 @@ final class Response extends Object {
      * @return void
      */
     public function setStatus($statusCode, $reasonPhrase = null) {
-        if (!isset($reasonPhrase)) {
+        if (is_null($reasonPhrase)) {
             $reasonPhrase =
                     (isset($this->reasonPhrases[$statusCode]) ? $this->reasonPhrases[$statusCode] : '');
         }
@@ -143,15 +124,25 @@ final class Response extends Object {
      * @param int $expire
      * @return void
      */
-    public function addCookie($name = UserSession::DEFAULT_SESSION_NAME, $value = '', $expire = 0) {
-        if ($this->getConfigValue('site.domain')) {
+    public function addCookie($name = UserSession::DEFAULT_SESSION_NAME, $value = '', $expire = 0, $domain = false, $path = '/') {
+        if(!$domain){
+            if($domain = $this->getConfigValue('site.domain')){
+                $domain = '.' . $domain;
+                $path = '/';
+            }
+            else {
+                $path = E()->getSiteManager()->getCurrentSite()->root;
+                $domain = E()->getSiteManager()->getCurrentSite()->domain;
+            }
+        }
+        /*if ($this->getConfigValue('site.domain')) {
             $path = '/';
             $domain = '.' . $this->getConfigValue('site.domain');
         }
         else {
             $path = E()->getSiteManager()->getCurrentSite()->root;
             $domain = '';
-        }
+        }*/
         $secure = false;
         $_COOKIE[$name] = $value;
         $this->cookies[$name] =
@@ -184,8 +175,8 @@ final class Response extends Object {
      *
      * @access public
      * @param string $name
-     * @param string $path
      * @param string $domain
+     * @param string $path
      * @param boolean $secure
      * @return void
      */

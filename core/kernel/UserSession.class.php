@@ -29,7 +29,7 @@ final class UserSession extends DBWorker {
     /**
      * Флаг не позволяющий вызвать объект UserSession напрямую
      * только через UserSession::start
-     * а приватный конструктор  для 
+     * а приватный конструктор  для
      * @var bool
      */
     private static $instance = false;
@@ -74,11 +74,6 @@ final class UserSession extends DBWorker {
     private $userAgent;
 
     /**
-     * @access private
-     * @var string имя таблицы сеансов в БД
-     */
-    private $tableName;
-    /**
      * Данные сеанса
      * false - сеанс существует но данных нет
      * string - сеанс существует и данные такие
@@ -87,6 +82,12 @@ final class UserSession extends DBWorker {
      * @var string
      */
     private $data = null;
+    /**
+     * @access private
+     * @var string имя таблицы сеансов в БД
+     * @static
+     */
+    static private $tableName = 'share_session';
 
 
     /**
@@ -104,7 +105,7 @@ final class UserSession extends DBWorker {
         $this->timeout = $this->getConfigValue('session.timeout');
         $this->lifespan = $this->getConfigValue('session.lifespan');
         $this->userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'ROBOT';
-        $this->tableName = 'share_session';
+
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
         // устанавливаем обработчики сеанса
         session_set_save_handler(
@@ -117,36 +118,24 @@ final class UserSession extends DBWorker {
         );
         session_name(self::DEFAULT_SESSION_NAME);
         $this->data = false;
-        if (
-                (isset($_COOKIE[self::DEFAULT_SESSION_NAME]))
-                ||
-                (isset($_POST['NRGNCookie']))
-        ) {
-            if(isset($_POST['NRGNCookie']) && preg_match("/".self::DEFAULT_SESSION_NAME."=([a-h0-9]{40})/i", $_POST['NRGNCookie'], $matches)){
-                $_POST[self::DEFAULT_SESSION_NAME] = $matches[1];
-            }
-            
-            $this->phpSessId = (isset($_POST[self::DEFAULT_SESSION_NAME])) ? $_POST[self::DEFAULT_SESSION_NAME]: $_COOKIE[self::DEFAULT_SESSION_NAME];
-
-            $this->data = $this->isSessionValid($this->phpSessId);
+        if ($this->phpSessId = self::isOpen()) {
+            $this->data = self::isValid($this->phpSessId);
             //Если сессия валидная
             if (!is_null($this->data)) {
-                E()->getDB()->modifyRequest('UPDATE ' . $this->tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
-            }
-            elseif ($force) {
+                E()->getDB()->modifyRequest('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
+            } elseif ($force) {
                 //создаем ее вручную
                 $sessInfo = self::manuallyCreateSessionInfo();
                 $this->phpSessId = $sessInfo[1];
             }
             //сессия невалидная
-            else{
-                $this->dbh->modify(QAL::DELETE, $this->tableName, null, array("session_native_id" => addslashes($this->phpSessId)));
+            else {
+                $this->dbh->modify(QAL::DELETE, self::$tableName, null, array("session_native_id" => addslashes($this->phpSessId)));
                 // удаляем cookie сеанса
                 E()->getResponse()->deleteCookie(self::DEFAULT_SESSION_NAME);
                 return;
             }
-        }
-        elseif($force){
+        } elseif ($force) {
             //создаем ее вручную
             $sessInfo = self::manuallyCreateSessionInfo();
             $this->phpSessId = $sessInfo[1];
@@ -159,8 +148,7 @@ final class UserSession extends DBWorker {
         if ($this->getConfigValue('site.domain')) {
             $path = '/';
             $domain = '.' . $this->getConfigValue('site.domain');
-        }
-        else {
+        } else {
             $path = E()->getSiteManager()->getCurrentSite()->root;
             $domain = '';
         }
@@ -170,20 +158,28 @@ final class UserSession extends DBWorker {
     }
 
     /**
+     * @static
+     *
+     */
+    static public function isOpen() {
+        return (isset($_COOKIE[self::DEFAULT_SESSION_NAME]) && !empty($_COOKIE[self::DEFAULT_SESSION_NAME]))?$_COOKIE[self::DEFAULT_SESSION_NAME]:false;
+    }
+
+    /**
      * Проверям , действителен ли сеанс с этим идентификатором
      * если да - то возвращает еще и данные сеанса
      * может не очень красиво, но выгоднее, чтоб секономить на запросах
      *
      * @param  $sessID
      * @return mixed | false
+     * @static
      */
-    private function isSessionValid($sessID) {
+    static public function isValid($sessID) {
         // проверяем
-        $res = $this->dbh->selectRequest(
-            'SELECT session_id, session_data FROM ' . $this->tableName .
-                    ' WHERE session_native_id = %s ' .
-                    ' AND session_expires >= UNIX_TIMESTAMP()'/*.
-                ' AND session_user_agent = %s'*/,
+        $res = E()->getDB()->select(
+            'SELECT session_id, session_data FROM ' . self::$tableName .
+                ' WHERE session_native_id = %s ' .
+                ' AND session_expires >= UNIX_TIMESTAMP()',
             addslashes($sessID)
         );
         return (!is_array($res)) ? false : $res[0]['session_data'];
@@ -304,10 +300,10 @@ final class UserSession extends DBWorker {
             $this->data = $data;
             $data = array('session_data' => $data);
             if (isset($_SESSION['userID'])) {
-                $data['u_id'] = (int) $_SESSION['userID'];
+                $data['u_id'] = (int)$_SESSION['userID'];
             }
 
-            $this->dbh->modify(QAL::UPDATE, $this->tableName, $data, array('session_native_id' => $phpSessId));
+            $this->dbh->modify(QAL::UPDATE, self::$tableName, $data, array('session_native_id' => $phpSessId));
         }
         return true;
     }
@@ -320,7 +316,7 @@ final class UserSession extends DBWorker {
      * @return bool
      */
     public function destroy($phpSessId) {
-        return $this->dbh->modify(QAL::DELETE, $this->tableName, null, array('session_native_id' => $phpSessId));
+        return $this->dbh->modify(QAL::DELETE, self::$tableName, null, array('session_native_id' => $phpSessId));
     }
 
     /**
@@ -333,7 +329,7 @@ final class UserSession extends DBWorker {
     public function gc($maxLifeTime) {
         $this->dbh->modify(
             QAL::DELETE,
-            $this->tableName,
+            self::$tableName,
             null,
             'session_expires < UNIX_TIMESTAMP()'
         );

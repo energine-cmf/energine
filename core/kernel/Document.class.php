@@ -388,9 +388,15 @@ final class Document extends DBWorker implements IDocument {
             *     - BreadCrumbs
             */
             $this->componentManager->add($this->componentManager->createComponent('breadCrumbs', 'share', 'BreadCrumbs'));
-
-            /*if(!$this->user->isAuthenticated())
-                $this->componentManager->add($this->componentManager->createComponent('cdAuth', 'share', 'CrossDomainAuth'));*/
+            //Если пользователь не авторизован и авторизационный домен не включает текущеий домен - то добавляем компонент для кроссдоменной авторизации
+            if(
+                !$this->user->isAuthenticated()
+                &&
+                (strpos(E()->getSiteManager()->getCurrentSite()->host, $this->getConfigValue('site.domain')) === false)
+            )
+                $this->componentManager->add(
+                    $this->componentManager->createComponent('cdAuth', 'share', 'CrossDomainAuth')
+                );
         }
 
     }

@@ -31,8 +31,8 @@ final class BreadCrumbs extends DataSet {
      *
      * @return void
      */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
+    public function __construct($name, $module, array $params = null) {
+        parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->setProperty('site', E()->getSiteManager()->getCurrentSite()->name);
     }
@@ -65,9 +65,18 @@ final class BreadCrumbs extends DataSet {
 
         return $result;
     }
-    protected function createBuilder() {
-        return new SimpleBuilder();
-    }    
+
+    protected function prepare() {
+        $this->setBuilder(new SimpleBuilder());
+        $this->setDataDescription($this->createDataDescription());
+        if (!$this->getData()) {
+            $data = $this->createData();
+            if ($data instanceof Data) {
+                $this->setData($data);
+            }
+        }
+    }
+
     /**
      * Переопределенный метод загрузки данных
      *
@@ -80,18 +89,18 @@ final class BreadCrumbs extends DataSet {
         $parents = $sitemap->getParents($this->document->getID());
         foreach ($parents as $id => $current) {
             $result[] = array(
-            'Id' => $id,
-            'Name' => $current['Name'],
-            'Segment' => $current['Segment'],
-            'Title' => $current['HtmlTitle'],
+                'Id' => $id,
+                'Name' => $current['Name'],
+                'Segment' => $current['Segment'],
+                'Title' => $current['HtmlTitle'],
             );
         }
         $docInfo = $sitemap->getDocumentInfo($this->document->getID());
         $result[] = array(
-        'Id' => $this->document->getID(),
-        'Name' => $docInfo['Name'],
-        'Segment' => $sitemap->getURLByID($this->document->getID()),
-        'Title' => $docInfo['HtmlTitle']
+            'Id' => $this->document->getID(),
+            'Name' => $docInfo['Name'],
+            'Segment' => $sitemap->getURLByID($this->document->getID()),
+            'Title' => $docInfo['HtmlTitle']
         );
         if (!empty($this->additionalCrumbs)) {
             $result = array_merge($result, $this->additionalCrumbs);
@@ -103,16 +112,16 @@ final class BreadCrumbs extends DataSet {
         if (($this->document->getID() != $defaultID) && (isset($result[0]) && ($result[0]['Id'] != $defaultID))) {
             $docInfo = $sitemap->getDocumentInfo($defaultID);
             $result = array_push_before(
-            $result,
-            array(
-            array(
-            'Id' => $defaultID,
-            'Name' => $docInfo['Name'],
-            'Segment' => '',
-            'Title' => $docInfo['HtmlTitle']
-            )
-            ),
-            0
+                $result,
+                array(
+                    array(
+                        'Id' => $defaultID,
+                        'Name' => $docInfo['Name'],
+                        'Segment' => '',
+                        'Title' => $docInfo['HtmlTitle']
+                    )
+                ),
+                0
             );
         }
 
@@ -120,21 +129,31 @@ final class BreadCrumbs extends DataSet {
     }
 
     /**
-      * Метод добавляющий хлебную крошку
-      * Если приходят пустые параметры, то эта крошка не выводится, а предыдущая хлебная крошка будет ссылкой
-      *
-      * @param int
-      * @param string
-      * @param segment
-      * @return void
-      * @access public
-      */
+     * Метод добавляющий хлебную крошку
+     * Если приходят пустые параметры, то эта крошка не выводится, а предыдущая хлебная крошка будет ссылкой
+     *
+     * @param int
+     * @param string
+     * @param segment
+     * @return void
+     * @access public
+     */
 
     public function addCrumb($smapID = '', $smapName = '', $smapSegment = '') {
         $this->additionalCrumbs[] = array(
-        'Id' => $smapID,
-        'Name' => $smapName,
-        'Segment' => $smapSegment
+            'Id' => $smapID,
+            'Name' => $smapName,
+            'Segment' => $smapSegment
         );
+    }
+
+    /**
+     * Замещает текущие данными - новыми
+     * @param $data array(array('Id'=>'', 'Name'=>'', 'Segment'=>''))
+     */
+    public function replaceData($data) {
+        $d = new Data();
+        $d->load($data);
+        $this->setData($d);
     }
 }

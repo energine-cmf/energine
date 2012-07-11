@@ -167,10 +167,12 @@ PageEditor.BlockEditor = new Class({
         this.blur();
         ModalBox.open({
             url:this.singlePath + 'source',
-            extraData:this.cleanMarkup('dummy', this.area.innerHTML),
+//            extraData:this.cleanMarkup('dummy', this.area.innerHTML),
+            extraData:this.area.innerHTML,
             onClose:function (returnValue) {
                 if (returnValue || (returnValue === '')) {
-                    this.area.set('html', this.cleanMarkup('dummy', returnValue));
+                    //this.area.set('html', this.cleanMarkup('dummy', returnValue));
+                    this.area.set('html', returnValue);
                     this.dirty = true;
                 }
                 this.focus();

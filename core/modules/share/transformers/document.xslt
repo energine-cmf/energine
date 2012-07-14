@@ -131,6 +131,9 @@
                 <xsl:value-of select="$COMPONENTS[@class='Ads']/recordset/record/field[@name='ad_top_728_90']" disable-output-escaping="yes"/>
             </div>
         </xsl:if>
+        <xsl:if test="$COMPONENTS[@class='CrossDomainAuth']">
+            <img src="{$COMPONENTS[@class='CrossDomainAuth']/@authURL}?return={$COMPONENTS[@class='CrossDomainAuth']/@returnURL}" width="1" height="1" style="display:none;" alt="" onload="document.location = document.location.href;"/>
+        </xsl:if>
         <div class="base">
             <div class="header">
                 <h1 class="logo">

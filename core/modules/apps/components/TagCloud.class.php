@@ -19,10 +19,23 @@
 class TagCloud extends DBDataSet {
 
     /**
+     * Вывод тегов для родительского раздела
+     */
+    const ID_PARENT_FILTER = 'parent';
+
+    /**
+     * Ид раздела, с которого
+     * будут выводиться теги
+     *
+     * @var int
+     */
+    private $filterId;
+
+    /**
      * Компонент, к которому привязывается
      * TagCloud
      *
-     * @var Pager
+     * @var Component
      */
     private $bindedBlock;
 
@@ -50,6 +63,15 @@ class TagCloud extends DBDataSet {
         if (!$this->bindedBlock) {
             throw new SystemException('ERR_TAGCLOUD_NOT_BINDED', SystemException::ERR_DEVELOPER);
         }
+        if ($filerId = intval($this->getParam('id'))) {
+            $this->filterId = $filerId;
+        }
+        else if($this->getParam('id') == self::ID_PARENT_FILTER) {
+            $this->filterId = E()->getMap()->getParent($this->document->getID());
+        }
+        else {
+            $this->filterId = $this->document->getID();
+        }
         $this->tagsInfo = $this->getTagsInfo();
         $this->addFilterCondition(array('tag_id' => simplifyDBResult($this->tagsInfo, 'tag_id')));
     }
@@ -65,6 +87,7 @@ class TagCloud extends DBDataSet {
         return array_merge(
             parent::defineParams(),
             array(
+                'id' => false,
                 'recordsPerPage' => 50,
                 'bind' => ''
             )
@@ -104,7 +127,7 @@ class TagCloud extends DBDataSet {
         $result = $this->dbh->select('SELECT COUNT(ctl.' . $this->bindedBlock->getPK() . ') as frq,ctl.tag_id FROM '
                 . $this->bindedBlock->getTableName()
                 . '_tags ctl INNER JOIN ' . $this->bindedBlock->getTableName() . ' ct '
-                . 'WHERE ct.smap_id = ' . $this->document->getID() . ' '
+                . 'WHERE ct.smap_id = ' . $this->filterId . ' '
                 . 'AND ctl.' . $this->bindedBlock->getPK() . ' = ct.'
                 . $this->bindedBlock->getPK() . ' GROUP BY tag_id');
         return $result;

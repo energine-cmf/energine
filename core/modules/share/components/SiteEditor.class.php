@@ -74,7 +74,11 @@ class SiteEditor extends Grid {
             $tagField->setType(FieldDescription::FIELD_TYPE_STRING);
             $tagField->removeProperty('pattern');
             $this->getDataDescription()->addFieldDescription($tagField);
-
+            // Добавлена проверка на наличие филда с лого сайта
+            // для обеспечения обратной совсместимости.
+            if($fieldLogo = $this->getDataDescription()->getFieldDescriptionByName('site_logo')) {
+                $fieldLogo->setType(FieldDescription::FIELD_TYPE_FILE);
+            }
 
             if ($this->getState() == 'add') {
                 $this->getData()->getFieldByName('site_is_active')->setData(1, true);

@@ -67,7 +67,9 @@ class TagCloud extends DBDataSet {
             $this->filterId = $filerId;
         }
         else if($this->getParam('id') == self::ID_PARENT_FILTER) {
-            $this->filterId = E()->getMap()->getParent($this->document->getID());
+            $map = E()->getMap();
+            $this->filterId = $map->getParent($this->document->getID());
+            $this->setProperty('template', $map->getURLByID($this->filterId));
         }
         else {
             $this->filterId = $this->document->getID();

@@ -499,9 +499,12 @@ var GridManager = new Class({
         });
     },
 
-    edit:function () {
+    edit:function (id) {
+        if(!id){
+            id = this.grid.getSelectedRecordKey();
+        }
         ModalBox.open({
-            url:this.singlePath + this.grid.getSelectedRecordKey() + '/edit',
+            url:this.singlePath + id + '/edit',
             onClose:this._processAfterCloseAction.bind(this)
         });
     },

@@ -545,7 +545,7 @@ Form.AttachmentPane = new Class({
 Form.Label = {
     setLabel:function (result) {
         var id = name = segment = segmentObject = '';
-        if (typeof(result) != 'undefined') {
+        if (typeOf(result) != 'null') {
             if (result) {
                 id = result.smap_id;
                 name = result.smap_name;

@@ -227,7 +227,13 @@ TreeView.Node = new Class({
         var parent = this.element.getParent().getParent(); // li / ul / li
         return (parent ? parent.retrieve('treeNode') : false);
     },
-
+    getParents: function(){
+        var p, node = this, result = [];
+        while(p = node.getParent()){
+            result.push(node = p);
+        }
+        return result;
+    },
     isParentOf: function(node) {
         var items = this.element.getElements('li');
         for (var i = 0, len = items.length; i < len; i++) {

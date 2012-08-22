@@ -33,7 +33,7 @@
             <pattern>/[site_id]/list/[int]/</pattern>
         </uri_patterns>
         <javascript>
-            <behavior name="DivManager"/>
+            <behavior name="DivTree"/>
         </javascript>
         <fields>
             <field name="smap_id"/>

@@ -90,7 +90,7 @@ final class DivisionEditor extends Grid {
 
         //получаем информацию о всех группах имеющихся в системе
         $groups =
-                $this->dbh->select('user_groups', array('group_id', 'group_name'));
+            $this->dbh->select('user_groups', array('group_id', 'group_name'));
         $groups = convertDBResult($groups, 'group_id');
         //создаем матриц
         //название группы/перечень прав
@@ -108,7 +108,7 @@ final class DivisionEditor extends Grid {
 
         //создаем переменную содержащую идентификторы групп в которые входит пользователь
         $data =
-                $this->dbh->select('share_access_level', array('group_id', 'right_id'), array('smap_id' => $id));
+            $this->dbh->select('share_access_level', array('group_id', 'right_id'), array('smap_id' => $id));
 
         if (is_array($data)) {
             $data = convertDBResult($data, 'group_id', true);
@@ -140,11 +140,11 @@ final class DivisionEditor extends Grid {
         $fd = new FieldDescription('right_id');
         $fd->setSystemType(FieldDescription::FIELD_TYPE_SELECT);
         $data =
-                $this->dbh->select('user_group_rights', array('right_id', 'right_const as right_name'));
+            $this->dbh->select('user_group_rights', array('right_id', 'right_const as right_name'));
         $data =
-                array_map(create_function('$a', '$a["right_name"] = DBWorker::_translate("TXT_".$a["right_name"]); return $a;'), $data);
+            array_map(create_function('$a', '$a["right_name"] = DBWorker::_translate("TXT_".$a["right_name"]); return $a;'), $data);
         $data[] =
-                array('right_id' => 0, 'right_name' => $this->translate('TXT_NO_RIGHTS'));
+            array('right_id' => 0, 'right_name' => $this->translate('TXT_NO_RIGHTS'));
 
         $fd->loadAvailableValues($data, 'right_id', 'right_name');
         $resultDD->addFieldDescription($fd);
@@ -154,7 +154,7 @@ final class DivisionEditor extends Grid {
 
         $field = new Field('page_rights');
         for ($i = 0;
-            $i < count(E()->getLanguage()->getLanguages()); $i++) {
+             $i < count(E()->getLanguage()->getLanguages()); $i++) {
             $field->addRowData(
                 $builder->getResult()
             );
@@ -180,12 +180,11 @@ final class DivisionEditor extends Grid {
             //$fd->setMode(FieldDescription::FIELD_MODE_READ);
 
             $result->getFieldDescriptionByName('smap_name')->removeProperty('nullable');
-        }
-        else {
+        } else {
             //Для режима списка нам нужно выводить не значение а ключ
             if ($this->getType() == self::COMPONENT_TYPE_LIST) {
                 $smapPIDFieldDescription =
-                        $result->getFieldDescriptionByName('smap_pid');
+                    $result->getFieldDescriptionByName('smap_pid');
                 if ($smapPIDFieldDescription) {
                     $smapPIDFieldDescription->setType(FieldDescription::FIELD_TYPE_INT);
                 }
@@ -234,8 +233,8 @@ final class DivisionEditor extends Grid {
             );
         }
         usort($result, function($rowA, $rowB) {
-                return $rowA['value'] > $rowB['value'];
-            });
+            return $rowA['value'] > $rowB['value'];
+        });
 
         return $result;
     }
@@ -251,32 +250,22 @@ final class DivisionEditor extends Grid {
         $result = parent::loadData();
 
         if ($result && $this->getState() == 'getRawData') {
-            //Используется GLOBALS поскольку нет другой возможности передать
-            //в runtime created function посторонее значение
-            /*$GLOBALS['__SMAP2ICONS'] = convertDBResult($this->dbh->selectRequest('
-               SELECT DISTINCT t.tmpl_icon, s.smap_id FROM `share_sitemap` s
-               LEFT JOIN share_templates t ON t.tmpl_id=s.tmpl_id
-               '), 'smap_id', true);
-
-               */
             $params = $this->getStateParams(true);
             $result = array_map(
                 create_function(
                     '$val',
                     '
                     $val["smap_segment"] = E()->getMap(' .
-                    $params['site_id'] . ')->getURLByID($val["smap_id"]);
+                        $params['site_id'] . ')->getURLByID($val["smap_id"]);
                     ' .
-                    (($this->getDataDescription()->getFieldDescriptionByName('site')) ?
+                        (($this->getDataDescription()->getFieldDescriptionByName('site')) ?
                             '$val["site"] = E()->getSiteManager()->getSiteByID(' .
-                            $params['site_id'] .
-                            ')->base;' : '') . '
+                                $params['site_id'] .
+                                ')->base;' : '') . '
                     return $val;
                     '
                 )
                 , $result);
-
-            //unset($GLOBALS['__SMAP2ICONS']);
         }
         return $result;
     }
@@ -344,20 +333,19 @@ final class DivisionEditor extends Grid {
             /*Тут пришлось пойти на извращаения для получения УРЛа страницы, поскольку новосозданная страница еще не присоединена к дереву*/
             //$smapPID = simplifyDBResult($this->dbh->select('share_sitemap', 'smap_pid', array('smap_id'=>$id)), 'smap_pid', true);
             $smapPID =
-                    $this->getSaver()->getData()->getFieldByName('smap_pid')->getRowData(0);
+                $this->getSaver()->getData()->getFieldByName('smap_pid')->getRowData(0);
             $url = $_POST[$this->getTableName()]['smap_segment'] . '/';
             if ($smapPID) {
                 $url = E()->getMap(
-                           E()->getSiteManager()->getSiteByPage($smapPID)->id
-                       )->getURLByID($smapPID) . $url;
+                    E()->getSiteManager()->getSiteByPage($smapPID)->id
+                )->getURLByID($smapPID) . $url;
             }
-        }
-        else {
+        } else {
             $mode = 'update';
             $id = $this->getFilter();
             $id = $id['smap_id'];
             $url =
-                    E()->getMap(E()->getSiteManager()->getSiteByPage($id)->id)->getURLByID($id);
+                E()->getMap(E()->getSiteManager()->getSiteByPage($id)->id)->getURLByID($id);
         }
 
         //Ads
@@ -396,17 +384,17 @@ final class DivisionEditor extends Grid {
             }
 
         $res =
-                $this->dbh->select(
-                    $this->getTranslationTableName(),
-                    array('smap_name'),
-                    array(
-                         'smap_id' => $actionParams['pid'],
-                         'lang_id' => $this->document->getLang()));
+            $this->dbh->select(
+                $this->getTranslationTableName(),
+                array('smap_name'),
+                array(
+                    'smap_id' => $actionParams['pid'],
+                    'lang_id' => $this->document->getLang()));
         if (!empty($res)) {
             $name = simplifyDBResult($res, 'smap_name', true);
             for ($i = 0,
-                $langCount = count(E()->getLanguage()->getLanguages());
-                $i < $langCount; $i++) {
+                 $langCount = count(E()->getLanguage()->getLanguages());
+                 $i < $langCount; $i++) {
                 $field->setRowData($i, $actionParams['pid']);
                 $field->setRowProperty($i, 'data_name', $name);
                 $field->setRowProperty($i, 'segment', $smapSegment);
@@ -427,12 +415,12 @@ final class DivisionEditor extends Grid {
     protected function edit() {
         parent::edit();
         $this->buildRightsTab($smapID =
-                                      $this->getData()->getFieldByName('smap_id')->getRowData(0));
+            $this->getData()->getFieldByName('smap_id')->getRowData(0));
         $this->addAttFilesField('share_sitemap');
         //Выводим УРЛ в поле сегмента
         $field = $this->getData()->getFieldByName('smap_pid');
         $site =
-                E()->getSiteManager()->getSiteByID($this->getData()->getFieldByName('site_id')->getRowData(0));
+            E()->getSiteManager()->getSiteByID($this->getData()->getFieldByName('site_id')->getRowData(0));
 
         foreach (array(self::TMPL_CONTENT, self::TMPL_LAYOUT) as $type)
             if ($f = $this->getDataDescription()->getFieldDescriptionByName(
@@ -447,26 +435,25 @@ final class DivisionEditor extends Grid {
         //Если изменен  - вносим исправления в список возможных значений
         if (simplifyDBResult($this->dbh->select($this->getTableName(), 'smap_content_xml', array('smap_id' => $this->getData()->getFieldByName('smap_id')->getRowData(0))), 'smap_content_xml', true)) {
             $contentFilename =
-                    $this->getData()->getFieldByName('smap_content')->getRowData(0);
+                $this->getData()->getFieldByName('smap_content')->getRowData(0);
             $contentFD =
-                    $this->getDataDescription()->getFieldDescriptionByName('smap_content');
+                $this->getDataDescription()->getFieldDescriptionByName('smap_content');
             $contentFD->setProperty('reset', $this->translate('TXT_RESET_CONTENT'));
             $av = &$contentFD->getAvailableValues();
             if (isset($av[$contentFilename])) {
                 $av[$contentFilename]['value'] .=
-                        ' - ' . $this->translate('TXT_CHANGED');
+                    ' - ' . $this->translate('TXT_CHANGED');
             }
             unset($contentFilename, $contentFD, $av);
         }
         $smapSegment = '';
         if ($field->getRowData(0) !== null) {
             $smapSegment =
-                    E()->getMap($site->id)->getURLByID($field->getRowData(0));
-        }
-        else {
+                E()->getMap($site->id)->getURLByID($field->getRowData(0));
+        } else {
             $this->getDataDescription()->getFieldDescriptionByName('smap_pid')
-                    ->setMode(FieldDescription::FIELD_MODE_READ)
-                    ->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+                ->setMode(FieldDescription::FIELD_MODE_READ)
+                ->setType(FieldDescription::FIELD_TYPE_HIDDEN);
             foreach (
                 array(
                     'smap_segment',
@@ -475,15 +462,14 @@ final class DivisionEditor extends Grid {
                 )
                 as
                 $fieldName
-            )
-            {
+            ) {
                 $this->getDataDescription()->removeFieldDescription(
                     $this->getDataDescription()->getFieldDescriptionByName($fieldName)
                 );
             }
         }
         $smapName =
-                simplifyDBResult($this->dbh->select($this->getTranslationTableName(), array('smap_name'), array('smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang())), 'smap_name', true);
+            simplifyDBResult($this->dbh->select($this->getTranslationTableName(), array('smap_name'), array('smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang())), 'smap_name', true);
 
         for ($i = 0; $i < (
         $langs = count(E()->getLanguage()->getLanguages())); $i++) {
@@ -494,8 +480,8 @@ final class DivisionEditor extends Grid {
         $field = $this->getData()->getFieldByName('smap_redirect_url');
         if ($field->getRowData(0)) {
             $field->setRowData(0,
-                               E()->getSiteManager()->getCurrentSite()->base .
-                               $field->getRowData(0));
+                E()->getSiteManager()->getCurrentSite()->base .
+                    $field->getRowData(0));
         }
 
         $tm = new TagManager(
@@ -527,8 +513,7 @@ final class DivisionEditor extends Grid {
 
         if ($params) {
             $siteID = $params['site_id'];
-        }
-        else {
+        } else {
             $siteID = E()->getSiteManager()->getCurrentSite()->id;
         }
 
@@ -548,7 +533,7 @@ final class DivisionEditor extends Grid {
 
     protected function deleteData($id) {
         $res =
-                $this->dbh->select('share_sitemap', array('smap_pid'), array($this->getPK() => $id));
+            $this->dbh->select('share_sitemap', array('smap_pid'), array($this->getPK() => $id));
         if (!is_array($res))
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_CRITICAL);
 
@@ -572,7 +557,7 @@ final class DivisionEditor extends Grid {
     protected function showWidgetEditor() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->widgetEditor =
-                $this->document->componentManager->createComponent('widgetEditor', 'share', 'WidgetsRepository', array('config' => 'ModalWidgetsRepository.component.xml'));
+            $this->document->componentManager->createComponent('widgetEditor', 'share', 'WidgetsRepository', array('config' => 'ModalWidgetsRepository.component.xml'));
         $this->widgetEditor->run();
     }
 
@@ -643,9 +628,9 @@ final class DivisionEditor extends Grid {
         $this->setFilter(array('smap_id' => $id, 'lang_id' => $langID));
         $result = $this->dbh->selectRequest(
             'SELECT smap_name, smap_pid, smap_order_num ' .
-            ' FROM share_sitemap s' .
-            ' LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id' .
-            ' WHERE s.smap_id = ' . $id . ' AND lang_id = ' . $langID
+                ' FROM share_sitemap s' .
+                ' LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id' .
+                ' WHERE s.smap_id = ' . $id . ' AND lang_id = ' . $langID
         );
         list($result) = $result;
         $b = new JSONCustomBuilder();
@@ -688,11 +673,11 @@ final class DivisionEditor extends Grid {
             //То есть если страница создана не по шаблону из ядра
             //и существует одноименный шаблон ядра
             //то добавляется опция возможности откатиться к шаблону ядра
-            if(
+            if (
                 (dirname($res['smap_content']) != '.')
                 &&
-                file_exists('templates/content/'.basename($res['smap_content']))
-            ){
+                file_exists('templates/content/' . basename($res['smap_content']))
+            ) {
                 $result['actionSelector']['revert'] = $this->translate('TXT_REVERT_CONTENT');
             }
         }
@@ -736,8 +721,7 @@ final class DivisionEditor extends Grid {
 
         if ($params) {
             $siteID = $params['site_id'];
-        }
-        else {
+        } else {
             $siteID = E()->getSiteManager()->getCurrentSite()->id;
         }
 
@@ -757,7 +741,7 @@ final class DivisionEditor extends Grid {
     protected function showTransEditor() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->transEditor =
-                $this->document->componentManager->createComponent('transEditor', 'share', 'TranslationEditor', null);
+            $this->document->componentManager->createComponent('transEditor', 'share', 'TranslationEditor', null);
         $this->transEditor->run();
     }
 
@@ -771,7 +755,7 @@ final class DivisionEditor extends Grid {
     protected function showUserEditor() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->userEditor =
-                $this->document->componentManager->createComponent('userEditor', 'user', 'UserEditor', null);
+            $this->document->componentManager->createComponent('userEditor', 'user', 'UserEditor', null);
         $this->userEditor->run();
     }
 
@@ -785,7 +769,7 @@ final class DivisionEditor extends Grid {
     protected function showRoleEditor() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->roleEditor =
-                $this->document->componentManager->createComponent('roleEditor', 'user', 'RoleEditor', null);
+            $this->document->componentManager->createComponent('roleEditor', 'user', 'RoleEditor', null);
         $this->roleEditor->run();
     }
 
@@ -799,7 +783,7 @@ final class DivisionEditor extends Grid {
     protected function showLangEditor() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->langEditor =
-                $this->document->componentManager->createComponent('langEditor', 'share', 'LanguageEditor', null);
+            $this->document->componentManager->createComponent('langEditor', 'share', 'LanguageEditor', null);
         $this->langEditor->run();
     }
 
@@ -813,7 +797,7 @@ final class DivisionEditor extends Grid {
     protected function showSiteEditor() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->siteEditor =
-                $this->document->componentManager->createComponent('siteEditor', 'share', 'SiteEditor', array('config' => 'core/modules/share/config/SiteEditorModal.component.xml'));
+            $this->document->componentManager->createComponent('siteEditor', 'share', 'SiteEditor', array('config' => 'core/modules/share/config/SiteEditorModal.component.xml'));
         $this->siteEditor->run();
     }
 
@@ -827,8 +811,7 @@ final class DivisionEditor extends Grid {
         $filter = array('smap_id' => $this->document->getID());
         if (isset($ap['site_id'])) {
             $filter = array('site_id' => $ap['site_id']);
-        }
-        elseif (isset($ap['smap_id'])) {
+        } elseif (isset($ap['smap_id'])) {
             $filter = array('smap_id' => $ap['smap_id']);
         }
 
@@ -842,8 +825,8 @@ final class DivisionEditor extends Grid {
                 QAL::UPDATE,
                 $this->getTableName(),
                 array(
-                     'smap_content_xml' => '',
-                     'smap_layout_xml' => ''
+                    'smap_content_xml' => '',
+                    'smap_layout_xml' => ''
                 ),
                 array('smap_id' => $smapID)
             );
@@ -874,18 +857,17 @@ final class DivisionEditor extends Grid {
         $order = $this->getOrder();
         if ($direction == Grid::DIR_UP) {
             $order[key($order)] =
-                    ($order[key($order)] == QAL::ASC) ? QAL::DESC : QAL::ASC;
+                ($order[key($order)] == QAL::ASC) ? QAL::DESC : QAL::ASC;
         }
 
         //Определяем PID
         $res =
-                $this->dbh->select($this->getTableName(), array('smap_pid'), array('smap_id' => $id));
+            $this->dbh->select($this->getTableName(), array('smap_pid'), array('smap_id' => $id));
         $PID = simplifyDBResult($res, 'smap_pid', true);
 
         if (!is_null($PID)) {
             $PID = ' = ' . $PID;
-        }
-        else {
+        } else {
             $PID = 'IS NULL';
         }
 
@@ -899,14 +881,14 @@ final class DivisionEditor extends Grid {
                 AND smap_pid %s
                 %s
                 LIMIT 2 ',
-                           $this->getPK(), $orderFieldName,
-                           $this->getTableName(),
-                           $orderFieldName, $direction,
-                           $orderFieldName,
-                           $this->getTableName(),
-                           $this->getPK(), $id,
-                           $PID,
-                           $this->dbh->buildOrderCondition($order));
+            $this->getPK(), $orderFieldName,
+            $this->getTableName(),
+            $orderFieldName, $direction,
+            $orderFieldName,
+            $this->getTableName(),
+            $this->getPK(), $id,
+            $PID,
+            $this->dbh->buildOrderCondition($order));
 
         $result = $this->dbh->selectRequest($request);
         if ($result === true || sizeof($result) < 2) {
@@ -936,10 +918,10 @@ final class DivisionEditor extends Grid {
         }
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
-                               'result' => true,
-                               'dir' => $direction,
-                               'nodeID' => $result
-                          ));
+            'result' => true,
+            'dir' => $direction,
+            'nodeID' => $result
+        ));
         $this->setBuilder($b);
 
     }

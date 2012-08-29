@@ -54,7 +54,9 @@ class RestorePassword extends DataSet {
      */
 
     protected function send() {
-        $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
+        if($crumbComponent = $this->document->componentManager->getBlockByName('breadCrumbs')) {
+            $crumbComponent->addCrumb();
+        }
         if ($component = $this->document->componentManager->getBlockByName('textBlockRestorePassword')) {
          	$component->disable();
          }

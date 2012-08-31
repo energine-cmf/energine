@@ -29,7 +29,7 @@ class TagCloud extends DBDataSet {
      *
      * @var int
      */
-    private $filterId;
+    protected  $filterId;
 
     /**
      * Компонент, к которому привязывается
@@ -37,7 +37,7 @@ class TagCloud extends DBDataSet {
      *
      * @var Component
      */
-    private $bindedBlock;
+    protected  $bindedBlock;
 
     /**
      * Массив, содержащий ИД тагов
@@ -123,9 +123,8 @@ class TagCloud extends DBDataSet {
      * и частоте их появления.
      *
      * @return array
-     * @access private
      */
-    private function getTagsInfo() {
+    protected function getTagsInfo() {
         $result = $this->dbh->select('SELECT COUNT(ctl.' . $this->bindedBlock->getPK() . ') as frq,ctl.tag_id FROM '
                 . $this->bindedBlock->getTableName()
                 . '_tags ctl INNER JOIN ' . $this->bindedBlock->getTableName() . ' ct '

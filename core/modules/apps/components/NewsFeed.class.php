@@ -39,7 +39,7 @@ class NewsFeed extends ExtendedFeed {
         parent::__construct($name, $module, $params);
         $this->setTableName('apps_news');
         $this->setOrder(array('news_date' => QAL::DESC));
-        $this->setFilter(array('news_is_active' => true));
+        $this->addFilterCondition(array('news_is_active' => true));
         if (!$this->document->getProperty('single') && $this->getParam('hasCalendar'))
             $this->createCalendar();
     }

@@ -122,7 +122,7 @@ class AttachmentManager extends DBWorker {
             if ($filteredMapValue = array_filter(array_values($mapValue))) {
                 $request = 'SELECT spu.' . $mapFieldName .
                            ',spu.upl_id as id, ' .
-                           'upl_path as file, upl_name as name, upl_internal_type as type,upl_mime_type as mime FROM '.self::ATTACH_TABLENAME.' su ' .
+                           'upl_path as file, upl_name as name, TIME_FORMAT(upl_duration, "%k:%i") as duration, upl_internal_type as type,upl_mime_type as mime FROM '.self::ATTACH_TABLENAME.' su ' .
                            'LEFT JOIN `' . $mapTableName .
                            '` spu ON spu.upl_id = su.upl_id ' .
                            //'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.
@@ -162,6 +162,10 @@ class AttachmentManager extends DBWorker {
                             $dataDescription->addFieldDescription($fd);
 
                             $fd = new FieldDescription('type');
+                            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+                            $dataDescription->addFieldDescription($fd);
+
+                            $fd = new FieldDescription('duration');
                             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
                             $dataDescription->addFieldDescription($fd);
 

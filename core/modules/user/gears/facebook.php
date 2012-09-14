@@ -92,33 +92,33 @@ class Facebook extends BaseFacebook {
     public function __get($varName) {
         if (isset($this->localStorage[$varName])) return $this->localStorage[$varName];
 
-        $result = E()->getDB()->select(self::STORAGE_TABLE_NAME, 'var_value', array('var_name' => $varName));
+        //$result = E()->getDB()->select(self::STORAGE_TABLE_NAME, 'var_value', array('var_name' => $varName));
 
-        if (!is_array($result)) return ($this->localStorage[$varName] = null);
+        /*if (!is_array($result))*/ return ($this->localStorage[$varName] = null);
 
-        return ($this->localStorage[$varName] = simplifyDBResult($result, 'var_value', true));
+        //return ($this->localStorage[$varName] = simplifyDBResult($result, 'var_value', true));
 
     }
 
     public function __set($varName, $varValue) {
         $this->localStorage[$varName] = $varValue;
-        E()->getDB()->modify(QAL::INSERT_IGNORE, self::STORAGE_TABLE_NAME, array('var_name' => $varName, 'var_value' => $varValue));
+        //E()->getDB()->modify(QAL::INSERT_IGNORE, self::STORAGE_TABLE_NAME, array('var_name' => $varName, 'var_value' => $varValue));
     }
 
     public function __unset($varName) {
         unset($this->localStorage[$varName]);
-        E()->getDB()->modify(QAL::DELETE, self::STORAGE_TABLE_NAME, null, array('var_name' => $varName));
+        //E()->getDB()->modify(QAL::DELETE, self::STORAGE_TABLE_NAME, null, array('var_name' => $varName));
     }
 
     public function __isset($varName) {
         if(isset($this->localStorage[$varName]) && !is_null($this->localStorage[$varName])) return true;
 
         $result = false;
-        $res = E()->getDB()->select(self::STORAGE_TABLE_NAME, 'var_value', array('var_name' => $varName));
+        /*$res = E()->getDB()->select(self::STORAGE_TABLE_NAME, 'var_value', array('var_name' => $varName));
         if (is_array($res)) {
             $this->localStorage[$varName] = simplifyDBResult($res, 'var_value', true);
             $result = true;
-        }
+        }*/
         return $result;
     }
 }

@@ -35,7 +35,7 @@ abstract class DBWorker extends Object {
      * (получается за ними по отдельности очень часто нужно обращаться)
      * @var array
      */
-    private static $translations = null;
+    private static $translationsCache = null;
     /**
      * @var PDOStatement
      */
@@ -71,12 +71,12 @@ abstract class DBWorker extends Object {
         $result = $const;
 
         //Мы еще не обращались за этим переводом
-        if(!isset(self::$translations[$langId][$const])){
+        if(!isset(self::$translationsCache[$langId][$const])){
             //Если что то пошло не так - нет смысл генерить ошибку, отдадим просто константу
             if(self::$findTranslationSQL->execute(array($const, $langId))){
                 //записали в кеш
                 if($result = self::$findTranslationSQL->fetchColumn()){
-                    self::$translations[$langId][$const] = $result;
+                    self::$translationsCache[$langId][$const] = $result;
                 }
                 else {
                     $result = $const;
@@ -85,8 +85,8 @@ abstract class DBWorker extends Object {
 
         }
         //За переводом уже обращались  Он есть
-        elseif(self::$translations[$langId][$const]){
-            $result = self::$translations[$langId][$const];
+        elseif(self::$translationsCache[$langId][$const]){
+            $result = self::$translationsCache[$langId][$const];
         }
         //Неявный случай - за переводом уже обращались но его нету
         //Отдаем константу

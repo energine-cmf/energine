@@ -171,7 +171,7 @@ class FileRepository extends Grid {
                 throw new SystemException('ERR_BAD_DATA');
             }
             $fileData = self::cleanFileData($_POST['data']);
-            if (!@file_put_contents(($result = FileObject::getTmpFilePath($_POST['name'])), $fileData)) {
+            if (!file_put_contents(($result = self::getTmpFilePath($_POST['name'])), $fileData)) {
                 throw new SystemException('ERR_CREATE_FILE');
             }
             $b->setProperties(array(
@@ -314,13 +314,12 @@ class FileRepository extends Grid {
                 list($parentData) = $parentData;
 
                 unset($data[$this->getPK()]);
-                $data['upl_filename'] = FileObject::generateFilename($parentData['upl_path'], pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
+                $data['upl_filename'] = self::generateFilename($parentData['upl_path'], pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
                 $data['upl_path'] = $parentData['upl_path'] . '/' . $data['upl_filename'];
                 if (!file_put_contents($data['upl_path'], $fileData)) {
                     throw new SystemException('ERR_SAVE_IMG');
                 }
-                $fi = new FileRepoInfo($data['upl_path']);
-                $fi = $fi->analyze();
+                $fi = E()->FileRepoInfo->analyze($data['upl_path'], true);
 
                 $data['upl_mime_type'] = $fi->mime;
                 $data['upl_internal_type'] = $fi->type;
@@ -523,14 +522,9 @@ class FileRepository extends Grid {
                     else {
                         $zip->renameIndex(
                             $i,
-                            $currentFile = $path .FileObject::generateFilename('', $fileInfo['extension'])
+                            $currentFile = $path .self::generateFilename('', $fileInfo['extension'])
                         );
                     }
-                    //inspect($currentFile, $extractPath);
-                    /*$zip->extractTo($this->uploadsDir->getPath(), $currentFile);
-                    FileObject::createFrom(
-                        $this->uploadsDir->getPath() . '/' .
-                                $currentFile, $fileInfo['filename']);*/
                 }
             }
             $zip->close();
@@ -555,5 +549,22 @@ class FileRepository extends Grid {
         $tmp = explode(';base64,', $data);
         return base64_decode($tmp[1]);
     }
+
+    public static function getTmpFilePath($filename){
+   		return self::TEMPORARY_DIR.basename($filename);
+   	}
+
+    public static function generateFilename($dirPath, $fileExtension){
+   		/*
+   		 * Генерируем уникальное имя файла.
+   		 */
+   		$c = ''; // первый вариант имени не будет включать символ '0'
+   		do {
+   			$filename = time().rand(1, 10000)."$c.{$fileExtension}";
+   			$c++; // при первом проходе цикла $c приводится к integer(1)
+   		} while(file_exists($dirPath.$filename));
+
+   		return $filename;
+   	}
 
 }

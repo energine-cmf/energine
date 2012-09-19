@@ -18,22 +18,6 @@
  */
 final class TextBlock extends DataSet {
     /**
-     * Компонент менеджера изображений
-     *
-     * @var ImageManager
-     * @access private
-     */
-    //private $imageManager;
-
-    /**
-     * Компонент библиотеки файлов
-     *
-     * @var FileLibrary
-     * @access private
-     */
-    //private $fileLibrary;
-
-    /**
      * Имя основной таблицы
      *
      * @var string

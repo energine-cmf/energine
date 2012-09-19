@@ -4,6 +4,23 @@ ScriptLoader.load(
 var FILE_COOKIE_NAME = 'NRGNFRPID';
 
 Grid.implement({
+    _popImage:function (path, tmplElement) {
+        /*var popUpImg = new Element('img', {'src':'resizer/w250-h250/' + path, 'width':250, 'height':250, 'styles':{
+            'z-index':100
+        }, 'events':{
+            'click':function (e) {
+                this.destroy()
+            },
+            'mouseleave':function (e) {
+                this.destroy();
+            }
+        }}).inject(document.body).position({'relativeTo':tmplElement, 'position':'center'});*/
+        tmplElement.setProperties({
+            'src': 'resizer/w250-h250/' + path,
+            'width':250,
+            'height':250
+        })
+    },
     iterateFields:function (record, fieldName, row) {
 // Пропускаем невидимые поля.
         if (!this.metadata[fieldName].visible ||
@@ -11,7 +28,8 @@ Grid.implement({
         var cell = new Element('td').injectInside(row);
         if (fieldName == 'upl_path') {
             cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
-            var image = new Element('img').setProperties({'width':40, 'height':40 }).injectInside(cell);
+            var image = new Element('img',{'width':40, 'height':40 }).injectInside(cell);
+            var tmt;
             switch (record['upl_internal_type']) {
                 case 'folder':
                     image.setProperty('src', 'images/icons/icon_folder.gif');
@@ -24,7 +42,17 @@ Grid.implement({
                     break;
                 case 'video':
                 case 'image':
-                    image.setProperty('src', 'resizer/w40-h40/' + record[fieldName]);
+                    image.setProperty('src', 'resizer/w40-h40/' + record[fieldName])/*.addEvents({
+                        'mouseenter':function (e) {
+                            var el = $(e.target);
+                            tmt = this._popImage.delay(1000, this, [record[fieldName], el])
+                        }.bind(this),
+                        'mouseleave':function () {
+                            if(tmt){
+                                clearTimeout(tmt);
+                            }
+                        }
+                    })*/;
                     break;
                 default:
                     image.setProperty('src', 'images/icons/icon_undefined.gif');
@@ -58,17 +86,17 @@ var FileRepository = new Class({
         var openBtn = this.toolbar.getControlById('open');
         switch (r.upl_internal_type) {
             case 'folder':
-                if(openBtn)openBtn.enable();
+                if (openBtn)openBtn.enable();
                 break;
             case 'folderup':
                 this.toolbar.disableControls();
-                if(openBtn)openBtn.enable();
+                if (openBtn)openBtn.enable();
                 this.toolbar.getControlById('addDir').enable();
                 this.toolbar.getControlById('add').enable()
                 break;
             case 'repo':
                 this.toolbar.disableControls();
-                if(openBtn)openBtn.enable();
+                if (openBtn)openBtn.enable();
                 break;
             default:
                 //this.toolbar.getControlById('open').disable();
@@ -145,8 +173,8 @@ var FileRepository = new Class({
         ModalBox.open({
             url:this.singlePath + pid + 'add-dir/',
             //onClose:this._processAfterCloseAction.bind(this)
-            onClose: function(response){
-                if(response && response.result){
+            onClose:function (response) {
+                if (response && response.result) {
                     this.currentPID = response.data;
                     this._processAfterCloseAction(response);
                 }
@@ -154,8 +182,8 @@ var FileRepository = new Class({
             }.bind(this)
         });
     },
-    uploadZip: function(data){
-        this.request(this.singlePath + 'upload-zip', 'PID='+this.grid.getSelectedRecord().upl_pid+'&data='+encodeURIComponent(data.result), function(response){
+    uploadZip:function (data) {
+        this.request(this.singlePath + 'upload-zip', 'PID=' + this.grid.getSelectedRecord().upl_pid + '&data=' + encodeURIComponent(data.result), function (response) {
             console.log(response)
         });
         //this.singlePath + 'upload-zip',

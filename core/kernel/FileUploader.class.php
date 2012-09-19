@@ -203,7 +203,7 @@ class FileUploader extends Object {
             $dir .= '/';
         }
 
-        return $this->uploadsPath.$dir.FileObject::generateFilename($this->uploadsPath.$dir, $ext);
+        return $this->uploadsPath.$dir.FileRepository::generateFilename($this->uploadsPath.$dir, $ext);
     }
 
     /**

@@ -344,7 +344,7 @@
         </button>
     </xsl:template>
 
-    <!-- /компонент FileLibrary -->
+
     <xsl:template match="field[@name='upl_path'][ancestor::component[@class='FileRepository']]">
         <div class="preview">
             <img border="0" id="preview" class="hidden"/>

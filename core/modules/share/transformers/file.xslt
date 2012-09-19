@@ -74,29 +74,4 @@
     </xsl:template>
     <!-- /компонент ImageManager -->
 
- <!-- компонент FileLibrary - файловый репозиторий -->
-    <xsl:template match="recordset[parent::component[@class='FileLibrary'][@type='list']]">
-        <xsl:variable name="TAB_ID" select="generate-id(record[1])"/>
-        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" file_type="{../@allowed_file_type}">
-            <xsl:if test="../toolbar">
-                <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
-            </xsl:if>
-            <div class="e-pane-t-toolbar">
-                <ul class="e-pane-toolbar e-tabs">
-                    <li>
-                        <a href="#{$TAB_ID}"><xsl:value-of select="record[1]/field[1]/@tabName"/></a>
-                    </li>
-                </ul>
-            </div>
-            <div class="e-pane-content">
-                <div id="{$TAB_ID}">
-                    <div class="e-filemanager"></div>
-                </div>
-            </div>
-            <xsl:if test="../toolbar">
-                <div class="e-pane-b-toolbar"></div>
-            </xsl:if>
-        </div>                
-    </xsl:template>
-    
 </xsl:stylesheet>

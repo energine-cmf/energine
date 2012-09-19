@@ -1064,21 +1064,4 @@ class Grid extends DBDataSet {
         $this->addTranslation('BTN_ADD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
     }
 
-
-    /**
-     * Быстрая загрузка аттачмента в репозиторий
-     *
-     * @return void
-     * @access protected
-     */
-    protected function put() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->fileLibrary = $this->document->componentManager->createComponent(
-            'filelibrary',
-            'share',
-            'FileLibrary',
-            array('state' => 'put', 'active' => false)
-        );
-        $this->fileLibrary->run();
-    }
 }

@@ -207,7 +207,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         ) {
             try {
                 $result->nodeValue = $fieldValue;
-                if ($info = E()->FileInfo->analyze($fieldValue)) {
+                if ($info = E()->FileRepoInfo->analyze($fieldValue)) {
                     $result->setAttribute('media_type', $info->type);
                     $result->setAttribute('mime', $info->mime);
                 }

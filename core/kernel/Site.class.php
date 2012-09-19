@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Содержит класс Site
  *
@@ -23,9 +23,15 @@ class Site extends DBWorker {
      * @var array
      */
     private $data;
+    /**
+     * Переводы
+     * @var array
+     */
+    static private $siteTranslationsData;
 
     /**
      * Конструктор класса
+     *
      *
      * @param array $data
      * @access public
@@ -37,6 +43,8 @@ class Site extends DBWorker {
 
     /**
      * Возвращает информацию о всех сайтах в виде массив объектов Site
+     * Сразу кешируем инфу из таблицы переводов
+     * Поскольку на этот момент текущий язык еще не известен
      * @static
      * @return Site[]
      */
@@ -45,6 +53,16 @@ class Site extends DBWorker {
         $res = E()->getDB()->select('share_sites');
         foreach ($res as $siteData) {
             $result[$siteData['site_id']] = new Site($siteData);
+        }
+        $res = E()->getDB()->select('share_sites_translation');
+        self::$siteTranslationsData = array();
+        $f = function ($row) {
+            unset($row['lang_id'], $row['site_id']);
+            return $row;
+        };
+        foreach ($res as $row) {
+            self::$siteTranslationsData[$row['lang_id']][$row['site_id']] = $f($row);
+
         }
         return $result;
     }
@@ -57,38 +75,21 @@ class Site extends DBWorker {
     public function setDomain($domainData) {
         $this->data = array_merge($this->data, $domainData);
         $this->data['base'] =
-                $this->data['protocol'] . '://' .
+            $this->data['protocol'] . '://' .
                 $this->data['host'] . (($this->data['port'] == 80) ? '' : ':' . $this->data['port']) .
                 $this->data['root'];
     }
 
     /**
-     * Magic method возврщающий свойства сайта
-     *
-     * @return Object
-     * @access public
+     * @param $propName
+     * @return null
      */
     public function __get($propName) {
         $result = null;
         if (isset($this->data[$propName])) {
             $result = $this->data[$propName];
-        }
-        elseif (strtolower($propName) == 'name') {
-            //@todo - нужно бы получать информацию обо всех сайтах, проблема в том что на момент первого обращения не известен текущий язык
-            $result =
-            $this->data[$propName] =
-                    simplifyDBResult(
-                        $this->dbh->select(
-                            'share_sites_translation',
-                            'site_name',
-                            array(
-                                 'lang_id' => E()->getLanguage()->getCurrent(),
-                                 'site_id' => $this->data['id']
-                            )
-                        ),
-                        'site_name',
-                        true
-                    );
+        } elseif (strtolower($propName) == 'name') {
+            $result = $this->data[$propName] = self::$siteTranslationsData[E()->getLanguage()->getCurrent()][$this->data['id']]['site_name'];
         }
         return $result;
     }

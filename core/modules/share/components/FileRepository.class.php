@@ -112,7 +112,6 @@ class FileRepository extends Grid {
 
     private function createThumbFields() {
         if ($thumbs = $this->getConfigValue('thumbnails')) {
-            $thumbs = array('preview' => array('width' => 0, 'height' => 0)) + $thumbs;
             $tabName = $this->translate('TXT_THUMBS');
             foreach ($thumbs as $name => $data) {
                 $fd = new FieldDescription($name);

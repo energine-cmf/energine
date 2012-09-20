@@ -610,7 +610,7 @@ class Grid extends DBDataSet {
                 //значения мультиполей
                 $multiFieldsData[$name] = $fd;
                 //Для замены имени поля в списке полей
-                $multiFields[$name] = 'GROUP_CONCAT(fk_id) as ' . $name;
+                $multiFields[$name] = 'GROUP_CONCAT('.$name.'.fk_id) as ' . $name;
             }
         }
 

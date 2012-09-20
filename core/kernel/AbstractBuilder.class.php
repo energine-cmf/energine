@@ -131,22 +131,20 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         }
         $result->setAttribute('mode', $fieldInfo->getMode());
 
-        if (in_array($fieldInfo->getType(),array(FieldDescription::FIELD_TYPE_FILE/*,FieldDescription::FIELD_TYPE_IMAGE*/))) {
+        if (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_FILE /*,FieldDescription::FIELD_TYPE_IMAGE*/))) {
             //$fieldInfo->setProperty('additionalTitle', $this->translate('MSG_LOAD_FILE'));
             E()->getDocument()->addTranslation('TXT_CLEAR');
-            if($fieldValue){
+            if ($fieldValue) {
                 try {
                     if ($info = E()->FileRepoInfo->analyze($fieldValue)) {
                         $result->setAttribute('media_type', $info->type);
                         $result->setAttribute('mime', $info->mime);
                     }
-                }
-                catch (SystemException $e) {
+                } catch (SystemException $e) {
 
                 }
             }
-        }
-        /*elseif (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
+        } /*elseif (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
             $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));
             $fieldInfo->setProperty('msgCloseField', $this->translate('TXT_CLOSE_FIELD'));
         }*/
@@ -181,29 +179,25 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      */
     protected function buildFieldValue(DOMElement $result, FieldDescription $fieldInfo, $fieldValue) {
         if (($fieldValue instanceof DOMNode) ||
-                ($fieldValue instanceof DOMElement)
+            ($fieldValue instanceof DOMElement)
         ) {
             try {
                 $result->appendChild($fieldValue);
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 $result->appendChild($this->result->importNode($fieldValue, true));
             }
-        }
-        elseif ($fieldInfo->getType() ==
-                FieldDescription::FIELD_TYPE_TEXTBOX_LIST
+        } elseif ($fieldInfo->getType() ==
+            FieldDescription::FIELD_TYPE_TEXTBOX_LIST
         ) {
             if ($fieldValue = $this->createTextBoxItems($fieldValue)) {
                 try {
                     $result->appendChild($fieldValue);
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                     $result->appendChild($this->result->importNode($fieldValue, true));
                 }
             }
-        }
-        elseif (($fieldInfo->getType() == FieldDescription::FIELD_TYPE_MEDIA) &&
-                $fieldValue
+        } elseif (($fieldInfo->getType() == FieldDescription::FIELD_TYPE_MEDIA) &&
+            $fieldValue
         ) {
             try {
                 $result->nodeValue = $fieldValue;
@@ -211,12 +205,10 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     $result->setAttribute('media_type', $info->type);
                     $result->setAttribute('mime', $info->mime);
                 }
-            }
-            catch (SystemException $e) {
+            } catch (SystemException $e) {
 
             }
-        }
-        elseif ($fieldValue !== false) {
+        } elseif ($fieldValue !== false) {
             // empty() не пропускает значиния 0 и '0'
             if (!empty($fieldValue) || ($fieldValue === 0) || ($fieldValue === '0')) {
                 switch ($fieldInfo->getType()) {
@@ -225,7 +217,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     case FieldDescription::FIELD_TYPE_TIME:
                         $result->setAttribute('date', $fieldValue);
                         $fieldValue =
-                                self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
+                            self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
 
                         break;
                     case FieldDescription::FIELD_TYPE_STRING:
@@ -259,6 +251,10 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
     /**
      * Форматирование даты
+     * Псевдо модификаторы
+     * %E - Сегодня|Вчера|Позавчера|Завтра|Послезавтра|Аббревиатура_дня_недели $Date $имя месяца, $время[$Год если не текущий]
+     * %f - Название дня недели $Date $имя месяца, $время[$Год если не текущий]
+     * %o - [Сегодня,] $Date $имя месяца, $время[$Год если не текущий]
      *
      * @param int $date timstamp
      * @param string $format
@@ -269,58 +265,63 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      */
     static public function enFormatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
         $date = strtotime($date);
-        if (!in_array($format, array('%E', '%f'))) {
+        if (!in_array($format, array('%E', '%f', '%o'))) {
             $result = @strftime($format, $date);
             if (!$result) {
                 $result = $date;
             }
-        }
-        else {
+        } else {
             $result = '';
-
             $today = strtotime("midnight");
             $tomorrow = strtotime("midnight +1 day");
             $dayAfterTomorrow = strtotime("midnight +2 day");
             $tomorrowPlus3 = strtotime("midnight +3 day");
             $yesterday = strtotime("midnight -1 day");
             $beforeYesterday = strtotime("midnight -2 day");
-            if ($format == '%E') {
-                if ($date >= $today and $date < $tomorrow) {
-                    $result .= DBWorker::_translate('TXT_TODAY');
-                }
-                elseif ($date < $today and $date >= $yesterday) {
-                    $result .= DBWorker::_translate('TXT_YESTERDAY');
-                }
-                elseif ($date < $yesterday and $date >= $beforeYesterday) {
-                    $result .= DBWorker::_translate('TXT_BEFORE_YESTERDAY');
-                }
-                elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
-                    $result .= DBWorker::_translate('TXT_TOMORROW');
-                }
-                elseif ($date >= $dayAfterTomorrow && $date < $tomorrowPlus3) {
-                    $result .= DBWorker::_translate('TXT_AFTER_TOMORROW');
-                }
-                else {
+            switch ($format) {
+                case '%E':
+                    if ($date >= $today and $date < $tomorrow) {
+                        $result .= DBWorker::_translate('TXT_TODAY');
+                    } elseif ($date < $today and $date >= $yesterday) {
+                        $result .= DBWorker::_translate('TXT_YESTERDAY');
+                    } elseif ($date < $yesterday and $date >= $beforeYesterday) {
+                        $result .= DBWorker::_translate('TXT_BEFORE_YESTERDAY');
+                    } elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
+                        $result .= DBWorker::_translate('TXT_TOMORROW');
+                    } elseif ($date >= $dayAfterTomorrow && $date < $tomorrowPlus3) {
+                        $result .= DBWorker::_translate('TXT_AFTER_TOMORROW');
+                    } else {
+                        $dayNum = date('w', $date);
+                        if ($dayNum == 0) {
+                            $dayNum = 7;
+                        }
+                        $result .= DBWorker::_translate('TXT_WEEKDAY_SHORT_' . $dayNum);
+                    }
+                    $result .= ', ' . date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                    if (date('Y', $date) != date('Y')) {
+                        $result .= ' ' . date('Y', $date);
+                    }
+                    break;
+                case '%f':
                     $dayNum = date('w', $date);
-                    if($dayNum == 0){
+                    if ($dayNum == 0) {
                         $dayNum = 7;
                     }
-                    $result .= DBWorker::_translate('TXT_WEEKDAY_SHORT_'.$dayNum);
-                }
-                $result .= ', '.date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
-                if (date('Y', $date) != date('Y')) {
-                    $result .= ' ' . date('Y', $date);
-                }
-            }
-            else {
-                $dayNum = date('w', $date);
-                if($dayNum == 0){
-                    $dayNum = 7;
-                }
-                $result .= DBWorker::_translate('TXT_WEEKDAY_'.$dayNum).', '.date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
-                if (date('Y', $date) != date('Y')) {
-                    $result .= ' ' . date('Y', $date);
-                }
+                    $result .= DBWorker::_translate('TXT_WEEKDAY_' . $dayNum) . ', ' . date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                    if (date('Y', $date) != date('Y')) {
+                        $result .= ' ' . date('Y', $date);
+                    }
+                    break;
+                case '%o':
+                    if ($date >= $today and $date < $tomorrow) {
+                        $result .= DBWorker::_translate('TXT_TODAY').', ';
+                    }
+                    $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+
+                    if (date('Y', $date) != date('Y')) {
+                        $result .= ' ' . date('Y', $date);
+                    }
+                    break;
             }
             //Если часы и минуты = 0, считаем что это просто дата, без времени
             if (in_array($type, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_HIDDEN))) {
@@ -328,7 +329,6 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                 $result .= date('G', $date) . ':' . date('i', $date);
             }
         }
-
         return $result;
     }
 
@@ -346,7 +346,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         if (is_array($fieldInfo->getAvailableValues()))
             foreach ($fieldInfo->getAvailableValues() as $key => $option) {
                 $dom_option =
-                        $this->result->createElement('option', str_replace('&', '&amp;', $option['value']));
+                    $this->result->createElement('option', str_replace('&', '&amp;', $option['value']));
                 $dom_option->setAttribute('id', $key);
                 if ($option['attributes']) {
                     foreach ($option['attributes'] as $attrName => $attrValue) {
@@ -373,8 +373,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
         if ($data === false) {
             return false;
-        }
-        elseif (!is_array($data)) {
+        } elseif (!is_array($data)) {
             $data = array($data);
         }
 

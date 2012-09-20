@@ -136,7 +136,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             E()->getDocument()->addTranslation('TXT_CLEAR');
             if($fieldValue){
                 try {
-                    if ($info = E()->FileInfo->analyze($fieldValue)) {
+                    if ($info = E()->FileRepoInfo->analyze($fieldValue)) {
                         $result->setAttribute('media_type', $info->type);
                         $result->setAttribute('mime', $info->mime);
                     }

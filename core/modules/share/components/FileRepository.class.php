@@ -306,15 +306,13 @@ class FileRepository extends Grid {
             $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
             if ($mode == QAL::INSERT) {
                 $fileData = self::cleanFileData($data['upl_path']);
-                $parentData = $this->dbh->select($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_pid']));
-                if (empty($parentData)) {
+                $uplPath = $this->dbh->getScalar($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_pid']));
+                if (empty($uplPath)) {
                     throw new SystemException('ERR_BAD_PID');
                 }
-                list($parentData) = $parentData;
-
                 unset($data[$this->getPK()]);
-                $data['upl_filename'] = self::generateFilename($parentData['upl_path'], pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
-                $data['upl_path'] = $parentData['upl_path'] . '/' . $data['upl_filename'];
+                $data['upl_filename'] = self::generateFilename($uplPath, pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
+                $data['upl_path'] = $uplPath . '/' . $data['upl_filename'];
                 if (!file_put_contents($data['upl_path'], $fileData)) {
                     throw new SystemException('ERR_SAVE_IMG');
                 }

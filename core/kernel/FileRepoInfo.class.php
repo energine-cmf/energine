@@ -96,14 +96,15 @@ class FileRepoInfo extends Object {
      * @return mixed
      */
     private function getFileInfoData($filename) {
+        $result['width'] = '';
+        $result['height'] = '';
+        
         if (is_dir($filename)) {
             $result['type'] = self::META_TYPE_FOLDER;
-
             $result['mime'] = 'unknown/mime-type';
         } elseif (!file_exists($filename)) {
             $result['mime'] = 'unknown/mime-type';
-            $result['type'] =
-                self::META_TYPE_UNKNOWN;
+            $result['type'] = self::META_TYPE_UNKNOWN;
         } else {
             switch (
                 $result['mime'] = $this->finfo->file($filename)) {

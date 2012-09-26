@@ -27,8 +27,9 @@ Grid.implement({
         var cell = new Element('td').injectInside(row);
         if (fieldName == 'upl_path') {
             cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
-            var image = new Element('img',{'width':60, 'height':45 }).injectInside(cell);
-            var tmt;
+
+            var image = new Element('img');
+            var tmt, dimensions = {'width':40, 'height':40};
             switch (record['upl_internal_type']) {
                 case 'folder':
                     image.setProperty('src', 'images/icons/icon_folder.gif');
@@ -41,7 +42,11 @@ Grid.implement({
                     break;
                 case 'video':
                 case 'image':
+                    dimensions = {'width':60, 'height':45};
                     image.setProperty('src', 'resizer/w60-h45/' + record[fieldName]).addEvents({
+                        'error': function(){
+                            image.setProperty('src', 'images/icons/icon_error_image.gif').removeEvents('mouseenter').removeEvent('mouseleave');
+                        },
                         'mouseenter':function (e) {
                             var el = $(e.target);
                             el.setStyle('border', '1px solid gray');
@@ -60,7 +65,7 @@ Grid.implement({
                     image.setProperty('src', 'images/icons/icon_undefined.gif');
                     break;
             }
-
+            image.setProperties(dimensions).injectInside(cell);
         }
         else {
             var fieldValue = '';

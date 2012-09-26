@@ -5,7 +5,9 @@ var FILE_COOKIE_NAME = 'NRGNFRPID';
 
 Grid.implement({
     _popImage:function (path, tmplElement) {
-        /*var popUpImg = new Element('img', {'src':'resizer/w250-h250/' + path, 'width':250, 'height':250, 'styles':{
+        var popUpImg = new Element('img', {'src':'resizer/w300-h300/' + path, 'width':60, 'height':60, 'styles':{
+            border:'1px solid gray',
+            'border-radius':'10px',
             'z-index':100
         }, 'events':{
             'click':function (e) {
@@ -14,12 +16,9 @@ Grid.implement({
             'mouseleave':function (e) {
                 this.destroy();
             }
-        }}).inject(document.body).position({'relativeTo':tmplElement, 'position':'center'});*/
-        tmplElement.setProperties({
-            'src': 'resizer/w250-h250/' + path,
-            'width':250,
-            'height':250
-        })
+        }}).inject(document.body).position({'relativeTo':tmplElement, 'position':'center'}).set('morph', {duration: 'short', transition: 'linear'});
+        var p = popUpImg.getPosition();
+        popUpImg.morph({width:300, height:300, left:p.x-150, top:p.y-150});
     },
     iterateFields:function (record, fieldName, row) {
 // Пропускаем невидимые поля.
@@ -28,7 +27,7 @@ Grid.implement({
         var cell = new Element('td').injectInside(row);
         if (fieldName == 'upl_path') {
             cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
-            var image = new Element('img',{'width':40, 'height':40 }).injectInside(cell);
+            var image = new Element('img',{'width':60, 'height':60 }).injectInside(cell);
             var tmt;
             switch (record['upl_internal_type']) {
                 case 'folder':
@@ -42,17 +41,20 @@ Grid.implement({
                     break;
                 case 'video':
                 case 'image':
-                    image.setProperty('src', 'resizer/w40-h40/' + record[fieldName])/*.addEvents({
+                    image.setProperty('src', 'resizer/w60-h60/' + record[fieldName]).addEvents({
                         'mouseenter':function (e) {
                             var el = $(e.target);
-                            tmt = this._popImage.delay(1000, this, [record[fieldName], el])
+                            el.setStyle('border', '1px solid gray');
+                            tmt = this._popImage.delay(700, this, [record[fieldName], el])
                         }.bind(this),
-                        'mouseleave':function () {
+                        'mouseleave':function (e) {
+                            var el = $(e.target);
+                            el.setStyle('border', '1px solid transparent');
                             if(tmt){
                                 clearTimeout(tmt);
                             }
                         }
-                    })*/;
+                    }).setStyles({'border-radius': '5px', 'border':'1px solid transparent'});
                     break;
                 default:
                     image.setProperty('src', 'images/icons/icon_undefined.gif');

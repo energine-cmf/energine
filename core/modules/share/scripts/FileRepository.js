@@ -28,7 +28,7 @@ Grid.implement({
         if (fieldName == 'upl_path') {
             cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
 
-            var image = new Element('img');
+            var image = new Element('img', {src:'about:blank'});
             var tmt, dimensions = {'width':40, 'height':40};
             switch (record['upl_internal_type']) {
                 case 'folder':

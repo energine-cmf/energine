@@ -456,7 +456,6 @@ class FileRepository extends Grid {
             );
             if (!$data->isEmpty())
                 foreach ($this->getDataDescription()->getFieldDescriptionList() as $fieldName) {
-
                     $data->getFieldByName($fieldName)->addRowData(((isset($newData[$fieldName])) ? $newData[$fieldName] : ''), false);
                 }
             else {

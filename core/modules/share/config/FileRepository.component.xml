@@ -18,6 +18,7 @@
             <field name="upl_id"/>
             <field name="upl_path" title="FIELD_UPL_FILE_PATH" type="file"/>
             <field name="upl_title"/>
+            <field name="upl_publication_date" outputFormat="%o"/>
             <field name="upl_pid" type="hidden"/>
             <field name="upl_childs_count" type="hidden"/>
             <field name="upl_internal_type" type="hidden"/>

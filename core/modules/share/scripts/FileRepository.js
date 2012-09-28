@@ -16,9 +16,9 @@ Grid.implement({
             'mouseleave':function (e) {
                 this.destroy();
             }
-        }}).inject(document.body).position({'relativeTo':tmplElement, 'position':'center'}).set('morph', {duration: 'short', transition: 'linear'});
+        }}).inject(document.body).position({'relativeTo':tmplElement, 'position':'center'}).set('morph', {duration:'short', transition:'linear'});
         var p = popUpImg.getPosition();
-        popUpImg.morph({width:298, height:224, left:p.x-112, top:p.y-149});
+        popUpImg.morph({width:298, height:224, left:p.x - 112, top:p.y - 149});
     },
     iterateFields:function (record, fieldName, row) {
 // Пропускаем невидимые поля.
@@ -30,6 +30,8 @@ Grid.implement({
 
             var image = new Element('img', {src:'about:blank'});
             var tmt, dimensions = {'width':40, 'height':40};
+            var container = new Element('div', {'class':'thumb_container'}).inject(cell);
+
             switch (record['upl_internal_type']) {
                 case 'folder':
                     image.setProperty('src', 'images/icons/icon_folder.gif');
@@ -44,29 +46,42 @@ Grid.implement({
                 case 'image':
                     dimensions = {'width':60, 'height':45};
                     image.setProperty('src', 'resizer/w60-h45/' + record[fieldName]).addEvents({
-                        'error': function(){
-                            image.setProperty('src', 'images/icons/icon_error_image.gif').removeEvents('mouseenter').removeEvent('mouseleave');
-                        },
+                        'error':function () {
+                            image.setProperty('src', 'images/icons/icon_error_image.gif');
+                            container.removeEvents('mouseenter').removeEvent('mouseleave');
+                        }
+                    }).setStyles({'border-radius':'5px', 'border':'1px solid transparent'});
+                    container.addEvents({
                         'mouseenter':function (e) {
                             var el = $(e.target);
+                            if (el.get('tag') != 'img') {
+                                el = el.getElement('img');
+                            }
                             el.setStyle('border', '1px solid gray');
                             tmt = this._popImage.delay(700, this, [record[fieldName], el])
                         }.bind(this),
                         'mouseleave':function (e) {
                             var el = $(e.target);
+                            if (el.get('tag') != 'img') {
+                                el = el.getElement('img');
+                            }
                             el.setStyle('border', '1px solid transparent');
-                            if(tmt){
+                            if (tmt) {
                                 clearTimeout(tmt);
                             }
                         }
-                    }).setStyles({'border-radius': '5px', 'border':'1px solid transparent'});
+                    });
+
+                    if (record['upl_internal_type'] == 'video') {
+                        container.grab(new Element('div', {'class':'video_file'}));
+                    }
                     break;
                 default:
                     dimensions = {'width':39, 'height':48};
                     image.setProperty('src', 'images/icons/icon_undefined.gif');
                     break;
             }
-            image.setProperties(dimensions).injectInside(cell);
+            image.setProperties(dimensions).inject(container);
         }
         else {
             var fieldValue = '';

@@ -62,6 +62,7 @@ Grid.implement({
                     }).setStyles({'border-radius': '5px', 'border':'1px solid transparent'});
                     break;
                 default:
+                    dimensions = {'width':39, 'height':48};
                     image.setProperty('src', 'images/icons/icon_undefined.gif');
                     break;
             }

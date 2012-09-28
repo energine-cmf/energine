@@ -264,6 +264,8 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      * @static
      */
     static public function enFormatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
+        if(!$date) return '';
+
         $date = strtotime($date);
         if (!in_array($format, array('%E', '%f', '%o'))) {
             $result = @strftime($format, $date);

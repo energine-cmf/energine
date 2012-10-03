@@ -48,16 +48,13 @@ final class Translit{
      */
 	private function __construct() {}
 
-	/**
-	 * Статический метод транслитерации
-	 *
-	 * @param string
-	 * @return string
-	 * @access public
-	 * @static
-	 */
-
-	static public function transliterate($string, $wordSeparator = '', $clean = false) {
+    /**
+     * @param $string
+     * @param string $wordSeparator
+     * @param bool $clean
+     * @return mixed|string
+     */
+    static public function transliterate($string, $wordSeparator = '', $clean = false) {
 	    //$str = iconv($encIn, "utf-8", $str);
 
         for($i=0; $i<count(self::$cyr); $i++){
@@ -80,6 +77,7 @@ final class Translit{
         if ($clean) {
             $string = strtolower($string);
             $string = preg_replace('/[^-_a-z0-9]+/','', $string);
+            $string = str_replace('--', '', $string);
         }
 
         //return iconv("utf-8", $encOut, $str);

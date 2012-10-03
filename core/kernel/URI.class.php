@@ -102,12 +102,11 @@ final class URI extends Object {
      */
     public static function validate($uri){
     	$result = false;
-        if(preg_match('/^(\w+):\/\/([a-z0-9\.\-]+)\:([0-9]{2,5})?(\/[^?]*)[\?]?(.*)?$/i', $uri, $matches) && count($matches) >= 5){
+        if(preg_match('/^(\w+):\/\/([a-z0-9\.\-]+)\:?([0-9]{2,5})?(\/[^?]*)[\?]?(.*)?$/i', $uri, $matches) && count($matches) >= 5){
             array_shift($matches);
             $result = $matches;
         }
-        
-        return $result;    
+        return $result;
     }
     /**
       * Создает объект URI
@@ -184,6 +183,7 @@ final class URI extends Object {
      * @return void
      */
     public function setPort($port) {
+        if(!$port) $port = 80;
         $this->port = $port;
     }
     /**

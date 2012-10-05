@@ -256,6 +256,8 @@ Toolbar.Button = new Class({
         }
         else {
             this.element.addEvent('mousedown', function (event) {
+                if(!event) return;
+
                 if (event.rightClick) return;
                 this.callAction();
             }.bind(this));

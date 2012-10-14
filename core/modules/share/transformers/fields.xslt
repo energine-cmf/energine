@@ -375,7 +375,7 @@
         <xsl:if test="recordset">
             <!--<xsl:if test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">-->
                 <!--<xsl:if test="count(recordset/record) &gt; 1">-->
-                    <script type="text/javascript" src="{$STATIC_URL}scripts/flowplayer-3.2.6.min.js"></script>
+                    <script type="text/javascript" src="{$STATIC_URL}scripts/flowplayer.js"></script>
                     <script type="text/javascript" src="{$STATIC_URL}scripts/Carousel.js"></script>
                     <script type="text/javascript" src="{$STATIC_URL}scripts/Playlist.js"></script>
 

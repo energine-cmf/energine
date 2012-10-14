@@ -90,7 +90,7 @@ var Playlist = new Class({
         return flowplayer(
                 playerElement,
                 {src:Energine.static +
-                'scripts/flowplayer-3.2.7.swf', wmode: 'opaque'},
+                'scripts/flowplayer.swf', wmode: 'opaque'},
                 playerProperties
                 );
     }

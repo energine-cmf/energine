@@ -41,20 +41,23 @@ class Data extends Object {
      * Загружает набор данных, полученных из БД.
      *
      * @access public
-     * @param array $data
+     * @param $data
      * @return void
      * @see DBA::selectRequest()
+     *
      */
-    public function load(array $data) {
-        $data = inverseDBResult($data);
-        foreach ($data as $fieldName => $fieldValues) {
-            //Если такого поля не существует еще, то создаем
-            if(!($fieldObject = $this->getFieldByName($fieldName))){
-                $fieldObject = new Field($fieldName);
-                $this->addField($fieldObject);
+    public function load($data) {
+        if (is_array($data) && ! empty($data)) {
+            $data = inverseDBResult($data);
+            foreach ($data as $fieldName => $fieldValues) {
+                //Если такого поля не существует еще, то создаем
+                if (!($fieldObject = $this->getFieldByName($fieldName))) {
+                    $fieldObject = new Field($fieldName);
+                    $this->addField($fieldObject);
+                }
+                //и заносим в него данные
+                $fieldObject->setData($fieldValues);
             }
-            //и заносим в него данные
-            $fieldObject->setData($fieldValues);
         }
     }
 
@@ -166,6 +169,7 @@ class Data extends Object {
     public function getLength() {
         return $this->length;
     }
+
     /**
      * Возвращает флаг указывающий на то является ли объект данных пустым
      *
@@ -197,14 +201,14 @@ class Data extends Object {
         foreach ($this->fields as $fieldName => $field) {
             $result[$fieldName] = $field->getData();
         }
-        if($groupedByFields){
+        if ($groupedByFields) {
             return $result;
         }
-        
+
         $fieldNames = array_keys($this->fields);
         $rows = $this->getRowCount();
-        for($i=0; $i<$rows; $i++){
-            foreach($fieldNames as $fieldName){
+        for ($i = 0; $i < $rows; $i++) {
+            foreach ($fieldNames as $fieldName) {
                 $res[$i][$fieldName] = $result[$fieldName][$i];
             }
         }

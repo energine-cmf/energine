@@ -93,8 +93,8 @@
         <xsl:if test="not(@empty)">
             <ul class="main_menu">
                 <xsl:if test="$DOC_PROPS[@name='default'] != 1">
-                    <li>
-                        <a href="{$LANG_ABBR}">
+                    <li class="home">
+                        <a href="{$BASE}">
                             <xsl:value-of select="$TRANSLATION[@const='TXT_HOME']" disable-output-escaping="yes"/>
                         </a>
                     </li>                    

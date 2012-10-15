@@ -1,6 +1,6 @@
 <?php
 
-class ExtendedFeedSaver extends Saver {
+class ExtendedSaver extends Saver {
     /**
      * Имя первичного ключа таблицы
      *

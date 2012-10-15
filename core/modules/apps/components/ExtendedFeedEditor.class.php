@@ -36,7 +36,7 @@ class ExtendedFeedEditor extends FeedEditor {
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
-        $this->setSaver(new ExtendedFeedSaver());
+        $this->setSaver(new ExtendedSaver());
     }
 
     protected function setParam($name, $value) {

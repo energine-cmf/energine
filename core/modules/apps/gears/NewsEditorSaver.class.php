@@ -1,6 +1,6 @@
 <?php
 
-class NewsEditorSaver extends ExtendedFeedSaver {
+class NewsEditorSaver extends ExtendedSaver {
 
     public function setData(Data $data) {
         parent::setData($data);

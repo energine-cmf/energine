@@ -48,6 +48,11 @@ class TagManager extends DBWorker {
      */
     private $pk;
 
+    /**
+     * @param $dataDescription
+     * @param $data
+     * @param $tableName
+     */
     public function __construct($dataDescription, $data, $tableName) {
         parent::__construct();
         if ($this->isActive = $this->dbh->tableExists($this->tableName = $tableName . '_tags')) {

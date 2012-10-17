@@ -88,12 +88,13 @@ Grid.implement({
             cell.addClass('properties');
             var propsTable = new Element('tbody');
             cell.grab(new Element('table').grab(propsTable));
-            if (!record['upl_internal_type'].test('folder')) {
-                new Element('tr').inject(propsTable).adopt([
-                    new Element('td', {'html':this.metadata['upl_mime_type'].title + ' :'}),
-                    new Element('td', {'html':record['upl_mime_type']})
-                ]
-                );
+            if (!record['upl_internal_type'].test('[folder|repo]')) {
+                if (record['upl_mime_type'])
+                    new Element('tr').inject(propsTable).adopt([
+                        new Element('td', {'html':this.metadata['upl_mime_type'].title + ' :'}),
+                        new Element('td', {'html':record['upl_mime_type']})
+                    ]
+                    );
                 switch (record['upl_internal_type']) {
                     case 'video':
                         if (record['upl_duration'])

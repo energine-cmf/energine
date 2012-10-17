@@ -46,8 +46,7 @@ class FileRepository extends Grid {
             array('upl_id' => $uplID)) == FileRepoInfo::META_TYPE_FOLDER
         ) {
             $this->editDir($uplID);
-        }
-        else {
+        } else {
             $this->editFile($uplID);
         }
     }
@@ -133,8 +132,7 @@ class FileRepository extends Grid {
         $sp = $this->getStateParams(true);
         if (isset($sp['pid'])) {
             $uplPID = (int)$sp['pid'];
-        }
-        else {
+        } else {
             $uplPID = '';
         }
 
@@ -177,8 +175,7 @@ class FileRepository extends Grid {
                 'data' => $result,
                 'result' => true
             ));
-        }
-        catch (SystemException $e) {
+        } catch (SystemException $e) {
             stop($e->getMessage());
             $b->setProperties(array(
                 'data' => false,
@@ -223,8 +220,7 @@ class FileRepository extends Grid {
                 $data['upl_path'] = $parentData['upl_path'] . '/' . $data['upl_filename'] . '/';
                 $where = false;
                 mkdir($data['upl_path']);
-            }
-            else {
+            } else {
                 $where = array('upl_id' => $data['upl_id']);
                 /*$currentUplPath = simplifyDBResult($this->dbh->select($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_id'])), 'upl_path', true);
                 $data['upl_name'] = $data['upl_filename'] = Translit::asURLSegment($data['upl_title']);
@@ -239,13 +235,12 @@ class FileRepository extends Grid {
             $b = new JSONCustomBuilder();
             $b->setProperties(array(
                 'data' => (is_int($result)) ? $result
-                        : (int)$_POST[$this->getTableName()][$this->getPK()],
+                    : (int)$_POST[$this->getTableName()][$this->getPK()],
                 'result' => true,
                 'mode' => (is_int($result)) ? 'insert' : 'update'
             ));
             $this->setBuilder($b);
-        }
-        catch (SystemException $e) {
+        } catch (SystemException $e) {
             if ($transactionStarted) {
                 $this->dbh->rollback();
             }
@@ -270,8 +265,7 @@ class FileRepository extends Grid {
                     }
                     $dir = self::IMAGE_CACHE . $thumbPath . dirname($baseFileName) . '/';
                     $fullFileName = self::IMAGE_CACHE . $thumbPath . $baseFileName;
-                }
-                else {
+                } else {
                     $thumbPath = '';
                     $dir = self::IMAGE_ALT_CACHE . $thumbPath . dirname($baseFileName) . '/';
                     $fullFileName = self::IMAGE_ALT_CACHE . $thumbPath . $baseFileName;
@@ -325,8 +319,7 @@ class FileRepository extends Grid {
                 $data['upl_publication_date'] = date('Y-m-d H:i:s');
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data);
 
-            }
-            elseif ($mode == QAL::UPDATE) {
+            } elseif ($mode == QAL::UPDATE) {
                 $pk = $data[$this->getPK()];
 
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data, array($this->getPK() => $pk));
@@ -340,7 +333,7 @@ class FileRepository extends Grid {
             $b = new JSONCustomBuilder();
             $b->setProperties(array(
                 'data' => (is_int($result)) ? $result
-                        : (int)$_POST[$this->getTableName()][$this->getPK()],
+                    : (int)$_POST[$this->getTableName()][$this->getPK()],
                 'result' => true,
                 'mode' => (is_int($result)) ? 'insert' : 'update'
             ));
@@ -361,8 +354,7 @@ class FileRepository extends Grid {
         $sp = $this->getStateParams(true);
         if (isset($sp['pid'])) {
             $uplPID = (int)$sp['pid'];
-        }
-        else {
+        } else {
             $uplPID = '';
         }
 
@@ -411,8 +403,8 @@ class FileRepository extends Grid {
             $tableName = ($tableName) ? $tableName . '.' : '';
             $this->addFilterCondition(
                 $tableName . $fieldName . ' ' .
-                        call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
-                        ' '
+                    call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
+                    ' '
             );
 
         }
@@ -425,8 +417,7 @@ class FileRepository extends Grid {
             jump:
             $this->addFilterCondition('(upl_pid IS NULL)');
             $uplPID = '';
-        }
-        else {
+        } else {
             $uplPID = (int)$sp['pid'];
 
             if (isset($_COOKIE[self::STORED_PID])) {
@@ -441,6 +432,7 @@ class FileRepository extends Grid {
         }
 
         parent::getRawData();
+        $this->setBuilder(new JSONRepoBuilder());
 
         if ($uplPID) {
             $data = $this->getData();
@@ -456,7 +448,8 @@ class FileRepository extends Grid {
             );
             if (!$data->isEmpty())
                 foreach ($this->getDataDescription()->getFieldDescriptionList() as $fieldName) {
-                    $data->getFieldByName($fieldName)->addRowData(((isset($newData[$fieldName])) ? $newData[$fieldName] : ''), false);
+                    if ($f = $data->getFieldByName($fieldName))
+                        $f->addRowData(((isset($newData[$fieldName])) ? $newData[$fieldName] : ''), false);
                 }
             else {
                 $data->load(array($newData));
@@ -502,8 +495,7 @@ class FileRepository extends Grid {
                 ) {
                     if ($fileInfo['dirname'] == '.') {
                         $path = '';
-                    }
-                    else {
+                    } else {
                         $path = Translit::transliterate(addslashes($fileInfo['dirname'])) . '/';
                     }
 
@@ -512,13 +504,12 @@ class FileRepository extends Grid {
                         $zip->renameIndex(
                             $i,
                             $currentFile = $path .
-                                    Translit::transliterate($fileInfo['filename'])
+                                Translit::transliterate($fileInfo['filename'])
                         );
-                    }
-                    else {
+                    } else {
                         $zip->renameIndex(
                             $i,
-                            $currentFile = $path .self::generateFilename('', $fileInfo['extension'])
+                            $currentFile = $path . self::generateFilename('', $fileInfo['extension'])
                         );
                     }
                 }
@@ -526,8 +517,7 @@ class FileRepository extends Grid {
             $zip->close();
             throw new SystemException('ERR_FAKE');
             $this->dbh->commit();
-        }
-        catch (SystemException $e) {
+        } catch (SystemException $e) {
             if ($transactionStarted) {
                 $this->dbh->rollback();
             }
@@ -546,21 +536,21 @@ class FileRepository extends Grid {
         return base64_decode($tmp[1]);
     }
 
-    public static function getTmpFilePath($filename){
-   		return self::TEMPORARY_DIR.basename($filename);
-   	}
+    public static function getTmpFilePath($filename) {
+        return self::TEMPORARY_DIR . basename($filename);
+    }
 
-    public static function generateFilename($dirPath, $fileExtension){
-   		/*
-   		 * Генерируем уникальное имя файла.
-   		 */
-   		$c = ''; // первый вариант имени не будет включать символ '0'
-   		do {
-   			$filename = time().rand(1, 10000)."$c.{$fileExtension}";
-   			$c++; // при первом проходе цикла $c приводится к integer(1)
-   		} while(file_exists($dirPath.$filename));
+    public static function generateFilename($dirPath, $fileExtension) {
+        /*
+         * Генерируем уникальное имя файла.
+         */
+        $c = ''; // первый вариант имени не будет включать символ '0'
+        do {
+            $filename = time() . rand(1, 10000) . "$c.{$fileExtension}";
+            $c++; // при первом проходе цикла $c приводится к integer(1)
+        } while (file_exists($dirPath . $filename));
 
-   		return $filename;
-   	}
+        return $filename;
+    }
 
 }

@@ -20,6 +20,7 @@ Grid.implement({
         var p = popUpImg.getPosition();
         popUpImg.morph({width:298, height:224, left:p.x - 112, top:p.y - 149});
     },
+
     iterateFields:function (record, fieldName, row) {
 // Пропускаем невидимые поля.
         if (!this.metadata[fieldName].visible ||
@@ -82,6 +83,49 @@ Grid.implement({
                     break;
             }
             image.setProperties(dimensions).inject(container);
+        }
+        else if (fieldName == 'upl_properties') {
+            cell.addClass('properties');
+            var propsTable = new Element('tbody');
+            cell.grab(new Element('table').grab(propsTable));
+            if (!record['upl_internal_type'].test('folder')) {
+                new Element('tr').inject(propsTable).adopt([
+                    new Element('td', {'html':this.metadata['upl_mime_type'].title + ' :'}),
+                    new Element('td', {'html':record['upl_mime_type']})
+                ]
+                );
+                switch (record['upl_internal_type']) {
+                    case 'video':
+                        if (record['upl_duration'])
+                            new Element('tr').inject(propsTable).adopt([
+                                new Element('td', {'html':this.metadata['upl_duration'].title + ' :'}),
+                                new Element('td', {'html':record['upl_duration']})
+                            ]
+                            );
+                        break;
+                    case 'image':
+                        if (record['upl_width'])
+                            new Element('tr').inject(propsTable).adopt([
+                                new Element('td', {'html':this.metadata['upl_width'].title + ' :'}),
+                                new Element('td', {'html':record['upl_width']})
+                            ]
+                            );
+                        if (record['upl_height'])
+                            new Element('tr').inject(propsTable).adopt([
+                                new Element('td', {'html':this.metadata['upl_height'].title + ' :'}),
+                                new Element('td', {'html':record['upl_height']})
+                            ]
+                            );
+                        break;
+                    default :
+                        break;
+                }
+                new Element('tr').inject(propsTable).adopt([
+                    new Element('td', {'html':this.metadata['upl_publication_date'].title + ' :'}),
+                    new Element('td', {'html':record['upl_publication_date']})
+                ]
+                );
+            }
         }
         else {
             var fieldValue = '';

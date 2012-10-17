@@ -432,7 +432,11 @@ class FileRepository extends Grid {
         }
 
         parent::getRawData();
+        /**
+         * Плохо реализован дефолтный механизм подключения билдера
+         */
         $this->setBuilder(new JSONRepoBuilder());
+        if ($this->pager) $this->getBuilder()->setPager($this->pager);
 
         if ($uplPID) {
             $data = $this->getData();

@@ -24,6 +24,11 @@ class TagCloud extends DBDataSet {
     const ID_PARENT_FILTER = 'parent';
 
     /**
+     * Вывод тегов со всего сайта
+     */
+    const ID_ALL_FILTER = 'all';
+
+    /**
      * Ид раздела, с которого
      * будут выводиться теги
      *
@@ -71,11 +76,12 @@ class TagCloud extends DBDataSet {
             $this->filterId = $map->getParent($this->document->getID());
             $this->setProperty('template', $map->getURLByID($this->filterId));
         }
-        else {
+        else if($this->getParam('id') != self::ID_ALL_FILTER) {
             $this->filterId = $this->document->getID();
         }
         $this->tagsInfo = $this->getTagsInfo();
         $this->addFilterCondition(array('tag_id' => simplifyDBResult($this->tagsInfo, 'tag_id')));
+        $this->addTranslation('TXT_TAGS');
     }
 
     /**
@@ -125,12 +131,16 @@ class TagCloud extends DBDataSet {
      * @return array
      */
     protected function getTagsInfo() {
+        $smapFilter = '';
+        if(!empty($this->filterId)) {
+            $smapFilter = ' AND ct.smap_id = ' . $this->filterId;
+        }
         $result = $this->dbh->select('SELECT COUNT(ctl.' . $this->bindedBlock->getPK() . ') as frq,ctl.tag_id FROM '
                 . $this->bindedBlock->getTableName()
                 . '_tags ctl INNER JOIN ' . $this->bindedBlock->getTableName() . ' ct '
-                . 'WHERE ct.smap_id = ' . $this->filterId . ' '
-                . 'AND ctl.' . $this->bindedBlock->getPK() . ' = ct.'
-                . $this->bindedBlock->getPK() . ' GROUP BY tag_id');
+                . 'WHERE ctl.' . $this->bindedBlock->getPK() . ' = ct.' . $this->bindedBlock->getPK()
+                .  $smapFilter
+                . ' GROUP BY tag_id');
         return $result;
     }
 }

@@ -193,7 +193,9 @@ class NewsFeed extends ExtendedFeed {
         if ($newsIDs === true) {
             $this->setData(new Data());
         }
-        $this->pager->setProperty('additional_url', 'tag/' . $tagID . '/');
+        if($this->pager) {
+            $this->pager->setProperty('additional_url', 'tag/' . $tagID . '/');
+        }
     }
 
     /**

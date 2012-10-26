@@ -267,7 +267,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         if(!$date) return '';
 
         $date = strtotime($date);
-        if (!in_array($format, array('%E', '%f', '%o'))) {
+        if (!in_array($format, array('%E', '%f', '%o', '%q'))) {
             $result = @strftime($format, $date);
             if (!$result) {
                 $result = $date;
@@ -318,6 +318,13 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     if ($date >= $today and $date < $tomorrow) {
                         $result .= DBWorker::_translate('TXT_TODAY').', ';
                     }
+                    $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+
+                    if (date('Y', $date) != date('Y')) {
+                        $result .= ' ' . date('Y', $date);
+                    }
+                    break;
+                case '%q':
                     $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
 
                     if (date('Y', $date) != date('Y')) {

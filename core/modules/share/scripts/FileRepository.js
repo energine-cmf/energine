@@ -8,7 +8,7 @@ Grid.implement({
         var popUpImg = new Element('img', {'src':'resizer/w298-h224/' + path, 'width':60, 'height':45, 'styles':{
             border:'1px solid gray',
             'border-radius':'10px',
-            'z-index':100
+            'z-index':1
         }, 'events':{
             'click':function (e) {
                 this.destroy()
@@ -18,7 +18,7 @@ Grid.implement({
             }
         }}).inject(document.body).position({'relativeTo':tmplElement, 'position':'center'}).set('morph', {duration:'short', transition:'linear'});
         var p = popUpImg.getPosition();
-        popUpImg.morph({width:298, height:224, left:p.x - 112, top:p.y - 149});
+        popUpImg.morph({width:298, height:224, left:p.x, top:p.y});
     },
 
     iterateFields:function (record, fieldName, row) {
@@ -90,6 +90,10 @@ Grid.implement({
             cell.grab(new Element('table').grab(propsTable));
 
             if (!record['upl_internal_type'].test('folder|repo')) {
+                /*new Element('tr').inject(propsTable).adopt([
+                 new Element('td', {'colspan': 2, 'html':'<a href="#">'+ record['upl_path'] + '</a>'}),
+                 ]
+                 );*/
                 if (record['upl_mime_type'])
                     new Element('tr').inject(propsTable).adopt([
                         new Element('td', {'html':this.metadata['upl_mime_type'].title + ' :'}),
@@ -129,13 +133,12 @@ Grid.implement({
                 );
             }
         }
-        else {
+        else if (fieldName == 'upl_title') {
             var fieldValue = '';
             if (record[fieldName]) {
                 var fieldValue = record[fieldName].clean();
             }
-            if (fieldValue != '') cell.set('html', fieldValue);
-            //if (fieldValue != '') cell.appendText(fieldValue);
+            if (fieldValue != '') cell.set('html', '<a target="_blank" href="' + Energine.static + record['upl_path'] + '">' + fieldValue + '</a>');
             else cell.set('html', '&#160;');
         }
     }

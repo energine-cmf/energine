@@ -133,7 +133,7 @@
                 <tr class="section_name">
                     <td><xsl:value-of select="field[@name='Site']"/></td>
                     <xsl:for-each select="field[@name='RightsId']/options/option">
-                        <td class="col_{position()}"><input type="radio" class="groupRadio" name=""></input></td>
+                        <td class="col_{position()}"><input type="radio" style="width:auto; border:0;" class="groupRadio" name=""></input></td>
                     </xsl:for-each>
                 </tr>
             </xsl:if>

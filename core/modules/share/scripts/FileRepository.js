@@ -138,8 +138,12 @@ Grid.implement({
             if (record[fieldName]) {
                 var fieldValue = record[fieldName].clean();
             }
-            if (fieldValue != '') cell.set('html', '<a target="_blank" href="' + Energine.static + record['upl_path'] + '">' + fieldValue + '</a>');
-            else cell.set('html', '&#160;');
+            if (!record['upl_internal_type'].test('folder|repo')){
+                cell.set('html', '<a target="_blank" href="' + Energine.static + record['upl_path'] + '">' + fieldValue + '</a>')
+            }
+            else {
+                cell.set('html', fieldValue);
+            }
         }
     }
 });
@@ -176,7 +180,9 @@ var FileRepository = new Class({
         }
     },
     processServerResponse:function (result) {
-
+        console.log(this.grid.headOff.getElement('th:index(0)'))
+        this.grid.headOff.getElement('th:index(0)').setStyle('width', '100px');
+        console.log(this.grid.headOff.getElement('th:index(0)').clientWidth)
         if (!this.initialized) {
             this.grid.setMetadata(result.meta);
             this.initialized = true;

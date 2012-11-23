@@ -42,7 +42,7 @@
 				<xsl:value-of select="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']" disable-output-escaping="yes"/>
 			</div>
 		</xsl:if>
-    </xsl:template>    
+    </xsl:template>
 
     <xsl:template match="record[ancestor::component[@type='form']]">
         <xsl:apply-templates/>

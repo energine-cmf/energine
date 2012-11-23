@@ -118,50 +118,57 @@
                 </div>
             </xsl:if>
             <span class="read"><xsl:value-of select="@data_name" disable-output-escaping="yes" /></span>
-                <input type="hidden" value="{.}">
-                    <xsl:attribute name="name">
-                        <xsl:choose>
-                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name" />]</xsl:when>
-                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:attribute>
-                </input>
+            <input type="hidden" value="{.}">
+                <xsl:attribute name="name">
+                    <xsl:choose>
+                        <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name" />]</xsl:when>
+                        <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+            </input>
         </div>
     </xsl:template>
     
     <!-- поле для ввода сегмента раздела -->
-    <xsl:template match="field[@name='smap_segment'][ancestor::component[@class='DivisionEditor'][@type='form']]">
-    	<div class="field">
-            <xsl:if test="not(@nullable)">
-                <xsl:attribute name="class">field required</xsl:attribute>
+    <xsl:template match="field[@name='smap_segment'][ancestor::component[@class='DivisionEditor' and @type='form']]" mode="field_input">
+        <div class="smap_segment">
+            <span><xsl:value-of select="../field[@name='smap_pid']/@base"/><xsl:value-of select="$LANG_ABBR"/></span><span id="smap_pid_segment"><xsl:value-of select="../field[@name='smap_pid']/@segment"/></span>
+            <xsl:choose>
+                <xsl:when test="@mode='2'">
+                    <input style="width: 150px;">
+                        <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+                    </input>
+                </xsl:when>
+                <xsl:otherwise>
+                    <span class="read current_segment"><xsl:value-of select="." disable-output-escaping="yes"/></span>
+                    <input type="hidden" value="{.}">
+                        <xsl:attribute name="name"><xsl:choose>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name" />]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+                        </xsl:choose></xsl:attribute>
+                    </input>
+                </xsl:otherwise>
+            </xsl:choose>/
+        </div>
+    </xsl:template>
+
+    <!-- поле выбора контентного шаблона раздела -->
+    <xsl:template match="field[@name='smap_content'][ancestor::component[@class='DivisionEditor' and @type='form']]" mode="field_input">
+        <select id="{@name}">
+            <xsl:attribute name="name"><xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+            </xsl:choose></xsl:attribute>
+            <xsl:if test="@nullable='1'">
+                <option></option>
             </xsl:if>
-            <xsl:if test="@title">
-                <div class="name">
-                    <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes"/></label>
-                </div>
-            </xsl:if>
-    		<div class="control">
-                <div class="smap_segment">      
-                    <span><xsl:value-of select="../field[@name='smap_pid']/@base"/><xsl:value-of select="$LANG_ABBR"/></span><span id="smap_pid_segment"><xsl:value-of select="../field[@name='smap_pid']/@segment"/></span>
-                    <xsl:choose>
-                        <xsl:when test="@mode='2'">
-                            <input style="width: 150px;">
-                                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-                            </input>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <span class="read current_segment"><xsl:value-of select="." disable-output-escaping="yes"/></span>
-                            <input type="hidden" value="{.}">
-                                <xsl:attribute name="name"><xsl:choose>
-                                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name" />]</xsl:when>
-                                    <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
-                                </xsl:choose></xsl:attribute>
-                            </input>
-                        </xsl:otherwise>
-                    </xsl:choose>/
-                </div>
-            </div>
-    	</div>
+            <xsl:apply-templates mode="field_input"/>
+        </select>
+        <xsl:if test="@reset">
+            <button type="button" onclick="{generate-id(../..)}.resetPageContentTemplate();">
+                <xsl:value-of select="@reset"/>
+            </button>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template match="record[parent::recordset[parent::component[@class='DivisionEditor'][@type='list']]]"/>

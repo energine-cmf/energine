@@ -13,413 +13,40 @@
         их позже в site/transformers.
     -->
 
-    <!-- 
-        Default form elements
-        В этой секции собраны дефолтные правила вывода полей формы, которые создают сам html-элемент (input, select, etc.).
-     -->
-    <!-- строковое поле (string), или поле, к которому не нашлось шаблона -->
-    <xsl:template match="field[ancestor::component[@type='form']]">
-        <input class="text inp_string">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-    </xsl:template>
-
-    <!-- поле для почтового адреса (email) -->
-    <xsl:template match="field[@type='email'][ancestor::component[@type='form']]">
-        <input class="text inp_email">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-    </xsl:template>
-
-    <!-- поле для телефона (phone)-->
-    <xsl:template match="field[@type='phone'][ancestor::component[@type='form']]">
-        <input class="text inp_phone">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-    </xsl:template>
-
-    <xsl:template match="field[@type='textbox'][ancestor::component[@type='form']]">
-        <xsl:variable name="SEPARATOR" select="@separator"/>
-        <script type="text/javascript" src="scripts/AcplField.js"></script>
-        <input class="text acpl">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="nrgn:url" xmlns:nrgn="http://energine.org">
-                <xsl:value-of select="$BASE"/><xsl:value-of
-                    select="ancestor::component/@single_template"/><xsl:value-of select="@url"/>
-            </xsl:attribute>
-            <xsl:attribute name="nrgn:separator" xmlns:nrgn="http://energine.org">
-                <xsl:value-of select="$SEPARATOR"/>
-            </xsl:attribute>
-            <xsl:attribute name="value">
-                <xsl:for-each select="items/item">
-                    <xsl:value-of select="."/>
-                    <xsl:if test="position()!=last()">
-                        <xsl:value-of
-                                select="$SEPARATOR"/>
-                    </xsl:if>
-                </xsl:for-each>
-            </xsl:attribute>
-        </input>
-        <!--<input class="text inp_textbox">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="value"><xsl:for-each select="items/item"><xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each></xsl:attribute>
-        </input>-->
-    </xsl:template>
-
-    <!-- числовое поле (integer) -->
-    <xsl:template match="field[@type='integer'][ancestor::component[@type='form']]">
-        <input length="5" class="text inp_integer">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:if test="@length">
-                <xsl:attribute name="maxlength">5</xsl:attribute>
-            </xsl:if>
-        </input>
-    </xsl:template>
-
-    <!-- числовое поле (float) -->
-    <xsl:template match="field[@type='float'][ancestor::component[@type='form']]">
-        <input class="text inp_float">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-    </xsl:template>
-
-    <!-- поле пароля (password) -->
-    <xsl:template match="field[@type='password' and ancestor::component[@type='form']]">
-        <input class="text inp_password">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">password</xsl:attribute>
-            <xsl:attribute name="name">
-                <xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="@name"/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
-        </input>
-    </xsl:template>
-
-    <!-- поле логического типа (boolean) -->
-    <xsl:template match="field[@type='boolean'][ancestor::component[@type='form']]">
-        <xsl:variable name="FIELD_NAME">
-            <xsl:choose>
-                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="@name"/>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        <input type="hidden" name="{$FIELD_NAME}" value="0"/>
-        <input class="checkbox" type="checkbox" id="{@name}" name="{$FIELD_NAME}" style="width: auto;" value="1">
-            <xsl:if test=". = 1">
-                <xsl:attribute name="checked">checked</xsl:attribute>
-            </xsl:if>
-        </input>
-        <label for="{@name}">
-            <xsl:value-of select="concat(' ', @title)" disable-output-escaping="yes"/>
-        </label>
-    </xsl:template>
-
-
-    <!-- поле типа file -->
-    <xsl:template match="field[@type='file'][ancestor::component[@type='form']]">
-        <a class="preview" id="{generate-id(.)}_preview" target="_blank">
-            <xsl:choose>
-                <xsl:when test=". = ''">
-                    <xsl:attribute name="style">display:none;</xsl:attribute>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:attribute name="href"><xsl:value-of select="$STATIC_URL"/><xsl:value-of
-                            select="."/></xsl:attribute>
-                </xsl:otherwise>
-            </xsl:choose>
-            <img alt="">
-                <xsl:if test=".!=''">
-                    <xsl:attribute name="src"><xsl:value-of select="$STATIC_URL"/><xsl:choose>
-                        <xsl:when test="@media_type='image'"><xsl:value-of select="."/></xsl:when>
-                        <xsl:when test="@media_type='video'">resizer/w0-h0/<xsl:value-of select="."/></xsl:when>
-                        <xsl:otherwise>images/icons/icon_undefined.gif</xsl:otherwise>
-                    </xsl:choose></xsl:attribute>
-                </xsl:if>
-            </img>
-        </a>
-        <input class="text inp_file" readonly="readonly">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="id">
-                <xsl:value-of select="generate-id(.)"/>
-            </xsl:attribute>
-        </input>
-        <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
-        <xsl:if test="@nullable">
-            <a class="lnk_clear" href="#"
-               onclick="{generate-id(../..)}.clearFileField('{generate-id(.)}',this);return false;">
-                <xsl:if test=". = ''">
-                    <xsl:attribute name="style">display:none;</xsl:attribute>
-                </xsl:if>
-                <xsl:value-of select="$TRANSLATION[@const='TXT_CLEAR']"/>
-            </a>
-        </xsl:if>
-        <br/>
-        <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
-        <span class="progress_indicator hidden" id="indicator">0%</span>
-    </xsl:template>
-
-    <!-- поле выбора из списка (select) -->
-    <xsl:template match="field[@type='select'][ancestor::component[@type='form']]">
-        <select id="{@name}">
-            <xsl:attribute name="name">
-                <xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="@name"/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
-            <xsl:if test="@nullable='1'">
-                <option></option>
-            </xsl:if>
-            <xsl:apply-templates/>
-        </select>
-    </xsl:template>
-
-    <xsl:template match="option[ancestor::field[@type='select'][ancestor::component[@type='form']]]">
-        <option value="{@id}">
-            <xsl:if test="@selected">
-                <xsl:attribute name="selected">selected</xsl:attribute>
-            </xsl:if>
-            <xsl:value-of select="."/>
-        </option>
-    </xsl:template>
-
-    <!-- поле множественного выбора (multi) -->
-    <xsl:template match="field[@type='multi'][ancestor::component[@type='form']]">
-        <xsl:variable name="NAME"><xsl:choose>
-                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
-                <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
-            </xsl:choose>[]</xsl:variable>
-        <div class="checkbox_set">
-            <xsl:for-each select="options/option">
-                <div>
-                    <input type="checkbox" id="{generate-id(.)}" name="{$NAME}" value="{@id}" class="checkbox">
-                        <xsl:if test="@selected">
-                            <xsl:attribute name="checked">checked</xsl:attribute>
-                        </xsl:if>
-                    </input>
-                    <label for="{generate-id(.)}">
-                        <xsl:value-of select="."/>
-                    </label>
-                </div>
-            </xsl:for-each>
-        </div>
-    </xsl:template>
-
-    <!-- текстовое поле (text) -->
-    <xsl:template match="field[@type='text'][ancestor::component[@type='form']]">
-        <textarea>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:value-of select="."/>
-        </textarea>
-    </xsl:template>
-
-    <!-- поле типа rtf текст (htmlblock) -->
-    <xsl:template match="field[@type='htmlblock'][ancestor::component[@type='form']]">
-        <textarea class="richEditor">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:value-of select="."/>
-        </textarea>
-    </xsl:template>
-
-    <!-- поле для даты (datetime) - никогда не использовался, устарела верстка -->
-    <xsl:template match="field[@type='datetime'][ancestor::component[@type='form']]">
-        <input class="text inp_datetime">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-        <script type="text/javascript">
-            window.addEvent('domready', function(){
-            Energine.createDateTimePicker($('<xsl:value-of select="@name"/>'), <xsl:value-of
-                select="boolean(@nullable)"/>);
-            });
-        </script>
-    </xsl:template>
-
-    <!-- поле для даты (date) -->
-    <xsl:template match="field[@type='date'][ancestor::component[@type='form']]">
-        <input class="text inp_date">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-        <script type="text/javascript">
-            window.addEvent('domready', function(){
-            Energine.createDatePicker(
-            $('<xsl:value-of select="@name"/>'),
-            <xsl:value-of select="boolean(@nullable)"/>
-            );
-            });
-        </script>
-    </xsl:template>
-
-    <!-- Для полей даты как части стандартной формы навешиваение DatePicker реализуется в js -->
-
-    <!-- поле для даты (datetime) - никогда не использовался, устарела верстка -->
-    <xsl:template match="field[@type='datetime'][ancestor::component[@type='form' and @exttype='grid']]">
-        <input class="text inp_datetime">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-    </xsl:template>
-
-    <!-- поле для даты (date) -->
-    <xsl:template match="field[@type='date'][ancestor::component[@type='form' and @exttype='grid']]">
-        <input class="text inp_date">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-    </xsl:template>
-
-    <!-- поле типа hidden -->
-    <xsl:template match="field[@type='hidden'][ancestor::component[@type='form']]">
-        <input type="hidden" id="{@name}" value="{.}">
-            <xsl:attribute name="name"><xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
-                    <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
-        </input>
-    </xsl:template>
-
     <!-- именованный шаблон с дефолтным набором атрибутов для элемента формы - НЕ ПЕРЕПИСЫВАТЬ В ДРУГОМ МЕСТЕ! -->
     <xsl:template name="FORM_ELEMENT_ATTRIBUTES">
         <xsl:if test="not(@type='text') and not(@type='htmlblock')">
             <xsl:attribute name="type">text</xsl:attribute>
-            <xsl:attribute name="value">
-                <xsl:value-of select="."/>
-            </xsl:attribute>
+            <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
         </xsl:if>
-        <xsl:attribute name="id">
-            <xsl:value-of select="@name"/>
-        </xsl:attribute>
-        <xsl:attribute name="name"><xsl:choose><xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="@name"/>
-                </xsl:otherwise>
-            </xsl:choose></xsl:attribute>
+        <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+        <xsl:attribute name="name"><xsl:choose>
+            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
+            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+        </xsl:choose></xsl:attribute>
         <xsl:if test="@length and not(@type='htmlblock')">
-            <xsl:attribute name="maxlength">
-                <xsl:value-of select="@length"/>
-            </xsl:attribute>
+            <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@pattern">
-            <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org">
-                <xsl:value-of select="@pattern"/>
-            </xsl:attribute>
+            <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message">
-            <xsl:attribute name="nrgn:message" xmlns:nrgn="http://energine.org">
-                <xsl:value-of select="@message"/>
-            </xsl:attribute>
+            <xsl:attribute name="nrgn:message" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
         </xsl:if>
         <xsl:if test="@message2">
-            <xsl:attribute name="nrgn:message2" xmlns:nrgn="http://energine.org">
-                <xsl:value-of select="@message2"/>
-            </xsl:attribute>
-        </xsl:if>
-    </xsl:template>
-    <!-- /default form elements -->
-
-    <!-- переопределение fields для компонентов из модуля share -->
-    <xsl:template match="field[@type='text'][@name='upl_description']">
-        <textarea class="quarter">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:value-of select="."/>
-        </textarea>
-    </xsl:template>
-
-    <xsl:template match="field[(@type='smap') and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]">
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
-        </input>
-        <input type="text" id="{generate-id(.)}_name" value="{@smap_name}" readonly="readonly" class="text inp_string" style="width:200px;"/>
-        <button type="button" style="width:48px;" class="smap_selector" smap_name="{generate-id(.)}_name" smap_id="{generate-id(.)}_id" field="{@name}">...
-        </button>
-    </xsl:template>
-
-
-    <xsl:template match="field[@name='upl_path'][ancestor::component[@class='FileRepository']]">
-        <div class="preview">
-            <img border="0" id="preview" class="hidden"/>
-        </div>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id">data</xsl:attribute>
-        </input>
-        <input type="file" id="uploader"/>
-    </xsl:template>
-
-    <!-- поле типа thumb используется только в FileRepository -->
-    <xsl:template match="field[@type='thumb'][ancestor::component[@type='form']]">
-        <div class="preview">
-            <img border="0" id="preview_{@name}" data="data_{@name}"  width="{@width}" height="{@height}">
-                <xsl:choose>
-                    <xsl:when test="../field[@name='upl_path']=''">
-                        <xsl:attribute name="class">hidden<xsl:if test="@name!='preview'"> thumb</xsl:if></xsl:attribute>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:if test="@name!='preview'"><xsl:attribute name="class">thumb</xsl:attribute></xsl:if>
-                        <xsl:attribute name="src"><xsl:value-of select="$IMAGE_RESIZER_URL"/>w<xsl:value-of select="@width"/>-h<xsl:value-of select="@height"/>/<xsl:value-of  select="../field[@name='upl_path']"/></xsl:attribute>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </img>
-        </div>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id">data_<xsl:value-of select="@name"/></xsl:attribute>
-        </input>
-        <input type="file" id="uploader_{@name}" preview="preview_{@name}" data="data_{@name}">
-            <xsl:choose>
-                <xsl:when test="@name='preview'"><xsl:attribute name="class">preview</xsl:attribute></xsl:when>
-                <xsl:otherwise><xsl:attribute name="class">thumb</xsl:attribute></xsl:otherwise>
-            </xsl:choose>
-        </input>
-        <xsl:if test="@name='preview'">
-            <hr/>
+            <xsl:attribute name="nrgn:message2" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message2"/></xsl:attribute>
         </xsl:if>
     </xsl:template>
 
-    <!-- Поле копирования структуры в редакторе сайтов -->
-    <xsl:template match="field[@type='select'][@name='copy_site_structure']">
-        <input type="checkbox" onchange="document.getElementById('{@name}').disabled = !this.checked;"/>
-        <select id="{@name}" disabled="disabled">
-            <xsl:attribute name="name">
-                <xsl:value-of select="@name"/>
-            </xsl:attribute>
-            <xsl:apply-templates/>
-        </select>
-    </xsl:template>
-
-    <xsl:template match="field[@name='smap_content'][ancestor::component[@class='DivisionEditor'][@type='form']]">
-        <select id="{@name}">
-            <xsl:attribute name="name">
-                <xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="@name"/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
-            <xsl:if test="@nullable='1'">
-                <option></option>
-            </xsl:if>
-            <xsl:apply-templates/>
-        </select>
-        <xsl:if test="@reset">
-            <button type="button" onclick="{generate-id(../..)}.resetPageContentTemplate();">
-                <xsl:value-of select="@reset"/>
-            </button>
-        </xsl:if>
+    <!-- именованный шаблон с дефолтным набором атрибутов для элемента формы, на который права только на чтение - НЕ ПЕРЕПИСЫВАТЬ В ДРУГОМ МЕСТЕ! -->
+    <xsl:template name="FORM_ELEMENT_ATTRIBUTES_READONLY">
+        <xsl:attribute name="type">hidden</xsl:attribute>
+        <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+        <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+        <xsl:attribute name="name"><xsl:choose>
+            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+        </xsl:choose></xsl:attribute>
     </xsl:template>
 
     <!-- именованный шаблон для построения заголовка окна -->
@@ -430,12 +57,8 @@
                 <xsl:when test="position() = last()">
                     <xsl:if test="$ID = field[@name='Id'] and (field[@name='Name'] != '' or field[@name='Title'] != '')">
                         <xsl:choose>
-                            <xsl:when test="field[@name='Title'] != ''">
-                                <xsl:value-of select="field[@name='Title']"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:value-of select="field[@name='Name']"/>
-                            </xsl:otherwise>
+                            <xsl:when test="field[@name='Title'] != ''"><xsl:value-of select="field[@name='Title']"/></xsl:when>
+                            <xsl:otherwise><xsl:value-of select="field[@name='Name']"/></xsl:otherwise>
                         </xsl:choose>
                         <xsl:text> / </xsl:text>
                     </xsl:if>
@@ -443,12 +66,8 @@
                 <xsl:otherwise>
                     <xsl:if test="field[@name='Name'] != '' or field[@name='Title'] != ''">
                         <xsl:choose>
-                            <xsl:when test="field[@name='Title'] != ''">
-                                <xsl:value-of select="field[@name='Title']"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:value-of select="field[@name='Name']"/>
-                            </xsl:otherwise>
+                            <xsl:when test="field[@name='Title'] != ''"><xsl:value-of select="field[@name='Title']"/></xsl:when>
+                            <xsl:otherwise><xsl:value-of select="field[@name='Name']"/></xsl:otherwise>
                         </xsl:choose>
                         <xsl:text> / </xsl:text>
                     </xsl:if>

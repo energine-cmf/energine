@@ -225,7 +225,7 @@ final class Registry extends Object {
                 $this->getConfigValue('database.username'),
                 $this->getConfigValue('database.password'),
                 array(
-                    PDO::ATTR_PERSISTENT => false,
+                    PDO::ATTR_PERSISTENT => (bool)$this->getConfigValue('database.persistent'),
                     PDO::ATTR_EMULATE_PREPARES => true,
                     PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
                 )

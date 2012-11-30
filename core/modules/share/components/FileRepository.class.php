@@ -32,6 +32,16 @@ class FileRepository extends Grid {
         $this->setTableName('share_uploads');
         $this->setFilter(array('upl_is_active' => 1));
         $this->setOrder(array('upl_title' => QAL::ASC));
+        //Если данные пришли из модального окна
+        if (isset($_POST['modalBoxData']) && ($d = json_decode($_POST['modalBoxData']))) {
+            if (
+                (isset($d->upl_pid) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_id', array('upl_id' => $d->upl_pid)))))
+                ||
+                (isset($d->upl_path) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_path' => $d->upl_path)))))
+            ) {
+                $this->response->addCookie(self::STORED_PID, $uplPID, 0, E()->getSiteManager()->getCurrentSite()->host, E()->getSiteManager()->getCurrentSite()->root);
+            }
+        }
     }
 
     /**
@@ -419,12 +429,9 @@ class FileRepository extends Grid {
             $uplPID = '';
         } else {
             $uplPID = (int)$sp['pid'];
-
             if (isset($_COOKIE[self::STORED_PID])) {
                 //проверям а есть ли такое?
                 if (!($this->dbh->getScalar($this->getTableName(), 'upl_id', array('upl_id' => $uplPID)))) {
-                    /* $site = E()->getSiteManager()->getCurrentSite();
-              setcookie(self::STORED_PID, '', time() - 3600, $site->root, $site->protocol.'://'.$site->host);*/
                     goto jump;
                 }
             }

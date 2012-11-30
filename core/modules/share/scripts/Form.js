@@ -646,8 +646,7 @@ Form.RichEditor = new Class({
             else if (Browser.Engine.gecko) this.area.onpaste =
                 this.processPasteFF.bindWithEvent(this);
             //this.area.onpaste = this.processPaste.bindWithEvent(this);
-
-            this.area.contentEditable = 'true';
+            this.activate();
         } else {
             this.area = this.textarea.setProperty('componentPath', this.form.singlePath);
         }
@@ -772,25 +771,10 @@ Form.RichEditor = new Class({
             onClose:function (returnValue) {
                 if (returnValue != null) {
                     this.area.set('html', returnValue);
+                    this.monitorElements();
                 }
             }.bind(this)
         });
-    },
-
-    disable:function () {
-        if (Browser.Engine.trident)
-            this.area.contentEditable = 'false';
-        else
-            this.area.disabled = true;
-        this.toolbar.disableControls();
-    },
-
-    enable:function () {
-        if (Browser.Engine.trident)
-            this.area.contentEditable = 'true';
-        else
-            this.area.disabled = false;
-        this.toolbar.enableControls();
     }
 });
 

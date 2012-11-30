@@ -42,6 +42,7 @@ var ImageManager = new Class({
     openImageLib:function () {
         ModalBox.open({
             url:this.singlePath + 'file-library/image/',
+            'post': JSON.encode(this.image),
             onClose:function (result) {
                 if (result) {
                     this.image = result;
@@ -55,16 +56,14 @@ var ImageManager = new Class({
     updateForm:function () {
         $('filename').value = this.image['upl_path'];
         $('thumbnail').src = Energine.static /*+ 'resizer/w40-h40/'*/ + this.image['upl_path'];
-
         $('width').value = this.image['upl_width'] || 0;
         $('height').value = this.image['upl_height'] || 0;
-        $('align').value = $('align').value || this.image.align || '';
+        $('align').set('value', this.image.align || '');
         this.imageMargins.each(function (propertyName) {
-            $(propertyName).value = $(propertyName).value || this.image['propertyName'] || '0';
+            $(propertyName).value = $(propertyName).value || this.image[propertyName] || '0';
 
         }, this);
         $('alt').value = $('alt').value || this.image['upl_title'] || '';
-        //$('insThumbnail').checked = this.image.insertThumbnail;
     },
 
     insertImage:function () {

@@ -2,12 +2,41 @@ ScriptLoader.load('ModalBox');
 var RichEditor = new Class({
     dirty:false,
     fallback_ie:false,
-
     initialize:function (area) {
         this.area = $(area);
+        this.isActive = false;
+        //Текущий выделенный объект
+        //Используется для хранения информации о выделенном имидже для его редактирования
+        this.selectedObject = false;
+        this.monitorElements();
 
     },
+    monitorElements:function () {
+        this.area.getElements('*').removeEvents('click');
 
+        //если редактор активизирован - отменяем всплытие
+        //Для всех имеджей при клике(выделении) сохраняем инфу в selectedObject
+        //для всех остальных елементов - очищаем selectedObject
+        var monitorFunction = function (event) {
+            if (this.isActive) {
+                var element = $(event.target);
+                if (element.get('tag') == 'img') {
+                    this.selectedObject = element;
+                }
+                else {
+                    this.selectedObject = false;
+                }
+                event.stopPropagation();
+            }
+        }.bind(this);
+        this.area.getElements('*').addEvent('click', monitorFunction);
+    },
+    activate:function () {
+        this.isActive = this.area.contentEditable = true;
+    },
+    deactivate:function () {
+        this.isActive = this.area.contentEditable = false;
+    },
     validateParent:function (range) {
         var element = $(range.parentElement()) || null;
         while ($type(element) == 'element' && element != this.area) {
@@ -15,7 +44,6 @@ var RichEditor = new Class({
         }
         return (element == this.area);
     },
-
     action:function (cmd, showUI, value) {
         if (/* Browser.Engine.gecko || */this.fallback_ie)
             return this.fallback(cmd);
@@ -132,13 +160,27 @@ var RichEditor = new Class({
             this.currentRange = this._getSelection().createRange();
         }
 
-        ModalBox.open({
-            url:this.area.getProperty('single_template') + 'file-library/image/',
-            onClose:this.insertImage.bind(this)
-        });
-
+        if (!this.selectedObject) {
+            ModalBox.open({
+                url:this.area.getProperty('single_template') + 'file-library/image/',
+                onClose:this.insertImage.bind(this)
+            });
+        }
+        else {
+            this.insertImage({
+                'upl_path':this.selectedObject.getProperty('src'),
+                'upl_width':this.selectedObject.getProperty('width'),
+                'upl_height':this.selectedObject.getProperty('height'),
+                'align':this.selectedObject.getProperty('align'),
+                'upl_title':this.selectedObject.getProperty('alt'),
+                'margin-top':this.selectedObject.getStyle('margin-top').toInt(),
+                'margin-bottom':this.selectedObject.getStyle('margin-bottom').toInt(),
+                'margin-left':this.selectedObject.getStyle('margin-left').toInt(),
+                'margin-right':this.selectedObject.getStyle('margin-right').toInt()
+            });
+        }
     },
-    insertImageURL: function(){
+    insertImageURL:function () {
         this.action('insertImage');
     },
     fileLibrary:function () {
@@ -157,81 +199,63 @@ var RichEditor = new Class({
     insertImage:function (imageData) {
         if (!imageData)
             return;
-
         ModalBox.open({
             url:this.area.getProperty('single_template') + 'imagemanager',
             onClose:function (image) {
                 //TODO Fix image margins in IE
-
                 if (!image) return;
-                if ($type(this.currentRange) == 'collection') {
-                    var controlRange = this.currentRange;
-                    if (controlRange(0).tagName == 'IMG') {
-                        var img = controlRange(0);
-                        img.src = image.filename;
-                        img.width = image.width;
-                        img.height = image.height;
-                        img.align = image.align;
-                        /*img.hspace = image.hspace;
-                         img.vspace = image.vspace;*/
-                        img.alt = image.alt;
+                if (!Browser.chrome && !this.fallback_ie) {
+                    var imgStr = '<img src="'
+                        + image.filename + '" width="'
+                        + image.width + '" height="'
+                        + image.height + '" align="'
+                        + image.align + '" alt="'
+                        + image.alt + '" border="0" style="';
+                    ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'].each(function (marginProp) {
+                        if (image[marginProp] != 0) {
+                            imgStr += marginProp + ':' + image[marginProp] +
+                                'px;';
+                        }
 
-                    }
-                    this.currentRange.select();
-                } else {
-                    if (!Browser.chrome && !this.fallback_ie) {
-                        var imgStr = '<img src="'
-                            + image.filename + '" width="'
-                            + image.width + '" height="'
-                            + image.height + '" align="'
-                            + image.align + '" alt="'
-                            + image.alt + '" border="0" style="';
-                        ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'].each(function (marginProp) {
-                            if (image[marginProp] != 0) {
-                                imgStr += marginProp + ':' + image[marginProp] +
-                                    'px;';
-                            }
-
-                        });
-                        imgStr += '"/>';
-                        document.execCommand('inserthtml',
-                            false, imgStr);
-                        this.dirty = true;
-                        return;
-                    }
-                    else if (Browser.chrome) {
-                        this.currentRange.insertNode(new Element('img', {'src':image.filename, 'width':image.width, 'height':image.height, 'align':image.align, 'alt':image.alt, 'border':0}));
-                        this.dirty = true;
-                        return;
-                    }
-                    else if (this.fallback_ie) {
-                        this.textarea.insertAtCursor('<img src="'
-                            + image.filename
-                            + '" width="'
-                            + image.width
-                            + '" height="'
-                            + image.height
-                            + '" align="'
-                            + image.align
-                            + '" alt="'
-                            + image.alt
-                            + '" border="0" />', true);
-                        this.dirty = true;
-                        return;
-                    }
-
-                    this.currentRange.select();
-                    if (this.validateParent(this.currentRange)) {
-                        var imgStr = '<img src="'
-                            + image.filename + '" width="'
-                            + image.width + '" height="'
-                            + image.height + '" align="'
-                            + image.align + '" alt="'
-                            + image.alt + '" border="0" />';
-                        this.currentRange.pasteHTML(imgStr);
-                        this.dirty = true;
-                    }
+                    });
+                    imgStr += '"/>';
+                    document.execCommand('inserthtml', false, imgStr);
+                    this.dirty = true;
+                    return;
                 }
+                else if (Browser.chrome) {
+                    this.currentRange.insertNode(new Element('img', {'src':image.filename, 'width':image.width, 'height':image.height, 'align':image.align, 'alt':image.alt, 'border':0}));
+                    this.dirty = true;
+                    return;
+                }
+                else if (this.fallback_ie) {
+                    this.textarea.insertAtCursor('<img src="'
+                        + image.filename
+                        + '" width="'
+                        + image.width
+                        + '" height="'
+                        + image.height
+                        + '" align="'
+                        + image.align
+                        + '" alt="'
+                        + image.alt
+                        + '" border="0" />', true);
+                    this.dirty = true;
+                    return;
+                }
+
+                this.currentRange.select();
+                if (this.validateParent(this.currentRange)) {
+                    var imgStr = '<img src="'
+                        + image.filename + '" width="'
+                        + image.width + '" height="'
+                        + image.height + '" align="'
+                        + image.align + '" alt="'
+                        + image.alt + '" border="0" />';
+                    this.currentRange.pasteHTML(imgStr);
+                    this.dirty = true;
+                }
+                this.monitorElements();
             }.bind(this),
             extraData:imageData
         });

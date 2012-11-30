@@ -121,7 +121,7 @@ PageEditor.BlockEditor = new Class({
     initialize:function (pageEditor, area) {
         this.pageEditor = pageEditor;
         this.parent(area);
-
+        this.isActive = false;
         this.singlePath = this.area.getProperty('single_template');
         this.ID = this.area.getProperty('eID') ? this.area.getProperty('eID') : false;
         this.num = this.area.getProperty('num') ? this.area.getProperty('num') : false;
@@ -139,9 +139,16 @@ PageEditor.BlockEditor = new Class({
         //this.switchToViewMode = this.pageEditor.switchToViewMode;
         this.overlay = new Overlay();
     },
-
-    focus:function () {
+    activate:function () {
+        this.parent();
         this.area.addClass('activeEditor');
+    },
+    deactivate:function () {
+        this.parent();
+        this.area.removeClass('activeEditor');
+    },
+    focus:function () {
+        this.activate();
         var toolbar = this.pageEditor.toolbar.bindTo(this);
         if (!Energine.supportContentEdit) {
 //            if (this.dirty) toolbar.getControlById('save').enable();
@@ -149,18 +156,17 @@ PageEditor.BlockEditor = new Class({
         }
         toolbar.enableControls();
 //        toolbar.getControlById('save').disable();
-        this.area.contentEditable = true;
+
     },
 
     blur:function () {
-        this.area.removeClass('activeEditor');
         this.pageEditor.toolbar.bindTo(this.pageEditor).disableControls();
         if (!Energine.supportContentEdit) {
             return;
         }
         if (this.dirty) this.save();
         //this.pageEditor.toolbar.getControlById('save').disable();
-        this.area.contentEditable = 'false';
+        this.deactivate();
     },
 
     showSource:function () {
@@ -176,6 +182,7 @@ PageEditor.BlockEditor = new Class({
                     this.dirty = true;
                 }
                 this.focus();
+                this.monitorElements();
             }.bind(this)
         });
     },

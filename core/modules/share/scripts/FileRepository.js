@@ -180,9 +180,7 @@ var FileRepository = new Class({
         }
     },
     processServerResponse:function (result) {
-        console.log(this.grid.headOff.getElement('th:index(0)'))
         this.grid.headOff.getElement('th:index(0)').setStyle('width', '100px');
-        console.log(this.grid.headOff.getElement('th:index(0)').clientWidth)
         if (!this.initialized) {
             this.grid.setMetadata(result.meta);
             this.initialized = true;

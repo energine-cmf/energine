@@ -8,7 +8,7 @@ var RichEditor = new Class({
         //Текущий выделенный объект
         //Используется для хранения информации о выделенном имидже для его редактирования
         this.selectedObject = false;
-        this.monitorElements();
+        this.activate();
 
     },
     monitorElements:function () {
@@ -33,6 +33,7 @@ var RichEditor = new Class({
     },
     activate:function () {
         this.isActive = this.area.contentEditable = true;
+        this.monitorElements();
     },
     deactivate:function () {
         this.isActive = this.area.contentEditable = false;
@@ -221,11 +222,13 @@ var RichEditor = new Class({
                     imgStr += '"/>';
                     document.execCommand('inserthtml', false, imgStr);
                     this.dirty = true;
+                    this.monitorElements();
                     return;
                 }
                 else if (Browser.chrome) {
                     this.currentRange.insertNode(new Element('img', {'src':image.filename, 'width':image.width, 'height':image.height, 'align':image.align, 'alt':image.alt, 'border':0}));
                     this.dirty = true;
+                    this.monitorElements();
                     return;
                 }
                 else if (this.fallback_ie) {
@@ -254,8 +257,9 @@ var RichEditor = new Class({
                         + image.alt + '" border="0" />';
                     this.currentRange.pasteHTML(imgStr);
                     this.dirty = true;
+                    this.monitorElements();
                 }
-                this.monitorElements();
+
             }.bind(this),
             extraData:imageData
         });

@@ -526,6 +526,9 @@ class Grid extends DBDataSet {
         if ($this->getType() == self::COMPONENT_TYPE_LIST) {
             $this->addTranslation('MSG_CONFIRM_DELETE');
         }
+        /*elseif($this->getTranslationTableName()) {
+            $this->addTranslation('TXT_COPY_DATA_TO_ANOTHER_TAB');
+        }*/
 
         $result = parent::build();
         return $result;

@@ -241,6 +241,7 @@ final class Document extends DBWorker implements IDocument {
         $prop = $this->doc->createElement('property', $this->getLang());
         $prop->setAttribute('name', 'lang');
         $prop->setAttribute('abbr', $this->request->getLangSegment());
+        $prop->setAttribute('default', E()->getLanguage()->getDefault());
         $prop->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($this->getLang()));
         $dom_documentProperties->appendChild($prop);
         unset($prop, $staticURL, $baseURL);

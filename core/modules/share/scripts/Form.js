@@ -31,9 +31,13 @@ var Form = new Class({
                 else if(el.hasClass('icon_min_max') && field.hasClass('max'))field.swapClass('max', 'min');
             }
         }
-
         this.form.getElements('.field .control.toggle').addEvent('click', showHideFunc);
         this.form.getElements('.icon_min_max').addEvent('click', showHideFunc);
+        /*this.form.getElements('#copy_lang_data a').addEvent('click', function(e){
+            Energine.cancelEvent(e);
+            var a = $(e.target).getProperty('href');
+            //console.log(this.tabPane.getCurrentTab().pane.toQueryString());
+        }.bind(this));*/
 
         this.form.getElements('.smap_selector').each(function (el) {
             new Form.SmapSelector(el, this);

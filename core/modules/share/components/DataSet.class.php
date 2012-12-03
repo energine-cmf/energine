@@ -179,8 +179,7 @@ abstract class DataSet extends Component {
         $result = array();
         if (!$toolbarName) {
             $result = $this->toolbar;
-        }
-        elseif (isset($this->toolbar[$toolbarName])) {
+        } elseif (isset($this->toolbar[$toolbarName])) {
             $result = $this->toolbar[$toolbarName];
         }
 
@@ -202,8 +201,7 @@ abstract class DataSet extends Component {
         foreach ($toolbar as $tb)
             if ($tb instanceof Toolbar) {
                 $this->toolbar[$tb->getName()] = $tb;
-            }
-            else {
+            } else {
                 throw new SystemException('ERR_BAD_TOOLBAR', SystemException::ERR_DEVELOPER);
             }
     }
@@ -301,7 +299,7 @@ abstract class DataSet extends Component {
             $externalDataDescriptionObject = new DataDescription();
             $externalDataDescriptionObject->load($externalDataDescription);
             $configDataDescriptionObject =
-                    $configDataDescriptionObject->intersect($externalDataDescriptionObject);
+                $configDataDescriptionObject->intersect($externalDataDescriptionObject);
         }
 
         return $configDataDescriptionObject;
@@ -318,8 +316,8 @@ abstract class DataSet extends Component {
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
             foreach ($config->toolbar as $toolbarDescription) {
                 $toolbarName = ((string)$toolbarDescription['name']) ?
-                        (string)$toolbarDescription['name'] :
-                        self::TB_PREFIX . $this->getName();
+                    (string)$toolbarDescription['name'] :
+                    self::TB_PREFIX . $this->getName();
 
                 $toolbar = new Toolbar($toolbarName);
                 $toolbar->attachToComponent($this);
@@ -343,11 +341,11 @@ abstract class DataSet extends Component {
         if ($recordsPerPage > 0) {
             $this->pager = new Pager($recordsPerPage);
             if ($this->isActive() &&
-                    $this->getType() == self::COMPONENT_TYPE_LIST
+                $this->getType() == self::COMPONENT_TYPE_LIST
             ) {
                 $actionParams = $this->getStateParams(true);
                 if (!isset($actionParams['pageNumber']) ||
-                        !($page = intval($actionParams['pageNumber']))
+                    !($page = intval($actionParams['pageNumber']))
                 ) {
                     $page = 1;
                 }
@@ -389,18 +387,15 @@ abstract class DataSet extends Component {
     public function build() {
         if ($this->getState() == 'fileLibrary') {
             $result = $this->fileLibrary->build();
-        }
-        elseif ($this->getState() == 'imageManager') {
+        } elseif ($this->getState() == 'imageManager') {
             $result = $this->imageManager->build();
-        }
-        elseif ($this->getState() == 'source') {
+        } elseif ($this->getState() == 'source') {
             $result = $this->source->build();
-        }
-        else {
+        } else {
             if (!$this->getBuilder()) {
                 throw new SystemException(
                     'ERR_DEV_NO_BUILDER:' . $this->getName() . ': ' .
-                            $this->getState(), SystemException::ERR_CRITICAL, $this->getName());
+                        $this->getState(), SystemException::ERR_CRITICAL, $this->getName());
             }
 
             // передаем данные и описание данных построителю
@@ -438,7 +433,7 @@ abstract class DataSet extends Component {
 
             //Работа с константами переводов
             if (($methodConfig = $this->getConfig()->getCurrentStateConfig()) &&
-                    $methodConfig->translations
+                $methodConfig->translations
             ) {
                 foreach ($methodConfig->translations->translation as $translation) {
                     $this->addTranslation((string)$translation['const']);
@@ -477,14 +472,14 @@ abstract class DataSet extends Component {
     protected function buildJS() {
         $result = false;
         if (($config = $this->getConfig()->getCurrentStateConfig()) &&
-                $config->javascript
+            $config->javascript
         ) {
             $result = $this->doc->createElement('javascript');
             foreach ($config->javascript->behavior as $value) {
                 $JSObjectXML = $this->doc->createElement('behavior');
                 $JSObjectXML->setAttribute('name', $value['name']);
                 $JSObjectXML->setAttribute('path', ($value['path']) ?
-                        $value['path'] . '/' : '');
+                    $value['path'] . '/' : '');
                 $result->appendChild($JSObjectXML);
             }
         }
@@ -502,8 +497,8 @@ abstract class DataSet extends Component {
         // если у нас не полностью сформированный путь, то добавляем информацию о языке + путь к шаблону
         if (!$isFullURI) {
             $action = $this->request->getLangSegment() .
-                    $this->request->getPath(Request::PATH_TEMPLATE, true) .
-                    $action;
+                $this->request->getPath(Request::PATH_TEMPLATE, true) .
+                $action;
 
             // если в конце нет слеша - добавляем его
             if (substr($action, -1) != '/') {
@@ -599,7 +594,7 @@ abstract class DataSet extends Component {
     final protected function downloadFile($data, $MIMEType, $fileName) {
         $this->response->setHeader('Content-Type', $MIMEType);
         $this->response->setHeader('Content-Disposition',
-                ': attachment; filename="' . $fileName . '"');
+            ': attachment; filename="' . $fileName . '"');
         $this->response->write($data);
         $this->response->commit();
     }
@@ -699,9 +694,9 @@ abstract class DataSet extends Component {
      */
 
     public static function cleanupHTML($data) {
-        $aggressive = isset($_GET['aggressive']);
-        //Если подключено расширение tidy
+        $aggressive = Object::_getConfigValue('site.aggresive_cleanup', false);
 
+        //Если подключено расширение tidy
         if (function_exists('tidy_get_output') && $aggressive) {
             try {
                 $tidy = new tidy();
@@ -730,82 +725,15 @@ abstract class DataSet extends Component {
                 //}
                 $data = $tidy->repairString($data, $config, 'utf8');
 
-            }
-            catch (Exception $dummyError) {
+            } catch (Exception $dummyError) {
                 //inspect($dummyError);
             }
             unset($tidy);
 
         }
 
-        /*
-               $jewix = new Jevix();
-               $jewix->cfgSetXHTMLMode(true);
-               $jewix->cfgSetAutoBrMode(false);
-               $jewix->cfgSetAutoLinkMode(false);
-
-               $shortTags  = array('br', 'hr');
-               $allowedTags = array(
-                   'a', 'abbr', 'acronym', 'address', 'b', 'big', 'blockquote', 'br', 'cite',
-                   'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em',
-                   'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'ins', 'kbd', 'li', 'ol',
-                   'p', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup','pre',
-                   'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'
-                   );
-
-                   if (!$aggressive) {
-                       $allowedTags = array_merge($allowedTags, array(
-                       'img',
-                       'object',
-                       'param',
-                       'embed',
-                       'map',
-                       'area'
-                       ));
-                       array_push($shortTags, 'img');
-                   }
-                   $jewix->cfgAllowTags($allowedTags);
-                   $jewix->cfgSetTagShort($shortTags);
-
-                   $jewix->cfgSetTagNoTypography(array('code', 'pre', 'blockquote'));
-                   $jewix->cfgSetTagPreformatted(array('code', 'pre', 'blockquote'));
-
-                   $jewix->cfgAllowTagParams('table', array('cellpadding', 'cellspacing'));
-                   $jewix->cfgAllowTagParams('td', array('colspan', 'rowspan'));
-                   $jewix->cfgAllowTagParams('th', array('colspan', 'rowspan'));
-                   $jewix->cfgAllowTagParams('a', array('href', 'target'));
-
-
-                   $jewix->cfgSetTagCutWithContent(array('script', 'iframe'));
-                   if(!$aggressive){
-                       array_walk($allowedTags, create_function('$element, $key, $jewix', '$jewix->cfgAllowTagParams($element, array("id", "class", "style"));'), $jewix);
-                       $jewix->cfgAllowTagParams('img',
-                       array(
-                           'align',
-                           'alt',
-                           'src',
-                           'vspace',
-                           'width',
-                           'hspace',
-                           'height',
-                           'border'
-                           )
-                           );
-                   }
-
-                   $errors = false;
-                   $data = $jewix->parse($data, $errors);
-        *
-        */
         $base = E()->getSiteManager()->getCurrentSite()->base;
-        $data =
-                str_replace(
-                    (strpos($data, '%7E')) ? str_replace('~', '%7E', $base) : $base,
-                    '',
-                    $data
-                );
-        //$data = str_replace('&amp;', '&', $data);
-        // stop($data);
+        $data = str_replace((strpos($data, '%7E')) ? str_replace('~', '%7E', $base) : $base, '', $data);
         return $data;
     }
 }

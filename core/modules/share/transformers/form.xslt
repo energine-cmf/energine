@@ -81,6 +81,15 @@
                 <xsl:for-each select="set:distinct($FIELDS/@tabName)">
                     <xsl:variable name="TAB_NAME" select="."/>
                     <div id="{generate-id(.)}">
+                        <!--<xsl:if test="$FIELDS[@tabName=$TAB_NAME][1]/@language = $DOC_PROPS[@name='lang']/@default">
+                            <span id="copy_lang_data"><xsl:value-of select="$TRANSLATION[@const='TXT_COPY_DATA_TO_ANOTHER_TAB']"/>:<xsl:for-each
+                                    select="set:distinct($FIELDS[@language!=$DOC_PROPS[@name='lang']/@default]/@tabName)">
+                                <xsl:variable name="LANG_NAME" select="."/>
+                                <a href="#{$FIELDS[@tabName=$LANG_NAME][1]/@language}">
+                                    <xsl:value-of select="$LANG_NAME"/>
+                                </a>
+                            </xsl:for-each></span>
+                        </xsl:if>-->
                         <xsl:apply-templates select="$FIELDS[@tabName=$TAB_NAME]"/>
                     </div>
                 </xsl:for-each>

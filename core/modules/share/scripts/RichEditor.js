@@ -8,8 +8,6 @@ var RichEditor = new Class({
         //Текущий выделенный объект
         //Используется для хранения информации о выделенном имидже для его редактирования
         this.selectedObject = false;
-        this.activate();
-
     },
     monitorElements:function () {
         this.area.getElements('*').removeEvents('click');

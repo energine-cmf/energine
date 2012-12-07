@@ -206,7 +206,7 @@ final class Mail extends Object {
 
     public function addAttachment($file, $fileName = false) {
         if (file_exists($file)) {
-			$fileContent = base64_encode(stripslashes(file_get_contents($file)));
+			$fileContent = base64_encode((file_get_contents($file)));
 	        $fileName = (!$fileName)?basename($file):$fileName;
 	        $this->attachments[$fileName] = $fileContent;
         }

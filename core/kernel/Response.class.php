@@ -58,7 +58,7 @@ final class Response extends Object {
         $this->body = '';
     }
 
-    
+
     /**
      * Метод вызываемый при переадресации
      * заменяет паттерны lang и site на соответствующие значения
@@ -66,20 +66,20 @@ final class Response extends Object {
      * @param $redirectURL string
      * @return string
      */
-    public static function prepareRedirectURL($redirectURL){
-        if(empty($redirectURL)) return $redirectURL;
-        $lang =E()->getLanguage();
-        
+    public static function prepareRedirectURL($redirectURL) {
+        if (empty($redirectURL)) return $redirectURL;
+        $lang = E()->getLanguage();
+
         return str_replace(
-                    array(
-                        '%lang%',
-                        '%site%'
-                    ),
-                    array(
-                        $lang->getAbbrByID($lang->getCurrent()),
-                        E()->getSiteManager()->getCurrentSite()->base
-                    ),
-                    $redirectURL);
+            array(
+                '%lang%',
+                '%site%'
+            ),
+            array(
+                $lang->getAbbrByID($lang->getCurrent()),
+                E()->getSiteManager()->getCurrentSite()->base
+            ),
+            $redirectURL);
     }
 
     /**
@@ -93,10 +93,10 @@ final class Response extends Object {
     public function setStatus($statusCode, $reasonPhrase = null) {
         if (is_null($reasonPhrase)) {
             $reasonPhrase =
-                    (isset($this->reasonPhrases[$statusCode]) ? $this->reasonPhrases[$statusCode] : '');
+                (isset($this->reasonPhrases[$statusCode]) ? $this->reasonPhrases[$statusCode] : '');
         }
         $this->statusLine =
-                $_SERVER['SERVER_PROTOCOL'] . " $statusCode $reasonPhrase";
+            $_SERVER['SERVER_PROTOCOL'] . " $statusCode $reasonPhrase";
     }
 
     /**
@@ -125,12 +125,11 @@ final class Response extends Object {
      * @return void
      */
     public function addCookie($name = UserSession::DEFAULT_SESSION_NAME, $value = '', $expire = 0, $domain = false, $path = '/') {
-        if(!$domain){
-            if($domain = $this->getConfigValue('site.domain')){
+        if (!$domain) {
+            if ($domain = $this->getConfigValue('site.domain')) {
                 $domain = '.' . $domain;
                 $path = '/';
-            }
-            else {
+            } else {
                 $path = E()->getSiteManager()->getCurrentSite()->root;
                 $domain = E()->getSiteManager()->getCurrentSite()->domain;
             }
@@ -146,8 +145,9 @@ final class Response extends Object {
         $secure = false;
         $_COOKIE[$name] = $value;
         $this->cookies[$name] =
-                compact('value', 'expire', 'path', 'domain', 'secure');
+            compact('value', 'expire', 'path', 'domain', 'secure');
     }
+
     /**
      * Отправляет куки добавленные в список
      * используется только в commit
@@ -213,9 +213,9 @@ final class Response extends Object {
         $request = E()->getRequest();
         $this->setRedirect(
             E()->getSiteManager()->getCurrentSite()->base .
-                    $request->getLangSegment()
-                    . $request->getPath(Request::PATH_TEMPLATE, true)
-                    . $action
+                $request->getLangSegment()
+                . $request->getPath(Request::PATH_TEMPLATE, true)
+                . $action
         );
     }
 
@@ -235,18 +235,22 @@ final class Response extends Object {
      * @see auth.php
      * @return void
      */
-    public function goBack(){
-        if(isset($_SERVER['HTTP_REFERER'])){
+    public function goBack() {
+        if (isset($_SERVER['HTTP_REFERER'])) {
             $url = $_SERVER['HTTP_REFERER'];
-        }
-        elseif(isset($_GET['return'])){
+        } elseif (isset($_GET['return'])) {
             $url = $_GET['return'];
-        }
-        else {
+        } else {
             $url = E()->getSiteManager()->getCurrentSite()->root;
         }
         $this->setHeader('Location', $url);
         $this->commit();
+    }
+
+    public function disableCache() {
+        $this->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+        $this->setHeader('Pragma', 'no-cache');
+        $this->setHeader('X-Accel-Expires', 0);
     }
 
     /**
@@ -260,20 +264,19 @@ final class Response extends Object {
         if (!headers_sent()) {
             $this->sendHeaders();
             $this->sendCookies();
-        }
-        else {
+        } else {
             //throw new SystemException('ERR_HEADERS_SENT', SystemException::ERR_CRITICAL);
         }
         $contents = $this->body;
 
         if (
-                (bool) Object::_getConfigValue('site.compress')
-                &&
-                isset($_SERVER['HTTP_ACCEPT_ENCODING'])
-                &&
-                (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)
-                &&
-                !(bool) Object::_getConfigValue('site.debug')
+            (bool)Object::_getConfigValue('site.compress')
+            &&
+            isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+            &&
+            (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)
+            &&
+            !(bool)Object::_getConfigValue('site.debug')
         ) {
             header("Vary: Accept-Encoding");
             header("Content-Encoding: gzip");

@@ -544,12 +544,14 @@ class Setup {
                 while ((($file = readdir($dh)) !== false)) {
                     if (!in_array($file, array('.', '..'))) {
                         if (is_dir($file = $dir . DIRECTORY_SEPARATOR . $file)) {
-                            $this->cleaner($file);
-                            $this->text('Удаляем директорию ', $file);
-                            if (!@rmdir($file)) {
-                                //может это симлинка
+                            if(is_link($file)){
                                 unlink($file);
                             }
+                            else {
+                                $this->cleaner($file);
+                                rmdir($file);
+                            }
+                            $this->text('Удаляем директорию ', $file);
                         }
                         else {
                             $this->text('Удаляем файл ', $file);
@@ -608,21 +610,21 @@ class Setup {
      */
 
     private function linkSite($globPattern, $dir) {
+
         $fileList = glob($globPattern);
         //Тут тоже хитрый финт ушами с относительным путем вычисляющимся как количество уровней вложенности исходной папки + еще один
         $relOffset = str_repeat('..' . DIRECTORY_SEPARATOR, sizeof(explode(DIRECTORY_SEPARATOR, $dir)) - 1);
-
         if (!empty($fileList)) {
             foreach ($fileList as $fo) {
                 list(, , , $module) = explode(DIRECTORY_SEPARATOR, $fo);
                 if (!file_exists($dir . DIRECTORY_SEPARATOR . $module)) {
                     mkdir($dir . DIRECTORY_SEPARATOR . $module);
                 }
-                $this->text('Создаем симлинк ', $relOffset . $fo, ' на ', $dir . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . basename($fo));
-                if (file_exists($dir . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . basename($fo))) {
-                    unlink($dir . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . basename($fo));
+                $this->text('Создаем симлинк ', $srcFile = $relOffset.$fo, ' на ', $linkPath = $dir . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . basename($fo));
+                if (file_exists($linkPath)) {
+                    unlink($linkPath);
                 }
-                symlink($relOffset . $fo, $dir . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . basename($fo));
+                symlink($srcFile, $linkPath);
             }
         }
     }

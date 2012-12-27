@@ -19,7 +19,7 @@
  */
 if (isset($_SERVER['SCRIPT_FILENAME'])) {
     $_SERVER['SCRIPT_FILENAME'] =
-            (isset($_SERVER['PATH_TRANSLATED'])) ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME'];
+        (isset($_SERVER['PATH_TRANSLATED'])) ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME'];
 }
 
 /**
@@ -61,11 +61,11 @@ define('SITE_DIR', 'site');
 /**
  * Путь к директории пользовательских компонентов
  */
-define('SITE_COMPONENTS_DIR', SITE_DIR.'/modules/*/components');
+define('SITE_COMPONENTS_DIR', SITE_DIR . '/modules/*/components');
 /**
  * Путь к директории пользовательских PHP файлов
  */
-define('SITE_GEARS_DIR', SITE_DIR.'/modules/*/gears');
+define('SITE_GEARS_DIR', SITE_DIR . '/modules/*/gears');
 /**
  * Путь к директории модулей ядра
  */
@@ -74,18 +74,18 @@ define('CORE_DIR', 'core');
  * Шаблон пути к директориям компонентов стандартных модулей,
  * где * заменяется именем модуля
  */
-define('CORE_COMPONENTS_DIR', CORE_DIR.'/modules/*/components');
+define('CORE_COMPONENTS_DIR', CORE_DIR . '/modules/*/components');
 
-define('CORE_GEARS_DIR', CORE_DIR.'/modules/*/gears');
+define('CORE_GEARS_DIR', CORE_DIR . '/modules/*/gears');
 
 /**
  * Путь к директории ядра системы
  */
-define('CORE_KERNEL_DIR', CORE_DIR.'/kernel');
+define('CORE_KERNEL_DIR', CORE_DIR . '/kernel');
 /**
  * Путь к директории ядра проекта
  */
-define('SITE_KERNEL_DIR', SITE_DIR.'/kernel');
+define('SITE_KERNEL_DIR', SITE_DIR . '/kernel');
 
 
 /**
@@ -134,7 +134,7 @@ function __autoload($className) {
         $mc = E()->getCache();
         if (!$mc->isEnabled() || !($paths = $mc->retrieve(Cache::CLASS_STRUCTURE_KEY))) {
             //собираем в статическую переменную
-            $tmp = glob(
+            /*$tmp = glob(
                 '{' . implode(',', array(
                     CORE_KERNEL_DIR,
                     CORE_COMPONENTS_DIR,
@@ -144,11 +144,26 @@ function __autoload($className) {
                     SITE_GEARS_DIR
                 )) . '}/*.class.php',
                 GLOB_BRACE
-            );
+            );*/
+
+            $tmp = array_reduce(
+                array(
+                    CORE_KERNEL_DIR,
+                    CORE_COMPONENTS_DIR,
+                    CORE_GEARS_DIR,
+                    SITE_KERNEL_DIR,
+                    SITE_COMPONENTS_DIR,
+                    SITE_GEARS_DIR
+                ),
+                function ($result, $row) {
+                    return array_merge($result, glob($row . '/*.class.php'));
+                },
+                array());
+
             foreach ($tmp as $fileName) {
                 $paths[substr(strrchr($fileName, '/'), 1, -10)] = $fileName;
             }
-            if($mc->isEnabled())
+            if ($mc->isEnabled())
                 $mc->store(Cache::CLASS_STRUCTURE_KEY, $paths);
         }
     }
@@ -178,11 +193,10 @@ function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext) {
             SystemException::ERR_DEVELOPER
         );
         throw $e->setFile($file)->setLine($line);
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         //Если ошибка произошла здесь
         //то капец
-        echo 'Message:', $message, PHP_EOL, 'File:', $file,PHP_EOL, 'Line:', $line, PHP_EOL;
+        echo 'Message:', $message, PHP_EOL, 'File:', $file, PHP_EOL, 'Line:', $line, PHP_EOL;
         exit;
     }
 }

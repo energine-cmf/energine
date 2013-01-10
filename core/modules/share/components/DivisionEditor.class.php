@@ -476,13 +476,6 @@ final class DivisionEditor extends Grid {
             $field->setRowProperty($i, 'data_name', $smapName);
             $field->setRowProperty($i, 'segment', $smapSegment);
         }
-        //@todo поправить
-        $field = $this->getData()->getFieldByName('smap_redirect_url');
-        if ($field->getRowData(0)) {
-            $field->setRowData(0,
-                E()->getSiteManager()->getCurrentSite()->base .
-                    $field->getRowData(0));
-        }
 
         $tm = new TagManager(
             $this->getDataDescription(),

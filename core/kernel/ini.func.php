@@ -156,7 +156,10 @@ function __autoload($className) {
                     SITE_GEARS_DIR
                 ),
                 function ($result, $row) {
-                    return array_merge($result, glob($row . '/*.class.php'));
+                    if(!($cmps = glob($row . '/*.class.php'))){
+                        $cmps = array();
+                    }
+                    return array_merge($result, $cmps);
                 },
                 array());
 

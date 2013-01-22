@@ -28,10 +28,17 @@ class GoogleSitemap extends SitemapTree
      */
     private $maxVideos;
 
-    /*
+    /**
      * Экземпляр класса PDO
      */
     private $pdoDB;
+
+    /**
+     * Максимальное кол - во видео в файле сайт мап
+     * по умолчанию.
+     */
+
+    const DEFAULT_MAX_VIDEOS = 40000;
 
     /**
      * Конструктор класса
@@ -47,7 +54,7 @@ class GoogleSitemap extends SitemapTree
         parent::__construct($name, $module, $params);
         E()->getResponse()->setHeader('Content-Type', 'text/xml; charset=utf-8');
         $this->pdoDB = $this->dbh->getPDO();
-        $this->maxVideos = (int)$this->getConfigValue('seo.maxVideosInMap');
+        $this->maxVideos = ((int)$this->getConfigValue('seo.maxVideosInMap'))? (int)$this->getConfigValue('seo.maxVideosInMap'): self::DEFAULT_MAX_VIDEOS;
     }
 
 

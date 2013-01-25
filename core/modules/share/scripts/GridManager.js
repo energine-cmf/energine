@@ -500,7 +500,7 @@ var GridManager = new Class({
     },
 
     edit:function (id) {
-        if(!id){
+        if(!parseInt(id)){
             id = this.grid.getSelectedRecordKey();
         }
         ModalBox.open({

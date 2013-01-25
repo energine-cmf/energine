@@ -599,20 +599,6 @@ GridManager.Filter = new Class({
                 new GridManager.Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
             this.condition = this.element.getElement('.f_condition');
 
-            /*var prepareInputs = function(){
-             //this.inputs.empty();
-             if(['date', 'datetime', 'time'].contains(this.fields.options[this.fields.selectedIndex].getAttribute('type'))){
-             this.inputs.asDateSelector();
-             }
-             else {
-             this.inputs.asTextSelector();
-             }
-             }.bind(this);
-             prepareInputs();
-
-             this.fields.addEvent('change', prepareInputs);*/
-
-
             this.condition.addEvent('change', function (event) {
                 //prepareInputs();
                 var condition = $(event.target).get('value');

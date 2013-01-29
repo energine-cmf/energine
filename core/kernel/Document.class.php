@@ -234,6 +234,8 @@ final class Document extends DBWorker implements IDocument {
             $this->getConfigValue('site.static')) ? $staticURL : $baseURL));
         $prop->setAttribute('media', (($mediaURL =
             $this->getConfigValue('site.media')) ? $mediaURL : $baseURL));
+        $prop->setAttribute('resizer', (($resizerURL =
+            $this->getConfigValue('site.resizer')) ? $resizerURL : $baseURL));
         $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
         $prop->setAttribute('default', E()->getSiteManager()->getDefaultSite()->base);
         $dom_documentProperties->appendChild($prop);

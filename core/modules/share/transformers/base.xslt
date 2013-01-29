@@ -100,11 +100,4 @@
         <link href="{$STATIC_URL}stylesheets/{$FOLDER}/print.css" rel="stylesheet" type="text/css" media="print"/>
         <link href="{$STATIC_URL}stylesheets/{$FOLDER}/handheld.css" rel="stylesheet" type="text/css" media="handheld"/>
     </xsl:template>
-
-    <!-- URL ресайзера изображений -->
-    <xsl:variable name="IMAGE_RESIZER_URL"><xsl:value-of select="$STATIC_URL"/>resizer/</xsl:variable>
-
-    <!-- URL ресайзера видео -->
-    <xsl:variable name="VIDEO_RESIZER_URL"><xsl:value-of select="$STATIC_URL"/>resizer/</xsl:variable>
-
 </xsl:stylesheet>

@@ -140,7 +140,7 @@
                                     <a href="{field[@name='upl_path']/@real_image}" target="blank">
                                         <xsl:choose>
                                             <xsl:when test="(field[@name='upl_internal_type']='image') or (field[@name='upl_internal_type']='video')">
-                                                <img src="{$IMAGE_RESIZER_URL}w150-h150/{field[@name='upl_path']}" border="0" width="150" height="150" alt=""/>
+                                                <img src="{$RESIZER_URL}w150-h150/{field[@name='upl_path']}" border="0" width="150" height="150" alt=""/>
                                             </xsl:when>
                                             <xsl:otherwise>
                                                 <xsl:value-of select="field[@name='upl_path']"/>

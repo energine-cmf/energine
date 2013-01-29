@@ -100,7 +100,7 @@ class SiteEditor extends Grid {
     }
 
     protected function reset() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->request->shiftPath(1);
         $this->divEditor = $this->document->componentManager->createComponent('dEditor', 'share', 'DivisionEditor');
         $this->divEditor->run();
     }

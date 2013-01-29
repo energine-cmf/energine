@@ -661,7 +661,7 @@ abstract class DataSet extends Component {
      * @access protected
      */
     protected function fileLibrary() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->request->shiftPath(1);
 
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
 

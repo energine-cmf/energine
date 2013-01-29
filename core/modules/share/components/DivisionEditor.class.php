@@ -548,7 +548,7 @@ final class DivisionEditor extends Grid {
      * @return void
      */
     protected function showWidgetEditor() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->request->shiftPath(1);
         $this->widgetEditor =
             $this->document->componentManager->createComponent('widgetEditor', 'share', 'WidgetsRepository', array('config' => 'ModalWidgetsRepository.component.xml'));
         $this->widgetEditor->run();
@@ -732,7 +732,7 @@ final class DivisionEditor extends Grid {
      */
 
     protected function showTransEditor() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->request->shiftPath(1);
         $this->transEditor =
             $this->document->componentManager->createComponent('transEditor', 'share', 'TranslationEditor', null);
         $this->transEditor->run();
@@ -746,7 +746,7 @@ final class DivisionEditor extends Grid {
      */
 
     protected function showUserEditor() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->request->shiftPath(1);
         $this->userEditor =
             $this->document->componentManager->createComponent('userEditor', 'user', 'UserEditor', null);
         $this->userEditor->run();
@@ -760,7 +760,7 @@ final class DivisionEditor extends Grid {
      */
 
     protected function showRoleEditor() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->request->shiftPath(1);
         $this->roleEditor =
             $this->document->componentManager->createComponent('roleEditor', 'user', 'RoleEditor', null);
         $this->roleEditor->run();
@@ -774,7 +774,7 @@ final class DivisionEditor extends Grid {
      */
 
     protected function showLangEditor() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->request->shiftPath(1);
         $this->langEditor =
             $this->document->componentManager->createComponent('langEditor', 'share', 'LanguageEditor', null);
         $this->langEditor->run();
@@ -788,7 +788,7 @@ final class DivisionEditor extends Grid {
      */
 
     protected function showSiteEditor() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
+        $this->request->shiftPath(1);
         $this->siteEditor =
             $this->document->componentManager->createComponent('siteEditor', 'share', 'SiteEditor', array('config' => 'core/modules/share/config/SiteEditorModal.component.xml'));
         $this->siteEditor->run();

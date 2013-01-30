@@ -155,17 +155,17 @@ var Form = new Class({
                     if (image) {
                         var src;
                         if (result['upl_internal_type'] == 'image') {
-                            src = result['upl_path'];
+                            src = Energine.media + result['upl_path'];
                         }
                         else if (result['upl_internal_type'] == 'video') {
-                            src = 'resizer/w0-h0/' + result['upl_path'];
+                            src = Energine.resizer + 'w0-h0/' + result['upl_path'];
                         }
                         else {
-                            src = 'images/icons/icon_undefined.gif';
+                            src = Energine.static + 'images/icons/icon_undefined.gif';
                         }
-                        src = Energine.static + src;
+
                         image.setProperty('src', src);
-                        $(button.getProperty('preview')).setProperty('href', Energine.static + result['upl_path']).show();
+                        $(button.getProperty('preview')).setProperty('href', Energine.media + result['upl_path']).show();
                     }
                     if (button.getNext('.lnk_clear')) {
                         button.getNext('.lnk_clear').show('inline');
@@ -478,7 +478,7 @@ Form.AttachmentPane = new Class({
                     switch (fileData.upl_internal_type) {
                         case 'image':
                         case 'video':
-                            thumb.setProperty('src', Energine.static + 'resizer/w150-h150/' + fileData.upl_path)
+                            thumb.setProperty('src', Energine.resizer + 'w150-h150/' + fileData.upl_path)
                             break;
                         default:
 

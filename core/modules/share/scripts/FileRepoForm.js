@@ -65,7 +65,7 @@ var FileRepoForm = new Class({
         if (this.thumbs)
             this.thumbs.each(function (el) {
                 el.removeClass('hidden');
-                el.setProperty('src', Energine.base + 'resizer/w' + el.getProperty('width') + '-h' + el.getProperty('height') + '/' + tmpFileName);
+                el.setProperty('src', Energine.resizer + 'w' + el.getProperty('width') + '-h' + el.getProperty('height') + '/' + tmpFileName);
             });
     },
     createTemporaryFile:function (data, filename, type, isAlts) {
@@ -80,7 +80,7 @@ var FileRepoForm = new Class({
         this.request(this.singlePath + 'temp-file/', data, function (response) {
             if (response.result && (type.match('image.*') || type.match('video.*'))) {
                 if (type.match('video.*')) {
-                    document.getElementById('preview').removeClass('hidden').setProperty('src', Energine.base + 'resizer/w0-h0/' + response.data);
+                    document.getElementById('preview').removeClass('hidden').setProperty('src', Energine.resizer + 'w0-h0/' + response.data);
                 }
                 this.generatePreviews(response.data)
             }

@@ -34,7 +34,7 @@ var ImageManager = new Class({
             }
             $('width').set('value', width);
             $('height').set('value', height);
-            $('filename').set('value', src = Energine.static + 'resizer/w'+width+'-h'+height+'/' + this.image['upl_path']);
+            $('filename').set('value', src = Energine.resizer + 'w'+width+'-h'+height+'/' + this.image['upl_path']);
             $('thumbnail').set('src', src);
         }
 
@@ -55,7 +55,7 @@ var ImageManager = new Class({
 
     updateForm:function () {
         $('filename').value = this.image['upl_path'];
-        $('thumbnail').src = Energine.static /*+ 'resizer/w40-h40/'*/ + this.image['upl_path'];
+        $('thumbnail').src = Energine.media /*+ 'resizer/w40-h40/'*/ + this.image['upl_path'];
         $('width').value = this.image['upl_width'] || 0;
         $('height').value = this.image['upl_height'] || 0;
         $('align').set('value', this.image.align || '');

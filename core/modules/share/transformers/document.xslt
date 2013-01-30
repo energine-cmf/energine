@@ -65,6 +65,8 @@
                             </xsl:if>
                             'base' : '<xsl:value-of select="$BASE"/>',
                             'static' : '<xsl:value-of select="$STATIC_URL"/>',
+                            'resizer' : '<xsl:value-of select="$RESIZER_URL"/>',
+                            'media' : '<xsl:value-of select="$MEDIA_URL"/>',
                             'lang' : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
                         });
                         try {

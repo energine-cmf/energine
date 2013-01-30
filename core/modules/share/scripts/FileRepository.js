@@ -5,7 +5,7 @@ var FILE_COOKIE_NAME = 'NRGNFRPID';
 
 Grid.implement({
     _popImage:function (path, tmplElement) {
-        var popUpImg = new Element('img', {'src':'resizer/w298-h224/' + path, 'width':60, 'height':45, 'styles':{
+        var popUpImg = new Element('img', {'src':Energine.resizer+ 'w298-h224/' + path, 'width':60, 'height':45, 'styles':{
             border:'1px solid gray',
             'border-radius':'10px',
             'z-index':1
@@ -46,7 +46,7 @@ Grid.implement({
                 case 'video':
                 case 'image':
                     dimensions = {'width':60, 'height':45};
-                    image.setProperty('src', 'resizer/w60-h45/' + record[fieldName]).addEvents({
+                    image.setProperty('src', Energine.resizer + 'w60-h45/' + record[fieldName]).addEvents({
                         'error':function () {
                             image.setProperty('src', 'images/icons/icon_error_image.gif');
                             container.removeEvents('mouseenter').removeEvent('mouseleave');
@@ -139,7 +139,7 @@ Grid.implement({
                 var fieldValue = record[fieldName].clean();
             }
             if (!record['upl_internal_type'].test('folder|repo')){
-                cell.set('html', '<a target="_blank" href="' + Energine.static + record['upl_path'] + '">' + fieldValue + '</a>')
+                cell.set('html', '<a target="_blank" href="' + Energine.media + record['upl_path'] + '">' + fieldValue + '</a>')
             }
             else {
                 cell.set('html', fieldValue);

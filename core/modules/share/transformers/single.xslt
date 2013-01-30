@@ -16,6 +16,9 @@
     <xsl:variable name="TRANSLATION" select="/document/translations/translation"/>
     <xsl:variable name="STATIC_URL"><xsl:value-of select="$BASE/@static"/></xsl:variable>
     <xsl:variable name="ROUTER_URL"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/>programs/p/</xsl:variable>
+    <xsl:variable name="MEDIA_URL"><xsl:value-of select="$BASE/@media"/></xsl:variable>
+    <xsl:variable name="RESIZER_URL"><xsl:value-of select="$BASE/@resizer"/></xsl:variable>
+
     <xsl:variable name="MAIN_SITE" select="$DOC_PROPS[@name='base']/@default"/>
     <xsl:template match="/">
         <xsl:apply-templates select="document/component"/>

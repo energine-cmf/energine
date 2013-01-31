@@ -747,11 +747,11 @@ class Grid extends DBDataSet {
      * @return void
      * @access protected
      */
-    /*protected function fileLibrary() {
+    protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
         $this->fileLibrary->run();
-    }*/
+    }
 
     /**
      * Метод генерящий thumbnail и сохраняющий его в БД

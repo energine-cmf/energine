@@ -44,6 +44,7 @@ var Grid = new Class({
                 window.addEvent('resize', this.fitGridFormSize.bind(this));
             }
         }
+
     },
 
     /*
@@ -396,6 +397,20 @@ var GridManager = new Class({
         }
         this.overlay = new Overlay(this.element);
         this.singlePath = this.element.getProperty('single_template');
+
+        this.mvElementId = null;
+    },
+
+    setMvElementId: function(id) {
+        this.mvElementId = id;
+    },
+
+    getMvElementId: function() {
+        return this.mvElementId;
+    },
+
+    clearMvElementId: function() {
+        this.mvElementId = null;
     },
 
     attachToolbar:function (toolbar) {
@@ -508,6 +523,18 @@ var GridManager = new Class({
             onClose:this._processAfterCloseAction.bind(this)
         });
     },
+
+    move:function () {
+        if(!this.getMvElementId()) {
+            this.setMvElementId(this.grid.getSelectedRecordKey());
+        }
+        else {
+            this.request(this.singlePath + this.getMvElementId() + '-' + this.grid.getSelectedRecordKey() +
+                '/move/', '', this.loadPage.pass(this.pageList.currentPage, this));
+            this.clearMvElementId();
+        }
+    },
+
     _processAfterCloseAction:function (returnValue) {
         if (returnValue) {
             if (returnValue.afterClose && this[returnValue.afterClose]) {

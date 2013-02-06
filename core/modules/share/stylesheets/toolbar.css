@@ -48,7 +48,7 @@ ul.toolbar li.select {
 }
 
 ul.toolbar li.highlighted { background-color: #FF8; cursor: pointer; cursor: hand; }
-ul.toolbar li.pressed { border-color: #000 #BBB #BBB #000; }
+ul.toolbar li.pressed { border-color: #000 #BBB #BBB #000;background-color: #FF8; }
 ul.toolbar li.disabled {}
 
 ul.toolbar .label {

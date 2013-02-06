@@ -831,6 +831,47 @@ class Grid extends DBDataSet {
     }
 
     /**
+     * Перемещает сущность на позицию выше
+     * другой выбранной сущности
+     *
+     * @throws SystemException
+     * @access protected
+     * @return void
+     */
+    protected function move() {
+        if (!$this->getOrderColumn()) {
+            //Если не задана колонка для пользовательской сортировки то на выход
+            throw new SystemException('ERR_NO_ORDER_COLUMN', SystemException::ERR_DEVELOPER);
+        }
+        $params = $this->getStateParams();
+        list($firstItem, $secondItem) = $params;
+
+        if((($firstItem = intval($firstItem)) && ($secondItem = intval($secondItem)))
+            && ($firstItem != $secondItem)) {
+            $secondItemOrderNum = $this->dbh->getScalar(
+                'SELECT ' . $this->getOrderColumn() . ' as secondItemOrderNum ' .
+                    'FROM ' . $this->getTableName() . ' ' .
+                    'WHERE ' . $this->getPK() . ' = ' . $secondItem
+            );
+
+            $this->dbh->beginTransaction();
+            $this->dbh->modify('UPDATE ' . $this->getTableName() . ' SET ' . $this->getOrderColumn() . ' = ' . $this->getOrderColumn()
+                . ' + 1 WHERE ' . $this->getOrderColumn() . ' >= ' . $secondItemOrderNum);
+            $this->dbh->modify(
+                QAL::UPDATE,
+                $this->getTableName(),
+                array($this->getOrderColumn() => $secondItemOrderNum),
+                array($this->getPK() => $firstItem)
+            );
+            $this->dbh->commit();
+        }
+
+        $b = new JSONCustomBuilder();
+        $b->setProperty('result', true);
+        $this->setBuilder($b);
+    }
+
+    /**
      * Метод для изменения порядка следования  - вверх
      *
      * @return void

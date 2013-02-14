@@ -16,6 +16,7 @@
     <xsl:variable name="STATIC_URL"><xsl:value-of select="$BASE/@static"/></xsl:variable>
     <xsl:variable name="MEDIA_URL"><xsl:value-of select="$BASE/@media"/></xsl:variable>
     <xsl:variable name="RESIZER_URL"><xsl:value-of select="$BASE/@resizer"/></xsl:variable>
+    <xsl:variable name="MAIN_SITE"><xsl:value-of select="$DOC_PROPS[@name='base']/@default"/><xsl:value-of select="$LANG_ABBR"/></xsl:variable>
 
     <xsl:template match="/" xmlns:nrgn="http://energine.org" xmlns="http://www.w3.org/1999/xhtml">
         <html>
@@ -67,6 +68,7 @@
                             'static' : '<xsl:value-of select="$STATIC_URL"/>',
                             'resizer' : '<xsl:value-of select="$RESIZER_URL"/>',
                             'media' : '<xsl:value-of select="$MEDIA_URL"/>',
+                            'root' : '<xsl:value-of select="$MAIN_SITE"/>',
                             'lang' : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
                         });
                         try {

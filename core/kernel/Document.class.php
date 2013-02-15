@@ -246,6 +246,17 @@ final class Document extends DBWorker implements IDocument {
         $prop->setAttribute('default', E()->getLanguage()->getDefault());
         $prop->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($this->getLang()));
         $dom_documentProperties->appendChild($prop);
+
+        if(($docVars = $this->getConfigValue('site.vars')) && is_array($docVars)){
+            $dom_documentVars = $this->doc->createElement('variables');
+            foreach($docVars as $varName=>$varValue){
+                $var = $this->doc->createElement('var', $varValue);
+                $var->setAttribute('name', $varName);
+                $dom_documentVars->appendChild($var);
+            }
+            $dom_root->appendChild($dom_documentVars);
+        }
+
         unset($prop, $staticURL, $baseURL);
 
         foreach ($this->componentManager as $component) {

@@ -251,7 +251,7 @@ final class Document extends DBWorker implements IDocument {
             $dom_documentVars = $this->doc->createElement('variables');
             foreach($docVars as $varName=>$varValue){
                 $var = $this->doc->createElement('var', $varValue);
-                $var->setAttribute('name', $varName);
+                $var->setAttribute('name', strtoupper($varName));
                 $dom_documentVars->appendChild($var);
             }
             $dom_root->appendChild($dom_documentVars);

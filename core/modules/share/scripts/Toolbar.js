@@ -320,7 +320,7 @@ Toolbar.Switcher = new Class({
                     this.element.removeClass('pressed');
             }
         }).bind(this);
-        this.element.addEvent('mousedown', function () {
+        this.element.addEvent('click', function () {
             if (!this.properties.disabled) {
                 this.properties.state = (!this.properties.state);
                 toggle();

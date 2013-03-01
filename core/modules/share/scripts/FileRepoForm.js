@@ -65,7 +65,7 @@ var FileRepoForm = new Class({
         if (this.thumbs)
             this.thumbs.each(function (el) {
                 el.removeClass('hidden');
-                el.setProperty('src', Energine.media + 'resizer/w' + el.getProperty('width') + '-h' + el.getProperty('height') + '/' + tmpFileName);
+                el.setProperty('src', Energine.resizer + 'w' + el.getProperty('width') + '-h' + el.getProperty('height') + '/' + tmpFileName);
             });
     },
     createTemporaryFile:function (data, filename, type, isAlts) {

@@ -52,9 +52,13 @@ class Feed extends DBDataSet
             }
 
             if ($this->getParam('showAll')) {
-                $descendants = array_keys(
-                    E()->getMap()->getTree()->getNodeById($this->filterID)->getDescendants()->asList(false)
-                );
+                $par = E()->getMap()->getTree()->getNodeById($this->filterID);
+                $descendants = array();
+                if($par){
+                    $descendants = array_keys(
+                        $par->getDescendants()->asList(false)
+                    );
+                }
                 $this->filterID = array_merge(array($this->filterID), $descendants);
             }
             $this->addFilterCondition(array('smap_id' => $this->filterID));

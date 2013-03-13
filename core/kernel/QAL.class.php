@@ -407,6 +407,14 @@ final class QAL extends DBA {
         return $sqlQuery;
     }
 
+    /**
+     * Возвращает единичное значение колонки из таблицы
+     *
+     * @param string имя таблицы
+     * @param string имя колонки
+     * @param array|mixed условие выборки
+     * @return null|string
+     */
     public function getScalar() {
         $args = func_get_args();
 

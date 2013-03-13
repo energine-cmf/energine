@@ -96,7 +96,7 @@ final class Response extends Object {
                 (isset($this->reasonPhrases[$statusCode]) ? $this->reasonPhrases[$statusCode] : '');
         }
         $this->statusLine =
-            $_SERVER['SERVER_PROTOCOL'] . " $statusCode $reasonPhrase";
+            ((isset($_SERVER['SERVER_PROTOCOL'])) ? $_SERVER['SERVER_PROTOCOL'] : 'UNKNOWN') . " $statusCode $reasonPhrase";
     }
 
     /**

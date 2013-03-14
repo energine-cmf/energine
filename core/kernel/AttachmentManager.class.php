@@ -122,7 +122,7 @@ class AttachmentManager extends DBWorker {
             if ($filteredMapValue = array_filter(array_values($mapValue))) {
                 $request = 'SELECT spu.' . $mapFieldName .
                            ',spu.upl_id as id, ' .
-                           'upl_path as file, upl_name as name, TIME_FORMAT(upl_duration, "%i:%s") as duration, upl_internal_type as type,upl_mime_type as mime FROM '.self::ATTACH_TABLENAME.' su ' .
+                           'upl_path as file, upl_name as name, TIME_FORMAT(upl_duration, "%i:%s") as duration, upl_internal_type as type,upl_mime_type as mime, upl_data as data FROM '.self::ATTACH_TABLENAME.' su ' .
                            'LEFT JOIN `' . $mapTableName .
                            '` spu ON spu.upl_id = su.upl_id ' .
                            //'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.
@@ -170,6 +170,10 @@ class AttachmentManager extends DBWorker {
                             $dataDescription->addFieldDescription($fd);
 
                             $fd = new FieldDescription('mime');
+                            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+                            $dataDescription->addFieldDescription($fd);
+
+                            $fd = new FieldDescription('data');
                             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
                             $dataDescription->addFieldDescription($fd);
 
@@ -228,7 +232,7 @@ class AttachmentManager extends DBWorker {
             $field = new Field('attached_files');
             if (!$data && !$this->data->isEmpty()) {
                 $data = $this->data->getFieldByName($this->pk->getName())->getRowData(0);
-                $request = 'SELECT files.upl_id, upl_path, upl_name, upl_title, upl_internal_type
+                $request = 'SELECT files.upl_id, upl_path, upl_name, upl_title, upl_internal_type, upl_data
                       FROM `' . $this->tableName . '` s2f
                     LEFT JOIN `' . self::ATTACH_TABLENAME . '` files ON s2f.upl_id=files.upl_id
                     WHERE ' . $this->pk->getName() . ' = %s  

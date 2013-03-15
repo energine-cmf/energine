@@ -57,7 +57,7 @@ error_reporting(E_ALL | E_STRICT);
 /**
  * Путь к директории пользовательских модулей
  */
-define('SITE_DIR', 'site');
+if (!defined('SITE_DIR')) define('SITE_DIR', 'site');
 /**
  * Путь к директории пользовательских компонентов
  */
@@ -69,7 +69,7 @@ define('SITE_GEARS_DIR', SITE_DIR . '/modules/*/gears');
 /**
  * Путь к директории модулей ядра
  */
-define('CORE_DIR', 'core');
+if (!defined('CORE_DIR')) define('CORE_DIR', 'core');
 /**
  * Шаблон пути к директориям компонентов стандартных модулей,
  * где * заменяется именем модуля

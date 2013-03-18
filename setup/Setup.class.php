@@ -1,12 +1,13 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: pavka
- * Date: 9/22/11
- * Time: 11:17 AM
- * To change this template use File | Settings | File Templates.
- */
 
+/**
+ * Класс Setup
+ *
+ * @package energine
+ * @subpackage setup
+ * @author dr.Pavka
+ * @copyright 2013 Energine
+ */
 
 /**
  * Основной функционал установки системы.
@@ -15,24 +16,38 @@
  * @subpackage setup
  * @author dr.Pavka
  */
-class Setup {
-    const UPLOADS_PATH = 'uploads/public/';
-    const UPLOADS_TABLE = 'share_uploads';
+final class Setup {
+
     /**
-     * @access private
-     * @var bool  true - установка запущенна из консоли false - с браузера
+     * Путь к папке загрузок
+     */
+    const UPLOADS_PATH = 'uploads/public/';
+
+    /**
+     * Имя таблицы, в которой хранятся пользовательские загрузки
+     */
+    const UPLOADS_TABLE = 'share_uploads';
+
+    /**
+     * Признак запуска установщика из консоли
+     * Вовзращает true, если запуск произведен из консоли, false - если из браузера
+     *
+     * @var bool
      */
     private $isFromConsole;
 
     /**
-     * @access private
-     * @var array конфиг системы
+     * Массив конфигурации системы
+     *
+     * @var array
      */
     private $config;
 
     /**
-     * @access private
-     * @var array директории для последующего создания символических ссылок
+     * Массив директорий, которые будут созданы и в которые будут создаваться
+     * символические ссылки из директорий ядра и сайта
+     *
+     * @var array
      */
     private $htdocsDirs = array(
         'images',
@@ -44,13 +59,16 @@ class Setup {
     );
 
     /**
+     * @var PDO
+     */
+    private $dbConnect;
+
+    /**
      * Конструктор класса.
      *
      * @param bool $consoleRun Вид вызова сценария установки
-     * @access public
      */
-
-    function __construct($consoleRun) {
+    public function __construct($consoleRun) {
         header('Content-Type: text/plain; charset=' . CHARSET);
         $this->title('Средство настройки CMF Energine');
         $this->isFromConsole = $consoleRun;
@@ -65,9 +83,8 @@ class Setup {
      *
      * @param string $var
      * @return string
-     * @access private
+     * @throws Exception
      */
-
     private function filterInput($var) {
         if (preg_match('/^[\~\-0-9a-zA-Z\/\.\_]+$/i', $var))
             return $var;
@@ -79,9 +96,7 @@ class Setup {
      * Возвращает хост, на котором работае система.
      *
      * @return string
-     * @access private
      */
-
     private function getSiteHost() {
         if (!isset($_SERVER['HTTP_HOST'])
                 || $_SERVER['HTTP_HOST'] == ''
@@ -93,11 +108,10 @@ class Setup {
 
     /**
      * Возвращает корневую директорию системы.
+     * todo: подразумевается, что папка setup всегда находится внутри htdocs
      *
      * @return string
-     * @access private
      */
-
     private function getSiteRoot() {
         $siteRoot = $this->filterInput($_SERVER['PHP_SELF']);
         $siteRoot = str_replace('setup/index.php', '', $siteRoot);
@@ -109,11 +123,10 @@ class Setup {
      * таких как версия PHP, наличие конфигурационного
      * файла Energine а также файла перечня модулей системы.
      *
-     * @return void
-     * @access public
+     * @throws Exception
      */
-
     public function checkEnvironment() {
+
         $this->title('Проверка системного окружения');
 
         //А что за PHP версия используется?
@@ -161,28 +174,28 @@ class Setup {
     /**
      * Обновляет Host и Root сайта в таблице share_sites.
      *
-     * @return void
-     * @access private
      */
-
     private function updateSitesTable() {
         $this->text('Обновляем таблицу share_sites...');
-        $this->dbConnect->query("UPDATE share_sites SET site_host = '" . $this->config['site']['domain'] . "',"
-                . "site_root = '" . $this->config['site']['root'] . "'");
+        $this->dbConnect->query(
+            "UPDATE share_sites SET site_host = '" . $this->config['site']['domain'] . "',"
+                . "site_root = '" . $this->config['site']['root'] . "'"
+        );
     }
 
     /**
      * Проверка возможности соединения с БД.
      *
-     * @return void
-     * @access private
+     * @throws Exception
      */
-
     private function checkDBConnection() {
+
         $this->title('Настройки базы данных');
+
         if (!isset($this->config['database']) || empty($this->config['database'])) {
             throw new Exception('В конфиге нет информации о подключении к базе данных');
         }
+
         $dbInfo = $this->config['database'];
 
         //валидируем все скопом
@@ -226,15 +239,12 @@ class Setup {
 
     /**
      * Функция для вызова метода класса.
-     * Фактически, запускает один из режимов
-     * установки системы.
+     * Фактически, запускает один из режимов установки системы.
      *
      * @param string $action
      * @param array $arguments
-     * @return void
-     * @access public
+     * @throws Exception
      */
-
     public function execute($action, $arguments) {
         if (!method_exists($this, $methodName = $action . 'Action')) {
             throw new Exception('Подозрительно все это... Либо программисты че то не учли, либо.... произошло непоправимое.');
@@ -243,12 +253,10 @@ class Setup {
         //$this->{$methodName}();
     }
 
-
     /**
      * Очищает папку Cache от ее содержимого.
-     * @TODO определится с именем папки
-     * @return void
-     * @access private
+     * @todo: определится с именем папки
+     *
      */
     private function clearCacheAction() {
         $this->title('Очищаем кеш');
@@ -256,15 +264,10 @@ class Setup {
     }
 
     /**
-     * Запуск полной установки системы,
-     * включающей генерацию symlinks,
-     * проверку соединения с БД и обновление
-     * таблицы share_sites.
+     * Запуск полной установки системы, включающей генерацию symlinks,
+     * проверку соединения с БД и обновление таблицы share_sites.
      *
-     * @return void
-     * @access private
      */
-
     private function installAction() {
         $this->checkDBConnection();
         $this->updateSitesTable();
@@ -274,14 +277,15 @@ class Setup {
 
     /**
      * Проверка конфигурации модуля СЕО
+     *
      * Для правильной работы он должен иметь
      * следующие параметры:
-     * sitemapSegment - имя сегмента карты сайта (по умолчанию google-sitemap)
-     * sitemapTemplate - имя файла шаблона карты сайта (по умолчанию google_sitemap)
-     * maxVideosInMap - максимальное количество записей
-     * в карте расположения видео сайта (по умолчанию 5000)
-     * @return void
-     * @access private
+     * -> sitemapSegment - имя сегмента карты сайта (по умолчанию google-sitemap)
+     * -> sitemapTemplate - имя файла шаблона карты сайта (по умолчанию google_sitemap)
+     * -> maxVideosInMap - максимальное количество записей
+     *   в карте расположения видео сайта (по умолчанию 5000)
+     *
+     * @return boolean
      */
     private function isSeoConfigured() {
         if (!array_key_exists('seo', $this->config)) {
@@ -299,8 +303,6 @@ class Setup {
      * Генерация файла robots.txt
      * Создаем ссылки на sitemap всех поддоменов
      *
-     * @return void
-     * @access private
      */
     private function robotsAction() {
         if (!$this->isSeoConfigured()) {
@@ -320,8 +322,6 @@ class Setup {
      * и даем на него права на просмотр для не авторизированных
      * пользователей. Имя сегмента следует указать в конфиге.
      *
-     * @return void
-     * @access private
      */
     private function createSitemapSegment() {
         $this->dbConnect->query('INSERT INTO share_sitemap(site_id,smap_layout,smap_content,smap_segment,smap_pid) '
@@ -344,17 +344,13 @@ class Setup {
         }
     }
 
-
     /**
-     * Заполняем файл robots.txt
-     * Ссылками на sitemaps
+     * Заполняем файл robots.txt ссылками на sitemaps
      * Sitemap: http://example.com/sm.xml
-     * Если не сконфигурирован модуль СЕО, то запрещаем
-     * индексацию сайта.
+     * Если не сконфигурирован модуль СЕО, то запрещаем индексацию сайта.
      *
      * @param $allowRobots
-     * @return void
-     * @access private
+     * @throws Exception
      */
     private function generateRobotsTxt($allowRobots = true) {
         $file = '../robots.txt';
@@ -377,17 +373,13 @@ class Setup {
     }
 
     /**
-     * Запуск установки системы,
-     * включающей генерацию symlinks.
+     * Запуск установки системы, включающей генерацию symlinks.
      *
-     * @return void
-     * @access private
+     * @throws Exception
      */
-
     private function linkerAction() {
 
         $this->title('Создание символических ссылок');
-
 
         foreach ($this->htdocsDirs as $dir) {
             $dir = '../' . $dir;
@@ -401,19 +393,20 @@ class Setup {
                 $this->cleaner($dir);
             }
         }
+
         //На этот момент у нас есть все необходимые директории в htdocs и они пустые
         foreach ($this->htdocsDirs as $dir) {
 
             //сначала проходимся по модулям ядра
             foreach (array_reverse($this->config['modules']) as $module) {
                 $this->linkCore(
-                    '../' . CORE . DIRECTORY_SEPARATOR . MODULES . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . '*',
+                    '../' . CORE_REL_DIR . DIRECTORY_SEPARATOR . MODULES . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . '*',
                         '../' . $dir,
                     sizeof(explode(DIRECTORY_SEPARATOR, $dir)));
 
             }
             $this->linkSite(
-                '../' . SITE . DIRECTORY_SEPARATOR . MODULES . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . '*',
+                '../' . SITE_REL_DIR . DIRECTORY_SEPARATOR . MODULES . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . '*',
                     '../' . $dir
             );
         }
@@ -422,8 +415,8 @@ class Setup {
     }
 
     private function iterateUploads($directory, $PID = null) {
-        //static $counter = 0;
 
+        //static $counter = 0;
 
         $iterator = new DirectoryIterator($directory);
         foreach ($iterator as $fileinfo) {
@@ -527,17 +520,13 @@ class Setup {
             $this->dbConnect->rollBack();
             throw new Exception($e->getMessage());
         }
-
     }
 
     /**
-     * Очищаем папку от того что в ней было.
+     * Рекурсивно очищает папку от того, что в ней было.
      *
-     * @param $dir
-     * @return void
-     * @access private
+     * @param string $dir путь к папке
      */
-
     private function cleaner($dir) {
         if (is_dir($dir)) {
             if ($dh = opendir($dir)) {
@@ -567,13 +556,11 @@ class Setup {
     /**
      * Расставляем симлинки для модулей ядра
      *
-     * @param string $globPattern - паттерн для выбора файлов
+     * @param string $globPattern паттерн для выбора файлов
      * @param string $module путь к модулю ядра
-     * @param int $level - финт ушами для формирования относительных путей для симлинков, при рекурсии инкрементируется
-     * @return void
-     * @access private
+     * @param int $level финт ушами для формирования относительных путей для симлинков, при рекурсии инкрементируется
+     * @throws Exception
      */
-
     private function linkCore($globPattern, $module, $level = 1) {
 
         $fileList = glob($globPattern);
@@ -603,12 +590,9 @@ class Setup {
     /**
      * Создание symlinks для модулей сайта.
      *
-     * @param string $globPattern
-     * @param string $dir
-     * @return void
-     * @access private
+     * @param string $globPattern паттерн для выбора файлов
+     * @param string $dir директория, в которой создавать симлинки
      */
-
     private function linkSite($globPattern, $dir) {
 
         $fileList = glob($globPattern);
@@ -630,30 +614,23 @@ class Setup {
     }
 
     /**
-     * Вывод заголовок текущего действия установки.
+     * Вывод заголовок текущего действия установки, дополненный красивыми звездочками
      *
      * @param string $text
-     * @return void
-     * @access private
      */
-
     private function title($text) {
         echo str_repeat('*', 80), PHP_EOL, $text, PHP_EOL, PHP_EOL;
     }
 
     /**
-     * Выводит все переданные ей параметры в виде строки.
+     * Выводит все переданные параметры в виде строки.
      *
-     * @param string $text
-     * @return void
-     * @access private
+     * @param string
      */
-
     private function text() {
         foreach (func_get_args() as $text) {
             echo $text;
         }
         echo PHP_EOL;
     }
-
 }

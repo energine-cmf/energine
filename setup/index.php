@@ -1,13 +1,14 @@
 <?php
+
 ob_start();
+
 define('CHARSET', 'UTF-8');
 
 //Минимальная версия РНР
 define('MIN_PHP_VERSION', 5.3);
 
-define('CORE', 'core');
-//Название директории проекта
-define('SITE', 'site');
+require_once('../bootstrap.php');
+
 //Название директории в которой содержатся модули(как ядра, так и модули проекта)
 define('MODULES', 'modules');
 

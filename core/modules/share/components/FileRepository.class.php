@@ -332,10 +332,13 @@ class FileRepository extends Grid {
         $cfg = E()->getConfigValue('repositories');
         if ($cfg) {
             $repo_mime = $this->dbh->getScalar($this->getTableName(), 'upl_mime_type', array('upl_id' => $repo_id));
-            if (isset($cfg[$repo_mime]) and $cfg[$repo_mime] instanceof IFileRepository) {
-                $result = $cfg[$repo_mime];
-                $result->setId($repo_id);
-                return $result;
+            if (!empty($cfg[$repo_mime])) {
+                $repo_class_name = $cfg[$repo_mime];
+                $result = new $repo_class_name;
+                if ($result instanceof IFileRepository) {
+                    $result->setId($repo_id);
+                    return $result;
+                }
             }
         }
 

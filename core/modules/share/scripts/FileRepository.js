@@ -178,6 +178,21 @@ var FileRepository = new Class({
                 //this.toolbar.getControlById('open').disable();
                 break;
         }
+
+        var btn_map = {
+            'addDir': 'upl_allows_create_dir',
+            'add': 'upl_allows_upload_file',
+            'edit': (r.upl_internal_type == 'folder') ? 'upl_allows_edit_dir' : 'upl_allows_edit_file',
+            'delete': (r.upl_internal_type == 'folder') ? 'upl_allows_delete_dir' : 'upl_allows_delete_file'
+        };
+
+        for (var btn in btn_map) {
+            if (r[btn_map[btn]] && !this.toolbar.getControlById(btn).disabled()) {
+                this.toolbar.getControlById(btn).enable();
+            } else {
+                this.toolbar.getControlById(btn).disable();
+            }
+        }
     },
     processServerResponse:function (result) {
         this.grid.headOff.getElement('th:index(0)').setStyle('width', '100px');

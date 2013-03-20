@@ -16,14 +16,19 @@
  * @author dr.Pavka
  */
 class FileRepository extends Grid {
+
     const TEMPORARY_DIR = 'uploads/temp/';
+
     //путь к кешу ресайзера
     const IMAGE_CACHE = 'uploads/resizer/';
+
     //Путь к кешу для альтернативных картинок
     const IMAGE_ALT_CACHE = 'uploads/alts/';
+
     //const TYPE_FOLDER = 'folder';
     //Фейковый тип для перехода на уровень выше
     const TYPE_FOLDER_UP = 'folderup';
+
     //Имя куки в которой хранится идентификатор папки к которой в последний раз обращались
     const STORED_PID = 'NRGNFRPID';
 
@@ -293,10 +298,59 @@ class FileRepository extends Grid {
     }
 
     /**
+     * Возвращает идентификатор медиа-репозитария по id медиа-контента
+     *
+     * @param $upl_id
+     * @return null|int
+     */
+    protected function getRepositoryIdByUploadId($upl_id) {
+        $this->dbh->select('CALL proc_get_share_uploads_repo_id(%s, @id)', $upl_id);
+        $res = $this->dbh->select('SELECT @id as repo_id');
+        if ($res) {
+            return ($res[0]['repo_id']) ? $res[0]['repo_id'] : null;
+        }
+        return null;
+    }
+
+    /**
+     * Возвращает объект IFileRepository для обработки видео-файлов в репозитарии
+     *
+     * @param int $upl_pid
+     * @return IFileRepository|FileRepositoryLocal|FileRepositoryRO
+     * @throws SystemException
+     */
+    protected function getRepositoryInstance($upl_pid) {
+
+        // 1. получаем upl_id репозитария
+        $repo_id = $this->getRepositoryIdByUploadId($upl_pid);
+        if (!$repo_id) {
+            throw new SystemException('ERR_CANT_GET_REPO_ID', SystemException::ERR_WARNING, $upl_pid);
+        }
+
+        // 2. получаем тип репозитария
+        // 3. ищем instance IFileRepository по mime-типу репозитария
+        $cfg = E()->getConfigValue('repositories');
+        if ($cfg) {
+            $repo_mime = $this->dbh->getScalar($this->getTableName(), 'upl_mime_type', array('upl_id' => $repo_id));
+            if (isset($cfg[$repo_mime]) and $cfg[$repo_mime] instanceof IFileRepository) {
+                $result = $cfg[$repo_mime];
+                $result->setId($repo_id);
+                return $result;
+            }
+        }
+
+        // 3.1. fallback на local
+        $result = new FileRepositoryLocal();
+        $result->setId($repo_id);
+        return $result;
+    }
+
+    /**
      * Сохранение файла
      * @throws SystemException
      */
     protected function save() {
+
         $transactionStarted = $this->dbh->beginTransaction();
         try {
             if (!isset($_POST[$this->getTableName()]) || !isset($_POST[$this->getTableName()][$this->getPK()]) || !isset($_POST[$this->getTableName()]['upl_title']) || !isset($_POST[$this->getTableName()]['upl_pid'])) {
@@ -306,6 +360,9 @@ class FileRepository extends Grid {
             if (!$data['upl_pid']) {
                 throw new SystemException('ERR_BAD_PID');
             }
+
+            // получаем instance IFileRepository
+            $repository = $this->getRepositoryInstance($data['upl_pid']);
 
             $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
             if ($mode == QAL::INSERT) {
@@ -317,9 +374,11 @@ class FileRepository extends Grid {
                 unset($data[$this->getPK()]);
                 $data['upl_filename'] = self::generateFilename($uplPath, pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
                 $data['upl_path'] = $uplPath . '/' . $data['upl_filename'];
-                if (!file_put_contents($data['upl_path'], $fileData)) {
-                    throw new SystemException('ERR_SAVE_IMG');
+
+                if (!$repository->uploadFile($data['upl_path'], $fileData)) {
+                    throw new SystemException('ERR_SAVE_FILE');
                 }
+
                 $fi = E()->FileRepoInfo->analyze($data['upl_path'], true);
 
                 $data['upl_mime_type'] = $fi->mime;
@@ -331,7 +390,6 @@ class FileRepository extends Grid {
 
             } elseif ($mode == QAL::UPDATE) {
                 $pk = $data[$this->getPK()];
-
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data, array($this->getPK() => $pk));
             }
             if (isset($_POST['thumbs'])) {
@@ -420,6 +478,41 @@ class FileRepository extends Grid {
         }
     }
 
+    /**
+     * Переопределенный метод loadData
+     *
+     * Добавляет к набору данных виртуальные поля upl_allows_* для state getRawData
+     * @return mixed
+     */
+    protected function loadData() {
+
+        $result = parent::loadData();
+
+        if ($this->getState() == 'getRawData') {
+
+            $sp = $this->getStateParams(true);
+
+            $uplPID = (!empty($sp['pid'])) ? (int) $sp['pid'] : null;
+
+            if (!$uplPID) return $result;
+
+            // инстанс IFileRepository для текущего $uplPID
+            $repo = $this->getRepositoryInstance($uplPID);
+
+            if ($result) {
+                foreach($result as $i => $row) {
+                    $result[$i]['upl_allows_create_dir'] = $repo->allowsCreateDir();
+                    $result[$i]['upl_allows_upload_file'] = $repo->allowsUploadFile();
+                    $result[$i]['upl_allows_edit_dir'] = $repo->allowsEditDir();
+                    $result[$i]['upl_allows_edit_file'] = $repo->allowsEditFile();
+                    $result[$i]['upl_allows_delete_dir'] = $repo->allowsDeleteDir();
+                    $result[$i]['upl_allows_delete_file'] = $repo->allowsDeleteFile();
+                }
+            }
+        }
+        return $result;
+    }
+
     protected function getRawData() {
         $sp = $this->getStateParams(true);
 
@@ -451,11 +544,20 @@ class FileRepository extends Grid {
             if (is_null($uplID)) {
                 $uplID = 0;
             }
+            // инстанс IFileRepository для текущего $uplPID
+            $repo = $this->getRepositoryInstance($uplPID);
             $newData = array(
                 'upl_id' => $uplID,
                 'upl_pid' => $uplPID,
                 'upl_title' => '...',
-                'upl_internal_type' => self::TYPE_FOLDER_UP
+                'upl_internal_type' => self::TYPE_FOLDER_UP,
+                // набор виртуальных upl_allows_* полей репозитария для folderup
+                'upl_allows_create_dir' => $repo->allowsCreateDir(),
+                'upl_allows_upload_file' => $repo->allowsUploadFile(),
+                'upl_allows_edit_dir' => $repo->allowsEditDir(),
+                'upl_allows_edit_file' => $repo->allowsEditFile(),
+                'upl_allows_delete_dir' => $repo->allowsDeleteDir(),
+                'upl_allows_delete_file' => $repo->allowsDeleteFile(),
             );
             if (!$data->isEmpty())
                 foreach ($this->getDataDescription()->getFieldDescriptionList() as $fieldName) {

@@ -221,6 +221,10 @@ Toolbar.Control = new Class({
         return this;
     },
 
+    disabled:function() {
+        return this.properties.disabled;
+    },
+
     setAction:function (action) {
         this.properties.action = action;
     }

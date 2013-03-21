@@ -118,6 +118,12 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         return true;
     }
 
+    /**
+     * Метод соединения и авторизации на ftp-сервере
+     *
+     * @return bool
+     * @throws SystemException
+     */
     protected function connect() {
 
         $cfg = E()->getConfigValue('repositories.ftp');
@@ -136,6 +142,11 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         return true;
     }
 
+    /**
+     * Метод отсоединения от ftp-сервера
+     *
+     * @return bool
+     */
     protected function disconnect() {
         if ($this->connected()) {
             ftp_close($this->conn_id);
@@ -145,6 +156,11 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         return false;
     }
 
+    /**
+     * Возвращает true, если соединение уже было установлено
+     *
+     * @return bool
+     */
     protected function connected() {
         return is_resource($this->conn_id);
     }

@@ -154,7 +154,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      *
      * @param string $filename имя файла
      * @param string $data данные
-     * @return boolean
+     * @return boolean|object
      * @throws SystemException
      */
     public function uploadFile($filename, $data) {
@@ -173,11 +173,16 @@ class FileRepositoryFTP extends Object implements IFileRepository {
 
         $result = ftp_put($this->conn_id, $basename, $source_file, FTP_BINARY);
 
+        $fi = false;
+        if ($result) {
+            $fi = $this->analyze($source_file);
+        }
+
         unlink($source_file);
 
         $this->disconnect();
 
-        return $result;
+        return $fi;
     }
 
     /**
@@ -201,6 +206,17 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      */
     public function deleteFile($filename) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
+    }
+
+    /**
+     * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)
+     *
+     * @param $filename
+     * @return object
+     * @throws SystemException
+     */
+    public function analyze($filename) {
+        return E()->FileRepoInfo->analyze($filename, true);
     }
 
     /**

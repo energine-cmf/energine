@@ -122,7 +122,7 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         if (!file_put_contents($filename, $data)) {
             return false;
         }
-        return true;
+        return $this->analyze($filename);
     }
 
     /**
@@ -152,6 +152,17 @@ class FileRepositoryLocal extends Object implements IFileRepository {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)
+     *
+     * @param $filename
+     * @return object
+     * @throws SystemException
+     */
+    public function analyze($filename) {
+        return E()->FileRepoInfo->analyze($filename, true);
     }
 
     /**

@@ -384,12 +384,9 @@ class FileRepository extends Grid {
                 $data['upl_filename'] = self::generateFilename($uplPath, pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
                 $data['upl_path'] = $uplPath . '/' . $data['upl_filename'];
 
-                if (!$repository->uploadFile($data['upl_path'], $fileData)) {
+                if (!($fi = $repository->uploadFile($data['upl_path'], $fileData))) {
                     throw new SystemException('ERR_SAVE_FILE');
                 }
-
-                // todo: нужен анализатор для не-локальных репозитариев
-                $fi = E()->FileRepoInfo->analyze($data['upl_path'], true);
 
                 $data['upl_mime_type'] = $fi->mime;
                 $data['upl_internal_type'] = $fi->type;

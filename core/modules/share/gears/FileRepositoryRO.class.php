@@ -147,6 +147,17 @@ class FileRepositoryRO extends Object implements IFileRepository {
     }
 
     /**
+     * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)
+     *
+     * @param $filename
+     * @return object
+     * @throws SystemException
+     */
+    public function analyze($filename) {
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
+    }
+
+    /**
      * Метод создания директории в репозитарии
      *
      * @param string $dir

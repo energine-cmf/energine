@@ -88,7 +88,7 @@ interface IFileRepository {
      *
      * @param string $filename имя файла
      * @param string $data данные
-     * @return boolean
+     * @return boolean|object
      * @throws SystemException
      */
     public function uploadFile($filename, $data);
@@ -98,7 +98,7 @@ interface IFileRepository {
      *
      * @param string $filename имя файла
      * @param string $data данные
-     * @return boolean
+     * @return boolean|object
      * @throws SystemException
      */
     public function updateFile($filename, $data);
@@ -111,6 +111,15 @@ interface IFileRepository {
      * @throws SystemException
      */
     public function deleteFile($filename);
+
+    /**
+     * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)
+     *
+     * @param $filename
+     * @return object
+     * @throws SystemException
+     */
+    public function analyze($filename);
 
     /**
      * Метод создания директории в репозитарии

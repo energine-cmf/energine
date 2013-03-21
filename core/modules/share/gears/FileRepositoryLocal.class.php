@@ -153,4 +153,37 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         }
         return true;
     }
+
+    /**
+     * Метод создания директории в репозитарии
+     *
+     * @param string $dir
+     * @return boolean
+     * @throws SystemException
+     */
+    public function createDir($dir) {
+        if (file_exists($dir)) return true;
+        return mkdir($dir);
+    }
+
+    /**
+     * Метод переименования директории в хранилище
+     *
+     * @param string $dir
+     * @return boolean
+     * @throws SystemException
+     */
+    public function renameDir($dir) {
+        throw new SystemException('ERR_UNIMPLEMENTED_YET');
+    }
+
+    /**
+     * Метод удаления директории из репозитария
+     *
+     * @param string $dir
+     * @throws SystemException
+     */
+    public function deleteDir($dir) {
+        throw new SystemException('ERR_UNIMPLEMENTED_YET');
+    }
 }

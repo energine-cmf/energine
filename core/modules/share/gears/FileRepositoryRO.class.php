@@ -120,7 +120,7 @@ class FileRepositoryRO extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function uploadFile($filename, $data) {
-        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING);
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
     }
 
     /**
@@ -132,7 +132,7 @@ class FileRepositoryRO extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function updateFile($filename, $data) {
-        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING);
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
     }
 
     /**
@@ -143,6 +143,39 @@ class FileRepositoryRO extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function deleteFile($filename) {
-        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING);
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
     }
+
+    /**
+     * Метод создания директории в репозитарии
+     *
+     * @param string $dir
+     * @return boolean
+     * @throws SystemException
+     */
+    public function createDir($dir) {
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $dir);
+    }
+
+    /**
+     * Метод переименования директории в хранилище
+     *
+     * @param string $dir
+     * @return boolean
+     * @throws SystemException
+     */
+    public function renameDir($dir) {
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $dir);
+    }
+
+    /**
+     * Метод удаления директории из репозитария
+     *
+     * @param string $dir
+     * @throws SystemException
+     */
+    public function deleteDir($dir) {
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $dir);
+    }
+
 }

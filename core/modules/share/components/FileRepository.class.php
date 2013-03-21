@@ -218,6 +218,10 @@ class FileRepository extends Grid {
             if (!$data['upl_pid']) {
                 throw new SystemException('ERR_BAD_PID');
             }
+
+            // получаем instance IFileRepository
+            $repository = $this->getRepositoryInstance($data['upl_pid']);
+
             $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
             if ($mode == QAL::INSERT) {
 
@@ -231,10 +235,12 @@ class FileRepository extends Grid {
                 $data['upl_name'] = $data['upl_filename'] = Translit::asURLSegment($data['upl_title']);
                 $data['upl_mime_type'] = 'unknown/mime-type';
                 $data['upl_internal_type'] = FileRepoInfo::META_TYPE_FOLDER;
-                $data['upl_childs_count'] = -1;
+                $data['upl_childs_count'] = 0;
                 $data['upl_path'] = $parentData['upl_path'] . '/' . $data['upl_filename'] . '/';
                 $where = false;
-                mkdir($data['upl_path']);
+
+                $repository->createDir($data['upl_path']);
+
             } else {
                 $where = array('upl_id' => $data['upl_id']);
                 /*$currentUplPath = simplifyDBResult($this->dbh->select($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_id'])), 'upl_path', true);
@@ -382,6 +388,7 @@ class FileRepository extends Grid {
                     throw new SystemException('ERR_SAVE_FILE');
                 }
 
+                // todo: нужен анализатор для не-локальных репозитариев
                 $fi = E()->FileRepoInfo->analyze($data['upl_path'], true);
 
                 $data['upl_mime_type'] = $fi->mime;

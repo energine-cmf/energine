@@ -29,6 +29,13 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     protected $id;
 
     /**
+     * Ресурс соединения по FTP
+     *
+     * @var resource
+     */
+    protected $conn_id;
+
+    /**
      * Метод получения внутреннего имени реализации
      *
      * @return string
@@ -111,6 +118,37 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         return true;
     }
 
+    protected function connect() {
+
+        $cfg = E()->getConfigValue('repositories.ftp');
+        if (empty($cfg)) {
+            throw new SystemException('ERR_MISSING_FTP_CONFIG');
+        }
+
+        $this->conn_id = ftp_connect($cfg['server'], $cfg['port']);
+        if (!$this->conn_id) return false;
+
+        $login_result = ftp_login($this->conn_id, $cfg['username'], $cfg['password']);
+        if (!$login_result) return false;
+
+        ftp_pasv($this->conn_id, true);
+
+        return true;
+    }
+
+    protected function disconnect() {
+        if ($this->connected()) {
+            ftp_close($this->conn_id);
+            $this->conn_id = false;
+            return true;
+        }
+        return false;
+    }
+
+    protected function connected() {
+        return is_resource($this->conn_id);
+    }
+
     /**
      * Метод загрузки файла в хранилище
      *
@@ -121,18 +159,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      */
     public function uploadFile($filename, $data) {
 
-        $cfg = E()->getConfigValue('repositories.ftp');
-        if (empty($cfg)) {
-            throw new SystemException('ERR_MISSING_FTP_CONFIG');
-        }
-
-        $conn_id = ftp_connect($cfg['server'], $cfg['port']);
-        if (!$conn_id) return false;
-
-        $login_result = ftp_login($conn_id, $cfg['username'], $cfg['password']);
-        if (!$login_result) return false;
-
-        ftp_pasv($conn_id, true);
+        if (!$this->connect()) return false;
 
         $source_file = FileRepository::getTmpFilePath($filename);
         file_put_contents($source_file, $data);
@@ -140,26 +167,15 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         $dirname = dirname($filename);
         $basename = basename($filename);
 
-        // рекурсивно переходит (и создает отсутствующие директории) в заданную директорию на ftp
         if ($dirname) {
-            $dirs = explode('/', $dirname);
-            if ($dirs) {
-                foreach($dirs as $dir) {
-                    if ($dir) {
-                        if(!@ftp_chdir($conn_id, $dir)) {
-                            ftp_mkdir($conn_id, $dir);
-                            ftp_chdir($conn_id, $dir);
-                        }
-                    }
-                }
-            }
+            $this->createDir($dirname);
         }
 
-        $result = ftp_put($conn_id, $basename, $source_file, FTP_BINARY);
+        $result = ftp_put($this->conn_id, $basename, $source_file, FTP_BINARY);
 
         unlink($source_file);
 
-        ftp_close($conn_id);
+        $this->disconnect();
 
         return $result;
     }
@@ -184,6 +200,67 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function deleteFile($filename) {
+        throw new SystemException('ERR_UNIMPLEMENTED_YET');
+    }
+
+    /**
+     * Метод создания директории в репозитарии
+     *
+     * @param string $dir
+     * @return boolean
+     * @throws SystemException
+     */
+    public function createDir($dir) {
+
+        $initially_connected = $this->connected();
+
+        if (!$initially_connected) {
+            $this->connect();
+        }
+
+        // рекурсивно переходит (и создает отсутствующие директории) в заданную директорию на ftp
+        if ($dir) {
+            $dirs = explode('/', $dir);
+            if ($dirs) {
+                foreach($dirs as $d) {
+                    if ($d) {
+                        $list = ftp_nlist($this->conn_id, '.');
+                        if (in_array($d, $list)) {
+                            ftp_chdir($this->conn_id, $d);
+                        } else {
+                            ftp_mkdir($this->conn_id, $d);
+                            ftp_chdir($this->conn_id, $d);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!$initially_connected) {
+            $this->disconnect();
+        }
+
+        return true;
+    }
+
+    /**
+     * Метод переименования директории в хранилище
+     *
+     * @param string $dir
+     * @return boolean
+     * @throws SystemException
+     */
+    public function renameDir($dir) {
+        throw new SystemException('ERR_UNIMPLEMENTED_YET');
+    }
+
+    /**
+     * Метод удаления директории из репозитария
+     *
+     * @param string $dir
+     * @throws SystemException
+     */
+    public function deleteDir($dir) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
     }
 }

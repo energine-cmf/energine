@@ -112,4 +112,30 @@ interface IFileRepository {
      */
     public function deleteFile($filename);
 
+    /**
+     * Метод создания директории в репозитарии
+     *
+     * @param string $dir
+     * @return boolean
+     * @throws SystemException
+     */
+    public function createDir($dir);
+
+    /**
+     * Метод переименования директории в хранилище
+     *
+     * @param string $dir
+     * @return boolean
+     * @throws SystemException
+     */
+    public function renameDir($dir);
+
+    /**
+     * Метод удаления директории из репозитария
+     *
+     * @param string $dir
+     * @throws SystemException
+     */
+    public function deleteDir($dir);
+
 }

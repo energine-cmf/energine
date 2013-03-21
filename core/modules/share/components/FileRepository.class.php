@@ -329,7 +329,7 @@ class FileRepository extends Grid {
 
         // 2. получаем тип репозитария
         // 3. ищем instance IFileRepository по mime-типу репозитария
-        $cfg = E()->getConfigValue('repositories');
+        $cfg = E()->getConfigValue('repositories.mapping');
         if ($cfg) {
             $repo_mime = $this->dbh->getScalar($this->getTableName(), 'upl_mime_type', array('upl_id' => $repo_id));
             if (!empty($cfg[$repo_mime])) {

@@ -120,7 +120,48 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function uploadFile($filename, $data) {
-        throw new SystemException('ERR_UNIMPLEMENTED_YET');
+
+        $cfg = E()->getConfigValue('repositories.ftp');
+        if (empty($cfg)) {
+            throw new SystemException('ERR_MISSING_FTP_CONFIG');
+        }
+
+        $conn_id = ftp_connect($cfg['server'], $cfg['port']);
+        if (!$conn_id) return false;
+
+        $login_result = ftp_login($conn_id, $cfg['username'], $cfg['password']);
+        if (!$login_result) return false;
+
+        ftp_pasv($conn_id, true);
+
+        $source_file = FileRepository::getTmpFilePath($filename);
+        file_put_contents($source_file, $data);
+
+        $dirname = dirname($filename);
+        $basename = basename($filename);
+
+        // рекурсивно переходит (и создает отсутствующие директории) в заданную директорию на ftp
+        if ($dirname) {
+            $dirs = explode('/', $dirname);
+            if ($dirs) {
+                foreach($dirs as $dir) {
+                    if ($dir) {
+                        if(!@ftp_chdir($conn_id, $dir)) {
+                            ftp_mkdir($conn_id, $dir);
+                            ftp_chdir($conn_id, $dir);
+                        }
+                    }
+                }
+            }
+        }
+
+        $result = ftp_put($conn_id, $basename, $source_file, FTP_BINARY);
+
+        unlink($source_file);
+
+        ftp_close($conn_id);
+
+        return $result;
     }
 
     /**

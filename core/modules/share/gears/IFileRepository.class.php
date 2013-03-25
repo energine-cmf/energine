@@ -86,22 +86,22 @@ interface IFileRepository {
     /**
      * Метод загрузки файла в хранилище
      *
-     * @param string $filename имя файла
-     * @param string $data данные
-     * @return boolean|object
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @return boolean
      * @throws SystemException
      */
-    public function uploadFile($filename, $data);
+    public function uploadFile($sourceFilename, $destFilename);
 
     /**
      * Метод обновления ранее загруженного файла в хранилище
      *
-     * @param string $filename имя файла
-     * @param string $data данные
+     * @param string $sourceFilename
+     * @param string $destFilename
      * @return boolean|object
      * @throws SystemException
      */
-    public function updateFile($filename, $data);
+    public function updateFile($sourceFilename, $destFilename);
 
     /**
      * Метод удаления файла из хранилища

@@ -280,7 +280,8 @@ Toolbar.File = new Class({
         var obj = this;
         this.element.grab(new Element('input', {'type':'file', 'id':this.properties.id, 'events':{
             'change':function (evt) {
-                var file = evt.target.files[0];
+                // todo: разобраться, зачем это здесь
+                /*var file = evt.target.files[0];
                 var reader = new FileReader();
                 reader.onload = (function (theFile) {
                     return function (e) {
@@ -288,7 +289,7 @@ Toolbar.File = new Class({
                             obj.toolbar._callAction(obj.properties.action, e.target);
                     }
                 })(file);
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(file);*/
             }.bind(this)
         }
         }));

@@ -1,15 +1,19 @@
 ScriptLoader.load('Form');
+var FileAPI = {
+    staticPath: Energine.base + 'scripts/FileAPI/',
+    debug: false
+};
+ScriptLoader.load('FileAPI/FileAPI.min');
+
 var FileRepoForm = new Class({
     Extends:Form,
     initialize:function (el) {
         this.parent(el);
         var uploader;
         if (uploader = this.componentElement.getElementById('uploader')) {
-            this.reader = new FileReader();
             uploader.addEvent('change', this.showPreview.bind(this))
         }
         if (this.thumbs = this.componentElement.getElements('img.thumb')) {
-            this.thumbReader = new FileReader();
             this.componentElement.getElements('input.thumb').addEvent('change', this.showThumbPreview.bind(this));
             var altPreview;
             if (altPreview = this.componentElement.getElements('input.preview')) {
@@ -20,45 +24,24 @@ var FileRepoForm = new Class({
             this.tabPane.disableTab(1);
     },
     showAltPreview:function (evt) {
-        var el = $(evt.target);
-        var files = evt.target.files;
-        var createTemporaryFile = this.createTemporaryFile.bind(this);
-
-        for (var i = 0, f; f = files[i]; i++) {
-            if (f.type.match('image.*')) {
-                this.thumbReader.onload = (function (file) {
-                    return function (e) {
-                        var previewElement = $(el.getProperty('preview')), dataElement = $(el.getProperty('data'));
-                        if (previewElement) previewElement.removeClass('hidden').setProperty('src', e.target.result);
-                        if (dataElement) dataElement.set('value', e.target.result);
-
-                        createTemporaryFile.attempt([e.target.result, file.name, file.type, true]);
-                    }
-                })(f);
-                this.thumbReader.readAsDataURL(f);
-            }
-        }
+       this.showThumbPreview(evt);
     },
     showThumbPreview:function (evt) {
         var el = $(evt.target);
-        var files = evt.target.files;
-        //var binaryReader = new FileReader();
+        var files = FileAPI.getFiles(evt);
 
         for (var i = 0, f; f = files[i]; i++) {
             if (f.type.match('image.*')) {
-                this.thumbReader.onload = (function (file) {
-                    return function (e) {
-                        var previewElement = $(el.getProperty('preview')), dataElement = $(el.getProperty('data'));
-
-                        if (previewElement) previewElement.removeClass('hidden').setProperty('src', e.target.result);
-                        if (dataElement) dataElement.set('value', e.target.result);
-                    }
-                })(f);
-                this.thumbReader.readAsDataURL(f);
+                this.xhrFileUpload(el.getProperty('id'), files, function (response) {
+                    var previewElement = $(el.getProperty('preview')),
+                        dataElement = $(el.getProperty('data'));
+                    if (previewElement) previewElement.removeClass('hidden').setProperty('src', Energine.resizer + 'w0-h0/' + response.tmp_name);
+                    if (dataElement) dataElement.set('value', response.tmp_name);
+                });
             }
         }
 
-
+        //FileAPI.reset(evt.currentTarget);
     },
     generatePreviews:function (tmpFileName) {
 
@@ -68,59 +51,97 @@ var FileRepoForm = new Class({
                 el.setProperty('src', Energine.resizer + 'w' + el.getProperty('width') + '-h' + el.getProperty('height') + '/' + tmpFileName);
             });
     },
-    createTemporaryFile:function (data, filename, type, isAlts) {
-        data = {
-            'data':data,
-            'name':filename
-        };
-        if(isAlts){
-            data = Object.append(data, {'alts':1});
-        }
-        data = Object.toQueryString(data);
-        this.request(this.singlePath + 'temp-file/', data, function (response) {
-            if (response.result && (type.match('image.*') || type.match('video.*'))) {
-                if (type.match('video.*')) {
-                    document.getElementById('preview').removeClass('hidden').setProperty('src', Energine.resizer + 'w0-h0/' + response.data);
+    xhrFileUpload: function(field_name, files, response_callback) {
+
+        var f = {};
+        f[field_name] = files;
+
+        return FileAPI.upload({
+            url: Energine.base + 'file-repository/upload-temp/?json',
+            data: {
+                'key': field_name
+            },
+            files: f,
+            prepare: function (file, options){
+                options.data[FileAPI.uid()] = 1;
+            },
+            beforeupload: function (){
+                // FileAPI.log('beforeupload:', arguments);
+            },
+
+            upload: function (){
+                // FileAPI.log('upload:', arguments);
+            },
+
+            fileupload: function (file, xhr){
+                // FileAPI.log('fileupload:', file.name);
+            },
+
+            fileprogress: function (evt, file){
+                // FileAPI.log('fileprogress:', file.name, '--', evt.loaded/evt.total*100);
+            },
+
+            filecomplete: function (err, xhr, file){
+                // FileAPI.log('filecomplete:', err, file.name);
+
+                if( !err ){
+                    try {
+                        var result = FileAPI.parseJSON(xhr.responseText);
+                        // FileAPI.log(result);
+                        if (result && !result.error) {
+                            response_callback(result);
+                        }
+                    } catch (er){
+                        //FileAPI.log('PARSE ERROR:', er.message);
+                    }
                 }
-                this.generatePreviews(response.data)
+            },
+
+            progress: function (evt, file){
+                //FileAPI.log('progress:', evt.loaded/evt.total*100, '('+file.name+')');
+            },
+
+            complete: function (err, xhr){
+                //FileAPI.log('complete:', err, xhr);
             }
-        }.bind(this)
-        )
-        ;
+        });
     },
     showPreview:function (evt) {
         var previewElement = document.getElementById('preview')
         previewElement.removeProperty('src').addClass('hidden');
         if (this.thumbs)this.thumbs.removeProperty('src').addClass('hidden');
         previewElement.removeClass('hidden').setProperty('src', Energine.base + 'images/loading.gif');
-        var createTemporaryFile = this.createTemporaryFile.bind(this);
-        var files = evt.target.files;
+        var files = FileAPI.getFiles(evt);
         var enableTab = this.tabPane.enableTab.pass(1, this.tabPane);
+        var generatePreviews = this.generatePreviews.bind(this);
         for (var i = 0, f; f = files[i]; i++) {
-            this.reader.onload = (function (theFile) {
-                return function (e) {
-                    document.getElementById('upl_name').set('value', theFile.name);
-                    document.getElementById('upl_filename').set('value', theFile.name);
-                    //document.getElementById('file_type').set('value', theFile.type);
-                    document.getElementById('data').set('value', e.target.result);
-                    document.getElementById('upl_title').set('value', theFile.name.split('.')[0]);
 
-                    if (theFile.type.match('image.*')) {
-                        previewElement.removeClass('hidden').setProperty('src', e.target.result);
-                        createTemporaryFile.attempt([e.target.result, theFile.name, theFile.type]);
-                        enableTab();
-                    }
-                    else if (theFile.type.match('video.*')) {
-                        createTemporaryFile.attempt([e.target.result, theFile.name, theFile.type]);
-                        enableTab();
-                    }
-                    else {
-                        previewElement.removeClass('hidden').setProperty('src', Energine.static + 'images/icons/icon_undefined.gif');
-                    }
-                };
-            })(f);
-            this.reader.readAsDataURL(f);
+            this.xhrFileUpload('uploader', files, function (response) {
+
+                document.getElementById('upl_name').set('value', response.name);
+                document.getElementById('upl_filename').set('value', response.name);
+                //document.getElementById('file_type').set('value', theFile.type);
+                document.getElementById('data').set('value', response.tmp_name);
+                document.getElementById('upl_title').set('value', response.name.split('.')[0]);
+
+                if (response.type.match('image.*')) {
+                    previewElement.removeProperty('src').addClass('hidden');
+                    previewElement.removeClass('hidden').setProperty('src', Energine.resizer + 'w0-h0/' + response.tmp_name);
+                    generatePreviews(response.tmp_name);
+                    enableTab();
+                }
+                else if (response.type.match('video.*')) {
+                    previewElement.removeProperty('src').addClass('hidden');
+                    previewElement.removeClass('hidden').setProperty('src', Energine.resizer + 'w0-h0/' + response.tmp_name);
+                    generatePreviews(response.tmp_name);
+                    enableTab();
+                }
+                else {
+                    previewElement.removeClass('hidden').setProperty('src', Energine.static + 'images/icons/icon_undefined.gif');
+                }
+            });
         }
+        //FileAPI.reset(evt.currentTarget);
     },
     save:function () {
         if (!this.validator.validate()) {

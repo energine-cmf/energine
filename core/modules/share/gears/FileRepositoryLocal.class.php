@@ -113,28 +113,28 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     /**
      * Метод загрузки файла в хранилище
      *
-     * @param string $filename имя файла
-     * @param string $data данные
+     * @param string $sourceFilename
+     * @param string $destFilename
      * @return boolean
      * @throws SystemException
      */
-    public function uploadFile($filename, $data) {
-        if (!file_put_contents($filename, $data)) {
+    public function uploadFile($sourceFilename, $destFilename) {
+        if (!copy($sourceFilename, $destFilename)) {
             return false;
         }
-        return $this->analyze($filename);
+        return $this->analyze($destFilename);
     }
 
     /**
      * Метод обновления ранее загруженного файла в хранилище
      *
-     * @param string $filename имя файла
-     * @param string $data данные
+     * @param string $sourceFilename
+     * @param string $destFilename
      * @return boolean
      * @throws SystemException
      */
-    public function updateFile($filename, $data) {
-        if (!file_put_contents($filename, $data)) {
+    public function updateFile($sourceFilename, $destFilename) {
+        if (!copy($sourceFilename, $destFilename)) {
             return false;
         }
         return true;

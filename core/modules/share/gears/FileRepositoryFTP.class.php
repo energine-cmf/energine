@@ -168,33 +168,28 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     /**
      * Метод загрузки файла в хранилище
      *
-     * @param string $filename имя файла
-     * @param string $data данные
-     * @return boolean|object
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @return boolean
      * @throws SystemException
      */
-    public function uploadFile($filename, $data) {
+    public function uploadFile($sourceFilename, $destFilename) {
 
         if (!$this->connect()) return false;
 
-        $source_file = FileRepository::getTmpFilePath($filename);
-        file_put_contents($source_file, $data);
-
-        $dirname = dirname($filename);
-        $basename = basename($filename);
+        $dirname = dirname($destFilename);
+        $basename = basename($destFilename);
 
         if ($dirname) {
             $this->createDir($dirname);
         }
 
-        $result = ftp_put($this->conn_id, $basename, $source_file, FTP_BINARY);
+        $result = ftp_put($this->conn_id, $basename, $sourceFilename, FTP_BINARY);
 
         $fi = false;
         if ($result) {
-            $fi = $this->analyze($source_file);
+            $fi = $this->analyze($sourceFilename);
         }
-
-        unlink($source_file);
 
         $this->disconnect();
 
@@ -204,12 +199,12 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     /**
      * Метод обновления ранее загруженного файла в хранилище
      *
-     * @param string $filename имя файла
-     * @param string $data данные
+     * @param string $sourceFilename
+     * @param string $destFilename
      * @return boolean
      * @throws SystemException
      */
-    public function updateFile($filename, $data) {
+    public function updateFile($sourceFilename, $destFilename) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
     }
 

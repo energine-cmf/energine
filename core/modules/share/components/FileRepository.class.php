@@ -17,6 +17,7 @@
  */
 class FileRepository extends Grid {
 
+    // путь к временной папке загрузок
     const TEMPORARY_DIR = 'uploads/temp/';
 
     //путь к кешу ресайзера
@@ -105,7 +106,7 @@ class FileRepository extends Grid {
 
     /**
      * Редактирование файла
-     * @param $uplID
+     * @param int $uplID идентификатор аплоада
      */
     private function editFile($uplID) {
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
@@ -124,6 +125,10 @@ class FileRepository extends Grid {
         $this->createThumbFields();
     }
 
+    /**
+     * Создает вкладку для превьюшек
+     *
+     */
     private function createThumbFields() {
         if ($thumbs = $this->getConfigValue('thumbnails')) {
             $tabName = $this->translate('TXT_THUMBS');
@@ -165,43 +170,6 @@ class FileRepository extends Grid {
         }
         $this->js = $this->buildJS();
         $this->setAction('save-dir/');
-    }
-
-    /**
-     * Создание временного файла
-     * Используется для генерации превью
-     *
-     * @throws SystemException
-     */
-    protected function createTemporaryFile() {
-
-        $b = new JSONCustomBuilder();
-        $this->setBuilder($b);
-
-        try {
-            if (!isset($_POST['data']) || !isset($_POST['name'])) {
-                throw new SystemException('ERR_BAD_DATA');
-            }
-            $fileData = self::cleanFileData($_POST['data']);
-            if (!file_put_contents(($result = self::getTmpFilePath($_POST['name'])), $fileData)) {
-                throw new SystemException('ERR_CREATE_FILE');
-            }
-            $b->setProperties(array(
-                'data' => $result,
-                'result' => true
-            ));
-        } catch (SystemException $e) {
-            stop($e->getMessage());
-            $b->setProperties(array(
-                'data' => false,
-                'result' => false,
-                'errors' => array(
-                    $e->getMessage()
-                )
-            ));
-        }
-
-
     }
 
     /**
@@ -272,13 +240,14 @@ class FileRepository extends Grid {
     /**
      * Сохранение thumbов
      *
-     * @param $thumbsData
-     * @param $baseFileName
+     * @param array $thumbsData массив вида названия -> имя временного файла
+     * @param string $baseFileName
+     * @throws SystemException
      */
     private function saveThumbs($thumbsData, $baseFileName) {
         $thumbProps = $this->getConfigValue('thumbnails');
-        foreach ($thumbsData as $thumbName => $thumbData) {
-            if ($thumbData) {
+        foreach ($thumbsData as $thumbName => $thumbTmpName) {
+            if ($thumbTmpName) {
                 if ($thumbName != 'preview') {
                     $thumbPath = 'w0-h0/';
                     if (isset($thumbProps[$thumbName])) {
@@ -296,7 +265,7 @@ class FileRepository extends Grid {
                     //                    stop($dir);
                     mkdir($dir, 0777, true);
                 }
-                if (!file_put_contents($fullFileName, self::cleanFileData($thumbData))) {
+                if (!copy($thumbTmpName, $fullFileName)) {
                     throw new SystemException('ERR_CANT_SAVE_THUMB', SystemException::ERR_WARNING, $fullFileName);
                 }
             }
@@ -375,7 +344,7 @@ class FileRepository extends Grid {
 
             $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
             if ($mode == QAL::INSERT) {
-                $fileData = self::cleanFileData($data['upl_path']);
+                $tmpFileName = $data['upl_path'];
                 $uplPath = $this->dbh->getScalar($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_pid']));
                 if (empty($uplPath)) {
                     throw new SystemException('ERR_BAD_PID');
@@ -384,7 +353,7 @@ class FileRepository extends Grid {
                 $data['upl_filename'] = self::generateFilename($uplPath, pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
                 $data['upl_path'] = $uplPath . '/' . $data['upl_filename'];
 
-                if (!($fi = $repository->uploadFile($data['upl_path'], $fileData))) {
+                if (!($fi = $repository->uploadFile($tmpFileName, $data['upl_path']))) {
                     throw new SystemException('ERR_SAVE_FILE');
                 }
 
@@ -582,7 +551,7 @@ class FileRepository extends Grid {
      *
      * @todo доделать
      * @return void
-     * @access protected
+     * @throws SystemException
      */
     protected function uploadZip() {
         $builder = new JSONCustomBuilder();
@@ -593,9 +562,9 @@ class FileRepository extends Grid {
                 throw new SystemException('ERR_BAD_DATA', SystemException::ERR_CRITICAL);
             }
             $fileName = tempnam(self::TEMPORARY_DIR, "zip");
-            $data = self::cleanFileData($_POST['data']);
+            $tmpFileName = $_POST['data'];
 
-            if (!file_put_contents($fileName, $data)) {
+            if (!copy($tmpFileName, $fileName)) {
                 throw new SystemException('ERR_CANT_CREATE_FILE', SystemException::ERR_CRITICAL);
             }
             $uplPID = $_POST['PID'];
@@ -644,18 +613,6 @@ class FileRepository extends Grid {
         }
     }
 
-    /**
-     * Очистка пришедших из JS FileReader
-     * @static
-     * @param $data
-     * @param bool $mime
-     * @return string
-     */
-    public static function cleanFileData($data) {
-        $tmp = explode(';base64,', $data);
-        return base64_decode($tmp[1]);
-    }
-
     public static function getTmpFilePath($filename) {
         return self::TEMPORARY_DIR . basename($filename);
     }
@@ -673,4 +630,76 @@ class FileRepository extends Grid {
         return $filename;
     }
 
+    protected function uploadTemporaryFile() {
+
+        $builder = new JSONCustomBuilder();
+        $this->setBuilder($builder);
+
+        if( !empty($_SERVER['HTTP_ORIGIN']) ){
+            header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+            header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+            header('Access-Control-Allow-Headers: Origin, X-Requested-With');
+        }
+
+        if( $_SERVER['REQUEST_METHOD'] == 'OPTIONS' ){
+            exit();
+        }
+
+        $response = array(
+            'name' => '',
+            'type' => '',
+            'tmp_name' => '',
+            'error' => false,
+            'error_message' => '',
+            'size' => 0,
+            'preview' => ''
+        );
+
+        try {
+            if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
+                header('HTTP/1.1 201 Created');
+                $key = (isset($_POST['key'])) ? $_POST['key'] : 'unknown';
+                if (isset($_FILES[$key]) and is_uploaded_file($_FILES[$key]['tmp_name'])) {
+                    $tmp_name = $this->getTmpFilePath($_FILES[$key]['name']);
+                    if (move_uploaded_file($_FILES[$key]['tmp_name'], $tmp_name)) {
+                        $response['name'] = $_FILES[$key]['name'];
+                        $response['type'] = $_FILES[$key]['type'];
+                        $response['tmp_name'] = $tmp_name;
+                        $response['error'] = $_FILES[$key]['error'];
+                        $response['size'] = $_FILES[$key]['size'];
+                        // todo: resize + base64_encode
+                        // $response['preview'] = 'data:' + $response['type'] . ';base64,' . base64_encode(file_get_contents($tmp_name));
+                    } else {
+                        $response['error'] = true;
+                        $response['error_message'] = 'ERR_NO_FILE';
+                    }
+                } else {
+                    $response['error'] = true;
+                    $response['error_message'] = 'ERR_NO_FILE';
+                }
+            } else {
+                $response['error'] = true;
+                $response['error_message'] = 'ERR_INVALID_REQUEST_METHOD';
+            }
+        } catch (Exception $e) {
+            $response['error'] = true;
+            $response['error_message'] = (string) $e;
+        }
+
+        // IE9 no-flash / iframe upload (fallback)
+        $jsonp	= isset($_REQUEST['callback']) ? trim($_REQUEST['callback']) : null;
+        if (!empty($jsonp)) {
+            echo  '<script type="text/javascript">'
+                . '(function(ctx,jsonp){'
+                . 	'if(ctx&&ctx[jsonp]){'
+                .		'ctx[jsonp](200, "OK", "'.addslashes(json_encode($response)).'")'
+                .	'}'
+                . '})(this.parent, "'.$jsonp.'")'
+                . '</script>'
+            ;
+            exit();
+        }
+
+        $builder->setProperties($response);
+    }
 }

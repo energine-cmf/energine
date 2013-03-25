@@ -57,7 +57,7 @@ var FileRepoForm = new Class({
         f[field_name] = files;
 
         return FileAPI.upload({
-            url: Energine.base + 'file-repository/upload-temp/?json',
+            url: this.singlePath + 'upload-temp/?json',
             data: {
                 'key': field_name
             },

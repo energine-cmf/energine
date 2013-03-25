@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+    <state name="uploadTemporaryFile" rights="3">
+        <uri_patterns>
+            <pattern>/upload-temp/</pattern>
+        </uri_patterns>
+    </state>
     <state name="createTemporaryFile" rights="3">
         <uri_patterns>
             <pattern>/temp-file/</pattern>
@@ -140,11 +145,6 @@
             <pattern>/[pid]/get-data/page-[pageNumber]/</pattern>
             <!--<pattern>/get-data/[sortField]-[sortDir]/</pattern>
             <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>-->
-        </uri_patterns>
-    </state>
-    <state name="uploadTemporaryFile" right="3">
-        <uri_patterns>
-            <pattern>/upload-temp/</pattern>
         </uri_patterns>
     </state>
 </configuration>

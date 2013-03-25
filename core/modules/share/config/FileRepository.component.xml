@@ -146,7 +146,7 @@
             <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>-->
         </uri_patterns>
     </state>
-    <state name="uploadTemporaryFile" right="3">
+    <state name="uploadTemporaryFile" rights="3">
         <uri_patterns>
             <pattern>/upload-temp/</pattern>
         </uri_patterns>

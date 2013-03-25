@@ -21,11 +21,17 @@
             <field name="upl_duration" type="hidden"/>
             <field name="upl_width" type="hidden"/>
             <field name="upl_height" type="hidden"/>
-            <field name="upl_publication_date" type="hidden"  outputFormat="%o"/>
+            <field name="upl_publication_date" type="hidden" outputFormat="%o"/>
+            <field name="upl_allows_create_dir" type="hidden"/>
+            <field name="upl_allows_upload_file" type="hidden"/>
+            <field name="upl_allows_edit_file" type="hidden"/>
+            <field name="upl_allows_edit_dir" type="hidden"/>
+            <field name="upl_allows_delete_dir" type="hidden"/>
+            <field name="upl_allows_delete_file" type="hidden"/>
         </fields>
         <toolbar>
-            <control id="open" title="BTN_OPEN" type="button" onclick="open"/>
-            <control id="sep01" type="separator"/>
+            <!--<control id="open" title="BTN_OPEN" type="button" onclick="open"/>
+            <control id="sep01" type="separator"/>-->
             <control id="add" title="BTN_UPLOAD" type="button" onclick="add"/>
             <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>

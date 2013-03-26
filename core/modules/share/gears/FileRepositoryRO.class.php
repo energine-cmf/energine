@@ -81,7 +81,7 @@ class FileRepositoryRO extends Object implements IFileRepository {
      * @return boolean
      */
     public function allowsEditDir() {
-        return false;
+        return true;
     }
 
     /**
@@ -90,7 +90,7 @@ class FileRepositoryRO extends Object implements IFileRepository {
      * @return boolean
      */
     public function allowsEditFile() {
-        return false;
+        return true;
     }
 
     /**

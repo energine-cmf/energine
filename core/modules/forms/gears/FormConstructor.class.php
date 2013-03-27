@@ -198,27 +198,30 @@ class FormConstructor extends DBWorker {
         $fieldIndex = sizeof(
             $cols = array_keys($this->dbh->getColumnsInfo($this->tableName)));
         list(, $tblName) = DBA::getFQTableName($this->tableName, true);
-        while (in_array(
-            $fieldName = $tblName . '_field_' . $fieldIndex, $cols)) {
-            $fieldIndex++;
-        }
+        $fieldSuffix = '';
         if ($fieldType == FieldDescription::FIELD_TYPE_MULTI) {
-            $fieldName .= '_multi';
+            $fieldSuffix= '_multi';
             $fieldIsNullable = true;
         }
         elseif ($fieldType == FieldDescription::FIELD_TYPE_FILE) {
-            $fieldName .= '_file';
+            $fieldSuffix = '_file';
         }
         elseif ($fieldType == FieldDescription::FIELD_TYPE_INFO) {
-            $fieldName .= '_info';
+            $fieldSuffix = '_info';
             $fieldIsNullable = true;
         }
         elseif ($fieldType == FieldDescription::FIELD_TYPE_PHONE) {
-            $fieldName .= '_phone';
+            $fieldSuffix = '_phone';
         }
         elseif ($fieldType == FieldDescription::FIELD_TYPE_EMAIL) {
-            $fieldName .= '_email';
+            $fieldSuffix= '_email';
         }
+
+        while (in_array(
+            $fieldName = $tblName . '_field_' . $fieldIndex.$fieldSuffix, $cols)) {
+            $fieldIndex++;
+        }
+
 
         $query = 'ALTER TABLE ' . $this->tableName . ' ADD ' . $fieldName . ' ';
         $query .= self::getFDAsSQLString($fieldType);

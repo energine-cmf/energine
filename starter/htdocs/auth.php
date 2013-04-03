@@ -1,15 +1,19 @@
 <?php
+
 //на всякий пожарный проверяем реферрера
 if (!isset($_SERVER['HTTP_REFERER'])) {
     //не местных  - в сад
     exit;
 }
-//подключаем инициализационные функции
-require_once('core/kernel/ini.func.php');
 
-//подключаем служебные(вспомогательные) функции
-require_once('core/kernel/utils.func.php');
+// подключаем bootstrap
+require_once('bootstrap.php');
 
+// подключаем инициализационные функции
+require_once(CORE_DIR . '/kernel/ini.func.php');
+
+// подключаем служебные(вспомогательные) функции
+require_once(CORE_DIR . '/kernel/utils.func.php');
 
 if (
         ($login = (isset($_POST['user']['login']) &&

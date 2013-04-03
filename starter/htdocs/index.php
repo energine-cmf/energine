@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Три... Два... Один... Запуск!
  *
@@ -6,12 +7,16 @@
  * @author pavka
  * @copyright Energine 2011
  */
-try {
-    //подключаем инициализационные функции
-    require_once('core/kernel/ini.func.php');
 
-    //подключаем служебные(вспомогательные) функции
-    require_once('core/kernel/utils.func.php');
+try {
+    // подключаем bootstrap
+    require_once('bootstrap.php');
+
+    // подключаем инициализационные функции
+    require_once(CORE_DIR . '/kernel/ini.func.php');
+
+    // подключаем служебные(вспомогательные) функции
+    require_once(CORE_DIR . '/kernel/utils.func.php');
 
     UserSession::start();
     $reg = E();

@@ -59,7 +59,8 @@ var FileRepoForm = new Class({
         return FileAPI.upload({
             url: this.singlePath + 'upload-temp/?json',
             data: {
-                'key': field_name
+                'key': field_name,
+                'pid': $('upl_pid').get('value')
             },
             files: f,
             prepare: function (file, options){

@@ -95,7 +95,11 @@ var FileManager = new Class({
         if(openBtn)
             openBtn.setAction(action);
 
-        if (selectedItem.obj['upl_name']== '...') {
+        if (!selectedItem.obj['upl_is_ready']) {
+            if (openBtn) openBtn.disable();
+            delBtn.disable();
+        }
+        else if (selectedItem.obj['upl_name']== '...') {
             delBtn.disable();
             if(renBtn)renBtn.disable();
         }
@@ -166,10 +170,12 @@ var FileManager = new Class({
     },
 
     insert: function() {
-        //Вроде как костыль
-        if(this.toolbar.getControlById('open')){
+        var r = this.viewWidget.getSelectedItem().obj;
+        if (r.upl_is_ready) {
             ModalBox.setReturnValue(this.viewWidget.getSelectedItem().obj);
             ModalBox.close();
+        } else {
+            alert(Energine.translations['ERR_UPL_NOT_READY']);
         }
     },
     uploadZip: function(){

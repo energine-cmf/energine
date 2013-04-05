@@ -94,6 +94,12 @@ Grid.implement({
                  new Element('td', {'colspan': 2, 'html':'<a href="#">'+ record['upl_path'] + '</a>'}),
                  ]
                  );*/
+                if (!record['upl_is_ready'])
+                    new Element('tr').inject(propsTable).adopt([
+                        new Element('td', {'html':this.metadata['upl_is_ready'].title + ' :'}),
+                        new Element('td', {'html': Energine.translations['TXT_NOT_READY']})
+                    ]
+                    );
                 if (record['upl_mime_type'])
                     new Element('tr').inject(propsTable).adopt([
                         new Element('td', {'html':this.metadata['upl_mime_type'].title + ' :'}),
@@ -172,7 +178,7 @@ var FileRepository = new Class({
                 break;
             case 'repo':
                 this.toolbar.disableControls();
-                if (openBtn)openBtn.enable();
+                if (openBtn && r.upl_is_ready)openBtn.enable();
                 break;
             default:
                 //this.toolbar.getControlById('open').disable();
@@ -241,8 +247,12 @@ var FileRepository = new Class({
                 this.loadPage(1);
                 break;
             default:
-                ModalBox.setReturnValue(r);
-                ModalBox.close();
+                if (r.upl_is_ready) {
+                    ModalBox.setReturnValue(r);
+                    ModalBox.close();
+                } else {
+                    alert(Energine.translations['ERR_UPL_NOT_READY']);
+                }
                 break;
         }
     },

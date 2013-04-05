@@ -29,6 +29,24 @@ class FileRepositoryRO extends Object implements IFileRepository {
     protected $id;
 
     /**
+     * Базовый путь к репозитарию
+     *
+     * @var string
+     */
+    protected $base;
+
+    /**
+     * Конструктор класса
+     *
+     * @param int $id
+     * @param string $base
+     */
+    public function __construct($id, $base) {
+        $this->setId($id);
+        $this->setBase($base);
+    }
+
+    /**
      * Метод получения внутреннего имени реализации
      *
      * @return string
@@ -55,6 +73,26 @@ class FileRepositoryRO extends Object implements IFileRepository {
      */
     public function getId() {
         return $this->id;
+    }
+
+    /**
+     * Метод установки базового пути репозитария (upl_path)
+     *
+     * @param string $base
+     * @return IFileRepository
+     */
+    public function setBase($base) {
+        $this->base = $base;
+        return $this;
+    }
+
+    /**
+     * Метод получения базового пути репозитария (upl_path)
+     *
+     * @return string
+     */
+    public function getBase() {
+        return $this->base;
     }
 
     /**
@@ -112,7 +150,7 @@ class FileRepositoryRO extends Object implements IFileRepository {
     }
 
     /**
-     * Метод загрузки файла в хранилище
+     * Метод загрузки media-файла в хранилище
      *
      * @param string $sourceFilename
      * @param string $destFilename
@@ -124,7 +162,21 @@ class FileRepositoryRO extends Object implements IFileRepository {
     }
 
     /**
-     * Метод обновления ранее загруженного файла в хранилище
+     * Метод загрузки alt-файла в хранилище
+     *
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $destFilename);
+    }
+
+    /**
+     * Метод обновления ранее загруженного media-файла в хранилище
      *
      * @param string $sourceFilename
      * @param string $destFilename
@@ -136,13 +188,40 @@ class FileRepositoryRO extends Object implements IFileRepository {
     }
 
     /**
-     * Метод удаления файла из хранилища
+     * Метод обновления ранее загруженного alt-файла в хранилище
+     *
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function updateAlt($sourceFilename, $destFilename, $width, $height) {
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $destFilename);
+    }
+
+    /**
+     * Метод удаления media-файла из хранилища
      *
      * @param string $filename имя файла
      * @return boolean
      * @throws SystemException
      */
     public function deleteFile($filename) {
+        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
+    }
+
+    /**
+     * Метод удаления alt-файла из хранилища
+     *
+     * @param string $filename имя файла
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function deleteAlt($filename, $width, $height) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
     }
 

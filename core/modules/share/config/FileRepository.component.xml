@@ -26,6 +26,7 @@
             <field name="upl_duration" type="hidden"/>
             <field name="upl_width" type="hidden"/>
             <field name="upl_height" type="hidden"/>
+            <field name="upl_is_ready" type="hidden"/>
             <field name="upl_publication_date" type="hidden" outputFormat="%o"/>
             <field name="upl_allows_create_dir" type="hidden"/>
             <field name="upl_allows_upload_file" type="hidden"/>

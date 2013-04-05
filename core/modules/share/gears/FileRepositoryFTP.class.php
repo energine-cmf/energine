@@ -21,6 +21,9 @@
  */
 class FileRepositoryFTP extends Object implements IFileRepository {
 
+    // путь FTP начиная от FTP root для загрузки alt-файлов
+    const IMAGE_ALT_CACHE = 'resizer/w[width]-h[height]/[upl_path]';
+
     /**
      * Внутренний идентификатор репозитария
      *
@@ -29,11 +32,63 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     protected $id;
 
     /**
-     * Ресурс соединения по FTP
+     * Базовый путь к репозитрию
      *
-     * @var resource
+     * @var string
      */
-    protected $conn_id;
+    protected $base;
+
+    /**
+     * Объект FTP для загрузки файлов
+     *
+     * @var FTP
+     */
+    protected $ftp_media;
+
+    /**
+     * Объект FTP для загрузки alts
+     *
+     * @var FTP
+     */
+    protected $ftp_alts;
+
+    /**
+     * Конструктор класса
+     *
+     * @param int $id
+     * @param string $base
+     * @throws SystemException
+     */
+    public function __construct($id, $base) {
+
+        $this->setId($id);
+        $this->setBase($base);
+
+        $cfg_ftp_media = E()->getConfigValue('repositories.ftp.' . $base . '.media');
+        $cfg_ftp_alts = E()->getConfigValue('repositories.ftp.' . $base . '.alts');
+
+        if (empty($cfg_ftp_media)) {
+            throw new SystemException('ERR_MISSING_MEDIA_FTP_CONFIG');
+        }
+
+        if (empty($cfg_ftp_alts)) {
+            throw new SystemException('ERR_MISSING_ALTS_FTP_CONFIG');
+        }
+
+        $this->ftp_media = new FTP(
+            $cfg_ftp_media['server'],
+            $cfg_ftp_media['port'],
+            $cfg_ftp_media['username'],
+            $cfg_ftp_media['password']
+        );
+
+        $this->ftp_alts = new FTP(
+            $cfg_ftp_alts['server'],
+            $cfg_ftp_alts['port'],
+            $cfg_ftp_alts['username'],
+            $cfg_ftp_alts['password']
+        );
+    }
 
     /**
      * Метод получения внутреннего имени реализации
@@ -62,6 +117,26 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      */
     public function getId() {
         return $this->id;
+    }
+
+    /**
+     * Метод установки базового пути репозитария (upl_path)
+     *
+     * @param string $base
+     * @return IFileRepository
+     */
+    public function setBase($base) {
+        $this->base = $base;
+        return $this;
+    }
+
+    /**
+     * Метод получения базового пути репозитария (upl_path)
+     *
+     * @return string
+     */
+    public function getBase() {
+        return $this->base;
     }
 
     /**
@@ -119,85 +194,67 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     /**
-     * Метод соединения и авторизации на ftp-сервере
-     *
-     * @return bool
-     * @throws SystemException
-     */
-    protected function connect() {
-
-        $cfg = E()->getConfigValue('repositories.ftp');
-        if (empty($cfg)) {
-            throw new SystemException('ERR_MISSING_FTP_CONFIG');
-        }
-
-        $this->conn_id = ftp_connect($cfg['server'], $cfg['port']);
-        if (!$this->conn_id) return false;
-
-        $login_result = ftp_login($this->conn_id, $cfg['username'], $cfg['password']);
-        if (!$login_result) return false;
-
-        ftp_pasv($this->conn_id, true);
-
-        return true;
-    }
-
-    /**
-     * Метод отсоединения от ftp-сервера
-     *
-     * @return bool
-     */
-    protected function disconnect() {
-        if ($this->connected()) {
-            ftp_close($this->conn_id);
-            $this->conn_id = false;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Возвращает true, если соединение уже было установлено
-     *
-     * @return bool
-     */
-    protected function connected() {
-        return is_resource($this->conn_id);
-    }
-
-    /**
-     * Метод загрузки файла в хранилище
+     * Метод загрузки media-файла в хранилище
      *
      * @param string $sourceFilename
      * @param string $destFilename
-     * @return boolean
+     * @return boolean|object
      * @throws SystemException
      */
     public function uploadFile($sourceFilename, $destFilename) {
 
-        if (!$this->connect()) return false;
-
-        $dirname = dirname($destFilename);
-        $basename = basename($destFilename);
-
-        if ($dirname) {
-            $this->createDir($dirname);
+        try {
+            $base = $this->getBase() . '/';
+            if (strpos($destFilename, $base) === 0) {
+                $destFilename = substr($destFilename, strlen($base));
+            }
+            $this->ftp_media->connect();
+            $result = $this->ftp_media->uploadFile($sourceFilename, $destFilename);
+            $fi = false;
+            if ($result) {
+                $fi = $this->analyze($sourceFilename);
+            }
+            $this->ftp_media->disconnect();
+            return $fi;
+        } catch (Exception $e) {
+            return false;
         }
-
-        $result = ftp_put($this->conn_id, $basename, $sourceFilename, FTP_BINARY);
-
-        $fi = false;
-        if ($result) {
-            $fi = $this->analyze($sourceFilename);
-        }
-
-        $this->disconnect();
-
-        return $fi;
     }
 
     /**
-     * Метод обновления ранее загруженного файла в хранилище
+     * Метод загрузки alt-файла в хранилище
+     *
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @param int $width
+     * @param int $height
+     * @return boolean|object
+     * @throws SystemException
+     */
+    public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
+
+        $destFilename = str_replace(
+            array('[width]', '[height]', '[upl_path]'),
+            array($width, $height, $destFilename),
+            self::IMAGE_ALT_CACHE
+        );
+
+        try {
+            $this->ftp_alts->connect();
+            $result = $this->ftp_alts->uploadFile($sourceFilename, $destFilename);
+            $fi = false;
+            if ($result) {
+                $fi = $this->analyze($sourceFilename);
+            }
+            $this->ftp_alts->disconnect();
+            return $fi;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Метод обновления ранее загруженного media-файла в хранилище
      *
      * @param string $sourceFilename
      * @param string $destFilename
@@ -209,13 +266,40 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     /**
-     * Метод удаления файла из хранилища
+     * Метод обновления ранее загруженного alt-файла в хранилище
+     *
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function updateAlt($sourceFilename, $destFilename, $width, $height) {
+        throw new SystemException('ERR_UNIMPLEMENTED_YET');
+    }
+
+    /**
+     * Метод удаления media-файла из хранилища
      *
      * @param string $filename имя файла
      * @return boolean
      * @throws SystemException
      */
     public function deleteFile($filename) {
+        throw new SystemException('ERR_UNIMPLEMENTED_YET');
+    }
+
+    /**
+     * Метод удаления alt-файла из хранилища
+     *
+     * @param string $filename имя файла
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function deleteAlt($filename, $width, $height) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
     }
 
@@ -227,7 +311,11 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function analyze($filename) {
-        return E()->FileRepoInfo->analyze($filename, true);
+        $fi = E()->FileRepoInfo->analyze($filename, true);
+        if (is_object($fi)) {
+            $fi->ready = true;
+        }
+        return $fi;
     }
 
     /**
@@ -235,36 +323,30 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      *
      * @param string $dir
      * @return boolean
-     * @throws SystemException
+     * @throws Exception|SystemException
      */
     public function createDir($dir) {
 
-        $initially_connected = $this->connected();
+        $initially_connected = $this->ftp_media->connected();
 
-        if (!$initially_connected) {
-            $this->connect();
-        }
+        try {
 
-        // рекурсивно переходит (и создает отсутствующие директории) в заданную директорию на ftp
-        if ($dir) {
-            $dirs = explode('/', $dir);
-            if ($dirs) {
-                foreach($dirs as $d) {
-                    if ($d) {
-                        $list = ftp_nlist($this->conn_id, '.');
-                        if (in_array($d, $list)) {
-                            ftp_chdir($this->conn_id, $d);
-                        } else {
-                            ftp_mkdir($this->conn_id, $d);
-                            ftp_chdir($this->conn_id, $d);
-                        }
-                    }
-                }
+            $base = $this->getBase() . '/';
+            if (strpos($dir, $base) === 0) {
+                $dir = substr($dir, strlen($base));
             }
-        }
 
-        if (!$initially_connected) {
-            $this->disconnect();
+            if (!$initially_connected) {
+                $this->ftp_media->connect();
+            }
+
+            $this->ftp_media->createDir($dir);
+
+            if (!$initially_connected) {
+                $this->ftp_media->disconnect();
+            }
+        } catch (Exception $e) {
+            return false;
         }
 
         return true;

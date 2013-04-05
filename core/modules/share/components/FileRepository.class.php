@@ -20,12 +20,6 @@ class FileRepository extends Grid {
     // путь к временной папке загрузок
     const TEMPORARY_DIR = 'uploads/temp/';
 
-    //путь к кешу ресайзера
-    const IMAGE_CACHE = 'uploads/resizer/';
-
-    //Путь к кешу для альтернативных картинок
-    const IMAGE_ALT_CACHE = 'uploads/alts/';
-
     //const TYPE_FOLDER = 'folder';
     //Фейковый тип для перехода на уровень выше
     const TYPE_FOLDER_UP = 'folderup';
@@ -38,6 +32,7 @@ class FileRepository extends Grid {
         $this->setTableName('share_uploads');
         $this->setFilter(array('upl_is_active' => 1));
         $this->setOrder(array('upl_title' => QAL::ASC));
+        $this->addTranslation('TXT_NOT_READY', 'FIELD_UPL_IS_READY', 'ERR_UPL_NOT_READY');
         //Если данные пришли из модального окна
         if (isset($_POST['modalBoxData']) && ($d = json_decode($_POST['modalBoxData']))) {
             if (
@@ -204,7 +199,7 @@ class FileRepository extends Grid {
                 $data['upl_mime_type'] = 'unknown/mime-type';
                 $data['upl_internal_type'] = FileRepoInfo::META_TYPE_FOLDER;
                 $data['upl_childs_count'] = 0;
-                $data['upl_path'] = $parentData['upl_path'] . '/' . $data['upl_filename'] . '/';
+                $data['upl_path'] = $parentData['upl_path'] . '/' . $data['upl_filename'];
                 $where = false;
 
                 $repository->createDir($data['upl_path']);
@@ -242,31 +237,20 @@ class FileRepository extends Grid {
      *
      * @param array $thumbsData массив вида названия -> имя временного файла
      * @param string $baseFileName
-     * @throws SystemException
+     * @param IFileRepository $repo
+     * @throws SystemException|Exception
      */
-    private function saveThumbs($thumbsData, $baseFileName) {
+    private function saveThumbs($thumbsData, $baseFileName, $repo) {
         $thumbProps = $this->getConfigValue('thumbnails');
         foreach ($thumbsData as $thumbName => $thumbTmpName) {
             if ($thumbTmpName) {
-                if ($thumbName != 'preview') {
-                    $thumbPath = 'w0-h0/';
-                    if (isset($thumbProps[$thumbName])) {
-                        $thumbPath = 'w' . $thumbProps[$thumbName]['width'] . '-h' . $thumbProps[$thumbName]['height'] . '/';
-                    }
-                    $dir = self::IMAGE_CACHE . $thumbPath . dirname($baseFileName) . '/';
-                    $fullFileName = self::IMAGE_CACHE . $thumbPath . $baseFileName;
-                } else {
-                    $thumbPath = '';
-                    $dir = self::IMAGE_ALT_CACHE . $thumbPath . dirname($baseFileName) . '/';
-                    $fullFileName = self::IMAGE_ALT_CACHE . $thumbPath . $baseFileName;
-                }
-
-                if (!file_exists($dir)) {
-                    //                    stop($dir);
-                    mkdir($dir, 0777, true);
-                }
-                if (!copy($thumbTmpName, $fullFileName)) {
-                    throw new SystemException('ERR_CANT_SAVE_THUMB', SystemException::ERR_WARNING, $fullFileName);
+                $w = (!empty($thumbProps[$thumbName]['width'])) ? (int)$thumbProps[$thumbName]['width'] : 0;
+                $h = (!empty($thumbProps[$thumbName]['height'])) ? (int)$thumbProps[$thumbName]['height'] : 0;
+                try {
+                    // todo: thumbName == preview ?
+                    $repo->uploadAlt($thumbTmpName, $baseFileName, $w, $h);
+                } catch (Exception $e) {
+                    throw new SystemException('ERR_SAVE_THUMBNAIL', SystemException::ERR_CRITICAL, (string) $e);
                 }
             }
         }
@@ -307,19 +291,18 @@ class FileRepository extends Grid {
         $cfg = E()->getConfigValue('repositories.mapping');
         if ($cfg) {
             $repo_mime = $this->dbh->getScalar($this->getTableName(), 'upl_mime_type', array('upl_id' => $repo_id));
+            $repo_base = $this->dbh->getScalar($this->getTableName(), 'upl_path', array('upl_id' => $repo_id));
             if (!empty($cfg[$repo_mime])) {
                 $repo_class_name = $cfg[$repo_mime];
-                $result = new $repo_class_name;
+                $result = new $repo_class_name($repo_id, $repo_base);
                 if ($result instanceof IFileRepository) {
-                    $result->setId($repo_id);
                     return $result;
                 }
             }
         }
 
         // 3.1. fallback на local
-        $result = new FileRepositoryLocal();
-        $result->setId($repo_id);
+        $result = new FileRepositoryLocal($repo_id, 'uploads/public');
         return $result;
     }
 
@@ -346,6 +329,7 @@ class FileRepository extends Grid {
             if ($mode == QAL::INSERT) {
                 $tmpFileName = $data['upl_path'];
                 $uplPath = $this->dbh->getScalar($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_pid']));
+                if ($uplPath && substr($uplPath, -1) == '/') $uplPath = substr($uplPath, 0, -1);
                 if (empty($uplPath)) {
                     throw new SystemException('ERR_BAD_PID');
                 }
@@ -361,6 +345,7 @@ class FileRepository extends Grid {
                 $data['upl_internal_type'] = $fi->type;
                 $data['upl_width'] = $fi->width;
                 $data['upl_height'] = $fi->height;
+                $data['upl_is_ready'] = $fi->ready;
                 $data['upl_publication_date'] = date('Y-m-d H:i:s');
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data);
 
@@ -369,7 +354,7 @@ class FileRepository extends Grid {
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data, array($this->getPK() => $pk));
             }
             if (isset($_POST['thumbs'])) {
-                $this->saveThumbs($_POST['thumbs'], $data['upl_path']);
+                $this->saveThumbs($_POST['thumbs'], $data['upl_path'], $repository);
             }
 
             $transactionStarted = !($this->dbh->commit());
@@ -659,6 +644,8 @@ class FileRepository extends Grid {
             if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
                 header('HTTP/1.1 201 Created');
                 $key = (isset($_POST['key'])) ? $_POST['key'] : 'unknown';
+                // $pid = (isset($_POST['pid'])) ? (int) $_POST['pid']: false;
+                // $repo = $this->getRepositoryInstance($pid);
                 if (isset($_FILES[$key]) and is_uploaded_file($_FILES[$key]['tmp_name'])) {
                     $tmp_name = $this->getTmpFilePath($_FILES[$key]['name']);
                     if (move_uploaded_file($_FILES[$key]['tmp_name'], $tmp_name)) {
@@ -667,12 +654,10 @@ class FileRepository extends Grid {
                         $response['tmp_name'] = $tmp_name;
                         $response['error'] = $_FILES[$key]['error'];
                         $response['size'] = $_FILES[$key]['size'];
-                        // todo: resize + base64_encode
-                        // $response['preview'] = 'data:' + $response['type'] . ';base64,' . base64_encode(file_get_contents($tmp_name));
-                    } else {
+                   } else {
                         $response['error'] = true;
                         $response['error_message'] = 'ERR_NO_FILE';
-                    }
+                   }
                 } else {
                     $response['error'] = true;
                     $response['error_message'] = 'ERR_NO_FILE';

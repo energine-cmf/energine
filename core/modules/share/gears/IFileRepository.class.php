@@ -20,6 +20,14 @@
 interface IFileRepository {
 
     /**
+     * Конструктор класса
+     *
+     * @param int $id
+     * @param string $base
+     */
+    public function __construct($id, $base);
+
+    /**
      * Метод получения внутреннего имени реализации
      *
      * @return string
@@ -40,6 +48,21 @@ interface IFileRepository {
      * @return int
      */
     public function getId();
+
+    /**
+     * Метод установки базового пути репозитария (upl_path)
+     *
+     * @param string $base
+     * @return IFileRepository
+     */
+    public function setBase($base);
+
+    /**
+     * Метод получения базового пути репозитария (upl_path)
+     *
+     * @return string
+     */
+    public function getBase();
 
     /**
      * Возвращает true, если разрешено создание папок в репозитарии
@@ -84,7 +107,7 @@ interface IFileRepository {
     public function allowsDeleteFile();
 
     /**
-     * Метод загрузки файла в хранилище
+     * Метод загрузки медиа-файла в хранилище
      *
      * @param string $sourceFilename
      * @param string $destFilename
@@ -94,7 +117,19 @@ interface IFileRepository {
     public function uploadFile($sourceFilename, $destFilename);
 
     /**
-     * Метод обновления ранее загруженного файла в хранилище
+     * Метод загрузки alt-файла в хранилище
+     *
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function uploadAlt($sourceFilename, $destFilename, $width, $height);
+
+    /**
+     * Метод обновления ранее загруженного медиа-файла в хранилище
      *
      * @param string $sourceFilename
      * @param string $destFilename
@@ -104,13 +139,36 @@ interface IFileRepository {
     public function updateFile($sourceFilename, $destFilename);
 
     /**
-     * Метод удаления файла из хранилища
+     * Метод обновления ранее загруженного alt-файла в хранилище
+     *
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function updateAlt($sourceFilename, $destFilename, $width, $height);
+
+    /**
+     * Метод удаления media-файла из хранилища
      *
      * @param string $filename имя файла
      * @return boolean
      * @throws SystemException
      */
     public function deleteFile($filename);
+
+    /**
+     * Метод удаления alt-файла из хранилища
+     *
+     * @param string $filename имя файла
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function deleteAlt($filename, $width, $height);
 
     /**
      * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)

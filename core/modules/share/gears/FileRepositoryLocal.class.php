@@ -20,12 +20,33 @@
  */
 class FileRepositoryLocal extends Object implements IFileRepository {
 
+    //Путь к кешу для альтернативных картинок
+    const IMAGE_ALT_CACHE = 'uploads/alts/resizer/w[width]-h[height]/[upl_path]';
+
     /**
      * Внутренний идентификатор репозитария
      *
      * @var int
      */
     protected $id;
+
+    /**
+     * Базовый путь к репозитарию
+     *
+     * @var string
+     */
+    protected $base;
+
+    /**
+     * Конструктор класса
+     *
+     * @param int $id
+     * @param string $base
+     */
+    public function __construct($id, $base) {
+        $this->setId($id);
+        $this->setBase($base);
+    }
 
     /**
      * Метод получения внутреннего имени реализации
@@ -54,6 +75,26 @@ class FileRepositoryLocal extends Object implements IFileRepository {
      */
     public function getId() {
         return $this->id;
+    }
+
+    /**
+     * Метод установки базового пути репозитария (upl_path)
+     *
+     * @param string $base
+     * @return IFileRepository
+     */
+    public function setBase($base) {
+        $this->base = $base;
+        return $this;
+    }
+
+    /**
+     * Метод получения базового пути репозитария (upl_path)
+     *
+     * @return string
+     */
+    public function getBase() {
+        return $this->base;
     }
 
     /**
@@ -111,7 +152,7 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     }
 
     /**
-     * Метод загрузки файла в хранилище
+     * Метод загрузки медиа-файла в хранилище
      *
      * @param string $sourceFilename
      * @param string $destFilename
@@ -119,14 +160,40 @@ class FileRepositoryLocal extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function uploadFile($sourceFilename, $destFilename) {
-        if (!copy($sourceFilename, $destFilename)) {
-            return false;
+
+        $dir = dirname($destFilename);
+        if (!file_exists($dir)) {
+            mkdir($dir, 0777, true);
         }
+
+        if (!copy($sourceFilename, $destFilename)) {
+            throw new SystemException('ERR_COPY_UPLOADED_FILE', SystemException::ERR_CRITICAL, $destFilename);
+        }
+
         return $this->analyze($destFilename);
     }
 
     /**
-     * Метод обновления ранее загруженного файла в хранилище
+     * Метод загрузки alts-файла в хранилище
+     *
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
+        $destFilename = str_replace(
+            array('[width]', '[height]', '[upl_path]'),
+            array($width, $height, $destFilename),
+            self::IMAGE_ALT_CACHE
+        );
+        return $this->uploadFile($sourceFilename, $destFilename);
+    }
+
+    /**
+     * Метод обновления ранее загруженного media-файла в хранилище
      *
      * @param string $sourceFilename
      * @param string $destFilename
@@ -138,6 +205,25 @@ class FileRepositoryLocal extends Object implements IFileRepository {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Метод обновления ранее загруженного alts-файла в хранилище
+     *
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function updateAlt($sourceFilename, $destFilename, $width, $height) {
+        $destFilename = str_replace(
+            array('[width]', '[height]', '[upl_path]'),
+            array($width, $height, $destFilename),
+            self::IMAGE_ALT_CACHE
+        );
+        return $this->updateFile($sourceFilename, $destFilename);
     }
 
     /**
@@ -155,6 +241,19 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     }
 
     /**
+     * Метод удаления alt-файла из хранилища
+     *
+     * @param string $filename имя файла
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     * @throws SystemException
+     */
+    public function deleteAlt($filename, $width, $height) {
+        return $this->deleteFile($filename);
+    }
+
+    /**
      * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)
      *
      * @param $filename
@@ -162,7 +261,12 @@ class FileRepositoryLocal extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function analyze($filename) {
-        return E()->FileRepoInfo->analyze($filename, true);
+        $fi = E()->FileRepoInfo->analyze($filename, true);
+        if (is_object($fi)) {
+            $fi->ready = true;
+        }
+        return $fi;
+
     }
 
     /**

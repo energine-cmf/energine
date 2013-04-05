@@ -153,7 +153,7 @@ function simplifyDBResult($dbResult, $fieldName, $singleRow = false) {
         }
         else {
             foreach ($dbResult as $row) {
-                if (isset($row[$fieldName])) {
+                if (array_key_exists($fieldName, $row)) {
                     $result[] = $row[$fieldName];
                 }
             }

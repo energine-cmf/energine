@@ -13,38 +13,13 @@
 /**
  * Реализация интерфейса загрузчика файлов для репозитариев типа Read-Only.
  * Используется в случаях, когда загрузка файлов в репозитарий осуществляется сторонними скриптами,
- * а интерфейс служит лишь для навигации по репозитарию
+ * а интерфейс служит лишь для навигации по репозитарию, но с возможностью загрузки alts
  *
  * @package energine
  * @subpackage kernel
  * @author Andy Karpov <andy.karpov@gmail.com>
  */
-class FileRepositoryRO extends Object implements IFileRepository {
-
-    /**
-     * Внутренний идентификатор репозитария
-     *
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * Базовый путь к репозитарию
-     *
-     * @var string
-     */
-    protected $base;
-
-    /**
-     * Конструктор класса
-     *
-     * @param int $id
-     * @param string $base
-     */
-    public function __construct($id, $base) {
-        $this->setId($id);
-        $this->setBase($base);
-    }
+class FileRepositoryRO extends FileRepositoryLocal implements IFileRepository {
 
     /**
      * Метод получения внутреннего имени реализации
@@ -53,46 +28,6 @@ class FileRepositoryRO extends Object implements IFileRepository {
      */
     public function getName() {
         return 'ro';
-    }
-
-    /**
-     * Метод установки идентификатора репозитария (upl_id)
-     *
-     * @param int $id
-     * @return IFileRepository
-     */
-    public function setId($id) {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * Метод получения идентификатора репозитария (upl_id)
-     *
-     * @return int
-     */
-    public function getId() {
-        return $this->id;
-    }
-
-    /**
-     * Метод установки базового пути репозитария (upl_path)
-     *
-     * @param string $base
-     * @return IFileRepository
-     */
-    public function setBase($base) {
-        $this->base = $base;
-        return $this;
-    }
-
-    /**
-     * Метод получения базового пути репозитария (upl_path)
-     *
-     * @return string
-     */
-    public function getBase() {
-        return $this->base;
     }
 
     /**
@@ -172,7 +107,22 @@ class FileRepositoryRO extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
-        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $destFilename);
+        $destFilename = str_replace(
+            array('[width]', '[height]', '[upl_path]'),
+            array($width, $height, $destFilename),
+            self::IMAGE_ALT_CACHE
+        );
+
+        $dir = dirname($destFilename);
+        if (!file_exists($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        if (!copy($sourceFilename, $destFilename)) {
+            throw new SystemException('ERR_COPY_UPLOADED_FILE', SystemException::ERR_CRITICAL, $destFilename);
+        }
+
+        return $this->analyze($destFilename);
     }
 
     /**
@@ -222,17 +172,6 @@ class FileRepositoryRO extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function deleteAlt($filename, $width, $height) {
-        throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
-    }
-
-    /**
-     * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)
-     *
-     * @param $filename
-     * @return object
-     * @throws SystemException
-     */
-    public function analyze($filename) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
     }
 

@@ -22,11 +22,17 @@ define('CORE_REL_DIR', 'core');
 define('SITE_REL_DIR', 'site');
 
 // абсолютный путь к ядру
-define('CORE_DIR', realpath(dirname(__FILE__) . '/' . CORE_REL_DIR));
+define('CORE_DIR', realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . CORE_REL_DIR));
 
 // абсолютный путь к сайту
-define('SITE_DIR', realpath(dirname(__FILE__) . '/' . SITE_REL_DIR));
+define('SITE_DIR', realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . SITE_REL_DIR));
 
 // установка текущего пути местоположения файла bootstrap.php
 // как одного из путей для нахождения файлов для include
 set_include_path(realpath(dirname(__FILE__)) . PATH_SEPARATOR . get_include_path());
+
+// подключаем инициализационные функции
+require_once(CORE_DIR . '/kernel/ini.func.php');
+
+// подключаем служебные(вспомогательные) функции
+require_once(CORE_DIR . '/kernel/utils.func.php');

@@ -9,12 +9,6 @@ if (!isset($_SERVER['HTTP_REFERER'])) {
 // подключаем bootstrap
 require_once('bootstrap.php');
 
-// подключаем инициализационные функции
-require_once(CORE_DIR . '/kernel/ini.func.php');
-
-// подключаем служебные(вспомогательные) функции
-require_once(CORE_DIR . '/kernel/utils.func.php');
-
 if (
         ($login = (isset($_POST['user']['login']) &&
         isset($_POST['user']['username']) &&

@@ -12,12 +12,6 @@ try {
     // подключаем bootstrap
     require_once('bootstrap.php');
 
-    // подключаем инициализационные функции
-    require_once(CORE_DIR . '/kernel/ini.func.php');
-
-    // подключаем служебные(вспомогательные) функции
-    require_once(CORE_DIR . '/kernel/utils.func.php');
-
     UserSession::start();
     $reg = E();
     $reg->getController()->run();

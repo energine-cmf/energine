@@ -85,6 +85,13 @@ class Grid extends DBDataSet {
         if (!$this->getTitle())
             $this->setTitle($this->translate(
                 'TXT_' . strtoupper($this->getName())));
+
+        if ($this->getParam('order')) {
+            if (in_array($this->getParam('order'), array_keys($this->dbh->getColumnsInfo($this->getTableName())))) {
+                $this->orderColumn = $this->getParam('order');
+            }
+        }
+
     }
 
     /**
@@ -117,7 +124,7 @@ class Grid extends DBDataSet {
         $params['active'] = true;
         $params['thumbnail'] =
             array($this->getConfigValue('thumbnail.width'), $this->getConfigValue('thumbnail.height'));
-
+        $params['order'] = false;
         return array_merge(parent::defineParams(), $params);
     }
 
@@ -846,8 +853,9 @@ class Grid extends DBDataSet {
         $params = $this->getStateParams();
         list($firstItem, $secondItem) = $params;
 
-        if((($firstItem = intval($firstItem)) && ($secondItem = intval($secondItem)))
-            && ($firstItem != $secondItem)) {
+        if ((($firstItem = intval($firstItem)) && ($secondItem = intval($secondItem)))
+            && ($firstItem != $secondItem)
+        ) {
             $secondItemOrderNum = $this->dbh->getScalar(
                 'SELECT ' . $this->getOrderColumn() . ' as secondItemOrderNum ' .
                     'FROM ' . $this->getTableName() . ' ' .
@@ -1033,8 +1041,7 @@ class Grid extends DBDataSet {
                 if (in_array($condition, array('like', 'notlike')) && in_array($this->getDataDescription($fieldName), array('date', 'datetime', 'time'))) {
                     if ($condition == 'like') {
                         $condition = '=';
-                    }
-                    else {
+                    } else {
                         $condition = '!=';
                     }
                 }

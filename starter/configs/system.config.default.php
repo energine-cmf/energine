@@ -77,6 +77,30 @@ return array(
             'width' => 184,
             'height' => 138,
         ),
+        'anchormiddle' => array(
+            'width' => 190,
+            'height' => 192,
+        ),
+        'anchorxsmall' => array(
+            'width' => 48,
+            'height' => 48,
+        ),
+        'small' => array(
+            'width' => 140,
+            'height' => 107,
+        ),
+        'xsmall' => array(
+            'width' => 75,
+            'height' => 56,
+        ),
+        'xxsmall' => array(
+            'width' => 60,
+            'height' => 45,
+        ),
+        'big' => array(
+            'width' => 650,
+            'height' => 367,
+        ),
     ),
 
     // дополнительные внешние системы авторизации

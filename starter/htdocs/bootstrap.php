@@ -66,3 +66,6 @@ require_once(implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'g
 
 // подключаем служебные(вспомогательные) функции
 require_once(implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'gears', 'utils.func.php')));
+
+// установка уже подключенного конфига в статическую переменную Object
+Object::setConfigArray($config);

@@ -79,10 +79,6 @@ define('CORE_COMPONENTS_DIR', CORE_DIR . '/modules/*/components');
 define('CORE_GEARS_DIR', CORE_DIR . '/modules/*/gears');
 
 /**
- * Путь к директории ядра системы
- */
-define('CORE_KERNEL_DIR', CORE_DIR . '/kernel');
-/**
  * Путь к директории ядра проекта
  */
 define('SITE_KERNEL_DIR', SITE_DIR . '/kernel');
@@ -134,21 +130,8 @@ function __autoload($className) {
         $mc = E()->getCache();
         if (!$mc->isEnabled() || !($paths = $mc->retrieve(Cache::CLASS_STRUCTURE_KEY))) {
             //собираем в статическую переменную
-            /*$tmp = glob(
-                '{' . implode(',', array(
-                    CORE_KERNEL_DIR,
-                    CORE_COMPONENTS_DIR,
-                    CORE_GEARS_DIR,
-                    SITE_KERNEL_DIR,
-                    SITE_COMPONENTS_DIR,
-                    SITE_GEARS_DIR
-                )) . '}/*.class.php',
-                GLOB_BRACE
-            );*/
-
             $tmp = array_reduce(
                 array(
-                    CORE_KERNEL_DIR,
                     CORE_COMPONENTS_DIR,
                     CORE_GEARS_DIR,
                     SITE_KERNEL_DIR,

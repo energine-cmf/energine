@@ -96,7 +96,7 @@ abstract class Object {
      * @return string
      */
     public static function _getConfigValue($paramPath, $initial = null) {
-        if(is_null(self::$systemConfig)) self::$systemConfig = include_once(self::CONFIG_FILE);
+        if(is_null(self::$systemConfig)) self::setConfigArray(include(self::CONFIG_FILE));
         $result = self::$systemConfig;
         $paramPath = explode('.', $paramPath);
         foreach($paramPath as $segment) {
@@ -122,5 +122,23 @@ abstract class Object {
      */
     public function getConfigValue($paramPath, $initial = null) {
         return self::_getConfigValue($paramPath, $initial);
+    }
+
+    /**
+     * Инициализирует статическую переменную $systemConfig значением $config
+     *
+     * @param array $config
+     */
+    public static function setConfigArray($config) {
+        self::$systemConfig = $config;
+    }
+
+    /**
+     * Возвращает конфигурационный массив
+     *
+     * @return array
+     */
+    public static function getConfigArray() {
+        return self::$systemConfig;
     }
 }

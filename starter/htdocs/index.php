@@ -19,9 +19,11 @@ try {
 }
 catch (Exception $generalException) {
     //Если отрабатывает этот кетчер, значит дела пошли совсем плохо
-    //@todo исправить вывод в зависимости от режима отладки
-    $r = E()->getResponse();
-    $r->setHeader('Content-Type', 'text/plain; charset=utf-8');
-    $r->write((string) $generalException);
-    $r->commit();
+
+    if (defined('DEBUG') && DEBUG) {
+        header('Content-Type', 'text/plain; charset=utf-8');
+        echo (string) $generalException;
+    }
+
+    exit;
 }

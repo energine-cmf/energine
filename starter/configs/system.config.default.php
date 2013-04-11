@@ -8,36 +8,42 @@
 return array(
 
     // название проекта
-    'project' => 'Platform 2.10',
+    'project' => 'Platform 2.11.1.dev',
+
+    // путь к директории setup текущего используемого ядра
+    'setup_dir' => ($energine_release = '/var/www/energine/tags/2.11.1.dev') . '/setup',
 
     // список подключенных модулей ядра в конкретном проекте
+    // ключи массива - названия модулей, значения - абсолютные пути к месторасположению
     'modules' => array(
-        'share',
-        'user',
-        'apps',
-        'forms',
-        'seo',
-        'calendar'
+        'share'     => $energine_release . '/core/modules/share',
+        'user'      => $energine_release . '/core/modules/user',
+        'apps'      => $energine_release . '/core/modules/apps',
+        'forms'     => $energine_release . '/core/modules/forms',
+        'seo'       => $energine_release . '/core/modules/seo',
+        'calendar'  => $energine_release . '/core/modules/calendar'
     ),
 
     // настройки подключения к mysql
     'database' => array(
-        'host' => 'localhost',
+        'host' => 'DB HOST NAME',
         'port' => '3306',
-        'db' => 'DATABASE',
-        'username' => 'USERNAME',
-        'password' => 'PASSWORD'
+        'db' => 'DB NAME',
+        'username' => 'DB LOGIN',
+        'password' => 'DB PASSWORD'
     ),
 
     // настройки сайта
     'site' => array(
         // имя домена
-        'domain' => 'energine.local',
+        'domain' => 'PROJECT DOMAIN NAME',
         // корень проекта
         'root' => '/',
         // отладочный режим: 1 - включено, 0 - выключено
         'debug' => 1,
+        // выводить для отладки сразу в XML
         'asXML' => 0,
+        // использовать GZIP сжатие
         'compress' => 0,
         // перечень глобальных переменных, которые будут доступны в XML документе на всех страницах
         'vars' => array(
@@ -57,7 +63,7 @@ return array(
     'document' => array(
         // основная точка входа в xslt преобразователь
         'transformer' => 'main.xslt',
-        // насткойка кеширования xslt
+        // насткойка кеширования xslt (при использовании XSLTCache)
         'xslcache' => 0,
     ),
 

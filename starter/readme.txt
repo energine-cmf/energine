@@ -2,44 +2,57 @@
 Краткое руководство по развертыванию проекта на базе Energine
 =======================================================================================================
 
-1. Необходимо отчекаутить себе релиз проекта starter из одного из стабильных релизов проекта,
-либо bleeding-edge релиз из trunk:
+Предисловие:
+Начиная с версии energine 2.11.0 структура проекта изменилась.
+Теперь релизы ядра energine могут храниться в отдельной директории (например /var/www/energine).
+А сами проекты теперь больше не тянут ядро и модули через svn:externals, а подключают нужные версии модулей
+ядра и сторонние модули через указанные местоположения в конфиге.
 
-1.1. Checkout из последнего стабильного релиза (например 2.10.0)
-- Если у Вас есть доступ на запись в репозитарий:
-  svn checkout https://energine.googlecode.com/svn/tags/2.10.0/starter/ new_energine_based_project_name
+Итак, для того, чтобы развернуть проект на базе energine у себя, необходимо:
 
-- или если нужна read-only копия:
-  svn checkout http://energine.googlecode.com/svn/tags/2.10.0/starter/ new_energine_based_project_name
+1. Создать директорию для хранения ядер (например /var/www/energine)
 
-1.2. Checkout из trunk
-- Если у Вас есть доступ на запись в репозитарий:
-  svn checkout https://energine.googlecode.com/svn/trunk/starter/ new_energine_based_project_name
+Пример:
+mkdir /var/www/energine
 
-- или если нужна read-only копия:
-  svn checkout http://energine.googlecode.com/svn/trunk/starter/ new_energine_based_project_name
+2. Отчекаутить из svn одно из стабильных ядер (начиная с версии tags/2.11.1 или trunk)
 
-2. Далее необходимо создать базу данных mysql
+Пример чекаута двух стабильных релизов и trunk:
+cd /var/www/energine
+svn checkout https://energine.googlecode.com/svn/tags/2.11.0 2.11.0
+svn checkout https://energine.googlecode.com/svn/tags/2.11.1 2.11.1
+svn checkout https://energine.googlecode.com/svn/trunk trunk
 
-2.1. импортировать базовую структуру из sql/starter.structure.sql
-2.2. импортировать хранимые процедуры из sql/starter.routines.sql (важно: необходимо поправить DEFINER в коде
+3. Отчекаутить из svn проект starter из одного из стабильных релизов проекта, либо bleeding-edge релиз из trunk:
+
+Пример:
+cd /home/username/projects
+svn checkout https://energine.googlecode.com/svn/tags/2.11.0/starter www.mynewsite.com
+
+4. Далее необходимо создать базу данных mysql
+
+4.1. импортировать базовую структуру из sql/starter.structure.sql
+4.2. импортировать хранимые процедуры из sql/starter.routines.sql (важно: необходимо поправить DEFINER в коде
 на свой username. Также username должен обладать правами на создание хранимых процедур)
-2.3. импортировать системные данные из sql/starter.data.sql
+4.3. импортировать системные данные из sql/starter.data.sql
 
-3. Скопировать конфигурационный файл system.config.default.php в system.config.свое_название.php и сделать
- из него симлинк в system.config.php. Данная операция сделана для того, чтобы иметь в системе несколько конфигов
- (например девелоперский, тестовый и для продакшна) и хранить их все в системе контроля версий конкретного
- проекта и легко между ними переключаться с помощью символических ссылок.
+5. Скопировать конфигурационный файл из configs/system.config.default.php в configs/system.config.username.php,
+а затем сделать симлинк из configs/system.config.username.php в htdocs/system.config.php
 
-4. Отредактировать конфиг, по крайней мере ввести туда корректные настройки базы данных и адрес сайта,
-а также определиться с перечнем модулей, которые будут доступны и поправить адреса электронной почты.
+6. Отредактировать конфиг, по крайней мере ввести туда такие данные:
+- указать директорию с текущим ядром, откуда будут тянуться setup и core/modules,
+- корректные настройки базы данных,
+- домен сайта,
+- перечень модулей, которые будут доступны на сайте, с указанием полного пути к месторасположению каждого модуля,
+- поправить адреса электронной почты.
 
-5. Настроить nginx. Базовый конфиг nginx находится в jambalaya/.nginx.conf.example
+7. Настроить nginx.
+Базовый конфиг nginx находится в jambalaya/.nginx.conf.example
 
-6. Выставить права на запись на директорию htdocs, htdocs/uploads и запустить http://<адрес проекта>/setup/index.php
+8. Выставить права на запись на директорию htdocs, htdocs/uploads и запустить http://<адрес проекта>/setup/
 Если все пойдет как нужно - у Вас будет минимально-рабочая копия системы на базе движка Energine.
 
-7. Разработать сайт на базе Energine ;)
+9. Разработать сайт на базе Energine ;)
 
 =======================================================================================================
 (c) 2013 Energine Team

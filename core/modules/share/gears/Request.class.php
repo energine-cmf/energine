@@ -208,7 +208,7 @@ final class Request extends Object {
         if (isset($_ENV['HTTP_X_FORWARDED_FOR']) && ip2long($_ENV['HTTP_X_FORWARDED_FOR']) != -1) {
             $ip = $_ENV['HTTP_X_FORWARDED_FOR'];
         }
-        if ($returnAsInt) $ip = ip2long($ip);
+        if ($returnAsInt) $ip = sprintf("%u", ip2long($ip));
         return $ip;
     }
 }

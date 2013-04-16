@@ -588,10 +588,7 @@
     <xsl:template match="field[@name='attachments']" mode="preview">
         <xsl:param name="PREVIEW_WIDTH"/>
         <xsl:param name="PREVIEW_HEIGHT"/>
-        <xsl:variable name="URL"><xsl:choose>
-            <xsl:when test="name(recordset/record[1]/field[@name='file']/*[1])='video'"><xsl:value-of select="$RESIZER_URL"/>?w=<xsl:value-of select="$PREVIEW_WIDTH"/>&amp;h=<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;c=<xsl:value-of select="$PREVIEW_WIDTH"/>:<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:when>
-            <xsl:otherwise><xsl:value-of select="$RESIZER_URL"/>?w=<xsl:value-of select="$PREVIEW_WIDTH"/>&amp;h=<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;c=<xsl:value-of select="$PREVIEW_WIDTH"/>:<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:otherwise>
-        </xsl:choose></xsl:variable>
+        <xsl:variable name="URL"><xsl:value-of select="$RESIZER_URL"/>?w=<xsl:value-of select="$PREVIEW_WIDTH"/>&amp;h=<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;c=<xsl:value-of select="$PREVIEW_WIDTH"/>:<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']"/></xsl:variable>
         <img width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}">
             <xsl:choose>
                 <xsl:when test="recordset">

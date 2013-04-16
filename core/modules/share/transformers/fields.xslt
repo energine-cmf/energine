@@ -588,7 +588,7 @@
     <xsl:template match="field[@name='attachments']" mode="preview">
         <xsl:param name="PREVIEW_WIDTH"/>
         <xsl:param name="PREVIEW_HEIGHT"/>
-        <xsl:variable name="URL"><xsl:value-of select="$RESIZER_URL"/>?w=<xsl:value-of select="$PREVIEW_WIDTH"/>&amp;h=<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;c=<xsl:value-of select="$PREVIEW_WIDTH"/>:<xsl:value-of select="$PREVIEW_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']"/></xsl:variable>
+        <xsl:variable name="URL"><xsl:value-of select="$RESIZER_URL"/>/w<xsl:value-of select="$PREVIEW_WIDTH"/>-h<xsl:value-of select="$PREVIEW_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']"/></xsl:variable>
         <img width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}">
             <xsl:choose>
                 <xsl:when test="recordset">
@@ -630,8 +630,8 @@
             <!--</xsl:if>-->
             <div class="player_box" id="playerBox">
                 <xsl:variable name="URL"><xsl:choose>
-                    <xsl:when test="name(recordset/record[1]/field[@name='file']/*[1])='video'"><xsl:value-of select="$RESIZER_URL"/>?w=<xsl:value-of select="$PLAYER_WIDTH"/>&amp;h=<xsl:value-of select="$PLAYER_HEIGHT"/>&amp;c=<xsl:value-of select="$PLAYER_WIDTH"/>:<xsl:value-of select="$PLAYER_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:when>
-                    <xsl:otherwise><xsl:value-of select="$RESIZER_URL"/>?w=<xsl:value-of select="$PLAYER_WIDTH"/>&amp;h=<xsl:value-of select="$PLAYER_HEIGHT"/>&amp;c=<xsl:value-of select="$PLAYER_WIDTH"/>:<xsl:value-of select="$PLAYER_HEIGHT"/>&amp;i=<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:otherwise>
+                    <xsl:when test="name(recordset/record[1]/field[@name='file']/*[1])='video'"><xsl:value-of select="$RESIZER_URL"/>/w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:when>
+                    <xsl:otherwise><xsl:value-of select="$RESIZER_URL"/>/w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:otherwise>
                 </xsl:choose></xsl:variable>
                 <div class="player" id="player" style="width: {$PLAYER_WIDTH}px; height: {$PLAYER_HEIGHT}px; background: black url({$URL}) 50% 50% no-repeat;">
                     <xsl:if test="recordset/record[1]/field[@name='file']/video or count(recordset/record) &gt; 1">
@@ -662,8 +662,8 @@
                                     <div class="carousel_image" id="{field[@name='id']}_imgc">
                                         <a href="{field[@name='file']/video | field[@name='file']/image}" xmlns:nrgn="http://energine.org" nrgn:media_type="{name(field[@name='file']/*[1])}">
                                             <xsl:choose>
-                                                <xsl:when test="field[@name='file']/video"><img src="{$RESIZER_URL}?w={$PREVIEW_WIDTH}&amp;h={$PREVIEW_HEIGHT}&amp;c={$PREVIEW_WIDTH}:{$PREVIEW_HEIGHT}&amp;i={field[@name='file']/*[1]/@image}" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:when>
-                                                <xsl:otherwise><img src="{$RESIZER_URL}?w={$PREVIEW_WIDTH}&amp;h={$PREVIEW_HEIGHT}&amp;c={$PREVIEW_WIDTH}:{$PREVIEW_HEIGHT}&amp;i={field[@name='file']/*[1]/@image}" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:otherwise>
+                                                <xsl:when test="field[@name='file']/video"><img src="{$RESIZER_URL}/w{$PREVIEW_WIDTH}-h{$PREVIEW_HEIGHT}/{field[@name='file']/*[1]/@image}" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:when>
+                                                <xsl:otherwise><img src="{$RESIZER_URL}/w{$PREVIEW_WIDTH}-h{$PREVIEW_HEIGHT}/{field[@name='file']/*[1]/@image}" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:otherwise>
                                             </xsl:choose>
                                              <xsl:if test="field[@name='file']/video">
                                                  <i class="icon play_icon"></i>

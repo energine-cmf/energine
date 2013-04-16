@@ -1,46 +1,73 @@
-#NGINX PHP-FPM config example
+#Пример конфигурации Nginx для проекта на базе Energine 2.11.x
 
+# настройка PHP-FPM (backend)
+upstream php-fpm {
+    # тут можно использовать либо 127.0.0.1:9000 либо unix-сокет
+    server unix:/tmp/php-fpm.sock;
+}
+
+# Конфиг Nginx (frontend)
 server {
-        listen                      ;
-        server_name                 ;
-        server_name_in_redirect off;
 
-        error_log  /var/log/nginx/energine_error.log;
-        access_log  /var/log/nginx/energine.log;
+    # Защита от бага http://forum.nginx.org/read.php?2,154025,154036
+    server_name_in_redirect off;
 
-        root /home/energine/public_html;
-        index index.php;
+    # Порт, принимаемые HOST и путь к сайту
+    listen 80;
+    server_name   starter.local
+                  *.starter.local;
 
-        location / {
-            location /project/ {
-                fastcgi_pass   unix:///var/run/php-fpm/php-fpm-energine.sock;
-                fastcgi_index  index.php;
-                fastcgi_param  SCRIPT_FILENAME  /home/pavka/public_html/project/index.php;
-                fastcgi_param  DOCUMENT_ROOT      /home/pavka/public_html/project/;
-                include        fastcgi_params;
-                location /project/scripts/ {
-                    try_files $uri $uri/ =404;
-                }
-                location /project/stylesheets/ {
-                    try_files $uri $uri/ =404;
-                }
-                location /project/images/ {
-                    try_files $uri $uri/ =404;
-                }
-                location /project/uploads/ {
-                    try_files $uri $uri/ =404;
-                }
-            }
-            location ~ ^(?P<dir>/[^/]*/)application {
-                deny all;
-            }
+  # путь к проекту
+  set $www_folder '/Users/andy/Documents/Projects/Eggmen/energine/branches/2.11.2.dev/starter';
 
-            location ~ \.php$ {
-                try_files $uri =404;
-                fastcgi_pass   unix:///var/run/php-fpm/php-fpm-energine.sock;
-                fastcgi_index  index.php;
-                fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-                include        fastcgi_params;
-            }
-        }
-    }
+  set $root_path '$www_folder/htdocs';
+  root $root_path;
+  index index.htm index.html index.php;
+
+  # Запросы непосредственно .php-файлов, например index.php
+  location ~ \.php$ {
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $root_path/$fastcgi_script_name;
+    fastcgi_param DOCUMENT_ROOT $root_path; # этот параметр нужен несмотря на root в секции server
+    fastcgi_pass php-fpm;
+  }
+
+  # rewrite-правильно для локального ресайзера
+  rewrite "^/resizer/w([0-9]+)\-h([0-9]+)/(.*)$" /resizer/index.php?w=$1&h=$2&i=$3;
+
+ # Остальные запросы также идут на PHP-FPM, если $uri не существует
+  location / {
+     default_type text/html;
+     root  $root_path;
+
+     if (!-e $request_filename) {
+        return 404;
+     }
+
+     error_page      404 502 504 403 405 = @php;
+  }
+
+  # Веб-приложение
+  location @php {
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $root_path/index.php;
+    fastcgi_pass php-fpm;
+  }
+
+  # Для js, css, swf, ico и т.д.
+  location ~* \.(css|js|swf|ico|png|jpg|gif|jpeg)$ {
+    root  $root_path;
+    access_log   off;
+    expires      30d;
+  }
+
+  # Защита от просмотра .htaccess и .htpasswd файлов
+  location ~ /\.ht {
+    deny  all;
+  }
+
+  # Защита от просмотра svn-файлов
+  location ~ /.svn/ {
+    deny all;
+  }
+}

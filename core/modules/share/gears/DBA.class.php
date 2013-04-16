@@ -402,6 +402,46 @@ abstract class DBA extends Object {
     }
 
     /**
+     * Существует ли процедура
+     *
+     * @param $procName string имя процедуры
+     * @return boolean
+     * @access public
+     */
+    public function procExists($procName) {
+        return ($this->getScalar(
+            'SELECT ROUTINE_NAME
+            FROM information_schema.ROUTINES
+            WHERE
+            ROUTINE_TYPE="PROCEDURE"
+            AND ROUTINE_SCHEMA=%s
+            AND ROUTINE_NAME=%s',
+            E()->getConfigValue('database.db'),
+            $procName
+        )) ? true : false;
+    }
+
+    /**
+     * Существует ли функция
+     *
+     * @param $funcName string имя функции
+     * @return boolean
+     * @access public
+     */
+    public function funcExists($funcName) {
+        return ($this->getScalar(
+            'SELECT ROUTINE_NAME
+            FROM information_schema.ROUTINES
+            WHERE
+            ROUTINE_TYPE="FUNCTION"
+            AND ROUTINE_SCHEMA=%s
+            AND ROUTINE_NAME=%s',
+            E()->getConfigValue('database.db'),
+            $funcName
+        )) ? true : false;
+    }
+
+    /**
      * Возвращает имя таблицы с именем базы данных(Fully Qualified) в мускульных кавычках
      *
      * @static

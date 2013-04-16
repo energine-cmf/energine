@@ -263,12 +263,29 @@ class FileRepository extends Grid {
      * @return null|int
      */
     protected function getRepositoryIdByUploadId($upl_id) {
-        $this->dbh->select('CALL proc_get_share_uploads_repo_id(%s, @id)', $upl_id);
-        $res = $this->dbh->select('SELECT @id as repo_id');
-        if ($res) {
-            return ($res[0]['repo_id']) ? $res[0]['repo_id'] : null;
+
+        // проверка существования хранимой процедуры
+        $proc_exists = $this->dbh->procExists('proc_get_share_uploads_repo_id');
+
+        // если процедура существует - получаем значение id репозитария по upl_id
+        if ($proc_exists) {
+            $this->dbh->select('CALL proc_get_share_uploads_repo_id(%s, @id)', $upl_id);
+            $res = $this->dbh->select('SELECT @id as repo_id');
+            if ($res) {
+                return ($res[0]['repo_id']) ? $res[0]['repo_id'] : null;
+            }
+            return null;
         }
-        return null;
+        // иначе - получаем ID первого локального репозитария в системе
+        // cоответственно пользователю не будет доступна функциональность по разделению прав доступа
+        // к разным типам репозитариев (local, ro, ftpto, ...)
+        else {
+            return $this->dbh->getScalar(
+                'SELECT upl_id
+                 FROM share_uploads
+                 WHERE upl_mime_type="repo/local" AND upl_internal_type="repo" LIMIT 1'
+            );
+        }
     }
 
     /**

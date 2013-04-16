@@ -17,12 +17,14 @@
  * @final
  */
 final class DBStructureInfo extends Object {
+
     /**
      * Массив информации о структуре БД
      *
      * @var array($tableName => array($coulmnName => array($columnPropName => $columnPropValue)))
      */
     private $structure;
+
     /**
      * Объект pdo - передается из DBA
      * @var PDO
@@ -30,9 +32,9 @@ final class DBStructureInfo extends Object {
     private $pdo;
 
     /**
+     * Конструктор класса
      *
      * @param PDO $pdo
-     * @return void
      */
     public function __construct(PDO $pdo) {
         $this->pdo = $pdo;
@@ -52,6 +54,7 @@ final class DBStructureInfo extends Object {
      * @see $this->structure
      */
     private function collectDBInfo() {
+        $result = array();
         $res = $this->pdo->query('SHOW TABLES');
         if ($res) {
             while ($tableName = $res->fetchColumn()) {
@@ -116,6 +119,8 @@ final class DBStructureInfo extends Object {
     private function analyzeView($viewName){
         if(!($res = $this->pdo->query('SHOW COLUMNS FROM `'.$viewName.'`')->fetchAll(PDO::FETCH_ASSOC))) return false;
         //Считаем что первое поле - PK
+
+        $result = array();
 
         foreach($res as $rowIndex => $fieldData){
             $matches = array();

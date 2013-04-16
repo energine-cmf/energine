@@ -123,7 +123,8 @@ abstract class DBA extends Object {
      * @param string $username имя пользователя
      * @param string $password пароль
      * @param array $driverOptions специфические параметры драйвера БД
-     * @return void
+     * @param string $charset кодировка соединения
+     * @throws SystemException
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         try {
@@ -169,8 +170,8 @@ abstract class DBA extends Object {
      *
      * @access public
      * @param string $query SELECT-запрос к БД
-     * @param mixed $var, ...
      * @return mixed
+     * @throws SystemException
      * @see printf()
      * @deprecated 
      */
@@ -218,6 +219,7 @@ abstract class DBA extends Object {
      * @access public
      * @param string $query
      * @return mixed
+     * @throws SystemException
      * @see printf()
      */
     public function modifyRequest($query) {
@@ -272,7 +274,7 @@ abstract class DBA extends Object {
     /**
      * Метод для получения данных с последующей итерацией
      *
-     * @param $query SQL запрос
+     * @param string $query SQL запрос
      * @return bool|PDOStatement
      */
     public function get($query) {

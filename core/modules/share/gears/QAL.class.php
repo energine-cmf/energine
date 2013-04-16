@@ -55,8 +55,8 @@ final class QAL extends DBA {
      * @param string $dsn
      * @param string $username
      * @param string $password
-     * @param object $driverOptions
-     * @return void
+     * @param array $driverOptions
+     * @param string $charset
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         parent::__construct($dsn, $username, $password, $driverOptions, $charset);
@@ -82,11 +82,11 @@ final class QAL extends DBA {
      * Возвращает массив результата выборки или true, если результат пустой.
      *
      * @access public
-     * @param string $tableName имя таблицы или SQL текст запроса, в этом случае все последующие параметры  - идут как переменные
-     * @param mixed $fields массив имен полей ИЛИ имя одного поля ИЛИ true для выборки всех полей таблицы
-     * @param mixed $condition условие выборки
-     * @param mixed $order порядок сортировки результата
-     * @param mixed $limit лимит выборки
+     * @param string имя таблицы или SQL текст запроса, в этом случае все последующие параметры  - идут как переменные
+     * @param mixed массив имен полей ИЛИ имя одного поля ИЛИ true для выборки всех полей таблицы
+     * @param mixed условие выборки
+     * @param mixed порядок сортировки результата
+     * @param mixed лимит выборки
      * @return array
      * @see DBA::selectRequest()
      * @see DBA::buildSQL
@@ -128,6 +128,7 @@ final class QAL extends DBA {
      * @param string $tableName имя таблицы
      * @param array $data данные для операции
      * @param mixed $condition условие операции
+     * @throws SystemException
      * @return array
      * @see DBA::modifyRequest()
      */
@@ -326,7 +327,7 @@ final class QAL extends DBA {
      * Строит предложение ORDER BY для SQL-запроса.
      *
      * @access public
-     * @param mixed $order
+     * @param mixed $clause
      * @return string
      * @see QAL::selectRequest()
      */
@@ -354,7 +355,7 @@ final class QAL extends DBA {
      * Строит предложение LIMIT для SQL-запроса.
      *
      * @access public
-     * @param mixed $limit
+     * @param mixed $clause
      * @return string
      * @see QAL::selectRequest()
      */

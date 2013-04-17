@@ -208,7 +208,7 @@ final class DivisionEditor extends Grid {
      * @return array
      * @access private
      */
-    private function loadTemplateData($type, $siteFolder) {
+    private function loadTemplateData($type, $siteFolder, $old_value = false) {
         $result = array();
         $dirPath = Document::TEMPLATES_DIR . $type . '/';
 
@@ -222,16 +222,31 @@ final class DivisionEditor extends Grid {
                 $r[basename($folderPath)] = $folderPath;
             }
         }
+
+        $old_exists = false;
+
+        $tr_name = function($path) {
+            list($name, $tp) = explode('.', substr(basename($path), 0, -4));
+            return $this->translate(strtoupper($tp . '_' . $name));
+        };
+
         foreach ($r as $path) {
             $path = str_replace($dirPath, '', $path);
-            list($name, $tp) = explode('.', substr(basename($path), 0, -4));
-            $name = $this->translate(strtoupper($tp . '_' . $name));
+            if ($old_value && $path == $old_value) $old_exists = true;
 
             $result[] = array(
                 'key' => $path,
-                'value' => $name
+                'value' => $tr_name($path)
             );
         }
+
+        if ($old_value and !$old_exists) {
+            $result[] = array(
+                'key' => $old_value,
+                'value' => $tr_name($old_value)
+            );
+        }
+
         usort($result, function($rowA, $rowB) {
             return $rowA['value'] > $rowB['value'];
         });
@@ -427,8 +442,10 @@ final class DivisionEditor extends Grid {
                 'smap_' . $type)
             ) {
                 $f->setType(FieldDescription::FIELD_TYPE_SELECT);
+                $old_value = $this->getData()->getFieldByName('smap_' . $type)->getRowData(0);
+                $template_data = $this->loadTemplateData($type, $site->folder, $old_value);
                 $f->loadAvailableValues(
-                    $this->loadTemplateData($type, $site->folder),
+                    $template_data,
                     'key', 'value');
             }
 

@@ -143,8 +143,8 @@ return array(
 
     // настройки recaptcha
     'recaptcha' => array(
-        'public' => '',
-        'private' => ''
+        'public' => '6LfkCeASAAAAALl-av9HM_RG1AU-tcta3teX7Z2u',
+        'private' => '6LfkCeASAAAAABPo4F3GoXULR2w5EgHjjd3RDjXk'
     ),
 
     // настройки файловых репозитариев

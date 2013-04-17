@@ -4,6 +4,12 @@
         <javascript>
             <behavior name="FeedToolbar"/>
         </javascript>
+        <fields>
+            <field name="news_id"/>
+            <field name="news_date"/>
+            <field name="news_title"/>
+            <field name="smap_id"/>
+        </fields>
         <toolbar>
             <control id="add" title="BTN_ADD_NEWS" type="button" onclick="add"/>
             <control id="edit" title="BTN_EDIT_NEWS" type="button" onclick="edit"/>

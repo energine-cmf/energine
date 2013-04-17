@@ -214,7 +214,7 @@ class FeedbackForm extends DBDataSet {
      * Перевіряє капчу
      */
     protected function checkCaptcha() {
-        require_once('core/kernel/recaptchalib.php');
+        require_once('core/modules/share/gears/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');
         $resp = recaptcha_check_answer($privatekey,
             $_SERVER["REMOTE_ADDR"],

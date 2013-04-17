@@ -21,7 +21,6 @@
 
 	<xsl:include href="../../../../core/modules/share/transformers/include.xslt"/>
 	<xsl:include href="../../../../core/modules/user/transformers/include.xslt"/>
-    <xsl:include href="../../../../core/modules/stb/transformers/include.xslt"/>
 	<xsl:include href="include.xslt"/>
 
 </xsl:stylesheet>

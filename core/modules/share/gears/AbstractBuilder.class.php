@@ -149,7 +149,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             $fieldInfo->setProperty('msgCloseField', $this->translate('TXT_CLOSE_FIELD'));
         }*/
         elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_CAPTCHA) {
-            require_once(CORE_DIR . '/kernel/recaptchalib.php');
+            require_once(CORE_DIR . '/modules/share/gears/recaptchalib.php');
             $fieldValue = recaptcha_get_html($this->getConfigValue('recaptcha.public'));
         }
 

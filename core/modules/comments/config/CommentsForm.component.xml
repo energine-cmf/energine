@@ -12,7 +12,7 @@
         </state>
 		<state name="main">
 			<javascript>
-				<object name="CommentsForm" />
+				<behavior name="CommentsForm" />
 			</javascript>
 			<fields>
                <field name="target_id"/>

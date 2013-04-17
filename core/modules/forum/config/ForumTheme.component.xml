@@ -5,7 +5,7 @@
                  <pattern>/create/</pattern>
             </uri_patterns>
             <javascript>
-            	<object name="ForumForm" />
+            	<behavior name="ForumForm" />
             </javascript>
             <fields>
                 <field name="theme_name"/>
@@ -36,7 +36,7 @@
                  <pattern>/[postID]/modify/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="ForumForm" />
+                <behavior name="ForumForm" />
             </javascript>
             <fields>
                 <field name="theme_id"/>

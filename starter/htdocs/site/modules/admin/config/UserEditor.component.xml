@@ -2,7 +2,7 @@
 <configuration>
 		<state name="main">
 			<javascript>
-				<object name="UserManager"/>
+				<behavior name="UserManager"/>
 			</javascript>
 			<fields>
 				<field name="u_id"/>
@@ -27,7 +27,7 @@
 				<pattern>/add/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Form"/>
+				<behavior name="Form"/>
 			</javascript>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -39,7 +39,7 @@
 				<pattern>/[int]/edit/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="Form"/>
+				<behavior name="Form"/>
 			</javascript>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -51,7 +51,7 @@
 				<pattern>/[int]/ban/</pattern>
 			</uri_patterns>
 			<javascript>
-				<object name="UserBan"/>
+				<behavior name="UserBan"/>
 			</javascript>
 			<toolbar>
 				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>

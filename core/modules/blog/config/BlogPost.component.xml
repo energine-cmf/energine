@@ -6,7 +6,7 @@
                  <pattern>/post/create/</pattern>
             </uri_patterns>
             <javascript>
-            	<object name="BlogForm" />
+            	<behavior name="BlogForm" />
             </javascript>
             <fields>
                 <field name="post_name"/>
@@ -21,7 +21,7 @@
                  <pattern>/post/[postID]/edit/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="BlogForm" />
+                <behavior name="BlogForm" />
             </javascript>
             <fields>
                 <field name="post_name"/>

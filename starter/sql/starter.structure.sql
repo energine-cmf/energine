@@ -53,7 +53,7 @@ CREATE TABLE `apps_feed` (
   KEY `tf_order_num` (`tf_order_num`),
   KEY `tf_date` (`tf_date`),
   CONSTRAINT `apps_feed_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,7 +156,7 @@ CREATE TABLE `apps_news` (
   KEY `news_show_image` (`news_show_image`),
   KEY `news_is_top` (`news_is_top`),
   CONSTRAINT `apps_news_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -266,7 +266,7 @@ CREATE TABLE `share_domains` (
   `domain_root` varchar(255) NOT NULL,
   PRIMARY KEY (`domain_id`),
   UNIQUE KEY `domain_protocol` (`domain_protocol`,`domain_host`,`domain_port`,`domain_root`)
-) ENGINE=InnoDB AUTO_INCREMENT=282 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=197 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -334,7 +334,7 @@ CREATE TABLE `share_session` (
   `session_last_impression` int(11) NOT NULL,
   `session_created` int(11) NOT NULL,
   `session_expires` int(11) NOT NULL,
-  `session_ip` int(4) unsigned DEFAULT NULL,
+  `session_ip` int(11) unsigned DEFAULT NULL,
   `session_user_agent` char(255) DEFAULT NULL,
   `u_id` int(10) unsigned DEFAULT NULL,
   `session_data` varchar(5000) DEFAULT NULL,
@@ -343,7 +343,7 @@ CREATE TABLE `share_session` (
   KEY `i_session_u_id` (`u_id`),
   KEY `i_session_ip` (`session_ip`),
   KEY `session_expires` (`session_expires`)
-) ENGINE=MEMORY AUTO_INCREMENT=27127 DEFAULT CHARSET=utf8;
+) ENGINE=MEMORY AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -374,7 +374,7 @@ CREATE TABLE `share_sitemap` (
   CONSTRAINT `share_sitemap_ibfk_11` FOREIGN KEY (`brand_id`) REFERENCES `apps_branding` (`brand_id`) ON DELETE SET NULL ON UPDATE SET NULL,
   CONSTRAINT `share_sitemap_ibfk_8` FOREIGN KEY (`smap_pid`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `share_sitemap_ibfk_9` FOREIGN KEY (`site_id`) REFERENCES `share_sites` (`site_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3835 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3630 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -452,7 +452,7 @@ CREATE TABLE `share_sites` (
   `site_meta_robots` text,
   `site_ga_code` text,
   PRIMARY KEY (`site_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=248 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -504,7 +504,7 @@ CREATE TABLE `share_tags` (
   `tag_name` char(100) NOT NULL,
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `tag_name` (`tag_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6169 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -521,7 +521,7 @@ CREATE TABLE `share_textblocks` (
   PRIMARY KEY (`tb_id`),
   UNIQUE KEY `smap_id` (`smap_id`,`tb_num`),
   CONSTRAINT `share_textblocks_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -579,7 +579,7 @@ CREATE TABLE `share_uploads` (
   KEY `upl_filename` (`upl_filename`),
   KEY `upl_is_active` (`upl_is_active`),
   CONSTRAINT `share_uploads_ibfk_1` FOREIGN KEY (`upl_pid`) REFERENCES `share_uploads` (`upl_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=903038 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -612,7 +612,7 @@ CREATE TABLE `share_widgets` (
   `widget_xml` text NOT NULL,
   `widget_icon_img` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`widget_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -720,7 +720,7 @@ CREATE TABLE `user_users` (
   PRIMARY KEY (`u_id`),
   UNIQUE KEY `u_login` (`u_name`),
   UNIQUE KEY `u_fbid` (`u_fbid`)
-) ENGINE=InnoDB AUTO_INCREMENT=28600 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -747,4 +747,4 @@ CREATE TABLE `user_users_ban` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-05 21:50:17
+-- Dump completed on 2013-04-17 15:46:21

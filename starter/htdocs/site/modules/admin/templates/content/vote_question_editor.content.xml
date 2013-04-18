@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="voteQuestionEditor" module="apps" class="VoteQuestionEditor">
+        <params>
+            <param name="rights">3</param>
+            <param name="config">core/modules/apps/config/VoteQuestionEditor.component.xml</param>
+        </params>
+    </component>
+</content>

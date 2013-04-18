@@ -24,9 +24,6 @@
     <xsl:template match="record[ancestor::component[@class='BlogPost'][@type='list']]">
         <li class="blog_item">
         	<span><xsl:value-of select="field[@name='post_created']"/></span>
-        	<xsl:if test="field[@name='u_avatar_img'] != ''">
-			    <img alt="" width="50" height="50" src="{field[@name='u_avatar_img']}" />
-			</xsl:if>
 			<a href="{$BASE}{$LANG_ABBR}blogs/blog/{field[@name='blog_id']}">
 				<xsl:if test="field[@name='u_nick'] != ''">
 				    <xsl:value-of select="field[@name='u_nick']"/>
@@ -55,9 +52,6 @@
     
     <xsl:template match="record[ancestor::component[@class='BlogPost'][@componentAction='view']]">
        	<span><xsl:value-of select="field[@name='post_created']"/></span>
-       	<xsl:if test="field[@name='u_avatar_img'] != ''">
-		    <img width="50" height="50" src="{field[@name='u_avatar_img']}" />
-		</xsl:if>
 		<a href="{$BASE}{$LANG_ABBR}blogs/blog/{field[@name='blog_id']}">
 			<xsl:if test="field[@name='u_nick'] != ''">
 			    <xsl:value-of select="field[@name='u_nick']"/>

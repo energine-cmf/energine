@@ -143,9 +143,6 @@ class Register extends DBDataSet {
         try {
             $result = $this->user->create($_POST[$this->getTableName()]);
 
-            if (isset($_FILES[$this->getTableName()])) {
-                $this->user->createAvatar(array_map(function($row) { return $row['u_avatar_img']; }, $_FILES[$this->getTableName()]));
-            }
             $mailer = new Mail();
             $mailer->setFrom($this->getConfigValue('mail.from'));
             $mailer->setSubject($this->translate('TXT_SUBJ_REGISTER'));

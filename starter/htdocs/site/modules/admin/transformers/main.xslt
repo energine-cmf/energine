@@ -19,8 +19,12 @@
 		<link href="{$STATIC_URL}stylesheets/{$FOLDER}/handheld.css" rel="stylesheet" type="text/css" media="handheld" />
     </xsl:template>
 
-	<xsl:include href="../../../../core/modules/share/transformers/include.xslt"/>
-	<xsl:include href="../../../../core/modules/user/transformers/include.xslt"/>
+    <xsl:include href="../../../../core/modules/share/transformers/include.xslt"/>
+    <xsl:include href="../../../../core/modules/user/transformers/include.xslt"/>
+    <xsl:include href="../../../../core/modules/calendar/transformers/include.xslt"/>
+    <xsl:include href="../../../../core/modules/apps/transformers/include.xslt"/>
+    <xsl:include href="../../../../core/modules/forms/transformers/include.xslt"/>
+
 	<xsl:include href="include.xslt"/>
 
 </xsl:stylesheet>

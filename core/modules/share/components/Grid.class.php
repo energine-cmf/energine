@@ -335,7 +335,6 @@ class Grid extends DBDataSet {
      * @return DataDescription
      * @access protected
      */
-
     protected function createDataDescription() {
         if (in_array($this->getState(), array('printData' /*, 'exportCSV'*/))) {
             $previousAction = $this->getState();

@@ -23,7 +23,6 @@ class UserEditor extends Grid {
     /**
      * Конструктор класса
      *
-     * @return void
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
@@ -35,7 +34,9 @@ class UserEditor extends Grid {
 	 * Переопределенный родительский метод
 	 * проверяет а не пытаемся ли мы удалить текущего пользователя
 	 *
+     * @param int $id
 	 * @return boolean
+     * @throws SystemException
 	 * @access public
 	 */
 
@@ -55,7 +56,6 @@ class UserEditor extends Grid {
 	 * @return boolean
 	 * @access protected
 	 */
-
     protected function saveData() {
         //При сохранении данных из формы редактирования
         //Если не пришел пароль - не трогаем его
@@ -70,31 +70,7 @@ class UserEditor extends Grid {
         $result = parent::saveData();
 
         $UID = (is_int($result))?$result:current($this->getFilter());
-        
-        //если задана аватарка
-        if(
-            isset($_POST[$this->getTableName()]['u_avatar_img'])
-            &&
-            file_exists($_POST[$this->getTableName()]['u_avatar_img'])
-        ){
-        	//и ее размеры отличаются от необходимых
-        	list($realWidth, $realHeight) = getimagesize($_POST[$this->getTableName()]['u_avatar_img']);
-        	list($thumbnailInfo) = $this->getConfigValue('thumbnails.thumbnail');
-        	list($neededWidth, $neededHeight) = array((string)$thumbnailInfo->width, (string)$thumbnailInfo->height);
-        	 
-        	if(
-        	   ($realWidth != $neededWidth) 
-        	   || 
-        	   ($realHeight != $neededHeight)
-        	){
-        		$fileName = $_POST[$this->getTableName()]['u_avatar_img'];
-                $image = new Image();
-                $image->loadFromFile($fileName);
-                $image->resize($neededWidth,$neededHeight);
-                $image->saveToFile($fileName);      	
-        	}
-        }
-        
+
         $this->dbh->modify(QAL::DELETE, 'user_user_groups', null, array('u_id'=>$UID));
         
         if(isset($_POST['group_id']) && is_array($_POST['group_id']))
@@ -224,6 +200,7 @@ class UserEditor extends Grid {
 
     /**
      * @return void
+     * @throws SystemException
      * @access protected
      */
     protected function saveban(){
@@ -288,7 +265,6 @@ class UserEditor extends Grid {
      * @return array
      * @access protected
      */
-
     protected function loadData() {
         $result = parent::loadData();
 
@@ -311,10 +287,10 @@ class UserEditor extends Grid {
      * Callback метод вызывающийся при загрузке данных
      * Добавляет к массиву строку с перечнем групп в которіе входит пользователь
      *
+     * @param mixed $row
      * @return array
      * @access private
      */
-
     private function printUserGroups($row) {
         $userGroup = E()->UserGroup;
         $userGroupIDs = $userGroup->getUserGroups($row['u_id']);
@@ -333,7 +309,6 @@ class UserEditor extends Grid {
      * @return DataDescription
      * @access protected
      */
-
     protected function createDataDescription() {
         $result = parent::createDataDescription();
 
@@ -375,7 +350,6 @@ class UserEditor extends Grid {
      * @return array
      * @access protected
      */
-
      protected function loadDataDescription() {
         $result = parent::loadDataDescription();
         if ($this->getState() == 'save' && isset($result['u_password'])) {
@@ -391,7 +365,6 @@ class UserEditor extends Grid {
       * @return Data
       * @access protected
       */
-
     protected function createData() {
         $result = parent::createData();
         $id = $this->getFilter();

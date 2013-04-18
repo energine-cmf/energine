@@ -100,9 +100,6 @@ class UserProfile extends DBDataSet {
 
         try {
             $this->document->user->update($data);
-            if(isset($_FILES[$this->getTableName()])){
-            	$this->document->user->createAvatar(array_map(function($row){return $row['u_avatar_img'];}, $_FILES[$this->getTableName()]));
-            }
             $_SESSION['saved'] = true;
 
             //переадресация

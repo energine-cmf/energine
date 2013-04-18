@@ -137,10 +137,6 @@ class CommentsList extends DataSet {
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
         $dataDescription->addFieldDescription($fd);
 
-        $fd = new FieldDescription('u_avatar_img');
-        $fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
-        $dataDescription->addFieldDescription($fd);
-
         $fd = new FieldDescription('u_sex');
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
         $dataDescription->addFieldDescription($fd);
@@ -267,32 +263,9 @@ class CommentsList extends DataSet {
                         trim($user['u_nick']) ? trim($user['u_nick']) : $user['u_fullname'];
                 $item['u_sex'] = $user['u_sex'];
                 $item['u_place'] = $user['u_place'];
-                if ($user['u_avatar_img']) {
-                    $item['u_avatar_img'] = $user['u_avatar_img'];
-                }
-                else {
-                    $item['u_avatar_img'] =
-                            $this->getNotExistsAvatar($item['u_id'], $user['u_is_male']);
-                }
             }
         }
         return $data;
-    }
-
-    /**
-     * Путь к несуществующей аватарке
-     * @param  int $uid
-     * @param  boolean $sex
-     * @return string
-     *
-     * @see CommentsForm::getNotExistsAvatar()
-     */
-    private function getNotExistsAvatar($uid, $sex = null) {
-        $addDir = '';
-        if (!is_null($sex)) {
-            $addDir = intval((bool) $sex) . '/';
-        }
-        return 'uploads/avatars/auto/' . $addDir . md5($uid) . '.jpg';
     }
 
     /**

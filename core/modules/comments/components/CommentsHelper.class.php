@@ -159,10 +159,6 @@ class CommentsHelper extends Comments
 		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
 		$dataDescription->addFieldDescription($fd);
 		
-		$fd = new FieldDescription('u_avatar_img');
-		$fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
-		$dataDescription->addFieldDescription($fd);
-		
 		return $dataDescription;
 	}
 	
@@ -180,7 +176,6 @@ class CommentsHelper extends Comments
 			foreach($data as &$item){
 				$user = $usersInfo[$item['u_id']];
 				$item['u_fullname'] = $user['u_fullname'];
-				$item['u_avatar_img'] = $user['u_avatar_img'];
 			}
 		}
 		return $data;

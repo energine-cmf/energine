@@ -375,7 +375,7 @@ class BlogPost extends DBDataSet {
         }
         if($limit) $limit = ' LIMIT '. $limit;
          
-        $sql = "SELECT p.*, b.blog_name, u.u_fullname, u.u_nick, u.u_avatar_img, u.u_id 
+        $sql = "SELECT p.*, b.blog_name, u.u_fullname, u.u_nick, u.u_id
         	FROM blog_post p
         		JOIN blog_title b ON p.blog_id = b.blog_id
         		JOIN user_users u ON u.u_id = b.u_id
@@ -454,10 +454,6 @@ class BlogPost extends DBDataSet {
 		
 		$fd = new FieldDescription('u_fullname');
 		$fd->setType(FieldDescription::FIELD_TYPE_STRING);
-		$this->getDataDescription()->addFieldDescription($fd);
-		
-		$fd = new FieldDescription('u_avatar_img');
-		$fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
 		$this->getDataDescription()->addFieldDescription($fd);
     }
     

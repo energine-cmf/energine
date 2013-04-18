@@ -125,7 +125,6 @@ class VKApi {
                 'u_city' => (isset($res['response'][0]['city']))?$res['response'][0]['city']:'',
                 'u_country' => (isset($res['response'][0]['country']))?$res['response'][0]['country']:'',
                 'u_fullname' => $res['response'][0]['first_name'] . ' ' . $res['response'][0]['last_name'],
-                'u_avatar_img' => $res['response'][0]['photo']
             );
             if(isset($res['response'][0]['city'])){
                 $userInfo['u_city'] = $res['response'][0]['city'];

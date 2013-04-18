@@ -409,7 +409,7 @@ class CommentsForm extends DataSet {
     /**
      * Add to DB
      *
-     * Возвращает комментарий в виде массива добавив к нему два поля (u_nick иu_avatar_img)
+     * Возвращает комментарий в виде массива добавив к нему поле (u_nick)
      * с информацией о юзере
      *
      * @param int $targetId       Комментируемая запись
@@ -422,7 +422,6 @@ class CommentsForm extends DataSet {
 
         $userInfo = $this->getUserInfo($uId);
         $userName = array_shift($userInfo);
-        $userAvatar = array_shift($userInfo);
         $userSex = array_shift($userInfo);
         if (is_bool($userSex)) {
             $userSex = $this->translate($userSex ? 'TXT_MALE' : 'TXT_FEMALE');
@@ -454,7 +453,6 @@ class CommentsForm extends DataSet {
             'comment_name' => $commentName,
             'comment_approved' => 0,
             'u_nick' => $userName,
-            'u_avatar_img' => $userAvatar,
             'u_sex' => $userSex,
             'u_place' => $userPlace
         );
@@ -463,46 +461,26 @@ class CommentsForm extends DataSet {
     /**
      * Имя и аватар юзера
      *
-     * Возврвщает массив с полями 'u_nick','u_avatar_img'
+     * Возврвщает массив с полями 'u_nick'
      *
      * @param int $uId
      * @return array string[]
      */
     private function getUserInfo($uId) {
-        $result = array('u_nick' => '', 'u_avatar_img' => '');
+        $result = array('u_nick' => '');
         $userInfo = $this->dbh->select('user_users',
-            array('u_nick', 'u_avatar_img', 'u_is_male, u_place', 'u_fullname'),
+            array('u_nick', 'u_is_male, u_place', 'u_fullname'),
             array('u_id' => $uId),
             null, array(1)
         );
         if ($userInfo) {
             $result = $userInfo[0];
-            if (!$result['u_avatar_img']) {
-                $result['u_avatar_img'] =
-                        $this->getNotExistsAvatar($uId, $result['u_is_male']);
-            }
             if (!$result['u_nick']) {
                 $result['u_nick'] = $result['u_fullname'];
             }
             unset($result['u_fullname']);
         }
         return $result;
-    }
-
-    /**
-     * Путь к несуществующей аватарке
-     * @param  int $uid
-     * @param  boolean $sex
-     * @return string
-     *
-     * @see CommentsList::getNotExistsAvatar()
-     */
-    private function getNotExistsAvatar($uid, $sex = null) {
-        $addDir = '';
-        if (!is_null($sex)) {
-            $addDir = intval((bool) $sex) . '/';
-        }
-        return 'uploads/avatars/auto/' . $addDir . md5($uid) . '.jpg';
     }
 
     /**
@@ -563,10 +541,6 @@ class CommentsForm extends DataSet {
         //добавляем поля о прокоментировавшем
         $fd = new FieldDescription('u_nick');
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-        $dataDescription->addFieldDescription($fd);
-
-        $fd = new FieldDescription('u_avatar_img');
-        $fd->setType(FieldDescription::FIELD_TYPE_IMAGE);
         $dataDescription->addFieldDescription($fd);
 
         $fd = new FieldDescription('u_sex');

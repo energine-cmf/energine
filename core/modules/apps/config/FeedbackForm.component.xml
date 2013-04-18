@@ -6,8 +6,10 @@
         </javascript>
         <fields>
             <field name="feed_id"/>
+            <field name="rcp_id"/>
             <field name="feed_email"/>
             <field name="feed_author"/>
+            <field name="feed_theme"/>
             <field name="feed_text"/>
             <field name="captcha" type="captcha"/>
         </fields>

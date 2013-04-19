@@ -61,8 +61,14 @@ if (isset($_SERVER['REQUEST_URI']) and strpos($_SERVER['REQUEST_URI'], '/setup')
     exit;
 }
 
+
+//это первое обращение к ядру
+//проверяем наличие файла ini.func.php, если он отсутствует -значит скорее всего инсталляция проекта не произошла
+if(!file_exists($iniPath = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'gears', 'ini.func.php')))){
+    throw new Exception('Ядро не подключено. Необходимо запустить setup.');
+}
 // подключаем инициализационные функции
-require_once(implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'gears', 'ini.func.php')));
+require_once($iniPath);
 
 // подключаем служебные(вспомогательные) функции
 require_once(implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'gears', 'utils.func.php')));

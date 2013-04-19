@@ -177,10 +177,24 @@ final class Setup {
      */
     private function updateSitesTable() {
         $this->text('Обновляем таблицу share_sites...');
-        $this->dbConnect->query(
-            "UPDATE share_sites SET site_host = '" . $this->config['site']['domain'] . "',"
-                . "site_root = '" . $this->config['site']['root'] . "'"
+
+        // получаем все домены из таблицы доменов
+        $res = $this->dbConnect->query(
+            'SELECT * FROM share_domains'
         );
+
+        $domains = $res->fetchAll();
+        $res->closeCursor();
+
+        // обновляем таблицу доменов, если:
+        // 1. одна запись в таблице
+        // 2. больше одной записи, и поле пустое
+        if ($domains and (count($domains) == 1 or (count($domains) >= 1 and $domains[0]['domain_host'] == ''))) {
+            $this->dbConnect->query(
+                "UPDATE share_domains SET domain_host = '" . $this->config['site']['domain'] . "',"
+                    . "domain_root = '" . $this->config['site']['root'] . "'"
+            );
+        }
     }
 
     /**

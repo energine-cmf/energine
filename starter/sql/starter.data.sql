@@ -248,7 +248,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `share_domains` WRITE;
 /*!40000 ALTER TABLE `share_domains` DISABLE KEYS */;
-INSERT INTO `share_domains` VALUES (2,'http',80,'starter.andy.eggmen.net','/');
+INSERT INTO `share_domains` VALUES (2,'http',80,'starter.local','/');
 /*!40000 ALTER TABLE `share_domains` ENABLE KEYS */;
 UNLOCK TABLES;
 

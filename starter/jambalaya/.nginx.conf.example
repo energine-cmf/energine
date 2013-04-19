@@ -18,7 +18,7 @@ server {
                   *.starter.local;
 
   # путь к проекту
-  set $www_folder '/Users/andy/Documents/Projects/Eggmen/energine/branches/2.11.2.dev/starter';
+  set $www_folder '/var/www/energine/branches/2.11.2.dev/starter';
 
   set $root_path '$www_folder/htdocs';
   root $root_path;

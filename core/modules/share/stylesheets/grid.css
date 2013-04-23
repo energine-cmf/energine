@@ -76,11 +76,11 @@ div.grid .f_fields {
 
 .gridHeadContainer th.asc {
     padding-right: 2em;
-	background: url("http://www.stb.ua/images/desc.gif") 100% 6px no-repeat;
+	background: url("../images/desc.gif") 100% 6px no-repeat;
 }
 .gridHeadContainer th.desc {    
     padding-right: 2em;
-    background: url("http://www.stb.ua/images/asc.gif") 100% 6px no-repeat;
+    background: url("../images/asc.gif") 100% 6px no-repeat;
 }
 
 .gridContainer {

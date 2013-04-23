@@ -414,10 +414,17 @@ final class Setup {
         foreach($this->config['modules'] as $module => $module_path) {
             $symlinked_dir = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES, $module));
             $this->text('Создание символической ссылки ', $module_path, ' -> ', $symlinked_dir);
-            if (file_exists($symlinked_dir)) {
+
+            if (file_exists($symlinked_dir) || is_link($symlinked_dir)) {
                 unlink($symlinked_dir);
             }
-            @symlink($module_path, $symlinked_dir);
+
+            if(!file_exists($module_path) || !is_writable($module_path) ) {
+        	    throw new Exception('Не существует: '.$module_path);
+            }
+
+            symlink($module_path, $symlinked_dir);
+
         }
 
         //На этот момент у нас есть все необходимые директории в htdocs и они пустые

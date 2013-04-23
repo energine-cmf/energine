@@ -100,14 +100,15 @@ var Grid = new Class({
             headers[key] = element.clientWidth;
         })
 
+        if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
+            this.element.getElements('.gridHeadContainer col').each(function (element, key) {
+                element.setStyle('width', headers[key]);
+            });
 
-        this.element.getElements('.gridHeadContainer col').each(function (element, key) {
-            element.setStyle('width', headers[key]);
-        });
-
-        this.element.getElements('.gridContainer col').each(function (element, key) {
-            element.setStyle('width', headers[key]);
-        });
+            this.element.getElements('.gridContainer col').each(function (element, key) {
+                element.setStyle('width', headers[key]);
+            });
+        }
 
         this.element.getElement('.gridContainer table.gridTable').setStyle('tableLayout', 'fixed');
         this.element.getElement('.gridHeadContainer table.gridTable').setStyle('tableLayout', 'fixed');

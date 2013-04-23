@@ -151,16 +151,25 @@
                         </xsl:if>
                         <div class="gridHeadContainer">
                         <table class="gridTable" cellspacing="0">
+                            <!--  !!!TODO!!!
+                                чтобы выводить колонки фиксированной ширины, нужно добавлять этой таблице класс fixed_columns
+                            -->
                             <xsl:for-each select="$FIELDS[@type!='hidden']">
                                 <xsl:choose>
                                     <!--<xsl:when test="@index='PRI'"></xsl:when>-->
                                     <xsl:when test="@language">
                                         <xsl:if test="@language = $LANG_ID">
                                             <col id="col_1{position()}"/>
+                                            <!--  !!!TODO!!!
+                                                чтобы выводить колонки фиксированной ширины, нужно выводить в инлайн-стиль ширину колонки style="width: 25%;"
+                                            -->
                                         </xsl:if>
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <col id="col_1{position()}"/>
+                                        <!--  !!!TODO!!!
+                                            чтобы выводить колонки фиксированной ширины, нужно выводить в инлайн-стиль ширину колонки style="width: 25%;"
+                                        -->
                                     </xsl:otherwise>
                                 </xsl:choose>
                             </xsl:for-each>
@@ -186,16 +195,25 @@
                         <div class="gridContainer">
                             <div class="gridBodyContainer">
                                 <table class="gridTable" cellspacing="0">
+                                <!--  !!!TODO!!!
+                                    чтобы выводить колонки фиксированной ширины, нужно добавлять этой таблице класс fixed_columns
+                                -->
                                 <xsl:for-each select="$FIELDS[@type!='hidden']">
                                     <xsl:choose>
                                         <!--<xsl:when test="@index='PRI'"></xsl:when>-->
                                         <xsl:when test="@language">
                                             <xsl:if test="@language = $LANG_ID">
                                                 <col id="col_{position()}a"/>
+                                                <!--  !!!TODO!!!
+                                                    чтобы выводить колонки фиксированной ширины, нужно выводить в инлайн-стиль ширину колонки style="width: 25%;"
+                                                -->
                                             </xsl:if>
                                         </xsl:when>
                                         <xsl:otherwise>
                                             <col id="col_{position()}a"/>
+                                            <!--  !!!TODO!!!
+                                                чтобы выводить колонки фиксированной ширины, нужно выводить в инлайн-стиль ширину колонки style="width: 25%;"
+                                            -->
                                         </xsl:otherwise>
                                     </xsl:choose>
                                  </xsl:for-each>

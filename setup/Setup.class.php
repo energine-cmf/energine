@@ -419,8 +419,13 @@ final class Setup {
                 unlink($symlinked_dir);
             }
 
-            if(!file_exists($module_path) || !is_writable($module_path) ) {
+            if(!file_exists($module_path)) {
         	    throw new Exception('Не существует: '.$module_path);
+            }
+
+            $modules_dir = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES));
+            if (!is_writeable($modules_dir)) {
+                throw new Exception('Нет доступа на запись: ' . $modules_dir );
             }
 
             symlink($module_path, $symlinked_dir);

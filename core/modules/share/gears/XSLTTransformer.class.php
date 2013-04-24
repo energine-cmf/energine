@@ -93,6 +93,7 @@ class XSLTTransformer extends Object implements ITransformer {
             if (!@$xsltDoc->load($this->fileName)) {
                 throw new SystemException('ERR_DEV_NOT_WELL_FORMED_XSLT', SystemException::ERR_DEVELOPER);
             }
+            $xsltDoc->documentURI = $this->fileName;
             $xsltProc->importStylesheet($xsltDoc);
             $result = $xsltProc->transformToXml($this->document);
         }

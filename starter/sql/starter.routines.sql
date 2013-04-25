@@ -1,8 +1,7 @@
--- MySQL dump 10.13  Distrib 5.6.10, for solaris11 (x86_64)
+-- MySQL dump
 --
--- Host: dbhost    Database: andy_starter
+-- Host: dbhost    Database: starter
 -- ------------------------------------------------------
--- Server version	5.6.10-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -15,9 +14,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Dumping routines for database 'andy_starter'
---
 /*!50003 DROP FUNCTION IF EXISTS `get_share_uploads_repo_id` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -28,7 +24,7 @@
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`andy`@`%` FUNCTION `get_share_uploads_repo_id`(media_id INT UNSIGNED) RETURNS int(11)
+CREATE FUNCTION `get_share_uploads_repo_id`(media_id INT UNSIGNED) RETURNS int(11)
     DETERMINISTIC
 BEGIN
 	DECLARE upl_pid INT;
@@ -51,7 +47,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`andy`@`%` PROCEDURE `proc_get_share_uploads_repo_id`(IN media_id INT UNSIGNED, OUT repo_id INT UNSIGNED)
+CREATE PROCEDURE `proc_get_share_uploads_repo_id`(IN media_id INT UNSIGNED, OUT repo_id INT UNSIGNED)
 BEGIN
 	SET max_sp_recursion_depth=100;
 	SELECT upl_pid INTO repo_id FROM share_uploads WHERE upl_id = media_id;

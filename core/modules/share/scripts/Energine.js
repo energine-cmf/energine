@@ -195,6 +195,15 @@ Energine._createDatePickerObject = function (datePickerObj, props) {
     //dp.input.set('value', dp.visual.get('value'));
     return dp;
 }
+
+Energine.translations = {
+    'get': function (constant){
+        return (Energine.translations[constant] || null);
+    },
+    'set':function(constant, translation){
+        Energine.translations[constant] = translation;
+    }
+};
 /*
  * Улучшения: - Проверка уже загруженных стилей; - Загрузка стилей из директории
  * stylesheets.

@@ -164,7 +164,10 @@ var ModalBox = window.top.ModalBox || {
     },
 
     setReturnValue: function(value) {
-        this.getCurrent().store('returnValue', value);
+        var result = this.getCurrent();
+        if (result) {
+            result.store('returnValue', value);
+        }
     },
 
     close: function() {

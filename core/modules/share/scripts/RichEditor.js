@@ -218,6 +218,9 @@ var RichEditor = new Class({
             onClose:function (image) {
                 //TODO Fix image margins in IE
                 if (!image) return;
+
+                image.filename = Energine.media + image.filename;
+
                 if (!Browser.chrome && !this.fallback_ie) {
                     var imgStr = '<img src="'
                         + image.filename + '" width="'

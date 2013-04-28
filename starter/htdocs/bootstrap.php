@@ -11,7 +11,7 @@
 
 // Подключаем конфиг, чтобы достать из него местоположение ядер и имя текущего ядра
 if (!file_exists($configName = 'system.config.php')) {
-    throw new Exception('Не найден конфигурационный файл system.config.php.');
+    throw new LogicException('Не найден конфигурационный файл system.config.php.');
 }
 
 // загружаем конфиг в $config
@@ -19,7 +19,7 @@ $config = include($configName);
 
 // получение из конфига пути к setup
 if (!array_key_exists('setup_dir', $config)) {
-    throw new Exception('Не указана секция setup_dir в system.config.php.');
+    throw new LogicException('Не указана секция setup_dir в system.config.php.');
 }
 
 // относительный путь к ядру - если ядро вынесено на 1 уроверь выше htdocs
@@ -56,7 +56,7 @@ set_include_path(implode(PATH_SEPARATOR, array(realpath(dirname(__FILE__)), get_
 // inline-подключение точки входа для setup
 // подключение осуществляется именно в данном файле по причине отсутствия симлинков в htdocs/core/modules
 // соответственно дальнейшие include'ы - некорректны
-if (isset($_SERVER['REQUEST_URI']) and strpos($_SERVER['REQUEST_URI'], '/setup') === 0) {
+if (isset($_SERVER['REQUEST_URI']) and strpos($_SERVER['REQUEST_URI'], $config['site']['root'] .'setup') === 0) {
     include_once(SETUP_DIR . DIRECTORY_SEPARATOR . 'index.php');
     exit;
 }
@@ -65,7 +65,7 @@ if (isset($_SERVER['REQUEST_URI']) and strpos($_SERVER['REQUEST_URI'], '/setup')
 //это первое обращение к ядру
 //проверяем наличие файла ini.func.php, если он отсутствует -значит скорее всего инсталляция проекта не произошла
 if(!file_exists($iniPath = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'gears', 'ini.func.php')))){
-    throw new Exception('Ядро не подключено. Необходимо запустить setup.');
+    throw new LogicException('Ядро не подключено. Необходимо запустить setup.');
 }
 // подключаем инициализационные функции
 require_once($iniPath);

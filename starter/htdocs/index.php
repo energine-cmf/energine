@@ -14,7 +14,9 @@ try {
 
     $use_timer = E()->getConfigValue('site.useTimer');
     if ($use_timer) {
-        class Timer Extends Object { }
+        class Timer Extends Object {
+        }
+
         $timer = new Timer();
         $timer->startTimer();
     }
@@ -29,14 +31,24 @@ try {
     }
 
     $reg->getResponse()->commit();
+} catch (LogicException $bootstrapException) {
+    //Все исключения перехваченные здесь произошли в bootstrap'e
+    //И ориентироваться на наличие DEBUG здесь нельзя
+    //Поэтому выводим как есть
+    header('Content-Type: text/plain; charset=utf-8');
+    echo $bootstrapException->getMessage();
 }
 catch (Exception $generalException) {
     //Если отрабатывает этот кетчер, значит дела пошли совсем плохо
-
     if (defined('DEBUG') && DEBUG) {
         header('Content-Type: text/plain; charset=utf-8');
-        echo (string) $generalException->getMessage();
+        echo (string)$generalException->getMessage();
     }
+    //TODO В лог что ли писать?
+    /*
+     else{
 
+      }
+     */
     exit;
 }

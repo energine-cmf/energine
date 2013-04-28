@@ -108,13 +108,13 @@ final class Setup {
 
     /**
      * Возвращает корневую директорию системы.
-     * todo: подразумевается, что папка setup всегда находится внутри htdocs
+     *
      *
      * @return string
      */
     private function getSiteRoot() {
         $siteRoot = $this->filterInput($_SERVER['PHP_SELF']);
-        $siteRoot = str_replace('setup/index.php', '', $siteRoot);
+        $siteRoot = str_replace('index.php', '', $siteRoot);
         return $siteRoot;
     }
 
@@ -143,10 +143,13 @@ final class Setup {
         $this->config = include($configName);
 
         // Если скрипт запущен не с консоли, необходимо вычислить хост сайта и его рут директорию
-        if (!$this->isFromConsole) {
+        /*if (!$this->isFromConsole) {
             $this->config['site']['domain'] = $this->getSiteHost();
             $this->config['site']['root'] = $this->getSiteRoot();
-        }
+        }*/
+        //все вышеизложенное - очень подозрительно
+        //что нам мешает просто прочитать значения из конфига?
+        //Если бы мы потом это в конфиг писали - то еще куда ни шло ... а так ... до выяснения  - закомментировал
 
         if (!is_array($this->config)) {
             throw new Exception('Странный какой то конфиг. Пользуясь ним я не могу ничего сконфигурить. Или возьмите нормальный конфиг, или - извините.');

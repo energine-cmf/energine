@@ -5,9 +5,9 @@
 var ScriptLoader = function () {
     window.top.currentWindow = window;
     return window.top.ScriptLoader || {
-        request:null,
-        loaded:{},
-        load:function () {
+        request: null,
+        loaded: {},
+        load: function () {
             var filename;
             for (var i = 0, len = arguments.length; i < len; i++) {
                 filename = arguments[i];
@@ -27,11 +27,11 @@ var ScriptLoader = function () {
 
                     this.request
                         .open('GET', ((Energine.base) ? Energine.base : '')
-                        + 'scripts/'
-                        + filename
-                        + '.js'
-                        + ((Energine.debug) ? '?'
-                        + Math.random() : ''), false);
+                            + 'scripts/'
+                            + filename
+                            + '.js'
+                            + ((Energine.debug) ? '?'
+                            + Math.random() : ''), false);
                     this.request.send(null);
                     //получаем текст запрашиваемого файла
                     if (this.request.status == 200) {
@@ -49,7 +49,7 @@ var ScriptLoader = function () {
                 this.globalEval(this.loaded[filename]['code']);
             }
         },
-        isLoadedInCurrentWindow:function (arr) {
+        isLoadedInCurrentWindow: function (arr) {
             var result = false;
             for (var i = 0, l = arr.length; i < l; i++) {
                 if (arr[i] === window.top.currentWindow) {
@@ -59,7 +59,7 @@ var ScriptLoader = function () {
             }
             return result;
         },
-        globalEval:function (code) {
+        globalEval: function (code) {
             var w = window.top.currentWindow;
             if (w.execScript) {
                 w.execScript(code, 'javascript');
@@ -76,22 +76,27 @@ var ScriptLoader = function () {
 var isset = function (variable) {
     return ('undefined' != typeof(variable));
 }
-/*
- var $chk = function(obj){
- return !!(obj || obj === 0);
- };
- */
 
 var Energine = {
-    debug:false,
-    base:null,
-    translations:new Hash(),
-    forceJSON:false,
-    supportContentEdit:Browser.ie || Browser.firefox ||
+    debug: false,
+    base: null,
+    translations: {
+        'get': function (constant) {
+            return (Energine.translations[constant] || null);
+        },
+        'set': function (constant, translation) {
+            Energine.translations[constant] = translation;
+        },
+        'extend': function (obj){
+            Object.append(Energine.translations, obj);
+        }
+    },
+    forceJSON: false,
+    supportContentEdit: Browser.ie || Browser.firefox ||
         Browser.opera || Browser.chrome
 }
 Energine.request = {
-    request:function (uri, data, onSuccess, onUserError, onServerError, method) {
+    request: function (uri, data, onSuccess, onUserError, onServerError, method) {
         onServerError = onServerError || function (responseText) {
 
         };
@@ -125,13 +130,13 @@ Energine.request = {
             }
         };
         new Request.JSON({
-            'url':uri + ((Energine.forceJSON) ? '?json' : ''),
-            'method':method,
-            'data':data,
+            'url': uri + ((Energine.forceJSON) ? '?json' : ''),
+            'method': method,
+            'data': data,
             // 'noCache': true,
-            'evalResponse':false,
-            'onComplete':callbackFunction,
-            'onFailure':function (e) {/*console.log(arguments)*/
+            'evalResponse': false,
+            'onComplete': callbackFunction,
+            'onFailure': function (e) {/*console.log(arguments)*/
             }
         }).send();
 
@@ -158,10 +163,10 @@ Energine.cancelEvent = function (e) {
 
 Energine.createDatePicker = function (datePickerObj, nullable) {
     var props = {
-        format:'j-m-Y',
-        allowEmpty:nullable,
-        inputOutputFormat:'Y-m-d',
-        useFadeInOut:false
+        format: 'j-m-Y',
+        allowEmpty: nullable,
+        inputOutputFormat: 'Y-m-d',
+        useFadeInOut: false
     };
     return Energine._createDatePickerObject($(datePickerObj), props);
 }
@@ -169,11 +174,11 @@ Energine.createDatePicker = function (datePickerObj, nullable) {
 Energine.createDateTimePicker = function (datePickerObj, nullable) {
     //DateTime
     var props = {
-        timePicker:true,
-        format:'j-m-Y H:i',
-        inputOutputFormat:'Y-m-d H:i',
-        allowEmpty:nullable,
-        useFadeInOut:false
+        timePicker: true,
+        format: 'j-m-Y H:i',
+        inputOutputFormat: 'Y-m-d H:i',
+        allowEmpty: nullable,
+        useFadeInOut: false
     }
 
     return Energine._createDatePickerObject($(datePickerObj), props);
@@ -196,20 +201,12 @@ Energine._createDatePickerObject = function (datePickerObj, props) {
     return dp;
 }
 
-Energine.translations = {
-    'get': function (constant){
-        return (Energine.translations[constant] || null);
-    },
-    'set':function(constant, translation){
-        Energine.translations[constant] = translation;
-    }
-};
 /*
  * Улучшения: - Проверка уже загруженных стилей; - Загрузка стилей из директории
  * stylesheets.
  */
 Asset.loaded = {
-    css:{}
+    css: {}
 };
 Asset.css = function (source, properties) {
     if (!Asset.loaded.css[source]) {
@@ -218,10 +215,10 @@ Asset.css = function (source, properties) {
 
         var result = new Element('link');
         result.setProperties($merge({
-            'rel':'stylesheet',
-            'media':'Screen, projection',
-            'type':'text/css',
-            'href':((Energine.static) ? Energine.static : '') + 'stylesheets/' +
+            'rel': 'stylesheet',
+            'media': 'Screen, projection',
+            'type': 'text/css',
+            'href': ((Energine.static) ? Energine.static : '') + 'stylesheets/' +
                 source
         }, properties));
         result.inject(document.head);

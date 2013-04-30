@@ -173,6 +173,10 @@
     <!-- Панель управления страницей обрабатывается в document.xslt  -->
     <xsl:template match="toolbar[parent::component[@class='PageToolBar']]"/>
 
-<!-- Те действия на которые нет прав  - прячем -->
-<xsl:template match="control[@mode=0]"></xsl:template>
+    <!-- Те действия на которые нет прав  - прячем -->
+    <xsl:template match="control[@mode=0]"></xsl:template>
+
+    <!--Равно как и те действия права на которые есть, но по каким то причинам их делать нельзя-->
+    <xsl:template match="control[@disabled]"></xsl:template>
+
 </xsl:stylesheet>

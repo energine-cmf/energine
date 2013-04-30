@@ -171,7 +171,7 @@ abstract class DataSet extends Component {
      * Возвращает набор тулбаров
      *
      * @param string $toolbarName
-     * @return Toolbar | array
+     * @return Toolbar | array[Toolbar]
      * @access protected
      */
 

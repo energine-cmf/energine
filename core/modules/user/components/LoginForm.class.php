@@ -29,12 +29,12 @@ class LoginForm extends DataSet {
         parent::__construct($name, $module, $params);
         $this->setTitle($this->translate('TXT_LOGIN_FORM'));
         $base = E()->getSiteManager()->getCurrentSite()->base;
-        if(strpos($currDomain = E()->getSiteManager()->getCurrentSite()->host, Object::_getConfigValue('site.domain')) === false){
-            $base = 'http://'.Object::_getConfigValue('site.domain').'/';
+        if (strpos($currDomain = E()->getSiteManager()->getCurrentSite()->host, Object::_getConfigValue('site.domain')) === false) {
+            $base = 'http://' . Object::_getConfigValue('site.domain') . '/';
         }
 
         $this->setAction(
-            $base . 'auth.php'.((isset($_SERVER['HTTP_REFERER']))?'':'?return='.E()->getRequest()->getURI()),
+            $base . 'auth.php' . ((isset($_SERVER['HTTP_REFERER'])) ? '' : '?return=' . E()->getRequest()->getURI()),
             true
         );
     }
@@ -82,15 +82,17 @@ class LoginForm extends DataSet {
         $f->setData('');
         $this->getData()->addField($f);
         //Если есть информация о авторизации через фейсбук
-        if ($this->getConfigValue('auth.facebook')) {
-            $fbAppID = $this->getConfigValue('auth.facebook.appID');
-            $this->setProperty('fbAppID', $fbAppID);
-            $this->addTranslation('TXT_FB_LOGIN');
-        }
-        if ($this->getConfigValue('auth.vk')) {
-            $vkAppID = $this->getConfigValue('auth.vk.appID');
-            $this->setProperty('vkAppID', $vkAppID);
-            $this->addTranslation('TXT_VK_LOGIN');
+        foreach (array('auth.facebook', 'auth.vk') as $configSectionName) {
+            list($tbr) = array_values($this->getToolbar());
+            if ($ctrl = $tbr->getControlByID($configSectionName)) $ctrl->disable();
+
+            if ($ctrl && $this->getConfigValue($configSectionName)) {
+                if ($appID = $this->getConfigValue($configSectionName . '.appID')) {
+                    $ctrl->setAttribute('appID', $appID);
+                    $ctrl->enable();
+                }
+
+            }
         }
     }
 

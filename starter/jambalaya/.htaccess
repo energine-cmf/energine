@@ -227,6 +227,8 @@ AddCharset utf-8 .html .css .js .xml .json .rss .atom
   RewriteCond %{REQUEST_FILENAME} !-d
 
   # Send everything to index.php
+  # Если сайт размещается в папке то
+  # RewriteRule ^(.*)$ [/путь к папке/]index.php [L,QSA]
   RewriteRule ^(.*)$ index.php [L,QSA]
 
 </IfModule>
@@ -244,7 +246,12 @@ AddCharset utf-8 .html .css .js .xml .json .rss .atom
 # FollowSymLinks is required when using the RewriteEngine in a local .htaccess.
 # Would have to move the rewrite rules into the main virtualhost definition to
 # fix that.
-Options +FollowSymLinks +SymLinksIfOwnerMatch -Indexes
+
+#Если совсем все правильно и секьюрно - то лучше так
+#Options +FollowSymLinks +SymLinksIfOwnerMatch -Indexes
+
+#А в жизни
+Options +FollowSymLinks  -Indexes
 
 # override php session / cookie options
 php_value max_execution_time 3600

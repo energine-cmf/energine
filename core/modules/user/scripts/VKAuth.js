@@ -9,7 +9,6 @@ window.VKI = {
 }
 window.addEvent('domready', function () {
     VK.init({apiId:VKI.get()});
-    VK.UI.button('vk_login_button');
 });
 function vkAuth(response) {
     if (response.session) {

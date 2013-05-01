@@ -35,7 +35,8 @@
     </xsl:template>
 
     <xsl:template match="control[(@id='auth.vk') and (@mode!=0)][ancestor::component[@class='LoginForm']]">
-        <a href="#" id="vkAuth" onclick="return false;"><xsl:value-of select="@title"/></a>
+        <script type="text/javascript" src="//vk.com/js/api/openapi.js?95"></script>
+        <a href="#" id="vkAuth" onclick="VK.Auth.login(vkAuth); return false;"><xsl:value-of select="@title"/></a>
         <script type="text/javascript" src="scripts/VKAuth.js"/>
         <script type="text/javascript">
             VKI.set('<xsl:value-of select="@appID"/>');

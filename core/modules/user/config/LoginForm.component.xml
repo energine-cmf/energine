@@ -9,9 +9,11 @@
 		</fields>
 		<toolbar>
 			<control type="submit" id="user[login]" title="BTN_LOGIN" tooltip="Click me" />
+            <control type="separator" id="sep"/>
+            <control type="link" id="auth.facebook" title="BTN_FB_LOGIN" />
+            <control type="link" id="auth.vk" title="BTN_VK_LOGIN" />
+            <control type="separator" id="sep02"/>
 			<control type="link" id="restore" title="TXT_FORGOT_PWD" click="restore-password"/>
-			<control type="link" id="auth.facebook" title="BTN_FB_LOGIN" />
-			<control type="link" id="auth.vk" title="BTN_VK_LOGIN" />
 		</toolbar>
 	</state>
 	<state name="showLogoutForm">

@@ -79,7 +79,7 @@ var FileManager = new Class({
                     this.currentPath = response.currentDirectory;
                     this.tabPane.setTabTitle(this.currentPath);
                 }
-				this.viewWidget.build();				
+				this.viewWidget.build();
 				Cookie.write(FILE_COOKIE_NAME, this.currentPath?this.currentPath:'', {path:new URI(Energine.base).get('directory'), duration:1});
             }.bind(this)
         );        

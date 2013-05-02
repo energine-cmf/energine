@@ -100,14 +100,15 @@ var Grid = new Class({
             headers[key] = element.clientWidth;
         })
 
+        if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
+            this.element.getElements('.gridHeadContainer col').each(function (element, key) {
+                element.setStyle('width', headers[key]);
+            });
 
-        this.element.getElements('.gridHeadContainer col').each(function (element, key) {
-            element.setStyle('width', headers[key]);
-        });
-
-        this.element.getElements('.gridContainer col').each(function (element, key) {
-            element.setStyle('width', headers[key]);
-        });
+            this.element.getElements('.gridContainer col').each(function (element, key) {
+                element.setStyle('width', headers[key]);
+            });
+        }
 
         this.element.getElement('.gridContainer table.gridTable').setStyle('tableLayout', 'fixed');
         this.element.getElement('.gridHeadContainer table.gridTable').setStyle('tableLayout', 'fixed');
@@ -115,7 +116,7 @@ var Grid = new Class({
 
         /* растягиваем gridContainer на высоту родительского элемента минус фильтр и голова грида */
         this.paneContent = this.element.getParent('.e-pane-item');
-        this.filter = this.element.getElement('.filter');
+        this.gridToolbar = this.element.getElement('.grid_toolbar');
         this.gridHeadContainer = this.element.getElement('.gridHeadContainer');
         this.gridContainer = this.element.getElement('.gridContainer');
         this.fitGridSize();
@@ -137,16 +138,18 @@ var Grid = new Class({
             this.pane = this.element.getParents('.e-pane')[0];
             this.gridBodyContainer =
                 this.element.getElement('.gridBodyContainer');
-            this.fitGridFormSize();
-            new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
+            this.fitGridFormSize();            
+            if (document.getElements('.grid')[0] == this.element) {
+                new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
+            }
         }
     },
 
     fitGridSize:function () {
         if (this.paneContent) {
             var gridHeight = this.paneContent.getSize().y -
-                ((this.filter) ? this.filter.getSize().y : 0) -
-                this.gridHeadContainer.getSize().y - 14;
+                ((this.gridToolbar) ? this.gridToolbar.getSize().y : 0) -
+                this.gridHeadContainer.getSize().y - 4;
             if (gridHeight > 0) {
                 this.gridContainer.setStyle('height', gridHeight);
             }

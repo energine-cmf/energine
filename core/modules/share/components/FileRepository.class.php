@@ -537,6 +537,20 @@ class FileRepository extends Grid {
                 'upl_allows_delete_dir' => $repo->allowsDeleteDir(),
                 'upl_allows_delete_file' => $repo->allowsDeleteFile(),
             );
+
+            //Так получилось что uplPID содержит текущий идентификатор, а uplID - родительский
+            $p = array($uplPID);
+            $res = $this->dbh->call('proc_get_upl_pid_list', $p);
+
+            unset($p);
+            if(!empty($res)){
+                $breadcrumbsData = array();
+                foreach($res as $row){
+                    $breadcrumbsData[$row['id']] =$row['title'];
+                }
+                $this->getBuilder()->setBreadcrumbs(array_reverse($breadcrumbsData, true));
+            }
+
             if (!$data->isEmpty())
                 foreach ($this->getDataDescription()->getFieldDescriptionList() as $fieldName) {
                     if ($f = $data->getFieldByName($fieldName))

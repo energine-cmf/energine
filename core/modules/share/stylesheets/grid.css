@@ -4,7 +4,7 @@ div.grid table tr.selected td { background: #36C; color: #FFF; }
 div.grid table tr .firstColumn { border-left: 0; }
 
 div.grid div.filter {
-    background: #EEEEDD;
+    background: #EEEEDD;    
     margin-bottom: 10px;
     padding: 3px 6px;
     border: 1px solid #AAA;
@@ -50,6 +50,19 @@ div.grid .f_fields {
     top:3px;
 }
 
+.grid_breadcrumbs {
+    margin-bottom: 1px;
+    padding: 4px 7px;
+    background: #eeeedd;
+    font-size: 11px;
+}
+.grid .filter + .grid_breadcrumbs {
+    margin-top: -9px;
+}
+.grid_breadcrumbs a {
+	color: blue !important;
+}
+
 .grid {
     background: #fcfcfc;
     color:black;
@@ -76,11 +89,11 @@ div.grid .f_fields {
 
 .gridHeadContainer th.asc {
     padding-right: 2em;
-	background: url("../images/desc.gif") 100% 6px no-repeat;
+	background: url("http://www.stb.ua/images/desc.gif") 100% 6px no-repeat;
 }
 .gridHeadContainer th.desc {    
     padding-right: 2em;
-    background: url("../images/asc.gif") 100% 6px no-repeat;
+    background: url("http://www.stb.ua/images/asc.gif") 100% 6px no-repeat;
 }
 
 .gridContainer {

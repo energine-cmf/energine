@@ -264,9 +264,8 @@ abstract class DBA extends Object {
             foreach ($args as $index => &$value) {
                 $stmt->bindParam($index + 1, $value);
             }
-
             if ($res = $stmt->execute()) {
-                $res = $stmt->fetchAll();
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
         return $res;

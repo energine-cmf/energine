@@ -5,7 +5,7 @@
 	       <param name="rights">2</param>
 	   </params>
 	</component>
-	 <!-- 
+	 <!--
 	   <component name="mainMenu" module="share" class="PageList" >
        <params>
            <param name="rights">2</param>

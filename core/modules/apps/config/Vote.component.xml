@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+		<state name="main">
+			<uri_patterns>
+                <pattern>/</pattern>
+			</uri_patterns>
+			<javascript>
+				<behavior name="Vote"/>
+			</javascript>
+		</state>
+        <state name="getVote">
+			<uri_patterns>
+                <pattern>/vote-[vid]/</pattern>
+			</uri_patterns>
+            <translations>
+                <translation const="TXT_VOTE_COUNT"/>
+            </translations>
+		</state>
+        <state name="vote">
+			<uri_patterns>
+				<pattern>/vote/[qid]/</pattern>
+			</uri_patterns>
+			<fields>
+               <field name="vote_question_id"/>
+               <field name="vote_question_title"/>
+               <field name="vote_question_counter"/>
+            </fields>
+            <translations>
+                <translation const="TXT_VOTE_COUNT"/>
+            </translations>
+		</state>
+</configuration>

@@ -5,5 +5,6 @@
     version="1.0">
     
     <xsl:include href="energine.xslt"/>
+    <xsl:include href="../../../../core/modules/apps/transformers/vote.xslt"/>
 
 </xsl:stylesheet>

@@ -108,13 +108,13 @@ final class Setup {
 
     /**
      * Возвращает корневую директорию системы.
-     * todo: подразумевается, что папка setup всегда находится внутри htdocs
+     *
      *
      * @return string
      */
     private function getSiteRoot() {
         $siteRoot = $this->filterInput($_SERVER['PHP_SELF']);
-        $siteRoot = str_replace('setup/index.php', '', $siteRoot);
+        $siteRoot = str_replace('index.php', '', $siteRoot);
         return $siteRoot;
     }
 
@@ -136,17 +136,20 @@ final class Setup {
         $this->text('Версия РНР ', floatval(phpversion()), ' соответствует требованиям');
 
         //При любом действии без конфига нам не обойтись
-        if (!file_exists($configName = '../system.config.php')) {
+        if (!file_exists($configName = implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, 'system.config.php')))) {
             throw new Exception('Не найден конфигурационный файл system.config.php. По хорошему, он должен лежать в корне проекта.');
         }
 
-        $this->config = include_once($configName);
+        $this->config = include($configName);
 
         // Если скрипт запущен не с консоли, необходимо вычислить хост сайта и его рут директорию
-        if (!$this->isFromConsole) {
+        /*if (!$this->isFromConsole) {
             $this->config['site']['domain'] = $this->getSiteHost();
             $this->config['site']['root'] = $this->getSiteRoot();
-        }
+        }*/
+        //все вышеизложенное - очень подозрительно
+        //что нам мешает просто прочитать значения из конфига?
+        //Если бы мы потом это в конфиг писали - то еще куда ни шло ... а так ... до выяснения  - закомментировал
 
         if (!is_array($this->config)) {
             throw new Exception('Странный какой то конфиг. Пользуясь ним я не могу ничего сконфигурить. Или возьмите нормальный конфиг, или - извините.');
@@ -168,7 +171,7 @@ final class Setup {
         if (!isset($this->config['modules']) && empty($this->config['modules'])) {
             throw new Exception('Странно. Отсутствует перечень модулей. Я могу конечно и сам посмотреть, что находится в папке core/modules, но как то это не кузяво будет. ');
         }
-        $this->text('Перечень модулей:', implode(PHP_EOL, $this->config['modules']));
+        $this->text('Перечень модулей:', PHP_EOL . ' => ' . implode(PHP_EOL . ' => ', array_values($this->config['modules'])));
     }
 
     /**
@@ -177,10 +180,24 @@ final class Setup {
      */
     private function updateSitesTable() {
         $this->text('Обновляем таблицу share_sites...');
-        $this->dbConnect->query(
-            "UPDATE share_sites SET site_host = '" . $this->config['site']['domain'] . "',"
-                . "site_root = '" . $this->config['site']['root'] . "'"
+
+        // получаем все домены из таблицы доменов
+        $res = $this->dbConnect->query(
+            'SELECT * FROM share_domains'
         );
+
+        $domains = $res->fetchAll();
+        $res->closeCursor();
+
+        // обновляем таблицу доменов, если:
+        // 1. одна запись в таблице
+        // 2. больше одной записи, и поле пустое
+        if ($domains and (count($domains) == 1 or (count($domains) >= 1 and $domains[0]['domain_host'] == ''))) {
+            $this->dbConnect->query(
+                "UPDATE share_domains SET domain_host = '" . $this->config['site']['domain'] . "',"
+                    . "domain_root = '" . $this->config['site']['root'] . "'"
+            );
+        }
     }
 
     /**
@@ -260,7 +277,7 @@ final class Setup {
      */
     private function clearCacheAction() {
         $this->title('Очищаем кеш');
-        $this->cleaner('../../cache');
+        $this->cleaner(implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, 'cache')));
     }
 
     /**
@@ -353,9 +370,9 @@ final class Setup {
      * @throws Exception
      */
     private function generateRobotsTxt($allowRobots = true) {
-        $file = '../robots.txt';
-        if (!is_writable('../')) {
-            throw new Exception('Невозможно создать файл robots.txt');
+        $file = implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, 'robots.txt'));
+        if (!is_writable(HTDOCS_DIR)) {
+            throw new Exception('Невозможно создать файл robots.txt в ' . HTDOCS_DIR);
         }
         if (!$allowRobots) {
             file_put_contents($file, 'User-agent: *' . PHP_EOL . 'Disallow: /' . PHP_EOL);
@@ -382,7 +399,7 @@ final class Setup {
         $this->title('Создание символических ссылок');
 
         foreach ($this->htdocsDirs as $dir) {
-            $dir = '../' . $dir;
+            $dir = HTDOCS_DIR . DIRECTORY_SEPARATOR . $dir;
 
             if (!file_exists($dir)) {
                 if (!@mkdir($dir, 0755, true)) {
@@ -394,20 +411,46 @@ final class Setup {
             }
         }
 
+        // создаем симлинки модулей из их физического расположения, описанного в конфиге
+        // в папку CORE_DIR . '/modules/'
+        $this->text(PHP_EOL . 'Создание символических ссылок в ' . CORE_DIR . ':');
+        foreach($this->config['modules'] as $module => $module_path) {
+            $symlinked_dir = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES, $module));
+            $this->text('Создание символической ссылки ', $module_path, ' -> ', $symlinked_dir);
+
+            if (file_exists($symlinked_dir) || is_link($symlinked_dir)) {
+                unlink($symlinked_dir);
+            }
+
+            if(!file_exists($module_path)) {
+        	    throw new Exception('Не существует: '.$module_path);
+            }
+
+            $modules_dir = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES));
+            if (!is_writeable($modules_dir)) {
+                throw new Exception('Нет доступа на запись: ' . $modules_dir );
+            }
+
+            symlink($module_path, $symlinked_dir);
+
+        }
+
         //На этот момент у нас есть все необходимые директории в htdocs и они пустые
         foreach ($this->htdocsDirs as $dir) {
 
+            $this->text(PHP_EOL . 'Обработка ' . $dir . ':');
+
             //сначала проходимся по модулям ядра
-            foreach (array_reverse($this->config['modules']) as $module) {
+            foreach (array_reverse($this->config['modules']) as $module => $module_path) {
                 $this->linkCore(
-                    '../' . CORE_REL_DIR . DIRECTORY_SEPARATOR . MODULES . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . '*',
-                        '../' . $dir,
+                    implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES, $module, $dir, '*')),
+                    implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir)),
                     sizeof(explode(DIRECTORY_SEPARATOR, $dir)));
 
             }
             $this->linkSite(
-                '../' . SITE_REL_DIR . DIRECTORY_SEPARATOR . MODULES . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . '*',
-                    '../' . $dir
+                implode(DIRECTORY_SEPARATOR, array(SITE_DIR, MODULES, '*', $dir, '*')),
+                implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir))
             );
         }
 
@@ -513,7 +556,7 @@ final class Setup {
 
         try {
             $this->dbConnect->query('UPDATE ' . self::UPLOADS_TABLE . ' SET upl_is_active=0 WHERE upl_path LIKE "'.$uploadsPath.'%"');
-            $this->iterateUploads('../' . $uploadsPath, $PID);
+            $this->iterateUploads(implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $uploadsPath)), $PID);
             $this->dbConnect->commit();
         }
         catch (Exception $e) {
@@ -569,6 +612,7 @@ final class Setup {
             foreach ($fileList as $fo) {
                 if (is_dir($fo)) {
                     mkdir($dir = $module . DIRECTORY_SEPARATOR . basename($fo));
+                    $this->text('Создаем директорию ', $dir);
                     $this->linkCore($fo . DIRECTORY_SEPARATOR . '*', $dir, $level + 1);
                 }
                 else {
@@ -577,9 +621,9 @@ final class Setup {
                     if (file_exists($dest = $module . DIRECTORY_SEPARATOR . basename($fo))) {
                         unlink($dest);
                     }
-                    $this->text('Создаем симлинк ', str_repeat('..' . DIRECTORY_SEPARATOR, $level) . $fo, ' --> ', $dest);
-                    if (!@symlink(str_repeat('..' . DIRECTORY_SEPARATOR, $level - 1) . $fo, $dest)) {
-                        throw new Exception('Не удалось создать символическую ссылку с ' . str_repeat('..' . DIRECTORY_SEPARATOR, $level - 1) . $fo . ' на ' . $dest);
+                    $this->text('Создаем симлинк ', $fo, ' --> ', $dest);
+                    if (!@symlink($fo, $dest)) {
+                        throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
                     }
 
                 }
@@ -596,19 +640,26 @@ final class Setup {
     private function linkSite($globPattern, $dir) {
 
         $fileList = glob($globPattern);
-        //Тут тоже хитрый финт ушами с относительным путем вычисляющимся как количество уровней вложенности исходной папки + еще один
-        $relOffset = str_repeat('..' . DIRECTORY_SEPARATOR, sizeof(explode(DIRECTORY_SEPARATOR, $dir)) - 1);
         if (!empty($fileList)) {
             foreach ($fileList as $fo) {
-                list(, , , $module) = explode(DIRECTORY_SEPARATOR, $fo);
-                if (!file_exists($dir . DIRECTORY_SEPARATOR . $module)) {
-                    mkdir($dir . DIRECTORY_SEPARATOR . $module);
+
+                $fo_stripped = str_replace(SITE_DIR, '', $fo);
+                list(, , $module) = explode(DIRECTORY_SEPARATOR, $fo_stripped);
+                $new_dir = implode(DIRECTORY_SEPARATOR, array($dir, $module));
+
+                if (!file_exists($new_dir)) {
+                    mkdir($new_dir);
                 }
-                $this->text('Создаем симлинк ', $srcFile = $relOffset.$fo, ' на ', $linkPath = $dir . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . basename($fo));
+
+                $srcFile = $fo;
+                $linkPath = implode(DIRECTORY_SEPARATOR, array($dir, $module, basename($fo_stripped)));
+                $this->text('Создаем симлинк ', $srcFile, ' --> ', $linkPath);
+
                 if (file_exists($linkPath)) {
                     unlink($linkPath);
                 }
-                symlink($srcFile, $linkPath);
+
+                @symlink($srcFile, $linkPath);
             }
         }
     }

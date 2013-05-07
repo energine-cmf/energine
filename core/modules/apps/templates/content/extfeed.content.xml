@@ -22,7 +22,7 @@
                    <param name="id">current</param>
                </params>
             </component>
-            <component name="news" module="apps" class="ExtendedFeed">
+            <component name="testFeed" module="apps" class="ExtendedFeed">
                 <params>
                     <param name="showAll">1</param>
                     <param name="tableName">apps_feed</param>
@@ -31,11 +31,11 @@
             </component>
         </container>
     </container>
-    <component name="newsEditor" module="apps" class="ExtendedFeedEditor">
+    <component name="testFeedEditor" module="apps" class="ExtendedFeedEditor">
 		<params>
 			<param name="rights">3</param>
-			<param name="bind">news</param>
-            <param name="tableName">test_feed</param>
+			<param name="bind">testFeed</param>
+            <param name="tableName">apps_feed</param>
 		</params>
     </component>
 </content>

@@ -1,7 +1,10 @@
 ScriptLoader.load('ModalBox');
 var RichEditor = new Class({
+
     dirty:false,
     fallback_ie:false,
+    stored_selection: false,
+
     initialize:function (area) {
         this.area = $(area);
         this.isActive = false;
@@ -155,6 +158,8 @@ var RichEditor = new Class({
     imageManager:function () {
         this.currentRange = false;
 
+        this.stored_selection = this.storeCurrentSelection();
+
         if (Energine.supportContentEdit && !this.fallback_ie) {
             this.currentRange = this._getSelection().createRange();
         }
@@ -179,10 +184,15 @@ var RichEditor = new Class({
             });
         }
     },
+
     insertImageURL:function () {
         this.action('insertImage');
     },
+
     fileLibrary:function () {
+
+        this.stored_selection = this.storeCurrentSelection();
+
         this.currentRange = false;
         if (Energine.supportContentEdit && !this.fallback_ie)
             this.currentRange = this._getSelection().createRange();
@@ -198,11 +208,19 @@ var RichEditor = new Class({
     insertImage:function (imageData) {
         if (!imageData)
             return;
+
+        if (this.stored_selection) {
+            this.restoreSelection(this.stored_selection);
+        }
+
         ModalBox.open({
             url:this.area.getProperty('single_template') + 'imagemanager',
             onClose:function (image) {
                 //TODO Fix image margins in IE
                 if (!image) return;
+
+                image.filename = Energine.media + image.filename;
+
                 if (!Browser.chrome && !this.fallback_ie) {
                     var imgStr = '<img src="'
                         + image.filename + '" width="'
@@ -218,7 +236,8 @@ var RichEditor = new Class({
 
                     });
                     imgStr += '"/>';
-                    document.execCommand('inserthtml', false, imgStr);
+                    this.restoreSelection(this.stored_selection);
+                    this.pasteHtml(imgStr);
                     this.dirty = true;
                     this.monitorElements();
                     return;
@@ -262,9 +281,15 @@ var RichEditor = new Class({
             extraData:imageData
         });
     },
+
     insertFileLink:function (data) {
         if (!data)
             return;
+
+        if (this.stored_selection) {
+            this.restoreSelection(this.stored_selection);
+        }
+
         var filename = data['upl_path'];
         if (this.fallback_ie) {
             this.textarea.insertAtCursor(
@@ -301,6 +326,7 @@ var RichEditor = new Class({
             this.dirty = true;
         }
     },
+
     insertExtFlash:function () {
         this.currentRange = false;
         if (Energine.supportContentEdit && !this.fallback_ie)
@@ -347,6 +373,7 @@ var RichEditor = new Class({
             }
         });
     },
+
     processPaste:function (event) {
         var selection = this._getSelection();
 
@@ -365,6 +392,7 @@ var RichEditor = new Class({
 
         this.pasteArea.innerHTML = '';
     },
+
     processPasteFF:function (event) {
         (function () {
             this.area.innerHTML = this.cleanMarkup(this.area
@@ -373,6 +401,7 @@ var RichEditor = new Class({
 
         }).delay(300, this);
     },
+
     cleanMarkup:function (path, data, aggressive) {
         var result;
         new Request({
@@ -386,6 +415,7 @@ var RichEditor = new Class({
         }).send('data=' + encodeURIComponent(data));
         return result;
     },
+
     changeFormat:function (control) {
         var selectedOption = control.select.value;
         if (selectedOption == 'reset') {
@@ -396,12 +426,14 @@ var RichEditor = new Class({
         }
         control.select.value = '';
     },
+
     _getSelection:function () {
         var selection = (document.selection || window.getSelection());
 
         if (!isset(selection.type)) {
             selection.type = 'Text';
         }
+
         if (!isset(selection.createRange)) {
             selection.createRange = function () {
                 var range = this.getRangeAt(0);
@@ -419,5 +451,104 @@ var RichEditor = new Class({
             };
         }
         return selection;
+    },
+
+    // кросс-браузерный метод получения range для selection
+    _getRange: function(selection) {
+        return (selection.getRangeAt) ? selection.getRangeAt(0) : ((selection.createRange) ? selection.createRange() : null);
+    },
+
+    // активирует текущий редактируемый контейнер, если по какой-то причине он потерял фокус
+    // (например при открытии диалога)
+    _setActiveMode: function() {
+        try {
+            this.area.focus();
+            this.area.setActive();
+        } catch (e) { }
+    },
+
+    // возвращает Element из текущего html кода
+    _getNodeFromHtml: function(html) {
+        var temp = new Element('div').set('html', html);
+        var els = temp.getElements('*');
+        return els[0];
+    },
+
+    // сохраняет и возвращает текущий selection активного контейнера
+    storeCurrentSelection: function () {
+        if (window.getSelection) {
+            var selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                var selectedRange = selection.getRangeAt(0);
+                return selectedRange.cloneRange();
+            }
+            else {
+                return null;
+            }
+        }
+        else if (document.selection) {
+            var selection = document.selection;
+            if (selection.type.toLowerCase() == 'text') {
+                return selection.createRange().getBookmark();
+            }
+            else if (selection.type.toLowerCase() == 'none' && Browser.ie) {
+                var rng = document.selection.createRange();
+                rng.text="_";
+                this.setSelectionRange(-1,0);
+                this._no_select = false;
+
+                return selection.createRange().getBookmark();
+            }
+            else
+                return null;
+        }
+        else {
+            return null;
+        }
+    },
+
+    setSelectionRange: function(start, end) {
+        var range = document.selection.createRange();
+        range.collapse(true);
+        range.moveStart("character", start);
+        range.moveEnd("character", end);
+        range.select();
+    },
+
+    // восстанавливает текущий selection в активном контейнере
+    restoreSelection: function (storedSelection) {
+        if (storedSelection) {
+            if (window.getSelection) {
+                var selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(storedSelection);
+            }
+            else if (document.selection && document.body.createTextRange) {
+                var range = document.body.createTextRange();
+                range.moveToBookmark(storedSelection);
+                range.select();
+            }
+        }
+    },
+
+    // метод вставки html кода узла в текущую выделенную позицию активного контейнера
+    pasteHtml: function(html) {
+        try {
+            var s = this._getSelection();
+            var r = this._getRange(s);
+            if (Browser.ie) { // IE
+                this._setActiveMode();
+                r.pasteHTML(html);
+            } else if (Browser.firefox) { // FF
+                r.deleteContents();
+                r.insertNode(this._getNodeFromHtml(html));
+            } else { // Safari
+                r.deleteContents();
+                r.insertNode(this._getNodeFromHtml(html));
+            }
+            r.collapse(false);
+            r.select();
+        } catch (e) { }
     }
+
 });

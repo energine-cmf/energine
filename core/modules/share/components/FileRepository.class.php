@@ -263,12 +263,29 @@ class FileRepository extends Grid {
      * @return null|int
      */
     protected function getRepositoryIdByUploadId($upl_id) {
-        $this->dbh->select('CALL proc_get_share_uploads_repo_id(%s, @id)', $upl_id);
-        $res = $this->dbh->select('SELECT @id as repo_id');
-        if ($res) {
-            return ($res[0]['repo_id']) ? $res[0]['repo_id'] : null;
+
+        // проверка существования хранимой процедуры
+        $proc_exists = $this->dbh->procExists('proc_get_share_uploads_repo_id');
+
+        // если процедура существует - получаем значение id репозитария по upl_id
+        if ($proc_exists) {
+            $this->dbh->select('CALL proc_get_share_uploads_repo_id(%s, @id)', $upl_id);
+            $res = $this->dbh->select('SELECT @id as repo_id');
+            if ($res) {
+                return ($res[0]['repo_id']) ? $res[0]['repo_id'] : null;
+            }
+            return null;
         }
-        return null;
+        // иначе - получаем ID первого локального репозитария в системе
+        // cоответственно пользователю не будет доступна функциональность по разделению прав доступа
+        // к разным типам репозитариев (local, ro, ftpto, ...)
+        else {
+            return $this->dbh->getScalar(
+                'SELECT upl_id
+                 FROM share_uploads
+                 WHERE upl_mime_type="repo/local" AND upl_internal_type="repo" LIMIT 1'
+            );
+        }
     }
 
     /**
@@ -520,6 +537,20 @@ class FileRepository extends Grid {
                 'upl_allows_delete_dir' => $repo->allowsDeleteDir(),
                 'upl_allows_delete_file' => $repo->allowsDeleteFile(),
             );
+
+            //Так получилось что uplPID содержит текущий идентификатор, а uplID - родительский
+            $p = array($uplPID);
+            $res = $this->dbh->call('proc_get_upl_pid_list', $p);
+
+            unset($p);
+            if(!empty($res)){
+                $breadcrumbsData = array();
+                foreach($res as $row){
+                    $breadcrumbsData[$row['id']] =$row['title'];
+                }
+                $this->getBuilder()->setBreadcrumbs(array_reverse($breadcrumbsData, true));
+            }
+
             if (!$data->isEmpty())
                 foreach ($this->getDataDescription()->getFieldDescriptionList() as $fieldName) {
                     if ($f = $data->getFieldByName($fieldName))

@@ -157,6 +157,7 @@ var FileRepository = new Class({
     Extends:GridManager,
     initialize:function (element) {
         this.parent(element);
+        this.pathBreadCrumbs = new PathList(this.element.getElementById('breadcrumbs'));
         this.currentPID = false;
     },
     onDoubleClick:function () {
@@ -229,7 +230,11 @@ var FileRepository = new Class({
         for (var i = 0, l = controlsEnabledByDefault.length; i < l; i++) {
             if (control = this.toolbar.getControlById(controlsEnabledByDefault[i])) control.enable();
         }
-
+        this.pathBreadCrumbs.load(result.breadcrumbs, function(upl_id){
+            this.currentPID = upl_id;
+            this.filter.remove();
+            this.loadPage(1);
+        }.bind(this));
         this.grid.build();
         this.overlay.hide();
     },
@@ -320,5 +325,20 @@ var FileRepository = new Class({
             null,
             this.processServerError.bind(this)
         );
+    }
+});
+
+var PathList = new Class({
+    initialize: function(el){
+        this.element = $(el);
+    },
+    load: function(data, loader){
+        this.element.empty();
+        Object.each(data, function(title, id){
+            this.element.adopt([new Element('a', {href: '#', 'text':title, 'events':{ 'click': function(e){
+                Energine.cancelEvent(e);
+                loader(id);
+            }}}), new Element('span', {'text' : ' / '})])
+        }, this);
     }
 });

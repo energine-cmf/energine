@@ -19,6 +19,10 @@
  */
 class JSONRepoBuilder extends JSONBuilder {
     /**
+     * @var array
+     */
+    private $breadcrumbs;
+    /**
      * Создает результирующий JSON-объект.
      *
      * @access public
@@ -73,12 +77,16 @@ class JSONRepoBuilder extends JSONBuilder {
                 }
             }
         }
-
+        $result['breadcrumbs'] = $this->breadcrumbs;
         $result['result'] = true;
         $result['mode'] = 'select';
 
         $this->result = $result;
 
         return true;
+    }
+
+    public function setBreadcrumbs(array $repoBreadCrumbs){
+        $this->breadcrumbs = $repoBreadCrumbs;
     }
 }

@@ -648,6 +648,62 @@ body, html {
 }
 /* ----- /div editor ----- */
 
+/* ----- vote ----- */
+.vote_date {
+    padding: 0 0 4px 12px;
+    font-size: 10px;
+    color: #969696;
+}
+.vote_text {
+    padding: 0 0 10px 12px;
+    font-weight: bold;
+}
+.vote_options {
+    padding-bottom: 5px;
+}
+.vote_option {
+    padding-bottom: 5px;
+}
+.vote_option a,
+.vote_option .result {
+    display: block;
+    border: 1px solid #e1effa;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    background: #f3f3f3 url(../images/vote_option_bg.gif) 0 0 repeat-x;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #555;
+}
+.vote_option a {
+    cursor: pointer;
+}
+.vote_option a:hover,
+.vote_option a:active {
+    text-decoration: none;
+    color: #0072bc;
+}
+.vote_option .name {
+    float: left;
+    width: 67%;
+}
+.vote_option .figure {
+    float: right;
+    width: 32%;
+    text-align: right;
+    line-height: 14px;
+    font-size: 18px;
+}
+.vote_count {
+    padding: 0 0 10px 12px;
+    font-size: 11px;
+}
+.vote .go_ahead {
+    text-align: right;
+}
+/* ----- /vote ----- */
+
 /* ----- error page ----- */
 .error_item {
     padding-bottom: 10px;

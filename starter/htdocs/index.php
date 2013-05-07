@@ -12,16 +12,43 @@ try {
     // подключаем bootstrap
     require_once('bootstrap.php');
 
+    $use_timer = E()->getConfigValue('site.useTimer');
+    if ($use_timer) {
+        class Timer Extends Object {
+        }
+
+        $timer = new Timer();
+        $timer->startTimer();
+    }
+
     UserSession::start();
     $reg = E();
     $reg->getController()->run();
+
+    if ($use_timer) {
+        $timer->stopTimer();
+        $reg->getResponse()->setHeader('X-Timer', $timer->getTimer());
+    }
+
     $reg->getResponse()->commit();
+} catch (LogicException $bootstrapException) {
+    //Все исключения перехваченные здесь произошли в bootstrap'e
+    //И ориентироваться на наличие DEBUG здесь нельзя
+    //Поэтому выводим как есть
+    header('Content-Type: text/plain; charset=utf-8');
+    echo $bootstrapException->getMessage();
 }
 catch (Exception $generalException) {
     //Если отрабатывает этот кетчер, значит дела пошли совсем плохо
-    //@todo исправить вывод в зависимости от режима отладки
-    $r = E()->getResponse();
-    $r->setHeader('Content-Type', 'text/plain; charset=utf-8');
-    $r->write((string) $generalException);
-    $r->commit();
+    if (defined('DEBUG') && DEBUG) {
+        header('Content-Type: text/plain; charset=utf-8');
+        echo (string)$generalException->getMessage();
+    }
+    //TODO В лог что ли писать?
+    /*
+     else{
+
+      }
+     */
+    exit;
 }

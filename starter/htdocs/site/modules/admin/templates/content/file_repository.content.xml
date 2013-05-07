@@ -3,7 +3,7 @@
     <component name="fileRepo" module="share" class="FileLibrary">
        <params>
            <param name="rights">3</param>
-           <param name="config">core/modules/stb/config/AltFileLibrary.component.xml</param>
+           <param name="config">core/modules/share/config/FileLibrary.component.xml</param>
        </params>        
     </component>
 </content>

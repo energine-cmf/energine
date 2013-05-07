@@ -8,7 +8,7 @@
         </state>
         <state name="main">
             <javascript>
-                <object name="GridManager"/>
+                <behavior name="GridManager"/>
             </javascript>
             <fields>
                 <field name="comment_id"/>
@@ -27,7 +27,7 @@
                 <pattern>/[int]/edit/</pattern>
             </uri_patterns>
             <javascript>
-                <object name="CommentEditorForm"/>
+                <behavior name="CommentEditorForm"/>
             </javascript>
             <toolbar>
                 <control id="save" title="BTN_SAVE" type="button" onclick="save"/>

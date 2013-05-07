@@ -1,10 +1,9 @@
 var TabPane = new Class({
-    options:{
-        onTabChange:$empty
+    options: {
+        onTabChange: $empty
     },
-    Implements:[Options, Events],
-
-    initialize:function (element, options) {
+    Implements: [Options, Events],
+    initialize: function (element, options) {
         Asset.css('tabpane.css');
         this.setOptions(options);
         this.element = $(element);
@@ -26,13 +25,13 @@ var TabPane = new Class({
 
             var tabpane = this;
             tab.addEvents({
-                'mouseover':function () {
+                'mouseover': function () {
                     if (this != tabpane.currentTab) this.addClass('highlighted');
                 },
-                'mouseout':function () {
+                'mouseout': function () {
                     this.removeClass('highlighted');
                 },
-                'click':function () {
+                'click': function () {
                     if ((this != tabpane.currentTab) && !this.hasClass('disabled')) tabpane.show(this);
                 }
             });
@@ -40,30 +39,31 @@ var TabPane = new Class({
 
         this.show(this.currentTab = this.tabs[0]);
     },
-
-    show:function (tab) {
+    show: function (tab) {
         this.currentTab.removeClass('current').pane.setStyle('display', 'none');
         tab.addClass('current').pane.setStyle('display', '');
         this.currentTab = tab;
         this.fireEvent('onTabChange', this.currentTab.data);
-    },
 
-    getTabs:function () {
+        var firstInput;
+        if (firstInput = this.currentTab.pane.getElement('div.field div.control input[type=text]'))
+            firstInput.focus();
+    },
+    getTabs: function () {
         return this.tabs;
     },
-
-    getCurrentTab:function () {
+    getCurrentTab: function () {
         return this.currentTab;
     },
-    setTabTitle:function (title, tab) {
+    setTabTitle: function (title, tab) {
         tab = $pick(tab, this.getCurrentTab());
         tab.getElement('a').set('html', title);
     },
-    createNewTab:function (tabTitle) {
+    createNewTab: function (tabTitle) {
         var tabID = 'id' + Math.floor(Math.random() * 101),
-            titleElement = new Element('a', {'href':'#' + tabID, 'html':tabTitle}),
-            tabPane = new Element('div', {'id':tabID, 'class':'e-pane-item', 'styles':{'display':'none'}}).inject(this.element.getElement('.e-pane-content')),
-            tabElement = new Element('li', {'unselectable':'on'}).grab(titleElement);
+            titleElement = new Element('a', {'href': '#' + tabID, 'html': tabTitle}),
+            tabPane = new Element('div', {'id': tabID, 'class': 'e-pane-item', 'styles': {'display': 'none'}}).inject(this.element.getElement('.e-pane-content')),
+            tabElement = new Element('li', {'unselectable': 'on'}).grab(titleElement);
         this.element.getElement('ul.e-tabs').grab(tabElement);
         this.tabs.push(tabElement);
         titleElement.addEvent('click', function (event) {
@@ -76,19 +76,19 @@ var TabPane = new Class({
 
         var tabpane = this;
         tabElement.addEvents({
-            'mouseover':function () {
+            'mouseover': function () {
                 if (this != tabpane.currentTab) this.addClass('highlighted');
             },
-            'mouseout':function () {
+            'mouseout': function () {
                 this.removeClass('highlighted');
             },
-            'click':function () {
+            'click': function () {
                 if (this != tabpane.currentTab) tabpane.show(this);
             }
         });
         return tabElement;
     },
-    whereIs:function (element) {
+    whereIs: function (element) {
         var el = $(element), pane = false;
         while (el = el.getParent()) {
             if (el.hasClass('e-pane-item') && el.tab) {
@@ -98,12 +98,12 @@ var TabPane = new Class({
         }
         return pane;
     },
-    enableTab:function (tabIndex) {
+    enableTab: function (tabIndex) {
         if (this.tabs[tabIndex]) {
             this.tabs[tabIndex].removeClass('disabled');
         }
     },
-    disableTab:function (tabIndex) {
+    disableTab: function (tabIndex) {
         var tab;
         if (tab = this.tabs[tabIndex]) {
             tab.addClass('disabled');

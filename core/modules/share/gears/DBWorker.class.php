@@ -30,12 +30,14 @@ abstract class DBWorker extends Object {
      * @var QAL ссылка на self::$dbhInstance (для производных классов)
      */
     protected $dbh;
+
     /**
      * Кеш переводов
      * (получается за ними по отдельности очень часто нужно обращаться)
      * @var array
      */
     private static $translationsCache = null;
+
     /**
      * @var PDOStatement
      */
@@ -45,7 +47,6 @@ abstract class DBWorker extends Object {
      * Конструктор класса.
      *
      * @access public
-     * @return void
      */
     public function __construct() {
         $this->dbh = E()->getDB();
@@ -114,7 +115,7 @@ abstract class DBWorker extends Object {
      *
      * @access public
      * @param string $const текстовая константа
-     * @param int $langId язык для перевода
+     * @param mixed $langID
      * @return string
      * @see DBWorker::_translate()
      */

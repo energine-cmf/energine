@@ -39,9 +39,9 @@ require_once 'slirconfigdefaults.class.php';
 class SLIRConfig extends SLIRConfigDefaults
 {
 	public static $errorImages	= true;
-	public static $SLIRDir	= '/home/pavka/projects/starter/htdocs/resizer';
-    public static $documentRoot	= '/home/pavka/projects/starter/htdocs';
-    public static $cacheDir	= '/home/pavka/projects/starter/image-cache';
+	public static $SLIRDir;
+    public static $documentRoot;
+    public static $cacheDir;
     public static $cacheDirName	= '/image-cache';
     public static $forceQueryString	= true;
 
@@ -49,7 +49,12 @@ class SLIRConfig extends SLIRConfigDefaults
 	{
 		// This must be the last line of this function
 		parent::init();
-	}
+        $HTDOCS_DIR = realpath(dirname(__FILE__) . '/../');
+        $PROJECT_DIR = realpath(dirname(__FILE__) . '/../../');
+        self::$SLIRDir = $HTDOCS_DIR . '/resizer';
+        self::$documentRoot = $HTDOCS_DIR;
+        self::$cacheDir = $PROJECT_DIR . '/image-cache';
+    }
 }
 
 SLIRConfig::init();

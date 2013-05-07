@@ -40,5 +40,15 @@
             <xsl:apply-templates/>
         </li>
     </xsl:template>
+
+    <xsl:template match="/document/translations[translation[@component='questionEditor']]">
+        <xsl:if test="$COMPONENTS[@class='QuestionEditor']/@type='form'">
+            <script type="text/javascript">
+                <xsl:for-each select="translation">
+                    Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="."/>');
+                </xsl:for-each>
+            </script>
+        </xsl:if>
+    </xsl:template>
     
 </xsl:stylesheet>

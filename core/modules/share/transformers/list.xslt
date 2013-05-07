@@ -142,37 +142,34 @@
                                     </div>
                                 </xsl:if>                                
                                 <xsl:if test="ancestor::component[@class='FileRepository']">
-                                    <!-- !!!TODO!!!
-                                    в этот блок нужно сделать вывод хлебных крошек для файла в гриде репозитория
-                                    <div class="grid_breadcrumbs">Путь к файлу: <a href="#">Локальный репозиторий</a> / <a href="#">Тест</a> / <a href="#">Имя папки</a></div>
-                                    -->
-                                </xsl:if>                                
+                                    <div class="grid_breadcrumbs" id="breadcrumbs"><!-- <a href="#">Локальный репозиторий</a><span> / </span><a href="#">Тест</a>--></div>
+                                </xsl:if>
                             </div>
                         </xsl:if>
                         <div class="gridHeadContainer">
                         <table class="gridTable" cellspacing="0">
-                            <!--  !!!TODO!!!
-                                чтобы выводить колонки фиксированной ширины, нужно добавлять этой таблице класс fixed_columns
-                            -->
-                            <xsl:for-each select="$FIELDS[@type!='hidden']">
-                                <xsl:choose>
-                                    <!--<xsl:when test="@index='PRI'"></xsl:when>-->
-                                    <xsl:when test="@language">
-                                        <xsl:if test="@language = $LANG_ID">
-                                            <col id="col_1{position()}"/>
-                                            <!--  !!!TODO!!!
-                                                чтобы выводить колонки фиксированной ширины, нужно выводить в инлайн-стиль ширину колонки style="width: 25%;"
-                                            -->
-                                        </xsl:if>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <col id="col_1{position()}"/>
-                                        <!--  !!!TODO!!!
-                                            чтобы выводить колонки фиксированной ширины, нужно выводить в инлайн-стиль ширину колонки style="width: 25%;"
-                                        -->
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:for-each>
+                            <xsl:choose>
+                                <xsl:when test="ancestor::component[@class='FileRepository']">
+                                    <xsl:attribute name="class">gridTable fixed_columns</xsl:attribute>
+                                    <col id="col_11" style="width:20%"/>
+                                    <col id="col_12" style="width:40%"/>
+                                    <col id="col_13" style="width:40%"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:for-each select="$FIELDS[@type!='hidden']">
+                                        <xsl:choose>
+                                            <xsl:when test="@language">
+                                                <xsl:if test="@language = $LANG_ID">
+                                                    <col id="col_1{position()}"/>
+                                                </xsl:if>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <col id="col_1{position()}"/>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </xsl:for-each>
+                                </xsl:otherwise>
+                            </xsl:choose>
                             <thead>
                                 <tr>
                                     <xsl:for-each select="$FIELDS[@type!='hidden']">
@@ -195,28 +192,31 @@
                         <div class="gridContainer">
                             <div class="gridBodyContainer">
                                 <table class="gridTable" cellspacing="0">
-                                <!--  !!!TODO!!!
-                                    чтобы выводить колонки фиксированной ширины, нужно добавлять этой таблице класс fixed_columns
-                                -->
-                                <xsl:for-each select="$FIELDS[@type!='hidden']">
                                     <xsl:choose>
-                                        <!--<xsl:when test="@index='PRI'"></xsl:when>-->
-                                        <xsl:when test="@language">
-                                            <xsl:if test="@language = $LANG_ID">
-                                                <col id="col_{position()}a"/>
-                                                <!--  !!!TODO!!!
-                                                    чтобы выводить колонки фиксированной ширины, нужно выводить в инлайн-стиль ширину колонки style="width: 25%;"
-                                                -->
-                                            </xsl:if>
+                                        <xsl:when test="ancestor::component[@class='FileRepository']">
+                                            <xsl:attribute name="class">gridTable fixed_columns</xsl:attribute>
+                                            <col id="col_11a" style="width:20%;"/>
+                                            <col id="col_12a" style="width:40%;"/>
+                                            <col id="col_13a" style="width:40%;"/>
                                         </xsl:when>
                                         <xsl:otherwise>
-                                            <col id="col_{position()}a"/>
+                                            <xsl:for-each select="$FIELDS[@type!='hidden']">
+                                                <xsl:choose>
+                                                    <xsl:when test="@language">
+                                                        <xsl:if test="@language = $LANG_ID">
+                                                            <col id="col_{position()}a"/>
+                                                        </xsl:if>
+                                                    </xsl:when>
+                                                    <xsl:otherwise>
+                                                        <col id="col_{position()}a"/>
+                                                    </xsl:otherwise>
+                                                </xsl:choose>
+                                            </xsl:for-each>
                                             <!--  !!!TODO!!!
                                                 чтобы выводить колонки фиксированной ширины, нужно выводить в инлайн-стиль ширину колонки style="width: 25%;"
                                             -->
                                         </xsl:otherwise>
                                     </xsl:choose>
-                                 </xsl:for-each>
                                     <thead style="visibility: hidden;">
                                         <tr>
                                         <xsl:for-each select="$FIELDS[@type!='hidden']">

@@ -53,7 +53,7 @@ CREATE TABLE `apps_feed` (
   KEY `tf_order_num` (`tf_order_num`),
   KEY `tf_date` (`tf_date`),
   CONSTRAINT `apps_feed_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ DROP TABLE IF EXISTS `apps_feedback`;
 CREATE TABLE `apps_feedback` (
   `feed_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `feed_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `rcp_id` int(10) unsigned NOT NULL,
+  `rcp_id` int(10) unsigned NOT NULL DEFAULT '0',
   `feed_email` varchar(200) NOT NULL DEFAULT '',
   `feed_phone` varchar(10) DEFAULT NULL,
   `feed_author` varchar(250) NOT NULL,
@@ -130,7 +130,41 @@ CREATE TABLE `apps_feedback` (
   `feed_text` text NOT NULL,
   PRIMARY KEY (`feed_id`),
   KEY `rcp_id` (`rcp_id`),
-  CONSTRAINT `apps_feedback_ibfk_1` FOREIGN KEY (`rcp_id`) REFERENCES `trku_feedback_recipient` (`rcp_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `apps_feedback_ibfk_1` FOREIGN KEY (`rcp_id`) REFERENCES `apps_feedback_recipient` (`rcp_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `apps_feedback_recipient`
+--
+
+DROP TABLE IF EXISTS `apps_feedback_recipient`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `apps_feedback_recipient` (
+  `rcp_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `rcp_recipients` varchar(300) NOT NULL,
+  `rcp_order_num` int(10) unsigned DEFAULT '1',
+  PRIMARY KEY (`rcp_id`),
+  KEY `rcp_order_num` (`rcp_order_num`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `apps_feedback_recipient_translation`
+--
+
+DROP TABLE IF EXISTS `apps_feedback_recipient_translation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `apps_feedback_recipient_translation` (
+  `rcp_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
+  `rcp_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`rcp_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`),
+  CONSTRAINT `apps_feedback_recipient_translation_ibfk_1` FOREIGN KEY (`rcp_id`) REFERENCES `apps_feedback_recipient` (`rcp_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `apps_feedback_recipient_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -156,7 +190,7 @@ CREATE TABLE `apps_news` (
   KEY `news_show_image` (`news_show_image`),
   KEY `news_is_top` (`news_is_top`),
   CONSTRAINT `apps_news_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,6 +249,167 @@ CREATE TABLE `apps_news_uploads` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `apps_vote`
+--
+
+DROP TABLE IF EXISTS `apps_vote`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `apps_vote` (
+  `vote_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vote_date` datetime NOT NULL,
+  `vote_is_active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`vote_id`),
+  KEY `vote_is_active` (`vote_is_active`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `apps_vote_question`
+--
+
+DROP TABLE IF EXISTS `apps_vote_question`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `apps_vote_question` (
+  `vote_question_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vote_id` int(10) unsigned DEFAULT NULL,
+  `vote_question_counter` int(10) unsigned DEFAULT '0',
+  `vote_question_order_num` int(10) unsigned DEFAULT '1',
+  PRIMARY KEY (`vote_question_id`),
+  KEY `vote_question_order_num` (`vote_question_order_num`),
+  KEY `vote_question_counter` (`vote_question_counter`),
+  KEY `vote_id` (`vote_id`),
+  CONSTRAINT `apps_vote_question_ibfk_1` FOREIGN KEY (`vote_id`) REFERENCES `apps_vote` (`vote_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `apps_vote_question_translation`
+--
+
+DROP TABLE IF EXISTS `apps_vote_question_translation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `apps_vote_question_translation` (
+  `vote_question_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
+  `vote_question_title` varchar(250) NOT NULL,
+  PRIMARY KEY (`vote_question_id`,`lang_id`),
+  KEY `apps_vote_question_translation_ibfk_1` (`lang_id`),
+  CONSTRAINT `apps_vote_question_translation_ibfk_1` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `apps_vote_question_translation_ibfk_2` FOREIGN KEY (`vote_question_id`) REFERENCES `apps_vote_question` (`vote_question_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `apps_vote_translation`
+--
+
+DROP TABLE IF EXISTS `apps_vote_translation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `apps_vote_translation` (
+  `vote_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
+  `vote_name` varchar(250) NOT NULL,
+  PRIMARY KEY (`vote_id`,`lang_id`),
+  KEY `apps_vote_translation_ibfk_2` (`lang_id`),
+  CONSTRAINT `apps_vote_translation_ibfk_1` FOREIGN KEY (`vote_id`) REFERENCES `apps_vote` (`vote_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `apps_vote_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `form_5`
+--
+
+DROP TABLE IF EXISTS `form_5`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `form_5` (
+  `pk_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `form_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `form_5_field_2` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`pk_id`),
+  KEY `form_date` (`form_date`),
+  KEY `form_5_field_2` (`form_5_field_2`),
+  CONSTRAINT `form_5_ibfk_1` FOREIGN KEY (`form_5_field_2`) REFERENCES `form_5_field_2` (`fk_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `form_5_field_2`
+--
+
+DROP TABLE IF EXISTS `form_5_field_2`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `form_5_field_2` (
+  `fk_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `fk_order_num` int(10) unsigned DEFAULT '1',
+  PRIMARY KEY (`fk_id`),
+  KEY `fk_order_num` (`fk_order_num`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `form_5_field_2_translation`
+--
+
+DROP TABLE IF EXISTS `form_5_field_2_translation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `form_5_field_2_translation` (
+  `fk_id` int(11) unsigned NOT NULL,
+  `lang_id` int(11) unsigned NOT NULL,
+  `fk_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`fk_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`),
+  CONSTRAINT `form_5_field_2_translation_ibfk_1` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `form_5_field_2_translation_ibfk_2` FOREIGN KEY (`fk_id`) REFERENCES `form_5_field_2` (`fk_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `frm_forms`
+--
+
+DROP TABLE IF EXISTS `frm_forms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `frm_forms` (
+  `form_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `form_creation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `form_is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `form_email_adresses` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`form_id`),
+  KEY `form_creation_date` (`form_creation_date`),
+  KEY `form_is_active` (`form_is_active`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `frm_forms_translation`
+--
+
+DROP TABLE IF EXISTS `frm_forms_translation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `frm_forms_translation` (
+  `form_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
+  `form_name` varchar(250) NOT NULL,
+  `form_annotation_rtf` text NOT NULL,
+  `form_post_annotation_rtf` text,
+  PRIMARY KEY (`form_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`),
+  CONSTRAINT `frm_forms_translation_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `frm_forms` (`form_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `frm_forms_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `share_access_level`
 --
 
@@ -266,7 +461,7 @@ CREATE TABLE `share_domains` (
   `domain_root` varchar(255) NOT NULL,
   PRIMARY KEY (`domain_id`),
   UNIQUE KEY `domain_protocol` (`domain_protocol`,`domain_host`,`domain_port`,`domain_root`)
-) ENGINE=InnoDB AUTO_INCREMENT=282 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=197 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,7 +476,7 @@ CREATE TABLE `share_lang_tags` (
   `ltag_name` varchar(70) NOT NULL DEFAULT '',
   PRIMARY KEY (`ltag_id`),
   UNIQUE KEY `ltag_name` (`ltag_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2011 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2012 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -334,7 +529,7 @@ CREATE TABLE `share_session` (
   `session_last_impression` int(11) NOT NULL,
   `session_created` int(11) NOT NULL,
   `session_expires` int(11) NOT NULL,
-  `session_ip` int(4) unsigned DEFAULT NULL,
+  `session_ip` int(11) unsigned DEFAULT NULL,
   `session_user_agent` char(255) DEFAULT NULL,
   `u_id` int(10) unsigned DEFAULT NULL,
   `session_data` varchar(5000) DEFAULT NULL,
@@ -343,7 +538,7 @@ CREATE TABLE `share_session` (
   KEY `i_session_u_id` (`u_id`),
   KEY `i_session_ip` (`session_ip`),
   KEY `session_expires` (`session_expires`)
-) ENGINE=MEMORY AUTO_INCREMENT=27127 DEFAULT CHARSET=utf8;
+) ENGINE=MEMORY AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -374,7 +569,7 @@ CREATE TABLE `share_sitemap` (
   CONSTRAINT `share_sitemap_ibfk_11` FOREIGN KEY (`brand_id`) REFERENCES `apps_branding` (`brand_id`) ON DELETE SET NULL ON UPDATE SET NULL,
   CONSTRAINT `share_sitemap_ibfk_8` FOREIGN KEY (`smap_pid`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `share_sitemap_ibfk_9` FOREIGN KEY (`site_id`) REFERENCES `share_sites` (`site_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3835 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3641 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -452,7 +647,7 @@ CREATE TABLE `share_sites` (
   `site_meta_robots` text,
   `site_ga_code` text,
   PRIMARY KEY (`site_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=248 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -504,7 +699,7 @@ CREATE TABLE `share_tags` (
   `tag_name` char(100) NOT NULL,
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `tag_name` (`tag_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6169 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -521,7 +716,7 @@ CREATE TABLE `share_textblocks` (
   PRIMARY KEY (`tb_id`),
   UNIQUE KEY `smap_id` (`smap_id`,`tb_num`),
   CONSTRAINT `share_textblocks_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -579,7 +774,7 @@ CREATE TABLE `share_uploads` (
   KEY `upl_filename` (`upl_filename`),
   KEY `upl_is_active` (`upl_is_active`),
   CONSTRAINT `share_uploads_ibfk_1` FOREIGN KEY (`upl_pid`) REFERENCES `share_uploads` (`upl_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=903038 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -612,7 +807,21 @@ CREATE TABLE `share_widgets` (
   `widget_xml` text NOT NULL,
   `widget_icon_img` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`widget_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `test_feed`
+--
+
+DROP TABLE IF EXISTS `test_feed`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `test_feed` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `created` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -716,11 +925,10 @@ CREATE TABLE `user_users` (
   `u_company` varchar(255) DEFAULT NULL,
   `u_position` varchar(255) DEFAULT NULL,
   `u_nick` varchar(250) DEFAULT NULL,
-  `u_avatar_img` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`u_id`),
   UNIQUE KEY `u_login` (`u_name`),
   UNIQUE KEY `u_fbid` (`u_fbid`)
-) ENGINE=InnoDB AUTO_INCREMENT=28600 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -747,4 +955,4 @@ CREATE TABLE `user_users_ban` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-05 21:50:17
+-- Dump completed on 2013-04-19 18:10:53

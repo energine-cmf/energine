@@ -55,8 +55,8 @@ final class QAL extends DBA {
      * @param string $dsn
      * @param string $username
      * @param string $password
-     * @param object $driverOptions
-     * @return void
+     * @param array $driverOptions
+     * @param string $charset
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         parent::__construct($dsn, $username, $password, $driverOptions, $charset);
@@ -82,11 +82,11 @@ final class QAL extends DBA {
      * Возвращает массив результата выборки или true, если результат пустой.
      *
      * @access public
-     * @param string $tableName имя таблицы или SQL текст запроса, в этом случае все последующие параметры  - идут как переменные
-     * @param mixed $fields массив имен полей ИЛИ имя одного поля ИЛИ true для выборки всех полей таблицы
-     * @param mixed $condition условие выборки
-     * @param mixed $order порядок сортировки результата
-     * @param mixed $limit лимит выборки
+     * @param string имя таблицы или SQL текст запроса, в этом случае все последующие параметры  - идут как переменные
+     * @param mixed массив имен полей ИЛИ имя одного поля ИЛИ true для выборки всех полей таблицы
+     * @param mixed условие выборки
+     * @param mixed порядок сортировки результата
+     * @param mixed лимит выборки
      * @return array
      * @see DBA::selectRequest()
      * @see DBA::buildSQL
@@ -128,6 +128,7 @@ final class QAL extends DBA {
      * @param string $tableName имя таблицы
      * @param array $data данные для операции
      * @param mixed $condition условие операции
+     * @throws SystemException
      * @return array
      * @see DBA::modifyRequest()
      */
@@ -156,15 +157,18 @@ final class QAL extends DBA {
                     foreach ($data as $fieldValue) {
                         if ($fieldValue === self::EMPTY_STRING) {
                             $fieldValue = $this->quote('');
-                        } elseif ($fieldValue == '') {
+                        }
+                        elseif ($fieldValue == '') {
                             $fieldValue = 'NULL';
-                        } else {
+                        }
+                        else {
                             $fieldValue = $this->quote($fieldValue);
                         }
                         $fieldValues[] = $fieldValue;
                     }
                     $sqlQuery = $mode . ' INTO ' . $tableName . ' (' . implode(', ', $fieldNames) . ') VALUES (' . implode(', ', $fieldValues) . ')';
-                } else {
+                }
+                else {
                     $sqlQuery = 'INSERT INTO ' . $tableName . ' VALUES ()';
                 }
                 break;
@@ -174,15 +178,18 @@ final class QAL extends DBA {
                     foreach ($data as $fieldName => $fieldValue) {
                         if ($fieldValue === self::EMPTY_STRING) {
                             $fieldValue = $this->quote('');
-                        } elseif ($fieldValue === '') {
+                        }
+                        elseif ($fieldValue === '') {
                             $fieldValue = 'NULL';
-                        } else {
+                        }
+                        else {
                             $fieldValue = $this->quote($fieldValue);
                         }
                         $fields[] = "$fieldName = $fieldValue";
                     }
                     $sqlQuery = 'UPDATE ' . $tableName . ' SET ' . implode(', ', $fields);
-                } else {
+                }
+                else {
                     throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
                 }
                 break;
@@ -220,9 +227,11 @@ final class QAL extends DBA {
                     //$fieldName = strtolower($fieldName);
                     if (is_null($value)) {
                         $cond[] = "$fieldName IS NULL";
-                    } elseif (is_numeric($fieldName)) {
+                    }
+                    elseif (is_numeric($fieldName)) {
                         $cond[] = $value;
-                    } elseif (is_array($value)) {
+                    }
+                    elseif (is_array($value)) {
                         $value = array_filter($value);
 
                         $value = implode(',', array_map(create_function('$row', 'return \'"\'.$row.\'"\';'), $value));
@@ -230,12 +239,14 @@ final class QAL extends DBA {
                         if (!empty($value))
                             $cond[] = $fieldName . ' IN (' . $value . ')';
                         else $cond[] = ' FALSE ';
-                    } else {
+                    }
+                    else {
                         $cond[] = "$fieldName = " . $this->quote($value);
                     }
                 }
                 $result .= implode(' AND ', $cond);
-            } else {
+            }
+            else {
                 $result .= $condition;
             }
         }
@@ -275,7 +286,8 @@ final class QAL extends DBA {
 
             if ($filter) {
                 $filter = ' AND ' . str_replace('WHERE', '', $this->buildWhereCondition($filter));
-            } else {
+            }
+            else {
                 $filter = '';
             }
 
@@ -293,12 +305,13 @@ final class QAL extends DBA {
                 $currentLangID
             );
             $res = $this->selectRequest($request);
-        } else {
+        }
+        else {
             //Если не существует поля с name берем в качестве поля со значением то же самое поле что и с id
             if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
 
             $columns = array_filter($columns,
-                function ($value) {
+                function($value) {
                     return !($value["type"] == QAL::COLTYPE_TEXT);
                 }
             );
@@ -314,7 +327,7 @@ final class QAL extends DBA {
      * Строит предложение ORDER BY для SQL-запроса.
      *
      * @access public
-     * @param mixed $order
+     * @param mixed $clause
      * @return string
      * @see QAL::selectRequest()
      */
@@ -330,7 +343,8 @@ final class QAL extends DBA {
                     $cls[] = "$fieldName " . constant("self::$direction");
                 }
                 $orderClause .= implode(', ', $cls);
-            } else {
+            }
+            else {
                 $orderClause .= $clause;
             }
         }
@@ -341,7 +355,7 @@ final class QAL extends DBA {
      * Строит предложение LIMIT для SQL-запроса.
      *
      * @access public
-     * @param mixed $limit
+     * @param mixed $clause
      * @return string
      * @see QAL::selectRequest()
      */
@@ -361,11 +375,14 @@ final class QAL extends DBA {
         if (is_array($fields) && !empty($fields)) {
             $fields = array_map('strtolower', $fields);
             $fields = implode(', ', $fields);
-        } elseif (is_string($fields)) {
+        }
+        elseif (is_string($fields)) {
             $fields = strtolower($fields);
-        } elseif ($fields === true) {
+        }
+        elseif ($fields === true) {
             $fields = '*';
-        } else {
+        }
+        else {
             throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB, array($tableName, $fields, $condition, $order, $limit));
         }
 
@@ -383,7 +400,8 @@ final class QAL extends DBA {
         if (isset($limit)) {
             if (is_array($limit)) {
                 $sqlQuery .= ' LIMIT ' . implode(', ', $limit);
-            } else {
+            }
+            else {
                 $sqlQuery .= " LIMIT $limit";
             }
         }
@@ -405,7 +423,8 @@ final class QAL extends DBA {
             //Считаем что у нас SQL код
             $handlerMethod = 'constructQuery';
             $args = array($args);
-        } else {
+        }
+        else {
             $handlerMethod = 'buildSQL';
         }
 
@@ -416,38 +435,6 @@ final class QAL extends DBA {
         $res = $this->pdo->query($this->lastQuery = $query);
         if ($res instanceof PDOStatement) {
             return $res->fetchColumn();
-        }
-
-        return null;
-    }
-
-    /**
-     * Возвращает индексный массив значений
-     * Использовать эту функцию нужно в тех случаях, когда нам нужно получить массив значений из одной колонки
-     *
-     * @param string имя таблицы | SQL текст запроса
-     * @param string имя колонки
-     * @param array|mixed условие выборки
-     * @return null | array()
-     */
-    public function getArray() {
-        $args = func_get_args();
-
-        if (strpos($args[0], ' ')) {
-            //Считаем что у нас SQL код
-            $handlerMethod = 'constructQuery';
-            $args = array($args);
-        } else {
-            $handlerMethod = 'buildSQL';
-        }
-
-        $query = call_user_func_array(array($this, $handlerMethod), $args);
-        if (!is_string($query) || strlen($query) == 0) {
-            return null;
-        }
-        $res = $this->pdo->query($this->lastQuery = $query);
-        if ($res instanceof PDOStatement) {
-            return $res->fetchAll(PDO::FETCH_COLUMN);
         }
 
         return null;

@@ -123,7 +123,8 @@ abstract class DBA extends Object {
      * @param string $username имя пользователя
      * @param string $password пароль
      * @param array $driverOptions специфические параметры драйвера БД
-     * @return void
+     * @param string $charset кодировка соединения
+     * @throws SystemException
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         try {
@@ -169,8 +170,8 @@ abstract class DBA extends Object {
      *
      * @access public
      * @param string $query SELECT-запрос к БД
-     * @param mixed $var, ...
      * @return mixed
+     * @throws SystemException
      * @see printf()
      * @deprecated 
      */
@@ -218,6 +219,7 @@ abstract class DBA extends Object {
      * @access public
      * @param string $query
      * @return mixed
+     * @throws SystemException
      * @see printf()
      */
     public function modifyRequest($query) {
@@ -262,9 +264,8 @@ abstract class DBA extends Object {
             foreach ($args as $index => &$value) {
                 $stmt->bindParam($index + 1, $value);
             }
-
             if ($res = $stmt->execute()) {
-                $res = $stmt->fetchAll();
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
         return $res;
@@ -272,7 +273,7 @@ abstract class DBA extends Object {
     /**
      * Метод для получения данных с последующей итерацией
      *
-     * @param $query SQL запрос
+     * @param string $query SQL запрос
      * @return bool|PDOStatement
      */
     public function get($query) {
@@ -397,6 +398,46 @@ abstract class DBA extends Object {
      */
     public function tableExists($tableName) {
         return ($this->dbCache->tableExists($tableName)) ? $tableName : false;
+    }
+
+    /**
+     * Существует ли процедура
+     *
+     * @param $procName string имя процедуры
+     * @return boolean
+     * @access public
+     */
+    public function procExists($procName) {
+        return ($this->getScalar(
+            'SELECT ROUTINE_NAME
+            FROM information_schema.ROUTINES
+            WHERE
+            ROUTINE_TYPE="PROCEDURE"
+            AND ROUTINE_SCHEMA=%s
+            AND ROUTINE_NAME=%s',
+            E()->getConfigValue('database.db'),
+            $procName
+        )) ? true : false;
+    }
+
+    /**
+     * Существует ли функция
+     *
+     * @param $funcName string имя функции
+     * @return boolean
+     * @access public
+     */
+    public function funcExists($funcName) {
+        return ($this->getScalar(
+            'SELECT ROUTINE_NAME
+            FROM information_schema.ROUTINES
+            WHERE
+            ROUTINE_TYPE="FUNCTION"
+            AND ROUTINE_SCHEMA=%s
+            AND ROUTINE_NAME=%s',
+            E()->getConfigValue('database.db'),
+            $funcName
+        )) ? true : false;
     }
 
     /**

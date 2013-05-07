@@ -184,37 +184,6 @@ class User extends DBWorker {
     }
 
     /**
-     * Добавляет аватарку пользователю
-     *
-     * @return void
-     * @access public
-     */
-    public function createAvatar($avatarUploadedFilename) {
-        $result = false;
-        if ($this->id) {
-            try {
-                $fu = new FileUploader();
-                $fu->setFile($avatarUploadedFilename);
-                $fu->upload($dir = 'uploads/avatars');
-                $result = $fu->getFileObjectName();
-                $im = new Image();
-                $im->loadFromFile($result);
-                $im->resize(100, 100);
-                $im->saveToFile($result);
-                $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, array('u_avatar_img' => $result), array('u_id' => $this->id));
-            }
-            catch (SystemException $e) {
-                //Notice генерирурется в случае с отсутствием файла, в данном случае это не принципиально
-                if ($e->getCode() != SystemException::ERR_NOTICE) {
-                    throw $e;
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Обновление данных о пользователе
      *
      * @param array

@@ -114,7 +114,11 @@
                         }
                         catch (e) {
                     <xsl:if test="document/@debug=1">
-                        console.error(e);
+                        if (window['console']) {
+                            if (console['error']) {
+                                console.error(e);
+                            }
+                        }
                     </xsl:if>
                     }
                     });

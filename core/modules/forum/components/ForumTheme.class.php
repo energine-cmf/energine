@@ -46,7 +46,6 @@ class ForumTheme extends DBDataSet {
         }
         $sql = 'SELECT SQL_CALC_FOUND_ROWS t.*, c.comment_created, c.comment_name, u.u_id,
                  IF(LENGTH(TRIM(u.u_nick)), u.u_nick, u.u_fullname) u_nick,
-                 u.u_avatar_img,
                  CASE WHEN u_is_male = 1 THEN "' .
                 $this->translate('TXT_MALE') . '" ELSE "' .
                 $this->translate('TXT_FEMALE') . '" END as u_sex,
@@ -146,8 +145,8 @@ class ForumTheme extends DBDataSet {
                 '" WHEN u_is_male = 1 THEN "' . $this->translate('TXT_MALE') .
                 '" ELSE "' . $this->translate('TXT_FEMALE') .
                 '" END as u_sex, ' .
-                ' u.u_place, ' .
-                ' u.u_avatar_img
+                ' u.u_place ' .
+                '
         FROM forum_theme t
             JOIN share_sitemap_translation  st ON st.smap_id = t.smap_id
             LEFT JOIN user_users u ON u.u_id = t.u_id
@@ -173,7 +172,6 @@ class ForumTheme extends DBDataSet {
             'u_nick' => FieldDescription::FIELD_TYPE_STRING,
             'u_place' => FieldDescription::FIELD_TYPE_STRING,
             'u_sex' => FieldDescription::FIELD_TYPE_STRING,
-            'u_avatar_img' => FieldDescription::FIELD_TYPE_IMAGE,
             //'comment_page' => FieldDescription::FIELD_TYPE_INT
         );
 

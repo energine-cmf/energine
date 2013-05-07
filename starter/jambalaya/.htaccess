@@ -217,6 +217,8 @@ AddCharset utf-8 .html .css .js .xml .json .rss .atom
   RewriteBase /
 
   # правило для локального ресайзера
+  # Если сайт размещается в папке то
+  # RewriteRule ^resizer/w([0-9]+)-h([0-9]+)/(.*)$ [/путь/к/папке/]resizer/index.php?w=$1&h=$2&i=$3 [L]
   RewriteRule ^resizer/w([0-9]+)-h([0-9]+)/(.*)$ resizer/index.php?w=$1&h=$2&i=$3 [L]
 
   # правила для статического и остального контента
@@ -228,7 +230,7 @@ AddCharset utf-8 .html .css .js .xml .json .rss .atom
 
   # Send everything to index.php
   # Если сайт размещается в папке то
-  # RewriteRule ^(.*)$ [/путь к папке/]index.php [L,QSA]
+  # RewriteRule ^(.*)$ [/путь/к/папке/]index.php [L,QSA]
   RewriteRule ^(.*)$ index.php [L,QSA]
 
 </IfModule>

@@ -42,14 +42,15 @@
     	</xsl:element>
     </xsl:template>
     
-    <xsl:template match="toolbar/control[@type='link']">
-        <xsl:if test="@mode != 0">
-            <a href="{$BASE}{$LANG_ABBR}{@click}" id="{@id}">
-                <xsl:value-of select="@title"/>
-            </a>
-        </xsl:if>
+    <xsl:template match="toolbar/control[(@type='link') and (@mode != 0)]">
+        <a href="{$BASE}{$LANG_ABBR}{@click}" id="{@id}">
+            <xsl:value-of select="@title"/>
+        </a>
     </xsl:template>
-    
+
+    <xsl:template match="toolbar/control[@type='separator']">
+        <br/>
+    </xsl:template>
     <!-- Панель управления для формы -->
     <xsl:template match="toolbar[parent::component[@exttype='grid']]">
         <script type="text/javascript">
@@ -173,6 +174,10 @@
     <!-- Панель управления страницей обрабатывается в document.xslt  -->
     <xsl:template match="toolbar[parent::component[@class='PageToolBar']]"/>
 
-<!-- Те действия на которые нет прав  - прячем -->
-<xsl:template match="control[@mode=0]"></xsl:template>
+    <!-- Те действия на которые нет прав  - прячем -->
+    <xsl:template match="control[@mode=0]"></xsl:template>
+
+    <!--Равно как и те действия права на которые есть, но по каким то причинам их делать нельзя-->
+    <xsl:template match="control[@disabled]"></xsl:template>
+
 </xsl:stylesheet>

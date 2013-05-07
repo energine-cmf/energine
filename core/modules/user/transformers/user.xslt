@@ -11,22 +11,6 @@
             <input type="hidden" name="componentAction" value="{@componentAction}" />
             <xsl:apply-templates/>
         </form>
-
-        <xsl:if test="@fbAppID and (@componentAction='showLoginForm')">
-            <a href="#" id="fbAuth" onclick="return false;"><xsl:value-of select="$TRANSLATION[@const='TXT_FB_LOGIN']"/></a>
-            <script type="text/javascript" src="scripts/FBAuth.js"/>
-            <script type="text/javascript">
-                FBL.set('<xsl:value-of select="@fbAppID"/>');
-            </script>
-            <div id="fb-root"></div>
-        </xsl:if>
-        <xsl:if test="@vkAppID and (@componentAction='showLoginForm')">
-            <a href="#" id="vkAuth" onclick="return false;"><xsl:value-of select="$TRANSLATION[@const='TXT_VK_LOGIN']"/></a>
-            <script type="text/javascript" src="scripts/VKAuth.js"/>
-            <script type="text/javascript">
-
-            </script>
-        </xsl:if>
     </xsl:template>
 
     <xsl:template match="recordset[parent::component[@class='LoginForm']]">
@@ -35,12 +19,28 @@
         </div>
     </xsl:template>
 
-    <xsl:template match="control[@id='restore'][ancestor::component[@class='LoginForm']]">
-        <xsl:if test="@mode != 0">
+    <xsl:template match="control[(@id='restore') and (@mode!=0)][ancestor::component[@class='LoginForm']]">
             <div class="restore_link">
                 <a href="{$BASE}{$LANG_ABBR}{@click}"><xsl:value-of select="@title" /></a>
             </div>
-        </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="control[(@id='auth.facebook') and (@mode!=0)][ancestor::component[@class='LoginForm']]">
+        <a href="#" id="fbAuth" onclick="return false;"><xsl:value-of select="@title"/></a>
+        <script type="text/javascript" src="scripts/FBAuth.js"/>
+        <script type="text/javascript">
+            FBL.set('<xsl:value-of select="@appID"/>');
+        </script>
+        <div id="fb-root"></div>
+    </xsl:template>
+
+    <xsl:template match="control[(@id='auth.vk') and (@mode!=0)][ancestor::component[@class='LoginForm']]">
+        <script type="text/javascript" src="//vk.com/js/api/openapi.js?95"></script>
+        <a href="#" id="vkAuth" onclick="VK.Auth.login(vkAuth); return false;"><xsl:value-of select="@title"/></a>
+        <script type="text/javascript" src="scripts/VKAuth.js"/>
+        <script type="text/javascript">
+            VKI.set('<xsl:value-of select="@appID"/>');
+        </script>
     </xsl:template>
 
     <xsl:template match="field[@name='message'][ancestor::component[@class='LoginForm']]">

@@ -41,7 +41,9 @@
     		<xsl:value-of select="@title"/>
     	</xsl:element>
     </xsl:template>
-    
+
+    <xsl:template match="toolbar/control[@type='link']"/>
+
     <xsl:template match="toolbar/control[(@type='link') and (@mode != 0)]">
         <a href="{$BASE}{$LANG_ABBR}{@click}" id="{@id}">
             <xsl:value-of select="@title"/>

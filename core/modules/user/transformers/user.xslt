@@ -25,7 +25,7 @@
             </div>
     </xsl:template>
 
-    <xsl:template match="control[(@id='auth.facebook') and (@mode!=0)][ancestor::component[@class='LoginForm']]">
+    <xsl:template match="control[(@id='auth.facebook') and not(@disabled)][ancestor::component[@class='LoginForm']]">
         <a href="#" id="fbAuth" onclick="return false;"><xsl:value-of select="@title"/></a>
         <script type="text/javascript" src="scripts/FBAuth.js"/>
         <script type="text/javascript">
@@ -34,7 +34,7 @@
         <div id="fb-root"></div>
     </xsl:template>
 
-    <xsl:template match="control[(@id='auth.vk') and (@mode!=0)][ancestor::component[@class='LoginForm']]">
+    <xsl:template match="control[(@id='auth.vk') and not(@disabled)][ancestor::component[@class='LoginForm']]">
         <script type="text/javascript" src="//vk.com/js/api/openapi.js?95"></script>
         <a href="#" id="vkAuth" onclick="VK.Auth.login(vkAuth); return false;"><xsl:value-of select="@title"/></a>
         <script type="text/javascript" src="scripts/VKAuth.js"/>

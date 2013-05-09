@@ -150,11 +150,11 @@ abstract class Control extends Object {
 
         $attr = $description->attributes();
 
-        $this->setAttribute('mode', 
+        $this->setAttribute('mode',
             FieldDescription::computeRights(
-                $this->getToolbar()->getComponent()->document->getRights(), 
-                !is_null($attr['ro_rights'])?(int)$attr['ro_rights']:null, 
-                !is_null($attr['fc_rights'])?(int)$attr['fc_rights']:null
+                $this->getToolbar()->getComponent()->document->getRights(),
+                !is_null($attr['ro_rights']) ? (int)$attr['ro_rights'] : null,
+                !is_null($attr['fc_rights']) ? (int)$attr['fc_rights'] : null
             )
         );
         unset($attr['ro_rights']);
@@ -162,8 +162,7 @@ abstract class Control extends Object {
         foreach ($attr as $key => $value) {
             if (isset($this->$key)) {
                 $this->$key = (string)$value;
-            }
-            else {
+            } else {
                 $this->setAttribute($key, (string)$value);
             }
         }
@@ -228,7 +227,7 @@ abstract class Control extends Object {
         }
         return false;
     }
-    
+
     /**
      * Возвращает идентификатор
      *
@@ -247,6 +246,10 @@ abstract class Control extends Object {
      */
     public function build() {
         $controlElem = $this->doc->createElement(self::TAG_NAME);
+
+        if (!isset($this->attributes['mode']) && ($this->type != 'separator')) {
+            $this->attributes['mode'] = FieldDescription::computeRights($this->getToolbar()->getComponent()->document->getRights());
+        }
         foreach ($this->attributes as $attrName => $attrValue) {
             $controlElem->setAttribute($attrName, $attrValue);
         }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="siteList" module="share" class="SiteList">
+        <params>
+            <param name="rights">3</param>
+        </params>
+    </component>
+    <component name="divEditor" module="share" class="DivisionEditor">
+        <params>
+            <param name="rights">3</param>
+            <param name="state">main</param>
+            <param name="config">core/modules/share/config/SiteDivisionEditor.component.xml</param>
+        </params>
+    </component>
+</content>
+

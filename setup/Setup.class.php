@@ -192,11 +192,20 @@ final class Setup {
         // обновляем таблицу доменов, если:
         // 1. одна запись в таблице
         // 2. больше одной записи, и поле пустое
-        if ($domains and (count($domains) == 1 or (count($domains) >= 1 and $domains[0]['domain_host'] == ''))) {
+        // 3. Доменов вообще нет
+        if (
+            empty($domains)
+            ||
+            ($domains and (count($domains) == 1 or (count($domains) >= 1 and $domains[0]['domain_host'] == '')))
+        ) {
             $this->dbConnect->query(
-                "UPDATE share_domains SET domain_host = '" . $this->config['site']['domain'] . "',"
-                    . "domain_root = '" . $this->config['site']['root'] . "'"
+                ((empty($domains))?'INSERT INTO':'UPDATE')." share_domains SET domain_host = '" . $this->config['site']['domain'] . "',"
+                        . "domain_root = '" . $this->config['site']['root'] . "'"
             );
+            if(empty($domains)){
+                $domainID = $this->dbConnect->lastInsertId();
+                $this->dbConnect->query('INSERT INTO share_domain2site SET site_id=1, domain_id='.$domainID);
+            }
         }
     }
 

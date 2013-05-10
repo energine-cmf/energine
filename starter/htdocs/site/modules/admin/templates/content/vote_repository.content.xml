@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<content>
-    <component name="voteEditor" module="apps" class="VoteEditor">
-        <params>
-            <param name="rights">3</param>
-            <param name="config">core/modules/apps/config/VoteEditor.component.xml</param>
-        </params>
-    </component>
-</content>

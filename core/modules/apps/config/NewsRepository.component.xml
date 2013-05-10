@@ -7,14 +7,13 @@
         <fields>
             <field name="news_id"/>
             <field name="news_date"/>
-            <field name="news_title"/>
             <field name="smap_id"/>
+            <field name="news_title"/>
         </fields>
         <toolbar>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
-            <control id="delete" title="BTN_DELETE" type="button"
-                     onclick="del"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
         </toolbar>
     </state>
     <state name="add">

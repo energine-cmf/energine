@@ -8,7 +8,7 @@
 return array(
 
     // название проекта
-    'project' => 'Platform 2.11.2.dev',
+    'project' => 'Energine 2.11.3',
 
     // путь к директории setup текущего используемого ядра
     'setup_dir' => ($energine_release = '/var/www/energine/branches/2.11.2.dev') . '/setup',
@@ -48,19 +48,13 @@ return array(
         // использовать GZIP сжатие
         'compress' => 0,
         // перечень глобальных переменных, которые будут доступны в XML документе на всех страницах
+        /*
         'vars' => array(
             'SOME_GLOBAL_XML_VARIABLE' => 'some constant value',
             'ANOTHER_GLOBAL_XML_VARIABLE' => 'another value',
         ),
+        */
     ),
-
-    // насткойки кеша memcached
-    'cache' => array(
-        'enable' => 0,
-        'host' => '127.0.0.1',
-        'port' => '11211'
-    ),
-
     // настройки документа
     'document' => array(
         // основная точка входа в xslt преобразователь
@@ -104,9 +98,8 @@ return array(
             'height' => 367,
         ),
     ),
-
     // дополнительные внешние системы авторизации
-    'auth' => array(
+    /*'auth' => array(
         // VK.COM
         'vk' => array(
             'appID' => 'VK APP ID',
@@ -117,7 +110,7 @@ return array(
             'appID' => 'FACEBOOK APP ID',
             'secretKey' => 'FACEBOOK SECRET'
         ),
-    ),
+    ),*/
 
     // натройка сессий
     'session' => array(

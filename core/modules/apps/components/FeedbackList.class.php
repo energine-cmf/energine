@@ -11,7 +11,7 @@
 
 
 /**
- * Спсиок сообщений поступивших с формы связи
+ * Список сообщений поступивших с формы связи
  *
  * @package energine
  * @subpackage share
@@ -29,7 +29,6 @@ class FeedbackList extends Grid {
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
-        //$this->setTableName('apps_feedback');
         $this->setOrder(array('feed_date' => QAL::DESC));
     }
 

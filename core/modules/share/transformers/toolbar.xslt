@@ -42,9 +42,12 @@
     	</xsl:element>
     </xsl:template>
 
-    <xsl:template match="toolbar/control[@type='link']"/>
+    <!-- Те действия на которые нет прав  - прячем -->
+    <xsl:template match="toolbar/control[@mode=0]"></xsl:template>
+    <!--Равно как и те действия права на которые есть, но по каким то причинам их делать нельзя-->
+    <xsl:template match="toolbar/control[@disabled]"></xsl:template>
 
-    <xsl:template match="toolbar/control[(@type='link') and (@mode != 0)]">
+    <xsl:template match="toolbar/control[(@type='link') and (@mode != 0) and not(@disabled)]">
         <a href="{$BASE}{$LANG_ABBR}{@click}" id="{@id}">
             <xsl:value-of select="@title"/>
         </a>
@@ -175,11 +178,4 @@
     
     <!-- Панель управления страницей обрабатывается в document.xslt  -->
     <xsl:template match="toolbar[parent::component[@class='PageToolBar']]"/>
-
-    <!-- Те действия на которые нет прав  - прячем -->
-    <xsl:template match="control[@mode=0]"></xsl:template>
-
-    <!--Равно как и те действия права на которые есть, но по каким то причинам их делать нельзя-->
-    <xsl:template match="control[@disabled]"></xsl:template>
-
 </xsl:stylesheet>

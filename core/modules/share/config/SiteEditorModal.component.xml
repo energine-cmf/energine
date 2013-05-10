@@ -19,8 +19,8 @@
             <control type="button" id="down" title="BTN_MOVE_DOWN" onclick="down"/>
             <control id="sep02" type="separator"/>
             <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
-            <control id="sep04" type="separator"/>
-            <control id="reset" title="BTN_RESET_TEMPLATES" type="button" onclick="reset"/>
+<!--            <control id="sep04" type="separator"/>
+            <control id="reset" title="BTN_RESET_TEMPLATES" type="button" onclick="reset"/>-->
             <control id="sep05" type="separator"/>
             <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>

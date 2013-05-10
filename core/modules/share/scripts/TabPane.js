@@ -46,8 +46,13 @@ var TabPane = new Class({
         this.fireEvent('onTabChange', this.currentTab.data);
 
         var firstInput;
-        if (firstInput = this.currentTab.pane.getElement('div.field div.control input[type=text]'))
+        if (
+            (firstInput = this.currentTab.pane.getElement('div.field div.control input[type=text]'))
+            ||
+            (firstInput = this.currentTab.pane.getElement('div.field div.control textarea'))
+            ) {
             firstInput.focus();
+        }
     },
     getTabs: function () {
         return this.tabs;

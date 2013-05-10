@@ -11,7 +11,7 @@ DROP FUNCTION IF EXISTS `get_share_uploads_repo_id`;
 
 DELIMITER ;;
 
-CREATE FUNCTION `get_share_uploads_repo_id`(media_id INT UNSIGNED) RETURNS int(11)
+CREATE FUNCTION `get_share_uploads_repo_id`(media_id INT UNSIGNED) RETURNS int(10) UNSIGNED
 DETERMINISTIC
   BEGIN
     DECLARE upl_pid INT;

@@ -247,9 +247,9 @@ abstract class Control extends Object {
     public function build() {
         $controlElem = $this->doc->createElement(self::TAG_NAME);
 
-        if (!isset($this->attributes['mode']) && ($this->type != 'separator')) {
+        /*if (!isset($this->attributes['mode']) && ($this->type != 'separator')) {
             $this->attributes['mode'] = FieldDescription::computeRights($this->getToolbar()->getComponent()->document->getRights());
-        }
+        }*/
         foreach ($this->attributes as $attrName => $attrValue) {
             $controlElem->setAttribute($attrName, $attrValue);
         }

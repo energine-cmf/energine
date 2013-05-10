@@ -78,7 +78,7 @@ INSERT INTO `apps_vote_question` (`vote_question_id`, `vote_id`, `vote_question_
 (2, 1, 0, 4),
 (3, 1, 0, 3),
 (4, 1, 0, 2),
-(5, 1, 1, 1);
+(5, 1, 2, 1);
 
 TRUNCATE TABLE `apps_vote_question_translation`;
 INSERT INTO `apps_vote_question_translation` (`vote_question_id`, `lang_id`, `vote_question_title`) VALUES
@@ -99,41 +99,45 @@ INSERT INTO `apps_vote_translation` (`vote_id`, `lang_id`, `vote_name`) VALUES
 (1, 2, 'Версия ядра Linux');
 
 TRUNCATE TABLE `form_5`;
-INSERT INTO `form_5` (`pk_id`, `form_date`, `form_5_field_2`) VALUES
-(1, '2013-04-18 12:24:37', 1),
-(2, '2013-04-18 12:25:40', 5),
-(3, '2013-04-18 14:12:25', 1),
-(4, '2013-04-18 14:18:23', 2);
+INSERT INTO `form_5` (`pk_id`, `form_date`, `form_5_field_2`, `form_5_field_3_email`, `form_5_field_4_phone`, `form_5_field_5_multi`, `form_5_field_6`) VALUES
+(5, '2013-05-10 14:51:57', '344334', 'demo@energine.org', '233223233223', NULL, 1);
 
-TRUNCATE TABLE `form_5_field_2`;
-INSERT INTO `form_5_field_2` (`fk_id`, `fk_order_num`) VALUES
+TRUNCATE TABLE `form_5_field_5_multi`;
+TRUNCATE TABLE `form_5_field_5_multi_values`;
+INSERT INTO `form_5_field_5_multi_values` (`fk_id`, `fk_order_num`) VALUES
 (1, 1),
 (2, 2),
-(3, 3),
-(4, 4),
-(5, 5);
+(3, 3);
 
-TRUNCATE TABLE `form_5_field_2_translation`;
-INSERT INTO `form_5_field_2_translation` (`fk_id`, `lang_id`, `fk_name`) VALUES
-(1, 1, '2.0'),
-(1, 2, '2.0'),
-(2, 1, '2.6'),
-(2, 2, '2.6'),
-(3, 1, '3.0 и выше'),
-(3, 2, '3.0 и выше'),
-(4, 1, 'Я не использую linux'),
-(4, 2, 'Я не использую linux'),
-(5, 1, 'Я не знаю, что такое linux'),
-(5, 2, 'Я не знаю, что такое linux');
+TRUNCATE TABLE `form_5_field_5_multi_values_translation`;
+INSERT INTO `form_5_field_5_multi_values_translation` (`fk_id`, `lang_id`, `fk_name`) VALUES
+(1, 1, 'Первое'),
+(1, 2, 'Перше'),
+(2, 1, 'Второе'),
+(2, 2, 'Друге'),
+(3, 1, 'Третье'),
+(3, 2, 'Третє');
+
+TRUNCATE TABLE `form_5_field_6`;
+INSERT INTO `form_5_field_6` (`fk_id`, `fk_order_num`) VALUES
+(2, 1),
+(1, 2);
+
+TRUNCATE TABLE `form_5_field_6_translation`;
+INSERT INTO `form_5_field_6_translation` (`fk_id`, `lang_id`, `fk_name`) VALUES
+(1, 1, 'Первый'),
+(1, 2, 'Перший'),
+(2, 1, 'Второй'),
+(2, 2, 'Другий');
 
 TRUNCATE TABLE `frm_forms`;
 INSERT INTO `frm_forms` (`form_id`, `form_creation_date`, `form_is_active`, `form_email_adresses`) VALUES
-(5, '2013-04-18 11:57:05', 1, 'demo@energine.org');
+(5, '2013-04-18 11:57:00', 1, 'demo@energine.org');
 
 TRUNCATE TABLE `frm_forms_translation`;
 INSERT INTO `frm_forms_translation` (`form_id`, `lang_id`, `form_name`, `form_annotation_rtf`, `form_post_annotation_rtf`) VALUES
-(5, 1, 'Опрос: Версия ядра linux', 'Простая форма опроса по поводу используемой версии ядра линукс<br>', 'Простая форма опроса по поводу используемой версии ядра линукс'),
-(5, 2, 'Опрос: Версия ядра linux', 'Простая форма опроса по поводу используемой версии ядра линукс', 'Простая форма опроса по поводу используемой версии ядра линукс');
+(5, 1, 'Пример формы созданной из конструктора форм', 'Простая форма<br>', NULL),
+(5, 2, 'Приклад форми створеної через конструктор форм', 'Проста форма<br>', '<br>');
 
 TRUNCATE TABLE `share_access_level`;
 INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
@@ -160,6 +164,7 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (3637, 1, 3),
 (3638, 1, 3),
 (3639, 1, 3),
+(3641, 1, 3),
 (80, 3, 1),
 (330, 3, 1),
 (1278, 3, 1),
@@ -177,6 +182,7 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (3629, 3, 1),
 (3631, 3, 1),
 (3639, 3, 1),
+(3641, 3, 1),
 (80, 4, 1),
 (330, 4, 1),
 (1278, 4, 1),
@@ -193,7 +199,8 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (3627, 4, 1),
 (3629, 4, 1),
 (3631, 4, 1),
-(3639, 4, 1);
+(3639, 4, 1),
+(3641, 4, 1);
 
 TRUNCATE TABLE `share_domain2site`;
 INSERT INTO `share_domain2site` (`domain_id`, `site_id`) VALUES
@@ -328,6 +335,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (1453, 'CONTENT_EXTFEED'),
 (841, 'CONTENT_FEEDBACK_FORM'),
 (842, 'CONTENT_FEEDBACK_LIST'),
+(2018, 'CONTENT_FEEDBACK_RECIPIENTS_EDITOR'),
 (605, 'CONTENT_FILE_REPOSITORY'),
 (1201, 'CONTENT_FORM'),
 (1202, 'CONTENT_FORM_EDITOR'),
@@ -363,7 +371,9 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (620, 'CONTENT_USER_PROFILE'),
 (848, 'CONTENT_VIDEO'),
 (1441, 'CONTENT_VIDEO_LIBRARY'),
+(2019, 'CONTENT_VOTE_REPOSITORY'),
 (1243, 'CONTENT_WIDE_TEXTBLOCK'),
+(2017, 'CONTENT_WIDGETS_REPOSITORY'),
 (422, 'DUMMY_EMAIL'),
 (1182, 'ERROR_NO_FORM'),
 (170, 'ERR_403'),
@@ -484,11 +494,16 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (1167, 'FIELD_FIELD_IS_NULLABLE'),
 (1165, 'FIELD_FIELD_NAME'),
 (1166, 'FIELD_FIELD_TYPE'),
+(2024, 'FIELD_FK_NAME'),
 (1370, 'FIELD_FMI_NAME'),
 (1371, 'FIELD_FMI_URL'),
 (1367, 'FIELD_FM_NAME'),
 (1368, 'FIELD_FM_URL'),
-(2011, 'FIELD_form_5_field_2'),
+(2020, 'FIELD_form_5_field_2'),
+(2021, 'FIELD_form_5_field_3_email'),
+(2022, 'FIELD_form_5_field_4_phone'),
+(2023, 'FIELD_form_5_field_5_multi'),
+(2025, 'FIELD_form_5_field_6'),
 (1164, 'FIELD_FORM_ANNOTATION_RTF'),
 (1155, 'FIELD_FORM_CREATION_DATE'),
 (1175, 'FIELD_FORM_DATE'),
@@ -496,6 +511,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (1154, 'FIELD_FORM_ID'),
 (1157, 'FIELD_FORM_IS_ACTIVE'),
 (1156, 'FIELD_FORM_NAME'),
+(2016, 'FIELD_FORM_POST_ANNOTATION_RTF'),
 (1450, 'FIELD_GENRE_ID'),
 (1445, 'FIELD_GENRE_NAME'),
 (1077, 'FIELD_GRAVITY'),
@@ -726,9 +742,11 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (1169, 'FIELD_TYPE_BOOL'),
 (1172, 'FIELD_TYPE_DATE'),
 (1173, 'FIELD_TYPE_DATETIME'),
+(2014, 'FIELD_TYPE_EMAIL'),
 (1174, 'FIELD_TYPE_FILE'),
 (1178, 'FIELD_TYPE_INFO'),
 (1179, 'FIELD_TYPE_MULTI'),
+(2015, 'FIELD_TYPE_PHONE'),
 (1171, 'FIELD_TYPE_SELECT'),
 (1168, 'FIELD_TYPE_STRING'),
 (1170, 'FIELD_TYPE_TEXT'),
@@ -3164,42 +3182,62 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (2004, 2, 'Назва'),
 (2010, 1, 'Краткие новости'),
 (2010, 2, 'Останні новини'),
-(2011, 1, 'Версия ядра'),
-(2011, 2, 'Версия ядра'),
 (2012, 1, 'Войти через FaceBook'),
 (2012, 2, 'Увійти з FaceBook'),
 (2013, 1, 'Войти  через ВКонтакте'),
-(2013, 2, 'Увійти з Вконтакте');
+(2013, 2, 'Увійти з Вконтакте'),
+(2014, 1, 'Email'),
+(2014, 2, 'Email'),
+(2015, 1, 'Телефонный номер'),
+(2015, 2, 'Телефонний номер'),
+(2016, 1, 'Дополнительное описание к форме (внизу)'),
+(2016, 2, 'Додатковий опис для форми'),
+(2017, 1, 'Редактор виджетов'),
+(2017, 2, 'Редактор віджетів'),
+(2018, 1, 'Редактор получателей уведомлений'),
+(2018, 2, 'Редактор отримувачів повідомлень'),
+(2019, 1, 'Редактор опросов'),
+(2019, 2, 'Редактор опитувань'),
+(2020, 1, 'Строка'),
+(2020, 2, 'Строка'),
+(2021, 1, 'Электопочта'),
+(2021, 2, 'Адреса електронної пошти'),
+(2022, 1, 'Телефон'),
+(2022, 2, 'Телефон'),
+(2023, 1, 'Множественный выбор'),
+(2023, 2, 'Багатоваріантний вибір'),
+(2024, 1, 'Значение'),
+(2024, 2, 'Значення'),
+(2025, 1, 'Выпадающий список'),
+(2025, 2, 'Випадаючий список');
 
 TRUNCATE TABLE `share_session`;
-INSERT INTO `share_session` (`session_id`, `session_native_id`, `session_last_impression`, `session_created`, `session_expires`, `session_ip`, `session_user_agent`, `u_id`, `session_data`) VALUES
-(13, '8ab42785e81263fab254631f6c2aa1a060aba3c3', 1368180007, 1368179864, 1368288007, 2130706433, NULL, 22, 'userID|i:22;');
-
 TRUNCATE TABLE `share_sitemap`;
 INSERT INTO `share_sitemap` (`smap_id`, `site_id`, `brand_id`, `smap_layout`, `smap_layout_xml`, `smap_content`, `smap_content_xml`, `smap_pid`, `smap_segment`, `smap_order_num`, `smap_redirect_url`, `smap_meta_robots`) VALUES
-(80, 1, NULL, 'default.layout.xml', NULL, 'main.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset3"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="topNewsContainer" block="beta" widget="widget"><component name="topNews" module="apps" class="NewsFeed"><params><param name="title">TXT_TOP_NEWS</param>\n<param name="limit" type="hidden">5</param>\n<param name="showAll">1</param>\n<param name="active" type="hidden">0</param>\n<param name="template">news</param></params></component></container></container>\n<container name="center" column="column" html_class="col col2"><container name="textBlockContainer1" block="alfa" widget="static"><component name="textBlock_1" module="share" class="TextBlock"><params><param name="num">1</param></params></component></container></container>\n<container name="right" column="column" html_class="col col3 last_col"><container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container>\n<container name="sidebarTextBlockContainer" block="beta" widget="widget"><component name="sidebarTextBlock" module="share" class="TextBlock"><params><param name="title"></param>\n<param name="num">sidebarTextBlock</param></params></component></container>\n<container name="VoteContainer5748" block="beta" widget="widget"><component class="Vote" module="apps" name="Vote6093"><params><param name="title">TXT_VOTE</param></params></component></container></container></content>', NULL, '', 445, NULL, NULL),
-(330, 1, NULL, 'default.layout.xml', NULL, 'login.content.xml', NULL, 80, 'login', 187, NULL, NULL),
-(1275, 1, NULL, 'default.layout.xml', NULL, 'admin/admin_childs.content.xml', NULL, 80, 'admin', 400, NULL, NULL),
-(1278, 1, NULL, 'default.layout.xml', NULL, 'register.content.xml', NULL, 80, 'register', 78, NULL, NULL),
-(1279, 1, NULL, 'default.layout.xml', NULL, 'admin/site_div_editor.content.xml', NULL, 1275, 'structure', 1, NULL, NULL),
-(1285, 1, NULL, 'default.layout.xml', NULL, 'admin/translations.content.xml', NULL, 1275, 'translations', 3, NULL, NULL),
-(1300, 1, NULL, 'default.layout.xml', NULL, 'admin/sites.content.xml', NULL, 1279, 'sites', 176, NULL, NULL),
-(1323, 1, NULL, 'default.layout.xml', NULL, 'admin/languages.content.xml', NULL, 1285, 'languages', 191, NULL, NULL),
-(1332, 1, NULL, 'default.layout.xml', NULL, 'admin/news_repository.content.xml', NULL, 1275, 'news-editor', 5, NULL, NULL),
-(1345, 1, NULL, 'default.layout.xml', NULL, 'admin/users.content.xml', NULL, 1275, 'users', 4, NULL, NULL),
-(3578, 1, NULL, 'default.layout.xml', NULL, 'admin/roles.content.xml', NULL, 1345, 'roles', 107, NULL, NULL),
-(3594, 1, NULL, 'default.layout.xml', NULL, 'news.content.xml', NULL, 80, 'news', 9, NULL, NULL),
-(3625, 1, NULL, 'default.layout.xml', NULL, 'restore_password.content.xml', NULL, 80, 'restore-password', 85, NULL, NULL),
-(3626, 1, NULL, 'default.layout.xml', NULL, 'feedback_form.content.xml', NULL, 80, 'contacts', 12, NULL, NULL),
-(3627, 1, NULL, 'default.layout.xml', NULL, 'childs.content.xml', NULL, 80, 'info', 2, NULL, NULL),
-(3629, 1, NULL, 'default.layout.xml', NULL, 'textblock.content.xml', NULL, 3627, 'quick-start', 12, NULL, NULL),
-(3630, 1, NULL, 'default.layout.xml', NULL, 'feedback_list.content.xml', NULL, 1275, 'feedback-editor', 7, NULL, NULL),
-(3631, 1, NULL, 'default.layout.xml', NULL, 'map.content.xml', NULL, 80, 'sitemap', 203, NULL, NULL),
-(3632, 1, NULL, 'default.layout.xml', NULL, 'form_editor.content.xml', NULL, 1275, 'form-builder', 9, NULL, NULL),
-(3634, 1, NULL, 'default.layout.xml', NULL, 'admin/widgets_repository.content.xml', NULL, 1275, 'widgets', 100, NULL, NULL),
-(3637, 1, NULL, 'default.layout.xml', NULL, 'admin/feedback_recipients_editor.content.xml', NULL, 3630, 'recipients', 42, NULL, NULL),
-(3638, 1, NULL, 'default.layout.xml', NULL, 'admin/vote_repository.content.xml', NULL, 1275, 'polls', 11, NULL, NULL),
-(3639, 1, NULL, 'default.layout.xml', NULL, 'extfeed.content.xml', NULL, 80, 'test-feed', 13, NULL, NULL);
+(80, 1, NULL, 'default.layout.xml', NULL, 'main.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset3"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="topNewsContainer" block="beta" widget="widget"><component name="topNews" module="apps" class="NewsFeed"><params><param name="title">TXT_TOP_NEWS</param>\n<param name="limit" type="hidden">5</param>\n<param name="showAll">1</param>\n<param name="active" type="hidden">0</param>\n<param name="template">news</param></params></component></container></container>\n<container name="center" column="column" html_class="col col2"><container name="textBlockContainer1" block="alfa" widget="static"><component name="textBlock_1" module="share" class="TextBlock"><params><param name="num">1</param></params></component></container></container>\n<container name="right" column="column" html_class="col col3 last_col"><container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container>\n<container name="sidebarTextBlockContainer" block="beta" widget="widget"><component name="sidebarTextBlock" module="share" class="TextBlock"><params><param name="title"></param>\n<param name="num">sidebarTextBlock</param></params></component></container>\n<container name="VoteContainer5748" block="beta" widget="widget"><component class="Vote" module="apps" name="Vote6093"><params><param name="title">TXT_VOTE</param></params></component></container></container></content>', NULL, '', 446, NULL, NULL),
+(330, 1, NULL, 'default.layout.xml', NULL, 'login.content.xml', NULL, 80, 'login', 188, NULL, NULL),
+(1275, 1, NULL, 'default.layout.xml', NULL, 'childs.content.xml', NULL, 80, 'admin', 401, NULL, NULL),
+(1278, 1, NULL, 'default.layout.xml', NULL, 'register.content.xml', NULL, 80, 'register', 79, NULL, NULL),
+(1279, 1, NULL, 'default.layout.xml', NULL, 'default/site_div_editor.content.xml', NULL, 1275, 'structure', 2, NULL, NULL),
+(1285, 1, NULL, 'default.layout.xml', NULL, 'default/translations.content.xml', NULL, 1275, 'translations', 4, NULL, NULL),
+(1300, 1, NULL, 'default.layout.xml', NULL, 'default/sites.content.xml', NULL, 1279, 'sites', 177, NULL, NULL),
+(1323, 1, NULL, 'default.layout.xml', NULL, 'default/languages.content.xml', NULL, 1285, 'languages', 192, NULL, NULL),
+(1332, 1, NULL, 'default.layout.xml', NULL, 'default/news_repository.content.xml', NULL, 1275, 'news-editor', 6, NULL, NULL),
+(1345, 1, NULL, 'default.layout.xml', NULL, 'default/users.content.xml', NULL, 1275, 'users', 5, NULL, NULL),
+(3578, 1, NULL, 'default.layout.xml', NULL, 'default/roles.content.xml', NULL, 1345, 'roles', 108, NULL, NULL),
+(3594, 1, NULL, 'default.layout.xml', NULL, 'news.content.xml', NULL, 80, 'news', 10, NULL, NULL),
+(3625, 1, NULL, 'default.layout.xml', NULL, 'restore_password.content.xml', NULL, 80, 'restore-password', 86, NULL, NULL),
+(3626, 1, NULL, 'default.layout.xml', NULL, 'feedback_form.content.xml', NULL, 80, 'contacts', 13, NULL, NULL),
+(3627, 1, NULL, 'default.layout.xml', NULL, 'childs.content.xml', NULL, 80, 'info', 3, NULL, NULL),
+(3629, 1, NULL, 'default.layout.xml', NULL, 'textblock.content.xml', NULL, 3627, 'quick-start', 13, NULL, NULL),
+(3630, 1, NULL, 'default.layout.xml', NULL, 'feedback_list.content.xml', NULL, 1275, 'feedback-editor', 8, NULL, NULL),
+(3631, 1, NULL, 'default.layout.xml', NULL, 'map.content.xml', NULL, 80, 'sitemap', 204, NULL, NULL),
+(3632, 1, NULL, 'default.layout.xml', NULL, 'form_editor.content.xml', NULL, 1275, 'form-builder', 10, NULL, NULL),
+(3634, 1, NULL, 'default.layout.xml', NULL, 'default/widgets_repository.content.xml', NULL, 1275, 'widgets', 101, NULL, NULL),
+(3637, 1, NULL, 'default.layout.xml', NULL, 'default/feedback_recipients_editor.content.xml', NULL, 3630, 'recipients', 43, NULL, NULL),
+(3638, 1, NULL, 'default.layout.xml', NULL, 'default/vote_repository.content.xml', NULL, 1275, 'polls', 12, NULL, NULL),
+(3639, 1, NULL, 'default.layout.xml', NULL, 'extfeed.content.xml', NULL, 80, 'test-feed', 14, NULL, NULL),
+(3641, 1, NULL, 'default.layout.xml', NULL, 'form.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formEditorContainer" block="alfa" widget="static"><component name="form" class="Form" module="forms"><params><param name="id">5</param>\n<param name="noCaptcha">1</param></params></component></container></container></content>', 80, 'form-example', 1, NULL, NULL);
 
 TRUNCATE TABLE `share_sitemap_tags`;
 INSERT INTO `share_sitemap_tags` (`smap_id`, `tag_id`) VALUES
@@ -3223,6 +3261,7 @@ INSERT INTO `share_sitemap_tags` (`smap_id`, `tag_id`) VALUES
 (3637, 1),
 (3638, 1),
 (3639, 1),
+(3641, 1),
 (330, 5),
 (1278, 5);
 
@@ -3251,6 +3290,7 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (3637, 1, 'Редактор получателей', NULL, NULL, NULL, NULL, 0),
 (3638, 1, 'Опросы', NULL, NULL, NULL, NULL, 0),
 (3639, 1, 'Список проектов', 'Пример списка, построенного на базе ExtendedFeed (смотрит в таблицу apps_feed)', NULL, NULL, NULL, 0),
+(3641, 1, 'Пример формы', NULL, NULL, NULL, NULL, 0),
 (80, 2, 'Головна сторінка', NULL, NULL, NULL, NULL, 0),
 (330, 2, 'Увійти', NULL, 'Вхід', NULL, NULL, 0),
 (1275, 2, 'Адміністративна частина', NULL, NULL, NULL, NULL, 0),
@@ -3273,7 +3313,8 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (3634, 2, 'Виджеты', NULL, NULL, NULL, NULL, 0),
 (3637, 2, 'Редактор получателей', NULL, NULL, NULL, NULL, 0),
 (3638, 2, 'Опросы', NULL, NULL, NULL, NULL, 0),
-(3639, 2, 'Список проектов', 'Пример списка, построенного на базе ExtendedFeed (смотрит в таблицу apps_feed)', NULL, NULL, NULL, 0);
+(3639, 2, 'Список проектов', 'Пример списка, построенного на базе ExtendedFeed (смотрит в таблицу apps_feed)', NULL, NULL, NULL, 0),
+(3641, 2, 'Приклад форми', NULL, NULL, NULL, NULL, 0);
 
 TRUNCATE TABLE `share_sitemap_uploads`;
 TRUNCATE TABLE `share_sites`;
@@ -3309,7 +3350,7 @@ INSERT INTO `share_textblocks` (`tb_id`, `smap_id`, `tb_num`) VALUES
 TRUNCATE TABLE `share_textblocks_translation`;
 INSERT INTO `share_textblocks_translation` (`tb_id`, `lang_id`, `tb_content`) VALUES
 (1, 1, '© 2013 Energine'),
-(1, 2, '2011'),
+(1, 2, '© 2013 Energine'),
 (22, 1, '<div style="color: red;"> \n<p>Вход в режим администратора:</p>\n<ul>\n<li>Логин: <strong>demo@energine.org</strong></li>\n<li>Пароль: <strong>demo</strong></li>\n</ul>\n</div>\n'),
 (22, 2, '<div style="color: red;"> \n<p>Вхід в режим адміністратора:</p>\n<ul>\n<li>Логін: <strong>demo@energine.org</strong></li>\n<li>Пароль: <strong>demo</strong></li>\n</ul>\n</div>\n              '),
 (26, 1, '<p>Новый текстовый блок</p>\n              '),

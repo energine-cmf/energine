@@ -203,12 +203,8 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (3641, 4, 1);
 
 TRUNCATE TABLE `share_domain2site`;
-INSERT INTO `share_domain2site` (`domain_id`, `site_id`) VALUES
-(2, 1);
 
 TRUNCATE TABLE `share_domains`;
-INSERT INTO `share_domains` (`domain_id`, `domain_protocol`, `domain_port`, `domain_host`, `domain_root`) VALUES
-(2, 'http', 80, 'local.dev', '/~pavka/nrgn2113/');
 
 TRUNCATE TABLE `share_languages`;
 INSERT INTO `share_languages` (`lang_id`, `lang_locale`, `lang_abbr`, `lang_name`, `lang_default`, `lang_order_num`) VALUES

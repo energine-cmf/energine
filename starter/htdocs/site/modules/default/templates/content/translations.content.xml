@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <component name="transEditor" module="share" class="TranslationEditor">
+        <params>
+           <param name="rights">2</param>
+       </params>
+    </component>
+</content>
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<component name="ChildsTextBlock" module="share" class="TextBlock" />
+    <component name="childDivisions" module="share" class="PageList" >
+       <params>
+           <param name="rights">3</param>
+           <param name="id">current</param>
+           <param name="config">core/modules/share/ChildDivisions.component.xml</param>
+       </params>
+    </component>
+</content>

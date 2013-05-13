@@ -1,9 +1,8 @@
-ScriptLoader.load('Form');
 var FileAPI = {
     staticPath: Energine.base + 'scripts/FileAPI/',
     debug: false
 };
-ScriptLoader.load('FileAPI/FileAPI.min');
+ScriptLoader.load('Form', 'FileAPI/FileAPI.min');
 
 var FileRepoForm = new Class({
     Extends:Form,

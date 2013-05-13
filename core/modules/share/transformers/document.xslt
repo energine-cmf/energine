@@ -53,7 +53,11 @@
                     </xsl:otherwise>
                 </xsl:choose>
         		<script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
+
+                <xsl:apply-templates select="/document/javascript/library" mode="head"/>
+
                 <xsl:call-template name="scripts"/>
+
                 <script type="text/javascript">
                     var componentToolbars = [];
                     <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@name!='PageEditor']) &gt; 0">
@@ -72,10 +76,6 @@
                             'lang' : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
                         });
                         try {
-                        <xsl:variable name="SCRIPTS" select="set:distinct($COMPONENTS/javascript/behavior[@name!='PageEditor']/@name)"/>
-                    <xsl:if test="$SCRIPTS">
-                        ScriptLoader.load(<xsl:for-each select="$SCRIPTS">'<xsl:value-of select="../@path" /><xsl:value-of select="." />'<xsl:if test="position() != last()">,</xsl:if></xsl:for-each>);
-                    </xsl:if>
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
                             <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
                             var pageToolbar = new <xsl:value-of select="$PAGE_TOOLBAR/javascript/behavior/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$PAGE_TOOLBAR/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$PAGE_TOOLBAR/toolbar/@name"/>', [
@@ -105,7 +105,6 @@
         				</xsl:for-each>
                         <xsl:if test="$COMPONENTS/javascript/behavior[@name='PageEditor']">
                             <xsl:if test="position()=1">
-                                ScriptLoader.load('PageEditor');
                                 <xsl:variable name="objectID" select="generate-id($COMPONENTS[javascript/behavior[@name='PageEditor']]/recordset)"/>
                                 <xsl:value-of select="$objectID"/> = new PageEditor();
                             </xsl:if>
@@ -186,6 +185,14 @@
                     Energine.translations.set('<xsl:value-of select="@const"/>', '<xsl:value-of select="."/>');
                 </xsl:for-each>
             </script>
+    </xsl:template>
+
+    <xsl:template match="/document/javascript"/>
+
+    <xsl:template match="/document/javascript/library"/>
+
+    <xsl:template match="/document/javascript/library" mode="head">
+        <script type="text/javascript" src="scripts/{@path}.js"/>
     </xsl:template>
 
 </xsl:stylesheet>

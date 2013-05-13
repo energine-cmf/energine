@@ -478,6 +478,7 @@ var GridManager = new Class({
         );
     },
     processServerResponse:function (result) {
+        var control;
         if (!this.initialized) {
             this.grid.setMetadata(result.meta);
             this.initialized = true;

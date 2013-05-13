@@ -679,6 +679,10 @@ class FileRepository extends Grid {
                 // $repo = $this->getRepositoryInstance($pid);
                 if (isset($_FILES[$key]) and is_uploaded_file($_FILES[$key]['tmp_name'])) {
                     $tmp_name = $this->getTmpFilePath($_FILES[$key]['name']);
+                    if(!is_writeable(dirname($tmp_name))){
+                        throw new SystemException('ERR_TEMP_DIR_WRITE', SystemException::ERR_CRITICAL, dirname($tmp_name));
+                    }
+
                     if (move_uploaded_file($_FILES[$key]['tmp_name'], $tmp_name)) {
                         $response['name'] = $_FILES[$key]['name'];
                         $response['type'] = $_FILES[$key]['type'];
@@ -699,7 +703,8 @@ class FileRepository extends Grid {
             }
         } catch (Exception $e) {
             $response['error'] = true;
-            $response['error_message'] = (string) $e;
+            $response['result'] = false;
+            $response['error_message'] = (string) $e->getMessage();
         }
 
         // IE9 no-flash / iframe upload (fallback)

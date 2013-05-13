@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<content>
-    <component name="newsRepo" module="apps" class="NewsRepository">
-       <params>
-           <param name="rights">3</param>
-           <param name="config">site/modules/admin/config/NewsEditor.component.xml</param>
-       </params>
-    </component>
-</content>

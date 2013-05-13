@@ -1,4 +1,4 @@
-ScriptLoader.load('TabPane', 'Toolbar', 'Validator', 'RichEditor', 'ModalBox', 'Overlay');
+ScriptLoader.load('TabPane', 'Toolbar', 'Validator', 'RichEditor', 'ModalBox', 'Overlay', 'datepicker');
 
 var Form = new Class({
     initialize:function (element) {

@@ -1,11 +1,4 @@
-ScriptLoader.load(
-    'View',
-    'TabPane',
-    'PageList',
-    'Toolbar',
-    'Overlay',
-    'ModalBox'
-);
+ScriptLoader.load('View', 'TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'datepicker');
 
 var Grid = new Class({
     Extends:View,

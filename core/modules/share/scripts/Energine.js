@@ -10,7 +10,6 @@ var ScriptLoader = function () {
     };
 }();
 
-
 var isset = function (variable) {
     return ('undefined' != typeof(variable));
 }
@@ -126,7 +125,6 @@ Energine._createDatePickerObject = function (datePickerObj, props) {
 
     if (!isset(this.datePickerDataLoaded)) {
         Asset.css('datepicker.css');
-        ScriptLoader.load('datepicker');
         this.datePickerDataLoaded = true;
     }
     var dp = new DatePicker(datePickerObj, $extend({

@@ -1,6 +1,4 @@
-ScriptLoader.load(
-    'GridManager'
-);
+ScriptLoader.load('GridManager');
 var FILE_COOKIE_NAME = 'NRGNFRPID';
 
 Grid.implement({

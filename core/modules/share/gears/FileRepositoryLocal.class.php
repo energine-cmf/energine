@@ -165,7 +165,7 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         if (!file_exists($dir)) {
             mkdir($dir, 0777, true);
         }
-        if(!is_writable(dirname($dir))){
+        if(!is_writable($dir)){
             throw new SystemException('ERR_DIR_WRITE', SystemException::ERR_CRITICAL, $dir);
         }
         if (!copy($sourceFilename, $destFilename)) {

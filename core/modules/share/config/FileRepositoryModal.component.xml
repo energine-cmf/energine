@@ -144,8 +144,8 @@
             <pattern>/get-data/page-[pageNumber]/</pattern>
             <pattern>/[pid]/get-data/</pattern>
             <pattern>/[pid]/get-data/page-[pageNumber]/</pattern>
-            <!--<pattern>/get-data/[sortField]-[sortDir]/</pattern>
-            <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>-->
+            <pattern>/[pid]/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/[pid]/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
         </uri_patterns>
     </state>
 </configuration>

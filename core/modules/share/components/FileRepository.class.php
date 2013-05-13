@@ -31,7 +31,8 @@ class FileRepository extends Grid {
         parent::__construct($name, $module, $params);
         $this->setTableName('share_uploads');
         $this->setFilter(array('upl_is_active' => 1));
-        $this->setOrder(array('upl_title' => QAL::ASC));
+        //$this->setOrder(array('upl_title' => QAL::ASC));
+        $this->setOrder(array('upl_publication_date' => QAL::DESC));
         $this->addTranslation('TXT_NOT_READY', 'FIELD_UPL_IS_READY', 'ERR_UPL_NOT_READY');
         //Если данные пришли из модального окна
         if (isset($_POST['modalBoxData']) && ($d = json_decode($_POST['modalBoxData']))) {

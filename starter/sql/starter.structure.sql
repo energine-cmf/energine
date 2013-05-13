@@ -456,7 +456,7 @@ CREATE TABLE IF NOT EXISTS `share_uploads` (
   `upl_name` varchar(250) NOT NULL COMMENT 'имя файла с расширением, с этим именем файл отдается при скачивании',
   `upl_title` varchar(250) NOT NULL DEFAULT '' COMMENT 'то как файл выводится в репозитории и в alt-ах',
   `upl_description` text,
-  `upl_publication_date` date DEFAULT NULL,
+  `upl_publication_date` datetime DEFAULT NULL,
   `upl_data` text,
   `upl_views` bigint(20) NOT NULL DEFAULT '0',
   `upl_internal_type` char(20) DEFAULT NULL,

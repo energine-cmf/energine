@@ -2,7 +2,7 @@
 <content>
     <component name="roleEditor" module="user" class="RoleEditor">
        <params>
-           <param name="rights">2</param>
+           <param name="rights">3</param>
        </params>    
     </component>
 </content>

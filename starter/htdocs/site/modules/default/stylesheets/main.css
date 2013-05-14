@@ -462,8 +462,8 @@ body, html {
     text-decoration: none;
     color: #f00;
 }
-.main_menu_item.active a:link, .main_menu_item.active a:visited,
-.main_menu_item.active a:hover, .main_menu_item.active a:active {
+.main_menu_item.active > a:link, .main_menu_item.active > a:visited,
+.main_menu_item.active > a:hover, .main_menu_item.active > a:active {
     background: navy;
     color: #fff;
 }

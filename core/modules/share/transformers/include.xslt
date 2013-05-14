@@ -11,8 +11,7 @@
     <xsl:include href="fields.xslt"/>
     <xsl:include href="form.xslt"/>
     <xsl:include href="toolbar.xslt"/>
-    <xsl:include href="file.xslt"/>    
-    <xsl:include href="structure.xslt"/>
+    <xsl:include href="file.xslt"/>
     <xsl:include href="divisionEditor.xslt"/>
     <xsl:include href="text.xslt"/>
     <!--<xsl:include href="error_page.xslt"/>-->

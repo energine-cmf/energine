@@ -1,13 +1,13 @@
-var FileAPI = {
-    staticPath: Energine.base + 'scripts/FileAPI/',
-    debug: false
-};
 ScriptLoader.load('Form', 'FileAPI/FileAPI.min');
 
 var FileRepoForm = new Class({
     Extends:Form,
     initialize:function (el) {
         this.parent(el);
+
+        FileAPI.staticPath = Energine.base + 'scripts/FileAPI/';
+        FileAPI.debug = false;
+
         var uploader;
         if (uploader = this.componentElement.getElementById('uploader')) {
             uploader.addEvent('change', this.showPreview.bind(this))

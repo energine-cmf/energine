@@ -82,6 +82,13 @@ Grid.implement({
             }
             image.setProperties(dimensions).inject(container);
         }
+        else if(fieldName == 'upl_publication_date'){
+            var fieldValue = '';
+            if (record[fieldName]) {
+                var fieldValue = record[fieldName].clean();
+            }
+            cell.set('html', fieldValue);
+        }
         else if (fieldName == 'upl_properties') {
             cell.addClass('properties');
             var propsTable = new Element('tbody');
@@ -130,11 +137,6 @@ Grid.implement({
                     default :
                         break;
                 }
-                new Element('tr').inject(propsTable).adopt([
-                    new Element('td', {'html': this.metadata['upl_publication_date'].title + ' :'}),
-                    new Element('td', {'html': record['upl_publication_date']})
-                ]
-                );
             }
         }
         else if (fieldName == 'upl_title') {

@@ -280,6 +280,12 @@ class FileRepositoryLocal extends Object implements IFileRepository {
      */
     public function createDir($dir) {
         if (file_exists($dir)) return true;
+        $dirs = array_filter(explode('/', $dir));
+        array_pop($dirs);
+        $parentDir = implode('/', $dirs);
+        if(!file_exists($parentDir) || !is_writable($parentDir)){
+            throw new SystemException('ERR_DIR_CREATE', SystemException::ERR_CRITICAL, $parentDir);
+        }
         return mkdir($dir);
     }
 

@@ -200,7 +200,9 @@ class FileRepository extends Grid {
                 $data['upl_mime_type'] = 'unknown/mime-type';
                 $data['upl_internal_type'] = FileRepoInfo::META_TYPE_FOLDER;
                 $data['upl_childs_count'] = 0;
-                $data['upl_path'] = $parentData['upl_path'] . '/' . $data['upl_filename'];
+                $data['upl_publication_date'] = date('Y-m-d H:i:s');
+                $data['upl_path'] = $parentData['upl_path'] . ((substr($parentData['upl_path'], -1) != '/') ? '/' : '') . $data['upl_filename'];
+
                 $where = false;
 
                 $repository->createDir($data['upl_path']);
@@ -216,11 +218,15 @@ class FileRepository extends Grid {
             $result = $this->dbh->modify($mode, $this->getTableName(), $data, $where);
 
             $transactionStarted = !($this->dbh->commit());
+            $uplID = (is_int($result)) ? $result: (int)$_POST[$this->getTableName()][$this->getPK()];
+
+            $args = array($uplID, date('Y-m-d H:i:s'));
+
+            $this->dbh->call('proc_update_dir_date', $args);
 
             $b = new JSONCustomBuilder();
             $b->setProperties(array(
-                'data' => (is_int($result)) ? $result
-                    : (int)$_POST[$this->getTableName()][$this->getPK()],
+                'data' => $uplID,
                 'result' => true,
                 'mode' => (is_int($result)) ? 'insert' : 'update'
             ));
@@ -251,7 +257,7 @@ class FileRepository extends Grid {
                     // todo: thumbName == preview ?
                     $repo->uploadAlt($thumbTmpName, $baseFileName, $w, $h);
                 } catch (Exception $e) {
-                    throw new SystemException('ERR_SAVE_THUMBNAIL', SystemException::ERR_CRITICAL, (string) $e);
+                    throw new SystemException('ERR_SAVE_THUMBNAIL', SystemException::ERR_CRITICAL, (string)$e);
                 }
             }
         }
@@ -276,8 +282,7 @@ class FileRepository extends Grid {
                 return ($res[0]['repo_id']) ? $res[0]['repo_id'] : null;
             }
             return null;
-        }
-        // иначе - получаем ID первого локального репозитария в системе
+        } // иначе - получаем ID первого локального репозитария в системе
         // cоответственно пользователю не будет доступна функциональность по разделению прав доступа
         // к разным типам репозитариев (local, ro, ftpto, ...)
         else {
@@ -353,7 +358,7 @@ class FileRepository extends Grid {
                 }
                 unset($data[$this->getPK()]);
                 $data['upl_filename'] = self::generateFilename($uplPath, pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
-                $data['upl_path'] = $uplPath . '/' . $data['upl_filename'];
+                $data['upl_path'] = $uplPath . ((substr($uplPath, -1) != '/') ? '/' : '') . $data['upl_filename'];
 
                 if (!($fi = $repository->uploadFile($tmpFileName, $data['upl_path']))) {
                     throw new SystemException('ERR_SAVE_FILE');
@@ -376,11 +381,14 @@ class FileRepository extends Grid {
             }
 
             $transactionStarted = !($this->dbh->commit());
+            $uplID = (is_int($result)) ? $result: (int)$_POST[$this->getTableName()][$this->getPK()];
+            $args = array($uplID, $data['upl_publication_date']);
+
+            $this->dbh->call('proc_update_dir_date', $args);
 
             $b = new JSONCustomBuilder();
             $b->setProperties(array(
-                'data' => (is_int($result)) ? $result
-                    : (int)$_POST[$this->getTableName()][$this->getPK()],
+                'data' => $uplID,
                 'result' => true,
                 'mode' => (is_int($result)) ? 'insert' : 'update'
             ));
@@ -471,7 +479,7 @@ class FileRepository extends Grid {
 
             $sp = $this->getStateParams(true);
 
-            $uplPID = (!empty($sp['pid'])) ? (int) $sp['pid'] : null;
+            $uplPID = (!empty($sp['pid'])) ? (int)$sp['pid'] : null;
 
             if (!$uplPID) return $result;
 
@@ -479,7 +487,7 @@ class FileRepository extends Grid {
             $repo = $this->getRepositoryInstance($uplPID);
 
             if ($result) {
-                foreach($result as $i => $row) {
+                foreach ($result as $i => $row) {
                     $result[$i]['upl_allows_create_dir'] = $repo->allowsCreateDir();
                     $result[$i]['upl_allows_upload_file'] = $repo->allowsUploadFile();
                     $result[$i]['upl_allows_edit_dir'] = $repo->allowsEditDir();
@@ -544,10 +552,10 @@ class FileRepository extends Grid {
             $res = $this->dbh->call('proc_get_upl_pid_list', $p);
 
             unset($p);
-            if(!empty($res)){
+            if (!empty($res)) {
                 $breadcrumbsData = array();
-                foreach($res as $row){
-                    $breadcrumbsData[$row['id']] =$row['title'];
+                foreach ($res as $row) {
+                    $breadcrumbsData[$row['id']] = $row['title'];
                 }
                 $this->getBuilder()->setBreadcrumbs(array_reverse($breadcrumbsData, true));
             }
@@ -652,13 +660,13 @@ class FileRepository extends Grid {
         $builder = new JSONCustomBuilder();
         $this->setBuilder($builder);
 
-        if( !empty($_SERVER['HTTP_ORIGIN']) ){
+        if (!empty($_SERVER['HTTP_ORIGIN'])) {
             header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
             header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
             header('Access-Control-Allow-Headers: Origin, X-Requested-With');
         }
 
-        if( $_SERVER['REQUEST_METHOD'] == 'OPTIONS' ){
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             exit();
         }
 
@@ -673,14 +681,14 @@ class FileRepository extends Grid {
         );
 
         try {
-            if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
+            if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
                 header('HTTP/1.1 201 Created');
                 $key = (isset($_POST['key'])) ? $_POST['key'] : 'unknown';
                 // $pid = (isset($_POST['pid'])) ? (int) $_POST['pid']: false;
                 // $repo = $this->getRepositoryInstance($pid);
                 if (isset($_FILES[$key]) and is_uploaded_file($_FILES[$key]['tmp_name'])) {
                     $tmp_name = $this->getTmpFilePath($_FILES[$key]['name']);
-                    if(!is_writeable(dirname($tmp_name))){
+                    if (!is_writeable(dirname($tmp_name))) {
                         throw new SystemException('ERR_TEMP_DIR_WRITE', SystemException::ERR_CRITICAL, dirname($tmp_name));
                     }
 
@@ -690,10 +698,10 @@ class FileRepository extends Grid {
                         $response['tmp_name'] = $tmp_name;
                         $response['error'] = $_FILES[$key]['error'];
                         $response['size'] = $_FILES[$key]['size'];
-                   } else {
+                    } else {
                         $response['error'] = true;
                         $response['error_message'] = 'ERR_NO_FILE';
-                   }
+                    }
                 } else {
                     $response['error'] = true;
                     $response['error_message'] = 'ERR_NO_FILE';
@@ -705,20 +713,19 @@ class FileRepository extends Grid {
         } catch (Exception $e) {
             $response['error'] = true;
             $response['result'] = false;
-            $response['error_message'] = (string) $e->getMessage();
+            $response['error_message'] = (string)$e->getMessage();
         }
 
         // IE9 no-flash / iframe upload (fallback)
-        $jsonp	= isset($_REQUEST['callback']) ? trim($_REQUEST['callback']) : null;
+        $jsonp = isset($_REQUEST['callback']) ? trim($_REQUEST['callback']) : null;
         if (!empty($jsonp)) {
-            echo  '<script type="text/javascript">'
+            echo '<script type="text/javascript">'
                 . '(function(ctx,jsonp){'
-                . 	'if(ctx&&ctx[jsonp]){'
-                .		'ctx[jsonp](200, "OK", "'.addslashes(json_encode($response)).'")'
-                .	'}'
-                . '})(this.parent, "'.$jsonp.'")'
-                . '</script>'
-            ;
+                . 'if(ctx&&ctx[jsonp]){'
+                . 'ctx[jsonp](200, "OK", "' . addslashes(json_encode($response)) . '")'
+                . '}'
+                . '})(this.parent, "' . $jsonp . '")'
+                . '</script>';
             exit();
         }
 

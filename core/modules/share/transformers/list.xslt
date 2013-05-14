@@ -151,9 +151,10 @@
                             <xsl:choose>
                                 <xsl:when test="ancestor::component[@class='FileRepository']">
                                     <xsl:attribute name="class">gridTable fixed_columns</xsl:attribute>
-                                    <col id="col_11" style="width:20%"/>
-                                    <col id="col_12" style="width:40%"/>
-                                    <col id="col_13" style="width:40%"/>
+                                    <col id="col_11" style="width:12%"/>
+                                    <col id="col_12" style="width:30%"/>
+                                    <col id="col_13" style="width:28%"/>
+                                    <col id="col_14" style="width:30%"/>
                                 </xsl:when>
                                 <xsl:otherwise>
                                     <xsl:for-each select="$FIELDS[@type!='hidden']">
@@ -195,9 +196,10 @@
                                     <xsl:choose>
                                         <xsl:when test="ancestor::component[@class='FileRepository']">
                                             <xsl:attribute name="class">gridTable fixed_columns</xsl:attribute>
-                                            <col id="col_11a" style="width:20%;"/>
-                                            <col id="col_12a" style="width:40%;"/>
-                                            <col id="col_13a" style="width:40%;"/>
+                                            <col id="col_11a" style="width:12%"/>
+                                            <col id="col_12a" style="width:30%"/>
+                                            <col id="col_13a" style="width:28%"/>
+                                            <col id="col_14a" style="width:30%"/>
                                         </xsl:when>
                                         <xsl:otherwise>
                                             <xsl:for-each select="$FIELDS[@type!='hidden']">

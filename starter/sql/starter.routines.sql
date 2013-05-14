@@ -68,3 +68,20 @@ MODIFIES SQL DATA
   END;;
 
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `proc_update_dir_date`;
+
+DELIMITER ;;
+
+CREATE PROCEDURE `proc_update_dir_date`(IN `in_id` INT UNSIGNED, IN `in_date` DATETIME)
+    MODIFIES SQL DATA
+BEGIN
+	set @_pid = get_upl_parent(in_id);
+
+    while @_pid > 0 do
+	update share_uploads set upl_publication_date=in_date where upl_id=@_pid;
+	set @_pid = get_upl_parent(@_pid);
+    end while;
+END;;
+
+DELIMITER ;

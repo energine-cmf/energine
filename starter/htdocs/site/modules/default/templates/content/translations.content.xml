@@ -2,7 +2,8 @@
 <content>
     <component name="transEditor" module="share" class="TranslationEditor">
         <params>
-            <param name="rights">3</param>
-        </params>
+           <param name="rights">3</param>
+       </params>
     </component>
 </content>
+

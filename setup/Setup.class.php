@@ -298,6 +298,7 @@ final class Setup {
         $this->checkDBConnection();
         $this->updateSitesTable();
         $this->linkerAction();
+        $this->scriptMapAction();
         $this->robotsAction();
     }
 
@@ -692,5 +693,80 @@ final class Setup {
             echo $text;
         }
         echo PHP_EOL;
+    }
+
+    /**
+     * Рекурсивно проходится по всем файлам и директориям в папке scripts и возвращает результат
+     * в переменную $result
+     *
+     * @param string $directory
+     * @param array $result
+     */
+    private function iterateScripts($directory, &$result) {
+
+        $iterator = new DirectoryIterator($directory);
+
+        foreach ($iterator as $fileinfo) {
+            if ($fileinfo->isFile() && !$fileinfo->isDot() && $fileinfo->getExtension() == 'js') {
+                $result[$fileinfo->getBasename('.js')] = $directory . DIRECTORY_SEPARATOR . $fileinfo->getFilename();
+            }
+
+            if ($fileinfo->isDir() && !$fileinfo->isDot()) {
+                $this->iterateScripts($fileinfo->getPathname(), $result);
+            }
+        }
+    }
+
+    /**
+     * Парсер включений ScriptLoader.load()
+     *
+     * @param string $script полное имя javascript-файла
+     * @return array массив зависимостей
+     */
+    private function parseScriptLoader($script) {
+        $result = array();
+
+        $data = file_get_contents($script);
+        $r = array();
+        if (preg_match_all('/ScriptLoader\.load\((([\s,]{1,})?(\'([a-zA-Z\/.-]{1,})\'){1,}([\s,]{1,})?){1,}\)/', $data, $r)) {
+            $s = str_replace(array('ScriptLoader.load', '(', ')', "\r", "\n"), '', (string) $r[0][0]);
+            $classes = array_map(function($el){ return str_replace(array('\'', ',',' '), '', $el); }, explode(',', $s));
+            $result = $classes;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Записывает массив зависимостей в php файл system.jsmap.php
+     *
+     * @param array $deps
+     */
+    private function writeScriptMap($deps) {
+        file_put_contents(HTDOCS_DIR . '/system.jsmap.php', '<?php return ' . var_export($deps, true) . ';');
+    }
+
+    /**
+     * Создает файл system.jsmap.php с массивом зависимостей для JS классов
+     */
+    private function scriptMapAction() {
+
+        $this->title("Создание карты зависимости Javascript классов");
+
+        $files = array();
+        $this->iterateScripts(HTDOCS_DIR . '/scripts', $files);
+
+        $result = array();
+
+        foreach($files as $class => $file) {
+            $deps = $this->parseScriptLoader($file);
+            if ($deps) {
+                $class_dir = str_replace(array(HTDOCS_DIR . '/scripts/', '.js') , '', $file);
+                $result[$class_dir] = $deps;
+                $this->text($class_dir . ' --> ' . implode(', ', $deps));
+            }
+        }
+
+        $this->writeScriptMap($result);
     }
 }

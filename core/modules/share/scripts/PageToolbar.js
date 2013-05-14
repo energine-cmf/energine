@@ -1,4 +1,4 @@
-ScriptLoader.load('Toolbar', 'ModalBox');
+ScriptLoader.load('Toolbar', 'ModalBox', 'LayoutManager');
 
 var PageToolbar = new Class({
     Extends: Toolbar,
@@ -44,10 +44,6 @@ var PageToolbar = new Class({
             'frameBorder': '0'
         }).injectInside(sidebarFrameContent);
         var editBlocksButton = this.getControlById('editBlocks');
-
-        if (editBlocksButton) {
-            ScriptLoader.load('LayoutManager');
-        }
 
         if(this.getControlById('editMode').getState() && editBlocksButton){
             editBlocksButton.disable();

@@ -1,3 +1,4 @@
+ScriptLoader.load('Overlay');
 window.FBL = {
     appID:null,
     get:function () {
@@ -12,7 +13,6 @@ window.addEvent('domready', function () {
     if (fbAuth) {
         fbAuth.addEvent('click', function (e) {
             Energine.cancelEvent(e);
-            ScriptLoader.load('Overlay');
             var over = new Overlay(document.body);
             over.show();
             (function (d) {

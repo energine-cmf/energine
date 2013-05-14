@@ -1,6 +1,4 @@
-ScriptLoader.load(
-    'Overlay'
-);
+ScriptLoader.load('Overlay');
 
 var ModalBox = window.top.ModalBox || {
 

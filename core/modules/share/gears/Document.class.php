@@ -305,6 +305,55 @@ final class Document extends DBWorker implements IDocument {
                 $dom_translations->appendChild($dom_translation);
             }
         }
+
+        // построение списка подключаемых js библиотек в порядке зависимостей
+        $jsmap_file = HTDOCS_DIR . '/system.jsmap.php';
+
+        if (file_exists($jsmap_file)) {
+
+            $js_includes = array();
+
+            $jsmap = include($jsmap_file);
+
+            $xpath = new DOMXPath($this->doc);
+            $nl = $xpath->query('//javascript/behavior');
+
+            if ($nl->length) {
+                foreach($nl as $node) {
+                    $cls_path = $node->getAttribute('path');
+                    $cls = (($cls_path) ? $cls_path . '/' : '' ) . $node->getAttribute('name');
+                    $this->createJavascriptDependencies(array($cls), $jsmap, $js_includes);
+                }
+            }
+
+            $dom_javascript = $this->doc->createElement('javascript');
+            foreach($js_includes as $js) {
+                $dom_js_library = $this->doc->createElement('library');
+                $dom_js_library->setAttribute('path', $js);
+                $dom_javascript->appendChild($dom_js_library);
+            }
+            $dom_root->appendChild($dom_javascript);
+        }
+    }
+
+    /**
+     * Построение уникального плоского массива подключений js-файлов и их зависимостей
+     *
+     * @param array $dependencies
+     * @param array $jsmap
+     * @param array $js_includes
+     */
+    protected function createJavascriptDependencies($dependencies, $jsmap, &$js_includes) {
+        if ($dependencies) {
+            foreach($dependencies as $dep) {
+                if (isset($jsmap[$dep]))
+                    $this->createJavascriptDependencies($jsmap[$dep], $jsmap, $js_includes);
+
+                if (!in_array($dep, $js_includes)) {
+                    $js_includes[] = $dep;
+                }
+            }
+        }
     }
 
     /**

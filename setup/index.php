@@ -17,7 +17,8 @@ $acceptableActions = array(
     'linker',
     'clearCache',
     'robots',
-    'syncUploads'
+    'syncUploads',
+    'scriptMap'
 );
 
 //вариант запуска приложения

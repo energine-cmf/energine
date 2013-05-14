@@ -321,7 +321,10 @@ final class Document extends DBWorker implements IDocument {
             if ($nl->length) {
                 foreach($nl as $node) {
                     $cls_path = $node->getAttribute('path');
-                    $cls = (($cls_path) ? $cls_path . '/' : '' ) . $node->getAttribute('name');
+                    if ($cls_path && substr($cls_path, -1) != '/') {
+                        $cls_path .= '/';
+                    }
+                    $cls = (($cls_path) ? $cls_path : '' ) . $node->getAttribute('name');
                     $this->createJavascriptDependencies(array($cls), $jsmap, $js_includes);
                 }
             }

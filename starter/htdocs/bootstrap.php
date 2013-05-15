@@ -10,7 +10,7 @@
  */
 
 // Подключаем конфиг, чтобы достать из него местоположение ядер и имя текущего ядра
-if (!file_exists($configName = 'system.config.php')) {
+if (!file_exists($configName = realpath(dirname(__FILE__)) . '/system.config.php')) {
     throw new LogicException('Не найден конфигурационный файл system.config.php.');
 }
 

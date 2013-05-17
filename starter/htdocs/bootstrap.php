@@ -56,11 +56,10 @@ set_include_path(implode(PATH_SEPARATOR, array(realpath(dirname(__FILE__)), get_
 // inline-подключение точки входа для setup
 // подключение осуществляется именно в данном файле по причине отсутствия симлинков в htdocs/core/modules
 // соответственно дальнейшие include'ы - некорректны
-if (isset($_SERVER['REQUEST_URI']) and strpos($_SERVER['REQUEST_URI'], $config['site']['root'] .'setup') === 0) {
+if ((isset($_SERVER['REQUEST_URI']) and strpos($_SERVER['REQUEST_URI'], $config['site']['root'] .'setup') === 0) or (isset($argv[1]) and $argv[1] == 'setup')) {
     include_once(SETUP_DIR . DIRECTORY_SEPARATOR . 'index.php');
     exit;
 }
-
 
 //это первое обращение к ядру
 //проверяем наличие файла ini.func.php, если он отсутствует -значит скорее всего инсталляция проекта не произошла

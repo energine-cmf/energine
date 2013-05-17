@@ -33,7 +33,8 @@ if (isset($argv)) {
     $args = $argv;
     //консоль
     $isConsole = true;
-    array_shift($args);
+    array_shift($args); // имя скрипта (index.php)
+    array_shift($args); // ключевое слово setup
 }
 else {
     //веб

@@ -178,12 +178,12 @@
                     <xsl:attribute name="style">display:none;</xsl:attribute>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:attribute name="href"><xsl:value-of select="$STATIC_URL"/><xsl:value-of select="."/></xsl:attribute>
+                    <xsl:attribute name="href"><xsl:value-of select="$MEDIA_URL"/><xsl:value-of select="."/></xsl:attribute>
                 </xsl:otherwise>
             </xsl:choose>
             <img alt="">
                 <xsl:if test=".!=''">
-                    <xsl:attribute name="src"><xsl:value-of select="$STATIC_URL"/><xsl:choose>
+                    <xsl:attribute name="src"><xsl:value-of select="$MEDIA_URL"/><xsl:choose>
                         <xsl:when test="@media_type='image'"><xsl:value-of select="."/></xsl:when>
                         <xsl:when test="@media_type='video'">resizer/w0-h0/<xsl:value-of select="."/></xsl:when>
                         <xsl:otherwise>images/icons/icon_undefined.gif</xsl:otherwise>

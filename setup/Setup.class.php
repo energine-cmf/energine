@@ -162,10 +162,14 @@ final class Setup {
         $this->text('Конфигурационный файл подключен и проверен');
 
         //Если режим отладки отключен - то и говорить дальше не о чем
-        if (!$this->config['site']['debug']) {
+        if (!$this->isFromConsole && !$this->config['site']['debug']) {
             throw new Exception('Нет. С отключенным режимом отладки я работать не буду, и не просите. Запускайте меня после того как исправите в конфиге ["site"]["debug"] с 0 на 1.');
         }
-        $this->text('Режим отладки включен');
+        if ($this->config['site']['debug']) {
+            $this->text('Режим отладки включен');
+        } else {
+            $this->text('Режим отладки выключен');
+        }
 
         //А задан ли у нас перечень модулей?
         if (!isset($this->config['modules']) && empty($this->config['modules'])) {

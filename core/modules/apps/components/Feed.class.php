@@ -61,6 +61,17 @@ class Feed extends DBDataSet
                 }
                 $this->filterID = array_merge(array($this->filterID), $descendants);
             }
+            if ($orderParam = $this->getParam('orderField')) {
+                if (is_array($orderParam)) {
+                    $field = $orderParam[0];
+                    $dir = (!empty($orderParam[1])) ? strtoupper($orderParam[1]) : QAL::ASC;
+                } else {
+                    $field = $orderParam;
+                    $dir = QAL::ASC;
+                }
+                if (!in_array($dir, array(QAL::ASC, QAL::DESC))) $dir = QAL::ASC;
+                $this->setOrder(array($field => $dir));
+            }
             $this->addFilterCondition(array('smap_id' => $this->filterID));
             if ($limit = $this->getParam('limit')) {
                 $this->setLimit(array(0, $limit));
@@ -152,7 +163,8 @@ class Feed extends DBDataSet
                  'showAll' => false,
                  'id' => false,
                  'limit' => false,
-                 'editable' => false
+                 'editable' => false,
+                 'orderField' => false,
             )
         );
     }

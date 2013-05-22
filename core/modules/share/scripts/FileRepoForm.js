@@ -34,7 +34,7 @@ var FileRepoForm = new Class({
                 this.xhrFileUpload(el.getProperty('id'), files, function (response) {
                     var previewElement = $(el.getProperty('preview')),
                         dataElement = $(el.getProperty('data'));
-                    if (previewElement) previewElement.removeClass('hidden').setProperty('src', Energine.resizer + 'w0-h0/' + response.tmp_name);
+                    if (previewElement) previewElement.removeClass('hidden').setProperty('src', Energine.base + 'resizer/' + 'w0-h0/' + response.tmp_name);
                     if (dataElement) dataElement.set('value', response.tmp_name);
                 });
             }
@@ -126,13 +126,13 @@ var FileRepoForm = new Class({
 
                 if (response.type.match('image.*')) {
                     previewElement.removeProperty('src').addClass('hidden');
-                    previewElement.removeClass('hidden').setProperty('src', Energine.resizer + 'w0-h0/' + response.tmp_name);
+                    previewElement.removeClass('hidden').setProperty('src', Energine.base + 'resizer/' + 'w0-h0/' + response.tmp_name);
                     generatePreviews(response.tmp_name);
                     enableTab();
                 }
                 else if (response.type.match('video.*')) {
                     previewElement.removeProperty('src').addClass('hidden');
-                    previewElement.removeClass('hidden').setProperty('src', Energine.resizer + 'w0-h0/' + response.tmp_name);
+                    previewElement.removeClass('hidden').setProperty('src', Energine.base + 'resizer/' + 'w0-h0/' + response.tmp_name);
                     generatePreviews(response.tmp_name);
                     enableTab();
                 }

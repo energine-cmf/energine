@@ -54,8 +54,8 @@ class FileRepository extends Grid {
         $sp = $this->getStateParams();
         $uplID = $sp[0];
         if ($this->dbh->getScalar($this->getTableName(),
-            'upl_internal_type',
-            array('upl_id' => $uplID)) == FileRepoInfo::META_TYPE_FOLDER
+                'upl_internal_type',
+                array('upl_id' => $uplID)) == FileRepoInfo::META_TYPE_FOLDER
         ) {
             $this->editDir($uplID);
         } else {
@@ -218,7 +218,7 @@ class FileRepository extends Grid {
             $result = $this->dbh->modify($mode, $this->getTableName(), $data, $where);
 
             $transactionStarted = !($this->dbh->commit());
-            $uplID = (is_int($result)) ? $result: (int)$_POST[$this->getTableName()][$this->getPK()];
+            $uplID = (is_int($result)) ? $result : (int)$_POST[$this->getTableName()][$this->getPK()];
 
             $args = array($uplID, date('Y-m-d H:i:s'));
 
@@ -381,10 +381,12 @@ class FileRepository extends Grid {
             }
 
             $transactionStarted = !($this->dbh->commit());
-            $uplID = (is_int($result)) ? $result: (int)$_POST[$this->getTableName()][$this->getPK()];
-            $args = array($uplID, $data['upl_publication_date']);
+            $uplID = (is_int($result)) ? $result : (int)$_POST[$this->getTableName()][$this->getPK()];
 
-            $this->dbh->call('proc_update_dir_date', $args);
+            if ($mode == QAL::INSERT) {
+                $args = array($uplID, $data['upl_publication_date']);
+                $this->dbh->call('proc_update_dir_date', $args);
+            }
 
             $b = new JSONCustomBuilder();
             $b->setProperties(array(
@@ -458,8 +460,8 @@ class FileRepository extends Grid {
             $tableName = ($tableName) ? $tableName . '.' : '';
             $this->addFilterCondition(
                 $tableName . $fieldName . ' ' .
-                    call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
-                    ' '
+                call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
+                ' '
             );
 
         }
@@ -604,8 +606,8 @@ class FileRepository extends Grid {
                 $fileInfo = pathinfo($currentFile);
                 inspect($fileInfo);
                 if (
-                    !((substr($fileInfo['filename'], 0, 1) === '.') || (strpos($currentFile, 'MACOSX') !== false)
-                    )
+                !((substr($fileInfo['filename'], 0, 1) === '.') || (strpos($currentFile, 'MACOSX') !== false)
+                )
                 ) {
                     if ($fileInfo['dirname'] == '.') {
                         $path = '';

@@ -201,7 +201,7 @@ final class Sitemap extends DBWorker {
 		if($diff = array_diff($id, array_keys($this->info))){
 			$ids = implode(',', $diff);
 			$result = convertDBResult(
-			$this->dbh->selectRequest(
+			$this->dbh->select(
                     'SELECT s.smap_id,
 	                    s.smap_pid,
 	                    s.site_id as site,
@@ -221,7 +221,7 @@ final class Sitemap extends DBWorker {
                     $this->siteID
                 ),
 	            'smap_id', true);
-			$result = array_map(array($this, 'preparePageInfo'), $result);
+        			$result = array_map(array($this, 'preparePageInfo'), $result);
 			$this->info += $result;
 		}
 		else{

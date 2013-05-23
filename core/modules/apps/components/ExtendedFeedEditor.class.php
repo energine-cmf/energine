@@ -54,14 +54,12 @@ class ExtendedFeedEditor extends FeedEditor {
 
     protected function add() {
         parent::add();
-        $this->addAttFilesField($this->getTableName());
         $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
         $tm->createFieldDescription();
     }
 
     protected function edit() {
         parent::edit();
-        $this->addAttFilesField($this->getTableName());
         $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
         $tm->createFieldDescription();
         $tm->createField();

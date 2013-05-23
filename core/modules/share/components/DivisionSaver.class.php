@@ -94,11 +94,6 @@
             }
         }
         
-        $m = new AttachmentManager($this->dataDescription, $this->data, 'share_sitemap');
-        $m->save($smapID);
-        $m = new TagManager($this->dataDescription, $this->data, 'share_sitemap');
-        $m->save($smapID);
-        
         if(
             AdsManager::isActive()
             && isset($_POST[AdsManager::TABLE_NAME])

@@ -107,10 +107,10 @@ class Grid extends DBDataSet {
             $fileName = get_class($this) . '.component.xml';
             $fileConf =
                 sprintf(SITE_DIR . ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
-                    $fileName;
+                $fileName;
             $coreConf =
                 sprintf(CORE_DIR . ComponentConfig::CORE_CONFIG_DIR, $this->module) .
-                    $fileName;
+                $fileName;
             if (file_exists($fileConf)) {
                 $params['config'] = $fileConf;
             } elseif (file_exists($coreConf)) {
@@ -118,7 +118,7 @@ class Grid extends DBDataSet {
             } else {
                 $params['config'] =
                     sprintf(CORE_DIR . ComponentConfig::CORE_CONFIG_DIR, 'share/') .
-                        'Grid.component.xml';
+                    'Grid.component.xml';
             }
         }
         $params['active'] = true;
@@ -153,7 +153,7 @@ class Grid extends DBDataSet {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
         $this->addToolbarTranslations();
-        //$this->addCrumb('TXT_ADD_ITEM');
+        $this->addAttFilesField($this->getTableName());
     }
 
     /**
@@ -174,6 +174,7 @@ class Grid extends DBDataSet {
         $this->setFilter($id);
         $this->prepare();
         $this->addToolbarTranslations();
+        $this->addAttFilesField($this->getTableName());
     }
 
     /**
@@ -235,8 +236,8 @@ class Grid extends DBDataSet {
             $ids =
                 simplifyDBResult($this->dbh->select($this->getTableName(), array($this->getPK()), array_merge($this->getFilter(), array(
                     $orderColumn .
-                        ' > ' .
-                        $deletedOrderNum)), array($orderColumn => QAL::ASC)), $this->getPK());
+                    ' > ' .
+                    $deletedOrderNum)), array($orderColumn => QAL::ASC)), $this->getPK());
 
         }
         $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, array($this->getPK() => $id));
@@ -246,8 +247,8 @@ class Grid extends DBDataSet {
             $this->addFilterCondition(array($this->getPK() => $ids));
             $request =
                 'UPDATE ' . $this->getTableName() . ' SET ' . $orderColumn .
-                    ' = ' . $orderColumn . ' - 1 ' .
-                    $this->dbh->buildWhereCondition($this->getFilter());
+                ' = ' . $orderColumn . ' - 1 ' .
+                $this->dbh->buildWhereCondition($this->getFilter());
 
             $this->dbh->modifyRequest($request);
         }
@@ -400,7 +401,7 @@ class Grid extends DBDataSet {
      */
     final protected function getSaver() {
         if (is_null($this->saver)) {
-            $this->saver = new Saver();
+            $this->saver = new ExtendedSaver();
         }
 
         return $this->saver;
@@ -456,7 +457,7 @@ class Grid extends DBDataSet {
          * @see Grid::createDataDescription
          */
         if (($col = $this->getOrderColumn()) && ($field =
-            $this->getDataDescription()->getFieldDescriptionByName($col))
+                $this->getDataDescription()->getFieldDescriptionByName($col))
         ) {
             $this->getDataDescription()->removeFieldDescription($field);
         }
@@ -490,8 +491,8 @@ class Grid extends DBDataSet {
             $this->addFilterCondition(array($this->getPK() . '!=' . $result));
             $request =
                 'UPDATE ' . $this->getTableName() . ' SET ' . $orderColumn .
-                    '=' . $orderColumn . '+1 ' .
-                    $this->dbh->buildWhereCondition($this->getFilter());
+                '=' . $orderColumn . '+1 ' .
+                $this->dbh->buildWhereCondition($this->getFilter());
             $this->dbh->modifyRequest($request);
         }
 
@@ -779,7 +780,7 @@ class Grid extends DBDataSet {
                 array_values(pathinfo($sourceFileName));
             $destFileName =
                 $dirname . '/' . '.' . $filename . '.' . $width . '-' .
-                    $height . '.' . $extension;
+                $height . '.' . $extension;
             if (
                 (
                     file_exists($fullDestFileName =
@@ -857,13 +858,13 @@ class Grid extends DBDataSet {
         ) {
             $secondItemOrderNum = $this->dbh->getScalar(
                 'SELECT ' . $this->getOrderColumn() . ' as secondItemOrderNum ' .
-                    'FROM ' . $this->getTableName() . ' ' .
-                    'WHERE ' . $this->getPK() . ' = ' . $secondItem
+                'FROM ' . $this->getTableName() . ' ' .
+                'WHERE ' . $this->getPK() . ' = ' . $secondItem
             );
 
             $this->dbh->beginTransaction();
             $this->dbh->modify('UPDATE ' . $this->getTableName() . ' SET ' . $this->getOrderColumn() . ' = ' . $this->getOrderColumn()
-                . ' + 1 WHERE ' . $this->getOrderColumn() . ' >= ' . $secondItemOrderNum);
+            . ' + 1 WHERE ' . $this->getOrderColumn() . ' >= ' . $secondItemOrderNum);
             $this->dbh->modify(
                 QAL::UPDATE,
                 $this->getTableName(),
@@ -923,8 +924,8 @@ class Grid extends DBDataSet {
         $currentOrderNum = simplifyDBResult(
             $this->dbh->selectRequest(
                 'SELECT ' . $this->getOrderColumn() . ' ' .
-                    'FROM ' . $this->getTableName() . ' ' .
-                    'WHERE ' . $this->getPK() . ' = %s',
+                'FROM ' . $this->getTableName() . ' ' .
+                'WHERE ' . $this->getPK() . ' = %s',
                 $currentID
             ),
             $this->getOrderColumn(),
@@ -945,12 +946,12 @@ class Grid extends DBDataSet {
         //Определяем идентификатор записи которая находится рядом с текущей
         $request =
             'SELECT ' . $this->getPK() . ' as neighborID, ' .
-                $this->getOrderColumn() . ' as neighborOrderNum ' .
-                'FROM ' . $this->getTableName() . ' ' .
-                'WHERE ' . $this->getOrderColumn() . ' ' . $direction .
-                ' ' . $currentOrderNum . ' ' . $baseFilter .
-                'ORDER BY ' . $this->getOrderColumn() . ' ' .
-                $orderDirection . ' Limit 1';
+            $this->getOrderColumn() . ' as neighborOrderNum ' .
+            'FROM ' . $this->getTableName() . ' ' .
+            'WHERE ' . $this->getOrderColumn() . ' ' . $direction .
+            ' ' . $currentOrderNum . ' ' . $baseFilter .
+            'ORDER BY ' . $this->getOrderColumn() . ' ' .
+            $orderDirection . ' Limit 1';
 
         $data =
             convertDBResult($this->dbh->selectRequest($request), 'neighborID');
@@ -1018,7 +1019,7 @@ class Grid extends DBDataSet {
                     ($fkTranslationTableName) ? $fkTranslationTableName
                         : $tableInfo[$fieldName]['key']['tableName'];
                 $fkValueField = substr($fkKeyName =
-                    $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
+                        $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
                     '_name';
                 $fkTableInfo = $this->dbh->getColumnsInfo($fkTableName);
                 if (!isset($fkTableInfo[$fkValueField])) $fkValueField = $fkKeyName;
@@ -1026,13 +1027,13 @@ class Grid extends DBDataSet {
                 if ($res =
                     simplifyDBResult($this->dbh->select($fkTableName, $fkKeyName,
                         $fkTableName . '.' .
-                            $fkValueField .
-                            ' ' .
-                            call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
-                            ' '), $fkKeyName)
+                        $fkValueField .
+                        ' ' .
+                        call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
+                        ' '), $fkKeyName)
                 ) {
                     $this->addFilterCondition(array($tableName . '.' .
-                        $fieldName => $res));
+                    $fieldName => $res));
                 } else {
                     $this->addFilterCondition(' FALSE');
                 }
@@ -1047,8 +1048,8 @@ class Grid extends DBDataSet {
                 $tableName = ($tableName) ? $tableName . '.' : '';
                 $this->addFilterCondition(
                     $tableName . $fieldName . ' ' .
-                        call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
-                        ' '
+                    call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
+                    ' '
                 );
             }
         }
@@ -1097,15 +1098,17 @@ class Grid extends DBDataSet {
      * @return void
      */
     protected function addAttFilesField($tableName, $data = false) {
-        $am = new AttachmentManager(
-            $this->getDataDescription(),
-            $this->getData(),
-            $tableName
-        );
-        $am->createAttachmentTab($data);
+        if ($this->dbh->tableExists($this->getTableName() . AttachmentManager::ATTACH_TABLE_PREFIX)) {
+            $am = new AttachmentManager(
+                $this->getDataDescription(),
+                $this->getData(),
+                $tableName
+            );
+            $am->createAttachmentTab($data);
 
-        //Ссылки на добавление и удаление файла
-        $this->addTranslation('BTN_ADD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
+            //Ссылки на добавление и удаление файла
+            $this->addTranslation('BTN_ADD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
+        }
     }
 
 }

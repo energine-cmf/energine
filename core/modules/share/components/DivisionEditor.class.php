@@ -225,7 +225,7 @@ final class DivisionEditor extends Grid {
 
         $old_exists = false;
 
-        $tr_name = function($path) {
+        $tr_name = function ($path) {
             list($name, $tp) = explode('.', substr(basename($path), 0, -4));
             return $this->translate(strtoupper($tp . '_' . $name));
         };
@@ -247,7 +247,7 @@ final class DivisionEditor extends Grid {
             );
         }
 
-        usort($result, function($rowA, $rowB) {
+        usort($result, function ($rowA, $rowB) {
             return $rowA['value'] > $rowB['value'];
         });
 
@@ -271,12 +271,12 @@ final class DivisionEditor extends Grid {
                     '$val',
                     '
                     $val["smap_segment"] = E()->getMap(' .
-                        $params['site_id'] . ')->getURLByID($val["smap_id"]);
+                    $params['site_id'] . ')->getURLByID($val["smap_id"]);
                     ' .
-                        (($this->getDataDescription()->getFieldDescriptionByName('site')) ?
-                            '$val["site"] = E()->getSiteManager()->getSiteByID(' .
-                                $params['site_id'] .
-                                ')->base;' : '') . '
+                    (($this->getDataDescription()->getFieldDescriptionByName('site')) ?
+                        '$val["site"] = E()->getSiteManager()->getSiteByID(' .
+                        $params['site_id'] .
+                        ')->base;' : '') . '
                     return $val;
                     '
                 )
@@ -352,8 +352,8 @@ final class DivisionEditor extends Grid {
             $url = $_POST[$this->getTableName()]['smap_segment'] . '/';
             if ($smapPID) {
                 $url = E()->getMap(
-                    E()->getSiteManager()->getSiteByPage($smapPID)->id
-                )->getURLByID($smapPID) . $url;
+                        E()->getSiteManager()->getSiteByPage($smapPID)->id
+                    )->getURLByID($smapPID) . $url;
             }
         } else {
             $mode = 'update';
@@ -380,7 +380,6 @@ final class DivisionEditor extends Grid {
         $this->buildRightsTab($actionParams['pid']);
 
         $site = E()->getSiteManager()->getSiteByPage($actionParams['pid']);
-        $this->addAttFilesField('share_sitemap');
         $sitemap = E()->getMap($site->id);
 
         $this->getData()->getFieldByName('site_id')->setData($site->id, true);
@@ -429,9 +428,8 @@ final class DivisionEditor extends Grid {
 
     protected function edit() {
         parent::edit();
-        $this->buildRightsTab($smapID =
-            $this->getData()->getFieldByName('smap_id')->getRowData(0));
-        $this->addAttFilesField('share_sitemap');
+        $this->buildRightsTab($smapID = $this->getData()->getFieldByName('smap_id')->getRowData(0));
+
         //Выводим УРЛ в поле сегмента
         $field = $this->getData()->getFieldByName('smap_pid');
         $site =
@@ -456,7 +454,7 @@ final class DivisionEditor extends Grid {
             $contentFD =
                 $this->getDataDescription()->getFieldDescriptionByName('smap_content');
             $contentFD->setProperty('reset', $this->translate('TXT_RESET_CONTENT'));
-            $av = &$contentFD->getAvailableValues();
+            $av = & $contentFD->getAvailableValues();
             if (isset($av[$contentFilename])) {
                 $av[$contentFilename]['value'] .=
                     ' - ' . $this->translate('TXT_CHANGED');
@@ -638,9 +636,9 @@ final class DivisionEditor extends Grid {
         $this->setFilter(array('smap_id' => $id, 'lang_id' => $langID));
         $result = $this->dbh->selectRequest(
             'SELECT smap_name, smap_pid, smap_order_num ' .
-                ' FROM share_sitemap s' .
-                ' LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id' .
-                ' WHERE s.smap_id = ' . $id . ' AND lang_id = ' . $langID
+            ' FROM share_sitemap s' .
+            ' LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id' .
+            ' WHERE s.smap_id = ' . $id . ' AND lang_id = ' . $langID
         );
         list($result) = $result;
         $b = new JSONCustomBuilder();

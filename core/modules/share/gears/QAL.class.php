@@ -278,9 +278,22 @@ final class QAL extends DBA {
                 break;
             }
         }
+        $transTableName = $this->getTranslationTablename($fkTableName);
         //если существует таблица с переводами для связанной таблицы
         //нужно брать значения оттуда
-        if ($transTableName = $this->getTranslationTablename($fkTableName)) {
+        if (isset($columns[$fkValueName]) || !$transTableName){
+            //Если не существует поля с name берем в качестве поля со значением то же самое поле что и с id
+            if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
+
+            $columns = array_filter($columns,
+                function($value) {
+                    return !($value["type"] == QAL::COLTYPE_TEXT);
+                }
+            );
+            $res = $this->select($fkTableName, array_keys($columns), $filter, $order);
+            //$res = $this->selectRequest('SELECT '.implode(',', array_keys($columns)).' FROM '.$fkTableName.)
+        }
+        else {
             $columns = $this->getColumnsInfo($transTableName);
             if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
 
@@ -306,19 +319,6 @@ final class QAL extends DBA {
             );
             $res = $this->selectRequest($request);
         }
-        else {
-            //Если не существует поля с name берем в качестве поля со значением то же самое поле что и с id
-            if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
-
-            $columns = array_filter($columns,
-                function($value) {
-                    return !($value["type"] == QAL::COLTYPE_TEXT);
-                }
-            );
-            $res = $this->select($fkTableName, array_keys($columns), $filter, $order);
-            //$res = $this->selectRequest('SELECT '.implode(',', array_keys($columns)).' FROM '.$fkTableName.)
-        }
-
 
         return array($res, $fkKeyName, $fkValueName);
     }

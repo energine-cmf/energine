@@ -15,7 +15,7 @@
   * @subpackage share
   * @author d.pavka@gmail.com
   */
- class DivisionSaver extends Saver {
+ class DivisionSaver extends ExtendedSaver {
     /**
      * Конструктор класса
      *

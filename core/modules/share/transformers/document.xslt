@@ -29,7 +29,7 @@
             		    <xsl:call-template name="stylesheets"/>
             		</xsl:when>
             		<xsl:otherwise>
-                        <link rel="stylesheet" type="text/css" href="stylesheets/singlemode.css"/>
+                        <link rel="stylesheet" type="text/css" href="{$STATIC_URL}stylesheets/singlemode.css"/>
                         <script type="text/javascript">window.singleMode = true;</script>
             		</xsl:otherwise>
         		</xsl:choose>
@@ -54,6 +54,20 @@
                 </xsl:choose>
         		<script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
 
+                <script type="text/javascript">
+                    $extend(Energine, {
+                    <xsl:if test="document/@debug=1">
+                        debug :true,
+                    </xsl:if>
+                    'base' : '<xsl:value-of select="$BASE"/>',
+                    'static' : '<xsl:value-of select="$STATIC_URL"/>',
+                    'resizer' : '<xsl:value-of select="$RESIZER_URL"/>',
+                    'media' : '<xsl:value-of select="$MEDIA_URL"/>',
+                    'root' : '<xsl:value-of select="$MAIN_SITE"/>',
+                    'lang' : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
+                    });
+                </script>
+
                 <xsl:apply-templates select="/document/javascript/library" mode="head"/>
 
                 <xsl:call-template name="scripts"/>
@@ -64,17 +78,6 @@
                         var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[@name!='PageEditor']]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
                     </xsl:if>
                     window.addEvent('domready', function () {
-                        $extend(Energine, {
-                            <xsl:if test="document/@debug=1">
-                                debug :true,
-                            </xsl:if>
-                            'base' : '<xsl:value-of select="$BASE"/>',
-                            'static' : '<xsl:value-of select="$STATIC_URL"/>',
-                            'resizer' : '<xsl:value-of select="$RESIZER_URL"/>',
-                            'media' : '<xsl:value-of select="$MEDIA_URL"/>',
-                            'root' : '<xsl:value-of select="$MAIN_SITE"/>',
-                            'lang' : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
-                        });
                         try {
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
                             <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
@@ -198,7 +201,7 @@
                 <xsl:value-of select="generate-id()"/>
             </xsl:if>
         </xsl:variable>
-        <script type="text/javascript" src="scripts/{@path}.js{$anticache}"/>
+        <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js{$anticache}"/>
     </xsl:template>
 
 </xsl:stylesheet>

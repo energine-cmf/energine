@@ -8,7 +8,8 @@ window.VKI = {
     }
 }
 window.addEvent('domready', function () {
-    VK.init({apiId:VKI.get()});
+    if(VKI.get())
+        VK.init({apiId:VKI.get()});
 });
 function vkAuth(response) {
     if (response.session) {

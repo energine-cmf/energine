@@ -66,6 +66,7 @@
         <uri_patterns>
             <pattern>/get-data/</pattern>
             <pattern>/get-data/page-[pageNumber]/</pattern>
+            <pattern>/[pid]/get-data/</pattern>
         </uri_patterns>
     </state>
     <state name="saveDir" rights="3">

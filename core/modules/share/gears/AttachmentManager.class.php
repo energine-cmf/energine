@@ -212,6 +212,10 @@ class AttachmentManager extends DBWorker {
         }
     }
 
+    protected function getUploadIdByUploadPath($path) {
+        return $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $path);
+    }
+
     /**
      * Создание поля(вкладки) для работы с приаттаченными полями
      * Используется в гридах
@@ -226,6 +230,12 @@ class AttachmentManager extends DBWorker {
             $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
             $field->setProperty('tabName', $this->translate('TAB_ATTACHED_FILES'));
             $field->setProperty('tableName', $tableName);
+
+            $quick_upload_path = $this->getConfigValue('repositories.quick_upload_path', 'uploads/public');
+            $quick_upload_pid = $this->getUploadIdByUploadPath($quick_upload_path);
+
+            $field->setProperty('quickUploadPath', $quick_upload_path);
+            $field->setProperty('quickUploadPid', $quick_upload_pid);
 
             $this->dataDescription->addFieldDescription($field);
 

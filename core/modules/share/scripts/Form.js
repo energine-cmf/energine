@@ -415,10 +415,50 @@ Form.AttachmentPane = new Class({
         //this.parent($('add_attachment'), form, 'put/');
         $('insert_attachment').addEvent('click', function (event) {
             Energine.cancelEvent(event);
-            ModalBox.open(
-                { 'url':form.singlePath + 'file-library/media/',
-                    'onClose':this._insertRow.bind(this)});
+            ModalBox.open({
+                'url': form.singlePath + 'file-library/media/',
+                'onClose': this._insertRow.bind(this)
+            });
         }.bind(this));
+
+        var quick_upload = $('quick_upload_attachment');
+        if (quick_upload) {
+            var quick_upload_pid = quick_upload.getProperty('quick_upload_pid') || '1';
+            quick_upload.addEvent('click', function (event) {
+                Energine.cancelEvent(event);
+                ModalBox.open({
+                    'url': form.singlePath + 'file-library/' + quick_upload_pid + '/add',
+                    'onClose': function(data) {
+                        if (data && data.result && data.data) {
+                            var upl_id = data.data;
+                            if (upl_id) {
+
+                                new Request.JSON({
+                                    'url': form.singlePath + 'file-library/' + quick_upload_pid + '/get-data/',
+                                    'method': 'post',
+                                    'data': {
+                                        json: 1,
+                                        filter: {
+                                            condition: '=',
+                                            share_uploads: {'upl_id': [upl_id]}
+                                        }
+                                    },
+                                    'evalResponse': true,
+                                    'onComplete': function(data) {
+                                        if (data && data.data && data.data.length == 2) {
+                                            // вставляем вторую строчку, ибо первая - folderup
+                                            this._insertRow(data.data[1]);
+                                        }
+                                    }.bind(this),
+                                    'onFailure': function (e) {
+                                    }
+                                }).send();
+                            }
+                        }
+                    }.bind(this)
+                });
+            }.bind(this));
+        }
 
         this.form.componentElement.getElements('.delete_attachment').addEvent('click', function (event) {
             Energine.cancelEvent(event);

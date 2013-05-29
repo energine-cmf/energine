@@ -163,7 +163,9 @@
                 <tfoot>
                     <tr>
                         <td colspan="4" style="text-align:right;">
-                            <a href="#" id="insert_attachment"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
+                            <a href="#" id="quick_upload_attachment" onclick="return false;" quick_upload_path="{@quickUploadPath}" quick_upload_pid="{@quickUploadPid}"><xsl:value-of select="$TRANSLATION[@const='BTN_QUICK_UPLOAD_FILE']"/></a>
+                            <span> | </span>
+                            <a href="#" id="insert_attachment" onclick="return false;"><xsl:value-of select="$TRANSLATION[@const='BTN_ADD_FILE']"/></a>
                             <script type="text/javascript">
                                 Energine.translations.extend({
                                 BTN_DEL_FILE: '<xsl:value-of select="$TRANSLATION[@const='BTN_DEL_FILE']"/>',

@@ -1107,7 +1107,7 @@ class Grid extends DBDataSet {
             $am->createAttachmentTab($data);
 
             //Ссылки на добавление и удаление файла
-            $this->addTranslation('BTN_ADD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
+            $this->addTranslation('BTN_ADD_FILE', 'BTN_QUICK_UPLOAD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
         }
 
         if ($this->dbh->tableExists($this->getTableName() . TagManager::TAGS_TABLE_SUFFIX)) {

@@ -10,7 +10,7 @@
             <field name="news_is_active"/>
         </fields>
         <javascript>
-            <behavior name="GridManager"/>
+            <behavior name="FeedToolbar"/>
         </javascript>
         <toolbar>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>

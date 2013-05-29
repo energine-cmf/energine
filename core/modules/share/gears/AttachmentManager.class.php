@@ -16,7 +16,7 @@
  * @author d.pavka@gmail.com
  */
 class AttachmentManager extends DBWorker {
-    const ATTACH_TABLE_PREFIX = '_uploads';
+    const ATTACH_TABLE_SUFFIX = '_uploads';
     /**
      * Имя базовой таблицы аплоадсов
      */
@@ -59,7 +59,7 @@ class AttachmentManager extends DBWorker {
      */
     public function __construct(DataDescription $dataDescription, Data $data, $tableName) {
         parent::__construct();
-        if ($this->isActive = $this->dbh->tableExists($this->tableName = $tableName . self::ATTACH_TABLE_PREFIX)) {
+        if ($this->isActive = $this->dbh->tableExists($this->tableName = $tableName . self::ATTACH_TABLE_SUFFIX)) {
             $this->dataDescription = $dataDescription;
             $this->data = $data;
 

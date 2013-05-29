@@ -21,6 +21,9 @@ class TagManager extends DBWorker {
      * Имя таблицы тегов
      */
     const TAG_TABLENAME = 'share_tags';
+
+    const TAGS_TABLE_SUFFIX = '_tags';
+
     /**
      * Разделитель тегов
      */

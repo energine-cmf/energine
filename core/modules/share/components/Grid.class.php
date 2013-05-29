@@ -153,7 +153,7 @@ class Grid extends DBDataSet {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
         $this->addToolbarTranslations();
-        $this->addAttFilesField($this->getTableName());
+        $this->linkExtraManagers($this->getTableName());
     }
 
     /**
@@ -174,7 +174,7 @@ class Grid extends DBDataSet {
         $this->setFilter($id);
         $this->prepare();
         $this->addToolbarTranslations();
-        $this->addAttFilesField($this->getTableName());
+        $this->linkExtraManagers($this->getTableName());
     }
 
     /**
@@ -1097,8 +1097,8 @@ class Grid extends DBDataSet {
      * @access protected
      * @return void
      */
-    protected function addAttFilesField($tableName, $data = false) {
-        if ($this->dbh->tableExists($this->getTableName() . AttachmentManager::ATTACH_TABLE_PREFIX)) {
+    protected function linkExtraManagers($tableName, $data = false) {
+        if ($this->dbh->tableExists($this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX)) {
             $am = new AttachmentManager(
                 $this->getDataDescription(),
                 $this->getData(),
@@ -1108,6 +1108,12 @@ class Grid extends DBDataSet {
 
             //Ссылки на добавление и удаление файла
             $this->addTranslation('BTN_ADD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
+        }
+
+        if ($this->dbh->tableExists($this->getTableName() . TagManager::TAGS_TABLE_SUFFIX)) {
+            $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
+            $tm->createFieldDescription();
+            $tm->createField();
         }
     }
 

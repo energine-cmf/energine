@@ -47,7 +47,7 @@ var FileRepoForm = new Class({
         if (this.thumbs)
             this.thumbs.each(function (el) {
                 el.removeClass('hidden');
-                el.setProperty('src', Energine.resizer + 'w' + el.getProperty('width') + '-h' + el.getProperty('height') + '/' + tmpFileName);
+                el.setProperty('src', Energine.base +'resizer/'+ 'w' + el.getProperty('width') + '-h' + el.getProperty('height') + '/' + tmpFileName);
             });
     },
     xhrFileUpload: function(field_name, files, response_callback) {

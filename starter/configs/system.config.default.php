@@ -149,6 +149,8 @@ return array(
             'repo/ftpro' => 'FileRepositoryFTPRO',
             'repo/ro' => 'FileRepositoryRO',
         ),
+        // папка по-умолчанию для быстрой загрузки файлов
+        'quick_upload_path' => 'uploads/public',
         // конфигурация для FTP репозитариев
         'ftp' => array(
             // конфигурация FTP доступа для репозитария с share_uploads.upl_path uploads/ftp

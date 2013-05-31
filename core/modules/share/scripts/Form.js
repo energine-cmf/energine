@@ -134,6 +134,38 @@ var Form = new Class({
         }
         lnk.hide();
     },
+
+    processFileResult: function(result, button) {
+        var image, btnDF;
+        if (result) {
+
+            button = $(button);
+            $(button.getProperty('link')).value = result['upl_path'];
+
+            image = ($(button.getProperty('preview')).get('tag') == 'img')
+                ? $(button.getProperty('preview'))
+                : $(button.getProperty('preview')).getElement('img');
+            if (image) {
+                var src;
+                if (result['upl_internal_type'] == 'image') {
+                    src = Energine.media + result['upl_path'];
+                }
+                else if (result['upl_internal_type'] == 'video') {
+                    src = Energine.resizer + 'w0-h0/' + result['upl_path'];
+                }
+                else {
+                    src = Energine.static + 'images/icons/icon_undefined.gif';
+                }
+
+                image.setProperty('src', src);
+                $(button.getProperty('preview')).setProperty('href', Energine.media + result['upl_path']).show();
+            }
+            if (button.getNext('.lnk_clear')) {
+                button.getNext('.lnk_clear').show('inline');
+            }
+        }
+    },
+
     openFileLib:function (button) {
         var path = $($(button).getProperty('link')).get('value');
         if (path == '') {
@@ -143,35 +175,53 @@ var Form = new Class({
             url:this.singlePath + 'file-library/',
             extraData:path,
             onClose:function (result) {
-                var image, btnDF;
-                if (result) {
+                this.processFileResult(result, button);
+            }.bind(this)
+        });
+    },
+    openQuickUpload:function (button) {
+        var path = $($(button).getProperty('link')).get('value');
+        if (path == '') {
+            path = null;
+        }
+        var quick_upload_path = $(button).getProperty('quick_upload_path');
+        var quick_upload_pid = $(button).getProperty('quick_upload_pid');
+        var overlay = this._getOverlay();
+        var processResult = this.processFileResult;
 
-                    button = $(button);
-                    $(button.getProperty('link')).value = result['upl_path'];
+        ModalBox.open({
+            url:this.singlePath + 'file-library/' + quick_upload_pid + '/add',
+            extraData:path,
+            onClose:function (result) {
+                if (result && result.data) {
+                    var upl_id = result.data;
 
-                    image = ($(button.getProperty('preview')).get('tag') == 'img')
-                        ? $(button.getProperty('preview'))
-                        : $(button.getProperty('preview')).getElement('img');
-                    if (image) {
-                        var src;
-                        if (result['upl_internal_type'] == 'image') {
-                            src = Energine.media + result['upl_path'];
-                        }
-                        else if (result['upl_internal_type'] == 'video') {
-                            src = Energine.resizer + 'w0-h0/' + result['upl_path'];
-                        }
-                        else {
-                            src = Energine.static + 'images/icons/icon_undefined.gif';
-                        }
-
-                        image.setProperty('src', src);
-                        $(button.getProperty('preview')).setProperty('href', Energine.media + result['upl_path']).show();
-                    }
-                    if (button.getNext('.lnk_clear')) {
-                        button.getNext('.lnk_clear').show('inline');
+                    if (upl_id) {
+                        overlay.show();
+                        new Request.JSON({
+                            'url': this.singlePath + 'file-library/' + quick_upload_pid + '/get-data/',
+                            'method': 'post',
+                            'data': {
+                                json: 1,
+                                filter: {
+                                    condition: '=',
+                                    share_uploads: {'upl_id': [upl_id]}
+                                }
+                            },
+                            'evalResponse': true,
+                            'onComplete': function(data) {
+                                if (data && data.data && data.data.length == 2) {
+                                    overlay.hide();
+                                    processResult(data.data[1], button);
+                                }
+                            }.bind(this),
+                            'onFailure': function (e) {
+                                overlay.hide();
+                            }
+                        }).send();
                     }
                 }
-            }
+            }.bind(this)
         });
     }
 });

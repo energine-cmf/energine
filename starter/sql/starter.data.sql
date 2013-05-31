@@ -1209,7 +1209,8 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (1199, 'TXT_YES'),
 (727, 'TXT_YESTERDAY'),
 (1534, 'TXT_YOUR_ADDRESS'),
-(642, 'TXT_YOU_ALREADY_VOTED');
+(642, 'TXT_YOU_ALREADY_VOTED'),
+(2026, 'BTN_QUICK_UPLOAD');
 
 TRUNCATE TABLE `share_lang_tags_translation`;
 INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf`) VALUES
@@ -3205,7 +3206,9 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (2024, 1, 'Значение'),
 (2024, 2, 'Значення'),
 (2025, 1, 'Выпадающий список'),
-(2025, 2, 'Випадаючий список');
+(2025, 2, 'Випадаючий список'),
+(2026, 1, 'Быстрая загрузка'),
+(2026, 2, 'Швидке завантаження');
 
 TRUNCATE TABLE `share_session`;
 TRUNCATE TABLE `share_sitemap`;

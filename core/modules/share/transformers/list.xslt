@@ -35,6 +35,11 @@
             <xsl:if test="../toolbar">
                 <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
             </xsl:if>
+            <xsl:if test="../@moveFromId">
+                <xsl:attribute name="move_from_id">
+                    <xsl:value-of select="../@moveFromId"/>
+                </xsl:attribute>
+            </xsl:if>
             <xsl:call-template name="BUILD_GRID"/>
             <xsl:if test="count($TRANSLATION[@component=$NAME])&gt;0">
                 <script type="text/javascript">

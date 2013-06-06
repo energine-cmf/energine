@@ -96,14 +96,8 @@
         				</xsl:if>
                         <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[@name!='PageEditor']">
                             <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
-                            var initComponent = function(){
+                            if($('<xsl:value-of select="$objectID"/>')){
                                 <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>($('<xsl:value-of select="$objectID"/>'));
-                            };
-                            if(!$('<xsl:value-of select="$objectID"/>')){
-                                initComponent.delay(10);
-                            }
-                            else{
-                                initComponent();
                             }
         				</xsl:for-each>
                         <xsl:if test="$COMPONENTS/javascript/behavior[@name='PageEditor']">

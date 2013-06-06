@@ -2,13 +2,7 @@
  * Загружает указанные скрипты из директории scripts.
  */
 
-var ScriptLoader = function () {
-    window.top.currentWindow = window;
-    return window.top.ScriptLoader || {
-        load: function () {
-        }
-    };
-}();
+var ScriptLoader = {load: function(){}};
 
 var isset = function (variable) {
     return ('undefined' != typeof(variable));

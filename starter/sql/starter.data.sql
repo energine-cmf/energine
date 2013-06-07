@@ -165,6 +165,7 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (3638, 1, 3),
 (3639, 1, 3),
 (3641, 1, 3),
+(3642, 1, 3),
 (80, 3, 1),
 (330, 3, 1),
 (1278, 3, 1),
@@ -183,6 +184,7 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (3631, 3, 1),
 (3639, 3, 1),
 (3641, 3, 1),
+(3642, 3, 1),
 (80, 4, 1),
 (330, 4, 1),
 (1278, 4, 1),
@@ -200,7 +202,8 @@ INSERT INTO `share_access_level` (`smap_id`, `group_id`, `right_id`) VALUES
 (3629, 4, 1),
 (3631, 4, 1),
 (3639, 4, 1),
-(3641, 4, 1);
+(3641, 4, 1),
+(3642, 4, 1);
 
 TRUNCATE TABLE `share_domain2site`;
 
@@ -3236,7 +3239,8 @@ INSERT INTO `share_sitemap` (`smap_id`, `site_id`, `brand_id`, `smap_layout`, `s
 (3637, 1, NULL, 'default.layout.xml', NULL, 'default/feedback_recipients_editor.content.xml', NULL, 3630, 'recipients', 43, NULL, NULL),
 (3638, 1, NULL, 'default.layout.xml', NULL, 'default/vote_repository.content.xml', NULL, 1275, 'polls', 12, NULL, NULL),
 (3639, 1, NULL, 'default.layout.xml', NULL, 'extfeed.content.xml', NULL, 80, 'test-feed', 14, NULL, NULL),
-(3641, 1, NULL, 'default.layout.xml', NULL, 'form.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formEditorContainer" block="alfa" widget="static"><component name="form" class="Form" module="forms"><params><param name="id">5</param>\n<param name="noCaptcha">1</param></params></component></container></container></content>', 80, 'form-example', 1, NULL, NULL);
+(3641, 1, NULL, 'default.layout.xml', NULL, 'form.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset2"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container></container>\n<container name="center" column="column" html_class="col col2 last_col"><container name="formEditorContainer" block="alfa" widget="static"><component name="form" class="Form" module="forms"><params><param name="id">5</param>\n<param name="noCaptcha">1</param></params></component></container></container></content>', 80, 'form-example', 1, NULL, NULL),
+(3642, 1, NULL, 'empty.layout.xml', NULL, 'robots_txt.content.xml', NULL, 80, 'robots.txt', 15, NULL, NULL);
 
 TRUNCATE TABLE `share_sitemap_tags`;
 INSERT INTO `share_sitemap_tags` (`smap_id`, `tag_id`) VALUES
@@ -3290,6 +3294,7 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (3638, 1, 'Опросы', NULL, NULL, NULL, NULL, 0),
 (3639, 1, 'Список проектов', 'Пример списка, построенного на базе ExtendedFeed (смотрит в таблицу apps_feed)', NULL, NULL, NULL, 0),
 (3641, 1, 'Пример формы', NULL, NULL, NULL, NULL, 0),
+(3642, 1, 'Robots.txt', NULL, NULL, NULL, NULL, 0),
 (80, 2, 'Головна сторінка', NULL, NULL, NULL, NULL, 0),
 (330, 2, 'Увійти', NULL, 'Вхід', NULL, NULL, 0),
 (1275, 2, 'Адміністративна частина', NULL, NULL, NULL, NULL, 0),
@@ -3313,7 +3318,8 @@ INSERT INTO `share_sitemap_translation` (`smap_id`, `lang_id`, `smap_name`, `sma
 (3637, 2, 'Редактор получателей', NULL, NULL, NULL, NULL, 0),
 (3638, 2, 'Опросы', NULL, NULL, NULL, NULL, 0),
 (3639, 2, 'Список проектов', 'Пример списка, построенного на базе ExtendedFeed (смотрит в таблицу apps_feed)', NULL, NULL, NULL, 0),
-(3641, 2, 'Приклад форми', NULL, NULL, NULL, NULL, 0);
+(3641, 2, 'Приклад форми', NULL, NULL, NULL, NULL, 0),
+(3642, 2, 'Robots.txt', NULL, NULL, NULL, NULL, 0);
 
 TRUNCATE TABLE `share_sitemap_uploads`;
 TRUNCATE TABLE `share_sites`;

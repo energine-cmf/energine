@@ -37,7 +37,6 @@ class GoogleSitemap extends SitemapTree
      * Максимальное кол - во видео в файле сайт мап
      * по умолчанию.
      */
-
     const DEFAULT_MAX_VIDEOS = 40000;
 
     /**

@@ -22,9 +22,8 @@ class Builder extends AbstractBuilder {
      * Title
      *
      * @var string
-     * @access private
      */
-    private $title;
+    protected $title;
 
     /**
      * Конструктор класса.

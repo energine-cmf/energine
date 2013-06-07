@@ -303,49 +303,6 @@ final class Setup {
         $this->updateSitesTable();
         $this->linkerAction();
         $this->scriptMapAction();
-        $this->robotsAction();
-    }
-
-    /**
-     * Проверка конфигурации модуля СЕО
-     *
-     * Для правильной работы он должен иметь
-     * следующие параметры:
-     * -> sitemapSegment - имя сегмента карты сайта (по умолчанию google-sitemap)
-     * -> sitemapTemplate - имя файла шаблона карты сайта (по умолчанию google_sitemap)
-     * -> maxVideosInMap - максимальное количество записей
-     *   в карте расположения видео сайта (по умолчанию 5000)
-     *
-     * @return boolean
-     */
-    private function isSeoConfigured() {
-        if (!array_key_exists('seo', $this->config)) {
-            return false;
-        }
-        foreach (array('sitemapSegment', 'sitemapTemplate', 'maxVideosInMap') as $seoParam) {
-            if (!array_key_exists($seoParam, $this->config['seo'])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Генерация файла robots.txt
-     * Создаем ссылки на sitemap всех поддоменов
-     *
-     */
-    private function robotsAction() {
-        if (!$this->isSeoConfigured()) {
-            $this->title('Не сконфигурирован СЕО модуль. Robots.txt генерируется для запрета индексации сайта.');
-            $this->generateRobotsTxt(false);
-            return;
-        }
-        $this->checkDBConnection();
-        $this->title('Генерация файла robots.txt');
-        $this->generateRobotsTxt();
-        $this->title('Добавление информации о сегменте ' . $this->config['seo']['sitemapSegment']);
-        $this->createSitemapSegment();
     }
 
     /**
@@ -372,34 +329,6 @@ final class Setup {
                     . '(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\') FROM `user_groups` ');
             $this->dbConnect->query('INSERT INTO share_sitemap_translation(smap_id,lang_id,smap_name,smap_is_disabled) '
                     . 'VALUES (' . $smIdInfo[0] . ',(SELECT lang_id FROM `share_languages` WHERE lang_default),\'Google sitemap\',0)');
-        }
-    }
-
-    /**
-     * Заполняем файл robots.txt ссылками на sitemaps
-     * Sitemap: http://example.com/sm.xml
-     * Если не сконфигурирован модуль СЕО, то запрещаем индексацию сайта.
-     *
-     * @param $allowRobots
-     * @throws Exception
-     */
-    private function generateRobotsTxt($allowRobots = true) {
-        $file = implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, 'robots.txt'));
-        if (!is_writable(HTDOCS_DIR)) {
-            throw new Exception('Невозможно создать файл robots.txt в ' . HTDOCS_DIR);
-        }
-        if (!$allowRobots) {
-            file_put_contents($file, 'User-agent: *' . PHP_EOL . 'Disallow: /' . PHP_EOL);
-            return;
-        }
-        file_put_contents($file, 'User-agent: *' . PHP_EOL . 'Allow: /' . PHP_EOL);
-        $domainsInfo = $this->dbConnect->query('SELECT ss.site_id,sd.domain_protocol,sd.domain_host,sd.domain_root FROM share_sites ss '
-                . 'INNER JOIN share_domain2site d2s ON ss.site_id = d2s.site_id '
-                . 'INNER JOIN share_domains sd ON  sd.domain_id = d2s.domain_id WHERE ss.site_is_indexed');
-        while ($domainInfo = $domainsInfo->fetch()) {
-            file_put_contents($file, 'Sitemap: ' . $domainInfo['domain_protocol'] . '://' . $domainInfo['domain_host']
-                    . $domainInfo['domain_root'] . $this->config['seo']['sitemapSegment']
-                    . PHP_EOL, FILE_APPEND);
         }
     }
 

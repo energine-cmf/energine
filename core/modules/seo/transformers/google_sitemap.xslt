@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        version="1.0">
+
     <xsl:output method="xml"
             version="1.0"
             encoding="utf-8"
@@ -10,13 +14,12 @@
     <xsl:variable name="ID" select="/document/properties/property[@name='ID']" />
 
     <xsl:template match="/">
-        <xsl:apply-templates select="//component[@class='GoogleSitemap']"></xsl:apply-templates>
+        <xsl:apply-templates select="//component[@class='GoogleSitemap']"/>
     </xsl:template>
 
     <xsl:template match="component[@class='GoogleSitemap']">
-        <urlset>
-            <xsl:attribute name="xmlns">http://www.sitemaps.org/schemas/sitemap/0.9</xsl:attribute>
-            <xsl:call-template name="TREE_BUILDER"></xsl:call-template>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <xsl:call-template name="TREE_BUILDER"/>
         </urlset>
     </xsl:template>
     
@@ -35,7 +38,7 @@
                 </xsl:if>
                 </xsl:for-each>
                 <xsl:if test="recordset">
-                    <xsl:call-template name="TREE_BUILDER"></xsl:call-template>
+                    <xsl:call-template name="TREE_BUILDER"/>
                 </xsl:if>
         </xsl:for-each>
     </xsl:template>

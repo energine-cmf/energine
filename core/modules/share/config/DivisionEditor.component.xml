@@ -107,7 +107,7 @@
             <field name="smap_pid"/>
             <field name="lang_id"/>
             <field name="site_id" type="hidden"/>
-            <field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
+            <field name="smap_segment" pattern="/^[a-z0-9\-\.]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
             <field name="smap_layout"/>
             <field name="smap_content"/>
             <!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->
@@ -144,7 +144,7 @@
             <field name="smap_pid"/>
             <field name="lang_id"/>
             <field name="site_id" type="hidden"/>
-            <field name="smap_segment" pattern="/^[a-z0-9\-]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
+            <field name="smap_segment" pattern="/^[a-z0-9\-\.]+$/" message="TXT_BAD_SEGMENT_FORMAT"/>
             <field name="smap_layout"/>
             <field name="smap_content"/>
             <!--pattern="/^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&amp;?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/" message="ERR_BAD_URL"-->

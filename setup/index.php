@@ -16,7 +16,6 @@ $acceptableActions = array(
     'install',
     'linker',
     'clearCache',
-    'robots',
     'syncUploads',
     'scriptMap'
 );

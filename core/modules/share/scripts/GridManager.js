@@ -37,7 +37,6 @@ var Grid = new Class({
                 window.addEvent('resize', this.fitGridFormSize.bind(this));
             }
         }
-
     },
 
     /*
@@ -395,6 +394,12 @@ var GridManager = new Class({
         this.singlePath = this.element.getProperty('single_template');
 
         this.mvElementId = null;
+
+        // инициализация id записи, которую будем двигать в стейте /move/
+        var move_from_id = this.element.getProperty('move_from_id');
+        if (move_from_id) {
+            this.setMvElementId(move_from_id);
+        }
     },
 
     setMvElementId: function(id) {
@@ -521,15 +526,57 @@ var GridManager = new Class({
         });
     },
 
-    move:function () {
-        if(!this.getMvElementId()) {
-            this.setMvElementId(this.grid.getSelectedRecordKey());
+    move:function (id) {
+        if(!id) {
+            id = this.grid.getSelectedRecordKey();
         }
-        else {
-            this.request(this.singlePath + this.getMvElementId() + '-' + this.grid.getSelectedRecordKey() +
-                '/move/', '', this.loadPage.pass(this.pageList.currentPage, this));
-            this.clearMvElementId();
+        this.setMvElementId(id);
+        ModalBox.open({
+            url:this.singlePath + 'move/' + id,
+            onClose: this._processAfterCloseAction.bind(this)
+        });
+    },
+
+    moveFirst: function() {
+        return this.moveTo('first', this.getMvElementId());
+    },
+
+    moveLast: function() {
+        return this.moveTo('last', this.getMvElementId());
+    },
+
+    moveAbove: function(id) {
+        if(!parseInt(id)){
+            id = this.grid.getSelectedRecordKey();
         }
+        return this.moveTo('above', this.getMvElementId(), id);
+    },
+
+    moveBelow: function(id) {
+        if(!parseInt(id)){
+            id = this.grid.getSelectedRecordKey();
+        }
+        return this.moveTo('below', this.getMvElementId(), id);
+    },
+
+    moveTo: function (dir, fromId, toId) {
+        toId = toId || '';
+        this.overlay.show();
+        this.request(this.singlePath + 'move/' + fromId + '/' + dir + '/' + toId + '/'
+            , null,
+            function () {
+                this.overlay.hide();
+                ModalBox.setReturnValue(true); // reload
+                this.close();
+            }.bind(this),
+            function (responseText) {
+                this.overlay.hide();
+            }.bind(this),
+            function (responseText) {
+                alert(responseText);
+                this.overlay.hide();
+            }.bind(this)
+        );
     },
 
     _processAfterCloseAction:function (returnValue) {

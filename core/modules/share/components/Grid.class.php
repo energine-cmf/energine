@@ -542,7 +542,7 @@ class Grid extends DBDataSet {
      */
 
     protected function loadData() {
-        if ($this->getState() == self::DEFAULT_STATE_NAME) {
+        if ($this->getState() == self::DEFAULT_STATE_NAME or $this->getState() == 'move') {
             $result = false;
         } elseif ($this->getState() == 'save') {
             if (!isset($_POST[$this->getTableName()])) {
@@ -838,40 +838,99 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Перемещает сущность на позицию выше
-     * другой выбранной сущности
+     * Выводид GRID для выбора элемента для перемещения
      *
      * @throws SystemException
-     * @access protected
-     * @return void
      */
     protected function move() {
         if (!$this->getOrderColumn()) {
             //Если не задана колонка для пользовательской сортировки то на выход
             throw new SystemException('ERR_NO_ORDER_COLUMN', SystemException::ERR_DEVELOPER);
         }
+        $id = $this->getStateParams();
+        list($id) = $id;
+        if (!$this->recordExists($id)) {
+            throw new SystemException('ERR_404', SystemException::ERR_404);
+        }
+        $this->setType(self::COMPONENT_TYPE_LIST);
+        $this->setProperty('moveFromId', $id);
+        $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
+        $this->prepare();
+
+    }
+
+    /**
+     * Перемещает запись на позицию выше заданной / ниже заданной / наверх списка / вниз списка
+     *
+     * @throws SystemException
+     * @access protected
+     * @return void
+     */
+    protected function moveTo() {
+        if (!$this->getOrderColumn()) {
+            //Если не задана колонка для пользовательской сортировки то на выход
+            throw new SystemException('ERR_NO_ORDER_COLUMN', SystemException::ERR_DEVELOPER);
+        }
         $params = $this->getStateParams();
-        list($firstItem, $secondItem) = $params;
+        list($firstItem, $direction) = $params;
 
-        if ((($firstItem = intval($firstItem)) && ($secondItem = intval($secondItem)))
-            && ($firstItem != $secondItem)
-        ) {
-            $secondItemOrderNum = $this->dbh->getScalar(
-                'SELECT ' . $this->getOrderColumn() . ' as secondItemOrderNum ' .
-                'FROM ' . $this->getTableName() . ' ' .
-                'WHERE ' . $this->getPK() . ' = ' . $secondItem
-            );
-
-            $this->dbh->beginTransaction();
-            $this->dbh->modify('UPDATE ' . $this->getTableName() . ' SET ' . $this->getOrderColumn() . ' = ' . $this->getOrderColumn()
-            . ' + 1 WHERE ' . $this->getOrderColumn() . ' >= ' . $secondItemOrderNum);
-            $this->dbh->modify(
-                QAL::UPDATE,
-                $this->getTableName(),
-                array($this->getOrderColumn() => $secondItemOrderNum),
-                array($this->getPK() => $firstItem)
-            );
-            $this->dbh->commit();
+        $allowed_directions = array('first', 'last', 'above', 'below');
+        if (in_array($direction, $allowed_directions) && $firstItem == intval($firstItem)) {
+            switch ($direction) {
+                // двигаем элемент с id=$firstItem на самый верх
+                case 'first':
+                    $oldFirstItem = (int) $this->dbh->getScalar('SELECT MIN(' . $this->getOrderColumn() . ') FROM ' . $this->getTableName() . ' LIMIT 1');
+                    if ($oldFirstItem != $firstItem) {
+                        $this->dbh->modify(
+                            QAL::UPDATE,
+                            $this->getTableName(),
+                            array($this->getOrderColumn() => $oldFirstItem - 1),
+                            array($this->getPK() => $firstItem)
+                        );
+                    }
+                    break;
+                // двигаем элемент с id=$firstItem в самый низ
+                case 'last':
+                    $oldLastItem = (int) $this->dbh->getScalar('SELECT MAX(' . $this->getOrderColumn() . ') FROM ' . $this->getTableName() . ' LIMIT 1');
+                    if ($oldLastItem != $firstItem) {
+                        $this->dbh->modify(
+                            QAL::UPDATE,
+                            $this->getTableName(),
+                            array($this->getOrderColumn() => $oldLastItem + 1),
+                            array($this->getPK() => $firstItem)
+                        );
+                    }
+                    break;
+                // двигаем элемент выше или ниже id=$secondItem
+                case 'above':
+                case 'below':
+                    $secondItem = (!empty($params[2])) ? $params[2] : null;
+                    if ($secondItem == intval($secondItem) && $firstItem != $secondItem) {
+                        $secondItemOrderNum = $this->dbh->getScalar(
+                            'SELECT ' . $this->getOrderColumn() . ' as secondItemOrderNum ' .
+                            'FROM ' . $this->getTableName() . ' ' .
+                            'WHERE ' . $this->getPK() . ' = ' . $secondItem
+                        );
+                        $this->dbh->beginTransaction();
+                        // сдвигаем все элементы выше или ниже второго id
+                        $this->dbh->select(
+                            'UPDATE ' . $this->getTableName() . ' ' .
+                            'SET ' . $this->getOrderColumn() . ' = ' .
+                            $this->getOrderColumn() . (($direction == 'below') ? ' +2 ' : ' -2 ') .
+                            'WHERE ' . $this->getOrderColumn() . (($direction == 'below') ? ' > ' : ' < ') .
+                            intval($secondItemOrderNum)
+                        );
+                        // устанавливаем новый порядок для первого id
+                        $this->dbh->modify(
+                            QAL::UPDATE,
+                            $this->getTableName(),
+                            array($this->getOrderColumn() => (($direction == 'below') ? $secondItemOrderNum + 1 : $secondItemOrderNum - 1)),
+                            array($this->getPK() => $firstItem)
+                        );
+                        $this->dbh->commit();
+                    }
+                    break;
+            }
         }
 
         $b = new JSONCustomBuilder();
@@ -956,6 +1015,8 @@ class Grid extends DBDataSet {
         $data =
             convertDBResult($this->dbh->selectRequest($request), 'neighborID');
         if ($data) {
+            $neighborID = null;
+            $neighborOrderNum = 0;
             extract(current($data));
             $this->dbh->beginTransaction();
             $this->dbh->modify(

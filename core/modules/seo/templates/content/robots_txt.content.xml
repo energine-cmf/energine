@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content>
-    <component name="robots" module="seo" class="Robots">
-        <params>
-            <param name="config">core/modules/seo/config/Robots.component.xml</param>
-            <param name="active">1</param>
-        </params>
-    </component>
+    <component name="robots" module="seo" class="Robots"/>
 </content>

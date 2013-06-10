@@ -252,7 +252,7 @@ PageEditor.BlockEditor = new Class({
         };
 
         if (el) {
-            if (Browser.ie) {
+            if (Browser.ie && el.each) {
                 el.each(parentHandler.bind(this));
             }
             el.getParents().each(parentHandler.bind(this));

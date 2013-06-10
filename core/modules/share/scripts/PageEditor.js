@@ -14,12 +14,21 @@ var PageEditor = new Class({
 
         document.addEvent('click', this.processClick.bindWithEvent(this));
 
-        window.addEvent('beforeunload', function (e) {
-            if (this.activeEditor) {
-                this.activeEditor.save(false);
-            }
-        }.bind(this));
-
+        if (Browser.opera) {
+            window.addEvent('unload', function (e) {
+                if (this.activeEditor) {
+                    this.activeEditor.save(false);
+                    window.location.href = window.location.href;
+                    return '';
+                }
+            }.bind(this));
+        } else {
+            window.addEvent('beforeunload', function (e) {
+                if (this.activeEditor) {
+                    this.activeEditor.save(false);
+                }
+            }.bind(this));
+        }
         this.attachToolbar(this.createToolbar());
 
     },
@@ -130,12 +139,12 @@ PageEditor.BlockEditor = new Class({
 
         if (Energine.supportContentEdit) {
             document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this.pageEditor));
-            //if (!(this.pasteArea = $('pasteArea'))) {
-            //    this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility':'hidden', 'width':'0', 'height':'0', 'font-size':'0', 'line-height':'0' }).injectInside(document.body);
-            //}
+            if (!(this.pasteArea = $('pasteArea'))) {
+                this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility':'hidden', 'width':'0', 'height':'0', 'font-size':'0', 'line-height':'0' }).injectInside(document.body);
+            }
             ////addEvent('paste' работать не захотело
-            //if (Browser.Engine.trident) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
-            //else if (Browser.Engine.gecko || Browser.Engine.presto) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
+            if (Browser.Engine.trident) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
+            else if (Browser.Engine.gecko || Browser.Engine.presto) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
         }
         //this.switchToViewMode = this.pageEditor.switchToViewMode;
         this.overlay = new Overlay();
@@ -255,12 +264,12 @@ PageEditor.BlockEditor = new Class({
     onSelectionChanged: function(e)
     {
         this.parent();
-
         if (!this.isActive) return false;
 
         this.pageEditor.toolbar.allButtonsUp();
 
         var el = this.selection.getNode();
+
         if (el == this.area) return;
 
         var tags = [];
@@ -269,7 +278,7 @@ PageEditor.BlockEditor = new Class({
         {
             for (var i=0; i<els.length; i++)
             {
-                if (!els[i].tagName) return;
+                if (!els[i] || !els[i].tagName) return;
                 var tag = els[i].tagName.toLowerCase();
                 tags.push(tag);
                 el = els[i];
@@ -293,17 +302,12 @@ PageEditor.BlockEditor = new Class({
                     this.pageEditor.toolbar.getControlById('left').down();
                 }
 
-                /*if (tag == 'h1') this.formatSelect('H1');
-                 if (tag == 'h2') this.formatSelect('H2');
-                 if (tag == 'h3') this.formatSelect('H3');
-                 if (tag == 'h4') this.formatSelect('H4');
-                 if (tag == 'h5') this.formatSelect('H5');
-                 if (tag == 'h6') this.formatSelect('H6');
-                 if (tag == 'pre') this.formatSelect('PRE');
-                 if (tag == 'address') this.formatSelect('ADDRESS');*/
-
+                if (['h1','h2','h3','h4','h5','h6','pre','address'].contains(tag)) {
+                    this.pageEditor.toolbar.getControlById('selectFormat').setSelected(tag.toUpperCase());
+                } else {
+                    this.pageEditor.toolbar.getControlById('selectFormat').select.getElements('option')[0].setProperty('selected', 'selected');
+                }
             }
         }
-        //console.log(tags);
     }
 });

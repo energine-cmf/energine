@@ -457,8 +457,8 @@ Toolbar.Select = new Class({
         if (this.options[itemId]) {
             //Элемент уже построен
             if (this.select) {
-                this.select.getElement('option[value=' + itemId +
-                    ']').setProperty('selected', 'selected');
+                this.select.getElement('option[value="' + itemId +
+                    '"]').setProperty('selected', 'selected');
             }
             else {
 

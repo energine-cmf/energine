@@ -46,12 +46,15 @@ var RichEditor = new Class({
         if (this.busy) return;
         this.busy = true;
 
+        showUI = showUI || false;
+        value = value || null;
+
         if (Browser.Engine.gecko) {
             document.execCommand('styleWithCSS', false, true);
         }
 
         try {
-            document.execCommand(cmd, (showUI || false), (value || null));
+            document.execCommand(cmd, showUI, value);
         }
         catch (e) {
         }
@@ -105,7 +108,9 @@ var RichEditor = new Class({
     },
 
     imageManager:function () {
+
         this.stored_selection = this.selection.storeCurrentSelection();
+
         var n = this.selection.getNode();
         if (n && n.tagName.toLowerCase() == 'img') {
             this.insertImage({
@@ -128,11 +133,16 @@ var RichEditor = new Class({
     },
 
     insertImageURL:function () {
-        this.action('insertImage');
+        var url = prompt("URL:");
+        if (url) {
+            this.action('insertImage', false, url);
+        }
     },
 
     fileLibrary:function () {
+
         this.stored_selection = this.selection.storeCurrentSelection();
+
         ModalBox.open({
             url: this.area.getProperty('single_template') + 'file-library',
             onClose: this.insertFileLink.bind(this)
@@ -141,6 +151,7 @@ var RichEditor = new Class({
 
     // private methods
     insertImage:function (imageData) {
+
         if (!imageData) return;
 
         if (this.stored_selection) {
@@ -153,7 +164,7 @@ var RichEditor = new Class({
 
                 if (!image) return;
 
-                image.filename = Energine.media + image.filename;
+                image.filename = ((image.filename.indexOf('http://') != -1) ? Energine.media : '') + image.filename;
 
                 var imgStr = '<img src="'
                     + image.filename + '" width="'
@@ -187,50 +198,34 @@ var RichEditor = new Class({
 
     insertFileLink:function (data) {
 
-        if (!data) return;
-
         if (this.stored_selection) {
-            this.restoreSelection(this.stored_selection);
+            this.selection.restoreSelection(this.stored_selection);
         }
+
+        if (!data) return;
 
         var filename = data['upl_path'];
 
         var text = this.selection.getText();
 
-        this.selection.insertContent('<a href="' + filename + '">' + text + '</a>');
+        this.selection.insertContent('<a href="' + filename + '">' + ((text) ? text : filename) + '</a>');
 
         this.dirty = true;
 
     },
 
-    /*
     insertExtFlash:function () {
-        this.currentRange = false;
-        if (Energine.supportContentEdit)
-            this.currentRange = this._getSelection().createRange();
+
+        this.stored_selection = this.selection.storeCurrentSelection();
 
         ModalBox.open({
             onClose:function (result) {
                 if (result && result.result) {
                     result = result.result;
-                    if (this.currentRange.select)
-                        this.currentRange.select();
+                    if (this.stored_selection) this.selection.restoreSelection(this.stored_selection);
+                    this.selection.insertContent(result);
+                    this.dirty = true;
 
-                    if (this.validateParent(this.currentRange)) {
-                        // IE
-                        if (this.currentRange.pasteHTML) {
-                            if (this.currentRange.text != '') {
-                                this.currentRange.pasteHTML(result);
-                            } else {
-                                this.currentRange.pasteHTML(result);
-                            }
-                        }
-                        // FF
-                        else {
-                            document.execCommand('inserthtml', false, result);
-                        }
-                        this.dirty = true;
-                    }
                 }
             }.bind(this),
             'form':{
@@ -245,25 +240,6 @@ var RichEditor = new Class({
         });
     },
 
-    processPaste:function (event) {
-        var selection = this._getSelection();
-
-        var orig_tr = selection.createRange();
-        var new_tr = document.body.createTextRange();
-
-        this.pasteArea.innerHTML = '';
-        new_tr.moveToElementText(this.pasteArea);
-        new_tr.select();
-        document.execCommand('paste', false, null);
-        orig_tr.select();
-
-        orig_tr.pasteHTML(this.cleanMarkup(this.area
-            .getProperty('componentPath'),
-            this.pasteArea.innerHTML, true));
-
-        this.pasteArea.innerHTML = '';
-    },
-
     processPasteFF:function (event) {
         (function () {
             this.area.innerHTML = this.cleanMarkup(this.area
@@ -272,7 +248,7 @@ var RichEditor = new Class({
 
         }).delay(300, this);
     },
-*/
+
     cleanMarkup:function (path, data, aggressive) {
         var result;
         new Request({
@@ -304,7 +280,7 @@ RichEditor.Selection = new Class({
     },
 
     getSelection: function(){
-        this.win.focus();
+        //this.win.focus();
         return (this.win.getSelection) ? this.win.getSelection() : this.win.document.selection;
     },
 

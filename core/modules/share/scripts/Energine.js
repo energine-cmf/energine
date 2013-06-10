@@ -23,8 +23,7 @@ var Energine = {
         }
     },
     forceJSON: false,
-    supportContentEdit: Browser.ie || Browser.firefox ||
-        Browser.opera || Browser.chrome
+    supportContentEdit: true
 }
 Energine.request = {
     request: function (uri, data, onSuccess, onUserError, onServerError, method) {

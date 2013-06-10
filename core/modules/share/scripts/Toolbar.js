@@ -148,6 +148,15 @@ var Toolbar = new Class({
         return this;
     },
 
+    allButtonsUp: function() {
+        this.controls.each(function (control) {
+            if (control instanceof Toolbar.Button) {
+                control.up();
+            }
+        });
+        return this;
+    },
+
     // Private methods:
 
     _callAction:function (action, data) {
@@ -237,6 +246,17 @@ Toolbar.Button = new Class({
         if (!this.properties.disabled) {
             this.toolbar._callAction(this.properties.action, data);
         }
+    },
+    down: function() {
+        this.element.addClass('pressed');
+        return this;
+    },
+    up: function() {
+        this.element.removeClass('pressed');
+        return this;
+    },
+    isDown: function() {
+        return this.element.hasClass('pressed');
     },
     build:function () {
         this.parent();

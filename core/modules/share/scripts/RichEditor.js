@@ -1,186 +1,128 @@
 ScriptLoader.load('ModalBox');
+
 var RichEditor = new Class({
 
-    dirty:false,
-    fallback_ie:false,
-    stored_selection: false,
+    dirty: false,
+    selection: null,
+    stored_selection: null,
+    busy: false,
 
     initialize:function (area) {
         this.area = $(area);
         this.isActive = false;
-        //Текущий выделенный объект
-        //Используется для хранения информации о выделенном имидже для его редактирования
-        this.selectedObject = false;
+        this.selection = new RichEditor.Selection(window);
     },
-    monitorElements:function () {
-        this.area.getElements('*').removeEvents('click');
 
-        //если редактор активизирован - отменяем всплытие
-        //Для всех имеджей при клике(выделении) сохраняем инфу в selectedObject
-        //для всех остальных елементов - очищаем selectedObject
+    monitorElements:function () {
+
+        this.area.getElements('*').removeEvents('click');
+        this.area.removeEvents('keyup');
+        this.area.removeEvents('mouseup');
+
         var monitorFunction = function (event) {
             if (this.isActive) {
-                var element = $(event.target);
-                if (element.get('tag') == 'img') {
-                    this.selectedObject = element;
-                }
-                else {
-                    this.selectedObject = false;
-                }
                 event.stopPropagation();
             }
         }.bind(this);
+
         this.area.getElements('*').addEvent('click', monitorFunction);
+        this.area.getElements('*').addEvent('click', this.onSelectionChanged.bind(this));
+        this.area.addEvent('keyup', this.onSelectionChanged.bind(this));
+        this.area.addEvent('mouseup', this.onSelectionChanged.bind(this));
     },
+
     activate:function () {
         this.isActive = this.area.contentEditable = true;
         this.monitorElements();
+        this.onSelectionChanged(false);
     },
+
     deactivate:function () {
         this.isActive = this.area.contentEditable = false;
     },
-    validateParent:function (range) {
-        var element = $(range.parentElement()) || null;
-        while ($type(element) == 'element' && element != this.area) {
-            element = element.getParent();
-        }
-        return (element == this.area);
-    },
+
     action:function (cmd, showUI, value) {
-        if (/* Browser.Engine.gecko || */this.fallback_ie)
-            return this.fallback(cmd);
-        var selection = this._getSelection();
-        if (!Energine.supportContentEdit || selection.type == 'Control')
-            return;
+
+        if (this.busy) return;
+        this.busy = true;
 
         if (Browser.Engine.gecko) {
-            document.execCommand('styleWithCSS', false, false);
+            document.execCommand('styleWithCSS', false, true);
         }
 
-        var range = selection.createRange();
-        if (this.validateParent(range)) {
-            if (isset(range.execCommand))
-                range.execCommand(cmd, (showUI || false), value);
-            else {
-                if ((cmd == 'CreateLink') || (cmd == 'insertImage')) {
-                    value = prompt("Enter a URL:", "http://");
-                    showUI = false;
-                }
-                try {
-                    document.execCommand(cmd, (showUI || false), value);
-                }
-                catch (e) {
-                }
-
-            }
-            this.dirty = true;
+        try {
+            document.execCommand(cmd, (showUI || false), (value || null));
         }
-    },
-
-    fallback:function (cmd) {
-        switch (cmd) {
-            case 'Bold' :
-                this.wrapSelectionWith('strong');
-                break;
-            case 'Italic' :
-                this.wrapSelectionWith('em');
-                break;
-            case 'InsertOrderedList' :
-                this.wrapSelectionWith('ol');
-                break;
-            case 'InsertUnorderedList' :
-                this.wrapSelectionWith('ul');
-                break;
-            case 'CreateLink' :
-                this.wrapSelectionWith('a', 'href="'
-                    + window.prompt('URL') + '"');
-                break;
-            case 'JustifyLeft' :
-                this
-                    .wrapSelectionWith('p',
-                    'style="text-align: left;"');
-                break;
-            case 'JustifyCenter' :
-                this.wrapSelectionWith('p',
-                    'style="text-align: center;"');
-                break;
-            case 'JustifyRight' :
-                this.wrapSelectionWith('p',
-                    'style="text-align: right;"');
-                break;
-            case 'JustifyFull' :
-                this.wrapSelectionWith('p',
-                    'style="text-align: justify;"');
-                break;
-            default : // not used
+        catch (e) {
         }
-    },
-    replaceSelectionWith:function (html) {
-        var sel = this.textarea.getSelectedRange();
-        this.textarea.value = this.textarea.value.substr(0, sel.start)
-            + html + this.textarea.value.substr(sel.end);
-    },
 
-    wrapSelectionWith:function (tagName, attrs) {
-        attrs = (attrs ? ' ' + attrs : '');
-        this.textarea.insertAroundCursor({before:'<' + tagName + attrs +
-            '>', defaultMiddle:'', after:'</' + tagName + '>'});
+        this.dirty = true;
+        this.busy = false;
+
+        this.onSelectionChanged(false);
     },
 
     bold:function () {
         this.action('Bold');
     },
+
     italic:function () {
         this.action('Italic');
     },
+
     olist:function () {
         this.action('InsertOrderedList');
     },
+
     ulist:function () {
         this.action('InsertUnorderedList');
     },
+
     link:function () {
-        this.action('CreateLink', true);
+        var link = prompt('URL:', 'http://');
+        if (link) {
+            var text = this.selection.getText() || link;
+            var a = new Element('a', {href: link, html: text});
+            this.selection.insertContent(new Element('div').adopt(a).get('html'));
+            this.onSelectionChanged(false);
+        }
     },
+
     alignLeft:function () {
         this.action('JustifyLeft');
     },
+
     alignCenter:function () {
         this.action('JustifyCenter');
     },
+
     alignRight:function () {
         this.action('JustifyRight');
     },
+
     alignJustify:function () {
         this.action('JustifyFull');
     },
 
     imageManager:function () {
-        this.currentRange = false;
-
-        this.stored_selection = this.storeCurrentSelection();
-
-        if (Energine.supportContentEdit && !this.fallback_ie) {
-            this.currentRange = this._getSelection().createRange();
-        }
-
-        if (!this.selectedObject) {
-            ModalBox.open({
-                url:this.area.getProperty('single_template') + 'file-library/image/',
-                onClose:this.insertImage.bind(this)
-            });
-        }
-        else {
+        this.stored_selection = this.selection.storeCurrentSelection();
+        var n = this.selection.getNode();
+        if (n && n.tagName.toLowerCase() == 'img') {
             this.insertImage({
-                'upl_path':this.selectedObject.getProperty('src'),
-                'upl_width':this.selectedObject.getProperty('width'),
-                'upl_height':this.selectedObject.getProperty('height'),
-                'align':this.selectedObject.getProperty('align'),
-                'upl_title':this.selectedObject.getProperty('alt'),
-                'margin-top':this.selectedObject.getStyle('margin-top').toInt(),
-                'margin-bottom':this.selectedObject.getStyle('margin-bottom').toInt(),
-                'margin-left':this.selectedObject.getStyle('margin-left').toInt(),
-                'margin-right':this.selectedObject.getStyle('margin-right').toInt()
+                'upl_path': n.getProperty('src'),
+                'upl_width': n.getProperty('width'),
+                'upl_height': n.getProperty('height'),
+                'align': n.getProperty('align'),
+                'upl_title': n.getProperty('alt'),
+                'margin-top': n.getStyle('margin-top').toInt(),
+                'margin-bottom': n.getStyle('margin-bottom').toInt(),
+                'margin-left': n.getStyle('margin-left').toInt(),
+                'margin-right': n.getStyle('margin-right').toInt()
+            });
+        } else {
+            ModalBox.open({
+                url: this.area.getProperty('single_template') + 'file-library/image/',
+                onClose: this.insertImage.bind(this)
             });
         }
     },
@@ -190,156 +132,87 @@ var RichEditor = new Class({
     },
 
     fileLibrary:function () {
-
-        this.stored_selection = this.storeCurrentSelection();
-
-        this.currentRange = false;
-        if (Energine.supportContentEdit && !this.fallback_ie)
-            this.currentRange = this._getSelection().createRange();
-
+        this.stored_selection = this.selection.storeCurrentSelection();
         ModalBox.open({
-            url:this.area.getProperty('single_template')
-                + 'file-library',
-            onClose:this.insertFileLink.bind(this)
+            url: this.area.getProperty('single_template') + 'file-library',
+            onClose: this.insertFileLink.bind(this)
         });
     },
 
     // private methods
     insertImage:function (imageData) {
-        if (!imageData)
-            return;
+        if (!imageData) return;
 
         if (this.stored_selection) {
-            this.restoreSelection(this.stored_selection);
+            this.selection.restoreSelection(this.stored_selection);
         }
 
         ModalBox.open({
-            url:this.area.getProperty('single_template') + 'imagemanager',
-            onClose:function (image) {
-                //TODO Fix image margins in IE
+            url: this.area.getProperty('single_template') + 'imagemanager',
+            onClose: function (image) {
+
                 if (!image) return;
 
                 image.filename = Energine.media + image.filename;
 
-                if (!Browser.chrome && !this.fallback_ie) {
-                    var imgStr = '<img src="'
-                        + image.filename + '" width="'
-                        + image.width + '" height="'
-                        + image.height + '" align="'
-                        + image.align + '" alt="'
-                        + image.alt + '" border="0" style="';
-                    ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'].each(function (marginProp) {
-                        if (image[marginProp] != 0) {
-                            imgStr += marginProp + ':' + image[marginProp] +
-                                'px;';
-                        }
+                var imgStr = '<img src="'
+                    + image.filename + '" width="'
+                    + image.width + '" height="'
+                    + image.height + '" align="'
+                    + image.align + '" alt="'
+                    + image.alt + '" border="0" style="';
 
-                    });
-                    imgStr += '"/>';
-                    this.restoreSelection(this.stored_selection);
-                    this.pasteHtml(imgStr);
-                    this.dirty = true;
-                    this.monitorElements();
-                    return;
-                }
-                else if (Browser.chrome) {
-                    this.currentRange.insertNode(new Element('img', {'src':image.filename, 'width':image.width, 'height':image.height, 'align':image.align, 'alt':image.alt, 'border':0}));
-                    this.dirty = true;
-                    this.monitorElements();
-                    return;
-                }
-                else if (this.fallback_ie) {
-                    this.textarea.insertAtCursor('<img src="'
-                        + image.filename
-                        + '" width="'
-                        + image.width
-                        + '" height="'
-                        + image.height
-                        + '" align="'
-                        + image.align
-                        + '" alt="'
-                        + image.alt
-                        + '" border="0" />', true);
-                    this.dirty = true;
-                    return;
+                ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'].each(function (marginProp) {
+                    if (image[marginProp] != 0) {
+                        imgStr += marginProp + ':' + image[marginProp] +
+                            'px;';
+                    }
+                });
+
+                imgStr += '"/>';
+
+                if (this.stored_selection) {
+                    this.selection.restoreSelection(this.stored_selection);
                 }
 
-                this.currentRange.select();
-                if (this.validateParent(this.currentRange)) {
-                    var imgStr = '<img src="'
-                        + image.filename + '" width="'
-                        + image.width + '" height="'
-                        + image.height + '" align="'
-                        + image.align + '" alt="'
-                        + image.alt + '" border="0" />';
-                    this.currentRange.pasteHTML(imgStr);
-                    this.dirty = true;
-                    this.monitorElements();
-                }
+                this.selection.insertContent(imgStr);
+
+                this.dirty = true;
+                this.monitorElements();
 
             }.bind(this),
-            extraData:imageData
+            extraData: imageData
         });
     },
 
     insertFileLink:function (data) {
-        if (!data)
-            return;
+
+        if (!data) return;
 
         if (this.stored_selection) {
             this.restoreSelection(this.stored_selection);
         }
 
         var filename = data['upl_path'];
-        if (this.fallback_ie) {
-            this.textarea.insertAtCursor(
-                '<a href="' + filename + '">' + data['upl_name'] +
-                    '</a>', true);
-            return;
-        }
-        if (this.currentRange.select)
-            this.currentRange.select();
 
-        if (this.validateParent(this.currentRange)) {
-            // IE
-            if (this.currentRange.pasteHTML) {
-                if (this.currentRange.text != '') {
-                    this.currentRange.pasteHTML('<a href="' + filename
-                        + '">' + this.currentRange.text + '</a>');
-                } else {
-                    this.currentRange.pasteHTML('<a href="' + filename
-                        + '">' + filename + '</a>');
-                }
-            }
-            // FF
-            else {
-                var str;
-                if (this.currentRange.toString())
-                    str = '<a href="' + filename + '">'
-                        + this.currentRange.toString() + '</a>';
-                else
-                    str = '<a href="' + filename + '">' + filename
-                        + '</a>';
+        var text = this.selection.getText();
 
-                document.execCommand('inserthtml', false, str);
-            }
-            this.dirty = true;
-        }
+        this.selection.insertContent('<a href="' + filename + '">' + text + '</a>');
+
+        this.dirty = true;
+
     },
 
+    /*
     insertExtFlash:function () {
         this.currentRange = false;
-        if (Energine.supportContentEdit && !this.fallback_ie)
+        if (Energine.supportContentEdit)
             this.currentRange = this._getSelection().createRange();
 
         ModalBox.open({
             onClose:function (result) {
                 if (result && result.result) {
                     result = result.result;
-                    if (this.fallback_ie) {
-                        this.textarea.insertAtCursor(result, true);
-                        return;
-                    }
                     if (this.currentRange.select)
                         this.currentRange.select();
 
@@ -367,8 +240,6 @@ var RichEditor = new Class({
                     'type':'textarea',
                     'title':Energine.translations.get('FIELD_EMBED_CODE')
                 }
-                /*,
-                 'toolbar':toolbar*/
 
             }
         });
@@ -401,7 +272,7 @@ var RichEditor = new Class({
 
         }).delay(300, this);
     },
-
+*/
     cleanMarkup:function (path, data, aggressive) {
         var result;
         new Request({
@@ -418,60 +289,162 @@ var RichEditor = new Class({
 
     changeFormat:function (control) {
         var selectedOption = control.select.value;
-        if (selectedOption == 'reset') {
-            document.execCommand("FormatBlock", false, '<P>');
-        } else {
-            document.execCommand("FormatBlock", false, '<'
-                + selectedOption + '>');
-        }
+        var tag = (selectedOption == 'reset') ? '<P>' : '<' + selectedOption + '>';
+        this.action("FormatBlock", false, tag);
         control.select.value = '';
     },
 
-    _getSelection:function () {
-        var selection = (document.selection || window.getSelection());
+    onSelectionChanged: function(e) {}
+});
 
-        if (!isset(selection.type)) {
-            selection.type = 'Text';
-        }
+RichEditor.Selection = new Class({
 
-        if (!isset(selection.createRange)) {
-            selection.createRange = function () {
-                var range = this.getRangeAt(0);
-
-                range.parentElement = function () {
-                    // var result = this.startContainer;
-                    var result = this.commonAncestorContainer;
-                    if (result.nodeType == 3) {
-                        result = result.parentNode;
-                    }
-                    return result;
-                };
-
-                return range;
-            };
-        }
-        return selection;
+    initialize: function(win){
+        this.win = win;
     },
 
-    // кросс-браузерный метод получения range для selection
-    _getRange: function(selection) {
-        return (selection.getRangeAt) ? selection.getRangeAt(0) : ((selection.createRange) ? selection.createRange() : null);
+    getSelection: function(){
+        this.win.focus();
+        return (this.win.getSelection) ? this.win.getSelection() : this.win.document.selection;
     },
 
-    // активирует текущий редактируемый контейнер, если по какой-то причине он потерял фокус
-    // (например при открытии диалога)
-    _setActiveMode: function() {
+    getRange: function(){
+        var s = this.getSelection();
+
+        if (!s) return null;
+
         try {
-            this.area.focus();
-            this.area.setActive();
-        } catch (e) { }
+            return s.rangeCount > 0 ? s.getRangeAt(0) : (s.createRange ? s.createRange() : null);
+        } catch(e) {
+            // IE bug when used in frameset
+            return this.doc.body.createTextRange();
+        }
     },
 
-    // возвращает Element из текущего html кода
-    _getNodeFromHtml: function(html) {
-        var temp = new Element('div').set('html', html);
-        var els = temp.getElements('*');
-        return els[0];
+    setRange: function(range){
+        if (range.select){
+            Function.attempt(function(){
+                range.select();
+            });
+        } else {
+            var s = this.getSelection();
+            if (s.addRange){
+                s.removeAllRanges();
+                s.addRange(range);
+            }
+        }
+    },
+
+    selectNode: function(node, collapse){
+        var r = this.getRange();
+        var s = this.getSelection();
+
+        if (r.moveToElementText){
+            Function.attempt(function(){
+                r.moveToElementText(node);
+                r.select();
+            });
+        } else if (s.addRange){
+            collapse ? r.selectNodeContents(node) : r.selectNode(node);
+            s.removeAllRanges();
+            s.addRange(r);
+        } else {
+            s.setBaseAndExtent(node, 0, node, 1);
+        }
+
+        return node;
+    },
+
+    isCollapsed: function(){
+        var r = this.getRange();
+        if (r.item) return false;
+        return r.boundingWidth == 0 || this.getSelection().isCollapsed;
+    },
+
+    collapse: function(toStart){
+        var r = this.getRange();
+        var s = this.getSelection();
+
+        if (r.select){
+            r.collapse(toStart);
+            r.select();
+        } else {
+            toStart ? s.collapseToStart() : s.collapseToEnd();
+        }
+    },
+
+    getContent: function(){
+        var r = this.getRange();
+        var body = new Element('body');
+
+        if (this.isCollapsed()) return '';
+
+        if (r.cloneContents){
+            body.appendChild(r.cloneContents());
+        } else if (r.item != undefined || r.htmlText != undefined){
+            body.set('html', r.item ? r.item(0).outerHTML : r.htmlText);
+        } else {
+            body.set('html', r.toString());
+        }
+
+        var content = body.get('html');
+        return content;
+    },
+
+    getText : function(){
+        var r = this.getRange();
+        var s = this.getSelection();
+        return this.isCollapsed() ? '' : r.text || (s.toString ? s.toString() : '');
+    },
+
+    getNode: function(){
+        var r = this.getRange();
+
+        if (!Browser.ie || Browser.version >= 9){
+            var el = null;
+
+            if (r){
+                el = r.commonAncestorContainer;
+
+                // Handle selection a image or other control like element such as anchors
+                if (!r.collapsed)
+                    if (r.startContainer == r.endContainer)
+                        if (r.startOffset - r.endOffset < 2)
+                            if (r.startContainer.hasChildNodes())
+                                el = r.startContainer.childNodes[r.startOffset];
+
+                while (typeOf(el) != 'element') el = el.parentNode;
+            }
+
+            return document.id(el);
+        }
+
+        return document.id(r.item ? r.item(0) : r.parentElement());
+    },
+
+    insertContent: function(content){
+        if (Browser.ie){
+            var r = this.getRange();
+            if (r.pasteHTML){
+                r.pasteHTML(content);
+                r.collapse(false);
+                r.select();
+            } else if (r.insertNode){
+                r.deleteContents();
+                if (r.createContextualFragment){
+                    r.insertNode(r.createContextualFragment(content));
+                } else {
+                    var doc = this.win.document;
+                    var fragment = doc.createDocumentFragment();
+                    var temp = doc.createElement('div');
+                    fragment.appendChild(temp);
+                    temp.outerHTML = content;
+                    r.insertNode(fragment);
+                }
+            }
+        } else {
+            this.win.document.execCommand('insertHTML', false, content);
+        }
     },
 
     // сохраняет и возвращает текущий selection активного контейнера
@@ -515,7 +488,6 @@ var RichEditor = new Class({
         range.select();
     },
 
-    // восстанавливает текущий selection в активном контейнере
     restoreSelection: function (storedSelection) {
         if (storedSelection) {
             if (window.getSelection) {
@@ -529,26 +501,6 @@ var RichEditor = new Class({
                 range.select();
             }
         }
-    },
-
-    // метод вставки html кода узла в текущую выделенную позицию активного контейнера
-    pasteHtml: function(html) {
-        try {
-            var s = this._getSelection();
-            var r = this._getRange(s);
-            if (Browser.ie) { // IE
-                this._setActiveMode();
-                r.pasteHTML(html);
-            } else if (Browser.firefox) { // FF
-                r.deleteContents();
-                r.insertNode(this._getNodeFromHtml(html));
-            } else { // Safari
-                r.deleteContents();
-                r.insertNode(this._getNodeFromHtml(html));
-            }
-            r.collapse(false);
-            r.select();
-        } catch (e) { }
     }
 
 });

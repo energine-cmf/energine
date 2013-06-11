@@ -18,7 +18,7 @@
  * @author dr.Pavka
  * @final
  */
-final class DivisionEditor extends Grid {
+final class DivisionEditor extends Grid implements SampleDivisionEditor {
     const TMPL_CONTENT = 'content';
     const TMPL_LAYOUT = 'layout';
     /**
@@ -934,3 +934,8 @@ final class DivisionEditor extends Grid {
 
     }
 }
+
+/**
+ * Фейковый интерфейс для создания образца
+ */
+interface SampleDivisionEditor {}

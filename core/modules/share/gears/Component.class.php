@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Класс Component.
  *
@@ -156,10 +155,21 @@ class Component extends DBWorker implements IBlock {
         $this->setProperty(
             'single_template',
             ($this->document->getProperty('single') ? $template :
-                    $template . 'single/' . $this->getName() . '/')
+                $template . 'single/' . $this->getName() . '/')
         );
         //$this->config = new ComponentConfig($this->getParam('config'), get_class($this), $this->module);
         $this->determineState();
+        //Определяем sample
+        $ifs = class_implements($this);
+
+        if (!empty($ifs)) {
+            foreach ($ifs as $iname){
+                if(strtolower(substr($iname, 0, 6)) == 'sample'){
+                    $this->setProperty('sample', substr($iname, 6));
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -252,13 +262,11 @@ class Component extends DBWorker implements IBlock {
                 //ОБрабатываем случай передачи массива-строки в параметры
                 $value = explode('|', $value);
                 $this->params[$name] =
-                        (sizeof($value) == 1) ? current($value) : $value;
-            }
-            elseif (is_array($value)) {
+                    (sizeof($value) == 1) ? current($value) : $value;
+            } elseif (is_array($value)) {
                 //$this->params[$name] = array_values($value);
                 $this->params[$name] = $value;
-            }
-            else {
+            } else {
                 $this->params[$name] = $value;
             }
         }
@@ -301,14 +309,13 @@ class Component extends DBWorker implements IBlock {
 
             // определяем действие по запрошенному URI
             $action =
-                    $this->getConfig()->getActionByURI($this->request->getPath(Request::PATH_ACTION, true));
+                $this->getConfig()->getActionByURI($this->request->getPath(Request::PATH_ACTION, true));
             if ($action !== false) {
                 $this->state = $action['name'];
                 $this->stateParams = $action['params'];
             }
 
-        }
-        // если имя действия указано в POST-запросе - используем его
+        } // если имя действия указано в POST-запросе - используем его
         elseif (isset($_POST[$this->getName()]['state'])) {
             $this->state = $_POST[$this->getName()]['state'];
         }
@@ -381,8 +388,7 @@ class Component extends DBWorker implements IBlock {
         $params = $this->getStateParams();
         if (empty($params)) {
             $this->{$this->getState()}();
-        }
-        else {
+        } else {
             call_user_func_array(array($this, $this->getState()), $params);
         }
 
@@ -516,8 +522,7 @@ class Component extends DBWorker implements IBlock {
                         true
                     )
                 );
-            }
-            else {
+            } else {
                 $el = $this->doc->createElement('result', $builderResult);
                 $el->setAttribute('xml:id', 'result');
                 $result->appendChild($el);
@@ -563,8 +568,18 @@ class Component extends DBWorker implements IBlock {
 }
 
 
+/**
+ * Class IBuilder
+ */
 interface IBuilder {
+    /**
+     * @return mixed
+     */
     public function getResult();
 
+    /**
+     * @return mixed
+     */
     public function build();
 }
+

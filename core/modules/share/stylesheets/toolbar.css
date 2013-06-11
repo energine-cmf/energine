@@ -47,6 +47,61 @@ ul.toolbar li.select {
     border: 0;
 }
 
+ul.toolbar li.custom_select {    
+    padding: 1px 2px !important;
+    border: 0;
+}
+ul.toolbar .custom_select_box {
+    position: relative;
+    display: -moz-inline-box;
+    display: inline-block;
+    margin-bottom: 4px;
+    padding-right: 18px;
+    border: 1px solid gray;
+    line-height: normal;
+    vertical-align: middle;
+}
+ul.toolbar .custom_select_view {
+    min-width: 120px;
+    min-height: 13px;
+    background: #fff;
+    border-right: 1px solid gray;
+    padding: 1px 2px;
+    white-space: nowrap;
+}
+ul.toolbar .custom_select_button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 18px;
+    height: 100%;
+    background: #f0f0f0 url(../images/asc.gif) 50% 60% no-repeat;
+}
+ul.toolbar .custom_select_dropbox {
+    position: relative;
+}
+ul.toolbar .custom_select_options {
+    position: absolute;
+    left: -1px;
+    top: 1px;
+    z-index: 10;
+    -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    background: #fff;
+    border: 1px solid gray;
+    white-space: nowrap;
+}
+ul.toolbar .custom_select_option {
+    padding: 4px 8px;
+}
+ul.toolbar .custom_select_option.selected {
+    background: #e0e0e0;
+}
+ul.toolbar .custom_select_option:hover {
+    background-color: #FF8;
+}
+
 ul.toolbar li.highlighted { background-color: #FF8; cursor: pointer; cursor: hand; }
 ul.toolbar li.pressed { border-color: #000 #BBB #BBB #000;background-color: #FF8; }
 ul.toolbar li.disabled {}

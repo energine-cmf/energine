@@ -3,6 +3,7 @@ ScriptLoader.load('Toolbar', 'RichEditor', 'ModalBox', 'Overlay');
 var PageEditor = new Class({
     editorClassName:'nrgnEditor',
     editors:[],
+    toolbar: null,
 
     initialize:function () {
         Asset.css('pagetoolbar.css');
@@ -13,20 +14,29 @@ var PageEditor = new Class({
 
         document.addEvent('click', this.processClick.bindWithEvent(this));
 
-        window.addEvent('beforeunload', function (e) {
-            if (this.activeEditor) {
-                this.activeEditor.save(false);
-            }
-        }.bind(this));
-
+        if (Browser.opera) {
+            window.addEvent('unload', function (e) {
+                if (this.activeEditor) {
+                    this.activeEditor.save(false);
+                    window.location.href = window.location.href;
+                    return '';
+                }
+            }.bind(this));
+        } else {
+            window.addEvent('beforeunload', function (e) {
+                if (this.activeEditor) {
+                    this.activeEditor.save(false);
+                }
+            }.bind(this));
+        }
         this.attachToolbar(this.createToolbar());
 
     },
     createToolbar:function () {
         var toolbar = new Toolbar('wysiwyg_toolbar');
         toolbar.dock();
-        /*toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: Energine.translations.get('BTN_SAVE'), state: 'save' }));
-         toolbar.appendControl(new Toolbar.Separator({ id: 'sep2' }));*/
+        //toolbar.appendControl(new Toolbar.Button({ id: 'save', icon: 'images/toolbar/save.gif', title: Energine.translations.get('BTN_SAVE'), state: 'save' }));
+        //toolbar.appendControl(new Toolbar.Separator({ id: 'sep2' }));
         toolbar.appendControl(new Toolbar.Button({ id:'bold', icon:'images/toolbar/bold.gif', title:Energine.translations.get('BTN_BOLD'), action:'bold' }));
         toolbar.appendControl(new Toolbar.Button({ id:'italic', icon:'images/toolbar/italic.gif', title:Energine.translations.get('BTN_ITALIC'), action:'italic' }));
         toolbar.appendControl(new Toolbar.Button({ id:'olist', icon:'images/toolbar/olist.gif', title:Energine.translations.get('BTN_OL'), action:'olist' }));
@@ -127,35 +137,38 @@ PageEditor.BlockEditor = new Class({
         this.num = this.area.getProperty('num') ? this.area.getProperty('num') : false;
 
 
-        if (Energine.supportContentEdit && !this.fallback_ie) {
+        if (Energine.supportContentEdit) {
             document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this.pageEditor));
             if (!(this.pasteArea = $('pasteArea'))) {
                 this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility':'hidden', 'width':'0', 'height':'0', 'font-size':'0', 'line-height':'0' }).injectInside(document.body);
             }
-            //addEvent('paste' работать не захотело
+            ////addEvent('paste' работать не захотело
             if (Browser.Engine.trident) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
             else if (Browser.Engine.gecko || Browser.Engine.presto) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
         }
         //this.switchToViewMode = this.pageEditor.switchToViewMode;
         this.overlay = new Overlay();
     },
+
     activate:function () {
         this.parent();
         this.area.addClass('activeEditor');
     },
+
     deactivate:function () {
         this.parent();
         this.area.removeClass('activeEditor');
     },
+
     focus:function () {
         this.activate();
         var toolbar = this.pageEditor.toolbar.bindTo(this);
         if (!Energine.supportContentEdit) {
-//            if (this.dirty) toolbar.getControlById('save').enable();
+            //if (this.dirty) toolbar.getControlById('save').enable();
             return;
         }
         toolbar.enableControls();
-//        toolbar.getControlById('save').disable();
+        //toolbar.getControlById('save').disable();
 
     },
 
@@ -214,5 +227,87 @@ PageEditor.BlockEditor = new Class({
     },
     cleanMarkup:function (dummyPath, data, aggressive) {
         return this.parent(this.singlePath, data, aggressive);
+    },
+
+    getAllowedFormatTags: function() {
+        return ['b', 'i', 'strong', 'em', 'p', 'p', 'div', 'span', 'ul',
+            'ol', 'li', 'h1','h2','h3','h4','h5','h6', 'pre', 'address',
+            'dir', 'menu', 'dl', 'dt', 'object', 'param'];
+    },
+
+    getAllParentElements: function(el) {
+        var els = [el];
+        var allowed = this.getAllowedFormatTags();
+
+        var found = false;
+        var parentHandler = function(item) {
+            var tag = item.tagName.toLowerCase();
+            if (allowed.contains(tag) && !found) {
+                if ($(item).hasClass('activeEditor')) {
+                    found = true;
+                    return false;
+                }
+                els.push(item);
+            }
+        };
+
+        if (el) {
+            if (Browser.ie && el.each) {
+                el.each(parentHandler.bind(this));
+            }
+            el.getParents().each(parentHandler.bind(this));
+        }
+
+        return els;
+    },
+
+    onSelectionChanged: function(e)
+    {
+        this.parent();
+        if (!this.isActive) return false;
+
+        this.pageEditor.toolbar.allButtonsUp();
+
+        var el = this.selection.getNode();
+
+        if (el == this.area) return;
+
+        var tags = [];
+        var els = this.getAllParentElements(el);
+        if (els.length > 0)
+        {
+            for (var i=0; i<els.length; i++)
+            {
+                if (!els[i] || !els[i].tagName) return;
+                var tag = els[i].tagName.toLowerCase();
+                tags.push(tag);
+                el = els[i];
+                var dirs = ['left', 'right', 'center', 'justify'];
+                var align = el.getProperty('align');
+                var text_align = el.getStyle('text-align');
+                if (dirs.contains(text_align)) {
+                    align = text_align;
+                }
+                var font_weight = el.getStyle('font-weight');
+                var font_style = el.getStyle('font-style');
+
+                if (tag == 'b' || tag == 'strong' || font_weight == 'bold') this.pageEditor.toolbar.getControlById('bold').down();
+                if (tag == 'i' || tag == 'em' || font_style == 'italic') this.pageEditor.toolbar.getControlById('italic').down();
+                if (tag == 'ul') this.pageEditor.toolbar.getControlById('ulist').down();
+                if (tag == 'ol') this.pageEditor.toolbar.getControlById('olist').down();
+
+                if (dirs.contains(align)) {
+                    this.pageEditor.toolbar.getControlById(align).down();
+                } else if (!this.pageEditor.toolbar.getControlById('right').isDown() && !this.pageEditor.toolbar.getControlById('center').isDown() && !this.pageEditor.toolbar.getControlById('justify').isDown()) {
+                    this.pageEditor.toolbar.getControlById('left').down();
+                }
+
+                if (['h1','h2','h3','h4','h5','h6','pre','address'].contains(tag)) {
+                    this.pageEditor.toolbar.getControlById('selectFormat').setSelected(tag.toUpperCase());
+                } else {
+                    this.pageEditor.toolbar.getControlById('selectFormat').select.getElements('option')[0].setProperty('selected', 'selected');
+                }
+            }
+        }
     }
 });

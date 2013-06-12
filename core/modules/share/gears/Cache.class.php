@@ -13,9 +13,18 @@ class Cache {
      */
     const CACHE_DIR = '../cache/';
 
+    /**
+     * @deprecated
+     */
     const TRANSLATIONS_KEY = 'translations';
 
+    /**
+     * Имя файла кеша хранящего инфу о путях
+     */
     const CLASS_STRUCTURE_KEY = 'class_structure';
+    /**
+     * Имя файла кеша хранящего массив с структурой БД
+     */
     const DB_STRUCTURE_KEY = 'db_structure';
 
     /**
@@ -76,6 +85,10 @@ class Cache {
         }
     }
 
+    /**
+     * @param $key
+     * @return string
+     */
     private function getCacheFileByKey($key) {
         return self::CACHE_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $key) . '.cache.php';
 

@@ -2,6 +2,14 @@
 /**
  * Содержит функцию E[nergine]
  * и класс Registry
+ *
+ * @package energine
+ * @author dr.Pavka
+ * @copyright Energine 2013
+ */
+
+/**
+ * Подключаем предка напрямую
  */
 require('Object.class.php');
 /**
@@ -80,7 +88,7 @@ final class Registry extends Object {
      * @return mixed
      */
     public function __get($className) {
-        if($className == 'Sitemap'){
+        if ($className == 'Sitemap') {
             throw new Exception('Use Registry::getMap($siteID) instead.');
         }
         return $this->get($className);
@@ -90,8 +98,7 @@ final class Registry extends Object {
         $result = null;
         if (isset($this->entities[$className])) {
             $result = $this->entities[$className];
-        }
-            //поскольку предполагается хранить синглтоны, пробуем создать соответствующий класс ориентируясь на имя
+        } //поскольку предполагается хранить синглтоны, пробуем создать соответствующий класс ориентируясь на имя
         else {
             $result = new $className();
             $this->entities[$className] = $result;
@@ -180,13 +187,14 @@ final class Registry extends Object {
     public function getLanguage() {
         return $this->get('Language');
     }
+
     /**
      * @return SiteManager
      */
     public function getSiteManager() {
         return $this->get('SiteManager');
     }
-    
+
     /**
      * Объект карты сайта
      * На самом деле этих объектов несколько
@@ -196,9 +204,9 @@ final class Registry extends Object {
      * @return Sitemap
      */
     public function getMap($siteID = false) {
-        if(!$siteID) $siteID = E()->getSiteManager()->getCurrentSite()->id;
-        if(!isset($this->entities['Sitemap'][$siteID])){
-            $this->entities['Sitemap'][$siteID] = new Sitemap($siteID); 
+        if (!$siteID) $siteID = E()->getSiteManager()->getCurrentSite()->id;
+        if (!isset($this->entities['Sitemap'][$siteID])) {
+            $this->entities['Sitemap'][$siteID] = new Sitemap($siteID);
         }
         return $this->entities['Sitemap'][$siteID];
     }
@@ -210,7 +218,7 @@ final class Registry extends Object {
         return $this->get('DocumentController');
     }
 
-   
+
     /**
      * @return QAL
      */
@@ -218,9 +226,9 @@ final class Registry extends Object {
         if (!isset($this->entities['QAL'])) {
             $this->entities['QAL'] = new QAL(
                 sprintf('mysql:host=%s;port=%s;dbname=%s',
-                        $this->getConfigValue('database.host'),
-                        $this->getConfigValue('database.port'),
-                        $this->getConfigValue('database.db')
+                    $this->getConfigValue('database.host'),
+                    $this->getConfigValue('database.port'),
+                    $this->getConfigValue('database.db')
                 ),
                 $this->getConfigValue('database.username'),
                 $this->getConfigValue('database.password'),

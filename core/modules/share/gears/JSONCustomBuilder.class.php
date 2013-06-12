@@ -17,8 +17,15 @@
   */
  
 class JSONCustomBuilder extends Object implements IBuilder{
+    /**
+     * Перечень дополнительных свойств
+     * @var array
+     */
     public $properties = array();
 
+    /**
+     * @return bool
+     */
     public function build() {
         if(!isset($this->properties['result'])){
             $this->properties['result'] = true;
@@ -31,11 +38,22 @@ class JSONCustomBuilder extends Object implements IBuilder{
         return true;
     }
 
+    /**
+     * Добавляем свойство
+     * @param $propName
+     * @param $propValue
+     * @return $this
+     */
     public function setProperty($propName, $propValue){
         $this->properties[$propName] = $propValue;
         return $this;
     }
 
+    /**
+     * Добавляем сразу несколько свойств
+     * @param array $properties
+     * @return $this
+     */
     public function setProperties(array $properties){
         foreach($properties as $propName => $propValue){
             $this->setProperty($propName, $propValue);
@@ -43,6 +61,10 @@ class JSONCustomBuilder extends Object implements IBuilder{
         return $this;
     }
 
+    /**
+     * Возвращение результата
+     * @return string
+     */
     public function getResult() {
         return json_encode($this->properties, JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
     }

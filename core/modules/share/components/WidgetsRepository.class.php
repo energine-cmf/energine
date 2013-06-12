@@ -294,6 +294,10 @@ class WidgetsRepository extends Grid {
         $this->setBuilder($b);
     }
 
+    /**
+     * Сбрасываем переопределения для контента и лейаута, возвращаясь к исходному шаблону
+     * @throws SystemException
+     */
     protected function revertTemplate() {
         $content = simplifyDBResult(
             $this->dbh->select(

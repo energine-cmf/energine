@@ -69,7 +69,11 @@
         $this->js = $this->buildJS();
     }
 
-    protected function changeOrder($direction){
+     /**
+      * Поскольку у нас список выводится в другом компоненте(Feed), то для того чтобы подхватить фильтры, наложенные в нем, мы записываем их в куки  - а здесь читаем
+      * @param $direction
+      */
+     protected function changeOrder($direction){
         if(isset($_COOKIE[md5($this->getName())])){
             $this->setFilter(convert_uudecode($_COOKIE[md5($this->getName())]));
             E()->getResponse()->deleteCookie(md5($this->getName()));
@@ -77,7 +81,10 @@
         return parent::changeOrder($direction);
     }
 
-    public function build() {
+     /**
+      * @return DOMDocument
+      */
+     public function build() {
         if ($this->getState() == 'main') {
             if ($param = $this->getParam('bind')) {
                 $this->setProperty('linkedComponent', $param);

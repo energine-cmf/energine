@@ -16,17 +16,28 @@
  * @author dr.Pavka
  */
 class FileRepository extends Grid {
-
-    // путь к временной папке загрузок
+    /**
+     * путь к временной папке загрузок
+     */
     const TEMPORARY_DIR = 'uploads/temp/';
 
-    //const TYPE_FOLDER = 'folder';
-    //Фейковый тип для перехода на уровень выше
+    /**
+     * Фейковый тип для перехода на уровень выше
+     */
     const TYPE_FOLDER_UP = 'folderup';
 
-    //Имя куки в которой хранится идентификатор папки к которой в последний раз обращались
+
+    /**
+     * Имя куки в которой хранится идентификатор папки к которой в последний раз обращались
+     */
     const STORED_PID = 'NRGNFRPID';
 
+    /**
+     *
+     * @param string $name
+     * @param string $module
+     * @param array $params
+     */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName('share_uploads');
@@ -433,6 +444,9 @@ class FileRepository extends Grid {
         $this->createThumbFields();
     }
 
+    /**
+     *
+     */
     protected function applyUserFilter() {
         //Формат фильтра
         //$_POST['filter'][$tableName][$fieldName] = значение фильтра
@@ -502,6 +516,9 @@ class FileRepository extends Grid {
         return $result;
     }
 
+    /**
+     *
+     */
     protected function getRawData() {
         $sp = $this->getStateParams(true);
 
@@ -640,10 +657,19 @@ class FileRepository extends Grid {
         }
     }
 
+    /**
+     * @param $filename
+     * @return string
+     */
     public static function getTmpFilePath($filename) {
         return self::TEMPORARY_DIR . basename($filename);
     }
 
+    /**
+     * @param $dirPath
+     * @param $fileExtension
+     * @return string
+     */
     public static function generateFilename($dirPath, $fileExtension) {
         /*
          * Генерируем уникальное имя файла.
@@ -657,6 +683,9 @@ class FileRepository extends Grid {
         return $filename;
     }
 
+    /**
+     *
+     */
     protected function uploadTemporaryFile() {
 
         $builder = new JSONCustomBuilder();

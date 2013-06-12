@@ -66,6 +66,10 @@ final class ComponentManager extends Object implements Iterator {
         self::$document = $document;
     }
 
+    /**
+     * Добавляем блок в поток
+     * @param IBlock $block
+     */
     public function register(IBlock $block) {
         $this->registeredBlocks[$block->getName()]  = $block;
     }

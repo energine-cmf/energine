@@ -23,7 +23,14 @@ class Switcher extends Button {
      * @access private
      */
 	private $state = false;
-     
+
+    /**
+     * @param string $id
+     * @param bool $action
+     * @param bool $image
+     * @param bool $title
+     * @param bool $tooltip
+     */
     public function __construct($id, $action = false, $image = false, $title = false, $tooltip = false) {
         parent::__construct($id, $action, $image, $title, $tooltip);
  
@@ -57,7 +64,10 @@ class Switcher extends Button {
     public function toggle(){
     	return ($this->state = !$this->state);
     }
-    
+
+    /**
+     * @return DOMNode
+     */
     public function build(){
     	$this->setAttribute('state', (int)$this->state);
     	return parent::build();

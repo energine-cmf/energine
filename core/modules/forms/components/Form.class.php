@@ -242,7 +242,7 @@ class Form extends DBDataSet {
 
                     //Create text to send. The last one will contain: translations of variables and  variables.
                     $body = '';
-                    if (!($url = $this->getConfigValue('site.media')))
+//                    if (!($url = $this->getConfigValue('site.media')))
                         $url = E()->getSiteManager()->getCurrentSite()->base;
                     foreach ($data as $fieldname => $value) {
                         $type = $this->getDataDescription()->getFieldDescriptionByName($fieldname)->getType();

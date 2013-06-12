@@ -6,26 +6,26 @@
 
     <!-- компонент LoginForm  -->
     <!-- режим гостя -->
-    <xsl:template match="component[@class='LoginForm']">
+    <xsl:template match="component[@sample='LoginForm']">
         <form method="post" action="{@action}" class="base_form login_form">
             <input type="hidden" name="componentAction" value="{@componentAction}" />
             <xsl:apply-templates/>
         </form>
     </xsl:template>
 
-    <xsl:template match="recordset[parent::component[@class='LoginForm']]">
+    <xsl:template match="recordset[parent::component[@sample='LoginForm']]">
         <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
             <xsl:apply-templates/>
         </div>
     </xsl:template>
 
-    <xsl:template match="control[(@id='restore') and (@mode!=0)][ancestor::component[@class='LoginForm']]">
+    <xsl:template match="control[(@id='restore') and (@mode!=0)][ancestor::component[@sample='LoginForm']]">
             <div class="restore_link">
                 <a href="{$BASE}{$LANG_ABBR}{@click}"><xsl:value-of select="@title" /></a>
             </div>
     </xsl:template>
 
-    <xsl:template match="control[(@id='auth.facebook') and not(@disabled)][ancestor::component[@class='LoginForm']]">
+    <xsl:template match="control[(@id='auth.facebook') and not(@disabled)][ancestor::component[@sample='LoginForm']]">
         <a href="#" id="fbAuth" onclick="return false;"><xsl:value-of select="@title"/></a>
         <script type="text/javascript">
             FBL.set('<xsl:value-of select="@appID"/>');
@@ -33,7 +33,7 @@
         <div id="fb-root"></div>
     </xsl:template>
 
-    <xsl:template match="control[(@id='auth.vk') and not(@disabled)][ancestor::component[@class='LoginForm']]">
+    <xsl:template match="control[(@id='auth.vk') and not(@disabled)][ancestor::component[@sample='LoginForm']]">
         <script type="text/javascript" src="//vk.com/js/api/openapi.js?95"></script>
         <a href="#" id="vkAuth" onclick="return false;"><xsl:value-of select="@title"/></a>
         <script type="text/javascript">
@@ -41,20 +41,20 @@
         </script>
     </xsl:template>
 
-    <xsl:template match="field[@name='message'][ancestor::component[@class='LoginForm']]">
+    <xsl:template match="field[@name='message'][ancestor::component[@sample='LoginForm']]">
         <div class="error_message">
             <xsl:apply-templates/>
         </div>
     </xsl:template>
 
     <!-- режим пользователя за логином -->
-    <xsl:template match="recordset[parent::component[@class='LoginForm'][@componentAction='showLogoutForm']]">
+    <xsl:template match="recordset[parent::component[@sample='LoginForm'][@componentAction='showLogoutForm']]">
         <div>
            <xsl:apply-templates/>
         </div>
     </xsl:template>
 
-    <xsl:template match="record[ancestor::component[@class='LoginForm'][@componentAction='showLogoutForm']]">
+    <xsl:template match="record[ancestor::component[@sample='LoginForm'][@componentAction='showLogoutForm']]">
         <span class="user_greeting"><xsl:value-of select="$TRANSLATION[@const='TXT_USER_GREETING']"/></span><xsl:value-of select="$NBSP" disable-output-escaping="yes" />
         <span class="user_name"><xsl:value-of select="$TRANSLATION[@const='TXT_USER_NAME']"/>:<xsl:value-of select="$NBSP" disable-output-escaping="yes" /><strong><xsl:value-of select="field[@name='u_name']"/></strong></span><br/>
         <span class="user_role"><xsl:value-of select="$TRANSLATION[@const='TXT_ROLE_TEXT']"/>:<xsl:value-of select="$NBSP" disable-output-escaping="yes" /><strong><xsl:value-of select="field[@name='role_name']"/></strong></span>

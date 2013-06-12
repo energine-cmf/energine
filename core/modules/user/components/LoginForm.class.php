@@ -17,7 +17,7 @@
  * @subpackage user
  * @author dr.Pavka
  */
-class LoginForm extends DataSet {
+class LoginForm extends DataSet implements SampleLoginForm{
     /**
      * Конструктор
      *
@@ -133,3 +133,8 @@ class LoginForm extends DataSet {
         return $result;
     }
 }
+
+/**
+ * Фейковый интерфейс для формы логина
+ */
+interface SampleLoginForm{}

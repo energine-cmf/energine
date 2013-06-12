@@ -221,8 +221,23 @@ final class TextBlock extends DataSet {
 
     protected function buildJS() {
         $result = false;
+
         if ($this->isEditable) {
+
             $result = parent::buildJS();
+
+            if ($result) {
+                if ($config = E()->getConfigValue('wysiwyg.styles')) {
+                    $JSObjectXML = $this->doc->createElement('variable');
+                    $JSObjectXML->setAttribute('name', 'wysiwyg_styles');
+                    $JSObjectXML->setAttribute('type', 'json');
+                    foreach ($config as $key => $value) {
+                        if (isset($value['caption'])) $config[$key]['caption'] = $this->translate($value['caption']);
+                    }
+                    $JSObjectXML->appendChild(new DomText(json_encode($config)));
+                    $result->appendChild($JSObjectXML);
+                }
+            }
         }
 
         return $result;

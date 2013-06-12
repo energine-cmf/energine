@@ -68,6 +68,8 @@
                     });
                 </script>
 
+                <xsl:apply-templates select="/document//javascript/variable" mode="head"/>
+
                 <xsl:apply-templates select="/document/javascript/library" mode="head"/>
 
                 <xsl:call-template name="scripts"/>
@@ -188,6 +190,8 @@
 
     <xsl:template match="/document/javascript/library"/>
 
+    <xsl:template match="/document//javascript/variable"/>
+
     <xsl:template match="/document/javascript/library" mode="head">
         <xsl:variable name="anticache">
             <xsl:if test="/document/@debug=1">
@@ -196,6 +200,25 @@
             </xsl:if>
         </xsl:variable>
         <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js{$anticache}"/>
+    </xsl:template>
+
+    <xsl:template match="/document//javascript/variable" mode="head">
+        <script type="text/javascript">
+            <xsl:text>window["</xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text>"] = </xsl:text>
+            <xsl:choose>
+                <xsl:when test="@type='json'">
+                    <xsl:value-of select="."/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>"</xsl:text>
+                    <xsl:value-of select="."/>
+                    <xsl:text>"</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>;</xsl:text>
+        </script>
     </xsl:template>
 
 </xsl:stylesheet>

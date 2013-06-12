@@ -465,6 +465,167 @@ Toolbar.Select = new Class({
             }
         }
     }
+});
 
+Toolbar.CustomSelect = new Class({
+    Extends:Toolbar.Control,
+    select:null,
+    view: null,
+    button: null,
+    dropbox: null,
+    options_container: null,
+    expanded: false,
+    toolbar:null,
 
+    initialize:function (properties, options, initialValue) {
+        this.properties = {
+            id:null,
+            title:'',
+            tooltip:'',
+            action:null,
+            action_before:null,
+            disabled:false
+        };
+        $extend(this.properties, $pick(properties, {}));
+
+        this.options = options || {};
+        this.initial = initialValue || false;
+    },
+
+    build:function () {
+
+        if (!this.toolbar || !this.properties.id) {
+            return false;
+        }
+
+        this.element =
+            new Element('li').setProperty('unselectable', 'on').addClass('custom_select');
+        if (this.properties.title) this.element.adopt(new Element('span').addClass('label').set('text', this.properties.title));
+        this.select = new Element('div').addClass('custom_select_box');
+        this.view = new Element('div').addClass('custom_select_view').setProperty('unselectable', 'on');
+        this.button = new Element('div').addClass('custom_select_button').setProperty('unselectable', 'on');
+        this.dropbox = new Element('div').addClass('custom_select_dropbox');
+        this.options_container = new Element('div').addClass('custom_select_options');
+        this.dropbox.adopt(this.options_container);
+        this.select.adopt(this.view);
+        this.select.adopt(this.button);
+        this.select.adopt(this.dropbox);
+
+        var control = this;
+
+        this.select.addEvent('change', function () {
+            control.toolbar._callAction(control.properties.action, control);
+            return false;
+        });
+
+        this.select.addEvent('beforechange', function () {
+            control.toolbar._callAction(control.properties.action_before, control);
+            return false;
+        });
+
+        this.element.adopt(this.select);
+
+        if (this.properties.disabled) {
+            this.disable();
+        }
+        var props = {};
+        Object.each(this.options, function (value, key) {
+            var el = new Element('div').addClass('custom_select_option');
+            el.setProperty('data-value', key);
+            el.set('html', value.html);
+            el.setProperty('data-caption', value.caption);
+            el.setProperty('data-element', value.element);
+            el.setProperty('data-class', value.class);
+
+            if (key == this.initial) {
+                el.addClass('selected');
+            }
+            control.select.getElement('.custom_select_options').adopt(el);
+
+            el.addEvent('click', function(e) {
+                var val = el.get('data-value');
+                control.setSelected(val);
+                control.select.fireEvent('change');
+            }.bind(this));
+
+        }, this);
+
+        this.view.addEvent('click', this.toggle.bind(this));
+        this.button.addEvent('click', this.toggle.bind(this));
+
+        this.select.addEvent('mouseup', function(e) {e.preventDefault();});
+        this.select.getElement('*').addEvent('mouseup', function(e) {e.preventDefault();});
+
+        document.addEvent('click', function(e) {
+            this.select.fireEvent('beforechange');
+            if (this.expanded) {
+                this.collapse();
+            }
+        }.bind(this));
+
+        this.collapse();
+    },
+
+    toggle: function(e) {
+        this.select.fireEvent('beforechange');
+        if (this.expanded) {
+            this.collapse();
+        } else {
+            this.expand();
+        }
+        return false;
+    },
+
+    expand: function() {
+        if (!this.properties.disabled) {
+            this.expanded = true;
+            this.dropbox.show();
+        }
+    },
+
+    collapse: function() {
+        this.expanded = false;
+        this.dropbox.hide();
+    },
+
+    disable:function () {
+        if (!this.properties.disabled) {
+            this.properties.disabled = true;
+            this.select.addClass('disabled');
+        }
+    },
+
+    enable:function () {
+        if (this.properties.disabled) {
+            this.properties.disabled = false;
+            this.select.removeClass('disabled');
+        }
+    },
+
+    setAction:function (action) {
+        this.properties.action = action;
+    },
+
+    getOptions: function() {
+        return this.options;
+    },
+
+    getValue:function () {
+        var selected = this.select.getElements('.selected').getLast();
+        if (!selected) return false;
+        return {
+            value: selected.get('data-value'),
+            element: selected.get('data-element'),
+            class: selected.get('data-class')
+        };
+    },
+
+    setSelected:function (itemId) {
+        if (this.options[itemId] && this.select) {
+            this.select.getElements('.custom_select_option').removeClass('selected');
+            this.select.getElements('.custom_select_option[data-value="' + itemId + '"]').addClass('selected', 'selected');
+            this.view.set('text', this.options[itemId].caption);
+            this.collapse();
+        }
+    }
 });

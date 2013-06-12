@@ -185,5 +185,29 @@ return array(
             )
         ),
     ),
+
+    // настройка SEO модуля
+    'seo' => array(
+        'sitemapSegment' => 'google_sitemap',
+        'sitemapTemplate' => 'google_sitemap',
+        'maxVideosInMap' => '10'
+    ),
+
+    // параметри пользовательских стилей RichText редактора
+    'wysiwyg' => array(
+        'styles' => array(
+            'p.red' => array(
+                'element' => 'p',
+                'class' => 'red',
+                'caption' => 'TXT_RED_PARAGRAPH'
+            ),
+            'p.underline' => array(
+                'element' => 'p',
+                'class' => 'underline',
+                'caption' => 'TXT_TEXT_UNDERLINE'
+            )
+        )
+    ),
+
 );
 

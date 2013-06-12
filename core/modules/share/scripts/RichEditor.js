@@ -263,11 +263,84 @@ var RichEditor = new Class({
         return result;
     },
 
+    beforeChangeFormat: function (control) {
+        this.stored_selection = this.selection.storeCurrentSelection();
+    },
+
     changeFormat:function (control) {
-        var selectedOption = control.select.value;
-        var tag = (selectedOption == 'reset') ? '<P>' : '<' + selectedOption + '>';
-        this.action("FormatBlock", false, tag);
-        control.select.value = '';
+
+        var selectedOption = control.getValue();
+        control.setSelected('');
+        if (!selectedOption) return;
+
+        if (this.stored_selection) {
+            this.selection.restoreSelection(this.stored_selection);
+        }
+
+        // сброс форматирования
+        if (selectedOption.value == 'reset') {
+            var node = this.selection.getNode();
+            if (node) {
+                this.selection.selectNode(node, false);
+                var html = '<p>' + node.get('html') + '</p>';
+                this.selection.insertContent(html);
+            } else {
+                this.action("FormatBlock", false, '<P>');
+            }
+        }
+        // применение стандартных тегов h1-h6, address, ...
+        else if (['h1','h2','h3','h4','h5','h6','address'].contains(selectedOption.value)) {
+            var tag = '<' + selectedOption.element.toUpperCase() + '>';
+            this.action("FormatBlock", false, tag);
+        }
+        // применение кастомных стилей
+        else {
+            var node = this.selection.getNode();
+            if (node) {
+                this.selection.selectNode(node, false);
+                var html = '<' + selectedOption.element + ' class="'+ selectedOption.class + '"' + '>'
+                    + node.get('html') +
+                    '</' + selectedOption.element + '>';
+                this.selection.insertContent(html);
+            } else {
+                var html = '<' + selectedOption.element + ' class="'+ selectedOption.class + '"' + '>'
+                    + this.selection.getText() +
+                    '</' + selectedOption.element + '>';
+                this.selection.insertContent(html);
+            }
+        }
+    },
+
+    getAllowedFormatTags: function() {
+        return ['b', 'i', 'strong', 'em', 'p', 'p', 'div', 'span', 'ul',
+            'ol', 'li', 'h1','h2','h3','h4','h5','h6', 'pre', 'address',
+            'dir', 'menu', 'dl', 'dt', 'object', 'param'];
+    },
+
+    getAllParentElements: function(el) {
+        var els = [el];
+        var allowed = this.getAllowedFormatTags();
+
+        var found = false;
+        var parentHandler = function(item) {
+            var tag = item.tagName.toLowerCase();
+            if (allowed.contains(tag) && !found) {
+                if ($(item).hasClass('activeEditor')) {
+                    found = true;
+                    return false;
+                }
+                els.push(item);
+            }
+        };
+
+        if (el) {
+            if (Browser.ie && el.each) {
+                el.each(parentHandler.bind(this));
+            }
+            el.getParents().each(parentHandler.bind(this));
+        }
+
+        return els;
     },
 
     onSelectionChanged: function(e) {}

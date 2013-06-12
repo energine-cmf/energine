@@ -749,3 +749,6 @@ body, html {
 }
 /* ----- /login form ----- */
 /* -------------------- /FORMS -------------------- */
+
+p.red { color: red; }
+p.underline { text-decoration: underline; }

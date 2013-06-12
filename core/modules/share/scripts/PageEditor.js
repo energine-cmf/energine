@@ -47,8 +47,32 @@ var PageEditor = new Class({
         toolbar.appendControl(new Toolbar.Button({ id:'center', icon:'images/toolbar/justifycenter.gif', title:Energine.translations.get('BTN_ALIGN_CENTER'), action:'alignCenter' }));
         toolbar.appendControl(new Toolbar.Button({ id:'right', icon:'images/toolbar/justifyright.gif', title:Energine.translations.get('BTN_ALIGN_RIGHT'), action:'alignRight' }));
         toolbar.appendControl(new Toolbar.Button({ id:'justify', icon:'images/toolbar/justifyall.gif', title:Energine.translations.get('BTN_ALIGN_JUSTIFY'), action:'alignJustify' }));
-        toolbar.appendControl(new Toolbar.Select({ id:'selectFormat', action:'changeFormat' },
-            {'':'', 'reset':Energine.translations.get('TXT_RESET'), 'H1':Energine.translations.get('TXT_H1'), 'H2':Energine.translations.get('TXT_H2'), 'H3':Energine.translations.get('TXT_H3'), 'H4':Energine.translations.get('TXT_H4'), 'H5':Energine.translations.get('TXT_H5'), 'H6':Energine.translations.get('TXT_H6'), 'ADDRESS':Energine.translations.get('TXT_ADDRESS')}));
+
+        var styles = {
+            '': {caption: '', html: '&nbsp;', element: '', class: ''},
+            'reset': {caption: Energine.translations.get('TXT_RESET'), html: Energine.translations.get('TXT_RESET'), element: '', class: ''},
+            'h1': {caption: Energine.translations.get('TXT_H1'), html: '<h1>' + Energine.translations.get('TXT_H1') + '</h1>', element: 'h1', class: ''},
+            'h2': {caption: Energine.translations.get('TXT_H2'), html: '<h2>' + Energine.translations.get('TXT_H2') + '</h2>', element: 'h2', class: ''},
+            'h3': {caption: Energine.translations.get('TXT_H3'), html: '<h3>' + Energine.translations.get('TXT_H3') + '</h3>', element: 'h3', class: ''},
+            'h4': {caption: Energine.translations.get('TXT_H4'), html: '<h4>' + Energine.translations.get('TXT_H4') + '</h4>', element: 'h4', class: ''},
+            'h5': {caption: Energine.translations.get('TXT_H5'), html: '<h5>' + Energine.translations.get('TXT_H5') + '</h5>', element: 'h5', class: ''},
+            'h6': {caption: Energine.translations.get('TXT_H6'), html: '<h6>' + Energine.translations.get('TXT_H6') + '</h6>', element: 'h6', class: ''},
+            'address': {caption: Energine.translations.get('TXT_ADDRESS'), html: '<address>' + Energine.translations.get('TXT_ADDRESS') + '</address>', element: 'address', class: ''}
+        };
+
+        if (typeof(window['wysiwyg_styles'] != 'undefined')) {
+            Object.each(window['wysiwyg_styles'], function (value, key) {
+                styles[key] = {
+                    caption: value.caption,
+                    html: '<' + value.element + ' class="' + value.class + '">' + value.caption + '</' + value.element + '>',
+                    element: value.element,
+                    class: value.class
+                };
+            });
+        }
+
+        toolbar.appendControl(new Toolbar.CustomSelect({ id:'selectFormat', action:'changeFormat', action_before: 'beforeChangeFormat' }, styles));
+
         toolbar.appendControl(new Toolbar.Separator({ id:'sep4' }));
         toolbar.appendControl(new Toolbar.Button({ id:'source', icon:'images/toolbar/source.gif', title:Energine.translations.get('BTN_VIEWSOURCE'), action:'showSource' }));
         toolbar.appendControl(new Toolbar.Separator({ id:'sep5' }));
@@ -229,38 +253,6 @@ PageEditor.BlockEditor = new Class({
         return this.parent(this.singlePath, data, aggressive);
     },
 
-    getAllowedFormatTags: function() {
-        return ['b', 'i', 'strong', 'em', 'p', 'p', 'div', 'span', 'ul',
-            'ol', 'li', 'h1','h2','h3','h4','h5','h6', 'pre', 'address',
-            'dir', 'menu', 'dl', 'dt', 'object', 'param'];
-    },
-
-    getAllParentElements: function(el) {
-        var els = [el];
-        var allowed = this.getAllowedFormatTags();
-
-        var found = false;
-        var parentHandler = function(item) {
-            var tag = item.tagName.toLowerCase();
-            if (allowed.contains(tag) && !found) {
-                if ($(item).hasClass('activeEditor')) {
-                    found = true;
-                    return false;
-                }
-                els.push(item);
-            }
-        };
-
-        if (el) {
-            if (Browser.ie && el.each) {
-                el.each(parentHandler.bind(this));
-            }
-            el.getParents().each(parentHandler.bind(this));
-        }
-
-        return els;
-    },
-
     onSelectionChanged: function(e)
     {
         this.parent();
@@ -273,6 +265,8 @@ PageEditor.BlockEditor = new Class({
         if (el == this.area) return;
 
         var tags = [];
+        var format_selected = false;
+        var align_selected = false;
         var els = this.getAllParentElements(el);
         if (els.length > 0)
         {
@@ -280,6 +274,7 @@ PageEditor.BlockEditor = new Class({
             {
                 if (!els[i] || !els[i].tagName) return;
                 var tag = els[i].tagName.toLowerCase();
+                var cls = els[i].get('class');
                 tags.push(tag);
                 el = els[i];
                 var dirs = ['left', 'right', 'center', 'justify'];
@@ -296,16 +291,26 @@ PageEditor.BlockEditor = new Class({
                 if (tag == 'ul') this.pageEditor.toolbar.getControlById('ulist').down();
                 if (tag == 'ol') this.pageEditor.toolbar.getControlById('olist').down();
 
-                if (dirs.contains(align)) {
+                if (dirs.contains(align) && !align_selected) {
                     this.pageEditor.toolbar.getControlById(align).down();
-                } else if (!this.pageEditor.toolbar.getControlById('right').isDown() && !this.pageEditor.toolbar.getControlById('center').isDown() && !this.pageEditor.toolbar.getControlById('justify').isDown()) {
+                    align_selected = true;
+                } else if (!align_selected && !this.pageEditor.toolbar.getControlById('right').isDown() && !this.pageEditor.toolbar.getControlById('center').isDown() && !this.pageEditor.toolbar.getControlById('justify').isDown()) {
                     this.pageEditor.toolbar.getControlById('left').down();
                 }
 
-                if (['h1','h2','h3','h4','h5','h6','pre','address'].contains(tag)) {
-                    this.pageEditor.toolbar.getControlById('selectFormat').setSelected(tag.toUpperCase());
-                } else {
-                    this.pageEditor.toolbar.getControlById('selectFormat').select.getElements('option')[0].setProperty('selected', 'selected');
+                Object.each(this.pageEditor.toolbar.getControlById('selectFormat').getOptions(), function (value, key) {
+                    if (key == tag && !format_selected) {
+                        format_selected = true;
+                        this.pageEditor.toolbar.getControlById('selectFormat').setSelected(tag);
+                    }
+                    if (key == tag + '.' + cls) {
+                        format_selected = true;
+                        this.pageEditor.toolbar.getControlById('selectFormat').setSelected(key);
+                    }
+                }.bind(this));
+
+                if (!format_selected) {
+                    this.pageEditor.toolbar.getControlById('selectFormat').setSelected('');
                 }
             }
         }

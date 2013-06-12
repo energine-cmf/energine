@@ -695,12 +695,17 @@ Form.Label = {
 Form.RichEditor = new Class({
     Extends:RichEditor,
 
+    toolbar: null,
+    selection: null,
+    area: null,
+
     initialize:function (textarea, form, fallback_ie) {
         this.fallback_ie = fallback_ie;
         if (!Energine.supportContentEdit)
             return;
         this.textarea = $(textarea);
         this.form = form;
+        this.selection = new RichEditor.Selection(window);
 
         if (Energine.supportContentEdit && !this.fallback_ie) {
             this.hidden = new Element('input').setProperty('name',
@@ -876,6 +881,55 @@ Form.RichEditor = new Class({
                 }
             }.bind(this)
         });
+    },
+
+    onSelectionChanged: function(e)
+    {
+        this.parent();
+
+        if (!this.toolbar) return;
+
+        this.toolbar.allButtonsUp();
+
+        var el = this.selection.getNode();
+
+        if (el == this.area) return;
+
+        var tags = [];
+        var format_selected = false;
+        var align_selected = false;
+        var els = this.getAllParentElements(el);
+        if (els.length > 0)
+        {
+            for (var i=0; i<els.length; i++)
+            {
+                if (!els[i] || !els[i].tagName) return;
+                var tag = els[i].tagName.toLowerCase();
+                var cls = els[i].get('class');
+                tags.push(tag);
+                el = els[i];
+                var dirs = ['left', 'right', 'center', 'justify'];
+                var align = el.getProperty('align');
+                var text_align = el.getStyle('text-align');
+                if (dirs.contains(text_align)) {
+                    align = text_align;
+                }
+                var font_weight = el.getStyle('font-weight');
+                var font_style = el.getStyle('font-style');
+
+                if (tag == 'b' || tag == 'strong' || font_weight == 'bold') this.toolbar.getControlById('bold').down();
+                if (tag == 'i' || tag == 'em' || font_style == 'italic') this.toolbar.getControlById('italic').down();
+                if (tag == 'ul') this.toolbar.getControlById('ulist').down();
+                if (tag == 'ol') this.toolbar.getControlById('olist').down();
+
+                if (dirs.contains(align) && !align_selected) {
+                    this.toolbar.getControlById(align).down();
+                    align_selected = true;
+                } else if (!align_selected && !this.toolbar.getControlById('right').isDown() && !this.toolbar.getControlById('center').isDown() && !this.toolbar.getControlById('justify').isDown()) {
+                    this.toolbar.getControlById('left').down();
+                }
+            }
+        }
     }
 });
 

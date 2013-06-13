@@ -481,79 +481,74 @@ RichEditor.Selection = new Class({
 
     insertContent: function(content){
 
-        var sel, range;
-        if (window.getSelection) {
-            // IE9 and non-IE
-            sel = window.getSelection();
-            if (sel.getRangeAt && sel.rangeCount) {
-                range = sel.getRangeAt(0);
-                range.deleteContents();
-
-                // Range.createContextualFragment() would be useful here but is
-                // non-standard and not supported in all browsers (IE9, for one)
-                var el = document.createElement("div");
-                el.innerHTML = content;
-                var frag = document.createDocumentFragment(), node, lastNode;
-                while ( (node = el.firstChild) ) {
-                    lastNode = frag.appendChild(node);
+        try {
+            var r = this.getRange();
+            if (r.pasteHTML){
+                r.pasteHTML(content);
+                r.collapse(false);
+                r.select();
+            } else if (r.insertNode && !Browser.ie){
+                r.deleteContents();
+                if (r.createContextualFragment){
+                    r.insertNode(r.createContextualFragment(content));
+                } else {
+                    var doc = this.win.document;
+                    var fragment = doc.createDocumentFragment();
+                    var temp = doc.createElement('div');
+                    fragment.appendChild(temp);
+                    temp.outerHTML = content;
+                    r.insertNode(fragment);
                 }
-                range.insertNode(frag);
+            } else if (document.selection && document.selection.type != "Control") {
+                // IE < 9
+                var getCommonAncestor = function(node1, node2) {
+                    var method = "contains" in node1 ? "contains" : "compareDocumentPosition",
+                        test   = method === "contains" ? 1 : 0x10;
 
-                // Preserve the selection
-                if (lastNode) {
-                    range = range.cloneRange();
-                    range.setStartAfter(lastNode);
+                    while (node1 = node1.parentNode) {
+                        if ((node1[method](node2) & test) === test)
+                            return node1;
+                    }
+
+                    return null;
+                }
+
+                var getTextRangeContainerElement = function(textRange) {
+                    var parentEl = textRange.parentElement();
+
+                    var range = textRange.duplicate();
                     range.collapse(true);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
+                    var startEl = range.parentElement();
+
+                    range = textRange.duplicate();
+                    range.collapse(false);
+                    var endEl = range.parentElement();
+
+                    var startEndContainer = (startEl == endEl) ?
+                        startEl : getCommonAncestor(startEl, endEl);
+
+                    return startEndContainer == parentEl ?
+                        startEndContainer : getCommonAncestor(parentEl, startEndContainer);
+                };
+
+                range = document.selection.createRange();
+                var el = range.parentElement();//getTextRangeContainerElement(range);
+                if (el) {
+                    var new_el = document.createElement('div');
+                    new_el.innerHTML = content;
+                    el.parentElement.replaceChild(new_el, el);
+                    this.selectNode(new_el);
+                } else {
+                    range.pasteHTML(content);
                 }
-            }
-        } else if (document.selection && document.selection.type != "Control") {
-            // IE < 9
-
-            var getCommonAncestor = function(node1, node2) {
-                var method = "contains" in node1 ? "contains" : "compareDocumentPosition",
-                    test   = method === "contains" ? 1 : 0x10;
-
-                while (node1 = node1.parentNode) {
-                    if ((node1[method](node2) & test) === test)
-                        return node1;
-                }
-
-                return null;
-            }
-
-            var getTextRangeContainerElement = function(textRange) {
-                var parentEl = textRange.parentElement();
-
-                var range = textRange.duplicate();
-                range.collapse(true);
-                var startEl = range.parentElement();
-
-                range = textRange.duplicate();
-                range.collapse(false);
-                var endEl = range.parentElement();
-
-                var startEndContainer = (startEl == endEl) ?
-                    startEl : getCommonAncestor(startEl, endEl);
-
-                return startEndContainer == parentEl ?
-                    startEndContainer : getCommonAncestor(parentEl, startEndContainer);
-            };
-
-            range = document.selection.createRange();
-            var el = range.parentElement();//getTextRangeContainerElement(range);
-            if (el) {
-                var new_el = document.createElement('div');
-                new_el.innerHTML = content;
-                el.parentElement.replaceChild(new_el, el);
-                this.selectNode(new_el);
+                //range = document.selection.createRange();
+                //range.expand();
+                //range.pasteHTML(content);
             } else {
-                range.pasteHTML(content);
+                this.win.document.execCommand('insertHTML', false, content);
             }
-            //range = document.selection.createRange();
-            //range.expand();
-            //range.pasteHTML(content);
+        } catch (e) {
+            this.win.document.execCommand('insertHTML', false, content);
         }
     },
 

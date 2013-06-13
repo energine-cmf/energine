@@ -264,11 +264,10 @@ var RichEditor = new Class({
     },
 
     beforeChangeFormat: function (control) {
-        try {
-            this.area.setActive();
-        } catch (e) {
+        try { this.area.setActive(); } catch (e) {}
+        if (!Browser.ie) {
+            this.stored_selection = this.selection.storeCurrentSelection();
         }
-        this.stored_selection = this.selection.storeCurrentSelection();
     },
 
     changeFormat:function (control) {
@@ -278,16 +277,20 @@ var RichEditor = new Class({
         if (!selectedOption) return;
         if (selectedOption['value'] == '') return;
 
-        if (this.stored_selection) {
+        if (this.stored_selection && !Browser.ie) {
             this.selection.restoreSelection(this.stored_selection);
         }
+
+        try { this.area.setActive(); } catch (e) {}
 
         // сброс форматирования
         if (selectedOption['value'] == 'reset') {
             var node = this.selection.getNode();
             if (node) {
-                this.selection.selectNode(node, false);
-                var html = '<p>' + node.get('html') + '</p>';
+                if (!Browser.ie) {
+                    this.selection.selectNode(node, false);
+                }
+                var html = '<P>' + node.get('html') + '</P>';
                 this.selection.insertContent(html);
             } else {
                 this.action("FormatBlock", false, '<P>');
@@ -478,37 +481,79 @@ RichEditor.Selection = new Class({
 
     insertContent: function(content){
 
-        if (Browser.ie) {
-            try {
-                this.win.document.execCommand('insertHTML', false, content);
-            } catch (e) {
-            }
-            return false;
-        }
+        var sel, range;
+        if (window.getSelection) {
+            // IE9 and non-IE
+            sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                range.deleteContents();
 
-        try {
-            var r = this.getRange();
-            if (r.pasteHTML){
-                r.pasteHTML(content);
-                r.collapse(false);
-                r.select();
-            } else if (r.insertNode){
-                r.deleteContents();
-                if (r.createContextualFragment){
-                    r.insertNode(r.createContextualFragment(content));
-                } else {
-                    var doc = this.win.document;
-                    var fragment = doc.createDocumentFragment();
-                    var temp = doc.createElement('div');
-                    fragment.appendChild(temp);
-                    temp.outerHTML = content;
-                    r.insertNode(fragment);
+                // Range.createContextualFragment() would be useful here but is
+                // non-standard and not supported in all browsers (IE9, for one)
+                var el = document.createElement("div");
+                el.innerHTML = content;
+                var frag = document.createDocumentFragment(), node, lastNode;
+                while ( (node = el.firstChild) ) {
+                    lastNode = frag.appendChild(node);
                 }
-            } else {
-                this.win.document.execCommand('insertHTML', false, content);
+                range.insertNode(frag);
+
+                // Preserve the selection
+                if (lastNode) {
+                    range = range.cloneRange();
+                    range.setStartAfter(lastNode);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
             }
-        } catch (e) {
-            this.win.document.execCommand('insertHTML', false, content);
+        } else if (document.selection && document.selection.type != "Control") {
+            // IE < 9
+
+            var getCommonAncestor = function(node1, node2) {
+                var method = "contains" in node1 ? "contains" : "compareDocumentPosition",
+                    test   = method === "contains" ? 1 : 0x10;
+
+                while (node1 = node1.parentNode) {
+                    if ((node1[method](node2) & test) === test)
+                        return node1;
+                }
+
+                return null;
+            }
+
+            var getTextRangeContainerElement = function(textRange) {
+                var parentEl = textRange.parentElement();
+
+                var range = textRange.duplicate();
+                range.collapse(true);
+                var startEl = range.parentElement();
+
+                range = textRange.duplicate();
+                range.collapse(false);
+                var endEl = range.parentElement();
+
+                var startEndContainer = (startEl == endEl) ?
+                    startEl : getCommonAncestor(startEl, endEl);
+
+                return startEndContainer == parentEl ?
+                    startEndContainer : getCommonAncestor(parentEl, startEndContainer);
+            };
+
+            range = document.selection.createRange();
+            var el = range.parentElement();//getTextRangeContainerElement(range);
+            if (el) {
+                var new_el = document.createElement('div');
+                new_el.innerHTML = content;
+                el.parentElement.replaceChild(new_el, el);
+                this.selectNode(new_el);
+            } else {
+                range.pasteHTML(content);
+            }
+            //range = document.selection.createRange();
+            //range.expand();
+            //range.pasteHTML(content);
         }
     },
 

@@ -482,6 +482,14 @@ abstract class DataSet extends Component {
                     $value['path'] . '/' : '');
                 $result->appendChild($JSObjectXML);
             }
+            foreach ($config->javascript->variable as $value) {
+                $JSObjectXML = $this->doc->createElement('variable');
+                $JSObjectXML->setAttribute('name', $value['name']);
+                $JSObjectXML->setAttribute('type', ($value['type']) ?
+                    $value['type'] : 'string');
+                $JSObjectXML->appendChild(new DomText( (string) $value));
+                $result->appendChild($JSObjectXML);
+            }
         }
         return $result;
     }

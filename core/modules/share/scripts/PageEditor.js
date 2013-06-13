@@ -49,24 +49,24 @@ var PageEditor = new Class({
         toolbar.appendControl(new Toolbar.Button({ id:'justify', icon:'images/toolbar/justifyall.gif', title:Energine.translations.get('BTN_ALIGN_JUSTIFY'), action:'alignJustify' }));
 
         var styles = {
-            '': {caption: '', html: '&nbsp;', element: '', class: ''},
-            'reset': {caption: Energine.translations.get('TXT_RESET'), html: Energine.translations.get('TXT_RESET'), element: '', class: ''},
-            'h1': {caption: Energine.translations.get('TXT_H1'), html: '<h1>' + Energine.translations.get('TXT_H1') + '</h1>', element: 'h1', class: ''},
-            'h2': {caption: Energine.translations.get('TXT_H2'), html: '<h2>' + Energine.translations.get('TXT_H2') + '</h2>', element: 'h2', class: ''},
-            'h3': {caption: Energine.translations.get('TXT_H3'), html: '<h3>' + Energine.translations.get('TXT_H3') + '</h3>', element: 'h3', class: ''},
-            'h4': {caption: Energine.translations.get('TXT_H4'), html: '<h4>' + Energine.translations.get('TXT_H4') + '</h4>', element: 'h4', class: ''},
-            'h5': {caption: Energine.translations.get('TXT_H5'), html: '<h5>' + Energine.translations.get('TXT_H5') + '</h5>', element: 'h5', class: ''},
-            'h6': {caption: Energine.translations.get('TXT_H6'), html: '<h6>' + Energine.translations.get('TXT_H6') + '</h6>', element: 'h6', class: ''},
-            'address': {caption: Energine.translations.get('TXT_ADDRESS'), html: '<address>' + Energine.translations.get('TXT_ADDRESS') + '</address>', element: 'address', class: ''}
+            '': {'caption': '', 'html': '&nbsp;', 'element': '', 'class': ''},
+            'reset': {'caption': Energine.translations.get('TXT_RESET'), 'html': Energine.translations.get('TXT_RESET'), 'element': '', 'class': ''},
+            'h1': {'caption': Energine.translations.get('TXT_H1'), 'html': '<h1>' + Energine.translations.get('TXT_H1') + '</h1>', 'element': 'h1', 'class': ''},
+            'h2': {'caption': Energine.translations.get('TXT_H2'), 'html': '<h2>' + Energine.translations.get('TXT_H2') + '</h2>', 'element': 'h2', 'class': ''},
+            'h3': {'caption': Energine.translations.get('TXT_H3'), 'html': '<h3>' + Energine.translations.get('TXT_H3') + '</h3>', 'element': 'h3', 'class': ''},
+            'h4': {'caption': Energine.translations.get('TXT_H4'), 'html': '<h4>' + Energine.translations.get('TXT_H4') + '</h4>', 'element': 'h4', 'class': ''},
+            'h5': {'caption': Energine.translations.get('TXT_H5'), 'html': '<h5>' + Energine.translations.get('TXT_H5') + '</h5>', 'element': 'h5', 'class': ''},
+            'h6': {'caption': Energine.translations.get('TXT_H6'), 'html': '<h6>' + Energine.translations.get('TXT_H6') + '</h6>', 'element': 'h6', 'class': ''},
+            'address': {'caption': Energine.translations.get('TXT_ADDRESS'), 'html': '<address>' + Energine.translations.get('TXT_ADDRESS') + '</address>', 'element': 'address', 'class': ''}
         };
 
         if (typeof(window['wysiwyg_styles'] != 'undefined')) {
             Object.each(window['wysiwyg_styles'], function (value, key) {
                 styles[key] = {
-                    caption: value.caption,
-                    html: '<' + value.element + ' class="' + value.class + '">' + value.caption + '</' + value.element + '>',
-                    element: value.element,
-                    class: value.class
+                    'caption': value['caption'],
+                    'html': '<' + value['element'] + ' class="' + value['class'] + '">' + value['caption'] + '</' + value['element'] + '>',
+                    'element': value['element'],
+                    'class': value['class']
                 };
             });
         }

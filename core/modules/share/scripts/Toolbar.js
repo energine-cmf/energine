@@ -499,11 +499,11 @@ Toolbar.CustomSelect = new Class({
         }
 
         this.element =
-            new Element('li').setProperty('unselectable', 'on').addClass('custom_select');
+            new Element('li').addClass('custom_select');
         if (this.properties.title) this.element.adopt(new Element('span').addClass('label').set('text', this.properties.title));
         this.select = new Element('div').addClass('custom_select_box');
-        this.view = new Element('div').addClass('custom_select_view').setProperty('unselectable', 'on');
-        this.button = new Element('div').addClass('custom_select_button').setProperty('unselectable', 'on');
+        this.view = new Element('div').addClass('custom_select_view');
+        this.button = new Element('div').addClass('custom_select_button');
         this.dropbox = new Element('div').addClass('custom_select_dropbox');
         this.options_container = new Element('div').addClass('custom_select_options');
         this.dropbox.adopt(this.options_container);
@@ -532,10 +532,10 @@ Toolbar.CustomSelect = new Class({
         Object.each(this.options, function (value, key) {
             var el = new Element('div').addClass('custom_select_option');
             el.setProperty('data-value', key);
-            el.set('html', value.html);
-            el.setProperty('data-caption', value.caption);
-            el.setProperty('data-element', value.element);
-            el.setProperty('data-class', value.class);
+            el.set('html', value['html']);
+            el.setProperty('data-caption', value['caption']);
+            el.setProperty('data-element', value['element']);
+            el.setProperty('data-class', value['class']);
 
             if (key == this.initial) {
                 el.addClass('selected');
@@ -632,9 +632,9 @@ Toolbar.CustomSelect = new Class({
         var selected = this.select.getElements('.selected').getLast();
         if (!selected) return false;
         return {
-            value: selected.get('data-value'),
-            element: selected.get('data-element'),
-            class: selected.get('data-class')
+            'value': selected.get('data-value'),
+            'element': selected.get('data-element'),
+            'class': selected.get('data-class')
         };
     },
 

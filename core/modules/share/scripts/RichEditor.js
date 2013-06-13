@@ -276,14 +276,14 @@ var RichEditor = new Class({
         var selectedOption = control.getValue();
         control.setSelected('');
         if (!selectedOption) return;
-        if (selectedOption.value == '') return;
+        if (selectedOption['value'] == '') return;
 
         if (this.stored_selection) {
             this.selection.restoreSelection(this.stored_selection);
         }
 
         // сброс форматирования
-        if (selectedOption.value == 'reset') {
+        if (selectedOption['value'] == 'reset') {
             var node = this.selection.getNode();
             if (node) {
                 this.selection.selectNode(node, false);
@@ -294,8 +294,8 @@ var RichEditor = new Class({
             }
         }
         // применение стандартных тегов h1-h6, address, ...
-        else if (['h1','h2','h3','h4','h5','h6','address'].contains(selectedOption.value)) {
-            var tag = '<' + selectedOption.element.toUpperCase() + '>';
+        else if (['h1','h2','h3','h4','h5','h6','address'].contains(selectedOption['value'])) {
+            var tag = '<' + selectedOption['element'].toUpperCase() + '>';
             this.action("FormatBlock", false, tag);
         }
         // применение кастомных стилей
@@ -303,14 +303,14 @@ var RichEditor = new Class({
             var node = this.selection.getNode();
             if (node) {
                 this.selection.selectNode(node, false);
-                var html = '<' + selectedOption.element + ' class="'+ selectedOption.class + '"' + '>'
+                var html = '<' + selectedOption['element'] + ' class="'+ selectedOption['class'] + '"' + '>'
                     + node.get('html') +
-                    '</' + selectedOption.element + '>';
+                    '</' + selectedOption['element'] + '>';
                 this.selection.insertContent(html);
             } else {
-                var html = '<' + selectedOption.element + ' class="'+ selectedOption.class + '"' + '>'
+                var html = '<' + selectedOption['element'] + ' class="'+ selectedOption['class'] + '"' + '>'
                     + this.selection.getText() +
-                    '</' + selectedOption.element + '>';
+                    '</' + selectedOption['element'] + '>';
                 this.selection.insertContent(html);
             }
         }
@@ -477,7 +477,16 @@ RichEditor.Selection = new Class({
     },
 
     insertContent: function(content){
-        if (Browser.ie){
+
+        if (Browser.ie) {
+            try {
+                this.win.document.execCommand('insertHTML', false, content);
+            } catch (e) {
+            }
+            return false;
+        }
+
+        try {
             var r = this.getRange();
             if (r.pasteHTML){
                 r.pasteHTML(content);
@@ -495,8 +504,10 @@ RichEditor.Selection = new Class({
                     temp.outerHTML = content;
                     r.insertNode(fragment);
                 }
+            } else {
+                this.win.document.execCommand('insertHTML', false, content);
             }
-        } else {
+        } catch (e) {
             this.win.document.execCommand('insertHTML', false, content);
         }
     },
@@ -519,11 +530,6 @@ RichEditor.Selection = new Class({
                 return selection.createRange().getBookmark();
             }
             else if (selection.type.toLowerCase() == 'none' && Browser.ie) {
-                var rng = document.selection.createRange();
-                rng.text="_";
-                this.setSelectionRange(-1,0);
-                this._no_select = false;
-
                 return selection.createRange().getBookmark();
             }
             else

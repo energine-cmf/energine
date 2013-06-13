@@ -513,7 +513,7 @@ Toolbar.CustomSelect = new Class({
 
         var control = this;
 
-        this.select.addEvent('change', function () {
+        this.select.addEvent('afterchange', function () {
             control.toolbar._callAction(control.properties.action, control);
             return false;
         });
@@ -543,9 +543,11 @@ Toolbar.CustomSelect = new Class({
             control.select.getElement('.custom_select_options').adopt(el);
 
             el.addEvent('click', function(e) {
+                e.stop();
                 var val = el.get('data-value');
                 control.setSelected(val);
-                control.select.fireEvent('change');
+                control.select.fireEvent('afterchange');
+                return false;
             }.bind(this));
 
         }, this);
@@ -553,20 +555,36 @@ Toolbar.CustomSelect = new Class({
         this.view.addEvent('click', this.toggle.bind(this));
         this.button.addEvent('click', this.toggle.bind(this));
 
-        this.select.addEvent('mouseup', function(e) {e.preventDefault();});
-        this.select.getElement('*').addEvent('mouseup', function(e) {e.preventDefault();});
-
         document.addEvent('click', function(e) {
-            this.select.fireEvent('beforechange');
             if (this.expanded) {
                 this.collapse();
             }
         }.bind(this));
 
+        var disableSelection = function(el) {
+            el.setProperty('unselectable', 'on');
+            el.setStyle('-moz-user-select', 'none');
+            el.setStyle('-khtml-user-select', 'none');
+            el.setStyle('-webkit-user-select', 'none');
+            el.setStyle('-o-user-select', 'none');
+            el.setStyle('-ms-user-select', 'none');
+            el.setStyle('user-select', 'none');
+            el.addEvent('selectstart', function(e) {e.stop(); return false;});
+            el.addEvent('mousedown', function(e) {e.stop(); return false;});
+            el.addEvent('click', function(e) {e.stop(); return false;});
+        };
+
+        disableSelection(this.element);
+        disableSelection(this.view);
+        disableSelection(this.button);
+        disableSelection(this.dropbox);
+        disableSelection(this.options_container);
+
         this.collapse();
     },
 
     toggle: function(e) {
+        e.stop();
         this.select.fireEvent('beforechange');
         if (this.expanded) {
             this.collapse();

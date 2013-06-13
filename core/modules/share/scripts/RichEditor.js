@@ -264,6 +264,10 @@ var RichEditor = new Class({
     },
 
     beforeChangeFormat: function (control) {
+        try {
+            this.area.setActive();
+        } catch (e) {
+        }
         this.stored_selection = this.selection.storeCurrentSelection();
     },
 
@@ -272,6 +276,7 @@ var RichEditor = new Class({
         var selectedOption = control.getValue();
         control.setSelected('');
         if (!selectedOption) return;
+        if (selectedOption.value == '') return;
 
         if (this.stored_selection) {
             this.selection.restoreSelection(this.stored_selection);

@@ -34,9 +34,7 @@
                     </xsl:call-template>
                 </xsl:if>
             </ul>
-            <xsl:if test="$COMPONENTS[@name='commentsForm'][not(@hide_form=1)]">
-                <xsl:apply-templates select="$COMPONENTS[@name='commentsForm']" mode="comments"/>
-            </xsl:if>
+            <xsl:apply-templates select="$COMPONENTS[@name='commentsForm']" mode="comments"/>
         </div>
 
     </xsl:template>
@@ -69,6 +67,9 @@
 
     <xsl:template match="component[@class='CommentsForm']" mode="comments">
         <div class="comment_inputblock">
+            <xsl:if test="$COMPONENTS[@name='commentsForm'][@hide_form=1]">
+                <xsl:attribute name="style">display:none;</xsl:attribute>
+            </xsl:if>
             <a href="#" class="link_comment"><xsl:value-of select="$TRANSLATION[@const='COMMENT_DO_NEWS']"/></a>
         </div>
         <xsl:call-template name="COMMENT_FORM"/>
@@ -76,6 +77,9 @@
 
     <xsl:template name="COMMENT_FORM">
         <form class="comment_form" method="POST" action="">
+            <xsl:if test="$COMPONENTS[@name='commentsForm'][@hide_form=1]">
+                <xsl:attribute name="style">display:none;</xsl:attribute>
+            </xsl:if>
             <xsl:attribute name="comment_remain"><xsl:value-of select="$TRANSLATION[@const='COMMENT_REMAIN']"/></xsl:attribute>
             <xsl:attribute name="comment_symbol1"><xsl:value-of select="$TRANSLATION[@const='COMMENT_SYMBOL1']"/></xsl:attribute>
             <xsl:attribute name="comment_symbol2"><xsl:value-of select="$TRANSLATION[@const='COMMENT_SYMBOL2']"/></xsl:attribute>

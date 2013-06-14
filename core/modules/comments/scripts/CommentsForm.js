@@ -4,8 +4,8 @@ var CommentsForm = new Class({
     Extends: ValidForm,
     Implements: new Class(Energine.request),
     initialize : function(element) {
-        this.parent(element);
         Asset.css('comments.css');
+        this.parent(element);
         if (this.componentElement && this.componentElement.getParent('form')) {
             this.form = this.componentElement.getParent('form').addClass('form');
             $$('div.comments div.comment_inputblock a.link_comment').addEvent('click', this.show_form_base.bind(this));

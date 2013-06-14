@@ -180,6 +180,7 @@ class TranslationFinder extends DBWorker {
 
         if ($data) {
             foreach ($data as $const => $val) {
+                if (!$const) continue;
                 $res = $this->dbh->getScalar('share_lang_tags', 'ltag_id', array('ltag_name' => $const));
                 if (!$res) {
                     $result[$const] = $val;

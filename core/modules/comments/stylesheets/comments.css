@@ -1,0 +1,123 @@
+/* ----- comments ----- */
+.comments {
+    position: relative;
+    padding: 0 4px 12px 12px;
+    color: black;
+}
+.comments .e-overlay {
+    position: absolute;
+}
+.comments .actionset {
+    float: right;
+    position: relative;
+    left: 2px;
+    padding-left: 8px;
+}
+.comments_title {
+    margin: 0;
+    font-size: 1.834em; /* =22px */
+}
+.comment_list {
+    clear: both;
+    margin: 0;
+    padding: 12px 0 0 0;
+    list-style: none;
+}
+.comment_item {
+    margin: 0;
+    padding: 11px 0 7px 0;
+}
+.comment_list .first_item {
+    background: none;
+}
+.comment_list .last_item {
+    padding-bottom: 0;
+}
+.comment_actionset {
+    float: right;
+    padding: 6px 0 6px 10px;
+}
+.comment_actionset a:link, .comment_actionset a:visited {
+    text-decoration: underline;
+}
+.comment_actionset a:hover, .comment_actionset a:active {
+    text-decoration: none;
+}
+.comment_userinfo {
+    padding-bottom: 7px;
+}
+.comment_username {
+    font-size: 1.25em; /* =15px */
+    font-weight: bold;
+}
+.comment_username a:link, .comment_username a:visited {
+    text-decoration: none;
+}
+.comment_username a:hover, .comment_username a:active {
+    text-decoration: underline;
+}
+.comment_date {
+    color: #00a31f;
+}
+.comment_text {
+    clear: both;
+    margin-bottom: 5px;
+}
+.comment_form {
+    margin: 0;
+}
+.comment_inputblock {
+    position: relative;
+    clear: both;
+    padding-top: 20px;
+}
+.comment_item .comment_inputblock {
+    padding-top: 0;
+}
+.comment_inputblock .btn_comment {
+    position: relative;
+    left: -2px;
+    margin-right: -2px;
+}
+.comment_inputblock .e-overlay{
+    position: absolute;
+}
+.comment_title {
+    font-size: 1.25em; /* =15px */
+    font-weight: bold;
+}
+.comment_field {
+    padding: 3px 8px 9px 0;
+}
+.comment_field textarea {
+    width: 100%;
+    height: 110px;
+    margin-right: -8px;
+}
+.comment_controlset .note {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+.comment_thread {
+    position: relative;
+}
+.comment_thread_icon {
+    display: block;
+    position: absolute;
+    top: 20px;
+    left: 2px;
+    z-index: 1;
+}
+.comment_thread .comment_list {
+    padding: 7px 0 0 38px;
+}
+.comments .link_comment {
+    font-size: 1.834em; /* =22px */
+}
+
+.comments .btn {
+    margin-right: 10px;
+    display: inline-block;
+}
+
+/* ----- /comments ----- */

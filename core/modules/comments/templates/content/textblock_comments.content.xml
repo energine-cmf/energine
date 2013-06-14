@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content html_class="colset colset2">
+    <container name="left" column="column" html_class="col col1">
+        <container name="mainMenuContainer" block="beta" widget="widget">
+            <component name="mainMenu" module="share" class="PageList">
+                <params>
+                    <param name="tags">menu</param>
+                    <param name="recursive">1</param>
+                    <param name="config">core/modules/share/MainMenu.component.xml</param>
+                </params>
+            </component>
+        </container>
+        <container name="leftAdBlock"/>
+        <container name="loginFormContainer" block="beta" widget="widget">
+            <component name="loginForm" module="user" class="LoginForm"/>
+        </container>
+    </container>
+    <container name="center" column="column" html_class="col col2 last_col">
+        <container name="textBlockContainer" block="alfa" widget="static">
+            <component name="textBlock_1" module="share" class="TextBlock">
+                <params>
+                    <param name="num">1</param>
+                </params>
+            </component>
+        </container>
+        <container name="commentsContainer" block="alfa" widget="static">
+            <component name="commentsForm" module="comments" class="CommentsForm">
+                <params>
+                    <param name="bind">textBlock_1</param>
+                    <param name="bind_state">main</param>
+                    <param name="comment_tables">share_sitemap_comment</param>
+                    <param name="show_comments">1</param>
+                    <param name="show_form">1</param>
+                    <param name="is_tree">1</param>
+                </params>
+            </component>
+        </container>
+    </container>
+</content>

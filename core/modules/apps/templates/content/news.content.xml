@@ -34,6 +34,18 @@
                 </params>
             </component>
         </container>
+        <container name="commentsContainer" block="alfa" widget="static">
+            <component name="commentsForm" module="comments" class="CommentsForm">
+                <params>
+                    <param name="bind">news</param>
+                    <param name="bind_state">view</param>
+                    <param name="comment_tables">apps_news_comment</param>
+                    <param name="show_comments">1</param>
+                    <param name="show_form">1</param>
+                    <param name="is_tree">1</param>
+                </params>
+            </component>
+        </container>
     </container>
     <component name="newsEditor" module="apps" class="NewsEditor">
 		<params>

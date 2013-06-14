@@ -137,14 +137,6 @@ class CommentsList extends DataSet {
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
         $dataDescription->addFieldDescription($fd);
 
-        $fd = new FieldDescription('u_sex');
-        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-        $dataDescription->addFieldDescription($fd);
-
-        $fd = new FieldDescription('u_place');
-        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-        $dataDescription->addFieldDescription($fd);
-
         return $dataDescription;
     }
 
@@ -261,8 +253,6 @@ class CommentsList extends DataSet {
                 $user = $usersInfo[$item['u_id']];
                 $item['u_nick'] =
                         trim($user['u_nick']) ? trim($user['u_nick']) : $user['u_fullname'];
-                $item['u_sex'] = $user['u_sex'];
-                $item['u_place'] = $user['u_place'];
             }
         }
         return $data;
@@ -287,12 +277,7 @@ class CommentsList extends DataSet {
             if ($userIds) {
                 $userIds = implode(',', $userIds);
                 $result = $this->dbh->selectRequest(
-                    'SELECT u.*, ' .
-                            ' CASE WHEN u.u_is_male IS NULL THEN "' .
-                            $this->translate('TXT_UNKNOWN') .
-                            '" WHEN u_is_male = 1 THEN "' .
-                            $this->translate('TXT_MALE') . '" ELSE "' .
-                            $this->translate('TXT_FEMALE') . '" END as u_sex ' .
+                    'SELECT u.* ' .
                             " FROM user_users u
 					 WHERE u.u_id in($userIds)"
                 );

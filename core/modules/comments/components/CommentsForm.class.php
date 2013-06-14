@@ -177,6 +177,9 @@ class CommentsForm extends DataSet {
      * @return string
      */
     protected function clearPost($s) {
+
+        return strip_tags($s);
+
         /*
         $allowTags = implode(array('<br><b><strong><em><i><div><ul><ol><li><a>'));
         $s = strip_tags($s, $allowTags);
@@ -333,6 +336,8 @@ class CommentsForm extends DataSet {
             'active' => true,
             'is_tree' => 0,
             'bind' => false,
+            'bind_state' => 'view',
+            'bind_pk_param_idx' => 0,
             'show_comments' => false,
             'show_form' => false,
             'textLimit' => 250
@@ -351,7 +356,7 @@ class CommentsForm extends DataSet {
         }
         else {
             if (($this->bindComponent &&
-                    $this->bindComponent->getState() == 'view') &&
+                    $this->bindComponent->getState() == $this->getParam('bind_state')) &&
                     ($this->getState() == 'main')
                     && $this->getParam('show_form') &&
                     $this->getParam('show_comments')
@@ -361,13 +366,14 @@ class CommentsForm extends DataSet {
                 //ID комментируемого элемента
                 $ap = $this->bindComponent->getStateParams(true);
                 //Тут костыль
-                $apk = array_keys($ap);
-                $apName = $apk[sizeof($apk) - 1];
-                if ($apName == 'pageNumber') {
-                    $apName = $apk[sizeof($apk) - 2];
+                if (is_array($ap)) {
+                    $apk = array_keys($ap);
+                    $param_idx = $this->getParam('bind_pk_param_idx');
+                    $apName = (isset($apk[$param_idx])) ? $apk[$param_idx] : $apk[sizeof($apk) - 1];
+                    $targetId = $ap[$apName];
+                } else {
+                    $targetId = $this->document->getID();
                 }
-                $targetId = $ap[$apName];
-
                 if ($this->isTargetEditable()) {
                     $this->getDataDescription()->getFieldDescriptionByName('target_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
 
@@ -398,7 +404,7 @@ class CommentsForm extends DataSet {
             if ($this->getParam('show_comments') &&
                     $this->isExistsNeedTables() &&
                     is_object($this->bindComponent) &&
-                    $this->bindComponent->getState() == 'view'
+                    $this->bindComponent->getState() == $this->getParam('bind_state')
                     && $this->bindComponent->getData() &&
                     !$this->bindComponent->getData()->isEmpty()) {
                 $this->showComments();
@@ -422,13 +428,6 @@ class CommentsForm extends DataSet {
 
         $userInfo = $this->getUserInfo($uId);
         $userName = array_shift($userInfo);
-        $userSex = array_shift($userInfo);
-        if (is_bool($userSex)) {
-            $userSex = $this->translate($userSex ? 'TXT_MALE' : 'TXT_FEMALE');
-        }
-        else $userSex = $this->translate('TXT_UNKNOWN');
-
-        $userPlace = array_shift($userInfo);
 
         $created = time(); // для JSONBuilder
         $createdStr = date('Y-m-d H:i:s', $created); // для запроса
@@ -449,12 +448,10 @@ class CommentsForm extends DataSet {
             'comment_parent_id' => $parentId,
             'target_id' => $targetId,
             'u_id' => $uId,
-            'comment_created' => $created,
+            'comment_created' => $createdStr,
             'comment_name' => $commentName,
             'comment_approved' => 0,
-            'u_nick' => $userName,
-            'u_sex' => $userSex,
-            'u_place' => $userPlace
+            'u_nick' => $userName
         );
     }
 
@@ -469,7 +466,7 @@ class CommentsForm extends DataSet {
     private function getUserInfo($uId) {
         $result = array('u_nick' => '');
         $userInfo = $this->dbh->select('user_users',
-            array('u_nick', 'u_is_male, u_place', 'u_fullname'),
+            array('u_nick', 'u_fullname'),
             array('u_id' => $uId),
             null, array(1)
         );
@@ -543,15 +540,6 @@ class CommentsForm extends DataSet {
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
         $dataDescription->addFieldDescription($fd);
 
-        $fd = new FieldDescription('u_sex');
-        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-        $dataDescription->addFieldDescription($fd);
-
-        $fd = new FieldDescription('u_place');
-        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
-        $dataDescription->addFieldDescription($fd);
-
-
         return $builder;
     }
 
@@ -560,7 +548,13 @@ class CommentsForm extends DataSet {
      * @return void
      */
     protected function showComments() {
-        $priFieldName = $this->bindComponent->getPK();
+
+        if ($this->getParam('bind_state') == 'main') {
+            $targetIds = $this->document->getID();
+        } else {
+            $priFieldName = $this->bindComponent->getPK();
+            $targetIds = $this->bindComponent->getData()->getFieldByName($priFieldName)->getData();
+        }
 
         $commentsParams = array(
             'active' => true,
@@ -568,7 +562,7 @@ class CommentsForm extends DataSet {
             'is_tree' => $this->getParam('is_tree'),
             'bind' => $this->getParam('bind'),
             'recordsPerPage' => $this->getParam('recordsPerPage'),
-            'target_ids' => $this->bindComponent->getData()->getFieldByName($priFieldName)->getData()
+            'target_ids' => $targetIds
         );
 
         $this->setProperty('bind', $this->getParam('bind'));

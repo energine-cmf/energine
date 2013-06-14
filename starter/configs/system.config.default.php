@@ -8,10 +8,10 @@
 return array(
 
     // название проекта
-    'project' => 'Energine 2.11.3',
+    'project' => 'Energine 2.11.4',
 
     // путь к директории setup текущего используемого ядра
-    'setup_dir' => ($energine_release = '/var/www/energine/branches/2.11.2.dev') . '/setup',
+    'setup_dir' => ($energine_release = '/var/www/energine/tags/2.11.4') . '/setup',
 
     // список подключенных модулей ядра в конкретном проекте
     // ключи массива - названия модулей, значения - абсолютные пути к месторасположению
@@ -21,7 +21,8 @@ return array(
         'apps'      => $energine_release . '/core/modules/apps',
         'forms'     => $energine_release . '/core/modules/forms',
         'seo'       => $energine_release . '/core/modules/seo',
-        'calendar'  => $energine_release . '/core/modules/calendar'
+        'calendar'  => $energine_release . '/core/modules/calendar',
+        'comments'  => $energine_release . '/core/modules/comments',
     ),
 
     // настройки подключения к mysql

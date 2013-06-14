@@ -18,7 +18,8 @@
     <xsl:include href="../../../../core/modules/calendar/transformers/include.xslt"/>    
     <xsl:include href="../../../../core/modules/apps/transformers/include.xslt"/>
     <xsl:include href="../../../../core/modules/forms/transformers/include.xslt"/>
-    
+    <xsl:include href="../../../../core/modules/comments/transformers/include.xslt"/>
+
     <xsl:include href="include.xslt"/>
 
 </xsl:stylesheet>

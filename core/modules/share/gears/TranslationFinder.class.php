@@ -11,7 +11,7 @@
 
 /**
  * Класс TranslationFinder предназначен для вывода непереведенных языковых констант,
- * которые забыты в php-коде и xml-файлах конфигов и/или шаблонов
+ * которые забыты в php-коде и xml-файлах конфигов
  *
  * @package Energine
  * @subpackage share
@@ -60,11 +60,6 @@ class TranslationFinder extends DBWorker {
 
                 $r = array();
 
-/*                if (preg_match_all('/addTranslation\([\'"]+([_A-Z0-9]+)[\'"]+\)/', $content, $r) > 0) {
-                    if ($r)
-                        $result[$file] = $r[1];
-                }
-*/
                 if (preg_match_all('/addTranslation\(([\'"]+([_A-Z0-9]+)[\'"]+([ ]{0,}[,]{1,1}[ ]{0,}[\'"]+([_A-Z0-9]+)[\'"]){0,})\)/', $content, $r) > 0) {
                     if ($r and isset($r[1])) {
                         foreach($r[1] as $string) {
@@ -119,7 +114,11 @@ class TranslationFinder extends DBWorker {
 
         $files = array_merge(
             glob(CORE_DIR . '/modules/*/config/*.xml'),
-            glob(SITE_DIR . '/modules/*/config/*.xml')
+            glob(CORE_DIR . '/modules/*/templates/content/*.xml'),
+            glob(CORE_DIR . '/modules/*/templates/layout/*.xml'),
+            glob(SITE_DIR . '/modules/*/config/*.xml'),
+            glob(SITE_DIR . '/modules/*/templates/content/*.xml'),
+            glob(SITE_DIR . '/modules/*/templates/layout/*.xml')
         );
 
         if ($files)
@@ -176,7 +175,7 @@ class TranslationFinder extends DBWorker {
      * @param array $data входной массив констант
      * @return array массив непереведенных констант
      */
-    public function mGetUntranslated($data) {
+    public function getUntranslated($data) {
         $result = array();
 
         if ($data) {
@@ -205,7 +204,7 @@ class TranslationFinder extends DBWorker {
             $this->getXmlCalls()
         );
 
-        $result = $this->mGetUntranslated($all);
+        $result = $this->getUntranslated($all);
 
         if ($result) {
             foreach($result as $key => $val) {

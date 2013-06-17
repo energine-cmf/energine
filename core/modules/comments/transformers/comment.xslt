@@ -8,6 +8,7 @@
         <xsl:variable name="IS_ADMIN"><xsl:value-of select="@is_admin"/></xsl:variable>
         <xsl:variable name="IS_EDITABLE"><xsl:value-of select="@is_editable"/></xsl:variable>
         <xsl:variable name="IS_SHOW_COMMENT_LINK"><xsl:if test="@is_tree='1' and @is_editable='1'">1</xsl:if></xsl:variable>
+        <br/>
         <div class="comments">
 
             <h3 class="comments_title">

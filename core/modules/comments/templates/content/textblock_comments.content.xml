@@ -22,8 +22,6 @@
                     <param name="num">1</param>
                 </params>
             </component>
-        </container>
-        <container name="commentsContainer" block="alfa" widget="static">
             <component name="commentsForm" module="comments" class="CommentsForm">
                 <params>
                     <param name="active">1</param>

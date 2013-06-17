@@ -52,7 +52,8 @@ class CommentsEditor extends Grid {
     protected function loadDataDescription() {
         $result = parent::loadDataDescription();
         if ($this->getState() == 'edit') {
-            unset($result['comment_parent_id'], $result['target_id']);
+            unset($result['comment_parent_id']);
+            unset($result['target_id']);
             $result['u_id']['key'] = false;
             $result['u_id']['type'] = QAL::COLTYPE_STRING;
         }

@@ -573,6 +573,43 @@ CREATE TABLE IF NOT EXISTS `user_user_groups` (
   KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `share_sitemap_comment`;
+CREATE TABLE `share_sitemap_comment` (
+  `comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `comment_parent_id` int(10) unsigned DEFAULT NULL,
+  `target_id` int(10) unsigned NOT NULL,
+  `u_id` int(10) unsigned DEFAULT NULL,
+  `comment_created` datetime NOT NULL,
+  `comment_name` varchar(250) NOT NULL,
+  `comment_approved` tinyint(1) NOT NULL DEFAULT '0',
+  `comment_nick` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`comment_id`),
+  KEY `parent_id` (`comment_parent_id`),
+  KEY `target_id` (`target_id`),
+  KEY `u_id` (`u_id`),
+  CONSTRAINT `share_sitemap_comment_ibfk_1` FOREIGN KEY (`comment_parent_id`) REFERENCES `share_sitemap_comment` (`comment_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `share_sitemap_comment_ibfk_2` FOREIGN KEY (`target_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `share_sitemap_comment_ibfk_3` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `apps_news_comment`;
+CREATE TABLE `apps_news_comment` (
+  `comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `comment_parent_id` int(10) unsigned DEFAULT NULL,
+  `target_id` int(10) unsigned NOT NULL,
+  `u_id` int(10) unsigned DEFAULT NULL,
+  `comment_created` datetime NOT NULL,
+  `comment_name` varchar(250) NOT NULL,
+  `comment_approved` tinyint(1) NOT NULL DEFAULT '0',
+  `comment_nick` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`comment_id`),
+  KEY `parent_id` (`comment_parent_id`),
+  KEY `target_id` (`target_id`),
+  KEY `u_id` (`u_id`),
+  CONSTRAINT `apps_news_comment_ibfk_1` FOREIGN KEY (`comment_parent_id`) REFERENCES `apps_news_comment` (`comment_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `apps_news_comment_ibfk_2` FOREIGN KEY (`target_id`) REFERENCES `apps_news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `apps_news_comment_ibfk_3` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `apps_feed`
   ADD CONSTRAINT `apps_feed_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;

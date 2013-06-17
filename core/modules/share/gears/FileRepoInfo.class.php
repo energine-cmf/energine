@@ -99,7 +99,13 @@ class FileRepoInfo extends Object {
         $result['width'] = '';
         $result['height'] = '';
 
-        if (is_dir($filename)) {
+        // hotfix для php на продакшне без поддержки https://
+        // todo: пофиксить, до выяснения
+        if (strpos($filename, 'https://') !== false) {
+            $result['mime'] = 'unknown/mime-type';
+            $result['type'] = self::META_TYPE_UNKNOWN;
+            return $result;
+        } elseif (is_dir($filename)) {
             $result['type'] = self::META_TYPE_FOLDER;
             $result['mime'] = 'unknown/mime-type';
         } elseif (!file_exists($filename)) {

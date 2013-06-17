@@ -17,15 +17,13 @@
             </h3>
 
             <ul class="comment_list">
-                <xsl:if test="$IS_SHOW_COMMENT_LINK = 1">
-                    <xsl:call-template name="BUILD_COMMENT">
-                        <xsl:with-param name="CLASS">hidden</xsl:with-param>
-                        <xsl:with-param name="IS_SHOW_COMMENT_LINK"><xsl:value-of select="$IS_SHOW_COMMENT_LINK"/></xsl:with-param>
-                        <xsl:with-param name="IS_ADMIN" select="$IS_ADMIN"/>
-                        <xsl:with-param name="IS_EDITABLE" select="$IS_EDITABLE"/>
-                        <xsl:with-param name="IS_TEMPLATE">1</xsl:with-param>
-                    </xsl:call-template>
-                </xsl:if>
+                <xsl:call-template name="BUILD_COMMENT">
+                    <xsl:with-param name="CLASS">hidden</xsl:with-param>
+                    <xsl:with-param name="IS_SHOW_COMMENT_LINK"><xsl:value-of select="$IS_SHOW_COMMENT_LINK"/></xsl:with-param>
+                    <xsl:with-param name="IS_ADMIN" select="$IS_ADMIN"/>
+                    <xsl:with-param name="IS_EDITABLE" select="$IS_EDITABLE"/>
+                    <xsl:with-param name="IS_TEMPLATE">1</xsl:with-param>
+                </xsl:call-template>
                 <xsl:if test="not(recordset[@empty])">
                     <xsl:call-template name="COMMENT">
                         <xsl:with-param name="IS_SHOW_COMMENT_LINK" select="$IS_SHOW_COMMENT_LINK" />
@@ -89,9 +87,28 @@
             <div class="comment_inputblock" id="{generate-id(recordset)}" single_template="{$BASE}{$LANG_ABBR}{@single_template}">
                 <div class="comment_title"><xsl:value-of select="@title"/></div>
                 <input type="hidden" name="target_id" value="{recordset/record/field[@name='target_id']}"></input>
+                <xsl:if test="@is_anonymous='1'">
                 <div class="comment_field">
+                    <label for="comment_nick">
+                        <xsl:value-of select="recordset/record/field[@name='comment_nick']/@title"/>
+                        <xsl:text>:</xsl:text>
+                    </label>
+                    <br/>
+                    <input type="text" id="comment_nick" name="comment_nick" nrgn:message="{recordset/record/field[@name='comment_nick']/@message}" nrgn:pattern="{recordset/record/field[@name='comment_nick']/@pattern}" xmlns:nrgn="http://energine.org"/>
+                </div>
+                </xsl:if>
+                <div class="comment_field">
+                    <label for="comment_name">
+                        <xsl:value-of select="recordset/record/field[@name='comment_name']/@title"/>
+                        <xsl:text>:</xsl:text>
+                    </label>
                     <textarea rows="10" cols="10" id="comment_name" name="comment_name" nrgn:message="{recordset/record/field[@name='comment_name']/@message}" nrgn:pattern="{recordset/record/field[@name='comment_name']/@pattern}" xmlns:nrgn="http://energine.org"></textarea>
                 </div>
+                <xsl:if test="@is_anonymous='1'">
+                    <div class="comment_field">
+                        <xsl:apply-templates select="recordset/record/field[@name='captcha']"/>
+                    </div>
+                </xsl:if>
                 <div class="comment_controlset">
                     <xsl:call-template name="BUILD_COMMENT_BUTTON">
                         <xsl:with-param name="CONTENT">

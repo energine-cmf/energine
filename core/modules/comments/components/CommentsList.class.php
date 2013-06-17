@@ -250,9 +250,13 @@ class CommentsList extends DataSet {
             $usersInfo = convertDBResult($usersInfo, 'u_id');
 
             foreach ($data as &$item) {
-                $user = $usersInfo[$item['u_id']];
-                $item['u_nick'] =
-                        trim($user['u_nick']) ? trim($user['u_nick']) : $user['u_fullname'];
+                if ($item['u_id']) {
+                    $user = $usersInfo[$item['u_id']];
+                    $item['u_nick'] =
+                            trim($user['u_nick']) ? trim($user['u_nick']) : $user['u_fullname'];
+                } else {
+                    $item['u_nick'] = $item['comment_nick'];
+                }
             }
         }
         return $data;
@@ -270,7 +274,9 @@ class CommentsList extends DataSet {
         if ($data && is_array($data)) {
             $userIds = array();
             foreach ($data as $item) {
-                $userIds[] = $item['u_id'];
+                if ($item['u_id']) {
+                    $userIds[] = $item['u_id'];
+                }
             }
             $userIds = array_unique($userIds);
 

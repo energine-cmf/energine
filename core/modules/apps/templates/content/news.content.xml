@@ -37,6 +37,8 @@
         <container name="commentsContainer" block="alfa" widget="static">
             <component name="commentsForm" module="comments" class="CommentsForm">
                 <params>
+                    <param name="active">1</param>
+                    <param name="allows_anonymous">1</param>
                     <param name="bind">news</param>
                     <param name="bind_state">view</param>
                     <param name="comment_tables">apps_news_comment</param>

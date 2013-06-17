@@ -25,6 +25,7 @@
  * @author sign
  */
 class CommentsForm extends DataSet {
+
     private $userEditor;
 
     private $banIPEditor;
@@ -83,6 +84,10 @@ class CommentsForm extends DataSet {
                 $this->document->componentManager->getBlockByName($this->getParam('bind'));
         $this->isTree = $this->getParam('is_tree');
         $this->setProperty('limit', $this->getParam('textLimit'));
+
+        $this->setProperty('is_anonymous', (string) !$this->document->user->isAuthenticated());
+
+        $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
 
     /**
@@ -113,7 +118,7 @@ class CommentsForm extends DataSet {
                 throw new Exception('Adding comments has been disabled');
             }
 
-            if (!$this->document->user->isAuthenticated()) {
+            if (!$this->getParam('allows_anonymous') && !$this->document->user->isAuthenticated()) {
                 throw new Exception('Add comment can auth user only');
             }
 
@@ -125,6 +130,14 @@ class CommentsForm extends DataSet {
                 throw new SystemException('read only');
             }
 
+            if (!$this->document->getUser()->isAuthenticated() && empty($_POST['comment_nick'])) {
+                throw new SystemException('TXT_COMMENT_NICK_IS_REQUIRED');
+            }
+
+            if (!$this->document->getUser()->isAuthenticated()) {
+                $this->checkCaptcha();
+            }
+
             if (isset($_POST['comment_name']) and
                     $commentName = trim($_POST['comment_name'])) {
                 if ($this->isTree and isset($_POST['parent_id'])) {
@@ -133,18 +146,19 @@ class CommentsForm extends DataSet {
                 else $parentId = 0;
 
                 $commentName = $this->clearPost($commentName);
+                $commentNick = $this->clearPost((isset($_POST['comment_nick'])) ? $_POST['comment_nick'] : '');
 
                 if (isset($_POST['comment_id']) and
                         $commentId = intval($_POST['comment_id'])) {
                     // отредактированный коммент
                     if (!$isUpdated =
-                            $this->updateComment($targetId, $commentName, $commentId))
+                            $this->updateComment($targetId, $commentName, $commentNick, $commentId))
                         throw new Exception('Save error');
                 }
                 else {
                     // новый коммент
                     $comment =
-                            $this->addComment($targetId, $commentName, $parentId);
+                            $this->addComment($targetId, $commentName, $commentNick, $parentId);
                 }
             }
             else {
@@ -155,8 +169,12 @@ class CommentsForm extends DataSet {
                 $builder->setProperties(array(
                     'result' => true,
                     'mode' => 'update',
-                    'data' => array('comment_name' => $commentName, 'comment_id' => $commentId))
-                );
+                    'data' => array(
+                        'comment_name' => $commentName,
+                        'comment_nick' => $commentNick,
+                        'comment_id' => $commentId
+                    )
+                ));
             }
             else {
                 $this->setBuilder($this->buildResult(array($comment)));
@@ -177,56 +195,7 @@ class CommentsForm extends DataSet {
      * @return string
      */
     protected function clearPost($s) {
-
         return strip_tags($s);
-
-        /*
-        $allowTags = implode(array('<br><b><strong><em><i><div><ul><ol><li><a>'));
-        $s = strip_tags($s, $allowTags);
-        $s = nl2br($s);
-        // все ньюлайн уже преобразованы, убираем случайные что бы они не помешали нам парсить ссылки
-        $s = str_replace(array("\n", "\r"), array('', ''), $s);
-        
-        $s = preg_replace_callback('|<a\s+([^>]*)>(.*)</a>|i',
-            function($matches){
-                $m = array();
-                if(!strlen(trim($matches[2])) or !preg_match('%href\s*=\s*(?:"|\')([^\'"]*)(?:"|\')%i', $matches[1], $m))
-                    return '';
-                return '<a href="'. $m[1]. '">'. $matches[2]. '</a>';
-            },
-            $s
-        );
-        return $s;
-         */
-        $jewix = new Jevix();
-        $jewix->cfgSetXHTMLMode(true);
-        $jewix->cfgSetAutoBrMode(false);
-        $jewix->cfgSetAutoLinkMode(true);
-
-        $allowedTags = array(
-            'br' => array(),
-            'ul' => array('class'),
-            'ol' => array('class'),
-            'li' => array(),
-            'img' => array('class', 'src'),
-            'b' => array(),
-            'div' => array('class'),
-            'em' => array(),
-            'i' => array(),
-            'span' => array('class'),
-            'p' => array('class'),
-            'a' => array('class', 'href', 'target')
-        );
-        $jewix->cfgAllowTags(array_keys($allowedTags));
-        $jewix->cfgSetTagShort(array('br', 'img'));
-        $jewix->cfgSetTagNoAutoBr(array('ul', 'ol', 'span', 'div'));
-        foreach ($allowedTags as $tagName => $tagParams)$jewix->cfgAllowTagParams($tagName, $tagParams);
-        $jewix->cfgSetTagCutWithContent(array('script', 'iframe', 'object', 'embed'));
-        $errors = false;
-        $data = $jewix->parse($s, $errors);
-        $data = SmileTransform::wrapSmileToTemplate($data);
-
-        return $data;
     }
 
     /**
@@ -234,14 +203,14 @@ class CommentsForm extends DataSet {
      * @return bool
      */
     protected function isTargetEditable() {
-        if (!E()->getAUser()->isAuthenticated())
+        if (!$this->getParam('allows_anonymous') && !E()->getAUser()->isAuthenticated())
             return false;
         $right =
                 E()->getMap()->getDocumentRights($this->document->getID());
-        return $right > ACCESS_READ;
+        return $right >= ACCESS_READ;
     }
 
-    private function updateComment($targetId, $commentName, $commentId) {
+    private function updateComment($targetId, $commentName, $commentNick, $commentId) {
         if (!in_array('1', E()->getAUser()->getGroups())) {
             if (!$this->isTargetEditable()) { // юзеру доступно только чтение
                 return false;
@@ -259,7 +228,10 @@ class CommentsForm extends DataSet {
             }
         }
         return $this->dbh->modify(QAL::UPDATE, $this->commentTable,
-            array('comment_name' => $commentName),
+            array(
+                'comment_name' => $commentName,
+                'comment_nick' => $commentNick,
+            ),
             array('comment_id' => $commentId)
         );
     }
@@ -316,7 +288,7 @@ class CommentsForm extends DataSet {
                 return true;
             }
             $comment = $comments[0];
-            if (E()->getAUser()->getID() != $comment['u_id']) {
+            if (!E()->getAUser() || E()->getAUser()->getID() != $comment['u_id']) {
                 // не автор - запретить!
                 return false;
             }
@@ -340,7 +312,8 @@ class CommentsForm extends DataSet {
             'bind_pk_param_idx' => 0,
             'show_comments' => false,
             'show_form' => false,
-            'textLimit' => 250
+            'textLimit' => 250,
+            'allows_anonymous' => true,
         ));
         return $result;
     }
@@ -362,6 +335,15 @@ class CommentsForm extends DataSet {
                     $this->getParam('show_comments')
                     && $this->isExistsNeedTables()) {
                 parent::prepare();
+
+                if (
+                    $this->document->getUser()->isAuthenticated()
+                    &&
+                    ($captcha =
+                        $this->getDataDescription()->getFieldDescriptionByName('captcha'))
+                ) {
+                    $this->getDataDescription()->removeFieldDescription($captcha);
+                }
 
                 //ID комментируемого элемента
                 $ap = $this->bindComponent->getStateParams(true);
@@ -423,25 +405,34 @@ class CommentsForm extends DataSet {
      * @param int $parentId       Родительский комментарий
      * @return array
      */
-    private function addComment($targetId, $commentName, $parentId = null) {
-        $uId = $this->document->user->getID();
+    private function addComment($targetId, $commentName, $commentNick, $parentId = null) {
 
-        $userInfo = $this->getUserInfo($uId);
-        $userName = array_shift($userInfo);
+        if ($this->document->user && $this->document->user->getID()) {
+            $uId = $this->document->user->getID();
+            $userInfo = $this->getUserInfo($uId);
+            $userName = array_shift($userInfo);
+        } else {
+            $uId = null;
+            $userName = $commentNick;
+        }
 
         $created = time(); // для JSONBuilder
         $createdStr = date('Y-m-d H:i:s', $created); // для запроса
 
         $parentIdSql = intval($parentId) ? intval($parentId) : 'NULL';
-        $commentId = $this->dbh->modifyRequest("INSERT {$this->commentTable} 
+        $uIdSql = intval($uId) ? intval($uId) : 'NULL';
+
+        $commentId = $this->dbh->modifyRequest("INSERT {$this->commentTable}
         	SET target_id = %s,
         		comment_parent_id = $parentIdSql, 
         		comment_name = %s,
-        		u_id = %s,
+        		comment_nick = %s,
+        		u_id = $uIdSql,
         		comment_created = %s,
         		comment_approved = 0",
-            $targetId, $commentName, $uId, $createdStr
+            $targetId, $commentName, $commentNick, $createdStr
         );
+
         return array(
             'is_tree' => (int) $this->isTree, // для отрисовки или не отрисовки ссылки "коментировать" в js
             'comment_id' => $commentId,
@@ -611,4 +602,18 @@ class CommentsForm extends DataSet {
         $this->banIPEditor = $this->document->componentManager->createComponent('bie','user','BanIPEditor');
         $this->banIPEditor->run();
     }
+
+    protected function checkCaptcha() {
+        require_once('core/modules/share/gears/recaptchalib.php');
+        $privatekey = $this->getConfigValue('recaptcha.private');
+        $resp = recaptcha_check_answer($privatekey,
+            $_SERVER["REMOTE_ADDR"],
+            $_POST["recaptcha_challenge_field"],
+            $_POST["recaptcha_response_field"]);
+
+        if (!$resp->is_valid) {
+            throw new SystemException($this->translate('TXT_BAD_CAPTCHA'), SystemException::ERR_CRITICAL);
+        }
+    }
+
 }

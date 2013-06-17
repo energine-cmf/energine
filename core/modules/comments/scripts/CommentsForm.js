@@ -31,6 +31,7 @@ var CommentsForm = new Class({
                     this.singlePath + 'save-comment/',
                     this.form.toQueryString(),
                     function(response) {
+                        this.overlay.hide();
                         if (response.mode == 'update') {
                             var li = $$('li.comment_item[id=' + response.data.comment_id + '_comment]');
                             li.getElement('div.hidden.comment_text').set('html', response.data.comment_name);
@@ -41,12 +42,17 @@ var CommentsForm = new Class({
                         else {
                             this.show_result(response);
                         }
+                    }.bind(this),
+                    function(response) {
                         this.overlay.hide();
                     }.bind(this)
             );
         }
     },
     show_result: function(response) {
+        try {
+            Recaptcha.reload();
+        } catch (e) {}
         if (response.errors) {
             alert(response.errors);
         }
@@ -66,8 +72,13 @@ var CommentsForm = new Class({
                 else {
                     li.getElement('div.comment_inputblock').addClass('hidden');
                 }
-                li.getElements('a.btn_edit').addEvent('click', this.editComment.bind(this));
-                li.getElements('a.btn_delete').addEvent('click', this.deleteComment.bind(this));
+                if (item['u_id']) {
+                    li.getElements('a.btn_edit').addEvent('click', this.editComment.bind(this));
+                    li.getElements('a.btn_delete').addEvent('click', this.deleteComment.bind(this));
+                } else {
+                    li.getElements('a.btn_edit').addClass('hidden');
+                    li.getElements('a.btn_delete').addClass('hidden');
+                }
             }
 
             if (item['comment_parent_id']) {

@@ -191,7 +191,10 @@ class GoogleSitemap extends SitemapTree
         $mainSiteTree = E()->getMap($defaultSiteID)->getTree();
         foreach ($sm as $siteID => $site) {
             if ($siteID != $defaultSiteID && $site->isIndexed) {
-                $mainSiteTree->add(E()->getMap($siteID)->getTree()->getRoot());
+                $tree = E()->getMap($siteID)->getTree();
+                if ($tree) {
+                    $mainSiteTree->add($tree->getRoot());
+                }
             }
         }
         $builder->setTree($mainSiteTree);

@@ -131,6 +131,7 @@ final class Sitemap extends DBWorker {
         */
 
 		if ($res === true) {
+            return;
 			throw new SystemException('ERR_NO_TRANSLATION', SystemException::ERR_CRITICAL, $this->dbh->getLastRequest());
 		}
 		//Кешируем уровни доступа к страницам сайта

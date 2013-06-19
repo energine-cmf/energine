@@ -82,11 +82,19 @@ var RichEditor = new Class({
     },
 
     link:function () {
+        this.stored_selection = this.selection.storeCurrentSelection();
         var link = prompt('URL:', 'http://');
         if (link) {
-            var text = this.selection.getText() || link;
-            var a = new Element('a', {href: link, html: text});
-            this.selection.insertContent(new Element('div').adopt(a).get('html'));
+            if (this.stored_selection) {
+                this.selection.restoreSelection(this.stored_selection);
+            }
+            if (Browser.ie) {
+                this.action('CreateLink', false, link);
+            } else {
+                var text = this.selection.getText() || link;
+                var a = new Element('a', {href: link, html: text});
+                this.selection.insertContent(new Element('div').adopt(a).get('html'));
+            }
             this.onSelectionChanged(false);
         }
     },
@@ -164,7 +172,7 @@ var RichEditor = new Class({
 
                 if (!image) return;
 
-                image.filename = ((image.filename.indexOf('http://') != -1) ? Energine.media : '') + image.filename;
+                //image.filename = ((image.filename.indexOf('http://') != -1) ? Energine.media : '') + image.filename;
 
                 var imgStr = '<img src="'
                     + image.filename + '" width="'
@@ -206,9 +214,12 @@ var RichEditor = new Class({
 
         var filename = data['upl_path'];
 
-        var text = this.selection.getText();
-
-        this.selection.insertContent('<a href="' + filename + '">' + ((text) ? text : filename) + '</a>');
+        if (Browser.ie) {
+            this.action('CreateLink', false, filename);
+        } else {
+            var text = this.selection.getText();
+            this.selection.insertContent('<a href="' + filename + '">' + ((text) ? text : filename) + '</a>');
+        }
 
         this.dirty = true;
 

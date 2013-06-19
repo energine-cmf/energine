@@ -18,7 +18,7 @@
     <xsl:variable name="ROUTER_URL"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/>programs/p/</xsl:variable>
     <xsl:variable name="MEDIA_URL"><xsl:value-of select="$BASE/@media"/></xsl:variable>
     <xsl:variable name="RESIZER_URL"><xsl:value-of select="$BASE/@resizer"/></xsl:variable>
-
+    <xsl:variable name="FOLDER" select="$DOC_PROPS[@name='base']/@folder"/>
     <xsl:variable name="MAIN_SITE" select="$DOC_PROPS[@name='base']/@default"/>
     <xsl:template match="/">
         <xsl:apply-templates select="document/component"/>

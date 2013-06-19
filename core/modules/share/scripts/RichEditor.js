@@ -172,7 +172,9 @@ var RichEditor = new Class({
 
                 if (!image) return;
 
-                //image.filename = ((image.filename.indexOf('http://') != -1) ? Energine.media : '') + image.filename;
+                if (image.filename.toLowerCase().indexOf('http://') == -1) {
+                    image.filename = Energine.media + image.filename;
+                }
 
                 var imgStr = '<img src="'
                     + image.filename + '" width="'
@@ -213,6 +215,10 @@ var RichEditor = new Class({
         if (!data) return;
 
         var filename = data['upl_path'];
+
+        if (filename.toLowerCase().indexOf('http://') == -1) {
+            filename = Energine.media + filename;
+        }
 
         if (Browser.ie) {
             this.action('CreateLink', false, filename);

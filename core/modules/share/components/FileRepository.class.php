@@ -120,6 +120,17 @@ class FileRepository extends Grid {
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->addFilterCondition(array('upl_id' => $uplID));
+
+        $repository = $this->getRepositoryInstance($uplID);
+        // меняем mode у поля для загрузки файла, если репозитарий RO
+        if (!$repository->allowsUploadFile()) {
+            $fd = $this->getDataDescription()->getFieldDescriptionByName('upl_path');
+            if ($fd) {
+                $fd->setMode(1);
+                $fd->setProperty('title', 'FIELD_UPL_PATH_READ');
+            }
+        }
+
         $this->setData($this->createData());
 
         $toolbars = $this->createToolbar();
@@ -360,14 +371,21 @@ class FileRepository extends Grid {
             $repository = $this->getRepositoryInstance($data['upl_pid']);
 
             $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
+
+            // добавление файла в репозиторий
             if ($mode == QAL::INSERT) {
+
                 $tmpFileName = $data['upl_path'];
                 $uplPath = $this->dbh->getScalar($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_pid']));
+
                 if ($uplPath && substr($uplPath, -1) == '/') $uplPath = substr($uplPath, 0, -1);
+
                 if (empty($uplPath)) {
                     throw new SystemException('ERR_BAD_PID');
                 }
+
                 unset($data[$this->getPK()]);
+
                 $data['upl_filename'] = self::generateFilename($uplPath, pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
                 $data['upl_path'] = $uplPath . ((substr($uplPath, -1) != '/') ? '/' : '') . $data['upl_filename'];
 
@@ -381,12 +399,48 @@ class FileRepository extends Grid {
                 $data['upl_height'] = $fi->height;
                 $data['upl_is_ready'] = $fi->ready;
                 $data['upl_publication_date'] = date('Y-m-d H:i:s');
+
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data);
 
-            } elseif ($mode == QAL::UPDATE) {
-                $pk = $data[$this->getPK()];
-                $result = $this->dbh->modify($mode, $this->getTableName(), $data, array($this->getPK() => $pk));
             }
+            // редактирование файла в репозитории
+            elseif ($mode == QAL::UPDATE) {
+
+                $pk = $data[$this->getPK()];
+
+                $old_upl_path = $this->dbh->getScalar($this->getTableName(), 'upl_path', array($this->getPK() => $pk));
+                $new_upl_path = $data['upl_path'];
+
+                unset($data['upl_path']);
+
+                // если пришел новый tmpfile в поле upl_path
+                if ($new_upl_path != $old_upl_path) {
+
+                    $old_mime = $this->dbh->getScalar($this->getTableName(), 'upl_mime_type', array($this->getPK() => $pk));
+                    $new_info = $repository->analyze($new_upl_path);
+
+                    if ($new_info && $new_info->mime != $old_mime) {
+                        throw new SystemException('ERR_INCORRECT_MIME');
+                    }
+
+                    if (!$repository->updateFile($new_upl_path, $old_upl_path)) {
+                        throw new SystemException('ERR_SAVE_FILE');
+                    }
+
+                    $fi = $repository->analyze($new_upl_path);
+                    if ($fi) {
+                        $data['upl_width'] = $fi->width;
+                        $data['upl_height'] = $fi->height;
+                    }
+
+                    $data['upl_publication_date'] = date('Y-m-d H:i:s');
+
+                }
+
+                $result = $this->dbh->modify($mode, $this->getTableName(), $data, array($this->getPK() => $pk));
+                $data['upl_path'] = $old_upl_path;
+            }
+
             if (isset($_POST['thumbs'])) {
                 $this->saveThumbs($_POST['thumbs'], $data['upl_path'], $repository);
             }

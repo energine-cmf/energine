@@ -85,4 +85,16 @@ class FileRepositoryFTPRO extends FileRepositoryFTP {
     public function uploadFile($sourceFilename, $destFilename) {
         throw new SystemException('ERR_READ_ONLY_FTP_REPO');
     }
+
+    /**
+     * Метод обновления файла в хранилище
+     *
+     * @param string $sourceFilename
+     * @param string $destFilename
+     * @return boolean|object
+     * @throws SystemException
+     */
+    public function updateFile($sourceFilename, $destFilename) {
+        throw new SystemException('ERR_READ_ONLY_FTP_REPO');
+    }
 }

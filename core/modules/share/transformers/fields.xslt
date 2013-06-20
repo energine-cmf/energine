@@ -556,6 +556,19 @@
         <input type="file" id="uploader"/>
     </xsl:template>
 
+    <!-- заполненное поле для загрузки файла в файловом репозитории -->
+    <xsl:template match="field[@name='upl_path'][.!=''][ancestor::component[@class='FileRepository' and @type='form']]" mode="field_input">
+        <div class="preview">
+            <img border="0" id="preview" src="{$RESIZER_URL}w200-h200/{.}?anticache={generate-id()}" alt=""/>
+        </div>
+        <input>
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">hidden</xsl:attribute>
+            <xsl:attribute name="id">data</xsl:attribute>
+        </input>
+        <input type="file" id="uploader"/>
+    </xsl:template>
+
     <xsl:template match="field[@name='upl_path'][@mode='1'][ancestor::component[@class='FileRepository' and @type='form']]">
         <div class="field">
             <div class="name">

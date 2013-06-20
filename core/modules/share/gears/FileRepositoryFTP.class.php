@@ -262,7 +262,22 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function updateFile($sourceFilename, $destFilename) {
-        throw new SystemException('ERR_UNIMPLEMENTED_YET');
+        try {
+            $base = $this->getBase() . '/';
+            if (strpos($destFilename, $base) === 0) {
+                $destFilename = substr($destFilename, strlen($base));
+            }
+            $this->ftp_media->connect();
+            $result = $this->ftp_media->uploadFile($sourceFilename, $destFilename);
+            $fi = false;
+            if ($result) {
+                $fi = $this->analyze($sourceFilename);
+            }
+            $this->ftp_media->disconnect();
+            return $fi;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**

@@ -435,6 +435,21 @@ class FileRepository extends Grid {
 
                     $data['upl_publication_date'] = date('Y-m-d H:i:s');
 
+                    // обновление alts для админки
+                    $system_alts = array(
+                        array(60, 45),
+                        array(200, 200),
+                        array(298, 224)
+                    );
+
+                    foreach($system_alts as $dim) {
+                        try {
+                            $repository->updateAlt($new_upl_path, $old_upl_path, $dim[0], $dim[1]);
+                        } catch (Exception $e) {
+                            //throw new SystemException('ERR_UPDATE_SYSTEM_ALT', SystemException::ERR_CRITICAL, (string) $e);
+                        }
+                    }
+
                 }
 
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data, array($this->getPK() => $pk));

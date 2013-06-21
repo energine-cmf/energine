@@ -291,7 +291,24 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      * @throws SystemException
      */
     public function updateAlt($sourceFilename, $destFilename, $width, $height) {
-        throw new SystemException('ERR_UNIMPLEMENTED_YET');
+        $destFilename = str_replace(
+            array('[width]', '[height]', '[upl_path]'),
+            array($width, $height, $destFilename),
+            self::IMAGE_ALT_CACHE
+        );
+
+        try {
+            $this->ftp_alts->connect();
+            $result = $this->ftp_alts->uploadFile($sourceFilename, $destFilename);
+            $fi = false;
+            if ($result) {
+                $fi = $this->analyze($sourceFilename);
+            }
+            $this->ftp_alts->disconnect();
+            return $fi;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**

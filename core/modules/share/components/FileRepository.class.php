@@ -436,6 +436,8 @@ class FileRepository extends Grid {
                     $data['upl_publication_date'] = date('Y-m-d H:i:s');
 
                     // обновление alts для админки
+                    // todo: подумать, что с этим делать
+                    /*
                     $system_alts = array(
                         array(60, 45),
                         array(200, 200),
@@ -449,6 +451,7 @@ class FileRepository extends Grid {
                             //throw new SystemException('ERR_UPDATE_SYSTEM_ALT', SystemException::ERR_CRITICAL, (string) $e);
                         }
                     }
+                    */
 
                 }
 

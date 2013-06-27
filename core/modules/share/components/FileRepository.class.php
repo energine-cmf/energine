@@ -291,7 +291,7 @@ class FileRepository extends Grid {
      * @param $upl_id
      * @return null|int
      */
-    protected function getRepositoryIdByUploadId($upl_id) {
+    public function getRepositoryIdByUploadId($upl_id) {
 
         // проверка существования хранимой процедуры
         $proc_exists = $this->dbh->procExists('proc_get_share_uploads_repo_id');
@@ -323,7 +323,7 @@ class FileRepository extends Grid {
      * @return IFileRepository|FileRepositoryLocal|FileRepositoryRO
      * @throws SystemException
      */
-    protected function getRepositoryInstance($upl_pid) {
+    public function getRepositoryInstance($upl_pid) {
 
         // 1. получаем upl_id репозитария
         $repo_id = $this->getRepositoryIdByUploadId($upl_pid);

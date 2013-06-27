@@ -135,7 +135,16 @@ class AttachmentManager extends DBWorker {
                 $images = $this->dbh->selectRequest($request);
 
                 if (is_array($images)) {
-                    foreach ($images as $row) {
+                    foreach ($images as $key => $row) {
+
+                        $file_repository = new FileRepository('dummy', 'share');
+                        $repo = $file_repository->getRepositoryInstance($row['id']);
+
+                        if ($repo) {
+                            $flags = $repo->getFlags();
+                            $images[$key]['secure'] = ($flags && in_array('secure', array_keys($flags)));
+                        }
+
                         $mapID = $row[$mapFieldName];
                         if ($returnOnlyFirstAttachment &&
                             isset($imageData[$mapID])
@@ -179,6 +188,12 @@ class AttachmentManager extends DBWorker {
                             $dataDescription->addFieldDescription($fd);
 
                             $fd = new FieldDescription('name');
+                            $dataDescription->addFieldDescription($fd);
+
+                            $fd = new FieldDescription('secure');
+                            $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+                            $dataDescription->addFieldDescription($fd);
+
                             $dataDescription->addFieldDescription($fd);
                             $builder->setData($localData);
                             $builder->setDataDescription($dataDescription);

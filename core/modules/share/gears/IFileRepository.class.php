@@ -205,4 +205,11 @@ interface IFileRepository {
      */
     public function deleteDir($dir);
 
+    /**
+     * Метод получения массива дополнительных флагов репозитария
+     *
+     * @return array
+     */
+    public function getFlags();
+
 }

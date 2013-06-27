@@ -143,6 +143,23 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             $result->setAttribute('quickUploadPid', $quick_upload_pid);
 
             if ($fieldValue) {
+
+                $upl_id = $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $fieldValue);
+
+                if ($upl_id) {
+                    $file_repository = new FileRepository('dummy', 'share');
+                    $repo = $file_repository->getRepositoryInstance($upl_id);
+
+                    if ($repo) {
+                        $flags = $repo->getFlags();
+                        if ($flags) {
+                            foreach($flags as $flagName => $flagValue) {
+                                $result->setAttribute($flagName, $flagValue);
+                            }
+                        }
+                    }
+                }
+
                 try {
                     if ($info = E()->FileRepoInfo->analyze($fieldValue)) {
                         $result->setAttribute('media_type', $info->type);
@@ -152,6 +169,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
                 }
             }
+
         } /*elseif (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
             $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));
             $fieldInfo->setProperty('msgCloseField', $this->translate('TXT_CLOSE_FIELD'));

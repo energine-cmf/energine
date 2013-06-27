@@ -641,9 +641,12 @@ final class Setup {
 
         foreach ($iterator as $fileinfo) {
             if ($fileinfo->isFile() && !$fileinfo->isDot() && $fileinfo->getExtension() == 'js') {
-                $result[$fileinfo->getBasename('.js')] = $directory . DIRECTORY_SEPARATOR . $fileinfo->getFilename();
+                $class = str_replace(array(HTDOCS_DIR . '/scripts/', '.js') , '', $directory . DIRECTORY_SEPARATOR .$fileinfo->getFilename());
+                $result[$class] = $directory . DIRECTORY_SEPARATOR . $fileinfo->getFilename();
             }
+        }
 
+        foreach ($iterator as $fileinfo) {
             if ($fileinfo->isDir() && !$fileinfo->isDot()) {
                 $this->iterateScripts($fileinfo->getPathname(), $result);
             }

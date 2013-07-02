@@ -61,7 +61,7 @@ class FileRepoInfo extends DBWorker {
     public function __construct() {
         parent::__construct();
         $this->finfo = new finfo(FILEINFO_MIME_TYPE);
-        $this->getFInfoSQL = E()->getDB()->getPDO()->prepare('SELECT upl_internal_type as type, upl_mime_type as mime, upl_width as width, upl_height as height FROM share_uploads WHERE upl_path = ?');
+        $this->getFInfoSQL = $this->dbh->getPDO()->prepare('SELECT upl_internal_type as type, upl_mime_type as mime, upl_width as width, upl_height as height FROM share_uploads WHERE upl_path = ?');
     }
 
     /**

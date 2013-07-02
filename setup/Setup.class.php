@@ -99,7 +99,7 @@ final class Setup {
      */
     private function getSiteHost() {
         if (!isset($_SERVER['HTTP_HOST'])
-                || $_SERVER['HTTP_HOST'] == ''
+            || $_SERVER['HTTP_HOST'] == ''
         )
             return $this->filterInput($_SERVER['SERVER_NAME']);
         else
@@ -203,12 +203,12 @@ final class Setup {
             ($domains and (count($domains) == 1 or (count($domains) >= 1 and $domains[0]['domain_host'] == '')))
         ) {
             $this->dbConnect->query(
-                ((empty($domains))?'INSERT INTO':'UPDATE')." share_domains SET domain_host = '" . $this->config['site']['domain'] . "',"
-                    . "domain_root = '" . $this->config['site']['root'] . "'"
+                ((empty($domains)) ? 'INSERT INTO' : 'UPDATE') . " share_domains SET domain_host = '" . $this->config['site']['domain'] . "',"
+                . "domain_root = '" . $this->config['site']['root'] . "'"
             );
-            if(empty($domains)){
+            if (empty($domains)) {
                 $domainID = $this->dbConnect->lastInsertId();
-                $this->dbConnect->query('INSERT INTO share_domain2site SET site_id=1, domain_id='.$domainID);
+                $this->dbConnect->query('INSERT INTO share_domain2site SET site_id=1, domain_id=' . $domainID);
             }
         }
     }
@@ -257,8 +257,7 @@ final class Setup {
                 ));
 
             $this->dbConnect = $connect;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw new Exception('Не удалось соединиться с БД по причине: ' . $e->getMessage());
         }
         restore_error_handler();
@@ -306,6 +305,75 @@ final class Setup {
     }
 
     /**
+     * Загрузка данных из файла с переводами
+     * Формат файла: "Перевод";"аббревиатура 1";"аббревиатура n"
+     *
+     * @param $path
+     * @throws Exception
+     */
+    private function loadTransFileAction($path, $module = 'share') {
+        $this->title('Загрузка файла с переводами: ' . $path . ' в модуль '.$module);
+        if (!file_exists($path)) {
+            throw new Exception('Не видать файла:' . $path);
+        }
+        $row = 0;
+        $loadedRows = 0;
+
+        if (($handle = fopen($path, 'r')) !== FALSE) {
+            $this->checkDBConnection();
+            $langRes = $this->dbConnect->prepare('SELECT lang_id FROM share_languages WHERE lang_abbr= ?', array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+            $langTagRes = $this->dbConnect->prepare('INSERT IGNORE INTO share_lang_tags(ltag_name, ltag_module) VALUES (?, ?)');
+            $langTransTagRes = $this->dbConnect->prepare('INSERT IGNORE INTO share_lang_tags_translation VALUES (?, ?, ?)');
+            $this->dbConnect->beginTransaction();
+            $langInfo = array();
+            try {
+                while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                    //На первой строчке определяемся с языками
+                    if (!($row++)) {
+                        //Отбрасываем первую колонку - Имя
+                        array_shift($data);
+                        foreach ($data as $langNum => $langAbbr) {
+                            if (!$langRes->execute(array(strtolower($langAbbr)))) {
+                                throw new Exception('Что то опять не слава Богу.');
+                            }
+                            //Создаем масив соответствия порядкового номера колонки - идентификатору языка
+                            $langInfo[$langNum + 1] = $langRes->fetch(PDO::FETCH_COLUMN);
+                        }
+                    } else {
+
+                        if ($r = !$langTagRes->execute(array($data[0], $module))) {
+                            throw new Exception('Произошла ошибка при вставке в share_lang_tags значения:' . $data[0]);
+                        }
+                        $ltagID = $this->dbConnect->lastInsertId();
+                        if ($ltagID) {
+                            $this->text('Пишем в основную таблицу: ' . $ltagID . ', ' . $data[0]);
+                            $loadedRows ++;
+                            foreach ($langInfo as $langNum => $langID) {
+                                if (!$langTransTagRes->execute(array($ltagID, $langID, stripslashes($data[$langNum])))) {
+                                    throw new Exception('Произошла ошибка при вставке в share_lang_tags_translation значения:' . $data[$langNum]);
+                                }
+                                $this->text('Пишем в таблицу переводов: ' . $ltagID . ', ' . $langID . ', ' . $data[$langNum]);
+                            }
+                        } else {
+                            $this->text('Такая константа уже существует: ' . $data[0] . '- пропускаем.');
+                        }
+                    }
+                }
+                $this->dbConnect->commit();
+            } catch (Exception $e) {
+                $this->dbConnect->rollBack();
+                throw $e;
+            }
+            fclose($handle);
+        } else {
+            throw new Exception('Файл вроде как есть, а вот читать из него невозможно.');
+        }
+
+
+        $this->text('Загружено ' . ($loadedRows) . ' значений');
+    }
+
+    /**
      * Создаем сегмент google sitemap в share_sitemap
      * и даем на него права на просмотр для не авторизированных
      * пользователей. Имя сегмента следует указать в конфиге.
@@ -313,22 +381,22 @@ final class Setup {
      */
     private function createSitemapSegment() {
         $this->dbConnect->query('INSERT INTO share_sitemap(site_id,smap_layout,smap_content,smap_segment,smap_pid) '
-                . 'SELECT sso.site_id,\'' . $this->config['seo']['sitemapTemplate'] . '.layout.xml\','
-                . '\'' . $this->config['seo']['sitemapTemplate'] . '.content.xml\','
-                . '\'' . $this->config['seo']['sitemapSegment'] . '\','
-                . '(SELECT smap_id FROM share_sitemap ss2 WHERE ss2.site_id = sso.site_id AND smap_pid IS NULL LIMIT 0,1) '
-                . 'FROM share_sites sso '
-                . 'WHERE site_is_indexed AND site_is_active '
-                . 'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
-                . 'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
-                . 'WHERE ssm.smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\' AND ssi.site_id = sso.site_id) = 0');
+        . 'SELECT sso.site_id,\'' . $this->config['seo']['sitemapTemplate'] . '.layout.xml\','
+        . '\'' . $this->config['seo']['sitemapTemplate'] . '.content.xml\','
+        . '\'' . $this->config['seo']['sitemapSegment'] . '\','
+        . '(SELECT smap_id FROM share_sitemap ss2 WHERE ss2.site_id = sso.site_id AND smap_pid IS NULL LIMIT 0,1) '
+        . 'FROM share_sites sso '
+        . 'WHERE site_is_indexed AND site_is_active '
+        . 'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
+        . 'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
+        . 'WHERE ssm.smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\' AND ssi.site_id = sso.site_id) = 0');
         $smIdsInfo = $this->dbConnect->query('SELECT smap_id FROM share_sitemap WHERE '
-                . 'smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\'');
+        . 'smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\'');
         while ($smIdInfo = $smIdsInfo->fetch()) {
             $this->dbConnect->query('INSERT INTO share_access_level SELECT ' . $smIdInfo[0] . ',group_id,'
-                    . '(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\') FROM `user_groups` ');
+            . '(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\') FROM `user_groups` ');
             $this->dbConnect->query('INSERT INTO share_sitemap_translation(smap_id,lang_id,smap_name,smap_is_disabled) '
-                    . 'VALUES (' . $smIdInfo[0] . ',(SELECT lang_id FROM `share_languages` WHERE lang_default),\'Google sitemap\',0)');
+            . 'VALUES (' . $smIdInfo[0] . ',(SELECT lang_id FROM `share_languages` WHERE lang_default),\'Google sitemap\',0)');
         }
     }
 
@@ -348,8 +416,7 @@ final class Setup {
                 if (!@mkdir($dir, 0755, true)) {
                     throw new Exception('Невозможно создать директорию:' . $dir);
                 }
-            }
-            else {
+            } else {
                 $this->cleaner($dir);
             }
         }
@@ -357,7 +424,7 @@ final class Setup {
         // создаем симлинки модулей из их физического расположения, описанного в конфиге
         // в папку CORE_DIR . '/modules/'
         $this->text(PHP_EOL . 'Создание символических ссылок в ' . CORE_DIR . ':');
-        foreach($this->config['modules'] as $module => $module_path) {
+        foreach ($this->config['modules'] as $module => $module_path) {
             $symlinked_dir = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES, $module));
             $this->text('Создание символической ссылки ', $module_path, ' -> ', $symlinked_dir);
 
@@ -365,13 +432,13 @@ final class Setup {
                 unlink($symlinked_dir);
             }
 
-            if(!file_exists($module_path)) {
-        	    throw new Exception('Не существует: '.$module_path);
+            if (!file_exists($module_path)) {
+                throw new Exception('Не существует: ' . $module_path);
             }
 
             $modules_dir = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES));
             if (!is_writeable($modules_dir)) {
-                throw new Exception('Нет доступа на запись: ' . $modules_dir );
+                throw new Exception('Нет доступа на запись: ' . $modules_dir);
             }
 
             symlink($module_path, $symlinked_dir);
@@ -413,7 +480,7 @@ final class Setup {
 
                 echo $uplPath . PHP_EOL;
                 $res = $this->dbConnect->query('SELECT upl_id, upl_pid FROM ' . self::UPLOADS_TABLE . ' WHERE upl_path = "' . $uplPath . '"');
-                if(!$res) throw new Exception('ERROR');
+                if (!$res) throw new Exception('ERROR');
 
                 $data = $res->fetch(PDO::FETCH_ASSOC);
 
@@ -447,30 +514,28 @@ final class Setup {
                                 $internalType = 'unknown';
                                 break;
                         }
-                        $title = $fileinfo->getBasename('.'.$fileinfo->getExtension());
-                    }
-                    else {
+                        $title = $fileinfo->getBasename('.' . $fileinfo->getExtension());
+                    } else {
                         $mimeType = 'unknown/mime-type';
                         $internalType = 'folder';
                         $childsCount = 0;
                         $title = $fileinfo->getBasename();
                     }
 
-                    $PID = (empty($PID))?'NULL':$PID;
+                    $PID = (empty($PID)) ? 'NULL' : $PID;
 
                     $r = $this->dbConnect->query($q = sprintf('INSERT INTO ' . self::UPLOADS_TABLE . ' (upl_pid, upl_childs_count, upl_path, upl_filename, upl_name, upl_title,upl_internal_type, upl_mime_type, upl_width, upl_height) VALUES(%s, %s, "%s", "%s", "%s", "%s", "%s", "%s", %s, %s)', $PID, $childsCount, $uplPath, $filename, $title, $title, $internalType, $mimeType, $uplWidth, $uplHeight));
-                    if(!$r) throw new Exception('ERROR INSERTING');
+                    if (!$r) throw new Exception('ERROR INSERTING');
                     //$this->text($uplPath);
-                    if($fileinfo->isDir()){
+                    if ($fileinfo->isDir()) {
                         $newPID = $this->dbConnect->lastInsertId();
                     }
 
                     //$this->dbConnect->lastInsertId();
-                }
-                else {
+                } else {
                     $newPID = $data['upl_pid'];
                     $r = $this->dbConnect->query('UPDATE ' . self::UPLOADS_TABLE . ' SET upl_is_active=1 WHERE upl_id="' . $data['upl_id'] . '"');
-                    if(!$r) throw new Exception('ERROR UPDATING');
+                    if (!$r) throw new Exception('ERROR UPDATING');
                 }
                 if ($fileinfo->isDir()) {
                     $this->iterateUploads($fileinfo->getPathname(), $newPID);
@@ -484,25 +549,24 @@ final class Setup {
         $this->checkDBConnection();
         $this->title('Синхронизация папки с загрузками');
         $this->dbConnect->beginTransaction();
-        if(substr($uploadsPath, -1) == '/'){
+        if (substr($uploadsPath, -1) == '/') {
             $uploadsPath = substr($uploadsPath, 0, -1);
         }
-        $r = $this->dbConnect->query('SELECT upl_id FROM '.self::UPLOADS_TABLE.' WHERE upl_path LIKE "'.$uploadsPath.'"');
-        if(!$r){
+        $r = $this->dbConnect->query('SELECT upl_id FROM ' . self::UPLOADS_TABLE . ' WHERE upl_path LIKE "' . $uploadsPath . '"');
+        if (!$r) {
             throw new Exception('Репозиторий по такому пути не существует');
         }
         $PID = $r->fetchColumn();
-        if(!$PID){
+        if (!$PID) {
             throw new Exception('Странный какой то идентификатор родительский.');
         }
         $uploadsPath .= '/';
 
         try {
-            $this->dbConnect->query('UPDATE ' . self::UPLOADS_TABLE . ' SET upl_is_active=0 WHERE upl_path LIKE "'.$uploadsPath.'%"');
+            $this->dbConnect->query('UPDATE ' . self::UPLOADS_TABLE . ' SET upl_is_active=0 WHERE upl_path LIKE "' . $uploadsPath . '%"');
             $this->iterateUploads(implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $uploadsPath)), $PID);
             $this->dbConnect->commit();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->dbConnect->rollBack();
             throw new Exception($e->getMessage());
         }
@@ -519,16 +583,14 @@ final class Setup {
                 while ((($file = readdir($dh)) !== false)) {
                     if (!in_array($file, array('.', '..'))) {
                         if (is_dir($file = $dir . DIRECTORY_SEPARATOR . $file)) {
-                            if(is_link($file)){
+                            if (is_link($file)) {
                                 unlink($file);
-                            }
-                            else {
+                            } else {
                                 $this->cleaner($file);
                                 rmdir($file);
                             }
                             $this->text('Удаляем директорию ', $file);
-                        }
-                        else {
+                        } else {
                             $this->text('Удаляем файл ', $file);
                             unlink($file);
                         }
@@ -557,8 +619,7 @@ final class Setup {
                     mkdir($dir = $module . DIRECTORY_SEPARATOR . basename($fo));
                     $this->text('Создаем директорию ', $dir);
                     $this->linkCore($fo . DIRECTORY_SEPARATOR . '*', $dir, $level + 1);
-                }
-                else {
+                } else {
                     //Если одним из низших по приоритету модулей был уже создан симлинк
                     //то затираем его нафиг
                     if (file_exists($dest = $module . DIRECTORY_SEPARATOR . basename($fo))) {
@@ -641,7 +702,7 @@ final class Setup {
 
         foreach ($iterator as $fileinfo) {
             if ($fileinfo->isFile() && !$fileinfo->isDot() && $fileinfo->getExtension() == 'js') {
-                $class = str_replace(array(HTDOCS_DIR . '/scripts/', '.js') , '', $directory . DIRECTORY_SEPARATOR .$fileinfo->getFilename());
+                $class = str_replace(array(HTDOCS_DIR . '/scripts/', '.js'), '', $directory . DIRECTORY_SEPARATOR . $fileinfo->getFilename());
                 $result[$class] = $directory . DIRECTORY_SEPARATOR . $fileinfo->getFilename();
             }
         }
@@ -665,8 +726,10 @@ final class Setup {
         $data = file_get_contents($script);
         $r = array();
         if (preg_match_all('/ScriptLoader\.load\((([\s,]{1,})?(\'([a-zA-Z\/.-]{1,})\'){1,}([\s,]{1,})?){1,}\)/', $data, $r)) {
-            $s = str_replace(array('ScriptLoader.load', '(', ')', "\r", "\n"), '', (string) $r[0][0]);
-            $classes = array_map(function($el){ return str_replace(array('\'', ',',' '), '', $el); }, explode(',', $s));
+            $s = str_replace(array('ScriptLoader.load', '(', ')', "\r", "\n"), '', (string)$r[0][0]);
+            $classes = array_map(function ($el) {
+                return str_replace(array('\'', ',', ' '), '', $el);
+            }, explode(',', $s));
             $result = $classes;
         }
 
@@ -694,10 +757,10 @@ final class Setup {
 
         $result = array();
 
-        foreach($files as $class => $file) {
+        foreach ($files as $class => $file) {
             $deps = $this->parseScriptLoader($file);
             if ($deps) {
-                $class_dir = str_replace(array(HTDOCS_DIR . '/scripts/', '.js') , '', $file);
+                $class_dir = str_replace(array(HTDOCS_DIR . '/scripts/', '.js'), '', $file);
                 $result[$class_dir] = $deps;
                 $this->text($class_dir . ' --> ' . implode(', ', $deps));
             }
@@ -705,4 +768,6 @@ final class Setup {
 
         $this->writeScriptMap($result);
     }
+
+
 }

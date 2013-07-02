@@ -52,31 +52,38 @@ class TranslationFinder extends DBWorker {
 
         if ($files)
             foreach ($files as $file) {
-
                 $content = file_get_contents($file);
 
                 if (is_array($content))
                     $content = join('', $content);
 
                 $r = array();
-
+                //Ищем в методе динамического добавления переводов
                 if (preg_match_all('/addTranslation\(([\'"]+([_A-Z0-9]+)[\'"]+([ ]{0,}[,]{1,1}[ ]{0,}[\'"]+([_A-Z0-9]+)[\'"]){0,})\)/', $content, $r) > 0) {
                     if ($r and isset($r[1])) {
-                        foreach($r[1] as $string) {
-                            $string = str_replace( array('"', "'", " "), '', $string);
+                        foreach ($r[1] as $string) {
+                            $string = str_replace(array('"', "'", " "), '', $string);
                             $consts = explode(',', $string);
                             if ($consts) {
-                                foreach($consts as $const) {
+                                foreach ($consts as $const) {
                                     $result[$file][] = $const;
                                 }
                             }
                         }
                     }
                 }
-
+                //Ищем в обращениях за переводами
                 if (preg_match_all('/->translate\([\'"]+([_A-Z0-9]+)[\'"]+\)/', $content, $r) > 0) {
                     if ($r and isset($r[1])) {
-                        foreach($r[1] as $row) {
+                        foreach ($r[1] as $row) {
+                            $result[$file][] = $row;
+                        }
+                    }
+                }
+                //Ищем в текстах ошибок
+                if (preg_match_all('/new SystemException\([\'"]+([_A-Z0-9]+)[\'"]+\)/', $content, $r) > 0) {
+                    if ($r and isset($r[1])) {
+                        foreach ($r[1] as $row) {
                             $result[$file][] = $row;
                         }
                     }
@@ -191,28 +198,70 @@ class TranslationFinder extends DBWorker {
         return $result;
     }
 
+    private function writeToFile($data) {
+        $langRes = $this->dbh->select('share_languages', array('lang_id', 'lang_abbr'));
+        foreach ($langRes as $value) {
+            $langData[$value['lang_id']] = $value['lang_abbr'];
+        }
+        $rows[] = 'CONST;' . implode(';', $langData);
+
+        foreach ($data as $ltagName => $ltagInfo) {
+            $row = array($ltagName);
+            foreach(array_keys($langData) as $langID){
+                array_push($row, (isset($ltagInfo['data'][$langID]))?('"'.addslashes(str_replace("\r\n", '\r\n', $ltagInfo['data'][$langID])).'"'):'');
+            }
+            $rows[] = implode(';', $row);
+        }
+        inspect($rows);
+    }
+
     public function log($message) {
         echo $message . "\n";
     }
 
     public function run() {
-
         global $argv;
-        $extended = (isset($argv[1]) && $argv[1] == 'extended');
+        $fillTranslations = function ($transData) {
+            $dbh = $this->dbh->getPDO();
+            array_walk($transData,
+                function (&$transInfo, $transConst, $findTransRes) {
+                    if ($findTransRes->execute(array($transConst))) {
+                        if ($data = $findTransRes->fetchAll(PDO::FETCH_ASSOC)) {
+                            foreach($data as $row){
+                                $transInfo['data'][$row['lang_id']] = $row['ltag_value_rtf'];
+                            }
+
+                        }
+                    }
+                },
+                $dbh->prepare('select ltag_value_rtf, lang_id FROM share_lang_tags_translation LEFT JOIN share_lang_tags USING(ltag_id) WHERE ltag_name=?')
+            );
+            return $transData;
+        };
+
+        $generate = (isset($argv[1]) && $argv[1] == 'generate');
+        $export = (isset($argv[1]) && $argv[1] == 'export');
 
         $all = array_merge(
             $this->getEngineCalls(),
             $this->getXmlCalls()
         );
+        if (!$export) {
+            $result = $this->getUntranslated($all);
 
-        $result = $this->getUntranslated($all);
-
-        if ($result) {
-            foreach($result as $key => $val) {
-                $this->log($key . (($extended) ? (' -> ' . implode(', ', $val['file'])) : '') );
+            if ($result) {
+                if (!$generate)
+                    foreach ($result as $key => $val) {
+                        $this->log($key . ': ' . implode(', ', $val['file']));
+                    }
+                else {
+                    $this->writeToFile($fillTranslations($result));
+                }
+            } else {
+                $this->log('Все в порядке, все языковые константы переведены');
             }
         } else {
-            $this->log('Все в порядке, все языковые константы переведены');
+            $this->writeToFile($fillTranslations($all));
         }
     }
 }

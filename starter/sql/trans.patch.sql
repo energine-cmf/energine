@@ -1,0 +1,1 @@
+ALTER TABLE `share_lang_tags` ADD `ltag_module` CHAR( 100 ) NULL DEFAULT NULL ;

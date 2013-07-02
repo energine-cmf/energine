@@ -33,6 +33,11 @@ class FileRepository extends Grid {
     const STORED_PID = 'NRGNFRPID';
 
     /**
+     * @var FileRepoInfo
+     */
+    protected $repoinfo;
+
+    /**
      *
      * @param string $name
      * @param string $module
@@ -40,6 +45,7 @@ class FileRepository extends Grid {
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
+        $this->repoinfo = E()->FileRepoInfo;
         $this->setTableName('share_uploads');
         $this->setFilter(array('upl_is_active' => 1));
         //$this->setOrder(array('upl_title' => QAL::ASC));
@@ -121,7 +127,7 @@ class FileRepository extends Grid {
         $this->setDataDescription($this->createDataDescription());
         $this->addFilterCondition(array('upl_id' => $uplID));
 
-        $repository = $this->getRepositoryInstance($uplID);
+        $repository = $this->repoinfo->getRepositoryInstanceById($uplID);
         // меняем mode у поля для загрузки файла, если репозитарий RO
         if (!$repository->allowsUploadFile()) {
             $fd = $this->getDataDescription()->getFieldDescriptionByName('upl_path');
@@ -206,7 +212,7 @@ class FileRepository extends Grid {
             }
 
             // получаем instance IFileRepository
-            $repository = $this->getRepositoryInstance($data['upl_pid']);
+            $repository = $this->repoinfo->getRepositoryInstanceById($data['upl_pid']);
 
             $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
             if ($mode == QAL::INSERT) {
@@ -285,71 +291,6 @@ class FileRepository extends Grid {
         }
     }
 
-    /**
-     * Возвращает идентификатор медиа-репозитария по id медиа-контента
-     *
-     * @param $upl_id
-     * @return null|int
-     */
-    public function getRepositoryIdByUploadId($upl_id) {
-
-        // проверка существования хранимой процедуры
-        $proc_exists = $this->dbh->procExists('proc_get_share_uploads_repo_id');
-
-        // если процедура существует - получаем значение id репозитария по upl_id
-        if ($proc_exists) {
-            $this->dbh->select('CALL proc_get_share_uploads_repo_id(%s, @id)', $upl_id);
-            $res = $this->dbh->select('SELECT @id as repo_id');
-            if ($res) {
-                return ($res[0]['repo_id']) ? $res[0]['repo_id'] : null;
-            }
-            return null;
-        } // иначе - получаем ID первого локального репозитария в системе
-        // cоответственно пользователю не будет доступна функциональность по разделению прав доступа
-        // к разным типам репозитариев (local, ro, ftpto, ...)
-        else {
-            return $this->dbh->getScalar(
-                'SELECT upl_id
-                 FROM share_uploads
-                 WHERE upl_mime_type="repo/local" AND upl_internal_type="repo" LIMIT 1'
-            );
-        }
-    }
-
-    /**
-     * Возвращает объект IFileRepository для обработки видео-файлов в репозитарии
-     *
-     * @param int $upl_pid
-     * @return IFileRepository|FileRepositoryLocal|FileRepositoryRO
-     * @throws SystemException
-     */
-    public function getRepositoryInstance($upl_pid) {
-
-        // 1. получаем upl_id репозитария
-        $repo_id = $this->getRepositoryIdByUploadId($upl_pid);
-        if (!$repo_id) {
-            throw new SystemException('ERR_CANT_GET_REPO_ID', SystemException::ERR_WARNING, $upl_pid);
-        }
-
-        // 2. получаем тип репозитария
-        // 3. ищем instance IFileRepository по mime-типу репозитария
-        $cfg = E()->getConfigValue('repositories.mapping');
-        if ($cfg) {
-            $repo_mime = $this->dbh->getScalar($this->getTableName(), 'upl_mime_type', array('upl_id' => $repo_id));
-            $repo_base = $this->dbh->getScalar($this->getTableName(), 'upl_path', array('upl_id' => $repo_id));
-            if (!empty($cfg[$repo_mime])) {
-                $repo_class_name = $cfg[$repo_mime];
-                $result = new $repo_class_name($repo_id, $repo_base);
-                if ($result instanceof IFileRepository) {
-                    return $result;
-                }
-            }
-        }
-
-        // 3.1. fallback на local
-        $result = new FileRepositoryLocal($repo_id, 'uploads/public');
-        return $result;
-    }
 
     /**
      * Сохранение файла
@@ -368,7 +309,7 @@ class FileRepository extends Grid {
             }
 
             // получаем instance IFileRepository
-            $repository = $this->getRepositoryInstance($data['upl_pid']);
+            $repository = $this->repoinfo->getRepositoryInstanceById($data['upl_pid']);
 
             $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
 
@@ -572,7 +513,7 @@ class FileRepository extends Grid {
             if (!$uplPID) return $result;
 
             // инстанс IFileRepository для текущего $uplPID
-            $repo = $this->getRepositoryInstance($uplPID);
+            $repo = $this->repoinfo->getRepositoryInstanceById($uplPID);
 
             if ($result) {
                 foreach ($result as $i => $row) {
@@ -623,7 +564,7 @@ class FileRepository extends Grid {
                 $uplID = 0;
             }
             // инстанс IFileRepository для текущего $uplPID
-            $repo = $this->getRepositoryInstance($uplPID);
+            $repo = $this->repoinfo->getRepositoryInstanceById($uplPID);
             $newData = array(
                 'upl_id' => $uplID,
                 'upl_pid' => $uplPID,

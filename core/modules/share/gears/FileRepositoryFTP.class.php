@@ -404,13 +404,4 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     public function deleteDir($dir) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
     }
-
-    /**
-     * Метод получения массива дополнительных флагов репозитария
-     *
-     * @return array
-     */
-    public function getFlags() {
-        return array();
-    }
 }

@@ -144,21 +144,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
             if ($fieldValue) {
 
-                $upl_id = $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $fieldValue);
-
-                if ($upl_id) {
-                    $file_repository = new FileRepository('dummy', 'share');
-                    $repo = $file_repository->getRepositoryInstance($upl_id);
-
-                    if ($repo) {
-                        $flags = $repo->getFlags();
-                        if ($flags) {
-                            foreach($flags as $flagName => $flagValue) {
-                                $result->setAttribute($flagName, $flagValue);
-                            }
-                        }
-                    }
-                }
+                    $repo = E()->FileRepoInfo->getRepositoryInstanceByPath($fieldValue);
+                    $is_secure = E()->getConfigValue('repositories.ftp.' . $repo->getBase() . '.secure', 0);
+                    $result->setAttribute('secure', $is_secure);
 
                 try {
                     if ($info = E()->FileRepoInfo->analyze($fieldValue)) {

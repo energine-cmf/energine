@@ -20,9 +20,17 @@
  */
 function inspect() {
     $args = func_get_args();
-    echo '<pre>';
-    call_user_func_array('var_dump', $args);
-    echo '</pre>';
+    if(php_sapi_name() != 'cli'){
+        echo '<pre>';
+        call_user_func_array('var_dump', $args);
+        echo '</pre>';
+    }
+    else {
+        print(PHP_EOL);
+        call_user_func_array('var_dump', $args);
+        print(PHP_EOL);
+    }
+
 }
 
 

@@ -220,7 +220,7 @@ final class Setup {
      */
     private function checkDBConnection() {
 
-        $this->title('Настройки базы данных');
+        $this->text('Проверяем коннект к БД');
 
         if (!isset($this->config['database']) || empty($this->config['database'])) {
             throw new Exception('В конфиге нет информации о подключении к базе данных');
@@ -304,6 +304,40 @@ final class Setup {
         $this->scriptMapAction();
     }
 
+    private function untranslatedAction($mode = 'show') {
+        $this->title('Поиск непереведенных констант');
+        $this->checkDBConnection();
+
+        $all = array_merge(
+            $this->getTransEngineCalls(),
+            $this->getTransXmlCalls()
+        );
+        $result = $this->getUntranslated($all);
+        if ($result) {
+            if ($mode == 'show') {
+                foreach ($result as $key => $val) {
+                    $this->text($key . ': ' . implode(', ', $val['file']));
+                }
+            } else {
+                $this->writeTranslations($this->fillTranslations($result), 'untranslated.csv');
+            }
+        } else {
+            $this->text('Все в порядке, все языковые константы переведены');
+        }
+
+
+    }
+
+    private function exportTransAction() {
+        $this->title('Экспорт констант в файлы');
+        $this->checkDBConnection();
+        $all = array_merge(
+            $this->getTransEngineCalls(),
+            $this->getTransXmlCalls()
+        );
+        $this->writeTranslations($this->fillTranslations($all));
+    }
+
     /**
      * Загрузка данных из файла с переводами
      * Формат файла: "Перевод";"аббревиатура 1";"аббревиатура n"
@@ -312,7 +346,7 @@ final class Setup {
      * @throws Exception
      */
     private function loadTransFileAction($path, $module = 'share') {
-        $this->title('Загрузка файла с переводами: ' . $path . ' в модуль '.$module);
+        $this->title('Загрузка файла с переводами: ' . $path . ' в модуль ' . $module);
         if (!file_exists($path)) {
             throw new Exception('Не видать файла:' . $path);
         }
@@ -347,7 +381,7 @@ final class Setup {
                         $ltagID = $this->dbConnect->lastInsertId();
                         if ($ltagID) {
                             $this->text('Пишем в основную таблицу: ' . $ltagID . ', ' . $data[0]);
-                            $loadedRows ++;
+                            $loadedRows++;
                             foreach ($langInfo as $langNum => $langID) {
                                 if (!$langTransTagRes->execute(array($ltagID, $langID, stripslashes($data[$langNum])))) {
                                     throw new Exception('Произошла ошибка при вставке в share_lang_tags_translation значения:' . $data[$langNum]);
@@ -371,6 +405,228 @@ final class Setup {
 
 
         $this->text('Загружено ' . ($loadedRows) . ' значений');
+    }
+
+    private function fillTranslations($transData) {
+        array_walk($transData,
+            function (&$transInfo, $transConst, $findTransRes) {
+                if ($findTransRes->execute(array($transConst))) {
+                    if ($data = $findTransRes->fetchAll(PDO::FETCH_ASSOC)) {
+                        foreach ($data as $row) {
+                            $transInfo['data'][$row['lang_id']] = $row['ltag_value_rtf'];
+                        }
+
+                    }
+                }
+            },
+            $this->dbConnect->prepare('select ltag_value_rtf, lang_id FROM share_lang_tags_translation LEFT JOIN share_lang_tags USING(ltag_id) WHERE ltag_name=?')
+        );
+        return $transData;
+    }
+
+    private function getTransXmlCalls() {
+        $output = array();
+
+        $result = false;
+
+        $files = array_merge(
+            glob(CORE_DIR . '/modules/*/config/*.xml'),
+            glob(CORE_DIR . '/modules/*/templates/content/*.xml'),
+            glob(CORE_DIR . '/modules/*/templates/layout/*.xml'),
+            glob(SITE_DIR . '/modules/*/config/*.xml'),
+            glob(SITE_DIR . '/modules/*/templates/content/*.xml'),
+            glob(SITE_DIR . '/modules/*/templates/layout/*.xml')
+        );
+
+        if ($files)
+            foreach ($files as $file) {
+                $doc = new DOMDocument();
+                $doc->preserveWhiteSpace = false;
+                $doc->load($file);
+                $xpath = new DOMXPath($doc);
+
+                // находим теги translation
+                $nl = $xpath->query('//translation');
+                if ($nl->length > 0)
+                    foreach ($nl as $node)
+                        if ($node instanceof DOMElement)
+                            $result[$file][] = $node->getAttribute('const');
+
+                // находим теги control
+                $nl = $xpath->query('//control');
+                if ($nl->length > 0)
+                    foreach ($nl as $node)
+                        if ($node instanceof DOMElement)
+                            $result[$file][] = $node->getAttribute('title');
+
+                // находим теги field
+                $nl = $xpath->query('//field');
+                if ($nl->length > 0)
+                    foreach ($nl as $node)
+                        if ($node instanceof DOMElement)
+                            $result[$file][] = 'FIELD_' . strtoupper($node->getAttribute('name'));
+            }
+
+        if ($result) {
+            foreach ($result as $file => $res) {
+                foreach ($res as $key => $line) {
+                    if (isset($output[$line]['count'])) {
+                        $output[$line]['count']++;
+                        if (!in_array($file, $output[$line]['file']))
+                            $output[$line]['file'][] = $file;
+                    } else {
+                        $output[$line]['count'] = 1;
+                        $output[$line]['file'][] = $file;
+                    }
+                }
+            }
+        }
+
+        return $output;
+    }
+
+    private function getUntranslated($data) {
+        $result = array();
+        $dbRes = $this->dbConnect->prepare('SELECT ltag_id FROM share_lang_tags WHERE ltag_name=?');
+
+        if ($data) {
+            foreach ($data as $const => $val) {
+                if (!$const) continue;
+                if ($dbRes->execute(array($const))) {
+                    $res = $dbRes->fetchColumn();
+                    if (empty($res))
+                        $result[$const] = $val;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+
+    private function getTransEngineCalls() {
+        $output = array();
+        $result = false;
+
+        $files = array_merge(
+            glob(CORE_COMPONENTS_DIR . '/*.php'),
+            glob(CORE_GEARS_DIR . '/*.php'),
+            glob(SITE_COMPONENTS_DIR . '/*.php'),
+            glob(SITE_GEARS_DIR . '/*.php'),
+            glob(SITE_KERNEL_DIR . '/*.php')
+        );
+
+        /*
+         * что ищем:
+         * ->addTranslation('CONST'[, 'CONST', ..])
+         * ->translate('CONST')
+         * System Exception('CONST')
+         */
+        if ($files)
+            foreach ($files as $file) {
+                $content = file_get_contents($file);
+
+                if (is_array($content))
+                    $content = join('', $content);
+
+                $r = array();
+                //Ищем в методе динамического добавления переводов
+                if (preg_match_all('/addTranslation\(([\'"]+([_A-Z0-9]+)[\'"]+([ ]{0,}[,]{1,1}[ ]{0,}[\'"]+([_A-Z0-9]+)[\'"]){0,})\)/', $content, $r) > 0) {
+                    if ($r and isset($r[1])) {
+                        foreach ($r[1] as $string) {
+                            $string = str_replace(array('"', "'", " "), '', $string);
+                            $consts = explode(',', $string);
+                            if ($consts) {
+                                foreach ($consts as $const) {
+                                    $result[$file][] = $const;
+                                }
+                            }
+                        }
+                    }
+                }
+                //Ищем в обращениях за переводами
+                if (preg_match_all('/->translate\([\'"]+([_A-Z0-9]+)[\'"]+\)/', $content, $r) > 0) {
+                    if ($r and isset($r[1])) {
+                        foreach ($r[1] as $row) {
+                            $result[$file][] = $row;
+                        }
+                    }
+                }
+                //Ищем в текстах ошибок
+                if (preg_match_all('/new SystemException\([\'"]+([_A-Z0-9]+)[\'"]+\)/', $content, $r) > 0) {
+                    if ($r and isset($r[1])) {
+                        foreach ($r[1] as $row) {
+                            $result[$file][] = $row;
+                        }
+                    }
+                }
+            }
+
+        if ($result) {
+            foreach ($result as $file => $res) {
+                foreach ($res as $key => $line) {
+
+                    if (isset($output[$line]['count'])) {
+                        $output[$line]['count']++;
+                        if (!in_array($file, $output[$line]['file']))
+                            $output[$line]['file'][] = $file;
+                    } else {
+                        $output[$line]['count'] = 1;
+                        $output[$line]['file'][] = $file;
+                    }
+                }
+            }
+        }
+        return $output;
+    }
+
+    private function writeTranslations($data, $transFileName = 'translations.csv') {
+        $langRes = $this->dbConnect->query('SELECT lang_id, lang_abbr FROM share_languages');
+        while ($row = $langRes->fetch(PDO::FETCH_ASSOC)) {
+            $langData[$row['lang_id']] = $row['lang_abbr'];
+        }
+
+
+        //$rows[] = 'CONST;' . implode(';', $langData);
+        //Формируем массив вида [тип_модуля][имя_модуля]=>array("Имя константы; Перевод 1; Перевод 2")
+        foreach ($data as $ltagName => $ltagInfo) {
+            //Берем только первый файл, все остальные вхождения нам не сильно интересны
+            $fileName = str_replace(HTDOCS_DIR, '', $ltagInfo['file'][0]);
+
+            if (preg_match('/\/([a-z]+)\/modules\/([a-z]+)\//', $fileName, $matches)) {
+
+                $row = array($ltagName);
+                foreach (array_keys($langData) as $langID) {
+                    array_push($row, (isset($ltagInfo['data'][$langID])) ? ('"' . addslashes(str_replace("\r\n", '\r\n', $ltagInfo['data'][$langID])) . '"') : '');
+                }
+                $rows[$matches[1]][$matches[2]][] = implode(';', $row);
+            }
+        }
+
+        //Пишем в файлы данные массива
+        foreach ($rows as $moduleType => $modulesInfo) {
+            //Не используем  константы CORE_REL_DIR/SITE_REL_DIR поскольку там могут быть пути
+            if ($moduleType == 'core') {
+                $filePath = CORE_DIR;
+            } elseif ($moduleType == 'site') {
+                $filePath = SITE_DIR;
+            }
+            $filePath .= '/modules/%s/install/';
+
+            foreach ($modulesInfo as $moduleName => $data) {
+                if (!file_exists($dirName = sprintf($filePath, $moduleName)) || !is_writable($dirName)) {
+                    throw new Exception('Директория ' . $dirName . ' отсутствует или недоступна для записи.');
+                }
+                array_unshift($data, 'CONST;' . implode(';', $langData));
+
+                if (!file_put_contents($dirName . $transFileName, implode("\r\n", $data))) {
+                    throw new Exception('Произошла ошибка при записи в файл: ' . $dirName . $transFileName . '.');
+                }
+                $this->text('Записываем в файл ' . $dirName . $transFileName.' ('.sizeof($data).')');
+
+            }
+        }
+
     }
 
     /**

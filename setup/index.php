@@ -18,7 +18,9 @@ $acceptableActions = array(
     'clearCache',
     'syncUploads',
     'scriptMap',
-    'loadTransFile'
+    'loadTransFile',
+    'exportTrans',
+    'untranslated'
 );
 
 //вариант запуска приложения

@@ -240,7 +240,7 @@ AddCharset utf-8 .html .css .js .xml .json .rss .atom
     Deny from all
 </FilesMatch>
 
-<FilesMatch "(\.svn|entries|-base)$">
+<FilesMatch "(\.svn|entries|-base|install)$">
     Order allow,deny
     Deny from all
 </FilesMatch>

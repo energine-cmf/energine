@@ -12,15 +12,13 @@ try {
     // подключаем bootstrap
     require_once('bootstrap.php');
 
-    $use_timer = E()->getConfigValue('site.useTimer');
-    if ($use_timer) {
+    if ($use_timer = E()->getConfigValue('site.useTimer')) {
         class Timer Extends Object {
-        }
 
+        }
         $timer = new Timer();
         $timer->startTimer();
     }
-
     UserSession::start();
     $reg = E();
     $reg->getController()->run();

@@ -54,10 +54,7 @@ error_reporting(E_ALL | E_STRICT);
 }*/
 
 @date_default_timezone_set('Europe/Kiev');
-/**
- * Путь к директории пользовательских модулей
- */
-if (!defined('SITE_DIR')) define('SITE_DIR', 'site');
+
 /**
  * Путь к директории пользовательских компонентов
  */
@@ -66,10 +63,6 @@ define('SITE_COMPONENTS_DIR', SITE_DIR . '/modules/*/components');
  * Путь к директории пользовательских PHP файлов
  */
 define('SITE_GEARS_DIR', SITE_DIR . '/modules/*/gears');
-/**
- * Путь к директории модулей ядра
- */
-if (!defined('CORE_DIR')) define('CORE_DIR', 'core');
 /**
  * Шаблон пути к директориям компонентов стандартных модулей,
  * где * заменяется именем модуля
@@ -139,7 +132,7 @@ function __autoload($className) {
                     SITE_GEARS_DIR
                 ),
                 function ($result, $row) {
-                    if(!($cmps = glob($row . '/*.class.php'))){
+                    if (!($cmps = glob($row . '/*.class.php'))) {
                         $cmps = array();
                     }
                     return array_merge($result, $cmps);

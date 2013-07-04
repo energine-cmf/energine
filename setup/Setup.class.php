@@ -304,6 +304,12 @@ final class Setup {
         $this->scriptMapAction();
     }
 
+    /**
+     * Поиск непереведенных констант
+     * и вывод информации оних на екран($mode='show') или в файл(mode='file')
+     *
+     * @param string $mode режим выгрузки
+     */
     private function untranslatedAction($mode = 'show') {
         $this->title('Поиск непереведенных констант');
         $this->checkDBConnection();
@@ -318,8 +324,11 @@ final class Setup {
                 foreach ($result as $key => $val) {
                     $this->text($key . ': ' . implode(', ', $val['file']));
                 }
-            } else {
+            } elseif($mode='file') {
                 $this->writeTranslations($this->fillTranslations($result), 'untranslated.csv');
+            }
+            else {
+                throw new Exception('Режим '.$mode.' не зарегистрирован');
             }
         } else {
             $this->text('Все в порядке, все языковые константы переведены');
@@ -328,6 +337,9 @@ final class Setup {
 
     }
 
+    /**
+     * Выгрузка констант переводов в файлы
+     */
     private function exportTransAction() {
         $this->title('Экспорт констант в файлы');
         $this->checkDBConnection();
@@ -407,6 +419,12 @@ final class Setup {
         $this->text('Загружено ' . ($loadedRows) . ' значений');
     }
 
+    /**
+     * Возвращает массив полученных в параметре данных с информацией о переводах
+     *
+     * @param $transData
+     * @return mixed
+     */
     private function fillTranslations($transData) {
         array_walk($transData,
             function (&$transInfo, $transConst, $findTransRes) {
@@ -424,6 +442,10 @@ final class Setup {
         return $transData;
     }
 
+    /**
+     * Поиск констант в xml файлах
+     * @return array
+     */
     private function getTransXmlCalls() {
         $output = array();
 
@@ -485,6 +507,12 @@ final class Setup {
         return $output;
     }
 
+    /**
+     * Фильтрует данные оставляя только непереведенные константы
+     *
+     * @param $data
+     * @return array
+     */
     private function getUntranslated($data) {
         $result = array();
         $dbRes = $this->dbConnect->prepare('SELECT ltag_id FROM share_lang_tags WHERE ltag_name=?');
@@ -503,7 +531,10 @@ final class Setup {
         return $result;
     }
 
-
+    /**
+     * Поиск констант в коде
+     * @return array
+     */
     private function getTransEngineCalls() {
         $output = array();
         $result = false;
@@ -580,6 +611,13 @@ final class Setup {
         return $output;
     }
 
+    /**
+     * Записывает полученные из параметра данные в файлы(помодульно)
+     *
+     * @param $data
+     * @param string $transFileName
+     * @throws Exception
+     */
     private function writeTranslations($data, $transFileName = 'translations.csv') {
         $langRes = $this->dbConnect->query('SELECT lang_id, lang_abbr FROM share_languages');
         while ($row = $langRes->fetch(PDO::FETCH_ASSOC)) {

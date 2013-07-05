@@ -145,7 +145,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             if ($fieldValue) {
 
                     $repo = E()->FileRepoInfo->getRepositoryInstanceByPath($fieldValue);
-                    $is_secure = E()->getConfigValue('repositories.ftp.' . $repo->getBase() . '.secure', 0);
+                    $is_secure = (E()->getConfigValue('repositories.ftp.' . $repo->getBase() . '.secure', 0)) ? true : false;
                     $result->setAttribute('secure', $is_secure);
 
                 try {

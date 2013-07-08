@@ -25,33 +25,14 @@ if (isset($_SERVER['SCRIPT_FILENAME'])) {
 /**
  * устанавливаем максимальный уровень отображения ошибок
  */
-error_reporting(E_ALL | E_STRICT);
-
+//error_reporting(E_ALL | E_STRICT);
+//С 5.4 вроде как E_STRICT стал частью E_ALL
+error_reporting(E_ALL);
 /**
  * включаем вывод ошибок и отключаем вывод в HTML
  */
 @ini_set('display_errors', 1);
 @ini_set('html_errors', 0);
-
-/**
- * отключаем magic_quotes_runtime
- */
-//@set_magic_quotes_runtime(1);
-/**
- * поскольку magic_quotes_gpc в runtime отключить нельзя, идем на ухищрение
- */
-/*if (get_magic_quotes_gpc()) {
-    function recursiveStripslashes($value) {
-        $value =
-                is_array($value) ? array_map('recursiveStripslashes', $value) : stripslashes($value);
-        return $value;
-    }
-
-    $_POST = array_map('recursiveStripslashes', $_POST);
-    $_GET = array_map('recursiveStripslashes', $_GET);
-    $_COOKIE = array_map('recursiveStripslashes', $_COOKIE);
-    $_REQUEST = array_map('recursiveStripslashes', $_REQUEST);
-}*/
 
 @date_default_timezone_set('Europe/Kiev');
 
@@ -115,7 +96,8 @@ require_once('Cache.class.php');
  * @return void
  * @staticvar array $paths массив путей к файлам классов вида [имя класса]=>путь к файлу класса
  */
-function __autoload($className) {
+spl_autoload_register(
+function ($className) {
     static $paths = array();
     //если массив путей не заполнен - заполняем
     if (empty($paths)) {
@@ -150,7 +132,7 @@ function __autoload($className) {
     if (!isset($paths[$className]) || !@require($paths[$className])) {
         stop('no class ' . $className . ' found');
     }
-}
+});
 
 # устанавливаем свой обработчик ошибок
 set_error_handler('nrgnErrorHandler');

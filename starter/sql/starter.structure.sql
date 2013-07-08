@@ -305,7 +305,6 @@ DROP TABLE IF EXISTS `share_lang_tags`;
 CREATE TABLE IF NOT EXISTS `share_lang_tags` (
   `ltag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ltag_name` varchar(70) NOT NULL DEFAULT '',
-  `ltag_module` CHAR( 100 ) NULL DEFAULT NULL,
   PRIMARY KEY (`ltag_id`),
   UNIQUE KEY `ltag_name` (`ltag_name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;

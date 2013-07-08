@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet
     version="1.0"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:nrgn="http://energine.org">
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+    <!--Собственно отсюда и пляшем-->
+    <!--Здесь можно сколько угодно дописывать, главное вызвать обработчки рута в моде head?в котором сосредоточены все команды необходимые для корректного формирования страницы-->
+    <xsl:template match="/">
+        <html>
+            <head>
+                <!--
+                Внутри происходят вызовы
+                <xsl:apply-templates select="." mode="favicon"/>
+                <xsl:apply-templates select="." mode="title"/>
+                <xsl:apply-templates select="." mode="stylesheets"/>
+                <xsl:apply-templates select="." mode="scripts"/>
+                -->
+                <xsl:apply-templates select="." mode="head"/>
+
+            </head>
+            <body>
+                <xsl:apply-templates select="document"/>
+            </body>
+        </html>
+    </xsl:template>
 
     <!-- page body -->
     <xsl:template match="document">

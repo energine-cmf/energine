@@ -39,7 +39,7 @@ var Scrollbar = new Class({
         var coords = this.contents.getCoordinates();
         this.element.setStyles({
             'display': '',
-            'top': coords.top - (Browser.Engine.trident ? (window.singleMode ? -1 : 24) : 0) + 'px',
+            'top': coords.top - (Browser.Engine.trident ? (Energine.singleMode ? -1 : 24) : 0) + 'px',
             'left': coords.right + (Browser.Engine.trident ? 2 : 1) + 'px',
             'width': '16px',
             'height': this.options.scrolledElement.getSize().size.y - 1 + 'px'

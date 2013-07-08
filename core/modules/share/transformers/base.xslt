@@ -50,6 +50,7 @@
     </xsl:template>
 
     <!-- именованный шаблон для построения заголовка окна -->
+    <!--@deprecated-->
     <xsl:template name="build_title">
         <xsl:for-each select="$COMPONENTS[@class='BreadCrumbs']/recordset/record">
             <xsl:sort data-type="text" order="descending" select="position()"/>
@@ -78,16 +79,19 @@
     </xsl:template>
 
     <!-- именованный шаблон для подключения значка сайта -->
+    <!--@deprecated-->
     <xsl:template name="favicon">
         <link rel="shortcut icon" href="{$STATIC_URL}images/energine.ico" type="image/x-icon"/>
     </xsl:template>
 
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->
+    <!--@deprecated-->
     <xsl:template name="scripts">
         <xsl:if test="not($DOC_PROPS[@name='single'])"><!-- User JS is here--></xsl:if>
     </xsl:template>
 
     <!-- именованный шаблон для подключения файлов стилей -->
+    <!--@deprecated-->
     <xsl:template name="stylesheets">
         <!-- файлы стилей для текущего варианта дизайна -->
         <link href="{$STATIC_URL}stylesheets/{$FOLDER}/main.css" rel="stylesheet" type="text/css"

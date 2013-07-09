@@ -94,8 +94,8 @@
             }
         }
         
-        if(
-            AdsManager::isActive()
+        if(class_exists('AdsManager', false)
+            && AdsManager::isActive()
             && isset($_POST[AdsManager::TABLE_NAME])
             && is_array($adsData = $_POST[AdsManager::TABLE_NAME])
         ){

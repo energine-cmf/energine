@@ -6,7 +6,7 @@
         </javascript>
         <fields>
             <field name="news_id"/>
-            <field name="news_date"/>
+            <field name="news_date" outputFormat="%E"/>
             <field name="smap_id"/>
             <field name="news_title"/>
         </fields>

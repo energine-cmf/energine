@@ -407,7 +407,7 @@ LayoutManager.Widget = new Class({
         var tb = new Toolbar('widgetToolbar_' + this.name);
         if (!this.static)
             tb.appendControl(new Toolbar.Button({id:'add', 'icon': 'images/toolbar/add.gif', title: 'Add', action:'addWidget'}));
-        if (this.component && this.component.params.getLength())
+        if (this.component && this.component.params.getLength() && this.component.params.some(function(obj){return (obj.xml.getAttribute('type') != 'hidden');}))
             tb.appendControl(new Toolbar.Button({id:'edit', 'icon': 'images/toolbar/edit.gif', title: 'Edit', action:'editProps'}));
         if (!this.static)
             tb.appendControl(new Toolbar.Button({id:'delete', 'icon': 'images/toolbar/delete.gif', title: 'Delete', action:'delWidget'}));

@@ -229,9 +229,7 @@
 
     <xsl:template match="option[ancestor::field[@type='select'][ancestor::component[@type='form']]]" mode="field_input">
         <option value="{@id}">
-            <xsl:if test="@selected">
-                <xsl:attribute name="selected">selected</xsl:attribute>
-            </xsl:if>
+            <xsl:copy-of select="attribute::*[name(.)!='id']"/>
             <xsl:value-of select="."/>
         </option>
     </xsl:template>

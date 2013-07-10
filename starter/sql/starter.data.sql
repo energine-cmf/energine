@@ -276,6 +276,7 @@ INSERT INTO `share_sitemap_tags` (`smap_id`, `tag_id`) VALUES
 (3638, 1),
 (3639, 1),
 (3641, 1),
+(3643, 1),
 (330, 5),
 (1278, 5);
 

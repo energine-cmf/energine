@@ -25,9 +25,7 @@
         </javascript>
         <toolbar>
             <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
-                     type="select"
-                    >
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
                 <options>
                     <option id="reload">BTN_CLOSE</option>
                     <option id="add">BTN_ADD</option>
@@ -55,11 +53,6 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <!--<state name="upload" rights="2">
-        <uri_patterns>
-            <pattern>/upload/</pattern>
-        </uri_patterns>
-    </state>-->
     <state name="delete" rights="2">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
@@ -73,20 +66,9 @@
             <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
         </uri_patterns>
     </state>
-    <!--<state name="fileLibrary" rights="3">
+    <state name="showSmapSelector" rights="3">
         <uri_patterns>
-            <pattern>/file-library/</pattern>
-            <pattern>/file-library/[any]/</pattern>
+            <pattern>/selector/[any]/</pattern>
         </uri_patterns>
-    </state>-->
-    <!--<state name="source" rights="3">
-        <uri_patterns>
-            <pattern>/source/</pattern>
-        </uri_patterns>
-    </state>-->
-    <!--<state name="cleanup" rights="3">
-        <uri_patterns>
-            <pattern>/cleanup/</pattern>
-        </uri_patterns>
-    </state>-->
+    </state>
 </configuration>

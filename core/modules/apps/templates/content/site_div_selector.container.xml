@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container name="smapSelector">
+    <component name="siteList" module="share" class="SiteList">
+        <params>
+            <param name="rights">3</param>
+        </params>
+    </component>
+    <component name="divEditor" module="share" class="DivisionEditor">
+        <params>
+            <param name="rights">3</param>
+            <param name="state">main</param>
+            <param name="config">core/modules/share/config/SiteDivisionSelector.component.xml</param>
+        </params>
+    </component>
+</container>

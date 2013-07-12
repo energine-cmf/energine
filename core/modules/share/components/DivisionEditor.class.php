@@ -208,7 +208,7 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
      * @return array
      * @access private
      */
-    private function loadTemplateData($type, $siteFolder, $old_value = false) {
+    private function loadTemplateData($type, $siteFolder, $oldValue = false) {
         $result = array();
         $dirPath = Document::TEMPLATES_DIR . $type . '/';
 
@@ -223,27 +223,22 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
             }
         }
 
-        $old_exists = false;
-
-        $tr_name = function ($path) {
-            list($name, $tp) = explode('.', substr(basename($path), 0, -4));
-            return $this->translate(strtoupper($tp . '_' . $name));
-        };
-
         foreach ($r as $path) {
             $path = str_replace($dirPath, '', $path);
-            if ($old_value && $path == $old_value) $old_exists = true;
+            list($name, $tp) = explode('.', substr(basename($path), 0, -4));
+            $name = $this->translate(strtoupper($tp . '_' . $name));
 
             $result[] = array(
                 'key' => $path,
-                'value' => $tr_name($path)
+                'value' => $name
             );
         }
 
-        if ($old_value and !$old_exists) {
+        if(!in_array($oldValue, array_keys($r))){
             $result[] = array(
-                'key' => $old_value,
-                'value' => $tr_name($old_value)
+                'key' => $oldValue,
+                'value' => $oldValue,
+                'disabled' => 'disabled'
             );
         }
 
@@ -940,4 +935,5 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
 /**
  * Фейковый интерфейс для создания образца
  */
-interface SampleDivisionEditor {}
+interface SampleDivisionEditor {
+}

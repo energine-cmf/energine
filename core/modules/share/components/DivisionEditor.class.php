@@ -234,7 +234,7 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
             );
         }
 
-        if(!in_array($oldValue, array_keys($r))){
+        if(!in_array($dirPath.$oldValue, array_values($r))){
             $result[] = array(
                 'key' => $oldValue,
                 'value' => $oldValue,

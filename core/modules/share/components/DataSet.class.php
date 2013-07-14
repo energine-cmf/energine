@@ -103,6 +103,11 @@ abstract class DataSet extends Component {
      * @var Pager
      */
     protected $pager;
+    /**
+     * Количество записей по умолчанию
+     *
+     */
+    const RECORD_PER_PAGE = 50;
 
 
     /**
@@ -113,7 +118,7 @@ abstract class DataSet extends Component {
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_FORM);
-        if (!$this->getParam('recordsPerPage')) $this->setParam('recordsPerPage', Grid::RECORD_PER_PAGE);
+        if (!$this->getParam('recordsPerPage')) $this->setParam('recordsPerPage', self::RECORD_PER_PAGE);
         if ($this->getParam('template')) {
             $this->setProperty('template', $this->getParam('template') . '/');
         }
@@ -395,7 +400,7 @@ abstract class DataSet extends Component {
             if (!$this->getBuilder()) {
                 throw new SystemException(
                     'ERR_DEV_NO_BUILDER:' . $this->getName() . ': ' .
-                        $this->getState(), SystemException::ERR_CRITICAL, $this->getName());
+                    $this->getState(), SystemException::ERR_CRITICAL, $this->getName());
             }
 
             // передаем данные и описание данных построителю
@@ -487,7 +492,7 @@ abstract class DataSet extends Component {
                 $JSObjectXML->setAttribute('name', $value['name']);
                 $JSObjectXML->setAttribute('type', ($value['type']) ?
                     $value['type'] : 'string');
-                $JSObjectXML->appendChild(new DomText( (string) $value));
+                $JSObjectXML->appendChild(new DomText((string)$value));
                 $result->appendChild($JSObjectXML);
             }
         }

@@ -28,12 +28,6 @@ class Grid extends DBDataSet {
      */
     const DIR_DOWN = '>';
     /**
-     * Количество записей в гриде по умолчанию
-     *
-     */
-    const RECORD_PER_PAGE = 50;
-
-    /**
      * Компонент: менеджер изображений
      *
      * @var ImageManager
@@ -79,7 +73,7 @@ class Grid extends DBDataSet {
 
         $this->setProperty('exttype', 'grid');
         if (!$this->getParam('recordsPerPage')) {
-            $this->setParam('recordsPerPage', self::RECORD_PER_PAGE);
+            $this->setParam('recordsPerPage', DataSet::RECORD_PER_PAGE);
         }
 
         if (!$this->getTitle())

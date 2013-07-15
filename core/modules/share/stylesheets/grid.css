@@ -41,6 +41,13 @@ div.grid div.filter input.small {
 }
 div.grid .f_fields {
     width: 150px;
+    height:auto;
+}
+div.grid .f_condition {
+    height:auto;
+}
+div.grid .query {
+    height:auto;
 }
 .f_datepicker {
     /*vertical-align:middle;*/

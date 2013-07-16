@@ -52,6 +52,10 @@ form input, form textarea, form select {
 	width: 250px;
 	height:auto;
 }
+form input[readonly]{
+    border-color: #f0f0f0;
+    color: gray;
+}
 form select{
 	height:auto;
 }

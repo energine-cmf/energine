@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content>
+<content segment="robots.txt" layout="empty.layout.xml">
     <component name="robots" module="seo" class="Robots"/>
 </content>

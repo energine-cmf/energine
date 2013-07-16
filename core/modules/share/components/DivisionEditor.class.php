@@ -222,17 +222,30 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
                 $r[basename($folderPath)] = $folderPath;
             }
         }
-
+        $d = new DOMDocument('1.0', 'UTF-8');
         foreach ($r as $path) {
             $path = str_replace($dirPath, '', $path);
             list($name, $tp) = explode('.', substr(basename($path), 0, -4));
             $name = $this->translate(strtoupper($tp . '_' . $name));
 
-            $result[] = array(
+            $row = array(
                 'key' => $path,
-                'value' => $name
+                'value' => $name,
             );
+
+            if(($type == 'content') && (file_exists($path = Document::TEMPLATES_DIR.$type.'/'.$path))){
+                $d->load($path);
+                if($attr = $d->documentElement->getAttribute('segment')){
+                    $row['data-segment'] = $attr;
+                }
+                if($attr = $d->documentElement->getAttribute('layout')){
+                    $row['data-layout'] = $attr;
+                }
+            }
+            array_push($result, $row);
         }
+
+        unset($d);
 
         if(!in_array($dirPath.$oldValue, array_values($r))){
             $result[] = array(

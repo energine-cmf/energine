@@ -21,6 +21,7 @@
     <xsl:variable name="FOLDER" select="$DOC_PROPS[@name='base']/@folder"/>
     <xsl:variable name="MAIN_SITE" select="$DOC_PROPS[@name='base']/@default"/>
     <xsl:template match="/">
+        <xsl:apply-templates select="document/container"/>
         <xsl:apply-templates select="document/component"/>
     </xsl:template>
 

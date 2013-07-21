@@ -324,20 +324,18 @@ final class Sitemap extends DBWorker {
 		}
 		
 		foreach ($segments as $key => $segment) {
-		    $found = false;
 			foreach($this->info as $pageID => $pageInfo){
 				if(($segment == $pageInfo['Segment']) && ($id == $pageInfo['Pid'])){
 				  		$id = $pageID;
 				  		$request->setPathOffset($key+1);
-				  		$found = true;
-				  		break;
+				  		goto found;
 				}
 			}
-			if(!$found){
-				break;
-			}
 		}
-		return ($id != $this->getDefault())?$id:false;
+        found:
+
+		//return ($id != $this->getDefault())?$id:false;
+        return $id;
 	}
 
 	/**

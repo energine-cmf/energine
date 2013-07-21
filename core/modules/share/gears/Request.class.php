@@ -49,6 +49,11 @@ final class Request extends Object {
      */
     private $offset;
 
+    /**
+     * @var
+     */
+    private $usedSegmentsCount = 0;
+
     /*
      * Типы пути:
      */
@@ -175,6 +180,7 @@ final class Request extends Object {
      */
     public function setPathOffset($offset) {
         $this->offset = $offset;
+        $this->useSegments($offset);
     }
 
     /**
@@ -194,6 +200,14 @@ final class Request extends Object {
      */
     public function getPathOffset() {
         return $this->offset;
+    }
+
+    public function useSegments($count = 1){
+        $this->usedSegmentsCount = $count;
+    }
+
+    public function getUsedSegments(){
+        return $this->usedSegmentsCount;
     }
 
     /**

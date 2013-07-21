@@ -79,6 +79,12 @@ class DocumentController extends Object {
             $document = E()->getDocument();
             $document->loadComponents();
             $document->runComponents();
+
+            if(($p = sizeof($path = E()->getRequest()->getPath())) != ($o = E()->getRequest()->getUsedSegments())){
+//                dump_log('URL: '.implode('/', $path). ' Path: '.$p.' Offset: '.$o, true);
+                throw new SystemException('ERR_404', SystemException::ERR_404, (string)E()->getRequest()->getURI());
+            }
+
             $document->build();
         }
         catch (IRQ $int) {

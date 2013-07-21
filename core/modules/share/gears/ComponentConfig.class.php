@@ -66,17 +66,14 @@ class ComponentConfig {
             if ($config) {
                 try {
                     $this->config = simplexml_load_file($config /*, 'ConfigElement'*/);
-                }
-                catch (Exception  $e) {
+                } catch (Exception  $e) {
                     throw new SystemException('ERR_DEV_BAD_CONFIG_FILE', SystemException::ERR_DEVELOPER, $config);
                 }
             }
-        }
-            //А может это конфиг из шаблона?
+        } //А может это конфиг из шаблона?
         elseif (is_a($config, 'SimpleXMLElement')) {
             $this->config = $config;
-        }
-        else {
+        } else {
             //Этого не может быть
             throw new SystemException('ERR_DEV_STRANGE', SystemException::ERR_DEVELOPER, func_get_args());
             //поскольку быть этого не может никогда
@@ -130,12 +127,12 @@ class ComponentConfig {
             $newState = $this->config->addChild('state');
             $newState->addAttribute('name', $methodName);
             $newState->addAttribute('weight', true);
-            if($rights){
+            if ($rights) {
                 $newState->addAttribute('rights', $rights);
             }
-            if(!is_array($patterns))$patterns = array($patterns);
+            if (!is_array($patterns)) $patterns = array($patterns);
             $uriPatterns = $newState->addChild('uri_patterns');
-            foreach($patterns as $pattern){
+            foreach ($patterns as $pattern) {
                 $uriPatterns->addChild('pattern', $pattern);
             }
         }
@@ -183,7 +180,7 @@ class ComponentConfig {
         foreach ($this->config->state as $method) {
             if (isset($method->uri_patterns->pattern)) {
 
-                $weightInc --;
+                $weightInc--;
                 //А это счетчик приоритета внутри набора паттернов
                 $maxPatternPriority = sizeof($method->uri_patterns->pattern) - 1;
                 //вообщем в результате мы получаем что у нас приоритеты выставлены как нужно
@@ -192,14 +189,14 @@ class ComponentConfig {
                     $patterns[(string)$pattern] = array(
                         'method' => (string)$method['name'],
                         //'rights' => ((isset($method['rights']))?(int)$method['rights']),
-                        'weight' => ((!isset($method['weight']))?($weightInc + $maxPatternPriority * 0.1):($maxWeightInc++))
+                        'weight' => ((!isset($method['weight'])) ? ($weightInc + $maxPatternPriority * 0.1) : ($maxWeightInc++))
                     );
-                    $maxPatternPriority --;
+                    $maxPatternPriority--;
                 }
             }
         }
         //сортируем  по приоритету
-        uasort($patterns, function($a, $b){
+        uasort($patterns, function ($a, $b) {
             return $a['weight'] < $b['weight'];
         });
 
@@ -211,13 +208,19 @@ class ComponentConfig {
                     array('(.*)', '\/', '([^\/]+)'),
                     $pattern
                 );
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 $resPattern = $pattern;
             }
             $matches = array();
 
             if (preg_match($resPattern = "/^$resPattern$/", $path, $matches)) {
+                $useSegments = sizeof(array_filter(explode('/', $pattern)));
+                if ($useSegments) {
+                    if (strpos($pattern, '[any]') !== false) {
+                        $useSegments--;
+                    }
+                    E()->getRequest()->useSegments(E()->getRequest()->getUsedSegments() + $useSegments);
+                }
                 array_shift($matches);
                 $actionName = $methodName;
                 if (!empty($matches)) {

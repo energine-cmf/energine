@@ -14,6 +14,10 @@
         <javascript>
             <behavior name="FileRepository"/>
         </javascript>
+        <uri_patterns>
+            <pattern>/</pattern>
+            <pattern>/[media]/</pattern>
+        </uri_patterns>
         <fields>
             <field name="upl_id"/>
             <field name="upl_path" title="FIELD_UPL_FILE_PATH" type="file"/>

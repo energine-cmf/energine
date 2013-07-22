@@ -85,6 +85,7 @@ final class TextBlock extends DataSet {
             array(
                  'num' => 1,
                  'active' => true,
+                 'text' => false
             )
         );
     }
@@ -141,6 +142,8 @@ final class TextBlock extends DataSet {
             list($res) = $res;
             $this->id = $res['id'];
             $this->content = $res['content'];
+        } elseif ($this->getParam('text')) {
+            $this->content = $this->getParam('text');
         }
 
         $this->setProperty('num', $this->getParam('num'));

@@ -311,22 +311,8 @@ LayoutManager.DummyWidget = new Class({
             url:LayoutManager.singlePath + 'widgets/',
             onClose: function(response) {
                 if (response) {
-                    var XMLHash;
-                    var changeNames = function(hash) {
-                        if (hash.tag == 'container' ||
-                            hash.tag == 'component') {
-                            if (hash.attributes['name'] !== undefined) {
-                                hash.attributes['name'] +=
-                                    Math.floor(Math.random() *
-                                        10001).toString();
-                                if (hash.children.length) {
-                                    hash.children.each(changeNames);
-                                }
-                            }
-                        }
-                    }
-                    changeNames(XMLHash =
-                        XML.rootToHashes(XML.rootFromString(response))[0]);
+                    response = new LayoutManager.Macros(response).replace();
+                    var XMLHash = XML.rootToHashes(XML.rootFromString(response))[0];
                     new Request({
                         url:LayoutManager.singlePath + 'widgets/build-widget/',
                         method: 'post',
@@ -425,22 +411,8 @@ LayoutManager.Widget = new Class({
             url:LayoutManager.singlePath + 'widgets/',
             onClose: function(response) {
                 if (response) {
-                    var XMLHash;
-                    var changeNames = function(hash) {
-                        if (hash.tag == 'container' ||
-                            hash.tag == 'component') {
-                            if (hash.attributes['name'] !== undefined) {
-                                hash.attributes['name'] +=
-                                    Math.floor(Math.random() *
-                                        10001).toString();
-                                if (hash.children.length) {
-                                    hash.children.each(changeNames);
-                                }
-                            }
-                        }
-                    }
-                    changeNames(XMLHash =
-                        XML.rootToHashes(XML.rootFromString(response))[0]);
+                    response = new LayoutManager.Macros(response).replace();
+                    var XMLHash = XML.rootToHashes(XML.rootFromString(response))[0];
                     new Request({
                         url:LayoutManager.singlePath + 'widgets/build-widget/',
                         method: 'post',
@@ -689,4 +661,21 @@ LayoutManager.Component.Param = new Class({
         return this.xml.get('text');
     }
 
+});
+
+/**
+ * Замена макросов при вставке нового виджета
+ */
+LayoutManager.Macros = new Class({
+
+    initialize: function(xml_string) {
+        this.xml_string = xml_string;
+    },
+
+    replace: function() {
+        var result = this.xml_string
+            .replace(new RegExp("\\[rand\\]", 'g'), Math.floor(Math.random() * 10001).toString());
+        console.log(result);
+        return result;
+    }
 });

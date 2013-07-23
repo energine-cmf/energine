@@ -1,4 +1,25 @@
-ScriptLoader.load('XML', 'Overlay');
+ScriptLoader.load('Overlay');
+
+/**
+ * Расширяем прототип Element'а
+ * для работы с псевдо-xml узлами в виде обычных DIV с доп атрибутом xmltag
+ */
+Element.implement({
+
+    getXMLElements: function(tag) {
+        return this.getElements('[xmltag=' + tag + ']');
+    },
+
+    getXMLElement: function(tag) {
+        return this.getElement('[xmltag=' + tag + ']');
+    },
+
+    asXMLString: function() {
+        return '<?xml version="1.0" encoding="utf-8" ?>' + PseudoXML.getElementAsXMLString(this);
+    }
+
+});
+
 /**
  * Редактор лейаута
  */
@@ -31,12 +52,13 @@ var LayoutManager = new Class({
         Asset.css('layout_manager.css');
         this.createToolbar();
         /**
+         * this.xml содержит Element с псевдо-xml структурой
          * нас интересует только узел content
          */
+        this.xml = PseudoXML.createPseudoXML(xml.documentElement).getXMLElements('content')[0];
 
-        this.xml = $(xml.getElementsByTagName('content')[0]);
         //Проходимся по всем контейнерам контента
-        this.xml.getElements('container').each(function(xml) {
+        this.xml.getXMLElements('container').each(function(xml) {
             //И создаем для каждого контейнера, который выступает в качестве колонки  - соответствующий объект колонки
             if (xml.getProperty('column')) {
                 this.columns.set(xml.getProperty('name'), new LayoutManager.Column(xml, this));
@@ -120,7 +142,7 @@ var LayoutManager = new Class({
                     url:LayoutManager.singlePath + 'widgets/save-template/' + ((Energine.forceJSON)?'?json':''),
                     method: 'post',
                     evalScripts: false,
-                    data: 'xml=' + '<?xml version="1.0" encoding="utf-8" ?>' + XML.hashToHTML(XML.nodeToHash(this.xml)),
+                    data: { 'xml': this.xml.asXMLString() },
                     onSuccess: function(response) {
                         if (response.result) {
                             document.location = document.location.href;
@@ -137,9 +159,10 @@ var LayoutManager = new Class({
                             url:LayoutManager.singlePath + 'widgets/save-new-template/' + ((Energine.forceJSON)?'?json':''),
                             method: 'post',
                             evalScripts: false,
-                            data: 'xml=' +
-                                '<?xml version="1.0" encoding="utf-8" ?>' +
-                                XML.hashToHTML(XML.nodeToHash(this.xml)) + '&title=' + result,
+                            data: {
+                                'xml': this.xml.asXMLString(),
+                                'title': result
+                            },
                             onSuccess: function(response) {
                                 if (response.result) {
                                     document.location = document.location.href;
@@ -154,9 +177,7 @@ var LayoutManager = new Class({
                     url:LayoutManager.singlePath + 'widgets/save-content/' + ((Energine.forceJSON)?'?json':''),
                     method: 'post',
                     evalScripts: false,
-                    data: 'xml=' +
-                        '<?xml version="1.0" encoding="utf-8" ?>' +
-                        XML.hashToHTML(XML.nodeToHash(this.xml)),
+                    data: { 'xml': this.xml.asXMLString() },
                     onSuccess: function(response) {
                         if (response.result) {
                             document.location = document.location.href;
@@ -216,8 +237,8 @@ var LayoutManager = new Class({
  */
 LayoutManager.Column = new Class({
     /**
-     * На вход получаем XML описание колонки
-     * @param xmlDescr DOMNode
+     * На вход получаем Pseudo-XML описание колонки
+     * @param xmlDescr Element
      */
     initialize: function(xmlDescr, layoutManager) {
         this.xml = xmlDescr;
@@ -229,7 +250,7 @@ LayoutManager.Column = new Class({
         if (this.element = document.getElement('[column=' + this.name + ']')) {
             this.element.addClass('e-lm-column');
             //проходимся по всем дочерним контейнерам и добавляем их в this.widgets
-            xmlDescr.getElements('container').each(this.addWidgetAsXML, this);
+            xmlDescr.getXMLElements('container').each(this.addWidgetAsXML, this);
             this.widgets.set(this.name, new LayoutManager.DummyWidget(this));
         }
     },
@@ -312,20 +333,18 @@ LayoutManager.DummyWidget = new Class({
             onClose: function(response) {
                 if (response) {
                     response = new LayoutManager.Macros(response).replace();
-                    var XMLHash = XML.rootToHashes(XML.rootFromString(response))[0];
+                    var xml = PseudoXML.createPseudoXML(response);
                     new Request({
                         url:LayoutManager.singlePath + 'widgets/build-widget/',
                         method: 'post',
                         evalScripts: false,
-                        data: 'xml=' +
-                            '<?xml version="1.0" encoding="utf-8" ?>' +
-                            XML.hashToHTML(XMLHash),
+                        data: { 'xml': xml.asXMLString() },
                         onSuccess: function(text) {
                             var container = new Element('div'), result;
                             container.set('html', text);
                             if (container.getElement('div')) {
                                 result = container.getElement('div').clone();
-                                new LayoutManager.Widget(XML.hashToElement(XMLHash), this.column, result, this);
+                                new LayoutManager.Widget(xml, this.column, result, this);
                             }
                             container.destroy();
                         }.bind(this)
@@ -385,7 +404,7 @@ LayoutManager.Widget = new Class({
         this.static = new Boolean(this.element.getProperty('static')).valueOf();
         if (this.static) this.container.addClass('e-lm-static-widget');
         var c;
-        if ((c = this.xml.getElement('component')) /*&& !this.static*/) {
+        if ((c = this.xml.getXMLElement('component')) /*&& !this.static*/) {
             this.component = new LayoutManager.Component(c, this.element);
         }
     },
@@ -412,20 +431,18 @@ LayoutManager.Widget = new Class({
             onClose: function(response) {
                 if (response) {
                     response = new LayoutManager.Macros(response).replace();
-                    var XMLHash = XML.rootToHashes(XML.rootFromString(response))[0];
+                    var xml = PseudoXML.createPseudoXML(response);
                     new Request({
                         url:LayoutManager.singlePath + 'widgets/build-widget/',
                         method: 'post',
                         evalScripts: false,
-                        data: 'xml=' +
-                            '<?xml version="1.0" encoding="utf-8" ?>' +
-                            XML.hashToHTML(XMLHash),
+                        data: { 'xml': xml.asXMLString() },
                         onSuccess: function(text) {
                             var container = new Element('div'), result;
                             container.set('html', text);
                             if (container.getElement('div')) {
                                 result = container.getElement('div').clone();
-                                new LayoutManager.Widget(XML.hashToElement(XMLHash), this.column, result, this);
+                                new LayoutManager.Widget(xml, this.column, result, this);
                             }
                             container.destroy();
                         }.bind(this)
@@ -438,9 +455,10 @@ LayoutManager.Widget = new Class({
      * Выводит форму редактирования параметров компонента виджета
      */
     editProps: function() {
+        //console.log(this.xml.asXMLString());
+        //return;
         ModalBox.open({
-            post:'<?xml version="1.0" encoding="utf-8" ?>' +
-                XML.hashToHTML(XML.nodeToHash(this.xml)),
+            post: this.xml.asXMLString(),
             url:LayoutManager.singlePath + 'widgets/edit-params/' +
                 this.component.name +
                 '/',
@@ -481,8 +499,7 @@ LayoutManager.Widget = new Class({
             url:LayoutManager.singlePath + 'widgets/build-widget/',
             method: 'post',
             evalScripts: false,
-            data: 'xml=' + '<?xml version="1.0" encoding="utf-8" ?>' +
-                XML.hashToHTML(XML.nodeToHash(this.xml)),
+            data: { 'xml': this.xml.asXMLString() },
             onSuccess: function(text) {
                 var container = new Element('div'), result;
                 container.set('html', text);
@@ -635,7 +652,7 @@ LayoutManager.Component = new Class({
         this.name = xmlDescr.getProperty('name');
         this.element = element;
         this.params = new Hash();
-        xmlDescr.getElements('param').each(function(xml) {
+        xmlDescr.getXMLElements('param').each(function(xml) {
             this.params.set(xml.getProperty('name'), new LayoutManager.Component.Param(xml));
         }, this);
     },
@@ -675,7 +692,154 @@ LayoutManager.Macros = new Class({
     replace: function() {
         var result = this.xml_string
             .replace(new RegExp("\\[rand\\]", 'g'), Math.floor(Math.random() * 10001).toString());
-        console.log(result);
         return result;
     }
 });
+
+/**
+ * Вспомогательный объект со статическими методами по созданию псевдо-XML коллекции в
+ * виде DIV блоков и кастомного атрибута xmltag, а также по преобразованию ее
+ * обратно в XML строку
+ *
+ * @type {{createPseudoXML: Function, getElementAsXMLString: Function}}
+ */
+var PseudoXML = {
+
+    /**
+     * Хитрый метод создания корневого элемента XML из строки
+     * с использованием Microsoft.XMLDOM или DOMParser'a
+     *
+     * @param string
+     * @returns {*}
+     */
+    createXMLRoot: function(string) {
+
+        // todo: проверить работоспособность во всех браузерах
+
+        var root;
+
+        if (window.DOMParser)
+        {
+            var parser = new DOMParser();
+            root = parser.parseFromString(string, "text/xml");
+        }
+        else // Internet Explorer
+        {
+            root = new ActiveXObject("Microsoft.XMLDOM");
+            root.async=false;
+            root.loadXML(string);
+        }
+
+        return root;
+    },
+
+    /**
+     * Создает псевдо-XML в виде DIV-ов
+     *
+     * @param Document|Element xml
+     * @param null|Element parent
+     * @returns Element
+     */
+    createPseudoXML: function(xml, parent) {
+
+        if (typeof(xml) == 'string') {
+            xml = this.createXMLRoot(xml).documentElement;
+        }
+
+        if (! parent) {
+            parent = new Element('div');
+            parent.setProperty('xmltag', xml.nodeName);
+        }
+
+        var tmp;
+        if (xml.attributes) {
+            for(var j = 0; j < xml.attributes.length; j++) {
+                tmp = xml.attributes[j];
+                parent.setProperty(tmp.nodeName, tmp.nodeValue);
+            }
+        }
+
+        if (!xml.childNodes || ! xml.childNodes.length) return parent;
+
+        var i, j, k, currChildNode, curSubNode;
+        for(i = 0; i < xml.childNodes.length; i++) {
+            currChildNode = xml.childNodes[i];
+
+            if (currChildNode.nodeType == 1) { // Element type
+                // NodeName
+                var el = new Element('div');
+                el.setProperty('xmltag', currChildNode.nodeName);
+
+                // Attributes
+                if(currChildNode.attributes.length) {
+                    for(j = 0; j < currChildNode.attributes.length; j++) {
+                        tmp = currChildNode.attributes[j];
+                        el.setProperty(tmp.nodeName, tmp.nodeValue);
+                    }
+                }
+
+                // Value
+                if (currChildNode.childNodes.length) {
+                    var text = '';
+                    for (k=0; k < currChildNode.childNodes.length; k++) {
+                        curSubNode = currChildNode.childNodes[k];
+                        if (curSubNode.nodeType == 3) {
+                            text += curSubNode.nodeValue;
+                        }
+                    }
+                    if (text != '') {
+                        el.set({'text' : text});
+                    }
+                }
+
+                parent.adopt(el);
+
+                if (currChildNode.childNodes.length) this.createPseudoXML(currChildNode, el);
+            }
+        }
+
+        return parent;
+    },
+
+    /**
+     * Собирает псевдо-XML обратно из псевдо-структуры в XML строку
+     *
+     * @param Element el
+     * @returns {string}
+     */
+    getElementAsXMLString: function(el) {
+
+        var result = '<' + el.getProperty('xmltag');
+        if (el.attributes && el.attributes.length) {
+            for (var i=0; i<el.attributes.length; i++) {
+                var attr_name = el.attributes[i].nodeName;
+                if (attr_name != 'xmltag' && attr_name != 'get' && el.getProperty(attr_name)) {
+                    result += ' ' + attr_name + '="' +
+                        el.getProperty(attr_name)
+                            .replace(/"/g, '\\"')
+                            .replace(/[\r\n]/g, ' ')
+                        + '"';
+                }
+            }
+        }
+        result += '>';
+
+        var children = el.getChildren();
+        if (children.length) {
+            children.each(function(e) {
+                result += this.getElementAsXMLString(e);
+            }.bind(this));
+        } else {
+            result += el.get('text')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        result += '</' + el.getProperty('xmltag') + '>';
+        return result;
+    }
+};
+

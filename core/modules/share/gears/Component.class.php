@@ -298,7 +298,7 @@ class Component extends DBWorker implements IBlock {
      */
     final private function determineState() {
         //Текущее действие берем из параметров
-        //По умолчанию оно равно self::DEFAULT_ACTION_NAME
+        //По умолчанию оно равно self::DEFAULT_STATE_NAME
         $this->state = $this->getParam('state');
 
         // если это основной компонент страницы, должен быть конфигурационный файл

@@ -467,7 +467,7 @@ Form.AttachmentPane = new Class({
         $('insert_attachment').addEvent('click', function (event) {
             Energine.cancelEvent(event);
             ModalBox.open({
-                'url': form.singlePath + 'file-library/media/',
+                'url': form.singlePath + 'file-library/',
                 'onClose': this._insertRow.bind(this)
             });
         }.bind(this));

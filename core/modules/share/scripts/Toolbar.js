@@ -300,8 +300,8 @@ Toolbar.File = new Class({
         var obj = this;
         this.element.grab(new Element('input', {'type':'file', 'id':this.properties.id, 'events':{
             'change':function (evt) {
-                // todo: разобраться, зачем это здесь
-                /*var file = evt.target.files[0];
+                // Это обработчик для control type= file в ие он наверное не работает , но в данном случае это не сильно принципиально
+                var file = evt.target.files[0];
                 var reader = new FileReader();
                 reader.onload = (function (theFile) {
                     return function (e) {
@@ -309,7 +309,7 @@ Toolbar.File = new Class({
                             obj.toolbar._callAction(obj.properties.action, e.target);
                     }
                 })(file);
-                reader.readAsDataURL(file);*/
+                reader.readAsDataURL(file);
             }.bind(this)
         }
         }));

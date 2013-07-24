@@ -775,4 +775,16 @@ class FileRepository extends Grid {
 
         $builder->setProperties($response);
     }
+
+    /**
+     * Очистка пришедших из JS FileReader
+     * @static
+     * @param $data
+     * @return string
+     * @deprecated
+     */
+    public static function cleanFileData($data) {
+        $tmp = explode(';base64,', $data);
+        return base64_decode($tmp[1]);
+    }
 }

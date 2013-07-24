@@ -135,10 +135,9 @@ class AttachmentManager extends DBWorker {
                 $images = $this->dbh->selectRequest($request);
 
                 if (is_array($images)) {
-                    foreach ($images as $key => $row) {
-
-                        $repo = E()->FileRepoInfo->getRepositoryInstanceByPath($row['file']);
-                        $row['secure'] = (E()->getConfigValue('repositories.ftp.' . $repo->getBase() . '.secure', 0)) ? true : false;
+                    foreach ($images as $row) {
+                        $repoPath = E()->FileRepoInfo->getRepositoryRoot($row['file']);
+                        $row['secure'] = (E()->getConfigValue('repositories.ftp.' . $repoPath . '.secure', 0)) ? true : false;
 
                         $mapID = $row[$mapFieldName];
                         if ($returnOnlyFirstAttachment &&

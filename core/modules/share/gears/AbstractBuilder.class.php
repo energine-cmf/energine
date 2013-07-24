@@ -132,21 +132,21 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         $result->setAttribute('mode', $fieldInfo->getMode());
 
         if (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_FILE /*,FieldDescription::FIELD_TYPE_IMAGE*/))) {
-            //$fieldInfo->setProperty('additionalTitle', $this->translate('MSG_LOAD_FILE'));
-            E()->getDocument()->addTranslation('TXT_CLEAR');
-            E()->getDocument()->addTranslation('BTN_QUICK_UPLOAD');
+            if (E()->getDocument()->getRights() > ACCESS_READ) {
+                E()->getDocument()->addTranslation('TXT_CLEAR');
+                E()->getDocument()->addTranslation('BTN_QUICK_UPLOAD');
 
-            $quick_upload_path = $this->getConfigValue('repositories.quick_upload_path', 'uploads/public');
-            $quick_upload_pid = $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $quick_upload_path);
+                $quick_upload_path = $this->getConfigValue('repositories.quick_upload_path', 'uploads/public');
+                $quick_upload_pid = $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $quick_upload_path);
 
-            $result->setAttribute('quickUploadPath', $quick_upload_path);
-            $result->setAttribute('quickUploadPid', $quick_upload_pid);
+                $result->setAttribute('quickUploadPath', $quick_upload_path);
+                $result->setAttribute('quickUploadPid', $quick_upload_pid);
+            }
 
             if ($fieldValue) {
-
-                    $repo = E()->FileRepoInfo->getRepositoryInstanceByPath($fieldValue);
-                    $is_secure = (E()->getConfigValue('repositories.ftp.' . $repo->getBase() . '.secure', 0)) ? true : false;
-                    $result->setAttribute('secure', $is_secure);
+                $repoPath = E()->FileRepoInfo->getRepositoryRoot($fieldValue);
+                $is_secure = (E()->getConfigValue('repositories.ftp.' . $repoPath . '.secure', 0)) ? true : false;
+                $result->setAttribute('secure', $is_secure);
 
                 try {
                     if ($info = E()->FileRepoInfo->analyze($fieldValue)) {
@@ -278,7 +278,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      * @static
      */
     static public function enFormatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
-        if(!$date) return '';
+        if (!$date) return '';
 
         $date = strtotime($date);
         if (!in_array($format, array('%E', '%f', '%o', '%q'))) {
@@ -330,7 +330,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     break;
                 case '%o':
                     if ($date >= $today and $date < $tomorrow) {
-                        $result .= DBWorker::_translate('TXT_TODAY').', ';
+                        $result .= DBWorker::_translate('TXT_TODAY') . ', ';
                     }
                     $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
 

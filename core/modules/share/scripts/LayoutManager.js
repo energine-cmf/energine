@@ -60,8 +60,8 @@ var LayoutManager = new Class({
         //Проходимся по всем контейнерам контента
         this.xml.getXMLElements('container').each(function(xml) {
             //И создаем для каждого контейнера, который выступает в качестве колонки  - соответствующий объект колонки
-            if (xml.getProperty('column')) {
-                this.columns.set(xml.getProperty('name'), new LayoutManager.Column(xml, this));
+            if (xml.getProperty('data-column')) {
+                this.columns.set(xml.getProperty('data-name'), new LayoutManager.Column(xml, this));
             }
         }, this);
     },
@@ -243,7 +243,7 @@ LayoutManager.Column = new Class({
     initialize: function(xmlDescr, layoutManager) {
         this.xml = xmlDescr;
         this.layoutManager = layoutManager;
-        this.name = xmlDescr.getProperty('name');
+        this.name = xmlDescr.getProperty('data-name');
         //хеш виджетов, находящихся внутри колонки
         this.widgets = new Hash();
         //Если существует соответствующий HTML елемент  - представление колонки
@@ -262,8 +262,8 @@ LayoutManager.Column = new Class({
      */
     addWidgetAsXML: function(widgetXML) {
         var widget = null;
-        if (widgetXML.getProperty('widget')) {
-            this.widgets.set(widgetXML.getProperty('name'), widget =
+        if (widgetXML.getProperty('data-widget')) {
+            this.widgets.set(widgetXML.getProperty('data-name'), widget =
                 new LayoutManager.Widget(widgetXML, this))
         }
         return widget;
@@ -367,7 +367,7 @@ LayoutManager.Widget = new Class({
     initialize:function(xmlDescr, column, htmlElement, injectBeforeThisWidget) {
         this.xml = xmlDescr;
         this.column = column;
-        this.name = xmlDescr.getProperty('name');
+        this.name = xmlDescr.getProperty('data-name');
         this.visible = false;
         this.static = false;
         htmlElement = htmlElement ||
@@ -412,7 +412,7 @@ LayoutManager.Widget = new Class({
         var tb = new Toolbar('widgetToolbar_' + this.name);
         if (!this.static)
             tb.appendControl(new Toolbar.Button({id:'add', 'icon': 'images/toolbar/add.gif', title: 'Add', action:'addWidget'}));
-        if (this.component && this.component.params.getLength() && this.component.params.some(function(obj){return (obj.xml.getAttribute('type') != 'hidden');}))
+        if (this.component && this.component.params.getLength() && this.component.params.some(function(obj){return (obj.xml.getProperty('data-type') != 'hidden');}))
             tb.appendControl(new Toolbar.Button({id:'edit', 'icon': 'images/toolbar/edit.gif', title: 'Edit', action:'editProps'}));
         if (!this.static)
             tb.appendControl(new Toolbar.Button({id:'delete', 'icon': 'images/toolbar/delete.gif', title: 'Delete', action:'delWidget'}));
@@ -455,8 +455,6 @@ LayoutManager.Widget = new Class({
      * Выводит форму редактирования параметров компонента виджета
      */
     editProps: function() {
-        //console.log(this.xml.asXMLString());
-        //return;
         ModalBox.open({
             post: this.xml.asXMLString(),
             url:LayoutManager.singlePath + 'widgets/edit-params/' +
@@ -649,11 +647,11 @@ LayoutManager.Widget.DragBehavior = new Class({
 LayoutManager.Component = new Class({
     initialize: function(xmlDescr, element) {
         this.xml = xmlDescr;
-        this.name = xmlDescr.getProperty('name');
+        this.name = xmlDescr.getProperty('data-name');
         this.element = element;
         this.params = new Hash();
         xmlDescr.getXMLElements('param').each(function(xml) {
-            this.params.set(xml.getProperty('name'), new LayoutManager.Component.Param(xml));
+            this.params.set(xml.getProperty('data-name'), new LayoutManager.Component.Param(xml));
         }, this);
     },
     getParam: function(paramName) {
@@ -755,7 +753,7 @@ var PseudoXML = {
         if (xml.attributes) {
             for(var j = 0; j < xml.attributes.length; j++) {
                 tmp = xml.attributes[j];
-                parent.setProperty(tmp.nodeName, tmp.nodeValue);
+                parent.setProperty('data-' + tmp.nodeName, tmp.nodeValue);
             }
         }
 
@@ -774,7 +772,7 @@ var PseudoXML = {
                 if(currChildNode.attributes.length) {
                     for(j = 0; j < currChildNode.attributes.length; j++) {
                         tmp = currChildNode.attributes[j];
-                        el.setProperty(tmp.nodeName, tmp.nodeValue);
+                        el.setProperty('data-' + tmp.nodeName, tmp.nodeValue);
                     }
                 }
 
@@ -813,8 +811,8 @@ var PseudoXML = {
         if (el.attributes && el.attributes.length) {
             for (var i=0; i<el.attributes.length; i++) {
                 var attr_name = el.attributes[i].nodeName;
-                if (attr_name != 'xmltag' && attr_name != 'get' && el.getProperty(attr_name)) {
-                    result += ' ' + attr_name + '="' +
+                if (attr_name.indexOf('data-') != -1) {
+                    result += ' ' + attr_name.replace('data-', '') + '="' +
                         el.getProperty(attr_name)
                             .replace(/"/g, '\\"')
                             .replace(/[\r\n]/g, ' ')

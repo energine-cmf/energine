@@ -27,6 +27,8 @@ function E() {
  * Любой объект помещенный в него становится синглтоном
  * Кроме того есть набор методов возвращающих объекты для часто используемых классов
  *
+ * @property FileRepoInfo FileRepoInfo
+ * @property ComponentManager ComponentManager
  * @throws SystemException
  * @see Singleton
  *
@@ -85,7 +87,8 @@ final class Registry extends Object {
 
     /**
      * @param  $className string
-     * @return mixed
+     * @return FileRepoInfo|ComponentManager|mixed
+     * @throws Exception
      */
     public function __get($className) {
         if ($className == 'Sitemap') {

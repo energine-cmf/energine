@@ -787,12 +787,26 @@ class DBDataSet extends DataSet {
      * @access protected
      */
     protected function buildJS() {
-        $result = false;
+        $result = parent::buildJS();
+
         if (($this->getState() == 'view') && $this->document->isEditable() && $this->getParam('editable')) {
             $this->addWYSIWYGTranslations();
             $this->setProperty('editable', 'editable');
         }
-        $result = parent::buildJS();
+
+        if (!$result) {
+            $result = $this->doc->createElement('javascript');
+        }
+        if ($config = E()->getConfigValue('wysiwyg.styles')) {
+            $JSObjectXML = $this->doc->createElement('variable');
+            $JSObjectXML->setAttribute('name', 'wysiwyg_styles');
+            $JSObjectXML->setAttribute('type', 'json');
+            foreach ($config as $key => $value) {
+                if (isset($value['caption'])) $config[$key]['caption'] = $this->translate($value['caption']);
+            }
+            $JSObjectXML->appendChild(new DomText(json_encode($config)));
+            $result->appendChild($JSObjectXML);
+        }
 
         return $result;
     }

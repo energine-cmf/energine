@@ -817,6 +817,33 @@ Form.RichEditor = new Class({
             title:Energine.translations.get('BTN_ALIGN_JUSTIFY'),
             action:'alignJustify'
         }));
+
+        var styles = {
+            '': {'caption': '', 'html': '&nbsp;', 'element': '', 'class': ''},
+            'reset': {'caption': Energine.translations.get('TXT_RESET'), 'html': Energine.translations.get('TXT_RESET'), 'element': '', 'class': ''},
+            'h1': {'caption': Energine.translations.get('TXT_H1'), 'html': '<h1>' + Energine.translations.get('TXT_H1') + '</h1>', 'element': 'h1', 'class': ''},
+            'h2': {'caption': Energine.translations.get('TXT_H2'), 'html': '<h2>' + Energine.translations.get('TXT_H2') + '</h2>', 'element': 'h2', 'class': ''},
+            'h3': {'caption': Energine.translations.get('TXT_H3'), 'html': '<h3>' + Energine.translations.get('TXT_H3') + '</h3>', 'element': 'h3', 'class': ''},
+            'h4': {'caption': Energine.translations.get('TXT_H4'), 'html': '<h4>' + Energine.translations.get('TXT_H4') + '</h4>', 'element': 'h4', 'class': ''},
+            'h5': {'caption': Energine.translations.get('TXT_H5'), 'html': '<h5>' + Energine.translations.get('TXT_H5') + '</h5>', 'element': 'h5', 'class': ''},
+            'h6': {'caption': Energine.translations.get('TXT_H6'), 'html': '<h6>' + Energine.translations.get('TXT_H6') + '</h6>', 'element': 'h6', 'class': ''},
+            'address': {'caption': Energine.translations.get('TXT_ADDRESS'), 'html': '<address>' + Energine.translations.get('TXT_ADDRESS') + '</address>', 'element': 'address', 'class': ''}
+        };
+
+        if (typeof(window['wysiwyg_styles'] != 'undefined')) {
+            Object.each(window['wysiwyg_styles'], function (value, key) {
+                styles[key] = {
+                    'caption': value['caption'],
+                    'html': '<' + value['element'] + ' class="' + value['class'] + '">' + value['caption'] + '</' + value['element'] + '>',
+                    'element': value['element'],
+                    'class': value['class']
+                };
+            });
+        }
+
+        this.toolbar.appendControl(new Toolbar.Separator({ id:'sep4' }));
+        this.toolbar.appendControl(new Toolbar.CustomSelect({ id:'selectFormat', action:'changeFormat', action_before: 'beforeChangeFormat' }, styles));
+
         if (Energine.supportContentEdit && !this.fallback_ie) {
             this.toolbar.appendControl(new Toolbar.Separator({
                 id:'sep2'
@@ -886,8 +913,7 @@ Form.RichEditor = new Class({
     onSelectionChanged: function(e)
     {
         this.parent();
-
-        if (!this.toolbar) return;
+        if (!this.toolbar) return false;
 
         this.toolbar.allButtonsUp();
 
@@ -927,6 +953,21 @@ Form.RichEditor = new Class({
                     align_selected = true;
                 } else if (!align_selected && !this.toolbar.getControlById('right').isDown() && !this.toolbar.getControlById('center').isDown() && !this.toolbar.getControlById('justify').isDown()) {
                     this.toolbar.getControlById('left').down();
+                }
+
+                Object.each(this.toolbar.getControlById('selectFormat').getOptions(), function (value, key) {
+                    if (key == tag && !format_selected) {
+                        format_selected = true;
+                        this.toolbar.getControlById('selectFormat').setSelected(tag);
+                    }
+                    if (key == tag + '.' + cls) {
+                        format_selected = true;
+                        this.toolbar.getControlById('selectFormat').setSelected(key);
+                    }
+                }.bind(this));
+
+                if (!format_selected) {
+                    this.toolbar.getControlById('selectFormat').setSelected('');
                 }
             }
         }

@@ -100,9 +100,9 @@ class DBDataSet extends DataSet {
         return array_merge(
             parent::defineParams(),
             array(
-                 'tableName' => false,
-                 'onlyCurrentLang' => false,
-                 'editable' => false
+                'tableName' => false,
+                'onlyCurrentLang' => false,
+                'editable' => false
             )
         );
     }
@@ -122,16 +122,14 @@ class DBDataSet extends DataSet {
                 //для всех полей кроме идентификатора языка и первичного ключа выставляем дополнительное свойство isMultiLanguage
                 if (!in_array($fieldName, array($this->getPK(), 'lang_id'))) {
                     $transColumnsDescription[$fieldName]['isMultilanguage'] = true;
-                }
-                elseif ($fieldName === 'lang_id' && $this->getPK() !== 'lang_id') {
+                } elseif ($fieldName === 'lang_id' && $this->getPK() !== 'lang_id') {
                     $transColumnsDescription[$fieldName]['languageID'] = true;
                 }
             }
             $result += $transColumnsDescription;
             if (isset($result['lang_id'])) {
                 $result['lang_id']['key'] = false;
-            }
-            else {
+            } else {
                 throw new SystemException('ERR_DEV_NO_LANG_ID', SystemException::ERR_DEVELOPER);
             }
         }
@@ -155,8 +153,8 @@ class DBDataSet extends DataSet {
         //Для мультиязычной таблицы - дергаем отдельный хитрый(сложный) метод загрузки
         $data = $this->loadm2mData(
             (!$this->getTranslationTableName()) ?
-                    $this->commonLoadData() :
-                    $this->multiLoadData()
+                $this->commonLoadData() :
+                $this->multiLoadData()
         );
 
         return $data;
@@ -201,7 +199,7 @@ class DBDataSet extends DataSet {
                         $relInfo['tableName'],
                         true,
                         array(
-                             $primaryKeyName => $pks
+                            $primaryKeyName => $pks
                         )
                     );
 
@@ -246,7 +244,7 @@ class DBDataSet extends DataSet {
         foreach ($this->getDataDescription() as $fieldName => $field) {
             if (is_null($field->getPropertyValue('customField'))) {
                 if (
-                    ($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
+                ($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
                 ) {
                     $fieldName = ' IF((' . $fieldName . ' IS NOT NULL) AND (' . $fieldName . ' <> ""), 1, 0) AS ' . $fieldName;
                 }
@@ -264,8 +262,7 @@ class DBDataSet extends DataSet {
                     $dbFields[$key] = '';
                 }
                 $res = array($dbFields);
-            }
-            else {
+            } else {
                 $res = $this->dbh->select($this->getTableName(), (($this->pager) ? ' SQL_CALC_FOUND_ROWS '
                         : '') . implode(',', $dbFields), $this->getFilter(), $this->getOrder(), $this->getLimit());
             }
@@ -303,14 +300,13 @@ class DBDataSet extends DataSet {
                 if (is_null($field->getPropertyValue('customField'))) {
                     //поля не приведенные к булеану
                     if (
-                        !($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
+                    !($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
                     ) {
                         $dbFields[$field->getPropertyValue('tableName')][$fieldName] = $field->getPropertyValue('tableName') . '.' . $fieldName;
-                    }
-                        //поля приведенные к булеану из родного типа данных
+                    } //поля приведенные к булеану из родного типа данных
                     else {
                         $dbFields[$field->getPropertyValue('tableName')][$fieldName] =
-                                ' IF((' . $field->getPropertyValue('tableName') . '.' . $fieldName . ' IS NOT NULL) AND (' . $field->getPropertyValue('tableName') . '.' . $fieldName . ' <> ""), 1, 0) AS ' . $fieldName;
+                            ' IF((' . $field->getPropertyValue('tableName') . '.' . $fieldName . ' IS NOT NULL) AND (' . $field->getPropertyValue('tableName') . '.' . $fieldName . ' <> ""), 1, 0) AS ' . $fieldName;
                     }
                 }
             }
@@ -320,8 +316,7 @@ class DBDataSet extends DataSet {
         if (!empty($filterCondition)) {
             $filter = $this->dbh->buildWhereCondition($filterCondition) . ($this->getParam('onlyCurrentLang')
                     ? ' AND lang_id = ' . $this->getDataLanguage() : '');
-        }
-        elseif ($this->getDataLanguage() && $this->getParam('onlyCurrentLang')) {
+        } elseif ($this->getDataLanguage() && $this->getParam('onlyCurrentLang')) {
             $filter = ' WHERE lang_id = ' . $this->getDataLanguage();
         }
 
@@ -381,11 +376,11 @@ class DBDataSet extends DataSet {
                     FROM %s
                     WHERE %s IN(%s)
                 ',
-                                   $this->getPK(), (isset($dbFields[$this->getTableName()]))
-                            ? implode(',', $dbFields[$this->getTableName()]) . ','
-                            : '', implode(',', $translationColumns),
-                                   $this->getTableName(),
-                                   $this->getPK(), implode(',', array_keys($matrix)));
+                    $this->getPK(), (isset($dbFields[$this->getTableName()]))
+                        ? implode(',', $dbFields[$this->getTableName()]) . ','
+                        : '', implode(',', $translationColumns),
+                    $this->getTableName(),
+                    $this->getPK(), implode(',', array_keys($matrix)));
                 $res = $this->dbh->selectRequest($request);
 
                 foreach ($res as $row) {
@@ -402,15 +397,13 @@ class DBDataSet extends DataSet {
                     foreach (array_keys($lang) as $langID) {
                         if (isset($langVersions[$langID])) {
                             $data[] = $langVersions[$langID];
-                        }
-                        else {
+                        } else {
                             $data[arrayPush($data, $template[$ltagID])]['lang_id'] = $langID;
                         }
                     }
                 }
             }
-        }
-        else {
+        } else {
             $i = 0;
             $dbFields = array_merge(
                 (isset($dbFields[$this->getTableName()])) ? array_keys($dbFields[$this->getTableName()]) : array(),
@@ -514,8 +507,7 @@ class DBDataSet extends DataSet {
     protected function addFilterCondition($filter) {
         if (is_numeric($filter)) {
             $filter = array($this->getTableName() . '.' . $this->getPK() => $filter);
-        }
-        elseif (is_string($filter)) {
+        } elseif (is_string($filter)) {
             $filter = array($filter);
         }
         $this->filter = array_merge($this->filter, $filter);
@@ -620,8 +612,7 @@ class DBDataSet extends DataSet {
                 if (!isset($this->pk)) {
                     throw new SystemException('ERR_DEV_NO_PK', SystemException::ERR_DEVELOPER);
                 }
-            }
-            else {
+            } else {
                 throw new SystemException('ERR_DEV_NO_PK', SystemException::ERR_DEVELOPER);
             }
 
@@ -645,8 +636,7 @@ class DBDataSet extends DataSet {
     protected function createBuilder() {
         if (!$this->getTranslationTableName()) {
             $result = parent::createBuilder();
-        }
-        else {
+        } else {
             $result = new MultiLanguageBuilder();
         }
         return $result;
@@ -671,8 +661,7 @@ class DBDataSet extends DataSet {
                     $fkKeyName = $keyInfo['fieldName'];
                     //загружаем информацию о возможных значениях
                     $values = $this->getFKData($fkTableName, $fkKeyName);
-                }
-                elseif ($fieldMetaData->getType() == FieldDescription::FIELD_TYPE_MULTI) {
+                } elseif ($fieldMetaData->getType() == FieldDescription::FIELD_TYPE_MULTI) {
 
                     $m2mTableName = $keyInfo['tableName'];
                     $m2mPKName = $keyInfo['fieldName'];
@@ -781,32 +770,31 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * При редактировании выводим Js объек
+     * При редактировании выводим Js объект
      *
      * @return mixed
      * @access protected
      */
     protected function buildJS() {
         $result = parent::buildJS();
-
         if (($this->getState() == 'view') && $this->document->isEditable() && $this->getParam('editable')) {
             $this->addWYSIWYGTranslations();
             $this->setProperty('editable', 'editable');
+            if ($config = E()->getConfigValue('wysiwyg.styles')) {
+                if (!$result) {
+                    $result = $this->doc->createElement('javascript');
+                }
+                $JSObjectXML = $this->doc->createElement('variable');
+                $JSObjectXML->setAttribute('name', 'wysiwyg_styles');
+                $JSObjectXML->setAttribute('type', 'json');
+                foreach ($config as $key => $value) {
+                    if (isset($value['caption'])) $config[$key]['caption'] = $this->translate($value['caption']);
+                }
+                $JSObjectXML->appendChild(new DomText(json_encode($config)));
+                $result->appendChild($JSObjectXML);
+            }
         }
 
-        if (!$result) {
-            $result = $this->doc->createElement('javascript');
-        }
-        if ($config = E()->getConfigValue('wysiwyg.styles')) {
-            $JSObjectXML = $this->doc->createElement('variable');
-            $JSObjectXML->setAttribute('name', 'wysiwyg_styles');
-            $JSObjectXML->setAttribute('type', 'json');
-            foreach ($config as $key => $value) {
-                if (isset($value['caption'])) $config[$key]['caption'] = $this->translate($value['caption']);
-            }
-            $JSObjectXML->appendChild(new DomText(json_encode($config)));
-            $result->appendChild($JSObjectXML);
-        }
 
         return $result;
     }
@@ -816,6 +804,7 @@ class DBDataSet extends DataSet {
      *
      * @return string
      * @access protected
+     * @throws SystemException
      * @final
      */
 
@@ -823,8 +812,7 @@ class DBDataSet extends DataSet {
         if (!$this->previousState) {
             if (!isset($_POST['componentAction'])) {
                 throw new SystemException('ERR_NO_COMPONENT_ACTION', SystemException::ERR_CRITICAL);
-            }
-            else {
+            } else {
                 $this->previousState = $_POST['componentAction'];
             }
         }

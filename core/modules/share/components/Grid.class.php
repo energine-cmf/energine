@@ -148,6 +148,15 @@ class Grid extends DBDataSet {
         $this->prepare();
         $this->addToolbarTranslations();
         $this->linkExtraManagers($this->getTableName());
+        foreach ($this->getDataDescription() as $fieldDescription) {
+            if ($default = $fieldDescription->getPropertyValue('default')) {
+                if(!($f = $this->getData()->getFieldByName($fieldDescription->getName()))){
+                    $f = new Field($fieldDescription->getName());
+                    $this->getData()->addField($f);
+                }
+                $f->setData($default, true);
+            }
+        }
     }
 
     /**
@@ -873,7 +882,7 @@ class Grid extends DBDataSet {
             switch ($direction) {
                 // двигаем элемент с id=$firstItem на самый верх
                 case 'first':
-                    $oldFirstItem = (int) $this->dbh->getScalar('SELECT MIN(' . $this->getOrderColumn() . ') FROM ' . $this->getTableName() . ' LIMIT 1');
+                    $oldFirstItem = (int)$this->dbh->getScalar('SELECT MIN(' . $this->getOrderColumn() . ') FROM ' . $this->getTableName() . ' LIMIT 1');
                     if ($oldFirstItem != $firstItem) {
                         $this->dbh->modify(
                             QAL::UPDATE,
@@ -885,7 +894,7 @@ class Grid extends DBDataSet {
                     break;
                 // двигаем элемент с id=$firstItem в самый низ
                 case 'last':
-                    $oldLastItem = (int) $this->dbh->getScalar('SELECT MAX(' . $this->getOrderColumn() . ') FROM ' . $this->getTableName() . ' LIMIT 1');
+                    $oldLastItem = (int)$this->dbh->getScalar('SELECT MAX(' . $this->getOrderColumn() . ') FROM ' . $this->getTableName() . ' LIMIT 1');
                     if ($oldLastItem != $firstItem) {
                         $this->dbh->modify(
                             QAL::UPDATE,
@@ -1162,7 +1171,7 @@ class Grid extends DBDataSet {
             $am->createAttachmentTab($data);
 
             //Ссылки на добавление и удаление файла
-            $this->addTranslation('BTN_ADD_FILE', 'BTN_EDIT_FILE','BTN_QUICK_UPLOAD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
+            $this->addTranslation('BTN_ADD_FILE', 'BTN_EDIT_FILE', 'BTN_QUICK_UPLOAD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
         }
 
         if ($this->dbh->tableExists($this->getTableName() . TagManager::TAGS_TABLE_SUFFIX)) {

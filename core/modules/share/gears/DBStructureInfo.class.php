@@ -216,7 +216,7 @@ final class DBStructureInfo extends Object {
                         'nullable' => (
                                 $matches['is_null'][$index] != 'NOT NULL'),
                         'length' => (int)$matches['len'][$index],
-                        'default' => trim($matches['default'][$index], "'"),
+                        'default' => (strcasecmp(trim($matches['default'][$index], "'"), 'null') == 0)? null: trim($matches['default'][$index], "'"),
                         'key' => false,
                         'type' => self::convertType($matches['type'][$index]),
                         'index' => false,

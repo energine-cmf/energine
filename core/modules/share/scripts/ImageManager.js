@@ -41,7 +41,7 @@ var ImageManager = new Class({
     },
     openImageLib:function () {
         ModalBox.open({
-            url:this.singlePath + 'file-library/image/',
+            url:this.singlePath + 'file-library/',
             'post': JSON.encode(this.image),
             onClose:function (result) {
                 if (result) {

@@ -134,7 +134,7 @@ var RichEditor = new Class({
             });
         } else {
             ModalBox.open({
-                url: this.area.getProperty('single_template') + 'file-library/image/',
+                url: this.area.getProperty('single_template') + 'file-library/',
                 onClose: this.insertImage.bind(this)
             });
         }

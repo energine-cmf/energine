@@ -302,7 +302,6 @@
                         }
                     </xsl:if>
                 </xsl:if>
-            }
             });
         </script>
         <xsl:apply-templates select="document/translations"/>

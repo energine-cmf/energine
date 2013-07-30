@@ -22,16 +22,13 @@ var DivForm = new Class({
                 }
             }
 
-            if((layout = contentSelector.getSelected()[0].getProperty('data-layout')) && (layout != '*')){
-                //layoutSelector.setProperty('disabled', 'disabled');
+            if((layout = contentSelector.getSelected()[0].getProperty('data-layout')) && (layout != '*')/* && (!new Boolean(layoutSelector.get('value').toInt()).valueOf())*/){
                 layoutSelector.set('value', layout);
             }
-            else {
-                //layoutSelector.removeProperty('disabled');
-            }
+
         };
         contentSelector.addEvent('change', contentFunc);
-        contentFunc();
+        //contentFunc();
     },
     resetPageContentTemplate: function () {
         this.request(

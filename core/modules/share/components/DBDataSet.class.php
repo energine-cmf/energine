@@ -777,9 +777,12 @@ class DBDataSet extends DataSet {
      */
     protected function buildJS() {
         $result = parent::buildJS();
-        if (($this->getState() == 'view') && $this->document->isEditable() && $this->getParam('editable')) {
+        if ((($this->getState() == 'view') && $this->document->isEditable() && $this->getParam('editable')) || in_array($this->getState(), array('add', 'edit'))) {
+
+            if($this->document->isEditable())
+                            $this->setProperty('editable', 'editable');
+
             $this->addWYSIWYGTranslations();
-            $this->setProperty('editable', 'editable');
             if ($config = E()->getConfigValue('wysiwyg.styles')) {
                 if (!$result) {
                     $result = $this->doc->createElement('javascript');

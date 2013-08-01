@@ -5,10 +5,9 @@
 				<behavior name="WidgetGridManager" />
 			</javascript>
             <fields>
-				<field name="widget_id"/>
-				<field name="widget_name"/>
-				<field name="widget_xml" type="hidden"/>
-				<field name="widget_icon_img"/>
+                <field name="widget_id"/>
+                <field name="widget_name"/>
+                <field name="widget_xml" type="hidden"/>
 			</fields>
 			<toolbar>
                 <control id="open" title="BTN_INSERT_WIDGET" type="button" onclick="insert" />

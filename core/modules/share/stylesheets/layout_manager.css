@@ -28,3 +28,10 @@
 .e-has-sideframe ul.block_management_toolbar{
     margin-left: 300px !important;
 }
+.e-widget.dynamic {
+    height:130px;
+    background: url("../images/default_90x68.png") no-repeat scroll top left transparent;
+    padding-left: 82px;
+    padding-top: 20px;
+    color:black;
+}

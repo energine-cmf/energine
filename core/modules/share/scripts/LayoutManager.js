@@ -6,15 +6,15 @@ ScriptLoader.load('Overlay');
  */
 Element.implement({
 
-    getXMLElements: function(tag) {
+    getXMLElements: function (tag) {
         return this.getElements('[xmltag=' + tag + ']');
     },
 
-    getXMLElement: function(tag) {
+    getXMLElement: function (tag) {
         return this.getElement('[xmltag=' + tag + ']');
     },
 
-    asXMLString: function() {
+    asXMLString: function () {
         return '<?xml version="1.0" encoding="utf-8" ?>' + PseudoXML.getElementAsXMLString(this);
     }
 
@@ -24,7 +24,7 @@ Element.implement({
  * Редактор лейаута
  */
 var LayoutManager = new Class({
-    initialize: function(singlePath) {
+    initialize: function (singlePath) {
         this.columns = new Hash();
         /**
          * По сути, статическая переменная
@@ -36,10 +36,10 @@ var LayoutManager = new Class({
          * Получаем XML структуру текущего документа
          */
         new Request({
-            url:document.location.href,
+            url: document.location.href,
             method: 'get',
             data: 'struct',
-            onSuccess: function(text, xml) {
+            onSuccess: function (text, xml) {
                 this.setup(xml);
             }.bind(this)
         }).send();
@@ -48,7 +48,7 @@ var LayoutManager = new Class({
      *
      * @param xml XML структура документа
      */
-    setup: function(xml) {
+    setup: function (xml) {
         Asset.css('layout_manager.css');
         this.createToolbar();
         /**
@@ -58,7 +58,7 @@ var LayoutManager = new Class({
         this.xml = PseudoXML.createPseudoXML(xml.documentElement).getXMLElements('content')[0];
 
         //Проходимся по всем контейнерам контента
-        this.xml.getXMLElements('container').each(function(xml) {
+        this.xml.getXMLElements('container').each(function (xml) {
             //И создаем для каждого контейнера, который выступает в качестве колонки  - соответствующий объект колонки
             if (xml.getProperty('data-column')) {
                 this.columns.set(xml.getProperty('data-name'), new LayoutManager.Column(xml, this));
@@ -87,20 +87,20 @@ var LayoutManager = new Class({
         }
         //получаем данные селекта с вариантами содержимого
         new Request.JSON({
-            url:LayoutManager.singlePath + 'get-template-info/',
+            url: LayoutManager.singlePath + 'get-template-info/',
             method: 'get',
-            onSuccess: function(result) {
+            onSuccess: function (result) {
                 if (result.result) {
                     this.toolbar.appendControl(
-                        new Toolbar.Text({id:'text3', 'title':result.data.layout.title}),
-                        new Toolbar.Text({id:'text4', 'title':result.data.layout.name, 'tooltip':result.data.layout.file}),
-                        new Toolbar.Text({id:'text1', 'title':result.data.content.title}),
-                        new Toolbar.Text({id:'text2', 'title':result.data.content.name + ((result.data.content.modified) ? ' (' + result.data.content.modified + ')' : ''), 'tooltip':result.data.content.file}),
-                        new Toolbar.Separator({id:'sep1'}),
-                        new Toolbar.Select({id: 'actionSelector', title:result.data.actionSelectorText}, result.data.actionSelector, 'save'),
-                        new Toolbar.Button({id: 'save', 'title':result.data.saveText, 'action': 'applyChanges'}),
-                        new Toolbar.Separator({id:'sep2'}),
-                        new Toolbar.Button({id: 'reset', 'title':result.data.cancelText, 'action':'resetChanges'})
+                        new Toolbar.Text({id: 'text3', 'title': result.data.layout.title}),
+                        new Toolbar.Text({id: 'text4', 'title': result.data.layout.name, 'tooltip': result.data.layout.file}),
+                        new Toolbar.Text({id: 'text1', 'title': result.data.content.title}),
+                        new Toolbar.Text({id: 'text2', 'title': result.data.content.name + ((result.data.content.modified) ? ' (' + result.data.content.modified + ')' : ''), 'tooltip': result.data.content.file}),
+                        new Toolbar.Separator({id: 'sep1'}),
+                        new Toolbar.Select({id: 'actionSelector', title: result.data.actionSelectorText}, result.data.actionSelector, 'save'),
+                        new Toolbar.Button({id: 'save', 'title': result.data.saveText, 'action': 'applyChanges'}),
+                        new Toolbar.Separator({id: 'sep2'}),
+                        new Toolbar.Button({id: 'reset', 'title': result.data.cancelText, 'action': 'resetChanges'})
                     );
 
                     //для красоты
@@ -111,59 +111,59 @@ var LayoutManager = new Class({
         }).send();
 
     },
-    applyChanges: function() {
+    applyChanges: function () {
         var
-            fRevert = function() {
+            fRevert = function () {
                 new Request.JSON({
-                    url:LayoutManager.singlePath + 'widgets/revert-template/' + ((Energine.forceJSON)?'?json':''),
+                    url: LayoutManager.singlePath + 'widgets/revert-template/' + ((Energine.forceJSON) ? '?json' : ''),
                     method: 'post',
                     evalScripts: false,
-                    onSuccess: function(response) {
+                    onSuccess: function (response) {
                         if (response.result) {
                             //document.location = document.location.href;
                         }
                     }
                 }).send();
             },
-            fReset = function() {
+            fReset = function () {
                 new Request.JSON({
-                    url:LayoutManager.singlePath + 'reset-templates/' + ((Energine.forceJSON)?'?json':''),
+                    url: LayoutManager.singlePath + 'reset-templates/' + ((Energine.forceJSON) ? '?json' : ''),
                     method: 'post',
                     evalScripts: false,
-                    onSuccess: function(response) {
+                    onSuccess: function (response) {
                         if (response.result) {
                             document.location = document.location.href;
                         }
                     }
                 }).send();
             },
-            fSaveTemplate = function() {
+            fSaveTemplate = function () {
                 new Request.JSON({
-                    url:LayoutManager.singlePath + 'widgets/save-template/' + ((Energine.forceJSON)?'?json':''),
+                    url: LayoutManager.singlePath + 'widgets/save-template/' + ((Energine.forceJSON) ? '?json' : ''),
                     method: 'post',
                     evalScripts: false,
                     data: { 'xml': this.xml.asXMLString() },
-                    onSuccess: function(response) {
+                    onSuccess: function (response) {
                         if (response.result) {
                             document.location = document.location.href;
                         }
                     }
                 }).send();
             },
-            fSaveNewTemplate = function() {
+            fSaveNewTemplate = function () {
                 ModalBox.open({
                     url: LayoutManager.singlePath + 'widgets/show-new-template-form/',
-                    onClose: function(result) {
+                    onClose: function (result) {
                         if (!result) return;
                         new Request.JSON({
-                            url:LayoutManager.singlePath + 'widgets/save-new-template/' + ((Energine.forceJSON)?'?json':''),
+                            url: LayoutManager.singlePath + 'widgets/save-new-template/' + ((Energine.forceJSON) ? '?json' : ''),
                             method: 'post',
                             evalScripts: false,
                             data: {
                                 'xml': this.xml.asXMLString(),
                                 'title': result
                             },
-                            onSuccess: function(response) {
+                            onSuccess: function (response) {
                                 if (response.result) {
                                     document.location = document.location.href;
                                 }
@@ -172,13 +172,13 @@ var LayoutManager = new Class({
                     }.bind(this)
                 });
             },
-            fSave = function() {
+            fSave = function () {
                 new Request.JSON({
-                    url:LayoutManager.singlePath + 'widgets/save-content/' + ((Energine.forceJSON)?'?json':''),
+                    url: LayoutManager.singlePath + 'widgets/save-content/' + ((Energine.forceJSON) ? '?json' : ''),
                     method: 'post',
                     evalScripts: false,
                     data: { 'xml': this.xml.asXMLString() },
-                    onSuccess: function(response) {
+                    onSuccess: function (response) {
                         if (response.result) {
                             document.location = document.location.href;
                         }
@@ -202,13 +202,13 @@ var LayoutManager = new Class({
                 fSave.apply(this);
         }
     },
-    resetChanges: function() {
+    resetChanges: function () {
         document.location = document.location.href;
     },
-    findWidgetByCoords: function(x, y, currentWidget) {
+    findWidgetByCoords: function (x, y, currentWidget) {
         var cl, mFrame = LayoutManager.mFrame;
-        this.columns.some(function(clm) {
-            return clm.widgets.some(function(wdg) {
+        this.columns.some(function (clm) {
+            return clm.widgets.some(function (wdg) {
                 var res = false;
                 if ((wdg != currentWidget) && wdg.visible) {
                     var pos = wdg.container.getPosition(mFrame), size = wdg.container.getSize();
@@ -227,7 +227,7 @@ var LayoutManager = new Class({
      * Возвращает объект колонки по имени
      * @param columnName имя колонки
      */
-    getColumn: function(columnName) {
+    getColumn: function (columnName) {
         return this.columns.get(columnName) || {};
     }
 });
@@ -240,7 +240,7 @@ LayoutManager.Column = new Class({
      * На вход получаем Pseudo-XML описание колонки
      * @param xmlDescr Element
      */
-    initialize: function(xmlDescr, layoutManager) {
+    initialize: function (xmlDescr, layoutManager) {
         this.xml = xmlDescr;
         this.layoutManager = layoutManager;
         this.name = xmlDescr.getProperty('data-name');
@@ -260,7 +260,7 @@ LayoutManager.Column = new Class({
      * @param widgetXML DOMNode
      * @return LayoutManager.Widget
      */
-    addWidgetAsXML: function(widgetXML) {
+    addWidgetAsXML: function (widgetXML) {
         var widget = null;
         if (widgetXML.getProperty('data-widget')) {
             this.widgets.set(widgetXML.getProperty('data-name'), widget =
@@ -274,7 +274,7 @@ LayoutManager.Column = new Class({
      * @param sourceWidget LayoutManager.Widget
      * @param location string 'before'|'after'
      */
-    injectWidget: function(injectedWidget, sourceWidget, location) {
+    injectWidget: function (injectedWidget, sourceWidget, location) {
         /**
          * Если передан sourceWidget - то инжектим
          */
@@ -304,51 +304,59 @@ LayoutManager.Column = new Class({
      * Получаем виджет находящийся в колонке, по его имени
      * @param widgetName string имя вижета
      */
-    getWidget: function(widgetName) {
+    getWidget: function (widgetName) {
         return this.widgets.get(widgetName) || {};
     }
 });
 
 LayoutManager.DummyWidget = new Class({
-    initialize: function(column) {
+    initialize: function (column) {
         this.column = column;
-        this.element = this.container = new Element('div', {'class':'e-lm-dummy-widget'});
+        this.element = this.container = new Element('div', {'class': 'e-lm-dummy-widget'});
         this.column.element.grab(this.element);
         this.visible = true;
         this.toolbar = this._buildToolbar();
     },
-    _buildToolbar: function() {
+    _buildToolbar: function () {
         var tb = new Toolbar('widgetToolbar_' + this.column.name);
-        tb.appendControl(new Toolbar.Button({id:'add', 'icon': 'images/toolbar/add.gif', title: 'Add', action:'addWidget'}));
+        tb.appendControl(new Toolbar.Button({id: 'add', 'icon': 'images/toolbar/add.gif', title: 'Add', action: 'addWidget'}));
         tb.getElement().inject(this.element, 'top');
         tb.bindTo(this);
         return tb;
     },
-    findDirection:function() {
+    findDirection: function () {
         return 'before';
     },
-    addWidget: function() {
+    /**
+     * Выводит модальное окно добавления виджета
+     */
+    addWidget: function () {
         ModalBox.open({
-            url:LayoutManager.singlePath + 'widgets/',
-            onClose: function(response) {
+            url: LayoutManager.singlePath + 'widgets/',
+            onClose: function (response) {
                 if (response) {
-                    response = new LayoutManager.Macros(response).replace();
-                    var xml = PseudoXML.createPseudoXML(response);
-                    new Request({
-                        url:LayoutManager.singlePath + 'widgets/build-widget/',
-                        method: 'post',
-                        evalScripts: false,
-                        data: { 'xml': xml.asXMLString() },
-                        onSuccess: function(text) {
-                            var container = new Element('div'), result;
-                            container.set('html', text);
-                            if (container.getElement('div')) {
-                                result = container.getElement('div').clone();
-                                new LayoutManager.Widget(xml, this.column, result, this);
-                            }
-                            container.destroy();
-                        }.bind(this)
-                    }).send();
+                    var xml = PseudoXML.createPseudoXML(response), widgetTitle;
+                    if (!(widgetTitle = xml.getProperty('data-dynamic'))) {
+                        new Request({
+                            url: LayoutManager.singlePath + 'widgets/build-widget/',
+                            method: 'post',
+                            evalScripts: false,
+                            data: { 'xml': xml.asXMLString() },
+                            onSuccess: function (text) {
+                                var container = new Element('div'), result;
+                                container.set('html', text);
+                                if (container.getElement('div')) {
+                                    result = container.getElement('div').clone();
+                                    new LayoutManager.Widget(xml, this.column, result, this);
+                                }
+                                container.destroy();
+                            }.bind(this)
+                        }).send();
+                    }
+                    else {
+                        new LayoutManager.Widget(xml, this.column, new Element('div', {'class': 'dynamic', 'text': widgetTitle}), this);
+                    }
+
                 }
             }.bind(this)
         });
@@ -359,12 +367,13 @@ LayoutManager.DummyWidget = new Class({
  * Виджет
  */
 LayoutManager.Widget = new Class({
+    Extends: LayoutManager.DummyWidget,
     /**
      *
      * @param xmlDescr DOMNode
      * @param column LayoutManager.Column
      */
-    initialize:function(xmlDescr, column, htmlElement, injectBeforeThisWidget) {
+    initialize: function (xmlDescr, column, htmlElement, injectBeforeThisWidget) {
         this.xml = xmlDescr;
         this.column = column;
         this.name = xmlDescr.getProperty('data-name');
@@ -380,7 +389,7 @@ LayoutManager.Widget = new Class({
             this.toolbar = this._buildToolbar();
             if (!this.static) this.dragger = new LayoutManager.Widget.DragBehavior(this);
             if (!this.element.hasClass('e-widget')) this.element.addClass('e-widget');
-            this.overlay = new Overlay(this.element, {indicator:false});
+            this.overlay = new Overlay(this.element, {indicator: false});
 
             this.overlay.show();
             this.visible = true;
@@ -392,10 +401,10 @@ LayoutManager.Widget = new Class({
      * @param element Element
      * @return void
      */
-    bindElement: function(element) {
+    bindElement: function (element) {
         //Создаем елемент контейнера  - содержащего тулбар виджета
         this.container =
-            new Element('div', {'class':'e-lm-widget'/*, styles:{'position': 'relative'}*/});
+            new Element('div', {'class': 'e-lm-widget'/*, styles:{'position': 'relative'}*/});
         if (this.element.getParent())
             this.container.wraps(this.element);
         else {
@@ -408,16 +417,18 @@ LayoutManager.Widget = new Class({
             this.component = new LayoutManager.Component(c, this.element);
         }
     },
-    _buildToolbar: function() {
+    _buildToolbar: function () {
         var tb = new Toolbar('widgetToolbar_' + this.name);
         if (!this.static)
-            tb.appendControl(new Toolbar.Button({id:'add', 'icon': 'images/toolbar/add.gif', title: 'Add', action:'addWidget'}));
-        if (this.component && this.component.params.getLength() && this.component.params.some(function(obj){return (obj.xml.getProperty('data-type') != 'hidden');}))
-            tb.appendControl(new Toolbar.Button({id:'edit', 'icon': 'images/toolbar/edit.gif', title: 'Edit', action:'editProps'}));
+            tb.appendControl(new Toolbar.Button({id: 'add', 'icon': 'images/toolbar/add.gif', title: 'Add', action: 'addWidget'}));
+        if (this.component && this.component.params.getLength() && this.component.params.some(function (obj) {
+            return (obj.xml.getProperty('data-type') != 'hidden');
+        }))
+            tb.appendControl(new Toolbar.Button({id: 'edit', 'icon': 'images/toolbar/edit.gif', title: 'Edit', action: 'editProps'}));
         if (!this.static)
-            tb.appendControl(new Toolbar.Button({id:'delete', 'icon': 'images/toolbar/delete.gif', title: 'Delete', action:'delWidget'}));
+            tb.appendControl(new Toolbar.Button({id: 'delete', 'icon': 'images/toolbar/delete.gif', title: 'Delete', action: 'delWidget'}));
 
-        tb.appendControl(new Toolbar.Switcher({id:'resize', 'icon': 'images/toolbar/minimize.gif','aicon': 'images/toolbar/restore.gif', title: 'Minimize/Expand', action:'resizeWidget'}));
+        tb.appendControl(new Toolbar.Switcher({id: 'resize', 'icon': 'images/toolbar/minimize.gif', 'aicon': 'images/toolbar/restore.gif', title: 'Minimize/Expand', action: 'resizeWidget'}));
         tb.getElement().inject(this.container, 'top');
         tb.bindTo(this);
         return tb;
@@ -425,45 +436,51 @@ LayoutManager.Widget = new Class({
     /**
      * Выводит модальное окно добавления виджета
      */
-    addWidget: function() {
-        ModalBox.open({
-            url:LayoutManager.singlePath + 'widgets/',
-            onClose: function(response) {
-                if (response) {
-                    response = new LayoutManager.Macros(response).replace();
-                    var xml = PseudoXML.createPseudoXML(response);
-                    new Request({
-                        url:LayoutManager.singlePath + 'widgets/build-widget/',
-                        method: 'post',
-                        evalScripts: false,
-                        data: { 'xml': xml.asXMLString() },
-                        onSuccess: function(text) {
-                            var container = new Element('div'), result;
-                            container.set('html', text);
-                            if (container.getElement('div')) {
-                                result = container.getElement('div').clone();
-                                new LayoutManager.Widget(xml, this.column, result, this);
-                            }
-                            container.destroy();
-                        }.bind(this)
-                    }).send();
-                }
-            }.bind(this)
-        });
-    },
+    /*addWidget: function () {
+     ModalBox.open({
+     url: LayoutManager.singlePath + 'widgets/',
+     onClose: function (response) {
+     if (response) {
+     response = new LayoutManager.Macros(response).replace();
+     var xml = PseudoXML.createPseudoXML(response);
+     if (!xml.getProperty('data-dynamic')) {
+     new Request({
+     url: LayoutManager.singlePath + 'widgets/build-widget/',
+     method: 'post',
+     evalScripts: false,
+     data: { 'xml': xml.asXMLString() },
+     onSuccess: function (text) {
+     var container = new Element('div'), result;
+     container.set('html', text);
+     if (container.getElement('div')) {
+     result = container.getElement('div').clone();
+     new LayoutManager.Widget(xml, this.column, result, this);
+     }
+     container.destroy();
+     }.bind(this)
+     }).send();
+     }
+     else {
+     new LayoutManager.Widget(xml, this.column, new Element('div', {'class': 'dynamic', 'text': 'Жопа'}), this);
+     }
+
+     }
+     }.bind(this)
+     });
+     },*/
     /**
      * Выводит форму редактирования параметров компонента виджета
      */
-    editProps: function() {
+    editProps: function () {
         ModalBox.open({
             post: this.xml.asXMLString(),
-            url:LayoutManager.singlePath + 'widgets/edit-params/' +
+            url: LayoutManager.singlePath + 'widgets/edit-params/' +
                 this.component.name +
                 '/',
-            onClose: function(result) {
+            onClose: function (result) {
                 this.overlay.element.addClass('e-overlay-loading');
                 if (result) {
-                    result.each(function(param, paramName) {
+                    result.each(function (param, paramName) {
                         this.getComponent().getParam(paramName).setValue(param);
                     }.bind(this));
                     this.reload();
@@ -478,12 +495,12 @@ LayoutManager.Widget = new Class({
     /**
      * Удаляет виджет
      */
-    delWidget: function() {
+    delWidget: function () {
         this.xml.destroy();
         this.container.destroy();
         LayoutManager.changed = true;
     },
-    resizeWidget: function() {
+    resizeWidget: function () {
         this.element.toggleClass('minimized');
         if (this.dragger) {
             this.dragger.recalculateSize();
@@ -492,34 +509,41 @@ LayoutManager.Widget = new Class({
     /**
      * Перегружает HTML предеставление виджета
      */
-    reload: function() {
-        new Request({
-            url:LayoutManager.singlePath + 'widgets/build-widget/',
-            method: 'post',
-            evalScripts: false,
-            data: { 'xml': this.xml.asXMLString() },
-            onSuccess: function(text) {
-                var container = new Element('div'), result;
-                container.set('html', text);
-                if (container.getElement('div')) {
-                    result = container.getElement('div').clone();
-                    this.replaceElement(result);
-                }
-                container.destroy();
-            }.bind(this)
-        }).send();
+    reload: function () {
+        if (!this.xml.getProperty('data-dynamic')) {
+            new Request({
+                url: LayoutManager.singlePath + 'widgets/build-widget/',
+                method: 'post',
+                evalScripts: false,
+                data: { 'xml': this.xml.asXMLString() },
+                onSuccess: function (text) {
+                    var container = new Element('div'), result;
+                    container.set('html', text);
+                    if (container.getElement('div')) {
+                        result = container.getElement('div').clone();
+                        this.replaceElement(result);
+                    }
+                    container.destroy();
+                }.bind(this)
+            }).send();
+        }
+        else {
+            new LayoutManager.Widget(this.xml, this.column, new Element('div', {'class': 'dynamic', 'text': ''}), this);
+        }
+
+
     },
     /**
      * Возвращает компонент виджета
      */
-    getComponent: function() {
+    getComponent: function () {
         return this.component || {};
     },
     /**
      * Заменяет елемент
      * @param el
      */
-    replaceElement: function(el) {
+    replaceElement: function (el) {
         el.replaces(this.element);
         this.element = el;
         this.element.addClass('e-widget');
@@ -527,7 +551,7 @@ LayoutManager.Widget = new Class({
         //this.overlay.getElement().removeClass('e-overlay-loading');
         this.overlay.show();
     },
-    findDirection:function(y) {
+    findDirection: function (y) {
         var pos = this.container.getPosition(LayoutManager.mFrame), size = this.container.getSize();
         if (this.static) return 'after';
         return ((y >= pos.y) &&
@@ -538,17 +562,17 @@ LayoutManager.Widget = new Class({
 LayoutManager.Widget.implement(Energine.request);
 
 LayoutManager.Widget.DragBehavior = new Class({
-    initialize: function(widget) {
+    initialize: function (widget) {
         this.widget = widget;
         this.strut =
-            new Element('div', {'class':'e-lm-strut'});
+            new Element('div', {'class': 'e-lm-strut'});
         this.recalculateSize();
 
         this.drag = new Drag(this.widget.container, {
-            grid:6,
-            snap:6,
+            grid: 6,
+            snap: 6,
             handle: this.widget.toolbar.getElement(),
-            onBeforeStart: function() {
+            onBeforeStart: function () {
                 var mFrame = LayoutManager.mFrame;
                 this.position = this.widget.container.getPosition(mFrame);
 
@@ -561,9 +585,9 @@ LayoutManager.Widget.DragBehavior = new Class({
                 //end of kostyly
 
                 this.widget.container.setStyles({
-                    width:this.size.x + 'px',
-                    height:this.size.y + 'px',
-                    'z-index':9999,
+                    width: this.size.x + 'px',
+                    height: this.size.y + 'px',
+                    'z-index': 9999,
                     'position': 'absolute'
                 });
                 this.strut.replaces(this.widget.container);
@@ -571,7 +595,7 @@ LayoutManager.Widget.DragBehavior = new Class({
                 this.widget.container.inject(mFrame);
 
             }.bind(this),
-            onComplete: function() {
+            onComplete: function () {
                 var w;
                 this.widget.container.setStyles({
                     width: null,
@@ -600,7 +624,7 @@ LayoutManager.Widget.DragBehavior = new Class({
                 }
                 LayoutManager.changed = true;
             }.bind(this),
-            onCancel: function() {
+            onCancel: function () {
                 this.widget.container.setStyles({
                     width: null,
                     height: null,
@@ -617,7 +641,7 @@ LayoutManager.Widget.DragBehavior = new Class({
              evt.page.y = evt.page.y - 35;
              }
              }.bind(this),*/
-            onDrag: function(el, evt) {
+            onDrag: function (el, evt) {
                 var cx, cy, pos, w, dir;
                 pos = this.widget.container.getPosition(LayoutManager.mFrame);
 
@@ -635,7 +659,7 @@ LayoutManager.Widget.DragBehavior = new Class({
             }.bind(this)
         });
     },
-    recalculateSize: function() {
+    recalculateSize: function () {
         this.size = this.widget.container.getSize();
         this.strut.setStyle('height', (this.size.y - 14) + 'px'); //от высоты контейнера отнимаем 14px, 10px это padding-bottom, 4px это бордеры внизу и вверху страта  
     }
@@ -645,16 +669,16 @@ LayoutManager.Widget.DragBehavior = new Class({
  * Компонент
  */
 LayoutManager.Component = new Class({
-    initialize: function(xmlDescr, element) {
+    initialize: function (xmlDescr, element) {
         this.xml = xmlDescr;
         this.name = xmlDescr.getProperty('data-name');
         this.element = element;
         this.params = new Hash();
-        xmlDescr.getXMLElements('param').each(function(xml) {
+        xmlDescr.getXMLElements('param').each(function (xml) {
             this.params.set(xml.getProperty('data-name'), new LayoutManager.Component.Param(xml));
         }, this);
     },
-    getParam: function(paramName) {
+    getParam: function (paramName) {
         return this.params.get(paramName) || {};
     }
 });
@@ -662,36 +686,20 @@ LayoutManager.Component = new Class({
  * параметр компонента
  */
 LayoutManager.Component.Param = new Class({
-    initialize: function(xml) {
+    initialize: function (xml) {
         this.xml = xml;
     },
     /**
      * Присвоение значения узлу меняет значение общего XML
      * @param value string
      */
-    setValue:function(value) {
+    setValue: function (value) {
         this.xml.set('text', value.toString());
     },
-    getValue: function() {
+    getValue: function () {
         return this.xml.get('text');
     }
 
-});
-
-/**
- * Замена макросов при вставке нового виджета
- */
-LayoutManager.Macros = new Class({
-
-    initialize: function(xml_string) {
-        this.xml_string = xml_string;
-    },
-
-    replace: function() {
-        var result = this.xml_string
-            .replace(new RegExp("\\[rand\\]", 'g'), Math.floor(Math.random() * 10001).toString());
-        return result;
-    }
 });
 
 /**
@@ -710,21 +718,20 @@ var PseudoXML = {
      * @param string
      * @returns {*}
      */
-    createXMLRoot: function(string) {
+    createXMLRoot: function (string) {
 
         // todo: проверить работоспособность во всех браузерах
 
         var root;
 
-        if (window.DOMParser)
-        {
+        if (window.DOMParser) {
             var parser = new DOMParser();
             root = parser.parseFromString(string, "text/xml");
         }
         else // Internet Explorer
         {
             root = new ActiveXObject("Microsoft.XMLDOM");
-            root.async=false;
+            root.async = false;
             root.loadXML(string);
         }
 
@@ -738,29 +745,29 @@ var PseudoXML = {
      * @param null|Element parent
      * @returns Element
      */
-    createPseudoXML: function(xml, parent) {
+    createPseudoXML: function (xml, parent) {
 
         if (typeof(xml) == 'string') {
             xml = this.createXMLRoot(xml).documentElement;
         }
 
-        if (! parent) {
+        if (!parent) {
             parent = new Element('div');
             parent.setProperty('xmltag', xml.nodeName);
         }
 
         var tmp;
         if (xml.attributes) {
-            for(var j = 0; j < xml.attributes.length; j++) {
+            for (var j = 0; j < xml.attributes.length; j++) {
                 tmp = xml.attributes[j];
                 parent.setProperty('data-' + tmp.nodeName, tmp.nodeValue);
             }
         }
 
-        if (!xml.childNodes || ! xml.childNodes.length) return parent;
+        if (!xml.childNodes || !xml.childNodes.length) return parent;
 
         var i, j, k, currChildNode, curSubNode;
-        for(i = 0; i < xml.childNodes.length; i++) {
+        for (i = 0; i < xml.childNodes.length; i++) {
             currChildNode = xml.childNodes[i];
 
             if (currChildNode.nodeType == 1) { // Element type
@@ -769,8 +776,8 @@ var PseudoXML = {
                 el.setProperty('xmltag', currChildNode.nodeName);
 
                 // Attributes
-                if(currChildNode.attributes.length) {
-                    for(j = 0; j < currChildNode.attributes.length; j++) {
+                if (currChildNode.attributes.length) {
+                    for (j = 0; j < currChildNode.attributes.length; j++) {
                         tmp = currChildNode.attributes[j];
                         el.setProperty('data-' + tmp.nodeName, tmp.nodeValue);
                     }
@@ -779,14 +786,14 @@ var PseudoXML = {
                 // Value
                 if (currChildNode.childNodes.length) {
                     var text = '';
-                    for (k=0; k < currChildNode.childNodes.length; k++) {
+                    for (k = 0; k < currChildNode.childNodes.length; k++) {
                         curSubNode = currChildNode.childNodes[k];
                         if (curSubNode.nodeType == 3) {
                             text += curSubNode.nodeValue;
                         }
                     }
                     if (text != '') {
-                        el.set({'text' : text});
+                        el.set({'text': text});
                     }
                 }
 
@@ -805,11 +812,11 @@ var PseudoXML = {
      * @param Element el
      * @returns {string}
      */
-    getElementAsXMLString: function(el) {
+    getElementAsXMLString: function (el) {
 
         var result = '<' + el.getProperty('xmltag');
         if (el.attributes && el.attributes.length) {
-            for (var i=0; i<el.attributes.length; i++) {
+            for (var i = 0; i < el.attributes.length; i++) {
                 var attr_name = el.attributes[i].nodeName;
                 if (attr_name.indexOf('data-') != -1) {
                     result += ' ' + attr_name.replace('data-', '') + '="' +
@@ -824,7 +831,7 @@ var PseudoXML = {
 
         var children = el.getChildren();
         if (children.length) {
-            children.each(function(e) {
+            children.each(function (e) {
                 result += this.getElementAsXMLString(e);
             }.bind(this));
         } else {

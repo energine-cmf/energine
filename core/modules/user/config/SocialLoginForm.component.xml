@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+	<state name="showLoginForm">
+        <javascript>
+            <behavior name="LoginForm"/>
+        </javascript>
+		<fields>
+			<field name="username" type="string" tableName="user" title="FIELD_U_NAME" length="50" mode="2"/>
+			<field name="password" type="password" tableName="user" title="FIELD_U_PASSWORD" length="40"  mode="2"/>
+			<field name="remember" type="boolean" tableName="user" title="FIELD_REMEMBER_LOGIN" mode="2"/>
+		</fields>
+		<toolbar>
+			<control type="submit" id="user[login]" title="BTN_LOGIN" tooltip="Click me" />
+            <control type="separator" id="sep"/>
+            <control type="link" id="auth.fb" title="BTN_FB_LOGIN" permissions="email"/>
+            <control type="link" id="auth.vk" title="BTN_VK_LOGIN" permissions="email"/>
+            <control type="separator" id="sep02"/>
+			<control type="link" id="restore" title="TXT_FORGOT_PWD" click="restore-password"/>
+		</toolbar>
+	</state>
+	<state name="showLogoutForm">
+		<fields>
+			<field name="u_name" type="string" mode="1"/>
+			<field name="role_name" type="string" mode="1"/>
+		</fields>
+		<toolbar>
+			<control type="submit" id="user[logout]" title="BTN_LOGOUT" />
+		</toolbar>
+	</state>
+
+</configuration>

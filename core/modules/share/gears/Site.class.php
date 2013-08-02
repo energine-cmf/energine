@@ -14,6 +14,8 @@
  * @package energine
  * @subpackage kernel
  * @author d.pavka@gmail.com
+ * @property string id
+ * @property string base
  */
 class Site extends DBWorker {
     /**

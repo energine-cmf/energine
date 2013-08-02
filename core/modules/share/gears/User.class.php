@@ -241,6 +241,20 @@ class User extends DBWorker {
     }
 
     /**
+     * @param string $email
+     * @param int $fbID
+     * @return bool|User
+     */
+    public static function linkFBUserByEmail($email, $fbID) {
+        $result = false;
+        if ($UID = simplifyDBResult(E()->getDB()->select(self::USER_TABLE_NAME, 'u_id', array('u_name' => $email, 'u_is_active' => 1)), 'u_id', true)) {
+            $result = new User($UID);
+            $result->update(array('u_fbid' => $fbID));
+        }
+        return $result;
+    }
+
+    /**
      * Поиск юзера по идентфикатору Вконтакте
      * @static
      * @param $vkID

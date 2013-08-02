@@ -8,7 +8,15 @@ var WidgetGridManager = new Class({
         this.insert();
     },
     insert: function(){
-        ModalBox.setReturnValue(new WidgetGridManager.Macros(this.grid.getSelectedRecord().widget_xml).replace({'rand':Math.floor(Math.random() * 10001), 'title': this.grid.getSelectedRecord().widget_name}));
+        ModalBox.setReturnValue(
+            new WidgetGridManager
+                .Macros(this.grid.getSelectedRecord().widget_xml)
+                .replace({
+                    'rand': Math.floor(Math.random() * 10001),
+                    'sitename': new URI(window.location.href).get('host').replace(/\./g, ''),
+                    'title': this.grid.getSelectedRecord().widget_name
+                })
+        );
         ModalBox.close();
     }
 });

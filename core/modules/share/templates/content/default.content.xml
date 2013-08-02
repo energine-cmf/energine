@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<content html_class="colset colset3">
+    <container name="left" column="column" html_class="col col1">
+        <container name="mainMenuContainer" block="beta" widget="widget">
+            <component name="mainMenu" module="share" class="PageList">
+                <params>
+                    <param name="tags">menu</param>
+                    <param name="recursive">1</param>
+                    <param name="config">core/modules/share/MainMenu.component.xml</param>
+                </params>
+            </component>
+        </container>
+        <container name="leftAdBlock"/>
+        <container name="sidebarTextBlockContainer" block="beta" widget="widget">
+            <component name="sidebarTextBlock" module="share" class="TextBlock">
+                <params>
+                    <param name="title"></param>
+                    <param name="num">sidebarTextBlock</param>
+                </params>
+            </component>
+        </container>
+        <container name="loginFormContainer" block="beta" widget="widget">
+            <component name="loginForm" module="user" class="LoginForm"/>
+        </container>
+    </container>
+    <container name="center" column="column" html_class="col col2">
+        <container name="textBlockContainer1" block="alfa" widget="static">
+            <component name="textBlock_1" module="share" class="TextBlock">
+                <params>
+                    <param name="num">1</param>
+                </params>
+            </component>
+        </container>
+    </container>
+    <container name="right" column="column" html_class="col col3 last_col">
+        <container name="topNewsContainer" block="beta" widget="widget">
+            <component name="topNews" module="apps" class="NewsFeed">
+                <params>
+                    <param name="title">TXT_TOP_NEWS</param>
+                    <param name="limit" type="hidden">5</param>
+                    <param name="showAll">1</param>
+                    <param name="active" type="hidden">0</param>
+                    <param name="template">news</param>                    
+                </params>
+            </component>
+        </container>
+    </container>
+</content>

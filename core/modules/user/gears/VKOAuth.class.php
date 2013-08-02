@@ -59,8 +59,7 @@ class VKOAuth extends Object{
     const ACCESS_TOKEN_URL = 'https://oauth.vk.com/access_token';
 
     /**
-     * @param string $appId
-     * @param string $apiSecret
+     * @param array $config
      * @throws SystemException
      */
     public function __construct($config) {

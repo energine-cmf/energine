@@ -22,7 +22,7 @@ require_once "base_facebook.php";
  * PHP sessions to store user ids and access tokens.
  */
 class FBOAuth extends BaseFacebook {
-    const STORAGE_TABLE_NAME = 'user_fb_storage';
+    const COOKIE_LIFETIME = 3600;
     private $localStorage = array();
 
     /**
@@ -91,59 +91,21 @@ class FBOAuth extends BaseFacebook {
 
     public function __get($varName) {
         if (isset($this->localStorage[$varName])) return $this->localStorage[$varName];
-
-        if(isset($_COOKIE[$varName])) {
-            return $_COOKIE[$varName];
-        }
-        else {
-            return false;
-        }
-
-        /*$result = E()->getDB()->select(self::STORAGE_TABLE_NAME, 'fb_var_value', array('fb_var_name' => $varName));
-
-        if (!is_array($result)) return ($this->localStorage[$varName] = null);
-
-        return ($this->localStorage[$varName] = simplifyDBResult($result, 'fb_var_value', true));*/
-
+        return (isset($_COOKIE[$varName]))? $_COOKIE[$varName]: null;
     }
 
     public function __set($varName, $varValue) {
         $this->localStorage[$varName] = $varValue;
-        /*E()->getDB()->modify(QAL::INSERT_IGNORE, self::STORAGE_TABLE_NAME, array('fb_var_name' => $varName, 'fb_var_value' => $varValue));*/
-        setcookie($varName, $varValue, time() + 3600);
+        setcookie($varName, $varValue, time() + self::COOKIE_LIFETIME);
     }
 
     public function __unset($varName) {
         unset($this->localStorage[$varName]);
-        //E()->getDB()->modify(QAL::DELETE, self::STORAGE_TABLE_NAME, null, array( 'fb_var_name' => $varName));
-        setcookie($varName, '', time() - 3600);
+        setcookie($varName, '', time() - self::COOKIE_LIFETIME);
     }
 
     public function __isset($varName) {
         if(isset($this->localStorage[$varName]) && !is_null($this->localStorage[$varName])) return true;
         return isset($_COOKIE[$varName]);
-        /*$result = false;
-        $res = E()->getDB()->select(self::STORAGE_TABLE_NAME, 'fb_var_value', array('fb_var_name' => $varName));
-        if (is_array($res)) {
-            $this->localStorage[$varName] = simplifyDBResult($res, 'fb_var_value', true);
-            $result = true;
-        }
-        return $result;*/
-    }
-
-    /**
-     * Prints to the error log if you aren't in command line mode.
-     *
-     * @param string $msg Log message
-     */
-    protected static function errorLog($msg) {
-        // disable error log if we are running in a CLI environment
-        // @codeCoverageIgnoreStart
-        if (php_sapi_name() != 'cli') {
-            error_log(date('d.m.Y h:i:s') . ' [ ' . $_SERVER['REMOTE_ADDR'] .  ' ]: ' . $msg, 3, '/home/dexter/projects/logs/ufo/fb.error.log' . "\n");
-        }
-        // uncomment this if you want to see the errors on the page
-        //print 'error_log: '.$msg."\n";
-        // @codeCoverageIgnoreEnd
     }
 }

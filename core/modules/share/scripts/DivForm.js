@@ -28,7 +28,10 @@ var DivForm = new Class({
 
         };
         contentSelector.addEvent('change', contentFunc);
-        //contentFunc();
+        if(this.componentElement.getElementById('smap_content_xml')){
+            CodeMirror.fromTextArea(this.componentElement.getElementById('smap_content_xml'), {mode: "application/xml", tabMode: "indent", lineNumbers: true});
+        }
+
     },
     resetPageContentTemplate: function () {
         this.request(

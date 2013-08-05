@@ -233,12 +233,12 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
                 'value' => $name,
             );
 
-            if(($type == 'content') && (file_exists($path = Document::TEMPLATES_DIR.$type.'/'.$path))){
+            if (($type == 'content') && (file_exists($path = Document::TEMPLATES_DIR . $type . '/' . $path))) {
                 $d->load($path);
-                if($attr = $d->documentElement->getAttribute('segment')){
+                if ($attr = $d->documentElement->getAttribute('segment')) {
                     $row['data-segment'] = $attr;
                 }
-                if($attr = $d->documentElement->getAttribute('layout')){
+                if ($attr = $d->documentElement->getAttribute('layout')) {
                     $row['data-layout'] = $attr;
                 }
             }
@@ -247,7 +247,7 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
 
         unset($d);
 
-        if(!in_array($dirPath.$oldValue, array_values($r))){
+        if (!in_array($dirPath . $oldValue, array_values($r))) {
             $result[] = array(
                 'key' => $oldValue,
                 'value' => $oldValue,
@@ -429,7 +429,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
 
         //Ads
         if (class_exists('AdsManager', false)
-                && AdsManager::isActive()) {
+            && AdsManager::isActive()
+        ) {
             $ads = new AdsManager();
             $ads->add($this->getDataDescription());
         }
@@ -457,7 +458,7 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
             }
 
         //Если изменен  - вносим исправления в список возможных значений
-        if (simplifyDBResult($this->dbh->select($this->getTableName(), 'smap_content_xml', array('smap_id' => $this->getData()->getFieldByName('smap_id')->getRowData(0))), 'smap_content_xml', true)) {
+        if ($contentXMLFieldData = $this->dbh->getScalar($this->getTableName(), 'smap_content_xml', array('smap_id' => $this->getData()->getFieldByName('smap_id')->getRowData(0)))) {
             $contentFilename =
                 $this->getData()->getFieldByName('smap_content')->getRowData(0);
             $contentFD =
@@ -468,7 +469,21 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
                 $av[$contentFilename]['value'] .=
                     ' - ' . $this->translate('TXT_CHANGED');
             }
-            unset($contentFilename, $contentFD, $av);
+            $newField = new FieldDescription('smap_content_xml');
+            $newField->setType(FieldDescription::FIELD_TYPE_TEXT);
+            $newField->setProperty('tableName', $this->getTableName());
+            $newField->setProperty('tabName', $contentFD->getPropertyValue('tabName'));
+
+            $this->getDataDescription()->addFieldDescription($newField, DataDescription::FIELD_POSITION_AFTER, 'smap_content');
+            $newField = new Field('smap_content_xml');
+            $doc = new DOMDocument();
+            $doc->loadXML($contentXMLFieldData);
+            $doc->formatOutput = true;
+            $doc->preserveWhiteSpace = true;
+            $newField->setData($doc->saveXML(), true);
+            $this->getData()->addField($newField);
+            unset($contentFilename, $contentFD, $av, $doc, $newField);
+
         }
         $smapSegment = '';
         if ($field->getRowData(0) !== null) {
@@ -512,7 +527,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
         $this->getDataDescription()->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_INT)->setMode(FieldDescription::FIELD_MODE_READ);
 
         if (class_exists('AdsManager', false)
-                && AdsManager::isActive()) {
+            && AdsManager::isActive()
+        ) {
             $ads = new AdsManager();
             $ads->edit($this->getData(), $this->getDataDescription());
         }

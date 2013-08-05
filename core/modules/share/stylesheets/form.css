@@ -39,7 +39,8 @@ form .field.max .icon_min_max {
     background: url(../images/desc.gif) -5px -2px no-repeat;
 }
 form .field.min .richEditor,
-form .field.min textarea {
+form .field.min textarea,
+form .field.min div.CodeMirror-scroll{
     height: 30px;
 }
 

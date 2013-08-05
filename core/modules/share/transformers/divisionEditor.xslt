@@ -170,7 +170,24 @@
             </button>
         </xsl:if>
     </xsl:template>
-    
+
+
+    <xsl:template match="field[@name='smap_content_xml'][ancestor::component[@type='form' and @exttype='grid']]">
+        <link rel="stylesheet" href="scripts/codemirror/lib/codemirror.css" />
+        <script type="text/javascript" src="scripts/codemirror/lib/codemirror.js"></script>
+        <script type="text/javascript" src="scripts/codemirror/mode/xml/xml.js"></script>
+        <link rel="stylesheet" href="scripts/codemirror/theme/default.css" />
+
+        <div>
+            <xsl:attribute name="class">field clearfix<xsl:choose>
+                <xsl:when test=".=''"> min</xsl:when>
+                <xsl:otherwise> max</xsl:otherwise>
+            </xsl:choose></xsl:attribute>
+            <xsl:apply-templates select="." mode="field_name"/>
+            <xsl:apply-templates select="." mode="field_content"/>
+        </div>
+    </xsl:template>
+
     <xsl:template match="record[parent::recordset[parent::component[@sample='DivisionEditor'][@type='list']]]"/>
     <!-- /компонент DivisionEditor -->
 

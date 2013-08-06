@@ -19,8 +19,9 @@ var Overlay = new Class({
     },
     show: function() {
         this.setupObjects(true);
-        if (!(this.parentElement.getElement('.e-overlay'))) {
+        if (!this.parentElement.getChildren('.e-overlay').length) {
             this.element.injectInside(this.parentElement);
+
         }
         this.element.fade(this.options.opacity);
     },

@@ -78,6 +78,10 @@ class WidgetsRepository extends Grid {
             $paramType = (isset($param['type'])) ? (string)$param['type'] : FieldDescription::FIELD_TYPE_STRING;
 
             $fd = new FieldDescription($paramName);
+            if(isset($param['nullable'])){
+                $fd->setProperty('nullable', true);
+            }
+
             $fd->setType($paramType)->setProperty('tabName', $this->translate('TAB_PARAMS'));
             if (($paramType == FieldDescription::FIELD_TYPE_SELECT) && isset($param['values'])) {
                 $availableValues = array();

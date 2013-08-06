@@ -9,7 +9,13 @@ var ComponentParamsForm = new Class({
             return false;
         }
         var result = new Hash();
-        this.form.getElements('input[type=text],input[type=checkbox], select').each(function(el){
+        if(this.codeEditors.length){
+            this.codeEditors.each(function(editor){
+                editor.save();
+            });
+        }
+
+        this.form.getElements('input[type=text],input[type=checkbox], select, textarea').each(function(el){
             var value;
             if(el.getProperty('type') == 'checkbox'){
                 value = (el.checked)?1:0;
@@ -17,8 +23,17 @@ var ComponentParamsForm = new Class({
             else {
                 value = el.get('value');
             }
-            result.set(el.getProperty('name'), value);
+
+            if(el.getProperty('name'))
+                result.set(el.getProperty('name'), value);
         });
+
+        if(this.richEditors.length){
+            this.richEditors.each(function(editor){
+                result.set(editor.hidden.getProperty('name'), editor.area.innerHTML);
+            });
+        }
+
         ModalBox.setReturnValue(result);
         this.close();
     }

@@ -835,12 +835,12 @@ var PseudoXML = {
                 result += this.getElementAsXMLString(e);
             }.bind(this));
         } else {
-            result += el.get('text')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+            result += el.get('html');
+                //.replace(/&/g, '&amp;')
+                //.replace(/</g, '&lt;')
+                //.replace(/>/g, '&gt;')
+                //.replace(/"/g, '&quot;')
+                //.replace(/'/g, '&#039;');
         }
 
         result += '</' + el.getProperty('xmltag') + '>';

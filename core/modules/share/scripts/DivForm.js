@@ -9,6 +9,8 @@ var DivForm = new Class({
             segmentInput = this.componentElement.getElementById('smap_segment'),
             contentFunc;
 
+        //чтоб ради одного вызова не биндится на this
+        var t = this;
         contentFunc = function () {
             var segment, layout;
             if (segmentInput) {
@@ -26,12 +28,9 @@ var DivForm = new Class({
                 layoutSelector.set('value', layout);
             }
 
+            t.clearContentXML();
         };
         contentSelector.addEvent('change', contentFunc);
-        if(this.componentElement.getElementById('smap_content_xml')){
-            CodeMirror.fromTextArea(this.componentElement.getElementById('smap_content_xml'), {mode: "application/xml", tabMode: "indent", lineNumbers: true});
-        }
-
     },
     resetPageContentTemplate: function () {
         this.request(
@@ -43,13 +42,22 @@ var DivForm = new Class({
                         option = select.getChildren()[select.selectedIndex],
                         optionText = option.get('text');
                     option.set('text', optionText.substring(0, optionText.lastIndexOf('-')));
+                    this.clearContentXML();
                 }
             }.bind(this)
         )
     },
+    clearContentXML: function(){
+        //Тут мы перполагаем что на форме только одно поле типа код... Пока что это так
+        this.codeEditors[0].setValue('');
+        this.codeEditors[0].getInputField().getParent('div.field').addClass('hidden');
+    },
     save: function () {
         this.richEditors.each(function (editor) {
             editor.onSaveForm();
+        });
+        this.codeEditors.each(function (editor) {
+            editor.save();
         });
         if (!this.validator.validate()) {
             return false;

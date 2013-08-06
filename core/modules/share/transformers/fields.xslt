@@ -40,7 +40,7 @@
         Шаблон для необязательного (nullable) поля в админчасти вынесен отдельно.
         В нем добавляется возможность скрыть/раскрыть необязательное поле.
     -->
-    <xsl:template match="field[@type='htmlblock' or @type='text'][ancestor::component[@type='form' and @exttype='grid']]">
+    <xsl:template match="field[@type='htmlblock' or @type='text' or @type='code'][ancestor::component[@type='form' and @exttype='grid']]">
         <div>
             <xsl:attribute name="class">field clearfix<xsl:choose>
                 <xsl:when test=".=''"> min</xsl:when>
@@ -51,7 +51,7 @@
         </div>
     </xsl:template>
 
-    <xsl:template match="field[@type='htmlblock' or @type='text'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_name">
+    <xsl:template match="field[@type='htmlblock' or @type='text' or @type='code'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_name">
         <xsl:if test="@title">
             <div class="name">
                 <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes"/></label>
@@ -60,7 +60,7 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="field[@type='htmlblock' or @type='text'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_content">
+    <xsl:template match="field[@type='htmlblock' or @type='text' or @type='code'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_content">
         <div class="control toggle" id="control_{@language}_{@name}">
             <xsl:apply-templates select="." mode="field_input"/>
         </div>
@@ -262,6 +262,14 @@
         </textarea>
     </xsl:template>
 
+    <!-- текстовое поле (text) -->
+    <xsl:template match="field[@type='code'][ancestor::component[@type='form']]" mode="field_input">
+        <textarea class="code">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:value-of select="."/>
+        </textarea>
+    </xsl:template>
+
     <!-- поле типа rtf текст (htmlblock) -->
     <xsl:template match="field[@type='htmlblock'][ancestor::component[@type='form']]" mode="field_input">
         <textarea class="richEditor">
@@ -434,6 +442,13 @@
 
     <xsl:template match="field[@type='file'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
         <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
+        <input>
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+        </input>
+    </xsl:template>
+
+    <xsl:template match="field[@type='file'][@mode='1' and @media_type='image'][ancestor::component[@type='form']]" mode="field_input_readonly">
+        <a href="{.}" target="_blank"><img src="{.}" alt=""/></a>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
         </input>

@@ -51,6 +51,10 @@ class FieldDescription extends DBWorker implements Iterator
      * Текст
      */
     const FIELD_TYPE_TEXT = 'text';
+    /**
+     * Код
+     */
+    const FIELD_TYPE_CODE = 'code';
 
     /**
      * Пароль
@@ -543,6 +547,7 @@ class FieldDescription extends DBWorker implements Iterator
                 break;
             case self::FIELD_TYPE_TEXT:
             case self::FIELD_TYPE_HTML_BLOCK:
+            case self::FIELD_TYPE_CODE:
                 if ($this->getPropertyValue('nullable') === false || is_null($this->getPropertyValue('nullable'))) {
                     $this->setProperty('pattern', '/^.+$/m');
                     //$this->setProperty('message', $this->translate('MSG_FIELD_IS_NOT_NULL'));
@@ -782,9 +787,6 @@ class FieldDescription extends DBWorker implements Iterator
                 elseif (strpos($name, '_file') || strpos($name, '_img')) {
                     $result = self::FIELD_TYPE_FILE;
                 }
-                /*elseif (strpos($name, '_pfile')) {
-                    $result = self::FIELD_TYPE_PFILE;
-                }*/
                 elseif (strpos($name, '_video')) {
                     $result = self::FIELD_TYPE_VIDEO;
                 }
@@ -814,6 +816,9 @@ class FieldDescription extends DBWorker implements Iterator
             case DBA::COLTYPE_TEXT:
                 if (strpos($name, '_rtf')) {
                     $result = self::FIELD_TYPE_HTML_BLOCK;
+                }
+                elseif (strpos($name, '_code')) {
+                    $result = self::FIELD_TYPE_CODE;
                 }
                 else {
                     $result = self::FIELD_TYPE_TEXT;

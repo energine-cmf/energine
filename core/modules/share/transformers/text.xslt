@@ -43,7 +43,7 @@
             </script>
     </xsl:template>
     
-    <xsl:template match="component[@class='TextBlockSource']">
+<!--    <xsl:template match="component[@class='TextBlockSource']">
         <link rel="stylesheet" href="scripts/codemirror/lib/codemirror.css" />
         <script type="text/javascript" src="scripts/codemirror/lib/codemirror.js"></script>
         <script type="text/javascript" src="scripts/codemirror/mode/xml/xml.js"></script>
@@ -56,7 +56,7 @@
             <input type="hidden" name="componentAction" value="{@componentAction}" id="componentAction"/>
             <xsl:apply-templates/>
         </form>    
-    </xsl:template>
+    </xsl:template>-->
     
     <xsl:template match="component[@class='TextBlockSource']/recordset">
         <xsl:variable name="paneID"><xsl:value-of select="generate-id(record)" /></xsl:variable>

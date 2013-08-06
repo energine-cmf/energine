@@ -470,7 +470,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
                     ' - ' . $this->translate('TXT_CHANGED');
             }
             $newField = new FieldDescription('smap_content_xml');
-            $newField->setType(FieldDescription::FIELD_TYPE_TEXT);
+            $newField->setProperty('nullable', true);
+            $newField->setType(FieldDescription::FIELD_TYPE_CODE);
             $newField->setProperty('tableName', $this->getTableName());
             $newField->setProperty('tabName', $contentFD->getPropertyValue('tabName'));
 

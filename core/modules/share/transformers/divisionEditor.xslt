@@ -172,7 +172,7 @@
     </xsl:template>
 
 
-    <xsl:template match="field[@name='smap_content_xml'][ancestor::component[@type='form' and @exttype='grid']]">
+    <!--<xsl:template match="field[@name='smap_content_xml'][ancestor::component[@type='form' and @exttype='grid']]">
         <link rel="stylesheet" href="scripts/codemirror/lib/codemirror.css" />
         <script type="text/javascript" src="scripts/codemirror/lib/codemirror.js"></script>
         <script type="text/javascript" src="scripts/codemirror/mode/xml/xml.js"></script>
@@ -186,7 +186,7 @@
             <xsl:apply-templates select="." mode="field_name"/>
             <xsl:apply-templates select="." mode="field_content"/>
         </div>
-    </xsl:template>
+    </xsl:template>-->
 
     <xsl:template match="record[parent::recordset[parent::component[@sample='DivisionEditor'][@type='list']]]"/>
     <!-- /компонент DivisionEditor -->

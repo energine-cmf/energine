@@ -6,7 +6,7 @@
     	        <behavior name="TextBlockSource" />
     	    </javascript>
     		<fields>
-                <field name="html" type="text" title="FIELD_TEXTBLOCK_SOURCE" />
+                <field name="html" type="code" title="FIELD_TEXTBLOCK_SOURCE" />
     		</fields>
     		<toolbar>
     			<control type="button" id="update" title="BTN_UPDATE" onclick="update" />

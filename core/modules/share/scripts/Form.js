@@ -14,13 +14,16 @@ var Form = new Class({
         });
         this.validator = new Validator(this.form, this.tabPane);
 
-        this.richEditors = [], this.uploaders = [], this.textBoxes =
-            [], this.dateControls = []/*, this.smapSelectors = []*/;
+        this.richEditors = [], this.uploaders = [], this.textBoxes = [], this.dateControls = [], this.codeEditors = []/*, this.smapSelectors = []*/;
 
         this.form.getElements('textarea.richEditor').each(function (textarea) {
             this.richEditors.push(new Form.RichEditor(textarea, this,
                 this.fallback_ie));
 
+        }, this);
+
+        this.form.getElements('textarea.code').each(function (textarea) {
+            this.codeEditors.push(CodeMirror.fromTextArea(textarea, {mode: "text/html", tabMode: "indent", lineNumbers: true}));
         }, this);
 
         var showHideFunc = function (e) {
@@ -97,6 +100,10 @@ var Form = new Class({
         this.richEditors.each(function (editor) {
             editor.onSaveForm();
         });
+        this.codeEditors.each(function (editor) {
+            editor.save();
+        });
+
         if (!this.validator.validate()) {
             return false;
         }

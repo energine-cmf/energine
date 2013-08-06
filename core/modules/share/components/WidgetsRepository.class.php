@@ -40,6 +40,13 @@ class WidgetsRepository extends Grid {
         $this->setTableName('share_widgets');
         $this->setOrder(array('widget_name' => QAL::ASC));
     }
+    protected function createDataDescription(){
+        $result = parent::createDataDescription();
+        if(in_array($this->getState(), array('add', 'edit'))){
+            $result->getFieldDescriptionByName('widget_xml')->setType(FieldDescription::FIELD_TYPE_CODE);
+        }
+        return $result;
+    }
 
     /**
      * Постройка формы редактирования параметров компонента

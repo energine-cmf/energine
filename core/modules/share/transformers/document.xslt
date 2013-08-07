@@ -85,9 +85,8 @@
                             console.error(e);
                             }
                         };
-
-                        try {
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
+                            try {
                             <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
                             var pageToolbar = new <xsl:value-of select="$PAGE_TOOLBAR/javascript/behavior/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$PAGE_TOOLBAR/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$PAGE_TOOLBAR/toolbar/@name"/>', [
                             <xsl:for-each select="$PAGE_TOOLBAR/toolbar/control">
@@ -101,11 +100,11 @@
                             <xsl:if test="not($COMPONENTS[@class='TextBlock'])">
                                 pageToolbar.getControlById('editMode').disable();
                             </xsl:if>
+                            }
+                            catch (e) {
+                                safeConsoleError(e);
+                            }
         				</xsl:if>
-                        }
-                        catch (e) {
-                            safeConsoleError(e);
-                        }
                         <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[@name!='PageEditor']">
                             <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
                             if($('<xsl:value-of select="$objectID"/>')){
@@ -260,8 +259,8 @@
                     console.error(e);
                     }
                 };
-                try {
                 <xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
+                    try {
                     <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
                     var pageToolbar = new <xsl:value-of select="$PAGE_TOOLBAR/javascript/behavior/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$PAGE_TOOLBAR/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$PAGE_TOOLBAR/toolbar/@name"/>', [
                     <xsl:for-each select="$PAGE_TOOLBAR/toolbar/control">
@@ -275,11 +274,11 @@
                     <xsl:if test="not($COMPONENTS[@class='TextBlock'])">
                         pageToolbar.getControlById('editMode').disable();
                     </xsl:if>
+                    }
+                    catch (e) {
+                        safeConsoleError(e);
+                    }
                 </xsl:if>
-                }
-                catch (e) {
-                    safeConsoleError(e);
-                }
                 <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[@name!='PageEditor']">
                     <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
                     if($('<xsl:value-of select="$objectID"/>')){

@@ -44,6 +44,13 @@ class Grid extends DBDataSet {
     protected $fileLibrary;
 
     /**
+     * Компонент: менеджер присоединенных медиа-объектов
+     *
+     * @var AttachmentEditor
+     */
+    protected $attachmentEditor;
+
+    /**
      * сейвер
      *
      * @var Saver
@@ -521,6 +528,9 @@ class Grid extends DBDataSet {
             case 'put':
                 return $this->fileLibrary->build();
                 break;
+            case 'attachments':
+                return $this->attachmentEditor->build();
+                break;
             default:
                 // do nothing
         }
@@ -761,6 +771,35 @@ class Grid extends DBDataSet {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
         $this->fileLibrary->run();
+    }
+
+    /**
+     * Выводит компонент: связанные медиа-объекты
+     *
+     * @return void
+     * @access protected
+     */
+    protected function attachments() {
+
+        $sp = $this->getStateParams(true);
+        $attachmentEditorParams = array(
+            'origTableName' => $this->getTableName(),
+            'pk' => $this->getPK(),
+            'tableName' => $this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX,
+        );
+
+        if (isset($sp['id'])) {
+            $this->request->shiftPath(2);
+            $attachmentEditorParams['linkedID'] = $sp['id'];
+        }
+        else {
+            $this->request->shiftPath(1);
+        }
+
+        $this->attachmentEditor = $this->document->componentManager->createComponent(
+            'attachmentEditor', 'share', 'AttachmentEditor', $attachmentEditorParams
+        );
+        $this->attachmentEditor->run();
     }
 
     /**
@@ -1162,16 +1201,20 @@ class Grid extends DBDataSet {
      * @return void
      */
     protected function linkExtraManagers($tableName, $data = false) {
-        if ($this->dbh->tableExists($this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX)) {
-            $am = new AttachmentManager(
-                $this->getDataDescription(),
-                $this->getData(),
-                $tableName
-            );
-            $am->createAttachmentTab($data);
 
-            //Ссылки на добавление и удаление файла
-            $this->addTranslation('BTN_ADD_FILE', 'BTN_EDIT_FILE', 'BTN_QUICK_UPLOAD_FILE', 'BTN_LOAD_FILE', 'BTN_DEL_FILE', 'BTN_UP', 'BTN_DOWN', 'MSG_NO_ATTACHED_FILES');
+        if ($this->dbh->tableExists($tableName . AttachmentManager::ATTACH_TABLE_SUFFIX) && $this->getState() != 'attachments') {
+
+            $fd = new FieldDescription('attached_files');
+            $fd->setType(FieldDescription::FIELD_TYPE_TAB);
+            $fd->setProperty('title', $this->translate('TAB_ATTACHED_FILES'));
+            $fd->setProperty('tableName', $tableName . AttachmentManager::ATTACH_TABLE_SUFFIX);
+            $this->getDataDescription()->addFieldDescription($fd);
+
+            $field = new Field('attached_files');
+            $state = $this->getState();
+            $tab_url = (($state != 'add') ? $this->getData()->getFieldByName($this->getPK())->getRowData(0) : '') . '/attachments/';
+            $field->setRowData(1, $tab_url);
+            $this->getData()->addField($field);
         }
 
         if ($this->dbh->tableExists($this->getTableName() . TagManager::TAGS_TABLE_SUFFIX)) {

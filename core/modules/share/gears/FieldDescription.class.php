@@ -150,6 +150,11 @@ class FieldDescription extends DBWorker implements Iterator
      *
      */
     const FIELD_TYPE_CUSTOM = 'custom';
+
+    /**
+     * Тип поля для отрисовки вкладки в форме, содержимое которой будет грузиться по значению из этого поля
+     */
+    const FIELD_TYPE_TAB = 'tab';
     /**
      * Поле содержит видео данные
      * в формате flv

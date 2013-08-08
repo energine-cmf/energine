@@ -75,22 +75,23 @@
                             </li>
                         </xsl:if>
                     </xsl:for-each>
+                    <xsl:for-each select="$FIELDS[@type='tab']">
+                        <li>
+                            <a href="#{generate-id(.)}"><xsl:value-of select="@title" /></a>
+                        </li>
+                    </xsl:for-each>
                 </ul>
             </div>            
             <div class="e-pane-content">
                 <xsl:for-each select="set:distinct($FIELDS/@tabName)">
                     <xsl:variable name="TAB_NAME" select="."/>
                     <div id="{generate-id(.)}">
-                        <!--<xsl:if test="$FIELDS[@tabName=$TAB_NAME][1]/@language = $DOC_PROPS[@name='lang']/@default">
-                            <span id="copy_lang_data"><xsl:value-of select="$TRANSLATION[@const='TXT_COPY_DATA_TO_ANOTHER_TAB']"/>:<xsl:for-each
-                                    select="set:distinct($FIELDS[@language!=$DOC_PROPS[@name='lang']/@default]/@tabName)">
-                                <xsl:variable name="LANG_NAME" select="."/>
-                                <a href="#{$FIELDS[@tabName=$LANG_NAME][1]/@language}">
-                                    <xsl:value-of select="$LANG_NAME"/>
-                                </a>
-                            </xsl:for-each></span>
-                        </xsl:if>-->
                         <xsl:apply-templates select="$FIELDS[@tabName=$TAB_NAME]"/>
+                    </div>
+                </xsl:for-each>
+                <xsl:for-each select="$FIELDS[@type='tab']">
+                    <div id="{generate-id(.)}">
+                        <iframe src="{ancestor::component/@single_template}{.}" frameBorder="0" scrolling="no" style="width:99%; height:99%;"></iframe>
                     </div>
                 </xsl:for-each>
             </div>

@@ -695,4 +695,6 @@
         </xsl:if>
     </xsl:template>
 
+    <xsl:template match="field[@type='tab'][ancestor::component[@type='form']]"/>
+
 </xsl:stylesheet>

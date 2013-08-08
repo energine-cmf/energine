@@ -96,12 +96,12 @@ class FBOAuth extends BaseFacebook {
 
     public function __set($varName, $varValue) {
         $this->localStorage[$varName] = $varValue;
-        setcookie($varName, $varValue, time() + self::COOKIE_LIFETIME);
+        setcookie($varName, $varValue, time() + self::COOKIE_LIFETIME, '/');
     }
 
     public function __unset($varName) {
         unset($this->localStorage[$varName]);
-        setcookie($varName, '', time() - self::COOKIE_LIFETIME);
+        setcookie($varName, '', time() - self::COOKIE_LIFETIME, '/');
     }
 
     public function __isset($varName) {

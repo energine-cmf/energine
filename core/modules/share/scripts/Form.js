@@ -481,7 +481,6 @@ Form.AttachmentSelector = new Class({
         });
     },
     setName:function (result) {
-        console.log(result);
         if (result) {
             this.uplName.set('value', result.upl_path);
             this.uplId.set('value', result.upl_id);

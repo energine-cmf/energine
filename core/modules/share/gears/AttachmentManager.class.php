@@ -121,6 +121,7 @@ class AttachmentManager extends DBWorker {
             }
 
             if ($filteredMapValue = array_filter(array_values($mapValue))) {
+
                 $request = 'SELECT spu.' . $mapFieldName .
                            ',spu.upl_id as id, ' .
                            'upl_path as file, upl_name as name, TIME_FORMAT(upl_duration, "%i:%s") as duration, upl_internal_type as type,upl_mime_type as mime, upl_data as data FROM '.self::ATTACH_TABLENAME.' su ' .
@@ -129,8 +130,17 @@ class AttachmentManager extends DBWorker {
                            //'WHERE '.$mapFieldName.' IN ('.implode(',', array_keys(array_flip($mapValue))).') '.
                            'WHERE ' . $mapFieldName . ' IN (' .
                            implode(',', $filteredMapValue) .
-                           ') AND (su.upl_is_ready=1) AND (su.upl_is_active = 1)' .
-                           'ORDER by upl_order_num';
+                           ') AND (su.upl_is_ready=1) AND (su.upl_is_active = 1)';
+
+                // получаем имя колонки _order_num и сортируем по этому полю, если оно есть
+                $columns = $this->dbh->getColumnsInfo($mapTableName);
+                if ($columns) {
+                    foreach($columns as $col => $colInfo) {
+                        if (strpos($col, '_order_num') !== false) {
+                            $request .= ' ORDER BY ' . $col;
+                        }
+                    }
+                }
 
                 $images = $this->dbh->selectRequest($request);
 

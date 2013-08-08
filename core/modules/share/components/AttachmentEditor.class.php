@@ -72,6 +72,12 @@ class AttachmentEditor extends Grid {
 
             $fd = $this->getDataDescription()->getFieldDescriptionByName('upl_id');
             $fd->setType(FieldDescription::FIELD_TYPE_INT);
+            if ($this->getState() == 'edit') {
+                $res = $this->dbh->getScalar('share_uploads', 'upl_path', array('upl_id' => $this->getData()->getFieldByName('upl_id')->getRowData(0)));
+                if ($res) {
+                    $fd->setProperty('upl_path', $res);
+                }
+            }
         }
     }
 
@@ -172,8 +178,5 @@ class AttachmentEditor extends Grid {
         $f = $this->getData()->getFieldByName('session_id');
         $f->setRowData(1, session_id());
     }
-
-    // todo:
-    // 2. в форме поле upl_id сделать read-only с кнопкой выбора / диалог из share_uploads
 
 }

@@ -43,6 +43,10 @@ var Form = new Class({
             new Form.SmapSelector(el, this);
         }, this);
 
+        this.form.getElements('.attachment_selector').each(function (el) {
+            new Form.AttachmentSelector(el, this);
+        }, this);
+
         this.componentElement.getElements('.uploader').each(function (uploader) {
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
@@ -451,6 +455,36 @@ Form.SmapSelector = new Class({
             name += result.smap_name;
             this.smapName.set('value', name);
             this.smapId.set('value', result.smap_id);
+        }
+
+    }
+});
+
+Form.AttachmentSelector = new Class({
+    initialize:function (selector, form) {
+        var selector = $(selector);
+        this.form = form;
+        this.field = selector.getProperty('field');
+
+        selector.addEvent('click', function (e) {
+            Energine.cancelEvent(e);
+            this.uplName = $($(e.target).getProperty('upl_name'));
+            this.uplId = $($(e.target).getProperty('upl_id'));
+            this.showSelector.apply(this);
+        }.bind(this));
+    },
+
+    showSelector:function () {
+        ModalBox.open({
+            url:this.form.componentElement.getProperty('template') + 'file-library/',
+            onClose:this.setName.bind(this)
+        });
+    },
+    setName:function (result) {
+        console.log(result);
+        if (result) {
+            this.uplName.set('value', result.upl_path);
+            this.uplId.set('value', result.upl_id);
         }
 
     }

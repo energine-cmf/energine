@@ -36,8 +36,7 @@ class AttachmentEditor extends Grid {
             if ($linkedID) {
                 $this->addFilterCondition(array($pk => $linkedID));
             } else {
-                $this->addFilterCondition(array($pk => null));
-                // todo: + session_id = current_session_id
+                $this->addFilterCondition(array($pk => null, 'session_id' => session_id()));
             }
         }
     }
@@ -106,11 +105,13 @@ class AttachmentEditor extends Grid {
             $field = new FieldDescription('upl_path');
             $field->setType(FieldDescription::FIELD_TYPE_FILE);
             $field->setProperty('title', 'FIELD_IMG_FILENAME_IMG');
+            $field->setProperty('customField', true);
             $dd->addFieldDescription($field);
 
             $field = new FieldDescription('upl_name');
             $field->setType(FieldDescription::FIELD_TYPE_CUSTOM);
             $field->setProperty('title', 'FIELD_IMG_FILENAME');
+            $field->setProperty('customField', true);
             $dd->addFieldDescription($field);
 
         }
@@ -163,20 +164,20 @@ class AttachmentEditor extends Grid {
         parent::add();
 
         $f = $this->getData()->getFieldByName($this->getParam('pk'));
-        $f->setRowData(1, $this->getParam('linkedID'));
+        $f->setRowData(0, $this->getParam('linkedID'));
 
         $f = $this->getData()->getFieldByName('session_id');
-        $f->setRowData(1, session_id());
+        $f->setRowData(0, session_id());
     }
 
     protected function edit() {
         parent::edit();
 
         $f = $this->getData()->getFieldByName($this->getParam('pk'));
-        $f->setRowData(1, $this->getParam('linkedID'));
+        $f->setRowData(0, $this->getParam('linkedID'));
 
         $f = $this->getData()->getFieldByName('session_id');
-        $f->setRowData(1, session_id());
+        $f->setRowData(0, session_id());
     }
 
 }

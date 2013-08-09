@@ -2,11 +2,11 @@
 <configuration>
     <state name="main">
         <javascript>
-            <behavior name="GridManager"/>
+            <behavior name="AttachmentEditor"/>
         </javascript>
         <toolbar>
-            <control id="view" title="BTN_VIEW" type="button" onclick="view"/>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+            <control id="quickupload" title="BTN_QUICK_UPLOAD" type="button" onclick="quickupload"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
             <control id="delete" title="BTN_DELETE" type="button"
                      onclick="del"/>
@@ -14,10 +14,12 @@
                 <control type="button" id="up" title="BTN_MOVE_UP" onclick="up" />
                 <control type="button" id="down" title="BTN_MOVE_DOWN"
                 onclick="down" />
-            <!-- <control id="print" title="BTN_PRINT"
-                type="button" onclick="print"/>
-            -->
         </toolbar>
+    </state>
+    <state name="savequickupload" rights="3">
+        <uri_patterns>
+            <pattern>/savequickupload/</pattern>
+        </uri_patterns>
     </state>
     <state name="add">
         <uri_patterns>
@@ -90,13 +92,6 @@
             <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
-    <!--
-    <state name="printData" rights="3">
-            <uri_patterns>
-                <pattern>/print/</pattern>
-            </uri_patterns>
-    </state>
-    -->
     <state name="moveTo" rights="3">
         <uri_patterns>
             <pattern>/move/[fromId]/[direction]/[toId]/</pattern>

@@ -29,8 +29,6 @@ class AttachmentEditor extends Grid {
 
         $linkedID = $this->getParam('linkedID');
         $pk = $this->getParam('pk');
-        $tableName = $this->getParam('tableName');
-        $origTableName = $this->getParam('origTableName');
 
         if ($this->getState() != 'save') {
             if ($linkedID) {
@@ -39,6 +37,12 @@ class AttachmentEditor extends Grid {
                 $this->addFilterCondition(array($pk => null, 'session_id' => session_id()));
             }
         }
+
+        $quick_upload_path = $this->getConfigValue('repositories.quick_upload_path', 'uploads/public');
+        $quick_upload_pid = $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $quick_upload_path);
+
+        $this->setProperty('quickUploadPath', $quick_upload_path);
+        $this->setProperty('quickUploadPid', $quick_upload_pid);
     }
 
     /**
@@ -163,21 +167,80 @@ class AttachmentEditor extends Grid {
     protected function add() {
         parent::add();
 
-        $f = $this->getData()->getFieldByName($this->getParam('pk'));
-        $f->setRowData(0, $this->getParam('linkedID'));
+        for($i=0; $i<$this->getData()->getRowCount(); $i++) {
+            $f = $this->getData()->getFieldByName($this->getParam('pk'));
+            $f->setRowData($i, $this->getParam('linkedID'));
 
-        $f = $this->getData()->getFieldByName('session_id');
-        $f->setRowData(0, session_id());
+            $f = $this->getData()->getFieldByName('session_id');
+            $f->setRowData($i, session_id());
+        }
+
     }
 
     protected function edit() {
         parent::edit();
 
-        $f = $this->getData()->getFieldByName($this->getParam('pk'));
-        $f->setRowData(0, $this->getParam('linkedID'));
+        for($i=0; $i<$this->getData()->getRowCount(); $i++) {
+            $f = $this->getData()->getFieldByName($this->getParam('pk'));
+            $f->setRowData($i, $this->getParam('linkedID'));
 
-        $f = $this->getData()->getFieldByName('session_id');
-        $f->setRowData(0, session_id());
+            $f = $this->getData()->getFieldByName('session_id');
+            $f->setRowData($i, session_id());
+        }
+    }
+
+    protected function savequickupload() {
+
+        $transactionStarted = $this->dbh->beginTransaction();
+        try {
+
+            $upl_id = (isset($_POST['upl_id'])) ? intval($_POST['upl_id']) : false;
+            $result = $this->dbh->modify(
+                QAL::INSERT,
+                $this->getTableName(),
+                array(
+                    $this->getParam('pk') => $this->getParam('linkedID'),
+                    'session_id' => session_id(),
+                    'upl_id' => $upl_id
+                )
+            );
+
+            if ($result && $langTable = $this->dbh->getTranslationTablename($this->getTableName())) {
+                // todo: вставка языковых данных
+                $lang_columns = $this->dbh->getColumnsInfo($langTable);
+                $fields = array(
+                    $this->getPK() => $result
+                );
+                foreach ($lang_columns as $colName => $colProps) {
+                    if (empty($colProps['index']) or $colProps['index'] != 'PRI') {
+                        $fields[$colName] = '';
+                    }
+                }
+                $langs = E()->getLanguage()->getLanguages();
+                foreach ($langs as $lang_id => $lang_data) {
+                    $this->dbh->modify(
+                        QAL::INSERT,
+                        $langTable,
+                        array_merge($fields, array('lang_id' => $lang_id))
+                    );
+                }
+            }
+
+            $transactionStarted = !($this->dbh->commit());
+
+            $b = new JSONCustomBuilder();
+            $b->setProperties(array(
+                'data' => (is_int($result)) ? $result : false,
+                'result' => true,
+                'mode' => (is_int($result)) ? 'insert' : 'update'
+            ));
+            $this->setBuilder($b);
+        } catch (SystemException $e) {
+            if ($transactionStarted) {
+                $this->dbh->rollback();
+            }
+            throw $e;
+        }
     }
 
 }

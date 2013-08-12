@@ -97,9 +97,6 @@
                                 </xsl:for-each>
                                 }<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>
                             ]);
-                            <xsl:if test="not($COMPONENTS[@class='TextBlock'])">
-                                pageToolbar.getControlById('editMode').disable();
-                            </xsl:if>
                             }
                             catch (e) {
                                 safeConsoleError(e);
@@ -271,9 +268,6 @@
                         </xsl:for-each>
                         }<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>
                     ]);
-                    <xsl:if test="not($COMPONENTS[@class='TextBlock'])">
-                        pageToolbar.getControlById('editMode').disable();
-                    </xsl:if>
                     }
                     catch (e) {
                         safeConsoleError(e);

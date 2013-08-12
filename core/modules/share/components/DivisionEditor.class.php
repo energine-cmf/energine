@@ -212,10 +212,24 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
         $result = array();
         $dirPath = Document::TEMPLATES_DIR . $type . '/';
 
-        $folders = array(
-            glob($dirPath . "*." . $type . ".xml"),
-            glob($dirPath . $siteFolder . "/*." . $type . ".xml"),
-        );
+        $folders = array();
+        $includeFile = SITE_DIR . '/modules/' . $siteFolder . '/templates/' . $type . '.include';
+
+        if (file_exists($includeFile)) {
+            $includeRules = file($includeFile);
+            foreach($includeRules as $rule) {
+                $rule = trim($rule);
+                if (empty($rule)) continue;
+                $folders[] = glob($dirPath . $rule);
+            }
+        } else {
+            $folders = array(
+                glob($dirPath . "*." . $type . ".xml"),
+                glob($dirPath . $siteFolder . "/*." . $type . ".xml"),
+            );
+        }
+
+        $r = array();
         foreach ($folders as $folder) {
             if ($folder === false) $folder = array();
             foreach ($folder as $folderPath) {

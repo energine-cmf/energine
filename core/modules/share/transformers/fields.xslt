@@ -572,7 +572,7 @@
     <!-- заполненное поле для загрузки файла в файловом репозитории -->
     <xsl:template match="field[@name='upl_path'][.!=''][ancestor::component[@class='FileRepository' and @type='form']]" mode="field_input">
         <div class="preview">
-            <img border="0" id="preview" src="{$RESIZER_URL}w200-h200/{.}?anticache={generate-id()}" alt=""/>
+            <img border="0" id="preview" src="{$RESIZER_URL}w298-h224/{.}?anticache={generate-id()}" alt=""/>
         </div>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
@@ -591,7 +591,7 @@
             </div>
             <div class="control" >
                 <div class="preview">
-                    <img border="0" id="preview" src="{$RESIZER_URL}w200-h200/{.}" alt=""/>
+                    <img border="0" id="preview" src="{$RESIZER_URL}w298-h224/{.}" alt=""/>
                 </div>
                 <input>
                     <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>

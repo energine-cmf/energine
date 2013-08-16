@@ -24,7 +24,7 @@ var DivForm = new Class({
                 }
             }
 
-            if((layout = contentSelector.getSelected()[0].getProperty('data-layout')) && (layout != '*')/* && (!new Boolean(layoutSelector.get('value').toInt()).valueOf())*/){
+            if ((layout = contentSelector.getSelected()[0].getProperty('data-layout')) && (layout != '*')/* && (!new Boolean(layoutSelector.get('value').toInt()).valueOf())*/) {
                 layoutSelector.set('value', layout);
             }
 
@@ -47,10 +47,12 @@ var DivForm = new Class({
             }.bind(this)
         )
     },
-    clearContentXML: function(){
-        //Тут мы перполагаем что на форме только одно поле типа код... Пока что это так
-        this.codeEditors[0].setValue('');
-        this.codeEditors[0].getInputField().getParent('div.field').addClass('hidden');
+    clearContentXML: function () {
+        if (this.codeEditors.length) {
+            //Тут мы перполагаем что на форме только одно поле типа код... Пока что это так
+            this.codeEditors[0].setValue('');
+            this.codeEditors[0].getInputField().getParent('div.field').addClass('hidden');
+        }
     },
     save: function () {
         this.richEditors.each(function (editor) {

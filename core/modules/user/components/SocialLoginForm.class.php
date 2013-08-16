@@ -51,18 +51,18 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
             }
             if ($ctrl && $this->getConfigValue('auth.' . $socialType)) {
                 if (($appID = $this->getConfigValue('auth.' . $socialType . '.appID'))
-                        && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))) {
+                    && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))
+                ) {
                     $authClassName = strtoupper($socialType) . 'OAuth';
                     $auth = new $authClassName(array(
                         'appId' => $appID,
                         'secret' => $secretKey,
                     ));
-                    $ctrl->setAttribute( 'loginUrl', $auth->getLoginUrl(
+                    $ctrl->setAttribute('loginUrl', $auth->getLoginUrl(
                         array(
-                            'redirect_uri'  => ($base = E()->getSiteManager()->getCurrentSite()->base)
-                                                            . 'auth.php?' . $socialType . 'Auth&return='
-                                                            . $base,
-                            'scope'         => $ctrl->getAttribute('permissions')
+                            'redirect_uri' => ($base = E()->getSiteManager()->getCurrentSite()->base)
+                            . 'auth.php?' . $socialType . 'Auth&return='.(string)E()->getRequest()->getURI(),//((isset($_SERVER['HTTP_REFERER']))?$_SERVER['HTTP_REFERER']:$base),
+                            'scope' => $ctrl->getAttribute('permissions')
                         )
                     ));
                     $ctrl->setAttribute('appID', $appID);

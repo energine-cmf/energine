@@ -17,7 +17,7 @@
  * @subpackage user
  * @author dr.Pavka
  */
-class LoginForm extends DataSet implements SampleLoginForm{
+class LoginForm extends DataSet implements SampleLoginForm {
     /**
      * Конструктор
      *
@@ -33,10 +33,7 @@ class LoginForm extends DataSet implements SampleLoginForm{
             $base = 'http://' . Object::_getConfigValue('site.domain') . '/';
         }
 
-        $this->setAction(
-            $base . 'auth.php' . ((isset($_SERVER['HTTP_REFERER'])) ? '' : '?return=' . E()->getRequest()->getURI()),
-            true
-        );
+        $this->setAction($base . 'auth.php' . ((isset($_SERVER['HTTP_REFERER'])) ? '' : '?return=' . (($return = $this->getParam('successAction')) ? $return : E()->getRequest()->getURI())),true);
     }
 
     /**
@@ -50,8 +47,7 @@ class LoginForm extends DataSet implements SampleLoginForm{
         return array_merge(
             parent::defineParams(),
             array(
-                'successAction' => false,
-                //'facebookAppID' => false
+                'successAction' => false
             )
         );
     }
@@ -137,4 +133,5 @@ class LoginForm extends DataSet implements SampleLoginForm{
 /**
  * Фейковый интерфейс для формы логина
  */
-interface SampleLoginForm{}
+interface SampleLoginForm {
+}

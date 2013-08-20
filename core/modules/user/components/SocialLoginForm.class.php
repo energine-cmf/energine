@@ -61,7 +61,7 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
                     $ctrl->setAttribute('loginUrl', $auth->getLoginUrl(
                         array(
                             'redirect_uri' => ($base = E()->getSiteManager()->getCurrentSite()->base)
-                            . 'auth.php?' . $socialType . 'Auth&return='.(string)E()->getRequest()->getURI(),//((isset($_SERVER['HTTP_REFERER']))?$_SERVER['HTTP_REFERER']:$base),
+                            . 'auth.php?' . $socialType . 'Auth&return=' . $this->getReturnUrl(),//((isset($_SERVER['HTTP_REFERER']))?$_SERVER['HTTP_REFERER']:$base),
                             'scope' => $ctrl->getAttribute('permissions')
                         )
                     ));
@@ -71,5 +71,12 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
 
             }
         }
+    }
+
+    private function getReturnUrl() {
+        if(!$returnUrl = $this->getParam('successAction')) {
+            $returnUrl = (string)E()->getRequest()->getURI();
+        }
+        return $returnUrl;
     }
 }

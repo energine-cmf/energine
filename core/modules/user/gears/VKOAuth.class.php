@@ -4,7 +4,7 @@
  * Класс VKOAuth
  *
  * @package energine
- * @subpackage site/ufo
+ * @subpackage user
  * @author Andrii Alieksieienko
  * @copyright 2013 eggmengroup.com
  */
@@ -14,7 +14,7 @@
  * через Вконтакте.
  *
  * @package energine
- * @subpackage site/ufo
+ * @subpackage user
  * @author Andrii Alieksieienko
  * @copyright 2013 eggmengroup.com
  */
@@ -60,6 +60,7 @@ class VKOAuth extends Object {
 
     /**
      * @param array $config
+     * @param string $return
      * @throws SystemException
      */
     public function __construct($config, $return = false) {

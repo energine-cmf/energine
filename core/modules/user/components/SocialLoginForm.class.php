@@ -44,7 +44,7 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
         $f->setData('');
         $this->getData()->addField($f);
         //Если есть информация о авторизации через соц. сети
-        foreach (array('fb', 'vk') as $socialType) {
+        foreach (array('fb', 'vk', 'ok') as $socialType) {
             list($tbr) = array_values($this->getToolbar());
             if ($ctrl = $tbr->getControlByID('auth.' . $socialType)) {
                 $ctrl->disable();
@@ -57,11 +57,12 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
                     $auth = new $authClassName(array(
                         'appId' => $appID,
                         'secret' => $secretKey,
+                        'public' => $this->getConfigValue('auth.' . $socialType . '.publicKey'),
                     ));
                     $ctrl->setAttribute('loginUrl', $auth->getLoginUrl(
                         array(
                             'redirect_uri' => ($base = E()->getSiteManager()->getCurrentSite()->base)
-                            . 'auth.php?' . $socialType . 'Auth&return=' . $this->getReturnUrl(),//((isset($_SERVER['HTTP_REFERER']))?$_SERVER['HTTP_REFERER']:$base),
+                            . 'auth.php?' . $socialType . 'Auth&return=' . $this->getReturnUrl(),
                             'scope' => $ctrl->getAttribute('permissions')
                         )
                     ));

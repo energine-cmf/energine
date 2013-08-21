@@ -269,6 +269,20 @@ class User extends DBWorker {
     }
 
     /**
+     * Поиск юзера по идентфикатору Одноклассников
+     * @static
+     * @param $okID
+     * @return bool|User
+     */
+    public static function getOKUser($okID) {
+        $result = false;
+        if ($UID = simplifyDBResult(E()->getDB()->select(self::USER_TABLE_NAME, 'u_id', array('u_okid' => $okID, 'u_is_active' => 1)), 'u_id', true)) {
+            return new User($UID);
+        }
+        return $result;
+    }
+
+    /**
      * Генерирует пароль заданной длины из случайных буквенно-цифровых символов.
      *
      * @param int $length

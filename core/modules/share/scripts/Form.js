@@ -715,12 +715,8 @@ Form.RichEditor = new Class({
         this.selection = new RichEditor.Selection(window);
 
         if (Energine.supportContentEdit && !this.fallback_ie) {
-            this.hidden = new Element('input').setProperty('name',
-                this.textarea.name).setProperties({
-                    'class':'richEditorValue',
-                    'type':'hidden',
-                    'value':''
-                }).injectBefore(this.textarea);
+            this.hidden = new Element('input', {'name': this.textarea.name, 'value': this.textarea.get('value'), 'type': 'hidden', 'class': 'richEditorValue'}).injectBefore(this.textarea);
+
             var prop;
             if (prop = this.textarea.getProperty('nrgn:pattern')) {
                 this.hidden.setProperty('nrgn:pattern', prop);

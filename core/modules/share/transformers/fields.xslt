@@ -196,9 +196,11 @@
             <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
         </input>
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
-        <button onclick="{generate-id(../..)}.openQuickUpload(this);" quick_upload_path="{@quickUploadPath}" quick_upload_pid="{@quickUploadPid}" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">
-            <xsl:value-of select="$TRANSLATION[@const='BTN_QUICK_UPLOAD']"/>
-        </button>
+        <xsl:if test="@quickUploadPid">
+            <button onclick="{generate-id(../..)}.openQuickUpload(this);" quick_upload_path="{@quickUploadPath}" quick_upload_pid="{@quickUploadPid}" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">
+                <xsl:value-of select="$TRANSLATION[@const='BTN_QUICK_UPLOAD']"/>
+            </button>
+        </xsl:if>
         <xsl:if test="@nullable">
             <a class="lnk_clear" href="#"
                onclick="{generate-id(../..)}.clearFileField('{generate-id(.)}',this);return false;">

@@ -242,9 +242,10 @@ class AttachmentManager extends DBWorker {
 
             $quick_upload_path = $this->getConfigValue('repositories.quick_upload_path', 'uploads/public');
             $quick_upload_pid = $this->getUploadIdByUploadPath($quick_upload_path);
-
-            $field->setProperty('quickUploadPath', $quick_upload_path);
-            $field->setProperty('quickUploadPid', $quick_upload_pid);
+            if($quick_upload_pid){
+                $field->setProperty('quickUploadPath', $quick_upload_path);
+                $field->setProperty('quickUploadPid', $quick_upload_pid);
+            }
 
             $this->dataDescription->addFieldDescription($field);
 

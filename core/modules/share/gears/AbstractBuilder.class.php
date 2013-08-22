@@ -139,8 +139,11 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                 $quick_upload_path = $this->getConfigValue('repositories.quick_upload_path', 'uploads/public');
                 $quick_upload_pid = $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $quick_upload_path);
 
-                $result->setAttribute('quickUploadPath', $quick_upload_path);
-                $result->setAttribute('quickUploadPid', $quick_upload_pid);
+                if($quick_upload_pid){
+                    $result->setAttribute('quickUploadPath', $quick_upload_path);
+                    $result->setAttribute('quickUploadPid', $quick_upload_pid);
+                }
+
             }
 
             if ($fieldValue) {

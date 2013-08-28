@@ -179,9 +179,13 @@ class FileRepoInfo extends DBWorker {
     public function getRepositoryRoot($upl_path) {
         $upl_junks = explode('/', $upl_path, 3);
         if (empty($upl_junks[1])) {
-            throw new SystemException('ERR_INVALID_UPL_PATH');
+            //throw new SystemException('ERR_INVALID_UPL_PATH');
+            $upl_root = '';
         }
-        $upl_root = $upl_junks[0] . '/' . $upl_junks[1];
+        else {
+            $upl_root = $upl_junks[0] . '/' . $upl_junks[1];
+        }
+
         return $upl_root;
     }
 

@@ -757,10 +757,9 @@ class DBDataSet extends DataSet {
      * @param mixed
      * @return void
      * @access protected
-     * @final
      */
 
-    final protected function recordExists($id, $fieldName = false) {
+    protected function recordExists($id, $fieldName = false) {
         if (!$fieldName) {
             $fieldName = $this->getPK();
         }

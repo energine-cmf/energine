@@ -104,7 +104,7 @@ class SiteSaver extends Saver {
 
         $translationTableName = 'share_sites_translation';
         //Если не задан параметр конфигурации  - создаем одну страницу
-        $smapId = $this->dbh->modify(QAL::INSERT, 'share_sitemap', array('smap_content' => $content, 'smap_layout' => $layout, 'site_id' => $id, 'smap_segment' => '/'));
+        $smapId = $this->dbh->modify(QAL::INSERT, 'share_sitemap', array('smap_content' => $content, 'smap_layout' => $layout, 'site_id' => $id, 'smap_segment' => ''));
         foreach ($_POST[$translationTableName] as $langID => $siteInfo) {
             $this->dbh->modify(
                 QAL::INSERT,

@@ -26,6 +26,7 @@ class GridConfig extends ComponentConfig {
         $this->registerState('cleanup', array('/cleanup/'));
         $this->registerState('imageManager', array('/imagemanager/'));
         $this->registerState('fileLibrary', array('/file-library/', '/file-library/[any]/'));
+        $this->registerState('attachments', array('/attachments/[any]/', '/[id]/attachments/[any]/'));
     }
 
 }

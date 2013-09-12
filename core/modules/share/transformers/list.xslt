@@ -35,6 +35,16 @@
             <xsl:if test="../toolbar">
                 <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
             </xsl:if>
+            <xsl:if test="../@quickUploadPath">
+                <xsl:attribute name="quick_upload_path">
+                    <xsl:value-of select="../@quickUploadPath"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="../@quickUploadPid">
+                <xsl:attribute name="quick_upload_pid">
+                    <xsl:value-of select="../@quickUploadPid"/>
+                </xsl:attribute>
+            </xsl:if>
             <xsl:if test="../@moveFromId">
                 <xsl:attribute name="move_from_id">
                     <xsl:value-of select="../@moveFromId"/>

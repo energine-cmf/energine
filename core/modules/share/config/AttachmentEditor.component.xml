@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <javascript>
+            <behavior name="AttachmentEditor"/>
+        </javascript>
+        <toolbar>
+            <control id="add" title="BTN_ADD" type="button" onclick="add"/>
+            <control id="quickupload" title="BTN_QUICK_UPLOAD" type="button" onclick="quickupload"/>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="delete" title="BTN_DELETE" type="button"
+                     onclick="del"/>
+                <control id="move" title="BTN_MOVE" type="button" onclick="move"/>
+                <control type="button" id="up" title="BTN_MOVE_UP" onclick="up" />
+                <control type="button" id="down" title="BTN_MOVE_DOWN"
+                onclick="down" />
+        </toolbar>
+    </state>
+    <state name="savequickupload" rights="3">
+        <uri_patterns>
+            <pattern>/savequickupload/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/add/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
+                     type="select"
+                    >
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="add">BTN_ADD</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
+            <control id="close" title="BTN_CANCEL" type="button"
+                     onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="edit">
+        <uri_patterns>
+            <pattern>/[int]/edit/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="editNext">BTN_EDIT_NEXT</option>
+                    <option id="editPrev">BTN_EDIT_PREV</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="save" rights="3">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="delete" rights="2">
+        <uri_patterns>
+            <pattern>/[int]/delete/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getRawData" rights="2">
+        <uri_patterns>
+            <pattern>/get-data/</pattern>
+            <pattern>/get-data/page-[pageNumber]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="view">
+        <uri_patterns>
+            <pattern>/[int]/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="moveTo" rights="3">
+        <uri_patterns>
+            <pattern>/move/[fromId]/[direction]/[toId]/</pattern>
+            <pattern>/move/[fromId]/[direction]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="move" rights="3">
+        <uri_patterns>
+            <pattern>/move/[fromId]/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="GridManager"/>
+        </javascript>
+        <toolbar>
+            <control id="moveFirst" title="BTN_MOVE_FIRST" type="button" onclick="moveFirst"/>
+            <control id="moveLast" title="BTN_MOVE_LAST" type="button" onclick="moveLast"/>
+            <control id="sep01" type="separator"/>
+            <control id="moveAbove" title="BTN_MOVE_ABOVE" type="button" onclick="moveAbove"/>
+            <control id="moveBelow" title="BTN_MOVE_BELOW" type="button" onclick="moveBelow"/>
+            <control id="sep02" type="separator"/>
+            <control id="close" title="BTN_CANCEL" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="up" rights="3">
+        <uri_patterns>
+            <pattern>/[int]/up/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="down" rights="3">
+        <uri_patterns>
+            <pattern>/[int]/down/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

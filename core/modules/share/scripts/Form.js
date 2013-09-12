@@ -46,6 +46,10 @@ var Form = new Class({
             new Form.SmapSelector(el, this);
         }, this);
 
+        this.form.getElements('.attachment_selector').each(function (el) {
+            new Form.AttachmentSelector(el, this);
+        }, this);
+
         this.componentElement.getElements('.uploader').each(function (uploader) {
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
@@ -463,191 +467,35 @@ Form.SmapSelector = new Class({
     }
 });
 
-Form.AttachmentPane = new Class({
-    Extends:Form.Uploader,
-    initialize:function (form) {
-        if (/*!$('add_attachment') || */!$('insert_attachment')) return;
-
+Form.AttachmentSelector = new Class({
+    initialize:function (selector, form) {
+        var selector = $(selector);
         this.form = form;
-        this.overlay = null;
-        //this.parent($('add_attachment'), form, 'put/');
-        $('insert_attachment').addEvent('click', function (event) {
-            Energine.cancelEvent(event);
-            ModalBox.open({
-                'url': form.singlePath + 'file-library/',
-                'onClose': this._insertRow.bind(this)
-            });
+        this.field = selector.getProperty('field');
+
+        selector.addEvent('click', function (e) {
+            Energine.cancelEvent(e);
+            this.uplName = $($(e.target).getProperty('upl_name'));
+            this.uplId = $($(e.target).getProperty('upl_id'));
+            this.showSelector.apply(this);
         }.bind(this));
+    },
 
-        var quick_upload = $('quick_upload_attachment');
-        var overlay = this._getOverlay();
-        if (quick_upload) {
-            var quick_upload_pid = quick_upload.getProperty('quick_upload_pid') || '1';
-            quick_upload.addEvent('click', function (event) {
-                Energine.cancelEvent(event);
-                ModalBox.open({
-                    'url': form.singlePath + 'file-library/' + quick_upload_pid + '/add',
-                    'onClose': function(data) {
-                        if (data && data.result && data.data) {
-                            var upl_id = data.data;
-                            if (upl_id) {
-                                overlay.show();
-                                new Request.JSON({
-                                    'url': form.singlePath + 'file-library/' + quick_upload_pid + '/get-data/',
-                                    'method': 'post',
-                                    'data': {
-                                        json: 1,
-                                        filter: {
-                                            condition: '=',
-                                            share_uploads: {'upl_id': [upl_id]}
-                                        }
-                                    },
-                                    'evalResponse': true,
-                                    'onComplete': function(data) {
-                                        if (data && data.data && data.data.length == 2) {
-                                            // вставляем вторую строчку, ибо первая - folderup
-                                            this._insertRow(data.data[1]);
-                                            overlay.hide();
-                                        }
-                                    }.bind(this),
-                                    'onFailure': function (e) {
-                                        overlay.hide();
-                                    }
-                                }).send();
-                            }
-                        }
-                    }.bind(this)
-                });
-            }.bind(this));
-        }
-
-        this.form.componentElement.getElements('.delete_attachment').addEvent('click', function (event) {
-            Energine.cancelEvent(event);
-            this.delAttachment($(event.target).getProperty('upl_id'));
-        }.bind(this));
-        this.form.componentElement.getElements('.up_attachment').addEvent('click', function (event) {
-            Energine.cancelEvent(event);
-            this.upAttachment($(event.target).getProperty('upl_id'));
-        }.bind(this));
-        this.form.componentElement.getElements('.down_attachment').addEvent('click', function (event) {
-            Energine.cancelEvent(event);
-            this.downAttachment($(event.target).getProperty('upl_id'));
-        }.bind(this));
-
+    showSelector:function () {
+        ModalBox.open({
+            url:this.form.componentElement.getProperty('template') + 'file-library/',
+            onClose:this.setName.bind(this)
+        });
     },
-    _getOverlay:function () {
-        return (!this.overlay) ? this.overlay = new Overlay() : this.overlay;
-    },
-    afterUpload:function (file) {
-        if (!file.response.error) {
-            var data = JSON.decode(file.response.text);
-            this._insertRow(data);
-        }
-    },
-    upAttachment:function (uplID) {
-        this._moveAttachment(uplID, 'up');
-    },
-    downAttachment:function (uplID) {
-        this._moveAttachment(uplID, 'down');
-    },
-    _moveAttachment:function (uplID, direction) {
-        var currentRow, changeRow, position;
-        if (currentRow = $('row_' + uplID)) {
-
-            if (direction == 'up') {
-                changeRow = currentRow.getPrevious();
-                position = 'before';
-            }
-            else {
-                changeRow = currentRow.getNext();
-                position = 'after';
-            }
-
-            if (changeRow) {
-                currentRow.inject(changeRow, position);
-            }
-        }
-        this._zebraRows();
-    },
-    _zebraRows:function () {
-        document.getElements('#attached_files tbody tr').removeClass('even');
-        document.getElements('#attached_files tbody tr:even').addClass('even');
-    },
-    _insertRow:function (result) {
+    setName:function (result) {
         if (result) {
-            var createThumb = function (fileData) {
-                var thumb = new Element('img', {'border':'0'});
-
-                if (fileData) {
-                    switch (fileData.upl_internal_type) {
-                        case 'image':
-                        case 'video':
-                            thumb.setProperty('src', Energine.resizer + 'w150-h150/' + fileData.upl_path)
-                            break;
-                        default:
-
-                            break;
-                    }
-                }
-                return new Element('a', {'href':fileData.upl_path, 'target':'blank'}).adopt(thumb)
-            }
-
-            var data = result;
-            var emptyRow;
-            if (emptyRow = $('empty_row')) emptyRow.dispose();
-
-            if (!$('row_' + data.upl_id)) {
-                document.getElement('#attached_files tbody').adopt(
-                    new Element('tr', {'id':'row_' + data.upl_id}).adopt([
-                        new Element('td').adopt([
-                            new Element('button',
-                                {'type':'button', 'events':{'click':function (event) {
-                                    this.delAttachment(data.upl_id);
-                                }.bind(this)
-                                }
-                                }).set('text', Energine.translations.get('BTN_DEL_FILE')),
-                            new Element('button',
-                                {'type':'button', 'events':{'click':function (event) {
-                                    this.upAttachment(data.upl_id);
-                                }.bind(this)
-                                }
-                                }).set('text', Energine.translations.get('BTN_UP')),
-                            new Element('button',
-                                {'type':'button', 'events':{'click':function (event) {
-                                    this.downAttachment(data.upl_id);
-                                }.bind(this)
-                                }
-                                }).set('text', Energine.translations.get('BTN_DOWN')),
-                            //                        new Element('input', {'name': 'uploads[upl_is_main][]', 'type': 'checkbox'}),
-                            new Element('input', {'name':'uploads[upl_id][]', 'type':'hidden', 'value':data.upl_id})
-                        ]),
-                        new Element('td').set('html', data.upl_title),
-                        new Element('td').adopt(createThumb(data))
-                    ])
-                )
-            }
+            this.uplName.set('value', result.upl_path);
+            this.uplId.set('value', result.upl_id);
         }
-        this._zebraRows();
-    },
-    delAttachment:function (id) {
-        if ($('row_' + id)) {
-            $('row_' + id).dispose();
-        }
-        else {
-            $('row_').dispose();
-        }
-        if (document.getElement('#attached_files tbody').getChildren().length ==
-            0) {
-            document.getElement('#attached_files tbody').adopt(
-                new Element('tr', {'id':'empty_row'}).adopt(
-                    new Element('td', {'colspan':'3'}).set('html', Energine.translations.get('MSG_NO_ATTACHED_FILES'))
-                )
-            );
 
-        }
-        this._zebraRows();
     }
 });
+
 // Предназначен для последующей имплементации
 // Содержит метод setLabel использующийся для привязки кнопки выбора разделов
 Form.Label = {

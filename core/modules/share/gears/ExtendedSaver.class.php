@@ -57,8 +57,23 @@ class ExtendedSaver extends Saver {
         $tm = new TagManager($this->dataDescription, $this->data, $this->mainTableName);
         $tm->save($entityID);
 
-        $am = new AttachmentManager($this->dataDescription, $this->data, $this->mainTableName);
-        $am->save($entityID);
+        // обновление записей из _uploads таблицы, в которых PK = NULL по ID сессии
+        if ($result && $this->dbh->tableExists($this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX)) {
+            $id = (is_int($result)) ? $result : (int)$_POST[$this->getTableName()][$this->getPK()];
+            //throw new SystemException($id);
+            $this->dbh->modify(
+                QAL::UPDATE,
+                $this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX,
+                array(
+                    $this->getPK() => $id
+                ),
+                array(
+                    $this->getPK() => null,
+                    'session_id' => session_id()
+                )
+            );
+        }
+
 
         return $result;
     }

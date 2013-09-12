@@ -439,4 +439,39 @@ final class QAL extends DBA {
 
         return null;
     }
+
+    /**
+     * Возвращает массив значений колонки из таблицы
+     *
+     * @param string имя таблицы
+     * @param string имя колонки
+     * @param array|mixed условие выборки
+     * @return array
+     */
+    public function getColumn() {
+        $args = func_get_args();
+
+        if (strpos($args[0], ' ')) {
+            //Считаем что у нас SQL код
+            $handlerMethod = 'constructQuery';
+            $args = array($args);
+        }
+        else {
+            $handlerMethod = 'buildSQL';
+        }
+
+        $query = call_user_func_array(array($this, $handlerMethod), $args);
+        if (!is_string($query) || strlen($query) == 0) {
+            return array();
+        }
+        $res = $this->pdo->query($this->lastQuery = $query);
+        $result = array();
+        if ($res instanceof PDOStatement) {
+            while ($row = $res->fetch(PDO::FETCH_NUM)) {
+                array_push($result, $row[0]);
+            }
+        }
+
+        return $result;
+    }
 }

@@ -40,9 +40,29 @@ class AttachmentEditor extends Grid {
 
         $quick_upload_path = $this->getConfigValue('repositories.quick_upload_path', 'uploads/public');
         $quick_upload_pid = $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $quick_upload_path);
+        $quick_upload_enabled = true;
+
+        $columns = $this->dbh->getColumnsInfo($this->getTableName());
+        if ($columns) {
+            foreach($columns as $colName => $colProps) {
+                if ((empty($colProps['index']) or $colProps['index'] != 'PRI') and $colName != 'upl_id' and strpos($colName, 'order_num') === false and !$colProps['nullable']) {
+                    $quick_upload_enabled = false;
+                }
+            }
+        }
+
+        if ($langTable = $this->dbh->getTranslationTablename($this->getTableName())) {
+            $lang_columns = $this->dbh->getColumnsInfo($langTable);
+            foreach ($lang_columns as $colName => $colProps) {
+                if ((empty($colProps['index']) or $colProps['index'] != 'PRI') and $colName != 'upl_id' and strpos($colName, 'order_num') === false and !$colProps['nullable']) {
+                    $quick_upload_enabled = false;
+                }
+            }
+        }
 
         $this->setProperty('quickUploadPath', $quick_upload_path);
         $this->setProperty('quickUploadPid', $quick_upload_pid);
+        $this->setProperty('quickUploadEnabled', $quick_upload_enabled);
     }
 
     /**

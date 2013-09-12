@@ -45,6 +45,11 @@
                     <xsl:value-of select="../@quickUploadPid"/>
                 </xsl:attribute>
             </xsl:if>
+            <xsl:if test="../@quickUploadEnabled">
+                <xsl:attribute name="quick_upload_enabled">
+                    <xsl:value-of select="../@quickUploadEnabled"/>
+                </xsl:attribute>
+            </xsl:if>
             <xsl:if test="../@moveFromId">
                 <xsl:attribute name="move_from_id">
                     <xsl:value-of select="../@moveFromId"/>

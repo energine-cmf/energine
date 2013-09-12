@@ -7,11 +7,18 @@ var AttachmentEditor = new Class({
         this.parent(element);
         this.quick_upload_path = element.get('quick_upload_path');
         this.quick_upload_pid = element.get('quick_upload_pid');
+        this.quick_upload_enabled = element.get('quick_upload_enabled');
     },
 
     processServerResponse: function(response) {
         this.parent(response);
-        if (control = this.toolbar.getControlById('quickupload')) control.enable();
+        if (control = this.toolbar.getControlById('quickupload')) {
+            if (this.quick_upload_enabled) {
+                control.enable();
+            } else {
+                control.disable();
+            }
+        }
     },
 
     quickupload: function () {

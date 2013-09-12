@@ -197,8 +197,11 @@ var Form = new Class({
         }
         var quick_upload_path = $(button).getProperty('quick_upload_path');
         var quick_upload_pid = $(button).getProperty('quick_upload_pid');
+        var quick_upload_enabled = $(button).getProperty('quick_upload_enabled');
         var overlay = this._getOverlay();
         var processResult = this.processFileResult;
+
+        if (!quick_upload_enabled) return;
 
         ModalBox.open({
             url:this.singlePath + 'file-library/' + quick_upload_pid + '/add',

@@ -306,8 +306,9 @@ var Grid = new Class({
         }
         else {
             var fieldValue = '';
-            if (record[fieldName]) {
-                var fieldValue = record[fieldName].clean();
+            if (record[fieldName]
+                || record[fieldName] == 0) {
+                var fieldValue = record[fieldName].toString().clean();
             }
             if (
                 (this.metadata[fieldName].type == 'select')

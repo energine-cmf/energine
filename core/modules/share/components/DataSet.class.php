@@ -708,7 +708,7 @@ abstract class DataSet extends Component {
      */
 
     public static function cleanupHTML($data) {
-        $aggressive = Object::_getConfigValue('site.aggresive_cleanup', false);
+        $aggressive = Object::_getConfigValue('site.aggressive_cleanup', false);
 
         //Если подключено расширение tidy
         if (function_exists('tidy_get_output') && $aggressive) {

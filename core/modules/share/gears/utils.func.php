@@ -248,7 +248,9 @@ function convertFieldNames(array $fields, $prefix = '') {
         if (($plen = strlen($prefix)) > 0 && strpos($fieldName, $prefix) === 0) {
             $fieldName = substr($fieldName, $plen);
         }
-        $fieldName = preg_replace('/_(\w)/e', 'strtoupper(\'$1\')', $fieldName);
+        //$fieldName = preg_replace('/_(\w)/e', 'strtoupper(\'$1\')', $fieldName);
+        $fieldName = preg_replace_callback('/_(\w)/', function($m){ return strtoupper($m[1]);}, $fieldName);
+
         $result[$fieldName] = $fieldValue;
     }
     return $result;

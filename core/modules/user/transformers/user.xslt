@@ -156,4 +156,12 @@
     </xsl:template>
     <!-- /компонент RoleEditor -->
 
+    <xsl:template match="field[@name='u_avatar_img'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+        <div><img src="{.}" alt=""/></div>
+        <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
+        <input>
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+        </input>
+    </xsl:template>
+
 </xsl:stylesheet>

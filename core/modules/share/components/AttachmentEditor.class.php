@@ -144,6 +144,17 @@ class AttachmentEditor extends Grid {
     }
 
     /**
+     * Отключаем FK для ul_id и связки с основной таблицей
+     * @return array
+     */
+    protected function loadDataDescription(){
+        $r = parent::loadDataDescription();
+        $r['upl_id']['key'] = false;
+        $r[$this->getParam('pk')]['key'] = false;
+        return $r;
+    }
+
+    /**
      * Переопределенный метод
      * Дополняет набор данных значениями полей upl_path, upl_name и upl_duration
      *

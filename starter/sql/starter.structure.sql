@@ -734,6 +734,11 @@ ALTER TABLE `share_uploads_tags`
 ALTER TABLE `user_user_groups`
   ADD CONSTRAINT `user_user_groups_ibfk_3` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_user_groups_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `user_groups` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE share_uploads add column upl_is_mp4 tinyint(1) not null default 0;
+ALTER TABLE share_uploads add column upl_is_webm tinyint(1) not null default 0;
+ALTER TABLE share_uploads add column upl_is_flv tinyint(1) not null default 0;
+
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 

@@ -426,6 +426,9 @@ TRUNCATE TABLE `user_user_groups`;
 INSERT INTO `user_user_groups` (`u_id`, `group_id`) VALUES
 (22, 1);
 
+update share_uploads set upl_is_mp4=1 where upl_mime_type='video/mp4';
+update share_uploads set upl_is_webm=1 where upl_mime_type='video/mp4';
+
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 

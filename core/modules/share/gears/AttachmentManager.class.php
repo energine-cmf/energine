@@ -146,7 +146,8 @@ class AttachmentManager extends DBWorker {
                 foreach($columns as $cname => $col) {
                     if ($cname != 'session_id' && (empty($col['index'])  or ($col['index'] != 'PRI' and (empty($col['key']['tableName']))))) {
                         $new_cname = str_replace($prefix . '_', '', $cname);
-                        $additional_fields[$cname] = $new_cname;
+                        if($new_cname != 'order_num')
+                            $additional_fields[$cname] = $new_cname;
                     }
                 }
                 if ($langMapTableName) {

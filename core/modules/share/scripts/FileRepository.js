@@ -105,12 +105,18 @@ Grid.implement({
                         new Element('td', {'html': Energine.translations['TXT_NOT_READY']})
                     ]
                     );
-                if (record['upl_mime_type'])
+                if (record['upl_mime_type']) {
+                    var video_types = [];
+                    if (record['upl_is_mp4'] && record['upl_is_mp4'] == '1') video_types.push('mp4');
+                    if (record['upl_is_webm'] && record['upl_is_webm'] == '1') video_types.push('webm');
+                    if (record['upl_is_flv'] && record['upl_is_flv'] == '1') video_types.push('flv');
+
                     new Element('tr').inject(propsTable).adopt([
                         new Element('td', {'html': this.metadata['upl_mime_type'].title + ' :'}),
-                        new Element('td', {'html': record['upl_mime_type']})
+                        new Element('td', {'html': (video_types.length) ? video_types.join(', ') : record['upl_mime_type']})
                     ]
                     );
+                }
                 switch (record['upl_internal_type']) {
                     case 'video':
                         if (record['upl_duration'])

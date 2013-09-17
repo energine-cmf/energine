@@ -163,7 +163,8 @@ class AttachmentManager extends DBWorker {
                 $request = 'SELECT spu.' . $mapFieldName .
                            ',spu.upl_id as id, spu.*, ' .
                            'upl_path as file, upl_name as name, TIME_FORMAT(upl_duration, "%i:%s") as duration,
-                            upl_internal_type as type,upl_mime_type as mime, upl_data as data ' .
+                            upl_internal_type as type,upl_mime_type as mime, upl_data as data, ' .
+                            'upl_is_mp4 as is_mp4, upl_is_webm as is_webm, upl_is_flv as is_flv ' .
                             (($langMapTableName && $lang_pk) ? ', spt.*' : '') .
                            'FROM '.self::ATTACH_TABLENAME.' su ' .
                            'LEFT JOIN `' . $mapTableName .
@@ -225,6 +226,7 @@ class AttachmentManager extends DBWorker {
 
                             $fd = new FieldDescription('file');
                             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+                            $base = pathinfo($imageData[$mapValue[$i]][0]['file'], PATHINFO_DIRNAME) . '/' . pathinfo($imageData[$mapValue[$i]][0]['file'], PATHINFO_FILENAME);
                             $dataDescription->addFieldDescription($fd);
 
                             $fd = new FieldDescription('type');
@@ -249,6 +251,24 @@ class AttachmentManager extends DBWorker {
                             $fd = new FieldDescription('secure');
                             $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
                             $dataDescription->addFieldDescription($fd);
+
+                            $playlist = array();
+                            if ($imageData[$mapValue[$i]][0]['is_mp4'] == '1') {
+                                $playlist[] = array('id' => $base . '.mp4');
+                            }
+                            if ($imageData[$mapValue[$i]][0]['is_webm'] == '1') {
+                                $playlist[] = array('id' => $base . '.webm');
+                            }
+                            if ($imageData[$mapValue[$i]][0]['is_flv'] == '1') {
+                                $playlist[] = array('id' => $base . '.flv');
+                            }
+
+                            if ($playlist && count($playlist) > 1) {
+                                $fd = new FieldDescription('playlist');
+                                $fd->setType(FieldDescription::FIELD_TYPE_SELECT);
+                                $fd->loadAvailableValues($playlist, 'id', 'id');
+                                $dataDescription->addFieldDescription($fd);
+                            }
 
                             // дополнительные поля из основной и языковой таблицы _uploads
                             foreach($additional_fields as $new_name) {

@@ -341,6 +341,19 @@ class FileRepository extends Grid {
                 $data['upl_is_ready'] = $fi->ready;
                 $data['upl_publication_date'] = date('Y-m-d H:i:s');
 
+                $ext = strtolower(pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
+                switch ($ext) {
+                    case 'mp4':
+                        $data['upl_is_mp4'] = '1';
+                        break;
+                    case 'webm':
+                        $data['upl_is_webm'] = '1';
+                        break;
+                    case 'flv':
+                        $data['upl_is_flv'] = '1';
+                        break;
+                }
+
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data);
 
             }

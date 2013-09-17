@@ -37,6 +37,9 @@
             <field name="upl_allows_edit_dir" type="hidden"/>
             <field name="upl_allows_delete_dir" type="hidden"/>
             <field name="upl_allows_delete_file" type="hidden"/>
+            <field name="upl_is_mp4" type="hidden"/>
+            <field name="upl_is_webm" type="hidden"/>
+            <field name="upl_is_flv" type="hidden"/>
         </fields>
         <toolbar>
             <!--<control id="open" title="BTN_OPEN" type="button" onclick="open"/>

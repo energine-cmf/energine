@@ -19,7 +19,6 @@
 				<control id="sep1" type="separator"></control>
 				<!--<control id="activate" title="BTN_ACTIVATE" type="button" onclick="activate"/>
                 <control id="sep1" type="separator"></control>-->
-                <control id="ban" title="BTN_BAN" type="button" onclick="ban"/>
 			</toolbar>
 		</state>
 		<state name="add" >
@@ -46,24 +45,7 @@
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</state>
-        <state name="ban" rights="3">
-			<uri_patterns>
-				<pattern>/[int]/ban/</pattern>
-			</uri_patterns>
-			<javascript>
-				<behavior name="UserBan"/>
-			</javascript>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
-			</toolbar>
-		</state>
-        <state name="saveban" rights="3">
-			<uri_patterns>
-				<pattern>/saveban/</pattern>
-			</uri_patterns>
-		</state>
-		<state name="save" rights="3">
+    	<state name="save" rights="3">
 			<uri_patterns>
 				<pattern>/save/</pattern>
 			</uri_patterns>

@@ -43,23 +43,6 @@
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</state>
-        <state name="ban" >
-			<uri_patterns>
-				<pattern>/[int]/ban/</pattern>
-			</uri_patterns>
-			<javascript>
-				<behavior name="UserBan"/>
-			</javascript>
-			<toolbar>
-				<control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
-			</toolbar>
-		</state>
-        <state name="saveban" >
-			<uri_patterns>
-				<pattern>/saveban/</pattern>
-			</uri_patterns>
-		</state>
 		<state name="save">
 			<uri_patterns>
 				<pattern>/save/</pattern>

@@ -7,6 +7,7 @@ SET character_set_results = utf8;
 SET collation_connection  = utf8_general_ci;
 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 
+/*
 DROP FUNCTION IF EXISTS `get_share_uploads_repo_id`;
 
 DELIMITER ;;
@@ -37,7 +38,7 @@ CREATE PROCEDURE `proc_get_share_uploads_repo_id`(IN media_id INT UNSIGNED, OUT 
     END IF;
   END ;;
 
-DELIMITER ;
+DELIMITER ;*/
 
 DROP FUNCTION IF EXISTS `get_upl_parent`;
 

@@ -61,7 +61,7 @@ class FileRepoInfo extends DBWorker {
     public function __construct() {
         parent::__construct();
         $this->finfo = new finfo(FILEINFO_MIME_TYPE);
-        $this->getFInfoSQL = $this->dbh->getPDO()->prepare('SELECT upl_internal_type as type, upl_mime_type as mime, upl_width as width, upl_height as height FROM share_uploads WHERE upl_path = ?');
+        $this->getFInfoSQL = $this->dbh->getPDO()->prepare('SELECT upl_internal_type as type, upl_mime_type as mime, upl_width as width, upl_height as height, upl_is_mp4 as is_mp4, upl_is_webm as is_webm, upl_is_flv as is_flv FROM share_uploads WHERE upl_path = ?');
     }
 
     /**
@@ -87,6 +87,9 @@ class FileRepoInfo extends DBWorker {
             $result['mime'] = 'unknown/mime-type';
             $result['width'] = null;
             $result['height'] = null;
+            $result['is_flv'] = false;
+            $result['is_webm'] = false;
+            $result['is_mp4'] = false;
         }
 
         return (object)$result;

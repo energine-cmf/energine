@@ -102,6 +102,9 @@ class FileRepoInfo extends DBWorker {
     private function getFileInfoData($filename) {
         $result['width'] = '';
         $result['height'] = '';
+        $result['is_mp4'] = false;
+        $result['is_webm'] = false;
+        $result['is_flv'] = false;
 
         // hotfix для php на продакшне без поддержки https://
         // todo: пофиксить, до выяснения

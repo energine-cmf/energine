@@ -1,5 +1,5 @@
 ﻿CKEDITOR.plugins.add( 'energineimage', {
-    lang: 'en,ru,ua',
+    lang: 'en,ru,uk',
     icons: 'energineimage',
 	init: function( editor ) {
 

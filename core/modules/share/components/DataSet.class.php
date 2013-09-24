@@ -731,7 +731,7 @@ abstract class DataSet extends Component {
                 $config = array_merge(
                     $config,
                     array(
-                        'clean' => true,
+                        //'clean' => true,
                         'word-2000' => true,
                         'drop-empty-paras' => true
                     )

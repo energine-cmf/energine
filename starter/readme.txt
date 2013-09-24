@@ -18,24 +18,23 @@
 mkdir /var/www/energine
 
 2. Разархивировать дистрибутив с ядром или извлечь из svn одно из стабильных ядер
-(начиная с версии tags/2.11.3 или trunk)
+(начиная с версии tags/2.11.8 или trunk)
 
 Пример извлечения стабильного релиза и trunk версии:
 cd /var/www/energine
-svn checkout https://energine.googlecode.com/svn/tags/2.11.3 2.11.3
+svn checkout https://energine.googlecode.com/svn/tags/2.11.8 2.11.8
 svn checkout https://energine.googlecode.com/svn/trunk trunk
 
 3. Извлечь из svn проект starter из одного из стабильных релизов проекта, либо bleeding-edge релиз из trunk:
 
 Пример:
 cd /home/username/projects
-svn checkout https://energine.googlecode.com/svn/tags/2.11.3/starter www.mynewsite.com
+svn checkout https://energine.googlecode.com/svn/tags/2.11.8/starter www.mynewsite.com
 
 4. Далее необходимо создать базу данных mysql
 
 4.1. импортировать базовую структуру из sql/starter.structure.sql
-4.2. импортировать хранимые процедуры из sql/starter.routines.sql (важно: необходимо поправить DEFINER в коде
-на свой username. Также username должен обладать правами на создание хранимых процедур)
+4.2. импортировать хранимые процедуры из sql/starter.routines.sql
 4.3. импортировать системные данные из sql/starter.data.sql
 
 5. Скопировать конфигурационный файл из configs/system.config.default.php в configs/system.config.username.php,

@@ -8,17 +8,12 @@ var GroupForm = new Class({
 //        this.componentElement.getElements('input[type=radio]').addEvent('change', this.uncheckGroupRadio);
     },
     checkAllRadioInColumn:function(event) {
-        event = new Event(event || window.event);
         var radio = $(event.target);
-
-
         radio.getParent('tbody').getElements('td.' +
                 radio.getParent('td').getProperty('class') +
                 ' input[type=radio]').setProperty('checked', 'checked');
     },
     uncheckGroupRadio: function(event) {
-        event = new Event(event || window.event);
-
         if (!radio.hasClass('groupRadio')) {
             //console.log(radio.getParent('tbody').getElement('tr.section_name td.' + radio.getParent('td').getProperty('class') + ' input[type=radio]'));
             radio.getParent('tbody').getElement('tr.section_name td.' +

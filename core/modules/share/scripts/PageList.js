@@ -1,8 +1,14 @@
+/**
+ *
+ * @type {Class}
+ *
+ * @param {Object} [options] Set of events. This class listens 'pageSelect'-event.
+ */
 var PageList = new Class({
 	Implements: Options,
-    options:{
-            onPageSelect: $empty
-    },
+//    options:{
+//            onPageSelect: function(){}
+//    },
 
     initialize: function(options) {
         Asset.css('pagelist.css');
@@ -17,12 +23,12 @@ var PageList = new Class({
 
     disable: function() {
         this.disabled = true;
-        this.element.setOpacity(0.25);
+        this.element.setStyle('opacity', 0.25);
     },
 
     enable: function() {
         this.disabled = false;
-        this.element.setOpacity(1);
+        this.element.setStyle('opacity', 1);
     },
     _createPageLink : function(title, index, image){
         var index = index || false;
@@ -30,7 +36,7 @@ var PageList = new Class({
 
         var listItem = new Element('li');
             if (image) {
-                new Element('img', {'src':image, 'border': 0, 'align':'absmiddle', alt:title, title:title, 'styles':{width:6, height:11}}).injectInside(listItem);
+                new Element('img', {'src':image, 'border': 0, 'align':'absmiddle', alt:title, title:title, 'styles':{width:6, height:11}}).inject(listItem);
             }
             else {
                 listItem.appendText(title);
@@ -61,7 +67,6 @@ var PageList = new Class({
             new Element('li').adopt(new Element('input', {
                 'events':{
                     'keydown':function(event){
-                        event = new Event(event);
                         if ((event.key == 'enter') && (event.target.get('value') != '')) {
                             var num = parseInt(event.target.get('value'));
                             event.target.value = '';
@@ -73,38 +78,38 @@ var PageList = new Class({
                     }.bind(this)
                 },
                 'type':'text'
-            })).injectInside(this.element);
+            })).inject(this.element);
         }
 
         if (startPage > 1) {
-            this._createPageLink(1, 1).injectInside(this.element)
+            this._createPageLink(1, 1).inject(this.element)
         }
 
         if (startPage > 2) {
-            this._createPageLink(2, 2).injectInside(this.element);
+            this._createPageLink(2, 2).inject(this.element);
             if (startPage != 2 + 1) {
-                this._createPageLink('...').injectInside(this.element)
+                this._createPageLink('...').inject(this.element)
             }
         }
         for (var i = startPage; i <= endPage; i++) {
             if ((currentPage != 1) && (currentPage == i)) {
-                this._createPageLink('previous',i-1, 'images/prev_page.gif').injectInside(this.element);
+                this._createPageLink('previous',i-1, 'images/prev_page.gif').inject(this.element);
             }
-            this._createPageLink(i, i).injectInside(this.element);
+            this._createPageLink(i, i).inject(this.element);
 
             if ((currentPage != numPages) && (currentPage == i)) {
-                this._createPageLink('next', i+1, 'images/next_page.gif').injectInside(this.element);
+                this._createPageLink('next', i+1, 'images/next_page.gif').inject(this.element);
             }
         }
 
         if (endPage < (numPages - 1)) {
             if (endPage != (numPages - 2)) {
-            	this._createPageLink('...').injectInside(this.element)
+            	this._createPageLink('...').inject(this.element)
             }
-            this._createPageLink(numPages - 1, numPages - 1).injectInside(this.element)
+            this._createPageLink(numPages - 1, numPages - 1).inject(this.element)
         }
         if (endPage < numPages) {
-            this._createPageLink(numPages, numPages).injectInside(this.element)
+            this._createPageLink(numPages, numPages).inject(this.element)
         }
 
         if(numPages && totalRecords)

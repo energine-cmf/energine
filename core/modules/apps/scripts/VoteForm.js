@@ -10,7 +10,7 @@ var VoteForm = new Class({
     },
     loadData:function () {
         var iframe, url = this.singlePath + ((this.state !== 'add') ? this.componentElement.getElementById('vote_id').get('value') : '') + '/question/';
-        if (Browser.Engine.trident && (Browser.version < 9)) {
+        if (Browser.ie && (Browser.version < 9)) {
             iframe = $(document.createElement('<iframe src="' + url + '" frameBorder="0" scrolling="no" style="width:99%; height:99%;"/>'));
         }
         else {

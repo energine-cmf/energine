@@ -10,8 +10,6 @@ var Register = new Class({
             this.loginField = this.form.getElementById('u_name');
             this.registerButton = this.form.getElement('button[name=register]');
             this.loginField.addEvent('blur', function (event) {
-
-                var event = new Event(event || window.event);
                 if (event.target.value) {
                     if (this.validator.validateElement(event.target)) {
                         this.checkLogin(this.loginField.get('value'));

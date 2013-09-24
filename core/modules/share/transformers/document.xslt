@@ -55,7 +55,7 @@
         		<script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
 
                 <script type="text/javascript">
-                    $extend(Energine, {
+                    Object.append(Energine, {
                     <xsl:if test="document/@debug=1">
                         debug :true,
                     </xsl:if>
@@ -231,7 +231,7 @@
         </xsl:choose>
         <script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
         <script type="text/javascript">
-            $extend(Energine, {
+            Object.append(Energine, {
             <xsl:if test="document/@debug=1">'debug' :true,</xsl:if>
             'base' : '<xsl:value-of select="$BASE"/>',
             'static' : '<xsl:value-of select="$STATIC_URL"/>',
@@ -370,7 +370,8 @@
                 <xsl:value-of select="generate-id()"/>
             </xsl:if>
         </xsl:variable>
-        <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js{$anticache}"/>
+        <!--<script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js{$anticache}"/>-->
+        <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
     </xsl:template>
 
     <xsl:template match="/document//javascript/variable" mode="head">

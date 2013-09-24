@@ -13,7 +13,9 @@ var PageEditor = new Class({
             this.editors.push(new PageEditor.BlockEditor(this, element));
         }, this);
 
-        document.addEvent('click', this.processClick.bindWithEvent(this));
+        // убран обработчик глобального клика для активации контейнера
+        // переделано через кнопку "Активизировать" в редакторе блоков
+        //document.addEvent('click', this.processClick.bind(this));
 
         if (Browser.opera) {
             window.addEvent('unload', function (e) {
@@ -86,9 +88,7 @@ var PageEditor = new Class({
     },
     attachToolbar:function (toolbar) {
         this.toolbar = toolbar;
-        this.toolbar.getElement().injectInside(
-            document.getElement('.e-topframe')
-        );
+        this.toolbar.getElement().inject( document.getElement('.e-topframe') );
         this.toolbar.disableControls();
 
         var html = $$('html')[0];
@@ -120,10 +120,10 @@ var PageEditor = new Class({
             element = element.getElement('div.' + this.editorClassName) || element;
         }
 
-        while ($type(element) == 'element' && !element.hasClass(this.editorClassName)) {
+        while (typeOf(element) == 'element' && !element.hasClass(this.editorClassName)) {
             element = element.getParent();
         }
-        if ($type(element) != 'element' || !element.hasClass(this.editorClassName)) return;
+        if (typeOf(element) != 'element' || !element.hasClass(this.editorClassName)) return;
 
         if (this.activeEditor) {
             if (this.activeEditor.area != element) {
@@ -163,16 +163,75 @@ PageEditor.BlockEditor = new Class({
 
 
         if (Energine.supportContentEdit) {
+
+            this.injectActivateButton();
+
             document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this.pageEditor));
             if (!(this.pasteArea = $('pasteArea'))) {
-                this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility':'hidden', 'width':'0', 'height':'0', 'font-size':'0', 'line-height':'0' }).injectInside(document.body);
+                this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility':'hidden', 'width':'0', 'height':'0', 'font-size':'0', 'line-height':'0' }).inject(document.body);
             }
             ////addEvent('paste' работать не захотело
-            if (Browser.Engine.trident) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
-            else if (Browser.Engine.gecko || Browser.Engine.presto) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
+            if (Browser.ie) this.area.onpaste = this.processPasteFF.bind(this);
+            else if (Browser.firefox || Browser.opera) this.area.onpaste = this.processPasteFF.bind(this);
         }
         //this.switchToViewMode = this.pageEditor.switchToViewMode;
         this.overlay = new Overlay();
+    },
+
+    injectActivateButton: function() {
+
+        var btn_activate = new Element('a', {href: '#', html: Energine.translations.get('BTN_ACTIVATE')})
+            .setStyle('visibility', 'hidden')
+            .setStyle('display', 'block')
+            .setStyle('float', 'right')
+            .setStyle('marginBottom', '-20px')
+            .addClass('btn');
+
+        btn_activate.inject(this.area, 'before');
+
+        var show_btn = function() {
+            if (!this.isActive) {
+                btn_activate.setStyle('visibility', 'visible');
+            } else {
+                btn_activate.setStyle('visibility', 'hidden');
+            }
+        }.bind(this);
+
+        var hide_btn = function() {
+                btn_activate.setStyle('visibility', 'hidden');
+        };
+
+        var click_btn = function(event){
+            event.stopPropagation();
+
+            hide_btn();
+
+            if (this.pageEditor.activeEditor) {
+                if (this.pageEditor.activeEditor.area != this.area) {
+                    var newActiveEditor = this.pageEditor.getEditorByElement(this.area);
+                    if (newActiveEditor) {
+                        this.pageEditor.activeEditor.blur();
+                        this.pageEditor.activeEditor = newActiveEditor;
+                        this.pageEditor.activeEditor.focus();
+                    }
+                }
+            }
+            else {
+                this.pageEditor.activeEditor = this.pageEditor.getEditorByElement(this.area);
+                if (this.pageEditor.activeEditor) this.pageEditor.activeEditor.focus();
+            }
+
+            return false;
+        }.bind(this);
+
+        btn_activate
+            .addEvent('mouseover', show_btn)
+            .addEvent('mouseout', hide_btn)
+            .addEvent('click', click_btn);
+
+        $(this.area)
+            .addEvent('mouseover', show_btn)
+            .addEvent('mouseout', hide_btn);
     },
 
     activate:function () {

@@ -54,8 +54,8 @@ var Form = new Class({
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
 
-        (this.componentElement.getElements('.inp_date') ||
-            []).extend((this.componentElement.getElements('.inp_datetime') ||
+        Object.append(this.componentElement.getElements('.inp_date') ||
+            [], (this.componentElement.getElements('.inp_datetime') ||
             [])).each(function (dateControl) {
                 var isNullable = !dateControl.getParent('.field').hasClass('required');
                 this.dateControls.push(
@@ -118,7 +118,7 @@ var Form = new Class({
         }.bind(this);
 
         this.request(this.singlePath +
-            'save', this.form.toQueryString(), this.processServerResponse.bind(this), errorFunc, errorFunc);
+            'save', Object.toQueryString(this.form), this.processServerResponse.bind(this), errorFunc, errorFunc);
     },
     _getOverlay:function () {
         return (!this.overlay) ? this.overlay = new Overlay() : this.overlay;
@@ -245,7 +245,7 @@ Form.Uploader = new Class({
         if (!(this.element = $(uploaderElement))) return;
         /*var cookieKeys = /(\w+)=(\w+);/i;
          console.log(cookieKeys.exec(document.cookie), document.cookie);
-         //console.log(document.cookie.split(';').map(function(cook){console.log(cook); return 1;}));*/
+         //console.log(Object.map(document.cookie.split(';'), function(cook){console.log(cook); return 1;}));*/
         this.form = form;
         this.swfUploader = new Swiff.Uploader({
             path:'scripts/Swiff.Uploader.swf',
@@ -257,7 +257,7 @@ Form.Uploader = new Class({
             instantStart:true,
             appendCookieData:false,
             timeLimit:0,
-            data:{'NRGNCookie':document.cookie, 'path':($type(ModalBox.getExtraData()) == 'string') ? ModalBox.getExtraData() : '', 'element':this.element.getProperty('nrgn:input')},
+            data:{'NRGNCookie':document.cookie, 'path':(typeOf(ModalBox.getExtraData()) == 'string') ? ModalBox.getExtraData() : '', 'element':this.element.getProperty('nrgn:input')},
             typeFilter:{
                 'All files (*.*)':'*.*',
                 'Images (*.jpg, *.jpeg, *.gif, *.png)':'*.jpg; *.jpeg; *.gif; *.png',
@@ -326,7 +326,7 @@ Form.Sked = new Class({
     options:{
         handlers:{
             'delete':this.delItem,
-            'add':$empty/*,
+            'add': function(){}/*,
              'iterate': this._iterate*/
         },
         tableName:'items',
@@ -341,7 +341,7 @@ Form.Sked = new Class({
         }.bind(this));
         this.element.getElements('.deleteItem').addEvent('click', function (event) {
             Energine.cancelEvent(event);
-            this.options.deleteFunc.run($(event.target).getProperty('target'));
+            this.options.deleteFunc.call($(event.target).getProperty('target'));
         }.bind(this));
         this.element.getElements('.upItem').addEvent('click', function (event) {
             Energine.cancelEvent(event);
@@ -566,7 +566,7 @@ Form.RichEditor = new Class({
         this.selection = new RichEditor.Selection(window);
 
         if (Energine.supportContentEdit && !this.fallback_ie) {
-            this.hidden = new Element('input', {'name': this.textarea.name, 'value': this.textarea.get('value'), 'type': 'hidden', 'class': 'richEditorValue'}).injectBefore(this.textarea);
+            this.hidden = new Element('input', {'name': this.textarea.name, 'value': this.textarea.get('value'), 'type': 'hidden', 'class': 'richEditorValue'}).inject(this.textarea, 'before');
 
             var prop;
             if (prop = this.textarea.getProperty('nrgn:pattern')) {
@@ -599,13 +599,13 @@ Form.RichEditor = new Class({
                 'height':'0',
                 'font-size':'0',
                 'line-height':'0'
-            }).injectInside(document.body);
+            }).inject(document.body);
             //addEvent('paste' работать не захотело
-            if (Browser.Engine.trident) this.area.onpaste =
-                this.processPasteFF.bindWithEvent(this);
-            else if (Browser.Engine.gecko) this.area.onpaste =
-                this.processPasteFF.bindWithEvent(this);
-            //this.area.onpaste = this.processPaste.bindWithEvent(this);
+            if (Browser.ie) this.area.onpaste =
+                this.processPasteFF.bind(this);
+            else if (Browser.firefox) this.area.onpaste =
+                this.processPasteFF.bind(this);
+            //this.area.onpaste = this.processPaste.bind(this);
             this.activate();
         } else {
             this.area = this.textarea.setProperty('componentPath', this.form.singlePath);
@@ -738,7 +738,7 @@ Form.RichEditor = new Class({
                 action:'insertExtFlash'
             })
         );
-        $pick(this.area, this.textarea).getParent().grab(this.toolbar.getElement(), 'top');
+        Array.pick([this.area, this.textarea]).getParent().grab(this.toolbar.getElement(), 'top');
 
         this.toolbar.element.setStyle('width', '650px');
         this.toolbar.bindTo(this);

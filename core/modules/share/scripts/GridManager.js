@@ -1,12 +1,25 @@
+/**
+ * @file GridManager.js
+ *
+ * @author
+ *
+ * @version 0.9
+ */
+
 ScriptLoader.load('View', 'TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'datepicker');
 
+/**
+ * @class Grid.
+ * @extends View
+ *
+ * @type {Class}
+ *
+ * @constructor
+ * @param {} element Element identifier in DOM Tree for the Grid.
+ * @param {Object} [options] Set of events. This class listens next events: 'select, 'sortChange', 'doubleClick'
+ */
 var Grid = new Class({
     Extends:View,
-    options:{
-        onSelect:$empty,
-        onSortChange:$empty,
-        onDoubleClick:$empty
-    },
 
     initialize:function (element, options) {
         Asset.css('grid.css');
@@ -192,7 +205,7 @@ var Grid = new Class({
         if (!this.data) return false;
         if (!this.keyFieldName) return false;
 
-        return this.data.some(function (item, index) {
+        return Object.some(this.data, function (item, index) {
             return (item[this.keyFieldName] == key);
         }.bind(this));
     },
@@ -230,7 +243,7 @@ var Grid = new Class({
     addRecord:function (record, key, currentKey) {
 
         if (!record) {
-            var row = new Element('tr').injectInside(this.tbody);
+            var row = new Element('tr').inject(this.tbody);
             return;
         }
         // Проверяем соответствие записи метаданным.
@@ -243,7 +256,7 @@ var Grid = new Class({
 
         // Создаем новую строку в таблице.
         var row = new Element('tr').addClass(((key / 2) == Math.ceil(key /
-            2)) ? 'odd' : 'even').setProperty('unselectable', 'on').injectInside(this.tbody);
+            2)) ? 'odd' : 'even').setProperty('unselectable', 'on').inject(this.tbody);
         // Сохраняем запись в объекте строки.
         row.record = record;
         var prevRow;
@@ -281,13 +294,13 @@ var Grid = new Class({
         // Пропускаем невидимые поля.
         if (!this.metadata[fieldName].visible ||
             this.metadata[fieldName].type == 'hidden') return;
-        var cell = new Element('td').injectInside(row);
+        var cell = new Element('td').inject(row);
         if (this.metadata[fieldName].type == 'boolean') {
             var checkbox = new Element('img').setProperties({
                 'src':'images/checkbox_' +
                     (record[fieldName] == true ? 'on' : 'off') + '.png',
                 'width':'13', 'height':'13'
-            }).injectInside(cell);
+            }).inject(cell);
             cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
         }
         else if (this.metadata[fieldName].type == 'textbox') {
@@ -300,7 +313,7 @@ var Grid = new Class({
         }
         else if (this.metadata[fieldName].type == 'file') {
             if (record[fieldName]) {
-                var image = new Element('img').setProperties({ 'src':Energine.resizer + 'w40-h40/' + record[fieldName], 'width':40, 'height':40 }).injectInside(cell);
+                var image = new Element('img').setProperties({ 'src':Energine.resizer + 'w40-h40/' + record[fieldName], 'width':40, 'height':40 }).inject(cell);
                 cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
             }
         }
@@ -709,8 +722,7 @@ GridManager.Filter = new Class({
     getValue:function () {
         var result = '';
         if (this.active && this.inputs.hasValues()) {
-            var
-                fieldName = this.fields.options[this.fields.selectedIndex].value,
+            var fieldName = this.fields.options[this.fields.selectedIndex].value,
                 fieldCondition = this.condition.options[this.condition.selectedIndex].value;
             result = this.inputs.getValues('filter' + fieldName) +
                 '&filter[condition]=' + fieldCondition + '&';
@@ -742,7 +754,6 @@ GridManager.Filter.QueryControls = new Class({
 
 
         this.inputs.addEvent('keydown', function (event) {
-            event = new Event(event);
             if ((event.key == 'enter') && (event.target.value != '')) {
                 Energine.cancelEvent(event);
                 applyAction.click();
@@ -750,7 +761,7 @@ GridManager.Filter.QueryControls = new Class({
         });
     },
     hasValues:function () {
-        return this.inputs.some(function (el) {
+        return Object.some(this.inputs, function (el) {
             return ($(el)) ? el.get('value') : false
         });
     },

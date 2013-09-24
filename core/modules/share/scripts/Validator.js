@@ -7,6 +7,7 @@ var Validator = new Class({
     },
     prepareFloatFields: function(){
 		var prepareFunction = function(event){
+        		event= new Event(event || window.event);
         		event.target.value = event.target.value.replace(/\,/, '.');
         };
 	    //Для всех field type=float(class=float)
@@ -28,7 +29,7 @@ var Validator = new Class({
 	showError: function(field, message){
         this.removeError(field);
         field.addClass('invalid');
-        new Element('div').addClass('error').appendText('^ ' + message).inject(field.parentNode, 'after');
+        new Element('div').addClass('error').appendText('^ ' + message).injectAfter(field.parentNode);
 	},
 	scrollToElement: function(field){
         var context = (context=document.getElement('.e-mainframe'))?context:window;

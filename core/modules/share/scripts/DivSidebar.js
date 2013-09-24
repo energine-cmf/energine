@@ -6,7 +6,7 @@ var DivSidebar = new Class({
         Asset.css('div.css');
 
         this.element = $(element);
-        new Element('ul').setProperty('id', 'divTree').addClass('treeview').inject($('treeContainer')).adopt(
+        new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
                 new Element('li').setProperty('id', 'treeRoot').adopt(
                         new Element('a').set('html', Energine.translations.get('TXT_DIVISIONS'))
                         )

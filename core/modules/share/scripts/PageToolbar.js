@@ -42,7 +42,7 @@ var PageToolbar = new Class({
         new Element('iframe').setProperties({
             'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
             'frameBorder': '0'
-        }).inject(sidebarFrameContent);
+        }).injectInside(sidebarFrameContent);
         var editBlocksButton = this.getControlById('editBlocks');
 
         if(this.getControlById('editMode').getState() && editBlocksButton){

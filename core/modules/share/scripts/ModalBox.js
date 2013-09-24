@@ -16,7 +16,7 @@ var ModalBox = window.top.ModalBox || {
     open: function(options) {
         var createIframe = function(mbName, iframeSrc) {
             var iframe;
-            if (Browser.ie && (Browser.version < 9)) {
+            if (Browser.Engine.trident && (Browser.version < 9)) {
                 iframe = $(document.createElement('<iframe class="e-modalbox-frame" src="' + iframeSrc + '" frameBorder="0" name="' + mbName + '" scrolling="no" />'));
             }
             else {
@@ -33,14 +33,14 @@ var ModalBox = window.top.ModalBox || {
             return iframe;
         }
 
-        var box = new Element('div').addClass('e-modalbox').inject(document.body);
+        var box = new Element('div').addClass('e-modalbox').injectInside(document.body);
         box.options = {
             url: null,
-            onClose: function(){},
+            onClose: $empty,//$empty,
             extraData: null,
             post: null
         };
-        Object.append(box.options, options);
+        $extend(box.options, $pick(options, {}));
 
         if (box.options.url) {
             var iframeSrc = box.options.url,
@@ -53,7 +53,7 @@ var ModalBox = window.top.ModalBox || {
 
             var iframe = createIframe(mbName, iframeSrc);
 
-            box.iframe = iframe.inject(box);
+            box.iframe = iframe.injectInside(box);
             if (box.options.post) {
                 box.grab(postForm);
                 postForm.submit();
@@ -128,8 +128,8 @@ var ModalBox = window.top.ModalBox || {
             //box.set('html', code);
             box.grab(fakeIframe);
         }
-        //box.iframe.addEvent('keydown', this.keyboardListener.bind(this));
-        box.closeButton = new Element('div').addClass('e-modalbox-close').inject(box);
+        //box.iframe.addEvent('keydown', this.keyboardListener.bindWithEvent(this));
+        box.closeButton = new Element('div').addClass('e-modalbox-close').injectInside(box);
         box.closeButton.addEvents({
             'click': this.close.bind(this),
             'mouseover': function() {

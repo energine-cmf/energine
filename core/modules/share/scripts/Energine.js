@@ -66,7 +66,8 @@ Energine.request = {
             // 'noCache': true,
             'evalResponse': false,
             'onComplete': callbackFunction,
-            'onFailure': function (e) {console.error(arguments)}
+            'onFailure': function (e) {/*console.log(arguments)*/
+            }
         }).send();
 
     }
@@ -119,7 +120,7 @@ Energine._createDatePickerObject = function (datePickerObj, props) {
         Asset.css('datepicker.css');
         this.datePickerDataLoaded = true;
     }
-    var dp = new DatePicker(datePickerObj, Object.append({
+    var dp = new DatePicker(datePickerObj, $extend({
             //debug:true
         },
         props
@@ -142,7 +143,7 @@ Asset.css = function (source, properties) {
         properties = properties || {};
 
         var result = new Element('link');
-        result.setProperties(Object.merge({
+        result.setProperties($merge({
             'rel': 'stylesheet',
             'media': 'Screen, projection',
             'type': 'text/css',

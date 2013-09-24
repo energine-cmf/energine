@@ -19,7 +19,10 @@
             <xsl:attribute name="type">text</xsl:attribute>
             <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
         </xsl:if>
-        <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+        <xsl:attribute name="id">
+            <xsl:value-of select="@name"/>
+            <xsl:if test="@language">_<xsl:value-of select="@language"/></xsl:if>
+        </xsl:attribute>
         <xsl:attribute name="name"><xsl:choose>
             <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
             <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>

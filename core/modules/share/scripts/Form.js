@@ -1,4 +1,4 @@
-ScriptLoader.load('TabPane', 'Toolbar', 'Validator', 'RichEditor', 'ModalBox', 'Overlay', 'datepicker');
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker');
 
 var Form = new Class({
     initialize:function (element) {
@@ -551,280 +551,71 @@ Form.Label = {
 }
 
 Form.RichEditor = new Class({
-    Extends:RichEditor,
 
-    toolbar: null,
-    selection: null,
     area: null,
 
     initialize:function (textarea, form, fallback_ie) {
-        this.fallback_ie = fallback_ie;
-        if (!Energine.supportContentEdit)
-            return;
+
+        this.setupEditors();
+
         this.textarea = $(textarea);
         this.form = form;
-        this.selection = new RichEditor.Selection(window);
+        try {
+            this.editor = CKEDITOR.replace(this.textarea.get('id'));
+            this.editor.editorId = this.textarea.get('id');
+            this.editor.singleTemplate = this.form.singlePath;
+        } catch (e) {
+        }
 
-        if (Energine.supportContentEdit && !this.fallback_ie) {
-            this.hidden = new Element('input', {'name': this.textarea.name, 'value': this.textarea.get('value'), 'type': 'hidden', 'class': 'richEditorValue'}).injectBefore(this.textarea);
+        var prop;
+        if (prop = this.textarea.getProperty('nrgn:pattern')) {
+            this.hidden.setProperty('nrgn:pattern', prop);
+        }
+        if (prop = this.textarea.getProperty('nrgn:message')) {
+            this.hidden.setProperty('nrgn:message', prop);
+        }
+    },
 
-            var prop;
-            if (prop = this.textarea.getProperty('nrgn:pattern')) {
-                this.hidden.setProperty('nrgn:pattern', prop);
+    setupEditors: function() {
+        if (!Form.RichEditor.ckeditor_init) {
+            CKEDITOR.config.extraPlugins = 'sourcedialog,energineimage';
+            CKEDITOR.config.removePlugins = 'sourcearea';
+            CKEDITOR.config.toolbar = [
+                { name: 'document', groups: [ 'mode' ], items: [ 'Sourcedialog' ] },
+                { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+                { name: 'editing', groups: [ 'find', 'selection' ], items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
+                { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+                { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'EnergineImage' ] },
+                { name: 'tools', items: [ 'ShowBlocks' ] },
+                '/',
+                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
+                { name: 'paragraph', groups: [ 'list', 'indent', 'align' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
+                { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
+                { name: 'colors', items: [ 'TextColor', 'BGColor' ] }
+            ];
+            var styles = [];
+            if (window['wysiwyg_styles']) {
+                Object.each(window['wysiwyg_styles'], function(style) {
+                    styles.push({
+                        name: style['caption'],
+                        element: style['element'],
+                        attributes: { 'class': style['class'] }
+                    });
+                });
             }
-            if (prop = this.textarea.getProperty('nrgn:message')) {
-                this.hidden.setProperty('nrgn:message', prop);
-            }
-
-            this.area = new Element('div').addEvent('blur', function () {
-                this.hidden.value = this.area.innerHTML;
-                this.hidden.fireEvent('blur');
-            }.bind(this)).setProperties({
-                    componentPath:this.form.singlePath
-                }).addClass('richEditor').setStyles({
-                    clear:'both',
-                    overflow:'auto'
-                }).set('html', this.textarea.value);
-            if (this.textarea.hasClass('half'))this.area.addClass('half');
-            if (this.textarea.hasClass('quarter'))this.area.addClass('quarter');
-            this.area.replaces(this.textarea);
-            this.area.addEvent('keydown', function () {
-                this.hidden.fireEvent('keydown')
-            }.bind(this));
-            // document.addEvent('keydown',
-            // this.processKeyEvent.bind(this));
-            this.pasteArea = new Element('div').setStyles({
-                'visibility':'hidden',
-                'width':'0',
-                'height':'0',
-                'font-size':'0',
-                'line-height':'0'
-            }).injectInside(document.body);
-            //addEvent('paste' работать не захотело
-            if (Browser.Engine.trident) this.area.onpaste =
-                this.processPasteFF.bindWithEvent(this);
-            else if (Browser.Engine.gecko) this.area.onpaste =
-                this.processPasteFF.bindWithEvent(this);
-            //this.area.onpaste = this.processPaste.bindWithEvent(this);
-            this.activate();
-        } else {
-            this.area = this.textarea.setProperty('componentPath', this.form.singlePath);
+            CKEDITOR.stylesSet.add('energine', styles);
+            CKEDITOR.config.stylesSet = 'energine';
+            Form.RichEditor.ckeditor_init = true;
         }
-        //@todo тут какие то непонятки с componentpath и single_Template
-
-        this.area.setProperty('single_template', this.form.singlePath);
-        this.toolbar = new Toolbar(this.textarea.name);
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'bold',
-            icon:'images/toolbar/bold.gif',
-            title:Energine.translations.get('BTN_BOLD'),
-            action:'bold'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'italic',
-            icon:'images/toolbar/italic.gif',
-            title:Energine.translations.get('BTN_ITALIC'),
-            action:'italic'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'olist',
-            icon:'images/toolbar/olist.gif',
-            title:Energine.translations.get('BTN_OL'),
-            action:'olist'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'ulist',
-            icon:'images/toolbar/ulist.gif',
-            title:Energine.translations.get('BTN_UL'),
-            action:'ulist'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'link',
-            icon:'images/toolbar/link.gif',
-            title:Energine.translations.get('BTN_HREF'),
-            action:'link'
-        }));
-        this.toolbar.appendControl(new Toolbar.Separator({
-            id:'sep1'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'left',
-            icon:'images/toolbar/justifyleft.gif',
-            title:Energine.translations.get('BTN_ALIGN_LEFT'),
-            action:'alignLeft'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'center',
-            icon:'images/toolbar/justifycenter.gif',
-            title:Energine.translations.get('BTN_ALIGN_CENTER'),
-            action:'alignCenter'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'right',
-            icon:'images/toolbar/justifyright.gif',
-            title:Energine.translations.get('BTN_ALIGN_RIGHT'),
-            action:'alignRight'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'justify',
-            icon:'images/toolbar/justifyall.gif',
-            title:Energine.translations.get('BTN_ALIGN_JUSTIFY'),
-            action:'alignJustify'
-        }));
-
-        var styles = {
-            '': {'caption': '', 'html': '&nbsp;', 'element': '', 'class': ''},
-            'reset': {'caption': Energine.translations.get('TXT_RESET'), 'html': Energine.translations.get('TXT_RESET'), 'element': '', 'class': ''},
-            'h1': {'caption': Energine.translations.get('TXT_H1'), 'html': '<h1>' + Energine.translations.get('TXT_H1') + '</h1>', 'element': 'h1', 'class': ''},
-            'h2': {'caption': Energine.translations.get('TXT_H2'), 'html': '<h2>' + Energine.translations.get('TXT_H2') + '</h2>', 'element': 'h2', 'class': ''},
-            'h3': {'caption': Energine.translations.get('TXT_H3'), 'html': '<h3>' + Energine.translations.get('TXT_H3') + '</h3>', 'element': 'h3', 'class': ''},
-            'h4': {'caption': Energine.translations.get('TXT_H4'), 'html': '<h4>' + Energine.translations.get('TXT_H4') + '</h4>', 'element': 'h4', 'class': ''},
-            'h5': {'caption': Energine.translations.get('TXT_H5'), 'html': '<h5>' + Energine.translations.get('TXT_H5') + '</h5>', 'element': 'h5', 'class': ''},
-            'h6': {'caption': Energine.translations.get('TXT_H6'), 'html': '<h6>' + Energine.translations.get('TXT_H6') + '</h6>', 'element': 'h6', 'class': ''},
-            'address': {'caption': Energine.translations.get('TXT_ADDRESS'), 'html': '<address>' + Energine.translations.get('TXT_ADDRESS') + '</address>', 'element': 'address', 'class': ''}
-        };
-
-        if (typeof(window['wysiwyg_styles'] != 'undefined')) {
-            Object.each(window['wysiwyg_styles'], function (value, key) {
-                styles[key] = {
-                    'caption': value['caption'],
-                    'html': '<' + value['element'] + ' class="' + value['class'] + '">' + value['caption'] + '</' + value['element'] + '>',
-                    'element': value['element'],
-                    'class': value['class']
-                };
-            });
-        }
-
-        this.toolbar.appendControl(new Toolbar.Separator({ id:'sep4' }));
-        this.toolbar.appendControl(new Toolbar.CustomSelect({ id:'selectFormat', action:'changeFormat', action_before: 'beforeChangeFormat' }, styles));
-
-        if (Energine.supportContentEdit && !this.fallback_ie) {
-            this.toolbar.appendControl(new Toolbar.Separator({
-                id:'sep2'
-            }));
-            this.toolbar.appendControl(new Toolbar.Button({
-                id:'source',
-                icon:'images/toolbar/source.gif',
-                title:Energine.translations.get('BTN_VIEWSOURCE'),
-                action:'showSource'
-            }));
-        }
-        this.toolbar.appendControl(new Toolbar.Separator({
-            id:'sep3'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'filelib',
-            icon:'images/toolbar/filemngr.gif',
-            title:Energine.translations.get('BTN_FILE_LIBRARY'),
-            action:'fileLibrary'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'imgmngr',
-            icon:'images/toolbar/image.gif',
-            title:Energine.translations.get('BTN_INSERT_IMAGE'),
-            action:'imageManager'
-        }));
-        this.toolbar.appendControl(new Toolbar.Button({
-            id:'imgURL',
-            icon:'images/toolbar/imageurl.gif',
-            title:Energine.translations.get('BTN_INSERT_IMAGE_URL'),
-            action:'insertImageURL'
-        }));
-        this.toolbar.appendControl(
-            new Toolbar.Button({
-                id:'extflash',
-                icon:'images/toolbar/embed.gif',
-                title:Energine.translations.get('BTN_EXT_FLASH'),
-                action:'insertExtFlash'
-            })
-        );
-        $pick(this.area, this.textarea).getParent().grab(this.toolbar.getElement(), 'top');
-
-        this.toolbar.element.setStyle('width', '650px');
-        this.toolbar.bindTo(this);
     },
 
     onSaveForm:function () {
-        if (!Energine.supportContentEdit || this.fallback_ie)
-            return;
-        this.hidden.value = this.area.innerHTML;
-    },
-
-    showSource:function () {
-        //this.blur();
-        ModalBox.open({
-            url:this.form.singlePath + 'source',
-            extraData:this.area.innerHTML,
-            onClose:function (returnValue) {
-                if (returnValue != null) {
-                    this.area.set('html', returnValue);
-                    this.monitorElements();
-                }
-            }.bind(this)
-        });
-    },
-
-    onSelectionChanged: function(e)
-    {
-        this.parent();
-        if (!this.toolbar) return false;
-
-        this.toolbar.allButtonsUp();
-
-        var el = this.selection.getNode();
-
-        if (el == this.area) return;
-
-        var tags = [];
-        var format_selected = false;
-        var align_selected = false;
-        var els = this.getAllParentElements(el);
-        if (els.length > 0)
-        {
-            for (var i=0; i<els.length; i++)
-            {
-                if (!els[i] || !els[i].tagName) return;
-                var tag = els[i].tagName.toLowerCase();
-                var cls = els[i].get('class');
-                tags.push(tag);
-                el = els[i];
-                var dirs = ['left', 'right', 'center', 'justify'];
-                var align = el.getProperty('align');
-                var text_align = el.getStyle('text-align');
-                if (dirs.contains(text_align)) {
-                    align = text_align;
-                }
-                var font_weight = el.getStyle('font-weight');
-                var font_style = el.getStyle('font-style');
-
-                if (tag == 'b' || tag == 'strong' || font_weight == 'bold') this.toolbar.getControlById('bold').down();
-                if (tag == 'i' || tag == 'em' || font_style == 'italic') this.toolbar.getControlById('italic').down();
-                if (tag == 'ul') this.toolbar.getControlById('ulist').down();
-                if (tag == 'ol') this.toolbar.getControlById('olist').down();
-
-                if (dirs.contains(align) && !align_selected) {
-                    this.toolbar.getControlById(align).down();
-                    align_selected = true;
-                } else if (!align_selected && !this.toolbar.getControlById('right').isDown() && !this.toolbar.getControlById('center').isDown() && !this.toolbar.getControlById('justify').isDown()) {
-                    this.toolbar.getControlById('left').down();
-                }
-
-                Object.each(this.toolbar.getControlById('selectFormat').getOptions(), function (value, key) {
-                    if (key == tag && !format_selected) {
-                        format_selected = true;
-                        this.toolbar.getControlById('selectFormat').setSelected(tag);
-                    }
-                    if (key == tag + '.' + cls) {
-                        format_selected = true;
-                        this.toolbar.getControlById('selectFormat').setSelected(key);
-                    }
-                }.bind(this));
-
-                if (!format_selected) {
-                    this.toolbar.getControlById('selectFormat').setSelected('');
-                }
-            }
+        try {
+            var data = this.editor.getData();
+            this.textarea.value = data;
+        } catch (e) {
         }
     }
+
 });
 

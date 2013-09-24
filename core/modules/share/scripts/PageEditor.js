@@ -13,7 +13,7 @@ var PageEditor = new Class({
             this.editors.push(new PageEditor.BlockEditor(this, element));
         }, this);
 
-        document.addEvent('click', this.processClick.bindWithEvent(this));
+        document.addEvent('click', this.processClick.bind(this));
 
         if (Browser.opera) {
             window.addEvent('unload', function (e) {
@@ -86,9 +86,7 @@ var PageEditor = new Class({
     },
     attachToolbar:function (toolbar) {
         this.toolbar = toolbar;
-        this.toolbar.getElement().injectInside(
-            document.getElement('.e-topframe')
-        );
+        this.toolbar.getElement().inject(document.getElement('.e-topframe'), 'bottom');
         this.toolbar.disableControls();
 
         var html = $$('html')[0];
@@ -120,10 +118,10 @@ var PageEditor = new Class({
             element = element.getElement('div.' + this.editorClassName) || element;
         }
 
-        while ($type(element) == 'element' && !element.hasClass(this.editorClassName)) {
+        while (typeOf(element) == 'element' && !element.hasClass(this.editorClassName)) {
             element = element.getParent();
         }
-        if ($type(element) != 'element' || !element.hasClass(this.editorClassName)) return;
+        if (typeOf(element) != 'element' || !element.hasClass(this.editorClassName)) return;
 
         if (this.activeEditor) {
             if (this.activeEditor.area != element) {
@@ -165,11 +163,11 @@ PageEditor.BlockEditor = new Class({
         if (Energine.supportContentEdit) {
             document.addEvent('keydown', this.pageEditor.processKeyEvent.bind(this.pageEditor));
             if (!(this.pasteArea = $('pasteArea'))) {
-                this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility':'hidden', 'width':'0', 'height':'0', 'font-size':'0', 'line-height':'0' }).injectInside(document.body);
+                this.pasteArea = new Element('div', {'id':'pasteArea'}).setStyles({ 'visibility':'hidden', 'width':'0', 'height':'0', 'font-size':'0', 'line-height':'0' }).inject(document.body, 'bottom');
             }
             ////addEvent('paste' работать не захотело
-            if (Browser.Engine.trident) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
-            else if (Browser.Engine.gecko || Browser.Engine.presto) this.area.onpaste = this.processPasteFF.bindWithEvent(this);
+            if (Browser.ie) this.area.onpaste = this.processPasteFF.bind(this);
+            else if (Browser.firefox || Browser.opera) this.area.onpaste = this.processPasteFF.bind(this);
         }
         //this.switchToViewMode = this.pageEditor.switchToViewMode;
         this.overlay = new Overlay();

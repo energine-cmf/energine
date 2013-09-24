@@ -31,16 +31,16 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     allowEmpty:false,
     inputOutputFormat:'U',
     animationDuration:400,
-    useFadeInOut:!Browser.Engine.trident,
+    useFadeInOut:!Browser.ie,
     startView:'month',
     positionOffset:{x:0, y:0},
     minDate:null,
     maxDate:null,
     debug:false,
     toggleElements:null,
-    onShow:$empty,
-    onClose:$empty,
-    onSelect:$empty
+    onShow:function(){},
+    onClose:function(){},
+    onSelect:function(){}
 }, initialize:function (attachTo, options) {
     this.attachTo = attachTo;
     this.setOptions(options).attach();
@@ -72,7 +72,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
         this.options.maxDate.setSeconds(59);
     }
 }, attach:function () {
-    if ($chk(this.options.toggleElements)) {
+    if (!!(this.options.toggleElements || this.options.toggleElements === 0)) {
         var togglers = $$(this.options.toggleElements);
         document.addEvents({'keydown':function (e) {
             if (e.key == "tab") {
@@ -84,7 +84,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     $$(this.attachTo).each(function (item, index) {
         if (item.retrieve('datepicker'))return;
         var init_val;
-        if ($chk(item.get('value'))) {
+        if (!!(item.get('value') || item.get('value') === 0)) {
             init_val = item.get('value');
             var init_clone_val = this.format(new Date(this.unformat(item.get('value'), this.options.inputOutputFormat)), this.options.format);
         } else if (!this.options.allowEmpty) {
@@ -97,7 +97,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
         var display = item.getStyle('display');
         var clone = item.setStyle('display', this.options.debug ? display : 'none').store('datepicker', true).set('value', init_val).clone().removeProperty('nrgn:pattern').store('datepicker', true).removeProperty('name').set('value', init_clone_val).setStyle('display', display).inject(item, 'after');
 
-        if ($chk(this.options.toggleElements)) {
+        if (!!(this.options.toggleElements || this.options.toggleElements === 0)) {
             togglers[index].setStyle('cursor', 'pointer').addEvents({'click':function (e) {
                 this.onFocus(item, clone);
             }.bind(this)});
@@ -122,14 +122,14 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     }.bind(this));
 }, onFocus:function (original_input, visual_input) {
     var init_visual_date, d = visual_input.getCoordinates();
-    if ($chk(original_input.get('value'))) {
+    if (!!(original_input.get('value') || original_input.get('value') === 0)) {
         init_visual_date = this.unformat(original_input.get('value'), this.options.inputOutputFormat).valueOf();
     } else {
         init_visual_date = new Date();
-        if ($chk(this.options.maxDate) && init_visual_date.valueOf() > this.options.maxDate.valueOf()) {
+        if (!!(this.options.maxDate || this.options.maxDate === 0) && init_visual_date.valueOf() > this.options.maxDate.valueOf()) {
             init_visual_date = new Date(this.options.maxDate.valueOf());
         }
-        if ($chk(this.options.minDate) && init_visual_date.valueOf() < this.options.minDate.valueOf()) {
+        if (!!(this.options.minDate || this.options.minDate === 0) && init_visual_date.valueOf() < this.options.minDate.valueOf()) {
             init_visual_date = new Date(this.options.minDate.valueOf());
         }
     }
@@ -144,7 +144,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     d.setDate(1);
     ['year', 'month', 'day', 'hours', 'minutes', 'seconds'].each(function (type) {
         var v = values[type];
-        if (!$chk(v))return;
+        if (!(v || v === 0))return;
         switch (type) {
             case'day':
                 d.setDate(v);
@@ -169,7 +169,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     return d;
 }, show:function (position, timestamp) {
     this.formatMinMaxDates();
-    if ($chk(timestamp)) {
+    if (!!(timestamp || timestamp === 0)) {
         this.d = new Date(timestamp);
     } else {
         this.d = new Date();
@@ -180,7 +180,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     this.render();
     this.picker.setStyles(position);
 }, render:function (fx) {
-    if (!$chk(this.picker)) {
+    if (!(this.picker || this.picker === 0)) {
         this.constructPicker();
     } else {
         var o = this.oldContents;
@@ -207,7 +207,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     if (this.picker.getStyle('opacity') == 0) {
         this.picker.tween('opacity', 0, 1);
     }
-    if ($chk(fx))this.fx(fx);
+    if (!!(fx || fx === 0))this.fx(fx);
 }, fx:function (fx) {
 
     if (fx == 'right') {
@@ -226,10 +226,12 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
         this.slider.setStyle('left', -this.bodysize.x).tween('left', -this.bodysize.x, 0);
     } else if (fx == 'fade') {
         this.slider.setStyle('left', 0);
-        var props, fxOld = new Fx.Tween(this.oldContents, props = {property:'opacity', duration:this.options.animationDuration / 2}), fxNew = new Fx.Tween(this.newContents, props);
+        var props,
+            fxOld = new Fx.Tween(this.oldContents, props = {property:'opacity', duration:this.options.animationDuration / 2}),
+            fxNew = new Fx.Tween(this.newContents, props);
         this.oldContents.setStyle('left', 0);
         fxOld.start(1, 0).chain(function () {
-            this.subject.setStyle('display', 'none');
+//            this.subject.setStyle('display', 'none');
         });
         this.newContents.setStyles({opacity:0, left:0, display:'block'});
         fxNew.start(0, 1);
@@ -241,10 +243,10 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     }
     var h = new Element('div', {'class':'header'}).inject(this.picker);
     var titlecontainer = new Element('div', {'class':'title'}).inject(h);
-    new Element('div', {'class':'previous'}).addEvent('click', this.previous.bind(this)).set('text', '«').inject(h);
-    new Element('div', {'class':'next'}).addEvent('click', this.next.bind(this)).set('text', '»').inject(h);
-    new Element('div', {'class':'closeButton'}).addEvent('click', this.close.bindWithEvent(this, true)).set('text', 'x').inject(h);
-    new Element('span', {'class':'titleText'}).addEvent('click', this.zoomOut.bind(this)).inject(titlecontainer);
+    new Element('div', {'class':'previous'}).addEvent('click', function(){this.previous()}.bind(this)).set('text', '«').inject(h);
+    new Element('div', {'class':'next'}).addEvent('click', function(){this.next()}.bind(this)).set('text', '»').inject(h);
+    new Element('div', {'class':'closeButton'}).addEvent('click', function(){this.close(true)}.bind(this) /*this.close.bindWithEvent(this, true)*/).set('text', 'x').inject(h);
+    new Element('span', {'class':'titleText'}).addEvent('click', function(){this.zoomOut()}.bind(this)).inject(titlecontainer);
     var b = new Element('div', {'class':'body'}).inject(this.picker);
     this.bodysize = b.getSize();
     this.slider = new Element('div', {styles:{position:'absolute', top:0, left:0, width:2 * this.bodysize.x, height:this.bodysize.y}}).set('tween', {duration:this.options.animationDuration, transition:Fx.Transitions.Quad.easeInOut}).inject(b);
@@ -282,7 +284,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     new Element('div', {'class':'separator'}).set('text', ':').inject(container);
     new Element('input', {type:'submit', value:'OK', 'class':'ok'}).addEvents({click:function (e) {
         e.stop();
-        this.select($merge(this.dateToObject(this.d), {hours:this.picker.getElement('.hour').get('value').toInt(), minutes:this.picker.getElement('.minutes').get('value').toInt()}));
+        this.select(Object.merge(this.dateToObject(this.d), {hours:this.picker.getElement('.hour').get('value').toInt(), minutes:this.picker.getElement('.minutes').get('value').toInt()}));
     }.bind(this)}).set('maxlength', 2).inject(container);
 }, renderMonth:function () {
     var month = this.d.getMonth();
@@ -320,7 +322,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
             }
         } else {
             available = true;
-            e.addEvent('click', function (e, d) {
+            e.addEvent('click', function (d) {
                 if (this.options.timePicker) {
                     this.d.setDate(d.day);
                     this.d.setMonth(d.month);
@@ -329,7 +331,8 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
                 } else {
                     this.select(d);
                 }
-            }.bindWithEvent(this, {day:this.d.getDate(), month:this.d.getMonth(), year:this.d.getFullYear()}));
+            }.call(this, {day:this.d.getDate(), month:this.d.getMonth(), year:this.d.getFullYear()}));
+//            }.bindWithEvent(this, {day:this.d.getDate(), month:this.d.getMonth(), year:this.d.getFullYear()}));
         }
         this.d.setDate(this.d.getDate() + 1);
     }
@@ -359,7 +362,8 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
                 this.d.setMonth(d);
                 this.mode = 'month';
                 this.render('fade');
-            }.bindWithEvent(this, i));
+            }.call(this, i));
+//            }.bindWithEvent(this, i));
         }
         this.d.setMonth(i);
     }
@@ -372,7 +376,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     var i, y, e;
     var available = false;
     var container = new Element('div', {'class':'years'}).inject(this.newContents);
-    if ($chk(this.options.minDate) && this.d.getFullYear() <= this.options.minDate.getFullYear()) {
+    if (!!(this.options.minDate || this.options.minDate === 0) && this.d.getFullYear() <= this.options.minDate.getFullYear()) {
         this.limit.left = true;
     }
     for (i = 0; i < this.options.yearsPerPage; i++) {
@@ -391,19 +395,20 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
                 this.d.setFullYear(d);
                 this.mode = 'year';
                 this.render('fade');
-            }.bindWithEvent(this, y));
+            }.call(this, y));
+//            }.bindWithEvent(this, y));
         }
         this.d.setFullYear(this.d.getFullYear() + 1);
     }
     if (!available) {
         this.limit.right = true;
     }
-    if ($chk(this.options.maxDate) && this.d.getFullYear() >= this.options.maxDate.getFullYear()) {
+    if (!!(this.options.maxDate || this.options.maxDate === 0) && this.d.getFullYear() >= this.options.maxDate.getFullYear()) {
         this.limit.right = true;
     }
 }, limited:function (type) {
-    var cs = $chk(this.options.minDate);
-    var ce = $chk(this.options.maxDate);
+    var cs = !!(this.options.minDate || this.options.minDate === 0);
+    var ce = !!(this.options.maxDate || this.options.maxDate === 0);
     if (!cs && !ce)return false;
     switch (type) {
         case'year':
@@ -449,7 +454,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     this.render('right');
 }, close:function (e, force) {
     if (!$(this.picker))return;
-    var clickOutside = ($chk(e) && e.target != this.picker && !this.picker.hasChild(e.target) && e.target != this.visual);
+    var clickOutside = (!!(e || e === 0) && e.target != this.picker && !this.picker.contains(e.target) && e.target != this.visual);
     if (force || clickOutside) {
         if (this.options.useFadeInOut) {
             this.picker.set('tween', {duration:this.options.animationDuration / 2, onComplete:this.destroy.bind(this)}).tween('opacity', 1, 0);
@@ -462,7 +467,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
     this.picker = null;
     this.options.onClose();
 }, select:function (values) {
-    this.choice = $merge(this.choice, values);
+    this.choice = Object.merge(this.choice, values);
     var d = this.dateFromObject(this.choice);
     this.input.set('value', this.format(d, this.options.inputOutputFormat));
     this.visual.set('value', this.format(d, this.options.format));
@@ -482,7 +487,7 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
                 break;
             case'y':
                 f += (100 + t.getYear() + '').substring(1);
-                break
+                break;
             case'Y':
                 f += t.getFullYear();
                 break;
@@ -606,9 +611,9 @@ var DatePicker = new Class({Implements:Options, d:'', today:'', choice:{}, bodys
             default:
                 r = null;
         }
-        if ($chk(r)) {
+        if (!!(r || r === 0)) {
             m = t.match('^' + r);
-            if ($chk(m)) {
+            if (!!(m || m === 0)) {
                 a[c] = m[0];
                 t = t.substring(a[c].length);
             } else {

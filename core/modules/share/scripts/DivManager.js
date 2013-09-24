@@ -7,7 +7,7 @@ var DivManager = new Class({
         this.tabPane = new TabPane(this.element);
 
         this.langId = this.element.getProperty('lang_id');
-        new Element('ul').setProperty('id', 'divTree').addClass('treeview').injectInside($('treeContainer')).adopt(
+        new Element('ul').setProperty('id', 'divTree').addClass('treeview').inject($('treeContainer')).adopt(
             new Element('li').setProperty('id', 'treeRoot').adopt(
                 new Element('a', {'href':'#'}).set('html', Energine.translations.get('TXT_DIVISIONS'))
             )

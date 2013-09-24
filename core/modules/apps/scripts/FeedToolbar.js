@@ -12,9 +12,7 @@ var FeedToolbar = new Class({
         this.feedElementType = false;
         
         
-        this.element.injectInside(
-            document.getElement('.e-topframe')
-        );
+        this.element.inject(document.getElement('.e-topframe'), 'bottom');
        
         var html = $$('html')[0];
         if(html.hasClass('e-has-topframe1')) {
@@ -86,10 +84,10 @@ var FeedToolbar = new Class({
 				if (!sibling.getProperty('record')) {
 					throw 'error';
 				}
-				$(this.previous).injectBefore(sibling);
+				$(this.previous).inject(sibling, 'before');
 			}
 			else {
-				$(this.previous).injectAfter(this.previous.getNext());
+				$(this.previous).inject(this.previous.getNext(), 'after');
 			}
 		}
 		catch (exception) {
@@ -124,7 +122,7 @@ var FeedToolbar = new Class({
     			linkChilds.each(function(element){
     				element.addEvent('mouseover', function(){this.addClass('record_highlight')});
     				element.addEvent('mouseout', function(){this.removeClass('record_highlight')});
-    				element.addEvent('click', this._select.bindWithEvent(this, element));
+    				element.addEvent('click', this._select.call(this, element));
     			}, this);
 		  }
 	},

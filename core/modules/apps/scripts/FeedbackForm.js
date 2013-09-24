@@ -1,5 +1,5 @@
 ScriptLoader.load('ValidForm');
 
-var FeedbackForm = ValidForm.extend({
+var FeedbackForm = Object.append(ValidForm, {
 
 });

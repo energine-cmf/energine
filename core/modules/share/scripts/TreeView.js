@@ -1,6 +1,6 @@
 var TreeView = new Class({
     options: {
-        dblClick:$empty
+        dblClick: function(){}
     },
     Implements: [Options, Events],
     selectedNode: null,
@@ -73,7 +73,7 @@ var TreeView = new Class({
     },
 
     setupStyles: function() {
-        if (!Browser.Engine.trident) return;
+        if (!Browser.ie) return;
         this.element.getElements('li.last').each(function(item) {
             if (item.hasClass('folder')) {
                 if (item.hasClass('opened')) {
@@ -90,9 +90,7 @@ var TreeView = new Class({
     },
 
     nodeToggleListener: function(event) {
-        event = new Event(event || window.event);
         event.stop();
-
         var node = event.target.retrieve('treeNode');
         if (event.target.get('tag') == 'a') {
             node = event.target.getParent().retrieve('treeNode');
@@ -104,8 +102,8 @@ var TreeView = new Class({
             var y = event.page.y - node.element.getTop();
 
             // Fix fo IE.
-            var delta_x = Browser.Engine.trident ? $(document.documentElement).getStyle('border-left-width') : 0;
-            var delta_y = Browser.Engine.trident ? $(document.documentElement).getStyle('border-top-width') : 0;
+            var delta_x = Browser.ie ? $(document.documentElement).getStyle('border-left-width') : 0;
+            var delta_y = Browser.ie ? $(document.documentElement).getStyle('border-top-width') : 0;
             if (delta_x == 'medium' && delta_y == 'medium') {
                 delta_x = 2; delta_y = 2;
             }
@@ -121,9 +119,7 @@ var TreeView = new Class({
     },
 
     nodeSelectListener: function(event) {
-        event = new Event(event || window.event);
         event.stop();
-
         var node = event.target.getParent().retrieve('treeNode');
         this.fireEvent('select', node);
         node.select();
@@ -151,7 +147,7 @@ TreeView.Node = new Class({
      */
     initialize: function(nodeInfo, tree) {
         this.tree = tree;
-        if ($type(nodeInfo) == 'element') {
+        if (typeOf(nodeInfo) == 'element') {
             this.element = $(nodeInfo);
             this.id = this.element.getProperty('id');
         }
@@ -183,7 +179,7 @@ TreeView.Node = new Class({
 
     adopt: function(node) {
         if (!(node instanceof TreeView.Node)) return false;
-        if (!this.childs) this.childs = new Element('ul').addClass('hidden').injectInside(this.element);
+        if (!this.childs) this.childs = new Element('ul').addClass('hidden').inject(this.element);
         this.childs.adopt(node.element);
         this.tree.nodes.push(node);
         //this.tree.setupCssClasses();
@@ -193,14 +189,14 @@ TreeView.Node = new Class({
 
     injectBefore: function(node) {
         if (!(node instanceof TreeView.Node)) return false;
-        this.element.injectBefore(node.element);
+        this.element.inject(node.element, 'before');
         this.tree.nodes.push(node);
         //this.tree.setupCssClasses();
         return this;
     },
     injectInside: function(parentNode){
         if (!(parentNode instanceof TreeView.Node)) return false;
-        if (!parentNode.childs) parentNode.childs = new Element('ul').addClass('hidden').injectInside(parentNode.element);
+        if (!parentNode.childs) parentNode.childs = new Element('ul').addClass('hidden').inject(parentNode.element);
         this.element.inject(parentNode.childs, 'top');
         parentNode.expand();
         this.tree.setupCssClasses();

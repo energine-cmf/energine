@@ -25,7 +25,7 @@ Element.implement({
  */
 var LayoutManager = new Class({
     initialize: function (singlePath) {
-        this.columns = new Hash();
+        this.columns = {};
         /**
          * По сути, статическая переменная
          */
@@ -61,7 +61,7 @@ var LayoutManager = new Class({
         this.xml.getXMLElements('container').each(function (xml) {
             //И создаем для каждого контейнера, который выступает в качестве колонки  - соответствующий объект колонки
             if (xml.getProperty('data-column')) {
-                this.columns.set(xml.getProperty('data-name'), new LayoutManager.Column(xml, this));
+                this.columns[xml.getProperty('data-name')] = new LayoutManager.Column(xml, this);
             }
         }, this);
     },
@@ -72,7 +72,7 @@ var LayoutManager = new Class({
         this.toolbar = new Toolbar('block_management_toolbar');
 
         this.toolbar.dock();
-        this.toolbar.getElement().injectInside(
+        this.toolbar.getElement().inject(
             document.getElement('.e-topframe')
         );
         this.toolbar.bindTo(this);
@@ -207,8 +207,8 @@ var LayoutManager = new Class({
     },
     findWidgetByCoords: function (x, y, currentWidget) {
         var cl, mFrame = LayoutManager.mFrame;
-        this.columns.some(function (clm) {
-            return clm.widgets.some(function (wdg) {
+        Object.some(this.columns, function (clm) {
+            return Object.some(clm.widgets, function (wdg) {
                 var res = false;
                 if ((wdg != currentWidget) && wdg.visible) {
                     var pos = wdg.container.getPosition(mFrame), size = wdg.container.getSize();
@@ -220,7 +220,7 @@ var LayoutManager = new Class({
                 }
                 return res;
             })
-        })
+        });
         return cl;
     },
     /**
@@ -228,7 +228,7 @@ var LayoutManager = new Class({
      * @param columnName имя колонки
      */
     getColumn: function (columnName) {
-        return this.columns.get(columnName) || {};
+        return this.columns[columnName] || {};
     }
 });
 
@@ -245,13 +245,13 @@ LayoutManager.Column = new Class({
         this.layoutManager = layoutManager;
         this.name = xmlDescr.getProperty('data-name');
         //хеш виджетов, находящихся внутри колонки
-        this.widgets = new Hash();
+        this.widgets = {};
         //Если существует соответствующий HTML елемент  - представление колонки
         if (this.element = document.getElement('[column=' + this.name + ']')) {
             this.element.addClass('e-lm-column');
             //проходимся по всем дочерним контейнерам и добавляем их в this.widgets
             xmlDescr.getXMLElements('container').each(this.addWidgetAsXML, this);
-            this.widgets.set(this.name, new LayoutManager.DummyWidget(this));
+            this.widgets[this.name] = new LayoutManager.DummyWidget(this);
         }
     },
     /**
@@ -263,8 +263,8 @@ LayoutManager.Column = new Class({
     addWidgetAsXML: function (widgetXML) {
         var widget = null;
         if (widgetXML.getProperty('data-widget')) {
-            this.widgets.set(widgetXML.getProperty('data-name'), widget =
-                new LayoutManager.Widget(widgetXML, this))
+            this.widgets[widgetXML.getProperty('data-name')] = widget =
+                new LayoutManager.Widget(widgetXML, this)
         }
         return widget;
     },
@@ -282,7 +282,8 @@ LayoutManager.Column = new Class({
             if (location != 'before') {
                 location = 'after';
             }
-            this.widgets.set(injectedWidget.name, injectedWidget, this);
+//            this.widgets.set(injectedWidget.name, injectedWidget, this);
+            this.widgets[injectedWidget.name] = injectedWidget;
             if (sourceWidget.xml) {
                 injectedWidget.xml.inject(sourceWidget.xml, location);
             }
@@ -294,7 +295,8 @@ LayoutManager.Column = new Class({
         }
         //Иначе - просто добавляем в конец
         else {
-            this.widgets.set(injectedWidget.name, injectedWidget, this);
+//            this.widgets.set(injectedWidget.name, injectedWidget, this);
+            this.widgets[injectedWidget.name] = injectedWidget;
             this.xml.grab(injectedWidget.xml);
             this.element.grab(injectedWidget.container);
         }
@@ -305,7 +307,7 @@ LayoutManager.Column = new Class({
      * @param widgetName string имя вижета
      */
     getWidget: function (widgetName) {
-        return this.widgets.get(widgetName) || {};
+        return this.widgets[widgetName] || {};
     }
 });
 
@@ -421,7 +423,7 @@ LayoutManager.Widget = new Class({
         var tb = new Toolbar('widgetToolbar_' + this.name);
         if (!this.static)
             tb.appendControl(new Toolbar.Button({id: 'add', 'icon': 'images/toolbar/add.gif', title: 'Add', action: 'addWidget'}));
-        if (this.component && this.component.params.getLength() && this.component.params.some(function (obj) {
+        if (this.component && Object.getLength(this.component.params) && Object.some(this.component.params, function (obj) {
             return (obj.xml.getProperty('data-type') != 'hidden');
         }))
             tb.appendControl(new Toolbar.Button({id: 'edit', 'icon': 'images/toolbar/edit.gif', title: 'Edit', action: 'editProps'}));
@@ -564,8 +566,7 @@ LayoutManager.Widget.implement(Energine.request);
 LayoutManager.Widget.DragBehavior = new Class({
     initialize: function (widget) {
         this.widget = widget;
-        this.strut =
-            new Element('div', {'class': 'e-lm-strut'});
+        this.strut = new Element('div', {'class': 'e-lm-strut'});
         this.recalculateSize();
 
         this.drag = new Drag(this.widget.container, {
@@ -615,8 +616,8 @@ LayoutManager.Widget.DragBehavior = new Class({
                         w.column.xml.grab(this.widget.xml);
                     }
                     if (w.column != this.widget.column) {
-                        w.column.widgets.set(this.widget.name, this.widget);
-                        this.widget.column.widgets.erase(this.widget.name);
+                        w.column.widgets[this.widget.name] = this.widget;
+                        delete this.widget.column.widgets[this.widget.name];
                         this.widget.column = w.column;
                     }
                     this.strut.eliminate('widget');
@@ -673,13 +674,13 @@ LayoutManager.Component = new Class({
         this.xml = xmlDescr;
         this.name = xmlDescr.getProperty('data-name');
         this.element = element;
-        this.params = new Hash();
+        this.params = {};
         xmlDescr.getXMLElements('param').each(function (xml) {
-            this.params.set(xml.getProperty('data-name'), new LayoutManager.Component.Param(xml));
+            this.params[xml.getProperty('data-name')] = new LayoutManager.Component.Param(xml);
         }, this);
     },
     getParam: function (paramName) {
-        return this.params.get(paramName) || {};
+        return this.params[paramName] || {};
     }
 });
 /**

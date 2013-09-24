@@ -62,13 +62,13 @@ var TextboxList = new Class({
   Implements: [Events, Options],
 
   options: {/*
-    onFocus: $empty,
-    onBlur: $empty,
-    onInputFocus: $empty,
-    onInputBlur: $empty,
-    onBoxFocus: $empty,
-    onBoxBlur: $empty,
-    onBoxDispose: $empty,*/
+    onFocus: function(){},
+    onBlur: function(){},
+    onInputFocus: function(){},
+    onInputBlur: function(){},
+    onBoxFocus: function(){},
+    onBoxBlur: function(){},
+    onBoxDispose: function(){},*/
     resizable: {},
     className: 'bit',
     separator: '###',
@@ -80,8 +80,8 @@ var TextboxList = new Class({
   initialize: function(element, options) {
     this.setOptions(options);
     this.element = $(element).setStyle('display', 'none');    
-    this.bits = new Hash;
-    this.events = new Hash;
+    this.bits = {};
+    this.events = {};
     this.count = 0;
     this.current = false;
     this.maininput = this.createInput({'class': 'maininput'});
@@ -89,7 +89,7 @@ var TextboxList = new Class({
       'class': 'holder', 
       'events': {
         'click': function(e) { 
-          e = new Event(e).stop();
+          e.stop();
           if(this.maininput != this.current) this.focus(this.maininput); 
         }.bind(this)
       }
@@ -99,19 +99,19 @@ var TextboxList = new Class({
   },
   
   setEvents: function() {
-    document.addEvent(Browser.Engine.trident ? 'keydown' : 'keypress', function(e) {    
+    document.addEvent(Browser.ie ? 'keydown' : 'keypress', function(e) {
       if(! this.current) return;
-      if(this.current.retrieve('type') == 'box' && e.code == Event.Keys.backspace) new Event(e).stop();
+      if(this.current.retrieve('type') == 'box' && e.key == 'backspace') e.stop();
     }.bind(this));      
          
     document.addEvents({
       'keyup': function(e) { 
-        e = new Event(e).stop();
+        e.stop();
         if(! this.current) return;
-        switch(e.code){
-          case Event.Keys.left: return this.move('left');
-          case Event.Keys.right: return this.move('right');
-          case Event.Keys.backspace: return this.moveDispose();
+        switch(e.key){
+          case 'left': return this.move('left');
+          case 'right': return this.move('right');
+          case 'backspace': return this.moveDispose();
         }
       }.bind(this),
       'click': function() { this.fireEvent('onBlur').blur(); }.bind(this)
@@ -119,18 +119,18 @@ var TextboxList = new Class({
   },
   
   update: function() {
-    this.element.set('value', this.bits.getValues().join(this.options.separator));
+    this.element.set('value', Object.values(this.bits).join(this.options.separator));
     return this;
   },
   
   add: function(text, html) {
     var id = this.options.className + '-' + this.count++;
-    var el = this.createBox($pick(html, text), {'id': id}).inject(this.current || this.maininput, 'before');
+    var el = this.createBox(Array.pick([html, text]), {'id': id}).inject(this.current || this.maininput, 'before');
     el.addEvent('click', function(e) {
-      e = new Event(e).stop();
+      e.stop();
       this.focus(el);
     }.bind(this));
-    this.bits.set(id, text);    
+    this.bits[id] = text;
     if(this.options.extrainputs && (this.options.startinput || el.getPrevious())) this.addSmallInput(el, 'before');
     return el;
   },
@@ -144,7 +144,7 @@ var TextboxList = new Class({
   },
   
   dispose: function(el) {
-    this.bits.remove(el.id);
+    delete this.bits(el.id);
     if(el.getPrevious().retrieve('small')) el.getPrevious().destroy();
     if(this.current == el) this.focus(el.getNext());
     if(el.retrieve('type') == 'box') this.fireEvent('onBoxDispose', el);
@@ -183,15 +183,15 @@ var TextboxList = new Class({
   },
   
   createBox: function(text, options) {
-    return new Element('li', $extend(options, {'class': this.options.className + '-box'})).set('html', text).store('type', 'box');
+    return new Element('li', Object.append(options, {'class': this.options.className + '-box'})).set('html', text).store('type', 'box');
   },
   
   createInput: function(options) {
     var li = new Element('li', {'class': this.options.className + '-input'});
-    var el = new Element('input', $extend(options, {
+    var el = new Element('input', Object.append(options, {
       'type': 'text', 
       'events': {
-        'click': function(e) { e = new Event(e).stop(); },
+        'click': function(e) { e.stop(); },
         'focus': function(e) { if(! this.isSelfEvent('focus')) this.focus(li, true); }.bind(this),
         'blur': function() { if(! this.isSelfEvent('blur')) this.blur(true); }.bind(this),
         'keydown': function(e) { this.store('lastvalue', this.value).store('lastcaret', this.getCaretPosition()); }
@@ -201,17 +201,17 @@ var TextboxList = new Class({
   },
   
   callEvent: function(el, type) {
-    this.events.set(type, el);
+    this.events[type] = el;
     el[type]();
   },
   
   isSelfEvent: function(type) {
-    return (this.events.get(type)) ? !! this.events.remove(type) : false;
+    return (this.events[type]) ? !! delete this.events[type] : false;
   },
   
   makeResizable: function(li) {
     var el = li.retrieve('input');
-    el.store('resizable', new ResizableTextbox(el, $extend(this.options.resizable, {min: el.offsetWidth, max: this.element.getStyle('width').toInt()})));
+    el.store('resizable', new ResizableTextbox(el, Object.append(this.options.resizable, {min: el.offsetWidth, max: this.element.getStyle('width').toInt()})));
     return this;
   },
   
@@ -228,7 +228,7 @@ var TextboxList = new Class({
   
   moveDispose: function() {
     if(this.current.retrieve('type') == 'box') return this.dispose(this.current);
-    if(this.checkInput() && this.bits.getKeys().length && this.current.getPrevious()) return this.focus(this.current.getPrevious());
+    if(this.checkInput() && Object.keys(this.bits).length && this.current.getPrevious()) return this.focus(this.current.getPrevious());
   }
   
 });
@@ -255,7 +255,7 @@ var TextboxList2 = new Class({
     Asset.css('tags.css');
     this.parent(element.getElement('input'), options);
     this.data = [];
-        this.autoholder = element.getElement('.textbox_items').set('opacity', this.options.autocomplete.opacity);
+        this.autoholder = element.getElement('.textbox_items').setStyle('opacity', this.options.autocomplete.opacity);
         this.autoresults = this.autoholder.getElement('ul');
         var children = this.autoresults.getElements('li');
     children.each(function(el) { this.add(el.innerHTML); }, this); 
@@ -277,7 +277,7 @@ var TextboxList2 = new Class({
         var el = new Element('li').addEvents({
           'mouseenter': function() { that.autoFocus(this); },
           'click': function(e) { 
-            new Event(e).stop();
+            e.stop();
             that.autoAdd(this); 
           }
         }).set('html', this.autoHighlight(result, search)).inject(this.autoresults);
@@ -334,16 +334,16 @@ var TextboxList2 = new Class({
     input.addEvents({
       'keydown': function(e) {
         this.dosearch = false;
-        switch(new Event(e).code) {
-          case Event.Keys.up: return this.autoMove('up');
-          case Event.Keys.down: return this.autoMove('down');        
-          case Event.Keys.enter: 
+        switch(e.key) {
+          case 'up': return this.autoMove('up');
+          case 'down': return this.autoMove('down');
+          case 'enter':
             if(! this.autocurrent) break;
             this.autoAdd(this.autocurrent);
             this.autocurrent = false;
             this.autoenter = true;
             break;
-          case Event.Keys.esc: 
+          case 'esc':
             this.autoHide();
             if(this.current && this.current.retrieve('input'))
               this.current.retrieve('input').set('value', '');
@@ -355,8 +355,8 @@ var TextboxList2 = new Class({
         if(this.dosearch) this.autoShow(input.value);
       }.bind(this)
     });
-    input.addEvent(Browser.Engine.trident ? 'keydown' : 'keypress', function(e) { 
-      if(this.autoenter) new Event(e).stop()
+    input.addEvent(Browser.ie ? 'keydown' : 'keypress', function(e) {
+      if(this.autoenter) e.stop()
       this.autoenter = false;
     }.bind(this));
     return li;
@@ -372,7 +372,7 @@ var TextboxList2 = new Class({
       'class': 'closebutton',
       'events': {
         'click': function(e) {
-          new Event(e).stop();
+          e.stop();
           if(! this.current) this.focus(this.maininput);
           this.dispose(li);
         }.bind(this)

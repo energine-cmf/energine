@@ -90,7 +90,7 @@ var Toolbar = new Class({
     },
 
     removeControl:function (control) {
-        if ($type(control) == 'string') {
+        if (typeOf(control) == 'string') {
             control = this.getControlById(control);
         }
         if (control instanceof Toolbar.Control) {
@@ -121,7 +121,7 @@ var Toolbar = new Class({
         else {
             var control;
             //Перечисляем идентификаторы контролов которые необходимо активировать
-            $A(arguments).each(function (controlID) {
+            Array.from(arguments).each(function (controlID) {
                 if (control = this.getControlById(controlID)) {
                     control.disable();
                 }
@@ -139,7 +139,7 @@ var Toolbar = new Class({
         else {
             var control;
             //Перечисляем идентификаторы контролов которые необходимо активировать
-            $A(arguments).each(function (controlID) {
+            Array.from(arguments).each(function (controlID) {
                 if (control = this.getControlById(controlID)) {
                     control.enable();
                 }
@@ -160,7 +160,7 @@ var Toolbar = new Class({
     // Private methods:
 
     _callAction:function (action, data) {
-        if (this.boundTo && $type(this.boundTo[action]) == 'function') {
+        if (this.boundTo && typeOf(this.boundTo[action]) == 'function') {
             this.boundTo[action](data);
         }
     }
@@ -179,7 +179,7 @@ Toolbar.Control = new Class({
             action:null,
             disabled:false
         };
-        $extend(this.properties, $pick(properties, {}));
+        Object.append(this.properties, properties);
     },
     load:function (controlDescr) {
         this.properties.id = controlDescr.getAttribute('id') || '';
@@ -220,13 +220,13 @@ Toolbar.Control = new Class({
 
     disable:function () {
         this.properties.disabled = true;
-        this.element.addClass('disabled').setOpacity(0.25);
+        this.element.addClass('disabled').setStyle('opacity', 0.25);
         return this;
     },
 
     enable:function () {
         this.properties.disabled = false;
-        this.element.removeClass('disabled').setOpacity(1);
+        this.element.removeClass('disabled').setStyle('opacity', 1);
         return this;
     },
 
@@ -389,7 +389,7 @@ Toolbar.Select = new Class({
             action:null,
             disabled:false
         };
-        $extend(this.properties, $pick(properties, {}));
+        Object.append(this.properties, properties);
 
         this.options = options || {};
         this.initial = initialValue || false;
@@ -486,7 +486,7 @@ Toolbar.CustomSelect = new Class({
             action_before:null,
             disabled:false
         };
-        $extend(this.properties, $pick(properties, {}));
+        Object.append(this.properties, properties);
 
         this.options = options || {};
         this.initial = initialValue || false;

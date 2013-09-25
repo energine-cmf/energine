@@ -3,7 +3,7 @@
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 1.1.0
  *
  * @requires MooTools
  */
@@ -20,13 +20,14 @@ Class.Mutators.Static = function(members) {
 };
 
 /**
- * @class Holds an playlist of items, that will be used by Carousel objects.
+ * @class Holds an playlist, that will be used by Carousel objects.
  *
  * @type {Class}
  * @author Valerii Zinchenko
  *
  * @constructor
- * @param {string | Element} el Can be the id of an element in DOM Tree or an Element.
+ * @param {string | Element} element Can be the id of an element in DOM Tree, or CSS Selector, or an Element that holds playlist's items. In case with CSS Selector it will get only the first element.
+ * @param {string} [itemSelector] CSS Selector of the playlist's items. If this argument is not defined, then all children of the holder will be selected as playlist's items.
  */
 var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
     /**
@@ -34,31 +35,28 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
      * @type {boolean}
      */
     isExtern: true,
+    /**
+     * Amount of items in the playlist.
+     * @type {Number}
+     */
+    NItems: 0,
     // constructor
-    initialize: function(el) {
-        if ( $(el) === null)
-            throw 'ERROR: Element for CarouselPlaylist is not found in DOM Tree!';
+    initialize: function(element, itemSelector) {
+        this.itemSelector = itemSelector;
         /**
-         * Main holder of playlist (ul-tag).
+         * Main holder of playlist.
          * @type {Element}
          */
-        this.holder = $(el).getElement('ul');
-        if (this.holder === null) {
-            /**
-             * Amount of items in the playlist.
-             * @type {Number}
-             */
-            this.NItems = 0;
-            console.warn('Playlist for carousel was not found!');
-        } else
-            this.NItems = this.holder.getElements('li').length;
+        this.holder = $(element) || $$(element)[0];
+        if (this.holder === null)
+            throw 'Element for CarouselPlaylist was not found in DOM Tree!';
     },
     /**
      * Hides playlist.
      * @public
      */
     hide: function() {
-        this.holder.getParent().dispose();
+        this.holder.dispose();
     }
 });
 
@@ -77,9 +75,9 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
     initialize: function(carousels) {
         // Check input arguments
         if (arguments.length != 1)
-            throw 'ERROR: Not enough arguments!';
+            throw 'Not enough arguments!';
         if ( !(carousels instanceof Array) )
-            throw 'ERROR: Second argument must be an Array of Carousel objects!';
+            throw 'Second argument must be an Array of Carousel objects!';
         for (n = 0; n < carousels.length; n++)
             if ( !(carousels[n] instanceof Carousel) )
                 throw 'Element #' + n + ' in second argument is not instance of Carousel!';
@@ -135,7 +133,7 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
  * @type {Class}
  *
  * @constructor
- * @param {string | Element} element Can be the id of an element in DOM Tree or an Element.
+ * @param {string | Element} element Can be the id of an element in DOM Tree, or CSS Selector, or an Element. In case with CSS Selector it will get only the first element.
  * @param {Object} [options] [Options]{@link Carousel#options}, that can be applied to the Carousel.
  */
 var Carousel = new Class(/** @lends Carousel# */{
@@ -177,7 +175,7 @@ var Carousel = new Class(/** @lends Carousel# */{
      * @property {number} [scrollStep = 1] Default scrolling step.
      * @property {boolean} [loop = true] Defines if scrolled items are in loop or not.
      * @property {number} [effectDuration = 700] Duration of the scrolling.
-     * @property {CarouselPlaylist} [playlist = null] Reference to the playlist.
+     * @property {CarouselPlaylist} [playlist = null] Reference to the playlist. If the playlist is not defined, then the playlist will be created from the element class <tt>'.viewbox'</tt>.
      * @property {Object} [style = internal predefined style] Reference to the object with core styles for the carousel.
      * This is need for the elimination the using of Asset.css('carousel.css') in the carousel's constructor,
      * because we do not know how long the file 'carousel.css' must be parsed and applied to the HTML document
@@ -203,41 +201,35 @@ var Carousel = new Class(/** @lends Carousel# */{
         // Core styles for the carousel.
         style: {
             '.carousel': {
-                'position': 'relative'
+                position: 'relative'
             },
             '.carousel_viewbox': {
-                'position': 'relative',
-                'overflow': 'hidden',
-                'margin': 'auto'
-            },
-            '.carousel_viewbox ul': {
-                'z-index': '1',
-                'margin': '0',
-                'list-style': 'none'
-            },
-            '.carousel_viewbox ul li': {
-                'position': 'absolute',
-                'z-index': '1'
+                position: 'relative',
+                overflow: 'hidden',
+                margin: 'auto'
             },
             '.carousel_image': {
-                'position': 'relative',
-                'text-align': 'center',
-                'vertical-align': 'middle'
+                textAlign: 'center',
+                verticalAlign: 'middle'
             },
             '.carousel .active .carousel_image': {
-                'text-align': 'center',
-                'vertical-align': 'middle'
+                textAlign: 'center',
+                verticalAlign: 'middle'
+            },
+            '.carousel .carousel_image.active': {
+                textAlign: 'center',
+                verticalAlign: 'middle'
             },
             '.carousel .next_control, .carousel .previous_control': {
-                'display': 'block',
-                'overflow': 'hidden',
-                'position': 'absolute',
-                'top': '50%',
-                'z-index': '2',
+                display: 'block',
+                overflow: 'hidden',
+                position: 'absolute',
+                top: '50%',
+                zIndex: '2',
                 '-moz-user-select': 'none'
             },
             '.carousel .next_control': {
-                'margin-left': '100%'
+                marginLeft: '100%'
             }
         },
 
@@ -264,15 +256,15 @@ var Carousel = new Class(/** @lends Carousel# */{
         this._id = Carousel.assignID();
 
         if (arguments.length < 1 || arguments.length > 2)
-            throw 'ERROR: Constructor of Carousel expected 1 or 2 arguments, but received ' + arguments.length + '!';
+            throw 'Constructor of Carousel expected 1 or 2 arguments, but received ' + arguments.length + '!';
 
         /**
          * Main element from DOM Tree for the carousel. It must contain the '.viewbox' element and buttons (a-tags) for scrolling.
          * @type {Element}
          */
-        this.carousel = $(element);
+        this.carousel = $(element) || $$(element)[0];
         if (this.carousel === null)
-            throw 'ERROR: Element for Carousel with id \'' + element + '\' was not found in DOM Tree!';
+            throw 'Element for Carousel was not found in DOM Tree!';
 
         this.setOptions(options);
 
@@ -284,24 +276,32 @@ var Carousel = new Class(/** @lends Carousel# */{
 
         // If the playlist is not explicitly specified, set than try to get a playlist from the carousel.
         if (this.options.playlist === null)
-            this.options.playlist = new CarouselPlaylist(this.carousel);
+            this.options.playlist = new CarouselPlaylist(this.element);
 
         // Check whether the playlist is internal. If not - make clone
-        if (this.element === this.options.playlist.holder.getParent()) {
+        if (this.element === this.options.playlist.holder) {
             /**
-             * Internal holder (ul-tag) of playlist items.
+             * Internal holder of playlist items.
              * @type {Element}
              */
-            this.holder = this.options.playlist.holder;
-            this.options.playlist.isExtern = true;
+            this.holder = this.element;
+            this.options.playlist.isExtern = false;
         } else
             this.holder = this.options.playlist.holder.clone().inject(this.element);
 
         /**
-         * Holds all items (li-tags) from the playlist.
+         * Holds all items from the playlist.
          * @type {Elements|Element[]}
          */
-        this.items = this.holder.getElements('li');
+        this.items = [];
+        if (this.options.playlist.itemSelector === undefined)
+            this.items = this.holder.getChildren();
+        else
+            this.items = this.holder.getElements(this.itemSelector);
+        if (this.items.length == 0)
+            throw 'No items were found in the playlist.';
+
+        this.options.playlist.NItems = this.items.length;
         this.items[this.currentActiveID].addClass(this.activeLabel);
 
         // Add 'click'-event to all items
@@ -371,9 +371,8 @@ var Carousel = new Class(/** @lends Carousel# */{
                 this.cloneItems(this.items, this.holder);
 
             if (this.options.loop)
-                this.effects = [{}, {}];    // Only if scrolling is in loop
+                this.effects = [{}, {}];
             else {
-                // Only if scrolling is not in loop
                 /**
                  * Array of objects with effects, that will be applied to the items by scrolling.
                  * @type {Array}
@@ -547,7 +546,7 @@ var Carousel = new Class(/** @lends Carousel# */{
         this.isEffectCompleted = false;
 
         if (scrollNTimes <= 0)
-            throw 'ERROR: scrollNTimes must be > 0';
+            throw 'scrollNTimes must be > 0';
         scrollNTimes = scrollNTimes || 1;
 
         // Selects proper properties for scrolling
@@ -560,7 +559,7 @@ var Carousel = new Class(/** @lends Carousel# */{
             itemShift = this.itemShifts[1] - ((scrollNTimes == 1) ? 0 : this.width * (scrollNTimes-1));
             itemPosition = 'top';
         } else
-            throw 'ERROR: Scrolling direction must be -1 or 1 but received \"' + direction + '\"!';
+            throw 'Scrolling direction must be -1 or 1 but received \"' + direction + '\"!';
 
         // Only if scrolling is not in loop
         if (!this.options.loop) {
@@ -610,7 +609,7 @@ var Carousel = new Class(/** @lends Carousel# */{
         }
         // Connects all visible and new items
         itemsToScroll = (direction == 1) ? itemsToScroll.concat(newItems) :
-                                           newItems.concat(itemsToScroll);
+            newItems.concat(itemsToScroll);
 
         if (scrollNTimes > 1) {
             var shift = 0;
@@ -619,7 +618,7 @@ var Carousel = new Class(/** @lends Carousel# */{
             effects = this.createEffect('left', -this.width * shift, this.width, this.firstVisibleItemID + this.options.NVisibleItems + this.options.scrollStep * scrollNTimes);
         } else {
             effects = this.effects[(!this.options.loop && isLast) ? (direction == 1) ? 2 : 3 :
-                                                                    (direction == 1) ? 0 : 1 ];
+                (direction == 1) ? 0 : 1 ];
         }
 
         // Save first visible item ID from this.items
@@ -732,7 +731,7 @@ var Carousel = new Class(/** @lends Carousel# */{
      */
     wrapIndices: function(id, minID, maxID, toWrap) {
         if (maxID === 0 || minID < 0 || maxID < minID)
-            throw 'ERROR arguments: they must be:\n\tmaxID != 0\n\tminID >= 0\n\tmaxID > minID';
+            throw 'arguments must be:\n\tmaxID != 0\n\tminID >= 0\n\tmaxID > minID';
         if (toWrap === undefined)
             toWrap = true;
         if (toWrap)

@@ -578,14 +578,13 @@ Form.RichEditor = new Class({
 
     setupEditors: function() {
         if (!Form.RichEditor.ckeditor_init) {
-            CKEDITOR.config.extraPlugins = 'sourcedialog,energineimage';
-            CKEDITOR.config.removePlugins = 'sourcearea';
+            CKEDITOR.config.extraPlugins = 'energineimage,energinefile';
             CKEDITOR.config.toolbar = [
-                { name: 'document', groups: [ 'mode' ], items: [ 'Sourcedialog' ] },
+                { name: 'document', groups: [ 'mode' ], items: [ 'Source' ] },
                 { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
                 { name: 'editing', groups: [ 'find', 'selection' ], items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
                 { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-                { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'EnergineImage' ] },
+                { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'EnergineImage', 'EnergineFile' ] },
                 { name: 'tools', items: [ 'ShowBlocks' ] },
                 '/',
                 { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },

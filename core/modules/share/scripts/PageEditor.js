@@ -9,14 +9,14 @@ var PageEditor = new Class({
         Asset.css('pageeditor.css');
 
         CKEDITOR.disableAutoInline = true;
-        CKEDITOR.config.extraPlugins = 'sourcedialog,energineimage';
+        CKEDITOR.config.extraPlugins = 'sourcedialog,energineimage,energinefile';
         CKEDITOR.config.removePlugins = 'sourcearea';
         CKEDITOR.config.toolbar = [
             { name: 'document', groups: [ 'mode' ], items: [ 'Sourcedialog' ] },
             { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
             { name: 'editing', groups: [ 'find', 'selection' ], items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
             { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-            { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'EnergineImage' ] },
+            { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'EnergineImage', 'EnergineFile' ] },
             { name: 'tools', items: [ 'ShowBlocks' ] },
             '/',
             { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },

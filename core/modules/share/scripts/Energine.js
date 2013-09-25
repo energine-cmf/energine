@@ -92,9 +92,9 @@ Energine.cancelEvent = function (e) {
 
 Energine.createDatePicker = function (datePickerObj, nullable) {
     var props = {
-        format: 'j-m-Y',
+        format: '%Y-%m-%d',
         allowEmpty: nullable,
-        inputOutputFormat: 'Y-m-d',
+//        inputOutputFormat: '%Y-%m-%d',
         useFadeInOut: false
     };
     return Energine._createDatePickerObject($(datePickerObj), props);
@@ -104,8 +104,8 @@ Energine.createDateTimePicker = function (datePickerObj, nullable) {
     //DateTime
     var props = {
         timePicker: true,
-        format: 'j-m-Y H:i',
-        inputOutputFormat: 'Y-m-d H:i',
+        format: '%Y-%m-%d %H:%M',
+//        inputOutputFormat: '%Y-%m-%d %H:%M',
         allowEmpty: nullable,
         useFadeInOut: false
     }

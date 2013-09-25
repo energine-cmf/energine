@@ -12,7 +12,7 @@ var FileForm = new Class({
 
         this.request(
             this.componentElement.getProperty('single_template')+'save-dir',
-            Object.toQueryString(this.form)+'&path='+ModalBox.getExtraData(),
+            this.form.toQueryString()+'&path='+ModalBox.getExtraData(),
             function() { ModalBox.setReturnValue(true); this.close(); }.bind(this)
         );
     },
@@ -22,7 +22,7 @@ var FileForm = new Class({
         }
         this.request(
             this.singlePath + 'save',
-            Object.toQueryString(this.form),
+            this.form.toQueryString(),
             function() { ModalBox.setReturnValue(true); this.close(); }.bind(this)
         );
     },
@@ -32,7 +32,7 @@ var FileForm = new Class({
         }
         this.request(
             this.singlePath + 'save-zip',
-            Object.toQueryString(this.form) + '&path='+ModalBox.getExtraData(),
+            this.form.toQueryString() + '&path='+ModalBox.getExtraData(),
             function() { ModalBox.setReturnValue(true); this.close(); }.bind(this)
         );
     },

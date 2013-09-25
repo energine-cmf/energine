@@ -86,7 +86,7 @@ var DivForm = new Class({
         }
         this.request(
             this.singlePath + 'save',
-            Object.toQueryString(this.form),
+            this.form.toQueryString(),
             this.processServerResponse.bind(this)
         );
     }

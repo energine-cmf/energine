@@ -29,7 +29,7 @@ var CommentsForm = new Class({
 
             this.request(
                     this.singlePath + 'save-comment/',
-                    Object.toQueryString(this.form),
+                    this.form.toQueryString(),
                     function(response) {
                         this.overlay.hide();
                         if (response.mode == 'update') {

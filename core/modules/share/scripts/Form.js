@@ -54,9 +54,9 @@ var Form = new Class({
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
 
-        Object.append(this.componentElement.getElements('.inp_date') ||
-            [], (this.componentElement.getElements('.inp_datetime') ||
-            [])).each(function (dateControl) {
+        (this.componentElement.getElements('.inp_date') ||
+            []).append(this.componentElement.getElements('.inp_datetime') ||
+            []).each(function (dateControl) {
                 var isNullable = !dateControl.getParent('.field').hasClass('required');
                 this.dateControls.push(
                     (dateControl.hasClass('inp_date') ? Energine.createDatePicker(dateControl, isNullable) : Energine.createDateTimePicker(dateControl, isNullable))
@@ -118,7 +118,7 @@ var Form = new Class({
         }.bind(this);
 
         this.request(this.singlePath +
-            'save', Object.toQueryString(this.form), this.processServerResponse.bind(this), errorFunc, errorFunc);
+            'save', this.form.toQueryString(), this.processServerResponse.bind(this), errorFunc, errorFunc);
     },
     _getOverlay:function () {
         return (!this.overlay) ? this.overlay = new Overlay() : this.overlay;

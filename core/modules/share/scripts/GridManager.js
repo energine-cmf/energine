@@ -205,7 +205,7 @@ var Grid = new Class({
         if (!this.data) return false;
         if (!this.keyFieldName) return false;
 
-        return Object.some(this.data, function (item, index) {
+        return this.data.some(function (item, index) {
             return (item[this.keyFieldName] == key);
         }.bind(this));
     },
@@ -761,7 +761,7 @@ GridManager.Filter.QueryControls = new Class({
         });
     },
     hasValues:function () {
-        return Object.some(this.inputs, function (el) {
+        return this.inputs.some(function (el) {
             return ($(el)) ? el.get('value') : false
         });
     },

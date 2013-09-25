@@ -321,7 +321,7 @@ var TextboxList2 = new Class({
   autoAdd: function(el) {
     if(!el || ! el.retrieve('result')) return;
     this.add(el.retrieve('result'));
-    delete this.data[this.data.indexOf(el.retrieve('result'))];
+    this.data.erase(this.data.indexOf(el.retrieve('result')));
     this.autoHide();
     var input = this.lastinput || this.current.retrieve('input');
     input.set('value', '').focus();

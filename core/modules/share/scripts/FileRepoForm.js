@@ -152,6 +152,6 @@ var FileRepoForm = new Class({
         var errorFunc = function (responseText) {
             this._getOverlay().hide();
         }.bind(this);
-        this.request(Energine.base + this.form.getProperty('action'), Object.toQueryString(this.form), this.processServerResponse.bind(this), errorFunc, errorFunc);
+        this.request(Energine.base + this.form.getProperty('action'), this.form.toQueryString(), this.processServerResponse.bind(this), errorFunc, errorFunc);
     }
 });

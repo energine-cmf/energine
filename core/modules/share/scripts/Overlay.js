@@ -43,7 +43,7 @@ var Overlay = new Class({
         var body;
         if (!this.options.hideObjects) return;
         var elements = Array.from((body = $(document.body)).getElements('object'));
-        Object.append(elements, Array.from(body.getElements(Browser.ie ? 'select' : 'embed')) );
+        elements.append(Array.from(body.getElements(Browser.ie ? 'select' : 'embed')) );
         elements.each(function(element) {
             element.style.visibility = hide ? 'hidden' : '';
         });

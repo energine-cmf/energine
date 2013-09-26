@@ -21,7 +21,7 @@
     </state>
     <state name="success">
         <uri_patterns>
-            <pattern>/success/</pattern>
+            <pattern>/send/success/</pattern>
         </uri_patterns>
     </state>
     <!--<state name="showResult">

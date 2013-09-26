@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `apps_vote` (
   `vote_is_active` tinyint(1) NOT NULL,
   PRIMARY KEY (`vote_id`),
   KEY `vote_is_active` (`vote_is_active`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8  ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8  ;
 
 -- --------------------------------------------------------
 

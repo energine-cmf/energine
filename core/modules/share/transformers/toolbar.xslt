@@ -73,7 +73,9 @@
                 id: '<xsl:value-of select="@id"/>',
                 title: '<xsl:value-of select="@title"/>',
                 action: '<xsl:value-of select="@onclick"/>',
-                icon: '<xsl:value-of select="@icon"/>'
+                icon: '<xsl:value-of select="@icon"/>',
+                initially_disabled: <xsl:choose><xsl:when test="@mode &lt; 2">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose>,
+                disabled: <xsl:choose><xsl:when test="@mode &lt; 2">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose>
             })
     	);
     </xsl:template>

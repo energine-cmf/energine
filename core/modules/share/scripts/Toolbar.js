@@ -177,7 +177,8 @@ Toolbar.Control = new Class({
             title:'',
             tooltip:'',
             action:null,
-            disabled:false
+            disabled:false,
+            initially_disabled: false
         };
         $extend(this.properties, $pick(properties, {}));
     },
@@ -189,6 +190,7 @@ Toolbar.Control = new Class({
         this.properties.tooltip = controlDescr.getAttribute('tooltip') || '';
         this.properties.disabled =
             controlDescr.getAttribute('disabled') ? true : false;
+        this.properties.initially_disabled = this.properties.disabled;
     },
     buildAsIcon:function (icon) {
         this.element.addClass('icon unselectable')
@@ -225,13 +227,19 @@ Toolbar.Control = new Class({
     },
 
     enable:function () {
-        this.properties.disabled = false;
-        this.element.removeClass('disabled').setOpacity(1);
+        if (!this.properties.initially_disabled) {
+            this.properties.disabled = false;
+            this.element.removeClass('disabled').setOpacity(1);
+        }
         return this;
     },
 
     disabled:function() {
         return this.properties.disabled;
+    },
+
+    initially_disabled:function() {
+        return this.properties.initially_disabled;
     },
 
     setAction:function (action) {

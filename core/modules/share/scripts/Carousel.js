@@ -3,7 +3,7 @@
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.1.0
+ * @version 1.2.0
  *
  * @requires MooTools
  */
@@ -50,6 +50,15 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
         this.holder = $(element) || $$(element)[0];
         if (this.holder === null)
             throw 'Element for CarouselPlaylist was not found in DOM Tree!';
+
+        if (this.itemSelector === undefined)
+            this.items = this.holder.getChildren();
+        else
+            this.items = this.holder.getElements(this.itemSelector);
+        if (this.items.length == 0)
+            throw 'No items were found in the playlist.';
+
+        this.NItems = this.items.length;
     },
     /**
      * Hides playlist.
@@ -208,19 +217,20 @@ var Carousel = new Class(/** @lends Carousel# */{
                 overflow: 'hidden',
                 margin: 'auto'
             },
-            '.carousel_image': {
+            '.item': {
+                position: 'absolute',
                 textAlign: 'center',
                 verticalAlign: 'middle'
             },
-            '.carousel .active .carousel_image': {
+            '.active .item': {
                 textAlign: 'center',
                 verticalAlign: 'middle'
             },
-            '.carousel .carousel_image.active': {
+            '.item.active': {
                 textAlign: 'center',
                 verticalAlign: 'middle'
             },
-            '.carousel .next_control, .carousel .previous_control': {
+            '.next_control, .previous_control': {
                 display: 'block',
                 overflow: 'hidden',
                 position: 'absolute',
@@ -228,7 +238,7 @@ var Carousel = new Class(/** @lends Carousel# */{
                 zIndex: '2',
                 '-moz-user-select': 'none'
             },
-            '.carousel .next_control': {
+            '.next_control': {
                 marginLeft: '100%'
             }
         },
@@ -267,6 +277,19 @@ var Carousel = new Class(/** @lends Carousel# */{
             throw 'Element for Carousel was not found in DOM Tree!';
 
         this.setOptions(options);
+        if (typeOf(this.options.NVisibleItems) == 'string') {
+            this.options.NVisibleItems = this.options.NVisibleItems.toInt();
+            if (!!this.options.NVisibleItems)
+                throw 'The option \"NVisibleItems\" is ' + this.options.NVisibleItems + ', but must contain an integer, or must be an integer.'
+        }
+        if (typeOf(this.options.scrollStep) == 'string'){
+            this.options.scrollStep = this.options.scrollStep.toInt();
+            if (!!this.options.scrollStep)
+                throw 'The option \"scrollStep\" is ' + this.options.scrollStep + ', but must contain an integer, or must be an integer.'
+        }
+
+        if (this.options.NVisibleItems <= 0)
+            this.options.NVisibleItems = 1;
 
         /**
          * View-box element of the carousel that holds an playlist items.
@@ -276,7 +299,12 @@ var Carousel = new Class(/** @lends Carousel# */{
 
         // If the playlist is not explicitly specified, set than try to get a playlist from the carousel.
         if (this.options.playlist === null)
-            this.options.playlist = new CarouselPlaylist(this.element);
+            try {
+                this.options.playlist = new CarouselPlaylist(this.element);
+            } catch (err) {
+                console.warn(err);
+                throw 'Carousel can not be created without playlist.';
+            }
 
         // Check whether the playlist is internal. If not - make clone
         if (this.element === this.options.playlist.holder) {
@@ -293,15 +321,7 @@ var Carousel = new Class(/** @lends Carousel# */{
          * Holds all items from the playlist.
          * @type {Elements|Element[]}
          */
-        this.items = [];
-        if (this.options.playlist.itemSelector === undefined)
-            this.items = this.holder.getChildren();
-        else
-            this.items = this.holder.getElements(this.itemSelector);
-        if (this.items.length == 0)
-            throw 'No items were found in the playlist.';
-
-        this.options.playlist.NItems = this.items.length;
+        this.items = this.holder.getChildren();
         this.items[this.currentActiveID].addClass(this.activeLabel);
 
         // Add 'click'-event to all items
@@ -426,7 +446,7 @@ var Carousel = new Class(/** @lends Carousel# */{
             this.effects[1] = this.createEffect('left', 0, this.width, N);
 
             this.itemShifts = [ this.width * this.options.NVisibleItems,
-                               -this.width * this.options.scrollStep ];
+                -this.width * this.options.scrollStep ];
 
             // Only if scrolling is not in loop
             if (!this.options.loop) {

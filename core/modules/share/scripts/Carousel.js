@@ -336,9 +336,11 @@ var Carousel = new Class(/** @lends Carousel# */{
         };
 
         // Sets core styles
-        var parentElement = this.carousel.getParent();
+        this.carousel.setStyles(this.options.style['.carousel']);
+        delete this.options.style['.carousel'];
         for (var selector in this.options.style)
-            parentElement.getElements(selector).setStyles(this.options.style[selector]);
+            this.carousel.getElements(selector).setStyles(this.options.style[selector]);
+        delete this.options.style;
 
         /**
          * Indicates whether the scrolling can be done. If the amount of items in the playlist less or equal

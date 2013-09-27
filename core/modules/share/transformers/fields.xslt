@@ -114,6 +114,9 @@
                 </xsl:for-each>
             </xsl:attribute>
         </input>
+        <xsl:if test="@name = 'tags'">
+            <button onclick="{generate-id(../..)}.openTagEditor(this);" type="button" link="tags">...</button>
+        </xsl:if>
         <!--<input class="text inp_textbox">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="value"><xsl:for-each select="items/item"><xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each></xsl:attribute>
@@ -160,7 +163,7 @@
             </xsl:choose>
         </xsl:variable>
         <input type="hidden" name="{$FIELD_NAME}" value="0"/>
-        <input class="checkbox" type="checkbox" id="{@name}" name="{$FIELD_NAME}" style="width: auto;" value="1">
+        <input class="checkbox" type="checkbox" id="{@name}" name="{$FIELD_NAME}" style="width: seto;" value="1">
             <xsl:if test=". = 1">
                 <xsl:attribute name="checked">checked</xsl:attribute>
             </xsl:if>

@@ -177,6 +177,11 @@ var Form = new Class({
         }
     },
 
+    processTagResult: function(result, button) {
+        button = $(button);
+        $(button.getProperty('link')).value = result['tags'];
+    },
+
     openFileLib:function (button) {
         var path = $($(button).getProperty('link')).get('value');
         if (path == '') {
@@ -190,6 +195,22 @@ var Form = new Class({
             }.bind(this)
         });
     },
+
+    openTagEditor: function (button) {
+        var tags = $($(button).getProperty('link')).get('value');
+        if (tags == '') {
+            tags = null;
+        }
+        ModalBox.open({
+            url:this.singlePath + 'tags/?tags=' + encodeURIComponent(tags),
+            extraData: tags,
+            onClose:function (result) {
+                console.log(result);
+                //this.processTagResult(result, button);
+            }.bind(this)
+        });
+    },
+
     openQuickUpload:function (button) {
         var path = $($(button).getProperty('link')).get('value');
         if (path == '') {

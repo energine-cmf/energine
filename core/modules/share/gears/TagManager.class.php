@@ -24,6 +24,8 @@ class TagManager extends DBWorker {
 
     const TAGS_TABLE_SUFFIX = '_tags';
 
+    const TAG_TABLENAME_TRANSLATION = 'share_tags_translation';
+
     /**
      * Разделитель тегов
      */
@@ -141,7 +143,14 @@ class TagManager extends DBWorker {
         if (!empty($tags)) {
             foreach ($tags as $tag) {
                 try {
-                    $this->dbh->modify(QAL::INSERT, self::TAG_TABLENAME, array('tag_name' => $tag));
+                    $tag_id = $this->dbh->modify(QAL::INSERT, self::TAG_TABLENAME, array('tag_code' => $tag));
+                    $langs = E()->getLanguage()->getLanguages();
+                    if ($langs) {
+                        foreach($langs as $lang_id => $lang_info) {
+                            $this->dbh->modify(QAL::INSERT_IGNORE, self::TAG_TABLENAME_TRANSLATION,
+                                array('tag_id' => $tag_id, 'lang_id' => $lang_id, 'tag_name' => $tag));
+                        }
+                    }
                 }
                 catch (Exception $e) {
 
@@ -211,7 +220,18 @@ class TagManager extends DBWorker {
         if (!is_array($tag)) {
             $tag = explode(self::TAG_SEPARATOR, $tag);
         }
-        $res = E()->getDB()->select(self::TAG_TABLENAME, true, array('tag_name' => $tag));
+
+        $in = array();
+        foreach($tag as $t) {
+            $in[] = E()->getDB()->quote($t);
+        }
+
+        $res = E()->getDB()->select(
+            'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
+            'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
+            'WHERE tr.tag_name IN (' . implode(',', $in) . ')',
+            E()->getLanguage()->getCurrent()
+        );
         if (is_array($res)) {
             foreach ($res as $row) {
                 $result[$row['tag_id']] = $row['tag_name'];
@@ -230,16 +250,16 @@ class TagManager extends DBWorker {
      * @return array
      */
     static public function getTagStartedWith($str, $limit = false) {
-        $result = array();
-        $str = trim($str);
 
-        if ($limit) {
-            $limit = array($limit);
-        }
-        else $limit = null;
+        $res = E()->getDB()->select(
+            'SELECT tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
+            'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
+            'WHERE tr.tag_name LIKE "%' . addslashes(trim($str)) . '%" ' .
+            'ORDER BY tr.tag_name DESC ' .
+            (($limit) ? 'LIMIT ' . (int) $limit : ''),
+            E()->getLanguage()->getCurrent()
+        );
 
-        $res =
-                E()->getDB()->select(self::TAG_TABLENAME, 'tag_name', 'tag_name LIKE "%' . addslashes($str) . '%"', array('tag_name' => QAL::DESC), $limit);
         $result = simplifyDBResult($res, 'tag_name');
 
         return $result;
@@ -261,8 +281,13 @@ class TagManager extends DBWorker {
             $tagID = array($tagID);
         }
 
-        $res =
-                E()->getDB()->select(self::TAG_TABLENAME, true, array('tag_id' => $tagID));
+        $res = E()->getDB()->select(
+            'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
+            'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
+            'WHERE tr.tag_id IN (' . implode(',', $tagID) . ')',
+            E()->getLanguage()->getCurrent()
+        );
+
         if(is_array($res)){
             foreach ($res as $resVal){
                 $result[$resVal['tag_id']] = $resVal['tag_name'];

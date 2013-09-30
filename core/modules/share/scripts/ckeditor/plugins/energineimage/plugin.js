@@ -1,0 +1,68 @@
+﻿CKEDITOR.plugins.add( 'energineimage', {
+    lang: 'en,ru,uk',
+    icons: 'energineimage',
+	init: function( editor ) {
+
+		editor.addCommand( 'energineimage', {
+            exec: function(editor) {
+
+                var panel = $('cke_' + editor.editorId);
+                panel.hide();
+
+                ModalBox.open({
+                    url: editor.singleTemplate + 'file-library/',
+                    onClose: function(imageData) {
+
+                        if (!imageData) {
+                            panel.show();
+                            return;
+                        }
+
+                        ModalBox.open({
+                            url: editor.singleTemplate + 'imagemanager',
+                            onClose: function (image) {
+                                if (!image) {
+                                    panel.show();
+                                    return;
+                                }
+
+                                if (image.filename.toLowerCase().indexOf('http://') == -1) {
+                                    image.filename = Energine.media + image.filename;
+                                }
+
+                                var imgStr = '<img src="'
+                                    + image.filename + '" width="'
+                                    + image.width + '" height="'
+                                    + image.height + '" align="'
+                                    + image.align + '" alt="'
+                                    + image.alt + '" border="0" style="';
+
+                                ['margin-left', 'margin-right', 'margin-top', 'margin-bottom'].each(function (marginProp) {
+                                    if (image[marginProp] != 0) {
+                                        imgStr += marginProp + ':' + image[marginProp] +
+                                            'px;';
+                                    }
+                                });
+
+                                imgStr += '"/>';
+
+                                editor.insertHtml(imgStr);
+                                panel.show();
+
+                            },
+                            extraData: imageData
+                        });
+                    }
+                });
+            }
+        });
+
+		if ( editor.ui.addButton ) {
+			editor.ui.addButton( 'EnergineImage', {
+				label: editor.lang.energineimage.toolbar,
+				command: 'energineimage',
+				toolbar: 'insert,10'
+			});
+		}
+	}
+});

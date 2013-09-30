@@ -66,8 +66,7 @@ Energine.request = {
             // 'noCache': true,
             'evalResponse': false,
             'onComplete': callbackFunction,
-            'onFailure': function (e) {/*console.log(arguments)*/
-            }
+            'onFailure': function (e) {console.error(arguments)}
         }).send();
 
     }
@@ -93,9 +92,9 @@ Energine.cancelEvent = function (e) {
 
 Energine.createDatePicker = function (datePickerObj, nullable) {
     var props = {
-        format: 'j-m-Y',
+        format: '%Y-%m-%d',
         allowEmpty: nullable,
-        inputOutputFormat: 'Y-m-d',
+//        inputOutputFormat: '%Y-%m-%d',
         useFadeInOut: false
     };
     return Energine._createDatePickerObject($(datePickerObj), props);
@@ -105,8 +104,8 @@ Energine.createDateTimePicker = function (datePickerObj, nullable) {
     //DateTime
     var props = {
         timePicker: true,
-        format: 'j-m-Y H:i',
-        inputOutputFormat: 'Y-m-d H:i',
+        format: '%Y-%m-%d %H:%M',
+//        inputOutputFormat: '%Y-%m-%d %H:%M',
         allowEmpty: nullable,
         useFadeInOut: false
     }
@@ -120,7 +119,7 @@ Energine._createDatePickerObject = function (datePickerObj, props) {
         Asset.css('datepicker.css');
         this.datePickerDataLoaded = true;
     }
-    var dp = new DatePicker(datePickerObj, $extend({
+    var dp = new DatePicker(datePickerObj, Object.append({
             //debug:true
         },
         props
@@ -143,7 +142,7 @@ Asset.css = function (source, properties) {
         properties = properties || {};
 
         var result = new Element('link');
-        result.setProperties($merge({
+        result.setProperties(Object.merge({
             'rel': 'stylesheet',
             'media': 'Screen, projection',
             'type': 'text/css',

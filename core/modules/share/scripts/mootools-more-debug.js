@@ -1,6 +1,6 @@
 // MooTools: the javascript framework.
-// Load this file's selection again by visiting: http://mootools.net/more/5484401afa9b3c5a190caa411871c147 
-// Or build this file again with packager using: packager build More/More More/Array.Extras More/Date More/URI More/Hash More/Element.Forms More/Elements.From More/Element.Measure More/Element.Pin More/Element.Position More/OverText More/Fx.Accordion More/Fx.Move More/Fx.Slide More/Fx.SmoothScroll More/Drag More/Assets More/Tips
+// Load this file's selection again by visiting: http://mootools.net/more/d941f81e435b3c0ce6ed5b236470c819 
+// Or build this file again with packager using: packager build More/More More/Array.Extras More/Date More/URI More/Element.Forms More/Elements.From More/Element.Measure More/Element.Pin More/Element.Position More/OverText More/Fx.Accordion More/Fx.Move More/Fx.Slide More/Fx.SmoothScroll More/Drag More/Assets More/Tips
 /*
 ---
 
@@ -236,9 +236,7 @@ var Locale = this.Locale = {
 
 		if (set) locale.define(set, key, value);
 
-		/*<1.2compat>*/
-		if (set == 'cascade') return Locale.inherit(name, key);
-		/*</1.2compat>*/
+		
 
 		if (!current) current = locale;
 
@@ -253,9 +251,7 @@ var Locale = this.Locale = {
 
 			this.fireEvent('change', locale);
 
-			/*<1.2compat>*/
-			this.fireEvent('langChange', locale.name);
-			/*</1.2compat>*/
+			
 		}
 
 		return this;
@@ -352,25 +348,7 @@ Locale.Set = new Class({
 
 });
 
-/*<1.2compat>*/
-var lang = MooTools.lang = {};
 
-Object.append(lang, Locale, {
-	setLanguage: Locale.use,
-	getCurrentLanguage: function(){
-		var current = Locale.getCurrent();
-		return (current) ? current.name : null;
-	},
-	set: function(){
-		Locale.define.apply(this, arguments);
-		return this;
-	},
-	get: function(set, key, args){
-		if (key) set += '.' + key;
-		return Locale.get(set, args);
-	}
-});
-/*</1.2compat>*/
 
 })();
 
@@ -852,9 +830,7 @@ Date.extend({
 		return this;
 	},
 
-	//<1.2compat>
-	parsePatterns: parsePatterns,
-	//</1.2compat>
+	
 
 	defineParser: function(pattern){
 		parsePatterns.push((pattern.re && pattern.handler) ? pattern : build(pattern));
@@ -1248,153 +1224,6 @@ String.implement({
 });
 
 })();
-
-
-/*
----
-
-name: Hash
-
-description: Contains Hash Prototypes. Provides a means for overcoming the JavaScript practical impossibility of extending native Objects.
-
-license: MIT-style license.
-
-requires:
-  - Core/Object
-  - /MooTools.More
-
-provides: [Hash]
-
-...
-*/
-
-(function(){
-
-if (this.Hash) return;
-
-var Hash = this.Hash = new Type('Hash', function(object){
-	if (typeOf(object) == 'hash') object = Object.clone(object.getClean());
-	for (var key in object) this[key] = object[key];
-	return this;
-});
-
-this.$H = function(object){
-	return new Hash(object);
-};
-
-Hash.implement({
-
-	forEach: function(fn, bind){
-		Object.forEach(this, fn, bind);
-	},
-
-	getClean: function(){
-		var clean = {};
-		for (var key in this){
-			if (this.hasOwnProperty(key)) clean[key] = this[key];
-		}
-		return clean;
-	},
-
-	getLength: function(){
-		var length = 0;
-		for (var key in this){
-			if (this.hasOwnProperty(key)) length++;
-		}
-		return length;
-	}
-
-});
-
-Hash.alias('each', 'forEach');
-
-Hash.implement({
-
-	has: Object.prototype.hasOwnProperty,
-
-	keyOf: function(value){
-		return Object.keyOf(this, value);
-	},
-
-	hasValue: function(value){
-		return Object.contains(this, value);
-	},
-
-	extend: function(properties){
-		Hash.each(properties || {}, function(value, key){
-			Hash.set(this, key, value);
-		}, this);
-		return this;
-	},
-
-	combine: function(properties){
-		Hash.each(properties || {}, function(value, key){
-			Hash.include(this, key, value);
-		}, this);
-		return this;
-	},
-
-	erase: function(key){
-		if (this.hasOwnProperty(key)) delete this[key];
-		return this;
-	},
-
-	get: function(key){
-		return (this.hasOwnProperty(key)) ? this[key] : null;
-	},
-
-	set: function(key, value){
-		if (!this[key] || this.hasOwnProperty(key)) this[key] = value;
-		return this;
-	},
-
-	empty: function(){
-		Hash.each(this, function(value, key){
-			delete this[key];
-		}, this);
-		return this;
-	},
-
-	include: function(key, value){
-		if (this[key] == undefined) this[key] = value;
-		return this;
-	},
-
-	map: function(fn, bind){
-		return new Hash(Object.map(this, fn, bind));
-	},
-
-	filter: function(fn, bind){
-		return new Hash(Object.filter(this, fn, bind));
-	},
-
-	every: function(fn, bind){
-		return Object.every(this, fn, bind);
-	},
-
-	some: function(fn, bind){
-		return Object.some(this, fn, bind);
-	},
-
-	getKeys: function(){
-		return Object.keys(this);
-	},
-
-	getValues: function(){
-		return Object.values(this);
-	},
-
-	toQueryString: function(base){
-		return Object.toQueryString(this, base);
-	}
-
-});
-
-Hash.alias({indexOf: 'keyOf', contains: 'hasValue'});
-
-
-})();
-
 
 
 /*
@@ -1847,10 +1676,7 @@ Element.implement({
 	},
 
 	getComputedSize: function(options){
-		//<1.2compat>
-		//legacy support for my stupid spelling error
-		if (options && options.plains) options.planes = options.plains;
-		//</1.2compat>
+		
 
 		options = Object.merge({
 			styles: ['padding','border'],
@@ -2028,9 +1854,7 @@ provides: [Element.Pin]
 
 	});
 
-//<1.2compat>
-Element.alias('togglepin', 'togglePin');
-//</1.2compat>
+
 
 })();
 
@@ -2971,39 +2795,7 @@ Fx.Accordion = new Class({
 
 });
 
-/*<1.2compat>*/
-/*
-	Compatibility with 1.2.0
-*/
-var Accordion = new Class({
 
-	Extends: Fx.Accordion,
-
-	initialize: function(){
-		this.parent.apply(this, arguments);
-		var params = Array.link(arguments, {'container': Type.isElement});
-		this.container = params.container;
-	},
-
-	addSection: function(toggler, element, pos){
-		toggler = document.id(toggler);
-		element = document.id(element);
-
-		var test = this.togglers.contains(toggler);
-		var len = this.togglers.length;
-		if (len && (!test || pos)){
-			pos = pos != null ? pos : len - 1;
-			toggler.inject(this.togglers[pos], 'before');
-			element.inject(toggler, 'after');
-		} else if (this.container && !test){
-			toggler.inject(this.container);
-			element.inject(this.container);
-		}
-		return this.parent.apply(this, arguments);
-	}
-
-});
-/*</1.2compat>*/
 
 
 /*
@@ -3415,16 +3207,7 @@ Fx.Scroll = new Class({
 
 });
 
-//<1.2compat>
-Fx.Scroll.implement({
-	scrollToCenter: function(){
-		return this.toElementCenter.apply(this, arguments);
-	},
-	scrollIntoView: function(){
-		return this.toElementEdge.apply(this, arguments);
-	}
-});
-//</1.2compat>
+
 
 function isBody(element){
 	return (/^(?:body|html)$/i).test(element.tagName);
@@ -3456,7 +3239,7 @@ provides: [Fx.SmoothScroll]
 ...
 */
 
-/*<1.2compat>*/var SmoothScroll = /*</1.2compat>*/Fx.SmoothScroll = new Class({
+Fx.SmoothScroll = new Class({
 
 	Extends: Fx.Scroll,
 

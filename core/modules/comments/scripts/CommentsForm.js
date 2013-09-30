@@ -204,7 +204,6 @@ var CommentsForm = new Class({
         if (confirm($(this.form).get('comment_realy_remove'))) {
             this.showOverlay();
             if (this.isEditState) this.showBaseForm();
-            var event = new Event(event || window.event);
             var commentLi = $(event.target).getParent('li');
             var cId = parseInt(event.target.getParent('li').id);
             this.request(

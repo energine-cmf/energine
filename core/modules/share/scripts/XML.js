@@ -7,13 +7,14 @@
 var XML = {
     rootFromFile: function(file) {
         var root = null;
-        switch (Browser.Engine.name) {
-            case 'webkit':
+        switch (Browser.name) {
+            case 'safari':
+            case 'chrome':
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.open('GET', file, false);
                 xmlhttp.send(null);
                 return xmlhttp.responseXML;
-            case 'trident': root = new ActiveXObject('Microsoft.XMLDOM');
+            case 'ie': root = new ActiveXObject('Microsoft.XMLDOM');
             default: root = root ||
                     document.implementation.createDocument('', '', null);
         }
@@ -26,7 +27,7 @@ var XML = {
     rootFromString: function(string) {
         var root;
 
-        if (Browser.Engine.trident) {
+        if (Browser.ie) {
             root = new ActiveXObject('Microsoft.XMLDOM');
             root.async = false;
             root.loadXML(string);
@@ -49,7 +50,7 @@ var XML = {
     },
 
     nodeToHash: function(node) {
-        switch ($type(node)) {
+        switch (typeOf(node)) {
 
             case 'element':
                 var attributes = node.attributes;
@@ -113,7 +114,7 @@ var XML = {
 
         var temp = document.newElement('div');
 
-        if (Browser.Engine.trident) {
+        if (Browser.ie) {
             var html = xml.transformNode(xsl);
             temp.innerHTML = html;
         } else {
@@ -125,7 +126,7 @@ var XML = {
 
         var children = [];
         for (var i = 0, l = temp.childNodes.length; i < l; i++) {
-            var element = temp.childNodes[i], type = $type(element);
+            var element = temp.childNodes[i], type = typeOf(element);
             if (type == 'element' || type == 'textnode') children.push(element);
         }
         return children;

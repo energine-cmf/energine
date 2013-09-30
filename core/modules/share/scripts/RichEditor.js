@@ -49,7 +49,7 @@ var RichEditor = new Class({
         showUI = showUI || false;
         value = value || null;
 
-        if (Browser.Engine.gecko) {
+        if (Browser.firefox) {
             document.execCommand('styleWithCSS', false, true);
         }
 

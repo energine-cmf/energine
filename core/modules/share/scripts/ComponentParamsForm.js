@@ -8,7 +8,7 @@ var ComponentParamsForm = new Class({
         if (!this.validator.validate()) {
             return false;
         }
-        var result = new Hash();
+        var result = {};
         if(this.codeEditors.length){
             this.codeEditors.each(function(editor){
                 editor.save();
@@ -25,12 +25,12 @@ var ComponentParamsForm = new Class({
             }
 
             if(el.getProperty('name'))
-                result.set(el.getProperty('name'), value);
+                result[el.getProperty('name')] = value;
         });
 
         if(this.richEditors.length){
             this.richEditors.each(function(editor){
-                result.set(editor.hidden.getProperty('name'), editor.area.innerHTML);
+                result[editor.hidden.getProperty('name')] = editor.area.innerHTML;
             });
         }
 

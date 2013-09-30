@@ -1,7 +1,13 @@
+/**
+ *
+ * @type {Class}
+ *
+ * @param {Object} [options] Set of events. This class listens 'tabChange'-event.
+ */
 var TabPane = new Class({
-    options: {
-        onTabChange: $empty
-    },
+//    options: {
+//        onTabChange: function(){}
+//    },
     Implements: [Options, Events],
     initialize: function (element, options) {
         Asset.css('tabpane.css');
@@ -14,7 +20,6 @@ var TabPane = new Class({
             var anchor = tab.getElement('a');
             var paneId = anchor.getProperty('href').slice(anchor.getProperty('href').lastIndexOf('#'));
             anchor.addEvent('click', function (event) {
-                event = new Event(event || window.event);
                 event.preventDefault();
                 tab.blur();
             });
@@ -61,7 +66,7 @@ var TabPane = new Class({
         return this.currentTab;
     },
     setTabTitle: function (title, tab) {
-        tab = $pick(tab, this.getCurrentTab());
+        tab = Array.pick([tab, this.getCurrentTab()]);
         tab.getElement('a').set('html', title);
     },
     createNewTab: function (tabTitle) {
@@ -72,7 +77,6 @@ var TabPane = new Class({
         this.element.getElement('ul.e-tabs').grab(tabElement);
         this.tabs.push(tabElement);
         titleElement.addEvent('click', function (event) {
-            event = new Event(event || window.event);
             event.preventDefault();
             tabElement.blur();
         });

@@ -23,7 +23,7 @@ Grid.implement({
 // Пропускаем невидимые поля.
         if (!this.metadata[fieldName].visible ||
             this.metadata[fieldName].type == 'hidden') return;
-        var cell = new Element('td').injectInside(row);
+        var cell = new Element('td').inject(row);
         if (fieldName == 'upl_path') {
             cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
 

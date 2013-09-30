@@ -39,20 +39,20 @@ var FileForm = new Class({
     _buildUpload: function(fileField, savePath){
     	var iframe = $('uploader');
         if(!iframe){
-            if (Browser.Engine.trident && (Browser.version < 9)) {
+            if (Browser.ie && (Browser.version < 9)) {
                 iframe = $(document.createElement('<iframe name="uploader" id="uploader">'));
             }
             else {
                 iframe = new Element('iframe').setProperties({ name: 'uploader', id: 'uploader' });
             }
             iframe.setStyles({ width: 0, height: 0, border: 0, position: 'absolute'});
-            iframe.injectBefore(this.form);
+            iframe.inject(this.form, 'before');
         }
         
         iframe.filename = $(fileField.getAttribute('link'));
         iframe.preview = $(fileField.getAttribute('preview'));
-        var path = new Element('input').setProperty('name', 'path').setProperties({ 'id': 'path', 'type': 'hidden', 'value': ModalBox.getExtraData() }).injectInside(this.form);
-        var progressBar = new Element('img').setProperties({ id: 'progress_bar', src: 'images/loading.gif' }).injectAfter(fileField);
+        var path = new Element('input').setProperty('name', 'path').setProperties({ 'id': 'path', 'type': 'hidden', 'value': ModalBox.getExtraData() }).inject(this.form);
+        var progressBar = new Element('img').setProperties({ id: 'progress_bar', src: 'images/loading.gif' }).inject(fileField, 'after');
         this.form.setProperties({ action: this.componentElement.getProperty('single_template') + savePath, target: 'uploader' });
 
         this.form.submit();

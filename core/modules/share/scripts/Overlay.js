@@ -20,7 +20,7 @@ var Overlay = new Class({
     show: function() {
         this.setupObjects(true);
         if (!this.parentElement.getChildren('.e-overlay').length) {
-            this.element.injectInside(this.parentElement);
+            this.element.inject(this.parentElement);
 
         }
         this.element.fade(this.options.opacity);
@@ -42,10 +42,8 @@ var Overlay = new Class({
 
         var body;
         if (!this.options.hideObjects) return;
-        var elements = $A((body = $(document.body)).getElements('object'));
-        elements.extend(
-            $A(body.getElements(Browser.Engine.trident ? 'select' : 'embed'))
-        );
+        var elements = Array.from((body = $(document.body)).getElements('object'));
+        elements.append(Array.from(body.getElements(Browser.ie ? 'select' : 'embed')) );
         elements.each(function(element) {
             element.style.visibility = hide ? 'hidden' : '';
         });

@@ -4,6 +4,10 @@
         <javascript>
             <behavior name="TagEditor"/>
         </javascript>
+        <fields>
+            <field name="tag_id"/>
+            <field name="tag_name"/>
+        </fields>
         <uri_patterns>
             <pattern>/show/[tag_id]/</pattern>
         </uri_patterns>
@@ -17,6 +21,10 @@
         <uri_patterns>
             <pattern>/[int]/edit/</pattern>
         </uri_patterns>
+        <fields>
+            <field name="tag_id"/>
+            <field name="tag_name"/>
+        </fields>
         <javascript>
             <behavior name="Form"/>
         </javascript>

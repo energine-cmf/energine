@@ -343,6 +343,11 @@ class FieldDescription extends DBWorker implements Iterator
                     break;
                 case 'type':
                     $this->setSystemType($attrValue);
+                    if (($this->getType() == self::FIELD_TYPE_SELECT)
+                        && !empty($fieldInfo->options->option)
+                    ) {
+                        $this->loadAvailableXMLValues($fieldInfo->options->option);
+                    }
                     break;
                 case 'length':
                     $this->setLength($attrValue);
@@ -792,6 +797,9 @@ class FieldDescription extends DBWorker implements Iterator
                 elseif (strpos($name, '_file') || strpos($name, '_img')) {
                     $result = self::FIELD_TYPE_FILE;
                 }
+                /*elseif (strpos($name, '_pfile')) {
+                    $result = self::FIELD_TYPE_PFILE;
+                }*/
                 elseif (strpos($name, '_video')) {
                     $result = self::FIELD_TYPE_VIDEO;
                 }
@@ -859,6 +867,9 @@ class FieldDescription extends DBWorker implements Iterator
     {
         $type = $configFieldDescription->getType();
         $mode = $configFieldDescription->getMode();
+        if(!is_null($av = $configFieldDescription->getAvailableValues())) {
+            $dbFieldDescription->setAvailableValues($av);
+        }
         if ($dbFieldDescription->getPropertyValue('index') == 'PRI') {
             $dbFieldDescription->setType(FieldDescription::FIELD_TYPE_HIDDEN);
         }
@@ -937,8 +948,8 @@ class FieldDescription extends DBWorker implements Iterator
      */
     public function loadAvailableValues($values, $keyName, $valueName)
     {
-        $result = array();
-        if (is_array($values)) {
+        if (is_array($values) && empty($this->availableValues)) {
+            $result = array();
             foreach ($values as $row) {
                 $key = $row[$keyName];
                 $value = $row[$valueName];
@@ -951,10 +962,39 @@ class FieldDescription extends DBWorker implements Iterator
                     'attributes' => (empty($row) ? false : $row)
                 );
             }
+            $this->availableValues = $result;
+        }
+        return $this;
+    }
+
+    /**
+     * Загружает возможные значения из
+     * конфига компонента.
+     * <field type="select">
+     *      <options>
+     *          <option id="1" [attributes]>TXT_1</option>
+     *          <option id="2" [attributes]>TXT_2</option>
+     *      </options>
+     * </field>
+     *
+     * @param SimpleXMLElement $options
+     * @access private
+     */
+    private function loadAvailableXMLValues(SimpleXMLElement $options) {
+        $result = array();
+        foreach($options as $option) {
+            $optAttributes = array();
+            foreach($option->attributes() as $optAttrName => $optAttrValue) {
+                if((string)$optAttrName != 'id') {
+                    $optAttributes[(string)$optAttrName] = (string)$optAttrValue;
+                }
+            }
+            $result[(int)$option['id']] = array(
+                'value' => $this->translate((string)$option),
+                'attributes' => $optAttributes
+            );
         }
         $this->availableValues = $result;
-
-        return $this;
     }
 
     /**
@@ -966,6 +1006,19 @@ class FieldDescription extends DBWorker implements Iterator
     public function &getAvailableValues()
     {
         return $this->availableValues;
+    }
+
+    /**
+     * Устанавливает набор возможных значений поля.
+     *
+     * @param $av
+     * @access public
+     * @return FieldDescription
+     */
+    public function setAvailableValues($av)
+    {
+        $this->availableValues = $av;
+        return $this;
     }
 
     /**

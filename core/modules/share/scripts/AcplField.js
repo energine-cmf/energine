@@ -168,6 +168,11 @@ var AcplField = new Class({
         this.element = $(element);
         this.container = new Element('div', {'class': '', 'styles': {'position': 'relative'}}).wraps(this.element);
 
+        if (this.element.get('name') == 'tags') {
+            var button = new Element('button', {'type': 'button', 'link': 'tags', 'onclick': this.element.get('component_id') + '.openTagEditor(this);', 'html': '...'});
+            button.inject(this.container);
+        }
+
         this.words = false;
         this.list = new DropBoxList(this.element);
         this.list.addEvent('choose', this.select.bind(this));

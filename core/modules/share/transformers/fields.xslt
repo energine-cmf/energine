@@ -113,10 +113,12 @@
                     </xsl:if>
                 </xsl:for-each>
             </xsl:attribute>
+            <xsl:if test="@name = 'tags'">
+                <xsl:attribute name="component_id">
+                    <xsl:value-of select="generate-id(../..)"/>
+                </xsl:attribute>
+            </xsl:if>
         </input>
-        <xsl:if test="@name = 'tags'">
-            <button onclick="{generate-id(../..)}.openTagEditor(this);" type="button" link="tags">...</button>
-        </xsl:if>
         <!--<input class="text inp_textbox">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="value"><xsl:for-each select="items/item"><xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each></xsl:attribute>

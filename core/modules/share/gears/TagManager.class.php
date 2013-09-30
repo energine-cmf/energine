@@ -143,13 +143,9 @@ class TagManager extends DBWorker {
         if (!empty($tags)) {
             foreach ($tags as $tag) {
                 try {
-                    $tag_id = $this->dbh->modify(QAL::INSERT, self::TAG_TABLENAME, array('tag_code' => $tag));
-                    $langs = E()->getLanguage()->getLanguages();
-                    if ($langs) {
-                        foreach($langs as $lang_id => $lang_info) {
-                            $this->dbh->modify(QAL::INSERT_IGNORE, self::TAG_TABLENAME_TRANSLATION,
-                                array('tag_id' => $tag_id, 'lang_id' => $lang_id, 'tag_name' => $tag));
-                        }
+                    $tag_id = $this->dbh->getScalar(self::TAG_TABLENAME_TRANSLATION, 'tag_id', array('tag_name' => $tag, 'lang_id' => E()->getLanguage()->getCurrent()));
+                    if (!$tag_id) {
+                        $tag_id = self::insert($tag);
                     }
                 }
                 catch (Exception $e) {
@@ -319,5 +315,17 @@ class TagManager extends DBWorker {
                     simplifyDBResult(E()->getDB()->select($mapTableName, array($mapFieldName), array('tag_id' => array_keys($tagInfo))), $mapFieldName);
         }
         return $result;
+    }
+
+    public static function insert($tag) {
+        $tag_id = E()->getDB()->modify(QAL::INSERT, self::TAG_TABLENAME, array('tag_code' => $tag));
+        $langs = E()->getLanguage()->getLanguages();
+        if ($langs && $tag_id) {
+            foreach($langs as $lang_id => $lang_info) {
+                E()->getDB()->modify(QAL::INSERT_IGNORE, self::TAG_TABLENAME_TRANSLATION,
+                    array('tag_id' => $tag_id, 'lang_id' => $lang_id, 'tag_name' => $tag));
+            }
+        }
+        return $tag_id;
     }
 }

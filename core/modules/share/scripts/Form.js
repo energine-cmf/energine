@@ -177,11 +177,6 @@ var Form = new Class({
         }
     },
 
-    processTagResult: function(result, button) {
-        button = $(button);
-        $(button.getProperty('link')).value = result['tags'];
-    },
-
     openFileLib:function (button) {
         var path = $($(button).getProperty('link')).get('value');
         if (path == '') {
@@ -201,14 +196,34 @@ var Form = new Class({
         if (tags == '') {
             tags = null;
         }
-        ModalBox.open({
-            url:this.singlePath + 'tags/?tags=' + encodeURIComponent(tags),
-            extraData: tags,
-            onClose:function (result) {
-                console.log(result);
-                //this.processTagResult(result, button);
-            }.bind(this)
-        });
+        var overlay = this._getOverlay();
+        overlay.show();
+        new Request.JSON({
+            'url': this.singlePath + 'tags/get-tag-ids/',
+            'method': 'post',
+            'data': {
+                json: 1,
+                tags: tags
+            },
+            'evalResponse': true,
+            'onComplete': function(data) {
+                overlay.hide();
+                if (data && data.data && data.data.length) {
+                    ModalBox.open({
+                        url:this.singlePath + 'tags/show/' + encodeURIComponent(data.data.join(',')) + '/',
+                        extraData: data.data,
+                        onClose:function (result) {
+                            if (result) {
+                                $($(button).getProperty('link')).set('value', result);
+                            }
+                        }.bind(this)
+                    });
+                }
+            }.bind(this),
+            'onFailure': function (e) {
+                overlay.hide();
+            }
+        }).send();
     },
 
     openQuickUpload:function (button) {

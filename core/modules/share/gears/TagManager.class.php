@@ -250,7 +250,7 @@ class TagManager extends DBWorker {
         $res = E()->getDB()->select(
             'SELECT tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
             'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
-            'WHERE tr.tag_name LIKE "%' . addslashes(trim($str)) . '%" ' .
+            'WHERE tr.tag_name LIKE ' . E()->getDB()->quote(trim($str) . '%%') . ' ' .
             'ORDER BY tr.tag_name DESC ' .
             (($limit) ? 'LIMIT ' . (int) $limit : ''),
             E()->getLanguage()->getCurrent()

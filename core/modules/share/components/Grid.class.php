@@ -1247,4 +1247,44 @@ class Grid extends DBDataSet {
         }
     }
 
+    /**
+     *
+     * @throws SystemException
+     * @return void
+     */
+    protected function autoCompleteTags() {
+        $b = new JSONCustomBuilder();
+        $this->setBuilder($b);
+
+        try {
+            if (!isset($_POST['value'])) {
+                throw new SystemException('ERR_NO_DATA', SystemException::ERR_CRITICAL);
+            }
+            else {
+
+                $tags = TagManager::getTagStartedWith($_POST['value'], 10);
+                $result['result'] = true;
+
+                if(is_array($tags) && !empty($tags)){
+                    foreach($tags as $tag){
+                        $result['data'][] = array(
+                            'key' => $tag,
+                            'value' => $tag
+                        );
+                    }
+                }
+            }
+        }
+        catch (Exception $e) {
+            $result = array(
+                'result' => false,
+                'data' => false,
+                'errors' => array(
+
+                )
+            );
+        }
+
+        $b->setProperties($result);
+    }
 }

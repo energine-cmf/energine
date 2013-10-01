@@ -34,13 +34,17 @@ class TagEditor extends Grid {
         $params = $this->getStateParams(true);
         $this->setProperty('tag_id', urldecode($params['tag_id']));
         $tag_ids = explode(TagManager::TAG_SEPARATOR, $params['tag_id']);
-        $this->addFilterCondition(array(TagManager::TAG_TABLENAME . '.tag_id' => $tag_ids));
+        if ($tag_ids) {
+            $this->addFilterCondition(array(TagManager::TAG_TABLENAME . '.tag_id' => $tag_ids));
+        }
     }
 
     protected function getRawData() {
         $params = $this->getStateParams(true);
         $tag_ids = explode(TagManager::TAG_SEPARATOR, urldecode($params['tag_id']));
-        $this->addFilterCondition(array(TagManager::TAG_TABLENAME . '.tag_id' => $tag_ids));
+        if ($tag_ids) {
+            $this->addFilterCondition(array(TagManager::TAG_TABLENAME . '.tag_id' => $tag_ids));
+        }
         parent::getRawData();
     }
 

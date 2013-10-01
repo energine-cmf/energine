@@ -96,7 +96,8 @@ var FeedToolbar = new Class({
 
 
 	},
-	_select:function(event, element){
+	_select:function(element){
+
 		if (this.previous){
 			this.previous.removeClass('record_select');
 		}
@@ -122,7 +123,7 @@ var FeedToolbar = new Class({
     			linkChilds.each(function(element){
     				element.addEvent('mouseover', function(){this.addClass('record_highlight')});
     				element.addEvent('mouseout', function(){this.removeClass('record_highlight')});
-    				element.addEvent('click', this._select.call(this, element));
+    				element.addEvent('click', this._select.bind(this, element));
     			}, this);
 		  }
 	},

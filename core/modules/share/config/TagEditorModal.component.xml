@@ -13,10 +13,11 @@
             <pattern>/show/[tag_id]/</pattern>
         </uri_patterns>
         <toolbar>
+            <control mode="1" id="select" title="BTN_SELECT" type="button" onclick="select"/>
+            <control id="sep01" type="separator"/>
             <control mode="1" id="add" title="BTN_ADD" type="button" onclick="add"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
             <control id="sep02" type="separator"/>
-            <control mode="1" id="select" title="BTN_SELECT" type="button" onclick="select"/>
             <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>

@@ -113,6 +113,11 @@
                     </xsl:if>
                 </xsl:for-each>
             </xsl:attribute>
+            <xsl:if test="@name = 'tags'">
+                <xsl:attribute name="component_id">
+                    <xsl:value-of select="generate-id(../..)"/>
+                </xsl:attribute>
+            </xsl:if>
         </input>
         <!--<input class="text inp_textbox">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
@@ -160,7 +165,7 @@
             </xsl:choose>
         </xsl:variable>
         <input type="hidden" name="{$FIELD_NAME}" value="0"/>
-        <input class="checkbox" type="checkbox" id="{@name}" name="{$FIELD_NAME}" style="width: auto;" value="1">
+        <input class="checkbox" type="checkbox" id="{@name}" name="{$FIELD_NAME}" style="width: seto;" value="1">
             <xsl:if test=". = 1">
                 <xsl:attribute name="checked">checked</xsl:attribute>
             </xsl:if>

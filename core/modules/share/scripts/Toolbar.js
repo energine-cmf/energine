@@ -226,7 +226,11 @@ Toolbar.Control = new Class({
         return this;
     },
 
-    enable:function () {
+    enable:function (force) {
+        force = force || false;
+        if (force) {
+            this.properties.initially_disabled = false;
+        }
         if (!this.properties.initially_disabled) {
             this.properties.disabled = false;
             this.element.removeClass('disabled').setStyle('opacity', 1);

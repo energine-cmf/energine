@@ -190,6 +190,42 @@ var Form = new Class({
             }.bind(this)
         });
     },
+
+    openTagEditor: function (button) {
+        var tags = $($(button).getProperty('link')).get('value');
+        if (tags == '') {
+            tags = null;
+        }
+        var overlay = this._getOverlay();
+        overlay.show();
+        new Request.JSON({
+            'url': this.singlePath + 'tags/get-tag-ids/',
+            'method': 'post',
+            'data': {
+                json: 1,
+                tags: tags
+            },
+            'evalResponse': true,
+            'onComplete': function(data) {
+                overlay.hide();
+                if (data) {
+                    ModalBox.open({
+                        url:this.singlePath + 'tags/show/' + ((data.data) ? encodeURIComponent(data.data.join(',')) + '/' : ''),
+                        extraData: data.data,
+                        onClose:function (result) {
+                            if (result) {
+                                $($(button).getProperty('link')).set('value', result);
+                            }
+                        }.bind(this)
+                    });
+                }
+            }.bind(this),
+            'onFailure': function (e) {
+                overlay.hide();
+            }
+        }).send();
+    },
+
     openQuickUpload:function (button) {
         var path = $($(button).getProperty('link')).get('value');
         if (path == '') {

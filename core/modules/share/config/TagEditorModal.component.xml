@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <javascript>
+            <behavior name="TagEditor"/>
+        </javascript>
+        <fields>
+            <field name="tag_id"/>
+            <field name="tag_name"/>
+        </fields>
+        <uri_patterns>
+            <pattern>/show/</pattern>
+            <pattern>/show/[tag_id]/</pattern>
+        </uri_patterns>
+        <toolbar>
+            <control mode="1" id="select" title="BTN_SELECT" type="button" onclick="select"/>
+            <control id="sep01" type="separator"/>
+            <control mode="1" id="add" title="BTN_ADD" type="button" onclick="add"/>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="sep02" type="separator"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <pattern>/add/</pattern>
+        </uri_patterns>
+        <fields>
+            <field name="tag_id"/>
+            <field name="lang_id"/>
+            <field name="tag_code"/>
+            <field name="tag_name"/>
+        </fields>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="edit">
+        <uri_patterns>
+            <pattern>/[int]/edit/</pattern>
+        </uri_patterns>
+        <fields>
+            <field name="tag_id"/>
+            <field name="tag_name"/>
+        </fields>
+        <javascript>
+            <behavior name="Form"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="save" rights="3">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getRawData" rights="2">
+        <uri_patterns>
+            <pattern>/get-data/</pattern>
+            <pattern>/get-data/page-[pageNumber]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+            <pattern>/[tag_id]/get-data/</pattern>
+            <pattern>/[tag_id]/get-data/page-[pageNumber]/</pattern>
+            <pattern>/[tag_id]/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/[tag_id]/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getTagIds" rights="2">
+        <uri_patterns>
+            <pattern>/get-tag-ids/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getTags" rights="2">
+        <uri_patterns>
+            <pattern>/get-tags/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

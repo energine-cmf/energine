@@ -27,6 +27,8 @@ class GridConfig extends ComponentConfig {
         $this->registerState('imageManager', array('/imagemanager/'));
         $this->registerState('fileLibrary', array('/file-library/', '/file-library/[any]/'));
         $this->registerState('attachments', array('/attachments/[any]/', '/[id]/attachments/[any]/'));
+        $this->registerState('tags', array('/tags/[any]/', '/[id]/tags/[any]/'));
+        $this->registerState('autoCompleteTags', array('/tag-autocomplete/'));
     }
 
 }

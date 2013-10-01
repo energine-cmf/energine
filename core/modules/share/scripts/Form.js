@@ -208,9 +208,9 @@ var Form = new Class({
             'evalResponse': true,
             'onComplete': function(data) {
                 overlay.hide();
-                if (data && data.data && data.data.length) {
+                if (data) {
                     ModalBox.open({
-                        url:this.singlePath + 'tags/show/' + encodeURIComponent(data.data.join(',')) + '/',
+                        url:this.singlePath + 'tags/show/' + ((data.data) ? encodeURIComponent(data.data.join(',')) + '/' : ''),
                         extraData: data.data,
                         onClose:function (result) {
                             if (result) {

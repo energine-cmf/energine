@@ -32,18 +32,22 @@ class TagEditor extends Grid {
     protected function main() {
         parent::main();
         $params = $this->getStateParams(true);
-        $this->setProperty('tag_id', urldecode($params['tag_id']));
-        $tag_ids = explode(TagManager::TAG_SEPARATOR, $params['tag_id']);
-        if ($tag_ids) {
-            $this->addFilterCondition(array(TagManager::TAG_TABLENAME . '.tag_id' => $tag_ids));
+        if (!empty($params['tag_id'])) {
+            $this->setProperty('tag_id', urldecode($params['tag_id']));
+            $tag_ids = explode(TagManager::TAG_SEPARATOR, $params['tag_id']);
+            if ($tag_ids) {
+                $this->addFilterCondition(array(TagManager::TAG_TABLENAME . '.tag_id' => $tag_ids));
+            }
         }
     }
 
     protected function getRawData() {
         $params = $this->getStateParams(true);
-        $tag_ids = explode(TagManager::TAG_SEPARATOR, urldecode($params['tag_id']));
-        if ($tag_ids) {
-            $this->addFilterCondition(array(TagManager::TAG_TABLENAME . '.tag_id' => $tag_ids));
+        if (!empty($params['tag_id'])) {
+            $tag_ids = explode(TagManager::TAG_SEPARATOR, urldecode($params['tag_id']));
+            if ($tag_ids) {
+                $this->addFilterCondition(array(TagManager::TAG_TABLENAME . '.tag_id' => $tag_ids));
+            }
         }
         parent::getRawData();
     }
@@ -89,9 +93,13 @@ class TagEditor extends Grid {
             )
         );
 
-        $tags = TagManager::getTags($tag_id);
-        if ($tags) {
-            $tags = array_values($tags);
+        if ($tag_id) {
+            $tags = TagManager::getTags($tag_id);
+            if ($tags) {
+                $tags = array_values($tags);
+            }
+        } else {
+            $tags = array();
         }
         $builder->setProperties(array('data' => $tags));
     }

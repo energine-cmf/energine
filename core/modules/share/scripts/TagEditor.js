@@ -44,12 +44,37 @@ var TagEditor = new Class({
                 overlay.hide();
                 if (data && data.data && data.data.length) {
                     ModalBox.setReturnValue(data.data.join(','));
-                    ModalBox.close();
+                } else {
+                    ModalBox.setReturnValue('');
                 }
+                ModalBox.close();
             }.bind(this),
             'onFailure': function (e) {
                 overlay.hide();
             }
         }).send();
+    },
+
+    select: function() {
+        var r = this.grid.getSelectedRecord();
+        if (r) {
+            this.tag_id = r.tag_id;
+            this.close();
+        }
+    },
+
+    onDoubleClick: function () {
+        this.select();
+    },
+
+    onSelect: function () {
+        var r = this.grid.getSelectedRecord();
+        this.toolbar.enableControls();
+        var selectBtn = this.toolbar.getControlById('select');
+        var addBtn = this.toolbar.getControlById('add');
+        if (r && !this.tag_id) {
+            addBtn.enable(true);
+            selectBtn.enable(true);
+        }
     }
 });

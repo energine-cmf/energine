@@ -1202,39 +1202,39 @@ var DatePicker = new Class({
         translations:{
             'ua':{
 //                days:['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця', 'Субота'],
-//                months:['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень'],
+                months:['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень'],
                 daysShort:['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
                 monthsShort: ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру']
             },
             'ru':{
 //                days:['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
-//                months:['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+                months:['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
                 daysShort:['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
                 monthsShort: ['Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
             },
             'en':{
 //                days:['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-//                months:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                months:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 daysShort:['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
                 monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
             }
         },
         useFadeInOut: !Browser.ie,
 
-             days_title: function(date, options) {
-                return options.months_abbr[date.getMonth()] + " " + date.getFullYear();
-             }
+        days_title: function(date, options) {
+            return options.months_full[date.getMonth()] + " " + date.getFullYear();
+        }
     },
     // constructor
     initialize: function(attachTo, options) {
         if (Energine.lang && this.options.translations[Energine.lang]) {
 //            options.days = this.options.translations[Energine.lang].days;
-//            options.months = this.options.translations[Energine.lang].months;
+            options.months_full = this.options.translations[Energine.lang].months;
             options.days_abbr = this.options.translations[Energine.lang].daysShort;
             options.months_abbr = this.options.translations[Energine.lang].monthsShort;
         } else {
 //            options.days = this.options.translations['en'].days;
-//            options.months = this.options.translations['en'].months;
+            options.months_full = this.options.translations['en'].months;
             options.days_abbr = this.options.translations['en'].daysShort;
             options.months_abbr = this.options.translations['en'].monthsShort;
         }

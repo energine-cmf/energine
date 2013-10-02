@@ -73,6 +73,10 @@ class Grid extends DBDataSet {
      */
     private $orderColumn = null;
 
+    /**
+     * @var Filter
+     */
+    protected $filter_control;
 
     /**
      * Конструктор класса
@@ -553,6 +557,15 @@ class Grid extends DBDataSet {
         }*/
 
         $result = parent::build();
+
+        if (!empty($this->filter_control)) {
+            if ($f = $this->filter_control->build()) {
+                $result->documentElement->appendChild(
+                    $result->importNode($f, true)
+                );
+            }
+        }
+
         return $result;
     }
 
@@ -1286,5 +1299,17 @@ class Grid extends DBDataSet {
         }
 
         $b->setProperties($result);
+    }
+
+    protected function prepare() {
+        parent::prepare();
+        if ($config = $this->getConfig()->getCurrentStateConfig()) {
+            foreach ($config->filter as $filterDescription) {
+                $this->filter_control = new Filter();
+                $this->filter_control->attachToComponent($this);
+                $this->filter_control->loadXML($filterDescription);
+                $this->filter_control->translate();
+            }
+        }
     }
 }

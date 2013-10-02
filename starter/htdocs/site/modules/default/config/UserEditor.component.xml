@@ -4,6 +4,10 @@
 			<javascript>
 				<behavior name="UserManager"/>
 			</javascript>
+            <filter>
+                <field name="u_name" tableName="user_users" type="text" title="FIELD_U_NAME"/>
+                <field name="u_fullname" tableName="user_users" type="text" title="FIELD_U_FULLNAME"/>
+            </filter>
 			<fields>
 				<field name="u_id"/>
                 <field name="u_is_active"/>

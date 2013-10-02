@@ -377,7 +377,7 @@ class Component extends DBWorker implements IBlock {
      * @final
      * @return void
      */
-    final public function run() {
+    public function run() {
         if (!method_exists($this, $this->getState())) {
             throw new SystemException(
                 'ERR_DEV_NO_ACTION',

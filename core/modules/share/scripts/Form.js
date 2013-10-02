@@ -603,13 +603,16 @@ Form.RichEditor = new Class({
         } catch (e) {
         }
 
+        /*if (Energine.supportContentEdit && !this.fallback_ie) {
+            this.hidden = new Element('input', {'name': this.textarea.name, 'value': this.textarea.get('value'), 'type': 'hidden', 'class': 'richEditorValue'}).injectBefore(this.textarea);
+
         var prop;
         if (prop = this.textarea.getProperty('nrgn:pattern')) {
             this.hidden.setProperty('nrgn:pattern', prop);
         }
         if (prop = this.textarea.getProperty('nrgn:message')) {
             this.hidden.setProperty('nrgn:message', prop);
-        }
+        }*/
     },
 
     setupEditors: function() {

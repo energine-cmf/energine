@@ -87,9 +87,10 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
             if ( !(carousels[n] instanceof Carousel) )
                 throw 'Element #' + n + ' in the array is not instance of Carousel!';
 
-        for (var n = 0; n < carousels.length-1; n++)
+        for (var n = 0; n < carousels.length-1; n++) {
             if (carousels[n].options.playlist !== carousels[n+1].options.playlist)
                 throw 'Carousels can not be connected, because of different playlists!';
+        }
 
         /**
          * Array of connected carousels.
@@ -273,6 +274,9 @@ var Carousel = new Class(/** @lends Carousel# */{
             throw 'Element for Carousel was not found in DOM Tree!';
 
         this.setOptions(options);
+        // This is need to save the reference to the playlist.
+        if (Object.keyOf(options, 'playlist' != null))
+            this.options.playlist = options.playlist;
         this.checkOptions();
 
         /**

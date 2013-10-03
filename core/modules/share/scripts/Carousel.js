@@ -275,7 +275,7 @@ var Carousel = new Class(/** @lends Carousel# */{
 
         this.setOptions(options);
         // This is need to save the reference to the playlist.
-        if ('playlist' in options)
+        if (options != undefined && 'playlist' in options)
             this.options.playlist = options.playlist;
         this.checkOptions();
 

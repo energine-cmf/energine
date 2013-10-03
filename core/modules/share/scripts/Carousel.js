@@ -22,8 +22,14 @@ Class.Mutators.Static = function(members) {
 /**
  * @class Holds an playlist, that will be used by Carousel objects.
  *
- * @type {Class}
  * @author Valerii Zinchenko
+ *
+ * @example <caption>HTML container for playlist.</caption>
+ * &ltdiv id="playlistID" class="playlist"&gt
+ *     &ltdiv class="item"&gtitem1&lt/div&gt
+ *     &ltdiv class="item"&gtitem2&lt/div&gt
+ *     ...
+ * &lt/div&gt
  *
  * @constructor
  * @param {string | Element} element Can be the id of an element in DOM Tree, or CSS Selector, or an Element that holds playlist's items. In case with CSS Selector it will get only the first element.
@@ -140,7 +146,15 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @type {Class}
+ * @example <caption>HTML container for carousel.</caption>
+ * &ltdiv id="carouselID" class="carousel"&gt
+ *     &ltdiv class="carousel_viewbox"&gt
+ *         &ltdiv class="playlist_local"&gt
+ *         &lt/div&gt
+ *     &lt/div&gt
+ *     &lta class="previous" href="#"&gt&lti&gt&lt/i&gt&lt/a&gt
+ *     &lta class="next" href="#"&gt&lti&gt&lt/i&gt&lt/a&gt
+ * &lt/div&gt
  *
  * @constructor
  * @param {string | Element} element Can be the id of an element in DOM Tree, or CSS Selector, or an Element. In case with CSS Selector it will get only the first element.
@@ -227,7 +241,7 @@ var Carousel = new Class(/** @lends Carousel# */{
                 textAlign: 'center',
                 verticalAlign: 'middle'
             },
-            '.next_control, .previous_control': {
+            '.next, .previous': {
                 display: 'block',
                 overflow: 'hidden',
                 position: 'absolute',
@@ -235,7 +249,7 @@ var Carousel = new Class(/** @lends Carousel# */{
                 zIndex: '2',
                 '-moz-user-select': 'none'
             },
-            '.next_control': {
+            '.next': {
                 marginLeft: '100%'
             }
         },

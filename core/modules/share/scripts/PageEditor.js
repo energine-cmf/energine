@@ -11,6 +11,7 @@ var PageEditor = new Class({
         CKEDITOR.disableAutoInline = true;
         CKEDITOR.config.extraPlugins = 'sourcedialog,energineimage,energinefile';
         CKEDITOR.config.removePlugins = 'sourcearea';
+        CKEDITOR.config.allowedContent = true;
         CKEDITOR.config.toolbar = [
             { name: 'document', groups: [ 'mode' ], items: [ 'Sourcedialog' ] },
             { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },

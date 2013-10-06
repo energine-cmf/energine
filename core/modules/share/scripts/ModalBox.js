@@ -184,6 +184,9 @@ var ModalBox = window.top.ModalBox || {
             if (box.iframe) {
                 box.iframe.setProperty('src', 'about:blank');
                 box.iframe.destroy();
+
+                //After iframe was destroyed, focus has been lost, so focusing on main document
+                window.parent.document.body.getElement('a').focus();
             }
             box.destroy();
         }

@@ -4,7 +4,7 @@ var ModalBox = window.top.ModalBox || {
 
     boxes: [],
 
-    init: function() {
+    init: function () {
         Asset.css('modalbox.css');
         this.overlay = new Overlay(document.body, {indicator: false});
         this.initialized = true;
@@ -13,8 +13,8 @@ var ModalBox = window.top.ModalBox || {
      *
      * @param Object options
      */
-    open: function(options) {
-        var createIframe = function(mbName, iframeSrc) {
+    open: function (options) {
+        var createIframe = function (mbName, iframeSrc) {
             var iframe;
             if (Browser.ie && (Browser.version < 9)) {
                 iframe = $(document.createElement('<iframe class="e-modalbox-frame" src="' + iframeSrc + '" frameBorder="0" name="' + mbName + '" scrolling="no" />'));
@@ -36,7 +36,8 @@ var ModalBox = window.top.ModalBox || {
         var box = new Element('div').addClass('e-modalbox').inject(document.body);
         box.options = {
             url: null,
-            onClose: function(){},
+            onClose: function () {
+            },
             extraData: null,
             post: null
         };
@@ -77,36 +78,36 @@ var ModalBox = window.top.ModalBox || {
              */
             var tabID = 'id' + ((Math.random() * 10000).toInt()),
                 fakeIframe = createIframe('iframe' + tabID, 'about:blank'),
-                form = new Element('form', {'class':'e-grid-form form'}),
-                tabPane = new Element('div', {'class': 'e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1', id:tabID}),
+                form = new Element('form', {'class': 'e-grid-form form'}),
+                tabPane = new Element('div', {'class': 'e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1', id: tabID}),
                 mainTab,
-                sharedEvents = {'onmouseover':"this.className = 'highlighted';", 'onmouseout':"this.className=''"},
+                sharedEvents = {'onmouseover': "this.className = 'highlighted';", 'onmouseout': "this.className=''"},
                 saveCode = 'var w = window.parent.ModalBox;w.setReturnValue.call(w, {"result": document.getElementById("result").value});w.close.apply(w);';
 
             tabPane.adopt(
-                new Element('div', {'class':'e-pane-t-toolbar'}).grab(
-                    new Element('ul', {'class':'e-pane-toolbar e-tabs clearfix'}).grab(
-                        new Element('li', {'unselectable':'on', 'class':'current'}).grab(
-                            new Element('a', {'href':'#', 'html':(box.options.form.title || 'Properties')})
+                new Element('div', {'class': 'e-pane-t-toolbar'}).grab(
+                    new Element('ul', {'class': 'e-pane-toolbar e-tabs clearfix'}).grab(
+                        new Element('li', {'unselectable': 'on', 'class': 'current'}).grab(
+                            new Element('a', {'href': '#', 'html': (box.options.form.title || 'Properties')})
                         )
                     )
                 ),
-                new Element('div', {'class':'e-pane-content'}).grab(
-                    mainTab = new Element('div', {'class':'e-pane-item'}).grab(
-                        new Element('div', {'class':'field'}).adopt(
-                            new Element('div', {'class':'name'}).grab(
-                                new Element('label',{'text':(box.options.form.field.title || 'Field value'), 'for':'result'})
+                new Element('div', {'class': 'e-pane-content'}).grab(
+                    mainTab = new Element('div', {'class': 'e-pane-item'}).grab(
+                        new Element('div', {'class': 'field'}).adopt(
+                            new Element('div', {'class': 'name'}).grab(
+                                new Element('label', {'text': (box.options.form.field.title || 'Field value'), 'for': 'result'})
                             ),
-                            new Element('div', {'class':'control'}).grab(
-                                new Element('textarea', {'id':'result', 'value': (box.options.form.field.value || '')})
+                            new Element('div', {'class': 'control'}).grab(
+                                new Element('textarea', {'id': 'result', 'value': (box.options.form.field.value || '')})
                             )
                         )
                     )
                 ),
-                new Element('div', {'class':'e-pane-b-toolbar'}).grab(
+                new Element('div', {'class': 'e-pane-b-toolbar'}).grab(
                     new Element('ul', {'class': 'toolbar clearfix'}).adopt(
-                        new Element('li', Object.merge({'unselectable':'on', 'text':'Save'}, sharedEvents, {'onclick':saveCode})),
-                        new Element('li', Object.merge({'unselectable':'on', 'text':'Close'}, sharedEvents, {'onclick':'var w = window.parent.ModalBox;w.close.apply(w);'}))
+                        new Element('li', Object.merge({'unselectable': 'on', 'text': 'Save'}, sharedEvents, {'onclick': saveCode})),
+                        new Element('li', Object.merge({'unselectable': 'on', 'text': 'Close'}, sharedEvents, {'onclick': 'var w = window.parent.ModalBox;w.close.apply(w);'}))
                     )
                 )
             );
@@ -115,12 +116,12 @@ var ModalBox = window.top.ModalBox || {
              * Финт ушами с задержкой
              * без задержки работать с Iframe нереально
              */
-            (function() {
+            (function () {
                 var b = fakeIframe.contentDocument.body;
                 b.className = 'e-singlemode-layout';
                 form.inject(b);
-                ['tabpane', 'form', 'toolbar', 'energine'].each(function(item){
-                    new Element('link', {'type':'text/css', 'rel': 'stylesheet', 'href':Energine.base + 'stylesheets/' + item + '.css'}).inject(fakeIframe.contentDocument.head);
+                ['tabpane', 'form', 'toolbar', 'energine'].each(function (item) {
+                    new Element('link', {'type': 'text/css', 'rel': 'stylesheet', 'href': Energine.base + 'stylesheets/' + item + '.css'}).inject(fakeIframe.contentDocument.head);
                 });
 
             }).delay(30);
@@ -128,14 +129,15 @@ var ModalBox = window.top.ModalBox || {
             //box.set('html', code);
             box.grab(fakeIframe);
         }
-        //box.iframe.addEvent('keydown', this.keyboardListener.bind(this));
+        $(document.body).addEvent('keypress', this.keyboardListener.bind(this));
+
         box.closeButton = new Element('div').addClass('e-modalbox-close').inject(box);
         box.closeButton.addEvents({
             'click': this.close.bind(this),
-            'mouseover': function() {
+            'mouseover': function () {
                 this.addClass('highlighted');
             },
-            'mouseout': function() {
+            'mouseout': function () {
                 this.removeClass('highlighted');
             }
         });
@@ -148,11 +150,14 @@ var ModalBox = window.top.ModalBox || {
 
     },
 
-    getCurrent: function() {
+    getCurrent: function () {
+        if (!this.boxes.length) {
+            return;
+        }
         return this.boxes[this.boxes.length - 1];
     },
 
-    getExtraData: function() {
+    getExtraData: function () {
         var result = null;
         if (this.getCurrent()) {
             result = this.getCurrent().options.extraData;
@@ -161,21 +166,21 @@ var ModalBox = window.top.ModalBox || {
         return result;
     },
 
-    setReturnValue: function(value) {
+    setReturnValue: function (value) {
         var result = this.getCurrent();
         if (result) {
             result.store('returnValue', value);
         }
     },
 
-    close: function() {
+    close: function () {
         if (!this.boxes.length) {
             return;
         }
         var box = this.boxes.pop();
         box.options.onClose(box.retrieve('returnValue'));
 
-        var destroyBox = function() {
+        var destroyBox = function () {
             if (box.iframe) {
                 box.iframe.setProperty('src', 'about:blank');
                 box.iframe.destroy();
@@ -190,10 +195,11 @@ var ModalBox = window.top.ModalBox || {
         }
     },
 
-    keyboardListener: function(event) {
+    keyboardListener: function (event) {
         switch (event.key) {
             case 'esc':
-                this.close();
+                if(this.getCurrent())
+                    this.close();
                 break;
         }
     }

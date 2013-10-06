@@ -73,6 +73,16 @@ var Form = new Class({
             'border':'1px dotted #777',
             'overflow':'auto'
         });
+
+        /*Checking if opened in modalbox*/
+        var mb;
+        if((mb = window.parent.ModalBox) && mb.initialized && mb.getCurrent()){
+            document.body.addEvent('keypress', function(evt){
+                if(evt.key=='esc'){
+                    mb.close();
+                }
+            });
+        }
     },
     buildAttachmentPane:function () {
         if (this.componentElement.getElementById('attached_files')) {

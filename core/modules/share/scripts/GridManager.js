@@ -406,6 +406,15 @@ var GridManager = new Class({
         }
         this.overlay = new Overlay(this.element);
         this.singlePath = this.element.getProperty('single_template');
+        /*Checking if opened in modalbox*/
+        var mb;
+        if((mb = window.parent.ModalBox) && mb.initialized && mb.getCurrent()){
+            document.body.addEvent('keypress', function(evt){
+                if(evt.key=='esc'){
+                    mb.close();
+                }
+            });
+        }
 
         this.mvElementId = null;
 

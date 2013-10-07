@@ -19,6 +19,7 @@
     <xsl:variable name="RESIZER_URL"><xsl:value-of select="$BASE/@resizer"/></xsl:variable>
     <xsl:variable name="FOLDER" select="$DOC_PROPS[@name='base']/@folder"/>
     <xsl:variable name="MAIN_SITE" select="$DOC_PROPS[@name='base']/@default"/>
+    <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
     <xsl:template match="/">
         <xsl:apply-templates select="document/container"/>
         <xsl:apply-templates select="document/component"/>

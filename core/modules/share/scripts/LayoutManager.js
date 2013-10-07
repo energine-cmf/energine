@@ -482,9 +482,9 @@ LayoutManager.Widget = new Class({
             onClose: function (result) {
                 this.overlay.element.addClass('e-overlay-loading');
                 if (result) {
-                    result.each(function (param, paramName) {
+                    Object.each(result, function (param, paramName) {
                         this.getComponent().getParam(paramName).setValue(param);
-                    }.bind(this));
+                    }, this);
                     this.reload();
                     LayoutManager.changed = true;
                 }

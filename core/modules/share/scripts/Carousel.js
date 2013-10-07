@@ -15,7 +15,7 @@
  * @augments Class.Mutators
  * @param {Object} members Object that contains properties and methods, which must be static in the class.
  */
-Class.Mutators.Static = function(members) {
+Class.Mutators.Static = function (members) {
     this.extend(members);
 };
 
@@ -42,7 +42,7 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
      */
     isExtern: true,
     // constructor
-    initialize: function(element, itemSelector) {
+    initialize: function (element, itemSelector) {
         this.itemSelector = itemSelector;
 
         var holder = $(element) || $$(element)[0];
@@ -66,9 +66,13 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
      * Hides playlist.
      * @public
      */
-    hide: function() {
+    hide: function () {
         this.items[0].getParent().dispose();
+    },
+    getHolder: function(){
+        return this.items[0].getParent();
     }
+
 });
 
 /**
@@ -83,18 +87,18 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
 var CarouselConnector = new Class(/** @lends CarouselConnector# */{
     Implements: Events,
     // constructor
-    initialize: function(carousels) {
+    initialize: function (carousels) {
         // Check input arguments
         if (arguments.length != 1)
             throw 'Not enough arguments!';
-        if ( !(carousels instanceof Array) )
+        if (!(carousels instanceof Array))
             throw 'Second argument must be an Array of Carousel objects!';
         for (n = 0; n < carousels.length; n++)
-            if ( !(carousels[n] instanceof Carousel) )
+            if (!(carousels[n] instanceof Carousel))
                 throw 'Element #' + n + ' in the array is not instance of Carousel!';
 
-        for (var n = 0; n < carousels.length-1; n++) {
-            if (carousels[n].options.playlist !== carousels[n+1].options.playlist)
+        for (var n = 0; n < carousels.length - 1; n++) {
+            if (carousels[n].options.playlist !== carousels[n + 1].options.playlist)
                 throw 'Carousels can not be connected, because of different playlists!';
         }
 
@@ -110,14 +114,14 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
 
         // Add events to the connected carousels
         for (n = 0; n < this.carousels.length; n++) {
-            (function(n) {
+            (function (n) {
                 var self = this;
-                self.carousels[n].addEvent('selectItem', function(id) {
+                self.carousels[n].addEvent('selectItem', function (id) {
                     // With slicing we exclude the carousel that fires event
-                    self.carousels.slice(0, n).each(function(carousel) {
+                    self.carousels.slice(0, n).each(function (carousel) {
                         self.carouselEventFn(carousel, id);
                     });
-                    self.carousels.slice(n+1, self.carousels.length).each(function(carousel) {
+                    self.carousels.slice(n + 1, self.carousels.length).each(function (carousel) {
                         self.carouselEventFn(carousel, id);
                     });
                 });
@@ -181,7 +185,7 @@ var Carousel = new Class(/** @lends Carousel# */{
          * @function
          * @returns {number}
          */
-        assignID: function() {
+        assignID: function () {
             return this.count++;
         }
     },
@@ -190,7 +194,7 @@ var Carousel = new Class(/** @lends Carousel# */{
      * Value of an element's parameter 'class' at the active item in the carousel.
      * @type {string}
      */
-    activeLabel : 'active',
+    activeLabel: 'active',
 
     /**
      * Options of the Carousel.
@@ -258,7 +262,7 @@ var Carousel = new Class(/** @lends Carousel# */{
         event: 'click'
     },
     // constructor
-    initialize: function(element, options) {
+    initialize: function (element, options) {
         /**
          * Indicates whether scrolling is finished.
          * @type {boolean}
@@ -298,27 +302,33 @@ var Carousel = new Class(/** @lends Carousel# */{
          * @type {Element}
          */
         this.element = this.carousel.getElement('.carousel_viewbox');
-        
         /**
          * Holder of the local playlist.
          * @type {Element}
          */
-        this.holder = this.element.getElement('.playlist_local');
+
 
         // If the playlist is not explicitly specified, set than try to get a playlist from the carousel.
-        if (this.options.playlist === null)
+                if (this.options.playlist === null) {
             try {
-                this.options.playlist = new CarouselPlaylist(this.holder);
+                this.options.playlist = new CarouselPlaylist(this.holder = this.element.getElement('.playlist_local'));
             } catch (err) {
                 console.warn(err);
                 throw 'Carousel can not be created without playlist.';
             }
+        }
+        /*else {
+            this.element.grab(this.holder = new Element(this.options.playlist.getHolder().get('tag')));
+        }*/
+
 
         // Check whether the playlist is internal. If not - make clone
-        if (this.element === this.options.playlist.items[0].getParent('.carousel_viewbox'))
+        if (this.element === this.options.playlist.items[0].getParent('.carousel_viewbox')){
             this.options.playlist.isExtern = false;
+            this.holder = this.options.playlist.getHolder();
+        }
         else
-            this.options.playlist.items.each(function(item) {
+            this.options.playlist.items.each(function (item) {
                 item.clone().inject(this.holder);
             }.bind(this));
 
@@ -327,12 +337,13 @@ var Carousel = new Class(/** @lends Carousel# */{
          * @type {Elements|Element[]}
          */
         this.items = this.holder.getChildren();
+
         this.items[this.currentActiveID].addClass(this.activeLabel);
 
         // Add 'click'-event to all items
-        this.items.each(function(it,n) {
+        this.items.each(function (it, n) {
             var self = this;
-            it.addEvent('click', function(defaultEvent) {
+            it.addEvent('click', function (defaultEvent) {
                 defaultEvent.stop();
                 self.selectItem(n);
                 self.fireEvent('selectItem', n);
@@ -399,35 +410,43 @@ var Carousel = new Class(/** @lends Carousel# */{
                 this.cloneItems(this.items, this.holder);
 
             if (this.options.loop)
-                this.effects = [{}, {}];
+                this.effects = [
+                    {},
+                    {}
+                ];
             else {
                 /**
                  * Array of objects with effects, that will be applied to the items by scrolling.
                  * @type {Array}
                  */
-                this.effects = [{}, {}, {}, {}];
+                this.effects = [
+                    {},
+                    {},
+                    {},
+                    {}
+                ];
                 /**
                  * Last possible scroll step for limited scrolling.
                  * @type {number}
                  */
                 this.lastScrollStep = this.items.length - this.options.NVisibleItems -
-                    this.options.scrollStep * Math.floor( (this.items.length - this.options.NVisibleItems) / this.options.scrollStep);
+                    this.options.scrollStep * Math.floor((this.items.length - this.options.NVisibleItems) / this.options.scrollStep);
                 if (this.lastScrollStep == 0)
                     this.lastScrollStep = this.options.scrollStep;
                 this.buttons.previous.isEnabled = false;
             }
 
             // Set events for the buttons.
-            this.buttons.next.handler = function(defaultEvent) {
+            this.buttons.next.handler = function (defaultEvent) {
                 defaultEvent.stop();
                 this.scrollLeft();
             }.bind(this);
-            this.buttons.previous.handler = function(defaultEvent) {
+            this.buttons.previous.handler = function (defaultEvent) {
                 defaultEvent.stop();
                 this.scrollRight();
             }.bind(this);
 
-            Object.each(this.buttons, function(btn) {
+            Object.each(this.buttons, function (btn) {
                 if (btn.button) {
                     btn.button.addEvent(this.options.event, btn.handler).setProperty('unselectable', 'on');
                 }
@@ -447,7 +466,7 @@ var Carousel = new Class(/** @lends Carousel# */{
         //      - prepare an object with proper effects for the Fx.Elements
         if (this.canScroll) {
             var N = this.options.NVisibleItems + this.options.scrollStep;
-            this.effects[0] = this.createEffect('left', -this.width*this.options.scrollStep, this.width, N);
+            this.effects[0] = this.createEffect('left', -this.width * this.options.scrollStep, this.width, N);
             this.effects[1] = this.createEffect('left', 0, this.width, N);
 
             this.itemShifts = [ this.width * this.options.NVisibleItems,
@@ -456,7 +475,7 @@ var Carousel = new Class(/** @lends Carousel# */{
             // Only if scrolling is not in loop
             if (!this.options.loop) {
                 N = this.options.NVisibleItems + this.lastScrollStep;
-                this.effects[2] = this.createEffect('left', -this.width*this.lastScrollStep, this.width, N);
+                this.effects[2] = this.createEffect('left', -this.width * this.lastScrollStep, this.width, N);
                 this.effects[3] = this.createEffect('left', 0, this.width, N);
 
                 this.itemShifts.push(-this.width * this.lastScrollStep);
@@ -467,10 +486,10 @@ var Carousel = new Class(/** @lends Carousel# */{
         this.element.setStyle('width', this.width * this.options.NVisibleItems);
 
         // Reposition elements
-        this.items.slice(0, this.options.NVisibleItems).each(function(it,n) {
+        this.items.slice(0, this.options.NVisibleItems).each(function (it, n) {
             it.setStyle('left', n * this.width);
         }, this);
-        this.items.slice(this.options.NVisibleItems).each(function(it) {
+        this.items.slice(this.options.NVisibleItems).each(function (it) {
             it.setStyle('left', -this.width);
         }, this);
     },
@@ -478,7 +497,7 @@ var Carousel = new Class(/** @lends Carousel# */{
      * Scroll left by one step. Multiple calls by not finished effect will be queued.
      * @public
      */
-    scrollLeft:  function() {
+    scrollLeft: function () {
         if (this.buttons.next.isEnabled)
             if (this.isEffectCompleted)
                 this._scrollEffect(1);
@@ -491,7 +510,7 @@ var Carousel = new Class(/** @lends Carousel# */{
      * Scroll right by one step. Multiple calls by not finished effect will be queued.
      * @public
      */
-    scrollRight: function() {
+    scrollRight: function () {
         if (this.buttons.previous.isEnabled)
             if (this.isEffectCompleted)
                 this._scrollEffect(-1);
@@ -505,13 +524,13 @@ var Carousel = new Class(/** @lends Carousel# */{
      * @public
      * @param {number} id Item ID.
      */
-    selectItem: function(id) {
+    selectItem: function (id) {
         if (this.currentActiveID === id)
             return;
 
         for (var n = 0; n < this.items.length / this.options.playlist.NItems; n++) {
-            this.items[this.currentActiveID + this.options.playlist.NItems*n].removeClass(this.activeLabel);
-            this.items[id + this.options.playlist.NItems*n].addClass(this.activeLabel);
+            this.items[this.currentActiveID + this.options.playlist.NItems * n].removeClass(this.activeLabel);
+            this.items[id + this.options.playlist.NItems * n].addClass(this.activeLabel);
         }
         this.currentActiveID = id;
     },
@@ -520,12 +539,12 @@ var Carousel = new Class(/** @lends Carousel# */{
      * @public
      * @param {number} id Item ID.
      */
-    scrollTo: function(id) {
+    scrollTo: function (id) {
         var direction,
             NTimes;
 
         // Check whether the desired item ID is visible in the carousel. If it is, then do not scroll.
-        for (var n = 0; n < this.options.NVisibleItems; n++ )
+        for (var n = 0; n < this.options.NVisibleItems; n++)
             if (this.wrapIndices(this.firstVisibleItemID + n, 0, this.options.playlist.NItems) == id)
                 return;
 
@@ -560,7 +579,7 @@ var Carousel = new Class(/** @lends Carousel# */{
      * @param {number} [scrollNTimes = 1] Defines how many scrollings must be done by one call of scrolling.
      * @param {boolean} [isSelected = false] Indicates whether one of the new visible items is already selected.
      */
-    _scrollEffect: function(direction, scrollNTimes, isSelected) {
+    _scrollEffect: function (direction, scrollNTimes, isSelected) {
         var fx,
             itemsToScroll = [], // all items from playlist, that will be scrolled
             newItems = [],      // collects all new items, that will be visible after scrolling
@@ -588,7 +607,7 @@ var Carousel = new Class(/** @lends Carousel# */{
             itemPosition = 'bottom';
         } else if (direction === -1) {
             newItemID = this.firstVisibleItemID - this.options.scrollStep * scrollNTimes;
-            itemShift = this.itemShifts[1] - ((scrollNTimes == 1) ? 0 : this.width * (scrollNTimes-1));
+            itemShift = this.itemShifts[1] - ((scrollNTimes == 1) ? 0 : this.width * (scrollNTimes - 1));
             itemPosition = 'top';
         } else
             throw 'Scrolling direction must be -1 or 1 but received \"' + direction + '\"!';
@@ -604,8 +623,8 @@ var Carousel = new Class(/** @lends Carousel# */{
 
         // Gets new items
         if (!isLast) {
-            if ( scrollNTimes > 1) {
-                var NClones = Math.floor( (this.options.NVisibleItems + this.options.scrollStep*scrollNTimes) / this.items.length);
+            if (scrollNTimes > 1) {
+                var NClones = Math.floor((this.options.NVisibleItems + this.options.scrollStep * scrollNTimes) / this.items.length);
                 if (NClones > 0) {
                     this.cloneItems(this.items, this.holder, NClones);
                     for (n = this.options.playlist.NItems; n < this.items.length; n++)
@@ -622,10 +641,10 @@ var Carousel = new Class(/** @lends Carousel# */{
             // Only if scrolling is not in loop
             newItemID = this.wrapIndices(newItemID, 0, this.items.length, this.options.loop);
             if (newItemID == 0)
-                itemShift = this.itemShifts[2] - this.width * this.options.scrollStep * (scrollNTimes-1);
+                itemShift = this.itemShifts[2] - this.width * this.options.scrollStep * (scrollNTimes - 1);
 
             // Gets last possible new items
-            for (n = 0; n < this.lastScrollStep + this.options.scrollStep * (scrollNTimes-1); n++) {
+            for (n = 0; n < this.lastScrollStep + this.options.scrollStep * (scrollNTimes - 1); n++) {
                 newItems[n] = this.items[newItemID + n].setStyle('left', this.width * n + itemShift);
                 this.holder.grab(newItems[n], itemPosition);
             }
@@ -646,7 +665,7 @@ var Carousel = new Class(/** @lends Carousel# */{
         if (scrollNTimes > 1) {
             var shift = 0;
             if (direction == 1)
-                shift = this.options.scrollStep * scrollNTimes + ((this.options.loop) ?  0: -this.options.scrollStep + this.lastScrollStep);
+                shift = this.options.scrollStep * scrollNTimes + ((this.options.loop) ? 0 : -this.options.scrollStep + this.lastScrollStep);
             effects = this.createEffect('left', -this.width * shift, this.width, this.firstVisibleItemID + this.options.NVisibleItems + this.options.scrollStep * scrollNTimes);
         } else {
             effects = this.effects[(!this.options.loop && isLast) ? (direction == 1) ? 2 : 3 :
@@ -655,13 +674,13 @@ var Carousel = new Class(/** @lends Carousel# */{
 
         // Save first visible item ID from this.items
         this.firstVisibleItemID += direction * ((!isLast) ? this.options.scrollStep * scrollNTimes :
-            this.lastScrollStep + this.options.scrollStep * (scrollNTimes-1));
+            this.lastScrollStep + this.options.scrollStep * (scrollNTimes - 1));
         this.firstVisibleItemID = this.wrapIndices(this.firstVisibleItemID, 0, this.items.length, this.options.loop);
 
         if (!isSelected) {
             // Checks whether the selected item is visible
             var isSelectedVisible = false;
-            for (n = 0; n < this.options.NVisibleItems; n++ ) {
+            for (n = 0; n < this.options.NVisibleItems; n++) {
                 if (this.wrapIndices(this.firstVisibleItemID + n, 0, this.options.playlist.NItems) == this.currentActiveID) {
                     isSelectedVisible = true;
                     break;
@@ -669,8 +688,8 @@ var Carousel = new Class(/** @lends Carousel# */{
             }
             // If the selected item is not visible, then the leftmost or rightmost visible item will be selected
             if (!isSelectedVisible) {
-                this.selectItem(this.wrapIndices( (direction == 1) ? this.firstVisibleItemID :
-                    this.firstVisibleItemID+this.options.NVisibleItems-1, 0, this.options.playlist.NItems));
+                this.selectItem(this.wrapIndices((direction == 1) ? this.firstVisibleItemID :
+                    this.firstVisibleItemID + this.options.NVisibleItems - 1, 0, this.options.playlist.NItems));
                 this.fireEvent('selectItem', this.currentActiveID);
             }
         }
@@ -700,16 +719,16 @@ var Carousel = new Class(/** @lends Carousel# */{
      * @param {number} [NTimes = 1] Specifies how many clones will be created. You must use explicit value 1 if you want to use last argument <tt>'where'</tt>.
      * @param {string} [where = 'bottom'] The place to inject each clone. It can be '<tt>top</tt>', '<tt>bottom</tt>', '<tt>after</tt>', or '<tt>before</tt>'.
      */
-    cloneItems: function(items, holder, NTimes, where) {
+    cloneItems: function (items, holder, NTimes, where) {
         NTimes = NTimes || 1;
         where = where || 'bottom';
         var N = items.length;
         for (var i = 1; i <= NTimes; i++) {
             for (var n = 0; n < N; n++) {
                 items.push(items[n].clone().inject(holder, where));
-                items[n+N*i].cloneEvents(items[n]);
+                items[n + N * i].cloneEvents(items[n]);
                 if (items[n].hasClass(this.activeLabel))
-                    items[n+N*i].addClass(this.activeLabel);
+                    items[n + N * i].addClass(this.activeLabel);
             }
         }
     }.protect(),
@@ -732,12 +751,12 @@ var Carousel = new Class(/** @lends Carousel# */{
      *                                     { 'left': 20 } }
      * </pre>
      */
-    createEffect: function(key, begin, step, count) {
+    createEffect: function (key, begin, step, count) {
         var obj = {};
-        for (var i=0; i < count; i++)
-            obj[i] = (function() {
+        for (var i = 0; i < count; i++)
+            obj[i] = (function () {
                 var subobj = {};
-                subobj[key] = begin + step*i;
+                subobj[key] = begin + step * i;
                 return subobj;
             })();
 
@@ -761,14 +780,14 @@ var Carousel = new Class(/** @lends Carousel# */{
      * wrapIndices(-2, 0, 8, false) == 0
      * </pre>
      */
-    wrapIndices: function(id, minID, maxID, toWrap) {
+    wrapIndices: function (id, minID, maxID, toWrap) {
         if (maxID === 0 || minID < 0 || maxID < minID)
             throw 'Arguments must be:\n\tmaxID != 0\n\tminID >= 0\n\tmaxID > minID';
         if (toWrap === undefined)
             toWrap = true;
         if (toWrap)
-            return (id >= maxID) ? id - maxID * Math.floor(id/maxID) :
-                (id < minID) ? id + maxID * Math.ceil(Math.abs(id)/maxID) : id;
+            return (id >= maxID) ? id - maxID * Math.floor(id / maxID) :
+                (id < minID) ? id + maxID * Math.ceil(Math.abs(id) / maxID) : id;
         else
             return (id >= maxID) ? maxID :
                 (id < minID) ? minID : id;
@@ -780,7 +799,7 @@ var Carousel = new Class(/** @lends Carousel# */{
      * @function
      * @protected
      */
-    checkOptions: function() {
+    checkOptions: function () {
         this.options.NVisibleItems = this.checkNumbers('NVisibleItems', [this.options.NVisibleItems, 1, 1]);
         this.options.scrollStep = this.checkNumbers('scrollStep', [this.options.scrollStep, 1, 1, this.options.NVisibleItems]);
         this.options.effectDuration = this.checkNumbers('effectDuration', [this.options.effectDuration, 700, 0]);
@@ -812,16 +831,16 @@ var Carousel = new Class(/** @lends Carousel# */{
      * @param {Object} obj Object with name of variable that contain an array with size 3: [0] value that will be checked; [1] default value; [2] min value; [3] max value;
      * @return {Object} Object with checked values.
      */
-    checkNumbers: function(varName, values) {
-            if (typeOf(values[0]) != 'number')
-                values[0] = Number.from(values[0]);
+    checkNumbers: function (varName, values) {
+        if (typeOf(values[0]) != 'number')
+            values[0] = Number.from(values[0]);
 
-            if (values[0] == null || isNaN(values[0]) || values[0] < values[2]) {
-                values[0] = values[1];
-                console.warn('The value for \"' + varName + '\" is incorrect. Its value reset to', values[0] + '.');
-            } else if (values[3] !== undefined && values[0] > values[3]) {
-                values[0] = values[3];
-                console.warn('The value for \"' + varName + '\" is incorrect. Its value reset to', values[0] + '.');
+        if (values[0] == null || isNaN(values[0]) || values[0] < values[2]) {
+            values[0] = values[1];
+            console.warn('The value for \"' + varName + '\" is incorrect. Its value reset to', values[0] + '.');
+        } else if (values[3] !== undefined && values[0] > values[3]) {
+            values[0] = values[3];
+            console.warn('The value for \"' + varName + '\" is incorrect. Its value reset to', values[0] + '.');
         }
         return values[0];
     }.protect()

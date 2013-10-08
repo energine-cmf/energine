@@ -2,7 +2,8 @@
  * Загружает указанные скрипты из директории scripts.
  */
 
-var ScriptLoader = {load: function(){}};
+var ScriptLoader = {load: function () {
+}};
 
 var isset = function (variable) {
     return ('undefined' != typeof(variable));
@@ -18,7 +19,7 @@ var Energine = {
         'set': function (constant, translation) {
             Energine.translations[constant] = translation;
         },
-        'extend': function (obj){
+        'extend': function (obj) {
             Object.append(Energine.translations, obj);
         }
     },
@@ -66,7 +67,9 @@ Energine.request = {
             // 'noCache': true,
             'evalResponse': false,
             'onComplete': callbackFunction,
-            'onFailure': function (e) {console.error(arguments)}
+            'onFailure': function (e) {
+                console.error(arguments)
+            }
         }).send();
 
     }
@@ -124,8 +127,18 @@ Energine._createDatePickerObject = function (datePickerObj, props) {
         },
         props
     ));
+    try {
+        if (!props.allowEmpty && (dp.inputs[0].get('value') == '')) {
+            var currentDate = new Date(), dateString = [currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate()].join('-');
+            if (props.timePicker) {
+                dateString += ' ' + [currentDate.getHours(), currentDate.getMinutes()].join(':');
+            }
+            dp.inputs[0].set('value', dateString);
 
-    //dp.input.set('value', dp.visual.get('value'));
+        }
+    }
+    catch (e) {}
+
     return dp;
 }
 

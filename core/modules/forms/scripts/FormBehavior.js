@@ -1,4 +1,4 @@
-ScriptLoader.load('ValidForm');
+ScriptLoader.load('ValidForm', 'datepicker');
 var FormBehavior = new Class({
     Extends:ValidForm,
     initialize: function(element){

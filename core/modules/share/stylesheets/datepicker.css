@@ -61,6 +61,7 @@
 	position: relative;
 	background: #333;
 	height: 25px;
+    min-height: inherit;
 }
 	.datepicker .header .title {
 		//margin: 0 50px;

@@ -330,7 +330,12 @@ class Component extends DBWorker implements IBlock {
             }
 
             if ($csp = $this->getConfig()->getCurrentStateParams()) {
-                $this->stateParams = array_merge($this->stateParams, $csp);
+                if($this->stateParams){
+                    $this->stateParams = array_merge($this->stateParams, $csp);
+                }
+                else {
+                    $this->stateParams = $csp;
+                }
             }
         }
 

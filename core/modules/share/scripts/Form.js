@@ -1,5 +1,4 @@
 ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker');
-
 var Form = new Class({
     initialize:function (element) {
         Asset.css('form.css');
@@ -33,7 +32,7 @@ var Form = new Class({
                 if(field.hasClass('min'))field.swapClass('min', 'max');
                 else if(el.hasClass('icon_min_max') && field.hasClass('max'))field.swapClass('max', 'min');
             }
-        }
+        };
         this.form.getElements('.field .control.toggle').addEvent('click', showHideFunc);
         this.form.getElements('.icon_min_max').addEvent('click', showHideFunc);
         /*this.form.getElements('#copy_lang_data a').addEvent('click', function(e){
@@ -175,7 +174,7 @@ var Form = new Class({
                     src = Energine.resizer + 'w0-h0/' + result['upl_path'];
                 }
                 else {
-                    src = Energine.static + 'images/icons/icon_undefined.gif';
+                    src = Energine['static'] + 'images/icons/icon_undefined.gif';
                 }
 
                 image.setProperty('src', src);

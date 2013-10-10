@@ -137,7 +137,7 @@ var FileRepoForm = new Class({
                     enableTab();
                 }
                 else {
-                    previewElement.removeClass('hidden').setProperty('src', Energine.static + 'images/icons/icon_undefined.gif');
+                    previewElement.removeClass('hidden').setProperty('src', Energine['static'] + 'images/icons/icon_undefined.gif');
                 }
             });
         }

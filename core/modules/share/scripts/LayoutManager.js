@@ -104,7 +104,7 @@ var LayoutManager = new Class({
                     );
 
                     //для красоты
-                    this.toolbar.getElement().getElement('select').setStyle('width', 'auto')
+                    this.toolbar.getElement().getElement('select').setStyle('width', 'auto');
 
                 }
             }.bind(this)
@@ -380,7 +380,7 @@ LayoutManager.Widget = new Class({
         this.column = column;
         this.name = xmlDescr.getProperty('data-name');
         this.visible = false;
-        this.static = false;
+        this['static'] = false;
         htmlElement = htmlElement ||
             document.getElement('[widget=' + this.name + ']');
         if (this.element = $(htmlElement)) {
@@ -389,7 +389,7 @@ LayoutManager.Widget = new Class({
                 this.column.injectWidget(this, injectBeforeThisWidget, 'before');
             }
             this.toolbar = this._buildToolbar();
-            if (!this.static) this.dragger = new LayoutManager.Widget.DragBehavior(this);
+            if (!this['static']) this.dragger = new LayoutManager.Widget.DragBehavior(this);
             if (!this.element.hasClass('e-widget')) this.element.addClass('e-widget');
             this.overlay = new Overlay(this.element, {indicator: false});
 
@@ -412,8 +412,8 @@ LayoutManager.Widget = new Class({
         else {
             this.container.grab(this.element);
         }
-        this.static = new Boolean(this.element.getProperty('static')).valueOf();
-        if (this.static) this.container.addClass('e-lm-static-widget');
+        this['static'] = new Boolean(this.element.getProperty('static')).valueOf();
+        if (this['static']) this.container.addClass('e-lm-static-widget');
         var c;
         if ((c = this.xml.getXMLElement('component')) /*&& !this.static*/) {
             this.component = new LayoutManager.Component(c, this.element);
@@ -421,13 +421,13 @@ LayoutManager.Widget = new Class({
     },
     _buildToolbar: function () {
         var tb = new Toolbar('widgetToolbar_' + this.name);
-        if (!this.static)
+        if (!this['static'])
             tb.appendControl(new Toolbar.Button({id: 'add', 'icon': 'images/toolbar/add.gif', title: 'Add', action: 'addWidget'}));
         if (this.component && Object.getLength(this.component.params) && Object.some(this.component.params, function (obj) {
             return (obj.xml.getProperty('data-type') != 'hidden');
         }))
             tb.appendControl(new Toolbar.Button({id: 'edit', 'icon': 'images/toolbar/edit.gif', title: 'Edit', action: 'editProps'}));
-        if (!this.static)
+        if (!this['static'])
             tb.appendControl(new Toolbar.Button({id: 'delete', 'icon': 'images/toolbar/delete.gif', title: 'Delete', action: 'delWidget'}));
 
         tb.appendControl(new Toolbar.Switcher({id: 'resize', 'icon': 'images/toolbar/minimize.gif', 'aicon': 'images/toolbar/restore.gif', title: 'Minimize/Expand', action: 'resizeWidget'}));
@@ -555,7 +555,7 @@ LayoutManager.Widget = new Class({
     },
     findDirection: function (y) {
         var pos = this.container.getPosition(LayoutManager.mFrame), size = this.container.getSize();
-        if (this.static) return 'after';
+        if (this['static']) return 'after';
         return ((y >= pos.y) &&
             (y <= (pos.y + size.y / 4))) ? 'before' : 'after';
     }

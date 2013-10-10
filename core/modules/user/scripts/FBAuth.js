@@ -7,7 +7,7 @@ window.FBL = {
     set:function (appID) {
         FBL.appID = appID;
     }
-}
+};
 window.addEvent('domready', function () {
     var fbAuth = $('fbAuth');
     if (fbAuth) {
@@ -39,7 +39,7 @@ window.addEvent('domready', function () {
                 FB.login(function (response) {
                     console.log(response);
                     if (response.authResponse) {
-                        document.location = Energine.static + 'auth.php?fbAuth';
+                        document.location = Energine['static'] + 'auth.php?fbAuth';
                     }
                     else {
                         over.hide();

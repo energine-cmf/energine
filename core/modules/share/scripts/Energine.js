@@ -7,7 +7,7 @@ var ScriptLoader = {load: function () {
 
 var isset = function (variable) {
     return ('undefined' != typeof(variable));
-}
+};
 
 var Energine = {
     debug: false,
@@ -25,7 +25,7 @@ var Energine = {
     },
     forceJSON: false,
     supportContentEdit: true
-}
+};
 Energine.request = {
     request: function (uri, data, onSuccess, onUserError, onServerError, method) {
         onServerError = onServerError || function (responseText) {
@@ -91,7 +91,7 @@ Energine.cancelEvent = function (e) {
     catch (exc) {
     }
     return false;
-}
+};
 
 Energine.createDatePicker = function (datePickerObj, nullable) {
     var props = {
@@ -101,7 +101,7 @@ Energine.createDatePicker = function (datePickerObj, nullable) {
         useFadeInOut: false
     };
     return Energine._createDatePickerObject($(datePickerObj), props);
-}
+};
 
 Energine.createDateTimePicker = function (datePickerObj, nullable) {
     //DateTime
@@ -111,10 +111,10 @@ Energine.createDateTimePicker = function (datePickerObj, nullable) {
 //        inputOutputFormat: '%Y-%m-%d %H:%M',
         allowEmpty: nullable,
         useFadeInOut: false
-    }
+    };
 
     return Energine._createDatePickerObject($(datePickerObj), props);
-}
+};
 
 Energine._createDatePickerObject = function (datePickerObj, props) {
 
@@ -140,7 +140,7 @@ Energine._createDatePickerObject = function (datePickerObj, props) {
     catch (e) {}
 
     return dp;
-}
+};
 
 /*
  * Улучшения: - Проверка уже загруженных стилей; - Загрузка стилей из директории
@@ -155,16 +155,17 @@ Asset.css = function (source, properties) {
         properties = properties || {};
 
         var result = new Element('link');
-        result.setProperties(Object.merge({
-            'rel': 'stylesheet',
-            'media': 'Screen, projection',
-            'type': 'text/css',
-            'href': ((Energine.static) ? Energine.static : '') + 'stylesheets/' +
-                source
-        }, properties));
+        result.setProperties(Object.merge(
+            {
+                'rel': 'stylesheet',
+                'media': 'Screen, projection',
+                'type': 'text/css',
+                'href': ((Energine['static']) ? Energine['static'] : '') + 'stylesheets/' + source
+            },
+            properties));
         result.inject(document.head);
         return result;
     }
     return false;
-}
+};
 

@@ -190,6 +190,10 @@ final class Setup {
             'SELECT * FROM share_domains'
         );
 
+        if(!$res){
+            throw new Exception('Удивительно.... Не с чем работать. А проверьте все ли хорошо с базой? не пустая ли? похоже некоторых нужных таблиц в ней нет.');
+
+        }
         $domains = $res->fetchAll();
         $res->closeCursor();
 

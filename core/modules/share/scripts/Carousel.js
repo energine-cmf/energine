@@ -397,6 +397,12 @@ var Carousel = new Class(/** @lends Carousel# */{
         delete this.options.style;
 
         /**
+         * Item width.
+         * @type {number}
+         */
+        this.width = this.items[0].getSize().x;
+
+        /**
          * Indicates whether the scrolling can be done. If the amount of items in the playlist less or equal
          * to the amount of visible items, than in the carousel then there is nothing to scroll.
          * @type {boolean}
@@ -488,12 +494,6 @@ var Carousel = new Class(/** @lends Carousel# */{
                 }
             }, this);
         }
-
-        /**
-         * Item width.
-         * @type {number}
-         */
-        this.width = this.items[0].getSize().x;
 
         // Apply new width to the 'view-box'-element
         this.element.setStyle('width', this.width * this.options.NVisibleItems);

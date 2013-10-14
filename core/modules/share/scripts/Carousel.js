@@ -734,6 +734,9 @@ var Carousel = new Class(/** @lends Carousel# */{
             'transition': 'cubic:in:out',
             'onChainComplete': function () {
                 this.isEffectCompleted = true;
+                if (this.$chain.length == 0) {
+                    this.fireEvent('scroll', direction);
+                }
                 this.callChain();
                 // Turn on disabled button (only if scrolling is not in loop!)
                 if (!this.options.loop) {

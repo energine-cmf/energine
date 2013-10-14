@@ -26,7 +26,7 @@
                            </th>
                        </xsl:for-each>
                        <th class="last"><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></th>
-                   </tr>                   
+                   </tr>
                </thead>
                <tbody>
                    <xsl:apply-templates/>
@@ -35,27 +35,29 @@
         </div>
     </xsl:template>
 
-    <xsl:template match="record[ancestor::component[@exttype='calendar']]">        
+    <xsl:template match="record[ancestor::component[@exttype='calendar']]">
         <tr class="week">
             <xsl:if test="field[@today='today']">
                 <xsl:attribute name="class">week current_week</xsl:attribute>
             </xsl:if>
             <td><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></td>
-            <xsl:for-each select="field">
-                <td>
-                    <xsl:attribute name="class">day<xsl:if test="position() = last()"> last_day</xsl:if><xsl:if test="@today"> current_day</xsl:if><xsl:if test="not(@current)"> foreign_day</xsl:if><xsl:if test="@marked"> active_day</xsl:if><xsl:if test="not(@selected) and not(@marked)"> inactive_day</xsl:if></xsl:attribute>
-                    <a>
-                        <xsl:if test="@selected">
-                            <xsl:attribute name="href">
-                                <xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../../@template"/><xsl:value-of select="@year"/>/<xsl:value-of select="@month"/>/<xsl:value-of select="@day"/>/
-                            </xsl:attribute>
-                        </xsl:if>
-                        <xsl:value-of select="."/>
-                    </a>
-                </td>
-            </xsl:for-each>
+            <xsl:apply-templates />
             <td class="last"><xsl:value-of select="$NBSP" disable-output-escaping="yes"/></td>
         </tr>
+    </xsl:template>
+
+    <xsl:template match="field[ancestor::component[@exttype='calendar']]">
+        <td>
+            <xsl:attribute name="class">day<xsl:if test="position() = last()"> last_day</xsl:if><xsl:if test="@today"> current_day</xsl:if><xsl:if test="not(@current)"> foreign_day</xsl:if><xsl:if test="@marked"> active_day</xsl:if><xsl:if test="not(@selected) and not(@marked)"> inactive_day</xsl:if></xsl:attribute>
+            <a>
+                <xsl:if test="@selected">
+                    <xsl:attribute name="href">
+                        <xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../../@template"/><xsl:value-of select="@year"/>/<xsl:value-of select="@month"/>/<xsl:value-of select="@day"/>/
+                    </xsl:attribute>
+                </xsl:if>
+                <xsl:value-of select="."/>
+            </a>
+        </td>
     </xsl:template>
 
     <xsl:template match="toolbar[parent::component[@exttype='calendar']]">

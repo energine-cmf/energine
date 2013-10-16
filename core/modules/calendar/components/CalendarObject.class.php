@@ -131,7 +131,7 @@ final class CalendarObject extends Object implements Iterator {
 	           $tmp->modify('-1 day');    	
 	       	break;
 		}
-	   return (object)array('month' => $tmp->format('n'), 'monthName' => strftime('%B', $tmp->format('U')), 'year' => $tmp->format('Y')); 
+	   return (object)array('month' => $tmp->format('n'), 'monthName' => DBWorker::_translate('TXT_MONTH_NAME_'.$tmp->format('m')), 'year' => $tmp->format('Y'));
 	}
 	
 	/**

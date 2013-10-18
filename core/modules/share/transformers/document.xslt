@@ -46,10 +46,12 @@
                     <xsl:when test="document/@debug=1">
                         <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-debug.js"></script>
                         <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more-debug.js"></script>
+                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext-debug.js"></script>
                     </xsl:when>
                     <xsl:otherwise>
                         <script type="text/javascript" src="{$STATIC_URL}scripts/mootools.js"></script>
                         <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more.js"></script>
+                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext.js"></script>
                     </xsl:otherwise>
                 </xsl:choose>
         		<script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
@@ -81,8 +83,12 @@
                     </xsl:if>
                     window.addEvent('domready', function () {
                         var safeConsoleError = function(e){
-                        if (window['console'] <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> console['error']) {
-                            console.error(e);
+                            if (window['console'] <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> console['error']) {
+                                if (Browser.chrome <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> instanceOf(e, TypeError) <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> Energine.debug) {
+                                    console.error(e.stack);
+                                } else {
+                                    console.error(e);
+                                }
                             }
                         };
         				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
@@ -223,10 +229,12 @@
             <xsl:when test="document/@debug=1">
                 <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-debug.js"></script>
                 <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more-debug.js"></script>
+                <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext-debug.js"></script>
             </xsl:when>
             <xsl:otherwise>
                 <script type="text/javascript" src="{$STATIC_URL}scripts/mootools.js"></script>
                 <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more.js"></script>
+                <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext.js"></script>
             </xsl:otherwise>
         </xsl:choose>
         <script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
@@ -252,8 +260,12 @@
             </xsl:if>
             window.addEvent('domready', function () {
                 var safeConsoleError = function(e){
-                if (window['console'] <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> console['error']) {
-                    console.error(e);
+                    if (window['console'] <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> console['error']) {
+                        if (Browser.chrome <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> instanceOf(e, TypeError) <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> Energine.debug) {
+                            console.error(e.stack);
+                        } else {
+                            console.error(e);
+                        }
                     }
                 };
                 <xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">

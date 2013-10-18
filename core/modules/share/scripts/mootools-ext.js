@@ -1,0 +1,1 @@
+Class.Mutators.Static = function (m) {this.extend(m);};

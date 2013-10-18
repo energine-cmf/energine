@@ -9,6 +9,16 @@
  */
 
 /**
+ * Mutator that creates static members in class.
+ *
+ * @constructor
+ * @augments Class.Mutators
+ * @param {Object} members Object that contains properties and methods, which must be static in the class.
+ */
+Class.Mutators.Static = function (members) {
+    this.extend(members);
+};
+/**
  * @class Holds an playlist, that will be used by Carousel objects.
  *
  * @author Valerii Zinchenko

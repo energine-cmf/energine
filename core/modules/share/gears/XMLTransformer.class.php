@@ -22,14 +22,16 @@ class XMLTransformer implements ITransformer{
     public function setDocument(DOMDocument $document){
         $this->document = $document;
     }
+
     /**
      * Введено для совместимти в режиме отладки
      *
-     * @param  $dummy
-     * @return void
+     * @param string $transformerFilename
+     * @param bool $isAbsolutePath
+     * @throws SystemException
      */
-    public function setFileName($dummy){
-
+    public function setFileName($transformerFilename, $isAbsolutePath = false) {
+        throw new SystemException('ERR_UNIMPLEMENTED', SystemException::ERR_DEVELOPER);
     }
 }
 

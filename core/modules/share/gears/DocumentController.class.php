@@ -148,6 +148,8 @@ interface ITransformer {
     public function transform();
 
     public function setDocument(DOMDocument $document);
+
+    public function setFileName($transformerFilename, $isAbsolutePath = false);
 }
 
 interface IDocument {

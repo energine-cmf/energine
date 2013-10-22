@@ -30,6 +30,17 @@ class JSONTransformer implements ITransformer {
         }
         return $component->nodeValue;
     }
+
+    /**
+     * Введено для совместимти в режиме отладки
+     *
+     * @param string $transformerFilename
+     * @param bool $isAbsolutePath
+     * @throws SystemException
+     */
+    public function setFileName($transformerFilename, $isAbsolutePath = false) {
+        throw new SystemException('ERR_UNIMPLEMENTED', SystemException::ERR_DEVELOPER);
+    }
 }
 
 

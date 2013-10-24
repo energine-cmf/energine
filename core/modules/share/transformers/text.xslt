@@ -28,7 +28,7 @@
                 <xsl:attribute name="eID"><xsl:value-of select="$ID"/></xsl:attribute>
             </xsl:if>            
             <xsl:if test=". = ''">
-                <p><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></p>
+                <p>--<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></p>
             </xsl:if>
             <xsl:value-of select="." disable-output-escaping="yes"/>
         </div>

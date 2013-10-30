@@ -3,7 +3,7 @@
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.2.4
+ * @version 1.2.4.1
  *
  * @requires MooTools
  */
@@ -19,9 +19,11 @@ Class.Mutators.Static = function (members) {
     this.extend(members);
 };
 /**
- * @class Holds an playlist, that will be used by Carousel objects.
+ * Holds an playlist, that will be used by Carousel objects.
  *
  * @author Valerii Zinchenko
+ *
+ * @throws {string} No items were found in the playlist.
  *
  * @example <caption>HTML container for playlist.</caption>
  * &ltdiv id="playlistID" class="playlist"&gt
@@ -40,13 +42,15 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
      * @type {boolean}
      */
     isExtern: true,
+
     // constructor
     initialize: function (element, itemSelector) {
         this.itemSelector = itemSelector;
 
         var holder = $(element) || $$(element)[0];
-        if (holder == null)
+        if (holder == null) {
             throw 'Element for CarouselPlaylist was not found in DOM Tree!';
+        }
 
         if (this.itemSelector === undefined) {
             this.items = holder.getChildren();
@@ -64,7 +68,8 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
         }
     },
     /**
-     * Hides playlist.
+     * Hide the playlist.
+     * @function
      * @public
      */
     hide: function () {
@@ -73,7 +78,10 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
 
     /**
      * Get the playlist's holder.
-     * @returns {*}
+     *
+     * @function
+     * @public
+     * @returns {Element}
      */
     getHolder: function(){
         return this.items[0].getParent();
@@ -81,16 +89,21 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
 });
 
 /**
- * @class Connects an Carousel objects and attach events to them. From MooTools it implements: Events
+ * Connects an Carousel objects and attach events to them. From MooTools it implements: Events
  *
- * @type {Class}
  * @author Valerii Zinchenko
+ *
+ * @throws {string} Not enough arguments!
+ * @throws {string} Second argument must be an Array of Carousel objects!
+ * @throws {string} Element #{number} in the array is not instance of Carousel!
+ * @throws {string} Carousels can not be connected, because of different playlists!
  *
  * @constructor
  * @param {Carousel[]} carousels Array of Carousel objects that will be connected.
  */
 var CarouselConnector = new Class(/** @lends CarouselConnector# */{
     Implements: Events,
+
     // constructor
     initialize: function (carousels) {
         // Check input arguments
@@ -140,8 +153,9 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
     },
 
     /**
-     * It stores the functions for selecting a specific item <tt>id</tt> in <tt>carousel</tt> by fired event <tt>selectItem</tt>.
+     * It stores the functions for selecting a specific item <tt>id</tt> in <tt>carousel</tt> by fired event [selectItem]{@link Carousel#selectItem}.
      *
+     * @function
      * @public
      * @param {Carousel} carousel Connected carousel.
      * @param {number} id Item ID in carousel that will be selected.
@@ -153,9 +167,9 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
 });
 
 /**
- * @class Carousel. The carousel self is located in the one of the element in DOM Tree, by default in div-tag.
- * The carousel's element must contain the view-box element with class name property <b>'viewbox'</b> and two buttons for scrolling
- * to the left and to the right with class name property <b>'next'</b> and <b>'previous'</b> respectively.
+ * The carousel self is located in the one of the element in DOM Tree, by default in div-tag.
+ * The carousel's element must contain the view-box element with class name property <b>'carousel_viewbox'</b>
+ * and two buttons for scrolling to the left and to the right with class name property <b>'next'</b> and <b>'previous'</b> respectively.
  * From MooTools it implements: Options, Events, Chain.
  *
  * @author Pavel Dubenko, Valerii Zinchenko
@@ -176,7 +190,7 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
  *
  * @constructor
  * @param {string | Element} element Can be the id of an element in DOM Tree, or CSS Selector, or an Element. In case with CSS Selector it will get only the first element.
- * @param {Object} [options] [Options]{@link Carousel#options}, that can be applied to the Carousel.
+ * @param {Object} [options] [Options]{@link Carousel#options} for the Carousel.
  */
 var Carousel = (function() {
     /**
@@ -340,6 +354,7 @@ var Carousel = (function() {
          * because we do not know how long the file 'carousel.css' must be parsed and applied to the HTML document
          * before the using of stylized elements.
          * @property {string} [event = 'click'] Defines an event for the buttons, that will scroll the carousel.
+         * @property {boolean} [autoSelect = true] Defines whether the items can be auto selected.
          */
         options: {
             // Number of visible items.
@@ -393,7 +408,10 @@ var Carousel = (function() {
             },
 
             // Defines an event for the buttons, that will scroll the carousel.
-            event: 'click'
+            event: 'click',
+
+            // Defines whether the items can be auto selected.
+            autoSelect: true
         },
 
         /**
@@ -460,6 +478,10 @@ var Carousel = (function() {
                 }
             }
 
+            if (this.options.NVisibleItems > this.options.playlist.NItems) {
+                this.options.NVisibleItems = this.options.playlist.NItems;
+            }
+
             // Check whether the playlist is internal. If not - make clone
             if (this.element === this.options.playlist.items[0].getParent('.carousel_viewbox')){
                 this.holder = this.options.playlist.getHolder();
@@ -524,20 +546,31 @@ var Carousel = (function() {
             }
             delete this.options.style;
 
-            var size = this.items[0].getSize();
+            // Get the size of the biggest item.
+            var size = [0,0];
+            this.items.getDimensions({computeSize:true}).each(function(dims) {
+                if (size[0] < dims.totalWidth) {
+                    size[0] = dims.totalWidth;
+                }
+            });
+            this.items.getDimensions({computeSize:true}).each(function(dims) {
+                if (size[1] < dims.totalHeight) {
+                    size[1] = dims.totalHeight;
+                }
+            });
+
+            // Apply new width to the 'view-box'-element
             if (this.options.scrollDirection == 'left' || this.options.scrollDirection == 'right') {
                 /**
                  * Item length.
                  * @type {number}
                  */
-                this.length = size.x;
-                // Apply new width to the 'view-box'-element
+                this.length = size[0];
                 this.element.setStyle('width', this.length * this.options.NVisibleItems);
-                this.element.setStyle('height', size.y);
+                this.element.setStyle('height', size[1]);
             } else {
-                this.length = size.y;
-                // Apply new width to the 'view-box'-element
-                this.element.setStyle('width', size.x);
+                this.length = size[1];
+                this.element.setStyle('width', size[0]);
                 this.element.setStyle('height', this.length * this.options.NVisibleItems);
             }
 
@@ -865,7 +898,7 @@ var Carousel = (function() {
                 : this.lastScrollStep + this.options.scrollStep * (scrollNTimes - 1));
             this.firstVisibleItemID = wrapIndices(this.firstVisibleItemID, 0, this.items.length, this.options.loop);
 
-            if (!isSelected) {
+            if (this.options.autoSelect && !isSelected) {
                 // Checks whether the selected item is visible
                 var isSelectedVisible = false;
                 for (n = 0; n < this.options.NVisibleItems; n++) {
@@ -877,9 +910,9 @@ var Carousel = (function() {
                 // If the selected item is not visible, then the leftmost or rightmost visible item will be selected
                 if (!isSelectedVisible) {
                     this.selectItem(wrapIndices(
-                            (direction == 1)
-                                ? this.firstVisibleItemID
-                                : this.firstVisibleItemID + this.options.NVisibleItems - 1,
+                        (direction == 1)
+                            ? this.firstVisibleItemID
+                            : this.firstVisibleItemID + this.options.NVisibleItems - 1,
                         0, this.options.playlist.NItems));
                     this.fireEvent('selectItem', this.currentActiveID);
                 }
@@ -922,10 +955,10 @@ var Carousel = (function() {
 
             // scrollDirection
             if (typeOf(this.options.scrollDirection) != 'string'
-                && this.options.scrollDirection != 'left'
+                || (this.options.scrollDirection != 'left'
                 && this.options.scrollDirection != 'right'
                 && this.options.scrollDirection != 'top'
-                && this.options.scrollDirection != 'bottom')
+                && this.options.scrollDirection != 'bottom'))
             {
                 this.options.scrollDirection = 'left';
                 console.warn('The option \"scrollDirection\" is incorrect. Its value reset to \"' + this.options.scrollDirection + '\"');
@@ -947,6 +980,11 @@ var Carousel = (function() {
             if (typeOf(this.options.event) != 'string' || this.options.event === '') {
                 this.options.event = 'click';
                 console.warn('The option for \"event\" is not type of the \"string\". Its value reset to \"click\"')
+            }
+
+            // autoSelect
+            if (typeOf(this.options.autoSelect) != 'boolean') {
+                this.options.autoSelect = !!this.options.autoSelect;
             }
         }.protect()
     });

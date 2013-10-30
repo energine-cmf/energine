@@ -552,8 +552,6 @@ var Carousel = (function() {
                 if (size[0] < dims.totalWidth) {
                     size[0] = dims.totalWidth;
                 }
-            });
-            this.items.getDimensions({computeSize:true}).each(function(dims) {
                 if (size[1] < dims.totalHeight) {
                     size[1] = dims.totalHeight;
                 }

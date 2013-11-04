@@ -694,7 +694,6 @@ class FieldDescription extends DBWorker implements Iterator {
      * @return FieldDescription
      */
     public function setProperty($name, $value) {
-        $name = strtolower($name);
         if (in_array($name, array('title', 'message', 'tabName'))) {
             $value = $this->translate($value);
         } elseif (is_scalar($value) && (strpos($value, 'trans(') !== false)) {
@@ -712,7 +711,6 @@ class FieldDescription extends DBWorker implements Iterator {
      * @return FieldDescription
      */
     public function removeProperty($name) {
-        $name = strtolower($name);
         unset($this->additionalProperties[$name]);
         return $this;
     }
@@ -735,7 +733,6 @@ class FieldDescription extends DBWorker implements Iterator {
      * @return mixed
      */
     public function getPropertyValue($name) {
-        $name = strtolower($name);
         $value = null;
         if (isset($this->additionalProperties[$name])) {
             $value = $this->additionalProperties[$name];

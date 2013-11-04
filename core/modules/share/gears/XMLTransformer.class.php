@@ -31,7 +31,7 @@ class XMLTransformer implements ITransformer{
      * @throws SystemException
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
-        throw new SystemException('ERR_UNIMPLEMENTED', SystemException::ERR_DEVELOPER);
+       //throw new SystemException('ERR_UNIMPLEMENTED', SystemException::ERR_DEVELOPER);
     }
 }
 

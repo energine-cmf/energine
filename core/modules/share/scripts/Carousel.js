@@ -3,7 +3,7 @@
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.2.4.1
+ * @version 1.2.4.2
  *
  * @requires MooTools
  */
@@ -96,7 +96,7 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
  * @throws {string} Not enough arguments!
  * @throws {string} Second argument must be an Array of Carousel objects!
  * @throws {string} Element #{number} in the array is not instance of Carousel!
- * @throws {string} Carousels can not be connected, because of different playlists!
+ * @throws {string} Carousels can not be connected, because of different amount of items in the playlists!
  *
  * @constructor
  * @param {Carousel[]} carousels Array of Carousel objects that will be connected.
@@ -119,8 +119,8 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
             }
         }
         for (var n = 0; n < carousels.length - 1; n++) {
-            if (carousels[n].options.playlist !== carousels[n + 1].options.playlist) {
-                throw 'Carousels can not be connected, because of different playlists!';
+            if (carousels[n].options.playlist.NItems != carousels[n + 1].options.playlist.NItems) {
+                throw 'Carousels can not be connected, because of different amount of items in the playlists!';
             }
         }
 
@@ -343,7 +343,7 @@ var Carousel = (function() {
         /**
          * Carousel options.
          * @type {object}
-         * @property {number} [NVisibleItems = 1] Number of visible items.
+         * @property {number|string} [NVisibleItems = 1] Number of visible items. It can be also 'all' to show all items in the playlist
          * @property {number} [scrollStep = 1] Default scrolling step.
          * @property {number} [scrollDirection = 'left'] Default scrolling direction. Here can be used 'left', 'right', 'top', 'bottom'.
          * @property {boolean} [loop = true] Defines if scrolled items are in loop or not.
@@ -377,33 +377,19 @@ var Carousel = (function() {
 
             // Core styles for the carousel.
             style: {
-                '.carousel': {
-                    position: 'relative'
-                },
                 '.carousel_viewbox': {
                     position: 'relative',
                     overflow: 'hidden',
                     margin: 'auto'
                 },
                 '.item': {
-                    position: 'absolute',
-                    textAlign: 'center',
-                    verticalAlign: 'middle'
-                },
-                '.item.active': {
-                    textAlign: 'center',
-                    verticalAlign: 'middle'
+                    position: 'absolute'
                 },
                 '.next, .previous': {
                     display: 'block',
                     overflow: 'hidden',
-                    position: 'absolute',
-                    top: '50%',
                     zIndex: '2',
                     '-moz-user-select': 'none'
-                },
-                '.next': {
-                    marginLeft: '100%'
                 }
             },
 
@@ -462,9 +448,9 @@ var Carousel = (function() {
 
             this.setOptions(options);
             // This is need to save the reference to the playlist.
-            if (options != undefined && 'playlist' in options) {
-                this.options.playlist = options.playlist;
-            }
+//            if (options != undefined && 'playlist' in options) {
+//                this.options.playlist = options.playlist;
+//            }
             this.checkOptions();
 
             // If the playlist is not explicitly specified, set than try to get a playlist from the carousel.
@@ -478,7 +464,7 @@ var Carousel = (function() {
                 }
             }
 
-            if (this.options.NVisibleItems > this.options.playlist.NItems) {
+            if (this.options.NVisibleItems == 'all' || this.options.NVisibleItems > this.options.playlist.NItems) {
                 this.options.NVisibleItems = this.options.playlist.NItems;
             }
 
@@ -539,8 +525,6 @@ var Carousel = (function() {
             };
 
             // Sets core styles
-            this.carousel.setStyles(this.options.style['.carousel']);
-            delete this.options.style['.carousel'];
             for (var selector in this.options.style) {
                 this.carousel.getElements(selector).setStyles(this.options.style[selector]);
             }
@@ -556,6 +540,8 @@ var Carousel = (function() {
                     size[1] = dims.totalHeight;
                 }
             });
+            size[0] += this.items[0].getStyle('margin-left').toInt() + this.items[0].getStyle('margin-right').toInt();
+            size[1] += this.items[0].getStyle('margin-top').toInt() + this.items[0].getStyle('margin-bottom').toInt();
 
             // Apply new width to the 'view-box'-element
             if (this.options.scrollDirection == 'left' || this.options.scrollDirection == 'right') {
@@ -947,7 +933,9 @@ var Carousel = (function() {
          * @protected
          */
         checkOptions: function () {
-            this.options.NVisibleItems = checkNumbers('NVisibleItems', [this.options.NVisibleItems, 1, 1]);
+            if (this.options.NVisibleItems !== 'all') {
+                this.options.NVisibleItems = checkNumbers('NVisibleItems', [this.options.NVisibleItems, 1, 1]);
+            }
             this.options.scrollStep = checkNumbers('scrollStep', [this.options.scrollStep, 1, 1, this.options.NVisibleItems]);
             this.options.effectDuration = checkNumbers('effectDuration', [this.options.effectDuration, 700, 0]);
 

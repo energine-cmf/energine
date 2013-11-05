@@ -377,19 +377,33 @@ var Carousel = (function() {
 
             // Core styles for the carousel.
             style: {
+                '.carousel': {
+                    position: 'relative'
+                },
                 '.carousel_viewbox': {
                     position: 'relative',
                     overflow: 'hidden',
                     margin: 'auto'
                 },
                 '.item': {
-                    position: 'absolute'
+                    position: 'absolute',
+                    textAlign: 'center',
+                    verticalAlign: 'middle'
+                },
+                '.item.active': {
+                    textAlign: 'center',
+                    verticalAlign: 'middle'
                 },
                 '.next, .previous': {
                     display: 'block',
                     overflow: 'hidden',
+                    position: 'absolute',
+                    top: '50%',
                     zIndex: '2',
                     '-moz-user-select': 'none'
+                },
+                '.next': {
+                    marginLeft: '100%'
                 }
             },
 
@@ -525,6 +539,8 @@ var Carousel = (function() {
             };
 
             // Sets core styles
+            this.carousel.setStyles(this.options.style['.carousel']);
+            delete this.options.style['.carousel'];
             for (var selector in this.options.style) {
                 this.carousel.getElements(selector).setStyles(this.options.style[selector]);
             }

@@ -504,8 +504,15 @@ var Carousel = (function() {
             // Add 'click'-event to all items
             this.items.each(function (it, n) {
                 var self = this;
-                it.addEvent('click', function (defaultEvent) {
-                    defaultEvent.stop();
+                it.addEvent('click', function (ev) {
+                    var el = $(ev.target);
+                    if (el !== this
+                        && ( el.tagName.toLowerCase() === 'a' || this.contains(el.getParent('a')) )
+                    ){
+                        return;
+                    }
+
+                    ev.stop();
                     self.selectItem(n);
 
                     /**

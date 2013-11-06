@@ -251,11 +251,11 @@ class NewsFeed extends ExtendedFeed {
                 $filteredIDs = TagManager::getFilter($this->getParam('tags'), $this->tagsTableName);
 
                 if (!empty($filteredIDs)) {
-                    $this->addFilterCondition(array('trku_news.news_id' => $filteredIDs));
+                    $this->addFilterCondition(array($this->getTableName() . '.news_id' => $filteredIDs));
 
                 }
                 else {
-                    $this->addFilterCondition(array('trku_news.news_id' => 0));
+                    $this->addFilterCondition(array($this->getTableName() . '.news_id' => 0));
                 }
             }
         }

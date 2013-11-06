@@ -27,6 +27,12 @@ class FieldDescription extends DBWorker implements Iterator {
      */
     private $additionalPropertiesNames;
     /**
+     * Список всех дополнительных свойств в ловеркейзе
+     * @var array
+     * Это на самом деле костыль
+     */
+    private $additionalPropertiesLower;
+    /**
      * Текущий индекс для итерации по $additionalProperties
      * @var int
      */
@@ -281,7 +287,7 @@ class FieldDescription extends DBWorker implements Iterator {
         $this->name = $name;
         $this->systemName = $name;
         $this->isMultilanguage = false;
-        $this->additionalProperties = array();
+        $this->additionalProperties = $this->additionalPropertiesLower = array();
 
         // формируем название поля добавляя префикс 'FIELD_'
         if ($name != self::EMPTY_FIELD_NAME) {
@@ -699,7 +705,7 @@ class FieldDescription extends DBWorker implements Iterator {
         } elseif (is_scalar($value) && (strpos($value, 'trans(') !== false)) {
             $value = $this->translate(str_replace(array('trans', '(', ')'), '', $value));
         }
-        $this->additionalProperties[$name] = $value;
+        $this->additionalProperties[$name] = $this->additionalPropertiesLower[strtolower($name)] = $value;
         return $this;
     }
 
@@ -711,7 +717,7 @@ class FieldDescription extends DBWorker implements Iterator {
      * @return FieldDescription
      */
     public function removeProperty($name) {
-        unset($this->additionalProperties[$name]);
+        unset($this->additionalProperties[$name], $this->additionalPropertiesLower[strtolower($name)]);
         return $this;
     }
 
@@ -736,6 +742,9 @@ class FieldDescription extends DBWorker implements Iterator {
         $value = null;
         if (isset($this->additionalProperties[$name])) {
             $value = $this->additionalProperties[$name];
+        }
+        elseif(isset($this->additionalPropertiesLower[strtolower($name)])) {
+            $value = $this->additionalPropertiesLower[strtolower($name)];
         }
         return $value;
     }

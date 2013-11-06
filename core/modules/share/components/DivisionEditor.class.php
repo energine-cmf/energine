@@ -495,7 +495,7 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
             $doc->loadXML($contentXMLFieldData);
             $doc->formatOutput = true;
             $doc->preserveWhiteSpace = true;
-            $newField->setData($doc->saveXML(), true);
+            $newField->setData($doc->saveXML(null, LIBXML_NOEMPTYTAG), true);
             $this->getData()->addField($newField);
             unset($contentFilename, $contentFD, $av, $doc, $newField);
 

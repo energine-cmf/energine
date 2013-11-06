@@ -14,6 +14,8 @@
 /**
  * Menu. From MooTools it implements: Options, Events.
  *
+ * @throws {string} Element for the menu is not found.
+ *
  * @constructor
  * @param {Element|string} el Main element or element ID.
  * @param {Object} options Menu [options]{@link Menu#options}.
@@ -48,6 +50,10 @@ var AMenu = new Class(/** @lends Menu# */{
          * @type {Element}
          */
         this.element = $(el);
+        if (this.element == null) {
+            throw 'Element for the menu is not found.';
+        }
+
         this.element.addEvent(this.options.deactivateMenu, function() {
             self.deactivate();
         });
@@ -61,6 +67,9 @@ var AMenu = new Class(/** @lends Menu# */{
          * @type {Elements}
          */
         this.items = this.element.getChildren('.menu_item');
+        if (this.items.length) {
+            console.warn('Menu is empty.');
+        }
         this.items.each(function(item) {
             item.addEvent(self.options.itemSelect, function() {
                 self.selectItem(item);

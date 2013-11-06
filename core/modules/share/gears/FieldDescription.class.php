@@ -740,11 +740,10 @@ class FieldDescription extends DBWorker implements Iterator {
      */
     public function getPropertyValue($name) {
         $value = null;
-        if (isset($this->additionalProperties[$name])) {
-            $value = $this->additionalProperties[$name];
-        }
-        elseif(isset($this->additionalPropertiesLower[strtolower($name)])) {
+        if (isset($this->additionalPropertiesLower[strtolower($name)])) {
             $value = $this->additionalPropertiesLower[strtolower($name)];
+        } elseif (isset($this->additionalProperties[$name])) {
+            $value = $this->additionalProperties[$name];
         }
         return $value;
     }
@@ -850,16 +849,12 @@ class FieldDescription extends DBWorker implements Iterator {
             $dbFieldDescription->setMode($mode);
         }
         $dbFieldDescription->isMultilanguage = $configFieldDescription->isMultilanguage || $dbFieldDescription->isMultilanguage();
-        //$properties = $secondaryFieldDescription->getPropertyNames();
-        $properties = array_merge($configFieldDescription->getPropertyNames(), $dbFieldDescription->getPropertyNames());
+        $properties = array_unique(array_merge($configFieldDescription->getPropertyNames(), $dbFieldDescription->getPropertyNames()));
+
         foreach ($properties as $propertyName) {
             $propertyValue = $configFieldDescription->getPropertyValue($propertyName);
 
             if (!is_null($propertyValue) && !($propertyName == 'title' && $propertyValue == 'FIELD_' . self::EMPTY_FIELD_NAME)) {
-                /*                if ($propertyName == 'message') {
-                    $propertyValue = $configFieldDescription->translate($propertyValue);
-                }*/
-
                 $dbFieldDescription->setProperty($propertyName, $propertyValue);
             }
         }

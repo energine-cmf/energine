@@ -5,9 +5,6 @@ var ComponentParamsForm = new Class({
         this.parent(el);
     },
     save: function(){
-        if (!this.validator.validate()) {
-            return false;
-        }
         var result = {};
         if(this.codeEditors.length){
             this.codeEditors.each(function(editor){
@@ -15,6 +12,9 @@ var ComponentParamsForm = new Class({
             });
         }
 
+        if (!this.validator.validate()) {
+            return false;
+        }
         this.form.getElements('input[type=text],input[type=checkbox], select, textarea').each(function(el){
             var value;
             if(el.getProperty('type') == 'checkbox'){

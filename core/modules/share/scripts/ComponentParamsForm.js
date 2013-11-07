@@ -3,11 +3,17 @@ var ComponentParamsForm = new Class({
     Extends: Form,
     initialize: function(el){
         this.parent(el);
+        if(this.codeEditors.length){
+            this.codeEditors.each(function(editor){
+                editor.setValue(editor.getValue().replace('<![CDATA['+"\n", '').replace("\n" + ']]>', ''));
+            });
+        }
     },
     save: function(){
         var result = {};
         if(this.codeEditors.length){
             this.codeEditors.each(function(editor){
+                editor.setValue('<![CDATA[' + "\n" + editor.getValue() + "\n" +']]>');
                 editor.save();
             });
         }

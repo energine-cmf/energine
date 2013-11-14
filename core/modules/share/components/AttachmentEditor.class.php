@@ -274,4 +274,108 @@ class AttachmentEditor extends Grid {
         }
     }
 
+    /**
+     * переписанный родительский saveData
+     * Правильно сохраняет порядок в order_num полях
+     *
+     */
+    protected function saveData() {
+
+        $result = false;
+        //если в POST не пустое значение значение первичного ключа - значит мы находимся в режиме редактирования
+        if (isset($_POST[$this->getTableName()][$this->getPK()]) &&
+            !empty($_POST[$this->getTableName()][$this->getPK()])
+        ) {
+            $mode = self::COMPONENT_TYPE_FORM_ALTER;
+            $this->setFilter(array($this->getPK() => $_POST[$this->getTableName()][$this->getPK()]));
+        } else {
+            $mode = self::COMPONENT_TYPE_FORM_ADD;
+        }
+
+        //создаем объект описания данных
+        $dataDescriptionObject = new DataDescription();
+
+        if (!method_exists($this, $this->getPreviousState())) {
+            throw new SystemException('ERR_NO_ACTION', SystemException::ERR_CRITICAL);
+        }
+
+        //получаем описание полей для метода
+        $configDataDescription =
+            $this->getConfig()->getStateConfig($this->getPreviousState());
+        //если в конфиге есть описание полей для метода - загружаем их
+        if (isset($configDataDescription->fields)) {
+            $dataDescriptionObject->loadXML($configDataDescription->fields);
+        }
+
+        //Создаем объект описания данных взятых из БД
+        $DBDataDescription = new DataDescription();
+        //Загружаем в него инфу о колонках
+        $DBDataDescription->load($this->loadDataDescription());
+        $this->setDataDescription($dataDescriptionObject->intersect($DBDataDescription));
+
+        //Поле с порядком следования убираем из списка
+        if (($col = $this->getOrderColumn()) && ($field =
+                $this->getDataDescription()->getFieldDescriptionByName($col))
+        ) {
+            $this->getDataDescription()->removeFieldDescription($field);
+        }
+
+        $dataObject = new Data();
+        $dataObject->load($this->loadData());
+        $this->setData($dataObject);
+
+        //Создаем сейвер
+        $saver = $this->getSaver();
+
+        //Устанавливаем его режим
+        $saver->setMode($mode);
+        $saver->setDataDescription($this->getDataDescription());
+        $saver->setData($this->getData());
+
+        if ($saver->validate() === true) {
+            $saver->setFilter($this->getFilter());
+            $saver->save();
+            $result = $saver->getResult();
+
+        } else {
+            //выдвигается exception который перехватывается в методе save
+            throw new SystemException('ERR_VALIDATE_FORM', SystemException::ERR_WARNING, $this->saver->getErrors());
+        }
+
+        //Если у нас режим вставки и определена колонка для порядка следования,
+        // изменяем порядок следования
+        if (($orderColumn = $this->getOrderColumn()) &&
+            ($mode == self::COMPONENT_TYPE_FORM_ADD)
+        ) {
+
+            $linkedID = $this->getParam('linkedID');
+            $pk = $this->getParam('pk');
+
+            if ($linkedID) {
+                $new_order_num = $this->dbh->getScalar(
+                    'SELECT max(' . $orderColumn . ') as max_order_num
+                    FROM ' . $this->getTableName() . ' WHERE `' . $pk . '` = %s',
+                    $linkedID
+                );
+            } else {
+                $new_order_num = $this->dbh->getScalar(
+                    'SELECT max(' . $orderColumn . ') as max_order_num
+                    FROM ' . $this->getTableName() . ' WHERE `' . $pk . '` IS NULL AND session_id = %s ',
+                    session_id()
+                );
+            }
+
+            $new_order_num = (!$new_order_num) ? 1 : $new_order_num + 1;
+
+            $this->addFilterCondition(array($this->getPK() . '=' . $result));
+            $request =
+                'UPDATE ' . $this->getTableName() . ' SET ' . $orderColumn . ' = %s ' .
+                $this->dbh->buildWhereCondition($this->getFilter());
+            $this->dbh->modifyRequest($request, $new_order_num);
+
+        }
+
+        return $result;
+    }
+
 }

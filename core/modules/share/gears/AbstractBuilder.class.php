@@ -263,7 +263,8 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     default: // not used
                 }
 
-                $result->nodeValue = $fieldValue;
+                //$result->nodeValue = $fieldValue;
+                $result->appendChild(new DomText($fieldValue));
             }
 
         }

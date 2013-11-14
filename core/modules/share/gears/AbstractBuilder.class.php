@@ -257,7 +257,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     case FieldDescription::FIELD_TYPE_STRING:
                     case FieldDescription::FIELD_TYPE_TEXT:
                     case FieldDescription::FIELD_TYPE_HTML_BLOCK:
-                        $fieldValue = str_replace('&', '&amp;', $fieldValue);
+                        //$fieldValue = str_replace('&', '&amp;', $fieldValue);
                         break;
 
                     default: // not used

@@ -108,17 +108,21 @@
                                 safeConsoleError(e);
                             }
         				</xsl:if>
-                        <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[@name!='PageEditor']">
-                            <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
-                            if($('<xsl:value-of select="$objectID"/>')){
-                                try {
-                                <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>($('<xsl:value-of select="$objectID"/>'));
-                                }
-                                catch (e) {
-                                    safeConsoleError(e);
-                                }
-                            }
-        				</xsl:for-each>
+                    try {
+                                            Object.each({<xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[@name!='PageEditor']">
+                                                '<xsl:value-of select="generate-id(../../recordset[not(@name)])"/>':'<xsl:value-of select="@name"/>'<xsl:if
+                                            test="position()!=last()">,</xsl:if>
+                                            </xsl:for-each>}, function(className, componentID){
+                                                var component;
+                                        console.log(window[componentID], this == window, componentID, className);
+                                                if((component = document.getElementById(componentID)) <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> window[className]){
+                                                    window[componentID] = new window[className](component);
+                                                }
+                                            });
+                                            }
+                                            catch (e) {
+                                                safeConsoleError(e);
+                                            }
                         <xsl:if test="$COMPONENTS/javascript/behavior[@name='PageEditor']">
                             <xsl:if test="position()=1">
                                 <xsl:variable name="objectID" select="generate-id($COMPONENTS[javascript/behavior[@name='PageEditor']]/recordset)"/>

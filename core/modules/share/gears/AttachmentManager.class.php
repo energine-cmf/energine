@@ -254,14 +254,10 @@ class AttachmentManager extends DBWorker {
                             $dataDescription->addFieldDescription($fd);
 
                             $playlist = array();
-                            if ($imageData[$mapValue[$i]][0]['is_mp4'] == '1') {
-                                $playlist[] = array('id' => $base . '.mp4');
-                            }
-                            if ($imageData[$mapValue[$i]][0]['is_webm'] == '1') {
-                                $playlist[] = array('id' => $base . '.webm');
-                            }
-                            if ($imageData[$mapValue[$i]][0]['is_flv'] == '1') {
-                                $playlist[] = array('id' => $base . '.flv');
+                            foreach(array('mp4', 'webm', 'flv') as $fileType){
+                                if ($imageData[$mapValue[$i]][0]['is_'.$fileType] == '1') {
+                                    $playlist[] = array('id' => $base . '.'.$fileType, 'type' => $fileType);
+                                }
                             }
 
                             if ($playlist && count($playlist) > 1) {

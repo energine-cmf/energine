@@ -1186,18 +1186,27 @@ Picker.Attach = new Class({
 
 })();
 
+
 /**
  * @class Extension to the Picker.Date for using with Energine CMS
  * @author Valerii Zinchenko
  * @type {Class}
  *
  * @constructor
- * @param attachTo
- * @param [options]
+ * @param {Element} attachTo Field to which the DatePicker will be attached.
+ * @param {Object} [options] [Options]{@link DatePicker#options}.
  */
 var DatePicker = new Class({
     Extends: Picker.Date,
 
+    /**
+     * Options.
+     * @type {Object}
+     *
+     * @property {Object} translations Array like object that contain translations for different languages.
+     * @property {boolean} useFadeInOut Defines whether fades effect can be used.
+     * @property {Function} days_title Function that creates title for the DatePicker.
+     */
     options: {
         translations:{
             'ua':{
@@ -1225,6 +1234,7 @@ var DatePicker = new Class({
             return options.months_full[date.getMonth()] + " " + date.getFullYear();
         }
     },
+
     // constructor
     initialize: function(attachTo, options) {
         if (Energine.lang && this.options.translations[Energine.lang]) {
@@ -1238,6 +1248,7 @@ var DatePicker = new Class({
             options.days_abbr = this.options.translations['en'].daysShort;
             options.months_abbr = this.options.translations['en'].monthsShort;
         }
+
         this.parent(attachTo, options);
     }
 });

@@ -264,8 +264,6 @@ final class QAL extends DBA {
      * @access public
      * @return array
      *
-     * @todo Исключать поля типа текст из результатов выборки для таблицы с переводами
-     * @todo Подключить фильтрацию
      */
     public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
         $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')) . '_name';

@@ -560,9 +560,9 @@ class FieldDescription extends DBWorker implements Iterator {
             case self::FIELD_TYPE_DATETIME:
                 if ($this->getPropertyValue('nullable') === false) {
                     //$regexp = '/^\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$/';
-                    $regexp = '/^\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}$/';
+                    $regexp = '/^\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}(:\d{1,2})?$/';
                 } else {
-                    $regexp = '/^(\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2})?$/';
+                    $regexp = '/^(\d{4}\-\d{1,2}\-\d{1,2} \d{1,2}:\d{1,2}(:\d{1,2})?)?$/';
                 }
                 $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);

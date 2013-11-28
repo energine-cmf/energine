@@ -194,7 +194,7 @@ class AttachmentManager extends DBWorker {
                         // делаем преобразование имен из $additional_fiels (отрезаем prefix)
                         if ($additional_fields) {
                             foreach($additional_fields as $old_field => $new_field) {
-                                if (isset($row[$old_field])) {
+                                if (array_key_exists($old_field, $row)) {
                                     $val = $row[$old_field];
                                     unset($row[$old_field]);
                                     $row[$new_field] = $val;

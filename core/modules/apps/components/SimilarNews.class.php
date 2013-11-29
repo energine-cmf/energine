@@ -1,10 +1,10 @@
 <?php
 /**
- * Содержит класс TRKUSimilarNews
+ * Содержит класс SimilarNews
  *
  * @package energine
  * @subpackage apps
- * @author andrii.a
+ * @author Andrii A
  * @copyright eggmengroup.com
  */
 
@@ -12,7 +12,7 @@
  *
  * @package energine
  * @subpackage apps
- * @author andrii.a
+ * @author Andrii A
  */
 class SimilarNews extends DBDataSet {
 
@@ -60,14 +60,14 @@ class SimilarNews extends DBDataSet {
      * @access public
      */
     public function __construct($name, $module, array $params = null) {
-        $this->cp =
-                E()->getDocument()->componentManager->getBlockByName($params['bind']);
         parent::__construct($name, $module, $params);
         $this->setParam('onlyCurrentLang', true);
-        if (!$this->cp || ($this->cp && $this->cp->getState() != 'view') ) {
+        $bindComponentName = ($this->getParam('bind'))? $this->getParam('bind'): self::DEFAULT_LINK_TO;
+        $this->cp =
+            E()->getDocument()->componentManager->getBlockByName($bindComponentName);
+        if (!$this->cp || ($this->cp && $this->cp->getState() != 'view')) {
             $this->disable();
         }
-        if (!$this->getParam('bind')) $this->setParam('bind', self::DEFAULT_LINK_TO);
         $this->setParam('recordsPerPage',false);
     }
 

@@ -550,7 +550,7 @@ var GridManager = new Class({
     },
 
     move:function (id) {
-        if(!id) {
+        if(!parseInt(id)) {
             id = this.grid.getSelectedRecordKey();
         }
         this.setMvElementId(id);

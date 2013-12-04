@@ -1117,7 +1117,7 @@ Carousel.Types = {
                 if (scrollNTimes > 1) {
                     var NClones = Math.floor((this.options.NVisibleItems + this.options.scrollStep * scrollNTimes) / this.items.length);
                     if (NClones > 0) {
-                        cloneItems(this.items, this.playlistHolder, NClones);
+                        this.cloneItems(this.items, this.playlistHolder, NClones);
                         for (n = this.options.playlist.NItems; n < this.items.length; n++) {
                             this.items[n].setStyle(this.options.scrollDirection, -this.length);
                         }
@@ -1298,16 +1298,6 @@ Carousel.Types = {
                             this.playlistHolder.grab(newItems[n], itemPosition);
                         }
                     } else {
-                        if (scrollNTimes > 1) {
-                            var NClones = Math.floor((this.options.NVisibleItems + this.options.scrollStep * scrollNTimes) / this.items.length);
-                            if (NClones > 0) {
-                                this.cloneItems(this.items, this.playlistHolder, NClones);
-                                for (n = this.options.playlist.NItems; n < this.items.length; n++) {
-                                    this.items[n].setStyle(this.options.scrollDirection, -this.length);
-                                }
-                            }
-                        }
-
                         for (n = 0; n < this.options.scrollStep * scrollNTimes; n++) {
                             newItems[n] = this.items[this.wrapIndices(newItemID + n, 0, this.items.length, true)].setStyle(this.options.scrollDirection, this.length * n + itemShift);
                             this.playlistHolder.grab(newItems[n], itemPosition);

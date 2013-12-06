@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Energine.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: Energine.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/**
+ * @file Contain the description of the next objects:
+ * &lt;ul>
+ *     &lt;li>[Energine]{@link Energine}&lt;/li>
+ *     &lt;li>[ScriptLoader]{@link ScriptLoader}&lt;/li>
+ * &lt;/ul>
+ *
+ * @requires GridManager
+ *
+ * @author Pavel Dubenko, Valerii Zinchenko
+ *
+ * @version 1.1.0
+ */
+
+/**
+ * Загружает указанные скрипты из директории scripts.
+ */
+var ScriptLoader = {load: function () {}};
+
+/**
+ * @namespace
+ */
+var Energine = /** @lends Energine */{
+    /**
+     * Debug flag.
+     * @type {boolean}
+     */
+    debug: false,
+
+    //todo: Append to all URLs ending 'URL'
+    //---------
+    /**
+     * Base URL.
+     * @type {string}
+     */
+    base: '',
+
+    /**
+     * Static URL.
+     * @type {string}
+     */
+    'static' : '',
+
+    /**
+     * Resizer URL.
+     * @type {string}
+     */
+    resizer: '',
+
+    /**
+     * Media URL.
+     * @type {string}
+     */
+    media: '',
+
+    /**
+     * Root URL.
+     * @type {string}
+     */
+    root: '',
+    //---------
+
+    /**
+     * Language ID.
+     * @type {string}
+     */
+    lang: '',
+
+    /**
+     * Translations.
+     * @type {Object}
+     *
+     * @property {Function} [get] Get the translation.
+     * @param {string} get.constant Translation ID.
+     * @property {Function} [set] Set the translation.
+     * @param {string} set.constant Translation ID.
+     * @param {Object} set.translation Translations.
+     * @property {Function} [extend] Extend the translation.
+     * @param {Object} obj New translation.
+     */
+    translations: {
+        'get': function (constant) {
+            return (Energine.translations[constant] || null);
+        },
+        'set': function (constant, translation) {
+            Energine.translations[constant] = translation;
+        },
+        'extend': function (obj) {
+            Object.append(Energine.translations, obj);
+        }
+    },
+
+    /**
+     * Force ths using of JSON.
+     * @type {boolean}
+     */
+    forceJSON: false,
+
+    /**
+     * Support content editing.
+     * @type {boolean}
+     */
+    supportContentEdit: true,
+
+
+    /**
+     * Send the request.
+     *
+     * @function
+     * @static
+     * @param {string} uri URI
+     * @param {string} data Request.
+     * @param {function} onSuccess Callback function that will be called by successful response.
+     * @param {function} [onUserError] Callback function that will be called by user error.
+     * @param {function} [onServerError] Callback function that will be called by server error.
+     * @param {string} [method = 'post'] Request method: 'get', 'post'.
+     */
+    request: function (uri, data, onSuccess, onUserError, onServerError, method) {
+        onServerError = onServerError || function (responseText) {};
+        method = method || 'post';
+
+        new Request.JSON({
+            'url': uri + ((Energine.forceJSON) ? '?json' : ''),
+            'method': method,
+            'data': data,
+            // 'noCache': true,
+            'evalResponse': false,
+            'onComplete': function (response, responseText) {
+                if (!response) {
+                    onServerError(responseText);
+                    return;
+                }
+
+                if (response.result) {
+                    onSuccess(response);
+                } else {
+                    var msg = (typeof response.title != 'undefined')
+                        ? response.title
+                        : 'Произошла ошибка:\n';
+                    response.errors.each(function (error) {
+                        if (typeof error.field != 'undefined') {
+                            msg += error.field + " :\t";
+                        }
+                        if (typeof error.message != 'undefined') {
+                            msg += error.message + "\n";
+                        } else {
+                            msg += error + "\n";
+                        }
+                    });
+
+                    alert(msg);
+
+                    if (onUserError) {
+                        onUserError(response);
+                    }
+                }
+            },
+            'onFailure': function (e) {
+                console.error(arguments)
+            }
+        }).send();
+    },
+
+    /**
+     * Cancel event.
+     *
+     * @deprecated Use MooTools implementation: e.stop()
+     *
+     * @function
+     * @static
+     * @param {Object} e Event.
+     */
+    cancelEvent: function (e) {
+        e = e || window.event;
+        try {
+            if (e.preventDefault) {
+                e.stopPropagation();
+                e.preventDefault();
+            } else {
+                e.returnValue = false;
+                e.cancelBubble = true;
+            }
+        } catch (err) {
+            console.warn(err)
+        }
+    },
+
+    /**
+     * Create the DatePicker object without time selecting.
+     *
+     * @function
+     * @static
+     * @param {Element} datePickerObj Element for DatePicker.
+     * @param {boolean} [nullable] Defines whether the an empty field for the date is allowed.
+     * @returns {DatePicker}
+     */
+    createDatePicker: function (datePickerObj, nullable) {
+        var props = {
+            format: '%Y-%m-%d',
+            allowEmpty: nullable,
+            useFadeInOut: false
+        };
+        return Energine._createDatePickerObject($(datePickerObj), props);
+    },
+
+    /**
+     * Create the DatePicker object with time selecting.
+     *
+     * @function
+     * @static
+     * @param {Element} datePickerObj Element for DatePicker.
+     * @param {boolean} [nullable] Defines whether the an empty field for the date is allowed.
+     * @returns {DatePicker}
+     */
+    createDateTimePicker: function (datePickerObj, nullable) {
+        //DateTime
+        var props = {
+            timePicker: true,
+            format: '%Y-%m-%d %H:%M',
+            allowEmpty: nullable,
+            useFadeInOut: false
+        };
+
+        return Energine._createDatePickerObject($(datePickerObj), props);
+    },
+
+    //fixme: bug
+    /**
+     * Create the DatePicker object.
+     *
+     * @function
+     * @static
+     * @param {Element} datePickerObj Element for DatePicker.
+     * @param {Object} props Properties for the DatePicker.
+     * @returns {DatePicker}
+     */
+    _createDatePickerObject: function (datePickerObj, props) {
+        Asset.css('datepicker.css');
+
+        var dp = new DatePicker(datePickerObj, Object.append({
+                //debug:true
+            },
+            props
+        ));
+
+        try {
+            if (!props.allowEmpty && dp.inputs[0].get('value') == '') {
+                var currentDate = new Date(),
+                    dateString = [
+                        currentDate.getFullYear(),
+                        currentDate.getMonth() + 1,
+                        currentDate.getDate()
+                    ].join('-');
+
+                if (props.timePicker) {
+                    dateString += ' ' + [currentDate.getHours(), currentDate.getMinutes()].join(':');
+                }
+                dp.inputs[0].set('value', dateString);
+            }
+        } catch (e) {
+            if (Energine.debug && Browser.chrome && instanceOf(e, TypeError)) {
+                console.warn(e.stack);
+            } else {
+                console.warn(e);
+            }
+        }
+
+        return dp;
+    },
+
+    /**
+     * Resize an requested image. The attribute &lt;tt>src&lt;/tt> of the img-tag will be build as follow:
+     * &lt;tt>Energine.resizer + r + 'w' + w + '-h' + h + '/' + src&lt;/tt>
+     *
+     * @function
+     * @public
+     * @param {HTMLImageElement} img Image, that will be resized.
+     * @param {string} src Source of the original image.
+     * @param {number} w Width of the new image.
+     * @param {number} h Height of the new image.
+     * @param {string} [r = ''] Special attribute. For example, if additional shrinking must be applied, in order to not cross requested width and height, &lt;tt>r&lt;/tt> must be 'r'.
+     *
+     * @example
+     * Energine.resizer = 'http://www.site.ua/resizer/';
+     * Energine.resize($$('img')[0], 'images/img01.png', 100, 50);
+     * $$('img')[0].getProperty('src') == 'http://www.site.ua/resizer/w100-h50/images/img01.png'
+     */
+    resize: function(img, src, w, h, r) {
+        if (r === undefined)
+            r = '';
+        img.setAttribute('src', Energine.resizer + r + 'w' + w + '-h' + h + '/' + src);
+    }
+};
+
+var safeConsoleError = function(e){
+    if (window['console'] && console['error']) {
+        if (Browser.chrome && instanceOf(e, TypeError) && Energine.debug) {
+            console.error(e.stack);
+        } else {
+            console.error(e);
+        }
+    }
+};
+
+/**
+ * Compatibility fix.
+ * @type {Function}
+ *
+ * @deprecated Use Energine.request instead.
+ */
+Energine.request.request = Energine.request;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ACarousel.html">ACarousel</a></li><li><a href="ACarousel.AControls.html">AControls</a></li><li><a href="AcplField.html">AcplField</a></li><li><a href="ActiveList.html">ActiveList</a></li><li><a href="AMenu.html">AMenu</a></li><li><a href="AttachmentEditor.html">AttachmentEditor</a></li><li><a href="Carousel.html">Carousel</a></li><li><a href="Carousel.Controls.TwoButtons.html">TwoButtons</a></li><li><a href="Carousel.Types.Line.html">Line</a></li><li><a href="Carousel.Types.Loop.html">Loop</a></li><li><a href="CarouselConnector.html">CarouselConnector</a></li><li><a href="CarouselPlaylist.html">CarouselPlaylist</a></li><li><a href="ComponentParamsForm.html">ComponentParamsForm</a></li><li><a href="DatePicker.html">DatePicker</a></li><li><a href="DivForm.html">DivForm</a></li><li><a href="DivManager.html">DivManager</a></li><li><a href="DivSelector.html">DivSelector</a></li><li><a href="DivSidebar.html">DivSidebar</a></li><li><a href="DivTree.html">DivTree</a></li><li><a href="DropBoxList.html">DropBoxList</a></li><li><a href="Element.html">Element</a></li><li><a href="FileRepoForm.html">FileRepoForm</a></li><li><a href="FileRepository.html">FileRepository</a></li><li><a href="Form.html">Form</a></li><li><a href="Form.AttachmentSelector.html">AttachmentSelector</a></li><li><a href="Form.RichEditor.html">RichEditor</a></li><li><a href="Form.SmapSelector.html">SmapSelector</a></li><li><a href="Form.Uploader.html">Uploader</a></li><li><a href="Grid.html">Grid</a></li><li><a href="GridManager.html">GridManager</a></li><li><a href="GridManager.Filter.html">Filter</a></li><li><a href="GridManager.Filter.QueryControls.html">QueryControls</a></li><li><a href="ImageManager.html">ImageManager</a></li><li><a href="LayoutManager.html">LayoutManager</a></li><li><a href="LayoutManager.Column.html">Column</a></li><li><a href="LayoutManager.Component.html">Component</a></li><li><a href="LayoutManager.Component.Param.html">Param</a></li><li><a href="LayoutManager.DummyWidget.html">DummyWidget</a></li><li><a href="LayoutManager.Widget.html">Widget</a></li><li><a href="LayoutManager.Widget.DragBehavior.html">DragBehavior</a></li><li><a href="NewTemplateForm.html">NewTemplateForm</a></li><li><a href="Overlay.html">Overlay</a></li><li><a href="PageEditor.html">PageEditor</a></li><li><a href="PageEditor.BlockEditor.html">BlockEditor</a></li><li><a href="PageList.html">PageList</a></li><li><a href="PageToolbar.html">PageToolbar</a></li><li><a href="PathList.html">PathList</a></li><li><a href="Playlist.html">Playlist</a></li><li><a href="Protected.html">Protected</a></li><li><a href="Scrollbar.html">Scrollbar</a></li><li><a href="SiteForm.html">SiteForm</a></li><li><a href="SiteManager.html">SiteManager</a></li><li><a href="Static.html">Static</a></li><li><a href="TabPane.html">TabPane</a></li><li><a href="TagEditor.html">TagEditor</a></li><li><a href="TextBlockSource.html">TextBlockSource</a></li><li><a href="Toolbar.html">Toolbar</a></li><li><a href="Toolbar.Button.html">Button</a></li><li><a href="Toolbar.Control.html">Control</a></li><li><a href="Toolbar.CustomSelect.html">CustomSelect</a></li><li><a href="Toolbar.File.html">File</a></li><li><a href="Toolbar.Select.html">Select</a></li><li><a href="Toolbar.Separator.html">Separator</a></li><li><a href="Toolbar.Switcher.html">Switcher</a></li><li><a href="Toolbar.Text.html">Text</a></li><li><a href="TreeView.html">TreeView</a></li><li><a href="TreeView.Node.html">Node</a></li><li><a href="Validator.html">Validator</a></li><li><a href="ValidForm.html">ValidForm</a></li><li><a href="WidgetGridManager.html">WidgetGridManager</a></li><li><a href="WidgetGridManager.Macros.html">Macros</a></li><li><a href="Words.html">Words</a></li></ul><h3>Events</h3><ul><li><a href="ACarousel.html#event:disableScrolling">disableScrolling</a></li><li><a href="ACarousel.html#event:enableScrolling">enableScrolling</a></li><li><a href="ACarousel.html#event:scroll">scroll</a></li><li><a href="ACarousel.html#event:selectItem">selectItem</a></li><li><a href="ACarousel.html#event:singleScroll">singleScroll</a></li><li><a href="ActiveList.html#event:choose">choose</a></li><li><a href="Carousel.Controls.TwoButtons.html#event:scrollBackward">scrollBackward</a></li><li><a href="Carousel.Controls.TwoButtons.html#event:scrollForward">scrollForward</a></li><li><a href="Carousel.Line.html#event:beginReached">beginReached</a></li><li><a href="Carousel.Line.html#event:endReached">endReached</a></li><li><a href="Carousel.Types.Line.html#event:disableScrolling">disableScrolling</a></li><li><a href="Carousel.Types.Line.html#event:enableScrolling">enableScrolling</a></li><li><a href="Carousel.Types.Line.html#event:scroll">scroll</a></li><li><a href="Carousel.Types.Line.html#event:selectItem">selectItem</a></li><li><a href="Carousel.Types.Line.html#event:singleScroll">singleScroll</a></li><li><a href="Carousel.Types.Loop.html#event:disableScrolling">disableScrolling</a></li><li><a href="Carousel.Types.Loop.html#event:enableScrolling">enableScrolling</a></li><li><a href="Carousel.Types.Loop.html#event:scroll">scroll</a></li><li><a href="Carousel.Types.Loop.html#event:selectItem">selectItem</a></li><li><a href="Carousel.Types.Loop.html#event:singleScroll">singleScroll</a></li><li><a href="DropBoxList.html#event:choose">choose</a></li><li><a href="Grid.html#event:doubleClick">doubleClick</a></li><li><a href="Grid.html#event:select">select</a></li><li><a href="Grid.html#event:sortChange">sortChange</a></li><li><a href="PageList.html#event:selectPage">selectPage</a></li><li><a href="TabPane.html#event:tabChange">tabChange</a></li><li><a href="Toolbar.CustomSelect.html#event:afterchange">afterchange</a></li><li><a href="Toolbar.CustomSelect.html#event:beforechange">beforechange</a></li><li><a href="TreeView.Node.html#event:select">select</a></li></ul><h3>Namespaces</h3><ul><li><a href="Asset.html">Asset</a></li><li><a href="Carousel.Controls.html">Controls</a></li><li><a href="Carousel.Types.html">Types</a></li><li><a href="Class.Mutators.html">Mutators</a></li><li><a href="Energine.html">Energine</a></li><li><a href="Form.Label.html">Label</a></li><li><a href="ModalBox.html">ModalBox</a></li><li><a href="PseudoXML.html">PseudoXML</a></li></ul><h3>Global</h3><ul><li><a href="global.html#css">css</a></li><li><a href="global.html#cssParent">cssParent</a></li><li><a href="global.html#FILE_COOKIE_NAME">FILE_COOKIE_NAME</a></li><li><a href="global.html#go">go</a></li><li><a href="global.html#loaded">loaded</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#ScriptLoader">ScriptLoader</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Thu Dec 05 2013 13:35:44 GMT+0200 (EET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

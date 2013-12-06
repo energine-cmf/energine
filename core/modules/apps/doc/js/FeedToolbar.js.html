@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: apps/scripts/FeedToolbar.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: apps/scripts/FeedToolbar.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/**
+ * @file Contain the description of the next classes:
+ * &lt;ul>
+ *     &lt;li>[FeedToolbar]{@link FeedToolbar}&lt;/li>
+ * &lt;/ul>
+ *
+ * @requires share/Energine
+ * @requires share/Toolbar
+ * @requires share/ModalBox
+ *
+ * @author Pavel Dubenko
+ *
+ * @version 1.0.0
+ */
+
+ScriptLoader.load('Toolbar', 'ModalBox');
+
+// TODO: This must extend PageToolbar class, not Toolbar, or this constructor must be the constructor from the PageToolbar. -- wait for tests
+//todo: Some of actions were already implemented (I think in the GridManager.js or TreeView.js). - leave as is
+/**
+ * FeedToolbar
+ *
+ * @augments Toolbar
+ *
+ * @constructor
+ * @param {string} toolbarName The name of the toolbar.
+ */
+var FeedToolbar = new Class(/** @lends FeedToolbar# */{
+    Extends: Toolbar,
+
+    /**
+     * @see Energine.request
+     * @deprecated Use Energine.request instead.
+     */
+    request: Energine.request,
+
+    // constructor
+    initialize: function(Container) {
+        Asset.css('pagetoolbar.css');
+        Asset.css('feedtoolbar.css');
+
+        //TODO это слегка костыль --> @ 31.10.2013 See above TODO
+        this.parent('feed_toolbar');
+
+        this.bindTo(this);
+        this.dock();
+
+        this.element.inject(document.getElement('.e-topframe'), 'bottom');
+
+        var html = $$('html')[0];
+        if(html.hasClass('e-has-topframe1')) {
+            html.removeClass('e-has-topframe1');
+            html.addClass('e-has-topframe2');
+        }
+        if(html.hasClass('e-has-topframe2')) {
+            html.removeClass('e-has-topframe2');
+            html.addClass('e-has-topframe3');
+        }
+
+        this.load(Container);
+        this.singlePath = Container.getProperty('single_template');
+        var feedElement = $(Container.getProperty('linkedTo'));
+        this.disableControls();
+        if(feedElement){
+            this._prepareDataSet(feedElement);
+            if(this.selected = feedElement.getProperty('current')){
+                this.enableControls('add', 'edit'/*, 'delete'*/);
+            } else {
+                this.enableControls('add');
+                this.selected = false;
+            }
+        }
+        Container.dispose();
+
+        this.previous = false;
+    },
+
+    /**
+     * Add action.
+     * @function
+     * @public
+     */
+    add: function() {
+        ModalBox.open({
+            url: this.singlePath + 'add/',
+            onClose: function(returnValue){
+                if(returnValue == 'add'){
+                    this.add();
+                }
+                else if(returnValue){
+                    this._reload(true);
+                }
+            }.bind(this)
+        });
+    },
+
+    /**
+     * Edit action.
+     * @function
+     * @public
+     */
+    edit: function() {
+        ModalBox.open({
+            url: this.singlePath+this.selected+'/edit/',
+            onClose: this._reload.bind(this)
+        });
+    },
+
+    /**
+     * Delete action.
+     * @function
+     * @public
+     */
+    del: function() {
+        var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE]') || 'Do you really want to delete selected record?';
+        if (confirm(MSG_CONFIRM_DELETE)) {
+            Energine.request(this.singlePath + this.selected + '/delete/', null, this._reload);
+        }
+    },
+
+    /**
+     * Move up action.
+     * @function
+     * @public
+     */
+    up: function(){
+        Energine.request(this.singlePath + this.selected + '/up/', null, this._aftermove.pass('up', this));
+    },
+
+    /**
+     * Move down action.
+     * @function
+     * @public
+     */
+    down: function(){
+        Energine.request(this.singlePath + this.selected + '/down/', null, this._aftermove.pass('down', this));
+    },
+
+    Protected: {
+        /**
+         * After move actions.
+         *
+         * @memberOf FeedToolbar#
+         * @function
+         * @public
+         * @param {string} direction Moving direction.
+         */
+        _aftermove: function(direction) {
+            try {
+                if (direction == 'up') {
+                    var sibling = this.previous.getPrevious();
+                    if (!sibling.getProperty('record')) {
+                        throw 'error';
+                    }
+                    $(this.previous).inject(sibling, 'before');
+                } else {
+                    $(this.previous).inject(this.previous.getNext(), 'after');
+                }
+            } catch (err) {
+                console.warn(err);
+                this._reload(true);
+            }
+        },
+
+        /**
+         * Selecting.
+         *
+         * @memberOf FeedToolbar#
+         * @function
+         * @public
+         * @param {Element} element Element that must be selected.
+         */
+        _select:function(element){
+            if (this.previous) {
+                this.previous.removeClass('record_select');
+            }
+
+            if (this.previous == element) {
+                this.selected = this.previous = false;
+                this.disableControls();
+                this.enableControls('add');
+            } else {
+                this.previous = element;
+                element.addClass('record_select');
+                this.selected = element.getProperty('record');
+                this.enableControls();
+            }
+        },
+
+        /**
+         * Reload.
+         *
+         * @memberOf FeedToolbar#
+         * @function
+         * @private
+         * @param data
+         */
+        _reload: function(data){
+            if (data) {
+                var form = new Element('form').setProperties({'action':'', 'method':'POST'});
+                form.adopt(new Element('input').setProperty('name', 'editMode').setProperty('type', 'hidden'));
+                document.body.adopt(form);
+                form.submit();
+            }
+        },
+
+        /**
+         * Prepare dataset.
+         *
+         * @memberOf FeedToolbar#
+         * @function
+         * @protected
+         * @param {Element} linkID
+         */
+        _prepareDataSet: function (linkID){
+            var linkChilds;
+            linkChilds = linkID.getElements('[record]');
+            if(linkChilds.length){
+                //список
+                linkID.addClass('active_component');
+                linkID.fade(0.7);
+                linkChilds.each(function(element){
+                    element.addEvent('mouseover', function(){this.addClass('record_highlight')});
+                    element.addEvent('mouseout', function(){this.removeClass('record_highlight')});
+                    element.addEvent('click', this._select.bind(this, element));
+                }, this);
+            }
+        }
+    }
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="FeedToolbar.html">FeedToolbar</a></li><li><a href="Form.html">Form</a></li><li><a href="Form.AttachmentSelector.html">AttachmentSelector</a></li><li><a href="Form.RichEditor.html">RichEditor</a></li><li><a href="Form.SmapSelector.html">SmapSelector</a></li><li><a href="Form.Uploader.html">Uploader</a></li><li><a href="Toolbar.html">Toolbar</a></li><li><a href="Toolbar.Button.html">Button</a></li><li><a href="Toolbar.Control.html">Control</a></li><li><a href="Toolbar.CustomSelect.html">CustomSelect</a></li><li><a href="Toolbar.File.html">File</a></li><li><a href="Toolbar.Select.html">Select</a></li><li><a href="Toolbar.Separator.html">Separator</a></li><li><a href="Toolbar.Switcher.html">Switcher</a></li><li><a href="Toolbar.Text.html">Text</a></li><li><a href="ValidForm.html">ValidForm</a></li><li><a href="Vote.html">Vote</a></li><li><a href="VoteForm.html">VoteForm</a></li></ul><h3>Events</h3><ul><li><a href="Toolbar.CustomSelect.html#event:afterchange">afterchange</a></li><li><a href="Toolbar.CustomSelect.html#event:beforechange">beforechange</a></li></ul><h3>Namespaces</h3><ul><li><a href="Energine.html">Energine</a></li><li><a href="Form.Label.html">Label</a></li><li><a href="ModalBox.html">ModalBox</a></li></ul><h3>Global</h3><ul><li><a href="global.html#ScriptLoader">ScriptLoader</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Thu Dec 05 2013 13:38:12 GMT+0200 (EET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

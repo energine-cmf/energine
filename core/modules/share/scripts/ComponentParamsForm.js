@@ -1,6 +1,30 @@
+/**
+ * @file Contain the description of the next classes:
+ * <ul>
+ *     <li>[ComponentParamsForm]{@link ComponentParamsForm}</li>
+ * </ul>
+ *
+ * @requires Form
+ *
+ * @author Pavel Dubenko
+ *
+ * @version 1.0.0
+ */
+
 ScriptLoader.load('Form');
+
+/**
+ * Component parameters form.
+ *
+ * @augments Form
+ *
+ * @constructor
+ * @param {Element|string} element The form element.
+ */
 var ComponentParamsForm = new Class({
     Extends: Form,
+
+    // constructor
     initialize: function(el){
         this.parent(el);
         if(this.codeEditors.length){
@@ -9,29 +33,36 @@ var ComponentParamsForm = new Class({
             });
         }
     },
+
+    /**
+     * Overridden parent [save]{@link Form#save} method.
+     * @function
+     * @public
+     */
     save: function(){
         var result = {};
+
+        if (!this.validator.validate()) {
+            return false;
+        }
+
         if(this.codeEditors.length){
             this.codeEditors.each(function(editor){
                 editor.setValue('<![CDATA[' + "\n" + editor.getValue() + "\n" +']]>');
                 editor.save();
             });
         }
-
-        if (!this.validator.validate()) {
-            return false;
-        }
         this.form.getElements('input[type=text],input[type=checkbox], select, textarea').each(function(el){
             var value;
             if(el.getProperty('type') == 'checkbox'){
                 value = (el.checked)?1:0;
-            }
-            else {
+            } else {
                 value = el.get('value');
             }
 
-            if(el.getProperty('name'))
+            if(el.getProperty('name')) {
                 result[el.getProperty('name')] = value;
+            }
         });
 
         if(this.richEditors.length){

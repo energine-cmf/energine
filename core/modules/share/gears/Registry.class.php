@@ -154,14 +154,14 @@ final class Registry extends Object {
      * Пока непонятно что с ним делать
      *
      * public function substitute($object){
-    if(!($className = get_class($object))){
-    throw new Exception((string)$object.' is not an object');
-    }
-    if(isset($this->entities[$className])){
-    throw new Exception($className.' is already used. You can not substitute it here.');
-    }
-    return $this->get($className);
-    }*/
+     * if(!($className = get_class($object))){
+     * throw new Exception((string)$object.' is not an object');
+     * }
+     * if(isset($this->entities[$className])){
+     * throw new Exception($className.' is already used. You can not substitute it here.');
+     * }
+     * return $this->get($className);
+     * }*/
 
     /**
      * @return Request
@@ -182,6 +182,10 @@ final class Registry extends Object {
      */
     public function getDocument() {
         return $this->get('Document');
+    }
+
+    public function getOGObject() {
+        return $this->get('OGObject');
     }
 
     /**

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet 
     version="1.0" 
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:og="http://ogp.me/ns#"
+    >
     <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
     <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
     <xsl:variable name="TRANSLATION" select="/document/translations/translation"/>
@@ -102,15 +104,15 @@
                                                 '<xsl:value-of select="generate-id(../../recordset[not(@name)])"/>':'<xsl:value-of select="@name"/>'<xsl:if
                                             test="position()!=last()">,</xsl:if>
                                             </xsl:for-each>}, function(className, componentID){
-                                                try {
+                                        try {
                                                     var component;
                                                     if((component = document.getElementById(componentID)) <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> window[className]){
                                                         window[componentID] = new window[className](component);
                                                     }
-                                                }
-                                                catch (e) {
-                                                    safeConsoleError(e);
-                                                }
+                                            }
+                                            catch (e) {
+                                                safeConsoleError(e);
+                                            }
                                             });
 
                         <xsl:if test="$COMPONENTS/javascript/behavior[@name='PageEditor']">

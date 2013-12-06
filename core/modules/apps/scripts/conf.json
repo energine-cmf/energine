@@ -1,0 +1,17 @@
+{
+    "source": {
+        "include": [
+            "README.md",
+            "./",
+            "../../share/scripts/Energine.js",
+            "../../share/scripts/Toolbar.js",
+            "../../share/scripts/ModalBox.js",
+            "../../share/scripts/Form.js",
+            "../../share/scripts/ValidForm.js"
+        ]
+    },
+    "opts": {
+        "private": true,
+        "destination": "../doc/js/"
+    }
+}

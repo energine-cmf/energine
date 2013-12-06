@@ -1,0 +1,14 @@
+server: http://localhost:9876
+
+load:
+  - ../../mootools-debug.js
+  - ../../mootools-more-debug.js
+  - ../../mootools-ext-debug.js
+  - GridManager.js
+
+test:
+  - GridManagerTests.js
+  - GridManagerFilterTests.js
+  - GridManagerFilterQuerryControlTests.js
+
+serve:

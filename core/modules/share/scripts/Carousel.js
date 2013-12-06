@@ -15,7 +15,7 @@
  *
  * @author Valerii Zinchenko, Pavel Dubenko
  *
- * @version 2.0.1
+ * @version 2.1.0
  */
 
 /**
@@ -842,7 +842,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
  * From MooTools it implements: Options, Events.
  *
  * @constructor
- * @param {Element|string} el Main carousel element.
+ * @param {ACarousel} carousel Carousel that will be controlled.
  * @param {Object} [opts] [Options]{@link ACarousel.AControls#options} for the controls.
  */
 ACarousel.AControls = new Class(/** @lends ACarousel.AControls# */{
@@ -869,12 +869,12 @@ ACarousel.AControls = new Class(/** @lends ACarousel.AControls# */{
     controls: {},
 
     // constructor
-    initialize: function(el, opts) {
+    initialize: function(carousel, opts) {
         /**
-         * Main carousel element.
-         * @type {Element}
+         * Connected carousel.
+         * @type {ACarousel}
          */
-        this.carouselElement = el;
+        this.carousel = carousel;
 
         this.setOptions(opts);
 
@@ -909,14 +909,13 @@ ACarousel.AControls = new Class(/** @lends ACarousel.AControls# */{
          */
         applyStyles: function() {
             var opts = this.options,
-                el = this.carouselElement,
+                el = this.carousel.element,
                 allCSS = '';
 
             for (var selector in opts.classes) {
                 allCSS += opts.classes[selector] + ', ';
             }
             opts.styles[allCSS] = opts.styles.all;
-            delete opts.styles.all;
 
             for (var selector in opts.styles) {
                 (selector in opts.classes)
@@ -930,8 +929,9 @@ ACarousel.AControls = new Class(/** @lends ACarousel.AControls# */{
 
 /**
  * The main carousel builder.
- * To use the carousel with default controls simply supply 'controls: {}' in the options. If the options for controls are not supplied then the controls will be not created.
+ * To use the carousel with controls simply supply <tt>controls: {type:'none'}<tt> to the options. If the options for controls are not supplied then the [TwoButtons]{@link Carousel.Controls.TwoButtons} control will be not created.
  * If no options were supplied the builder will try to get the options from the element property 'data-carousel'. The property value should be in JSON format.
+ * The type of the carousel and controls can be in the followed format: <tt>SomeType<tt>, <tt>someType<tt>, <tt>Some-Type<tt>, <tt>Some-type<tt>, <tt>some-Type<tt>, <tt>some-type<tt>.
  * From MooTools it implements: Options.
  *
  * @author Pavel Dubenko, Valerii Zinchenko
@@ -961,7 +961,7 @@ var Carousel = new Class(/** @lends Carousel# */{
         },
 
         controls: {
-            type: 'twoButtons'
+            type: 'two-buttons'
         }
     },
 
@@ -979,14 +979,11 @@ var Carousel = new Class(/** @lends Carousel# */{
 
     // constructor
     initialize: function (el, opts) {
-        var carouselEvents = {},
-            controlsEvents;
-
         if (arguments.length < 1 || arguments.length > 2) {
             throw 'Constructor of Carousel expected 1 or 2 arguments, but received ' + arguments.length + '!';
         }
 
-        el = $(el) || $$(el)[0];
+        el = $(el) || $$(el);
         if (el == null) {
             throw 'Element for Carousel was not found in the DOM Tree!';
         }
@@ -996,51 +993,15 @@ var Carousel = new Class(/** @lends Carousel# */{
         }
         this.setOptions(opts);
 
-        // Select the carousel constructor
-        switch (this.options.carousel.type) {
-            case 'line':
-                this.carousel = new Carousel.Types.Line(el, this.options.carousel);
-                break;
+        this.options.carousel.type = this.options.carousel.type.capitalize();
+        this.options.controls.type = this.options.controls.type.camelCase().capitalize();
 
-            case 'loop':
-            default:
-                this.carousel = new Carousel.Types.Loop(el, this.options.carousel);
+        this.carousel = new Carousel.Types[this.options.carousel.type](el, this.options.carousel);
+        if (this.options.controls.type !== 'none') {
+            this.controls = new Carousel.Controls[this.options.controls.type](this.carousel, this.options.controls);
+            this.carousel.items[this.carousel.currentActiveID].addClass(this.carousel.options.activeLabel);
         }
 
-        if (opts.controls) {
-            // Select the controls constructor
-            switch (this.options.controls.type) {
-                case 'twoButtons':
-                default :
-                    this.controls = new Carousel.Controls.TwoButtons(el, this.options.controls);
-                    this.carousel.items[this.carousel.currentActiveID].addClass(this.carousel.options.activeLabel);
-                    controlsEvents = {
-                        scrollForward: this.carousel.scrollForward.bind(this.carousel),
-                        scrollBackward: this.carousel.scrollBackward.bind(this.carousel)
-                    };
-                    carouselEvents = {
-                        enableScrolling: this.controls.enable.bind(this.controls),
-                        disableScrolling: this.controls.disable.bind(this.controls),
-                        singleScroll: function(direction) {
-                            if (!this[(direction == 1) ? 'backward' : 'forward' ].isEnabled) {
-                                this[ (direction == 1) ? 'backward' : 'forward' ].isEnabled = true;
-                            }
-                        }.bind(this.controls.controls),
-                        endReached: function() {
-                            this.controls.controls.forward.isEnabled = false;
-                            this.carousel.stop();
-                        }.bind(this),
-                        beginReached: function() {
-                            this.controls.controls.backward.isEnabled = false;
-                            this.carousel.stop();
-                        }.bind(this)
-                    };
-            }
-
-            this.controls.addEvents(controlsEvents);
-        }
-
-        this.carousel.addEvents(carouselEvents);
         this.carousel.build();
     }
 });
@@ -1117,7 +1078,7 @@ Carousel.Types = {
                 if (scrollNTimes > 1) {
                     var NClones = Math.floor((this.options.NVisibleItems + this.options.scrollStep * scrollNTimes) / this.items.length);
                     if (NClones > 0) {
-                        this.cloneItems(this.items, this.playlistHolder, NClones);
+                        cloneItems(this.items, this.playlistHolder, NClones);
                         for (n = this.options.playlist.NItems; n < this.items.length; n++) {
                             this.items[n].setStyle(this.options.scrollDirection, -this.length);
                         }
@@ -1298,6 +1259,17 @@ Carousel.Types = {
                             this.playlistHolder.grab(newItems[n], itemPosition);
                         }
                     } else {
+                        this.atEnd = false;
+                        if (scrollNTimes > 1) {
+                            var NClones = Math.floor((this.options.NVisibleItems + this.options.scrollStep * scrollNTimes) / this.items.length);
+                            if (NClones > 0) {
+                                cloneItems(this.items, this.playlistHolder, NClones);
+                                for (n = this.options.playlist.NItems; n < this.items.length; n++) {
+                                    this.items[n].setStyle(this.options.scrollDirection, -this.length);
+                                }
+                            }
+                        }
+
                         for (n = 0; n < this.options.scrollStep * scrollNTimes; n++) {
                             newItems[n] = this.items[this.wrapIndices(newItemID + n, 0, this.items.length, true)].setStyle(this.options.scrollDirection, this.length * n + itemShift);
                             this.playlistHolder.grab(newItems[n], itemPosition);
@@ -1431,11 +1403,11 @@ Carousel.Controls = {
         },
 
         // constructor
-        initialize: function(el, opts) {
-            this.parent(el, opts);
+        initialize: function(carousel, opts) {
+            this.parent(carousel, opts);
 
-            this.controls.forward.element = this.carouselElement.getElement(this.options.classes.forward).setProperty('unselectable', 'on');
-            this.controls.backward.element = this.carouselElement.getElement(this.options.classes.backward).setProperty('unselectable', 'on');
+            this.controls.forward.element = this.carousel.element.getElement(this.options.classes.forward).setProperty('unselectable', 'on');
+            this.controls.backward.element = this.carousel.element.getElement(this.options.classes.backward).setProperty('unselectable', 'on');
 
             if (!this.controls.forward.element) {
                 throw 'Forward control button for the carousel was not found.';
@@ -1443,6 +1415,28 @@ Carousel.Controls = {
             if (!this.controls.backward.element) {
                 throw 'Backward control button for the carousel was not found.';
             }
+
+            this.addEvents({
+                scrollForward: this.carousel.scrollForward.bind(this.carousel),
+                scrollBackward: this.carousel.scrollBackward.bind(this.carousel)
+            });
+            this.carousel.addEvents({
+                enableScrolling: this.enable.bind(this),
+                disableScrolling: this.disable.bind(this),
+                singleScroll: function(direction) {
+                    if (!this[(direction == 1) ? 'backward' : 'forward' ].isEnabled) {
+                        this[ (direction == 1) ? 'backward' : 'forward' ].isEnabled = true;
+                    }
+                }.bind(this.controls),
+                endReached: function() {
+                    this.controls.forward.isEnabled = false;
+                    this.carousel.stop();
+                }.bind(this),
+                beginReached: function() {
+                    this.controls.backward.isEnabled = false;
+                    this.carousel.stop();
+                }.bind(this)
+            });
         },
 
         /**

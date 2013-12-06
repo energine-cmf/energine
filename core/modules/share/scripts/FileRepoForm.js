@@ -1,57 +1,129 @@
+/**
+ * @file Contain the description of the next classes:
+ * <ul>
+ *     <li>[FileRepoForm]{@link FileRepoForm}</li>
+ * </ul>
+ *
+ * @requires Form
+ * @requires FileAPI/FileAPI.min
+ *
+ * @author Pavel Dubenko
+ *
+ * @version 1.0.0
+ */
+
 ScriptLoader.load('Form', 'FileAPI/FileAPI.min');
 
-var FileRepoForm = new Class({
+/**
+ * FileRepoForm
+ *
+ * @augments Form
+ *
+ * @constructor
+ * @param {Element|string} element The form element.
+ */
+var FileRepoForm = new Class(/** @lends FileRepoForm# */{
     Extends:Form,
+
+    // constructor
     initialize:function (el) {
         this.parent(el);
 
         FileAPI.staticPath = Energine.base + 'scripts/FileAPI/';
         FileAPI.debug = false;
 
-        var uploader;
-        if (uploader = this.componentElement.getElementById('uploader')) {
+        var uploader = this.componentElement.getElementById('uploader');
+        if (uploader) {
             uploader.addEvent('change', this.showPreview.bind(this))
         }
-        if (this.thumbs = this.componentElement.getElements('img.thumb')) {
+
+        /**
+         * Thumbnails.
+         * @type {Elements}
+         */
+        this.thumbs = this.componentElement.getElements('img.thumb');
+        if (this.thumbs) {
             this.componentElement.getElements('input.thumb').addEvent('change', this.showThumbPreview.bind(this));
-            var altPreview;
-            if (altPreview = this.componentElement.getElements('input.preview')) {
+
+            var altPreview = this.componentElement.getElements('input.preview');
+            if (altPreview) {
                 altPreview.addEvent('change', this.showAltPreview.bind(this));
             }
         }
-        if(this.componentElement.getElementById('data') && !(this.componentElement.getElementById('data').get('value')))
+
+        var data = this.componentElement.getElementById('data');
+        if(data && !(data.get('value'))) {
             this.tabPane.disableTab(1);
+        }
     },
+
+    /**
+     * Event handler. Show alternative preview.
+     *
+     * @function
+     * @public
+     * @param {Object} evt Event.
+     */
     showAltPreview:function (evt) {
        this.showThumbPreview(evt);
     },
+
+    /**
+     * Event handler. Show thumbnail.
+     *
+     * @function
+     * @public
+     * @param {Object} evt Event.
+     */
     showThumbPreview:function (evt) {
         var el = $(evt.target);
         var files = FileAPI.getFiles(evt);
 
-        for (var i = 0, f; f = files[i]; i++) {
-            if (f.type.match('image.*')) {
-                this.xhrFileUpload(el.getProperty('id'), files, function (response) {
-                    var previewElement = $(el.getProperty('preview')),
-                        dataElement = $(el.getProperty('data'));
-                    if (previewElement) previewElement.removeClass('hidden').setProperty('src', Energine.base + 'resizer/' + 'w0-h0/' + response.tmp_name);
-                    if (dataElement) dataElement.set('value', response.tmp_name);
-                });
+        for (var i = 0; i < files.length; i++) {
+            if (files[i].type.match('image.*')) {
+                this.xhrFileUpload(
+                    el.getProperty('id'),
+                    files,
+                    function (response) {
+                        var previewElement = $(el.getProperty('preview')),
+                            dataElement = $(el.getProperty('data'));
+                        if (previewElement) {
+                            previewElement.removeClass('hidden')
+                                .setProperty('src', Energine.base + 'resizer/' + 'w0-h0/' + response.tmp_name);
+                        }
+                        if (dataElement) {
+                            dataElement.set('value', response.tmp_name);
+                        }
+                    }
+                );
             }
         }
-
-        //FileAPI.reset(evt.currentTarget);
     },
-    generatePreviews:function (tmpFileName) {
 
+    /**
+     * Generate previews.
+     *
+     * @function
+     * @public
+     * @param {string} tmpFileName File name.
+     */
+    generatePreviews:function (tmpFileName) {
         if (this.thumbs)
             this.thumbs.each(function (el) {
                 el.removeClass('hidden');
                 el.setProperty('src', Energine.base +'resizer/'+ 'w' + el.getProperty('width') + '-h' + el.getProperty('height') + '/' + tmpFileName);
             });
     },
-    xhrFileUpload: function(field_name, files, response_callback) {
 
+    /**
+     * XMLHttpRequest for uploading the file.
+     *
+     * @param {string} field_name Field name.
+     * @param {} files
+     * @param {} response_callback
+     * @returns {*|XMLHttpRequestEventTarget}
+     */
+    xhrFileUpload: function(field_name, files, response_callback) {
         var f = {};
         f[field_name] = files;
 
@@ -106,52 +178,52 @@ var FileRepoForm = new Class({
             }
         });
     },
+
+    /**
+     * Event handler. Show preview.
+     * @param {Object} evt Event.
+     */
     showPreview:function (evt) {
-        var previewElement = document.getElementById('preview')
-        previewElement.removeProperty('src').addClass('hidden');
-        if (this.thumbs)this.thumbs.removeProperty('src').addClass('hidden');
-        previewElement.removeClass('hidden').setProperty('src', Energine.base + 'images/loading.gif');
+        var previewElement = document.getElementById('preview');
+        previewElement.removeProperty('src');
+
+        if (this.thumbs) {
+            this.thumbs.removeProperty('src').addClass('hidden');
+        }
+        previewElement.setProperty('src', Energine.base + 'images/loading.gif');
+
         var files = FileAPI.getFiles(evt);
         var enableTab = this.tabPane.enableTab.pass(1, this.tabPane);
         var generatePreviews = this.generatePreviews.bind(this);
-        for (var i = 0, f; f = files[i]; i++) {
-
+        for (var i = 0; i < files.length; i++) {
             this.xhrFileUpload('uploader', files, function (response) {
-
                 document.getElementById('upl_name').set('value', response.name);
                 document.getElementById('upl_filename').set('value', response.name);
                 //document.getElementById('file_type').set('value', theFile.type);
                 document.getElementById('data').set('value', response.tmp_name);
                 document.getElementById('upl_title').set('value', response.name.split('.')[0]);
 
-                if (response.type.match('image.*')) {
+                if (response.type.match('image.*') || response.type.match('video.*')) {
                     previewElement.removeProperty('src').addClass('hidden');
-                    previewElement.removeClass('hidden').setProperty('src', Energine.base + 'resizer/' + 'w0-h0/' + response.tmp_name);
+                    previewElement.setProperty('src', Energine.base + 'resizer/' + 'w0-h0/' + response.tmp_name);
                     generatePreviews(response.tmp_name);
                     enableTab();
+                } else {
+                    previewElement.setProperty('src', Energine['static'] + 'images/icons/icon_undefined.gif');
                 }
-                else if (response.type.match('video.*')) {
-                    previewElement.removeProperty('src').addClass('hidden');
-                    previewElement.removeClass('hidden').setProperty('src', Energine.base + 'resizer/' + 'w0-h0/' + response.tmp_name);
-                    generatePreviews(response.tmp_name);
-                    enableTab();
-                }
-                else {
-                    previewElement.removeClass('hidden').setProperty('src', Energine['static'] + 'images/icons/icon_undefined.gif');
-                }
+                previewElement.removeClass('hidden');
             });
         }
-        //FileAPI.reset(evt.currentTarget);
     },
-    save:function () {
-        if (!this.validator.validate()) {
-            return false;
-        }
-        this._getOverlay().show();
 
-        var errorFunc = function (responseText) {
-            this._getOverlay().hide();
-        }.bind(this);
-        this.request(Energine.base + this.form.getProperty('action'), this.form.toQueryString(), this.processServerResponse.bind(this), errorFunc, errorFunc);
+    /**
+     * Overridden parent [save]{@link Form#buildSaveURL} action.
+     *
+     * @function
+     * @public
+     * @return {string}
+     */
+    buildSaveURL: function() {
+        return Energine.base + this.form.getProperty('action');
     }
 });

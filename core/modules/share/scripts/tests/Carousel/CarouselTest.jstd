@@ -1,0 +1,17 @@
+server: http://localhost:9876
+
+load:
+  - fixtures/carousel.css
+  - ../../mootools-debug.js
+  - ../../mootools-more-debug.js
+  - ../../mootools-ext-debug.js
+  - Carousel.js
+
+test:
+  - TestACarousel.js
+  - CarouselTests.js
+  - CarouselPlaylistTests.js
+  - CarouselConnectorTests.js
+
+serve:
+  - fixtures/*.html

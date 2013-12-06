@@ -1,229 +1,46 @@
 /**
- * @file GridManager.js
+ * @file Contain the description of the next classes:
+ * <ul>
+ *     <li>[Grid]{@link Grid}</li>
+ *     <li>[GridManager]{@link GridManager}</li>
+ *     <li>[GridManager.Filter]{@link GridManager.Filter}</li>
+ *     <li>[GridManager.Filter.QueryControls]{@link GridManager.Filter.QueryControls}</li>
+ * </ul>
  *
- * @author
+ * @requires Energine
+ * @requires TabPane
+ * @requires PageList
+ * @requires Toolbar
+ * @requires Overlay
+ * @requires ModalBox
+ * @requires datepicker
  *
- * @version 0.9
+ * @author Pavel Dubenko, Valerii Zinchenko
+ *
+ * @version 1.0.1
  */
 
-ScriptLoader.load('View', 'TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'datepicker');
+// todo: Strange to use scrolling and changing pages to see more data fields.
 
+ScriptLoader.load('TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'datepicker');
+
+// todo: The name 'Grid' does not reflect his main function.
 /**
- * @class Grid.
- * @extends View
- *
- * @type {Class}
+ * From MooTools it implements: Events, Options.
  *
  * @constructor
- * @param {} element Element identifier in DOM Tree for the Grid.
- * @param {Object} [options] Set of events. This class listens next events: 'select, 'sortChange', 'doubleClick'
+ * @param {Element} element Element identifier in DOM Tree for the Grid.
+ * @param {Object} [options] Set of events.
  */
-var Grid = new Class({
-    Extends:View,
-
-    initialize:function (element, options) {
-        Asset.css('grid.css');
-
-        this.sort = {
-            field:null,
-            order:null
-        };
-
-        this.setOptions(options);
-        this.parent(element, this.options);
-        this.headOff = this.element.getElement('.gridContainer thead');
-        this.headOff.setStyle('display', 'none');
-        this.tbody = this.element.getElement('.gridContainer tbody');
-        this.headers =
-            this.element.getElements('.gridHeadContainer table.gridTable th');
-        this.headers.addEvent('click', this.changeSort.bind(this));
-
-        /* добавляем к контейнеру класс, который указывает, что в нем есть грид */
-        this.element.getParents('.e-pane')[0].addClass('e-grid-pane');
-
-        /* вешаем пересчет размеров гридовой формы на ресайз окна */
-        if (document.getElement('.e-singlemode-layout')) {
-            window.addEvent('resize', this.fitGridSize.bind(this));
-        }
-        else {
-            if (navigator.userAgent.indexOf('MSIE 6') == -1) {
-                window.addEvent('resize', this.fitGridFormSize.bind(this));
-            }
-        }
-    },
-
-    /*
-     * {
-     *     <fieldName>: {
-     *         type: <fieldType>,
-     *         [key: true,]
-     *         [sort: 'asc'|'desc',]
-     *         [visible: true]
-     *     },
-     *     ...
-     * }
+var Grid = (function() {
+    /**
+     * Fit the headers.
+     * @deprecated
+     * @function
+     * @memberOf Grid#
+     * @private
      */
-    setMetadata:function (metadata) {
-        /*
-         * Проверяем соответствие видимых полей физической структуре таблицы,
-         * определяем имя ключевого поля
-         */
-        //var visibleFieldsCount = 0;
-        for (var fieldName in metadata) {
-            if (metadata[fieldName].key) this.keyFieldName = fieldName;
-        }
-
-        this.parent(metadata);
-    },
-
-    build:function () {
-        var preiouslySelectedRecordKey = this.getSelectedRecordKey();
-
-        this.headOff.setStyle('visibility', 'hidden');
-        this.headOff.setStyle('display', 'table-header-group');
-
-        if (this.data.length) {
-            if (!this.dataKeyExists(preiouslySelectedRecordKey)) {
-                preiouslySelectedRecordKey = false;
-            }
-            this.data.each(
-                function (record, key) {
-                    this.addRecord(record, key, preiouslySelectedRecordKey);
-                },
-                this
-            );
-            if (!preiouslySelectedRecordKey) {
-                this.selectItem(this.tbody.getFirst());
-            }
-        }
-        else {
-            this.addRecord(null);
-        }
-
-        var headers = new Array();
-        this.headOff.getElements('th').each(function (element, key) {
-            headers[key] = element.clientWidth;
-        })
-
-        if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
-            this.element.getElements('.gridHeadContainer col').each(function (element, key) {
-                element.setStyle('width', headers[key]);
-            });
-
-            this.element.getElements('.gridContainer col').each(function (element, key) {
-                element.setStyle('width', headers[key]);
-            });
-        }
-
-        this.element.getElement('.gridContainer table.gridTable').setStyle('tableLayout', 'fixed');
-        this.element.getElement('.gridHeadContainer table.gridTable').setStyle('tableLayout', 'fixed');
-        this.headOff.setStyle('display', 'none');
-
-        /* растягиваем gridContainer на высоту родительского элемента минус фильтр и голова грида */
-        this.paneContent = this.element.getParent('.e-pane-item');
-        this.gridToolbar = this.element.getElement('.grid_toolbar');
-        this.gridHeadContainer = this.element.getElement('.gridHeadContainer');
-        this.gridContainer = this.element.getElement('.gridContainer');
-        this.fitGridSize();
-
-        if (!(this.minGridHeight)) {
-            var h = this.gridContainer.getStyle('height');
-            //Если грид запустился внутри вкладки формы
-            if (h) {
-                this.minGridHeight = h.toInt();
-            }
-            else {
-                //отфонарное на самом деле значение
-                this.minGridHeight = 300;//h.toInt();
-            }
-        }
-
-        /* растягиваем всю форму до высоты видимого окна */
-        if (!(document.getElement('.e-singlemode-layout'))) {
-            this.pane = this.element.getParents('.e-pane')[0];
-            this.gridBodyContainer =
-                this.element.getElement('.gridBodyContainer');
-            this.fitGridFormSize();            
-            if (document.getElements('.grid')[0] == this.element) {
-                new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
-            }
-        }
-    },
-
-    fitGridSize:function () {
-        if (this.paneContent) {
-            var gridHeight = this.paneContent.getSize().y -
-                ((this.gridToolbar) ? this.gridToolbar.getSize().y : 0) -
-                this.gridHeadContainer.getSize().y - 4;
-            if (gridHeight > 0) {
-                this.gridContainer.setStyle('height', gridHeight);
-            }
-        }
-    },
-
-    fitGridFormSize:function () {
-        if (this.pane) {
-            var windowHeight = window.getSize().y - 10;
-            var paneHeight = this.pane.getSize().y;
-            var gridBodyHeight = ((this.gridBodyContainer.getSize().y + 2) >
-                this.minGridHeight) ? (this.gridBodyContainer.getSize().y +
-                2) : this.minGridHeight;
-            var gridContainerHeight = this.gridContainer.getSize().y;
-            var paneOthersHeight = paneHeight - gridContainerHeight;
-            if (windowHeight > (this.minGridHeight + paneOthersHeight)) {
-                if ((gridBodyHeight + paneOthersHeight) > windowHeight) {
-                    this.pane.setStyle('height', windowHeight);
-                }
-                else {
-                    this.pane.setStyle('height', gridBodyHeight +
-                        paneOthersHeight);
-                }
-            }
-            else {
-                this.pane.setStyle('height', this.minGridHeight +
-                    paneOthersHeight);
-            }
-            this.fitGridSize();
-        }
-    },
-
-    isEmpty:function () {
-        return !this.data.length;
-    },
-
-    getSelectedRecord:function () {
-        if (!this.getSelectedItem()) return false;
-        return this.getSelectedItem().record;
-    },
-
-    getSelectedRecordKey:function () {
-        if (!this.keyFieldName) return false;
-        return this.getSelectedRecord()[this.keyFieldName];
-    },
-
-    dataKeyExists:function (key) {
-        if (!this.data) return false;
-        if (!this.keyFieldName) return false;
-
-        return this.data.some(function (item, index) {
-            return (item[this.keyFieldName] == key);
-        }.bind(this));
-    },
-
-    clear:function () {
-        this.selectItem(false);
-        while (this.tbody.hasChildNodes()) {
-            this.tbody.removeChild(this.tbody.firstChild);
-        }
-    },
-
-    // Private methods:
-    clearHeaders:function () {
-        this.sort.field = null;
-        this.sort.field = null;
-        this.headers.removeProperty('class');
-    },
-    fitHeaders:function () {
+    function fitHeaders() {
         this.headersContainer.setStyle('visibility', '');
         var firstRow = this.tbody.getFirst();
         this.headers.each(function (header, i) {
@@ -238,35 +55,42 @@ var Grid = new Class({
                 delta + 'px');
         }, this);
         if (!this.data.length) this.tbody.getFirst().dispose();
-    },
+    }
 
-    addRecord:function (record, key, currentKey) {
+    /**
+     * Adds records to the Grid.
+     *
+     * @function
+     * @memberOf Grid#
+     * @private
+     * @param {Object} record Object with current record properties.
+     * @param {number} id ID of the recordset.
+     * @param {string|boolean} currentKey Defines which recordset must be selected.
+     */
+    function addRecord(record, id, currentKey) {
+        var row,
+            prevRow;
 
-        if (!record) {
-            var row = new Element('tr').inject(this.tbody);
-            return;
-        }
         // Проверяем соответствие записи метаданным.
         for (var fieldName in record) {
             if (!this.metadata[fieldName]) {
                 alert('Grid: record doesn\'t conform to metadata.');
-                return false;
+                return;
             }
         }
 
         // Создаем новую строку в таблице.
-        var row = new Element('tr').addClass(((key / 2) == Math.ceil(key /
-            2)) ? 'odd' : 'even').setProperty('unselectable', 'on').inject(this.tbody);
+        row = new Element('tr').addClass((id % 2 == 0) ? 'odd' : 'even').setProperty('unselectable', 'on').inject(this.tbody);
         // Сохраняем запись в объекте строки.
         row.record = record;
-        var prevRow;
 
         for (var fieldName in record) {
-            this.iterateFields(record, fieldName, row);
+            this.iterateFields(fieldName, record, row);
         }
 
         // Помечаем первую ячейку строки.
         row.getFirst().addClass('firstColumn');
+
         if (currentKey == record[this.keyFieldName]) {
             this.selectItem(row);
             new Fx.Scroll($(document.body).getElement('.gridContainer')).toElement(row);
@@ -275,175 +99,728 @@ var Grid = new Class({
         var grid = this;
         row.addEvents({
             'mouseover':function () {
-                if (this !=
-                    grid.getSelectedItem()) this.addClass('highlighted');
+                if (this != grid.getSelectedItem()) {
+                    this.addClass('highlighted');
+                }
             },
             'mouseout':function () {
                 this.removeClass('highlighted');
             },
             'click':function () {
-                if (this != grid.getSelectedItem()) grid.selectItem(this);
+                if (this != grid.getSelectedItem()) {
+                    grid.selectItem(this);
+                }
             },
             'dblclick':function () {
-                this.fireEvent('onDoubleClick');
-            }.bind(this)
+                /**
+                 * Double click event.
+                 * @event Grid#doubleClick
+                 */
+                grid.fireEvent('doubleClick');
+            }
         });
-
-    },
-    iterateFields:function (record, fieldName, row) {
-        // Пропускаем невидимые поля.
-        if (!this.metadata[fieldName].visible ||
-            this.metadata[fieldName].type == 'hidden') return;
-        var cell = new Element('td').inject(row);
-        if (this.metadata[fieldName].type == 'boolean') {
-            var checkbox = new Element('img').setProperties({
-                'src':'images/checkbox_' +
-                    (record[fieldName] == true ? 'on' : 'off') + '.png',
-                'width':'13', 'height':'13'
-            }).inject(cell);
-            cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
-        }
-        else if (this.metadata[fieldName].type == 'textbox') {
-            if (record[fieldName] && Object.getLength(record[fieldName])) {
-                cell.set('html', Object.values(record[fieldName]).join(', '));
-            }
-            else {
-                cell.set('html', '&nbsp;');
-            }
-        }
-        else if (this.metadata[fieldName].type == 'file') {
-            if (record[fieldName]) {
-                var image = new Element('img').setProperties({ 'src':Energine.resizer + 'w40-h40/' + record[fieldName], 'width':40, 'height':40 }).inject(cell);
-                cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
-            }
-        }
-        else {
-            var fieldValue = '';
-            if (record[fieldName]
-                || record[fieldName] == 0) {
-                var fieldValue = record[fieldName].toString().clean();
-            }
-            if (
-                (this.metadata[fieldName].type == 'select')
-                    &&
-                    (row.getFirst() == cell)
-                    &&
-                    (prevRow = row.getPrevious())
-                    &&
-                    (prevRow.record[fieldName] == record[fieldName])
-                ) {
-                fieldValue = '';
-                prevRow.getFirst().setStyle('font-weight', 'bold');
-            }
-            if (fieldValue != '') cell.set('html', fieldValue);
-            //if (fieldValue != '') cell.appendText(fieldValue);
-            else cell.set('html', '&#160;');
-        }
-    },
-    changeSort:function (event) {
-        var getNextDirectionOrderItem = function (current) {
-            if(!current)current = '';
-            var sortDirectionOrder = ['', 'asc', 'desc'], result, currentIndex;
-
-            if ((currentIndex = sortDirectionOrder.indexOf(current)) != -1) {
-                if ((currentIndex + 1) < sortDirectionOrder.length)
-                    result = sortDirectionOrder[currentIndex + 1];
-                else
-                    result = sortDirectionOrder[0];
-            }
-            else {
-                result = sortDirectionOrder[0];
-            }
-
-            return result;
-        }
-
-        var
-            header = $(event.target),
-            sortFieldName = header.getProperty('name'),
-            sortDirection = header.getProperty('class');
-
-        //проверяем есть ли колонка сортировки в списке колонок
-        if (
-            this.metadata[sortFieldName]
-                &&
-                this.metadata[sortFieldName].sort == 1
-            ) {
-            this.clearHeaders();
-            this.sort.field = sortFieldName;
-            this.sort.order = getNextDirectionOrderItem(sortDirection);
-
-            header.addClass(this.sort.order);
-            this.fireEvent('onSortChange');
-        }
     }
-});
 
-var GridManager = new Class({
-    initialize:function (element) {
+    return new Class(/** @lends Grid# */{
+        Implements: [Events, Options],
+
+        /**
+         * Array of data fields.
+         * @type {Object[]}
+         */
+        data: null,
+
+        /**
+         * Array-like object. Each internal object contain the properties (see below) to the each data field in the [data]{@link Grid#data}.
+         * @type {Object}
+         *
+         * @property {string} type Type of the field.
+         * @property {boolean} [key] Defines if this field is key field.
+         * @property {boolean|number} [sort] Defines the sorting allowed (true == 1; false == 0).
+         * @property {boolean} [visible] Defines if the field is visible or not.
+         *
+         * @example <caption>Structure of metadata</caption>
+         * metadata = {
+         *     'field1': {
+         *         type: 'fieldType1',
+         *         [key: true,]
+         *         [sort: 'asc'|'desc',]
+         *         [visible: true]
+         *     },
+         *     'field2': {
+         *         type: 'fieldType2',
+         *         [key: true,]
+         *         [sort: 'asc'|'desc',]
+         *         [visible: true]
+         *     },
+         *     ...
+         * }
+         */
+        metadata: null,
+
+        /**
+         * Current selected data field.
+         * @type {Element}
+         */
+        selectedItem: null,
+
+        /**
+         * Sorting properties.
+         * @type {Object}
+         * @property {string} [field = null] Defines the field by which the sorting will applied.
+         * @property {string} [order = null] Defines the direction of the sorting. Can be: '', 'asc', 'desc'.
+         */
+        sort: {
+            field:null,
+            order:null
+        },
+
+        // constructor
+        initialize: function(element, options) {
+            Asset.css('grid.css');
+
+            /**
+             * The main element.
+             * @type {Element}
+             */
+            this.element = $(element);
+            this.setOptions(options);
+
+            // TODO: I think this.headOff can be removed, because it is allways hidden.
+            /**
+             * Header of a table in the element '.gridContainer'.
+             * @type {Element}
+             * @deprecated
+             */
+            this.headOff = this.element.getElement('.gridContainer thead').setStyle('display', 'none');
+
+            /**
+             * Grid's table body.
+             * @type {Element}
+             */
+            this.tbody = this.element.getElement('.gridContainer tbody');
+
+            /**
+             * Grid's header.
+             * @type {Element}
+             */
+            this.headers = this.element.getElements('.gridHeadContainer table.gridTable th');
+            this.headers.addEvent('click', this.onChangeSort.bind(this));
+
+            // добавляем к контейнеру класс, который указывает, что в нем есть грид
+            this.element.getParents('.e-pane')[0].addClass('e-grid-pane');
+
+            // вешаем пересчет размеров гридовой формы на ресайз окна
+            if (document.getElement('.e-singlemode-layout')) {
+                window.addEvent('resize', this.fitGridSize.bind(this));
+            } else {
+                if (navigator.userAgent.indexOf('MSIE 6') == -1) {
+                    window.addEvent('resize', this.fitGridFormSize.bind(this));
+                }
+            }
+        },
+
+        /**
+         * Set the [metadata]{@link Grid.metadata}. It also finds there the [key field name]{@link Grid#keyFieldName}.
+         *
+         * @function
+         * @public
+         * @param {Object} metadata [Metadata]{@link Grid#metadata}.
+         */
+        setMetadata: function(metadata) {
+            /*
+             * Проверяем соответствие видимых полей физической структуре таблицы,
+             * определяем имя ключевого поля
+             */
+            //var visibleFieldsCount = 0;
+            for (var fieldName in metadata) {
+                if (metadata[fieldName].key) {
+                    /**
+                     * Key field name.
+                     * @type {string}
+                     */
+                    this.keyFieldName = fieldName;
+                }
+            }
+
+            this.metadata = metadata;
+        },
+
+        /**
+         * Get the current [metadata]{@link Grid#metadata}.
+         *
+         * @function
+         * @public
+         * @returns {Object} [Metadata]{@link Grid#metadata}.
+         */
+        getMetadata: function() {
+            return this.metadata;
+        },
+
+        /**
+         * Set the [data fields]{@link Grid#data}.
+         *
+         * @function
+         * @public
+         * @param {Object[]} data Object with [data fields]{@link Gird#data}.
+         * @returns {boolean} Returns true if the data fields were successful set, otherwise false.
+         */
+        setData: function(data) {
+            if (!this.metadata) {
+                alert('Cannot set data without specified metadata.');
+                return false;
+            }
+            this.data = data;
+            return true;
+        },
+
+        /**
+         * Select the one data field from all [data fields]{@link Grid#data}.
+         *
+         * @fires Grid#select
+         *
+         * @function
+         * @public
+         * @param {Element} item Data field that will be selected.
+         */
+        selectItem: function(item) {
+            this.deselectItem();
+            if (item) {
+                item.addClass('selected');
+                this.selectedItem = item;
+                /**
+                 * Select event.
+                 * @event Grid#select
+                 * @param {Element} item Item element that will be selected.
+                 */
+                this.fireEvent('select', item);
+            }
+        },
+
+        /**
+         * Deselect the selected item.
+         * @function
+         * @public
+         */
+        deselectItem: function() {
+            if (this.selectedItem) {
+                this.selectedItem.removeClass('selected');
+            }
+        },
+
+        /**
+         * Return the [selected item]{@link Grid#selectedItem}.
+         *
+         * @function
+         * @public
+         * @returns {Element}
+         */
+        getSelectedItem: function() {
+            return this.selectedItem;
+        },
+
+        /**
+         * Build Grid. Fill the Grid's table body with data fields.
+         *
+         * @function
+         * @public
+         */
+        build: function() {
+            var preiouslySelectedRecordKey = this.getSelectedRecordKey(),
+                headers = [];
+
+            this.selectedItem = null;
+
+            // Set the column width to the 0, if the columns are not fixed.
+            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
+                this.element.getElements('.gridHeadContainer col').each(function (element, id) {
+                    element.setStyle('width', 0);
+                });
+
+                this.element.getElements('.gridContainer col').each(function (element, id) {
+                    element.setStyle('width', 0);
+                });
+            }
+
+            if (!this.isEmpty()) {
+                if (!this.dataKeyExists(preiouslySelectedRecordKey)) {
+                    preiouslySelectedRecordKey = false;
+                }
+                this.data.each(function (record, id) {
+                    addRecord.call(this, record, id, preiouslySelectedRecordKey);
+                }, this);
+                if (!this.selectedItem && !preiouslySelectedRecordKey) {
+                    this.selectItem(this.tbody.getFirst());
+                }
+            } else {
+                new Element('tr').inject(this.tbody);
+            }
+
+            // FIXME: If the element is not visible, then the column width will be incorrect extracted. (Опроси -> Редактировать)
+            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
+                // Get the col width from the tbody
+                this.tbody.getElement('tr').getElements('td').each(function (element, id) {
+                    headers[id] = element.clientWidth;
+                });
+                // Set the col width of the header
+                this.element.getElements('.gridHeadContainer col').each(function (element, id) {
+                    element.setStyle('width', headers[id]);
+                });
+
+                // Recursive resetting the header size.
+                var makeRecursive = this.element.getElement('.gridHeadContainer tr').getElements('th').some(function(el, id) {
+                    return el.getSize().x != headers[id];
+                });
+                if (makeRecursive) {
+                    // This is need if the real column width is different from setted width.
+                    this.element.getElement('.gridHeadContainer tr').getElements('th').each(function(el, id) {
+                        headers[id] = el.getSize().x;
+                    });
+                    // Reset the col width of the tbody
+                    this.element.getElements('.gridContainer col').each(function (element, id) {
+                        element.setStyle('width', headers[id]);
+                    });
+
+                    // Get the col width from the tbody
+                    this.tbody.getElement('tr').getElements('td').each(function (element, id) {
+                        headers[id] = element.clientWidth;
+                    });
+                    // Set the col width of the header
+                    this.element.getElements('.gridHeadContainer col').each(function (element, id) {
+                        element.setStyle('width', headers[id]);
+                    });
+                }
+            }
+
+            /**
+             * Main element that holds Grid's toolbar, header and container.
+             * @type {Element}
+             */
+            this.paneContent = this.element.getParent('.e-pane-item');
+
+            /**
+             * Element for Grid's toolbar.
+             * @type {Element}
+             */
+            this.gridToolbar = this.element.getElement('.grid_toolbar');
+
+            /**
+             * Element for Grid's header.
+             * @type {Element}
+             */
+            this.gridHeadContainer = this.element.getElement('.gridHeadContainer');
+
+            /**
+             * Element for Grid's container.
+             * @type {Element}
+             */
+            this.gridContainer = this.element.getElement('.gridContainer');
+
+            // растягиваем gridContainer на высоту родительского элемента минус фильтр и голова грида
+            this.fitGridSize();
+
+            if (!(this.minGridHeight)) {
+                var h = this.gridContainer.getStyle('height');
+                //Если грид запустился внутри вкладки формы
+                if (h) {
+                    /**
+                     * Minimal Grid's height.
+                     * @type {number}
+                     */
+                    this.minGridHeight = h.toInt();
+                } else {
+                    // todo: :)
+                    //отфонарное на самом деле значение
+                    this.minGridHeight = 300;//h.toInt();
+                }
+            }
+
+            /* растягиваем всю форму до высоты видимого окна */
+            if (!(document.getElement('.e-singlemode-layout'))) {
+                this.pane = this.element.getParent('.e-pane');
+                /**
+                 * @deprecated
+                 * @type {Element}
+                 */
+                this.gridBodyContainer = this.element.getElement('.gridBodyContainer');
+                this.fitGridFormSize();
+                if (document.getElements('.grid')[0] == this.element) {
+                    new Fx.Scroll(document.getElement('.e-mainframe') ? document.getElement('.e-mainframe') : window).toElement(this.pane);
+                }
+            }
+        },
+
+        /**
+         * Iterates over record's fields and inserts them to the [Grid's table body]{@link Grid#tbody}.
+         *
+         * @function
+         * @protected
+         * @param {Object} record Object with fields.
+         * @param {Element} row Table row where the data will be inserted.
+         */
+        iterateFields: function(fieldName, record, row) {
+            // Пропускаем невидимые поля.
+            if (!this.metadata[fieldName].visible || this.metadata[fieldName].type == 'hidden') {
+                return;
+            }
+
+            var cell = new Element('td').inject(row);
+            switch (this.metadata[fieldName].type) {
+                case 'boolean':
+                    var checkbox = new Element('img').setProperties({
+                        'src':'images/checkbox_' + (record[fieldName] == true ? 'on' : 'off') + '.png',
+                        'width':'13', 'height':'13'}).inject(cell);
+                    cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
+                    break;
+                case 'textbox':
+                    if (record[fieldName] && Object.getLength(record[fieldName])) {
+                        cell.set('html', Object.values(record[fieldName]).join(', '));
+                    } else {
+                        cell.set('html', '&nbsp;');
+                    }
+                    break;
+                case 'file':
+                    if (record[fieldName]) {
+                        var image = new Element('img').setProperties({ 'src':Energine.resizer + 'w40-h40/' + record[fieldName], 'width':40, 'height':40 }).inject(cell);
+                        cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
+                    }
+                    break;
+                default :
+                    var fieldValue = '';
+                    if (record[fieldName] || record[fieldName] == 0) {
+                        fieldValue = record[fieldName].toString().clean();
+                    }
+                    var prevRow = row.getPrevious();
+                    if ((this.metadata[fieldName].type == 'select')
+                        && (row.getFirst() == cell)
+                        && (row.getPrevious())
+                        && (prevRow.record[fieldName] == record[fieldName]))
+                    {
+                        fieldValue = '';
+                        prevRow.getFirst().setStyle('font-weight', 'bold');
+                    }
+                    if (fieldValue != '') {
+                        cell.set('html', fieldValue);
+                    } else {
+                        cell.set('html', '&#160;');
+                    }
+            }
+        }.protect(),
+
+        /**
+         * Fit the height of the Grid's container.
+         * @function
+         * @public
+         */
+        fitGridSize: function() {
+            if (this.paneContent) {
+                var gridHeight = this.paneContent.getSize().y -
+                    ((this.gridToolbar) ? this.gridToolbar.getSize().y : 0) -
+                    this.gridHeadContainer.getSize().y - 4;
+                if (gridHeight > 0) {
+                    this.gridContainer.setStyle('height', gridHeight);
+                }
+            }
+        },
+
+        /**
+         * Fit the height of the Grid's container if the container is not new modal frame.
+         * @function
+         * @public
+         */
+        fitGridFormSize: function() {
+            if (this.pane) {
+                var gridBodyContainer = this.element.getElement('.gridBodyContainer');
+                var gridBodyHeight = ((gridBodyContainer.getSize().y + 2)
+                    > this.minGridHeight) ? (gridBodyContainer.getSize().y + 2) : this.minGridHeight;
+                var paneOthersHeight = this.pane.getSize().y - this.gridContainer.getSize().y;
+
+                var windowHeight = window.getSize().y - 10;
+                if (windowHeight > (this.minGridHeight + paneOthersHeight)) {
+                    if ((gridBodyHeight + paneOthersHeight) > windowHeight) {
+                        this.pane.setStyle('height', windowHeight);
+                    } else {
+                        this.pane.setStyle('height', gridBodyHeight + paneOthersHeight);
+                    }
+                } else {
+                    this.pane.setStyle('height', this.minGridHeight + paneOthersHeight);
+                }
+                this.fitGridSize();
+            }
+        },
+
+        /**
+         * Return true if no data fields are stored, otherwise - false.
+         *
+         * @function
+         * @public
+         * @returns {boolean}
+         */
+        isEmpty: function() {
+            return !this.data.length;
+        },
+
+        /**
+         * Return the recordset from the selected data field.
+         *
+         * @function
+         * @public
+         * @returns {Object}
+         */
+        getSelectedRecord: function() {
+            if (!this.getSelectedItem()) {
+                return false;
+            }
+            return this.getSelectedItem().record;
+        },
+
+        /**
+         * Returns the value of the key field from the selected item.
+         *
+         * @function
+         * @public
+         * @returns {boolean}
+         */
+        getSelectedRecordKey: function() {
+            if (!this.keyFieldName) {
+                return false;
+            }
+            return this.getSelectedRecord()[this.keyFieldName];
+        },
+
+        /**
+         * Find the <tt>'key'<tt> in the [<tt>'data'</tt>]{@link Grid.data}. If the key exist tru will be returns, otherwise - false.
+         *
+         * @function
+         * @public
+         * @param key
+         * @returns {boolean}
+         */
+        dataKeyExists: function(key) {
+            if (!this.data) return false;
+            if (!this.keyFieldName) return false;
+
+            return this.data.some(function (item, index) {
+                return (item[this.keyFieldName] == key);
+            }.bind(this));
+        },
+
+        /**
+         * Clear the [Grid's table body]{@link Grid#tbody}.
+         *
+         * @function
+         * @public
+         */
+        clear: function() {
+            this.deselectItem();
+            while (this.tbody.hasChildNodes()) {
+                this.tbody.removeChild(this.tbody.firstChild);
+            }
+        },
+
+        /**
+         * Event handler. Change the sorting of the [data fields]{@link Grid#data}.
+         *
+         * @fires Grid#sortChange
+         *
+         * @function
+         * @public
+         * @param {Object} event Default event object.
+         */
+        onChangeSort: function(event) {
+            var getNextDirectionOrderItem = function (current) {
+                var sortDirectionOrder = ['', 'asc', 'desc'],
+                    currentIndex,
+                    result;
+
+                current = current || '';
+
+                if ((currentIndex = sortDirectionOrder.indexOf(current)) != -1) {
+                    if ((++currentIndex) < sortDirectionOrder.length) {
+                        result = sortDirectionOrder[currentIndex];
+                    } else {
+                        result = sortDirectionOrder[0];
+                    }
+                } else {
+                    result = sortDirectionOrder[0];
+                }
+
+                return result;
+            };
+
+            var header = $(event.target),
+                sortFieldName = header.getProperty('name'),
+                sortDirection = header.getProperty('class');
+
+            //проверяем есть ли колонка сортировки в списке колонок
+            if (this.metadata[sortFieldName] && this.metadata[sortFieldName].sort == 1) {
+                this.sort.field = sortFieldName;
+                this.sort.order = getNextDirectionOrderItem(sortDirection);
+
+                header.removeProperty('class').addClass(this.sort.order);
+
+                /**
+                 * Change the sorting.
+                 * @event Grid#sortChange
+                 */
+                this.fireEvent('sortChange');
+            }
+        }
+    });
+})();
+
+// todo: The name 'GridManager' does not reflect his main function.
+/**
+ * Grid Manager.
+ *
+ * @constructor
+ * @param {Element} element The main holder element for the Grid Manager.
+ */
+var GridManager = new Class(/** @lends GridManager# */{
+    /**
+     * @see Energine.request
+     * @deprecated Use Energine.request instead.
+     */
+    request: Energine.request,
+
+    /**
+     * Element ID that will be moved.
+     * @type {number}
+     */
+    mvElementId: null,
+
+    /**
+     * Language ID.
+     * @type {number}
+     */
+    langId: 0,
+
+    // constructor
+    initialize: function(element) {
+        /**
+         * The main holder element.
+         * @type {Element}
+         */
         this.element = element;
 
-        this.filter = new GridManager.Filter(this);
+        /**
+         * Filter tool.
+         * @type {GridManager.Filter}
+         */
+        try {
+            this.filter = new GridManager.Filter(this);
+        } catch (err) {
+            console.warn(err);
+            console.warn('Filter is not created.');
+        }
 
-        this.tabPane =
-            new TabPane(this.element, { onTabChange:this.onTabChange.bind(this) });
+        /**
+         * Pages.
+         * @type {PageList}
+         */
+        this.pageList = new PageList({ onPageSelect:this.loadPage.bind(this) });
 
+        /**
+         * Grid.
+         * @type {Grid}
+         */
         this.grid = new Grid(this.element.getElement('.grid'), {
-            onSelect:this.onSelect.bind(this),
-            onSortChange:this.changeSort.bind(this),
-            onDoubleClick:this.onDoubleClick.bind(this)
+            onSelect: this.onSelect.bind(this),
+            onSortChange: this.onSortChange.bind(this),
+            onDoubleClick: this.onDoubleClick.bind(this)
         });
-        this.pageList =
-            new PageList({ onPageSelect:this.loadPage.bind(this) });
+
+        /**
+         * Tabs.
+         * @type {TabPane}
+         */
+        this.tabPane = new TabPane(this.element, { onTabChange:this.onTabChange.bind(this) });
+
         var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
         if (toolbarContainer) {
             toolbarContainer.adopt(this.pageList.getElement());
             this.tabPane.element.removeClass('e-pane-has-b-toolbar1');
             this.tabPane.element.addClass('e-pane-has-b-toolbar2');
-        }
-        else {
+        } else {
             this.tabPane.element.adopt(this.pageList.getElement());
         }
+
+        /**
+         * Visual imitation of waiting.
+         * @type {Overlay}
+         */
         this.overlay = new Overlay(this.element);
+
+        /**
+         * Property <tt>'single_template'</tt> of the [main holder element]{@link GridManager#element}.
+         * @type {string}
+         */
         this.singlePath = this.element.getProperty('single_template');
         /*Checking if opened in modalbox*/
-        var mb;
-        if((mb = window.parent.ModalBox) && mb.initialized && mb.getCurrent()){
+        var mb = window.parent.ModalBox;
+        if(mb && mb.initialized && mb.getCurrent()){
             document.body.addEvent('keypress', function(evt){
-                if(evt.key=='esc'){
+                if(evt.key == 'esc'){
                     mb.close();
                 }
             });
         }
-
-        this.mvElementId = null;
 
         // инициализация id записи, которую будем двигать в стейте /move/
         var move_from_id = this.element.getProperty('move_from_id');
         if (move_from_id) {
             this.setMvElementId(move_from_id);
         }
+
+        this.reload();
     },
 
+    /**
+     * Set the element ID that will be moved.
+     * @function
+     * @public
+     * @param {string|number} id Element ID.
+     */
     setMvElementId: function(id) {
         this.mvElementId = id;
     },
 
+    /**
+     * Get the moved element ID.
+     * @function
+     * @public
+     * @returns {string|number}
+     */
     getMvElementId: function() {
         return this.mvElementId;
     },
 
+    /**
+     * Reset the moved element ID.
+     * @function
+     * @public
+     */
     clearMvElementId: function() {
         this.mvElementId = null;
     },
 
-    attachToolbar:function (toolbar) {
+    /**
+     * Attach the <tt>'toolbar'</tt> to the Grid Manager.
+     *
+     * @function
+     * @public
+     * @param {Toolbar} toolbar Toolbar that will be attached to this GridManager.
+     */
+    attachToolbar: function(toolbar) {
+        /**
+         * Toolbar.
+         * @type {}
+         */
         this.toolbar = toolbar;
         var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
         if (toolbarContainer) {
             toolbarContainer.adopt(this.toolbar.getElement());
-        }
-        else {
+        } else {
             this.tabPane.element.adopt(this.toolbar.getElement());
         }
         this.toolbar.disableControls();
@@ -457,136 +834,275 @@ var GridManager = new Class({
         //this.reload.delay(1000, this);
     },
 
-    onTabChange:function (tabData) {
-        this.langId = tabData.lang;
+    /**
+     * Changing the tab of the Grid Manager.
+     *
+     * @function
+     * @public
+     * @param {Object} data Object with language ID.
+     */
+    onTabChange: function(data) {
+        this.langId = data.lang;
         // Загружаем первую страницу только если панель инструментов уже прикреплена.
-        this.filter.remove();
+        if (this.filter) {
+            this.filter.remove();
+        }
         this.reload();
     },
 
-    onSelect:function () {
+    /**
+     * Event handler. Select the item.
+     * @function
+     * @public
+     */
+    onSelect: function() {},
 
-    },
-    onDoubleClick:function () {
+    /**
+     * Event handler. Double click.
+     * @function
+     * @public
+     */
+    onDoubleClick: function() {
         this.edit();
     },
-    changeSort:function () {
-        this.loadPage.delay(10, this, 1);
+
+    /**
+     * Event handler. Change the sorting of the data.
+     * @function
+     * @public
+     */
+    onSortChange: function() {
+        this.loadPage(1);
     },
 
-    reload:function () {
-        this.loadPage.delay(10, this, 1);
+    /**
+     * Load the first page.
+     * @function
+     * @public
+     */
+    reload: function() {
+        this.loadPage(1);
     },
 
-    loadPage:function (pageNum) {
+    // todo: Define methods to get url and postBody. - do
+    /**
+     * Load the specified page number.
+     *
+     * @function
+     * @public
+     * @param {number} pageNum Page number.
+     */
+    loadPage: function(pageNum) {
+        var postBody = '',
+            url = '';
+
         this.pageList.disable();
-
-        this.toolbar.disableControls();
+        // todo: The toolbar is attached later as this functions calls.
+        if (this.toolbar) {
+            this.toolbar.disableControls();
+        }
         this.overlay.show();
         this.grid.clear();
-        var postBody = '', url = this.singlePath + 'get-data/page-' + pageNum;
-        if (this.langId) postBody += 'languageID=' + this.langId + '&';
-        postBody += this.filter.getValue();
-        if (this.grid.sort.order) {
-            url = this.singlePath + 'get-data/' + this.grid.sort.field + '-' +
-                this.grid.sort.order + '/page-' + pageNum
+
+        if (this.langId) {
+            postBody += 'languageID=' + this.langId + '&';
         }
-        this.request(url,
+        if (this.filter) {
+            postBody += this.filter.getValue();
+        }
+
+        if (this.grid.sort.order) {
+            url = this.singlePath + 'get-data/' + this.grid.sort.field + '-'
+                + this.grid.sort.order + '/page-' + pageNum
+        } else {
+            url = this.singlePath + 'get-data/page-' + pageNum;
+        }
+
+        Energine.request(url,
             postBody,
             this.processServerResponse.bind(this),
             null,
             this.processServerError.bind(this)
         );
     },
-    processServerResponse:function (result) {
-        var control;
+
+    /**
+     * Callback function by successful server response.
+     *
+     * @function
+     * @public
+     * @param {Object} result Result data from the server.
+     */
+    processServerResponse: function(result) {
+        var control = this.toolbar.getControlById('add');
+
         if (!this.initialized) {
             this.grid.setMetadata(result.meta);
             this.initialized = true;
         }
+
         this.grid.setData(result.data || []);
 
-
-        if (result.pager)
+        if (result.pager) {
             this.pageList.build(result.pager.count, result.pager.current, result.pager.records);
-
+        }
 
         if (!this.grid.isEmpty()) {
             this.toolbar.enableControls();
             this.pageList.enable();
         }
 
+        if (control) {
+            control.enable();
+        }
 
-        if (control = this.toolbar.getControlById('add')) control.enable();
         this.grid.build();
         this.overlay.hide();
     },
-    processServerError:function (responseText) {
+
+    /**
+     * Callback function by server error.
+     *
+     * @function
+     * @public
+     * @param {string} responseText Server error message.
+     */
+    processServerError: function(responseText) {
         alert(responseText);
         this.overlay.hide();
     },
-    // Actions:
 
-    view:function () {
+    /**
+     * Call the next action after finished action 'close'.
+     *
+     * @function
+     * @public
+     * @param {Object} [returnValue] Object, that can contain the next action name.
+     */
+    processAfterCloseAction: function(returnValue) {
+        if (returnValue) {
+            if (returnValue.afterClose && this[returnValue.afterClose]) {
+                this[returnValue.afterClose].attempt(null, this);
+            } else {
+                this.loadPage(this.pageList.currentPage);
+            }
+        }
+    },
+
+    // Actions:
+    /**
+     * View action.
+     * @function
+     * @public
+     */
+    view: function() {
         ModalBox.open({ url:this.singlePath +
             this.grid.getSelectedRecordKey() });
     },
 
-    add:function () {
+    /**
+     * Add action.
+     * @function
+     * @public
+     */
+    add: function() {
         ModalBox.open({
             url:this.singlePath + 'add/',
-            onClose:this._processAfterCloseAction.bind(this)
+            onClose:this.processAfterCloseAction.bind(this)
         });
     },
 
-    edit:function (id) {
+    /**
+     * Edit action.
+     * @function
+     * @public
+     * @param [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
+     */
+    edit: function(id) {
         if(!parseInt(id)){
             id = this.grid.getSelectedRecordKey();
         }
         ModalBox.open({
             url:this.singlePath + id + '/edit',
-            onClose:this._processAfterCloseAction.bind(this)
+            onClose:this.processAfterCloseAction.bind(this)
         });
     },
 
-    move:function (id) {
-        if(!parseInt(id)) {
+    /**
+     * Move action.
+     * @function
+     * @public
+     * @param {string|number} [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
+     */
+    move: function(id) {
+        if(!id) {
             id = this.grid.getSelectedRecordKey();
         }
         this.setMvElementId(id);
         ModalBox.open({
             url:this.singlePath + 'move/' + id,
-            onClose: this._processAfterCloseAction.bind(this)
+            onClose: this.processAfterCloseAction.bind(this)
         });
     },
 
+    /**
+     * Move to the top action.
+     * @function
+     * @public
+     */
     moveFirst: function() {
-        return this.moveTo('first', this.getMvElementId());
+        this.moveTo('first', this.getMvElementId());
     },
 
+    /**
+     * Move to the bottom action.
+     * @function
+     * @public
+     */
     moveLast: function() {
-        return this.moveTo('last', this.getMvElementId());
+        this.moveTo('last', this.getMvElementId());
     },
 
+    /**
+     * Move above action.
+     * @function
+     * @public
+     * @param {string|number} [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
+     */
     moveAbove: function(id) {
         if(!parseInt(id)){
             id = this.grid.getSelectedRecordKey();
         }
-        return this.moveTo('above', this.getMvElementId(), id);
+        this.moveTo('above', this.getMvElementId(), id);
     },
 
+    /**
+     * Move below action.
+     * @function
+     * @public
+     * @param {string|number} [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
+     */
     moveBelow: function(id) {
         if(!parseInt(id)){
             id = this.grid.getSelectedRecordKey();
         }
-        return this.moveTo('below', this.getMvElementId(), id);
+        this.moveTo('below', this.getMvElementId(), id);
     },
 
-    moveTo: function (dir, fromId, toId) {
+    /**
+     * Move action.
+     *
+     * @function
+     * @public
+     * @param {string} dir Defines specific item position ('belolw', 'above', 'last', 'first').
+     * @param {string|number} fromId Defines from which ID will the element moved.
+     * @param {string|number} toId Defines to which ID will the element moved.
+     */
+    moveTo: function(dir, fromId, toId) {
         toId = toId || '';
         this.overlay.show();
-        this.request(this.singlePath + 'move/' + fromId + '/' + dir + '/' + toId + '/'
-            , null,
+        Energine.request(this.singlePath + 'move/' + fromId + '/' + dir + '/' + toId + '/',
+            null,
             function () {
                 this.overlay.hide();
                 ModalBox.setReturnValue(true); // reload
@@ -602,36 +1118,43 @@ var GridManager = new Class({
         );
     },
 
-    _processAfterCloseAction:function (returnValue) {
-        if (returnValue) {
-            if (returnValue.afterClose && this[returnValue.afterClose]) {
-                this[returnValue.afterClose].attempt(null, this);
-            }
-            else {
-                this.loadPage(this.pageList.currentPage);
-            }
-        }
-    },
-    editPrev:function () {
+    /**
+     * Edit previous action.
+     * @function
+     * @public
+     */
+    editPrev: function() {
         var prevRow;
         if (this.grid.getSelectedItem() && (prevRow = this.grid.getSelectedItem().getPrevious())) {
             this.grid.selectItem(prevRow);
             this.edit();
         }
     },
-    editNext:function () {
+
+    /**
+     * Edit next action.
+     * @function
+     * @public
+     */
+    editNext: function() {
         var nextRow;
         if (this.grid.getSelectedItem() && (nextRow = this.grid.getSelectedItem().getNext())) {
             this.grid.selectItem(nextRow);
             this.edit();
         }
     },
-    del:function () {
+
+    /**
+     * Delete action.
+     * @function
+     * @public
+     */
+    del: function() {
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
             'Do you really want to delete selected record?';
         if (confirm(MSG_CONFIRM_DELETE)) {
             this.overlay.show();
-            this.request(this.singlePath + this.grid.getSelectedRecordKey() +
+            Energine.request(this.singlePath + this.grid.getSelectedRecordKey() +
                 '/delete/', null,
                 function () {
                     this.overlay.hide();
@@ -648,118 +1171,235 @@ var GridManager = new Class({
         }
     },
 
-    close:function () {
+    /**
+     * Close action.
+     * @function
+     * @public
+     */
+    close: function() {
         ModalBox.close();
     },
-    up:function () {
-        this.request(this.singlePath + this.grid.getSelectedRecordKey() +
-            '/up/', '', this.loadPage.pass(this.pageList.currentPage, this));
+
+    /**
+     * Up action.
+     * @function
+     * @public
+     */
+    up: function() {
+        Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/up/',
+                     '', this.loadPage.pass(this.pageList.currentPage, this));
     },
 
-    down:function () {
-        this.request(this.singlePath + this.grid.getSelectedRecordKey() +
-            '/down/', '', this.loadPage.pass(this.pageList.currentPage, this));
+    /**
+     * Down action.
+     * @function
+     * @public
+     */
+    down: function() {
+        Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/down/',
+                     '', this.loadPage.pass(this.pageList.currentPage, this));
     },
-    print:function () {
+
+    /**
+     * Print action.
+     * @function
+     * @public
+     */
+    print: function() {
         window.open(this.element.getProperty('single_template') + 'print/');
     },
-    csv:function () {
-        document.location.href =
-            this.element.getProperty('single_template') + 'csv/';
+
+    /**
+     * CSV action.
+     * @function
+     * @public
+     */
+    csv: function() {
+        document.location.href = this.element.getProperty('single_template') + 'csv/';
     }
 });
 
-GridManager.Filter = new Class({
-    initialize:function (gridManager) {
-        this.gm = gridManager;
-        this.element = this.gm.element.getElement('.filter');
-        this.fields = false;
-        this.inputs = false;
+/**
+ * Filter tool.
+ *
+ * @throws Element for GridManager.Filter was not found.
+ *
+ * @constructor
+ * @param {GridManager} gridManager
+ */
+GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
+    /**
+     * Column names for filter.
+     * @type {Elements}
+     */
+    fields: null,
+
+    /**
+     * Filter condition.
+     * @type {Elements}
+     */
+    condition: null,
+
+    /**
+     * Query controls for the filter.
+     * @type {GridManager.Filter.QueryControls}
+     */
+    inputs: null,
+
+    /**
+     * Indicates whether the filter is active or not.
+     * @type {boolean}
+     */
+    active: false,
+
+    // constructor
+    initialize: function(gridManager) {
+        /**
+         * Filter element of the GridManager.
+         * @type {Element}
+         */
+        this.element = gridManager.element.getElement('.filter');
+
+        if (!this.element) {
+            throw 'Element for GridManager.Filter was not found.';
+        }
+
+        var applyButton = this.element.getElement('.f_apply'),
+            resetLink = this.element.getElement('.f_reset');
+
+        applyButton.addEvent('click', function () {
+            this.use();
+            gridManager.reload();
+        }.bind(this));
+
+        resetLink.addEvent('click', function (e) {
+            Energine.cancelEvent(e);
+            this.remove();
+            gridManager.reload();
+        }.bind(this));
+
+        this.inputs = new GridManager.Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
+
+        //FIXME: The filter works not properly by condition '=' and '!=' when the input for field 'datetime' is given only by date (without TIME!!!) -- report a bug.
+        this.condition = this.element.getElement('.f_condition');
+        this.condition.addEvent('change', function (event) {
+            if ($(event.target).get('value') == 'between') {
+                this.inputs.asPeriod();
+            } else {
+                this.inputs.asScalar();
+            }
+        }.bind(this));
+
+        this.fields = this.element.getElement('.f_fields');
+        this.fields.addEvent('change', this.checkCondition.bind(this));
+
+        this.checkCondition();
+    },
+
+    /**
+     * Check the filter's condition option.
+     * @function
+     * @public
+     */
+    checkCondition: function() {
+        var isDate = this.fields.getSelected()[0].getAttribute('type') == 'datetime';
+        this.inputs.showDatePickers(isDate);
+        this.condition.getElements('option[value=like],option[value=notlike]').setStyle('display', (isDate ? 'none' : ''));
+        for (var n = 0; isDate && n < this.condition.options.length; n++) {
+            if (this.condition.options[n].getStyle('display') !== 'none') {
+                this.condition.selectedIndex = n;
+                break;
+            }
+        }
+    },
+
+    /**
+     * Reset the whole [filter element]{@link GridManager.Filter#element}.
+     * @function
+     * @public
+     */
+    remove: function() {
+        this.inputs.empty();
+        this.element.removeClass('active');
         this.active = false;
-        if (this.element) {
-            var applyButton = this.element.getElement('.f_apply'), resetLink = this.element.getElement('.f_reset');
-            this.fields = this.element.getElement('.f_fields');
-            applyButton.addEvent('click', function () {
-                this.use();
-                this.gm.reload.apply(this.gm);
-            }.bind(this));
-            resetLink.addEvent('click', function (e) {
-                Energine.cancelEvent(e);
-                this.remove();
-                this.gm.reload.apply(this.gm);
-            }.bind(this));
-
-            this.inputs =
-                new GridManager.Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
-            this.condition = this.element.getElement('.f_condition');
-
-            this.condition.addEvent('change', function (event) {
-                //prepareInputs();
-                var condition = $(event.target).get('value');
-
-                if (condition == 'between') {
-                    this.inputs.asPeriod();
-                }
-                else {
-                    this.inputs.asScalar();
-                }
-            }.bind(this));
-        }
     },
-    remove:function () {
-        if (this.element) {
-            this.inputs.empty();
-            this.element.removeClass('active');
-            this.active = false;
-        }
-    },
-    use:function () {
-        var reloadOnExit = true;
+
+    /**
+     * Mark the filter element as used or not.
+     *
+     * @function
+     * @public
+     * @returns {boolean}
+     */
+    use: function() {
         if (this.inputs.hasValues()) {
             this.element.addClass('active');
             this.active = true;
-        }
-        else if (this.active) {
+        } else {
             this.remove();
         }
-        else {
-            reloadOnExit = false;
-        }
 
-        return reloadOnExit;
+        return this.active;
     },
-    getValue:function () {
+
+    /**
+     * Get filter string.
+     *
+     * @function
+     * @public
+     * @returns {string}
+     */
+    getValue: function() {
         var result = '';
         if (this.active && this.inputs.hasValues()) {
             var fieldName = this.fields.options[this.fields.selectedIndex].value,
                 fieldCondition = this.condition.options[this.condition.selectedIndex].value;
-            result = this.inputs.getValues('filter' + fieldName) +
-                '&filter[condition]=' + fieldCondition + '&';
+
+            result = this.inputs.getValues('filter' + fieldName) + '&filter[condition]=' + fieldCondition + '&';
         }
         return result;
     }
 });
 
-GridManager.Filter.QueryControls = new Class({
-    initialize:function (els, applyAction) {
+/**
+ * Query controls.
+ *
+ * @constructor
+ * @param {Elements} els Elements with input fields.
+ * @param {Element} applyAction Apply button.
+ */
+GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.QueryControls# */{
+    // constructor
+    initialize: function(els, applyAction) {
+        /**
+         * Holds the query containers.
+         * @type {Elements}
+         */
         this.containers = els;
-        this.inputs = [];
-        this.dps = [];
-        this.containers.each(function (el) {
-            this.inputs.push(el.getElement('input'));
-            this.dps.push(el.getElement('.f_datepicker'));
-        }.bind(this));
+        //TODO: Remove the style hidden of the first container from the CSS or HTML!
+        this.containers[0].removeClass('hidden');
 
-        this.inputs = new Elements(this.inputs);
-        this.dps = new Elements(this.dps);
-        /*this.dps.each(function(el, index){
-         Energine._createDatePickerObject(el, {
-         format:'j-m-Y',
-         allowEmpty: true,
-         inputOutputFormat: 'Y-m-d',
-         toggleElements: this.inputs[index]
-         })
-         }.bind(this));*/
+        /**
+         * Holds all input fields.
+         * @type {Elements}
+         */
+        this.inputs = new Elements(this.containers.getElements('input'));
+
+        /**
+         * Holds the elements for DatePickers.
+         * @type {Elements}
+         */
+        this.dps = new Elements(this.containers.getElements('.f_datepicker'));
+
+        this.dps.each(function(el, index){
+            //note: This is small trick to open DatePicker on the image element, not on the span.
+            Energine._createDatePickerObject(el.getFirst(), {
+                format:'%Y-%m-%d',
+                allowEmpty: true,
+                toggle: this.inputs[index],
+                useFadeInOut: false
+            })
+        }.bind(this));
 
 
         this.inputs.addEvent('keydown', function (event) {
@@ -769,37 +1409,83 @@ GridManager.Filter.QueryControls = new Class({
             }
         });
     },
+
+    /**
+     * Return true if one of the [inputs]{@link GridManager.Filter.QueryControls#inputs} has a value, otherwise - false.
+     *
+     * @function
+     * @public
+     * @returns {boolean}
+     */
     hasValues:function () {
         return this.inputs.some(function (el) {
-            return ($(el)) ? el.get('value') : false
+            return el.get('value');
         });
     },
+
+    /**
+     * Clear the [input fields]{@link GridManager.Filter.QueryControls#inputs}.
+     * @function
+     * @public
+     */
     empty:function () {
         this.inputs.each(function (el) {
             el.set('value', '')
         });
     },
+
+    /**
+     * Build the filter's pattern string.
+     *
+     * @function
+     * @public
+     * @param {string} fieldName The field name from the recordset.
+     * @returns {string}
+     */
     getValues:function (fieldName) {
         var str = '';
         this.inputs.each(function (el, index, els) {
-            if (el.get('value')) str += fieldName + '[]=' + el.get('value');
-            if (index != (els.length - 1)) str += '&';
+            if (el.get('value')) {
+                str += fieldName + '[]=' + el.get('value');
+            }
+            if (index != (els.length - 1)) {
+                str += '&';
+            }
         });
         return str;
     },
-    asDateSelector:function () {
-        //this.dps.removeClass('hidden').setStyle('display', '');
-    },
-    asTextSelector:function () {
-        //this.dps.addClass('hidden');
-    },
+
+    /**
+     * Enable additional input fields for using the <tt>'between'</tt> filter condition.
+     * @function
+     * @public
+     */
     asPeriod:function () {
-        this.containers.removeClass('hidden');
+        this.containers[1].removeClass('hidden');
         this.inputs.addClass('small');
     },
+
+    /**
+     * Enable only one input field for filter.
+     * @function
+     * @public
+     */
     asScalar:function () {
         this.containers[1].addClass('hidden');
         this.inputs.removeClass('small');
+    },
+
+    /**
+     * Show/hide date pickers.
+     * @function
+     * @public
+     * @param {boolean} toShow Defines whether the date pickers will be visible (by <tt>true</tt>) or hidden (by <tt>false</tt>).
+     */
+    showDatePickers: function(toShow) {
+        if (toShow) {
+            this.dps.removeClass('hidden');
+        } else {
+            this.dps.addClass('hidden');
+        }
     }
 });
-GridManager.implement(Energine.request);

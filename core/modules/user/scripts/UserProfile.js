@@ -1,21 +1,51 @@
+/**
+ * @file Contain the description of the next classes:
+ * <ul>
+ *     <li>[UserProfile]{@link UserProfile}</li>
+ * </ul>
+ *
+ * @requires share/Energine
+ * @requires share/ValidForm
+ *
+ * @author Pavel Dubenko
+ *
+ * @version 1.0.0
+ */
+
 ScriptLoader.load('ValidForm');
 
-var UserProfile = new Class({
+/**
+ * User profile.
+ *
+ * @augments ValidForm
+ *
+ * @constructor
+ * @param {Element|string} element The main element.
+ */
+var UserProfile = new Class(/** @lends UserProfile# */{
     Extends: ValidForm,
-	initialize: function(element){
-		this.parent(element);
-	},
-    validateForm: function(event){
+
+    // constructor
+    initialize: function(element){
+        this.parent(element);
+    },
+
+    /**
+     * Overridden parent [validateForm]{@link ValidForm#validateForm} method.
+     * @function
+     * @public
+     * @param {Object} event Event.
+     */
+    validateForm: function(event) {
+        //todo: Why not to do all over the parent method?
         var field = $('u_password');
         var field2 = $('u_password2');
 
-        if ((field.value != field2.value)) {
+        if (field.value != field2.value) {
             this.validator.showError(field, field.getProperty('nrgn:message2'));
-            this.cancelEvent(event);
-        }
-        else{
+            Energine.cancelEvent(event);
+        } else {
             this.parent(event);
         }
-    
     }
 });

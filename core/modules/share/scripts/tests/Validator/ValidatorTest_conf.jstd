@@ -1,0 +1,12 @@
+server: http://localhost:9876
+
+load:
+  - ../../mootools-debug.js
+  - ../../mootools-more-debug.js
+  - ../../mootools-ext-debug.js
+  - Validator.js
+
+test:
+  - ValidatorTests.js
+
+serve:

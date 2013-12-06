@@ -1,11 +1,41 @@
+/**
+ * @file Contain the description of the next classes:
+ * <ul>
+ *     <li>[PageEditor]{@link PageEditor}</li>
+ *     <li>[PageEditor.BlockEditor]{@link PageEditor.BlockEditor}</li>
+ * </ul>
+ *
+ * @requires Energine
+ * @requires ckeditor/ckeditor
+ * @requires ModalBox
+ * @requires Overlay
+ *
+ * @author Pavel Dubenko
+ *
+ * @version 1.0.0
+ */
+
 ScriptLoader.load('ckeditor/ckeditor', 'ModalBox', 'Overlay');
 
-var PageEditor = new Class({
+/**
+ * @class PageEditor
+ * @classdesc Page editor.
+ */
+var PageEditor = new Class(/** @lends PageEditor# */{
+    // todo: Make it sense to store this two members in the object? They used only by initialize.
+    /**
+     * Editor class name.
+     * @type {string}
+     */
     editorClassName:'nrgnEditor',
+
+    /**
+     * Array of block editors.
+     * @type {PageEditor.BlockEditor[]}
+     */
     editors:[],
 
     initialize:function () {
-
         Asset.css('pageeditor.css');
 
         CKEDITOR.disableAutoInline = true;
@@ -48,6 +78,7 @@ var PageEditor = new Class({
                     this.editors.each(function(editor) {
                         editor.save(false);
                     }.bind(this));
+                    // todo: What is it?
                     window.location.href = window.location.href;
                     return '';
                 }
@@ -62,42 +93,106 @@ var PageEditor = new Class({
             }.bind(this));
         }
     }
-
 });
 
-PageEditor.BlockEditor = new Class({
-
+/**
+ * Block editor.
+ *
+ * @constructor
+ * @param pageEditor
+ * @param area
+ */
+PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
+    // constructor
     initialize:function (pageEditor, area) {
+        /**
+         * Area element.
+         * @type {Element}
+         */
         this.area = area;
         this.area.setProperty('contenteditable', true);
+
+        // todo: Need?
+        /**
+         * Page editor.
+         * @type {PageEditor}
+         */
         this.pageEditor = pageEditor;
+
+        /**
+         * Defines whether the editor is active.
+         * @type {boolean}
+         */
         this.isActive = false;
+
+        /**
+         * Single path.
+         * @type {string}
+         */
         this.singlePath = this.area.getProperty('single_template');
-        this.ID = this.area.getProperty('eID') ? this.area.getProperty('eID') : false;
-        this.num = this.area.getProperty('num') ? this.area.getProperty('num') : false;
+
+        /**
+         * Block editor ID.
+         * @type {string}
+         */
+        this.ID = this.area.getProperty('eID') ? this.area.getProperty('eID') : '';
+
+        // todo: What is num?
+        /**
+         * Number.
+         * @type {string}
+         */
+        this.num = this.area.getProperty('num') ? this.area.getProperty('num') : '';
+
+        /**
+         * Editor.
+         * @type {CKEDITOR}
+         */
         this.editor = CKEDITOR.inline(this.area.get('id'));
         this.editor.singleTemplate = this.area.getProperty('single_template');
         this.editor.editorId = this.area.get('id');
+
+        /**
+         * Overlay.
+         * @type {Overlay}
+         */
         this.overlay = new Overlay();
     },
 
+    /**
+     * Save.
+     *
+     * @function
+     * @public
+     * @param {boolean} [async = true] Defines whether the request be asynchronous or not.
+     */
     save:function (async) {
-        if (async == undefined) async = true;
+        if (async == undefined) {
+            async = true;
+        }
+        if (!async) {
+            this.overlay.show();
+        }
+
         var data = 'data=' + encodeURIComponent(this.editor.getData());
-        if (this.ID) data += '&ID=' + this.ID;
-        if (this.num) data += '&num=' + this.num;
-        if (!async) this.overlay.show();
+        if (this.ID) {
+            data += '&ID=' + this.ID;
+        }
+        if (this.num) {
+            data += '&num=' + this.num;
+        }
 
         new Request({
             url:this.singlePath + 'save-text',
-            'async':async,
+            async: async,
             method:'post',
-            'data':data,
-            onSuccess:function (response) {
+            data: data,
+            onSuccess: function (response) {
                 this.editor.setData(response);
-                if (!async)this.overlay.hide();
+                if (!async) {
+                    this.overlay.hide();
+                }
             }.bind(this)
         }).send();
     }
-
 });

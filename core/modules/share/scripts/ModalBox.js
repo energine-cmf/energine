@@ -1,43 +1,75 @@
+/**
+ * @file Contain the description of the next classes:
+ * <ul>
+ *     <li>[ModalBox]{@link ModalBox}</li>
+ * </ul>
+ *
+ * @requires Energine
+ * @requires Overlay
+ *
+ * @author Pavel Dubenko
+ *
+ * @version 1.0.0
+ */
+
 ScriptLoader.load('Overlay');
 
-var ModalBox = window.top.ModalBox || {
-
+/**
+ * Modal box
+ * @namespace
+ */
+var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
+    /**
+     * Array of boxes.
+     * @type {Array}
+     */
     boxes: [],
 
+    /**
+     * Defines whether the ModalBox is initialised or not.
+     * @type {boolean}
+     */
+    initialized: false,
+
+    /**
+     * Initialisation.
+     * @function
+     * @static
+     */
     init: function () {
         Asset.css('modalbox.css');
+        /**
+         * Overlay for the modal box.
+         * @type {Overlay}
+         */
         this.overlay = new Overlay(document.body, {indicator: false});
         this.initialized = true;
     },
+
     /**
+     * Open the modal box.
      *
-     * @param Object options
+     * @function
+     * @static
+     * @param {Object} options Set of options for the modal box.
      */
     open: function (options) {
+        //todo: Private?
         var createIframe = function (mbName, iframeSrc) {
-            var iframe;
-            if (Browser.ie && (Browser.version < 9)) {
-                iframe = $(document.createElement('<iframe class="e-modalbox-frame" src="' + iframeSrc + '" frameBorder="0" name="' + mbName + '" scrolling="no" />'));
-            }
-            else {
-                iframe = new Element('iframe').setProperties(
-                    {
-                        'name': mbName,
-                        'src': iframeSrc,
-                        'frameBorder': '0',
-                        'scrolling': 'no',
-                        'class': 'e-modalbox-frame'
-                    }
-                )
-            }
-            return iframe;
-        }
+            return new Element('iframe').setProperties({
+                'name': mbName,
+                'src': iframeSrc,
+                'frameBorder': '0',
+                'scrolling': 'no',
+                'class': 'e-modalbox-frame'
+            });
+        };
 
+        // todo: I think it would better to make AbstractModalBox class.
         var box = new Element('div').addClass('e-modalbox').inject(document.body);
         box.options = {
             url: null,
-            onClose: function () {
-            },
+            onClose: function () {},
             extraData: null,
             post: null
         };
@@ -60,13 +92,10 @@ var ModalBox = window.top.ModalBox || {
                 postForm.submit();
                 postForm.destroy();
             }
-        }
-        else if (box.options.code) {
-
+        } else if (box.options.code) {
             //box.set('html', code);
             box.grab(box.options.code);
-        }
-        else if (box.options.form) {
+        } else if (box.options.form) {
             /*
              * Тут все очень не просто и требует пояснений
              * Мы создаем пустой iframe в который пишем код формы
@@ -150,13 +179,28 @@ var ModalBox = window.top.ModalBox || {
 
     },
 
+    // todo: This return not the current but the last modal box. Is this right?
+    /**
+     * Get the current modal box.
+     *
+     * @function
+     * @static
+     * @returns {Object}
+     */
     getCurrent: function () {
         if (!this.boxes.length) {
-            return;
+            return null;
         }
         return this.boxes[this.boxes.length - 1];
     },
 
+    /**
+     * Get the extra data.
+     *
+     * @function
+     * @static
+     * @returns {null}
+     */
     getExtraData: function () {
         var result = null;
         if (this.getCurrent()) {
@@ -166,6 +210,13 @@ var ModalBox = window.top.ModalBox || {
         return result;
     },
 
+    /**
+     * Store the return value in the modal box.
+     *
+     * @function
+     * @static
+     * @param {*} value Value that will be stored.
+     */
     setReturnValue: function (value) {
         var result = this.getCurrent();
         if (result) {
@@ -173,10 +224,16 @@ var ModalBox = window.top.ModalBox || {
         }
     },
 
+    /**
+     * Close the modal box.
+     * @function
+     * @static
+     */
     close: function () {
         if (!this.boxes.length) {
             return;
         }
+
         var box = this.boxes.pop();
         box.options.onClose(box.retrieve('returnValue'));
 
@@ -189,8 +246,9 @@ var ModalBox = window.top.ModalBox || {
                 window.parent.document.body.getElement('a').focus();
             }
             box.destroy();
-        }
+        };
 
+        // todo: Do we really need this delay? Without this it seams all works fine.
         destroyBox.delay(1);
 
         if (!this.boxes.length) {
@@ -198,6 +256,10 @@ var ModalBox = window.top.ModalBox || {
         }
     },
 
+    /**
+     * Event handler for events from keyboard.
+     * @param {Object} event Default event object.
+     */
     keyboardListener: function (event) {
         switch (event.key) {
             case 'esc':

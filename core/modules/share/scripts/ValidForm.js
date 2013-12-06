@@ -1,28 +1,71 @@
+/**
+ * @file Contain the description of the next classes:
+ * <ul>
+ *     <li>[ValidForm]{@link ValidForm}</li>
+ * </ul>
+ *
+ * @requires Energine
+ * @requires Validator
+ *
+ * @author Pavel Dubenko
+ *
+ * @version 1.0.0
+ */
+
 ScriptLoader.load('Validator');
 
-var ValidForm = new Class({
-    initialize:function (element) {
+/**
+ * ValidForm
+ *
+ * @constructor
+ * @param {Element|string} element The main element.
+ */
+var ValidForm = new Class(/** @lends ValidForm# */{
+    // constructor
+    initialize: function (element) {
+        /**
+         * The main element.
+         * @type {Element}
+         */
         this.componentElement = $(element);
         if (this.componentElement) {
+            /**
+             * Form element.
+             * @type {Element}
+             */
             this.form = this.componentElement.getParent('form');
             if (this.form) {
+                /**
+                 * Single path.
+                 * @type {string}
+                 */
                 this.singlePath = this.componentElement.getProperty('single_template');
+
                 this.form.addClass('form').addEvent('submit', this.validateForm.bind(this));
+
+                /**
+                 * Validator.
+                 * @type {Validator}
+                 */
                 this.validator = new Validator(this.form);
             }
         }
     },
-    validateForm:function (event) {
-        var result = false;
+
+    /**
+     * Event handler. Validate form.
+     *
+     * @function
+     * @public
+     * @param {Object} event Event.
+     * @returns {boolean} true if the form is valid, otherwise - false.
+     */
+    validateForm: function (event) {
         if (!this.validator.validate()) {
-            this.cancelEvent(event);
+            Energine.cancelEvent(event);
+            return false;
+        } else {
+            return true;
         }
-        else {
-            result = true;
-        }
-        return result;
-    },
-    cancelEvent:function (event) {
-        return Energine.cancelEvent(event);
     }
 });

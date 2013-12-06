@@ -1,0 +1,23 @@
+{
+    "source": {
+        "include": [
+            "README.md",
+            "./"
+        ],
+        "exclude": [
+            "flowplayer.js",
+            "mootools.js",
+            "mootools-debug.js",
+            "mootools-est.js",
+            "mootools-more.js",
+            "mootools-more-debug.js",
+            "Swiff.Uploader.js",
+            "TextboxList.js",
+            "XML.js",
+        ]
+    },
+    "opts": {
+        "private": true,
+        "destination": "../doc/js/"
+    }
+}

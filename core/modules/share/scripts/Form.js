@@ -1,24 +1,135 @@
-ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker');
-var Form = new Class({
+/**
+ * @file Contain the description of the next classes:
+ * <ul>
+ *     <li>[Form]{@link Form}</li>
+ *     <li>[Form.Uploader]{@link Form.Uploader}</li>
+ *     <li>[Form.Sked]{@link Form.Sked}</li>
+ *     <li>[Form.SmapSelector]{@link Form.SmapSelector}</li>
+ *     <li>[Form.AttachmentSelector]{@link Form.AttachmentSelector}</li>
+ *     <li>[Form.Label]{@link Form.Label}</li>
+ *     <li>[Form.RichEditor]{@link Form.RichEditor}</li>
+ * </ul>
+ *
+ * @requires Energine
+ * @requires ckeditor/ckeditor
+ * @requires TabPane
+ * @requires Toolbar
+ * @requires Validator
+ * @requires ModalBox
+ * @requires Overlay
+ * @requires datepicker
+ * @requires Swiff.Uploader
+ *
+ * @author Pavel Dubenko
+ *
+ * @version 1.0.0
+ */
+
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader');
+
+/**
+ * Form.
+ *
+ * @constructor
+ * @param {Element|string} element The form element.
+ */
+var Form = new Class(/** @lends Form# */{
+    /**
+     * @see Energine.request
+     * @deprecated Use Energine.request instead.
+     */
+    request: Energine.request,
+
+    /**
+     * The overlay.
+     * @type {Overlay}
+     */
+    overlay: null,
+
+    /**
+     * Attached toolbar.
+     * @type {Toolbar}
+     */
+    toolbar: null,
+
+    /**
+     * Array of RichEditors.
+     * @type {RichEditor[]}
+     */
+    richEditors: [],
+
+    /**
+     * Array of Uploaders.
+     * @type {Uploader[]}
+     */
+    uploaders: [],
+
+    /**
+     * Array of text boxes.
+     * @type {Array}
+     */
+    textBoxes: [],
+
+    /**
+     * Array of date controls.
+     * @type {Array}
+     */
+    dateControls: [],
+
+    /**
+     * Array of code editors.
+     * @type {CodeMirror[]}
+     */
+    codeEditors: [],
+
+//    smapSelectors: [],
+
+    // constructor
     initialize:function (element) {
         Asset.css('form.css');
+
+        this.overlay = new Overlay();
+
+        /**
+         * The component element.
+         * @type {Element}
+         */
         this.componentElement = $(element);
-        this.overlay = null;
+
+        /**
+         * Value of property 'single_template'.
+         * @type {string}
+         */
         this.singlePath = this.componentElement.getProperty('single_template');
 
+        /**
+         * The main holder element.
+         * @type {Element}
+         */
         this.form = this.componentElement.getParent('form').addClass('form');
+
+        /**
+         * State of the form.
+         * @type {string}
+         */
         this.state = this.form.getElementById('componentAction').get('value');
+
+        /**
+         * Tab panels.
+         * @type {TabPane}
+         */
         this.tabPane = new TabPane(this.componentElement, {
             // onTabChange: this.onTabChange.bind(this)
         });
+
+        /**
+         * The Validator.
+         * @type {Validator}
+         */
         this.validator = new Validator(this.form, this.tabPane);
 
-        this.richEditors = [], this.uploaders = [], this.textBoxes = [], this.dateControls = [], this.codeEditors = []/*, this.smapSelectors = []*/;
-
         this.form.getElements('textarea.richEditor').each(function (textarea) {
-            this.richEditors.push(new Form.RichEditor(textarea, this,
-                this.fallback_ie));
-
+            this.richEditors.push(new Form.RichEditor(textarea, this));
         }, this);
 
         this.form.getElements('textarea.code').each(function (textarea) {
@@ -27,19 +138,20 @@ var Form = new Class({
 
         var showHideFunc = function (e) {
             Energine.cancelEvent(e);
-            var field, el = $(e.target);
-            if (field = el.getParent('.field')) {
-                if(field.hasClass('min'))field.swapClass('min', 'max');
-                else if(el.hasClass('icon_min_max') && field.hasClass('max'))field.swapClass('max', 'min');
+            var el = $(e.target),
+                field = el.getParent('.field');
+
+            if (field) {
+                if(field.hasClass('min')) {
+                    field.swapClass('min', 'max');
+                } else if (el.hasClass('icon_min_max') && field.hasClass('max')) {
+                    field.swapClass('max', 'min');
+                }
             }
         };
+
         this.form.getElements('.field .control.toggle').addEvent('click', showHideFunc);
         this.form.getElements('.icon_min_max').addEvent('click', showHideFunc);
-        /*this.form.getElements('#copy_lang_data a').addEvent('click', function(e){
-            Energine.cancelEvent(e);
-            var a = $(e.target).getProperty('href');
-            //console.log(this.tabPane.getCurrentTab().pane.toQueryString());
-        }.bind(this));*/
 
         this.form.getElements('.smap_selector').each(function (el) {
             new Form.SmapSelector(el, this);
@@ -53,55 +165,51 @@ var Form = new Class({
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
 
-        (this.componentElement.getElements('.inp_date') ||
-            []).append(this.componentElement.getElements('.inp_datetime') ||
-            []).each(function (dateControl) {
-                var isNullable = !dateControl.getParent('.field').hasClass('required');
-                this.dateControls.push(
-                    (dateControl.hasClass('inp_date') ? Energine.createDatePicker(dateControl, isNullable) : Energine.createDateTimePicker(dateControl, isNullable))
-                );
-            }, this);
-        this.buildAttachmentPane();
+        (this.componentElement.getElements('.inp_date')
+            || []).append(this.componentElement.getElements('.inp_datetime')
+                || []).each(function (dateControl) {
+                    var isNullable = !dateControl.getParent('.field').hasClass('required');
+                    this.dateControls.push(
+                        (dateControl.hasClass('inp_date') ? Energine.createDatePicker(dateControl, isNullable)
+                                                          : Energine.createDateTimePicker(dateControl, isNullable))
+                    );
+                }, this);
 
-        /*
-         this.componentElement.getElements('.textbox').each(function(textBox){
-         this.textBoxes.push(new TextboxList2(textBox));
-         }, this);
-         */
         this.componentElement.getElements('.pane').setStyles({
             'border':'1px dotted #777',
             'overflow':'auto'
         });
 
         /*Checking if opened in modalbox*/
-        var mb;
-        if((mb = window.parent.ModalBox) && mb.initialized && mb.getCurrent()){
-            document.body.addEvent('keypress', function(evt){
+        var mb = window.parent.ModalBox;
+        if(mb && mb.initialized && mb.getCurrent()){
+            $(document.body).addEvent('keypress', function(evt){
                 if(evt.key=='esc'){
                     mb.close();
                 }
             });
         }
     },
-    buildAttachmentPane:function () {
-        if (this.componentElement.getElementById('attached_files')) {
-            (function () {
-                new Form.AttachmentPane(this)
-            }).delay(300, this);
-        }
-    },
+
+    /**
+     * Attach the toolbar.
+     *
+     * @function
+     * @public
+     * @param {Toolbar} toolbar Toolbar that will be attached.
+     */
     attachToolbar:function (toolbar) {
         this.toolbar = toolbar;
-        var toolbarContainer = this.componentElement.getElement('.e-pane-b-toolbar');
+        var toolbarContainer = this.componentElement.getElement('.e-pane-b-toolbar'),
+            afterSaveActionSelect  = this.toolbar.getControlById('after_save_action');
+
         if (toolbarContainer) {
             toolbarContainer.adopt(this.toolbar.getElement());
-        }
-        else {
+        } else {
             this.componentElement.adopt(this.toolbar.getElement());
         }
-        var afterSaveActionSelect;
-        if (afterSaveActionSelect =
-            this.toolbar.getControlById('after_save_action')) {
+
+        if (afterSaveActionSelect) {
             var savedActionState = Cookie.read('after_add_default_action');
             if (savedActionState) {
                 afterSaveActionSelect.setSelected(savedActionState);
@@ -109,6 +217,23 @@ var Form = new Class({
         }
         toolbar.bindTo(this);
     },
+
+    /**
+     * Build the URL for saving.
+     *
+     * @function
+     * @public
+     * @return {string}
+     */
+    buildSaveURL: function() {
+        return this.singlePath + 'save';
+    },
+
+    /**
+     * Save all in the form.
+     * @function
+     * @public
+     */
     save:function () {
         this.richEditors.each(function (editor) {
             editor.onSaveForm();
@@ -118,34 +243,66 @@ var Form = new Class({
         });
 
         if (!this.validator.validate()) {
-            return false;
+            return;
         }
-        this._getOverlay().show();
 
-        var errorFunc = function (responseText) {
-            this._getOverlay().hide();
-        }.bind(this);
+        this.overlay.show();
 
-        this.request(this.singlePath +
-            'save', this.form.toQueryString(), this.processServerResponse.bind(this), errorFunc, errorFunc);
+        Energine.request(
+            this.buildSaveURL(),
+            this.form.toQueryString(),
+            this.processServerResponse.bind(this),
+            this.processServerError.bind(this),
+            this.processServerError.bind(this)
+        );
     },
-    _getOverlay:function () {
-        return (!this.overlay) ? this.overlay = new Overlay() : this.overlay;
-    },
+
+    /**
+     * Callback function by successful server response.
+     *
+     * @function
+     * @public
+     * @param {Object} response Result data from the server.
+     */
     processServerResponse:function (response) {
         var nextActionSelector;
-        if (response && (nextActionSelector =
-            this.toolbar.getControlById('after_save_action'))) {
+        if (response && (nextActionSelector = this.toolbar.getControlById('after_save_action'))) {
             Cookie.write('after_add_default_action', nextActionSelector.getValue(), {path:new URI(Energine.base).get('directory'), duration:1});
             response.afterClose = nextActionSelector.getValue();
         }
         ModalBox.setReturnValue(response);
-        this._getOverlay().hide();
+        this.overlay.hide();
         this.close();
     },
+
+    /**
+     * Callback function by server error.
+     *
+     * @function
+     * @public
+     * @param {Object} response Result data from the server.
+     */
+    processServerError: function(response) {
+        this.overlay.hide();
+    },
+
+    /**
+     * Close the form.
+     * @function
+     * @public
+     */
     close:function () {
         ModalBox.close();
     },
+
+    /**
+     * Clear the file field.
+     *
+     * @function
+     * @public
+     * @param {string|number} fieldId
+     * @param {} lnk
+     */
     clearFileField:function (fieldId, lnk) {
         var preview;
         this.form.getElementById(fieldId).set('value', '');
@@ -155,37 +312,57 @@ var Form = new Class({
         lnk.hide();
     },
 
+    /**
+     * Process file result.
+     *
+     * @function
+     * @public
+     * @param {Object} result
+     * @param {Element|string} button Button element.
+     */
     processFileResult: function(result, button) {
-        var image, btnDF;
-        if (result) {
+        var image;
 
-            button = $(button);
-            $(button.getProperty('link')).value = result['upl_path'];
+        if (!result) {
+            return;
+        }
 
-            image = ($(button.getProperty('preview')).get('tag') == 'img')
-                ? $(button.getProperty('preview'))
-                : $(button.getProperty('preview')).getElement('img');
-            if (image) {
-                var src;
-                if (result['upl_internal_type'] == 'image') {
+        button = $(button);
+        $(button.getProperty('link')).value = result['upl_path'];
+
+        image = ($(button.getProperty('preview')).get('tag') == 'img')
+            ? $(button.getProperty('preview'))
+            : $(button.getProperty('preview')).getElement('img');
+
+        if (image) {
+            var src;
+            switch (result['upl_internal_type']) {
+                case 'image':
                     src = Energine.media + result['upl_path'];
-                }
-                else if (result['upl_internal_type'] == 'video') {
+                    break;
+                case 'video':
                     src = Energine.resizer + 'w0-h0/' + result['upl_path'];
-                }
-                else {
+                    break;
+                default:
                     src = Energine['static'] + 'images/icons/icon_undefined.gif';
-                }
+            }
 
-                image.setProperty('src', src);
-                $(button.getProperty('preview')).setProperty('href', Energine.media + result['upl_path']).show();
-            }
-            if (button.getNext('.lnk_clear')) {
-                button.getNext('.lnk_clear').show('inline');
-            }
+            image.setProperty('src', src);
+            $(button.getProperty('preview')).setProperty('href', Energine.media + result['upl_path']).show();
+        }
+
+        if (button.getNext('.lnk_clear')) {
+            button.getNext('.lnk_clear').show('inline');
         }
     },
 
+    /**
+     * Open the file library.
+     *
+     * @function
+     * @public
+     * @param {Element|string} button Button element.
+     */
     openFileLib:function (button) {
         var path = $($(button).getProperty('link')).get('value');
         if (path == '') {
@@ -200,12 +377,19 @@ var Form = new Class({
         });
     },
 
+    /**
+     * Open the tag editor.
+     *
+     * @function
+     * @public
+     * @param {Element|string} button Button element.
+     */
     openTagEditor: function (button) {
         var tags = $($(button).getProperty('link')).get('value');
         if (tags == '') {
             tags = null;
         }
-        var overlay = this._getOverlay();
+        var overlay = this.overlay;
         overlay.show();
         new Request.JSON({
             'url': this.singlePath + 'tags/get-tag-ids/',
@@ -235,6 +419,13 @@ var Form = new Class({
         }).send();
     },
 
+    /**
+     * Open th equick upload window.
+     *
+     * @function
+     * @public
+     * @param {Element|string} button Button element.
+     */
     openQuickUpload:function (button) {
         var path = $($(button).getProperty('link')).get('value');
         if (path == '') {
@@ -243,7 +434,7 @@ var Form = new Class({
         var quick_upload_path = $(button).getProperty('quick_upload_path');
         var quick_upload_pid = $(button).getProperty('quick_upload_pid');
         var quick_upload_enabled = $(button).getProperty('quick_upload_enabled');
-        var overlay = this._getOverlay();
+        var overlay = this.overlay;
         var processResult = this.processFileResult;
 
         if (!quick_upload_enabled) return;
@@ -284,14 +475,41 @@ var Form = new Class({
         });
     }
 });
-Form.implement(Energine.request);
-Form.Uploader = new Class({
+
+/**
+ * File uploader.
+ *
+ * @constructor
+ * @param uploaderElement
+ * @param form
+ * @param path
+ */
+Form.Uploader = new Class(/** @lends Form.Uploader# */{
+    // constructor
     initialize:function (uploaderElement, form, path) {
-        if (!(this.element = $(uploaderElement))) return;
+        /**
+         * The main uploader element.
+         * @type {Element}
+         */
+        this.element = $(uploaderElement);
+        if (!this.element) {
+            return;
+        }
+
         /*var cookieKeys = /(\w+)=(\w+);/i;
          console.log(cookieKeys.exec(document.cookie), document.cookie);
          //console.log(document.cookie.split(';').map(function(cook){console.log(cook); return 1;}));*/
+
+        /**
+         * The form.
+         * @type {Form}
+         */
         this.form = form;
+
+        /**
+         * swf uploader.
+         * @type {Swiff.Uploader}
+         */
         this.swfUploader = new Swiff.Uploader({
             path:'scripts/Swiff.Uploader.swf',
             url:this.form.singlePath + path + '?json',
@@ -324,12 +542,35 @@ Form.Uploader = new Class({
             onSelectFail:this.handleError.bind(this)
         });
     },
+
+    /**
+     * Callback function after upload.
+     *
+     * @function
+     * @public
+     * @param {} uploadInfo
+     */
     afterUpload:function (uploadInfo) {
         this._show_preview(uploadInfo);
     },
+
+    /**
+     * Callback function for error handling.
+     * @function
+     * @public
+     */
     handleError:function () {
         this.form.validator.showError(this.element, 'При загрузке файла произошла ошибка');
     },
+
+    // todo: make private.
+    /**
+     * Show the preview.
+     *
+     * @function
+     * @private
+     * @param file
+     */
     _show_preview:function (file) {
         if (!file.response.error) {
             var data = JSON.decode(file.response.text, true);
@@ -352,6 +593,15 @@ Form.Uploader = new Class({
     },
 
     //todo Сделать удаление файла
+    // todo: The argument 'control' is not used. Delete him? - leave
+    /**
+     * Remove the file preview.
+     *
+     * @function
+     * @public
+     * @param {string} fieldId Field identifier.
+     * @param {} control
+     */
     removeFilePreview:function (fieldId, control) {
         var tmpNode;
         $(fieldId).value = '';
@@ -363,144 +613,72 @@ Form.Uploader = new Class({
         if (tmpNode = $(fieldId + '_link')) {
             tmpNode.set('html', '');
         }
-        return false;
-    }
-});
-Form.Sked = new Class({
-    Implements:Options,
-    options:{
-        handlers:{
-            'delete':this.delItem,
-            'add': function(){}/*,
-             'iterate': this._iterate*/
-        },
-        tableName:'items',
-        pk:'target'
-    },
-    initialize:function (element, options) {
-        this.setOptions(options);
-        this.element = $(element);
-        this.element.getElementById('add_item').addEvent('click', function (event) {
-            Energine.cancelEvent(event);
-            this.options.handlers.add();
-        }.bind(this));
-        this.element.getElements('.deleteItem').addEvent('click', function (event) {
-            Energine.cancelEvent(event);
-            this.options.deleteFunc.call($(event.target).getProperty('target'));
-        }.bind(this));
-        this.element.getElements('.upItem').addEvent('click', function (event) {
-            Energine.cancelEvent(event);
-            this.upItem($(event.target).getProperty('target'));
-        }.bind(this));
-        this.element.getElements('.downItem').addEvent('click', function (event) {
-            Energine.cancelEvent(event);
-            this.downItem($(event.target).getProperty('target'));
-        }.bind(this));
-
-    },
-    upItem:function (id) {
-        this._moveItem(id, 'up');
-    },
-    downItem:function (id) {
-        this._moveItem(id, 'down');
-    },
-    _moveItem:function (id, direction) {
-        var currentRow, changeRow, position;
-        if (currentRow = $('row_' + id)) {
-
-            if (direction == 'up') {
-                changeRow = currentRow.getPrevious();
-                position = 'before';
-            }
-            else {
-                changeRow = currentRow.getNext();
-                position = 'after';
-            }
-
-            if (changeRow) {
-                currentRow.inject(changeRow, position);
-            }
-        }
-        this._zebraRows();
-    },
-    _zebraRows:function () {
-        this.element.getElements('tbody tr').removeClass('even');
-        this.element.getElements('tbody tr:even').addClass('even');
-    },
-    insertItem:function (data) {
-        var emptyRow, pk = this.options.pk, tr = new Element('tr');
-        if (emptyRow = $('empty_row')) emptyRow.dispose();
-        if (!$('row_' + data[pk])) {
-            tr.setProperty('id', 'row_' + data[pk]);
-            $H(data).each(function (value, key) {
-                tr.grab(((key == pk) ? this._buildPKColumn(value) : this._buildColumn(value)));
-            }.bind(this));
-            this.element.getElement('tbody').grab(tr);
-            this._zebraRows();
-        }
-    },
-    _buildPKColumn:function (pkValue) {
-        return new Element('td').adopt([
-            new Element('button',
-                {'type':'button', 'events':{'click':function (event) {
-                    this.delItem(pkValue);
-                }.bind(this)
-                }
-                }).set('text', Energine.translations.get('BTN_DEL_ITEM')),
-            new Element('button',
-                {'type':'button', 'events':{'click':function (event) {
-                    this.upItem(pkValue);
-                }.bind(this)
-                }
-                }).set('text', Energine.translations.get('BTN_UP')),
-            new Element('button',
-                {'type':'button', 'events':{'click':function (event) {
-                    this.downItem(pkValue);
-                }.bind(this)
-                }
-                }).set('text', Energine.translations.get('BTN_DOWN')),
-            new Element('input', {'name':this.options.tableName + '[' +
-                this.options.pk +
-                '][]', 'type':'hidden', 'value':pkValue})
-        ]);
-    },
-    _buildColumn:function (value) {
-        return new Element('td').set('html', value)
-    },
-    delItem:function (id) {
-        $('row_' + id).dispose();
-        if (this.element.getElement('tbody').getChildren().length ==
-            0) {
-            this.element.getElement('tbody').adopt(
-                new Element('tr', {'id':'empty_row'}).adopt(
-                    new Element('td', {'colspan':'3'}).set('html', Energine.translations.get('MSG_NO_ITEMS'))
-                )
-            );
-        }
-        this._zebraRows();
     }
 });
 
-Form.SmapSelector = new Class({
+/**
+ * The smap (parent ID selector) selector.
+ *
+ * @constructor
+ * @param {string|Element} selector The element id.
+ * @param {Form} form The form.
+ */
+Form.SmapSelector = new Class(/** @lends Form.SmapSelector# */{
+    /**
+     * The properties of the smap.
+     * @type {Object}
+     *
+     * @property {string} id The identifier.
+     * @property {string} name The name.
+     */
+    smap: {
+        id: '',
+        name: ''
+    },
+
+    // constructor
     initialize:function (selector, form) {
         var selector = $(selector);
+
+        /**
+         * The form.
+         * @type {Form}
+         */
         this.form = form;
+
+        /**
+         * The value of the property 'field' from the stltctor by initialising.
+         * @type {string}
+         */
         this.field = selector.getProperty('field');
 
         selector.addEvent('click', function (e) {
             Energine.cancelEvent(e);
-            this.smapName = $($(e.target).getProperty('smap_name'));
-            this.smapId = $($(e.target).getProperty('smap_id'));
+            this.smap.id = $($(e.target).getProperty('smap_id'));
+            this.smap.name = $($(e.target).getProperty('smap_name'));
             this.showSelector.apply(this);
         }.bind(this));
     },
 
+    /**
+     * Show the selector.
+     * @function
+     * @public
+     */
     showSelector:function () {
         ModalBox.open({
             url:this.form.componentElement.getProperty('template') + 'selector/',
             onClose:this.setName.bind(this)
         });
     },
+
+    /**
+     * Set the name and ID of the smap.
+     *
+     * @function
+     * @public
+     * @param {} result
+     */
     setName:function (result) {
         if (result) {
             var name = '';
@@ -508,57 +686,102 @@ Form.SmapSelector = new Class({
                 name += result.site_name + ' : ';
             }
             name += result.smap_name;
-            this.smapName.set('value', name);
-            this.smapId.set('value', result.smap_id);
+            this.smap.name.set('value', name);
+            this.smap.id.set('value', result.smap_id);
         }
 
     }
 });
 
-Form.AttachmentSelector = new Class({
+/**
+ * AttachmentSelector.
+ *
+ * @constructor
+ * @param {string|Element} selector The element id.
+ * @param {Form} form The form.
+ */
+Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
+    // constructor
     initialize:function (selector, form) {
-        var selector = $(selector);
+        selector = $(selector);
         this.form = form;
         this.field = selector.getProperty('field');
 
         selector.addEvent('click', function (e) {
             Energine.cancelEvent(e);
+            /**
+             * Upload name.
+             * @type {string}
+             */
             this.uplName = $($(e.target).getProperty('upl_name'));
+            /**
+             * Upload ID.
+             * @type {string|number}
+             */
             this.uplId = $($(e.target).getProperty('upl_id'));
             this.showSelector.apply(this);
         }.bind(this));
     },
 
+    /**
+     * Show the selector.
+     * @function
+     * @public
+     */
     showSelector:function () {
         ModalBox.open({
             url:this.form.componentElement.getProperty('template') + 'file-library/',
             onClose:this.setName.bind(this)
         });
     },
+
+    /**
+     * Set the name and ID of the smap.
+     *
+     * @function
+     * @public
+     * @param {} result
+     */
     setName:function (result) {
         if (result) {
             this.uplName.set('value', result.upl_path);
             this.uplId.set('value', result.upl_id);
         }
-
     }
 });
 
 // Предназначен для последующей имплементации
 // Содержит метод setLabel использующийся для привязки кнопки выбора разделов
-Form.Label = {
+/**
+ * Contain the methods that will be implemented in other classes.
+ *
+ * @namespace
+ */
+Form.Label = /** @lends Form.Label */{
+    /**
+     * Set the label.
+     *
+     * @function
+     * @static
+     * @param {} result The server result.
+     */
     setLabel:function (result) {
         var id = name = segment = segmentObject = '';
+
         if (typeOf(result) != 'null') {
             if (result) {
                 id = result.smap_id;
                 name = result.smap_name;
                 segment = result.smap_segment;
             }
+
             $(this.obj.getProperty('hidden_field')).value = id;
             $(this.obj.getProperty('span_field')).innerHTML = name;
-            if (segmentObject = $('smap_pid_segment'))
+
+            if (segmentObject = $('smap_pid_segment')) {
                 segmentObject.innerHTML = segment;
+            }
+
             Cookie.write(
                 'last_selected_smap',
                 JSON.encode({'id':id, 'name':name, 'segment':segment}),
@@ -566,64 +789,119 @@ Form.Label = {
             );
         }
     },
+
+    /**
+     * Prepare the label.
+     *
+     * @function
+     * @static
+     * @param {string} treeURL The URL of the tree.
+     * @param {boolean|*} restore
+     */
     prepareLabel:function (treeURL, restore) {
         if (!arguments[1]) {
             restore = false;
         }
-        if (this.obj = $('sitemap_selector')) {
+
+        /**
+         * Sitemap selector element.
+         * @type {Element}
+         */
+        this.obj = $('sitemap_selector');
+        if (this.obj) {
             this.obj.addEvent('click', this.showTree.pass(treeURL, this));
             if (restore) {
                 this.restoreLabel();
             }
         }
     },
+
+    /**
+     * Show the tree.
+     *
+     * @function
+     * @static
+     * @param {string} url The URL.
+     */
     showTree:function (url) {
         ModalBox.open({
             url:this.singlePath + url,
             onClose:this.setLabel.bind(this)
         });
     },
+
+    /**
+     * Restore the label.
+     * @function
+     * @static
+     */
     restoreLabel:function () {
         var savedData = Cookie.read('last_selected_smap');
         if (this.obj && savedData) {
             savedData = JSON.decode(savedData);
+
             $(this.obj.getProperty('hidden_field')).value = savedData.id;
             $(this.obj.getProperty('span_field')).innerHTML = savedData.name;
-            if (segmentObject = $('smap_pid_segment'))
+
+            var segmentObject = $('smap_pid_segment');
+            if (segmentObject) {
                 segmentObject.innerHTML = savedData.segment;
+            }
         }
     }
 }
 
-Form.RichEditor = new Class({
+/**
+ * The rich editor form.
+ *
+ * @constructor
+ * @param {} textarea
+ * @param {Form} form
+ * @param {} fallback_ie
+ */
+Form.RichEditor = new Class(/** @lends Form.RichEditor# */{
 
+    /**
+     * @type {}
+     */
     area: null,
 
-    initialize:function (textarea, form, fallback_ie) {
+    /**
+     * Editor.
+     * @type {CKEDITOR}
+     */
+    editor: null,
+
+    // constructor
+    initialize:function (textarea, form) {
 
         this.setupEditors();
 
+        /**
+         * The text area element.
+         * @type {Element}
+         */
         this.textarea = $(textarea);
+
+        /**
+         * The main form.
+         * @type {Form}
+         */
         this.form = form;
         try {
             this.editor = CKEDITOR.replace(this.textarea.get('id'));
             this.editor.editorId = this.textarea.get('id');
             this.editor.singleTemplate = this.form.singlePath;
         } catch (e) {
+            console.warn(e);
         }
-
-        /*if (Energine.supportContentEdit && !this.fallback_ie) {
-            this.hidden = new Element('input', {'name': this.textarea.name, 'value': this.textarea.get('value'), 'type': 'hidden', 'class': 'richEditorValue'}).injectBefore(this.textarea);
-
-        var prop;
-        if (prop = this.textarea.getProperty('nrgn:pattern')) {
-            this.hidden.setProperty('nrgn:pattern', prop);
-        }
-        if (prop = this.textarea.getProperty('nrgn:message')) {
-            this.hidden.setProperty('nrgn:message', prop);
-        }*/
     },
 
+    /**
+     * Setup the editors.
+     * @function
+     * @public
+     */
     setupEditors: function() {
         if (!Form.RichEditor.ckeditor_init) {
             CKEDITOR.config.extraPlugins = 'energineimage,energinefile';
@@ -657,13 +935,18 @@ Form.RichEditor = new Class({
         }
     },
 
+    /**
+     * Save the form.
+     * @function
+     * @public
+     */
     onSaveForm:function () {
         try {
             var data = this.editor.getData();
             this.textarea.value = data;
         } catch (e) {
+            console.warn(e);
         }
     }
-
 });
 

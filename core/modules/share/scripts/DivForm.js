@@ -1,9 +1,40 @@
+/**
+ * @file Contain the description of the next classes:
+ * <ul>
+ *     <li>[DivForm]{@link DivForm}</li>
+ * </ul>
+ *
+ * @requires Form
+ * @requires ModalBox
+ *
+ * @author Pavel Dubenko, Valerii Zinchenko
+ *
+ * @version 1.0.0
+ */
+
 ScriptLoader.load('Form', 'ModalBox');
+
+/**
+ * DivForm.
+ *
+ * @augments Form
+ *
+ * @borrows Form.Label.setLabel as DivForm#setLabel
+ * @borrows Form.Label.prepareLabel as DivForm#prepareLabel
+ * @borrows Form.Label.restoreLabel as DivForm#restoreLabel
+ * @borrows Form.Label.showTree as DivForm#showTree
+ *
+ * @constructor
+ * @param {Element|string} element The form element.
+ */
 var DivForm = new Class({
     Extends: Form,
+
+    // constructor
     initialize: function (element) {
         this.parent(element);
         this.prepareLabel($('site_id').get('value') + '/list/');
+
         var contentSelector = this.componentElement.getElementById('smap_content'),
             layoutSelector = this.componentElement.getElementById('smap_layout'),
             segmentInput = this.componentElement.getElementById('smap_segment'),
@@ -11,10 +42,13 @@ var DivForm = new Class({
 
         //чтоб ради одного вызова не биндится на this
         var t = this;
+
         contentFunc = function () {
             var segment, layout;
+
             if (segmentInput) {
                 if (segment = contentSelector.getSelected()[0].getProperty('data-segment')) {
+                (segment)
                     segmentInput.setProperty('readOnly', 'readOnly');
                     segmentInput.set('value', segment);
                 }
@@ -32,6 +66,12 @@ var DivForm = new Class({
         };
         contentSelector.addEvent('change', contentFunc);
     },
+
+    /**
+     * Reset the page content template.
+     * @function
+     * @public
+     */
     resetPageContentTemplate: function () {
         this.request(
             this.singlePath + 'reset-templates/' + this.componentElement.getElementById('smap_id').get('value') + '/',
@@ -41,12 +81,19 @@ var DivForm = new Class({
                     var select = this.componentElement.getElementById('smap_content'),
                         option = select.getChildren()[select.selectedIndex],
                         optionText = option.get('text');
+
                     option.set('text', optionText.substring(0, optionText.lastIndexOf('-')));
                     this.clearContentXML();
                 }
             }.bind(this)
         )
     },
+
+    /**
+     * Clear XML content.
+     * @function
+     * @public
+     */
     clearContentXML: function () {
         if (this.codeEditors.length) {
             //Тут мы перполагаем что на форме только одно поле типа код... Пока что это так
@@ -54,6 +101,12 @@ var DivForm = new Class({
             this.codeEditors[0].getInputField().getParent('div.field').addClass('hidden');
         }
     },
+
+    /**
+     * Overridden parent [save]{@link Form#save} action.
+     * @function
+     * @public
+     */
     save: function () {
         this.richEditors.each(function (editor) {
             editor.onSaveForm();

@@ -55,7 +55,7 @@ final class DBStructureInfo extends Object {
      */
     private function collectDBInfo() {
         $result = array();
-        $res = $this->pdo->query('SHOW TABLES');
+        $res = $this->pdo->query('/*ms=slave*/SHOW TABLES');
         if ($res) {
             while ($tableName = $res->fetchColumn()) {
                 $result[$tableName] = $this->getTableMeta($tableName);
@@ -80,10 +80,10 @@ final class DBStructureInfo extends Object {
 
             $FQTableName = DBA::getFQTableName($tableName, true);
 
-            $query = 'SHOW TABLES '.((sizeof($FQTableName) == 2)?' FROM `'.reset($FQTableName).'` ':'').' LIKE \''.end($FQTableName).'\'';
+            $query = '/*ms=slave*/SHOW TABLES '.((sizeof($FQTableName) == 2)?' FROM `'.reset($FQTableName).'` ':'').' LIKE \''.end($FQTableName).'\'';
 
             //если существует в списке таблиц
-            if ($this->pdo->query($query)->rowCount()) {
+            if ($this->pdo->query($query) && $this->pdo->query($query)->rowCount()) {
                 $result = true;
                 $this->structure[$tableName] = array();
             }
@@ -117,7 +117,7 @@ final class DBStructureInfo extends Object {
     }
     //@todo спрятать внутрь analyzeTable
     private function analyzeView($viewName){
-        if(!($res = $this->pdo->query('SHOW COLUMNS FROM `'.$viewName.'`')->fetchAll(PDO::FETCH_ASSOC))) return false;
+        if(!($res = $this->pdo->query('/*ms=slave*/SHOW COLUMNS FROM `'.$viewName.'`')->fetchAll(PDO::FETCH_ASSOC))) return false;
         //Считаем что первое поле - PK
 
         $result = array();
@@ -146,7 +146,7 @@ final class DBStructureInfo extends Object {
      */
     private function analyzeTable($tableName) {
         $dTableName = DBA::getFQTableName($tableName, true);
-        $query = 'SHOW CREATE TABLE '.implode('.', $dTableName);
+        $query = '/*ms=slave*/SHOW CREATE TABLE '.implode('.', $dTableName);
 
         $dbName = '';
         if(sizeof($dTableName) == 2){

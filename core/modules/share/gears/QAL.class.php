@@ -430,7 +430,7 @@ final class QAL extends DBA {
         if (!is_string($query) || strlen($query) == 0) {
             return null;
         }
-        $res = $this->pdo->query($this->lastQuery = $query);
+        $res = $this->pdo->query('/*ms=slave*/'.($this->lastQuery = $query));
         if ($res instanceof PDOStatement) {
             return $res->fetchColumn();
         }
@@ -462,7 +462,7 @@ final class QAL extends DBA {
         if (!is_string($query) || strlen($query) == 0) {
             return array();
         }
-        $res = $this->pdo->query($this->lastQuery = $query);
+        $res = $this->pdo->query('/*ms=slave*/'.($this->lastQuery = $query));
         $result = array();
         if ($res instanceof PDOStatement) {
             while ($row = $res->fetch(PDO::FETCH_NUM)) {

@@ -184,7 +184,7 @@ abstract class DBA extends Object {
 
         $query = $this->constructQuery(func_get_args());
         $this->lastQuery = $query;
-        $res = $this->pdo->query($query);
+        $res = $this->pdo->query('/*ms=slave*/'.$query);
 
         if (!($res instanceof PDOStatement)) {
             $errorInfo = $this->pdo->errorInfo();
@@ -283,7 +283,7 @@ abstract class DBA extends Object {
 
         $query = $this->constructQuery(func_get_args());
         $this->lastQuery = $query;
-        $res = $this->pdo->query($query);
+        $res = $this->pdo->query('/*ms=slave*/'.$query);
         if ($res instanceof PDOStatement) {
             return $res;
         }

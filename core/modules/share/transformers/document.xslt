@@ -44,6 +44,7 @@
                 <xsl:if test="$DOC_PROPS[@name='robots']!=''">
                     <meta name="robots" content="{$DOC_PROPS[@name='robots']}"/>
                 </xsl:if>
+                <xsl:apply-templates select="/" mode="og"/>
                 <xsl:choose>
                     <xsl:when test="document/@debug=1">
                         <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-debug.js"></script>
@@ -75,6 +76,7 @@
                 <xsl:apply-templates select="/document//javascript/variable" mode="head"/>
 
                 <xsl:apply-templates select="/document/javascript/library" mode="head"/>
+
 
                 <xsl:call-template name="scripts"/>
 
@@ -195,8 +197,17 @@
 
     <xsl:template match="/" mode="scripts">
         <xsl:if test="not($DOC_PROPS[@name='single'])"><!-- User JS is here--></xsl:if>
+
     </xsl:template>
 
+    <xsl:template match="/" mode="og">
+        <xsl:for-each select="document/og/property">
+            <meta property="og:{@name}" content="{.}" />
+        </xsl:for-each>
+        <xsl:if test="document/og/property[@name='image']">
+            <link rel="image_src" href="{document/og/property[@name='image']}" />
+        </xsl:if>
+    </xsl:template>
 
     <xsl:template match="/" mode="head">
         <xsl:apply-templates select="." mode="title"/>
@@ -221,6 +232,7 @@
         <xsl:if test="$DOC_PROPS[@name='robots']!=''">
             <meta name="robots" content="{$DOC_PROPS[@name='robots']}"/>
         </xsl:if>
+        <xsl:apply-templates select="." mode="og"/>
         <xsl:choose>
             <xsl:when test="document/@debug=1">
                 <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-debug.js"></script>

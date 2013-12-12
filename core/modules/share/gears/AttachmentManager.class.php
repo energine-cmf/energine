@@ -48,6 +48,7 @@ class AttachmentManager extends DBWorker {
      * @var FieldDescription
      */
     private $pk;
+    private $addOG;
 
     /**
      * Проверяет активность объекта
@@ -56,12 +57,14 @@ class AttachmentManager extends DBWorker {
      * @param DataDescription $dataDescription
      * @param Data $data
      * @param $tableName имя основной таблицы
+     * @param $addToOG флаг - показывающий нужно ли генерить теги image для OG
      */
-    public function __construct(DataDescription $dataDescription, Data $data, $tableName) {
+    public function __construct(DataDescription $dataDescription, Data $data, $tableName, $addToOG = false) {
         parent::__construct();
         if ($this->isActive = $this->dbh->tableExists($this->tableName = $tableName . self::ATTACH_TABLE_SUFFIX)) {
             $this->dataDescription = $dataDescription;
             $this->data = $data;
+            $this->addOG = $addToOG;
 
             foreach ($this->dataDescription as $fd) {
                 if ($fd->getPropertyValue('key')) {
@@ -215,12 +218,15 @@ class AttachmentManager extends DBWorker {
 
                     for ($i = 0; $i < sizeof($mapValue); $i++) {
                         if (isset($imageData[$mapValue[$i]])) {
-                            $builder = new SimpleBuilder();
-                            $localData = new Data();
-                            if (isset($imageData[$mapValue[$i]])) {
-                                $localData->load($imageData[$mapValue[$i]]);
+                            if($this->addOG){
+                                foreach($imageData[$mapValue[$i]] as $row){
+                                    E()->getOGObject()->addImage($row['file']);
+                                }
                             }
 
+                            $builder = new SimpleBuilder();
+                            $localData = new Data();
+                            $localData->load($imageData[$mapValue[$i]]);
                             $dataDescription = new DataDescription();
                             $fd = new FieldDescription('id');
                             $dataDescription->addFieldDescription($fd);

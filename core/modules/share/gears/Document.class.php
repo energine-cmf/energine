@@ -105,10 +105,7 @@ final class Document extends DBWorker implements IDocument {
     private $translations = array();
 
     /**
-     * Конструктор класса.
      *
-     * @access public
-     * @return void
      */
     public function __construct() {
         parent::__construct();
@@ -167,7 +164,7 @@ final class Document extends DBWorker implements IDocument {
                 $this->setProperty('google_verify', $verifyCode);
             }
             if (($analyticsCode = $currentSite->gaCode) || (($analyticsCode = $this->getConfigValue('google.analytics')) &&
-                !empty($analyticsCode))
+                    !empty($analyticsCode))
             ) {
                 $this->setProperty('google_analytics', $analyticsCode);
             }
@@ -235,7 +232,7 @@ final class Document extends DBWorker implements IDocument {
         $prop->setAttribute('media', (($mediaURL =
             $this->getConfigValue('site.media')) ? $mediaURL : $baseURL));
         $prop->setAttribute('resizer', (($resizerURL =
-            $this->getConfigValue('site.resizer')) ? $resizerURL : (E()->getSiteManager()->getDefaultSite()->base.'resizer/')));
+            $this->getConfigValue('site.resizer')) ? $resizerURL : (E()->getSiteManager()->getDefaultSite()->base . 'resizer/')));
         $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
         $prop->setAttribute('default', E()->getSiteManager()->getDefaultSite()->base);
         $dom_documentProperties->appendChild($prop);
@@ -247,17 +244,25 @@ final class Document extends DBWorker implements IDocument {
         $prop->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($this->getLang()));
         $dom_documentProperties->appendChild($prop);
 
-        if(($docVars = $this->getConfigValue('site.vars')) && is_array($docVars)){
+        if (($docVars = $this->getConfigValue('site.vars')) && is_array($docVars)) {
             $dom_documentVars = $this->doc->createElement('variables');
-            foreach($docVars as $varName=>$varValue){
+            foreach ($docVars as $varName => $varValue) {
                 $var = $this->doc->createElement('var', $varValue);
                 $var->setAttribute('name', strtoupper($varName));
                 $dom_documentVars->appendChild($var);
             }
             $dom_root->appendChild($dom_documentVars);
         }
+        if ($og = E()->getOGObject()->build()) {
+            $dom_root->appendChild($this->doc->importNode(
+                $og,
+                true
+            ));
 
-        unset($prop, $staticURL, $baseURL);
+        }
+
+
+        unset($prop, $staticURL, $baseURL, $og);
 
         foreach ($this->componentManager as $component) {
             $componentResult = false;
@@ -319,18 +324,18 @@ final class Document extends DBWorker implements IDocument {
             $nl = $xpath->query('//javascript/behavior');
 
             if ($nl->length) {
-                foreach($nl as $node) {
+                foreach ($nl as $node) {
                     $cls_path = $node->getAttribute('path');
                     if ($cls_path && substr($cls_path, -1) != '/') {
                         $cls_path .= '/';
                     }
-                    $cls = (($cls_path) ? $cls_path : '' ) . $node->getAttribute('name');
+                    $cls = (($cls_path) ? $cls_path : '') . $node->getAttribute('name');
                     $this->createJavascriptDependencies(array($cls), $jsmap, $js_includes);
                 }
             }
 
             $dom_javascript = $this->doc->createElement('javascript');
-            foreach($js_includes as $js) {
+            foreach ($js_includes as $js) {
                 $dom_js_library = $this->doc->createElement('library');
                 $dom_js_library->setAttribute('path', $js);
                 $dom_javascript->appendChild($dom_js_library);
@@ -348,7 +353,7 @@ final class Document extends DBWorker implements IDocument {
      */
     protected function createJavascriptDependencies($dependencies, $jsmap, &$js_includes) {
         if ($dependencies) {
-            foreach($dependencies as $dep) {
+            foreach ($dependencies as $dep) {
                 if (isset($jsmap[$dep]))
                     $this->createJavascriptDependencies($jsmap[$dep], $jsmap, $js_includes);
 
@@ -444,7 +449,7 @@ final class Document extends DBWorker implements IDocument {
                      ) as $XML) {
                 $this->componentManager->add(
                     ComponentManager::createBlockFromDescription($XML, array('file' => ($XML == $contentXML)
-                        ? $contentFile : $layoutFile))
+                            ? $contentFile : $layoutFile))
                 );
 
             }
@@ -455,7 +460,7 @@ final class Document extends DBWorker implements IDocument {
             */
             $this->componentManager->add($this->componentManager->createComponent('breadCrumbs', 'share', 'BreadCrumbs'));
             //Если пользователь не авторизован и авторизационный домен не включает текущеий домен - то добавляем компонент для кроссдоменной авторизации
-            if(
+            if (
                 !$this->user->isAuthenticated()
                 &&
                 (strpos(E()->getSiteManager()->getCurrentSite()->host, $this->getConfigValue('site.domain')) === false)
@@ -597,13 +602,13 @@ final class Document extends DBWorker implements IDocument {
      * @return object
      */
     static public function getTemplatesData($documentID) {
-        $loadDataFromFile = function($fileName, $type) {
+        $loadDataFromFile = function ($fileName, $type) {
             if (!($result = simplexml_load_string(file_get_contents_stripped(
                 Document::TEMPLATES_DIR .
-                    constant(
-                        'DivisionEditor::TMPL_' .
-                            strtoupper($type)) .
-                    '/' . $fileName)))
+                constant(
+                    'DivisionEditor::TMPL_' .
+                    strtoupper($type)) .
+                '/' . $fileName)))
             ) {
                 throw new SystemException('ERR_WRONG_' . strtoupper($type));
             }
@@ -622,7 +627,7 @@ final class Document extends DBWorker implements IDocument {
             if (!$templateData[$type]) {
                 //Берем из файла
                 $templateData[$type] = $loadDataFromFile($templateData[$type .
-                    '_file'], $type);
+                '_file'], $type);
             } else {
                 //Если есть данные в поле
                 //Пытаемся распарсить
@@ -631,12 +636,12 @@ final class Document extends DBWorker implements IDocument {
                 ) {
                     //Если не удалось - берем из файла
                     $templateData[$type] = $loadDataFromFile($templateData[$type .
-                        '_file'], $type);
+                    '_file'], $type);
                     //и очищаем 
                     E()->getDB()->modify(QAL::UPDATE, 'share_sitemap', array(
                         'smap_' .
-                            $type .
-                            '_xml' => ''), array('smap_id' => $documentID));
+                        $type .
+                        '_xml' => ''), array('smap_id' => $documentID));
                 }
             }
             $templateData[$type . 'File'] = $templateData[$type . '_file'];

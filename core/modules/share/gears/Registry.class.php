@@ -184,6 +184,9 @@ final class Registry extends Object {
         return $this->get('Document');
     }
 
+    /**
+     * @return OGObject
+     */
     public function getOGObject() {
         return $this->get('OGObject');
     }

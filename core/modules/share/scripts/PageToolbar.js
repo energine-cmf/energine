@@ -81,7 +81,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
         }
 
         var currentBody = $(document.body).getChildren().filter(function(element) {
-                return !(element.hasClass('e-overlay'));
+                return !((element.get('tag') !== 'svg') && element.hasClass('e-overlay'));
             }),
             mainFrame = new Element('div', {'class': 'e-mainframe'}),
             topFrame = new Element('div', {'class':'e-topframe'}),

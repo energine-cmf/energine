@@ -737,6 +737,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
         }
 
         if (this.component
+            && this.component['params']
             && Object.getLength(this.component.params)
             && Object.some(this.component.params, function (obj) {
                 return (obj.xml.getProperty('data-type') != 'hidden');

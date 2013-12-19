@@ -222,12 +222,16 @@ class TagManager extends DBWorker {
             $in[] = E()->getDB()->quote($t);
         }
 
-        $res = E()->getDB()->select(
-            'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
-            'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
-            'WHERE tr.tag_name IN (' . implode(',', $in) . ')',
-            E()->getLanguage()->getCurrent()
-        );
+        if (!empty($in)) {
+            $res = E()->getDB()->select(
+                'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
+                'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
+                'WHERE tr.tag_name IN (' . implode(',', $in) . ')',
+                E()->getLanguage()->getCurrent()
+            );
+        } else {
+            $res = false;
+        }
         if (is_array($res)) {
             foreach ($res as $row) {
                 $result[$row['tag_id']] = $row['tag_name'];

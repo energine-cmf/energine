@@ -14,7 +14,7 @@
  * @version 1.0.0
  */
 
-// todo: Need we Form?
+// todo: Does we need Form?
 ScriptLoader.load('Form', 'FBAuth', 'VKAuth');
 
 /**

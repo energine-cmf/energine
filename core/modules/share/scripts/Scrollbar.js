@@ -80,7 +80,7 @@ var Scrollbar = new Class(/** @lends Scrollbar# */{
      * @param {Object} event Event
      */
     scrolledElement: function(event){
-        // TODO: Which set() method is used? --> To the Slider class. Look at the next TODO!!!
+        // TODO: Which set() method is used? --> To the Slider class. Where is the Slider class?
         if (event.wheel < 0) {
             this.set(this.step + 1);
         } else if (event.wheel > 0) {
@@ -95,7 +95,7 @@ var Scrollbar = new Class(/** @lends Scrollbar# */{
      *
      * @function
      * @public
-     * @param {} steps
+     * @param {number} steps
      */
     setup: function(steps) {
         if (!steps) {

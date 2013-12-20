@@ -30,47 +30,30 @@ var CommentsManager = new Class(/** @lends CommentsManager# */{
         this.parent(element)
     },
 
-    // todo: This method is almost equal to the parent method. Make unique!
-    /**
-     * Overridden parent [loadPage]{@link GridManager#loadPage} method.
-     *
-     * @function
-     * @public
-     * @param {number} pageNum Page number.
-     */
-    loadPage: function(pageNum) {
-        var postBody = '',
-            url = '';
+    Protected: {
+        /**
+         * Overridden parent [buildRequestPostBody]{@link GridManager#buildRequestPostBody} method.
+         *
+         * @memberOf CommentsManager#
+         * @abstract
+         * @function
+         * @protected
+         * @returns {string}
+         */
+        buildRequestPostBody: function() {
+            var postBody = '';
 
-        this.pageList.disable();
-        if (this.toolbar) {
-            this.toolbar.disableControls();
-        }
-        this.overlay.show();
-        this.grid.clear();
+            if (this.langId) {
+                postBody += 'languageID=' + this.langId + '&';
+            }
+            if (this.filter.active && this.filter.query.value.length > 0) {
+                var fieldName = this.filter.fields.options[this.filter.fields.selectedIndex].value;
+                postBody += 'filter' + fieldName + '=' + this.filter.query.value + '&';
+            }
+            postBody += 'tab_index=' + this.getNumCurrTab() + '&';
 
-        if (this.langId) {
-            postBody += 'languageID=' + this.langId + '&';
+            return postBody;
         }
-        if (this.filter.active && this.filter.query.value.length > 0) {
-            var fieldName = this.filter.fields.options[this.filter.fields.selectedIndex].value;
-            postBody += 'filter' + fieldName + '=' + this.filter.query.value + '&';
-        }
-        postBody += 'tab_index=' + this.getNumCurrTab() + '&';
-
-        if(this.grid.sort.order){
-            url = this.singlePath + 'get-data/' + this.grid.sort.field + '-'
-                + this.grid.sort.order + '/page-' + pageNum
-        } else {
-            url = this.singlePath + 'get-data/page-' + pageNum;
-        }
-
-        this.request(url,
-            postBody,
-            this.processServerResponse.bind(this),
-            null,
-            this.processServerError.bind(this)
-        );
     },
 
     // todo: This is not current - this is the last.
@@ -96,7 +79,7 @@ var CommentsManager = new Class(/** @lends CommentsManager# */{
             postBody = 'tab_index=' + this.getNumCurrTab() + '&',
             selectedItem = this.grid.getSelectedItem().getElement('img');
 
-        this.request(url, postBody, function(result) {
+        Energine.request(url, postBody, function(result) {
             if (result['result']) {
                 selectedItem.setProperty('src','images/checkbox_on.png');
             }
@@ -124,9 +107,12 @@ var CommentsManager = new Class(/** @lends CommentsManager# */{
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
             'Do you really want to delete selected record?';
         if (confirm(MSG_CONFIRM_DELETE)) {
-            this.request(this.singlePath + this.grid.getSelectedRecordKey() +
-                '/delete/' + this.getNumCurrTab() + '/tab',
-                null, this.loadPage.pass(this.pageList.currentPage, this));
+            Energine.request(
+                this.singlePath + this.grid.getSelectedRecordKey() +
+                    '/delete/' + this.getNumCurrTab() + '/tab',
+                null,
+                this.loadPage.pass(this.pageList.currentPage, this)
+            );
         }
     }
 });

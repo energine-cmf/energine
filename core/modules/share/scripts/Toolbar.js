@@ -460,7 +460,9 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
         if (Browser.chrome) {
             this.element.addEvents({
                 'click': this.callAction.bind(this),
-                'mousedown': function () {}
+                'mousedown': function (ev) {
+                    ev.stop();
+                }
             });
         } else {
             this.element.addEvent('mousedown', function (event) {

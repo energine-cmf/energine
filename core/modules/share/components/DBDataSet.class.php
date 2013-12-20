@@ -151,7 +151,7 @@ class DBDataSet extends DataSet {
 
         //Если не существует таблицы с переводами, то выбираем данные из основной таблицы
         //Для мультиязычной таблицы - дергаем отдельный хитрый(сложный) метод загрузки
-        $data = $this->loadm2mData(
+        $data = $this->modify(
             (!$this->getTranslationTableName()) ?
                 $this->commonLoadData() :
                 $this->multiLoadData()
@@ -181,11 +181,11 @@ class DBDataSet extends DataSet {
      * @param $data array | false
      * @return array | false
      */
-    private function loadm2mData($data) {
+    private function modify($data) {
         //Перечень мультиполей
         $multiFields = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_MULTI);
         //Загрузка значений из м2м таблиц
-        if (is_array($data) && !empty($multiFields)) {
+        if (!empty($multiFields)) {
             $m2mData = array();
             $primaryKeyName = $this->getPK();
             $pks = simplifyDBResult($data, $primaryKeyName);
@@ -228,7 +228,47 @@ class DBDataSet extends DataSet {
                 }
             }
         }
+        $valueFields = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_VALUE);
+        if (!empty($valueFields)) {
+            //Готовим инфу для получения данных их связанных таблиц
+            foreach($valueFields as $valueFieldName =>$valueField){
+                $relInfo = $valueField->getPropertyValue('key');
+                if(is_array($relInfo)){
+                    $langTable = $this->dbh->getTranslationTablename($relInfo['tableName']);
+                    $relations[$valueFieldName] = array(
+                        'table' => (!$langTable)?$relInfo['tableName']: $langTable,
+                        'field' => $relInfo['fieldName'],
+                        'lang' => ($langTable)?E()->getLanguage()->getCurrent():false,
+                        'valueField' => substr($relInfo['fieldName'], 0, strrpos($relInfo['fieldName'], '_')) . '_name'
+                    );
 
+                    $cond = array(
+                        $relations[$valueFieldName]['field'] => simplifyDBResult($data, $relations[$valueFieldName]['field'])
+                    );
+                    if($relations[$valueFieldName]['lang']){
+                        $cond['lang_id'] = $relations[$valueFieldName]['lang'];
+                    }
+                    $values = convertDBResult($this->dbh->select($relations[$valueFieldName]['table'], array($relations[$valueFieldName]['field'], $relations[$valueFieldName]['valueField']), $cond), $relations[$valueFieldName]['field'], true);
+                }
+
+            }
+            unset($valueFields, $langTable, $relInfo);
+
+            foreach ($data as &$row) {
+                foreach ($row as $name => &$value) {
+                    if (in_array($name, array_keys($relations))) {
+                        $cond = array($relations[$name]['field'] => $value);
+                        if($relations[$name]['lang']){
+                            $cond['lang_id'] = $relations[$name]['lang'];
+                        }
+                        $value = array(
+                            'id' => $value,
+                            'value' => $values[$value][$relations[$valueFieldName]['valueField']]
+                        );
+                    }
+                }
+            }
+        }
         return $data;
     }
 
@@ -249,9 +289,6 @@ class DBDataSet extends DataSet {
                     $fieldName = ' IF((' . $fieldName . ' IS NOT NULL) AND (' . $fieldName . ' <> ""), 1, 0) AS ' . $fieldName;
                 }
                 array_push($dbFields, $fieldName);
-
-                //Поскольку все равно ниже будем проверять на существование мульти полей, то лучше сделаем это в одной итерации
-                if ($field->getType() == FieldDescription::FIELD_TYPE_MULTI) $multiFields[] = $field;
             }
         }
         //Если не пустой массив полей для отбора
@@ -276,7 +313,6 @@ class DBDataSet extends DataSet {
                 }
             }
         }
-
         return $data;
     }
 
@@ -651,7 +687,7 @@ class DBDataSet extends DataSet {
 
     protected function createDataDescription() {
         $result = parent::createDataDescription();
-        foreach ($result as $fieldName => $fieldMetaData) {
+        foreach ($result as $fieldMetaData) {
             $keyInfo = $fieldMetaData->getPropertyValue('key');
             $values = false;
             //Если это внешний ключ и не в режиме списка
@@ -778,8 +814,8 @@ class DBDataSet extends DataSet {
         $result = parent::buildJS();
         if ((($this->getState() == 'view') && $this->document->isEditable() && $this->getParam('editable')) || in_array($this->getState(), array('add', 'edit'))) {
 
-            if($this->document->isEditable())
-                            $this->setProperty('editable', 'editable');
+            if ($this->document->isEditable())
+                $this->setProperty('editable', 'editable');
 
             $this->addWYSIWYGTranslations();
             if ($config = E()->getConfigValue('wysiwyg.styles')) {

@@ -271,7 +271,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      */
     scrollForward: function () {
         if (this.isEffectCompleted) {
-            this.scroll(1);
+            this.scroll(1, 1);
         } else {
             this.chain(this.scrollForward.bind(this));
         }
@@ -284,7 +284,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      */
     scrollBackward: function () {
         if (this.isEffectCompleted) {
-            this.scroll(-1);
+            this.scroll(-1, 1);
         } else {
             this.chain(this.scrollBackward.bind(this));
         }
@@ -340,7 +340,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
         direction = (id > this.currentActiveID) ? 1 : -1;
         var diffFromLeft = Math.abs(id - this.currentActiveID);
 
-        if (this.options.loop) {
+        if (this.options.type === 'Loop') {
             var diffFromRight = this.options.playlist.NItems - diffFromLeft;
 
             if (diffFromLeft <= diffFromRight) {
@@ -355,7 +355,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
                 NTimes = this.options.playlist.NItems - this.options.NVisibleItems;
             }
         }
-        NTimes = Math.ceil(NTimes / this.options.scrollStep);
+        NTimes = Math.floor(NTimes / this.options.scrollStep);
         this.scroll(direction, Math.abs(NTimes), true);
     },
 
@@ -627,10 +627,12 @@ var ACarousel = new Class(/** @lends ACarousel# */{
                 return;
             }
 
-            if (scrollNTimes <= 0) {
-                throw 'scrollNTimes must be > 0';
+            if (scrollNTimes < 0) {
+                throw 'scrollNTimes must be >= 0';
             }
-            scrollNTimes = scrollNTimes || 1;
+            if (scrollNTimes == 0) {
+                return;
+            }
 
             itemsToScroll = this.getScrolledItems(direction, scrollNTimes);
 
@@ -1301,7 +1303,7 @@ Carousel.Types = {
                     if (scrollNTimes > 1) {
                         var shift = 0;
                         if (direction == 1) {
-                            shift = this.options.scrollStep * scrollNTimes - this.options.scrollStep + this.lastScrollStep;
+                            shift = this.options.scrollStep * (scrollNTimes - 1) + this.lastScrollStep + 1;
                         }
 
                         effects = this.createEffect(this.options.scrollDirection, -this.length * shift, this.length,

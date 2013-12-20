@@ -146,7 +146,6 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     $result->setAttribute('quickUploadEnabled', $quick_upload_enabled);
                 }
             }
-
             if ($fieldValue) {
                 $repoPath = E()->FileRepoInfo->getRepositoryRoot($fieldValue);
                 $is_secure = (E()->getConfigValue('repositories.ftp.' . $repoPath . '.secure', 0)) ? true : false;
@@ -186,7 +185,11 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             require_once(CORE_DIR . '/modules/share/gears/recaptchalib.php');
             $fieldValue = recaptcha_get_html($this->getConfigValue('recaptcha.public'));
         }
-
+        elseif($fieldInfo->getType() == FieldDescription::FIELD_TYPE_VALUE){
+            $value = $this->result->createElement('value', $fieldValue['value']);
+            $value->setAttribute('id', $fieldValue['id']);
+            $fieldValue = $value;
+        }
         foreach ($fieldInfo as $propName => $propValue) {
             if ($propValue && !is_array($propValue)) {
                 $result->setAttribute($propName, $propValue);
@@ -242,7 +245,8 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             } catch (SystemException $e) {
 
             }
-        } elseif ($fieldValue !== false) {
+        }
+        elseif ($fieldValue !== false) {
             // empty() не пропускает значиния 0 и '0'
             if (!empty($fieldValue) || ($fieldValue === 0) || ($fieldValue === '0')) {
                 switch ($fieldInfo->getType()) {

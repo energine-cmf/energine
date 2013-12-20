@@ -916,6 +916,7 @@ ACarousel.AControls = new Class(/** @lends ACarousel.AControls# */{
                 allCSS += opts.classes[selector] + ', ';
             }
             opts.styles[allCSS] = opts.styles.all;
+            delete opts.styles.all;
 
             for (var selector in opts.styles) {
                 (selector in opts.classes)

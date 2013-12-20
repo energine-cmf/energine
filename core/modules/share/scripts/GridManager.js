@@ -1035,7 +1035,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @param {string|number} [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
      */
     move: function(id) {
-        if(!id) {
+        if(!parseInt(id)) {
             id = this.grid.getSelectedRecordKey();
         }
         this.setMvElementId(id);

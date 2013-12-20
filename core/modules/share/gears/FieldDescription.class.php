@@ -130,6 +130,11 @@ class FieldDescription extends DBWorker implements Iterator {
     const FIELD_TYPE_MULTI = 'multi';
 
     /**
+     * Значение для select
+     */
+    const FIELD_TYPE_VALUE = 'value';
+
+    /**
      * Дата и время
      */
     const FIELD_TYPE_DATETIME = 'datetime';

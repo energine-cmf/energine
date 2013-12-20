@@ -271,7 +271,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      */
     scrollForward: function () {
         if (this.isEffectCompleted) {
-            this.scroll(1);
+            this.scroll(1, 1);
         } else {
             this.chain(this.scrollForward.bind(this));
         }
@@ -284,7 +284,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      */
     scrollBackward: function () {
         if (this.isEffectCompleted) {
-            this.scroll(-1);
+            this.scroll(-1, 1);
         } else {
             this.chain(this.scrollBackward.bind(this));
         }

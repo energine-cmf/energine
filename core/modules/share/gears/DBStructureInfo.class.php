@@ -1,40 +1,58 @@
 <?php
 /**
- * Содержит класс DBStructureInfo
+ * @file
+ * DBStructureInfo.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+final class DBStructureInfo;
+@endcode
+ *
  * @author d.pavka@gmail.com
  * @copyright Energine 2010
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс хранящий информацию о структуре БД
- * Имеет возможность хранить данные в кеше
+ * Data base structure information.
  *
- * @package energine
- * @subpackage kernel
- * @final
+ * @code
+final class DBStructureInfo;
+@endcode
+ *
+ * It can holds an information in cache.
+ *
+ * @attention This is @b final class.
  */
 final class DBStructureInfo extends Object {
-
     /**
-     * Массив информации о структуре БД
+     * Structure information.
      *
-     * @var array($tableName => array($coulmnName => array($columnPropName => $columnPropValue)))
+     * Structure:
+     * @code
+array(
+    $tableName => false| null | array(
+        $coulmnName => array(
+            $columnPropName => $columnPropValue
+        )
+    )
+)
+@endcode
+     *
+     * @var array $structure
      */
     private $structure;
 
     /**
-     * Объект pdo - передается из DBA
-     * @var PDO
+     * PDO (PHP Data Objects).
+     *
+     * @var PDO $pdo
      */
     private $pdo;
 
     /**
-     * Конструктор класса
-     *
-     * @param PDO $pdo
+     * @param PDO $pdo PDO instance.
      */
     public function __construct(PDO $pdo) {
         $this->pdo = $pdo;
@@ -47,11 +65,11 @@ final class DBStructureInfo extends Object {
     }
 
     /**
-     * Собирает информацию о структуре всех таблиц в БД
-     * вызывается только при использовании кеша
+     * Collect the table structure information of all tables in the DB.
+     *
+     * This can be called only by using cache.
      *
      * @return array
-     * @see $this->structure
      */
     private function collectDBInfo() {
         $result = array();
@@ -66,10 +84,9 @@ final class DBStructureInfo extends Object {
     }
 
     /**
-     * Проверка таблицы на существование
-     * $this->structure[$tableName] может быть или массив или false ну или null
-     * 
-     * @param  string $tableName
+     * Check if some table exist.
+     *
+     * @param  string $tableName Table name.
      * @return bool
      */
     public function tableExists($tableName) {
@@ -99,6 +116,12 @@ final class DBStructureInfo extends Object {
         return $result;
     }
 
+    /**
+     * Get table meta data.
+     *
+     * @param string $tableName Table name.
+     * @return mixed
+     */
     public function getTableMeta($tableName) {
         if (!isset($this->structure[$tableName]) ||
                 ($this->structure[$tableName] === array())) {
@@ -115,7 +138,14 @@ final class DBStructureInfo extends Object {
         }
         return $this->structure[$tableName];
     }
+
     //@todo спрятать внутрь analyzeTable
+    /**
+     * Analyze view structure.
+     *
+     * @param string $viewName View name.
+     * @return array|bool
+     */
     private function analyzeView($viewName){
         if(!($res = $this->pdo->query('/*ms=slave*/SHOW COLUMNS FROM `'.$viewName.'`')->fetchAll(PDO::FETCH_ASSOC))) return false;
         //Считаем что первое поле - PK
@@ -137,11 +167,13 @@ final class DBStructureInfo extends Object {
         }
         return $result;
     }
+
     /**
-     * Анализ структуры таблицы
+     * Analyze table structure.
      *
      * @throws SystemException
-     * @param  $tableName
+     *
+     * @param string $tableName Table name.
      * @return array|PDOStatement|string
      */
     private function analyzeTable($tableName) {
@@ -150,7 +182,7 @@ final class DBStructureInfo extends Object {
 
         $dbName = '';
         if(sizeof($dTableName) == 2){
-            $dbName = $dTableName[0];     
+            $dbName = $dTableName[0];
         }
 
         $res = $this->pdo->query($query);
@@ -246,10 +278,9 @@ final class DBStructureInfo extends Object {
     }
 
     /**
-     * Конвертирует MYSQL типы полей в Energine типы полей
+     * Convert MySQL field types to the Energine field types.
      *
-     * @static
-     * @param  string $mysqlType
+     * @param  string $mysqlType MySQL type
      * @return string
      */
     static private function convertType($mysqlType) {

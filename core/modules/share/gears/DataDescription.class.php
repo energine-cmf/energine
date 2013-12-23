@@ -1,53 +1,62 @@
 <?php
 /**
- * Класс DataDescription.
+ * @file
+ * DataDescription.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+class DataDescription;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
+//todo VZ: Why the Iterator is multiple times have the same implementation?
 /**
- * Мета-данные.
+ * Meta data.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class DataDescription
+@endcode
+ *
+ * Data description.
  */
 class DataDescription extends Object implements Iterator {
+    /**
+     * @var string FIELD_POSITION_AFTER
+     */
     const FIELD_POSITION_AFTER = 'after';
+    /**
+     * @var string FIELD_POSITION_BEFORE
+     */
     const FIELD_POSITION_BEFORE = 'before';
 
     /**
-     * @access private
-     * @var array мета-данные полей
+     * Meta data for fields.
+     * @var array $fieldDescriptions
      */
     private $fieldDescriptions;
 
     /**
-     * @access private
-     * @var int индекс текущего элемента (используется для итерации)
+     * Index of the current element (used for iteration).
+     * @var int $currentIndex
      */
     private $currentIndex = 0;
 
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
     public function __construct() {
         $this->fieldDescriptions = array();
     }
 
+    //todo VZ: I recommend to create method for loading single data description and use it for this and next load methods.
     /**
-     * Загружает описание данных полученных из БД.
+     * Load the data descriptions received from the data base.
      *
-     * @access public
-     * @param array $columnsInfo
-     * @return void
      * @see DBA::getColumnsInfo()
+     *
+     * @param array $columnsInfo Data description.
      */
 	//TODO Добавить возможность загрузки обычного массива создавая FieldDescription с параметрами по умолчанию
     public function load(array $columnsInfo) {
@@ -59,11 +68,9 @@ class DataDescription extends Object implements Iterator {
     }
 
     /**
-     * Загружает описание данных полученных из конфигурационного XML файла.
+     * Load data descriptions from XML file.
      *
-     * @access public
-     * @param SimpleXMLElement $xmlDescr
-     * @return void
+     * @param SimpleXMLElement $xmlDescr XML file with descriptions.
      */
     public function loadXML(SimpleXMLElement $xmlDescr) {
         if (!empty($xmlDescr))
@@ -75,11 +82,11 @@ class DataDescription extends Object implements Iterator {
     }
 
     /**
-     * Добавляет описание поля данных.
+     * Add new field description.
      *
-     * @access public
-     * @param FieldDescription $fieldDescription
-     * @return void
+     * @param FieldDescription $fieldDescription New field description.
+     * @param string $location Description location.
+     * @param string $targetFDName Target field description name.
      */
     public function addFieldDescription(FieldDescription $fieldDescription, $location = 'bottom', $targetFDName = null) {
         if($location == self::FIELD_POSITION_AFTER && $targetFDName && array_key_exists($targetFDName, $this->fieldDescriptions)){
@@ -95,23 +102,20 @@ class DataDescription extends Object implements Iterator {
     }
 
     /**
-     * Удаляет описание поля данных.
+     * Remove field description.
      *
-     * @access public
-     * @param FieldDescription $fieldDescription
-     * @return void
+     * @param FieldDescription $fieldDescription Field description.
      */
     public function removeFieldDescription(FieldDescription $fieldDescription) {
         	unset($this->fieldDescriptions[$fieldDescription->getName()]);
     }
 
+    //todo VZ: Why it returns bool instead of null?
     /**
-     * Возвращает описание поля данных по имени поля,
-     * или false, если такого поля не существует.
+     * Get field description by field name.
      *
-     * @access public
-     * @param string $name
-     * @return FieldDescription
+     * @param string $name Field name
+     * @return FieldDescription|bool
      */
     public function getFieldDescriptionByName($name) {
         $fieldDescription = false;
@@ -120,8 +124,9 @@ class DataDescription extends Object implements Iterator {
         }
         return $fieldDescription;
     }
+
     /**
-     * Возвращает перечень описаний полей определнного типа/ов
+     * Get field descriptions by type.
      *
      * @param $types string|array
      * @return FieldDescription[]
@@ -139,30 +144,27 @@ class DataDescription extends Object implements Iterator {
 
 
     /**
-     * Возвращает список имён полей данных.
+     * Get the list of field description names.
      * @todo Не очень красивый метод, нужно бы как то без него обойтись
      * @return array
-     * @access public
      */
     public function getFieldDescriptionList() {
         return array_keys($this->fieldDescriptions);
     }
 
     /**
-     * Возвращает количество полей данных.
+     * Check whether the [field description array](@ref DataDescription::$fieldDescriptions) is empty.
      *
-     * @access public
-     * @return int
+     * @return bool
      */
     public function isEmpty() {
         return !(bool)sizeof($this->fieldDescriptions);
     }
 
     /**
-     * Создаёт пересечение описания данных с другим описанием данных.
+     * Intersect this data description with other object data description.
      *
-     * @access public
-     * @param DataDescription $otherDataDescr
+     * @param DataDescription $otherDataDescr Other data description.
      * @return DataDescription
      */
     public function intersect(DataDescription $otherDataDescr) {
@@ -194,20 +196,17 @@ class DataDescription extends Object implements Iterator {
     }
 
     /**
-     * Перемещает итератор на первый элемент.
-     *
-     * @access public
-     * @return void
+     * Rewind the Iterator to the first element.
+     * @link http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind() {
         $this->currentIndex = 0;
     }
 
     /**
-     * Возвращает текущий элемент.
-     *
-     * @access public
-     * @return mixed
+     * Return the current data description.
+     * @link http://php.net/manual/en/iterator.current.php
+     * @return DataDescription
      */
     public function current() {
         $fieldNames = $this->getFieldDescriptionList();
@@ -215,10 +214,9 @@ class DataDescription extends Object implements Iterator {
     }
 
     /**
-     * Возвращает ключ текущего элемента.
-     *
-     * @access public
-     * @return mixed
+     * Return the current field name.
+     * @link http://php.net/manual/en/iterator.key.php
+     * @return string
      */
     public function key() {
         $fieldNames = $this->getFieldDescriptionList();
@@ -226,20 +224,17 @@ class DataDescription extends Object implements Iterator {
     }
 
     /**
-     * Перемещает итератор на следующий элемент.
-     *
-     * @access public
-     * @return void
+     * Move forward to next element.
+     * @link http://php.net/manual/en/iterator.next.php
      */
     public function next() {
         $this->currentIndex++;
     }
 
     /**
-     * Проверяет, существует ли текущий элемент.
-     *
-     * @access public
-     * @return boolean
+     * Checks if current position is valid.
+     * @link http://php.net/manual/en/iterator.valid.php
+     * @return bool
      */
     public function valid() {
         $fieldNames = $this->getFieldDescriptionList();

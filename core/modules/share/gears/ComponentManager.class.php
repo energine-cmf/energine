@@ -4,19 +4,27 @@
  * ComponentManager, IBlock
  *
  * Contain the definition to:
- * - class ComponentManager
- * - interface IBlock
+ * @code
+final class ComponentManager;
+interface IBlock;
+@endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
-//todo What is the difference between ComponentManager and ComponentContainer?
+//todo VZ: What is the difference between ComponentManager and ComponentContainer?
 /**
  * Manager of the set of the document's components.
- * @attention This is @b final class!
  *
+ * @code
+final class ComponentManager
+@endcode
+ *
+ * @attention This is @b final class!
  */
 final class ComponentManager extends Object implements Iterator {
 
@@ -290,7 +298,7 @@ final class ComponentManager extends Object implements Iterator {
      *
      * @param string $name Component name.
      * @param string $module Component module name.
-     * @param $class Component class.
+     * @param  $class Component class.
      * @param $params Parameters.
      * @return Component
      */
@@ -311,7 +319,8 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Load the array of block names to the ComponentManager::$blockNames.
+     * Rewind the Iterator to the first element.
+     * @link http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind() {
         $this->blockNames = array_keys($this->blocks);
@@ -319,7 +328,8 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Validate the child name from ComponentContainer::$childNames by current ComponentContainer::$iteratorIndex.
+     * Checks if current position is valid.
+     * @link http://php.net/manual/en/iterator.valid.php
      * @return bool
      */
     public function valid() {
@@ -327,7 +337,8 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Get the child name from ComponentContainer::$childNames by current ComponentContainer::$iteratorIndex.
+     * Return the current block name.
+     * @link http://php.net/manual/en/iterator.key.php
      * @return string
      */
     public function key() {
@@ -335,14 +346,16 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Increase the ComponentContainer::$iteratorIndex.
+     * Move forward to next element.
+     * @link http://php.net/manual/en/iterator.next.php
      */
     public function next() {
         $this->iteratorIndex++;
     }
 
     /**
-     * Get the current block from ComponentContainer::$blocks
+     * Return the current block.
+     * @link http://php.net/manual/en/iterator.current.php
      * @return IBlock
      */
     public function current() {
@@ -352,6 +365,10 @@ final class ComponentManager extends Object implements Iterator {
 
 /**
  * IBlock interface.
+ *
+ * @code
+interface IBlock
+@endcode
  */
 interface IBlock {
     /**

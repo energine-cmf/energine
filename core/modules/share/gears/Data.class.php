@@ -1,50 +1,54 @@
 <?php
 
 /**
- * Класс Data.
+ * @file
+ * Data.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+class Data;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Данные.
+ * Holds data.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class Data
+@endcode
+ *
  */
 class Data extends Object {
-
     /**
-     * @access private
-     * @var array поля данных
+     * Data fields.
+     * @var array $fields
      */
     private $fields = array();
 
     /**
-     * @access private
-     * @var int количество полей данных
+     * Amount of data fields.
+     * @var int $length
      */
     private $length = 0;
 
     /**
-     * @access private
-     * @var int количество строк данных
+     * Amount of data rows.
+     * @var int $rows
      */
     private $rows = 0;
 
     /**
-     * Загружает набор данных, полученных из БД.
+     * Load the dataset, received from the data base.
      *
-     * @access public
-     * @param $data
-     * @return void
      * @see DBA::selectRequest()
      *
+     * @param array $data Dataset.
      */
     public function load($data) {
         if (is_array($data) && ! empty($data)) {
@@ -62,11 +66,9 @@ class Data extends Object {
     }
 
     /**
-     * Добавляет строку данных ко всем полям.
+     * Add data row to all data fields.
      *
-     * @access public
-     * @param array $rowData
-     * @return void
+     * @param array $rowData Data row.
      */
     public function addRow(array $rowData) {
         foreach ($rowData as $fieldName => $fieldValue) {
@@ -78,11 +80,9 @@ class Data extends Object {
     }
 
     /**
-     * Удаляет строку данных из всех полей.
+     * Remove data row from all data fields.
      *
-     * @access public
-     * @param int $rowIndex
-     * @return void
+     * @param int $rowIndex Row ID.
      */
     public function removeRow($rowIndex) {
         foreach ($this->fields as $field) {
@@ -90,12 +90,12 @@ class Data extends Object {
         }
     }
 
+    //todo VZ: Why bool is returned?
     /**
-     * Изменяет строку данных для всех полей.
+     * Change the data row for all data fields.
      *
-     * @access public
-     * @param int $rowIndex
-     * @param array $rowData
+     * @param int $rowIndex Row ID.
+     * @param array $rowData Row data.
      * @return boolean
      */
     public function changeRow($rowIndex, array $rowData) {
@@ -110,11 +110,9 @@ class Data extends Object {
     }
 
     /**
-     * Добавляет поле данных.
+     * Add data field.
      *
-     * @access public
-     * @param Field $field
-     * @return void
+     * @param Field $field New data field.
      */
     public function addField(Field $field) {
         $this->fields[$field->getName()] = $field;
@@ -122,11 +120,9 @@ class Data extends Object {
     }
 
     /**
-     * Удаляет поле данных.
+     * Remove data field.
      *
-     * @access public
-     * @param Field $field
-     * @return void
+     * @param Field $field Data field.
      */
     public function removeField(Field $field) {
         if (isset($this->fields[$field->getName()])) {
@@ -136,10 +132,9 @@ class Data extends Object {
     }
 
     /**
-     * Возвращает поле с указанным именем.
+     * Get field by his name.
      *
-     * @access public
-     * @param string $name
+     * @param string $name Field name.
      * @return Field
      */
     public function getFieldByName($name) {
@@ -151,9 +146,8 @@ class Data extends Object {
     }
 
     /**
-     * Возвращает набор полей данных.
+     * Get all [data fields](@ref Data::$fields).
      *
-     * @access public
      * @return array
      */
     public function getFields() {
@@ -161,9 +155,8 @@ class Data extends Object {
     }
 
     /**
-     * Возвращает количество полей данных.
+     * Get the [total amount of data fields](@ref Data::$length).
      *
-     * @access public
      * @return int
      */
     public function getLength() {
@@ -171,7 +164,7 @@ class Data extends Object {
     }
 
     /**
-     * Возвращает флаг указывающий на то является ли объект данных пустым
+     * Check if [data fields array](Data::$fields) is empty.
      *
      * @return bool
      */
@@ -180,10 +173,9 @@ class Data extends Object {
     }
 
     /**
-     * Возвращает количество строк данных.
+     * Get the total amount of data rows.
      *
      * @return int
-     * @access public
      */
     public function getRowCount() {
         if ($this->length > 0) {
@@ -194,6 +186,12 @@ class Data extends Object {
         return $this->rows;
     }
 
+    /**
+     * Get all data fields as an array.
+     *
+     * @param bool $groupedByFields Defines whether the returned array should be grouped by fields.
+     * @return array
+     */
     public function asArray($groupedByFields = false) {
         $result = array();
         $res = array();

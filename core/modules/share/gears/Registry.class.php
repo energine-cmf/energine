@@ -31,6 +31,7 @@ function E() {
  * @property ComponentManager ComponentManager
  * @throws SystemException
  * @see Singleton
+ * @method int SiteMap() Get SiteMap.
  *
  */
 

@@ -4,15 +4,23 @@
  * Object
  *
  * Contain the definition to:
- * - abstract class Object.
+ * @code
+abstract class Object;
+@endcode
  *
  * @package kernel
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
  * Te main parent abstract class for all objects in the system.
+ *
+ * @code
+abstract class Object
+@endcode
  *
  * This provides the general functionality to the objects:
  * - measure the execution time;

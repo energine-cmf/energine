@@ -1,17 +1,25 @@
 <?php
 /**
  * @file
- * ComponentContainer
+ * ComponentContainer.
  *
  * Contain the definition to:
- * - class ComponentContainer
+ * @code
+class ComponentContainer
+@endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2010
+ *
+ * @version 1.0.0
  */
 
 /**
  * Container of components.
+ *
+ * @code
+class ComponentContainer
+@endcode
  */
 class ComponentContainer extends Object implements IBlock, Iterator{
     /**
@@ -35,10 +43,12 @@ class ComponentContainer extends Object implements IBlock, Iterator{
      */
     private $blocks = array();
     /**
+     * Iterator index.
      * @var int $iteratorIndex
      */
     private $iteratorIndex = 0;
     /**
+     * Array of child names.
      * @var array $childNames
      */
     private $childNames = array();
@@ -179,7 +189,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         return $doc;
     }
     /**
-     * Call @c run() method for all ComponentContainer::$blocks.
+     * Call @c run() method for all [blocks](@ref ComponentContainer::$blocks).
      */
     public function run() {
         foreach ($this->blocks as $block) {
@@ -194,7 +204,8 @@ class ComponentContainer extends Object implements IBlock, Iterator{
     }
 
     /**
-     * Rewind.
+     * Rewind the Iterator to the first element.
+     * @link http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind() {
         $this->childNames = array_keys($this->blocks);
@@ -202,7 +213,8 @@ class ComponentContainer extends Object implements IBlock, Iterator{
     }
 
     /**
-     * Validate the child name from ComponentContainer::$childNames by current ComponentContainer::$iteratorIndex.
+     * Checks if current position is valid.
+     * @link http://php.net/manual/en/iterator.valid.php
      * @return bool
      */
     public function valid() {
@@ -210,22 +222,25 @@ class ComponentContainer extends Object implements IBlock, Iterator{
     }
 
     /**
-     * Get the child name from ComponentContainer::$childNames by current ComponentContainer::$iteratorIndex.
-     * @return mixed
+     * Return the current child name.
+     * @link http://php.net/manual/en/iterator.key.php
+     * @return string
      */
     public function key() {
         return $this->childNames[$this->iteratorIndex];
     }
 
     /**
-     * Increase the ComponentContainer::$iteratorIndex.
+     * Move forward to next element.
+     * @link http://php.net/manual/en/iterator.next.php
      */
     public function next() {
         $this->iteratorIndex++;
     }
 
     /**
-     * Get the current block from ComponentContainer::$blocks
+     * Return the current block.
+     * @link http://php.net/manual/en/iterator.current.php
      * @return IBlock
      */
     public function current() {
@@ -242,7 +257,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
             $block->disable();
         }
     }
-    //todo I do not understand your description.
+    //todo VZ: I do not understand your description.
     /**
      * Get whether the ComponentContainer is enabled.
      *
@@ -257,7 +272,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         return $this->enabled;
     }
 
-    //todo For what is this?
+    //todo VZ: For what is this?
     /**
      * Всегда возвращает минимальное значение прав
      * Используется для единообразного вызова наследников Block

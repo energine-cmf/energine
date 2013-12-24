@@ -143,7 +143,7 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Get [PDO](@ref DBA::$pdo).
+     * Get @link DBA::$pdo PDO@endlink.
      *
      * Use this for direct work with DB.
      *
@@ -300,7 +300,7 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Get the [last query](@ref DBA::$lastQuery).
+     * Get the @link DBA::$lastQuery last query@endlink.
      *
      * @return string
      */

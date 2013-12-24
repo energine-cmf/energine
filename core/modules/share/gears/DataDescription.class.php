@@ -153,7 +153,7 @@ class DataDescription extends Object implements Iterator {
     }
 
     /**
-     * Check whether the [field description array](@ref DataDescription::$fieldDescriptions) is empty.
+     * Check whether the @link DataDescription::$fieldDescriptions field description@endlink array is empty.
      *
      * @return bool
      */

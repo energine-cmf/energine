@@ -1,31 +1,45 @@
 <?php
 /**
- * Содержит класс ErrorDocument
+ * @file
+ * ErrorDocument.
  *
- * @package energine
- * @subpackage apps
+ * Contain the definition to:
+ * @code
+class ErrorDocument;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
  /**
-  * Документ ошибки
+  * Error document.
   *
-  * @package energine
-  * @subpackage apps
-  * @author d.pavka@gmail.com
+  * @code
+ class ErrorDocument;
+ @endcode
   */
-
 class ErrorDocument extends Object implements IDocument {
     /**
-     * @var DOMDocument
+     * Document.
+     * @var DOMDocument $doc
      */
     private $doc;
     /**
-     * @var SystemException
+     * Exception.
+     * @var SystemException $e
      */
     private $e;
 
+    /**
+     * Attach exception.
+     *
+     * @see ErrorDocument::$e
+     *
+     * @param SystemException $e Exception.
+     */
     public function attachException(SystemException $e) {
         $this->e = $e;
     }
@@ -89,9 +103,8 @@ class ErrorDocument extends Object implements IDocument {
     }
 
     /**
-     * Возвращает результирующий DOM-документ.
+     * Get the resulting DOM-document.
      *
-     * @access public
      * @return DOMDocument
      */
     public function getResult() {

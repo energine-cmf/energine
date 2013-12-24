@@ -46,25 +46,25 @@ abstract class Object {
     private $executionTime;
 
     /**
-     * Start the [execution time counter](@ref Object::$executionTime).
+     * Start the @link Object::$executionTime execution time counter@endlink.
      */
     public function startTimer() {
         $this->executionTime = microtime(true);
     }
 
     /**
-     * Stop the [execution time counter](@ref Object::$executionTime).
+     * Stop the @link Object::$executionTime execution time counter@endlink.
      *
-     * @return Execution time.
+     * @return float
      */
     public function stopTimer() {
         return ($this->executionTime = microtime(true) - $this->executionTime);
     }
 
     /**
-     * Reset the [execution time counter](@ref Object::$executionTime).
+     * Reset the @link Object::$executionTime execution time counter@endlink.
      *
-     * @return Last value.
+     * @return float
      */
     public function resetTimer() {
         $result = $this->stopTimer();
@@ -73,9 +73,9 @@ abstract class Object {
     }
 
     /**
-     * Get the current value of the [execution time counter](@ref Object::$executionTime).
+     * Get the current value of the @link Object::$executionTime execution time counter@endlink.
      *
-     * @return Current value.
+     * @return float
      */
     public function getTimer() {
         return $this->executionTime;
@@ -85,7 +85,9 @@ abstract class Object {
      * Get the configuration value by parameter path.
      *
      * @note Use dot character as separator between configuration's tree levels.
-     * @code Object::_getConfigValue('database.dsn'); @endcode
+     * @code
+Object::_getConfigValue('database.dsn');
+@endcode
      *
      * @param string $paramPath Parameter path.
      * @param mixed $initial Default value. It will be used if the looked value is not found.
@@ -107,7 +109,7 @@ abstract class Object {
     }
 
     /**
-     * Nonstatic method-wrapper over Object::_getConfigValue for simpler using inside the derivative classes.
+     * Non-static method-wrapper over Object::_getConfigValue for simpler using inside the derivative classes.
      *
      * @see Object::_getConfigValue()
      *
@@ -128,7 +130,7 @@ abstract class Object {
     }
 
     /**
-     * Get the [configurations](@ref Object::$systemConfig).
+     * Get the @link Object::$systemConfig configurations@endlink.
      * @return array
      */
     public static function getConfigArray() {

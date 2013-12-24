@@ -113,7 +113,7 @@ abstract class DBWorker extends Object {
     }
 
     /**
-     * Nonstatic wrapper method over DBWorker::_translate.
+     * Non-static wrapper method over DBWorker::_translate.
      *
      * This is for using inside derived class.
      *
@@ -126,7 +126,7 @@ abstract class DBWorker extends Object {
     }
 
     /**
-     * Nonstatic wrapper method over DBWorker::_dateToString.
+     * Non-static wrapper method over DBWorker::_dateToString.
      *
      * @param string $date Date.
      * @param string $format Date format.

@@ -189,7 +189,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         return $doc;
     }
     /**
-     * Call @c run() method for all [blocks](@ref ComponentContainer::$blocks).
+     * Call @c run() method for all @link ComponentContainer::$blocks blocks@endlink.
      */
     public function run() {
         foreach ($this->blocks as $block) {

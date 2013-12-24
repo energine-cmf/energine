@@ -1,71 +1,75 @@
 <?php
-
 /**
- * Класс Field.
+ * @file
+ * Field.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+class Field;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Поле данных.
+ * Data field.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class Field;
+@endcode
  */
 class Field extends Object implements Iterator {
-
     /**
-     * @access private
-     * @var array набор дополнительных свойств
+     * Set of additional properties.
+     * @var array $properties
      */
     private $properties = array();
 
     /**
-     * @access private
-     * @var string имя поля
+     * Field name.
+     * @var string $name
      */
     private $name;
 
     /**
-     * @access private
-     * @var array данные поля
+     * Data of the field.
+     * @var array $data
      */
     private $data = array();
 
     /**
-     * Если права не указаны - используются права из FieldDescription (наследуются).
+     * User rights for the field.
      *
-     * @access private
-     * @var int права пользователя на поле
+     * If the rights are not set, then the derived rights from FieldDescription will be used.
+     *
+     * @var int $rights
      */
     private $rights;
 
     /**
-     * @access private
-     * @var int индекс текущего элемента (используется для итерации)
+     * Index of the current element.
+     *
+     * Used for iteration.
+     *
+     * @var int $currentIndex
      */
     private $currentIndex = 0;
 
 
     /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @param string $name иям поля
+     * @param string $name Field name.
      */
     public function __construct($name) {
         $this->name = $name;
     }
 
     /**
-     * Возвращает имя поля.
+     * Get the name.
      *
-     * @access public
      * @return string
      */
     public function getName() {
@@ -73,13 +77,10 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Устанавливает данные поля.
+     * Set data for the field.
      *
-     * @access public
-     * @param mixed $data
-     * @param bool $setForAll - установить для всех строчек
-     *  только для перепределения данных
-     *  в случае если поле только создано то нужно заполнять через итератор
+     * @param mixed $data Data.
+     * @param bool $setForAll Defines whether the data should be set for all rows (only for data overwriting). In the case that the field is newly created - fill it by using iterator.
      * @return Field
      */
     public function setData($data, $setForAll = false) {
@@ -101,9 +102,8 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Возвращает данные поля.
+     * Get field data.
      *
-     * @access public
      * @return array
      */
     public function getData() {
@@ -111,10 +111,9 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Возвращает данные указанной строки.
+     * Get data from specific row.
      *
-     * @access public
-     * @param int $rowIndex индекс строки
+     * @param int $rowIndex Row index.
      * @return mixed
      */
     public function getRowData($rowIndex) {
@@ -125,12 +124,12 @@ class Field extends Object implements Iterator {
         return $result;
     }
 
+    //todo VZ: Why bool is returned?
     /**
-     * Удаляет данные указанной строки.
+     * Remove data from specific row.
      *
-     * @access public
-     * @param int $rowIndex индекс строки
-     * @return mixed
+     * @param int $rowIndex Row index
+     * @return bool
      */
     public function removeRowData($rowIndex) {
         $result = false;
@@ -142,11 +141,10 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Добавляет строку данных.
+     * Add new data row.
      *
-     * @access public
-     * @param mixed $data
-     * @return void
+     * @param mixed $data Data.
+     * @param bool $toEnd Defines, whether the data should be appended to the end. Otherwise they will be appended to the beginning.
      */
     public function addRowData($data, $toEnd = true) {
         if ($toEnd)
@@ -156,12 +154,12 @@ class Field extends Object implements Iterator {
         }
     }
 
+    //todo VZ: Why bool is returned?
     /**
-     * Устанавливает данные в указанной строке.
+     * Set the data for specific row.
      *
-     * @access public
-     * @param int $rowIndex индекс строки
-     * @param mixed $newData новые данные
+     * @param int $rowIndex Row index
+     * @param mixed $newData New data.
      * @return boolean
      */
     public function setRowData($rowIndex, $newData) {
@@ -174,20 +172,17 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Устанавливает уровень прав на поле.
+     * Set rights for the field.
      *
-     * @access public
-     * @param int $rights уровень прав
-     * @return void
+     * @param int $rights Rights.
      */
     public function setRights($rights) {
         $this->rights = $rights;
     }
 
     /**
-     * Возвращает уровень прав на поле.
+     * Get @link Field::$rights rights@endlink for the field.
      *
-     * @access public
      * @return int
      */
     public function getRights() {
@@ -195,9 +190,8 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Возвращает количество строк данных.
+     * Get the total amount of the rows.
      *
-     * @access public
      * @return int
      */
     public function getRowCount() {
@@ -205,24 +199,21 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Устанавливает дополнтельное свойство строки.
+     * Set additional property for the specific row.
      *
-     * @access public
-     * @param int $index индекс строки
-     * @param string $propertyName имя свойства
-     * @param mixed $propertyValue значение свойства
-     * @return void
+     * @param int $index Row index
+     * @param string $propertyName Property name.
+     * @param mixed $propertyValue Property value.
      */
     public function setRowProperty($index, $propertyName, $propertyValue) {
         $this->properties[$index][$propertyName] = $propertyValue;
     }
 
     /**
-     * Возвращает значение дополнительного свойства строки.
+     * Get the additional property value of the specific row.
      *
-     * @access public
-     * @param int $index индекс строки
-     * @param string $propertyName имя свойства
+     * @param int $index Row index
+     * @param string $propertyName Property value.
      * @return mixed
      */
     public function getRowProperty($index, $propertyName) {
@@ -234,10 +225,9 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Возвращает все дополнительные свойства строки.
+     * Get all additional properties of the specific row.
      *
-     * @access public
-     * @param int $index индекс строки
+     * @param int $index Row index.
      * @return array
      */
     public function getRowProperties($index) {
@@ -249,50 +239,42 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Перемещает итератор на первый элемент.
-     *
-     * @access public
-     * @return void
+     * Rewind the Iterator to the first element.
+     * @link http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind() {
         $this->currentIndex = 0;
     }
 
     /**
-     * Возвращает текущий элемент.
-     *
-     * @access public
-     * @return mixed
+     * Return the current element.
+     * @link http://php.net/manual/en/iterator.current.php
      */
     public function current() {
         return $this->data[$this->currentIndex];
     }
 
     /**
-     * Возвращает ключ текущего элемента.
-     *
-     * @access public
-     * @return mixed
+     * Return the current key.
+     * @link http://php.net/manual/en/iterator.key.php
+     * @return string
      */
     public function key() {
         return $this->currentIndex;
     }
 
     /**
-     * Перемещает итератор на следующий элемент.
-     *
-     * @access public
-     * @return void
+     * Move forward to next element.
+     * @link http://php.net/manual/en/iterator.next.php
      */
     public function next() {
         $this->currentIndex++;
     }
 
     /**
-     * Проверяет, существует ли текущий элемент.
-     *
-     * @access public
-     * @return boolean
+     * Checks if current position is valid.
+     * @link http://php.net/manual/en/iterator.valid.php
+     * @return bool
      */
     public function valid() {
         return ($this->currentIndex < $this->getRowCount());

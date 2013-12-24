@@ -1,27 +1,31 @@
 <?php
-
 /**
- * Класс FileUploader.
+ * @file
+ * FileUploader.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+class FileUploader;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
  */
 
 
 /**
- * Загрузчик файлов на сервер.
+ * File uploader.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
+ * To the server.
+ *
+ * @code
+class FileUploader;
+@endcode
  */
 class FileUploader extends Object {
-
     /**
-     * @access protected
-     * @var array описание загружаемого файла - $_FILE
+     *
+     * @var array $file описание загружаемого файла - $_FILE
      * @see PHP manual, POST method uploads
      */
     protected $file = array();

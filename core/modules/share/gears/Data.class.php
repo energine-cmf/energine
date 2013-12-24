@@ -146,7 +146,7 @@ class Data extends Object {
     }
 
     /**
-     * Get all [data fields](@ref Data::$fields).
+     * Get all @link Data::$fields data fields@endlink.
      *
      * @return array
      */
@@ -155,7 +155,7 @@ class Data extends Object {
     }
 
     /**
-     * Get the [total amount of data fields](@ref Data::$length).
+     * Get the @link Data::$length total amount of data fields@endlink.
      *
      * @return int
      */

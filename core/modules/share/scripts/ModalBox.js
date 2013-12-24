@@ -64,7 +64,7 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
             });
         }
 
-        // todo: I think it would better to make AbstractModalBox class.
+        // todo: I think it would better to make AbstractModalBox class. -- try
         var box = new Element('div').addClass('e-modalbox').inject(document.body);
         box.options = {
             url: null,
@@ -175,7 +175,6 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
 
     },
 
-    // todo: This return not the current but the last modal box. Is this right?
     /**
      * Get the current modal box.
      *
@@ -244,7 +243,7 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
             box.destroy();
         };
 
-        // todo: Do we really need this delay? Without this it seams all works fine.
+        // todo: Do we really need this delay? Without this it seams all works fine. -- test in other browsers
         destroyBox.delay(1);
 
         if (!this.boxes.length) {

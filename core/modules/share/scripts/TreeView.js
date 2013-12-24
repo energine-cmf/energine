@@ -355,7 +355,7 @@ TreeView.Node = new Class(/** @lends TreeView.Node# */{
             this.childs = new Element('ul').addClass('hidden').inject(this.element);
         }
         this.childs.adopt(node.element);
-        //todo: Why we push the node in the tree's node array?
+        //todo: Why we push the node in the tree's node array? -- try to solve
         this.tree.nodes.push(node);
     },
 

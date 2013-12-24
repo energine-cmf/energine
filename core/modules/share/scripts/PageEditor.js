@@ -78,7 +78,6 @@ var PageEditor = new Class(/** @lends PageEditor# */{
                     this.editors.each(function(editor) {
                         editor.save(false);
                     }.bind(this));
-                    // todo: What is it?
                     window.location.href = window.location.href;
                     return '';
                 }
@@ -112,13 +111,6 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
         this.area = area;
         this.area.setProperty('contenteditable', true);
 
-        // todo: Need?
-        /**
-         * Page editor.
-         * @type {PageEditor}
-         */
-        this.pageEditor = pageEditor;
-
         /**
          * Defines whether the editor is active.
          * @type {boolean}
@@ -137,9 +129,8 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
          */
         this.ID = this.area.getProperty('eID') ? this.area.getProperty('eID') : '';
 
-        // todo: What is num?
         /**
-         * Number.
+         * Text block ID.
          * @type {string}
          */
         this.num = this.area.getProperty('num') || '';

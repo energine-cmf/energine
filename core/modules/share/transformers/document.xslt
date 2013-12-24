@@ -390,7 +390,7 @@
                 <xsl:value-of select="generate-id()"/>
             </xsl:if>
         </xsl:variable>
-        <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js{$anticache}"/>
+        <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
     </xsl:template>
 
     <xsl:template match="/document//javascript/variable" mode="head">

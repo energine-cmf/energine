@@ -34,7 +34,6 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
     initialize: function(componentPath, documentId, toolbarName, controlsDesc) {
         this.parent(toolbarName);
 
-        // todo: Strange, to override parent CSS.
         Asset.css('pagetoolbar.css');
 
         /**
@@ -118,7 +117,6 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
         {
             this._reloadWindowInEditMode();
         } else {
-            //todo: What is it?
             window.location = window.location;
         }
     },
@@ -253,7 +251,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
         }
     },
 
-    //todo: Why not to inject this to the editMode() method?
+    //todo: Why not to inject this to the editMode() method? - try
     /**
      * Reload window in the edit mode.
      * @function

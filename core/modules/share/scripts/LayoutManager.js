@@ -490,7 +490,6 @@ LayoutManager.DummyWidget = new Class(/** @lends LayoutManager.DummyWidget# */{
          */
         this.column = column;
 
-        // todo: Why this.element = this.container?
         /**
          * Main element.
          * @type {Element}
@@ -623,6 +622,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
         this.name = xmlDescr.getProperty('data-name');
         this.visible = false;
         // todo: what is it?
+        // static widjet
         this['static'] = false;
 
         htmlElement = htmlElement || document.getElement('[widget=' + this.name + ']');
@@ -642,7 +642,6 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
             this.toolbar = this._buildToolbar();
 
             if (!this['static']) {
-                // fixme: dragging works not correct when the widget changes his column.
                 /**
                  * Dragger.
                  * @type {LayoutManager.Widget.DragBehavior}

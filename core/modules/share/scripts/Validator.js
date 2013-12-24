@@ -90,8 +90,8 @@ var Validator = new Class(/** @lends Validator# */{
      * @param {Element} field Field element.
      */
     scrollToElement: function(field){
-        // todo: I do not full understand this expression.
-        var context = (context=document.getElement('.e-mainframe')) ? context : window;
+        var context=document.getElement('.e-mainframe') || window;
+
         var scroll = new Fx.Scroll(context, {
             offset: {
                 'x': -30,

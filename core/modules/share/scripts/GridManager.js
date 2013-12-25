@@ -1187,7 +1187,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      */
     up: function() {
         Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/up/',
-                     '', this.loadPage.pass(this.pageList.currentPage, this));
+            this.filter.getValue(), this.loadPage.pass(this.pageList.currentPage, this));
     },
 
     /**
@@ -1197,7 +1197,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      */
     down: function() {
         Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/down/',
-                     '', this.loadPage.pass(this.pageList.currentPage, this));
+            this.filter.getValue(), this.loadPage.pass(this.pageList.currentPage, this));
     },
 
     /**

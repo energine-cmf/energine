@@ -563,6 +563,7 @@ Form.Uploader = new Class(/** @lends Form.Uploader# */{
         this.form.validator.showError(this.element, 'При загрузке файла произошла ошибка');
     },
 
+    // todo: make private.
     /**
      * Show the preview.
      *

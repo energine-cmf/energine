@@ -136,95 +136,93 @@ var FeedToolbar = new Class(/** @lends FeedToolbar# */{
         Energine.request(this.singlePath + this.selected + '/down/', null, this._aftermove.pass('down', this));
     },
 
-    Protected: {
-        /**
-         * After move actions.
-         *
-         * @memberOf FeedToolbar#
-         * @function
-         * @public
-         * @param {string} direction Moving direction.
-         */
-        _aftermove: function(direction) {
-            try {
-                if (direction == 'up') {
-                    var sibling = this.previous.getPrevious();
-                    if (!sibling.getProperty('record')) {
-                        throw 'error';
-                    }
-                    $(this.previous).inject(sibling, 'before');
-                } else {
-                    $(this.previous).inject(this.previous.getNext(), 'after');
+    // todo: make protected.
+    /**
+     * After move actions.
+     *
+     * @function
+     * @public
+     * @param {string} direction Moving direction.
+     */
+    _aftermove: function(direction) {
+        try {
+            if (direction == 'up') {
+                var sibling = this.previous.getPrevious();
+                if (!sibling.getProperty('record')) {
+                    throw 'error';
                 }
-            } catch (err) {
-                console.warn(err);
-                this._reload(true);
-            }
-        },
-
-        /**
-         * Selecting.
-         *
-         * @memberOf FeedToolbar#
-         * @function
-         * @public
-         * @param {Element} element Element that must be selected.
-         */
-        _select:function(element){
-            if (this.previous) {
-                this.previous.removeClass('record_select');
-            }
-
-            if (this.previous == element) {
-                this.selected = this.previous = false;
-                this.disableControls();
-                this.enableControls('add');
+                $(this.previous).inject(sibling, 'before');
             } else {
-                this.previous = element;
-                element.addClass('record_select');
-                this.selected = element.getProperty('record');
-                this.enableControls();
+                $(this.previous).inject(this.previous.getNext(), 'after');
             }
-        },
+        } catch (err) {
+            console.warn(err);
+            this._reload(true);
+        }
+    },
 
-        /**
-         * Reload.
-         *
-         * @memberOf FeedToolbar#
-         * @function
-         * @private
-         * @param data
-         */
-        _reload: function(data){
-            if (data) {
-                var form = new Element('form').setProperties({'action':'', 'method':'POST'});
-                form.adopt(new Element('input').setProperty('name', 'editMode').setProperty('type', 'hidden'));
-                document.body.adopt(form);
-                form.submit();
-            }
-        },
+    // todo: make protected
+    /**
+     * Selecting.
+     *
+     * @function
+     * @public
+     * @param {Element} element Element that must be selected.
+     */
+    _select:function(element){
+        if (this.previous) {
+            this.previous.removeClass('record_select');
+        }
 
-        /**
-         * Prepare dataset.
-         *
-         * @memberOf FeedToolbar#
-         * @function
-         * @protected
-         * @param {Element} linkID
-         */
-        _prepareDataSet: function (linkID){
-            var linkChilds;
-            linkChilds = linkID.getElements('[record]');
-            if(linkChilds.length){
-                //список
-                linkID.addClass('active_component');
-                linkID.fade(0.7);
-                linkChilds.each(function(element){
-                    element.addEvent('mouseover', function(){this.addClass('record_highlight')});
-                    element.addEvent('mouseout', function(){this.removeClass('record_highlight')});
-                    element.addEvent('click', this._select.bind(this, element));
-                }, this);
-            }
+        if (this.previous == element) {
+            this.selected = this.previous = false;
+            this.disableControls();
+            this.enableControls('add');
+        } else {
+            this.previous = element;
+            element.addClass('record_select');
+            this.selected = element.getProperty('record');
+            this.enableControls();
+        }
+    },
+
+    // todo: make private
+    /**
+     * Prepare dataset.
+     *
+     * @function
+     * @private
+     * @param linkID
+     */
+    _prepareDataSet: function (linkID){
+        var linkChilds;
+        linkChilds = linkID.getElements('[record]');
+        if(linkChilds.length){
+            //список
+            linkID.addClass('active_component');
+            linkID.fade(0.7);
+            linkChilds.each(function(element){
+                element.addEvent('mouseover', function(){this.addClass('record_highlight')});
+                element.addEvent('mouseout', function(){this.removeClass('record_highlight')});
+                element.addEvent('click', this._select.bind(this, element));
+            }, this);
+        }
+    },
+
+    // todo: make protected
+    /**
+     * Reload.
+     *
+     * @function
+     * @private
+     * @param data
+     */
+    _reload: function(data){
+        if (data) {
+            var form = new Element('form').setProperties({'action':'', 'method':'POST'});
+            form.adopt(new Element('input').setProperty('name', 'editMode').setProperty('type', 'hidden'));
+            document.body.adopt(form);
+            form.submit();
         }
     }
 });

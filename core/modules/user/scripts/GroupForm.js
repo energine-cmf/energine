@@ -46,8 +46,9 @@ var GroupForm = new Class(/** @lends GroupForm# */{
             .setProperty('checked', 'checked');
     },
 
+    // todo: not used?
     /**
-     * Event handler. Uncheck the radio button.
+     * Event handler. Uncheck radio button.
      *
      * @function
      * @public
@@ -55,6 +56,7 @@ var GroupForm = new Class(/** @lends GroupForm# */{
      */
     uncheckGroupRadio: function(event) {
         if (!radio.hasClass('groupRadio')) {
+            //console.log(radio.getParent('tbody').getElement('tr.section_name td.' + radio.getParent('td').getProperty('class') + ' input[type=radio]'));
             radio.getParent('tbody')
                 .getElement('tr.section_name td.' + radio.getParent('td').getProperty('class') + ' input[type=radio]')
                 .removeProperty('checked');

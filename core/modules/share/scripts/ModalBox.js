@@ -54,7 +54,8 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
      * @param {Object} options Set of options for the modal box.
      */
     open: function (options) {
-        function createIframe (mbName, iframeSrc) {
+        //todo: Private?
+        var createIframe = function (mbName, iframeSrc) {
             return new Element('iframe').setProperties({
                 'name': mbName,
                 'src': iframeSrc,
@@ -62,7 +63,7 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
                 'scrolling': 'no',
                 'class': 'e-modalbox-frame'
             });
-        }
+        };
 
         // todo: I think it would better to make AbstractModalBox class.
         var box = new Element('div').addClass('e-modalbox').inject(document.body);
@@ -92,6 +93,7 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
                 postForm.destroy();
             }
         } else if (box.options.code) {
+            //box.set('html', code);
             box.grab(box.options.code);
         } else if (box.options.form) {
             /*
@@ -107,6 +109,7 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
                 fakeIframe = createIframe('iframe' + tabID, 'about:blank'),
                 form = new Element('form', {'class': 'e-grid-form form'}),
                 tabPane = new Element('div', {'class': 'e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1', id: tabID}),
+                mainTab,
                 sharedEvents = {'onmouseover': "this.className = 'highlighted';", 'onmouseout': "this.className=''"},
                 saveCode = 'var w = window.parent.ModalBox;w.setReturnValue.call(w, {"result": document.getElementById("result").value});w.close.apply(w);';
 
@@ -119,7 +122,7 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
                     )
                 ),
                 new Element('div', {'class': 'e-pane-content'}).grab(
-                    new Element('div', {'class': 'e-pane-item'}).grab(
+                    mainTab = new Element('div', {'class': 'e-pane-item'}).grab(
                         new Element('div', {'class': 'field'}).adopt(
                             new Element('div', {'class': 'name'}).grab(
                                 new Element('label', {'text': (box.options.form.field.title || 'Field value'), 'for': 'result'})
@@ -152,6 +155,7 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
 
             }).delay(30);
 
+            //box.set('html', code);
             box.grab(fakeIframe);
         }
         $(document.body).addEvent('keypress', this.keyboardListener.bind(this));

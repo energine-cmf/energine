@@ -142,7 +142,7 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
          * Number.
          * @type {string}
          */
-        this.num = this.area.getProperty('num') || '';
+        this.num = this.area.getProperty('num') ? this.area.getProperty('num') : '';
 
         /**
          * Editor.

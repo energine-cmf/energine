@@ -178,6 +178,7 @@ var DivManager = new Class(/** @lends DivManager# */{
             treeInfo[pid].push(node);
         }
 
+        //todo: Private?
         var lambda = function (nodeId) {
             var node = this.tree.getNodeById(nodeId);
 
@@ -248,16 +249,20 @@ var DivManager = new Class(/** @lends DivManager# */{
         }
     },
 
+    // todo: What is the reason use 'really' argument? - try
     /**
      * Reload.
      *
      * @function
      * @public
+     * @param {boolean} really Confirmation.
      */
-    reload:function () {
-        this.treeRoot.removeChilds();
-        this.treeRoot.id = 'treeRoot';
-        this.loadTree();
+    reload:function (really) {
+        if (really) {
+            this.treeRoot.removeChilds();
+            this.treeRoot.id = 'treeRoot';
+            this.loadTree();
+        }
     },
 
     // Actions:
@@ -282,7 +287,7 @@ var DivManager = new Class(/** @lends DivManager# */{
                             break;
 
                         default :
-                            this.reload();
+                            this.reload(true);
                     }
                 }
             }.bind(this),
@@ -325,6 +330,7 @@ var DivManager = new Class(/** @lends DivManager# */{
         );
     },
 
+    // todo: Private?
     /**
      * Change order.
      *

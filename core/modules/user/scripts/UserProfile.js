@@ -31,12 +31,13 @@ var UserProfile = new Class(/** @lends UserProfile# */{
     },
 
     /**
-     * Extended parent [validateForm]{@link ValidForm#validateForm} method.
+     * Overridden parent [validateForm]{@link ValidForm#validateForm} method.
      * @function
      * @public
      * @param {Object} event Event.
      */
     validateForm: function(event) {
+        //todo: Why not to do all over the parent method?
         var field = $('u_password');
         var field2 = $('u_password2');
 

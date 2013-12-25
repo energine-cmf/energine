@@ -33,14 +33,12 @@ var Validator = new Class(/** @lends Validator# */{
         this.prepareFloatFields();
     },
 
-    // todo: I think this must be private.
     /**
      * Prepare the fields with float values.
      * @function
      * @public
      */
     prepareFloatFields: function(){
-        // todo: Make this private?
         function prepareFunction(event){
             event.target.value = event.target.value.replace(/\,/, '.');
         }

@@ -145,7 +145,6 @@ var TreeView = new Class(/** @lends TreeView# */{
      */
     expandToNode: function(nodeId){
         var nodes = [];
-        //todo: Make this private?
         var lambda = function(node){
             var n;
             if(node && (n = node.getParent())){

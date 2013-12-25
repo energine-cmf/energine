@@ -444,59 +444,63 @@ var FileRepository = new Class(/** @lends FileRepository# */{
      * @param {Object} data Data.
      */
     uploadZip: function (data) {
-        this.request(this.singlePath + 'upload-zip', 'PID=' + this.grid.getSelectedRecord().upl_pid + '&data=' + encodeURIComponent(data.result), function (response) {
+        Energine.request(this.singlePath + 'upload-zip', 'PID=' + this.grid.getSelectedRecord().upl_pid + '&data=' + encodeURIComponent(data.result), function (response) {
             console.log(response)
         });
-        //this.singlePath + 'upload-zip',
     },
 
-    // todo: This method is almost equal to the parent method. Make unique! - do
-    /**
-     * Load the specified page number.
-     *
-     * @function
-     * @public
-     * @param {number} pageNum Page number.
-     */
-    loadPage: function (pageNum) {
-        var postBody = '',
-            url = '',
-            level = '';
+    Protected: {
+        /**
+         * Overridden parent [buildRequestURL]{@link GridManager#buildRequestURL} method.
+         *
+         * @memberOf FileRepository#
+         * @function
+         * @protected
+         * @param {number|string} pageNum Page number.
+         * @returns {string}
+         */
+        buildRequestURL: function(pageNum) {
+            var url = '',
+                level = '';
 
-            this.pageList.disable();
+            var cookiePID = Cookie.read(FILE_COOKIE_NAME);
+            if (this.currentPID === 0) {
+                level = '';
+            } else if (this.currentPID) {
+                level = this.currentPID + '/';
+            } else if (cookiePID) {
+                this.currentPID = cookiePID;
+                level = this.currentPID + '/';
+            }
 
-        if (this.toolbar) {
-            this.toolbar.disableControls();
+            if (this.grid.sort.order) {
+                url = this.singlePath + level + 'get-data/' + this.grid.sort.field + '-'
+                    + this.grid.sort.order + '/page-' + pageNum + '/';
+            } else {
+                url = this.singlePath + level + 'get-data/' + 'page-' + pageNum + '/';
+            }
+
+            return url;
+        },
+
+        /**
+         * Overridden parent [buildRequestPostBody]{@link GridManager#buildRequestPostBody} method.
+         *
+         * @memberOf FileRepository#
+         * @abstract
+         * @function
+         * @protected
+         * @returns {string}
+         */
+        buildRequestPostBody: function() {
+            var postBody = '';
+
+            if (this.filter) {
+                postBody += this.filter.getValue();
+            }
+
+            return postBody;
         }
-        this.overlay.show();
-        this.grid.clear();
-
-        var cookiePID = Cookie.read(FILE_COOKIE_NAME);
-        if (this.currentPID === 0) {
-            level = '';
-        } else if (this.currentPID) {
-            level = this.currentPID + '/';
-        } else if (cookiePID) {
-            this.currentPID = cookiePID;
-            level = this.currentPID + '/';
-        }
-
-        if (this.filter) {
-            postBody += this.filter.getValue();
-        }
-        if (this.grid.sort.order) {
-            url = this.singlePath + level + 'get-data/' + this.grid.sort.field + '-'
-                + this.grid.sort.order + '/page-' + pageNum + '/';
-        } else {
-            url = this.singlePath + level + 'get-data/' + 'page-' + pageNum + '/';
-        }
-
-        this.request(url,
-            postBody,
-            this.processServerResponse.bind(this),
-            null,
-            this.processServerError.bind(this)
-        );
     }
 });
 

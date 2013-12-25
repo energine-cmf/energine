@@ -2,6 +2,7 @@
  * @file Testing class CarouselPlaylist from Carousel.js
  *
  * @author Valerii Zinchenko
+ *
  * @version 0.2
  */
 
@@ -30,27 +31,28 @@ new TestCase('CarouselPlaylist initialisation', {
         loadFixture('playlist.html');
         this.playlistElement = $('playlistID');
     },
+
     testGetPlaylistByID: function() {
-        var NTrhows = 0;
+        var NThrows = 0;
         assertEquals(this.playlistElement.getChildren()[0], new CarouselPlaylist('playlistID').items[0]);
         try {
             new CarouselPlaylist('playlistI');
         } catch (err) {
             assertEquals('Element for CarouselPlaylist was not found in DOM Tree!', err);
-            NTrhows++;
+            NThrows++;
         }
-        assertEquals(1, NTrhows);
+        assertEquals(1, NThrows);
     },
     testGetPlaylistByClass: function() {
-        var NTrhows = 0;
+        var NThrows = 0;
         assertEquals(this.playlistElement.getChildren()[0], new CarouselPlaylist('.playlist').items[0]);
         try {
             new CarouselPlaylist('.playlis');
         } catch (err) {
             assertEquals('Element for CarouselPlaylist was not found in DOM Tree!', err);
-            NTrhows++;
+            NThrows++;
         }
-        assertEquals(1, NTrhows);
+        assertEquals(1, NThrows);
     },
     testHidePlaylist: function () {
         new CarouselPlaylist('.playlist').hide();
@@ -61,7 +63,7 @@ new TestCase('CarouselPlaylist initialisation', {
         var NItems = 7,
             item = this.playlistElement.getElement('.item'),
             n,
-            NTrhows = 0;
+            NThrows = 0;
         for (n = 1; n < NItems; n++)
             item.clone().inject(this.playlistElement);
 
@@ -71,9 +73,9 @@ new TestCase('CarouselPlaylist initialisation', {
             new CarouselPlaylist('.playlist', '.other');
         } catch (err) {
             assertEquals('No items were found in the playlist.', err);
-            NTrhows++;
+            NThrows++;
         }
-        assertEquals(1, NTrhows);
+        assertEquals(1, NThrows);
 
         var items = this.playlistElement.getElements('.item');
         for (n = 0; n < NItems; n += 2)

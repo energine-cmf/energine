@@ -96,7 +96,7 @@ var Playlist = new Class(/** @lends Playlist */{
         }.bind(this));
     },
 
-    // todo: Look for unused variables.
+    // todo: Remove the commented variables?
     /**
      * Create player.
      *

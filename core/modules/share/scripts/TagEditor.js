@@ -35,46 +35,28 @@ var TagEditor = new Class(/** @lends TagEditor# */{
         this.tag_id = this.element.getProperty('tag_id');
     },
 
-    // todo: This method is almost equal to the parent method. Make unique!
-    /**
-     * Load the specified page number.
-     *
-     * @function
-     * @public
-     * @param {number} pageNum Page number.
-     */
-    loadPage:function (pageNum) {
-        var postBody = '',
-            url = '';
+    Protected: {
+        /**
+         * Overridden parent [buildRequestURL]{@link GridManager#buildRequestURL} method.
+         *
+         * @memberOf TagEditor#
+         * @function
+         * @protected
+         * @param {number|string} pageNum Page number.
+         * @returns {string}
+         */
+        buildRequestURL: function(pageNum) {
+            var url = '';
 
-        this.pageList.disable();
-        if (this.toolbar) {
-            this.toolbar.disableControls();
-        }
-        this.overlay.show();
-        this.grid.clear();
+            if (this.grid.sort.order) {
+                url = this.singlePath + this.tag_id + '/get-data/' + this.grid.sort.field + '-'
+                    + this.grid.sort.order + '/page-' + pageNum
+            } else {
+                url = this.singlePath + this.tag_id + '/get-data/page-' + pageNum;
+            }
 
-        if (this.langId) {
-            postBody += 'languageID=' + this.langId + '&';
+            return url;
         }
-        if (this.filter) {
-            postBody += this.filter.getValue();
-        }
-
-        if (this.grid.sort.order) {
-            url = this.singlePath + this.tag_id + '/get-data/' + this.grid.sort.field + '-'
-                + this.grid.sort.order + '/page-' + pageNum
-        } else {
-            url = this.singlePath + this.tag_id + '/get-data/page-' + pageNum;
-        }
-
-        this.request(url,
-            postBody,
-            // FIXME: The response result at the first call has no data for Grid. (Сайты -> Редактировать -> Теги)
-            this.processServerResponse.bind(this),
-            null,
-            this.processServerError.bind(this)
-        );
     },
 
     /**

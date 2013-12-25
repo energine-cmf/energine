@@ -1,71 +1,63 @@
 <?php
-
 /**
- * Класс Object.
+ * @file
+ * Object
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * - abstract class Object.
+ *
+ * @package kernel
  * @author 1m.dm
  * @copyright Energine 2006
  */
 
-
 /**
- * Родительский класс для всех объектов системы.
- * Обеспечивает общую функциональность объектов
- * измерение времени выполнения и загрузку данных из конфигурационного файла
+ * Te main parent abstract class for all objects in the system.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
- * @abstract
+ * This provides the general functionality to the objects:
+ * - measure the execution time;
+ * - parse and process the configuration file.
  */
 abstract class Object {
     /**
-     * Имя файла конфигурации
+     * Configuration file name.
      */
     const CONFIG_FILE = 'system.config.php';
 
     /**
-     * @access private
-     * @static
-     * @var SimpleXMLElement конфигурация системы
+     * System configuration.
+     * It has tree structure.
+     * @var SimpleXMLElement $systemConfig
      */
     private static $systemConfig;
 
     /**
-     * @access private
-     * @var float счетчик времени выполнения
+     * Execution time counter.
+     * @var float $executionTime
      */
     private $executionTime;
 
     /**
-     * Запускает счетчик времени выполнения.
-     *
-     * @access public
-     * @return void
+     * Start the [execution time counter](@ref Object::$executionTime).
      */
     public function startTimer() {
         $this->executionTime = microtime(true);
     }
 
     /**
-     * Останавливает счетчик времени выполнения.
+     * Stop the [execution time counter](@ref Object::$executionTime).
      *
-     * @access public
-     * @return float
+     * @return Execution time.
      */
     public function stopTimer() {
         return ($this->executionTime = microtime(true) - $this->executionTime);
     }
 
     /**
-     * Сбрасывает счетчик времени, возвращает предыдущее значение счетчика
+     * Reset the [execution time counter](@ref Object::$executionTime).
      *
-     * @return float
-     * @access public
+     * @return Last value.
      */
-
     public function resetTimer() {
         $result = $this->stopTimer();
         $this->startTimer();
@@ -73,26 +65,22 @@ abstract class Object {
     }
 
     /**
-     * Возвращает значение счетчика времени выполнения.
+     * Get the current value of the [execution time counter](@ref Object::$executionTime).
      *
-     * @access public
-     * @return float
+     * @return Current value.
      */
     public function getTimer() {
         return $this->executionTime;
     }
 
     /**
-     * Возвращает значение указанного параметра конфигурации.
-     * Конфигурация представляет из себя дерево параметров;
-     * в качестве разделителя уровней дерева используется точка.
-     * Пример:
-     *     Object::_getConfigValue('database.dsn');
+     * Get the configuration value by parameter path.
      *
-     * @access public
-     * @static
-     * @param string $paramPath путь к параметру в дереве конфигурации
-     * @param mixed $initial Дефолтное значение - будет использоваться если запрошенного значения не существует
+     * @note Use dot character as separator between configuration's tree levels.
+     * @code Object::_getConfigValue('database.dsn'); @endcode
+     *
+     * @param string $paramPath Parameter path.
+     * @param mixed $initial Default value. It will be used if the looked value is not found.
      * @return string
      */
     public static function _getConfigValue($paramPath, $initial = null) {
@@ -111,22 +99,20 @@ abstract class Object {
     }
 
     /**
-     * Нестатический метод-обёртка над Object::_getConfigValue -
-     * для удобства использования внутри производных классов.
+     * Nonstatic method-wrapper over Object::_getConfigValue for simpler using inside the derivative classes.
      *
-     * @access public
-     * @param string $paramPath путь к параметру в дереве конфигурации
-     * @param mixed $initial дефолтное значение
-     * @return mixed
      * @see Object::_getConfigValue()
+     *
+     * @param string $paramPath Parameter path.
+     * @param mixed $initial Default value. It will be used if the looked value is not found.
+     * @return string
      */
     public function getConfigValue($paramPath, $initial = null) {
         return self::_getConfigValue($paramPath, $initial);
     }
 
     /**
-     * Инициализирует статическую переменную $systemConfig значением $config
-     *
+     * Set the Object::$systemConfig.
      * @param array $config
      */
     public static function setConfigArray($config) {
@@ -134,8 +120,7 @@ abstract class Object {
     }
 
     /**
-     * Возвращает конфигурационный массив
-     *
+     * Get the [configurations](@ref Object::$systemConfig).
      * @return array
      */
     public static function getConfigArray() {

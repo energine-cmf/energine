@@ -918,12 +918,19 @@ var GridManager = new Class(/** @lends GridManager# */{
             url = this.singlePath + 'get-data/page-' + pageNum;
         }
 
-        Energine.request(url,
-            postBody,
-            this.processServerResponse.bind(this),
-            null,
-            this.processServerError.bind(this)
-        );
+        /*
+        This delay was created because of some stupid behavior in Firefox.
+        this.paneContent in build() has different height without delay.
+        Firefox 26
+         */
+        (function() {
+            Energine.request(url,
+                postBody,
+                this.processServerResponse.bind(this),
+                null,
+                this.processServerError.bind(this)
+            );
+        }).delay(0, this);
     },
 
     /**

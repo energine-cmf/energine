@@ -12,7 +12,6 @@
  * @version 1.0.0
  */
 
-//todo: Make this as MooTools class? - leave
 /**
  * Words.
  *

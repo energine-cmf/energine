@@ -23,7 +23,6 @@ var Vote = new Class(/** @lends Vote# */{
          * @type {Element}
          */
         this.element = $(el);
-        //todo: Is url really need a random number? I think, unique ID would be better. - leave as is.
         var url = this.element.getProperty('vote_url')+'?html&' + Math.floor((Math.random()*10000));
         if(url){
             this.element.set(

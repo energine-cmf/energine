@@ -14,9 +14,9 @@
  *
  * @requires Energine
  *
- * @author Pavel Dubenko
+ * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**

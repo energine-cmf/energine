@@ -17,7 +17,7 @@
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.0.1
+ * @version 1.0.3
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.

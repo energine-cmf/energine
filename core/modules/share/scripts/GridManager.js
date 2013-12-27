@@ -17,7 +17,7 @@
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.0.3
+ * @version 1.1.0
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
@@ -185,7 +185,7 @@ var Grid = (function() {
             this.element = $(element);
             this.setOptions(options);
 
-            // TODO: I think this.headOff can be removed, because it is allways hidden.
+            // TODO: I think this.headOff can be removed, because it is always hidden.
             /**
              * Header of a table in the element '.gridContainer'.
              * @type {Element}
@@ -325,21 +325,9 @@ var Grid = (function() {
          * @public
          */
         build: function() {
-            var preiouslySelectedRecordKey = this.getSelectedRecordKey(),
-                headers = [];
+            var preiouslySelectedRecordKey = this.getSelectedRecordKey();
 
             this.selectedItem = null;
-
-            // Set the column width to the 0, if the columns are not fixed.
-            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
-                this.element.getElements('.gridHeadContainer col').each(function (element, id) {
-                    element.setStyle('width', 0);
-                });
-
-                this.element.getElements('.gridContainer col').each(function (element, id) {
-                    element.setStyle('width', 0);
-                });
-            }
 
             if (!this.isEmpty()) {
                 if (!this.dataKeyExists(preiouslySelectedRecordKey)) {
@@ -355,32 +343,7 @@ var Grid = (function() {
                 new Element('tr').inject(this.tbody);
             }
 
-            // Adjust padding-right for '.gridHeadContainer' element.
-            var gridHeadContainer = this.element.getElement('.gridHeadContainer');
-            var headSize = gridHeadContainer.getDimensions({computeSize: true});
-            var bodySize = this.element.getElement('.gridBodyContainer .gridTable').getDimensions({computeSize: true});
-
-            var scrollBarWidth = headSize.totalWidth - bodySize.totalWidth;
-            scrollBarWidth -= headSize['border-left-width'] + headSize['border-right-width'];
-            gridHeadContainer.setStyle('padding-right', scrollBarWidth + 'px');
-
-            // FIXME: If the element is not visible, then the column width will be incorrect extracted. (Опроси -> Редактировать)
-            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
-                //FIXME: In Opera the width sets incorrect.
-                // Get the col width from the tbody
-                this.tbody.getElement('tr').getElements('td').each(function (td, id) {
-                    headers[id] = td.getDimensions({computeSize: true}).totalWidth;
-                });
-                // Set the col width of the header
-                this.element.getElements('.gridHeadContainer col').each(function (col, id) {
-                    col.setStyle('width', (!Browser.opera1) ? headers[id] : headers[id]-10);
-                });
-            } else {
-                this.tbody.getParent().setStyles({
-                    wordWrap: 'break-word',
-                    tableLayout: 'fixed'
-                });
-            }
+            this.adjustColumns();
 
             /**
              * Main element that holds Grid's toolbar, header and container.
@@ -495,6 +458,56 @@ var Grid = (function() {
                         cell.set('html', '&#160;');
                     }
             }
+        }.protect(),
+
+        //FIXME: The last column in Opera won't receive the correct width.
+        /**
+         * Adjust columns width of the table body and table header.
+         *
+         * @function
+         * @protected
+         */
+        adjustColumns: function() {
+            // Adjust padding-right for '.gridHeadContainer' element.
+            var headers = [],
+                gridHeadContainer = this.element.getElement('.gridHeadContainer');
+
+            gridHeadContainer.setStyle('padding-right', ScrollBarWidth + 'px');
+
+            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
+                // Get the col width from the tbody
+                this.tbody.getElement('tr').getElements('td').each(function (td, id) {
+                    headers[id] = td.getDimensions({computeSize: true}).totalWidth;
+                });
+                // Set the col width of the header
+                this.element.getElements('.gridHeadContainer col').each(function (col, id) {
+                    col.setStyle('width', headers[id]);
+                });
+
+                this.element.getElements('.gridContainer col').each(function (col, id) {
+                    col.setStyle('width', headers[id]);
+                });
+
+                var refetch = this.element.getElement('.gridHeadContainer tr').getElements('th').some(function(el, id) {
+                    return el.getDimensions({computeSize: true}).totalWidth != headers[id];
+                });
+                if (refetch) {
+                    this.element.getElements('.gridHeadContainer col').each(function (col, id) {
+                        headers[id] = col.getDimensions({computeSize: true}).totalWidth;
+                    });
+                    this.element.getElements('.gridContainer col').each(function (col, id) {
+                        col.setStyle('width', headers[id]);
+                    });
+                }
+            }
+
+            this.tbody.getParent().setStyles({
+                wordWrap: 'break-word',
+                tableLayout: 'fixed'
+            });
+            gridHeadContainer.getElement('.gridTable').setStyles({
+                tableLayout: 'fixed'
+            });
         }.protect(),
 
         /**
@@ -1484,4 +1497,32 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
             this.dps.addClass('hidden');
         }
     }
+});
+
+document.addEvent('domready', function() {
+    /**
+     * Scroll bar width of the browser.
+     * @type {number}
+     */
+    ScrollBarWidth = window.top.ScrollBarWidth || (function() {
+        var parent = new Element('div', {
+            styles: {
+                height: '100px',
+                overflow: 'scroll'
+            }
+        });
+        var child = new Element('div', {
+            styles: {
+                height: '200px'
+            }
+        });
+
+        parent.grab(child);
+        document.body.grab(parent);
+
+        var width = parent.offsetWidth - child.offsetWidth;
+        parent.destroy();
+
+        return width;
+    })();
 });

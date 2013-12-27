@@ -1,7 +1,7 @@
 /**
  * @file Contain the description of the next classes:
  * <ul>
- *     <li>[LayoutManager]{@link LayoutManager}</li>
+ *     <li>[Scrollbar]{@link Scrollbar}</li>
  * </ul>
  *
  * @requires Energine

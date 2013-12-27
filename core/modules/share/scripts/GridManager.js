@@ -24,7 +24,6 @@
 
 ScriptLoader.load('TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'datepicker');
 
-// todo: The name 'Grid' does not reflect his main function.
 /**
  * From MooTools it implements: Events, Options.
  *
@@ -356,40 +355,32 @@ var Grid = (function() {
                 new Element('tr').inject(this.tbody);
             }
 
+            // Adjust padding-right for '.gridHeadContainer' element.
+            var gridHeadContainer = this.element.getElement('.gridHeadContainer');
+            var headSize = gridHeadContainer.getDimensions({computeSize: true});
+            var bodySize = this.element.getElement('.gridBodyContainer .gridTable').getDimensions({computeSize: true});
+
+            var scrollBarWidth = headSize.totalWidth - bodySize.totalWidth;
+            scrollBarWidth -= headSize['border-left-width'] + headSize['border-right-width'];
+            gridHeadContainer.setStyle('padding-right', scrollBarWidth + 'px');
+
             // FIXME: If the element is not visible, then the column width will be incorrect extracted. (Опроси -> Редактировать)
             if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
+                //FIXME: In Opera the width sets incorrect.
                 // Get the col width from the tbody
-                this.tbody.getElement('tr').getElements('td').each(function (element, id) {
-                    headers[id] = element.clientWidth;
+                this.tbody.getElement('tr').getElements('td').each(function (td, id) {
+                    headers[id] = td.getDimensions({computeSize: true}).totalWidth;
                 });
+                console.log(headers);
                 // Set the col width of the header
-                this.element.getElements('.gridHeadContainer col').each(function (element, id) {
-                    element.setStyle('width', headers[id]);
+                this.element.getElements('.gridHeadContainer col').each(function (col, id) {
+                    col.setStyle('width', (!Browser.opera1) ? headers[id] : headers[id]-10);
                 });
-
-                // Recursive resetting the header size.
-                var makeRecursive = this.element.getElement('.gridHeadContainer tr').getElements('th').some(function(el, id) {
-                    return el.getSize().x != headers[id];
+            } else {
+                this.tbody.getParent().setStyles({
+                    wordWrap: 'break-word',
+                    tableLayout: 'fixed'
                 });
-                if (makeRecursive) {
-                    // This is need if the real column width is different from setted width.
-                    this.element.getElement('.gridHeadContainer tr').getElements('th').each(function(el, id) {
-                        headers[id] = el.getSize().x;
-                    });
-                    // Reset the col width of the tbody
-                    this.element.getElements('.gridContainer col').each(function (element, id) {
-                        element.setStyle('width', headers[id]);
-                    });
-
-                    // Get the col width from the tbody
-                    this.tbody.getElement('tr').getElements('td').each(function (element, id) {
-                        headers[id] = element.clientWidth;
-                    });
-                    // Set the col width of the header
-                    this.element.getElements('.gridHeadContainer col').each(function (element, id) {
-                        element.setStyle('width', headers[id]);
-                    });
-                }
             }
 
             /**
@@ -669,7 +660,6 @@ var Grid = (function() {
     });
 })();
 
-// todo: The name 'GridManager' does not reflect his main function.
 /**
  * Grid Manager.
  *

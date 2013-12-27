@@ -371,7 +371,6 @@ var Grid = (function() {
                 this.tbody.getElement('tr').getElements('td').each(function (td, id) {
                     headers[id] = td.getDimensions({computeSize: true}).totalWidth;
                 });
-                console.log(headers);
                 // Set the col width of the header
                 this.element.getElements('.gridHeadContainer col').each(function (col, id) {
                     col.setStyle('width', (!Browser.opera1) ? headers[id] : headers[id]-10);

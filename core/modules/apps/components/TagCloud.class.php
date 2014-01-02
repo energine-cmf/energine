@@ -53,12 +53,9 @@ class TagCloud extends DBDataSet {
     private $tagsInfo;
 
     /**
-     * Конструктор класса
-     *
      * @param string $name
      * @param string $module
      * @param array $params
-     * @access public
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -80,7 +77,7 @@ class TagCloud extends DBDataSet {
             $this->filterId = $this->document->getID();
         }
         $this->tagsInfo = $this->getTagsInfo();
-        $this->addFilterCondition(array('tag_id' => simplifyDBResult($this->tagsInfo, 'tag_id')));
+        $this->addFilterCondition(array($this->getTableName().'.tag_id' => simplifyDBResult($this->tagsInfo, 'tag_id')));
         $this->addTranslation('TXT_TAGS');
     }
 

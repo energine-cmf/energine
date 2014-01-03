@@ -18,11 +18,11 @@ class OGObject extends Object {
     /**
      * Ширина изображения по умолчанию
      */
-    const DEFAULT_IMAGE_WIDTH = 300;
+    const DEFAULT_IMAGE_WIDTH = 640;
     /***
      * Высота изображения по умолчанию
      */
-    const DEFAULT_IMAGE_HEIGHT = 250;
+    const DEFAULT_IMAGE_HEIGHT = 360;
     /**
      * og:image
      * В принципе их может быть несколько на странице, пока реализовано только добавление одного

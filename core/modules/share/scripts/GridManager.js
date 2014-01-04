@@ -425,6 +425,9 @@ var Grid = (function() {
                         'width':'13', 'height':'13'}).inject(cell);
                     cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
                     break;
+                case 'value':
+                    cell.set('html', record[fieldName]['value']);
+                    break;
                 case 'textbox':
                     if (record[fieldName] && Object.getLength(record[fieldName])) {
                         cell.set('html', Object.values(record[fieldName]).join(', '));
@@ -1282,7 +1285,7 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
         }.bind(this));
 
         resetLink.addEvent('click', function (e) {
-            Energine.cancelEvent(e);
+            e.stop();
             this.remove();
             gridManager.reload();
         }.bind(this));

@@ -263,7 +263,7 @@ class DBDataSet extends DataSet {
                         }
                         $value = array(
                             'id' => $value,
-                            'value' => $values[$value][$relations[$valueFieldName]['valueField']]
+                            'value' => $values[$value][$relations[$name]['valueField']]
                         );
                     }
                 }

@@ -231,39 +231,34 @@ class DBDataSet extends DataSet {
         $valueFields = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_VALUE);
         if (!empty($valueFields)) {
             //Готовим инфу для получения данных их связанных таблиц
-            foreach($valueFields as $valueFieldName =>$valueField){
+            foreach ($valueFields as $valueFieldName => $valueField) {
                 $relInfo = $valueField->getPropertyValue('key');
-                if(is_array($relInfo)){
+                if (is_array($relInfo)) {
                     $langTable = $this->dbh->getTranslationTablename($relInfo['tableName']);
                     $relations[$valueFieldName] = array(
-                        'table' => (!$langTable)?$relInfo['tableName']: $langTable,
+                        'table' => (!$langTable) ? $relInfo['tableName'] : $langTable,
                         'field' => $relInfo['fieldName'],
-                        'lang' => ($langTable)?E()->getLanguage()->getCurrent():false,
+                        'lang' => ($langTable) ? E()->getLanguage()->getCurrent() : false,
                         'valueField' => substr($relInfo['fieldName'], 0, strrpos($relInfo['fieldName'], '_')) . '_name'
                     );
 
                     $cond = array(
                         $relations[$valueFieldName]['field'] => simplifyDBResult($data, $relations[$valueFieldName]['field'])
                     );
-                    if($relations[$valueFieldName]['lang']){
+                    if ($relations[$valueFieldName]['lang']) {
                         $cond['lang_id'] = $relations[$valueFieldName]['lang'];
                     }
-                    $values = convertDBResult($this->dbh->select($relations[$valueFieldName]['table'], array($relations[$valueFieldName]['field'], $relations[$valueFieldName]['valueField']), $cond), $relations[$valueFieldName]['field'], true);
+                    $values[$valueFieldName] = convertDBResult($this->dbh->select($relations[$valueFieldName]['table'], array($relations[$valueFieldName]['field'], $relations[$valueFieldName]['valueField']), $cond), $relations[$valueFieldName]['field'], true);
                 }
 
             }
             unset($valueFields, $langTable, $relInfo);
-
-            foreach ($data as &$row) {
-                foreach ($row as $name => &$value) {
-                    if (in_array($name, array_keys($relations))) {
-                        $cond = array($relations[$name]['field'] => $value);
-                        if($relations[$name]['lang']){
-                            $cond['lang_id'] = $relations[$name]['lang'];
-                        }
-                        $value = array(
+            foreach ($data as $key => $row) {
+                foreach ($row as $name => $value) {
+                    if (in_array($name, array_keys($relations)) && array_key_exists($value, $values[$name])) {
+                        $data[$key][$name] = array(
                             'id' => $value,
-                            'value' => $values[$value][$relations[$name]['valueField']]
+                            'value' => $values[$name][$value][$relations[$name]['valueField']]
                         );
                     }
                 }

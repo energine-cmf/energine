@@ -413,7 +413,6 @@ var CommentsForm = new Class(/** @lends CommentsForm# */{
         );
     },
 
-    //todo: Why not to create Overlay object in the constructor and simple call his show() method instead of this method?
     /**
      * Show overlay.
      * @function

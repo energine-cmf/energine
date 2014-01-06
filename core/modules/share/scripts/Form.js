@@ -593,7 +593,6 @@ Form.Uploader = new Class(/** @lends Form.Uploader# */{
     },
 
     //todo Сделать удаление файла
-    // todo: The argument 'control' is not used. Delete him? - leave
     /**
      * Remove the file preview.
      *

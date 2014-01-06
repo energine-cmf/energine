@@ -182,93 +182,90 @@ class DBDataSet extends DataSet {
      * @return array | false
      */
     private function modify($data) {
-        //Перечень мультиполей
-        $multiFields = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_MULTI);
-        //Загрузка значений из м2м таблиц
-        if (!empty($multiFields)) {
-            $m2mData = array();
-            $primaryKeyName = $this->getPK();
-            $pks = simplifyDBResult($data, $primaryKeyName);
+       if(is_array($data)){
+           //Перечень мультиполей
+           $multiFields = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_MULTI);
+           //Загрузка значений из м2м таблиц
+           if (!empty($multiFields)) {
+               $m2mData = array();
+               $primaryKeyName = $this->getPK();
+               $pks = simplifyDBResult($data, $primaryKeyName);
 
-            //Загружаем в $m2mData значения всех мульти полей
-            //формат array($MultiFieldName => array($pk => $values))
-            foreach ($multiFields as $mfd) {
-                $relInfo = $mfd->getPropertyValue('key');
-                if (is_array($relInfo) && $this->dbh->tableExists($relInfo['tableName'])) {
-                    $res = $this->dbh->select(
-                        $relInfo['tableName'],
-                        true,
-                        array(
-                            $primaryKeyName => $pks
-                        )
-                    );
+               //Загружаем в $m2mData значения всех мульти полей
+               //формат array($MultiFieldName => array($pk => $values))
+               foreach ($multiFields as $mfd) {
+                   $relInfo = $mfd->getPropertyValue('key');
+                   if (is_array($relInfo) && $this->dbh->tableExists($relInfo['tableName'])) {
+                       $res = $this->dbh->select(
+                           $relInfo['tableName'],
+                           true,
+                           array(
+                               $primaryKeyName => $pks
+                           )
+                       );
 
-                    if (is_array($res)) {
-                        foreach ($res as $row) {
-                            $pk = $row[$relInfo['fieldName']];
-                            unset($row[$relInfo['fieldName']]);
-                            $m2mData[$mfd->getName()][$pk][] = current($row);
-                        }
-                    }
-                }
-            }
-            //Проходимся по всем данным
-            foreach ($data as $key => $row) {
-                //потом по multi полям
-                foreach ($m2mData as $fieldName => $m2mValues) {
-                    //Если в списке полей данных существует мультиполе с этим именем
-                    if (array_key_exists($fieldName, $row)) {
-                        //
-                        foreach ($m2mValues as $pk => $values) {
-                            if ($row[$primaryKeyName] == $pk) {
-                                $data[$key][$fieldName] = $values;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        $valueFields = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_VALUE);
-        if (!empty($valueFields)) {
-            //Готовим инфу для получения данных их связанных таблиц
-            foreach($valueFields as $valueFieldName =>$valueField){
-                $relInfo = $valueField->getPropertyValue('key');
-                if(is_array($relInfo)){
-                    $langTable = $this->dbh->getTranslationTablename($relInfo['tableName']);
-                    $relations[$valueFieldName] = array(
-                        'table' => (!$langTable)?$relInfo['tableName']: $langTable,
-                        'field' => $relInfo['fieldName'],
-                        'lang' => ($langTable)?E()->getLanguage()->getCurrent():false,
-                        'valueField' => substr($relInfo['fieldName'], 0, strrpos($relInfo['fieldName'], '_')) . '_name'
-                    );
+                       if (is_array($res)) {
+                           foreach ($res as $row) {
+                               $pk = $row[$relInfo['fieldName']];
+                               unset($row[$relInfo['fieldName']]);
+                               $m2mData[$mfd->getName()][$pk][] = current($row);
+                           }
+                       }
+                   }
+               }
+               //Проходимся по всем данным
+               foreach ($data as $key => $row) {
+                   //потом по multi полям
+                   foreach ($m2mData as $fieldName => $m2mValues) {
+                       //Если в списке полей данных существует мультиполе с этим именем
+                       if (array_key_exists($fieldName, $row)) {
+                           //
+                           foreach ($m2mValues as $pk => $values) {
+                               if ($row[$primaryKeyName] == $pk) {
+                                   $data[$key][$fieldName] = $values;
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+           $valueFields = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_VALUE);
+           if (!empty($valueFields)) {
+               //Готовим инфу для получения данных их связанных таблиц
+               foreach ($valueFields as $valueFieldName => $valueField) {
+                   $relInfo = $valueField->getPropertyValue('key');
+                   if (is_array($relInfo)) {
+                       $langTable = $this->dbh->getTranslationTablename($relInfo['tableName']);
+                       $relations[$valueFieldName] = array(
+                           'table' => (!$langTable) ? $relInfo['tableName'] : $langTable,
+                           'field' => $relInfo['fieldName'],
+                           'lang' => ($langTable) ? E()->getLanguage()->getCurrent() : false,
+                           'valueField' => substr($relInfo['fieldName'], 0, strrpos($relInfo['fieldName'], '_')) . '_name'
+                       );
 
-                    $cond = array(
-                        $relations[$valueFieldName]['field'] => simplifyDBResult($data, $relations[$valueFieldName]['field'])
-                    );
-                    if($relations[$valueFieldName]['lang']){
-                        $cond['lang_id'] = $relations[$valueFieldName]['lang'];
-                    }
-                    $values = convertDBResult($this->dbh->select($relations[$valueFieldName]['table'], array($relations[$valueFieldName]['field'], $relations[$valueFieldName]['valueField']), $cond), $relations[$valueFieldName]['field'], true);
-                }
+                       $cond = array(
+                           $relations[$valueFieldName]['field'] => simplifyDBResult($data, $relations[$valueFieldName]['field'])
+                       );
+                       if ($relations[$valueFieldName]['lang']) {
+                           $cond['lang_id'] = $relations[$valueFieldName]['lang'];
+                       }
+                       $values[$valueFieldName] = convertDBResult($this->dbh->select($relations[$valueFieldName]['table'], array($relations[$valueFieldName]['field'], $relations[$valueFieldName]['valueField']), $cond), $relations[$valueFieldName]['field'], true);
+                   }
 
-            }
-            unset($valueFields, $langTable, $relInfo);
-
-            foreach ($data as &$row) {
-                foreach ($row as $name => &$value) {
-                    if (in_array($name, array_keys($relations))) {
-                        $cond = array($relations[$name]['field'] => $value);
-                        if($relations[$name]['lang']){
-                            $cond['lang_id'] = $relations[$name]['lang'];
-                        }
-                        $value = array(
-                            'id' => $value,
-                            'value' => $values[$value][$relations[$valueFieldName]['valueField']]
-                        );
-                    }
-                }
-            }
-        }
+               }
+               unset($valueFields, $langTable, $relInfo);
+               foreach ($data as $key => $row) {
+                   foreach ($row as $name => $value) {
+                       if (in_array($name, array_keys($relations)) && array_key_exists($value, $values[$name])) {
+                           $data[$key][$name] = array(
+                               'id' => $value,
+                               'value' => $values[$name][$value][$relations[$name]['valueField']]
+                           );
+                       }
+                   }
+               }
+           }
+       }
         return $data;
     }
 

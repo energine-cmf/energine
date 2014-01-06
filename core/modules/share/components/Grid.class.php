@@ -939,6 +939,7 @@ class Grid extends DBDataSet {
     /**
      * Перемещает запись на позицию выше заданной / ниже заданной / наверх списка / вниз списка
      *
+     * @TODO: Пофиксить перемещение в начало списка, т.к. сейчаспорядковый номер может выйти меньше 0. Аналогичная ситуация с move above.
      * @throws SystemException
      * @access protected
      * @return void
@@ -1046,8 +1047,7 @@ class Grid extends DBDataSet {
      */
 
     protected function changeOrder($direction) {
-
-
+        $this->applyUserFilter();
         if (!$this->getOrderColumn()) {
             //Если не задана колонка для пользовательской сортировки то на выход
             throw new SystemException('ERR_NO_ORDER_COLUMN', SystemException::ERR_DEVELOPER);

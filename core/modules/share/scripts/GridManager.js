@@ -17,14 +17,13 @@
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.0.1
+ * @version 1.1.0
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
 
 ScriptLoader.load('TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'datepicker');
 
-// todo: The name 'Grid' does not reflect his main function.
 /**
  * From MooTools it implements: Events, Options.
  *
@@ -186,7 +185,7 @@ var Grid = (function() {
             this.element = $(element);
             this.setOptions(options);
 
-            // TODO: I think this.headOff can be removed, because it is allways hidden.
+            // TODO: I think this.headOff can be removed, because it is always hidden.
             /**
              * Header of a table in the element '.gridContainer'.
              * @type {Element}
@@ -326,21 +325,9 @@ var Grid = (function() {
          * @public
          */
         build: function() {
-            var preiouslySelectedRecordKey = this.getSelectedRecordKey(),
-                headers = [];
+            var preiouslySelectedRecordKey = this.getSelectedRecordKey();
 
             this.selectedItem = null;
-
-            // Set the column width to the 0, if the columns are not fixed.
-            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
-                this.element.getElements('.gridHeadContainer col').each(function (element, id) {
-                    element.setStyle('width', 0);
-                });
-
-                this.element.getElements('.gridContainer col').each(function (element, id) {
-                    element.setStyle('width', 0);
-                });
-            }
 
             if (!this.isEmpty()) {
                 if (!this.dataKeyExists(preiouslySelectedRecordKey)) {
@@ -356,41 +343,7 @@ var Grid = (function() {
                 new Element('tr').inject(this.tbody);
             }
 
-            // FIXME: If the element is not visible, then the column width will be incorrect extracted. (Опроси -> Редактировать)
-            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
-                // Get the col width from the tbody
-                this.tbody.getElement('tr').getElements('td').each(function (element, id) {
-                    headers[id] = element.clientWidth;
-                });
-                // Set the col width of the header
-                this.element.getElements('.gridHeadContainer col').each(function (element, id) {
-                    element.setStyle('width', headers[id]);
-                });
-
-                // Recursive resetting the header size.
-                var makeRecursive = this.element.getElement('.gridHeadContainer tr').getElements('th').some(function(el, id) {
-                    return el.getSize().x != headers[id];
-                });
-                if (makeRecursive) {
-                    // This is need if the real column width is different from setted width.
-                    this.element.getElement('.gridHeadContainer tr').getElements('th').each(function(el, id) {
-                        headers[id] = el.getSize().x;
-                    });
-                    // Reset the col width of the tbody
-                    this.element.getElements('.gridContainer col').each(function (element, id) {
-                        element.setStyle('width', headers[id]);
-                    });
-
-                    // Get the col width from the tbody
-                    this.tbody.getElement('tr').getElements('td').each(function (element, id) {
-                        headers[id] = element.clientWidth;
-                    });
-                    // Set the col width of the header
-                    this.element.getElements('.gridHeadContainer col').each(function (element, id) {
-                        element.setStyle('width', headers[id]);
-                    });
-                }
-            }
+            this.adjustColumns();
 
             /**
              * Main element that holds Grid's toolbar, header and container.
@@ -472,6 +425,9 @@ var Grid = (function() {
                         'width':'13', 'height':'13'}).inject(cell);
                     cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
                     break;
+                case 'value':
+                    cell.set('html', record[fieldName]['value']);
+                    break;
                 case 'textbox':
                     if (record[fieldName] && Object.getLength(record[fieldName])) {
                         cell.set('html', Object.values(record[fieldName]).join(', '));
@@ -505,6 +461,56 @@ var Grid = (function() {
                         cell.set('html', '&#160;');
                     }
             }
+        }.protect(),
+
+        //FIXME: The last column in Opera won't receive the correct width.
+        /**
+         * Adjust columns width of the table body and table header.
+         *
+         * @function
+         * @protected
+         */
+        adjustColumns: function() {
+            // Adjust padding-right for '.gridHeadContainer' element.
+            var headers = [],
+                gridHeadContainer = this.element.getElement('.gridHeadContainer');
+
+            gridHeadContainer.setStyle('padding-right', ScrollBarWidth + 'px');
+
+            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
+                // Get the col width from the tbody
+                this.tbody.getElement('tr').getElements('td').each(function (td, id) {
+                    headers[id] = td.getDimensions({computeSize: true}).totalWidth;
+                });
+                // Set the col width of the header
+                this.element.getElements('.gridHeadContainer col').each(function (col, id) {
+                    col.setStyle('width', headers[id]);
+                });
+
+                this.element.getElements('.gridContainer col').each(function (col, id) {
+                    col.setStyle('width', headers[id]);
+                });
+
+                var refetch = this.element.getElement('.gridHeadContainer tr').getElements('th').some(function(el, id) {
+                    return el.getDimensions({computeSize: true}).totalWidth != headers[id];
+                });
+                if (refetch) {
+                    this.element.getElements('.gridHeadContainer col').each(function (col, id) {
+                        headers[id] = col.getDimensions({computeSize: true}).totalWidth;
+                    });
+                    this.element.getElements('.gridContainer col').each(function (col, id) {
+                        col.setStyle('width', headers[id]);
+                    });
+                }
+            }
+
+            this.tbody.getParent().setStyles({
+                wordWrap: 'break-word',
+                tableLayout: 'fixed'
+            });
+            gridHeadContainer.getElement('.gridTable').setStyles({
+                tableLayout: 'fixed'
+            });
         }.protect(),
 
         /**
@@ -669,7 +675,6 @@ var Grid = (function() {
     });
 })();
 
-// todo: The name 'GridManager' does not reflect his main function.
 /**
  * Grid Manager.
  *
@@ -918,12 +923,19 @@ var GridManager = new Class(/** @lends GridManager# */{
             url = this.singlePath + 'get-data/page-' + pageNum;
         }
 
-        Energine.request(url,
-            postBody,
-            this.processServerResponse.bind(this),
-            null,
-            this.processServerError.bind(this)
-        );
+        /*
+        This delay was created because of some stupid behavior in Firefox.
+        this.paneContent in build() has different height without delay.
+        Firefox 26
+         */
+        (function() {
+            Energine.request(url,
+                postBody,
+                this.processServerResponse.bind(this),
+                null,
+                this.processServerError.bind(this)
+            );
+        }).delay(0, this);
     },
 
     /**
@@ -1187,7 +1199,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      */
     up: function() {
         Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/up/',
-                     '', this.loadPage.pass(this.pageList.currentPage, this));
+            this.filter.getValue(), this.loadPage.pass(this.pageList.currentPage, this));
     },
 
     /**
@@ -1197,7 +1209,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      */
     down: function() {
         Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/down/',
-                     '', this.loadPage.pass(this.pageList.currentPage, this));
+            this.filter.getValue(), this.loadPage.pass(this.pageList.currentPage, this));
     },
 
     /**
@@ -1273,7 +1285,7 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
         }.bind(this));
 
         resetLink.addEvent('click', function (e) {
-            Energine.cancelEvent(e);
+            e.stop();
             this.remove();
             gridManager.reload();
         }.bind(this));
@@ -1488,4 +1500,32 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
             this.dps.addClass('hidden');
         }
     }
+});
+
+document.addEvent('domready', function() {
+    /**
+     * Scroll bar width of the browser.
+     * @type {number}
+     */
+    ScrollBarWidth = window.top.ScrollBarWidth || (function() {
+        var parent = new Element('div', {
+            styles: {
+                height: '100px',
+                overflow: 'scroll'
+            }
+        });
+        var child = new Element('div', {
+            styles: {
+                height: '200px'
+            }
+        });
+
+        parent.grab(child);
+        document.body.grab(parent);
+
+        var width = parent.offsetWidth - child.offsetWidth;
+        parent.destroy();
+
+        return width;
+    })();
 });

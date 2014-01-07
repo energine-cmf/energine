@@ -11,6 +11,8 @@
  * @requires Overlay
  *
  * @author Pavel Dubenko
+ * @author Andy Karpov
+ * @author Valerii Zinchenko
  *
  * @version 1.0.0
  */

@@ -11,6 +11,8 @@
  * @requires Overlay
  *
  * @author Pavel Dubenko
+ * @author Andy Karpov
+ * @author Valerii Zinchenko
  *
  * @version 1.0.0
  */
@@ -27,15 +29,15 @@ var PageEditor = new Class(/** @lends PageEditor# */{
      * Editor class name.
      * @type {string}
      */
-    editorClassName:'nrgnEditor',
+    editorClassName: 'nrgnEditor',
 
     /**
      * Array of block editors.
      * @type {PageEditor.BlockEditor[]}
      */
-    editors:[],
+    editors: [],
 
-    initialize:function () {
+    initialize: function () {
         Asset.css('pageeditor.css');
 
         CKEDITOR.disableAutoInline = true;
@@ -57,7 +59,7 @@ var PageEditor = new Class(/** @lends PageEditor# */{
         ];
         var styles = [];
         if (window['wysiwyg_styles']) {
-            Object.each(window['wysiwyg_styles'], function(style) {
+            Object.each(window['wysiwyg_styles'], function (style) {
                 styles.push({
                     name: style['caption'],
                     element: style['element'],
@@ -69,29 +71,21 @@ var PageEditor = new Class(/** @lends PageEditor# */{
         CKEDITOR.config.stylesSet = 'energine';
 
         $(document.body).getElements('.' + this.editorClassName).each(function (element) {
-            this.editors.push(new PageEditor.BlockEditor(this, element));
+            this.editors.push(new PageEditor.BlockEditor(element));
         }, this);
 
-        if (Browser.opera) {
-            window.addEvent('unload', function (e) {
-                if (this.editors.length) {
-                    this.editors.each(function(editor) {
-                        editor.save(false);
-                    }.bind(this));
-                    // todo: What is it?
-                    window.location.href = window.location.href;
-                    return '';
-                }
-            }.bind(this));
-        } else {
-            window.addEvent('beforeunload', function (e) {
-                if (this.editors.length) {
-                    this.editors.each(function(editor) {
-                        editor.save(false);
-                    }.bind(this));
-                }
-            }.bind(this));
-        }
+        window.addEvent(((Browser.opera) ? 'unload' : 'beforeunload'), function () {
+            if (this.editors.length) {
+                this.editors.each(function (editor) {
+                    editor.save.call(editor, false);
+                }, this);
+            }
+            if (Browser.opera) {
+                // Dirty Opera hack
+                window.location.href = window.location.href;
+                return '';
+            }
+        }.bind(this));
     }
 });
 
@@ -104,21 +98,13 @@ var PageEditor = new Class(/** @lends PageEditor# */{
  */
 PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
     // constructor
-    initialize:function (pageEditor, area) {
+    initialize: function (area) {
         /**
          * Area element.
          * @type {Element}
          */
         this.area = area;
         this.area.setProperty('contenteditable', true);
-
-        // todo: Need?
-        /**
-         * Page editor.
-         * @type {PageEditor}
-         */
-        this.pageEditor = pageEditor;
-
         /**
          * Defines whether the editor is active.
          * @type {boolean}
@@ -157,6 +143,13 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
          * @type {Overlay}
          */
         this.overlay = new Overlay();
+        this.editor.on('blur', function () {
+            this.area.removeClass('activeEditor');
+            this.save();
+        }.bind(this));
+        this.editor.on('focus', function () {
+            this.area.addClass('activeEditor');
+        }.bind(this));
     },
 
     /**
@@ -165,34 +158,40 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
      * @function
      * @public
      * @param {boolean} [async = true] Defines whether the request be asynchronous or not.
+     * @param {function} [onSuccess = undefined] User defined function that is called after sucess saving
      */
-    save:function (async) {
-        if (async == undefined) {
-            async = true;
-        }
-        if (!async) {
-            this.overlay.show();
+    save: function (async, onSuccess) {
+        if (this.editor.checkDirty()) {
+            if (async == undefined) {
+                async = true;
+            }
+            if (!async) {
+                this.overlay.show();
+            }
+
+            var data = 'data=' + encodeURIComponent(this.editor.getData());
+            if (this.ID) {
+                data += '&ID=' + this.ID;
+            }
+            if (this.num) {
+                data += '&num=' + this.num;
+            }
+
+            new Request({
+                url: this.singlePath + 'save-text',
+                async: async,
+                method: 'post',
+                data: data,
+                onSuccess: function (response) {
+                    this.editor.resetDirty();
+                    this.editor.setData(response);
+                    if (onSuccess)onSuccess.call(this);
+                    if (!async) {
+                        this.overlay.hide();
+                    }
+                }.bind(this)
+            }).send();
         }
 
-        var data = 'data=' + encodeURIComponent(this.editor.getData());
-        if (this.ID) {
-            data += '&ID=' + this.ID;
-        }
-        if (this.num) {
-            data += '&num=' + this.num;
-        }
-
-        new Request({
-            url:this.singlePath + 'save-text',
-            async: async,
-            method:'post',
-            data: data,
-            onSuccess: function (response) {
-                this.editor.setData(response);
-                if (!async) {
-                    this.overlay.hide();
-                }
-            }.bind(this)
-        }).send();
     }
 });

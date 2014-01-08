@@ -474,9 +474,21 @@ abstract class DBA extends Object {
     protected function constructQuery(array $args) {
         if (sizeof($args) > 1) {
             $query = array_shift($args); // отбрасываем первый аргумент $query
+            //$altArgs = $args;
+
             foreach ($args as &$arg) {
                 $arg = $this->pdo->quote($arg);
             }
+            /*if(preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)){
+                $stat =$this->pdo->prepare(preg_replace('(%(?:(\d)\$)?s)', '?', $query));
+                foreach($matches[1] as $a){
+                    if($a = (int)$a) $a--;
+                    $data[] = $altArgs[$a];
+                }
+                $stat->execute($data);
+            }*/
+
+
             array_unshift($args, $query);
             $query = call_user_func_array('sprintf', $args);
         }

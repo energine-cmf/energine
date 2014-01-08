@@ -486,8 +486,10 @@ var Grid = (function() {
                 // Get the col width from the tbody
                 for (var n = 0; n < tds.length; n++) {
                     headers[n] = tds[n].getDimensions({computeSize: true}).totalWidth;
+                }
 
-                    // Set col width
+                // Set col width
+                for (n = 0; n < tds.length; n++) {
                     headCols[n].setStyle('width', headers[n]);
                     bodyCols[n].setStyle('width', headers[n]);
                 }

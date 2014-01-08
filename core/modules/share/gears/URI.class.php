@@ -1,86 +1,79 @@
 <?php
 /**
- * Класс URI.
+ * @file
+ * URI.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+final class URI;
+@endcode
+ *
  * @author 1m
- * @copyright Energine 
+ * @copyright Energine
+ *
+ * @version 1.0.0
  */
 
 
 /**
  * URI (Unified Resource Identifier).
  *
- * @package energine
- * @subpackage kernel
- * @author 1m
- * @final
+ * @attention This is @b final class;
  */
 final class URI extends Object {
-
     /**
-     * @access private
-     * @var string схема (протокол) запроса
+     * Request scheme (protocol).
+     * @var string $scheme
      */
     private $scheme;
 
     /**
-     * @access private
-     * @var string сервер (имя хоста)
+     * Host name.
+     * @var string $host
      */
     private $host;
 
     /**
-     * @access private
-     * @var array путь
+     * Path.
+     * @var array $path
      */
     private $path;
 
     /**
-     * @access private
-     * @var string строка параметров
+     * Query of parameters.
+     * @var string $query
      */
     private $query;
 
     /**
-     * @access private
-     * @var string идентификатор фрагмента документа
+     * Document fragment ID.
+     * @var string $fragment
      */
     private $fragment;
-    
-    /**
-     * Trick для имитации приватного конструктора
-     * 
-     * @access private
-     * @var bool
-     * @static 
-     */
-     private static $trick;
-    
-    /**
-     * Порт
-     * 
-     * @access private
-     * @var int 
-     */
-     private $port;
-    
-    
 
     /**
-     * Конструктор класса.
+     * Trick for imitation of private constructor.
+     * @var bool $trick
+     */
+    private static $trick;
+
+    /**
+     * Port number.
+     * @var int $port
+     */
+    private $port;
+
+    /**
+     * @throws SystemException 'ERR_PRIVATE_CONSTRUCTOR'
      *
-     * @access private
-     * @param string $uri
-     * @return void
+     * @param string $uri URI.
      */
     public function __construct($uri) {
-    	if(is_null(self::$trick)){
-    		throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
-    	}
+        if(is_null(self::$trick)){
+            throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
+        }
         $matches = array();
-        
+
         if($uri && ($matches = self::validate($uri))){
             $this->setScheme($matches[0]);
             $this->setHost($matches[1]);
@@ -91,32 +84,34 @@ final class URI extends Object {
         else {
             $this->scheme = $this->host = $this->path = $this->query = $this->fragment = '';
         }
-        
     }
+
+    //todo VZ: I think the using of throws is better than return false.
     /**
-     * Проверяет правильность URL. ВОзвращает массив, полученный в результате разбора строки
-     * 
-     * @return array
-     * @access public
-     * @static
+     * Validate URI.
+     *
+     * It returns an array of matched strings.
+     *
+     * @param string $uri URI
+     * @return array|bool
      */
     public static function validate($uri){
-    	$result = false;
+        $result = false;
         if(preg_match('/^(\w+):\/\/([a-z0-9\.\-]+)\:?([0-9]{2,5})?(\/[^?]*)[\?]?(.*)?$/i', $uri, $matches) && count($matches) >= 5){
             array_shift($matches);
             $result = $matches;
         }
         return $result;
     }
+
     /**
-      * Создает объект URI
-      * 
-      * @return URI
-      * @access public
-      * @static
-      */
+     * Create URI.
+     *
+     * @param string $uriString URI string.
+     * @return URI
+     */
     public static function create($uriString = ''){
-    	self::$trick = true;
+        self::$trick = true;
         if(!$uriString){
             $host = explode(':', ((isset($_SERVER['HTTP_HOST']))?$_SERVER['HTTP_HOST']:$_SERVER['SERVER_NAME']));
             $protocol = (isset($_SERVER['HTTPS']) ? 'https' : 'http');
@@ -135,20 +130,17 @@ final class URI extends Object {
     }
 
     /**
-     * Устанавливает схему (протокол) URI.
+     * Set scheme (protocol)
      *
-     * @access public
-     * @param string $scheme
-     * @return void
+     * @param string $scheme Scheme.
      */
     public function setScheme($scheme) {
         $this->scheme = strtolower($scheme);
     }
 
     /**
-     * Возвращает схему (протокол) URI.
+     * Get scheme (protocol).
      *
-     * @access public
      * @return string
      */
     public function getScheme() {
@@ -156,52 +148,47 @@ final class URI extends Object {
     }
 
     /**
-     * Устанавливает имя хоста.
+     * Set host name.
      *
-     * @access public
-     * @param string $host
-     * @return void
+     * @param string $host Host name.
      */
     public function setHost($host) {
         $this->host = strtolower($host);
     }
 
     /**
-     * Возвращает имя хоста.
-     *
-     * @access public
+     * Get host name.
      * @return string
      */
     public function getHost() {
         return $this->host;
     }
-    
+
     /**
-     * Устанавливает порт
+     * Set port number.
      *
-     * @access public
-     * @return void
+     * If @c $port is not defined, then the port @c 80 will be used.
+     *
+     * @param int $port Port number.
      */
     public function setPort($port) {
         if(!$port) $port = 80;
         $this->port = $port;
     }
+
     /**
-     * Возвращает идентификатор порта
+     * Get port.
      *
-     * @access public
      * @return int
      */
     public function getPort() {
         return $this->port;
-    }    
+    }
 
     /**
-     * Устанавливает путь.
+     * Set path.
      *
-     * @access public
-     * @param $path
-     * @return void
+     * @param string $path Path.
      */
     public function setPath($path) {
         if (!is_array($path)) {
@@ -211,12 +198,10 @@ final class URI extends Object {
     }
 
     /**
-     * Возвращает путь в виде массива сегментов или в виде строки,
-     * если установлен флаг $asString.
+     * Get path.
      *
-     * @access public
-     * @param boolean $asString
-     * @return string
+     * @param boolean $asString Defines whether the returned array of the path should be converted to string type.
+     * @return array|string
      */
     public function getPath($asString = true) {
         $path = $this->path;
@@ -225,17 +210,16 @@ final class URI extends Object {
                 $path = '/'.implode('/', $path).'/';
             }
             else {
-            	$path = '/';
+                $path = '/';
             }
         }
         return $path;
     }
 
     /**
-     * Возвращает сегмент пути с индексом $pos.
+     * Get path segment with @c $pos index.
      *
-     * @access public
-     * @param int $pos
+     * @param int $pos Position
      * @return string
      */
     public function getPathSegment($pos) {
@@ -246,20 +230,17 @@ final class URI extends Object {
     }
 
     /**
-     * Устанавливает строку параметров.
+     * Set query.
      *
-     * @access public
-     * @param string $query
-     * @return void
+     * @param string $query Query.
      */
     public function setQuery($query) {
         $this->query = strval($query);
     }
 
     /**
-     * Возвращает строку параметров.
+     * Get query.
      *
-     * @access public
      * @return string
      */
     public function getQuery() {
@@ -267,38 +248,34 @@ final class URI extends Object {
     }
 
     /**
-     * Устанавливает идентификатор фрагмента документа.
+     * Set document fragment.
      *
-     * @access public
-     * @param string $fragment
-     * @return void
+     * @param string $fragment Document fragment.
      */
     public function setFragment($fragment) {
         $this->fragment = strval($fragment);
     }
 
     /**
-     * Возвращает идентификатор фрагмента документа.
+     * Get document fragment.
      *
      * @return string
-     * @access public
      */
     public function getFragment() {
         return $this->fragment;
     }
 
     /**
-     * Возвращает строковое представление URI.
+     * Get URI as string.
      *
-     * @access public
      * @return string
      */
     public function __toString() {
         if (!empty($this->scheme) && !empty($this->host)) {
             return $this->scheme.'://'.$this->host.
-                (empty($this->path) ? '/' : $this->getPath(true)).
-                (empty($this->query) ? '' : '?'.$this->query).
-                (empty($this->fragment) ? '' : '#'.$this->fragment);
+            (empty($this->path) ? '/' : $this->getPath(true)).
+            (empty($this->query) ? '' : '?'.$this->query).
+            (empty($this->fragment) ? '' : '#'.$this->fragment);
         }
         else {
             return '';

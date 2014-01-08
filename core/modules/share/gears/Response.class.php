@@ -1,55 +1,59 @@
 <?php
-
 /**
- * Класс Response.
+ * @file
+ * Response.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+final class Response;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * HTTP-ответ.
+ * HTTP-response.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
- * @final
+ * @code
+final class Response;
+@endcode
+ *
+ * @attention This is @b final class.
  */
 final class Response extends Object {
-
-    private $reasonPhrases;
     /**
-     * @access private
-     * @var string строка статуса ответа
+     * Reason phrases.
+     * @var mixed $reasonPhrases
+     */
+    private $reasonPhrases;
+
+    /**
+     * Line of the response status.
+     * @var string $statusLine
      */
     private $statusLine;
 
     /**
-     * @access private
-     * @var array заголовки ответа
+     * Response header.
+     * @var array $headers
      */
     private $headers;
 
     /**
-     * @access private
-     * @var array cookies ответа
+     * Response cookies.
+     * @var array $cookies
      */
     private $cookies;
 
     /**
-     * @access private
-     * @var string тело ответа
+     * Response body.
+     * @var string $body
      */
     private $body;
 
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
     public function __construct() {
         $this->reasonPhrases = include_once('reasonPhrases.inc.php');
         $this->setStatus(200);
@@ -58,12 +62,12 @@ final class Response extends Object {
         $this->body = '';
     }
 
-
     /**
-     * Метод вызываемый при переадресации
-     * заменяет паттерны lang и site на соответствующие значения
-     * @static
-     * @param $redirectURL string
+     * Prepare redirection URL.
+     *
+     * It replaces @c lang and @c site to the correspond values.
+     *
+     * @param string $redirectURL Redirection URL.
      * @return string
      */
     public static function prepareRedirectURL($redirectURL) {
@@ -83,12 +87,10 @@ final class Response extends Object {
     }
 
     /**
-     * Устанавливает статус ответа.
+     * Set response status.
      *
-     * @access public
-     * @param int $statusCode
-     * @param string $reasonPhrase
-     * @return void
+     * @param int $statusCode Status code.
+     * @param string $reasonPhrase Reason phrase.
      */
     public function setStatus($statusCode, $reasonPhrase = null) {
         if (is_null($reasonPhrase)) {
@@ -100,13 +102,11 @@ final class Response extends Object {
     }
 
     /**
-     * Устанавливает поле заголовка ответа.
+     * Set response header.
      *
-     * @access public
-     * @param string $name
-     * @param string $value
-     * @param boolean $replace
-     * @return void
+     * @param string $name Header name.
+     * @param string $value Header value.
+     * @param boolean $replace defines whether the header value should be replaced.
      */
     public function setHeader($name, $value, $replace = true) {
         if ((!$replace) && isset($this->headers[$name])) {
@@ -116,13 +116,13 @@ final class Response extends Object {
     }
 
     /**
-     * Устанавливает cookie.
+     * Set cookies.
      *
-     * @access public
-     * @param string $name
-     * @param string $value
-     * @param int $expire
-     * @return void
+     * @param string $name Session name.
+     * @param string $value Value.
+     * @param int $expire Expire time.
+     * @param bool $domain Domain.
+     * @param string $path Path.
      */
     public function addCookie($name = UserSession::DEFAULT_SESSION_NAME, $value = '', $expire = 0, $domain = false, $path = '/') {
         if (!$domain) {
@@ -134,6 +134,7 @@ final class Response extends Object {
                 $domain = E()->getSiteManager()->getCurrentSite()->domain;
             }
         }
+        //todo VZ: remove this?
         /*if ($this->getConfigValue('site.domain')) {
             $path = '/';
             $domain = '.' . $this->getConfigValue('site.domain');
@@ -149,13 +150,9 @@ final class Response extends Object {
     }
 
     /**
-     * Отправляет куки добавленные в список
-     * используется только в commit
-     * сделан публичным для того чтобы можно было вызвать из капчи
-     * но это исключение
+     * Send cookies to the list.
      *
-     * @return void
-     * @access private
+     * This is used only in @c commit. It is made public for possibility to call this from capcha (but this is exception).
      */
     public function sendCookies() {
         foreach ($this->cookies as $name => $params) {
@@ -163,6 +160,9 @@ final class Response extends Object {
         }
     }
 
+    /**
+     * Send headers.
+     */
     public function sendHeaders() {
         header($this->statusLine);
         foreach ($this->headers as $name => $value) {
@@ -171,26 +171,18 @@ final class Response extends Object {
     }
 
     /**
-     * Удаляет cookie.
+     * Remove cookie by name.
      *
-     * @access public
      * @param string $name
-     * @param string $domain
-     * @param string $path
-     * @param boolean $secure
-     * @return void
      */
     public function deleteCookie($name) {
         $this->addCookie($name, '', (time() - 1));
     }
 
     /**
-     * Устанавливает адрес для переадресации.
-     * и собственно переадресовывает
+     * Set redirection URL and redirect.
      *
-     * @param string $location
-     * @return void
-     * @access public
+     * @param string $location Redirection URL.
      */
     public function setRedirect($location) {
         $this->setStatus(302);
@@ -200,11 +192,9 @@ final class Response extends Object {
     }
 
     /**
-     * Устанавливает адрес переадресации
+     * Redirect to current section.
      *
-     * @param string $action
-     * @return void
-     * @access public
+     * @param string $action Action name.
      */
     public function redirectToCurrentSection($action = '') {
         if ($action && substr($action, -1) !== '/') {
@@ -220,20 +210,18 @@ final class Response extends Object {
     }
 
     /**
-     * Добавляет данные к телу ответа.
+     * Add data to the response body.
      *
-     * @access public
-     * @param string $data
-     * @return void
+     * @param string $data New data.
      */
     public function write($data) {
         $this->body .= $data;
     }
 
     /**
-     * Возвращаемся туда откуда пришли
+     * Go back.
+     *
      * @see auth.php
-     * @return void
      */
     public function goBack() {
         if (isset($_GET['return'])) {
@@ -249,6 +237,9 @@ final class Response extends Object {
         $this->commit();
     }
 
+    /**
+     * Disable cache.
+     */
     public function disableCache() {
         $this->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
         $this->setHeader('Pragma', 'no-cache');
@@ -256,11 +247,9 @@ final class Response extends Object {
     }
 
     /**
-     * Отправляет ответ клиенту и завершает работу программы.
-     * это - точка выхода
+     * Send response to the client.
      *
-     * @access public
-     * @return void
+     * This the last step.
      */
     public function commit() {
         if (!headers_sent()) {
@@ -271,14 +260,10 @@ final class Response extends Object {
         }
         $contents = $this->body;
 
-        if (
-            (bool)Object::_getConfigValue('site.compress')
-            &&
-            isset($_SERVER['HTTP_ACCEPT_ENCODING'])
-            &&
-            (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)
-            &&
-            !(bool)Object::_getConfigValue('site.debug')
+        if ((bool)Object::_getConfigValue('site.compress')
+            && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+            && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)
+            && !(bool)Object::_getConfigValue('site.debug')
         ) {
             header("Vary: Accept-Encoding");
             header("Content-Encoding: gzip");

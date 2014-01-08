@@ -1,35 +1,65 @@
 <?php
 /**
- * Класс PageStructureDocument
+ * @file
+ * PageStructureDocument.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+class PageStructureDocument;
+@endcode
+ *
  * @author d.pavka@gmail.com
  * @copyright Energine 2010
+ *
+ * @version 1.0.0
  */
+
 /**
- * Класс для генерации структуры документа
+ * Generate document structure.
+ *
+ * @code
+class PageStructureDocument;
+@endcode
  */
 class PageStructureDocument extends Object implements IDocument{
     /**
-     * @var DOMDocument
+     * Document
+     * @var DOMDocument $doc
      */
     private $doc;
+
     /**
-     * @var SimpleXMLElement | bool
+     * Layout.
+     * @var SimpleXMLElement|bool $layout
      */
     private $layout = false;
+
     /**
-     * @var SimpleXMLElement | bool
+     * Content.
+     * @var SimpleXMLElement|bool $content
      */
     private $content = false;
 
+    /**
+     * Set layout.
+     * @param SimpleXMLElement $layout Layout.
+     */
     public function setLayout(SimpleXMLElement $layout){
         $this->layout = $layout;
     }
+
+    /**
+     * Set content.
+     * @param SimpleXMLElement $content Content.
+     */
     public function setContent(SimpleXMLElement $content){
         $this->content = $content;
     }
+
+    /**
+     * Get result.
+     * @return DOMDocument
+     */
     public function getResult() {
         return $this->doc;
     }

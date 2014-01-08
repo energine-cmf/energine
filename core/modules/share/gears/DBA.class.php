@@ -181,10 +181,15 @@ abstract class DBA extends Object {
         }
 
         $result = false;
-
-        $query = $this->constructQuery(func_get_args());
-        $this->lastQuery = $query;
-        $res = $this->pdo->query($query);
+        if($this->getConfigValue('site.testSpeed')){
+            $res = $this->runQuery(func_get_args());
+            $this->lastQuery = $res->queryString;
+        }
+        else {
+            $query = $this->constructQuery(func_get_args());
+            $this->lastQuery = $query;
+            $res = $this->pdo->query($query);
+        }
 
         if (!($res instanceof PDOStatement)) {
             $errorInfo = $this->pdo->errorInfo();
@@ -474,27 +479,39 @@ abstract class DBA extends Object {
     protected function constructQuery(array $args) {
         if (sizeof($args) > 1) {
             $query = array_shift($args); // отбрасываем первый аргумент $query
-            //$altArgs = $args;
-
             foreach ($args as &$arg) {
                 $arg = $this->pdo->quote($arg);
             }
-            /*if(preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)){
-                $stat =$this->pdo->prepare(preg_replace('(%(?:(\d)\$)?s)', '?', $query));
-                foreach($matches[1] as $a){
-                    if($a = (int)$a) $a--;
-                    $data[] = $altArgs[$a];
-                }
-                $stat->execute($data);
-            }*/
-
-
-            array_unshift($args, $query);
+                  array_unshift($args, $query);
             $query = call_user_func_array('sprintf', $args);
         }
         else {
             $query = $args[0];
         }
         return $query;
+    }
+
+    protected function runQuery(array $args) {
+        if(empty($args)){
+            throw new SystemException('ERR_BAD_REQUEST');
+        }
+
+        $query = array_shift($args);
+        if (!empty($args)) {
+            if(preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)){
+                $result =$this->pdo->prepare(preg_replace('(%(?:(\d)\$)?s)', '?', $query));
+                foreach($matches[1] as $a){
+                    if($a = (int)$a) $a--;
+                    $data[] = $args[$a];
+                }
+                if(!$result->execute($data)){
+                    throw new SystemException('ERR_BAD_REQUEST');
+                }
+            }
+        }
+        else {
+            $result = $this->pdo->query($query);
+        }
+        return $result;
     }
 }

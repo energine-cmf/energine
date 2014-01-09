@@ -5,8 +5,7 @@ html, body {
     padding: 0;
     border: 0;
     background: white;
-    font-family: Tahoma, sans-serif;
-    font-size: 11px;
+    font-size: 13px;
 }
 .e-singlemode-layout {
     overflow: hidden;

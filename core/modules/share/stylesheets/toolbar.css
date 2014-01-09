@@ -48,6 +48,7 @@ ul.toolbar li.icon {
 }
 
 ul.toolbar li.separator {
+    display: none;
     width: 2px;
     height: 19px;
     padding: 0 2px !important;

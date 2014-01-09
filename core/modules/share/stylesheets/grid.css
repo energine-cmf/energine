@@ -18,7 +18,7 @@ div.grid div.filter select, div.grid div.filter input, div.grid div.filter butto
     color: #555;
 	margin:0px;
     line-height: 20px;
-    padding: 6px 12px;
+    padding: 6px 8px;
 }
 
 div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_container{
@@ -131,7 +131,7 @@ table.gridTable {
 }
 .gridTable td {
     margin: 0;
-    padding: 8px;
+    padding: 12px 8px;
     border: 0;
     border-right: 1px solid #ddd;
     cursor:default;

@@ -19,7 +19,7 @@ u, font, s, center, dir, menu, strike, xmp                                      
     border: 0;
     vertical-align: baseline;
     text-indent: 0;
-    font-family: inherit;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1em;
 }
 /* ----- /reset ----- */
@@ -27,12 +27,9 @@ u, font, s, center, dir, menu, strike, xmp                                      
 /* ----- common ----- */
 html, body  {
     background: white;
-    font-family: Arial, sans-serif;
-    font-size: 100.01%;
-    color: black;
-}
-body {
-    font-size: 0.813em; /* =13px - базовый размер шрифта */
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
 }
 p {
     margin: 0 0 1em 0;
@@ -90,17 +87,14 @@ h6 {
 /* ----- /headers ----- */
 
 /* ----- links ----- */
-a:link {
-    text-decoration: underline;
-    color: #00e;
-}
+a:link,
 a:visited {
-    text-decoration: underline;
-    color: gray;
+    color: #428bca;
+    text-decoration: none;
 }
 a[href]:hover, a[href]:active {
-    text-decoration: none;
-    color: #f00;
+    color: #2a6496;
+    text-decoration: underline;
 }
 /* ----- /links ----- */
 
@@ -169,17 +163,38 @@ input, textarea, select, button {
     height: auto;
     margin: 0;
     vertical-align: middle;
-    line-height: normal;
-    font-family: Arial, sans-serif;
-    font-size: 1em;
-    color: black;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
-input.text, textarea, select {
-    border: 1px solid gray;
-    background: white;
+button {
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
-input.text, textarea {
-    padding: 3px;
+button:hover {
+    background-color: #ebebeb;
+    border-color: #adadad;
+}
+input:focus, textarea:focus, select:focus {
+    border-color: #FFB400;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #FFB600;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #FFB600;
 }
 textarea {
     vertical-align: top;
@@ -269,6 +284,11 @@ optgroup option {
 /* ----- block ----- */
 .block {
     padding-bottom: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 }
 .block_header {
     padding: 5px 10px 3px 10px;
@@ -281,7 +301,6 @@ optgroup option {
 }
 .block_content {
     padding: 10px;
-    border: 1px solid silver;
 }
 /* ----- /block ----- */
 
@@ -355,14 +374,9 @@ input.radio, input.checkbox {
 
 /* -------------------- LAYOUT -------------------- */
 /* ----- base ----- */
-body, html {
-	background: #e0e0e0;	
-}
 .base {
     width: 1000px;
     margin: 0 auto 20px auto;
-    background: white;
-    box-shadow: 0 0 10px #a0a0a0;
 }
 .top_adblock {
     padding: 10px 0;
@@ -387,8 +401,18 @@ body, html {
 
 /* ----- breadcrumbs ----- */
 .breadcrumbs {
-	padding: 0 10px 10px 10px;
-    font-size: 0.924em; /* =12px */
+    background: #474544;
+    padding: 11px 34px 11px 10px;
+    font-size: 13px;
+    color: #e4e4e4;
+}
+.breadcrumbs a {
+    color: #bbb;
+}
+.breadcrumbs a:hover,
+.breadcrumbs a:active {
+    color: #e4e4e4;
+    text-decoration: none;
 }
 /* ----- /breadcrumbs ----- */
 
@@ -430,24 +454,22 @@ body, html {
 
 /* ----- language switcher ----- */
 .lang_switcher {
-    clear: both;
-    margin: 0;
+    float: right;
+    margin: 26px 10px;
 	padding: 7px 10px;
-    background: silver;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
     list-style: none;
     text-align: right;
-    font-size: 0.924em; /* =12px */
 }
 .lang_switcher li {
     display: inline;
-    margin-right: 7px;
+    padding: 0 7px;
 }
-.lang_switcher a:visited {
-    color: #00e;
-}
-.lang_switcher a[href]:hover, .lang_switcher a[href]:active {
-    text-decoration: none;
-    color: #f00;
+.lang_switcher li + li {
+    border-left: 1px solid #ddd;
 }
 /* ----- /language switcher ----- */
 

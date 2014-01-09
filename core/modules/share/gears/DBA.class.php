@@ -175,19 +175,7 @@ abstract class DBA extends Object {
      * @deprecated
      */
     public function selectRequest($query) {
-        if (!is_string($query) || strlen($query) == 0) {
-            return false;
-        }
-
-        $result = false;
-        if ($this->getConfigValue('site.testSpeed')) {
-            $res = $this->runQuery(func_get_args());
-            $this->lastQuery = $res->queryString;
-        } else {
-            $query = $this->constructQuery(func_get_args());
-            $this->lastQuery = $query;
-            $res = $this->pdo->query($query);
-        }
+        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
         if (!($res instanceof PDOStatement)) {
             $errorInfo = $this->pdo->errorInfo();
@@ -224,15 +212,7 @@ abstract class DBA extends Object {
      * @see printf()
      */
     public function modifyRequest($query) {
-        if (!is_string($query) || strlen($query) == 0) {
-            return false;
-        }
-
-        $result = false;
-
-        $query = $this->constructQuery(func_get_args());
-        $this->lastQuery = $query;
-        $res = $this->pdo->query($query);
+        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
         if (!($res instanceof PDOStatement)) {
             $errorInfo = $this->pdo->errorInfo();
@@ -278,18 +258,32 @@ abstract class DBA extends Object {
      * @return bool|PDOStatement
      */
     public function get($query) {
-        if (!is_string($query) || strlen($query) == 0) {
-            return false;
-        }
-
-        $query = $this->constructQuery(func_get_args());
-        $this->lastQuery = $query;
-        $res = $this->pdo->query($query);
+        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
         if ($res instanceof PDOStatement) {
             return $res;
         }
-
         return false;
+    }
+
+    /**
+     * Executes the request
+     *
+     * @param $request
+     * @return bool|PDOStatement
+     */
+    private function fulfill($request) {
+        if (!is_string($request) || empty($request)) {
+            return false;
+        }
+        if ($this->getConfigValue('database.prepare')) {
+            $res = $this->runQuery(func_get_args());
+            $this->lastQuery = $res->queryString;
+        } else {
+            $request = $this->constructQuery(func_get_args());
+            $res = $this->pdo->query($request);
+            $this->lastQuery = $request;
+        }
+        return $res;
     }
 
     /**
@@ -471,6 +465,7 @@ abstract class DBA extends Object {
      * @return string
      * @see DBA::selectRequest()
      * @see DBA::modifyRequest()
+     * @deprecated
      */
     protected function constructQuery(array $args) {
         if (sizeof($args) > 1) {
@@ -506,8 +501,7 @@ abstract class DBA extends Object {
                 foreach ($matches[1] as $a) {
                     if ($a = (int)$a) {
                         $data[] = $args[$a - 1];
-                    }
-                    else {
+                    } else {
                         $data[] = $args[$argIndex++];
                     }
                 }

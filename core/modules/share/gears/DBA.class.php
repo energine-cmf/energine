@@ -133,8 +133,7 @@ abstract class DBA extends Object {
 
             $this->dbCache = new DBStructureInfo($this->pdo);
 
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             throw new SystemException('Unable to connect. The site is temporarily unavailable.', SystemException::ERR_DB, 'The site is temporarily unavailable');
         }
 
@@ -148,7 +147,7 @@ abstract class DBA extends Object {
      * @return PDO
      */
 
-    public function getPDO(){
+    public function getPDO() {
         return $this->pdo;
     }
 
@@ -173,7 +172,7 @@ abstract class DBA extends Object {
      * @return mixed
      * @throws SystemException
      * @see printf()
-     * @deprecated 
+     * @deprecated
      */
     public function selectRequest($query) {
         if (!is_string($query) || strlen($query) == 0) {
@@ -181,11 +180,10 @@ abstract class DBA extends Object {
         }
 
         $result = false;
-        if($this->getConfigValue('site.testSpeed')){
+        if ($this->getConfigValue('site.testSpeed')) {
             $res = $this->runQuery(func_get_args());
             $this->lastQuery = $res->queryString;
-        }
-        else {
+        } else {
             $query = $this->constructQuery(func_get_args());
             $this->lastQuery = $query;
             $res = $this->pdo->query($query);
@@ -197,11 +195,9 @@ abstract class DBA extends Object {
         }
 
         $result = array();
-
         while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
             array_push($result, $row);
         }
-
         if (empty($result)) {
             $result = true;
         }
@@ -262,8 +258,7 @@ abstract class DBA extends Object {
     public function call($name, &$args = null) {
         if (!$args) {
             $res = $this->pdo->query("call $name();", PDO::FETCH_NAMED);
-        }
-        else {
+        } else {
             $argString = implode(',', array_fill(0, count($args), '?'));
             $stmt = $this->pdo->prepare("CALL $name($argString)");
             foreach ($args as $index => &$value) {
@@ -275,6 +270,7 @@ abstract class DBA extends Object {
         }
         return $res;
     }
+
     /**
      * Метод для получения данных с последующей итерацией
      *
@@ -463,7 +459,7 @@ abstract class DBA extends Object {
             $tableName = substr($tableName, $pos + 1);
         }
         array_push($result, $tableName);
-        return (!$returnAsArray) ? implode('.', array_map(function($row) {
+        return (!$returnAsArray) ? implode('.', array_map(function ($row) {
             return '`' . $row . '`';
         }, $result)) : $result;
     }
@@ -482,34 +478,44 @@ abstract class DBA extends Object {
             foreach ($args as &$arg) {
                 $arg = $this->pdo->quote($arg);
             }
-                  array_unshift($args, $query);
+            array_unshift($args, $query);
             $query = call_user_func_array('sprintf', $args);
-        }
-        else {
+        } else {
             $query = $args[0];
         }
         return $query;
     }
 
+    /**
+     * @param array $args
+     * @return PDOStatement
+     * @throws SystemException
+     */
     protected function runQuery(array $args) {
-        if(empty($args)){
+        if (empty($args)) {
             throw new SystemException('ERR_BAD_REQUEST');
         }
 
         $query = array_shift($args);
+
         if (!empty($args)) {
-            if(preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)){
-                $result =$this->pdo->prepare(preg_replace('(%(?:(\d)\$)?s)', '?', $query));
-                foreach($matches[1] as $a){
-                    if($a = (int)$a) $a--;
-                    $data[] = $args[$a];
+            if (preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)) {
+
+                $result = $this->pdo->prepare($newQuery = preg_replace('(%(?:(\d)\$)?s)', '?', $query));
+                $argIndex = 0;
+                foreach ($matches[1] as $a) {
+                    if ($a = (int)$a) {
+                        $data[] = $args[$a - 1];
+                    }
+                    else {
+                        $data[] = $args[$argIndex++];
+                    }
                 }
-                if(!$result->execute($data)){
+                if (!$result->execute($data)) {
                     throw new SystemException('ERR_BAD_REQUEST');
                 }
             }
-        }
-        else {
+        } else {
             $result = $this->pdo->query($query);
         }
         return $result;

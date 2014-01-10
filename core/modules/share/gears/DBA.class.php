@@ -43,79 +43,88 @@ abstract class DBA extends Object {
      */
     private $dbCache;
 
-    /*
-     * Типы полей таблиц БД:
-     */
-
+    //Типы полей таблиц БД:
     /**
      * Column type: @c INTEGER
+     * @var string COLTYPE_INTEGER
      */
     const COLTYPE_INTEGER = 'INT';
 
     /**
      * Column type: @c FLOAT
+     * @var string COLTYPE_FLOAT
      */
     const COLTYPE_FLOAT = 'FLOAT';
 
     /**
      * Column type: @c DATE
+     * @var string COLTYPE_DATE
      */
     const COLTYPE_DATE = 'DATE';
 
     /**
      * Column type: @c TIME
+     * @var string COLTYPE_TIME
      */
     const COLTYPE_TIME = 'TIME';
 
     /**
      * Column type: @c TIMESTAMP
+     * @var string COLTYPE_TIMESTAMP
      */
     const COLTYPE_TIMESTAMP = 'TIMESTAMP';
 
     /**
      * Column type: @c DATETIME
+     * @var string COLTYPE_DATETIME
      */
     const COLTYPE_DATETIME = 'DATETIME';
 
     /**
      * Column type: @c VARCHAR
+     * @var string COLTYPE_STRING
      */
     const COLTYPE_STRING = 'VARCHAR';
 
-    /**
-     * Типы строк только для внутреннего использования. Без комментариев :)
-     */
+    //Типы строк только для внутреннего использования. Без комментариев :)
     //const COLTYPE_STRING1 = 'STRING';
     //const COLTYPE_STRING2 = 'VAR_STRING';
 
     /**
      * Column type: @c TEXT
+     * @var string COLTYPE_TEXT
      */
     const COLTYPE_TEXT = 'TEXT';
 
     /**
      * Column type: @c BLOB
      * Binary data.
+     *
+     * @var string COLTYPE_BLOB
      */
     const COLTYPE_BLOB = 'BLOB';
 
     /**
      * Error type of the column.
+     * @var string ERR_BAD_REQUEST
      */
     const ERR_BAD_REQUEST = 'ERR_DATABASE_ERROR';
 
     /**
      * Primary index
+     * @var string PRIMARY_INDEX
      */
     const PRIMARY_INDEX = 'PRI';
 
     /**
      * Unique index.
+     * @var string UNIQUE_INDEX
      */
     const UNIQUE_INDEX = 'UNI';
 
     /**
      * Index.
+     * @var string INDEX
      */
     const INDEX = 'MUL';
 

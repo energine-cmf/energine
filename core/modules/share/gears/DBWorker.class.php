@@ -49,9 +49,6 @@ abstract class DBWorker extends Object {
      */
     private static $findTranslationSQL;
 
-    /**
-     *
-     */
     public function __construct() {
         $this->dbh = E()->getDB();
         self::$findTranslationSQL = $this->dbh->getPDO()->prepare('SELECT trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id  WHERE (ltag.ltag_name = ?) AND (lang_id = ?)');

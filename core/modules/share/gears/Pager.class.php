@@ -31,8 +31,8 @@ final class Pager extends Object {
      *
      * Example:
      * @code
-    VISIBLE_PAGES_COUNT = 3 --> 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
-    @endcode
+VISIBLE_PAGES_COUNT = 3 --> 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
+@endcode
      *
      * @var int VISIBLE_PAGES_COUNT
      */

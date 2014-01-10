@@ -1,56 +1,56 @@
 <?php
-
 /**
- * Класс Transformer
+ * @file
+ * Transformer.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+class XSLTTransformer;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
-
+ *
+ * @version 1.0.0
  */
 
 /**
- * Трансформер XML-документа страницы.
+ * XML transformer of the page.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class XSLTTransformer;
+@endcode
  */
 class XSLTTransformer extends Object implements ITransformer {
-
     /**
-     * Директория, где находится основной трансформер
+     * Directory where the main transform file is stored.
+     * @var string MAIN_TRANSFORMER_DIR
      */
     const MAIN_TRANSFORMER_DIR = '/modules/%s/transformers/';
 
     /**
-     * Имя файла трансформации
-     * @var string
+     * XSLT-filename.
+     * @var string $fileName
      */
     private $fileName;
 
     /**
-     * Документ
-     * @var DOMDocument
+     * Document.
+     * @var DOMDocument $document
      */
     private $document;
 
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
     public function __construct() {
         $this->setFileName($this->getConfigValue('document.transformer'));
     }
 
     /**
-     * Устанавливает имя основного файла трансформации
+     * Set file name, that will be transformed.
      *
-     * @param string
-     * @param bool флаг указывающий на что путь абсолютный
+     * @throws SystemException 'ERR_DEV_NO_MAIN_TRANSFORMER'
+     *
+     * @param string $transformerFilename File name.
+     * @param bool $isAbsolutePath Defines whether the absolute path is used.
      * @return void
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
@@ -69,12 +69,11 @@ class XSLTTransformer extends Object implements ITransformer {
     }
 
     /**
-     * Трансформирует XML-документ страницы в выходной формат.
+     * Run transforming.
      *
-     * @param DOMDocument
-     * @param string
+     * @throws SystemException 'ERR_DEV_NOT_WELL_FORMED_XSLT'
+     *
      * @return string
-     * @access public
      */
     public function transform() {
         //При наличии модуля xslcache http://code.nytimes.com/projects/xslcache

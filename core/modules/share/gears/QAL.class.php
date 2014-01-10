@@ -1,95 +1,131 @@
 <?php
-
 /**
- * Класс QAL.
+ * @file
+ * QAL.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+final class QAL;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
  * Query Abstraction Layer.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
- * @final
+ * @code
+final class QAL;
+@endcode
+ *
+ * @attention This is @b final class.
  */
 final class QAL extends DBA {
-
+    //Режимы модифицирующих операций
     /**
-     * Режимы модифицирующих операций
+     * INSERT operation.
+     * @var string INSERT
      */
     const INSERT = 'INSERT';
+    /**
+     * INSERT_IGNORE operation.
+     * @var string INSERT_IGNORE
+     */
     const INSERT_IGNORE = 'INSERT IGNORE';
+    /**
+     * UPDATE operation.
+     * @var string UPDATE
+     */
     const UPDATE = 'UPDATE';
+    /**
+     * DELETE operation.
+     * @var string DELETE
+     */
     const DELETE = 'DELETE';
+    /**
+     * REPLACE operation.
+     * @var string REPLACE
+     */
     const REPLACE = 'REPLACE';
 
     /**
-     * Для единоообразия
+     * SELECT operation.
+     * @var string SELECT
      */
     const SELECT = 'SELECT';
+
     /**
-     * Направления сортировки
+     * Ascending order.
+     * @var string ASC
      */
     const ASC = 'ASC';
+    /**
+     * Descending order.
+     * @var string DESC
+     */
     const DESC = 'DESC';
 
     /**
-     * Пустая строка
+     * Empty string.
+     * @var string EMPTY_STRING
      */
     const EMPTY_STRING = null;
 
     /**
-     * Ошибки
+     * Errors.
+     * @var string ERR_BAD_QUERY_FORMAT
      */
     const ERR_BAD_QUERY_FORMAT = 'Bad query format.';
 
+    //todo VZ: I think this can be removed from here.
     /**
-     * Конструктор класса.
+     * @throws SystemException Unable to connect. The site is temporarily unavailable.
      *
-     * @access public
-     * @param string $dsn
-     * @param string $username
-     * @param string $password
-     * @param array $driverOptions
-     * @param string $charset
+     * @param string $dsn Data Source Name; for connecting to the data base.
+     * @param string $username User name.
+     * @param string $password Password.
+     * @param array $driverOptions Specific DB driver parameters.
+     * @param string $charset Encoding.
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         parent::__construct($dsn, $username, $password, $driverOptions, $charset);
     }
 
+    //todo VZ: There is not clear the order of arguments.
     /**
-     * Выполняет простой SELECT-запрос к БД и возвращает результат выборки.
+     * Execute simple SELECT-request and return the result.
      *
-     * Имена полей $fields задаётся одним из трёх способов:
-     *     1. массив имён полей;
-     *     2. имя одного поля;
-     *     3. true, для выборки всех полей таблицы.
+     * Field names of @c $fields can be:
+     *   -# an array of names;
+     *   -# single name;
+     *   -# true - all table rows wil be selected.
      *
-     * Условие выборки $condition задаётся массивом вида array(имя_поля => значение),
-     * или строкой WHERE-условия типа 'field1 = 4 AND field2 = 8'.
+     * Selecting condition @c $condition is given by:
+     *   -# an array like <tt>array(field_name => value)</tt>;
+     *   -# a sting of @c WHERE condition like <tt>'field1 = 4 AND field2 = 8'</tt>.
      *
-     * Порядок сортировки результа задаётся массивом вида array(имя_поля => порядок_сортировки),
-     * или строкой предложения ORDER BY типа 'field1 DESC, field2 ASC'.
+     * The sort order is given by:
+     *   -# an array like <tt>array(field_name => sort_order)</tt>;
+     *   -# a string of <tt>ORDER BY</tt> like <tt>'field1 DESC, field2 ASC'</tt>.
      *
-     * Лимит выборки задаётся массивом вида array(смещение, кол-во_строк),
-     * или строкой предложения LIMIT типа '32'.
+     * Limit is given by:
+     *   -# an array like <tt>array(offset, amount_of_rows)</tt>;
+     *   -# a string of @C LIMIT like <tt>'32'</tt>
      *
-     * Возвращает массив результата выборки или true, если результат пустой.
+     * @c true will be returned if the the result is empty.
      *
-     * @access public
-     * @param string имя таблицы или SQL текст запроса, в этом случае все последующие параметры  - идут как переменные
-     * @param mixed массив имен полей ИЛИ имя одного поля ИЛИ true для выборки всех полей таблицы
-     * @param mixed условие выборки
-     * @param mixed порядок сортировки результата
-     * @param mixed лимит выборки
-     * @return array
      * @see DBA::selectRequest()
-     * @see DBA::buildSQL
+     * @see QAL::buildSQL
+     *
+     * @param string $tableOrText Table name or SQL-request text (in this case all further arguments follows as variables)
+     * @param array|string|true [$fields] Field names.
+     * @param array|string [$condition] Condition.
+     * @param array|string [$sortOrder] Sort order.
+     * @param array|string [$lim] Limit
+     * @return array|true
      */
     public function select() {
         $args = func_get_args();
@@ -102,35 +138,36 @@ final class QAL extends DBA {
     }
 
     /**
-     * Выполняет простую модифицирующую (INSERT, UPDATE, DELETE) операцию в БД.
+     * Execute simple modification (INSERT, UPDATE, DELETE) operation in the data base.
      *
-     * Режим операции задаётся одной из трёх констант:
-     *     1. QAL::INSERT - вставка;
-     *     2. QAL::UPDATE - обновление;
-     *     3. QAL::DELETE - удаление.
+     * The operation mode defines by one of the following constants:
+     *   -# QAL::INSERT - inserting;
+     *   -# QAL::UPDATE - updating;
+     *   -# QAL::DELETE - removing.
      *
-     * Данные для операций типа QAL::INSERT и QAL::UPDATE задаются массивом
-     * вида array(имя_поля => значение).
+     * Data for operation mode QAL::INSERT and QAL::UPDATE is given by an array like @code array(field_name => value) @endcode
      *
-     * Условие операции задаётся массивом вида array(имя_поля => значение),
-     * или строкой WHERE-условия типа 'field1 = 4 AND field2 = 8'.
+     * Operation condition is given by:
+     *   -# an array like <tt>array(field_name => value)</tt>;
+     *   -# a string of @c WHERE like <tt>'field1 = 4 AND field2 = 8'</tt>.
      *
-     * В режиме QAL::INSERT метод возвращает последний сгенерированный ID для
-     * поля типа AUTO_INCREMENT, или true если такого поля в таблице нет.
+     * Return values:
+     *   - Mode QAL::INSERT:
+     *     - last generated ID for field type @c AUTO_INCREMENT, or
+     *     - @c true if such field is not exist in the table.
+     *   - Mode QAL::UPDATE, QAL::DELETE:
+     *     - @c true by success
+     *   - @c false by execution error.
      *
-     * В режимах QAL::UPDATE и QAL::DELETE при успешном выполнении запроса
-     * всегда возвращается true.
-     *
-     * При ошибке выполнения любого типа операций возвращается false.
-     *
-     * @access public
-     * @param int $mode режим операции
-     * @param string $tableName имя таблицы
-     * @param array $data данные для операции
-     * @param mixed $condition условие операции
      * @throws SystemException
-     * @return array
+     *
      * @see DBA::modifyRequest()
+     *
+     * @param int $mode Operation mode.
+     * @param string $tableName Table name.
+     * @param array $data Data for operation.
+     * @param mixed $condition Operation condition.
+     * @return int|bool
      */
     public function modify($mode, $tableName = null, $data = null, $condition = null) {
 
@@ -208,12 +245,12 @@ final class QAL extends DBA {
     }
 
     /**
-     * Строит WHERE-условие для SQL-запроса.
+     * Build @c WHERE condition for SQL request.
      *
-     * @access public
-     * @param mixed $condition
-     * @return string
      * @see QAL::selectRequest()
+     *
+     * @param mixed $condition Condition.
+     * @return string
      */
     public function buildWhereCondition($condition) {
         $result = '';
@@ -255,15 +292,15 @@ final class QAL extends DBA {
     }
 
     /**
-     * ВОзвращает данные из таблицы связанной по внешнему ключу
+     * Get foreign key data.
      *
-     * @param string Имя таблицы
-     * @param string имя ключа
-     * @param int идентификатор текущего языка
-     * @param mixed ограничение на выборку
-     * @access public
+     * It returns a data from the linked table by foreign key.
+     *
+     * @param string $fkTableName Table name.
+     * @param string $fkKeyName Key name.
+     * @param int $currentLangID Current language ID.
+     * @param mixed $filter Restriction for selecting.
      * @return array
-     *
      */
     public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
         $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')) . '_name';
@@ -322,12 +359,12 @@ final class QAL extends DBA {
     }
 
     /**
-     * Строит предложение ORDER BY для SQL-запроса.
+     * Build <tt>ORDER BY</tt> line for SQL request.
      *
-     * @access public
-     * @param mixed $clause
-     * @return string
      * @see QAL::selectRequest()
+     *
+     * @param mixed $clause Clause.
+     * @return string
      */
     public function buildOrderCondition($clause) {
         $orderClause = '';
@@ -350,12 +387,12 @@ final class QAL extends DBA {
     }
 
     /**
-     * Строит предложение LIMIT для SQL-запроса.
+     * Build @c LIMIT line for SQL request.
      *
-     * @access public
-     * @param mixed $clause
-     * @return string
      * @see QAL::selectRequest()
+     *
+     * @param mixed $clause Clause.
+     * @return string
      */
     public function buildLimitStatement($clause) {
         $limitClause = '';
@@ -407,11 +444,11 @@ final class QAL extends DBA {
     }
 
     /**
-     * Возвращает единичное значение колонки из таблицы
+     * Get the scalar value of the column in the table.
      *
-     * @param string имя таблицы
-     * @param string имя колонки
-     * @param array|mixed условие выборки
+     * @param string $tableName Table name.
+     * @param string [$colName] Column name.
+     * @param array|mixed [$cond] Condition.
      * @return null|string
      */
     public function getScalar() {
@@ -439,11 +476,11 @@ final class QAL extends DBA {
     }
 
     /**
-     * Возвращает массив значений колонки из таблицы
+     * Get column values from the table.
      *
-     * @param string имя таблицы
-     * @param string имя колонки
-     * @param array|mixed условие выборки
+     * @param string $tableName Table name.
+     * @param string [$colName] Column name.
+     * @param array|mixed [$cond] Condition.
      * @return array
      */
     public function getColumn() {

@@ -1,134 +1,139 @@
 <?php
 /**
- * Класс Component.
+ * @file
+ * Component, IBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+class Component;
+interface IBuilder;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
-
 /**
- * Компонент страницы.
+ * Page component.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
+ * @code
+class Component;
+@endcode
  */
 class Component extends DBWorker implements IBlock {
     /**
-     * Имя состояния по-умолчанию.
+     * Default state name: @code 'main' @endcode
+     *
+     * @var string DEFAULT_STATE_NAME
      */
     const DEFAULT_STATE_NAME = 'main';
+
     /**
-     * @access protected
-     * @var DOMDocument DOM-документ компонента
+     * Document DOM of the component.
+     * @var DOMDocument $doc
      */
     protected $doc;
 
     /**
-     * @access protected
-     * @var Request экземпляр объекта Request
+     * Instance of the Request object.
+     * @var Request $request
      */
     protected $request;
 
     /**
-     * @access protected
-     * @var array параметры компонента
+     * Component parameters.
+     * @var array $params
      */
     protected $params;
 
     /**
-     * @access public
-     * @var Document документ страницы
+     * Page document.
+     * @var Document $document
      */
     public $document;
 
     /**
-     * @access protected
-     * @var string имя модуля, которому принадлежит компонент
+     * Module name that owns the component.
+     * @var string $module
      */
     protected $module;
 
     /**
-     * @access protected
-     * @var Response экземпляр объекта Response
+     * Response object exemplar.
+     * @var Response $response
      */
     protected $response;
 
     /**
-     * @access private
-     * @var int уровень прав, необходимый для запуска метода компонента
+     * Rights level required for running component's method.
+     * @var int $rights
      */
     private $rights;
 
     /**
-     * @access private
-     * @var string имя компонента
+     * Component name.
+     * @var string $name
      */
     private $name;
 
     /**
-     * @var boolean Флаг, указывающий на то, является ли компонент активным
-     * @access private
+     * Indicator, that indicates whether the component is active.
+     * @var boolean $enabled
      */
-
     private $enabled = true;
+
     /**
-     * @access private
-     * @var array параметры состояния
+     * State parameters.
+     * @var array $stateParams
      */
     private $stateParams = false;
 
     /**
-     * @access private
-     * @var array свойства компонента
+     * Component properties.
+     * @var array $properties
      */
     private $properties = array();
 
     /**
-     * @access private
-     * @var array список ошибок, произошедших во время работы компонента
+     * List of errors, that occurs by component work.
+     * @var array $errors
      */
     private $errors = array();
 
+    //todo VZ: Remove this?
     /**
      * Результат является объектом класса DOMNode или boolean:
      * true - компонент отработал успешно, но ничего не вывел;
      * false - произошла ошибка при работе компонента.
      *
-     * @access private
      * @var mixed результат работы компонента
      */
     //private $result;
 
     /**
-     * @access private
-     * @var string имя текущего состояния компонента
+     * Name of the current component state.
+     * @var string $state
      */
     private $state = self::DEFAULT_STATE_NAME;
 
     /**
-     * @access protected
-     * @var AbstractBuilder построитель результата работы компонента
+     * Builder of the component result.
+     * @var AbstractBuilder $builder
      */
     protected $builder = false;
 
     /**
-     * @access protected
-     * @var ComponentConfig конфигурация компонента
+     * Component configurations.
+     * @var ComponentConfig $config
      */
     protected $config;
 
     /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @return void
+     * @param string $name Component name.
+     * @param string $module Module name.
+     * @param array $params Component parameters.
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct();
@@ -173,20 +178,21 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Возвращает флаг активности компонента
+     * Get the @c 'active' parameter of the component.
+     *
+     * @attention This is @b final function.
      *
      * @return bool
-     * @access protected
-     * @final
      */
-
     final protected function isActive() {
         return $this->params['active'];
     }
 
     /**
-     * Возвращает конфиг компонента
-     * Метод введен для возможности переопределения конфига в потомках
+     * Get component configurations.
+     *
+     * @note This method was created for redefining configurations in the children.
+     * @attention This is @b final function.
      *
      * @return ComponentConfig
      */
@@ -198,22 +204,21 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Устанавливает построитель компонента.
+     * Set component builder.
      *
-     * @access protected
-     * @final
-     * @param IBuilder $builder
-     * @return void
+     * @attention This is @b final function.
+     *
+     * @param IBuilder $builder Builder.
      */
     final protected function setBuilder(IBuilder $builder) {
         $this->builder = $builder;
     }
 
     /**
-     * Возвращает построитель компонента.
+     * Get component builder.
      *
-     * @access protected
-     * @final
+     * @attention This is @b final function.
+     *
      * @return AbstractBuilder
      */
     final protected function getBuilder() {
@@ -221,10 +226,8 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Определяет допустимые параметры компонента и их значения по-умолчанию
-     * в виде массива array(paramName => defaultValue).
+     * Defines allowable component parameters and their default values as an array like <tt>array(paramName => defaultValue)</tt>
      *
-     * @access protected
      * @return array
      */
     protected function defineParams() {
@@ -237,13 +240,14 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Устанавливает значение параметра компонента, если такой существует.
-     * В противном случае возбуждается исключение.
+     * Set component parameter if such exist.
      *
-     * @access protected
-     * @param string $name
-     * @param mixed $value
-     * @return void
+     * If this parameter is not exist SystemException will be generated.
+     *
+     * @throws SystemException 'ERR_DEV_NO_PARAM'
+     *
+     * @param string $name Parameter name.
+     * @param mixed $value parameter value.
      */
     protected function setParam($name, $value) {
         if (!isset($this->params[$name])) {
@@ -273,12 +277,13 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Возвращает значение параметра компонента, или null, если такого
-     * параметра не существует.
+     * Get component parameter.
      *
-     * @access protected
-     * @final
-     * @param string $name
+     * If such parameter is not exist @b @c null will be returned.
+     *
+     * @attention This is @b final function.
+     *
+     * @param string $name Parameter name.
      * @return mixed
      */
     final protected function getParam($name) {
@@ -286,15 +291,13 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Определяет текущее действие
+     * Determine current state.
      *
      * @todo Если компонент активный - то передача значения в параметре state - ни на что не влияет,
      * @todo все равно используется состояние определяемое конфигом
      * @todo непонятно то ли это фича то ли бага
      *
-     * @return void
-     * @access private
-     * @final
+     * @attention This is @b final function.
      */
     final private function determineState() {
         //Текущее действие берем из параметров
@@ -342,22 +345,21 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Определяет имя текущего состояния компонента.
+     * Get current state of the component.
      *
-     * @access public
+     * @attention This is @b final function.
+     *
      * @return string
-     * @final
      */
     final public function getState() {
         return $this->state;
     }
 
     /**
-     * Возвращает уровень прав пользователя, необходимых для запуска
-     * текущего действия компонента.
+     * Get current rights level of the user needed for running current component action.
      *
-     * @access public
-     * @final
+     * @attention This is @b final function.
+     *
      * @return int
      */
     final public function getCurrentStateRights() {
@@ -365,23 +367,16 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Возвращает имя компонента.
+     * Get component name.
      *
-     * @access public
-     * @final
+     * @attention This is @b final function.
+     *
      * @return string
      */
     final public function getName() {
         return $this->name;
     }
 
-    /**
-     * Запускает компонент на исполнение.
-     *
-     * @access public
-     * @final
-     * @return void
-     */
     public function run() {
         if (!method_exists($this, $this->getState())) {
             throw new SystemException(
@@ -399,10 +394,10 @@ class Component extends DBWorker implements IBlock {
 
     }
 
+    //todo VZ: Why true is returned?
     /**
-     * Действие по-умолчанию.
+     * Default action.
      *
-     * @access protected
      * @return boolean
      */
     protected function main() {
@@ -411,69 +406,60 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Метод подготовки данных.
-     * Вызывается вначале работы метода, реализующего основное действие.
+     * Prepare data.
      *
-     * @access protected
-     * @return void
+     * It calls at the beginning of the method, that realize main action.
      */
-    protected function prepare() {
-    }
+    protected function prepare() {}
 
     /**
-     * Отключает отображение компонента
+     * Disable component.
      *
-     * @return void
-     * @access public
-     * @final
+     * @attention This is @b final function.
      */
-
     final public function disable() {
         $this->enabled = false;
     }
 
     /**
-     * Включает отображение компонента
+     * Enable component.
      *
-     * @return void
-     * @access public
-     * @final
+     * @attention This is @b final function.
      */
-
     final public function enable() {
         $this->enabled = true;
     }
 
     /**
-     * Возвращает активность компонента
+     * Get if the component enabled.
+     *
+     * @attention This is @b final function.
      *
      * @return boolean
-     * @access public
-     * @final
      */
-
     final public function enabled() {
         return $this->enabled;
     }
 
     /**
-     * Устанавливает значение свойства компонента.
+     * Set/update property value.
      *
-     * @access protected
-     * @final
-     * @param string $propName
-     * @param mixed $propValue
+     * @attention This is @b final function.
+     *
+     * @param string $propName Property name.
+     * @param mixed $propValue Property value.
      * @return void
      */
     final protected function setProperty($propName, $propValue) {
         $this->properties[$propName] = $propValue;
     }
 
+    //todo VZ: It is better to throw an exception instead of return false. What if the property value has boolean type?
     /**
-     * Возвращает значение свойства компонента.
+     * Get property value.
      *
-     * @access protected
-     * @final
+     * @attention This is @b final function.
+     *
      * @param string $propName
      * @return mixed
      */
@@ -486,23 +472,16 @@ class Component extends DBWorker implements IBlock {
     }
 
     /**
-     * Удаляет свойство компонента.
+     * Remove property.
      *
-     * @access protected
-     * @final
-     * @param string
-     * @return void
+     * @attention This is @b final function.
+     *
+     * @param string $propName Property name.
      */
     final protected function removeProperty($propName) {
         unset($this->properties[$propName]);
     }
 
-    /**
-     * Строит результат работы компонента используя определённый построитель.
-     *
-     * @access public
-     * @return DOMDocument
-     */
     public function build() {
         $result = $this->doc->createElement('component');
         $result->setAttribute('name', $this->getName());
@@ -541,13 +520,12 @@ class Component extends DBWorker implements IBlock {
 
 
     /**
-     * Возвращает параметры состояния.
-     *
-     * @param bool  - возвращает ассоциативный/обычный массив
-     * @access public
-     * @return array
+     * Get state parameters.
      *
      * @todo Тут какой то беспорядок, то false то пустой array
+     *
+     * @param bool $returnAsAssocArray Defines whether an associative or normal array should be returned.
+     * @return array
      */
     public function getStateParams($returnAsAssocArray = false) {
         if (!$returnAsAssocArray && ($this->stateParams !== false)) {
@@ -555,34 +533,37 @@ class Component extends DBWorker implements IBlock {
         }
 
         return $this->stateParams;
-
     }
 
     /**
-     * Устанавливает параметр состояния
-     * Обычно такое требуется при динамическом создании компонента и передаче ему параметров состояния из другого компонента
+     * Set state parameter.
+     * Usually this is required by dynamic component creation and assigning him state parameter from other component.
      *
-     * @param  $paramName string
-     * @param  $paramValue mixed
-     * @return void
+     * @param string $paramName Parameter name.
+     * @param mixed $paramValue Parameter value.
      */
     public function setStateParam($paramName, $paramValue) {
         $this->stateParams[$paramName] = $paramValue;
     }
-
 }
 
-
+//todo VZ: What is the difference between IBuilder and IDocument?
 /**
- * Class IBuilder
+ * Builder interface.
+ *
+ * @code
+interface IBuilder;
+@endcode
  */
 interface IBuilder {
     /**
+     * Get build result.
      * @return mixed
      */
     public function getResult();
 
     /**
+     * Run building.
      * @return mixed
      */
     public function build();

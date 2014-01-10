@@ -26,10 +26,12 @@ class DataDescription
  */
 class DataDescription extends Object implements Iterator {
     /**
+     * Field position: @c 'after'
      * @var string FIELD_POSITION_AFTER
      */
     const FIELD_POSITION_AFTER = 'after';
     /**
+     * Field position: @c 'before'
      * @var string FIELD_POSITION_BEFORE
      */
     const FIELD_POSITION_BEFORE = 'before';

@@ -1,50 +1,44 @@
 <?php
-
 /**
- * Класс AbstractBuilder.
+ * @file
+ * AbstractBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * Contain the definition to:
+ * @code
+class Component;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
-
 
 /**
- * Построитель.
- * Создаёт XML-документ основываясь на переданных ему данных и мета-данных.
+ * Builder.
+ * Create XML-document based on meta-data.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
- * @abstract
+ * @attention This is @b abstract class.
  */
 abstract class AbstractBuilder extends DBWorker implements IBuilder {
-
     /**
-     * @access protected
-     * @var DataDescription мета-данные
+     * Meta-data.
+     * @var DataDescription $dataDescription
      */
     protected $dataDescription;
 
     /**
-     * @access protected
-     * @var Data данные
+     * Data.
+     * @var Data $data
      */
     protected $data;
 
     /**
-     * @access protected
-     * @var DOMDocument результирующий документ
+     * Result document.
+     * @var DOMDocument $result
      */
     protected $result;
 
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
     public function __construct() {
         parent::__construct();
 
@@ -53,22 +47,18 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     }
 
     /**
-     * Устанавливает мета-данные.
+     * Set meta-data.
      *
-     * @access public
-     * @param DataDescription $dataDescription мета-данные
-     * @return void
+     * @param DataDescription $dataDescription Meta-data.
      */
     public function setDataDescription(DataDescription $dataDescription) {
         $this->dataDescription = $dataDescription;
     }
 
     /**
-     * Устанавливает данные.
+     * Set data.
      *
-     * @access public
-     * @param Data $data данные
-     * @return void
+     * @param Data $data Data.
      */
     public function setData(Data $data) {
         $this->data = $data;

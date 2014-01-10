@@ -21,7 +21,7 @@ interface IBlock;
  * Manager of the set of the document's components.
  *
  * @code
-final class ComponentManager
+final class ComponentManager;
 @endcode
  *
  * @attention This is @b final class!
@@ -367,30 +367,36 @@ final class ComponentManager extends Object implements Iterator {
  * IBlock interface.
  *
  * @code
-interface IBlock
+interface IBlock;
 @endcode
  */
 interface IBlock {
     /**
+     * Run execution.
      * @return void
      */
     public function run();
 
     /**
+     * Enable.
      * @return bool
      */
     public function enabled();
+
     /**
+     * Get current rights level of the user needed for running current action.
      * @return void
      */
     public function getCurrentStateRights();
 
     /**
+     * Build.
      * @return DOMDocument
      */
     public function build();
 
     /**
+     * Get name.
      * @return string
      */
     public function getName();

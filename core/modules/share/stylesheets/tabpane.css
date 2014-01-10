@@ -93,10 +93,10 @@
 }
 /* 1 тулбар внизу */
 .e-pane-has-b-toolbar1 .e-pane-b-toolbar { 
-    height: 30px; 
+    height: 62px;
 }
 .e-pane-has-b-toolbar1 .e-pane-content { 
-    bottom: 40px;
+    bottom: 72px;
     _zoom: expression( 
         runtimeStyle.zoom = 1, 
         (/e-pane-has-t-toolbar1/.test(this.parentNode.className)) ? (runtimeStyle.tHeight = '96') : (/e-pane-has-t-toolbar2/.test(this.parentNode.className) ? runtimeStyle.tHeight = '120' : runtimeStyle.tHeight = '72')

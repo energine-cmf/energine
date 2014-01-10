@@ -41,6 +41,7 @@ fieldset {
 input, textarea, select, button {
     height: auto;
     margin: 0;
+    padding: 6px;
     vertical-align: middle;
     background-color: #fff;
     background-image: none;
@@ -59,6 +60,7 @@ button {
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
+    padding: 6px 12px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

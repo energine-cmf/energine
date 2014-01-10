@@ -492,6 +492,7 @@ abstract class DBA extends Object {
         }
 
         $query = array_shift($args);
+        $query = str_replace('%%', '%', $query);
 
         if (!empty($args)) {
             if (preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)) {

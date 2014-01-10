@@ -46,7 +46,7 @@ form .field.min div.CodeMirror-scroll{
 
 form input, form textarea, form select {
     margin: 1px 0;
-    padding: 1px;
+    padding: 6px;
     border: 1px solid gray;
     font-family: Tahoma, sans-serif;
     font-size: 11px;

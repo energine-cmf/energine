@@ -3,7 +3,7 @@
  * @file
  * Object
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 abstract class Object;
 @endcode

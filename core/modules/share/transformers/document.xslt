@@ -384,12 +384,6 @@
     <xsl:template match="/document//javascript/variable"/>
 
     <xsl:template match="/document/javascript/library" mode="head">
-        <xsl:variable name="anticache">
-            <xsl:if test="/document/@debug=1">
-                <xsl:text>?</xsl:text>
-                <xsl:value-of select="generate-id()"/>
-            </xsl:if>
-        </xsl:variable>
         <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
     </xsl:template>
 

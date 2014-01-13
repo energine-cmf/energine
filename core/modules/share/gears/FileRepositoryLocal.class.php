@@ -3,7 +3,7 @@
  * @file
  * FileRepositoryLocal.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class FileRepositoryLocal;
 @endcode

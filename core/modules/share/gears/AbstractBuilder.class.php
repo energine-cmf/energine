@@ -3,7 +3,7 @@
  * @file
  * AbstractBuilder.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class Component;
 @endcode
@@ -16,6 +16,11 @@ class Component;
 
 /**
  * Builder.
+ *
+ * @code
+class Component;
+@endcode
+ *
  * Create XML-document based on meta-data.
  *
  * @attention This is @b abstract class.
@@ -64,10 +69,12 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         $this->data = $data;
     }
 
+    //todo VZ: This always returns true. Why?
     /**
-     * Создаёт результирующий XML-документ.
+     * Build XML-document.
      *
-     * @access public
+     * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
+     *
      * @return boolean
      */
     public function build() {
@@ -82,9 +89,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     }
 
     /**
-     * Возвращает результат работы построителя
-     *
-     * @access public
+     * Get result document.
      * @return DOMNode
      */
     public function getResult() {
@@ -92,23 +97,20 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     }
 
     /**
-     * Используется в производных классах для построения результата.
-     * Результат должен быть записан в Builder::$result.
+     * Run.
      *
-     * @access protected
-     * @return void
+     * This is used in the derived classes to build a result. That result should be stored in Builder::$result
      */
     protected function run() {
     }
 
     /**
-     * Создаёт XML-описание поля данных.
+     * Create data filed XML-description.
      *
-     * @access protected
-     * @param string $fieldName
-     * @param FieldDescription $fieldInfo
-     * @param mixed $fieldValue
-     * @param mixed $fieldProperties
+     * @param string $fieldName Field name.
+     * @param FieldDescription $fieldInfo Filed description.
+     * @param mixed $fieldValue Field value.
+     * @param mixed $fieldProperties Field properties.
      * @return DOMNode
      */
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
@@ -195,13 +197,13 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     }
 
     /**
-     * Создание значения поля
-     * Значение обрабатывается и записывается в переданный DOMElement
+     * Create field value.
      *
-     * @param DOMElement $result
-     * @param FieldDescription $fieldInfo
-     * @param  $fieldValue
+     * The value is processed and stored in passed DOM-element.
      *
+     * @param DOMElement $result DOM-element.
+     * @param FieldDescription $fieldInfo Field description.
+     * @param $fieldValue Field value.
      * @return DOMElement
      */
     protected function buildFieldValue(DOMElement $result, FieldDescription $fieldInfo, $fieldValue) {
@@ -267,7 +269,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     }
 
     /**
-     * @param  string $url
+     * Fix URL.
+     *
+     * @param string $url URL.
      * @return string
      */
     protected function fixUrl($url) {
@@ -278,19 +282,20 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         );
     }
 
+    //todo VZ: What '%q' means?
     /**
-     * Форматирование даты
-     * Псевдо модификаторы
-     * %E - Сегодня|Вчера|Позавчера|Завтра|Послезавтра|Аббревиатура_дня_недели $Date $имя месяца, $время[$Год если не текущий]
-     * %f - Название дня недели $Date $имя месяца, $время[$Год если не текущий]
-     * %o - [Сегодня,] $Date $имя месяца, $время[$Год если не текущий]
+     * Format date.
      *
-     * @param int $date timstamp
-     * @param string $format
+     * Pseudo modifiers:
+     * - %E - Today|Yesterday|Tomorrow|After tomorrow|Weekday_abbreviation $Date $month_name, $time[$Year(if not current)]
+     * - %f - Weekday name $Date $month_name, $time[$Year(if not current)]
+     * - %o - [Today,] $Date $month_name, $time[$Year(if not current)]
+     * - %q
      *
+     * @param int $date Timestamp.
+     * @param string $format Format.
+     * @param string $type Type.
      * @return string
-     * @access public
-     * @static
      */
     static public function enFormatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
         if (!$date) return '';
@@ -372,11 +377,10 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
 
     /**
-     * Создает набор возможных значений поля типа select.
+     * Create the set of possible field values with type 'select'.
      *
-     * @access protected
-     * @param FieldDescription $fieldInfo
-     * @param mixed $data
+     * @param FieldDescription $fieldInfo Field description.
+     * @param mixed $data Data.
      * @return DOMNode
      */
     protected function createOptions(FieldDescription $fieldInfo, $data = false) {
@@ -401,10 +405,10 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     }
 
     /**
-     * Создает набор значений для поля типа textbox
+     * Create the set of field values with type 'textbox'.
      *
+     * @param array $data Data.
      * @return mixed
-     * @access protected
      */
     protected function createTextBoxItems($data = array()) {
         $fieldValue = false;

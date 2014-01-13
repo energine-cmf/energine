@@ -3,7 +3,7 @@
  * @file
  * Field.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class Field;
 @endcode

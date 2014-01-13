@@ -3,7 +3,7 @@
  * @file
  * FileUploader.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class FileUploader;
 @endcode

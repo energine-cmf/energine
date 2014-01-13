@@ -1,290 +1,319 @@
 <?php
-
 /**
- * Класс FieldDescription.
+ * @file
+ * FieldDescription.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class FieldDescription;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Описание поля данных.
+ * Description of the field data.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class FieldDescription;
+@endcode
  */
 class FieldDescription extends DBWorker implements Iterator {
     /**
-     * Используется в функциях итерации
-     * Инициализируется в rewind
-     * Вынесен в отдельную переменную чтоб не дергать во время итерации array_keys
+     * Additional property names.
+     * It is initialized in FieldDescription::$rewind and used by iterations.@n
+     * This variable was created for eliminating calling 'array_keys' by iterations.
      *
-     * @var array
+     * @var array $additionalPropertiesNames
      */
     private $additionalPropertiesNames;
     /**
-     * Список всех дополнительных свойств в ловеркейзе
-     * @var array
-     * Это на самом деле костыль
+     * Additional property names in the lowercase.
+     * @var array $additionalPropertiesLower
+     * @todo Это на самом деле костыль
      */
     private $additionalPropertiesLower;
     /**
-     * Текущий индекс для итерации по $additionalProperties
-     * @var int
+     * Current additional property ID.
+     * For iteration over FieldDescription::$additionalProperties
+     * @var int $propertiesIndex
      */
     private $propertiesIndex;
     /**
-     * Имя поля для которого не указано имя :)
-     *
+     * Default field name.
+     * @var string EMPTY_FIELD_NAME
      */
     const EMPTY_FIELD_NAME = 'DUMMY';
 
-    /*
-    * Визуальные типы полей:
-    */
-
+    // Визуальные типы полей:
     /**
-     * Строка
+     * Visual field type for string.
+     * @var string FIELD_TYPE_STRING
      */
     const FIELD_TYPE_STRING = 'string';
 
     /**
-     * Текст
+     * Visual field type for text.
+     * @var string FIELD_TYPE_TEXT
      */
     const FIELD_TYPE_TEXT = 'text';
     /**
-     * Код
+    Visual field type for code.
+     * @var string FIELD_TYPE_CODE
      */
     const FIELD_TYPE_CODE = 'code';
 
     /**
-     * Пароль
+     * Visual field type for password.
+     * @var string FIELD_TYPE_PWD
      */
     const FIELD_TYPE_PWD = 'password';
 
     /**
-     * E-mail
+     * Visual field type for E-mail.
+     * @var string FIELD_TYPE_EMAIL
      */
     const FIELD_TYPE_EMAIL = 'email';
     /**
-     * Поле типа капча
+     * Visual field type for captcha.
+     * @var string FIELD_TYPE_CAPTCHA
      */
     const FIELD_TYPE_CAPTCHA = 'captcha';
 
     /**
-     * Телефонный номер
+     * Visual field type for phone.
+     * @var string FIELD_TYPE_PHONE
      */
     const FIELD_TYPE_PHONE = 'phone';
 
     /**
-     * Целое число
+     * Visual field type for integer.
+     * @var string FIELD_TYPE_INT
      */
     const FIELD_TYPE_INT = 'integer';
 
     /**
-     * Число с плавающей точкой
+     * Visual field type for float.
+     * @var string FIELD_TYPE_FLOAT
      */
     const FIELD_TYPE_FLOAT = 'float';
 
-    /**
-     * Изображение
+    /*
+     * Visual field type for image.
+     * @var string FIELD_TYPE_IMAGE
      */
     //const FIELD_TYPE_IMAGE = 'image';
 
     /**
-     * Файл
+     * Visual field type for file.
+     * @var string FIELD_TYPE_FILE
      */
     const FIELD_TYPE_FILE = 'file';
 
-    /**
-     * Приватный файл
+    /*
+     * Visual field type for private file.
+     * @var string FIELD_TYPE_PFILE
      */
     //const FIELD_TYPE_PFILE = 'pfile';
     /**
-     * Thumbnail
+     * Visual field type for thumbnail.
+     * @var string FIELD_TYPE_THUMB
      */
     const FIELD_TYPE_THUMB = 'thumb';
 
     /**
-     * Булево значение
+     * Visual field type for boolean.
+     * @var string FIELD_TYPE_BOOL
      */
     const FIELD_TYPE_BOOL = 'boolean';
 
     /**
-     * HTML блок
+     * Visual field type for HTML block.
+     * @var string FIELD_TYPE_HTML_BLOCK
      */
     const FIELD_TYPE_HTML_BLOCK = 'htmlblock';
 
     /**
-     * Единичный выбор из нескольких вариантов
+     * Visual field type for single selection.
+     * @var string FIELD_TYPE_SELECT
      */
     const FIELD_TYPE_SELECT = 'select';
 
     /**
-     * Множественный выбор из нескольких вариантов
+     * Visual field type for multiple selections.
+     * @var string FIELD_TYPE_MULTI
      */
     const FIELD_TYPE_MULTI = 'multi';
 
     /**
-     * Значение для select
+     * Visual field type for select value.
+     * @var string FIELD_TYPE_VALUE
      */
     const FIELD_TYPE_VALUE = 'value';
 
     /**
-     * Дата и время
+     * Visual field type for date and time.
+     * @var string FIELD_TYPE_DATETIME
      */
     const FIELD_TYPE_DATETIME = 'datetime';
 
     /**
-     * Дата
+     * Visual field type for date.
+     * @var string FIELD_TYPE_DATE
      */
     const FIELD_TYPE_DATE = 'date';
 
     /**
-     * Время
+     * Visual field type for time.
+     * @var string FIELD_TYPE_TIME
      */
     const FIELD_TYPE_TIME = 'time';
 
     /**
-     * Скрытое поле
+     * Visual field type for hidden field.
+     * @var string FIELD_TYPE_HIDDEN
      */
     const FIELD_TYPE_HIDDEN = 'hidden';
     /**
-     * Additional info field
+     * Visual field type for additional info field.
+     * @var string FIELD_TYPE_INFO
      */
     const FIELD_TYPE_INFO = 'info';
 
 
     /**
-     * Пользовательский тип поля (может содержать любые данные)
-     *
+     * Visual field type for custom field type.
+     * It can contain any data.
+     * @var string FIELD_TYPE_CUSTOM
      */
     const FIELD_TYPE_CUSTOM = 'custom';
 
     /**
-     * Тип поля для отрисовки вкладки в форме, содержимое которой будет грузиться по значению из этого поля
+     * Visual field type for tab in form.
+     * The content of the tab will be loaded by the value from this field.
+     * @var string FIELD_TYPE_TAB
      */
     const FIELD_TYPE_TAB = 'tab';
     /**
-     * Поле содержит видео данные
-     * в формате flv
-     * если установлен ffmpeg - конвертируется из одного из поддерживаемых форматов
+     * Visual field type for video data.
+     * In flv format. If the 'ffmpeg' is set that it will be converted from one of the supported formats.
+     * @var string FIELD_TYPE_VIDEO
      */
     const FIELD_TYPE_VIDEO = 'video';
     /**
-     * Поле содержит медиа данные
+     * Visual field type for media data.
+     * @var string FIELD_TYPE_MEDIA
      */
     const FIELD_TYPE_MEDIA = 'media';
     /**
-     * Поле типа список пунктов, используется для тегов
+     * Visual field type for textbox list.
+     * Used for tags.
+     * @var string FIELD_TYPE_TEXTBOX_LIST
      */
     const FIELD_TYPE_TEXTBOX_LIST = 'textbox';
     /**
-     * Поле - выбор раздела
-     * Должен быть предусмотрен проброс через /selector/
+     * Visual field type for section selecting.
+     * Forwarding through /selector/ shall be provided.
+     * @var string FIELD_TYPE_SMAP_SELECTOR
      */
     const FIELD_TYPE_SMAP_SELECTOR = 'smap';
-    /*
-    * Режимы отображения полей:
-    */
 
+    // Режимы отображения полей:
     /**
-     * Поле не отображается
+     * Field mode: NONE.
+     * @var int FIELD_MODE_NONE
      */
     const FIELD_MODE_NONE = 0;
-
     /**
-     * Только для чтения
+     * Field mode: READ.
+     * @var int FIELD_MODE_READ
      */
     const FIELD_MODE_READ = 1;
-
     /**
-     * Режим редактирования
+     * Field mode: EDIT.
+     * @var int FIELD_MODE_EDIT
      */
     const FIELD_MODE_EDIT = 2;
-
     /**
-     * Полный контроль
+     * Field mode: FULL CONTROL.
+     * @var int FIELD_MODE_FC
      */
     const FIELD_MODE_FC = 3;
 
     /**
-     * @access private
-     * @var array набор возможных значений (для полей типа select)
+     * Set of all available values for 'select' fields.
+     * @var array $availableValues
      */
     private $availableValues;
 
     /**
-     * @access private
-     * @var string имя поля
+     * Field name.
+     * @var string $name
      */
     private $name;
 
     /**
-     * Для полей из БД, включает имя таблицы: tableName[name]
+     * System field name.
+     * For fields from data base it includes table name: @code tableName[field_name] @endcode
      *
-     * @access private
-     * @var string системное имя поля
+     * @var string $systemName
      */
     private $systemName;
 
     /**
-     * @access private
-     * @var string визуальный тип поля
+     * Visual type.
+     * @var string $type
      */
     private $type;
 
     /**
-     * @access private
-     * @var string тип поля в БД
+     * Field type in data base.
+     * @var string $systemType
      */
     private $systemType;
 
     /**
-     * @access private
-     * @var int режим отображения поля
+     * Field mode.
+     * @var int $mode
      */
     private $mode = self::FIELD_MODE_EDIT;
 
     /**
-     * @access private
-     * @var int уровень прав на данное поле
+     * Right level for the field.
+     * @var int $rights
      */
     private $rights;
 
     /**
-     * @access private
-     * @var boolean данные в поле мультиязычные?
+     * Defines whether the data in the field is multilingual.
+     * @var boolean $isMultilanguage
      */
     private $isMultilanguage;
 
     /**
-     * Хэш вида array(propertyName => propertyValue).
-     * По нему происходит итерация
+     * Additional field properties.
+     * It is a hash like @code array(propertyName => propertyValue)@endcode
+     * Iteration works with this variable.
      *
-     * @access private
-     * @var Object дополнительные свойства поля
+     * @var Object $additionalProperties
      */
     private $additionalProperties;
 
+    //todo VZ: Why not to set this to 1 or 0?
     /**
-     * Для полей не имеющих длины устанавливается в true.
+     * Field length.
+     * For the fields that has not the length it will set to @c true.
      *
-     * @access private
-     * @var int длина поля
+     * @var int $length
      */
     private $length = true;
 
     /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @param string $name имя поля
-     * @return void
+     * @param string $name Field name.
      */
     public function __construct($name = self::EMPTY_FIELD_NAME) {
         parent::__construct();
@@ -302,11 +331,11 @@ class FieldDescription extends DBWorker implements Iterator {
 
     }
 
+    //todo VZ: This always return true. Why?
     /**
-     * Загружает описание поля из массива.
+     * Load field description form the array.
      *
-     * @access public
-     * @param array $fieldInfo
+     * @param array $fieldInfo Field information.
      * @return boolean
      */
     public function loadArray(array $fieldInfo) {
@@ -332,11 +361,11 @@ class FieldDescription extends DBWorker implements Iterator {
         return $result;
     }
 
+    //todo VZ: This always return true. Why?
     /**
-     * Загружает описание поля из XML-описания.
+     * Load field description from XML-description.
      *
-     * @access public
-     * @param SimpleXMLElement $fieldInfo
+     * @param SimpleXMLElement $fieldInfo XML element.
      * @return boolean
      */
     public function loadXML(SimpleXMLElement $fieldInfo) {
@@ -373,9 +402,8 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает имя поля.
+     * Get field name.
      *
-     * @access public
      * @return string
      */
     public function getName() {
@@ -383,31 +411,27 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Устанавливает системное имя поля.
+     * Set system field name.
      *
-     * @access public
-     * @param string $systemName
-     * @return void
+     * @param string $systemName System name.
      */
     public function setSystemName($systemName) {
         $this->systemName = $systemName;
     }
 
     /**
-     * Возвращает длину поля.
+     * Get field length.
      *
-     * @access public
-     * @return int | true
+     * @return int|true
      */
     public function getLength() {
         return $this->length;
     }
 
     /**
-     * Устанавливает длину поля.
+     * Set field length.
      *
-     * @access public
-     * @param int $length
+     * @param int $length Length.
      * @return FieldDescription
      */
     public function setLength($length) {
@@ -416,9 +440,8 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает системное имя поля.
+     * Get system name.
      *
-     * @access public
      * @return string
      */
     public function getSystemName() {
@@ -426,10 +449,9 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Устанавливает визуальный тип поля.
+     * Set visual type.
      *
-     * @access public
-     * @param string $type
+     * @param string $type Visual field type.
      * @return FieldDescription
      */
     public function setType($type) {
@@ -620,9 +642,8 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает визуальный тип поля.
+     * Get visual type.
      *
-     * @access public
      * @return string
      */
     public function getType() {
@@ -630,12 +651,10 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Устанавливает системный тип поля, одновременно устанавливая на
-     * основании его визуальный тип.
+     * Set system field type.
+     * At the same time the visual field type will be set based on system type.
      *
-     * @access public
      * @param string $systemType
-     * @return void
      */
     public function setSystemType($systemType) {
         $this->systemType = $systemType;
@@ -643,9 +662,8 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает системный тип поля.
+     * Get system type.
      *
-     * @access public
      * @return string
      */
     public function getSystemType() {
@@ -653,10 +671,9 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Устанавливает режим отображения поля.
+     * Set Field mode.
      *
-     * @access public
-     * @param int $mode
+     * @param int $mode Mode.
      * @return FieldDescription
      */
     public function setMode($mode) {
@@ -665,9 +682,8 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает режим отображения поля.
+     * Get field mode.
      *
-     * @access public
      * @return int
      */
     public function getMode() {
@@ -675,20 +691,17 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Устанавливает уровень прав на поле.
+     * Set field rights.
      *
-     * @access public
-     * @param int $rights
-     * @return void
+     * @param int $rights Rights.
      */
     public function setRights($rights) {
         $this->rights = $rights;
     }
 
     /**
-     * Возвращает уровень прав на поле.
+     * Get rights.
      *
-     * @access public
      * @return int
      */
     public function getRights() {
@@ -696,12 +709,11 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Добавляет свойство поля.
-     * Для предопределенный свойств и значений содержащих зарезервированную конструкцию trans(), происходит автоматический перевод
+     * Set field property.
+     * Some properties an values, that contain reserved construction @c trans(), will be automatic translated.
      *
-     * @access public
-     * @param string $name
-     * @param mixed $value
+     * @param string $name Property name.
+     * @param mixed $value Property value.
      * @return FieldDescription
      */
     public function setProperty($name, $value) {
@@ -715,10 +727,9 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Удаляет свойство поля.
+     * Remove property.
      *
-     * @access public
-     * @param string $name
+     * @param string $name Property name.
      * @return FieldDescription
      */
     public function removeProperty($name) {
@@ -727,9 +738,8 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает список имен дополнительных свойств поля.
+     * Get the list of additional property names.
      *
-     * @access public
      * @return array
      */
     public function getPropertyNames() {
@@ -737,10 +747,9 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает значение свойста поля.
+     * Get property value.
      *
-     * @access public
-     * @param string $name
+     * @param string $name Property name.
      * @return mixed
      */
     public function getPropertyValue($name) {
@@ -754,12 +763,13 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Конвертирует тип поля из системного типа в визуальный.
+     * Convert field type from system type to visual type.
      *
-     * @access public
-     * @param string $systemType
+     * @param string $systemType System type.
+     * @param string $name Field name.
+     * @param int $length Field length.
+     * @param array $props Field properties.
      * @return string
-     * @static
      */
     static public function convertType($systemType, $name, $length = 1, $props = array()) {
         switch ($systemType) {
@@ -827,14 +837,11 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Пересечение мета-данных конфигурации и мета-данных, полученных из БД.
+     * Intersect the configuration meta-data with meta-data from data base.
      *
-     * @access public
-     * @param FieldDescription основное описание
-     * @param FieldDescription дополнительное описание
-     *
+     * @param FieldDescription $configFieldDescription Configuration meta-data.
+     * @param FieldDescription $dbFieldDescription Meta-data from data base.
      * @return FieldDescription
-     * @static
      */
     public static function intersect(FieldDescription $configFieldDescription, FieldDescription $dbFieldDescription) {
         $type = $configFieldDescription->getType();
@@ -867,10 +874,9 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Проверяет корректность переданных данных.
+     * Validate data.
      *
-     * @access public
-     * @param mixed $data
+     * @param mixed $data Data.
      * @return boolean
      */
     public function validate($data) {
@@ -884,9 +890,8 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает флаг мультиязычности данных.
+     * Check if the data in the field is multilingual.
      *
-     * @access public
      * @return boolean
      */
     public function isMultilanguage() {
@@ -894,22 +899,21 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Устанавливает флаг мультиязычности
-     * @return void
+     * Mark the field as multilingual.
      */
     public function markMultilanguage() {
         $this->isMultilanguage = true;
     }
 
     /**
-     * Загружает набор возможных значений поля.
+     * Load the set of available field values.
      *
-     * @access public
-     * @param mixed $values набор значений
-     * @param string $keyName имя поля-ключа
-     * @param string $valueName имя поля основного значения
-     * @return void
      * @see QAL::select()
+     *
+     * @param mixed $values Set of values.
+     * @param string $keyName Name of the key field.
+     * @param string $valueName Field name of the main value.
+     * @return $this
      */
     public function loadAvailableValues($values, $keyName, $valueName) {
         if (is_array($values) && empty($this->availableValues)) {
@@ -932,17 +936,17 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Загружает возможные значения из
-     * конфига компонента.
-     * <field type="select">
-     *      <options>
-     *          <option id="1" [attributes]>TXT_1</option>
-     *          <option id="2" [attributes]>TXT_2</option>
-     *      </options>
-     * </field>
+     * Load available values from the component config.
+     * @code
+<field type="select">
+    <options>
+        <option id="1" [attributes]>TXT_1</option>
+        <option id="2" [attributes]>TXT_2</option>
+    </options>
+</field>
+@endcode
      *
-     * @param SimpleXMLElement $options
-     * @access private
+     * @param SimpleXMLElement $options Options.
      */
     private function loadAvailableXMLValues(SimpleXMLElement $options) {
         $result = array();
@@ -962,9 +966,8 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает набор возможных значений поля.
+     * Get available field values.
      *
-     * @access public
      * @return array
      */
     public function &getAvailableValues() {
@@ -972,10 +975,9 @@ class FieldDescription extends DBWorker implements Iterator {
     }
 
     /**
-     * Устанавливает набор возможных значений поля.
+     * Set available values.
      *
-     * @param $av
-     * @access public
+     * @param array $av Available values.
      * @return FieldDescription
      */
     public function setAvailableValues($av) {
@@ -983,14 +985,15 @@ class FieldDescription extends DBWorker implements Iterator {
         return $this;
     }
 
+    //todo VZ: What is $RORights and $FCRights?
     /**
-     * Определяет значение режима отображения элемента
+     * Compute the field rights.
      *
+     * @param int $methodRights Method rights.
+     * @param null|int $RORights
+     * @param null|int $FCRights
      * @return int
-     * @access public
-     * @static
      */
-
     public static function computeRights($methodRights, $RORights = null, $FCRights = null) {
         //Если уровень прав не указан, берем права документа
         $RORights = is_null($RORights) ? $methodRights : $RORights;
@@ -1007,7 +1010,7 @@ class FieldDescription extends DBWorker implements Iterator {
             $result = FieldDescription::FIELD_MODE_EDIT;
         }
 
-        Return $result;
+        return $result;
     }
 
     public function current() {

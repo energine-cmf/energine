@@ -3,7 +3,7 @@
  * @file
  * Request.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 final class Request;
 @endcode

@@ -3,7 +3,7 @@
  * @file
  * ErrorDocument.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class ErrorDocument;
 @endcode

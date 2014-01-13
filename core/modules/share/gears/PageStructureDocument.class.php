@@ -3,7 +3,7 @@
  * @file
  * PageStructureDocument.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class PageStructureDocument;
 @endcode

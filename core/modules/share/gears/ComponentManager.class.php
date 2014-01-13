@@ -3,7 +3,7 @@
  * @file
  * ComponentManager, IBlock
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 final class ComponentManager;
 interface IBlock;

@@ -3,7 +3,7 @@
  * @file
  * URI.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 final class URI;
 @endcode

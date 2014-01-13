@@ -3,7 +3,7 @@
  * @file
  * Transformer.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class XSLTTransformer;
 @endcode

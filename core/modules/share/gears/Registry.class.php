@@ -3,7 +3,7 @@
  * @file
  * E, Registry.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 function E();
 final class Registry;

@@ -3,7 +3,7 @@
  * @file
  * Component, IBuilder.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class Component;
 interface IBuilder;

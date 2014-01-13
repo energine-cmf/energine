@@ -3,7 +3,7 @@
  * @file
  * QAL.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 final class QAL;
 @endcode

@@ -3,7 +3,7 @@
  * @file
  * ComponentContainer.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class ComponentContainer
 @endcode

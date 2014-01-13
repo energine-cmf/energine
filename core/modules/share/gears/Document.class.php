@@ -1,112 +1,121 @@
 <?php
-
 /**
- * Класс Document.
+ * @file.
+ * Document.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class Document;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Документ страницы.
+ * Page document.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
- * @final
+ * @code
+final class Document;
+@endcode
+ *
+ * @attention Thi is @b final class.
  */
 final class Document extends DBWorker implements IDocument {
     /**
-     * Зарезервированный сегмент URL для single-режима
+     * Reserved URL segment for 'single'-mode
+     * @var string SINGLE_SEGMENT
      */
     const SINGLE_SEGMENT = 'single';
 
     /**
-     * Путь к директории с конфигурационными шаблонами
+     * Path to the directory with templates.
+     * @var string TEMPLATES_DIR
      */
     const TEMPLATES_DIR = 'templates/';
 
     /**
-     * @access private
-     * @var int идентификатор документа
+     * Document ID
+     * @var int $id
      */
     private $id = false;
 
     /**
-     * @access private
-     * @var int идентификатор языка документа
+     * Document language ID.
+     * @var int $lang
      */
     private $lang;
 
     /**
-     * @access protected
-     * @var Language информация о языках системы
+     * Info about system language.
+     * @var Language $language
      */
     protected $language;
 
     /**
-     * @access protected
-     * @var Sitemap карта сайта
+     * Site map.
+     * @var Sitemap $sitemap
      */
     protected $sitemap;
 
     /**
-     * @access private
-     * @var Request
+     * Request.
+     * @var Request $request
      */
     private $request;
 
     /**
-     * @access public
-     * @var ComponentManager менеджер компонентов
+     * Component manager.
+     * @var ComponentManager $componentManager
      */
     public $componentManager;
 
     /**
-     * @access private
-     * @var DOMDocument результирующий документ
+     * Result document.
+     * @var DOMDocument $doc
      */
     private $doc;
 
     /**
-     * @access private
-     * @var int права пользователя на документ
+     * User rights for document.
+     * Rights:
+     * - ACCESS_NONE = 0
+     * - ACCESS_READ = 1
+     * - ACCESS_EDIT = 2
+     * - ACCESS_FULL = 3
+     *
+     * @var int $rights
      */
     private $rights = false;
 
     /**
-     * @access private
-     * @var array свойства документа
+     * Document properties.
+     * @var array $properties
      */
     private $properties = array();
 
     /**
-     * @access public
-     * @var AuthUser экземпляр класса AuthUser
-     * @see AuthUser
+     * Exemplar of the AuthUser class.
+     * @var AuthUser $user
      */
     public $user;
 
     /**
-     * @access private
-     * @var array информация о документе
+     * Document information.
+     * @var array $documentInfo
      * @see Sitemap::getDocumentInfo()
      */
     private $documentInfo = array();
 
     /**
-     * Массив констант для перевода
+     * Array of constants for translations.
      *
-     * @var array
-     * @access private
+     * @var array $translations
      */
     private $translations = array();
 
-    /**
-     *
-     */
     public function __construct() {
         parent::__construct();
         $this->user = E()->getAUser();
@@ -172,9 +181,8 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Возвращает идентификатор документа.
+     * Get document ID.
      *
-     * @access public
      * @return int
      */
     public function getID() {
@@ -182,9 +190,8 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Возвращает идентификатор языка документа.
+     * Get language ID.
      *
-     * @access public
      * @return int
      */
     public function getLang() {
@@ -192,10 +199,8 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Запускает построение компонентов страницы и возвращает результат в виде
-     * собранного DOM-документа страницы.
+     * Build page components.
      *
-     * @access public
      * @return DOMDocument
      */
     public function build() {
@@ -345,11 +350,11 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Построение уникального плоского массива подключений js-файлов и их зависимостей
+     * Create unique flat array of connected .js-files and their dependencies.
      *
-     * @param array $dependencies
-     * @param array $jsmap
-     * @param array $js_includes
+     * @param array $dependencies Dependencies.
+     * @param array $jsmap JS map.
+     * @param array $js_includes JS includes.
      */
     protected function createJavascriptDependencies($dependencies, $jsmap, &$js_includes) {
         if ($dependencies) {
@@ -365,11 +370,9 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
+     * Define and load page components into the @link ComponentManager component manager@endlink.
      * Определяет компоненты страницы и загружает их в менеджер компонентов.
      *
-     * @access public
-     *
-     * @return void
      * @todo Полный рефакторинг!
      */
     public function loadComponents() {
@@ -473,10 +476,7 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Запускает работу всех компонентов страницы.
-     *
-     * @access public
-     * @return void
+     * Run all components.
      */
     public function runComponents() {
         foreach ($this->componentManager as $block) {
@@ -500,9 +500,8 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Возвращает результирующий DOM-документ.
+     * Get the result DOM-document.
      *
-     * @access public
      * @return DOMDocument
      */
     public function getResult() {
@@ -510,9 +509,8 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Возвращает объект текущего пользователя.
+     * Get current user.
      *
-     * @access public
      * @return AuthUser
      */
     public function getUser() {
@@ -520,11 +518,10 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Возвращает права пользователя на документ.
+     * Get user rights.
      *
-     * one of [ACCESS_NONE=0, ACCESS_READ=1, ACCESS_EDIT=2, ACCESS_FULL=3]
+     * @see Document::$rights
      *
-     * @access public
      * @return int
      */
     public function getRights() {
@@ -532,23 +529,20 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Устанавливает значение свойства документа.
+     * Set document property.
      *
-     * @access public
-     * @param string $propName
-     * @param string $propValue
-     * @return void
+     * @param string $propName Property name.
+     * @param string $propValue Property value.
      */
     public function setProperty($propName, $propValue) {
         $this->properties[$propName] = $propValue;
     }
 
     /**
-     * Возвращает значение свойства документа.
+     * Get document property.
      *
-     * @access public
-     * @param string $propName
-     * @return string
+     * @param string $propName Property name.
+     * @return string|false
      */
     public function getProperty($propName) {
         if (isset($this->properties[$propName])) {
@@ -558,11 +552,9 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Удаляет свойство документа.
+     * Remove property.
      *
-     * @access protected
-     * @param string $propName
-     * @return void
+     * @param string $propName Property name.
      */
     protected function removeProperty($propName) {
         if (isset($this->properties[$propName])) {
@@ -571,20 +563,21 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Добавляет константу перевода к документу
+     * Add translation constant.
      *
-     * @param string
-     * @param Component
-     *
-     * @return void
-     * @access public
+     * @param string $const Translation constant
+     * @param Component $component Component object.
      */
-
     public function addTranslation($const, Component $component = null) {
         $this->translations[$const] =
             (!is_null($component)) ? $component->getName() : null;
     }
 
+    /**
+     * Check if the component editable.
+     *
+     * @return bool
+     */
     public function isEditable() {
         if ($this->getRights() > 2) {
             return ($this->getConfigValue('site.debug')) ? isset($_REQUEST['editMode']) : isset($_POST['editMode']);
@@ -594,11 +587,12 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Возвращает информацию о xml коде документа
-     * Если значение xml отсутствует или неверно  - пытается загрузить XML из соответсвующего файла
-     * @static
-     * @throws SystemException
-     * @param  $documentID int Идентификатор документа
+     * Get the information about document XML-code.
+     * If the value 'xml' is missed or incorrect then it will try to load XML from the file.
+     *
+     * @throws SystemException 'ERR_WRONG_'
+     *
+     * @param int $documentID Document ID.
      * @return object
      */
     static public function getTemplatesData($documentID) {

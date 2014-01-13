@@ -3,7 +3,7 @@
  * @file
  * DocumentController, ITransformer, IDocument.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 class DocumentController;
 interface ITransformer;

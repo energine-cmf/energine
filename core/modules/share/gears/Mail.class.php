@@ -3,7 +3,7 @@
  * @file
  * Mail.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 final class Mail;
 @endcode
@@ -18,7 +18,7 @@ final class Mail;
 /**
  * Message sender.
  *
- * Contain the definition to:
+ * It contains the definition to:
  * @code
 final class Mail;
 @endcode

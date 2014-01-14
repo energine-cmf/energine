@@ -94,6 +94,22 @@ optgroup {
 optgroup option {
     padding-left: 22px;
 }
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="phone"],
+select,
+textarea {
+    border-left: 6px solid #6FCFE3;
+}
+.required input[type="text"],
+.required input[type="password"],
+.required input[type="email"],
+.required input[type="phone"],
+.required select,
+.required textarea {
+    border-left: 6px solid #DC143C;
+}
 /* ----- /forms ----- */
 /* ----- clearfix ----- */
 .clearfix:after {

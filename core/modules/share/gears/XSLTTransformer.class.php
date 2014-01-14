@@ -50,7 +50,7 @@ class XSLTTransformer extends Object implements ITransformer {
      * @throws SystemException 'ERR_DEV_NO_MAIN_TRANSFORMER'
      *
      * @param string $transformerFilename File name.
-     * @param bool $isAbsolutePath Defines whether the absolute path is used.
+     * @param bool $isAbsolutePath Is the path absolute?
      * @return void
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false) {

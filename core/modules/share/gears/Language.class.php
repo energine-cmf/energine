@@ -1,41 +1,44 @@
 <?php
 /**
- * Класс Language.
+ * @file
+ * Language.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class Language;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Управляет языками системы.
+ * Language system control.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
- * @final
+ * @code
+final class Language;
+@endcode
+ *
+ * @attention This is @b final class.
  */
 final class Language extends DBWorker{
-
     /**
-     * @access public
-     * @var int текущий язык системы
+     * Current language ID.
+     * @var int $current
      */
     private $current = false;
 
     /**
-     * @access private
-     * @var array набор языков, определённых в системе
+     * Set of system defined languages.
+     * @var array $languages
      */
     private $languages;
 
     /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
+     * @throws SystemException 'ERR_NO_LANG_INFO'
      */
     public function __construct() {
         parent::__construct();
@@ -53,21 +56,22 @@ final class Language extends DBWorker{
     }
 
     /**
-	 * Возвращает идентификатор текущего языка.
+     * Get current language ID.
 	 *
-	 * @access public
 	 * @return int
 	 */
     public function getCurrent() {
         return $this->current;
     }
 
+    //todo VZ: This never returns 'false', then what is the reason to return true?
     /**
-	 * Устанавливает идентификатор текущнго языка.
+     * Set current language ID.
 	 *
-	 * @access public
-	 * @param int $currentLangID
-	 * @return void
+     * @throws SystemException 'ERR_404'
+     *
+	 * @param int $currentLangID Language ID.
+     * @return true
 	 */
     public function setCurrent($currentLangID) {
         $result = false;
@@ -89,10 +93,12 @@ final class Language extends DBWorker{
         return $result;
     }
 
+    //todo VZ: false == 0 == "0" == NULL == array() == "" --> true: The $result is not safe. Use strict comparison.
     /**
-	 * Возвращает идентификатор языка по-умолчанию.
+     * Get default language ID.
+     *
+     * @throws SystemException 'ERR_NO_DEFAULT_LANG'
 	 *
-	 * @access public
 	 * @return int
 	 */
     public function getDefault() {
@@ -109,12 +115,13 @@ final class Language extends DBWorker{
         return $result;
     }
 
+    //todo VZ: Strange using of flag $useDefaultIfEmpty.
     /**
-	 * Возвращает идентификатор языка по аббревиатуре азыка.
+     * Get language ID by his abbreviation,
 	 *
-	 * @access public
-	 * @param string $abbr аббревиатура языка
-	 * @return int
+	 * @param string $abbr Language abbreviation.
+     * @param boolean $useDefaultIfEmpty Use default language if the abbreviation is empty.
+     * @return int
 	 */
     public function getIDByAbbr($abbr, $useDefaultIfEmpty = false) {
         $result = false;
@@ -128,14 +135,15 @@ final class Language extends DBWorker{
             }
         }
         return $result;
-
     }
 
+    //todo VZ: false == 0 == "0" == NULL == array() == "" --> true: The $result is not safe. Use strict comparison.
     /**
-	 * Возвращает аббревиатуру языка по идентификатору языка.
+     * Get abbreviation language by his ID.
 	 *
-	 * @access public
-	 * @param int $id идентификатор языка
+     * @throws SystemException 'ERR_BAD_LANG_ID'
+     *
+	 * @param int $id Language ID.
 	 * @return string
 	 */
     public function getAbbrByID($id) {
@@ -152,11 +160,13 @@ final class Language extends DBWorker{
         return $result;
     }
 
+    //todo VZ: false == 0 == "0" == NULL == array() == "" --> true: The $result is not safe. Use strict comparison.
     /**
-	 * Возвращает название языка по идентификатору языка.
+     * Get language name by his ID.
+     *
+     * @throws SystemException 'ERR_BAD_LANG_ID'
 	 *
-	 * @access public
-	 * @param int $id
+	 * @param int $id Language ID.
 	 * @return string
 	 */
     public function getNameByID($id) {
@@ -174,9 +184,8 @@ final class Language extends DBWorker{
     }
 
     /**
-     * Возвращает все языки, определённые в системе.
+     * Get all system defined languages.
      *
-     * @access public
      * @return array
      */
     public function getLanguages() {
@@ -184,16 +193,20 @@ final class Language extends DBWorker{
     }
 
     /**
-     * Проверяет, существует ли язык с указанным идентификатором.
+     * Check if the language ID already exist.
      *
-     * @access public
-     * @param int $id
+     * @param int $id Language ID.
      * @return bool
      */
     public function isValidLangID($id) {
         return in_array($id, array_keys($this->languages));
     }
 
+    /**
+     * Check if the language abbreviation already exist.
+     * @param string $abbr language abbreviation.
+     * @return bool
+     */
     public function isValidLangAbbr($abbr) {
         $result = false;
         foreach ($this->languages as $langID => $langInfo) {

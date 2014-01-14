@@ -150,7 +150,7 @@ final class Request extends Object {
      * Get path.
      *
      * @param int $what Path type (PATH_WHOLE, PATH_TEMPLATE, PATH_ACTION). Defines which piece of the path to return.
-     * @param boolean $asString Defines whether the return value should be converted to the string type.
+     * @param bool $asString Return as boolean?
      * @return array|string
      */
     public function getPath($what = self::PATH_WHOLE, $asString = false) {
@@ -222,7 +222,7 @@ final class Request extends Object {
     /**
      * Get client IP-address.
      *
-     * @param bool $returnAsInt Defines whether the return value should be converted to the @c int type.
+     * @param bool $returnAsInt Return as int?
      * @return string
      */
     public function getClientIP($returnAsInt = false) {

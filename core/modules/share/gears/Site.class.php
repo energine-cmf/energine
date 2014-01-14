@@ -1,42 +1,39 @@
 <?php
 /**
- * Содержит класс Site
+ * Site.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class Site;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Работа с сайтом
+ * Site.
  *
- * @package energine
- * @subpackage kernel
- * @author d.pavka@gmail.com
- * @property string id
- * @property string base
+ * @code
+class Site;
+@endcode
  */
 class Site extends DBWorker {
     /**
-     * Данные сайта
-     *
-     * @access private
-     * @var array
+     * Site data.
+     * @var array $data
      */
     private $data;
     /**
-     * Переводы
-     * @var array
+     * Site translations.
+     * @var array $siteTranslationsData
      */
     static private $siteTranslationsData;
 
     /**
-     * Конструктор класса
-     *
-     *
-     * @param array $data
-     * @access public
+     * @param array $data Data.
      */
     public function __construct($data) {
         parent::__construct();
@@ -44,10 +41,11 @@ class Site extends DBWorker {
     }
 
     /**
-     * Возвращает информацию о всех сайтах в виде массив объектов Site
-     * Сразу кешируем инфу из таблицы переводов
-     * Поскольку на этот момент текущий язык еще не известен
-     * @static
+     * Load site.
+     *
+     * Return the information about all sites in the form of an array of Site objects.
+     * Right away all info is cached from translation table, because ata this moment current language is not yet defined.
+     *
      * @return Site[]
      */
     public static function load() {
@@ -70,9 +68,7 @@ class Site extends DBWorker {
     }
 
     /**
-     * Загружается информация о домене
-     *
-     * @return void
+     * Load domain information.
      */
     public function setDomain($domainData) {
         $this->data = array_merge($this->data, $domainData);
@@ -83,8 +79,10 @@ class Site extends DBWorker {
     }
 
     /**
-     * @param $propName
-     * @return null
+     * Magic @c get method.
+     *
+     * @param string $propName Property name.
+     * @return mixed
      */
     public function __get($propName) {
         $result = null;

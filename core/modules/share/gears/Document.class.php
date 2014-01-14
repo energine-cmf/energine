@@ -371,7 +371,6 @@ final class Document extends DBWorker implements IDocument {
 
     /**
      * Define and load page components into the @link ComponentManager component manager@endlink.
-     * Определяет компоненты страницы и загружает их в менеджер компонентов.
      *
      * @todo Полный рефакторинг!
      */

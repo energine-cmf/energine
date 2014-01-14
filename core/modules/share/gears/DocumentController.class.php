@@ -202,7 +202,7 @@ interface ITransformer {
      * Set file name, that will be transformed.
      *
      * @param string $transformerFilename File name.
-     * @param bool $isAbsolutePath Defines whether the absolute path is used.
+     * @param bool $isAbsolutePath Is the path absolute?
      * @return mixed
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false);

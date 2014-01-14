@@ -444,7 +444,7 @@ array(
      * Get the fully qualified table name in MySQL quotes.
      *
      * @param string $tableName Table name.
-     * @param bool $returnAsArray Defines whether the return type should be an array.
+     * @param bool $returnAsArray Return as array?
      * @return string | array
      */
     public static function getFQTableName($tableName, $returnAsArray = false) {

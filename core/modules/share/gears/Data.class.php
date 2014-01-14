@@ -189,7 +189,7 @@ class Data extends Object {
     /**
      * Get all data fields as an array.
      *
-     * @param bool $groupedByFields Defines whether the returned array should be grouped by fields.
+     * @param bool $groupedByFields Group by fields?
      * @return array
      */
     public function asArray($groupedByFields = false) {

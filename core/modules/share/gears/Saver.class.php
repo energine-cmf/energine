@@ -1,87 +1,87 @@
 <?php
-
 /**
- * Класс Saver
+ * @file
+ * Saver.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class Saver;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Сохранитель данных в БД.
+ * Data saver into data base.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class Saver;
+@endcode
  */
 class Saver extends DBWorker {
     /**
-     * @access private
-     * @var array имена полей, в которых произошли ошибки
+     * Field names where errors occurred.
+     * @var array $errors
      */
     private $errors = array();
 
     /**
-     * @access private
-     * @var mixed условие SQL-запроса сохранения
+     * Condition for save SQL-request.
+     *
      * @see QAL::select()
+     *
+     * @var mixed $filter
      */
     private $filter = null;
 
     /**
-     * @access private
-     * @var string режим сохранения
+     * Save mode.
+     *
      * @see QAL::INSERT
      * @see QAL::UPDATE
+     *
+     * @var string $mode
      */
     private $mode = QAL::INSERT;
 
     /**
-     * @access protected
-     * @var DataDescription описание данных
+     * Data description.
+     * @var DataDescription $dataDescription
      */
     protected $dataDescription = false;
 
     /**
-     * @access protected
-     * @var Data данные
+     * Data.
+     * @var Data $data
      */
     protected $data = false;
 
     /**
-     * @access private
-     * @var mixed результат сохранения
+     * Result of saving.
+     * @var mixed $result
      */
     private $result = false;
 
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     * Устанавливает описание данных.
+     * Set data description.
      *
-     * @access public
-     * @param DataDescription $dataDescription
-     * @return void
+     * @param DataDescription $dataDescription Data description.
      */
     public function setDataDescription(DataDescription $dataDescription) {
         $this->dataDescription = $dataDescription;
     }
 
     /**
-     * Возвращает описание данных.
+     * Get data description.
      *
-     * @access public
      * @return DataDescription
      */
     public function getDataDescription() {
@@ -89,42 +89,35 @@ class Saver extends DBWorker {
     }
 
     /**
-     * Возвращает данные
+     * Get data.
      *
      * @return Data
-     * @access public
      */
-
     public function getData() {
         return $this->data;
     }
 
     /**
-     * Устанавливает данные.
+     * Set data.
      *
-     * @access public
-     * @param Data $data
-     * @return void
+     * @param Data $data Data.
      */
     public function setData(Data $data) {
         $this->data = $data;
     }
 
     /**
-     * Устанавливает режим сохранения данных.
+     * Set save mode.
      *
-     * @access public
-     * @param string
-     * @return void
+     * @param string $mode Mode.
      */
     public function setMode($mode) {
         $this->mode = $mode;
     }
 
     /**
-     * Возвращает режим сохранения данных.
+     * Get save mode.
      *
-     * @access public
      * @return string
      */
     public function getMode() {
@@ -132,9 +125,8 @@ class Saver extends DBWorker {
     }
 
     /**
-     * Возвращает условие SQL-запроса сохранения.
+     * Get condition for save SQL-request.
      *
-     * @access public
      * @return mixed
      */
     public function getFilter() {
@@ -142,22 +134,22 @@ class Saver extends DBWorker {
     }
 
     /**
-     * Устанавливает условие SQL-запроса сохранения.
+     * Set condition for save SQL-request.
      *
-     * @access public
-     * @param mixed $filter
-     * @return void
+     * @param mixed $filter Condition for save SQL-request.
      */
     public function setFilter($filter) {
         $this->filter = $filter;
     }
 
     /**
-     * Валидация сохраняемых данных.
+     * Validate date before saving.
      *
-     * @access public
-     * @return boolean
+     * @throws SystemException 'ERR_DEV_BAD_DATA'
+     *
      * @todo возможность передачи в объект callback функции для пользовательской валидации
+     *
+     * @return boolean
      */
     public function validate() {
         $result = false;
@@ -199,9 +191,8 @@ class Saver extends DBWorker {
     }
 
     /**
-     * Возвращает имена полей, в которых произошли ошибки.
+     * Get fields with errors.
      *
-     * @access public
      * @return array
      */
     public function getErrors() {
@@ -209,21 +200,16 @@ class Saver extends DBWorker {
     }
 
     /**
-     * Добавляет имя поле в набор ошибочных имён полей.
+     * Add field name where an error occurred.
      *
-     * @access public
-     * @param string $fieldName
-     * @return void
+     * @param string $fieldName Field name.
      */
     public function addError($fieldName) {
         array_push($this->errors, $this->translate('FIELD_' . $fieldName));
     }
 
     /**
-     * Сохранение данных.
-     *
-     * @access public
-     * @return void
+     * Save data.
      */
     public function save() {
         //Основные данные для сохранения
@@ -354,9 +340,8 @@ class Saver extends DBWorker {
     }
 
     /**
-     * Возвращает результат сохранения данных.
+     * Get result of saving.
      *
-     * @access public
      * @return mixed
      */
     public function getResult() {

@@ -200,7 +200,7 @@ final class URI extends Object {
     /**
      * Get path.
      *
-     * @param boolean $asString Defines whether the returned array of the path should be converted to string type.
+     * @param boolean $asString Return as string?
      * @return array|string
      */
     public function getPath($asString = true) {

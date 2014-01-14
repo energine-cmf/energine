@@ -1,103 +1,98 @@
 <?php
-
 /**
- * Содержит класс Sitemap
+ * @file
+ * Sitemap.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class Sitemap;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
  */
 
 
 /**
- * Класс - синглтон
- * Содержит методы по работе со структурой сайта
+ * Site map.
  *
+ * It contain the methods for work with site structure.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
- * @final
+ * @code
+final class Sitemap;
+@endcode
+ *
+ * @attention This is singleton class.
+ * @attention This is @b final class.
  */
 final class Sitemap extends DBWorker {
 	/**
-	 * @var TreeNodeList Экземпляр класса реализующего работу с древовидными структурами
-	 * @access private
+     * Class exemplar that works with tree structures.
+	 * @var TreeNodeList $tree
 	 */
 	private $tree;
 
 	/**
-	 * Информация о тех разделах, на которые у юзера есть права
-	 * @var array
-	 * @access private
-	 */
+     * Information about sections where the user can access.
+	 * @var array $info
+     */
 	private $info = array();
 
 	/**
-	 * Идентификатор дефолтной страницы
-	 * Вынесено в переменную чтоб не дергать запрос постоянно
-	 *
-	 * @var int
-	 * @access private
-	 */
+     * Default page ID.
+     * This variable was created to minimize the using of requests.
+	 * @var int $defaultID
+     */
 	private $defaultID = false;
 
 	/**
-	 * Дефолтные meta keywords
-	 * Используется для всех страниц у которых не указано
-	 * Вынесено в отдельную переменную, чтобы не дергать каждый раз запрос
+     * Default Meta-Keywords.
+     *
+     * This is used for all pages that haven't custom Meta-keyword.
+     * This variable was created to minimize the using of requests.
 	 *
-	 * @var string
-	 * @access private
+	 * @var string $defaultMetaKeywords
 	 */
 	private $defaultMetaKeywords;
 
 	/**
-	 * Дефолтное meta description
+     * Default Meta-Description.
 	 *
-	 * @var string
-	 * @access private
 	 * @see Sitemap::defaultMetaKeywords
+     *
+	 * @var string $defaultMetaDescription
 	 */
 	private $defaultMetaDescription;
     /**
-	 * Дефолтное meta robots
+     * Default Meta-Robots.
 	 *
-	 * @var string
-	 * @access private
+	 * @var string $defaultMetaRobots
 	 */
 	private $defaultMetaRobots;
 
 	/**
-	 * Идентификатор текущего языка
-	 *
-	 * @var int
-	 * @access private
+     * Current language ID.
+	 * @var int $langID
 	 */
 	private $langID;
 
 	/**
-	 * Кеширование уровней доступа
-	 *
-	 * @var array
-	 * @access private
-	 */
+     * Cache of access levels.
+	 * @var array $cacheAccessLevels
+     */
 	private $cacheAccessLevels = array();
 
 	/**
-	 * Идентификатор текущего сайта 
-	 *
-	 * @access private
-	 * @var int
+     * Current site ID.
+	 * @var int $siteID
 	 */
 	private $siteID;
 
 	/**
-	 * Конструктор класса
-	 *
-	 * @param int идентификатор сайта
-	 * @return void
+     * @throws SystemException 'ERR_NO_TRANSLATION'
+     * @throws SystemException 'ERR_404'
+     *
+	 * @param int $siteID Site ID.
 	 */
 	public function __construct($siteID) {
 		parent::__construct();
@@ -169,12 +164,12 @@ final class Sitemap extends DBWorker {
         $this->defaultMetaRobots = $res['site_meta_robots'];
 
 		$this->getSitemapData(array_keys($this->tree->asList()));
-
 	}
 
 	/**
-     * @static
-     * @param $pageID
+     * Get site ID by page ID.
+     *
+     * @param int $pageID Page ID.
      * @return mixed
      */
 	public static function getSiteID($pageID){
@@ -186,13 +181,11 @@ final class Sitemap extends DBWorker {
 	}
 
 	/**
-	 * Метод возвращающий информацию о разделах
+     * Get information about sections.
 	 *
-	 * @param mixed идентификатор раздела или массив идентификаторов
+	 * @param int|array $id Section ID or array of IDs.
 	 * @return array
-	 * @access private
 	 */
-
 	private function getSitemapData($id) {
 		if (!is_array($id)) {
 			$id = array($id);
@@ -239,13 +232,14 @@ final class Sitemap extends DBWorker {
 
 
 	/**
-	 * Внутренний метод по преобразования информации о документе. Сводит все ключи к camel notation и для линка изменяет значение идентификатора шаблона
+     * Prepare page information.
+     *
+     * This is internal method for transforming information about document.
+     * It set all keys to @c camelNotation and change template ID for link.
 	 *
-	 * @param array
+	 * @param array $current Current page.
 	 * @return array
-	 * @access private
 	 */
-
 	private function preparePageInfo($current) {
 		//inspect($current);
 		//здесь что то лишнее
@@ -261,25 +255,20 @@ final class Sitemap extends DBWorker {
 
 
 	/**
-	 * Возвращает идентификатор страницы по умолчанию
+     * Get default page ID.
 	 *
 	 * @return int
-	 * @access public
 	 */
-
 	public function getDefault() {
 		return $this->defaultID;
 	}
 
 	/**
-	 * Возвращает часть строки УРЛ по идентификатор
+     * Get URL section by page ID.
 	 *
-	 *
-	 * @param int
+	 * @param int $smapID Page ID.
 	 * @return string
-	 * @access public
 	 */
-
 	public function getURLByID($smapID) {
 		$result = array();
 		$node = $this->tree->getNodeById($smapID);
@@ -309,13 +298,11 @@ final class Sitemap extends DBWorker {
 	}
 
 	/**
-	 * Возвращает идентификатор страницы по его URL
+     * Get page ID by his URL.
 	 *
-	 * @param array
+	 * @param array $segments URL.
 	 * @return int
-	 * @access public
 	 */
-
 	public function getIDByURI(array $segments) {
 		$request = E()->getRequest();
         $id = $this->getDefault();
@@ -342,12 +329,13 @@ final class Sitemap extends DBWorker {
 	}
 
 	/**
-	 * Определение прав набора групп на страницу
+     * Get document rights.
+     *
+     * It also defines the set of rights for a page.
 	 *
-	 * @param int идентификатор документа
-	 * @param mixed группа/набор групп, если не указан, берется группа/группы текущего пользовател
+	 * @param int $docID Document ID.
+	 * @param mixed $groups Group/set of groups. If this is not defined the group of current user will be used.
 	 * @return int
-	 * @access public
 	 */
 	public function getDocumentRights($docID, $groups = false) {
 		if (!$groups) {
@@ -368,13 +356,12 @@ final class Sitemap extends DBWorker {
 	}
 
 	/**
-	 * Возвращает все дочерние разделы
+     * Get all child sections.
 	 *
-	 * @param int идентификатор раздела
-	 * @return array
-	 * @access public
+	 * @param int $smapID Section ID.
+     * @param bool $returnAsTreeNodeList Return all as TreeNodeList?
+     * @return array
 	 */
-
 	public function getChilds($smapID, $returnAsTreeNodeList = false) {
 		$result = array();
 		if ($node = $this->tree->getNodeById($smapID)) {
@@ -387,14 +374,13 @@ final class Sitemap extends DBWorker {
 		}
 		return $result;
 	}
-	/**
-	 * Возвращает всех потомков
-	 *
-	 * @param int идентификатор раздела
-	 * @return array
-	 * @access public
-	 */
 
+	/**
+     * Get all descendants.
+	 *
+	 * @param int $smapID Section ID.
+	 * @return array
+	 */
 	public function getDescendants($smapID) {
 		$result = array();
 		if ($node = $this->tree->getNodeById($smapID)) {
@@ -404,12 +390,11 @@ final class Sitemap extends DBWorker {
 	}
 
 	/**
-	 * Возвращает родителя
+     * Get parent.
 	 *
+     * @param int $smapID Section ID.
 	 * @return int
-	 * @access public
 	 */
-
 	public function getParent($smapID) {
 		$node = $this->tree->getNodeById($smapID);
 		$result = false;
@@ -421,13 +406,11 @@ final class Sitemap extends DBWorker {
 	}
 
 	/**
-	 * Возвращает массив родителей
+     * Get parents.
 	 *
-	 * @param int Идентфикатор раздела
+	 * @param int $smapID Section ID.
 	 * @return array
-	 * @access public
 	 */
-
 	public function getParents($smapID) {
 		$node = $this->tree->getNodeById($smapID);
 		$result = array();
@@ -438,13 +421,14 @@ final class Sitemap extends DBWorker {
 	}
 
 	/**
-	 * По переданному массиву идентификаторов разделов и массиву перечня полей формирует  cтруктуру array('$идентификатор_раздела'=>array())
+     * Build page map.
+     *
+     * The returned array looks as follows:
+     * @code array('$section_id'=>array()) @endcode
 	 *
-	 * @param array идентификаторы разделов
+	 * @param array $ids Section IDs.
 	 * @return array
-	 * @access private
 	 */
-
 	private function buildPagesMap($ids) {
 		$result = array();
 		if (is_array($ids)) {
@@ -459,15 +443,13 @@ final class Sitemap extends DBWorker {
 	}
 
 	/**
-	 * Возвращает информацию о документе
-	 * Ищем документ с нужным идентификатором в $this->info
-	 *
-	 * @param int Идентификатор раздела
+     * Get document information.
+     *
+     * @param int $id Section ID
 	 * @return array
-	 * @access public
 	 */
-
 	public function getDocumentInfo($id) {
+        // Ищем документ с нужным идентификатором в $this->info
 		if(isset($this->info[$id]))
 		$result = $this->info[$id];
 		else{
@@ -479,23 +461,19 @@ final class Sitemap extends DBWorker {
 
 
 	/**
-	 * Возвращает объект Tree
+     * Get Tree object.
 	 *
 	 * @return TreeNodeList
-	 * @access public
 	 */
-
 	public function getTree() {
 		return $this->tree;
 	}
 
 	/**
-	 * Возвращает всю информацию о раздеах в не структурированном виде
+     * Get the whole information about sections in unstructured view.
 	 *
 	 * @return array
-	 * @access public
 	 */
-
 	public function getInfo() {
 		return $this->info;
 	}

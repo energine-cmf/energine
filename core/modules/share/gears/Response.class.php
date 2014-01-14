@@ -106,7 +106,7 @@ final class Response extends Object {
      *
      * @param string $name Header name.
      * @param string $value Header value.
-     * @param boolean $replace defines whether the header value should be replaced.
+     * @param boolean $replace Defines whether the header value should be replaced.
      */
     public function setHeader($name, $value, $replace = true) {
         if ((!$replace) && isset($this->headers[$name])) {

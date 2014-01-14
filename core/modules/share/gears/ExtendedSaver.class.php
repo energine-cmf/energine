@@ -1,25 +1,42 @@
 <?php
+/**
+ * @file
+ * ExtendedSaver.
+ *
+ * It contains the definition to:
+ * @code
+class ExtendedSaver;
+@endcode
+ *
+ * @author
+ *
+ * @versioin 1.0.0
+ */
 
+/**
+ * Extended Saver.
+ *
+ * @code
+class ExtendedSaver;
+@endcode
+ */
 class ExtendedSaver extends Saver {
     /**
-     * Имя первичного ключа таблицы
-     *
-     * @access private
-     * @var string
+     * Primary key of the table.
+     * @var string $pk
      */
     private $pk;
 
     /**
-     * Имя основной таблицы
-     * @var string
+     * Main table name.
+     * @var string $mainTableName
      */
     private $mainTableName;
 
     /**
-     * Устанавливает имя основной таблицы
+     * Set data description and main table name.
      *
-     * @return void
-     * @access public
+     * @param DataDescription $dd Data description.
      */
     public function setDataDescription(DataDescription $dd) {
         parent::setDataDescription($dd);
@@ -33,6 +50,8 @@ class ExtendedSaver extends Saver {
     }
 
     /**
+     * Get main table name.
+     *
      * @return string
      */
     protected function getTableName() {
@@ -40,6 +59,8 @@ class ExtendedSaver extends Saver {
     }
 
     /**
+     * Get primary key.
+     *
      * @return string
      */
     protected function getPK(){
@@ -47,8 +68,7 @@ class ExtendedSaver extends Saver {
     }
 
     /**
-     * Сохраняем данные в таблицу аплоадсов и в таблицу тегов
-     * @return void
+     * Save data into the table of uploads and tags.
      */
     public function save() {
         $result = parent::save();
@@ -73,7 +93,6 @@ class ExtendedSaver extends Saver {
                 )
             );
         }
-
 
         return $result;
     }

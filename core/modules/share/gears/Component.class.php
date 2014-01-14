@@ -524,7 +524,7 @@ class Component extends DBWorker implements IBlock {
      *
      * @todo Тут какой то беспорядок, то false то пустой array
      *
-     * @param bool $returnAsAssocArray Defines whether an associative or normal array should be returned.
+     * @param bool $returnAsAssocArray Return as an associative?
      * @return array
      */
     public function getStateParams($returnAsAssocArray = false) {

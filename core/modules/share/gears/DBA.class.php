@@ -277,7 +277,8 @@ abstract class DBA extends Object {
         }
         if ($this->getConfigValue('database.prepare')) {
             $res = $this->runQuery(func_get_args());
-            $this->lastQuery = $res->queryString;
+            if($res instanceof PDOStatement)
+                $this->lastQuery = $res->queryString;
         } else {
             $request = $this->constructQuery(func_get_args());
             $res = $this->pdo->query($request);

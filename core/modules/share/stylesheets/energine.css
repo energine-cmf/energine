@@ -110,6 +110,21 @@ textarea {
 .required textarea {
     border-left: 6px solid #DC143C;
 }
+.e-pane-b-toolbar input[type="text"],
+.e-pane-b-toolbar input[type="password"],
+.e-pane-b-toolbar input[type="email"],
+.e-pane-b-toolbar input[type="phone"],
+.e-pane-b-toolbar select,
+.e-pane-b-toolbar textarea,
+.filter input[type="text"],
+.filter input[type="password"],
+.filter input[type="email"],
+.filter input[type="phone"],
+.filter select,
+.filter textarea {
+    border: 0;
+}
+
 .e-pane-content .field {
     padding: 10px 0;
 }
@@ -135,7 +150,8 @@ textarea {
 .e-pane-content .field .control select {
     width: 509px;
 }
-.e-pane-content .field .control.toggle {
+.e-pane-content .field .control.type_code,
+.e-pane-content .field .control.type_htmlblock {
     display: block;
     width: 100% ;
 }

@@ -110,6 +110,35 @@ textarea {
 .required textarea {
     border-left: 6px solid #DC143C;
 }
+.e-pane-content .field {
+    padding: 10px 0;
+}
+.e-pane-content .field .name {
+    display: inline-block;
+    vertical-align: middle;
+    width: 25%;
+}
+.e-pane-content .field .control {
+    display: inline-block;
+    vertical-align: middle;
+    width: 70%;
+}
+.e-pane-content .field .control textarea,
+.e-pane-content .field .control input[type="text"]
+.e-pane-content .field .control input[type="password"],
+.e-pane-content .field .control input[type="email"],
+.e-pane-content .field .control input[type="phone"],
+.e-pane-content .field .control select {
+    width: 495px;
+    margin-bottom: 10px;
+}
+.e-pane-content .field .control select {
+    width: 509px;
+}
+.e-pane-content .field .control.toggle {
+    display: block;
+    width: 100% ;
+}
 /* ----- /forms ----- */
 /* ----- clearfix ----- */
 .clearfix:after {

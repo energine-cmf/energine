@@ -12,17 +12,11 @@ Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
     margin: 0 auto;
 }
 .carousel .next_control, .carousel .previous_control {
-    /*display: block;*/
-    /*position: absolute;*/
-    /*top: 50%;*/
     left: 0;    
-    /*z-index: 2;*/
     width: 14px;
     height: 20px;
-    /*overflow: hidden;*/
     margin-top: -10px;
     outline: 0;
-    /*-moz-user-select: none;*/
 }
 .carousel .next_control {
     left: -14px;
@@ -43,10 +37,7 @@ Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
     _left: -48px;
 }
 .carousel_viewbox {
-    /*position: relative;*/
     height: 88px;
-    /*overflow: hidden;*/
-    /*margin: auto;*/
     border-left: 1px solid #afafaf;
     border-right: 1px solid #afafaf;    
 }
@@ -73,20 +64,12 @@ Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
     width: 538px;
 }
 .item {
-    /*position: relative;*/
-    /*width: 92px;*/
     padding: 3px;
-    /*text-align: center;*/
-    /*vertical-align: middle;*/
 }
 .carousel .item .active {
     background: #fdd34e;
-    /*text-align: center;*/
-    /*vertical-align: middle;*/
 }
 .item img {
-/*    display: block;
-*/
     border: 1px solid #878787;
 }
 .item .play_icon {

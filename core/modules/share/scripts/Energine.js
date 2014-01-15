@@ -3,15 +3,13 @@
  * <ul>
  *     <li>[Energine]{@link Energine}</li>
  *     <li>[ScriptLoader]{@link ScriptLoader}</li>
- *     <li>[ScrollBarWidth]{@link ScrollBarWidth}</li>
  * </ul>
  *
  * @requires GridManager
  *
- * @author Pavel Dubenko
- * @author Valerii Zinchenko
+ * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.1.1
+ * @version 1.1.0
  */
 
 /**
@@ -103,6 +101,7 @@ var Energine = /** @lends Energine */{
      * @type {boolean}
      */
     supportContentEdit: true,
+
 
     /**
      * Send the request.
@@ -293,11 +292,6 @@ var Energine = /** @lends Energine */{
     }
 };
 
-/**
- * Print error message in the console.
- *
- * @param {string|TypeError} e Error.
- */
 var safeConsoleError = function(e){
     if (window['console'] && console['error']) {
         if (Browser.chrome && instanceOf(e, TypeError) && Energine.debug) {
@@ -308,38 +302,10 @@ var safeConsoleError = function(e){
     }
 };
 
-document.addEvent('domready', function() {
-    /**
-     * Scroll bar width of the browser.
-     * @type {number}
-     */
-    ScrollBarWidth = window.top.ScrollBarWidth || (function() {
-        var parent = new Element('div', {
-            styles: {
-                height: '1px',
-                overflow: 'scroll'
-            }
-        });
-        var child = new Element('div', {
-            styles: {
-                height: '2px'
-            }
-        });
-
-        parent.grab(child);
-        $(document.body).grab(parent);
-
-        var width = parent.offsetWidth - child.offsetWidth;
-        parent.destroy();
-
-        return width;
-    })();
-});
-
 /**
  * Compatibility fix.
  * @type {Function}
  *
- * @deprecated Use Energine.request.
+ * @deprecated Use Energine.request instead.
  */
 Energine.request.request = Energine.request;

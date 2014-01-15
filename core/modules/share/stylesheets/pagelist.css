@@ -1,13 +1,13 @@
 /* ----- page list ----- */
 .e-pagelist {
     min-height: 14px;
-    margin: 1px 0 0 0 !important;
-    padding: 3px 2px 3px 22px !important;
-    background: #eed url(../images/pagelist.gif) 4px center no-repeat !important;
-    font-family: Tahoma, sans-serif;
-    font-size: 12px;
+    margin: 10px 0 0 0 !important;
+    padding: 8px 2px 8px 22px !important;
+    background: #eee url(../images/pagelist.gif) 4px center no-repeat !important;
+    font-size: 13px;
     line-height: normal;
     _height: 14px;
+    border-radius: 4px;
 }
 .e-pagelist * {
     vertical-align: middle;
@@ -15,19 +15,19 @@
 .e-pagelist li {
     display: inline;
     margin: 0 2px !important;
-    padding: 0 4px !important;
+    padding: 0 6px !important;
     background: transparent !important;
     list-style: none !important;
     cursor: default;
-	color:#36C;
+	color:#428bca;
 }
 .e-pagelist .highlighted {
-    background: #ff8 !important;
+    background: #ecf3f8 !important;
     cursor: pointer;
     cursor: hand;
 }
 .e-pagelist .current {
-    background: #36c !important;
+    background: #428bca !important;
     color: white;
     font-weight: bold;
     cursor: default;
@@ -35,7 +35,6 @@
 .e-pagelist li input{	
 	width: 50px;	
 	margin-right: 10px;
-	padding: 0;
-	font-size: 11px;
+	padding: 6px;
 }
 /* ----- /page list ----- */

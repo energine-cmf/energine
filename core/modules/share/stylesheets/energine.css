@@ -1,5 +1,145 @@
 *[unselectable="on"], .unselectable {-moz-user-select: none;-khtml-user-select: none;-webkit-user-select: none;user-select: none;}
-
+/* ----- reset ----- */
+html, body, iframe, address, blockquote, p, pre, h1, h2, h3, h4, h5, h6, hr,        /* блочные элементы кроме div */
+dd, dl, dt, ul, ol, li,                                                             /* списки */
+a, abbr, acronym, b, cite, code, del, dfn, em, i,                                   /* строчные элементы кроме span */
+ins, kbd, q, samp, strong, tt, var,                                                 /* строчные элементы */
+img, object,                                                                        /* картинки и объекты */
+caption, table, tbody, td, tfoot, th, thead, tr,                                    /* табличные элементы */
+form, fieldset, legend, label,                                                      /* элементы формы кроме контролов */
+u, font, s, center, dir, menu, strike, xmp                                          /* устаревшие элементы */
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+    text-indent: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1em;
+}
+/* ----- /reset ----- */
+/* ----- links ----- */
+a:link,
+a:visited {
+    color: #428bca;
+    text-decoration: none;
+}
+a[href]:hover, a[href]:active {
+    color: #2a6496;
+    text-decoration: underline;
+}
+/* ----- /links ----- */
+/* ----- forms ----- */
+form {
+    margin: 0 0 1em 0;
+    font-family: Arial, sans-serif;
+}
+fieldset {
+    padding: 12px;
+    border: 1px solid gray;
+}
+input, textarea, select, button {
+    height: auto;
+    margin: 0;
+    padding: 6px;
+    vertical-align: middle;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+button {
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 6px 12px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+button:hover {
+    background-color: #ebebeb;
+    border-color: #adadad;
+}
+input:focus, textarea:focus, select:focus {
+    border-color: #FFB400;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #FFB600;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #FFB600;
+}
+textarea {
+    vertical-align: top;
+}
+select {
+    min-height: 24px;
+    padding: 2px;
+}
+select option {
+    background: white;
+}
+optgroup {
+    color: black;
+    background: white;
+}
+optgroup option {
+    padding-left: 22px;
+}
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="phone"],
+select,
+textarea {
+    border-left: 6px solid #6FCFE3;
+}
+.required input[type="text"],
+.required input[type="password"],
+.required input[type="email"],
+.required input[type="phone"],
+.required select,
+.required textarea {
+    border-left: 6px solid #DC143C;
+}
+.e-pane-content .field {
+    padding: 10px 0;
+}
+.e-pane-content .field .name {
+    display: inline-block;
+    vertical-align: middle;
+    width: 25%;
+}
+.e-pane-content .field .control {
+    display: inline-block;
+    vertical-align: middle;
+    width: 70%;
+}
+.e-pane-content .field .control textarea,
+.e-pane-content .field .control input[type="text"]
+.e-pane-content .field .control input[type="password"],
+.e-pane-content .field .control input[type="email"],
+.e-pane-content .field .control input[type="phone"],
+.e-pane-content .field .control select {
+    width: 495px;
+    margin-bottom: 10px;
+}
+.e-pane-content .field .control select {
+    width: 509px;
+}
+.e-pane-content .field .control.toggle {
+    display: block;
+    width: 100% ;
+}
+/* ----- /forms ----- */
 /* ----- clearfix ----- */
 .clearfix:after {
     clear: both;

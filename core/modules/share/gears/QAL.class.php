@@ -370,12 +370,6 @@ final class QAL extends DBA {
     }
 
     protected function buildSQL($tableName, $fields = true, $condition = null, $order = null, $limit = null) {
-        //If first argument contains space  - assume this is SQL string
-        if (strpos($tableName, ' ')){
-            return $tableName;
-        }
-
-
         if (is_array($fields) && !empty($fields)) {
             $fields = array_map('strtolower', $fields);
             $fields = implode(', ', $fields);
@@ -423,7 +417,16 @@ final class QAL extends DBA {
     public function getScalar() {
         $args = func_get_args();
 
-        $query = call_user_func_array(array($this, 'buildSQL'), $args);
+        if (strpos($args[0], ' ')) {
+            //Считаем что у нас SQL код
+            $handlerMethod = 'constructQuery';
+            $args = array($args);
+        }
+        else {
+            $handlerMethod = 'buildSQL';
+        }
+
+        $query = call_user_func_array(array($this, $handlerMethod), $args);
         if (!is_string($query) || strlen($query) == 0) {
             return null;
         }
@@ -445,7 +448,17 @@ final class QAL extends DBA {
      */
     public function getColumn() {
         $args = func_get_args();
-        $query = call_user_func_array(array($this, 'buildSQL'), $args);
+
+        if (strpos($args[0], ' ')) {
+            //Считаем что у нас SQL код
+            $handlerMethod = 'constructQuery';
+            $args = array($args);
+        }
+        else {
+            $handlerMethod = 'buildSQL';
+        }
+
+        $query = call_user_func_array(array($this, $handlerMethod), $args);
         if (!is_string($query) || strlen($query) == 0) {
             return array();
         }

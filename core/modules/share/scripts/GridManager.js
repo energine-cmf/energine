@@ -15,10 +15,9 @@
  * @requires ModalBox
  * @requires datepicker
  *
- * @author Pavel Dubenko
- * @author Valerii Zinchenko
+ * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.1.1
+ * @version 1.1.0
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
@@ -464,71 +463,52 @@ var Grid = (function() {
             }
         }.protect(),
 
+        //FIXME: The last column in Opera won't receive the correct width.
         /**
-         * Adjust column widths of the table body and table header.
+         * Adjust columns width of the table body and table header.
          *
          * @function
          * @protected
          */
         adjustColumns: function() {
+            // Adjust padding-right for '.gridHeadContainer' element.
             var headers = [],
                 gridHeadContainer = this.element.getElement('.gridHeadContainer');
 
-            // Adjust padding-right for '.gridHeadContainer' element.
             gridHeadContainer.setStyle('padding-right', ScrollBarWidth + 'px');
 
             if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
-                var tds = this.tbody.getElement('tr').getElements('td'),
-                    ths = gridHeadContainer.getElements('th'),
-                    headCols = gridHeadContainer.getElements('col'),
-                    bodyCols = this.element.getElements('.gridContainer col');
-
                 // Get the col width from the tbody
-                for (var n = 0; n < tds.length; n++) {
-                    headers[n] = tds[n].getDimensions({computeSize: true}).totalWidth;
-                }
+                this.tbody.getElement('tr').getElements('td').each(function (td, id) {
+                    headers[id] = td.getDimensions({computeSize: true}).totalWidth;
+                });
+                // Set the col width of the header
+                this.element.getElements('.gridHeadContainer col').each(function (col, id) {
+                    col.setStyle('width', headers[id]);
+                });
 
-                // Set col width
-                for (n = 0; n < tds.length; n++) {
-                    headCols[n].setStyle('width', headers[n]);
-                    bodyCols[n].setStyle('width', headers[n]);
-                }
+                this.element.getElements('.gridContainer col').each(function (col, id) {
+                    col.setStyle('width', headers[id]);
+                });
 
-                var oversizeHead = [];
-                for (n = 0; n < tds.length; n++) {
-                    oversizeHead[n] = ths[n].getDimensions({computeSize: true}).totalWidth > headers[n];
-                }
-                if (oversizeHead.sum()) {
-                    var newWidth = [],
-                        colWidth = [0,0];
-
-                    for (n = 0; n < tds.length; n++) {
-                        if (oversizeHead[n]) {
-                            newWidth[n] = ths[n].getDimensions({computeSize: true}).totalWidth;
-                            colWidth[1] += newWidth[n] - headers[n];
-                        } else {
-                            colWidth[0] += headers[n];
-                        }
-                    }
-                    colWidth[1] += colWidth[0];
-
-                    var scaleCoef = colWidth[0] / colWidth[1];
-
-                    for (n = 0; n < tds.length; n++) {
-                        headers[n] = (oversizeHead[n]) ? newWidth[n] : Math.floor(headers[n] * scaleCoef);
-
-                        // Reset col width
-                        headCols[n].setStyle('width', headers[n]);
-                        bodyCols[n].setStyle('width', headers[n]);
-                    }
+                var refetch = this.element.getElement('.gridHeadContainer tr').getElements('th').some(function(el, id) {
+                    return el.getDimensions({computeSize: true}).totalWidth != headers[id];
+                });
+                if (refetch) {
+                    this.element.getElements('.gridHeadContainer col').each(function (col, id) {
+                        headers[id] = col.getDimensions({computeSize: true}).totalWidth;
+                    });
+                    this.element.getElements('.gridContainer col').each(function (col, id) {
+                        col.setStyle('width', headers[id]);
+                    });
                 }
             }
 
-            gridHeadContainer.getElement('.gridTable').setStyles({
-                tableLayout: 'fixed'
-            });
             this.tbody.getParent().setStyles({
                 wordWrap: 'break-word',
+                tableLayout: 'fixed'
+            });
+            gridHeadContainer.getElement('.gridTable').setStyles({
                 tableLayout: 'fixed'
             });
         }.protect(),
@@ -1520,4 +1500,32 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
             this.dps.addClass('hidden');
         }
     }
+});
+
+document.addEvent('domready', function() {
+    /**
+     * Scroll bar width of the browser.
+     * @type {number}
+     */
+    ScrollBarWidth = window.top.ScrollBarWidth || (function() {
+        var parent = new Element('div', {
+            styles: {
+                height: '100px',
+                overflow: 'scroll'
+            }
+        });
+        var child = new Element('div', {
+            styles: {
+                height: '200px'
+            }
+        });
+
+        parent.grab(child);
+        $(document.body).grab(parent);
+
+        var width = parent.offsetWidth - child.offsetWidth;
+        parent.destroy();
+
+        return width;
+    })();
 });

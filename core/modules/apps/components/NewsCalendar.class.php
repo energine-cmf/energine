@@ -36,7 +36,7 @@ class NewsCalendar extends Calendar {
 
         $existingDates = simplifyDBResult(
             $this->dbh->selectRequest(
-                'SELECT DATE_FORMAT(news_date, "%X-%c-%e") as news_date FROM ' . $tableName .
+                'SELECT DATE_FORMAT(news_date, "%Y-%c-%e") as news_date FROM ' . $tableName .
                 ' LEFT JOIN ' . $translationTableName . ' ON ' . $translationTableName . '.news_id = ' . $tableName . '.news_id ' .
                 $this->dbh->buildWhereCondition(
                     array_merge(

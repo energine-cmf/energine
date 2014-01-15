@@ -21,13 +21,8 @@ ScriptLoader.load('GridManager');
  * @constructor
  * @param {Element|string} element The main holder element.
  */
-var SiteManager = new Class({
+var SiteManager = new Class(/** @lends SiteManager# */{
     Extends:GridManager,
-
-    // constructor
-    initialize: function(element) {
-        this.parent(element);
-    },
 
     /**
      * Reset action.
@@ -36,7 +31,7 @@ var SiteManager = new Class({
      */
     reset: function() {
         if (confirm(Energine.translations.get('MSG_CONFIRM_TEMPLATES_RESET'))) {
-            this.request(
+            Energine.request(
                     this.singlePath + 'reset/' +
                             this.grid.getSelectedRecordKey() +
                             '/reset-templates/',

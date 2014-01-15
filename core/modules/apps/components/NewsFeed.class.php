@@ -39,7 +39,7 @@ class NewsFeed extends ExtendedFeed {
         parent::__construct($name, $module, $params);
         $this->setTableName('apps_news');
         $this->setOrder(array('news_date' => QAL::DESC));
-        if($this->document->getRights()<ACCESS_EDIT){
+        if ($this->document->getRights() < ACCESS_EDIT) {
             $this->addFilterCondition(array('news_is_active' => true));
         }
         if (!$this->document->getProperty('single') && $this->getParam('hasCalendar'))
@@ -108,8 +108,7 @@ class NewsFeed extends ExtendedFeed {
             foreach (array_keys($dateArr) as $parameterName) {
                 if (isset($ap[$parameterName])) {
                     array_push($additionalURL, $ap[$parameterName]);
-                }
-                else {
+                } else {
                     break;
                 }
             }
@@ -149,8 +148,7 @@ class NewsFeed extends ExtendedFeed {
         if (!$this->getData()->isEmpty()) {
             list($newsTitle) = $this->getData()->getFieldByName('news_title')->getData();
             $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb('', $newsTitle);
-        }
-        else {
+        } else {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
 
@@ -159,7 +157,7 @@ class NewsFeed extends ExtendedFeed {
         foreach ($this->getDataDescription() as $fieldDescription) {
             $fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);
         }
-        $am = new AttachmentManager($this->getDataDescription(), $this->getData(), $this->getTableName());
+        $am = new AttachmentManager($this->getDataDescription(), $this->getData(), $this->getTableName(), true);
         $am->createFieldDescription();
         $am->createField();
 
@@ -181,10 +179,7 @@ class NewsFeed extends ExtendedFeed {
         if (is_array($newsIDs)) {
             $newsIDs = array_keys(convertDBResult($newsIDs, 'news_id', true));
             $this->addFilterCondition(array($this->getTableName() . '.news_id' => $newsIDs));
-            $tagName = simplifyDBResult(
-                $this->dbh->select('share_tags', 'tag_name', array('tag_id' => $tagID)),
-                'tag_name',
-                true);
+            $tagName = $this->dbh->getScalar('SELECT tag_name FROM share_tags LEFT JOIN share_tags_translation USING(tag_id) WHERE (lang_id = %s) AND (tag_id = %s)', $this->document->getLang(), $tagID);
             $pageTitle = $this->translate('TXT_NEWS_BY_TAG') . ': ' . $tagName;
             E()->getDocument()->componentManager->getBlockByName('breadCrumbs')->addCrumb(null, $pageTitle);
             E()->getDocument()->setProperty('title', $pageTitle);
@@ -193,7 +188,7 @@ class NewsFeed extends ExtendedFeed {
         if ($newsIDs === true) {
             $this->setData(new Data());
         }
-        if($this->pager) {
+        if ($this->pager) {
             $this->pager->setProperty('additional_url', 'tag/' . $tagID . '/');
         }
     }
@@ -210,40 +205,38 @@ class NewsFeed extends ExtendedFeed {
         $ap = $this->getStateParams(true);
         if ($this->getState() == 'main') {
             if (isset($ap['year']) && isset($ap['month']) &&
-                    isset($ap['day'])
+                isset($ap['day'])
             ) {
                 if ($this->getParam('hasCalendar')) {
                     $calendarParams['month'] = $ap['month'];
                     $calendarParams['year'] = $ap['year'];
                     $calendarParams['date'] =
-                            DateTime::createFromFormat('Y-m-d',
-                                    $ap['year'] . '-' . $ap['month'] . '-' .
-                                            $ap['day']);
+                        DateTime::createFromFormat('Y-m-d',
+                            $ap['year'] . '-' . $ap['month'] . '-' .
+                            $ap['day']);
                 }
 
                 $additionalFilter =
-                        'DAY(news_date) = "' . $ap['day'] .
-                                '" AND MONTH(news_date) = "' .
-                                $ap['month'] .
-                                '" AND YEAR(news_date) = "' .
-                                $ap['year'] . '"';
-            }
-            elseif (isset($ap['year']) && isset($ap['month'])) {
+                    'DAY(news_date) = "' . $ap['day'] .
+                    '" AND MONTH(news_date) = "' .
+                    $ap['month'] .
+                    '" AND YEAR(news_date) = "' .
+                    $ap['year'] . '"';
+            } elseif (isset($ap['year']) && isset($ap['month'])) {
                 if ($this->getParam('hasCalendar')) {
                     $calendarParams['month'] = $ap['month'];
                     $calendarParams['year'] = $ap['year'];
                 }
                 $additionalFilter =
-                        'MONTH(news_date) = "' . $ap['month'] .
-                                '" AND YEAR(news_date) = "' .
-                                $ap['year'] . '"';
-            }
-            elseif (isset($ap['year'])) {
+                    'MONTH(news_date) = "' . $ap['month'] .
+                    '" AND YEAR(news_date) = "' .
+                    $ap['year'] . '"';
+            } elseif (isset($ap['year'])) {
                 if ($this->getParam('hasCalendar')) {
                     $calendarParams['year'] = $ap['year'];
                 }
                 $additionalFilter =
-                        'YEAR(news_date) = "' . $ap['year'] . '"';
+                    'YEAR(news_date) = "' . $ap['year'] . '"';
             }
 
             if ($this->getParam('tags')) {
@@ -253,19 +246,17 @@ class NewsFeed extends ExtendedFeed {
                 if (!empty($filteredIDs)) {
                     $this->addFilterCondition(array($this->getTableName() . '.news_id' => $filteredIDs));
 
-                }
-                else {
+                } else {
                     $this->addFilterCondition(array($this->getTableName() . '.news_id' => 0));
                 }
             }
-        }
-        elseif (($this->getState() == 'view') &&
-                ($this->getParam('hasCalendar'))
+        } elseif (($this->getState() == 'view') &&
+            ($this->getParam('hasCalendar'))
         ) {
             $calendarParams['month'] = $ap['month'];
             $calendarParams['year'] = $ap['year'];
             $calendarParams['date'] = DateTime::createFromFormat('Y-m-d',
-                    $ap['year'] . '-' . $ap['month'] . '-' . $ap['day']);
+                $ap['year'] . '-' . $ap['month'] . '-' . $ap['day']);
         }
 
         if ($this->getParam('hasCalendar')) {
@@ -274,7 +265,7 @@ class NewsFeed extends ExtendedFeed {
             //Создаем компонент календаря новостей
             $this->document->componentManager->addComponent(
                 $this->calendar =
-                        $this->document->componentManager->createComponent('calendar', 'apps', 'NewsCalendar', $calendarParams)
+                    $this->document->componentManager->createComponent('calendar', 'apps', 'NewsCalendar', $calendarParams)
             );
         }
 

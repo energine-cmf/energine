@@ -15,9 +15,9 @@
  * @requires Energine
  * @requires Overlay
  *
- * @author Pavel Dubenko
+ * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 ScriptLoader.load('Overlay');
@@ -340,9 +340,10 @@ var LayoutManager = new Class(/** @lends LayoutManager# */{
                     var pos = wdg.container.getPosition(mFrame),
                         size = wdg.container.getSize();
 
-                    res = x >= pos.x && x <= (pos.x + size.x);
-                    if (res && y >= pos.y && y <= (pos.y + size.y)) {
+                    if (pos.x <= x && x <= (pos.x + size.x)
+                        && pos.y <= y && y <= (pos.y + size.y)) {
                         cl = wdg;
+                        res = true;
                     }
                 }
                 return res;
@@ -621,8 +622,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
         this.column = column;
         this.name = xmlDescr.getProperty('data-name');
         this.visible = false;
-        // todo: what is it?
-        // static widjet
+        // static widget
         this['static'] = false;
 
         htmlElement = htmlElement || document.getElement('[widget=' + this.name + ']');
@@ -640,6 +640,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
             }
 
             this.toolbar = this._buildToolbar();
+            this.toolbar.size = this.toolbar.element.getSize();
 
             if (!this['static']) {
                 /**
@@ -744,7 +745,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
     }.protect(),
 
     /**
-     * Edit widget's propeties.
+     * Edit widget's properties.
      * @function
      * @public
      */
@@ -848,8 +849,8 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
     /**
      * Overridden parent [findDirection]{@link LayoutManager.DummyWidget} method.
      *
-     * @param y
-     * @returns {string}
+     * @param {number} y Y position of the draggable widget.
+     * @returns {string} 'after' or 'before'
      */
     findDirection: function (y) {
         var r = 'after';
@@ -978,9 +979,8 @@ LayoutManager.Widget.DragBehavior = new Class(/** @lends LayoutManager.Widget.Dr
                 var pos = this.widget.container.getPosition(LayoutManager.mFrame),
                     //Центр блока
                     cx = (pos.x + (this.size.x) / 2).toInt(),
-//                    cy = (pos.y + (this.size.y) / 4).toInt(),
                 /* координата Y центра блока сделана равной pos.y + 25 (число 25 найдено методом подбора, при этом блоки ведут себя наиболее ожидаемо) */
-                    cy = (pos.y + (this.size.y < 100 ? (this.size.y) / 4 : 25)).toInt(),
+                    cy = (pos.y + this.widget.toolbar.size.y).toInt(),
                     w = this.widget.column.layoutManager.findWidgetByCoords(cx, cy, this.widget),
                     dir;
 
@@ -990,7 +990,7 @@ LayoutManager.Widget.DragBehavior = new Class(/** @lends LayoutManager.Widget.Dr
                     this.strut.store('widget', w);
                     this.strut.store('direction', dir);
                 } else {
-                    cy = (pos.y + this.size.y - (this.size.y < 100 ? (this.size.y) / 4 : 25)).toInt();
+                    cy = (pos.y + this.size.y - this.widget.toolbar.size.y).toInt();
                     w = this.widget.column.layoutManager.findWidgetByCoords(cx, cy, this.widget);
                     if (w) {
                         dir = w.findDirection(cy);

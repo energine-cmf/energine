@@ -13,9 +13,10 @@
  *     <li>[CarouselConnector]{@link CarouselConnector}</li>
  * </ul>
  *
- * @author Valerii Zinchenko, Pavel Dubenko
+ * @author Valerii Zinchenko
+ * @author Pavel Dubenko
  *
- * @version 2.1.2
+ * @version 2.1.4
  */
 
 /**
@@ -516,7 +517,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
             }
 
             // Check whether the playlist is internal. If not - make clone
-            if (this.viewbox === this.options.playlist.items[0].getParent('.carousel_viewbox')){
+            if (this.viewbox === this.options.playlist.items[0].getParent(this.options.classes.viewbox)){
                 this.playlistHolder = this.options.playlist.getHolder();
                 this.options.playlist.isExtern = false;
             } else {
@@ -995,6 +996,11 @@ var Carousel = new Class(/** @lends Carousel# */{
             opts = JSON.decode(el.getProperty('data-carousel')) || {};
         }
         this.setOptions(opts);
+
+        // This is need to save the reference to the playlist.
+        if (opts != undefined && opts.carousel != undefined && 'playlist' in opts.carousel) {
+            this.options.carousel.playlist = opts.carousel.playlist;
+        }
 
         this.options.carousel.type = this.options.carousel.type.capitalize();
         this.options.controls.type = this.options.controls.type.camelCase().capitalize();

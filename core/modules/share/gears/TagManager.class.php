@@ -296,6 +296,12 @@ class TagManager extends DBWorker {
      * @return array|string|mixed
      */
     static public function getTags($tagID, $asSting = false) {
+        $result = array();
+
+        if (empty($tagID)) {
+            $tagID = array('-1');
+        }
+
         if (!is_array($tagID)) {
             $tagID = array($tagID);
         }

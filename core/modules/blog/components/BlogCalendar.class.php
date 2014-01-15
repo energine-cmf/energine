@@ -57,7 +57,7 @@ class BlogCalendar extends Calendar {
         }
         $existingDates = simplifyDBResult(
             $this->dbh->selectRequest(
-                'SELECT DISTINCT DATE_FORMAT(post_created, "%X-%c-%e") as post_date FROM blog_post'.
+                'SELECT DISTINCT DATE_FORMAT(post_created, "%Y-%c-%e") as post_date FROM blog_post'.
                 $this->dbh->buildWhereCondition($conditions)
             ),
             'post_date'

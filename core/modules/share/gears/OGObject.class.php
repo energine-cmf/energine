@@ -28,13 +28,13 @@ class OGObject extends Object {
      * Default image width.
      * @var int DEFAULT_IMAGE_WIDTH
      */
-    const DEFAULT_IMAGE_WIDTH = 300;
+    const DEFAULT_IMAGE_WIDTH = 640;
 
     /**
      * Default image height.
      * @var int DEFAULT_IMAGE_HEIGHT
      */
-    const DEFAULT_IMAGE_HEIGHT = 250;
+    const DEFAULT_IMAGE_HEIGHT = 360;
 
     /**
      * og:image

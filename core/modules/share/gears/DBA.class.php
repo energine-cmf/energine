@@ -9,6 +9,7 @@ abstract class DBA;
 @endcode
  *
  * @author 1m.dm
+ * @author dr.Pavka
  * @copyright Energine 2006
  *
  * @version 1.0.0
@@ -144,8 +145,7 @@ abstract class DBA extends Object {
 
             $this->dbCache = new DBStructureInfo($this->pdo);
 
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             throw new SystemException('Unable to connect. The site is temporarily unavailable.', SystemException::ERR_DB, 'The site is temporarily unavailable');
         }
 
@@ -167,32 +167,32 @@ abstract class DBA extends Object {
     /**
      * Execute SELECT request.
      *
-     * Возвращает в результате
-     *     1. Массив вида
-     *            array(
-     *                rowID => array(fieldName => fieldValue, ...)
-     *            )
-     *        если запрос исполнился успешно и вернул какие-либо строки
-     *     2. true, если запрос исполнился успешно, но не вернул ни одной строки;
-     *     3. false, если при выполнении запроса произошла ошибка.
+     * It returns one from the following:
+     *  - an array for non-empty result like
+     * @code
+array(
+    rowID => array(
+                   fieldName => fieldValue,
+                   ...
+                  )
+)
+@endcode
+     *  - @c true for empty result;
+     *  - @c false by fail.
      *
      * @throws SystemException
+     *
      * @see DBA::constructQuery
+     *
+     * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
+     *
      * @deprecated
      *
      * @param string $query SELECT query.
      * @return mixed
      */
     public function selectRequest($query) {
-        if (!is_string($query) || strlen($query) == 0) {
-            return false;
-        }
-
-        $result = false;
-
-        $query = $this->constructQuery(func_get_args());
-        $this->lastQuery = $query;
-        $res = $this->pdo->query($query);
+        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
         if (!($res instanceof PDOStatement)) {
             $errorInfo = $this->pdo->errorInfo();
@@ -200,11 +200,9 @@ abstract class DBA extends Object {
         }
 
         $result = array();
-
         while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
             array_push($result, $row);
         }
-
         if (empty($result)) {
             $result = true;
         }
@@ -215,27 +213,23 @@ abstract class DBA extends Object {
     /**
      * Execute modification request like INSERT, UPDATE, DELETE.
      *
-     * Возвращает в результате
-     *     1. Последний сгенерированный ID для поля типа AUTO_INCREMENT, или
-     *     2. true, если запрос выполнен успешно;
-     *     2. false, в случае неудачи.
+     *
+     * It returns one from the following:
+     * - last generated ID for field type AUTO_INCREMENT;
+     * - @c true by success;
+     * - @c false by fail.
+     *
+     * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
+     *
+     * @see DBA::constructQuery
      *
      * @throws SystemException
-     * @see DBA::constructQuery
      *
      * @param string $query Query.
      * @return mixed
      */
     public function modifyRequest($query) {
-        if (!is_string($query) || strlen($query) == 0) {
-            return false;
-        }
-
-        $result = false;
-
-        $query = $this->constructQuery(func_get_args());
-        $this->lastQuery = $query;
-        $res = $this->pdo->query($query);
+        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
         if (!($res instanceof PDOStatement)) {
             $errorInfo = $this->pdo->errorInfo();
@@ -261,8 +255,7 @@ abstract class DBA extends Object {
     public function call($name, &$args = null) {
         if (!$args) {
             $res = $this->pdo->query("call $name();", PDO::FETCH_NAMED);
-        }
-        else {
+        } else {
             $argString = implode(',', array_fill(0, count($args), '?'));
             $stmt = $this->pdo->prepare("CALL $name($argString)");
             foreach ($args as $index => &$value) {
@@ -282,18 +275,33 @@ abstract class DBA extends Object {
      * @return bool|PDOStatement
      */
     public function get($query) {
-        if (!is_string($query) || strlen($query) == 0) {
-            return false;
-        }
-
-        $query = $this->constructQuery(func_get_args());
-        $this->lastQuery = $query;
-        $res = $this->pdo->query($query);
+        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
         if ($res instanceof PDOStatement) {
             return $res;
         }
-
         return false;
+    }
+
+    /**
+     * Execute the request.
+     *
+     * @param string $request Request.
+     * @return bool|PDOStatement
+     */
+    private function fulfill($request) {
+        if (!is_string($request) || empty($request)) {
+            return false;
+        }
+        if ($this->getConfigValue('database.prepare')) {
+            $res = $this->runQuery(func_get_args());
+            if($res instanceof PDOStatement)
+                $this->lastQuery = $res->queryString;
+        } else {
+            $request = $this->constructQuery(func_get_args());
+            $res = $this->pdo->query($request);
+            $this->lastQuery = $request;
+        }
+        return $res;
     }
 
     /**
@@ -386,7 +394,7 @@ array(
      * Otherwise false will be returned.
      *
      * @param string $tableName
-     * @return string | bool
+     * @return string|bool
      */
     public function getTranslationTablename($tableName) {
         return $this->tableExists($tableName . '_translation');
@@ -396,7 +404,7 @@ array(
      * Check whether some table name exist.
      *
      * @param $tableName string Table name.
-     * @return string | bool
+     * @return string|bool
      */
     public function tableExists($tableName) {
         return ($this->dbCache->tableExists($tableName)) ? $tableName : false;
@@ -457,7 +465,7 @@ array(
             $tableName = substr($tableName, $pos + 1);
         }
         array_push($result, $tableName);
-        return (!$returnAsArray) ? implode('.', array_map(function($row) {
+        return (!$returnAsArray) ? implode('.', array_map(function ($row) {
             return '`' . $row . '`';
         }, $result)) : $result;
     }
@@ -472,6 +480,7 @@ array(
      *
      * @param array $args Array from which the single query string will be built.
      * @return string
+     * @deprecated
      */
     protected function constructQuery(array $args) {
         if (sizeof($args) > 1) {
@@ -481,10 +490,47 @@ array(
             }
             array_unshift($args, $query);
             $query = call_user_func_array('sprintf', $args);
-        }
-        else {
+        } else {
             $query = $args[0];
         }
         return $query;
+    }
+
+    /**
+     * Run query.
+     *
+     * @throws SystemException 'ERR_BAD_REQUEST'
+     *
+     * @param array $args Query arguments.
+     * @return PDOStatement
+     */
+    protected function runQuery(array $args) {
+        if (empty($args)) {
+            throw new SystemException('ERR_BAD_REQUEST');
+        }
+
+        $query = array_shift($args);
+        $query = str_replace('%%', '%', $query);
+
+        if (!empty($args)) {
+            if (preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)) {
+
+                $result = $this->pdo->prepare($newQuery = preg_replace('(%(?:(\d)\$)?s)', '?', $query));
+                $argIndex = 0;
+                foreach ($matches[1] as $a) {
+                    if ($a = (int)$a) {
+                        $data[] = $args[$a - 1];
+                    } else {
+                        $data[] = $args[$argIndex++];
+                    }
+                }
+                if (!$result->execute($data)) {
+                    throw new SystemException('ERR_BAD_REQUEST');
+                }
+            }
+        } else {
+            $result = $this->pdo->query($query);
+        }
+        return $result;
     }
 }

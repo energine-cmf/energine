@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="init">
+        <javascript>
+            <behavior name="Basket" path="shop"/>
+        </javascript>
+        <uri_patterns>
+            <pattern>/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="main">
+        <fields>
+            <field name="product_id"/>
+            <field name="sb_quantity"/>
+            <field name="product_title"/>
+            <field name="product_price"/>
+        </fields>
+        <uri_patterns>
+            <pattern>/list/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="put">
+        <uri_patterns>
+            <pattern>/put/[productId]/</pattern>
+            <pattern>/put/[productId]/[productQuantity]/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

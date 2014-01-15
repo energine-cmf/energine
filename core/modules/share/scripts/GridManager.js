@@ -15,16 +15,16 @@
  * @requires ModalBox
  * @requires datepicker
  *
- * @author Pavel Dubenko, Valerii Zinchenko
+ * @author Pavel Dubenko
+ * @author Valerii Zinchenko
  *
- * @version 1.0.1
+ * @version 1.1.1
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
 
 ScriptLoader.load('TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'datepicker');
 
-// todo: The name 'Grid' does not reflect his main function.
 /**
  * From MooTools it implements: Events, Options.
  *
@@ -186,7 +186,7 @@ var Grid = (function() {
             this.element = $(element);
             this.setOptions(options);
 
-            // TODO: I think this.headOff can be removed, because it is allways hidden.
+            // TODO: I think this.headOff can be removed, because it is always hidden.
             /**
              * Header of a table in the element '.gridContainer'.
              * @type {Element}
@@ -326,21 +326,9 @@ var Grid = (function() {
          * @public
          */
         build: function() {
-            var preiouslySelectedRecordKey = this.getSelectedRecordKey(),
-                headers = [];
+            var preiouslySelectedRecordKey = this.getSelectedRecordKey();
 
             this.selectedItem = null;
-
-            // Set the column width to the 0, if the columns are not fixed.
-            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
-                this.element.getElements('.gridHeadContainer col').each(function (element, id) {
-                    element.setStyle('width', 0);
-                });
-
-                this.element.getElements('.gridContainer col').each(function (element, id) {
-                    element.setStyle('width', 0);
-                });
-            }
 
             if (!this.isEmpty()) {
                 if (!this.dataKeyExists(preiouslySelectedRecordKey)) {
@@ -356,41 +344,7 @@ var Grid = (function() {
                 new Element('tr').inject(this.tbody);
             }
 
-            // FIXME: If the element is not visible, then the column width will be incorrect extracted. (Опроси -> Редактировать)
-            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
-                // Get the col width from the tbody
-                this.tbody.getElement('tr').getElements('td').each(function (element, id) {
-                    headers[id] = element.clientWidth;
-                });
-                // Set the col width of the header
-                this.element.getElements('.gridHeadContainer col').each(function (element, id) {
-                    element.setStyle('width', headers[id]);
-                });
-
-                // Recursive resetting the header size.
-                var makeRecursive = this.element.getElement('.gridHeadContainer tr').getElements('th').some(function(el, id) {
-                    return el.getSize().x != headers[id];
-                });
-                if (makeRecursive) {
-                    // This is need if the real column width is different from setted width.
-                    this.element.getElement('.gridHeadContainer tr').getElements('th').each(function(el, id) {
-                        headers[id] = el.getSize().x;
-                    });
-                    // Reset the col width of the tbody
-                    this.element.getElements('.gridContainer col').each(function (element, id) {
-                        element.setStyle('width', headers[id]);
-                    });
-
-                    // Get the col width from the tbody
-                    this.tbody.getElement('tr').getElements('td').each(function (element, id) {
-                        headers[id] = element.clientWidth;
-                    });
-                    // Set the col width of the header
-                    this.element.getElements('.gridHeadContainer col').each(function (element, id) {
-                        element.setStyle('width', headers[id]);
-                    });
-                }
-            }
+            this.adjustColumns();
 
             /**
              * Main element that holds Grid's toolbar, header and container.
@@ -472,6 +426,9 @@ var Grid = (function() {
                         'width':'13', 'height':'13'}).inject(cell);
                     cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
                     break;
+                case 'value':
+                    cell.set('html', record[fieldName]['value']);
+                    break;
                 case 'textbox':
                     if (record[fieldName] && Object.getLength(record[fieldName])) {
                         cell.set('html', Object.values(record[fieldName]).join(', '));
@@ -505,6 +462,75 @@ var Grid = (function() {
                         cell.set('html', '&#160;');
                     }
             }
+        }.protect(),
+
+        /**
+         * Adjust column widths of the table body and table header.
+         *
+         * @function
+         * @protected
+         */
+        adjustColumns: function() {
+            var headers = [],
+                gridHeadContainer = this.element.getElement('.gridHeadContainer');
+
+            // Adjust padding-right for '.gridHeadContainer' element.
+            gridHeadContainer.setStyle('padding-right', ScrollBarWidth + 'px');
+
+            if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
+                var tds = this.tbody.getElement('tr').getElements('td'),
+                    ths = gridHeadContainer.getElements('th'),
+                    headCols = gridHeadContainer.getElements('col'),
+                    bodyCols = this.element.getElements('.gridContainer col');
+
+                // Get the col width from the tbody
+                for (var n = 0; n < tds.length; n++) {
+                    headers[n] = tds[n].getDimensions({computeSize: true}).totalWidth;
+                }
+
+                // Set col width
+                for (n = 0; n < tds.length; n++) {
+                    headCols[n].setStyle('width', headers[n]);
+                    bodyCols[n].setStyle('width', headers[n]);
+                }
+
+                var oversizeHead = [];
+                for (n = 0; n < tds.length; n++) {
+                    oversizeHead[n] = ths[n].getDimensions({computeSize: true}).totalWidth > headers[n];
+                }
+                if (oversizeHead.sum()) {
+                    var newWidth = [],
+                        colWidth = [0,0];
+
+                    for (n = 0; n < tds.length; n++) {
+                        if (oversizeHead[n]) {
+                            newWidth[n] = ths[n].getDimensions({computeSize: true}).totalWidth;
+                            colWidth[1] += newWidth[n] - headers[n];
+                        } else {
+                            colWidth[0] += headers[n];
+                        }
+                    }
+                    colWidth[1] += colWidth[0];
+
+                    var scaleCoef = colWidth[0] / colWidth[1];
+
+                    for (n = 0; n < tds.length; n++) {
+                        headers[n] = (oversizeHead[n]) ? newWidth[n] : Math.floor(headers[n] * scaleCoef);
+
+                        // Reset col width
+                        headCols[n].setStyle('width', headers[n]);
+                        bodyCols[n].setStyle('width', headers[n]);
+                    }
+                }
+            }
+
+            gridHeadContainer.getElement('.gridTable').setStyles({
+                tableLayout: 'fixed'
+            });
+            this.tbody.getParent().setStyles({
+                wordWrap: 'break-word',
+                tableLayout: 'fixed'
+            });
         }.protect(),
 
         /**
@@ -669,7 +695,6 @@ var Grid = (function() {
     });
 })();
 
-// todo: The name 'GridManager' does not reflect his main function.
 /**
  * Grid Manager.
  *
@@ -900,14 +925,21 @@ var GridManager = new Class(/** @lends GridManager# */{
         this.overlay.show();
         this.grid.clear();
 
+        /*
+         This delay was created because of some stupid behavior in Firefox.
+         this.paneContent in build() has different height without delay.
+         Firefox 26
+         */
         // FIXME: TagEditor: The response result at the first call has no data for Grid. (Сайты -> Редактировать -> Теги)
-        Energine.request(
-            this.buildRequestURL(pageNum),
-            this.buildRequestPostBody(),
-            this.processServerResponse.bind(this),
-            null,
-            this.processServerError.bind(this)
-        );
+        (function() {
+            Energine.request(
+                this.buildRequestURL(pageNum),
+                this.buildRequestPostBody(),
+                this.processServerResponse.bind(this),
+                null,
+                this.processServerError.bind(this)
+            );
+        }).delay(0, this);
     },
 
     Protected: {
@@ -1218,7 +1250,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      */
     up: function() {
         Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/up/',
-                     '', this.loadPage.pass(this.pageList.currentPage, this));
+            (this.filter)?this.filter.getValue():null, this.loadPage.pass(this.pageList.currentPage, this));
     },
 
     /**
@@ -1228,7 +1260,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      */
     down: function() {
         Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/down/',
-                     '', this.loadPage.pass(this.pageList.currentPage, this));
+            (this.filter)?this.filter.getValue():null, this.loadPage.pass(this.pageList.currentPage, this));
     },
 
     /**
@@ -1304,7 +1336,7 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
         }.bind(this));
 
         resetLink.addEvent('click', function (e) {
-            Energine.cancelEvent(e);
+            e.stop();
             this.remove();
             gridManager.reload();
         }.bind(this));

@@ -65,13 +65,17 @@ var TabPane = new Class(/** @lends TabPane# */{
             var tabpane = this;
             tab.addEvents({
                 'mouseover': function () {
-                    if (this != tabpane.currentTab) this.addClass('highlighted');
+                    if (this != tabpane.currentTab) {
+                        this.addClass('highlighted');
+                    }
                 },
                 'mouseout': function () {
                     this.removeClass('highlighted');
                 },
                 'click': function () {
-                    if ((this != tabpane.currentTab) && !this.hasClass('disabled')) tabpane.show(this);
+                    if ((this != tabpane.currentTab) && !this.hasClass('disabled')) {
+                        tabpane.show(this);
+                    }
                 }
             });
         }, this);
@@ -162,7 +166,7 @@ var TabPane = new Class(/** @lends TabPane# */{
      * @returns {Element} New tab.
      */
     createNewTab: function (tabTitle) {
-        var tabID = 'id' + TabPane.assignID();//Math.floor(Math.random() * 101),
+        var tabID = 'id' + TabPane.assignID(),
             titleElement = new Element('a', {'href': '#' + tabID, 'html': tabTitle}),
             tabPane = new Element('div', {'id': tabID, 'class': 'e-pane-item', 'styles': {'display': 'none'}}).inject(this.element.getElement('.e-pane-content')),
             tabElement = new Element('li', {'unselectable': 'on'}).grab(titleElement);
@@ -180,13 +184,17 @@ var TabPane = new Class(/** @lends TabPane# */{
         var tabpane = this;
         tabElement.addEvents({
             'mouseover': function () {
-                if (this != tabpane.currentTab) this.addClass('highlighted');
+                if (this != tabpane.currentTab) {
+                    this.addClass('highlighted');
+                }
             },
             'mouseout': function () {
                 this.removeClass('highlighted');
             },
             'click': function () {
-                if (this != tabpane.currentTab) tabpane.show(this);
+                if (this != tabpane.currentTab) {
+                    tabpane.show(this);
+                }
             }
         });
         return tabElement;

@@ -1,30 +1,36 @@
 <?php
 /**
- * Класс AuthUser.
+ * @file
+ * AuthUser.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class AuthUser;
+@endcode
+ *
  * @author d.pavka
  * @copyright Energine 2011
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Аутентифицированный пользователь.
+ * Authenticated user.
  *
- * @package energine
- * @subpackage kernel
- * @author d.pavka
+ * @code
+class AuthUser;
+@endcode
  */
 class AuthUser extends User {
+    //todo VZ: Why not to use 0 as the default user id?
     /**
-     * Конструктор класса.
-     * параметр введен только для избежания strict ошибки
+     * Constructor.
+     * the parameter is used for preventing "strict" error
      *
-     * @param false
-     * @access private
-     * @return void
      * @todo избавиться от hardcoded имен полей формы?
+     *
+     * @param bool|int $id
      */
     public function __construct($id = false) {
         //Если есть в сессии данные о юзере
@@ -37,11 +43,12 @@ class AuthUser extends User {
     }
 
     /**
-     * Возвращает флаг успеха аутентификации:
-     *     true - пользователь успешно аутентифицирован;
-     *     false - пользователь является гостем.
+     * Check if the user authenticated.
      *
-     * @access public
+     * The return value mean:
+     *   - true - the user is successfully authenticated;
+     *   - false - the user is guest.
+     *
      * @return boolean
      */
     public function isAuthenticated() {
@@ -50,13 +57,11 @@ class AuthUser extends User {
 
 
     /**
-     * Аутентифицирует пользователя по его имени и SHA-1 хэшу пароля.
-     *      *
-     * @access public
-     * @param string $username имя пользовате
-     * @param string $password SHA-1 хэш пароля
-     * @return bool | int
-     * @static
+     * Authenticate user by his name and SHA-1 hash code.
+     *
+     * @param string $username User name.
+     * @param string $password SHA-1 hash code.
+     * @return bool|int
      */
     public static function authenticate($username, $password) {
         $username = trim($username);

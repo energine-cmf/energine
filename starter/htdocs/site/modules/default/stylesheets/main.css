@@ -19,7 +19,7 @@ u, font, s, center, dir, menu, strike, xmp                                      
     border: 0;
     vertical-align: baseline;
     text-indent: 0;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: inherit;
     font-size: 1em;
 }
 /* ----- /reset ----- */
@@ -27,9 +27,12 @@ u, font, s, center, dir, menu, strike, xmp                                      
 /* ----- common ----- */
 html, body  {
     background: white;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    color: #333;
+    font-family: Arial, sans-serif;
+    font-size: 100.01%;
+    color: black;
+}
+body {
+    font-size: 0.813em; /* =13px - базовый размер шрифта */
 }
 p {
     margin: 0 0 1em 0;
@@ -87,14 +90,17 @@ h6 {
 /* ----- /headers ----- */
 
 /* ----- links ----- */
-a:link,
+a:link {
+    text-decoration: underline;
+    color: #00e;
+}
 a:visited {
-    color: #428bca;
-    text-decoration: none;
+    text-decoration: underline;
+    color: gray;
 }
 a[href]:hover, a[href]:active {
-    color: #2a6496;
-    text-decoration: underline;
+    text-decoration: none;
+    color: #f00;
 }
 /* ----- /links ----- */
 
@@ -163,38 +169,17 @@ input, textarea, select, button {
     height: auto;
     margin: 0;
     vertical-align: middle;
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    line-height: normal;
+    font-family: Arial, sans-serif;
+    font-size: 1em;
+    color: black;
 }
-button {
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    background-image: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+input.text, textarea, select {
+    border: 1px solid gray;
+    background: white;
 }
-button:hover {
-    background-color: #ebebeb;
-    border-color: #adadad;
-}
-input:focus, textarea:focus, select:focus {
-    border-color: #FFB400;
-    outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #FFB600;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #FFB600;
+input.text, textarea {
+    padding: 3px;
 }
 textarea {
     vertical-align: top;
@@ -284,11 +269,6 @@ optgroup option {
 /* ----- block ----- */
 .block {
     padding-bottom: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
-    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 }
 .block_header {
     padding: 5px 10px 3px 10px;
@@ -301,6 +281,7 @@ optgroup option {
 }
 .block_content {
     padding: 10px;
+    border: 1px solid silver;
 }
 /* ----- /block ----- */
 
@@ -374,9 +355,14 @@ input.radio, input.checkbox {
 
 /* -------------------- LAYOUT -------------------- */
 /* ----- base ----- */
+body, html {
+	background: #e0e0e0;	
+}
 .base {
     width: 1000px;
     margin: 0 auto 20px auto;
+    background: white;
+    box-shadow: 0 0 10px #a0a0a0;
 }
 .top_adblock {
     padding: 10px 0;
@@ -401,18 +387,8 @@ input.radio, input.checkbox {
 
 /* ----- breadcrumbs ----- */
 .breadcrumbs {
-    background: #474544;
-    padding: 11px 34px 11px 10px;
-    font-size: 13px;
-    color: #e4e4e4;
-}
-.breadcrumbs a {
-    color: #bbb;
-}
-.breadcrumbs a:hover,
-.breadcrumbs a:active {
-    color: #e4e4e4;
-    text-decoration: none;
+	padding: 0 10px 10px 10px;
+    font-size: 0.924em; /* =12px */
 }
 /* ----- /breadcrumbs ----- */
 
@@ -454,22 +430,24 @@ input.radio, input.checkbox {
 
 /* ----- language switcher ----- */
 .lang_switcher {
-    float: right;
-    margin: 26px 10px;
+    clear: both;
+    margin: 0;
 	padding: 7px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
-    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    background: silver;
     list-style: none;
     text-align: right;
+    font-size: 0.924em; /* =12px */
 }
 .lang_switcher li {
     display: inline;
-    padding: 0 7px;
+    margin-right: 7px;
 }
-.lang_switcher li + li {
-    border-left: 1px solid #ddd;
+.lang_switcher a:visited {
+    color: #00e;
+}
+.lang_switcher a[href]:hover, .lang_switcher a[href]:active {
+    text-decoration: none;
+    color: #f00;
 }
 /* ----- /language switcher ----- */
 

@@ -1,24 +1,27 @@
-div.grid table tr.highlighted td {  background: #ecf3f8; }
-div.grid table tr.selected td {  background: #428bca; color: #fff; }
+div.grid table tr.highlighted td { background: #FF8; }
+div.grid table tr.selected td { background: #36C; color: #FFF; }
 
 div.grid table tr .firstColumn { border-left: 0; }
 
 div.grid div.filter {
-    background-color: #eee;
+    background: #EEEEDD;    
     margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 4px;
+    padding: 3px 6px;
+    border: 1px solid #AAA;
+    font: 11px tahoma, sans-serif;
+}
+
+div.filter a{
+	color:Blue !important;
 }
 div.grid div.filter.active {
-    background: #ecf3f8;
+    background: #FF8;
 }
 
 div.grid div.filter select, div.grid div.filter input, div.grid div.filter button {
-    font-size: 14px;
-    color: #555;
+    font: 11px tahoma, sans-serif;
+	padding:2px;
 	margin:0px;
-    line-height: 20px;
-    padding: 6px 8px;
 }
 
 div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_container{
@@ -28,8 +31,9 @@ div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_contai
 div.grid div.filter input {
     width: 165px;
     margin-right:5px;
-    height: 20px;
+    vertical-align:middle;
 }
+
 div.grid div.filter input.small {
     width: 72px;
     margin-right:5px;
@@ -62,13 +66,16 @@ div.grid .query {
 .grid .filter + .grid_breadcrumbs {
     margin-top: -9px;
 }
-
+.grid_breadcrumbs a {
+	color: blue !important;
+}
 
 .grid {
     background: #fcfcfc;
     color:black;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size:13px;
+    /*border: 1px solid silver;*/
+    font-family:tahoma,sans-serif;
+    font-size:11px;
     font-size-adjust:none;
     font-stretch:normal;
     font-style:normal;
@@ -77,9 +84,8 @@ div.grid .query {
 
 .gridHeadContainer {
     padding-right: 17px;
-    border: 1px solid #ddd;
-    border-bottom: 1px solid #aaa;
-    background: #efefef;
+    border: 1px solid #aaaaaa;
+    background: #eeeedd;
     _height: 1%; /* добавляет свойство hasLayout для IE6 */
 }
 
@@ -101,11 +107,12 @@ div.grid .query {
     /*height: 200px;*/
     overflow: scroll;
     overflow-x: hidden;
-    border: 1px solid #ddd;
+    border: 1px solid #aaaaaa;
 }
 
 table.gridTable, table.gridTable th, table.gridTable td {
-
+	font-family: tahoma,sans-serif;
+	font-size: 11px;
 }
 
 table.gridTable {
@@ -116,24 +123,24 @@ table.gridTable {
     border-collapse: separate;
     border-spacing: 0;
     line-height: normal;
-    *border-right: 17px solid #efefef;  /* исправляет выползание скролла за пределы контейнера в IE */
+    *border-right: 17px solid #eeeedd;  /* исправляет выползание скролла за пределы контейнера в IE */
     *margin-right: -17px;
 }
 .gridTable th {
     margin: 0;
-    padding: 8px;
+    padding: 5px;
     border: 0;
-    border-right: 1px solid #ddd;
-    background: #efefef;
+    border-right: 1px solid #aaaaaa;
+    background: #eeeedd;
     text-align: left;
     color:#000000;
     font-weight: bold;
 }
 .gridTable td {
     margin: 0;
-    padding: 12px 8px;
+    padding: 5px;
     border: 0;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid #aaaaaa;
     cursor:default;
     /*border-bottom: 1px solid #aaaaaa;*/
 }
@@ -143,7 +150,7 @@ table.gridTable {
 }
 
 .gridContainer table.gridTable {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #aaaaaa;
 }
 
 .thumb_container{

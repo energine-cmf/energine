@@ -1,21 +1,24 @@
 form .invalid {
     border-style: solid;
-    border-color: #931313;
+    border-color: #F00;
 }
 
 form div.error {
     padding: 0.5em;
-    color: #931313;
-    font-size: 13px;
+    color: #F00;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
 }
 
 form .field {
     clear: both;
     margin: 12px 0 0 10px;
-    font-size: 13px;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
 }
 form .field button {
-    font-size: 13px;
+	font-family: Tahoma, sans-serif;
+    font-size: 11px;
 }
 
 form .field.required label {
@@ -42,11 +45,12 @@ form .field.min div.CodeMirror-scroll{
 }
 
 form input, form textarea, form select {
-    margin: 1px 0 10px;
-    padding: 6px;
+    margin: 1px 0;
+    padding: 1px;
     border: 1px solid gray;
-    font-size: 13px;
-	width: 490px;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
+	width: 250px;
 	height:auto;
 }
 form input[readonly]{
@@ -96,7 +100,8 @@ form .inp_date{
 	padding: 0;
 	border-collapse: collapse;
 	border: 1px solid #aaaaaa;
-    font-size: 13px;
+	font-family: Tahoma, sans-serif;
+    font-size: 11px;
 }
 .table_data table th {
     text-align: center;
@@ -110,7 +115,7 @@ form .inp_date{
 	background: #f4f4f4;
 }
 .table_data table thead td {
-	background: #eee;
+	background: #eeeedd;
 	font-weight: bold;
 }
 .table_data table tr.section_name {
@@ -118,11 +123,12 @@ form .inp_date{
     background-color:#E3E9FF;
 }
 .table_data table td.group_name, .table_data table .even td.group_name {
-	background: #eee;
+	background: #eeeedd;
 	text-align: left;
 }
 .table_data table td select {
-    font-size: 13px;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
 	width: 250px;
 	border: 1px solid gray;
 }
@@ -162,11 +168,12 @@ form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
 
 .tool-tip{
 	padding: 5px;
-	background: #eee;
+	background: #EEEEDD;
 	border: 1px solid gray;
 }
 .tool-text{
-    font-size: 13px ;
+	font-family: Tahoma, sans-serif;
+    font-size: 11px ;
 }
 /*
 .formContainer fieldset{
@@ -181,10 +188,10 @@ form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
 }
 */
 .smap_segment {
-    font-size: 12px;
+    font-size: 10px;
     color: gray;
 }
 .smap_segment .current_segment {
-    font-size: 13px;
+    font-size: 11px;
     color: #000;
 }

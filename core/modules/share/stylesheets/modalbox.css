@@ -21,8 +21,8 @@ html {
     height: 90%;
     margin-left: -390px;
     background: white;
-    border-radius: 4px;
-    font-size: 13px;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
     _position: absolute;
     _top: expression(eval(document.documentElement.scrollTop + document.documentElement.clientHeight/20));
 }
@@ -33,14 +33,13 @@ html {
     z-index: 1001;
     width: 16px;
     height: 16px;
-    border-radius: 4px;
     background: white url(../images/close.gif) no-repeat;
     line-height: 0;
     font-size: 0;
     cursor: pointer;
 }
 .e-modalbox .highlighted {
-    background-color: #ecf3f8;
+    background-color: #ff8;
 }
 .e-modalbox-frame {
     width: 100%;
@@ -48,6 +47,5 @@ html {
     margin: 0;
     padding: 0;
     border: 0;
-    border-radius: 4px;
 }
 /* ----- /modalbox ----- */

@@ -5,16 +5,16 @@
 
 		editor.addCommand( 'energineimage', {
             exec: function(editor) {
-
                 var panel = $('cke_' + editor.editorId);
-                panel.hide();
+                var zIndex = panel.getStyle('z-index');
+                panel.setStyle('z-index', '1');
 
                 ModalBox.open({
                     url: editor.singleTemplate + 'file-library/',
                     onClose: function(imageData) {
 
                         if (!imageData) {
-                            panel.show();
+                            panel.setStyle('z-index', zIndex);
                             return;
                         }
 
@@ -22,7 +22,7 @@
                             url: editor.singleTemplate + 'imagemanager',
                             onClose: function (image) {
                                 if (!image) {
-                                    panel.show();
+                                    panel.setStyle('z-index', zIndex);
                                     return;
                                 }
 
@@ -47,8 +47,7 @@
                                 imgStr += '"/>';
 
                                 editor.insertHtml(imgStr);
-                                panel.show();
-
+                                panel.setStyle('z-index', zIndex);
                             },
                             extraData: imageData
                         });

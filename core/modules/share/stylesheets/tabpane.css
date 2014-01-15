@@ -30,8 +30,8 @@
     position: relative;
     height: 100%;
     min-height: 300px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
     line-height: normal;
     _height: 300px;
 }
@@ -77,10 +77,10 @@
 }
 /* 1 тулбар вверху */
 .e-pane-has-t-toolbar1 .e-pane-t-toolbar { 
-    height: 36px;
+    height: 24px; 
 }
 .e-pane-has-t-toolbar1 .e-pane-content { 
-    top: 47px;
+    top: 34px;    
     _height: expression(this.parentNode.clientHeight - 66); 
 }
 /* 2 тулбара вверху */
@@ -93,10 +93,10 @@
 }
 /* 1 тулбар внизу */
 .e-pane-has-b-toolbar1 .e-pane-b-toolbar { 
-    height: 62px;
+    height: 30px; 
 }
 .e-pane-has-b-toolbar1 .e-pane-content { 
-    bottom: 72px;
+    bottom: 40px;
     _zoom: expression( 
         runtimeStyle.zoom = 1, 
         (/e-pane-has-t-toolbar1/.test(this.parentNode.className)) ? (runtimeStyle.tHeight = '96') : (/e-pane-has-t-toolbar2/.test(this.parentNode.className) ? runtimeStyle.tHeight = '120' : runtimeStyle.tHeight = '72')
@@ -105,10 +105,10 @@
 }
 /* 2 тулбара внизу */
 .e-pane-has-b-toolbar2 .e-pane-b-toolbar { 
-    height: 116px;
+    height: 54px; 
 }
 .e-pane-has-b-toolbar2 .e-pane-content { 
-    bottom: 126px;
+    bottom: 64px;
     _zoom: expression(
         runtimeStyle.zoom = 1, 
         (/e-pane-has-t-toolbar1/.test(this.parentNode.className)) ? (runtimeStyle.tHeight = '120') : (/e-pane-has-t-toolbar2/.test(this.parentNode.className) ? runtimeStyle.tHeight = '144' : runtimeStyle.tHeight = '96')
@@ -123,14 +123,14 @@
 /* pane content  */
 .e-pane-content {
     position: absolute;            
-    top: 10px;
+    top: 10px;  
     right: 10px;
     bottom: 10px;
     left: 10px;                 
     overflow: hidden;
-    border: 1px solid #ddd;
+    border: 1px solid #aaa;
     background: white;
-    padding: 15px 10px;
+    padding: 10px;
     _width: expression(this.parentNode.clientWidth - 42);
     _height: expression(this.parentNode.clientHeight - 42);
 }
@@ -155,7 +155,7 @@
     box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
     height: 100%;    
     overflow: auto;
-    /*border: 1px dotted #777;*/
+    border: 1px dotted #777;
     padding: 10px;
     *position: absolute;
     *top: 10px;
@@ -180,27 +180,27 @@
     margin: 0 !important;
     padding: 0 !important;
     list-style: none !important;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
     line-height: normal;
-    border-bottom: 1px solid #ddd;
 }
 .e-tabs li {
     float: left;
-    margin: 0 2px -1px 0;
-    padding: 0;
     clear: none;
+    height: 16px;
     overflow: hidden;
-    padding: 10px 15px;
-    border-radius: 4px 4px 0 0;
-    font-size: 14px;
-    cursor: pointer;
-    border: 1px solid transparent;
+    margin: 2px -1px 0 0 !important;
+    padding: 3px 10px 2px 10px !important;
+    border: 1px solid #aaa;
+    border-bottom: 0;
+    background: #eed;
 }
-.e-tabs li a, .e-tabs li a:link, .e-tabs li a:visited, .e-tabs li a:hover, .e-tabs li a:active {
-    color: #428bca;
+.e-tabs li a, .e-tabs li a:link, .e-tabs li a:visited, .e-tabs li a:hover, .e-tabs li a:active { 
     text-decoration: none;
+    color: black;
 }
 .e-tabs .highlighted {
-    background-color: #eee;
+    background-color: #ff8;
 }
 .e-tabs li.disabled a{
     color:silver;
@@ -208,17 +208,9 @@
 .e-tabs .current {
     position: relative;
     z-index: 1;
-    padding: 10px 15px;
-    font-size: 14px;
-    color: #555;
-    cursor: default;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-}
-.e-tabs .current a {
-    cursor: default;
-    color: black;
+    margin: 0px -1px -1px 0 !important;
+    padding: 5px 10px 3px 10px !important;
+    background-color: white;
 }
 .e-tabs li .data {
     display: none;

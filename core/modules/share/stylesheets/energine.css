@@ -132,6 +132,8 @@ textarea {
     display: inline-block;
     vertical-align: middle;
     width: 25%;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 .e-pane-content .field .control {
     display: inline-block;

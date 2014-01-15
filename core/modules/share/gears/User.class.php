@@ -214,7 +214,7 @@ class User extends DBWorker {
     }
 
     /**
-     * Get user by his ID in @link www.facebook.com Facebook@endlink.
+     * Get user by his ID in <a href="http://www.facebook.com">Facebook</a>.
      *
      * @param string $fbID Facebook user ID.
      * @return bool|User
@@ -244,7 +244,7 @@ class User extends DBWorker {
     }
 
     /**
-     * Get user by his ID in @link www.vk.com VKontakte@endlink.
+     * Get user by his ID in <a href="http://www.vk.com">VKontakte</a>.
      *
      * @param string $vkID VKontakte user ID.
      * @return bool|User
@@ -258,7 +258,7 @@ class User extends DBWorker {
     }
 
     /**
-     * Get user by his ID in @link www.odnoklassniki.ru Одноклассники@endlink.
+     * Get user by his ID in <a href="http://www.odnoklassniki.ru">Одноклассники</a>.
      * @static
      * @param string $okID User ID in Одноклассники.
      * @return bool|User

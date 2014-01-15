@@ -18,11 +18,43 @@ class FileRepositoryFTP;
 /**
  * Implementation of file loader interface IFileRepository for remote FTP repositories.
  *
- * This is useful for the cases when the repository is remote and the file is downloaded over FTP by using admin tools.
- *
  * @code
 class FileRepositoryFTP;
 @endcode
+ *
+ * This is useful for the cases when the repository is remote and the file is downloaded over FTP by using admin tools.
+ *
+ * <b>Rights table</b>
+ * <table>
+ *      <tr>
+ *          <td><b>Action</b></td>
+ *          <td><b>Allowed?</b></td>
+ *      </tr>
+ *      <tr>
+ *          <td>CreateDir</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>UploadFile</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>EditDir</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>EditFile</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>DeleteDir</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>DeleteFile</td>
+ *          <td>true</td>
+ *      </tr>
+ * </table>
  */
 class FileRepositoryFTP extends Object implements IFileRepository {
     /**
@@ -145,8 +177,8 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         return true;
     }
 
+    //todo VZ: I think, it should be
     public function uploadFile($sourceFilename, $destFilename) {
-
         try {
             $base = $this->getBase() . '/';
             if (strpos($destFilename, $base) === 0) {
@@ -166,7 +198,6 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
-
         $destFilename = str_replace(
             array('[width]', '[height]', '[upl_path]'),
             array($width, $height, $destFilename),
@@ -258,7 +289,6 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     public function createDir($dir) {
-
         $initially_connected = $this->ftp_media->connected();
 
         try {

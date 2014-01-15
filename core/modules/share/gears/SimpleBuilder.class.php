@@ -1,43 +1,36 @@
 <?php
 /**
- * Содержит класс SimpleBuilder.
+ * @file
+ * SimpleBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class SimpleBuilder;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2010
+ *
+ * @version 1.0.0
  */
 /**
- * Упрощенный построитель.
- * Используется в тех случаях когда нет необходимости
- * выводить все аттрибуты поля
+ * Simplified Builder.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class SimpleBuilder;
+@endcode
+ *
+ * This is used for the cases when there is not necessary to view all filed attributes.
  */
 class SimpleBuilder extends Builder {
     /**
-     * Конструктор класса.
-     *
-     * @param string recordset title
-     * @access public
-     * @return void
+     * @param string $title Recordset title.
      */
     public function __construct($title = '') {
         parent::__construct();
         $this->title = $title;
     }
-    /**
-     * 
-     *
-     * @access protected
-     * @param string $fieldName
-     * @param FieldDescription $fieldInfo
-     * @param mixed $fieldValue
-     * @param mixed $fieldProperties
-     * @return DOMNode
-     */
+
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
         foreach(
             array(

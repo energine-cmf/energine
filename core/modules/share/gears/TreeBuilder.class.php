@@ -1,70 +1,68 @@
 <?php
-
 /**
- * Класс TreeBuilder.
+ * @file
+ * TreeBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class TreeBuilder;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Построитель древовидных данных.
- * Кроме Data и DataDescription имеет еще и Tree c помощью которого определяется структура
+ * Builder of tree-like data.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class TreeBuilder;
+@endcode
+ *
+ * Except of Data and DataDescription it contain Tree whereby the structure will be defined.
  */
 class TreeBuilder extends AbstractBuilder  {
     /**
-     * Имя поля содержащего ключевой идентификатор
-     *
-     * @var string
-     * @access private
+     * field name with key ID.
+     * @var string $idFieldName
      */
     private $idFieldName = false;
     /**
-     * Дерево
-     *
-     * @var TreeNodeList
-     * @access private
+     * Tree
+     * @var TreeNodeList $tree
      */
     private $tree;
 
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
+    //todo VZ: I think it can be removed.
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     * Устанавливает дерево
+     * Set tree.
      *
-     * @param TreeNodeList
-     * @return void
-     * @access public
+     * @param TreeNodeList $tree New tree.
      */
-
     public function setTree(TreeNodeList $tree) {
         $this->tree = $tree;
     }
 
+    /**
+     * Get tree.
+     *
+     * @return TreeNodeList
+     */
     public function getTree() {
         return $this->tree;
     }
 
     /**
-	 * Построение результата.
-	 *
-	 * @access protected
-	 * @return void
-	 */
+     * Run building.
+     *
+     * @throws SystemException 'ERR_DEV_NO_TREE_IDENT'
+     */
     protected function run() {
         foreach ($this->dataDescription as $fieldName => $fieldDescription) {
             if (!is_null($fieldDescription->getPropertyValue('key'))) {
@@ -79,12 +77,11 @@ class TreeBuilder extends AbstractBuilder  {
     }
 
     /**
-     * Внутренний метод постройки древовидного XML
+     * Build tree-like XML.
      *
+     * @param TreeNodeList $tree Tree.
      * @return DOMNode
-     * @access private
      */
-
     private function treeBuild(TreeNodeList $tree) {
         $dom_recordset = $this->result->createElement('recordset');
         $data = array_flip($this->data->getFieldByName($this->idFieldName)->getData());

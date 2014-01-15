@@ -1,52 +1,49 @@
 <?php
-
 /**
- * Класс JSONBuilder
+ * @file
+ * JSONBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class JSONBuilder;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
-
 /**
- * Построитель данных в формат JSON (JavaScript Object Notation).
+ * Build data in JSON (JavaScript Object Notation) format.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class JSONBuilder;
+@endcode
  */
 class JSONBuilder extends AbstractBuilder {
     /**
-     * Листалка
-     *
-     * @var Pager
-     * @access private
+     * Pager.
+     * @var Pager $pager
      */
     private $pager = null;
 
     /**
-     * @access private
-     * @var array список ошибок
+     * List of errors.
+     * @var array $errors
      * @todo зачем это!?
      */
     private $errors = array();
 
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     * Создает результирующий JSON-объект.
+     * Build JSON-object.
      *
-     * @access public
+     * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
+     *
      * @return bool
      */
     public function build() {
@@ -129,12 +126,6 @@ class JSONBuilder extends AbstractBuilder {
         return true;
     }
 
-    /**
-     * Возвращает результат работы построителя.
-     *
-     * @access public
-     * @return string
-     */
     public function getResult() {
         $result = $this->result;
         if (!is_null($this->pager)) {
@@ -149,24 +140,21 @@ class JSONBuilder extends AbstractBuilder {
     }
 
     /**
-     * Возвращает список ошибок.
+     * Get the list of errors.
      *
      * @return string
-     * @access public
      * @todo зачем это!?
      */
     public function getErrors() {
         return json_encode($this->errors, JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
     }
 
+    //todo VZ: Total amount of pages or Pager object?
     /**
-     * Устанавливает кооличество страниц для листлки
+     * Set amount of pages.
      *
-     * @param int
-     * @return void
-     * @access public
+     * @param int $pager Amount of pages.
      */
-
     public function setPager($pager) {
         $this->pager = $pager;
     }

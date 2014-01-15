@@ -1,27 +1,33 @@
 <?php
 /**
- * Класс EmptyBuilder.
+ * @file
+ * EmptyBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class EmptyBuilder;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2012
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Билдер который собственно ничего не билдит
- * Нужен для случаев когда нет необходимости в данных (recordset)
- * Часто это используется когда main state служит просто для загрузки джаваскриптового класса
- * который осуществляет загрузку данных аяксом
+ * Empty builder.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class EmptyBuilder;
+@endcode
+ *
+ * It actually nothing builds. this class is required for the cases when the data (recordset) are not necessary.
+ * Often it's used when <tt>main state</tt> serves only to load JavaScript class, that loads data over AJAX.
  */
 class EmptyBuilder implements IBuilder {
     /**
-     * Метод реализован
+     * There is nothing to build.
      * @return true
      */
     public function build() {
@@ -29,7 +35,7 @@ class EmptyBuilder implements IBuilder {
     }
 
     /**
-     * Создаем пустой рекордсет требующийся для привязки к JS
+     * Create empty recordset, that require the linking to JavaScript.
      *
      * @return bool
      */

@@ -1,48 +1,41 @@
 <?php
-
 /**
- * Класс Builder.
+ * @file
+ * Builder.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class Builder;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
-
 /**
- * Построитель XML-документа.
+ * Build XML-document.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
+ * @code
+class Builder;
+@endcode
  */
 class Builder extends AbstractBuilder {
     /**
-     * Title
-     *
-     * @var string
+     * Title.
+     * @var string $title
      */
     protected $title;
 
     /**
-     * Конструктор класса.
-     *
-     * @param string recordset title
-     * @access public
-     * @return void
+     * @param string $title Recordset title.
      */
     public function __construct($title = '') {
         parent::__construct();
         $this->title = $title;
     }
 
-    /**
-	 * Построение результата.
-	 *
-	 * @access protected
-	 * @return void
-	 */
     protected function run() {
         $dom_recordSet = $this->result->createElement('recordset');
         $this->result->appendChild($dom_recordSet);

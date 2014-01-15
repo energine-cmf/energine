@@ -5,7 +5,7 @@
  *
  * It contains the definition to:
  * @code
-class Component;
+abstract class AbstractBuilder;
 @endcode
  *
  * @author dr.Pavka
@@ -18,7 +18,7 @@ class Component;
  * Builder.
  *
  * @code
-class Component;
+abstract class AbstractBuilder;
 @endcode
  *
  * Create XML-document based on meta-data.
@@ -97,7 +97,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     }
 
     /**
-     * Run.
+     * Run building.
      *
      * This is used in the derived classes to build a result. That result should be stored in Builder::$result
      */

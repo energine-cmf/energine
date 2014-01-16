@@ -24,7 +24,7 @@ class Form extends DBDataSet {
      * Form info
      * @var Saver
      */
-    private $saver;
+    protected $saver;
 
     /**
      * @var FormResults

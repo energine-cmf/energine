@@ -271,7 +271,7 @@ abstract class DBA extends Object {
      * @param $request
      * @return bool|PDOStatement
      */
-    private function fulfill($request) {
+    protected function fulfill($request) {
         if (!is_string($request) || empty($request)) {
             return false;
         }

@@ -183,7 +183,7 @@ final class Registry extends Object {
     }
 
     //todo VZ: remove this?
-    /**
+    /*
      * Пока непонятно что с ним делать
      *
      * public function substitute($object){

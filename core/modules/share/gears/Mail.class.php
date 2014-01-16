@@ -34,16 +34,13 @@ final class Mail extends Object {
 
     /**
      * Mime boundary.
-     *
      * @var string $MIMEBoundary
      */
     private $MIMEBoundary;
 
     /**
      * Message subject.
-     *
-     * @var string
-     * @access private
+     * @var string $subject
      */
     private $subject = false;
 

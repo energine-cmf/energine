@@ -240,7 +240,7 @@ class Field extends Object implements Iterator {
 
     /**
      * Rewind the Iterator to the first element.
-     * @link http://php.net/manual/en/iterator.rewind.php
+     * http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind() {
         $this->currentIndex = 0;
@@ -248,7 +248,7 @@ class Field extends Object implements Iterator {
 
     /**
      * Return the current element.
-     * @link http://php.net/manual/en/iterator.current.php
+     * http://php.net/manual/en/iterator.current.php
      */
     public function current() {
         return $this->data[$this->currentIndex];
@@ -256,7 +256,7 @@ class Field extends Object implements Iterator {
 
     /**
      * Return the current key.
-     * @link http://php.net/manual/en/iterator.key.php
+     * http://php.net/manual/en/iterator.key.php
      * @return string
      */
     public function key() {
@@ -265,7 +265,7 @@ class Field extends Object implements Iterator {
 
     /**
      * Move forward to next element.
-     * @link http://php.net/manual/en/iterator.next.php
+     * http://php.net/manual/en/iterator.next.php
      */
     public function next() {
         $this->currentIndex++;
@@ -273,7 +273,7 @@ class Field extends Object implements Iterator {
 
     /**
      * Checks if current position is valid.
-     * @link http://php.net/manual/en/iterator.valid.php
+     * http://php.net/manual/en/iterator.valid.php
      * @return bool
      */
     public function valid() {

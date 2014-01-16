@@ -1,21 +1,25 @@
 <?php
 /**
- * Содержит класс GridConfig
+ * @file
+ * GridConfig.
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class GridConfig;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2011
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс реализующий работу с конфигурационным файлом компонента
- * специфичный для Grid
+ * Grid configuration.
  *
- *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class GridConfig;
+@endcode
  */
 class GridConfig extends ComponentConfig {
     public function __construct($config, $className, $moduleName){
@@ -30,5 +34,4 @@ class GridConfig extends ComponentConfig {
         $this->registerState('tags', array('/tags/[any]/', '/[id]/tags/[any]/'));
         $this->registerState('autoCompleteTags', array('/tag-autocomplete/'));
     }
-
 }

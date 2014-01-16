@@ -1,31 +1,43 @@
 <?php
 /**
- * Класс IRQ
+ * @file
+ * IRQ.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class IRQ;
+@endcode
+ *
  * @author d.pavka@gmail.com
  * @copyright Energine 2010
+ *
+ * @version 1.0.0
  */
 
 /**
- * Фейковый Exception відвигающийся для прерывания нормального течения программы
- * и возврата документа содержащего структуру страницы
- *  
+ * Fake Exception.
+ *
+ * @code
+class IRQ;
+@endcode
+ *
+ * It interrupts the normal flow of the program and returns the document of the page structure.
  */
 class IRQ extends Exception {
     /**
-     * @var SimpleXMLElement | bool
+     * Content block.
+     * @var SimpleXMLElement|bool $contentBlock
      */
     private $contentBlock = false;
     /**
-     * @var SimpleXMLElement | bool
+     * Layout block.
+     * @var SimpleXMLElement|bool $layoutBlock
      */
     private $layoutBlock = false;
 
     /**
-     * @param SimpleXMLElement $block
-     * @return void
+     * Add block.
+     * @param SimpleXMLElement $block Block.
      */
     public function addBlock(SimpleXMLElement $block) {
         if($block->getName() == 'page'){
@@ -35,13 +47,19 @@ class IRQ extends Exception {
             $this->contentBlock = $block;
         }
     }
+
     /**
+     * Get content block.
+     *
      * @return bool|SimpleXMLElement
      */
     public function getContentBlock(){
         return $this->contentBlock;
     }
+
     /**
+     * Get layout block.
+     *
      * @return bool|SimpleXMLElement
      */
     public function getLayoutBlock(){

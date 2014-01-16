@@ -1,21 +1,25 @@
 <?php
 /**
- * Содержит класс GridConfig
+ * @file
+ * SiteEditorConfig.
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class SiteEditorConfig;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2011
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс реализующий работу с конфигурационным файлом компонента
- * специфичный для Grid
+ * Configuration of site editor.
  *
- *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class SiteEditorConfig;
+@endcode
  */
 class SiteEditorConfig extends GridConfig {
     public function __construct($config, $className, $moduleName){

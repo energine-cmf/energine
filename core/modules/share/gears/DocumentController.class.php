@@ -50,12 +50,11 @@ class DocumentController extends Object {
     const TRANSFORM_JSON = 'json';
 
     /**
-     * ХЗ вообще что это такое?
-     * Наверное была какая то идея
-     * но в процессе разработки - потерялась
+     * Empty transformation.
      *
-     * @upd
-     * Похоже это для случая когда нам нужно вернуть XML без накладывания XSLT Трансформации
+     * @note The main idea of this constant was lost. Perhaps this is for the cases to return raw XML without XSLT transformation.
+     *
+     * @var string TRANSFORM_EMPTY
      */
     const TRANSFORM_EMPTY = 'empty';
 
@@ -177,7 +176,7 @@ class DocumentController extends Object {
 }
 
 /**
- * Interface ITransformer
+ * Transformer interface.
  *
  * @code
 interface ITransformer;
@@ -194,7 +193,6 @@ interface ITransformer {
      * Set document, that will be transformed.
      *
      * @param DOMDocument $document Document, that will be transformed.
-     * @return mixed
      */
     public function setDocument(DOMDocument $document);
 
@@ -203,13 +201,12 @@ interface ITransformer {
      *
      * @param string $transformerFilename File name.
      * @param bool $isAbsolutePath Is the path absolute?
-     * @return mixed
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false);
 }
 
 /**
- * Interface IDocument
+ * Document interface.
  *
  * @code
 interface IDocument;

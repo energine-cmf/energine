@@ -133,7 +133,6 @@ class User extends DBWorker {
      * @throws SystemException 'ERR_NOT_UNIQUE_DATA'
      *
      * @param array $data Data.
-     * @param array
      */
     public function create($data) {
         //проверяем имеются ли все необходимые значения
@@ -176,7 +175,7 @@ class User extends DBWorker {
     /**
      * Update user data.
      *
-     * @param array
+     * @param array $data New user data.
      * @return boolean
      */
     public function update($data) {
@@ -259,7 +258,7 @@ class User extends DBWorker {
 
     /**
      * Get user by his ID in <a href="http://www.odnoklassniki.ru">Одноклассники</a>.
-     * @static
+     *
      * @param string $okID User ID in Одноклассники.
      * @return bool|User
      */

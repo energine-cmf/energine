@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Transformer.
+ * XSLTTransformer.
  *
  * It contains the definition to:
  * @code
@@ -15,7 +15,7 @@ class XSLTTransformer;
  */
 
 /**
- * XML transformer of the page.
+ * XSLT transformer.
  *
  * @code
 class XSLTTransformer;
@@ -51,7 +51,6 @@ class XSLTTransformer extends Object implements ITransformer {
      *
      * @param string $transformerFilename File name.
      * @param bool $isAbsolutePath Is the path absolute?
-     * @return void
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
         if (!$isAbsolutePath)

@@ -103,7 +103,7 @@ class Component extends DBWorker implements IBlock {
     private $errors = array();
 
     //todo VZ: Remove this?
-    /**
+    /*
      * Результат является объектом класса DOMNode или boolean:
      * true - компонент отработал успешно, но ничего не вывел;
      * false - произошла ошибка при работе компонента.
@@ -407,7 +407,6 @@ class Component extends DBWorker implements IBlock {
 
     /**
      * Prepare data.
-     *
      * It calls at the beginning of the method, that realize main action.
      */
     protected function prepare() {}

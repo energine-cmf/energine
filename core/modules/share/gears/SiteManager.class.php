@@ -33,7 +33,8 @@ final class SiteManager extends DBWorker implements Iterator {
 
     /**
      * Data about all registered sites.
-     * @var Site[] $data
+     * Array of Site's.
+     * @var array $data
      */
     private $data;
     /**
@@ -163,7 +164,7 @@ final class SiteManager extends DBWorker implements Iterator {
 
     /**
      * Return the current element.
-     * @link http://php.net/manual/en/iterator.current.php
+     * http://php.net/manual/en/iterator.current.php
      * @return Site
      */
     public function current() {
@@ -174,7 +175,7 @@ final class SiteManager extends DBWorker implements Iterator {
 
     /**
      * Return the current child name.
-     * @link http://php.net/manual/en/iterator.key.php
+     * http://php.net/manual/en/iterator.key.php
      * @return int
      */
     public function key() {
@@ -184,7 +185,7 @@ final class SiteManager extends DBWorker implements Iterator {
 
     /**
      * Move forward to next element.
-     * @link http://php.net/manual/en/iterator.next.php
+     * http://php.net/manual/en/iterator.next.php
      */
     public function next() {
         self::$index++;
@@ -192,7 +193,7 @@ final class SiteManager extends DBWorker implements Iterator {
 
     /**
      * Rewind the Iterator to the first element.
-     * @link http://php.net/manual/en/iterator.rewind.php
+     * http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind() {
         self::$index = 0;
@@ -200,7 +201,7 @@ final class SiteManager extends DBWorker implements Iterator {
 
     /**
      * Checks if current position is valid.
-     * @link http://php.net/manual/en/iterator.valid.php
+     * http://php.net/manual/en/iterator.valid.php
      * @return bool
      */
     public function valid() {

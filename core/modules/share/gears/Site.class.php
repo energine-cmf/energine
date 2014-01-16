@@ -1,5 +1,6 @@
 <?php
 /**
+ * @file
  * Site.
  *
  * It contains the definition to:

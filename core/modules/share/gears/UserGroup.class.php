@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Group.
+ * UserGroup.
  *
  * It contains the definition to:
  * @code

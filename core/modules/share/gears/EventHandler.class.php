@@ -1,5 +1,28 @@
 <?php
+/**
+ * @file
+ * EventHandler.
+ *
+ * It contains the definition to:
+ * @code
+trait EventHandler;
+@endcode
+ */
+
+/**
+ * @class EventHandler
+ * @brief Event handler.
+ *
+ * @code
+trait EventHandler;
+@endcode
+ */
 trait EventHandler {
+    /**
+     * Define parameters.
+     *
+     * @return array
+     */
     protected function defineParams() {
         if (!($newParams = $this->eDefineParams())) {
             $newParams = array();
@@ -9,6 +32,11 @@ trait EventHandler {
             $newParams);
     }
 
+    /**
+     * Load data description.
+     *
+     * @return mixed
+     */
     protected function loadDataDescription() {
         $this->eBeforeLoadMetaData();
         $result = parent::loadDataDescription();
@@ -17,6 +45,11 @@ trait EventHandler {
         return $result;
     }
 
+    /**
+     * Create data description.
+     *
+     * @return mixed
+     */
     protected function createDataDescription() {
         $this->eBeforeCreateDataDescription();
         $dataDescription = parent::createDataDescription();
@@ -25,6 +58,11 @@ trait EventHandler {
         return $dataDescription;
     }
 
+    /**
+     * Create data.
+     *
+     * @return mixed
+     */
     protected function createData() {
         $this->eBeforeCreateData();
         $data = parent::createData();
@@ -33,6 +71,11 @@ trait EventHandler {
         return $data;
     }
 
+    /**
+     * Load data.
+     *
+     * @return mixed
+     */
     protected function loadData() {
         $this->eBeforeLoadData();
         $result = parent::loadData();
@@ -41,18 +84,33 @@ trait EventHandler {
         return $result;
     }
 
+    /**
+     * Prepare.
+     */
     protected function prepare() {
         $this->eBeforePrepare();
         parent::prepare();
         $this->ePrepare();
     }
 
+    /**
+     * Run.
+     */
     public function run() {
         $this->{'eBefore' . ucfirst($this->getState()) . 'State'}();
         parent::run();
         $this->{'e' . ucfirst($this->getState()) . 'State'}();
     }
 
+    /**
+     * Magic @c call method.
+     *
+     * @throws SystemException 'ERR_NO_METHOD'
+     *
+     * @param string $name Name
+     * @param array $args Arguments.
+     * @return mixed|null
+     */
     public function __call($name, $args) {
         $result = null;
 

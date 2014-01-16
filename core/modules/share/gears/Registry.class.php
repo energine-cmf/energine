@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * E, Registry.
+ * E(), Registry.
  *
  * It contains the definition to:
  * @code
@@ -19,8 +19,8 @@ final class Registry;
 require('Object.class.php');
 
 /**
- * E[nergine].
- *
+ * @fn E
+ * @brief E[nergine].
  * Shortcut for Registry::getInstance.
  *
  * @return Registry

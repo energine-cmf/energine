@@ -205,7 +205,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
 
     /**
      * Rewind the Iterator to the first element.
-     * @link http://php.net/manual/en/iterator.rewind.php
+     * http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind() {
         $this->childNames = array_keys($this->blocks);
@@ -214,7 +214,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
 
     /**
      * Checks if current position is valid.
-     * @link http://php.net/manual/en/iterator.valid.php
+     * http://php.net/manual/en/iterator.valid.php
      * @return bool
      */
     public function valid() {
@@ -223,7 +223,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
 
     /**
      * Return the current child name.
-     * @link http://php.net/manual/en/iterator.key.php
+     * http://php.net/manual/en/iterator.key.php
      * @return string
      */
     public function key() {
@@ -232,7 +232,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
 
     /**
      * Move forward to next element.
-     * @link http://php.net/manual/en/iterator.next.php
+     * http://php.net/manual/en/iterator.next.php
      */
     public function next() {
         $this->iteratorIndex++;
@@ -240,7 +240,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
 
     /**
      * Return the current block.
-     * @link http://php.net/manual/en/iterator.current.php
+     * http://php.net/manual/en/iterator.current.php
      * @return IBlock
      */
     public function current() {

@@ -8,7 +8,6 @@
 abstract class Object;
 @endcode
  *
- * @package kernel
  * @author 1m.dm
  * @copyright Energine 2006
  *
@@ -16,7 +15,7 @@ abstract class Object;
  */
 
 /**
- * Te main parent abstract class for all objects in the system.
+ * The main abstract class for all objects in the system.
  *
  * @code
 abstract class Object
@@ -137,3 +136,30 @@ Object::_getConfigValue('database.dsn');
         return self::$systemConfig;
     }
 }
+
+/**
+ * @class Exception
+ * @brief Native Exception class.
+ * @code
+class Exception;
+@endcode
+ * http://ua2.php.net/manual/en/class.exception.php
+ */
+
+/**
+ * @class Iterator
+ * @brief Native Iterator interface.
+ * @code
+interface Iterator;
+@endcode
+ * http://ua2.php.net/manual/en/class.iterator.php
+ */
+
+/**
+ * @class IteratorAggregate
+ * @brief Native IteratorAggregate interface.
+ * @code
+interface IteratorAggregate;
+@endcode
+ * http://ua2.php.net/manual/en/class.iteratoraggregate.php
+ */

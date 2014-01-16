@@ -10,13 +10,13 @@ class FileUploader;
  *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * File uploader.
- *
- * To the server.
+ * File uploader for the server.
  *
  * @code
 class FileUploader;
@@ -42,7 +42,7 @@ class FileUploader extends Object {
 
     /**
      * File extension.
-     * @var string
+     * @var string $ext
      */
     private $ext;
 
@@ -73,8 +73,6 @@ class FileUploader extends Object {
      */
     private $validated = false;
 
-    ////////////////////////////////////////////////////////////////////////////
-
     /**
      * @param array $restrictions File restrictions.
      */
@@ -90,7 +88,7 @@ class FileUploader extends Object {
 array(
     'ext' => array('jpg', 'gif')
 )
-@encode
+@endcode
      *
      * @param array $restrictions Restriction
      */
@@ -133,9 +131,7 @@ array(
      * @return boolean
      */
     public function validate() {
-        /*
-         * Браузер может не посылать MIME type, поэтому расчитывать на него нельзя.
-         */
+        // Браузер может не посылать MIME type, поэтому расчитывать на него нельзя.
         if (empty($this->file)) {
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER, $this->file['name']);
         }
@@ -176,34 +172,29 @@ array(
         ) {
             throw new SystemException('ERR_DEV_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file['name']);
         }
+        //@todo Отключено до выяснения
         //Ресайзим изображение
         /*
         if(in_array($this->getExtension(), array('gif', 'png', 'jpg', 'jpeg'))){
-            //@todo Отключено до выяснения
-            /*$img = new Image();
-            $img->loadFromFile($filePath);
-            
-            if(($img->getWidth()> 800) && ($img->getHeight() > 600)){
-	            $img->resize(800, 600);
-	            $img->saveToFile($filePath);	
-            }
-            unset($image);
-            
-            */
+//            $img = new Image();
+//            $img->loadFromFile($filePath);
+//
+//            if(($img->getWidth()> 800) && ($img->getHeight() > 600)){
+//	            $img->resize(800, 600);
+//	            $img->saveToFile($filePath);
+//            }
+//            unset($image);
         	// ------------------------
-            /*
-            elseif($img->getWidth()> 800){
-            	$img->resize(800, null);
-                $img->saveToFile($filePath);
-            }
-            elseif($img->getHeight()> 600){
-                $img->resize(null, 600);
-                $img->saveToFile($filePath);
-            }
-            
-          	
-            	
-        }*/
+//            elseif($img->getWidth()> 800){
+//            	$img->resize(800, null);
+//                $img->saveToFile($filePath);
+//            }
+//            elseif($img->getHeight()> 600){
+//                $img->resize(null, 600);
+//                $img->saveToFile($filePath);
+//            }
+        }
+        */
         
         $this->FileRealName = $this->file['name'];
         $this->FileObjectName = $filePath;

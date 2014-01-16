@@ -1,16 +1,30 @@
 <?php
 /**
- * Класс XMLTransformer.
+ * @file
+ * XMLTransformer.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class XMLTransformer;
+@endcode
+ *
  * @author pavka
  * @copyright Energine 2010
+ *
+ * @version 1.0.0
  */
 
+/**
+ * XML Transformer.
+ *
+ * @code
+class XMLTransformer;
+@endcode
+ */
 class XMLTransformer implements ITransformer{
     /**
-     * @var DOMDocument
+     * Document.
+     * @var DOMDocument $document
      */
     private $document;
 
@@ -23,13 +37,7 @@ class XMLTransformer implements ITransformer{
         $this->document = $document;
     }
 
-    /**
-     * Введено для совместимти в режиме отладки
-     *
-     * @param string $transformerFilename
-     * @param bool $isAbsolutePath
-     * @throws SystemException
-     */
+    //todo VZ: remove that comment?
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
        //throw new SystemException('ERR_UNIMPLEMENTED', SystemException::ERR_DEVELOPER);
     }

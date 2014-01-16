@@ -113,7 +113,7 @@ final class QAL extends DBA {
      *
      * Limit is given by:
      *   -# an array like <tt>array(offset, amount_of_rows)</tt>;
-     *   -# a string of @C LIMIT like <tt>'32'</tt>
+     *   -# a string of @c LIMIT like <tt>'32'</tt>
      *
      * @c true will be returned if the the result is empty.
      *
@@ -121,10 +121,10 @@ final class QAL extends DBA {
      * @see QAL::buildSQL
      *
      * @param string $tableOrText Table name or SQL-request text (in this case all further arguments follows as variables)
-     * @param array|string|true [$fields] Field names.
-     * @param array|string [$condition] Condition.
-     * @param array|string [$sortOrder] Sort order.
-     * @param array|string [$lim] Limit
+     * @param array|string|true $fields Field names.
+     * @param array|string $condition Condition.
+     * @param array|string $sortOrder Sort order.
+     * @param array|string $lim Limit
      * @return array|true
      */
     public function select() {
@@ -453,8 +453,8 @@ final class QAL extends DBA {
      * Get the scalar value of the column in the table.
      *
      * @param string $tableName Table name.
-     * @param string [$colName] Column name.
-     * @param array|mixed [$cond] Condition.
+     * @param string $colName Column name.
+     * @param array|mixed $cond Condition.
      * @return null|string
      */
     public function getScalar() {
@@ -476,8 +476,8 @@ final class QAL extends DBA {
      * Get column values from the table.
      *
      * @param string $tableName Table name.
-     * @param string [$colName] Column name.
-     * @param array|mixed [$cond] Condition.
+     * @param string $colName Column name.
+     * @param array|mixed $cond Condition.
      * @return array
      */
     public function getColumn() {

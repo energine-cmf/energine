@@ -320,7 +320,7 @@ final class ComponentManager extends Object implements Iterator {
 
     /**
      * Rewind the Iterator to the first element.
-     * @link http://php.net/manual/en/iterator.rewind.php
+     * http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind() {
         $this->blockNames = array_keys($this->blocks);
@@ -329,7 +329,7 @@ final class ComponentManager extends Object implements Iterator {
 
     /**
      * Checks if current position is valid.
-     * @link http://php.net/manual/en/iterator.valid.php
+     * http://php.net/manual/en/iterator.valid.php
      * @return bool
      */
     public function valid() {
@@ -338,7 +338,7 @@ final class ComponentManager extends Object implements Iterator {
 
     /**
      * Return the current block name.
-     * @link http://php.net/manual/en/iterator.key.php
+     * http://php.net/manual/en/iterator.key.php
      * @return string
      */
     public function key() {
@@ -347,7 +347,7 @@ final class ComponentManager extends Object implements Iterator {
 
     /**
      * Move forward to next element.
-     * @link http://php.net/manual/en/iterator.next.php
+     * http://php.net/manual/en/iterator.next.php
      */
     public function next() {
         $this->iteratorIndex++;
@@ -355,7 +355,7 @@ final class ComponentManager extends Object implements Iterator {
 
     /**
      * Return the current block.
-     * @link http://php.net/manual/en/iterator.current.php
+     * http://php.net/manual/en/iterator.current.php
      * @return IBlock
      */
     public function current() {
@@ -364,7 +364,7 @@ final class ComponentManager extends Object implements Iterator {
 }
 
 /**
- * IBlock interface.
+ * Block interface.
  *
  * @code
 interface IBlock;

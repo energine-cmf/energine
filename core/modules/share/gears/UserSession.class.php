@@ -47,7 +47,7 @@ final class UserSession extends DBWorker {
      * Default probability to call garbage collector.
      *
      * It calculates as follows: <tt> DEFAULT_PROBABILITY / session.gc_divisor</tt>, where <tt>session.gc_divisor</tt> is 100 by defaults.
-     * @example <tt>10 / 100</tt> means that garbage collector will called with probability of 10%.
+     * Example: <tt>10 / 100</tt> means that garbage collector will called with probability of 10%.
      */
     const DEFAULT_PROBABILITY = 10;
 

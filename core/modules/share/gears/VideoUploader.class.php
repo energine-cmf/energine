@@ -1,18 +1,30 @@
 <?php 
-
 /**
- * Класс VideoUploader.
+ * @file
+ * VideoUploader.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class VideoUploader;
+@endcode
+ *
  * @author pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * 
- * Загрузчик и конвертер видео файлов в формат flv
+ * Video uploader.
+ *
+ * @code
+final class VideoUploader;
+@endcode
+ *
+ * It also converts video file to @c flv format
+ *
+ * @attention This is @b final class.
  */
 final class VideoUploader extends FileUploader {
     

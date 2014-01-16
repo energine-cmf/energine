@@ -199,7 +199,7 @@ class DataDescription extends Object implements Iterator {
 
     /**
      * Rewind the Iterator to the first element.
-     * @link http://php.net/manual/en/iterator.rewind.php
+     * http://php.net/manual/en/iterator.rewind.php
      */
     public function rewind() {
         $this->currentIndex = 0;
@@ -207,7 +207,7 @@ class DataDescription extends Object implements Iterator {
 
     /**
      * Return the current data description.
-     * @link http://php.net/manual/en/iterator.current.php
+     * http://php.net/manual/en/iterator.current.php
      * @return DataDescription
      */
     public function current() {
@@ -217,7 +217,7 @@ class DataDescription extends Object implements Iterator {
 
     /**
      * Return the current field name.
-     * @link http://php.net/manual/en/iterator.key.php
+     * http://php.net/manual/en/iterator.key.php
      * @return string
      */
     public function key() {
@@ -227,7 +227,7 @@ class DataDescription extends Object implements Iterator {
 
     /**
      * Move forward to next element.
-     * @link http://php.net/manual/en/iterator.next.php
+     * http://php.net/manual/en/iterator.next.php
      */
     public function next() {
         $this->currentIndex++;
@@ -235,7 +235,7 @@ class DataDescription extends Object implements Iterator {
 
     /**
      * Checks if current position is valid.
-     * @link http://php.net/manual/en/iterator.valid.php
+     * http://php.net/manual/en/iterator.valid.php
      * @return bool
      */
     public function valid() {

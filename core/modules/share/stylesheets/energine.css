@@ -52,6 +52,12 @@ input, textarea, select, button {
     -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="phone"] {
+    display: table-cell;
+}
 button {
     text-align: center;
     white-space: nowrap;
@@ -61,6 +67,7 @@ button {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 6px 12px;
+    line-height: 18px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -71,11 +78,23 @@ button:hover {
     background-color: #ebebeb;
     border-color: #adadad;
 }
-input:focus, textarea:focus, select:focus {
-    border-color: #FFB400;
+input:focus,
+textarea:focus,
+select:focus,
+input:hover,
+textarea:hover,
+select:hover,
+.required input:focus,
+.required textarea:focus,
+.required select:focus,
+.required input:hover,
+.required textarea:hover,
+.required select:hover {
+    border-color: #6FCFE3;
+    background-color: #FaFFFF;
     outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #FFB600;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #FFB600;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
 }
 textarea {
     vertical-align: top;
@@ -94,21 +113,11 @@ optgroup {
 optgroup option {
     padding-left: 22px;
 }
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="phone"],
-select,
-textarea {
-    border-left: 6px solid #6FCFE3;
-}
-.required input[type="text"],
-.required input[type="password"],
-.required input[type="email"],
-.required input[type="phone"],
+.required input,
 .required select,
 .required textarea {
-    border-left: 6px solid #DC143C;
+    background: #fff0f0;
+    border-color: #A90329;
 }
 .e-pane-b-toolbar input[type="text"],
 .e-pane-b-toolbar input[type="password"],
@@ -131,14 +140,14 @@ textarea {
 .e-pane-content .field .name {
     display: inline-block;
     vertical-align: middle;
-    width: 25%;
+    width: 173px;
     margin-bottom: 10px;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 .e-pane-content .field .control {
     display: inline-block;
     vertical-align: middle;
-    width: 70%;
+    width: 520px;
 }
 .e-pane-content .field .control textarea,
 .e-pane-content .field .control input[type="text"]
@@ -146,16 +155,52 @@ textarea {
 .e-pane-content .field .control input[type="email"],
 .e-pane-content .field .control input[type="phone"],
 .e-pane-content .field .control select {
-    width: 495px;
+    width: 100%;
     margin-bottom: 10px;
 }
 .e-pane-content .field .control select {
-    width: 509px;
+    width: 534px;
 }
 .e-pane-content .field .control.type_code,
 .e-pane-content .field .control.type_htmlblock {
     display: block;
-    width: 100% ;
+    width: 100%;
+}
+.e-pane-content .field .control  .with_append {
+    display: table;
+    width: 532px;
+}
+.e-pane-content .field .control  .with_append input,
+.e-pane-content .field .control  .with_append select,
+.e-pane-content .field .control  .with_append .read {
+    display: table-cell;
+    width: 100%;
+    margin-top: 0;
+    border-right: 0;
+    border-radius: 4px 0 0 4px;
+}
+.e-pane-content .field .control  .with_append .acpl {
+    width: 481px;
+    height: 18px;
+}
+.e-pane-content .field .control  .appended_block {
+    vertical-align: top;
+    display: table-cell;
+    width: 1%;
+}
+.e-pane-content .field .control  .appended_block button,
+.e-pane-content .field .control  .appended_block input[type="button"] {
+    border-radius: 0 4px 4px 0;
+}
+.e-pane-content .field .control  .with_append .read {
+    border: 1px solid #ccc;
+    border-right: 0;
+    line-height: 30px;
+    padding-left: 6px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 /* ----- /forms ----- */
 /* ----- clearfix ----- */

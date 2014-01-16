@@ -114,25 +114,35 @@ html.e-has-topframe3 {
 }      
 /* ----- /e-frames ----- */
 
-/* ----- page toolbars ----- */ 
+/* ----- page toolbars ----- */
+.e-topframe {
+    background-color: #cfd1cf;
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#f5f5f5),to(#cfd1cf));
+    background-image: -moz-linear-gradient(top,#f5f5f5,#cfd1cf);
+    background-image: -webkit-linear-gradient(top,#f5f5f5,#cfd1cf);
+    background-image: -o-linear-gradient(top,#f5f5f5,#cfd1cf);
+    background-image: -ms-linear-gradient(top,#f5f5f5,#cfd1cf);
+    background-image: linear-gradient(top,#f5f5f5,#cfd1cf);
+    filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#f5f5f5',endColorstr='#cfd1cf');
+    z-index: 1;
+}
 ul.docked_toolbar {
     position: relative;
     z-index: 10;
-    min-height: 40px;
+    min-height: 30px;
     margin: 0 !important;
     padding: 0 !important;
     border-bottom: 1px solid #AAA;
-    background: #eee;
+    background: url(../images/toolbar/pagetb_logo.gif) 0 0 no-repeat;
     color: black;
-    _height: 40px;
 }
 ul.docked_toolbar li {
-    min-height: 40px;
-    height: 40px;
+    min-height: 30px;
+    height: 30px;
     margin: 0 !important;
     padding: 0 20px !important;
     border: 0;
-    line-height: 40px;
+    line-height: 30px;
     vertical-align: middle;
     _height: 40px;
     background: transparent;
@@ -140,10 +150,9 @@ ul.docked_toolbar li {
     border: 0;
 }
 ul.docked_toolbar li.icon {
-    height: 40px; /* =24px для размера шрифта 11px */
+    height: 30px; /* =24px для размера шрифта 11px */
     padding: 0 15px !important;
     background: 50% 50% no-repeat;
-    _height: 40px;
 }
 ul.docked_toolbar li.separator {
     display: none;
@@ -152,8 +161,7 @@ ul.docked_toolbar li.highlighted { background-color: #ecf3f8 !important; }
 ul.docked_toolbar li.pressed { background-color: #A6CE39 !important; }
 
 ul.main_toolbar {
-    padding-left: 28px !important;  
-    background: #eee url(../images/toolbar/pagetb_logo.gif) 0 0 no-repeat;
+    padding-left: 28px !important;
 }
 .e-has-sideframe ul.main_toolbar { /* костыль для IE6, который не может растянуть верхний фрейм на всю ширину body */
     _margin-left: -300px !important;

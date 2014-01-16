@@ -130,7 +130,7 @@
     overflow: hidden;
     border: 1px solid #ddd;
     background: white;
-    padding: 15px 10px;
+    padding: 0;
     _width: expression(this.parentNode.clientWidth - 42);
     _height: expression(this.parentNode.clientHeight - 42);
 }

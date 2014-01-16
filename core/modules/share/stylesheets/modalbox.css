@@ -28,8 +28,8 @@ html {
 }
 .e-modalbox-close {
     position: absolute;
-    top: -8px;
-    right: -8px;
+    top: 8px;
+    right: 8px;
     z-index: 1001;
     width: 16px;
     height: 16px;

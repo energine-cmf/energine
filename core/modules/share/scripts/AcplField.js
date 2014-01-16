@@ -463,15 +463,17 @@ var AcplField = new Class(/** @lends AcplField# */{
          * Container for the field.
          * @type {Element}
          */
-        this.container = new Element('div', {'class': '', 'styles': {'position': 'relative'}}).wraps(this.element);
+        this.container = new Element('div', {'class': 'with_append', 'styles': {'position': 'relative'}}).wraps(this.element);
 
         if (this.element.get('name') == 'tags') {
-            new Element('button', {
+            this.button = new Element('button', {
                 type: 'button',
                 link: 'tags',
                 onclick: this.element.get('component_id') + '.openTagEditor(this);',
                 html: '...'
             }).inject(this.container);
+
+            new Element('div', {'class': 'appended_block'}).wraps(this.button);
         }
 
         /**

@@ -41,7 +41,7 @@ form input, form textarea, form select {
     margin: 1px 0 10px;
     padding: 6px;
     font-size: 13px;
-	width: 490px;
+	width: 100%;
 	height:auto;
 }
 form input[readonly]{
@@ -62,7 +62,7 @@ form input.checkbox {
 	border: none;
 }
 form textarea {
-	width: 650px;
+	/*width: 650px;*/
 	height: 200px;
 }
 
@@ -72,16 +72,16 @@ form .half {
 form .quarter {
     height: 30px !important;
 }
-form select {
-	width: 250px;
-}
+/*form select {*/
+	/*width: 250px;*/
+/*}*/
 
-form .inp_datetime{
-    width:90px;
-}
-form .inp_date{
-    width:90px;
-}
+/*form .inp_datetime{*/
+    /*width:90px;*/
+/*}*/
+/*form .inp_date{*/
+    /*width:90px;*/
+/*}*/
 .table_data {
 	padding:10px 10px 0px 10px;
 }

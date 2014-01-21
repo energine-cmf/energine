@@ -478,11 +478,11 @@ input.radio, input.checkbox {
     margin-bottom: 0;    
 }
 .main_menu a:link, .main_menu a:visited {
-    color: #00e;
+    color: #428bca;
 }
 .main_menu a:hover, .main_menu a:active {
     text-decoration: none;
-    color: #f00;
+    color: #2a6496;
 }
 .main_menu_item.active > a:link, .main_menu_item.active > a:visited,
 .main_menu_item.active > a:hover, .main_menu_item.active > a:active {

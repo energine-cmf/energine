@@ -1,28 +1,29 @@
 <?php
 /**
- * Содержит класс DomainEditor
+ * @file
+ * DomainEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class DomainEditor;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2011
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редактор доменов
+ * Domain editor.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class DomainEditor;
+@endcode
  */
 class DomainEditor extends Grid {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -35,11 +36,9 @@ class DomainEditor extends Grid {
     }
 
     /**
-     * Изменяем типы филдов
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc Grid::prepare
      */
+    // Изменяем типы филдов
     protected function prepare() {
         parent::prepare();
         if (in_array($this->getState(), array('add', 'edit'))) {
@@ -55,10 +54,9 @@ class DomainEditor extends Grid {
         }
     }
     /**
-     * Добавлеям параметр идентификатор сайта
-     *
-     * @return array
+     * @copydoc Grid::defineParams
      */
+    // Добавлеям параметр идентификатор сайта
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -68,11 +66,10 @@ class DomainEditor extends Grid {
         );
     }
     /**
-     * Нет смысла создавать отдельный сейвер
-     * Проверяем на правильность заполнянеия поля корня сайта
-     *
-     * @return mixed
+     * @copydoc Grid::saveData
      */
+    // Нет смысла создавать отдельный сейвер
+    // Проверяем на правильность заполнянеия поля корня сайта
     protected function saveData(){
 
         if(isset($_POST[$this->getTableName()]['domain_root']) && (substr($_POST[$this->getTableName()]['domain_root'], -1) != '/')){

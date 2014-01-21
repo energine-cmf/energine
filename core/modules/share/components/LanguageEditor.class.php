@@ -1,45 +1,42 @@
 <?php
-
 /**
- * Содержит класс TranslationEditor
+ * @file
+ * LanguageEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class LanguageEditor;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Редактор переводов
+ * Language editor.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class LanguageEditor;
+@endcode
  */
-class LanguageEditor extends Grid
-{
+class LanguageEditor extends Grid {
     /**
-     * Конструктор класса
-     *
-     * @return void
+     * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null)
-    {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName('share_languages');
         $this->setTitle($this->translate('TXT_LANGUAGE_EDITOR'));
     }
 
     /**
-     * Добавляем паттерн и сообщение об ошибке для описания поля lang_abbr. Поле должно содержать две маленькие латинские буквы
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc Grid::createDataDescription
      */
-
-    protected function createDataDescription()
-    {
+    // Добавляем паттерн и сообщение об ошибке для описания поля lang_abbr. Поле должно содержать две маленькие латинские буквы
+    protected function createDataDescription() {
         $dataDescription = parent::createDataDescription();
 
         if ($this->getType() !== self::COMPONENT_TYPE_LIST) {
@@ -53,14 +50,10 @@ class LanguageEditor extends Grid
     }
 
     /**
-     * При создании нового языка не даем возможности сделать его дефолтным
-     *
-     * @return void
-     * @access protected
+     * @copydoc Grid::add
      */
-
-    protected function add()
-    {
+    // При создании нового языка не даем возможности сделать его дефолтным
+    protected function add() {
         parent::add();
         if ($fd =
                 $this->getDataDescription()->getFieldDescriptionByName('lang_default')) {
@@ -69,15 +62,10 @@ class LanguageEditor extends Grid
     }
 
     /**
-     * Переопределенный метод
-     * Для формы редактирования, если чекбокс языка по умолчания отмечен делает его неактивным
-     *
-     * @return void
-     * @access public
+     * @copydoc Grid::build
      */
-
-    public function build()
-    {
+    // Для формы редактирования, если чекбокс языка по умолчания отмечен делает его неактивным
+    public function build() {
         if ($this->getType() == self::COMPONENT_TYPE_FORM_ALTER) {
             //Если это язык по умолчанию - делаем неактивным
             if (
@@ -91,15 +79,9 @@ class LanguageEditor extends Grid
     }
 
     /**
-     * Переопределенный метод сохранения
-     *
-     * @param array
-     * @return void
-     * @access public
+     * @copydoc Grid::loadData
      */
-
-    public function loadData()
-    {
+    public function loadData() {
         $result = parent::loadData();
         if ($this->getState() == 'save' && isset($result[0]['lang_default']) &&
             $result[0]['lang_default'] !== '0') {
@@ -110,15 +92,9 @@ class LanguageEditor extends Grid
     }
 
     /**
-     * Переопределенный родительский метод
-     *
-     *
-     * @return boolean
-     * @access public
+     * @copydoc Grid::deleteData
      */
-
-    public function deleteData($id)
-    {
+    public function deleteData($id) {
         //если мы пытаемся удалить текущий язык
         //генерим ошибку
         if ($this->document->getLang() == $id ||
@@ -129,14 +105,10 @@ class LanguageEditor extends Grid
     }
 
     /**
-     * При добавлении нового языка создаем задизейбленые разделы
-     *
-     * @return mixed
-     * @access protected
+     * @copydoc Grid::saveData
      */
-
-    protected function saveData()
-    {
+    // При добавлении нового языка создаем задизейбленые разделы
+    protected function saveData() {
         if (isset($_POST[$this->getTableName()][$this->getPK()]) &&
             empty($_POST[$this->getTableName()][$this->getPK()])) {
 

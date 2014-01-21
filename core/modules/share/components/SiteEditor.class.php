@@ -1,37 +1,40 @@
 <?php
 /**
- * Содержит класс SiteEditor
+ * @file
+ * SiteEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class SiteEditor;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редактор сайтов
+ * Site editor.
  *
- * @package energine
- * @subpackage share
- * @author d.pavka@gmail.com
+ * @code
+class SiteEditor;
+@endcode
  */
 class SiteEditor extends Grid {
     /**
-     * @var DivisionEditor
+     * Division editor.
+     * @var DivisionEditor $divEditor
      */
     private $divEditor;
     /**
-     * @var DomainEditor
+     * Domain editor.
+     * @var DomainEditor $domainEditor
      */
     private $domainEditor;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -40,7 +43,7 @@ class SiteEditor extends Grid {
     }
 
     /**
-     * @return GridConfig
+     * @copydoc Grid::getConfig
      */
     protected function getConfig() {
         if (!$this->config) {
@@ -54,11 +57,9 @@ class SiteEditor extends Grid {
     }
 
     /**
-     * Изменяем типы филдов
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc Grid::prepare
      */
+    // Изменяем типы филдов
     protected function prepare() {
         parent::prepare();
         if (in_array($this->getState(), array('add', 'edit'))) {
@@ -99,6 +100,9 @@ class SiteEditor extends Grid {
         }
     }
 
+    /**
+     * Reset editor.
+     */
     protected function reset() {
         $this->request->shiftPath(1);
         $this->divEditor = $this->document->componentManager->createComponent('dEditor', 'share', 'DivisionEditor');
@@ -106,8 +110,7 @@ class SiteEditor extends Grid {
     }
 
     /**
-     * Формирование IFRAME для вклдаки с перечнем доменов
-     * @return void
+     * Create IFRAME for tab with the list of domains.
      */
     protected function domains() {
         $sp = $this->getStateParams(true);
@@ -124,6 +127,9 @@ class SiteEditor extends Grid {
         $this->domainEditor->run();
     }
 
+    /**
+     * @copydoc Grid::build
+     */
     public function build() {
         if ($this->getState() == 'reset') {
             $result = $this->divEditor->build();
@@ -139,10 +145,9 @@ class SiteEditor extends Grid {
     }
 
     /**
-     * Загружаем данные о папках в поле folder
+     * Load data about folders into 'folder' field.
      *
      * @return array
-     * @access private
      */
     private function loadFoldersData() {
         $result = array();
@@ -153,6 +158,11 @@ class SiteEditor extends Grid {
         return $result;
     }
 
+    /**
+     * Go.
+     *
+     * @throws SystemException 'ERR_BAD_URL'
+     */
     protected function go() {
         list($siteID) = $this->getStateParams();
         if(!($url = simplifyDBResult(

@@ -40,7 +40,7 @@ final class VideoUploader extends FileUploader {
     }
 
     /**
-     * @copydir FileUploader::upload
+     * @copydoc FileUploader::upload
      *
      * @throws SystemException 'ERR_BAD_FILE_FORMAT'
      */

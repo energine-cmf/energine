@@ -1,90 +1,81 @@
 <?php
-
 /**
- * Содержит класс Grid
+ * @file
+ * Grid
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Grid;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Сетка
- * test
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * Grid.
+ *
+ * @code
+class Grid;
+@endcode
  */
 class Grid extends DBDataSet {
     /**
-     * Направление вверх
-     *
+     * Direction: up.
+     * @var string DIR_UP
      */
     const DIR_UP = '<';
     /**
-     * Направление вниз
-     *
+     * Direction: dowm.
+     * @var string DIR_DOWN
      */
     const DIR_DOWN = '>';
     /**
-     * Компонент: менеджер изображений
-     *
-     * @var ImageManager
-     * @access private
+     * Component: image manager.
+     * @var ImageManager $imageManager
      */
     private $imageManager;
 
     /**
-     * Компонент: библиотека изображений
-     *
-     * @var FileLibrary
-     * @access protected
+     * Component: file library.
+     * @var FileLibrary $fileLibrary
      */
     protected $fileLibrary;
 
     /**
-     * Компонент: менеджер присоединенных медиа-объектов
-     *
-     * @var AttachmentEditor
+     * Component: attachment editor manager.
+     * @var AttachmentEditor $attachmentEditor
      */
     protected $attachmentEditor;
 
     /**
-     * Редактор тегов
-     *
-     * @var TagEditor
+     * Tag editor.
+     * @var TagEditor $tagEditor
      */
     protected $tagEditor;
 
     /**
-     * сейвер
-     *
-     * @var Saver
-     * @access protected
+     * Saver.
+     * @var Saver $saver
      */
     protected $saver;
 
     /**
-     * Имя колонки для определения порядка пользовательскорй сортировки
-     *
-     * @var string
-     * @access private
+     * Column name for user sorting.
+     * @var string $orderColumn
      */
     private $orderColumn = null;
 
     /**
-     * @var Filter
+     * Filter.
+     * @var Filter $filter_control
      */
     protected $filter_control;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -107,12 +98,8 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Переопределен параметр config
-     *
-     * @return array
-     * @access protected
+     * @copydoc DBDataSet::defineParams
      */
-
     protected function defineParams() {
         $params = array();
         if (!$this->params['config']) {
@@ -141,7 +128,7 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * @return GridConfig
+     * @copydoc DBDataSet::getConfig
      */
     protected function getConfig() {
         if (!$this->config) {
@@ -155,12 +142,8 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Метод выводящий форму добавления
-     *
-     * @return void
-     * @access protected
+     * Show add form.
      */
-
     protected function add() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->prepare();
@@ -178,12 +161,10 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Метод выводящий форму редактирования
+     * Show edit form.
      *
-     * @return void
-     * @access protected
+     * @throws SystemException 'ERR_404'
      */
-
     protected function edit() {
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
 
@@ -199,25 +180,22 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Добавлены переводы для фильтра
-     *
-     * @return void
-     * @access protected
+     * @copydoc DBDataSet::main
      */
-
     protected function main() {
         parent::main();
         $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
     }
 
     /**
-     * Внешний метод удаления
+     * Delete.
      *
      * @return mixed
-     * @access protected
+     *
      * @see Grid::save()
+     *
+     * @throws SystemException 'ERR_404'
      */
-
     protected function delete() {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
@@ -242,13 +220,10 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Внутренний метод удаления записи
+     * Delete record.
      *
-     * @param int идентификаотр записи
-     * @return void
-     * @access protected
+     * @param int $id Record ID.
      */
-
     protected function deleteData($id) {
         if ($orderColumn = $this->getOrderColumn()) {
             $deletedOrderNum =
@@ -276,12 +251,8 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * переписан родительский метод
-     *
-     * @return int
-     * @access protected
+     * @copydoc DBDataSet::getDataLanguage
      */
-
     protected function getDataLanguage() {
         if (isset($_POST['languageID']) && $this->getState() == 'getRawData') {
             $langID = $_POST['languageID'];
@@ -295,14 +266,9 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Выводит данные в JSON формате для AJAX
-     *
-     * @return void
-     * @access protected
+     * Show data in JSON format for AJAX
      */
-
     protected function getRawData() {
-
         $this->setParam('onlyCurrentLang', true);
         $this->getConfig()->setCurrentState(self::DEFAULT_STATE_NAME);
         $this->setBuilder(new JSONBuilder());
@@ -320,14 +286,12 @@ class Grid extends DBDataSet {
         if ($this->pager) $this->getBuilder()->setPager($this->pager);
     }
 
+    //todo VZ: What is the trick with external and internal methods?
     /**
-     * Внешний метод сохранения
-     * Вызывает внутренний метод сохранения saveData(), который и производит собственно все действия
+     * Save.
      *
-     * @return void
-     * @access protected
+     * @note This is 'external' method that calls 'internal' Grid::saveData.
      */
-
     protected function save() {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
@@ -352,12 +316,10 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Если поле OrderColumn присутствует в списке, убираем его
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc DBDataSet::createDataDescription
      */
     protected function createDataDescription() {
+        //Если поле OrderColumn присутствует в списке, убираем его
         if (in_array($this->getState(), array('printData' /*, 'exportCSV'*/))) {
             $previousAction = $this->getState();
             $this->getConfig()->setCurrentState(self::DEFAULT_STATE_NAME);
@@ -367,9 +329,8 @@ class Grid extends DBDataSet {
             $result = parent::createDataDescription();
         }
 
-        if (
-            ($col = $this->getOrderColumn()) && (
-            $field = $result->getFieldDescriptionByName($col))
+        if (($col = $this->getOrderColumn())
+            && ($field = $result->getFieldDescriptionByName($col))
         ) {
             $result->removeFieldDescription($field);
         }
@@ -378,14 +339,10 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * ДЛя main убираем список значений в селекте
-     * ни к чему он там
-     *
-     * @return array
-     * @access protected
+     * @copydoc DBDataSet::getFKData
      */
-
     protected function getFKData($fkTableName, $fkKeyName) {
+        // Для main убираем список значений в селекте, ни к чему он там
         $result = array();
         if ($this->getState() !== self::DEFAULT_STATE_NAME)
             $result =
@@ -395,14 +352,12 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Переписан родительский метод генерации ошибки, поскольку для AJAX такая не подходит
+     * Generate error.
      *
-     * @param string тип ошибки
-     * @param string сообщение об ошибке
-     * @param mixed  необязательная дополнительная информация об ошибке
-     *
-     * @return void
-     * @access protected
+     * @param string $errorType Error type.
+     * @param string $errorMessage Error message.
+     * @param mixed $errorCustomInfo Optional additional info about error.
+     * @return array
      */
     protected function generateError($errorType, $errorMessage, $errorCustomInfo = false) {
         $message['errors'][] = array('message' => $errorMessage);
@@ -412,13 +367,13 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Возвращает объект Saver
-     * Есть смысл вызывать эту функцию только внутри save/saveSata
-     * во всех остальных случаях она возвращает false
+     * Get saver.
      *
      * @return Saver
-     * @access protected
+     *
      * @final
+     *
+     * @note There is only reason to call this function inside save/saveSate, in other cases it will return false.
      */
     final protected function getSaver() {
         if (is_null($this->saver)) {
@@ -428,17 +383,23 @@ class Grid extends DBDataSet {
         return $this->saver;
     }
 
+    /**
+     * Set saver.
+     *
+     * @param Saver $saver Saver.
+     */
     final protected function setSaver(Saver $saver) {
         $this->saver = $saver;
     }
 
     /**
-     * Внутренний метод сохранения
+     * Save data.
      *
      * @return mixed
-     * @access protected
+     *
+     * @throws SystemException 'ERR_NO_ACTION'
+     * @throws SystemException 'ERR_VALIDATE_FORM'
      */
-
     protected function saveData() {
         $result = false;
         //если в POST не пустое значение значение первичного ключа - значит мы находимся в режиме редактирования
@@ -522,14 +483,10 @@ class Grid extends DBDataSet {
 
 
     /**
-     * Переопределенный метод построения
-     * Перед построением - добавляется перевод
-     * После построения добавляется информация о закладках
+     * @copydoc DBDataSet::build
      *
-     * @return void
-     * @access public
+     * @note It includes translations and information about tabs.
      */
-
     public function build() {
         switch ($this->getState()) {
             case 'imageManager':
@@ -570,14 +527,11 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Для действия main не выводим данные
-     * Для действия save определяем другой формат данных
-     *
-     * @return mixed
-     * @access protected
+     * @copydoc DBDataSet::loadData
      */
-
     protected function loadData() {
+        // Для действия main не выводим данные
+        // Для действия save определяем другой формат данных
         if ($this->getState() == self::DEFAULT_STATE_NAME or $this->getState() == 'move') {
             $result = false;
         } elseif ($this->getState() == 'save') {
@@ -610,13 +564,12 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Выводит список в файл в формате CSV
+     * Export the list into CSV file.
+     *
+     * @throws SystemException 'ERR_CANT_EXPORT'
      *
      * @todo не подхватывает фильтр, а должен
-     * @return void
-     * @access protected
      */
-
     protected function exportCSV() {
         $sp = $this->getStateParams(true);
         if (isset($sp['encoding'])) {
@@ -741,9 +694,7 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Формирует список для печати
-     *
-     * @return void
+     * Prepare the list for printing.
      */
     protected function printData() {
         $this->setParam('recordsPerPage', false);
@@ -754,6 +705,12 @@ class Grid extends DBDataSet {
         $this->prepare();
     }
 
+    /**
+     * Prepare CSV string.
+     *
+     * @param array $nextValue Next value.
+     * @return string
+     */
     protected function prepareCSVString(Array $nextValue) {
         $separator = '"';
         $delimiter = ';';
@@ -772,10 +729,7 @@ class Grid extends DBDataSet {
 
 
     /**
-     * Выводит компонент: менеджер изображений
-     *
-     * @return void
-     * @access protected
+     * @copydoc DBDataSet::imageManager
      */
     protected function imageManager() {
         $this->imageManager =
@@ -785,10 +739,7 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Выводит компонент: библиотека изображений
-     *
-     * @return void
-     * @access protected
+     * @copydoc DBDataSet::fileLibrary
      */
     protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
@@ -797,13 +748,9 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Выводит компонент: связанные медиа-объекты
-     *
-     * @return void
-     * @access protected
+     * Show component: attachments.
      */
     protected function attachments() {
-
         $sp = $this->getStateParams(true);
         $attachmentEditorParams = array(
             'origTableName' => $this->getTableName(),
@@ -826,10 +773,7 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Выводит компонент: редактор тегов
-     *
-     * @return void
-     * @access protected
+     * Show component: tag editor.
      */
     protected function tags() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
@@ -838,18 +782,16 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Метод генерящий thumbnail и сохраняющий его в БД
+     * Generate thumbnails and save them in data base.
      *
-     * @param $sourceFileName string имя исходного файла
-     * @param $destFieldName string имя поля
-     * @param $width int ширина
-     * @param $height int высота
-     * @param $filter array фильтр
-     * @param $rewrite boolean переписывать ли если уже существует
-     * @return имя файла - превьюхи
-     * @access protected
+     * @param string $sourceFileName Source filename.
+     * @param string $destFieldName Destination filed name.
+     * @param int $width Width
+     * @param int $height Height.
+     * @param array $filter Filter.
+     * @param bool $rewrite Overwrite existed?
+     * @return bool|string
      */
-
     protected function generateThumbnail($sourceFileName, $destFieldName, $width, $height, $filter, $rewrite = true) {
         $destFileName = false;
         if (!empty($sourceFileName)) {
@@ -858,8 +800,7 @@ class Grid extends DBDataSet {
             $destFileName =
                 $dirname . '/' . '.' . $filename . '.' . $width . '-' .
                 $height . '.' . $extension;
-            if (
-                (
+            if ((
                     file_exists($fullDestFileName =
                         dirname($_SERVER['SCRIPT_FILENAME']) .
                         '/' .
@@ -882,24 +823,24 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Устанавливает имя колонки для пользовательской сортировки
+     * Set column name for user sorting.
      *
-     * @return void
-     * @access protected
+     * @param string $columnName Column name.
+     *
+     * @see Grid::getOrderColumn
      */
-
     protected function setOrderColumn($columnName) {
         $this->orderColumn = $columnName;
         $this->setOrder(array($columnName => QAL::ASC));
     }
 
     /**
-     * Возвращает имя колонки для пользовательской сортировки
+     * Get column name for user sorting.
      *
      * @return string
-     * @access protected
+     *
+     * @see Grid::setOrderColumn
      */
-
     protected function getOrderColumn() {
         if (is_null($this->orderColumn)) {
             $this->orderColumn = false;
@@ -915,9 +856,10 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Выводид GRID для выбора элемента для перемещения
+     * Show GRID for moving element.
      *
-     * @throws SystemException
+     * @throws SystemException 'ERR_NO_ORDER_COLUMN'
+     * @throws SystemException 'ERR_404'
      */
     protected function move() {
         if (!$this->getOrderColumn()) {
@@ -933,16 +875,21 @@ class Grid extends DBDataSet {
         $this->setProperty('moveFromId', $id);
         $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
         $this->prepare();
-
     }
 
     /**
-     * Перемещает запись на позицию выше заданной / ниже заданной / наверх списка / вниз списка
+     * Move the record.
      *
-     * @TODO: Пофиксить перемещение в начало списка, т.к. сейчаспорядковый номер может выйти меньше 0. Аналогичная ситуация с move above.
-     * @throws SystemException
-     * @access protected
-     * @return void
+     * Allowed movement:
+     *
+     * - above
+     * - below
+     * - top
+     * - bottom
+     *
+     * @TODO: Пофиксить перемещение в начало списка, т.к. сейчас порядковый номер может выйти меньше 0. Аналогичная ситуация с move above.
+     *
+     * @throws SystemException 'ERR_NO_ORDER_COLUMN'
      */
     protected function moveTo() {
         if (!$this->getOrderColumn()) {
@@ -1017,35 +964,26 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Метод для изменения порядка следования  - вверх
-     *
-     * @return void
-     * @access protected
+     * Change the moving direction to Grid::DIR_UP.
      */
-
     protected function up() {
         $this->changeOrder(Grid::DIR_UP);
     }
 
     /**
-     * Метод для изменения порядка следования  - вниз
-     *
-     * @return void
-     * @access protected
+     * Change the moving direction to Grid::DIR_DOWN.
      */
-
     protected function down() {
         $this->changeOrder(Grid::DIR_DOWN);
     }
 
     /**
-     * Изменяет порядок следования
+     * Change order.
      *
-     * @param string  - направление
-     * @return void
-     * @access protected
+     * @param string $direction Direction.
+     *
+     * @throws SystemException 'ERR_NO_ORDER_COLUMN'
      */
-
     protected function changeOrder($direction) {
         $this->applyUserFilter();
         if (!$this->getOrderColumn()) {
@@ -1119,12 +1057,8 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Метод применяющий фильтр в гриде
-     *
-     * @return void
-     * @access protected
+     * Apply user filter.
      */
-
     protected function applyUserFilter() {
         //Формат фильтра
         //$_POST['filter'][$tableName][$fieldName] = значение фильтра
@@ -1195,9 +1129,7 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Применение сортировки
-     *
-     * @return void
+     * Apply user sorting.
      */
     protected function applyUserSort() {
         $actionParams = $this->getStateParams(true);
@@ -1210,10 +1142,7 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Добавляет переводы для WYSIWYG при необходимости
-     *
-     * @access private
-     * @return void
+     * Add translations for WYSIWYG.
      */
     private function addToolbarTranslations() {
         foreach ($this->getDataDescription() as $fd) {
@@ -1224,19 +1153,20 @@ class Grid extends DBDataSet {
         }
     }
 
+    // Сохранение приаттаченных данных должно происходить в методе saveData на общих основаниях
+    //todo VZ: $data is not used.
     /**
-     * Строит список дополнительных файлов
-     * Используется в тех случаях когда необходимо создать дополнительную вкладку с приаттачеными к записи файлами
+     * Build the list of additional files.
      *
-     * Сохранение приаттаченных данных должно происходить в методе saveData на общих основаниях
+     * @param string $tableName Table name.
+     * @param bool $data Data.
+     *
      * @see DivisionEditor
      * @see ProductEditor
      *
-     * @access protected
-     * @return void
+     * @note It is used for the cases when additional tab with attached files to the record should be created.
      */
     protected function linkExtraManagers($tableName, $data = false) {
-
         if ($this->dbh->tableExists($tableName . AttachmentManager::ATTACH_TABLE_SUFFIX) && $this->getState() != 'attachments') {
 
             $fd = new FieldDescription('attached_files');
@@ -1261,9 +1191,9 @@ class Grid extends DBDataSet {
     }
 
     /**
+     * Autocomplete tag names.
      *
-     * @throws SystemException
-     * @return void
+     * @throws SystemException 'ERR_NO_DATA'
      */
     protected function autoCompleteTags() {
         $b = new JSONCustomBuilder();
@@ -1301,6 +1231,9 @@ class Grid extends DBDataSet {
         $b->setProperties($result);
     }
 
+    /**
+     * @copydoc DBDataSet::prepare
+     */
     protected function prepare() {
         parent::prepare();
         if ($config = $this->getConfig()->getCurrentStateConfig()) {

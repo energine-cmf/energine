@@ -15,7 +15,7 @@ class JSONDivBuilder;
  */
 
 /**
- * JSON builder for sections editor.
+ * JSON builder for division editor.
  *
  * @code
 class JSONDivBuilder;

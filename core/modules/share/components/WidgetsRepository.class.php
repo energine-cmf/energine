@@ -1,45 +1,46 @@
 <?php
 /**
- * Содержит класс WidgetsRepository
+ * @file
+ * WidgetsRepository
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+abstract class DataSet;
+@endcode
+ *
  * @author spacelord
  * @copyright Energine 2010
- * @version $Id
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Работа с виджетами (компонентов)
+ * Class to work with repository widgets.
  *
- * @package energine
- * @subpackage share
- * @author spacelord
+ * @code
+abstract class DataSet;
+@endcode
  */
-
-
 class WidgetsRepository extends Grid {
     /**
-     * @var Component
-     *
+     * Temporary component.
+     * @var Component $tmpComponent
      */
     private $tmpComponent;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName('share_widgets');
         $this->setOrder(array('widget_name' => QAL::ASC));
     }
+
+    /**
+     * @copydoc Grid::createDataDescription
+     */
     protected function createDataDescription(){
         $result = parent::createDataDescription();
         if(in_array($this->getState(), array('add', 'edit'))){
@@ -49,11 +50,11 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Постройка формы редактирования параметров компонента
-     * Получает на вход XML данные виджета, на основании которых и строит форму
+     * Build for for editing component parameters.
+     * The form creation is based on XML widget's data received per POST request.
      *
-     * @throws SystemException
-     * @return void
+     * @throws SystemException 'ERR_INSUFFICIENT_DATA'
+     * @throws SystemException 'ERR_BAD_XML_DESCR'
      */
     protected function buildParamsForm() {
         if (!isset($_POST['modalBoxData'])) {
@@ -99,10 +100,9 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Создание виджета по переданному описанию
+     * Build widget.
      *
-     * @throws SystemException
-     * @return void
+     * @throws SystemException 'ERR_BAD_DATA'
      */
     public function buildWidget() {
         if (!isset($_POST['xml'])) {
@@ -118,11 +118,9 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Для формы ввода имени для нового шаблона контента
-     * отключаем получение данных
-     * а какие там могут быть данные  - в самом то деле
-     * @return bool|mixed
+     * @copydoc Grid::loadData
      */
+    // Для формы ввода имени для нового шаблона контента отключаем получение данных; а какие там могут быть данные  - в самом то деле
     protected function loadData() {
         if ($this->getState() == 'showNewTemplateForm') return false;
 
@@ -130,10 +128,9 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Для состояния buildWidget
-     * возвращаем код динамического компонента
-     * @return DOMDocument|void
+     * @copydoc Grid::build
      */
+    // Для состояния buildWidget возвращаем код динамического компонента
     public function build() {
         switch ($this->getState()) {
             case 'buildWidget':
@@ -148,9 +145,10 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Сохраняет content для текущей страницы
-     * @throws SystemException
-     * @return void
+     * Save content for current page.
+     *
+     * @throws SystemException 'ERR_INSUFFICIENT_DATA'
+     * @throws SystemException 'ERR_BAD_XML'
      */
     protected function saveContent() {
         if (!isset($_POST['xml'])) {
@@ -171,8 +169,7 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Выводит форму ввода имени нового шаблона
-     * @return void
+     * Show form for new template.
      */
     protected function showNewTemplateForm() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
@@ -180,16 +177,13 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Сохраняет расположение блоков
-     * в текущем шаблоне
+     * Save template.
+     * It saves the position of all blocks in the current template.
+     * If this is one of the core template then it creates new template with the same name
+     * and reset him for current page and for all pages, created from this template.
      *
-     * если это шаблон из ядра
-     * то создает новый одноименный шаблон
-     * и переназначает его для текущей страницы
-     * а также для всех страниц созданных по этому шаблону
-     *
-     * @throws SystemException
-     * @return void
+     * @throws SystemException 'ERR_INSUFFICIENT_DATA'
+     * @throws SystemException 'ERR_BAD_XML'
      */
     protected function saveTemplate() {
         if (!isset($_POST['xml'])) {
@@ -231,11 +225,11 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Создает симлинк
+     * Create symlink.
+     * It return the path to the symlink.
      *
-     * @static
-     * @param $fileName имя файла
-     * @param $module имя модуля
+     * @param string $fileName Filename.
+     * @param string $module Module name.
      * @return string
      */
     private static function createSymlink($fileName, $module) {
@@ -262,10 +256,10 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Создает новый шаблон
+     * Save new template.
      *
-     * @throws SystemException
-     * @return void
+     * @throws SystemException 'ERR_INSUFFICIENT_DATA'
+     * @throws SystemException 'ERR_BAD_XML'
      */
     protected function saveNewTemplate() {
         if (!isset($_POST['xml'])) {
@@ -306,8 +300,9 @@ class WidgetsRepository extends Grid {
     }
 
     /**
-     * Сбрасываем переопределения для контента и лейаута, возвращаясь к исходному шаблону
-     * @throws SystemException
+     * Revert this template to the initial template.
+     *
+     * @throws SystemException 'ERR_CONTENT_NOT_REVERTED'
      */
     protected function revertTemplate() {
         $content = simplifyDBResult(

@@ -406,14 +406,14 @@ class Component extends DBWorker implements IBlock {
 
     /**
      * Prepare data.
-     * It calls at the beginning of the method, that realize main action.
+     * @note It calls at the beginning of the method, that realize main action.
      */
     protected function prepare() {}
 
     /**
      * Disable component.
      *
-     * @attention This is @b final function.
+     * @final
      */
     final public function disable() {
         $this->enabled = false;
@@ -422,18 +422,16 @@ class Component extends DBWorker implements IBlock {
     /**
      * Enable component.
      *
-     * @attention This is @b final function.
+     * @final
      */
     final public function enable() {
         $this->enabled = true;
     }
 
     /**
-     * Get if the component enabled.
+     * @copydoc IBlock::enabled
      *
-     * @return boolean
-     *
-     * @attention This is @b final function.
+     * @final
      */
     final public function enabled() {
         return $this->enabled;
@@ -445,7 +443,7 @@ class Component extends DBWorker implements IBlock {
      * @param string $propName Property name.
      * @param mixed $propValue Property value.
      *
-     * @attention This is @b final function.
+     * @final
      */
     final protected function setProperty($propName, $propValue) {
         $this->properties[$propName] = $propValue;
@@ -458,7 +456,7 @@ class Component extends DBWorker implements IBlock {
      * @param string $propName
      * @return mixed
      *
-     * @attention This is @b final function.
+     * @final
      */
     final protected function getProperty($propName) {
         $result = false;
@@ -473,7 +471,7 @@ class Component extends DBWorker implements IBlock {
      *
      * @param string $propName Property name.
      *
-     * @attention This is @b final function.
+     * @final
      */
     final protected function removeProperty($propName) {
         unset($this->properties[$propName]);

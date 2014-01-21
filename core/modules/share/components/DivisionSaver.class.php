@@ -15,7 +15,7 @@ class DivisionSaver;
  */
 
 /**
- * Saver for sections editor.
+ * Saver for division editor.
  *
  * @code
 class DivisionSaver;

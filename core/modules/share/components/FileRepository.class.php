@@ -1,47 +1,55 @@
 <?php
 /**
- * Содержит класс FileRepository
+ * @file
+ * FileRepository
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class FileRepository;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2012
+ *
+ * @version 1.0.0
  */
 
 /**
- * Файловый репозиторий
+ * File repository.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class FileRepository;
+@endcode
  */
 class FileRepository extends Grid {
     /**
-     * путь к временной папке загрузок
+     * Path to temporary directory.
+     * @var string TEMPORARY_DIR
      */
     const TEMPORARY_DIR = 'uploads/temp/';
 
     /**
-     * Фейковый тип для перехода на уровень выше
+     * Fake type to go to the upper folder.
+     * @var string TYPE_FOLDER_UP
      */
     const TYPE_FOLDER_UP = 'folderup';
 
 
     /**
-     * Имя куки в которой хранится идентификатор папки к которой в последний раз обращались
+     * Cookie name.
+     * It holds the last viewed folder ID.
+     * @var string STORED_PID
      */
     const STORED_PID = 'NRGNFRPID';
 
     /**
-     * @var FileRepoInfo
+     * Repository info.
+     * @var FileRepoInfo $repoinfo
      */
     protected $repoinfo;
 
     /**
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -53,10 +61,8 @@ class FileRepository extends Grid {
         $this->addTranslation('TXT_NOT_READY', 'FIELD_UPL_IS_READY', 'ERR_UPL_NOT_READY');
         //Если данные пришли из модального окна
         if (isset($_POST['modalBoxData']) && ($d = json_decode($_POST['modalBoxData']))) {
-            if (
-                (isset($d->upl_pid) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_id', array('upl_id' => $d->upl_pid)))))
-                ||
-                (isset($d->upl_path) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_path' => $d->upl_path)))))
+            if ((isset($d->upl_pid) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_id', array('upl_id' => $d->upl_pid)))))
+                || (isset($d->upl_path) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_path' => $d->upl_path)))))
             ) {
                 $this->response->addCookie(self::STORED_PID, $uplPID, 0, E()->getSiteManager()->getCurrentSite()->host, E()->getSiteManager()->getCurrentSite()->root);
             }
@@ -64,9 +70,9 @@ class FileRepository extends Grid {
     }
 
     /**
-     * прокси метод для редактирования
-     * разбрасывает по методам редактирования директории и файла
+     * Proxy method for editing.
      */
+    // разбрасывает по методам редактирования директории и файла
     protected function edit() {
         $sp = $this->getStateParams();
         $uplID = $sp[0];
@@ -81,9 +87,9 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Редактирование директории
+     * Edit directory.
      *
-     * @param int $uplID идентификатор аплоада
+     * @param int $uplID Upload ID.
      */
     private function editDir($uplID) {
         $this->setFilter(array('upl_id' => $uplID));
@@ -118,8 +124,8 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Редактирование файла
-     * @param int $uplID идентификатор аплоада
+     * Edit file.
+     * @param int $uplID Upload ID.
      */
     private function editFile($uplID) {
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
@@ -150,8 +156,7 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Создает вкладку для превьюшек
-     *
+     * Create tab for thumbs.
      */
     private function createThumbFields() {
         if ($thumbs = $this->getConfigValue('thumbnails')) {
@@ -170,7 +175,7 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Создание директории
+     * Add directory.
      */
     protected function addDir() {
         $sp = $this->getStateParams(true);
@@ -197,8 +202,10 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Сохранеие данных директории
-     * @throws SystemException
+     * Save data in directory.
+     *
+     * @throws SystemException 'ERR_NO_DATA'
+     * @throws SystemException 'ERR_BAD_PID'
      */
     protected function saveDir() {
         $transactionStarted = $this->dbh->beginTransaction();
@@ -268,12 +275,13 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Сохранение thumbов
+     * Save thumbs.
      *
-     * @param array $thumbsData массив вида названия -> имя временного файла
-     * @param string $baseFileName
-     * @param IFileRepository $repo
-     * @throws SystemException|Exception
+     * @param array $thumbsData Thumbs data in the form @code name -> tmp_filename@endcode.
+     * @param string $baseFileName Base file name.
+     * @param IFileRepository $repo Repository.
+     *
+     * @throws SystemException 'ERR_SAVE_THUMBNAIL'
      */
     private function saveThumbs($thumbsData, $baseFileName, $repo) {
         $thumbProps = $this->getConfigValue('thumbnails');
@@ -293,8 +301,12 @@ class FileRepository extends Grid {
 
 
     /**
-     * Сохранение файла
-     * @throws SystemException
+     * @copydoc Grid::save
+     *
+     * @throws SystemException 'ERR_NO_DATA'
+     * @throws SystemException 'ERR_BAD_PID'
+     * @throws SystemException 'ERR_SAVE_FILE'
+     * @throws SystemException 'ERR_INCORRECT_MIME'
      */
     protected function save() {
 
@@ -442,7 +454,7 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Форма добавления файла
+     * @copydoc Grid::add
      */
     protected function add() {
         $sp = $this->getStateParams(true);
@@ -471,7 +483,7 @@ class FileRepository extends Grid {
     }
 
     /**
-     *
+     * @copydoc Grid::applyUserFilter
      */
     protected function applyUserFilter() {
         //Формат фильтра
@@ -508,13 +520,9 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Переопределенный метод loadData
-     *
-     * Добавляет к набору данных виртуальные поля upl_allows_* для state getRawData
-     * @return mixed
+     * @copydoc Grid::loadData
      */
     protected function loadData() {
-
         $result = parent::loadData();
 
         if ($this->getState() == 'getRawData') {
@@ -543,7 +551,7 @@ class FileRepository extends Grid {
     }
 
     /**
-     *
+     * @copydoc Grid::getRawData
      */
     protected function getRawData() {
         $sp = $this->getStateParams(true);
@@ -564,9 +572,7 @@ class FileRepository extends Grid {
         }
 
         parent::getRawData();
-        /**
-         * Плохо реализован дефолтный механизм подключения билдера
-         */
+        // Плохо реализован дефолтный механизм подключения билдера
         $this->setBuilder(new JSONRepoBuilder());
         if ($this->pager) $this->getBuilder()->setPager($this->pager);
 
@@ -617,11 +623,9 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Выводим форму загрузки Zip файла содержащего набор файлов
+     * Show form to upload Zip file.
      *
      * @todo доделать
-     * @return void
-     * @throws SystemException
      */
     protected function uploadZip() {
         $builder = new JSONCustomBuilder();
@@ -684,7 +688,9 @@ class FileRepository extends Grid {
     }
 
     /**
-     * @param $filename
+     * Get path of temporary file.
+     *
+     * @param string $filename Filename.
      * @return string
      */
     public static function getTmpFilePath($filename) {
@@ -692,8 +698,10 @@ class FileRepository extends Grid {
     }
 
     /**
-     * @param $dirPath
-     * @param $fileExtension
+     * Generate filename.
+     *
+     * @param string $dirPath Directory path.
+     * @param string $fileExtension File extension.
      * @return string
      */
     public static function generateFilename($dirPath, $fileExtension) {
@@ -710,10 +718,9 @@ class FileRepository extends Grid {
     }
 
     /**
-     *
+     * Upload temporary file.
      */
     protected function uploadTemporaryFile() {
-
         $builder = new JSONCustomBuilder();
         $this->setBuilder($builder);
 
@@ -790,9 +797,9 @@ class FileRepository extends Grid {
     }
 
     /**
-     * Очистка пришедших из JS FileReader
-     * @static
-     * @param $data
+     * Clean incoming from JS FileReader.
+     *
+     * @param string $data Data.
      * @return string
      * @deprecated
      */

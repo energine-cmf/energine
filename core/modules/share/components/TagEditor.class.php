@@ -1,34 +1,36 @@
 <?php
 /**
- * Содержит класс TagEditor
+ * @file
+ * TagEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class TagEditor;
+@endcode
+ *
  * @author andy.karpov
  * @copyright Energine 2013
  */
 
 /**
- * Редактор тегов
+ * Tag editor.
  *
- * @package energine
- * @subpackage share
- * @author andy.karpov
+ * @code
+class TagEditor;
+@endcode
  */
 class TagEditor extends Grid {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName(TagManager::TAG_TABLENAME);
     }
 
+    /**
+     * @copydoc Grid::main
+     */
     protected function main() {
         parent::main();
         $params = $this->getStateParams(true);
@@ -41,6 +43,9 @@ class TagEditor extends Grid {
         }
     }
 
+    /**
+     * @copydoc Grid::getRawData
+     */
     protected function getRawData() {
         $params = $this->getStateParams(true);
         if (!empty($params['tag_id'])) {
@@ -52,6 +57,9 @@ class TagEditor extends Grid {
         parent::getRawData();
     }
 
+    /**
+     * Get tag IDs.
+     */
     protected function getTagIds() {
         $builder = new JSONCustomBuilder();
         $this->setBuilder($builder);
@@ -81,6 +89,9 @@ class TagEditor extends Grid {
         $builder->setProperties(array('data' => $response));
     }
 
+    /**
+     * Get tags.
+     */
     protected function getTags() {
         $builder = new JSONCustomBuilder();
         $this->setBuilder($builder);

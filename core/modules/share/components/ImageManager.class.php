@@ -1,28 +1,39 @@
 <?php
 /**
- * Класс ImageManager.
+ * @file
+ * ImageManager.
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class ImageManager;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Менеджер изображений.
+ * Image manager.
  *
- * @package energine
- * @subpackage share
- * @author 1m.dm
+ * @code
+class ImageManager;
+@endcode
  */
 class ImageManager extends DataSet {
-
+    /**
+     * @copydoc DataSet::__construct
+     */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTitle('TXT_IMG_MANAGER');
     }
 
+    /**
+     * @copydoc DataSet::createDataDescription
+     */
     public function createDataDescription() {
         $result = parent::createDataDescription();
         $fieldDescr = $result->getFieldDescriptionByName('align');

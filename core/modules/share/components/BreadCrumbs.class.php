@@ -1,35 +1,40 @@
 <?php
 /**
- * Содержит класс BreadCrumbs
+ * @file
+ * BreadCrumbs.
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+final class BreadCrumbs;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * "Хлебные крошки"
+ * "Bread crumbs"
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+final class BreadCrumbs;
+@endcode
+ *
  * @final
  */
 final class BreadCrumbs extends DataSet {
     /**
-     * Список дополнительных элементов
+     * List of additional elements.
      * Необходим для того чтобы другие компоненты могли добавлять хлебные крошки
-     * @var array
-     * @access private
+     * @var array $additionalCrumbs
+     * @note This is needed to allow other components add bread crumbs.
      */
     private $additionalCrumbs = array();
 
     /**
-     * Конструктор класса
-     *
-     * @return void
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -38,12 +43,12 @@ final class BreadCrumbs extends DataSet {
     }
 
     /**
-     * Поскольку изменение перечня полей невозможно, принудительно выставляем необходимые значения
+     * Create data description.
      *
      * @return DataDescription
-     * @access protected
+     *
+     * @note Since it is impossible to change the list of fields, the required values will be forced to reset.
      */
-
     protected function createDataDescription() {
         $result = new DataDescription();
         $field = new FieldDescription('Id');
@@ -66,6 +71,9 @@ final class BreadCrumbs extends DataSet {
         return $result;
     }
 
+    /**
+     * @copydoc DataSet::prepare
+     */
     protected function prepare() {
         $this->setBuilder(new SimpleBuilder());
         $this->setDataDescription($this->createDataDescription());
@@ -78,10 +86,7 @@ final class BreadCrumbs extends DataSet {
     }
 
     /**
-     * Переопределенный метод загрузки данных
-     *
-     * @return mixed
-     * @access protected
+     * @copydoc DataSet::loadData
      */
     protected function loadData() {
         $sitemap = E()->getMap();
@@ -129,16 +134,16 @@ final class BreadCrumbs extends DataSet {
     }
 
     /**
-     * Метод добавляющий хлебную крошку
+     * Add crumb.
+     *
      * Если приходят пустые параметры, то эта крошка не выводится, а предыдущая хлебная крошка будет ссылкой
      *
-     * @param int
-     * @param string
-     * @param segment
-     * @return void
-     * @access public
+     * @param string|int $smapID ID.
+     * @param string $smapName Name.
+     * @param string $smapSegment Segment.
+     *
+     * @note If the input arguments are empty, then this crumb will be not showed and previous crumb become a link.
      */
-
     public function addCrumb($smapID = '', $smapName = '', $smapSegment = '') {
         $this->additionalCrumbs[] = array(
             'Id' => $smapID,
@@ -148,8 +153,8 @@ final class BreadCrumbs extends DataSet {
     }
 
     /**
-     * Замещает текущие данными - новыми
-     * @param $data array(array('Id'=>'', 'Name'=>'', 'Segment'=>''))
+     * Replace data.
+     * @param array $data Data in the form @code array(array('Id'=>'', 'Name'=>'', 'Segment'=>'')) @endcode
      */
     public function replaceData($data) {
         $d = new Data();

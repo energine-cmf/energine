@@ -1,41 +1,40 @@
 <?php
-
 /**
- * Содержит класс PageInfo
+ * @file
+ * PageInfo
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class PageInfo;
+@endcode
+ *
  * @author andy.karpov@gmail.com
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 /**
- * Выводит на странице контейнер с доп характеристиками страницы +
- * медиаконтейнер из медиа-файлов, присоединенных к данной странице
+ * page information.
+ * It shows on the page a container with additional properties of the page and media container with media files that are attached to the current page.
  *
- * @package energine
- * @subpackage share
- * @author andy.karpov@gmail.com
+ * @code
+class PageInfo;
+@endcode
  */
 class PageInfo extends DataSet {
-
+    //todo VZ: this can be removed.
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
     }
 
     /**
-     * Основной метод вывода
-     *
+     * @copydoc DataSet::main
      */
     protected function main() {
-
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->setBuilder(new SimpleBuilder());
         $dd = $this->createDataDescription();

@@ -1,28 +1,29 @@
 <?php
 /**
- * Содержит класс AttachmentEditor
+ * @file
+ * AttachmentEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class AttachmentEditor;
+@endcode
+ *
  * @author andy.karpov
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редактор связанных аттачментов
+ * Attachment editor.
  *
- * @package energine
- * @subpackage share
- * @author andy.karpov
+ * @code
+class AttachmentEditor;
+@endcode
  */
 class AttachmentEditor extends Grid {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -66,10 +67,7 @@ class AttachmentEditor extends Grid {
     }
 
     /**
-     * Переопределенный метод
-     * Дополняет принимаемые компонентом параметры
-     *
-     * @return array
+     * @copydoc Grid::defineParams
      */
     protected function defineParams() {
         return array_merge(
@@ -83,12 +81,10 @@ class AttachmentEditor extends Grid {
     }
 
     /**
-     * Переопределенный метод
-     * Делает поле upl_id типа INT в форме add/edit, чтобы исключить подтягивание значений по FK
-     *
+     * @copydoc Grid::prepare
      */
+    // Делает поле upl_id типа INT в форме add/edit, чтобы исключить подтягивание значений по FK
     protected function prepare() {
-
         parent::prepare();
 
         if (in_array($this->getState(), array('add', 'edit'))) {
@@ -105,14 +101,10 @@ class AttachmentEditor extends Grid {
     }
 
     /**
-     * Переопределенный метод
-     * Дополняет описание данных доп полями из таблицы share_uploads,
-     * а также исключает из вывода PK основной таблицы и поле session_id
-     *
-     * @return DataDescription
+     * @copydoc Grid::createDataDescription
      */
+    // Дополняет описание данных доп полями из таблицы share_uploads, а также исключает из вывода PK основной таблицы и поле session_id
     protected function createDataDescription() {
-
         $dd = parent::createDataDescription();
 
         $fd = $dd->getFieldDescriptionByName($this->getParam('pk'));
@@ -144,9 +136,9 @@ class AttachmentEditor extends Grid {
     }
 
     /**
-     * Отключаем FK для ul_id и связки с основной таблицей
-     * @return array
+     * @copydoc Grid::loadDataDescription
      */
+    // Отключаем FK для ul_id и связки с основной таблицей
     protected function loadDataDescription(){
         $r = parent::loadDataDescription();
         $r['upl_id']['key'] = false;
@@ -155,11 +147,9 @@ class AttachmentEditor extends Grid {
     }
 
     /**
-     * Переопределенный метод
-     * Дополняет набор данных значениями полей upl_path, upl_name и upl_duration
-     *
-     * @return mixed
+     * @copydoc Grid::loadData
      */
+    // Дополняет набор данных значениями полей upl_path, upl_name и upl_duration
     protected function loadData() {
         $data = parent::loadData();
 
@@ -195,6 +185,9 @@ class AttachmentEditor extends Grid {
         return $data;
     }
 
+    /**
+     * @copydoc Grid::add
+     */
     protected function add() {
         parent::add();
 
@@ -208,6 +201,9 @@ class AttachmentEditor extends Grid {
 
     }
 
+    /**
+     * @copydoc Grid::edit
+     */
     protected function edit() {
         parent::edit();
 
@@ -220,11 +216,15 @@ class AttachmentEditor extends Grid {
         }
     }
 
+    /**
+     * Save quick upload.
+     *
+     * @throws Exception
+     * @throws SystemException
+     */
     protected function savequickupload() {
-
         $transactionStarted = $this->dbh->beginTransaction();
         try {
-
             $upl_id = (isset($_POST['upl_id'])) ? intval($_POST['upl_id']) : false;
             $result = $this->dbh->modify(
                 QAL::INSERT,
@@ -275,12 +275,10 @@ class AttachmentEditor extends Grid {
     }
 
     /**
-     * переписанный родительский saveData
-     * Правильно сохраняет порядок в order_num полях
-     *
+     * @copydoc Grid::saveData
      */
+    //Правильно сохраняет порядок в order_num полях
     protected function saveData() {
-
         $result = false;
         //если в POST не пустое значение значение первичного ключа - значит мы находимся в режиме редактирования
         if (isset($_POST[$this->getTableName()][$this->getPK()]) &&

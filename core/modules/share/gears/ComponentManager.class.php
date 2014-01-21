@@ -355,7 +355,7 @@ interface IBlock {
     public function run();
 
     /**
-     * Enable.
+     * Is enabled?
      * @return bool
      */
     public function enabled();

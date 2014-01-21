@@ -15,7 +15,7 @@ class Image;
  */
 
 /**
- * Image manager.
+ * Class for work with images.
  *
  * @code
 class Image;

@@ -1,27 +1,29 @@
 <?php
 /**
- * Содержит класс Separator
+ * @file
+ * Separator.
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Separator;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Разделитель элементов управления на панели инструментов
+ * Separator element on toolbar.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
- *
+ * @code
+class Separator;
+@endcode
  */
 class Separator extends Control {
-
     /**
-     * Конструктор класса
-     *
-     * @access public
+     * @copydoc Control::__construct
      */
     public function __construct($id) {
         parent::__construct($id);

@@ -80,9 +80,9 @@ VISIBLE_PAGES_COUNT = 3 --> 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
     /**
      * Set amount of records per page.
      *
-     * @throws SystemException 'ERR_DEV_BAD_RECORDS_PER_PAGE'
-     *
      * @param int $recordsPerPage Amount of records per page.
+     *
+     * @throws SystemException 'ERR_DEV_BAD_RECORDS_PER_PAGE'
      */
     public function setRecordsPerPage($recordsPerPage) {
         $recordsPerPage = intval($recordsPerPage);
@@ -113,9 +113,9 @@ VISIBLE_PAGES_COUNT = 3 --> 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
     /**
      * Set current page.
      *
-     * @throws SystemException 'ERR_DEV_BAD_PAGE_NUMBER'
-     *
      * @param int $currentPage Current page number.
+     *
+     * @throws SystemException 'ERR_DEV_BAD_PAGE_NUMBER'
      */
     public function setCurrentPage($currentPage) {
         $currentPage = intval($currentPage);
@@ -128,9 +128,9 @@ VISIBLE_PAGES_COUNT = 3 --> 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
     /**
      * Set total amount of records.
      *
-     * @throws SystemException 'ERR_DEV_BAD_RECORDS_COUNT'
-     *
      * @param int $count Amount of records.
+     *
+     * @throws SystemException 'ERR_DEV_BAD_RECORDS_COUNT'
      */
     public function setRecordsCount($count) {
         $recordsCount = intval($count);
@@ -173,9 +173,9 @@ VISIBLE_PAGES_COUNT = 3 --> 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
     /**
      * Get fetching limit for SELECT-request.
      *
-     * @see QAL::select()
-     *
      * @return array
+     *
+     * @see QAL::select()
      */
     public function getLimit() {
         return array(($this->getCurrentPage() - 1) * $this->getRecordsPerPage(), $this->getRecordsPerPage());
@@ -183,13 +183,11 @@ VISIBLE_PAGES_COUNT = 3 --> 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
 
     /**
      * Build page list.
-     *
      * The root node is returned.
      *
      * @return DOMNode
      */
     public function build() {
-
         $pager = new Toolbar('pager');
         if (!empty($_GET)) {
             $this->setProperty('get_string', http_build_query($_GET));

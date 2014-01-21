@@ -28,7 +28,6 @@ final class Request extends Object {
 
     /**
      * Root path.
-     *
      * Path to the site root in the whole URI path.
      *
      * @var string $rootPath
@@ -37,7 +36,6 @@ final class Request extends Object {
 
     /**
      * Language.
-     *
      * Language, that set in the URI.
      *
      * @var string $lang
@@ -46,7 +44,6 @@ final class Request extends Object {
 
     /**
      * Path from URI request.
-     *
      * This is without root path and language piece.
      *
      * @var array $path

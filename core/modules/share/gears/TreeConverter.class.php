@@ -54,13 +54,13 @@ final class TreeConverter{
 
 	/**
      * Run converting.
-	 *
-     * @throws Exception 'Неправильный формат древовидных данных'
      *
      * @param array $data Loaded data.
      * @param string $keyName Field name that holds an ID.
      * @param string $parentKeyName Field name that holds an parent ID.
 	 * @return TreeNodeList
+	 *
+     * @throws Exception 'Неправильный формат древовидных данных'
 	 */
 	static public function convert(array $data, $keyName, $parentKeyName) {
         self::$keyName = $keyName;
@@ -77,10 +77,10 @@ final class TreeConverter{
     /**
      * Validate data.
      *
-     * @todo реализовать
-     *
      * @param array $data Data.
      * @return bool
+     *
+     * @todo реализовать
      */
     static private function validate(array $data) {
     	foreach ($data as $value) {

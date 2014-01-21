@@ -59,7 +59,7 @@ class TreeBuilder extends AbstractBuilder  {
     }
 
     /**
-     * Run building.
+     * @copydoc AbstractBuilder::run
      *
      * @throws SystemException 'ERR_DEV_NO_TREE_IDENT'
      */

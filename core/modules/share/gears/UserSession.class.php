@@ -26,14 +26,13 @@ final class UserSession;
 final class UserSession extends DBWorker {
     /**
      * Cookie name for failed login.
+     * @var string FAILED_LOGIN_COOKIE_NAME
      *
      * @see auth.php
      *
      * @note In general this should be in LoginForm, but of the inconvenience call it was moved here.
      *
      * @todo Все таки надо как то ей указать надлежащее место
-     *
-     * @var string FAILED_LOGIN_COOKIE_NAME
      */
     const FAILED_LOGIN_COOKIE_NAME = 'failed_login';
 
@@ -45,7 +44,6 @@ final class UserSession extends DBWorker {
 
     /**
      * Default probability to call garbage collector.
-     *
      * It calculates as follows: <tt> DEFAULT_PROBABILITY / session.gc_divisor</tt>, where <tt>session.gc_divisor</tt> is 100 by defaults.
      * Example: <tt>10 / 100</tt> means that garbage collector will called with probability of 10%.
      */
@@ -74,7 +72,6 @@ final class UserSession extends DBWorker {
     /**
      * Maximal session lifespan.
      * It is used to setup the lifespan of cookie and garbage collector.
-     *
      * @var int $lifespan
      */
     private $lifespan;
@@ -102,9 +99,9 @@ final class UserSession extends DBWorker {
     static private $tableName = 'share_session';
 
     /**
-     * @throws SystemException 'ERR_NO_CONSTRUCTOR'
-     *
      * @param bool $force Force to create session?
+     *
+     * @throws SystemException 'ERR_NO_CONSTRUCTOR'
      */
     public function __construct($force = false) {
         if (!self::$instance) {
@@ -241,12 +238,12 @@ final class UserSession extends DBWorker {
      * If there are no information about the session in cookies or posts (there is an exception for flash uploader) then no session will start.
      * For captcha we need to force to start session.
      *
-     * @throws SystemException 'ERR_SESSION_ALREADY_STARTED'
+     * @param $force bool Force to create session if this is not necessary?
      *
      * @see index.php
      * @see auth.php
      *
-     * @param $force bool Force to create session if this is not necessary?
+     * @throws SystemException 'ERR_SESSION_ALREADY_STARTED'
      */
     public static function start($force = false) {
         if (self::$instance) {
@@ -291,10 +288,10 @@ final class UserSession extends DBWorker {
     /**
      * Read session data.
      *
-     * @see UserSession::data
-     *
      * @param string $phpSessId Sesion ID.
      * @return mixed
+     *
+     * @see UserSession::data
      */
     public function read($phpSessId) {
         return ($this->data);

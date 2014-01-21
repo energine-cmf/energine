@@ -1,86 +1,77 @@
 <?php
 /**
- * Содержит класс Control
+ * @file
+ * Control
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+abstract class Control;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
-
+//todo VZ: There should be Element class that is extended from Object and has all needed methods and members.
 /**
- * Элемент управления панели инструментов
+ * Toolbar control.
  *
- * @package energine
- * @subpackage share
- * @abstract
- * @author dr.Pavka
+ * @code
+abstract class Control;
+@endcode
+ *
+ * @attention This is @b abstract class.
  */
 abstract class Control extends Object {
     /**
-     * Имя тега элемента
+     * Element tag name.
+     * @var string TAG_NAME
      */
     const TAG_NAME = 'control';
 
     /**
-     * Документ
-     *
-     * @var DOMDocument
-     * @access protected
+     * Document.
+     * @var DOMDocument $doc
      */
     protected $doc;
 
     /**
-     * Тип элемента
-     *
-     * @access protected
-     * @var string
+     * Element type.
+     * @var string $type
      */
     protected $type = false;
 
     /**
-     * Доступность элемента
-     *
-     * @access private
-     * @var boolean
+     * Is element disabled?
+     * @var boolean $disabled
      */
     private $disabled = false;
 
     /**
-     * Дополнительные атрибуты
-     *
-     * @var array
-     * @access private
+     * Additional attributes.
+     * @var array $attributes
      */
     private $attributes = array();
 
     /**
-     * Панель управления к которому привязан элемент управления
-     *
-     * @var ToolBar
-     * @access private
+     * Toolbar.
+     * @var ToolBar $toolbar
      */
     private $toolbar;
 
     /**
-     * Индекс элемента.
-     * Присваивается панелью инструментов после присоединения элемента.
-     *
-     * @var int
-     * @access private
+     * Element index.
+     * It is assigned by toolbar after attaching.
+     * @var int $index
      */
     private $index = false;
 
     /**
-     * Конструктор
+     * Constructor.
      *
-     * @param string $id
-     * @param string $action
-     * @param string $image
-     * @param string $title
-     * @param string $tooltip
-     * @access public
+     * @param string $id Control ID.
      */
     public function __construct($id) {
         $this->setAttribute('id', $id);
@@ -88,46 +79,42 @@ abstract class Control extends Object {
     }
 
     /**
-     * Привязываем элемент управления к панели управления
+     * Attach control element to the toolbar.
      *
-     * @param Toolbar
-     * @return void
-     * @access public
+     * @param Toolbar $toolbar Toolbar.
      */
-
     public function attach($toolbar) {
         $this->toolbar = $toolbar;
     }
 
     /**
-     * Возвращает панель управления
+     * Get toolbar.
      *
      * @return Toolbar
-     * @access protected
      */
-
     protected function getToolbar() {
         return $this->toolbar;
     }
 
     /**
-     * Устанавливает индекс элемента.
-     * Вызывается из панели инструментов (Toolbar).
+     * Set element index.
      *
-     * @param int
-     * @return void
-     * @access public
+     * @param int $index ID.
+     *
+     * @note This is called from Toolbar.
      */
     public function setIndex($index) {
         $this->index = $index;
     }
 
     /**
-     * Возвращает индекс элемента.
-     * Вызывается из панели инструментов (Toolbar).
+     * Get element index.
      *
      * @return int
-     * @access public
+     *
+     * @note This is called from Toolbar.
+     *
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_INDEX'
      */
     public function getIndex() {
         if ($this->index === false) {
@@ -137,11 +124,11 @@ abstract class Control extends Object {
     }
 
     /**
-     * Загрузка элемента из XML-описания.
+     * Load element from XML description.
      *
-     * @param SimpleXMLElement $description
-     * @return void
-     * @access public
+     * @param SimpleXMLElement $description Element description.
+     *
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function loadFromXml(SimpleXMLElement $description) {
         if (!isset($description['type'])) {
@@ -169,30 +156,25 @@ abstract class Control extends Object {
     }
 
     /**
-     * Отключает элемент (делает его недоступным).
-     *
-     * @return void
-     * @access public
+     * Disable element.
      */
     public function disable() {
         $this->disabled = true;
     }
 
     /**
-     * Включает элемент.
-     *
-     * @return void
-     * @access public
+     * Enable element.
      */
     public function enable() {
         $this->disabled = false;
     }
 
     /**
-     * Возвращает тип элемента.
+     * Get element type.
      *
      * @return string
-     * @access public
+     *
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function getType() {
         if (!$this->type) {
@@ -202,24 +184,20 @@ abstract class Control extends Object {
     }
 
     /**
-     * Устанавливает значение атрибута.
+     * Set attribute.
      *
-     * @param string
-     * @param mixed
-     * @return void
-     * @access public
+     * @param string $attrName Attribute name.
+     * @param mixed $attrValue Attribute value.
      */
-
     public function setAttribute($attrName, $attrValue) {
         $this->attributes[$attrName] = $attrValue;
     }
 
     /**
-     * Возвращает значение атрибута.
+     * Get attribute value.
      *
-     * @param string
+     * @param string $attrName Attribute name.
      * @return mixed
-     * @access public
      */
     public function getAttribute($attrName) {
         if (isset($this->attributes[$attrName])) {
@@ -229,20 +207,18 @@ abstract class Control extends Object {
     }
 
     /**
-     * Возвращает идентификатор
+     * Get element ID.
      *
      * @return string
-     * @access public
      */
     public function getID() {
         return $this->getAttribute('id');
     }
 
     /**
-     * Построение элемента управления.
+     * Build control element.
      *
      * @return DOMNode
-     * @access public
      */
     public function build() {
         $controlElem = $this->doc->createElement(self::TAG_NAME);
@@ -263,11 +239,9 @@ abstract class Control extends Object {
     }
 
     /**
-     * Переводит языко-зависимые атрибуты.
+     * Translate language-dependent attributes.
      *
-     * @param array перечень атрибутов дялш перевода
-     * @return type
-     * @access public
+     * @param array $attrs Set of attributes for translation.
      */
     public function translate($attrs = array('title', 'tooltip')) {
         foreach ($attrs as $attrName) {

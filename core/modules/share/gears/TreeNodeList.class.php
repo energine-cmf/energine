@@ -141,28 +141,14 @@ class TreeNodeList implements Iterator{
         return $result;
     }
 
-    /**
-     * Return the current block.
-     * http://php.net/manual/en/iterator.current.php
-     * @return TreeNode
-     */
 	public function current() {
 		return $this->nodeList[$this->currentKey];
 	}
 
-    /**
-     * Return the current child name.
-     * http://php.net/manual/en/iterator.key.php
-     * @return int
-     */
 	public function key() {
 		return $this->currentKey;
 	}
 
-    /**
-     * Move forward to next element.
-     * http://php.net/manual/en/iterator.next.php
-     */
 	public function next() {
 		//получаем все ключи
 		$keys = array_keys($this->nodeList);
@@ -179,10 +165,6 @@ class TreeNodeList implements Iterator{
 		}
 	}
 
-    /**
-     * Rewind the Iterator to the first element.
-     * http://php.net/manual/en/iterator.rewind.php
-     */
 	public function rewind() {
 		if(empty($this->nodeList)) return;
 		//получаем все ключи
@@ -191,11 +173,6 @@ class TreeNodeList implements Iterator{
 		$this->currentKey = $keys[0];
 	}
 
-    /**
-     * Checks if current position is valid.
-     * http://php.net/manual/en/iterator.valid.php
-     * @return bool
-     */
 	public function valid() {
 		if(!is_null($this->currentKey)){
 			$keys = array_keys($this->nodeList);
@@ -251,6 +228,9 @@ final class TreeNode implements IteratorAggregate{
      */
     private $children;
 
+    /**
+     * @param int $id Node ID.
+     */
     public function __construct($id) {
         $this->children = new TreeNodeList();
         $this->id = $id;
@@ -292,15 +272,6 @@ final class TreeNode implements IteratorAggregate{
         return $this->children;
     }
 
-    /**
-     * Retrieve an external iterator.
-     *
-     * http://php.net/manual/en/iteratoraggregate.getiterator.php
-     *
-     * @see IteratorAggregate
-     *
-     * @return TreeNodeList
-     */
     public function getIterator() {
         return $this->getChildren();
     }

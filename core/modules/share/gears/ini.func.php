@@ -38,27 +38,27 @@ error_reporting(E_ALL);
 
 /**
  * Path to the directory with user components.
- * @note Sign @c '*' means the module name.
  * @var string SITE_COMPONENTS_DIR
+ * @note Sign @c '*' means the module name.
  */
 define('SITE_COMPONENTS_DIR', SITE_DIR . '/modules/*/components');
 /**
  * Path to the directory with site PHP files.
- * @note Sign @c '*' means the module name.
  * @var string SITE_GEARS_DIR
+ * @note Sign @c '*' means the module name.
  */
 define('SITE_GEARS_DIR', SITE_DIR . '/modules/*/gears');
 /**
  * Path to the directory with standard components.
- * @note Sign @c '*' means the module name.
  * @var string CORE_COMPONENTS_DIR
+ * @note Sign @c '*' means the module name.
  */
 define('CORE_COMPONENTS_DIR', CORE_DIR . '/modules/*/components');
 
 /**
  * Path to the directory with core PHP files.
- * @note Sign @c '*' means the module name.
  * @var string CORE_GEARS_DIR
+ * @note Sign @c '*' means the module name.
  */
 define('CORE_GEARS_DIR', CORE_DIR . '/modules/*/gears');
 
@@ -108,6 +108,9 @@ spl_autoload_register(
  * @staticvar array $paths массив путей к файлам классов вида [имя класса]=>путь к файлу класса
  */
 function ($className) {
+    $className = explode('\\', $className);
+    $className = array_pop($className);
+
     static $paths = array();
     //если массив путей не заполнен - заполняем
     if (empty($paths)) {
@@ -152,13 +155,13 @@ set_error_handler('nrgnErrorHandler');
  * @brief Error handler.
  * It converts all errors to the SystemException with type ERR_DEVELOPER.
  *
- * @throws SystemException
- *
  * @param int $errLevel Error level.
  * @param string $message Error message.
  * @param string $file Error file.
  * @param int $line Error line.
  * @param array $errContext Error context.
+ *
+ * @throws SystemException
  */
 function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext) {
     try {

@@ -23,10 +23,14 @@ class MultiLanguageBuilder;
 @endcode
  */
 class MultiLanguageBuilder extends AbstractBuilder {
+    //todo VZ: This can be removed.
     public function __construct() {
         parent::__construct();
     }
 
+    /**
+     * @copydoc AbstractBuilder::run
+     */
     protected function run() {
         $lang = E()->getLanguage();
 

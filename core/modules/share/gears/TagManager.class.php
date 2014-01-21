@@ -146,12 +146,12 @@ class TagManager extends DBWorker {
     /**
      * Bind set of tags with specific field.
      *
-     * @throws SystemException 'ERR_WRONG_TABLE_NAME'
-     *
      * @param string $tags single string line of tags.
      * @param string $mapValue Name of ligaments filed in linked table.
      * @param string $mapTableName Name of a linked table.
      * @return array
+     *
+     * @throws SystemException 'ERR_WRONG_TABLE_NAME'
      */
     public function bind($tags, $mapValue, $mapTableName) {
         if (!$this->dbh->tableExists($mapTableName)) {
@@ -187,12 +187,12 @@ class TagManager extends DBWorker {
     /**
      * Pull tag names by passed information from linked table.
      *
-     * @throws SystemException 'ERR_WRONG_TABLE_NAME'
-     *
      * @param string $mapValue Map value.
      * @param string $mapTableName Map table name.
      * @param bool $asString Return as string?
      * @return array|mixed
+     *
+     * @throws SystemException 'ERR_WRONG_TABLE_NAME'
      */
     public function pull($mapValue, $mapTableName, $asString = false) {
         if (!$this->dbh->tableExists($mapTableName)) {
@@ -326,11 +326,11 @@ class TagManager extends DBWorker {
     /**
      * Get filter.
      *
-     * @throws SystemException 'ERR_WRONG_TABLE_NAME'
-     *
      * @param mixed $tags
      * @param string $mapTableName Map table name.
      * @return array|mixed
+     *
+     * @throws SystemException 'ERR_WRONG_TABLE_NAME'
      */
     static public function getFilter($tags, $mapTableName) {
         if (!E()->getDB()->tableExists($mapTableName)) {

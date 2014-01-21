@@ -23,7 +23,7 @@ final class QAL;
  *
  * @attention This is @b final class.
  */
-final class QAL extends DBA {
+class QAL extends DBA {
     //Режимы модифицирующих операций
     /**
      * INSERT operation.
@@ -82,13 +82,7 @@ final class QAL extends DBA {
 
     //todo VZ: I think this can be removed from here.
     /**
-     * @throws SystemException Unable to connect. The site is temporarily unavailable.
-     *
-     * @param string $dsn Data Source Name; for connecting to the data base.
-     * @param string $username User name.
-     * @param string $password Password.
-     * @param array $driverOptions Specific DB driver parameters.
-     * @param string $charset Encoding.
+     * @copydoc DBA::__construct
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         parent::__construct($dsn, $username, $password, $driverOptions, $charset);
@@ -117,15 +111,15 @@ final class QAL extends DBA {
      *
      * @c true will be returned if the the result is empty.
      *
-     * @see DBA::selectRequest()
-     * @see QAL::buildSQL
-     *
      * @param string $tableOrText Table name or SQL-request text (in this case all further arguments follows as variables)
      * @param array|string|true $fields Field names.
      * @param array|string $condition Condition.
      * @param array|string $sortOrder Sort order.
-     * @param array|string $lim Limit
+     * @param array|string $lim Limit.
      * @return array|true
+     *
+     * @see DBA::selectRequest()
+     * @see QAL::buildSQL
      */
     public function select() {
         $args = func_get_args();
@@ -159,15 +153,15 @@ final class QAL extends DBA {
      *     - @c true by success
      *   - @c false by execution error.
      *
-     * @throws SystemException
-     *
-     * @see DBA::modifyRequest()
-     *
      * @param int $mode Operation mode.
      * @param string $tableName Table name.
      * @param array $data Data for operation.
      * @param mixed $condition Operation condition.
      * @return int|bool
+     *
+     * @throws SystemException
+     *
+     * @see DBA::modifyRequest()
      */
     public function modify($mode, $tableName = null, $data = null, $condition = null) {
 
@@ -247,10 +241,10 @@ final class QAL extends DBA {
     /**
      * Build @c WHERE condition for SQL request.
      *
-     * @see QAL::selectRequest()
-     *
      * @param mixed $condition Condition.
      * @return string
+     *
+     * @see QAL::selectRequest()
      */
     public function buildWhereCondition($condition) {
         $result = '';
@@ -361,10 +355,10 @@ final class QAL extends DBA {
     /**
      * Build <tt>ORDER BY</tt> line for SQL request.
      *
-     * @see QAL::selectRequest()
-     *
      * @param mixed $clause Clause.
      * @return string
+     *
+     * @see QAL::selectRequest()
      */
     public function buildOrderCondition($clause) {
         $orderClause = '';
@@ -389,10 +383,10 @@ final class QAL extends DBA {
     /**
      * Build @c LIMIT line for SQL request.
      *
-     * @see QAL::selectRequest()
-     *
      * @param mixed $clause Clause.
      * @return string
+     *
+     * @see QAL::selectRequest()
      */
     public function buildLimitStatement($clause) {
         $limitClause = '';
@@ -406,6 +400,19 @@ final class QAL extends DBA {
         return $limitClause;
     }
 
+    /**
+     * Build SQL.
+     *
+     *
+     * @param string $tableName Table name.
+     * @param array|string|bool $fields Fields.
+     * @param mixed $condition Operation condition.
+     * @param array|string $order Sort order.
+     * @param array|string $limit Limit.
+     * @return string
+     *
+     * @throws SystemException
+     */
     protected function buildSQL($tableName, $fields = true, $condition = null, $order = null, $limit = null) {
         //If first argument contains space  - assume this is SQL string
         if (strpos($tableName, ' ')){

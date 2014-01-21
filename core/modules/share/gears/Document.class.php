@@ -198,11 +198,6 @@ final class Document extends DBWorker implements IDocument {
         return $this->lang;
     }
 
-    /**
-     * Build page components.
-     *
-     * @return DOMDocument
-     */
     public function build() {
         //Если у нас не режим json
 
@@ -370,7 +365,7 @@ final class Document extends DBWorker implements IDocument {
     }
 
     /**
-     * Define and load page components into the @link ComponentManager component manager@endlink.
+     * Define and load page components into the ComponentManager.
      *
      * @todo Полный рефакторинг!
      */
@@ -498,11 +493,6 @@ final class Document extends DBWorker implements IDocument {
         }
     }
 
-    /**
-     * Get the result DOM-document.
-     *
-     * @return DOMDocument
-     */
     public function getResult() {
         return $this->doc;
     }
@@ -589,10 +579,11 @@ final class Document extends DBWorker implements IDocument {
      * Get the information about document XML-code.
      * If the value 'xml' is missed or incorrect then it will try to load XML from the file.
      *
-     * @throws SystemException 'ERR_WRONG_'
-     *
      * @param int $documentID Document ID.
      * @return object
+     *
+     * @throws SystemException 'ERR_WRONG_[type]'
+     * @throws SystemException 'ERR_BAD_DOC_ID'
      */
     static public function getTemplatesData($documentID) {
         $loadDataFromFile = function ($fileName, $type) {

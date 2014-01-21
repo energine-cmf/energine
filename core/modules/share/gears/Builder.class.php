@@ -36,6 +36,9 @@ class Builder extends AbstractBuilder {
         $this->title = $title;
     }
 
+    /**
+     * @copydoc AbstractBuilder::run
+     */
     protected function run() {
         $dom_recordSet = $this->result->createElement('recordset');
         $this->result->appendChild($dom_recordSet);

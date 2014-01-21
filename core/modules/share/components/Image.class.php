@@ -1,56 +1,59 @@
 <?php
 /**
- * Класс Image.
+ * @file
+ * Image
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Image;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс для работы с изображениями.
+ * Image manager.
  *
- * @package energine
- * @subpackage share
- * @author 1m.dm
+ * @code
+class Image;
+@endcode
  */
 class Image extends Object {
-
     /**
-     * Количество памяти по умолчанию(если cкомпилировано без memory-limit)
-     * 16M
+     * Default memory limit.
+     * 16 Mb.
+     * @var int DEFAULT_MEMORY_LIMIT
      *
+     * @note If compiled without @c memory-limit.
      */
     const DEFAULT_MEMORY_LIMIT = 16777216;
 
+    // Тип изображения:
     /**
-     * Тип изображения:
-     */
-    /**
-     * Неизвестный
+     * Unknown image type.
      */
     const TYPE_UNKNOWN = 0;
     /**
-     * Portable Network Graphics
+     * PNG (Portable Network Graphics) image.
      */
     const TYPE_PNG     = 1;
     /**
-     * Graphics Interchange Format
+     * GIF (Graphics Interchange Format) image.
      */
     const TYPE_GIF     = 2;
     /**
-     * Joint Photographic Experts Group
+     * JPEG (Joint Photographic Experts Group) image.
      */
     const TYPE_JPEG    = 3;
 
     ////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Сопоставление расширений файлов типам.
-     *
-     * @access private
-     * @var array
+     * Map of file extensions with image types.
+     * @var array $extensions
      */
     private $extensions = array(
     'png'  => self::TYPE_PNG,
@@ -63,34 +66,27 @@ class Image extends Object {
     ////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Изображение.
-     *
-     * @access private
-     * @var resource
+     * Image.
+     * @var resource $image
      */
     private $image;
 
     /**
-     * Ширина изображения.
-     *
-     * @access private
-     * @var int
+     * Width.
+     * @var int $width
      */
     private $width;
 
     /**
-     * Высота изображения.
-     *
-     * @access private
-     * @var int
+     * Height.
+     * @var int $height
      */
     private $height;
 
     /**
-     * Тип изображения (см. выше список типов).
-     *
-     * @access private
-     * @var int
+     * Image type.
+     * @see Image::TYPE_UNKNOWN, Image::TYPE_PNG, Image::TYPE_GIF, Image::TYPE_JPEG
+     * @var int $type
      */
     private $type;
 
@@ -98,12 +94,12 @@ class Image extends Object {
 
 
     /**
-	 * Создание изображения заданной ширины и высоты.
+     * Create an image by defined width and height.
+     *
+	 * @param int $width Width.
+	 * @param int $height Height.
 	 *
-	 * @access public
-	 * @param int $width - ширина
-	 * @param int $height - высота
-	 * @return void
+     * @throws SystemException 'ERR_MEMORY_NOT_AVAILABLE'
 	 */
     public function create($width, $height) {
         if (!$this->checkAvailableMemory($width, $height)) {
@@ -118,6 +114,13 @@ class Image extends Object {
 
     ////////
 
+    /**
+     * Check available memory.
+     *
+     * @param int $width Image width.
+     * @param int $height Image height.
+     * @return bool
+     */
     private function checkAvailableMemory($width, $height) {
         $isMemoryAvailable = true;
         $memoryLimit = ini_get('memory_limit');
@@ -138,6 +141,12 @@ class Image extends Object {
         return $isMemoryAvailable;
     }
 
+    /**
+     * Convert image size into bytes.
+     *
+     * @param int $size Image size.
+     * @return int
+     */
     private function convertSizeToBytes($size) {
         if (!empty($size)) {
             $size = trim($size);
@@ -157,25 +166,36 @@ class Image extends Object {
 
     ////////
 
+    /**
+     * Get image width.
+     *
+     * @return int
+     */
     public function getWidth() {
         return $this->width;
     }
 
+    /**
+     * Get image height.
+     *
+     * @return int
+     */
     public function getHeight() {
         return $this->height;
     }
 
     /**
-	 * Загружает изображение из файла.
-	 * Если тип изображения явно не указан, метод попытается определить его
-	 * самостоятельно, основываясь на расширении файла. В случае неудачи
-	 * будет возбуждено исключение.
-	 *
-	 * @access public
-	 * @param int $filename - имя файла
-	 * @param int $type - тип изображения
-	 * @return void
-	 */
+     * Load image from file.
+     * If the image type is not explicit defined this method tries to detect it from file extension.
+     *
+     * @param int $filename Filename.
+     * @param int $type Image type.
+     *
+     * @throws SystemException 'ERR_DEV_FILE_DOESNT_EXISTS'
+     * @throws SystemException 'ERR_CANNOT_DETERMINE_IMAGE_TYPE'
+     * @throws SystemException 'ERR_BAD_FILE_FORMAT'
+     * @throws SystemException 'ERR_MEMORY_NOT_AVAILABLE'
+     */
     public function loadFromFile($filename, $type = self::TYPE_UNKNOWN) {
         if (!file_exists($filename)) {
             throw new SystemException('ERR_DEV_FILE_DOESNT_EXISTS', SystemException::ERR_DEVELOPER, $filename);
@@ -216,16 +236,17 @@ class Image extends Object {
     }
 
     /**
-	 * Сохраняет изображение в файл.
-	 * Если тип изображения явно не указан, метод попытается определить его
-	 * самостоятельно, основываясь на расширении файла. В случае неудачи
-	 * будет возбуждено исключение.
-	 *
-	 * @access public
-	 * @param int $filename - имя файла
-	 * @param int $type - тип изображения
-	 * @return void
-	 */
+     * Save image to the file.
+     * If the image type is not explicit defined this method tries to detect it from file extension.
+     *
+     * @param string $filename Filename.
+     * @param int $type Image type.
+     * @return bool
+     *
+     * @throws SystemException 'ERR_DEV_NO_IMAGE_TO_SAVE'
+     * @throws SystemException 'ERR_CANNOT_DETERMINE_IMAGE_TYPE'
+     * @throws SystemException 'ERR_CANT_SAVE_FILE'
+     */
     public function saveToFile($filename, $type = self::TYPE_UNKNOWN) {
         if (!$this->image) {
             throw new SystemException('ERR_DEV_NO_IMAGE_TO_SAVE', SystemException::ERR_DEVELOPER, $filename);
@@ -263,14 +284,16 @@ class Image extends Object {
     }
 
     /**
-	 * Изменяет размер (разрешение) изображения.
-	 * @todo Если ширина ИЛИ высота равны null -- они вычисляются пропорционально.
-	 *
-	 * @access public
-	 * @param mixed $newWidth - новая ширина
-	 * @param mixed $newHeight - новая высота
-	 * @return void
-	 */
+     * Resize the image.
+     *
+     * @param int $newWidth New width.
+     * @param int $newHeight New height.
+     * @param bool $crop Crop the image?
+     *
+     * @todo Если ширина ИЛИ высота равны null -- они вычисляются пропорционально.
+     *
+     * @throws SystemException 'ERR_MEMORY_NOT_AVAILABLE'
+     */
     public function resize($newWidth, $newHeight, $crop = false) {
     	if (!$this->checkAvailableMemory($newWidth, $newHeight)) {
             throw new SystemException('ERR_MEMORY_NOT_AVAILABLE', SystemException::ERR_NOTICE);
@@ -292,7 +315,14 @@ class Image extends Object {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-	private function crop($newWidth, $newHeight){
+    /**
+     * Crop the image.
+     *
+     * @param int $newWidth New width.
+     * @param int $newHeight New height.
+     * @return resource
+     */
+    private function crop($newWidth, $newHeight){
 		list($width,$height)= array($this->width, $this->height);
 		$OldImage = $this->image;
 
@@ -342,6 +372,7 @@ class Image extends Object {
             );
             ImageDestroy($crop);
         } else { // ratio match, regular resize
+            //todo VZ: $w and $h (i.e. destination width and height) are not defined.
             ImageCopyResampled(
                 $NewThumb,
                 $OldImage,
@@ -361,7 +392,14 @@ class Image extends Object {
         return $result;
 	}
 
-	private function resizeWithMargins($newWidth, $newHeight){
+    /**
+     * Resize the image with margins.
+     *
+     * @param int $newWidth New width.
+     * @param int $newHeight New height.
+     * @return resource
+     */
+    private function resizeWithMargins($newWidth, $newHeight){
 		$posX = $posY = 0;
 
         $lowend = 0.8;
@@ -399,12 +437,11 @@ class Image extends Object {
 	}
 
     /**
-	 * Возвращает расширение файла.
-	 *
-	 * @access private
-	 * @param string $filename
-	 * @return string
-	 */
+     * Get file extension.
+     *
+     * @param string $filename Filename.
+     * @return string
+     */
     private function getExtension($filename) {
         return substr(strrchr($filename, '.'), 1);
     }
@@ -416,14 +453,9 @@ class Image extends Object {
     }
 
     /**
-	 * Выводит картинку
-	 *
-	 * @return void
-	 * @access public
-	 */
-
+     * Show image.
+     */
     public function show() {
-
         switch ($this->type){
             case self::TYPE_PNG:
                 $contentType = 'image/png';

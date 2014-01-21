@@ -64,9 +64,9 @@ final class URI extends Object {
     private $port;
 
     /**
-     * @throws SystemException 'ERR_PRIVATE_CONSTRUCTOR'
-     *
      * @param string $uri URI.
+     *
+     * @throws SystemException 'ERR_PRIVATE_CONSTRUCTOR'
      */
     public function __construct($uri) {
         if(is_null(self::$trick)){
@@ -89,7 +89,6 @@ final class URI extends Object {
     //todo VZ: I think the using of throws is better than return false.
     /**
      * Validate URI.
-     *
      * It returns an array of matched strings.
      *
      * @param string $uri URI
@@ -166,7 +165,6 @@ final class URI extends Object {
 
     /**
      * Set port number.
-     *
      * If @c $port is not defined, then the port @c 80 will be used.
      *
      * @param int $port Port number.

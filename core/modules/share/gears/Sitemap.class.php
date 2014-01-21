@@ -26,74 +26,71 @@ final class Sitemap;
  * @attention This is @b final class.
  */
 final class Sitemap extends DBWorker {
-	/**
+    /**
      * Class exemplar that works with tree structures.
-	 * @var TreeNodeList $tree
-	 */
+     * @var TreeNodeList $tree
+     */
 	private $tree;
 
-	/**
+    /**
      * Information about sections where the user can access.
-	 * @var array $info
+     * @var array $info
      */
 	private $info = array();
 
-	/**
+    /**
      * Default page ID.
      * This variable was created to minimize the using of requests.
-	 * @var int $defaultID
+     * @var int $defaultID
      */
 	private $defaultID = false;
 
-	/**
+    /**
      * Default Meta-Keywords.
-     *
      * This is used for all pages that haven't custom Meta-keyword.
      * This variable was created to minimize the using of requests.
-	 *
-	 * @var string $defaultMetaKeywords
-	 */
+     *
+     * @var string $defaultMetaKeywords
+     */
 	private $defaultMetaKeywords;
 
-	/**
+    /**
      * Default Meta-Description.
-	 *
-	 * @see Sitemap::defaultMetaKeywords
+     * @var string $defaultMetaDescription
      *
-	 * @var string $defaultMetaDescription
-	 */
+     * @see Sitemap::defaultMetaKeywords
+     */
 	private $defaultMetaDescription;
     /**
      * Default Meta-Robots.
-	 *
-	 * @var string $defaultMetaRobots
-	 */
+     * @var string $defaultMetaRobots
+     */
 	private $defaultMetaRobots;
 
-	/**
+    /**
      * Current language ID.
-	 * @var int $langID
-	 */
+     * @var int $langID
+     */
 	private $langID;
 
-	/**
+    /**
      * Cache of access levels.
-	 * @var array $cacheAccessLevels
+     * @var array $cacheAccessLevels
      */
 	private $cacheAccessLevels = array();
 
-	/**
+    /**
      * Current site ID.
-	 * @var int $siteID
-	 */
+     * @var int $siteID
+     */
 	private $siteID;
 
-	/**
+    /**
+     * @param int $siteID Site ID.
+     *
      * @throws SystemException 'ERR_NO_TRANSLATION'
      * @throws SystemException 'ERR_404'
-     *
-	 * @param int $siteID Site ID.
-	 */
+     */
 	public function __construct($siteID) {
 		parent::__construct();
 		$this->siteID = $siteID;
@@ -166,7 +163,7 @@ final class Sitemap extends DBWorker {
 		$this->getSitemapData(array_keys($this->tree->asList()));
 	}
 
-	/**
+    /**
      * Get site ID by page ID.
      *
      * @param int $pageID Page ID.
@@ -180,12 +177,12 @@ final class Sitemap extends DBWorker {
         );
 	}
 
-	/**
+    /**
      * Get information about sections.
-	 *
-	 * @param int|array $id Section ID or array of IDs.
-	 * @return array
-	 */
+     *
+     * @param int|array $id Section ID or array of IDs.
+     * @return array
+     */
 	private function getSitemapData($id) {
 		if (!is_array($id)) {
 			$id = array($id);
@@ -231,15 +228,15 @@ final class Sitemap extends DBWorker {
 	}
 
 
-	/**
+    /**
      * Prepare page information.
      *
      * This is internal method for transforming information about document.
      * It set all keys to @c camelNotation and change template ID for link.
-	 *
-	 * @param array $current Current page.
-	 * @return array
-	 */
+     *
+     * @param array $current Current page.
+     * @return array
+     */
 	private function preparePageInfo($current) {
 		//inspect($current);
 		//здесь что то лишнее
@@ -330,7 +327,6 @@ final class Sitemap extends DBWorker {
 
 	/**
      * Get document rights.
-     *
      * It also defines the set of rights for a page.
 	 *
 	 * @param int $docID Document ID.
@@ -422,7 +418,6 @@ final class Sitemap extends DBWorker {
 
 	/**
      * Build page map.
-     *
      * The returned array looks as follows:
      * @code array('$section_id'=>array()) @endcode
 	 *

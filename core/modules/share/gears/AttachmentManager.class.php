@@ -219,8 +219,8 @@ class AttachmentManager extends DBWorker {
                         }
 
                         $mapID = $row[$mapFieldName];
-                        if ($returnOnlyFirstAttachment &&
-                            isset($imageData[$mapID])
+                        if ($returnOnlyFirstAttachment
+                            && isset($imageData[$mapID])
                         ) continue;
 
                         if (!isset($imageData[$mapID]))

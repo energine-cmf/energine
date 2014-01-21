@@ -34,9 +34,6 @@ final class UserGroup extends DBWorker {
 
     /**
      * Information about all user groups.
-     *
-     * @see UserGroup::__construct()
-     *
      * @var array $groups
      */
     private $groups;
@@ -64,9 +61,9 @@ final class UserGroup extends DBWorker {
     /**
      * Get default group ID for guests.
      *
-     * @throws SystemException 'ERR_DEV_NO_DEFAULT_GROUP'
-     *
      * @return int
+     *
+     * @throws SystemException 'ERR_DEV_NO_DEFAULT_GROUP'
      */
     public function getDefaultGuestGroup() {
         if (!$this->defaultGuestGroup) {
@@ -88,9 +85,9 @@ final class UserGroup extends DBWorker {
     /**
      * Get default group ID for authenticated users.
      *
-     * @throws SystemException 'ERR_DEV_NO_DEFAULT_USER_GROUP'
-     *
      * @return int
+     *
+     * @throws SystemException 'ERR_DEV_NO_DEFAULT_USER_GROUP'
      */
     public function getDefaultUserGroup() {
         if (!$this->defaultUserGroup) {

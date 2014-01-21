@@ -25,7 +25,7 @@ final class DBStructureInfo;
  *
  * @attention This is @b final class.
  */
-final class DBStructureInfo extends Object {
+class DBStructureInfo extends Object {
     /**
      * Structure information.
      *
@@ -171,10 +171,10 @@ array(
     /**
      * Analyze table structure.
      *
-     * @throws SystemException
-     *
      * @param string $tableName Table name.
      * @return array|PDOStatement|string
+     *
+     * @throws SystemException
      */
     private function analyzeTable($tableName) {
         $dTableName = DBA::getFQTableName($tableName, true);

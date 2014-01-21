@@ -36,9 +36,9 @@ class ErrorDocument extends Object implements IDocument {
     /**
      * Attach exception.
      *
-     * @see ErrorDocument::$e
-     *
      * @param SystemException $e Exception.
+     *
+     * @see ErrorDocument::$e
      */
     public function attachException(SystemException $e) {
         $this->e = $e;
@@ -102,11 +102,6 @@ class ErrorDocument extends Object implements IDocument {
         }
     }
 
-    /**
-     * Get the resulting DOM-document.
-     *
-     * @return DOMDocument
-     */
     public function getResult() {
         return $this->doc;
     }

@@ -43,7 +43,6 @@ class Site extends DBWorker {
 
     /**
      * Load site.
-     *
      * Return the information about all sites in the form of an array of Site objects.
      * Right away all info is cached from translation table, because ata this moment current language is not yet defined.
      *

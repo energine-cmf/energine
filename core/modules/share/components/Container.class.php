@@ -1,29 +1,39 @@
 <?php
 /**
- * Содержит класс Container
+ * @file
+ * Container
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Container;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Выпадающее меню
+ * Drop-down menu.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class Container;
+@endcode
  */
 class Container extends Control {
-
+    /**
+     * Controls.
+     * @var array $controls
+     */
     private $controls = array();
 
     /**
-     * Конструктор класса
-     *
-     * @return void
+     * @param string $id Control ID.
+     * @param string|bool $action Action name.
+     * @param string|bool $title Control title.
+     * @param string|bool $tooltip Control tooltip.
      */
 	public function __construct($id, $action = false, $title = false, $tooltip = false) {
 		parent::__construct($id);
@@ -33,7 +43,13 @@ class Container extends Control {
         if ($tooltip) $this->setAttribute('tooltip', $tooltip);
 	}
 
-	public function loadFromXml(SimpleXMLElement $description) {
+    /**
+     * @copydoc Control::loadFromXml
+     *
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_CLASS'
+     */
+    public function loadFromXml(SimpleXMLElement $description) {
 	    parent::loadFromXml($description);
 
 	    foreach ($description->control as $controlDescription) {
@@ -55,7 +71,10 @@ class Container extends Control {
         }
     }
 
-	public function build() {
+    /**
+     * @copydoc Control::build
+     */
+    public function build() {
         parent::build();
 
         foreach ($this->controls as $control) {
@@ -65,6 +84,11 @@ class Container extends Control {
         return $this->doc->documentElement;
     }
 
+    /**
+     * Attach control.
+     *
+     * @param Control $control
+     */
     public function attachControl(Control $control) {
         $control->setIndex(arrayPush($this->controls, $control));
         $control->attach($this->getToolbar());

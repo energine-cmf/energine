@@ -56,10 +56,6 @@ class PageStructureDocument extends Object implements IDocument{
         $this->content = $content;
     }
 
-    /**
-     * Get result.
-     * @return DOMDocument
-     */
     public function getResult() {
         return $this->doc;
     }

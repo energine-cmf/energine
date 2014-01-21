@@ -27,8 +27,10 @@ final class VideoUploader;
  * @attention This is @b final class.
  */
 final class VideoUploader extends FileUploader {
-    
-	public function __construct(Array $restrictions = array()){
+    /**
+     * @copydoc FileUploader::__construct
+     */
+    public function __construct(Array $restrictions = array()){
     	parent::__construct(
     	   array_merge(
     	       array('ext' => array('flv', 'avi', 'mpeg', 'mpg')),
@@ -37,11 +39,14 @@ final class VideoUploader extends FileUploader {
     	);
     }
 
+    /**
+     * @copydir FileUploader::upload
+     *
+     * @throws SystemException 'ERR_BAD_FILE_FORMAT'
+     */
     public function upload($dir){
-    	if(
-    	   ($this->getExtension() != 'flv') 
-    	   && 
-    	   (file_exists($this->getConfigValue('video.ffmpeg')))
+    	if(($this->getExtension() != 'flv')
+    	   && (file_exists($this->getConfigValue('video.ffmpeg')))
     	){
     		$cmd = $this->getConfigValue('video.ffmpeg').' -i '.
     		  $this->file['tmp_name'].
@@ -58,7 +63,7 @@ final class VideoUploader extends FileUploader {
               ' -vframes 1 -ss 00:00:05'.
               ' -f image2 -s cif -an '.$this->FileObjectName.'.jpg';
     		system($cmd);
-            $result = true;    		
+            $result = true;
     	}
     	else{
     		$result = parent::upload($dir);

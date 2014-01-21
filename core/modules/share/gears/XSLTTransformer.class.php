@@ -45,12 +45,9 @@ class XSLTTransformer extends Object implements ITransformer {
     }
 
     /**
-     * Set file name, that will be transformed.
+     * @copydoc ITransformer::setFileName
      *
      * @throws SystemException 'ERR_DEV_NO_MAIN_TRANSFORMER'
-     *
-     * @param string $transformerFilename File name.
-     * @param bool $isAbsolutePath Is the path absolute?
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
         if (!$isAbsolutePath)
@@ -67,12 +64,11 @@ class XSLTTransformer extends Object implements ITransformer {
         $this->document = $document;
     }
 
+    //todo VZ: Where is xsltCache?
     /**
-     * Run transforming.
+     * @copydoc ITransformer::transform
      *
      * @throws SystemException 'ERR_DEV_NOT_WELL_FORMED_XSLT'
-     *
-     * @return string
      */
     public function transform() {
         //При наличии модуля xslcache http://code.nytimes.com/projects/xslcache

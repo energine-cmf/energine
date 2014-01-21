@@ -51,10 +51,9 @@ class DocumentController extends Object {
 
     /**
      * Empty transformation.
+     * @var string TRANSFORM_EMPTY
      *
      * @note The main idea of this constant was lost. Perhaps this is for the cases to return raw XML without XSLT transformation.
-     *
-     * @var string TRANSFORM_EMPTY
      */
     const TRANSFORM_EMPTY = 'empty';
 
@@ -136,7 +135,6 @@ class DocumentController extends Object {
 
     /**
      * Get transformer.
-     *
      * The transformer type depends on one of reserved parameters in the GET request.
      *
      * @return ITransformer
@@ -162,7 +160,6 @@ class DocumentController extends Object {
 
     /**
      * Run transformation.
-     *
      * Transform XML-document in the output format and show the result to the client.
      *
      * @param Document $document XML-document.
@@ -197,7 +194,7 @@ interface ITransformer {
     public function setDocument(DOMDocument $document);
 
     /**
-     * Set file name, that will be transformed.
+     * Set filename, that will be transformed.
      *
      * @param string $transformerFilename File name.
      * @param bool $isAbsolutePath Is the path absolute?
@@ -215,15 +212,13 @@ interface IDocument;
 interface IDocument {
     /**
      * Build.
-     *
-     * @return mixed
      */
     public function build();
 
     /**
      * Get result.
      *
-     * @return mixed
+     * @return DOMDocument
      */
     public function getResult();
 }

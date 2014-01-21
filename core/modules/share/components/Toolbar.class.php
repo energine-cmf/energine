@@ -1,128 +1,113 @@
 <?php
 /**
- * Класс Toolbar
+ * @file
+ * Toolbar
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Toolbar;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Панель инструментов
+ * Toolbar.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class Toolbar;
+@endcode
  */
 class Toolbar extends Object {
     /**
-     * Имя тeга
+     * Tag name.
      */
     const TAG_NAME = 'toolbar';
 
     /**
-     * Документ
-     *
-     * @var DOMDocument
-     * @access private
+     * Document.
+     * @var DOMDocument $doc
      */
     private $doc;
 
     /**
-     * Набор элементов управления
-     *
-     * @access private
-     * @var array
+     * Set of control elements.
+     * @var array $controls
      */
     private $controls = array();
 
     /**
-     * Имя панели инструментов
-     *
-     * @access private
-     * @var string
+     * Toolbar name.
+     * @var string $name
      */
     private $name;
 
     /**
-     * Путь к директории содержащей рисунки
-     *
-     * @access private
-     * @var string
+     * Path to the directory with images.
+     * @var string $imageDir
      */
     private $imageDir;
 
     /**
-     * Дополнительные свойства панели инструментов
-     *
-     * @var array
-     * @access private
+     * Additional properties.
+     * @var array $properties
      */
     private $properties = array();
 
     /**
-     * Присоединяет панель управления к компоненту
-     *
-     * @var Component
-     * @access private
+     * Component that holds toolbar.
+     * @var Component $component
      */
     private $component;
 
     /**
-     * Конструктор
-     *
-     * @param string $name имя тулбара
-     * @param string $imageDir путь к директории содержащей рисунки
-     * @param string $module
-     * @access public
+     * @param string $name Toolbar name.
+     * @param string|bool $imageDir Path to the directory with images.
      */
     public function __construct($name, $imageDir = false) {
         $this->name = $name;
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $this->imageDir = $imageDir;
     }
+
     /**
-     * Return toolbar name
+     * Return toolbar name.
      * 
-     * @final
-     * @access public
      * @return string
+     *
+     * @attention This is @b final function.
      */
     final public function getName(){
-        return $this->name;    	
+        return $this->name;
     }
 
     /**
-     * Привязывает панель управления к компоненту
+     * Attach toolbar to specific component.
      *
-     * @param Component
-     * @return void
-     * @access public
+     * @param Component $component Component.
      */
-
     public function attachToComponent(Component $component) {
         $this->component = $component;
     }
 
     /**
-     * Возвращает компонент к которому привязана панель управления
+     * Get component that holds toolbar.
      *
      * @return Component
-     * @access public
      */
-
     public function getComponent() {
         return $this->component;
     }
 
+    //todo VZ: Second argument is not used.
     /**
-     * Присоединение элемента управления к панели
+     * Attach control.
      *
-     * @param Control $control
-     * @param Control $position если не указан, добавляем контрол в конец тулбара, если указан, то он добавляется в указанное место
-     * @return void
-     * @access public
+     * @param Control $control Control element.
+     * @param Control $position Control position. If it is not set than the control will be placed at the end.
      */
     public function attachControl(Control $control, Control $position = null) {
         $control->setIndex(arrayPush($this->controls, $control));
@@ -130,11 +115,11 @@ class Toolbar extends Object {
     }
 
     /**
-     * Отсоединение элемента управления от панели
+     * Detach control element.
      *
-     * @param Control $control
-     * @return void
-     * @access public
+     * @param Control $control Control.
+     *
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_TO_DETACH'
      */
     public function detachControl(Control $control) {
         if (!isset($this->controls[$control->getIndex()])) {
@@ -144,11 +129,10 @@ class Toolbar extends Object {
     }
 
     /**
-     * Получение элемента управления по его идентификатору
+     * Get control by his ID.
      *
-     * @param int $id
+     * @param int $id Control ID.
      * @return Control
-     * @access public
      */
     public function getControlByID($id) {
         $result = false;
@@ -162,11 +146,11 @@ class Toolbar extends Object {
     }
 
     /**
-     * Построение панели инструментов по XML-описанию
+     * Create toolbar from XML description.
      *
-     * @param SimpleXMLElement $toolbarDescription
-     * @return boolean
-     * @access public
+     * @param SimpleXMLElement $toolbarDescription Toolbar description.
+     *
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function loadXML(SimpleXMLElement $toolbarDescription) {
         if(!empty($toolbarDescription))
@@ -192,42 +176,42 @@ class Toolbar extends Object {
     }
 
     /**
-     * Возвращает набор элементов управления
+     * Get all controls.
      *
      * @return array
-     * @access public
      */
     public function getControls() {
         return $this->controls;
     }
 
     /**
-     * Enter description here...
+     * Set property.
      *
-     * @param string $name
-     * @param mixed $value
+     * @param string $name Property name.
+     * @param mixed $value Property value.
      */
     public function setProperty($name, $value) {
         $this->properties[$name] = $value;
     }
 
+
     /**
-     * Enter description here...
+     * Get property.
      *
-     * @param string $name
-     * @return mixed
+     * @param string $name Property name.
+     * @return mixed|null
      */
     public function getProperty($name) {
         if (isset($this->properties[$name])) {
             return $this->properties[$name];
         }
+        return null;
     }
 
     /**
-     * Построение панели инструментов
+     * Build toolbar.
      *
      * @return DOMNode
-     * @access public
      */
     public function build() {
         $result = false;
@@ -256,10 +240,7 @@ class Toolbar extends Object {
     }
 
     /**
-     * Переводит все элементы управления
-     *
-     * @return void
-     * @access public
+     * Translate toolbar.
      */
     public function translate() {
         foreach ($this->controls as $control) {

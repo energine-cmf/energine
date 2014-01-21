@@ -25,7 +25,6 @@ class Component;
 class Component extends DBWorker implements IBlock {
     /**
      * Default state name: @code 'main' @endcode
-     *
      * @var string DEFAULT_STATE_NAME
      */
     const DEFAULT_STATE_NAME = 'main';
@@ -180,9 +179,9 @@ class Component extends DBWorker implements IBlock {
     /**
      * Get the @c 'active' parameter of the component.
      *
-     * @attention This is @b final function.
-     *
      * @return bool
+     *
+     * @attention This is @b final function.
      */
     final protected function isActive() {
         return $this->params['active'];
@@ -206,9 +205,9 @@ class Component extends DBWorker implements IBlock {
     /**
      * Set component builder.
      *
-     * @attention This is @b final function.
-     *
      * @param IBuilder $builder Builder.
+     *
+     * @attention This is @b final function.
      */
     final protected function setBuilder(IBuilder $builder) {
         $this->builder = $builder;
@@ -217,9 +216,9 @@ class Component extends DBWorker implements IBlock {
     /**
      * Get component builder.
      *
-     * @attention This is @b final function.
-     *
      * @return AbstractBuilder
+     *
+     * @attention This is @b final function.
      */
     final protected function getBuilder() {
         return $this->builder;
@@ -244,10 +243,10 @@ class Component extends DBWorker implements IBlock {
      *
      * If this parameter is not exist SystemException will be generated.
      *
-     * @throws SystemException 'ERR_DEV_NO_PARAM'
-     *
      * @param string $name Parameter name.
      * @param mixed $value parameter value.
+     *
+     * @throws SystemException 'ERR_DEV_NO_PARAM'
      */
     protected function setParam($name, $value) {
         if (!isset($this->params[$name])) {
@@ -281,10 +280,10 @@ class Component extends DBWorker implements IBlock {
      *
      * If such parameter is not exist @b @c null will be returned.
      *
-     * @attention This is @b final function.
-     *
      * @param string $name Parameter name.
      * @return mixed
+     *
+     * @attention This is @b final function.
      */
     final protected function getParam($name) {
         return (isset($this->params[$name]) ? $this->params[$name] : null);
@@ -347,9 +346,9 @@ class Component extends DBWorker implements IBlock {
     /**
      * Get current state of the component.
      *
-     * @attention This is @b final function.
-     *
      * @return string
+     *
+     * @attention This is @b final function.
      */
     final public function getState() {
         return $this->state;
@@ -358,9 +357,9 @@ class Component extends DBWorker implements IBlock {
     /**
      * Get current rights level of the user needed for running current component action.
      *
-     * @attention This is @b final function.
-     *
      * @return int
+     *
+     * @attention This is @b final function.
      */
     final public function getCurrentStateRights() {
         return (int)$this->rights;
@@ -369,9 +368,9 @@ class Component extends DBWorker implements IBlock {
     /**
      * Get component name.
      *
-     * @attention This is @b final function.
-     *
      * @return string
+     *
+     * @attention This is @b final function.
      */
     final public function getName() {
         return $this->name;
@@ -432,9 +431,9 @@ class Component extends DBWorker implements IBlock {
     /**
      * Get if the component enabled.
      *
-     * @attention This is @b final function.
-     *
      * @return boolean
+     *
+     * @attention This is @b final function.
      */
     final public function enabled() {
         return $this->enabled;
@@ -443,11 +442,10 @@ class Component extends DBWorker implements IBlock {
     /**
      * Set/update property value.
      *
-     * @attention This is @b final function.
-     *
      * @param string $propName Property name.
      * @param mixed $propValue Property value.
-     * @return void
+     *
+     * @attention This is @b final function.
      */
     final protected function setProperty($propName, $propValue) {
         $this->properties[$propName] = $propValue;
@@ -457,10 +455,10 @@ class Component extends DBWorker implements IBlock {
     /**
      * Get property value.
      *
-     * @attention This is @b final function.
-     *
      * @param string $propName
      * @return mixed
+     *
+     * @attention This is @b final function.
      */
     final protected function getProperty($propName) {
         $result = false;
@@ -473,9 +471,9 @@ class Component extends DBWorker implements IBlock {
     /**
      * Remove property.
      *
-     * @attention This is @b final function.
-     *
      * @param string $propName Property name.
+     *
+     * @attention This is @b final function.
      */
     final protected function removeProperty($propName) {
         unset($this->properties[$propName]);
@@ -521,10 +519,10 @@ class Component extends DBWorker implements IBlock {
     /**
      * Get state parameters.
      *
-     * @todo Тут какой то беспорядок, то false то пустой array
-     *
      * @param bool $returnAsAssocArray Return as an associative?
      * @return array
+     *
+     * @todo Тут какой то беспорядок, то false то пустой array
      */
     public function getStateParams($returnAsAssocArray = false) {
         if (!$returnAsAssocArray && ($this->stateParams !== false)) {

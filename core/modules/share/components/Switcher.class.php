@@ -1,64 +1,62 @@
 <?php
 /**
- * Содержит класс Switcher
+ * @file
+ * Switcher
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Switcher;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Переключатель
+ * Switcher control element.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class Switcher;
+@endcode
  */
 class Switcher extends Button {
     /**
-     * Состояние переключателя
-     * 
-     * @var boolean
-     * @access private
+     * Switcher state.
+     * @var boolean $state
      */
 	private $state = false;
 
     /**
-     * @param string $id
-     * @param bool $action
-     * @param bool $image
-     * @param bool $title
-     * @param bool $tooltip
+     * @copydoc Button::__construct
      */
     public function __construct($id, $action = false, $image = false, $title = false, $tooltip = false) {
         parent::__construct($id, $action, $image, $title, $tooltip);
- 
         $this->type = 'switcher';
     }
+
     /**
-     * Возвращает состояние переключателя
-     * 
-     * @access public
+     * Get state.
+     *
      * @return boolean
      */
     public function getState(){
     	return $this->state;
     }
+
     /**
-     * Устанавливает состояние переключателя
-     * 
-     * @param boolean
-     * @access public
-     * @return void
+     * Set state.
+     *
+     * @param boolean $state New switcher state.
      */
     public function setState($state){
         $this->state = (bool)$state;
     }
+
     /**
-     * Переключает состояние
+     * Toggle switcher.
      * 
-     * @access public
      * @return boolean
      */
     public function toggle(){
@@ -66,13 +64,10 @@ class Switcher extends Button {
     }
 
     /**
-     * @return DOMNode
+     * @copydoc Control::build
      */
     public function build(){
     	$this->setAttribute('state', (int)$this->state);
     	return parent::build();
-    	
     }
-    
-    
 }

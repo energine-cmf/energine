@@ -49,16 +49,19 @@ final class SiteManager extends DBWorker implements Iterator {
      */
     private $currentSiteID = null;
 
+    /**
+     * @copydoc DBWorker::__construct
+     *
+     * @throws SystemException 'ERR_NO_SITE'
+     * @throws SystemException 'ERR_403'
+     */
     public function __construct() {
         parent::__construct();
         $uri = URI::create();
         $this->data = Site::load();
 
-        if (!(
-                $this->getConfigValue('site.debug')
-                &&
-                $res = $this->getConfigValue('site.dev_domains')
-        )
+        if (!($this->getConfigValue('site.debug')
+              && $res = $this->getConfigValue('site.dev_domains'))
         ) {
             $request = 'SELECT d . * , site_id as domain_site
                       FROM `share_domains` d
@@ -112,10 +115,10 @@ final class SiteManager extends DBWorker implements Iterator {
     /**
      * Get exemplar of Site object by his ID.
      *
-     * @throws SystemException 'ERR_NO_SITE'
-     *
      * @param int $siteID Site ID.
      * @return Site
+     *
+     * @throws SystemException 'ERR_NO_SITE'
      */
     public function getSiteByID($siteID) {
         if (!isset($this->data[$siteID])) {
@@ -149,9 +152,9 @@ final class SiteManager extends DBWorker implements Iterator {
     /**
      * Get default site.
      *
-     * @throws SystemException 'ERR_NO_DEFAULT_SITE'
-     *
      * @return Site
+     *
+     * @throws SystemException 'ERR_NO_DEFAULT_SITE'
      */
     public function getDefaultSite() {
         foreach ($this->data as $site) {
@@ -162,48 +165,25 @@ final class SiteManager extends DBWorker implements Iterator {
         throw new SystemException('ERR_NO_DEFAULT_SITE', SystemException::ERR_DEVELOPER);
     }
 
-    /**
-     * Return the current element.
-     * http://php.net/manual/en/iterator.current.php
-     * @return Site
-     */
     public function current() {
         $siteIDs = array_keys($this->data);
 
         return $this->data[$siteIDs[self::$index]];
     }
 
-    /**
-     * Return the current child name.
-     * http://php.net/manual/en/iterator.key.php
-     * @return int
-     */
     public function key() {
         $siteIDs = array_keys($this->data);
         return $siteIDs[self::$index];
     }
 
-    /**
-     * Move forward to next element.
-     * http://php.net/manual/en/iterator.next.php
-     */
     public function next() {
         self::$index++;
     }
 
-    /**
-     * Rewind the Iterator to the first element.
-     * http://php.net/manual/en/iterator.rewind.php
-     */
     public function rewind() {
         self::$index = 0;
     }
 
-    /**
-     * Checks if current position is valid.
-     * http://php.net/manual/en/iterator.valid.php
-     * @return bool
-     */
     public function valid() {
         $siteIDs = array_keys($this->data);
         return isset($siteIDs[self::$index]);

@@ -64,7 +64,6 @@ final class Response extends Object {
 
     /**
      * Prepare redirection URL.
-     *
      * It replaces @c lang and @c site to the correspond values.
      *
      * @param string $redirectURL Redirection URL.
@@ -248,8 +247,7 @@ final class Response extends Object {
 
     /**
      * Send response to the client.
-     *
-     * This the last step.
+     * @note This the last step.
      */
     public function commit() {
         if (!headers_sent()) {

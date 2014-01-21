@@ -31,6 +31,9 @@ class SimpleBuilder extends Builder {
         $this->title = $title;
     }
 
+    /**
+     * @copydoc Builder::createField
+     */
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
         foreach(
             array(

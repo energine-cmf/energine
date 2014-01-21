@@ -26,11 +26,11 @@ class AuthUser extends User {
     //todo VZ: Why not to use 0 as the default user id?
     /**
      * Constructor.
-     * the parameter is used for preventing "strict" error
-     *
-     * @todo избавиться от hardcoded имен полей формы?
+     * The parameter is used for preventing "strict" error.
      *
      * @param bool|int $id
+     *
+     * @todo избавиться от hardcoded имен полей формы?
      */
     public function __construct($id = false) {
         //Если есть в сессии данные о юзере

@@ -27,21 +27,18 @@ class FileRepositoryFTP;
 class FileRepositoryLocal extends Object implements IFileRepository {
     /**
      * Path to the cache for alternative images.
-     *
      * @var string IMAGE_ALT_CACHE
      */
     const IMAGE_ALT_CACHE = 'uploads/alts/resizer/w[width]-h[height]/[upl_path]';
 
     /**
      * Internal repository ID.
-     *
      * @var int $id
      */
     protected $id;
 
     /**
      * Base path to the repository.
-     *
      * @var string $base
      */
     protected $base;
@@ -98,14 +95,10 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     }
 
     /**
-     * Upload a file to the repository.
+     * @copydoc IFileRepository::uploadFile
      *
      * @throws SystemException 'ERR_DIR_WRITE'
      * @throws SystemException 'ERR_COPY_UPLOADED_FILE'
-     *
-     * @param string $sourceFilename Source filename.
-     * @param string $destFilename Destination filename.
-     * @return boolean
      */
     public function uploadFile($sourceFilename, $destFilename) {
 
@@ -169,12 +162,9 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     }
 
     /**
-     * Create new directory in the repository.
+     * @copydoc IFileRepository::createDir
      *
      * @throws SystemException 'ERR_DIR_CREATE'
-     *
-     * @param string $dir Directory name.
-     * @return boolean
      */
     public function createDir($dir) {
         if (file_exists($dir)) return true;
@@ -188,7 +178,7 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     }
 
     /**
-     * Rename directory in the repository.
+     * @copydoc IFileRepository::renameDir
      *
      * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
      *
@@ -199,7 +189,7 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     }
 
     /**
-     * Delete directory from the repository.
+     * @copydoc IFileRepository::deleteDir
      *
      * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
      *

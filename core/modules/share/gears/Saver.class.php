@@ -31,20 +31,18 @@ class Saver extends DBWorker {
 
     /**
      * Condition for save SQL-request.
+     * @var mixed $filter
      *
      * @see QAL::select()
-     *
-     * @var mixed $filter
      */
     private $filter = null;
 
     /**
      * Save mode.
+     * @var string $mode
      *
      * @see QAL::INSERT
      * @see QAL::UPDATE
-     *
-     * @var string $mode
      */
     private $mode = QAL::INSERT;
 
@@ -145,11 +143,11 @@ class Saver extends DBWorker {
     /**
      * Validate date before saving.
      *
+     * @return boolean
+     *
      * @throws SystemException 'ERR_DEV_BAD_DATA'
      *
      * @todo возможность передачи в объект callback функции для пользовательской валидации
-     *
-     * @return boolean
      */
     public function validate() {
         $result = false;

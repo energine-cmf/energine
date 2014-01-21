@@ -28,6 +28,7 @@ class EmptyBuilder;
 class EmptyBuilder implements IBuilder {
     /**
      * There is nothing to build.
+     *
      * @return true
      */
     public function build() {

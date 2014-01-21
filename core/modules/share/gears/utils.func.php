@@ -102,7 +102,6 @@ function simple_log($var){
  *
  * @param mixed $var Variable
  * @param boolean $append Append the log into the file? If @c false the file will be overwritten.
- * @return void
  */
 function dump_log($var, $append = false) {
     $flags = ($append ? FILE_APPEND : null);
@@ -141,7 +140,6 @@ function ddump_log() {
 /**
  * @fn simplifyDBResult($dbResult, $fieldName, $singleRow = false)
  * @brief Simplify data base result.
- *
  * It selects the values at the defined field from the result of SELECT request.
  *
  * @param mixed $dbResult Result of SELECT request.
@@ -208,16 +206,16 @@ function inverseDBResult(array $dbResult) {
  * @fn convertDBResult($dbResult, $pkName, $deletePK = false)
  * @brief Convert data base result.
  *
+ * @param mixed $dbResult Data base result.
+ * @param mixed $pkName Primary key.
+ * @param boolean $deletePK Delete fields with primary key from the result?
+ * @return array
+ *
  * @todo написать подробное описание!
  *
  * @see QAL::select()
  *
  * @throws SystemException 'ERR_DEV_BAD_DATA'
- *
- * @param mixed $dbResult Data base result.
- * @param mixed $pkName Primary key.
- * @param boolean $deletePK Delete fields with primary key from the result?
- * @return array
  */
 function convertDBResult($dbResult, $pkName, $deletePK = false) {
     $result = false;
@@ -274,15 +272,14 @@ function convertFieldNames(array $fields, $prefix = '') {
 /**
  * @fn arrayPush(array &$array, $var, $key = null)
  * @brief Push the new array element at the end of the array.
- *
  * The index of newly inserted element will be returned.
- *
- * @see array_push()
  *
  * @param array $array Array.
  * @param mixed $var New array element
  * @param int $key Desired key value of the new element.
  * @return int
+ *
+ * @see array_push()
  */
 function arrayPush(array &$array, $var, $key = null) {
     $newkey = 0;

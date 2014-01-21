@@ -28,9 +28,9 @@ class FileUploader extends Object {
      * Description of uploaded file.
      * $_FILE
      *
-     * @see PHP manual, POST method uploads
-     *
      * @var array $file
+     *
+     * @see PHP manual, POST method uploads
      */
     protected $file = array();
 
@@ -48,7 +48,6 @@ class FileUploader extends Object {
 
     /**
      * Filename on the server side.
-     *
      * @var string $FileObjectName
      */
     protected $FileObjectName;
@@ -99,11 +98,11 @@ array(
     /**
      * Set file description.
      *
+     * @param array $file File.
+     *
      * @throws SystemException 'ERR_DEV_BAD_DATA'
      * @throws SystemException 'ERR_NO_FILE'
      * @throws SystemException 'ERR_UPLOAD_FAILED'
-     *
-     * @param array $file File.
      */
     public function setFile(array $file) {
         if (!isset($file['name'], $file['size'], $file['tmp_name'], $file['error'])) {
@@ -125,10 +124,10 @@ array(
     /**
      * Validate uploaded file.
      *
+     * @return boolean
+     *
      * @throws SystemException 'ERR_DEV_BAD_DATA'
      * @throws SystemException 'ERR_BAD_FILE_TYPE'
-     *
-     * @return boolean
      */
     public function validate() {
         // Браузер может не посылать MIME type, поэтому расчитывать на него нельзя.
@@ -153,10 +152,10 @@ array(
     /**
      * Upload file into the directory.
      *
-     * @throws SystemException 'ERR_DEV_UPLOAD_FAILED'
-     *
      * @param string $dir Directory within the root directory of the downloaded files. (директория внутри корневого каталога загружаемых файлов)
      * @return boolean
+     *
+     * @throws SystemException 'ERR_DEV_UPLOAD_FAILED'
      */
     public function upload($dir) {
         if (!$this->validated) {

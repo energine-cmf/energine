@@ -27,35 +27,30 @@ class FTP;
 class FTP extends Object {
     /**
      * Connection resource over FTP.
-     *
      * @var resource $conn_id
      */
     protected $conn_id;
 
     /**
      * FTP-Server address.
-     *
      * @var string $server
      */
     protected $server;
 
     /**
      * FTP port.
-     *
      * @var int $port
      */
     protected $port;
 
     /**
      * FTP username.
-     *
      * @var string $username
      */
     protected $username;
 
     /**
      * FTP password.
-     *
      * @var string $password
      */
     protected $password;
@@ -76,13 +71,12 @@ class FTP extends Object {
     //todo VZ: Why only true is returned?
     /**
      * Connect to FTP.
-     *
      * It connects and authorize the user on the FTP-server.
+     *
+     * @return bool
      *
      * @throws SystemException 'ERR_CONNECT_FTP'
      * @throws SystemException 'ERR_FRP_LOGIN_PASSWORD'
-     *
-     * @return bool
      */
     public function connect() {
 
@@ -99,7 +93,6 @@ class FTP extends Object {
 
     /**
      * Disconnect FTP-Server.
-     *
      * It returns false if the server was not connected.
      *
      * @return bool
@@ -125,11 +118,11 @@ class FTP extends Object {
     /**
      * Upload file.
      *
-     * @throws SystemException 'ERR_FTP_NOT_CONNECTED'
-     *
      * @param string $sourceFilename Source filename.
      * @param string $destFilename Destination filename.
      * @return boolean
+     *
+     * @throws SystemException 'ERR_FTP_NOT_CONNECTED'
      */
     public function uploadFile($sourceFilename, $destFilename) {
 
@@ -155,10 +148,10 @@ class FTP extends Object {
     /**
      * Create directory.
      *
-     * @throws SystemException 'ERR_FTP_NOT_CONNECTED'
-     *
      * @param string $dir Directory name.
      * @return boolean
+     *
+     * @throws SystemException 'ERR_FTP_NOT_CONNECTED'
      */
     public function createDir($dir) {
 

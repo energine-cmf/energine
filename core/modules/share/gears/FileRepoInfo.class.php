@@ -78,11 +78,11 @@ class FileRepoInfo extends DBWorker {
     /**
      * Analyze file.
      *
-     * @throws Exception
-     *
      * @param string $filename File name.
      * @param bool $forceReadFromFile
      * @return mixed|object
+     *
+     * @throws Exception
      */
     public function analyze($filename, $forceReadFromFile = false) {
         try {
@@ -168,10 +168,10 @@ class FileRepoInfo extends DBWorker {
      * Get repository instance by ID.
      * It returns IFileRepository for processing video files into the repository.
      *
-     * @throws SystemException
-     *
      * @param int $upl_id Uploads ID.
      * @return IFileRepository|FileRepositoryLocal|FileRepositoryRO
+     *
+     * @throws SystemException
      */
     public function getRepositoryInstanceById($upl_id) {
         $upl_path = $this->dbh->getScalar('share_uploads', 'upl_path', array('upl_id' => $upl_id));
@@ -184,10 +184,10 @@ class FileRepoInfo extends DBWorker {
      * Get repository instance by path.
      * It returns IFileRepository for processing video files into the repository.
      *
-     * @throws SystemException
-     *
      * @param string $upl_path Uploads path.
      * @return IFileRepository|FileRepositoryLocal|FileRepositoryRO
+     *
+     * @throws SystemException
      */
     public function getRepositoryInstanceByPath($upl_path) {
         $upl_root = $this->getRepositoryRoot($upl_path);
@@ -199,10 +199,10 @@ class FileRepoInfo extends DBWorker {
      * Get repository root path.
      * It returns repository @c root from the whole file path. For example <tt>uploads/public</tt>
      *
-     * @throws SystemException
-     *
      * @param string $upl_path Uploads path.
      * @return string
+     *
+     * @throws SystemException
      */
     public function getRepositoryRoot($upl_path) {
         $upl_junks = explode('/', $upl_path, 3);

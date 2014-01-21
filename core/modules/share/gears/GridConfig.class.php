@@ -22,6 +22,9 @@ class GridConfig;
 @endcode
  */
 class GridConfig extends ComponentConfig {
+    /**
+     * @copydoc ComponentConfig::__construct
+     */
     public function __construct($config, $className, $moduleName){
         parent::__construct($config, $className, $moduleName);
         $this->registerState('source', array('/source/'));

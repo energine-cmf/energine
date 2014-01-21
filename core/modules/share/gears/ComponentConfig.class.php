@@ -33,9 +33,9 @@ class ComponentConfig {
      * Core configuration directory.
      * Path to the directory, that contains configuration files for standard components.
      *
-     * @note @c %s will be substituted to the module name, that contains the component.
-     *
      * @var string CORE_CONFIG_DIR
+     *
+     * @note @c %s will be substituted to the module name, that contains the component.
      */
     const CORE_CONFIG_DIR = '/modules/%s/config/';
 
@@ -60,14 +60,13 @@ class ComponentConfig {
     /**
      * Initialize configuration.
      *
-     * @throws SystemException 'ERR_DEV_BAD_CONFIG_FILE'
-     * @throws SystemException 'ERR_DEV_STRANGE'
-     *
      * @param mixed $config Configuration or configuration filename.
      * @param string $className Class name.
      * @param string $moduleName Module name.
      * @return ComponentConfig
      *
+     * @throws SystemException 'ERR_DEV_BAD_CONFIG_FILE'
+     * @throws SystemException 'ERR_DEV_STRANGE'
      */
     public function __construct($config, $className, $moduleName) {
         //Если это строка(с именем файла) или false
@@ -118,9 +117,9 @@ class ComponentConfig {
     /**
      * Set current state.
      *
-     * @throws SystemException 'ERR_NO_METHOD '
-     *
      * @param string $methodName Method name.
+     *
+     * @throws SystemException 'ERR_NO_METHOD '
      */
     public function setCurrentState($methodName) {
         if (!($this->currentState = $this->getStateConfig($methodName))) {

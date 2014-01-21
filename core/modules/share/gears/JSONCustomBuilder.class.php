@@ -61,10 +61,10 @@ class JSONCustomBuilder extends Object implements IBuilder{
     /**
      * Set multiple properties.
      *
-     * @see JSONCustomBuilder::setProperty
-     *
      * @param array $properties Array of property names and values.
      * @return JSONCustomBuilder
+     *
+     * @see JSONCustomBuilder::setProperty
      */
     public function setProperties(array $properties){
         foreach($properties as $propName => $propValue){

@@ -57,51 +57,44 @@ class FileRepositoryFTP;
  * </table>
  */
 class FileRepositoryFTP extends Object implements IFileRepository {
+    // путь FTP начиная от FTP root для загрузки alt-файлов
     /**
      * Path to the cache for alternative images.
-     *
      * @var string IMAGE_ALT_CACHE
      */
-    // путь FTP начиная от FTP root для загрузки alt-файлов
     const IMAGE_ALT_CACHE = 'resizer/w[width]-h[height]/[upl_path]';
 
     /**
      * Internal repository ID.
-     *
      * @var int $id
      */
     protected $id;
 
     /**
      * Base path to the repository.
-     *
      * @var string $base
      */
     protected $base;
 
     /**
      * FTP object for file downloading.
-     *
      * @var FTP $ftp_media
      */
     protected $ftp_media;
 
     /**
      * FTP object for loading @c alts.
-     *
      * @var FTP $ftp_alts
      */
     protected $ftp_alts;
 
     /**
+     * @copydoc IFileRepository::__construct
+     *
      * @throws SystemException 'ERR_MISSING_MEDIA_FTP_CONFIG'
      * @throws SystemException 'ERR_MISSING_ALTS_FTP_CONFIG'
-     *
-     * @param int $id Repository ID.
-     * @param string $base Base path to the repository.
      */
     public function __construct($id, $base) {
-
         $this->setId($id);
         $this->setBase($base);
 
@@ -177,7 +170,6 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         return true;
     }
 
-    //todo VZ: I think, it should be
     public function uploadFile($sourceFilename, $destFilename) {
         try {
             $base = $this->getBase() . '/';
@@ -259,7 +251,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     /**
-     * Delete file from repository.
+     * @copydoc IFileRepository::deleteFile
      *
      * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
      *
@@ -270,7 +262,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     /**
-     * Delete @c alt-file from repository.
+     * @copydoc IFileRepository::deleteAlt
      *
      * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
      *
@@ -315,7 +307,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     /**
-     * Rename directory in the repository.
+     * @copydoc IFileRepository::renameDir
      *
      * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
      *
@@ -326,7 +318,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     /**
-     * Delete directory from the repository.
+     * @copydoc IFileRepository::deleteDir
      *
      * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
      *

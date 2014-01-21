@@ -45,6 +45,7 @@ abstract class DBWorker extends Object {
     private static $translationsCache = null;
 
     /**
+     * Request to find translation.
      * @var PDOStatement $findTranslationSQL
      */
     private static $findTranslationSQL;

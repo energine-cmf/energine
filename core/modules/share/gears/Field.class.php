@@ -43,7 +43,6 @@ class Field extends Object implements Iterator {
 
     /**
      * User rights for the field.
-     *
      * If the rights are not set, then the derived rights from FieldDescription will be used.
      *
      * @var int $rights
@@ -52,7 +51,6 @@ class Field extends Object implements Iterator {
 
     /**
      * Index of the current element.
-     *
      * Used for iteration.
      *
      * @var int $currentIndex
@@ -181,7 +179,7 @@ class Field extends Object implements Iterator {
     }
 
     /**
-     * Get @link Field::$rights rights@endlink for the field.
+     * Get rights for the field.
      *
      * @return int
      */
@@ -238,44 +236,22 @@ class Field extends Object implements Iterator {
         return $result;
     }
 
-    /**
-     * Rewind the Iterator to the first element.
-     * http://php.net/manual/en/iterator.rewind.php
-     */
     public function rewind() {
         $this->currentIndex = 0;
     }
 
-    /**
-     * Return the current element.
-     * http://php.net/manual/en/iterator.current.php
-     */
     public function current() {
         return $this->data[$this->currentIndex];
     }
 
-    /**
-     * Return the current key.
-     * http://php.net/manual/en/iterator.key.php
-     * @return string
-     */
     public function key() {
         return $this->currentIndex;
     }
 
-    /**
-     * Move forward to next element.
-     * http://php.net/manual/en/iterator.next.php
-     */
     public function next() {
         $this->currentIndex++;
     }
 
-    /**
-     * Checks if current position is valid.
-     * http://php.net/manual/en/iterator.valid.php
-     * @return bool
-     */
     public function valid() {
         return ($this->currentIndex < $this->getRowCount());
     }

@@ -32,8 +32,8 @@ class Cache {
 
     /**
      * Translation key.
-     * @deprecated
      * @var string TRANSLATIONS_KEY
+     * @deprecated
      */
     const TRANSLATIONS_KEY = 'translations';
 

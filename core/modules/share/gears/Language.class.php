@@ -24,7 +24,7 @@ final class Language;
  *
  * @attention This is @b final class.
  */
-final class Language extends DBWorker{
+class Language extends DBWorker{
     /**
      * Current language ID.
      * @var int $current
@@ -38,6 +38,8 @@ final class Language extends DBWorker{
     private $languages;
 
     /**
+     * @copydoc DBWorker::__construct
+     *
      * @throws SystemException 'ERR_NO_LANG_INFO'
      */
     public function __construct() {
@@ -67,12 +69,12 @@ final class Language extends DBWorker{
     //todo VZ: This never returns 'false', then what is the reason to return true?
     /**
      * Set current language ID.
-	 *
-     * @throws SystemException 'ERR_404'
      *
-	 * @param int $currentLangID Language ID.
+     * @param int $currentLangID Language ID.
      * @return true
-	 */
+     *
+     * @throws SystemException 'ERR_404'
+     */
     public function setCurrent($currentLangID) {
         $result = false;
 
@@ -97,10 +99,10 @@ final class Language extends DBWorker{
     /**
      * Get default language ID.
      *
+     * @return int
+     *
      * @throws SystemException 'ERR_NO_DEFAULT_LANG'
-	 *
-	 * @return int
-	 */
+     */
     public function getDefault() {
         $result = false;
         foreach ($this->languages as $langID => $langInfo) {
@@ -140,12 +142,12 @@ final class Language extends DBWorker{
     //todo VZ: false == 0 == "0" == NULL == array() == "" --> true: The $result is not safe. Use strict comparison.
     /**
      * Get abbreviation language by his ID.
-	 *
-     * @throws SystemException 'ERR_BAD_LANG_ID'
      *
-	 * @param int $id Language ID.
-	 * @return string
-	 */
+     * @param int $id Language ID.
+     * @return string
+     *
+     * @throws SystemException 'ERR_BAD_LANG_ID'
+     */
     public function getAbbrByID($id) {
         $result = false;
         foreach ($this->languages as $langID => $langInfo) {
@@ -164,11 +166,11 @@ final class Language extends DBWorker{
     /**
      * Get language name by his ID.
      *
+     * @param int $id Language ID.
+     * @return string
+     *
      * @throws SystemException 'ERR_BAD_LANG_ID'
-	 *
-	 * @param int $id Language ID.
-	 * @return string
-	 */
+     */
     public function getNameByID($id) {
         $result = false;
         foreach ($this->languages as $langID => $langInfo) {

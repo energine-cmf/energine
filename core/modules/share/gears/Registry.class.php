@@ -22,7 +22,6 @@ require('Object.class.php');
  * @fn E
  * @brief E[nergine].
  * Shortcut for Registry::getInstance.
- *
  * @return Registry
  */
 function E() {
@@ -59,7 +58,6 @@ final class Registry extends Object {
 
     /**
      * Flag for imitation the private constructor.
-     *
      * @var boolean $flag
      */
     private static $flag = null;
@@ -83,9 +81,9 @@ final class Registry extends Object {
     /**
      * Get instance.
      *
-     * @attention This is @b final method.
-     *
      * @return Registry
+     *
+     * @attention This is @b final method.
      */
     final public static function getInstance() {
         if (is_null(self::$instance)) {
@@ -98,10 +96,10 @@ final class Registry extends Object {
     /**
      * Magic get.
      *
-     * @throws Exception 'Use Registry::getMap($siteID) instead.'
-     *
      * @param string $className Class name.
      * @return FileRepoInfo|ComponentManager|mixed
+     *
+     * @throws Exception 'Use Registry::getMap($siteID) instead.'
      */
     public function __get($className) {
         if ($className == 'Sitemap') {
@@ -171,9 +169,9 @@ final class Registry extends Object {
     /**
      * Set AuthUser.
      *
-     * @throws Exception 'AuthUser object is already used. You can not substitute it here.'
-     *
      * @param AuthUser $anotherAuthUserObject AuthUser object.
+     *
+     * @throws Exception 'AuthUser object is already used. You can not substitute it here.'
      */
     public function setAUser($anotherAuthUserObject) {
         if (isset($this->entities['AuthUser'])) {
@@ -253,11 +251,10 @@ final class Registry extends Object {
     /**
      * Get Sitemap object.
      *
-     * In fact, several objects of these class exist.
-     *
-     *
      * @param bool|int $siteID Site ID.
      * @return Sitemap
+     *
+     * @note In fact, several objects of these class exist.
      */
     public function getMap($siteID = false) {
         if (!$siteID) $siteID = E()->getSiteManager()->getCurrentSite()->id;

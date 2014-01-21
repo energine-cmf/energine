@@ -56,9 +56,9 @@ class DataDescription extends Object implements Iterator {
     /**
      * Load the data descriptions received from the data base.
      *
-     * @see DBA::getColumnsInfo()
-     *
      * @param array $columnsInfo Data description.
+     *
+     * @see DBA::getColumnsInfo()
      */
 	//TODO Добавить возможность загрузки обычного массива создавая FieldDescription с параметрами по умолчанию
     public function load(array $columnsInfo) {
@@ -147,8 +147,9 @@ class DataDescription extends Object implements Iterator {
 
     /**
      * Get the list of field description names.
-     * @todo Не очень красивый метод, нужно бы как то без него обойтись
+     *
      * @return array
+     * @todo Не очень красивый метод, нужно бы как то без него обойтись
      */
     public function getFieldDescriptionList() {
         return array_keys($this->fieldDescriptions);
@@ -197,47 +198,24 @@ class DataDescription extends Object implements Iterator {
         return $result;
     }
 
-    /**
-     * Rewind the Iterator to the first element.
-     * http://php.net/manual/en/iterator.rewind.php
-     */
     public function rewind() {
         $this->currentIndex = 0;
     }
 
-    /**
-     * Return the current data description.
-     * http://php.net/manual/en/iterator.current.php
-     * @return DataDescription
-     */
     public function current() {
         $fieldNames = $this->getFieldDescriptionList();
         return $this->fieldDescriptions[$fieldNames[$this->currentIndex]];
     }
 
-    /**
-     * Return the current field name.
-     * http://php.net/manual/en/iterator.key.php
-     * @return string
-     */
     public function key() {
         $fieldNames = $this->getFieldDescriptionList();
         return $fieldNames[$this->currentIndex];
     }
 
-    /**
-     * Move forward to next element.
-     * http://php.net/manual/en/iterator.next.php
-     */
     public function next() {
         $this->currentIndex++;
     }
 
-    /**
-     * Checks if current position is valid.
-     * http://php.net/manual/en/iterator.valid.php
-     * @return bool
-     */
     public function valid() {
         $fieldNames = $this->getFieldDescriptionList();
         return isset($fieldNames[$this->currentIndex]);

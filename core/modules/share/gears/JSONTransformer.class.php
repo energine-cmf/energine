@@ -42,14 +42,11 @@ class JSONTransformer implements ITransformer {
     }
 
     /**
-     * Set file name, that will be transformed.
-     *
-     * This is used for compatibility with debug mode.
+     * @copydoc ITransformer::setFileName
      *
      * @throws SystemException 'ERR_UNIMPLEMENTED'
      *
-     * @param string $transformerFilename File name.
-     * @param bool $isAbsolutePath Is the path absolute?
+     * @note This is used for compatibility with debug mode.
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
         throw new SystemException('ERR_UNIMPLEMENTED', SystemException::ERR_DEVELOPER);

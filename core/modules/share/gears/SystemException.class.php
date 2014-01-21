@@ -68,13 +68,13 @@ class SystemException extends Exception {
     //todo VZ: What means the todo inside doc?
     /**
      * Error associated with multilanguage.
+     * @var int ERR_LANG
      *
      * @attention This error raises by missing of translation for another processed error. Without of this the system can go in unlimited recursion.
      *
      * @note This error refers to system developers.
      *
      * @todo сделать хоть что-нибудь! :)
-     * @var int ERR_LANG
      */
     const ERR_LANG = 5;
 
@@ -93,11 +93,11 @@ class SystemException extends Exception {
     protected $customMessages = array();
 
     /**
-     * @todo определиться с $customMessages: это mixed или array?
-     *
      * @param string $message Message.
      * @param int $code Error code.
      * @param mixed $customMessages Additional information about error.
+     *
+     * @todo определиться с $customMessages: это mixed или array?
      */
     public function __construct($message, $code = self::ERR_CRITICAL, $customMessages = null) {
         $this->response = E()->getResponse();
@@ -142,9 +142,9 @@ class SystemException extends Exception {
     /**
      * Get additional information about error.
      *
-     * @todo переименовать в getCustomMessages
-     *
      * @return mixed
+     *
+     * @todo переименовать в getCustomMessages
      */
     public function getCustomMessage() {
         return $this->customMessages;
@@ -152,12 +152,12 @@ class SystemException extends Exception {
 
     /**
      * Set file.
-     *
      * It is used to force a change of error location.
-     * @note It is called from nrgnErrorHandler().
      *
      * @param string $file File.
      * @return SystemException
+     *
+     * @note It is called from nrgnErrorHandler().
      */
     public function setFile($file){
         $this->file = $file;
@@ -166,10 +166,10 @@ class SystemException extends Exception {
     /**
      * Set line.
      *
-     * @see SystemException::setFile
-     *
      * @param string $line Line.
      * @return SystemException
+     *
+     * @see SystemException::setFile
      */
     public function setLine($line){
         $this->line = $line;

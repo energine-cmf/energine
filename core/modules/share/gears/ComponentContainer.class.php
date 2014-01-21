@@ -81,11 +81,11 @@ class ComponentContainer extends Object implements IBlock, Iterator{
     /**
      * Create component container from description.
      *
-     * @throws SystemException ERR_NO_CONTAINER_NAME
-     *
      * @param SimpleXMLElement $containerDescription Container description.
      * @param array $additionalAttributes Additional attributes.
      * @return ComponentContainer
+     *
+     * @throws SystemException ERR_NO_CONTAINER_NAME
      */
     static public function createFromDescription(SimpleXMLElement $containerDescription, array $additionalAttributes = array()) {
         $attributes = $containerDescription->attributes();
@@ -118,16 +118,14 @@ class ComponentContainer extends Object implements IBlock, Iterator{
     public function isEmpty() {
         return (boolean) sizeof($this->childs);
     }
-    /**
-     * Get the ComponentContainer::$name.
-     * @return string
-     */
+
     public function getName() {
         return $this->name;
     }
 
     /**
      * Set property to the ComponentContainer::$properties.
+     *
      * @param string $propertyName Property name.
      * @param string $propertyValue Property value.
      */
@@ -137,6 +135,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
 
     /**
      * Get property value from ComponentContainer::$properties by property name.
+     *
      * @param string $propertyName Property name.
      * @return string or null
      */
@@ -150,6 +149,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
 
     /**
      * Remove property from ComponentContainer::$properties.
+     *
      * @param string $propertyName Property name.
      */
     public function removeProperty($propertyName) {
@@ -159,7 +159,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
     /**
      * Build DOM document.
      *
-     * @return DOMElement | DOMElement[]
+     * @return DOMElement|array
      */
     public function build() {
         $doc = new DOMDocument('1.0', 'UTF-8');
@@ -193,56 +193,31 @@ class ComponentContainer extends Object implements IBlock, Iterator{
      */
     public function run() {
         foreach ($this->blocks as $block) {
-            if (
-                $block->enabled()
-                &&
-                ($this->document->getRights() >= $block->getCurrentStateRights())
+            if ($block->enabled()
+                && ($this->document->getRights() >= $block->getCurrentStateRights())
             ) {
                 $block->run();
             }
         }
     }
 
-    /**
-     * Rewind the Iterator to the first element.
-     * http://php.net/manual/en/iterator.rewind.php
-     */
     public function rewind() {
         $this->childNames = array_keys($this->blocks);
         $this->iteratorIndex = 0;
     }
 
-    /**
-     * Checks if current position is valid.
-     * http://php.net/manual/en/iterator.valid.php
-     * @return bool
-     */
     public function valid() {
         return isset($this->childNames[$this->iteratorIndex]);
     }
 
-    /**
-     * Return the current child name.
-     * http://php.net/manual/en/iterator.key.php
-     * @return string
-     */
     public function key() {
         return $this->childNames[$this->iteratorIndex];
     }
 
-    /**
-     * Move forward to next element.
-     * http://php.net/manual/en/iterator.next.php
-     */
     public function next() {
         $this->iteratorIndex++;
     }
 
-    /**
-     * Return the current block.
-     * http://php.net/manual/en/iterator.current.php
-     * @return IBlock
-     */
     public function current() {
         return $this->blocks[$this->childNames[$this->iteratorIndex]];
     }
@@ -257,28 +232,11 @@ class ComponentContainer extends Object implements IBlock, Iterator{
             $block->disable();
         }
     }
-    //todo VZ: I do not understand your description.
-    /**
-     * Get whether the ComponentContainer is enabled.
-     *
-     * Метод всегда возвращает true
-     * Используется для единообразного вызова наследников Block
-     *
-     * @see ComponentContainer::$enabled
-     *
-     * @return bool
-     */
+
     public function enabled() {
         return $this->enabled;
     }
 
-    //todo VZ: For what is this?
-    /**
-     * Всегда возвращает минимальное значение прав
-     * Используется для единообразного вызова наследников Block
-     *
-     * @return int
-     */
     public function getCurrentStateRights() {
         return 0;
     }

@@ -112,8 +112,6 @@ interface IFileRepository {
     /**
      * Upload a file to the repository.
      *
-     * @throws SystemException
-     *
      * @param string $sourceFilename Source filename.
      * @param string $destFilename Destination filename.
      * @return boolean
@@ -123,8 +121,6 @@ interface IFileRepository {
     //todo VZ: Why bool instead of throw?
     /**
      * Upload a @c alt-file to the repository.
-     *
-     * @throws SystemException
      *
      * @param string $sourceFilename Source filename.
      * @param string $destFilename Destination filename.
@@ -137,10 +133,7 @@ interface IFileRepository {
     //todo VZ: Why bool instead of throw?
     /**
      * Update file.
-     *
      * Update the file in the repository.
-     *
-     * @throws SystemException
      *
      * @param string $sourceFilename Source filename.
      * @param string $destFilename Destination filename.
@@ -151,10 +144,7 @@ interface IFileRepository {
     //todo VZ: Why bool instead of throw?
     /**
      * Update @c alt-file.
-     *
      * Update the @c alt-file in the repository.
-     *
-     * @throws SystemException
      *
      * @param string $sourceFilename Source filename.
      * @param string $destFilename Destination filename.
@@ -168,8 +158,6 @@ interface IFileRepository {
     /**
      * Delete file from repository.
      *
-     * @throws SystemException
-     *
      * @param string $filename Filename.
      * @return boolean
      */
@@ -178,8 +166,6 @@ interface IFileRepository {
     //todo VZ: Why bool instead of throw?
     /**
      * Delete @c alt-file from repository.
-     *
-     * @throws SystemException
      *
      * @param string $filename Filename.
      * @param int $width Width
@@ -191,8 +177,6 @@ interface IFileRepository {
     /**
      * Get the meta-information of the file (mime-type, size, etc.).
      *
-     * @throws SystemException
-     *
      * @param string $filename Filename.
      * @return object
      */
@@ -201,8 +185,6 @@ interface IFileRepository {
     //todo VZ: Why bool instead of throw?
     /**
      * Create new directory in the repository.
-     *
-     * @throws SystemException
      *
      * @param string $dir Directory name.
      * @return boolean
@@ -213,8 +195,6 @@ interface IFileRepository {
     /**
      * Rename directory in the repository.
      *
-     * @throws SystemException
-     *
      * @param string $dir Directory name.
      * @return boolean
      */
@@ -222,8 +202,6 @@ interface IFileRepository {
 
     /**
      * Delete directory from the repository.
-     *
-     * @throws SystemException
      *
      * @param string $dir Directory name.
      */

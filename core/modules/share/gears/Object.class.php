@@ -24,6 +24,8 @@ abstract class Object
  * This provides the general functionality to the objects:
  * - measure the execution time;
  * - parse and process the configuration file.
+ *
+ * @attention This is @b abstract class.
  */
 abstract class Object {
     /**
@@ -45,14 +47,14 @@ abstract class Object {
     private $executionTime;
 
     /**
-     * Start the @link Object::$executionTime execution time counter@endlink.
+     * Start the execution time counter.
      */
     public function startTimer() {
         $this->executionTime = microtime(true);
     }
 
     /**
-     * Stop the @link Object::$executionTime execution time counter@endlink.
+     * Stop the execution time counter.
      *
      * @return float
      */
@@ -61,7 +63,7 @@ abstract class Object {
     }
 
     /**
-     * Reset the @link Object::$executionTime execution time counter@endlink.
+     * Reset the execution time counter.
      *
      * @return float
      */
@@ -72,7 +74,7 @@ abstract class Object {
     }
 
     /**
-     * Get the current value of the @link Object::$executionTime execution time counter@endlink.
+     * Get the current value of the execution time counter.
      *
      * @return float
      */
@@ -83,7 +85,6 @@ abstract class Object {
     /**
      * Get the configuration value by parameter path.
      *
-     * @note Use dot character as separator between configuration's tree levels.
      * @code
 Object::_getConfigValue('database.dsn');
 @endcode
@@ -91,6 +92,8 @@ Object::_getConfigValue('database.dsn');
      * @param string $paramPath Parameter path.
      * @param mixed $initial Default value. It will be used if the looked value is not found.
      * @return string
+     *
+     * @note Use dot character as separator between configuration's tree levels.
      */
     public static function _getConfigValue($paramPath, $initial = null) {
         if(is_null(self::$systemConfig)) self::setConfigArray(include(self::CONFIG_FILE));
@@ -110,11 +113,11 @@ Object::_getConfigValue('database.dsn');
     /**
      * Non-static method-wrapper over Object::_getConfigValue for simpler using inside the derivative classes.
      *
-     * @see Object::_getConfigValue()
-     *
      * @param string $paramPath Parameter path.
      * @param mixed $initial Default value. It will be used if the looked value is not found.
      * @return string
+     *
+     * @see Object::_getConfigValue()
      */
     public function getConfigValue($paramPath, $initial = null) {
         return self::_getConfigValue($paramPath, $initial);
@@ -136,30 +139,3 @@ Object::_getConfigValue('database.dsn');
         return self::$systemConfig;
     }
 }
-
-/**
- * @class Exception
- * @brief Native Exception class.
- * @code
-class Exception;
-@endcode
- * http://ua2.php.net/manual/en/class.exception.php
- */
-
-/**
- * @class Iterator
- * @brief Native Iterator interface.
- * @code
-interface Iterator;
-@endcode
- * http://ua2.php.net/manual/en/class.iterator.php
- */
-
-/**
- * @class IteratorAggregate
- * @brief Native IteratorAggregate interface.
- * @code
-interface IteratorAggregate;
-@endcode
- * http://ua2.php.net/manual/en/class.iteratoraggregate.php
- */

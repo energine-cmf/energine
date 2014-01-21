@@ -46,9 +46,9 @@ class Data extends Object {
     /**
      * Load the dataset, received from the data base.
      *
-     * @see DBA::selectRequest()
-     *
      * @param array $data Dataset.
+     *
+     * @see DBA::selectRequest()
      */
     public function load($data) {
         if (is_array($data) && ! empty($data)) {
@@ -164,7 +164,7 @@ class Data extends Object {
     }
 
     /**
-     * Check if [data fields array](Data::$fields) is empty.
+     * Check if @link Data::$fields data fields array@endlink is empty.
      *
      * @return bool
      */

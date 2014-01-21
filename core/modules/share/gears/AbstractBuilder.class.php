@@ -44,6 +44,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      */
     protected $result;
 
+    /**
+     * @copydoc DBWorker::__construct
+     */
     public function __construct() {
         parent::__construct();
 
@@ -73,9 +76,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     /**
      * Build XML-document.
      *
-     * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
-     *
      * @return boolean
+     *
+     * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
      */
     public function build() {
         $this->result = new DOMDocument('1.0', 'UTF-8');
@@ -99,7 +102,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     /**
      * Run building.
      *
-     * This is used in the derived classes to build a result. That result should be stored in Builder::$result
+     * @note This is used in the derived classes to build a result. That result should be stored in Builder::$result
      */
     protected function run() {
     }

@@ -1,28 +1,36 @@
 <?php
 /**
- * Содержит класс Button
+ * @file
+ * Button
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Button;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Кнопка панели инструментов
+ * Button control.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class Button;
+@endcode
+ *
+ * Button control on the toolbar.
  */
 class Button extends Control {
-
     /**
-     * Конструктор
-     *
-     * @return type
-     * @access public
+     * @param string $id Control ID.
+     * @param string|bool $action Action name.
+     * @param string|bool $image Image path.
+     * @param string|bool $title Control title.
+     * @param string|bool $tooltip Control tooltip.
      */
     public function __construct($id, $action = false, $image = false, $title = false, $tooltip = false) {
         parent::__construct($id);
@@ -34,67 +42,65 @@ class Button extends Control {
     }
 
     /**
-     * Устанавливает название кнопки
+     * Set title.
      *
-     * @return void
-     * @access public
+     * @param string $title Button title.
      */
     public function setTitle($title) {
         $this->setAttribute('title', $title);
     }
 
     /**
-     * Возвращает название кнопки
+     * Get title.
      *
      * @return string
-     * @access public
      */
     public function getTitle() {
         return $this->getAttribute('title');
     }
 
     /**
-     * Возвращает имя действия
+     * Get action name.
      *
      * @return string
-     * @access public
      */
     public function getAction() {
         return $this->getAttribute('action');
     }
 
     /**
-     * Возвращает путь к изображению
+     * Get image path.
      *
      * @return string
-     * @access public
      */
     public function getImage() {
         return $this->getAttribute('image');
     }
 
     /**
-     * Устанавливает всплывающую подсказку
+     * Set tooltip.
      *
-     * @param string
+     * @param string $tooltip Tooltip.
      * @return string
-     * @access public
      */
     public function setTooltip($tooltip) {
          $this->setAttribute('tooltip', $tooltip);
     }
 
     /**
-     * Возвращает всплывающую подсказку
+     * Get tooltip.
      *
      * @return string
-     * @access public
      */
     public function getTooltip() {
         return $this->getAttribute('tooltip');
     }
 }
 
+//todo VZ: remove this?
+/**
+ * File.
+ */
 class File extends Button{
 
 }

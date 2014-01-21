@@ -22,6 +22,9 @@ class SiteEditorConfig;
 @endcode
  */
 class SiteEditorConfig extends GridConfig {
+    /**
+     * @copydoc GridConfig::__construct
+     */
     public function __construct($config, $className, $moduleName){
         parent::__construct($config, $className, $moduleName);
         $this->registerState('domains', array('/domains/[any]/', '/[site_id]/domains/[any]/'));

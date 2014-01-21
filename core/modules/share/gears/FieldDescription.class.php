@@ -908,12 +908,12 @@ class FieldDescription extends DBWorker implements Iterator {
     /**
      * Load the set of available field values.
      *
-     * @see QAL::select()
-     *
      * @param mixed $values Set of values.
      * @param string $keyName Name of the key field.
      * @param string $valueName Field name of the main value.
      * @return $this
+     *
+     * @see QAL::select()
      */
     public function loadAvailableValues($values, $keyName, $valueName) {
         if (is_array($values) && empty($this->availableValues)) {

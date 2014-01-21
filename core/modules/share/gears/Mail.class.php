@@ -53,35 +53,30 @@ final class Mail extends Object {
 
     /**
      * Set of recipients.
-     *
      * @var array $to
      */
     private $to = array();
 
     /**
      * Message text.
-     *
      * @var string $text
      */
     private $text = false;
 
     /**
      * Message header.
-     *
      * @var array $headers
      */
     private $headers = array();
 
     /**
      * Reply-to.
-     *
      * @var string $replyTo
      */
     private $replyTo = array();
 
     /**
      * Set of attachments.
-     *
      * @var array $attachments
      */
     private $attachments = array();
@@ -177,7 +172,6 @@ final class Mail extends Object {
      *
      * @return string
      */
-
     public function getText() {
         return $this->text;
     }
@@ -189,7 +183,6 @@ final class Mail extends Object {
      * @param string|bool $fileName Filename.
      * @return Mail
      */
-
     public function addAttachment($file, $fileName = false) {
         if (file_exists($file)) {
             $fileContent = base64_encode((file_get_contents($file)));

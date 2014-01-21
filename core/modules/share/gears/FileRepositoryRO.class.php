@@ -85,10 +85,20 @@ class FileRepositoryRO extends FileRepositoryLocal implements IFileRepository {
         return false;
     }
 
+    /**
+     * @copydoc IFileRepository::uploadFile
+     *
+     * @throws SystemException ERR_REPOSITORY_READ_ONLY
+     */
     public function uploadFile($sourceFilename, $destFilename) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $destFilename);
     }
 
+    /**
+     * @copydoc IFileRepository::uploadAlt
+     *
+     * @throws SystemException ERR_COPY_UPLOADED_FILE
+     */
     public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
         $destFilename = str_replace(
             array('[width]', '[height]', '[upl_path]'),
@@ -108,30 +118,65 @@ class FileRepositoryRO extends FileRepositoryLocal implements IFileRepository {
         return $this->analyze($destFilename);
     }
 
+    /**
+     * @copydoc IFileRepository::updateFile
+     *
+     * @throws SystemException ERR_REPOSITORY_READ_ONLY
+     */
     public function updateFile($sourceFilename, $destFilename) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $destFilename);
     }
 
+    /**
+     * @copydoc IFileRepository::updateAlt
+     *
+     * @throws SystemException ERR_REPOSITORY_READ_ONLY
+     */
     public function updateAlt($sourceFilename, $destFilename, $width, $height) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $destFilename);
     }
 
+    /**
+     * @copydoc IFileRepository::deleteFile
+     *
+     * @throws SystemException ERR_REPOSITORY_READ_ONLY
+     */
     public function deleteFile($filename) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
     }
 
+    /**
+     * @copydoc IFileRepository::deleteAlt
+     *
+     * @throws SystemException ERR_REPOSITORY_READ_ONLY
+     */
     public function deleteAlt($filename, $width, $height) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $filename);
     }
 
+    /**
+     * @copydoc IFileRepository::createDir
+     *
+     * @throws SystemException ERR_REPOSITORY_READ_ONLY
+     */
     public function createDir($dir) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $dir);
     }
 
+    /**
+     * @copydoc IFileRepository::renameDir
+     *
+     * @throws SystemException ERR_REPOSITORY_READ_ONLY
+     */
     public function renameDir($dir) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $dir);
     }
 
+    /**
+     * @copydoc IFileRepository::deleteDir
+     *
+     * @throws SystemException ERR_REPOSITORY_READ_ONLY
+     */
     public function deleteDir($dir) {
         throw new SystemException('ERR_REPOSITORY_READ_ONLY', SystemException::ERR_WARNING, $dir);
     }

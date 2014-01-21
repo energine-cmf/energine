@@ -29,11 +29,9 @@ class JSONRepoBuilder extends JSONBuilder {
     private $breadcrumbs;
 
     /**
-     * Build JSON-object.
+     * @copydoc IBuilder::build
      *
      * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
-     *
-     * @return bool
      */
     public function build() {
         $result = false;

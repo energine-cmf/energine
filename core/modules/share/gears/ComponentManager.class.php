@@ -30,7 +30,6 @@ final class ComponentManager extends Object implements Iterator {
 
     /**
      * Set of components.
-     *
      * This set is used to quick find the component by ComponentManager::getComponentByName.
      * It is filled by adding an component in the stream.
      *
@@ -46,14 +45,13 @@ final class ComponentManager extends Object implements Iterator {
 
     /**
      * Array of blocks (IBlock).
-     *
      * It can contain components and containers.
+     *
      * @var array $blocks
      */
     private $blocks = array();
     /**
      * Array of block names.
-     *
      * This used for increasing the iterations.
      * It is filled by ComponentManager::rewind method.
      *
@@ -75,6 +73,7 @@ final class ComponentManager extends Object implements Iterator {
 
     /**
      * Add new IBlock to the ComponentManager::$registeredBlocks.
+     *
      * @param IBlock $block New block.
      */
     public function register(IBlock $block) {
@@ -83,6 +82,7 @@ final class ComponentManager extends Object implements Iterator {
 
     /**
      * Add new IBlock to the ComponentManager::$blocks.
+     *
      * @param IBlock $block New block.
      */
     public function add(IBlock $block) {
@@ -136,10 +136,10 @@ final class ComponentManager extends Object implements Iterator {
     /**
      * Create component from XML description.
      *
-     * @throws SystemException ERR_DEV_NO_REQUIRED_ATTRIB [attribute_name]
-     *
      * @param SimpleXMLElement $componentDescription Component description.
      * @return Component
+     *
+     * @throws SystemException ERR_DEV_NO_REQUIRED_ATTRIB [attribute_name]
      */
     static public function createComponentFromDescription(SimpleXMLElement $componentDescription) {
         // перечень необходимых атрибутов компонента
@@ -240,11 +240,11 @@ final class ComponentManager extends Object implements Iterator {
     /**
      * Load the component description from the file.
      *
-     * @throws SystemException ERR_DEV_NO_CONTAINER_FILE
-     * @throws SystemException ERR_DEV_BAD_CONTAINER_FILE
-     *
      * @param string $blockDescriptionFileName File name.
      * @return SimpleXMLElement
+     *
+     * @throws SystemException ERR_DEV_NO_CONTAINER_FILE
+     * @throws SystemException ERR_DEV_BAD_CONTAINER_FILE
      */
     static public function getDescriptionFromFile($blockDescriptionFileName) {
         if (!file_exists($blockDescriptionFileName)) {
@@ -260,11 +260,11 @@ final class ComponentManager extends Object implements Iterator {
     /**
      * Create block from description.
      *
-     * @throws SystemException ERR_UNKNOWN_BLOCKTYPE
-     *
      * @param SimpleXMLElement $blockDescription Block description.
      * @param array $additionalProps Additional properties.
      * @return IBlock
+     *
+     * @throws SystemException ERR_UNKNOWN_BLOCKTYPE
      */
     static public function createBlockFromDescription(SimpleXMLElement $blockDescription, $additionalProps = array()) {
         $result = false;
@@ -294,13 +294,13 @@ final class ComponentManager extends Object implements Iterator {
     /**
      * Create component by requested parameters.
      *
-     * @throws SystemException
-     *
      * @param string $name Component name.
      * @param string $module Component module name.
      * @param  $class Component class.
      * @param $params Parameters.
      * @return Component
+     *
+     * @throws SystemException
      */
     static private function _createComponent($name, $module, $class, $params = null) {
         try {
@@ -318,46 +318,23 @@ final class ComponentManager extends Object implements Iterator {
         return $result;
     }
 
-    /**
-     * Rewind the Iterator to the first element.
-     * http://php.net/manual/en/iterator.rewind.php
-     */
     public function rewind() {
         $this->blockNames = array_keys($this->blocks);
         $this->iteratorIndex = 0;
     }
 
-    /**
-     * Checks if current position is valid.
-     * http://php.net/manual/en/iterator.valid.php
-     * @return bool
-     */
     public function valid() {
         return isset($this->blockNames[$this->iteratorIndex]);
     }
 
-    /**
-     * Return the current block name.
-     * http://php.net/manual/en/iterator.key.php
-     * @return string
-     */
     public function key() {
         return $this->blockNames[$this->iteratorIndex];
     }
 
-    /**
-     * Move forward to next element.
-     * http://php.net/manual/en/iterator.next.php
-     */
     public function next() {
         $this->iteratorIndex++;
     }
 
-    /**
-     * Return the current block.
-     * http://php.net/manual/en/iterator.current.php
-     * @return IBlock
-     */
     public function current() {
         return $this->blocks[$this->blockNames[$this->iteratorIndex]];
     }
@@ -384,13 +361,14 @@ interface IBlock {
     public function enabled();
 
     /**
-     * Get current rights level of the user needed for running current action.
-     * @return void
+     * Get current rights level of the user.
+     * This is needed for running current action.
+     * @return mixed
      */
     public function getCurrentStateRights();
 
     /**
-     * Build.
+     * Build block.
      * @return DOMDocument
      */
     public function build();

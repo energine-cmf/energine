@@ -1,36 +1,40 @@
 <?php
 /**
- * Содержит класс SiteSaver
+ * @file
+ * SiteSaver
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class SiteSaver;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
 
 /**
- * Сохранятор для редактора сайтов
+ * Saver for sites editor.
  *
- * @package energine
- * @subpackage share
- * @author d.pavka@gmail.com
+ * @code
+class SiteSaver;
+@endcode
  */
 class SiteSaver extends Saver {
-    const MODULES = 'modules';
     /**
-     * Конструктор класса
-     *
-     * @access public
+     * Modules.
+     * @var string MODULES
      */
+    const MODULES = 'modules';
+
+    //todo VZ: this can be removed.
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     * После сохранения данных сайта, создает новый раздел , переводы и права
+     * @copydoc Saver::save
      *
-     * @return mixed
-     * @access public
+     * @note After saving site data it creates new section, translations and rights.
      */
     public function save() {
         $mainTableName = 'share_sites';
@@ -68,9 +72,9 @@ class SiteSaver extends Saver {
     }
 
     /**
-     * Создаем главную страницу сайта
-     * И назначаем на нее права
-     * @param $id
+     * Create main page of the site and set rights for it.
+     *
+     * @param int $id Site ID.
      */
     private function createMainPage($id) {
         //Ищем в перечне шаблонов модуля по которому создан сайт, шаблоны отмеченные аттрибутом default
@@ -130,10 +134,10 @@ class SiteSaver extends Saver {
     }
 
     /**
-     * Копирование структуры выбранного сайта в новый
+     * Copy site structure into another site.
      *
-     * @param $sourceSiteID
-     * @param $destinationSiteID
+     * @param int $sourceSiteID Source site ID.
+     * @param int $destinationSiteID Destination site ID.
      */
     private function copyStructure($sourceSiteID, $destinationSiteID) {
         $source = $this->dbh->select(
@@ -188,12 +192,12 @@ class SiteSaver extends Saver {
     }
 
     /**
-     * Рекурсивный итератор по набору данных для копирования
+     * Copy rows.
      *
-     * @param $source
-     * @param $PID
-     * @param $newPID
-     * @param $siteID
+     * @param array $source Source that copies.
+     * @param int $PID Parent ID.
+     * @param string|int $newPID New parent ID.
+     * @param int $siteID Destination site ID.
      * @return array
      */
     private function copyRows($source, $PID, $newPID, $siteID) {

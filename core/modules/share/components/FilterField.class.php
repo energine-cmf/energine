@@ -1,69 +1,68 @@
 <?php
 /**
- * Содержит класс FilterField
+ * @file
+ * FilterField
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class FilterField;
+@endcode
+ *
  * @author andy.karpov
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 
+//todo VZ: This is very similar to Control class.
 /**
- * Элемент управления фильтра
+ * Filter control.
  *
- * @package energine
- * @subpackage share
- * @abstract
- * @author andy.karpov
+ * @code
+class FilterField;
+@endcode
  */
 class FilterField extends Object {
-
     /**
-     * Имя тега элемента
+     * Element tag name.
+     * @var string TAG_NAME
      */
     const TAG_NAME = 'field';
 
     /**
-     * Документ
-     *
-     * @var DOMDocument
+     * Document.
+     * @var DOMDocument $doc
      */
     protected $doc;
 
     /**
-     * Тип элемента
+     * Element type.
      *
-     * @var string
+     * @var string $type
      */
     protected $type = false;
 
     /**
-     * Дополнительные атрибуты
-     *
-     * @var array
+     * Additional attributes.
+     * @var array $attributes
      */
     private $attributes = array();
 
     /**
-     * Фильтр к которому привязан элемент управления
-     *
-     * @var Filter
+     * Filter that holds this control element.
+     * @var Filter $filter
      */
     private $filter;
 
     /**
-     * Индекс элемента.
-     * Присваивается фильтром после присоединения элемента.
-     *
-     * @var int
+     * Element ID.
+     * @var int $index
      */
     private $index = false;
 
     /**
-     * Конструктор
-     *
-     * @param string $name
+     * @param string $name Name.
      */
     public function __construct($name) {
         $this->setAttribute('name', $name);
@@ -71,17 +70,16 @@ class FilterField extends Object {
     }
 
     /**
-     * Привязываем элемент управления к фильтру
+     * Attach filter.
      *
-     * @param Filter
+     * @param Filter $filter Filter.
      */
-
     public function attach($filter) {
         $this->filter = $filter;
     }
 
     /**
-     * Возвращает фильтр
+     * Get attached filter.
      *
      * @return Filter
      */
@@ -90,21 +88,20 @@ class FilterField extends Object {
     }
 
     /**
-     * Устанавливает индекс элемента.
-     * Вызывается из фильтра (Filter).
+     * Set element ID.
      *
-     * @param int
+     * @param int $index ID.
      */
     public function setIndex($index) {
         $this->index = $index;
     }
 
     /**
-     * Возвращает индекс элемента.
-     * Вызывается из фильтра (Filter).
+     * Get element ID.
      *
      * @return int
-     * @throws SystemException
+     *
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_INDEX'
      */
     public function getIndex() {
         if ($this->index === false) {
@@ -114,10 +111,11 @@ class FilterField extends Object {
     }
 
     /**
-     * Загрузка элемента из XML-описания.
+     * Load element from XML description.
      *
-     * @param SimpleXMLElement $description
-     * @throws SystemException
+     * @param SimpleXMLElement $description Element description.
+     *
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function loadFromXml(SimpleXMLElement $description) {
 
@@ -146,10 +144,11 @@ class FilterField extends Object {
     }
 
     /**
-     * Возвращает тип элемента.
+     * Get element type.
      *
      * @return string
-     * @throws SystemException
+     *
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function getType() {
         if (!$this->type) {
@@ -159,19 +158,19 @@ class FilterField extends Object {
     }
 
     /**
-     * Устанавливает значение атрибута.
+     * Set attribute.
      *
-     * @param string $attrName
-     * @param mixed $attrValue
+     * @param string $attrName Attribute name.
+     * @param mixed $attrValue Attribute value.
      */
     public function setAttribute($attrName, $attrValue) {
         $this->attributes[$attrName] = $attrValue;
     }
 
     /**
-     * Возвращает значение атрибута.
+     * Get attribute.
      *
-     * @param string $attrName
+     * @param string $attrName Attribute name.
      * @return mixed
      */
     public function getAttribute($attrName) {
@@ -182,7 +181,7 @@ class FilterField extends Object {
     }
 
     /**
-     * Построение DOM элемента
+     * Build element.
      *
      * @return DOMNode
      */
@@ -200,9 +199,9 @@ class FilterField extends Object {
     }
 
     /**
-     * Переводит языко-зависимые атрибуты.
+     * Translate language-dependent attributes.
      *
-     * @param array перечень атрибутов для перевода
+     * @param array $attrs Set of attributes for translation.
      */
     public function translate($attrs = array('title')) {
         foreach ($attrs as $attrName) {

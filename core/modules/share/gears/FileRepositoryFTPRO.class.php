@@ -80,10 +80,20 @@ class FileRepositoryFTPRO extends FileRepositoryFTP {
         return false;
     }
 
+    /**
+     * @copydoc IFileRepository::uploadFile
+     *
+     * @throws SystemException ERR_READ_ONLY_FTP_REPO
+     */
     public function uploadFile($sourceFilename, $destFilename) {
         throw new SystemException('ERR_READ_ONLY_FTP_REPO');
     }
 
+    /**
+     * @copydoc IFileRepository::updateFile
+     *
+     * @throws SystemException ERR_READ_ONLY_FTP_REPO
+     */
     public function updateFile($sourceFilename, $destFilename) {
         throw new SystemException('ERR_READ_ONLY_FTP_REPO');
     }

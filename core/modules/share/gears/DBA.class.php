@@ -130,13 +130,13 @@ abstract class DBA extends Object {
     const INDEX = 'MUL';
 
     /**
-     * @throws SystemException Unable to connect. The site is temporarily unavailable.
-     *
      * @param string $dsn Data Source Name; for connecting to the data base.
      * @param string $username User name.
      * @param string $password Password.
      * @param array $driverOptions Specific DB driver parameters.
      * @param string $charset Encoding.
+     *
+     * @throws SystemException Unable to connect. The site is temporarily unavailable.
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         try {
@@ -180,6 +180,9 @@ array(
      *  - @c true for empty result;
      *  - @c false by fail.
      *
+     * @param string $query SELECT query.
+     * @return mixed
+     *
      * @throws SystemException
      *
      * @see DBA::constructQuery
@@ -187,9 +190,6 @@ array(
      * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
      *
      * @deprecated
-     *
-     * @param string $query SELECT query.
-     * @return mixed
      */
     public function selectRequest($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
@@ -219,14 +219,14 @@ array(
      * - @c true by success;
      * - @c false by fail.
      *
+     * @param string $query Query.
+     * @return mixed
+     *
      * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
      *
      * @see DBA::constructQuery
      *
      * @throws SystemException
-     *
-     * @param string $query Query.
-     * @return mixed
      */
     public function modifyRequest($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
@@ -475,12 +475,13 @@ array(
      *
      * If the number of the arguments is > 1, then this method behaves like printf() function.
      *
-     * @see DBA::selectRequest()
-     * @see DBA::modifyRequest()
-     *
      * @param array $args Array from which the single query string will be built.
      * @return string
+     *
      * @deprecated
+     *
+     * @see DBA::selectRequest()
+     * @see DBA::modifyRequest()
      */
     protected function constructQuery(array $args) {
         if (sizeof($args) > 1) {
@@ -499,10 +500,10 @@ array(
     /**
      * Run query.
      *
-     * @throws SystemException 'ERR_BAD_REQUEST'
-     *
      * @param array $args Query arguments.
      * @return PDOStatement
+     *
+     * @throws SystemException 'ERR_BAD_REQUEST'
      */
     protected function runQuery(array $args) {
         if (empty($args)) {

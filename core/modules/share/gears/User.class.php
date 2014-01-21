@@ -130,9 +130,10 @@ class User extends DBWorker {
     /**
      * Create new user.
      *
-     * @throws SystemException 'ERR_NOT_UNIQUE_DATA'
-     *
      * @param array $data Data.
+     *
+     * @throws SystemException 'ERR_INSUFFICIENT_DATA'
+     * @throws SystemException 'ERR_NOT_UNIQUE_DATA'
      */
     public function create($data) {
         //проверяем имеются ли все необходимые значения

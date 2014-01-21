@@ -99,6 +99,11 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
             'frameBorder': '0'
         }).inject(sidebarFrameContent);
 
+        new Element('img').setProperties({
+            'src': 'images/toolbar/pagetb_logo.png',
+            'class' : 'pagetb_logo'
+        }).inject(topFrame, 'top');
+
         var editBlocksButton = this.getControlById('editBlocks');
         if(this.getControlById('editMode').getState() && editBlocksButton) {
             editBlocksButton.disable();

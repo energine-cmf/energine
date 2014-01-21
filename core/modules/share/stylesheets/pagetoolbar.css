@@ -133,8 +133,13 @@ ul.docked_toolbar {
     margin: 0 !important;
     padding: 0 !important;
     border-bottom: 1px solid #AAA;
-    background: url(../images/toolbar/pagetb_logo.gif) 0 0 no-repeat;
     color: black;
+}
+.pagetb_logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 11;
 }
 ul.docked_toolbar li {
     min-height: 30px;
@@ -169,5 +174,14 @@ ul.main_toolbar {
 .e-has-sideframe ul.wysiwyg_toolbar, .e-has-sideframe ul.feed_toolbar { 
     margin-left: 300px !important;   
     _margin-left: 0 !important;    
+}
+ul.docked_toolbar.block_management_toolbar,
+ul.docked_toolbar.block_management_toolbar li {
+    background: none;
+}
+ul.toolbar.docked_toolbar.block_management_toolbar li select {
+    min-height: 20px;
+    height: 20px;
+    margin-top: -6px;
 }
 /* ----- /page toolbars ----- */

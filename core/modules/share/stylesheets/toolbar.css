@@ -59,6 +59,7 @@ ul.toolbar li.separator {
 ul.toolbar li.select {    
     padding: 1px 0 !important;
     border: 0;
+    background: none;
 }
 
 ul.toolbar li.custom_select {    
@@ -121,8 +122,8 @@ ul.toolbar li.pressed { border-color: #000 #BBB #BBB #000;background-color: #FF8
 ul.toolbar li.disabled {}
 
 ul.toolbar .label {
-    margin-right: 5px;
-    margin-left: 5px;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
 ul.toolbar .text{
@@ -132,9 +133,9 @@ ul.toolbar .text{
 }
 
 ul.toolbar li select{
-	font: 11px Tahoma, sans-serif;
 	width:150px;
-    margin-bottom:4px;
+    height: 28px;
+    margin-right: 15px;
 }
 
 ul.toolbar li input[type="file"]{
@@ -143,3 +144,4 @@ ul.toolbar li input[type="file"]{
     top:-50;
     left:-50;
 }
+

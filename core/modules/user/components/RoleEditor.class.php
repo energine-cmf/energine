@@ -1,35 +1,37 @@
 <?php
-
 /**
- * Содержит класс RoleEditor
+ * @file
+ * RoleEditor
  *
- * @package energine
- * @subpackage user
+ * It contains the definition to:
+ * @code
+class RoleEditor;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Редактор ролей
+ * Role editor.
  *
- * @package energine
- * @subpackage user
- * @author dr.Pavka
+ * @code
+class RoleEditor;
+@endcode
  */
 class RoleEditor extends Grid {
     /**
-     * Уникальные поля
-     * Эти поля могут быть только у одного пользователя из всех
-     * @var array
-     * @access private
+     * Unique fields.
+     * This fields can exist only for one user.
+     * @var array $uniqueFields
      */
     private $uniqueFields = array('group_default', 'group_user_default');
 
     /**
-     * Конструктор класса
-     *
-     * @return void
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
@@ -38,13 +40,9 @@ class RoleEditor extends Grid {
     }
 
     /**
-     * Переопределенный метод
-     * Для формы редактирования, если чекбоксы ролей по умолчанию отмечены делает их неактивными
-     *
-     * @return void
-     * @access public
+     * @copydoc Grid::build
      */
-
+    // Для формы редактирования, если чекбоксы ролей по умолчанию отмечены делает их неактивными
     public function build() {
         if ($this->getType() == self::COMPONENT_TYPE_FORM_ALTER ) {
             foreach ($this->uniqueFields as $fieldName) {
@@ -58,13 +56,8 @@ class RoleEditor extends Grid {
     }
 
     /**
-      * Переопределенный метод сохранения
-      *
-      *
-      * @return void
-      * @access protected
+      * @copydoc Grid::loadData
       */
-
     protected function loadData() {
         $result = parent::loadData();
         if ($this->getState() == 'save') {
@@ -78,12 +71,9 @@ class RoleEditor extends Grid {
     }
 
     /**
-     * Добавляется fake поле user_div_rights в котором находятся данные
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc Grid::createDataDescription
      */
-
+    //  Добавляется fake поле user_div_rights в котором находятся данные
     protected function createDataDescription() {
         $result = parent::createDataDescription();
         if ($this->getType() != self::COMPONENT_TYPE_LIST) {
@@ -100,12 +90,10 @@ class RoleEditor extends Grid {
     }
 
     /**
-     * Вкладка с уровнем прав на разделы
+     * Build tab with division rights.
      *
      * @return DOMNode
-     * @access private
      */
-
     private function buildDivRightsData() {
         $builder  = new TreeBuilder();
         $builder->setTree(
@@ -174,13 +162,11 @@ class RoleEditor extends Grid {
 
         return $builder->getResult();
     }
-    /**
-      * Для методов add и edit добавляется инфо о роли
-      *
-      * @return Data
-      * @access protected
-      */
 
+    /**
+      * @copydoc Grid::createData
+      */
+    // Для методов add и edit добавляется инфо о роли
     protected function createData() {
         $result = parent::createData();
         if ($this->getType() != self::COMPONENT_TYPE_LIST) {
@@ -193,12 +179,9 @@ class RoleEditor extends Grid {
     }
 
     /**
-	 * Сохранение данных о уровне прав на разделы
-	 *
-	 * @return boolean
-	 * @access protected
-	 */
-
+     * @copydoc Grid::saveData
+     */
+    // Сохранение данных о уровне прав на разделы
     protected function saveData() {
         $result = parent::saveData();
 
@@ -216,12 +199,9 @@ class RoleEditor extends Grid {
     }
 
     /**
-     * При удалении происходит проверка не удаляется ли дефолтная группа
-     *
-     * @return void
-     * @access protected
+     * @copydoc Grid::deleteData
      */
-
+    // При удалении происходит проверка не удаляется ли дефолтная группа
     protected function deleteData($id) {
         if ($this->dbh->select($this->getTableName(), 'group_id', array('group_id'=>$id, 'group_default'=>true)) !== true) {
             throw new SystemException('ERR_DEFAULT_GROUP', SystemException::ERR_NOTICE);

@@ -1,7 +1,27 @@
 <?php
+/**
+ * @file
+ * NewsEditorSaver
+ *
+ * It contains the definition to:
+ * @code
+class NewsEditorSaver;
+@endcode
+ *
+ * @version 1.0.0
+ */
 
+/**
+ * Saver for news editor.
+ *
+ * @code
+class NewsEditorSaver;
+@endcode
+ */
 class NewsEditorSaver extends ExtendedSaver {
-
+    /**
+     * @copydoc ExtendedSaver::setData
+     */
     public function setData(Data $data) {
         parent::setData($data);
         if (!$data->getFieldByName('news_segment')->getRowData(0)) {

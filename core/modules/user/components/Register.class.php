@@ -1,39 +1,35 @@
 <?php
 /**
- * Содержит класс Register
+ * @file
+ * Register
  *
- * @package energine
- * @subpackage user
+ * It contains the definition to:
+ * @code
+class Register;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 /**
- * Форма регистрации
+ * Registration form.
  *
- * @package energine
- * @subpackage user
- * @author 1m.dm
+ * @code
+class Register;
+@endcode
  */
 class Register extends DBDataSet {
-
     /**
-     * Экземпляр класса User
-     *
-     * @var User
-     * @access private
+     * Exemplar of User class.
+     * @var User $user
      */
     protected $user;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param Document $document
-     * @param array $params
-     * @access public
+     * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -48,12 +44,9 @@ class Register extends DBDataSet {
     }
 
     /**
-     * Переопределен параметр active
-     *
-     * @return int
-     * @access protected
+     * @copydoc DBDataSet::defineParams
      */
-
+    // Переопределен параметр active
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
             array(
@@ -63,11 +56,8 @@ class Register extends DBDataSet {
     }
 
     /**
-     * Метод проверки логина
-     * Вызывается AJAXом при заполнении формы регистрации
-     *
-     * @access protected
-     * @return void
+     * Check login.
+     * It is called by AJAX by filling registration form.
      */
     protected function checkLogin() {
         $login = trim($_POST['login']);
@@ -94,10 +84,8 @@ class Register extends DBDataSet {
 
 
     /**
-     * Обработка возможных ошибок сохранения + редирект на страницу результата
-     *
-     * @return void
-     * @access protected
+     * Save.
+     * It process all possible errors and redirect to the result page.
      */
     protected function save() {
         //inspect($_SESSION);
@@ -120,6 +108,12 @@ class Register extends DBDataSet {
         }
     }
 
+    /**
+     * Failure.
+     *
+     * @param string $errorMessage Error message.
+     * @param mixed $data Data.
+     */
     protected function failure($errorMessage, $data) {
         $this->getConfig()->setCurrentState('main');
         $this->prepare();
@@ -133,10 +127,9 @@ class Register extends DBDataSet {
 
 
     /**
-     * Сохранение данных.
+     * Save data.
      *
-     * @return array
-     * @access protected
+     * @throws SystemException
      */
     protected function saveData() {
         $password = $_POST[$this->getTableName()]['u_password'] = User::generatePassword();
@@ -164,11 +157,9 @@ class Register extends DBDataSet {
     }
 
     /**
-     * Получает список доступных полей из таблицы пользователей и генерит форму
-     *
-     * @return void
-     * @access protected
+     * @copydoc DBDataSet::prepare
      */
+    // Получает список доступных полей из таблицы пользователей и генерит форму
     protected function prepare() {
         parent::prepare();
         //u_id и u_is_active нам не нужны ни при каких раскладах
@@ -187,10 +178,7 @@ class Register extends DBDataSet {
     }
 
     /**
-     * Выводит результат регистрации.
-     *
-     * @return void
-     * @access protected
+     * Show registration result.
      */
     protected function success() {
         //если в сессии нет переменной saved значит этот метод пытаются вызвать напрямую. Не выйдет!

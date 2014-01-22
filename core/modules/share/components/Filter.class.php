@@ -24,7 +24,7 @@ class Filter;
 class Filter extends Object {
     /**
      * Filter tag name.
-     * @ver string TAG_NAME
+     * @var string TAG_NAME
      */
     const TAG_NAME = 'filter';
 

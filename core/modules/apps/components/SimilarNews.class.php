@@ -1,63 +1,50 @@
 <?php
 /**
- * Содержит класс SimilarNews
+ * @file
+ * SimilarNews
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class SimilarNews;
+@endcode
+ *
  * @author Andrii A
  * @copyright eggmengroup.com
+ *
+ * @version 1.0.0
  */
 
 /**
+ * Similar news.
  *
- * @package energine
- * @subpackage apps
- * @author Andrii A
+ * @code
+class SimilarNews;
+@endcode
  */
 class SimilarNews extends DBDataSet {
-
     /**
-     * Дефолтное имя компонента, к которому
-     * следует биндится.
-     *
-     * @var string
-     * @access private
+     * Default component name for binding.
      */
-
     const DEFAULT_LINK_TO = 'news';
     /**
-     * Разделитель имен тэгов
-     *
-     * @var string
-     * @access private
+     * Separator of tag names.
      */
     const TAG_SEPARATOR = ',';
 
     /**
-     * ИД новостей
-     *
-     * @var int
-     * @access private
+     * News ID.
+     * @var int $newsID
      */
     private $newsID;
 
     /**
-     * Компонент, к которому производится
-     * bind компонента "Похожие новости"
-     *
-     * @var Component
-     * @access private
+     * Component to which "Similar news" will be bounded.
+     * @var Component $cp
      */
     private $cp;
 
-
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -72,23 +59,16 @@ class SimilarNews extends DBDataSet {
     }
 
     /**
-     * Перевизначаємо тип builder'а
-     *
-     * @access protected
-     * @return SimpleBuilder
-     *
+     * @copydoc DBDataSet::createBuilder
      */
     protected function createBuilder() {
         return new SimpleBuilder();
     }
 
     /**
-     * Определяет допустимые параметры компонента и их значения по-умолчанию
-     * в виде массива array(paramName => defaultValue).
-     *
-     * @access protected
-     * @return array
+     * @copydoc DBDataSet::defineParams
      */
+    // Определяет допустимые параметры компонента и их значения по-умолчанию в виде массива array(paramName => defaultValue).
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
             array(
@@ -98,6 +78,9 @@ class SimilarNews extends DBDataSet {
         return $result;
     }
 
+    /**
+     * @copydoc DBDataSet::main
+     */
     protected function main() {
         $ap = $this->cp->getStateParams(true);
         $this->newsID = (int) $ap['newsID'];
@@ -146,8 +129,9 @@ class SimilarNews extends DBDataSet {
     }
 
     /**
-     * Отримуємо IDs новин, які позначені тими тегами, що й новина з id = $this->newsID
-     * @return array or false
+     * Get similar news IDs.
+     *
+     * @return array|false
      */
     private function getSimilarNewsIDs() {
         $tagIDs = $this->getNewsTagIDs();
@@ -170,8 +154,8 @@ class SimilarNews extends DBDataSet {
     }
 
     /**
-     * Отримуємо теги новини
-     * @param int
+     * Get news tag IDs.
+     *
      * @return array
      * */
     private function getNewsTagIDs() {

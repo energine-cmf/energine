@@ -277,7 +277,7 @@ class FileRepository extends Grid {
     /**
      * Save thumbs.
      *
-     * @param array $thumbsData Thumbs data in the form @code name -> tmp_filename@endcode.
+     * @param array $thumbsData Thumbs data in the form @code name -> tmp_filename @endcode.
      * @param string $baseFileName Base file name.
      * @param IFileRepository $repo Repository.
      *

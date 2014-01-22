@@ -1,43 +1,52 @@
 <?php
 /**
- * Содержит класс VoteEditor
+ * @file
+ * VoteEditor
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class VoteEditor;
+@endcode
+ *
  * @author andrii a
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редактор голосовалки
+ * Vote editor.
  *
- * @package energine
- * @subpackage apps
- * @author andrii a
+ * @code
+class VoteEditor;
+@endcode
  */
 class VoteEditor extends Grid {
-
     /**
-     * @var VoteQuestionEditor
+     * Question editor.
+     * @var VoteQuestionEditor $qEditor
      */
     private $qEditor;
 
+    /**
+     * @copydoc Grid::__construct
+     */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName('apps_vote');
     }
 
     /**
-     * Делаем голосование активным по умолчанию
+     * @copydoc Grid::add
      */
+    // Делаем голосование активным по умолчанию
     protected function add() {
         parent::add();
         $this->getData()->getFieldByName('vote_is_active')->setData(1, true);
     }
 
     /**
-     * Создаем компонент для редактирования ответов
-     * на вопрос.
+     * Create component for editing the answers to the question.
      */
     protected function questionEditor() {
         $sp = $this->getStateParams(true);
@@ -54,6 +63,9 @@ class VoteEditor extends Grid {
         $this->qEditor->run();
     }
 
+    /**
+     * @copydoc Grid::build
+     */
     public function build() {
         if ($this->getState() == 'questionEditor') {
             $result = $this->qEditor->build();
@@ -65,11 +77,9 @@ class VoteEditor extends Grid {
     }
 
     /**
-     * Привязывем все варианты ответов с
-     * vote_id = NULL к текущему опросу.
-     *
-     * @return mixed
+     * @copydoc Grid::saveData
      */
+    // Привязывем все варианты ответов с vote_id = NULL к текущему опросу.
     protected function saveData() {
         $voteID = parent::saveData();
         $this->dbh->modify('UPDATE apps_vote_question SET vote_id=%s WHERE (vote_id IS NULL) or (vote_id = %1$s)', $voteID);

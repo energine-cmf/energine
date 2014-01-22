@@ -1,21 +1,30 @@
 <?php
 /**
- * Содержит класс Branding
+ * @file
+ * Branding
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class Branding;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2012
+ *
+ * @version 1.0.0
  */
 
 /**
- * Вывод брендирования
+ * Show branding.
  *
- * @package energine
- * @subpackage apps
- * @author dr.Pavka
+ * @code
+class Branding;
+@endcode
  */
 class Branding extends DBDataSet {
+    /**
+     * @copydoc DBDataSet::__construct
+     */
     public function __construct($name, $module, array $params = null) {
         $params['active'] = false;
 
@@ -26,7 +35,7 @@ class Branding extends DBDataSet {
     }
 
     /**
-     * Поиск ближайшего родителя у которого есть брендинг
+     * Find nearest parent with branding.
      *
      * @return int
      */
@@ -50,10 +59,16 @@ class Branding extends DBDataSet {
         return array_pop($res);
     }
 
+    /**
+     * @copydoc DBDataSet::createBuilder
+     */
     protected function createBuilder() {
         return new SimpleBuilder();
     }
 
+    /**
+     * @copydoc DBDataSet::createDataDescription
+     */
     protected function createDataDescription() {
         $result = parent::createDataDescription();
         $result->getFieldDescriptionByName('brand_main_img')->setType(FieldDescription::FIELD_TYPE_STRING);

@@ -1,40 +1,37 @@
 <?php
 /**
- * Содержит класс NewsFeed
+ * @file
+ * NewsFeed
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class NewsFeed;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2007
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 /**
- * Лента новостей
+ * News line.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class NewsFeed;
+@endcode
  */
 class NewsFeed extends ExtendedFeed {
-
     /**
-     * Календарь
-     *
-     * @access private
-     * @var Calendar
+     * Calendar.
+     * @var Calendar $calendar
      */
     private $calendar;
 
     /**
-     * Конструктор класса
-     * Жестко привязываемя к таблице новостей
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc ExtendedFeed::__construct
      */
+    // Жестко привязываемя к таблице новостей
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName('apps_news');
@@ -47,12 +44,9 @@ class NewsFeed extends ExtendedFeed {
     }
 
     /**
-     * Определяет допустимые параметры компонента и их значения по-умолчанию
-     * в виде массива array(paramName => defaultValue).
-     *
-     * @access protected
-     * @return array
+     * @copydoc ExtendedFeed::defineParams
      */
+    // Определяет допустимые параметры компонента и их значения по-умолчанию в виде массива array(paramName => defaultValue).
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
             array(
@@ -61,15 +55,17 @@ class NewsFeed extends ExtendedFeed {
         return $result;
     }
 
+    /**
+     * @copydoc ExtendedFeed::createBuilder
+     */
     protected function createBuilder() {
         return new SimpleBuilder();
     }
 
     /**
-     * Все новости которые имеют будущую дату выводятся только админам
-     *
-     * @return Data
+     * @copydoc ExtendedFeed::createData
      */
+    // Все новости которые имеют будущую дату выводятся только админам
     protected function createData() {
         if ($this->document->getRights() < ACCESS_EDIT) {
             $this->addFilterCondition(
@@ -82,8 +78,10 @@ class NewsFeed extends ExtendedFeed {
     }
 
     /**
-     * Перед вызовом родителя
-     * добавляем ограничения
+     * @copydoc ExtendedFeed::main
+     */
+    /*
+     * Перед вызовом родителя добавляем ограничения
      * После вызова - добавляем в пейджер
      */
     protected function main() {
@@ -125,12 +123,11 @@ class NewsFeed extends ExtendedFeed {
 
 
     /**
-     * Переписан под специфический сегмент УРЛ
+     * @copydoc ExtendedFeed::view
      *
-     * @return void
-     * @access protected
+     * @throws SystemException 'ERR_404'
      */
-
+    // Переписан под специфический сегмент УРЛ
     protected function view() {
         $ap = $this->getStateParams(true);
 
@@ -164,14 +161,10 @@ class NewsFeed extends ExtendedFeed {
     }
 
     /**
-     * Выводим новости, соответствующие
-     * определенному тэгу. Если задан несуществующий тег,
-     * то убираем все ранее полученные данные.
+     * Show news that correspond to specific tag.
      *
-     * @return void
-     * @access protected
+     * @note If tag is not exist then clean all previously received data.
      */
-
     protected function tag() {
         $tagID = $this->getStateParams(true);
         $tagID = (int)$tagID['tagID'];
@@ -194,11 +187,8 @@ class NewsFeed extends ExtendedFeed {
     }
 
     /**
-     * Функция для генерация компонента календарь,
-     * который помогает осуществлять навигацию по новостям.
-     *
-     * @access private
-     * @var Calendar
+     * Create calendar.
+     * Calendar helps to navigate over the news.
      */
     protected function createCalendar() {
         $calendarParams = array();

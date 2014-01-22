@@ -1,30 +1,29 @@
 <?php
 /**
- * Содержит класс NewsEditor
+ * @file
+ * NewsEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class NewsEditor;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2007
- * @version $Id: NewsEditor.class.php,v 1.10 2008/08/27 15:39:16 chyk Exp $
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редактор новостей сайта
+ * News editor.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class NewsEditor;
+@endcode
  */
 class NewsEditor extends ExtendedFeedEditor {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc ExtendedFeedEditor::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -33,8 +32,9 @@ class NewsEditor extends ExtendedFeedEditor {
         $this->setSaver(new NewsEditorSaver());
     }
 
-
-
+    /**
+     * @copydoc ExtendedFeedEditor::add
+     */
     protected function add() {
         parent::add();
         $this->getDataDescription()->getFieldDescriptionByName('news_segment')->setType(FieldDescription::FIELD_TYPE_HIDDEN);

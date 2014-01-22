@@ -1,31 +1,29 @@
 <?php
 /**
- * Содержит класс FeedbackForm
+ * @file
+ * FeedbackForm
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class FeedbackForm;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2007
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 /**
- * Форма обратной связи
+ * Form for feedback.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class FeedbackForm;
+@endcode
  */
 class FeedbackForm extends DBDataSet {
-
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -43,12 +41,9 @@ class FeedbackForm extends DBDataSet {
     }
 
     /**
-     * Переопределен параметр active
-     *
-     * @return int
-     * @access protected
+     * @copydoc DBDataSet::defineParams
      */
-
+    // Переопределен параметр active
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
             array(
@@ -66,12 +61,13 @@ class FeedbackForm extends DBDataSet {
     }
 
     /**
-     * Сохраняет данные
+     * Save data.
      *
-     * @return mixed
-     * @access protected
+     * @param array $data Data.
+     * @return bool|mixed
+     *
+     * @throws SystemException 'ERR_VALIDATE_FORM'
      */
-
     protected function saveData($data) {
         $result = false;
         //создаем объект описания данных
@@ -118,12 +114,9 @@ class FeedbackForm extends DBDataSet {
     }
 
     /**
-     * Записывает обращение в БД, отправляет уведомление пользователю и администратору
-     *
-     * @return void
-     * @access protected
+     * Send feedback.
+     * It stores the access to database, sends message to the user and administrator.
      */
-
     protected function send() {
 
         if(!isset($_POST[$this->getTableName()])){
@@ -186,19 +179,24 @@ class FeedbackForm extends DBDataSet {
         }
     }
 
+    //todo VZ: input argument is not used.
     /**
-     * Визначає адресу отримувача
+     * Get recipient E-Mail.
      *
+     * @param bool $options Options.
      * @return string
-     * @access private
      */
     protected function getRecipientEmail($options = false) {
         return $this->getParam('recipientEmail');
     }
 
-    /*
-    * Викликаємо у випадку помилки з captcha 
-    */
+    /**
+     * Failure.
+     *
+     * @param string $errorMessage Error message.
+     * @param mixed $data Data.
+     */
+    // Викликаємо у випадку помилки з captcha
     protected function failure($errorMessage, $data) {
         $this->getConfig()->setCurrentState('main');
         $this->prepare();
@@ -210,8 +208,10 @@ class FeedbackForm extends DBDataSet {
         $this->getDataDescription()->getFieldDescriptionByName('error_message')->removeProperty('title');
     }
 
-    /*
-     * Перевіряє капчу
+    /**
+     * Check captcha.
+     *
+     * @throws SystemException
      */
     protected function checkCaptcha() {
         require_once('core/modules/share/gears/recaptchalib.php');
@@ -226,19 +226,22 @@ class FeedbackForm extends DBDataSet {
         }
     }
 
-
+    /**
+     * @copydoc DBDataSet::prepare
+     */
     protected function prepare() {
         parent::prepare();
-        if (
-            $this->document->getUser()->isAuthenticated()
-            &&
-            ($captcha =
+        if ($this->document->getUser()->isAuthenticated()
+            && ($captcha =
                     $this->getDataDescription()->getFieldDescriptionByName('captcha'))
         ) {
             $this->getDataDescription()->removeFieldDescription($captcha);
         }
     }
 
+    /**
+     * Success.
+     */
     protected function success() {
         $this->setBuilder($this->createBuilder());
 

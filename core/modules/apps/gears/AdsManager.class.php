@@ -1,31 +1,38 @@
 <?php
 /**
- * Содержит класс AdsManager
+ * @file
+ * AdsManager
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class AdsManager;
+@endcode
+ *
  * @author spacelord
  * @copyright spacelord.5@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс по работе с рекламой
- * @package energine
- * @subpackage apps
- * @author spacelord.5@gmail.com
+ * Ads manager.
+ *
+ * @code
+class AdsManager;
+@endcode
  */
 class AdsManager extends DBWorker {
     /**
-     * имя таблицы
+     * Table name.
+     * @var string TABLE_NAME
      */
     const TABLE_NAME = 'apps_ads';
 
     /**
-     * Модифицирует переданный ему объект DataDescription
-     * добавляя к нему информацию рекламных полях
+     * Add ad.
+     * Modify input DataDescription argument by adding to it an information about ad fields.
      *
-     * @param DataDescription $dd
-     * @return void
+     * @param DataDescription $dd Data description.
      */
     public function add(DataDescription $dd){
         $fds = $this->dbh->getColumnsInfo(self::TABLE_NAME);
@@ -36,12 +43,11 @@ class AdsManager extends DBWorker {
         $dd->load($fds);
     }
     /**
-     * Модифицирует переданные объекты Data DataDescription
-     * добавляя информацию о рекламе
+     * Edit ad.
+     * Modify input DataDescription argument by adding to it an information about ad.
      *
-     * @param Data $d
-     * @param DataDescription $dd
-     * @return void
+     * @param Data $d Data.
+     * @param DataDescription $dd Data description.
      */
     public function edit(Data $d, DataDescription $dd){
         $fds = $this->dbh->getColumnsInfo(self::TABLE_NAME);
@@ -66,9 +72,9 @@ class AdsManager extends DBWorker {
 
     }
     /**
-     * Сохраняет информацию о рекламе
-     * 
-     * @param array $data
+     * Save ad information.
+     *
+     * @param array $data Data.
      * @return array|bool
      */
     public function save(array $data){
@@ -92,9 +98,8 @@ class AdsManager extends DBWorker {
         return $result;
     }
     /**
-     * Если таблицы не существует
-     * значит и рекламы никакой нет
-     * @static
+     * Is an ad active?
+     *
      * @return bool
      */
     public static function isActive(){

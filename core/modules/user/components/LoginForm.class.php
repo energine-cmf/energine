@@ -1,28 +1,30 @@
 <?php
 /**
- * Содержит класс LoginForm
+ * @file
+ * LoginForm
  *
- * @package energine
- * @subpackage user
+ * It contains the definition to:
+ * @code
+class LoginForm;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Вывод формы авторизации
+ * Show login form.
  *
- * @package energine
- * @subpackage user
- * @author dr.Pavka
+ * @code
+class LoginForm;
+@endcode
  */
 class LoginForm extends DataSet implements SampleLoginForm {
     /**
-     * Конструктор
-     *
-     * @param string $name
-     * @param string $module
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         $params['state'] = E()->getDocument()->user->isAuthenticated() ? 'showLogoutForm' : 'showLoginForm';
@@ -37,12 +39,9 @@ class LoginForm extends DataSet implements SampleLoginForm {
     }
 
     /**
-     * Добавлены:
-     * Параметр successAction - УРЛ на который происходит переадресация в случае успеха
-     *
-     * @return array
-     * @access protected
+     * @copydoc DataSet::defineParams
      */
+    // Добавлен successAction - УРЛ на который происходит переадресация в случае успеха
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -53,12 +52,8 @@ class LoginForm extends DataSet implements SampleLoginForm {
     }
 
     /**
-     * Вывод формы авторизации
-     *
-     * @return type
-     * @access public
+     * Show login form.
      */
-
     public function showLoginForm() {
         $this->prepare();
         if (isset($_COOKIE[UserSession::FAILED_LOGIN_COOKIE_NAME])) {
@@ -94,12 +89,8 @@ class LoginForm extends DataSet implements SampleLoginForm {
 
 
     /**
-     * Вывод формы logout
-     *
-     * @return type
-     * @access public
+     * Show logout form.
      */
-
     public function showLogoutForm() {
         //$request = E()->getRequest();
         //$this->setTitle($this->translate('TXT_LOGOUT'));
@@ -114,6 +105,9 @@ class LoginForm extends DataSet implements SampleLoginForm {
         $this->getData()->getFieldByName('role_name')->setData(implode(', ', $data));*/
     }
 
+    /**
+     * @copydoc DataSet::loadData
+     */
     protected function loadData() {
         $result = false;
         switch ($this->getState()) {
@@ -130,8 +124,9 @@ class LoginForm extends DataSet implements SampleLoginForm {
     }
 }
 
+//todo VZ: for what is this?
 /**
- * Фейковый интерфейс для формы логина
+ * Fake interface for login form.
  */
 interface SampleLoginForm {
 }

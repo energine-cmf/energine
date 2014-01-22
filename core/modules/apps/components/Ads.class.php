@@ -1,26 +1,33 @@
 <?php
 /**
- * Містить клас Ads.
- * Відповідає за виборку реклами на сторінках сайту.
+ * @file.
+ * Ads
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class Ads;
+@endcode
+ *
  * @author spacelord
  * @copyright Energine 2011
+ *
+ * @version 1.0.0
  */
 
 /**
- * Клас для вывода рекламных блоков
- * находящихся в таблице apps_ads
- * Перечень блоков прописывается в виде полей
- * и привязывается по smap_id к разделу
- * Если не задан свой блок  - берется родительский
+ * Class to show ad blocks.
  *
- * @package energine
- * @subpackage apps
- * @author spacelord
+ * @code
+class Ads;
+@endcode
+ *
+ * @note Ads should be in the "apps_ads" table. The list of blocks is described in the form of fields and bounds by "smap_id" to the section.
+ * If you do not specify your block then parent block will be token.
  */
 class Ads extends DataSet{
+    /**
+     * @copydoc DataSet::__construct
+     */
     public function __construct($name, $module, array $params = null){
         parent::__construct($name, $module, $params);
         if(!AdsManager::isActive()){
@@ -28,6 +35,9 @@ class Ads extends DataSet{
         }
     }
 
+    /**
+     * @copydoc DataSet::main
+     */
     protected function main(){
         parent::main();
         //Сначала проверили есть ли свой код баннера

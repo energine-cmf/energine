@@ -551,7 +551,7 @@ class DBDataSet extends DataSet {
     /**
      * Set sort order.
      *
-     * @param array $order Sort order in the form @code array($orderFieldName => $orderDirection)@endcode
+     * @param array $order Sort order in the form @code array($orderFieldName => $orderDirection) @endcode
      *
      * @final
      */

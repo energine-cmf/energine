@@ -1,34 +1,35 @@
 <?php
 /**
- * Содержит класс SelectorValuesEditor
- * и функцию получения реальных _POST данных
- * реальные - имеется ввиду с точками в именах переменных не замененными на _
+ * @file
+ * SelectorValuesEditor, getRealPOST()
  *
- * @package energine
- * @subpackage forms
+ * It contains the definition to:
+ * @code
+class SelectorValuesEditor;
+function getRealPOST();
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редатор значений селекта
- * вызывается из
- * @see FormEditor
- * @package energine
- * @subpackage forms
- * @author d.pavka@gmail.com
+ * Editor of selector values.
+ *
+ * @code
+class SelectorValuesEditor;
+@endcode
+ *
+ * @note It is used from FormEditor.
  */
 class SelectorValuesEditor extends Grid {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
-        /**
+        /*
          * финт ушами связанный с заменой PHP
          * "." на "_"
          * поэтому мы получаем POST по хитрому
@@ -40,6 +41,9 @@ class SelectorValuesEditor extends Grid {
         //stop(file_get_contents("php://input"), $_POST, $_POST[$this->getTableName()]);
     }
 
+    /**
+     * @copydoc Grid::defineParams
+     */
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -51,14 +55,21 @@ class SelectorValuesEditor extends Grid {
     
 }
 
-
+/**
+ * @fn getRealPOST()
+ * @brief Get real POST data.
+ * @return array|bool
+ *
+ * @note Under "real" data means that variable names have point instead of underscore.
+ */
 function getRealPOST() {
-    /**
-     * @param  $result
-     * @param  $k
-     * @param  $arrayKeys
-     * @param  $value
-     * @return
+    //todo VZ: For what are this functions?
+    /*
+     * @param $result
+     * @param $k
+     * @param $arrayKeys
+     * @param $value
+     * @return string
      */
     function parse_query_string_array(&$result, $k, $arrayKeys, $value) {
         $value = urldecode($value);
@@ -85,7 +96,7 @@ function getRealPOST() {
             $temp[urldecode($last)] = $value;
         }
     }
-    /**
+    /*
      * @param  $a
      * @param string $delim
      * @param bool $default
@@ -99,7 +110,7 @@ function getRealPOST() {
         $a = substr($a, 0, $n);
         return $result;
     }
-    /**
+    /*
      * @param  $url
      * @param bool $qmark
      * @return array|bool

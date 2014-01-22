@@ -1,29 +1,30 @@
 <?php
 /**
- * Содержит класс SocialLoginForm
+ * @file
+ * SocialLoginForm
  *
- * @package energine
- * @subpackage user
+ * It contains the definition to:
+ * @code
+class SocialLoginForm;
+@endcode
+ *
  * @author Andrii A
  * @copyright Energine 2013
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Вывод формы авторизации с возможностью авторизации
- * через соц. сети
+ * Show authorization form with possibility to authorize over social networks.
  *
- * @package energine
- * @subpackage user
- * @author Andrii A
+ * @code
+class SocialLoginForm;
+@endcode
  */
 class SocialLoginForm extends LoginForm implements SampleLoginForm {
     /**
-     * Вывод формы авторизации
-     *
-     * @return void
-     * @access public
+     * @copydoc LoginForm::showLoginForm
      */
     public function showLoginForm() {
         $this->prepare();
@@ -74,6 +75,11 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
         }
     }
 
+    /**
+     * Get return URL.
+     *
+     * @return mixed|string
+     */
     private function getReturnUrl() {
         if(!$returnUrl = $this->getParam('successAction')) {
             $returnUrl = (string)E()->getRequest()->getURI();

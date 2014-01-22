@@ -1,26 +1,31 @@
 <?php
 /**
- * Содержит класс MediaFeed
+ * @file
+ * ExtendedFeed
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class ExtendedFeed;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2011
+ *
+ * @version 1.0.0
  */
 
 /**
- * Расширенный список
+ * Extended list.
  *
- * @package energine
- * @subpackage apps
- * @author dr.Pavka
+ * @code
+class ExtendedFeed;
+@endcode
  */
 class ExtendedFeed extends Feed {
     /**
-     * Опция inline редактирования по умолчанию включена
-     *
-     * @return array
+     * @copydoc Feed::defineParams
      */
+    // Опция inline редактирования по умолчанию включена
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -31,8 +36,7 @@ class ExtendedFeed extends Feed {
     }
 
     /**
-     *
-     * @return DataDescription
+     * @copydoc DBDataSet::createDataDescription
      */
     protected function createDataDescription() {
         $res = DBDataSet::createDataDescription();
@@ -49,6 +53,9 @@ class ExtendedFeed extends Feed {
         return $res;
     }
 
+    /**
+     * @copydoc Feed::loadDataDescription
+     */
     protected function loadDataDescription() {
         $res = parent::loadDataDescription();
         if (isset($res['smap_id'])) {
@@ -57,6 +64,9 @@ class ExtendedFeed extends Feed {
         return $res;
     }
 
+    /**
+     * @copydoc Feed::createData
+     */
     protected function createData() {
         $res = parent::createData();
         if (!$res->isEmpty() && !($categoryField = $res->getFieldByName('category'))) {
@@ -75,6 +85,9 @@ class ExtendedFeed extends Feed {
         return $res;
     }
 
+    /**
+     * @copydoc Feed::main
+     */
     protected function main() {
         parent::main();
         $m = new AttachmentManager(
@@ -95,12 +108,8 @@ class ExtendedFeed extends Feed {
     }
 
     /**
-     * View
-     *
-     * @return type
-     * @access protected
+     * @copydoc Feed::view
      */
-
     protected function view() {
         $this->addFilterCondition(array('smap_id' => $this->document->getID()));
         DBDataSet::view();

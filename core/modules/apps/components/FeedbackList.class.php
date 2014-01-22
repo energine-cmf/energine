@@ -1,37 +1,39 @@
 <?php
 /**
- * Содержит класс FeedbackList
+ * @file
+ * FeedbackList
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class FeedbackList;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2007
- * @version $Id: FeedbackList.class.php,v 1.6 2008/08/27 15:39:16 chyk Exp $
+ *
+ * @version 1.6.0
  */
 
 
 /**
- * Список сообщений поступивших с формы связи
+ * List of feedback messages.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class FeedbackList;
+@endcode
  */
 class FeedbackList extends Grid {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setOrder(array('feed_date' => QAL::DESC));
     }
 
+    /**
+     * @copydoc Grid::defineParams
+     */
     protected function defineParams() {
         $result = array_merge(
             parent::defineParams(),

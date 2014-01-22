@@ -1,28 +1,30 @@
 <?php
 /**
- * Содержит класс UserProfile
+ * @file
+ * UserProfile
  *
- * @package energine
- * @subpackage user
+ * It contains the definition to:
+ * @code
+class UserProfile;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Форма редактирования данных пользователя
+ * form to edit user profile.
  *
- * @package energine
- * @subpackage user
- * @author dr.Pavka
+ * @code
+class UserProfile;
+@endcode
  */
 class UserProfile extends DBDataSet {
     /**
-     * Конструктор класса
-     *
-     * @return void
-     * @access public
+     * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
@@ -32,12 +34,10 @@ class UserProfile extends DBDataSet {
 
 
     /**
-	 * Действие по умолчанию
-	 *
-	 * @return type
-	 * @access protected
-	 */
-
+     * @copydoc DBDataSet::main
+     *
+     * @throws SystemException 'ERR_DEV_NO_AUTH_USER'
+     */
     protected function main() {
     	if (!$this->document->user->isAuthenticated()) {
             throw new SystemException('ERR_DEV_NO_AUTH_USER', SystemException::ERR_DEVELOPER);
@@ -51,12 +51,9 @@ class UserProfile extends DBDataSet {
     }
 
     /**
-	 * Переопределен параметр active
-	 *
-	 * @return int
-	 * @access protected
-	 */
-
+     * @copydoc DBDataSet::defineParams
+     */
+    // Переопределен параметр active
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
         array(
@@ -67,13 +64,8 @@ class UserProfile extends DBDataSet {
 
 
     /**
-	 * Метод сохранения
-	 * Переписан родительский
-	 *
-	 * @return void
-	 * @access protected
-	 */
-
+     * Save.
+     */
     protected function save() {
         if($this->document->user->getValue('u_password') != sha1($_POST[$this->getTableName()]['u_password'])) {
             $_SESSION['error'] = true;
@@ -124,12 +116,10 @@ class UserProfile extends DBDataSet {
     }
 
     /**
-	 * Метод, выводящий сообщение об успешном сохранении данных
-	 *
-	 * @return void
-	 * @access protected
-	 */
-
+     * Show message about successful saving data.
+     *
+     * @throws SystemException 'ERR_404'
+     */
     protected function success() {
         //если в сессии нет переменной saved, значит этот метод пытаются дернуть напрямую. Не выйдет!
         if (!isset($_SESSION['saved'])) {
@@ -161,12 +151,10 @@ class UserProfile extends DBDataSet {
 
 
     /**
-	 * Метод, выводящий сообщение о неверно введенном пароле
-	 *
-	 * @return void
-	 * @access protected
-	 */
-
+     * Show message about incorrect password.
+     *
+     * @throws SystemException 'ERR_404'
+     */
     protected function error() {
         //если в сессии нет переменной error, значит этот метод пытаются дернуть напрямую. Не выйдет!
         if (!isset($_SESSION['error'])) {
@@ -197,12 +185,9 @@ class UserProfile extends DBDataSet {
     }
 
     /**
-     * Для метода success переопределен метод создания объекта метаданных
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc DBDataSet::createDataDescription
      */
-
+    // Для метода success переопределен метод создания объекта метаданных
     protected function createDataDescription() {
         $result = parent::createdataDescription();
         if ($field = $result->getFieldDescriptionByName('u_is_active')) {
@@ -229,12 +214,9 @@ class UserProfile extends DBDataSet {
     }
 
     /**
-     * Для метода success создаем свой объект данных
-     *
-     * @return Data
-     * @access protected
+     * @copydoc DBDataSet::createData
      */
-
+    // Для метода success создаем свой объект данных
     protected function createData() {
         $result = parent::createData();
         $result->getFieldByName('u_password')->setData('');

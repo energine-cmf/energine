@@ -57,7 +57,7 @@ class Select extends Control {
      *
      * @param string $id Item ID.
      * @param string $value Item value.
-     * @param array $itemProperties Item properties in form @code array($attr_name => attr_value)@endcode.
+     * @param array $itemProperties Item properties in form @code array($attr_name => attr_value) @endcode.
      */
     public function addItem($id, $value, $itemProperties = array()) {
     	$this->items[$id] = array(

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Utilities.
+ * Utilities: inspect(), splitDate(), stop(), simple_log(), dump_log(), ddump_log(), simplifyDBResult(), inverseDBResult(), convertDBResult(), convertFieldNames(), arrayPush(), array_push_before(), array_push_after(), file_get_contents_stripped().
  * It contain the set of service utilities of the system.
  *
  * @author 1m.dm

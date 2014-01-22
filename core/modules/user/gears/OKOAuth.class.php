@@ -1,33 +1,77 @@
 <?php
 /**
- * Класс OKOAuth
+ * @file
+ * OKOAuth
  *
- * @package energine
- * @subpackage site/ufo
+ * It contains the definition to:
+ * @code
+class OKOAuth;
+@endcode
+ *
  * @author Andrii Alieksieienko
  * @copyright 2013 eggmengroup.com
+ *
+ * @version 1.0.0
  */
 /**
- * Класс для авторизации пользователей
- * через odnoklassniki.ru.
+ * Class for user authorisation over <a href="http://www.odnoklassniki.ru">Однокласники</a>.
  *
- * @package energine
- * @subpackage user
- * @author Andrii Alieksieienko
- * @copyright 2013 eggmengroup.com
+ * @code
+class OKOAuth;
+@endcode
  */
 class OKOAuth extends Object {
+    /**
+     * API URL.
+     * @var string API_URL
+     */
     const API_URL = 'http://api.odnoklassniki.ru/fb.do';
+    /**
+     * Authorize URL.
+     * @var string AUTHORIZE_URL
+     */
     const AUTHORIZE_URL = 'http://www.odnoklassniki.ru/oauth/authorize';
+    /**
+     * Access token URL.
+     * @var string ACCESS_TOKEN_URL
+     */
     const ACCESS_TOKEN_URL = 'http://api.odnoklassniki.ru/oauth/token.do';
+    /**
+     * Sign token name.
+     * @var string SIGN_TOKEN_NAME
+     */
     const SIGN_TOKEN_NAME = 'access_token';
 
+    /**
+     * Application secret key.
+     * @var int|string $appSecret
+     */
     private $appSecret;
+    /**
+     * Application ID.
+     * @var int $appId
+     */
     private $appId;
+    /**
+     * Application public key.
+     * @var string $appPublic
+     */
     private $appPublic;
+    /**
+     * Callback URL.
+     * @var string $callbackUrl
+     */
     private $callbackUrl;
+    /**
+     * Access token.
+     * @var $accessToken
+     */
     private $accessToken;
 
+    /**
+     * @param array $config Configurations.
+     * @param bool $return
+     */
     public function __construct($config, $return = false) {
         $this->appId = $config['appId'];
         $this->appPublic = $config['public'];
@@ -36,6 +80,14 @@ class OKOAuth extends Object {
             . 'auth.php?okAuth&return=' . ((!$return) ? $base : $return);
     }
 
+    /**
+     * Send request.
+     *
+     * @param string $url URL.
+     * @param array $params Parameters.
+     * @param string $method Method name.
+     * @return mixed
+     */
     private function request($url, $params = array(), $method = 'GET') {
         $ch = curl_init();
         curl_setopt_array($ch, array(
@@ -51,6 +103,12 @@ class OKOAuth extends Object {
         return $response;
     }
 
+    /**
+     * Parse request result.
+     *
+     * @param mixed $result Request result.
+     * @return mixed|StdClass
+     */
     private function parseRequestResult($result) {
         if(json_decode($result)) {
             return json_decode($result);
@@ -63,6 +121,13 @@ class OKOAuth extends Object {
         return $result;
     }
 
+    /**
+     * Connect.
+     *
+     * @return mixed
+     *
+     * @throws Exception
+     */
     public function connect() {
         $parameters = array(
             "client_id"     => $this->appId,
@@ -81,6 +146,11 @@ class OKOAuth extends Object {
         return $response;
     }
 
+    /**
+     * Get user information.
+     *
+     * @return array
+     */
     public function getUser() {
         $user = array();
         $sig = md5('application_key=' . $this->appPublic . 'method=users.getCurrentUser' . md5($this->accessToken . $this->appSecret));
@@ -94,6 +164,14 @@ class OKOAuth extends Object {
         return $user;
     }
 
+    /**
+     * API.
+     *
+     * @param string $url URL.
+     * @param string $method Method name.
+     * @param array $parameters Parameters.
+     * @return mixed|null
+     */
     private function api( $url, $method = "GET", $parameters = array() ) {
         if ( strrpos($url, 'http://') !== 0 && strrpos($url, 'https://') !== 0 ) {
             $url = self::API_URL . $url;
@@ -111,7 +189,9 @@ class OKOAuth extends Object {
     }
 
     /**
-     * @param array $params
+     * Get login URL.
+     *
+     * @param array $params Parameters.
      * @return string
      */
     public function getLoginUrl($params) {
@@ -126,9 +206,11 @@ class OKOAuth extends Object {
     }
 
     /**
-     * @param   string $url
-     * @param   array $parameters
-     * @return  string
+     * Create URL.
+     *
+     * @param string $url URL.
+     * @param array $parameters Parameters.
+     * @return string
      */
     private function createUrl($url, $parameters) {
         $piece = array();
@@ -140,6 +222,8 @@ class OKOAuth extends Object {
     }
 
     /**
+     * Get code.
+     *
      * @return string
      */
     private function getCode() {

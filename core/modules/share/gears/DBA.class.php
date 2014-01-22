@@ -271,13 +271,13 @@ abstract class DBA extends Object {
      * @param $request
      * @return bool|PDOStatement
      */
-    private function fulfill($request) {
+    protected function fulfill($request) {
         if (!is_string($request) || empty($request)) {
             return false;
         }
         if ($this->getConfigValue('database.prepare')) {
             $res = $this->runQuery(func_get_args());
-            if($res instanceof PDOStatement)
+            if ($res instanceof PDOStatement)
                 $this->lastQuery = $res->queryString;
         } else {
             $request = $this->constructQuery(func_get_args());
@@ -491,14 +491,11 @@ abstract class DBA extends Object {
         if (empty($args)) {
             throw new SystemException('ERR_BAD_REQUEST');
         }
-
         $query = array_shift($args);
         $query = str_replace('%%', '%', $query);
-
         if (!empty($args)) {
             if (preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)) {
-
-                $result = $this->pdo->prepare($newQuery = preg_replace('(%(?:(\d)\$)?s)', '?', $query));
+                $query = preg_replace('(%(?:(\d)\$)?s)', '?', $query);
                 $argIndex = 0;
                 foreach ($matches[1] as $a) {
                     if ($a = (int)$a) {
@@ -507,10 +504,17 @@ abstract class DBA extends Object {
                         $data[] = $args[$argIndex++];
                     }
                 }
-                if (!$result->execute($data)) {
-                    throw new SystemException('ERR_BAD_REQUEST');
-                }
+            } else {
+                $data = $args;
             }
+
+            if (!($result = $this->pdo->prepare($query))) {
+                throw new SystemException('ERR_PREPARE_REQUEST', $query);
+            }
+            if (!$result->execute($data)) {
+                throw new SystemException('ERR_EXECUTE_REQUEST', $query);
+            }
+
         } else {
             $result = $this->pdo->query($query);
         }

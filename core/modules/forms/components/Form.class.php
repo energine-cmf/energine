@@ -19,12 +19,12 @@ class Form extends DBDataSet {
     /*
      * Form identifier
      */
-    private $formID;
+    protected $formID;
     /**
      * Form info
      * @var Saver
      */
-    private $saver;
+    protected $saver;
 
     /**
      * @var FormResults

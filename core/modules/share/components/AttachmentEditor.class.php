@@ -170,7 +170,7 @@ class AttachmentEditor extends Grid {
 
             $res = $this->dbh->select(
                 'share_uploads',
-                array('upl_id', 'upl_path', 'upl_name', 'upl_duration'),
+                array('upl_id', 'upl_path', 'upl_title as upl_name', 'upl_duration'),
                 array('upl_id' => $upl_ids)
             );
 

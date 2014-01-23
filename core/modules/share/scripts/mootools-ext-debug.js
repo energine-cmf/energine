@@ -47,7 +47,7 @@ Class.Mutators = Object.append(Class.Mutators, {
  * @namespace
  * @augments Asset
  */
-Asset = Object.append(Asset, {
+Asset = Object.append(Asset, /** @lends Asset# */{
     /**
      * List of loaded files.
      * @type {Object}

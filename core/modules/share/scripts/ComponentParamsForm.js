@@ -21,7 +21,7 @@ ScriptLoader.load('Form');
  * @constructor
  * @param {Element|string} element The form element.
  */
-var ComponentParamsForm = new Class({
+var ComponentParamsForm = new Class(/** @lends ComponentParamsForm# */{
     Extends: Form,
 
     // constructor

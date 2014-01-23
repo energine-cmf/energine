@@ -1,0 +1,36 @@
+{
+    "source": {
+        "include": [
+            "main_js.md",
+            "core/modules/apps/scripts",
+            "core/modules/comments/scripts",
+            "core/modules/forms/scripts",
+            "core/modules/share/scripts",
+            "core/modules/user/scripts"
+        ],
+        "exclude": [
+            "core/modules/share/scripts/ckeditor",
+            "core/modules/share/scripts/codemirror",
+            "core/modules/share/scripts/FileAPI",
+            "core/modules/share/scripts/flowplayer.js",
+            "core/modules/share/scripts/mootools.js",
+            "core/modules/share/scripts/mootools-debug.js",
+            "core/modules/share/scripts/mootools-ext.js",
+            "core/modules/share/scripts/mootools-more.js",
+            "core/modules/share/scripts/mootools-more-debug.js",
+            "core/modules/share/scripts/Swiff.Uploader.js",
+            "core/modules/share/scripts/TextboxList.js",
+            "core/modules/share/scripts/datepicker.js",
+            "core/modules/share/scripts/XML.js",
+            "core/modules/apps/scripts/tests",
+            "core/modules/comments/scripts/tests",
+            "core/modules/forms/scripts/tests",
+            "core/modules/share/scripts/tests",
+            "core/modules/user/scripts/tests"
+        ]
+    },
+    "opts": {
+        "private": true,
+        "destination": "doc/js/"
+    }
+}

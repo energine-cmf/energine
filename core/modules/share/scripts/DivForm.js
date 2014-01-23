@@ -27,7 +27,7 @@ ScriptLoader.load('Form', 'ModalBox');
  * @constructor
  * @param {Element|string} element The form element.
  */
-var DivForm = new Class({
+var DivForm = new Class(/** @lends DivForm# */{
     Extends: Form,
 
     // constructor

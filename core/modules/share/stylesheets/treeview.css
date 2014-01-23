@@ -13,7 +13,7 @@
 .treeview li.folder.opened.last { background: #FFF url(../images/treeview/opened_last.gif) left -3px no-repeat; }
 
 .treeview a { 
-	padding: 2px; 
+	padding: 2px;
 	color: #000; 
 	text-decoration: none;
     padding-left: 21px; 

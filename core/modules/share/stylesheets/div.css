@@ -16,9 +16,9 @@ img {
     box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
     height: 100%;
     overflow: hidden;
-    padding: 63px 10px 12px 10px;
+    padding: 54px 10px 12px 10px;
     border: 0; 
-    background: #f8f8ed;
+    background: #eee;
     _padding-top: 38px;    
 }
 .e-divtree-panel body, .e-divtree-panel .e-singlemode-layout {    
@@ -59,6 +59,7 @@ img {
     margin: 0 !important;
     padding: 2px 0 !important;
     border: 1px solid #aaaaaa;
+    border-radius: 0;
 }
 .e-divtree-panel .e-divtree-toolbar li.icon {
     margin: 0 2px !important;

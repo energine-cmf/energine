@@ -2,7 +2,8 @@
     line-height: 1.5em;
     font-family: "Courier New", monospace;
     font-size: 12px;
-    border: 1px solid gray;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     padding: 1px;
     margin:1px 0;
 }

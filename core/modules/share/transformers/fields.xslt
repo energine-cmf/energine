@@ -61,7 +61,7 @@
     </xsl:template>
 
     <xsl:template match="field[@type='htmlblock' or @type='text' or @type='code'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_content">
-        <div class="control toggle" id="control_{@language}_{@name}">
+        <div class="control toggle type_{@type}" id="control_{@language}_{@name}">
             <xsl:apply-templates select="." mode="field_input"/>
         </div>
     </xsl:template>

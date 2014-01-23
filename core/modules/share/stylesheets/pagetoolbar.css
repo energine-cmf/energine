@@ -76,7 +76,7 @@ html.e-has-topframe3 {
     float: left;
     width: 300px;
     height: 100%;
-    background: #f8f8ed;    
+    background: #eee;
     _top: 25px;
     _clear: right;      
 }
@@ -114,48 +114,54 @@ html.e-has-topframe3 {
 }      
 /* ----- /e-frames ----- */
 
-/* ----- page toolbars ----- */ 
+/* ----- page toolbars ----- */
+.e-topframe {
+    background-color: #cfd1cf;
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#f5f5f5),to(#cfd1cf));
+    background-image: -moz-linear-gradient(top,#f5f5f5,#cfd1cf);
+    background-image: -webkit-linear-gradient(top,#f5f5f5,#cfd1cf);
+    background-image: -o-linear-gradient(top,#f5f5f5,#cfd1cf);
+    background-image: -ms-linear-gradient(top,#f5f5f5,#cfd1cf);
+    background-image: linear-gradient(top,#f5f5f5,#cfd1cf);
+    filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#f5f5f5',endColorstr='#cfd1cf');
+    z-index: 1;
+}
 ul.docked_toolbar {
     position: relative;
     z-index: 10;
-    min-height: 24px;       
+    min-height: 30px;
     margin: 0 !important;
     padding: 0 !important;
     border-bottom: 1px solid #AAA;
-    background: #EED;
+    background: url(../images/toolbar/pagetb_logo.gif) 0 0 no-repeat;
     color: black;
-    _height: 24px;
 }
 ul.docked_toolbar li {
-    min-height: 24px;
-    height: 2.182em; /* =24px для размера шрифта 11px */    
+    min-height: 30px;
+    height: 30px;
     margin: 0 !important;
-    padding: 0 10px !important;
+    padding: 0 20px !important;
     border: 0;
-    line-height: 24px;
+    line-height: 30px;
     vertical-align: middle;
-    _height: 24px;
+    _height: 40px;
+    background: transparent;
+    border-radius: 0;
+    border: 0;
 }
 ul.docked_toolbar li.icon {
-    height: 2.182em; /* =24px для размера шрифта 11px */
-    padding: 0 4px !important;
+    height: 30px; /* =24px для размера шрифта 11px */
+    padding: 0 15px !important;
     background: 50% 50% no-repeat;
-    _height: 24px;
 }
 ul.docked_toolbar li.separator {
-    width: 2px;
-    height: 2.182em; /* =24px для размера шрифта 11px */
-    margin: 0 !important;
-    padding: 0 2px !important;
-    background: url(../images/toolbar/separator.gif) 50% 50% no-repeat !important;
-    _height: 24px;
+    display: none;
 }
-ul.docked_toolbar li.highlighted { background-color: #FF8 !important; }
+ul.docked_toolbar li.highlighted { background-color: #ecf3f8 !important; }
 ul.docked_toolbar li.pressed { background-color: #A6CE39 !important; }
 
 ul.main_toolbar {
-    padding-left: 28px !important;  
-    background: #EED url(../images/toolbar/pagetb_logo.gif) left top no-repeat;
+    padding-left: 28px !important;
 }
 .e-has-sideframe ul.main_toolbar { /* костыль для IE6, который не может растянуть верхний фрейм на всю ширину body */
     _margin-left: -300px !important;

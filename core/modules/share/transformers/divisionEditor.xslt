@@ -98,14 +98,18 @@
     		</xsl:if>
     		<div class="control">
                 <xsl:variable name="FIELD_ID"><xsl:value-of select="generate-id()"/></xsl:variable>
-                <span class="read" id="s_{$FIELD_ID}" style="margin-right: 5px;"><xsl:value-of select="@data_name" disable-output-escaping="yes" /></span>
-                <input type="hidden" id="h_{$FIELD_ID}" value="{.}">                    
-            		<xsl:attribute name="name"><xsl:choose>
-    					<xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
-    					<xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
-    				</xsl:choose></xsl:attribute>
-                </input>
-        		<button type="button" id="sitemap_selector" hidden_field="h_{$FIELD_ID}" span_field="s_{$FIELD_ID}">...</button>
+                <div class="with_append">
+                    <span class="read" id="s_{$FIELD_ID}" style="margin-right: 5px;"><xsl:value-of select="@data_name" disable-output-escaping="yes" /></span>
+                    <input type="hidden" id="h_{$FIELD_ID}" value="{.}">
+                        <xsl:attribute name="name"><xsl:choose>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name" />]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+                        </xsl:choose></xsl:attribute>
+                    </input>
+                    <div class="appended_block">
+                        <button type="button" id="sitemap_selector" hidden_field="h_{$FIELD_ID}" span_field="s_{$FIELD_ID}">...</button>
+                    </div>
+                </div>
             </div>
     	</div>
     </xsl:template>
@@ -135,7 +139,7 @@
             <span><xsl:value-of select="../field[@name='smap_pid']/@base"/><xsl:value-of select="$LANG_ABBR"/></span><span id="smap_pid_segment"><xsl:value-of select="../field[@name='smap_pid']/@segment"/></span>
             <xsl:choose>
                 <xsl:when test="@mode='2'">
-                    <input style="width: 150px;">
+                    <input style="width: 130px; height: 16px; padding: 0; margin-top: 6px;">
                         <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
                     </input>
                 </xsl:when>
@@ -154,21 +158,26 @@
 
     <!-- поле выбора контентного шаблона раздела -->
     <xsl:template match="field[@name='smap_content'][ancestor::component[@sample='DivisionEditor' and @type='form']]" mode="field_input">
-        <select id="{@name}">
-            <xsl:attribute name="name"><xsl:choose>
-                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
-                <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
-            </xsl:choose></xsl:attribute>
-            <xsl:if test="@nullable='1'">
-                <option></option>
+        <div>
+            <xsl:if test="@reset"><xsl:attribute name="class">with_append</xsl:attribute></xsl:if>
+            <select id="{@name}">
+                <xsl:attribute name="name"><xsl:choose>
+                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                    <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+                </xsl:choose></xsl:attribute>
+                <xsl:if test="@nullable='1'">
+                    <option></option>
+                </xsl:if>
+                <xsl:apply-templates mode="field_input"/>
+            </select>
+            <xsl:if test="@reset">
+                <div class="appended_block">
+                    <button type="button" onclick="{generate-id(../..)}.resetPageContentTemplate();">
+                        <xsl:value-of select="@reset"/>
+                    </button>
+                </div>
             </xsl:if>
-            <xsl:apply-templates mode="field_input"/>
-        </select>
-        <xsl:if test="@reset">
-            <button type="button" onclick="{generate-id(../..)}.resetPageContentTemplate();">
-                <xsl:value-of select="@reset"/>
-            </button>
-        </xsl:if>
+        </div>
     </xsl:template>
 
 

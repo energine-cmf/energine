@@ -21,25 +21,26 @@ html {
     height: 90%;
     margin-left: -390px;
     background: white;
-    font-family: Tahoma, sans-serif;
-    font-size: 11px;
+    border-radius: 4px;
+    font-size: 13px;
     _position: absolute;
     _top: expression(eval(document.documentElement.scrollTop + document.documentElement.clientHeight/20));
 }
 .e-modalbox-close {
     position: absolute;
-    top: -8px;
-    right: -8px;
+    top: 8px;
+    right: 8px;
     z-index: 1001;
     width: 16px;
     height: 16px;
+    border-radius: 4px;
     background: white url(../images/close.gif) no-repeat;
     line-height: 0;
     font-size: 0;
     cursor: pointer;
 }
 .e-modalbox .highlighted {
-    background-color: #ff8;
+    background-color: #ecf3f8;
 }
 .e-modalbox-frame {
     width: 100%;
@@ -47,5 +48,6 @@ html {
     margin: 0;
     padding: 0;
     border: 0;
+    border-radius: 4px;
 }
 /* ----- /modalbox ----- */

@@ -1521,3 +1521,31 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
         }
     }
 });
+
+document.addEvent('domready', function() {
+    /**
+     * Scroll bar width of the browser.
+     * @type {number}
+     */
+    ScrollBarWidth = window.top.ScrollBarWidth || (function() {
+        var parent = new Element('div', {
+            styles: {
+                height: '100px',
+                overflow: 'scroll'
+            }
+        });
+        var child = new Element('div', {
+            styles: {
+                height: '200px'
+            }
+        });
+
+        parent.grab(child);
+        document.body.grab(parent);
+
+        var width = parent.offsetWidth - child.offsetWidth;
+        parent.destroy();
+
+        return width;
+    })();
+});

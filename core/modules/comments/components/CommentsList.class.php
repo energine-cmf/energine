@@ -1,71 +1,84 @@
 <?php
 /**
- * Содержит класс CommentsList
+ * @file
+ * CommentsList
  *
- * @package energine
- * @subpackage comments
+ * It contains the definition to:
+ * @code
+class CommentsList;
+@endcode
+ *
  * @author sign
+ *
+ * @version 1.0.0
  */
 
 /**
- * Компонент комментариев
+ * List of comments.
  *
- * @package energine
- * @subpackage comments
- * @author sign
+ * @code
+class CommentsList;
+@endcode
  *
- * Пример использования
- *
- * $commentsParams = array(
-'table_name' => $this->getTableName(),
-'is_tree' => false,
-'target_ids' => $this->getData()->getFieldByName('news_id')->getData()
+ * Usage example:
+ * @code
+$commentsParams = array(
+    'table_name' => $this->getTableName(),
+    'is_tree' => false,
+    'target_ids' => $this->getData()->getFieldByName('news_id')->getData()
 );
 $commentsList = $this->document->componentManager->createComponent('commentsList', 'comments', 'CommentsList', $commentsParams);
 $commentsList->run();
 $this->document->componentManager->addComponent($commentsList);
+@endcode
  */
 class CommentsList extends DataSet {
     /**
-     * Коментарии древовидные
-     * @var bool
+     * Are the comments tree-like?
+     * @var bool $isTree
      */
     protected $isTree = false;
 
-
+    /**
+     * Comment ID(s).
+     * @var int|array $targetIds
+     */
     protected $targetIds = array();
 
     /**
-     * @var array
+     * Loaded data.
+     * @var array $loadedData
      */
     private $loadedData = null;
 
     /**
-     * @var Comments
+     * Comments.
+     * @var Comments $comments
      */
     protected $comments = null;
 
+    //todo VZ: remove this?
+    /**
+     * Comment field name.
+     * @var string $commentsFieldName
+     */
     private $commentsFieldName = '';
     
 
     /**
-     * @var Component
+     * Component to which this list is bound.
+     * @var Component $bindComponent
      */
     private $bindComponent = null;
 
     /**
-     * Конструктор
-     *
+     * @copydoc DataSet::__construct
+     */
+    /*
      * В $param ожидаются поля
      * table_name string - имя комментируемой таблицы
      * target_ids array - айдишники комментируемых сущностей
      * is_tree bool - комментарии древовидные?
-     *
-     * @param string  $name
-     * @param string  $module
-
-     * @param  array $params
-     * @return void
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -93,8 +106,7 @@ class CommentsList extends DataSet {
     }
 
     /**
-     * Описание полей комментария
-     * @return DataDescription
+     * @copydoc DataSet::createDataDescription
      */
     protected function createDataDescription() {
         $dataDescription = new DataDescription();
@@ -141,11 +153,9 @@ class CommentsList extends DataSet {
     }
 
     /**
-     * Создать билдер
-     *
-     * Если комментарии не древовидные или отсутствуют возвращается Builder иначе - TreeBuilder
-     * @return Builder|TreeBuilder
+     * @copydoc DataSet::createBuilder
      */
+    // Если комментарии не древовидные или отсутствуют возвращается Builder иначе - TreeBuilder
     protected function createBuilder() {
         if ($this->isTree and is_array($data = $this->loadData())) {
             $builder = new TreeBuilder();
@@ -161,9 +171,9 @@ class CommentsList extends DataSet {
     }
 
     /**
-     * Создаём педжер только один раз
-     * @return void
+     * @copydoc DataSet::createPager
      */
+    // Создаём педжер только один раз
     protected function createPager() {
         if (!$this->pager) {
             $recordsPerPage = intval($this->getParam('recordsPerPage'));
@@ -195,10 +205,9 @@ class CommentsList extends DataSet {
     }
 
     /**
-     * Загружаем комментарии и информацию о пользователях
-     *
-     * @return array
+     * @copydoc DataSet::loadData
      */
+    // Загружаем комментарии и информацию о пользователях
     protected function loadData() {
         if (is_null($this->loadedData)) {
             $this->createPager();
@@ -223,7 +232,7 @@ class CommentsList extends DataSet {
 
 
     /**
-     * @return array
+     * @copydoc DataSet::defineParams
      */
     protected function defineParams() {
         return array_merge(
@@ -239,9 +248,9 @@ class CommentsList extends DataSet {
     }
 
     /**
-     * Внедряем инфу о юзерах в комментарии
+     * Add information about users.
      *
-     * @param array $data
+     * @param array $data Data.
      * @return array
      */
     private function addUsersInfo($data) {
@@ -262,7 +271,9 @@ class CommentsList extends DataSet {
         return $data;
     }
 
+    //todo VZ: same function name in CommentsHelper
     /**
+     * Get users who left comments.
      * Информация о юзерах оставивших комментарии
      *
      * @param array $data
@@ -293,11 +304,9 @@ class CommentsList extends DataSet {
     }
 
     /**
-     * Если задан связаный компонент (параметер bind)
-     * то добавляем ему поле comments (имя задаётся параметром commentsFieldName)
-     *
-     * @return void
+     * @copydoc DataSet::main
      */
+    // Если задан связаный компонент (параметер bind) то добавляем ему поле comments (имя задаётся параметром commentsFieldName)
     protected function main() {
         parent::main();
 

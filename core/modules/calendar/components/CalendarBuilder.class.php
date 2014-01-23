@@ -1,40 +1,37 @@
 <?php 
-
 /**
- * Содержит класс CalendarBuilder
+ * @file
+ * CalendarBuilder
  *
- * @package energine
- * @subpackage calendar
+ * It contains the definition to:
+ * @code
+class CalendarBuilder;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Построитель календаря
+ * Calendar builder.
  *
- * @package energine
- * @subpackage calendar
- * @author d.pavka@gmail.com
+ * @code
+class CalendarBuilder;
+@endcode
  */
 class CalendarBuilder extends Builder {
+    //todo VZ: this can be removed.
     /**
-     * Конструктор класса
-     *
-     * @access public
+     * @copydoc AbstractBuilder::__construct
      */
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     * Создаёт XML-описание поля данных.
-     *
-     * @access protected
-     * @param string $fieldName
-     * @param FieldDescription $fieldInfo
-     * @param mixed $fieldValue
-     * @param mixed $fieldProperties
-     * @return DOMNode
+     * @copydoc Builder::createField
      */
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
         $result = $this->result->createElement('field');

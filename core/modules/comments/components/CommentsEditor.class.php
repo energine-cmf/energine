@@ -1,37 +1,44 @@
 <?php
 /**
+ * @file
+ * CommentsEditor
  *
- * Управление комментариями
- *
- * Вкладки грида соответствуют таблицам с комментариями заданными в параметре comment_tables
- * Клик на вкладке передаёт порядковый номер вкладки (0..n) который соответствует индексу таблицы
- * @see CommentsEditor::changeTableName
+ * It contains the definition to:
+ * @code
+class CommentsEditor;
+@endcode
  *
  * @author sign
  *
+ * @version 1.0.0
+ */
+
+/**
+ * Comments editor.
+ *
+ * @code
+class CommentsEditor;
+@endcode
  */
 class CommentsEditor extends Grid {
     /**
-     * Таблицы с комментариями
+     * Table names with comments.
+     * @var array $commentTables
+     *
      * @see comments_editor.content.xml
-     * @var array string[]
      */
     private $commentTables = array();
 
     /**
-     * Индекс текущей таблицы
-     * @var int
+     * Current table ID.
+     * @var int $currTabIndex
      */
     private $currTabIndex = 0;
 
     /**
+     * @copydoc Grid::__construct
      *
-     * Enter description here ...
-     * @param unknown_type $name
-     * @param unknown_type $module
-     * @param Document $document
-     * @param array $params
-     * @throws SystemException если параметер comment_tables не задан
+     * @throws SystemException 'Please set `comment_tables` parameter in comments_editor.content.xml file'
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -49,6 +56,9 @@ class CommentsEditor extends Grid {
         $this->setParam('onlyCurrentLang', true);
     }
 
+    /**
+     * @copydoc Grid::loadDataDescription
+     */
     protected function loadDataDescription() {
         $result = parent::loadDataDescription();
         if ($this->getState() == 'edit') {
@@ -61,9 +71,9 @@ class CommentsEditor extends Grid {
     }
 
     /**
-     * Выбираем рабочую таблицу
+     * Change table name.
      *
-     * @param $index
+     * @param int $index Table ID.
      */
     private function changeTableName($index = 0) {
         // для метода save имя таблицы ищем в $_POST
@@ -90,6 +100,9 @@ class CommentsEditor extends Grid {
         $this->setTitle($this->translate('TAB_' . $currTableName));
     }
 
+    /**
+     * @copydoc Grid::edit
+     */
     protected function edit() {
         $tab = $this->getStateParams();
         if ($tab) {
@@ -112,6 +125,11 @@ class CommentsEditor extends Grid {
                 true));
     }
 
+    /**
+     * Approve comment.
+     *
+     * @throws Exception 'Add comment can auth user only'
+     */
     protected function approve() {
 
         if (!$this->document->user->isAuthenticated()) {
@@ -137,11 +155,9 @@ class CommentsEditor extends Grid {
     }
 
     /**
-     * ...
-     *
-     * Добавляем вкладки для всех таблиц кроме первой(для которой загружаются данные)
-     * и меняем типы связанных полей для минимизации xml-а
+     * @copydoc Grid::main
      */
+    // Добавляем вкладки для всех таблиц кроме первой(для которой загружаются данные) и меняем типы связанных полей для минимизации xml-а
     protected function main() {
         parent::main();
 
@@ -163,31 +179,23 @@ class CommentsEditor extends Grid {
     }
 
     /**
-     * Возвращает данные о значения в связанной таблицы
-     *
-     * @param string $fkTableName
-     * @param string $fkKeyName
-     * @return array
-     * @access protected
-     *
-     * @todo кажется здесь нужен фильтр
+     * @copydoc Grid::getFKData
      */
+     //todo кажется здесь нужен фильтр
     protected function getFKData($fkTableName, $fkKeyName) {
         return $this->getForeignKeyData($fkTableName, $fkKeyName, $this->document->getLang());
     }
 
     /**
-     * Отображаемое поле в связанной таблице
+     * Get field name in foreign table.
      *
-     * Если отображаемое поле имеет имя не типа 'PREFIX_name' то мы можем указать имя поля в комментарии
-     * к первому полю первичного ключа (title=XXXX_title)
-     * если в комментарии несколько пар свойств то они должны быть разделены символом '|'
+     * If displayed field name is not like @c "PREFIX_name" then we can set field name in the comment to the first field of primary key (title=XXXX_title).@n
+     * If displayed field name has several properties then they should be separated by @c "|" sign.
      *
-     *  Если в комментарии к первичному ключу нужного значения нет
-     *  то будет возвращена строка с именем поля типа 'PREFIX_name'
+     * If in the comment to the primary key there are not necessary value then the string with field name like @c "PREFIX_name" will be returned.
      *
-     * @param string $fkTableName
-     * @param string $fkKeyName
+     * @param string $fkTableName Foreign table name.
+     * @param string $fkKeyName Foreign key name.
      * @return string
      */
     protected function getForeinKeyFieldName($fkTableName, $fkKeyName) {
@@ -211,18 +219,9 @@ class CommentsEditor extends Grid {
     }
 
     /**
-     * ВОзвращает данные из таблицы связанной по внешнему ключу
+     * @copydoc QAL::getForeignKeyData
      *
-     * @see QAL::getForeignKeyData()
-     * Копия метода QAL::getForeignKeyData()
-     * отличается лишь определением имени поля в связанной таблице @see CommentsEditor::getForeinKeyFieldName()
-     *
-     * @param string $fkTableName Имя таблицы
-     * @param string $fkKeyName имя ключа
-     * @param int $currentLangID идентификатор текущего языка
-     * @param mixed $filter ограничение на выборку
-     * @access public
-     * @return array
+     * This is an overwritten QAL::getForeignKeyData() method.
      *
      * @todo Исключать поля типа текст из результатов выборки для таблицы с переводами
      * @todo Подключить фильтрацию
@@ -272,28 +271,24 @@ class CommentsEditor extends Grid {
     }
 
     /**
-     * Сортировка для таблицы
+     * Get ordering by table.
      *
-     * Метод для переопределенияв потомках для таблиц с нестандартной структурой без таблицы переводов
-     * @see STBCommentsEditor::getOrderingByTable()
-     *
-     * @param  string $fkTableName
-     * @param  string $fkValueName
+     * @param string $fkTableName Foreign table name.
+     * @param string $fkValueName Foreign value name.
      * @return array
+     *
+     * @note This is for overwriting/extending in child classes wor tables with non-standard structure and without translations.
+     *
+     * @see STBCommentsEditor::getOrderingByTable()
      */
     protected function getOrderingByTable($fkTableName, $fkValueName) {
         return array($fkValueName => QAL::ASC);
     }
 
     /**
-     * Определяет допустимые параметры компонента и их значения по-умолчанию
-     * в виде массива array(paramName => defaultValue).
-     *
-     * Параметер comment_tables содержит имена комментируемых таблиц разделённых символом '|'
-     *
-     * @access protected
-     * @return array
+     * @copydoc Grid::defineParams
      */
+    // Параметер comment_tables содержит имена комментируемых таблиц разделённых символом '|'
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
             array(
@@ -302,6 +297,9 @@ class CommentsEditor extends Grid {
         return $result;
     }
 
+    /**
+     * @copydoc Grid::delete
+     */
     protected function delete() {
         $tab = $this->getStateParams();
         if ($tab) {

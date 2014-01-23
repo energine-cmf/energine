@@ -1,28 +1,33 @@
 <?php
 /**
- * Содержит класс CommentsJSONBuilder
+ * @file
+ * CommentsJSONBuilder
  *
- * @package energine
- * @subpackage comments
+ * It contains the definition to:
+ * @code
+class CommentsJSONBuilder;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
- /**
-  * Построитель для для комментариев
-  *
-  * @package energine
-  * @subpackage comments
-  * @author d.pavka@gmail.com
-  */
+/**
+ * Builder for comments.
+ *
+ * @code
+class CommentsJSONBuilder;
+@endcode
+ */
  class CommentsJSONBuilder extends JSONBuilder {
     /**
-     * Создает результирующий JSON-объект.
+     * @copydoc JSONBuilder::build
      *
-     * @access public
-     * @return bool
+     * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
      */
-    public function build() {
+     public function build() {
         $result = false;
 
         if ($this->dataDescription == false) {

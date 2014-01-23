@@ -1,55 +1,55 @@
 <?php
 /**
- * Содержит класс GoogleSitemap
+ * @file
+ * GoogleSitemap
  *
- * @package energine
- * @subpackage misc
+ * It contains the definition to:
+ * @code
+class GoogleSitemap;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Компонент для генерации Google Sitemap,
- * Google Sitemap Index и Google Video Sitemap.
- * Должен содержаться в пустом лейауте.
+ * Component for generation Google Sitemap, Google Sitemap Index and Google Video Sitemap.
+ *
+ * @code
+class GoogleSitemap;
+@endcode
+ *
+ *
+ * @note It should be held in empty layout.
+ *
  * @see http://www.sitemaps.org/protocol.php
  * @see http://www.google.com/support/webmasters/bin/answer.py?answer=80472
- *
- * @package energine
- * @subpackage misc
- * @author d.pavka@gmail.com
  */
-class GoogleSitemap extends SitemapTree
-{
+class GoogleSitemap extends SitemapTree {
 
     /**
-     * Максимальное кол-во записей с информацией
-     * о видео в файле video sitemap.
+     * Maximal amount of records with information about video in file <tt>video sitemap</tt>.
+     * @var int $maxVideos
      */
     private $maxVideos;
 
     /**
-     * Экземпляр класса PDO
+     * Exemplar of PDO class.
+     * @var PDO $pdoDB
      */
     private $pdoDB;
 
     /**
-     * Максимальное кол - во видео в файле сайт мап
-     * по умолчанию.
+     * Default maximal amount of videos in file <tt>sitemap</tt>
      */
     const DEFAULT_MAX_VIDEOS = 40000;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc SitemapTree::__construct
      */
-    public function __construct($name, $module, array $params = null)
-    {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         E()->getResponse()->setHeader('Content-Type', 'text/xml; charset=utf-8');
         $this->pdoDB = $this->dbh->getPDO();
@@ -58,10 +58,9 @@ class GoogleSitemap extends SitemapTree
 
 
     /**
-     * Генерирует google sitemap index
-     *
-     * @access protected
+     * @copydoc SitemapTree::main
      */
+    // Генерирует google sitemap index
     protected function main(){
         E()->getController()->getTransformer()->setFileName('core/modules/seo/transformers/google_sitemap_index.xslt', true);
         parent::main();
@@ -69,9 +68,7 @@ class GoogleSitemap extends SitemapTree
     }
 
     /**
-     * Генерирует google sitemap
-     *
-     * @access protected
+     * Generate Google Sitemap
      */
     protected function map(){
         $this->prepare();
@@ -112,10 +109,9 @@ class GoogleSitemap extends SitemapTree
     }
 
     /**
-     * Генерирует непосредственно video sitemap,
-     * содержащий информацию о видео файлах.
+     * Generate <tt>video sitemap</tt>.
      *
-     * @access protected
+     * <tt>Video sitemap</tt> holds an information about video files.
      */
     protected function videomap() {
         $respone = E()->getResponse();
@@ -152,8 +148,10 @@ class GoogleSitemap extends SitemapTree
         E()->getResponse()->commit();
     }
 
-    protected function loadData()
-    {
+    /**
+     * @copydoc SitemapTree::loadData
+     */
+    protected function loadData() {
         $sitemaps = array();
 
         $siteinfo = E()->getSiteManager()->getCurrentSite();
@@ -174,8 +172,10 @@ class GoogleSitemap extends SitemapTree
         return $sitemaps;
     }
 
-    protected function createDataDescription()
-    {
+    /**
+     * @copydoc SitemapTree::createDataDescription
+     */
+    protected function createDataDescription() {
         $dd = new DataDescription();
         $fd = new FieldDescription('path');
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
@@ -183,8 +183,10 @@ class GoogleSitemap extends SitemapTree
         return $dd;
     }
 
-    protected function createBuilder()
-    {
+    /**
+     * @copydoc SitemapTree::createBuilder
+     */
+    protected function createBuilder() {
         $builder = new TreeBuilder();
         $sm = E()->getSiteManager();
         $defaultSiteID = $sm->getDefaultSite()->id;

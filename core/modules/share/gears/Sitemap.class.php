@@ -23,7 +23,7 @@ final class Sitemap;
 @endcode
  *
  * @attention This is singleton class.
- * @attention This is @b final class.
+ * @final
  */
 final class Sitemap extends DBWorker {
     /**

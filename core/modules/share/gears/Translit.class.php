@@ -22,7 +22,7 @@ final class Translit;
 final class Translit;
 @endcode
  *
- * @attention This is @b final class.
+ * @final
  */
 final class Translit{
     /**

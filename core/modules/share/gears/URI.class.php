@@ -18,7 +18,7 @@ final class URI;
 /**
  * URI (Unified Resource Identifier).
  *
- * @attention This is @b final class;
+ * @final
  */
 final class URI extends Object {
     /**

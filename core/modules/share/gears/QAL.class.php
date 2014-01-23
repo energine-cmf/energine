@@ -21,7 +21,7 @@ final class QAL;
 final class QAL;
 @endcode
  *
- * @attention This is @b final class.
+ * @final
  */
 class QAL extends DBA {
     //Режимы модифицирующих операций

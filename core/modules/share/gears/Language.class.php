@@ -22,9 +22,9 @@ final class Language;
 final class Language;
 @endcode
  *
- * @attention This is @b final class.
+ * @final
  */
-class Language extends DBWorker{
+final class Language extends DBWorker{
     /**
      * Current language ID.
      * @var int $current

@@ -21,7 +21,7 @@ final class SiteManager;
 final class SiteManager;
 @endcode
  *
- * @attention This is @b final class.
+ * @final
  */
 final class SiteManager extends DBWorker implements Iterator {
     /*

@@ -17,7 +17,7 @@ final class Request;
 /**
  * HTTP-Request.
  *
- * @attention This is @b final class.
+ * @final
  */
 final class Request extends Object {
     /**

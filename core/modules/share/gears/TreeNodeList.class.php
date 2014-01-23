@@ -209,7 +209,7 @@ class TreeNodeList implements Iterator{
 final class TreeNode;
 @endcode
  *
- * @attention This is @b final class.
+ * @final
  */
 final class TreeNode implements IteratorAggregate{
     /**

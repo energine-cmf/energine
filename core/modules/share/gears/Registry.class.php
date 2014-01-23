@@ -41,7 +41,7 @@ final class Registry;
  *
  * @see Singleton
  *
- * @attention This is @b final class.
+ * @final
  */
 final class Registry extends Object {
     /**
@@ -83,7 +83,7 @@ final class Registry extends Object {
      *
      * @return Registry
      *
-     * @attention This is @b final method.
+     * @final
      */
     final public static function getInstance() {
         if (is_null(self::$instance)) {

@@ -28,7 +28,7 @@ final class TreeConverter;
  *
  * @note It represents a container of static methods.
  *
- * @attention This is @b final class.
+ * @final
  */
 final class TreeConverter{
     /**

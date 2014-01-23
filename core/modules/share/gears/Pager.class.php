@@ -22,7 +22,7 @@ final class Pager;
 final class Pager;
 @endcode
  *
- * @attention This is @b final class.
+ * @final
  */
 final class Pager extends Object {
     //todo VZ: In PageList.js VISIBLE_PAGES_COUNT is always 2. For what is this?

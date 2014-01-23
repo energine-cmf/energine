@@ -21,7 +21,7 @@ final class Response;
 final class Response;
 @endcode
  *
- * @attention This is @b final class.
+ * @final
  */
 final class Response extends Object {
     /**

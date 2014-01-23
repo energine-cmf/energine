@@ -22,7 +22,7 @@ abstract class Control;
 abstract class Control;
 @endcode
  *
- * @attention This is @b abstract class.
+ * @abstract
  */
 abstract class Control extends Object {
     /**

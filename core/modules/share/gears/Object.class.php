@@ -25,7 +25,7 @@ abstract class Object
  * - measure the execution time;
  * - parse and process the configuration file.
  *
- * @attention This is @b abstract class.
+ * @abstract
  */
 abstract class Object {
     /**

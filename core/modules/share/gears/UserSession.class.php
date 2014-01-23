@@ -21,7 +21,7 @@ final class UserSession;
 final class UserSession;
 @endcode
  *
- * @attention This is @b final class.
+ * @final
  */
 final class UserSession extends DBWorker {
     /**

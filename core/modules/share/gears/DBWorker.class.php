@@ -20,7 +20,7 @@ abstract class DBWorker;
 abstract class DBWorker;
 @endcode
  *
- * @attention This is @b  abstract class.
+ * @abstract
  */
 abstract class DBWorker extends Object {
     /**

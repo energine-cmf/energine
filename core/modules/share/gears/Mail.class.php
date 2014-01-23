@@ -23,7 +23,7 @@ final class Mail;
 final class Mail;
 @endcode
  *
- * @attention This is @b final class.
+ * @final
  */
 final class Mail extends Object {
     /**

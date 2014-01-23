@@ -24,7 +24,7 @@ final class VideoUploader;
  *
  * It also converts video file to @c flv format
  *
- * @attention This is @b final class.
+ * @final
  */
 final class VideoUploader extends FileUploader {
     /**

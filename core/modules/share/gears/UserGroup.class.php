@@ -17,7 +17,7 @@ final class UserGroup;
 /**
  * User groups.
  *
- * @attention This is @b final class.
+ * @final
  */
 final class UserGroup extends DBWorker {
     /**

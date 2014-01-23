@@ -181,7 +181,7 @@ class Component extends DBWorker implements IBlock {
      *
      * @return bool
      *
-     * @attention This is @b final function.
+     * @final
      */
     final protected function isActive() {
         return $this->params['active'];
@@ -190,10 +190,11 @@ class Component extends DBWorker implements IBlock {
     /**
      * Get component configurations.
      *
-     * @note This method was created for redefining configurations in the children.
-     * @attention This is @b final function.
-     *
      * @return ComponentConfig
+     *
+     * @note This method was created for redefining configurations in the children.
+     *
+     * @final
      */
     protected function getConfig() {
         if (!$this->config) {
@@ -207,7 +208,7 @@ class Component extends DBWorker implements IBlock {
      *
      * @param IBuilder $builder Builder.
      *
-     * @attention This is @b final function.
+     * @final
      */
     final protected function setBuilder(IBuilder $builder) {
         $this->builder = $builder;
@@ -218,7 +219,7 @@ class Component extends DBWorker implements IBlock {
      *
      * @return AbstractBuilder
      *
-     * @attention This is @b final function.
+     * @final
      */
     final protected function getBuilder() {
         return $this->builder;
@@ -283,7 +284,7 @@ class Component extends DBWorker implements IBlock {
      * @param string $name Parameter name.
      * @return mixed
      *
-     * @attention This is @b final function.
+     * @final
      */
     final protected function getParam($name) {
         return (isset($this->params[$name]) ? $this->params[$name] : null);
@@ -296,7 +297,7 @@ class Component extends DBWorker implements IBlock {
      * @todo все равно используется состояние определяемое конфигом
      * @todo непонятно то ли это фича то ли бага
      *
-     * @attention This is @b final function.
+     * @final
      */
     final private function determineState() {
         //Текущее действие берем из параметров
@@ -348,29 +349,25 @@ class Component extends DBWorker implements IBlock {
      *
      * @return string
      *
-     * @attention This is @b final function.
+     * @final
      */
     final public function getState() {
         return $this->state;
     }
 
     /**
-     * Get current rights level of the user needed for running current component action.
+     * @copydoc IBlock::getCurrentStateRights
      *
-     * @return int
-     *
-     * @attention This is @b final function.
+     * @final
      */
     final public function getCurrentStateRights() {
         return (int)$this->rights;
     }
 
     /**
-     * Get component name.
+     * @copydoc IBlock::getName
      *
-     * @return string
-     *
-     * @attention This is @b final function.
+     * @final
      */
     final public function getName() {
         return $this->name;

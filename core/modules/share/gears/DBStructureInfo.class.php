@@ -23,7 +23,7 @@ final class DBStructureInfo;
  *
  * It can holds an information in cache.
  *
- * @attention This is @b final class.
+ * @final
  */
 class DBStructureInfo extends Object {
     /**

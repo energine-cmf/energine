@@ -23,7 +23,7 @@ abstract class AbstractBuilder;
  *
  * Create XML-document based on meta-data.
  *
- * @attention This is @b abstract class.
+ * @abstract
  */
 abstract class AbstractBuilder extends DBWorker implements IBuilder {
     /**

@@ -78,7 +78,7 @@ class Toolbar extends Object {
      * 
      * @return string
      *
-     * @attention This is @b final function.
+     * @final
      */
     final public function getName(){
         return $this->name;

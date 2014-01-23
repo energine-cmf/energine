@@ -21,7 +21,7 @@ final class Document;
 final class Document;
 @endcode
  *
- * @attention Thi is @b final class.
+ * @final
  */
 final class Document extends DBWorker implements IDocument {
     /**

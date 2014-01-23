@@ -24,7 +24,7 @@ interface IBlock;
 final class ComponentManager;
 @endcode
  *
- * @attention This is @b final class!
+ * @final
  */
 final class ComponentManager extends Object implements Iterator {
 

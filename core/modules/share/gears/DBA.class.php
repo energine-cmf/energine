@@ -23,7 +23,7 @@ abstract class DBA;
 abstract class DBA;
 @endcode
  *
- * @attention This is @b abstract class!
+ * @abstract
  */
 abstract class DBA extends Object {
     /**

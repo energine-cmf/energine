@@ -14,7 +14,7 @@ u, font, s, center, dir, menu, strike, xmp                                      
     border: 0;
     vertical-align: baseline;
     text-indent: 0;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Arial, sans-serif;
     font-size: 1em;
 }
 /* ----- /reset ----- */
@@ -52,12 +52,7 @@ input, textarea, select, button {
     -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="phone"] {
-    display: table-cell;
-}
+
 button {
     text-align: center;
     white-space: nowrap;

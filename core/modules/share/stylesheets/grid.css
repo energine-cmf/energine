@@ -5,7 +5,7 @@ div.grid table tr .firstColumn { border-left: 0; }
 
 div.grid div.filter {
     background-color: #eee;
-    margin: 10px;
+    margin: 10px 0;
     padding: 10px;
     border-radius: 4px;
 }
@@ -26,7 +26,7 @@ div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_contai
 }
 
 div.grid div.filter input {
-    width: 165px;
+    width: 145px;
     margin-right:5px;
     height: 20px;
 }
@@ -54,20 +54,22 @@ div.grid .query {
 }
 
 .grid_breadcrumbs {
-    margin-bottom: 1px;
-    padding: 4px 7px;
-    background: #eeeedd;
-    font-size: 11px;
+    margin: 10px 0;
+    border-radius: 4px;
+    padding: 15px;
+    background: #eee;
+    font-size: 12px;
 }
 .grid .filter + .grid_breadcrumbs {
-    margin-top: -9px;
+    margin-top: -14px;
 }
 
 
 .grid {
+    margin: 10px;
     background: #fcfcfc;
     color:black;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Arial, sans-serif;
     font-size:13px;
     font-size-adjust:none;
     font-stretch:normal;
@@ -78,7 +80,7 @@ div.grid .query {
 .gridHeadContainer {
     padding-right: 17px;
     border: 1px solid #ddd;
-    border-bottom: 1px solid #aaa;
+    border-bottom: 0;
     background: #efefef;
     _height: 1%; /* добавляет свойство hasLayout для IE6 */
 }

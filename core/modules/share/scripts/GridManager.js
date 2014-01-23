@@ -524,9 +524,9 @@ var Grid = (function() {
                 }
             }
 
-            gridHeadContainer.getElement('.gridTable').setStyles({
-                tableLayout: 'fixed'
-            });
+//            gridHeadContainer.getElement('.gridTable').setStyles({
+//                tableLayout: 'fixed'
+//            });
             this.tbody.getParent().setStyles({
                 wordWrap: 'break-word',
                 tableLayout: 'fixed'

@@ -1,11 +1,16 @@
 ul.toolbar {
     margin: 10px 0 0 0 !important;
     padding: 8px !important;
-    background: #eee;
     border-radius: 4px;
 	color:black;
 }
-
+.colset ul.toolbar,
+ul.toolbar.toolbar_attachmentEditor {
+    background: #eee;
+}
+.e-topframe ul.toolbar {
+    background: none;
+}
 ul.toolbar * {
     margin: 0;
     padding: 0;
@@ -56,10 +61,13 @@ ul.toolbar li.separator {
     background: url(../images/toolbar/separator.gif) center center no-repeat;
 }
 
-ul.toolbar li.select {    
-    padding: 1px 0 !important;
+ul.toolbar li.select {
     border: 0;
     background: none;
+    padding: 0 !important;
+    border: 0;
+    -webkit-box-shadow: 0 0 0 0;
+    box-shadow: 0 0 0 0;
 }
 
 ul.toolbar li.custom_select {    
@@ -145,3 +153,78 @@ ul.toolbar li input[type="file"]{
     left:-50;
 }
 
+/* -- button colors -- */
+ul.toolbar li.edit_btn,
+ul.toolbar li.edit_btn.disabled:focus, ul.toolbar li.edit_btn.disabled:hover, ul.toolbar li.edit_btn.disabled:active {
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #eea236;
+}
+ul.toolbar li.edit_btn:focus, ul.toolbar li.edit_btn:hover, ul.toolbar li.edit_btn:active {
+    color: #fff;
+    background-color: #ed9c28;
+    border-color: #d58512;
+}
+ul.toolbar li.add_btn,
+ul.toolbar li.add_btn.disabled:focus, ul.toolbar li.add_btn.disabled:hover, ul.toolbar li.add_btn.disabled:active {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+ul.toolbar li.add_btn:focus, ul.toolbar li.add_btn:hover, ul.toolbar li.add_btn:active {
+    color: #fff;
+    background-color: #47a447;
+    border-color: #398439;
+}
+ul.toolbar li.delete_btn,
+ul.toolbar li.delete_btn.disabled:focus, ul.toolbar li.delete_btn.disabled:hover, ul.toolbar li.delete_btn.disabled:active {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+ul.toolbar li.delete_btn:focus, ul.toolbar li.delete_btn:hover, ul.toolbar li.delete_btn:active {
+    color: #fff;
+    background-color: #d2322d;
+    border-color: #ac2925;
+}
+ul.toolbar li.save_btn,
+ul.toolbar li.save_btn.disabled:focus, ul.toolbar li.save_btn.disabled:hover, ul.toolbar li.save_btn.disabled:active {
+    color: #fff;
+    background-color: #3276b1;
+    border-color: #285e8e;
+}
+ul.toolbar li.save_btn:focus, ul.toolbar li.save_btn:hover, ul.toolbar li.save_btn:active {
+    color: #fff;
+    background-color: #3276b1;
+    border-color: #285e8e;
+}
+ul.e-divtree-toolbar.toolbar li.edit_btn,
+ul.e-divtree-toolbar.toolbar li.edit_btn:focus, ul.e-divtree-toolbar.toolbar li.edit_btn:hover, ul.e-divtree-toolbar.toolbar li.edit_btn:active,
+ul.e-divtree-toolbar.toolbar li.add_btn,
+ul.e-divtree-toolbar.toolbar li.add_btn:focus, ul.e-divtree-toolbar.toolbar li.add_btn:hover, ul.e-divtree-toolbar.toolbar li.add_btn:active,
+ul.e-divtree-toolbar.toolbar li.delete_btn,
+ul.e-divtree-toolbar.toolbar li.delete_btn:focus, ul.e-divtree-toolbar.toolbar li.delete_btn:hover, ul.e-divtree-toolbar.toolbar li.delete_btn:active,
+ul.e-divtree-toolbar.toolbar li.save_btn,
+ul.e-divtree-toolbar.toolbar li.save_btn:focus, ul.e-divtree-toolbar.toolbar li.save_btn:hover, ul.e-divtree-toolbar.toolbar li.save_btn:active,
+.colset ul.toolbar li.edit_btn,
+.colset ul.toolbar li.edit_btn:focus, .colset ul.toolbar li.edit_btn:hover, .colset ul.toolbar li.edit_btn:active,
+.colset ul.toolbar li.add_btn,
+.colset ul.toolbar li.add_btn:focus, .colset ul.toolbar li.add_btn:hover, .colset ul.toolbar li.add_btn:active,
+.colset ul.toolbar li.delete_btn,
+.colset ul.toolbar li.delete_btn:focus, .colset ul.toolbar li.delete_btn:hover, .colset ul.toolbar li.delete_btn:active,
+.colset ul.toolbar li.save_btn,
+.colset ul.toolbar li.save_btn:focus, .colset ul.toolbar li.save_btn:hover, .colset ul.toolbar li.save_btn:active {
+    background-color: transparent;
+}
+ul.toolbar li.up_btn,
+ul.toolbar li.down_btn {
+    color: #fff;
+    background-color: #43BDFE;
+}
+
+ul.toolbar li.up_btn:focus, ul.toolbar li.up_btn:hover, ul.toolbar li.up_btn:active,
+ul.toolbar li.down_btn:focus, ul.toolbar li.down_btn:hover, ul.toolbar li.down_btn:active {
+    color: #fff;
+    background-color: #1DA6FB;
+}
+/* -- button colors -- */

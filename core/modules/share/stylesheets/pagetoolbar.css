@@ -71,23 +71,22 @@ html.e-has-topframe3 {
 .e-sideframe {
     display: none;
     position: absolute;
-    top: 0;
+    top: 31px;
     left: 0;
     float: left;
     width: 300px;
     height: 100%;
     background: #eee;
-    _top: 25px;
-    _clear: right;      
+    z-index: 3;
 }
 .e-has-sideframe .e-sideframe {
     display: block;
 }
 .e-has-topframe2 .e-sideframe {
-    _padding-bottom: 25px;
+    top: 31px;
 }
 .e-has-topframe3 .e-sideframe {
-    _padding-bottom: 50px;
+
 }
 .e-sideframe-content {
     width: 297px;
@@ -124,7 +123,6 @@ html.e-has-topframe3 {
     background-image: -ms-linear-gradient(top,#f5f5f5,#cfd1cf);
     background-image: linear-gradient(top,#f5f5f5,#cfd1cf);
     filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#f5f5f5',endColorstr='#cfd1cf');
-    z-index: 1;
 }
 ul.docked_toolbar {
     position: relative;
@@ -140,6 +138,7 @@ ul.docked_toolbar {
     top: 0;
     left: 0;
     z-index: 11;
+    width: 30px;
 }
 ul.docked_toolbar li {
     min-height: 30px;
@@ -177,7 +176,16 @@ ul.main_toolbar {
 }
 ul.docked_toolbar.block_management_toolbar,
 ul.docked_toolbar.block_management_toolbar li {
+    color: #000;
     background: none;
+}
+ul.docked_toolbar.block_management_toolbar:hover,
+ul.docked_toolbar.block_management_toolbar li:hover,
+ul.docked_toolbar.block_management_toolbar:focus,
+ul.docked_toolbar.block_management_toolbar li:focus,
+ul.docked_toolbar.block_management_toolbar:active,
+ul.docked_toolbar.block_management_toolbar li:active {
+    color: #000;
 }
 ul.toolbar.docked_toolbar.block_management_toolbar li select {
     min-height: 20px;

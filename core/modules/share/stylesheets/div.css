@@ -16,7 +16,7 @@ img {
     box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
     height: 100%;
     overflow: hidden;
-    padding: 54px 10px 12px 10px;
+    padding: 32px 10px 12px 10px;
     border: 0; 
     background: #eee;
     _padding-top: 38px;    
@@ -52,13 +52,12 @@ img {
 /* тулбар дерева подразделов в боковой панели */
 .e-divtree-panel .e-divtree-toolbar {
     position: absolute;
-    top: -25px;
+    top: -30px;
     left: -1px;
     z-index: 1;
     width: 100%;
     margin: 0 !important;
     padding: 2px 0 !important;
-    border: 1px solid #aaaaaa;
     border-radius: 0;
 }
 .e-divtree-panel .e-divtree-toolbar li.icon {

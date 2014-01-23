@@ -30,7 +30,7 @@
     position: relative;
     height: 100%;
     min-height: 500px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Arial, sans-serif;
     font-size: 13px;
     line-height: normal;
     _height: 500px;
@@ -81,7 +81,7 @@
 }
 .e-pane-has-t-toolbar1 .e-pane-content { 
     top: 47px;
-    _height: expression(this.parentNode.clientHeight - 66); 
+    _height: expression(this.parentNode.clientHeight - 66);
 }
 /* 2 тулбара вверху */
 .e-pane-has-t-toolbar2 .e-pane-t-toolbar { 
@@ -97,23 +97,13 @@
 }
 .e-pane-has-b-toolbar1 .e-pane-content { 
     bottom: 72px;
-    _zoom: expression( 
-        runtimeStyle.zoom = 1, 
-        (/e-pane-has-t-toolbar1/.test(this.parentNode.className)) ? (runtimeStyle.tHeight = '96') : (/e-pane-has-t-toolbar2/.test(this.parentNode.className) ? runtimeStyle.tHeight = '120' : runtimeStyle.tHeight = '72')
-        );
-    _height: expression(this.parentNode.clientHeight - this.runtimeStyle.tHeight);
 }
 /* 2 тулбара внизу */
 .e-pane-has-b-toolbar2 .e-pane-b-toolbar { 
-    height: 116px;
+    height: 108px;
 }
 .e-pane-has-b-toolbar2 .e-pane-content { 
-    bottom: 126px;
-    _zoom: expression(
-        runtimeStyle.zoom = 1, 
-        (/e-pane-has-t-toolbar1/.test(this.parentNode.className)) ? (runtimeStyle.tHeight = '120') : (/e-pane-has-t-toolbar2/.test(this.parentNode.className) ? runtimeStyle.tHeight = '144' : runtimeStyle.tHeight = '96')
-        );
-    _height: expression(this.parentNode.clientHeight - this.runtimeStyle.tHeight);
+    bottom: 120px;
 }
 
 .e-pane-toolbar {

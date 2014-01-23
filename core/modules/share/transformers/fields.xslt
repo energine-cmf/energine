@@ -724,13 +724,17 @@
 
     <!-- поле для выбора upl_id гридах -->
     <xsl:template match="field[@name='upl_id' and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]" mode="field_input">
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
-        </input>
-        <input type="text" id="{generate-id(.)}_name" value="{@upl_path}" readonly="readonly" class="text inp_string" style="width:200px;"/>
-        <button type="button" style="width:48px;" class="attachment_selector" upl_name="{generate-id(.)}_name" upl_id="{generate-id(.)}_id" field="{@name}">...</button>
+        <div class="with_append">
+            <input>
+                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+                <xsl:attribute name="type">hidden</xsl:attribute>
+                <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
+            </input>
+            <input type="text" id="{generate-id(.)}_name" value="{@upl_path}" readonly="readonly" class="text inp_string" style="height: 18px; width: 472px;"/>
+            <div class="appended_block">
+                <button type="button" style="width:48px;" class="attachment_selector" upl_name="{generate-id(.)}_name" upl_id="{generate-id(.)}_id" field="{@name}">...</button>
+            </div>
+        </div>
     </xsl:template>
 
 </xsl:stylesheet>

@@ -40,7 +40,8 @@ html {
     cursor: pointer;
 }
 .e-modalbox .highlighted {
-    background-color: #ecf3f8;
+    background-color: #d2322d;
+    background-image: url(../images/close_white.png);
 }
 .e-modalbox-frame {
     width: 100%;

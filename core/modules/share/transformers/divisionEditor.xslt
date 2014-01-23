@@ -159,7 +159,7 @@
     <!-- поле выбора контентного шаблона раздела -->
     <xsl:template match="field[@name='smap_content'][ancestor::component[@sample='DivisionEditor' and @type='form']]" mode="field_input">
         <div>
-            <xsl:if test="@reset"><xsl:attribute name="class">with_append</xsl:attribute></xsl:if>
+            <xsl:if test="@reset"><xsl:attribute name="class">with_append with_link</xsl:attribute></xsl:if>
             <select id="{@name}">
                 <xsl:attribute name="name"><xsl:choose>
                     <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>

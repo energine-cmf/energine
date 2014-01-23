@@ -23,7 +23,7 @@ final class QAL;
  *
  * @final
  */
-class QAL extends DBA {
+final class QAL extends DBA {
     //Режимы модифицирующих операций
     /**
      * INSERT operation.
@@ -123,12 +123,12 @@ class QAL extends DBA {
      */
     public function select() {
         $args = func_get_args();
-        if (strpos($args[0], ' ')) {
+        if (!strpos($args[0], ' ')) {
             //если в имени таблицы есть пробелы
             //будем считать что это просто SQL код
-            return call_user_func_array(array($this, 'selectRequest'), $args);
+            $args = $this->buildSQL($args);
         }
-        return $this->selectRequest(call_user_func_array(array($this, 'buildSQL'), $args));
+        return call_user_func_array(array($this, 'selectRequest'), $args);
     }
 
     /**
@@ -188,18 +188,15 @@ class QAL extends DBA {
                     foreach ($data as $fieldValue) {
                         if ($fieldValue === self::EMPTY_STRING) {
                             $fieldValue = $this->quote('');
-                        }
-                        elseif ($fieldValue == '') {
+                        } elseif ($fieldValue == '') {
                             $fieldValue = 'NULL';
-                        }
-                        else {
+                        } else {
                             $fieldValue = $this->quote($fieldValue);
                         }
                         $fieldValues[] = $fieldValue;
                     }
                     $sqlQuery = $mode . ' INTO ' . $tableName . ' (' . implode(', ', $fieldNames) . ') VALUES (' . implode(', ', $fieldValues) . ')';
-                }
-                else {
+                } else {
                     $sqlQuery = 'INSERT INTO ' . $tableName . ' VALUES ()';
                 }
                 break;
@@ -209,18 +206,15 @@ class QAL extends DBA {
                     foreach ($data as $fieldName => $fieldValue) {
                         if ($fieldValue === self::EMPTY_STRING) {
                             $fieldValue = $this->quote('');
-                        }
-                        elseif ($fieldValue === '') {
+                        } elseif ($fieldValue === '') {
                             $fieldValue = 'NULL';
-                        }
-                        else {
+                        } else {
                             $fieldValue = $this->quote($fieldValue);
                         }
                         $fields[] = "$fieldName = $fieldValue";
                     }
                     $sqlQuery = 'UPDATE ' . $tableName . ' SET ' . implode(', ', $fields);
-                }
-                else {
+                } else {
                     throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
                 }
                 break;
@@ -258,11 +252,9 @@ class QAL extends DBA {
                     //$fieldName = strtolower($fieldName);
                     if (is_null($value)) {
                         $cond[] = "$fieldName IS NULL";
-                    }
-                    elseif (is_numeric($fieldName)) {
+                    } elseif (is_numeric($fieldName)) {
                         $cond[] = $value;
-                    }
-                    elseif (is_array($value)) {
+                    } elseif (is_array($value)) {
                         $value = array_filter($value);
 
                         $value = implode(',', array_map(create_function('$row', 'return \'"\'.$row.\'"\';'), $value));
@@ -270,14 +262,12 @@ class QAL extends DBA {
                         if (!empty($value))
                             $cond[] = $fieldName . ' IN (' . $value . ')';
                         else $cond[] = ' FALSE ';
-                    }
-                    else {
+                    } else {
                         $cond[] = "$fieldName = " . $this->quote($value);
                     }
                 }
                 $result .= implode(' AND ', $cond);
-            }
-            else {
+            } else {
                 $result .= $condition;
             }
         }
@@ -310,26 +300,24 @@ class QAL extends DBA {
         $transTableName = $this->getTranslationTablename($fkTableName);
         //если существует таблица с переводами для связанной таблицы
         //нужно брать значения оттуда
-        if (isset($columns[$fkValueName]) || !$transTableName){
+        if (isset($columns[$fkValueName]) || !$transTableName) {
             //Если не существует поля с name берем в качестве поля со значением то же самое поле что и с id
             if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
 
             $columns = array_filter($columns,
-                function($value) {
+                function ($value) {
                     return !($value["type"] == QAL::COLTYPE_TEXT);
                 }
             );
             $res = $this->select($fkTableName, array_keys($columns), $filter, $order);
             //$res = $this->selectRequest('SELECT '.implode(',', array_keys($columns)).' FROM '.$fkTableName.)
-        }
-        else {
+        } else {
             $columns = $this->getColumnsInfo($transTableName);
             if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
 
             if ($filter) {
                 $filter = ' AND ' . str_replace('WHERE', '', $this->buildWhereCondition($filter));
-            }
-            else {
+            } else {
                 $filter = '';
             }
 
@@ -372,8 +360,7 @@ class QAL extends DBA {
                     $cls[] = "$fieldName " . constant("self::$direction");
                 }
                 $orderClause .= implode(', ', $cls);
-            }
-            else {
+            } else {
                 $orderClause .= $clause;
             }
         }
@@ -401,36 +388,45 @@ class QAL extends DBA {
     }
 
     /**
-     * Build SQL.
+     * Build SQL query
      *
-     *
-     * @param string $tableName Table name.
-     * @param array|string|bool $fields Fields.
-     * @param mixed $condition Operation condition.
-     * @param array|string $order Sort order.
-     * @param array|string $limit Limit.
-     * @return string
-     *
+     * @param array $args Arguments for query.
+     * @return array
+     * 
      * @throws SystemException
      */
-    protected function buildSQL($tableName, $fields = true, $condition = null, $order = null, $limit = null) {
+    protected function buildSQL(array $args) {
         //If first argument contains space  - assume this is SQL string
-        if (strpos($tableName, ' ')){
-            return $tableName;
+        if (strpos($args[0], ' ')) {
+            return $args;
         }
+        //Want to do it this way - but it throws Notice with our level of error reporting
+        //list($tableName, $fields, $condition, $order, $limit )  = $args;
 
+        $fields = true;
+        $condition = $order = $limit = null;
+        $tableName = $args[0];
+        if (isset($args[1])) {
+            $fields = $args[1];
+        }
+        if (isset($args[2])) {
+            $condition = $args[2];
+        }
+        if (isset($args[3])) {
+            $order = $args[3];
+        }
+        if (isset($args[4])) {
+            $limit = $args[4];
+        }
 
         if (is_array($fields) && !empty($fields)) {
             $fields = array_map('strtolower', $fields);
             $fields = implode(', ', $fields);
-        }
-        elseif (is_string($fields)) {
+        } elseif (is_string($fields)) {
             $fields = strtolower($fields);
-        }
-        elseif ($fields === true) {
+        } elseif ($fields === true) {
             $fields = '*';
-        }
-        else {
+        } else {
             throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB, array($tableName, $fields, $condition, $order, $limit));
         }
 
@@ -448,12 +444,11 @@ class QAL extends DBA {
         if (isset($limit)) {
             if (is_array($limit)) {
                 $sqlQuery .= ' LIMIT ' . implode(', ', $limit);
-            }
-            else {
+            } else {
                 $sqlQuery .= " LIMIT $limit";
             }
         }
-        return $sqlQuery;
+        return array($sqlQuery);
     }
 
     /**
@@ -465,13 +460,8 @@ class QAL extends DBA {
      * @return null|string
      */
     public function getScalar() {
-        $args = func_get_args();
+        $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
 
-        $query = call_user_func_array(array($this, 'buildSQL'), $args);
-        if (!is_string($query) || strlen($query) == 0) {
-            return null;
-        }
-        $res = $this->pdo->query('/*ms=slave*/'.($this->lastQuery = $query));
         if ($res instanceof PDOStatement) {
             return $res->fetchColumn();
         }
@@ -488,12 +478,8 @@ class QAL extends DBA {
      * @return array
      */
     public function getColumn() {
-        $args = func_get_args();
-        $query = call_user_func_array(array($this, 'buildSQL'), $args);
-        if (!is_string($query) || strlen($query) == 0) {
-            return array();
-        }
-        $res = $this->pdo->query('/*ms=slave*/'.($this->lastQuery = $query));
+        $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
+
         $result = array();
         if ($res instanceof PDOStatement) {
             while ($row = $res->fetch(PDO::FETCH_NUM)) {

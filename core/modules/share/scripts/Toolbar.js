@@ -445,6 +445,7 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
      */
     build:function () {
         this.parent();
+        this.element.addClass(this.properties.id + '_btn');
         var control = this;
         this.element.addEvents({
             'mouseover':function () {

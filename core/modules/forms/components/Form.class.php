@@ -26,12 +26,12 @@ class Form extends DBDataSet {
      * Form ID.
      * @var bool $formID
      */
-    private $formID;
+    protected $formID;
     /**
      * Form info.
      * @var Saver $saver
      */
-    private $saver;
+    protected $saver;
 
     /*
      * @var FormResults

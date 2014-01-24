@@ -1,71 +1,67 @@
 <?php
 /**
- * Содержит класс SiteManager
+ * @file
+ * SiteManager.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class SiteManager;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Работа с сайтам
+ * Site manager.
  *
- * @package energine
- * @subpackage kernel
- * @author d.pavka@gmail.com
+ * @code
+final class SiteManager;
+@endcode
+ *
  * @final
  */
 final class SiteManager extends DBWorker implements Iterator {
-    /**
-     * Инстанс текущего класса
+    /*
+     * Instance of the current class.
      *
-     * @access private
-     * @var SiteManager
-     * @static
+     * @var SiteManager $instance
      */
     //private static $instance;
 
     /**
-     * Данные о всех зарегистрированных сайтах
-     *
-     * @access private
-     * @var Site[]
+     * Data about all registered sites.
+     * Array of Site's.
+     * @var array $data
      */
     private $data;
     /**
-     * Индекс используемый при итерации
-     *
-     *
-     * @access private
-     * @var int
-     * @static
+     * Iteration index.
+     * @var int $index
      */
     private static $index = 0;
 
     /**
-     * Идентификатор текущего сайта
-     *
-     * @access private
-     * @var int
+     * Current site ID.
+     * @var int $currentSiteID
      */
     private $currentSiteID = null;
 
     /**
-     * Конструктор класса
+     * @copydoc DBWorker::__construct
      *
-     * @access private
+     * @throws SystemException 'ERR_NO_SITE'
+     * @throws SystemException 'ERR_403'
      */
     public function __construct() {
         parent::__construct();
         $uri = URI::create();
         $this->data = Site::load();
 
-        if (!(
-                $this->getConfigValue('site.debug')
-                &&
-                $res = $this->getConfigValue('site.dev_domains')
-        )
+        if (!($this->getConfigValue('site.debug')
+              && $res = $this->getConfigValue('site.dev_domains'))
         ) {
             $request = 'SELECT d . * , site_id as domain_site
                       FROM `share_domains` d
@@ -117,10 +113,12 @@ final class SiteManager extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает екземпляр объекта Site по идентификатору
+     * Get exemplar of Site object by his ID.
      *
+     * @param int $siteID Site ID.
      * @return Site
-     * @access public
+     *
+     * @throws SystemException 'ERR_NO_SITE'
      */
     public function getSiteByID($siteID) {
         if (!isset($this->data[$siteID])) {
@@ -130,11 +128,10 @@ final class SiteManager extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает экземпляр объекта сайт по идентфикатору страницы
+     * Get exemplar of Site object by his page ID.
      *
-     * @param int идентфикатор страницы
+     * @param int $pageID Page ID.
      * @return Site
-     * @access public
      */
     public function getSiteByPage($pageID) {
         return $this->getSiteByID(
@@ -143,10 +140,9 @@ final class SiteManager extends DBWorker implements Iterator {
     }
 
     /**
-     * Returns current's site
+     * Returns current site.
      *
      * @return Site
-     * @access public
      */
     public function getCurrentSite() {
         return $this->data[$this->currentSiteID];
@@ -154,10 +150,11 @@ final class SiteManager extends DBWorker implements Iterator {
     }
 
     /**
-     * Возвращает сайт по умолчанию
+     * Get default site.
      *
      * @return Site
-     * @access public
+     *
+     * @throws SystemException 'ERR_NO_DEFAULT_SITE'
      */
     public function getDefaultSite() {
         foreach ($this->data as $site) {
@@ -168,60 +165,25 @@ final class SiteManager extends DBWorker implements Iterator {
         throw new SystemException('ERR_NO_DEFAULT_SITE', SystemException::ERR_DEVELOPER);
     }
 
-    /**
-     * Возвращает текущий элемент при итерации
-     *
-     * @return Site
-     * @access public
-     * @see Iterator
-     */
     public function current() {
         $siteIDs = array_keys($this->data);
 
         return $this->data[$siteIDs[self::$index]];
     }
 
-    /**
-     * Возвращает идентификатор текущего сайта(при итерации только)
-     *
-     * @return int
-     * @access public
-     * @see Iterator
-     */
     public function key() {
         $siteIDs = array_keys($this->data);
         return $siteIDs[self::$index];
     }
 
-    /**
-     * Передвигает счетчик на следующий елемент
-     *
-     * @return void
-     * @access public
-     * @see Iterator
-     */
     public function next() {
         self::$index++;
     }
 
-    /**
-     * Сбрасывает счетчик текущих елементов на начало
-     *
-     * @return void
-     * @access public
-     * @see Iterator
-     */
     public function rewind() {
         self::$index = 0;
     }
 
-    /**
-     * Возвращает флаг указывающий существует ли елемент
-     *
-     * @return boolean
-     * @access public
-     * @see Iterator
-     */
     public function valid() {
         $siteIDs = array_keys($this->data);
         return isset($siteIDs[self::$index]);

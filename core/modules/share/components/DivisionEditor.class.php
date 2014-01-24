@@ -1,72 +1,74 @@
 <?php
-
 /**
- * Содержит класс DivisionEditor
+ * @file
+ * DivisionEditor, SampleDivisionEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+final class DivisionEditor;
+interface SampleDivisionEditor;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Редактор разделов
+ * Division editor.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+final class DivisionEditor;
+@endcode
+ *
  * @final
  */
 final class DivisionEditor extends Grid implements SampleDivisionEditor {
+    /**
+     * Template content.
+     * @var string TMPL_CONTENT
+     */
     const TMPL_CONTENT = 'content';
+    /**
+     * Template layout.
+     * @var string TMPL_LAYOUT
+     */
     const TMPL_LAYOUT = 'layout';
     /**
-     * Редактор сайтов
-     * @var SiteEditor
+     * Site editor.
+     * @var SiteEditor $siteEditor
      */
     private $siteEditor;
     /**
-     * Редактор переводов
-     *
-     * @var TranslationEditor
-     * @access private
+     * Translation editor.
+     * @var TranslationEditor $transEditor
      */
     private $transEditor;
     /**
-     * Редактор пользователей
-     *
-     * @var UserEditor
-     * @access private
+     * User editor.
+     * @var UserEditor $userEditor
      */
     private $userEditor;
     /**
-     * Редактор ролей
-     *
-     * @var RoleEditor
-     * @access private
+     * Role editor.
+     * @var RoleEditor $roleEditor
      */
     private $roleEditor;
     /**
-     * Редактор языков
-     *
-     * @var LanguageEditor
-     * @access private
+     * Language editor.
+     * @var LanguageEditor $langEditor
      */
     private $langEditor;
     /**
-     * Редактор виджетов
-     * @var WidgetsRepository
+     * Widget editor.
+     * @var WidgetsRepository $widgetEditor
      */
     private $widgetEditor;
 
     /**
-     * Конструктор класса
-     *
-     * @param string
-     * @param string
-     * @param array
-     * @return void
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -79,12 +81,12 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Строит вкладку прав
+     * Build tab of rights.
      *
-     * @param int идентификатор раздела(при создании раздела используем родительский идентификатор)
-     * @return void
+     * @param int $id Division ID.
+     *
+     * @note By creation of new division use parent ID.
      */
-
     private function buildRightsTab($id) {
         $builder = new Builder($this->getTitle());
 
@@ -163,13 +165,10 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Для setRole создаем свое описание данных
-     * Для поля smap_pid формируется Дерево разделов
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc Grid::createDataDescription
      */
-
+    // Для setRole создаем свое описание данных
+    // Для поля smap_pid формируется Дерево разделов
     protected function createDataDescription() {
         $result = parent::createDataDescription();
 
@@ -200,13 +199,13 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Возвращает список шаблонов
+     * Load template data.
      * Этот список загружается в соответствующий FieldDescription
      *
-     * @param string тип шаблона(layout/content)
-     * @param string папка сайта
+     * @param string $type Template type (layout/content).
+     * @param string $siteFolder Site folder.
+     * @param bool|string $oldValue Old value.
      * @return array
-     * @access private
      */
     private function loadTemplateData($type, $siteFolder, $oldValue = false) {
         $result = array();
@@ -277,12 +276,9 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Добавляет данные об УРЛ
-     *
-     * @return array
-     * @access protected
+     * @copydoc Grid::loadData
      */
-
+    // Добавляет данные об УРЛ
     protected function loadData() {
         $result = parent::loadData();
 
@@ -307,6 +303,9 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
         return $result;
     }
 
+    /**
+     * @copydoc Grid::getRawData
+     */
     protected function getRawData() {
         $params = $this->getStateParams(true);
         $this->setFilter(array('site_id' => $params['site_id']));
@@ -331,12 +330,9 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Подменяем построитель для метода setPageRights
-     *
-     * @return AbstractBuilder
-     * @access protected
+     * @copydoc Grid::prepare
      */
-
+    // Подменяем построитель для метода setPageRights
     protected function prepare() {
         parent::prepare();
         if (in_array($this->getState(), array('add', 'edit'))) {
@@ -347,14 +343,9 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Переопределенный внешний метод сохранения
-     * добавлено значение урла страницы
-     * Вызывает внутренний метод сохранения saveData(), который и производит собственно все действия
-     *
-     * @return void
-     * @access protected
+     * @copydoc Grid::save
      */
-
+    // добавлено значение урла страницы
     protected function save() {
         $this->setSaver(
             new DivisionSaver()
@@ -395,6 +386,9 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
         $b->setProperty('result', true)->setProperty('mode', $mode)->setProperty('url', $url);
     }
 
+    /**
+     * @copydoc Grid::add
+     */
     protected function add() {
         parent::add();
         //@todo Тут пришлось пойти на извращение
@@ -450,6 +444,9 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
         }
     }
 
+    /**
+     * @copydoc Grid::edit
+     */
     protected function edit() {
         parent::edit();
         $this->buildRightsTab($smapID = $this->getData()->getFieldByName('smap_id')->getRowData(0));
@@ -550,12 +547,9 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Добавлен перевод для корня дерева разделов
-     *
-     * @return void
-     * @access protected
+     * @copydoc Grid::main
      */
-
+    // Добавлен перевод для корня дерева разделов
     protected function main() {
         parent::main();
         $params = $this->getStateParams(true);
@@ -573,13 +567,11 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
 
 
     /**
-     * Не позволяет удалить раздел по умолчанию а также системные разделы
+     * @copydoc Grid::deleteData
      *
-     * @param int
-     * @return void
-     * @access protected
+     * @throws SystemException 'ERR_DEV_BAD_DATA'
      */
-
+    // Не позволяет удалить раздел по умолчанию а также системные разделы
     protected function deleteData($id) {
         $res =
             $this->dbh->select('share_sitemap', array('smap_pid'), array($this->getPK() => $id));
@@ -599,9 +591,7 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Выводит редактор виджетов
-     *
-     * @return void
+     * Show widget editor.
      */
     protected function showWidgetEditor() {
         $this->request->shiftPath(1);
@@ -611,13 +601,7 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
 
-    /**
-     * Для метода show слешатся имена разделов
-     *
-     * @return DOMNode
-     * @access public
-     */
-
+    // Для метода show слешатся имена разделов
     public function build() {
         switch ($this->getState()) {
             case 'showPageToolbar':
@@ -660,12 +644,10 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Метод возвращает свойства узла
+     * Get node property.
      *
-     * @return void
-     * @access protected
+     * @throws SystemException 'ERR_404'
      */
-
     protected function getProperties() {
 
         $id = $_POST['id'];
@@ -688,6 +670,9 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
         $this->setBuilder($b);
     }
 
+    /**
+     * Get template information.
+     */
     protected function getTemplateInfo() {
         $res = $this->dbh->select('SELECT smap_layout, smap_content, IF(smap_content_xml<>"", 1,0 ) as modified FROM share_sitemap WHERE smap_id = %s', $this->document->getID());
         if (!empty($res)) {
@@ -722,10 +707,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
             //То есть если страница создана не по шаблону из ядра
             //и существует одноименный шаблон ядра
             //то добавляется опция возможности откатиться к шаблону ядра
-            if (
-                (dirname($res['smap_content']) != '.')
-                &&
-                file_exists('templates/content/' . basename($res['smap_content']))
+            if ((dirname($res['smap_content']) != '.')
+                && file_exists('templates/content/' . basename($res['smap_content']))
             ) {
                 $result['actionSelector']['revert'] = $this->translate('TXT_REVERT_CONTENT');
             }
@@ -737,12 +720,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Выводит панель управления страницей
-     *
-     * @return void
-     * @access protected
+     * Show page toolbar.
      */
-
     protected function showPageToolbar() {
         if (!$this->getConfig()->getCurrentStateConfig()) {
             throw new SystemException('ERR_DEV_TOOLBAR_MUST_HAVE_CONFIG', SystemException::ERR_DEVELOPER);
@@ -755,14 +734,9 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Селектор
-     *
-     * @return void
-     * @access protected
+     * Selector.
      */
-
     protected function selector() {
-
         $this->addTranslation('TXT_DIVISIONS');
         $this->prepare();
 
@@ -776,17 +750,12 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
 
         $this->setProperty('site', $siteID);
         $this->setFilter(array('site_id' => $siteID));
-
     }
 
 
     /**
-     * Вывод редактора переводов
-     *
-     * @return void
-     * @access protected
+     * Show translation editor.
      */
-
     protected function showTransEditor() {
         $this->request->shiftPath(1);
         $this->transEditor =
@@ -795,12 +764,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Вывод редактора пользователей
-     *
-     * @return void
-     * @access protected
+     * Show user editor.
      */
-
     protected function showUserEditor() {
         $this->request->shiftPath(1);
         $this->userEditor =
@@ -809,12 +774,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Вывод редактора ролей
-     *
-     * @return void
-     * @access protected
+     * Show role editor.
      */
-
     protected function showRoleEditor() {
         $this->request->shiftPath(1);
         $this->roleEditor =
@@ -823,12 +784,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Вывод редактора языков
-     *
-     * @return void
-     * @access protected
+     * Show language editor.
      */
-
     protected function showLangEditor() {
         $this->request->shiftPath(1);
         $this->langEditor =
@@ -837,12 +794,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Вывод редактора сайтов
-     *
-     * @return void
-     * @access protected
+     * Show site editor.
      */
-
     protected function showSiteEditor() {
         $this->request->shiftPath(1);
         $this->siteEditor =
@@ -851,9 +804,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 
     /**
-     * Сброс шаблона контента
-     * При вызове метода XML код контента берется из файла
-     * @return void
+     * Reset content template.
+     * @note XML content code taken from the file.
      */
     protected function resetTemplates() {
         $ap = $this->getStateParams(true);
@@ -889,13 +841,8 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
 
 
     /**
-     * Изменяет порядок следования
-     *
-     * @param string
-     * @return JSON String
-     * @access protected
+     * @copydoc Grid::changeOrder
      */
-
     protected function changeOrder($direction) {
 
         $id = $this->getStateParams();
@@ -976,8 +923,13 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
     }
 }
 
+//todo VZ: Remove this?
 /**
- * Фейковый интерфейс для создания образца
+ * Fake interface to create sample.
+ *
+ * @code
+interface SampleDivisionEditor;
+@endcode
  */
 interface SampleDivisionEditor {
 }

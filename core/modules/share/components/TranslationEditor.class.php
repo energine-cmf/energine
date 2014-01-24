@@ -1,29 +1,30 @@
 <?php
 /**
- * Содержит класс TranslationEditor
+ * @file
+ * TranslationEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class TranslationEditor;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Редактор переводов
+ * Translation editor.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class TranslationEditor;
+@endcode
  */
 class TranslationEditor extends Grid {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -31,6 +32,9 @@ class TranslationEditor extends Grid {
         $this->setOrder(array('ltag_name' => QAL::ASC));
     }
 
+    /**
+     * @copydoc Grid::prepare
+     */
     protected function prepare() {
         parent::prepare();
         if (in_array($this->getState(), array('add', 'edit'))) {
@@ -38,6 +42,9 @@ class TranslationEditor extends Grid {
         }
     }
 
+    /**
+     * @copydoc Grid::saveData
+     */
     protected function saveData() {
         //обрезаем лишние незначащие пробелы и прочее в самих тегах и в переводах
         //в переводах - сделано на случай вывода в джаваскрипт

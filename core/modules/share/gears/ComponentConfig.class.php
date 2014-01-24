@@ -1,62 +1,72 @@
 <?php
 /**
- * Содержит класс ComponentConfig
+ * @file
+ * ComponentConfig.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class ComponentConfig;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2007
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс реализующий работу с конфигурационным файлом компонента
+ * Component configuration manager.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class ComponentConfig;
+@endcode
  */
 class ComponentConfig {
     /**
-     * Путь к директории, содержащей пользовательские файлы конфигурации для компонентов
+     * Site configuration directory.
+     * Path to the directory, that contains configuration files for the component.
+     * @var string SITE_CONFIG_DIR
      */
     const SITE_CONFIG_DIR = '/modules/%s/config/';
 
     /**
-     * Путь к директории, содержащей файлы конфигурации для стандартных компонентов
-     * (вместо %s будет подставлено имя модуля, содержащего компонент)
+     * Core configuration directory.
+     * Path to the directory, that contains configuration files for standard components.
+     *
+     * @var string CORE_CONFIG_DIR
+     *
+     * @note @c %s will be substituted to the module name, that contains the component.
      */
     const CORE_CONFIG_DIR = '/modules/%s/config/';
 
     /**
-     * Конфигурационный файл
-     *
-     * @var SimpleXMLElement
-     * @access private
+     * Configuration file.
+     * @var SimpleXMLElement $config
      */
     private $config = false;
 
     /**
-     * Конфигурация текущего метода
-     *
-     * @var SimpleXMLElement
-     * @access private
+     * Configuration of the current state.
+     * @var SimpleXMLElement $currentState
      */
     private $currentState = false;
+
     /**
-     * Перечень "приклееных состояний"
-     *
-     * @var array
+     * List of "glued states".
+     * @var array $stickedStates
      */
     private $stickedStates = array();
 
     /**
-     * Инициализирует конфигурацию
+     * Initialize configuration.
      *
-     * @param mixed $config конфигурация или имя конфигурационного файла
-     * @param string $className
-     * @param string $moduleName
-     * @return \ComponentConfig
+     * @param mixed $config Configuration or configuration filename.
+     * @param string $className Class name.
+     * @param string $moduleName Module name.
+     * @return ComponentConfig
      *
+     * @throws SystemException 'ERR_DEV_BAD_CONFIG_FILE'
+     * @throws SystemException 'ERR_DEV_STRANGE'
      */
     public function __construct($config, $className, $moduleName) {
         //Если это строка(с именем файла) или false
@@ -81,11 +91,13 @@ class ComponentConfig {
     }
 
     /**
-     * Возвращает полный путь к конфигурационному файлу, или false если файл не существует.
+     * Get full path to the configuration file.
      *
-     * @param $configFilename
-     * @param $moduleName
-     * @return bool|string
+     * It will return @c false if the file was not found.
+     *
+     * @param string $configFilename Configuration file name.
+     * @param string $moduleName Module name.
+     * @return string|bool
      */
     private function getConfigPath($configFilename, $moduleName) {
         $file = false;
@@ -103,11 +115,11 @@ class ComponentConfig {
     }
 
     /**
-     * Устанавливает имя текущего метода
+     * Set current state.
      *
-     * @throws SystemException
-     * @param $methodName
-     * @return void
+     * @param string $methodName Method name.
+     *
+     * @throws SystemException 'ERR_NO_METHOD '
      */
     public function setCurrentState($methodName) {
         if (!($this->currentState = $this->getStateConfig($methodName))) {
@@ -117,10 +129,11 @@ class ComponentConfig {
     }
 
     /**
-     * @param $methodName string имя метода
-     * @param $patterns array|string набор паттернов
-     * @param bool int $rights
-     * @return void
+     * Register state.
+     *
+     * @param string $methodName Method name.
+     * @param array|string $patterns Set of patterns.
+     * @param bool|int $rights Rights.
      */
     protected function registerState($methodName, $patterns, $rights = false) {
         if ($this->config) {
@@ -139,31 +152,28 @@ class ComponentConfig {
     }
 
     /**
-     * Возвращает конфигурацию текущего метода
+     * Get configuration of current state.
      *
-     * @return ConfigElement
-     * @access public
+     * @return SimpleXMLElement
      */
     public function getCurrentStateConfig() {
         return $this->currentState;
     }
 
     /**
-     * Возвращает флаг того, что конфиг пустой
+     * Check if configuration is empty.
      *
      * @return boolean
-     * @access public
      */
-
     public function isEmpty() {
         return ($this->config) ? false : true;
     }
 
     /**
-     * Возвращает имя действия из конфигурации, основываясь на URI запроса.
-     * @param $path
-     * @internal param $string
-     * @access public
+     * Get action name from configuration.
+     * It based on URI request.
+     *
+     * @param string $path URI path.
      * @return array
      */
     public function getActionByURI($path) {
@@ -251,11 +261,10 @@ class ComponentConfig {
     }
 
     /**
-     * Возвращает конфигурацию для указанного состояния
+     * Get state configuration for specific state.
      *
-     * @access public
-     * @param string $methodName имя метода
-     * @return SimpleXMLElement
+     * @param string $methodName Method name.
+     * @return SimpleXMLElement|false
      */
     public function getStateConfig($methodName) {
         $result = false;
@@ -269,8 +278,9 @@ class ComponentConfig {
     }
 
     /**
-     * Возвращает перечень параметров состояния заданных в конфигурационном файле
-     * @return array || bool
+     * Get list of current state parameters from configuration file.
+     *
+     * @return array|bool
      */
     public function getCurrentStateParams() {
         $result = false;

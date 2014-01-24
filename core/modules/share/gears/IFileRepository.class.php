@@ -1,207 +1,209 @@
 <?php
-
 /**
- * Интерфейс IFileRepository
+ * @file
+ * IFileRepository.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+interface IFileRepository;
+@endcode
+ *
  * @author Andy Karpov <andy.karpov@gmail.com>
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Интерфейс загрузчика файлов.
+ * Interface for the file loader.
  *
- * @package energine
- * @subpackage kernel
- * @author Andy Karpov <andy.karpov@gmail.com>
+ * @code
+interface IFileRepository;
+@endcode
  */
 interface IFileRepository {
-
     /**
-     * Конструктор класса
-     *
-     * @param int $id
-     * @param string $base
+     * @param int $id Repository ID.
+     * @param string $base Base path to the repository.
      */
     public function __construct($id, $base);
 
     /**
-     * Метод получения внутреннего имени реализации
+     * Get internal name of implementation.
      *
      * @return string
      */
     public function getName();
 
     /**
-     * Метод установки идентификатора репозитария (upl_id)
+     * Set repository ID (upl_id).
      *
-     * @param int $id
+     * @param int $id Repository ID.
      * @return IFileRepository
      */
     public function setId($id);
 
     /**
-     * Метод получения идентификатора репозитария (upl_id)
+     * Get repository ID (upl_id).
      *
      * @return int
      */
     public function getId();
 
     /**
-     * Метод установки базового пути репозитария (upl_path)
+     * Set base path to the repository (upl_path).
      *
-     * @param string $base
+     * @param string $base Base path.
      * @return IFileRepository
      */
     public function setBase($base);
 
     /**
-     * Метод получения базового пути репозитария (upl_path)
+     * Get base path to the repository (upl_path).
      *
      * @return string
      */
     public function getBase();
 
     /**
-     * Возвращает true, если разрешено создание папок в репозитарии
+     * Check if the creating of directories is allowed.
      *
      * @return boolean
      */
     public function allowsCreateDir();
 
     /**
-     * Возвращает true, если разрешена загрузка файлов в репозитарий
+     * Check if the file uploading is allowed.
      *
      * @return boolean
      */
     public function allowsUploadFile();
 
     /**
-     * Возвращает true, если разрешено редактирование папки в репозитарии
+     * Check if the editing of the directory is allowed.
      *
      * @return boolean
      */
     public function allowsEditDir();
 
     /**
-     * Возвращает true, если разрешено редактирование файла в репозитарии
+     * Check if the editing of the file is allowed.
      *
      * @return boolean
      */
     public function allowsEditFile();
 
     /**
-     * Возвращает true, если разрешено удаление папки из репозитария
+     * Check if the deleting of the directory is allowed.
      *
      * @return boolean
      */
     public function allowsDeleteDir();
 
     /**
-     * Возвращает true, если разрешено удаление файла из репозитария
+     * Check if the deleting of the file is allowed.
      *
      * @return boolean
      */
     public function allowsDeleteFile();
 
+    //todo VZ: Why bool instead of throw?
     /**
-     * Метод загрузки медиа-файла в хранилище
+     * Upload a file to the repository.
      *
-     * @param string $sourceFilename
-     * @param string $destFilename
+     * @param string $sourceFilename Source filename.
+     * @param string $destFilename Destination filename.
      * @return boolean
-     * @throws SystemException
      */
     public function uploadFile($sourceFilename, $destFilename);
 
+    //todo VZ: Why bool instead of throw?
     /**
-     * Метод загрузки alt-файла в хранилище
+     * Upload a @c alt-file to the repository.
      *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @param int $width
-     * @param int $height
+     * @param string $sourceFilename Source filename.
+     * @param string $destFilename Destination filename.
+     * @param int $width Width.
+     * @param int $height Height.
      * @return boolean
-     * @throws SystemException
      */
     public function uploadAlt($sourceFilename, $destFilename, $width, $height);
 
+    //todo VZ: Why bool instead of throw?
     /**
-     * Метод обновления ранее загруженного медиа-файла в хранилище
+     * Update file.
+     * Update the file in the repository.
      *
-     * @param string $sourceFilename
-     * @param string $destFilename
+     * @param string $sourceFilename Source filename.
+     * @param string $destFilename Destination filename.
      * @return boolean|object
-     * @throws SystemException
      */
     public function updateFile($sourceFilename, $destFilename);
 
+    //todo VZ: Why bool instead of throw?
     /**
-     * Метод обновления ранее загруженного alt-файла в хранилище
+     * Update @c alt-file.
+     * Update the @c alt-file in the repository.
      *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @param int $width
-     * @param int $height
+     * @param string $sourceFilename Source filename.
+     * @param string $destFilename Destination filename.
+     * @param int $width Width.
+     * @param int $height Height.
      * @return boolean
-     * @throws SystemException
      */
     public function updateAlt($sourceFilename, $destFilename, $width, $height);
 
+    //todo VZ: Why bool instead of throw?
     /**
-     * Метод удаления media-файла из хранилища
+     * Delete file from repository.
      *
-     * @param string $filename имя файла
+     * @param string $filename Filename.
      * @return boolean
-     * @throws SystemException
      */
     public function deleteFile($filename);
 
+    //todo VZ: Why bool instead of throw?
     /**
-     * Метод удаления alt-файла из хранилища
+     * Delete @c alt-file from repository.
      *
-     * @param string $filename имя файла
-     * @param int $width
-     * @param int $height
+     * @param string $filename Filename.
+     * @param int $width Width
+     * @param int $height Height
      * @return boolean
-     * @throws SystemException
      */
     public function deleteAlt($filename, $width, $height);
 
     /**
-     * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)
+     * Get the meta-information of the file (mime-type, size, etc.).
      *
-     * @param $filename
+     * @param string $filename Filename.
      * @return object
-     * @throws SystemException
      */
     public function analyze($filename);
 
+    //todo VZ: Why bool instead of throw?
     /**
-     * Метод создания директории в репозитарии
+     * Create new directory in the repository.
      *
-     * @param string $dir
+     * @param string $dir Directory name.
      * @return boolean
-     * @throws SystemException
      */
     public function createDir($dir);
 
+    //todo VZ: Why bool instead of throw?
     /**
-     * Метод переименования директории в хранилище
+     * Rename directory in the repository.
      *
-     * @param string $dir
+     * @param string $dir Directory name.
      * @return boolean
-     * @throws SystemException
      */
     public function renameDir($dir);
 
     /**
-     * Метод удаления директории из репозитария
+     * Delete directory from the repository.
      *
-     * @param string $dir
-     * @throws SystemException
+     * @param string $dir Directory name.
      */
     public function deleteDir($dir);
 }

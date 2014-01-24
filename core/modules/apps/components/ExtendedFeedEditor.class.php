@@ -1,44 +1,45 @@
 <?php
 /**
- * Содержит класс MediaFeedEditor
+ * @file
+ * ExtendedFeedEditor
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class ExtendedFeedEditor;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2011
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редактор медиа фида
+ * Media feed editor.
  *
- * @package energine
- * @subpackage apps
- * @author dr.Pavka
+ * @code
+class ExtendedFeedEditor;
+@endcode
  */
 class ExtendedFeedEditor extends FeedEditor {
-
     /**
+     * Publication field name-ID
      * Имя поля - идентификатора публикации
-     *
-     * @access private
-     * @var string
+     * @var string $publishFieldName
      */
     private $publishFieldName = false;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc FeedEditor::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setSaver(new ExtendedSaver());
     }
 
+    /**
+     * @copydoc FeedEditor::setParam
+     */
     protected function setParam($name, $value) {
         if ($name == 'tableName') {
             foreach (array_keys($this->dbh->getColumnsInfo($value)) as $columnName) {
@@ -52,12 +53,18 @@ class ExtendedFeedEditor extends FeedEditor {
         parent::setParam($name, $value);
     }
 
+    /**
+     * @copydoc FeedEditor::add
+     */
     protected function add() {
         parent::add();
         $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
         $tm->createFieldDescription();
     }
 
+    /**
+     * @copydoc FeedEditor::edit
+     */
     protected function edit() {
         parent::edit();
         $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
@@ -65,9 +72,9 @@ class ExtendedFeedEditor extends FeedEditor {
         $tm->createField();
     }
     /**
+     * @copydoc FeedEditor::autoCompleteTags
      *
-     * @throws SystemException
-     * @return void
+     * @throws SystemException 'ERR_NO_DATA'
      */
     protected function autoCompleteTags() {
         $b = new JSONCustomBuilder();
@@ -106,11 +113,8 @@ class ExtendedFeedEditor extends FeedEditor {
     }
 
     /**
-     * Публицация \ депубликация материала.
-     *
-     * @return void
+     * Publish material.
      */
-
     protected function publish() {
         list($id) = $this->getStateParams();
         $this->dbh->modifyRequest('UPDATE ' . $this->getTableName() . ' SET ' . $this->publishFieldName . ' = NOT ' . $this->publishFieldName . ' WHERE ' . $this->getPK() . ' = %s', $id);

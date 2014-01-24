@@ -1,113 +1,118 @@
 <?php
-
 /**
- * Содержит класс ComponentManager и интерфейс Block
+ * @file
+ * ComponentManager, IBlock
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class ComponentManager;
+interface IBlock;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
+//todo VZ: What is the difference between ComponentManager and ComponentContainer?
 /**
- * Менеджер набора компонентов документа.
+ * Manager of the set of the document's components.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+final class ComponentManager;
+@endcode
+ *
  * @final
  */
 final class ComponentManager extends Object implements Iterator {
 
     /**
-     * Массив компонентов
-     * используется для быстрого поиска компонента функцией getComponentByName
-     * Наполняется  при добавлении компонента в поток
+     * Set of components.
+     * This set is used to quick find the component by ComponentManager::getComponentByName.
+     * It is filled by adding an component in the stream.
      *
-     * @access private
-     * @var array набор компонентов
+     * @var array $registeredBlocks
      */
     private $registeredBlocks = array();
 
     /**
-     * @access private
-     * @var Document документ
-     * @static
+     * Document.
+     * @var Document $document
      */
     static private $document;
 
     /**
-     * Содержит как компоненты так и контейнеры
-     * @var IBlock[] Массив блоков
+     * Array of blocks (IBlock).
+     * It can contain components and containers.
+     *
+     * @var array $blocks
      */
     private $blocks = array();
     /**
-     * Массив имен блоков
-     * заполняется в функции rewind
-     * используется для ускорения итерации
-     * @var array
+     * Array of block names.
+     * This used for increasing the iterations.
+     * It is filled by ComponentManager::rewind method.
+     *
+     * @var array $blockNames
      */
     private $blockNames = array();
     /**
-     * Текщий индекс итерации
-     * @var int
+     * Iterator index.
+     * @var int $iteratorIndex
      */
     private $iteratorIndex = 0;
 
     /**
-     * Конструктор класса.
-     *
-     * @access public
-
-     * @return void
+     * @param Document $document Document.
      */
     public function __construct(Document $document) {
         self::$document = $document;
     }
 
     /**
-     * Добавляем блок в поток
-     * @param IBlock $block
+     * Add new IBlock to the ComponentManager::$registeredBlocks.
+     *
+     * @param IBlock $block New block.
      */
     public function register(IBlock $block) {
         $this->registeredBlocks[$block->getName()]  = $block;
     }
 
     /**
-     * Добавляет блок в список блоков
-     * @param IBlock $block
-     * @return void
+     * Add new IBlock to the ComponentManager::$blocks.
+     *
+     * @param IBlock $block New block.
      */
     public function add(IBlock $block) {
         $this->blocks[$block->getName()] = $block;
-/*
-        $iterateContainer = function(Block $block) use(&$iterateContainer) {
-            $result = array();
-            if ($block instanceof ComponentContainer) {
-                foreach ($block as $blockChildName => $blockChild) {
-                    $result[$blockChildName] = $blockChild;
-                    $result = array_merge($result, $iterateContainer($blockChild));
-                }
-            }
-            else {
-                 $result[$block->getName()] = $block;
-            }
-            return $result;
-        };
+        /*
+                $iterateContainer = function(Block $block) use(&$iterateContainer) {
+                    $result = array();
+                    if ($block instanceof ComponentContainer) {
+                        foreach ($block as $blockChildName => $blockChild) {
+                            $result[$blockChildName] = $blockChild;
+                            $result = array_merge($result, $iterateContainer($blockChild));
+                        }
+                    }
+                    else {
+                         $result[$block->getName()] = $block;
+                    }
+                    return $result;
+                };
 
-        $this->blockCache = array_merge($this->blockCache, $iterateContainer($block));
- *
- */
+                $this->blockCache = array_merge($this->blockCache, $iterateContainer($block));
+         *
+         */
     }
 
 
     /**
-     * Добавляет компонент.
+     * Add component.
      *
-     * @access public
      * @param Component $component
-     * @return void
+     *
      * @deprecated С поялением концепции блоков нужно использовать ComponentManager::add
      */
     public function addComponent(Component $component) {
@@ -115,10 +120,9 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Возвращает блок с указанным именем.
+     * Get the block by his name.
      *
-     * @access public
-     * @param string $name имя компонента
+     * @param string $name Block name.
      * @return Component
      */
     public function getBlockByName($name) {
@@ -130,14 +134,13 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Создание компонента из XML описания
+     * Create component from XML description.
      *
-     * @param SimpleXMLElement описание компонента
-     * @return Object
-     * @access public
-     * @static
+     * @param SimpleXMLElement $componentDescription Component description.
+     * @return Component
+     *
+     * @throws SystemException ERR_DEV_NO_REQUIRED_ATTRIB [attribute_name]
      */
-
     static public function createComponentFromDescription(SimpleXMLElement $componentDescription) {
         // перечень необходимых атрибутов компонента
         $requiredAttributes = array('name', 'module', 'class');
@@ -174,7 +177,7 @@ final class ComponentManager extends Object implements Iterator {
                         if (isset($params[$paramName])) {
                             if (!is_array($params[$paramName])) {
                                 $params[$paramName] =
-                                        array($params[$paramName]);
+                                    array($params[$paramName]);
                             }
                             array_push($params[$paramName], $paramValue);
                         }
@@ -185,14 +188,14 @@ final class ComponentManager extends Object implements Iterator {
                 }
             }
         }
-/*        $result = false;
-        if(
-            !isset($params['rights'])
-            ||
-            (isset($params['rights']) && self::$document->getRights() >= $params['rights'])
-        ) {
-            $result = self::_createComponent($name, $module, $class, $params);
-        }*/
+        /*        $result = false;
+                if(
+                    !isset($params['rights'])
+                    ||
+                    (isset($params['rights']) && self::$document->getRights() >= $params['rights'])
+                ) {
+                    $result = self::_createComponent($name, $module, $class, $params);
+                }*/
 
         $result = self::_createComponent($name, $module, $class, $params);
 
@@ -200,14 +203,12 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Создает компонент.
-     * Использует
+     * Create component.
      *
-     * @access public
-     * @param string $name
-     * @param string $module
-     * @param string $class
-     * @param array $params
+     * @param string $name Component name.
+     * @param string $module Component module name.
+     * @param string $class Component class.
+     * @param array $params Component properties.
      * @return Component
      */
     public function createComponent($name, $module, $class, $params = null) {
@@ -215,17 +216,16 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Осуществляет поиск блока в описании
+     * Find block in the component XML description by his name.
      *
-     * @static
-     * @param SimpleXMLElement $containerXMLDescription
-     * @param  $blockName
+     * @param SimpleXMLElement $containerXMLDescription Component descriptions.
+     * @param string $blockName Block name.
      * @return IBlock|bool
      */
     static public function findBlockByName(SimpleXMLElement $containerXMLDescription, $blockName) {
         $blocks = $containerXMLDescription->xpath(
             'descendant-or-self::*[name()="container" or name() = "component"]' .
-                    '[@name="' . $blockName . '"]'
+            '[@name="' . $blockName . '"]'
         );
         if (!empty($blocks)) {
             list($blocks) = $blocks;
@@ -238,19 +238,19 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Осуществляет загрузку описания блока из файла
+     * Load the component description from the file.
      *
-     * @static
-     * @throws SystemException
-     * @param  $blockDescriptionFileName
+     * @param string $blockDescriptionFileName File name.
      * @return SimpleXMLElement
+     *
+     * @throws SystemException ERR_DEV_NO_CONTAINER_FILE
+     * @throws SystemException ERR_DEV_BAD_CONTAINER_FILE
      */
     static public function getDescriptionFromFile($blockDescriptionFileName) {
         if (!file_exists($blockDescriptionFileName)) {
             throw new SystemException('ERR_DEV_NO_CONTAINER_FILE', SystemException::ERR_CRITICAL, $blockDescriptionFileName);
         }
-        if (!(
-        $blockDescription = simplexml_load_file($blockDescriptionFileName))) {
+        if (!($blockDescription = simplexml_load_file($blockDescriptionFileName))) {
             throw new SystemException('ERR_DEV_BAD_CONTAINER_FILE', SystemException::ERR_CRITICAL, $blockDescriptionFileName);
         }
 
@@ -258,33 +258,30 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Создает блок по его описанию
+     * Create block from description.
      *
-     * @static
-     * @throws SystemException
-     * @param SimpleXMLElement $blockDescription
+     * @param SimpleXMLElement $blockDescription Block description.
+     * @param array $additionalProps Additional properties.
      * @return IBlock
+     *
+     * @throws SystemException ERR_UNKNOWN_BLOCKTYPE
      */
     static public function createBlockFromDescription(SimpleXMLElement $blockDescription, $additionalProps = array()) {
         $result = false;
         switch ($blockDescription->getName()) {
             case 'content':
                 $props = array_merge(array('tag' => 'content'), $additionalProps);
-                $result =
-                        ComponentContainer::createFromDescription($blockDescription, $props);
+                $result = ComponentContainer::createFromDescription($blockDescription, $props);
                 break;
             case 'page':
                 $props = array_merge(array('tag' => 'layout'), $additionalProps);
-                $result =
-                        ComponentContainer::createFromDescription($blockDescription, $props);
+                $result = ComponentContainer::createFromDescription($blockDescription, $props);
                 break;
             case 'container':
-                $result =
-                        ComponentContainer::createFromDescription($blockDescription);
+                $result = ComponentContainer::createFromDescription($blockDescription);
                 break;
             case 'component':
-                $result =
-                        self::createComponentFromDescription($blockDescription);
+                $result = self::createComponentFromDescription($blockDescription);
                 break;
             default:
                 throw new SystemException('ERR_UNKNOWN_BLOCKTYPE', SystemException::ERR_CRITICAL);
@@ -295,15 +292,15 @@ final class ComponentManager extends Object implements Iterator {
     }
 
     /**
-     * Создает компонент по переданнім параметрам
+     * Create component by requested parameters.
      *
-     * @static
+     * @param string $name Component name.
+     * @param string $module Component module name.
+     * @param  $class Component class.
+     * @param $params Parameters.
+     * @return Component
+     *
      * @throws SystemException
-     * @param  $name
-     * @param  $module
-     * @param  $class
-     * @param  $params
-     * @return
      */
     static private function _createComponent($name, $module, $class, $params = null) {
         try {
@@ -314,81 +311,70 @@ final class ComponentManager extends Object implements Iterator {
                 'class' => (($module !==
                         'site') ? str_replace('*', $module, CORE_COMPONENTS_DIR) :
                         SITE_COMPONENTS_DIR . $module) . '/' . $class .
-                        '.class.php',
+                    '.class.php',
                 'trace' => $e->getTraceAsString()
             ));
         }
         return $result;
     }
 
-    /**
-     * Загружает массив имен блоков в переменную blockNames
-     *
-     * @return void
-     */
     public function rewind() {
         $this->blockNames = array_keys($this->blocks);
         $this->iteratorIndex = 0;
     }
 
-    /**
-     * @return boolean
-     */
     public function valid() {
         return isset($this->blockNames[$this->iteratorIndex]);
     }
 
-    /**
-     * @return string
-     */
     public function key() {
         return $this->blockNames[$this->iteratorIndex];
     }
 
-    /**
-     * @return void
-     */
     public function next() {
         $this->iteratorIndex++;
     }
 
-    /**
-     * @return IBlock
-     */
     public function current() {
         return $this->blocks[$this->blockNames[$this->iteratorIndex]];
     }
 }
 
 /**
+ * Block interface.
  *
+ * @code
+interface IBlock;
+@endcode
  */
 interface IBlock {
     /**
-     * @abstract
+     * Run execution.
      * @return void
      */
     public function run();
-    
+
     /**
-     * @abstract
+     * Is enabled?
      * @return bool
      */
     public function enabled();
+
     /**
-     * @abstract
-     * @return void
+     * Get current rights level of the user.
+     * This is needed for running current action.
+     * @return mixed
      */
     public function getCurrentStateRights();
 
     /**
-     * @abstract
+     * Build block.
      * @return DOMDocument
      */
     public function build();
 
     /**
-     * @abstract
+     * Get name.
      * @return string
      */
     public function getName();

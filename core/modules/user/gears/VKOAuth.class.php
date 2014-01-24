@@ -1,67 +1,80 @@
 <?php
-
 /**
- * Класс VKOAuth
+ * @file
+ * VKOAuth
  *
- * @package energine
- * @subpackage user
+ * It contains the definition to:
+ * @code
+class VKOAuth;
+@endcode
+ *
  * @author Andrii Alieksieienko
  * @copyright 2013 eggmengroup.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс для авторизации пользователей
- * через Вконтакте.
+ * Class for user authorization over <a href="http://vk.com">Вконтакте (VK)</a>.
  *
- * @package energine
- * @subpackage user
- * @author Andrii Alieksieienko
- * @copyright 2013 eggmengroup.com
+ * @code
+class VKOAuth;
+@endcode
  */
 class VKOAuth extends Object {
     /**
-     * VK application id.
-     * @var string
+     * VK application ID.
+     * @var string $appId
      */
     private $appId;
 
     /**
      * VK application secret key.
-     * @var string
+     * @var string $apiSecret
      */
     private $apiSecret;
 
     /**
      * VK access token.
-     * @var string
+     * @var string $accessToken
      */
     private $accessToken = null;
 
     /**
      * Instance curl.
-     * @var resource
+     * @var resource $ch
      */
     private $ch;
 
     /**
-     * ИД пользователя вконтакте.
-     * @var integer
+     * User ID.
+     * @var integer $VKId
      */
     private $VKId = false;
 
     /**
-     * Url для получения access token.
-     * @var string
+     * Callback URL.
+     * URL for getting access token.
+     * @var string $callbackUrl
      */
     private $callbackUrl;
 
+    /**
+     * Authorization URL.
+     * @var string AUTHORIZE_URL
+     */
     const AUTHORIZE_URL = 'https://oauth.vk.com/authorize';
-    const ACCESS_TOKEN_URL = 'https://oauth.vk.com/access_token';
 
     /**
-     * @param array $config
-     * @param string $return
-     * @throws SystemException
+     * Access token URL.
+     * @var string ACCESS_TOKEN_URL
+     */
+    const ACCESS_TOKEN_URL = 'https://oauth.vk.com/access_token';
+
+    //todo VZ: What is return?
+    /**
+     * @param array $config Configurations
+     * @param string|bool $return
      */
     public function __construct($config, $return = false) {
         $this->callbackUrl = ($base = E()->getSiteManager()->getCurrentSite()->base)
@@ -70,25 +83,27 @@ class VKOAuth extends Object {
         $this->apiSecret = $config['secret'];
     }
 
-    /**
-     * @return  void
-     */
     public function __destruct() {
         if(is_resource($this->ch))
             curl_close($this->ch);
     }
 
     /**
-     * @param   string $method
-     * @param   string $responseFormat
-     * @return  string
+     * Get API URL.
+     *
+     * @param string $method Method name.
+     * @param string $responseFormat Response format.
+     * @return string
      */
     public function getApiUrl($method, $responseFormat = 'json') {
         return 'https://api.vk.com/method/' . $method . '.' . $responseFormat;
     }
 
     /**
+     * Connect.
+     *
      * @return mixed
+     *
      * @throws SystemException
      */
     public function connect() {
@@ -113,7 +128,9 @@ class VKOAuth extends Object {
     }
 
     /**
-     * @param array $params
+     * Get login URL.
+     *
+     * @param array $params Parameters.
      * @return string
      */
     public function getLoginUrl($params) {
@@ -128,7 +145,9 @@ class VKOAuth extends Object {
     }
 
     /**
-     * @return string
+     * Get code.
+     *
+     * @return string | bool
      */
     private function getCode() {
         $code = false;
@@ -139,6 +158,8 @@ class VKOAuth extends Object {
     }
 
     /**
+     * Get VK ID.
+     *
      * @return int
      */
     public function getVKId() {
@@ -146,10 +167,12 @@ class VKOAuth extends Object {
     }
 
     /**
-     * @param   string $method
-     * @param   array $parameters
-     * @param   string $format
-     * @return  mixed
+     * API.
+     *
+     * @param string $method Method name.
+     * @param array $parameters Parameters.
+     * @param string $format Format.
+     * @return mixed
      */
     public function api($method, $parameters = array(), $format = 'array') {
         $parameters['timestamp'] = time();
@@ -174,9 +197,11 @@ class VKOAuth extends Object {
     }
 
     /**
-     * @param   string $url
-     * @param   array $parameters
-     * @return  string
+     * Create URL.
+     *
+     * @param string $url URL.
+     * @param array $parameters Parameters.
+     * @return string
      */
     private function createUrl($url, $parameters) {
         $piece = array();
@@ -188,9 +213,11 @@ class VKOAuth extends Object {
     }
 
     /**
-     * @param $url
-     * @param string $method
-     * @param array $postFields
+     * Send request.
+     *
+     * @param string $url URL.
+     * @param string $method Method name.
+     * @param array $postFields Post fields.
      * @return mixed
      */
     private function request($url, $method = 'GET', $postFields = array()) {

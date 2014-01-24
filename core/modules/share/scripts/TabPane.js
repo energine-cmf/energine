@@ -117,6 +117,7 @@ var TabPane = new Class(/** @lends TabPane# */{
         var firstInput = this.currentTab.pane.getElement('div.field div.control input[type=text]')
             || this.currentTab.pane.getElement('div.field div.control textarea');
         if (firstInput) {
+            // TODO Check if this is not DatePicker.
             firstInput.focus();
         }
     },

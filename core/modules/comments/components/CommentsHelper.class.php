@@ -1,29 +1,45 @@
 <?php
-
 /**
- * Хелпер комментариев
- * 
- * Пример вызова из компоннта новостей
- * 
- * $comments = new CommentsHelper('stb_news_comment');
- * $comments->createAndAddField(
- *		$this->getDataDescription(),
- *		$this->getData(), 
- *		$this->getData()->getFieldByName('news_id')->getData()
- *	);
- * 
- * 
+ * @file
+ * CommentsHelper
+ *
+ * It contains the definition to:
+ * @code
+class CommentsHelper;
+@endcode
+ *
  * @author sign
  *
+ * @version 1.0.0
+ */
+
+/**
+ * Comments helper.
+ *
+ * @code
+class CommentsHelper;
+@endcode
+ *
+ * Example from news component:
+ * @code
+$comments = new CommentsHelper('stb_news_comment');
+$comments->createAndAddField(
+$this->getDataDescription(),
+$this->getData(),
+$this->getData()->getFieldByName('news_id')->getData()
+);
+@endcode
  */
 class CommentsHelper extends Comments
 {
-	private $commentsFieldName = 'comments';
+    /**
+     * Comment field name.
+     * @var string $commentsFieldName
+     */
+    private $commentsFieldName = 'comments';
 	
 	/**
-	 * 
-	 * @param string $tableName Комментируемая таблица
-	 * @return CommentsHelper|NULL
+	 * @copydoc Comments::createInstanceFor
 	 */
 	public static function createInstanceFor($tableName, $isTree=false){
 		//@TODO переделать
@@ -34,13 +50,12 @@ class CommentsHelper extends Comments
 	}
 	
 	/**
-	 * Получить комментарии, сбилдить и встроить как поле $fieldName в Data и DataDescription
+     * Get comments, build and integrate as field @c $fieldName into Data and DataDescription.
 	 *
-	 * @param DataDescription $desc
-	 * @param Data $data
-	 * @param mixed $targetIds int|int[] айдишники комментируемых сущностей
-	 * @param string $fieldName имя поля в Dom
-	 * @return void
+	 * @param DataDescription $desc Data description.
+	 * @param Data $data Data.
+	 * @param int|array $targetIds Comment ID(s)
+	 * @param string $fieldName Field name.
 	 */
 	public function createAndAddField(DataDescription $desc, Data $data, $targetIds, $fieldName='comments'){
 		$desc->addFieldDescription($this->createFieldDescription($fieldName));
@@ -48,9 +63,9 @@ class CommentsHelper extends Comments
 	}
 	
 	/**
-	 * Описание поля коментариев
+     * Create field description to the comment.
 	 *
-	 * @param string $fieldName
+	 * @param string $fieldName Field name.
 	 * @return FieldDescription
 	 */
 	protected function createFieldDescription($fieldName=''){
@@ -63,9 +78,9 @@ class CommentsHelper extends Comments
 	}
 	
 	/**
-	 * Извлекаем комментарии и помещаем в Field
+     * Create field.
 	 *
-	 * @param mixed $targetIds int|int[]
+	 * @param int|array $targetIds Comment ID(s).
 	 * @return Field
 	 */
 	protected function createField($targetIds){
@@ -78,11 +93,13 @@ class CommentsHelper extends Comments
 		 $f->setData($data);
 		 return $f;
 	}
-	
+
+    //todo VZ: I do not understand this function.
 	/**
-	 * 
-	 * @param mixed $targetIds int|int[]
-	 * @return  DOMNode
+	 * Get built list.
+     *
+	 * @param int|array $targetIds Comment ID(s).
+	 * @return DOMNode
 	 */
 	public function getBuildedListByIds($targetIds){
 		$data = $this->getListByIds($targetIds); // список комментариев
@@ -91,8 +108,10 @@ class CommentsHelper extends Comments
 	}
 	
 	/**
-	 * @param array $data
-	 * @return  DOMNode
+     * Build comments.
+     *
+	 * @param array $data Data.
+	 * @return DOMNode
 	 */
 	private function buildComments($data){
     	$localData = new Data();
@@ -115,6 +134,7 @@ class CommentsHelper extends Comments
 	}
 	
 	/**
+     * Create new data description.
 	 * 
 	 * @return DataDescription
 	 */
@@ -163,9 +183,9 @@ class CommentsHelper extends Comments
 	}
 	
 	/**
-	 * Внедряем инфу о юзерах в комментарии 
+     * Add information about users.
 	 *
-	 * @param array $data
+	 * @param array $data Data.
 	 * @return array
 	 */
 	private function addUsersInfo($data){
@@ -180,11 +200,12 @@ class CommentsHelper extends Comments
 		}
 		return $data;
 	}
-	
+
+    //todo VZ: same function name in CommentsList
 	/**
-	 * Информация о юзерах оставивших комментарии
-	 * 
-	 * @param array $data
+     * Get users who left comments.
+	 *
+	 * @param array $data Data.
 	 * @return array
 	 */
 	private function getUsersByComments($data){

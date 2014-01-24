@@ -1,48 +1,63 @@
 <?php
+/**
+ * @file
+ * Cache.
+ *
+ * It contains the definition to:
+ * @code
+class Cache;
+@endcode
+ *
+ * @author
+ *
+ * @version 1.0.0
+ */
 
 /**
- * Класс файлового кеша
- * Кеш по сути является
- * файлами расположенными в папке CACHE_DIR
- * Имя файла(без расширения .cache.php) используется в виде ключа
+ * File cache.
  *
+ * @code
+class Cache;
+@endcode
+ *
+ * Cache represent files placed in cache directory.
+ * Cache file name (without ".cache.php") is used as a key.
  */
 class Cache {
     /**
-     * путь к кешу
+     * Path to the cache.
+     * @var string CACHE_DIR
      */
     const CACHE_DIR = '../cache/';
 
     /**
+     * Translation key.
+     * @var string TRANSLATIONS_KEY
      * @deprecated
      */
     const TRANSLATIONS_KEY = 'translations';
 
     /**
-     * Имя файла кеша хранящего инфу о путях
+     * Cache filename, that stores information about paths.
+     * @var string CLASS_STRUCTURE_KEY
      */
     const CLASS_STRUCTURE_KEY = 'class_structure';
     /**
-     * Имя файла кеша хранящего массив с структурой БД
+     * Cache filename, that stores an array with data base structure.
+     * @var string DB_STRUCTURE_KEY
      */
     const DB_STRUCTURE_KEY = 'db_structure';
 
-    /**
-     *
-     */
     public function __construct() {
         $this->enabled =
                 (bool)Object::_getConfigValue('site.cache')
-                        &&
-                        (!(bool)Object::_getConfigValue('site.debug'))
-                        &&
-                        is_dir(self::CACHE_DIR)
-                        &&
-                        is_writable(self::CACHE_DIR);
+                        && (!(bool)Object::_getConfigValue('site.debug'))
+                        && is_dir(self::CACHE_DIR)
+                        && is_writable(self::CACHE_DIR);
     }
 
     /**
-     * Возвращает состояние кеша
+     * Get cache state.
      *
      * @return bool
      */
@@ -51,10 +66,10 @@ class Cache {
     }
 
     /**
-     * Сохраняет данные в кеше
+     * Store data in cache.
      *
-     * @param  $key string
-     * @param  $value mixed
+     * @param string $key Data key.
+     * @param mixed $value Data value.
      * @return bool
      */
     public function store($key, $value) {
@@ -63,8 +78,9 @@ class Cache {
     }
 
     /**
-     * Получает данные из кеша
-     * @param  $key string
+     * Get data from cache.
+     *
+     * @param string $key Data key.
      * @return mixed
      */
     public function retrieve($key) {
@@ -77,7 +93,9 @@ class Cache {
     }
 
     /**
-     * @param $key string Имя ключа
+     * Remove data from cache.
+     *
+     * @param string $key Data key.
      */
     public function dispose($key) {
         if ($fileName = $this->cacheFileExists($key)) {
@@ -86,7 +104,9 @@ class Cache {
     }
 
     /**
-     * @param $key
+     * Get cache file by data key.
+     *
+     * @param string $key Data key.
      * @return string
      */
     private function getCacheFileByKey($key) {
@@ -95,8 +115,10 @@ class Cache {
     }
 
     /**
-     * @param $key string имя ключа
-     * @return string полное имя и путь к файлу кеша | false если не существует
+     * Check if cache file for specific data key exist.
+     *
+     * @param string $key Data key.
+     * @return string|false
      */
     private function cacheFileExists($key) {
         if (file_exists($fileName = $this->getCacheFileByKey($key))) {

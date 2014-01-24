@@ -1,73 +1,90 @@
 <?php
-
 /**
- * 
- * Комментарии - CRUD
- * 
- * Пример
- * //комментируемые IDs
- * $targetIds      = $this->getData()->getFieldByName('news_id')->getData(); // [3,4]
- * list($targetId) = $this->getData()->getFieldByName('news_id')->getData(); // 3
- * 
- * 
- * $comments = new Comments('stb_news_comment');
- * //количество коментариев
- * $cc = $comments->getCountByIds($targetIds); // {3:12, 4:3:}
- * $cc = $comments->getCountByIds(array(-123)); // {0:0}
- * 
- * // новый комментарий
- * $comments->insertItem(
- *		$targetId, 
- *		$userId,
- *		'ещё 1 новый коммент'
- * );
- * 
- * // список комментариев
- * $cList = $comments->getListByIds($targetId);
- * // правим и сохраняем
- * $cItem = $cList[0];
- * $cItem['comment_name'] = '123 1231 123123';
- * $comments->saveItem($cItem);
- * 
- * // удаляем
- * $comments->deleteItem($targetId);
- * 
-}
-
- * 
+ * @file
+ * Comments
+ *
+ * It contains the definition to:
+ * @code
+class Comments;
+@endcode
+ *
  * @author sign
  *
+ * @version 1.0.0
+ */
+
+/**
+ * Comments CRUD.
+ *
+ * @code
+class Comments;
+@endcode
+ *
+ * Examples:
+ * - Comments IDs:
+ * @code
+$targetIds      = $this->getData()->getFieldByName('news_id')->getData(); // [3,4]
+list($targetId) = $this->getData()->getFieldByName('news_id')->getData(); // 3
+@endcode
+ * - Amount of comments:
+ * @code
+$comments = new Comments('stb_news_comment');
+$cc = $comments->getCountByIds($targetIds); // {3:12, 4:3:}
+$cc = $comments->getCountByIds(array(-123)); // {0:0}
+@endcode
+ * - New comment:
+ * @code
+$comments->insertItem(
+$targetId,
+$userId,
+'Comment text'
+);
+@endcode
+ * - List of comments:
+ * @code
+$cList = $comments->getListByIds($targetId);
+@endcode
+ * - Edit and save:
+ * @code
+$cItem = $cList[0];
+$cItem['comment_name'] = '123 1231 123123';
+$comments->saveItem($cItem);
+@endcode
+ *
+ * - Delete:
+ * @code
+$comments->deleteItem($targetId);
+@endcode
  */
 class Comments extends DBWorker
 {
-//	/**
-//	 * Таблица комментируемой сущности 
-//	 * @var string
-//	 */
+	/*
+	 * Таблица комментируемой сущности
+	 * @var string
+	 */
 //	private $baseTable = '';
 	
 	/**
-	 * Таблица с комментариями 
-	 * @var string
+     * Table with comments.
+	 * @var string $commentTable
 	 */
 	protected $commentTable = '';
 	
 	/**
-	 * Коментарии древовидные
-	 * @var bool
+     * Are comments tree-like?
+	 * @var bool $isTree
 	 */
 	protected $isTree = false;
 
     /**
-     *
-     * @var int
+     * Count last list.
+     * @var int $countLastList
      */
     protected $countLastList = null;
 	
 	/**
-	 * 
-	 * @param string $commentTable Таблица с комментариями
-	 * @param bool $isTree
+	 * @param string $commentTable Table name with comments.
+	 * @param bool $isTree Are comments tree-like?
 	 */
 	public function __construct($commentTable, $isTree=false){
 		$this->commentTable = $commentTable;
@@ -77,9 +94,11 @@ class Comments extends DBWorker
 	}
 
 	/**
-	 * 
-	 * @param string $tableName Комментируемая таблица
-	 * @return Comments|NULL
+	 * Create instance.
+     *
+	 * @param string $tableName Commented table.
+     * @param bool $isTree Are comments tree-like?
+	 * @return Comments|null
 	 */
 	public static function createInstanceFor($tableName, $isTree=false){
         //@TODO переделать
@@ -90,7 +109,8 @@ class Comments extends DBWorker
 	}
 	
 	/**
-	 * Таблица с комментариями
+     * Get table with comments.
+	 *
 	 * @return string
 	 */
 	public function getCommentTable(){
@@ -98,12 +118,13 @@ class Comments extends DBWorker
 	}
 	
 	/**
-	 * Список комментариев
+     * Get list of comments by IDs.
+     *
+	 * @param int|array $targetIds Comment ID(s).
+     * @param mixed $limitArr Array limit.
+	 * @return array
      *
      * @see Comments::getCountByLastList()
-     *
-	 * @param mixed $targetIds int|int[]
-	 * @return array
 	 */
 	public function getListByIds($targetIds, $limitArr=null){
 		if(!$targetIds)
@@ -152,11 +173,13 @@ class Comments extends DBWorker
 	}
 
     /**
-     * Результат SELECT FOUND_ROWS() после getListByIds() с лимитом
+     * Get count by last list.
      *
-     * поле запроса без лимита возвращает null
-     * @see Comments::getListByIds()
      * @return int|null
+     *
+     * @note Result of <tt>SELECT FOUND_ROWS()</tt> after @c getListByIds() with limit.
+     *
+     * @see Comments::getListByIds()
      */
     public function getCountByLastList(){
         return $this->countLastList;
@@ -173,15 +196,13 @@ class Comments extends DBWorker
     }
 
 	/**
-	 * Количество комментариев
+     * Get amount of comments by IDs.
+	 *
+	 * @param int|array $targetIds ID(s).
+	 * @param bool $singleRow Return only the first result?
+	 * @return int|int[]
      *
-     * Для получения количества коментов после запроса с лимитом @see Comments::getCountByLastList()
-	 * 
-	 * @param mixed $targetIds int|int[]
-	 * @param bool $singleRow Возвращать ли лишь первый результат как int, 
-	 * иначе возвращается массив {targetId=>count, ...}
-	 * при отсутствии результата возвращает $singleRow ? 0 : array(0)
-	 * @return mixed int|int[]
+     * @see Comments::getCountByLastList()
 	 */
 	public function getCountByIds(array $targetIds, $singleRow = false){
 		if(!$targetIds){
@@ -216,17 +237,17 @@ class Comments extends DBWorker
 	}
 	
 	/**
-	 * Сохранить|Добавить коментарий
-	 * 
-	 * ожидает массив с полями
-	 * [int comment_id,] int target_id, int u_id, string comment_name, [string|int comment_created,]
-	 * [int comment_parent_id,] [bool comment_approved]
-	 * 
-	 * поле comment_created - либо строка 'Y-m-d H:i:s' либо timestamp
+     * Save/add comment.
+	 *
+	 * Input argument looks like:
+     * @code
+[int comment_id,] int target_id, int u_id, string comment_name, [string|int comment_created,] [int comment_parent_id,] [bool comment_approved]
+@endcode
 	 * 
 	 * @param array $comment
-	 * @return mixed int|bool
+	 * @return int|bool
 	 */
+    // поле comment_created - либо строка 'Y-m-d H:i:s' либо timestamp
 	public function saveItem(array $comment){
 		if(isset($comment['comment_id'])){
 			$mode = QAL::UPDATE;
@@ -261,15 +282,15 @@ class Comments extends DBWorker
 	}
 	
 	/**
-	 * Добавить комментарий
-	 * 
-	 * @param int $targetId
-	 * @param int $userId
-	 * @param string $name
-	 * @param string $created
-	 * @param int $parentId
-	 * @param bool $approved 
-	 * @return mixed int|bool
+     * Insert comment.
+	 *
+	 * @param int $targetId Target ID.
+	 * @param int $userId User ID.
+	 * @param string $name Comment name.
+	 * @param string $created Comment time.
+	 * @param int $parentId Parent ID.
+	 * @param bool $approved Approved?
+	 * @return int|bool
 	 */
 	public function insertItem($targetId, $userId, $name, $created='', $parentId=null, $approved=false){
 		$item = array(
@@ -284,9 +305,9 @@ class Comments extends DBWorker
 	}
 	
 	/**
-	 * Удалить комментарии учитывая древовидность
-	 * 
-	 * @param mixed $commentIds int|int[]
+     * Delete comment(s).
+	 *
+	 * @param int|array $commentIds Comment ID(s).
 	 * @return bool
 	 */
 	public function deleteItem($commentIds){

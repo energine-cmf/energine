@@ -1,43 +1,45 @@
 <?php
 /**
- * Содержит класс Form
+ * @file
+ * Form
  *
- * @package energine
- * @subpackage forms
+ * It contains the definition to:
+ * @code
+class Form;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Форма
+ * Form.
  *
- * @package energine
- * @subpackage forms
- * @author d.pavka@gmail.com
+ * @code
+class Form;
+@endcode
  */
 class Form extends DBDataSet {
-    /*
-     * Form identifier
+    /**
+     * Form ID.
+     * @var bool $formID
      */
     protected $formID;
     /**
-     * Form info
-     * @var Saver
+     * Form info.
+     * @var Saver $saver
      */
     protected $saver;
 
-    /**
+    /*
      * @var FormResults
      */
     //private $results;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -67,6 +69,9 @@ class Form extends DBDataSet {
         $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
 
+    /**
+     * @copydoc DBDataSet::defineParams
+     */
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -78,9 +83,9 @@ class Form extends DBDataSet {
         );
     }
 
-    /*
-    * Викликаємо у випадку помилки з captcha
-    */
+    /**
+     * Call this by failure with captcha.
+     */
     protected function failure($errorMessage, $data) {
         $data = array_values($data);
         $this->getConfig()->setCurrentState('main');
@@ -99,12 +104,13 @@ class Form extends DBDataSet {
     }
 
     /**
-     * Сохраняет данные
+     * Save data.
      *
-     * @return $result
-     * @access protected
+     * @param array $data Data.
+     * @return mixed
+     *
+     * @throws SystemException 'ERR_VALIDATE_FORM'
      */
-
     protected function saveData(&$data) {
         //Обрабатываем аплоадсы
         $result = false;
@@ -183,6 +189,9 @@ class Form extends DBDataSet {
 
     }
 
+    /**
+     * Send.
+     */
     protected function send() {
         $postTableName = str_replace('.', '_', $this->getTableName());
         if (!isset($_POST[$postTableName])) {
@@ -281,8 +290,10 @@ class Form extends DBDataSet {
         }
     }
 
-    /*
-     * Перевіряє капчу
+    /**
+     * Check captcha.
+     *
+     * @throws SystemException
      */
     protected function checkCaptcha() {
         require_once('core/modules/share/gears/recaptchalib.php');
@@ -298,6 +309,9 @@ class Form extends DBDataSet {
         }
     }
 
+    /**
+     * Call this by successful captcha.
+     */
     protected function success() {
         $this->setBuilder($this->createBuilder());
 
@@ -325,11 +339,12 @@ class Form extends DBDataSet {
         $this->setTitle($result);
     }
 
+    //todo VZ: Input argument is not used.
     /**
-     * Визначає адресу отримувача інформації з форми
+     * Get recipient E-Mail from form.
      *
+     * @param bool $options Options.
      * @return string
-     * @access private
      */
     protected function getRecipientEmail($options = false) {
         $result =
@@ -339,6 +354,9 @@ class Form extends DBDataSet {
         return $result;
     }
 
+    /**
+     * @copydoc DBDataSet::main
+     */
     protected function main() {
         //If we don't have such form - return recodset with error
         //Otherwise run main method
@@ -350,6 +368,9 @@ class Form extends DBDataSet {
         }
     }
 
+    /**
+     * Return empty recordset.
+     */
     private function returnEmptyRecordset() {
         $f = new Field('error_msg');
         $fd = new FieldDescription('error_msg');
@@ -369,12 +390,10 @@ class Form extends DBDataSet {
 
     }
 
-    /*
-    * Додає опис форми: назву й інформацію про форму.
-    *
-    * @return void
-    * @access private
-    */
+    /**
+     * Build form.
+     * It adds form name and information about the form.
+     */
     private function buildForm() {
         $result = $this->dbh->select('frm_forms_translation',
             array('form_name', 'form_annotation_rtf', 'form_post_annotation_rtf'),

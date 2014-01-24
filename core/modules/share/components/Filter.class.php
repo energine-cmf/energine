@@ -1,87 +1,83 @@
 <?php
 /**
- * Класс Filter
+ * @file
+ * Filter
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Filter;
+@endcode
+ *
  * @author andy.karpov
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 /**
- * Фильтры
+ * Filters.
  *
- * @package energine
- * @subpackage share
- * @author andy.karpov
+ * @code
+class Filter;
+@endcode
  */
 class Filter extends Object {
-
     /**
-     * Имя тeга
+     * Filter tag name.
+     * @var string TAG_NAME
      */
     const TAG_NAME = 'filter';
 
     /**
-     * Документ
-     *
-     * @var DOMDocument
+     * Document.
+     * @var DOMDocument $doc
      */
     private $doc;
 
     /**
-     * Набор полей
-     *
-     * @var FilterField[]
+     * Set of FilterField's.
+     * @var array $fields
      */
     private $fields = array();
 
     /**
-     * Дополнительные свойства фильтра
-     *
-     * @var array
+     * Additional properties.
+     * @var array $properties
      */
     private $properties = array();
 
     /**
-     * Присоединяет фильтр к компоненту
-     *
-     * @var Component
+     * Component of the filter.
+     * @var Component $component
      */
     private $component;
 
-    /**
-     * Конструктор
-     *
-     */
     public function __construct() {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
     }
 
     /**
-     * Привязывает фильтр к компоненту
+     * Attach filter to the component.
      *
-     * @param Component
+     * @param Component $component Component.
      */
-
     public function attachToComponent(Component $component) {
         $this->component = $component;
     }
 
     /**
-     * Возвращает компонент к которому привязан фильтр
+     * Get attached component.
      *
      * @return Component
      */
-
     public function getComponent() {
         return $this->component;
     }
 
     /**
-     * Присоединение филда к фильтру
+     * Attach new filed.
      *
-     * @param FilterField $field
+     * @param FilterField $field New filter field.
      */
     public function attachField(FilterField $field) {
         $field->setIndex(arrayPush($this->fields, $field));
@@ -89,10 +85,11 @@ class Filter extends Object {
     }
 
     /**
-     * Отсоединение филда от фильтра
+     * Detach field.
      *
-     * @param FilterField $field
-     * @throws SystemException
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_TO_DETACH'
+     *
+     * @param FilterField $field filter field.
      */
     public function detachField(FilterField $field) {
         if (!isset($this->fields[$field->getIndex()])) {
@@ -102,11 +99,12 @@ class Filter extends Object {
     }
 
     /**
-     * Построение фильтра по XML-описанию
+     * Build filter from XML description.
      *
-     * @param SimpleXMLElement $filterDescription
+     * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
+     *
+     * @param SimpleXMLElement $filterDescription Filter description.
      * @return mixed
-     * @throws Exception|SystemException
      */
     public function loadXML(SimpleXMLElement $filterDescription) {
         if(!empty($filterDescription))
@@ -125,7 +123,7 @@ class Filter extends Object {
     }
 
     /**
-     * Возвращает набор элементов управления
+     * Get filter fields.
      *
      * @return array
      */
@@ -134,19 +132,19 @@ class Filter extends Object {
     }
 
     /**
-     * Enter description here...
+     * Set filter property.
      *
-     * @param string $name
-     * @param mixed $value
+     * @param string $name Property name.
+     * @param mixed $value Property value.
      */
     public function setProperty($name, $value) {
         $this->properties[$name] = $value;
     }
 
     /**
-     * Enter description here...
+     * Get property.
      *
-     * @param string $name
+     * @param string $name Property name.
      * @return array|null
      */
     public function getProperty($name) {
@@ -157,7 +155,7 @@ class Filter extends Object {
     }
 
     /**
-     * Построение DOM фильтра
+     * Build filter.
      *
      * @return DOMNode
      */
@@ -187,8 +185,7 @@ class Filter extends Object {
     }
 
     /**
-     * Переводит все поля фильтра
-     *
+     * Translate all filter fields.
      */
     public function translate() {
         foreach ($this->fields as $field) {

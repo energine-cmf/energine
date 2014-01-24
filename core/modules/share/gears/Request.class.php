@@ -1,83 +1,86 @@
 <?php
-
 /**
- * Класс Request.
+ * @file
+ * Request.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class Request;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
-
 /**
- * HTTP-запрос.
+ * HTTP-Request.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
  * @final
  */
 final class Request extends Object {
     /**
-     * @access private
-     * @var URI текущий URI запроса
+     * Current request URI.
+     * @var URI $uri
      */
     private $uri;
 
     /**
-     * @access private
-     * @var string путь к корню сайта в общем пути URI
+     * Root path.
+     * Path to the site root in the whole URI path.
+     *
+     * @var string $rootPath
      */
     private $rootPath;
 
     /**
-     * @access private
-     * @var string язык, указанный в URI
+     * Language.
+     * Language, that set in the URI.
+     *
+     * @var string $lang
      */
     private $lang;
 
     /**
-     * @access private
-     * @var array путь из URI запроса (без пути к корню и языка)
+     * Path from URI request.
+     * This is without root path and language piece.
+     *
+     * @var array $path
      */
     private $path;
 
     /**
-     * @access private
-     * @var int смещение в пути, разделяющее путь шаблона, и путь, относящийся к действию
+     * Offset in the path, that separates template path and path for some action.
+     *
+     * @var int $offset
      */
     private $offset;
 
     /**
-     * @var
+     * Counter of used segments.
+     * @var int $usedSegmentsCount
      */
     private $usedSegmentsCount = 0;
 
-    /*
-     * Типы пути:
-     */
-
+    //Типы пути:
     /**
-     * Полный путь
+     * Whole path.
      */
     const PATH_WHOLE = 1;
 
     /**
-     * Путь шаблона
+     * Template path.
      */
     const PATH_TEMPLATE = 2;
 
     /**
-     * Путь, относящийся к действию
+     * Action path.
      */
     const PATH_ACTION = 3;
 
     /**
-     * Конструктор класса.
-     *
-     * @access private
-     * @return void
+     * @throws SystemException
      */
     public function __construct() {
         $this->uri = URI::create();
@@ -114,9 +117,8 @@ final class Request extends Object {
     }
 
     /**
-     * Возвращает URI запроса.
+     * Get request URI.
      *
-     * @access public
      * @return URI
      */
     public function getURI() {
@@ -124,9 +126,8 @@ final class Request extends Object {
     }
 
     /**
-     * Возвращает язык, указанный в URI запроса.
+     * Get language.
      *
-     * @access public
      * @return string
      */
     public function getLang() {
@@ -134,9 +135,8 @@ final class Request extends Object {
     }
 
     /**
-     * Возвращает сегмент(аббревиатуру) языка
+     * Get language segment (abbreviation)
      *
-     * @access public
      * @return string
      */
     public function getLangSegment() {
@@ -144,12 +144,11 @@ final class Request extends Object {
     }
 
     /**
-     * Возвращает путь из URI запроса.
+     * Get path.
      *
-     * @access public
-     * @param int $what тип пути - определяет какую часть пути вернуть
-     * @param boolean $asString вернуть путь в виде строки
-     * @return array
+     * @param int $what Path type (PATH_WHOLE, PATH_TEMPLATE, PATH_ACTION). Defines which piece of the path to return.
+     * @param bool $asString Return as boolean?
+     * @return array|string
      */
     public function getPath($what = self::PATH_WHOLE, $asString = false) {
         $path = array();
@@ -172,11 +171,9 @@ final class Request extends Object {
     }
 
     /**
-     * Устанавливает смещение в пути, разделяющее путь шаблона, и путь, относящийся к действию.
-     *
-     * @access public
-     * @param int $offset
-     * @return void
+     * Set path offset.
+     * @see Request::$offset
+     * @param int $offset Offset.
      */
     public function setPathOffset($offset) {
         $this->offset = $offset;
@@ -184,37 +181,45 @@ final class Request extends Object {
     }
 
     /**
-     * Сдвигает смещение :) на offset пунктов
-     * @param  $offset
-     * @return void
+     * Shift path.
+     *
+     * @param int $offset Number of offset points.
      */
     public function shiftPath($offset) {
         $this->setPathOffset($this->getPathOffset() + $offset);
     }
 
     /**
-     * Возвращает смещение в пути.
+     * Get path offset.
      *
-     * @access public
      * @return int
      */
     public function getPathOffset() {
         return $this->offset;
     }
 
+    /**
+     * Use segments.
+     *
+     * @param int $count Count of used segments.
+     */
     public function useSegments($count = 1){
         $this->usedSegmentsCount = $count;
     }
 
+    /**
+     * Get the count of used segments.
+     *
+     * @return int
+     */
     public function getUsedSegments(){
         return $this->usedSegmentsCount;
     }
 
     /**
-     * Возвращает IP-адрес клиента.
+     * Get client IP-address.
      *
-     * @param $returnAsInt bool
-     * @access public
+     * @param bool $returnAsInt Return as int?
      * @return string
      */
     public function getClientIP($returnAsInt = false) {

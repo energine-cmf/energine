@@ -1,130 +1,142 @@
 <?php
-
 /**
- * Класс DBA.
+ * @file
+ * DBA.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+abstract class DBA;
+@endcode
+ *
  * @author 1m.dm
+ * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
  * Database Abstraction Layer.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
+ * @code
+abstract class DBA;
+@endcode
+ *
  * @abstract
  */
 abstract class DBA extends Object {
-
     /**
-     * @access protected
-     * @var PDO экземпляр класса PDO (PHP Data Objects)
+     * Instance of PDO class (PHP Data Objects).
+     * @var PDO $pdo
      */
     protected $pdo;
 
     /**
-     * @access protected
-     * @var string последний запрос к БД
+     * Last query to the data base.
+     * @var string $lastQuery
      */
     protected $lastQuery;
 
     /**
-     * @var DBStructureInfo
+     * Data base cache.
+     * @var DBStructureInfo $dbCache
      */
     private $dbCache;
 
-    /*
-      * Типы полей таблиц БД:
-      */
-
+    //Типы полей таблиц БД:
     /**
-     * Целое числ
+     * Column type: @c INTEGER
+     * @var string COLTYPE_INTEGER
      */
     const COLTYPE_INTEGER = 'INT';
 
     /**
-     * Число с плавающей точкой
+     * Column type: @c FLOAT
+     * @var string COLTYPE_FLOAT
      */
     const COLTYPE_FLOAT = 'FLOAT';
 
     /**
-     * Дата
+     * Column type: @c DATE
+     * @var string COLTYPE_DATE
      */
     const COLTYPE_DATE = 'DATE';
 
     /**
-     * Время
+     * Column type: @c TIME
+     * @var string COLTYPE_TIME
      */
     const COLTYPE_TIME = 'TIME';
 
     /**
-     * Timestamp
+     * Column type: @c TIMESTAMP
+     * @var string COLTYPE_TIMESTAMP
      */
     const COLTYPE_TIMESTAMP = 'TIMESTAMP';
 
     /**
-     * Дата и врем
+     * Column type: @c DATETIME
+     * @var string COLTYPE_DATETIME
      */
     const COLTYPE_DATETIME = 'DATETIME';
 
     /**
-     * Строка
+     * Column type: @c VARCHAR
+     * @var string COLTYPE_STRING
      */
     const COLTYPE_STRING = 'VARCHAR';
 
-    /**
-     * Типы строк только для внутреннего использования. Без комментариев :)
-     */
+    //Типы строк только для внутреннего использования. Без комментариев :)
     //const COLTYPE_STRING1 = 'STRING';
     //const COLTYPE_STRING2 = 'VAR_STRING';
 
     /**
-     * Текст
+     * Column type: @c TEXT
+     * @var string COLTYPE_TEXT
      */
     const COLTYPE_TEXT = 'TEXT';
 
     /**
-     * Бинарные данные
+     * Column type: @c BLOB
+     * Binary data.
+     *
+     * @var string COLTYPE_BLOB
      */
     const COLTYPE_BLOB = 'BLOB';
 
     /**
-     * Ошибки
+     * Error type of the column.
+     * @var string ERR_BAD_REQUEST
      */
     const ERR_BAD_REQUEST = 'ERR_DATABASE_ERROR';
 
     /**
-     * Первичный индекс
-     *
+     * Primary index
+     * @var string PRIMARY_INDEX
      */
     const PRIMARY_INDEX = 'PRI';
 
     /**
-     * Уникальный индекс
-     *
+     * Unique index.
+     * @var string UNIQUE_INDEX
      */
     const UNIQUE_INDEX = 'UNI';
 
     /**
-     * Индекс
-     *
+     * Index.
+     * @var string INDEX
      */
     const INDEX = 'MUL';
 
     /**
-     * Конструктор класса.
+     * @param string $dsn Data Source Name; for connecting to the data base.
+     * @param string $username User name.
+     * @param string $password Password.
+     * @param array $driverOptions Specific DB driver parameters.
+     * @param string $charset Encoding.
      *
-     * @access public
-     * @param string $dsn Data Source Name для подключения к БД
-     * @param string $username имя пользователя
-     * @param string $password пароль
-     * @param array $driverOptions специфические параметры драйвера БД
-     * @param string $charset кодировка соединения
-     * @throws SystemException
+     * @throws SystemException Unable to connect. The site is temporarily unavailable.
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         try {
@@ -139,39 +151,44 @@ abstract class DBA extends Object {
 
     }
 
-    /*
-     * Возвращает обьект ПДО для
-     * работы с БД напрямую.
+    /**
+     * Get @link DBA::$pdo PDO@endlink.
      *
-     * @access public
+     * Use this for direct work with DB.
+     *
      * @return PDO
      */
-
-    public function getPDO() {
+    public function getPDO(){
         return $this->pdo;
     }
 
+    //todo VZ: What is the alternative?
+    //todo VZ: I think it will be better to throw some value instead of returning false or true.
     /**
-     * Выполняет SELECT-запрос к БД.
+     * Execute SELECT request.
      *
-     * Если количество аргументов метода больше 1, тогда $query трактуется
-     * как строка формата подобно функции printf, а дополнительные аргументы
-     * экранируются и помещаются на место меток (placeholder) строки $query.
+     * It returns one from the following:
+     *  - an array for non-empty result like
+     * @code
+array(
+    rowID => array(
+                   fieldName => fieldValue,
+                   ...
+                  )
+)
+@endcode
+     *  - @c true for empty result;
+     *  - @c false by fail.
      *
-     * Возвращает в результате
-     *     1. Массив вида
-     *            array(
-     *                rowID => array(fieldName => fieldValue, ...)
-     *            )
-     *        если запрос исполнился успешно и вернул какие-либо строки
-     *     2. true, если запрос исполнился успешно, но не вернул ни одной строки;
-     *     3. false, если при выполнении запроса произошла ошибка.
-     *
-     * @access public
-     * @param string $query SELECT-запрос к БД
+     * @param string $query SELECT query.
      * @return mixed
+     *
      * @throws SystemException
-     * @see printf()
+     *
+     * @see DBA::constructQuery
+     *
+     * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
+     *
      * @deprecated
      */
     public function selectRequest($query) {
@@ -194,22 +211,22 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Выполняет модифицирующую (INSERT, UPDATE, DELETE) операцию в БД.
+     * Execute modification request like INSERT, UPDATE, DELETE.
      *
-     * Если количество аргументов метода больше 1, тогда $query трактуется
-     * как строка формата подобно функции printf, а дополнительные аргументы
-     * экранируются и помещаются на место меток (placeholder) строки $query.
      *
-     * Возвращает в результате
-     *     1. Последний сгенерированный ID для поля типа AUTO_INCREMENT, или
-     *     2. true, если запрос выполнен успешно;
-     *     2. false, в случае неудачи.
+     * It returns one from the following:
+     * - last generated ID for field type AUTO_INCREMENT;
+     * - @c true by success;
+     * - @c false by fail.
      *
-     * @access public
-     * @param string $query
+     * @param string $query Query.
      * @return mixed
+     *
+     * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
+     *
+     * @see DBA::constructQuery
+     *
      * @throws SystemException
-     * @see printf()
      */
     public function modifyRequest($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
@@ -229,10 +246,10 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Вызов процедуры
+     * Call procedure.
      *
-     * @param  string $name
-     * @param  array $args
+     * @param  string $name Procedure name.
+     * @param  array $args Procedure arguments.
      * @return array|bool
      */
     public function call($name, &$args = null) {
@@ -252,9 +269,9 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Метод для получения данных с последующей итерацией
+     * Get data for further iteration.
      *
-     * @param string $query SQL запрос
+     * @param string $query SQL request.
      * @return bool|PDOStatement
      */
     public function get($query) {
@@ -266,9 +283,9 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Executes the request
+     * Execute the request.
      *
-     * @param $request
+     * @param string $request Request.
      * @return bool|PDOStatement
      */
     protected function fulfill($request) {
@@ -288,11 +305,11 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Ставит кавычки вокруг входной строки (если необходимо) и экранирует
-     * специальные символы внутри входной строки.
+     * Process string.
      *
-     * @access public
-     * @param string $string
+     * Place, if needed, double quotes around the input string and isolates special symbols inside the string.
+     *
+     * @param string $string Some string.
      * @return string
      */
     public function quote($string) {
@@ -300,9 +317,8 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Возвращает последний запрос к БД.
+     * Get the @link DBA::$lastQuery last query@endlink.
      *
-     * @access public
      * @return string
      */
     public function getLastRequest() {
@@ -310,20 +326,17 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Возвращает последнюю ошибку
+     * Get last error message.
      *
      * @return string
-     * @access public
      */
-
     public function getLastError() {
         return $this->pdo->errorInfo();
     }
 
     /**
-     * Стартует транзакцию.
+     * Begin an transaction.
      *
-     * @access public
      * @return boolean
      */
     public function beginTransaction() {
@@ -331,9 +344,8 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Выполняет (commit) транзакцию.
+     * Execute @c commit transaction.
      *
-     * @access public
      * @return boolean
      */
     public function commit() {
@@ -341,9 +353,8 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Откатывает транзакцию.
+     * Open transaction.
      *
-     * @access public
      * @return boolean
      */
     public function rollback() {
@@ -351,20 +362,23 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Возвращает информацию о колонках таблицы $tableName в виде массива:
-     *     array(
-     *         'columnName' => array(
-     *             'type' => тип колонки,
-     *             'length' => длина,
-     *             'nullable' => принимает ли значение NULL?,
-     *             'key' => описание ключа колонки (если есть),
-     *             'default' => значение по-умолчанию,
-     *             'index'=> тип индекса
-     *         )
-     *     )
+     * Get columns info of the table.
      *
-     * @access public
-     * @param string $tableName
+     * The returned array looks like:
+     * @code
+array(
+    'columnName' => array(
+        'type'      => column type,
+        'length'    => length,
+        'nullable'  => accept NULL?,
+        'key'       => description of the columns key (if exist),
+        'default'   => default value,
+        'index'     => index type
+    )
+)
+@endcode
+     *
+     * @param string $tableName Table name.
      * @return array
      */
     public function getColumnsInfo($tableName) {
@@ -374,34 +388,33 @@ abstract class DBA extends Object {
 
 
     /**
-     * Возвращает для таблицы $tableName имя таблицы с переводами,
-     * если такая существует. В противном случае возвращает false.
+     * Get the table name with translations.
      *
-     * @access public
+     * Get the table name with translations for some table name, if such exist.
+     * Otherwise false will be returned.
+     *
      * @param string $tableName
-     * @return mixed
+     * @return string|bool
      */
     public function getTranslationTablename($tableName) {
         return $this->tableExists($tableName . '_translation');
     }
 
     /**
-     * Существует ли таблица
+     * Check whether some table name exist.
      *
-     * @param $tableName string имя таблицы
-     * @return boolean
-     * @access public
+     * @param $tableName string Table name.
+     * @return string|bool
      */
     public function tableExists($tableName) {
         return ($this->dbCache->tableExists($tableName)) ? $tableName : false;
     }
 
     /**
-     * Существует ли процедура
+     * Check whether some procedure exist.
      *
-     * @param $procName string имя процедуры
+     * @param string $procName Procedure name.
      * @return boolean
-     * @access public
      */
     public function procExists($procName) {
         return ($this->getScalar(
@@ -417,11 +430,10 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Существует ли функция
+     * Check whether some function exist.
      *
-     * @param $funcName string имя функции
+     * @param string $funcName Function name.
      * @return boolean
-     * @access public
      */
     public function funcExists($funcName) {
         return ($this->getScalar(
@@ -437,11 +449,10 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Возвращает имя таблицы с именем базы данных(Fully Qualified) в мускульных кавычках
+     * Get the fully qualified table name in MySQL quotes.
      *
-     * @static
-     * @param  string $tableName
-     * @param bool Возвращать как массив
+     * @param string $tableName Table name.
+     * @param bool $returnAsArray Return as array?
      * @return string | array
      */
     public static function getFQTableName($tableName, $returnAsArray = false) {
@@ -460,13 +471,17 @@ abstract class DBA extends Object {
     }
 
     /**
-     * Формирует строку запроса к БД.
+     * Construct query.
      *
-     * @param array $args массив аргументов, переданных в методы selectRequest и modifyRequest
+     * If the number of the arguments is > 1, then this method behaves like printf() function.
+     *
+     * @param array $args Array from which the single query string will be built.
      * @return string
+     *
+     * @deprecated
+     *
      * @see DBA::selectRequest()
      * @see DBA::modifyRequest()
-     * @deprecated
      */
     protected function constructQuery(array $args) {
         if (sizeof($args) > 1) {
@@ -483,9 +498,12 @@ abstract class DBA extends Object {
     }
 
     /**
-     * @param array $args
+     * Run query.
+     *
+     * @param array $args Query arguments.
      * @return PDOStatement
-     * @throws SystemException
+     *
+     * @throws SystemException 'ERR_BAD_REQUEST'
      */
     protected function runQuery(array $args) {
         if (empty($args)) {

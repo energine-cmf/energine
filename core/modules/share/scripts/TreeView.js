@@ -145,7 +145,6 @@ var TreeView = new Class(/** @lends TreeView# */{
      */
     expandToNode: function(nodeId){
         var nodes = [];
-        //todo: Make this private?
         var lambda = function(node){
             var n;
             if(node && (n = node.getParent())){
@@ -356,7 +355,7 @@ TreeView.Node = new Class(/** @lends TreeView.Node# */{
             this.childs = new Element('ul').addClass('hidden').inject(this.element);
         }
         this.childs.adopt(node.element);
-        //todo: Why we push the node in the tree's node array?
+        //todo: Why we push the node in the tree's node array? -- try to solve
         this.tree.nodes.push(node);
     },
 

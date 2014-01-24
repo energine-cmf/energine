@@ -1,43 +1,57 @@
 <?php
 /**
- * Содержит класс Vote
+ * @file
+ * Vote
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class Vote;
+@endcode
+ *
  * @author andrii a
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 /**
- * Голосование по дисскусиям
+ * Voting by discussions.
  *
- * @package energine
- * @subpackage apps
- * @author andrii a
+ * @code
+class Vote;
+@endcode
  */
 class Vote extends DataSet {
-
+    //todo VZ: Used?
+    /**
+     * Vote ID.
+     * @var int $voteID
+     */
     private $voteID;
 
     /**
-     * Перфикс для файлов куки
+     * Vote prefix for cookie.
      */
-
     const VOTED_COOKIE_PREFIX = 'nrgn_voted_';
 
     /**
-     * Срок жизни куки. Сутки.
+     * Cookie lifespan.
+     * 24 hours.
      */
-
     const COOKIE_LIFETIME = 86400;
 
-
+    /**
+     * @copydoc DataSet::__construct
+     */
     public function __construct($name, $module, array $params = null) {
         $params['active'] = true;
         parent::__construct($name, $module, $params);
         $this->setProperty('recordsPerPage', false);
     }
 
+    /**
+     * @copydoc DataSet::main
+     */
     protected function main() {
         if ($voteId
             = $this->dbh->getScalar('SELECT vote_id FROM apps_vote WHERE vote_is_active ORDER BY vote_date DESC LIMIT 0,1')
@@ -50,10 +64,16 @@ class Vote extends DataSet {
         }
     }
 
+    /**
+     * @copydoc DataSet::createBuilder
+     */
     protected function createBuilder() {
         return new SimpleBuilder();
     }
 
+    /**
+     * Get vote.
+     */
     protected function getVote() {
 
         $sp = $this->getStateParams(true);
@@ -74,6 +94,12 @@ class Vote extends DataSet {
 
     }
 
+    /**
+     * Check if the user can vote.
+     *
+     * @param int|string $voteID Vote ID.
+     * @return bool
+     */
     private function isUserCanVote($voteID) {
         $code = true;
 //        if ($uid = $this->document->getUser()->getID()) {
@@ -86,6 +112,9 @@ class Vote extends DataSet {
         return $code;
     }
 
+    /**
+     * Vote.
+     */
     protected function vote() {
         $sp = $this->getStateParams(true);
         $QID = (int)$sp['qid'];
@@ -99,6 +128,10 @@ class Vote extends DataSet {
         $this->getVoteResults($voteID);
     }
 
+    /**
+     * Get vote result.
+     * @param int|string $voteID Vote ID.
+     */
     private function getVoteResults($voteID) {
         $this->setProperty('count', $counter = $this->dbh->getScalar('apps_vote_question', 'SUM(vote_question_counter)', array('vote_id' => $voteID)));
         $this->prepare();
@@ -113,6 +146,9 @@ class Vote extends DataSet {
         $this->getDataDescription()->addFieldDescription($fd);
     }
 
+    /**
+     * @copydoc DataSet::prepare
+     */
     protected function prepare() {
         $data = new Data();
         $dataDescription = new DataDescription();

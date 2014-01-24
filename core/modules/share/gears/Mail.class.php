@@ -1,234 +1,211 @@
 <?php
-
 /**
- * Содержит класс Mail
+ * @file
+ * Mail.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class Mail;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2007
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Отправщик сообщения
+ * Message sender.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * It contains the definition to:
+ * @code
+final class Mail;
+@endcode
+ *
  * @final
  */
 final class Mail extends Object {
     /**
-     * End Of Line
-     *
+     * End Of Line.
+     * @var string EOL
      */
     const EOL = "\n";
 
     /**
-     * MimeBoundary
-     *
-     * @var string
-     * @access private
+     * Mime boundary.
+     * @var string $MIMEBoundary
      */
     private $MIMEBoundary;
 
     /**
-     * Тема письма
-     *
-     * @var string
-     * @access private
+     * Message subject.
+     * @var string $subject
      */
     private $subject = false;
 
     /**
-     * Адрес отправителя
-     * Формат: Имя отправителя <em@il_address>
-     * @var string
-     * @access private
+     * Sender address.
+     * Format: User name <email\@address.ua>
+     * @var string $sender
      */
     private $sender;
 
     /**
-     * Перечень получателей
-     *
-     * @var array
-     * @access private
+     * Set of recipients.
+     * @var array $to
      */
     private $to = array();
 
     /**
-     * Текст сообщения
-     *
-     * @var string
-     * @access private
+     * Message text.
+     * @var string $text
      */
     private $text = false;
 
     /**
-     * Заголовки письма
-     *
-     * @var array
-     * @access private
+     * Message header.
+     * @var array $headers
      */
     private $headers = array();
 
     /**
-     * Reply-to
-     *
-     * @var string
-     * @access private
+     * Reply-to.
+     * @var string $replyTo
      */
     private $replyTo = array();
 
     /**
-     * Массив файлов для аттачмента
-     *
-     * @var array
-     * @access private
+     * Set of attachments.
+     * @var array $attachments
      */
     private $attachments = array();
 
-    /**
-     * Конструктор класса
-     *
-     * @return void
-     */
-	public function __construct() {
+    public function __construct() {
         $this->sender = $this->getConfigValue('mail.from');
-	}
-
-	/**
-	 * Устанавливает аттрибут от
-	 *
-	 * @param string $email
-	 * @param string $name
-	 * @return Mail
-	 * @access public
-	 */
-
-	public function setFrom($email, $name = false) {
-	    $this->sender = ($name)?'=?UTF-8?B?'.base64_encode($name).'?=<'.$email.'>':$email;
-	    return $this;
-	}
-
-    /**
-     * Устанавливает тему письма
-     *
-     * @param string $subject
-     * @return Mail
-     * @access public
-     */
-
-    public function setSubject($subject) {
-        $this->subject = '=?UTF-8?B?'.base64_encode(strip_tags($subject)).'?=';
-        return $this;
-
     }
 
     /**
-     * Добавляет получателя к списку получателей
+     * Set "from" attribute.
      *
+     * @param string $email Email address.
+     * @param string|bool $name Name.
      * @return Mail
-     * @access public
      */
 
+    public function setFrom($email, $name = false) {
+        $this->sender = ($name)?'=?UTF-8?B?'.base64_encode($name).'?=<'.$email.'>':$email;
+        return $this;
+    }
+
+    /**
+     * Set message subject.
+     *
+     * @param string $subject Subject text.
+     * @return Mail
+     */
+    public function setSubject($subject) {
+        $this->subject = '=?UTF-8?B?'.base64_encode(strip_tags($subject)).'?=';
+        return $this;
+    }
+
+    /**
+     * Add recipient.
+     *
+     * @param string $email Email address.
+     * @param string|bool $name Name.
+     * @return Mail
+     */
     public function addTo($email, $name = false) {
         $email = trim($email);
         $this->to[$email] = ($name)?'=?UTF-8?B?'.base64_encode($name).'?=<'.$email.'>':$email;
         return $this;
     }
+
     /**
-     * Очищает список получателей
-     * 
-     * @access public
+     * Clear recipient list.
+     *
      * @return Mail
      */
     public function clearRecipientList(){
         $this->to = array();
-        
+
         return $this;
     }
-    /**
-     * Добавление reply-to заголовка
-     *
-     * @return Mail
-     * @access public
-     */
 
+    /**
+     * Add recipient to Reply-to
+     *
+     * @param string $email Email address.
+     * @param string|bool $name Name.
+     * @return Mail
+     */
     public function addReplyTo($email, $name = false) {
         $this->replyTo[$email] = ($name)?'=?UTF-8?B?'.base64_encode($name).'?=<'.$email.'>':$email;
         return $this;
     }
 
     /**
-     * Устанавливает текст сообщения
+     * Set message text.
      *
-     * @param string $text
-     * @param mixed $data данные для шаблонизатора
+     * @param string $text Text.
+     * @param mixed $data Data templating.
      * @return Mail
-     * @access public
      */
-
     public function setText($text, $data = false) {
-    	if ($data) {
+        if ($data) {
             if (is_array($data)) {
-            	extract($data);
+                extract($data);
             }
             $host = E()->getSiteManager()->getDefaultSite()->base;
-        	$errorLevel = error_reporting(E_ERROR);
-        	$text = addslashes($text);
-        	eval("\$text = \"$text\";");
-        	error_reporting($errorLevel);
+            $errorLevel = error_reporting(E_ERROR);
+            $text = addslashes($text);
+            eval("\$text = \"$text\";");
+            error_reporting($errorLevel);
         }
         $this->text = $text;
         return $this;
     }
 
     /**
-     * Возвращает текст сообщения
+     * Get message text.
      *
      * @return string
-     * @access public
      */
-
     public function getText() {
         return $this->text;
     }
 
     /**
-     * Добавить аттач
+     * Add attachment.
      *
-     * @param mixed $file
-     * @return void
-     * @access public
+     * @param mixed $file File.
+     * @param string|bool $fileName Filename.
+     * @return Mail
      */
-
     public function addAttachment($file, $fileName = false) {
         if (file_exists($file)) {
-			$fileContent = base64_encode((file_get_contents($file)));
-	        $fileName = (!$fileName)?basename($file):$fileName;
-	        $this->attachments[$fileName] = $fileContent;
+            $fileContent = base64_encode((file_get_contents($file)));
+            $fileName = (!$fileName)?basename($file):$fileName;
+            $this->attachments[$fileName] = $fileContent;
         }
-        
+
         return $this;
     }
 
 
     /**
-     * Отправляет сообщение
+     * Send message.
      *
      * @return boolean
-     * @access public
      */
-
     public function send() {
         $MIMEBoundary1 = md5(time()).rand(1000,9999);
         $MIMEBoundary2 = md5(time()).rand(1000,9999);
-        
+
         $this->headers = array('X-Mailer: PHP v'.phpversion());
         $this->headers[] = 'MIME-Version: 1.0';
-        
+
         # Common Headers
         $this->headers[] = 'From: '.$this->sender;
         $this->headers[] = (!empty($this->replyTo))?'Reply-To: '.implode(',', $this->replyTo):'Reply-To: '.$this->sender;
@@ -274,7 +251,7 @@ final class Mail extends Object {
             $result = mail(implode(',', $this->to), $this->subject, $message, $headers);
         }
         else {
-        	$result = false;
+            $result = false;
         }
 
         return $result;

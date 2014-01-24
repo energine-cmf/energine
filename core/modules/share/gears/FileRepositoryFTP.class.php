@@ -1,66 +1,100 @@
 <?php
-
 /**
- * Класс FileRepositoryFTP
+ * @file
+ * FileRepositoryFTP.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class FileRepositoryFTP;
+@endcode
+ *
  * @author Andy Karpov <andy.karpov@gmail.com>
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Реализация интерфейса загрузчика файлов для удаленных FTP репозитариев.
- * Используется в случаях, когда загрузка файлов в репозитарий осуществляется средствами админки,
- * но хранилище удаленное, через FTP
+ * Implementation of file loader interface IFileRepository for remote FTP repositories.
  *
- * @package energine
- * @subpackage kernel
- * @author Andy Karpov <andy.karpov@gmail.com>
+ * @code
+class FileRepositoryFTP;
+@endcode
+ *
+ * This is useful for the cases when the repository is remote and the file is downloaded over FTP by using admin tools.
+ *
+ * <b>Rights table</b>
+ * <table>
+ *      <tr>
+ *          <td><b>Action</b></td>
+ *          <td><b>Allowed?</b></td>
+ *      </tr>
+ *      <tr>
+ *          <td>CreateDir</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>UploadFile</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>EditDir</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>EditFile</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>DeleteDir</td>
+ *          <td>true</td>
+ *      </tr>
+ *      <tr>
+ *          <td>DeleteFile</td>
+ *          <td>true</td>
+ *      </tr>
+ * </table>
  */
 class FileRepositoryFTP extends Object implements IFileRepository {
-
     // путь FTP начиная от FTP root для загрузки alt-файлов
+    /**
+     * Path to the cache for alternative images.
+     * @var string IMAGE_ALT_CACHE
+     */
     const IMAGE_ALT_CACHE = 'resizer/w[width]-h[height]/[upl_path]';
 
     /**
-     * Внутренний идентификатор репозитария
-     *
-     * @var int
+     * Internal repository ID.
+     * @var int $id
      */
     protected $id;
 
     /**
-     * Базовый путь к репозитрию
-     *
-     * @var string
+     * Base path to the repository.
+     * @var string $base
      */
     protected $base;
 
     /**
-     * Объект FTP для загрузки файлов
-     *
-     * @var FTP
+     * FTP object for file downloading.
+     * @var FTP $ftp_media
      */
     protected $ftp_media;
 
     /**
-     * Объект FTP для загрузки alts
-     *
-     * @var FTP
+     * FTP object for loading @c alts.
+     * @var FTP $ftp_alts
      */
     protected $ftp_alts;
 
     /**
-     * Конструктор класса
+     * @copydoc IFileRepository::__construct
      *
-     * @param int $id
-     * @param string $base
-     * @throws SystemException
+     * @throws SystemException 'ERR_MISSING_MEDIA_FTP_CONFIG'
+     * @throws SystemException 'ERR_MISSING_ALTS_FTP_CONFIG'
      */
     public function __construct($id, $base) {
-
         $this->setId($id);
         $this->setBase($base);
 
@@ -90,119 +124,53 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         );
     }
 
-    /**
-     * Метод получения внутреннего имени реализации
-     *
-     * @return string
-     */
     public function getName() {
         return 'ftp';
     }
 
-    /**
-     * Метод установки идентификатора репозитария (upl_id)
-     *
-     * @param int $id
-     * @return IFileRepository
-     */
     public function setId($id) {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * Метод получения идентификатора репозитария (upl_id)
-     *
-     * @return int
-     */
     public function getId() {
         return $this->id;
     }
 
-    /**
-     * Метод установки базового пути репозитария (upl_path)
-     *
-     * @param string $base
-     * @return IFileRepository
-     */
     public function setBase($base) {
         $this->base = $base;
         return $this;
     }
 
-    /**
-     * Метод получения базового пути репозитария (upl_path)
-     *
-     * @return string
-     */
     public function getBase() {
         return $this->base;
     }
 
-    /**
-     * Возвращает true, если разрешено создание папок в репозитарии
-     *
-     * @return boolean
-     */
     public function allowsCreateDir() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешена загрузка файлов в репозитарий
-     *
-     * @return boolean
-     */
     public function allowsUploadFile() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешено редактирование папки в репозитарии
-     *
-     * @return boolean
-     */
     public function allowsEditDir() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешено редактирование файла в репозитарии
-     *
-     * @return boolean
-     */
     public function allowsEditFile() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешено удаление папки из репозитария
-     *
-     * @return boolean
-     */
     public function allowsDeleteDir() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешено удаление файла из репозитария
-     *
-     * @return boolean
-     */
     public function allowsDeleteFile() {
         return true;
     }
 
-    /**
-     * Метод загрузки media-файла в хранилище
-     *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @return boolean|object
-     * @throws SystemException
-     */
     public function uploadFile($sourceFilename, $destFilename) {
-
         try {
             $base = $this->getBase() . '/';
             if (strpos($destFilename, $base) === 0) {
@@ -221,18 +189,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         }
     }
 
-    /**
-     * Метод загрузки alt-файла в хранилище
-     *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @param int $width
-     * @param int $height
-     * @return boolean|object
-     * @throws SystemException
-     */
     public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
-
         $destFilename = str_replace(
             array('[width]', '[height]', '[upl_path]'),
             array($width, $height, $destFilename),
@@ -253,14 +210,6 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         }
     }
 
-    /**
-     * Метод обновления ранее загруженного media-файла в хранилище
-     *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @return boolean
-     * @throws SystemException
-     */
     public function updateFile($sourceFilename, $destFilename) {
         try {
             $base = $this->getBase() . '/';
@@ -280,16 +229,6 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         }
     }
 
-    /**
-     * Метод обновления ранее загруженного alt-файла в хранилище
-     *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @param int $width
-     * @param int $height
-     * @return boolean
-     * @throws SystemException
-     */
     public function updateAlt($sourceFilename, $destFilename, $width, $height) {
         $destFilename = str_replace(
             array('[width]', '[height]', '[upl_path]'),
@@ -312,36 +251,27 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     /**
-     * Метод удаления media-файла из хранилища
+     * @copydoc IFileRepository::deleteFile
      *
-     * @param string $filename имя файла
-     * @return boolean
-     * @throws SystemException
+     * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
+     *
+     * @attention This is not yet implemented!
      */
     public function deleteFile($filename) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
     }
 
     /**
-     * Метод удаления alt-файла из хранилища
+     * @copydoc IFileRepository::deleteAlt
      *
-     * @param string $filename имя файла
-     * @param int $width
-     * @param int $height
-     * @return boolean
-     * @throws SystemException
+     * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
+     *
+     * @attention This is not yet implemented!
      */
     public function deleteAlt($filename, $width, $height) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
     }
 
-    /**
-     * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)
-     *
-     * @param $filename
-     * @return object
-     * @throws SystemException
-     */
     public function analyze($filename) {
         $fi = E()->FileRepoInfo->analyze($filename, true);
         if (is_object($fi)) {
@@ -350,15 +280,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         return $fi;
     }
 
-    /**
-     * Метод создания директории в репозитарии
-     *
-     * @param string $dir
-     * @return boolean
-     * @throws Exception|SystemException
-     */
     public function createDir($dir) {
-
         $initially_connected = $this->ftp_media->connected();
 
         try {
@@ -385,21 +307,22 @@ class FileRepositoryFTP extends Object implements IFileRepository {
     }
 
     /**
-     * Метод переименования директории в хранилище
+     * @copydoc IFileRepository::renameDir
      *
-     * @param string $dir
-     * @return boolean
-     * @throws SystemException
+     * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
+     *
+     * @attention This is not yet implemented!
      */
     public function renameDir($dir) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
     }
 
     /**
-     * Метод удаления директории из репозитария
+     * @copydoc IFileRepository::deleteDir
      *
-     * @param string $dir
-     * @throws SystemException
+     * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
+     *
+     * @attention This is not yet implemented!
      */
     public function deleteDir($dir) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');

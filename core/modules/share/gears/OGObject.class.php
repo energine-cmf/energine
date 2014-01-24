@@ -1,40 +1,61 @@
 <?php
 /**
- * Содержит класс OGObject
+ * @file
+ * OGObject.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class OGObject;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 /**
- * Class OGObject
- * Формирует перечень OpenGraph свойств
- * Вызывается из Document
+ * Class for OpenGraph.
  *
+ * @code
+class OGObject;
+@endcode
+ *
+ * Generates a list of OpenGraph properties. It is called from Document.
  */
 class OGObject extends Object {
     /**
-     * Ширина изображения по умолчанию
+     * Default image width.
+     * @var int DEFAULT_IMAGE_WIDTH
      */
     const DEFAULT_IMAGE_WIDTH = 640;
-    /***
-     * Высота изображения по умолчанию
+
+    /**
+     * Default image height.
+     * @var int DEFAULT_IMAGE_HEIGHT
      */
     const DEFAULT_IMAGE_HEIGHT = 360;
+
     /**
      * og:image
-     * В принципе их может быть несколько на странице, пока реализовано только добавление одного
-     * @var array
+     * In general, there may be several images per page, while adding only one image is implemented.
+     * @var array $images
      */
     private $images = array();
+
     /**
      * og:title
-     * @var string
+     * @var string $title
      */
     private $title = '';
 
+    /**
+     * Add image.
+     *
+     * @param string $imageURL Image URL.
+     * @param int $width Image width.
+     * @param int $height Image height.
+     */
     public function addImage($imageURL, $width = self::DEFAULT_IMAGE_WIDTH, $height = self::DEFAULT_IMAGE_HEIGHT) {
         array_push($this->images, array(
             'url' => $imageURL,
@@ -44,9 +65,11 @@ class OGObject extends Object {
     }
 
     /**
-     * @param $imageURL
-     * @param int $width
-     * @param int $height
+     * Set image.
+     *
+     * @param string $imageURL Image URL.
+     * @param int $width Image width.
+     * @param int $height Image height.
      */
     public function setImage($imageURL, $width = self::DEFAULT_IMAGE_WIDTH, $height = self::DEFAULT_IMAGE_HEIGHT) {
         $this->images = array(
@@ -59,14 +82,15 @@ class OGObject extends Object {
     }
 
     /**
-     *
-     * @param $title
+     * Set title.
+     * @param string $title Title.
      */
     public function setTitle($title) {
         $this->title = $title;
     }
 
     /**
+     * Build.
      * @return DOMElement
      */
     public function build() {
@@ -97,7 +121,6 @@ class OGObject extends Object {
                 $result->appendChild($prop);
             }
         }
-
 
         return $result;
     }

@@ -1,63 +1,74 @@
 <?php
 /**
- * Содержит класс FileRepoInfo
+ * @file
+ * FileRepoInfo
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class FileRepoInfo;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Альтернативный FileInfo
+ * Alternative to FileInfo.
  *
- * @package energine
- * @subpackage kernel
- * @author d.pavka@gmail.com
+ * @code
+class FileRepoInfo;
+@endcode
  */
 class FileRepoInfo extends DBWorker {
     /**
-     * Мета тип image
+     * Image meta type.
+     * @var string META_TYPE_IMAGE
      */
     const META_TYPE_IMAGE = 'image';
     /**
-     * Мета тип видео
+     * Video meta type.
+     * @var string META_TYPE_VIDEO
      */
     const META_TYPE_VIDEO = 'video';
     /**
-     * Мета тип audio
+     * Audio meta type.
+     * @var string META_TYPE_AUDIO
      */
     const META_TYPE_AUDIO = 'audio';
     /**
-     * Мета тип zip
+     * Zip meta type.
+     * @var string META_TYPE_ZIP
      */
     const META_TYPE_ZIP = 'zip';
-
+    /**
+     * Text meta type.
+     * @var string META_TYPE_TEXT
+     */
     const META_TYPE_TEXT = 'text';
     /**
-     * Мета тип папка
+     * Folder meta type.
+     * @var string META_TYPE_FOLDER
      */
     const META_TYPE_FOLDER = 'folder';
-
+    /**
+     * Unknown meta type.
+     * @var string META_TYPE_UNKNOWN
+     */
     const META_TYPE_UNKNOWN = 'unknown';
 
+    //todo VZ: Where is FileInfo?
     /**
-     * Finfo object
-     *
-     * @access private
-     * @var Fileinfo
+     * File info object.
+     * @var Fileinfo $finfo
      */
     private $finfo;
     /**
-     * @var PDOStatement
+     * @var PDOStatement $getFInfoSQL
      */
     private $getFInfoSQL;
 
-    /**
-     * Конструктор класса
-     *
-     * @access public
-     */
     public function __construct() {
         parent::__construct();
         $this->finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -65,19 +76,19 @@ class FileRepoInfo extends DBWorker {
     }
 
     /**
-     * @param $filename
+     * Analyze file.
+     *
+     * @param string $filename File name.
      * @param bool $forceReadFromFile
      * @return mixed|object
+     *
      * @throws Exception
      */
     public function analyze($filename, $forceReadFromFile = false) {
         try {
-            if (
-                $forceReadFromFile
-                ||
-                !$this->getFInfoSQL->execute(array($filename))
-                ||
-                !($result = $this->getFInfoSQL->fetch(PDO::FETCH_ASSOC))
+            if ($forceReadFromFile
+                || !$this->getFInfoSQL->execute(array($filename))
+                || !($result = $this->getFInfoSQL->fetch(PDO::FETCH_ASSOC))
             ) {
                 if(!($result = $this->getFileInfoData($filename)))
                     throw new Exception();
@@ -96,7 +107,9 @@ class FileRepoInfo extends DBWorker {
     }
 
     /**
-     * @param $filename
+     * Get file information data.
+     *
+     * @param string $filename Filename.
      * @return mixed
      */
     private function getFileInfoData($filename) {
@@ -150,11 +163,14 @@ class FileRepoInfo extends DBWorker {
         return $result;
     }
 
+    //todo VZ: where it throws?
     /**
-     * Возвращает объект IFileRepository для обработки видео-файлов в репозитарии
+     * Get repository instance by ID.
+     * It returns IFileRepository for processing video files into the repository.
      *
-     * @param int $upl_id
+     * @param int $upl_id Uploads ID.
      * @return IFileRepository|FileRepositoryLocal|FileRepositoryRO
+     *
      * @throws SystemException
      */
     public function getRepositoryInstanceById($upl_id) {
@@ -163,11 +179,14 @@ class FileRepoInfo extends DBWorker {
         return $this->getRepositoryInstanceByRepoPath($upl_root);
     }
 
+    //todo VZ: where it throws?
     /**
-     * Возвращает объект IFileRepository для обработки видео-файлов в репозитарии
+     * Get repository instance by path.
+     * It returns IFileRepository for processing video files into the repository.
      *
-     * @param string $upl_path
+     * @param string $upl_path Uploads path.
      * @return IFileRepository|FileRepositoryLocal|FileRepositoryRO
+     *
      * @throws SystemException
      */
     public function getRepositoryInstanceByPath($upl_path) {
@@ -175,16 +194,20 @@ class FileRepoInfo extends DBWorker {
         return $this->getRepositoryInstanceByRepoPath($upl_root);
     }
 
+    //todo VZ: where it throws?
     /**
-     * Возвращает root репозитария (например uploads/public) из полного пути к файлу
+     * Get repository root path.
+     * It returns repository @c root from the whole file path. For example <tt>uploads/public</tt>
      *
-     * @param string $upl_path
+     * @param string $upl_path Uploads path.
      * @return string
+     *
      * @throws SystemException
      */
     public function getRepositoryRoot($upl_path) {
         $upl_junks = explode('/', $upl_path, 3);
         if (empty($upl_junks[1])) {
+            //todo VZ: remove this?
             //throw new SystemException('ERR_INVALID_UPL_PATH');
             $upl_root = '';
         }
@@ -196,9 +219,10 @@ class FileRepoInfo extends DBWorker {
     }
 
     /**
-     * Возвращает инстанс IFileRepository по идентификатору $repo_id
+     * Get repository instance by repository path.
+     * It returns the instance of IFileRepository by @c $repo_id.
      *
-     * @param string $upl_root
+     * @param string $upl_root Uploads root path.
      * @return FileRepositoryLocal|IFileRepository
      */
     protected function getRepositoryInstanceByRepoPath($upl_root) {

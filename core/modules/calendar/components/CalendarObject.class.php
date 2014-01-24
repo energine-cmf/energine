@@ -1,73 +1,74 @@
 <?php
 /**
- * Содержит классы CalendarObject и CalendarItem
+ * @file
+ * CalendarObject, CalendarItem
  *
- * @package energine
- * @subpackage calendar
+ * It contains the definition to:
+ * @code
+final class CalendarObject;
+final class CalendarItem
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2010
+ *
+ * @version 1.0.0
  */
 
 /**
- * 
- * Объект календаря
+ * Calendar object.
  *
- * @package energine
- * @subpackage calendar
- * @author dr.Pavka
+ * @code
+final class CalendarObject;
+final class CalendarItem
+@endcode
+ *
  * @final
  */
 final class CalendarObject extends Object implements Iterator {
-	const PERIOD_CURRENT = 'current';
-	const PERIOD_PREVIOUS = 'previous';
-	const PERIOD_NEXT = 'next';
+    /**
+     * Current period.
+     */
+    const PERIOD_CURRENT = 'current';
+    /**
+     * Previous period.
+     */
+    const PERIOD_PREVIOUS = 'previous';
+    /**
+     * Next period.
+     */
+    const PERIOD_NEXT = 'next';
 	
 	/**
-	 * позиция итерации
-	 * 
-	 * @access private
-	 * @var integer 
+     * Iteration position.
+	 * @var integer $position
 	 */
 	 private $position;
 	/**
-	 * Сегодня
-	 *
-	 * Сделано публичным, поскольку его изменение после вызова констурктора не приводит ни к чему плохому
-	 * @access public
-	 * @var DateTime
+     * Today date and time.
+	 * @var DateTime $today
 	 */
 	public $today;
 	/**
-     * Первый день календарного месяца 
-     *
-     * @access private
-     * @var DateTime
+     * First month day.
+     * @var DateTime $firstDayOfPeriod
      */
     private $firstDayOfPeriod;
     
 	/**
-	 * Собственно матрица
-	 * Календарь представляет из себя матрицу 7х5
-	 *
-	 * @access private
-	 * @var array
+     * Calendar matrix.
+     * This is a list of month weeks.@n
+     * Matrix has size 7x5.
+	 * @var array $calendar
 	 */
 	private $calendar = array();
 
 	/**
-	 * Индекс сопоставляющий дату и месторасположение в матрице
-	 *
-	 * @access private
-	 * @var array
-	 */
+     * Day index in the calendar matrix that corresponds the specific day.
+	 * @var array $index
+     */
 	private $index = array();
 	
-	/**
-	 * Конструктор создает матрицу
-	 *
-	 * @return void
-	 * @access public
-	 */
 	public function __construct($monthID = false, $year = false){
 		$this->today = new DateTime();
         $this->today->setTime(0, 0, 0);
@@ -115,11 +116,12 @@ final class CalendarObject extends Object implements Iterator {
 	}
 	
 	/**
-	 * Возвращает данные о предыдущем периоде
-	 * Используется для создания тулбара календаря
-	 *  
+     * Get previous period.
+	 *
+     * @param string $periodType Period type.
 	 * @return Object
-	 * @access public
+	 *
+	 * @note It is used to create calendar toolbar.
 	 */
 	public function getPeriod($periodType){
 	   $tmp = clone $this->firstDayOfPeriod;
@@ -135,12 +137,9 @@ final class CalendarObject extends Object implements Iterator {
 	}
 	
 	/**
-	 * Возвращает данные о начальной и конечной датах текущего календаря
-     *
-     * $this->calendar - список недель, из последней берём седьмой день
+     * Get data about first and last date from current calendar.
 	 * 
 	 * @return Object
-	 * @access public
 	 */
 	public function getRange(){
 	    return (object)array('start' => $this->calendar[0][0]->getDate(), 'end' => $this->calendar[count($this->calendar)-1][6]->getDate());
@@ -149,15 +148,16 @@ final class CalendarObject extends Object implements Iterator {
 	
 
 	/**
-	 * Возвращает флаг указывающий на то, существует ли такая дата в календаре
+     * Check if exist specific day in the calendar.
 	 *
-	 * @param DateTime дата
-	 * Или
-	 * @param int идентификатор строки
-	 * @param int идентификатор дня
-	 * 
+     * Input arguments can be:
+	 * - one argument:
+     *   - {DateTime} Specific date
+	 * - two arguments:
+     *   - {int} Row ID.
+     *   - {int} Day ID.
+     *
 	 * @return boolean
-	 * @access protected
 	 */
 	protected function itemExists(){
 		$result = null;
@@ -174,10 +174,11 @@ final class CalendarObject extends Object implements Iterator {
 	}
 	
 	/**
-	 * Возвращает объект календарного дня по индексу
-	 * 
-	 * @return CalendarItem
-	 * @access public
+     * Get calendar day item by index.
+     *
+     * @param int $row Row ID.
+     * @param int $day Day ID.
+     * @return CalendarItem
 	 */
 	public function getItemByIndex($row, $day){
 	    $result = null;
@@ -188,11 +189,10 @@ final class CalendarObject extends Object implements Iterator {
 	}
 
 	/**
-	 * getDate
+	 * Get calendar item by date.
 	 *
-	 * @param DateTime
+	 * @param DateTime $date Date.
 	 * @return CalendarItem
-	 * @access public
 	 */
 	public function getItemByDate(DateTime $date){
 		$result = null;
@@ -203,13 +203,11 @@ final class CalendarObject extends Object implements Iterator {
 
 		return $result;
 	}
-        /**
-     * Вычисляем информацию о текущей неделе
+    /**
+     * Calc information about current week.
      *
-     * @param DateTime информация о текущем дн
+     * @param DateTime $dateObj Information about current day.
      * @return DateTime[]
-     * @access public
-     * @static
      */
     static public function getWeek(DateTime $dateObj) {
         $result = array();
@@ -229,84 +227,59 @@ final class CalendarObject extends Object implements Iterator {
         return $result;
     }
 	
-	
-	/**
-	 * @see Iterator 
-	 */
+
     function rewind() {
         $this->position = 0;
     }
-    /**
-     * @see Iterator
-     */
     function current() {
         return /*new IteratorIterator(new ArrayObject(*/$this->calendar[$this->position]/*))*/;
     }
-    /**
-     * @see Iterator
-     */
     function key() {
         return $this->position;
     }
-    /**
-     * @see Iterator
-     */
     function next() {
         ++$this->position;
     }
-    /**
-     * @see Iterator
-     */
     function valid() {
         return isset($this->calendar[$this->position]);
-    }	
+    }
 }
 
 /**
- * Класс овеществляющий день календаря
- 
- * @package energine
- * @subpackage calendar
- * @author dr.Pavka
+ * Calendar day.
+ *
+ * @code
+final class CalendarObject;
+final class CalendarItem
+@endcode
+ *
  * @final
  */
 final class CalendarItem extends Object implements Iterator {
     /**
-     * Property iterartor position
-     * 
-     * @access private
-     * @var int 
+     * Property iterator position.
+     * @var int $position
      */
      private $position;
     /**
-     * День 
-     *
-     * @access private
-     * @var DateTime
+     * Day.
+     * @var DateTime $date
      */
     private $date;
     /**
-     * Подпись
-     *
-     * @access private
-     * @var string
+     * Title.
+     * @var string $title
      */
     private $title;
      
     /**
-     * Дополнительные свойства
-     *
-     * @access private
-     * @var array
+     * Additional properties.
+     * @var array $properties
      */
     private $properties = array();
      
     /**
-     * Создает день календаря
-     * 
-     * @param DateTime Дата
-     * @return void
-     * @access public
+     * @param DateTime $date Date.
      */
     public function __construct(DateTime $date){
         $this->date = $date;
@@ -317,45 +290,37 @@ final class CalendarItem extends Object implements Iterator {
 
     }
     /**
-     * Устанавливает подпись для данного дня
+     * Set title for current day.
      *
-     * @param string подпись
-     *
-     * @return void
-     * @access public
+     * @param string $title Title.
      */
     public function setTitle($title){
         $this->title = $title;
     }
 
     /**
-     * Возвращает подпись данного пункта
+     * Get title.
      *
      * @return string
-     * @access public
      */
     public function getTitle(){
         return $this->title;
     }
 
     /**
-     * Устанавливает значение дополнительного свойства
+     * Set additional property.
      *
-     * @param string название свойств
-     * @param mixed значений свойств
-     *
-     * @return void
-     * @access public
+     * @param string $propName Property name.
+     * @param mixed $propValue Property value.
      */
     public function setProperty($propName, $propValue){
         $this->properties[$propName] = $propValue;
     }
     /**
-     * Возвращает значение дополнительного свойства
+     * Get property.
      *
-     * @param string значение свойств
-     * @return mixed
-     * @access public
+     * @param string $propName Property name.
+     * @return mixed|null
      */
     public function getProperty($propName){
         $result =  null;
@@ -365,20 +330,18 @@ final class CalendarItem extends Object implements Iterator {
     }
 
     /**
-     * Возвращает объект DateTime сопоставленный с объектом
+     * Get date.
      *
      * @return DateTime
-     * @access public
      */
     public function getDate(){
         return $this->date;
     }
     
     /**
-     * При превращении в строку - выводим дату
-     * 
+     * Return title by converting into string.
+     *
      * @return string
-     * @access public
      */
     public function __toString(){
         return $this->getTitle();

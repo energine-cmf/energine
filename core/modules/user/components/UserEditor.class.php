@@ -1,28 +1,30 @@
 <?php
-
 /**
- * Содержит класс UserEditor
+ * @file
+ * UserEditor
  *
- * @package energine
- * @subpackage user
+ * It contains the definition to:
+ * @code
+class UserEditor;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Класс - редактор пользователей
+ * User editor.
  *
- * @package energine
- * @subpackage user
- * @author dr.Pavka
+ * @code
+class UserEditor;
+@endcode
  */
 class UserEditor extends Grid {
-
-
     /**
-     * Конструктор класса
-     *
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
@@ -31,15 +33,10 @@ class UserEditor extends Grid {
     }
 
     /**
-	 * Переопределенный родительский метод
-	 * проверяет а не пытаемся ли мы удалить текущего пользователя
-	 *
-     * @param int $id
-	 * @return boolean
-     * @throws SystemException
-	 * @access public
-	 */
-
+     * @copydoc Grid::deleteData
+     *
+     * @throws SystemException 'ERR_CANT_DELETE_YOURSELF'
+     */
     public function deleteData($id) {
         //если мы пытаемся удалить текущего пользователя
         //генерим ошибку
@@ -51,11 +48,8 @@ class UserEditor extends Grid {
 
 
     /**
-	 * Сохранение данных о ролях пользователя
-	 *
-	 * @return boolean
-	 * @access protected
-	 */
+     * @copydoc Grid::saveData
+     */
     protected function saveData() {
         //При сохранении данных из формы редактирования
         //Если не пришел пароль - не трогаем его
@@ -81,10 +75,7 @@ class UserEditor extends Grid {
         return $result;
     }
     /**
-     * toggles user activity status
-     * 
-     * @return void
-     * @access protected
+     * Toggle user activity status
      */
     protected function activate(){
     	$transactionStarted = $this->dbh->beginTransaction();
@@ -123,11 +114,9 @@ class UserEditor extends Grid {
 
 
     /**
-     * Для метода редактирования убирается пароль
-     *
-     * @return array
-     * @access protected
+     * @copydoc Grid::loadData
      */
+    // Для метода редактирования убирается пароль
     protected function loadData() {
         $result = parent::loadData();
 
@@ -147,12 +136,11 @@ class UserEditor extends Grid {
     }
 
     /**
-     * Callback метод вызывающийся при загрузке данных
-     * Добавляет к массиву строку с перечнем групп в которіе входит пользователь
+     * Callback method that called by data loading.
+     * It adds a string to the array with all user's groups.
      *
-     * @param mixed $row
+     * @param array $row Row.
      * @return array
-     * @access private
      */
     private function printUserGroups($row) {
         $userGroup = E()->UserGroup;
@@ -167,11 +155,9 @@ class UserEditor extends Grid {
     }
 
     /**
-     * Для методов add и edit добавляется поле роли
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc Grid::createDataDescription
      */
+    // Для методов add и edit добавляется поле роли
     protected function createDataDescription() {
         $result = parent::createDataDescription();
 
@@ -208,10 +194,7 @@ class UserEditor extends Grid {
         return $result;
     }
     /**
-     * Load
-     *
-     * @return array
-     * @access protected
+     * @copydoc Grid::loadDataDescription
      */
      protected function loadDataDescription() {
         $result = parent::loadDataDescription();
@@ -223,11 +206,9 @@ class UserEditor extends Grid {
      }
 
     /**
-      * Для методов add и edit добавляется инфо о роли
-      *
-      * @return Data
-      * @access protected
+      * @copydoc Grid::createData
       */
+    // Для методов add и edit добавляется инфо о роли
     protected function createData() {
         $result = parent::createData();
         $id = $this->getFilter();

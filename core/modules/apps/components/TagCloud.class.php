@@ -1,61 +1,57 @@
 <?php
 /**
- * Содержит класс TagCloud
+ * @file
+ * TagCloud
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class TagCloud;
+@endcode
+ *
  * @author andrii.a
  * @copyright Energine 2012
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 /**
- * Содержит класс, позволяющий вывести облако тегов на страницу
+ * Show the cloud of tags on the page.
  *
- * @package energine
- * @subpackage apps
- * @author andrii.a
+ * @code
+class TagCloud;
+@endcode
  */
 class TagCloud extends DBDataSet {
-
     /**
-     * Вывод тегов для родительского раздела
+     * Tags of parent section.
      */
     const ID_PARENT_FILTER = 'parent';
 
     /**
-     * Вывод тегов со всего сайта
+     * Tags from the whole site.
      */
     const ID_ALL_FILTER = 'all';
 
     /**
-     * Ид раздела, с которого
-     * будут выводиться теги
-     *
-     * @var int
+     * Section ID, from which the tags will be showed.
+     * @var int $filterId
      */
     protected  $filterId;
 
     /**
-     * Компонент, к которому привязывается
-     * TagCloud
-     *
-     * @var Component
+     * Component, to which TagCloud will be bounded.
+     * @var Component $bindedBlock
      */
     protected  $bindedBlock;
 
     /**
-     * Массив, содержащий ИД тагов
-     * и информацию о их "весе"
-     *
-     * @var array
+     * Array that holds tag IDs and their weight.
+     * @var array $tagsInfo
      */
     private $tagsInfo;
 
     /**
-     * @param string $name
-     * @param string $module
-     * @param array $params
+     * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -82,12 +78,9 @@ class TagCloud extends DBDataSet {
     }
 
     /**
-     * Добавлен
-     * параметр bind
-     *
-     * @return array
-     * @access protected
+     * @copydoc DBDataSet::defineParams
      */
+    // Добавлен параметр bind
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -100,12 +93,9 @@ class TagCloud extends DBDataSet {
     }
 
     /**
-     * Добавлена проперти с частотой появления
-     * тега.
-     *
-     * @return Data
-     * @access protected
+     * @copydoc DBDataSet::createData
      */
+    // Добавлена проперти с частотой появления тега.
     protected function createData() {
         $result = parent::createData();
         if (is_array($this->tagsInfo)) {
@@ -122,8 +112,8 @@ class TagCloud extends DBDataSet {
     }
 
     /**
-     * Возвращает информацию о ИД тегов
-     * и частоте их появления.
+     * Get tags information.
+     * This is tag IDs and their frequency of occurrence.
      *
      * @return array
      */

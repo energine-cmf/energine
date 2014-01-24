@@ -1,96 +1,100 @@
 <?php
-
 /**
- * Класс Pager
+ * @file
+ * Pager.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class Pager;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Список страниц для навигации при постраничном выводе.
+ * List of pages for navigation.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
+ * @code
+final class Pager;
+@endcode
+ *
  * @final
  */
 final class Pager extends Object {
-
+    //todo VZ: In PageList.js VISIBLE_PAGES_COUNT is always 2. For what is this?
     /**
-     * Количество отображаемых номеров страниц с каждой стороны от текущей
+     * Amount of visible pages by both side of current page.
      *
-     * Пример для VISIBLE_PAGES_COUNT = 3
-     * 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
+     * Example:
+     * @code
+VISIBLE_PAGES_COUNT = 3 --> 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
+@endcode
+     *
+     * @var int VISIBLE_PAGES_COUNT
      */
     const VISIBLE_PAGES_COUNT = 2;
 
     /**
-     * @access private
-     * @var int количество записей на странице
+     * Amount of records per page.
+     * @var int $recordsPerPage
      */
     private $recordsPerPage;
 
     /**
-     * @access private
-     * @var int количество страниц
+     * Total amount of pages.
+     * @var int $numPages
      */
     private $numPages = 0;
 
     /**
-     * @access private
-     * @var int общее количество записей
+     * Total amount of records.
+     * @var int $recordsCount
      */
     private $recordsCount;
 
     /**
-     * @access private
-     * @var int номер текущей страницы
+     * Current page number.
+     * @var int $currentPage
      */
     private $currentPage;
 
     /**
-     * @access private
-     * @var array дополнительные свойства списка страниц
+     * Additional properties.
+     * @var array $properties
      */
     private $properties = array();
 
     /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @param int $recordsPerPage
-     * @param int $currentPage
-     * @return void
+     * @param int $recordsPerPage Records per page.
+     * @param int $currentPage Current page.
      */
     public function __construct($recordsPerPage = 0, $currentPage = 1) {
-
         $this->setRecordsPerPage($recordsPerPage);
         $this->setCurrentPage($currentPage);
     }
 
     /**
-     * Устанавливает количество записей на странице.
+     * Set amount of records per page.
      *
-     * @access public
-     * @param int $recordsPerPage
-     * @return void
+     * @param int $recordsPerPage Amount of records per page.
+     *
+     * @throws SystemException 'ERR_DEV_BAD_RECORDS_PER_PAGE'
      */
     public function setRecordsPerPage($recordsPerPage) {
         $recordsPerPage = intval($recordsPerPage);
         if ($recordsPerPage < 1) {
-        	throw new SystemException('ERR_DEV_BAD_RECORDS_PER_PAGE', SystemException::ERR_DEVELOPER);
+            throw new SystemException('ERR_DEV_BAD_RECORDS_PER_PAGE', SystemException::ERR_DEVELOPER);
         }
         $this->recordsPerPage = $recordsPerPage;
     }
 
     /**
-     * Возвращает количество записей на странице.
+     * Get amount of records per page.
      *
-     * @access public
      * @return int
      */
     public function getRecordsPerPage() {
@@ -98,9 +102,8 @@ final class Pager extends Object {
     }
 
     /**
-     * Возвращает количество страниц.
+     * Get total amount of pages.
      *
-     * @access public
      * @return int
      */
     public function getNumPages() {
@@ -108,10 +111,11 @@ final class Pager extends Object {
     }
 
     /**
-     * Устанавливает номер текущей страницы.
+     * Set current page.
      *
-     * @access public
-     * @param int $currentPage
+     * @param int $currentPage Current page number.
+     *
+     * @throws SystemException 'ERR_DEV_BAD_PAGE_NUMBER'
      */
     public function setCurrentPage($currentPage) {
         $currentPage = intval($currentPage);
@@ -122,11 +126,11 @@ final class Pager extends Object {
     }
 
     /**
-     * Устанавливает общее количество записей.
+     * Set total amount of records.
      *
-     * @access public
-     * @param int $count
-     * @return void
+     * @param int $count Amount of records.
+     *
+     * @throws SystemException 'ERR_DEV_BAD_RECORDS_COUNT'
      */
     public function setRecordsCount($count) {
         $recordsCount = intval($count);
@@ -139,9 +143,8 @@ final class Pager extends Object {
     }
 
     /**
-     * Возвращает общее количество записей.
+     * Get total amount of records.
      *
-     * @access public
      * @return int
      */
     public function getRecordsCount() {
@@ -149,9 +152,8 @@ final class Pager extends Object {
     }
 
     /**
-     * Возвращает номер текущей страницы.
+     * Get current page number.
      *
-     * @access public
      * @return int
      */
     public function getCurrentPage() {
@@ -159,22 +161,20 @@ final class Pager extends Object {
     }
 
     /**
-     * Устанавливает свойство списка страниц.
+     * Set property.
      *
-     * @access public
-     * @param string $name
-     * @param mixed $value
-     * @return void
+     * @param string $name Property name.
+     * @param mixed $value Property value.
      */
     public function setProperty($name, $value) {
         $this->properties[$name] = $value;
     }
 
     /**
-     * Возвращает лимит выборки для SELECT-запроса.
+     * Get fetching limit for SELECT-request.
      *
-     * @access public
      * @return array
+     *
      * @see QAL::select()
      */
     public function getLimit() {
@@ -182,16 +182,15 @@ final class Pager extends Object {
     }
 
     /**
-     * Строит документ списка страниц и возвращает ссылку на корневой узел документа.
+     * Build page list.
+     * The root node is returned.
      *
-     * @access public
      * @return DOMNode
      */
     public function build() {
-
         $pager = new Toolbar('pager');
         if (!empty($_GET)) {
-        	$this->setProperty('get_string', http_build_query($_GET));
+            $this->setProperty('get_string', http_build_query($_GET));
         }
         if (!empty($this->properties)) {
             foreach ($this->properties as $propName => $propValue) {
@@ -206,32 +205,32 @@ final class Pager extends Object {
         $total = $this->numPages;
         $current = $this->currentPage;
         $visible = self::VISIBLE_PAGES_COUNT;
-        
-	    $startSeparator = $endSeparator = false;
-	    
-		for($i = 1; $i<= $total; $i++){
-		    if(
-		           ($i>$visible) &&
-		           ($i < ($current - $visible))
-		    ){
-		        if(!$startSeparator) $pager->attachControl(new Separator('sep_start'));
-		        $startSeparator = true;
-		        continue;
-		    }
-		    elseif(
-		           ($i> $current+$visible) &&
-		           ($i<= ($total - $visible))   
-		    ){
-		        if(!$endSeparator) $pager->attachControl(new Separator('sep_end'));
-		        $endSeparator = true;
-		        continue;
-		    }
-		    else {
-		    	$control = new Link("page".$i, $i, $i);
-		    	if($i == $current) $control->disable();
+
+        $startSeparator = $endSeparator = false;
+
+        for($i = 1; $i<= $total; $i++){
+            if(
+                ($i>$visible) &&
+                ($i < ($current - $visible))
+            ){
+                if(!$startSeparator) $pager->attachControl(new Separator('sep_start'));
+                $startSeparator = true;
+                continue;
+            }
+            elseif(
+                ($i> $current+$visible) &&
+                ($i<= ($total - $visible))
+            ){
+                if(!$endSeparator) $pager->attachControl(new Separator('sep_end'));
+                $endSeparator = true;
+                continue;
+            }
+            else {
+                $control = new Link("page".$i, $i, $i);
+                if($i == $current) $control->disable();
                 $pager->attachControl($control);
-		    }
-		}
+            }
+        }
         return $pager->build();
     }
 }

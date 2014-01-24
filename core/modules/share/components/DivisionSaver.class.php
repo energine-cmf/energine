@@ -1,38 +1,37 @@
 <?php
 /**
- * Содержит класс DivisionSaver
+ * @file
+ * DivisionSaver
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class DivisionSaver;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Сохранитель данных для редактора разделов
+ * Saver for division editor.
  *
- * @package energine
- * @subpackage share
- * @author d.pavka@gmail.com
+ * @code
+class DivisionSaver;
+@endcode
  */
 class DivisionSaver extends ExtendedSaver {
-    /**
-     * Конструктор класса
-     *
-     * @access public
-     */
+    //todo VZ: this can be removed.
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     * Для метода редактирования заглавной страницы
-     * удаляем описание
-     *
-     * @access public
-     * @return boolean
+     * @copydoc ExtendedSaver::validate
      */
     public function validate() {
+        // Для метода редактирования заглавной страницы удаляем описание
         if (!$this->getData()->getFieldByName('smap_pid')->getRowData(0)) {
             $this->getDataDescription()->removeFieldDescription(
                 $this->getDataDescription()->getFieldDescriptionByName('smap_segment')
@@ -42,10 +41,7 @@ class DivisionSaver extends ExtendedSaver {
     }
 
     /**
-     * переопределенный дефолтный метод
-     *
-     * @return mixed
-     * @access public
+     * @copydoc ExtendedSaver::save
      */
     public function save() {
         //Выставляем фильтр для родительского идентификатора

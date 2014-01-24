@@ -1,63 +1,63 @@
 <?php
-
 /**
- * Содержит класс User
+ * @file
+ * User.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class User;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс для работы с пользователем
- * Возвращает информацию о пользователе, сохраняет данные
+ * User manager.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class User;
+@endcode
+ *
+ * It holds an information about user, saves data, etc.
  */
 class User extends DBWorker {
     /**
-     * Имя таблицы пользователей
-     *
+     * Table name of users.
+     * @var string USER_TABLE_NAME
      */
     const USER_TABLE_NAME = 'user_users';
 
     /**
-     * Имя таблицы групп
-     *
+     * Table name of groups.
+     * @var string GROUP_TABLE_NAME
      */
     const GROUP_TABLE_NAME = 'user_user_groups';
 
+    //todo VZ: Why not to begin the user id from 0?
     /**
-     * Идентификатор пользователя
-     *
-     * @var int
-     * @access private
+     * User ID.
+     * @var int $id
      */
     private $id = false;
+
     /**
-     * Объект по работе с пользователями
-     *
-     * @var UserGroup
-     * @access protected
+     * Object for work with users.
+     * @var UserGroup $userGroup
      */
     protected $userGroup;
 
     /**
-     * Информация о пользователе
-     *
-     * @var array
-     * @access private
+     * Information about the user.
+     * @var array $info
      */
     private $info = array();
 
+    //todo VZ: Why not to use 0 as the default user id?
     /**
-     * Конструктор класса
-     *
-     * @param int идентификатор пользователя
-     * @return void
+     * @param bool|int $id User ID.
      */
     public function __construct($id = false) {
         parent::__construct();
@@ -70,13 +70,10 @@ class User extends DBWorker {
     }
 
     /**
-     * Загрузка информации из БД
+     * Load information about the user from data base.
      *
-     * @param int идентификатор пользователя
-     * @return void
-     * @access protected
+     * @param int $UID User ID.
      */
-
     protected function loadInfo($UID) {
         $result = $this->dbh->select(self::USER_TABLE_NAME, true, array('u_id' => $UID));
         if (is_array($result) && !empty($result)) {
@@ -87,12 +84,10 @@ class User extends DBWorker {
     }
 
     /**
-     * Возвращает перечень групп в которые входит пользователь
+     * Get the list of groups to which belongs the user.
      *
-     * @return mixed
-     * @access public
+     * @return array
      */
-
     public function getGroups() {
         $result = array();
         $result = $this->userGroup->getUserGroups($this->id);
@@ -100,23 +95,20 @@ class User extends DBWorker {
     }
 
     /**
-     * Возвращает идентфикатор пользователя
+     * Get user ID.
      *
-     * @return mixed
-     * @access public
+     * @return int
      */
-
     public function getID() {
         return $this->id;
     }
 
     /**
-     * Возвращает значение поля
+     * Get the field value.
      *
+     * @param string $fieldName Field name.
      * @return mixed
-     * @access public
      */
-
     public function getValue($fieldName) {
         $result = false;
         if (isset($this->info[$fieldName])) {
@@ -126,25 +118,23 @@ class User extends DBWorker {
     }
 
     /**
-     * Возвращает перечень полей
+     * Get the list of fields.
      *
      * @return array
-     * @access public
      */
-
     public function getFields() {
         $result = $this->dbh->getColumnsInfo(self::USER_TABLE_NAME);
         return $result;
     }
 
     /**
-     * Создание нового пользователя
+     * Create new user.
      *
-     * @param array
-     * @return void
-     * @access public
+     * @param array $data Data.
+     *
+     * @throws SystemException 'ERR_INSUFFICIENT_DATA'
+     * @throws SystemException 'ERR_NOT_UNIQUE_DATA'
      */
-
     public function create($data) {
         //проверяем имеются ли все необходимые значения
         $tableInfo = $this->dbh->getColumnsInfo(self::USER_TABLE_NAME);
@@ -184,13 +174,11 @@ class User extends DBWorker {
     }
 
     /**
-     * Обновление данных о пользователе
+     * Update user data.
      *
-     * @param array
+     * @param array $data New user data.
      * @return boolean
-     * @access public
      */
-
     public function update($data) {
         $result = false;
         if ($this->getID()) {
@@ -200,13 +188,12 @@ class User extends DBWorker {
     }
 
     /**
-     * Устанавливает перечень групп в которые будет входить пользователь
+     * Set user groups.
      *
-     * @param array
-     * @return void
-     * @access public
+     * @throws SystemException
+     *
+     * @param array $groups Groups.
      */
-
     public function setGroups($groups) {
         //Устанавливать группы можно только тогда, когда пользователь создан
         if ($this->getID()) {
@@ -227,9 +214,9 @@ class User extends DBWorker {
     }
 
     /**
-     * Поиск юзера по идентфикатору ФБ
-     * @static
-     * @param $fbID
+     * Get user by his ID in <a href="http://www.facebook.com">Facebook</a>.
+     *
+     * @param string $fbID Facebook user ID.
      * @return bool|User
      */
     public static function getFBUser($fbID) {
@@ -241,8 +228,10 @@ class User extends DBWorker {
     }
 
     /**
-     * @param string $email
-     * @param int $fbID
+     * Link Facebook user by his E-Mail.
+     *
+     * @param string $email User E-Mail.
+     * @param string $fbID Facebook user ID.
      * @return bool|User
      */
     public static function linkFBUserByEmail($email, $fbID) {
@@ -255,9 +244,9 @@ class User extends DBWorker {
     }
 
     /**
-     * Поиск юзера по идентфикатору Вконтакте
-     * @static
-     * @param $vkID
+     * Get user by his ID in <a href="http://www.vk.com">VKontakte</a>.
+     *
+     * @param string $vkID VKontakte user ID.
      * @return bool|User
      */
     public static function getVKUser($vkID) {
@@ -269,9 +258,9 @@ class User extends DBWorker {
     }
 
     /**
-     * Поиск юзера по идентфикатору Одноклассников
-     * @static
-     * @param $okID
+     * Get user by his ID in <a href="http://www.odnoklassniki.ru">Одноклассники</a>.
+     *
+     * @param string $okID User ID in Одноклассники.
      * @return bool|User
      */
     public static function getOKUser($okID) {
@@ -283,12 +272,10 @@ class User extends DBWorker {
     }
 
     /**
-     * Генерирует пароль заданной длины из случайных буквенно-цифровых символов.
+     * Generate random password with specific length from numbers and latin characters.
      *
-     * @param int $length
+     * @param int $length Password length.
      * @return string
-     * @access public
-     * @static
      */
     public static function generatePassword($length = 8) {
         $chars = '0123456789abcdefghjiklmnopqrstuvwxyzABCDEFGHJIKLMNOPQRSTUVWXYZ';

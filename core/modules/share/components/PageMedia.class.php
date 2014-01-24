@@ -1,39 +1,39 @@
 <?php
 /**
- * Содержит класс PageMedia
+ * @file
+ * PageMedia
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class PageMedia;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Выводит на странице медиаконтейнер из меди файлов присоединенных к данной странице
+ * Show media container on the page with attached to that page media files.
  *
- * @package energine
- * @subpackage share
- * @author d.pavka@gmail.com
+ * @code
+class PageMedia;
+@endcode
  */
 class PageMedia extends DataSet {
+    //todo VZ: This can be removed.
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
     }
 
     /**
-     * Выводит галлерею
-     *
-     * @return void
-     * @access protected
+     * @copydoc DataSet::main
      */
+    // Выводит галлерею
     protected function main() {
         $this->prepare();
 

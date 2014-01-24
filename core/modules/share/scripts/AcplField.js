@@ -552,20 +552,18 @@ var AcplField = new Class(/** @lends AcplField# */{
                     return 0;
                 })(this.element));
 
-                if (word['string'].length > this.options.startFrom /*&& (val.length  && (this.value != val))*/) {
+                if (word.str.length > this.options.startFrom) {
                     this.words.setCurrentIndex(word.index);
                     this.putInQueue(word.str, this.value);
-                    //this.requestValues(word.str);
                 }
         }
     },
 
-    // todo: make private.
     /**
      * Prepare the data.
      *
      * @function
-     * @private
+     * @public
      * @param {Object} result Result object.
      */
     _prepareData: function(result) {
@@ -575,16 +573,13 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Put in queue.
      *
-     * @param {string} str One string value.
+     * @param {string} str One word.
      * @param {string} val The whole string.
      */
     putInQueue: function(str, val) {
-        (function(string, value){
-            if (this.value == value) {
-                this.requestValues(string);
-            }
-            //todo: Why with delay? - try to find the source
-        }).delay(900, this, [str, val]);
+        if (this.value == val) {
+            this.requestValues(str);
+        }
     },
 
     /**

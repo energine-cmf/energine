@@ -1,49 +1,51 @@
 <?php
 
 /**
- * Содержит класс TreeConverter
+ * @file
+ * TreeConverter.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class TreeConverter;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2007
+ *
+ * @version 1.0.0
  */
 
 //require_once('TreeNodeList.class.php');
 
 /**
- * Конвертер для превращения древовидного массива в объект Tree
- * По сути представляет из себя контейнер статических методов
+ * Convert Tree.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+final class TreeConverter;
+@endcode
+ *
+ * It casts tree-like array into Tree object.
+ *
+ * @note It represents a container of static methods.
+ *
  * @final
  */
 final class TreeConverter{
     /**
-     * Имя поля - ключа
-     *
-     * @var string
-     * @access private
-     * @static
+     * Key name.
+     * @var string $keyName
      */
     static private $keyName;
+
     /**
-     * Имя поля - родительского ключа
-     *
-     * @var string
-     * @access private
-     * @static
+     * Parent key name.
+     * @var string $parentKeyName
      */
     static private $parentKeyName;
 
     /**
-     * Список узлов
-     *
-     * @var TreeNodeList
-     * @access private
-     * @static
+     * Tree's node list.
+     * @var TreeNodeList $treeNodeList
      */
     static private $treeNodeList;
 
@@ -51,16 +53,15 @@ final class TreeConverter{
 	private function __construct() {}
 
 	/**
-	 * Превращает переданный массив в дерево
-	 *
-     * @param array Загружаемые данные
-     * @param string название поля содержащего идентификатор
-     * @param string название поля содержащего идентификатор родителя
+     * Run converting.
+     *
+     * @param array $data Loaded data.
+     * @param string $keyName Field name that holds an ID.
+     * @param string $parentKeyName Field name that holds an parent ID.
 	 * @return TreeNodeList
-	 * @access public
-	 * @static
+	 *
+     * @throws Exception 'Неправильный формат древовидных данных'
 	 */
-
 	static public function convert(array $data, $keyName, $parentKeyName) {
         self::$keyName = $keyName;
         self::$parentKeyName = $parentKeyName;
@@ -72,16 +73,15 @@ final class TreeConverter{
         return self::iterate($data, self::$treeNodeList = new TreeNodeList());
 	}
 
+    //todo VZ: Is this realised?
     /**
-     * Проверяет входные данные на валидность
+     * Validate data.
      *
-     * @param array
+     * @param array $data Data.
      * @return bool
-     * @access private
-     * @static
+     *
      * @todo реализовать
      */
-
     static private function validate(array $data) {
     	foreach ($data as $value) {
     		if (!array_key_exists(self::$parentKeyName, $value) || !array_key_exists(self::$parentKeyName, $value)) {
@@ -95,15 +95,12 @@ final class TreeConverter{
     }
 
     /**
-     * Рекурсивный метод итерации по исходному древовидному массиву
+     * Recursive iteration over tree-like array.
      *
-	 * @param array массив данных в формате array(array('$keyName'=>$key, '$parentKeyName'=>$parentKey))
-	 * @param mixed родительский объект (может быть TreeNode или TreeNodeList)
+	 * @param array $data Data array in the form @code array(array('$keyName'=>$key, '$parentKeyName'=>$parentKey)) @endcode.
+	 * @param TreeNode|TreeNodeList $parent Parent object.
      * @return TreeNodeList
-     * @access private
-     * @static
      */
-
     static private function iterate(array $data, $parent) {
         foreach ($data as $key => $value) {
         	//Если родителем является TreeNodeList  - значит мы на начальном шаге итерации и ключ - пустой, во всех других случаях - ключом является идентификатор узла родителя

@@ -1,34 +1,37 @@
 <?php
 /**
- * Содержит класс Select
+ * @file
+ * Select
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Select;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Выпадающий список
+ * Drop-down list.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class Select;
+@endcode
  */
 class Select extends Control {
-
     /**
-     * Элементы списка
-     *
-     * @access private
-     * @var array
+     * List items.
+     * @var array $items
      */
     private $items;
 
     /**
-     *
-     *
-     * @access public
+     * @param string $id Control ID.
+     * @param string|bool $action Action name.
+     * @param string|bool $title Control title.
      */
     public function __construct($id, $action = false, $title = false) {
         parent::__construct($id);
@@ -36,12 +39,9 @@ class Select extends Control {
         if ($title)   $this->setAttribute('title',   $title);
         if ($action)  $this->setAttribute('action',  $action);
     }
+
     /**
-     * Перегружаем родительский метод для получения возможности загрузить значения опций 
-     *
-     * @param SimpleXMLElement $description
-     * @return void
-     * @access public
+     * @copydoc Control::loadFromXml
      */
     public function loadFromXml(SimpleXMLElement $description) {
         parent::loadFromXml($description);
@@ -53,14 +53,11 @@ class Select extends Control {
     }    
 
     /**
-     * Добавляет item
-     * @param string 
-     * @param string 
-     * @param array $itemProperties array(
-     *                                  $attr_name => attr_value 
-     *                              )
-     * @return void
-     * @access public
+     * Add item.
+     *
+     * @param string $id Item ID.
+     * @param string $value Item value.
+     * @param array $itemProperties Item properties in form @code array($attr_name => attr_value) @endcode.
      */
     public function addItem($id, $value, $itemProperties = array()) {
     	$this->items[$id] = array(
@@ -68,11 +65,9 @@ class Select extends Control {
     	   'properties' => $itemProperties
     	);
     }
+
     /**
-     * Переопределенный вывод елемента 
-     * 
-     * @return DOMNode
-     * @access public 
+     * @copydoc Control::build
      */
     public function build(){
         $result = parent::build();
@@ -95,11 +90,9 @@ class Select extends Control {
     }
 
     /**
+     * Remove item from list.
      *
-     *
-     * @param string $id
-     * @return void
-     * @access public
+     * @param string $id Item ID.
      */
     public function removeItem($id) {
     	if(isset($this->items[$id])){
@@ -108,11 +101,10 @@ class Select extends Control {
     }
 
     /**
-     *
+     * Get item.
      *
      * @param string $id
      * @return array
-     * @access public
      */
     public function getItem($id) {
     	$result = null;

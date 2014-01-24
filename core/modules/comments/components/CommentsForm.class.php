@@ -1,17 +1,28 @@
 <?php
 /**
- * Содержит класс CommentsForm
+ * @file
+ * CommentsForm
  *
- * @package energine
- * @subpackage comments
+ * It contains the definition to:
+ * @code
+class CommentsForm;
+@endcode
+ *
  * @author sign
+ *
+ * @version 1.0.0
  */
 
 /**
- * Вывод комментариев и формы комментирования
+ * Show comments and form for commenting.
  *
- * Пример использования в *.content.xml
- * <component name="commentsForm" module="comments" class="CommentsForm">
+ * @code
+class CommentsForm;
+@endcode
+ *
+ * Usage example in @c "*.content.xml":
+ * @code
+<component name="commentsForm" module="comments" class="CommentsForm">
 <params>
 <param name="bind">newsArchive</param>
 <param name="comment_tables">stb_news_comment</param>
@@ -19,55 +30,54 @@
 <param name="show_form">1</param>
 </params>
 </component>
- *
- * @package energine
- * @subpackage comments
- * @author sign
+@endcode
  */
 class CommentsForm extends DataSet {
-
+    /**
+     * User editor.
+     * @var Component $userEditor
+     */
     private $userEditor;
 
+    /**
+     * Editor of baned IPs.
+     * @var mixed $banIPEditor
+     */
     private $banIPEditor;
     /**
-     * связанный компонент
-     *
-     * @access private
-     * @var DBDataSet|boolean
+     * Bounded component.
+     * @var DBDataSet|boolean $bindComponent
      */
     private $bindComponent;
 
     /**
-     * Таблица с комментариями - должна быть задана как параметер компонента
-     * @var string
+     * Table with comments.
+     * @var string $commentTable
+     *
+     * @note It should be a component parameter.
      */
     private $commentTable = '';
 
     /**
-     * Комментируемая таблица
-     * @var string
+     * Commented table.
+     * @var string $targetTable
      */
     private $targetTable = '';
 
     /**
-     * Комментарии древовидные? определяется параметром is_tree
-     * @var bool
+     * Are the comments tree-like?
+     * @var bool $isTree
      */
     private $isTree = false;
 
     /**
-     * @var bool
+     * Are tables exist?
+     * @var bool $isExistsTables
      */
     private $isExistsTables = null;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         // если комментарии скрыты то бессмысленно показывать форму
@@ -91,7 +101,8 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Существуют ли комментируемая таблица и таблица комментариев
+     * Check if required tables exist: commented table and table of comments.
+     *
      * @return bool
      */
     protected function isExistsNeedTables() {
@@ -104,10 +115,14 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Сохраняем комментарий и отдаём json
-     *  отключается параметром компонента show_form
+     * Save comment and give back JSON.
      *
-     * Только для авторизованных пользователей
+     * Only for authorized users.
+     *
+     * @throws Exception 'Adding comments has been disabled'
+     * @throws Exception 'Add comment can auth user only'
+     * @throws Exception 'Mistake targetId'
+     * @throws Exception 'Save error'
      */
     protected function saveComment() {
         $builder = new JSONCustomBuilder();
@@ -188,10 +203,11 @@ class CommentsForm extends DataSet {
         }
     }
 
+    //tpdp VZ: What is $s?
     /**
-     * Чистим переимущетвенно текстовый ввод пользователя
+     * Clear user's post.
      *
-     * @param  string $s
+     * @param string $s
      * @return string
      */
     protected function clearPost($s) {
@@ -199,7 +215,8 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Права на текущий раздел текущего пользователя больше чем "Read only"
+     * Check if the current section for the user is editable.
+     *
      * @return bool
      */
     protected function isTargetEditable() {
@@ -210,6 +227,15 @@ class CommentsForm extends DataSet {
         return $right >= ACCESS_READ;
     }
 
+    /**
+     * Update comment.
+     *
+     * @param int $targetId Target ID.
+     * @param string $commentName Comment name.
+     * @param string $commentNick Nick.
+     * @param string|int $commentId Comment ID.
+     * @return bool|int
+     */
     private function updateComment($targetId, $commentName, $commentNick, $commentId) {
         if (!in_array('1', E()->getAUser()->getGroups())) {
             if (!$this->isTargetEditable()) { // юзеру доступно только чтение
@@ -236,6 +262,13 @@ class CommentsForm extends DataSet {
         );
     }
 
+    /**
+     * Delete comment.
+     *
+     * @throws Exception 'Adding comments has been disabled'
+     * @throws Exception 'Add comment can auth user only'
+     * @throws Exception 'Mistake arg'
+     */
     protected function deleteComment() {
         $builder = new JSONCustomBuilder();
         $this->setBuilder($builder);
@@ -271,9 +304,9 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Удалить комментарий
+     * Remove comment.
      *
-     * @param  int $id
+     * @param int $id Comment ID.
      * @return bool
      */
     private function removeComment($id) {
@@ -298,10 +331,9 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Добавляем обязательный параметер comment_tables - имя таблицы с комментариями
-     *
-     * @return array
+     * @copydoc DataSet::defineParams
      */
+    // Добавляем обязательный параметер comment_tables - имя таблицы с комментариями
     protected function defineParams() {
         $result = array_merge(parent::defineParams(), array(
             'comment_tables' => '',
@@ -319,9 +351,9 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * При построении формы назначаем ID комментируемого элемента
-     *
+     * @copydoc DataSet::prepare
      */
+    // При построении формы назначаем ID комментируемого элемента
     protected function prepare() {
         if ($this->getState() == 'deleteComment') {
             ;
@@ -395,14 +427,13 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Add to DB
+     * Add comment.
+     * It returns a comment as an array with user information in the field @c u_nick.
      *
-     * Возвращает комментарий в виде массива добавив к нему поле (u_nick)
-     * с информацией о юзере
-     *
-     * @param int $targetId       Комментируемая запись
-     * @param string $commentName Комментарий
-     * @param int $parentId       Родительский комментарий
+     * @param int $targetId Comment ID.
+     * @param string $commentName Comment.
+     * @param string $commentNick Comment nick.
+     * @param int $parentId Parent comment.
      * @return array
      */
     private function addComment($targetId, $commentName, $commentNick, $parentId = null) {
@@ -447,12 +478,11 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Имя и аватар юзера
+     * Get user information.
+     * User name and avatar.
      *
-     * Возврвщает массив с полями 'u_nick'
-     *
-     * @param int $uId
-     * @return array string[]
+     * @param int $uId User ID.
+     * @return string[]
      */
     private function getUserInfo($uId) {
         $result = array('u_nick' => '');
@@ -472,9 +502,9 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Билдим результаты как JSON
+     * Build result as JSON.
      *
-     * @param array $comment
+     * @param array $comment Comment.
      * @return IBuilder
      */
     private function buildResult($comment) {
@@ -535,8 +565,7 @@ class CommentsForm extends DataSet {
     }
 
     /**
-     * Показываем комментарии
-     * @return void
+     * Show comments.
      */
     protected function showComments() {
 
@@ -558,7 +587,6 @@ class CommentsForm extends DataSet {
 
         $this->setProperty('bind', $this->getParam('bind'));
 
-        /** @var $commentsList CommentsList */
         $commentsList =
                 $this->document->componentManager->createComponent('commentsList', 'comments', 'CommentsList', $commentsParams);
 
@@ -574,12 +602,18 @@ class CommentsForm extends DataSet {
         $commentsList->run();
     }
 
+    /**
+     * Ban.
+     */
     protected function ban(){
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->userEditor = $this->document->componentManager->createComponent('ue','user','UserEditor');
         $this->userEditor->run();
     }
 
+    /**
+     * @copydoc DataSet::build
+     */
     public function build(){
         $result = '';
         switch($this->getState()){
@@ -597,12 +631,20 @@ class CommentsForm extends DataSet {
         return $result;
     }
 
+    /**
+     * Ban IP.
+     */
     protected function banip(){
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->banIPEditor = $this->document->componentManager->createComponent('bie','user','BanIPEditor');
         $this->banIPEditor->run();
     }
 
+    /**
+     * Check captcha.
+     *
+     * @throws SystemException 'TXT_BAD_CAPTCHA'
+     */
     protected function checkCaptcha() {
         require_once('core/modules/share/gears/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');

@@ -39,7 +39,7 @@ var Overlay = new Class(/** @lends Overlay# */{
 
         //определяем родительский элемент
         parentElement = $(parentElement) || document.body;
-        // todo: What is the underground of this? Detect IE?
+        // todo: What is the underground of this? Detect IE? -- comment and check
         if (!parentElement.getElement) {
             parentElement = document;
         }

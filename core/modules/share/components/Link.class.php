@@ -1,29 +1,33 @@
 <?php
 /**
- * Содержит класс Link
+ * @file
+ * Link
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Link;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
-
+//todo VZ: This is very similar to the Button.
 /**
- * Ссылка для панели инструментов
+ * Link control element.
  *
- * @package energine
- * @subpackage share
- * @author 1m.dm
+ * @code
+class Link;
+@endcode
  */
 class Link extends Control {
-
     /**
-     * Конструктор
-     *
-     * @return type
-     * @access public
+     * @param string $id Control ID.
+     * @param string|bool $action Action name.
+     * @param string|bool $title Control title.
+     * @param string|bool $tooltip Control tooltip.
      */
     public function __construct($id, $action = false, $title = false, $tooltip = false) {
         parent::__construct($id);
@@ -34,51 +38,45 @@ class Link extends Control {
     }
 
     /**
-     * Устанавливает название кнопки
+     * Set title.
      *
-     * @return void
-     * @access public
+     * @param string $title Title.
      */
     public function setTitle($title) {
         $this->setAttribute('title', $title);
     }
 
     /**
-     * Возвращает название кнопки
+     * Get title.
      *
      * @return string
-     * @access public
      */
     public function getTitle() {
         return $this->getAttribute('title');
     }
 
     /**
-     * Возвращает имя действия
+     * Get action name.
      *
      * @return string
-     * @access public
      */
     public function getAction() {
         return $this->getAttribute('action');
     }
 
     /**
-     * Устанавливает всплывающую подсказку
+     * Set tooltip.
      *
-     * @param string
-     * @return string
-     * @access public
+     * @param string $tooltip Tooltip.
      */
     public function setTooltip($tooltip) {
          $this->setAttribute('tooltip', $tooltip);
     }
 
     /**
-     * Возвращает всплывающую подсказку
+     * Get tooltip.
      *
      * @return string
-     * @access public
      */
     public function getTooltip() {
         return $this->getAttribute('tooltip');

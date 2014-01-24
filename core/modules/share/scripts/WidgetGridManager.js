@@ -29,7 +29,6 @@ var WidgetGridManager = new Class(/** @lends WidgetGridManager# */{
         this.parent(element);
     },
 
-    // todo: Why insert(), not edit()?
     /**
      * Overridden parent [onDoubleClick]{@link GridManager#onDoubleClick} event handler.
      * @function
@@ -39,7 +38,6 @@ var WidgetGridManager = new Class(/** @lends WidgetGridManager# */{
         this.insert();
     },
 
-    // todo: What does this method?
     /**
      * Insert the widget.
      * @function

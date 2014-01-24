@@ -1,40 +1,39 @@
 <?php
-
 /**
- * Содержит класс Robots
+ * @file
+ * Robots
  *
- * @package energine
- * @subpackage seo
+ * It contains the definition to:
+ * @code
+class Robots;
+@endcode
+ *
  * @author andy.karpov
  * @copyright andy.karpov@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Компонент для генерации robots.txt
+ * Component for generation @c robot.txt
  *
- * @package energine
- * @subpackage seo
- * @author andy.karpov@gmail.com
+ * @code
+class Robots;
+@endcode
  */
-class Robots extends DataSet
-{
+class Robots extends DataSet {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
+     * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module, array $params = null)
-    {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         E()->getResponse()->setHeader('Content-Type', 'text/plain; charset=utf-8');
     }
 
     /**
-     * Основной стейт генерации robots.txt
-     *
+     * @copydoc DataSet::main
      */
+    // Основной стейт генерации robots.txt
     protected function main(){
         E()->getController()->getTransformer()->setFileName('core/modules/seo/transformers/robots_txt.xslt', true);
         parent::main();
@@ -42,9 +41,7 @@ class Robots extends DataSet
     }
 
     /**
-     * Описание DataDescription
-     *
-     * @return DataDescription
+     * @copydoc DataSet::createDataDescription
      */
     protected function createDataDescription()
     {
@@ -56,7 +53,7 @@ class Robots extends DataSet
     }
 
     /**
-     * Метод проверки наличия конфигурации модуля seo в system.config.php
+     * Check if exists the configuration module @ seo in @c system.config.php.
      *
      * @return bool
      */
@@ -74,7 +71,7 @@ class Robots extends DataSet
     }
 
     /**
-     * Метод получения массива существующих smap_segment для google sitemap
+     * Get available @c smap_segment for Google sitemap.
      *
      * @return array|bool
      */
@@ -97,9 +94,9 @@ class Robots extends DataSet
     }
 
     /**
-     * Создаем сегмент(ы) google sitemap в share_sitemap
-     * и даем на него права на просмотр для не авторизированных
-     * пользователей. Имя сегмента следует указать в конфиге.
+     * Create sitemap segments.
+     * It creates Google sitemap segments in @c share_sitemap and set the read-only access for not authorized users.@n
+     * Segment name should be set in configuration file.
      */
     protected function createSitemapSegment() {
 
@@ -147,12 +144,9 @@ class Robots extends DataSet
     }
 
     /**
-     * Метод формирования данных для DataSet'а
-     *
-     * @return array|mixed
+     * @copydoc DataSet::loadData
      */
-    protected function loadData()
-    {
+    protected function loadData() {
         $entries = array();
 
         if (!$this->isSeoConfigured()) {

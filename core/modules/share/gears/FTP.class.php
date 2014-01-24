@@ -1,66 +1,65 @@
 <?php
-
 /**
- * Класс FTP
+ * @file
+ * FTP.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class FTP;
+@endcode
+ *
  * @author Andy Karpov <andy.karpov@gmail.com>
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Класс-обертка для работы со встроенными функциями php для заливки файлов на FTP
+ * Upload files over FTP.
  *
- * @package energine
- * @subpackage kernel
- * @author Andy Karpov <andy.karpov@gmail.com>
+ * This is class-wrapper with build-in PHP functions for uploading files over FTP.
+ *
+ * @code
+class FTP;
+@endcode
  */
 class FTP extends Object {
-
     /**
-     * Ресурс соединения по FTP
-     *
-     * @var resource
+     * Connection resource over FTP.
+     * @var resource $conn_id
      */
     protected $conn_id;
 
     /**
-     * Адрес FTP сервера
-     *
-     * @var string
+     * FTP-Server address.
+     * @var string $server
      */
     protected $server;
 
     /**
-     * FTP порт
-     *
-     * @var int
+     * FTP port.
+     * @var int $port
      */
     protected $port;
 
     /**
-     * FTP Логин
-     *
-     * @var string
+     * FTP username.
+     * @var string $username
      */
     protected $username;
 
     /**
-     * FTP пароль
-     *
-     * @var string
+     * FTP password.
+     * @var string $password
      */
     protected $password;
 
     /**
-     * Конструктор класса
-     *
-     * @param $server
-     * @param $port
-     * @param $username
-     * @param $password
+     * @param string $server FTP address.
+     * @param string $port Port.
+     * @param string $username Username.
+     * @param string $password Password.
      */
     public function __construct($server, $port, $username, $password) {
         $this->server = $server;
@@ -69,11 +68,15 @@ class FTP extends Object {
         $this->password = $password;
     }
 
+    //todo VZ: Why only true is returned?
     /**
-     * Метод соединения и авторизации на ftp-сервере
+     * Connect to FTP.
+     * It connects and authorize the user on the FTP-server.
      *
      * @return bool
-     * @throws SystemException
+     *
+     * @throws SystemException 'ERR_CONNECT_FTP'
+     * @throws SystemException 'ERR_FRP_LOGIN_PASSWORD'
      */
     public function connect() {
 
@@ -89,7 +92,8 @@ class FTP extends Object {
     }
 
     /**
-     * Метод отсоединения от ftp-сервера
+     * Disconnect FTP-Server.
+     * It returns false if the server was not connected.
      *
      * @return bool
      */
@@ -103,7 +107,7 @@ class FTP extends Object {
     }
 
     /**
-     * Возвращает true, если соединение уже было установлено
+     * Check if the server is connected.
      *
      * @return bool
      */
@@ -112,12 +116,13 @@ class FTP extends Object {
     }
 
     /**
-     * Метод загрузки файла
+     * Upload file.
      *
-     * @param string $sourceFilename
-     * @param string $destFilename
+     * @param string $sourceFilename Source filename.
+     * @param string $destFilename Destination filename.
      * @return boolean
-     * @throws SystemException
+     *
+     * @throws SystemException 'ERR_FTP_NOT_CONNECTED'
      */
     public function uploadFile($sourceFilename, $destFilename) {
 
@@ -139,12 +144,14 @@ class FTP extends Object {
         return ftp_put($this->conn_id, $basename, $sourceFilename, FTP_BINARY);
     }
 
+    //todo VZ: Why only true is returned?
     /**
-     * Метод создания директории
+     * Create directory.
      *
-     * @param string $dir
+     * @param string $dir Directory name.
      * @return boolean
-     * @throws SystemException
+     *
+     * @throws SystemException 'ERR_FTP_NOT_CONNECTED'
      */
     public function createDir($dir) {
 

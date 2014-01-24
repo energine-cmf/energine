@@ -1,48 +1,48 @@
 <?php
 /**
- * Содержит класс NavigationMenu
+ * @file
+ * NavigationMenu
  *
- * @package energine
- * @subpackage misc
+ * It contains the definition to:
+ * @code
+final class NavigationMenu;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Компонент выводящий список дочерних страниц, а также список страниц того же уровня
+ * Navigation manager.
+ * It shows the list of child pages and pages in the same level.
  *
- * @package energine
- * @subpackage misc
- * @author d.pavka@gmail.com
+ * @code
+final class NavigationMenu;
+@endcode
+ *
  * @final
  */
 final class NavigationMenu extends DataSet {
     /**
-     * Отфильтрованные идентифкаторы
-     *
-     * @access private
-     * @var array | boolean
+     * Filtered IDs.
+     * @var array $filteredIDs
      */
     private $filteredIDs;
 
+    //todo VZ: This can be removed.
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param Document $document
-     * @param array $params
-     * @access public
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
     }
 
     /**
-     * Добавлен параметр tags позволяющий ограничивать выборку определенными тегами
-     *
-     * @return array
+     * @copydoc DataSet::defineParams
      */
+    // Добавлен параметр tags позволяющий ограничивать выборку определенными тегами
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
             array(
@@ -51,8 +51,7 @@ final class NavigationMenu extends DataSet {
         return $result;
     }
     /**
-     *
-     * @return DataDescription
+     * @copydoc DataSet::createDataDescription
      */
     protected function createDataDescription() {
         $result = new DataDescription();
@@ -81,11 +80,9 @@ final class NavigationMenu extends DataSet {
     }
 
     /**
-     * Накладываем ограничения по тегам
-     *
-     * @return array | false
-     * @access protected
+     * @copydoc DataSet::loadData
      */
+    // Накладываем ограничения по тегам
     protected function loadData() {
         $sitemap = E()->getMap();
 
@@ -121,8 +118,10 @@ final class NavigationMenu extends DataSet {
         return $data;
     }
 
+    /**
+     * @copydoc DataSet::createBuilder
+     */
     protected function createBuilder() {
-
         $tree = E()->getMap()->getTree();
 
         $treeData = array();

@@ -1,29 +1,29 @@
 <?php 
 /**
- * Содержит класс NewsCalendar
+ * @file
+ * NewsCalendar
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class NewsCalendar;
+@endcode
+ *
  * @author andrii.a
  * @copyright eggmengroup.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Новостной календарь
+ * Calendar for news.
  *
- * @package energine
- * @subpackage apps
- * @author andrii.a
+ * @code
+class NewsCalendar;
+@endcode
  */
 class NewsCalendar extends Calendar {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc Calendar::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -63,6 +63,9 @@ class NewsCalendar extends Calendar {
             $date->setProperty('marked', 'marked');
     }
 
+    /**
+     * @copydoc Calendar::defineParams
+     */
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -77,7 +80,11 @@ class NewsCalendar extends Calendar {
         );
     }
 
-
+    /**
+     * @copydoc Calendar::setParam
+     *
+     * @throws SystemException 'ERR_404'
+     */
     protected function setParam($name, $value) {
 
 

@@ -1,41 +1,72 @@
 <?php
-
 /**
- * Класс DocumentController  и  интерфейс Transformer.
+ * @file
+ * DocumentController, ITransformer, IDocument.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class DocumentController;
+interface ITransformer;
+interface IDocument;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Отвечает за подготовку среды и запуск работы объекта Document.
+ * DocumentController class is responsible for preparing the environment and running Document object.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
+ * @code
+class DocumentController;
+@endcode
+ *
  */
 class DocumentController extends Object {
-    const TRANSFORM_HTML = 'html';
-    const TRANSFORM_DEBUG_XML = 'debug';
-    const TRANSFORM_STRUCTURE_XML = 'struct';
-    const TRANSFORM_JSON = 'json';
     /**
-     * ХЗ вообще что это такое?
-     * Наверное была какая то идея
-     * но в процессе разработки - потерялась
+     * Constant string for transforming into the HTML.
+     * @var string TRANSFORM_HTML
+     */
+    const TRANSFORM_HTML = 'html';
+
+    /**
+     * Constant string for transforming into the XML debugging view format.
+     * @var string TRANSFORM_HTML
+     */
+    const TRANSFORM_DEBUG_XML = 'debug';
+
+    /**
+     * Constant string for transforming into the XML structure view format.
+     * @var string TRANSFORM_HTML
+     */
+    const TRANSFORM_STRUCTURE_XML = 'struct';
+
+    /**
+     * Constant string for transforming into the JSON.
+     * @var string TRANSFORM_HTML
+     */
+    const TRANSFORM_JSON = 'json';
+
+    /**
+     * Empty transformation.
+     * @var string TRANSFORM_EMPTY
      *
-     * @upd
-     * Похоже это для случая когда нам нужно вернуть XML без накладывания XSLT Трансформации
+     * @note The main idea of this constant was lost. Perhaps this is for the cases to return raw XML without XSLT transformation.
      */
     const TRANSFORM_EMPTY = 'empty';
+
     /**
-     *
-     * @var XSLTTransformer
+     * XSLT transformer.
+     * @var XSLTTransformer $transformer
      */
     private static $transformer;
 
+    /**
+     * Get the view mode.
+     * @return string
+     */
     public function getViewMode() {
         $result = self::TRANSFORM_HTML;
 
@@ -63,12 +94,11 @@ class DocumentController extends Object {
     }
 
     /**
-     * Подготавливает среду для работы, создаёт объект Document и передаёт
-     * ему управление. После отработки объекта Document, запускает трансформацию
-     * XML-документа страницы в выходной формат.
+     * Run processing.
      *
-     * @access public
-     * @return void
+     * -# Prepare the environment
+     * -# Create Document object and give him control
+     * -# Transform XML-document
      */
     public function run() {
         $language = E()->getLanguage();
@@ -104,8 +134,8 @@ class DocumentController extends Object {
     }
 
     /**
-     * Возвращает объект  - трансформатор
-     * Тип трасформатора зависит от переданного в GET одного из зарезервированных параметров
+     * Get transformer.
+     * The transformer type depends on one of reserved parameters in the GET request.
      *
      * @return ITransformer
      */
@@ -128,14 +158,12 @@ class DocumentController extends Object {
         return self::$transformer;
     }
 
-
     /**
-     * Трансформирует XML-документ страницы в выходной формат,
-     * и выводит результат клиенту.
+     * Run transformation.
+     * Transform XML-document in the output format and show the result to the client.
      *
-     * @param $document Document
-     * @access private
-     * @return void
+     * @param Document $document XML-document.
+     * @return mixed
      */
     private function transform($document) {
         $this->getTransformer()->setDocument($document->getResult());
@@ -144,16 +172,53 @@ class DocumentController extends Object {
     }
 }
 
+/**
+ * Transformer interface.
+ *
+ * @code
+interface ITransformer;
+@endcode
+ */
 interface ITransformer {
+    /**
+     * Run transforming.
+     * @return mixed
+     */
     public function transform();
 
+    /**
+     * Set document, that will be transformed.
+     *
+     * @param DOMDocument $document Document, that will be transformed.
+     */
     public function setDocument(DOMDocument $document);
 
+    /**
+     * Set filename, that will be transformed.
+     *
+     * @param string $transformerFilename File name.
+     * @param bool $isAbsolutePath Is the path absolute?
+     */
     public function setFileName($transformerFilename, $isAbsolutePath = false);
 }
 
+/**
+ * Document interface.
+ *
+ * @code
+interface IDocument;
+@endcode
+ */
 interface IDocument {
+    /**
+     * Build.
+     */
     public function build();
 
+    /**
+     * Get result.
+     *
+     * @return DOMDocument
+     */
     public function getResult();
 }

@@ -1,28 +1,37 @@
 <?php
 /**
- * Содержит класс JSONCustomBuilder
+ * @file
+ * JSONCustomBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class JSONCustomBuilder;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
  /**
-  * Упрощенный JSON билдер
+  * Custom JSON builder.
   *
-  * @package energine
-  * @subpackage kernel
-  * @author d.pavka@gmail.com
+  * This is simplified JSON builder.
+  *
+  * @code
+ class JSONCustomBuilder;
+ @endcode
   */
  
 class JSONCustomBuilder extends Object implements IBuilder{
     /**
-     * Перечень дополнительных свойств
-     * @var array
+     * Set of the additional properties.
+     * @var array $properties
      */
     public $properties = array();
 
+    //todo VZ: Why only true is returned?
     /**
      * @return bool
      */
@@ -39,10 +48,10 @@ class JSONCustomBuilder extends Object implements IBuilder{
     }
 
     /**
-     * Добавляем свойство
-     * @param $propName
-     * @param $propValue
-     * @return $this
+     * Set property.
+     * @param string $propName Property name.
+     * @param mixed $propValue Property value.
+     * @return JSONCustomBuilder
      */
     public function setProperty($propName, $propValue){
         $this->properties[$propName] = $propValue;
@@ -50,9 +59,12 @@ class JSONCustomBuilder extends Object implements IBuilder{
     }
 
     /**
-     * Добавляем сразу несколько свойств
-     * @param array $properties
-     * @return $this
+     * Set multiple properties.
+     *
+     * @param array $properties Array of property names and values.
+     * @return JSONCustomBuilder
+     *
+     * @see JSONCustomBuilder::setProperty
      */
     public function setProperties(array $properties){
         foreach($properties as $propName => $propValue){
@@ -62,7 +74,7 @@ class JSONCustomBuilder extends Object implements IBuilder{
     }
 
     /**
-     * Возвращение результата
+     * Get build result.
      * @return string
      */
     public function getResult() {

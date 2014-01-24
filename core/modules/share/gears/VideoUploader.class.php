@@ -1,22 +1,36 @@
 <?php 
-
 /**
- * Класс VideoUploader.
+ * @file
+ * VideoUploader.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class VideoUploader;
+@endcode
+ *
  * @author pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * 
- * Загрузчик и конвертер видео файлов в формат flv
+ * Video uploader.
+ *
+ * @code
+final class VideoUploader;
+@endcode
+ *
+ * It also converts video file to @c flv format
+ *
+ * @final
  */
 final class VideoUploader extends FileUploader {
-    
-	public function __construct(Array $restrictions = array()){
+    /**
+     * @copydoc FileUploader::__construct
+     */
+    public function __construct(Array $restrictions = array()){
     	parent::__construct(
     	   array_merge(
     	       array('ext' => array('flv', 'avi', 'mpeg', 'mpg')),
@@ -25,11 +39,14 @@ final class VideoUploader extends FileUploader {
     	);
     }
 
+    /**
+     * @copydoc FileUploader::upload
+     *
+     * @throws SystemException 'ERR_BAD_FILE_FORMAT'
+     */
     public function upload($dir){
-    	if(
-    	   ($this->getExtension() != 'flv') 
-    	   && 
-    	   (file_exists($this->getConfigValue('video.ffmpeg')))
+    	if(($this->getExtension() != 'flv')
+    	   && (file_exists($this->getConfigValue('video.ffmpeg')))
     	){
     		$cmd = $this->getConfigValue('video.ffmpeg').' -i '.
     		  $this->file['tmp_name'].
@@ -46,7 +63,7 @@ final class VideoUploader extends FileUploader {
               ' -vframes 1 -ss 00:00:05'.
               ' -f image2 -s cif -an '.$this->FileObjectName.'.jpg';
     		system($cmd);
-            $result = true;    		
+            $result = true;
     	}
     	else{
     		$result = parent::upload($dir);

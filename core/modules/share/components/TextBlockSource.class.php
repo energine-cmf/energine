@@ -1,24 +1,32 @@
 <?php
 /**
- * Класс TextBlockSource.
+ * @file
+ * TextBlockSource
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class TextBlockSource;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2007
+ *
+ * @version 1.0.0
  */
 
 //require_once('core/modules/share/components/DataSet.class.php');
 
 /**
- * Исходный код текстового блока.
+ * Source of the text block.
  *
- * @package energine
- * @subpackage share
- * @author 1m.dm
+ * @code
+class TextBlockSource;
+@endcode
  */
 class TextBlockSource extends DataSet {
-
+    /**
+     * @copydoc DataSet::__construct
+     */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
         $this->addWYSIWYGTranslations();

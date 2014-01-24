@@ -1,39 +1,54 @@
 <?php
 /**
- * Содержит класс PageList
+ * @file
+ * PageList
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class PageList;
+@endcode
+ *
  * @author dr.Pavka
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Класс выводит список подразделов
+ * Show the list of subsections.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class PageList;
+@endcode
  */
 class PageList extends DataSet {
-    const CURRENT_PAGE = 'current';
-    const PARENT_PAGE = 'parent';
-    const ALL_PAGES = 'all';
     /**
-     * Идентификатор раздела для которого мы выводим чайлдов
-     *
-     * @access private
-     * @var int
+     * Current page.
+     * @var string CURRENT_PAGE
+     */
+    const CURRENT_PAGE = 'current';
+
+    /**
+     * Parent page.
+     * @var string PARENT_PAGE
+     */
+    const PARENT_PAGE = 'parent';
+    /**
+     * All pages.
+     * @var string ALL_PAGES
+     */
+    const ALL_PAGES = 'all';
+
+    /**
+     * Section ID, for which we display children.
+     * @var int $pid
      */
     private $pid;
 
     /**
-     * Конструктор класса
-     *
-     * @return void
+     * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module, array $params = null)
-    {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->addTranslation('TXT_HOME');
@@ -45,8 +60,10 @@ class PageList extends DataSet {
         }
     }
 
-    protected function createBuilder()
-    {
+    /**
+     * @copydoc DataSet::createBuilder
+     */
+    protected function createBuilder() {
         if ($this->getParam('recursive')) {
             $builder = new TreeBuilder();
         }
@@ -58,17 +75,15 @@ class PageList extends DataSet {
     }
 
     /**
+     * @copydoc DataSet::defineParams
+     */
+    /*
      * Добавлены параметр tags - теги
      * id - идентификатор страницы или CURRENT_PAGE | PARENT_PAGE | ALL_PAGES
      * site - идентфиикатор сайта
      * recursive - рекурсивно
-     *
-     * @return array
-     * @access protected
      */
-
-    protected function defineParams()
-    {
+    protected function defineParams() {
         $result = array_merge(parent::defineParams(),
             array(
                 'tags' => '',
@@ -80,13 +95,10 @@ class PageList extends DataSet {
     }
 
     /**
-     * Добавляем информацию о присоединенных файлах
-     *
-     * @return void
-     * @access protected
+     * @copydoc DataSet::main
      */
-    protected function main()
-    {
+    // Добавляем информацию о присоединенных файлах
+    protected function main() {
         parent::main();
         if ($this->getDataDescription()->isEmpty()) {
             $this->getDataDescription()->loadXML(
@@ -121,14 +133,9 @@ class PageList extends DataSet {
     }
 
     /**
-     * Переопределенный метод загрузки данных
-     *
-     * @return mixed
-     * @access protected
+     * @copydoc DataSet::loadData
      */
-
-    protected function loadData()
-    {
+    protected function loadData() {
         $sitemap = E()->getMap();
 
         $methodName = 'getChilds';

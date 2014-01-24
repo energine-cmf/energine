@@ -1,11 +1,19 @@
 <?php
 /**
- * Этот файл возник потому что мне надоело наблюдать при отладке
- * вывод всех объяснений headerов
- * Вот и решил спрятать их здесь чтобы загружались только по надобности
+ * @file
+ * HTTP status codes and their short descriptions.
+ * It returns an array in the form
+ * @code
+array(
+    http_code => short_description,
+    ...
+)
+@endcode
+ *
  * @see Response::__get
  * @see Response::__isset
- *  
+ *
+ * @note This file was created because of the big information overhead of all headers by debugging.
  */
 
 return array(

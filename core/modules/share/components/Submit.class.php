@@ -1,29 +1,30 @@
 <?php
 /**
- * Содержит класс Button
+ * @file
+ * Submit
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Submit;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Кнопка отправки данных
+ * Submit button.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class Submit;
+@endcode
  */
-
 class Submit extends Button {
     /**
-     * Конструктор
-     *
-     * @return type
-     * @access public
+     * @copydoc Button::__construct
      */
-
     public function __construct($id, $action = false, $image = false, $title = false, $tooltip = false) {
         parent::__construct($id, $action, $image, $title, $tooltip);
         $this->type = 'submit';

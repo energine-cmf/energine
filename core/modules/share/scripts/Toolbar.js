@@ -132,7 +132,6 @@ var Toolbar = new Class(/** @lends Toolbar# */{
         }, this);
     },
 
-    // todo: I think it would be better to explicit define the input variables for example as array or object of controls.
     /**
      * Append the control(s) from arguments.
      *

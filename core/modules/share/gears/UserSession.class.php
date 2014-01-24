@@ -1,100 +1,107 @@
 <?php
-
 /**
- * Класс UserSession.
+ * @file
+ * UserSession.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class UserSession;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2011
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс управления сеансами пользователей.
+ * Manager of user sessions.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+final class UserSession;
+@endcode
+ *
  * @final
  */
 final class UserSession extends DBWorker {
     /**
-     * Имя куки которое бросается при неудачной попытке входа
+     * Cookie name for failed login.
+     * @var string FAILED_LOGIN_COOKIE_NAME
+     *
      * @see auth.php
-     * Вообще то должо находиться в LoginForm
-     * Но изза неудобства вызова перенесена сюда
+     *
+     * @note In general this should be in LoginForm, but of the inconvenience call it was moved here.
+     *
      * @todo Все таки надо как то ей указать надлежащее место
      */
     const FAILED_LOGIN_COOKIE_NAME = 'failed_login';
+
     /**
-     * Флаг не позволяющий вызвать объект UserSession напрямую
-     * только через UserSession::start
-     * а приватный конструктор  для
-     * @var bool
-     */
-    private static $instance = false;
-    /**
-     * Имя сеанса по-умолчанию.
+     * Default session name.
+     * @var string DEFAULT_SESSION_NAME
      */
     const DEFAULT_SESSION_NAME = 'NRGNSID';
 
     /**
-     * Вероятность вызова сборщика мусора.
-     * Вычисляется как DEFAULT_PROBABILITY / session.gc_divisor (defaults to 100).
-     * Например, 10 / 100 означает 10%-вероятность вызова СМ.
+     * Default probability to call garbage collector.
+     * It calculates as follows: <tt> DEFAULT_PROBABILITY / session.gc_divisor</tt>, where <tt>session.gc_divisor</tt> is 100 by defaults.
+     * Example: <tt>10 / 100</tt> means that garbage collector will called with probability of 10%.
      */
     const DEFAULT_PROBABILITY = 10;
 
     /**
-     * @access private
-     * @var string идентификатор сеанса
+     * Instance flag.
+     * It denies to call directly UserSession, only over UserSession::start().
+     * @var bool $instance
+     */
+    private static $instance = false;
+
+    /**
+     * Session ID.
+     * @var string $phpSessId
      */
     private $phpSessId;
 
     /**
-     * Если период между запросами превышает эту величину, сеанс становится недействительным.
-     *
-     * @var int время ожидания
-     * @access private
+     * Timeout.
+     * If time difference between requests is bigger than this value then the session become invalid.
+     * @var int $timeout
      */
     private $timeout;
 
     /**
-     * Используется для настройки времени жизни cookie и сборки мусора.
-     *
-     * @var int максимальное время жизни сеанса
-     * @access private
+     * Maximal session lifespan.
+     * It is used to setup the lifespan of cookie and garbage collector.
+     * @var int $lifespan
      */
     private $lifespan;
 
     /**
-     * @access private
-     * @var string пользовательский агент
+     * User agent.
+     * @var string $userAgent
      */
     private $userAgent;
 
     /**
-     * Данные сеанса
-     * false - сеанс существует но данных нет
-     * string - сеанс существует и данные такие
-     * null - сеанса нет существует
+     * Session data.
      *
-     * @var string
+     * - null - Session is not exist.
+     * - false - Session is exist but there is no data.
+     * - string - Session and data are exist.
+     *
+     * @var null|bool|string $data
      */
     private $data = null;
     /**
-     * @access private
-     * @var string имя таблицы сеансов в БД
-     * @static
+     * Session table name in data base.
+     * @var string $tableName
      */
     static private $tableName = 'share_session';
 
-
     /**
-     * Конструктор класса.
+     * @param bool $force Force to create session?
      *
-     * @access private
-     * @return void
+     * @throws SystemException 'ERR_NO_CONSTRUCTOR'
      */
     public function __construct($force = false) {
         if (!self::$instance) {
@@ -158,21 +165,20 @@ final class UserSession extends DBWorker {
     }
 
     /**
-     * @static
+     * Check if the session is opened.
      *
+     * @return bool
      */
     static public function isOpen() {
         return (isset($_COOKIE[self::DEFAULT_SESSION_NAME]) && !empty($_COOKIE[self::DEFAULT_SESSION_NAME]))?$_COOKIE[self::DEFAULT_SESSION_NAME]:false;
     }
 
     /**
-     * Проверям , действителен ли сеанс с этим идентификатором
-     * если да - то возвращает еще и данные сеанса
-     * может не очень красиво, но выгоднее, чтоб секономить на запросах
+     * Validate the session.
+     * It checks the validity of the session with this ID. If true then session data will be returned.
      *
-     * @param  $sessID
-     * @return mixed | false
-     * @static
+     * @param int $sessID Session ID.
+     * @return mixed|false
      */
     static public function isValid($sessID) {
         // проверяем
@@ -185,15 +191,14 @@ final class UserSession extends DBWorker {
         return (!is_array($res)) ? false : $res[0]['session_data'];
     }
 
+    //todo VZ: Why not to use 0 as the default for arguments?
     /**
-     * Создает в БД информацию о новой сессии
-     * возвращает информацию о куках для нее
+     * Create new session information.
+     * It returns an information about cookie for new session for Response::addCookie().
      *
-     * @static
-     * @param  $UID int || false информация о идентификаторе пользователя
+     * @param int|bool $UID User ID.
      * @param bool $expires
-     *
-     * @return array для Response::addCookie
+     * @return array
      */
     public static function manuallyCreateSessionInfo($UID = false, $expires = false) {
         //Записали данные в БД
@@ -218,8 +223,7 @@ final class UserSession extends DBWorker {
     }
 
     /**
-     * @static
-     * @return void
+     * Delete session information.
      */
     public static function manuallyDeleteSessionInfo() {
         if (isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])) {
@@ -229,16 +233,17 @@ final class UserSession extends DBWorker {
     }
 
     /**
-     * Стартует сеанс
-     * На самом деле в Enrgine сеанс стартуется только как продолжение уже имеющегося(созданного в auth.php)
-     * и если нет ифнормации о сеансе в куках или посте(исключение для флеш аплоадера)- то никакой сессии и не будет
-     * но в captcha нам нужно стартовать принудительно
+     * Start session.
+     * Actually the session in Energine starts as continuation of already existed session (created in auth.php).
+     * If there are no information about the session in cookies or posts (there is an exception for flash uploader) then no session will start.
+     * For captcha we need to force to start session.
      *
-     * @param $force bool создавать сессию даже когда в этом нет необходимости
+     * @param $force bool Force to create session if this is not necessary?
+     *
      * @see index.php
      * @see auth.php
-     * @access public
-     * @return void
+     *
+     * @throws SystemException 'ERR_SESSION_ALREADY_STARTED'
      */
     public static function start($force = false) {
         if (self::$instance) {
@@ -249,50 +254,54 @@ final class UserSession extends DBWorker {
         new UserSession($force);
     }
 
+    /**
+     * Generate ID.
+     *
+     * @return string
+     */
     public static function createIdentifier() {
         return sha1(time() + rand(0, 10000));
     }
 
     /**
-     * Открывает сеанс.
+     * Open session.
      *
-     * @access public
-     * @param string $savePath
-     * @param string $sessionName
+     * @param string $savePath Save path.
+     * @param string $sessionName Session name.
      * @return boolean
      */
     public function open($savePath, $sessionName) {
         return true;
     }
 
+    //todo VZ: Why for closing true is returned?
     /**
-     * Закрывает сеанс.
+     * Close session.
      *
-     * @access public
      * @return bool
      */
     public function close() {
         return true;
     }
 
+    //todo VZ: input argument is not used.
     /**
-     * возвращает  данные сеанса.
+     * Read session data.
      *
-     * @access public
-     * @see UserSession::data
-     * @param string идентификатор сеанса
+     * @param string $phpSessId Sesion ID.
      * @return mixed
+     *
+     * @see UserSession::data
      */
     public function read($phpSessId) {
         return ($this->data);
     }
 
     /**
-     * Записывает данные сеанса.
+     * Write session data.
      *
-     * @access public
-     * @param string идентификатор сеанса
-     * @param mixed данные
+     * @param string $phpSessId Session ID.
+     * @param mixed $data Data.
      * @return mixed
      */
     public function write($phpSessId, $data) {
@@ -309,21 +318,21 @@ final class UserSession extends DBWorker {
     }
 
     /**
-     * Уничтожает сеанс.
+     * Destroy session.
      *
-     * @access public
-     * @param string идентификатор сеанса
+     * @param string $phpSessId Session ID.
      * @return bool
      */
     public function destroy($phpSessId) {
         return $this->dbh->modify(QAL::DELETE, self::$tableName, null, array('session_native_id' => $phpSessId));
     }
 
+    //todo VZ: input argument is not used.
+    //todo VZ: Why true is returned?
     /**
-     * Сборщик мусора.
+     * Garbage collector.
      *
-     * @access public
-     * @param int максимальное время жизни сеанса
+     * @param int $maxLifeTime Maximal session lifespan.
      * @return bool
      */
     public function gc($maxLifeTime) {

@@ -1,28 +1,29 @@
 <?php
 /**
- * Содержит класс SiteList
+ * @file
+ * SiteList
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class SiteList;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Список сайтов
+ * Site list.
  *
- * @package energine
- * @subpackage share
- * @author d.pavka@gmail.com
+ * @code
+class SiteList;
+@endcode
  */
 class SiteList extends DataSet {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -30,9 +31,9 @@ class SiteList extends DataSet {
     }
 
     /**
-     * Добавлены теги, количество принудительно сброшено
-     * @return array
+     * @copydoc DataSet::defineParams
      */
+    // Добавлены теги, количество принудительно сброшено
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
             array(
@@ -43,11 +44,9 @@ class SiteList extends DataSet {
     }
 
     /**
-     * Загружаем данные SiteManager
-     *
-     * @return array
-     * @access protected
+     * @copydoc DataSet::loadData
      */
+    // Загружаем данные SiteManager
     protected function loadData() {
         $result = array();
         $filteredIDs = true;
@@ -71,6 +70,4 @@ class SiteList extends DataSet {
             }
         return $result;
     }
-
-
 }

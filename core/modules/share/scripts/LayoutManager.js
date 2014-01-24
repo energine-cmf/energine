@@ -159,7 +159,6 @@ var LayoutManager = new Class(/** @lends LayoutManager# */{
         }, this);
     },
 
-    // todo: Public or private?
     /**
      * Create toolbar.
      * @function
@@ -246,97 +245,68 @@ var LayoutManager = new Class(/** @lends LayoutManager# */{
      * @public
      */
     applyChanges: function () {
-        var fRevert = function () {
-                new Request.JSON({
-                    url: LayoutManager.singlePath + 'widgets/revert-template/' + ((Energine.forceJSON) ? '?json' : ''),
-                    method: 'post',
-                    evalScripts: false,
-                    onSuccess: function (response) {
-                        if (response.result) {
-                            //document.location = document.location.href;
-                        }
+        var jsonRequest = new Request.JSON({
+            url: LayoutManager.singlePath,
+            method: 'post',
+            evalScripts: false
+        });
+
+        var toolbarValue = this.toolbar.getElement().getElement('select').get('value');
+        switch (toolbarValue) {
+            case 'revert':
+                jsonRequest.url += 'widgets/revert-template/';
+                break;
+            case 'reset':
+                jsonRequest.url += 'reset-templates/';
+                break;
+            case 'saveTemplate':
+                jsonRequest.url += 'widgets/save-template/';
+                break;
+            case 'saveNewTemplate':
+                jsonRequest.url += 'widgets/save-new-template/';
+                break;
+            default:
+                jsonRequest.url += 'widgets/save-content/';
+        }
+        jsonRequest.url += ((Energine.forceJSON) ? '?json' : '');
+
+        switch (toolbarValue) {
+            case 'revert':
+            case 'reset':
+                break;
+            case 'saveTemplate':
+            case 'saveNewTemplate':
+            default:
+                jsonRequest.data.xml = this.xml.asXMLString();
+        }
+
+        switch (toolbarValue) {
+            case 'revert' :
+                break;
+            default :
+                jsonRequest.addEvent('success', function(response) {
+                    if (response.result) {
+                        document.location = document.location.href;
                     }
-                }).send();
-            },
-            fReset = function () {
-                new Request.JSON({
-                    url: LayoutManager.singlePath + 'reset-templates/' + ((Energine.forceJSON) ? '?json' : ''),
-                    method: 'post',
-                    evalScripts: false,
-                    onSuccess: function (response) {
-                        if (response.result) {
-                            document.location = document.location.href;
-                        }
-                    }
-                }).send();
-            },
-            fSaveTemplate = function () {
-                new Request.JSON({
-                    url: LayoutManager.singlePath + 'widgets/save-template/' + ((Energine.forceJSON) ? '?json' : ''),
-                    method: 'post',
-                    evalScripts: false,
-                    data: { 'xml': this.xml.asXMLString() },
-                    onSuccess: function (response) {
-                        if (response.result) {
-                            document.location = document.location.href;
-                        }
-                    }
-                }).send();
-            },
-            fSaveNewTemplate = function () {
+                })
+        }
+
+        switch (toolbarValue) {
+            case 'saveNewTemplate':
                 ModalBox.open({
                     url: LayoutManager.singlePath + 'widgets/show-new-template-form/',
                     onClose: function (result) {
                         if (!result) {
                             return;
                         }
-                        new Request.JSON({
-                            url: LayoutManager.singlePath + 'widgets/save-new-template/' + ((Energine.forceJSON) ? '?json' : ''),
-                            method: 'post',
-                            evalScripts: false,
-                            data: {
-                                'xml': this.xml.asXMLString(),
-                                'title': result
-                            },
-                            onSuccess: function (response) {
-                                if (response.result) {
-                                    document.location = document.location.href;
-                                }
-                            }
-                        }).send();
-                    }.bind(this)
-                });
-            },
-            fSave = function () {
-                new Request.JSON({
-                    url: LayoutManager.singlePath + 'widgets/save-content/' + ((Energine.forceJSON) ? '?json' : ''),
-                    method: 'post',
-                    evalScripts: false,
-                    data: { 'xml': this.xml.asXMLString() },
-                    onSuccess: function (response) {
-                        if (response.result) {
-                            document.location = document.location.href;
-                        }
-                    }
-                }).send();
-            };
 
-        // todo: Why not to merge the above Request.JSONs to the below switch?
-        switch (this.toolbar.getElement().getElement('select').get('value')) {
-            case 'revert':
-                fRevert.apply(this);
-                break;
-            case 'reset':
-                fReset.apply(this);
-                break;
-            case 'saveTemplate':
-                fSaveTemplate.apply(this);
-                break;
-            case 'saveNewTemplate':
-                fSaveNewTemplate.apply(this);
+                        jsonRequest.data.title = result;
+                        jsonRequest.send();
+                    }
+                });
                 break;
             default:
-                fSave.apply(this);
+                jsonRequest.send();
         }
     },
 
@@ -379,6 +349,7 @@ var LayoutManager = new Class(/** @lends LayoutManager# */{
                 return res;
             })
         });
+
         return cl;
     },
 
@@ -520,7 +491,6 @@ LayoutManager.DummyWidget = new Class(/** @lends LayoutManager.DummyWidget# */{
          */
         this.column = column;
 
-        // todo: Why this.element = this.container?
         /**
          * Main element.
          * @type {Element}
@@ -652,7 +622,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
         this.column = column;
         this.name = xmlDescr.getProperty('data-name');
         this.visible = false;
-        // todo: what is it?
+        // static widget
         this['static'] = false;
 
         htmlElement = htmlElement || document.getElement('[widget=' + this.name + ']');

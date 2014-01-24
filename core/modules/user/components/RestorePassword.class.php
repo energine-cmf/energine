@@ -1,31 +1,30 @@
 <?php
 /**
- * Содержит класс RestorePassword
+ * @file
+ * RestorePassword
  *
- * @package energine
- * @subpackage user
+ * It contains the definition to:
+ * @code
+class RestorePassword;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Форма восстановления пароля
+ * Form to restoring password.
  *
- * @package energine
- * @subpackage user
- * @author dr.Pavka
+ * @code
+class RestorePassword;
+@endcode
  */
 class RestorePassword extends DataSet {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
@@ -33,12 +32,9 @@ class RestorePassword extends DataSet {
     }
 
     /**
-	 * Переопределен параметр active
-	 *
-	 * @return int
-	 * @access protected
-	 */
-
+     * @copydoc DataSet::defineParams
+     */
+    // Переопределен параметр active
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
         array(
@@ -46,13 +42,10 @@ class RestorePassword extends DataSet {
         ));
         return $result;
     }
-    /**
-     * Отправляет новый пароль на указанный email
-     *
-     * @return void
-     * @access protected
-     */
 
+    /**
+     * Send new password to defined E-Mail.
+     */
     protected function send() {
         if($crumbComponent = $this->document->componentManager->getBlockByName('breadCrumbs')) {
             $crumbComponent->addCrumb();

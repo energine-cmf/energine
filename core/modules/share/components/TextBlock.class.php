@@ -1,61 +1,56 @@
 <?php
 /**
- * Содержит класс TextBlock.
+ * @file
+ * TextBlock
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+final class TextBlock;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Текстовый блок.
+ * Text block.
  *
- * @package energine
- * @subpackage share
- * @author 1m.dm
+ * @code
+final class TextBlock;
+@endcode
+ *
  * @final
  */
 final class TextBlock extends DataSet {
     /**
-     * Имя основной таблицы
-     *
-     * @var string
-     * @access private
+     * Name of the main table.
+     * @var string $tableName
      */
     private $tableName;
 
     /**
-     * Идентификатор текстового блока
-     *
-     * @var int
-     * @access private
+     * Text block ID.
+     * @var int $id
      */
     private $id = false;
 
     /**
-     * Содержимое текстового блока
-     *
-     * @var string
-     * @access private
+     * Content of the text block.
+     * @var string $content
      */
     private $content = '';
 
     /**
-     * Находится ли страница в режиме редактирования содержимого
-     *
-     * @var boolean
-     * @access private
+     * Is this text block editable?
+     * @var boolean $isEditable
      */
     private $isEditable;
 
+    //todo VZ: Is the next todo done?
     /**
-     * Конструктор класса
-     *
-     * @param string
-     * @param string
-     * @return void
-     * @access public
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -73,12 +68,9 @@ final class TextBlock extends DataSet {
     }
 
     /**
-     * Добавлен параметр num
-     *
-     * @return array
-     * @access protected
+     * @copydoc DataSet::defineParams
      */
-
+    // Добавлен параметр num
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -90,15 +82,14 @@ final class TextBlock extends DataSet {
         );
     }
 
+    //todo VZ: This confuse! What is returned when $num is text block ID?
     /**
-     * Возвращает идентификатор текстового блока по переданному идентификатору документа и порядковому номеру
+     * Get text block ID by document ID and number.
      *
-     * @param int идентификатор документа
-     * @param string идентификатор текстового блока
+     * @param int $smapID Document ID.
+     * @param string $num Text block ID.
      * @return int
-     * @access protected
      */
-
     protected function getTextBlockID($smapID, $num) {
         $smapID = (empty($smapID)) ? null : $smapID;
         $result = false;
@@ -110,11 +101,9 @@ final class TextBlock extends DataSet {
     }
 
     /**
-     * Загрузка данных
-     *
-     * @return void
-     * @access protected
+     * @copydoc DataSet::main
      */
+    // Загрузка данных
     protected function main() {
         /**
          * @todo Тут вообще получается ограничение, что num лейаутного текстового блока не должен быть цифрой
@@ -151,12 +140,8 @@ final class TextBlock extends DataSet {
     }
 
     /**
-     * Переопределен метод создания объекта мета данных
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc DataSet::createDataDescription
      */
-
     protected function createDataDescription() {
         $dataDescr = new DataDescription();
         $fieldDescr = new FieldDescription($this->getName());
@@ -167,12 +152,9 @@ final class TextBlock extends DataSet {
     }
 
     /**
-     * Создаем свои данные
-     *
-     * @return Data
-     * @access protected
+     * @copydoc DataSet::createData
      */
-
+    // Создаем свои данные
     protected function createData() {
         $data = new Data();
         $field = new Field($this->getName());
@@ -183,45 +165,33 @@ final class TextBlock extends DataSet {
     }
 
     /**
-     * Возвращает содержимое текстового блока
+     * Get text block content.
      *
      * @return string
-     * @access protected
      */
-
     protected function getContent() {
         return $this->content;
     }
 
     /**
-     * Возвращает идентификатор текстового блока
+     * Get text block ID.
      *
      * @return int
-     * @access protected
      */
-
     protected function getID() {
         return $this->id;
     }
 
     /**
-     * Создание панели инструментов
-     *
-     * @return void
-     * @access protected
+     * @copydoc DataSet::createToolbar
      */
-
     protected function createToolbar() {
         return false;
     }
 
     /**
-     * Строит JS описание
-     *
-     * @return DOMNode
-     * @access protected
+     * @copydoc DataSet::buildJS
      */
-
     protected function buildJS() {
         $result = false;
 
@@ -247,12 +217,8 @@ final class TextBlock extends DataSet {
     }
 
     /**
-     * Сохранение данных
-     *
-     * @return void
-     * @access protected
+     * Save data.
      */
-
     protected function save() {
         $this->dbh->beginTransaction();
         try {
@@ -301,12 +267,13 @@ final class TextBlock extends DataSet {
         $this->response->commit();
     }
 
+    //todo VZ: remove this?
    /* protected function source() {
         $this->source = $this->document->componentManager->createComponent('textblocksource', 'share', 'TextBlockSource', null);
         $this->source->run();
     }*/
 
-    /**
+    /*
      * Выводит компонент менеджер изображений
      *
      * @return void
@@ -318,7 +285,7 @@ final class TextBlock extends DataSet {
     }*/
 
 
-    /**
+    /*
      * Для метода вывода редактора изображений вызывает построитель редактора изоборажений во всех других случаях - свой
      *
      * @return DOMNode

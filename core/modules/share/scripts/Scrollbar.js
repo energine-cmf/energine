@@ -12,6 +12,7 @@
  * @version 1.0.0
  */
 
+//todo try to remove
 /**
  * Scroll bar. From MooTools it implements: Options.
  *
@@ -73,14 +74,13 @@ var Scrollbar = new Class(/** @lends Scrollbar# */{
         this.contents = this.options.scrolledElement.getFirst(); // Первый дочерний элемент прокручиваемой области считается содержимым.
     },
 
-    // todo: What is it?
     // todo: Rename to eliminate the collision with the options member.
     /**
      *
      * @param {Object} event Event
      */
     scrolledElement: function(event){
-        // TODO: Which set() method is used? --> To the Slider class. Look at the next TODO!!!
+        // TODO: Which set() method is used? --> To the Slider class. Where is the Slider class?
         if (event.wheel < 0) {
             this.set(this.step + 1);
         } else if (event.wheel > 0) {
@@ -95,7 +95,7 @@ var Scrollbar = new Class(/** @lends Scrollbar# */{
      *
      * @function
      * @public
-     * @param {} steps
+     * @param {number} steps
      */
     setup: function(steps) {
         if (!steps) {
@@ -134,7 +134,6 @@ var Scrollbar = new Class(/** @lends Scrollbar# */{
         });
 
         if (!this.slider) {
-            // TODO: Where is the Slider class?
             this.slider = new Slider(this.element, this.knob, {
                 mode: this.options.type,
                 onChange: function(step) {

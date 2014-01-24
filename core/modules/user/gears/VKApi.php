@@ -1,19 +1,51 @@
 <?php
 /**
- * Класс для работы с API соц. сети Вконтакте.
+ * @file
+ * VKApi
  *
- * @package energine
- * @subpackage user
- * @author andrii.a
- * @copyright eggmengroup.com
+ * It contains the definition to:
+ * @code
+class VKApi;
+@endcode
+ *
+ * @version 1.0.0
+ */
+
+
+/**
+ * Class for working with <a href="http://vk.com">Вконтакте</a> API.
+ *
+ * @code
+class VKApi;
+@endcode
  */
 class VKApi {
-
+    /**
+     * Application ID.
+     * @var string|int $m_appId
+     */
     private $m_appId;
+    /**
+     * Application secret key
+     * @var string $m_secret
+     */
     private $m_secret;
+    /**
+     * API URL.
+     * @var string $m_apiUrl
+     */
     private $m_apiUrl;
+    /**
+     * User ID.
+     * @var int|string $m_uid
+     */
     private $m_uid;
 
+    /**
+     * @param string|int $appId Application ID.
+     * @param string $secret Application secret key.
+     * @param string $api_url API URL.
+     */
     function __construct($appId, $secret, $api_url = 'api.vk.com/api.php') {
         $this->m_appId = $appId;
         $this->m_secret = $secret;
@@ -22,12 +54,10 @@ class VKApi {
     }
 
     /**
-     * Функция для запроса в API
-     * Вконтакте.
+     * API request.
      *
-     * @param $method
-     * @param $params
-     * @access private
+     * @param string $method Method name.
+     * @param array|bool $params parameters.
      * @return array
      */
     private function apiRequest($method,$params=false) {
@@ -52,11 +82,9 @@ class VKApi {
 
 
     /**
-     * Генерация параметров запроса к
-     * API Вконтакте.
+     * Generate request parameters to <a href="http://vk.com">Вконтакте</a> API.
      *
-     * @param $params
-     * @access private
+     * @param mixed $params Parameters.
      * @return string
      */
     private function params($params) {
@@ -67,13 +95,13 @@ class VKApi {
         return implode('&',$pice);
     }
 
+    // todo VZ: the function name does not reflect his functionality.
     /**
-     * Если пользователь авторизирован -
-     * возвращаем его ЮИД, в противном случае
-     * возвращаем false.
+     * Is the user authorized?
      *
-     * @access public
      * @return bool|int
+     *
+     * @note If the user is authorized then his user ID will be returned. If not - @c false.
      */
     public function is_auth() {
         if (!isset($_COOKIE['vk_app_' . $this->m_appId]))
@@ -110,9 +138,8 @@ class VKApi {
     }
 
     /**
-     * Получаем данные о пользователе
+     * Get user information.
      *
-     * @access public
      * @return array
      */
     public function getUserInfo() {

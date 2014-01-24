@@ -1,102 +1,112 @@
 <?php
 /**
- * Содержит набор инициализационных функций и констант
+ * @file
+ * Initialisation file.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the initialisation functions and constants.
+ *
  * @author pavka
  * @copyright Energine 2007
+ *
+ * @version 1.0.0
  */
-/**
- * опыт показывает что есть еще люди  пользующиеся register_globals = On
+
+//todo VZ: Delete this?
+/*
+ * опыт показывает что есть еще люди пользующиеся register_globals = On
  * не катит
  */
 /*if (ini_get('register_globals')) {
     die('Register_globals directive must be turned off.');
 }*/
-/**
- * Хак для cgi mode, где SCRIPT_FILENAME возвращает путь к PHP, вместо пути к текущему исполняемому файлу
- */
+
+// Хак для cgi mode, где SCRIPT_FILENAME возвращает путь к PHP, вместо пути к текущему исполняемому файлу
 if (isset($_SERVER['SCRIPT_FILENAME'])) {
     $_SERVER['SCRIPT_FILENAME'] =
         (isset($_SERVER['PATH_TRANSLATED'])) ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME'];
 }
 
-/**
- * устанавливаем максимальный уровень отображения ошибок
- */
+// устанавливаем максимальный уровень отображения ошибок
 //error_reporting(E_ALL | E_STRICT);
 //С 5.4 вроде как E_STRICT стал частью E_ALL
 error_reporting(E_ALL);
-/**
- * включаем вывод ошибок и отключаем вывод в HTML
- */
+// включаем вывод ошибок и отключаем вывод в HTML
 @ini_set('display_errors', 1);
 @ini_set('html_errors', 0);
 
 @date_default_timezone_set('Europe/Kiev');
 
 /**
- * Путь к директории пользовательских компонентов
+ * Path to the directory with user components.
+ * @var string SITE_COMPONENTS_DIR
+ * @note Sign @c '*' means the module name.
  */
 define('SITE_COMPONENTS_DIR', SITE_DIR . '/modules/*/components');
 /**
- * Путь к директории пользовательских PHP файлов
+ * Path to the directory with site PHP files.
+ * @var string SITE_GEARS_DIR
+ * @note Sign @c '*' means the module name.
  */
 define('SITE_GEARS_DIR', SITE_DIR . '/modules/*/gears');
 /**
- * Шаблон пути к директориям компонентов стандартных модулей,
- * где * заменяется именем модуля
+ * Path to the directory with standard components.
+ * @var string CORE_COMPONENTS_DIR
+ * @note Sign @c '*' means the module name.
  */
 define('CORE_COMPONENTS_DIR', CORE_DIR . '/modules/*/components');
 
+/**
+ * Path to the directory with core PHP files.
+ * @var string CORE_GEARS_DIR
+ * @note Sign @c '*' means the module name.
+ */
 define('CORE_GEARS_DIR', CORE_DIR . '/modules/*/gears');
 
 /**
- * Путь к директории ядра проекта
+ * Path to the site kernel directory.
+ * @var string SITE_KERNEL_DIR
  */
 define('SITE_KERNEL_DIR', SITE_DIR . '/kernel');
 
 
-/**
+/*
  * Определяем константы прав доступа
  * они должны иметь те же значения что и в таблице user_group_rights + ACCESS_NONE = 0
  * загружать их из таблицы особого смысла не имеет
  */
 /**
- * Права отсутствуют
- *
+ * Access level: none.
+ * @var int ACCESS_NONE
  */
 define('ACCESS_NONE', 0);
 /**
- * Уровень прав - только чтение
- *
+ * Access level: read.
+ * @var int ACCESS_READ
  */
 define('ACCESS_READ', 1);
 /**
- * Уровень прав - редактирование
- *
+ * Access level: edit.
+ * @var int ACCESS_EDIT
  */
 define('ACCESS_EDIT', 2);
 /**
- * Уровень - полный доступ
- *
+ * Access level: full.
+ * @var int ACCESS_FULL
  */
 define('ACCESS_FULL', 3);
-/**
- * Подключаем реестр и мемкешер, нужные нам для автолоадера
- */
+
+// Подключаем реестр и мемкешер, нужные нам для автолоадера
 require_once('Registry.class.php');
 require_once('Cache.class.php');
 
-/**
+spl_autoload_register(
+/*
  * Функция автозагрузки файлов классов
  *
  * @param string $className имя класса
  * @return void
  * @staticvar array $paths массив путей к файлам классов вида [имя класса]=>путь к файлу класса
  */
-spl_autoload_register(
 function ($className) {
     static $paths = array();
     //если массив путей не заполнен - заполняем
@@ -138,14 +148,17 @@ function ($className) {
 set_error_handler('nrgnErrorHandler');
 
 /**
- * Обработчик ошибок.
- * Преобразует все ошибки в системные исключения с типом ERR_DEVELOPER.
+ * @fn nrgnErrorHandler($errLevel, $message, $file, $line, $errContext)
+ * @brief Error handler.
+ * It converts all errors to the SystemException with type ERR_DEVELOPER.
  *
- * @param int $errno
- * @param string $errstr
- * @param string $errfile
- * @param string $errline
- * @return void
+ * @param int $errLevel Error level.
+ * @param string $message Error message.
+ * @param string $file Error file.
+ * @param int $line Error line.
+ * @param array $errContext Error context.
+ *
+ * @throws SystemException
  */
 function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext) {
     try {
@@ -155,8 +168,7 @@ function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext) {
         );
         throw $e->setFile($file)->setLine($line);
     } catch (Exception $e) {
-        //Если ошибка произошла здесь
-        //то капец
+        //Если ошибка произошла здесь, то капец
         echo 'Message:', $message, PHP_EOL, 'File:', $file, PHP_EOL, 'Line:', $line, PHP_EOL;
         exit;
     }

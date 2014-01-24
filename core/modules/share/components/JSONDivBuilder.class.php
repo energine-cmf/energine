@@ -1,31 +1,42 @@
 <?php
 /**
- * Содержит класс JSONDivBuilder
+ * @file
+ * JSONDivBuilder
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class JSONDivBuilder;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
- /**
-  * Модифицированный постороитель для редактора разделов
-  *
-  * @package energine
-  * @subpackage share
-  * @author d.pavka@gmail.com
-  */
- class JSONDivBuilder extends JSONBuilder {
- 	private $documentId;
+/**
+ * JSON builder for division editor.
+ *
+ * @code
+class JSONDivBuilder;
+@endcode
+ */
+class JSONDivBuilder extends JSONBuilder {
     /**
-     * Конструктор класса
-     *
-     * @access public
+     * Document ID.
+     * @var int $documentId
      */
+    private $documentId;
+
+    //todo VZ: this can be removed.
     public function __construct() {
         parent::__construct();
     }
-    
+
+    /**
+     * Set document ID.
+     * @param int $id ID
+     */
     public function setDocumentId($id){
     	$this->documentId = $id;
     }

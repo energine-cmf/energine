@@ -1,44 +1,40 @@
 <?php
-
 /**
- * Содержит класс SitemapTree
+ * @file
+ * SitemapTree
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class SitemapTree;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Карта сайта
+ * Site map.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class SitemapTree;
+@endcode
  */
 class SitemapTree extends DataSet {
-
+    //todo VZ: This can be removed.
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
 
     }
     /**
-     * Загружает данные о дереве разделов
-     *
-     * @return array
-     * @access protected
+     * @copydoc DataSet::loadData
      */
-
+    // Загружает данные о дереве разделов
     protected function loadData() {
         $sitemap = E()->getMap();
         $res = $sitemap->getInfo();
@@ -55,12 +51,8 @@ class SitemapTree extends DataSet {
     }
 
     /**
-     * Переопределяет посторитель
-     *
-     * @return void
-     * @access protected
+     * @copydoc DataSet::createBuilder
      */
-
     protected function createBuilder() {
         $builder  = new TreeBuilder();
         $builder->setTree(E()->getMap()->getTree());

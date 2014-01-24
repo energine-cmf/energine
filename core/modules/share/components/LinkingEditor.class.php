@@ -1,29 +1,29 @@
 <?php 
 /**
- * Содержит класс LinkingEditor
+ * @file
+ * LinkingEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class LinkingEditor;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
- /**
-  * Редактор 
-  *
-  * @package energine
-  * @subpackage share
-  * @author d.pavka@gmail.com
-  */
- class LinkingEditor extends Grid {
+/**
+ * Linking editor.
+ *
+ * @code
+class LinkingEditor;
+@endcode
+ */
+class LinkingEditor extends Grid {
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
@@ -39,12 +39,9 @@
     }
 
     /**
-     * Добавляем параметр  - имя связанного компонента
-     *
-     * @return array
-     * @access protected
+     * @copydoc Grid::defineParams
      */
-
+    // Добавляем параметр  - имя связанного компонента
     protected function defineParams() {
         return array_merge(
         parent::defineParams(),
@@ -54,12 +51,9 @@
         );
     }    
     /**
-     * Убираем все лишнее
-     *
-     * @return void
-     * @access protected
+     * @copydoc Grid::main
      */
-
+    // Убираем все лишнее
     protected function main() {
         if($this->getFilter())
             E()->getResponse()->addCookie(md5($this->getName()), convert_uuencode($this->document->componentManager->getBlockByName(
@@ -70,10 +64,10 @@
     }
 
      /**
-      * Поскольку у нас список выводится в другом компоненте(Feed), то для того чтобы подхватить фильтры, наложенные в нем, мы записываем их в куки  - а здесь читаем
-      * @param $direction
+      * @copydoc Grid::changeOrder
       */
-     protected function changeOrder($direction){
+    // Поскольку у нас список выводится в другом компоненте(Feed), то для того чтобы подхватить фильтры, наложенные в нем, мы записываем их в куки  - а здесь читаем
+    protected function changeOrder($direction){
         if(isset($_COOKIE[md5($this->getName())])){
             $this->setFilter(convert_uudecode($_COOKIE[md5($this->getName())]));
             E()->getResponse()->deleteCookie(md5($this->getName()));
@@ -82,7 +76,7 @@
     }
 
      /**
-      * @return DOMDocument
+      * @copydoc Grid::build
       */
      public function build() {
         if ($this->getState() == 'main') {

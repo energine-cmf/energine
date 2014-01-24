@@ -1,63 +1,81 @@
 <?php 
 /**
- * Содержит класс AttachmentManager
+ * @file
+ * AttachmentManager.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class AttachmentManager;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс предназначен для автоматизации работы с присоединенными файлами
+ * This class is designed to automate the work of attaching files.
  *
- * @package energine
- * @subpackage kernel
- * @author d.pavka@gmail.com
+ * @code
+class AttachmentManager;
+@endcode
  */
 class AttachmentManager extends DBWorker {
+    /**
+     * Attach table suffix.
+     * @var string ATTACH_TABLE_SUFFIX
+     */
     const ATTACH_TABLE_SUFFIX = '_uploads';
     /**
-     * Имя базовой таблицы аплоадсов
+     * Name of the main table for uploads.
+     * @var string ATTACH_TABLENAME
      */
     const ATTACH_TABLENAME = 'share_uploads';
+
     /**
-     * @var Data
+     * Data.
+     * @var Data $data.
      */
     private $data;
     /**
-     * Флаг активности
-     * Определяется путем проверки наличия таблицы с суффиксом _uploads
+     * Activity flag.
+     * It is defined by checking the existence of the table name with '_uploads' suffix.
      *
-     * @var bool
+     * @var bool $isActive
      */
     private $isActive = false;
     /**
-     * Имя таблицы аплоадсов
-     * Имя основной таблицы + суффикс _uploads
-     * @var bool
+     * Table name for uploads.
+     * Main table name + '_uploads' suffix.
+     * @var bool $tableName
      */
     private $tableName = false;
     /**
-     * @var DataDescription
+     * Data description.
+     * @var DataDescription $dataDescription
      */
     private $dataDescription;
     /**
-     * Первичный ключ в основной таблице
-     *
-     * @var FieldDescription
+     * Primary key in the main table.
+     * @var FieldDescription $pk
      */
     private $pk;
+    /**
+     * Flag that shows the necessity to generate 'image' tags for OG.
+     * @var bool $addOG
+     */
     private $addOG;
 
     /**
-     * Проверяет активность объекта
-     * заполняет основные свойства
+     * Constructor.
      *
-     * @param DataDescription $dataDescription
-     * @param Data $data
-     * @param $tableName имя основной таблицы
-     * @param $addToOG флаг - показывающий нужно ли генерить теги image для OG
+     * It checks the object's activity and fills the main properties.
+     *
+     * @param DataDescription $dataDescription Data description.
+     * @param Data $data Data.
+     * @param string $tableName Main table name.
+     * @param bool $addToOG Flag that shows the necessity to generate 'image' tags for OG.
      */
     public function __construct(DataDescription $dataDescription, Data $data, $tableName, $addToOG = false) {
         parent::__construct();
@@ -76,11 +94,8 @@ class AttachmentManager extends DBWorker {
     }
 
     /**
-     * Создает описание поля
-     * используется в фидах и их производных
-     *
-     * @return void
-     * @access public
+     * Create field description.
+     * It is used in feeds and their derivatives.
      */
     public function createFieldDescription() {
         if ($this->isActive) {
@@ -92,15 +107,13 @@ class AttachmentManager extends DBWorker {
         }
     }
 
-
     /**
-     * Возвращает поле
-     * Используется в фидах и их производных
+     * Create field.
+     * It is used in feeds and their derivatives.
      *
-     * @param $mapFieldName
-     * @param bool $returnOnlyFirstAttachment
-     * @param bool $mapValue
-     * @return void
+     * @param bool|string $mapFieldName Map field name.
+     * @param bool $returnOnlyFirstAttachment Defines whether only the first attachment should be returned.
+     * @param bool|array $mapValue Map values.
      */
     public function createField($mapFieldName = false, $returnOnlyFirstAttachment = false, $mapValue = false) {
         if ($this->isActive && !$this->data->isEmpty()) {
@@ -206,8 +219,8 @@ class AttachmentManager extends DBWorker {
                         }
 
                         $mapID = $row[$mapFieldName];
-                        if ($returnOnlyFirstAttachment &&
-                            isset($imageData[$mapID])
+                        if ($returnOnlyFirstAttachment
+                            && isset($imageData[$mapID])
                         ) continue;
 
                         if (!isset($imageData[$mapID]))
@@ -295,6 +308,12 @@ class AttachmentManager extends DBWorker {
         }
     }
 
+    /**
+     * Get upload ID by upload path.
+     *
+     * @param string $path Path
+     * @return null|string
+     */
     protected function getUploadIdByUploadPath($path) {
         return $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $path);
     }

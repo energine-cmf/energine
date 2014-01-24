@@ -1,30 +1,31 @@
 <?php
 /**
- * Содержит класс VoteQuestionEditor
+ * @file
+ * VoteQuestionEditor
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class VoteQuestionEditor;
+@endcode
+ *
  * @author andrii a
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редактор голосовалки
+ * Vote question editor.
  *
- * @package energine
- * @subpackage apps
- * @author andrii a
+ * @code
+class VoteQuestionEditor;
+@endcode
  */
 class VoteQuestionEditor extends Grid {
-
     /**
-     * На вход параметром получаем ID голосования,
-     * к которому следует привязать вариант ответа.
-     *
-     * @param string $name
-     * @param string $module
-     * @param array|null $params
+     * @copydoc Grid::__construct
      */
+    // На вход параметром получаем ID голосования, к которому следует привязать вариант ответа.
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName('apps_vote_question');
@@ -38,10 +39,9 @@ class VoteQuestionEditor extends Grid {
     }
 
     /**
-     * добавлен параметр voteID - ид голосования
-     *
-     * @return array
+     * @copydoc Grid::defineParams
      */
+    // добавлен параметр voteID - ид голосования
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -53,11 +53,10 @@ class VoteQuestionEditor extends Grid {
 
 
     /**
-     * Значение для филда vote_id устанавливается
-     * компонентом VoteEditor.
+     * @copydoc Grid::loadDataDescription
      *
-     * @return array
      */
+    // Значение для филда vote_id устанавливается компонентом VoteEditor.
     protected function loadDataDescription() {
         $result = parent::loadDataDescription();
         if (in_array($this->getState(), array('add', 'edit', 'save'))) {
@@ -66,6 +65,9 @@ class VoteQuestionEditor extends Grid {
         return $result;
     }
 
+    /**
+     * @copydoc Grid::add
+     */
     protected function add() {
         parent::add();
         $this->getData()->getFieldByName('vote_question_counter')->setData(0, true);

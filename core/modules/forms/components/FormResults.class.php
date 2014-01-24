@@ -1,37 +1,37 @@
-    <?php
+<?php
 /**
- * Содержит класс FormConstuctor
+ * @file
+ * FormResults
  *
- * @package energine
- * @subpackage forms
+ * It contains the definition to:
+ * @code
+class FormResults;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Конструктор формы
+ * Form results.
  *
- * @package energine
- * @subpackage forms
- * @author d.pavka@gmail.com
+ * @code
+class FormResults;
+@endcode
  */
-class FormResults extends Grid
-{
-    /*
-     * @var formID
+class FormResults extends Grid {
+    /**
+     * Form ID.
+     * @var int $formID
      */
     private $formID;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null)
-    {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         //Якщо ідентифікатор форми вказаний невірно або не вказаний, то не вивалювати помилку, а красиво показати.
         if (!$this->formID = $this->getParam('form_id'))
@@ -42,8 +42,10 @@ class FormResults extends Grid
         $this->setOrder(array('pk_id' => QAL::DESC));
     }
 
-    protected function defineParams()
-    {
+    /**
+     * @copydoc Grid::defineParams
+     */
+    protected function defineParams() {
         return array_merge(
             parent::defineParams(),
             array(
@@ -52,8 +54,10 @@ class FormResults extends Grid
         );
     }
 
-    protected function loadDataDescription()
-    {
+    /**
+     * @copydoc Grid::loadDataDescription
+     */
+    protected function loadDataDescription() {
         $result = parent::loadDataDescription();
         //Якщо у конфігі вказано обмеження на кількість полів, які мають відображатися у Grid'і (states: main, getRawData), то застосувати його.
         //Інакше відобразити всі поля.
@@ -66,8 +70,10 @@ class FormResults extends Grid
         return $result;
     }
 
-    protected function main()
-    {
+    /**
+     * @copydoc Grid::main
+     */
+    protected function main() {
         if (!$this->formID)
             $this->returnEmptyRecordset();
         else {
@@ -75,6 +81,9 @@ class FormResults extends Grid
         }
     }
 
+    /**
+     * @copydoc Grid::createDataDescription
+     */
     protected function createDataDescription(){
         $result = parent::createDataDescription();
         if(in_array($this->getState(), array('main', 'getRawData') )){
@@ -83,8 +92,10 @@ class FormResults extends Grid
         return $result;
     }
 
-    private function returnEmptyRecordset()
-    {
+    /**
+     * Return empty recordset.
+     */
+    private function returnEmptyRecordset() {
         //Тип форми змінюється для того, щоб xslt опрацював помилку не в Grid'і.
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->removeProperty('exttype');

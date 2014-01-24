@@ -35,31 +35,17 @@ var TagEditor = new Class(/** @lends TagEditor# */{
         this.tag_id = this.element.getProperty('tag_id');
     },
 
-    // todo: This method is almost equal to the parent method. Make unique!
     /**
-     * Load the specified page number.
+     * Overridden parent [buildRequestURL]{@link GridManager#buildRequestURL} method.
      *
+     * @memberOf TagEditor#
      * @function
-     * @public
-     * @param {number} pageNum Page number.
+     * @protected
+     * @param {number|string} pageNum Page number.
+     * @returns {string}
      */
-    loadPage:function (pageNum) {
-        var postBody = '',
-            url = '';
-
-        this.pageList.disable();
-        if (this.toolbar) {
-            this.toolbar.disableControls();
-        }
-        this.overlay.show();
-        this.grid.clear();
-
-        if (this.langId) {
-            postBody += 'languageID=' + this.langId + '&';
-        }
-        if (this.filter) {
-            postBody += this.filter.getValue();
-        }
+    buildRequestURL: function(pageNum) {
+        var url = '';
 
         if (this.grid.sort.order) {
             url = this.singlePath + this.tag_id + '/get-data/' + this.grid.sort.field + '-'
@@ -68,13 +54,7 @@ var TagEditor = new Class(/** @lends TagEditor# */{
             url = this.singlePath + this.tag_id + '/get-data/page-' + pageNum;
         }
 
-        this.request(url,
-            postBody,
-            // FIXME: The response result at the first call has no data for Grid. (Сайты -> Редактировать -> Теги)
-            this.processServerResponse.bind(this),
-            null,
-            this.processServerError.bind(this)
-        );
+        return url;
     },
 
     /**

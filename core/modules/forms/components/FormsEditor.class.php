@@ -1,39 +1,47 @@
 <?php
 /**
- * Содержит класс FormEditor
+ * @file
+ * FormEditor
  *
- * @package energine
- * @subpackage forms
+ * It contains the definition to:
+ * @code
+class FormsEditor;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Построитель пользовательских форм
+ * Create custom form.
  *
- * @package energine
- * @subpackage forms
- * @author d.pavka@gmail.com
+ * @code
+class FormsEditor;
+@endcode
  */
 class FormsEditor extends Grid {
     /**
-     * @var FormEditor
+     * Form editor.
+     * @var FormEditor $form
      */
     private $form;
     /**
-     * @var FormResults
+     * Form results.
+     * @var FormResults $results
      */
     private $results;
 
+    //todo VZ: used?
+    /**
+     * Form component.
+     * @var Component $formComponent
+     */
     private $formComponent;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc Grid::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -42,6 +50,9 @@ class FormsEditor extends Grid {
         $this->setOrder(array('form_creation_date' => QAL::DESC));
     }
 
+    /**
+     * @copydoc Grid::createDataDescription
+     */
     protected function createDataDescription() {
         $result = parent::createDataDescription();
         if (in_array($this->getState(), array('main', 'getRawData'))) {
@@ -54,7 +65,9 @@ class FormsEditor extends Grid {
         return $result;
     }
 
-
+    /**
+     * Edit form.
+     */
     protected function editForm() {
         list($formID) = $this->getStateParams();
         E()->getRequest()->shiftPath(2);
@@ -62,6 +75,9 @@ class FormsEditor extends Grid {
         $this->form->run();
     }
 
+    /**
+     * Show result.
+     */
     protected function showResult() {
         list($formID) = $this->getStateParams();
         E()->getRequest()->shiftPath(2);
@@ -69,6 +85,9 @@ class FormsEditor extends Grid {
         $this->results->run();
     }
 
+    /**
+     * @copydoc Grid::deleteData
+     */
     protected function deleteData($id) {
         parent::deleteData($id);
         $res = $this->dbh->selectRequest('SHOW FULL TABLES FROM `' . FormConstructor::getDatabase() . '` LIKE "%form_' . $id . '%"');
@@ -81,6 +100,9 @@ class FormsEditor extends Grid {
         }
     }
 
+    /**
+     * @copydoc Grid::build
+     */
     public function build() {
         if ($this->getState() == 'editForm') {
             $result = $this->form->build();

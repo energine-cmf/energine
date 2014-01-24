@@ -1,66 +1,68 @@
 <?php
-
 /**
- * Класс DBWorker.
+ * @file
+ * DBWorker.
  *
- * @package energine
- * @subpackage kernel
+ * @code
+abstract class DBWorker;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
- */
-/**
- * Предоставляет производным классам ссылку на объект для работы с БД.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
+ * @version 1.0.0
+ */
+
+/**
+ * Provide the derived classes the reference to the object for work with DB.
+ *
+ * @code
+abstract class DBWorker;
+@endcode
+ *
  * @abstract
  */
 abstract class DBWorker extends Object {
-
     /**
-     * @access protected
-     * @static
-     * @var QAL единый для всех экземпляров класса объект QAL
+     * QAL object.
+     * @var QAL $dbhInstance
      */
     protected static $dbhInstance;
 
     /**
-     * @access protected
-     * @var QAL ссылка на self::$dbhInstance (для производных классов)
+     * Reference to the DBWorker::$dbhInstance for derived classes.
+     * @var QAL $dbh
      */
     protected $dbh;
 
+    //todo VZ: I do not understand the comment in the brackets.
     /**
-     * Кеш переводов
+     * Translation cache.
+     *
      * (получается за ними по отдельности очень часто нужно обращаться)
-     * @var array
+     * @var array $translationsCache
      */
     private static $translationsCache = null;
 
     /**
-     * @var PDOStatement
+     * Request to find translation.
+     * @var PDOStatement $findTranslationSQL
      */
     private static $findTranslationSQL;
 
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     */
     public function __construct() {
         $this->dbh = E()->getDB();
         self::$findTranslationSQL = $this->dbh->getPDO()->prepare('SELECT trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id  WHERE (ltag.ltag_name = ?) AND (lang_id = ?)');
     }
 
     /**
-     * Возвращает перевод текстовой константы из таблицы переводов для
-     * указанного языка. Если язык явно не указан - используется текущий язык.
+     * Get the translation of the text constant.
      *
-     * @access public
-     * @static
-     * @param string $const текстовая константа
-     * @param int $langId язык для перевода
+     * Get the translation of the text constant from the translation table for specific language.
+     * If the language not provided, then current language will be used.
+     *
+     * @param string $const Text constant
+     * @param int $langId Language ID.
      * @return string
      */
     public static function _translate($const, $langId = null) {
@@ -96,13 +98,12 @@ abstract class DBWorker extends Object {
     }
 
     /**
-     * Возвращает дату в виде строки прописью
+     * Transform date to the string.
      *
-     * @param $year
-     * @param $month
-     * @param $day
+     * @param int $year Year value.
+     * @param int $month Month value.
+     * @param int $day Day value
      * @return string
-     * @static
      */
     public static function _dateToString($year, $month, $day) {
         $result = (int)$day . ' ' . self::_translate('TXT_MONTH_' . (int)$month) . ' ' . $year;
@@ -110,27 +111,24 @@ abstract class DBWorker extends Object {
     }
 
     /**
-     * Нестатический метод-обёртка над DBWorker::_translate -
-     * для удобства использования внутри производных классов.
+     * Non-static wrapper method over DBWorker::_translate.
      *
-     * @access public
-     * @param string $const текстовая константа
-     * @param mixed $langID
+     * This is for using inside derived class.
+     *
+     * @param string $const Text constant.
+     * @param mixed $langID Language ID.
      * @return string
-     * @see DBWorker::_translate()
      */
     public function translate($const, $langID = null) {
         return self::_translate($const, $langID);
     }
 
     /**
-     * Дата прописью
-     * Обертка над DBWorker::_dateToString
+     * Non-static wrapper method over DBWorker::_dateToString.
      *
-     * @param $date string
-     * @param $format string
+     * @param string $date Date.
+     * @param string $format Date format.
      * @return string
-     * @see DBWorker::_dateToString
      */
     public function dateToString($date, $format = '%d-%d-%d') {
         list($year, $month, $day) = sscanf($date, $format);

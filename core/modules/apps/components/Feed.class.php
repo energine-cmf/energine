@@ -1,40 +1,37 @@
 <?php
 /**
- * Содержит класс Feed
+ * @file
+ * Feed
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Feed;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2007
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 /**
- * Абстрактный класс предок для компонентов основывающихся на структуре сайта
+ * Parent class for components on the site structure.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class Feed;
+@endcode
  */
-class Feed extends DBDataSet
-{
+class Feed extends DBDataSet {
     /**
-     * @var array | int
-     * фильтр по идентификаторам
+     * Filter by IDs.
+     * @var array|int $filterID
      */
     protected $filterID;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, $module, array $params = null)
-    {
+    public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         //Если title не указан  - устанавливаем дефолтный
         if(!$this->getProperty('title')){
@@ -79,14 +76,16 @@ class Feed extends DBDataSet
             }
         }
     }
+
+    /**
+     * @copydoc DBDataSet::loadDataDescription
+     */
     /*
-     * @access protected
-     * @return DataDescription
      * Якщо у конфігі є smap_id, то змінюємо його тип на int.
      * Потрібно для того, щоб при проходжені подальшого циклу ми не лізли в таблицю share_sitemap.
      * Натомість smap_id у нас реально буде містити тільки smap_id as integer
-     * */
-    protected function loadDataDescription(){
+     */
+    protected function loadDataDescription() {
         $result = parent::loadDataDescription();
         if(isset($result['smap_id'])){
             $result['smap_id']['key'] = false;
@@ -95,16 +94,14 @@ class Feed extends DBDataSet
     }
 
     /**
+     * @copydoc DBDataSet::createDataDescription
+     */
+    /*
      * Убираем smap_id
-     *
-     * @access protected
-     * @return DataDescription
      * Якщо у конфігі не вказано smap_id, створюємо його, вказуємо таблицю з якою брати значення й додаємо до DataDescription.
      * Потім змінюємо тип smap_id на FIELD_TYPE_HIDDEN.
-     * 
      */
-    protected function createDataDescription()
-    {
+    protected function createDataDescription() {
         $result = parent::createDataDescription();
         if ($this->getState() == 'main') {
             if (!($fd = $result->getFieldDescriptionByName('smap_id'))) {
@@ -116,13 +113,16 @@ class Feed extends DBDataSet
         }
         return $result;
     }
+
+    /**
+     * @copydoc DBDataSet::main
+     */
     /*
      * Окрім батьківського методу ми також робимо деякі дії зі smap_id,
      * а саме записуємо йому властивістю url повне значення smap_segment.
      * Таким чином, якщо у нас на одній сторінці Feed витягне елементи з різними smap_id,
      * то ми завжди будемо знати як правильно сформувати link для того щоб дістатися до конкретного елементу.
-     *  
-     * */
+     */
     protected function main(){
         parent::main();
         if($f = $this->getData()->getFieldByName('smap_id')){
@@ -134,28 +134,20 @@ class Feed extends DBDataSet
 
 
     /**
-     * Добавляем крошку
-     *
-     * @return void
-     * @access protected
+     * @copydoc DBDataSet::view
      */
-
-    protected function view()
-    {
+    // Добавляем крошку
+    protected function view() {
         parent::view();
         $this->addFilterCondition(array('smap_id' => $this->document->getID()));
         $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
     }
 
     /**
-     * Делаем компонент активным
-     *
-     * @return array
-     * @access protected
+     * @copydoc DBDataSet::defineParams
      */
-
-    protected function defineParams()
-    {
+    // Делаем компонент активным
+    protected function defineParams() {
         return array_merge(
             parent::defineParams(),
             array(

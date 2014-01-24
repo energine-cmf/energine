@@ -1,39 +1,41 @@
 <?php
 /**
- * Содержит класс Remover
+ * @file
+ * Remover
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class Remover;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
  */
 
 
 /**
- * Класс которому передается имя компонента, который необходимо удалить
- * Класс используется для случаев, когда пользователи с разными правми должны видеть разные компоненты
+ * Store the component name, that should be removed.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class Remover;
+@endcode
+ *
+ * This is used when the users with different rights should see different components.
  */
 class Remover extends Component {
+    //todo VZ: this can be removed.
     /**
-     * @param $name
-     * @param $module
-     * @param array|null $params
+     * @copydoc Component::__construct
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
 	}
 
     /**
-     * Добавлен параметр имя компонента
-     *
-     * @access protected
-     * @return array
+     * @copydoc Component::defineParams
      */
     protected function defineParams() {
+        // Добавлен параметр имя компонента
         return array_merge(
             parent::defineParams(),
             array(
@@ -42,19 +44,12 @@ class Remover extends Component {
     }
 
     /**
-     * Дизейблит компонент
-     *
-     * @return void
-     * @access protected
+     * @copydoc Component::main
      */
-
      protected function main() {
-        if (
-            (
-	            $this->document->getRights() != ACCESS_FULL 
-	            && 
-	            $component = $this->document->componentManager->getBlockByName($this->getParam('componentName'))
-            )
+         // Дизейблит компонент
+        if ($this->document->getRights() != ACCESS_FULL
+            && $component = $this->document->componentManager->getBlockByName($this->getParam('componentName'))
         ) {
         	$component->disable();
         }

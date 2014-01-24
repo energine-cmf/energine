@@ -909,32 +909,51 @@ var GridManager = new Class(/** @lends GridManager# */{
         this.loadPage(1);
     },
 
-    // todo: Define methods to get url and postBody. - do
     /**
      * Load the specified page number.
      *
      * @function
      * @public
-     * @param {number} pageNum Page number.
+     * @param {number|string} pageNum Page number.
      */
     loadPage: function(pageNum) {
-        var postBody = '',
-            url = '';
-
         this.pageList.disable();
-        // todo: The toolbar is attached later as this functions calls.
+        // todo: The toolbar is attached later as this function calls.
         if (this.toolbar) {
             this.toolbar.disableControls();
         }
         this.overlay.show();
         this.grid.clear();
 
-        if (this.langId) {
-            postBody += 'languageID=' + this.langId + '&';
-        }
-        if (this.filter) {
-            postBody += this.filter.getValue();
-        }
+        /*
+         This delay was created because of some stupid behavior in Firefox.
+         this.paneContent in build() has different height without delay.
+         Firefox 26
+         */
+        // FIXME: TagEditor: The response result at the first call has no data for Grid. (Сайты -> Редактировать -> Теги)
+        (function() {
+            Energine.request(
+                this.buildRequestURL(pageNum),
+                this.buildRequestPostBody(),
+                this.processServerResponse.bind(this),
+                null,
+                this.processServerError.bind(this)
+            );
+        }).delay(0, this);
+    },
+
+    /**
+     * Build request URL.
+     *
+     * @memberOf GridManager#
+     * @abstract
+     * @function
+     * @protected
+     * @param {number|string} pageNum Page number.
+     * @returns {string}
+     */
+    buildRequestURL: function(pageNum) {
+        var url = '';
 
         if (this.grid.sort.order) {
             url = this.singlePath + 'get-data/' + this.grid.sort.field + '-'
@@ -943,19 +962,29 @@ var GridManager = new Class(/** @lends GridManager# */{
             url = this.singlePath + 'get-data/page-' + pageNum;
         }
 
-        /*
-        This delay was created because of some stupid behavior in Firefox.
-        this.paneContent in build() has different height without delay.
-        Firefox 26
-         */
-        (function() {
-            Energine.request(url,
-                postBody,
-                this.processServerResponse.bind(this),
-                null,
-                this.processServerError.bind(this)
-            );
-        }).delay(0, this);
+        return url;
+    },
+
+    /**
+     * Build request post body.
+     *
+     * @memberOf GridManager#
+     * @abstract
+     * @function
+     * @protected
+     * @returns {string}
+     */
+    buildRequestPostBody: function() {
+        var postBody = '';
+
+        if (this.langId) {
+            postBody += 'languageID=' + this.langId + '&';
+        }
+        if (this.filter) {
+            postBody += this.filter.getValue();
+        }
+
+        return postBody;
     },
 
     /**

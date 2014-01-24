@@ -1,54 +1,49 @@
-<?php 
+<?php
 /**
- * Содержит класс Calendar
+ * @file
+ * Calendar
  *
- * @package energine
- * @subpackage calendar
+ * It contains the definition to:
+ * @code
+class Calendar;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
- /**
-  * Компонент календаря
-  *
-  * @package energine
-  * @subpackage calendar
-  * @author d.pavka@gmail.com
-  */
+/**
+ * Calendar component.
+ *
+ * @code
+class Calendar;
+@endcode
+ */
  class Calendar extends DataSet {
     /**
-     * Календарь
-     * 
-     * @access protected
-     * @var CalendarObject 
+     * Calendar.
+     * @var CalendarObject $calendar
      */
      protected $calendar;
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-
-     * @param array $params
-     * @access public
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module,   array $params = null) {
         parent::__construct($name, $module,  $params);
         $this->setProperty('exttype', 'calendar');
     }
     /**
-     * Построитель календаря более простой чем обычно
-     * 
-     * @return CalendarBuilder
+     * @copydoc DataSet::createBuilder
      */
     protected function createBuilder() {
         return new CalendarBuilder();
     }
     /**
-      * Возвращаем объект календаря
+      * Get calendar object.
       * 
       * @return CalendarObject
-      * @access public
       */
     public function getCalendar(){
         if(!isset($this->calendar)) {
@@ -57,21 +52,17 @@
         return $this->calendar;
     }
     /**
-      * Устаналиваем объект календаря
+      * Set calendar object.
       * 
-      * @param CalendarObject
-      * @return void
-      * @access public
+      * @param CalendarObject $calendar Calendar object.
       */
     public function setCalendar(CalendarObject  $calendar){
         $this->calendar = $calendar;
     }
     /**
-      * Создаем описание данных - по сути просто семь дней
-      * 
-      * @return DataDescription
-      * @access protected
+      * @copydoc DataSet::createDataDescription
       */
+    // Создаем описание данных - по сути просто семь дней
     protected function createDataDescription(){
         $result = new DataDescription();
         
@@ -84,10 +75,7 @@
     }
     
     /**
-      * Загружаем данные 
-      * 
-      * @return Data
-      * @access protected
+      * @copydoc DataSet::createData
       */
     protected function createData(){
         $result = new Data();
@@ -112,10 +100,7 @@
     }
     
     /**
-      * Добавляем тулбар
-      * 
-      * @return Toolbar[]
-      * @access protected
+      * @copydoc DataSet::createToolbar
       */
     protected function createToolbar(){
         $toolbar = new Toolbar('navigation');

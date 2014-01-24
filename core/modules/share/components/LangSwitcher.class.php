@@ -1,43 +1,46 @@
 <?php
 
 /**
- * Содержит класс LangSwitcher
+ * @file
+ * LangSwitcher
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+final class LangSwitcher;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * переключатель языков
+ * language switcher.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+final class LangSwitcher;
+@endcode
  */
 final class LangSwitcher extends DataSet {
     /**
-     * Конструктор класса
-     *
-     * @return void
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module,  array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
     }
 
+    /**
+     * @copydoc DataSet::createBuilder
+     */
     protected function createBuilder() {
         return new SimpleBuilder();
     }
 
     /**
-     * Method Description
-     *
-     * @return type
-     * @access protected
+     * @copydoc DataSet::loadData
      */
-
     protected function loadData() {
         $lang = E()->getLanguage();
         $data = $lang->getLanguages();
@@ -58,12 +61,10 @@ final class LangSwitcher extends DataSet {
     }
 
     /**
-     * Создаем перечень полей
+     * Create data description.
      *
      * @return DataDescription
-     * @access protected
      */
-
     protected function createDataDescription() {
         $result = new DataDescription();
         $f = new FieldDescription('lang_id');

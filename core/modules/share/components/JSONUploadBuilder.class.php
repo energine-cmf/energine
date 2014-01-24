@@ -1,47 +1,41 @@
 <?php
 /**
- * Содержит класс JSONUploadBuilder
+ * @file
+ * JSONUploadBuilder
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class JSONUploadBuilder;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
+//todo VZ: What is FileLibrary?
 /**
- * Класс для построения JSON ответа
- * Используется для FileLibrary
+ * JSON builder for uploading.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class JSONUploadBuilder;
+@endcode
+ *
+ * @note Used for FileLibrary
  */
 class JSONUploadBuilder extends JSONBuilder {
-
     /**
-     * Текущая директория
-     *
-     * @var string
-     * @access private
+     * Current directory.
+     * @var string $currentDirectory
      */
     private $currentDirectory = false;
 
-    /**
-     * Конструктор класса
-     *
-     * @return void
-     */
+    //todo VZ: this can be removed.
 	public function __construct() {
 		parent::__construct();
 	}
-
-	/**
-	 * В ответ добавляется значение текущей директории
-	 *
-	 * @return string
-	 * @access public
-	 */
 
 	public function getResult() {
 	    $this->result['currentDirectory'] = $this->getCurrentDirectory();
@@ -49,13 +43,13 @@ class JSONUploadBuilder extends JSONBuilder {
 	    return $result;
 	}
 
-	/**
-	 * Возвращает текущую директорию
-	 *
-	 * @return string
-	 * @access public
-	 */
-
+    /**
+     * Get current directory.
+     *
+     * @return string
+     *
+     * @throws SystemException 'ERR_DEV_NO_CURR_DIR'
+     */
 	public function getCurrentDirectory() {
 	    if (!$this->currentDirectory) {
 	    	throw new SystemException('ERR_DEV_NO_CURR_DIR', SystemException::ERR_DEVELOPER);
@@ -65,12 +59,10 @@ class JSONUploadBuilder extends JSONBuilder {
 	}
 
 	/**
-	 * Устанавливает текущую директорию
+	 * Set current directory.
 	 *
-	 * @return void
-	 * @access public
+	 * @param string $path Path to the directory.
 	 */
-
 	public function setCurrentDir($path) {
         $this->currentDirectory = $path;
 	}

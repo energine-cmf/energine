@@ -1,53 +1,64 @@
 <?php
 /**
- * Содержит класс Container
+ * @file
+ * ComponentContainer.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class ComponentContainer
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2010
+ *
+ * @version 1.0.0
  */
 
 /**
- * Контейнер компонентов
+ * Container of components.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class ComponentContainer
+@endcode
  */
 class ComponentContainer extends Object implements IBlock, Iterator{
+    /**
+     * Defines whether the component container is enabled.
+     * @var bool $enabled
+     */
     private  $enabled= true;
     /**
-     * Свойства контейнера
-     *
-     * @var array
+     * Properties.
+     * @var array $properties
      */
     private $properties = array();
     /**
-     * @var string
+     * Container name.
+     * @var string $name
      */
     private $name;
     /**
-     * @var IBlock[]
+     * Array of IBlock.
+     * @var array $blocks
      */
     private $blocks = array();
     /**
-     * @var int
+     * Iterator index.
+     * @var int $iteratorIndex
      */
     private $iteratorIndex = 0;
     /**
-     * @var array
+     * Array of child names.
+     * @var array $childNames
      */
     private $childNames = array();
     /**
-     * @var Document
+     * @var Document $document
      */
     private $document;
     /**
-     * @param  $name string
-
-     * @param  $properties array
-     * @return void
+     * @param string $name Component name.
+     * @param array $properties Component properties.
      */
     public function __construct($name, array $properties = array()) {
         $this->name = $name;
@@ -60,15 +71,21 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         $this->document->componentManager->register($this);
     }
 
+    /**
+     * Add block.
+     * @param IBlock $block New block.
+     */
     public function add(IBlock $block) {
         $this->blocks[$block->getName()] = $block;
     }
     /**
-     * @static
-     * @throws SystemException
-     * @param SimpleXMLElement $containerDescription
-
-     * @return Container
+     * Create component container from description.
+     *
+     * @param SimpleXMLElement $containerDescription Container description.
+     * @param array $additionalAttributes Additional attributes.
+     * @return ComponentContainer
+     *
+     * @throws SystemException ERR_NO_CONTAINER_NAME
      */
     static public function createFromDescription(SimpleXMLElement $containerDescription, array $additionalAttributes = array()) {
         $attributes = $containerDescription->attributes();
@@ -94,20 +111,34 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         return $result;
     }
 
+    /**
+     * Check if the container is empty.
+     * @return bool
+     */
     public function isEmpty() {
         return (boolean) sizeof($this->childs);
     }
-    /**
-     * @return string
-     */
+
     public function getName() {
         return $this->name;
     }
 
+    /**
+     * Set property to the ComponentContainer::$properties.
+     *
+     * @param string $propertyName Property name.
+     * @param string $propertyValue Property value.
+     */
     public function setProperty($propertyName, $propertyValue) {
         $this->properties[(string) $propertyName] = (string) $propertyValue;
     }
 
+    /**
+     * Get property value from ComponentContainer::$properties by property name.
+     *
+     * @param string $propertyName Property name.
+     * @return string or null
+     */
     public function getProperty($propertyName) {
         $result = null;
         if (isset($this->properties[$propertyName])) {
@@ -116,12 +147,19 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         return $result;
     }
 
+    /**
+     * Remove property from ComponentContainer::$properties.
+     *
+     * @param string $propertyName Property name.
+     */
     public function removeProperty($propertyName) {
         unset($this->properties[$propertyName]);
     }
 
     /**
-     * @return DOMElement | DOMElement[]
+     * Build DOM document.
+     *
+     * @return DOMElement|array
      */
     public function build() {
         $doc = new DOMDocument('1.0', 'UTF-8');
@@ -135,14 +173,14 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         }
         foreach ($this->blocks as $block) {
             if (
-                    $block->enabled()
-                    &&
-                    ($this->document->getRights() >= $block->getCurrentStateRights())
+                $block->enabled()
+                &&
+                ($this->document->getRights() >= $block->getCurrentStateRights())
             ) {
                 $blockDOM = $block->build();
                 if ($blockDOM instanceof DOMDocument) {
                     $blockDOM =
-                            $doc->importNode($blockDOM->documentElement, true);
+                        $doc->importNode($blockDOM->documentElement, true);
                     $containerDOM->appendChild($blockDOM);
                 }
             }
@@ -151,14 +189,12 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         return $doc;
     }
     /**
-     * @return void
+     * Call @c run() method for all @link ComponentContainer::$blocks blocks@endlink.
      */
     public function run() {
         foreach ($this->blocks as $block) {
-            if (
-                $block->enabled()
-                &&
-                ($this->document->getRights() >= $block->getCurrentStateRights())
+            if ($block->enabled()
+                && ($this->document->getRights() >= $block->getCurrentStateRights())
             ) {
                 $block->run();
             }
@@ -186,6 +222,9 @@ class ComponentContainer extends Object implements IBlock, Iterator{
         return $this->blocks[$this->childNames[$this->iteratorIndex]];
     }
 
+    /**
+     * Disable ComponentContainer.
+     */
     public function disable(){
         $this->enabled = false;
 
@@ -193,22 +232,11 @@ class ComponentContainer extends Object implements IBlock, Iterator{
             $block->disable();
         }
     }
-    /**
-     * Метод всегда возвращает true
-     * Используется для единообразного вызова наследников Block
-     *
-     * @return bool
-     */
+
     public function enabled() {
         return $this->enabled;
     }
 
-    /**
-     * Всегда возвращает минимальное значение прав
-     * Используется для единообразного вызова наследников Block
-     *
-     * @return int
-     */
     public function getCurrentStateRights() {
         return 0;
     }

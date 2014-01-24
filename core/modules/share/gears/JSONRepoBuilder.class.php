@@ -1,32 +1,37 @@
 <?php
-
 /**
- * Класс JSONRepoBuilder
+ * @file
+ * JSONRepoBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class JSONRepoBuilder;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
-
 /**
- * Построитель данных в формат JSON (JavaScript Object Notation).
+ * Build data in JSON (JavaScript Object Notation) format.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class JSONRepoBuilder;
+@endcode
  */
 class JSONRepoBuilder extends JSONBuilder {
     /**
-     * @var array
+     * Bread crumbs.
+     * @var array $breadcrumbs
      */
     private $breadcrumbs;
+
     /**
-     * Создает результирующий JSON-объект.
+     * @copydoc IBuilder::build
      *
-     * @access public
-     * @return bool
+     * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
      */
     public function build() {
         $result = false;
@@ -86,6 +91,11 @@ class JSONRepoBuilder extends JSONBuilder {
         return true;
     }
 
+    /**
+     * Set brad crumbs.
+     *
+     * @param array $repoBreadCrumbs Brad crumbs.
+     */
     public function setBreadcrumbs(array $repoBreadCrumbs){
         $this->breadcrumbs = $repoBreadCrumbs;
     }

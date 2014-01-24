@@ -1,163 +1,104 @@
 <?php
-
 /**
- * Класс FileRepositoryLocal
+ * @file
+ * FileRepositoryLocal.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class FileRepositoryLocal;
+@endcode
+ *
  * @author Andy Karpov <andy.karpov@gmail.com>
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Реализация интерфейса загрузчика файлов для локальных репозитариев.
- * Используется в случаях, когда загрузка файлов в репозитарий осуществляется средствами админки
+ * Implementation of file loader interface IFileRepository for local FTP repositories.
  *
- * @package energine
- * @subpackage kernel
- * @author Andy Karpov <andy.karpov@gmail.com>
+ * This is useful for the cases when the repository is local and the file is downloaded over FTP by using admin tools.
+ *
+ * @code
+class FileRepositoryFTP;
+@endcode
  */
 class FileRepositoryLocal extends Object implements IFileRepository {
-
-    //Путь к кешу для альтернативных картинок
+    /**
+     * Path to the cache for alternative images.
+     * @var string IMAGE_ALT_CACHE
+     */
     const IMAGE_ALT_CACHE = 'uploads/alts/resizer/w[width]-h[height]/[upl_path]';
 
     /**
-     * Внутренний идентификатор репозитария
-     *
-     * @var int
+     * Internal repository ID.
+     * @var int $id
      */
     protected $id;
 
     /**
-     * Базовый путь к репозитарию
-     *
-     * @var string
+     * Base path to the repository.
+     * @var string $base
      */
     protected $base;
 
-    /**
-     * Конструктор класса
-     *
-     * @param int $id
-     * @param string $base
-     */
     public function __construct($id, $base) {
         $this->setId($id);
         $this->setBase($base);
     }
 
-    /**
-     * Метод получения внутреннего имени реализации
-     *
-     * @return string
-     */
     public function getName() {
         return 'local';
     }
 
-    /**
-     * Метод установки идентификатора репозитария (upl_id)
-     *
-     * @param int $id
-     * @return IFileRepository
-     */
     public function setId($id) {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * Метод получения идентификатора репозитария (upl_id)
-     *
-     * @return int
-     */
     public function getId() {
         return $this->id;
     }
 
-    /**
-     * Метод установки базового пути репозитария (upl_path)
-     *
-     * @param string $base
-     * @return IFileRepository
-     */
     public function setBase($base) {
         $this->base = $base;
         return $this;
     }
 
-    /**
-     * Метод получения базового пути репозитария (upl_path)
-     *
-     * @return string
-     */
     public function getBase() {
         return $this->base;
     }
 
-    /**
-     * Возвращает true, если разрешено создание папок в репозитарии
-     *
-     * @return boolean
-     */
     public function allowsCreateDir() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешена загрузка файлов в репозитарий
-     *
-     * @return boolean
-     */
     public function allowsUploadFile() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешено редактирование папки в репозитарии
-     *
-     * @return boolean
-     */
     public function allowsEditDir() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешено редактирование файла в репозитарии
-     *
-     * @return boolean
-     */
     public function allowsEditFile() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешено удаление папки из репозитария
-     *
-     * @return boolean
-     */
     public function allowsDeleteDir() {
         return true;
     }
 
-    /**
-     * Возвращает true, если разрешено удаление файла из репозитария
-     *
-     * @return boolean
-     */
     public function allowsDeleteFile() {
         return true;
     }
 
     /**
-     * Метод загрузки медиа-файла в хранилище
+     * @copydoc IFileRepository::uploadFile
      *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @return boolean
-     * @throws SystemException
+     * @throws SystemException 'ERR_DIR_WRITE'
+     * @throws SystemException 'ERR_COPY_UPLOADED_FILE'
      */
     public function uploadFile($sourceFilename, $destFilename) {
 
@@ -175,16 +116,6 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         return $this->analyze($destFilename);
     }
 
-    /**
-     * Метод загрузки alts-файла в хранилище
-     *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @param int $width
-     * @param int $height
-     * @return boolean
-     * @throws SystemException
-     */
     public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
         $destFilename = str_replace(
             array('[width]', '[height]', '[upl_path]'),
@@ -194,14 +125,6 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         return $this->uploadFile($sourceFilename, $destFilename);
     }
 
-    /**
-     * Метод обновления ранее загруженного media-файла в хранилище
-     *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @return boolean
-     * @throws SystemException
-     */
     public function updateFile($sourceFilename, $destFilename) {
         if (!copy($sourceFilename, $destFilename)) {
             return false;
@@ -209,16 +132,6 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         return true;
     }
 
-    /**
-     * Метод обновления ранее загруженного alts-файла в хранилище
-     *
-     * @param string $sourceFilename
-     * @param string $destFilename
-     * @param int $width
-     * @param int $height
-     * @return boolean
-     * @throws SystemException
-     */
     public function updateAlt($sourceFilename, $destFilename, $width, $height) {
         $destFilename = str_replace(
             array('[width]', '[height]', '[upl_path]'),
@@ -228,13 +141,6 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         return $this->updateFile($sourceFilename, $destFilename);
     }
 
-    /**
-     * Метод удаления файла из хранилища
-     *
-     * @param string $filename имя файла
-     * @return boolean
-     * @throws SystemException
-     */
     public function deleteFile($filename) {
         if (!@unlink($filename)) {
             return false;
@@ -242,26 +148,10 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         return true;
     }
 
-    /**
-     * Метод удаления alt-файла из хранилища
-     *
-     * @param string $filename имя файла
-     * @param int $width
-     * @param int $height
-     * @return boolean
-     * @throws SystemException
-     */
     public function deleteAlt($filename, $width, $height) {
         return $this->deleteFile($filename);
     }
 
-    /**
-     * Возвращает объект с мета-информацией файла (mime-тип, размер и тп)
-     *
-     * @param $filename
-     * @return object
-     * @throws SystemException
-     */
     public function analyze($filename) {
         $fi = E()->FileRepoInfo->analyze($filename, true);
         if (is_object($fi)) {
@@ -272,11 +162,9 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     }
 
     /**
-     * Метод создания директории в репозитарии
+     * @copydoc IFileRepository::createDir
      *
-     * @param string $dir
-     * @return boolean
-     * @throws SystemException
+     * @throws SystemException 'ERR_DIR_CREATE'
      */
     public function createDir($dir) {
         if (file_exists($dir)) return true;
@@ -290,21 +178,22 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     }
 
     /**
-     * Метод переименования директории в хранилище
+     * @copydoc IFileRepository::renameDir
      *
-     * @param string $dir
-     * @return boolean
-     * @throws SystemException
+     * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
+     *
+     * @attention This is not yet implemented!
      */
     public function renameDir($dir) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
     }
 
     /**
-     * Метод удаления директории из репозитария
+     * @copydoc IFileRepository::deleteDir
      *
-     * @param string $dir
-     * @throws SystemException
+     * @throws SystemException 'ERR_UNIMPLEMENTED_YET'
+     *
+     * @attention This is not yet implemented!
      */
     public function deleteDir($dir) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');

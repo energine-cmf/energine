@@ -1,62 +1,82 @@
 <?php 
-
 /**
- * Содержит класс TagManager
+ * @file
+ * TagManager
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class TagManager;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс реализующий функциональность по управлению тегами
+ * Tag manager.
  *
- * @package energine
- * @subpackage kernel
- * @author d.pavka@gmail.com
+ * @code
+class TagManager;
+@endcode
  */
 class TagManager extends DBWorker {
     /**
-     * Имя таблицы тегов
+     * Table name with tags.
+     * @var string TAG_TABLENAME
      */
     const TAG_TABLENAME = 'share_tags';
 
+    /**
+     * Table suffix.
+     * @var string TAGS_TABLE_SUFFIX
+     */
     const TAGS_TABLE_SUFFIX = '_tags';
 
+    /**
+     * Translation table for tags.
+     * @var string TAG_TABLENAME_TRANSLATION
+     */
     const TAG_TABLENAME_TRANSLATION = 'share_tags_translation';
 
     /**
-     * Разделитель тегов
+     * Tag separator.
+     * @var string TAG_SEPARATOR
      */
     const TAG_SEPARATOR = ',';
+
     /**
-     * @var DataDescription
+     * Data descriptions.
+     * @var DataDescription $dataDescription
      */
     private $dataDescription;
     /**
-     * @var Data
+     * Data.
+     * @var Data $data
      */
     private $data;
     /**
-     * @var Имя таблицы тегов
+     * Table name.
+     * @var string $tableName
      */
     private $tableName;
     /**
-     * Флаг активности
-     * @var bool
+     * Activity flag.
+     * @var bool $isActive
      */
     private $isActive;
 
     /**
-     * @var FieldDescription
+     * Key field description.
+     * @var FieldDescription $pk
      */
     private $pk;
 
     /**
-     * @param $dataDescription
-     * @param $data
-     * @param $tableName
+     * @param DataDescription $dataDescription Data description.
+     * @param Data $data Data.
+     * @param string $tableName Table name.
      */
     public function __construct($dataDescription, $data, $tableName) {
         parent::__construct();
@@ -73,6 +93,9 @@ class TagManager extends DBWorker {
         }
     }
 
+    /**
+     * Create field description.
+     */
     public function createFieldDescription() {
         if ($this->isActive) {
             if (!($fd = $this->dataDescription->getFieldDescriptionByName('tags'))) {
@@ -84,8 +107,9 @@ class TagManager extends DBWorker {
     }
 
     /**
-     * @param $initialValue mixed начальное значение
-     * @return void
+     * Create field.
+     *
+     * @param mixed $initialValue Initial value.
      */
     public function createField($initialValue = null) {
 
@@ -120,13 +144,14 @@ class TagManager extends DBWorker {
     }
 
     /**
-     * Связывание набора тегов с определенным полем
+     * Bind set of tags with specific field.
      *
-     * @param $tags string строка тегов
-     * @param $mapValue string имя поля-связки в связующей таблице
-     * @param $mapTableName string имя связующей таблицы
+     * @param string $tags single string line of tags.
+     * @param string $mapValue Name of ligaments filed in linked table.
+     * @param string $mapTableName Name of a linked table.
      * @return array
-     * @access public
+     *
+     * @throws SystemException 'ERR_WRONG_TABLE_NAME'
      */
     public function bind($tags, $mapValue, $mapTableName) {
         if (!$this->dbh->tableExists($mapTableName)) {
@@ -160,13 +185,14 @@ class TagManager extends DBWorker {
     }
 
     /**
-     * Вытягивает имена тегов по переданной информации из связующей таблицы
+     * Pull tag names by passed information from linked table.
      *
-     * @throws SystemException
-     * @param $mapValue
-     * @param $mapTableName
-     * @param bool $asString
+     * @param string $mapValue Map value.
+     * @param string $mapTableName Map table name.
+     * @param bool $asString Return as string?
      * @return array|mixed
+     *
+     * @throws SystemException 'ERR_WRONG_TABLE_NAME'
      */
     public function pull($mapValue, $mapTableName, $asString = false) {
         if (!$this->dbh->tableExists($mapTableName)) {
@@ -204,12 +230,10 @@ class TagManager extends DBWorker {
     }
 
     /**
-     * Возвращает идентификатор(ы) тегов по переданным значениям
+     * Get tag IDs by passed values.
      *
-     * @param $tag mixed
+     * @param mixed $tag Tags.
      * @return array
-     * @access public
-     * @static
      */
     static public function getID($tag) {
         $result = null;
@@ -242,15 +266,13 @@ class TagManager extends DBWorker {
     }
 
     /**
-     * Возвращает перечень тегов
+     * Get tags that begins from passed characters.
      *
-     * @static
-     * @param $str начальные буквы тега
-     * @param bool | int $limit ограничение по количеству
+     * @param string $str First tag characters.
+     * @param bool|int $limit Limit the amount of matched tags.
      * @return array
      */
     static public function getTagStartedWith($str, $limit = false) {
-
         $res = E()->getDB()->select(
             'SELECT tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
             'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
@@ -267,16 +289,13 @@ class TagManager extends DBWorker {
 
 
     /**
-     * Возвращает перечень тегов по переданным идентфикатором
+     * Get tags by IDs.
      *
-     * @param $tagID int[] | int идентфикатор(ы) тегов
-     * @param bool $asSting вернуть как строку с разделителем
-     *
-     * @return array|mixed|string
-     * @static
+     * @param array|int $tagID Tag ID(s).
+     * @param bool $asSting Return as string?
+     * @return array|string|mixed
      */
     static public function getTags($tagID, $asSting = false) {
-
         $result = array();
 
         if (empty($tagID)) {
@@ -305,11 +324,13 @@ class TagManager extends DBWorker {
     }
 
     /**
-     * @throws SystemException
-     * @param $tags
-     * @param $mapTableName
+     * Get filter.
+     *
+     * @param mixed $tags
+     * @param string $mapTableName Map table name.
      * @return array|mixed
-     * @static
+     *
+     * @throws SystemException 'ERR_WRONG_TABLE_NAME'
      */
     static public function getFilter($tags, $mapTableName) {
         if (!E()->getDB()->tableExists($mapTableName)) {
@@ -327,6 +348,12 @@ class TagManager extends DBWorker {
         return $result;
     }
 
+    /**
+     * Insert tag.
+     *
+     * @param mixed $tag Tag.
+     * @return bool|int
+     */
     public static function insert($tag) {
         $tag_id = E()->getDB()->modify(QAL::INSERT, self::TAG_TABLENAME, array('tag_code' => $tag));
         $langs = E()->getLanguage()->getLanguages();

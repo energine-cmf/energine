@@ -1,39 +1,35 @@
 <?php
-
 /**
- * Класс MultiLanguageBuilder.
+ * @file
+ * MultiLanguageBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class MultiLanguageBuilder;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Построитель для мультиязычных компонентов.
+ * Builder for multilingual components.
  *
- * @package energine
- * @subpackage kernel
- * @author dr.Pavka
+ * @code
+class MultiLanguageBuilder;
+@endcode
  */
 class MultiLanguageBuilder extends AbstractBuilder {
-
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
+    //todo VZ: This can be removed.
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     * Построение результата.
-     *
-     * @access protected
-     * @return void
+     * @copydoc AbstractBuilder::run
      */
     protected function run() {
         $lang = E()->getLanguage();

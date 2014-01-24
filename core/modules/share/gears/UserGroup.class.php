@@ -1,50 +1,43 @@
 <?php
-
 /**
- * Класс Group.
+ * @file
+ * UserGroup.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+final class UserGroup;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Группы пользователей.
+ * User groups.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
  * @final
  */
 final class UserGroup extends DBWorker {
-
     /**
-     * @access private
-     * @var int идентификатор группы для гостей
+     * Default group for guests.
+     * @var int $defaultGuestGroup
      */
     private $defaultGuestGroup = false;
 
     /**
-     * @access private
-     * @var int идентификатор группы для аутентифицированных пользователей
+     * Default group for authenticated users.
+     * @var int $defaultUserGroup
      */
     private $defaultUserGroup = false;
 
     /**
-     * @access private
-     * @var array информация о всех существующих группах пользователей
-     * @see UserGroup::__construct()
+     * Information about all user groups.
+     * @var array $groups
      */
     private $groups;
 
-
-    /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
-     */
     public function __construct() {
         parent::__construct();
         /*
@@ -55,22 +48,22 @@ final class UserGroup extends DBWorker {
          */
         $this->groups = convertDBResult($this->dbh->select('user_groups'), 'group_id', true);
     }
+
     /**
-     * Возвращает перечень групп
+     * Get all groups as array.
      *
      * @return array
-     * @access public
      */
-
     public function asArray() {
         return $this->groups;
     }
 
     /**
-     * Возвращает идентификатор группы для гостей.
+     * Get default group ID for guests.
      *
-     * @access public
      * @return int
+     *
+     * @throws SystemException 'ERR_DEV_NO_DEFAULT_GROUP'
      */
     public function getDefaultGuestGroup() {
         if (!$this->defaultGuestGroup) {
@@ -90,10 +83,11 @@ final class UserGroup extends DBWorker {
     }
 
     /**
-     * Возвращает идентификатор группы для аутентифицированных пользователей.
+     * Get default group ID for authenticated users.
      *
-     * @access public
      * @return int
+     *
+     * @throws SystemException 'ERR_DEV_NO_DEFAULT_USER_GROUP'
      */
     public function getDefaultUserGroup() {
         if (!$this->defaultUserGroup) {
@@ -112,11 +106,11 @@ final class UserGroup extends DBWorker {
         return $this->defaultUserGroup;
     }
 
+    //todo VZ: Why not to use 0 as the default user id?
     /**
-     * Возвращает набор групп, к которым принадлежит пользователь.
+     * Get the list of groups to which belongs specific user.
      *
-     * @param int идентификатор пользователя
-     * @access public
+     * @param int|bool $userId User ID.
      * @return array
      */
     public function getUserGroups($userId = false) {
@@ -135,9 +129,9 @@ final class UserGroup extends DBWorker {
     }
 
     /**
-     * Возвращает информацию о группе.
+     * Get information about specific group.
      *
-     * @access public
+     * @param int $groupId Group ID.
      * @return array
      */
     public function getInfo($groupId) {
@@ -149,12 +143,11 @@ final class UserGroup extends DBWorker {
     }
 
     /**
-      * Возвращает перечень идентификаторов пользователей в группе
-      *
-      * @return array
-      * @access public
-      */
-
+     * Get the list of specific group members.
+     *
+     * @param int $groupID Group ID.
+     * @return array
+     */
     public function getMembers($groupID){
         $result = array();
     	$members = simplifyDBResult($this->dbh->select('user_user_groups', array('u_id'), array('group_id'=>$groupID)), 'u_id');

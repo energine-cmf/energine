@@ -33,14 +33,12 @@ var Validator = new Class(/** @lends Validator# */{
         this.prepareFloatFields();
     },
 
-    // todo: I think this must be private.
     /**
      * Prepare the fields with float values.
      * @function
      * @public
      */
     prepareFloatFields: function(){
-        // todo: Make this private?
         function prepareFunction(event){
             event.target.value = event.target.value.replace(/\,/, '.');
         }
@@ -92,8 +90,8 @@ var Validator = new Class(/** @lends Validator# */{
      * @param {Element} field Field element.
      */
     scrollToElement: function(field){
-        // todo: I do not full understand this expression.
-        var context = (context=document.getElement('.e-mainframe')) ? context : window;
+        var context=document.getElement('.e-mainframe') || window;
+
         var scroll = new Fx.Scroll(context, {
             offset: {
                 'x': -30,

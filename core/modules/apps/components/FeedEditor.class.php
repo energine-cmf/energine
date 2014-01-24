@@ -1,29 +1,32 @@
 <?php
 /**
- * Содержит класс FeedEditor
+ * @file
+ * FeedEditor
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class FeedEditor;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2007
- * @version $Id$
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс для построения редакторов управляющихся из панели управления
+ * Feed editor.
+ * It creates editors that are controlled from control panel.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class FeedEditor;
+@endcode
  */
 class FeedEditor extends LinkingEditor {
     /**
-     * Для форм поле smap_id віводим как string
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc LinkingEditor::createDataDescription
      */
-
+    // Для форм поле smap_id віводим как string
     protected function createDataDescription() {
         $result = parent::createDataDescription();
         if (in_array($this->getType(), array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER))) {
@@ -36,12 +39,9 @@ class FeedEditor extends LinkingEditor {
     }
 
     /**
-     * Определяем данные для smap_id
-     *
-     * @return Data
-     * @access protected
+     * @copydoc LinkingEditor::createData
      */
-
+    // Определяем данные для smap_id
     protected function createData() {
 
         $result = parent::createData();
@@ -57,12 +57,9 @@ class FeedEditor extends LinkingEditor {
     }
 
     /**
-     * Выставляем smap_id в текущее значение
-     *
-     * @return mixed
-     * @access protected
+     * @copydoc LinkingEditor::saveData
      */
-
+    // Выставляем smap_id в текущее значение
     protected function saveData() {
         $_POST[$this->getTableName()]['smap_id'] = $this->document->getID();
         $result = parent::saveData();
@@ -70,16 +67,9 @@ class FeedEditor extends LinkingEditor {
     }
 
     /**
-     * Изменяет порядок следования
-     *
-     * @param string  - направление
-     * @return void
-     * @access protected
+     * @copydoc LinkingEditor::changeOrder
      */
-
     protected function changeOrder($direction) {
-
-
         if (!$this->getOrderColumn()) {
             //Если не задана колонка для пользовательской сортировки то на выход
             throw new SystemException('ERR_NO_ORDER_COLUMN', SystemException::ERR_DEVELOPER);

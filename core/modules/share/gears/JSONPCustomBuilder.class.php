@@ -1,28 +1,36 @@
 <?php
 /**
- * Содержит класс JSONPCustomBuilder
+ * @file
+ * JSONPCustomBuilder.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class JSONPCustomBuilder;
+@endcode
+ *
  * @author andy.karpov
+ *
+ * @version 1.0.0
  */
 
 /**
- * JSONP билдер
+ * JSONP builder.
  *
- * @package energine
- * @subpackage kernel
- * @author andy.karpov@gmail.com
+ * @code
+class JSONPCustomBuilder;
+@endcode
  */
-
 class JSONPCustomBuilder extends JSONCustomBuilder {
-
+    /**
+     * Callback.
+     * @var string $callback
+     */
     public $callback = 'undefined';
 
     /**
-     * Добавляем свойство
-     * @param $propName
-     * @param $propValue
+     * Set callback.
+     *
+     * @param string $callback Callback.
      * @return $this
      */
     public function setCallback($callback) {
@@ -30,10 +38,6 @@ class JSONPCustomBuilder extends JSONCustomBuilder {
         return $this;
     }
 
-    /**
-     * Возвращение результата
-     * @return string
-     */
     public function getResult() {
         return
             $this->callback .

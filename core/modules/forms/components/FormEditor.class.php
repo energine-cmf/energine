@@ -1,38 +1,41 @@
 <?php
 /**
- * Содержит класс FormEditor
+ * @file
+ * FormEditor
  *
- * @package energine
- * @subpackage forms
+ * It contains the definition to:
+ * @code
+class FormEditor;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редактор формы
+ * Form editor.
  *
- * @package energine
- * @subpackage forms
- * @author d.pavka@gmail.com
+ * @code
+class FormEditor;
+@endcode
  */
 class FormEditor extends DataSet {
     /**
-     * @var SelectorValuesEditor
+     * Editor of selector values.
+     * @var SelectorValuesEditor $SVEditor
      */
     private $SVEditor;
 
     /**
-     * @var FormConstructor
+     * Form constructor.
+     * @var FormConstructor $constructor
      */
     private $constructor;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -45,6 +48,9 @@ class FormEditor extends DataSet {
 
     }
 
+    /**
+     * @copydoc DataSet::defineParams
+     */
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -55,6 +61,9 @@ class FormEditor extends DataSet {
         );
     }
 
+    /**
+     * @copydoc DataSet::createDataDescription
+     */
     protected function createDataDescription() {
         //We work with other fields when we edit field - so create other DataDescription.
         if (in_array($this->getState(), array('edit'))) {
@@ -118,19 +127,32 @@ class FormEditor extends DataSet {
         }
     }
 
+    /**
+     * @copydoc DataSet::createBuilder
+     */
     protected function createBuilder() {
         return new MultiLanguageBuilder();
     }
 
+    /**
+     * @copydoc DataSet::loadData
+     */
     protected function loadData() {
         return false;
     }
 
+    /**
+     * @copydoc DataSet::createData
+     */
     protected function createData() {
         return $this->constructor->getData((isset($_POST['languageID'])) ? $_POST['languageID']
                                                    : E()->getLanguage()->getDefault());
     }
 
+    //todo VZ: Where is return?
+    /**
+     * Get raw data.
+     */
     protected function getRawData() {
         $this->setBuilder(new JSONBuilder());
         $this->setDataDescription($this->createDataDescription());
@@ -144,6 +166,10 @@ class FormEditor extends DataSet {
         if ($this->pager) $this->getBuilder()->setPager($this->pager);
     }
 
+    //todo VZ: What to add?
+    /**
+     * Add.
+     */
     protected function add() {
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->setBuilder($this->createBuilder());
@@ -156,11 +182,10 @@ class FormEditor extends DataSet {
         $this->js = $this->buildJS();
     }
 
-    /*
-   * @access protected
-   * edit() function gets information about selected field to modal form, so user can edit it.
-   *
-   * */
+    /**
+     * Edit.
+     * Get information about selected field to modal form, so user can edit it.
+     */
     protected function edit() {
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->setBuilder($this->createBuilder());
@@ -221,6 +246,9 @@ class FormEditor extends DataSet {
         //inspect($this->getDataDescription());
     }
 
+    /**
+     * @copydoc DataSet::main
+     */
     protected function main() {
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
@@ -234,6 +262,10 @@ class FormEditor extends DataSet {
         $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
     }
 
+    //todo VZ: What up?
+    /**
+     * Up.
+     */
     protected function up() {
         list($fieldIndex) = $this->getStateParams();
         $this->constructor->changeOrder(Grid::DIR_UP, $fieldIndex);
@@ -245,6 +277,10 @@ class FormEditor extends DataSet {
         $this->setBuilder($b);
     }
 
+    //todo VZ: What down?
+    /**
+     * Down.
+     */
     protected function down() {
         list($fieldIndex) = $this->getStateParams();
         $this->constructor->changeOrder(Grid::DIR_DOWN, $fieldIndex);
@@ -256,6 +292,9 @@ class FormEditor extends DataSet {
         $this->setBuilder($b);
     }
 
+    /**
+     * Edit selector.
+     */
     protected function editSelector() {
         list($fieldIndex) = $this->getStateParams();
         E()->getRequest()->shiftPath(2);
@@ -274,7 +313,10 @@ class FormEditor extends DataSet {
 
     }
 
-
+    //todo VZ: What delete?
+    /**
+     * Delete.
+     */
     protected function delete() {
         list($fieldIndex) = $this->getStateParams();
         $this->constructor->delete($this->getFieldInfoByIndex($fieldIndex));
@@ -298,6 +340,9 @@ class FormEditor extends DataSet {
         $this->setBuilder(new JSONCustomBuilder());
     }
 
+    /**
+     * Save field.
+     */
     protected function saveField() {
         $tableName = 'share_lang_tags_translation';
         if (isset($_POST) && isset($_POST[$tableName]) && isset($_POST['share_lang_tags'])) {
@@ -315,6 +360,9 @@ class FormEditor extends DataSet {
         }
     }
 
+    /**
+     * @copydoc DataSet::build
+     */
     public function build() {
         if ($this->getState() == 'editSelector') {
             $result = $this->SVEditor->build();
@@ -326,6 +374,15 @@ class FormEditor extends DataSet {
         return $result;
     }
 
+    /**
+     * Get field information by his ID
+     *
+     * @param int $fieldIndex Field ID.
+     * @param bool $asArray Return as an array?
+     * @return array
+     *
+     * @throws SystemException 'ERR_BAD_REQUEST'
+     */
     private function getFieldInfoByIndex($fieldIndex, $asArray = false) {
         if ($fieldIndex == 1) {
             throw new SystemException('ERR_BAD_REQUEST', SystemException::ERR_WARNING);

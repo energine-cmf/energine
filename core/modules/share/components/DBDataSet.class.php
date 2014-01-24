@@ -1,68 +1,62 @@
 <?php
 /**
- * Содержит класс DBDataSet
+ * @file
+ * DBDataSet
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+class DBDataSet;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 /**
- * Класс позволяющий выводить  данные из БД
+ * Class that shows the data from data base.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+class DBDataSet;
+@endcode
  */
 class DBDataSet extends DataSet {
-
     /**
-     * Имя таблицы содержащей переводы
-     *
-     * @var string
-     * @access private
+     * Table name with translations.
+     * @var string $translationTableName
      */
     private $translationTableName = false;
 
     /**
-     * Имя поля первичного ключа
-     *
-     * @var string
-     * @access private
+     * Primary key.
+     * @var string $pk
      */
     private $pk = false;
 
     /**
-     * Условия выборки
-     *
-     * @var array
-     * @access private
+     * Filter.
+     * @var array $filter
      */
     private $filter = array();
 
     /**
-     * Условие сортировки
-     *
-     * @var mixed
-     * @access protected
+     * Sort order.
+     * @var mixed $order
      */
     private $order = null;
 
     /**
-     * Ограничение количества записей
-     *
-     * @var array
-     * @access private
+     * Limit of the record's amount.
+     * @var array $limit
      */
     private $limit = null;
 
     /**
-     * Действие которое исполнялось на предыдущем шаге
-     * используется в методе сохранения
+     * Previous state.
+     * @var string $previousState
      *
-     * @var string
-     * @access private
+     * @note This is used by saving.
      */
     private $previousState = false;
 
@@ -80,9 +74,7 @@ class DBDataSet extends DataSet {
     //private $source;
 
     /**
-     * Конструктор класса
-     *
-     * @return void
+     * @copydoc DataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -90,12 +82,8 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Добавлены параметры tableName, onlyCurrentLang, editable
-     *
-     * @return array
-     * @access protected
+     * @copydoc DataSet::defineParams
      */
-
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -108,11 +96,11 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Переопределенный метод загрузки описания данных
-     * Возвращает информацию о колонках в основной таблице и таблице переводов
+     * @copydoc DataSet::loadDataDescription
      *
-     * @return array
-     * @access protected
+     * @throws SystemException 'ERR_DEV_NO_LANG_ID'
+     *
+     * It returns the information about columns in main table and table of translations.
      */
     protected function loadDataDescription() {
         $result = $this->dbh->getColumnsInfo($this->getTableName());
@@ -138,10 +126,7 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Переопределенный метод загрузки данных
-     *
-     * @return array
-     * @access protected
+     * @copydoc DataSet::loadData
      */
     protected function loadData() {
         if ($this->pager) {
@@ -161,12 +146,10 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Возвращает язык на которм берутся данные
+     * Get data language.
      *
-     * @return int
-     * @access protected
+     * @return int|false
      */
-
     protected function getDataLanguage() {
         $result = false;
         if ($this->getParam('onlyCurrentLang')) {
@@ -176,10 +159,10 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Модифицирует набор данных добавляя в него значений из m2m таблиц
+     * Modify data set by adding the values from "m2m" table.
      *
-     * @param $data array | false
-     * @return array | false
+     * @param array $data Data.
+     * @return array|false
      */
     private function modify($data) {
        if(is_array($data)){
@@ -270,7 +253,7 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Загрузка значений из обычной таблицы
+     * Load data from the common table.
      *
      * @return array | bool
      */
@@ -314,7 +297,7 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Загрузка мультиязычных данных
+     * Load multilingual data.
      *
      * @return array|bool|mixed
      */
@@ -458,27 +441,19 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Устанавливает имя таблицы
+     * Set table name.
      *
-     * @param string
-     * @return type
-     * @access protected
+     * @param string $tableName Table name.
      */
-
     protected function setTableName($tableName) {
         $this->setParam('tableName', $tableName);
     }
 
     /**
-     * Для параметра tableName устанавливаем еще и имя таблицы переводов
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return void
-     * @access protected
+     * @copydoc Component::setParam
      */
-
     protected function setParam($name, $value) {
+        // Для параметра tableName устанавливаем еще и имя таблицы переводов
         if ($name == 'tableName') {
             $this->translationTableName = $this->dbh->getTranslationTablename($value);
         }
@@ -487,11 +462,13 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Возвращает имя таблицы
+     * Get table name.
      *
      * @return string
-     * @access public
+     *
      * @final
+     *
+     * @throws SystemException 'ERR_DEV_NO_TABLENAME'
      */
     final public function getTableName() {
         if (!$this->getParam('tableName')) {
@@ -502,27 +479,25 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Возвращает значение фильтра
+     * Get filter.
      *
      * @return mixed
-     * @access protected
+     *
      * @final
      */
-
     final public function getFilter() {
         return $this->filter;
     }
 
     /**
-     * Устанавливает значение фильтра
+     * Set filter.
      *
-     * @param mixed
-     * @return void
-     * @access protected
+     * @param mixed $filter Filter.
+     *
      * @final
+     *
      * @see QAL::select()
      */
-
     final protected function setFilter($filter) {
         $this->clearFilter();
         if (!empty($filter)) {
@@ -531,12 +506,8 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Добавляет условие к фильтру
-     *
-     * @return void
-     * @access protected
+     * Add filter condition.
      */
-
     protected function addFilterCondition($filter) {
         if (is_numeric($filter)) {
             $filter = array($this->getTableName() . '.' . $this->getPK() => $filter);
@@ -547,25 +518,21 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Сброс фильтра
+     * Reset filter.
      *
-     * @return void
-     * @access protected
      * @final
      */
-
     final protected function clearFilter() {
         $this->filter = array();
     }
 
     /**
-     * Возвращает условия сортровки
+     * Get sort order.
      *
      * @return array
-     * @access protected
+     *
      * @final
      */
-
     final protected function getOrder() {
         if (is_null($this->order)) {
             $this->order = false;
@@ -582,14 +549,12 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Устанавливает условие сортровки
+     * Set sort order.
      *
-     * @param array Параметры сортировки array($orderFieldName => $orderDirection)
-     * @return void
-     * @access protected
+     * @param array $order Sort order in the form @code array($orderFieldName => $orderDirection) @endcode
+     *
      * @final
      */
-
     final protected function setOrder(array $order) {
         /*$orderDirection = strtoupper($orderDirection);
         if (!in_array($orderDirection, array(QAL::ASC, QAL::DESC))) {
@@ -600,39 +565,37 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Возвращает ограничения по количеству записей
+     * Get limit.
      *
      * @return array
-     * @access protected
+     *
      * @final
      */
-
     final protected function getLimit() {
         return $this->limit;
     }
 
     /**
-     * Устанавливает ограничения по количеству записей
+     * Set limit.
      *
-     * @param array
-     * @return void
-     * @access protected
+     * @param array $limit Limit.
+     *
      * @final
      */
-
     final protected function setLimit(array $limit) {
         $this->limit = $limit;
     }
 
 
     /**
-     * Возвращает имя поля - первичного ключа
+     * Get filed name of primary key.
      *
      * @return string
-     * @access protected
+     *
      * @final
+     *
+     * @throws SystemException 'ERR_DEV_NO_PK'
      */
-
     final public function getPK() {
         if (!$this->pk) {
             $res = $this->dbh->getColumnsInfo($this->getTableName());
@@ -654,18 +617,18 @@ class DBDataSet extends DataSet {
         return $this->pk;
     }
 
+    /**
+     * Set primary key.
+     *
+     * @param string $primaryColumnName Primary column name.
+     */
     final protected function setPK($primaryColumnName) {
         $this->pk = $primaryColumnName;
     }
 
     /**
-     * Для мультиязычного грида
-     * подменяем построитель
-     *
-     * @return AbstractBuilder
-     * @access protected
+     * @copydoc DataSet::createBuilder
      */
-
     protected function createBuilder() {
         if (!$this->getTranslationTableName()) {
             $result = parent::createBuilder();
@@ -676,12 +639,8 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * добавлена обработка ключей
-     *
-     * @return DataDescription
-     * @access protected
+     * @copydoc DataSet::createDataDescription
      */
-
     protected function createDataDescription() {
         $result = parent::createDataDescription();
         foreach ($result as $fieldMetaData) {
@@ -738,34 +697,30 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Возвращает данные о значения в связанной таблицы
+     * Get data from linked table.
      *
+     * @param string $fkTableName Linked table name.
+     * @param string $fkKeyName Key name.
      * @return array
-     * @access protected
      */
-
     protected function getFKData($fkTableName, $fkKeyName) {
         return $this->dbh->getForeignKeyData($fkTableName, $fkKeyName, $this->document->getLang());
     }
 
     /**
-     * Возвращает имя таблицы переводов
+     * Get table name with translations.
      *
      * @return string
-     * @access protected
      */
-
     protected function getTranslationTableName() {
         return $this->translationTableName;
     }
 
     /**
-     * Метод выводит форму просмотра
+     * Show view form.
      *
-     * @return void
-     * @access protected
+     * @throws SystemException 'ERR_404'
      */
-
     protected function view() {
         $this->setType(self::COMPONENT_TYPE_FORM);
         //$this->addCrumb('TXT_VIEW_ITEM');
@@ -783,15 +738,12 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Определяет существует ли запись с идентификатором переданным в параметре
-     * Вызывается из методов где нужно быть уверенным в наличии записи(view, edit,delete)
+     * Detect if the specific record exist.
      *
-     * @param string
-     * @param mixed
-     * @return void
-     * @access protected
+     * @param string $id ID.
+     * @param mixed $fieldName Field name.
+     * @return bool
      */
-
     protected function recordExists($id, $fieldName = false) {
         if (!$fieldName) {
             $fieldName = $this->getPK();
@@ -802,10 +754,7 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * При редактировании выводим Js объект
-     *
-     * @return mixed
-     * @access protected
+     * @copydoc DataSet::buildJS
      */
     protected function buildJS() {
         $result = parent::buildJS();
@@ -835,14 +784,14 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Возвращает предыдущее действие
+     * Get previous state.
      *
      * @return string
-     * @access protected
-     * @throws SystemException
+     *
+     * @throws SystemException ERR_NO_COMPONENT_ACTION
+     *
      * @final
      */
-
     final protected function getPreviousState() {
         if (!$this->previousState) {
             if (!isset($_POST['componentAction'])) {
@@ -856,10 +805,7 @@ class DBDataSet extends DataSet {
     }
 
     /**
-     * Сохранение текста статьи
-     *
-     * @return void
-     * @access protected
+     * Save text.
      */
     protected function saveText() {
         $result = '';
@@ -877,11 +823,9 @@ class DBDataSet extends DataSet {
         $this->response->commit();
     }
 
-    /**
+    //todo VZ: remove this?
+    /*
      * Выводит компонент: библиотека изображений
-     *
-     * @return void
-     * @access protected
      */
     /*protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
@@ -890,11 +834,8 @@ class DBDataSet extends DataSet {
         $this->fileLibrary->run();
     }*/
 
-    /**
+    /*
      * Выводит компонент: менеджер изображений
-     *
-     * @return void
-     * @access protected
      */
     /*protected function imageManager() {
         $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
@@ -902,11 +843,9 @@ class DBDataSet extends DataSet {
         $this->imageManager->run();
     }*/
 
-    /**
+    /*
      * Displays source of text.
      * Usage: editing news and most of feeds in view mode.
-     * @return void
-     * @access protected
      * @TODO: move this method to more suitable place.
      */
     /*protected function source() {

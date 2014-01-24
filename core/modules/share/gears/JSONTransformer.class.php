@@ -1,23 +1,33 @@
 <?php
 /**
- * Класс JSONTransformer
+ * @file
+ * JSONTransformer.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class JSONTransformer;
+@endcode
+ *
  * @author pavka
  * @copyright Energine 2010
+ *
+ * @version 1.0.0
  */
 
+/**
+ * JSON Transformer.
+ *
+ * @code
+class JSONTransformer;
+@endcode
+ */
 class JSONTransformer implements ITransformer {
     /**
-     * @var DOMDocument
+     * DOM document.
+     * @var DOMDocument $document
      */
     private $document;
 
-    /**
-     * @param DOMDocument $document
-     * @return void
-     */
     public function setDocument(DOMDocument $document) {
         $this->document = $document;
     }
@@ -32,11 +42,11 @@ class JSONTransformer implements ITransformer {
     }
 
     /**
-     * Введено для совместимти в режиме отладки
+     * @copydoc ITransformer::setFileName
      *
-     * @param string $transformerFilename
-     * @param bool $isAbsolutePath
-     * @throws SystemException
+     * @throws SystemException 'ERR_UNIMPLEMENTED'
+     *
+     * @note This is used for compatibility with debug mode.
      */
     public function setFileName($transformerFilename, $isAbsolutePath = false) {
         throw new SystemException('ERR_UNIMPLEMENTED', SystemException::ERR_DEVELOPER);

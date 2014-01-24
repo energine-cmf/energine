@@ -1,33 +1,35 @@
 <?php
 /**
- * Содержит класс NewsRepository
+ * @file
+ * NewsRepository
  *
- * @package energine
- * @subpackage apps
+ * It contains the definition to:
+ * @code
+class NewsRepository;
+@endcode
+ *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
+ *
+ * @version 1.0.0
  */
 
 /**
- * Редактор
+ * News repository.
  *
- * @package energine
- * @subpackage apps
- * @author d.pavka@gmail.com
+ * @code
+class NewsRepository;
+@endcode
  */
 class NewsRepository extends NewsEditor {
     /**
-     * @var DivisionEditor
+     * Division editor.
+     * @var DivisionEditor $divisionEditor
      */
     private $divisionEditor;
 
     /**
-     * Конструктор класса
-     *
-     * @param string $name
-     * @param string $module
-     * @param array $params
-     * @access public
+     * @copydoc NewsEditor::__construct
      */
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
@@ -37,12 +39,9 @@ class NewsRepository extends NewsEditor {
     }
 
     /**
-     * Добавляем параметр  - имя связанного компонента
-     *
-     * @return array
-     * @access protected
+     * @copydoc NewsEditor::defineParams
      */
-
+    // Добавляем параметр  - имя связанного компонента
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
@@ -53,7 +52,7 @@ class NewsRepository extends NewsEditor {
     }
 
     /**
-     * Вывод дерева разделов для форм добавления/редактирования
+     * Show division tree for form of adding/editing.
      */
     protected function showSmapSelector() {
         $this->request->shiftPath(1);
@@ -63,9 +62,10 @@ class NewsRepository extends NewsEditor {
     }
 
     /**
-     * Переписываем чтобы вернуть smap_id
+     * @copydoc NewsEditor::createDataDescription
      * @return DataDescription
      */
+    // Переписываем чтобы вернуть smap_id
     protected function createDataDescription() {
         $dd = LinkingEditor::createDataDescription();
         if (in_array($this->getState(), array('add', 'edit'))) {
@@ -75,8 +75,9 @@ class NewsRepository extends NewsEditor {
     }
 
     /**
-     * Вернули выбор раздела
+     * @copydoc NewsEditor::edit
      */
+    // Вернули выбор раздела
     protected function edit() {
         parent::edit();
         $smapField = $this->getData()->getFieldByName('smap_id');
@@ -88,32 +89,37 @@ class NewsRepository extends NewsEditor {
     }
 
     /**
-     * Переписываем чтобы вернуть smap_id
-     * @return Data
+     * @copydoc NewsEditor::createData
      */
+    // Переписываем чтобы вернуть smap_id
     protected function createData() {
         return LinkingEditor::createData();
     }
 
     /**
-     * Убираем все лишнее
-     *
-     * @return void
-     * @access protected
+     * @copydoc Grid::main
      */
-
     protected function main() {
         Grid::main();
     }
 
+    /**
+     * @copydoc Grid::changeOrder
+     */
     protected function changeOrder($direction) {
         Grid::changeOrder($direction);
     }
 
+    /**
+     * @copydoc LinkingEditor::saveData
+     */
     protected function saveData() {
         return LinkingEditor::saveData();
     }
 
+    /**
+     * @copydoc NewsEditor::build
+     */
     public function build() {
         if ($this->getState() == 'showSmapSelector') {
             $result = $this->divisionEditor->build();

@@ -1,19 +1,27 @@
 <?php
 /**
- * Содержит функцию E[nergine]
- * и класс Registry
+ * @file
+ * E(), Registry.
  *
- * @package energine
+ * It contains the definition to:
+ * @code
+function E();
+final class Registry;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2013
+ *
+ * @version 1.0.0
  */
 
-/**
- * Подключаем предка напрямую
- */
+// Подключаем предка напрямую
 require('Object.class.php');
+
 /**
- * Shortcut для Registry::getInstance
+ * @fn E
+ * @brief E[nergine].
+ * Shortcut for Registry::getInstance.
  * @return Registry
  */
 function E() {
@@ -21,39 +29,42 @@ function E() {
 }
 
 /**
- * Реестр приложения
+ * Application registry.
  *
- * Такой себе гибрид Registry & Service Locator
- * Любой объект помещенный в него становится синглтоном
- * Кроме того есть набор методов возвращающих объекты для часто используемых классов
+ * @code
+final class Registry;
+@endcode
  *
- * @property FileRepoInfo FileRepoInfo
- * @property ComponentManager ComponentManager
- * @throws SystemException
+ * Such Registry & Service Locator hybrid.
+ * Any injected object here become a singleton.
+ * In addition there is a set of methods, that returns an objects for commonly used classes.
+ *
  * @see Singleton
  *
+ * @final
  */
-
 final class Registry extends Object {
     /**
-     * Инстанс этого класса
-     * @var Registry
+     * Instance of this class.
+     * @var Registry $instance
      */
     static private $instance = null;
+
     /**
-     * перечень хранящихся в реестре объектов
-     * @var array
+     * List of stored objects in the registry.
+     * @var array $entities
      */
     private $entities = array();
+
     /**
-     * Флаг использующийся для имитации приватного конструктора
-     *
-     * @access private
-     * @var boolean
-     * @static
+     * Flag for imitation the private constructor.
+     * @var boolean $flag
      */
     private static $flag = null;
 
+    /**
+     * @throws SystemException
+     */
     public function __construct() {
         if (is_null(self::$flag)) {
             throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
@@ -62,19 +73,16 @@ final class Registry extends Object {
     }
 
     /**
-     * Закрываем возможность клонирования
-     *
-     * @return void
-     * @access private
+     * Disable cloning.
      */
     private function __clone() {
     }
 
     /**
+     * Get instance.
      *
-     * @access public
      * @return Registry
-     * @static
+     *
      * @final
      */
     final public static function getInstance() {
@@ -86,9 +94,12 @@ final class Registry extends Object {
     }
 
     /**
-     * @param  $className string
+     * Magic get.
+     *
+     * @param string $className Class name.
      * @return FileRepoInfo|ComponentManager|mixed
-     * @throws Exception
+     *
+     * @throws Exception 'Use Registry::getMap($siteID) instead.'
      */
     public function __get($className) {
         if ($className == 'Sitemap') {
@@ -97,6 +108,12 @@ final class Registry extends Object {
         return $this->get($className);
     }
 
+    /**
+     * Get class by name.
+     *
+     * @param string $className Class name.
+     * @return mixed
+     */
     private function get($className) {
         $result = null;
         if (isset($this->entities[$className])) {
@@ -107,10 +124,15 @@ final class Registry extends Object {
             $this->entities[$className] = $result;
         }
 
-
         return $result;
     }
 
+    /**
+     * Magic set.
+     *
+     * @param string $className Class name.
+     * @param mixed $object Object.
+     */
     public function __set($className, $object) {
         if (!isset($this->entities[$className])) {
             $this->entities[$className] = $object;
@@ -118,39 +140,48 @@ final class Registry extends Object {
     }
 
     /**
-     * @param  $entityName string
-     * @return
+     * Check if some entity name is set.
+     *
+     * @param string $entityName
+     * @return bool
      */
     public function __isset($entityName) {
         return isset($this->entities[$entityName]);
     }
 
     /**
-     * Убирать вручную из реестра ничего нельзя
+     * Disable manual unsetting.
      *
-     * @param  $entityName string
-     * @return void
+     * @param string $entityName Entity name.
      */
     public function __unset($entityName) {
-
     }
 
     /**
+     * Get AuthUser.
+     *
      * @return AuthUser
      */
     public function getAUser() {
         return $this->get('AuthUser');
     }
 
-    public function setAUser( /*AuthUser */
-        $anotherAuthUserObject) {
+    /**
+     * Set AuthUser.
+     *
+     * @param AuthUser $anotherAuthUserObject AuthUser object.
+     *
+     * @throws Exception 'AuthUser object is already used. You can not substitute it here.'
+     */
+    public function setAUser($anotherAuthUserObject) {
         if (isset($this->entities['AuthUser'])) {
             throw new Exception ('AuthUser object is already used. You can not substitute it here.');
         }
         $this->entities['AuthUser'] = $anotherAuthUserObject;
     }
 
-    /**
+    //todo VZ: remove this?
+    /*
      * Пока непонятно что с ним делать
      *
      * public function substitute($object){
@@ -164,6 +195,8 @@ final class Registry extends Object {
      * }*/
 
     /**
+     * Get Request.
+     *
      * @return Request
      */
     public function getRequest() {
@@ -171,6 +204,8 @@ final class Registry extends Object {
     }
 
     /**
+     * Get Response.
+     *
      * @return Response
      */
     public function getResponse() {
@@ -178,6 +213,8 @@ final class Registry extends Object {
     }
 
     /**
+     * Get Document.
+     *
      * @return Document
      */
     public function getDocument() {
@@ -185,6 +222,8 @@ final class Registry extends Object {
     }
 
     /**
+     * Get OGObject.
+     *
      * @return OGObject
      */
     public function getOGObject() {
@@ -192,6 +231,8 @@ final class Registry extends Object {
     }
 
     /**
+     * Get Language.
+     *
      * @return Language
      */
     public function getLanguage() {
@@ -199,6 +240,8 @@ final class Registry extends Object {
     }
 
     /**
+     * Get SiteManager.
+     *
      * @return SiteManager
      */
     public function getSiteManager() {
@@ -206,12 +249,12 @@ final class Registry extends Object {
     }
 
     /**
-     * Объект карты сайта
-     * На самом деле этих объектов несколько
+     * Get Sitemap object.
      *
-     *
-     * @param bool | int $siteID идентификатор сайта
+     * @param bool|int $siteID Site ID.
      * @return Sitemap
+     *
+     * @note In fact, several objects of these class exist.
      */
     public function getMap($siteID = false) {
         if (!$siteID) $siteID = E()->getSiteManager()->getCurrentSite()->id;
@@ -222,14 +265,17 @@ final class Registry extends Object {
     }
 
     /**
+     * Get DocumentController.
+     *
      * @return DocumentController
      */
     public function getController() {
         return $this->get('DocumentController');
     }
 
-
     /**
+     * Get QAL.
+     *
      * @return QAL
      */
     public function getDB() {
@@ -254,6 +300,7 @@ final class Registry extends Object {
     }
 
     /**
+     * Get Cache.
      *
      * @return Cache
      */

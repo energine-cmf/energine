@@ -1,30 +1,42 @@
 <?php
 /**
- * Хреново получилось
- * так и хочется все переписать
+ * @file
+ * FormConstructor
  *
+ * It contains the definition to:
+ * @code
+class FormConstructor;
+@endcode
  *
+ * Version 1.0.0
  */
+//todo Хреново получилось, так и хочется все переписать
+
 /**
- * @throws SystemException
+ * Form constructor.
  *
+ * @code
+class FormConstructor;
+@endcode
  */
 class FormConstructor extends DBWorker {
     /**
-     *
+     * Table name prefix.
      */
     const TABLE_PREFIX = 'form_';
     /**
-     * @var string
+     * Table name.
+     * @var string $tableName
      */
     private $tableName;
     /**
-     * @var string
+     * Database name.
+     * @var string $fDBName
      */
     private $fDBName;
 
     /**
-     * @param  $formID
+     * @param int|string $formID Form ID.
      */
     public function __construct($formID) {
         parent::__construct();
@@ -38,6 +50,8 @@ class FormConstructor extends DBWorker {
     }
 
     /**
+     * Get data description.
+     *
      * @return DataDescription
      */
     public function getDataDescription() {
@@ -162,8 +176,10 @@ class FormConstructor extends DBWorker {
     }
 
     /**
-     * @param  $langID
-     * @param null $filter
+     * Get data.
+     *
+     * @param string|int $langID Language ID.
+     * @param mixed $filter filter.
      * @return Data
      */
     public function getData($langID, $filter = null) {
@@ -189,8 +205,9 @@ class FormConstructor extends DBWorker {
     }
 
     /**
-     * @param  $data
-     * @return void
+     * Save.
+     *
+     * @param array $data Data.
      */
     public function save($data) {
         $fieldType = $data['table_name']['field_type'];
@@ -248,10 +265,9 @@ class FormConstructor extends DBWorker {
     }
 
     /**
-     * Создание multi поля
+     * Create multi field.
      *
-     * @param $fieldName
-     * @return void
+     * @param string $fieldName Field name.
      */
     private function createMultiField($fieldName) {
         $query = array();
@@ -307,9 +323,9 @@ class FormConstructor extends DBWorker {
     }
 
     /**
-     * Создание поля select
-     * @param $fieldName
-     * @return void
+     * Create "select" field.
+     *
+     * @param string $fieldName Field name.
      */
     private function createSelectField($fieldName) {
         $query = array();
@@ -350,9 +366,9 @@ class FormConstructor extends DBWorker {
     }
 
     /**
-     * @throws SystemException
-     * @param  $fieldIndex
-     * @return void
+     * Delete field.
+     *
+     * @param string $fieldName Field name.
      */
     public function delete($fieldName) {
         $info = $this->dbh->getColumnsInfo($this->tableName);
@@ -398,7 +414,9 @@ class FormConstructor extends DBWorker {
     }
 
     /**
-     * @param  $fieldName
+     * Get field tag.
+     *
+     * @param string $fieldName Field name.
      * @return string
      */
     private function getFieldLTag($fieldName) {
@@ -407,7 +425,9 @@ class FormConstructor extends DBWorker {
     }
 
     /**
-     * @param  $fieldName
+     * Delete field tag.
+     *
+     * @param string $fieldName Field name.
      * @return string
      */
     private function deleteFieldLTag($fieldName) {
@@ -416,10 +436,21 @@ class FormConstructor extends DBWorker {
         return $ltagName;
     }
 
+    /**
+     * Get table name.
+     *
+     * @return string
+     */
     public function getTableName() {
         return $this->tableName;
     }
 
+    /**
+     * Change order.
+     *
+     * @param string $direction Order direction.
+     * @param int $fieldIndex Field index.
+     */
     public function changeOrder($direction, $fieldIndex) {
         $fieldIndex--;
         $cols = array_keys(
@@ -438,17 +469,23 @@ class FormConstructor extends DBWorker {
                  ' AFTER ' . $destColField;
         $this->dbh->modifyRequest($query);
     }
+
     /**
-     * Обвязка для случая когда имя бд форм не указано в конфиге
-     * в этом случае берем текущую БД
-     * 
-     * @static
+     * Wrapper for Object::_getConfigValue.
+     * This is for the cases when database name is not set in the configurations. In this case the current database will be used.
+     *
      * @return string
      */
     public static function getDatabase(){
         return Object::_getConfigValue('forms.database', Object::_getConfigValue('database.db'));
     }
 
+    /**
+     * Get field as SQL string.
+     *
+     * @param string $fieldType Field type.
+     * @return string
+     */
     private static function getFDAsSQLString($fieldType) {
 
         switch ($fieldType) {

@@ -1,97 +1,108 @@
 <?php
-
 /**
- * Класс FileUploader.
+ * @file
+ * FileUploader.
  *
- * @package energine
- * @subpackage kernel
+ * It contains the definition to:
+ * @code
+class FileUploader;
+@endcode
+ *
  * @author 1m.dm
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Загрузчик файлов на сервер.
+ * File uploader for the server.
  *
- * @package energine
- * @subpackage kernel
- * @author 1m.dm
+ * @code
+class FileUploader;
+@endcode
  */
 class FileUploader extends Object {
-
+    //todo VZ: $_FILE or $_FILES? This is need for link.
     /**
-     * @access protected
-     * @var array описание загружаемого файла - $_FILE
+     * Description of uploaded file.
+     * $_FILE
+     *
+     * @var array $file
+     *
      * @see PHP manual, POST method uploads
      */
     protected $file = array();
 
     /**
-     * @access private
-     * @var array ограничения для загружаемого файла
+     * Restriction for uploaded file.
+     * @var array $restrictions
      */
     private $restrictions = array();
 
     /**
-     * @access private
-     * @var string расширение файла
+     * File extension.
+     * @var string $ext
      */
     private $ext;
 
     /**
-     * @access protected
-     * @var string имя, под которым загруженный файл сохранен на сервере
+     * Filename on the server side.
+     * @var string $FileObjectName
      */
     protected $FileObjectName;
-    
+
+    //todo VZ: Have I this right described?
+    /**
+     * Filename on the client side.
+     * @var string $FileRealName
+     */
     protected $FileRealName;
 
     /**
-     * @access private
-     * @var string путь к корневому каталогу загружаемых файлов
+     * Root path of uploaded files.
+     * @var string $uploadsPath
      */
     private $uploadsPath = '';
 
     /**
-     * @access private
-     * @var boolean флаг, указывающий была ли произведена валидация (проверяется методом upload)
+     * Validation flag.
+     * It indicates whether the validation was done (this can be checked with @link FileUploader::upload upload @endlink);
+     * @var boolean $validated
      */
     private $validated = false;
 
-    ////////////////////////////////////////////////////////////////////////////
-
     /**
-     * Конструктор класса.
-     *
-     * @access public
-     * @return void
+     * @param array $restrictions File restrictions.
      */
     public function __construct(Array $restrictions = array()) {
         $this->restrictions = $restrictions;
     }
 
+    //todo VZ: For what is that array example?
     /**
-     * Устанавливает ограничения которым должен соответствовать загружаемый
+     * Set uploaded file restrictions.
      *
-     * 
-     * array(
-     *      'ext' => array('jpg', 'gif')
-     * )
+     * @code
+array(
+    'ext' => array('jpg', 'gif')
+)
+@endcode
      *
-     * @access public
-     * @param array $restrictions
-     * @return void
+     * @param array $restrictions Restriction
      */
     public function setRestrictions(array $restrictions) {
         $this->restrictions = $restrictions;
     }
 
     /**
-     * Устанавливает описание файла.
+     * Set file description.
      *
-     * @access public
-     * @param array $file
-     * @return void
+     * @param array $file File.
+     *
+     * @throws SystemException 'ERR_DEV_BAD_DATA'
+     * @throws SystemException 'ERR_NO_FILE'
+     * @throws SystemException 'ERR_UPLOAD_FAILED'
      */
     public function setFile(array $file) {
         if (!isset($file['name'], $file['size'], $file['tmp_name'], $file['error'])) {
@@ -111,20 +122,18 @@ class FileUploader extends Object {
     }
 
     /**
-     * Валидация загружаемого файла.
+     * Validate uploaded file.
      *
-     * @access public
      * @return boolean
+     *
+     * @throws SystemException 'ERR_DEV_BAD_DATA'
+     * @throws SystemException 'ERR_BAD_FILE_TYPE'
      */
     public function validate() {
-        /*
-         * Браузер может не посылать MIME type, поэтому расчитывать на него нельзя.
-         */
+        // Браузер может не посылать MIME type, поэтому расчитывать на него нельзя.
         if (empty($this->file)) {
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER, $this->file['name']);
         }
-
-       
         
         $dummy = explode('.', $this->file['name']);
         $this->ext = array_pop($dummy);
@@ -138,12 +147,15 @@ class FileUploader extends Object {
         return ($this->validated = true);
     }
 
+    //todo VZ: Why only true is returned?
+    //todo VZ: The description for input argument is not very clear.
     /**
-     * Фактическая загрузка файла в определенную директорию.
+     * Upload file into the directory.
      *
-     * @access public
-     * @param string $dir директория внутри корневого каталога загружаемых файлов
+     * @param string $dir Directory within the root directory of the downloaded files. (директория внутри корневого каталога загружаемых файлов)
      * @return boolean
+     *
+     * @throws SystemException 'ERR_DEV_UPLOAD_FAILED'
      */
     public function upload($dir) {
         if (!$this->validated) {
@@ -159,34 +171,29 @@ class FileUploader extends Object {
         ) {
             throw new SystemException('ERR_DEV_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file['name']);
         }
+        //@todo Отключено до выяснения
         //Ресайзим изображение
         /*
         if(in_array($this->getExtension(), array('gif', 'png', 'jpg', 'jpeg'))){
-            //@todo Отключено до выяснения
-            /*$img = new Image();
-            $img->loadFromFile($filePath);
-            
-            if(($img->getWidth()> 800) && ($img->getHeight() > 600)){
-	            $img->resize(800, 600);
-	            $img->saveToFile($filePath);	
-            }
-            unset($image);
-            
-            */
+//            $img = new Image();
+//            $img->loadFromFile($filePath);
+//
+//            if(($img->getWidth()> 800) && ($img->getHeight() > 600)){
+//	            $img->resize(800, 600);
+//	            $img->saveToFile($filePath);
+//            }
+//            unset($image);
         	// ------------------------
-            /*
-            elseif($img->getWidth()> 800){
-            	$img->resize(800, null);
-                $img->saveToFile($filePath);
-            }
-            elseif($img->getHeight()> 600){
-                $img->resize(null, 600);
-                $img->saveToFile($filePath);
-            }
-            
-          	
-            	
-        }*/
+//            elseif($img->getWidth()> 800){
+//            	$img->resize(800, null);
+//                $img->saveToFile($filePath);
+//            }
+//            elseif($img->getHeight()> 600){
+//                $img->resize(null, 600);
+//                $img->saveToFile($filePath);
+//            }
+        }
+        */
         
         $this->FileRealName = $this->file['name'];
         $this->FileObjectName = $filePath;
@@ -194,7 +201,14 @@ class FileUploader extends Object {
 
         return true;
     }
-    
+
+    /**
+     * Generate filename.
+     *
+     * @param string $dir Directory.
+     * @param string $ext File extension.
+     * @return string
+     */
     protected function generateFilename($dir, $ext){
         if ($dir[0] == '/') {
             $dir = substr($dir, 1);
@@ -207,35 +221,35 @@ class FileUploader extends Object {
     }
 
     /**
-     * Возвращает имя загруженного файла.
+     * Get the uploaded filename on the server side.
      *
-     * @access public
      * @return string
      */
     public function getFileObjectName() {
         return $this->FileObjectName;
     }
-    
+
+    //todo VZ: Have I this right described?
+    /**
+     * Get the filename on the client side.
+     *
+     * @return string
+     */
     public function getFileRealName() {
         return $this->FileRealName;
     }
 
     /**
-     * Возвращает расширение файла.
+     * Get the file extension.
      *
-     * @access public
      * @return string
      */
     public function getExtension() {
         return $this->ext;
     }
-    
 
     /**
-     * Очищает состояние объекта для повторного использования.
-     *
-     * @access public
-     * @return void
+     * Clean the object properties for further reuse.
      */
     public function cleanUp() {
         $this->restrictions = array();

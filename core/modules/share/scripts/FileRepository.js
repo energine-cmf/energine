@@ -452,9 +452,6 @@ var FileRepository = new Class(/** @lends FileRepository# */{
     /**
      * Overridden parent [buildRequestURL]{@link GridManager#buildRequestURL} method.
      *
-     * @memberOf FileRepository#
-     * @function
-     * @protected
      * @param {number|string} pageNum Page number.
      * @returns {string}
      */
@@ -485,10 +482,6 @@ var FileRepository = new Class(/** @lends FileRepository# */{
     /**
      * Overridden parent [buildRequestPostBody]{@link GridManager#buildRequestPostBody} method.
      *
-     * @memberOf FileRepository#
-     * @abstract
-     * @function
-     * @protected
      * @returns {string}
      */
     buildRequestPostBody: function() {

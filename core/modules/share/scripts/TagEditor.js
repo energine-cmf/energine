@@ -38,9 +38,6 @@ var TagEditor = new Class(/** @lends TagEditor# */{
     /**
      * Overridden parent [buildRequestURL]{@link GridManager#buildRequestURL} method.
      *
-     * @memberOf TagEditor#
-     * @function
-     * @protected
      * @param {number|string} pageNum Page number.
      * @returns {string}
      */

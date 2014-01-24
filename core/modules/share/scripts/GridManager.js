@@ -945,10 +945,7 @@ var GridManager = new Class(/** @lends GridManager# */{
     /**
      * Build request URL.
      *
-     * @memberOf GridManager#
      * @abstract
-     * @function
-     * @protected
      * @param {number|string} pageNum Page number.
      * @returns {string}
      */
@@ -968,10 +965,7 @@ var GridManager = new Class(/** @lends GridManager# */{
     /**
      * Build request post body.
      *
-     * @memberOf GridManager#
      * @abstract
-     * @function
-     * @protected
      * @returns {string}
      */
     buildRequestPostBody: function() {

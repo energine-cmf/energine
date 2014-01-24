@@ -1,0 +1,116 @@
+@charset "utf-8";
+/*
+Name: Carousel stylesheet
+Description: Стили для "карусели" изображений.
+Created: August 2010
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
+*/
+
+/* ----- carousel ----- */
+
+.carousel {
+    margin: 0 auto;
+}
+.carousel .next_control, .carousel .previous_control {
+    /*display: block;*/
+    /*position: absolute;*/
+    /*top: 50%;*/
+    left: 0;    
+    /*z-index: 2;*/
+    width: 14px;
+    height: 20px;
+    /*overflow: hidden;*/
+    margin-top: -10px;
+    outline: 0;
+    /*-moz-user-select: none;*/
+}
+.carousel .next_control {
+    left: -14px;
+    margin-left: 100%;
+}
+.carousel .previous_control { 
+	background-position: -32px -92px;
+}
+.carousel .next_control {
+	background-position: -48px -92px;
+}
+.carousel .previous_control i {
+    _top: -92px;
+    _left: -32px;
+}
+.carousel .next_control i {   
+    _top: -92px;
+    _left: -48px;
+}
+.carousel_viewbox {
+    /*position: relative;*/
+    height: 88px;
+    /*overflow: hidden;*/
+    /*margin: auto;*/
+    border-left: 1px solid #afafaf;
+    border-right: 1px solid #afafaf;    
+}
+.carousel_viewbox.big {
+    height: 378px;
+}
+.carousel_viewbox.small {
+    height: 88px;
+}
+.carousel_viewbox ul {
+    /*z-index: 1;*/
+    /*margin: 0;*/
+    padding: 0;
+    /*list-style: none;*/
+}
+.carousel_viewbox ul li {
+    /*position: absolute;*/
+    top: 0;
+    /*z-index: 1;*/
+    /*width: 98px;*/
+    margin: 0;
+    padding: 0 6px;
+}
+.carousel_viewbox.small ul li{
+    width: 98px;
+}
+.carousel_viewbox.big ul li {
+    width: 538px;
+}
+.item {
+    /*position: relative;*/
+    /*width: 92px;*/
+    padding: 3px;
+    /*text-align: center;*/
+    /*vertical-align: middle;*/
+}
+.carousel .active .item {
+    background: #fdd34e;
+    /*text-align: center;*/
+    /*vertical-align: middle;*/
+}
+.item img {
+/*    display: block;
+*/
+    border: 1px solid #878787;
+}
+.item .play_icon {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    margin: -16px 0 0 -16px;
+}
+.carousel .viewbox a:link, .carousel .viewbox a:visited, .carousel .viewbox a:hover, .carousel .viewbox a:active {
+    text-decoration: none;
+	outline: 0;
+}
+
+.icon, .icon8x12, .icon12x12, .icon16x16, .icon20x20, .icon24x24, .icon32x32 {
+    /*background: url("../images/common_icons.png") no-repeat scroll 100px 100px transparent;*/
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+    vertical-align: middle;
+}
+/* ----- /carousel ----- */

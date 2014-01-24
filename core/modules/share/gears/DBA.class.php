@@ -500,7 +500,7 @@ array(
     /**
      * Run query.
      *
-     * @param array $args Query arguments.
+     * @param array $args Query arguments. First argument is SQL string
      * @return PDOStatement
      *
      * @throws SystemException 'ERR_BAD_REQUEST'
@@ -527,10 +527,10 @@ array(
             }
 
             if (!($result = $this->pdo->prepare($query))) {
-                throw new SystemException('ERR_PREPARE_REQUEST', $query);
+                throw new SystemException('ERR_PREPARE_REQUEST', SystemException::ERR_DB, $query);
             }
             if (!$result->execute($data)) {
-                throw new SystemException('ERR_EXECUTE_REQUEST', $query);
+                throw new SystemException('ERR_EXECUTE_REQUEST', SystemException::ERR_DB, $query);
             }
 
         } else {

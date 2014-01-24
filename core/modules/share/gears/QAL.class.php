@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 final class QAL;
-@endcode
+ * @endcode
  *
  * @author 1m.dm
  * @copyright Energine 2006
@@ -19,7 +19,7 @@ final class QAL;
  *
  * @code
 final class QAL;
-@endcode
+ * @endcode
  *
  * @final
  */
@@ -164,7 +164,6 @@ final class QAL extends DBA {
      * @see DBA::modifyRequest()
      */
     public function modify($mode, $tableName = null, $data = null, $condition = null) {
-
         //Если в первом параметре не один из зарегистрированных режимов - считаем что это запрос
         if (!in_array($mode, array(self::INSERT, self::INSERT_IGNORE, self::REPLACE, self::DELETE, self::UPDATE))) {
             return call_user_func_array(array($this, 'modifyRequest'), func_get_args());
@@ -175,45 +174,40 @@ final class QAL extends DBA {
         }
         $tableName = DBA::getFQTableName($tableName);
 
-        $sqlQuery = '';
+        $args = array();
+
+        $buildQueryBody = function ($data, &$args) {
+            if (!empty($data)) {
+                $key = 0;
+                foreach ($data as $fieldValue) {
+                    $args[$key] = $fieldValue;
+                    if ($fieldValue === self::EMPTY_STRING) {
+                        $args[$key] = '';
+                    } elseif ($fieldValue == '') {
+                        $args[$key] = null;
+                    }
+                    $key++;
+                }
+            }
+        };
 
         switch ($mode) {
             case self::INSERT:
             case self::INSERT_IGNORE:
             case self::REPLACE:
                 if (!empty($data)) {
-                    $fieldNames = array();
-                    $fieldValues = array();
-                    $fieldNames = array_keys($data);
-                    foreach ($data as $fieldValue) {
-                        if ($fieldValue === self::EMPTY_STRING) {
-                            $fieldValue = $this->quote('');
-                        } elseif ($fieldValue == '') {
-                            $fieldValue = 'NULL';
-                        } else {
-                            $fieldValue = $this->quote($fieldValue);
-                        }
-                        $fieldValues[] = $fieldValue;
-                    }
-                    $sqlQuery = $mode . ' INTO ' . $tableName . ' (' . implode(', ', $fieldNames) . ') VALUES (' . implode(', ', $fieldValues) . ')';
+                    $buildQueryBody($data, $args);
+                    $sqlQuery = $mode . ' INTO ' . $tableName . ' (' . implode(', ', array_keys($data)) . ') VALUES (' . implode(', ', array_fill(0, sizeof($data), '%s')) . ')';
                 } else {
                     $sqlQuery = 'INSERT INTO ' . $tableName . ' VALUES ()';
                 }
                 break;
             case self::UPDATE:
                 if (!empty($data)) {
-                    $fields = array();
-                    foreach ($data as $fieldName => $fieldValue) {
-                        if ($fieldValue === self::EMPTY_STRING) {
-                            $fieldValue = $this->quote('');
-                        } elseif ($fieldValue === '') {
-                            $fieldValue = 'NULL';
-                        } else {
-                            $fieldValue = $this->quote($fieldValue);
-                        }
-                        $fields[] = "$fieldName = $fieldValue";
-                    }
-                    $sqlQuery = 'UPDATE ' . $tableName . ' SET ' . implode(', ', $fields);
+                    $buildQueryBody($data, $args);
+                    $sqlQuery = 'UPDATE ' . $tableName . ' SET ' . implode(', ', array_map(function ($fieldName) {
+                            return $fieldName . '= %s';
+                        }, array_keys($data)));
                 } else {
                     throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
                 }
@@ -226,54 +220,88 @@ final class QAL extends DBA {
         }
 
         if (isset($condition) && $mode != self::INSERT) {
-            $sqlQuery .= $this->buildWhereCondition($condition);
+            $sqlQuery .= $this->buildWhereCondition($condition, $args);
         }
-
-        return $this->modifyRequest($sqlQuery);
+        array_unshift($args, $sqlQuery);
+        return call_user_func_array(array($this, 'modifyRequest'), $args);
     }
 
     /**
      * Build @c WHERE condition for SQL request.
      *
      * @param mixed $condition Condition.
+     * @param array $args
      * @return string
      *
      * @see QAL::selectRequest()
      */
-    public function buildWhereCondition($condition) {
-        $result = '';
+    public function buildWhereCondition($condition, array &$args = null) {
+        if ($this->getConfigValue('database.prepare') && !is_null($args)) {
+            $result = '';
+            if (!empty($condition)) {
+                $result = ' WHERE ';
+                if (is_array($condition)) {
+                    $cond = array();
+                    foreach ($condition as $fieldName => $value) {
+                        if (is_null($value)) {
+                            $cond[] = $fieldName . ' IS NULL';
+                        } elseif (is_numeric($fieldName)) {
+                            $cond[] = $value;
+                        } elseif (is_array($value)) {
+                            $value = array_filter($value);
+                            $value = implode(',', array_map(function ($row) use (&$args) {
+                                array_push($args, $row);
+                                return '%s';
+                            }, $value));
 
-        if (!empty($condition)) {
-            $result = ' WHERE ';
-
-            if (is_array($condition)) {
-                $cond = array();
-                foreach ($condition as $fieldName => $value) {
-                    //$fieldName = strtolower($fieldName);
-                    if (is_null($value)) {
-                        $cond[] = "$fieldName IS NULL";
-                    } elseif (is_numeric($fieldName)) {
-                        $cond[] = $value;
-                    } elseif (is_array($value)) {
-                        $value = array_filter($value);
-
-                        $value = implode(',', array_map(create_function('$row', 'return \'"\'.$row.\'"\';'), $value));
-
-                        if (!empty($value))
-                            $cond[] = $fieldName . ' IN (' . $value . ')';
-                        else $cond[] = ' FALSE ';
-                    } else {
-                        $cond[] = "$fieldName = " . $this->quote($value);
+                            if (!empty($value))
+                                $cond[] = $fieldName . ' IN (' . $value . ')';
+                            else $cond[] = ' FALSE ';
+                        } else {
+                            $cond[] = $fieldName.' = %s';
+                            array_push($args, $value);
+                        }
                     }
+                    $result .= implode(' AND ', $cond);
+                } else {
+                    $result .= $condition;
                 }
-                $result .= implode(' AND ', $cond);
-            } else {
-                $result .= $condition;
+            }
+        } else {
+            $result = '';
+            if (!empty($condition)) {
+                $result = ' WHERE ';
+
+                if (is_array($condition)) {
+                    $cond = array();
+                    foreach ($condition as $fieldName => $value) {
+                        //$fieldName = strtolower($fieldName);
+                        if (is_null($value)) {
+                            $cond[] = "$fieldName IS NULL";
+                        } elseif (is_numeric($fieldName)) {
+                            $cond[] = $value;
+                        } elseif (is_array($value)) {
+                            $value = array_filter($value);
+
+                            $value = implode(',', array_map(create_function('$row', 'return \'"\'.$row.\'"\';'), $value));
+
+                            if (!empty($value))
+                                $cond[] = $fieldName . ' IN (' . $value . ')';
+                            else $cond[] = ' FALSE ';
+                        } else {
+                            $cond[] = "$fieldName = " . $this->quote($value);
+                        }
+                    }
+                    $result .= implode(' AND ', $cond);
+                } else {
+                    $result .= $condition;
+                }
             }
         }
 
         return $result;
     }
+
 
     /**
      * Get foreign key data.
@@ -392,7 +420,7 @@ final class QAL extends DBA {
      *
      * @param array $args Arguments for query.
      * @return array
-     * 
+     *
      * @throws SystemException
      */
     protected function buildSQL(array $args) {

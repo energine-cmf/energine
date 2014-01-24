@@ -18,7 +18,7 @@
  * @author Pavel Dubenko
  * @author Valerii Zinchenko
  *
- * @version 1.1.1
+ * @version 1.1.2
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
@@ -524,9 +524,6 @@ var Grid = (function() {
                 }
             }
 
-//            gridHeadContainer.getElement('.gridTable').setStyles({
-//                tableLayout: 'fixed'
-//            });
             this.tbody.getParent().setStyles({
                 wordWrap: 'break-word',
                 tableLayout: 'fixed'
@@ -542,7 +539,7 @@ var Grid = (function() {
             if (this.paneContent) {
                 var gridHeight = this.paneContent.getSize().y -
                     ((this.gridToolbar) ? this.gridToolbar.getSize().y : 0) -
-                    this.gridHeadContainer.getSize().y - 4;
+                    this.gridHeadContainer.getSize().y - this.element.getStyle('margin-top').toInt();
                 if (gridHeight > 0) {
                     this.gridContainer.setStyle('height', gridHeight);
                 }
@@ -551,25 +548,39 @@ var Grid = (function() {
 
         /**
          * Fit the height of the Grid's container if the container is not new modal frame.
-         * @function
-         * @public
          */
         fitGridFormSize: function() {
             if (this.pane) {
-                var gridBodyContainer = this.element.getElement('.gridBodyContainer');
-                var gridBodyHeight = ((gridBodyContainer.getSize().y + 2)
-                    > this.minGridHeight) ? (gridBodyContainer.getSize().y + 2) : this.minGridHeight;
-                var paneOthersHeight = this.pane.getSize().y - this.gridContainer.getSize().y;
+                var toolbarH = this.gridToolbar.getSize().y,
+                    gridHeadH = this.gridHeadContainer.getComputedSize().totalHeight,
+                    paneToolbarTH = this.pane.getElement('.e-pane-t-toolbar').getSize().y,
+                    paneToolbarBH = this.pane.getElement('.e-pane-b-toolbar').getSize().y,
+                    paneH = this.pane.getSize().y,
 
-                var windowHeight = window.getSize().y - 10;
-                if (windowHeight > (this.minGridHeight + paneOthersHeight)) {
-                    if ((gridBodyHeight + paneOthersHeight) > windowHeight) {
-                        this.pane.setStyle('height', windowHeight);
-                    } else {
-                        this.pane.setStyle('height', gridBodyHeight + paneOthersHeight);
-                    }
-                } else {
-                    this.pane.setStyle('height', this.minGridHeight + paneOthersHeight);
+                    gridBodyContainer = this.element.getElement('.gridBodyContainer'),
+                    gridBodyHeight = gridBodyContainer.getSize().y
+                        + this.gridContainer.getStyle('border-top-width').toInt() + this.gridContainer.getStyle('border-bottom-width').toInt();
+                if (gridBodyHeight < this.minGridHeight) {
+                    gridBodyHeight = this.minGridHeight;
+                }
+
+                /*
+                 * +3 at the end is:
+                 *   +2 from e-pane-content border
+                 *   +1 from somewhere, I do not why this should be
+                 */
+                var totalH = toolbarH + gridHeadH + gridBodyHeight + paneToolbarTH + paneToolbarBH
+                    + this.element.getStyle('margin-top').toInt() + 3;
+                /*
+                 * -81 at the end is:
+                 *   -31 from e-topframe height
+                 *   -50 from footer
+                 * they are not visible from grid
+                 */
+                var windowHeight = window.getSize().y - this.pane.getPosition().y - ScrollBarWidth - 81;
+
+                if (totalH > paneH) {
+                    this.pane.setStyle('height', (totalH > windowHeight) ? windowHeight : totalH);
                 }
                 this.fitGridSize();
             }

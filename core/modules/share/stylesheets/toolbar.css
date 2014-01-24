@@ -213,7 +213,11 @@ ul.e-divtree-toolbar.toolbar li.save_btn:focus, ul.e-divtree-toolbar.toolbar li.
 .colset ul.toolbar li.delete_btn,
 .colset ul.toolbar li.delete_btn:focus, .colset ul.toolbar li.delete_btn:hover, .colset ul.toolbar li.delete_btn:active,
 .colset ul.toolbar li.save_btn,
-.colset ul.toolbar li.save_btn:focus, .colset ul.toolbar li.save_btn:hover, .colset ul.toolbar li.save_btn:active {
+.colset ul.toolbar li.save_btn:focus, .colset ul.toolbar li.save_btn:hover, .colset ul.toolbar li.save_btn:active,
+.colset ul.toolbar li.up_btn,
+.colset ul.toolbar li.up_btn:focus, .colset ul.toolbar li.up_btn:hover, .colset ul.toolbar li.up_btn:active,
+.colset ul.toolbar li.down_btn,
+.colset ul.toolbar li.down_btn:focus, .colset ul.toolbar li.down_btn:hover, .colset ul.toolbar li.down_btn:active {
     background-color: transparent;
 }
 ul.toolbar li.up_btn,

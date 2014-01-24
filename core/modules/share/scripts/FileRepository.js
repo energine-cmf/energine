@@ -449,58 +449,56 @@ var FileRepository = new Class(/** @lends FileRepository# */{
         });
     },
 
-    Protected: {
-        /**
-         * Overridden parent [buildRequestURL]{@link GridManager#buildRequestURL} method.
-         *
-         * @memberOf FileRepository#
-         * @function
-         * @protected
-         * @param {number|string} pageNum Page number.
-         * @returns {string}
-         */
-        buildRequestURL: function(pageNum) {
-            var url = '',
-                level = '';
+    /**
+     * Overridden parent [buildRequestURL]{@link GridManager#buildRequestURL} method.
+     *
+     * @memberOf FileRepository#
+     * @function
+     * @protected
+     * @param {number|string} pageNum Page number.
+     * @returns {string}
+     */
+    buildRequestURL: function(pageNum) {
+        var url = '',
+            level = '';
 
-            var cookiePID = Cookie.read(FILE_COOKIE_NAME);
-            if (this.currentPID === 0) {
-                level = '';
-            } else if (this.currentPID) {
-                level = this.currentPID + '/';
-            } else if (cookiePID) {
-                this.currentPID = cookiePID;
-                level = this.currentPID + '/';
-            }
-
-            if (this.grid.sort.order) {
-                url = this.singlePath + level + 'get-data/' + this.grid.sort.field + '-'
-                    + this.grid.sort.order + '/page-' + pageNum + '/';
-            } else {
-                url = this.singlePath + level + 'get-data/' + 'page-' + pageNum + '/';
-            }
-
-            return url;
-        },
-
-        /**
-         * Overridden parent [buildRequestPostBody]{@link GridManager#buildRequestPostBody} method.
-         *
-         * @memberOf FileRepository#
-         * @abstract
-         * @function
-         * @protected
-         * @returns {string}
-         */
-        buildRequestPostBody: function() {
-            var postBody = '';
-
-            if (this.filter) {
-                postBody += this.filter.getValue();
-            }
-
-            return postBody;
+        var cookiePID = Cookie.read(FILE_COOKIE_NAME);
+        if (this.currentPID === 0) {
+            level = '';
+        } else if (this.currentPID) {
+            level = this.currentPID + '/';
+        } else if (cookiePID) {
+            this.currentPID = cookiePID;
+            level = this.currentPID + '/';
         }
+
+        if (this.grid.sort.order) {
+            url = this.singlePath + level + 'get-data/' + this.grid.sort.field + '-'
+                + this.grid.sort.order + '/page-' + pageNum + '/';
+        } else {
+            url = this.singlePath + level + 'get-data/' + 'page-' + pageNum + '/';
+        }
+
+        return url;
+    },
+
+    /**
+     * Overridden parent [buildRequestPostBody]{@link GridManager#buildRequestPostBody} method.
+     *
+     * @memberOf FileRepository#
+     * @abstract
+     * @function
+     * @protected
+     * @returns {string}
+     */
+    buildRequestPostBody: function() {
+        var postBody = '';
+
+        if (this.filter) {
+            postBody += this.filter.getValue();
+        }
+
+        return postBody;
     }
 });
 

@@ -35,28 +35,26 @@ var TagEditor = new Class(/** @lends TagEditor# */{
         this.tag_id = this.element.getProperty('tag_id');
     },
 
-    Protected: {
-        /**
-         * Overridden parent [buildRequestURL]{@link GridManager#buildRequestURL} method.
-         *
-         * @memberOf TagEditor#
-         * @function
-         * @protected
-         * @param {number|string} pageNum Page number.
-         * @returns {string}
-         */
-        buildRequestURL: function(pageNum) {
-            var url = '';
+    /**
+     * Overridden parent [buildRequestURL]{@link GridManager#buildRequestURL} method.
+     *
+     * @memberOf TagEditor#
+     * @function
+     * @protected
+     * @param {number|string} pageNum Page number.
+     * @returns {string}
+     */
+    buildRequestURL: function(pageNum) {
+        var url = '';
 
-            if (this.grid.sort.order) {
-                url = this.singlePath + this.tag_id + '/get-data/' + this.grid.sort.field + '-'
-                    + this.grid.sort.order + '/page-' + pageNum
-            } else {
-                url = this.singlePath + this.tag_id + '/get-data/page-' + pageNum;
-            }
-
-            return url;
+        if (this.grid.sort.order) {
+            url = this.singlePath + this.tag_id + '/get-data/' + this.grid.sort.field + '-'
+                + this.grid.sort.order + '/page-' + pageNum
+        } else {
+            url = this.singlePath + this.tag_id + '/get-data/page-' + pageNum;
         }
+
+        return url;
     },
 
     /**

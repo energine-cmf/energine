@@ -942,51 +942,49 @@ var GridManager = new Class(/** @lends GridManager# */{
         }).delay(0, this);
     },
 
-    Protected: {
-        /**
-         * Build request URL.
-         *
-         * @memberOf GridManager#
-         * @abstract
-         * @function
-         * @protected
-         * @param {number|string} pageNum Page number.
-         * @returns {string}
-         */
-        buildRequestURL: function(pageNum) {
-            var url = '';
+    /**
+     * Build request URL.
+     *
+     * @memberOf GridManager#
+     * @abstract
+     * @function
+     * @protected
+     * @param {number|string} pageNum Page number.
+     * @returns {string}
+     */
+    buildRequestURL: function(pageNum) {
+        var url = '';
 
-            if (this.grid.sort.order) {
-                url = this.singlePath + 'get-data/' + this.grid.sort.field + '-'
-                    + this.grid.sort.order + '/page-' + pageNum
-            } else {
-                url = this.singlePath + 'get-data/page-' + pageNum;
-            }
-
-            return url;
-        },
-
-        /**
-         * Build request post body.
-         *
-         * @memberOf GridManager#
-         * @abstract
-         * @function
-         * @protected
-         * @returns {string}
-         */
-        buildRequestPostBody: function() {
-            var postBody = '';
-
-            if (this.langId) {
-                postBody += 'languageID=' + this.langId + '&';
-            }
-            if (this.filter) {
-                postBody += this.filter.getValue();
-            }
-
-            return postBody;
+        if (this.grid.sort.order) {
+            url = this.singlePath + 'get-data/' + this.grid.sort.field + '-'
+                + this.grid.sort.order + '/page-' + pageNum
+        } else {
+            url = this.singlePath + 'get-data/page-' + pageNum;
         }
+
+        return url;
+    },
+
+    /**
+     * Build request post body.
+     *
+     * @memberOf GridManager#
+     * @abstract
+     * @function
+     * @protected
+     * @returns {string}
+     */
+    buildRequestPostBody: function() {
+        var postBody = '';
+
+        if (this.langId) {
+            postBody += 'languageID=' + this.langId + '&';
+        }
+        if (this.filter) {
+            postBody += this.filter.getValue();
+        }
+
+        return postBody;
     },
 
     /**

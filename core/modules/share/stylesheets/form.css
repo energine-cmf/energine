@@ -1,3 +1,5 @@
+@import url("controls.css");
+
 form .invalid {
     border-style: solid;
     border-color: #931313;

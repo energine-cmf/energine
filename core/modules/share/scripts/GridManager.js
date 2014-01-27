@@ -537,9 +537,11 @@ var Grid = (function() {
          */
         fitGridSize: function() {
             if (this.paneContent) {
-                var gridHeight = this.paneContent.getSize().y -
-                    ((this.gridToolbar) ? this.gridToolbar.getSize().y : 0) -
-                    this.gridHeadContainer.getSize().y - this.element.getStyle('margin-top').toInt();
+                var margin = this.element.getStyle('margin-top'),
+                    gridHeight = this.paneContent.getSize().y
+                    - this.gridHeadContainer.getSize().y
+                    - ((this.gridToolbar) ? this.gridToolbar.getSize().y : 0)
+                    - ((margin) ? margin.toInt() : 0);
                 if (gridHeight > 0) {
                     this.gridContainer.setStyle('height', gridHeight);
                 }
@@ -553,13 +555,17 @@ var Grid = (function() {
             if (this.pane) {
                 var toolbarH = this.gridToolbar.getSize().y,
                     gridHeadH = this.gridHeadContainer.getComputedSize().totalHeight,
-                    paneToolbarTH = this.pane.getElement('.e-pane-t-toolbar').getSize().y,
-                    paneToolbarBH = this.pane.getElement('.e-pane-b-toolbar').getSize().y,
+                    paneToolbarT = this.pane.getElement('.e-pane-t-toolbar'),
+                    paneToolbarTH = (paneToolbarT) ? paneToolbarT.getSize().y : 0,
+                    paneToolbarB = this.pane.getElement('.e-pane-b-toolbar'),
+                    paneToolbarBH = (paneToolbarB) ? paneToolbarB.getSize().y : 0,
                     paneH = this.pane.getSize().y,
+                    margin = this.element.getStyle('margin-top'),
 
                     gridBodyContainer = this.element.getElement('.gridBodyContainer'),
                     gridBodyHeight = gridBodyContainer.getSize().y
-                        + this.gridContainer.getStyle('border-top-width').toInt() + this.gridContainer.getStyle('border-bottom-width').toInt();
+                        + this.gridContainer.getStyle('border-top-width').toInt()
+                        + this.gridContainer.getStyle('border-bottom-width').toInt();
                 if (gridBodyHeight < this.minGridHeight) {
                     gridBodyHeight = this.minGridHeight;
                 }
@@ -570,7 +576,7 @@ var Grid = (function() {
                  *   +1 from somewhere, I do not why this should be
                  */
                 var totalH = toolbarH + gridHeadH + gridBodyHeight + paneToolbarTH + paneToolbarBH
-                    + this.element.getStyle('margin-top').toInt() + 3;
+                    + ((margin) ? margin.toInt() : 0) + 3;
                 /*
                  * -81 at the end is:
                  *   -31 from e-topframe height

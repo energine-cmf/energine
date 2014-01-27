@@ -153,6 +153,7 @@ optgroup option {
 }
 .e-pane-content .field .control  .with_append button {
     box-sizing: content-box;
+    -moz-box-sizing: content-box;
 }
 .e-pane-content .field .control  .appended_block {
     vertical-align: top;

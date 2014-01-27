@@ -117,7 +117,7 @@ var Validator = new Class(/** @lends Validator# */{
     validateElement: function(field){
         var result = true;
         var pattern,
-            message;
+            message, field;
         field = $(field);
         pattern = field.getProperty('nrgn:pattern');
         if (pattern
@@ -125,7 +125,9 @@ var Validator = new Class(/** @lends Validator# */{
             && !field.getProperty('disabled')
             && !field.hasClass('novalidation'))
         {
-            if (!eval('field.value.match('+pattern+');')) {
+            if (!field.value.test(pattern)) {
+                console.log(pattern)
+            //if (!eval('field.value.match('+pattern+');')) {
                 //Выводим информацию об ошибке
                 this.showError(field, message);
                 //Вешаем проверку правильности введения данных на onblur

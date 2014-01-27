@@ -9,6 +9,8 @@
  * @copyright 2013 Energine
  */
 
+require_once('JSqueeze.php');
+
 /**
  * Основной функционал установки системы.
  *
@@ -190,7 +192,7 @@ final class Setup {
             'SELECT * FROM share_domains'
         );
 
-        if(!$res){
+        if (!$res) {
             throw new Exception('Удивительно.... Не с чем работать. А проверьте все ли хорошо с базой? не пустая ли? похоже некоторых нужных таблиц в ней нет.');
 
         }
@@ -328,11 +330,10 @@ final class Setup {
                 foreach ($result as $key => $val) {
                     $this->text($key . ': ' . implode(', ', $val['file']));
                 }
-            } elseif($mode='file') {
+            } elseif ($mode = 'file') {
                 $this->writeTranslations($this->fillTranslations($result), 'untranslated.csv');
-            }
-            else {
-                throw new Exception('Режим '.$mode.' не зарегистрирован');
+            } else {
+                throw new Exception('Режим ' . $mode . ' не зарегистрирован');
             }
         } else {
             $this->text('Все в порядке, все языковые константы переведены');
@@ -664,7 +665,7 @@ final class Setup {
                 if (!file_put_contents($dirName . $transFileName, implode("\r\n", $data))) {
                     throw new Exception('Произошла ошибка при записи в файл: ' . $dirName . $transFileName . '.');
                 }
-                $this->text('Записываем в файл ' . $dirName . $transFileName.' ('.sizeof($data).')');
+                $this->text('Записываем в файл ' . $dirName . $transFileName . ' (' . sizeof($data) . ')');
 
             }
         }
@@ -679,22 +680,22 @@ final class Setup {
      */
     private function createSitemapSegment() {
         $this->dbConnect->query('INSERT INTO share_sitemap(site_id,smap_layout,smap_content,smap_segment,smap_pid) '
-        . 'SELECT sso.site_id,\'' . $this->config['seo']['sitemapTemplate'] . '.layout.xml\','
-        . '\'' . $this->config['seo']['sitemapTemplate'] . '.content.xml\','
-        . '\'' . $this->config['seo']['sitemapSegment'] . '\','
-        . '(SELECT smap_id FROM share_sitemap ss2 WHERE ss2.site_id = sso.site_id AND smap_pid IS NULL LIMIT 0,1) '
-        . 'FROM share_sites sso '
-        . 'WHERE site_is_indexed AND site_is_active '
-        . 'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
-        . 'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
-        . 'WHERE ssm.smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\' AND ssi.site_id = sso.site_id) = 0');
+            . 'SELECT sso.site_id,\'' . $this->config['seo']['sitemapTemplate'] . '.layout.xml\','
+            . '\'' . $this->config['seo']['sitemapTemplate'] . '.content.xml\','
+            . '\'' . $this->config['seo']['sitemapSegment'] . '\','
+            . '(SELECT smap_id FROM share_sitemap ss2 WHERE ss2.site_id = sso.site_id AND smap_pid IS NULL LIMIT 0,1) '
+            . 'FROM share_sites sso '
+            . 'WHERE site_is_indexed AND site_is_active '
+            . 'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
+            . 'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
+            . 'WHERE ssm.smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\' AND ssi.site_id = sso.site_id) = 0');
         $smIdsInfo = $this->dbConnect->query('SELECT smap_id FROM share_sitemap WHERE '
-        . 'smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\'');
+            . 'smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\'');
         while ($smIdInfo = $smIdsInfo->fetch()) {
             $this->dbConnect->query('INSERT INTO share_access_level SELECT ' . $smIdInfo[0] . ',group_id,'
-            . '(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\') FROM `user_groups` ');
+                . '(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\') FROM `user_groups` ');
             $this->dbConnect->query('INSERT INTO share_sitemap_translation(smap_id,lang_id,smap_name,smap_is_disabled) '
-            . 'VALUES (' . $smIdInfo[0] . ',(SELECT lang_id FROM `share_languages` WHERE lang_default),\'Google sitemap\',0)');
+                . 'VALUES (' . $smIdInfo[0] . ',(SELECT lang_id FROM `share_languages` WHERE lang_default),\'Google sitemap\',0)');
         }
     }
 
@@ -908,7 +909,7 @@ final class Setup {
      * @throws Exception
      */
     private function linkCore($globPattern, $module, $level = 1) {
-
+        $JSMIn = new JSqueeze();
         $fileList = glob($globPattern);
 
         if (!empty($fileList)) {
@@ -924,9 +925,32 @@ final class Setup {
                         unlink($dest);
                     }
                     $this->text('Создаем симлинк ', $fo, ' --> ', $dest);
-                    if (!@symlink($fo, $dest)) {
+                    /*if (!@symlink($fo, $dest)) {
                         throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
-                    }
+
+                    }*/
+                     $pi = pathinfo($fo);
+
+                     if (isset($pi['extension']) && ($pi['extension'] == 'js')) {
+                         if (
+                             (strpos($pi['filename'], 'mootools') === false)
+                             &&
+                             (strpos($pi['dirname'], 'ckeditor') === false)
+                             &&
+                             (strpos($pi['dirname'], 'codemirror') === false)
+                             &&
+                             (strpos($pi['dirname'], 'FileAPI') === false)
+                         ) {
+                             file_put_contents($dest, $JSMIn->squeeze(file_get_contents($fo), true, false));
+                         } elseif (!@symlink($fo, $dest)) {
+                             throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+                         }
+
+                     } elseif (!@symlink($fo, $dest)) {
+                         throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+
+                     }
+
 
                 }
             }

@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class Grid;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -19,7 +19,7 @@ class Grid;
  *
  * @code
 class Grid;
-@endcode
+ * @endcode
  */
 class Grid extends DBDataSet {
     /**
@@ -151,7 +151,7 @@ class Grid extends DBDataSet {
         $this->linkExtraManagers($this->getTableName());
         foreach ($this->getDataDescription() as $fieldDescription) {
             if ($default = $fieldDescription->getPropertyValue('default')) {
-                if(!($f = $this->getData()->getFieldByName($fieldDescription->getName()))){
+                if (!($f = $this->getData()->getFieldByName($fieldDescription->getName()))) {
                     $f = new Field($fieldDescription->getName());
                     $this->getData()->addField($f);
                 }
@@ -302,7 +302,7 @@ class Grid extends DBDataSet {
             $b = new JSONCustomBuilder();
             $b->setProperties(array(
                 'data' => (is_int($result)) ? $result
-                    : (int)$_POST[$this->getTableName()][$this->getPK()],
+                        : (int)$_POST[$this->getTableName()][$this->getPK()],
                 'result' => true,
                 'mode' => (is_int($result)) ? 'insert' : 'update'
             ));
@@ -761,8 +761,7 @@ class Grid extends DBDataSet {
         if (isset($sp['id'])) {
             $this->request->shiftPath(2);
             $attachmentEditorParams['linkedID'] = $sp['id'];
-        }
-        else {
+        } else {
             $this->request->shiftPath(1);
         }
 
@@ -1078,7 +1077,7 @@ class Grid extends DBDataSet {
             $tableName = key($_POST['filter']);
             $fieldName = key($_POST['filter'][$tableName]);
             $values = $_POST['filter'][$tableName][$fieldName];
-
+            //inspect(in_array($this->getDataDescription()->getFieldDescriptionByName($fieldName)->getType(), array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME)));
             if (
                 $this->dbh->tableExists($tableName) &&
                 ($tableInfo = $this->dbh->getColumnsInfo($tableName)) &&
@@ -1110,22 +1109,31 @@ class Grid extends DBDataSet {
                     $this->addFilterCondition(' FALSE');
                 }
             } else {
-                if (in_array($condition, array('like', 'notlike')) && in_array($this->getDataDescription($fieldName), array('date', 'datetime', 'time'))) {
+                $fieldType = $this->getDataDescription()->getFieldDescriptionByName($fieldName)->getType();
+
+                if (in_array($condition, array('like', 'notlike')) && in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME))) {
                     if ($condition == 'like') {
                         $condition = '=';
                     } else {
                         $condition = '!=';
                     }
                 }
-                $tableName = ($tableName) ? $tableName . '.' : '';
+
+                $fieldName = (($tableName) ? $tableName . '.' : '') . $fieldName;
+                if ($fieldType == FieldDescription::FIELD_TYPE_DATETIME) {
+                    $fieldName = 'DATE(' . $fieldName . ')';
+                }
+                if (in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE))) {
+                    $conditionPatterns['='] = '= DATE(\'%s\')';
+                }
                 $this->addFilterCondition(
-                    $tableName . $fieldName . ' ' .
+                    $fieldName . ' ' .
                     call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
                     ' '
                 );
             }
         }
-        //inspect($this->getFilter());
+       //inspect($this->getFilter());
     }
 
     /**
@@ -1202,14 +1210,13 @@ class Grid extends DBDataSet {
         try {
             if (!isset($_POST['value'])) {
                 throw new SystemException('ERR_NO_DATA', SystemException::ERR_CRITICAL);
-            }
-            else {
+            } else {
 
                 $tags = TagManager::getTagStartedWith($_POST['value'], 10);
                 $result['result'] = true;
 
-                if(is_array($tags) && !empty($tags)){
-                    foreach($tags as $tag){
+                if (is_array($tags) && !empty($tags)) {
+                    foreach ($tags as $tag) {
                         $result['data'][] = array(
                             'key' => $tag,
                             'value' => $tag
@@ -1217,14 +1224,11 @@ class Grid extends DBDataSet {
                     }
                 }
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $result = array(
                 'result' => false,
                 'data' => false,
-                'errors' => array(
-
-                )
+                'errors' => array()
             );
         }
 

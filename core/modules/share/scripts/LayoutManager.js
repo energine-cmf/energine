@@ -212,8 +212,8 @@ var LayoutManager = new Class(/** @lends LayoutManager# */{
                         id: 'text2',
                         title: result.data.content.name
                             + ((result.data.content.modified)
-                                ? ' (' + result.data.content.modified + ')'
-                                : ''),
+                            ? ' (' + result.data.content.modified + ')'
+                            : ''),
                         tooltip: result.data.content.file}),
                     new Toolbar.Separator({id: 'sep1'}),
                     new Toolbar.Select({
@@ -245,70 +245,100 @@ var LayoutManager = new Class(/** @lends LayoutManager# */{
      * @public
      */
     applyChanges: function () {
-        var jsonRequest = new Request.JSON({
-            url: LayoutManager.singlePath,
-            method: 'post',
-            evalScripts: false
-        });
-
-        var toolbarValue = this.toolbar.getElement().getElement('select').get('value');
-        switch (toolbarValue) {
-            case 'revert':
-                jsonRequest.url += 'widgets/revert-template/';
-                break;
-            case 'reset':
-                jsonRequest.url += 'reset-templates/';
-                break;
-            case 'saveTemplate':
-                jsonRequest.url += 'widgets/save-template/';
-                break;
-            case 'saveNewTemplate':
-                jsonRequest.url += 'widgets/save-new-template/';
-                break;
-            default:
-                jsonRequest.url += 'widgets/save-content/';
-        }
-        jsonRequest.url += ((Energine.forceJSON) ? '?json' : '');
-
-        switch (toolbarValue) {
-            case 'revert':
-            case 'reset':
-                break;
-            case 'saveTemplate':
-            case 'saveNewTemplate':
-            default:
-                jsonRequest.data.xml = this.xml.asXMLString();
-        }
-
-        switch (toolbarValue) {
-            case 'revert' :
-                break;
-            default :
-                jsonRequest.addEvent('success', function(response) {
-                    if (response.result) {
-                        document.location = document.location.href;
+        var fRevert = function () {
+                new Request.JSON({
+                    url: LayoutManager.singlePath + 'widgets/revert-template/' + ((Energine.forceJSON) ? '?json' : ''),
+                    method: 'post',
+                    evalScripts: false,
+                    onSuccess: function (response) {
+                        if (response.result) {
+                            //document.location = document.location.href;
+                        }
                     }
-                })
-        }
-
-        switch (toolbarValue) {
-            case 'saveNewTemplate':
+                }).send();
+            },
+            fReset = function () {
+                new Request.JSON({
+                    url: LayoutManager.singlePath + 'reset-templates/' + ((Energine.forceJSON) ? '?json' : ''),
+                    method: 'post',
+                    evalScripts: false,
+                    onSuccess: function (response) {
+                        if (response.result) {
+                            document.location = document.location.href;
+                        }
+                    }
+                }).send();
+            },
+            fSaveTemplate = function () {
+                new Request.JSON({
+                    url: LayoutManager.singlePath + 'widgets/save-template/' + ((Energine.forceJSON) ? '?json' : ''),
+                    method: 'post',
+                    evalScripts: false,
+                    data: { 'xml': this.xml.asXMLString() },
+                    onSuccess: function (response) {
+                        if (response.result) {
+                            document.location = document.location.href;
+                        }
+                    }
+                }).send();
+            },
+            fSaveNewTemplate = function () {
                 ModalBox.open({
                     url: LayoutManager.singlePath + 'widgets/show-new-template-form/',
                     onClose: function (result) {
                         if (!result) {
                             return;
                         }
-
-                        jsonRequest.data.title = result;
-                        jsonRequest.send();
-                    }
+                        new Request.JSON({
+                            url: LayoutManager.singlePath + 'widgets/save-new-template/' + ((Energine.forceJSON) ? '?json' : ''),
+                            method: 'post',
+                            evalScripts: false,
+                            data: {
+                                'xml': this.xml.asXMLString(),
+                                'title': result
+                            },
+                            onSuccess: function (response) {
+                                if (response.result) {
+                                    document.location = document.location.href;
+                                }
+                            }
+                        }).send();
+                    }.bind(this)
                 });
+            },
+            fSave = function () {
+                new Request.JSON({
+                    url: LayoutManager.singlePath + 'widgets/save-content/' + ((Energine.forceJSON) ? '?json' : ''),
+                    method: 'post',
+                    evalScripts: false,
+                    data: { 'xml': this.xml.asXMLString() },
+                    onSuccess: function (response) {
+                        if (response.result) {
+                            document.location = document.location.href;
+                        }
+                    }
+                }).send();
+            };
+
+        // todo: Why not to merge the above Request.JSONs to the below switch?
+        switch (this.toolbar.getElement().getElement('select').get('value')) {
+            case 'revert':
+                fRevert.apply(this);
+                break;
+            case 'reset':
+                fReset.apply(this);
+                break;
+            case 'saveTemplate':
+                fSaveTemplate.apply(this);
+                break;
+            case 'saveNewTemplate':
+                fSaveNewTemplate.apply(this);
                 break;
             default:
-                jsonRequest.send();
+                fSave.apply(this);
         }
     },
+
 
     /**
      * Reset changes.
@@ -442,7 +472,7 @@ LayoutManager.Column = new Class(/** @lends LayoutManager.Column# */{
         this.widgets[widget.name] = widget;
 //        this.widgets.set(injectedWidget.name, injectedWidget, this);
 
-        if (location != 'before' && location!= 'after') {
+        if (location != 'before' && location != 'after') {
             location = location || 'before'
         }
 
@@ -516,11 +546,11 @@ LayoutManager.DummyWidget = new Class(/** @lends LayoutManager.DummyWidget# */{
     _buildToolbar: function () {
         var tb = new Toolbar('widgetToolbar_' + this.column.name);
         tb.appendControl(new Toolbar.Button({
-                id: 'add',
-                icon: 'images/toolbar/add.gif',
-                title: 'Add',
-                action: 'addWidget'
-            }));
+            id: 'add',
+            icon: 'images/toolbar/add.gif',
+            title: 'Add',
+            action: 'addWidget'
+        }));
         tb.getElement().inject(this.element, 'top');
         tb.bindTo(this);
 
@@ -671,7 +701,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
          */
         this.container = new Element('div', {
             'class': 'e-lm-widget'/*,
-            styles:{'position': 'relative'}*/
+             styles:{'position': 'relative'}*/
         });
 
         (this.element.getParent())
@@ -711,9 +741,8 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
             && this.component['params']
             && Object.getLength(this.component.params)
             && Object.some(this.component.params, function (obj) {
-                return (obj.xml.getProperty('data-type') != 'hidden');
-            }))
-        {
+            return (obj.xml.getProperty('data-type') != 'hidden');
+        })) {
             tb.appendControl(new Toolbar.Button({
                 id: 'edit',
                 icon: 'images/toolbar/edit.gif',
@@ -977,7 +1006,7 @@ LayoutManager.Widget.DragBehavior = new Class(/** @lends LayoutManager.Widget.Dr
 
             onDrag: function (el, evt) {
                 var pos = this.widget.container.getPosition(LayoutManager.mFrame),
-                    //Центр блока
+                //Центр блока
                     cx = (pos.x + (this.size.x) / 2).toInt(),
                 /* координата Y центра блока сделана равной pos.y + 25 (число 25 найдено методом подбора, при этом блоки ведут себя наиболее ожидаемо) */
                     cy = (pos.y + this.widget.toolbar.size.y).toInt(),
@@ -1228,8 +1257,8 @@ var PseudoXML = /** @lends PseudoXML */{
                         + attr_name.replace('data-', '')
                         + '="'
                         + el.getProperty(attr_name)
-                            .replace(/"/g, '\\"')
-                            .replace(/[\r\n]/g, ' ')
+                        .replace(/"/g, '\\"')
+                        .replace(/[\r\n]/g, ' ')
                         + '"';
                 }
             }
@@ -1242,11 +1271,11 @@ var PseudoXML = /** @lends PseudoXML */{
             }.bind(this));
         } else {
             result += el.get('html');
-                //.replace(/&/g, '&amp;')
-                //.replace(/</g, '&lt;')
-                //.replace(/>/g, '&gt;')
-                //.replace(/"/g, '&quot;')
-                //.replace(/'/g, '&#039;');
+            //.replace(/&/g, '&amp;')
+            //.replace(/</g, '&lt;')
+            //.replace(/>/g, '&gt;')
+            //.replace(/"/g, '&quot;')
+            //.replace(/'/g, '&#039;');
         }
         result += '</' + el.getProperty('xmltag') + '>';
 

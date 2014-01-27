@@ -318,7 +318,7 @@
 
     <!-- Для полей даты как части стандартной формы навешиваение DatePicker реализуется в js -->
 
-    <!-- поле для даты в гридах (datetime) -->
+    <!-- поле для даты в гридах (datetime)  -->
     <xsl:template match="field[@type='datetime'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_input">
         <input class="text inp_datetime">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>

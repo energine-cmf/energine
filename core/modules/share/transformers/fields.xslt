@@ -732,7 +732,7 @@
             </input>
             <input type="text" id="{generate-id(.)}_name" value="{@upl_path}" readonly="readonly" class="text inp_string" style="height: 18px; width: 472px;"/>
             <div class="appended_block">
-                <button type="button" style="width:48px;" class="attachment_selector" upl_name="{generate-id(.)}_name" upl_id="{generate-id(.)}_id" field="{@name}">...</button>
+                <button type="button" style="width:22px;" class="attachment_selector" upl_name="{generate-id(.)}_name" upl_id="{generate-id(.)}_id" field="{@name}">...</button>
             </div>
         </div>
     </xsl:template>

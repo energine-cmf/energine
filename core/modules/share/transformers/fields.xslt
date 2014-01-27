@@ -334,13 +334,17 @@
 
     <!-- поле для выбора родительского раздела в гридах (smap) -->
     <xsl:template match="field[@type='smap' and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]" mode="field_input">
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">hidden</xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
-        </input>
-        <input type="text" id="{generate-id(.)}_name" value="{@smap_name}" readonly="readonly" class="text inp_string" style="width:200px;"/>
-        <button type="button" style="width:48px;" class="smap_selector" smap_name="{generate-id(.)}_name" smap_id="{generate-id(.)}_id" field="{@name}">...</button>
+        <div class="with_append">
+            <input>
+                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+                <xsl:attribute name="type">hidden</xsl:attribute>
+                <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
+            </input>
+            <input type="text" id="{generate-id(.)}_name" value="{@smap_name}" readonly="readonly" class="text inp_string" style="width:481px;height:18px;"/>
+            <div class="appended_block">
+                <button type="button" style="height:30px;padding:0 12px;-moz-box-sizing:content-box;" class="smap_selector" smap_name="{generate-id(.)}_name" smap_id="{generate-id(.)}_id" field="{@name}">...</button>
+            </div>
+        </div>
     </xsl:template>
 
     <!-- поле типа thumb используется только в FileRepository -->

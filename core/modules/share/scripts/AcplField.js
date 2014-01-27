@@ -469,6 +469,7 @@ var AcplField = new Class(/** @lends AcplField# */{
             this.button = new Element('button', {
                 type: 'button',
                 link: 'tags',
+                style: 'height:18px;',
                 onclick: this.element.get('component_id') + '.openTagEditor(this);',
                 html: '...'
             }).inject(this.container);

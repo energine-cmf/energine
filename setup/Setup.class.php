@@ -714,7 +714,7 @@ final class Setup {
      */
     private function linkerAction() {
 
-        $this->title('Создание символических ссылок');
+        $this->title('Связывание данных модулей ');
 
         foreach ($this->htdocsDirs as $dir) {
             $dir = HTDOCS_DIR . DIRECTORY_SEPARATOR . $dir;
@@ -756,18 +756,17 @@ final class Setup {
         foreach ($this->htdocsDirs as $dir) {
 
             $this->text(PHP_EOL . 'Обработка ' . $dir . ':');
-
             //сначала проходимся по модулям ядра
             foreach (array_reverse($this->config['modules']) as $module => $module_path) {
                 $this->linkCore(
-                    self::MODE_SYMLINK,
+                    ($this->config['site']['debug'])?self::MODE_SYMLINK:self::MODE_COPY,
                     implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES, $module, $dir, '*')),
                     implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir)),
                     sizeof(explode(DIRECTORY_SEPARATOR, $dir)));
 
             }
             $this->linkSite(
-                self::MODE_SYMLINK,
+                ($this->config['site']['debug'])?self::MODE_SYMLINK:self::MODE_COPY,
                 implode(DIRECTORY_SEPARATOR, array(SITE_DIR, MODULES, '*', $dir, '*')),
                 implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir))
             );
@@ -1131,30 +1130,4 @@ final class Setup {
 
         $this->writeScriptMap($result);
     }
-
-    private function minifyAction() {
-        foreach ($this->htdocsDirs as $dir) {
-
-            if (strpos($dir, 'scripts') !== false) {
-                $this->text(PHP_EOL . 'Минификация ' . $dir . ':');
-
-                //сначала проходимся по модулям ядра
-                foreach (array_reverse($this->config['modules']) as $module => $module_path) {
-                    $this->linkCore(
-                        self::MODE_COPY,
-                        implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES, $module, $dir, '*')),
-                        implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir)),
-                        sizeof(explode(DIRECTORY_SEPARATOR, $dir)));
-
-                }
-                $this->linkSite(
-                    self::MODE_COPY,
-                    implode(DIRECTORY_SEPARATOR, array(SITE_DIR, MODULES, '*', $dir, '*')),
-                    implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir))
-                );
-            }
-        }
-    }
-
-
 }

@@ -170,7 +170,7 @@ class DBDataSet extends DataSet {
     protected function getDataLanguage() {
         $result = false;
         if ($this->getParam('onlyCurrentLang')) {
-            $result = $this->document->getLang();
+            $result = E()->getLanguage()->getCurrent();
         }
         return $result;
     }
@@ -745,7 +745,7 @@ class DBDataSet extends DataSet {
      */
 
     protected function getFKData($fkTableName, $fkKeyName) {
-        return $this->dbh->getForeignKeyData($fkTableName, $fkKeyName, $this->document->getLang());
+        return $this->dbh->getForeignKeyData($fkTableName, $fkKeyName, E()->getLanguage()->getCurrent());
     }
 
     /**
@@ -865,7 +865,7 @@ class DBDataSet extends DataSet {
         $result = '';
         if ($this->getParam('editable') && isset($_POST['ID']) && isset($_POST['num']) && isset($_POST['data'])) {
             $result = DataSet::cleanupHTML($_POST['data']);
-            $langID = $this->document->getLang();
+            $langID = E()->getLanguage()->getCurrent();
             $entityId = (int)$_POST['ID'];
             $field = $_POST['num'];
             $this->dbh->modify(QAL::UPDATE, $this->getTranslationTableName(), array($field => $result), array('lang_id' => $langID, $this->getPK() => $entityId));

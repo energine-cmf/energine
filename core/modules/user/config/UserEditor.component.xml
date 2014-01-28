@@ -17,6 +17,8 @@
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
 				<control id="sep1" type="separator"></control>
 				<control id="activate" title="BTN_ACTIVATE" type="button" onclick="activate"/>
+				<control id="sep2" type="separator"></control>
+                <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</state>
 		<state name="add" >

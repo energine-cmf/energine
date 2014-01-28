@@ -18,9 +18,14 @@ require_once('JSqueeze.php');
  * @subpackage setup
  * @author dr.Pavka
  */
-final class Setup
-{
+final class Setup {
+    /**
+     * Symlink mode  - for development
+     */
     const MODE_SYMLINK = 'symlink';
+    /**
+     * Copy minified mode - for production
+     */
     const MODE_COPY = 'copy';
 
     /**
@@ -73,8 +78,7 @@ final class Setup
      *
      * @param bool $consoleRun Вид вызова сценария установки
      */
-    public function __construct($consoleRun)
-    {
+    public function __construct($consoleRun) {
         header('Content-Type: text/plain; charset=' . CHARSET);
         $this->title('Средство настройки CMF Energine');
         $this->isFromConsole = $consoleRun;
@@ -91,8 +95,7 @@ final class Setup
      * @return string
      * @throws Exception
      */
-    private function filterInput($var)
-    {
+    private function filterInput($var) {
         if (preg_match('/^[\~\-0-9a-zA-Z\/\.\_]+$/i', $var))
             return $var;
         else
@@ -104,8 +107,7 @@ final class Setup
      *
      * @return string
      */
-    private function getSiteHost()
-    {
+    private function getSiteHost() {
         if (!isset($_SERVER['HTTP_HOST'])
             || $_SERVER['HTTP_HOST'] == ''
         )
@@ -120,8 +122,7 @@ final class Setup
      *
      * @return string
      */
-    private function getSiteRoot()
-    {
+    private function getSiteRoot() {
         $siteRoot = $this->filterInput($_SERVER['PHP_SELF']);
         $siteRoot = str_replace('index.php', '', $siteRoot);
         return $siteRoot;
@@ -134,8 +135,7 @@ final class Setup
      *
      * @throws Exception
      */
-    public function checkEnvironment()
-    {
+    public function checkEnvironment() {
 
         $this->title('Проверка системного окружения');
 
@@ -192,8 +192,7 @@ final class Setup
      * Обновляет Host и Root сайта в таблице share_sites.
      *
      */
-    private function updateSitesTable()
-    {
+    private function updateSitesTable() {
         $this->text('Обновляем таблицу share_sites...');
 
         // получаем все домены из таблицы доменов
@@ -233,8 +232,7 @@ final class Setup
      *
      * @throws Exception
      */
-    private function checkDBConnection()
-    {
+    private function checkDBConnection() {
 
         $this->text('Проверяем коннект к БД');
 
@@ -290,8 +288,7 @@ final class Setup
      * @param array $arguments
      * @throws Exception
      */
-    public function execute($action, $arguments)
-    {
+    public function execute($action, $arguments) {
         if (!method_exists($this, $methodName = $action . 'Action')) {
             throw new Exception('Подозрительно все это... Либо программисты че то не учли, либо.... произошло непоправимое.');
         }
@@ -304,8 +301,7 @@ final class Setup
      * @todo: определится с именем папки
      *
      */
-    private function clearCacheAction()
-    {
+    private function clearCacheAction() {
         $this->title('Очищаем кеш');
         $this->cleaner(implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, 'cache')));
     }
@@ -315,8 +311,7 @@ final class Setup
      * проверку соединения с БД и обновление таблицы share_sites.
      *
      */
-    private function installAction()
-    {
+    private function installAction() {
         $this->checkDBConnection();
         $this->updateSitesTable();
         $this->linkerAction();
@@ -329,8 +324,7 @@ final class Setup
      *
      * @param string $mode режим выгрузки
      */
-    private function untranslatedAction($mode = 'show')
-    {
+    private function untranslatedAction($mode = 'show') {
         $this->title('Поиск непереведенных констант');
         $this->checkDBConnection();
 
@@ -359,8 +353,7 @@ final class Setup
     /**
      * Выгрузка констант переводов в файлы
      */
-    private function exportTransAction()
-    {
+    private function exportTransAction() {
         $this->title('Экспорт констант в файлы');
         $this->checkDBConnection();
         $all = array_merge(
@@ -377,8 +370,7 @@ final class Setup
      * @param $path
      * @throws Exception
      */
-    private function loadTransFileAction($path, $module = 'share')
-    {
+    private function loadTransFileAction($path, $module = 'share') {
         $this->title('Загрузка файла с переводами: ' . $path . ' в модуль ' . $module);
         if (!file_exists($path)) {
             throw new Exception('Не видать файла:' . $path);
@@ -446,8 +438,7 @@ final class Setup
      * @param $transData
      * @return mixed
      */
-    private function fillTranslations($transData)
-    {
+    private function fillTranslations($transData) {
         array_walk($transData,
             function (&$transInfo, $transConst, $findTransRes) {
                 if ($findTransRes->execute(array($transConst))) {
@@ -468,8 +459,7 @@ final class Setup
      * Поиск констант в xml файлах
      * @return array
      */
-    private function getTransXmlCalls()
-    {
+    private function getTransXmlCalls() {
         $output = array();
 
         $result = false;
@@ -536,8 +526,7 @@ final class Setup
      * @param $data
      * @return array
      */
-    private function getUntranslated($data)
-    {
+    private function getUntranslated($data) {
         $result = array();
         $dbRes = $this->dbConnect->prepare('SELECT ltag_id FROM share_lang_tags WHERE ltag_name=?');
 
@@ -559,8 +548,7 @@ final class Setup
      * Поиск констант в коде
      * @return array
      */
-    private function getTransEngineCalls()
-    {
+    private function getTransEngineCalls() {
         $output = array();
         $result = false;
 
@@ -643,8 +631,7 @@ final class Setup
      * @param string $transFileName
      * @throws Exception
      */
-    private function writeTranslations($data, $transFileName = 'translations.csv')
-    {
+    private function writeTranslations($data, $transFileName = 'translations.csv') {
         $langRes = $this->dbConnect->query('SELECT lang_id, lang_abbr FROM share_languages');
         while ($row = $langRes->fetch(PDO::FETCH_ASSOC)) {
             $langData[$row['lang_id']] = $row['lang_abbr'];
@@ -699,8 +686,7 @@ final class Setup
      * пользователей. Имя сегмента следует указать в конфиге.
      *
      */
-    private function createSitemapSegment()
-    {
+    private function createSitemapSegment() {
         $this->dbConnect->query('INSERT INTO share_sitemap(site_id,smap_layout,smap_content,smap_segment,smap_pid) '
             . 'SELECT sso.site_id,\'' . $this->config['seo']['sitemapTemplate'] . '.layout.xml\','
             . '\'' . $this->config['seo']['sitemapTemplate'] . '.content.xml\','
@@ -726,8 +712,7 @@ final class Setup
      *
      * @throws Exception
      */
-    private function linkerAction()
-    {
+    private function linkerAction() {
 
         $this->title('Создание символических ссылок');
 
@@ -782,6 +767,7 @@ final class Setup
 
             }
             $this->linkSite(
+                self::MODE_SYMLINK,
                 implode(DIRECTORY_SEPARATOR, array(SITE_DIR, MODULES, '*', $dir, '*')),
                 implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir))
             );
@@ -790,8 +776,7 @@ final class Setup
         $this->text('Символические ссылки расставлены');
     }
 
-    private function iterateUploads($directory, $PID = null)
-    {
+    private function iterateUploads($directory, $PID = null) {
 
         //static $counter = 0;
 
@@ -869,8 +854,7 @@ final class Setup
         }
     }
 
-    private function syncUploadsAction($uploadsPath = self::UPLOADS_PATH)
-    {
+    private function syncUploadsAction($uploadsPath = self::UPLOADS_PATH) {
         $this->checkDBConnection();
         $this->title('Синхронизация папки с загрузками');
         $this->dbConnect->beginTransaction();
@@ -902,8 +886,7 @@ final class Setup
      *
      * @param string $dir путь к папке
      */
-    private function cleaner($dir)
-    {
+    private function cleaner($dir) {
         if (is_dir($dir)) {
             if ($dh = opendir($dir)) {
                 while ((($file = readdir($dh)) !== false)) {
@@ -935,16 +918,18 @@ final class Setup
      * @param int $level финт ушами для формирования относительных путей для симлинков, при рекурсии инкрементируется
      * @throws Exception
      */
-    private function linkCore($mode, $globPattern, $module, $level = 1)
-    {
+    private function linkCore($mode, $globPattern, $module, $level = 1) {
         $JSMIn = new JSqueeze();
         $fileList = glob($globPattern);
 
         if (!empty($fileList)) {
             foreach ($fileList as $fo) {
                 if (is_dir($fo)) {
-                    mkdir($dir = $module . DIRECTORY_SEPARATOR . basename($fo));
-                    $this->text('Создаем директорию ', $dir);
+                    $dir = $module . DIRECTORY_SEPARATOR . basename($fo);
+                    if (!file_exists($dir)) {
+                        mkdir($dir);
+                        $this->text('Создаем директорию ', $dir);
+                    }
                     $this->linkCore($mode, $fo . DIRECTORY_SEPARATOR . '*', $dir, $level + 1);
                 } else {
                     //Если одним из низших по приоритету модулей был уже создан симлинк
@@ -973,15 +958,21 @@ final class Setup
                                     &&
                                     (strpos($pi['dirname'], 'FileAPI') === false)
                                 ) {
-                                    $this->text('Минифицируем и Копируем ', $fo, ' --> ', $dest);
+                                    $this->text('Минифицируем и копируем ', $fo, ' --> ', $dest);
                                     file_put_contents($dest, $JSMIn->squeeze(file_get_contents($fo), true, false));
-                                } elseif (!@symlink($fo, $dest)) {
-                                    throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+                                } else {
+                                    $this->text('Создаем символическую ссылку ', $fo, ' --> ', $dest);
+                                    if (!@symlink($fo, $dest)) {
+                                        throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+                                    }
                                 }
 
-                            } elseif (!@symlink($fo, $dest)) {
-                                throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+                            } else {
+                                $this->text('Создаем символическую ссылку ', $fo, ' --> ', $dest);
+                                if (!@symlink($fo, $dest)) {
+                                    throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
 
+                                }
                             }
                             break;
                     }
@@ -996,8 +987,8 @@ final class Setup
      * @param string $globPattern паттерн для выбора файлов
      * @param string $dir директория, в которой создавать симлинки
      */
-    private function linkSite($globPattern, $dir)
-    {
+    private function linkSite($mode, $globPattern, $dir) {
+        $JSMin = new JSqueeze();
 
         $fileList = glob($globPattern);
         if (!empty($fileList)) {
@@ -1013,13 +1004,29 @@ final class Setup
 
                 $srcFile = $fo;
                 $linkPath = implode(DIRECTORY_SEPARATOR, array($dir, $module, basename($fo_stripped)));
-                $this->text('Создаем симлинк ', $srcFile, ' --> ', $linkPath);
 
-                if (file_exists($linkPath)) {
-                    unlink($linkPath);
+                switch ($mode) {
+                    case self::MODE_SYMLINK:
+                        $this->text('Создаем симлинк ', $srcFile, ' --> ', $linkPath);
+                        if (!@symlink($srcFile, $linkPath)) {
+                            throw new Exception('Не удалось создать символическую ссылку с ' . $srcFile . ' на ' . $linkPath);
+                        }
+                        break;
+                    case self::MODE_COPY:
+                        $pi = pathinfo($srcFile);
+
+                        if (isset($pi['extension']) && ($pi['extension'] == 'js')) {
+                            $this->text('Минифицируем и копируем ', $srcFile, ' --> ', $linkPath);
+                            file_put_contents($linkPath, $JSMin->squeeze(file_get_contents($srcFile), true, false));
+                        } else {
+                            $this->text('Создаем символическую ссылку ', $srcFile, ' --> ', $linkPath);
+                            if (!@symlink($srcFile, $linkPath)) {
+                                throw new Exception('Не удалось создать символическую ссылку с ' . $srcFile . ' на ' . $linkPath);
+
+                            }
+                        }
+                        break;
                 }
-
-                @symlink($srcFile, $linkPath);
             }
         }
     }
@@ -1029,8 +1036,7 @@ final class Setup
      *
      * @param string $text
      */
-    private function title($text)
-    {
+    private function title($text) {
         echo str_repeat('*', 80), PHP_EOL, $text, PHP_EOL, PHP_EOL;
     }
 
@@ -1039,8 +1045,7 @@ final class Setup
      *
      * @param string
      */
-    private function text()
-    {
+    private function text() {
         foreach (func_get_args() as $text) {
             echo $text;
         }
@@ -1054,8 +1059,7 @@ final class Setup
      * @param string $directory
      * @param array $result
      */
-    private function iterateScripts($directory, &$result)
-    {
+    private function iterateScripts($directory, &$result) {
 
         $iterator = new DirectoryIterator($directory);
 
@@ -1079,8 +1083,7 @@ final class Setup
      * @param string $script полное имя javascript-файла
      * @return array массив зависимостей
      */
-    private function parseScriptLoader($script)
-    {
+    private function parseScriptLoader($script) {
         $result = array();
 
         $data = file_get_contents($script);
@@ -1101,16 +1104,14 @@ final class Setup
      *
      * @param array $deps
      */
-    private function writeScriptMap($deps)
-    {
+    private function writeScriptMap($deps) {
         file_put_contents(HTDOCS_DIR . '/system.jsmap.php', '<?php return ' . var_export($deps, true) . ';');
     }
 
     /**
      * Создает файл system.jsmap.php с массивом зависимостей для JS классов
      */
-    private function scriptMapAction()
-    {
+    private function scriptMapAction() {
 
         $this->title("Создание карты зависимости Javascript классов");
 
@@ -1131,8 +1132,7 @@ final class Setup
         $this->writeScriptMap($result);
     }
 
-    private function minifyAction()
-    {
+    private function minifyAction() {
         foreach ($this->htdocsDirs as $dir) {
 
             if (strpos($dir, 'scripts') !== false) {
@@ -1148,6 +1148,7 @@ final class Setup
 
                 }
                 $this->linkSite(
+                    self::MODE_COPY,
                     implode(DIRECTORY_SEPARATOR, array(SITE_DIR, MODULES, '*', $dir, '*')),
                     implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir))
                 );

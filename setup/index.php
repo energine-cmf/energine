@@ -20,7 +20,8 @@ $acceptableActions = array(
     'scriptMap',
     'loadTransFile',
     'exportTrans',
-    'untranslated'
+    'untranslated',
+    'minify',
 );
 
 //вариант запуска приложения
@@ -46,7 +47,7 @@ else {
 $additionalArgs  = array();
 //если нам в параметрах пришло что то очень похожее на допустимое действие
 //то считаем, что это оно и есть
-if (!empty($args) && in_array($args[0], $acceptableActions)) {
+if (!empty($args)) {
     list($action) = $args;
 
 

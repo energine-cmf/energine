@@ -9,6 +9,8 @@
  * @copyright 2013 Energine
  */
 
+require_once('JSqueeze.php');
+
 /**
  * Основной функционал установки системы.
  *
@@ -17,6 +19,14 @@
  * @author dr.Pavka
  */
 final class Setup {
+    /**
+     * Symlink mode  - for development
+     */
+    const MODE_SYMLINK = 'symlink';
+    /**
+     * Copy minified mode - for production
+     */
+    const MODE_COPY = 'copy';
 
     /**
      * Путь к папке загрузок
@@ -190,7 +200,7 @@ final class Setup {
             'SELECT * FROM share_domains'
         );
 
-        if(!$res){
+        if (!$res) {
             throw new Exception('Удивительно.... Не с чем работать. А проверьте все ли хорошо с базой? не пустая ли? похоже некоторых нужных таблиц в ней нет.');
 
         }
@@ -328,11 +338,10 @@ final class Setup {
                 foreach ($result as $key => $val) {
                     $this->text($key . ': ' . implode(', ', $val['file']));
                 }
-            } elseif($mode='file') {
+            } elseif ($mode = 'file') {
                 $this->writeTranslations($this->fillTranslations($result), 'untranslated.csv');
-            }
-            else {
-                throw new Exception('Режим '.$mode.' не зарегистрирован');
+            } else {
+                throw new Exception('Режим ' . $mode . ' не зарегистрирован');
             }
         } else {
             $this->text('Все в порядке, все языковые константы переведены');
@@ -664,7 +673,7 @@ final class Setup {
                 if (!file_put_contents($dirName . $transFileName, implode("\r\n", $data))) {
                     throw new Exception('Произошла ошибка при записи в файл: ' . $dirName . $transFileName . '.');
                 }
-                $this->text('Записываем в файл ' . $dirName . $transFileName.' ('.sizeof($data).')');
+                $this->text('Записываем в файл ' . $dirName . $transFileName . ' (' . sizeof($data) . ')');
 
             }
         }
@@ -679,22 +688,22 @@ final class Setup {
      */
     private function createSitemapSegment() {
         $this->dbConnect->query('INSERT INTO share_sitemap(site_id,smap_layout,smap_content,smap_segment,smap_pid) '
-        . 'SELECT sso.site_id,\'' . $this->config['seo']['sitemapTemplate'] . '.layout.xml\','
-        . '\'' . $this->config['seo']['sitemapTemplate'] . '.content.xml\','
-        . '\'' . $this->config['seo']['sitemapSegment'] . '\','
-        . '(SELECT smap_id FROM share_sitemap ss2 WHERE ss2.site_id = sso.site_id AND smap_pid IS NULL LIMIT 0,1) '
-        . 'FROM share_sites sso '
-        . 'WHERE site_is_indexed AND site_is_active '
-        . 'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
-        . 'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
-        . 'WHERE ssm.smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\' AND ssi.site_id = sso.site_id) = 0');
+            . 'SELECT sso.site_id,\'' . $this->config['seo']['sitemapTemplate'] . '.layout.xml\','
+            . '\'' . $this->config['seo']['sitemapTemplate'] . '.content.xml\','
+            . '\'' . $this->config['seo']['sitemapSegment'] . '\','
+            . '(SELECT smap_id FROM share_sitemap ss2 WHERE ss2.site_id = sso.site_id AND smap_pid IS NULL LIMIT 0,1) '
+            . 'FROM share_sites sso '
+            . 'WHERE site_is_indexed AND site_is_active '
+            . 'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
+            . 'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
+            . 'WHERE ssm.smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\' AND ssi.site_id = sso.site_id) = 0');
         $smIdsInfo = $this->dbConnect->query('SELECT smap_id FROM share_sitemap WHERE '
-        . 'smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\'');
+            . 'smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\'');
         while ($smIdInfo = $smIdsInfo->fetch()) {
             $this->dbConnect->query('INSERT INTO share_access_level SELECT ' . $smIdInfo[0] . ',group_id,'
-            . '(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\') FROM `user_groups` ');
+                . '(SELECT right_id FROM `user_group_rights` WHERE right_const = \'ACCESS_READ\') FROM `user_groups` ');
             $this->dbConnect->query('INSERT INTO share_sitemap_translation(smap_id,lang_id,smap_name,smap_is_disabled) '
-            . 'VALUES (' . $smIdInfo[0] . ',(SELECT lang_id FROM `share_languages` WHERE lang_default),\'Google sitemap\',0)');
+                . 'VALUES (' . $smIdInfo[0] . ',(SELECT lang_id FROM `share_languages` WHERE lang_default),\'Google sitemap\',0)');
         }
     }
 
@@ -705,7 +714,7 @@ final class Setup {
      */
     private function linkerAction() {
 
-        $this->title('Создание символических ссылок');
+        $this->title('Связывание данных модулей ');
 
         foreach ($this->htdocsDirs as $dir) {
             $dir = HTDOCS_DIR . DIRECTORY_SEPARATOR . $dir;
@@ -747,16 +756,17 @@ final class Setup {
         foreach ($this->htdocsDirs as $dir) {
 
             $this->text(PHP_EOL . 'Обработка ' . $dir . ':');
-
             //сначала проходимся по модулям ядра
             foreach (array_reverse($this->config['modules']) as $module => $module_path) {
                 $this->linkCore(
+                    ($this->config['site']['debug'])?self::MODE_SYMLINK:self::MODE_COPY,
                     implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES, $module, $dir, '*')),
                     implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir)),
                     sizeof(explode(DIRECTORY_SEPARATOR, $dir)));
 
             }
             $this->linkSite(
+                ($this->config['site']['debug'])?self::MODE_SYMLINK:self::MODE_COPY,
                 implode(DIRECTORY_SEPARATOR, array(SITE_DIR, MODULES, '*', $dir, '*')),
                 implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $dir))
             );
@@ -907,27 +917,64 @@ final class Setup {
      * @param int $level финт ушами для формирования относительных путей для симлинков, при рекурсии инкрементируется
      * @throws Exception
      */
-    private function linkCore($globPattern, $module, $level = 1) {
-
+    private function linkCore($mode, $globPattern, $module, $level = 1) {
+        $JSMIn = new JSqueeze();
         $fileList = glob($globPattern);
 
         if (!empty($fileList)) {
             foreach ($fileList as $fo) {
                 if (is_dir($fo)) {
-                    mkdir($dir = $module . DIRECTORY_SEPARATOR . basename($fo));
-                    $this->text('Создаем директорию ', $dir);
-                    $this->linkCore($fo . DIRECTORY_SEPARATOR . '*', $dir, $level + 1);
+                    $dir = $module . DIRECTORY_SEPARATOR . basename($fo);
+                    if (!file_exists($dir)) {
+                        mkdir($dir);
+                        $this->text('Создаем директорию ', $dir);
+                    }
+                    $this->linkCore($mode, $fo . DIRECTORY_SEPARATOR . '*', $dir, $level + 1);
                 } else {
                     //Если одним из низших по приоритету модулей был уже создан симлинк
                     //то затираем его нафиг
                     if (file_exists($dest = $module . DIRECTORY_SEPARATOR . basename($fo))) {
                         unlink($dest);
                     }
-                    $this->text('Создаем симлинк ', $fo, ' --> ', $dest);
-                    if (!@symlink($fo, $dest)) {
-                        throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
-                    }
 
+                    switch ($mode) {
+                        case self::MODE_SYMLINK:
+                            $this->text('Создаем симлинк ', $fo, ' --> ', $dest);
+                            if (!@symlink($fo, $dest)) {
+                                throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+                            }
+                            break;
+                        case self::MODE_COPY:
+                            $pi = pathinfo($fo);
+
+                            if (isset($pi['extension']) && ($pi['extension'] == 'js')) {
+                                if (
+                                    (strpos($pi['filename'], 'mootools') === false)
+                                    &&
+                                    (strpos($pi['dirname'], 'ckeditor') === false)
+                                    &&
+                                    (strpos($pi['dirname'], 'codemirror') === false)
+                                    &&
+                                    (strpos($pi['dirname'], 'FileAPI') === false)
+                                ) {
+                                    $this->text('Минифицируем и копируем ', $fo, ' --> ', $dest);
+                                    file_put_contents($dest, $JSMIn->squeeze(file_get_contents($fo), true, false));
+                                } else {
+                                    $this->text('Создаем символическую ссылку ', $fo, ' --> ', $dest);
+                                    if (!@symlink($fo, $dest)) {
+                                        throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+                                    }
+                                }
+
+                            } else {
+                                $this->text('Создаем символическую ссылку ', $fo, ' --> ', $dest);
+                                if (!@symlink($fo, $dest)) {
+                                    throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+
+                                }
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -939,7 +986,8 @@ final class Setup {
      * @param string $globPattern паттерн для выбора файлов
      * @param string $dir директория, в которой создавать симлинки
      */
-    private function linkSite($globPattern, $dir) {
+    private function linkSite($mode, $globPattern, $dir) {
+        $JSMin = new JSqueeze();
 
         $fileList = glob($globPattern);
         if (!empty($fileList)) {
@@ -955,13 +1003,29 @@ final class Setup {
 
                 $srcFile = $fo;
                 $linkPath = implode(DIRECTORY_SEPARATOR, array($dir, $module, basename($fo_stripped)));
-                $this->text('Создаем симлинк ', $srcFile, ' --> ', $linkPath);
 
-                if (file_exists($linkPath)) {
-                    unlink($linkPath);
+                switch ($mode) {
+                    case self::MODE_SYMLINK:
+                        $this->text('Создаем симлинк ', $srcFile, ' --> ', $linkPath);
+                        if (!@symlink($srcFile, $linkPath)) {
+                            throw new Exception('Не удалось создать символическую ссылку с ' . $srcFile . ' на ' . $linkPath);
+                        }
+                        break;
+                    case self::MODE_COPY:
+                        $pi = pathinfo($srcFile);
+
+                        if (isset($pi['extension']) && ($pi['extension'] == 'js')) {
+                            $this->text('Минифицируем и копируем ', $srcFile, ' --> ', $linkPath);
+                            file_put_contents($linkPath, $JSMin->squeeze(file_get_contents($srcFile), true, false));
+                        } else {
+                            $this->text('Создаем символическую ссылку ', $srcFile, ' --> ', $linkPath);
+                            if (!@symlink($srcFile, $linkPath)) {
+                                throw new Exception('Не удалось создать символическую ссылку с ' . $srcFile . ' на ' . $linkPath);
+
+                            }
+                        }
+                        break;
                 }
-
-                @symlink($srcFile, $linkPath);
             }
         }
     }
@@ -1023,10 +1087,10 @@ final class Setup {
 
         $data = file_get_contents($script);
         $r = array();
-        if (preg_match_all('/ScriptLoader\.load\((([\s,]{1,})?(\'([a-zA-Z\/.-]{1,})\'){1,}([\s,]{1,})?){1,}\)/', $data, $r)) {
+        if (preg_match_all('/ScriptLoader\.load\((([\s,]{1,})?((?:\'|")([a-zA-Z\/.-]{1,})(?:\'|")){1,}([\s,]{1,})?){1,}\)/', $data, $r)) {
             $s = str_replace(array('ScriptLoader.load', '(', ')', "\r", "\n"), '', (string)$r[0][0]);
             $classes = array_map(function ($el) {
-                return str_replace(array('\'', ',', ' '), '', $el);
+                return str_replace(array('\'', '"',',', ' '), '', $el);
             }, explode(',', $s));
             $result = $classes;
         }
@@ -1066,6 +1130,4 @@ final class Setup {
 
         $this->writeScriptMap($result);
     }
-
-
 }

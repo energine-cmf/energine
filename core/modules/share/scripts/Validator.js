@@ -125,7 +125,10 @@ var Validator = new Class(/** @lends Validator# */{
             && !field.getProperty('disabled')
             && !field.hasClass('novalidation'))
         {
-            if (!eval('field.value.match('+pattern+');')) {
+            var a = pattern.split('/');
+
+            if (!new RegExp(a[1], a[2]).test(field.value)) {
+            //if (!eval('field.value.match('+pattern+');')) {
                 //Выводим информацию об ошибке
                 this.showError(field, message);
                 //Вешаем проверку правильности введения данных на onblur

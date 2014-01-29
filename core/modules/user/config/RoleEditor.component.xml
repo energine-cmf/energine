@@ -15,6 +15,7 @@
 				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
 				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</state>
 		<state name="getRawData">

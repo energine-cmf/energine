@@ -144,7 +144,7 @@ ul.toolbar .text{
 
 ul.toolbar li select{
 	width:150px;
-    height: 28px;
+    padding: 6px;
     margin-right: 15px;
 }
 

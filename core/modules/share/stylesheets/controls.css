@@ -130,6 +130,9 @@ optgroup option {
     display: block;
     width: 100%;
 }
+.e-pane-content .field.editor .name {
+    width: 100%;
+}
 .e-pane-content .field .control  .with_append {
     display: table;
     width: 532px;

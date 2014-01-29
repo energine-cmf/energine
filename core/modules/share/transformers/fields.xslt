@@ -40,7 +40,7 @@
         Шаблон для необязательного (nullable) поля в админчасти вынесен отдельно.
         В нем добавляется возможность скрыть/раскрыть необязательное поле.
     -->
-    <xsl:template match="field[@type='htmlblock' or @type='text' or @type='code'][ancestor::component[@type='form' and @exttype='grid']]">
+    <xsl:template match="field[@type='text'][ancestor::component[@type='form' and @exttype='grid']]">
         <div>
             <xsl:attribute name="class">field clearfix<xsl:choose>
                 <xsl:when test=".=''"> min</xsl:when>
@@ -51,7 +51,31 @@
         </div>
     </xsl:template>
 
-    <xsl:template match="field[@type='htmlblock' or @type='text' or @type='code'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_name">
+    <xsl:template match="field[@type='code'][ancestor::component[@type='form' and @exttype='grid']]">
+        <div>
+            <xsl:attribute name="class">field editor clearfix<xsl:choose>
+                <xsl:when test=".=''"> min</xsl:when>
+                <xsl:otherwise> max</xsl:otherwise>
+            </xsl:choose></xsl:attribute>
+            <xsl:apply-templates select="." mode="field_name"/>
+            <xsl:apply-templates select="." mode="field_content"/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="field[@type='htmlblock'][ancestor::component[@type='form' and @exttype='grid']]">
+        <div>
+            <xsl:attribute name="class">field editor clearfix
+                <!--<xsl:choose>-->
+                <!--<xsl:when test=".=''"> min</xsl:when>-->
+                <!--<xsl:otherwise> max</xsl:otherwise>-->
+            <!--</xsl:choose>-->
+            </xsl:attribute>
+            <xsl:apply-templates select="." mode="field_name"/>
+            <xsl:apply-templates select="." mode="field_content"/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="field[@type='text' or @type='code'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_name">
         <xsl:if test="@title">
             <div class="name">
                 <label for="{@name}"><xsl:value-of select="@title" disable-output-escaping="yes"/></label>

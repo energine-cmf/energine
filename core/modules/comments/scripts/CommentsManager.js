@@ -9,7 +9,7 @@
  *
  * @author Pavel Dubenko
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 ScriptLoader.load('GridManager');
@@ -30,30 +30,24 @@ var CommentsManager = new Class(/** @lends CommentsManager# */{
         this.parent(element)
     },
 
-    Protected: {
-        /**
-         * Overridden parent [buildRequestPostBody]{@link GridManager#buildRequestPostBody} method.
-         *
-         * @memberOf CommentsManager#
-         * @abstract
-         * @function
-         * @protected
-         * @returns {string}
-         */
-        buildRequestPostBody: function() {
-            var postBody = '';
+    /**
+     * Overridden parent [buildRequestPostBody]{@link GridManager#buildRequestPostBody} method.
+     *
+     * @returns {string}
+     */
+    buildRequestPostBody: function() {
+        var postBody = '';
 
-            if (this.langId) {
-                postBody += 'languageID=' + this.langId + '&';
-            }
-            if (this.filter.active && this.filter.query.value.length > 0) {
-                var fieldName = this.filter.fields.options[this.filter.fields.selectedIndex].value;
-                postBody += 'filter' + fieldName + '=' + this.filter.query.value + '&';
-            }
-            postBody += 'tab_index=' + this.getNumCurrTab() + '&';
-
-            return postBody;
+        if (this.langId) {
+            postBody += 'languageID=' + this.langId + '&';
         }
+        if (this.filter.active && this.filter.query.value.length > 0) {
+            var fieldName = this.filter.fields.options[this.filter.fields.selectedIndex].value;
+            postBody += 'filter' + fieldName + '=' + this.filter.query.value + '&';
+        }
+        postBody += 'tab_index=' + this.getNumCurrTab() + '&';
+
+        return postBody;
     },
 
     // todo: This is not current - this is the last.

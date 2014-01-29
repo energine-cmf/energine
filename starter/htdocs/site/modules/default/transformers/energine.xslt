@@ -212,16 +212,26 @@
     </xsl:template>
     
     <xsl:template match="record[ancestor::component[@class='BreadCrumbs']]">
-        <xsl:if test="field[@name='Id'] != ''">
-            <a href="{$BASE}{$LANG_ABBR}{field[@name='Segment']}"><xsl:value-of select="field[@name='Name']"/></a> /
-        </xsl:if> 
+        <xsl:choose>
+            <xsl:when test="position() = 1">
+                <a href="{$BASE}{$LANG_ABBR}" class="breadcrumbs_home"><xsl:value-of select="field[@name='Name']"/></a> /
+            </xsl:when>
+            <xsl:when test="position() = last()">
+                <xsl:value-of select="field[@name='Name']"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:if test="field[@name='Id'] != ''">
+                    <a href="{$BASE}{$LANG_ABBR}{field[@name='Segment']}"><xsl:value-of select="field[@name='Name']"/></a> /
+                </xsl:if>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     
-    <xsl:template match="record[position() = last()][ancestor::component[@class='BreadCrumbs']]">
-        <xsl:if test="field[@name='Id'] != ''">
-            <xsl:value-of select="field[@name='Name']"/>
-        </xsl:if>
-    </xsl:template>
+    <!--<xsl:template match="record[position() = last()][ancestor::component[@class='BreadCrumbs']]">-->
+        <!--<xsl:if test="field[@name='Id'] != ''">-->
+            <!--<xsl:value-of select="field[@name='Name']"/>-->
+        <!--</xsl:if>-->
+    <!--</xsl:template>-->
     <!-- /BreadCrumbs -->
 
     <!-- SitemapTree -->

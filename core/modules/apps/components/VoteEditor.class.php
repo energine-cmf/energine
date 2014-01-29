@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class VoteEditor;
-@endcode
+ * @endcode
  *
  * @author andrii a
  * @copyright Energine 2013
@@ -19,7 +19,7 @@ class VoteEditor;
  *
  * @code
 class VoteEditor;
-@endcode
+ * @endcode
  */
 class VoteEditor extends Grid {
     /**
@@ -34,6 +34,23 @@ class VoteEditor extends Grid {
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName('apps_vote');
+    }
+
+    protected function prepare() {
+        parent::prepare();
+        if (in_array($this->getState(), array('add', 'edit'))) {
+            $fd = new FieldDescription('questions');
+            $fd->setType(FieldDescription::FIELD_TYPE_TAB);
+            $fd->setProperty('title', $this->translate('TAB_VOTE_QUESTIONS'));
+            $this->getDataDescription()->addFieldDescription($fd);
+
+            $field = new Field('questions');
+            $state = $this->getState();
+            $tab_url = (($state != 'add') ? $this->getData()->getFieldByName($this->getPK())->getRowData(0) : '') . '/question/';
+
+            $field->setData($tab_url, true);
+            $this->getData()->addField($field);
+        }
     }
 
     /**

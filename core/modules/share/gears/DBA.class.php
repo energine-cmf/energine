@@ -487,7 +487,11 @@ array(
         if (sizeof($args) > 1) {
             $query = array_shift($args); // отбрасываем первый аргумент $query
             foreach ($args as &$arg) {
-                $arg = $this->pdo->quote($arg);
+                if(!is_null($arg))
+                    $arg = $this->pdo->quote($arg);
+                else {
+                    $arg = 'NULL';
+                }
             }
             array_unshift($args, $query);
             $query = call_user_func_array('sprintf', $args);

@@ -18,7 +18,7 @@
  * @author Pavel Dubenko
  * @author Valerii Zinchenko
  *
- * @version 1.1.2
+ * @version 1.1.3
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
@@ -344,8 +344,6 @@ var Grid = (function() {
                 new Element('tr').inject(this.tbody);
             }
 
-            this.adjustColumns();
-
             /**
              * Main element that holds Grid's toolbar, header and container.
              * @type {Element}
@@ -369,6 +367,8 @@ var Grid = (function() {
              * @type {Element}
              */
             this.gridContainer = this.element.getElement('.gridContainer');
+
+            this.adjustColumns();
 
             // растягиваем gridContainer на высоту родительского элемента минус фильтр и голова грида
             this.fitGridSize();
@@ -471,16 +471,15 @@ var Grid = (function() {
          * @protected
          */
         adjustColumns: function() {
-            var headers = [],
-                gridHeadContainer = this.element.getElement('.gridHeadContainer');
+            var headers = [];
 
             // Adjust padding-right for '.gridHeadContainer' element.
-            gridHeadContainer.setStyle('padding-right', ScrollBarWidth + 'px');
+            this.gridHeadContainer.setStyle('padding-right', ScrollBarWidth + 'px');
 
             if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
                 var tds = this.tbody.getElement('tr').getElements('td'),
-                    ths = gridHeadContainer.getElements('th'),
-                    headCols = gridHeadContainer.getElements('col'),
+                    ths = this.gridHeadContainer.getElements('th'),
+                    headCols = this.gridHeadContainer.getElements('col'),
                     bodyCols = this.element.getElements('.gridContainer col');
 
                 // Get the col width from the tbody

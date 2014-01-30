@@ -1,3 +1,9 @@
+a.f_reset,
+a.f_reset:hover,
+a.f_reset:active {
+    color: #428bca;
+    text-decoration: none;
+}
 div.grid table tr.highlighted td {  background: #ecf3f8; }
 div.grid table tr.selected td {  background: #428bca; color: #fff; }
 
@@ -16,13 +22,15 @@ div.grid div.filter.active {
 div.grid div.filter select, div.grid div.filter input, div.grid div.filter button {
     font-size: 14px;
     color: #555;
-	margin:0 10px 0 0;
+	margin:0 5px 0 0;
     line-height: 20px;
     padding: 6px 8px;
 }
-
+div.grid div.filter button {
+    padding: 5px 8px;
+}
 div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_container{
-    margin-right: 10px;
+    margin-right: 0;
 }
 
 div.grid div.filter input {

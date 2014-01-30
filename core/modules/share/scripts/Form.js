@@ -22,7 +22,7 @@
  *
  * @author Pavel Dubenko
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader');
@@ -119,7 +119,7 @@ var Form = new Class(/** @lends Form# */{
          * @type {TabPane}
          */
         this.tabPane = new TabPane(this.componentElement, {
-            // onTabChange: this.onTabChange.bind(this)
+            onTabChange: this.onTabChange
         });
 
         /**
@@ -188,6 +188,24 @@ var Form = new Class(/** @lends Form# */{
                     mb.close();
                 }
             });
+        }
+    },
+
+    /**
+     * Create required IFrame by tab changing.
+     */
+    onTabChange: function() {
+        if (this.currentTab.getProperty('data-src') && !this.currentTab.loaded) {
+            this.currentTab.pane.grab(new Element('iframe', {
+                src: Energine['static'] + this.currentTab.getProperty('data-src'),
+                frameBorder: 0,
+                scrolling: 'no',
+                styles: {
+                    width: '99%',
+                    height: '99%'
+                }
+            }));
+            this.currentTab.loaded = true;
         }
     },
 

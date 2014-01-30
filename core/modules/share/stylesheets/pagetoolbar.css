@@ -192,5 +192,6 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
     min-height: 20px;
     height: 20px;
     margin-top: -6px;
+    padding: 0;
 }
 /* ----- /page toolbars ----- */

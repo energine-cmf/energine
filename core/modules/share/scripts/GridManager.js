@@ -524,8 +524,7 @@ var Grid = (function() {
             }
 
             this.tbody.getParent().setStyles({
-                wordWrap: 'break-word',
-                tableLayout: 'fixed'
+                wordWrap: 'break-word'
             });
         }.protect(),
 

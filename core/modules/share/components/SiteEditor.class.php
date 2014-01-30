@@ -63,7 +63,17 @@ class SiteEditor extends Grid {
     protected function prepare() {
         parent::prepare();
         if (in_array($this->getState(), array('add', 'edit'))) {
-            $this->addTranslation('TAB_DOMAINS');
+            $fd = new FieldDescription('domains');
+            $fd->setType(FieldDescription::FIELD_TYPE_TAB);
+            $fd->setProperty('title', $this->translate('TAB_DOMAINS'));
+            $this->getDataDescription()->addFieldDescription($fd);
+
+            $field = new Field('domains');
+            $state = $this->getState();
+            $tab_url = (($state != 'add') ? $this->getData()->getFieldByName($this->getPK())->getRowData(0) : '') . '/domains/';
+            $field->setData($tab_url, true);
+            $this->getData()->addField($field);
+
             $fd = $this->getDataDescription()->getFieldDescriptionByName('site_folder');
             $fd->setType(FieldDescription::FIELD_TYPE_SELECT);
             $fd->loadAvailableValues($this->loadFoldersData(), 'key', 'value');
@@ -75,11 +85,6 @@ class SiteEditor extends Grid {
             $tagField->setType(FieldDescription::FIELD_TYPE_STRING);
             $tagField->removeProperty('pattern');
             $this->getDataDescription()->addFieldDescription($tagField);
-            // Добавлена проверка на наличие филда с лого сайта
-            // для обеспечения обратной совсместимости.
-            if($fieldLogo = $this->getDataDescription()->getFieldDescriptionByName('site_logo')) {
-                $fieldLogo->setType(FieldDescription::FIELD_TYPE_FILE);
-            }
 
             if ($this->getState() == 'add') {
                 $this->getData()->getFieldByName('site_is_active')->setData(1, true);

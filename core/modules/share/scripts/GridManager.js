@@ -521,6 +521,10 @@ var Grid = (function() {
                         bodyCols[n].setStyle('width', headers[n]);
                     }
                 }
+            } else {
+                this.tbody.getParent().setStyles({
+                    'table-layout': 'fixed'
+                });
             }
 
             this.tbody.getParent().setStyles({

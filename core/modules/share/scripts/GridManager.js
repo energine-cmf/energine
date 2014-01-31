@@ -18,7 +18,7 @@
  * @author Pavel Dubenko
  * @author Valerii Zinchenko
  *
- * @version 1.1.3
+ * @version 1.1.4
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
@@ -551,7 +551,7 @@ var Grid = (function() {
          */
         fitGridFormSize: function() {
             if (this.pane) {
-                var toolbarH = this.gridToolbar.getSize().y,
+                var toolbarH = (this.gridToolbar) ? this.gridToolbar.getSize().y : 0,
                     gridHeadH = this.gridHeadContainer.getComputedSize().totalHeight,
                     paneToolbarT = this.pane.getElement('.e-pane-t-toolbar'),
                     paneToolbarTH = (paneToolbarT) ? paneToolbarT.getSize().y : 0,
@@ -581,10 +581,14 @@ var Grid = (function() {
                  *   -50 from footer
                  * they are not visible from grid
                  */
-                var windowHeight = window.getSize().y - this.pane.getPosition().y - ScrollBarWidth - 81;
+                var windowHeight = window.getSize().y;
+                var freespace = windowHeight;
+                if ($(document.body).scrollHeight - ScrollBarWidth - 81 < windowHeight) {
+                    freespace -= this.pane.getPosition().y + ScrollBarWidth + 81;
+                }
 
                 if (totalH > paneH) {
-                    this.pane.setStyle('height', (totalH > windowHeight) ? windowHeight : totalH);
+                    this.pane.setStyle('height', (totalH > freespace) ? freespace : totalH);
                 }
                 this.fitGridSize();
             }
@@ -799,7 +803,7 @@ var GridManager = new Class(/** @lends GridManager# */{
         /*Checking if opened in modalbox*/
         var mb = window.parent.ModalBox;
         if(mb && mb.initialized && mb.getCurrent()){
-            document.body.addEvent('keypress', function(evt){
+            $(document.body).addEvent('keypress', function(evt){
                 if(evt.key == 'esc'){
                     mb.close();
                 }
@@ -1368,11 +1372,10 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
 
     /**
      * Check the filter's condition option.
-     * @function
-     * @public
      */
     checkCondition: function() {
         var isDate = this.fields.getSelected()[0].getAttribute('type') == 'datetime';
+        this.disableInputField(isDate);
         this.inputs.showDatePickers(isDate);
         this.condition.getElements('option[value=like],option[value=notlike]').setStyle('display', (isDate ? 'none' : ''));
         for (var n = 0; isDate && n < this.condition.options.length; n++) {
@@ -1380,6 +1383,24 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
                 this.condition.selectedIndex = n;
                 break;
             }
+        }
+    },
+
+    /**
+     * Disable input fields.
+     *
+     * @param {boolean} disable Disable input fields?
+     */
+    disableInputField: function(disable) {
+        if (disable) {
+            this.inputs.inputs.each(function(input) {
+                input[0].setProperty('disabled',true);
+                input[0].value = '';
+            });
+        } else if (this.inputs.inputs[0][0].get('disabled')) {
+            this.inputs.inputs.each(function(input) {
+                input[0].removeProperty('disabled');
+            });
         }
     },
 
@@ -1558,32 +1579,4 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
             this.dps.addClass('hidden');
         }
     }
-});
-
-document.addEvent('domready', function() {
-    /**
-     * Scroll bar width of the browser.
-     * @type {number}
-     */
-    ScrollBarWidth = window.top.ScrollBarWidth || (function() {
-        var parent = new Element('div', {
-            styles: {
-                height: '100px',
-                overflow: 'scroll'
-            }
-        });
-        var child = new Element('div', {
-            styles: {
-                height: '200px'
-            }
-        });
-
-        parent.grab(child);
-        document.body.grab(parent);
-
-        var width = parent.offsetWidth - child.offsetWidth;
-        parent.destroy();
-
-        return width;
-    })();
 });

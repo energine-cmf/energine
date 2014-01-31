@@ -784,7 +784,7 @@ var GridManager = new Class(/** @lends GridManager# */{
         /*Checking if opened in modalbox*/
         var mb = window.parent.ModalBox;
         if(mb && mb.initialized && mb.getCurrent()){
-            document.body.addEvent('keypress', function(evt){
+            $(document.body).addEvent('keypress', function(evt){
                 if(evt.key == 'esc'){
                     mb.close();
                 }

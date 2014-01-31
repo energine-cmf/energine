@@ -327,7 +327,7 @@ document.addEvent('domready', function() {
         });
 
         parent.grab(child);
-        document.body.grab(parent);
+        $(document.body).grab(parent);
 
         var width = parent.offsetWidth - child.offsetWidth;
         parent.destroy();

@@ -1378,10 +1378,13 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
         this.disableInputField(isDate);
         this.inputs.showDatePickers(isDate);
         this.condition.getElements('option[value=like],option[value=notlike]').setStyle('display', (isDate ? 'none' : ''));
-        for (var n = 0; isDate && n < this.condition.options.length; n++) {
-            if (this.condition.options[n].getStyle('display') !== 'none') {
-                this.condition.selectedIndex = n;
-                break;
+
+        if (this.condition.options[this.condition.selectedIndex].getStyle('display') == 'none') {
+            for (var n = 0; isDate && n < this.condition.options.length; n++) {
+                if (this.condition.options[n].getStyle('display') !== 'none') {
+                    this.condition.selectedIndex = n;
+                    break;
+                }
             }
         }
     },

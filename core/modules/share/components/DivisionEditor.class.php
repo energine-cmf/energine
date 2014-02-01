@@ -259,8 +259,7 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
         }
 
         unset($d);
-
-        if (!in_array($dirPath . $oldValue, array_values($r))) {
+        if ($oldValue && !in_array($dirPath . $oldValue, array_values($r))) {
             $result[] = array(
                 'key' => $oldValue,
                 'value' => $oldValue,
@@ -271,7 +270,6 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
         usort($result, function ($rowA, $rowB) {
             return $rowA['value'] > $rowB['value'];
         });
-
         return $result;
     }
 

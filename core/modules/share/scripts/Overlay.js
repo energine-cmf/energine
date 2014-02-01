@@ -38,7 +38,7 @@ var Overlay = new Class(/** @lends Overlay# */{
         this.setOptions(options);
 
         //определяем родительский элемент
-        parentElement = $(parentElement) || document.body;
+        parentElement = $(parentElement) || $(document.body);
         // todo: What is the underground of this? Detect IE? -- comment and check
         if (!parentElement.getElement) {
             parentElement = document;

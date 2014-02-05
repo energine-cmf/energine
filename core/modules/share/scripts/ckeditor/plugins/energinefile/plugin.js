@@ -7,14 +7,15 @@
             exec: function(editor) {
 
                 var panel = $('cke_' + editor.editorId);
-                panel.hide();
+                var zIndex = panel.getStyle('z-index');
+                panel.setStyle('z-index', '1');
 
                 ModalBox.open({
                     url: editor.singleTemplate + 'file-library',
                     onClose: function (data) {
 
                         if (!data) {
-                            panel.show();
+                            panel.setStyle('z-index', zIndex);
                             return;
                         }
 
@@ -33,7 +34,11 @@
                         style.type = CKEDITOR.STYLE_INLINE;
                         style.apply(editor.document);
 
-                        panel.show();
+                        if(editor.getSelection().getSelectedText() == '') {
+                            editor.insertHtml('<a href = "' + filename + '">' + data['upl_title'] + '</a>');
+                        }
+
+                        panel.setStyle('z-index', zIndex);
                     }
                 });
 

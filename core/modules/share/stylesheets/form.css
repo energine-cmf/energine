@@ -46,6 +46,11 @@ form input, form textarea, form select {
 	width: 100%;
 	height:auto;
 }
+form input[type="file"] {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
 form input[readonly]{
     border-color: #f0f0f0;
     color: gray;

@@ -64,12 +64,15 @@
 
     <xsl:template match="field[@type='htmlblock'][ancestor::component[@type='form' and @exttype='grid']]">
         <div>
-            <xsl:attribute name="class">field editor clearfix
-                <!--<xsl:choose>-->
-                <!--<xsl:when test=".=''"> min</xsl:when>-->
-                <!--<xsl:otherwise> max</xsl:otherwise>-->
-            <!--</xsl:choose>-->
-            </xsl:attribute>
+            <xsl:attribute name="class">field editor clearfix</xsl:attribute>
+            <xsl:apply-templates select="." mode="field_name"/>
+            <xsl:apply-templates select="." mode="field_content"/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="field[@type='file'][ancestor::component[@type='form']]">
+        <div>
+            <xsl:attribute name="class">field file_upload clearfix</xsl:attribute>
             <xsl:apply-templates select="." mode="field_name"/>
             <xsl:apply-templates select="." mode="field_content"/>
         </div>
@@ -86,6 +89,12 @@
 
     <xsl:template match="field[@type='htmlblock' or @type='text' or @type='code'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_content">
         <div class="control toggle type_{@type}" id="control_{@language}_{@name}">
+            <xsl:apply-templates select="." mode="field_input"/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="field[@type='file'][ancestor::component[@type='form']]" mode="field_content">
+        <div class="control type_{@type}" id="control_{@language}_{@name}">
             <xsl:apply-templates select="." mode="field_input"/>
         </div>
     </xsl:template>
@@ -220,35 +229,42 @@
                 </xsl:if>
             </img>
         </a>
-        <input class="text inp_file" readonly="readonly">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
-        </input>
-        <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
-        <xsl:if test="@quickUploadPid">
-            <button onclick="{generate-id(../..)}.openQuickUpload(this);" quick_upload_path="{@quickUploadPath}" quick_upload_pid="{@quickUploadPid}" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">
-                <xsl:choose>
-                    <xsl:when test="@quickUploadEnabled!='1'">
-                        <xsl:attribute name="disabled">disabled</xsl:attribute>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:attribute name="quick_upload_enabled">
-                            <xsl:value-of select="@quickUploadEnabled"/>
-                        </xsl:attribute>
-                    </xsl:otherwise>
-                </xsl:choose>
-                <xsl:value-of select="$TRANSLATION[@const='BTN_QUICK_UPLOAD']"/>
-            </button>
-        </xsl:if>
-        <xsl:if test="@nullable">
-            <a class="lnk_clear" href="#"
-               onclick="{generate-id(../..)}.clearFileField('{generate-id(.)}',this);return false;">
-                <xsl:if test=". = ''">
-                    <xsl:attribute name="style">display:none;</xsl:attribute>
-                </xsl:if>
-                <xsl:value-of select="$TRANSLATION[@const='TXT_CLEAR']"/>
-            </a>
-        </xsl:if>
+        <div class="with_append">
+            <input class="text inp_file" readonly="readonly">
+                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+                <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+            </input>
+            <div>
+                <xsl:attribute name="class">appended_block<xsl:if test="@quickUploadPid"> appended_inner</xsl:if></xsl:attribute>
+                <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
+            </div>
+            <xsl:if test="@quickUploadPid">
+                <div class="appended_block">
+                    <button onclick="{generate-id(../..)}.openQuickUpload(this);" quick_upload_path="{@quickUploadPath}" quick_upload_pid="{@quickUploadPid}" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">
+                        <xsl:choose>
+                            <xsl:when test="@quickUploadEnabled!='1'">
+                                <xsl:attribute name="disabled">disabled</xsl:attribute>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="quick_upload_enabled">
+                                    <xsl:value-of select="@quickUploadEnabled"/>
+                                </xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:value-of select="$TRANSLATION[@const='BTN_QUICK_UPLOAD']"/>
+                    </button>
+                </div>
+            </xsl:if>
+            <xsl:if test="@nullable">
+                <a class="lnk_clear" href="#"
+                   onclick="{generate-id(../..)}.clearFileField('{generate-id(.)}',this);return false;">
+                    <xsl:if test=". = ''">
+                        <xsl:attribute name="style">display:none;</xsl:attribute>
+                    </xsl:if>
+                    <xsl:value-of select="$TRANSLATION[@const='TXT_CLEAR']"/>
+                </a>
+            </xsl:if>
+        </div>
         <br/>
         <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
         <span class="progress_indicator hidden" id="indicator">0%</span>

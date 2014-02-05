@@ -133,6 +133,7 @@ form .field .control .preview {
 
 form .field .control .preview img {
     display: block;
+    margin-bottom: 15px;
 }
 
 form .richEditor {

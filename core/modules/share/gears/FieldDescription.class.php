@@ -304,6 +304,7 @@ class FieldDescription extends DBWorker implements Iterator {
     private $additionalProperties;
 
     //todo VZ: Why not to set this to 1 or 0?
+    //todo Pavka: Really why?
     /**
      * Field length.
      * For the fields that has not the length it will set to @c true.

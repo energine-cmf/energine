@@ -731,21 +731,21 @@ class Grid extends DBDataSet {
     /**
      * @copydoc DBDataSet::imageManager
      */
-/*    protected function imageManager() {
-        $this->imageManager =
-            $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
-        //$this->imageManager->getState();
-        $this->imageManager->run();
-    }*/
+    /*    protected function imageManager() {
+            $this->imageManager =
+                $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
+            //$this->imageManager->getState();
+            $this->imageManager->run();
+        }*/
 
     /**
      * @copydoc DBDataSet::fileLibrary
      */
-/*    protected function fileLibrary() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
-        $this->fileLibrary->run();
-    }*/
+    /*    protected function fileLibrary() {
+            $this->request->setPathOffset($this->request->getPathOffset() + 1);
+            $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
+            $this->fileLibrary->run();
+        }*/
 
     /**
      * Show component: attachments.
@@ -1133,7 +1133,7 @@ class Grid extends DBDataSet {
                 );
             }
         }
-       //inspect($this->getFilter());
+        //inspect($this->getFilter());
     }
 
     /**
@@ -1240,11 +1240,23 @@ class Grid extends DBDataSet {
      */
     protected function prepare() {
         parent::prepare();
+        //todo : Порядок генерации фильтров
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
-            foreach ($config->filter as $filterDescription) {
+            if (!($config->filter && !$config->filter->count())) {
                 $this->filter_control = new Filter();
                 $this->filter_control->attachToComponent($this);
-                $this->filter_control->loadXML($filterDescription);
+                if ($config->filter) {
+                    $this->filter_control->loadXML($config->filter);
+                } else {
+                    foreach ($this->getDataDescription() as $fd) {
+                        if (in_array($fd->getType(), array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_INT, FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_EMAIL, FieldDescription::FIELD_TYPE_STRING))) {
+                            $ff = new FilterField($fd->getName(), $fd->getType());
+                            if ($fd->getPropertyValue('title'))
+                                $ff->setAttribute('title', $fd->getPropertyValue('title'));
+                            $this->filter_control->attachField($ff);
+                        }
+                    }
+                }
                 $this->filter_control->translate();
             }
         }

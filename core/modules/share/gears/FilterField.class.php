@@ -16,6 +16,7 @@ class FilterField;
 
 
 //todo VZ: This is very similar to Control class.
+//todo Pavka: But this is not control .... hmm .... but why not? :)
 /**
  * Filter control.
  *
@@ -41,7 +42,7 @@ class FilterField extends Object {
      *
      * @var string $type
      */
-    protected $type = false;
+    protected $type = FieldDescription::FIELD_TYPE_STRING;
 
     /**
      * Additional attributes.
@@ -64,8 +65,9 @@ class FilterField extends Object {
     /**
      * @param string $name Name.
      */
-    public function __construct($name) {
+    public function __construct($name, $type = FieldDescription::FIELD_TYPE_STRING) {
         $this->setAttribute('name', $name);
+        $this->type = $type;
         $this->doc = new DOMDocument('1.0', 'UTF-8');
     }
 
@@ -118,11 +120,6 @@ class FilterField extends Object {
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function loadFromXml(SimpleXMLElement $description) {
-
-        if (!isset($description['type'])) {
-            throw new SystemException('ERR_DEV_NO_CONTROL_TYPE', SystemException::ERR_DEVELOPER);
-        }
-
         $attr = $description->attributes();
 
         $this->setAttribute('mode',
@@ -151,9 +148,6 @@ class FilterField extends Object {
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function getType() {
-        if (!$this->type) {
-            throw new SystemException('ERR_DEV_NO_CONTROL_TYPE', SystemException::ERR_DEVELOPER);
-        }
         return $this->type;
     }
 

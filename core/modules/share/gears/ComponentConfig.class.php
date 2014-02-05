@@ -52,12 +52,6 @@ class ComponentConfig {
     private $currentState = false;
 
     /**
-     * List of "glued states".
-     * @var array $stickedStates
-     */
-    private $stickedStates = array();
-
-    /**
      * Initialize configuration.
      *
      * @param mixed $config Configuration or configuration filename.
@@ -234,15 +228,6 @@ class ComponentConfig {
                 array_shift($matches);
                 $actionName = $methodName;
                 if (!empty($matches)) {
-                    /*if (strpos($pattern, '[any]') === false) {
-                        preg_match($resPattern, $pattern, $varNames);
-                        array_shift($varNames);
-                        $varNames = str_replace(array('[', ']'), '', $varNames);
-                        $actionParams = array_combine($varNames, $matches);
-                    }
-                    else {
-                        $actionParams = array('any' => $matches[0]);
-                    }*/
                     preg_match($resPattern, $pattern, $varNames);
                     array_shift($varNames);
                     $varNames = str_replace(array('[', ']'), '', $varNames);

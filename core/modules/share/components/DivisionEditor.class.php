@@ -791,6 +791,14 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
         $this->langEditor->run();
     }
 
+    protected function fileLibrary() {
+        $this->request->shiftPath(1);
+
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
+
+        $this->fileLibrary->run();
+    }
+
     /**
      * Show site editor.
      */

@@ -384,7 +384,7 @@ var FileRepository = new Class(/** @lends FileRepository# */{
 
             default:
                 if (r.upl_is_ready) {
-                    if (ModalBox.boxes.length > 1) {
+                    if (this.toolbar.getControlById('open')) {
                         ModalBox.setReturnValue(r);
                         ModalBox.close();
                     } else {

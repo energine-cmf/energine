@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    <state name="uploadZip" rights="3">
+    <state name="uploadTemporaryFile" rights="3">
         <uri_patterns>
-            <pattern>/upload-zip/</pattern>
+            <pattern>/upload-temp/</pattern>
         </uri_patterns>
     </state>
     <state name="createTemporaryFile" rights="3">
@@ -133,11 +133,11 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-<!--    <state name="upload" rights="2">
-        <uri_patterns>
-            <pattern>/upload/</pattern>
-        </uri_patterns>
-    </state>-->
+    <!--    <state name="upload" rights="2">
+            <uri_patterns>
+                <pattern>/upload/</pattern>
+            </uri_patterns>
+        </state>-->
     <state name="delete" rights="2">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
@@ -151,11 +151,6 @@
             <pattern>/[pid]/get-data/page-[pageNumber]/</pattern>
             <pattern>/[pid]/get-data/[sortField]-[sortDir]/</pattern>
             <pattern>/[pid]/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="uploadTemporaryFile" rights="3">
-        <uri_patterns>
-            <pattern>/upload-temp/</pattern>
         </uri_patterns>
     </state>
 </configuration>

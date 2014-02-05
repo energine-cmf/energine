@@ -36,13 +36,13 @@ class Grid extends DBDataSet {
      * Component: image manager.
      * @var ImageManager $imageManager
      */
-    private $imageManager;
+    //private $imageManager;
 
     /**
      * Component: file library.
      * @var FileLibrary $fileLibrary
      */
-    protected $fileLibrary;
+    //protected $fileLibrary;
 
     /**
      * Component: attachment editor manager.
@@ -489,13 +489,13 @@ class Grid extends DBDataSet {
      */
     public function build() {
         switch ($this->getState()) {
-            case 'imageManager':
+            /*case 'imageManager':
                 return $this->imageManager->build();
                 break;
             case 'fileLibrary':
             case 'put':
                 return $this->fileLibrary->build();
-                break;
+                break;*/
             case 'attachments':
                 return $this->attachmentEditor->build();
                 break;
@@ -731,21 +731,21 @@ class Grid extends DBDataSet {
     /**
      * @copydoc DBDataSet::imageManager
      */
-    protected function imageManager() {
+/*    protected function imageManager() {
         $this->imageManager =
             $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
         //$this->imageManager->getState();
         $this->imageManager->run();
-    }
+    }*/
 
     /**
      * @copydoc DBDataSet::fileLibrary
      */
-    protected function fileLibrary() {
+/*    protected function fileLibrary() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
         $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
         $this->fileLibrary->run();
-    }
+    }*/
 
     /**
      * Show component: attachments.

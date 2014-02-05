@@ -66,13 +66,11 @@ div.grid .query {
     border-radius: 4px;
     padding: 15px;
     background: #eee;
-    font-size: 12px;
+    font-size: 13px;
 }
-.grid .filter + .grid_breadcrumbs {
-    margin-top: -14px;
+.grid_breadcrumbs a {
+    color: #428bca;
 }
-
-
 .grid {
     margin: 10px;
     background: #fcfcfc;
@@ -155,7 +153,12 @@ table.gridTable {
 .gridContainer table.gridTable {
     border-bottom: 1px solid #ddd;
 }
-
+.gridContainer table.gridTable a {
+    color: #428bca;;
+}
+.gridContainer table.gridTable .selected a {
+    color: #fefefe;
+}
 .thumb_container{
     position: relative;
 }

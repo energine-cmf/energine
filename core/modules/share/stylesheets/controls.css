@@ -129,18 +129,18 @@ optgroup option {
 .e-pane-content .field .control.type_htmlblock,
 .e-pane-content .field .control.type_file {
     display: block;
-    width: 100%;
+    width: 713px;
 }
 .e-pane-content .field.file_upload .name,
 .e-pane-content .field.editor .name {
-    width: 100%;
+    width: 713px;
 }
 .e-pane-content .field .control  .with_append {
     display: table;
     width: 532px;
 }
 .e-pane-content .field .control.type_file .with_append {
-    width: 100%;
+    width: 713px;
 }
 .e-pane-content .field .control.type_file .lnk_clear {
     margin-left: 15px;

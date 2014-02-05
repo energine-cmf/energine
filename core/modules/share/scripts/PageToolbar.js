@@ -99,7 +99,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
         }).inject(sidebarFrameContent);
 
         new Element('img').setProperties({
-            'src': ((Energine.debug)?'images/toolbar/nrgnptbdbg.png':'images/toolbar/nrgnptb.png'),
+            'src': Energine.static + ((Energine.debug)?'images/toolbar/nrgnptbdbg.png':'images/toolbar/nrgnptb.png'),
             'class' : 'pagetb_logo'
         }).inject(topFrame, 'top');
 

@@ -31,13 +31,13 @@ abstract class DataSet extends Component {
      * File library.
      * @var FileRepository $fileLibrary
      */
-    private $fileLibrary;
+    protected $fileLibrary;
 
     /**
      * Image manager.
      * @var ImageManager $imageManager
      */
-    private $imageManager;
+    protected $imageManager;
     /**
      * Source.
      * @var TextBlockSource $source
@@ -650,7 +650,7 @@ abstract class DataSet extends Component {
     protected function fileLibrary() {
         $this->request->shiftPath(1);
 
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositorySelect.component.xml'));
 
         $this->fileLibrary->run();
     }

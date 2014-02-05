@@ -227,9 +227,16 @@
         <button onclick="{generate-id(../..)}.openFileLib(this);" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">...</button>
         <xsl:if test="@quickUploadPid">
             <button onclick="{generate-id(../..)}.openQuickUpload(this);" quick_upload_path="{@quickUploadPath}" quick_upload_pid="{@quickUploadPid}" type="button" link="{generate-id(.)}" preview="{generate-id(.)}_preview">
-                <xsl:if test="@quickUploadEnabled!='1'">
-                    <xsl:attribute name="disabled">disabled</xsl:attribute>
-                </xsl:if>
+                <xsl:choose>
+                    <xsl:when test="@quickUploadEnabled!='1'">
+                        <xsl:attribute name="disabled">disabled</xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:attribute name="quick_upload_enabled">
+                            <xsl:value-of select="@quickUploadEnabled"/>
+                        </xsl:attribute>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <xsl:value-of select="$TRANSLATION[@const='BTN_QUICK_UPLOAD']"/>
             </button>
         </xsl:if>

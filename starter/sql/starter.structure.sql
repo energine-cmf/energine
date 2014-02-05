@@ -710,10 +710,19 @@ CREATE TABLE IF NOT EXISTS `share_sites_translation` (
 DROP TABLE IF EXISTS `share_tags`;
 CREATE TABLE IF NOT EXISTS `share_tags` (
   `tag_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `tag_name` char(100) NOT NULL,
+  `tag_code` char(100) NOT NULL,
   PRIMARY KEY (`tag_id`),
-  UNIQUE KEY `tag_name` (`tag_name`)
+  UNIQUE KEY `tag_code` (`tag_code`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  ;
+
+DROP TABLE IF EXISTS `share_tags_translation`;
+CREATE TABLE `share_tags_translation` (
+  `tag_id` int(11) unsigned NOT NULL,
+  `lang_id` int(11) unsigned NOT NULL,
+  `tag_name` char(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`tag_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -766,6 +775,9 @@ CREATE TABLE IF NOT EXISTS `share_uploads` (
   `upl_views` bigint(20) NOT NULL DEFAULT '0',
   `upl_internal_type` char(20) DEFAULT NULL,
   `upl_mime_type` char(50) DEFAULT NULL,
+  `upl_is_mp4` tinyint(1) not null default 0,
+  `upl_is_webm` tinyint(1) not null default 0,
+  `upl_is_flv` tinyint(1) not null default 0,
   `upl_width` int(10) unsigned DEFAULT NULL,
   `upl_height` int(10) unsigned DEFAULT NULL,
   `upl_is_ready` tinyint(1) DEFAULT '1',
@@ -780,7 +792,10 @@ CREATE TABLE IF NOT EXISTS `share_uploads` (
   KEY `upl_pid` (`upl_pid`),
   KEY `upl_childs_count` (`upl_childs_count`),
   KEY `upl_filename` (`upl_filename`),
-  KEY `upl_is_active` (`upl_is_active`)
+  KEY `upl_is_active` (`upl_is_active`),
+  KEY `upl_is_mp4` (`upl_is_mp4`),
+  KEY `upl_is_webm` (`upl_is_webm`),
+  KEY `upl_is_flv` (`upl_is_flv`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  ;
 
 -- --------------------------------------------------------
@@ -1102,6 +1117,10 @@ ALTER TABLE `share_sites_translation`
   ADD CONSTRAINT `share_sites_translation_ibfk_1` FOREIGN KEY (`site_id`) REFERENCES `share_sites` (`site_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `share_sites_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE `share_tags_translation`
+  ADD CONSTRAINT `share_tags_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `share_tags_translation_ibfk_1` FOREIGN KEY (`tag_id`) REFERENCES `share_tags` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 --
 -- Ограничения внешнего ключа таблицы `share_textblocks`
 --
@@ -1134,10 +1153,6 @@ ALTER TABLE `share_uploads_tags`
 ALTER TABLE `user_user_groups`
   ADD CONSTRAINT `user_user_groups_ibfk_3` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_user_groups_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `user_groups` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE share_uploads add column upl_is_mp4 tinyint(1) not null default 0;
-ALTER TABLE share_uploads add column upl_is_webm tinyint(1) not null default 0;
-ALTER TABLE share_uploads add column upl_is_flv tinyint(1) not null default 0;
 
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;

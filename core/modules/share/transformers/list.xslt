@@ -142,7 +142,7 @@
                                                     </xsl:otherwise>
                                                 </xsl:choose>
                                         </select>
-                                        <xsl:text>&#160;</xsl:text>
+                                        <!--<xsl:text>&#160;</xsl:text>-->
                                         <select name="condition" class="f_condition">
                                             <option value="like"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_CONTAINS']"/></option>
                                             <option value="notlike"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_NOT_CONTAINS']"/></option>
@@ -166,7 +166,7 @@
                                         </span>
                                         <!--<span class="f_query_date_container hidden"><input type="text" class="query"/><input type="text" class="hidden query"/></span>-->
                                         <button type="button" class="f_apply"><xsl:value-of select="$TRANSLATION[@const = 'BTN_APPLY_FILTER']"/></button>
-                                        <xsl:text>&#160;</xsl:text>
+                                        <!--<xsl:text>&#160;</xsl:text>-->
                                         <a href="#" class="f_reset"><xsl:value-of select="$TRANSLATION[@const = 'TXT_RESET_FILTER']"/></a>
                                     </div>
                                 </xsl:if>

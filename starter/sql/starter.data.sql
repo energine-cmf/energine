@@ -3524,10 +3524,16 @@ INSERT INTO `share_sites_translation` (`site_id`, `lang_id`, `site_name`, `site_
 -- Дамп данных таблицы `share_tags`
 --
 
-INSERT INTO `share_tags` (`tag_id`, `tag_name`) VALUES
+INSERT INTO `share_tags` (`tag_id`, `tag_code`) VALUES
 (2, 'main'),
 (1, 'menu'),
 (5, 'user');
+
+INSERT INTO share_tags_translation (tag_id, lang_id, tag_name)
+  SELECT tag_id, 1 as lang_id, tag_code as tag_name from share_tags;
+
+INSERT INTO share_tags_translation (tag_id, lang_id, tag_name)
+  SELECT tag_id, 2 as lang_id, tag_code as tag_name from share_tags;
 
 --
 -- Дамп данных таблицы `share_textblocks`

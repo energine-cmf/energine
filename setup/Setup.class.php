@@ -1,22 +1,22 @@
 <?php
-
 /**
- * Класс Setup
+ * @file
+ * Setup
  *
- * @package energine
- * @subpackage setup
+ * @code
+final class Setup;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright 2013 Energine
+ *
+ * @version 1.0.0
  */
 
 require_once('JSqueeze.php');
 
 /**
- * Основной функционал установки системы.
- *
- * @package energine
- * @subpackage setup
- * @author dr.Pavka
+ * Main system setup.
  */
 final class Setup {
     /**
@@ -29,35 +29,35 @@ final class Setup {
     const MODE_COPY = 'copy';
 
     /**
-     * Путь к папке загрузок
+     * Path to the directory for uploads.
      */
     const UPLOADS_PATH = 'uploads/public/';
 
     /**
-     * Имя таблицы, в которой хранятся пользовательские загрузки
+     * Table name, where customer uploads are sotred.
      */
     const UPLOADS_TABLE = 'share_uploads';
 
     /**
-     * Признак запуска установщика из консоли
-     * Вовзращает true, если запуск произведен из консоли, false - если из браузера
+     * Flag, that indicates that the installer was executed from console.
      *
-     * @var bool
+     * States:
+     * - @c true - executed from console
+     * - @c false - executed from browser.
+     *
+     * @var bool $isFromConsole
      */
     private $isFromConsole;
 
     /**
-     * Массив конфигурации системы
-     *
-     * @var array
+     * System configurations.
+     * @var array $config
      */
     private $config;
 
     /**
-     * Массив директорий, которые будут созданы и в которые будут создаваться
-     * символические ссылки из директорий ядра и сайта
-     *
-     * @var array
+     * Array of directories, that will be created and where will be placed symbolic links from system core and site.
+     * @var array $htdocsDirs
      */
     private $htdocsDirs = array(
         'images',
@@ -69,14 +69,13 @@ final class Setup {
     );
 
     /**
-     * @var PDO
+     * PDO
+     * @var PDO $dbConnect
      */
     private $dbConnect;
 
     /**
-     * Конструктор класса.
-     *
-     * @param bool $consoleRun Вид вызова сценария установки
+     * @param bool $consoleRun Is setup from console called?
      */
     public function __construct($consoleRun) {
         header('Content-Type: text/plain; charset=' . CHARSET);
@@ -86,14 +85,13 @@ final class Setup {
     }
 
     /**
-     * Очистка переменных для предотвращения возможных атак.
-     * Если входящяя строка содержит символы помимо
-     * Букв, цифр, -, . , /
-     * Будет возвращена строка error
+     * Filter input arguments from potential attacks.
+     * If input argument contain symbols except letters, numbers, @c "-", @c "." and @c "/" then exception error will be thrown.
      *
-     * @param string $var
+     * @param string $var Input argument.
      * @return string
-     * @throws Exception
+     *
+     * @throws Exception 'Некорректные данные системных переменных, возможна атака на сервер.'
      */
     private function filterInput($var) {
         if (preg_match('/^[\~\-0-9a-zA-Z\/\.\_]+$/i', $var))
@@ -103,7 +101,7 @@ final class Setup {
     }
 
     /**
-     * Возвращает хост, на котором работае система.
+     * Get site host name.
      *
      * @return string
      */
@@ -117,8 +115,7 @@ final class Setup {
     }
 
     /**
-     * Возвращает корневую директорию системы.
-     *
+     * Get site root directory.
      *
      * @return string
      */
@@ -129,11 +126,18 @@ final class Setup {
     }
 
     /**
-     * Функция для проверки параметров системы,
-     * таких как версия PHP, наличие конфигурационного
-     * файла Energine а также файла перечня модулей системы.
+     * Check system environment.
+     * It checks:
+     * - PHP version
+     * - the presence of configuration file
+     * - the presence of file with system modules.
      *
-     * @throws Exception
+     * @throws Exception 'Вашему РНР нужно еще немного подрости. Минимальная допустимая версия '
+     * @throws Exception 'Не найден конфигурационный файл system.config.php. По хорошему, он должен лежать в корне проекта.'
+     * @throws Exception 'Странный какой то конфиг. Пользуясь ним я не могу ничего сконфигурить. Или возьмите нормальный конфиг, или - извините.'
+     * @throws Exception 'В конфиге ничего не сказано о режиме отладки. Это плохо. Так я работать не буду.'
+     * @throws Exception 'Нет. С отключенным режимом отладки я работать не буду, и не просите. Запускайте меня после того как исправите в конфиге ["site"]["debug"] с 0 на 1.'
+     * @throws Exception 'Странно. Отсутствует перечень модулей. Я могу конечно и сам посмотреть, что находится в папке core/modules, но как то это не кузяво будет. '
      */
     public function checkEnvironment() {
 
@@ -189,8 +193,9 @@ final class Setup {
     }
 
     /**
-     * Обновляет Host и Root сайта в таблице share_sites.
+     * Update site host and root in table @c share_sites.
      *
+     * @throws Exception 'Удивительно.... Не с чем работать. А проверьте все ли хорошо с базой? не пустая ли? похоже некоторых нужных таблиц в ней нет.'
      */
     private function updateSitesTable() {
         $this->text('Обновляем таблицу share_sites...');
@@ -228,9 +233,11 @@ final class Setup {
     }
 
     /**
-     * Проверка возможности соединения с БД.
+     * Check connection to database.
      *
-     * @throws Exception
+     * @throws Exception 'В конфиге нет информации о подключении к базе данных'
+     * @throws Exception 'Удивительно, но не указан параметр: ' . $description . '  (["database"]["' . $key . '"])'
+     * @throws Exception 'Не удалось соединиться с БД по причине: '
      */
     private function checkDBConnection() {
 
@@ -281,12 +288,13 @@ final class Setup {
     }
 
     /**
-     * Функция для вызова метода класса.
-     * Фактически, запускает один из режимов установки системы.
+     * Function that calls some class method.
+     * In fact, it runs one of the system installation modes.
      *
-     * @param string $action
-     * @param array $arguments
-     * @throws Exception
+     * @param string $action Method name.
+     * @param array $arguments Method arguments.
+     *
+     * @throws Exception 'Подозрительно все это... Либо программисты че то не учли, либо.... произошло непоправимое.'
      */
     public function execute($action, $arguments) {
         if (!method_exists($this, $methodName = $action . 'Action')) {
@@ -297,9 +305,8 @@ final class Setup {
     }
 
     /**
-     * Очищает папку Cache от ее содержимого.
+     * Clear cache directory.
      * @todo: определится с именем папки
-     *
      */
     private function clearCacheAction() {
         $this->title('Очищаем кеш');
@@ -307,9 +314,12 @@ final class Setup {
     }
 
     /**
-     * Запуск полной установки системы, включающей генерацию symlinks,
-     * проверку соединения с БД и обновление таблицы share_sites.
-     *
+     * Run full system installation.
+     * It:
+     * - checks connection to database
+     * - updates table @c share_sites
+     * - generate symlinks
+     * - generate file dependency to JavaScript classes
      */
     private function installAction() {
         $this->checkDBConnection();
@@ -319,10 +329,13 @@ final class Setup {
     }
 
     /**
-     * Поиск непереведенных констант
-     * и вывод информации оних на екран($mode='show') или в файл(mode='file')
+     * Search and show untranslated constants.
+     * To show the information about founded constants on the display use @code $mode='show' @endcode @n
+     * To write the information about founded constants into the file use @code $mode='file' @endcode @n
      *
-     * @param string $mode режим выгрузки
+     * @param string $mode Display mode.
+     *
+     * @throws Exception 'Режим ' . $mode . ' не зарегистрирован'
      */
     private function untranslatedAction($mode = 'show') {
         $this->title('Поиск непереведенных констант');
@@ -334,6 +347,7 @@ final class Setup {
         );
         $result = $this->getUntranslated($all);
         if ($result) {
+            //todo VZ: I think switch is better.
             if ($mode == 'show') {
                 foreach ($result as $key => $val) {
                     $this->text($key . ': ' . implode(', ', $val['file']));
@@ -351,7 +365,7 @@ final class Setup {
     }
 
     /**
-     * Выгрузка констант переводов в файлы
+     * Export translation constants into the file.
      */
     private function exportTransAction() {
         $this->title('Экспорт констант в файлы');
@@ -364,11 +378,14 @@ final class Setup {
     }
 
     /**
-     * Загрузка данных из файла с переводами
-     * Формат файла: "Перевод";"аббревиатура 1";"аббревиатура n"
+     * Load data from the file with translations.
+     * File format: "Translation";"abbreviation 1";"abbreviation 2"
      *
-     * @param $path
-     * @throws Exception
+     * @param string $path Path.
+     * @param string $module Module name.
+     *
+     * @throws Exception 'Не видать файла:' . $path
+     * @throws Exception 'Файл вроде как есть, а вот читать из него невозможно.'
      */
     private function loadTransFileAction($path, $module = 'share') {
         $this->title('Загрузка файла с переводами: ' . $path . ' в модуль ' . $module);
@@ -433,9 +450,9 @@ final class Setup {
     }
 
     /**
-     * Возвращает массив полученных в параметре данных с информацией о переводах
+     * Get an array with information about translations.
      *
-     * @param $transData
+     * @param array $transData Translation data.
      * @return mixed
      */
     private function fillTranslations($transData) {
@@ -456,7 +473,8 @@ final class Setup {
     }
 
     /**
-     * Поиск констант в xml файлах
+     * Search constants in XML-file.
+     *
      * @return array
      */
     private function getTransXmlCalls() {
@@ -521,9 +539,9 @@ final class Setup {
     }
 
     /**
-     * Фильтрует данные оставляя только непереведенные константы
+     * Get untranslated constants.
      *
-     * @param $data
+     * @param array $data %Data.
      * @return array
      */
     private function getUntranslated($data) {
@@ -545,7 +563,8 @@ final class Setup {
     }
 
     /**
-     * Поиск констант в коде
+     * Search constants in the code.
+     *
      * @return array
      */
     private function getTransEngineCalls() {
@@ -625,11 +644,13 @@ final class Setup {
     }
 
     /**
-     * Записывает полученные из параметра данные в файлы(помодульно)
+     * Write translation data into the file (for each module).
      *
-     * @param $data
-     * @param string $transFileName
-     * @throws Exception
+     * @param array $data %Data.
+     * @param string $transFileName Filename with translations.
+     *
+     * @throws Exception 'Директория ' . $dirName . ' отсутствует или недоступна для записи.'
+     * @throws Exception 'Произошла ошибка при записи в файл: '
      */
     private function writeTranslations($data, $transFileName = 'translations.csv') {
         $langRes = $this->dbConnect->query('SELECT lang_id, lang_abbr FROM share_languages');
@@ -681,10 +702,9 @@ final class Setup {
     }
 
     /**
-     * Создаем сегмент google sitemap в share_sitemap
-     * и даем на него права на просмотр для не авторизированных
-     * пользователей. Имя сегмента следует указать в конфиге.
-     *
+     * Create segment <tt>Google sitemap</tt> into @c share_sitemap.
+     * It sets for that segment read-only access for non-authorized users. @n
+     * Segment name should be defined in configurations.
      */
     private function createSitemapSegment() {
         $this->dbConnect->query('INSERT INTO share_sitemap(site_id,smap_layout,smap_content,smap_segment,smap_pid) '
@@ -708,9 +728,10 @@ final class Setup {
     }
 
     /**
-     * Запуск установки системы, включающей генерацию symlinks.
+     * Generate symlinks.
      *
-     * @throws Exception
+     * @throws Exception 'Не существует: ' . $module_path
+     * @throws Exception 'Нет доступа на запись: ' . $modules_dir
      */
     private function linkerAction() {
 
@@ -775,6 +796,16 @@ final class Setup {
         $this->text('Символические ссылки расставлены');
     }
 
+    /**
+     * Iterate over uploads.
+     *
+     * @param string $directory Directory.
+     * @param null|int $PID Parent ID.
+     *
+     * @throws Exception 'ERROR'
+     * @throws Exception 'ERROR INSERTING'
+     * @throws Exception 'ERROR UPDATING'
+     */
     private function iterateUploads($directory, $PID = null) {
 
         //static $counter = 0;
@@ -853,6 +884,14 @@ final class Setup {
         }
     }
 
+    /**
+     * Synchronize uploads.
+     *
+     * @param string $uploadsPath Path to the uploads.
+     *
+     * @throws Exception 'Репозиторий по такому пути не существует'
+     * @throws Exception 'Странный какой то идентификатор родительский.'
+     */
     private function syncUploadsAction($uploadsPath = self::UPLOADS_PATH) {
         $this->checkDBConnection();
         $this->title('Синхронизация папки с загрузками');
@@ -881,9 +920,9 @@ final class Setup {
     }
 
     /**
-     * Рекурсивно очищает папку от того, что в ней было.
+     * Recursive clean directory.
      *
-     * @param string $dir путь к папке
+     * @param string $dir Path to the directory.
      */
     private function cleaner($dir) {
         if (is_dir($dir)) {
@@ -909,13 +948,16 @@ final class Setup {
         }
     }
 
+    //todo VZ: $level is not used.
     /**
-     * Расставляем симлинки для модулей ядра
+     * Create symlinks for core modules.
      *
-     * @param string $globPattern паттерн для выбора файлов
-     * @param string $module путь к модулю ядра
-     * @param int $level финт ушами для формирования относительных путей для симлинков, при рекурсии инкрементируется
-     * @throws Exception
+     * @param string $mode Mode.
+     * @param string $globPattern File selection pattern.
+     * @param string $module Path to the core module.
+     * @param int $level Depth level for relative paths.
+     *
+     * @throws Exception 'Не удалось создать символическую ссылку'
      */
     private function linkCore($mode, $globPattern, $module, $level = 1) {
         $JSMIn = new JSqueeze();
@@ -981,10 +1023,13 @@ final class Setup {
     }
 
     /**
-     * Создание symlinks для модулей сайта.
+     * Create symlinks for site modules.
      *
-     * @param string $globPattern паттерн для выбора файлов
-     * @param string $dir директория, в которой создавать симлинки
+     * @param string $mode Mode.
+     * @param string $globPattern File selection pattern.
+     * @param string $dir Directory where symlinks will be created.
+     *
+     * @throws Exception 'Не удалось создать символическую ссылку'
      */
     private function linkSite($mode, $globPattern, $dir) {
         $JSMin = new JSqueeze();
@@ -1031,18 +1076,18 @@ final class Setup {
     }
 
     /**
-     * Вывод заголовок текущего действия установки, дополненный красивыми звездочками
+     * Show title of current installation action with beauty stars.
      *
-     * @param string $text
+     * @param string $text Text.
      */
     private function title($text) {
         echo str_repeat('*', 80), PHP_EOL, $text, PHP_EOL, PHP_EOL;
     }
 
     /**
-     * Выводит все переданные параметры в виде строки.
+     * Show all input arguments as string line.
      *
-     * @param string
+     * @return string
      */
     private function text() {
         foreach (func_get_args() as $text) {
@@ -1052,11 +1097,10 @@ final class Setup {
     }
 
     /**
-     * Рекурсивно проходится по всем файлам и директориям в папке scripts и возвращает результат
-     * в переменную $result
+     * Recursive iterate throw all files and directories in the folder @c "scripts" and store the result into @c $result argument.
      *
-     * @param string $directory
-     * @param array $result
+     * @param string $directory Directory.
+     * @param array $result Reference to the result.
      */
     private function iterateScripts($directory, &$result) {
 
@@ -1077,10 +1121,10 @@ final class Setup {
     }
 
     /**
-     * Парсер включений ScriptLoader.load()
+     * Parse inclusions in <tt>ScriptLoader.load()</tt>
      *
-     * @param string $script полное имя javascript-файла
-     * @return array массив зависимостей
+     * @param string $script Full name of JavaScript-file
+     * @return array
      */
     private function parseScriptLoader($script) {
         $result = array();
@@ -1099,16 +1143,16 @@ final class Setup {
     }
 
     /**
-     * Записывает массив зависимостей в php файл system.jsmap.php
+     * Write an array of dependencies into @c "system.jsmap.php"
      *
-     * @param array $deps
+     * @param array $deps Dependencies.
      */
     private function writeScriptMap($deps) {
         file_put_contents(HTDOCS_DIR . '/system.jsmap.php', '<?php return ' . var_export($deps, true) . ';');
     }
 
     /**
-     * Создает файл system.jsmap.php с массивом зависимостей для JS классов
+     * Create file @c "system.jsmap.php" with dependencies for JavaScript classes.
      */
     private function scriptMapAction() {
 

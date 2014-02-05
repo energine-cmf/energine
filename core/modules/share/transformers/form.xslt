@@ -88,7 +88,7 @@
                         </xsl:if>
                     </xsl:for-each>
                     <xsl:for-each select="$FIELDS[@type='tab']">
-                        <li>
+                        <li data-src="{ancestor::component/@single_template}{.}">
                             <a href="#{generate-id(.)}"><xsl:value-of select="@title" /></a>
                         </li>
                     </xsl:for-each>
@@ -102,9 +102,7 @@
                     </div>
                 </xsl:for-each>
                 <xsl:for-each select="$FIELDS[@type='tab']">
-                    <div id="{generate-id(.)}">
-                        <iframe src="{ancestor::component/@single_template}{.}" frameBorder="0" scrolling="no" style="width:99%; height:99%;"></iframe>
-                    </div>
+                    <div id="{generate-id(.)}"></div>
                 </xsl:for-each>
             </div>
             <xsl:if test="../toolbar">

@@ -35,6 +35,7 @@ ul.toolbar li {
     text-align: center;
     white-space: nowrap;
     font-size: 13px;
+    font-family: Tahoma, sans-serif;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;

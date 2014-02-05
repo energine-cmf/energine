@@ -139,7 +139,8 @@ ul.docked_toolbar {
     top: 0;
     left: 0;
     z-index: 11;
-    width: 30px;
+    /*width: 30px;*/
+    width: 32px;
 }
 ul.docked_toolbar li {
     min-height: 30px;
@@ -166,7 +167,7 @@ ul.docked_toolbar li.highlighted { background-color: #ecf3f8 !important; }
 ul.docked_toolbar li.pressed { background-color: #A6CE39 !important; }
 
 ul.main_toolbar {
-    padding-left: 28px !important;
+    padding-left: 30px !important;
 }
 .e-has-sideframe ul.main_toolbar { /* костыль для IE6, который не может растянуть верхний фрейм на всю ширину body */
     _margin-left: -300px !important;

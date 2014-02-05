@@ -177,6 +177,10 @@ optgroup option {
     border-radius: 0 4px 4px 0;
     background-color: #dedede;
 }
+.e-pane-content .field.file_upload .control.type_file  .appended_block button,
+.e-pane-content .field.file_upload .control.type_file  .appended_block input[type="button"] {
+    height: 16px;
+}
 .e-pane-content .field .control  .appended_block.appended_inner button,
 .e-pane-content .field .control  .appended_block.appended_inner input[type="button"] {
     border-radius: 0;

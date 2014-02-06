@@ -84,7 +84,6 @@ class Grid extends DBDataSet {
         if (!$this->getParam('recordsPerPage')) {
             $this->setParam('recordsPerPage', DataSet::RECORD_PER_PAGE);
         }
-
         if (!$this->getTitle())
             $this->setTitle($this->translate(
                 'TXT_' . strtoupper($this->getName())));
@@ -540,7 +539,6 @@ class Grid extends DBDataSet {
                 }
                 $result = array();
                 $multidata = $_POST[$this->getTranslationTableName()];
-                inspect($multidata);
                 foreach ($multidata as $langID => $langValues) {
                     $idx = arrayPush($result, $data);
                     $result[$idx]['lang_id'] = $langID;
@@ -1240,8 +1238,9 @@ class Grid extends DBDataSet {
      */
     protected function prepare() {
         parent::prepare();
-        $this->createFilter();
 
+        if($this->getType() == self::COMPONENT_TYPE_LIST)
+            $this->createFilter();
     }
 
     protected function createFilter() {

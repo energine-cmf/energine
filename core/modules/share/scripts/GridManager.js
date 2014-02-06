@@ -1378,10 +1378,34 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
      * Check the filter's condition option.
      */
     checkCondition: function() {
-        var isDate = this.fields.getSelected()[0].getAttribute('type') == 'datetime';
+        var fieldType = this.fields.getSelected()[0].getAttribute('type'),
+            isDate = (fieldType == 'datetime');
+        var typesMap = [
+        //Date types Если дата - оставляем период, < , > , =
+        {types: ['date', 'datetime'],  conditions: ['between', '>', '<', '=', '!=']},
+        //string types Строковые - содержит, не содержит, =, !=
+        {types: ['string', 'text', 'htmlblock', 'select'], conditions: ['like', 'notlike', '=', '!=']},
+        //Чисельные <, >, =, !=, период
+        {types: ['integer', 'float'], conditions: ['>', '<', '=', '!=', 'between']},
+        //Булиновы  - checked, unchecked
+        {types: ['boolean'], conditions: ['checked', 'unchecked']}];
+
+        //var availableConditions = ['like', 'notlike', '=', '!='];
+        this.condition.getElements('option').setStyle('display', 'none');
+
+        for(var i in typesMap){
+            if(typesMap[i].types.contains(fieldType)){
+                typesMap[i].conditions.each(function(c){
+                    this.condition.getElement('option[value='+c+']').setStyle('display', '');
+                }, this);
+                break;
+            }
+        }
+
+
         this.disableInputField(isDate);
         this.inputs.showDatePickers(isDate);
-        this.condition.getElements('option[value=like],option[value=notlike]').setStyle('display', (isDate ? 'none' : ''));
+        //this.condition.getElements('option[value=like],option[value=notlike]').setStyle('display', (isDate ? 'none' : ''));
 
         if (this.condition.options[this.condition.selectedIndex].getStyle('display') == 'none') {
             for (var n = 0; isDate && n < this.condition.options.length; n++) {

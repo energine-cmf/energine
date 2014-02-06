@@ -128,6 +128,8 @@
                                             <option value="!=">!=</option>
                                             <option value="&lt;"><xsl:text>&lt;</xsl:text></option>
                                             <option value="&gt;"><xsl:text>&gt;</xsl:text></option>
+                                            <option value="checked">checked</option>
+                                            <option value="unchecked">unchecked</option>
                                             <option value="between"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_BETWEEN']"/></option>
                                         </select>
                                         <span class="f_query_container">

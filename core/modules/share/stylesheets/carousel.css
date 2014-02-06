@@ -8,6 +8,7 @@ Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
     position: relative;
     height: 82px;    
     background: white;
+    font-family: Tahoma, sans-serif;
 }
 .carousel .next_control, .carousel .previous_control {
     display: block;

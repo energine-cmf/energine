@@ -4,6 +4,7 @@ ul.toolbar {
     margin: 10px 0 0 0 !important;
     padding: 8px !important;
     border-radius: 4px;
+    font-family: Tahoma, sans-serif;
 	color:black;
 }
 .colset ul.toolbar,
@@ -35,7 +36,6 @@ ul.toolbar li {
     text-align: center;
     white-space: nowrap;
     font-size: 13px;
-    font-family: Tahoma, sans-serif;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;

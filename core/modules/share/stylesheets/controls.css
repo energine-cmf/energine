@@ -1,7 +1,10 @@
+.e-pane-content {
+    font-family: Tahoma, sans-serif;
+}
 /* ----- forms ----- */
 form {
     margin: 0 0 1em 0;
-    font-family: Arial, sans-serif;
+    font-family: Tahoma, sans-serif;
 }
 fieldset {
     padding: 12px;

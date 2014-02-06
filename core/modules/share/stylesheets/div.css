@@ -19,9 +19,11 @@ img {
     padding: 32px 10px 12px 10px;
     border: 0; 
     background: #eee;
-    _padding-top: 38px;    
+    _padding-top: 38px;
+    font-family: Tahoma, sans-serif;
 }
-.e-divtree-panel body, .e-divtree-panel .e-singlemode-layout {    
+.e-divtree-panel body,
+.e-divtree-panel .e-singlemode-layout {
     height: 100%;
     padding: 0;
     background: #fff;

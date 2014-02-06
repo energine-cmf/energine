@@ -23,6 +23,7 @@
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: Tahoma, sans-serif;
 }
 /* ----- /grid form ----- */
 
@@ -31,23 +32,15 @@
     position: relative;
     height: 100%;
     min-height: 500px;
-    font-family: Arial, sans-serif;
+    font-family: Tahoma, sans-serif;
     font-size: 13px;
     line-height: normal;
-    _height: 500px;
 }
 .e-singlemode-layout .e-pane {
     min-height: 0;
-    _height: 100%;
 }
-/* оверлей внутри табпейна, его высота вычисляется expression'ом для IE6 в случае, когда высота e-pane задана в пикселах */
 .e-pane .e-overlay {
     position: absolute;
-    _top: 0;
-    _height: expression(this.parentNode.clientHeight);    
-}
-.e-singlemode-layout .e-pane .e-overlay {
-    _height: 100%;
 }
 
 /* pane toolbars */
@@ -58,7 +51,6 @@
     left: 10px;
     z-index: 1;
     background: white;
-    _width: expression(this.parentNode.clientWidth - 20);
 }
 .e-pane-t-toolbar {
     top: 0;
@@ -67,7 +59,6 @@
 .e-pane-b-toolbar {                    
     bottom: 0;
     padding-bottom: 10px;
-    _padding-bottom: 9px;
 } 
 /* Классы-модификаторы (для контейнера e-pane) для случая, когда есть тулбары вверху и/или внизу */
 .e-pane-has-t-toolbar1 .e-pane-t-toolbar, 
@@ -82,7 +73,6 @@
 }
 .e-pane-has-t-toolbar1 .e-pane-content { 
     top: 47px;
-    _height: expression(this.parentNode.clientHeight - 66);
 }
 /* 2 тулбара вверху */
 .e-pane-has-t-toolbar2 .e-pane-t-toolbar { 
@@ -90,7 +80,6 @@
 }
 .e-pane-has-t-toolbar2 .e-pane-content { 
     top: 58px;
-    _height: expression(this.parentNode.clientHeight - 90); 
 }
 /* 1 тулбар внизу */
 .e-pane-has-b-toolbar1 .e-pane-b-toolbar { 
@@ -122,22 +111,17 @@
     border: 1px solid #ddd;
     background: white;
     padding: 0;
-    _width: expression(this.parentNode.clientWidth - 42);
-    _height: expression(this.parentNode.clientHeight - 42);
+    font-family: Tahoma, sans-serif;
 }
 .e-singlemode-layout .e-pane-t-toolbar, 
 .e-singlemode-layout .e-pane-b-toolbar, 
 .e-singlemode-layout .e-pane-content {
     position: fixed;
-    _position: absolute;
 }
 .e-pane-item {
     /* 
         Для этого блока применяется метод перевода боксовой модели в модель border-box, 
-        что дает возможность создать отступы и бордеры у блока при его 100% высоте.        
-        В IE6 этот эффект делается с помощью expression.
-        В IE7 expressions нельзя использовать, так как будет глючить скрипт, который подгоняет размеры грида,
-        поэтому используется абсолютное позиционирование блока.
+        что дает возможность создать отступы и бордеры у блока при его 100% высоте.
     */
     -moz-box-sizing: border-box; /* Firefox 2+ */
     -ms-box-sizing: border-box; /* IE 8 */
@@ -146,7 +130,6 @@
     box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
     height: 100%;    
     overflow: auto;
-    /*border: 1px dotted #777;*/
     padding: 10px;
     *position: absolute;
     *top: 10px;
@@ -154,16 +137,12 @@
     *bottom: 10px;
     *left: 10px;
     *height: auto;
-    _position: static;
-    _width: expression(this.parentNode.clientWidth - 42);
-    _height: expression(this.parentNode.clientHeight - 42);   
+    font-family: Tahoma, sans-serif;
 }
 .e-grid-pane .e-pane-item {
     border: 0;
     padding: 0;
     overflow: hidden;
-    _width: 100%;
-    _height: 100%;
 }
 
 /* pane tabs */
@@ -188,7 +167,11 @@
     cursor: pointer;
     border: 1px solid transparent;
 }
-.e-tabs li a, .e-tabs li a:link, .e-tabs li a:visited, .e-tabs li a:hover, .e-tabs li a:active {
+.e-tabs li a,
+.e-tabs li a:link,
+.e-tabs li a:visited,
+.e-tabs li a:hover,
+.e-tabs li a:active {
     color: #428bca;
     text-decoration: none;
 }

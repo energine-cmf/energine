@@ -12,7 +12,8 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    border: 0;       
+    border: 0;
+    font-family: Tahoma, sans-serif;
 }
 
 html {
@@ -50,13 +51,11 @@ html.e-has-topframe3 {
     left: 0;    
     width: 100%;
     min-height: 31px;
+    font-family: Tahoma, sans-serif;
     *z-index: 1;
 }
 .e-has-topframe1 .e-topframe, .e-has-topframe2 .e-topframe, .e-has-topframe3 .e-topframe {
     display: block;
-}
-.e-has-sideframe .e-topframe { /* костыль для IE6, который не может растянуть верхний фрейм на всю ширину body */
-    _left: 300px;
 }
 
 .e-mainframe {
@@ -66,7 +65,6 @@ html.e-has-topframe3 {
     height: 100%;               
     overflow: auto;
     margin-right: -100%;
-    _clear: right;
 }
 
 .e-sideframe {
@@ -78,6 +76,7 @@ html.e-has-topframe3 {
     width: 300px;
     height: 100%;
     background: #eee;
+    font-family: Tahoma, sans-serif;
     z-index: 3;
 }
 .e-has-sideframe .e-sideframe {
@@ -103,7 +102,6 @@ html.e-has-topframe3 {
     border-left: 1px solid #eeeedd;
     border-right: 1px solid #aaaaaa;
     background: #eeeedd;
-    /*cursor: e-resize;*/
 }
 .e-sideframe iframe {
     display: block;
@@ -124,6 +122,7 @@ html.e-has-topframe3 {
     background-image: -ms-linear-gradient(top,#f5f5f5,#cfd1cf);
     background-image: linear-gradient(top,#f5f5f5,#cfd1cf);
     filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#f5f5f5',endColorstr='#cfd1cf');
+    font-family: Tahoma, sans-serif;
 }
 ul.docked_toolbar {
     position: relative;
@@ -139,7 +138,6 @@ ul.docked_toolbar {
     top: 0;
     left: 0;
     z-index: 11;
-    /*width: 30px;*/
     width: 32px;
 }
 ul.docked_toolbar li {
@@ -150,13 +148,12 @@ ul.docked_toolbar li {
     border: 0;
     line-height: 30px;
     vertical-align: middle;
-    _height: 40px;
     background: transparent;
     border-radius: 0;
     border: 0;
 }
 ul.docked_toolbar li.icon {
-    height: 30px; /* =24px для размера шрифта 11px */
+    height: 30px;
     padding: 0 15px !important;
     background: 50% 50% no-repeat;
 }
@@ -169,12 +166,8 @@ ul.docked_toolbar li.pressed { background-color: #A6CE39 !important; }
 ul.main_toolbar {
     padding-left: 30px !important;
 }
-.e-has-sideframe ul.main_toolbar { /* костыль для IE6, который не может растянуть верхний фрейм на всю ширину body */
-    _margin-left: -300px !important;
-}
 .e-has-sideframe ul.wysiwyg_toolbar, .e-has-sideframe ul.feed_toolbar { 
-    margin-left: 300px !important;   
-    _margin-left: 0 !important;    
+    margin-left: 300px !important;
 }
 ul.docked_toolbar.block_management_toolbar,
 ul.docked_toolbar.block_management_toolbar li {

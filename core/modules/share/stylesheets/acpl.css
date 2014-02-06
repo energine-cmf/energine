@@ -3,6 +3,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     max-height:200px;
+    font-family: Tahoma, sans-serif;
 }
 .alist ul{
     list-style: none;

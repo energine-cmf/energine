@@ -4,9 +4,9 @@
     margin: 10px 0 0 0 !important;
     padding: 8px 2px 8px 22px !important;
     background: #eee url(../images/pagelist.gif) 4px center no-repeat !important;
+    font-family: Tahoma, sans-serif;
     font-size: 13px;
     line-height: normal;
-    _height: 14px;
     border-radius: 4px;
 }
 .e-pagelist * {

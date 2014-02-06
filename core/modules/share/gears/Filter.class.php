@@ -109,10 +109,6 @@ class Filter extends Object {
     public function loadXML(SimpleXMLElement $filterDescription) {
         if(!empty($filterDescription))
             foreach ($filterDescription->field as $fieldDescription) {
-                if (!isset($fieldDescription['type'])) {
-                    throw new SystemException('ERR_DEV_NO_CONTROL_TYPE', SystemException::ERR_DEVELOPER);
-                }
-
                 $field = new FilterField(
                     isset($fieldDescription['name']) ? (string)$fieldDescription['name'] : null
                 );

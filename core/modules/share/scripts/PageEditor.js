@@ -183,9 +183,9 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
                 method: 'post',
                 data: data,
                 onSuccess: function (response) {
-                    this.editor.resetDirty();
                     this.editor.setData(response);
                     if (onSuccess)onSuccess.call(this);
+                    this.editor.resetDirty();
                     if (!async) {
                         this.overlay.hide();
                     }

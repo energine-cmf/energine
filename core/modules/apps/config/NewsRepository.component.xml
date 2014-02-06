@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <state name="main">
+        <filter>
+            <field name="news_title" title="FIELD_NEWS_TITLE"/>
+            <field name="news_is_active"/>
+        </filter>
         <javascript>
             <behavior name="GridManager"/>
         </javascript>

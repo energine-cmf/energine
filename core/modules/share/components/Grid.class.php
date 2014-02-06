@@ -180,14 +180,6 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * @copydoc DBDataSet::main
-     */
-    protected function main() {
-        parent::main();
-        $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
-    }
-
-    /**
      * Delete.
      *
      * @return mixed
@@ -548,6 +540,7 @@ class Grid extends DBDataSet {
                 }
                 $result = array();
                 $multidata = $_POST[$this->getTranslationTableName()];
+                inspect($multidata);
                 foreach ($multidata as $langID => $langValues) {
                     $idx = arrayPush($result, $data);
                     $result[$idx]['lang_id'] = $langID;
@@ -872,7 +865,7 @@ class Grid extends DBDataSet {
         }
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->setProperty('moveFromId', $id);
-        $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
+        //$this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
         $this->prepare();
     }
 
@@ -1077,11 +1070,17 @@ class Grid extends DBDataSet {
             $tableName = key($_POST['filter']);
             $fieldName = key($_POST['filter'][$tableName]);
             $values = $_POST['filter'][$tableName][$fieldName];
-            //inspect(in_array($this->getDataDescription()->getFieldDescriptionByName($fieldName)->getType(), array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME)));
+            if(
+                !$this->dbh->tableExists($tableName)
+            ||
+                !($tableInfo = $this->dbh->getColumnsInfo($tableName))
+            ||
+                !isset($tableInfo[$fieldName])
+            ){
+                throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $tableName);
+            }
+
             if (
-                $this->dbh->tableExists($tableName) &&
-                ($tableInfo = $this->dbh->getColumnsInfo($tableName)) &&
-                isset($tableInfo[$fieldName]) &&
                 is_array($tableInfo[$fieldName]['key'])
             ) {
                 $fkTranslationTableName =
@@ -1109,7 +1108,8 @@ class Grid extends DBDataSet {
                     $this->addFilterCondition(' FALSE');
                 }
             } else {
-                $fieldType = $this->getDataDescription()->getFieldDescriptionByName($fieldName)->getType();
+
+                $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName, $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
 
                 if (in_array($condition, array('like', 'notlike')) && in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME))) {
                     if ($condition == 'like') {
@@ -1240,24 +1240,30 @@ class Grid extends DBDataSet {
      */
     protected function prepare() {
         parent::prepare();
-        //todo : Порядок генерации фильтров
+        $this->createFilter();
+
+    }
+
+    protected function createFilter() {
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
-            if (!($config->filter && !$config->filter->count())) {
-                $this->filter_control = new Filter();
-                $this->filter_control->attachToComponent($this);
-                if ($config->filter) {
-                    $this->filter_control->loadXML($config->filter);
-                } else {
-                    foreach ($this->getDataDescription() as $fd) {
-                        if (in_array($fd->getType(), array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_INT, FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_EMAIL, FieldDescription::FIELD_TYPE_STRING))) {
-                            $ff = new FilterField($fd->getName(), $fd->getType());
-                            if ($fd->getPropertyValue('title'))
-                                $ff->setAttribute('title', $fd->getPropertyValue('title'));
-                            $this->filter_control->attachField($ff);
-                        }
+            $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
+            $this->filter_control = new Filter();
+            $cInfo = $this->dbh->getColumnsInfo($this->getTableName());
+            if ($this->getTranslationTableName()) {
+                $cInfo = array_merge($cInfo, $this->dbh->getColumnsInfo($this->getTranslationTableName()));
+            }
+            if ($config->filter) {
+                $this->filter_control->load($config->filter, $cInfo);
+            } else {
+                foreach ($cInfo as $name => $attrs) {
+                    $type = FieldDescription::convertType($attrs['type'], $name, $attrs['length'], $attrs);
+                    if (in_array($type, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_INT, FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_EMAIL, FieldDescription::FIELD_TYPE_STRING, FieldDescription::FIELD_TYPE_TEXT, FieldDescription::FIELD_TYPE_HTML_BLOCK)) && ($attrs['index'] != 'PRI')) {
+                        $ff = new FilterField($name, $type);
+                        $ff->setAttribute('tableName', $attrs['tableName']);
+                        $ff->setAttribute('title', 'FIELD_'.$name);
+                        $this->filter_control->attachField($ff);
                     }
                 }
-                $this->filter_control->translate();
             }
         }
     }

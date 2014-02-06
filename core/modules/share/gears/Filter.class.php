@@ -46,32 +46,8 @@ class Filter extends Object {
      */
     private $properties = array();
 
-    /**
-     * Component of the filter.
-     * @var Component $component
-     */
-    private $component;
-
     public function __construct() {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
-    }
-
-    /**
-     * Attach filter to the component.
-     *
-     * @param Component $component Component.
-     */
-    public function attachToComponent(Component $component) {
-        $this->component = $component;
-    }
-
-    /**
-     * Get attached component.
-     *
-     * @return Component
-     */
-    public function getComponent() {
-        return $this->component;
     }
 
     /**
@@ -104,17 +80,19 @@ class Filter extends Object {
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      *
      * @param SimpleXMLElement $filterDescription Filter description.
+     * @param array $meta Info about table columns
      * @return mixed
      */
-    public function loadXML(SimpleXMLElement $filterDescription) {
+    public function load(SimpleXMLElement $filterDescription, array $meta = null) {
         if(!empty($filterDescription))
             foreach ($filterDescription->field as $fieldDescription) {
-                $field = new FilterField(
-                    isset($fieldDescription['name']) ? (string)$fieldDescription['name'] : null
-                );
-
+                if(!isset($fieldDescription['name'])){
+                    throw new SystemException('ERR_BAD_FILTER_XML', SystemException::ERR_DEVELOPER);
+                }
+                $name = (string)$fieldDescription['name'];
+                $field = new FilterField($name);
                 $this->attachField($field);
-                $field->loadFromXml($fieldDescription);
+                $field->load($fieldDescription, (isset($meta[$name])?$meta[$name]:null));
             }
     }
 
@@ -157,8 +135,8 @@ class Filter extends Object {
      */
     public function build() {
         $result = false;
-
-        if (count($this->fields) > 0) {
+        if (sizeof($this->fields)) {
+            $this->translate();
             $filterElem = $this->doc->createElement(self::TAG_NAME);
             if (!empty($this->properties)) {
                 $props = $this->doc->createElement('properties');

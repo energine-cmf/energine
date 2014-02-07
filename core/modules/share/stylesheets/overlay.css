@@ -9,17 +9,6 @@
     background: black;
     line-height: 0;
     font-size: 0;
-    _position: absolute;
-    _top: expression(eval(document.documentElement.scrollTop));    
-}
-.e-has-topframe1 .e-overlay {
-    _padding-top: 25px;
-}
-.e-has-topframe2 .e-overlay {              
-    _padding-top: 50px;
-}
-.e-has-sideframe .e-overlay {
-    _padding-left: 300px;
 }
 .e-overlay-loading {
     background: black url("../images/overlay_loading.gif") 50% 50% no-repeat;

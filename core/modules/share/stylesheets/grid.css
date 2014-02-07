@@ -1,6 +1,7 @@
 a.f_reset,
 a.f_reset:hover,
 a.f_reset:active {
+    font-family: Tahoma, sans-serif;
     color: #428bca;
     text-decoration: none;
 }
@@ -14,12 +15,14 @@ div.grid div.filter {
     margin: 10px 0;
     padding: 10px;
     border-radius: 4px;
+    font-family: Tahoma, sans-serif;
 }
 div.grid div.filter.active {
     background: #ecf3f8;
 }
 
 div.grid div.filter select, div.grid div.filter input, div.grid div.filter button {
+    font-family: Tahoma, sans-serif;
     font-size: 14px;
     color: #555;
 	margin:0 5px 0 0;
@@ -30,7 +33,7 @@ div.grid div.filter button {
     padding: 5px 8px;
 }
 div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_container{
-    margin-right: 0;
+    margin-right: 5px;
 }
 
 div.grid div.filter input {
@@ -46,12 +49,15 @@ div.grid div.filter input.small {
 div.grid .f_fields {
     width: 150px;
     height:auto;
+    font-family: Tahoma, sans-serif;
 }
 div.grid .f_condition {
     height:auto;
+    font-family: Tahoma, sans-serif;
 }
 div.grid .query {
     height:auto;
+    font-family: Tahoma, sans-serif;
 }
 .f_datepicker {
     /*vertical-align:middle;*/
@@ -59,6 +65,7 @@ div.grid .query {
     padding-right:5px;
     position:relative;
     top:3px;
+    font-family: Tahoma, sans-serif;
 }
 
 .grid_breadcrumbs {
@@ -67,6 +74,7 @@ div.grid .query {
     padding: 15px;
     background: #eee;
     font-size: 13px;
+    font-family: Tahoma, sans-serif;
 }
 .grid_breadcrumbs a {
     color: #428bca;
@@ -75,7 +83,7 @@ div.grid .query {
     margin: 10px;
     background: #fcfcfc;
     color:black;
-    font-family: Arial, sans-serif;
+    font-family: Tahoma, sans-serif;
     font-size:13px;
     font-size-adjust:none;
     font-stretch:normal;
@@ -88,12 +96,13 @@ div.grid .query {
     border: 1px solid #ddd;
     border-bottom: 0;
     background: #efefef;
-    _height: 1%; /* добавляет свойство hasLayout для IE6 */
+    font-family: Tahoma, sans-serif;
 }
 
 .gridHeadContainer th {
     background: auto;
     cursor: default;
+    font-family: Tahoma, sans-serif;
 }
 
 .gridHeadContainer th.asc {
@@ -106,14 +115,14 @@ div.grid .query {
 }
 
 .gridContainer {
-    /*height: 200px;*/
     overflow: scroll;
     overflow-x: hidden;
     border: 1px solid #ddd;
+    font-family: Tahoma, sans-serif;
 }
 
 table.gridTable, table.gridTable th, table.gridTable td {
-
+    font-family: Tahoma, sans-serif;
 }
 
 table.gridTable {
@@ -135,6 +144,7 @@ table.gridTable {
     background: #efefef;
     text-align: left;
     color:#000000;
+    font-family: Tahoma, sans-serif;
     font-weight: bold;
 }
 .gridTable td {
@@ -143,7 +153,7 @@ table.gridTable {
     border: 0;
     border-right: 1px solid #ddd;
     cursor:default;
-    /*border-bottom: 1px solid #aaaaaa;*/
+    font-family: Tahoma, sans-serif;
 }
 
 .gridTable tr.even td {

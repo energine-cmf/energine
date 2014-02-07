@@ -3,18 +3,21 @@
 form .invalid {
     border-style: solid;
     border-color: #931313;
+    font-family: Tahoma, sans-serif;
 }
 
 form div.error {
     padding: 0.5em;
     color: #931313;
     font-size: 13px;
+    font-family: Tahoma, sans-serif;
 }
 
 form .field {
     clear: both;
     margin: 12px 0 0 10px;
     font-size: 13px;
+    font-family: Tahoma, sans-serif;
 }
 form .field button {
     font-size: 13px;

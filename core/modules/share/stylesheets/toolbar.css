@@ -33,6 +33,7 @@ ul.toolbar li {
     border-radius: 4px;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    font-family: Tahoma, sans-serif;
     text-align: center;
     white-space: nowrap;
     font-size: 13px;

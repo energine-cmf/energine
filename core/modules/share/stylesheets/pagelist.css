@@ -20,6 +20,7 @@
     list-style: none !important;
     cursor: default;
 	color:#428bca;
+    font-family: Tahoma, sans-serif;
 }
 .e-pagelist .highlighted {
     background: #ecf3f8 !important;

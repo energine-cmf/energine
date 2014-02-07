@@ -16,7 +16,8 @@
 	padding: 2px;
 	color: #000; 
 	text-decoration: none;
-    padding-left: 21px; 
+    padding-left: 21px;
+    font-family: Tahoma, sans-serif;
 }
 
 .treeview li a:hover, .treeview li.selected li a:hover { 

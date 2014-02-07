@@ -172,6 +172,7 @@
 .e-tabs li a:visited,
 .e-tabs li a:hover,
 .e-tabs li a:active {
+    font-family: Tahoma, sans-serif;
     color: #428bca;
     text-decoration: none;
 }

@@ -1,6 +1,7 @@
 a.f_reset,
 a.f_reset:hover,
 a.f_reset:active {
+    font-family: Tahoma, sans-serif;
     color: #428bca;
     text-decoration: none;
 }
@@ -21,6 +22,7 @@ div.grid div.filter.active {
 }
 
 div.grid div.filter select, div.grid div.filter input, div.grid div.filter button {
+    font-family: Tahoma, sans-serif;
     font-size: 14px;
     color: #555;
 	margin:0 5px 0 0;

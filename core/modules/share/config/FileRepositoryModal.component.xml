@@ -11,6 +11,13 @@
         </uri_patterns>
     </state>
     <state name="main">
+        <filter>
+            <field name="upl_title"/>
+            <field name="upl_publication_date"/>
+            <field name="upl_is_ready"/>
+            <field name="upl_filename"/>
+            <field name="upl_internal_type"/>
+        </filter>
         <javascript>
             <behavior name="FileRepository"/>
         </javascript>

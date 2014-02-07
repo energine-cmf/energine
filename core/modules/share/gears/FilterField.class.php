@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class FilterField;
-@endcode
+ * @endcode
  *
  * @author andy.karpov
  * @copyright Energine 2013
@@ -22,7 +22,7 @@ class FilterField;
  *
  * @code
 class FilterField;
-@endcode
+ * @endcode
  */
 class FilterField extends Object {
     /**
@@ -116,26 +116,31 @@ class FilterField extends Object {
      * Load element from XML description.
      *
      * @param SimpleXMLElement $description Element description.
-     *
+     * @param array $meta DB column meta data
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
-    public function loadFromXml(SimpleXMLElement $description) {
-        $attr = $description->attributes();
+    public function load(SimpleXMLElement $description, array $meta = null) {
+        //Получили список аттрибутов заданных в филдах фильтра
+        //Get the attributes list form filter fields
+        $attrs = (array)$description->attributes();
+        $attrs = $attrs['@attributes'];
+        //we do no need name attribute
+        unset($attrs['name']);
 
-        $this->setAttribute('mode',
-            FieldDescription::computeRights(
-                $this->getFilter()->getComponent()->document->getRights(),
-                !is_null($attr['ro_rights']) ? (int)$attr['ro_rights'] : null,
-                !is_null($attr['fc_rights']) ? (int)$attr['fc_rights'] : null
-            )
-        );
-        unset($attr['ro_rights']);
-        unset($attr['fc_rights']);
-        foreach ($attr as $key => $value) {
+        if ($meta) {
+            if(!isset($attrs['title'])){
+                $attrs['title'] = 'FIELD_'.$this->getAttribute('name');
+            }
+            $attrs['type'] = FieldDescription::convertType($meta['type'], $this->getAttribute('name'), $meta['length'], $meta);
+            $attrs['tableName'] = $meta['tableName'];
+        }
+
+
+        foreach ($attrs as $key => $value) {
             if (isset($this->$key)) {
-                $this->$key = (string)$value;
+                $this->$key = $value;
             } else {
-                $this->setAttribute($key, (string)$value);
+                $this->setAttribute($key, $value);
             }
         }
     }

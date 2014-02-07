@@ -11,9 +11,6 @@ ul.toolbar {
 ul.toolbar.toolbar_attachmentEditor {
     background: #eee;
 }
-.e-topframe ul.toolbar {
-    background: none;
-}
 ul.toolbar * {
     margin: 0;
     padding: 0;
@@ -258,3 +255,8 @@ ul.toolbar li.down_btn:focus, ul.toolbar li.down_btn:hover, ul.toolbar li.down_b
     background-color: #1DA6FB;
 }
 /* -- button colors -- */
+
+/* --- media queries --- */
+@media screen and  (max-width: 1100px) {
+
+}

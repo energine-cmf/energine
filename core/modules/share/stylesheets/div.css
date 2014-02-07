@@ -16,10 +16,9 @@ img {
     box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
     height: 100%;
     overflow: hidden;
-    padding: 32px 10px 12px 10px;
+    padding: 63px 10px 12px 10px;
     border: 0; 
     background: #eee;
-    _padding-top: 38px;
     font-family: Tahoma, sans-serif;
 }
 .e-divtree-panel body,

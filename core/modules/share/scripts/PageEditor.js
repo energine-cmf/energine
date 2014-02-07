@@ -183,7 +183,9 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
                 method: 'post',
                 data: data,
                 onSuccess: function (response) {
-                    this.editor.setData(response);
+                    // Временно убрано, т.к. сбрасывает курсор в начала редактируемой области
+                    // и из за этого неправильно работают некоторые ф-ции эдитора.
+                    //this.editor.setData(response);
                     if (onSuccess)onSuccess.call(this);
                     this.editor.resetDirty();
                     if (!async) {

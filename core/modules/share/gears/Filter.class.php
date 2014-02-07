@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class Filter;
-@endcode
+ * @endcode
  *
  * @author andy.karpov
  * @copyright Energine 2013
@@ -19,7 +19,7 @@ class Filter;
  *
  * @code
 class Filter;
-@endcode
+ * @endcode
  */
 class Filter extends Object {
     /**
@@ -84,15 +84,15 @@ class Filter extends Object {
      * @return mixed
      */
     public function load(SimpleXMLElement $filterDescription, array $meta = null) {
-        if(!empty($filterDescription))
+        if (!empty($filterDescription))
             foreach ($filterDescription->field as $fieldDescription) {
-                if(!isset($fieldDescription['name'])){
+                if (!isset($fieldDescription['name'])) {
                     throw new SystemException('ERR_BAD_FILTER_XML', SystemException::ERR_DEVELOPER);
                 }
                 $name = (string)$fieldDescription['name'];
                 $field = new FilterField($name);
                 $this->attachField($field);
-                $field->load($fieldDescription, (isset($meta[$name])?$meta[$name]:null));
+                $field->load($fieldDescription, (isset($meta[$name]) ? $meta[$name] : null));
             }
     }
 
@@ -138,6 +138,8 @@ class Filter extends Object {
         if (sizeof($this->fields)) {
             $this->translate();
             $filterElem = $this->doc->createElement(self::TAG_NAME);
+            $filterElem->setAttribute('title', DBWorker::_translate('TXT_FILTER'));
+
             if (!empty($this->properties)) {
                 $props = $this->doc->createElement('properties');
                 foreach ($this->properties as $propName => $propValue) {
@@ -148,6 +150,87 @@ class Filter extends Object {
                 }
                 $filterElem->appendChild($props);
             }
+            //Добавляем информацию о доступных опреациях
+            $operatorsNode = $this->doc->createElement('operators');
+            /*
+             * <option value="like"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_CONTAINS']"/></option>
+                 <option value="notlike"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_NOT_CONTAINS']"/></option>
+                 <option value="=">=</option>
+                 <option value="!=">!=</option>
+                 <option value="&lt;"><xsl:text>&lt;</xsl:text></option>
+                 <option value="&gt;"><xsl:text>&gt;</xsl:text></option>
+                 <option value="checked">checked</option>
+                 <option value="unchecked">unchecked</option>
+                 <option value="between"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_BETWEEN']"/></option>
+             */
+            $stringTypes = array(
+                FieldDescription::FIELD_TYPE_STRING,
+                FieldDescription::FIELD_TYPE_SELECT,
+                FieldDescription::FIELD_TYPE_TEXT,
+                FieldDescription::FIELD_TYPE_HTML_BLOCK,
+                FieldDescription::FIELD_TYPE_VALUE,
+                FieldDescription::FIELD_TYPE_PHONE,
+                FieldDescription::FIELD_TYPE_EMAIL,
+                FieldDescription::FIELD_TYPE_CODE,
+            );
+            $numericTypes = array(
+                FieldDescription::FIELD_TYPE_INT,
+                FieldDescription::FIELD_TYPE_FLOAT
+            );
+            $dateTypes = array(
+                FieldDescription::FIELD_TYPE_DATETIME,
+                FieldDescription::FIELD_TYPE_DATE
+            );
+            foreach (array(
+                'like' => array(
+                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_CONTAINS'),
+                    'type' => $stringTypes
+                ),
+                'notlike' => array(
+                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_NOT_CONTAINS'),
+                    'type' => $stringTypes
+                ),
+                '=' => array(
+                    'title' => '=',
+                    'type' => array_merge($stringTypes, $numericTypes, $dateTypes)
+                ),
+                '!=' => array(
+                    'title' => '!=',
+                    'type' => array_merge($stringTypes, $numericTypes, $dateTypes)
+                ),
+                '<' => array(
+                    'title' => '<',
+                    'type' => array_merge($dateTypes, $numericTypes)
+                ),
+                '>' => array(
+                    'title' => '>',
+                    'type' => array_merge($dateTypes, $numericTypes)
+                ),
+                'between' => array(
+                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_BETWEEN'),
+                    'type' => array_merge($dateTypes, $numericTypes)
+                ),
+                'checked' => array(
+                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_CHECKED'),
+                    'type' => array(FieldDescription::FIELD_TYPE_BOOL)
+                ),
+                'unchecked' => array(
+                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_UNCHEKED'),
+                    'type' => array(FieldDescription::FIELD_TYPE_BOOL)
+                ),
+            ) as $operatorName => $operator){
+                $operatorNode = $this->doc->createElement('operator');
+                $operatorNode->setAttribute('title', $operator['title']);
+                $operatorNode->setAttribute('name', $operatorName);
+                $operatorsNode->appendChild($operatorNode);
+                $typesNode = $this->doc->createElement('types');
+                foreach($operator['type'] as $typeName){
+                    $typesNode->appendChild($this->doc->createElement('type', $typeName));
+                }
+                $operatorNode->appendChild($typesNode);
+            }
+            $filterElem->appendChild($operatorsNode);
+
             foreach ($this->fields as $field) {
                 $filterElem->appendChild($this->doc->importNode($field->build(), true));
             }

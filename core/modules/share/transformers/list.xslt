@@ -75,6 +75,9 @@
             </script>
     </xsl:template>
 
+    <!--Фильтр обрабатывается в BUILD_GRID-->
+    <xsl:template match="component[@type='list' and @exttype='grid']/filter"/>
+
     <xsl:template name="BUILD_GRID">
         <xsl:variable name="FIELDS" select="record/field"/>
         <xsl:variable name="TAB_ID" select="generate-id(record)"/>
@@ -114,23 +117,22 @@
                             <div class="grid_toolbar clearfix">
 
                                     <div class="filter">
-                                        <xsl:value-of select="$TRANSLATION[@const = 'TXT_FILTER']" />:<xsl:text>&#160;</xsl:text>
+                                        <xsl:value-of select="ancestor::component/filter/@title" />:<xsl:text>&#160;</xsl:text>
                                         <select name="fieldName" class="f_fields">
                                             <xsl:for-each select="ancestor::component/filter/field">
                                                 <option value="[{@tableName}][{@name}]" type="{@type}"><xsl:value-of select="@title"/></option>
                                             </xsl:for-each>
                                         </select>
-                                        <!--<xsl:text>&#160;</xsl:text>-->
                                         <select name="condition" class="f_condition">
-                                            <option value="like"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_CONTAINS']"/></option>
-                                            <option value="notlike"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_NOT_CONTAINS']"/></option>
-                                            <option value="=">=</option>
-                                            <option value="!=">!=</option>
-                                            <option value="&lt;"><xsl:text>&lt;</xsl:text></option>
-                                            <option value="&gt;"><xsl:text>&gt;</xsl:text></option>
-                                            <option value="checked">checked</option>
-                                            <option value="unchecked">unchecked</option>
-                                            <option value="between"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_BETWEEN']"/></option>
+                                            <xsl:for-each select="ancestor::component/filter/operators/operator">
+                                                <option value="{@name}">
+                                                    <xsl:attribute name="data-types">
+                                                        <xsl:for-each select="types/type"><xsl:value-of select="."/><xsl:if
+                                                                test="position()!=last()">|</xsl:if></xsl:for-each>
+                                                    </xsl:attribute>
+                                                    <xsl:value-of select="@title"/>
+                                                </option>
+                                            </xsl:for-each>
                                         </select>
                                         <span class="f_query_container">
                                             <input type="text" class="query"/>

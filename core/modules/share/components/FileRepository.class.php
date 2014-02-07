@@ -485,7 +485,7 @@ class FileRepository extends Grid {
     /**
      * @copydoc Grid::applyUserFilter
      */
-    protected function applyUserFilter() {
+   /* protected function applyUserFilter() {
         //Формат фильтра
         //$_POST['filter'][$tableName][$fieldName] = значение фильтра
         if (isset($_POST['filter'])) {
@@ -517,7 +517,7 @@ class FileRepository extends Grid {
             );
 
         }
-    }
+    }*/
 
     /**
      * @copydoc Grid::loadData

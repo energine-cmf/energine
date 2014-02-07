@@ -1061,7 +1061,9 @@ class Grid extends DBDataSet {
                 '!=' => '!= \'%s\'',
                 '<' => '<\'%s\'',
                 '>' => '>\'%s\'',
-                'between' => 'BETWEEN \'%s\' AND \'%s\''
+                'between' => 'BETWEEN \'%s\' AND \'%s\'',
+                'checked' => '= 1',
+                'unchecked' => '!=1'
             );
 
             unset($_POST['filter']['condition']);
@@ -1246,7 +1248,6 @@ class Grid extends DBDataSet {
     protected function createFilter() {
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
             //Нужно смотреть если он есть в дескрпшене - то использовать тип из него
-            $this->addTranslation('TXT_FILTER', 'BTN_APPLY_FILTER', 'TXT_RESET_FILTER', 'TXT_FILTER_SIGN_BETWEEN', 'TXT_FILTER_SIGN_CONTAINS', 'TXT_FILTER_SIGN_NOT_CONTAINS');
             $this->filter_control = new Filter();
             $cInfo = $this->dbh->getColumnsInfo($this->getTableName());
             if ($this->getTranslationTableName()) {

@@ -139,6 +139,8 @@ class Filter extends Object {
             $this->translate();
             $filterElem = $this->doc->createElement(self::TAG_NAME);
             $filterElem->setAttribute('title', DBWorker::_translate('TXT_FILTER'));
+            $filterElem->setAttribute('apply', DBWorker::_translate('BTN_APPLY_FILTER'));
+            $filterElem->setAttribute('reset', DBWorker::_translate('TXT_RESET_FILTER'));
 
             if (!empty($this->properties)) {
                 $props = $this->doc->createElement('properties');

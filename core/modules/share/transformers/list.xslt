@@ -147,9 +147,9 @@
                                             </span>
                                         </span>
                                         <!--<span class="f_query_date_container hidden"><input type="text" class="query"/><input type="text" class="hidden query"/></span>-->
-                                        <button type="button" class="f_apply"><xsl:value-of select="$TRANSLATION[@const = 'BTN_APPLY_FILTER']"/></button>
+                                        <button type="button" class="f_apply"><xsl:value-of select="ancestor::component/filter/@apply"/></button>
                                         <!--<xsl:text>&#160;</xsl:text>-->
-                                        <a href="#" class="f_reset"><xsl:value-of select="$TRANSLATION[@const = 'TXT_RESET_FILTER']"/></a>
+                                        <a href="#" class="f_reset"><xsl:value-of select="ancestor::component/filter/@reset"/></a>
                                     </div>
 
                                 <xsl:if test="ancestor::component[@class='FileRepository']">

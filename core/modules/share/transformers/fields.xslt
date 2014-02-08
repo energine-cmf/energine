@@ -502,14 +502,14 @@
     </xsl:template>
 
     <xsl:template match="field[@type='file'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
-        <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
+        <a href="{$MEDIA_URL}{.}" target="_blank"><xsl:value-of select="."/></a>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
         </input>
     </xsl:template>
 
     <xsl:template match="field[@type='file'][@mode='1' and @media_type='image'][ancestor::component[@type='form']]" mode="field_input_readonly">
-        <a href="{.}" target="_blank"><img src="{.}" alt=""/></a>
+        <a href="{$MEDIA_URL}{.}" target="_blank"><img src="{.}" alt=""/></a>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
         </input>

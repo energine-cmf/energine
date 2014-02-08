@@ -108,7 +108,7 @@
     bottom: 10px;
     left: 10px;                 
     overflow: hidden;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
     background: white;
     padding: 0;
     font-family: Tahoma, sans-serif;

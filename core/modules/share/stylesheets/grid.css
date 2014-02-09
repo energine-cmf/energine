@@ -147,6 +147,7 @@ table.gridTable {
     color:#000000;
     font-family: Tahoma, sans-serif;
     font-weight: bold;
+    text-align: center;
 }
 .gridTable td {
     margin: 0;

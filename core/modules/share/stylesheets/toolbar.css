@@ -3,6 +3,7 @@
 ul.toolbar {
     margin: 10px 0 0 0 !important;
     padding: 8px !important;
+    padding-left: 0 !important;
     border-radius: 4px;
     font-family: Tahoma, sans-serif;
 	color:black;
@@ -42,6 +43,9 @@ ul.toolbar li {
     user-select: none;
     -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+ul.toolbar li:first-child {
+    margin-left: 0 !important;
 }
 
 ul.toolbar li.icon {

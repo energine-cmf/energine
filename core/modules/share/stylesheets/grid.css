@@ -30,7 +30,7 @@ div.grid div.filter select, div.grid div.filter input, div.grid div.filter butto
     padding: 6px 8px;
 }
 div.grid div.filter select.f_condition {
-    width: 200px;
+    width: 150px;
 }
 div.grid div.filter button {
     padding: 5px 8px;

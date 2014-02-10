@@ -160,9 +160,6 @@ ul.docked_toolbar li.icon {
     padding: 0 15px !important;
     background: 50% 50% no-repeat;
 }
-ul.docked_toolbar li.separator {
-    display: none;
-}
 ul.docked_toolbar li.highlighted { background-color: #ecf3f8 !important; }
 ul.docked_toolbar li.pressed { background-color: #A6CE39 !important; }
 
@@ -176,7 +173,7 @@ ul.docked_toolbar.block_management_toolbar,
 ul.docked_toolbar.block_management_toolbar li {
     color: #000;
 }
-ul.docked_toolbar.block_management_toolbar li {
+ul.docked_toolbar.block_management_toolbar li.save_btn {
     background: none;
 }
 ul.docked_toolbar.block_management_toolbar:hover,
@@ -203,9 +200,24 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
     html.e-has-sideframe.e-has-topframe2 {
         padding-top: 92px;
     }
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn,
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.reset_btn {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fafafa;
+        min-height: 24px;
+        height: 24px;
+        margin: 2px !important;
+        padding: 0 17px !important;
+        line-height: 24px;
+    }
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.separator {
+        display: none;
+    }
     .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn {
         clear: left;
     }
+
 }
 @media screen and  (max-width: 1300px) {
     html.e-has-sideframe.e-has-topframe2 {
@@ -222,6 +234,9 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
     html.e-has-sideframe.e-has-topframe2 {
         padding-top: 122px;
     }
+    ul.toolbar li.separator {
+        display: none;
+    }
 }
 @media screen and  (max-width: 1042px) {
     html.e-has-topframe1 {
@@ -237,7 +252,25 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
     .e-has-topframe2 .e-sideframe {
         padding-top: 31px;
     }
-
+    ul.toolbar li {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fafafa;
+        min-height: 24px;
+        height: 24px;
+        margin: 2px !important;
+        padding: 0 17px !important;
+        line-height: 24px;
+    }
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li {
+        border: 0;
+        background: none;
+        min-height: 30px;
+        height: 30px;
+        margin: 0 !important;
+        padding: 0 20px !important;
+        line-height: 30px;
+    }
 }
 @media screen and  (max-width: 975px) {
     html.e-has-topframe2 {
@@ -299,7 +332,7 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         padding-top: 182px;
     }
 }
-@media screen and  (max-width: 555px) {
+@media screen and  (max-width: 640px) {
     html.e-has-topframe1 {
         padding-top: 91px;
     }
@@ -317,7 +350,7 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         padding-top: 212px;
     }
 }
-@media screen and  (max-width: 420px) {
+@media screen and  (max-width: 465px) {
     html.e-has-topframe1 {
         padding-top: 121px;
     }

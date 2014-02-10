@@ -1,5 +1,5 @@
 {
-    "name": "Energine/CMF",
+    "name": "energine/cmf",
     "description": "Energine is content management framework based on the XML/XSLT transformations.",
     "minimum-stability": "stable",
     "license": "MIT",

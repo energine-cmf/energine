@@ -80,7 +80,6 @@ div.grid .query {
     color: #428bca;
 }
 .grid {
-    margin: 10px;
     background: #fcfcfc;
     color:black;
     font-family: Tahoma, sans-serif;
@@ -96,8 +95,10 @@ div.grid .query {
 
     /*border: 1px solid #EFEFEF;*/
     border-bottom: 0;
+    border-radius: 4px 4px 0 0;
     background: #efefef;
     font-family: Tahoma, sans-serif;
+    overflow: hidden;
 }
 
 .gridHeadContainer th {

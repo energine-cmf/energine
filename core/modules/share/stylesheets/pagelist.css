@@ -1,26 +1,37 @@
 /* ----- page list ----- */
 .e-pagelist {
     min-height: 14px;
-    margin: 10px 0 0 0 !important;
-    padding: 8px 2px 8px 22px !important;
-    background: #eee url(../images/pagelist.gif) 4px center no-repeat !important;
+    margin: 10px 0 0 10px !important;
+    padding: 0 !important;
+    /*background: #eee url(../images/pagelist.gif) 4px center no-repeat !important;*/
+    display: inline-block;
+    border-radius: 4px;
     font-family: Tahoma, sans-serif;
     font-size: 13px;
     line-height: normal;
-    border-radius: 4px;
 }
 .e-pagelist * {
     vertical-align: middle;
 }
-.e-pagelist li {
-    display: inline;
-    margin: 0 2px !important;
-    padding: 0 6px !important;
-    background: transparent !important;
+.e-pagelist > li {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
     list-style: none !important;
-    cursor: default;
-	color:#428bca;
+    line-height: 1.428571429;
+    text-decoration: none;
+    color: #428bca;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    margin: 0;
+    margin-left: -1px;
     font-family: Tahoma, sans-serif;
+}
+.e-pagelist > li:first-child {
+    border-radius: 4px 0 0 4px;
+}
+.e-pagelist > li:last-child {
+    border-radius: 0 4px 4px 0;
 }
 .e-pagelist .highlighted {
     background: #ecf3f8 !important;

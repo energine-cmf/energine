@@ -1,0 +1,16 @@
+{
+    "name": "Energine/Energine_CMF",
+    "description": "Energine is content management framework based on the XML/XSLT transformations.",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "keywords": ["xml","xslt", "framework", "cmf"],
+    "homepage": "http://energine.org/",
+    "authors": [
+        {
+            "name": "Pavel Dubenko",
+            "email": "d.pavka@gmail.com",
+            "homepage": "http://web-developer.kiev.ua",
+            "role": "Owner"
+        }
+    ]
+}

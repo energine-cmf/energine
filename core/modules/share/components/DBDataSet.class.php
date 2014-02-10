@@ -508,7 +508,7 @@ class DBDataSet extends DataSet {
     /**
      * Add filter condition.
      */
-    protected function addFilterCondition($filter) {
+    public function addFilterCondition($filter) {
         if (is_numeric($filter)) {
             $filter = array($this->getTableName() . '.' . $this->getPK() => $filter);
         } elseif (is_string($filter)) {

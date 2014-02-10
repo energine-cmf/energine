@@ -1050,90 +1050,8 @@ class Grid extends DBDataSet {
      * Apply user filter.
      */
     protected function applyUserFilter() {
-        //Формат фильтра
-        //$_POST['filter'][$tableName][$fieldName] = значение фильтра
-        if (isset($_POST['filter'])) {
-            $condition = $_POST['filter']['condition'];
-            $conditionPatterns = array(
-                'like' => 'LIKE \'%%%s%%\'',
-                'notlike' => 'NOT LIKE \'%%%s%%\'',
-                '=' => '= \'%s\'',
-                '!=' => '!= \'%s\'',
-                '<' => '<\'%s\'',
-                '>' => '>\'%s\'',
-                'between' => 'BETWEEN \'%s\' AND \'%s\'',
-                'checked' => '= 1',
-                'unchecked' => '!=1'
-            );
-
-            unset($_POST['filter']['condition']);
-            $tableName = key($_POST['filter']);
-            $fieldName = key($_POST['filter'][$tableName]);
-            $values = $_POST['filter'][$tableName][$fieldName];
-            if(
-                !$this->dbh->tableExists($tableName)
-            ||
-                !($tableInfo = $this->dbh->getColumnsInfo($tableName))
-            ||
-                !isset($tableInfo[$fieldName])
-            ){
-                throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $tableName);
-            }
-
-            if (
-                is_array($tableInfo[$fieldName]['key'])
-            ) {
-                $fkTranslationTableName =
-                    $this->dbh->getTranslationTablename($tableInfo[$fieldName]['key']['tableName']);
-                $fkTableName =
-                    ($fkTranslationTableName) ? $fkTranslationTableName
-                        : $tableInfo[$fieldName]['key']['tableName'];
-                $fkValueField = substr($fkKeyName =
-                        $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
-                    '_name';
-                $fkTableInfo = $this->dbh->getColumnsInfo($fkTableName);
-                if (!isset($fkTableInfo[$fkValueField])) $fkValueField = $fkKeyName;
-
-                if ($res =
-                    simplifyDBResult($this->dbh->select($fkTableName, $fkKeyName,
-                        $fkTableName . '.' .
-                        $fkValueField .
-                        ' ' .
-                        call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
-                        ' '), $fkKeyName)
-                ) {
-                    $this->addFilterCondition(array($tableName . '.' .
-                    $fieldName => $res));
-                } else {
-                    $this->addFilterCondition(' FALSE');
-                }
-            } else {
-
-                $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName, $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
-
-                if (in_array($condition, array('like', 'notlike')) && in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME))) {
-                    if ($condition == 'like') {
-                        $condition = '=';
-                    } else {
-                        $condition = '!=';
-                    }
-                }
-
-                $fieldName = (($tableName) ? $tableName . '.' : '') . $fieldName;
-                if ($fieldType == FieldDescription::FIELD_TYPE_DATETIME) {
-                    $fieldName = 'DATE(' . $fieldName . ')';
-                }
-                if (in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE))) {
-                    $conditionPatterns['='] = '= DATE(\'%s\')';
-                }
-                $this->addFilterCondition(
-                    $fieldName . ' ' .
-                    call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
-                    ' '
-                );
-            }
-        }
-        //inspect($this->getFilter());
+        $filter = new Filter();
+        $filter->apply($this);
     }
 
     /**
@@ -1245,9 +1163,11 @@ class Grid extends DBDataSet {
             $this->createFilter();
     }
 
+    /**
+     * Create Grid filter
+     */
     protected function createFilter() {
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
-            //Нужно смотреть если он есть в дескрпшене - то использовать тип из него
             $this->filter_control = new Filter();
             $cInfo = $this->dbh->getColumnsInfo($this->getTableName());
             if ($this->getTranslationTableName()) {

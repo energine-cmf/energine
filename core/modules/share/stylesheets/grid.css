@@ -93,7 +93,8 @@ div.grid .query {
 
 .gridHeadContainer {
     padding-right: 17px;
-    border: 1px solid #ddd;
+
+    /*border: 1px solid #EFEFEF;*/
     border-bottom: 0;
     background: #efefef;
     font-family: Tahoma, sans-serif;
@@ -117,7 +118,7 @@ div.grid .query {
 .gridContainer {
     overflow: scroll;
     overflow-x: hidden;
-    border: 1px solid #ddd;
+    /*border: 1px solid #ddd;*/
     font-family: Tahoma, sans-serif;
 }
 
@@ -141,11 +142,12 @@ table.gridTable {
     padding: 8px;
     border: 0;
     border-right: 1px solid #ddd;
-    background: #efefef;
+    background: #eeeeee;
     text-align: left;
     color:#000000;
     font-family: Tahoma, sans-serif;
     font-weight: bold;
+    text-align: center;
 }
 .gridTable td {
     margin: 0;

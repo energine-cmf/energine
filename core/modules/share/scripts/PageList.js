@@ -6,7 +6,7 @@
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 1.0.2
  */
 
 /**
@@ -77,10 +77,9 @@ var PageList = new Class(/** @lends PageList# */{
      *
      * @param {number} numPages Total amount of pages.
      * @param {number} currentPage Current viewed page.
-     * @param {string} totalRecords Shows the total amount of data fields.
      */
-    build: function(numPages, currentPage, totalRecords) {
-        if (numPages <= 1) {
+    build: function(numPages, currentPage) {
+        if (numPages <= 0) {
             return;
         }
 
@@ -94,24 +93,6 @@ var PageList = new Class(/** @lends PageList# */{
         if (endPage > numPages) {
             endPage = numPages;
         }
-
-//        if (numPages > 5) {
-//            new Element('li').adopt(new Element('input', {
-//                'events':{
-//                    'keydown':function(event){
-//                        if ((event.key == 'enter') && (event.target.get('value') != '')) {
-//                            var num = parseInt(event.target.get('value'));
-//                            event.target.value = '';
-//                            if (num >= 1 && num <= numPages) {
-//                                this.selectPageByNum(num);
-//                            }
-//                            event.stop();
-//                        }
-//                    }.bind(this)
-//                },
-//                'type':'text'
-//            })).inject(this.element);
-//        }
 
         // Build first pages.
         if (startPage > 1) {
@@ -143,16 +124,6 @@ var PageList = new Class(/** @lends PageList# */{
         this.element.getElement('[index=' + this.currentPage + ']').addClass('current');
 
         // Add buttons to the current page.
-//        if (currentPage != 1) {
-//            this._createPageLink('previous',currentPage-1, 'images/prev_page.gif').inject(this.element.getElement('li.current'), 'before');
-//        }
-//        if (currentPage != numPages) {
-//            this._createPageLink('next', currentPage+1, 'images/next_page.gif').inject(this.element.getElement('li.current'), 'after');
-//        }
-
-//        if (numPages && totalRecords) {
-//            this.element.grab(new Element('span', {'styles': {'padding-left':'20px'}, 'text': totalRecords}));
-//        }
         if (currentPage != 1) {
             this._createPageLink('previous',currentPage-1, 'images/prev_page.gif').inject(this.element, 'top');
         }

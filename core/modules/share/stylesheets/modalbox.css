@@ -11,12 +11,11 @@ html, body {
 /* ----- modalbox ----- */
 .e-modalbox {
     position: fixed;
-    left: 50%;
+    left: 5%;
     top: 5%;
     z-index: 1001;
-    width: 780px;
+    width: 90%;
     height: 90%;
-    margin-left: -390px;
     background: white;
     border-radius: 4px;
     font-size: 13px;

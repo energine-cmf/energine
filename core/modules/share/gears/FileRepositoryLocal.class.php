@@ -309,4 +309,19 @@ class FileRepositoryLocal extends Object implements IFileRepository {
     public function deleteDir($dir) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
     }
+
+    /**
+     * @copydoc IFileRepository::prepare
+     */
+    public function prepare(&$data) {
+        return $data;
+    }
+
+    /**
+     * @copydoc IFileRepository::setPrepareFunction
+     * @throws SystemException 'ERR_NOT_USED'
+     */
+    public function setPrepareFunction($func) {
+        throw new SystemException('ERR_NOT_USED');
+    }
 }

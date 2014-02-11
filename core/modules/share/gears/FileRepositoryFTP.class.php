@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Класс FileRepositoryFTP
  *
@@ -22,6 +21,10 @@
 class FileRepositoryFTP extends Object implements IFileRepository {
 
     // путь FTP начиная от FTP root для загрузки alt-файлов
+    /**
+     * Path to the cache for alternative images.
+     * @var string IMAGE_ALT_CACHE
+     */
     const IMAGE_ALT_CACHE = 'resizer/w[width]-h[height]/[upl_path]';
 
     /**
@@ -51,6 +54,11 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      * @var FTP
      */
     protected $ftp_alts;
+    /**
+     * @var callable function used for preparing data set
+     * @see IFileRepository::prepare
+     */
+    private $prepareFunction = null;
 
     /**
      * Конструктор класса
@@ -99,12 +107,6 @@ class FileRepositoryFTP extends Object implements IFileRepository {
         return 'ftp';
     }
 
-    /**
-     * Метод установки идентификатора репозитария (upl_id)
-     *
-     * @param int $id
-     * @return IFileRepository
-     */
     public function setId($id) {
         $this->id = $id;
         return $this;
@@ -403,5 +405,26 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      */
     public function deleteDir($dir) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
+    }
+
+    /**
+     * @copydoc IFileRepository::setPrepareFunction
+     * @throws SystemException 'ERR_BAD_PREPARE_FUNCTION'
+     */
+    public function setPrepareFunction($func) {
+        if (!is_callable($func)) {
+            throw new SystemException('ERR_BAD_PREPARE_FUNCTION');
+        }
+        $this->prepareFunction = $func;
+    }
+
+    /**
+     * @copydoc IFileRepository::prepare
+     *
+     */
+    public function prepare(&$data) {
+        if ($data && $this->prepareFunction) {
+            array_walk($data, $this->prepareFunction);
+        }
     }
 }

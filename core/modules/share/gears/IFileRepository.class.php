@@ -204,4 +204,17 @@ interface IFileRepository {
      * @throws SystemException
      */
     public function deleteDir($dir);
+
+    /**
+     * Prepare data with
+     * @param &$data array repository data as array
+     * @return array||boolean
+     */
+    public function prepare(&$data);
+
+    /**
+     * Sets the function to prepare dataset
+     * @param $func callable prepare function
+     */
+    public function setPrepareFunction($func);
 }

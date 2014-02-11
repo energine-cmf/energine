@@ -524,10 +524,9 @@ class FileRepository extends Grid {
             $uplPID = (!empty($sp['pid'])) ? (int)$sp['pid'] : null;
 
             if (!$uplPID) return $result;
-
             // инстанс IFileRepository для текущего $uplPID
             $repo = $this->repoinfo->getRepositoryInstanceById($uplPID);
-
+            $repo->prepare($result);
             if ($result) {
                 foreach ($result as $i => $row) {
                     $result[$i]['upl_allows_create_dir'] = $repo->allowsCreateDir();

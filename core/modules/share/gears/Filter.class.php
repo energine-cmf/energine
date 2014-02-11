@@ -204,11 +204,15 @@ class Filter extends Object {
                 if ($fieldType == FieldDescription::FIELD_TYPE_DATETIME) {
                     $fieldName = 'DATE(' . $fieldName . ')';
                 }
-                $conditionPatterns = $this->map[$this->condition]['condition'];
+
 
                 if (in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE))) {
-                    $conditionPatterns['='] = '= DATE(\'%s\')';
+                    array_walk($this->map, function(&$row){
+                        $row['condition'] = str_replace('\'%s\'', 'DATE(\'%s\')', $row['condition']);
+                    });
+
                 }
+                $conditionPatterns = $this->map[$this->condition]['condition'];
                 $grid->addFilterCondition(
                     $fieldName . ' ' .
                     call_user_func_array('sprintf', array_merge(array($conditionPatterns), $values)) .

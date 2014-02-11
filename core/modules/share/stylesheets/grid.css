@@ -9,10 +9,12 @@ div.grid table tr.highlighted td {  background: #ecf3f8; }
 div.grid table tr.selected td {  background: #428bca; color: #fff; }
 
 div.grid table tr .firstColumn { border-left: 0; }
-
+.grid_toolbar {
+    padding: 10px 0;
+}
 div.grid div.filter {
     background-color: #eee;
-    margin: 10px 0;
+    margin: 0;
     padding: 10px;
     border-radius: 4px;
     font-family: Tahoma, sans-serif;

@@ -99,7 +99,9 @@
 .e-pane-toolbar {
     padding: 5px 10px;
 }
-
+.e-pane ul.toolbar li.separator {
+    background: none;
+}
 /* pane content  */
 .e-pane-content {
     position: absolute;            

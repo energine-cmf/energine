@@ -1435,7 +1435,13 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
             this.inputs.inputs[0][0].focus();
         }
     },
-
+    /**
+     * Shows inputs depending on fields' types and filter's condition
+     * @param {string} condition Filter condition name
+     * @param {string} type Filter field type
+     * @function
+     * @public
+     */
     switchInputs: function (condition, type) {
         if (type == 'boolean') {
             this.inputs.hide();
@@ -1448,7 +1454,6 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
             }
         }
     },
-
     /**
      * Disable input fields.
      *
@@ -1630,10 +1635,19 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
         this.containers[1].addClass('hidden');
         this.inputs.removeClass('small');
     },
-
+    /**
+     * Show all inputs
+     * @function
+     * @public
+     */
     show: function () {
         this.containers.removeClass('hidden');
     },
+    /**
+     * hide inputs
+     * @function
+     * @public
+     */
     hide: function () {
         this.containers.addClass('hidden');
     },

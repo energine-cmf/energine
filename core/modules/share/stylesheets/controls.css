@@ -247,4 +247,11 @@ optgroup option {
     transition: none;
     -webkit-transition: none;
 }
+/* --- media queries --- */
+@media screen and (max-width: 570px) {
+    .e-pane-content .field .control,
+    .e-pane-content .field .name {
+        width: 98%;
+    }
+}
 /* ----- /forms ----- */

@@ -387,7 +387,7 @@
                 <xsl:attribute name="type">hidden</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
             </input>
-            <input type="text" id="{generate-id(.)}_name" value="{@smap_name}" readonly="readonly" class="text inp_string" style="width:481px;height:18px;"/>
+            <input type="text" id="{generate-id(.)}_name" value="{@smap_name}" readonly="readonly" class="text inp_string" style="height:32px;"/>
             <div class="appended_block">
                 <button type="button" style="height:30px;padding:0 12px;-moz-box-sizing:content-box;" class="smap_selector" smap_name="{generate-id(.)}_name" smap_id="{generate-id(.)}_id" field="{@name}">...</button>
             </div>
@@ -784,7 +784,7 @@
                 <xsl:attribute name="type">hidden</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
             </input>
-            <input type="text" id="{generate-id(.)}_name" value="{@upl_path}" readonly="readonly" class="text inp_string" style="height: 18px; width: 472px;"/>
+            <input type="text" id="{generate-id(.)}_name" value="{@upl_path}" readonly="readonly" class="text inp_string" style="height: 32px;"/>
             <div class="appended_block">
                 <button type="button" style="width:22px;height:18px;" class="attachment_selector" upl_name="{generate-id(.)}_name" upl_id="{generate-id(.)}_id" field="{@name}">...</button>
             </div>

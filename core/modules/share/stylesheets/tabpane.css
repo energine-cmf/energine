@@ -207,7 +207,6 @@
         height: auto;
     }
     .e-pane-has-t-toolbar1 .e-pane-content {
-        top: 94px;
         border: 1px solid #ddd;
     }
     .e-tabs {
@@ -219,6 +218,7 @@
         border: 1px solid #ccc;
         background: #fafafa;
         margin: 2px;
+        padding: 4px 10px !important;
     }
     .e-tabs .current {
         border: 1px solid #ccc;
@@ -229,9 +229,14 @@
         color: #fafafa;
     }
 }
-@media screen and (max-width: 450px){
+@media screen and (max-width: 630px){
     .e-pane-has-t-toolbar1 .e-pane-content {
-        top: 138px;
+        top: 72px;
+    }
+}
+@media screen and (max-width: 370px){
+    .e-pane-has-t-toolbar1 .e-pane-content {
+        top: 102px;
     }
 }
 /* ----- /tabpane ----- */

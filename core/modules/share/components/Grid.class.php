@@ -148,10 +148,10 @@ class Grid extends DBDataSet {
         $this->prepare();
         $this->addToolbarTranslations();
         $this->linkExtraManagers($this->getTableName());
-        foreach ($this->getDataDescription() as $fieldDescription) {
-            if ($default = $fieldDescription->getPropertyValue('default')) {
-                if (!($f = $this->getData()->getFieldByName($fieldDescription->getName()))) {
-                    $f = new Field($fieldDescription->getName());
+        foreach ($this->getDataDescription() as $fdName => $fieldDescription) {
+            if (($default = $fieldDescription->getPropertyValue('default')) || ($default === '0')) {
+                if (!($f = $this->getData()->getFieldByName($fdName))) {
+                    $f = new Field($fdName);
                     $this->getData()->addField($f);
                 }
                 $f->setData($default, true);
@@ -1159,7 +1159,7 @@ class Grid extends DBDataSet {
     protected function prepare() {
         parent::prepare();
 
-        if($this->getType() == self::COMPONENT_TYPE_LIST)
+        if ($this->getType() == self::COMPONENT_TYPE_LIST)
             $this->createFilter();
     }
 
@@ -1181,7 +1181,7 @@ class Grid extends DBDataSet {
                     if (in_array($type, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_INT, FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_EMAIL, FieldDescription::FIELD_TYPE_STRING, FieldDescription::FIELD_TYPE_TEXT, FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_BOOL)) && ($attrs['index'] != 'PRI')) {
                         $ff = new FilterField($name, $type);
                         $ff->setAttribute('tableName', $attrs['tableName']);
-                        $ff->setAttribute('title', 'FIELD_'.$name);
+                        $ff->setAttribute('title', 'FIELD_' . $name);
                         $this->filter_control->attachField($ff);
                     }
                 }

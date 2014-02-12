@@ -158,7 +158,6 @@
 .e-tabs li {
     float: left;
     margin: 0 2px -1px 0;
-    padding: 0;
     clear: none;
     overflow: hidden;
     padding: 10px 15px;
@@ -201,5 +200,17 @@
 }
 .e-tabs li .data {
     display: none;
+}
+/* --- media queries --- */
+@media screen and (max-width: 700px){
+    .e-tabs {
+        border: 0;
+    }
+    .e-tabs .current {
+        border: 0;
+    }
+    .e-tabs li {
+        border-radius: 4px;
+    }
 }
 /* ----- /tabpane ----- */

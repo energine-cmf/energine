@@ -162,7 +162,7 @@ ul.docked_toolbar li.icon {
 }
 ul.docked_toolbar li.highlighted { background-color: #ecf3f8 !important; }
 ul.docked_toolbar li.pressed {
-    padding: 0 17px !important;
+    padding: 0 19px !important;
     min-height: 24px;
     height: 24px;
     line-height: 24px;

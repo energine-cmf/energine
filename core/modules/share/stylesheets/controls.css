@@ -105,17 +105,21 @@ optgroup option {
 }
 
 .e-pane-content .field {
+    float: left;
+    width: 100%;
     padding: 10px 0;
 }
 .e-pane-content .field .name {
-    display: inline-block;
+    display: block;
+    float: left;
     vertical-align: middle;
     width: 30%;
     margin-bottom: 10px;
     /*font-weight: bold;*/
 }
 .e-pane-content .field .control {
-    display: inline-block;
+    display: block;
+    float: left;
     vertical-align: middle;
     width: 68%;
 }

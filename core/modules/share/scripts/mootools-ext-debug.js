@@ -86,19 +86,13 @@ Asset = Object.append(Asset, /** @lends Asset# */{
     }
 });
 
-// NOTE: This function is overwritten because of bad style calculation in calculateEdgeSize(),
-// it had not checked whether the style value converted to integer is NaN.
+// NOTE: This function is overwritten because of not secure style value casting.
 Element.implement({
     getComputedSize: function(options){
         function calculateEdgeSize(edge, styles){
             var total = 0;
             Object.each(styles, function(value, style){
-                if (style.test(edge)) {
-                    value = value.toInt();
-                    if (!isNaN(value)) {
-                        total += value;
-                    }
-                }
+                if (style.test(edge)) total = total + value.toInt();
             });
             return total;
         }
@@ -136,7 +130,9 @@ Element.implement({
         }
 
         getStylesList(options.styles, options.planes).each(function(style){
-            styles[style] = this.getStyle(style).toInt();
+            // here was not checked if the type casting return NaN
+            var value = this.getStyle(style).toInt();
+            styles[style] = isNaN(value) ? 0 : value;
         }, this);
 
         Object.each(options.planes, function(edges, plane){

@@ -26,10 +26,7 @@ Element.implement({
         function calculateEdgeSize(e, sts){
             var t = 0;
             Object.each(sts, function(v, s){
-                if (s.test(e)) {
-                    v= v.toInt();
-                    if (!isNaN(v)) t = t + v;
-                }
+                if (s.test(e)) t += v.toInt();
             });
             return t;
         }
@@ -49,7 +46,10 @@ Element.implement({
             delete s.height;
             delete options.planes.height;
         }
-        getStylesList(options.styles, options.planes).each(function(s){sts[s] = this.getStyle(s).toInt();}, this);
+        getStylesList(options.styles, options.planes).each(function(s){
+            var v = this.getStyle(s).toInt();
+            sts[s] = isNaN(v) ? 0 : v;
+        }, this);
         Object.each(options.planes, function(es, p){
             var c = p.capitalize(),st = this.getStyle(p);
             if (st == 'auto' && !d) d = this.getDimensions();

@@ -205,3 +205,9 @@ table.gridTable {
     font-size: xx-small;
     border: none;
 }
+/* --- media queries --- */
+@media screen and (max-width: 768px) {
+    div.grid div.filter {
+        display: none;
+    }
+}

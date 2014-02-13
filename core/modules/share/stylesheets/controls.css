@@ -155,6 +155,14 @@ optgroup option {
     display: table;
     width: 100%;
 }
+div.with_append.focus_block .appended_block button,
+div.with_append.focus_block .appended_block input[type="button"] {
+    border-color: #6FCFE3;
+    background-color: #FaFFFF;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
+}
 .e-pane-content .field .control.type_file .with_append {
     width: 713px;
 }

@@ -51,9 +51,9 @@ CREATE TABLE IF NOT EXISTS `apps_feed` (
 DROP TABLE IF EXISTS `apps_feedback`;
 CREATE TABLE IF NOT EXISTS `apps_feedback` (
   `feed_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `feed_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `rcp_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `feed_email` varchar(200) NOT NULL DEFAULT '',
+  `feed_date` datetime NOT NULL,
+  `rcp_id` int(10) unsigned NOT NULL,
+  `feed_email` varchar(200) NOT NULL,
   `feed_phone` varchar(10) DEFAULT NULL,
   `feed_author` varchar(250) NOT NULL,
   `feed_theme` varchar(250) NOT NULL,
@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS `apps_news_uploads` (
   `anu_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `news_id` int(10) unsigned DEFAULT NULL,
   `upl_id` int(10) unsigned NOT NULL,
-  `anu_order_num` int(10) unsigned NOT NULL DEFAULT '0',
+  `anu_order_num` int(10) unsigned NOT NULL DEFAULT '1',
   `session_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`anu_id`),
   KEY `upl_id` (`upl_id`),
@@ -438,9 +438,9 @@ CREATE TABLE IF NOT EXISTS `frm_forms_translation` (
 
 DROP TABLE IF EXISTS `share_access_level`;
 CREATE TABLE IF NOT EXISTS `share_access_level` (
-  `smap_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `right_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `smap_id` int(10) unsigned NOT NULL,
+  `group_id` int(10) unsigned NOT NULL,
+  `right_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`smap_id`,`group_id`,`right_id`),
   KEY `group_id` (`group_id`),
   KEY `right_id` (`right_id`)
@@ -504,7 +504,7 @@ CREATE TABLE IF NOT EXISTS `share_languages` (
 DROP TABLE IF EXISTS `share_lang_tags`;
 CREATE TABLE IF NOT EXISTS `share_lang_tags` (
   `ltag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ltag_name` varchar(70) NOT NULL DEFAULT '',
+  `ltag_name` varchar(70) NOT NULL,
   PRIMARY KEY (`ltag_id`),
   UNIQUE KEY `ltag_name` (`ltag_name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  ;
@@ -517,8 +517,8 @@ CREATE TABLE IF NOT EXISTS `share_lang_tags` (
 
 DROP TABLE IF EXISTS `share_lang_tags_translation`;
 CREATE TABLE IF NOT EXISTS `share_lang_tags_translation` (
-  `ltag_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `lang_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `ltag_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
   `ltag_value_rtf` text NOT NULL,
   PRIMARY KEY (`ltag_id`,`lang_id`),
   KEY `FK_tranaslatelv_language` (`lang_id`)
@@ -564,7 +564,7 @@ CREATE TABLE IF NOT EXISTS `share_sitemap` (
   `smap_content` char(200) NOT NULL,
   `smap_content_xml` text,
   `smap_pid` int(10) unsigned DEFAULT NULL,
-  `smap_segment` char(50) NOT NULL DEFAULT '',
+  `smap_segment` char(50) NOT NULL,
   `smap_order_num` int(10) unsigned DEFAULT '1',
   `smap_redirect_url` char(250) DEFAULT NULL,
   `smap_meta_robots` text,
@@ -589,7 +589,7 @@ CREATE TABLE IF NOT EXISTS `share_sitemap_comment` (
   `u_id` int(10) unsigned DEFAULT NULL,
   `comment_created` datetime NOT NULL,
   `comment_name` varchar(250) NOT NULL,
-  `comment_approved` tinyint(1) NOT NULL DEFAULT '0',
+  `comment_approved` boolean NOT NULL DEFAULT '0',
   `comment_nick` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`comment_id`),
   KEY `parent_id` (`comment_parent_id`),
@@ -619,8 +619,8 @@ CREATE TABLE IF NOT EXISTS `share_sitemap_tags` (
 
 DROP TABLE IF EXISTS `share_sitemap_translation`;
 CREATE TABLE IF NOT EXISTS `share_sitemap_translation` (
-  `smap_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `lang_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `smap_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
   `smap_name` varchar(200) DEFAULT NULL,
   `smap_description_rtf` text,
   `smap_html_title` varchar(250) DEFAULT NULL,
@@ -642,7 +642,7 @@ CREATE TABLE IF NOT EXISTS `share_sitemap_uploads` (
   `ssu_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `smap_id` int(10) unsigned DEFAULT NULL,
   `upl_id` int(10) unsigned NOT NULL,
-  `ssu_order_num` int(10) unsigned NOT NULL DEFAULT '0',
+  `ssu_order_num` int(10) unsigned NOT NULL DEFAULT '1',
   `session_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ssu_id`),
   KEY `upl_id` (`upl_id`),
@@ -719,7 +719,7 @@ DROP TABLE IF EXISTS `share_tags_translation`;
 CREATE TABLE `share_tags_translation` (
   `tag_id` int(11) unsigned NOT NULL,
   `lang_id` int(11) unsigned NOT NULL,
-  `tag_name` char(100) NOT NULL DEFAULT '',
+  `tag_name` char(100) NOT NULL,
   PRIMARY KEY (`tag_id`,`lang_id`),
   KEY `lang_id` (`lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -747,8 +747,8 @@ CREATE TABLE IF NOT EXISTS `share_textblocks` (
 
 DROP TABLE IF EXISTS `share_textblocks_translation`;
 CREATE TABLE IF NOT EXISTS `share_textblocks_translation` (
-  `tb_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `lang_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `tb_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
   `tb_content` text NOT NULL,
   UNIQUE KEY `tb_id` (`tb_id`,`lang_id`),
   KEY `lang_id` (`lang_id`)
@@ -865,8 +865,8 @@ CREATE TABLE IF NOT EXISTS `user_groups` (
 DROP TABLE IF EXISTS `user_group_rights`;
 CREATE TABLE IF NOT EXISTS `user_group_rights` (
   `right_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `right_name` char(20) NOT NULL DEFAULT '',
-  `right_const` char(20) NOT NULL DEFAULT '',
+  `right_name` char(20) NOT NULL,
+  `right_const` char(20) NOT NULL,
   PRIMARY KEY (`right_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  ;
 
@@ -881,9 +881,9 @@ CREATE TABLE IF NOT EXISTS `user_users` (
   `u_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `u_fbid` char(25) DEFAULT NULL,
   `u_vkid` char(25) DEFAULT NULL,
-  `u_name` varchar(50) NOT NULL DEFAULT '',
+  `u_name` varchar(50) NOT NULL,
   `u_phone` varchar(100) DEFAULT NULL,
-  `u_password` varchar(40) NOT NULL DEFAULT '',
+  `u_password` varchar(40) NOT NULL,
   `u_is_active` tinyint(1) NOT NULL DEFAULT '1',
   `u_fullname` varchar(250) NOT NULL,
   `u_country` varchar(255) DEFAULT NULL,
@@ -904,8 +904,8 @@ CREATE TABLE IF NOT EXISTS `user_users` (
 
 DROP TABLE IF EXISTS `user_user_groups`;
 CREATE TABLE IF NOT EXISTS `user_user_groups` (
-  `u_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `u_id` int(10) unsigned NOT NULL,
+  `group_id` int(10) unsigned NOT NULL ,
   PRIMARY KEY (`u_id`,`group_id`),
   KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

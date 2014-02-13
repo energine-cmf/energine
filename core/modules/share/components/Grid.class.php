@@ -75,6 +75,12 @@ class Grid extends DBDataSet {
     protected $filter_control;
 
     /**
+     * Grids for select fields
+     * @var Grid[]
+     */
+    protected $fkEditors = array();
+
+    /**
      * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
@@ -277,6 +283,13 @@ class Grid extends DBDataSet {
         if ($this->pager) $this->getBuilder()->setPager($this->pager);
     }
 
+    /**
+     * Single mode state that show Grid for select field values
+     */
+    protected function fkEditor(){
+
+    }
+
     //todo VZ: What is the trick with external and internal methods?
     /**
      * Save.
@@ -316,7 +329,14 @@ class Grid extends DBDataSet {
             $this->getConfig()->setCurrentState(self::DEFAULT_STATE_NAME);
             $result = parent::createDataDescription();
             $this->getConfig()->setCurrentState($previousAction);
-        } else {
+        }
+        elseif(in_array($this->getType(), array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER, self::COMPONENT_TYPE_FORM))){
+            $result = parent::createDataDescription();
+            if($selects = $result->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_SELECT)){
+                //inspect($selects);
+            }
+        }
+        else {
             $result = parent::createDataDescription();
         }
 

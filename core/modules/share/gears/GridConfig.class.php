@@ -36,5 +36,6 @@ class GridConfig extends ComponentConfig {
         $this->registerState('attachments', array('/attachments/[any]/', '/[id]/attachments/[any]/'));
         $this->registerState('tags', array('/tags/[any]/', '/[id]/tags/[any]/'));
         $this->registerState('autoCompleteTags', array('/tag-autocomplete/'));
+        $this->registerState('fkEditor', array('/crud/[any]'));
     }
 }

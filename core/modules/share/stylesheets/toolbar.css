@@ -8,9 +8,12 @@ ul.toolbar {
     font-family: Tahoma, sans-serif;
 	color:black;
 }
-.colset ul.toolbar,
+/*.colset ul.toolbar,*/
 ul.toolbar.toolbar_attachmentEditor {
-    background: #eee;
+    background: none;
+}
+ul.toolbar_siteEditor .separator {
+    display: none;
 }
 ul.toolbar * {
     margin: 0;

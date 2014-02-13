@@ -8,14 +8,12 @@
             <control id="view" title="BTN_VIEW" type="button" onclick="view"/>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
-            <control id="delete" title="BTN_DELETE" type="button"
-                     onclick="del"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
             <!--
                 <control id="move" title="BTN_MOVE" type="button" onclick="move"/>
                 <control type="button" id="up" title="BTN_MOVE_UP" onclick="up" />
-                <control type="button" id="down" title="BTN_MOVE_DOWN"
-                onclick="down" /> <control id="print" title="BTN_PRINT"
-                type="button" onclick="print"/>
+                <control type="button" id="down" title="BTN_MOVE_DOWN" onclick="down" />
+                <control id="print" title="BTN_PRINT" type="button" onclick="print"/>
             -->
         </toolbar>
     </state>
@@ -28,9 +26,7 @@
         </javascript>
         <toolbar>
             <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
-            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
-                     type="select"
-                    >
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
                 <options>
                     <option id="reload">BTN_CLOSE</option>
                     <option id="add">BTN_ADD</option>

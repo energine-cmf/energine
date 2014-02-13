@@ -515,7 +515,10 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          */
         calcItemSize: function() {
             // Get the size of the biggest item.
-            this.items.getDimensions({computeSize:true}).each(function(dims) {
+            this.items.getDimensions({
+                computeSize:true,
+                styles: ['padding','border','margin']
+            }).each(function(dims) {
                 if (this.itemSize[0] < dims.totalWidth) {
                     this.itemSize[0] = dims.totalWidth;
                 }
@@ -523,10 +526,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
                     this.itemSize[1] = dims.totalHeight;
                 }
             }, this);
-
-            // add margins
-            this.itemSize[0] += this.items[0].getStyle('margin-left').toInt() + this.items[0].getStyle('margin-right').toInt();
-            this.itemSize[1] += this.items[0].getStyle('margin-top').toInt() + this.items[0].getStyle('margin-bottom').toInt();
 
             // Apply new width to the 'view-box'-element
             if (this.options.scrollDirection == 'left' || this.options.scrollDirection == 'right') {

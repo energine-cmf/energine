@@ -953,7 +953,6 @@ var GridManager = new Class(/** @lends GridManager# */{
          this.paneContent in build() has different height without delay.
          Firefox 26
          */
-        // FIXME: TagEditor: The response result at the first call has no data for Grid. (Сайты -> Редактировать -> Теги)
         (function () {
             Energine.request(
                 this.buildRequestURL(pageNum),
@@ -1358,7 +1357,6 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
 
         this.inputs = new GridManager.Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
 
-        //FIXME: The filter works not properly by condition '=' and '!=' when the input for field 'datetime' is given only by date (without TIME!!!) -- report a bug.
         this.condition = this.element.getElement('.f_condition');
         this.condition.getChildren().each(function (el) {
             var types;

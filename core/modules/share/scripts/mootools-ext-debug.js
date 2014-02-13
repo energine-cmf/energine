@@ -85,3 +85,78 @@ Asset = Object.append(Asset, /** @lends Asset# */{
         return Asset.cssParent(fullSource, {'media': 'Screen, projection'});
     }
 });
+
+// NOTE: This function is overwritten because of bad style calculation in calculateEdgeSize(),
+// it had not checked whether the style value converted to integer is NaN.
+Element.implement({
+    getComputedSize: function(options){
+        function calculateEdgeSize(edge, styles){
+            var total = 0;
+            Object.each(styles, function(value, style){
+                if (style.test(edge)) {
+                    value = value.toInt();
+                    if (!isNaN(value)) {
+                        total += value;
+                    }
+                }
+            });
+            return total;
+        }
+        function getStylesList(styles, planes){
+            var list = [];
+            Object.each(planes, function(directions){
+                Object.each(directions, function(edge){
+                    styles.each(function(style){
+                        list.push(style + '-' + edge + (style == 'border' ? '-width' : ''));
+                    });
+                });
+            });
+            return list;
+        }
+
+        options = Object.merge({
+            styles: ['padding','border'],
+            planes: {
+                height: ['top','bottom'],
+                width: ['left','right']
+            },
+            mode: 'both'
+        }, options);
+
+        var styles = {},
+            size = {width: 0, height: 0},
+            dimensions;
+
+        if (options.mode == 'vertical'){
+            delete size.width;
+            delete options.planes.width;
+        } else if (options.mode == 'horizontal'){
+            delete size.height;
+            delete options.planes.height;
+        }
+
+        getStylesList(options.styles, options.planes).each(function(style){
+            styles[style] = this.getStyle(style).toInt();
+        }, this);
+
+        Object.each(options.planes, function(edges, plane){
+
+            var capitalized = plane.capitalize(),
+                style = this.getStyle(plane);
+
+            if (style == 'auto' && !dimensions) dimensions = this.getDimensions();
+
+            style = styles[plane] = (style == 'auto') ? dimensions[plane] : style.toInt();
+            size['total' + capitalized] = style;
+
+            edges.each(function(edge){
+                var edgesize = calculateEdgeSize(edge, styles);
+                size['computed' + edge.capitalize()] = edgesize;
+                size['total' + capitalized] += edgesize;
+            });
+
+        }, this);
+
+        return Object.append(size, styles);
+    }
+});

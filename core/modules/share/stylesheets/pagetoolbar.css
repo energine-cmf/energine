@@ -162,8 +162,21 @@ ul.docked_toolbar li.icon {
     background: 50% 50% no-repeat;
 }
 ul.docked_toolbar li.highlighted { background-color: #ecf3f8 !important; }
-ul.docked_toolbar li.pressed { background-color: #A6CE39 !important; }
-
+ul.docked_toolbar li.pressed {
+    padding: 0 19px !important;
+    min-height: 24px;
+    height: 24px;
+    line-height: 24px;
+    margin: 2px 0 !important;
+    border: 1px inset #fff;
+    border-radius: 4px;
+    /*-webkit-box-shadow: inset rgb(192, 192, 192) 0px 0px 6px 3px;*/
+    /*-moz-box-shadow: inset rgb(192, 192, 192) 0px 0px 6px 3px;*/
+    /*box-shadow: inset rgb(192, 192, 192) 0px 0px 6px 3px;*/
+}
+ul.docked_toolbar li.highlighted.add_btn { background-color: #5cb85c !important; }
+ul.docked_toolbar li.highlighted.edit_btn { background-color: #f0ad4e !important; }
+ul.docked_toolbar li.highlighted.delete_btn { background-color: #d9534f !important; }
 ul.main_toolbar {
     padding-left: 30px !important;
 }

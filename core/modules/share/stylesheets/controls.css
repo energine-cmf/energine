@@ -155,13 +155,28 @@ optgroup option {
     display: table;
     width: 100%;
 }
-div.with_append.focus_block .appended_block button,
-div.with_append.focus_block .appended_block input[type="button"] {
+div.with_append.focus_block {
     border-color: #6FCFE3;
     background-color: #FaFFFF;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
+    margin-bottom: 10px;
+}
+div.with_append.focus_block.with_link,
+div.with_append.focus_block input {
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 0;
+    box-shadow: 0 0 0 0;
+    margin-bottom: 0;
+}
+div.with_append.focus_block.with_link input,
+div.with_append.focus_block.with_link select {
+    margin-bottom: 10px;
+}
+div.with_append.focus_block input,
+div.with_append.focus_block select {
+    margin-bottom: 0;
 }
 .e-pane-content .field .control.type_file .with_append {
     width: 713px;

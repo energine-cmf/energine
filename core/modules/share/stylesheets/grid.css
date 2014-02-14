@@ -9,10 +9,12 @@ div.grid table tr.highlighted td {  background: #ecf3f8; }
 div.grid table tr.selected td {  background: #428bca; color: #fff; }
 
 div.grid table tr .firstColumn { border-left: 0; }
-
+.grid_toolbar {
+    padding: 10px 0;
+}
 div.grid div.filter {
     background-color: #eee;
-    margin: 10px 0;
+    margin: 0;
     padding: 10px;
     border-radius: 4px;
     font-family: Tahoma, sans-serif;
@@ -29,6 +31,9 @@ div.grid div.filter select, div.grid div.filter input, div.grid div.filter butto
     line-height: 20px;
     padding: 6px 8px;
 }
+div.grid div.filter select.f_condition {
+    width: 150px;
+}
 div.grid div.filter button {
     padding: 5px 8px;
 }
@@ -38,8 +43,8 @@ div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_contai
 
 div.grid div.filter input {
     width: 145px;
-    margin-right:5px;
-    height: 20px;
+    margin-right: 0;
+    height: 32px;
 }
 div.grid div.filter input.small {
     width: 72px;
@@ -80,7 +85,6 @@ div.grid .query {
     color: #428bca;
 }
 .grid {
-    margin: 10px;
     background: #fcfcfc;
     color:black;
     font-family: Tahoma, sans-serif;
@@ -93,10 +97,13 @@ div.grid .query {
 
 .gridHeadContainer {
     padding-right: 17px;
-    border: 1px solid #ddd;
+
+    /*border: 1px solid #EFEFEF;*/
     border-bottom: 0;
+    border-radius: 4px 4px 0 0;
     background: #efefef;
     font-family: Tahoma, sans-serif;
+    overflow: hidden;
 }
 
 .gridHeadContainer th {
@@ -117,7 +124,7 @@ div.grid .query {
 .gridContainer {
     overflow: scroll;
     overflow-x: hidden;
-    border: 1px solid #ddd;
+    /*border: 1px solid #ddd;*/
     font-family: Tahoma, sans-serif;
 }
 
@@ -141,11 +148,12 @@ table.gridTable {
     padding: 8px;
     border: 0;
     border-right: 1px solid #ddd;
-    background: #efefef;
+    background: #eeeeee;
     text-align: left;
     color:#000000;
     font-family: Tahoma, sans-serif;
     font-weight: bold;
+    text-align: center;
 }
 .gridTable td {
     margin: 0;
@@ -154,6 +162,12 @@ table.gridTable {
     border-right: 1px solid #ddd;
     cursor:default;
     font-family: Tahoma, sans-serif;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .gridTable tr.even td {
@@ -190,4 +204,10 @@ table.gridTable {
 .properties table td{
     font-size: xx-small;
     border: none;
+}
+/* --- media queries --- */
+@media screen and (max-width: 768px) {
+    div.grid div.filter {
+        display: none;
+    }
 }

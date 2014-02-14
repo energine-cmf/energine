@@ -5,7 +5,6 @@
 /* ----- common ----- */
 html, body {
     height: 100%;
-    font-family: Tahoma, sans-serif;
 }
 /* ----- /common ----- */
 
@@ -15,9 +14,10 @@ html, body {
     left: 50%;
     top: 5%;
     z-index: 1001;
-    width: 780px;
-    height: 90%;
+    max-width: 780px;
     margin-left: -390px;
+    width: 90%;
+    height: 90%;
     background: white;
     border-radius: 4px;
     font-size: 13px;
@@ -47,5 +47,12 @@ html, body {
     padding: 0;
     border: 0;
     border-radius: 4px;
+}
+/* --- media queries ---*/
+@media screen and (max-width: 870px) {
+    .e-modalbox {
+        margin-left: 0;
+        left: 5%;
+    }
 }
 /* ----- /modalbox ----- */

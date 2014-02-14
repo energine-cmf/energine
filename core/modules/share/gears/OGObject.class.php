@@ -86,7 +86,7 @@ class OGObject extends Object {
      * @param string $title Title.
      */
     public function setTitle($title) {
-        $this->title = $title;
+        $this->title = strip_tags($title);
     }
 
     /**
@@ -94,9 +94,8 @@ class OGObject extends Object {
      * @return DOMElement
      */
     public function build() {
-
         if (empty($this->title)) {
-            $this->title = E()->getDocument()->getProperty('title');
+            $this->setTitle(E()->getDocument()->getProperty('title'));
         }
 
         $doc = new DOMDocument('1.0', 'UTF-8');

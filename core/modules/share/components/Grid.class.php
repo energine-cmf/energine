@@ -148,10 +148,10 @@ class Grid extends DBDataSet {
         $this->prepare();
         $this->addToolbarTranslations();
         $this->linkExtraManagers($this->getTableName());
-        foreach ($this->getDataDescription() as $fieldDescription) {
-            if ($default = $fieldDescription->getPropertyValue('default')) {
-                if (!($f = $this->getData()->getFieldByName($fieldDescription->getName()))) {
-                    $f = new Field($fieldDescription->getName());
+        foreach ($this->getDataDescription() as $fdName => $fieldDescription) {
+            if (($default = $fieldDescription->getPropertyValue('default')) || ($default === '0')) {
+                if (!($f = $this->getData()->getFieldByName($fdName))) {
+                    $f = new Field($fdName);
                     $this->getData()->addField($f);
                 }
                 $f->setData($default, true);
@@ -1050,90 +1050,8 @@ class Grid extends DBDataSet {
      * Apply user filter.
      */
     protected function applyUserFilter() {
-        //Формат фильтра
-        //$_POST['filter'][$tableName][$fieldName] = значение фильтра
-        if (isset($_POST['filter'])) {
-            $condition = $_POST['filter']['condition'];
-            $conditionPatterns = array(
-                'like' => 'LIKE \'%%%s%%\'',
-                'notlike' => 'NOT LIKE \'%%%s%%\'',
-                '=' => '= \'%s\'',
-                '!=' => '!= \'%s\'',
-                '<' => '<\'%s\'',
-                '>' => '>\'%s\'',
-                'between' => 'BETWEEN \'%s\' AND \'%s\'',
-                'checked' => '= 1',
-                'unchecked' => '!=1'
-            );
-
-            unset($_POST['filter']['condition']);
-            $tableName = key($_POST['filter']);
-            $fieldName = key($_POST['filter'][$tableName]);
-            $values = $_POST['filter'][$tableName][$fieldName];
-            if(
-                !$this->dbh->tableExists($tableName)
-            ||
-                !($tableInfo = $this->dbh->getColumnsInfo($tableName))
-            ||
-                !isset($tableInfo[$fieldName])
-            ){
-                throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $tableName);
-            }
-
-            if (
-                is_array($tableInfo[$fieldName]['key'])
-            ) {
-                $fkTranslationTableName =
-                    $this->dbh->getTranslationTablename($tableInfo[$fieldName]['key']['tableName']);
-                $fkTableName =
-                    ($fkTranslationTableName) ? $fkTranslationTableName
-                        : $tableInfo[$fieldName]['key']['tableName'];
-                $fkValueField = substr($fkKeyName =
-                        $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
-                    '_name';
-                $fkTableInfo = $this->dbh->getColumnsInfo($fkTableName);
-                if (!isset($fkTableInfo[$fkValueField])) $fkValueField = $fkKeyName;
-
-                if ($res =
-                    simplifyDBResult($this->dbh->select($fkTableName, $fkKeyName,
-                        $fkTableName . '.' .
-                        $fkValueField .
-                        ' ' .
-                        call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
-                        ' '), $fkKeyName)
-                ) {
-                    $this->addFilterCondition(array($tableName . '.' .
-                    $fieldName => $res));
-                } else {
-                    $this->addFilterCondition(' FALSE');
-                }
-            } else {
-
-                $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName, $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
-
-                if (in_array($condition, array('like', 'notlike')) && in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME))) {
-                    if ($condition == 'like') {
-                        $condition = '=';
-                    } else {
-                        $condition = '!=';
-                    }
-                }
-
-                $fieldName = (($tableName) ? $tableName . '.' : '') . $fieldName;
-                if ($fieldType == FieldDescription::FIELD_TYPE_DATETIME) {
-                    $fieldName = 'DATE(' . $fieldName . ')';
-                }
-                if (in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE))) {
-                    $conditionPatterns['='] = '= DATE(\'%s\')';
-                }
-                $this->addFilterCondition(
-                    $fieldName . ' ' .
-                    call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
-                    ' '
-                );
-            }
-        }
-        //inspect($this->getFilter());
+        $filter = new Filter();
+        $filter->apply($this);
     }
 
     /**
@@ -1241,13 +1159,15 @@ class Grid extends DBDataSet {
     protected function prepare() {
         parent::prepare();
 
-        if($this->getType() == self::COMPONENT_TYPE_LIST)
+        if ($this->getType() == self::COMPONENT_TYPE_LIST)
             $this->createFilter();
     }
 
+    /**
+     * Create Grid filter
+     */
     protected function createFilter() {
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
-            //Нужно смотреть если он есть в дескрпшене - то использовать тип из него
             $this->filter_control = new Filter();
             $cInfo = $this->dbh->getColumnsInfo($this->getTableName());
             if ($this->getTranslationTableName()) {
@@ -1258,10 +1178,10 @@ class Grid extends DBDataSet {
             } else {
                 foreach ($cInfo as $name => $attrs) {
                     $type = FieldDescription::convertType($attrs['type'], $name, $attrs['length'], $attrs);
-                    if (in_array($type, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_INT, FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_EMAIL, FieldDescription::FIELD_TYPE_STRING, FieldDescription::FIELD_TYPE_TEXT, FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_BOOL)) && ($attrs['index'] != 'PRI')) {
+                    if (in_array($type, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_INT, FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_EMAIL, FieldDescription::FIELD_TYPE_STRING, FieldDescription::FIELD_TYPE_TEXT, FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_BOOL)) && ($attrs['index'] != 'PRI') && !strpos($name, '_num')) {
                         $ff = new FilterField($name, $type);
                         $ff->setAttribute('tableName', $attrs['tableName']);
-                        $ff->setAttribute('title', 'FIELD_'.$name);
+                        $ff->setAttribute('title', 'FIELD_' . $name);
                         $this->filter_control->attachField($ff);
                     }
                 }

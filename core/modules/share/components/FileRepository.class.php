@@ -483,43 +483,6 @@ class FileRepository extends Grid {
     }
 
     /**
-     * @copydoc Grid::applyUserFilter
-     */
-   /* protected function applyUserFilter() {
-        //Формат фильтра
-        //$_POST['filter'][$tableName][$fieldName] = значение фильтра
-        if (isset($_POST['filter'])) {
-            $condition = $_POST['filter']['condition'];
-            $conditionPatterns = array(
-                'like' => 'LIKE \'%%%s%%\'',
-                'notlike' => 'NOT LIKE \'%%%s%%\'',
-                '=' => '= \'%s\'',
-                '!=' => '!= \'%s\'',
-                '<' => '<\'%s\'',
-                '>' => '>\'%s\'',
-                'between' => 'BETWEEN \'%s\' AND \'%s\''
-            );
-
-            unset($_POST['filter']['condition']);
-            $tableName = key($_POST['filter']);
-            $fieldName = key($_POST['filter'][$tableName]);
-            $values = $_POST['filter'][$tableName][$fieldName];
-
-            $currentFilters = $this->getFilter();
-            unset($currentFilters['upl_pid']);
-            $this->setFilter($currentFilters);
-
-            $tableName = ($tableName) ? $tableName . '.' : '';
-            $this->addFilterCondition(
-                $tableName . $fieldName . ' ' .
-                call_user_func_array('sprintf', array_merge(array($conditionPatterns[$condition]), $values)) .
-                ' '
-            );
-
-        }
-    }*/
-
-    /**
      * @copydoc Grid::loadData
      */
     protected function loadData() {
@@ -532,10 +495,9 @@ class FileRepository extends Grid {
             $uplPID = (!empty($sp['pid'])) ? (int)$sp['pid'] : null;
 
             if (!$uplPID) return $result;
-
             // инстанс IFileRepository для текущего $uplPID
             $repo = $this->repoinfo->getRepositoryInstanceById($uplPID);
-
+            $repo->prepare($result);
             if ($result) {
                 foreach ($result as $i => $row) {
                     $result[$i]['upl_allows_create_dir'] = $repo->allowsCreateDir();

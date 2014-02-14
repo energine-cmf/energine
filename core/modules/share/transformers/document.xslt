@@ -39,6 +39,7 @@
                 <xsl:if test="$DOC_PROPS[@name='google_verify']">
                     <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
                 </xsl:if>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                 <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
                 <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
                 <xsl:if test="$DOC_PROPS[@name='robots']!=''">
@@ -227,6 +228,7 @@
         <xsl:if test="$DOC_PROPS[@name='google_verify']">
             <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
         </xsl:if>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
         <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
         <xsl:if test="$DOC_PROPS[@name='robots']!=''">

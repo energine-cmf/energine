@@ -13,7 +13,6 @@ html, body {
     margin: 0;
     padding: 0;
     border: 0;
-    font-family: Tahoma, sans-serif;
 }
 
 html {
@@ -36,7 +35,7 @@ html.e-has-topframe2 {
     padding-top: 62px; /* отступ для размещения верхней панели (с двумя тулбарами), ограничение - фиксированная высота панели */
 }
 html.e-has-topframe3 {              
-    padding-top: 93px; /* отступ для размещения верхней панели (с тремя тулбарами), ограничение - фиксированная высота панели */
+    padding-top: 62px; /* отступ для размещения верхней панели (с тремя тулбарами), ограничение - фиксированная высота панели */
 }
 .e-has-sideframe body {             
     padding-left: 300px; /* этот отступ создает нужные две колонки, правая из которых фиксированная, а левая - растягивается на оставшуюся ширину окна */
@@ -50,9 +49,10 @@ html.e-has-topframe3 {
     top: 0;
     left: 0;    
     width: 100%;
+    height: 31px;
     min-height: 31px;
     font-family: Tahoma, sans-serif;
-    *z-index: 1;
+    z-index: 3;
 }
 .e-has-topframe1 .e-topframe, .e-has-topframe2 .e-topframe, .e-has-topframe3 .e-topframe {
     display: block;
@@ -70,20 +70,22 @@ html.e-has-topframe3 {
 .e-sideframe {
     display: none;
     position: absolute;
-    top: 31px;
+    -moz-box-sizing: border-box; /* Firefox 2+ */
+    -ms-box-sizing: border-box; /* IE 8 */
+    -khtml-box-sizing: border-box; /* Konquerror */
+    -webkit-box-sizing: border-box; /* Safari 3+ */
+    box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
+    top: 0;
     left: 0;
     float: left;
     width: 300px;
     height: 100%;
     background: #eee;
     font-family: Tahoma, sans-serif;
-    z-index: 3;
+    z-index: 2;
 }
 .e-has-sideframe .e-sideframe {
     display: block;
-}
-.e-has-topframe2 .e-sideframe {
-    top: 31px;
 }
 .e-has-topframe3 .e-sideframe {
 
@@ -114,14 +116,6 @@ html.e-has-topframe3 {
 
 /* ----- page toolbars ----- */
 .e-topframe {
-    background-color: #cfd1cf;
-    background-image: -webkit-gradient(linear,left top,left bottom,from(#f5f5f5),to(#cfd1cf));
-    background-image: -moz-linear-gradient(top,#f5f5f5,#cfd1cf);
-    background-image: -webkit-linear-gradient(top,#f5f5f5,#cfd1cf);
-    background-image: -o-linear-gradient(top,#f5f5f5,#cfd1cf);
-    background-image: -ms-linear-gradient(top,#f5f5f5,#cfd1cf);
-    background-image: linear-gradient(top,#f5f5f5,#cfd1cf);
-    filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#f5f5f5',endColorstr='#cfd1cf');
     font-family: Tahoma, sans-serif;
 }
 ul.docked_toolbar {
@@ -132,6 +126,16 @@ ul.docked_toolbar {
     padding: 0 !important;
     border-bottom: 1px solid #AAA;
     color: black;
+    border-radius: 0;
+    background-color: #eee;
+    /*background-image: -webkit-gradient(linear,left top,left bottom,from(#f5f5f5),to(#cfd1cf));*/
+    /*background-image: -moz-linear-gradient(top,#f5f5f5,#cfd1cf);*/
+    /*background-image: -webkit-linear-gradient(top,#f5f5f5,#cfd1cf);*/
+    /*background-image: -o-linear-gradient(top,#f5f5f5,#cfd1cf);*/
+    /*background-image: -ms-linear-gradient(top,#f5f5f5,#cfd1cf);*/
+    /*background-image: linear-gradient(top,#f5f5f5,#cfd1cf);*/
+    /*filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#f5f5f5',endColorstr='#cfd1cf');*/
+    z-index: 10;
 }
 .pagetb_logo {
     position: absolute;
@@ -139,6 +143,7 @@ ul.docked_toolbar {
     left: 0;
     z-index: 11;
     width: 32px;
+    cursor: pointer;
 }
 ul.docked_toolbar li {
     min-height: 30px;
@@ -149,20 +154,29 @@ ul.docked_toolbar li {
     line-height: 30px;
     vertical-align: middle;
     background: transparent;
-    border-radius: 0;
-    border: 0;
+    border-radius: 4px;
 }
 ul.docked_toolbar li.icon {
     height: 30px;
     padding: 0 15px !important;
     background: 50% 50% no-repeat;
 }
-ul.docked_toolbar li.separator {
-    display: none;
-}
 ul.docked_toolbar li.highlighted { background-color: #ecf3f8 !important; }
-ul.docked_toolbar li.pressed { background-color: #A6CE39 !important; }
-
+ul.docked_toolbar li.pressed {
+    padding: 0 19px !important;
+    min-height: 24px;
+    height: 24px;
+    line-height: 24px;
+    margin: 2px 0 !important;
+    border: 1px inset #fff;
+    border-radius: 4px;
+    /*-webkit-box-shadow: inset rgb(192, 192, 192) 0px 0px 6px 3px;*/
+    /*-moz-box-shadow: inset rgb(192, 192, 192) 0px 0px 6px 3px;*/
+    /*box-shadow: inset rgb(192, 192, 192) 0px 0px 6px 3px;*/
+}
+ul.docked_toolbar li.highlighted.add_btn { background-color: #5cb85c !important; }
+ul.docked_toolbar li.highlighted.edit_btn { background-color: #f0ad4e !important; }
+ul.docked_toolbar li.highlighted.delete_btn { background-color: #d9534f !important; }
 ul.main_toolbar {
     padding-left: 30px !important;
 }
@@ -172,6 +186,8 @@ ul.main_toolbar {
 ul.docked_toolbar.block_management_toolbar,
 ul.docked_toolbar.block_management_toolbar li {
     color: #000;
+}
+ul.docked_toolbar.block_management_toolbar li.save_btn {
     background: none;
 }
 ul.docked_toolbar.block_management_toolbar:hover,
@@ -189,3 +205,182 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
     padding: 0;
 }
 /* ----- /page toolbars ----- */
+/* --- media queries --- */
+
+@media screen and  (max-width: 1475px) {
+    html.e-has-topframe2 {
+        padding-top: 62px;
+    }
+    html.e-has-sideframe.e-has-topframe2 {
+        padding-top: 92px;
+    }
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn,
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.reset_btn {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fafafa;
+        min-height: 24px;
+        height: 24px;
+        margin: 2px !important;
+        padding: 0 17px !important;
+        line-height: 24px;
+    }
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.separator {
+        display: none;
+    }
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn {
+        clear: left;
+    }
+
+}
+@media screen and  (max-width: 1300px) {
+    html.e-has-sideframe.e-has-topframe2 {
+        padding-top: 122px;
+    }
+}
+@media screen and  (max-width: 1175px) {
+    ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn {
+        clear: left;
+    }
+    html.e-has-topframe2 {
+        padding-top: 92px;
+    }
+    html.e-has-sideframe.e-has-topframe2 {
+        padding-top: 122px;
+    }
+    ul.toolbar li.separator {
+        display: none;
+    }
+}
+@media screen and  (max-width: 1042px) {
+    html.e-has-topframe1 {
+        padding-top: 61px;
+    }
+    html.e-has-topframe2 {
+        padding-top: 122px;
+    }
+    html.e-has-sideframe.e-has-topframe2 {
+        padding-top: 152px;
+    }
+    .e-sideframe,
+    .e-has-topframe2 .e-sideframe {
+        padding-top: 31px;
+    }
+    ul.toolbar li {
+        border-bottom: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fafafa;
+        min-height: 24px;
+        height: 24px;
+        margin: 2px !important;
+        padding: 0 17px !important;
+        line-height: 24px;
+    }
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li {
+        border: 0;
+        background: none;
+        min-height: 30px;
+        height: 30px;
+        margin: 0 !important;
+        padding: 0 20px !important;
+        line-height: 30px;
+    }
+}
+@media screen and  (max-width: 975px) {
+    html.e-has-topframe2 {
+        padding-top: 152px;
+    }
+}
+@media screen and  (max-width: 860px) {
+    html.e-has-topframe2.e-has-sideframe {
+        padding-top: 182px;
+    }
+}
+/* в портретной ориентации ipad боковая панель становится на весь экран,
+контент следует за ней внизу
+ когда открывается панель управления блоками, боковая панель также скрывается */
+@media screen and  (max-width: 768px) {
+    html.e-has-topframe2.e-has-sideframe {
+        padding-top: 152px;
+    }
+    .e-has-sideframe body {
+        padding-left: 0;
+    }
+    .e-has-sideframe {
+        overflow-y: auto;
+    }
+
+    .e-has-sideframe .e-sideframe {
+        -webkit-box-shadow: 0 2px 3px #777;
+        box-shadow: 0 2px 3px #777;
+    }
+    .e-has-sideframe .e-sideframe,
+    .e-has-sideframe .e-sideframe-content {
+        width: 100%;
+        height: 100%;
+    }
+    .e-has-sideframe .e-mainframe {
+        height: auto;
+        position: relative;
+        top: 100%;
+    }
+    .e-has-topframe2 .e-sideframe {
+        display: none;
+    }
+    .e-has-topframe2.e-has-sideframe .e-mainframe {
+        position: static;
+    }
+
+    .e-has-topframe2.e-has-sideframe ul.block_management_toolbar {
+        margin-left: 0 !important;
+    }
+}
+@media screen and  (max-width: 700px) {
+    html.e-has-topframe2 {
+        padding-top: 152px;
+    }
+}
+@media screen and  (max-width: 560px) {
+    html.e-has-topframe2,
+    html.e-has-topframe2.e-has-sideframe {
+        padding-top: 182px;
+    }
+}
+@media screen and  (max-width: 640px) {
+    html.e-has-topframe1 {
+        padding-top: 91px;
+    }
+    html.e-has-topframe2,
+    html.e-has-topframe2.e-has-sideframe {
+        padding-top: 212px;
+    }
+    .e-sideframe,
+    .e-has-topframe2 .e-sideframe {
+        padding-top: 61px;
+    }
+}
+@media screen and  (max-width: 535px) {
+    html.e-has-topframe2.e-has-sideframe {
+        padding-top: 212px;
+    }
+}
+@media screen and  (max-width: 465px) {
+    html.e-has-topframe1 {
+        padding-top: 121px;
+    }
+    html.e-has-topframe2,
+    html.e-has-topframe2.e-has-sideframe {
+        padding-top: 242px;
+    }
+    .e-has-topframe2 .e-sideframe,
+    .e-sideframe {
+        padding-top: 91px;
+    }
+}
+@media screen and  (max-width: 400px) {
+    html.e-has-topframe2,
+    html.e-has-topframe2.e-has-sideframe {
+        padding-top: 272px;
+    }
+}

@@ -45,9 +45,182 @@ class Filter extends Object {
      * @var array $properties
      */
     private $properties = array();
+    /**
+     * Filter map
+     * Contains all info about filters
+     *
+     * @var array
+     */
+    private $map = array();
+    /**
+     * Filter data
+     *
+     * @var array
+     */
+    private $data = null;
+    /**
+     * Current filter condition
+     *
+     * @var string
+     */
+    private $condition = false;
 
     public function __construct() {
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $stringTypes = array(
+            FieldDescription::FIELD_TYPE_STRING,
+            FieldDescription::FIELD_TYPE_SELECT,
+            FieldDescription::FIELD_TYPE_TEXT,
+            FieldDescription::FIELD_TYPE_HTML_BLOCK,
+            FieldDescription::FIELD_TYPE_VALUE,
+            FieldDescription::FIELD_TYPE_PHONE,
+            FieldDescription::FIELD_TYPE_EMAIL,
+            FieldDescription::FIELD_TYPE_CODE,
+        );
+        $numericTypes = array(
+            FieldDescription::FIELD_TYPE_INT,
+            FieldDescription::FIELD_TYPE_FLOAT
+        );
+        $dateTypes = array(
+            FieldDescription::FIELD_TYPE_DATETIME,
+            FieldDescription::FIELD_TYPE_DATE
+        );
+        $this->map = array(
+            'like' => array(
+                'title' => DBWorker::_translate('TXT_FILTER_SIGN_CONTAINS'),
+                'type' => $stringTypes,
+                'condition' => 'LIKE \'%%%s%%\'',
+            ),
+            'notlike' => array(
+                'title' => DBWorker::_translate('TXT_FILTER_SIGN_NOT_CONTAINS'),
+                'type' => $stringTypes,
+                'condition' => 'NOT LIKE \'%%%s%%\'',
+            ),
+            '=' => array(
+                'title' => '=',
+                'type' => array_merge($stringTypes, $numericTypes, $dateTypes),
+                'condition' => '= \'%s\'',
+            ),
+            '!=' => array(
+                'title' => '!=',
+                'type' => array_merge($stringTypes, $numericTypes, $dateTypes),
+                'condition' => '!= \'%s\'',
+            ),
+            '<' => array(
+                'title' => '<',
+                'type' => array_merge($dateTypes, $numericTypes),
+                'condition' => '<\'%s\'',
+            ),
+            '>' => array(
+                'title' => '>',
+                'type' => array_merge($dateTypes, $numericTypes),
+                'condition' => '>\'%s\'',
+            ),
+            'between' => array(
+                'title' => DBWorker::_translate('TXT_FILTER_SIGN_BETWEEN'),
+                'type' => array_merge($dateTypes, $numericTypes),
+                'condition' => 'BETWEEN \'%s\' AND \'%s\'',
+            ),
+            'checked' => array(
+                'title' => DBWorker::_translate('TXT_FILTER_SIGN_CHECKED'),
+                'type' => array(FieldDescription::FIELD_TYPE_BOOL),
+                'condition' => '= 1',
+            ),
+            'unchecked' => array(
+                'title' => DBWorker::_translate('TXT_FILTER_SIGN_UNCHEKED'),
+                'type' => array(FieldDescription::FIELD_TYPE_BOOL),
+                'condition' => '!=1'
+            ),
+        );
+
+        if (isset($_POST[self::TAG_NAME]) && !empty($_POST[self::TAG_NAME])) {
+            $this->data = $_POST[self::TAG_NAME];
+            if (!isset($this->data['condition']) || !in_array($this->data['condition'], array_keys($this->map))) {
+
+                throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $this->data);
+            }
+            $this->condition = $this->data['condition'];
+            unset($this->data['condition']);
+        }
+    }
+
+    /**
+     * Apply filter to the grid
+     * @param Grid $grid
+     * @throws SystemException
+     */
+    public function apply(Grid $grid) {
+        if ($this->data) {
+            $dbh = E()->getDB();
+            $tableName = key($this->data);
+            $fieldName = key($this->data[$tableName]);
+            $values = $this->data[$tableName][$fieldName];
+
+            if (
+                !$dbh->tableExists($tableName)
+                ||
+                !($tableInfo = $dbh->getColumnsInfo($tableName))
+                ||
+                !isset($tableInfo[$fieldName])
+            ) {
+                throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $tableName);
+            }
+            if (
+            is_array($tableInfo[$fieldName]['key'])
+            ) {
+                $fkTranslationTableName =
+                    $dbh->getTranslationTablename($tableInfo[$fieldName]['key']['tableName']);
+                $fkTableName =
+                    ($fkTranslationTableName) ? $fkTranslationTableName
+                        : $tableInfo[$fieldName]['key']['tableName'];
+                $fkValueField = substr($fkKeyName =
+                        $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
+                    '_name';
+                $fkTableInfo = $dbh->getColumnsInfo($fkTableName);
+                if (!isset($fkTableInfo[$fkValueField])) $fkValueField = $fkKeyName;
+
+                if ($res =
+                    $dbh->getColumn($fkTableName, $fkKeyName,
+                        $fkTableName . '.' . $fkValueField . ' ' .
+                        call_user_func_array('sprintf', array_merge(array($this->map[$this->condition]['condition']), $values)) .
+                        ' ')
+                ) {
+                    $grid->addFilterCondition(array($tableName . '.' . $fieldName => $res));
+                } else {
+                    $grid->addFilterCondition(' FALSE');
+                }
+            } else {
+
+                $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName, $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
+
+                if (in_array($this->condition, array('like', 'notlike')) && in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME))) {
+                    if ($this->condition == 'like') {
+                        $this->condition = '=';
+                    } else {
+                        $this->condition = '!=';
+                    }
+                }
+
+                $fieldName = (($tableName) ? $tableName . '.' : '') . $fieldName;
+                if ($fieldType == FieldDescription::FIELD_TYPE_DATETIME) {
+                    $fieldName = 'DATE(' . $fieldName . ')';
+                }
+
+
+                if (in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE))) {
+                    array_walk($this->map, function(&$row){
+                        $row['condition'] = str_replace('\'%s\'', 'DATE(\'%s\')', $row['condition']);
+                    });
+
+                }
+                $conditionPatterns = $this->map[$this->condition]['condition'];
+                $grid->addFilterCondition(
+                    $fieldName . ' ' .
+                    call_user_func_array('sprintf', array_merge(array($conditionPatterns), $values)) .
+                    ' '
+                );
+            }
+        }
+
     }
 
     /**
@@ -137,6 +310,7 @@ class Filter extends Object {
         $result = false;
         if (sizeof($this->fields)) {
             $this->translate();
+            $this->doc = new DOMDocument('1.0', 'UTF-8');
             $filterElem = $this->doc->createElement(self::TAG_NAME);
             $filterElem->setAttribute('title', DBWorker::_translate('TXT_FILTER'));
             $filterElem->setAttribute('apply', DBWorker::_translate('BTN_APPLY_FILTER'));
@@ -165,68 +339,14 @@ class Filter extends Object {
                  <option value="unchecked">unchecked</option>
                  <option value="between"><xsl:value-of select="$TRANSLATION[@const='TXT_FILTER_SIGN_BETWEEN']"/></option>
              */
-            $stringTypes = array(
-                FieldDescription::FIELD_TYPE_STRING,
-                FieldDescription::FIELD_TYPE_SELECT,
-                FieldDescription::FIELD_TYPE_TEXT,
-                FieldDescription::FIELD_TYPE_HTML_BLOCK,
-                FieldDescription::FIELD_TYPE_VALUE,
-                FieldDescription::FIELD_TYPE_PHONE,
-                FieldDescription::FIELD_TYPE_EMAIL,
-                FieldDescription::FIELD_TYPE_CODE,
-            );
-            $numericTypes = array(
-                FieldDescription::FIELD_TYPE_INT,
-                FieldDescription::FIELD_TYPE_FLOAT
-            );
-            $dateTypes = array(
-                FieldDescription::FIELD_TYPE_DATETIME,
-                FieldDescription::FIELD_TYPE_DATE
-            );
-            foreach (array(
-                'like' => array(
-                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_CONTAINS'),
-                    'type' => $stringTypes
-                ),
-                'notlike' => array(
-                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_NOT_CONTAINS'),
-                    'type' => $stringTypes
-                ),
-                '=' => array(
-                    'title' => '=',
-                    'type' => array_merge($stringTypes, $numericTypes, $dateTypes)
-                ),
-                '!=' => array(
-                    'title' => '!=',
-                    'type' => array_merge($stringTypes, $numericTypes, $dateTypes)
-                ),
-                '<' => array(
-                    'title' => '<',
-                    'type' => array_merge($dateTypes, $numericTypes)
-                ),
-                '>' => array(
-                    'title' => '>',
-                    'type' => array_merge($dateTypes, $numericTypes)
-                ),
-                'between' => array(
-                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_BETWEEN'),
-                    'type' => array_merge($dateTypes, $numericTypes)
-                ),
-                'checked' => array(
-                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_CHECKED'),
-                    'type' => array(FieldDescription::FIELD_TYPE_BOOL)
-                ),
-                'unchecked' => array(
-                    'title' => DBWorker::_translate('TXT_FILTER_SIGN_UNCHEKED'),
-                    'type' => array(FieldDescription::FIELD_TYPE_BOOL)
-                ),
-            ) as $operatorName => $operator){
+
+            foreach ($this->map as $operatorName => $operator) {
                 $operatorNode = $this->doc->createElement('operator');
                 $operatorNode->setAttribute('title', $operator['title']);
                 $operatorNode->setAttribute('name', $operatorName);
                 $operatorsNode->appendChild($operatorNode);
                 $typesNode = $this->doc->createElement('types');
-                foreach($operator['type'] as $typeName){
+                foreach ($operator['type'] as $typeName) {
                     $typesNode->appendChild($this->doc->createElement('type', $typeName));
                 }
                 $operatorNode->appendChild($typesNode);
@@ -244,9 +364,9 @@ class Filter extends Object {
     }
 
     /**
-     * Translate all filter fields.
+     * Translate attributes for filter fields
      */
-    public function translate() {
+    private function translate() {
         foreach ($this->fields as $field) {
             $field->translate();
         }

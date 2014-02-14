@@ -18,7 +18,7 @@
  * @author Pavel Dubenko
  * @author Valerii Zinchenko
  *
- * @version 1.1.1
+ * @version 1.1.4
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
@@ -32,7 +32,7 @@ ScriptLoader.load('TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'date
  * @param {Element} element Element identifier in DOM Tree for the Grid.
  * @param {Object} [options] Set of events.
  */
-var Grid = (function() {
+var Grid = (function () {
     /**
      * Fit the headers.
      * @deprecated
@@ -98,20 +98,20 @@ var Grid = (function() {
 
         var grid = this;
         row.addEvents({
-            'mouseover':function () {
+            'mouseover': function () {
                 if (this != grid.getSelectedItem()) {
                     this.addClass('highlighted');
                 }
             },
-            'mouseout':function () {
+            'mouseout': function () {
                 this.removeClass('highlighted');
             },
-            'click':function () {
+            'click': function () {
                 if (this != grid.getSelectedItem()) {
                     grid.selectItem(this);
                 }
             },
-            'dblclick':function () {
+            'dblclick': function () {
                 /**
                  * Double click event.
                  * @event Grid#doubleClick
@@ -171,12 +171,12 @@ var Grid = (function() {
          * @property {string} [order = null] Defines the direction of the sorting. Can be: '', 'asc', 'desc'.
          */
         sort: {
-            field:null,
-            order:null
+            field: null,
+            order: null
         },
 
         // constructor
-        initialize: function(element, options) {
+        initialize: function (element, options) {
             Asset.css('grid.css');
 
             /**
@@ -227,7 +227,7 @@ var Grid = (function() {
          * @public
          * @param {Object} metadata [Metadata]{@link Grid#metadata}.
          */
-        setMetadata: function(metadata) {
+        setMetadata: function (metadata) {
             /*
              * Проверяем соответствие видимых полей физической структуре таблицы,
              * определяем имя ключевого поля
@@ -253,7 +253,7 @@ var Grid = (function() {
          * @public
          * @returns {Object} [Metadata]{@link Grid#metadata}.
          */
-        getMetadata: function() {
+        getMetadata: function () {
             return this.metadata;
         },
 
@@ -265,7 +265,7 @@ var Grid = (function() {
          * @param {Object[]} data Object with [data fields]{@link Gird#data}.
          * @returns {boolean} Returns true if the data fields were successful set, otherwise false.
          */
-        setData: function(data) {
+        setData: function (data) {
             if (!this.metadata) {
                 alert('Cannot set data without specified metadata.');
                 return false;
@@ -283,7 +283,7 @@ var Grid = (function() {
          * @public
          * @param {Element} item Data field that will be selected.
          */
-        selectItem: function(item) {
+        selectItem: function (item) {
             this.deselectItem();
             if (item) {
                 item.addClass('selected');
@@ -302,7 +302,7 @@ var Grid = (function() {
          * @function
          * @public
          */
-        deselectItem: function() {
+        deselectItem: function () {
             if (this.selectedItem) {
                 this.selectedItem.removeClass('selected');
             }
@@ -315,7 +315,7 @@ var Grid = (function() {
          * @public
          * @returns {Element}
          */
-        getSelectedItem: function() {
+        getSelectedItem: function () {
             return this.selectedItem;
         },
 
@@ -325,7 +325,7 @@ var Grid = (function() {
          * @function
          * @public
          */
-        build: function() {
+        build: function () {
             var preiouslySelectedRecordKey = this.getSelectedRecordKey();
 
             this.selectedItem = null;
@@ -343,8 +343,6 @@ var Grid = (function() {
             } else {
                 new Element('tr').inject(this.tbody);
             }
-
-            this.adjustColumns();
 
             /**
              * Main element that holds Grid's toolbar, header and container.
@@ -369,6 +367,8 @@ var Grid = (function() {
              * @type {Element}
              */
             this.gridContainer = this.element.getElement('.gridContainer');
+
+            this.adjustColumns();
 
             // растягиваем gridContainer на высоту родительского элемента минус фильтр и голова грида
             this.fitGridSize();
@@ -412,7 +412,7 @@ var Grid = (function() {
          * @param {Object} record Object with fields.
          * @param {Element} row Table row where the data will be inserted.
          */
-        iterateFields: function(fieldName, record, row) {
+        iterateFields: function (fieldName, record, row) {
             // Пропускаем невидимые поля.
             if (!this.metadata[fieldName].visible || this.metadata[fieldName].type == 'hidden') {
                 return;
@@ -422,9 +422,9 @@ var Grid = (function() {
             switch (this.metadata[fieldName].type) {
                 case 'boolean':
                     var checkbox = new Element('img').setProperties({
-                        'src':'images/checkbox_' + (record[fieldName] == true ? 'on' : 'off') + '.png',
-                        'width':'13', 'height':'13'}).inject(cell);
-                    cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
+                        'src': 'images/checkbox_' + (record[fieldName] == true ? 'on' : 'off') + '.png',
+                        'width': '13', 'height': '13'}).inject(cell);
+                    cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
                     break;
                 case 'value':
                     cell.set('html', record[fieldName]['value']);
@@ -438,8 +438,8 @@ var Grid = (function() {
                     break;
                 case 'file':
                     if (record[fieldName]) {
-                        var image = new Element('img').setProperties({ 'src':Energine.resizer + 'w40-h40/' + record[fieldName], 'width':40, 'height':40 }).inject(cell);
-                        cell.setStyles({ 'text-align':'center', 'vertical-align':'middle' });
+                        var image = new Element('img').setProperties({ 'src': Energine.resizer + 'w40-h40/' + record[fieldName], 'width': 40, 'height': 40 }).inject(cell);
+                        cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
                     }
                     break;
                 default :
@@ -451,8 +451,7 @@ var Grid = (function() {
                     if ((this.metadata[fieldName].type == 'select')
                         && (row.getFirst() == cell)
                         && (row.getPrevious())
-                        && (prevRow.record[fieldName] == record[fieldName]))
-                    {
+                        && (prevRow.record[fieldName] == record[fieldName])) {
                         fieldValue = '';
                         prevRow.getFirst().setStyle('font-weight', 'bold');
                     }
@@ -470,17 +469,16 @@ var Grid = (function() {
          * @function
          * @protected
          */
-        adjustColumns: function() {
-            var headers = [],
-                gridHeadContainer = this.element.getElement('.gridHeadContainer');
+        adjustColumns: function () {
+            var headers = [];
 
             // Adjust padding-right for '.gridHeadContainer' element.
-            gridHeadContainer.setStyle('padding-right', ScrollBarWidth + 'px');
+            this.gridHeadContainer.setStyle('padding-right', ScrollBarWidth + 'px');
 
             if (!(this.element.getElement('table.gridTable').hasClass('fixed_columns'))) {
                 var tds = this.tbody.getElement('tr').getElements('td'),
-                    ths = gridHeadContainer.getElements('th'),
-                    headCols = gridHeadContainer.getElements('col'),
+                    ths = this.gridHeadContainer.getElements('th'),
+                    headCols = this.gridHeadContainer.getElements('col'),
                     bodyCols = this.element.getElements('.gridContainer col');
 
                 // Get the col width from the tbody
@@ -500,7 +498,7 @@ var Grid = (function() {
                 }
                 if (oversizeHead.sum()) {
                     var newWidth = [],
-                        colWidth = [0,0];
+                        colWidth = [0, 0];
 
                     for (n = 0; n < tds.length; n++) {
                         if (oversizeHead[n]) {
@@ -522,14 +520,14 @@ var Grid = (function() {
                         bodyCols[n].setStyle('width', headers[n]);
                     }
                 }
+            } else {
+                this.tbody.getParent().setStyles({
+                    'table-layout': 'fixed'
+                });
             }
 
-            gridHeadContainer.getElement('.gridTable').setStyles({
-                tableLayout: 'fixed'
-            });
             this.tbody.getParent().setStyles({
-                wordWrap: 'break-word',
-                tableLayout: 'fixed'
+                wordWrap: 'break-word'
             });
         }.protect(),
 
@@ -538,11 +536,13 @@ var Grid = (function() {
          * @function
          * @public
          */
-        fitGridSize: function() {
+        fitGridSize: function () {
             if (this.paneContent) {
-                var gridHeight = this.paneContent.getSize().y -
-                    ((this.gridToolbar) ? this.gridToolbar.getSize().y : 0) -
-                    this.gridHeadContainer.getSize().y - 4;
+                var margin = this.element.getStyle('margin-top'),
+                    gridHeight = this.paneContent.getSize().y
+                        - this.gridHeadContainer.getSize().y
+                        - ((this.gridToolbar) ? this.gridToolbar.getSize().y : 0)
+                        - ((margin) ? margin.toInt() : 0);
                 if (gridHeight > 0) {
                     this.gridContainer.setStyle('height', gridHeight);
                 }
@@ -551,25 +551,47 @@ var Grid = (function() {
 
         /**
          * Fit the height of the Grid's container if the container is not new modal frame.
-         * @function
-         * @public
          */
-        fitGridFormSize: function() {
+        fitGridFormSize: function () {
             if (this.pane) {
-                var gridBodyContainer = this.element.getElement('.gridBodyContainer');
-                var gridBodyHeight = ((gridBodyContainer.getSize().y + 2)
-                    > this.minGridHeight) ? (gridBodyContainer.getSize().y + 2) : this.minGridHeight;
-                var paneOthersHeight = this.pane.getSize().y - this.gridContainer.getSize().y;
+                var toolbarH = (this.gridToolbar) ? this.gridToolbar.getSize().y : 0,
+                    gridHeadH = this.gridHeadContainer.getComputedSize().totalHeight,
+                    paneToolbarT = this.pane.getElement('.e-pane-t-toolbar'),
+                    paneToolbarTH = (paneToolbarT) ? paneToolbarT.getSize().y : 0,
+                    paneToolbarB = this.pane.getElement('.e-pane-b-toolbar'),
+                    paneToolbarBH = (paneToolbarB) ? paneToolbarB.getSize().y : 0,
+                    paneH = this.pane.getSize().y,
+                    margin = this.element.getStyle('margin-top'),
 
-                var windowHeight = window.getSize().y - 10;
-                if (windowHeight > (this.minGridHeight + paneOthersHeight)) {
-                    if ((gridBodyHeight + paneOthersHeight) > windowHeight) {
-                        this.pane.setStyle('height', windowHeight);
-                    } else {
-                        this.pane.setStyle('height', gridBodyHeight + paneOthersHeight);
-                    }
-                } else {
-                    this.pane.setStyle('height', this.minGridHeight + paneOthersHeight);
+                    gridBodyContainer = this.element.getElement('.gridBodyContainer'),
+                    gridBodyHeight = gridBodyContainer.getSize().y
+                        + this.gridContainer.getStyle('border-top-width').toInt()
+                        + this.gridContainer.getStyle('border-bottom-width').toInt();
+                if (gridBodyHeight < this.minGridHeight) {
+                    gridBodyHeight = this.minGridHeight;
+                }
+
+                /*
+                 * +3 at the end is:
+                 *   +2 from e-pane-content border
+                 *   +1 from somewhere, I do not why this should be
+                 */
+                var totalH = toolbarH + gridHeadH + gridBodyHeight + paneToolbarTH + paneToolbarBH
+                    + ((margin) ? margin.toInt() : 0) + 3;
+                /*
+                 * -81 at the end is:
+                 *   -31 from e-topframe height
+                 *   -50 from footer
+                 * they are not visible from grid
+                 */
+                var windowHeight = window.getSize().y;
+                var freespace = windowHeight;
+                if ($(document.body).scrollHeight - ScrollBarWidth - 81 < windowHeight) {
+                    freespace -= this.pane.getPosition().y + ScrollBarWidth + 81;
+                }
+
+                if (totalH > paneH) {
+                    this.pane.setStyle('height', (totalH > freespace) ? freespace : totalH);
                 }
                 this.fitGridSize();
             }
@@ -582,7 +604,7 @@ var Grid = (function() {
          * @public
          * @returns {boolean}
          */
-        isEmpty: function() {
+        isEmpty: function () {
             return !this.data.length;
         },
 
@@ -593,7 +615,7 @@ var Grid = (function() {
          * @public
          * @returns {Object}
          */
-        getSelectedRecord: function() {
+        getSelectedRecord: function () {
             if (!this.getSelectedItem()) {
                 return false;
             }
@@ -607,7 +629,7 @@ var Grid = (function() {
          * @public
          * @returns {boolean}
          */
-        getSelectedRecordKey: function() {
+        getSelectedRecordKey: function () {
             if (!this.keyFieldName) {
                 return false;
             }
@@ -622,7 +644,7 @@ var Grid = (function() {
          * @param key
          * @returns {boolean}
          */
-        dataKeyExists: function(key) {
+        dataKeyExists: function (key) {
             if (!this.data) return false;
             if (!this.keyFieldName) return false;
 
@@ -637,7 +659,7 @@ var Grid = (function() {
          * @function
          * @public
          */
-        clear: function() {
+        clear: function () {
             this.deselectItem();
             while (this.tbody.hasChildNodes()) {
                 this.tbody.removeChild(this.tbody.firstChild);
@@ -653,7 +675,7 @@ var Grid = (function() {
          * @public
          * @param {Object} event Default event object.
          */
-        onChangeSort: function(event) {
+        onChangeSort: function (event) {
             var getNextDirectionOrderItem = function (current) {
                 var sortDirectionOrder = ['', 'asc', 'desc'],
                     currentIndex,
@@ -721,7 +743,7 @@ var GridManager = new Class(/** @lends GridManager# */{
     langId: 0,
 
     // constructor
-    initialize: function(element) {
+    initialize: function (element) {
         /**
          * The main holder element.
          * @type {Element}
@@ -743,7 +765,7 @@ var GridManager = new Class(/** @lends GridManager# */{
          * Pages.
          * @type {PageList}
          */
-        this.pageList = new PageList({ onPageSelect:this.loadPage.bind(this) });
+        this.pageList = new PageList({ onPageSelect: this.loadPage.bind(this) });
 
         /**
          * Grid.
@@ -759,7 +781,7 @@ var GridManager = new Class(/** @lends GridManager# */{
          * Tabs.
          * @type {TabPane}
          */
-        this.tabPane = new TabPane(this.element, { onTabChange:this.onTabChange.bind(this) });
+        this.tabPane = new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });
 
         var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
         if (toolbarContainer) {
@@ -783,9 +805,9 @@ var GridManager = new Class(/** @lends GridManager# */{
         this.singlePath = this.element.getProperty('single_template');
         /*Checking if opened in modalbox*/
         var mb = window.parent.ModalBox;
-        if(mb && mb.initialized && mb.getCurrent()){
-            document.body.addEvent('keypress', function(evt){
-                if(evt.key == 'esc'){
+        if (mb && mb.initialized && mb.getCurrent()) {
+            $(document.body).addEvent('keypress', function (evt) {
+                if (evt.key == 'esc') {
                     mb.close();
                 }
             });
@@ -806,7 +828,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {string|number} id Element ID.
      */
-    setMvElementId: function(id) {
+    setMvElementId: function (id) {
         this.mvElementId = id;
     },
 
@@ -816,7 +838,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @returns {string|number}
      */
-    getMvElementId: function() {
+    getMvElementId: function () {
         return this.mvElementId;
     },
 
@@ -825,7 +847,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    clearMvElementId: function() {
+    clearMvElementId: function () {
         this.mvElementId = null;
     },
 
@@ -836,7 +858,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {Toolbar} toolbar Toolbar that will be attached to this GridManager.
      */
-    attachToolbar: function(toolbar) {
+    attachToolbar: function (toolbar) {
         /**
          * Toolbar.
          * @type {}
@@ -866,7 +888,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {Object} data Object with language ID.
      */
-    onTabChange: function(data) {
+    onTabChange: function (data) {
         this.langId = data.lang;
         // Загружаем первую страницу только если панель инструментов уже прикреплена.
         if (this.filter) {
@@ -880,14 +902,15 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    onSelect: function() {},
+    onSelect: function () {
+    },
 
     /**
      * Event handler. Double click.
      * @function
      * @public
      */
-    onDoubleClick: function() {
+    onDoubleClick: function () {
         this.edit();
     },
 
@@ -896,7 +919,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    onSortChange: function() {
+    onSortChange: function () {
         this.loadPage(1);
     },
 
@@ -905,36 +928,51 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    reload: function() {
+    reload: function () {
         this.loadPage(1);
     },
 
-    // todo: Define methods to get url and postBody. - do
     /**
      * Load the specified page number.
      *
      * @function
      * @public
-     * @param {number} pageNum Page number.
+     * @param {number|string} pageNum Page number.
      */
-    loadPage: function(pageNum) {
-        var postBody = '',
-            url = '';
-
+    loadPage: function (pageNum) {
         this.pageList.disable();
-        // todo: The toolbar is attached later as this functions calls.
+        // todo: The toolbar is attached later as this function calls.
         if (this.toolbar) {
             this.toolbar.disableControls();
         }
         this.overlay.show();
         this.grid.clear();
 
-        if (this.langId) {
-            postBody += 'languageID=' + this.langId + '&';
-        }
-        if (this.filter) {
-            postBody += this.filter.getValue();
-        }
+        /*
+         This delay was created because of some stupid behavior in Firefox.
+         this.paneContent in build() has different height without delay.
+         Firefox 26
+         */
+        (function () {
+            Energine.request(
+                this.buildRequestURL(pageNum),
+                this.buildRequestPostBody(),
+                this.processServerResponse.bind(this),
+                null,
+                this.processServerError.bind(this)
+            );
+        }).delay(0, this);
+    },
+
+    /**
+     * Build request URL.
+     *
+     * @abstract
+     * @param {number|string} pageNum Page number.
+     * @returns {string}
+     */
+    buildRequestURL: function (pageNum) {
+        var url = '';
 
         if (this.grid.sort.order) {
             url = this.singlePath + 'get-data/' + this.grid.sort.field + '-'
@@ -943,19 +981,26 @@ var GridManager = new Class(/** @lends GridManager# */{
             url = this.singlePath + 'get-data/page-' + pageNum;
         }
 
-        /*
-        This delay was created because of some stupid behavior in Firefox.
-        this.paneContent in build() has different height without delay.
-        Firefox 26
-         */
-        (function() {
-            Energine.request(url,
-                postBody,
-                this.processServerResponse.bind(this),
-                null,
-                this.processServerError.bind(this)
-            );
-        }).delay(0, this);
+        return url;
+    },
+
+    /**
+     * Build request post body.
+     *
+     * @abstract
+     * @returns {string}
+     */
+    buildRequestPostBody: function () {
+        var postBody = '';
+
+        if (this.langId) {
+            postBody += 'languageID=' + this.langId + '&';
+        }
+        if (this.filter) {
+            postBody += this.filter.getValue();
+        }
+
+        return postBody;
     },
 
     /**
@@ -965,7 +1010,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {Object} result Result data from the server.
      */
-    processServerResponse: function(result) {
+    processServerResponse: function (result) {
         var control = this.toolbar.getControlById('add');
 
         if (!this.initialized) {
@@ -999,7 +1044,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {string} responseText Server error message.
      */
-    processServerError: function(responseText) {
+    processServerError: function (responseText) {
         alert(responseText);
         this.overlay.hide();
     },
@@ -1011,7 +1056,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {Object} [returnValue] Object, that can contain the next action name.
      */
-    processAfterCloseAction: function(returnValue) {
+    processAfterCloseAction: function (returnValue) {
         if (returnValue) {
             if (returnValue.afterClose && this[returnValue.afterClose]) {
                 this[returnValue.afterClose].attempt(null, this);
@@ -1027,8 +1072,8 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    view: function() {
-        ModalBox.open({ url:this.singlePath +
+    view: function () {
+        ModalBox.open({ url: this.singlePath +
             this.grid.getSelectedRecordKey() });
     },
 
@@ -1037,10 +1082,10 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    add: function() {
+    add: function () {
         ModalBox.open({
-            url:this.singlePath + 'add/',
-            onClose:this.processAfterCloseAction.bind(this)
+            url: this.singlePath + 'add/',
+            onClose: this.processAfterCloseAction.bind(this)
         });
     },
 
@@ -1050,13 +1095,13 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
      */
-    edit: function(id) {
-        if(!parseInt(id)){
+    edit: function (id) {
+        if (!parseInt(id)) {
             id = this.grid.getSelectedRecordKey();
         }
         ModalBox.open({
-            url:this.singlePath + id + '/edit',
-            onClose:this.processAfterCloseAction.bind(this)
+            url: this.singlePath + id + '/edit',
+            onClose: this.processAfterCloseAction.bind(this)
         });
     },
 
@@ -1066,13 +1111,13 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {string|number} [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
      */
-    move: function(id) {
-        if(!parseInt(id)) {
+    move: function (id) {
+        if (!parseInt(id)) {
             id = this.grid.getSelectedRecordKey();
         }
         this.setMvElementId(id);
         ModalBox.open({
-            url:this.singlePath + 'move/' + id,
+            url: this.singlePath + 'move/' + id,
             onClose: this.processAfterCloseAction.bind(this)
         });
     },
@@ -1082,7 +1127,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    moveFirst: function() {
+    moveFirst: function () {
         this.moveTo('first', this.getMvElementId());
     },
 
@@ -1091,7 +1136,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    moveLast: function() {
+    moveLast: function () {
         this.moveTo('last', this.getMvElementId());
     },
 
@@ -1101,8 +1146,8 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {string|number} [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
      */
-    moveAbove: function(id) {
-        if(!parseInt(id)){
+    moveAbove: function (id) {
+        if (!parseInt(id)) {
             id = this.grid.getSelectedRecordKey();
         }
         this.moveTo('above', this.getMvElementId(), id);
@@ -1114,8 +1159,8 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      * @param {string|number} [id] ID of the data field. If <tt>id</tt> is not specified it will be get from [getSelectedRecordKey()]{@link Grid#getSelectedRecordKey}.
      */
-    moveBelow: function(id) {
-        if(!parseInt(id)){
+    moveBelow: function (id) {
+        if (!parseInt(id)) {
             id = this.grid.getSelectedRecordKey();
         }
         this.moveTo('below', this.getMvElementId(), id);
@@ -1130,7 +1175,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @param {string|number} fromId Defines from which ID will the element moved.
      * @param {string|number} toId Defines to which ID will the element moved.
      */
-    moveTo: function(dir, fromId, toId) {
+    moveTo: function (dir, fromId, toId) {
         toId = toId || '';
         this.overlay.show();
         Energine.request(this.singlePath + 'move/' + fromId + '/' + dir + '/' + toId + '/',
@@ -1155,7 +1200,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    editPrev: function() {
+    editPrev: function () {
         var prevRow;
         if (this.grid.getSelectedItem() && (prevRow = this.grid.getSelectedItem().getPrevious())) {
             this.grid.selectItem(prevRow);
@@ -1168,7 +1213,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    editNext: function() {
+    editNext: function () {
         var nextRow;
         if (this.grid.getSelectedItem() && (nextRow = this.grid.getSelectedItem().getNext())) {
             this.grid.selectItem(nextRow);
@@ -1181,7 +1226,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    del: function() {
+    del: function () {
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
             'Do you really want to delete selected record?';
         if (confirm(MSG_CONFIRM_DELETE)) {
@@ -1208,7 +1253,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    close: function() {
+    close: function () {
         ModalBox.close();
     },
 
@@ -1217,9 +1262,9 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    up: function() {
+    up: function () {
         Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/up/',
-            (this.filter)?this.filter.getValue():null, this.loadPage.pass(this.pageList.currentPage, this));
+            (this.filter) ? this.filter.getValue() : null, this.loadPage.pass(this.pageList.currentPage, this));
     },
 
     /**
@@ -1227,9 +1272,9 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    down: function() {
+    down: function () {
         Energine.request(this.singlePath + this.grid.getSelectedRecordKey() + '/down/',
-            (this.filter)?this.filter.getValue():null, this.loadPage.pass(this.pageList.currentPage, this));
+            (this.filter) ? this.filter.getValue() : null, this.loadPage.pass(this.pageList.currentPage, this));
     },
 
     /**
@@ -1237,7 +1282,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    print: function() {
+    print: function () {
         window.open(this.element.getProperty('single_template') + 'print/');
     },
 
@@ -1246,7 +1291,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    csv: function() {
+    csv: function () {
         document.location.href = this.element.getProperty('single_template') + 'csv/';
     }
 });
@@ -1285,7 +1330,7 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
     active: false,
 
     // constructor
-    initialize: function(gridManager) {
+    initialize: function (gridManager) {
         /**
          * Filter element of the GridManager.
          * @type {Element}
@@ -1312,36 +1357,116 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
 
         this.inputs = new GridManager.Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
 
-        //FIXME: The filter works not properly by condition '=' and '!=' when the input for field 'datetime' is given only by date (without TIME!!!) -- report a bug.
         this.condition = this.element.getElement('.f_condition');
-        this.condition.addEvent('change', function (event) {
-            if ($(event.target).get('value') == 'between') {
-                this.inputs.asPeriod();
-            } else {
-                this.inputs.asScalar();
+        this.condition.getChildren().each(function (el) {
+            var types;
+            if (types = el.getProperty('data-types')) {
+                el.store('type', types.split('|'));
+                el.removeProperty('data-types');
             }
-        }.bind(this));
+        });
 
         this.fields = this.element.getElement('.f_fields');
         this.fields.addEvent('change', this.checkCondition.bind(this));
+        this.condition.addEvent('change', function (event) {
+            this.switchInputs($(event.target).get('value'), this.fields.getSelected()[0].getAttribute('type'));
+        }.bind(this));
 
         this.checkCondition();
     },
 
     /**
      * Check the filter's condition option.
+     */
+    checkCondition: function () {
+        var fieldType = this.fields.getSelected()[0].getAttribute('type'),
+            isDate = (fieldType == 'datetime' || fieldType == 'date');
+        this.condition.getChildren().each(function (el) {
+            var types;
+
+            if (types = el.retrieve('type')) {
+                if (types.contains(fieldType)) {
+                    el.setStyle('display', '');
+                }
+                else {
+                    el.setStyle('display', 'none');
+                }
+            }
+        }, this);
+
+        /*var typesMap = [
+         //Date types Если дата - оставляем период, < , > , =
+         {types: ['date', 'datetime'], conditions: ['between', '>', '<', '=', '!=']},
+         //string types Строковые - содержит, не содержит, =, !=
+         {types: ['string', 'text', 'htmlblock', 'select', 'phone', 'email'], conditions: ['like', 'notlike', '=', '!=']},
+         //Чисельные <, >, =, !=, период
+         {types: ['integer', 'float'], conditions: ['>', '<', '=', '!=', 'between']},
+         //Булиновы  - checked, unchecked
+         {types: ['boolean'], conditions: ['checked', 'unchecked']}
+         ];
+
+         //var availableConditions = ['like', 'notlike', '=', '!='];
+         this.condition.getElements('option').setStyle('display', 'none');
+
+         for (var i in typesMap) {
+         if (typesMap[i].types.contains(fieldType)) {
+         typesMap[i].conditions.each(function (c) {
+         if(this.condition.getElement('option[value=' + c + ']'))this.condition.getElement('option[value=' + c + ']').setStyle('display', '');
+         }, this);
+         break;
+         }
+         }
+         */
+        if (this.condition.options[this.condition.selectedIndex].getStyle('display') == 'none') {
+            for (var n = 0; n < this.condition.options.length; n++) {
+                if (this.condition.options[n].getStyle('display') !== 'none') {
+                    this.condition.selectedIndex = n;
+                    break;
+                }
+            }
+        }
+        this.switchInputs(this.condition.get('value'), fieldType);
+        this.disableInputField(isDate);
+        this.inputs.showDatePickers(isDate);
+
+        if (this.inputs.inputs[0][0].getStyle('display') != 'none') {
+            this.inputs.inputs[0][0].focus();
+        }
+    },
+    /**
+     * Shows inputs depending on fields' types and filter's condition
+     * @param {string} condition Filter condition name
+     * @param {string} type Filter field type
      * @function
      * @public
      */
-    checkCondition: function() {
-        var isDate = this.fields.getSelected()[0].getAttribute('type') == 'datetime';
-        this.inputs.showDatePickers(isDate);
-        this.condition.getElements('option[value=like],option[value=notlike]').setStyle('display', (isDate ? 'none' : ''));
-        for (var n = 0; isDate && n < this.condition.options.length; n++) {
-            if (this.condition.options[n].getStyle('display') !== 'none') {
-                this.condition.selectedIndex = n;
-                break;
+    switchInputs: function (condition, type) {
+        if (type == 'boolean') {
+            this.inputs.hide();
+        }
+        else {
+            if (condition == 'between') {
+                this.inputs.asPeriod();
+            } else {
+                this.inputs.asScalar();
             }
+        }
+    },
+    /**
+     * Disable input fields.
+     *
+     * @param {boolean} disable Disable input fields?
+     */
+    disableInputField: function (disable) {
+        if (disable) {
+            this.inputs.inputs.each(function (input) {
+                input[0].setProperty('disabled', true);
+                input[0].value = '';
+            });
+        } else if (this.inputs.inputs[0][0].get('disabled')) {
+            this.inputs.inputs.each(function (input) {
+                input[0].removeProperty('disabled');
+            });
         }
     },
 
@@ -1350,7 +1475,7 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
      * @function
      * @public
      */
-    remove: function() {
+    remove: function () {
         this.inputs.empty();
         this.element.removeClass('active');
         this.active = false;
@@ -1363,7 +1488,7 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
      * @public
      * @returns {boolean}
      */
-    use: function() {
+    use: function () {
         if (this.inputs.hasValues()) {
             this.element.addClass('active');
             this.active = true;
@@ -1381,7 +1506,7 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
      * @public
      * @returns {string}
      */
-    getValue: function() {
+    getValue: function () {
         var result = '';
         if (this.active && this.inputs.hasValues()) {
             var fieldName = this.fields.options[this.fields.selectedIndex].value,
@@ -1402,7 +1527,7 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
  */
 GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.QueryControls# */{
     // constructor
-    initialize: function(els, applyAction) {
+    initialize: function (els, applyAction) {
         /**
          * Holds the query containers.
          * @type {Elements}
@@ -1423,10 +1548,10 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
          */
         this.dps = new Elements(this.containers.getElements('.f_datepicker'));
 
-        this.dps.each(function(el, index){
+        this.dps.each(function (el, index) {
             //note: This is small trick to open DatePicker on the image element, not on the span.
             Energine._createDatePickerObject(el.getFirst(), {
-                format:'%Y-%m-%d',
+                format: '%Y-%m-%d',
                 allowEmpty: true,
                 toggle: this.inputs[index],
                 useFadeInOut: false
@@ -1449,7 +1574,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      * @public
      * @returns {boolean}
      */
-    hasValues:function () {
+    hasValues: function () {
         return this.inputs.some(function (el) {
             return el.get('value');
         });
@@ -1460,7 +1585,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      * @function
      * @public
      */
-    empty:function () {
+    empty: function () {
         this.inputs.each(function (el) {
             el.set('value', '')
         });
@@ -1474,7 +1599,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      * @param {string} fieldName The field name from the recordset.
      * @returns {string}
      */
-    getValues:function (fieldName) {
+    getValues: function (fieldName) {
         var str = '';
         this.inputs.each(function (el, index, els) {
             if (el.get('value')) {
@@ -1492,8 +1617,9 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      * @function
      * @public
      */
-    asPeriod:function () {
-        this.containers[1].removeClass('hidden');
+    asPeriod: function () {
+        this.show();
+        //this.containers[1].removeClass('hidden');
         this.inputs.addClass('small');
     },
 
@@ -1502,18 +1628,34 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      * @function
      * @public
      */
-    asScalar:function () {
+    asScalar: function () {
+        this.show();
         this.containers[1].addClass('hidden');
         this.inputs.removeClass('small');
     },
-
+    /**
+     * Show all inputs
+     * @function
+     * @public
+     */
+    show: function () {
+        this.containers.removeClass('hidden');
+    },
+    /**
+     * hide inputs
+     * @function
+     * @public
+     */
+    hide: function () {
+        this.containers.addClass('hidden');
+    },
     /**
      * Show/hide date pickers.
      * @function
      * @public
      * @param {boolean} toShow Defines whether the date pickers will be visible (by <tt>true</tt>) or hidden (by <tt>false</tt>).
      */
-    showDatePickers: function(toShow) {
+    showDatePickers: function (toShow) {
         if (toShow) {
             this.dps.removeClass('hidden');
         } else {

@@ -33,7 +33,7 @@ server {
   }
 
   # rewrite-правильно для локального ресайзера
-  rewrite "^/resizer/w([0-9]+)\-h([0-9]+)/(.*)$" /resizer/index.php?w=$1&h=$2&i=$3;
+  rewrite "^/resizer/w([0-9]+)\-h([0-9]+)/(.*)$" /resizer/timthumb.php?w=$1&h=$2&src=$3&zc=2;
 
  # Остальные запросы также идут на PHP-FPM, если $uri не существует
   location / {

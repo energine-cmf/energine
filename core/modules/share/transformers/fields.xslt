@@ -387,7 +387,7 @@
                 <xsl:attribute name="type">hidden</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
             </input>
-            <input type="text" id="{generate-id(.)}_name" value="{@smap_name}" readonly="readonly" class="text inp_string" style="width:481px;height:18px;"/>
+            <input type="text" id="{generate-id(.)}_name" value="{@smap_name}" readonly="readonly" class="text inp_string" style="height:32px;"/>
             <div class="appended_block">
                 <button type="button" style="height:30px;padding:0 12px;-moz-box-sizing:content-box;" class="smap_selector" smap_name="{generate-id(.)}_name" smap_id="{generate-id(.)}_id" field="{@name}">...</button>
             </div>
@@ -493,26 +493,29 @@
         </input>
     </xsl:template>
 
-    <!-- для поля FILE на которое права только чтение -->
-    <xsl:template match="field[@type='file'][@mode='1'][ancestor::component[@type='form']]">
-        <div class="field">
-            <xsl:apply-templates select="." mode="field_name_readonly"/>
-            <xsl:apply-templates select="." mode="field_input_readonly"/>
-        </div>
-    </xsl:template>
-
     <xsl:template match="field[@type='file'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
-        <a href="{.}" target="_blank"><xsl:value-of select="."/></a>
+        <div>
+        <xsl:choose>
+            <xsl:when test="(@media_type='video' or @media_type='image') and .!=''">
+                <a class="preview" id="{generate-id(.)}_preview" target="_blank">
+                    <xsl:attribute name="href"><xsl:value-of select="$MEDIA_URL"/><xsl:value-of select="."/></xsl:attribute>
+                        <img alt="">
+                                <xsl:attribute name="src"><xsl:value-of select="$MEDIA_URL"/><xsl:choose>
+                                    <xsl:when test="@media_type='image'"><xsl:value-of select="."/></xsl:when>
+                                    <xsl:when test="@media_type='video'">resizer/w0-h0/<xsl:value-of select="."/></xsl:when>
+                                    <xsl:otherwise>images/icons/icon_undefined.gif</xsl:otherwise>
+                                </xsl:choose></xsl:attribute>
+                        </img>
+                    </a>
+            </xsl:when>
+            <xsl:otherwise>
+                <a href="{$MEDIA_URL}{.}" target="_blank"><xsl:value-of select="."/></a>
+            </xsl:otherwise>
+        </xsl:choose>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
         </input>
-    </xsl:template>
-
-    <xsl:template match="field[@type='file'][@mode='1' and @media_type='image'][ancestor::component[@type='form']]" mode="field_input_readonly">
-        <a href="{.}" target="_blank"><img src="{.}" alt=""/></a>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
-        </input>
+        </div>
     </xsl:template>
 
     <!-- read-only поле типа select -->
@@ -781,7 +784,7 @@
                 <xsl:attribute name="type">hidden</xsl:attribute>
                 <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/>_id</xsl:attribute>
             </input>
-            <input type="text" id="{generate-id(.)}_name" value="{@upl_path}" readonly="readonly" class="text inp_string" style="height: 18px; width: 472px;"/>
+            <input type="text" id="{generate-id(.)}_name" value="{@upl_path}" readonly="readonly" class="text inp_string" style="height: 32px;"/>
             <div class="appended_block">
                 <button type="button" style="width:22px;height:18px;" class="attachment_selector" upl_name="{generate-id(.)}_name" upl_id="{generate-id(.)}_id" field="{@name}">...</button>
             </div>

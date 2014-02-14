@@ -24,6 +24,8 @@ input, textarea, select, button {
     -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     font-family: Tahoma, sans-serif;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 
 button {
@@ -103,19 +105,23 @@ optgroup option {
 }
 
 .e-pane-content .field {
+    float: left;
+    width: 100%;
     padding: 10px 0;
 }
 .e-pane-content .field .name {
-    display: inline-block;
+    display: block;
+    float: left;
     vertical-align: middle;
-    width: 173px;
+    width: 30%;
     margin-bottom: 10px;
     /*font-weight: bold;*/
 }
 .e-pane-content .field .control {
-    display: inline-block;
+    display: block;
+    float: left;
     vertical-align: middle;
-    width: 520px;
+    width: 68%;
 }
 .e-pane-content .field .control textarea,
 .e-pane-content .field .control input[type="text"]
@@ -125,23 +131,37 @@ optgroup option {
 .e-pane-content .field .control select {
     width: 100%;
     margin-bottom: 10px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 .e-pane-content .field .control select {
-    width: 534px;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 .e-pane-content .field .control.type_code,
 .e-pane-content .field .control.type_htmlblock,
 .e-pane-content .field .control.type_file {
     display: block;
-    width: 713px;
+    width: 98%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 .e-pane-content .field.file_upload .name,
 .e-pane-content .field.editor .name {
-    width: 713px;
+    width: 100%;
 }
 .e-pane-content .field .control  .with_append {
     display: table;
-    width: 532px;
+    width: 100%;
+}
+div.with_append.focus_block .appended_block button,
+div.with_append.focus_block .appended_block input[type="button"] {
+    border-color: #6FCFE3;
+    background-color: #FaFFFF;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
 }
 .e-pane-content .field .control.type_file .with_append {
     width: 713px;
@@ -164,8 +184,8 @@ optgroup option {
     border-right-width: 1px;
 }
 .e-pane-content .field .control  .with_append .acpl {
-    width: 481px;
-    height: 18px;
+    width: 100%;
+    height: 32px;
 }
 .e-pane-content .field .control  .with_append button {
     box-sizing: content-box;
@@ -238,5 +258,12 @@ optgroup option {
     -webkit-box-shadow: 0 0 0 0;
     transition: none;
     -webkit-transition: none;
+}
+/* --- media queries --- */
+@media screen and (max-width: 570px) {
+    .e-pane-content .field .control,
+    .e-pane-content .field .name {
+        width: 98%;
+    }
 }
 /* ----- /forms ----- */

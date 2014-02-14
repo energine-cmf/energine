@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class FileRepositoryFTP;
-@endcode
+ * @endcode
  *
  * @author Andy Karpov <andy.karpov@gmail.com>
  * @copyright Energine 2013
@@ -20,7 +20,7 @@ class FileRepositoryFTP;
  *
  * @code
 class FileRepositoryFTP;
-@endcode
+ * @endcode
  *
  * This is useful for the cases when the repository is remote and the file is downloaded over FTP by using admin tools.
  *
@@ -87,6 +87,11 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      * @var FTP $ftp_alts
      */
     protected $ftp_alts;
+    /**
+     * @var callable function used for preparing data set
+     * @see IFileRepository::prepare
+     */
+    private $prepareFunction = null;
 
     /**
      * @copydoc IFileRepository::__construct
@@ -326,5 +331,26 @@ class FileRepositoryFTP extends Object implements IFileRepository {
      */
     public function deleteDir($dir) {
         throw new SystemException('ERR_UNIMPLEMENTED_YET');
+    }
+
+    /**
+     * @copydoc IFileRepository::setPrepareFunction
+     * @throws SystemException 'ERR_BAD_PREPARE_FUNCTION'
+     */
+    public function setPrepareFunction($func) {
+        if (!is_callable($func)) {
+            throw new SystemException('ERR_BAD_PREPARE_FUNCTION');
+        }
+        $this->prepareFunction = $func;
+    }
+
+    /**
+     * @copydoc IFileRepository::prepare
+     *
+     */
+    public function prepare(&$data) {
+        if ($data && $this->prepareFunction) {
+            array_walk($data, $this->prepareFunction);
+        }
     }
 }

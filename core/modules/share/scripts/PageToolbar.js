@@ -98,7 +98,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
             'frameBorder': '0'
         }).inject(sidebarFrameContent);
 
-        new Element('img').setProperties({
+        new Element('img',{'events':{'click':this.toggleSidebar}}).setProperties({
             'src': Energine.static + ((Energine.debug)?'images/toolbar/nrgnptbdbg.png':'images/toolbar/nrgnptb.png'),
             'class' : 'pagetb_logo'
         }).inject(topFrame, 'top');

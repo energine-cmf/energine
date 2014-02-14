@@ -209,7 +209,7 @@ final class Document extends DBWorker implements IDocument {
 
         $this->doc->appendChild($dom_root);
         if (!isset($this->properties['title'])) {
-            $this->setProperty('title', $this->documentInfo['Name']);
+            $this->setProperty('title', strip_tags($this->documentInfo['Name']));
         }
         $dom_documentProperties = $this->doc->createElement('properties');
         foreach ($this->properties as $propName => $propValue) {

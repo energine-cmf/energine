@@ -9,7 +9,7 @@
  *
  * @author Pavel Dubenko
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**
@@ -42,8 +42,6 @@ var Words = function(initialValue, sep) {
     /**
      * Set the word index.
      *
-     * @function
-     * @public
      * @param {number} index Word index.
      */
     this.setCurrentIndex = function(index) {
@@ -55,8 +53,6 @@ var Words = function(initialValue, sep) {
     /**
      * Return the initial string line.
      *
-     * @function
-     * @public
      * @returns {string}
      */
     this.asString = function() {
@@ -66,8 +62,6 @@ var Words = function(initialValue, sep) {
     /**
      * Get the amount of delimited words.
      *
-     * @function
-     * @public
      * @returns {number}
      */
     this.getLength = function() {
@@ -77,8 +71,6 @@ var Words = function(initialValue, sep) {
     /**
      * Get the word at the specified index.
      *
-     * @function
-     * @public
      * @param {number} index Word index.
      * @returns {string}
      */
@@ -91,8 +83,6 @@ var Words = function(initialValue, sep) {
     /**
      * Reset the delimited word at the specific index.
      *
-     * @function
-     * @public
      * @param {number} index Word index.
      * @param {string} value New word.
      */
@@ -103,8 +93,6 @@ var Words = function(initialValue, sep) {
     /**
      * Find the word.
      *
-     * @function
-     * @public
      * @param {number} curPos Position of the looked word.
      * @returns {Object} Object with properties: index {number}, str {string}.
      */
@@ -167,6 +155,8 @@ var ActiveList = new Class(/** @lends ActiveList# */{
 
     // constructor
     initialize: function(container) {
+        Asset.css('acpl.css');
+
         /**
          * Active list container.
          * @type {Element}
@@ -175,8 +165,6 @@ var ActiveList = new Class(/** @lends ActiveList# */{
         this.container.addClass('alist');
         this.container.tabIndex = 1;
         this.container.setStyle('-moz-user-select', 'none');
-
-        Asset.css('acpl.css');
 
         if (!this.container.getChildren('ul').length) {
             this.ul = new Element('ul');
@@ -191,9 +179,6 @@ var ActiveList = new Class(/** @lends ActiveList# */{
      * Activate list.
      *
      * @fires ActiveList#choose
-     *
-     * @function
-     * @public
      */
     activate: function() {
         this.items = this.ul.getChildren();
@@ -222,31 +207,17 @@ var ActiveList = new Class(/** @lends ActiveList# */{
      *
      * @fires ActiveList#choose
      *
-     * @function
-     * @public
      * @param {Object} e Event.
      */
     keyPressed: function(e) {
         switch (e.key) {
             case 'up':
-            case 'down':
-                var itemId,
-                    l = this.items.length;
+                this.selectItem(this.selected - 1);
+                e.preventDefault();
+                break;
 
-                if (e.key == 'up') {
-                    itemId = (this.selected >= 0)
-                        ? l - 1
-                        : (this.selected - 1 < 0)
-                            ? l - 1
-                            : this.selected - 1;
-                } else {
-                    itemId = (this.selected >= 0)
-                        ? 0
-                        : (this.selected + 1 >= l)
-                            ? 0
-                            : this.selected + 1;
-                }
-                this.selectItem(itemId);
+            case 'down':
+                this.selectItem(this.selected + 1);
                 e.preventDefault();
                 break;
 
@@ -260,8 +231,6 @@ var ActiveList = new Class(/** @lends ActiveList# */{
     /**
      * Select the item by ID.
      *
-     * @function
-     * @public
      * @param {number} [id = 0] Item ID.
      */
     selectItem: function(id) {
@@ -269,38 +238,26 @@ var ActiveList = new Class(/** @lends ActiveList# */{
             id = 0;
         }
 
-        if (this.selected >= 0) {
-            this.unselectItem(this.selected);
+        if (id < 0) {
+            id = this.items.length + id;
+        } else if (id >= this.items.length) {
+            id -= this.items.length;
         }
 
-        if (this.items[id]) {
-            this.items[id].addClass('selected');
-            this.selected = id;
-            var
-            //Позиция елемента по Y относительно контейнера
-            //Если она отрицательная значит скролл сверху
-                posY = this.items[id].getPosition(this.container).y,
-            //Высота елемента
-                height = this.items[id].getSize().y,
-            //Высота контейнера
-                cHeight = this.container.getSize().y;
+        this.unselectItem(this.selected);
 
-            //Если скролл сверху не позволяет видеть елемент
-            //Или высота елемента и его позиция больше высоты контейнера(скролл снизу)
-            if (posY < 0 || posY + height > cHeight) {
-                //скроллим
-                this.items[id].scrollIntoView();
-            }
-        } else {
-            this.selected = -1;
+        this.items[id].addClass('selected');
+        this.selected = id;
+
+        var body = $(document.body);
+        if (body.scrollHeight > body.getSize().y) {
+            this.input.scrollIntoView();
         }
     },
 
     /**
      * Deselect selected item.
      *
-     * @function
-     * @public
      * @param {number} id Item ID.
      */
     unselectItem: function(id) {
@@ -332,10 +289,11 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
         this.parent(new Element('div', {
             'class': 'acpl_variants',
             styles:{
-                position: 'absolute',
-                'min-width': this.input.getSize().x
+                marginTop: '-10px'
             }
         }));
+
+        this.input.addEvent('blur', this.hide.bind(this));
 
         this.hide();
     },
@@ -343,8 +301,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     /**
      * Return true if the drop box list is opened, otherwise - false.
      *
-     * @function
-     * @public
      * @returns {boolean}
      */
     isOpen: function() {
@@ -354,8 +310,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     /**
      * Get the drop box list [container]{@link DropBoxList#container}.
      *
-     * @function
-     * @public
      * @returns {Element}
      */
     get: function() {
@@ -364,18 +318,18 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
 
     /**
      * Show the drop box list.
-     * @function
-     * @public
      */
     show: function() {
+        if (!this.isOpen()) {
+            var size = this.container.getComputedSize();
+            this.container.setStyle('width', this.input.getSize().x - size['border-left-width'] - size['border-right-width']);
+        }
         this.container.removeClass('hidden');
         this.activate();
     },
 
     /**
      * Hide the drop box list.
-     * @function
-     * @public
      */
     hide: function() {
         this.container.addClass('hidden');
@@ -383,8 +337,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
 
     /**
      * Empty the list.
-     * @function
-     * @public
      */
     empty: function() {
         this.ul.empty();
@@ -402,8 +354,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     /**
      * Add the new item to the list.
      *
-     * @function
-     * @public
      * @param {HTMLLIElement} li New item for the list.
      */
     add: function(li) {
@@ -506,8 +456,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Event handler. Enter.
      *
-     * @function
-     * @public
      * @param {Object} e Event.
      */
     enter: function(e) {
@@ -563,8 +511,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Prepare the data.
      *
-     * @function
-     * @public
      * @param {Object} result Result object.
      */
     _prepareData: function(result) {
@@ -586,8 +532,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Send the POST request.
      *
-     * @function
-     * @public
      * @param {string} str Data string.
      */
     requestValues: function(str) {
@@ -603,8 +547,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Reset the items in the [list]{@link AcplField#list}.
      *
-     * @function
-     * @public
      * @param {Array} data Data array.
      */
     setValues: function(data) {
@@ -621,8 +563,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Select an item from the [list]{@link AcplField#list}.
      *
-     * @function
-     * @public
      * @param {HTMLLIElement} li Element that will be selected.
      */
     select: function(li) {

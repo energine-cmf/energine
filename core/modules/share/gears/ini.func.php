@@ -140,7 +140,7 @@ function ($className) {
     }
 
     if (!isset($paths[$className]) || !@require($paths[$className])) {
-        stop('no class ' . $className . ' found');
+        throw new SystemException('ERR_NO_CLASS', SystemException::ERR_CRITICAL, $className);
     }
 });
 

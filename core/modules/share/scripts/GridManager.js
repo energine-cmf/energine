@@ -1247,7 +1247,17 @@ var GridManager = new Class(/** @lends GridManager# */{
             );
         }
     },
-
+    /**
+     * Use action
+     * Return selected record as a result of modal box call
+     *
+     * @function
+     * @public
+     */
+    use: function(){
+        ModalBox.setReturnValue(this.grid.getSelectedRecord());
+        ModalBox.close();
+    },
     /**
      * Close action.
      * @function

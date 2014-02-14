@@ -27,6 +27,7 @@ class GridConfig extends ComponentConfig {
      */
     public function __construct($config, $className, $moduleName){
         parent::__construct($config, $className, $moduleName);
+        $this->registerState('fkEditor', array('/[field]-[class]/crud/[any]/'));
         $this->registerState('source', array('/source/'));
         $this->registerState('put', array('/put/'));
         $this->registerState('upload', array('/upload/'));
@@ -36,6 +37,5 @@ class GridConfig extends ComponentConfig {
         $this->registerState('attachments', array('/attachments/[any]/', '/[id]/attachments/[any]/'));
         $this->registerState('tags', array('/tags/[any]/', '/[id]/tags/[any]/'));
         $this->registerState('autoCompleteTags', array('/tag-autocomplete/'));
-        $this->registerState('fkEditor', array('/crud/[any]'));
     }
 }

@@ -83,9 +83,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     public function build() {
         $this->result = new DOMDocument('1.0', 'UTF-8');
 
-        // если отсутствует описание данных - построение невозможно
-        if ($this->dataDescription == false) {
-            throw new SystemException('ERR_DEV_NO_DATA_DESCRIPTION', SystemException::ERR_DEVELOPER);
+        // если отсутствует описание данных или сами данные - построение невозможно
+        if ((false === $this->dataDescription) || (false === $this->data)) {
+            throw new SystemException('ERR_DEV_DATA_AND_DESCRIPTION_REQUIRED', SystemException::ERR_DEVELOPER);
         }
         $this->run();
         return ($this->result instanceof DOMDocument ? true : false);
@@ -93,10 +93,10 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
     /**
      * Get result document.
-     * @return DOMNode
+     * @return DOMNode | bool
      */
     public function getResult() {
-        return $this->result->documentElement;
+        return ($this->result)? $this->result->documentElement: false;
     }
 
     /**

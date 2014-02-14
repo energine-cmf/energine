@@ -17,7 +17,7 @@
  * @author Valerii Zinchenko
  * @author Pavel Dubenko
  *
- * @version 2.1.5
+ * @version 2.1.6
  */
 
 /**

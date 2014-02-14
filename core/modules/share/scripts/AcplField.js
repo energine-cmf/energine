@@ -42,8 +42,6 @@ var Words = function(initialValue, sep) {
     /**
      * Set the word index.
      *
-     * @function
-     * @public
      * @param {number} index Word index.
      */
     this.setCurrentIndex = function(index) {
@@ -55,8 +53,6 @@ var Words = function(initialValue, sep) {
     /**
      * Return the initial string line.
      *
-     * @function
-     * @public
      * @returns {string}
      */
     this.asString = function() {
@@ -66,8 +62,6 @@ var Words = function(initialValue, sep) {
     /**
      * Get the amount of delimited words.
      *
-     * @function
-     * @public
      * @returns {number}
      */
     this.getLength = function() {
@@ -77,8 +71,6 @@ var Words = function(initialValue, sep) {
     /**
      * Get the word at the specified index.
      *
-     * @function
-     * @public
      * @param {number} index Word index.
      * @returns {string}
      */
@@ -91,8 +83,6 @@ var Words = function(initialValue, sep) {
     /**
      * Reset the delimited word at the specific index.
      *
-     * @function
-     * @public
      * @param {number} index Word index.
      * @param {string} value New word.
      */
@@ -103,8 +93,6 @@ var Words = function(initialValue, sep) {
     /**
      * Find the word.
      *
-     * @function
-     * @public
      * @param {number} curPos Position of the looked word.
      * @returns {Object} Object with properties: index {number}, str {string}.
      */
@@ -191,9 +179,6 @@ var ActiveList = new Class(/** @lends ActiveList# */{
      * Activate list.
      *
      * @fires ActiveList#choose
-     *
-     * @function
-     * @public
      */
     activate: function() {
         this.items = this.ul.getChildren();
@@ -222,8 +207,6 @@ var ActiveList = new Class(/** @lends ActiveList# */{
      *
      * @fires ActiveList#choose
      *
-     * @function
-     * @public
      * @param {Object} e Event.
      */
     keyPressed: function(e) {
@@ -248,8 +231,6 @@ var ActiveList = new Class(/** @lends ActiveList# */{
     /**
      * Select the item by ID.
      *
-     * @function
-     * @public
      * @param {number} [id = 0] Item ID.
      */
     selectItem: function(id) {
@@ -277,8 +258,6 @@ var ActiveList = new Class(/** @lends ActiveList# */{
     /**
      * Deselect selected item.
      *
-     * @function
-     * @public
      * @param {number} id Item ID.
      */
     unselectItem: function(id) {
@@ -322,8 +301,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     /**
      * Return true if the drop box list is opened, otherwise - false.
      *
-     * @function
-     * @public
      * @returns {boolean}
      */
     isOpen: function() {
@@ -333,8 +310,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     /**
      * Get the drop box list [container]{@link DropBoxList#container}.
      *
-     * @function
-     * @public
      * @returns {Element}
      */
     get: function() {
@@ -343,8 +318,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
 
     /**
      * Show the drop box list.
-     * @function
-     * @public
      */
     show: function() {
         if (!this.isOpen()) {
@@ -357,8 +330,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
 
     /**
      * Hide the drop box list.
-     * @function
-     * @public
      */
     hide: function() {
         this.container.addClass('hidden');
@@ -366,8 +337,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
 
     /**
      * Empty the list.
-     * @function
-     * @public
      */
     empty: function() {
         this.ul.empty();
@@ -385,8 +354,6 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     /**
      * Add the new item to the list.
      *
-     * @function
-     * @public
      * @param {HTMLLIElement} li New item for the list.
      */
     add: function(li) {
@@ -489,8 +456,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Event handler. Enter.
      *
-     * @function
-     * @public
      * @param {Object} e Event.
      */
     enter: function(e) {
@@ -546,8 +511,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Prepare the data.
      *
-     * @function
-     * @public
      * @param {Object} result Result object.
      */
     _prepareData: function(result) {
@@ -569,8 +532,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Send the POST request.
      *
-     * @function
-     * @public
      * @param {string} str Data string.
      */
     requestValues: function(str) {
@@ -586,8 +547,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Reset the items in the [list]{@link AcplField#list}.
      *
-     * @function
-     * @public
      * @param {Array} data Data array.
      */
     setValues: function(data) {
@@ -604,8 +563,6 @@ var AcplField = new Class(/** @lends AcplField# */{
     /**
      * Select an item from the [list]{@link AcplField#list}.
      *
-     * @function
-     * @public
      * @param {HTMLLIElement} li Element that will be selected.
      */
     select: function(li) {

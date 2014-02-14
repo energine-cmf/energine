@@ -1,0 +1,7 @@
+<phpunit
+        bootstrap="../../../starter/htdocs/bootstrap.php">
+    <php>
+        <server name="HTTP_HOST" value="PHPUNIT"/>
+        <server name="REQUEST_URI" value="/"/>
+    </php>
+</phpunit>

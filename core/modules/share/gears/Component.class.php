@@ -539,25 +539,3 @@ class Component extends DBWorker implements IBlock {
     }
 }
 
-//todo VZ: What is the difference between IBuilder and IDocument?
-/**
- * Builder interface.
- *
- * @code
-interface IBuilder;
-@endcode
- */
-interface IBuilder {
-    /**
-     * Get build result.
-     * @return mixed
-     */
-    public function getResult();
-
-    /**
-     * Run building.
-     * @return mixed
-     */
-    public function build();
-}
-

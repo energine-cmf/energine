@@ -139,7 +139,10 @@ function ($className) {
         }
     }
 
-    if (!isset($paths[$className]) || !@require($paths[$className])) {
+    if (
+        (!isset($paths[$className]) || !@require($paths[$className]))
+        && (1 === count(spl_autoload_functions()))
+    ) {
         stop('no class ' . $className . ' found');
     }
 });

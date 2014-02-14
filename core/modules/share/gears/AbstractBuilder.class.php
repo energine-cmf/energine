@@ -295,7 +295,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      * - %o - [Today,] $Date $month_name, $time[$Year(if not current)]
      * - %q
      *
-     * @param int $date Timestamp.
+     * @param string $date Current date string.
      * @param string $format Format.
      * @param string $type Type.
      * @return string
@@ -303,7 +303,12 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
     static public function enFormatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
         if (!$date) return '';
 
-        $date = strtotime($date);
+        // We can also pass timestamp to this function, so
+        // we shouldn't apply strtotime in this case.
+        if(!(is_numeric($date) && (int)$date == $date)) {
+            $date = strtotime($date);
+        }
+
         if (!in_array($format, array('%E', '%f', '%o', '%q'))) {
             $result = @strftime($format, $date);
             if (!$result) {
@@ -432,4 +437,26 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         }
         return $fieldValue;
     }
+}
+
+//todo VZ: What is the difference between IBuilder and IDocument?
+/**
+ * Builder interface.
+ *
+ * @code
+interface IBuilder;
+@endcode
+ */
+interface IBuilder {
+    /**
+     * Get build result.
+     * @return mixed
+     */
+    public function getResult();
+
+    /**
+     * Run building.
+     * @return mixed
+     */
+    public function build();
 }

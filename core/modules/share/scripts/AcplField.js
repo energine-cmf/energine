@@ -416,6 +416,10 @@ var AcplField = new Class(/** @lends AcplField# */{
         this.container = new Element('div', {'class': 'with_append', 'styles': {'position': 'relative'}}).wraps(this.element);
 
         if (this.element.get('name') == 'tags') {
+            /**
+             * Appended button for input field.
+             * @type {Element}
+             */
             this.button = new Element('button', {
                 type: 'button',
                 link: 'tags',
@@ -575,10 +579,4 @@ var AcplField = new Class(/** @lends AcplField# */{
 
         this.list.hide();
     }
-});
-
-window.addEvent('domready', function() {
-    document.getElements('input.acpl').each(function(el) {
-        new AcplField(el);
-    })
 });

@@ -136,6 +136,10 @@ var Form = new Class(/** @lends Form# */{
             this.codeEditors.push(CodeMirror.fromTextArea(textarea, {mode: "text/html", tabMode: "indent", lineNumbers: true}));
         }, this);
 
+        this.form.getElements('input.acpl').each(function(el) {
+            new AcplField(el);
+        }, this);
+
         var showHideFunc = function (e) {
             Energine.cancelEvent(e);
             var el = $(e.target),
@@ -189,20 +193,20 @@ var Form = new Class(/** @lends Form# */{
                 }
             });
         }
-        this.componentElement.getElements('.crud').addEvent('click', function (e) {
-            ModalBox.open({
-                url: [this.singlePath, $(e.target).getProperty('data-field') , '-',$(e.target).getProperty('data-editor'), '/crud/'].join(''),
-                onClose: function () {
-                    console.log(arguments)
-                }
+        this.form.getElements('.with_append').each(function(el) {
+            el.addEvents({
+                focus: this.glow.bind(this),
+                blur: this.glow.bind(this),
+                mouseenter: this.glow.bind(this),
+                mouseleave: this.glow.bind(this)
             });
-        }.bind(this));
+        }, this);
     },
 
     /**
      * Create required IFrame by tab changing.
      */
-    onTabChange: function () {
+    onTabChange: function() {
         if (this.currentTab.getProperty('data-src') && !this.currentTab.loaded) {
             this.currentTab.pane.grab(new Element('iframe', {
                 src: Energine['static'] + this.currentTab.getProperty('data-src'),
@@ -214,6 +218,26 @@ var Form = new Class(/** @lends Form# */{
                 }
             }));
             this.currentTab.loaded = true;
+        }
+    },
+
+    /**
+     * Apply or remove glow effect to the appended buttons near the input fields.
+     * @param ev Event. By default this function is connected to 'onFocus', 'onBlur', 'onMouseover' and 'onMouseout' events.
+     */
+    glow: function(ev) {
+        switch (ev.type) {
+            case 'focus':
+            case 'mouseenter':
+                ev.target.addClass('focus_block');
+                ev.stopPropagation();
+                break;
+
+            case 'blur':
+            case 'mouseleave':
+                ev.target.removeClass('focus_block');
+                ev.stopPropagation();
+                break;
         }
     },
 

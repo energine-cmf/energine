@@ -288,15 +288,14 @@ class Grid extends DBDataSet {
     protected function fkEditor() {
         list($fkField, $className) = $this->getStateParams();
         $className = explode('\\', urldecode($className));
-
-        if(sizeof($className) > 1){
+        //Using tmp variable $class because list() cannot  modify variable it is working with
+        if (sizeof($className) > 1) {
             list($module, $class) = $className;
-        }
-        else {
+        } else {
             $module = $this->module;
             list($class) = $className;
         }
-
+        unset($className);
         $params = array();
         if ($class == 'Grid') {
             $cols = $this->dbh->getColumnsInfo($this->getTableName());
@@ -312,18 +311,24 @@ class Grid extends DBDataSet {
                 throw new SystemException('ERR_BAD_FK_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
             }
             $params['tableName'] = $cols[$fkField]['key']['tableName'];
-        }
-        else {
+        } else {
             try {
                 class_exists($class);
+            } catch (SystemException $e) {
+                throw new SystemException('ERR_BAD_CLASS', SystemException::ERR_DEVELOPER, $class);
             }
-            catch(SystemException $e){
-                throw new SystemException('ERR_BAD_CLASS', SystemException::ERR_DEVELOPER, $className);
-            }
-            if(!is_subclass_of($class, 'Grid')){
-                throw new SystemException('ERR_BAD_CLASS', SystemException::ERR_DEVELOPER, $className);
+            if (!is_subclass_of($class, 'Grid')) {
+                throw new SystemException('ERR_BAD_CLASS', SystemException::ERR_DEVELOPER, $class);
             }
         }
+        //Search for modal component config
+        if (!file_exists($config = CORE_REL_DIR . sprintf(ComponentConfig::CORE_CONFIG_DIR, $module) . $class . 'Modal.component.xml')) {
+            if (!file_exists($config = CORE_REL_DIR . sprintf(ComponentConfig::CORE_CONFIG_DIR, $module) . $class . '.component.xml')) {
+                $config = CORE_REL_DIR . sprintf(ComponentConfig::CORE_CONFIG_DIR, 'share') . 'GridModal.component.xml';
+            }
+        }
+        $params['config'] = $config;
+
 
         $this->request->shiftPath(2);
         $this->fkCRUDEditor = $this->document->componentManager->createComponent('fkEditor', $module, $class, $params);
@@ -377,10 +382,9 @@ class Grid extends DBDataSet {
                         $select->removeProperty('editor');
                     } else {
                         $editorClassName = explode('\\', $editorClassName);
-                        if(sizeof($editorClassName) > 1){
+                        if (sizeof($editorClassName) > 1) {
                             $editorClassName = $editorClassName[1];
-                        }
-                        else {
+                        } else {
                             list($editorClassName) = $editorClassName;
                         }
                         try {

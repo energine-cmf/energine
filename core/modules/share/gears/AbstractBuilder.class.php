@@ -176,6 +176,9 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));
             $fieldInfo->setProperty('msgCloseField', $this->translate('TXT_CLOSE_FIELD'));
         }*/
+        elseif(($fieldInfo->getType() == FieldDescription::FIELD_TYPE_SMAP_SELECTOR) && $fieldValue){
+            $result->setAttribute('smap_name', E()->getSiteManager()->getSiteByPage($fieldValue)->name.' : '.$this->dbh->getScalar('share_sitemap_translation', 'smap_name', array('smap_id' => $fieldValue, 'lang_id' => E()->getLanguage()->getCurrent())));
+        }
         elseif ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_CAPTCHA) {
             require_once(CORE_DIR . '/modules/share/gears/recaptchalib.php');
             $fieldValue = recaptcha_get_html($this->getConfigValue('recaptcha.public'));

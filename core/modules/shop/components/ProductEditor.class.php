@@ -30,12 +30,17 @@ class ProductEditor extends Grid {
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setTableName('shop_product');
+        $this->setSaver(new ProductSaver());
     }
+
+
 
     protected function createDataDescription() {
         $dd = parent::createDataDescription();
         if(in_array($this->getState(), array('add', 'edit'))) {
             $dd->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_SMAP_SELECTOR);
+            $dd->getFieldDescriptionByName('product_add_date')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+            $dd->getFieldDescriptionByName('product_mod_date')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
         }
         return $dd;
     }

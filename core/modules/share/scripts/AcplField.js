@@ -9,7 +9,7 @@
  *
  * @author Pavel Dubenko
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**
@@ -167,6 +167,8 @@ var ActiveList = new Class(/** @lends ActiveList# */{
 
     // constructor
     initialize: function(container) {
+        Asset.css('acpl.css');
+
         /**
          * Active list container.
          * @type {Element}
@@ -175,8 +177,6 @@ var ActiveList = new Class(/** @lends ActiveList# */{
         this.container.addClass('alist');
         this.container.tabIndex = 1;
         this.container.setStyle('-moz-user-select', 'none');
-
-        Asset.css('acpl.css');
 
         if (!this.container.getChildren('ul').length) {
             this.ul = new Element('ul');
@@ -229,24 +229,12 @@ var ActiveList = new Class(/** @lends ActiveList# */{
     keyPressed: function(e) {
         switch (e.key) {
             case 'up':
-            case 'down':
-                var itemId,
-                    l = this.items.length;
+                this.selectItem(this.selected - 1);
+                e.preventDefault();
+                break;
 
-                if (e.key == 'up') {
-                    itemId = (this.selected >= 0)
-                        ? l - 1
-                        : (this.selected - 1 < 0)
-                            ? l - 1
-                            : this.selected - 1;
-                } else {
-                    itemId = (this.selected >= 0)
-                        ? 0
-                        : (this.selected + 1 >= l)
-                            ? 0
-                            : this.selected + 1;
-                }
-                this.selectItem(itemId);
+            case 'down':
+                this.selectItem(this.selected + 1);
                 e.preventDefault();
                 break;
 
@@ -269,30 +257,20 @@ var ActiveList = new Class(/** @lends ActiveList# */{
             id = 0;
         }
 
-        if (this.selected >= 0) {
-            this.unselectItem(this.selected);
+        if (id < 0) {
+            id = this.items.length + id;
+        } else if (id >= this.items.length) {
+            id -= this.items.length;
         }
 
-        if (this.items[id]) {
-            this.items[id].addClass('selected');
-            this.selected = id;
-            var
-            //Позиция елемента по Y относительно контейнера
-            //Если она отрицательная значит скролл сверху
-                posY = this.items[id].getPosition(this.container).y,
-            //Высота елемента
-                height = this.items[id].getSize().y,
-            //Высота контейнера
-                cHeight = this.container.getSize().y;
+        this.unselectItem(this.selected);
 
-            //Если скролл сверху не позволяет видеть елемент
-            //Или высота елемента и его позиция больше высоты контейнера(скролл снизу)
-            if (posY < 0 || posY + height > cHeight) {
-                //скроллим
-                this.items[id].scrollIntoView();
-            }
-        } else {
-            this.selected = -1;
+        this.items[id].addClass('selected');
+        this.selected = id;
+
+        var body = $(document.body);
+        if (body.scrollHeight > body.getSize().y) {
+            this.input.scrollIntoView();
         }
     },
 
@@ -332,10 +310,11 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
         this.parent(new Element('div', {
             'class': 'acpl_variants',
             styles:{
-                position: 'absolute',
-                'min-width': this.input.getSize().x
+                marginTop: '-10px'
             }
         }));
+
+        this.input.addEvent('blur', this.hide.bind(this));
 
         this.hide();
     },
@@ -368,6 +347,10 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      * @public
      */
     show: function() {
+        if (!this.isOpen()) {
+            var size = this.container.getComputedSize();
+            this.container.setStyle('width', this.input.getSize().x - size['border-left-width'] - size['border-right-width']);
+        }
         this.container.removeClass('hidden');
         this.activate();
     },

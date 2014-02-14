@@ -190,9 +190,9 @@
             <pattern>/show-toolbar/</pattern>
         </uri_patterns>
         <toolbar name="main_toolbar">
-            <control id="showSidebar" title="BTN_SIDEBAR" type="button" icon="images/toolbar/structure.gif"
-                     onclick="toggleSidebar"/>
-            <control id="sep1" type="separator"/>
+            <!--<control id="showSidebar" title="BTN_SIDEBAR" type="button" icon="images/toolbar/structure.gif"-->
+                     <!--onclick="toggleSidebar"/>-->
+            <!--<control id="sep1" type="separator"/>-->
             <control id="editMode" title="BTN_EDIT_MODE" type="switcher" onclick="editMode"/>
             <control id="sep2" type="separator"/>
             <control id="editBlocks" title="BTN_EDIT_BLOCKS" type="switcher" onclick="editBlocks"/>

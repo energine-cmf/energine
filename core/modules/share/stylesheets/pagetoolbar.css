@@ -127,15 +127,15 @@ ul.docked_toolbar {
     border-bottom: 1px solid #AAA;
     color: black;
     border-radius: 0;
-    background-color: #cfd1cf;
-    background-image: -webkit-gradient(linear,left top,left bottom,from(#f5f5f5),to(#cfd1cf));
+    background-color: #EEEEEE;
+    /*background-image: -webkit-gradient(linear,left top,left bottom,from(#f5f5f5),to(#cfd1cf));
     background-image: -moz-linear-gradient(top,#f5f5f5,#cfd1cf);
     background-image: -webkit-linear-gradient(top,#f5f5f5,#cfd1cf);
     background-image: -o-linear-gradient(top,#f5f5f5,#cfd1cf);
     background-image: -ms-linear-gradient(top,#f5f5f5,#cfd1cf);
     background-image: linear-gradient(top,#f5f5f5,#cfd1cf);
     filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#f5f5f5',endColorstr='#cfd1cf');
-    z-index: 3;
+    z-index: 3;*/
 }
 .pagetb_logo {
     position: absolute;
@@ -143,6 +143,7 @@ ul.docked_toolbar {
     left: 0;
     z-index: 11;
     width: 32px;
+    cursor: pointer;
 }
 ul.docked_toolbar li {
     min-height: 30px;
@@ -153,7 +154,7 @@ ul.docked_toolbar li {
     line-height: 30px;
     vertical-align: middle;
     background: transparent;
-    border-radius: 0;
+    border-radius: 4px;
 }
 ul.docked_toolbar li.icon {
     height: 30px;
@@ -253,7 +254,8 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         padding-top: 31px;
     }
     ul.toolbar li {
-        border: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        border-right: 1px solid #ccc;
         border-radius: 4px;
         background-color: #fafafa;
         min-height: 24px;

@@ -875,3 +875,46 @@ input.radio, input.checkbox {
 
 p.red { color: red; }
 p.underline { text-decoration: underline; }
+
+/* --- media queries --- */
+@media screen and (max-width: 1024px) {
+   .colset3 > .col1,
+   .colset3 > .col2 {
+       width: 49%;
+   }
+   .colset3 > .col3 {
+       width: 100%;
+   }
+   .colset.colset3 > .col {
+       padding-right: 0;
+   }
+   .colset3 .col1 + .col2 {
+       padding-left: 2%;
+   }
+}
+@media screen and (max-width: 768px) {
+    .colset3 > .col1,
+    .colset3 > .col2,
+    .colset3 > .col3,
+    .colset2 > .col1,
+    .colset2 > .col2 {
+        width: 100%;
+    }
+    .colset.colset2 > .col {
+        padding-right: 0;
+    }
+    .colset3 .col1 + .col2 {
+        padding-left: 0;
+    }
+}
+@media screen and (max-width: 480px) {
+    .header .logo {
+        width: 38%;
+        padding: 26px 10px;
+    }
+    .header .logo img {
+        width: 100%;
+        height: auto;
+    }
+}
+/* --- /media queries -- */

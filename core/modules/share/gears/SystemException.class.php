@@ -52,6 +52,11 @@ class SystemException extends Exception {
      * @var int ERR_DEVELOPER
      */
     const ERR_DEVELOPER = 4;
+    /**
+     * Cannot find needed class
+     * @var int ERR_DEPENDENCY
+     */
+    const ERR_DEPENDENCY = 5;
 
     /**
      * Warning.

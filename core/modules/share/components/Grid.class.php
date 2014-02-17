@@ -75,6 +75,12 @@ class Grid extends DBDataSet {
     protected $filter_control;
 
     /**
+     * Grid for select fields
+     * @var Grid
+     */
+    protected $fkCRUDEditor = null;
+
+    /**
      * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
@@ -93,7 +99,6 @@ class Grid extends DBDataSet {
                 $this->orderColumn = $this->getParam('order');
             }
         }
-
     }
 
     /**
@@ -277,6 +282,82 @@ class Grid extends DBDataSet {
         if ($this->pager) $this->getBuilder()->setPager($this->pager);
     }
 
+    /**
+     * Single mode state that show Grid for select field values
+     */
+    protected function fkEditor() {
+        list($fkField, $className) = $this->getStateParams();
+        $className = explode('\\', urldecode($className));
+        //Using tmp variable $class because list() cannot  modify variable it is working with
+        if (sizeof($className) > 1) {
+            list($module, $class) = $className;
+        } else {
+            $module = $this->module;
+            list($class) = $className;
+        }
+        unset($className);
+        $params = array();
+        if ($class == 'Grid') {
+            $cols = $this->dbh->getColumnsInfo($this->getTableName());
+            if (!in_array($fkField, array_keys($cols)) && $this->getTranslationTableName()) {
+                $cols = $this->dbh->getColumnsInfo($this->getTranslationTableName());
+                if (!in_array($fkField, array_keys($cols))) {
+                    throw new SystemException('ERR_NO_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
+                }
+            } elseif (!$this->getTranslationTableName()) {
+                throw new SystemException('ERR_NO_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
+            }
+            if (!is_array($cols[$fkField]['key'])) {
+                throw new SystemException('ERR_BAD_FK_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
+            }
+            $params['tableName'] = $cols[$fkField]['key']['tableName'];
+        } else {
+            try {
+                class_exists($class);
+            } catch (SystemException $e) {
+                throw new SystemException('ERR_BAD_CLASS', SystemException::ERR_DEVELOPER, $class);
+            }
+            if (!is_subclass_of($class, 'Grid')) {
+                throw new SystemException('ERR_BAD_CLASS', SystemException::ERR_DEVELOPER, $class);
+            }
+        }
+        //Search for modal component config
+        if (!file_exists($config = CORE_REL_DIR . sprintf(ComponentConfig::CORE_CONFIG_DIR, $module) . $class . 'Modal.component.xml')) {
+            if (!file_exists($config = CORE_REL_DIR . sprintf(ComponentConfig::CORE_CONFIG_DIR, $module) . $class . '.component.xml')) {
+                $config = CORE_REL_DIR . sprintf(ComponentConfig::CORE_CONFIG_DIR, 'share') . 'GridModal.component.xml';
+            }
+        }
+        $params['config'] = $config;
+
+
+        $this->request->shiftPath(2);
+        $this->fkCRUDEditor = $this->document->componentManager->createComponent('fkEditor', $module, $class, $params);
+        $this->fkCRUDEditor->run();
+    }
+
+    /**
+     * Single mode state for gettting latest values from FK table
+     */
+    protected function fkValues() {
+        list($fkField) = $this->getStateParams();
+        $cols = $this->dbh->getColumnsInfo($this->getTableName());
+        if (!in_array($fkField, array_keys($cols)) && $this->getTranslationTableName()) {
+            $cols = $this->dbh->getColumnsInfo($this->getTranslationTableName());
+            if (!in_array($fkField, array_keys($cols))) {
+                throw new SystemException('ERR_NO_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
+            }
+        } elseif (!$this->getTranslationTableName()) {
+            throw new SystemException('ERR_NO_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
+        }
+        if (!is_array($cols[$fkField]['key'])) {
+            throw new SystemException('ERR_BAD_FK_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
+        }
+
+        $builder = new JSONCustomBuilder();
+        $builder->setProperty('result', $this->getFKData($cols[$fkField]['key']['tableName'], $cols[$fkField]['key']['fieldName']));
+        $this->setBuilder($builder);
+    }
+
     //todo VZ: What is the trick with external and internal methods?
     /**
      * Save.
@@ -304,6 +385,42 @@ class Grid extends DBDataSet {
             }
             throw $e;
         }
+    }
+
+    /**
+     * @copydoc DBDataSet::createData
+     */
+    protected function createData() {
+        if (in_array($this->getType(), array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER, self::COMPONENT_TYPE_FORM))) {
+            $dd = $this->getDataDescription();
+            if ($selects = $dd->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_SELECT)) {
+                foreach ($selects as $select) {
+                    //is null - use default
+                    //is empty - no editor
+                    //string - check for class existance
+                    $editorClassName = $select->getPropertyValue('editor');
+                    if (is_null($editorClassName)) {
+                        $select->setProperty('editor', 'Grid');
+                    } elseif (empty($editorClassName)) {
+                        $select->removeProperty('editor');
+                    } else {
+                        $editorClassName = explode('\\', $editorClassName);
+                        if (sizeof($editorClassName) > 1) {
+                            $editorClassName = $editorClassName[1];
+                        } else {
+                            list($editorClassName) = $editorClassName;
+                        }
+                        try {
+                            class_exists($editorClassName);
+                        } catch (SystemException $e) {
+                            throw new SystemException('ERR_NO_EDITOR_CLASS', SystemException::ERR_DEVELOPER, $editorClassName);
+                        }
+                    }
+                }
+            }
+        }
+        $r = parent::createData();
+        return $r;
     }
 
     /**
@@ -492,6 +609,9 @@ class Grid extends DBDataSet {
                 break;
             case 'tags':
                 return $this->tagEditor->build();
+                break;
+            case 'fkEditor':
+                return $this->fkCRUDEditor->build();
                 break;
             default:
                 // do nothing

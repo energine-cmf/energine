@@ -82,6 +82,12 @@ var PageList = new Class(/** @lends PageList# */{
         if (numPages <= 0) {
             return;
         }
+        /*else if(numPages == 1){
+            this.element.setStyle('visibility', 'hidden');
+            return;
+        }
+        this.element.setStyle('visibility', 'visible');*/
+
 
         this.currentPage = currentPage;
         this.clear();

@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding="UTF-8"?>
 <xsl:stylesheet
         version="1.0"
-        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:nrgn="http://energine.org">
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         
     <xsl:template match="record[ancestor::component[@class='Form']]">
         <xsl:if test="ancestor::component/@componentAction='main' and field[@name='form_description']!=''">

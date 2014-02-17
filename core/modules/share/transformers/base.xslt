@@ -2,8 +2,7 @@
 <xsl:stylesheet
         version="1.0"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-        xmlns:nrgn="http://energine.org"
-        xmlns="http://www.w3.org/1999/xhtml">
+        >
 
     <!--
         В этом файле собраны базовые правила обработки с низким приоритетом. Файл импортируется в include.xslt,

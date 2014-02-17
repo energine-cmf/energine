@@ -174,6 +174,12 @@ var Grid = (function () {
             field: null,
             order: null
         },
+        /**
+         * Flag that show that dataset is changed eg: when rows are added, updated or deleted
+         * Changed as a result
+         * @type {Boolean}
+         */
+        isDirty : false,
 
         // constructor
         initialize: function (element, options) {
@@ -218,6 +224,10 @@ var Grid = (function () {
                     window.addEvent('resize', this.fitGridFormSize.bind(this));
                 }
             }
+
+            this.addEvent('dirty', function(){
+                this.isDirty = true;
+            }.bind(this));
         },
 
         /**
@@ -1063,6 +1073,7 @@ var GridManager = new Class(/** @lends GridManager# */{
             } else {
                 this.loadPage(this.pageList.currentPage);
             }
+            this.grid.fireEvent('dirty');
         }
     },
 
@@ -1235,6 +1246,7 @@ var GridManager = new Class(/** @lends GridManager# */{
                 '/delete/', null,
                 function () {
                     this.overlay.hide();
+                    this.grid.fireEvent('dirty');
                     this.loadPage(this.pageList.currentPage);
                 }.bind(this),
                 function (responseText) {
@@ -1247,7 +1259,17 @@ var GridManager = new Class(/** @lends GridManager# */{
             );
         }
     },
-
+    /**
+     * Use action
+     * Return selected record as a result of modal box call
+     *
+     * @function
+     * @public
+     */
+    use: function(){
+        ModalBox.setReturnValue(this.grid.getSelectedRecord());
+        ModalBox.close();
+    },
     /**
      * Close action.
      * @function

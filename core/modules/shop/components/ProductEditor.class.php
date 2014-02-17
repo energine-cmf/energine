@@ -39,6 +39,7 @@ class ProductEditor extends Grid {
         $dd = parent::createDataDescription();
         if(in_array($this->getState(), array('add', 'edit'))) {
             $dd->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_SMAP_SELECTOR);
+            $dd->getFieldDescriptionByName('pt_id')->setProperty('editor', 'ProductTypesEditor');
             $dd->getFieldDescriptionByName('product_add_date')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
             $dd->getFieldDescriptionByName('product_mod_date')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
         }

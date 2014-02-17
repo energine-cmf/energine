@@ -139,11 +139,19 @@ ul.docked_toolbar {
 }
 .pagetb_logo {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: -10px;
+    left: -10px;
     z-index: 11;
-    width: 32px;
+    width: 46px;
     cursor: pointer;
+    transition: transform 2s;
+    -webkit-transition: -webkit-transform 2s;
+}
+.pagetb_logo:hover,
+.pagetb_logo:active {
+    transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
 }
 ul.docked_toolbar li {
     min-height: 30px;

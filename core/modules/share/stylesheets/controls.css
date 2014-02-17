@@ -122,6 +122,7 @@ optgroup option {
     float: left;
     vertical-align: middle;
     width: 68%;
+    margin-left: -4px;
 }
 .e-pane-content .field .control textarea,
 .e-pane-content .field .control input[type="text"]
@@ -146,11 +147,13 @@ optgroup option {
     width: 98%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
+    margin-left: 0;
 }
 .e-pane-content .field.file_upload .name,
 .e-pane-content .field.editor .name {
     width: 100%;
 }
+
 .e-pane-content .field .control  .with_append {
     display: table;
     width: 100%;

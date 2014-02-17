@@ -167,7 +167,7 @@ ul.docked_toolbar li.pressed {
     min-height: 24px;
     height: 24px;
     line-height: 24px;
-    margin: 2px 0 !important;
+    margin: 2px 0 1px !important;
     border: 1px inset #fff;
     border-radius: 4px;
     /*-webkit-box-shadow: inset rgb(192, 192, 192) 0px 0px 6px 3px;*/
@@ -215,7 +215,9 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         padding-top: 92px;
     }
     .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn,
-    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.reset_btn {
+    ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn,
+    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.reset_btn,
+    ul.toolbar.block_management_toolbar.docked_toolbar li.reset_btn {
         border: 1px solid #ccc;
         border-radius: 4px;
         background-color: #fafafa;
@@ -225,20 +227,20 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         padding: 0 17px !important;
         line-height: 24px;
     }
-    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.separator {
+    ul.toolbar.block_management_toolbar.docked_toolbar li.separator {
         display: none;
     }
-    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn {
+    ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn {
         clear: left;
     }
 
 }
-@media screen and  (max-width: 1300px) {
+@media screen and  (max-width: 1200px) {
     html.e-has-sideframe.e-has-topframe2 {
         padding-top: 122px;
     }
 }
-@media screen and  (max-width: 1175px) {
+@media screen and  (max-width: 1185px) {
     ul.toolbar.block_management_toolbar.docked_toolbar li.save_btn {
         clear: left;
     }
@@ -252,7 +254,7 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         display: none;
     }
 }
-@media screen and  (max-width: 1042px) {
+@media screen and  (max-width: 1000px) {
     html.e-has-topframe1 {
         padding-top: 61px;
     }
@@ -277,7 +279,7 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         padding: 0 17px !important;
         line-height: 24px;
     }
-    .e-has-sideframe ul.toolbar.block_management_toolbar.docked_toolbar li {
+    ul.toolbar.block_management_toolbar.docked_toolbar li {
         border: 0;
         background: none;
         min-height: 30px;
@@ -287,7 +289,7 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         line-height: 30px;
     }
 }
-@media screen and  (max-width: 975px) {
+@media screen and  (max-width: 980px) {
     html.e-has-topframe2 {
         padding-top: 152px;
     }
@@ -301,16 +303,9 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
 контент следует за ней внизу
  когда открывается панель управления блоками, боковая панель также скрывается */
 @media screen and  (max-width: 768px) {
-    html.e-has-topframe2.e-has-sideframe {
-        padding-top: 152px;
-    }
     .e-has-sideframe body {
         padding-left: 0;
     }
-    .e-has-sideframe {
-        overflow-y: auto;
-    }
-
     .e-has-sideframe .e-sideframe {
         -webkit-box-shadow: 0 2px 3px #777;
         box-shadow: 0 2px 3px #777;
@@ -325,62 +320,31 @@ ul.toolbar.docked_toolbar.block_management_toolbar li select {
         position: relative;
         top: 100%;
     }
-    .e-has-topframe2 .e-sideframe {
+    .editMode_btn,
+    .editBlocks_btn {
         display: none;
     }
-    .e-has-topframe2.e-has-sideframe .e-mainframe {
-        position: static;
+    .e-sideframe {
+        padding-top: 0;
     }
-
-    .e-has-topframe2.e-has-sideframe ul.block_management_toolbar {
-        margin-left: 0 !important;
-    }
-}
-@media screen and  (max-width: 700px) {
-    html.e-has-topframe2 {
-        padding-top: 152px;
+    html.e-has-topframe1 {
+        padding-top: 31px;
     }
 }
-@media screen and  (max-width: 560px) {
-    html.e-has-topframe2,
-    html.e-has-topframe2.e-has-sideframe {
-        padding-top: 182px;
+@media screen and  (max-width: 646px) {
+    html.e-has-topframe1 {
+        padding-top: 61px;
+    }
+    .e-sideframe {
+        padding-top: 31px;
     }
 }
-@media screen and  (max-width: 640px) {
+@media screen and  (max-width: 370px) {
     html.e-has-topframe1 {
         padding-top: 91px;
     }
-    html.e-has-topframe2,
-    html.e-has-topframe2.e-has-sideframe {
-        padding-top: 212px;
-    }
-    .e-sideframe,
-    .e-has-topframe2 .e-sideframe {
+    .e-sideframe {
         padding-top: 61px;
     }
 }
-@media screen and  (max-width: 535px) {
-    html.e-has-topframe2.e-has-sideframe {
-        padding-top: 212px;
-    }
-}
-@media screen and  (max-width: 465px) {
-    html.e-has-topframe1 {
-        padding-top: 121px;
-    }
-    html.e-has-topframe2,
-    html.e-has-topframe2.e-has-sideframe {
-        padding-top: 242px;
-    }
-    .e-has-topframe2 .e-sideframe,
-    .e-sideframe {
-        padding-top: 91px;
-    }
-}
-@media screen and  (max-width: 400px) {
-    html.e-has-topframe2,
-    html.e-has-topframe2.e-has-sideframe {
-        padding-top: 272px;
-    }
-}
+

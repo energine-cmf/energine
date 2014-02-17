@@ -160,6 +160,11 @@ ul.toolbar li input[type="file"]{
 }
 
 /* -- button colors -- */
+ul.toolbar.docked_toolbar li.edit_btn,
+ul.toolbar.docked_toolbar li.add_btn,
+ul.toolbar.docked_toolbar li.delete_btn {
+    border-radius: 0;
+}
 ul.toolbar li.edit_btn,
 ul.toolbar li.edit_btn.disabled:focus, ul.toolbar li.edit_btn.disabled:hover, ul.toolbar li.edit_btn.disabled:active {
     color: #fff;

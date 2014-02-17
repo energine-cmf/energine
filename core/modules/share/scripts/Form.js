@@ -194,12 +194,29 @@ var Form = new Class(/** @lends Form# */{
             });
         }
 
-        this.form.getElements('.with_append').each(function(el) {
+        /**
+         * Controls, that appended with additional controls, like buttons.
+         * @type {Element[]}
+         */
+        this.appendedControls = this.form.getElements('.with_append');
+        this.appendedControls.each(function(el) {
+            Object.append(el, {
+                isOnFocus: false,
+                controlEl: el
+            });
             el.addEvents({
-                focus: this.glow.bind(this),
-                blur: this.glow.bind(this),
                 mouseenter: this.glow.bind(this),
                 mouseleave: this.glow.bind(this)
+            });
+        }, this);
+        this.appendedControls.getElements('input,select').each(function(el, id) {
+            el.each(function(el){
+                el.controlEl = this.appendedControls[id];
+            }.bind(this));
+
+            el.addEvents({
+                focus: this.glow.bind(this),
+                blur: this.glow.bind(this)
             });
         }, this);
     },
@@ -224,20 +241,24 @@ var Form = new Class(/** @lends Form# */{
 
     /**
      * Apply or remove glow effect to the appended buttons near the input fields.
-     * @param ev Event. By default this function is connected to 'onFocus', 'onBlur', 'onMouseover' and 'onMouseout' events.
+     * @param {Object} ev Event. By default this function is connected to 'onFocus', 'onBlur', 'onMouseover' and 'onMouseout' events.
      */
     glow: function(ev) {
         switch (ev.type) {
             case 'focus':
+                ev.target.controlEl.isOnFocus = true;
             case 'mouseenter':
-                ev.target.addClass('focus_block');
+                ev.target.controlEl.addClass('focus_block');
                 ev.stopPropagation();
                 break;
 
             case 'blur':
+                ev.target.controlEl.isOnFocus = false;
             case 'mouseleave':
-                ev.target.removeClass('focus_block');
-                ev.stopPropagation();
+                if (!ev.target.controlEl.isOnFocus) {
+                    ev.target.controlEl.removeClass('focus_block');
+                    ev.stopPropagation();
+                }
                 break;
         }
     },

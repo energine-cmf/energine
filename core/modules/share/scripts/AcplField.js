@@ -287,10 +287,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
         this.input = $(input);
 
         this.parent(new Element('div', {
-            'class': 'acpl_variants',
-            styles:{
-                marginTop: '-10px'
-            }
+            'class': 'acpl_variants'
         }));
 
         this.input.addEvent('blur', this.hide.bind(this));
@@ -320,11 +317,9 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      * Show the drop box list.
      */
     show: function() {
-        if (!this.isOpen()) {
-            var size = this.container.getComputedSize();
-            this.container.setStyle('width', this.input.getSize().x - size['border-left-width'] - size['border-right-width']);
-        }
         this.container.removeClass('hidden');
+        var size = this.container.getComputedSize();
+        this.container.setStyle('width', this.input.getSize().x - size['border-left-width'] - size['border-right-width']);
         this.activate();
     },
 

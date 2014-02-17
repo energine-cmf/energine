@@ -131,8 +131,12 @@ Element.implement({
 
         getStylesList(options.styles, options.planes).each(function(style){
             // here was not checked if the type casting return NaN
-            var value = this.getStyle(style).toInt();
-            styles[style] = isNaN(value) ? 0 : value;
+            try {
+                var value = this.getStyle(style).toInt();
+                styles[style] = isNaN(value) ? 0 : value;
+            } catch (e) {
+                styles[style] = 0;
+            }
         }, this);
 
         Object.each(options.planes, function(edges, plane){
@@ -142,7 +146,11 @@ Element.implement({
 
             if (style == 'auto' && !dimensions) dimensions = this.getDimensions();
 
-            style = styles[plane] = (style == 'auto') ? dimensions[plane] : style.toInt();
+            try {
+                style = styles[plane] = (style == 'auto') ? dimensions[plane] : style.toInt();
+            } catch (e) {
+                style = styles[plane] = 0;
+            }
             size['total' + capitalized] = style;
 
             edges.each(function(edge){

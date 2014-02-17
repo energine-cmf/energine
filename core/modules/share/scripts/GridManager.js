@@ -1548,6 +1548,12 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
  * @param {Element} applyAction Apply button.
  */
 GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.QueryControls# */{
+    /**
+     * Indicate, whether the date picker is used as query control.
+     * @type {boolean}
+     */
+    isDate: false,
+
     // constructor
     initialize: function (els, applyAction) {
         Asset.css('datepicker.css');
@@ -1591,7 +1597,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
             }));
         }.bind(this));
 
-        this.dpsInputs.addEvent('keydown', function (event) {
+        this.dpsInputs.concat(this.inputs).addEvent('keydown', function (event) {
             if ((event.key == 'enter') && (event.target.value != '')) {
                 event.stop();
                 applyAction.click();
@@ -1607,7 +1613,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      * @returns {boolean}
      */
     hasValues: function () {
-        return this.dpsInputs.some(function (el) {
+        return this[(this.isDate) ? 'dpsInputs' : 'inputs'].some(function (el) {
             return el.get('value');
         });
     },
@@ -1618,7 +1624,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      * @public
      */
     empty: function () {
-        this.dpsInputs.each(function (el) {
+        this.dpsInputs.concat(this.inputs).each(function (el) {
             el.set('value', '')
         });
     },
@@ -1633,7 +1639,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      */
     getValues: function (fieldName) {
         var str = '';
-        this.dpsInputs.each(function (el, index, els) {
+        this[(this.isDate) ? 'dpsInputs' : 'inputs'].each(function (el, index, els) {
             if (el.get('value')) {
                 str += fieldName + '[]=' + el.get('value');
             }
@@ -1651,7 +1657,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      */
     asPeriod: function () {
         this.show();
-        this.dpsInputs.addClass('small');
+        this.dpsInputs.concat(this.inputs).addClass('small');
     },
 
     /**
@@ -1662,7 +1668,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
     asScalar: function () {
         this.show();
         this.containers[1].addClass('hidden');
-        this.dpsInputs.removeClass('small');
+        this.dpsInputs.concat(this.inputs).removeClass('small');
     },
     /**
      * Show all inputs
@@ -1687,6 +1693,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      * @param {boolean} toShow Defines whether the date pickers will be visible (by <tt>true</tt>) or hidden (by <tt>false</tt>).
      */
     showDatePickers: function (toShow) {
+        this.isDate = toShow;
         if (toShow) {
             this.inputs.addClass('hidden');
             this.dpsInputs.removeClass('hidden');

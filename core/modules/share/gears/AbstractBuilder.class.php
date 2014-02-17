@@ -305,7 +305,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
         // We can also pass timestamp to this function, so
         // we shouldn't apply strtotime in this case.
-        if(!(is_numeric($date) && (int)$date == $date)) {
+        if(!(is_numeric($date) && ((int)$date == $date))) {
             $date = strtotime($date);
         }
 

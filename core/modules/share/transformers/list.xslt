@@ -136,15 +136,9 @@
                                         </select>
                                         <span class="f_query_container">
                                             <input type="text" class="query"/>
-                                            <span class="f_datepicker hidden">
-                                                <img src="images/calendar.gif" alt=""/>
-                                            </span>
                                         </span>
                                         <span class="f_query_container hidden">
                                             <input type="text" class="query"/>
-                                            <span class="f_datepicker hidden">
-                                                <img src="images/calendar.gif" alt=""/>
-                                            </span>
                                         </span>
                                         <!--<span class="f_query_date_container hidden"><input type="text" class="query"/><input type="text" class="hidden query"/></span>-->
                                         <button type="button" class="f_apply"><xsl:value-of select="ancestor::component/filter/@apply"/></button>

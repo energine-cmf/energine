@@ -18,7 +18,7 @@
  * @author Pavel Dubenko
  * @author Valerii Zinchenko
  *
- * @version 1.1.4
+ * @version 1.1.5
  */
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
@@ -1528,6 +1528,8 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
 GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.QueryControls# */{
     // constructor
     initialize: function (els, applyAction) {
+        Asset.css('datepicker.css');
+
         /**
          * Holds the query containers.
          * @type {Elements}
@@ -1537,56 +1539,64 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
         this.containers[0].removeClass('hidden');
 
         /**
-         * Holds all input fields.
+         * Holds all input fields, from which input fields for DatePicker will be created.
          * @type {Elements}
          */
         this.inputs = new Elements(this.containers.getElements('input'));
 
         /**
-         * Holds the elements for DatePickers.
+         * Input elements for DatePicker.
          * @type {Elements}
          */
-        this.dps = new Elements(this.containers.getElements('.f_datepicker'));
+        this.dpsInputs = new Elements();
 
-        this.dps.each(function (el, index) {
-            //note: This is small trick to open DatePicker on the image element, not on the span.
-            Energine._createDatePickerObject(el.getFirst(), {
+        for (var n=0; n < this.containers.length; n++) {
+            this.dpsInputs.push(this.inputs[n][0].clone().addClass('hidden'));
+            this.containers[n].grab(this.dpsInputs[n]);
+        }
+
+        /**
+         * DatePickers.
+         * @type {DatePicker[]}
+         */
+        this.dps = [];
+
+        this.dpsInputs.each(function (el) {
+            this.dps.push(new DatePicker(el, {
                 format: '%Y-%m-%d',
                 allowEmpty: true,
-                toggle: this.inputs[index],
                 useFadeInOut: false
-            })
+            }));
         }.bind(this));
 
-
-        this.inputs.addEvent('keydown', function (event) {
+        this.dpsInputs.addEvent('keydown', function (event) {
             if ((event.key == 'enter') && (event.target.value != '')) {
-                Energine.cancelEvent(event);
+                event.stop();
                 applyAction.click();
             }
         });
     },
 
     /**
-     * Return true if one of the [inputs]{@link GridManager.Filter.QueryControls#inputs} has a value, otherwise - false.
+     * Return true if one of the [inputs]{@link GridManager.Filter.QueryControls#dpsInputs} has a value, otherwise - false.
      *
      * @function
      * @public
      * @returns {boolean}
      */
     hasValues: function () {
-        return this.inputs.some(function (el) {
+        return this.dpsInputs.some(function (el) {
             return el.get('value');
         });
     },
 
     /**
-     * Clear the [input fields]{@link GridManager.Filter.QueryControls#inputs}.
+     * Clear the [input fields]{@link GridManager.Filter.QueryControls#dpsInputs}.
      * @function
      * @public
      */
     empty: function () {
-        this.inputs.each(function (el) {
+        this.dpsInputs.each(function (el) {
             el.set('value', '')
         });
     },
@@ -1601,7 +1611,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      */
     getValues: function (fieldName) {
         var str = '';
-        this.inputs.each(function (el, index, els) {
+        this.dpsInputs.each(function (el, index, els) {
             if (el.get('value')) {
                 str += fieldName + '[]=' + el.get('value');
             }
@@ -1619,8 +1629,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      */
     asPeriod: function () {
         this.show();
-        //this.containers[1].removeClass('hidden');
-        this.inputs.addClass('small');
+        this.dpsInputs.addClass('small');
     },
 
     /**
@@ -1631,7 +1640,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
     asScalar: function () {
         this.show();
         this.containers[1].addClass('hidden');
-        this.inputs.removeClass('small');
+        this.dpsInputs.removeClass('small');
     },
     /**
      * Show all inputs
@@ -1657,9 +1666,11 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      */
     showDatePickers: function (toShow) {
         if (toShow) {
-            this.dps.removeClass('hidden');
+            this.inputs.addClass('hidden');
+            this.dpsInputs.removeClass('hidden');
         } else {
-            this.dps.addClass('hidden');
+            this.inputs.removeClass('hidden');
+            this.dpsInputs.addClass('hidden');
         }
     }
 });

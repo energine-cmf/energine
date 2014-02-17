@@ -6,7 +6,7 @@
         </javascript>
         <fields>
             <field name="prop_id"/>
-            <field name="prop_title"/>
+            <field name="prop_name"/>
         </fields>
         <toolbar>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>

@@ -136,7 +136,7 @@ var Form = new Class(/** @lends Form# */{
             this.codeEditors.push(CodeMirror.fromTextArea(textarea, {mode: "text/html", tabMode: "indent", lineNumbers: true}));
         }, this);
 
-        this.form.getElements('input.acpl').each(function(el) {
+        this.form.getElements('input.acpl').each(function (el) {
             new AcplField(el);
         }, this);
 
@@ -193,7 +193,58 @@ var Form = new Class(/** @lends Form# */{
                 }
             });
         }
-        this.form.getElements('.with_append').each(function(el) {
+        this.componentElement.getElements('.crud').addEvent('click', function (e) {
+            var control = $($(e.target).getProperty('data-field'));
+            if (control) {
+                ModalBox.open({
+                    url: [this.singlePath, $(e.target).getProperty('data-field') , '-', $(e.target).getProperty('data-editor'), '/crud/'].join(''),
+                    onClose: function (result) {
+                        var selectedValue = result.key;
+                        if (result.dirty) {
+                            Energine.request(
+                                [this.singlePath, $(e.target).getProperty('data-field'), '/fk-values/'].join(''),
+                                null,
+                                function (data) {
+                                    if (data.result) {
+                                        control.empty();
+                                        var id = data.result[1];
+                                        var title = data.result[2];
+                                        data.result[0].each(function (row) {
+                                            var option = new Element('option');
+                                            Object.each(row, function (value, key) {
+                                                if (key == id) {
+                                                    option.setProperty('value', value);
+                                                }
+                                                else if (key == title) {
+                                                    option.set('text', value);
+                                                }
+                                                else {
+                                                    option.setProperty(key, value);
+                                                }
+                                            });
+                                            control.grab(option);
+                                        });
+                                        if (selectedValue) {
+                                            control.set('value', selectedValue);
+                                        }
+                                    }
+                                },
+                                this.processServerError.bind(this),
+                                this.processServerError.bind(this)
+                            );
+                        }
+                        else {
+                            if (selectedValue) {
+                                control.set('value', selectedValue);
+                            }
+                        }
+                    }.bind(this)
+                });
+            }
+        }.bind(this));
+
+
+        this.form.getElements('.with_append').each(function (el) {
             el.addEvents({
                 focus: this.glow.bind(this),
                 blur: this.glow.bind(this),
@@ -206,7 +257,7 @@ var Form = new Class(/** @lends Form# */{
     /**
      * Create required IFrame by tab changing.
      */
-    onTabChange: function() {
+    onTabChange: function () {
         if (this.currentTab.getProperty('data-src') && !this.currentTab.loaded) {
             this.currentTab.pane.grab(new Element('iframe', {
                 src: Energine['static'] + this.currentTab.getProperty('data-src'),
@@ -225,7 +276,7 @@ var Form = new Class(/** @lends Form# */{
      * Apply or remove glow effect to the appended buttons near the input fields.
      * @param ev Event. By default this function is connected to 'onFocus', 'onBlur', 'onMouseover' and 'onMouseout' events.
      */
-    glow: function(ev) {
+    glow: function (ev) {
         switch (ev.type) {
             case 'focus':
             case 'mouseenter':

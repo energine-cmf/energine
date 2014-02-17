@@ -28,6 +28,7 @@ class GridConfig extends ComponentConfig {
     public function __construct($config, $className, $moduleName){
         parent::__construct($config, $className, $moduleName);
         $this->registerState('fkEditor', array('/[field]-[class]/crud/[any]/'));
+        $this->registerState('fkValues', array('/[field]/fk-values/[any]/'));
         $this->registerState('source', array('/source/'));
         $this->registerState('put', array('/put/'));
         $this->registerState('upload', array('/upload/'));

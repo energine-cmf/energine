@@ -335,6 +335,29 @@ class Grid extends DBDataSet {
         $this->fkCRUDEditor->run();
     }
 
+    /**
+     * Single mode state for gettting latest values from FK table
+     */
+    protected function fkValues() {
+        list($fkField) = $this->getStateParams();
+        $cols = $this->dbh->getColumnsInfo($this->getTableName());
+        if (!in_array($fkField, array_keys($cols)) && $this->getTranslationTableName()) {
+            $cols = $this->dbh->getColumnsInfo($this->getTranslationTableName());
+            if (!in_array($fkField, array_keys($cols))) {
+                throw new SystemException('ERR_NO_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
+            }
+        } elseif (!$this->getTranslationTableName()) {
+            throw new SystemException('ERR_NO_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
+        }
+        if (!is_array($cols[$fkField]['key'])) {
+            throw new SystemException('ERR_BAD_FK_COLUMN', SystemException::ERR_DEVELOPER, $fkField);
+        }
+
+        $builder = new JSONCustomBuilder();
+        $builder->setProperty('result', $this->getFKData($cols[$fkField]['key']['tableName'], $cols[$fkField]['key']['fieldName']));
+        $this->setBuilder($builder);
+    }
+
     //todo VZ: What is the trick with external and internal methods?
     /**
      * Save.

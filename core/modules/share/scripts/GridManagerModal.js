@@ -30,7 +30,24 @@ var GridManagerModal = new Class(/** @lends GridManagerModal# */{
      * @public
      */
     use: function () {
-        ModalBox.setReturnValue(this.grid);
+        /*var values = this.grid.getSelectedRecordKey();
+
+        ModalBox.setReturnValue(Object.map(this.grid.getMetadata(), function (value, key) {
+            if (values[key]) {
+                value.value = values[key];
+            }
+            return value;
+        }));*/
+        ModalBox.setReturnValue({'key': this.grid.getSelectedRecordKey(), 'dirty':this.grid.isDirty});
+        ModalBox.close();
+    },
+    /**
+     * Close action.
+     * @function
+     * @public
+     */
+    close: function () {
+        ModalBox.setReturnValue({'dirty':this.grid.isDirty});
         ModalBox.close();
     }
 });

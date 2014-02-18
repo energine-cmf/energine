@@ -47,16 +47,14 @@ Element.implement({
             delete options.planes.height;
         }
         getStylesList(options.styles, options.planes).each(function(s){
-            try {
-                var v = this.getStyle(s).toInt();
-                sts[s] = isNaN(v) ? 0 : v;
-            } catch(e) {sts[s] = 0;}
+            var v = parseInt(this.getStyle(s));
+            sts[s] = isNaN(v) ? 0 : v;
         }, this);
         Object.each(options.planes, function(es, p){
             var c = p.capitalize(),st = this.getStyle(p);
             if (st == 'auto' && !d) d = this.getDimensions();
-            try {st = sts[p] = (st == 'auto') ? d[p] : st.toInt();
-            } catch (e) {st = sts[p] = 0;}
+            var v = (st == 'auto') ? d[p] : parseInt(st);
+            st = sts[p] = isNaN(v) ? 0 : v;
             s['total' + c] = st;
             es.each(function(e){
                 var ed = calculateEdgeSize(e, sts);

@@ -52,7 +52,8 @@ class ProductTypesEditor extends Grid {
      */
     protected function propertiesEditor() {
         $sp = $this->getStateParams(true);
-        $params = array('config' => 'core/modules/apps/config/VoteQuestionEditor.component.xml');
+        /*$params = array('config' => 'core/modules/apps/config/PropertiesEditor.component.xml');*/
+        $params = array();
 
         if (isset($sp['type_id'])) {
             $this->request->shiftPath(2);

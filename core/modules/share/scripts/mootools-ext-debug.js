@@ -11,7 +11,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.1
+ * @version 1.0.3
  */
 
 /**
@@ -131,12 +131,8 @@ Element.implement({
 
         getStylesList(options.styles, options.planes).each(function(style){
             // here was not checked if the type casting return NaN
-            try {
-                var value = this.getStyle(style).toInt();
-                styles[style] = isNaN(value) ? 0 : value;
-            } catch (e) {
-                styles[style] = 0;
-            }
+            var value = parseInt(this.getStyle(style));
+            styles[style] = isNaN(value) ? 0 : value;
         }, this);
 
         Object.each(options.planes, function(edges, plane){
@@ -146,11 +142,8 @@ Element.implement({
 
             if (style == 'auto' && !dimensions) dimensions = this.getDimensions();
 
-            try {
-                style = styles[plane] = (style == 'auto') ? dimensions[plane] : style.toInt();
-            } catch (e) {
-                style = styles[plane] = 0;
-            }
+            var value = (style == 'auto') ? dimensions[plane] : parseInt(style);
+            style = styles[style] = isNaN(value) ? 0 : value;
             size['total' + capitalized] = style;
 
             edges.each(function(edge){

@@ -1,32 +1,43 @@
 <?php
 /**
- * Содержит класс DataSet
+ * @file
+ * DataSet.
  *
- * @package energine
- * @subpackage share
+ * It contains the definition to:
+ * @code
+abstract class DataSet;
+@endcode
+ *
  * @author dr.Pavka
  * @copyright Energine 2006
+ *
+ * @version 1.0.0
  */
 
 
 /**
- * Предок для формы, списка, и дерева; содержит методы работы с панелью инструментов и набором данных.
+ * Abstract data set.
  *
- * @package energine
- * @subpackage share
- * @author dr.Pavka
+ * @code
+abstract class DataSet;
+@endcode
+ *
+ * This is a parent class for form, list and tree; it contains methods to work with toolbar and data sets.
+ *
  * @abstract
  */
 abstract class DataSet extends Component {
     /**
-     * @var FileRepository
+     * File library.
+     * @var FileRepository $fileLibrary
      */
-    private $fileLibrary;
+    protected $fileLibrary;
 
     /**
-     * @var ImageManager
+     * Image manager.
+     * @var ImageManager $imageManager
      */
-    private $imageManager;
+    protected $imageManager;
     /**
      * @var TextBlockSource
      */
@@ -245,10 +256,7 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Подготовительные действия перед вызовом основного действия.
-     *
-     * @return void
-     * @access protected
+     * @copydoc Component::prepare
      */
     protected function prepare() {
         $this->setBuilder($this->createBuilder());
@@ -268,7 +276,7 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Создает построитель
+     * Create builder.
      *
      * @return AbstractBuilder
      * @access protected
@@ -280,10 +288,11 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Создаем объект описания данных
+     * Create data description.
      *
      * @return DataDescription
-     * @access protected
+     *
+     * @throws SystemException 'ERR_DEV_LOAD_DATA_DESCR_IS_FUNCTION'
      */
     protected function createDataDescription() {
         // описание данных из конфигурации
@@ -311,10 +320,9 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Создание панелей инструментов
+     * Create toolbar
      *
-     * @return Toolbar[]
-     * @access protected
+     * @return Toolbar|Toolbar[]
      */
     protected function createToolbar() {
         $result = array();
@@ -335,10 +343,7 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Создает листалку
-     *
-     * @return void
-     * @access protected
+     * Create pager.
      */
 
     protected function createPager() {
@@ -362,7 +367,7 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Абстрактный метод загрузки данных
+     * Load data.
      *
      * @return mixed
      * @access protected
@@ -372,8 +377,8 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Абстрактный метод загрузки описания данных
-     * Используется для загрузки внешнего описания данных (не из конфигурации)
+     * Load data description.
+     * Use this to load external data description (not from configurations).
      *
      * @return mixed
      * @access protected
@@ -383,11 +388,9 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Проверяет наличие пострителя
-     * передает ему данные и описание данны
+     * @copydoc IBlock::build
      *
-     * @return DOMDocument
-     * @access public
+     * @throws SystemException
      */
     public function build() {
         if ($this->getState() == 'fileLibrary') {
@@ -449,10 +452,11 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Загружает данные
+     * Create data.
      *
      * @return Data
-     * @access protected
+     *
+     * @throws SystemException 'ERR_DEV_LOAD_DATA_IS_FUNCTION'
      */
     protected function createData() {
         $result = false;
@@ -469,7 +473,7 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Строит описание JS объектов
+     * Create description of JS objects.
      *
      * @return DOMNode
      * @access protected
@@ -500,11 +504,12 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Устанавливает адрес обработчика формы
+     * Set action for form processor.
      *
-     * @param string
-     * @param bool
-     * @access public
+     * @param string $action Action name.
+     * @param bool $isFullURI Is the URI full?
+     *
+     * @final
      */
     final protected function setAction($action, $isFullURI = false) {
         // если у нас не полностью сформированный путь, то добавляем информацию о языке + путь к шаблону
@@ -525,21 +530,22 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Возвращает адрес обработчика формы
+     * Get an address of form processor.
      *
      * @return string
-     * @access public
+     *
+     * @final
      */
     final protected function getDataSetAction() {
         return $this->getParam('datasetAction');
     }
 
     /**
-     * Устанавливает тип компонента
+     * Set component type.
      *
-     * @param string
-     * @return void
-     * @access protected
+     * @param string $type Component type.
+     *
+     * @final
      */
     final protected function setType($type) {
         $this->type = $type;
@@ -550,35 +556,40 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Возвращает тип компонента
+     * Get component type.
      *
      * @return string
-     * @access protected
+     *
+     * @final
      */
     final protected function getType() {
         return $this->type;
     }
 
     /**
-     * Устанавливает название компонента
+     * Set component title.
      *
-     * @param string $title
+     * @param string $title Title.
+     *
+     * @final
      */
     final protected function setTitle($title) {
         $this->setProperty('title', $title);
     }
 
     /**
-     * Возвращает название компонента
+     * Get component title.
      *
      * @return string
+     *
+     * @final
      */
     final protected function getTitle() {
         return $this->getProperty('title');
     }
 
     /**
-     * Добавляет переводы
+     * Add translation.
      *
      * @return void
      * @access protected
@@ -593,11 +604,11 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Метод возвращает файл
+     * Download file.
      *
-     * @param $data string данные файла
-     * @param $MIMEType string тип файла
-     * @param $fileName string имя файла
+     * @param string $data File data.
+     * @param string $MIMEType File type.
+     * @param string $fileName Filename.
      *
      * @return void
      * @access protected
@@ -613,11 +624,7 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Чистка от лишних и вердоносных html тегов
-     * Вызывается в single режиме
-     *
-     * @return void
-     * @access protected
+     * Clean up.
      */
 
     protected function cleanup() {
@@ -629,11 +636,10 @@ abstract class DataSet extends Component {
     }
 
     /**
-     * Добавляет переводы для тулбара WYSIWYG
-     * вызывается в потомках
+     * Add translations for WYSIWYG toolbar.
      *
-     * @return void
-     * @access protected
+     * @note It is called from children.
+     *
      * @final
      */
     final protected function addWYSIWYGTranslations() {
@@ -677,7 +683,7 @@ abstract class DataSet extends Component {
     protected function fileLibrary() {
         $this->request->shiftPath(1);
 
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositorySelect.component.xml'));
 
         $this->fileLibrary->run();
     }

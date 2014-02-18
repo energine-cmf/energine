@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="uploadTemporaryFile" rights="3">
+        <uri_patterns>
+            <pattern>/upload-temp/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="createTemporaryFile" rights="3">
+        <uri_patterns>
+            <pattern>/temp-file/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="main">
+        <javascript>
+            <behavior name="FileRepository"/>
+        </javascript>
+        <uri_patterns>
+            <pattern>/</pattern>
+        </uri_patterns>
+        <fields>
+            <field name="upl_id"/>
+            <field name="upl_path" title="FIELD_UPL_FILE_PATH" type="file"/>
+            <field name="upl_title"/>
+            <field name="upl_publication_date" outputFormat="%o"/>
+            <field name="upl_properties"/>
+            <field name="upl_pid" type="hidden"/>
+            <field name="upl_childs_count" type="hidden"/>
+            <field name="upl_internal_type" type="hidden"/>
+            <field name="upl_mime_type" type="hidden"/>
+            <field name="upl_duration" type="hidden"/>
+            <field name="upl_width" type="hidden"/>
+            <field name="upl_height" type="hidden"/>
+            <field name="upl_is_ready" type="hidden"/>
+            <field name="upl_allows_create_dir" type="hidden"/>
+            <field name="upl_allows_upload_file" type="hidden"/>
+            <field name="upl_allows_edit_file" type="hidden"/>
+            <field name="upl_allows_edit_dir" type="hidden"/>
+            <field name="upl_allows_delete_dir" type="hidden"/>
+            <field name="upl_allows_delete_file" type="hidden"/>
+            <field name="upl_is_mp4" type="hidden"/>
+            <field name="upl_is_webm" type="hidden"/>
+            <field name="upl_is_flv" type="hidden"/>
+        </fields>
+        <toolbar>
+            <control id="open" title="BTN_OPEN" type="button" onclick="open"/>
+            <control id="sep01" type="separator"/>
+            <control id="add" title="BTN_UPLOAD" type="button" onclick="add"/>
+            <control id="addDir" title="BTN_ADD_DIR" type="button" onclick="addDir"/>
+            <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
+            <control id="sep02" type="separator"/>
+            <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+            <control id="sep03" type="separator"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="addDir">
+        <uri_patterns>
+            <!--<pattern>/add-dir/</pattern>-->
+            <pattern>/[pid]/add-dir/</pattern>
+        </uri_patterns>
+        <fields>
+            <field name="upl_id"/>
+            <field name="upl_pid" type="hidden"/>
+            <field name="upl_title"/>
+        </fields>
+        <javascript>
+            <behavior name="FileRepoForm"/>
+        </javascript>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="close" title="BTN_CANCEL" type="button"
+                     onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="add">
+        <uri_patterns>
+            <!--<pattern>/add/</pattern>-->
+            <pattern>/[pid]/add/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FileRepoForm"/>
+        </javascript>
+        <fields>
+            <field name="upl_id"/>
+            <field name="upl_pid" type="hidden"/>
+            <field name="upl_title"/>
+            <field name="upl_path" type="file" title="FIELD_UPL_PATH2"/>
+            <field name="upl_name"/>
+            <field name="upl_filename" type="hidden"/>
+            <!--<field name="file_type" type="hidden"/>-->
+        </fields>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION"
+                     type="select"
+                    >
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="add">BTN_ADD</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
+            <control id="close" title="BTN_CANCEL" type="button"
+                     onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="edit">
+        <uri_patterns>
+            <pattern>/[int]/edit/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FileRepoForm"/>
+        </javascript>
+        <fields>
+            <field name="upl_id"/>
+            <field name="upl_pid" type="hidden"/>
+            <field name="upl_title"/>
+            <field name="upl_path" type="file" title="FIELD_UPL_PATH2"/>
+            <field name="upl_name"/>
+            <field name="upl_filename" type="hidden"/>
+        </fields>
+        <toolbar>
+            <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
+        </toolbar>
+    </state>
+    <state name="saveDir" rights="3">
+        <uri_patterns>
+            <pattern>/save-dir/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="save" rights="3">
+        <uri_patterns>
+            <pattern>/save/</pattern>
+        </uri_patterns>
+    </state>
+    <!--    <state name="upload" rights="2">
+            <uri_patterns>
+                <pattern>/upload/</pattern>
+            </uri_patterns>
+        </state>-->
+    <state name="delete" rights="2">
+        <uri_patterns>
+            <pattern>/[int]/delete/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="getRawData" rights="2">
+        <uri_patterns>
+            <pattern>/get-data/</pattern>
+            <pattern>/get-data/page-[pageNumber]/</pattern>
+            <pattern>/[pid]/get-data/</pattern>
+            <pattern>/[pid]/get-data/page-[pageNumber]/</pattern>
+            <pattern>/[pid]/get-data/[sortField]-[sortDir]/</pattern>
+            <pattern>/[pid]/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

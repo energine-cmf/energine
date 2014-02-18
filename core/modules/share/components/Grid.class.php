@@ -33,7 +33,7 @@ class Grid extends DBDataSet {
      * @var ImageManager
      * @access private
      */
-    private $imageManager;
+    //private $imageManager;
 
     /**
      * Компонент: библиотека изображений
@@ -41,7 +41,7 @@ class Grid extends DBDataSet {
      * @var FileLibrary
      * @access protected
      */
-    protected $fileLibrary;
+    //protected $fileLibrary;
 
     /**
      * Компонент: менеджер присоединенных медиа-объектов
@@ -532,13 +532,13 @@ class Grid extends DBDataSet {
 
     public function build() {
         switch ($this->getState()) {
-            case 'imageManager':
+            /*case 'imageManager':
                 return $this->imageManager->build();
                 break;
             case 'fileLibrary':
             case 'put':
                 return $this->fileLibrary->build();
-                break;
+                break;*/
             case 'attachments':
                 return $this->attachmentEditor->build();
                 break;
@@ -785,16 +785,13 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Выводит компонент: библиотека изображений
-     *
-     * @return void
-     * @access protected
+     * @copydoc DBDataSet::fileLibrary
      */
-    protected function fileLibrary() {
-        $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
-        $this->fileLibrary->run();
-    }
+    /*    protected function fileLibrary() {
+            $this->request->setPathOffset($this->request->getPathOffset() + 1);
+            $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
+            $this->fileLibrary->run();
+        }*/
 
     /**
      * Выводит компонент: связанные медиа-объекты

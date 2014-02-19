@@ -122,7 +122,6 @@ class Field extends Object implements Iterator {
         return $result;
     }
 
-    //todo VZ: Why bool is returned?
     /**
      * Remove data from specific row.
      *
@@ -140,7 +139,7 @@ class Field extends Object implements Iterator {
 
     /**
      * Add new data row.
-     *
+     * @TODO: using array_unshift leads to reindex of array, so it can lead to unexpected behaviour with set of fields.
      * @param mixed $data Data.
      * @param bool $toEnd Defines, whether the data should be appended to the end. Otherwise they will be appended to the beginning.
      */
@@ -152,21 +151,16 @@ class Field extends Object implements Iterator {
         }
     }
 
-    //todo VZ: Why bool is returned?
     /**
      * Set the data for specific row.
      *
      * @param int $rowIndex Row index
      * @param mixed $newData New data.
-     * @return boolean
+     * @return Field
      */
     public function setRowData($rowIndex, $newData) {
-        $result = false;
-        //if (isset($this->data[$rowIndex])) {
         $this->data[$rowIndex] = $newData;
-        $result = true;
-        //}
-        return $result;
+        return $this;
     }
 
     /**
@@ -215,7 +209,7 @@ class Field extends Object implements Iterator {
      * @return mixed
      */
     public function getRowProperty($index, $propertyName) {
-        $result = false;
+        $result = null;
         if (isset($this->properties[$index][$propertyName])) {
             $result = $this->properties[$index][$propertyName];
         }

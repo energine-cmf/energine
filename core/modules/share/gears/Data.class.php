@@ -135,7 +135,7 @@ class Data extends Object {
      * Get field by his name.
      *
      * @param string $name Field name.
-     * @return Field
+     * @return bool|Field
      */
     public function getFieldByName($name) {
         $field = false;

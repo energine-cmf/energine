@@ -139,7 +139,7 @@ abstract class Control extends Object {
 
         $this->setAttribute('mode',
             FieldDescription::computeRights(
-                $this->getToolbar()->getComponent()->document->getRights(),
+                (!is_null($this->getToolbar()))? $this->getToolbar()->getComponent()->document->getRights(): FieldDescription::FIELD_MODE_READ,
                 !is_null($attr['ro_rights']) ? (int)$attr['ro_rights'] : null,
                 !is_null($attr['fc_rights']) ? (int)$attr['fc_rights'] : null
             )

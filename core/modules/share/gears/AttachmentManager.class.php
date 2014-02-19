@@ -307,14 +307,4 @@ class AttachmentManager extends DBWorker {
             }
         }
     }
-
-    /**
-     * Get upload ID by upload path.
-     *
-     * @param string $path Path
-     * @return null|string
-     */
-    protected function getUploadIdByUploadPath($path) {
-        return $this->dbh->getScalar('SELECT upl_id FROM share_uploads WHERE upl_path=%s LIMIT 1', $path);
-    }
 }

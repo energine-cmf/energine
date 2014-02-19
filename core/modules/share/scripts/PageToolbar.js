@@ -15,15 +15,14 @@
 
 ScriptLoader.load('Toolbar', 'ModalBox', 'LayoutManager');
 
-// TODO: This constructor is more general as the parents constructor, or something is wrong with parent constructor and/or parent class.
 /**
  * PageToolbar
  *
  * @augments Toolbar
  *
  * @constructor
- * @param componentPath
- * @param documentId
+ * @param {string} componentPath Component path.
+ * @param {number} documentId Document ID.
  * @param {string} toolbarName Toolbar name.
  * @param controlsDesc
  */
@@ -37,22 +36,22 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
         Asset.css('pagetoolbar.css');
 
         /**
-         *
-         * @type {*}
+         * Component path.
+         * @type {string}
          */
         this.componentPath = componentPath;
 
         /**
-         *
-         * @type {*}
+         * Document ID.
+         * @type {number}
          */
         this.documentId = documentId;
 
         /**
-         *
-         * @type {boolean}
+         * Layout manager.
+         * @type {LayoutManager}
          */
-        this.layoutManager = false;
+        this.layoutManager = null;
 
         this.dock();
         this.bindTo(this);

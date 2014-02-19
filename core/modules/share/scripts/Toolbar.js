@@ -16,7 +16,7 @@
  *
  * @author Pavel Dubenko, Valerii Zinchenko
  *
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 /**
@@ -465,7 +465,7 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
                 }
             });
         } else {
-            this.element.addEvent('mousedown', function (event) {
+            this.element.addEvent('click', function (event) {
                 if(event && !event.rightClick) {
                     this.callAction();
                 }

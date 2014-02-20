@@ -28,6 +28,8 @@ class ButtonTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testBuild() {
-        $this->control->build();
+        $result = $this->control->build();
+        $this->assertInstanceOf('DOMElement', $result);
+        $this->assertEquals('control', $result->nodeName);
     }
 }

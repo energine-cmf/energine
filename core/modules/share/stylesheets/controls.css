@@ -130,7 +130,6 @@ optgroup option {
 .e-pane-content .field .control input[type="phone"],
 .e-pane-content .field .control select {
     width: 100%;
-    margin-bottom: 10px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 }

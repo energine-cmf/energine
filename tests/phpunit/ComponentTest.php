@@ -1,4 +1,7 @@
 <?php
+// loading fake Document class for component run
+require_once('gears/Document.class.php');
+
 /**
  * Class ComponentTest
  */
@@ -9,25 +12,7 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
      */
     private $component;
 
-    /**
-     * @var ComponentManager
-     */
-    private $cm;
-
-    /**
-     * @var Document
-     */
-    private $document;
-
-    /**
-     * @var DocumentController
-     */
-    private $documentController;
-
     public function setUp() {
-        $this->documentController = new DocumentController();
-        $this->document = new Document();
-        $this->cm = new ComponentManager($this->document);
         $this->component = new Component('phpunit', 'test');
     }
 

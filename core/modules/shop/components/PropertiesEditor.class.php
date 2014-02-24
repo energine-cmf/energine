@@ -44,13 +44,6 @@ class PropertiesEditor extends Grid {
         );
     }
 
-    protected function createDataDescription(){
-        $result = parent::createDataDescription();
-
-
-        return $result;
-    }
-
     protected function prepare(){
         parent::prepare();
         if(in_array($this->getType(), array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER))){

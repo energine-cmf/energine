@@ -543,16 +543,16 @@ var Grid = (function () {
 
         /**
          * Fit the height of the Grid's container.
-         * @function
-         * @public
          */
         fitGridSize: function () {
             if (this.paneContent) {
                 var margin = this.element.getStyle('margin-top'),
+                    eBToolbar = $(document.body).getElement('.e-pane-b-toolbar'),
                     gridHeight = this.paneContent.getSize().y
                         - this.gridHeadContainer.getSize().y
                         - ((this.gridToolbar) ? this.gridToolbar.getSize().y : 0)
-                        - ((margin) ? margin.toInt() : 0);
+                        - ((margin) ? margin.toInt() : 0)
+                        - ((eBToolbar) ? eBToolbar.getSize().y : 0);
                 if (gridHeight > 0) {
                     this.gridContainer.setStyle('height', gridHeight);
                 }

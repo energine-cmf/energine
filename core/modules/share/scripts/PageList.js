@@ -83,6 +83,7 @@ var PageList = new Class(/** @lends PageList# */{
         this.clear();
 
         if (numPages <= 1) {
+            this.element.dispose();
             return;
         }
         /*else if(numPages == 1){

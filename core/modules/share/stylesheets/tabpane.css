@@ -90,10 +90,10 @@
 }
 /* 2 тулбара внизу */
 .e-pane-has-b-toolbar2 .e-pane-b-toolbar { 
-    height: 108px;
+    /*height: 108px;*/
 }
 .e-pane-has-b-toolbar2 .e-pane-content { 
-    bottom: 120px;
+    bottom: 0px;
 }
 
 .e-pane-toolbar {

@@ -87,11 +87,7 @@
                             </li>
                         </xsl:if>
                     </xsl:for-each>
-                    <xsl:for-each select="$FIELDS[@type='tab']">
-                        <li data-src="{ancestor::component/@single_template}{.}">
-                            <a href="#{generate-id(.)}"><xsl:value-of select="@title" /></a>
-                        </li>
-                    </xsl:for-each>
+                    <xsl:apply-templates select="$FIELDS[@type='tab']" mode="field_name"/>
                 </ul>
             </div>            
             <div class="e-pane-content">
@@ -101,9 +97,7 @@
                         <xsl:apply-templates select="$FIELDS[@tabName=$TAB_NAME]"/>
                     </div>
                 </xsl:for-each>
-                <xsl:for-each select="$FIELDS[@type='tab']">
-                    <div id="{generate-id(.)}"></div>
-                </xsl:for-each>
+                <xsl:apply-templates select="$FIELDS[@type='tab']" mode="field_content"/>
             </div>
             <xsl:if test="../toolbar">
                 <div class="e-pane-b-toolbar"></div>

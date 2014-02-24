@@ -79,7 +79,10 @@ var PageList = new Class(/** @lends PageList# */{
      * @param {number} currentPage Current viewed page.
      */
     build: function(numPages, currentPage) {
-        if (numPages <= 0) {
+        this.currentPage = currentPage;
+        this.clear();
+
+        if (numPages <= 1) {
             return;
         }
         /*else if(numPages == 1){
@@ -89,8 +92,8 @@ var PageList = new Class(/** @lends PageList# */{
         this.element.setStyle('visibility', 'visible');*/
 
 
-        this.currentPage = currentPage;
-        this.clear();
+
+
         // Amount of visible pages on the each side relative to the current page.
         var VISIBLE_PAGES_COUNT = 2;
 

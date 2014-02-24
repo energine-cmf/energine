@@ -41,15 +41,27 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testLoadConfig() {
-        $this->component = new Component('phpunit', 'test', array('config' => self::TEST_CONFIG_XML));
+        $this->component = new Component('phpunit', 'test', array('config' => new SimpleXMLElement(self::TEST_CONFIG_XML)));
         $getConfigMethod = $this->getComponentMethod('getConfig');
         $config = $getConfigMethod->invoke($this->component);
+        // is config loaded
         $this->assertInstanceOf('ComponentConfig', $config);
-        //stop($config->getStateConfig('main'));
+        // default state is main
+        $this->assertEquals('main', $config->getCurrentStateConfig()->attributes()->name);
     }
 
     public function testBuild() {
-
+        $result = $this->component->build();
+        $this->assertInstanceOf('DOMDocument', $result);
+        // Component node should be created at this moment
+        $this->assertTrue($result->getElementsByTagName('component')->length > 0);
+        /**
+         * Counting on component, created in setUp method, we can check its properties after building component
+         * @see setUp()
+         */
+        $this->assertEquals('phpunit', $result->getElementsByTagName('component')->item(0)->getAttribute('name'));
+        $this->assertEquals('test', $result->getElementsByTagName('component')->item(0)->getAttribute('module'));
+        $this->assertEquals('Component', $result->getElementsByTagName('component')->item(0)->getAttribute('class'));
     }
 
     /**

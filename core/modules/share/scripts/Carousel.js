@@ -3,20 +3,21 @@
  * <ul>
  *     <li>[ACarousel]{@link ACarousel}</li>
  *     <li>[ACarousel.AControls]{@link ACarousel.AControls}</li>
- *     <li>[Carousel]{@link Carousel}</li>
- *     <li>[Carousel.Types]{@link Carousel.Types}</li>
- *     <li>[Carousel.Types.Loop]{@link Carousel.Types.Loop}</li>
- *     <li>[Carousel.Types.Line]{@link Carousel.Types.Line}</li>
- *     <li>[Carousel.Controls]{@link Carousel.Controls}</li>
- *     <li>[Carousel.Controls.TwoButtons]{@link Carousel.Controls.TwoButtons}</li>
+ *     <li>[CarouselFactory]{@link CarouselFactory}</li>
+ *     <li>[CarouselFactory.Types]{@link CarouselFactory.Types}</li>
+ *     <li>[CarouselFactory.Types.Loop]{@link CarouselFactory.Types.Loop}</li>
+ *     <li>[CarouselFactory.Types.Line]{@link CarouselFactory.Types.Line}</li>
+ *     <li>[CarouselFactory.Controls]{@link CarouselFactory.Controls}</li>
+ *     <li>[CarouselFactory.Controls.TwoButtons]{@link CarouselFactory.Controls.TwoButtons}</li>
  *     <li>[CarouselPlaylist]{@link CarouselPlaylist}</li>
  *     <li>[CarouselConnector]{@link CarouselConnector}</li>
+ *     <li>[Carousel]{@link Carousel}</li>
  * </ul>
  *
  * @author Valerii Zinchenko
  * @author Pavel Dubenko
  *
- * @version 2.1.4
+ * @version 2.1.6
  */
 
 /**
@@ -31,8 +32,6 @@
  *         &lt/div&gt
  *     &lt/div&gt
  * &lt/div&gt
- *
- * @author Valerii Zinchenko
  *
  * @throws {string} View box of the carousel was not found.
  * @throws {string} Carousel can not be created without playlist.
@@ -200,9 +199,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      *
      * @fires ACarousel#enableScrolling
      * @fires ACarousel#disableScrolling
-     *
-     * @function
-     * @public
      */
     build: function() {
         this.calcItemSize();
@@ -267,8 +263,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
 
     /**
      * Scroll forward by one step. Multiple calls will be chained.
-     * @function
-     * @public
      */
     scrollForward: function () {
         if (this.isEffectCompleted) {
@@ -280,8 +274,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
 
     /**
      * Scroll backward by one step. Multiple calls will be chained.
-     * @function
-     * @public
      */
     scrollBackward: function () {
         if (this.isEffectCompleted) {
@@ -296,8 +288,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      *
      * @fires ACarousel#selectItem
      *
-     * @function
-     * @public
      * @param {number} id Item ID.
      */
     selectItem: function (id) {
@@ -323,8 +313,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
     /**
      * Scrolls to the specific item ID.
      *
-     * @function
-     * @public
      * @param {number} id Item ID.
      */
     scrollTo: function (id) {
@@ -362,8 +350,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
 
     /**
      * Stop the scrolling.
-     * @function
-     * @public
      */
     stop: function() {
         this.$chain = [];
@@ -377,7 +363,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          *
          * @memberOf ACarousel#
          * @abstract
-         * @function
          * @protected
          */
         prepareScrolling: function() {
@@ -405,7 +390,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          *
          * @memberOf ACarousel#
          * @abstract
-         * @function
          * @protected
          */
         prepareItems: function() {
@@ -422,7 +406,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          *
          * @memberOf ACarousel#
          * @abstract
-         * @function
          * @protected
          * @param {number} direction Scrolling direction.
          * @param {number} scrollNTimes Scrolling multiplier.
@@ -435,7 +418,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          *
          * @memberOf ACarousel#
          * @abstract
-         * @function
          * @protected
          * @param {number} direction Scrolling direction.
          * @param {number} scrollNTimes Scrolling multiplier.
@@ -447,7 +429,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          *
          * @memberOf ACarousel#
          * @abstract
-         * @function
          * @protected
          * @param {number} direction Scrolling direction.
          * @param {number} scrollNTimes Scrolling multiplier.
@@ -459,7 +440,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
         /**
          * Checks types and boundaries of carousel options.
          * @memberOf ACarousel#
-         * @function
          * @protected
          */
         checkOptions: function() {
@@ -501,7 +481,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          * @throws {string} Carousel can not be created without playlist.
          *
          * @memberOf ACarousel#
-         * @function
          * @protected
          */
         createPlaylist: function() {
@@ -532,12 +511,14 @@ var ACarousel = new Class(/** @lends ACarousel# */{
         /**
          * Get the the maximal item size.
          * @memberOf ACarousel#
-         * @function
          * @protected
          */
         calcItemSize: function() {
             // Get the size of the biggest item.
-            this.items.getDimensions({computeSize:true}).each(function(dims) {
+            this.items.getDimensions({
+                computeSize:true,
+                styles: ['padding','border','margin']
+            }).each(function(dims) {
                 if (this.itemSize[0] < dims.totalWidth) {
                     this.itemSize[0] = dims.totalWidth;
                 }
@@ -545,10 +526,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
                     this.itemSize[1] = dims.totalHeight;
                 }
             }, this);
-
-            // add margins
-            this.itemSize[0] += this.items[0].getStyle('margin-left').toInt() + this.items[0].getStyle('margin-right').toInt();
-            this.itemSize[1] += this.items[0].getStyle('margin-top').toInt() + this.items[0].getStyle('margin-bottom').toInt();
 
             // Apply new width to the 'view-box'-element
             if (this.options.scrollDirection == 'left' || this.options.scrollDirection == 'right') {
@@ -565,7 +542,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
         /**
          * Apply styles to the carousel and his elements.
          * @memberOf ACarousel#
-         * @function
          * @protected
          */
         applyStyles: function() {
@@ -594,7 +570,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
         /**
          * Disable carousel.
          * @memberOf ACarousel#
-         * @function
          * @protected
          */
         disable: function() {
@@ -614,7 +589,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          *
          * @memberOf ACarousel#
          * @abstract
-         * @function
          * @protected
          * @param {number} direction Defines the scroll direction. It can be 1 or -1 to scroll forward and backward respectively.
          * @param {number} [scrollNTimes = 1] Defines how many scrolls must be done by one call of scrolling.
@@ -694,7 +668,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          * @throws {string} Scrolling direction must be -1 or 1 but received "{number}"!
          *
          * @memberOf ACarousel#
-         * @function
          * @protected
          * @param {number} direction Scrolling direction.
          * @param {number} scrollNTimes Scrolling multiplier.
@@ -728,7 +701,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          * Clone each item in '<tt>items</tt>' and place them to '<tt>where</tt>'.
          *
          * @memberOf ACarousel#
-         * @function
          * @protected
          * @param {Array} items Items that will be cloned.
          * @param {HTMLElement} holder Element that stores <tt>items</tt>.
@@ -754,7 +726,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          * Create an object with effects.
          *
          * @memberOf ACarousel#
-         * @function
          * @protected
          * @param {string} key Key for value.
          * @param {number} begin Indicates a start value of effect.
@@ -783,7 +754,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          * Checks if the variable in the input object is with type of number and lower than some default value.
          *
          * @memberOf ACarousel#
-         * @function
          * @protected
          * @param {string} varName Variable name.
          * @param {Object} values Object with name of variable that contain an array with size 3: [0] value that will be checked; [1] default value; [2] min value; [3] max value;
@@ -810,7 +780,6 @@ var ACarousel = new Class(/** @lends ACarousel# */{
          * @throws {string} Arguments must be: maxID != 0 minID >= 0 maxID > minID
          *
          * @memberOf ACarousel#
-         * @function
          * @protected
          * @param {number} id Index that must be wrapped.
          * @param {number} minID Lower limit.
@@ -889,16 +858,12 @@ ACarousel.AControls = new Class(/** @lends ACarousel.AControls# */{
     /**
      * Enable controls.
      * @abstract
-     * @function
-     * @public
      */
     enable: function() {},
 
     /**
      * Disable controls.
      * @abstract
-     * @function
-     * @public
      */
     disable: function() {},
     // ====================
@@ -907,7 +872,6 @@ ACarousel.AControls = new Class(/** @lends ACarousel.AControls# */{
         /**
          * Apply the styles to the controls.
          * @memberOf ACarousel#
-         * @function
          * @protected
          */
         applyStyles: function() {
@@ -933,25 +897,23 @@ ACarousel.AControls = new Class(/** @lends ACarousel.AControls# */{
 
 /**
  * The main carousel builder.
- * To use the carousel with controls simply supply <tt>controls: {type:'none'}<tt> to the options. If the options for controls are not supplied then the [TwoButtons]{@link Carousel.Controls.TwoButtons} control will be not created.
+ * To use the carousel with controls simply supply <tt>controls: {type:'none'}<tt> to the options. If the options for controls are not supplied then the [TwoButtons]{@link CarouselFactory.Controls.TwoButtons} control will be not created.
  * If no options were supplied the builder will try to get the options from the element property 'data-carousel'. The property value should be in JSON format.
  * The type of the carousel and controls can be in the followed format: <tt>SomeType<tt>, <tt>someType<tt>, <tt>Some-Type<tt>, <tt>Some-type<tt>, <tt>some-Type<tt>, <tt>some-type<tt>.
  * From MooTools it implements: Options.
- *
- * @author Pavel Dubenko, Valerii Zinchenko
  *
  * @throws {string} Constructor of Carousel expected 1 or 2 arguments, but received {number}!
  * @throws {string} Element for Carousel was not found in DOM Tree!
  *
  * @constructor
  * @param {string | Element} el Can be the id of an element in DOM Tree, or CSS Selector, or an Element. In case with CSS Selector it will get only the first element.
- * @param {Object} [opts] [Options]{@link Carousel#options} for the Carousel.
+ * @param {Object} [opts] [Options]{@link CarouselFactory#options} for the CarouselFactory.
  */
-var Carousel = new Class(/** @lends Carousel# */{
+var CarouselFactory = new Class(/** @lends CarouselFactory# */{
     Implements: Options,
 
     /**
-     * Carousel options.
+     * CarouselFactory options.
      * @type {object}
      *
      * @property {Object} [carousel] [Options for the carousel]{@link ACarousel#options}.
@@ -984,7 +946,7 @@ var Carousel = new Class(/** @lends Carousel# */{
     // constructor
     initialize: function (el, opts) {
         if (arguments.length < 1 || arguments.length > 2) {
-            throw 'Constructor of Carousel expected 1 or 2 arguments, but received ' + arguments.length + '!';
+            throw 'Constructor of CarouselFactory expected 1 or 2 arguments, but received ' + arguments.length + '!';
         }
 
         el = $(el) || $$(el)[0];
@@ -1005,9 +967,9 @@ var Carousel = new Class(/** @lends Carousel# */{
         this.options.carousel.type = this.options.carousel.type.capitalize();
         this.options.controls.type = this.options.controls.type.camelCase().capitalize();
 
-        this.carousel = new Carousel.Types[this.options.carousel.type](el, this.options.carousel);
+        this.carousel = new CarouselFactory.Types[this.options.carousel.type](el, this.options.carousel);
         if (this.options.controls.type !== 'none') {
-            this.controls = new Carousel.Controls[this.options.controls.type](this.carousel, this.options.controls);
+            this.controls = new CarouselFactory.Controls[this.options.controls.type](this.carousel, this.options.controls);
             this.carousel.items[this.carousel.currentActiveID].addClass(this.carousel.options.activeLabel);
         }
 
@@ -1019,7 +981,7 @@ var Carousel = new Class(/** @lends Carousel# */{
  * This namespace holds the implementations of the abstract carousel [ACarousel]{@link ACarousel}.
  * @namespace
  */
-Carousel.Types = {
+CarouselFactory.Types = {
     /**
      * Loop carousel. All items are scrolled in the loop, that means there are no end of the scrolling.
      *
@@ -1029,7 +991,7 @@ Carousel.Types = {
      * @param {Element} el Main element for the carousel.
      * @param {Object} [opts] [Options]{@link ACarousel#options} for the carousel.
      */
-    Loop: new Class(/** @lends Carousel.Types.Loop# */{
+    Loop: new Class(/** @lends CarouselFactory.Types.Loop# */{
         Extends: ACarousel,
 
         effects: [{},{}],
@@ -1038,7 +1000,6 @@ Carousel.Types = {
             /**
              * Extends the parent [prepareScrolling]{@link ACarousel#prepareScrolling} method.
              * @memberOf ACarousel#
-             * @function
              * @protected
              */
             prepareScrolling: function() {
@@ -1057,7 +1018,6 @@ Carousel.Types = {
              * @throws {string} Scrolling direction must be -1 or 1 but received "{number}".
              *
              * @memberOf ACarousel#
-             * @function
              * @protected
              * @param {number} direction Scrolling direction.
              * @param {number} scrollNTimes Scrolling multiplier.
@@ -1096,7 +1056,6 @@ Carousel.Types = {
 
                 for (n = 0; n < this.options.scrollStep * scrollNTimes; n++) {
                     newItems[n] = this.items[this.wrapIndices(newItemID + n, 0, this.items.length, true)].setStyle(this.options.scrollDirection, this.length * n + itemShift);
-                    this.playlistHolder.grab(newItems[n], itemPosition);
                 }
 
                 return newItems;
@@ -1106,7 +1065,6 @@ Carousel.Types = {
              * Implements the parent abstract [calcFirstItemID]{@link ACarousel#calcFirstItemID} method.
              *
              * @memberOf ACarousel#
-             * @function
              * @protected
              * @param {number} direction Scrolling direction.
              * @param {number} scrollNTimes Scrolling multiplier.
@@ -1120,7 +1078,6 @@ Carousel.Types = {
              * Implements the parent abstract [getItemEffects]{@link ACarousel#getItemEffects} method.
              *
              * @memberOf ACarousel#
-             * @function
              * @protected
              * @param {number} direction Scrolling direction.
              * @param {number} scrollNTimes Scrolling multiplier.
@@ -1148,7 +1105,7 @@ Carousel.Types = {
 
     /**
      * Line carousel. All items scrolled in the line, that means it has two ends of the scrolling.
-     * By reaching each end will corresponding event fired: [beginReached]{@link Carousel.Line#beginReached} and [endReached]{@link Carouse.Line#endReached}
+     * By reaching each end will corresponding event fired: [beginReached]{@link CarouselFactory.Line#beginReached} and [endReached]{@link CarouselFactory.Line#endReached}
      *
      * @augments ACarousel
      *
@@ -1160,11 +1117,11 @@ Carousel.Types = {
         /**
          * Defines whether the last scroll will made.
          * @type {boolean}
-         * @memberOf Carousel.Types.Line~
+         * @memberOf CarouselFactory.Types.Line~
          */
         var isLast;
 
-        return new Class(/** @lends Carousel.Types.Line# */{
+        return new Class(/** @lends CarouselFactory.Types.Line# */{
             Extends: ACarousel,
 
             effects: [{},{},{},{}],
@@ -1173,10 +1130,9 @@ Carousel.Types = {
                 /**
                  * Extends the parent [prepareScrolling]{@link ACarousel#prepareScrolling} method.
                  *
-                 * @fires Carousel.Line#beginReached
+                 * @fires CarouselFactory.Line#beginReached
                  *
                  * @memberOf ACarousel#
-                 * @function
                  * @protected
                  */
                 prepareScrolling: function() {
@@ -1194,7 +1150,7 @@ Carousel.Types = {
 
                     /**
                      * Fired when the carousel has the begin reached.
-                     * @event Carousel.Line#beginReached
+                     * @event CarouselFactory.Line#beginReached
                      */
                     this.fireEvent('beginReached');
 
@@ -1208,14 +1164,13 @@ Carousel.Types = {
                 /**
                  * Implements the parent abstract [getNewVisibleItems]{@link ACarousel#prepareScrolling} method.
                  *
-                 * @fires Carousel.Line#beginReached
-                 * @fires Carousel.Line#endReached
+                 * @fires CarouselFactory.Line#beginReached
+                 * @fires CarouselFactory.Line#endReached
                  *
                  * @throws {string} Scrolling direction must be -1 or 1 but received "{number}".
                  * @throws {string} Carousel: The end is reached
                  *
                  * @memberOf ACarousel#
-                 * @function
                  * @protected
                  * @param {number} direction Scrolling direction.
                  * @param {number} scrollNTimes Scrolling multiplier.
@@ -1247,7 +1202,7 @@ Carousel.Types = {
                         (direction == 1)
                         /**
                          * Fired when the carousel has the end reached.
-                         * @event Carousel.Line#endReached
+                         * @event CarouselFactory.Line#endReached
                          */
                             ? this.fireEvent('endReached')
                             : this.fireEvent('beginReached');
@@ -1265,12 +1220,10 @@ Carousel.Types = {
                         // Gets last possible new items
                         for (n = 0; n < this.lastScrollStep + this.options.scrollStep * (scrollNTimes - 1); n++) {
                             newItems[n] = this.items[newItemID + n].setStyle(this.options.scrollDirection, this.length * n + itemShift);
-                            this.playlistHolder.grab(newItems[n], itemPosition);
                         }
                     } else {
                         for (n = 0; n < this.options.scrollStep * scrollNTimes; n++) {
                             newItems[n] = this.items[this.wrapIndices(newItemID + n, 0, this.items.length, true)].setStyle(this.options.scrollDirection, this.length * n + itemShift);
-                            this.playlistHolder.grab(newItems[n], itemPosition);
                         }
                     }
 
@@ -1281,7 +1234,6 @@ Carousel.Types = {
                  * Implements the parent abstract [calcFirstItemID]{@link ACarousel#calcFirstItemID} method.
                  *
                  * @memberOf ACarousel#
-                 * @function
                  * @protected
                  * @param {number} direction Scrolling direction.
                  * @param {number} scrollNTimes Scrolling multiplier.
@@ -1297,7 +1249,6 @@ Carousel.Types = {
                  * Implements the parent abstract [getItemEffects]{@link ACarousel#getItemEffects} method.
                  *
                  * @memberOf ACarousel#
-                 * @function
                  * @protected
                  * @param {number} direction Scrolling direction.
                  * @param {number} scrollNTimes Scrolling multiplier.
@@ -1332,7 +1283,7 @@ Carousel.Types = {
  * This namespace holds the implementations of the abstract controls [ACarousel.AControls]{@link ACarousel.AControls} for the carousel.
  * @namespace
  */
-Carousel.Controls = {
+CarouselFactory.Controls = {
     /**
      * Control the carousel with tow buttons.
      *
@@ -1342,7 +1293,7 @@ Carousel.Controls = {
      * @param {Element|string} el Main carousel element.
      * @param {Object} [opts] [Options]{@link ACarousel.AControls#options} for the controls.
      */
-    TwoButtons: new Class(/** @lends Carousel.Controls.TwoButtons# */{
+    TwoButtons: new Class(/** @lends CarouselFactory.Controls.TwoButtons# */{
         Extends: ACarousel.AControls,
 
         /**
@@ -1439,8 +1390,6 @@ Carousel.Controls = {
 
         /**
          * Implements the parent abstract [enable]{@link ACarousel.AControls#enable} method.
-         * @function
-         * @public
          */
         enable: function() {
             this.controls.forward.element.addEvent(this.options.event, function (ev) {
@@ -1449,7 +1398,7 @@ Carousel.Controls = {
                 if (this.controls.forward.isEnabled) {
                     /**
                      * Fired when the forward button is enabled and clicked.
-                     * @event Carousel.Controls.TwoButtons#scrollForward
+                     * @event CarouselFactory.Controls.TwoButtons#scrollForward
                      */
                     this.fireEvent('scrollForward');
                 }
@@ -1461,7 +1410,7 @@ Carousel.Controls = {
                 if (this.controls.backward.isEnabled) {
                     /**
                      * Fired when the backward button is enabled and clicked.
-                     * @event Carousel.Controls.TwoButtons#scrollBackward
+                     * @event CarouselFactory.Controls.TwoButtons#scrollBackward
                      */
                     this.fireEvent('scrollBackward');
                 }
@@ -1470,8 +1419,6 @@ Carousel.Controls = {
 
         /**
          * Implements the parent abstract [disable]{@link ACarousel.AControls#disable} method.
-         * @function
-         * @public
          */
         disable: function() {
             if (this.controls.backward.element) {
@@ -1486,8 +1433,6 @@ Carousel.Controls = {
 
 /**
  * Holds an playlist, that will be used by Carousel objects.
- *
- * @author Valerii Zinchenko
  *
  * @throws {string} No items were found in the playlist.
  *
@@ -1535,8 +1480,6 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
     },
     /**
      * Hide the playlist.
-     * @function
-     * @public
      */
     hide: function () {
         this.items[0].getParent().dispose();
@@ -1545,8 +1488,6 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
     /**
      * Get the playlist's holder.
      *
-     * @function
-     * @public
      * @returns {Element}
      */
     getHolder: function(){
@@ -1555,9 +1496,7 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
 });
 
 /**
- * Connects an Carousel objects and attach events to them. From MooTools it implements: Events
- *
- * @author Valerii Zinchenko
+ * Connects an Carousel objects and attach events to them. From MooTools it implements: Events.
  *
  * @throws {string} Not enough arguments!
  * @throws {string} Second argument must be an Array of Carousel objects!
@@ -1565,7 +1504,7 @@ var CarouselPlaylist = new Class(/** @lends CarouselPlaylist# */{
  * @throws {string} Carousels can not be connected, because of different amount of items in the playlists!
  *
  * @constructor
- * @param {Carousel[]} carousels Array of Carousel objects that will be connected.
+ * @param {CarouselFactory[]} carousels Array of Carousel objects that will be connected.
  */
 var CarouselConnector = new Class(/** @lends CarouselConnector# */{
     Implements: Events,
@@ -1580,8 +1519,8 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
             throw 'Second argument must be an Array of Carousel objects!';
         }
         for (n = 0; n < carousels.length; n++) {
-            if (!(carousels[n] instanceof Carousel)) {
-                throw 'Element #' + n + ' in the array is not instance of Carousel!';
+            if (!(carousels[n] instanceof CarouselFactory)) {
+                throw 'Element #' + n + ' in the array is not instance of CarouselFactory!';
             }
             carousels[n] = carousels[n].carousel;
         }
@@ -1593,7 +1532,7 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
 
         /**
          * Array of connected carousels.
-         * @type {Carousel[]}
+         * @type {CarouselFactory[]}
          */
         this.carousels = carousels;
 
@@ -1620,11 +1559,9 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
     },
 
     /**
-     * It stores the functions for selecting a specific item <tt>id</tt> in <tt>carousel</tt> by fired event [selectItem]{@link Carousel#selectItem}.
+     * It stores the functions for selecting a specific item <tt>id</tt> in <tt>carousel</tt> by fired event [selectItem]{@link CarouselFactory#selectItem}.
      *
-     * @function
-     * @public
-     * @param {Carousel} carousel Connected carousel.
+     * @param {CarouselFactory} carousel Connected carousel.
      * @param {number} id Item ID in carousel that will be selected.
      */
     carouselEventFn: function (carousel, id) {
@@ -1632,3 +1569,10 @@ var CarouselConnector = new Class(/** @lends CarouselConnector# */{
         carousel.selectItem(id);
     }
 });
+
+/**
+ * Backward compatibility.
+ *
+ * @deprecated Use CarouselFactory
+ */
+var Carousel = CarouselFactory;

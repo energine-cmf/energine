@@ -17,7 +17,7 @@
  * @author Valerii Zinchenko
  * @author Pavel Dubenko
  *
- * @version 2.1.7
+ * @version 2.1.8
  */
 
 /**
@@ -291,15 +291,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      * @param {number} id Item ID.
      */
     selectItem: function (id) {
-        if (this.currentActiveID === id) {
-            return;
-        }
-
-        for (var n = 0; n < this.items.length / this.options.playlist.NItems; n++) {
-            this.items[this.currentActiveID + this.options.playlist.NItems * n].removeClass(this.options.activeLabel);
-            this.items[id + this.options.playlist.NItems * n].addClass(this.options.activeLabel);
-        }
-        this.currentActiveID = id;
+        this.setActiveItem(id);
 
         /**
          * Fired when the new item ID was selected.
@@ -318,12 +310,14 @@ var ACarousel = new Class(/** @lends ACarousel# */{
         // Check whether the desired item ID is visible in the carousel. If it is, then do not scroll.
         for (var n = 0; n < this.options.NVisibleItems; n++) {
             if (this.wrapIndices(this.firstVisibleItemID + n, 0, this.options.playlist.NItems) == id) {
+                this.setActiveItem(id);
                 return;
             }
         }
 
         var scrollsProps = this.calcScrolls(id);
         this.scroll(scrollsProps.direction, scrollsProps.NScrolls, true);
+        this.setActiveItem(id);
     },
 
     /**
@@ -331,6 +325,23 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      */
     stop: function() {
         this.$chain = [];
+    },
+
+    /**
+     * Mark item as active.
+     *
+     * @param {number} id Item ID.
+     */
+    setActiveItem: function(id) {
+        if (this.currentActiveID === id) {
+            return;
+        }
+
+        this.items.removeClass(this.options.activeLabel);
+        for (var n = 0; n < this.items.length / this.options.playlist.NItems; n++) {
+            this.items[id + this.options.playlist.NItems * n].addClass(this.options.activeLabel);
+        }
+        this.currentActiveID = id;
     },
 
     Protected: {

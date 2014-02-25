@@ -44,5 +44,19 @@ class PropertiesEditor extends Grid {
         );
     }
 
+    protected function prepare(){
+        parent::prepare();
+        if(in_array($this->getType(), array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER))){
+            $this->getDataDescription()->getFieldDescriptionByName('pt_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+            $this->getDataDescription()->getFieldDescriptionByName('session_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
+
+            $f = $this->getData()->getFieldByName('pt_id');
+            $f->setData($this->getParam('typeID'), true);
+
+            $f = $this->getData()->getFieldByName('session_id');
+            $f->setData(session_id(), true);
+        }
+    }
+
 }
 

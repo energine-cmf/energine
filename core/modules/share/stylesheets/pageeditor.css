@@ -2,6 +2,6 @@
     outline: 1px dashed #F00;
 }
 
-.nrgnEditor.activeEditor {
-    outline-color: #0D0;
+.nrgnEditor.cke_focus {
+    outline: 2px dashed #0D0;
 }

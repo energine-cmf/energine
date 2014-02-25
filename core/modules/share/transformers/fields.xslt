@@ -791,8 +791,6 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="field[@type='tab'][ancestor::component[@type='form']]"/>
-
     <!-- поле для выбора upl_id гридах -->
     <xsl:template match="field[@name='upl_id' and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]" mode="field_input">
         <div class="with_append">
@@ -806,6 +804,18 @@
                 <button type="button" style="width:22px;height:18px;" class="attachment_selector" upl_name="{generate-id(.)}_name" upl_id="{generate-id(.)}_id" field="{@name}">...</button>
             </div>
         </div>
+    </xsl:template>
+
+    <xsl:template match="field[@type='tab'][ancestor::component[@type='form']]"/>
+
+    <xsl:template match="field[@type='tab'][ancestor::component[@type='form']]" mode="field_name">
+        <li data-src="{ancestor::component/@single_template}{.}">
+            <a href="#{generate-id(.)}"><xsl:value-of select="@title" /></a>
+        </li>
+    </xsl:template>
+
+    <xsl:template match="field[@type='tab'][ancestor::component[@type='form']]" mode="field_content">
+        <div id="{generate-id(.)}"></div>
     </xsl:template>
 
 </xsl:stylesheet>

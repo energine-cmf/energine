@@ -143,13 +143,15 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
          * @type {Overlay}
          */
         this.overlay = new Overlay();
-        this.editor.on('blur', function () {
+        /*this.editor.on('blur', function () {
+            console.log(this.area)
             this.area.removeClass('activeEditor');
             this.save();
         }.bind(this));
         this.editor.on('focus', function () {
+            console.log(this.area)
             this.area.addClass('activeEditor');
-        }.bind(this));
+        }.bind(this));*/
     },
 
     /**

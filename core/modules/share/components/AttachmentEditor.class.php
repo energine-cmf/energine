@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class AttachmentEditor;
-@endcode
+ * @endcode
  *
  * @author andy.karpov
  * @copyright Energine 2013
@@ -19,13 +19,15 @@ class AttachmentEditor;
  *
  * @code
 class AttachmentEditor;
-@endcode
+ * @endcode
  */
-class AttachmentEditor extends Grid {
+class AttachmentEditor extends Grid
+{
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name, $module, array $params = null)
+    {
         parent::__construct($name, $module, $params);
 
         $linkedID = $this->getParam('linkedID');
@@ -45,7 +47,7 @@ class AttachmentEditor extends Grid {
 
         $columns = $this->dbh->getColumnsInfo($this->getTableName());
         if ($columns) {
-            foreach($columns as $colName => $colProps) {
+            foreach ($columns as $colName => $colProps) {
                 if ((empty($colProps['index']) or $colProps['index'] != 'PRI') and $colName != 'upl_id' and strpos($colName, 'order_num') === false and !$colProps['nullable']) {
                     $quick_upload_enabled = false;
                 }
@@ -69,7 +71,8 @@ class AttachmentEditor extends Grid {
     /**
      * @copydoc Grid::defineParams
      */
-    protected function defineParams() {
+    protected function defineParams()
+    {
         return array_merge(
             parent::defineParams(),
             array(
@@ -84,11 +87,11 @@ class AttachmentEditor extends Grid {
      * @copydoc Grid::prepare
      */
     // Делает поле upl_id типа INT в форме add/edit, чтобы исключить подтягивание значений по FK
-    protected function prepare() {
+    protected function prepare()
+    {
         parent::prepare();
 
         if (in_array($this->getState(), array('add', 'edit'))) {
-
             $fd = $this->getDataDescription()->getFieldDescriptionByName('upl_id');
             $fd->setType(FieldDescription::FIELD_TYPE_INT);
             if ($this->getState() == 'edit') {
@@ -97,6 +100,20 @@ class AttachmentEditor extends Grid {
                     $fd->setProperty('upl_path', $res);
                 }
             }
+
+            $f = $this->getData()->getFieldByName($this->getParam('pk'));
+            $f->setData($this->getParam('linkedID'), true);
+
+            $f = $this->getData()->getFieldByName('session_id');
+            $f->setData(session_id(), true);
+
+            /*for ($i = 0; $i < $this->getData()->getRowCount(); $i++) {
+                $f = $this->getData()->getFieldByName($this->getParam('pk'));
+                $f->setRowData($i, $this->getParam('linkedID'));
+
+                $f = $this->getData()->getFieldByName('session_id');
+                $f->setRowData($i, session_id());
+            }*/
         }
     }
 
@@ -104,7 +121,8 @@ class AttachmentEditor extends Grid {
      * @copydoc Grid::createDataDescription
      */
     // Дополняет описание данных доп полями из таблицы share_uploads, а также исключает из вывода PK основной таблицы и поле session_id
-    protected function createDataDescription() {
+    protected function createDataDescription()
+    {
         $dd = parent::createDataDescription();
 
         $fd = $dd->getFieldDescriptionByName($this->getParam('pk'));
@@ -139,7 +157,8 @@ class AttachmentEditor extends Grid {
      * @copydoc Grid::loadDataDescription
      */
     // Отключаем FK для ul_id и связки с основной таблицей
-    protected function loadDataDescription(){
+    protected function loadDataDescription()
+    {
         $r = parent::loadDataDescription();
         $r['upl_id']['key'] = false;
         $r[$this->getParam('pk')]['key'] = false;
@@ -150,7 +169,8 @@ class AttachmentEditor extends Grid {
      * @copydoc Grid::loadData
      */
     // Дополняет набор данных значениями полей upl_path, upl_name и upl_duration
-    protected function loadData() {
+    protected function loadData()
+    {
         $data = parent::loadData();
 
         if ($this->getState() == 'getRawData' && is_array($data)) {
@@ -168,7 +188,7 @@ class AttachmentEditor extends Grid {
                 foreach ($data as $i => $row) {
                     if ($res) {
                         $new_row = false;
-                        foreach($res as $row2) {
+                        foreach ($res as $row2) {
                             if ($row2['upl_id'] == $row['upl_id']) {
                                 $new_row = $row2;
                             }
@@ -186,43 +206,13 @@ class AttachmentEditor extends Grid {
     }
 
     /**
-     * @copydoc Grid::add
-     */
-    protected function add() {
-        parent::add();
-
-        for($i=0; $i<$this->getData()->getRowCount(); $i++) {
-            $f = $this->getData()->getFieldByName($this->getParam('pk'));
-            $f->setRowData($i, $this->getParam('linkedID'));
-
-            $f = $this->getData()->getFieldByName('session_id');
-            $f->setRowData($i, session_id());
-        }
-
-    }
-
-    /**
-     * @copydoc Grid::edit
-     */
-    protected function edit() {
-        parent::edit();
-
-        for($i=0; $i<$this->getData()->getRowCount(); $i++) {
-            $f = $this->getData()->getFieldByName($this->getParam('pk'));
-            $f->setRowData($i, $this->getParam('linkedID'));
-
-            $f = $this->getData()->getFieldByName('session_id');
-            $f->setRowData($i, session_id());
-        }
-    }
-
-    /**
      * Save quick upload.
      *
      * @throws Exception
      * @throws SystemException
      */
-    protected function savequickupload() {
+    protected function savequickupload()
+    {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
             $upl_id = (isset($_POST['upl_id'])) ? intval($_POST['upl_id']) : false;
@@ -278,7 +268,8 @@ class AttachmentEditor extends Grid {
      * @copydoc Grid::saveData
      */
     //Правильно сохраняет порядок в order_num полях
-    protected function saveData() {
+    protected function saveData()
+    {
         $result = false;
         //если в POST не пустое значение значение первичного ключа - значит мы находимся в режиме редактирования
         if (isset($_POST[$this->getTableName()][$this->getPK()]) &&

@@ -17,7 +17,7 @@
  * @author Valerii Zinchenko
  * @author Pavel Dubenko
  *
- * @version 2.1.6
+ * @version 2.1.8
  */
 
 /**
@@ -291,15 +291,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      * @param {number} id Item ID.
      */
     selectItem: function (id) {
-        if (this.currentActiveID === id) {
-            return;
-        }
-
-        for (var n = 0; n < this.items.length / this.options.playlist.NItems; n++) {
-            this.items[this.currentActiveID + this.options.playlist.NItems * n].removeClass(this.options.activeLabel);
-            this.items[id + this.options.playlist.NItems * n].addClass(this.options.activeLabel);
-        }
-        this.currentActiveID = id;
+        this.setActiveItem(id);
 
         /**
          * Fired when the new item ID was selected.
@@ -309,43 +301,23 @@ var ACarousel = new Class(/** @lends ACarousel# */{
         this.fireEvent('selectItem', this.currentActiveID);
     },
 
-    //todo: this must somehow called from scrollForward and scrollBackward with the id difference.
     /**
      * Scrolls to the specific item ID.
      *
      * @param {number} id Item ID.
      */
     scrollTo: function (id) {
-        var direction,
-            NTimes;
-
         // Check whether the desired item ID is visible in the carousel. If it is, then do not scroll.
         for (var n = 0; n < this.options.NVisibleItems; n++) {
             if (this.wrapIndices(this.firstVisibleItemID + n, 0, this.options.playlist.NItems) == id) {
+                this.setActiveItem(id);
                 return;
             }
         }
 
-        direction = (id > this.currentActiveID) ? 1 : -1;
-        var diffFromLeft = Math.abs(id - this.currentActiveID);
-
-        if (this.options.type === 'Loop') {
-            var diffFromRight = this.options.playlist.NItems - diffFromLeft;
-
-            if (diffFromLeft <= diffFromRight) {
-                NTimes = diffFromLeft;
-            } else {
-                direction *= -1;
-                NTimes = diffFromRight;
-            }
-        } else {
-            NTimes = diffFromLeft;
-            if (NTimes > this.options.playlist.NItems - this.options.NVisibleItems) {
-                NTimes = this.options.playlist.NItems - this.options.NVisibleItems;
-            }
-        }
-        NTimes = Math.floor(NTimes / this.options.scrollStep);
-        this.scroll(direction, Math.abs(NTimes), true);
+        var scrollsProps = this.calcScrolls(id);
+        this.scroll(scrollsProps.direction, scrollsProps.NScrolls, true);
+        this.setActiveItem(id);
     },
 
     /**
@@ -353,6 +325,23 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      */
     stop: function() {
         this.$chain = [];
+    },
+
+    /**
+     * Mark item as active.
+     *
+     * @param {number} id Item ID.
+     */
+    setActiveItem: function(id) {
+        if (this.currentActiveID === id) {
+            return;
+        }
+
+        this.items.removeClass(this.options.activeLabel);
+        for (var n = 0; n < this.items.length / this.options.playlist.NItems; n++) {
+            this.items[id + this.options.playlist.NItems * n].addClass(this.options.activeLabel);
+        }
+        this.currentActiveID = id;
     },
 
     Protected: {
@@ -538,6 +527,17 @@ var ACarousel = new Class(/** @lends ACarousel# */{
                 this.length = this.itemSize[1];
             }
         },
+
+        /**
+         * Calculate how many scroll steps and in which direction should the carousel scroll to reach the desired item ID.
+         *
+         * @memberOf ACarousel#
+         * @abstract
+         * @protected
+         * @param {number} id Desired item ID.
+         * @return {{NScrolls: number, direction: number}}
+         */
+        calcScrolls: function(id) {},
 
         /**
          * Apply styles to the carousel and his elements.
@@ -1075,6 +1075,35 @@ CarouselFactory.Types = {
             },
 
             /**
+             * Implements the parent abstract [calcScrolls]{@link ACarousel#calcScrolls} method.
+             *
+             * @memberOf ACarousel#
+             * @abstract
+             * @protected
+             * @param {number} id Desired item ID.
+             * @returns {{NScrolls: number, direction: number}}
+             */
+            calcScrolls: function(id) {
+                var NTimes,
+                    direction = 1,
+                    diffFromLeft = this.wrapIndices(id - this.currentActiveID, 0, this.options.playlist.NItems),
+                    diffFromRight = this.options.playlist.NItems - diffFromLeft;
+
+                if (diffFromLeft <= diffFromRight) {
+                    NTimes = diffFromLeft - (this.wrapIndices(this.firstVisibleItemID + this.options.NVisibleItems, 0, this.options.playlist.NItems) - 1 - this.currentActiveID);
+                } else {
+                    NTimes = diffFromRight - (this.currentActiveID - this.firstVisibleItemID);
+                    direction = -1;
+                }
+                NTimes = Math.ceil(NTimes / this.options.scrollStep);
+
+                return {
+                    NScrolls: NTimes,
+                    direction: direction
+                };
+            },
+
+            /**
              * Implements the parent abstract [getItemEffects]{@link ACarousel#getItemEffects} method.
              *
              * @memberOf ACarousel#
@@ -1243,6 +1272,35 @@ CarouselFactory.Types = {
                         ? this.options.scrollStep * scrollNTimes
                         : this.lastScrollStep + this.options.scrollStep * (scrollNTimes - 1));
                     this.firstVisibleItemID = this.wrapIndices(this.firstVisibleItemID, 0, this.items.length, false);
+                },
+
+                /**
+                 * Implements the parent abstract [calcScrolls]{@link ACarousel#calcScrolls} method.
+                 *
+                 * @memberOf ACarousel#
+                 * @abstract
+                 * @protected
+                 * @param {number} id Desired item ID.
+                 * @returns {{NScrolls: number, direction: number}}
+                 */
+                calcScrolls: function(id) {
+                    var NTimes = Math.abs(id - this.currentActiveID),
+                        direction = (id > this.currentActiveID) ? 1 : -1;
+
+                    if (NTimes >= this.options.playlist.NItems) {
+                        NTimes = this.options.playlist.NItems - 1;
+                    }
+                    if (direction == 1) {
+                        NTimes -= this.wrapIndices(this.firstVisibleItemID + this.options.NVisibleItems, 0, this.options.playlist.NItems) - 1 - this.currentActiveID;
+                    } else {
+                        NTimes -= this.currentActiveID - this.firstVisibleItemID;
+                    }
+                    NTimes = Math.ceil(NTimes / this.options.scrollStep);
+
+                    return {
+                        NScrolls: NTimes,
+                        direction: direction
+                    };
                 },
 
                 /**

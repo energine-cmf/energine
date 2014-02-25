@@ -3,6 +3,11 @@
     version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
+    <xsl:template match="field[@type='tab'][ancestor::component[@type='form']]" mode="field_name">
+            <li data-src="{ancestor::component/@single_template}{.}" data-segment="{@segment}" data-url="{ancestor::component/@single_template}">
+                <a href="#{generate-id(.)}"><xsl:value-of select="@title" /></a>
+            </li>
+        </xsl:template>
 
     <!-- Корзина -->
     <xsl:template match="component[@class='Basket'][@componentAction='init']">

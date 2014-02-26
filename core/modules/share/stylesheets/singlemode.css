@@ -19,3 +19,8 @@ html, body {
     padding: 0;
 }
 /* ----- /grid form ----- */
+@media screen and (max-width: 680px){
+    .e-singlemode-layout {
+        margin: 0;
+    }
+}

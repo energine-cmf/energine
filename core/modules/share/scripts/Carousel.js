@@ -291,11 +291,14 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      * @param {number} id Item ID.
      */
     selectItem: function (id) {
+        if (this.currentActiveID === id) {
+            return;
+        }
         this.setActiveItem(id);
 
         /**
          * Fired when the new item ID was selected.
-         * @event ACarousel#selectItem
+         * @event ACarousel#selectItegit stam
          * @param {number} n New item ID.
          */
         this.fireEvent('selectItem', this.currentActiveID);

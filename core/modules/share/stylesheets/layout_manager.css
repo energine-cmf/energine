@@ -11,6 +11,8 @@
 }
 .e-lm-widget .toolbar {
     cursor: move;
+    background-color: #eee;
+    border-radius: 4px 4px 0 0;
 }
 .e-lm-static-widget .toolbar {
     cursor: default;

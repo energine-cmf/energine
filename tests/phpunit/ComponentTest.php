@@ -26,6 +26,9 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     private $component;
 
     public function setUp() {
+        // Changing URI to test active components. It should go BEFORE
+        // component creation.
+        $_SERVER['REQUEST_URI'] = 'test';
         $this->component = new Component('phpunit', 'test');
     }
 
@@ -46,7 +49,7 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
         $config = $getConfigMethod->invoke($this->component);
         // is config loaded
         $this->assertInstanceOf('ComponentConfig', $config);
-        // default state is main
+        // By default component is inactive, so its should fallback to default state
         $this->assertEquals('main', $config->getCurrentStateConfig()->attributes()->name);
     }
 
@@ -87,7 +90,14 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testDetermineState() {
-
+        $this->component = new Component('phpunit', 'test', array('active' => true, 'config' => new SimpleXMLElement(self::TEST_CONFIG_XML)));
+        /**
+         * Because of config, defined in
+         * @see TEST_CONFIG_XML
+         * state of active component should be 'test'
+         * @see setUp()
+         */
+        $this->assertEquals('test', $this->component->getState());
     }
 
     public function testRun() {
@@ -95,7 +105,7 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * Method to test protected and private methods
+     * Method for testing protected and private methods
      *
      * @param $name
      * @return ReflectionMethod

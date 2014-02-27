@@ -717,75 +717,36 @@
         </xsl:if>
     </xsl:template>
 
-    <!-- в виде плеера -->
-    <xsl:template match="field[@name='attachments']" mode="player">
-        <xsl:param name="PLAYER_WIDTH"/>
-        <xsl:param name="PLAYER_HEIGHT"/>
-        <xsl:if test="recordset and (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">
-            <!--<xsl:if test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">-->
-                <!--<xsl:if test="count(recordset/record) &gt; 1">-->
-                    <script type="text/javascript" src="{$STATIC_URL}scripts/flowplayer.js"></script>
-                    <script type="text/javascript" src="{$STATIC_URL}scripts/Carousel.js"></script>
-                    <script type="text/javascript" src="{$STATIC_URL}scripts/Playlist.js"></script>
-
-                    <script type="text/javascript">
-                        var carousel, playlist;
-
-                        window.addEvent('domready', function() {
-                                carousel = new Carousel('playlist', {visibleItems : 6, css : 'carousel.css'});
-                                playlist = new Playlist('playlist', 'player', 'playerBox');
-                        });
-                    </script>
-                <!--</xsl:if>-->
-            <!--</xsl:if>-->
-            <div class="player_box" id="playerBox">
-                <xsl:variable name="URL"><xsl:choose>
-                    <xsl:when test="name(recordset/record[1]/field[@name='file']/*[1])='video'"><xsl:value-of select="$RESIZER_URL"/>w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:when>
-                    <xsl:otherwise><xsl:value-of select="$RESIZER_URL"/>w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:otherwise>
-                </xsl:choose></xsl:variable>
-                <div class="player" id="player" style="width: {$PLAYER_WIDTH}px; height: {$PLAYER_HEIGHT}px; background: black url({$URL}) 50% 50% no-repeat;">
-                    <xsl:if test="recordset/record[1]/field[@name='file']/video or count(recordset/record) &gt; 1">
-                        <a href="#" class="play_button"></a>
-                    </xsl:if>
-                </div>
-            </div>
-        </xsl:if>
-    </xsl:template>
-
     <!-- в виде карусели -->
     <xsl:template match="field[@name='attachments']" mode="carousel">
-        <xsl:param name="PREVIEW_WIDTH"/>
-        <xsl:param name="PREVIEW_HEIGHT"/>
-        <xsl:if test="(count(recordset/record) &gt; 1) or not(recordset/record/field[@name='file']/image)">
-            <div class="carousel_box">
-                <xsl:if test="not(recordset/record/field[@name='file']/image)">
-                    <xsl:attribute name="style">display:none;</xsl:attribute>
-                </xsl:if>
-                <!--<div class="carousel_title">
-                    <xsl:value-of select="@title"/>
-                </div>-->
-                <div class="carousel" id="playlist">
-                    <div class="carousel_viewbox viewbox">
-                        <ul>
+        <xsl:param name="WIDTH"/>
+        <xsl:param name="HEIGHT"/>
+        <xsl:if test="(count(recordset/record) &gt; 1)">
+            <script src="scripts/Carousel.js" type="text/javascript"></script>
+            <script src="scripts/AttachmentsCarousel.js" type="text/javascript"></script>
+            <script type="text/javascript">
+                window.addEvent('domready', function(){
+                    new AttachmentsCarousel('<xsl:value-of select="generate-id(.)"/>');
+                });
+            </script>
+
+            <div class="carousel_box" id="{generate-id(.)}">
+                <div class="carousel">
+                    <div class="carousel_viewbox">
+                        <ul class="playlist_local">
                             <xsl:for-each select="recordset/record">
-                                <li>
-                                    <div class="carousel_image" id="{field[@name='id']}_imgc">
-                                        <a href="{field[@name='file']/video | field[@name='file']/image}" xmlns:nrgn="http://energine.org" nrgn:media_type="{name(field[@name='file']/*[1])}">
-                                            <xsl:choose>
-                                                <xsl:when test="field[@name='file']/video"><img src="{$RESIZER_URL}w{$PREVIEW_WIDTH}-h{$PREVIEW_HEIGHT}/{field[@name='file']/*[1]/@image}" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:when>
-                                                <xsl:otherwise><img src="{$RESIZER_URL}w{$PREVIEW_WIDTH}-h{$PREVIEW_HEIGHT}/{field[@name='file']/*[1]/@image}" alt="{field[@name='name']}" width="{$PREVIEW_WIDTH}" height="{$PREVIEW_HEIGHT}"/></xsl:otherwise>
-                                            </xsl:choose>
-                                             <xsl:if test="field[@name='file']/video">
-                                                 <i class="icon play_icon"></i>
-                                             </xsl:if>
+                                <li style="width:{$WIDTH}; height:{$HEIGHT};" class="item">
+                                    <div>
+                                        <a href="{field[@name='file']}">
+                                            <img src="{$RESIZER_URL}w{$WIDTH}-h{$HEIGHT}/{field[@name='file']}" alt="{field[@name='name']}" width="{$WIDTH}" height="{$HEIGHT}"/>
                                          </a>
                                      </div>
                                  </li>
                              </xsl:for-each>
                          </ul>
                      </div>
-                     <a class="previous_control" href="#"><xsl:text disable-output-escaping="yes">&amp;lt;</xsl:text></a>
-                     <a class="next_control" href="#"><xsl:text disable-output-escaping="yes">&amp;gt;</xsl:text></a>
+                     <a class="previous" href="#"><xsl:text disable-output-escaping="yes">&amp;lt;</xsl:text></a>
+                     <a class="next" href="#"><xsl:text disable-output-escaping="yes">&amp;gt;</xsl:text></a>
                  </div>
              </div>
         </xsl:if>

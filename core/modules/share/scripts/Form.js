@@ -275,6 +275,7 @@ var Form = new Class(/** @lends Form# */{
      */
     onTabChange: function () {
         if (this.currentTab.getProperty('data-src') && !this.currentTab.loaded) {
+            this.currentTab.pane.empty();
             this.currentTab.pane.grab(new Element('iframe', {
                 src: Energine['base'] + this.currentTab.getProperty('data-src'),
                 frameBorder: 0,

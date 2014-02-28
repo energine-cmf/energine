@@ -30,6 +30,31 @@ class PropertiesValuesEditor extends Grid {
         );
     }
 
+    protected function createDataDescription() {
+        if ($this->getType() == self::COMPONENT_TYPE_LIST) {
+            $result = new DataDescription();
+            $fd = new FieldDescription('pval_id');
+            $fd->setType(FieldDescription::FIELD_TYPE_INT);
+            $fd->setProperty('key', true);
+            $fd->setProperty('index', 'PRI');
+            $result->addFieldDescription($fd);
+
+            $fd = new FieldDescription('lang_id');
+            $fd->setType(FieldDescription::FIELD_TYPE_INT);
+            $fd->setProperty('languageID', true);
+            $result->addFieldDescription($fd);
+
+            $fd = new FieldDescription('prop_name');
+            $result->addFieldDescription($fd);
+
+            $fd = new FieldDescription('pval_name');
+            $result->addFieldDescription($fd);
+        } else {
+            $result = parent::createDataDescription();
+        }
+        return $result;
+    }
+
     /**
      * @copydoc DataSet::loadData
      */
@@ -40,9 +65,11 @@ class PropertiesValuesEditor extends Grid {
         }
 
         if ($this->getState() == 'getRawData') {
-            $data = $this->dbh->select('select pp.prop_id, lang_id, prop_name
+            $data = $this->dbh->select('select pp.prop_id as pval_id, pp.prop_id, ppt.lang_id, prop_name , pval_name
             FROM shop_product_properties pp
-              LEFT JOIN shop_product_properties_translation ppt ON (pp.prop_id=ppt.prop_id) AND (lang_id=%s)
+              LEFT JOIN shop_product_properties_translation ppt ON (pp.prop_id=ppt.prop_id) AND (ppt.lang_id=%s)
+              LEFT JOIN shop_product_properties_values ppv ON (pp.prop_id=ppv.prop_id)
+              LEFT JOIN shop_product_properties_values_translation ppvt ON (ppv.pval_id=ppvt.pval_id) AND (ppvt.lang_id=%1$s)
               WHERE pt_id=%s
             ORDER BY prop_order_num', E()->getLanguage()->getCurrent(), $this->getParam('typeID'));
         } else {

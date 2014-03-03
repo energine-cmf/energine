@@ -86,8 +86,15 @@ Asset = Object.append(Asset, /** @lends Asset# */{
     }
 });
 
-// NOTE: This function is overwritten because of not secure style value casting.
 Element.implement({
+    getComputedStyle: function(property){
+        var floatName = (document.html.style.cssFloat == null) ? 'styleFloat' : 'cssFloat',
+            defaultView = Element.getDocument(this).defaultView,
+            computed = defaultView ? defaultView.getComputedStyle(this, null) : null;
+        return (computed) ? computed.getPropertyValue((property == floatName) ? 'float' : property.hyphenate()) : null;
+    },
+
+    // NOTE: This function is overwritten because of not secure style value casting.
     getComputedSize: function(options){
         function calculateEdgeSize(edge, styles){
             var total = 0;

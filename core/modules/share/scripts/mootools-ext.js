@@ -15,6 +15,12 @@ Asset = Object.append(Asset, {
 });
 
 Element.implement({
+    getComputedStyle: function(p){
+        var f = (document.html.style.cssFloat == null) ? 'styleFloat' : 'cssFloat',
+            d = Element.getDocument(this).defaultView,
+            c = d ? d.getComputedStyle(this, null) : null;
+        return (c) ? c.getPropertyValue((p == f) ? 'float' : p.hyphenate()) : null;
+    },
     getComputedSize: function(options){
         function getStylesList(sts, p){
             var l = [];

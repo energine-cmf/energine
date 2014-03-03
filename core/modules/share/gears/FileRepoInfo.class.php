@@ -86,12 +86,17 @@ class FileRepoInfo extends DBWorker {
      */
     public function analyze($filename, $forceReadFromFile = false) {
         try {
+            $tf = $filename;
+            list($filename) = explode('?', $tf);
             if ($forceReadFromFile
                 || !$this->getFInfoSQL->execute(array($filename))
                 || !($result = $this->getFInfoSQL->fetch(PDO::FETCH_ASSOC))
             ) {
-                if(!($result = $this->getFileInfoData($filename)))
+                if(!($result = $this->getFileInfoData($filename))){
                     throw new Exception();
+
+                }
+
             }
         } catch (Exception $e) {
             $result['type'] = self::META_TYPE_UNKNOWN;

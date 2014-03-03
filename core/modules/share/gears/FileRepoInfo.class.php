@@ -86,8 +86,6 @@ class FileRepoInfo extends DBWorker {
      */
     public function analyze($filename, $forceReadFromFile = false) {
         try {
-            $tf = $filename;
-            list($filename) = explode('?', $tf);
             if ($forceReadFromFile
                 || !$this->getFInfoSQL->execute(array($filename))
                 || !($result = $this->getFInfoSQL->fetch(PDO::FETCH_ASSOC))

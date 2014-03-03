@@ -150,6 +150,7 @@ class NewsFeed extends ExtendedFeed {
         }
 
         $this->addToolbar($this->createToolbar());
+        $this->js = $this->buildJS();
 
         foreach ($this->getDataDescription() as $fieldDescription) {
             $fieldDescription->setMode(FieldDescription::FIELD_MODE_READ);

@@ -133,11 +133,13 @@ optgroup option {
     width: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
+    outline: none;
 }
 .e-pane-content .field .control select {
     width: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
+    height: 32px;
 }
 .e-pane-content .field .control.type_code,
 .e-pane-content .field .control.type_htmlblock,
@@ -172,8 +174,11 @@ div.with_append.focus_block input {
     margin-bottom: 0;
 }
 div.with_append.focus_block input,
-div.with_append.focus_block select {
+div.with_append.focus_block select,
+div.with_append.focus_block button,
+div.with_append.focus_block input[type='button'] {
     margin-bottom: 0;
+    border-color: #6FCFE3;
 }
 .e-pane-content .field .control.type_file .with_append {
     width: 713px;
@@ -212,6 +217,8 @@ div.with_append.focus_block select {
 .e-pane-content .field .control  .appended_block input[type="button"] {
     border-radius: 0 4px 4px 0;
     background-color: #dedede;
+    height: 18px;
+    outline: none;
 }
 .e-pane-content .field.file_upload .control.type_file  .appended_block button,
 .e-pane-content .field.file_upload .control.type_file  .appended_block input[type="button"] {

@@ -187,13 +187,9 @@
             <xsl:apply-templates select="field[@name='news_text_rtf']"/>
             <xsl:if test="field[@name='attachments']/recordset">
                 <div class="media_box">
-                    <xsl:apply-templates select="field[@name='attachments']" mode="player">
-                        <xsl:with-param name="PLAYER_WIDTH">664</xsl:with-param>
-                        <xsl:with-param name="PLAYER_HEIGHT">498</xsl:with-param>
-                    </xsl:apply-templates>
                     <xsl:apply-templates select="field[@name='attachments']" mode="carousel">
-                        <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
-                        <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                        <xsl:with-param name="WIDTH">664</xsl:with-param>
+                        <xsl:with-param name="HEIGHT">498</xsl:with-param>
                     </xsl:apply-templates>
                 </div>
             </xsl:if>

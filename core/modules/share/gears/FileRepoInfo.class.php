@@ -72,8 +72,6 @@ class FileRepoInfo extends DBWorker {
      */
     public function analyze($filename, $forceReadFromFile = false) {
         try {
-            $tf = $filename;
-            list($filename) = explode('?', $tf);
             if (
                 $forceReadFromFile
                 ||

@@ -385,6 +385,9 @@ var FileRepository = new Class(/** @lends FileRepository# */{
             default:
                 if (r.upl_is_ready) {
                     if (this.toolbar.getControlById('open')) {
+                        var t = r['upl_path'].split('?');
+                        r['upl_path'] = t[0];
+
                         ModalBox.setReturnValue(r);
                         ModalBox.close();
                     } else {

@@ -291,6 +291,9 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      * @param {number} id Item ID.
      */
     selectItem: function (id) {
+        if (this.currentActiveID === id) {
+            return;
+        }
         this.setActiveItem(id);
 
         /**

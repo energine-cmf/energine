@@ -27,8 +27,10 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
 
     public function setUp() {
         // Changing URI to test active components. It should go BEFORE
-        // component creation.
-        $_SERVER['REQUEST_URI'] = 'test';
+        // component creation. Because during component creation system
+        // components such as Response and URI are created and REQUEST_URI
+        // can't be changed after.
+        $_SERVER['REQUEST_URI'] = '/test/';
         $this->component = new Component('phpunit', 'test');
     }
 
@@ -100,8 +102,15 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals('test', $this->component->getState());
     }
 
-    public function testRun() {
-
+    /**
+     * When component is active and there is no action, linked to
+     * its current state, component should throw Exception.
+     *
+     * @expectedException   SystemException
+     */
+    public function testRunNoAction() {
+        $this->component = new Component('phpunit', 'test', array('active' => true, 'config' => new SimpleXMLElement(self::TEST_CONFIG_XML)));
+        $this->component->run();
     }
 
     /**

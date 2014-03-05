@@ -11,7 +11,7 @@ return array(
     'project' => 'Energine 2.11.4',
 
     // путь к директории setup текущего используемого ядра
-    'setup_dir' => ($energine_release = '/home/dexter/projects/energine_core_git_tests') . '/setup',
+    'setup_dir' => ($energine_release = '') . '/setup',
 
     // список подключенных модулей ядра в конкретном проекте
     // ключи массива - названия модулей, значения - абсолютные пути к месторасположению
@@ -29,9 +29,9 @@ return array(
     'database' => array(
         'host' => 'dbhost',
         'port' => '3306',
-        'db' => 'dexter_starter',
-        'username' => 'dexter',
-        'password' => '2Kts5d8PDtfJmpCK'
+        'db' => '',
+        'username' => '',
+        'password' => ''
     ),
 
     // настройки сайта

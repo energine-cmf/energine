@@ -430,6 +430,20 @@ abstract class DataSet extends Component {
     }
 
     /**
+     * @copydoc DBDataSet::getConfig
+     */
+    protected function getConfig() {
+        if (!$this->config) {
+            $this->config = new DataSetConfig(
+                $this->getParam('config'),
+                get_class($this),
+                $this->module
+            );
+        }
+        return $this->config;
+    }
+
+    /**
      * Create data.
      *
      * @return Data
@@ -669,6 +683,55 @@ abstract class DataSet extends Component {
     protected function imageManager() {
         $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
         $this->imageManager->run();
+    }
+
+    /**
+     * Player for embedding in text areas
+     */
+    protected function embedPlayer() {
+        $sp = $this->getStateParams();
+        list($uplId) = $sp;
+        $fileInfo = $this->dbh->select(
+            'share_uploads',
+            array(
+                'upl_path',
+                'upl_name'
+            ),
+            array(
+                'upl_id' => intval($uplId),
+                'upl_internal_type' => FileRepoInfo::META_TYPE_VIDEO
+            )
+        );
+        // Using array_values to transform associative index to key index
+        list($file, $name) = array_values($fileInfo[0]);
+        if(!is_array($fileInfo)) {
+            throw new SystemException('ERROR_NO_VIDEO_FILE', SystemException::ERR_404);
+        }
+        $dd = new DataDescription();
+        foreach(
+            array(
+                'file' => FieldDescription::FIELD_TYPE_STRING,
+                'name' => FieldDescription::FIELD_TYPE_STRING
+            ) as $fName => $fType
+        ) {
+            $fd = new FieldDescription($fName);
+            $fd->setType($fType);
+            $dd->addFieldDescription($fd);
+        }
+        $this->setBuilder(new SimpleBuilder());
+        $this->setDataDescription($dd);
+        $data = new Data();
+        $data->load(
+          array(
+              array(
+                  'file' => $file,
+                  'name' => $name
+              )
+          )
+        );
+        $this->setData($data);
+        $this->js = $this->buildJS();
+        E()->getController()->getTransformer()->setFileName('core/modules/share/transformers/embed_player.xslt', true);
     }
 
     /**

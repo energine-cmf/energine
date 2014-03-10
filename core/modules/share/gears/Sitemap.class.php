@@ -99,7 +99,7 @@ final class Sitemap extends DBWorker {
 
 		//Загружаем идентификаторы для последующего формирования древовидной стркутуры
 
-		$res = $this->dbh->selectRequest(
+		$res = $this->dbh->select(
             'SELECT s.smap_id, s.smap_pid FROM share_sitemap s '.
             'LEFT JOIN share_sitemap_translation st ON st.smap_id = s.smap_id '.
             'WHERE st.smap_is_disabled = 0 AND s.site_id = %s AND st.lang_id = %s '.
@@ -147,7 +147,7 @@ final class Sitemap extends DBWorker {
 		//Загружаем перечень идентификаторов в объект дерева
 		$this->tree = TreeConverter::convert($res, 'smap_id', 'smap_pid');
 
-		$res = $this->dbh->selectRequest('
+		$res = $this->dbh->select('
 		  SELECT s.smap_id,ss.site_meta_keywords, ss.site_meta_description, sss.site_meta_robots 
             FROM share_sitemap s
             LEFT JOIN share_sites_translation ss ON ss.site_id=s.site_id

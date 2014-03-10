@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 final class BreadCrumbs;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -20,7 +20,7 @@ final class BreadCrumbs;
  *
  * @code
 final class BreadCrumbs;
-@endcode
+ * @endcode
  *
  * @final
  */
@@ -95,7 +95,7 @@ final class BreadCrumbs extends DataSet {
         foreach ($parents as $id => $current) {
             $result[] = array(
                 'Id' => $id,
-                'Name' => $current['Name'],
+                'Name' => strip_tags($current['Name']),
                 'Segment' => $current['Segment'],
                 'Title' => $current['HtmlTitle'],
             );
@@ -103,7 +103,7 @@ final class BreadCrumbs extends DataSet {
         $docInfo = $sitemap->getDocumentInfo($this->document->getID());
         $result[] = array(
             'Id' => $this->document->getID(),
-            'Name' => $docInfo['Name'],
+            'Name' => strip_tags($docInfo['Name']),
             'Segment' => $sitemap->getURLByID($this->document->getID()),
             'Title' => $docInfo['HtmlTitle']
         );
@@ -121,7 +121,7 @@ final class BreadCrumbs extends DataSet {
                 array(
                     array(
                         'Id' => $defaultID,
-                        'Name' => $docInfo['Name'],
+                        'Name' => strip_tags($docInfo['Name']),
                         'Segment' => '',
                         'Title' => $docInfo['HtmlTitle']
                     )

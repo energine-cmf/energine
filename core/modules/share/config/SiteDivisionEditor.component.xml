@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    <state name="main">
+    <state name="main" rights="3">
         <uri_patterns>
             <pattern>/show/</pattern>
             <pattern>/show/[site_id]/</pattern>
@@ -27,7 +27,7 @@
                    <control id="close" title="BTN_ClOSE" type="button" onclick="close"/>-->
         </toolbar>
     </state>
-    <state name="selector">
+    <state name="selector" rights="3">
         <uri_patterns>
             <pattern>/[site_id]/list/</pattern>
             <pattern>/[site_id]/list/[int]/</pattern>
@@ -46,7 +46,7 @@
             <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
-    <state name="getRawData">
+    <state name="getRawData" rights="3">
         <uri_patterns>
             <pattern>/[site_id]/get-data/</pattern>
             <pattern>/[site_id]/get-data/[string]/</pattern>
@@ -59,7 +59,7 @@
             <pattern>/reset-templates/</pattern>
         </uri_patterns>
     </state>
-    <state name="getProperties">
+    <state name="getProperties" rights="3">
         <uri_patterns>
             <pattern>/get-node-data/</pattern>
         </uri_patterns>
@@ -137,17 +137,17 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <state name="delete">
+    <state name="delete" rights="3">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
         </uri_patterns>
     </state>
-    <state name="up">
+    <state name="up" rights="3">
         <uri_patterns>
             <pattern>/[int]/up/</pattern>
         </uri_patterns>
     </state>
-    <state name="down">
+    <state name="down" rights="3">
         <uri_patterns>
             <pattern>/[int]/down/</pattern>
         </uri_patterns>

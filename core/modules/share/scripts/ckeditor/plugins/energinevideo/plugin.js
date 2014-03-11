@@ -2,8 +2,6 @@
     lang: 'en,ru,uk',
     icons: 'energinevideo',
 	init: function(editor) {
-        editor.addCommand('videoPropertiesDialog', new CKEDITOR.dialogCommand('videoPropertiesDialog'));
-        CKEDITOR.dialog.add('videoPropertiesDialog', this.path + 'dialogs/properties.js');
 		editor.addCommand( 'energinevideo', {
             exec: function(editor) {
                 var panel = $('cke_' + editor.editorId);
@@ -17,13 +15,26 @@
                             panel.setStyle('z-index', zIndex);
                             return;
                         }
-                        editor.execCommand('videoPropertiesDialog', fileInfo);
+                        ModalBox.open({
+                            url: editor.singleTemplate + 'file-library/' + fileInfo['upl_id'] + '/put-video/',
+                            onClose: function (player) {
+                                var iframe = editor.document.createElement('iframe'),
+                                    div = editor.document.createElement('div');
+                                div.setAttribute('class', 'video');
+                                iframe.setAttribute('src', Energine.base + 'single/pageToolBar/embed-player/' + fileInfo['upl_id'] + '/');
+                                iframe.setAttribute('width', player.width);
+                                iframe.setAttribute('height', player.height);
+                                iframe.setAttribute('frameborder', '0');
+                                iframe.appendTo(div);
+                                editor.insertElement(div);
+                            }
+                        });
                     }
                 });
             }
         });
 
-		if ( editor.ui.addButton ) {
+		if (editor.ui.addButton) {
 			editor.ui.addButton( 'EnergineVideo', {
 				label: editor.lang.energinevideo.toolbar,
 				command: 'energinevideo',

@@ -30,7 +30,7 @@
             <pattern>/sites/[any]/</pattern>
         </uri_patterns>
     </state>
-    <state name="main">
+    <state name="main" rights="3">
         <uri_patterns>
             <pattern>/show/</pattern>
             <pattern>/show/[site_id]/</pattern>

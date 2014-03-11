@@ -225,5 +225,19 @@ var FileRepoForm = new Class(/** @lends FileRepoForm# */{
      */
     buildSaveURL: function() {
         return Energine.base + this.form.getProperty('action');
+    },
+
+    /**
+     * Returns video params, such as
+     * file, player height, player width.
+     * @function
+     * @public
+     */
+    getPlayerParams: function () {
+        var player = {};
+        player.width = parseInt(this.componentElement.getElementById('width').value) || '';
+        player.height = parseInt(this.componentElement.getElementById('height').value) || '';
+        ModalBox.setReturnValue(player);
+        this.close();
     }
 });

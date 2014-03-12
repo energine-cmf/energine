@@ -18,15 +18,12 @@
                         ModalBox.open({
                             url: editor.singleTemplate + 'file-library/' + fileInfo['upl_id'] + '/put-video/',
                             onClose: function (player) {
-                                var iframe = editor.document.createElement('iframe'),
-                                    div = editor.document.createElement('div');
-                                div.setAttribute('class', 'video');
+                                var iframe = editor.document.createElement('iframe');
                                 iframe.setAttribute('src', Energine.base + 'single/pageToolBar/embed-player/' + fileInfo['upl_id'] + '/');
                                 iframe.setAttribute('width', player.width);
                                 iframe.setAttribute('height', player.height);
                                 iframe.setAttribute('frameborder', '0');
-                                iframe.appendTo(div);
-                                editor.insertElement(div);
+                                editor.insertElement(iframe);
                             }
                         });
                     }

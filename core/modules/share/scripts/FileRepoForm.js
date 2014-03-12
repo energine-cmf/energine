@@ -229,7 +229,7 @@ var FileRepoForm = new Class(/** @lends FileRepoForm# */{
 
     /**
      * Returns video params, such as
-     * file, player height, player width.
+     * player height, player width.
      * @function
      * @public
      */

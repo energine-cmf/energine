@@ -721,33 +721,13 @@
     <xsl:template match="field[@name='attachments']" mode="player">
         <xsl:param name="PLAYER_WIDTH"/>
         <xsl:param name="PLAYER_HEIGHT"/>
-        <xsl:if test="recordset and (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">
-            <!--<xsl:if test="(count(recordset/record) &gt; 1) or (name(recordset/record[1]/field[@name='file']/*[1]) = 'video')">-->
-                <!--<xsl:if test="count(recordset/record) &gt; 1">-->
-                    <script type="text/javascript" src="{$STATIC_URL}scripts/flowplayer.js"></script>
-                    <script type="text/javascript" src="{$STATIC_URL}scripts/Carousel.js"></script>
-                    <script type="text/javascript" src="{$STATIC_URL}scripts/Playlist.js"></script>
-
-                    <script type="text/javascript">
-                        var carousel, playlist;
-
-                        window.addEvent('domready', function() {
-                                carousel = new Carousel('playlist', {visibleItems : 6, css : 'carousel.css'});
-                                playlist = new Playlist('playlist', 'player', 'playerBox');
-                        });
-                    </script>
-                <!--</xsl:if>-->
-            <!--</xsl:if>-->
+        <xsl:if test="recordset and (count(recordset/record[field[@name='type'] = 'video']) &gt; 0)">
             <div class="player_box" id="playerBox">
-                <xsl:variable name="URL"><xsl:choose>
-                    <xsl:when test="name(recordset/record[1]/field[@name='file']/*[1])='video'"><xsl:value-of select="$RESIZER_URL"/>w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:when>
-                    <xsl:otherwise><xsl:value-of select="$RESIZER_URL"/>w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="recordset/record[1]/field[@name='file']/*[1]"/></xsl:otherwise>
-                </xsl:choose></xsl:variable>
-                <div class="player" id="player" style="width: {$PLAYER_WIDTH}px; height: {$PLAYER_HEIGHT}px; background: black url({$URL}) 50% 50% no-repeat;">
-                    <xsl:if test="recordset/record[1]/field[@name='file']/video or count(recordset/record) &gt; 1">
-                        <a href="#" class="play_button"></a>
-                    </xsl:if>
-                </div>
+                <xsl:call-template name="VIDEO_PLAYER">
+                    <xsl:with-param name="PLAYER_WIDTH" select="$PLAYER_WIDTH"/>
+                    <xsl:with-param name="PLAYER_HEIGHT" select="$PLAYER_HEIGHT"/>
+                    <xsl:with-param name="FILE" select="recordset/record[field[@name='type'] = 'video'][1]/field[@name='file']"/>
+                </xsl:call-template>
             </div>
         </xsl:if>
     </xsl:template>

@@ -9,17 +9,18 @@
         <xsl:param name="PLAYER_WIDTH"/>
         <xsl:param name="PLAYER_HEIGHT"/>
         <xsl:param name="FILE"/>
-        <xsl:variable name="PLAYER_ID">player-<xsl:value-of select="generate-id()"/></xsl:variable>
+        <xsl:variable name="PLAYER_ID">player_<xsl:value-of select="generate-id()"/></xsl:variable>
         <script type="text/javascript" src="{$STATIC_URL}scripts/jwplayer/jwplayer.js"></script>
+        <script type="text/javascript" src="{$STATIC_URL}scripts/Player.js"></script>
         <div id="{$PLAYER_ID}"/>
         <script type="text/javascript">
-            jwplayer('<xsl:value-of select="$PLAYER_ID"/>').setup(
-                {
-                    file: '<xsl:value-of select="$MEDIA_URL"/><xsl:value-of select="$FILE"/>',
-                    image: '<xsl:value-of select="$RESIZER_URL"/>w0-h0/<xsl:value-of select="$FILE"/>',
-                    width: '<xsl:value-of select="$PLAYER_WIDTH"/><xsl:if test="number($PLAYER_WIDTH) = $PLAYER_WIDTH">px</xsl:if>',
-                    height: '<xsl:value-of select="$PLAYER_HEIGHT"/><xsl:if test="number($PLAYER_HEIGHT) = $PLAYER_HEIGHT">px</xsl:if>'
-                }<!-- We can set width and height in % also, so we add 'px' suffix only if width and height are numeric -->
+            var <xsl:value-of select="$PLAYER_ID"/> = new Player(
+                '<xsl:value-of select="$PLAYER_ID"/>',
+                '<xsl:value-of select="$RESIZER_URL"/>w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="$FILE"/>',
+                ['<xsl:value-of select="$MEDIA_URL"/><xsl:value-of select="$FILE"/>'],
+                '<xsl:value-of select="$PLAYER_WIDTH"/>',
+                '<xsl:value-of select="$PLAYER_HEIGHT"/>',
+                false
             );
         </script>
     </xsl:template>

@@ -14,14 +14,14 @@
         <script type="text/javascript" src="{$STATIC_URL}scripts/Player.js"></script>
         <div id="{$PLAYER_ID}"/>
         <script type="text/javascript">
-            var <xsl:value-of select="$PLAYER_ID"/> = new Player(
-                '<xsl:value-of select="$PLAYER_ID"/>',
-                '<xsl:value-of select="$RESIZER_URL"/>w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="$FILE"/>',
-                ['<xsl:value-of select="$MEDIA_URL"/><xsl:value-of select="$FILE"/>'],
-                '<xsl:value-of select="$PLAYER_WIDTH"/>',
-                '<xsl:value-of select="$PLAYER_HEIGHT"/>',
-                false
-            );
+            var <xsl:value-of select="$PLAYER_ID"/> = new Player({
+                'player_id': '<xsl:value-of select="$PLAYER_ID"/>',
+                'image': '<xsl:value-of select="$RESIZER_URL"/>w<xsl:value-of select="$PLAYER_WIDTH"/>-h<xsl:value-of select="$PLAYER_HEIGHT"/>/<xsl:value-of select="$FILE"/>',
+                'files': ['<xsl:value-of select="$MEDIA_URL"/><xsl:value-of select="$FILE"/>'],
+                'width': '<xsl:value-of select="$PLAYER_WIDTH"/>',
+                'height': '<xsl:value-of select="$PLAYER_HEIGHT"/>',
+                'autostart': false
+            });
         </script>
     </xsl:template>
     <!-- /Video player (JW Player) -->

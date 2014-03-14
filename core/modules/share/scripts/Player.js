@@ -6,13 +6,14 @@ if('undefined' === typeof Player) {
      * @type {Class}
      */
     var Player = new Class({
-        initialize: function (player_id, image, files, width, height, autostart) {
-            this.player_id = player_id;
-            this.image = image || '';
-            this.files = files || [];
-            this.width = width || 0;
-            this.height = height || 0;
-            this.autostart = autostart || false;
+        Implements: Events,
+        initialize: function (options) {
+            this.player_id = options.player_id;
+            this.image = options.image || '';
+            this.files = options.files || [];
+            this.width = options.width || 0;
+            this.height = options.height || 0;
+            this.autostart = options.autostart || false;
 
             $(document).addEvent('domready', function () {
                 if (Browser.firefox && !this.base_fixed) {

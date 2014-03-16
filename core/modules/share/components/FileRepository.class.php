@@ -87,6 +87,37 @@ class FileRepository extends Grid {
     }
 
     /**
+     * Method for adding video in text blocks.
+     */
+    protected function putVideo() {
+        $sp = $this->getStateParams();
+        $uplID = intval($sp[0]);
+        $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
+        $this->setBuilder($this->createBuilder());
+        $this->setDataDescription($this->createDataDescription());
+        $this->addFilterCondition(array('upl_id' => $uplID));
+
+        $repository = $this->repoinfo->getRepositoryInstanceById($uplID);
+        // меняем mode у поля для загрузки файла, если репозитарий RO
+        if (!$repository->allowsUploadFile()) {
+            $fd = $this->getDataDescription()->getFieldDescriptionByName('upl_path');
+            if ($fd) {
+                $fd->setMode(1);
+                $fd->setProperty('title', 'FIELD_UPL_PATH_READ');
+            }
+        }
+
+        $this->setData($this->createData());
+
+        $toolbars = $this->createToolbar();
+        if (!empty($toolbars)) {
+            $this->addToolbar($toolbars);
+        }
+        $this->js = $this->buildJS();
+        $this->setAction('save/');
+    }
+
+    /**
      * Edit directory.
      *
      * @param int $uplID Upload ID.

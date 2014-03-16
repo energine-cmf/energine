@@ -124,6 +124,23 @@
             <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
+    <state name="putVideo">
+        <uri_patterns>
+            <pattern>/[int]/put-video/</pattern>
+        </uri_patterns>
+        <javascript>
+            <behavior name="FileRepoForm"/>
+        </javascript>
+        <fields>
+            <field name="upl_id"/>
+            <field name="upl_path" type="file" mode="1" title="TXT_PREVIEW"/>
+            <field name="width" title="TXT_WIDTH"/>
+            <field name="height" title="TXT_HEIGHT"/>
+        </fields>
+        <toolbar>
+            <control type="button" id="insert" title="BTN_INSERT_VIDEO" onclick="getPlayerParams"/>
+        </toolbar>
+    </state>
     <state name="saveDir" rights="3">
         <uri_patterns>
             <pattern>/save-dir/</pattern>

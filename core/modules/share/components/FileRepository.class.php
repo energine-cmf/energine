@@ -96,17 +96,6 @@ class FileRepository extends Grid {
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->addFilterCondition(array('upl_id' => $uplID));
-
-        $repository = $this->repoinfo->getRepositoryInstanceById($uplID);
-        // меняем mode у поля для загрузки файла, если репозитарий RO
-        if (!$repository->allowsUploadFile()) {
-            $fd = $this->getDataDescription()->getFieldDescriptionByName('upl_path');
-            if ($fd) {
-                $fd->setMode(1);
-                $fd->setProperty('title', 'FIELD_UPL_PATH_READ');
-            }
-        }
-
         $this->setData($this->createData());
 
         $toolbars = $this->createToolbar();

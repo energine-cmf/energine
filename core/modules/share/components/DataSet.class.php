@@ -647,6 +647,7 @@ abstract class DataSet extends Component {
             'TXT_H5',
             'TXT_H6',
             'TXT_ADDRESS',
+            'TXT_ERROR_NOT_VIDEO_FILE',
             'BTN_SAVE',
             'BTN_BOLD',
             'BTN_ALIGN_CENTER',

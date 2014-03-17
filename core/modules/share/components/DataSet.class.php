@@ -702,11 +702,11 @@ abstract class DataSet extends Component {
                 'upl_internal_type' => FileRepoInfo::META_TYPE_VIDEO
             )
         );
-        // Using array_values to transform associative index to key index
-        list($file, $name) = array_values($fileInfo[0]);
         if(!is_array($fileInfo)) {
             throw new SystemException('ERROR_NO_VIDEO_FILE', SystemException::ERR_404);
         }
+        // Using array_values to transform associative index to key index
+        list($file, $name) = array_values($fileInfo[0]);
         $dd = new DataDescription();
         foreach(
             array(

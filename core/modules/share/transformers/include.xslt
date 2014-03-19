@@ -15,6 +15,7 @@
     <xsl:include href="divisionEditor.xslt"/>
     <xsl:include href="tagEditor.xslt"/>
     <xsl:include href="text.xslt"/>
+    <xsl:include href="media.xslt"/>
     <!--<xsl:include href="error_page.xslt"/>-->
     
 </xsl:stylesheet>

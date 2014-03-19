@@ -34,16 +34,16 @@ class PropertiesValuesEditor extends Grid {
         if ($this->getType() == self::COMPONENT_TYPE_LIST) {
             $result = new DataDescription();
             $fd = new FieldDescription('pval_id');
-            $fd->setType(FieldDescription::FIELD_TYPE_INT);
+            $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
             $fd->setProperty('key', true);
             $fd->setProperty('index', 'PRI');
             $result->addFieldDescription($fd);
 
-            $fd = new FieldDescription('lang_id');
-            $fd->setType(FieldDescription::FIELD_TYPE_INT);
-            $fd->setProperty('languageID', true);
-            $result->addFieldDescription($fd);
+            $fd = new FieldDescription('prop_id');
+            $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
 
+
+            $result->addFieldDescription($fd);
             $fd = new FieldDescription('prop_name');
             $result->addFieldDescription($fd);
 
@@ -79,18 +79,4 @@ class PropertiesValuesEditor extends Grid {
 
         return $data;
     }
-
-    /*protected function prepare() {
-        parent::prepare();
-        if (in_array($this->getType(), array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER))) {
-            $this->getDataDescription()->getFieldDescriptionByName('pt_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
-            $this->getDataDescription()->getFieldDescriptionByName('session_id')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
-
-            $f = $this->getData()->getFieldByName('pt_id');
-            $f->setData($this->getParam('typeID'), true);
-
-            $f = $this->getData()->getFieldByName('session_id');
-            $f->setData(session_id(), true);
-        }
-    }*/
-} 
+}

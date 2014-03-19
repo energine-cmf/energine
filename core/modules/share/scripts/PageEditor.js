@@ -41,7 +41,7 @@ var PageEditor = new Class(/** @lends PageEditor# */{
         Asset.css('pageeditor.css');
 
         CKEDITOR.disableAutoInline = true;
-        CKEDITOR.config.extraPlugins = 'sourcedialog,energineimage,energinefile';
+        CKEDITOR.config.extraPlugins = 'sourcedialog,energineimage,energinevideo,energinefile';
         CKEDITOR.config.removePlugins = 'sourcearea';
         CKEDITOR.config.allowedContent = true;
         CKEDITOR.config.toolbar = [
@@ -49,7 +49,7 @@ var PageEditor = new Class(/** @lends PageEditor# */{
             { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
             { name: 'editing', groups: [ 'find', 'selection' ], items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
             { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-            { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'EnergineImage', 'EnergineFile' ] },
+            { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'EnergineImage', 'EnergineVideo', 'EnergineFile' ] },
             { name: 'tools', items: [ 'ShowBlocks' ] },
             '/',
             { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },

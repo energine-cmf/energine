@@ -235,7 +235,6 @@ array(
             $errorInfo = $this->pdo->errorInfo();
             throw new SystemException($errorInfo[2], SystemException::ERR_DB, array($this->getLastRequest(),));
         }
-
         $result = intval($this->pdo->lastInsertId());
 
         if ($result == 0) {
@@ -534,7 +533,7 @@ array(
                 throw new SystemException('ERR_PREPARE_REQUEST', SystemException::ERR_DB, $query);
             }
             if (!$result->execute($data)) {
-                throw new SystemException('ERR_EXECUTE_REQUEST', SystemException::ERR_DB, $query);
+                throw new SystemException('ERR_EXECUTE_REQUEST', SystemException::ERR_DB, array($query, $data));
             }
 
         } else {

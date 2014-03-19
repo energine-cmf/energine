@@ -47,7 +47,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
     controls: [],
 
     // constructor
-    initialize:function (toolbarName) {
+    initialize: function (toolbarName) {
         Asset.css('toolbar.css');
 
         /**
@@ -71,7 +71,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @function
      * @public
      */
-    dock:function () {
+    dock: function () {
         this.element.addClass('docked_toolbar');
     },
 
@@ -80,7 +80,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @function
      * @public
      */
-    undock:function () {
+    undock: function () {
         this.element.removeClass('docked_toolbar');
     },
 
@@ -91,7 +91,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @public
      * @returns {Element}
      */
-    getElement:function () {
+    getElement: function () {
         return this.element;
     },
 
@@ -102,7 +102,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @public
      * @param {Object} object Object to which the toolbar will be bounded.
      */
-    bindTo:function (object) {
+    bindTo: function (object) {
         this.boundTo = object;
     },
 
@@ -112,7 +112,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @public
      * @param {Element} toolbarDescr
      */
-    load:function (toolbarDescr) {
+    load: function (toolbarDescr) {
         Array.each(toolbarDescr.childNodes, function (elem) {
             if (elem.nodeType == 1) {
                 var control = null;
@@ -139,7 +139,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @public
      * @param {} arguments
      */
-    appendControl:function () {
+    appendControl: function () {
         Array.each(arguments, function (control) {
             if (control.type && control.id) {
                 control.action = control.onclick;
@@ -163,7 +163,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @public
      * @param {Toolbar.Control} control Control element that will be removed.
      */
-    removeControl:function (control) {
+    removeControl: function (control) {
         if (typeOf(control) == 'string') {
             control = this.getControlById(control);
         }
@@ -185,7 +185,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @public
      * @param {number} id ID of the control.
      */
-    getControlById:function (id) {
+    getControlById: function (id) {
         for (var i = 0; i < this.controls.length; i++) {
             if (this.controls[i].properties.id == id) {
                 return this.controls[i];
@@ -199,7 +199,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @function
      * @public
      */
-    disableControls:function () {
+    disableControls: function () {
         if (!arguments.length) {
             this.controls.each(function (control) {
                 if (control.properties.id != 'close') control.disable();
@@ -220,7 +220,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @function
      * @public
      */
-    enableControls:function () {
+    enableControls: function () {
         if (!arguments.length) {
             this.controls.each(function (control) {
                 control.enable();
@@ -241,7 +241,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @function
      * @public
      */
-    allButtonsUp: function() {
+    allButtonsUp: function () {
         this.controls.each(function (control) {
             if (control instanceof Toolbar.Button) {
                 control.up();
@@ -257,7 +257,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
      * @param {string} action Action name.
      * @param {*} data Argumet(s) for the action function.
      */
-    callAction:function (action, data) {
+    callAction: function (action, data) {
         if (this.boundTo && typeOf(this.boundTo[action]) == 'function') {
             this.boundTo[action](data);
         }
@@ -275,7 +275,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * Toolbar to which the control is connected.
      * @type {Toolbar}
      */
-    toolbar:null,
+    toolbar: null,
 
     /**
      * Control properties.
@@ -300,7 +300,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
     },
 
     // constructor
-    initialize:function (properties) {
+    initialize: function (properties) {
         Object.append(this.properties, properties);
     },
 
@@ -311,7 +311,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @public
      * @param {Element} controlDescr Element with properties in the attributes.
      */
-    load:function (controlDescr) {
+    load: function (controlDescr) {
         this.properties.id = controlDescr.getAttribute('id') || '';
         this.properties.icon = controlDescr.getAttribute('icon') || '';
         this.properties.title = controlDescr.getAttribute('title') || '';
@@ -328,7 +328,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @public
      * @param {string} icon Icon url.
      */
-    buildAsIcon:function (icon) {
+    buildAsIcon: function (icon) {
         this.element
             .addClass('icon unselectable')
             .setProperties({
@@ -346,7 +346,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @function
      * @public
      */
-    build:function () {
+    build: function () {
         if (!this.toolbar || !this.properties.id) {
             return;
         }
@@ -370,7 +370,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @function
      * @public
      */
-    disable:function () {
+    disable: function () {
         this.properties.isDisabled = true;
         this.element.addClass('disabled').setStyle('opacity', 0.25);
     },
@@ -382,7 +382,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @public
      * @param {boolean} force
      */
-    enable:function (force) {
+    enable: function (force) {
         force = force || false;
         if (force) {
             this.properties.isInitiallyDisabled = false;
@@ -400,7 +400,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @public
      * @returns {boolean}
      */
-    disabled:function() {
+    disabled: function () {
         return this.properties.isDisabled;
     },
 
@@ -411,7 +411,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @public
      * @returns {boolean}
      */
-    initially_disabled:function() {
+    initially_disabled: function () {
         return this.properties.isInitiallyDisabled;
     },
 
@@ -422,7 +422,7 @@ Toolbar.Control = new Class(/** @lends Toolbar.Control# */{
      * @public
      * @param {string} action Action name.
      */
-    setAction:function (action) {
+    setAction: function (action) {
         this.properties.action = action;
     }
 });
@@ -443,34 +443,24 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
      * @function
      * @public
      */
-    build:function () {
+    build: function () {
         this.parent();
         this.element.addClass(this.properties.id + '_btn');
         var control = this;
         this.element.addEvents({
-            'mouseover':function () {
+            'mouseover': function () {
                 if (!control.properties.isDisabled) {
                     this.addClass('highlighted');
                 }
             },
-            'mouseout':function () {
+            'mouseout': function () {
                 this.removeClass('highlighted');
-            }});
-
-        if (Browser.chrome) {
-            this.element.addEvents({
-                'click': this.callAction.bind(this),
-                'mousedown': function (ev) {
-                    ev.stop();
-                }
-            });
-        } else {
-            this.element.addEvent('click', function (event) {
-                if(event && !event.rightClick) {
-                    this.callAction();
-                }
-            }.bind(this));
-        }
+            },
+            'click': this.callAction.bind(this),
+            'mousedown': function (ev) {
+                ev.stop();
+            }
+        });
     },
 
     /**
@@ -480,7 +470,7 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
      * @public
      * @param {*} [data] Argument(s) for the action function.
      */
-    callAction:function (data) {
+    callAction: function (data) {
         if (!this.properties.isDisabled) {
             this.toolbar.callAction(this.properties.action, data);
         }
@@ -491,7 +481,7 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
      * @function
      * @public
      */
-    down: function() {
+    down: function () {
         this.element.addClass('pressed');
     },
 
@@ -500,7 +490,7 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
      * @function
      * @public
      */
-    up: function() {
+    up: function () {
         this.element.removeClass('pressed');
     },
 
@@ -511,7 +501,7 @@ Toolbar.Button = new Class(/** @lends Toolbar.Button# */{
      * @public
      * @returns {boolean}
      */
-    isDown: function() {
+    isDown: function () {
         return this.element.hasClass('pressed');
     }
 });
@@ -532,17 +522,17 @@ Toolbar.File = new Class(/** @lends Toolbar.File# */{
      * @function
      * @public
      */
-    build:function () {
+    build: function () {
         this.parent();
         var obj = this;
-        this.element.grab(new Element('input', {'type':'file', 'id':this.properties.id, 'events':{
-            'change':function (evt) {
+        this.element.grab(new Element('input', {'type': 'file', 'id': this.properties.id, 'events': {
+            'change': function (evt) {
                 // Это обработчик для control type= file в ие он наверное не работает , но в данном случае это не сильно принципиально
                 var file = evt.target.files[0];
                 var reader = new FileReader();
                 reader.onload = (function (theFile) {
                     return function (e) {
-                        if(!obj.properties.isDisabled) {
+                        if (!obj.properties.isDisabled) {
                             obj.toolbar.callAction(obj.properties.action, e.target);
                         }
                     }
@@ -558,7 +548,7 @@ Toolbar.File = new Class(/** @lends Toolbar.File# */{
      * @function
      * @public
      */
-    callAction:function () {
+    callAction: function () {
         this.element.getElementById(this.properties.id).click();
     }
 });
@@ -572,7 +562,7 @@ Toolbar.File = new Class(/** @lends Toolbar.File# */{
  * @param {Object} props [Properties]{@link Toolbar.Control#properties} for the switcher.
  */
 Toolbar.Switcher = new Class(/** @lends Toolbar.Switcher# */{
-    Extends:Toolbar.Button,
+    Extends: Toolbar.Button,
 
     /**
      * Control properties.
@@ -590,7 +580,7 @@ Toolbar.Switcher = new Class(/** @lends Toolbar.Switcher# */{
      */
 
     //constructor
-    initialize:function (props) {
+    initialize: function (props) {
         this.parent(props);
         this.properties.state = (this.properties.state) ? !!(this.properties.state.toInt()) : false;
     },
@@ -600,7 +590,7 @@ Toolbar.Switcher = new Class(/** @lends Toolbar.Switcher# */{
      * @function
      * @public
      */
-    build:function () {
+    build: function () {
         this.parent();
         var toggle = (function () {
             if (this.properties.state) {
@@ -633,7 +623,7 @@ Toolbar.Switcher = new Class(/** @lends Toolbar.Switcher# */{
      * @function
      * @public
      */
-    load:function (controlDescr) {
+    load: function (controlDescr) {
         this.parent(controlDescr);
         this.properties.aicon = controlDescr.getAttribute('aicon') || '';
         this.properties.state = controlDescr.getAttribute('state') || 0;
@@ -646,7 +636,7 @@ Toolbar.Switcher = new Class(/** @lends Toolbar.Switcher# */{
      * @public
      * @returns {string|number}
      */
-    getState:function () {
+    getState: function () {
         return this.properties.state;
     }
 });
@@ -667,7 +657,7 @@ Toolbar.Separator = new Class(/** @lends Toolbar.Separator# */{
      * @function
      * @public
      */
-    build:function () {
+    build: function () {
         this.parent();
         this.element.addClass('separator');
     },
@@ -677,7 +667,7 @@ Toolbar.Separator = new Class(/** @lends Toolbar.Separator# */{
      * @function
      * @public
      */
-    disable:function () {
+    disable: function () {
         // Separator cannot be disabled.
     }
 });
@@ -698,7 +688,7 @@ Toolbar.Text = new Class(/** @lends Toolbar.Text# */{
      * @function
      * @public
      */
-    build:function () {
+    build: function () {
         this.parent();
         this.element.addClass('text');
     }
@@ -788,7 +778,7 @@ Toolbar.Select = new Class(/** @lends Toolbar.Select# */{
 
 //        var props = {};
         Object.each(this.options, function (value, key) {
-            var props = {'value':key};
+            var props = {'value': key};
             if (key == this.initial) {
                 props.selected = 'selected';
             }
@@ -801,7 +791,7 @@ Toolbar.Select = new Class(/** @lends Toolbar.Select# */{
      * @function
      * @public
      */
-    disable:function () {
+    disable: function () {
         if (!this.properties.isDisabled) {
             this.properties.isDisabled = true;
             this.select.setProperty('disabled', 'disabled');
@@ -813,7 +803,7 @@ Toolbar.Select = new Class(/** @lends Toolbar.Select# */{
      * @function
      * @public
      */
-    enable:function () {
+    enable: function () {
         if (this.properties.isDisabled) {
             this.properties.isDisabled = false;
             this.select.removeProperty('disabled');
@@ -827,7 +817,7 @@ Toolbar.Select = new Class(/** @lends Toolbar.Select# */{
      * @public
      * @param action
      */
-    setAction:function (action) {
+    setAction: function (action) {
         this.properties.action = action;
     },
 
@@ -838,7 +828,7 @@ Toolbar.Select = new Class(/** @lends Toolbar.Select# */{
      * @public
      * @returns {string}
      */
-    getValue:function () {
+    getValue: function () {
         return this.select.getSelected().getLast().get('value');
     },
 
@@ -849,7 +839,7 @@ Toolbar.Select = new Class(/** @lends Toolbar.Select# */{
      * @public
      * @param {number} itemId Item ID
      */
-    setSelected:function (itemId) {
+    setSelected: function (itemId) {
         //Если существует такая опция
         if (this.options[itemId]) {
             //Элемент уже построен
@@ -872,13 +862,13 @@ Toolbar.Select = new Class(/** @lends Toolbar.Select# */{
  * @param {} [initialValue = false] Initial value. To use this argument without options-argument - simple set the options-argument to <tt>{}</tt>.
  */
 Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
-    Extends:Toolbar.Control,
+    Extends: Toolbar.Control,
 
     /**
      * Select element.
      * @type {Element}
      */
-    select:null,
+    select: null,
 
     /**
      * View element.
@@ -914,7 +904,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * Toolbar element.
      * @type {Element}
      */
-    toolbar:null,
+    toolbar: null,
 
     /**
      * Control properties.
@@ -929,16 +919,16 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * @property {boolean} [disabled = false] Defines if the control is disables or not.
      */
     properties: {
-        id:null,
-        title:'',
-        tooltip:'',
-        action:null,
-        action_before:null,
-        disabled:false
+        id: null,
+        title: '',
+        tooltip: '',
+        action: null,
+        action_before: null,
+        disabled: false
     },
 
     // constructor
-    initialize:function (properties, options, initialValue) {
+    initialize: function (properties, options, initialValue) {
         Object.append(this.properties, properties);
 
         this.options = options || {};
@@ -953,7 +943,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * @function
      * @public
      */
-    build:function () {
+    build: function () {
         if (!this.toolbar || !this.properties.id) {
             return;
         }
@@ -1004,7 +994,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
             }
             control.select.getElement('.custom_select_options').adopt(el);
 
-            el.addEvent('click', function(e) {
+            el.addEvent('click', function (e) {
                 e.stop();
                 var val = el.get('data-value');
                 control.setSelected(val);
@@ -1021,13 +1011,13 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
         this.view.addEvent('click', this.toggle.bind(this));
         this.button.addEvent('click', this.toggle.bind(this));
 
-        document.addEvent('click', function(e) {
+        document.addEvent('click', function (e) {
             if (this.expanded) {
                 this.collapse();
             }
         }.bind(this));
 
-        var disableSelection = function(el) {
+        var disableSelection = function (el) {
             el.setProperty('unselectable', 'on');
             el.setStyle('-moz-user-select', 'none');
             el.setStyle('-khtml-user-select', 'none');
@@ -1036,13 +1026,13 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
             el.setStyle('-ms-user-select', 'none');
             el.setStyle('user-select', 'none');
 
-            el.addEvent('selectstart', function(e) {
+            el.addEvent('selectstart', function (e) {
                 e.stop();
             });
-            el.addEvent('mousedown', function(e) {
+            el.addEvent('mousedown', function (e) {
                 e.stop();
             });
-            el.addEvent('click', function(e) {
+            el.addEvent('click', function (e) {
                 e.stop();
             });
         };
@@ -1065,7 +1055,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * @public
      * @param {Object} e Default event.
      */
-    toggle: function(e) {
+    toggle: function (e) {
         e.stop();
         /**
          * Event before changes.
@@ -1080,7 +1070,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * @function
      * @public
      */
-    expand: function() {
+    expand: function () {
         if (!this.properties.isDisabled) {
             this.expanded = true;
             this.dropbox.show();
@@ -1092,7 +1082,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * @function
      * @public
      */
-    collapse: function() {
+    collapse: function () {
         this.expanded = false;
         this.dropbox.hide();
     },
@@ -1102,7 +1092,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * @function
      * @public
      */
-    disable:function () {
+    disable: function () {
         if (!this.properties.isDisabled) {
             this.properties.isDisabled = true;
             this.select.addClass('disabled');
@@ -1114,7 +1104,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * @function
      * @public
      */
-    enable:function () {
+    enable: function () {
         if (this.properties.isDisabled) {
             this.properties.isDisabled = false;
             this.select.removeClass('disabled');
@@ -1128,7 +1118,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * @public
      * @returns {Object}
      */
-    getOptions: function() {
+    getOptions: function () {
         return this.options;
     },
 
@@ -1139,7 +1129,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
      * @public
      * @returns {Object}
      */
-    getValue:function () {
+    getValue: function () {
         var selected = this.select.getElements('.selected').getLast();
         if (!selected) {
             return null;
@@ -1151,7 +1141,7 @@ Toolbar.CustomSelect = new Class(/** @lends Toolbar.CustomSelect# */{
         };
     },
 
-    setSelected:function (itemId) {
+    setSelected: function (itemId) {
         if (this.options[itemId] && this.select) {
             this.select.getElements('.custom_select_option').removeClass('selected');
             this.select.getElements('.custom_select_option[data-value="' + itemId + '"]').addClass('selected', 'selected');

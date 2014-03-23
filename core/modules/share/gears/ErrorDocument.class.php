@@ -93,6 +93,9 @@ class ErrorDocument extends Object implements IDocument {
             $customMessages = $this->e->getCustomMessage();
             if(is_array($customMessages) && !empty($customMessages)){
                 foreach($customMessages as $message){
+                    if(is_array($message)){
+                        $message = implode(', ', $message);
+                    }
                     $error->appendChild($this->doc->createElement('customMessage', $message));
                 }
             }

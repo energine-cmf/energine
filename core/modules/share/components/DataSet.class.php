@@ -163,9 +163,8 @@ abstract class DataSet extends Component {
      *
      * @return Data
      *
-     * @final
      */
-    final protected function getData() {
+    protected function getData() {
         return $this->data;
     }
 

@@ -545,7 +545,7 @@ final class Document extends DBWorker implements IDocument {
      *
      * @param string $propName Property name.
      */
-    protected function removeProperty($propName) {
+    public function removeProperty($propName) {
         if (isset($this->properties[$propName])) {
             unset($this->properties[$propName]);
         }

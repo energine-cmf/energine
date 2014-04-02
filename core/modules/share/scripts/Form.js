@@ -403,7 +403,7 @@ var Form = new Class(/** @lends Form# */{
                 overlay.hide();
                 if (data) {
                     ModalBox.open({
-                        url:this.singlePath + 'tags/show/' + ((data.data) ? encodeURIComponent(data.data.join(',')) + '/' : ''),
+                        url:this.singlePath + 'tags/show/' + ((data.data && data.data.length) ? (encodeURIComponent(data.data.join(',')) + '/') : ''),
                         extraData: data.data,
                         onClose:function (result) {
                             if (result) {

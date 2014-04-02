@@ -26,13 +26,12 @@ var TagEditor = new Class(/** @lends TagEditor# */{
 
     // constructor
     initialize:function (element) {
-        this.parent(element);
-
         /**
          * Tag id.
          * @type {string}
          */
-        this.tag_id = this.element.getProperty('tag_id');
+        this.tag_id = $(element).getProperty('tag_id');
+        this.parent(element);
     },
 
     // todo: This method is almost equal to the parent method. Make unique!
@@ -60,6 +59,7 @@ var TagEditor = new Class(/** @lends TagEditor# */{
         if (this.filter) {
             postBody += this.filter.getValue();
         }
+        if(!this.tag_id) this.tag_id = '';
 
         if (this.grid.sort.order) {
             url = this.singlePath + this.tag_id + '/get-data/' + this.grid.sort.field + '-'

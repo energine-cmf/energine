@@ -8,14 +8,13 @@
  * @copyright d.pavka@gmail.com
  */
 
- /**
-  * Документ ошибки
-  *
-  * @package energine
-  * @subpackage apps
-  * @author d.pavka@gmail.com
-  */
-
+/**
+ * Документ ошибки
+ *
+ * @package energine
+ * @subpackage apps
+ * @author d.pavka@gmail.com
+ */
 class ErrorDocument extends Object implements IDocument {
     /**
      * @var DOMDocument
@@ -34,21 +33,21 @@ class ErrorDocument extends Object implements IDocument {
         $this->doc = new DOMDocument('1.0', 'UTF-8');
         $dom_root = $this->doc->createElement('document');
         $dom_root->setAttribute('debug', $this->getConfigValue('site.debug'));
-        $dom_root->setAttribute('url', (string) E()->getRequest()->getURI());
+        $dom_root->setAttribute('url', (string)E()->getRequest()->getURI());
         $this->doc->appendChild($dom_root);
         $dom_documentProperties = $this->doc->createElement('properties');
         $dom_root->appendChild($dom_documentProperties);
         $prop =
-                $this->doc->createElement('property', E()->getSiteManager()->getCurrentSite()->base);
-        $prop ->setAttribute('name', 'base');
-        $prop ->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
+            $this->doc->createElement('property', E()->getSiteManager()->getCurrentSite()->base);
+        $prop->setAttribute('name', 'base');
+        $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
         $dom_documentProperties->appendChild($prop);
 
         $prop = $this->doc->createElement('property',
             $langID = E()->getLanguage()->getCurrent());
-        $prop ->setAttribute('name', 'lang');
-        $prop ->setAttribute('abbr', E()->getRequest()->getLangSegment());
-        $prop ->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($langID));
+        $prop->setAttribute('name', 'lang');
+        $prop->setAttribute('abbr', E()->getRequest()->getLangSegment());
+        $prop->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($langID));
         $dom_documentProperties->appendChild($prop);
         unset($prop);
 
@@ -60,7 +59,7 @@ class ErrorDocument extends Object implements IDocument {
         if ($vm == DocumentController::TRANSFORM_JSON) {
             $errors = array(array('message' => $this->e->getMessage()));
             $customMessages = $this->e->getCustomMessage();
-            if(is_array($customMessages) && !empty($customMessages)){
+            if (is_array($customMessages) && !empty($customMessages)) {
                 array_push($errors, $customMessages);
             }
             $data = array(
@@ -68,8 +67,7 @@ class ErrorDocument extends Object implements IDocument {
                 'errors' => $errors
             );
             $result->appendChild(new DOMText(json_encode($data)));
-        }
-        else {
+        } else {
             $error = $this->doc->createElement('error');
             $result->appendChild($error);
 
@@ -77,8 +75,11 @@ class ErrorDocument extends Object implements IDocument {
             $error->setAttribute('file', $this->e->getFile());
             $error->setAttribute('line', $this->e->getLine());
             $customMessages = $this->e->getCustomMessage();
-            if(is_array($customMessages) && !empty($customMessages)){
-                foreach($customMessages as $message){
+            if (is_array($customMessages) && !empty($customMessages)) {
+                foreach ($customMessages as $message) {
+                    if (is_array($message)) {
+                        $message = implode(', ', $message);
+                    }
                     $error->appendChild($this->doc->createElement('customMessage', $message));
                 }
             }

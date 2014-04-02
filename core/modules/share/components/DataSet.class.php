@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 abstract class DataSet;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -20,7 +20,7 @@ abstract class DataSet;
  *
  * @code
 abstract class DataSet;
-@endcode
+ * @endcode
  *
  * This is a parent class for form, list and tree; it contains methods to work with toolbar and data sets.
  *
@@ -177,9 +177,8 @@ abstract class DataSet extends Component {
      *
      * @return Data
      * @access protected
-     * @final
      */
-    final protected function getData() {
+    protected function getData() {
         return $this->data;
     }
 

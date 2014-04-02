@@ -560,11 +560,10 @@ final class Document extends DBWorker implements IDocument {
     /**
      * Удаляет свойство документа.
      *
-     * @access protected
      * @param string $propName
      * @return void
      */
-    protected function removeProperty($propName) {
+    public function removeProperty($propName) {
         if (isset($this->properties[$propName])) {
             unset($this->properties[$propName]);
         }

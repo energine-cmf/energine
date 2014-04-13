@@ -22,9 +22,8 @@ final class BreadCrumbs;
 final class BreadCrumbs;
  * @endcode
  *
- * @final
  */
-final class BreadCrumbs extends DataSet {
+class BreadCrumbs extends DataSet {
     /**
      * List of additional elements.
      * Необходим для того чтобы другие компоненты могли добавлять хлебные крошки

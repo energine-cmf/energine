@@ -6,7 +6,8 @@
     "keywords": ["xml", "xslt", "framework", "cmf"],
     "homepage": "http://energine.org/",
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "php-ffmpeg/php-ffmpeg": "~0.4"
     },
     "authors": [
         {

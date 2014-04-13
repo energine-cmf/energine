@@ -36,6 +36,8 @@ final class Document extends DBWorker implements IDocument {
      */
     const TEMPLATES_DIR = 'templates/';
 
+    private $breadCrumbsClass = 'BreadCrumbs';
+
     /**
      * Document ID
      * @var int $id
@@ -196,6 +198,13 @@ final class Document extends DBWorker implements IDocument {
      */
     public function getLang() {
         return $this->lang;
+    }
+
+    public function setBreadCrumbs($breadCrumbsClass){
+        if(!class_parents($breadCrumbsClass)){
+            throw new SystemException('ERR_BAD_BREADCRUMBS_CLASS', SystemException::ERR_DEVELOPER, $breadCrumbsClass);
+        }
+        $this->breadCrumbsClass = $breadCrumbsClass;
     }
 
     public function build() {
@@ -455,7 +464,7 @@ final class Document extends DBWorker implements IDocument {
             * обязательные стандартные компоненты:
             *     - BreadCrumbs
             */
-            $this->componentManager->add($this->componentManager->createComponent('breadCrumbs', 'share', 'BreadCrumbs'));
+            $this->componentManager->add($this->componentManager->createComponent('breadCrumbs', 'share', $this->breadCrumbsClass));
             //Если пользователь не авторизован и авторизационный домен не включает текущеий домен - то добавляем компонент для кроссдоменной авторизации
             if (
                 !$this->user->isAuthenticated()

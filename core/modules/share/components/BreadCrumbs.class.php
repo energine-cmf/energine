@@ -160,4 +160,12 @@ class BreadCrumbs extends DataSet {
         $d->load($data);
         $this->setData($d);
     }
+
+    /**
+     * Remove portion from additioan crumbs
+     * @param int $indexFromEnd Индекс
+     */
+    public function removeCrumb($indexFromEnd){
+        $this->additionalCrumbs = array_slice($this->additionalCrumbs, 0 , -$indexFromEnd);
+    }
 }

@@ -81,7 +81,6 @@ window.addEvent('domready', function () {
                 oauth:true
             });
             FB.login(function (response) {
-                console.log(response);
                 if (response.authResponse) {
                     document.location = Energine['static'] + 'auth.php?fbAuth';
                 } else {

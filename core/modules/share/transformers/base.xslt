@@ -54,7 +54,7 @@
     <!-- именованный шаблон для построения заголовка окна -->
     <!--@deprecated-->
     <xsl:template name="build_title">
-        <xsl:for-each select="$COMPONENTS[@class='BreadCrumbs']/recordset/record">
+        <xsl:for-each select="$COMPONENTS[@name='breadCrumbs']/recordset/record">
             <xsl:sort data-type="text" order="descending" select="position()"/>
             <xsl:choose>
                 <xsl:when test="position() = last()">
@@ -77,7 +77,7 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:for-each>
-        <xsl:value-of select="$COMPONENTS[@class='BreadCrumbs']/@site"/>
+        <xsl:value-of select="$COMPONENTS[@name='breadCrumbs']/@site"/>
     </xsl:template>
 
     <!-- именованный шаблон для подключения значка сайта -->

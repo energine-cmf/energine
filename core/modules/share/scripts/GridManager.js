@@ -1021,7 +1021,11 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @param {Object} result Result data from the server.
      */
     processServerResponse: function (result) {
-        var control = this.toolbar.getControlById('add');
+        var control = false;
+        if(this.toolbar){
+            control = this.toolbar.getControlById('add');
+        }
+
 
         if (!this.initialized) {
             this.grid.setMetadata(result.meta);
@@ -1035,7 +1039,7 @@ var GridManager = new Class(/** @lends GridManager# */{
         }
 
         if (!this.grid.isEmpty()) {
-            this.toolbar.enableControls();
+            if(this.toolbar) this.toolbar.enableControls();
             this.pageList.enable();
         }
 

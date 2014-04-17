@@ -22,7 +22,7 @@ ScriptLoader.load('DivManager');
  * @param {Element|string} el The main holder element.
  */
 var DivTree = new Class(/** @lends DivTree# */{
-    Extends:DivManager,
+    Extends: DivManager,
 
     /**
      * Current ID.
@@ -31,7 +31,7 @@ var DivTree = new Class(/** @lends DivTree# */{
     currentID: 0,
 
     // constructor
-    initialize:function (el) {
+    initialize: function (el) {
         this.parent(el);
 
         var iframes = window.top.document.getElementsByTagName('iframe'),
@@ -46,10 +46,14 @@ var DivTree = new Class(/** @lends DivTree# */{
         }
 
         for (i = 0; i < srcWindows.length; i++) {
-            result = srcWindows[i].document.getElementById('smap_id');
-            if (result) {
-                this.currentID = result.value.toInt();
-                break;
+            try {
+                result = srcWindows[i].document.getElementById('smap_id');
+                if (result) {
+                    this.currentID = result.value.toInt();
+                    break;
+                }
+            }
+            catch (e) {
             }
         }
     },
@@ -61,7 +65,7 @@ var DivTree = new Class(/** @lends DivTree# */{
      * @public
      * @param {TreeView.Node} node Node that will be selected.
      */
-    onSelectNode:function (node) {
+    onSelectNode: function (node) {
         this.parent(node);
 
         var btnSelect = this.toolbar.getControlById('select');

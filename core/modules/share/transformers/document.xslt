@@ -144,7 +144,7 @@
 
     <xsl:template match="/" mode="title">
         <title>
-            <xsl:for-each select="$COMPONENTS[@class='BreadCrumbs']/recordset/record">
+            <xsl:for-each select="$COMPONENTS[@name='breadCrumbs']/recordset/record">
                 <xsl:sort data-type="text" order="descending" select="position()"/>
                 <xsl:choose>
                     <xsl:when test="position() = last()">
@@ -175,7 +175,7 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:for-each>
-            <xsl:value-of select="$COMPONENTS[@class='BreadCrumbs']/@site"/>
+            <xsl:value-of select="$COMPONENTS[@name='breadCrumbs']/@site"/>
         </title>
     </xsl:template>
 
@@ -347,7 +347,7 @@
                 <xsl:apply-templates select="$COMPONENTS[@class='LangSwitcher']"/>
             </div>
             <div class="main">
-                <xsl:apply-templates select="$COMPONENTS[@class='BreadCrumbs']"/>
+                <xsl:apply-templates select="$COMPONENTS[@name='breadCrumbs']"/>
                 <xsl:apply-templates select="content"/>
             </div>
             <div class="footer">

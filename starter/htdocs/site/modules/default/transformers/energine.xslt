@@ -47,7 +47,7 @@
                 <xsl:apply-templates select="$COMPONENTS[@class='LangSwitcher']"/>
             </div>
             <div class="main">
-                <xsl:apply-templates select="$COMPONENTS[@class='BreadCrumbs']"/>
+                <xsl:apply-templates select="$COMPONENTS[@name='breadCrumbs']"/>
                 <xsl:apply-templates select="content"/>
             </div>
             <div class="footer">
@@ -199,19 +199,19 @@
     <!-- /LangSwitcher -->
 
     <!-- BreadCrumbs -->
-    <xsl:template match="component[@class='BreadCrumbs']">
+    <xsl:template match="component[@name='breadCrumbs']">
         <xsl:if test="count(recordset/record) &gt; 1">
             <xsl:apply-templates/>
         </xsl:if>
     </xsl:template>
     
-    <xsl:template match="recordset[parent::component[@class='BreadCrumbs']]">
+    <xsl:template match="recordset[parent::component[@name='breadCrumbs']]">
         <div class="breadcrumbs">
             <xsl:apply-templates/>
         </div>
     </xsl:template>
     
-    <xsl:template match="record[ancestor::component[@class='BreadCrumbs']]">
+    <xsl:template match="record[ancestor::component[@name='breadCrumbs']]">
         <xsl:choose>
             <xsl:when test="position() = 1">
                 <a href="{$BASE}{$LANG_ABBR}" class="breadcrumbs_home"><xsl:value-of select="field[@name='Name']"/></a> /

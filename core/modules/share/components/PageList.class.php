@@ -124,7 +124,7 @@ class PageList extends DataSet {
                 $this->getData(),
                 'share_sitemap'
             );
-            //$am->createFieldDescription();
+            $am->createFieldDescription();
             if ($f = $this->getData()->getFieldByName('Id'))
                 $am->createField('smap_id', true, $f->getData());
         }

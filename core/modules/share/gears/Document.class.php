@@ -36,6 +36,10 @@ final class Document extends DBWorker implements IDocument {
      */
     const TEMPLATES_DIR = 'templates/';
 
+    /**
+     * Name of the BreadCrumbs default class
+     * @var string
+     */
     private $breadCrumbsClass = 'BreadCrumbs';
 
     /**
@@ -200,6 +204,13 @@ final class Document extends DBWorker implements IDocument {
         return $this->lang;
     }
 
+    /**
+     * Setting breadCrumbs class name
+     * It gives the possibilty to add custom BreadCrumbs class
+     *
+     * @param string $breadCrumbsClass
+     * @throws SystemException
+     */
     public function setBreadCrumbs($breadCrumbsClass){
         if(!class_parents($breadCrumbsClass)){
             throw new SystemException('ERR_BAD_BREADCRUMBS_CLASS', SystemException::ERR_DEVELOPER, $breadCrumbsClass);
@@ -207,6 +218,9 @@ final class Document extends DBWorker implements IDocument {
         $this->breadCrumbsClass = $breadCrumbsClass;
     }
 
+    /**
+     * Building resulte XML Document
+     */
     public function build() {
         //Если у нас не режим json
 

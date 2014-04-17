@@ -62,7 +62,7 @@ var ValidForm = new Class(/** @lends ValidForm# */{
      */
     validateForm: function (event) {
         if (!this.validator.validate()) {
-            Energine.cancelEvent(event);
+            event.preventDefault();
             return false;
         } else {
             return true;

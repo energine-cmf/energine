@@ -285,7 +285,7 @@
     </xsl:template>
 
     <xsl:template match="field[@type='select' and @editor][ancestor::component[@exttype='grid' or @exttype='feed']]" mode="field_input">
-        <div class="with_append">
+        <!--<div class="with_append">-->
             <select id="{@name}">
                 <xsl:attribute name="name"><xsl:choose>
                     <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
@@ -296,10 +296,10 @@
                 </xsl:if>
                 <xsl:apply-templates mode="field_input"/>
             </select>
-            <div class="appended_block">
+            <!--<div class="appended_block">
                 <button type="button" class="crud" data-field="{@name}" data-editor="{@editor}">...</button>
-            </div>
-        </div>
+            </div>-->
+        <!--</div>-->
         </xsl:template>
     <xsl:template match="option[ancestor::field[@type='select'][ancestor::component[@type='form']]]" mode="field_input">
         <option value="{@id}">

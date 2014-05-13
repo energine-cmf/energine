@@ -327,7 +327,8 @@ var ACarousel = new Class(/** @lends ACarousel# */{
      * Stop the scrolling.
      */
     stop: function() {
-        this.$chain = [];
+        //this.$chain = [];
+        this.clearChain();
     },
 
     /**
@@ -645,7 +646,7 @@ var ACarousel = new Class(/** @lends ACarousel# */{
                 onChainComplete: function () {
                     this.isEffectCompleted = true;
 
-                    if (this.$chain.length == 0) {
+                    if (this['$chain'].length == 0) {
                         /**
                          * Fired when the whole scrolling is finished.
                          * @event ACarousel#scroll

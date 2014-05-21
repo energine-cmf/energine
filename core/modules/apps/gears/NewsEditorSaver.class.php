@@ -33,7 +33,7 @@ class NewsEditorSaver extends ExtendedSaver {
             if($pkF = $pkF->getRowData(0)){
                 $filter[$this->getPK()] = $pkF;
             }
-            for($i=0; $i<10; $i++){
+            for($i=0; $i<30; $i++){
                 $tempTitle = $translitedTitle;
                 if($i){
                     $tempTitle = $translitedTitle.'-'.$i;

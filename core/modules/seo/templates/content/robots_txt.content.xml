@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content segment="robots.txt" layout="empty.layout.xml">
+<content segment="robots.txt" layout="google_sitemap.layout.xml">
     <component name="robots" module="seo" class="Robots"/>
 </content>

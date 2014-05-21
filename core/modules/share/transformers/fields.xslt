@@ -53,10 +53,7 @@
 
     <xsl:template match="field[@type='code'][ancestor::component[@type='form' and @exttype='grid']]">
         <div>
-            <xsl:attribute name="class">field editor clearfix<xsl:choose>
-                <xsl:when test=".=''"> min</xsl:when>
-                <xsl:otherwise> max</xsl:otherwise>
-            </xsl:choose></xsl:attribute>
+            <xsl:attribute name="class">field editor clearfix</xsl:attribute>
             <xsl:apply-templates select="." mode="field_name"/>
             <xsl:apply-templates select="." mode="field_content"/>
         </div>

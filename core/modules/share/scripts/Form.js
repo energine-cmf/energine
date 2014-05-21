@@ -133,7 +133,7 @@ var Form = new Class(/** @lends Form# */{
         }, this);
 
         this.form.getElements('textarea.code').each(function (textarea) {
-            this.codeEditors.push(CodeMirror.fromTextArea(textarea, {mode: "text/html", tabMode: "indent", lineNumbers: true}));
+            this.codeEditors.push(CodeMirror.fromTextArea(textarea, {mode: "text/html", tabMode: "indent", lineNumbers: true, theme:'elegant'}));
         }, this);
 
         this.form.getElements('input.acpl').each(function (el) {

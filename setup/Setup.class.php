@@ -990,8 +990,15 @@ final class Setup {
                             $pi = pathinfo($fo);
 
                             if (isset($pi['extension']) && ($pi['extension'] == 'js')) {
+
                                 if (
                                     (strpos($pi['filename'], 'mootools') === false)
+                                    &&
+                                    (strpos($pi['filename'], 'mootools-more') === false)
+                                    &&
+                                    (strpos($pi['filename'], 'mootools-ext') === false)
+                                    &&
+                                    (strpos($pi['filename'], 'jwplayer') === false)
                                     &&
                                     (strpos($pi['dirname'], 'ckeditor') === false)
                                     &&

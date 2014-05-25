@@ -89,11 +89,10 @@
         <fields>
             <field name="upl_id"/>
             <field name="upl_pid" type="hidden"/>
-            <field name="upl_title"/>
             <field name="upl_path" type="file" title="FIELD_UPL_PATH2"/>
+            <field name="upl_title"/>
             <field name="upl_name"/>
             <field name="upl_filename" type="hidden"/>
-            <!--<field name="file_type" type="hidden"/>-->
         </fields>
         <toolbar>
             <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
@@ -120,8 +119,8 @@
         <fields>
             <field name="upl_id"/>
             <field name="upl_pid" type="hidden"/>
-            <field name="upl_title"/>
             <field name="upl_path" type="file" title="FIELD_UPL_PATH2"/>
+            <field name="upl_title"/>
             <field name="upl_name"/>
             <field name="upl_filename" type="hidden"/>
         </fields>

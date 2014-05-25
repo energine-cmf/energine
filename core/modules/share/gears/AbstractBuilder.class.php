@@ -127,7 +127,11 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         $result->setAttribute('mode', $fieldInfo->getMode());
 
         if (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_FILE /*,FieldDescription::FIELD_TYPE_IMAGE*/))) {
-            if (E()->getDocument()->getRights() > ACCESS_READ) {
+            if (
+                (E()->getDocument()->getRights() > ACCESS_READ)
+                &&
+                ($fieldInfo->getMode() > ACCESS_READ)
+            ) {
                 E()->getDocument()->addTranslation('TXT_CLEAR');
                 E()->getDocument()->addTranslation('BTN_QUICK_UPLOAD');
 

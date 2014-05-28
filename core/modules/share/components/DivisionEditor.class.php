@@ -928,8 +928,6 @@ final class DivisionEditor extends Grid implements SampleDivisionEditor {
 
     }
 }
-
-//todo VZ: Remove this?
 /**
  * Fake interface to create sample.
  *

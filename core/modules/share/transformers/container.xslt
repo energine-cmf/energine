@@ -56,7 +56,7 @@
     <!-- Блок - контейнер для визуального отделения одного или группы компонентов -->
     <xsl:template match="container[@block]">
         <xsl:param name="HOLDER_NAME"/>
-        <xsl:if test="($COMPONENTS[@name='adminPanel']) or (@block='alfa') or (component[not(@class='TextBlock') and not(recordset[@empty])]) or (component[@class='TextBlock' and (@editable or recordset/record/field != '')])">
+        <xsl:if test="($COMPONENTS[@name='adminPanel']) or (@block='alfa') or (component[not(@sample='TextBlock') and not(recordset[@empty])]) or (component[@sample='TextBlock' and (@editable or recordset/record/field != '')])">
             <div>
                 <xsl:attribute name="class">block<xsl:if test="@block='alfa'"> alfa_block</xsl:if><xsl:if test="@html_class"><xsl:text> </xsl:text><xsl:value-of select="@html_class"/></xsl:if><xsl:if test="@widget and $COMPONENTS[@name='adminPanel']"> e-widget</xsl:if></xsl:attribute>
                 <xsl:if test="@widget and $COMPONENTS[@name='adminPanel']">

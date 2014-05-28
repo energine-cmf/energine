@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 final class TextBlock;
-@endcode
+ * @endcode
  *
  * @author 1m.dm
  * @copyright Energine 2006
@@ -18,12 +18,12 @@ final class TextBlock;
  * Text block.
  *
  * @code
-final class TextBlock;
-@endcode
+ class TextBlock;
+ * @endcode
  *
  * @final
  */
-final class TextBlock extends DataSet {
+class TextBlock extends DataSet implements SampleTextBlock{
     /**
      * Name of the main table.
      * @var string $tableName
@@ -75,9 +75,9 @@ final class TextBlock extends DataSet {
         return array_merge(
             parent::defineParams(),
             array(
-                 'num' => 1,
-                 'active' => true,
-                 'text' => false
+                'num' => 1,
+                'active' => true,
+                'text' => false
             )
         );
     }
@@ -111,8 +111,7 @@ final class TextBlock extends DataSet {
 
         if (intval($this->getParam('num')) !== 0) {
             $docID = $this->document->getID();
-        }
-        else {
+        } else {
             $docID = '';
             //Блок - глобальный
             $this->setProperty('global', 'global');
@@ -244,20 +243,17 @@ final class TextBlock extends DataSet {
                 if (is_array($res)) {
 
                     $res = $this->dbh->modify(QAL::UPDATE, $tableName, array('tb_content' => $result), array('tb_id' => $tbID, 'lang_id' => $langID));
-                }
-                elseif ($res === true) {
+                } elseif ($res === true) {
                     //если нет - вставляем
                     $res = $this->dbh->modify(QAL::INSERT, $tableName, array('tb_content' => $result, 'tb_id' => $tbID, 'lang_id' => $langID));
                 }
-            }
-            elseif($tbID) {
+            } elseif ($tbID) {
                 $this->dbh->modify(QAL::DELETE, $this->tableName, null, array('tb_id' => $tbID));
             }
 
 
             $this->dbh->commit();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->dbh->rollback();
             $result = $e->getMessage();
         }
@@ -266,43 +262,14 @@ final class TextBlock extends DataSet {
         $this->response->write($result);
         $this->response->commit();
     }
-
-    //todo VZ: remove this?
-   /* protected function source() {
-        $this->source = $this->document->componentManager->createComponent('textblocksource', 'share', 'TextBlockSource', null);
-        $this->source->run();
-    }*/
-
-    /*
-     * Выводит компонент менеджер изображений
-     *
-     * @return void
-     * @access protected
-     */
-/*    protected function imageManager() {
-        $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
-        $this->imageManager->run();
-    }*/
-
-
-    /*
-     * Для метода вывода редактора изображений вызывает построитель редактора изоборажений во всех других случаях - свой
-     *
-     * @return DOMNode
-     * @access public
-     */
-
-/*    public function build() {
-        switch ($this->getState()) {
-            case 'imageManager':
-                $result = $this->imageManager->build();
-                break;
-            default:
-                $result = parent::build();
-                break;
-        }
-        return $result;
-    }*/
-
 }
 
+/**
+ * Fake interface to create sample.
+ *
+ * @code
+interface SampleTextBlock;
+@endcode
+ */
+interface SampleTextBlock {
+}

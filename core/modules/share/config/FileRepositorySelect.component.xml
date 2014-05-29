@@ -17,6 +17,10 @@
         <uri_patterns>
             <pattern>/</pattern>
         </uri_patterns>
+        <filter>
+            <field name="upl_title"/>
+            <field name="upl_publication_date"/>
+        </filter>
         <fields>
             <field name="upl_id"/>
             <field name="upl_path" title="FIELD_UPL_FILE_PATH" type="file"/>

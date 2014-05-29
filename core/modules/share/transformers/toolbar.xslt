@@ -47,6 +47,9 @@
         </a>
     </xsl:template>
 
+    <!--Равно как и те действия права на которые есть, но по каким то причинам их делать нельзя-->
+    <xsl:template match="toolbar/control[@disabled]"></xsl:template>
+
     <xsl:template match="toolbar/control[@type='separator']">
         <br/>
     </xsl:template>
@@ -80,7 +83,8 @@
                 id: '<xsl:value-of select="@id"/>',
                 title: '<xsl:value-of select="@title"/>',
                 action: '<xsl:value-of select="@onclick"/>',
-                icon: '<xsl:value-of select="@icon"/>'
+                icon: '<xsl:value-of select="@icon"/>',
+                disabled: '<xsl:value-of select="@disabled"/>'
             })
     	);
     </xsl:template>
@@ -187,6 +191,6 @@
     <xsl:template match="toolbar[parent::component[@class='PageToolBar']]"/>
     <!-- Те действия на которые нет прав  - прячем -->
     <xsl:template match="toolbar/control[@mode=0]"></xsl:template>
-    <!--Равно как и те действия права на которые есть, но по каким то причинам их делать нельзя-->
-    <xsl:template match="toolbar/control[@disabled]"></xsl:template>
+
+
 </xsl:stylesheet>

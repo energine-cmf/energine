@@ -23,10 +23,9 @@ class FileUploader;
 @endcode
  */
 class FileUploader extends Object {
-    //todo VZ: $_FILE or $_FILES? This is need for link.
     /**
      * Description of uploaded file.
-     * $_FILE
+     * $_FILES
      *
      * @var array $file
      *

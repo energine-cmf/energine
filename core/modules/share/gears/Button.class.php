@@ -35,7 +35,7 @@ class Button extends Control {
     public function __construct($id, $action = false, $image = false, $title = false, $tooltip = false) {
         parent::__construct($id);
         $this->type = 'button';
-        if ($action)  $this->setAttribute('action',  $action);
+        if ($action !== false)  $this->setAttribute('action',  $action);
         if ($image)   $this->setAttribute('image',   $image);
         if ($title)   $this->setAttribute('title',   $title);
         if ($tooltip) $this->setAttribute('tooltip', $tooltip);

@@ -349,6 +349,9 @@ class FieldDescription extends DBWorker implements Iterator {
                 case 'length':
                     $this->setLength($propValue);
                     break;
+                case 'mode':
+                    $this->setMode($propValue);
+                    break;
                 case 'isMultilanguage':
                     $this->isMultilanguage = true;
                     break;

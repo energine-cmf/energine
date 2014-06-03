@@ -182,9 +182,13 @@ final class Response extends Object {
      * Set redirection URL and redirect.
      *
      * @param string $location Redirection URL.
+     * @param int $status
+     * @throws InvalidArgumentException
      */
-    public function setRedirect($location) {
-        $this->setStatus(302);
+    public function setRedirect($location, $status = 302) {
+        if(!in_array($status, array(301, 302))) throw new InvalidArgumentException();
+
+        $this->setStatus($status);
         $this->setHeader('Location', $location);
         $this->setHeader('Content-Length', 0);
         $this->commit();

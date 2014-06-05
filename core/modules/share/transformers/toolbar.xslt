@@ -56,7 +56,7 @@
     <!-- Панель управления для формы -->
     <xsl:template match="toolbar[parent::component[@exttype='grid']]">
         <script type="text/javascript">
-            window.addEvent('domready', function(){
+            $(window).addEvent('domready', function(){
                     componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>'] = new Toolbar('<xsl:value-of select="@name"/>');
                 <xsl:apply-templates />
                 if(<xsl:value-of select="generate-id(../recordset)"/>)<xsl:value-of select="generate-id(../recordset)"/>.attachToolbar(componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>']);
@@ -68,10 +68,10 @@
                         contentHeight = $(document.body).getSize().y;
                     if (tToolbar) contentHeight -= tToolbar.getComputedSize().totalHeight;
                     if (bToolbar) contentHeight -= bToolbar.getComputedSize().totalHeight;
-                    content.setStyles({
+                    <!--content.setStyles({
                         height: contentHeight,
                         position: 'static'
-                    });
+                    });-->
                 }
             });
         </script>

@@ -1,6 +1,16 @@
-// MooTools: the javascript framework.
-// Load this file's selection again by visiting: http://mootools.net/more/d941f81e435b3c0ce6ed5b236470c819 
-// Or build this file again with packager using: packager build More/More More/Array.Extras More/Date More/URI More/Element.Forms More/Elements.From More/Element.Measure More/Element.Pin More/Element.Position More/OverText More/Fx.Accordion More/Fx.Move More/Fx.Slide More/Fx.SmoothScroll More/Drag More/Assets More/Tips
+/*
+---
+MooTools: the javascript framework
+
+web build:
+ - http://mootools.net/more/42f6d1f155005866674e59375267780c
+
+packager build:
+ - packager build More/More More/Array.Extras More/Date More/URI More/Element.Forms More/Elements.From More/Element.Measure More/Element.Pin More/Element.Position More/OverText More/Fx.Accordion More/Fx.Move More/Fx.Slide More/Fx.SmoothScroll More/Drag More/Request.JSONP More/Assets More/Swiff More/Tips
+
+...
+*/
+
 /*
 ---
 
@@ -31,8 +41,8 @@ provides: [MooTools.More]
 */
 
 MooTools.More = {
-	'version': '1.4.0.1',
-	'build': 'a4244edf2aa97ac8a196fc96082dd35af1abab87'
+	version: '1.5.0',
+	build: '73db5e24e6e9c5c87b3a27aebef2248053f7db37'
 };
 
 
@@ -79,7 +89,9 @@ Array.implement({
 	sum: function(){
 		var result = 0, l = this.length;
 		if (l){
-			while (l--) result += this[l];
+			while (l--){
+				if (this[l] != null) result += parseFloat(this[l]);
+			}
 		}
 		return result;
 	},
@@ -110,6 +122,12 @@ Array.implement({
 			if (i in this) value = value === nil ? this[i] : fn.call(null, value, this[i], i, this);
 		}
 		return value;
+	},
+
+	pluck: function(prop){
+		return this.map(function(item){
+			return item[prop];
+		});
 	}
 
 });
@@ -133,7 +151,7 @@ authors:
 
 requires:
   - Core/Object
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Object.Extras]
 
@@ -202,8 +220,8 @@ authors:
 
 requires:
   - Core/Events
-  - /Object.Extras
-  - /MooTools.More
+  - Object.Extras
+  - MooTools.More
 
 provides: [Locale, Lang]
 
@@ -366,7 +384,7 @@ authors:
   - Aaron Newton
 
 requires:
-  - /Locale
+  - Locale
 
 provides: [Locale.en-US.Date]
 
@@ -1005,7 +1023,7 @@ authors:
 requires:
   - Core/Array
   - Core/String
-  - /MooTools.More
+  - MooTools.More
 
 provides: [String.QueryString]
 
@@ -1075,7 +1093,7 @@ requires:
   - Core/Class
   - Core/Class.Extras
   - Core/Element
-  - /String.QueryString
+  - String.QueryString
 
 provides: [URI]
 
@@ -1193,7 +1211,7 @@ var URI = this.URI = new Class({
 			data[arguments[0]] = arguments[1];
 			values = data;
 		} else if (merge){
-			values = Object.merge(this.getData(), values);
+			values = Object.merge(this.getData(null, part), values);
 		}
 		return this.set(part || 'query', Object.toQueryString(values));
 	},
@@ -1279,10 +1297,8 @@ var special = {
 	'S': /[ŠŞŚ]/g,
 	't': /[ťţ]/g,
 	'T': /[ŤŢ]/g,
-	'ue': /[ü]/g,
-	'UE': /[Ü]/g,
-	'u': /[ùúûůµ]/g,
-	'U': /[ÙÚÛŮ]/g,
+	'u': /[ùúûůüµ]/g,
+	'U': /[ÙÚÛŮÜ]/g,
 	'y': /[ÿý]/g,
 	'Y': /[ŸÝ]/g,
 	'z': /[žźż]/g,
@@ -1307,7 +1323,16 @@ tidy = {
 	'-': /[\u2013]/g,
 //	'--': /[\u2014]/g,
 	'&raquo;': /[\uFFFD]/g
-};
+},
+
+conversions = {
+	ms: 1,
+	s: 1000,
+	m: 6e4,
+	h: 36e5
+},
+
+findUnits = /(\d*.?\d+)([msh]+)/;
 
 var walk = function(string, replacements){
 	var result = string, key;
@@ -1369,6 +1394,13 @@ String.implement({
 			if (trail) string += trail;
 		}
 		return string;
+	},
+
+	ms: function(){
+	  // "Borrowed" from https://gist.github.com/1503944
+		var units = findUnits.exec(this);
+		if (units == null) return Number(this);
+		return Number(units[1]) * conversions[units[2]];
 	}
 
 });
@@ -1392,8 +1424,8 @@ authors:
 
 requires:
   - Core/Element
-  - /String.Extras
-  - /MooTools.More
+  - String.Extras
+  - MooTools.More
 
 provides: [Element.Forms]
 
@@ -1535,7 +1567,7 @@ authors:
 requires:
   - Core/String
   - Core/Element
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Elements.from, Elements.From]
 
@@ -1545,7 +1577,7 @@ provides: [Elements.from, Elements.From]
 Elements.from = function(text, excludeScripts){
 	if (excludeScripts || excludeScripts == null) text = text.stripScripts();
 
-	var container, match = text.match(/^\s*<(t[dhr]|tbody|tfoot|thead)/i);
+	var container, match = text.match(/^\s*(?:<!--.*?-->\s*)*<(t[dhr]|tbody|tfoot|thead)/i);
 
 	if (match){
 		container = new Element('table');
@@ -1579,7 +1611,7 @@ authors:
 requires:
   - Core/Element.Style
   - Core/Element.Dimensions
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Element.Measure]
 
@@ -1747,7 +1779,7 @@ requires:
   - Core/Element.Event
   - Core/Element.Dimensions
   - Core/Element.Style
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Element.Pin]
 
@@ -1781,11 +1813,13 @@ provides: [Element.Pin]
 				scrollFixer;
 
 			if (enable !== false){
-				pinnedPosition = this.getPosition(supportsPositionFixed ? document.body : this.getOffsetParent());
-				if (!this.retrieve('pin:_pinned')){
+				pinnedPosition = this.getPosition();
+				if (!this.retrieve('pin:_pinned')) {
 					var currentPosition = {
 						top: pinnedPosition.y - scroll.y,
-						left: pinnedPosition.x - scroll.x
+						left: pinnedPosition.x - scroll.x,
+						margin: '0px',
+						padding: '0px'
 					};
 
 					if (supportsPositionFixed && !forceScroll){
@@ -1825,7 +1859,7 @@ provides: [Element.Pin]
 				parent = this.getParent();
 				var offsetParent = (parent.getComputedStyle('position') != 'static' ? parent : parent.getOffsetParent());
 
-				pinnedPosition = this.getPosition(offsetParent);
+				pinnedPosition = this.getPosition();
 
 				this.store('pin:_pinned', false);
 				scrollFixer = this.retrieve('pin:_scrollFixer');
@@ -1926,13 +1960,15 @@ var local = Element.Position = {
 	},
 
 	setOffsetOption: function(element, options){
-		var parentOffset = {x: 0, y: 0},
-			offsetParent = element.measure(function(){
-				return document.id(this.getOffsetParent());
-			}),
-			parentScroll = offsetParent.getScroll();
+		var parentOffset = {x: 0, y: 0};
+		var parentScroll = {x: 0, y: 0};
+		var offsetParent = element.measure(function(){
+			return document.id(this.getOffsetParent());
+		});
 
 		if (!offsetParent || offsetParent == element.getDocument().body) return;
+
+		parentScroll = offsetParent.getScroll();
 		parentOffset = offsetParent.measure(function(){
 			var position = this.getPosition();
 			if (this.getStyle('position') == 'fixed'){
@@ -2112,7 +2148,7 @@ authors:
 
 requires:
   - Core/Class
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Class.Binds]
 
@@ -2152,7 +2188,7 @@ authors:
 requires:
   - Core/Class
   - Core/Element
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Class.Occlude]
 
@@ -2191,7 +2227,7 @@ authors:
 
 requires:
   - Core/Element.Style
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Element.Shortcuts]
 
@@ -2446,7 +2482,7 @@ var OverText = new Class({
 	},
 
 	show: function(){
-		if (this.text && !this.text.isDisplayed()){
+		if (document.id(this.text) && !this.text.isDisplayed()){
 			this.text.show();
 			this.reposition();
 			this.fireEvent('textShow', [this.text, this.element]);
@@ -2528,7 +2564,7 @@ authors:
 
 requires:
   - Core/Fx.CSS
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Fx.Elements]
 
@@ -2604,7 +2640,7 @@ authors:
 
 requires:
   - Core/Element.Event
-  - /Fx.Elements
+  - Fx.Elements
 
 provides: [Fx.Accordion]
 
@@ -2754,18 +2790,19 @@ Fx.Accordion = new Class({
 
 		if (useFx == null) useFx = true;
 		if (typeOf(index) == 'element') index = elements.indexOf(index);
-		if (index == this.previous && !options.alwaysHide) return this;
+		if (index == this.current && !options.alwaysHide) return this;
 
 		if (options.resetHeight){
-			var prev = elements[this.previous];
+			var prev = elements[this.current];
 			if (prev && !this.selfHidden){
 				for (var fx in effects) prev.setStyle(fx, prev[effects[fx]]);
 			}
 		}
 
-		if ((this.timer && options.link == 'chain') || (index === this.previous && !options.alwaysHide)) return this;
+		if ((this.timer && options.link == 'chain') || (index === this.current && !options.alwaysHide)) return this;
 
-		this.previous = index;
+		if (this.current != null) this.previous = this.current;
+		this.current = index;
 		this.selfHidden = false;
 
 		elements.each(function(el, i){
@@ -2814,7 +2851,7 @@ authors:
 
 requires:
   - Core/Fx.Morph
-  - /Element.Position
+  - Element.Position
 
 provides: [Fx.Move]
 
@@ -2888,7 +2925,7 @@ authors:
 requires:
   - Core/Fx
   - Core/Element.Style
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Fx.Slide]
 
@@ -3061,7 +3098,7 @@ requires:
   - Core/Fx
   - Core/Element.Event
   - Core/Element.Dimensions
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Fx.Scroll]
 
@@ -3099,7 +3136,6 @@ Fx.Scroll = new Class({
 
 	set: function(){
 		var now = Array.flatten(arguments);
-		if (Browser.firefox) now = [Math.round(now[0]), Math.round(now[1])]; // not needed anymore in newer firefox versions
 		this.element.scrollTo(now[0], now[1]);
 		return this;
 	},
@@ -3232,7 +3268,7 @@ authors:
 
 requires:
   - Core/Slick.Finder
-  - /Fx.Scroll
+  - Fx.Scroll
 
 provides: [Fx.SmoothScroll]
 
@@ -3310,7 +3346,7 @@ requires:
   - Core/Element.Event
   - Core/Element.Style
   - Core/Element.Dimensions
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Drag]
 ...
@@ -3356,10 +3392,10 @@ var Drag = new Class({
 		this.mouse = {'now': {}, 'pos': {}};
 		this.value = {'start': {}, 'now': {}};
 
-		this.selection = (Browser.ie) ? 'selectstart' : 'mousedown';
+		this.selection = 'selectstart' in document ? 'selectstart' : 'mousedown';
 
 
-		if (Browser.ie && !Drag.ondragstartFixed){
+		if ('ondragstart' in document && !('FileReader' in window) && !Drag.ondragstartFixed){
 			document.ondragstart = Function.from(false);
 			Drag.ondragstartFixed = true;
 		}
@@ -3527,6 +3563,150 @@ Element.implement({
 /*
 ---
 
+script: Request.JSONP.js
+
+name: Request.JSONP
+
+description: Defines Request.JSONP, a class for cross domain javascript via script injection.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+  - Guillermo Rauch
+  - Arian Stolwijk
+
+requires:
+  - Core/Element
+  - Core/Request
+  - MooTools.More
+
+provides: [Request.JSONP]
+
+...
+*/
+
+Request.JSONP = new Class({
+
+	Implements: [Chain, Events, Options],
+
+	options: {/*
+		onRequest: function(src, scriptElement){},
+		onComplete: function(data){},
+		onSuccess: function(data){},
+		onCancel: function(){},
+		onTimeout: function(){},
+		onError: function(){}, */
+		onRequest: function(src){
+			if (this.options.log && window.console && console.log){
+				console.log('JSONP retrieving script with url:' + src);
+			}
+		},
+		onError: function(src){
+			if (this.options.log && window.console && console.warn){
+				console.warn('JSONP '+ src +' will fail in Internet Explorer, which enforces a 2083 bytes length limit on URIs');
+			}
+		},
+		url: '',
+		callbackKey: 'callback',
+		injectScript: document.head,
+		data: '',
+		link: 'ignore',
+		timeout: 0,
+		log: false
+	},
+
+	initialize: function(options){
+		this.setOptions(options);
+	},
+
+	send: function(options){
+		if (!Request.prototype.check.call(this, options)) return this;
+		this.running = true;
+
+		var type = typeOf(options);
+		if (type == 'string' || type == 'element') options = {data: options};
+		options = Object.merge(this.options, options || {});
+
+		var data = options.data;
+		switch (typeOf(data)){
+			case 'element': data = document.id(data).toQueryString(); break;
+			case 'object': case 'hash': data = Object.toQueryString(data);
+		}
+
+		var index = this.index = Request.JSONP.counter++;
+
+		var src = options.url +
+			(options.url.test('\\?') ? '&' :'?') +
+			(options.callbackKey) +
+			'=Request.JSONP.request_map.request_'+ index +
+			(data ? '&' + data : '');
+
+		if (src.length > 2083) this.fireEvent('error', src);
+
+		Request.JSONP.request_map['request_' + index] = function(){
+			this.success(arguments, index);
+		}.bind(this);
+
+		var script = this.getScript(src).inject(options.injectScript);
+		this.fireEvent('request', [src, script]);
+
+		if (options.timeout) this.timeout.delay(options.timeout, this);
+
+		return this;
+	},
+
+	getScript: function(src){
+		if (!this.script) this.script = new Element('script', {
+			type: 'text/javascript',
+			async: true,
+			src: src
+		});
+		return this.script;
+	},
+
+	success: function(args, index){
+		if (!this.running) return;
+		this.clear()
+			.fireEvent('complete', args).fireEvent('success', args)
+			.callChain();
+	},
+
+	cancel: function(){
+		if (this.running) this.clear().fireEvent('cancel');
+		return this;
+	},
+
+	isRunning: function(){
+		return !!this.running;
+	},
+
+	clear: function(){
+		this.running = false;
+		if (this.script){
+			this.script.destroy();
+			this.script = null;
+		}
+		return this;
+	},
+
+	timeout: function(){
+		if (this.running){
+			this.running = false;
+			this.fireEvent('timeout', [this.script.get('src'), this.script]).fireEvent('failure').cancel();
+		}
+		return this;
+	}
+
+});
+
+Request.JSONP.counter = 0;
+Request.JSONP.request_map = {};
+
+
+/*
+---
+
 script: Assets.js
 
 name: Assets
@@ -3540,7 +3720,7 @@ authors:
 
 requires:
   - Core/Element.Event
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Assets]
 
@@ -3561,7 +3741,7 @@ var Asset = {
 		delete properties.document;
 
 		if (load){
-			if (typeof script.onreadystatechange != 'undefined'){
+			if (!script.addEventListener){
 				script.addEvent('readystatechange', function(){
 					if (['loaded', 'complete'].contains(this.readyState)) load.call(this);
 				});
@@ -3660,6 +3840,121 @@ var Asset = {
 /*
 ---
 
+name: Swiff
+
+description: Wrapper for embedding SWF movies. Supports External Interface Communication.
+
+license: MIT-style license.
+
+credits:
+  - Flash detection & Internet Explorer + Flash Player 9 fix inspired by SWFObject.
+
+requires: [Core/Options, Core/Object, Core/Element]
+
+provides: Swiff
+
+...
+*/
+
+(function(){
+
+var Swiff = this.Swiff = new Class({
+
+	Implements: Options,
+
+	options: {
+		id: null,
+		height: 1,
+		width: 1,
+		container: null,
+		properties: {},
+		params: {
+			quality: 'high',
+			allowScriptAccess: 'always',
+			wMode: 'window',
+			swLiveConnect: true
+		},
+		callBacks: {},
+		vars: {}
+	},
+
+	toElement: function(){
+		return this.object;
+	},
+
+	initialize: function(path, options){
+		this.instance = 'Swiff_' + String.uniqueID();
+
+		this.setOptions(options);
+		options = this.options;
+		var id = this.id = options.id || this.instance;
+		var container = document.id(options.container);
+
+		Swiff.CallBacks[this.instance] = {};
+
+		var params = options.params, vars = options.vars, callBacks = options.callBacks;
+		var properties = Object.append({height: options.height, width: options.width}, options.properties);
+
+		var self = this;
+
+		for (var callBack in callBacks){
+			Swiff.CallBacks[this.instance][callBack] = (function(option){
+				return function(){
+					return option.apply(self.object, arguments);
+				};
+			})(callBacks[callBack]);
+			vars[callBack] = 'Swiff.CallBacks.' + this.instance + '.' + callBack;
+		}
+
+		params.flashVars = Object.toQueryString(vars);
+		if ('ActiveXObject' in window){
+			properties.classid = 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000';
+			params.movie = path;
+		} else {
+			properties.type = 'application/x-shockwave-flash';
+		}
+		properties.data = path;
+
+		var build = '<object id="' + id + '"';
+		for (var property in properties) build += ' ' + property + '="' + properties[property] + '"';
+		build += '>';
+		for (var param in params){
+			if (params[param]) build += '<param name="' + param + '" value="' + params[param] + '" />';
+		}
+		build += '</object>';
+		this.object = ((container) ? container.empty() : new Element('div')).set('html', build).firstChild;
+	},
+
+	replaces: function(element){
+		element = document.id(element, true);
+		element.parentNode.replaceChild(this.toElement(), element);
+		return this;
+	},
+
+	inject: function(element){
+		document.id(element, true).appendChild(this.toElement());
+		return this;
+	},
+
+	remote: function(){
+		return Swiff.remote.apply(Swiff, [this.toElement()].append(arguments));
+	}
+
+});
+
+Swiff.CallBacks = {};
+
+Swiff.remote = function(obj, fn){
+	var rs = obj.CallFunction('<invoke name="' + fn + '" returntype="javascript">' + __flash__argumentsToXML(arguments, 2) + '</invoke>');
+	return eval(rs);
+};
+
+})();
+
+
+/*
+---
+
 script: Tips.js
 
 name: Tips
@@ -3679,7 +3974,7 @@ requires:
   - Core/Element.Event
   - Core/Element.Style
   - Core/Element.Dimensions
-  - /MooTools.More
+  - MooTools.More
 
 provides: [Tips]
 

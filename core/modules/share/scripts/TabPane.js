@@ -58,7 +58,7 @@ var TabPane = new Class(/** @lends TabPane# */{
             });
 
             var tabData = tab.getElement('span.data');
-            tab.data = (tabData ? JSON.decode(tabData.firstChild.nodeValue) : {});
+            tab.data = (tabData ? JSON.decode(tabData.firstChild.nodeValue, false) : {});
             tab.pane = this.element.getElement('div' + paneId).addClass('e-pane-item').setStyle('display', 'none');
             tab.pane.tab = tab;
 

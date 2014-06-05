@@ -694,7 +694,7 @@ Form.Uploader = new Class(/** @lends Form.Uploader# */{
      */
     _show_preview: function (file) {
         if (!file.response.error) {
-            var data = JSON.decode(file.response.text, true);
+            var data = JSON.decode(file.response.text, false);
             var preview, input, previewImg;
             if ((preview = $(data.element + '_preview')) &&
                 (input = $(data.element))) {
@@ -958,7 +958,7 @@ Form.Label = /** @lends Form.Label */{
     restoreLabel: function () {
         var savedData = Cookie.read('last_selected_smap');
         if (this.obj && savedData) {
-            savedData = JSON.decode(savedData);
+            savedData = JSON.decode(savedData, false);
 
             $(this.obj.getProperty('hidden_field')).value = savedData.id;
             $(this.obj.getProperty('span_field')).innerHTML = savedData.name;

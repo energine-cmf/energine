@@ -994,6 +994,8 @@ final class Setup {
                                 if (
                                     (strpos($pi['filename'], 'mootools') === false)
                                     &&
+                                    (strpos($pi['filename'], 'Swiff.Uploader') === false)
+                                    &&
                                     (strpos($pi['filename'], 'mootools-more') === false)
                                     &&
                                     (strpos($pi['filename'], 'mootools-ext') === false)

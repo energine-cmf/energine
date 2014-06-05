@@ -44,6 +44,12 @@ Class.Mutators = Object.append(Class.Mutators, {
 });
 
 /**
+ * Compatibility with < 1.5
+ * @type {string|a.platform|*|parse.platform}
+ */
+Browser.Platform = Browser.platform;
+
+/**
  * @namespace
  * @augments Asset
  */

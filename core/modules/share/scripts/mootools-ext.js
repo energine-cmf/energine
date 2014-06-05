@@ -3,6 +3,8 @@ Class.Mutators = Object.append(Class.Mutators,{
     Protected: function (m) {for (var k in m) {if (m[k] instanceof Function) {this.implement(k, m[k].protect());}}}
 });
 
+Browser.Platform = Browser.platform;
+
 Asset = Object.append(Asset, {
     loaded: {css: {}},
     cssParent: Asset.css,

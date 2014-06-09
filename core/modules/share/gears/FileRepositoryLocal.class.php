@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class FileRepositoryLocal;
-@endcode
+ * @endcode
  *
  * @author Andy Karpov <andy.karpov@gmail.com>
  * @copyright Energine 2013
@@ -22,7 +22,7 @@ class FileRepositoryLocal;
  *
  * @code
 class FileRepositoryFTP;
-@endcode
+ * @endcode
  */
 class FileRepositoryLocal extends Object implements IFileRepository {
     /**
@@ -106,7 +106,7 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         if (!file_exists($dir)) {
             mkdir($dir, 0777, true);
         }
-        if(!is_writable($dir)){
+        if (!is_writable($dir)) {
             throw new SystemException('ERR_DIR_WRITE', SystemException::ERR_CRITICAL, $dir);
         }
         if (!copy($sourceFilename, $destFilename)) {
@@ -114,6 +114,20 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         }
 
         return $this->analyze($destFilename);
+    }
+
+    public function putFile($fileData, $filePath) {
+        $dir = dirname($filePath);
+        if (!file_exists($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        if (!is_writable($dir)) {
+            throw new SystemException('ERR_DIR_WRITE', SystemException::ERR_CRITICAL, $dir);
+        }
+        if (!file_put_contents($filePath, $fileData)) {
+            throw new SystemException('ERR_PUT_FILE', SystemException::ERR_CRITICAL, $dir . DIRECTORY_SEPARATOR . $filePath);
+        }
+        return $this->analyze($filePath);
     }
 
     public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
@@ -171,7 +185,7 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         $dirs = array_filter(explode('/', $dir));
         array_pop($dirs);
         $parentDir = implode('/', $dirs);
-        if(!file_exists($parentDir) || !is_writable($parentDir)){
+        if (!file_exists($parentDir) || !is_writable($parentDir)) {
             throw new SystemException('ERR_DIR_CREATE', SystemException::ERR_CRITICAL, $parentDir);
         }
         return mkdir($dir);

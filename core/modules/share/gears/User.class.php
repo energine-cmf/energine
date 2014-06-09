@@ -192,11 +192,14 @@ class User extends DBWorker {
      *
      * @throws SystemException
      *
-     * @param array $groups Groups.
+     * @param array|integer $groups Groups.
      */
     public function setGroups($groups) {
         //Устанавливать группы можно только тогда, когда пользователь создан
         if ($this->getID()) {
+            if(!is_array($groups)){
+                $groups = array($groups);
+            }
             //$this->dbh->beginTransaction();
             try {
                 $this->dbh->modify(QAL::DELETE, self::GROUP_TABLE_NAME, null, array('u_id' => $this->getID()));

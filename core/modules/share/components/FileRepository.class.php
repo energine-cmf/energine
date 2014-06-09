@@ -782,11 +782,16 @@ class FileRepository extends Grid {
      * Clean incoming from JS FileReader.
      *
      * @param string $data Data.
-     * @return string
-     * @deprecated
+     * @return object
      */
     public static function cleanFileData($data) {
-        $tmp = explode(';base64,', $data);
-        return base64_decode($tmp[1]);
+        if(!preg_match('/data\:(.*);base64\,(.*)$/', $data, $matches)){
+            throw new SystemException('ERR_BAD_FILE', SystemException::ERR_WARNING);
+        }
+
+        //http://j-query.blogspot.com/2011/02/save-base64-encoded-canvas-image-to-png.html?showComment=1402329668513#c517521780203205620
+        $matches[2] = str_replace(' ', '+', $matches[2]);
+
+        return (object)array('mime' => $matches[1], 'data' => base64_decode($matches[2]));
     }
 }

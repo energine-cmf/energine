@@ -43,23 +43,23 @@ Class.Mutators = Object.append(Class.Mutators, {
     }
 });
 
-/**
- * Compatibility with < 1.5
- *
- */
-Browser[Browser.name] = true;
-/**
- * Compatibility with < 1.5
- *
- */
-Browser[Browser.name + parseInt(Browser.version, 10)] = true;
-/**
- * Compatibility with < 1.5
- *
- */
+(function(){
+    Browser[Browser.name] = true;
+    Browser[Browser.name + parseInt(Browser.version, 10)] = true;
 
-Browser.Platform = {};
-Browser.Platform[Browser.platform] = true;
+    if (Browser.name == 'ie' && Browser.version >= '11') {
+    	delete Browser.ie;
+    }
+
+    var platform = Browser.platform;
+    if (platform == 'windows'){
+    	platform = 'win';
+    }
+    Browser.Platform = {
+    	name: platform
+    };
+    Browser.Platform[platform] = true;
+})();
 
 
 /**

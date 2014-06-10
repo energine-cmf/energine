@@ -3,10 +3,23 @@ Class.Mutators = Object.append(Class.Mutators,{
     Protected: function (m) {for (var k in m) {if (m[k] instanceof Function) {this.implement(k, m[k].protect());}}}
 });
 
-Browser[Browser.name] = true;
-Browser[Browser.name + parseInt(Browser.version, 10)] = true;
-Browser.Platform = {};
-Browser.Platform[Browser.platform] = true;
+(function(){
+    Browser[Browser.name] = true;
+    Browser[Browser.name + parseInt(Browser.version, 10)] = true;
+
+    if (Browser.name == 'ie' && Browser.version >= '11') {
+    	delete Browser.ie;
+    }
+
+    var platform = Browser.platform;
+    if (platform == 'windows'){
+    	platform = 'win';
+    }
+    Browser.Platform = {
+    	name: platform
+    };
+    Browser.Platform[platform] = true;
+})();
 
 Asset = Object.append(Asset, {
     loaded: {css: {}},

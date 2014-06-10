@@ -5,6 +5,7 @@ Class.Mutators = Object.append(Class.Mutators,{
 
 Browser[Browser.name] = true;
 Browser[Browser.name + parseInt(Browser.version, 10)] = true;
+Browser.Platform = {};
 Browser.Platform[Browser.platform] = true;
 
 Asset = Object.append(Asset, {

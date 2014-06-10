@@ -45,9 +45,22 @@ Class.Mutators = Object.append(Class.Mutators, {
 
 /**
  * Compatibility with < 1.5
- * @type {string|a.platform|*|parse.platform}
+ *
  */
-Browser.Platform = Browser.platform;
+Browser[Browser.name] = true;
+/**
+ * Compatibility with < 1.5
+ *
+ */
+Browser[Browser.name + parseInt(Browser.version, 10)] = true;
+/**
+ * Compatibility with < 1.5
+ *
+ */
+
+Browser.Platform = {};
+Browser.Platform[Browser.platform] = true;
+
 
 /**
  * @namespace

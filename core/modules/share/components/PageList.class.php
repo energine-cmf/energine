@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class PageList;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  *
@@ -19,9 +19,10 @@ class PageList;
  *
  * @code
 class PageList;
-@endcode
+ * @endcode
  */
-class PageList extends DataSet {
+class PageList extends DataSet
+{
     /**
      * Current page.
      * @var string CURRENT_PAGE
@@ -48,14 +49,14 @@ class PageList extends DataSet {
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name, $module, array $params = null)
+    {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->addTranslation('TXT_HOME');
         if ($this->getParam('site') == 'default') {
             $this->setParam('site', E()->getSiteManager()->getDefaultSite()->id);
-        }
-        elseif ($this->getParam('site') == 'current') {
+        } elseif ($this->getParam('site') == 'current') {
             $this->setParam('site', E()->getSiteManager()->getCurrentSite()->id);
         }
     }
@@ -63,11 +64,11 @@ class PageList extends DataSet {
     /**
      * @copydoc DataSet::createBuilder
      */
-    protected function createBuilder() {
+    protected function createBuilder()
+    {
         if ($this->getParam('recursive')) {
             $builder = new TreeBuilder();
-        }
-        else {
+        } else {
             $builder = new SimpleBuilder();
         }
 
@@ -83,7 +84,8 @@ class PageList extends DataSet {
      * site - идентфиикатор сайта
      * recursive - рекурсивно
      */
-    protected function defineParams() {
+    protected function defineParams()
+    {
         $result = array_merge(parent::defineParams(),
             array(
                 'tags' => '',
@@ -98,7 +100,8 @@ class PageList extends DataSet {
      * @copydoc DataSet::main
      */
     // Добавляем информацию о присоединенных файлах
-    protected function main() {
+    protected function main()
+    {
         parent::main();
         if ($this->getDataDescription()->isEmpty()) {
             $this->getDataDescription()->loadXML(
@@ -111,12 +114,13 @@ class PageList extends DataSet {
                         </fields>')
             );
         }
-        if (!$this->getData()->isEmpty())
+        if (!$this->getData()->isEmpty()) {
             foreach (array('Site', 'Redirect') as $fieldName) {
                 $FD = new FieldDescription($fieldName);
                 $FD->setType(FieldDescription::FIELD_TYPE_STRING);
                 $this->getDataDescription()->addFieldDescription($FD);
             }
+        }
 
         if ($this->getDataDescription()->getFieldDescriptionByName('attachments')) {
             $am = new AttachmentManager(
@@ -128,14 +132,23 @@ class PageList extends DataSet {
             if ($f = $this->getData()->getFieldByName('Id'))
                 $am->createField('smap_id', true, $f->getData());
         }
-
+        if ($this->getDataDescription()->getFieldDescriptionByName('tags')) {
+            $m = new TagManager(
+                $this->getDataDescription(),
+                $this->getData(),
+                'share_sitemap'
+            );
+            $m->createFieldDescription();
+            $m->createField();
+        }
 
     }
 
     /**
      * @copydoc DataSet::loadData
      */
-    protected function loadData() {
+    protected function loadData()
+    {
         $sitemap = E()->getMap();
 
         $methodName = 'getChilds';
@@ -146,12 +159,10 @@ class PageList extends DataSet {
         //Выводим siblin
         if ($this->getParam('id') == self::PARENT_PAGE) {
             $param = $sitemap->getParent($this->document->getID());
-        }
-        //выводим child текуще
+        } //выводим child текуще
         elseif ($this->getParam('id') == self::CURRENT_PAGE) {
             $param = $this->document->getID();
-        }
-        //выводим все разделы
+        } //выводим все разделы
         elseif ($this->getParam('id') == self::ALL_PAGES) {
             $methodName = 'getInfo';
             $param = null;
@@ -159,15 +170,13 @@ class PageList extends DataSet {
                 $siteId = E()->getSiteManager()->getCurrentSite()->id;
             }
             $sitemap = E()->getMap($siteId);
-        }
-        //если пустой id
+        } //если пустой id
         elseif (!$this->getParam('id')) {
-            if ($this->getParam('site')){
+            if ($this->getParam('site')) {
                 $sitemap = E()->getMap($this->getParam('site'));
             }
             $param = $sitemap->getDefault();
-        }
-        //выводим child переданной в параметре
+        } //выводим child переданной в параметре
         else {
             $param = (int)$this->getParam('id');
             $sitemap = E()->getMap(E()->getSiteManager()->getSiteByPage($param)->id);
@@ -180,13 +189,13 @@ class PageList extends DataSet {
                 $this->getBuilder()->setTree($sitemap->getChilds($param, true));
             }
             $hasDescriptionRtf =
-                    (bool)$this->getDataDescription()->getFieldDescriptionByName('DescriptionRtf');
+                (bool)$this->getDataDescription()->getFieldDescriptionByName('DescriptionRtf');
 
             //По умолчанию - фильтрация отсутствует
             $filteredIDs = true;
             if ($this->getParam('tags'))
                 $filteredIDs =
-                        TagManager::getFilter($this->getParam('tags'), 'share_sitemap_tags');
+                    TagManager::getFilter($this->getParam('tags'), 'share_sitemap_tags');
 
             reset($data);
             while (list($key, $value) = each($data)) {
@@ -196,22 +205,20 @@ class PageList extends DataSet {
                 }
                 if ($key == $sitemap->getDefault()) {
                     unset($data[$key]);
-                }
-                else {
+                } else {
                     $data[$key]['Id'] = $key;
                     $data[$key]['Segment'] = $value['Segment'];
                     $data[$key]['Name'] = $value['Name'];
                     $data[$key]['Redirect'] = Response::prepareRedirectURL($value['RedirectUrl']);
                     $data[$key]['Site'] =
-                            E()->getSiteManager()->getSiteByID($data[$key]['site'])->base;
+                        E()->getSiteManager()->getSiteByID($data[$key]['site'])->base;
                     if ($hasDescriptionRtf) $data[$key]['DescriptionRtf'] =
-                            $value['DescriptionRtf'];
+                        $value['DescriptionRtf'];
                 }
 
             }
             //stop($data);
-        }
-        else {
+        } else {
             $this->setBuilder(new SimpleBuilder());
         }
         return $data;

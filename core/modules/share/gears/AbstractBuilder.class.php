@@ -126,7 +126,12 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
         }
         $result->setAttribute('mode', $fieldInfo->getMode());
 
-        if (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_FILE /*,FieldDescription::FIELD_TYPE_IMAGE*/))) {
+        if($fieldInfo->getMode() == FieldDescription::FIELD_MODE_READ){
+            $fieldInfo->removeProperty('message');
+            $fieldInfo->removeProperty('pattern');
+        }
+
+        if (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_FILE))) {
             if (
                 (E()->getDocument()->getRights() > ACCESS_READ)
                 &&
@@ -175,11 +180,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
                 }
             }
-
-        } /*elseif (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_TEXT))) {
-            $fieldInfo->setProperty('msgOpenField', $this->translate('TXT_OPEN_FIELD'));
-            $fieldInfo->setProperty('msgCloseField', $this->translate('TXT_CLOSE_FIELD'));
-        }*/
+        }
         elseif(($fieldInfo->getType() == FieldDescription::FIELD_TYPE_SMAP_SELECTOR) && $fieldValue){
             $result->setAttribute('smap_name', E()->getSiteManager()->getSiteByPage($fieldValue)->name.' : '.$this->dbh->getScalar('share_sitemap_translation', 'smap_name', array('smap_id' => $fieldValue, 'lang_id' => E()->getLanguage()->getCurrent())));
         }

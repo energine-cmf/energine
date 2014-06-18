@@ -14,10 +14,12 @@
                     <xsl:when test="document/@debug=1">
                         <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-debug.js"></script>
                         <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more-debug.js"></script>
+                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext-debug.js"></script>
                     </xsl:when>
                     <xsl:otherwise>
                         <script type="text/javascript" src="{$STATIC_URL}scripts/mootools.js"></script>
                         <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more.js"></script>
+                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext.js"></script>
                     </xsl:otherwise>
                 </xsl:choose>
                 <meta property="og:video" content="{$MEDIA_URL}{$DATA[@name='file']}"/>

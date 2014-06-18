@@ -43,11 +43,24 @@ Class.Mutators = Object.append(Class.Mutators, {
     }
 });
 
-/**
- * Compatibility with < 1.5
- * @type {string|a.platform|*|parse.platform}
- */
-Browser.Platform = Browser.platform;
+(function(){
+    Browser[Browser.name] = true;
+    Browser[Browser.name + parseInt(Browser.version, 10)] = true;
+
+    if (Browser.name == 'ie' && Browser.version >= '11') {
+    	delete Browser.ie;
+    }
+
+    var platform = Browser.platform;
+    if (platform == 'windows'){
+    	platform = 'win';
+    }
+    Browser.Platform = {
+    	name: platform
+    };
+    Browser.Platform[platform] = true;
+})();
+
 
 /**
  * @namespace

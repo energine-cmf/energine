@@ -62,8 +62,8 @@ var Validator = new Class(/** @lends Validator# */{
         if (field.hasClass('invalid')) {
             field.removeClass('invalid');
             var errorDiv;
-            if(errorDiv = field.getParent().getParent().getElement('div.error')){
-                errorDiv.dispose();
+            if(errorDiv = field.getParent('.field').getElement('div.error')){
+                errorDiv.destroy();
             }
         }
     },

@@ -193,6 +193,27 @@ class FileRepositoryFTP extends Object implements IFileRepository {
             return false;
         }
     }
+    public function putFile($fileData, $filePath) {
+        try {
+            $base = $this->getBase() . '/';
+            if (strpos($filePath, $base) === 0) {
+                $destFilename = substr($filePath, strlen($base));
+            }
+            $this->ftp_media->connect();
+            if (!file_put_contents($filePath2 = FileRepository::TEMPORARY_DIR.basename($destFilename), $fileData)) {
+                throw new SystemException('ERR_PUT_FILE', SystemException::ERR_CRITICAL, $filePath2);
+            }
+            $result = $this->ftp_media->uploadFile($filePath2, $filePath);
+            $fi = false;
+            if ($result) {
+                $fi = $this->analyze($filePath);
+            }
+            $this->ftp_media->disconnect();
+            return $fi;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 
     public function uploadAlt($sourceFilename, $destFilename, $width, $height) {
         $destFilename = str_replace(

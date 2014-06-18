@@ -81,6 +81,7 @@
     <xsl:template name="BUILD_GRID">
         <xsl:variable name="FIELDS" select="record/field"/>
         <xsl:variable name="TAB_ID" select="generate-id(record)"/>
+
         <div class="e-pane-t-toolbar">
             <ul class="e-pane-toolbar e-tabs">
                 <xsl:choose>

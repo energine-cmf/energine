@@ -22,6 +22,7 @@
 	<state name="showLogoutForm">
 		<fields>
 			<field name="u_name" type="string" mode="1"/>
+			<field name="u_fullname" type="string" mode="1"/>
 			<field name="role_name" type="string" mode="1"/>
 		</fields>
 		<toolbar>

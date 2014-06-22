@@ -1,0 +1,1 @@
+ALTER TABLE `share_sitemap_translation` ADD `smap_title` VARCHAR(250) NULL DEFAULT NULL AFTER `smap_name`;

@@ -199,6 +199,7 @@ final class Sitemap extends DBWorker {
 	                    s.smap_segment as Segment,
 	                    s.smap_meta_robots,
 	                    st.smap_name,
+	                    st.smap_title,
 	                    smap_redirect_url,
 	                    smap_description_rtf,
 	                    smap_html_title,

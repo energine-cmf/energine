@@ -56,13 +56,23 @@ class GoogleSitemap extends SitemapTree {
         $this->maxVideos = ((int)$this->getConfigValue('seo.maxVideosInMap'))? (int)$this->getConfigValue('seo.maxVideosInMap'): self::DEFAULT_MAX_VIDEOS;
     }
 
+    protected function defineParams() {
+        return array_merge(
+            parent::defineParams(),
+            array(
+                'index.xslt' => 'core/modules/seo/transformers/google_sitemap_index.xslt',
+                'map.xslt' => 'core/modules/seo/transformers/google_sitemap.xslt'
+            )
+        );
+    }
+
 
     /**
      * @copydoc SitemapTree::main
      */
     // Генерирует google sitemap index
     protected function main(){
-        E()->getController()->getTransformer()->setFileName('core/modules/seo/transformers/google_sitemap_index.xslt', true);
+        E()->getController()->getTransformer()->setFileName($this->getParam('index.xslt'), true);
         parent::main();
         $this->setBuilder(new SimpleBuilder());
     }
@@ -72,7 +82,7 @@ class GoogleSitemap extends SitemapTree {
      */
     protected function map(){
         $this->prepare();
-        E()->getController()->getTransformer()->setFileName('core/modules/seo/transformers/google_sitemap.xslt', true);
+        E()->getController()->getTransformer()->setFileName($this->getParam('map.xslt'), true);
         $dd = new DataDescription();
         foreach (array('Id' => FieldDescription::FIELD_TYPE_INT,
                      'Pid' => FieldDescription::FIELD_TYPE_INT,

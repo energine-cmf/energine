@@ -122,7 +122,6 @@ class Field extends Object implements Iterator {
         return $result;
     }
 
-    //todo VZ: Why bool is returned?
     /**
      * Remove data from specific row.
      *
@@ -130,12 +129,8 @@ class Field extends Object implements Iterator {
      * @return bool
      */
     public function removeRowData($rowIndex) {
-        $result = false;
-        if (isset($this->data[$rowIndex])) {
-            unset($this->data[$rowIndex]);
-            $result = true;
-        }
-        return $result;
+        unset($this->data[$rowIndex]);
+        //$this->data = array_values($this->data);
     }
 
     /**

@@ -25,7 +25,7 @@ final class DivisionEditor;
  *
  * @final
  */
-final class DivisionEditor extends Grid implements SampleDivisionEditor {
+class DivisionEditor extends Grid implements SampleDivisionEditor {
     /**
      * Template content.
      * @var string TMPL_CONTENT

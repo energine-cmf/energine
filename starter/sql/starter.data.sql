@@ -16,7 +16,7 @@ INSERT INTO `apps_feed` (`tf_id`, `smap_id`, `tf_date`, `tf_order_num`) VALUES
 -- Дамп данных таблицы `apps_feedback`
 --
 
-INSERT INTO `apps_feedback` (`feed_id`, `feed_date`, `rcp_id`, `feed_email`, `feed_phone`, `feed_author`, `feed_theme`, `feed_text`) VALUES
+INSERT INTO `apps_feedback` (`feed_id`, `feed_date`, rcp_id, `feed_email`, `feed_phone`, `feed_author`, `feed_theme`, `feed_text`) VALUES
 (1, '2013-04-18 14:50:04', 5, 'andy.karpov@gmail.com', NULL, 'Andy Karpov', 'test', 'test message');
 
 --

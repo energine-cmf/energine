@@ -113,4 +113,25 @@ class TreeBuilder extends AbstractBuilder  {
         }
         return $dom_recordset;
     }
+    protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
+        foreach(
+            array(
+                'nullable',
+                'pattern',
+                'message',
+                'tabName',
+                'tableName',
+                'sort',
+                'customField',
+                //'deleteFileTitle',
+                /*'msgOpenField',
+                'msgCloseField',*/
+                'default'
+            ) as $propertyName
+        ) {
+            $fieldInfo->removeProperty($propertyName);
+        }
+
+        return parent::createField($fieldName, $fieldInfo, $fieldValue, $fieldProperties);
+    }
 }

@@ -657,4 +657,8 @@ final class Document extends DBWorker implements IDocument {
 
         return (object)$templateData;
     }
+
+    public function getXMLDocument(){
+        return $this->doc;
+    }
 }

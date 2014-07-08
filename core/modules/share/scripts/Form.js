@@ -169,13 +169,11 @@ var Form = new Class(/** @lends Form# */{
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
 
-        (this.componentElement.getElements('.inp_date')
-            || []).append(this.componentElement.getElements('.inp_datetime')
-                || []).each(function (dateControl) {
+        (this.componentElement.getElements('.inp_date')|| []).append(this.componentElement.getElements('.inp_datetime')|| []).each(function (dateControl) {
                 var isNullable = !dateControl.getParent('.field').hasClass('required');
                 this.dateControls.push(
-                    (dateControl.hasClass('inp_date') ? Energine.createDatePicker(dateControl, isNullable)
-                        : Energine.createDateTimePicker(dateControl, isNullable))
+                    (dateControl.hasClass('inp_datetime') ? Energine.createDateTimePicker(dateControl, isNullable)
+                        : Energine.createDatePicker(dateControl, isNullable))
                 );
             }, this);
 

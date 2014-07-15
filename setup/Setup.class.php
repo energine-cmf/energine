@@ -1009,7 +1009,7 @@ final class Setup {
                                     (strpos($pi['dirname'], 'FileAPI') === false)
                                 ) {
                                     $this->text('Минифицируем и копируем ', $fo, ' --> ', $dest);
-                                    file_put_contents($dest, $JSMIn->squeeze(file_get_contents($fo), true, false));
+                                    file_put_contents($dest, $JSMIn->squeeze(file_get_contents($fo), true, false, false));
                                 } else {
                                     $this->text('Создаем символическую ссылку ', $fo, ' --> ', $dest);
                                     if (!@symlink($fo, $dest)) {
@@ -1070,7 +1070,7 @@ final class Setup {
 
                         if (isset($pi['extension']) && ($pi['extension'] == 'js')) {
                             $this->text('Минифицируем и копируем ', $srcFile, ' --> ', $linkPath);
-                            file_put_contents($linkPath, $JSMin->squeeze(file_get_contents($srcFile), true, false));
+                            file_put_contents($linkPath, $JSMin->squeeze(file_get_contents($srcFile), true, false, false));
                         } else {
                             $this->text('Создаем символическую ссылку ', $srcFile, ' --> ', $linkPath);
                             if (!@symlink($srcFile, $linkPath)) {

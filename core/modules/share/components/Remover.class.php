@@ -23,14 +23,6 @@ class Remover;
  * This is used when the users with different rights should see different components.
  */
 class Remover extends Component {
-    //todo VZ: this can be removed.
-    /**
-     * @copydoc Component::__construct
-     */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
-	}
-
     /**
      * @copydoc Component::defineParams
      */
@@ -39,7 +31,8 @@ class Remover extends Component {
         return array_merge(
             parent::defineParams(),
             array(
-	            'componentName' => false
+	            'componentName' => false,
+                'force' => false
         ));
     }
 
@@ -48,10 +41,14 @@ class Remover extends Component {
      */
      protected function main() {
          // Дизейблит компонент
-        if ($this->document->getRights() != ACCESS_FULL
-            && $component = $this->document->componentManager->getBlockByName($this->getParam('componentName'))
-        ) {
-        	$component->disable();
+        if ($component = $this->document->componentManager->getBlockByName($this->getParam('componentName'))) {
+            if($this->getParam('force') && $this->document->getRights() == ACCESS_FULL){
+                $component->disable();
+            }
+            elseif($this->document->getRights() != ACCESS_FULL) {
+                $component->disable();
+            }
+
         }
      }
 }

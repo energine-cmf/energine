@@ -31,7 +31,7 @@ html, body {
     width: 16px;
     height: 16px;
     border-radius: 4px;
-    background: white url(../images/close.gif) no-repeat;
+    background: #d2322d url(../images/close_white.png) no-repeat;
     line-height: 0;
     font-size: 0;
     cursor: pointer;

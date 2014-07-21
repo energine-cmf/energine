@@ -242,9 +242,6 @@
     .e-pane-has-t-toolbar1 .e-pane-content {
         top: 72px;
     }
-    .e-singlemode-layout .e-pane {
-        overflow: auto;
-    }
 }
 @media screen and (max-width: 370px){
     .e-pane-has-t-toolbar1 .e-pane-content {

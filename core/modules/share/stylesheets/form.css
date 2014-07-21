@@ -194,3 +194,9 @@ form div.richEditor ol, form div.richEditor ul { margin-left: 2em; }
     font-size: 13px;
     color: #000;
 }
+
+@media screen and (max-width: 630px){
+    form .field .control .preview img {
+        width: 100%;
+    }
+}

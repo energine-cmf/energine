@@ -42,7 +42,7 @@ class Remover extends Component {
      protected function main() {
          // Дизейблит компонент
         if ($component = $this->document->componentManager->getBlockByName($this->getParam('componentName'))) {
-            if($this->getParam('force') && $this->document->getRights() == ACCESS_FULL){
+            if($this->getParam('force') && ($this->document->getRights() == ACCESS_FULL) && !$this->document->isEditable()){
                 $component->disable();
             }
             elseif($this->document->getRights() != ACCESS_FULL) {

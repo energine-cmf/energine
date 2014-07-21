@@ -59,6 +59,7 @@
 .e-pane-b-toolbar {                    
     bottom: 0;
     padding-bottom: 10px;
+    padding-left: 20px;
 } 
 /* Классы-модификаторы (для контейнера e-pane) для случая, когда есть тулбары вверху и/или внизу */
 .e-pane-has-t-toolbar1 .e-pane-t-toolbar, 
@@ -240,6 +241,9 @@
 @media screen and (max-width: 630px){
     .e-pane-has-t-toolbar1 .e-pane-content {
         top: 72px;
+    }
+    .e-singlemode-layout .e-pane {
+        overflow: auto;
     }
 }
 @media screen and (max-width: 370px){

@@ -181,7 +181,7 @@ div.with_append.focus_block input[type='button'] {
     border-color: #6FCFE3;
 }
 .e-pane-content .field .control.type_file .with_append {
-    width: 713px;
+    width: 100%;
 }
 .e-pane-content .field .control.type_file .lnk_clear {
     margin-left: 15px;

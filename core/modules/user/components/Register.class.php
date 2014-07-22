@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class Register;
-@endcode
+ * @endcode
  *
  * @author 1m.dm
  * @copyright Energine 2006
@@ -19,7 +19,7 @@ class Register;
  *
  * @code
 class Register;
-@endcode
+ * @endcode
  */
 class Register extends DBDataSet {
     /**
@@ -90,21 +90,30 @@ class Register extends DBDataSet {
     protected function save() {
         //inspect($_SESSION);
         try {
-            if (
-                !isset($_SESSION['captchaCode'])
-                ||
-                !isset($_POST['captcha'])
-                ||
-                ($_SESSION['captchaCode'] != sha1(trim($_POST['captcha'])))
-            ) {
-                throw new SystemException('TXT_BAD_CAPTCHA', SystemException::ERR_CRITICAL);
-            }
+            $this->checkCaptcha();
             $this->saveData();
             $_SESSION['saved'] = true;
             $this->response->redirectToCurrentSection('success/');
-        }
-        catch (SystemException $e) {
+        } catch (SystemException $e) {
             $this->failure($e->getMessage(), $_POST[$this->getTableName()]);
+        }
+    }
+
+    /**
+     * Check captcha.
+     *
+     * @throws SystemException
+     */
+    protected function checkCaptcha() {
+        require_once('core/modules/share/gears/recaptchalib.php');
+        $privatekey = $this->getConfigValue('recaptcha.private');
+        $resp = recaptcha_check_answer($privatekey,
+            $_SERVER["REMOTE_ADDR"],
+            $_POST["recaptcha_challenge_field"],
+            $_POST["recaptcha_response_field"]);
+
+        if (!$resp->is_valid) {
+            throw new SystemException($this->translate('TXT_BAD_CAPTCHA'), SystemException::ERR_CRITICAL);
         }
     }
 
@@ -150,8 +159,7 @@ class Register extends DBDataSet {
             $mailer->addTo($this->user->getValue('u_name'));
             $mailer->send();
 
-        }
-        catch (Exception $error) {
+        } catch (Exception $error) {
             throw new SystemException($error->getMessage(), SystemException::ERR_WARNING);
         }
     }

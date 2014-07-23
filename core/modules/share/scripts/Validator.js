@@ -79,7 +79,7 @@ var Validator = new Class(/** @lends Validator# */{
     showError: function(field, message){
         this.removeError(field);
         field.addClass('invalid');
-        new Element('div').addClass('error').appendText('^ ' + message).inject(field.parentNode, 'after');
+        new Element('div').addClass('error').appendText(message).inject(field.parentNode, 'after');
     },
 
     /**

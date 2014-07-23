@@ -208,14 +208,12 @@
     .e-pane-has-b-toolbar1 .e-pane-b-toolbar,
     .e-pane-has-t-toolbar2 .e-pane-t-toolbar,
     .e-pane-has-b-toolbar2 .e-pane-b-toolbar {
-        position: static;
         height: auto;
     }
     .e-pane-has-b-toolbar2 .e-pane-b-toolbar ul.toolbar {
         margin: 0 2px !important;
     }
     .e-pane-has-t-toolbar1 .e-pane-content {
-        position: static;
         border: 1px solid #ddd;
     }
     .e-tabs {

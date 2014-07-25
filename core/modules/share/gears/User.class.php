@@ -188,6 +188,14 @@ class User extends DBWorker {
     }
 
     /**
+     * @param $groupID int Group id
+     * @return bool
+     */
+    public function isInGroup($groupID){
+        return in_array($groupID, $this->getGroups());
+    }
+
+    /**
      * Set user groups.
      *
      * @throws SystemException

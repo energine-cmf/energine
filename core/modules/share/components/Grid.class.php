@@ -1296,12 +1296,15 @@ class Grid extends DBDataSet {
             if ($config->filter) {
                 $this->filter_control->load($config->filter, $cInfo);
             } else {
-                foreach ($cInfo as $name => $attrs) {
-                    $type = FieldDescription::convertType($attrs['type'], $name, $attrs['length'], $attrs);
-                    if (in_array($type, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_INT, FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_EMAIL, FieldDescription::FIELD_TYPE_STRING, FieldDescription::FIELD_TYPE_TEXT, FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_BOOL)) && ($attrs['index'] != 'PRI') && !strpos($name, '_num')) {
-                        $ff = new FilterField($name, $type);
-                        $ff->setAttribute('tableName', $attrs['tableName']);
-                        $ff->setAttribute('title', 'FIELD_' . $name);
+                foreach ($this->getDataDescription() as $fName => $fAttributes) {
+                    if (in_array($fAttributes->getType(), array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_INT, FieldDescription::FIELD_TYPE_SELECT, FieldDescription::FIELD_TYPE_PHONE, FieldDescription::FIELD_TYPE_EMAIL, FieldDescription::FIELD_TYPE_STRING, FieldDescription::FIELD_TYPE_TEXT, FieldDescription::FIELD_TYPE_HTML_BLOCK, FieldDescription::FIELD_TYPE_BOOL))
+                        && ($fAttributes->getPropertyValue('index') != 'PRI')
+                        && !strpos($fName, '_num')
+                        && array_key_exists($fName, $cInfo)
+                    ) {
+                        $ff = new FilterField($fName, $fAttributes->getType());
+                        $ff->setAttribute('tableName', $cInfo[$fName]['tableName']);
+                        $ff->setAttribute('title', 'FIELD_' . $fName);
                         $this->filter_control->attachField($ff);
                     }
                 }

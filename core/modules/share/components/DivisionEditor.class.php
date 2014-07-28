@@ -50,7 +50,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
      * User editor.
      * @var UserEditor $userEditor
      */
-    private $userEditor;
+    protected $userEditor;
     /**
      * Role editor.
      * @var RoleEditor $roleEditor

@@ -262,7 +262,7 @@ class DBDataSet extends DataSet {
         $data = false;
 
         foreach ($this->getDataDescription() as $fieldName => $field) {
-            if (is_null($field->getPropertyValue('customField'))) {
+            if (is_null($field->getPropertyValue('customField')) && ($field->getType() != FieldDescription::FIELD_TYPE_TAB)) {
                 if (
                 ($field->getPropertyValue('origType') && ($field->getType() == FieldDescription::FIELD_TYPE_BOOL))
                 ) {

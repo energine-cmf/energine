@@ -32,6 +32,11 @@ class Site extends DBWorker {
      * @var array $siteTranslationsData
      */
     static private $siteTranslationsData;
+    /**
+     * Flag, indicates if extended properties 'share_sites_properties' table exists.
+     * @var string
+     */
+    public static $isPropertiesTableExists = null;
 
     /**
      * @param array $data Data.
@@ -39,6 +44,9 @@ class Site extends DBWorker {
     public function __construct($data) {
         parent::__construct();
         $this->data = convertFieldNames($data, 'site_');
+        if(is_null(self::$isPropertiesTableExists)) {
+            self::$isPropertiesTableExists = $this->dbh->tableExists('share_sites_properties');
+        }
     }
 
     /**
@@ -90,6 +98,17 @@ class Site extends DBWorker {
             $result = $this->data[$propName];
         } elseif (strtolower($propName) == 'name') {
             $result = $this->data[$propName] = self::$siteTranslationsData[E()->getLanguage()->getCurrent()][$this->data['id']]['site_name'];
+        } elseif (self::$isPropertiesTableExists) {
+            $result = $this->data[$propName] = $this->dbh->getScalar(
+                'SELECT prop_value FROM share_sites_properties
+                    WHERE prop_name = %s
+                    AND (site_id = %s
+                    OR site_id IS NULL)
+                    ORDER BY site_id DESC
+                    LIMIT 1',
+                $propName,
+                $this->data['id']
+            );
         }
         return $result;
     }

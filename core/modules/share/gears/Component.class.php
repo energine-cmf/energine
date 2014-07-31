@@ -287,7 +287,7 @@ class Component extends DBWorker implements IBlock {
      * @final
      */
     final protected function getParam($name) {
-        return (isset($this->params[$name]) ? $this->params[$name] : null);
+        return (array_key_exists($name, $this->params) ? $this->params[$name] : null);
     }
 
     /**

@@ -44,7 +44,10 @@ var SiteManager = new Class(/** @lends SiteManager# */{
             );
         }
     },
-
+    siteProps: function() {
+        ModalBox.open({ url: this.singlePath +
+            this.grid.getSelectedRecordKey() + '/properties/' });
+    },
     /**
      * Go action.
      * @function

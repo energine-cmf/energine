@@ -99,7 +99,7 @@ class Site extends DBWorker {
         } elseif (strtolower($propName) == 'name') {
             $result = $this->data[$propName] = self::$siteTranslationsData[E()->getLanguage()->getCurrent()][$this->data['id']]['site_name'];
         } elseif (self::$isPropertiesTableExists) {
-            $result = $this->data[$propName] = $this->dbh->getScalar(
+            $res = $this->data[$propName] = $this->dbh->getScalar(
                 'SELECT prop_value FROM share_sites_properties
                     WHERE prop_name = %s
                     AND (site_id = %s
@@ -109,6 +109,7 @@ class Site extends DBWorker {
                 $propName,
                 $this->data['id']
             );
+            $result = (false !== $res)? $res: $result;
         }
         return $result;
     }

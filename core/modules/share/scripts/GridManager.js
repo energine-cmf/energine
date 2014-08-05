@@ -179,7 +179,7 @@ var Grid = (function () {
          * Changed as a result
          * @type {Boolean}
          */
-        isDirty : false,
+        isDirty: false,
 
         // constructor
         initialize: function (element, options) {
@@ -225,7 +225,7 @@ var Grid = (function () {
                 }
             }
 
-            this.addEvent('dirty', function(){
+            this.addEvent('dirty', function () {
                 this.isDirty = true;
             }.bind(this));
         },
@@ -921,7 +921,13 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      */
     onDoubleClick: function () {
-        this.edit();
+        if (this.toolbar.getControlById('edit')) {
+            this.edit();
+        }
+        else if(this.toolbar.controls.length) {
+            var action = this.toolbar.controls[0].properties.action;
+            if(this[action]) this[action]();
+        }
     },
 
     /**
@@ -1022,7 +1028,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      */
     processServerResponse: function (result) {
         var control = false;
-        if(this.toolbar){
+        if (this.toolbar) {
             control = this.toolbar.getControlById('add');
         }
 
@@ -1039,7 +1045,7 @@ var GridManager = new Class(/** @lends GridManager# */{
         }
 
         if (!this.grid.isEmpty()) {
-            if(this.toolbar) this.toolbar.enableControls();
+            if (this.toolbar) this.toolbar.enableControls();
             this.pageList.enable();
         }
 
@@ -1270,7 +1276,7 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @function
      * @public
      */
-    use: function(){
+    use: function () {
         ModalBox.setReturnValue(this.grid.getSelectedRecord());
         ModalBox.close();
     },
@@ -1582,7 +1588,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
          */
         this.dpsInputs = new Elements();
 
-        for (var n=0; n < this.containers.length; n++) {
+        for (var n = 0; n < this.containers.length; n++) {
             this.dpsInputs.push(this.inputs[n][0].clone().addClass('hidden'));
             this.containers[n].grab(this.dpsInputs[n]);
         }
@@ -1708,12 +1714,12 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
     }
 });
 
-document.addEvent('domready', function() {
+document.addEvent('domready', function () {
     /**
      * Scroll bar width of the browser.
      * @type {number}
      */
-    ScrollBarWidth = window.top.ScrollBarWidth || (function() {
+    ScrollBarWidth = window.top.ScrollBarWidth || (function () {
         var parent = new Element('div', {
             styles: {
                 height: '1px',

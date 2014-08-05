@@ -21,6 +21,8 @@
             <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
 <!--            <control id="sep04" type="separator"/>
             <control id="reset" title="BTN_RESET_TEMPLATES" type="button" onclick="reset"/>-->
+            <control id="sep04" type="separator"/>
+            <control id="properties" title="BTN_PROPERTIES" type="button" onclick="siteProps"/>
             <control id="sep05" type="separator"/>
             <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
@@ -81,6 +83,11 @@
     <state name="down" rights="3">
         <uri_patterns>
             <pattern>/[int]/down/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="properties" rights="3">
+        <uri_patterns>
+            <pattern>/[site_id]/properties/[any]/</pattern>
         </uri_patterns>
     </state>
     <state name="reset" rights="3">

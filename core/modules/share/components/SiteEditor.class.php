@@ -32,6 +32,11 @@ class SiteEditor extends Grid {
      * @var DomainEditor $domainEditor
      */
     private $domainEditor;
+    /**
+     * Editor for site additional properties
+     * @var SitePropertiesEditor
+     */
+    private $propertiesEditor;
 
     /**
      * @copydoc Grid::__construct
@@ -132,6 +137,19 @@ class SiteEditor extends Grid {
         $this->domainEditor->run();
     }
 
+    protected function properties() {
+        $sp = $this->getStateParams(true);
+        $sitePropertiesEditorParams = array();
+
+        if (isset($sp['site_id'])) {
+            $this->request->shiftPath(2);
+            $sitePropertiesEditorParams = array('siteID' => $sp['site_id']);
+        }
+
+        $this->propertiesEditor = $this->document->componentManager->createComponent('propertiesEditor', 'share', 'SitePropertiesEditor', $sitePropertiesEditorParams);
+        $this->propertiesEditor->run();
+    }
+
     /**
      * @copydoc Grid::build
      */
@@ -141,6 +159,9 @@ class SiteEditor extends Grid {
         }
         elseif ($this->getState() == 'domains') {
             $result = $this->domainEditor->build();
+        }
+        elseif ($this->getState() == 'properties') {
+            $result = $this->propertiesEditor->build();
         }
         else {
             $result = parent::build();

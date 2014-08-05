@@ -6,14 +6,16 @@
         </javascript>
         <fields>
             <field name="prop_id"/>
-            <field name="site_id"/>
+            <field name="prop_is_default" sort="0" type="boolean" title="FIELD_PROP_IS_DEFAULT"/>
             <field name="prop_name"/>
+            <field name="site_id" type="hidden"/>
+            <field name="prop_value"/>
         </fields>
         <toolbar>
-            <control id="view" title="BTN_VIEW" type="button" onclick="view"/>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
             <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
     <state name="add">

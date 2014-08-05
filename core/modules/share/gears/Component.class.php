@@ -250,7 +250,7 @@ class Component extends DBWorker implements IBlock {
      * @throws SystemException 'ERR_DEV_NO_PARAM'
      */
     protected function setParam($name, $value) {
-        if (!isset($this->params[$name])) {
+        if (!array_key_exists($name, $this->params)) {
             throw new SystemException('ERR_DEV_NO_PARAM', SystemException::ERR_DEVELOPER, $name);
         }
         if ($name == 'active') {
@@ -287,7 +287,7 @@ class Component extends DBWorker implements IBlock {
      * @final
      */
     final protected function getParam($name) {
-        return (isset($this->params[$name]) ? $this->params[$name] : null);
+        return (array_key_exists($name, $this->params) ? $this->params[$name] : null);
     }
 
     /**

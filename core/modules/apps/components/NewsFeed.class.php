@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class NewsFeed;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2007
@@ -19,7 +19,7 @@ class NewsFeed;
  *
  * @code
 class NewsFeed;
-@endcode
+ * @endcode
  */
 class NewsFeed extends ExtendedFeed {
     /**
@@ -263,5 +263,24 @@ class NewsFeed extends ExtendedFeed {
         if (isset($additionalFilter)) {
             $this->addFilterCondition($additionalFilter);
         }
+    }
+
+    protected function rss() {
+        $this->setParam('recordsPerPage', self::RECORD_PER_PAGE);
+        $this->main();
+        if ($this->getData()->getFieldByName('news_date')) {
+            foreach ($field = $this->getData()->getFieldByName('news_date') as $key => $value) {
+                $field->setRowData($key, date('D, d M Y H:i:m +0300', strtotime($value)));
+            }
+        }
+        if ($this->getData()->getFieldByName('news_announce_rtf')) {
+            foreach ($field = $this->getData()->getFieldByName('news_announce_rtf') as $key => $value) {
+                $field->setRowData($key, strip_tags($value));
+            }
+        }
+        $this->pager->setRecordsCount(self::RECORD_PER_PAGE);
+
+        E()->getController()->getTransformer()->setFileName('core/modules/apps/transformers/rss.xslt', true);
+        E()->getResponse()->setHeader('Content-Type', 'text/xml; charset=utf-8');
     }
 }

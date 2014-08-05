@@ -104,6 +104,10 @@ function simple_log($var){
  * @param boolean $append Append the log into the file? If @c false the file will be overwritten.
  */
 function dump_log($var, $append = false) {
+    $t = microtime(true);
+    $micro = sprintf("%06d",($t - floor($t)) * 1000000);
+    $d = new DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
+
     $flags = ($append ? FILE_APPEND : null);
     ob_start();
     var_dump($var);
@@ -111,7 +115,7 @@ function dump_log($var, $append = false) {
     ob_end_clean();
     file_put_contents(
         'logs/debug.log',
-        "\ndate: ".date('l dS of F Y h:i:s')."\n\n".$data."\n",
+        "\ndate: ".$d->format('l dS of F Y h:i:s:u')."\n\n".$data."\n",
         $flags
     );
     chmod('logs/debug.log', 0666);

@@ -27,7 +27,21 @@
             <pattern>/file-library/[any]/</pattern>
         </uri_patterns>
     </state>
-
+    <state name="rss">
+        <uri_patterns>
+            <pattern>/rss/</pattern>
+        </uri_patterns>
+        <fields>
+            <field name="news_id"/>
+            <field name="news_date"/>
+            <field name="news_segment"/>
+            <field name="news_title"/>
+            <field name="news_announce_rtf"/>
+        </fields>
+        <translations>
+            <translation const="TXT_RSS_NEWS_TITLE"/>
+        </translations>
+    </state>
     <state name="view">
         <uri_patterns>
             <pattern>/[id]--[segment]/</pattern>

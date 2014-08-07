@@ -14,7 +14,6 @@
 
  ...
  */
-
 var MooSocket = new Class({
     Implements: [Options, Events],
 
@@ -31,7 +30,6 @@ var MooSocket = new Class({
 
     initialize: function (location, options) {
         if (!("WebSocket" in window)) throw 'This browser cannot use sockets';
-
         this.setOptions(options);
         this.location = location;
         this.create()
@@ -44,7 +42,7 @@ var MooSocket = new Class({
         catch (e){
             this.fireEvent("error", e);
         }
-
+        this.implicitlyClosed = false;
         this.attachEvents();
     },
 
@@ -54,8 +52,9 @@ var MooSocket = new Class({
         }.bind(this);
 
         this.socket.onclose = function (e) {
+
             this.fireEvent("close");
-            if (this.options.reconnect) this.reconnect();
+            if (this.options.reconnect && !this.implicitlyClosed) this.reconnect();
         }.bind(this);
 
         this.socket.onopen = function (e) {
@@ -72,9 +71,11 @@ var MooSocket = new Class({
         this.socket.send(msg);
     },
     close: function(){
+        this.implicitlyClosed = true;
         this.socket.close();
     },
     reconnect: function () {
+        this.implicitlyClosed = false;
         if (this.reconnectAttempts > this.options.maxReconnects) return false;
         this.create.delay(this.reconnectDelay * 1000, this);
         this.reconnectAttempts++;

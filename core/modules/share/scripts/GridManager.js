@@ -506,7 +506,7 @@ var Grid = (function () {
                 for (n = 0; n < tds.length; n++) {
                     oversizeHead[n] = ths[n].getDimensions({computeSize: true}).totalWidth > headers[n];
                 }
-                if (oversizeHead.sum()) {
+                if (oversizeHead.length > 0) {
                     var newWidth = [],
                         colWidth = [0, 0];
 
@@ -1723,7 +1723,8 @@ document.addEvent('domready', function () {
         var parent = new Element('div', {
             styles: {
                 height: '1px',
-                overflow: 'scroll'
+                overflow: 'scroll',
+                visibility: 'hidden'
             }
         });
         var child = new Element('div', {
@@ -1731,10 +1732,8 @@ document.addEvent('domready', function () {
                 height: '2px'
             }
         });
-
         parent.grab(child);
         $(document.body).grab(parent);
-
         var width = parent.offsetWidth - child.offsetWidth;
         parent.destroy();
 

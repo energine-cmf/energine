@@ -31,10 +31,10 @@
 
     <xsl:template match="component[@type='list' and @exttype='grid']/recordset">
         <xsl:variable name="NAME" select="../@name"/>
-        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
-            <xsl:if test="../toolbar">
+        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1  e-pane-has-b-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+            <!--<xsl:if test="../toolbar">
                 <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
-            </xsl:if>
+            </xsl:if>-->
             <xsl:if test="../@quickUploadPath">
                 <xsl:attribute name="quick_upload_path">
                     <xsl:value-of select="../@quickUploadPath"/>
@@ -250,9 +250,10 @@
                 </div>
             </div>
         </div>
-        <xsl:if test="../toolbar">
+        <!--<xsl:if test="../toolbar">
             <div class="e-pane-b-toolbar"></div>
-        </xsl:if>
+        </xsl:if>-->
+        <div class="e-pane-b-toolbar"></div>
     </xsl:template>
 
     <xsl:template match="component[@type='list']/recordset/record/field">

@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class UserEditor;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -20,14 +20,14 @@ class UserEditor;
  *
  * @code
 class UserEditor;
-@endcode
+ * @endcode
  */
 class UserEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
+    public function __construct($name, $module, array $params = null) {
+        parent::__construct($name, $module, $params);
         $this->setTableName('user_users');
         $this->setTitle($this->translate('TXT_USER_EDITOR'));
     }
@@ -56,29 +56,31 @@ class UserEditor extends Grid {
 
         if ($this->getPreviousState() == 'edit' && $_POST[$this->getTableName()]['u_password'] === '') {
             unset($_POST[$this->getTableName()]['u_password']);
+        } else {
+            $_POST[$this->getTableName()]['u_password'] = sha1($_POST[$this->getTableName()]['u_password']);
         }
-        else {
-        	$_POST[$this->getTableName()]['u_password'] = sha1($_POST[$this->getTableName()]['u_password']);
+        if($this->dbh->getScalar('SELECT COUNT(*) FROM ' . $this->getTableName() . ' WHERE u_name=%s', $_POST[$this->getTableName()]['u_name'])){
+            throw new SystemException('ERR_USER_EXISTS', SystemException::ERR_CRITICAL);
         }
-
         $result = parent::saveData();
 
-        $UID = (is_int($result))?$result:current($this->getFilter());
+        $UID = (is_int($result)) ? $result : current($this->getFilter());
 
-        $this->dbh->modify(QAL::DELETE, 'user_user_groups', null, array('u_id'=>$UID));
-        
-        if(isset($_POST['group_id']) && is_array($_POST['group_id']))
-        foreach ($_POST['group_id'] as $groupID) {
-            $this->dbh->modify(QAL::INSERT, 'user_user_groups',array('u_id'=>$UID, 'group_id'=>$groupID));
-        }
+        $this->dbh->modify(QAL::DELETE, 'user_user_groups', null, array('u_id' => $UID));
+
+        if (isset($_POST['group_id']) && is_array($_POST['group_id']))
+            foreach ($_POST['group_id'] as $groupID) {
+                $this->dbh->modify(QAL::INSERT, 'user_user_groups', array('u_id' => $UID, 'group_id' => $groupID));
+            }
 
         return $result;
     }
+
     /**
      * Toggle user activity status
      */
-    protected function activate(){
-    	$transactionStarted = $this->dbh->beginTransaction();
+    protected function activate() {
+        $transactionStarted = $this->dbh->beginTransaction();
         $b = new JSONCustomBuilder();
         $this->setBuilder($b);
         try {
@@ -86,22 +88,21 @@ class UserEditor extends Grid {
             if (!$this->recordExists($id)) {
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
-            
-	        if ($this->document->user->getID() == $id) {
-	           throw new SystemException('ERR_CANT_ACTIVATE_YOURSELF', SystemException::ERR_CRITICAL);
-	        }
-	        
-            $this->dbh->modifyRequest('UPDATE '.$this->getTableName().' SET u_is_active = NOT u_is_active WHERE u_id = %s', $id);
 
-            
+            if ($this->document->user->getID() == $id) {
+                throw new SystemException('ERR_CANT_ACTIVATE_YOURSELF', SystemException::ERR_CRITICAL);
+            }
+
+            $this->dbh->modifyRequest('UPDATE ' . $this->getTableName() . ' SET u_is_active = NOT u_is_active WHERE u_id = %s', $id);
+
+
             $b->setProperties(array(
-            'result' => true,
+                'result' => true,
             ));
 
 
             $this->dbh->commit();
-        }
-        catch (SystemException $e){
+        } catch (SystemException $e) {
             if ($transactionStarted) {
                 $this->dbh->rollback();
             }
@@ -123,13 +124,12 @@ class UserEditor extends Grid {
         /*if ($this->getState() == 'save') {
             $result[0]['u_password'] = sha1($result[0]['u_password']);
         }
-        else*/if ($this->getState() == 'getRawData' && $result) {
+        else*/
+        if ($this->getState() == 'getRawData' && $result) {
             $result = array_map(array($this, 'printUserGroups'), $result);
-        }
-        elseif ($this->getState() == 'edit') {
+        } elseif ($this->getState() == 'edit') {
             $result[0]['u_password'] = '';
-        }
-        elseif ($this->getState() == 'view') {
+        } elseif ($this->getState() == 'view') {
             $result[0]['u_password'] = '';
         }
         return $result;
@@ -147,8 +147,8 @@ class UserEditor extends Grid {
         $userGroupIDs = $userGroup->getUserGroups($row['u_id']);
         $userGroupName = array();
         foreach ($userGroupIDs as $UGID) {
-        	$groupInfo = $userGroup->getInfo($UGID);
-        	$userGroupName[] = $groupInfo['group_name'];
+            $groupInfo = $userGroup->getInfo($UGID);
+            $userGroupName[] = $groupInfo['group_name'];
         }
         $row['u_group'] = implode(', ', $userGroupName);
         return $row;
@@ -167,7 +167,7 @@ class UserEditor extends Grid {
             }
             $result->getFieldDescriptionByName('u_name')->setType(FieldDescription::FIELD_TYPE_EMAIL);
             if ($fd = $result->getFieldDescriptionByName('u_is_active')) {
-            	$result->removeFieldDescription($fd);
+                $result->removeFieldDescription($fd);
             }
             $fd = new FieldDescription('group_id');
             $fd->setSystemType(FieldDescription::FIELD_TYPE_INT);
@@ -182,9 +182,9 @@ class UserEditor extends Grid {
         }
 
         if (
-        	($this->getType() == self::COMPONENT_TYPE_FORM_ALTER)
-        	&&
-        	($f = $result->getFieldDescriptionByName('u_password'))
+            ($this->getType() == self::COMPONENT_TYPE_FORM_ALTER)
+            &&
+            ($f = $result->getFieldDescriptionByName('u_password'))
         ) {
             $f->removeProperty('pattern');
             $f->removeProperty('message');
@@ -193,36 +193,36 @@ class UserEditor extends Grid {
 
         return $result;
     }
+
     /**
      * @copydoc Grid::loadDataDescription
      */
-     protected function loadDataDescription() {
+    protected function loadDataDescription() {
         $result = parent::loadDataDescription();
         if ($this->getState() == 'save' && isset($result['u_password'])) {
-           	$result['u_password']['nullable'] = true;
+            $result['u_password']['nullable'] = true;
         }
 
         return $result;
-     }
+    }
 
     /**
-      * @copydoc Grid::createData
-      */
+     * @copydoc Grid::createData
+     */
     // Для методов add и edit добавляется инфо о роли
     protected function createData() {
         $result = parent::createData();
         $id = $this->getFilter();
-        $id = (!empty($id) && is_array($id))?current($id):false;
+        $id = (!empty($id) && is_array($id)) ? current($id) : false;
         if ($this->getType() != self::COMPONENT_TYPE_LIST && $id) {
             //создаем переменную содержащую идентификторы групп в которые входит пользователь
             $f = new Field('group_id');
             $result->addField($f);
 
-            $data = $this->dbh->select('user_user_groups', array('group_id'), array('u_id'=>$id));
-            if(is_array($data)) {
+            $data = $this->dbh->select('user_user_groups', array('group_id'), array('u_id' => $id));
+            if (is_array($data)) {
                 $f->addRowData(array_keys(convertDBResult($data, 'group_id', true)));
-            }
-            else {
+            } else {
                 $f->setData(array());
             }
         }

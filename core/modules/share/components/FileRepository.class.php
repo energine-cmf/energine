@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class FileRepository;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2012
@@ -19,7 +19,7 @@ class FileRepository;
  *
  * @code
 class FileRepository;
-@endcode
+ * @endcode
  */
 class FileRepository extends Grid {
     /**
@@ -388,8 +388,7 @@ class FileRepository extends Grid {
 
                 $result = $this->dbh->modify($mode, $this->getTableName(), $data);
 
-            }
-            // редактирование файла в репозитории
+            } // редактирование файла в репозитории
             elseif ($mode == QAL::UPDATE) {
 
                 $pk = $data[$this->getPK()];
@@ -789,8 +788,8 @@ class FileRepository extends Grid {
      */
     public static function cleanFileData($data, $maxFileSize = 5242880) {
         ini_set('pcre.backtrack_limit', $maxFileSize);
-        if(!preg_match('/data\:(.*);base64\,(.*)$/', $data, $matches)){
-            switch(preg_last_error()){
+        if (!preg_match('/data\:(.*);base64\,(.*)$/', $data, $matches)) {
+            switch (preg_last_error()) {
                 case PREG_NO_ERROR:
                     $errorMessage = 'ERR_BAD_FILE';
                     break;
@@ -809,10 +808,12 @@ class FileRepository extends Grid {
             }
             throw new SystemException($errorMessage, SystemException::ERR_WARNING);
         }
-
+        $mime = $matches[1];
+        $string = $matches[2];
+        unset($matches);
         //http://j-query.blogspot.com/2011/02/save-base64-encoded-canvas-image-to-png.html?showComment=1402329668513#c517521780203205620
-        $matches[2] = str_replace(' ', '+', $matches[2]);
+        $string = str_replace_opt(' ', '+', $string);
 
-        return (object)array('mime' => $matches[1], 'data' => base64_decode($matches[2]));
+        return (object)array('mime' => $mime, 'data' => base64_decode($string));
     }
 }

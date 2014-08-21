@@ -363,3 +363,20 @@ function array_push_after($src,$in,$pos){
 function file_get_contents_stripped($fileName){
     return stripslashes(trim(file_get_contents($fileName)));
 }
+
+/**
+ * Optimized for large strings str_replace
+ *
+ * @param $from char
+ * @param $to char
+ * @param $src string
+ * @return string
+ */
+function str_replace_opt($from, $to, $src) {
+    for ($i = 0; $i < strlen($src); $i++) {
+        if($src[$i] == $from){
+            $src[$i] = $to;
+        }
+    }
+    return $src;
+}

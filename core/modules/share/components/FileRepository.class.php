@@ -782,11 +782,32 @@ class FileRepository extends Grid {
      * Clean incoming from JS FileReader.
      *
      * @param string $data Data.
+     * @param int $maxFileSize maximum file size (5mB default)
      * @return object
+     * @throws SystemException
+     *
      */
-    public static function cleanFileData($data) {
+    public static function cleanFileData($data, $maxFileSize = 5242880) {
+        ini_set('pcre.backtrack_limit', $maxFileSize);
         if(!preg_match('/data\:(.*);base64\,(.*)$/', $data, $matches)){
-            throw new SystemException('ERR_BAD_FILE', SystemException::ERR_WARNING);
+            switch(preg_last_error()){
+                case PREG_NO_ERROR:
+                    $errorMessage = 'ERR_BAD_FILE';
+                    break;
+                case PREG_INTERNAL_ERROR:
+                    $errorMessage = 'ERR_PREG_INTERNAL';
+                    break;
+                case PREG_BACKTRACK_LIMIT_ERROR:
+                    $errorMessage = 'ERR_PREG_BACKTRACK_LIMIT';
+                    break;
+                case PREG_RECURSION_LIMIT_ERROR:
+                    $errorMessage = 'ERR_PREG_RECURSION_LIMIT';
+                    break;
+                case PREG_BAD_UTF8_ERROR:
+                    $errorMessage = 'ERR_PREG_BAD_UTF8_ERROR';
+                    break;
+            }
+            throw new SystemException($errorMessage, SystemException::ERR_WARNING);
         }
 
         //http://j-query.blogspot.com/2011/02/save-base64-encoded-canvas-image-to-png.html?showComment=1402329668513#c517521780203205620

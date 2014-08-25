@@ -81,13 +81,13 @@ class ComponentContainer extends Object implements IBlock, Iterator{
     /**
      * Create component container from description.
      *
-     * @param SimpleXMLElement $containerDescription Container description.
+     * @param \SimpleXMLElement $containerDescription Container description.
      * @param array $additionalAttributes Additional attributes.
      * @return ComponentContainer
      *
      * @throws SystemException ERR_NO_CONTAINER_NAME
      */
-    static public function createFromDescription(SimpleXMLElement $containerDescription, array $additionalAttributes = array()) {
+    static public function createFromDescription(\SimpleXMLElement $containerDescription, array $additionalAttributes = array()) {
         $attributes = $containerDescription->attributes();
         if (in_array($containerDescription->getName(), array('page', 'content'))) {
             $properties['name'] = $containerDescription->getName();
@@ -162,7 +162,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
      * @return DOMElement|array
      */
     public function build() {
-        $doc = new DOMDocument('1.0', 'UTF-8');
+        $doc = new \DOMDocument('1.0', 'UTF-8');
         $containerDOM = $doc->createElement($this->properties['tag']);
         $containerDOM->setAttribute('name', $this->getName());
         $doc->appendChild($containerDOM);
@@ -178,7 +178,7 @@ class ComponentContainer extends Object implements IBlock, Iterator{
                 ($this->document->getRights() >= $block->getCurrentStateRights())
             ) {
                 $blockDOM = $block->build();
-                if ($blockDOM instanceof DOMDocument) {
+                if ($blockDOM instanceof \DOMDocument) {
                     $blockDOM =
                         $doc->importNode($blockDOM->documentElement, true);
                     $containerDOM->appendChild($blockDOM);

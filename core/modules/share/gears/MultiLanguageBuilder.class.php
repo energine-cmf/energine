@@ -14,7 +14,7 @@ class MultiLanguageBuilder;
  * @version 1.0.0
  */
 
-
+namespace share\gears;
 /**
  * Builder for multilingual components.
  *

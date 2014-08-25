@@ -13,7 +13,7 @@ class SystemException;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Base exception.
  *
@@ -21,7 +21,7 @@ class SystemException;
 class SystemException;
 @endcode
  */
-class SystemException extends Exception {
+class SystemException extends \Exception {
     /**
      * Critical error.
      * @var int ERR_CRITICAL

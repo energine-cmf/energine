@@ -13,7 +13,7 @@ class DataDescription;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 //todo VZ: Why the Iterator is multiple times have the same implementation?
 /**
  * Meta data.
@@ -24,7 +24,7 @@ class DataDescription
  *
  * Data description.
  */
-class DataDescription extends Object implements Iterator {
+class DataDescription extends Object implements \Iterator {
     /**
      * Field position: @c 'after'
      * @var string FIELD_POSITION_AFTER
@@ -72,9 +72,9 @@ class DataDescription extends Object implements Iterator {
     /**
      * Load data descriptions from XML file.
      *
-     * @param SimpleXMLElement $xmlDescr XML file with descriptions.
+     * @param \SimpleXMLElement $xmlDescr XML file with descriptions.
      */
-    public function loadXML(SimpleXMLElement $xmlDescr) {
+    public function loadXML(\SimpleXMLElement $xmlDescr) {
         if (!empty($xmlDescr))
         foreach ($xmlDescr->field as $fieldXmlDescr) {
             $fieldDescr = new FieldDescription();

@@ -41,7 +41,7 @@ class EmptyBuilder implements IBuilder {
      * @return bool
      */
     public function getResult() {
-        $doc = new DOMDocument('1.0', 'UTF-8');
+        $doc = new \DOMDocument('1.0', 'UTF-8');
         $dom_recordSet = $doc->createElement('recordset');
         return $dom_recordSet;
     }

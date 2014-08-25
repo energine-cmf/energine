@@ -14,7 +14,7 @@ interface IBuilder;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Page component.
  *
@@ -31,7 +31,7 @@ class Component extends DBWorker implements IBlock {
 
     /**
      * Document DOM of the component.
-     * @var DOMDocument $doc
+     * @var \DOMDocument $doc
      */
     protected $doc;
 
@@ -152,7 +152,7 @@ class Component extends DBWorker implements IBlock {
         /**
          * @todo Проверить, можно ли перенести в build
          */
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc = new \DOMDocument('1.0', 'UTF-8');
         $this->document->componentManager->register($this);
         $this->setProperty('template',
             $template = $this->request->getPath(Request::PATH_TEMPLATE, true));

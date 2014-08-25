@@ -43,7 +43,7 @@ class Select extends Control {
     /**
      * @copydoc Control::loadFromXml
      */
-    public function loadFromXml(SimpleXMLElement $description) {
+    public function loadFromXml(\SimpleXMLElement $description) {
         parent::loadFromXml($description);
         if($description->options){
         	foreach ($description->options->option as $item){

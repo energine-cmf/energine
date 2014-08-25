@@ -24,35 +24,35 @@ class PageStructureDocument;
 class PageStructureDocument extends Object implements IDocument{
     /**
      * Document
-     * @var DOMDocument $doc
+     * @var \DOMDocument $doc
      */
     private $doc;
 
     /**
      * Layout.
-     * @var SimpleXMLElement|bool $layout
+     * @var \SimpleXMLElement|bool $layout
      */
     private $layout = false;
 
     /**
      * Content.
-     * @var SimpleXMLElement|bool $content
+     * @var \SimpleXMLElement|bool $content
      */
     private $content = false;
 
     /**
      * Set layout.
-     * @param SimpleXMLElement $layout Layout.
+     * @param \SimpleXMLElement $layout Layout.
      */
-    public function setLayout(SimpleXMLElement $layout){
+    public function setLayout(\SimpleXMLElement $layout){
         $this->layout = $layout;
     }
 
     /**
      * Set content.
-     * @param SimpleXMLElement $content Content.
+     * @param \SimpleXMLElement $content Content.
      */
-    public function setContent(SimpleXMLElement $content){
+    public function setContent(\SimpleXMLElement $content){
         $this->content = $content;
     }
 
@@ -61,7 +61,7 @@ class PageStructureDocument extends Object implements IDocument{
     }
 
     public function build() {
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc = new \DOMDocument('1.0', 'UTF-8');
         if(!$this->layout) {
             $layout = $this->doc->createElement('page');
         }

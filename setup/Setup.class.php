@@ -493,7 +493,7 @@ final class Setup {
 
         if ($files)
             foreach ($files as $file) {
-                $doc = new DOMDocument();
+                $doc = new \DOMDocument();
                 $doc->preserveWhiteSpace = false;
                 $doc->load($file);
                 $xpath = new DOMXPath($doc);

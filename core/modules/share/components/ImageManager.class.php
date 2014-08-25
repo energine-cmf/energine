@@ -13,7 +13,7 @@ class ImageManager;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
 
 /**
  * Image manager.

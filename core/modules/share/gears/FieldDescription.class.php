@@ -13,7 +13,7 @@ class FieldDescription;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 
 /**
  * Description of the field data.
@@ -22,7 +22,7 @@ class FieldDescription;
 class FieldDescription;
 @endcode
  */
-class FieldDescription extends DBWorker implements Iterator {
+class FieldDescription extends DBWorker implements \Iterator {
     /**
      * Additional property names.
      * It is initialized in FieldDescription::$rewind and used by iterations.@n
@@ -369,10 +369,10 @@ class FieldDescription extends DBWorker implements Iterator {
     /**
      * Load field description from XML-description.
      *
-     * @param SimpleXMLElement $fieldInfo XML element.
+     * @param \SimpleXMLElement $fieldInfo XML element.
      * @return boolean
      */
-    public function loadXML(SimpleXMLElement $fieldInfo) {
+    public function loadXML(\SimpleXMLElement $fieldInfo) {
         $result = true;
         foreach ($fieldInfo->attributes() as $attrName => $attrValue) {
             $attrName = (string)$attrName;
@@ -950,9 +950,9 @@ class FieldDescription extends DBWorker implements Iterator {
 </field>
 @endcode
      *
-     * @param SimpleXMLElement $options Options.
+     * @param \SimpleXMLElement $options Options.
      */
-    private function loadAvailableXMLValues(SimpleXMLElement $options) {
+    private function loadAvailableXMLValues(\SimpleXMLElement $options) {
         $result = array();
         foreach ($options as $option) {
             $optAttributes = array();

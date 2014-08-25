@@ -49,7 +49,7 @@ class Container extends Control {
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      * @throws SystemException 'ERR_DEV_NO_CONTROL_CLASS'
      */
-    public function loadFromXml(SimpleXMLElement $description) {
+    public function loadFromXml(\SimpleXMLElement $description) {
 	    parent::loadFromXml($description);
 
 	    foreach ($description->control as $controlDescription) {

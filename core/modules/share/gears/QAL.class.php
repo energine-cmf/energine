@@ -14,6 +14,8 @@ final class QAL;
  * @version 1.0.0
  */
 
+namespace share\gears;
+
 /**
  * Query Abstraction Layer.
  *
@@ -513,7 +515,7 @@ final class QAL extends DBA {
 
         $result = array();
         if ($res instanceof PDOStatement) {
-            while ($row = $res->fetch(PDO::FETCH_NUM)) {
+            while ($row = $res->fetch(\PDO::FETCH_NUM)) {
                 array_push($result, $row[0]);
             }
         }

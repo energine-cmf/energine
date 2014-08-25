@@ -14,7 +14,7 @@ class TextBlockSource;
  * @version 1.0.0
  */
 
-//require_once('core/modules/share/components/DataSet.class.php');
+namespace share\components;
 
 /**
  * Source of the text block.

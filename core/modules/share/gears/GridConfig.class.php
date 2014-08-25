@@ -13,7 +13,7 @@ class GridConfig;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Grid configuration.
  *

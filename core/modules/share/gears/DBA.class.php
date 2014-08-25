@@ -14,7 +14,7 @@ abstract class DBA;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 
 /**
  * Database Abstraction Layer.
@@ -28,7 +28,7 @@ abstract class DBA;
 abstract class DBA extends Object {
     /**
      * Instance of PDO class (PHP Data Objects).
-     * @var PDO $pdo
+     * @var \PDO $pdo
      */
     protected $pdo;
 
@@ -140,23 +140,23 @@ abstract class DBA extends Object {
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
         try {
-            $this->pdo = new PDO($dsn, $username, $password, $driverOptions);
+            $this->pdo = new \PDO($dsn, $username, $password, $driverOptions);
             $this->pdo->query('SET NAMES ' . $charset);
 
             $this->dbCache = new DBStructureInfo($this->pdo);
 
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new SystemException('Unable to connect. The site is temporarily unavailable.', SystemException::ERR_DB, 'The site is temporarily unavailable');
         }
 
     }
 
     /**
-     * Get @link DBA::$pdo PDO@endlink.
+     * Get @link DBA::$pdo \PDO@endlink.
      *
      * Use this for direct work with DB.
      *
-     * @return PDO
+     * @return \PDO
      */
     public function getPDO(){
         return $this->pdo;
@@ -194,13 +194,13 @@ array(
     public function selectRequest($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
-        if (!($res instanceof PDOStatement)) {
+        if (!($res instanceof \PDOStatement)) {
             $errorInfo = $this->pdo->errorInfo();
             throw new SystemException($errorInfo[2], SystemException::ERR_DB, array($this->getLastRequest()));
         }
 
         $result = array();
-        while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
             array_push($result, $row);
         }
         if (empty($result)) {
@@ -231,7 +231,7 @@ array(
     public function modifyRequest($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
-        if (!($res instanceof PDOStatement)) {
+        if (!($res instanceof \PDOStatement)) {
             $errorInfo = $this->pdo->errorInfo();
             throw new SystemException($errorInfo[2], SystemException::ERR_DB, array($this->getLastRequest(),));
         }
@@ -253,7 +253,7 @@ array(
      */
     public function call($name, &$args = null) {
         if (!$args) {
-            $res = $this->pdo->query("call $name();", PDO::FETCH_NAMED);
+            $res = $this->pdo->query("call $name();", \PDO::FETCH_NAMED);
         } else {
             $argString = implode(',', array_fill(0, count($args), '?'));
             $stmt = $this->pdo->prepare("CALL $name($argString)");
@@ -261,7 +261,7 @@ array(
                 $stmt->bindParam($index + 1, $value);
             }
             if ($res = $stmt->execute()) {
-                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             }
         }
         return $res;
@@ -271,11 +271,11 @@ array(
      * Get data for further iteration.
      *
      * @param string $query SQL request.
-     * @return bool|PDOStatement
+     * @return bool|\PDOStatement
      */
     public function get($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
-        if ($res instanceof PDOStatement) {
+        if ($res instanceof \PDOStatement) {
             return $res;
         }
         return false;
@@ -285,7 +285,7 @@ array(
      * Execute the request.
      *
      * @param string $request Request.
-     * @return bool|PDOStatement
+     * @return bool|\PDOStatement
      */
     protected function fulfill($request) {
         if (!is_string($request) || empty($request)) {
@@ -293,7 +293,7 @@ array(
         }
         if ($this->getConfigValue('database.prepare')) {
             $res = $this->runQuery(func_get_args());
-            if ($res instanceof PDOStatement)
+            if ($res instanceof \PDOStatement)
                 $this->lastQuery = $res->queryString;
         } else {
             $request = $this->constructQuery(func_get_args());
@@ -504,7 +504,7 @@ array(
      * Run query.
      *
      * @param array $args Query arguments. First argument is SQL string
-     * @return PDOStatement
+     * @return \PDOStatement
      *
      * @throws SystemException 'ERR_BAD_REQUEST'
      */

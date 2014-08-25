@@ -108,12 +108,15 @@ spl_autoload_register(
  * @staticvar array $paths массив путей к файлам классов вида [имя класса]=>путь к файлу класса
  */
 function ($className) {
+    $className = explode('\\', $className);
+    $className = array_pop($className);
+    inspect($className);
     static $paths = array();
     //если массив путей не заполнен - заполняем
     if (empty($paths)) {
         //Если мемкеш не заенейблен или значения путей в нем нет
         $mc = E()->getCache();
-        if (!$mc->isEnabled() || !($paths = $mc->retrieve(Cache::CLASS_STRUCTURE_KEY))) {
+        if (!$mc->isEnabled() || !($paths = $mc->retrieve(share\gears\Cache::CLASS_STRUCTURE_KEY))) {
             //собираем в статическую переменную
             $tmp = array_reduce(
                 array(
@@ -135,12 +138,12 @@ function ($className) {
                 $paths[substr(strrchr($fileName, '/'), 1, -10)] = $fileName;
             }
             if ($mc->isEnabled())
-                $mc->store(Cache::CLASS_STRUCTURE_KEY, $paths);
+                $mc->store(share\gears\Cache::CLASS_STRUCTURE_KEY, $paths);
         }
     }
 
     if (!isset($paths[$className]) || !@require($paths[$className])) {
-        throw new SystemException('ERR_NO_CLASS', SystemException::ERR_CRITICAL, $className);
+        throw new share\gears\SystemException('ERR_NO_CLASS', share\gears\SystemException::ERR_CRITICAL, $className);
     }
 });
 
@@ -162,12 +165,12 @@ set_error_handler('nrgnErrorHandler');
  */
 function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext) {
     try {
-        $e = new SystemException(
+        $e = new share\gears\SystemException(
             $message,
-            SystemException::ERR_DEVELOPER
+            share\gears\SystemException::ERR_DEVELOPER
         );
         throw $e->setFile($file)->setLine($line);
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         //Если ошибка произошла здесь, то капец
         echo 'Message:', $message, PHP_EOL, 'File:', $file, PHP_EOL, 'Line:', $line, PHP_EOL;
         exit;

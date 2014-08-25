@@ -24,7 +24,7 @@ class XMLTransformer;
 class XMLTransformer implements ITransformer{
     /**
      * Document.
-     * @var DOMDocument $document
+     * @var \DOMDocument $document
      */
     private $document;
 
@@ -33,7 +33,7 @@ class XMLTransformer implements ITransformer{
         return trim($this->document->saveXML());
     }
 
-    public function setDocument(DOMDocument $document){
+    public function setDocument(\DOMDocument $document){
         $this->document = $document;
     }
 

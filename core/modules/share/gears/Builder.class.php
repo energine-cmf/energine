@@ -13,7 +13,7 @@ class Builder;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Build XML-document.
  *

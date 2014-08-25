@@ -13,7 +13,7 @@ class Site;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Site.
  *

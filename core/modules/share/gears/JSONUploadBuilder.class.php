@@ -14,8 +14,7 @@ class JSONUploadBuilder;
  * @version 1.0.0
  */
 
-
-//todo VZ: What is FileLibrary?
+namespace share\gears;
 /**
  * JSON builder for uploading.
  *

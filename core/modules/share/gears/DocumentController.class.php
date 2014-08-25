@@ -15,7 +15,7 @@ interface IDocument;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * DocumentController class is responsible for preparing the environment and running Document object.
  *
@@ -189,9 +189,9 @@ interface ITransformer {
     /**
      * Set document, that will be transformed.
      *
-     * @param DOMDocument $document Document, that will be transformed.
+     * @param \DOMDocument $document Document, that will be transformed.
      */
-    public function setDocument(DOMDocument $document);
+    public function setDocument(\DOMDocument $document);
 
     /**
      * Set filename, that will be transformed.
@@ -218,7 +218,7 @@ interface IDocument {
     /**
      * Get result.
      *
-     * @return DOMDocument
+     * @return \DOMDocument
      */
     public function getResult();
 }

@@ -98,7 +98,7 @@ class OGObject extends Object {
             $this->setTitle(E()->getDocument()->getProperty('title'));
         }
 
-        $doc = new DOMDocument('1.0', 'UTF-8');
+        $doc = new \DOMDocument('1.0', 'UTF-8');
         $result = $doc->createElement('og');
         if (!empty($this->title)) {
             $prop = $doc->createElement('property', $this->title);

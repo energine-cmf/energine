@@ -13,7 +13,7 @@ final class URI;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 
 /**
  * URI (Unified Resource Identifier).

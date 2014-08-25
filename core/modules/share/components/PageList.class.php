@@ -105,7 +105,7 @@ class PageList extends DataSet
         parent::main();
         if ($this->getDataDescription()->isEmpty()) {
             $this->getDataDescription()->loadXML(
-                new SimpleXMLElement('<fields>
+                new \SimpleXMLElement('<fields>
                             <field name="Id" type="integer" key="1"/>
                             <field name="Pid" type="integer"/>
                             <field name="Name" type="string"/>

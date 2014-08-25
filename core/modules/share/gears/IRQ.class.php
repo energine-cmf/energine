@@ -13,7 +13,7 @@ class IRQ;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Fake Exception.
  *
@@ -23,23 +23,23 @@ class IRQ;
  *
  * It interrupts the normal flow of the program and returns the document of the page structure.
  */
-class IRQ extends Exception {
+class IRQ extends \Exception {
     /**
      * Content block.
-     * @var SimpleXMLElement|bool $contentBlock
+     * @var \SimpleXMLElement|bool $contentBlock
      */
     private $contentBlock = false;
     /**
      * Layout block.
-     * @var SimpleXMLElement|bool $layoutBlock
+     * @var \SimpleXMLElement|bool $layoutBlock
      */
     private $layoutBlock = false;
 
     /**
      * Add block.
-     * @param SimpleXMLElement $block Block.
+     * @param \SimpleXMLElement $block Block.
      */
-    public function addBlock(SimpleXMLElement $block) {
+    public function addBlock(\SimpleXMLElement $block) {
         if($block->getName() == 'page'){
             $this->layoutBlock = $block;
         }
@@ -51,7 +51,7 @@ class IRQ extends Exception {
     /**
      * Get content block.
      *
-     * @return bool|SimpleXMLElement
+     * @return bool|\SimpleXMLElement
      */
     public function getContentBlock(){
         return $this->contentBlock;
@@ -60,7 +60,7 @@ class IRQ extends Exception {
     /**
      * Get layout block.
      *
-     * @return bool|SimpleXMLElement
+     * @return bool|\SimpleXMLElement
      */
     public function getLayoutBlock(){
         return $this->layoutBlock;

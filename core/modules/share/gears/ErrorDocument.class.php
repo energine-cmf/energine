@@ -13,7 +13,7 @@ class ErrorDocument;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
  /**
   * Error document.
   *
@@ -24,7 +24,7 @@ class ErrorDocument;
 class ErrorDocument extends Object implements IDocument {
     /**
      * Document.
-     * @var DOMDocument $doc
+     * @var \DOMDocument $doc
      */
     private $doc;
     /**
@@ -45,7 +45,7 @@ class ErrorDocument extends Object implements IDocument {
     }
 
     public function build() {
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc = new \DOMDocument('1.0', 'UTF-8');
         $dom_root = $this->doc->createElement('document');
         $dom_root->setAttribute('debug', $this->getConfigValue('site.debug'));
         $dom_root->setAttribute('url', (string) E()->getRequest()->getURI());
@@ -81,7 +81,7 @@ class ErrorDocument extends Object implements IDocument {
                 'result' => false,
                 'errors' => $errors
             );
-            $result->appendChild(new DOMText(json_encode($data)));
+            $result->appendChild(new \DOMText(json_encode($data)));
         }
         else {
             $error = $this->doc->createElement('error');

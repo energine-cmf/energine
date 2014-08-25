@@ -13,7 +13,7 @@ class Toolbar;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Toolbar.
  *
@@ -29,7 +29,7 @@ class Toolbar extends Object {
 
     /**
      * Document.
-     * @var DOMDocument $doc
+     * @var \DOMDocument $doc
      */
     private $doc;
 
@@ -69,7 +69,7 @@ class Toolbar extends Object {
      */
     public function __construct($name, $imageDir = false) {
         $this->name = $name;
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc = new \DOMDocument('1.0', 'UTF-8');
         $this->imageDir = $imageDir;
     }
 
@@ -148,11 +148,11 @@ class Toolbar extends Object {
     /**
      * Create toolbar from XML description.
      *
-     * @param SimpleXMLElement $toolbarDescription Toolbar description.
+     * @param \SimpleXMLElement $toolbarDescription Toolbar description.
      *
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
-    public function loadXML(SimpleXMLElement $toolbarDescription) {
+    public function loadXML(\SimpleXMLElement $toolbarDescription) {
         if(!empty($toolbarDescription))
         foreach ($toolbarDescription->control as $controlDescription) {
             if (!isset($controlDescription['type'])) {

@@ -14,9 +14,8 @@ interface IBlock;
  *
  * @version 1.0.0
  */
+namespace share\gears;
 
-
-//todo VZ: What is the difference between ComponentManager and ComponentContainer?
 /**
  * Manager of the set of the document's components.
  *
@@ -26,7 +25,7 @@ final class ComponentManager;
  *
  * @final
  */
-final class ComponentManager extends Object implements Iterator {
+final class ComponentManager extends Object implements \Iterator {
 
     /**
      * Set of components.
@@ -136,12 +135,12 @@ final class ComponentManager extends Object implements Iterator {
     /**
      * Create component from XML description.
      *
-     * @param SimpleXMLElement $componentDescription Component description.
+     * @param \SimpleXMLElement $componentDescription Component description.
      * @return Component
      *
      * @throws SystemException ERR_DEV_NO_REQUIRED_ATTRIB [attribute_name]
      */
-    static public function createComponentFromDescription(SimpleXMLElement $componentDescription) {
+    static public function createComponentFromDescription(\SimpleXMLElement $componentDescription) {
         // перечень необходимых атрибутов компонента
         $requiredAttributes = array('name', 'module', 'class');
 
@@ -218,11 +217,11 @@ final class ComponentManager extends Object implements Iterator {
     /**
      * Find block in the component XML description by his name.
      *
-     * @param SimpleXMLElement $containerXMLDescription Component descriptions.
+     * @param \SimpleXMLElement $containerXMLDescription Component descriptions.
      * @param string $blockName Block name.
      * @return IBlock|bool
      */
-    static public function findBlockByName(SimpleXMLElement $containerXMLDescription, $blockName) {
+    static public function findBlockByName(\SimpleXMLElement $containerXMLDescription, $blockName) {
         $blocks = $containerXMLDescription->xpath(
             'descendant-or-self::*[name()="container" or name() = "component"]' .
             '[@name="' . $blockName . '"]'
@@ -241,7 +240,7 @@ final class ComponentManager extends Object implements Iterator {
      * Load the component description from the file.
      *
      * @param string $blockDescriptionFileName File name.
-     * @return SimpleXMLElement
+     * @return \SimpleXMLElement
      *
      * @throws SystemException ERR_DEV_NO_CONTAINER_FILE
      * @throws SystemException ERR_DEV_BAD_CONTAINER_FILE
@@ -260,13 +259,13 @@ final class ComponentManager extends Object implements Iterator {
     /**
      * Create block from description.
      *
-     * @param SimpleXMLElement $blockDescription Block description.
+     * @param \SimpleXMLElement $blockDescription Block description.
      * @param array $additionalProps Additional properties.
      * @return IBlock
      *
      * @throws SystemException ERR_UNKNOWN_BLOCKTYPE
      */
-    static public function createBlockFromDescription(SimpleXMLElement $blockDescription, $additionalProps = array()) {
+    static public function createBlockFromDescription(\SimpleXMLElement $blockDescription, $additionalProps = array()) {
         $result = false;
         switch ($blockDescription->getName()) {
             case 'content':
@@ -369,7 +368,7 @@ interface IBlock {
 
     /**
      * Build block.
-     * @return DOMDocument
+     * @return \DOMDocument
      */
     public function build();
 

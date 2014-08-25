@@ -27,6 +27,8 @@ abstract class Object
  *
  * @abstract
  */
+namespace share\gears;
+
 abstract class Object {
     /**
      * Configuration file name.
@@ -36,7 +38,7 @@ abstract class Object {
     /**
      * System configuration.
      * It has tree structure.
-     * @var SimpleXMLElement $systemConfig
+     * @var \SimpleXMLElement $systemConfig
      */
     private static $systemConfig;
 
@@ -50,7 +52,7 @@ abstract class Object {
      * Start the execution time counter.
      */
     public function startTimer() {
-        $this->executionTime = microtime(true);
+        $this->executionTime = \microtime(true);
     }
 
     /**
@@ -59,7 +61,7 @@ abstract class Object {
      * @return float
      */
     public function stopTimer() {
-        return ($this->executionTime = microtime(true) - $this->executionTime);
+        return ($this->executionTime = \microtime(true) - $this->executionTime);
     }
 
     /**

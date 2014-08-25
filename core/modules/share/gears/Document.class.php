@@ -13,7 +13,8 @@ final class Document;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
+use share\components as cmp;
 /**
  * Page document.
  *
@@ -80,7 +81,7 @@ final class Document extends DBWorker implements IDocument {
 
     /**
      * Result document.
-     * @var DOMDocument $doc
+     * @var \DOMDocument $doc
      */
     private $doc;
 
@@ -224,7 +225,7 @@ final class Document extends DBWorker implements IDocument {
     public function build() {
         //Если у нас не режим json
 
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc = new \DOMDocument('1.0', 'UTF-8');
         $dom_root = $this->doc->createElement('document');
         $dom_root->setAttribute('debug', $this->getConfigValue('site.debug'));
         $dom_root->setAttribute('editable', $this->isEditable());
@@ -343,7 +344,7 @@ final class Document extends DBWorker implements IDocument {
 
             $jsmap = include($jsmap_file);
 
-            $xpath = new DOMXPath($this->doc);
+            $xpath = new \DOMXPath($this->doc);
             $nl = $xpath->query('//javascript/behavior');
 
             if ($nl->length) {
@@ -613,7 +614,7 @@ final class Document extends DBWorker implements IDocument {
             if (!($result = simplexml_load_string(file_get_contents_stripped(
                 Document::TEMPLATES_DIR .
                 constant(
-                    'DivisionEditor::TMPL_' .
+                    'cmp\\DivisionEditor::TMPL_' .
                     strtoupper($type)) .
                 '/' . $fileName)))
             ) {
@@ -629,7 +630,7 @@ final class Document extends DBWorker implements IDocument {
         list($templateData) = $templateData;
 
         libxml_use_internal_errors(true);
-        foreach (array(DivisionEditor::TMPL_LAYOUT, DivisionEditor::TMPL_CONTENT) as $type) {
+        foreach (array(cmp\DivisionEditor::TMPL_LAYOUT, cmp\DivisionEditor::TMPL_CONTENT) as $type) {
             //Если нет данных поле
             if (!$templateData[$type]) {
                 //Берем из файла

@@ -13,7 +13,7 @@ class Field;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 
 /**
  * Data field.
@@ -22,7 +22,7 @@ class Field;
 class Field;
 @endcode
  */
-class Field extends Object implements Iterator {
+class Field extends Object implements \Iterator {
     /**
      * Set of additional properties.
      * @var array $properties

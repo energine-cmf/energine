@@ -14,8 +14,8 @@ interface SampleDivisionEditor;
  *
  * @version 1.0.0
  */
-
-
+namespace share\components;
+use share\gears, share\gears\FieldDescription;
 /**
  * Division editor.
  *
@@ -235,7 +235,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                 $r[basename($folderPath)] = $folderPath;
             }
         }
-        $d = new DOMDocument('1.0', 'UTF-8');
+        $d = new \DOMDocument('1.0', 'UTF-8');
         foreach ($r as $path) {
             $path = str_replace($dirPath, '', $path);
             list($name, $tp) = explode('.', substr(basename($path), 0, -4));
@@ -485,8 +485,8 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $newField->setProperty('tabName', $contentFD->getPropertyValue('tabName'));
 
             $this->getDataDescription()->addFieldDescription($newField, DataDescription::FIELD_POSITION_AFTER, 'smap_content');
-            $newField = new Field('smap_content_xml');
-            $doc = new DOMDocument();
+            $newField = new \share\gears\Field('smap_content_xml');
+            $doc = new \DOMDocument();
             $doc->loadXML($contentXMLFieldData);
             $doc->formatOutput = true;
             $doc->preserveWhiteSpace = true;
@@ -605,8 +605,8 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             case 'showPageToolbar':
                 $result = false;
                 // вызываем родительский метод построения
-                $result = Component::build();
-                if ($result instanceof DOMDocument) {
+                $result = gears\Component::build();
+                if ($result instanceof \DOMDocument) {
                     $result->documentElement->appendChild($result->importNode($this->buildJS(), true));
                     $tbs = $this->getToolbar();
                     if (!empty($tbs))

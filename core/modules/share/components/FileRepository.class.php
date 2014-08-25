@@ -13,7 +13,7 @@ class FileRepository;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
 /**
  * File repository.
  *

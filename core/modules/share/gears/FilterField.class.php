@@ -13,7 +13,7 @@ class FilterField;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 
 //todo VZ: This is very similar to Control class.
 //todo Pavka: But this is not control .... hmm .... but why not? :)
@@ -33,7 +33,7 @@ class FilterField extends Object {
 
     /**
      * Document.
-     * @var DOMDocument $doc
+     * @var \DOMDocument $doc
      */
     protected $doc;
 
@@ -64,11 +64,12 @@ class FilterField extends Object {
 
     /**
      * @param string $name Name.
+     * @param string
      */
     public function __construct($name, $type = FieldDescription::FIELD_TYPE_STRING) {
         $this->setAttribute('name', $name);
         $this->type = $type;
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc = new \DOMDocument('1.0', 'UTF-8');
     }
 
     /**
@@ -115,11 +116,11 @@ class FilterField extends Object {
     /**
      * Load element from XML description.
      *
-     * @param SimpleXMLElement $description Element description.
+     * @param \SimpleXMLElement $description Element description.
      * @param array $meta DB column meta data
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
-    public function load(SimpleXMLElement $description, array $meta = null) {
+    public function load(\SimpleXMLElement $description, array $meta = null) {
         //Получили список аттрибутов заданных в филдах фильтра
         //Get the attributes list form filter fields
         $attrs = (array)$description->attributes();

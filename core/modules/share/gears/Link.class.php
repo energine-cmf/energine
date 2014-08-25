@@ -14,7 +14,7 @@ class Link;
  * @version 1.0.0
  */
 
-//todo VZ: This is very similar to the Button.
+namespace share\gears;
 /**
  * Link control element.
  *

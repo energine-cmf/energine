@@ -255,6 +255,8 @@ final class CalendarItem
  *
  * @final
  */
+use share\gears;
+
 final class CalendarItem extends Object implements Iterator {
     /**
      * Property iterator position.

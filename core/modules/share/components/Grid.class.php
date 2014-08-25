@@ -13,6 +13,8 @@ class Grid;
  *
  * @version 1.0.0
  */
+namespace share\components;
+use share\gears, share\gears\SystemException, share\gears\FieldDescription;
 
 /**
  * Grid.
@@ -109,10 +111,10 @@ class Grid extends DBDataSet {
         if (!$this->params['config']) {
             $fileName = get_class($this) . '.component.xml';
             $fileConf =
-                sprintf(SITE_DIR . ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
+                sprintf(SITE_DIR . gears\ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
                 $fileName;
             $coreConf =
-                sprintf(CORE_DIR . ComponentConfig::CORE_CONFIG_DIR, $this->module) .
+                sprintf(CORE_DIR . gears\ComponentConfig::CORE_CONFIG_DIR, $this->module) .
                 $fileName;
             if (file_exists($fileConf)) {
                 $params['config'] = $fileConf;
@@ -120,7 +122,7 @@ class Grid extends DBDataSet {
                 $params['config'] = $coreConf;
             } else {
                 $params['config'] =
-                    sprintf(CORE_DIR . ComponentConfig::CORE_CONFIG_DIR, 'share/') .
+                    sprintf(CORE_DIR . gears\ComponentConfig::CORE_CONFIG_DIR, 'share/') .
                     'Grid.component.xml';
             }
         }
@@ -136,7 +138,7 @@ class Grid extends DBDataSet {
      */
     protected function getConfig() {
         if (!$this->config) {
-            $this->config = new GridConfig(
+            $this->config = new gears\GridConfig(
                 $this->getParam('config'),
                 get_class($this),
                 $this->module
@@ -156,7 +158,7 @@ class Grid extends DBDataSet {
         foreach ($this->getDataDescription() as $fdName => $fieldDescription) {
             if (($default = $fieldDescription->getPropertyValue('default')) || ($default === '0')) {
                 if (!($f = $this->getData()->getFieldByName($fdName))) {
-                    $f = new Field($fdName);
+                    $f = new gears\Field($fdName);
                     $this->getData()->addField($f);
                 }
                 $f->setData($default, true);
@@ -747,7 +749,7 @@ class Grid extends DBDataSet {
             $res = $this->dbh->get($request);
 
             if ($res && $res->rowCount()) {
-                while ($row = $res->fetch(PDO::FETCH_LAZY)) {
+                while ($row = $res->fetch(\PDO::FETCH_LAZY)) {
                     $tmpRow = array();
                     foreach ($row as $fieldName => $fieldValue) {
                         if ($fd = $dd->getFieldDescriptionByName($fieldName)) {
@@ -1242,7 +1244,7 @@ class Grid extends DBDataSet {
      * @throws SystemException 'ERR_NO_DATA'
      */
     protected function autoCompleteTags() {
-        $b = new JSONCustomBuilder();
+        $b = new gears\JSONCustomBuilder();
         $this->setBuilder($b);
 
         try {
@@ -1250,7 +1252,7 @@ class Grid extends DBDataSet {
                 throw new SystemException('ERR_NO_DATA', SystemException::ERR_CRITICAL);
             } else {
 
-                $tags = TagManager::getTagStartedWith($_POST['value'], 10);
+                $tags = gears\TagManager::getTagStartedWith($_POST['value'], 10);
                 $result['result'] = true;
 
                 if (is_array($tags) && !empty($tags)) {
@@ -1262,7 +1264,7 @@ class Grid extends DBDataSet {
                     }
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result = array(
                 'result' => false,
                 'data' => false,
@@ -1288,7 +1290,7 @@ class Grid extends DBDataSet {
      */
     protected function createFilter() {
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
-            $this->filter_control = new Filter();
+            $this->filter_control = new gears\Filter();
             $cInfo = $this->dbh->getColumnsInfo($this->getTableName());
             if ($this->getTranslationTableName()) {
                 $cInfo = array_merge($cInfo, $this->dbh->getColumnsInfo($this->getTranslationTableName()));
@@ -1302,7 +1304,7 @@ class Grid extends DBDataSet {
                         && !strpos($fName, '_num')
                         && array_key_exists($fName, $cInfo)
                     ) {
-                        $ff = new FilterField($fName, $fAttributes->getType());
+                        $ff = new gears\FilterField($fName, $fAttributes->getType());
                         $ff->setAttribute('tableName', $cInfo[$fName]['tableName']);
                         $ff->setAttribute('title', 'FIELD_' . $fName);
                         $this->filter_control->attachField($ff);

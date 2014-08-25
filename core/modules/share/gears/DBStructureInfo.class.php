@@ -13,7 +13,7 @@ final class DBStructureInfo;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Data base structure information.
  *
@@ -47,14 +47,14 @@ array(
     /**
      * PDO (PHP Data Objects).
      *
-     * @var PDO $pdo
+     * @var \PDO $pdo
      */
     private $pdo;
 
     /**
-     * @param PDO $pdo PDO instance.
+     * @param \PDO $pdo PDO instance.
      */
-    public function __construct(PDO $pdo) {
+    public function __construct(\PDO $pdo) {
         $this->pdo = $pdo;
         $mc = E()->getCache();
         if($mc->isEnabled()){
@@ -147,7 +147,7 @@ array(
      * @return array|bool
      */
     private function analyzeView($viewName){
-        if(!($res = $this->pdo->query('/*ms=slave*/SHOW COLUMNS FROM `'.$viewName.'`')->fetchAll(PDO::FETCH_ASSOC))) return false;
+        if(!($res = $this->pdo->query('/*ms=slave*/SHOW COLUMNS FROM `'.$viewName.'`')->fetchAll(\PDO::FETCH_ASSOC))) return false;
         //Считаем что первое поле - PK
 
         $result = array();

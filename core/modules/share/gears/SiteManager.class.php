@@ -13,7 +13,7 @@ final class SiteManager;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Site manager.
  *
@@ -23,7 +23,7 @@ final class SiteManager;
  *
  * @final
  */
-final class SiteManager extends DBWorker implements Iterator {
+final class SiteManager extends DBWorker implements \Iterator {
     /*
      * Instance of the current class.
      *

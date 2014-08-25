@@ -13,7 +13,7 @@ final class UserSession;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Manager of user sessions.
  *
@@ -101,11 +101,11 @@ final class UserSession extends DBWorker {
     /**
      * @param bool $force Force to create session?
      *
-     * @throws SystemException 'ERR_NO_CONSTRUCTOR'
+     * @throws \SystemException 'ERR_NO_CONSTRUCTOR'
      */
     public function __construct($force = false) {
         if (!self::$instance) {
-            throw new SystemException('ERR_NO_CONSTRUCTOR');
+            throw new \SystemException('ERR_NO_CONSTRUCTOR');
         }
 
         parent::__construct();
@@ -243,11 +243,11 @@ final class UserSession extends DBWorker {
      * @see index.php
      * @see auth.php
      *
-     * @throws SystemException 'ERR_SESSION_ALREADY_STARTED'
+     * @throws \SystemException 'ERR_SESSION_ALREADY_STARTED'
      */
     public static function start($force = false) {
         if (self::$instance) {
-            throw new SystemException('ERR_SESSION_ALREADY_STARTED');
+            throw new \SystemException('ERR_SESSION_ALREADY_STARTED');
         }
         self::$instance = true;
 

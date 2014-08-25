@@ -13,7 +13,8 @@ class DBDataSet;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
+use share\gears, share\gears\SystemException, share\gears\FieldDescription;
 /**
  * Class that shows the data from data base.
  *
@@ -774,7 +775,7 @@ class DBDataSet extends DataSet {
                 foreach ($config as $key => $value) {
                     if (isset($value['caption'])) $config[$key]['caption'] = $this->translate($value['caption']);
                 }
-                $JSObjectXML->appendChild(new DomText(json_encode($config)));
+                $JSObjectXML->appendChild(new \DomText(json_encode($config)));
                 $result->appendChild($JSObjectXML);
             }
         }
@@ -814,7 +815,7 @@ class DBDataSet extends DataSet {
             $langID = E()->getLanguage()->getCurrent();
             $entityId = (int)$_POST['ID'];
             $field = $_POST['num'];
-            $this->dbh->modify(QAL::UPDATE, $this->getTranslationTableName(), array($field => $result), array('lang_id' => $langID, $this->getPK() => $entityId));
+            $this->dbh->modify(gears\QAL::UPDATE, $this->getTranslationTableName(), array($field => $result), array('lang_id' => $langID, $this->getPK() => $entityId));
 
         }
 

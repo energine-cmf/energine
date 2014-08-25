@@ -15,7 +15,7 @@ final class TreeConverter;
  * @version 1.0.0
  */
 
-//require_once('TreeNodeList.class.php');
+namespace share\gears;
 
 /**
  * Convert Tree.
@@ -60,7 +60,7 @@ final class TreeConverter{
      * @param string $parentKeyName Field name that holds an parent ID.
 	 * @return TreeNodeList
 	 *
-     * @throws Exception 'Неправильный формат древовидных данных'
+     * @throws \Exception 'Неправильный формат древовидных данных'
 	 */
 	static public function convert(array $data, $keyName, $parentKeyName) {
         self::$keyName = $keyName;
@@ -68,7 +68,7 @@ final class TreeConverter{
 
         //Проверяем данные на правильность
 	    if (!self::validate($data)) {
-            throw new Exception('Неправильный формат древовидных данных');
+            throw new \Exception('Неправильный формат древовидных данных');
         }
         return self::iterate($data, self::$treeNodeList = new TreeNodeList());
 	}

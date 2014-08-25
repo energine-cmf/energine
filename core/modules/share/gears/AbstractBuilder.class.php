@@ -13,7 +13,7 @@ abstract class AbstractBuilder;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Builder.
  *
@@ -40,7 +40,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
     /**
      * Result document.
-     * @var DOMDocument $result
+     * @var \DOMDocument $result
      */
     protected $result;
 
@@ -81,14 +81,14 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
      */
     public function build() {
-        $this->result = new DOMDocument('1.0', 'UTF-8');
+        $this->result = new \DOMDocument('1.0', 'UTF-8');
 
         // если отсутствует описание данных - построение невозможно
         if ($this->dataDescription == false) {
             throw new SystemException('ERR_DEV_NO_DATA_DESCRIPTION', SystemException::ERR_DEVELOPER);
         }
         $this->run();
-        return ($this->result instanceof DOMDocument ? true : false);
+        return ($this->result instanceof \DOMDocument ? true : false);
     }
 
     /**

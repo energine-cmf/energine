@@ -1,5 +1,5 @@
 <?php
-
+namespace share\gears;
 /**
  * @file
  * Data.

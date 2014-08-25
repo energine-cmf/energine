@@ -14,7 +14,7 @@ final class TreeNode;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * List of nodes.
  *
@@ -22,7 +22,7 @@ final class TreeNode;
 class TreeNodeList;
 @endcode
  */
-class TreeNodeList implements Iterator{
+class TreeNodeList implements \Iterator{
     /**
      * Internal pointer.
      * @var mixed $currentKey
@@ -211,7 +211,7 @@ final class TreeNode;
  *
  * @final
  */
-final class TreeNode implements IteratorAggregate{
+final class TreeNode implements \IteratorAggregate{
     /**
      * Node ID.
      * @var int $id

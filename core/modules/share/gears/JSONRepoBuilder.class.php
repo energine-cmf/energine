@@ -13,7 +13,7 @@ class JSONRepoBuilder;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Build data in JSON (JavaScript Object Notation) format.
  *

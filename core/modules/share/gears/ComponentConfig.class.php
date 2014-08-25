@@ -13,7 +13,7 @@ class ComponentConfig;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Component configuration manager.
  *
@@ -41,13 +41,13 @@ class ComponentConfig {
 
     /**
      * Configuration file.
-     * @var SimpleXMLElement $config
+     * @var \SimpleXMLElement $config
      */
     private $config = false;
 
     /**
      * Configuration of the current state.
-     * @var SimpleXMLElement $currentState
+     * @var \SimpleXMLElement $currentState
      */
     private $currentState = false;
 
@@ -148,7 +148,7 @@ class ComponentConfig {
     /**
      * Get configuration of current state.
      *
-     * @return SimpleXMLElement
+     * @return \SimpleXMLElement
      */
     public function getCurrentStateConfig() {
         return $this->currentState;
@@ -249,7 +249,7 @@ class ComponentConfig {
      * Get state configuration for specific state.
      *
      * @param string $methodName Method name.
-     * @return SimpleXMLElement|false
+     * @return \SimpleXMLElement|false
      */
     public function getStateConfig($methodName) {
         $result = false;

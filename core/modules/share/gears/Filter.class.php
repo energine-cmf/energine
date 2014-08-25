@@ -13,7 +13,7 @@ class Filter;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Filters.
  *
@@ -30,7 +30,7 @@ class Filter extends Object {
 
     /**
      * Document.
-     * @var DOMDocument $doc
+     * @var \DOMDocument $doc
      */
     private $doc;
 
@@ -252,11 +252,11 @@ class Filter extends Object {
      *
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      *
-     * @param SimpleXMLElement $filterDescription Filter description.
+     * @param \SimpleXMLElement $filterDescription Filter description.
      * @param array $meta Info about table columns
      * @return mixed
      */
-    public function load(SimpleXMLElement $filterDescription, array $meta = null) {
+    public function load(\SimpleXMLElement $filterDescription, array $meta = null) {
         if (!empty($filterDescription))
             foreach ($filterDescription->field as $fieldDescription) {
                 if (!isset($fieldDescription['name'])) {
@@ -310,7 +310,7 @@ class Filter extends Object {
         $result = false;
         if (sizeof($this->fields)) {
             $this->translate();
-            $this->doc = new DOMDocument('1.0', 'UTF-8');
+            $this->doc = new \DOMDocument('1.0', 'UTF-8');
             $filterElem = $this->doc->createElement(self::TAG_NAME);
             $filterElem->setAttribute('title', DBWorker::_translate('TXT_FILTER'));
             $filterElem->setAttribute('apply', DBWorker::_translate('BTN_APPLY_FILTER'));

@@ -13,7 +13,7 @@ class TagManager;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Tag manager.
  *

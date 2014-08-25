@@ -24,11 +24,11 @@ class JSONTransformer;
 class JSONTransformer implements ITransformer {
     /**
      * DOM document.
-     * @var DOMDocument $document
+     * @var \DOMDocument $document
      */
     private $document;
 
-    public function setDocument(DOMDocument $document) {
+    public function setDocument(\DOMDocument $document) {
         $this->document = $document;
     }
 

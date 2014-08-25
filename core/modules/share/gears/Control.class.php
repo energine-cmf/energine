@@ -13,7 +13,7 @@ abstract class Control;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 //todo VZ: There should be Element class that is extended from Object and has all needed methods and members.
 /**
  * Toolbar control.
@@ -33,7 +33,7 @@ abstract class Control extends Object {
 
     /**
      * Document.
-     * @var DOMDocument $doc
+     * @var \DOMDocument $doc
      */
     protected $doc;
 
@@ -75,7 +75,7 @@ abstract class Control extends Object {
      */
     public function __construct($id) {
         $this->setAttribute('id', $id);
-        $this->doc = new DOMDocument('1.0', 'UTF-8');
+        $this->doc = new \DOMDocument('1.0', 'UTF-8');
     }
 
     /**
@@ -126,11 +126,11 @@ abstract class Control extends Object {
     /**
      * Load element from XML description.
      *
-     * @param SimpleXMLElement $description Element description.
+     * @param \SimpleXMLElement $description Element description.
      *
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
-    public function loadFromXml(SimpleXMLElement $description) {
+    public function loadFromXml(\SimpleXMLElement $description) {
         if (!isset($description['type'])) {
             throw new SystemException('ERR_DEV_NO_CONTROL_TYPE', SystemException::ERR_DEVELOPER);
         }

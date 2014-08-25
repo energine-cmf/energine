@@ -13,7 +13,7 @@ class AuthUser;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 
 /**
  * Authenticated user.

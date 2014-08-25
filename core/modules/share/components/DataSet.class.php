@@ -14,7 +14,8 @@ abstract class DataSet;
  * @version 1.0.0
  */
 
-
+namespace share\components;
+use share\gears, share\gears\SystemException, share\gears\DataDescription, share\gears\FieldDescription;
 /**
  * Abstract data set.
  *
@@ -26,7 +27,7 @@ abstract class DataSet;
  *
  * @abstract
  */
-abstract class DataSet extends Component {
+abstract class DataSet extends gears\Component {
     /**
      * File library.
      * @var FileRepository $fileLibrary
@@ -60,13 +61,13 @@ abstract class DataSet extends Component {
      * Form type: insert form.
      * @var string COMPONENT_TYPE_FORM_ADD
      */
-    const COMPONENT_TYPE_FORM_ADD = QAL::INSERT;
+    const COMPONENT_TYPE_FORM_ADD = gears\QAL::INSERT;
 
     /**
      * Form type: edit form.
      * @var string COMPONENT_TYPE_FORM_ALTER
      */
-    const COMPONENT_TYPE_FORM_ALTER = QAL::UPDATE;
+    const COMPONENT_TYPE_FORM_ALTER = gears\QAL::UPDATE;
 
     /**
      * Prefix for toolbar name.
@@ -76,13 +77,13 @@ abstract class DataSet extends Component {
 
     /**
      * Data description.
-     * @var DataDescription $dataDescription
+     * @var gears\DataDescription $dataDescription
      */
     private $dataDescription = false;
 
     /**
      * Data
-     * @var Data $data
+     * @var gears\Data $data
      */
     private $data = false;
 
@@ -94,7 +95,7 @@ abstract class DataSet extends Component {
 
     /**
      * JavaScript
-     * @var DOMNode $js
+     * @var \DOMNode $js
      */
     protected $js;
 
@@ -106,7 +107,7 @@ abstract class DataSet extends Component {
 
     /**
      * List of pages (pager).
-     * @var Pager $pager
+     * @var gears\Pager $pager
      */
     protected $pager;
     /**
@@ -154,14 +155,14 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function setData(Data $data) {
+    final protected function setData(gears\Data $data) {
         $this->data = $data;
     }
 
     /**
      * Get data.
      *
-     * @return Data
+     * @return gears\Data
      *
      */
     public function getData() {
@@ -172,7 +173,7 @@ abstract class DataSet extends Component {
      * Get toolbar(s).
      *
      * @param string|bool $toolbarName Toolbar name.
-     * @return Toolbar|array
+     * @return gears\Toolbar|array
      */
     protected function getToolbar($toolbarName = false) {
         $result = array();
@@ -197,7 +198,7 @@ abstract class DataSet extends Component {
             $toolbar = array($toolbar);
         }
         foreach ($toolbar as $tb)
-            if ($tb instanceof Toolbar) {
+            if ($tb instanceof gears\Toolbar) {
                 $this->toolbar[$tb->getName()] = $tb;
             } else {
                 throw new SystemException('ERR_BAD_TOOLBAR', SystemException::ERR_DEVELOPER);
@@ -209,14 +210,14 @@ abstract class DataSet extends Component {
      *
      * @final
      */
-    final protected function setDataDescription(DataDescription $dataDescription) {
+    final protected function setDataDescription(gears\DataDescription $dataDescription) {
         $this->dataDescription = $dataDescription;
     }
 
     /**
      * Возвращает описание данных
      *
-     * @return DataDescription
+     * @return gears\DataDescription
      * @final
      *
      * @throws SystemException 'ERR_DEV_NO_DATA_DESCRIPTION'
@@ -259,24 +260,24 @@ abstract class DataSet extends Component {
     /**
      * Create builder.
      *
-     * @return AbstractBuilder
+     * @return gears\AbstractBuilder
      */
     protected function createBuilder() {
         if (!isset($this->builder) || !$this->builder)
-            return new Builder($this->getTitle());
+            return new gears\Builder($this->getTitle());
         else return $this->builder;
     }
 
     /**
      * Create data description.
      *
-     * @return DataDescription
+     * @return gears\DataDescription
      *
      * @throws SystemException 'ERR_DEV_LOAD_DATA_DESCR_IS_FUNCTION'
      */
     protected function createDataDescription() {
         // описание данных из конфигурации
-        $configDataDescriptionObject = new DataDescription();
+        $configDataDescriptionObject = new gears\DataDescription();
         if ($this->getConfig()->getCurrentStateConfig()) {
             $configDataDescriptionObject->loadXML($this->getConfig()->getCurrentStateConfig()->fields);
         }
@@ -290,7 +291,7 @@ abstract class DataSet extends Component {
 
         // если существует внешнее описание данных - пересекаем с описанием из конфиг
         if ($externalDataDescription) {
-            $externalDataDescriptionObject = new DataDescription();
+            $externalDataDescriptionObject = new gears\DataDescription();
             $externalDataDescriptionObject->load($externalDataDescription);
             $configDataDescriptionObject =
                 $configDataDescriptionObject->intersect($externalDataDescriptionObject);
@@ -302,7 +303,7 @@ abstract class DataSet extends Component {
     /**
      * Create toolbar
      *
-     * @return Toolbar|Toolbar[]
+     * @return Toolbar|gears\Toolbar[]
      */
     protected function createToolbar() {
         $result = array();
@@ -312,7 +313,7 @@ abstract class DataSet extends Component {
                     (string)$toolbarDescription['name'] :
                     self::TB_PREFIX . $this->getName();
 
-                $toolbar = new Toolbar($toolbarName);
+                $toolbar = new gears\Toolbar($toolbarName);
                 $toolbar->attachToComponent($this);
                 $toolbar->loadXML($toolbarDescription);
                 $toolbar->translate();
@@ -328,7 +329,7 @@ abstract class DataSet extends Component {
     protected function createPager() {
         $recordsPerPage = intval($this->getParam('recordsPerPage'));
         if ($recordsPerPage > 0) {
-            $this->pager = new Pager($recordsPerPage);
+            $this->pager = new gears\Pager($recordsPerPage);
             if ($this->isActive() &&
                 $this->getType() == self::COMPONENT_TYPE_LIST
             ) {
@@ -433,7 +434,7 @@ abstract class DataSet extends Component {
      */
     protected function getConfig() {
         if (!$this->config) {
-            $this->config = new DataSetConfig(
+            $this->config = new gears\DataSetConfig(
                 $this->getParam('config'),
                 get_class($this),
                 $this->module
@@ -455,7 +456,7 @@ abstract class DataSet extends Component {
         if (is_null($data)) {
             throw new SystemException('ERR_DEV_LOAD_DATA_IS_FUNCTION', SystemException::ERR_DEVELOPER);
         }
-        $result = new Data();
+        $result = new gears\Data();
 
         if (is_array($data)) {
             $result->load($data);
@@ -505,7 +506,7 @@ abstract class DataSet extends Component {
         // если у нас не полностью сформированный путь, то добавляем информацию о языке + путь к шаблону
         if (!$isFullURI) {
             $action = $this->request->getLangSegment() .
-                $this->request->getPath(Request::PATH_TEMPLATE, true) .
+                $this->request->getPath(gears\Request::PATH_TEMPLATE, true) .
                 $action;
 
             // если в конце нет слеша - добавляем его
@@ -699,7 +700,7 @@ abstract class DataSet extends Component {
             ),
             array(
                 'upl_id' => intval($uplId),
-                'upl_internal_type' => FileRepoInfo::META_TYPE_VIDEO
+                'upl_internal_type' => gears\FileRepoInfo::META_TYPE_VIDEO
             )
         );
         if(!is_array($fileInfo)) {
@@ -718,9 +719,9 @@ abstract class DataSet extends Component {
             $fd->setType($fType);
             $dd->addFieldDescription($fd);
         }
-        $this->setBuilder(new SimpleBuilder());
+        $this->setBuilder(new gears\SimpleBuilder());
         $this->setDataDescription($dd);
-        $data = new Data();
+        $data = new gears\Data();
         $data->load(
           array(
               array(
@@ -741,12 +742,12 @@ abstract class DataSet extends Component {
      * @return string
      */
     public static function cleanupHTML($data) {
-        $aggressive = Object::_getConfigValue('site.aggressive_cleanup', false);
+        $aggressive = gears\Object::_getConfigValue('site.aggressive_cleanup', false);
 
         //Если подключено расширение tidy
         if (function_exists('tidy_get_output') && $aggressive) {
             try {
-                $tidy = new tidy();
+                $tidy = new \tidy();
                 $config = array(
                     'bare' => true,
                     'drop-font-tags' => true,
@@ -772,7 +773,7 @@ abstract class DataSet extends Component {
                 //}
                 $data = $tidy->repairString($data, $config, 'utf8');
 
-            } catch (Exception $dummyError) {
+            } catch (\Exception $dummyError) {
                 //inspect($dummyError);
             }
             unset($tidy);

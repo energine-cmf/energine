@@ -13,6 +13,10 @@ class AttachmentEditor;
  *
  * @version 1.0.0
  */
+namespace share\components;
+use share\gears;
+use share\gears\FieldDescription;
+use share\gears\SystemException;
 
 /**
  * Attachment editor.
@@ -208,7 +212,7 @@ class AttachmentEditor extends Grid
     /**
      * Save quick upload.
      *
-     * @throws Exception
+     * @throws \Exception
      * @throws SystemException
      */
     protected function savequickupload()
@@ -240,7 +244,7 @@ class AttachmentEditor extends Grid
                 $langs = E()->getLanguage()->getLanguages();
                 foreach ($langs as $lang_id => $lang_data) {
                     $this->dbh->modify(
-                        QAL::INSERT,
+                        gears\QAL::INSERT,
                         $langTable,
                         array_merge($fields, array('lang_id' => $lang_id))
                     );
@@ -249,7 +253,7 @@ class AttachmentEditor extends Grid
 
             $transactionStarted = !($this->dbh->commit());
 
-            $b = new JSONCustomBuilder();
+            $b = new gears\JSONCustomBuilder();
             $b->setProperties(array(
                 'data' => (is_int($result)) ? $result : false,
                 'result' => true,
@@ -282,7 +286,7 @@ class AttachmentEditor extends Grid
         }
 
         //создаем объект описания данных
-        $dataDescriptionObject = new DataDescription();
+        $dataDescriptionObject = new gears\DataDescription();
 
         if (!method_exists($this, $this->getPreviousState())) {
             throw new SystemException('ERR_NO_ACTION', SystemException::ERR_CRITICAL);

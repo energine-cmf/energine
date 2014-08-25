@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * LangSwitcher
@@ -14,7 +13,8 @@ final class LangSwitcher;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
+use share\gears\SimpleBuilder, share\gears\Request, share\gears\DataDescription, share\gears\FieldDescription;
 /**
  * language switcher.
  *

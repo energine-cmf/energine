@@ -13,7 +13,7 @@ class XMLTransformer;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * XML Transformer.
  *

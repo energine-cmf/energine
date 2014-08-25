@@ -13,7 +13,8 @@ final class TextBlock;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
+use share\gears\DataDescription, share\gears\FieldDescription, share\gears\Data, share\gears\Field, share\gears\SystemException, share\gears\QAL;
 /**
  * Text block.
  *
@@ -206,7 +207,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
                     foreach ($config as $key => $value) {
                         if (isset($value['caption'])) $config[$key]['caption'] = $this->translate($value['caption']);
                     }
-                    $JSObjectXML->appendChild(new DomText(json_encode($config)));
+                    $JSObjectXML->appendChild(new \DomText(json_encode($config)));
                     $result->appendChild($JSObjectXML);
                 }
             }
@@ -253,7 +254,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
 
 
             $this->dbh->commit();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->dbh->rollback();
             $result = $e->getMessage();
         }

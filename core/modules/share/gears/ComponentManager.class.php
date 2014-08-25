@@ -303,7 +303,8 @@ final class ComponentManager extends Object implements \Iterator {
      */
     static private function _createComponent($name, $module, $class, $params = null) {
         try {
-            $result = new $class($name, $module, $params);
+            $fqClassName = $module.'\\'.'components'.'\\'.$class;
+            $result = new $fqClassName($name, $module, $params);
         }
         catch (SystemException $e) {
             throw new SystemException($e->getMessage(), SystemException::ERR_DEVELOPER, array(

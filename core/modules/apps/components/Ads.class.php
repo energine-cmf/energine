@@ -13,7 +13,8 @@ class Ads;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use share\components\DataSet, apps\gears\AdsManager, share\gears\QAL, share\gears\FieldDescription;
 /**
  * Class to show ad blocks.
  *

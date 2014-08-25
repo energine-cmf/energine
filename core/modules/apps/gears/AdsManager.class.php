@@ -13,7 +13,8 @@ class AdsManager;
  *
  * @version 1.0.0
  */
-
+namespace apps\gears;
+use share\gears\DBWorker, share\gears\DataDescription, share\gears\Data, share\gears\QAL;
 /**
  * Ads manager.
  *
@@ -74,7 +75,7 @@ class AdsManager extends DBWorker {
     /**
      * Save ad information.
      *
-     * @param array $data Data.
+     * @param array $data share\gears\Data.
      * @return array|bool
      */
     public function save(array $data){

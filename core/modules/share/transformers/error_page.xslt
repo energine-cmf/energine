@@ -44,7 +44,7 @@
                         <div class="go_back"><a href="{$BASE}{$LANG_ABBR}">Вернуться на главную</a></div>
                     </div>
                     <div class="footer">
-                        2011
+                        2014
                     </div>
                 </div>
 
@@ -68,19 +68,18 @@
                     <div><strong>File: </strong><xsl:value-of select="@file"/></div>
                     <div><strong>Line: </strong><xsl:value-of select="@line"/></div>
                 </div>
-                <xsl:apply-templates select="customMessages"/>
+                <xsl:if test="customMessage">
+                    <ul>
+                        <xsl:apply-templates select="customMessage"/>
+                    </ul>
+                </xsl:if>
+
             </xsl:if>
         </div>
     </xsl:template>
 
-    <xsl:template match="customMessages">
-        <ul>
-            <xsl:apply-templates />
-        </ul>
-    </xsl:template>
-
     <xsl:template match="customMessage">
-        <li><xsl:value-of select="."/></li>
+        <li><pre><xsl:value-of select="."/></pre></li>
     </xsl:template>
 
 </xsl:stylesheet>

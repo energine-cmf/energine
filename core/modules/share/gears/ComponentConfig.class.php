@@ -65,12 +65,14 @@ class ComponentConfig {
     public function __construct($config, $className, $moduleName) {
         //Если это строка(с именем файла) или false
         if (!$config || is_string($config)) {
+            $className = explode('\\', $className);
+            $className = array_pop($className);
             $config = ($param = $this->getConfigPath($config, $moduleName)) ? $param
                     : $this->getConfigPath($className . '.component.xml', $moduleName);
             if ($config) {
                 try {
                     $this->config = simplexml_load_file($config /*, 'ConfigElement'*/);
-                } catch (Exception  $e) {
+                } catch (\Exception  $e) {
                     throw new SystemException('ERR_DEV_BAD_CONFIG_FILE', SystemException::ERR_DEVELOPER, $config);
                 }
             }

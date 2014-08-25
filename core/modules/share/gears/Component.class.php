@@ -24,7 +24,10 @@ class Component;
  */
 class Component extends DBWorker implements IBlock {
     /**
-     * Default state name: @code 'main' @endcode
+     * Default state name:
+     * @code
+     * 'main'
+     * @endcode
      * @var string DEFAULT_STATE_NAME
      */
     const DEFAULT_STATE_NAME = 'main';
@@ -100,16 +103,6 @@ class Component extends DBWorker implements IBlock {
      * @var array $errors
      */
     private $errors = array();
-
-    //todo VZ: Remove this?
-    /*
-     * Результат является объектом класса DOMNode или boolean:
-     * true - компонент отработал успешно, но ничего не вывел;
-     * false - произошла ошибка при работе компонента.
-     *
-     * @var mixed результат работы компонента
-     */
-    //private $result;
 
     /**
      * Name of the current component state.

@@ -614,7 +614,7 @@ final class Document extends DBWorker implements IDocument {
             if (!($result = simplexml_load_string(file_get_contents_stripped(
                 Document::TEMPLATES_DIR .
                 constant(
-                    'cmp\\DivisionEditor::TMPL_' .
+                    'share\\components\\DivisionEditor::TMPL_' .
                     strtoupper($type)) .
                 '/' . $fileName)))
             ) {
@@ -631,6 +631,7 @@ final class Document extends DBWorker implements IDocument {
 
         libxml_use_internal_errors(true);
         foreach (array(cmp\DivisionEditor::TMPL_LAYOUT, cmp\DivisionEditor::TMPL_CONTENT) as $type) {
+
             //Если нет данных поле
             if (!$templateData[$type]) {
                 //Берем из файла

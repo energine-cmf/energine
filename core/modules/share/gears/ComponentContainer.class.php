@@ -13,7 +13,7 @@ class ComponentContainer
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Container of components.
  *
@@ -21,7 +21,7 @@ class ComponentContainer
 class ComponentContainer
 @endcode
  */
-class ComponentContainer extends Object implements IBlock, Iterator{
+class ComponentContainer extends Object implements IBlock, \Iterator{
     /**
      * Defines whether the component container is enabled.
      * @var bool $enabled

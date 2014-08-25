@@ -17,7 +17,10 @@
     margin: 0px;
 }
 
-.errors ul {
+.error_item ul {
     margin: 0px;
     padding: 10px 10px 10px 30px;
+}
+.error_item pre {
+    width: 100%;
 }

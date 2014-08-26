@@ -10,7 +10,8 @@ class NewsEditorSaver;
  *
  * @version 1.0.0
  */
-
+namespace apps\gears;
+use share\gears\Data, share\gears\ExtendedSaver, share\gears\Translit, share\gears\Field;
 /**
  * Saver for news editor.
  *

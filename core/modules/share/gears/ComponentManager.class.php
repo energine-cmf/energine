@@ -211,7 +211,7 @@ final class ComponentManager extends Object implements \Iterator {
      * @return Component
      */
     public function createComponent($name, $module, $class, $params = null) {
-        return call_user_func_array(array('ComponentManager', '_createComponent'), func_get_args());
+        return call_user_func_array(array('share\\gears\\ComponentManager', '_createComponent'), func_get_args());
     }
 
     /**

@@ -13,7 +13,9 @@ class CommentsJSONBuilder;
  *
  * @version 1.0.0
  */
+namespace comments\gears;
 
+use share\gears\JSONBuilder, share\gears\SystemException, share\gears\FieldDescription;
 /**
  * Builder for comments.
  *

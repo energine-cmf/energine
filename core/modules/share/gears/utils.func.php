@@ -106,7 +106,7 @@ function simple_log($var){
 function dump_log($var, $append = false) {
     $t = microtime(true);
     $micro = sprintf("%06d",($t - floor($t)) * 1000000);
-    $d = new DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
+    $d = new \DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
 
     $flags = ($append ? FILE_APPEND : null);
     ob_start();
@@ -379,4 +379,13 @@ function str_replace_opt($from, $to, $src) {
         }
     }
     return $src;
+}
+
+/**
+ * @param $fullyQualifiedClassName string
+ * @return string
+ */
+function simplifyClassName($fullyQualifiedClassName){
+    $className = explode('\\', $fullyQualifiedClassName);
+    return array_pop($className);
 }

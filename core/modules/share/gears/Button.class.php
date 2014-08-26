@@ -14,7 +14,7 @@ class Button;
  * @version 1.0.0
  */
 
-
+namespace share\gears;
 /**
  * Button control.
  *
@@ -97,7 +97,6 @@ class Button extends Control {
     }
 }
 
-//todo VZ: remove this?
 /**
  * File.
  */

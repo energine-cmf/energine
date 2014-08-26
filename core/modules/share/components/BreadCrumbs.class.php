@@ -13,7 +13,8 @@ final class BreadCrumbs;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
+use share\gears\DataDescription, share\gears\FieldDescription, share\gears\SimpleBuilder, share\gears\Data;
 
 /**
  * "Bread crumbs"

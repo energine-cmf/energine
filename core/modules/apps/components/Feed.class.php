@@ -13,7 +13,9 @@ class Feed;
  *
  * @version 1.0.0
  */
+namespace apps\components;
 
+use share\components\DBDataSet, share\gears\QAL, share\gears\FieldDescription;
 /**
  * Parent class for components on the site structure.
  *
@@ -32,6 +34,7 @@ class Feed extends DBDataSet {
      * @copydoc DBDataSet::__construct
      */
     public function __construct($name, $module, array $params = null) {
+
         parent::__construct($name, $module, $params);
         //Если title не указан  - устанавливаем дефолтный
         if(!$this->getProperty('title')){

@@ -14,7 +14,9 @@ class LoginForm;
  * @version 1.0.0
  */
 
+namespace user\components;
 
+use share\components\DataSet, share\gears\Object, share\gears\FieldDescription, share\gears\UserSession, share\gears\Field;
 /**
  * Show login form.
  *
@@ -124,7 +126,6 @@ class LoginForm extends DataSet implements SampleLoginForm {
     }
 }
 
-//todo VZ: for what is this?
 /**
  * Fake interface for login form.
  */

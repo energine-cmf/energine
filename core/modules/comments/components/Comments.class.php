@@ -12,7 +12,8 @@ class Comments;
  *
  * @version 1.0.0
  */
-
+namespace comments\components;
+use share\gears\DBWorker, share\gears\QAL;
 /**
  * Comments CRUD.
  *

@@ -14,7 +14,7 @@ class FileRepositoryLocal;
  * @version 1.0.0
  */
 
-
+namespace share\gears;
 /**
  * Implementation of file loader interface IFileRepository for local FTP repositories.
  *

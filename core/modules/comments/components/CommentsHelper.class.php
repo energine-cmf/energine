@@ -12,7 +12,8 @@ class CommentsHelper;
  *
  * @version 1.0.0
  */
-
+namespace comments\components;
+use share\gears\DataDescription, share\gears\Data, share\gears\FieldDescription, share\gears\Field, share\gears\Builder, share\gears\TreeBuilder, share\gears\TreeConverter;
 /**
  * Comments helper.
  *
@@ -99,7 +100,7 @@ class CommentsHelper extends Comments
 	 * Get built list.
      *
 	 * @param int|array $targetIds Comment ID(s).
-	 * @return DOMNode
+	 * @return \DOMNode
 	 */
 	public function getBuildedListByIds($targetIds){
 		$data = $this->getListByIds($targetIds); // список комментариев

@@ -13,7 +13,8 @@ class FeedbackForm;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use share\components\DBDataSet, share\gears\DataDescription, share\gears\Data, share\gears\Saver, share\gears\SystemException, share\gears\QAL, share\gears\FieldDescription, share\gears\Field, share\gears\Mail;
 /**
  * Form for feedback.
  *
@@ -159,7 +160,7 @@ class FeedbackForm extends DBDataSet {
                             setText($this->translate($this->getParam('adminBody')), $data)->
                             addTo($this->getRecipientEmail($recipientID))->send();
                 }
-                catch (Exception $e) {
+                catch (\Exception $e) {
                 }
             }
 

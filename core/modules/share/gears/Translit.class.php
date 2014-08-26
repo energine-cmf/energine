@@ -15,6 +15,7 @@ final class Translit;
  * @version 1.0.0
  */
 
+namespace share\gears;
 /**
  * Service class for line transliteration.
  *

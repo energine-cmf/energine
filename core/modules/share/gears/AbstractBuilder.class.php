@@ -114,7 +114,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      * @param FieldDescription $fieldInfo Filed description.
      * @param mixed $fieldValue Field value.
      * @param mixed $fieldProperties Field properties.
-     * @return DOMNode
+     * @return \DOMNode
      */
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
         $result = $this->result->createElement('field');
@@ -212,18 +212,18 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
      *
      * The value is processed and stored in passed DOM-element.
      *
-     * @param DOMElement $result DOM-element.
+     * @param \DOMElement $result DOM-element.
      * @param FieldDescription $fieldInfo Field description.
      * @param $fieldValue Field value.
-     * @return DOMElement
+     * @return \DOMElement
      */
-    protected function buildFieldValue(DOMElement $result, FieldDescription $fieldInfo, $fieldValue) {
-        if (($fieldValue instanceof DOMNode) ||
-            ($fieldValue instanceof DOMElement)
+    protected function buildFieldValue(\DOMElement $result, FieldDescription $fieldInfo, $fieldValue) {
+        if (($fieldValue instanceof \DOMNode) ||
+            ($fieldValue instanceof \DOMElement)
         ) {
             try {
                 $result->appendChild($fieldValue);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $result->appendChild($this->result->importNode($fieldValue, true));
             }
         } elseif ($fieldInfo->getType() ==
@@ -232,7 +232,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             if ($fieldValue = $this->createTextBoxItems($fieldValue)) {
                 try {
                     $result->appendChild($fieldValue);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $result->appendChild($this->result->importNode($fieldValue, true));
                 }
             }
@@ -269,7 +269,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
 
                     default: // not used
                 }
-                $result->appendChild(new DomText($fieldValue));
+                $result->appendChild(new \DomText($fieldValue));
             }
 
         }

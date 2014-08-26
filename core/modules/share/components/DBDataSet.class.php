@@ -14,7 +14,7 @@ class DBDataSet;
  * @version 1.0.0
  */
 namespace share\components;
-use share\gears, share\gears\SystemException, share\gears\FieldDescription;
+use share\gears, share\gears\SystemException, share\gears\FieldDescription, share\gears\MultiLanguageBuilder;
 /**
  * Class that shows the data from data base.
  *

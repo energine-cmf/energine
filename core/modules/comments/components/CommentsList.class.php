@@ -12,7 +12,8 @@ class CommentsList;
  *
  * @version 1.0.0
  */
-
+namespace comments\components;
+use share\components\DataSet, share\gears\Pager, share\gears\TreeBuilder, share\gears\TreeConverter, share\gears\FieldDescription, share\gears\DataDescription;
 /**
  * List of comments.
  *

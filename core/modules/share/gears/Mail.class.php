@@ -14,6 +14,7 @@ final class Mail;
  * @version 1.0.0
  */
 
+namespace share\gears;
 
 /**
  * Message sender.

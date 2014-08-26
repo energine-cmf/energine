@@ -13,7 +13,7 @@ class OGObject;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Class for OpenGraph.
  *

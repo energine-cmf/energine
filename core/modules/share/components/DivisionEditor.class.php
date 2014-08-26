@@ -74,10 +74,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         parent::__construct($name, $module, $params);
         $this->setTableName('share_sitemap');
         $this->setTitle($this->translate('TXT_DIVISION_EDITOR'));
-        //$this->setOrder('smap_order_num', QAL::ASC);
-
         $this->setParam('recordsPerPage', false);
-        //$this->setOrderColumn('smap_order_num');
     }
 
     /**

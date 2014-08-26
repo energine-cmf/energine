@@ -15,6 +15,7 @@ class MultiLanguageBuilder;
  */
 
 namespace share\gears;
+
 /**
  * Builder for multilingual components.
  *
@@ -23,11 +24,6 @@ class MultiLanguageBuilder;
 @endcode
  */
 class MultiLanguageBuilder extends AbstractBuilder {
-    //todo VZ: This can be removed.
-    public function __construct() {
-        parent::__construct();
-    }
-
     /**
      * @copydoc AbstractBuilder::run
      */

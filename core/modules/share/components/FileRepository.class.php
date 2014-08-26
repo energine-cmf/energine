@@ -14,6 +14,7 @@ class FileRepository;
  * @version 1.0.0
  */
 namespace share\components;
+use share\gears\QAL, share\gears\FileRepoInfo, share\gears\DataDescription, share\gears\FieldDescription, share\gears\Data, share\gears\Field, share\gears\SystemException, share\gears\JSONCustomBuilder, share\gears\Translit, share\gears\JSONRepoBuilder;
 /**
  * File repository.
  *
@@ -27,7 +28,6 @@ class FileRepository extends Grid {
      * @var string TEMPORARY_DIR
      */
     const TEMPORARY_DIR = 'uploads/temp/';
-
     /**
      * Fake type to go to the upper folder.
      * @var string TYPE_FOLDER_UP
@@ -626,7 +626,7 @@ class FileRepository extends Grid {
             $transactionStarted = $this->dbh->beginTransaction();
             $extractPath = $this->dbh->getScalar($this->getTableName(), 'upl_path', array('upl_id' => $uplPID));
 
-            $zip = new ZipArchive();
+            $zip = new \ZipArchive();
             $zip->open($fileName);
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $currentFile = $zip->statIndex($i);

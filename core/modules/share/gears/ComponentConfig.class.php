@@ -65,10 +65,9 @@ class ComponentConfig {
     public function __construct($config, $className, $moduleName) {
         //Если это строка(с именем файла) или false
         if (!$config || is_string($config)) {
-            $className = explode('\\', $className);
-            $className = array_pop($className);
             $config = ($param = $this->getConfigPath($config, $moduleName)) ? $param
-                    : $this->getConfigPath($className . '.component.xml', $moduleName);
+                    : $this->getConfigPath(simplifyClassName($className) . '.component.xml', $moduleName);
+
             if ($config) {
                 try {
                     $this->config = simplexml_load_file($config /*, 'ConfigElement'*/);

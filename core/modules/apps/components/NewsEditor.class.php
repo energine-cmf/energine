@@ -13,7 +13,8 @@ class NewsEditor;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use share\gears\Field, share\gears\FieldDescription, share\gears\QAL, apps\gears\NewsEditorSaver;
 /**
  * News editor.
  *

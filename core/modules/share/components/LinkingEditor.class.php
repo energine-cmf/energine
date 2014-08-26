@@ -13,7 +13,8 @@ class LinkingEditor;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
+use share\gears\Component;
 /**
  * Linking editor.
  *

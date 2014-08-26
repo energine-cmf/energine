@@ -12,8 +12,9 @@ class PageList;
  *
  * @version 1.0.0
  */
+namespace share\components;
 
-
+use share\gears\TreeBuilder, share\gears\SimpleBuilder, share\gears\FieldDescription, share\gears\Response, share\gears\TagManager, share\gears\AttachmentManager;
 /**
  * Show the list of subsections.
  *
@@ -39,12 +40,6 @@ class PageList extends DataSet
      * @var string ALL_PAGES
      */
     const ALL_PAGES = 'all';
-
-    /**
-     * Section ID, for which we display children.
-     * @var int $pid
-     */
-    private $pid;
 
     /**
      * @copydoc DataSet::__construct

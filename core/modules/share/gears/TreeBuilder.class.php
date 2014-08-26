@@ -13,7 +13,7 @@ class TreeBuilder;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Builder of tree-like data.
  *
@@ -80,7 +80,7 @@ class TreeBuilder extends AbstractBuilder  {
      * Build tree-like XML.
      *
      * @param TreeNodeList $tree Tree.
-     * @return DOMNode
+     * @return \DOMNode
      */
     private function treeBuild(TreeNodeList $tree) {
         $dom_recordset = $this->result->createElement('recordset');

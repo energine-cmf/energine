@@ -58,20 +58,19 @@ class FileRepoInfo extends DBWorker {
      */
     const META_TYPE_UNKNOWN = 'unknown';
 
-    //todo VZ: Where is FileInfo?
     /**
      * File info object.
-     * @var Fileinfo $finfo
+     * @var \finfo $finfo
      */
     private $finfo;
     /**
-     * @var PDOStatement $getFInfoSQL
+     * @var \PDOStatement $getFInfoSQL
      */
     private $getFInfoSQL;
 
     public function __construct() {
         parent::__construct();
-        $this->finfo = new finfo(FILEINFO_MIME_TYPE);
+        $this->finfo = new \finfo(FILEINFO_MIME_TYPE);
         $this->getFInfoSQL = $this->dbh->getPDO()->prepare('SELECT upl_internal_type as type, upl_mime_type as mime, upl_width as width, upl_height as height, upl_is_mp4 as is_mp4, upl_is_webm as is_webm, upl_is_flv as is_flv FROM share_uploads WHERE upl_path = ?');
     }
 
@@ -82,21 +81,21 @@ class FileRepoInfo extends DBWorker {
      * @param bool $forceReadFromFile
      * @return mixed|object
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function analyze($filename, $forceReadFromFile = false) {
         try {
             if ($forceReadFromFile
                 || !$this->getFInfoSQL->execute(array($filename))
-                || !($result = $this->getFInfoSQL->fetch(PDO::FETCH_ASSOC))
+                || !($result = $this->getFInfoSQL->fetch(\PDO::FETCH_ASSOC))
             ) {
                 if(!($result = $this->getFileInfoData($filename))){
-                    throw new Exception();
+                    throw new \Exception();
 
                 }
 
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result['type'] = self::META_TYPE_UNKNOWN;
             $result['mime'] = 'unknown/mime-type';
             $result['width'] = null;

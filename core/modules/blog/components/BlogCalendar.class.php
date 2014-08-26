@@ -65,7 +65,7 @@ class BlogCalendar extends Calendar {
 
         if (is_array($existingDates)) {
             foreach ($existingDates as $date) {
-                $this->calendar->getItemByDate(DateTime::createFromFormat('Y-m-d', $date))->setProperty('selected', 'selected');
+                $this->calendar->getItemByDate(\DateTime::createFromFormat('Y-m-d', $date))->setProperty('selected', 'selected');
             }
         }
     }
@@ -76,7 +76,7 @@ class BlogCalendar extends Calendar {
             array(
                 'month' => false,
                 'year' => false,
-                'date' => new DateTime(),
+                'date' => new \DateTime(),
                 'filter' => array(),
                 'blog_id' => false,
                 'template'=> 'blogs'

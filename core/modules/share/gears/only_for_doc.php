@@ -145,7 +145,7 @@ cp -r /var/www/energine/starter www.mynewsite.com
  */
 
 /**
- * @class DateTime
+ * @class \DateTime
  * @brief Native DateTime class.
  * http://php.net/manual/en/class.datetime.php
  */

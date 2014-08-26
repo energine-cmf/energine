@@ -13,7 +13,8 @@ class Calendar;
  *
  * @version 1.0.0
  */
-
+namespace calendar\components;
+use share\components\DataSet, calendar\gears\CalendarObject, CalendarBuilder, share\gears\DataDescription, share\gears\FieldDescription, share\gears\Toolbar, share\gears\Link, share\gears\Data, share\gears\Field;
 /**
  * Calendar component.
  *

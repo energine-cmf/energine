@@ -429,11 +429,11 @@ class BlogPost extends DBDataSet {
 
         if($item && $this->getParam('showCalendar')){
             // извлекаем из поста дату для календаря
-            $date = new DateTime();
+            $date = new \DateTime();
             $date->setTimestamp($item[0]['post_created']);
             $this->calendarParams['month'] = $date->format('m');
             $this->calendarParams['year'] = $date->format('Y');
-//                $calendarParams['date'] = DateTime::createFromFormat('Y-m-d', $ap['year'].'-'.$ap['month'].'-'.$ap['day']);
+//                $calendarParams['date'] = \DateTime::createFromFormat('Y-m-d', $ap['year'].'-'.$ap['month'].'-'.$ap['day']);
                 $this->calendarParams['date'] = $date;
         }
         return $item;

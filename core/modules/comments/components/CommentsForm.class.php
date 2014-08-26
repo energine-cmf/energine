@@ -12,7 +12,8 @@ class CommentsForm;
  *
  * @version 1.0.0
  */
-
+namespace comments\components;
+use share\components\DataSet, share\gears\SystemException, share\gears\JSONCustomBuilder, share\gears\QAL, share\gears\DataDescription, share\gears\FieldDescription, comments\gears\CommentsJSONBuilder, share\gears\Data, share\gears\Field;
 /**
  * Show comments and form for commenting.
  *
@@ -130,11 +131,11 @@ class CommentsForm extends DataSet {
 
         try {
             if (!$this->getParam('show_form')) {
-                throw new Exception('Adding comments has been disabled');
+                throw new \Exception('Adding comments has been disabled');
             }
 
             if (!$this->getParam('allows_anonymous') && !$this->document->user->isAuthenticated()) {
-                throw new Exception('Add comment can auth user only');
+                throw new \Exception('Add comment can auth user only');
             }
 
             if (!isset($_POST['target_id']) or
@@ -168,7 +169,7 @@ class CommentsForm extends DataSet {
                     // отредактированный коммент
                     if (!$isUpdated =
                             $this->updateComment($targetId, $commentName, $commentNick, $commentId))
-                        throw new Exception('Save error');
+                        throw new \Exception('Save error');
                 }
                 else {
                     // новый коммент
@@ -275,16 +276,16 @@ class CommentsForm extends DataSet {
 
         try {
             if (!$this->getParam('show_form')) {
-                throw new Exception('Adding comments has been disabled');
+                throw new \Exception('Adding comments has been disabled');
             }
 
             if (!$this->document->user->isAuthenticated()) {
-                throw new Exception('Add comment can auth user only');
+                throw new \Exception('Add comment can auth user only');
             }
 
             if (!isset($_POST['comment_id']) or
                     !($commentId = (int) $_POST['comment_id']))
-                throw new Exception('Mistake arg');
+                throw new \Exception('Mistake arg');
             $builder->setProperties(
                 array(
                     'mode' => 'delete',

@@ -13,7 +13,8 @@ class NewsFeed;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use share\gears\QAL, share\gears\SystemException, share\gears\AttachmentManager, share\gears\FieldDescription, share\gears\SimpleBuilder, share\gears\Data, share\gears\TagManager;
 /**
  * News line.
  *
@@ -56,7 +57,7 @@ class NewsFeed extends ExtendedFeed {
     }
 
     /**
-     * @copydoc ExtendedFeed::createBuilder
+     * @copydoc \apps\components\ExtendedFeed::createBuilder
      */
     protected function createBuilder() {
         return new SimpleBuilder();
@@ -202,7 +203,7 @@ class NewsFeed extends ExtendedFeed {
                     $calendarParams['month'] = $ap['month'];
                     $calendarParams['year'] = $ap['year'];
                     $calendarParams['date'] =
-                        DateTime::createFromFormat('Y-m-d',
+                        \DateTime::createFromFormat('Y-m-d',
                             $ap['year'] . '-' . $ap['month'] . '-' .
                             $ap['day']);
                 }
@@ -246,7 +247,7 @@ class NewsFeed extends ExtendedFeed {
         ) {
             $calendarParams['month'] = $ap['month'];
             $calendarParams['year'] = $ap['year'];
-            $calendarParams['date'] = DateTime::createFromFormat('Y-m-d',
+            $calendarParams['date'] = \DateTime::createFromFormat('Y-m-d',
                 $ap['year'] . '-' . $ap['month'] . '-' . $ap['day']);
         }
 

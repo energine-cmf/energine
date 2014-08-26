@@ -164,6 +164,7 @@ class Toolbar extends Object {
             if (!class_exists($controlClassName, false)) {
             	//throw new SystemException('ERR_DEV_NO_CONTROL_CLASS', SystemException::ERR_DEVELOPER, $controlClassName);
             }
+            $controlClassName = 'share\\gears\\'.$controlClassName;
 
             $control = new $controlClassName(
                 isset($controlDescription['id']) ? (string)$controlDescription['id'] : null
@@ -211,7 +212,7 @@ class Toolbar extends Object {
     /**
      * Build toolbar.
      *
-     * @return DOMNode
+     * @return \DOMNode
      */
     public function build() {
         $result = false;

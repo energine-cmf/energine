@@ -13,7 +13,8 @@ class ExtendedFeed;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use share\components\DBDataSet, share\gears\FieldDescription, share\gears\Field, share\gears\AttachmentManager, share\gears\TagManager;
 /**
  * Extended list.
  *

@@ -13,7 +13,8 @@ class FeedEditor;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use share\components\LinkingEditor, share\gears\FieldDescription, share\gears\SystemException, share\gears\QAL, share\gears\JSONCustomBuilder;
 /**
  * Feed editor.
  * It creates editors that are controlled from control panel.

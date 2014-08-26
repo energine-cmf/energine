@@ -109,7 +109,7 @@ class Grid extends DBDataSet {
     protected function defineParams() {
         $params = array();
         if (!$this->params['config']) {
-            $fileName = get_class($this) . '.component.xml';
+            $fileName = simplifyClassName(get_class($this)) . '.component.xml';
             $fileConf =
                 sprintf(SITE_DIR . gears\ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
                 $fileName;
@@ -496,9 +496,9 @@ class Grid extends DBDataSet {
     /**
      * Set saver.
      *
-     * @param Saver $saver Saver.
+     * @param Saver $saver share\gears\Saver.
      */
-    final protected function setSaver(Saver $saver) {
+    final protected function setSaver(\share\gears\Saver $saver) {
         $this->saver = $saver;
     }
 

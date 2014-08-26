@@ -14,7 +14,8 @@ final class CalendarItem
  *
  * @version 1.0.0
  */
-
+namespace calendar\gears;
+use share\gears\Object, share\gears\DBWorker;
 /**
  * Calendar object.
  *
@@ -25,7 +26,7 @@ final class CalendarItem
  *
  * @final
  */
-final class CalendarObject extends Object implements Iterator {
+final class CalendarObject extends Object implements \Iterator {
     /**
      * Current period.
      */
@@ -46,12 +47,12 @@ final class CalendarObject extends Object implements Iterator {
 	 private $position;
 	/**
      * Today date and time.
-	 * @var DateTime $today
+	 * @var \DateTime $today
 	 */
 	public $today;
 	/**
      * First month day.
-     * @var DateTime $firstDayOfPeriod
+     * @var \DateTime $firstDayOfPeriod
      */
     private $firstDayOfPeriod;
     
@@ -70,7 +71,7 @@ final class CalendarObject extends Object implements Iterator {
 	private $index = array();
 	
 	public function __construct($monthID = false, $year = false){
-		$this->today = new DateTime();
+		$this->today = new \DateTime();
         $this->today->setTime(0, 0, 0);
 
 		$monthID = (int)((!$monthID)?$this->today->format('n'):$monthID);
@@ -78,7 +79,7 @@ final class CalendarObject extends Object implements Iterator {
 		//Определяем день начала календаря
 		//Это последний понедельник предыдущего месяца
 		//кроме случая когда 1 е число нужно месяца  - понедельник
-		$this->firstDayOfPeriod = DateTime::createFromFormat('j-n-Y', '1-'.$monthID.'-'.$year);
+		$this->firstDayOfPeriod = \DateTime::createFromFormat('j-n-Y', '1-'.$monthID.'-'.$year);
 
 		$firstDayOfCalendar = clone $this->firstDayOfPeriod;
 		//У буржуев Воскресенье - первый день недели
@@ -152,7 +153,7 @@ final class CalendarObject extends Object implements Iterator {
 	 *
      * Input arguments can be:
 	 * - one argument:
-     *   - {DateTime} Specific date
+     *   - {\DateTime} Specific date
 	 * - two arguments:
      *   - {int} Row ID.
      *   - {int} Day ID.
@@ -191,10 +192,10 @@ final class CalendarObject extends Object implements Iterator {
 	/**
 	 * Get calendar item by date.
 	 *
-	 * @param DateTime $date Date.
+	 * @param \DateTime $date Date.
 	 * @return CalendarItem
 	 */
-	public function getItemByDate(DateTime $date){
+	public function getItemByDate(\DateTime $date){
 		$result = null;
 		if ($this->itemExists($date)){
 			list($row, $day)  = $this->index[$date->format('Y-m-d')];
@@ -206,10 +207,10 @@ final class CalendarObject extends Object implements Iterator {
     /**
      * Calc information about current week.
      *
-     * @param DateTime $dateObj Information about current day.
-     * @return DateTime[]
+     * @param \DateTime $dateObj Information about current day.
+     * @return \DateTime[]
      */
-    static public function getWeek(DateTime $dateObj) {
+    static public function getWeek(\DateTime $dateObj) {
         $result = array();
         $tmpDateObj = clone $dateObj;
 
@@ -255,9 +256,8 @@ final class CalendarItem
  *
  * @final
  */
-use share\gears;
 
-final class CalendarItem extends Object implements Iterator {
+final class CalendarItem extends Object implements \Iterator {
     /**
      * Property iterator position.
      * @var int $position
@@ -265,7 +265,7 @@ final class CalendarItem extends Object implements Iterator {
      private $position;
     /**
      * Day.
-     * @var DateTime $date
+     * @var \DateTime $date
      */
     private $date;
     /**
@@ -281,9 +281,9 @@ final class CalendarItem extends Object implements Iterator {
     private $properties = array();
      
     /**
-     * @param DateTime $date Date.
+     * @param \DateTime $date Date.
      */
-    public function __construct(DateTime $date){
+    public function __construct(\DateTime $date){
         $this->date = $date;
         $this->setTitle($this->date->format('j'));
         $this->setProperty('day', $this->date->format('j'));
@@ -334,7 +334,7 @@ final class CalendarItem extends Object implements Iterator {
     /**
      * Get date.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate(){
         return $this->date;

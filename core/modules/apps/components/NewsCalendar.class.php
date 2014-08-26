@@ -13,7 +13,8 @@ class NewsCalendar;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use calendar\gears\CalendarObject, share\gears\SystemException, calendar\components\Calendar;
 /**
  * Calendar for news.
  *
@@ -55,7 +56,7 @@ class NewsCalendar extends Calendar {
 
         if (is_array($existingDates)) {
             foreach ($existingDates as $date) {
-                if ($date = $this->calendar->getItemByDate(DateTime::createFromFormat('Y-m-d', $date)))
+                if ($date = $this->calendar->getItemByDate(\DateTime::createFromFormat('Y-m-d', $date)))
                     $date->setProperty('selected', 'selected');
             }
         }
@@ -72,7 +73,7 @@ class NewsCalendar extends Calendar {
             array(
                  'month' => false,
                  'year' => false,
-                 'date' => new DateTime(),
+                 'date' => new \DateTime(),
                  'filter' => array(),
                  //'template' => 'news',
                  'tableName' => false,

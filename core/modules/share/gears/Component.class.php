@@ -158,9 +158,9 @@ class Component extends DBWorker implements IBlock {
         $this->determineState();
         //Определяем sample
         $ifs = class_implements($this);
-
         if (!empty($ifs)) {
             foreach ($ifs as $iname){
+                $iname = simplifyClassName($iname);
                 if(strtolower(substr($iname, 0, 6)) == 'sample'){
                     $this->setProperty('sample', substr($iname, 6));
                     break;
@@ -472,7 +472,7 @@ class Component extends DBWorker implements IBlock {
         $result->setAttribute('name', $this->getName());
         $result->setAttribute('module', $this->module);
         $result->setAttribute('componentAction', $this->getState());
-        $result->setAttribute('class', get_class($this));
+        $result->setAttribute('class', simplifyClassName(get_class($this)));
 
         foreach ($this->properties as $propName => $propValue) {
             $result->setAttribute($propName, $propValue);
@@ -484,7 +484,7 @@ class Component extends DBWorker implements IBlock {
         */
         if ($this->getBuilder() && $this->getBuilder()->build()) {
             $builderResult = $this->getBuilder()->getResult();
-            if ($builderResult instanceof DOMNode) {
+            if ($builderResult instanceof \DOMNode) {
                 $result->appendChild(
                     $this->doc->importNode(
                         $builderResult,

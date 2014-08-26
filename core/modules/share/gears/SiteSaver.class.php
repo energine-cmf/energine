@@ -11,7 +11,7 @@ class SiteSaver;
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
-
+namespace share\gears;
 /**
  * Saver for sites editor.
  *
@@ -25,11 +25,6 @@ class SiteSaver extends Saver {
      * @var string MODULES
      */
     const MODULES = 'modules';
-
-    //todo VZ: this can be removed.
-    public function __construct() {
-        parent::__construct();
-    }
 
     /**
      * @copydoc Saver::save

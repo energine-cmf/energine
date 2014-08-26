@@ -1,4 +1,5 @@
 <?php
+use share\gears\UserSession, share\gears\Object, share\gears\User, user\gears\FBOAuth, user\gears\VKOAuth;
 //на всякий пожарный проверяем реферрера
 if (!isset($_SERVER['HTTP_REFERER']) && (!isset($_GET['return']))) {
     //не местных  - в сад
@@ -23,7 +24,7 @@ if (
     ($vkAuth = isset($_GET['vkAuth']))
 ) {
     if ($login) {
-        if ($UID = AuthUser::authenticate(
+        if ($UID = share\gears\AuthUser::authenticate(
             $_POST['user']['username'],
             $_POST['user']['password']
         )
@@ -81,7 +82,7 @@ if (
 
             }
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);
             goto escape;
         }

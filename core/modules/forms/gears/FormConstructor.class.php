@@ -11,7 +11,8 @@ class FormConstructor;
  * Version 1.0.0
  */
 //todo Хреново получилось, так и хочется все переписать
-
+namespace forms\gears;
+use share\gears\DBWorker, share\gears\DBA, share\gears\DataDescription, share\gears\FieldDescription, share\gears\Data, share\components\Grid, share\gears\Object, share\gears\QAL;
 /**
  * Form constructor.
  *

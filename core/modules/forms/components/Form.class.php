@@ -13,7 +13,8 @@ class Form;
  *
  * @version 1.0.0
  */
-
+namespace forms\components;
+use share\components\DBDataSet, share\gears\Saver, forms\gears\FormConstructor, share\gears\SystemException, share\gears\FieldDescription, share\gears\Data, share\gears\DataDescription,share\gears\DBA;
 /**
  * Form.
  *

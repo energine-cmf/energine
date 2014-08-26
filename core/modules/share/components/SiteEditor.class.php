@@ -13,7 +13,8 @@ class SiteEditor;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
+use share\gears\SiteSaver, share\gears\SiteEditorConfig, share\gears\FieldDescription, share\gears\Field, share\gears\TagManager, share\gears\SystemException;
 /**
  * Site editor.
  *

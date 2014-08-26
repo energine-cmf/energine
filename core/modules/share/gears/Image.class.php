@@ -13,7 +13,7 @@ class Image;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * Class for work with images.
  *

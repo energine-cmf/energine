@@ -28,11 +28,6 @@ class JSONDivBuilder extends JSONBuilder {
      */
     private $documentId;
 
-    //todo VZ: this can be removed.
-    public function __construct() {
-        parent::__construct();
-    }
-
     /**
      * Set document ID.
      * @param int $id ID

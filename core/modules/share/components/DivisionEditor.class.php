@@ -15,7 +15,7 @@ interface SampleDivisionEditor;
  * @version 1.0.0
  */
 namespace share\components;
-use share\gears, share\gears\FieldDescription;
+use share\gears, share\gears\FieldDescription, share\gears\JSONDivBuilder, share\gears\Data;
 /**
  * Division editor.
  *

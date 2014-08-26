@@ -13,7 +13,8 @@ class NewsRepository;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use apps\gears\NewsEditorSaver, share\gears\ComponentManager, share\gears\FieldDescription, share\components\LinkingEditor, share\components\Grid;
 /**
  * News repository.
  *

@@ -10,7 +10,8 @@ class FormsSaver;
  *
  * @version 1.0.0
  */
-
+namespace forms\gears;
+use share\gears\Saver, share\gears\QAL;
 /**
  * Saver for forms.
  *

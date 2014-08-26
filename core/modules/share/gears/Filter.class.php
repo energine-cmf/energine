@@ -14,6 +14,7 @@ class Filter;
  * @version 1.0.0
  */
 namespace share\gears;
+use share\components\Grid;
 /**
  * Filters.
  *
@@ -304,7 +305,7 @@ class Filter extends Object {
     /**
      * Build filter.
      *
-     * @return DOMNode
+     * @return \DOMNode
      */
     public function build() {
         $result = false;

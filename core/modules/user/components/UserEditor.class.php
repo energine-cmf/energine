@@ -14,7 +14,8 @@ class UserEditor;
  * @version 1.0.0
  */
 
-
+namespace user\components;
+use share\components\Grid, share\gears\SystemException, share\gears\QAL, share\gears\JSONCustomBuilder, share\gears\FieldDescription, share\gears\Field;
 /**
  * User editor.
  *

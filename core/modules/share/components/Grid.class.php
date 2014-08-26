@@ -14,7 +14,7 @@ class Grid;
  * @version 1.0.0
  */
 namespace share\components;
-use share\gears, share\gears\SystemException, share\gears\FieldDescription;
+use share\gears, share\gears\SystemException, share\gears\FieldDescription, share\gears\QAL, share\gears\JSONCustomBuilder, share\gears\Filter, share\gears\ComponentConfig, share\gears\JSONBuilder, share\gears\TagManager, share\gears\Field, share\gears\AttachmentManager, share\gears\Image, share\gears\Data, share\gears\DataDescription;
 
 /**
  * Grid.
@@ -111,10 +111,10 @@ class Grid extends DBDataSet {
         if (!$this->params['config']) {
             $fileName = simplifyClassName(get_class($this)) . '.component.xml';
             $fileConf =
-                sprintf(SITE_DIR . gears\ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
+                sprintf(SITE_DIR . ComponentConfig::SITE_CONFIG_DIR, E()->getSiteManager()->getCurrentSite()->folder) .
                 $fileName;
             $coreConf =
-                sprintf(CORE_DIR . gears\ComponentConfig::CORE_CONFIG_DIR, $this->module) .
+                sprintf(CORE_DIR . ComponentConfig::CORE_CONFIG_DIR, $this->module) .
                 $fileName;
             if (file_exists($fileConf)) {
                 $params['config'] = $fileConf;
@@ -122,7 +122,7 @@ class Grid extends DBDataSet {
                 $params['config'] = $coreConf;
             } else {
                 $params['config'] =
-                    sprintf(CORE_DIR . gears\ComponentConfig::CORE_CONFIG_DIR, 'share/') .
+                    sprintf(CORE_DIR . ComponentConfig::CORE_CONFIG_DIR, 'share/') .
                     'Grid.component.xml';
             }
         }
@@ -812,7 +812,7 @@ class Grid extends DBDataSet {
     protected function printData() {
         $this->setParam('recordsPerPage', false);
         if (E()->getController()->getViewMode() ==
-            DocumentController::TRANSFORM_HTML
+            \share\gears\DocumentController::TRANSFORM_HTML
         )
             E()->getController()->getTransformer()->setFileName('print.xslt');
         $this->prepare();
@@ -1252,7 +1252,7 @@ class Grid extends DBDataSet {
                 throw new SystemException('ERR_NO_DATA', SystemException::ERR_CRITICAL);
             } else {
 
-                $tags = gears\TagManager::getTagStartedWith($_POST['value'], 10);
+                $tags = TagManager::getTagStartedWith($_POST['value'], 10);
                 $result['result'] = true;
 
                 if (is_array($tags) && !empty($tags)) {
@@ -1290,7 +1290,7 @@ class Grid extends DBDataSet {
      */
     protected function createFilter() {
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
-            $this->filter_control = new gears\Filter();
+            $this->filter_control = new Filter();
             $cInfo = $this->dbh->getColumnsInfo($this->getTableName());
             if ($this->getTranslationTableName()) {
                 $cInfo = array_merge($cInfo, $this->dbh->getColumnsInfo($this->getTranslationTableName()));

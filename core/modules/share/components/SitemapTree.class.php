@@ -13,8 +13,8 @@ class SitemapTree;
  *
  * @version 1.0.0
  */
-
-
+namespace share\components;
+use share\gears\TreeBuilder;
 /**
  * Site map.
  *

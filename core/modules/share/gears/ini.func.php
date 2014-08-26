@@ -108,7 +108,8 @@ spl_autoload_register(
  * @staticvar array $paths массив путей к файлам классов вида [имя класса]=>путь к файлу класса
  */
 function ($className) {
-inspect($className);
+dump_log($className,true);
+
     $className = simplifyClassName($className);
     static $paths = array();
     //если массив путей не заполнен - заполняем

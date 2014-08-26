@@ -14,7 +14,8 @@ class TranslationEditor;
  * @version 1.0.0
  */
 
-
+namespace share\components;
+use share\gears\QAL, share\gears\FieldDescription, share\gears\Cache;
 /**
  * Translation editor.
  *

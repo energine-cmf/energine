@@ -13,7 +13,7 @@ class JSONTransformer;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
 /**
  * JSON Transformer.
  *

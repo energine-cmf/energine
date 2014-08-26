@@ -13,7 +13,8 @@ class FeedbackList;
  *
  * @version 1.6.0
  */
-
+namespace apps\components;
+use share\components\Grid, share\gears\QAL;
 
 /**
  * List of feedback messages.

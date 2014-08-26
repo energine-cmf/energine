@@ -13,7 +13,8 @@ class SiteList;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
+use share\gears\TagManager;
 /**
  * Site list.
  *

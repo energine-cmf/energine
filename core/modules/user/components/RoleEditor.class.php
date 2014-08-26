@@ -14,7 +14,8 @@ class RoleEditor;
  * @version 1.0.0
  */
 
-
+namespace user\components;
+use share\components\Grid, share\gears\FieldDescription, share\gears\QAL, share\gears\TreeBuilder, share\gears\TreeConverter, share\gears\SystemException, share\gears\Data, share\gears\DataDescription;
 /**
  * Role editor.
  *

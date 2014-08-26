@@ -13,7 +13,8 @@ class Register;
  *
  * @version 1.0.0
  */
-
+namespace user\components;
+use share\components\DBDataSet, share\gears\User, share\gears\JSONCustomBuilder, share\gears\SystemException, share\gears\FieldDescription, share\gears\Data, share\gears\DataDescription, share\gears\Field, share\gears\Mail;
 /**
  * Registration form.
  *
@@ -159,7 +160,7 @@ class Register extends DBDataSet {
             $mailer->addTo($this->user->getValue('u_name'));
             $mailer->send();
 
-        } catch (Exception $error) {
+        } catch (\Exception $error) {
             throw new SystemException($error->getMessage(), SystemException::ERR_WARNING);
         }
     }

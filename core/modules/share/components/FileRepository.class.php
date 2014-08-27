@@ -18,9 +18,9 @@ use share\gears\QAL, share\gears\FileRepoInfo, share\gears\DataDescription, shar
 /**
  * File repository.
  *
- * @code
+@code
 class FileRepository;
- * @endcode
+@endcode
  */
 class FileRepository extends Grid implements SampleFileRepository{
     /**

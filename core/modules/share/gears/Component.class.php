@@ -6,8 +6,8 @@
  * It contains the definition to:
  * @code
 class Component;
-interface IBuilder;
-@endcode
+ * interface IBuilder;
+ * @endcode
  *
  * @author 1m.dm
  * @copyright Energine 2006
@@ -20,7 +20,7 @@ interface IBuilder;
  *
  * @code
 class Component;
-@endcode
+ * @endcode
  */
 class Component extends DBWorker implements IBlock {
     /**
@@ -167,8 +167,8 @@ class Component extends DBWorker implements IBlock {
         $ifs = class_implements($this);
 
         if (!empty($ifs)) {
-            foreach ($ifs as $iname){
-                if(strtolower(substr($iname, 0, 6)) == 'sample'){
+            foreach ($ifs as $iname) {
+                if (strtolower(substr($iname, 0, 6)) == 'sample') {
                     $this->setProperty('sample', substr($iname, 6));
                     break;
                 }
@@ -333,10 +333,9 @@ class Component extends DBWorker implements IBlock {
             }
 
             if ($csp = $this->getConfig()->getCurrentStateParams()) {
-                if($this->stateParams){
+                if ($this->stateParams) {
                     $this->stateParams = array_merge($this->stateParams, $csp);
-                }
-                else {
+                } else {
                     $this->stateParams = $csp;
                 }
             }
@@ -373,24 +372,29 @@ class Component extends DBWorker implements IBlock {
         return $this->name;
     }
 
+    /**
+     * Run current state method
+     *
+     * @throws SystemException
+     */
     public function run() {
-        if (!method_exists($this, $this->getState())) {
+        if (!$params = $this->getStateParams()) {
+            $params = array();
+        }
+
+        if (method_exists($this, $this->getState() . 'State')) {
+            call_user_func_array(array($this, $this->getState().'State'), $params);
+        } elseif (method_exists($this, $this->getState() )) {
+            call_user_func_array(array($this, $this->getState()), $params);
+        } else {
             throw new SystemException(
                 'ERR_DEV_NO_ACTION',
                 SystemException::ERR_DEVELOPER,
                 array($this->getState(), $this->getName())
             );
         }
-        $params = $this->getStateParams();
-        if (empty($params)) {
-            $this->{$this->getState()}();
-        } else {
-            call_user_func_array(array($this, $this->getState()), $params);
-        }
-
     }
 
-    //todo VZ: Why true is returned?
     /**
      * Default action.
      *
@@ -405,7 +409,8 @@ class Component extends DBWorker implements IBlock {
      * Prepare data.
      * @note It calls at the beginning of the method, that realize main action.
      */
-    protected function prepare() {}
+    protected function prepare() {
+    }
 
     /**
      * Disable component.
@@ -446,7 +451,7 @@ class Component extends DBWorker implements IBlock {
         $this->properties[$propName] = $propValue;
     }
 
-    //todo VZ: It is better to throw an exception instead of return false. What if the property value has boolean type?
+
     /**
      * Get property value.
      *
@@ -539,13 +544,12 @@ class Component extends DBWorker implements IBlock {
     }
 }
 
-//todo VZ: What is the difference between IBuilder and IDocument?
 /**
  * Builder interface.
  *
  * @code
 interface IBuilder;
-@endcode
+ * @endcode
  */
 interface IBuilder {
     /**

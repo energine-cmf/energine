@@ -635,7 +635,7 @@
 
     <!-- Секция 5. Поля, которые не относятся к стандартному выводу. -->
     <!-- поле для загрузки файла в файловом репозитории -->
-    <xsl:template match="field[@name='upl_path'][ancestor::component[@class='FileRepository' and @type='form']]" mode="field_input">
+    <xsl:template match="field[@name='upl_path'][ancestor::component[@sample='FileRepository' and @type='form']]" mode="field_input">
         <div class="preview">
             <img border="0" id="preview" class="hidden"/>
         </div>
@@ -648,7 +648,7 @@
     </xsl:template>
 
     <!-- заполненное поле для загрузки файла в файловом репозитории -->
-    <xsl:template match="field[@name='upl_path'][.!=''][ancestor::component[@class='FileRepository' and @type='form']]" mode="field_input">
+    <xsl:template match="field[@name='upl_path'][.!=''][ancestor::component[@sample='FileRepository' and @type='form']]" mode="field_input">
         <div class="preview">
             <img border="0" id="preview" src="{$RESIZER_URL}w298-h224/{.}?anticache={generate-id()}" alt=""/>
         </div>
@@ -660,7 +660,7 @@
         <input type="file" id="uploader"/>
     </xsl:template>
 
-    <xsl:template match="field[@name='upl_path'][@mode='1'][ancestor::component[@class='FileRepository' and @type='form']]">
+    <xsl:template match="field[@name='upl_path'][@mode='1'][ancestor::component[@sample='FileRepository' and @type='form']]">
         <div class="field">
             <div class="name">
                 <label for="{@name}">

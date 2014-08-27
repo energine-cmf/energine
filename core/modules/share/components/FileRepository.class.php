@@ -22,7 +22,7 @@ use share\gears\QAL, share\gears\FileRepoInfo, share\gears\DataDescription, shar
 class FileRepository;
  * @endcode
  */
-class FileRepository extends Grid {
+class FileRepository extends Grid implements SampleFileRepository{
     /**
      * Path to temporary directory.
      * @var string TEMPORARY_DIR
@@ -56,7 +56,7 @@ class FileRepository extends Grid {
         $this->repoinfo = E()->FileRepoInfo;
         $this->setTableName('share_uploads');
         $this->setFilter(array('upl_is_active' => 1));
-        //$this->setOrder(array('upl_title' => QAL::ASC));
+
         $this->setOrder(array('upl_publication_date' => QAL::DESC));
         $this->addTranslation('TXT_NOT_READY', 'FIELD_UPL_IS_READY', 'ERR_UPL_NOT_READY');
         //Если данные пришли из модального окна
@@ -816,4 +816,12 @@ class FileRepository extends Grid {
 
         return (object)array('mime' => $mime, 'data' => base64_decode($string));
     }
+}
+
+/**
+ * Fake interface for XSLT
+ * Interface SampleFileRepository
+ */
+interface SampleFileRepository{
+
 }

@@ -284,8 +284,10 @@ var FileRepository = new Class(/** @lends FileRepository# */{
                 if (openBtn) {
                     openBtn.enable();
                 }
-                this.toolbar.getControlById('addDir').enable();
-                this.toolbar.getControlById('add').enable();
+                if(this.toolbar.getControlById('addDir'))
+                    this.toolbar.getControlById('addDir').enable();
+                if(this.toolbar.getControlById('add'))
+                    this.toolbar.getControlById('add').enable();
                 break;
 
             case 'repo':
@@ -307,9 +309,9 @@ var FileRepository = new Class(/** @lends FileRepository# */{
         };
 
         for (var btn in btn_map) {
-            if (r[btn_map[btn]] && !this.toolbar.getControlById(btn).disabled()) {
+            if (r[btn_map[btn]] && this.toolbar.getControlById(btn) && !this.toolbar.getControlById(btn).disabled()) {
                 this.toolbar.getControlById(btn).enable();
-            } else {
+            } else if(this.toolbar.getControlById(btn)){
                 this.toolbar.getControlById(btn).disable();
             }
         }

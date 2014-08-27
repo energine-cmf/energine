@@ -47,7 +47,7 @@ var Toolbar = new Class(/** @lends Toolbar# */{
     controls: [],
 
     // constructor
-    initialize: function (toolbarName) {
+    initialize: function (toolbarName, props) {
         Asset.css('toolbar.css');
 
         /**
@@ -63,6 +63,11 @@ var Toolbar = new Class(/** @lends Toolbar# */{
         this.element = new Element('ul').addClass('toolbar').addClass('clearfix');
         if (this.name) {
             this.element.addClass(this.name);
+        }
+
+        this.properties = {};
+        if(props && (typeOf(props) == 'object')){
+            this.properties = props;
         }
     },
 

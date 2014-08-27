@@ -30,8 +30,8 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
     Extends: Toolbar,
 
     // constructor
-    initialize: function(componentPath, documentId, toolbarName, controlsDesc) {
-        this.parent(toolbarName);
+    initialize: function (componentPath, documentId, toolbarName, controlsDesc, props) {
+        this.parent(toolbarName, props);
 
         Asset.css('pagetoolbar.css');
 
@@ -56,9 +56,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
         this.dock();
         this.bindTo(this);
         if (controlsDesc) {
-            controlsDesc.each(function(controlDesc) {
-                this.appendControl(controlDesc);
-            }, this);
+            controlsDesc.each(this.appendControl.bind(this));
         }
 
         this.setupLayout();
@@ -69,41 +67,41 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    setupLayout: function() {
+    setupLayout: function () {
         var html = $$('html')[0];
         if (!html.hasClass('e-has-topframe1')) {
             html.addClass('e-has-topframe1');
         }
-        if (/*(Cookie.read('sidebar') == null) || */(Cookie.read('sidebar') == 1)) {
-            $$('html')[0].addClass('e-has-sideframe');
-        }
-
-        var currentBody = $(document.body).getChildren().filter(function(element) {
+        var currentBody = $(document.body).getChildren().filter(function (element) {
                 return !((element.get('tag') !== 'svg') && element.hasClass('e-overlay'));
             }),
             mainFrame = new Element('div', {'class': 'e-mainframe'}),
-            topFrame = new Element('div', {'class':'e-topframe'}),
-            sidebarFrame = new Element('div', {'class':'e-sideframe'}),
-            sidebarFrameContent = new Element('div', {'class':'e-sideframe-content'}),
-            sidebarFrameBorder = new Element('div', {'class':'e-sideframe-border'});
+            topFrame = new Element('div', {'class': 'e-topframe'});
 
-        $(document.body).adopt([topFrame, mainFrame, sidebarFrame]);
+        $(document.body).adopt([topFrame, mainFrame]);
         mainFrame.adopt(currentBody);
-        sidebarFrame.adopt([sidebarFrameContent, sidebarFrameBorder]);
+
         topFrame.grab(this.element);
+        var gear = new Element('img', {'src': Energine.static + ((Energine.debug) ? 'images/toolbar/nrgnptbdbg.png' : 'images/toolbar/nrgnptb.png'),
+            'class': 'pagetb_logo'}).inject(topFrame, 'top');
 
-        new Element('iframe').setProperties({
-            'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
-            'frameBorder': '0'
-        }).inject(sidebarFrameContent);
+        if (!this.properties['noSideFrame']) {
+            if ((Cookie.read('sidebar') == 1)) {
+                $$('html')[0].addClass('e-has-sideframe');
+            }
+            var sidebarFrame = new Element('div', {'class': 'e-sideframe'}), sidebarFrameContent = new Element('div', {'class': 'e-sideframe-content'}), sidebarFrameBorder = new Element('div', {'class': 'e-sideframe-border'});
+            $(document.body).grab(sidebarFrame);
+            sidebarFrame.adopt([sidebarFrameContent, sidebarFrameBorder]);
+            new Element('iframe').setProperties({
+                'src': this.componentPath + 'show/'/* + this.documentId + '/'*/,
+                'frameBorder': '0'
+            }).inject(sidebarFrameContent);
+            gear.addEvent('click', this.toggleSidebar);
+        }
 
-        new Element('img',{'events':{'click':this.toggleSidebar}}).setProperties({
-            'src': Energine.static + ((Energine.debug)?'images/toolbar/nrgnptbdbg.png':'images/toolbar/nrgnptb.png'),
-            'class' : 'pagetb_logo'
-        }).inject(topFrame, 'top');
 
         var editBlocksButton = this.getControlById('editBlocks');
-        if(this.getControlById('editMode').getState() && editBlocksButton) {
+        if (this.getControlById('editMode') && this.getControlById('editMode').getState() && editBlocksButton) {
             editBlocksButton.disable();
         }
 
@@ -115,10 +113,9 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    editMode: function() {
+    editMode: function () {
         if (this.getControlById('editMode')
-            && this.getControlById('editMode').getState() == 0)
-        {
+            && this.getControlById('editMode').getState() == 0) {
             this._reloadWindowInEditMode();
         } else {
             window.location = window.location;
@@ -130,7 +127,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    add: function() {
+    add: function () {
         ModalBox.open({ 'url': this.componentPath + 'add/' + this.documentId });
     },
 
@@ -139,7 +136,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    edit: function() {
+    edit: function () {
         ModalBox.open({ 'url': this.componentPath + this.documentId +
             '/edit' });
     },
@@ -149,13 +146,13 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    toggleSidebar: function() {
+    toggleSidebar: function () {
         $$('html')[0].toggleClass('e-has-sideframe');
         var url = new URI(Energine.base),
             domainChunks = url.get('host').split('.'),
             domain;
 
-        if(domainChunks.length > 2){
+        if (domainChunks.length > 2) {
             domainChunks.shift();
         }
 
@@ -174,7 +171,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    showTmplEditor: function() {
+    showTmplEditor: function () {
         ModalBox.open({ 'url': this.componentPath + 'template' });
     },
 
@@ -183,7 +180,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    showTransEditor: function() {
+    showTransEditor: function () {
         ModalBox.open({ 'url': this.componentPath + 'translation' });
     },
 
@@ -192,7 +189,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    showUserEditor: function() {
+    showUserEditor: function () {
         ModalBox.open({ 'url': this.componentPath + 'user' });
     },
 
@@ -201,7 +198,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    showRoleEditor: function() {
+    showRoleEditor: function () {
         ModalBox.open({ 'url': this.componentPath + 'role' });
     },
 
@@ -210,7 +207,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    showLangEditor: function() {
+    showLangEditor: function () {
         ModalBox.open({ 'url': this.componentPath + 'languages' });
     },
 
@@ -219,7 +216,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    showFileRepository: function() {
+    showFileRepository: function () {
         ModalBox.open({ 'url': this.componentPath + 'file-library' });
     },
 
@@ -228,7 +225,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    showSiteEditor: function() {
+    showSiteEditor: function () {
         ModalBox.open({ 'url': this.componentPath + 'sites' });
     },
 
@@ -237,7 +234,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @public
      */
-    editBlocks: function() {
+    editBlocks: function () {
         if (!this.getControlById('editBlocks').getState()) {
             /**
              * Layout manager.
@@ -245,8 +242,8 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
              */
             this.layoutManager = new LayoutManager(this.componentPath);
         } else {
-            if (this.layoutManager && LayoutManager.changed){
-                if(!confirm('The page has unsaved changes. Are you sure you want to quit and lost all changes?'))   {
+            if (this.layoutManager && LayoutManager.changed) {
+                if (!confirm('The page has unsaved changes. Are you sure you want to quit and lost all changes?')) {
                     return;
                 }
             }
@@ -261,7 +258,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @function
      * @private
      */
-    _reloadWindowInEditMode: function() {
+    _reloadWindowInEditMode: function () {
         new Element('form', {styles: {display: 'none'}})
             .setProperties({
                 action: '',
@@ -275,4 +272,8 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
                 }))
             .inject(document.body).submit();
     }
+});
+
+PageToolbar.Logo = new Class({
+    Extends: Toolbar.Control
 });

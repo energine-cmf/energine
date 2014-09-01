@@ -14,7 +14,14 @@ class Grid;
  * @version 1.0.0
  */
 namespace share\components;
-use share\gears, share\gears\SystemException, share\gears\FieldDescription, share\gears\QAL, share\gears\JSONCustomBuilder, share\gears\Filter, share\gears\ComponentConfig, share\gears\JSONBuilder, share\gears\TagManager, share\gears\Field, share\gears\AttachmentManager, share\gears\Image, share\gears\Data, share\gears\DataDescription;
+
+use share\gears\AbstractBuilder;
+use share\gears\DocumentController;
+use share\gears\ExtendedSaver;
+use share\gears\FilterField;
+use share\gears\GridConfig;
+use share\gears\Saver;
+use share\gears\SystemException, share\gears\FieldDescription, share\gears\QAL, share\gears\JSONCustomBuilder, share\gears\Filter, share\gears\ComponentConfig, share\gears\JSONBuilder, share\gears\TagManager, share\gears\Field, share\gears\AttachmentManager, share\gears\Image, share\gears\Data, share\gears\DataDescription;
 
 /**
  * Grid.
@@ -34,17 +41,6 @@ class Grid extends DBDataSet {
      * @var string DIR_DOWN
      */
     const DIR_DOWN = '>';
-    /**
-     * Component: image manager.
-     * @var ImageManager $imageManager
-     */
-    //private $imageManager;
-
-    /**
-     * Component: file library.
-     * @var FileLibrary $fileLibrary
-     */
-    //protected $fileLibrary;
 
     /**
      * Component: attachment editor manager.
@@ -95,7 +91,6 @@ class Grid extends DBDataSet {
         if (!$this->getTitle())
             $this->setTitle($this->translate(
                 'TXT_' . strtoupper($this->getName())));
-
         if ($this->getParam('order')) {
             if (in_array($this->getParam('order'), array_keys($this->dbh->getColumnsInfo($this->getTableName())))) {
                 $this->orderColumn = $this->getParam('order');
@@ -138,7 +133,7 @@ class Grid extends DBDataSet {
      */
     protected function getConfig() {
         if (!$this->config) {
-            $this->config = new gears\GridConfig(
+            $this->config = new GridConfig(
                 $this->getParam('config'),
                 get_class($this),
                 $this->module
@@ -487,7 +482,7 @@ class Grid extends DBDataSet {
      */
     final protected function getSaver() {
         if (is_null($this->saver)) {
-            $this->saver = new gears\ExtendedSaver();
+            $this->saver = new ExtendedSaver();
         }
 
         return $this->saver;
@@ -496,9 +491,9 @@ class Grid extends DBDataSet {
     /**
      * Set saver.
      *
-     * @param gears\Saver $saver share\gears\Saver.
+     * @param Saver $saver Saver.
      */
-    final protected function setSaver(gears\Saver $saver) {
+    final protected function setSaver(Saver $saver) {
         $this->saver = $saver;
     }
 
@@ -758,7 +753,7 @@ class Grid extends DBDataSet {
                                 case FieldDescription::FIELD_TYPE_TIME:
                                 case FieldDescription::FIELD_TYPE_DATETIME:
                                     if ($format = $fieldInfo->getPropertyValue('outputFormat')) {
-                                        $fieldValue = gears\AbstractBuilder::enFormatDate($fieldValue, $format, $fd->getType());
+                                        $fieldValue = AbstractBuilder::enFormatDate($fieldValue, $format, $fd->getType());
                                     }
                                     break;
                                 case FieldDescription::FIELD_TYPE_SELECT:
@@ -812,7 +807,7 @@ class Grid extends DBDataSet {
     protected function printData() {
         $this->setParam('recordsPerPage', false);
         if (E()->getController()->getViewMode() ==
-            gears\DocumentController::TRANSFORM_HTML
+            DocumentController::TRANSFORM_HTML
         )
             E()->getController()->getTransformer()->setFileName('print.xslt');
         $this->prepare();
@@ -1244,7 +1239,7 @@ class Grid extends DBDataSet {
      * @throws SystemException 'ERR_NO_DATA'
      */
     protected function autoCompleteTags() {
-        $b = new gears\JSONCustomBuilder();
+        $b = new JSONCustomBuilder();
         $this->setBuilder($b);
 
         try {
@@ -1304,7 +1299,7 @@ class Grid extends DBDataSet {
                         && !strpos($fName, '_num')
                         && array_key_exists($fName, $cInfo)
                     ) {
-                        $ff = new gears\FilterField($fName, $fAttributes->getType());
+                        $ff = new FilterField($fName, $fAttributes->getType());
                         $ff->setAttribute('tableName', $cInfo[$fName]['tableName']);
                         $ff->setAttribute('title', 'FIELD_' . $fName);
                         $this->filter_control->attachField($ff);

@@ -14,7 +14,7 @@ function getRealPOST();
  *
  * @version 1.0.0
  */
-
+namespace forms\components;
 /**
  * Editor of selector values.
  *

@@ -13,7 +13,8 @@ class FormsEditor;
  *
  * @version 1.0.0
  */
-
+namespace forms\components;
+use share\components\Grid, forms\gears\FormsSaver, share\gears\FieldDescription, forms\gears\FormConstructor, share\gears\QAL;
 /**
  * Create custom form.
  *
@@ -90,7 +91,7 @@ class FormsEditor extends Grid {
      */
     protected function deleteData($id) {
         parent::deleteData($id);
-        $res = $this->dbh->selectRequest('SHOW FULL TABLES FROM `' . FormConstructor::getDatabase() . '` LIKE "%form_' . $id . '%"');
+        $res = $this->dbh->select('SHOW FULL TABLES FROM `' . FormConstructor::getDatabase() . '` LIKE "%form_' . $id . '%"');
         if (is_array($res)) {
             $tables = array_map(function($row) { return current($row); }, $res);
             $this->dbh->modifyRequest('SET FOREIGN_KEY_CHECKS=0;');

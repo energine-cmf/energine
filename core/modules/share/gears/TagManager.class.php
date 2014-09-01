@@ -173,7 +173,7 @@ class TagManager extends DBWorker {
                         $tag_id = self::insert($tag);
                     }
                 }
-                catch (Exception $e) {
+                catch (\Exception $e) {
 
                 }
             }

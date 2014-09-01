@@ -13,7 +13,8 @@ class FormEditor;
  *
  * @version 1.0.0
  */
-
+namespace forms\components;
+use share\gears\SystemException, forms\gears\FormConstructor, share\gears\DataDescription, share\gears\FieldDescription, share\gears\MultiLanguageBuilder, share\gears\JSONBuilder, share\gears\Data, share\gears\Field, share\gears\QAL, share\gears\JSONCustomBuilder, share\components\Grid, share\gears\Cache, share\components\DataSet;
 /**
  * Form editor.
  *
@@ -216,7 +217,7 @@ class FormEditor extends DataSet {
         $this->getDataDescription()->getFieldDescriptionByName('field_type')->setProperty('tabName', 'TXT_PROPERTIES');
         $this->getDataDescription()->getFieldDescriptionByName('ltag_name')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
 
-        $result = $this->dbh->selectRequest(
+        $result = $this->dbh->select(
             'SELECT * FROM share_lang_tags lt
                     LEFT JOIN share_lang_tags_translation ltt ON lt.ltag_id=ltt.ltag_id
                     WHERE lt.ltag_name = %s', $ltagName = 'FIELD_' . strtoupper($fieldName));

@@ -13,8 +13,8 @@ class FileUploader;
  *
  * @version 1.0.0
  */
-
-
+namespace share\gears;
+use share\components\FileRepository;
 /**
  * File uploader for the server.
  *

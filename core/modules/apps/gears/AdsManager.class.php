@@ -14,7 +14,7 @@ class AdsManager;
  * @version 1.0.0
  */
 namespace apps\gears;
-use share\gears\DBWorker, share\gears\DataDescription, share\gears\Data, share\gears\QAL;
+use share\gears\DBWorker, share\gears\DataDescription, share\gears\Data, share\gears\QAL, share\gears\Field;
 /**
  * Ads manager.
  *

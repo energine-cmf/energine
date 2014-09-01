@@ -13,7 +13,8 @@ class VoteEditor;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use share\components\Grid, share\gears\FieldDescription, share\gears\Field;
 /**
  * Vote editor.
  *

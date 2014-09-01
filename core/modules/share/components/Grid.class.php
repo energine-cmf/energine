@@ -158,7 +158,7 @@ class Grid extends DBDataSet {
         foreach ($this->getDataDescription() as $fdName => $fieldDescription) {
             if (($default = $fieldDescription->getPropertyValue('default')) || ($default === '0')) {
                 if (!($f = $this->getData()->getFieldByName($fdName))) {
-                    $f = new gears\Field($fdName);
+                    $f = new Field($fdName);
                     $this->getData()->addField($f);
                 }
                 $f->setData($default, true);

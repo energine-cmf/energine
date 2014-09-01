@@ -13,7 +13,8 @@ class DivisionSaver;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
+use apps\gears\AdsManager;
 /**
  * Saver for division editor.
  *
@@ -22,10 +23,6 @@ class DivisionSaver;
 @endcode
  */
 class DivisionSaver extends ExtendedSaver {
-    //todo VZ: this can be removed.
-    public function __construct() {
-        parent::__construct();
-    }
 
     /**
      * @copydoc ExtendedSaver::validate

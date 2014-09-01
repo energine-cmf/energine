@@ -673,26 +673,6 @@ class DBDataSet extends DataSet {
                 if (!empty($values))
                     call_user_func_array(array($fieldMetaData, 'loadAvailableValues'), $values);
             }
-
-            /*if (is_array($keyInfo) && ($fieldMetaData->getType() == FieldDescription::FIELD_TYPE_SELECT)){
-
-                    $fkTableName = $keyInfo['tableName'];
-                    $fkKeyName = $keyInfo['fieldName'];
-                    //загружаем информацию о возможных значениях
-                    $values = $this->getFKData($fkTableName, $fkKeyName);
-            }
-            elseif($fieldMetaData->getType() == FieldDescription::FIELD_TYPE_MULTI) {
-                //Если существует таблица связанная
-                if($this->dbh->tableExists($multiTableName = $fieldName)){
-                    $tableInfo = $this->dbh->getColumnsInfo($multiTableName);
-                    stop($tableInfo);
-                }
-                //если нет значит это забота программиста наполнить значениями
-            }
-
-            if(!empty($values))
-                call_user_func_array(array($fieldMetaData, 'loadAvailableValues'), $values);*/
-
         }
         return $result;
     }

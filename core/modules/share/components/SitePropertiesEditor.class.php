@@ -13,7 +13,8 @@ class SitePropertiesEditor;
  *
  * @version 1.0.0
  */
-
+namespace share\components;
+use share\gears\SitePropertiesSaver, share\gears\FieldDescription;
 /**
  * Site properties editor.
  *

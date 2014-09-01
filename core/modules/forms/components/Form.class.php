@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class Form;
-@endcode
+ * @endcode
  *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
@@ -14,13 +14,15 @@ class Form;
  * @version 1.0.0
  */
 namespace forms\components;
-use share\components\DBDataSet, share\gears\Saver, forms\gears\FormConstructor, share\gears\SystemException, share\gears\FieldDescription, share\gears\Data, share\gears\DataDescription,share\gears\DBA;
+
+use share\components\DBDataSet, share\gears\Saver, forms\gears\FormConstructor, share\gears\SystemException, share\gears\FieldDescription, share\gears\Data, share\gears\DataDescription, share\gears\DBA, share\gears\FileUploader, share\gears\Mail, share\gears\Field, share\gears\SimpleBuilder;
+
 /**
  * Form.
  *
  * @code
 class Form;
-@endcode
+ * @endcode
  */
 class Form extends DBDataSet {
     /**
@@ -57,9 +59,9 @@ class Form extends DBDataSet {
         //Otherwiste setTableName.
         if (!$this->formID || !$this->dbh->tableExists($tableName =
                 FormConstructor::getDatabase() .
-                        '.' .
-                        FormConstructor::TABLE_PREFIX .
-                        $this->formID)
+                '.' .
+                FormConstructor::TABLE_PREFIX .
+                $this->formID)
         )
             $this->formID = false;
         else
@@ -117,7 +119,7 @@ class Form extends DBDataSet {
         $result = false;
         if (isset($_FILES) && !empty($_FILES)) {
             list($dbName, $tName) =
-                    DBA::getFQTableName($this->getTableName(), true);
+                DBA::getFQTableName($this->getTableName(), true);
             if (isset($_FILES[$phpTableName = $dbName . '_' . $tName])) {
                 $fileData = array();
                 //Переворачиваем пришедший массив в удобный для нас вид
@@ -133,7 +135,7 @@ class Form extends DBDataSet {
                         $uploader->setFile($fileInfo);
                         $uploader->upload('uploads/forms');
                         $data[$this->getTableName()][$fieldName] =
-                                $uploader->getFileObjectName();
+                            $uploader->getFileObjectName();
                         $uploader->cleanUp();
                     }
                 }
@@ -145,7 +147,7 @@ class Form extends DBDataSet {
 
         //получаем описание полей для метода
         $configDataDescription =
-                $this->getConfig()->getStateConfig($this->getPreviousState());
+            $this->getConfig()->getStateConfig($this->getPreviousState());
         //если в конфиге есть описание полей для метода - загружаем их
         if (isset($configDataDescription->fields)) {
             $dataDescriptionObject->loadXML($configDataDescription->fields);
@@ -179,8 +181,7 @@ class Form extends DBDataSet {
             $this->saver->save();
             $result = $this->saver->getResult();
 
-        }
-        else {
+        } else {
             //выдвигается пустой exception который перехватывается в методе save
             //выдвигается exception который перехватывается в методе save
             throw new SystemException('ERR_VALIDATE_FORM', SystemException::ERR_WARNING, $this->saver->getErrors());
@@ -214,7 +215,7 @@ class Form extends DBDataSet {
                 $data['pk_id'] = $result;
                 foreach ($data as $key => $value) {
                     $data[$key] = array('translation' => $this->translate(
-                        'FIELD_' . $key),
+                            'FIELD_' . $key),
                         'value' => $value);
                     if ($fd = $this->saver->getDataDescription()->getFieldDescriptionByName($key)) {
                         if (($fd->getType() == FieldDescription::FIELD_TYPE_MULTI) && is_array($keyInfo = $fd->getPropertyValue('key'))) {
@@ -228,7 +229,9 @@ class Form extends DBDataSet {
                                 if (isset($m2mValueFieldInfo['key']) && is_array($m2mValueFieldInfo)) {
                                     list($values, ,) = $this->dbh->getForeignKeyData($m2mValueFieldInfo['key']['tableName'], $m2mValueFieldInfo['key']['fieldName'], E()->getLanguage()->getCurrent(), array($m2mValueFieldInfo['key']['tableName'] . '.' . $m2mValueFieldInfo['key']['fieldName'] => $value));
                                     if (is_array($values)) {
-                                        $data[$key]['value'] = implode(',', array_map(function($row) { return $row['fk_name']; }, $values));
+                                        $data[$key]['value'] = implode(',', array_map(function ($row) {
+                                            return $row['fk_name'];
+                                        }, $values));
                                     }
                                 }
 
@@ -248,36 +251,33 @@ class Form extends DBDataSet {
                         'form_name',
                         true);
                     $subject = $this->translate('TXT_EMAIL_FROM_FORM') . ' ' .
-                            $subject;
+                        $subject;
 
                     //Create text to send. The last one will contain: translations of variables and  variables.
                     $body = '';
 //                    if (!($url = $this->getConfigValue('site.media')))
-                        $url = E()->getSiteManager()->getCurrentSite()->base;
+                    $url = E()->getSiteManager()->getCurrentSite()->base;
                     foreach ($data as $fieldname => $value) {
                         $type = $this->getDataDescription()->getFieldDescriptionByName($fieldname)->getType();
                         if ($type == FieldDescription::FIELD_TYPE_FILE) {
                             $val = $url . $value['value'];
-                        }
-                        elseif ($type == FieldDescription::FIELD_TYPE_BOOL) {
+                        } elseif ($type == FieldDescription::FIELD_TYPE_BOOL) {
                             $val = $this->translate(((int)$value['value'] === 0) ? 'TXT_NO' : 'TXT_YES');
-                        }
-                        else {
+                        } else {
                             $val = $value['value'];
                         }
 
                         $body .=
-                                '<strong>' . $value['translation'] . '</strong>: ' . $val .
-                                        '<br>';
+                            '<strong>' . $value['translation'] . '</strong>: ' . $val .
+                            '<br>';
                     }
                     $mailer->setFrom($this->getConfigValue('mail.from'))->
-                            setSubject($subject)->
-                            setText($body)->
-                            addTo(($recp =
+                        setSubject($subject)->
+                        setText($body)->
+                        addTo(($recp =
                             $this->getRecipientEmail()) ? $recp
                             : $this->getConfigValue('mail.manager'))->send();
-                }
-                catch (Exception $e) {
+                } catch (\Exception $e) {
                 }
             }
 
@@ -285,8 +285,7 @@ class Form extends DBDataSet {
             //$this->prepare();
             $this->response->redirectToCurrentSection('send/success/');
 
-        }
-        catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->failure($e->getMessage(), $data);
         }
     }
@@ -349,9 +348,9 @@ class Form extends DBDataSet {
      */
     protected function getRecipientEmail($options = false) {
         $result =
-                simplifyDBResult($this->dbh->select('frm_forms', array('form_email_adresses'), array('form_id' => $this->formID)),
-                    'form_email_adresses',
-                    true);
+            simplifyDBResult($this->dbh->select('frm_forms', array('form_email_adresses'), array('form_id' => $this->formID)),
+                'form_email_adresses',
+                true);
         return $result;
     }
 
@@ -403,18 +402,17 @@ class Form extends DBDataSet {
         if (is_array($result)) {
             $this->setTitle($result[0]['form_name']);
             //Если поля не существует - создаем
-            if(!($field = $this->getData()->getFieldByName('form_date'))){
+            if (!($field = $this->getData()->getFieldByName('form_date'))) {
                 $field = new Field(('form_date'));
                 $this->getData()->addField($field);
             }
             //заполняем текущей датой
             $field->setData(date('Y-m-d H:i:s'));
             //Если описания не существует - создаем и добавляем
-            if(!($fd = $this->getDataDescription()->getFieldDescriptionByName('form_date'))){
+            if (!($fd = $this->getDataDescription()->getFieldDescriptionByName('form_date'))) {
                 $fd = new FieldDescription('form_date');
                 $this->getDataDescription()->addFieldDescription($fd);
-            }
-            else{
+            } else {
                 //Удаялем и добавляем
                 //Это нужно для того чтобы перенести поле в конец списка
                 $this->getDataDescription()->removeFieldDescription($fd);
@@ -439,7 +437,7 @@ class Form extends DBDataSet {
 
 
             if (
-                !($this->document->getUser()->isAuthenticated()
+            !($this->document->getUser()->isAuthenticated()
                 ||
                 $this->getParam('noCaptcha'))
             ) {

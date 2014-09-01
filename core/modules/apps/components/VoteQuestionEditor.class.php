@@ -13,7 +13,8 @@ class VoteQuestionEditor;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use share\components\Grid;
 /**
  * Vote question editor.
  *

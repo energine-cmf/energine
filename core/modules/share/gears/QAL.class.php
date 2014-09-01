@@ -495,7 +495,7 @@ final class QAL extends DBA {
     public function getScalar() {
         $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
 
-        if ($res instanceof PDOStatement) {
+        if ($res instanceof \PDOStatement) {
             return $res->fetchColumn();
         }
 
@@ -514,7 +514,7 @@ final class QAL extends DBA {
         $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
 
         $result = array();
-        if ($res instanceof PDOStatement) {
+        if ($res instanceof \PDOStatement) {
             while ($row = $res->fetch(\PDO::FETCH_NUM)) {
                 array_push($result, $row[0]);
             }

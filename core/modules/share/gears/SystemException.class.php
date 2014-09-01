@@ -96,6 +96,10 @@ class SystemException extends \Exception {
      * @var array|string $customMessages
      */
     protected $customMessages = array();
+    /**
+     * @var array
+     */
+    private $backtrace = array();
 
     /**
      * @param string $message Message.
@@ -132,14 +136,7 @@ class SystemException extends \Exception {
         elseif ($code != self::ERR_DB ) {
             $message = DBWorker::_translate($message, E()->getLanguage()->getCurrent());
         }
-        /*else {
-            $this->response->setStatus(503);
-            $this->response->setHeader('Retry-After', 20);
-        }*/
-        /*elseif ($code != self::ERR_DB ) {
-            $message = DBWorker::_translate($message, E()->getLanguage()->getCurrent());
-        }*/
-
+        $this->backtrace = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT, 5);
 
         parent::__construct($message, $code);
     }
@@ -180,4 +177,12 @@ class SystemException extends \Exception {
         $this->line = $line;
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getBacktrace() {
+        return $this->backtrace;
+    }
+
 }

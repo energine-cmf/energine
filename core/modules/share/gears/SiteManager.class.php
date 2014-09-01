@@ -73,7 +73,6 @@ final class SiteManager extends DBWorker implements \Iterator {
         if (empty($res) || !is_array($res)) {
             throw new SystemException('ERR_NO_SITE', SystemException::ERR_DEVELOPER);
         }
-
         foreach ($res as $domainData) {
             $domainData = convertFieldNames($domainData, 'domain_');
             //Если не установлен уже домен - для сайта - дописываем
@@ -121,6 +120,7 @@ final class SiteManager extends DBWorker implements \Iterator {
      * @throws SystemException 'ERR_NO_SITE'
      */
     public function getSiteByID($siteID) {
+
         if (!isset($this->data[$siteID])) {
             throw new SystemException('ERR_NO_SITE', SystemException::ERR_DEVELOPER, $siteID);
         }

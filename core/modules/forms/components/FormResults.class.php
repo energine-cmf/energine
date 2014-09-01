@@ -13,7 +13,8 @@ class FormResults;
  *
  * @version 1.0.0
  */
-
+namespace forms\components;
+use share\components\Grid, forms\gears\FormConstructor, share\gears\QAL, share\gears\Field, share\gears\FieldDescription, share\gears\SimpleBuilder, share\gears\Data, share\gears\DataDescription;
 /**
  * Form results.
  *

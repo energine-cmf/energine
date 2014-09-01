@@ -242,6 +242,8 @@ abstract class DataSet extends Component {
      */
     protected function prepare() {
         $this->setBuilder($this->createBuilder());
+
+        //$this->setDataDescription($this->createDataDescription());
         $this->setDataDescription($this->createDataDescription());
         $this->createPager();
         $data = $this->createData();
@@ -255,6 +257,7 @@ abstract class DataSet extends Component {
             $this->addToolbar($toolbars);
         }
         $this->js = $this->buildJS();
+
     }
 
     /**
@@ -315,7 +318,9 @@ abstract class DataSet extends Component {
 
                 $toolbar = new Toolbar($toolbarName);
                 $toolbar->attachToComponent($this);
+
                 $toolbar->loadXML($toolbarDescription);
+
                 $toolbar->translate();
                 $result[$toolbarName] = $toolbar;
             }

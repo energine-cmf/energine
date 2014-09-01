@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class Toolbar;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -19,7 +19,7 @@ namespace share\gears;
  *
  * @code
 class Toolbar;
-@endcode
+ * @endcode
  */
 class Toolbar extends Object {
     /**
@@ -75,12 +75,12 @@ class Toolbar extends Object {
 
     /**
      * Return toolbar name.
-     * 
+     *
      * @return string
      *
      * @final
      */
-    final public function getName(){
+    final public function getName() {
         return $this->name;
     }
 
@@ -123,7 +123,7 @@ class Toolbar extends Object {
      */
     public function detachControl(Control $control) {
         if (!isset($this->controls[$control->getIndex()])) {
-        	throw new SystemException('ERR_DEV_NO_CONTROL_TO_DETACH', SystemException::ERR_DEVELOPER);
+            throw new SystemException('ERR_DEV_NO_CONTROL_TO_DETACH', SystemException::ERR_DEVELOPER);
         }
         unset($this->controls[$control->getIndex()]);
     }
@@ -153,27 +153,30 @@ class Toolbar extends Object {
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function loadXML(\SimpleXMLElement $toolbarDescription) {
-        if(!empty($toolbarDescription))
-        foreach ($toolbarDescription->control as $controlDescription) {
-            if (!isset($controlDescription['type'])) {
-                throw new SystemException('ERR_DEV_NO_CONTROL_TYPE', SystemException::ERR_DEVELOPER);
+        if (!empty($toolbarDescription))
+            foreach ($toolbarDescription->control as $controlDescription) {
+
+                if (!isset($controlDescription['type'])) {
+                    throw new SystemException('ERR_DEV_NO_CONTROL_TYPE', SystemException::ERR_DEVELOPER);
+                }
+
+                $controlClassName = ucfirst((string)$controlDescription['type']);
+                if ($controlClassName == 'Togglebutton') $controlClassName = 'Switcher'; // dirty hack
+                $controlClassName = 'share\\gears\\' . $controlClassName;
+                if (!class_exists($controlClassName)) {
+                    throw new SystemException('ERR_DEV_NO_CONTROL_CLASS', SystemException::ERR_DEVELOPER, $controlClassName);
+                }
+
+
+                $control = new $controlClassName(
+                    isset($controlDescription['id']) ? (string)$controlDescription['id'] : null
+                );
+
+                $this->attachControl($control);
+                $control->loadFromXml($controlDescription);
             }
 
-            $controlClassName = ucfirst((string)$controlDescription['type']);
-            if ($controlClassName == 'Togglebutton') $controlClassName = 'Switcher'; // dirty hack
-            if (!class_exists($controlClassName, false)) {
-            	//throw new SystemException('ERR_DEV_NO_CONTROL_CLASS', SystemException::ERR_DEVELOPER, $controlClassName);
-            }
-            $controlClassName = 'share\\gears\\'.$controlClassName;
 
-            $control = new $controlClassName(
-                isset($controlDescription['id']) ? (string)$controlDescription['id'] : null
-            );
-
-            $this->attachControl($control);
-            $control->loadFromXml($controlDescription);
-
-        }
     }
 
     /**
@@ -231,7 +234,7 @@ class Toolbar extends Object {
                 $toolbarElem->appendChild($props);
             }
             foreach ($this->controls as $control) {
-            	$toolbarElem->appendChild($this->doc->importNode($control->build(), true));
+                $toolbarElem->appendChild($this->doc->importNode($control->build(), true));
             }
             $this->doc->appendChild($toolbarElem);
             $result = $this->doc->documentElement;

@@ -6,8 +6,8 @@
  * It contains the definition to:
  * @code
 final class DivisionEditor;
-interface SampleDivisionEditor;
-@endcode
+ * interface SampleDivisionEditor;
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -15,13 +15,15 @@ interface SampleDivisionEditor;
  * @version 1.0.0
  */
 namespace share\components;
-use share\gears, share\gears\FieldDescription, share\gears\JSONDivBuilder, share\gears\Data;
+
+use share\gears, share\gears\FieldDescription, share\gears\JSONDivBuilder, share\gears\Data, share\gears\Builder, share\gears\Field, share\gears\DataDescription, share\gears\DBWorker, share\gears\Document, share\gears\DivisionSaver,share\gears\TagManager, apps\gears\AdsManager, share\gears\SystemException, share\gears\Component, share\gears\JSONCustomBuilder, share\gears\QAL;
+
 /**
  * Division editor.
  *
  * @code
 final class DivisionEditor;
-@endcode
+ * @endcode
  *
  * @final
  */
@@ -141,7 +143,10 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $data =
             $this->dbh->select('user_group_rights', array('right_id', 'right_const as right_name'));
         $data =
-            array_map(create_function('$a', '$a["right_name"] = DBWorker::_translate("TXT_".$a["right_name"]); return $a;'), $data);
+            array_map(function ($a) {
+                $a["right_name"] = DBWorker::_translate("TXT_" . $a["right_name"]);
+                return $a;
+            }, $data);
         $data[] =
             array('right_id' => 0, 'right_name' => $this->translate('TXT_NO_RIGHTS'));
 
@@ -213,7 +218,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
 
         if (file_exists($includeFile)) {
             $includeRules = file($includeFile);
-            foreach($includeRules as $rule) {
+            foreach ($includeRules as $rule) {
                 $rule = trim($rule);
                 if (empty($rule)) continue;
                 $folders[] = glob($dirPath . $rule);
@@ -386,6 +391,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
      */
     protected function add() {
         parent::add();
+
         //@todo Тут пришлось пойти на извращение
         $actionParams = $this->getStateParams(true);
         $this->buildRightsTab($actionParams['pid']);
@@ -482,7 +488,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $newField->setProperty('tabName', $contentFD->getPropertyValue('tabName'));
 
             $this->getDataDescription()->addFieldDescription($newField, DataDescription::FIELD_POSITION_AFTER, 'smap_content');
-            $newField = new \share\gears\Field('smap_content_xml');
+            $newField = new Field('smap_content_xml');
             $doc = new \DOMDocument();
             $doc->loadXML($contentXMLFieldData);
             $doc->formatOutput = true;
@@ -602,7 +608,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             case 'showPageToolbar':
                 $result = false;
                 // вызываем родительский метод построения
-                $result = gears\Component::build();
+                $result = Component::build();
                 if ($result instanceof \DOMDocument) {
                     $result->documentElement->appendChild($result->importNode($this->buildJS(), true));
                     $tbs = $this->getToolbar();
@@ -925,12 +931,13 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
 
     }
 }
+
 /**
  * Fake interface to create sample.
  *
  * @code
 interface SampleDivisionEditor;
-@endcode
+ * @endcode
  */
 interface SampleDivisionEditor {
 }

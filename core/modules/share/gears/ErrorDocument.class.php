@@ -99,6 +99,22 @@ class ErrorDocument extends Object implements IDocument {
                     $error->appendChild($this->doc->createElement('customMessage', $message));
                 }
             }
+
+            $bktrace = $this->doc->createElement('backtrace');
+            $dbgObj = $this->e->getBacktrace();
+            array_walk($dbgObj, function($callable) use ($bktrace){
+                $bktrace->appendChild($call = $this->doc->createElement('call'));
+                array_walk($callable, function($value, $key) use ($call){
+                    if(is_scalar($value))
+                        $call->appendChild($this->doc->createElement($key, $value));
+                    elseif(is_array($value)){
+                        $call->appendChild($this->doc->createElement($key, implode(',', $value)));
+                    }
+
+                });
+            });
+            $result->appendChild($bktrace);
+
             if ($vm == DocumentController::TRANSFORM_HTML) {
                 E()->getController()->getTransformer()->setFileName('error_page.xslt');
             }

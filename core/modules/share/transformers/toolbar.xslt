@@ -57,7 +57,9 @@
     <xsl:template match="toolbar[parent::component[@exttype='grid']]">
         <script type="text/javascript">
             $(window).addEvent('domready', function(){
-                    componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>'] = new Toolbar('<xsl:value-of select="@name"/>');
+                    componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>'] = new Toolbar('<xsl:value-of select="@name"/>'<xsl:if
+                test="properties/property">, <xsl:for-each select="properties/property">{'<xsl:value-of select="@name"/>':'<xsl:value-of
+                select="."/>'<xsl:if test="position()!=last()">,</xsl:if>}</xsl:for-each></xsl:if>);
                 <xsl:apply-templates />
                 if(<xsl:value-of select="generate-id(../recordset)"/>)<xsl:value-of select="generate-id(../recordset)"/>.attachToolbar(componentToolbars['<xsl:value-of select="generate-id(../recordset)"/>']);
                 var holder = document.id('<xsl:value-of select="generate-id(../recordset)"/>'),

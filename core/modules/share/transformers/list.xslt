@@ -114,9 +114,7 @@
                         <!-- если есть хотя бы одно поле с типом string -->
                         <!-- или если есть узел filters -->
                         <xsl:if test="ancestor::component/filter">
-                        <!--<xsl:if test="ancestor::component/filter or ancestor::component[@class='FileRepository'] or $FIELDS[@type = 'string' or @type='date' or @type='datetime' or @type='float' or @type='integer' or @type='select']">-->
                             <div class="grid_toolbar clearfix">
-
                                     <div class="filter">
                                         <xsl:value-of select="ancestor::component/filter/@title" />:<xsl:text>&#160;</xsl:text>
                                         <select name="fieldName" class="f_fields">
@@ -147,7 +145,7 @@
                                         <a href="#" class="f_reset"><xsl:value-of select="ancestor::component/filter/@reset"/></a>
                                     </div>
 
-                                <xsl:if test="ancestor::component[@class='FileRepository']">
+                                <xsl:if test="ancestor::component[@sample='FileRepository']">
                                     <div class="grid_breadcrumbs" id="breadcrumbs"><!-- <a href="#">Локальный репозиторий</a><span> / </span><a href="#">Тест</a>--></div>
                                 </xsl:if>
                             </div>
@@ -155,7 +153,7 @@
                         <div class="gridHeadContainer">
                         <table class="gridTable" cellspacing="0">
                             <xsl:choose>
-                                <xsl:when test="ancestor::component[@class='FileRepository']">
+                                <xsl:when test="ancestor::component[@sample='FileRepository']">
                                     <xsl:attribute name="class">gridTable fixed_columns</xsl:attribute>
                                     <col id="col_11" style="width:12%"/>
                                     <col id="col_12" style="width:30%"/>
@@ -200,7 +198,7 @@
                             <div class="gridBodyContainer">
                                 <table class="gridTable" cellspacing="0">
                                     <xsl:choose>
-                                        <xsl:when test="ancestor::component[@class='FileRepository']">
+                                        <xsl:when test="ancestor::component[@sample='FileRepository']">
                                             <xsl:attribute name="class">gridTable fixed_columns</xsl:attribute>
                                             <col id="col_11a" style="width:12%"/>
                                             <col id="col_12a" style="width:30%"/>

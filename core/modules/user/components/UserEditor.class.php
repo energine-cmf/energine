@@ -60,7 +60,7 @@ class UserEditor extends Grid {
         } else {
             $_POST[$this->getTableName()]['u_password'] = sha1($_POST[$this->getTableName()]['u_password']);
         }
-        if($this->dbh->getScalar('SELECT COUNT(*) FROM ' . $this->getTableName() . ' WHERE u_name=%s', $_POST[$this->getTableName()]['u_name'])){
+        if($this->getPreviousState() == 'add' && $this->dbh->getScalar('SELECT COUNT(*) FROM ' . $this->getTableName() . ' WHERE u_name=%s', $_POST[$this->getTableName()]['u_name'])){
             throw new SystemException('ERR_USER_EXISTS', SystemException::ERR_CRITICAL);
         }
         $result = parent::saveData();

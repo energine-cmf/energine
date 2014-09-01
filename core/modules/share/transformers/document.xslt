@@ -96,7 +96,9 @@
                                     '<xsl:value-of select="name()"/>':'<xsl:value-of select="."/>'
                                     <xsl:if test="position()!=last()">,</xsl:if>
                                 </xsl:for-each>}<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>
-                            ]);
+                            ]<xsl:if
+                                            test="$PAGE_TOOLBAR/toolbar/properties/property">, <xsl:for-each select="properties/property">{'<xsl:value-of select="@name"/>':'<xsl:value-of
+                                            select="."/>'<xsl:if test="position()!=last()">,</xsl:if>}</xsl:for-each></xsl:if>);
                             }
                             catch (e) {
                                 safeConsoleError(e);
@@ -294,7 +296,9 @@
                             <xsl:if test="position()!=last()">,</xsl:if>
                         </xsl:for-each>
                         }<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>
-                    ]);
+                    ]<xsl:if
+                                                                test="$PAGE_TOOLBAR/toolbar/properties/property">, <xsl:for-each select="$PAGE_TOOLBAR/toolbar/properties/property">{'<xsl:value-of select="@name"/>':'<xsl:value-of
+                                                                select="."/>'<xsl:if test="position()!=last()">,</xsl:if>}</xsl:for-each></xsl:if>);
                     }
                     catch (e) {
                         safeConsoleError(e);

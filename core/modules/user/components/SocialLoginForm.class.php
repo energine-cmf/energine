@@ -13,8 +13,8 @@ class SocialLoginForm;
  *
  * @version 1.0.0
  */
-namespace user\components;
-use share\gears\Field;
+namespace Energine\user\components;
+use Energine\share\gears\Field;
 
 /**
  * Show authorization form with possibility to authorize over social networks.
@@ -55,7 +55,7 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
                 if (($appID = $this->getConfigValue('auth.' . $socialType . '.appID'))
                     && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))
                 ) {
-                    $authClassName = 'share\\gears\\'.strtoupper($socialType) . 'OAuth';
+                    $authClassName = 'Energine\\share\\gears\\'.strtoupper($socialType) . 'OAuth';
                     $auth = new $authClassName(array(
                         'appId' => $appID,
                         'secret' => $secretKey,

@@ -13,7 +13,7 @@ class OKOAuth;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * Class for user authorisation over <a href="http://www.odnoklassniki.ru">Однокласники</a>.
  *

@@ -13,8 +13,8 @@ class NewsFeed;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use share\gears\QAL, share\gears\SystemException, share\gears\AttachmentManager, share\gears\FieldDescription, share\gears\SimpleBuilder, share\gears\Data, share\gears\TagManager;
+namespace Energine\apps\components;
+use Energine\share\gears\QAL, Energine\share\gears\SystemException, Energine\share\gears\AttachmentManager, Energine\share\gears\FieldDescription, Energine\share\gears\SimpleBuilder, Energine\share\gears\Data, Energine\share\gears\TagManager;
 /**
  * News line.
  *
@@ -57,7 +57,7 @@ class NewsFeed extends ExtendedFeed {
     }
 
     /**
-     * @copydoc \apps\components\ExtendedFeed::createBuilder
+     * @copydoc \Energine\apps\components\ExtendedFeed::createBuilder
      */
     protected function createBuilder() {
         return new SimpleBuilder();

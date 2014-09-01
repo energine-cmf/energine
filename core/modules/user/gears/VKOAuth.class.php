@@ -13,8 +13,8 @@ class VKOAuth;
  *
  * @version 1.0.0
  */
-namespace user\gears;
-use share\gears\Object, share\gears\SystemException;
+namespace Energine\user\gears;
+use Energine\share\gears\Object, Energine\share\gears\SystemException;
 /**
  * Class for user authorization over <a href="http://vk.com">Вконтакте (VK)</a>.
  *

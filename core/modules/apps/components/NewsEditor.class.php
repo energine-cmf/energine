@@ -13,8 +13,8 @@ class NewsEditor;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use share\gears\Field, share\gears\FieldDescription, share\gears\QAL, apps\gears\NewsEditorSaver;
+namespace Energine\apps\components;
+use Energine\share\gears\Field, Energine\share\gears\FieldDescription, Energine\share\gears\QAL, Energine\apps\gears\NewsEditorSaver;
 /**
  * News editor.
  *

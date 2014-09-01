@@ -13,9 +13,9 @@ class Feed;
  *
  * @version 1.0.0
  */
-namespace apps\components;
+namespace Energine\apps\components;
 
-use share\components\DBDataSet, share\gears\QAL, share\gears\FieldDescription;
+use Energine\share\components\DBDataSet, Energine\share\gears\QAL, Energine\share\gears\FieldDescription;
 /**
  * Parent class for components on the site structure.
  *

@@ -14,7 +14,7 @@ class TextBlockSource;
  * @version 1.0.0
  */
 
-namespace share\components;
+namespace Energine\share\components;
 
 /**
  * Source of the text block.

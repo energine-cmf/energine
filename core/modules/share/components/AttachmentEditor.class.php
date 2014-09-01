@@ -13,10 +13,10 @@ class AttachmentEditor;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears;
-use share\gears\FieldDescription;
-use share\gears\SystemException;
+namespace Energine\share\components;
+use Energine\share\gears;
+use Energine\share\gears\FieldDescription;
+use Energine\share\gears\SystemException;
 
 /**
  * Attachment editor.

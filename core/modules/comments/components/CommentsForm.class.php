@@ -12,8 +12,8 @@ class CommentsForm;
  *
  * @version 1.0.0
  */
-namespace comments\components;
-use share\components\DataSet, share\gears\SystemException, share\gears\JSONCustomBuilder, share\gears\QAL, share\gears\DataDescription, share\gears\FieldDescription, comments\gears\CommentsJSONBuilder, share\gears\Data, share\gears\Field;
+namespace Energine\comments\components;
+use Energine\share\components\DataSet, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\comments\gears\CommentsJSONBuilder, Energine\share\gears\Data, Energine\share\gears\Field;
 /**
  * Show comments and form for commenting.
  *

@@ -14,8 +14,8 @@ abstract class DataSet;
  * @version 1.0.0
  */
 
-namespace share\components;
-use share\gears\Toolbar, share\gears\QAL,share\gears\Component, share\gears\SystemException, share\gears\DataDescription, share\gears\FieldDescription, share\gears\Data, share\gears\Builder, share\gears\Object, share\gears\SimpleBuilder, share\gears\DataSetConfig, share\gears\Pager;
+namespace Energine\share\components;
+use Energine\share\gears\Toolbar, Energine\share\gears\QAL,Energine\share\gears\Component, Energine\share\gears\SystemException, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Object, Energine\share\gears\SimpleBuilder, Energine\share\gears\DataSetConfig, Energine\share\gears\Pager;
 /**
  * Abstract data set.
  *
@@ -451,7 +451,7 @@ abstract class DataSet extends Component {
     /**
      * Create data.
      *
-     * @return \share\gears\Data
+     * @return \Energine\share\gears\Data
      *
      * @throws SystemException 'ERR_DEV_LOAD_DATA_IS_FUNCTION'
      */
@@ -511,7 +511,7 @@ abstract class DataSet extends Component {
         // если у нас не полностью сформированный путь, то добавляем информацию о языке + путь к шаблону
         if (!$isFullURI) {
             $action = $this->request->getLangSegment() .
-                $this->request->getPath(\share\gears\Request::PATH_TEMPLATE, true) .
+                $this->request->getPath(\Energine\share\gears\Request::PATH_TEMPLATE, true) .
                 $action;
 
             // если в конце нет слеша - добавляем его
@@ -705,7 +705,7 @@ abstract class DataSet extends Component {
             ),
             array(
                 'upl_id' => intval($uplId),
-                'upl_internal_type' => \share\gears\FileRepoInfo::META_TYPE_VIDEO
+                'upl_internal_type' => \Energine\share\gears\FileRepoInfo::META_TYPE_VIDEO
             )
         );
         if(!is_array($fileInfo)) {

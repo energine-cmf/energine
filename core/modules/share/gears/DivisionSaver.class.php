@@ -13,8 +13,8 @@ class DivisionSaver;
  *
  * @version 1.0.0
  */
-namespace share\gears;
-use apps\gears\AdsManager;
+namespace Energine\share\gears;
+use Energine\apps\gears\AdsManager;
 /**
  * Saver for division editor.
  *

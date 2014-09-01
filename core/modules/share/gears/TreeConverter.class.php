@@ -15,7 +15,7 @@ final class TreeConverter;
  * @version 1.0.0
  */
 
-namespace share\gears;
+namespace Energine\share\gears;
 
 /**
  * Convert Tree.

@@ -13,9 +13,9 @@ class FormEditor;
  *
  * @version 1.0.0
  */
-namespace forms\components;
+namespace Energine\forms\components;
 
-use share\gears\SystemException, forms\gears\FormConstructor, share\gears\DataDescription, share\gears\FieldDescription, share\gears\MultiLanguageBuilder, share\gears\JSONBuilder, share\gears\Data, share\gears\Field, share\gears\QAL, share\gears\JSONCustomBuilder, share\components\Grid, share\gears\Cache, share\components\DataSet;
+use Energine\share\gears\SystemException, Energine\forms\gears\FormConstructor, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\MultiLanguageBuilder, Energine\share\gears\JSONBuilder, Energine\share\gears\Data, Energine\share\gears\Field, Energine\share\gears\QAL, Energine\share\gears\JSONCustomBuilder, Energine\share\components\Grid, Energine\share\gears\Cache, Energine\share\components\DataSet;
 
 /**
  * Form editor.

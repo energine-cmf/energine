@@ -13,8 +13,8 @@ class Register;
  *
  * @version 1.0.0
  */
-namespace user\components;
-use share\components\DBDataSet, share\gears\User, share\gears\JSONCustomBuilder, share\gears\SystemException, share\gears\FieldDescription, share\gears\Data, share\gears\DataDescription, share\gears\Field, share\gears\Mail;
+namespace Energine\user\components;
+use Energine\share\components\DBDataSet, Energine\share\gears\User, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\DataDescription, Energine\share\gears\Field, Energine\share\gears\Mail;
 /**
  * Registration form.
  *

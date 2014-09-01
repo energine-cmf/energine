@@ -11,9 +11,9 @@ class FormConstructor;
  * Version 1.0.0
  */
 //todo Хреново получилось, так и хочется все переписать
-namespace forms\gears;
+namespace Energine\forms\gears;
 
-use share\gears\DBWorker, share\gears\DBA, share\gears\DataDescription, share\gears\FieldDescription, share\gears\Data, share\components\Grid, share\gears\Object, share\gears\QAL;
+use Energine\share\gears\DBWorker, Energine\share\gears\DBA, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\components\Grid, Energine\share\gears\Object, Energine\share\gears\QAL;
 
 /**
  * Form constructor.

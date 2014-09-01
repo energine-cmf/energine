@@ -13,8 +13,8 @@ class Branding;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use share\components\DBDataSet, share\gears\SimpleBuilder, share\gears\FieldDescription;
+namespace Energine\apps\components;
+use Energine\share\components\DBDataSet, Energine\share\gears\SimpleBuilder, Energine\share\gears\FieldDescription;
 /**
  * Show branding.
  *

@@ -13,7 +13,7 @@ abstract class Control;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 //todo VZ: There should be Element class that is extended from Object and has all needed methods and members.
 /**
  * Toolbar control.

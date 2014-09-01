@@ -13,7 +13,7 @@ final class DBStructureInfo;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * Data base structure information.
  *

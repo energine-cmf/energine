@@ -13,8 +13,8 @@ class DBDataSet;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears, share\gears\SystemException, share\gears\FieldDescription, share\gears\MultiLanguageBuilder, share\gears\QAL;
+namespace Energine\share\components;
+use Energine\share\gears, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\MultiLanguageBuilder, Energine\share\gears\QAL;
 /**
  * Class that shows the data from data base.
  *

@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content>
-    <component name="userEditor" module="user" class="UserEditor">
-       <params>
-           <param name="rights">3</param>
-       </params>
-    </component>
+<content html_class="colset colset2">
+    <container name="left" column="column" html_class="col col1">
+        <container name="mainMenuContainer" block="beta" widget="widget">
+            <component name="mainMenu" module="share" class="PageList">
+                <params>
+                    <param name="tags">menu</param>
+                    <param name="recursive">1</param>
+                    <param name="config">core/modules/share/MainMenu.component.xml</param>
+                </params>
+            </component>
+        </container>
+        <container name="leftAdBlock"/>
+        <container name="loginFormContainer" block="beta" widget="widget">
+            <component name="loginForm" module="user" class="LoginForm"/>
+        </container>
+    </container>
+    <container name="center" column="column" html_class="col col2 last_col">
+        <container name="usersContainer" block="alfa" widget="static">
+            <component name="userEditor" module="user" class="UserEditor">
+                <params>
+                    <param name="rights">3</param>
+                </params>
+            </component>
+        </container>
+    </container>
 </content>
+
 

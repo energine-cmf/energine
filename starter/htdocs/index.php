@@ -13,16 +13,17 @@ try {
     require_once('bootstrap.php');
 
     if ($use_timer = E()->getConfigValue('site.useTimer')) {
-        class Timer Extends share\gears\Object {
+        class Timer Extends Energine\share\gears\Object {
 
         }
         $timer = new Timer();
         $timer->startTimer();
     }
 
-    share\gears\UserSession::start();
+    Energine\share\gears\UserSession::start();
 
     $reg = E();
+
     $reg->getController()->run();
 
     if ($use_timer) {

@@ -13,8 +13,8 @@ class DomainEditor;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\FieldDescription;
+namespace Energine\share\components;
+use Energine\share\gears\FieldDescription;
 /**
  * Domain editor.
  *

@@ -13,8 +13,8 @@ final class TextBlock;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\DataDescription, share\gears\FieldDescription, share\gears\Data, share\gears\Field, share\gears\SystemException, share\gears\QAL;
+namespace Energine\share\components;
+use Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\Field, Energine\share\gears\SystemException, Energine\share\gears\QAL;
 /**
  * Text block.
  *

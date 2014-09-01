@@ -13,8 +13,8 @@ class FileRepositoryFTP;
  *
  * @version 1.0.0
  */
-namespace share\gears;
-use share\components\FileRepository;
+namespace Energine\share\gears;
+use Energine\share\components\FileRepository;
 
 /**
  * Implementation of file loader interface IFileRepository for remote FTP repositories.

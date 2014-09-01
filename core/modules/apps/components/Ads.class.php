@@ -13,8 +13,8 @@ class Ads;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use share\components\DataSet, apps\gears\AdsManager, share\gears\QAL, share\gears\FieldDescription;
+namespace Energine\apps\components;
+use Energine\share\components\DataSet, Energine\apps\gears\AdsManager, Energine\share\gears\QAL, Energine\share\gears\FieldDescription;
 /**
  * Class to show ad blocks.
  *

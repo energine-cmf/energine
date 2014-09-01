@@ -13,8 +13,8 @@ class AdsManager;
  *
  * @version 1.0.0
  */
-namespace apps\gears;
-use share\gears\DBWorker, share\gears\DataDescription, share\gears\Data, share\gears\QAL, share\gears\Field;
+namespace Energine\apps\gears;
+use Energine\share\gears\DBWorker, Energine\share\gears\DataDescription, Energine\share\gears\Data, Energine\share\gears\QAL, Energine\share\gears\Field;
 /**
  * Ads manager.
  *
@@ -75,7 +75,7 @@ class AdsManager extends DBWorker {
     /**
      * Save ad information.
      *
-     * @param array $data share\gears\Data.
+     * @param array $data Energine\share\gears\Data.
      * @return array|bool
      */
     public function save(array $data){

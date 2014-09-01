@@ -13,8 +13,8 @@ class Vote;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use share\components\DataSet, share\gears\EmptyBuilder, share\gears\SimpleBuilder, share\gears\AbstractBuilder, share\gears\FieldDescription, share\gears\Data, share\gears\DataDescription;
+namespace Energine\apps\components;
+use Energine\share\components\DataSet, Energine\share\gears\EmptyBuilder, Energine\share\gears\SimpleBuilder, Energine\share\gears\AbstractBuilder, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\DataDescription;
 /**
  * Voting by discussions.
  *

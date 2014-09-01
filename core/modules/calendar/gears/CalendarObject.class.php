@@ -14,8 +14,8 @@ final class CalendarItem
  *
  * @version 1.0.0
  */
-namespace calendar\gears;
-use share\gears\Object, share\gears\DBWorker;
+namespace Energine\calendar\gears;
+use Energine\share\gears\Object, Energine\share\gears\DBWorker;
 /**
  * Calendar object.
  *

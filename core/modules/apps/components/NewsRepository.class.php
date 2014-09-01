@@ -13,8 +13,8 @@ class NewsRepository;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use apps\gears\NewsEditorSaver, share\gears\ComponentManager, share\gears\FieldDescription, share\components\LinkingEditor, share\components\Grid;
+namespace Energine\apps\components;
+use Energine\apps\gears\NewsEditorSaver, Energine\share\gears\ComponentManager, Energine\share\gears\FieldDescription, Energine\share\components\LinkingEditor, Energine\share\components\Grid;
 /**
  * News repository.
  *

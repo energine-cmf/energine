@@ -13,8 +13,8 @@ class Calendar;
  *
  * @version 1.0.0
  */
-namespace calendar\components;
-use share\components\DataSet, calendar\gears\CalendarObject, CalendarBuilder, share\gears\DataDescription, share\gears\FieldDescription, share\gears\Toolbar, share\gears\Link, share\gears\Data, share\gears\Field;
+namespace Energine\calendar\components;
+use Energine\share\components\DataSet, Energine\calendar\gears\CalendarObject, CalendarBuilder, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Toolbar, Energine\share\gears\Link, Energine\share\gears\Data, Energine\share\gears\Field;
 /**
  * Calendar component.
  *

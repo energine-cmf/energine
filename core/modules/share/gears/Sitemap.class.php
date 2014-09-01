@@ -12,7 +12,7 @@ final class Sitemap;
  * @copyright Energine 2006
  */
 
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * Site map.
  *

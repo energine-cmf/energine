@@ -13,7 +13,7 @@ class Toolbar;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * Toolbar.
  *
@@ -162,7 +162,7 @@ class Toolbar extends Object {
 
                 $controlClassName = ucfirst((string)$controlDescription['type']);
                 if ($controlClassName == 'Togglebutton') $controlClassName = 'Switcher'; // dirty hack
-                $controlClassName = 'share\\gears\\' . $controlClassName;
+                $controlClassName = 'Energine\\share\\gears\\' . $controlClassName;
                 if (!class_exists($controlClassName)) {
                     throw new SystemException('ERR_DEV_NO_CONTROL_CLASS', SystemException::ERR_DEVELOPER, $controlClassName);
                 }

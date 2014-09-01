@@ -12,9 +12,9 @@ class CommentsList;
  *
  * @version 1.0.0
  */
-namespace comments\components;
-use comments\gears\Comments;
-use share\components\DataSet, share\gears\Pager, share\gears\TreeBuilder, share\gears\TreeConverter, share\gears\FieldDescription, share\gears\DataDescription;
+namespace Energine\comments\components;
+use Energine\comments\gears\Comments;
+use Energine\share\components\DataSet, Energine\share\gears\Pager, Energine\share\gears\TreeBuilder, Energine\share\gears\TreeConverter, Energine\share\gears\FieldDescription, Energine\share\gears\DataDescription;
 /**
  * List of comments.
  *

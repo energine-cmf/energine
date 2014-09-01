@@ -13,7 +13,7 @@ class Select;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * Drop-down list.
  *

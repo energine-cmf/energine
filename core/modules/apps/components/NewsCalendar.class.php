@@ -13,8 +13,8 @@ class NewsCalendar;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use calendar\gears\CalendarObject, share\gears\SystemException, calendar\components\Calendar;
+namespace Energine\apps\components;
+use Energine\calendar\gears\CalendarObject, Energine\share\gears\SystemException, Energine\calendar\components\Calendar;
 /**
  * Calendar for news.
  *

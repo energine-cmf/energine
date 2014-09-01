@@ -14,7 +14,7 @@ interface IBlock;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 
 /**
  * Manager of the set of the document's components.
@@ -211,7 +211,7 @@ final class ComponentManager extends Object implements \Iterator {
      * @return Component
      */
     public function createComponent($name, $module, $class, $params = null) {
-        return call_user_func_array(array('share\\gears\\ComponentManager', '_createComponent'), func_get_args());
+        return call_user_func_array(array('Energine\\share\\gears\\ComponentManager', '_createComponent'), func_get_args());
     }
 
     /**
@@ -303,7 +303,7 @@ final class ComponentManager extends Object implements \Iterator {
      */
     static private function _createComponent($name, $module, $class, $params = null) {
         try {
-            $fqClassName = $module.'\\'.'components'.'\\'.$class;
+            $fqClassName = 'Energine'.'\\'.$module.'\\'.'components'.'\\'.$class;
             $result = new $fqClassName($name, $module, $params);
         }
         catch (SystemException $e) {

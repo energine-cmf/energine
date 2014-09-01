@@ -14,8 +14,8 @@ class TranslationEditor;
  * @version 1.0.0
  */
 
-namespace share\components;
-use share\gears\QAL, share\gears\FieldDescription, share\gears\Cache;
+namespace Energine\share\components;
+use Energine\share\gears\QAL, Energine\share\gears\FieldDescription, Energine\share\gears\Cache;
 /**
  * Translation editor.
  *

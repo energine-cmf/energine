@@ -13,9 +13,9 @@ class CommentsJSONBuilder;
  *
  * @version 1.0.0
  */
-namespace comments\gears;
+namespace Energine\comments\gears;
 
-use share\gears\JSONBuilder, share\gears\SystemException, share\gears\FieldDescription;
+use Energine\share\gears\JSONBuilder, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription;
 /**
  * Builder for comments.
  *

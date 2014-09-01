@@ -13,7 +13,7 @@ final class Pager;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 
 /**
  * List of pages for navigation.

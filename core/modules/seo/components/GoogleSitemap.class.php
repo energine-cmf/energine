@@ -13,8 +13,8 @@ class GoogleSitemap;
  *
  * @version 1.0.0
  */
-namespace seo\components;
-use share\components\SitemapTree, share\gears\SimpleBuilder, share\gears\FieldDescription, share\gears\DataDescription, share\gears\TreeBuilder;
+namespace Energine\seo\components;
+use Energine\share\components\SitemapTree, Energine\share\gears\SimpleBuilder, Energine\share\gears\FieldDescription, Energine\share\gears\DataDescription, Energine\share\gears\TreeBuilder;
 /**
  * Component for generation Google Sitemap, Google Sitemap Index and Google Video Sitemap.
  *

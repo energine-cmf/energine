@@ -12,9 +12,9 @@ class PageList;
  *
  * @version 1.0.0
  */
-namespace share\components;
+namespace Energine\share\components;
 
-use share\gears\TreeBuilder, share\gears\SimpleBuilder, share\gears\FieldDescription, share\gears\Response, share\gears\TagManager, share\gears\AttachmentManager;
+use Energine\share\gears\TreeBuilder, Energine\share\gears\SimpleBuilder, Energine\share\gears\FieldDescription, Energine\share\gears\Response, Energine\share\gears\TagManager, Energine\share\gears\AttachmentManager;
 /**
  * Show the list of subsections.
  *

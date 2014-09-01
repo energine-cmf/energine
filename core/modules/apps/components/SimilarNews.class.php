@@ -13,8 +13,8 @@ class SimilarNews;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use share\components\DBDataSet, share\gears\SimpleBuilder, share\gears\QAL, share\gears\FieldDescription, share\gears\Field;
+namespace Energine\apps\components;
+use Energine\share\components\DBDataSet, Energine\share\gears\SimpleBuilder, Energine\share\gears\QAL, Energine\share\gears\FieldDescription, Energine\share\gears\Field;
 
 /**
  * Similar news.

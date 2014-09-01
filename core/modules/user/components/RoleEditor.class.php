@@ -14,8 +14,8 @@ class RoleEditor;
  * @version 1.0.0
  */
 
-namespace user\components;
-use share\components\Grid, share\gears\FieldDescription, share\gears\QAL, share\gears\TreeBuilder, share\gears\TreeConverter, share\gears\SystemException, share\gears\Data, share\gears\DataDescription;
+namespace Energine\user\components;
+use Energine\share\components\Grid, Energine\share\gears\FieldDescription, Energine\share\gears\QAL, Energine\share\gears\TreeBuilder, Energine\share\gears\TreeConverter, Energine\share\gears\SystemException, Energine\share\gears\Data, Energine\share\gears\DataDescription;
 /**
  * Role editor.
  *

@@ -1,5 +1,5 @@
 <?php
-use share\gears\UserSession, share\gears\Object, share\gears\User, user\gears\FBOAuth, user\gears\VKOAuth;
+use Energine\share\gears\UserSession, Energine\share\gears\Object, Energine\share\gears\User, Energine\user\gears\FBOAuth, Energine\user\gears\VKOAuth;
 //на всякий пожарный проверяем реферрера
 if (!isset($_SERVER['HTTP_REFERER']) && (!isset($_GET['return']))) {
     //не местных  - в сад
@@ -24,7 +24,7 @@ if (
     ($vkAuth = isset($_GET['vkAuth']))
 ) {
     if ($login) {
-        if ($UID = share\gears\AuthUser::authenticate(
+        if ($UID = Energine\share\gears\AuthUser::authenticate(
             $_POST['user']['username'],
             $_POST['user']['password']
         )

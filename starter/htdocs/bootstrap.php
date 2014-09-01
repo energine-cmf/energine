@@ -73,4 +73,4 @@ require_once($iniPath);
 require_once(implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'gears', 'utils.func.php')));
 
 // установка уже подключенного конфига в статическую переменную Object
-share\gears\Object::setConfigArray($config);
+Energine\share\gears\Object::setConfigArray($config);

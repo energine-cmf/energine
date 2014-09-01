@@ -12,8 +12,8 @@ class CommentsHelper;
  *
  * @version 1.0.0
  */
-namespace comments\gears;
-use share\gears\DataDescription, share\gears\Data, share\gears\FieldDescription, share\gears\Field, share\gears\Builder, share\gears\TreeBuilder, share\gears\TreeConverter;
+namespace Energine\comments\gears;
+use Energine\share\gears\DataDescription, Energine\share\gears\Data, Energine\share\gears\FieldDescription, Energine\share\gears\Field, Energine\share\gears\Builder, Energine\share\gears\TreeBuilder, Energine\share\gears\TreeConverter;
 /**
  * Comments helper.
  *

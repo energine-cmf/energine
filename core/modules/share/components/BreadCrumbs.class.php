@@ -13,8 +13,8 @@ final class BreadCrumbs;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\DataDescription, share\gears\FieldDescription, share\gears\SimpleBuilder, share\gears\Data;
+namespace Energine\share\components;
+use Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\SimpleBuilder, Energine\share\gears\Data;
 
 /**
  * "Bread crumbs"

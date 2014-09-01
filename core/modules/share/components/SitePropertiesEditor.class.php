@@ -13,8 +13,8 @@ class SitePropertiesEditor;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\SitePropertiesSaver, share\gears\FieldDescription;
+namespace Energine\share\components;
+use Energine\share\gears\SitePropertiesSaver, Energine\share\gears\FieldDescription;
 /**
  * Site properties editor.
  *

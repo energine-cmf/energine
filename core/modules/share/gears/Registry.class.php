@@ -20,16 +20,16 @@ namespace {
      * @fn E
      * @brief E[nergine].
      * Shortcut for Registry::getInstance.
-     * @return Registry
+     * @return Energine\share\gears\Registry
      */
     function E()
     {
-        return share\gears\Registry::getInstance();
+        return Energine\share\gears\Registry::getInstance();
     }
 
 }
 
-namespace share\gears {
+namespace Energine\share\gears {
 // Подключаем предка напрямую
     require('Object.class.php');
 
@@ -115,7 +115,7 @@ namespace share\gears {
             if ($className == 'Sitemap') {
                 throw new \Exception('Use Registry::getMap($siteID) instead.');
             }
-            $className = 'share\\gears\\'.$className;
+            $className = 'Energine\\share\\gears\\'.$className;
             return $this->get($className);
         }
 
@@ -178,7 +178,7 @@ namespace share\gears {
          */
         public function getAUser()
         {
-            return $this->get('share\\gears\\AuthUser');
+            return $this->get('Energine\\share\\gears\\AuthUser');
         }
 
         /**
@@ -217,7 +217,7 @@ namespace share\gears {
          */
         public function getRequest()
         {
-            return $this->get('share\\gears\\Request');
+            return $this->get('Energine\\share\\gears\\Request');
         }
 
         /**
@@ -227,7 +227,7 @@ namespace share\gears {
          */
         public function getResponse()
         {
-            return $this->get('share\\gears\\Response');
+            return $this->get('Energine\\share\\gears\\Response');
         }
 
         /**
@@ -237,7 +237,7 @@ namespace share\gears {
          */
         public function getDocument()
         {
-            return $this->get('share\\gears\\Document');
+            return $this->get('Energine\\share\\gears\\Document');
         }
 
         /**
@@ -247,7 +247,7 @@ namespace share\gears {
          */
         public function getOGObject()
         {
-            return $this->get('share\\gears\\OGObject');
+            return $this->get('Energine\\share\\gears\\OGObject');
         }
 
         /**
@@ -257,7 +257,7 @@ namespace share\gears {
          */
         public function getLanguage()
         {
-            return $this->get('share\\gears\\Language');
+            return $this->get('Energine\\share\\gears\\Language');
         }
 
         /**
@@ -267,7 +267,7 @@ namespace share\gears {
          */
         public function getSiteManager()
         {
-            return $this->get('share\\gears\\SiteManager');
+            return $this->get('Energine\\share\\gears\\SiteManager');
         }
 
         /**
@@ -294,7 +294,7 @@ namespace share\gears {
          */
         public function getController()
         {
-            return $this->get('share\\gears\\DocumentController');
+            return $this->get('Energine\\share\\gears\\DocumentController');
         }
 
         /**
@@ -331,7 +331,7 @@ namespace share\gears {
          */
         public function getCache()
         {
-            return $this->get('share\\gears\\Cache');
+            return $this->get('Energine\\share\\gears\\Cache');
         }
     }
 }

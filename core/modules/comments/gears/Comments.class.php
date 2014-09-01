@@ -12,8 +12,8 @@ class Comments;
  *
  * @version 1.0.0
  */
-namespace comments\gears;
-use share\gears\DBWorker, share\gears\QAL;
+namespace Energine\comments\gears;
+use Energine\share\gears\DBWorker, Energine\share\gears\QAL;
 /**
  * Comments CRUD.
  *

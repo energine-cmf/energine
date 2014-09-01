@@ -14,8 +14,8 @@ function getRealPOST();
  *
  * @version 1.0.0
  */
-namespace forms\components;
-use share\components\Grid;
+namespace Energine\forms\components;
+use Energine\share\components\Grid;
 /**
  * Editor of selector values.
  *

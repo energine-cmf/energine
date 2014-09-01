@@ -13,7 +13,7 @@ class FileRepositoryFTPRO;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * File loader for remote FTP repositories, that is read-only.
  *

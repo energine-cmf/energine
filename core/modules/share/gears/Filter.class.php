@@ -13,8 +13,8 @@ class Filter;
  *
  * @version 1.0.0
  */
-namespace share\gears;
-use share\components\Grid;
+namespace Energine\share\gears;
+use Energine\share\components\Grid;
 /**
  * Filters.
  *

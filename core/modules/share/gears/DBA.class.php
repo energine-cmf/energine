@@ -14,7 +14,7 @@ abstract class DBA;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 
 /**
  * Database Abstraction Layer.

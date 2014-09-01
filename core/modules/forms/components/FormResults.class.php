@@ -13,8 +13,8 @@ class FormResults;
  *
  * @version 1.0.0
  */
-namespace forms\components;
-use share\components\Grid, forms\gears\FormConstructor, share\gears\QAL, share\gears\Field, share\gears\FieldDescription, share\gears\SimpleBuilder, share\gears\Data, share\gears\DataDescription;
+namespace Energine\forms\components;
+use Energine\share\components\Grid, Energine\forms\gears\FormConstructor, Energine\share\gears\QAL, Energine\share\gears\Field, Energine\share\gears\FieldDescription, Energine\share\gears\SimpleBuilder, Energine\share\gears\Data, Energine\share\gears\DataDescription;
 /**
  * Form results.
  *

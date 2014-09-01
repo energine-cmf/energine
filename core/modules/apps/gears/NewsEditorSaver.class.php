@@ -10,8 +10,8 @@ class NewsEditorSaver;
  *
  * @version 1.0.0
  */
-namespace apps\gears;
-use share\gears\Data, share\gears\ExtendedSaver, share\gears\Translit, share\gears\Field;
+namespace Energine\apps\gears;
+use Energine\share\gears\Data, Energine\share\gears\ExtendedSaver, Energine\share\gears\Translit, Energine\share\gears\Field;
 /**
  * Saver for news editor.
  *

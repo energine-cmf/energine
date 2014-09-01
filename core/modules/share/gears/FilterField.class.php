@@ -13,7 +13,7 @@ class FilterField;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 
 //todo VZ: This is very similar to Control class.
 //todo Pavka: But this is not control .... hmm .... but why not? :)

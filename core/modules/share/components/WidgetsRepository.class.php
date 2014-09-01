@@ -13,8 +13,8 @@ abstract class DataSet;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\QAL, share\gears\FieldDescription, share\gears\SystemException, share\gears\ComponentManager, share\gears\Field, share\gears\Data, share\gears\DataDescription, share\gears\Builder, share\gears\JSONCustomBuilder, share\gears\Translit;
+namespace Energine\share\components;
+use Energine\share\gears\QAL, Energine\share\gears\FieldDescription, Energine\share\gears\SystemException, Energine\share\gears\ComponentManager, Energine\share\gears\Field, Energine\share\gears\Data, Energine\share\gears\DataDescription, Energine\share\gears\Builder, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\Translit;
 /**
  * Class to work with repository widgets.
  *

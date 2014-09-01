@@ -13,8 +13,8 @@ class FileRepository;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\QAL, share\gears\FileRepoInfo, share\gears\DataDescription, share\gears\FieldDescription, share\gears\Data, share\gears\Field, share\gears\SystemException, share\gears\JSONCustomBuilder, share\gears\Translit, share\gears\JSONRepoBuilder;
+namespace Energine\share\components;
+use Energine\share\gears\QAL, Energine\share\gears\FileRepoInfo, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\Field, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\Translit, Energine\share\gears\JSONRepoBuilder;
 /**
  * File repository.
  *

@@ -14,9 +14,9 @@ class LoginForm;
  * @version 1.0.0
  */
 
-namespace user\components;
+namespace Energine\user\components;
 
-use share\components\DataSet, share\gears\Object, share\gears\FieldDescription, share\gears\UserSession, share\gears\Field;
+use Energine\share\components\DataSet, Energine\share\gears\Object, Energine\share\gears\FieldDescription, Energine\share\gears\UserSession, Energine\share\gears\Field;
 /**
  * Show login form.
  *

@@ -13,8 +13,8 @@ class SiteEditor;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\SiteSaver, share\gears\SiteEditorConfig, share\gears\FieldDescription, share\gears\Field, share\gears\TagManager, share\gears\SystemException;
+namespace Energine\share\components;
+use Energine\share\gears\SiteSaver, Energine\share\gears\SiteEditorConfig, Energine\share\gears\FieldDescription, Energine\share\gears\Field, Energine\share\gears\TagManager, Energine\share\gears\SystemException;
 /**
  * Site editor.
  *

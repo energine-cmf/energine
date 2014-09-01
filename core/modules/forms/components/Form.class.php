@@ -13,9 +13,9 @@ class Form;
  *
  * @version 1.0.0
  */
-namespace forms\components;
+namespace Energine\forms\components;
 
-use share\components\DBDataSet, share\gears\Saver, forms\gears\FormConstructor, share\gears\SystemException, share\gears\FieldDescription, share\gears\Data, share\gears\DataDescription, share\gears\DBA, share\gears\FileUploader, share\gears\Mail, share\gears\Field, share\gears\SimpleBuilder;
+use Energine\share\components\DBDataSet, Energine\share\gears\Saver, Energine\forms\gears\FormConstructor, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\DataDescription, Energine\share\gears\DBA, Energine\share\gears\FileUploader, Energine\share\gears\Mail, Energine\share\gears\Field, Energine\share\gears\SimpleBuilder;
 
 /**
  * Form.

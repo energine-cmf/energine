@@ -1,5 +1,5 @@
 <?php
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * @file
  * Data.

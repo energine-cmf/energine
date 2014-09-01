@@ -13,8 +13,8 @@ final class LangSwitcher;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\SimpleBuilder, share\gears\Request, share\gears\DataDescription, share\gears\FieldDescription;
+namespace Energine\share\components;
+use Energine\share\gears\SimpleBuilder, Energine\share\gears\Request, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription;
 /**
  * language switcher.
  *

@@ -13,8 +13,8 @@ class TagCloud;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use share\components\DBDataSet, share\gears\SystemException;
+namespace Energine\apps\components;
+use Energine\share\components\DBDataSet, Energine\share\gears\SystemException;
 /**
  * Show the cloud of tags on the page.
  *
@@ -41,7 +41,7 @@ class TagCloud extends DBDataSet {
 
     /**
      * Component, to which TagCloud will be bounded.
-     * @var \share\gears\Component $bindedBlock
+     * @var \Energine\share\gears\Component $bindedBlock
      */
     protected  $bindedBlock;
 

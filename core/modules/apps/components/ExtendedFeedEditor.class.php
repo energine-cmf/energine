@@ -13,8 +13,8 @@ class ExtendedFeedEditor;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use share\gears\ExtendedSaver, share\gears\TagManager, share\gears\SystemException, share\gears\JSONCustomBuilder;
+namespace Energine\apps\components;
+use Energine\share\gears\ExtendedSaver, Energine\share\gears\TagManager, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder;
 /**
  * Media feed editor.
  *

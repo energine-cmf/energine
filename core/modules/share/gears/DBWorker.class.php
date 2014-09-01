@@ -12,7 +12,7 @@ abstract class DBWorker;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * Provide the derived classes the reference to the object for work with DB.
  *

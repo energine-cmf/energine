@@ -13,7 +13,7 @@ class SitePropertiesSaver;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * Saver for site properties. Transliterates property name for each new property.
  *

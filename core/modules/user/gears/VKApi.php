@@ -11,7 +11,7 @@ class VKApi;
  * @version 1.0.0
  */
 
-
+namespace Energine\user\gears;
 /**
  * Class for working with <a href="http://vk.com">Вконтакте</a> API.
  *

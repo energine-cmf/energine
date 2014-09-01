@@ -13,8 +13,8 @@ class SitemapTree;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\TreeBuilder;
+namespace Energine\share\components;
+use Energine\share\gears\TreeBuilder;
 /**
  * Site map.
  *

@@ -1,6 +1,6 @@
 <?php
 
-namespace user\gears;
+namespace Energine\user\gears;
 
 /**
  * Copyright 2011 Facebook, Inc.

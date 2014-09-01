@@ -13,8 +13,8 @@ class Saver;
  *
  * @version 1.0.0
  */
-namespace share\gears;
-use share\components\DataSet;
+namespace Energine\share\gears;
+use Energine\share\components\DataSet;
 
 /**
  * Data saver into data base.

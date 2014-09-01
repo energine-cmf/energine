@@ -13,8 +13,8 @@ class Robots;
  *
  * @version 1.0.0
  */
-namespace seo\components;
-use share\components\DataSet, share\gears\SimpleBuilder, share\gears\DataDescription, share\gears\FieldDescription;
+namespace Energine\seo\components;
+use Energine\share\components\DataSet, Energine\share\gears\SimpleBuilder, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription;
 /**
  * Component for generation @c robot.txt
  *

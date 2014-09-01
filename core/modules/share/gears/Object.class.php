@@ -27,7 +27,7 @@ abstract class Object
  *
  * @abstract
  */
-namespace share\gears;
+namespace Energine\share\gears;
 
 abstract class Object {
     /**

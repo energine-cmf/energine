@@ -116,7 +116,7 @@ dump_log($className,true);
     if (empty($paths)) {
         //Если мемкеш не заенейблен или значения путей в нем нет
         $mc = E()->getCache();
-        if (!$mc->isEnabled() || !($paths = $mc->retrieve(share\gears\Cache::CLASS_STRUCTURE_KEY))) {
+        if (!$mc->isEnabled() || !($paths = $mc->retrieve(Energine\share\gears\Cache::CLASS_STRUCTURE_KEY))) {
             //собираем в статическую переменную
             $tmp = array_reduce(
                 array(
@@ -138,12 +138,12 @@ dump_log($className,true);
                 $paths[substr(strrchr($fileName, '/'), 1, -10)] = $fileName;
             }
             if ($mc->isEnabled())
-                $mc->store(share\gears\Cache::CLASS_STRUCTURE_KEY, $paths);
+                $mc->store(Energine\share\gears\Cache::CLASS_STRUCTURE_KEY, $paths);
         }
     }
 
     if (!isset($paths[$className]) || !@require($paths[$className])) {
-        throw new share\gears\SystemException('ERR_NO_CLASS', share\gears\SystemException::ERR_CRITICAL, $className);
+        throw new Energine\share\gears\SystemException('ERR_NO_CLASS', Energine\share\gears\SystemException::ERR_CRITICAL, $className);
     }
 });
 
@@ -165,9 +165,9 @@ set_error_handler('nrgnErrorHandler');
  */
 function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext) {
     try {
-        $e = new share\gears\SystemException(
+        $e = new Energine\share\gears\SystemException(
             $message,
-            share\gears\SystemException::ERR_DEVELOPER
+            Energine\share\gears\SystemException::ERR_DEVELOPER
         );
         throw $e->setFile($file)->setLine($line);
     } catch (\Exception $e) {

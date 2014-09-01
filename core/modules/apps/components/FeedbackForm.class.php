@@ -13,8 +13,8 @@ class FeedbackForm;
  *
  * @version 1.0.0
  */
-namespace apps\components;
-use share\components\DBDataSet, share\gears\DataDescription, share\gears\Data, share\gears\Saver, share\gears\SystemException, share\gears\QAL, share\gears\FieldDescription, share\gears\Field, share\gears\Mail;
+namespace Energine\apps\components;
+use Energine\share\components\DBDataSet, Energine\share\gears\DataDescription, Energine\share\gears\Data, Energine\share\gears\Saver, Energine\share\gears\SystemException, Energine\share\gears\QAL, Energine\share\gears\FieldDescription, Energine\share\gears\Field, Energine\share\gears\Mail;
 /**
  * Form for feedback.
  *

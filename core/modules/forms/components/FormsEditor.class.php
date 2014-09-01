@@ -13,8 +13,8 @@ class FormsEditor;
  *
  * @version 1.0.0
  */
-namespace forms\components;
-use share\components\Grid, forms\gears\FormsSaver, share\gears\FieldDescription, forms\gears\FormConstructor, share\gears\QAL;
+namespace Energine\forms\components;
+use Energine\share\components\Grid, Energine\forms\gears\FormsSaver, Energine\share\gears\FieldDescription, Energine\forms\gears\FormConstructor, Energine\share\gears\QAL;
 /**
  * Create custom form.
  *

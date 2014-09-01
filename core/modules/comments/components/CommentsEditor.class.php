@@ -12,8 +12,8 @@ class CommentsEditor;
  *
  * @version 1.0.0
  */
-namespace comments\components;
-use share\components\Grid, share\gears\QAL, share\gears\SystemException, share\gears\FieldDescription, share\gears\JSONCustomBuilder;
+namespace Energine\comments\components;
+use Energine\share\components\Grid, Energine\share\gears\QAL, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\JSONCustomBuilder;
 /**
  * Comments editor.
  *

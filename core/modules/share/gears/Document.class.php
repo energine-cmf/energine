@@ -13,8 +13,8 @@ final class Document;
  *
  * @version 1.0.0
  */
-namespace share\gears;
-use share\components as cmp;
+namespace Energine\share\gears;
+use Energine\share\components as cmp;
 /**
  * Page document.
  *
@@ -415,7 +415,7 @@ final class Document extends DBWorker implements IDocument {
             $this->request->setPathOffset($this->request->getPathOffset() + 2);
             $this->setProperty('single', 'single');
             if ($actionParams[1] == 'pageToolBar') {
-                $this->componentManager->addComponent(
+                $this->componentManager->add(
                     $this->componentManager->createComponent(
                         'pageToolBar',
                         'share',
@@ -614,7 +614,7 @@ final class Document extends DBWorker implements IDocument {
             if (!($result = simplexml_load_string(file_get_contents_stripped(
                 Document::TEMPLATES_DIR .
                 constant(
-                    'share\\components\\DivisionEditor::TMPL_' .
+                    'Energine\\share\\components\\DivisionEditor::TMPL_' .
                     strtoupper($type)) .
                 '/' . $fileName)))
             ) {

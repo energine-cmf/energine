@@ -15,7 +15,7 @@ interface IDocument;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * DocumentController class is responsible for preparing the environment and running Document object.
  *

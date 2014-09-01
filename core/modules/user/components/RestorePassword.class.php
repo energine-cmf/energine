@@ -13,8 +13,8 @@ class RestorePassword;
  *
  * @version 1.0.0
  */
-namespace user\components;
-use share\components\DataSet, share\gears\User, share\gears\QAL, share\gears\Field, share\gears\Mail;
+namespace Energine\user\components;
+use Energine\share\components\DataSet, Energine\share\gears\User, Energine\share\gears\QAL, Energine\share\gears\Field, Energine\share\gears\Mail;
 
 /**
  * Form to restoring password.

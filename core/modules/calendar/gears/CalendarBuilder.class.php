@@ -13,8 +13,8 @@ class CalendarBuilder;
  *
  * @version 1.0.0
  */
-namespace calendar\gears;
-use share\gears\Builder, share\gears\FieldDescription;
+namespace Energine\calendar\gears;
+use Energine\share\gears\Builder, Energine\share\gears\FieldDescription;
 /**
  * Calendar builder.
  *

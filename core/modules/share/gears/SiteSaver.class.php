@@ -11,7 +11,7 @@ class SiteSaver;
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  */
-namespace share\gears;
+namespace Energine\share\gears;
 /**
  * Saver for sites editor.
  *

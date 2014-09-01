@@ -13,8 +13,8 @@ class SiteList;
  *
  * @version 1.0.0
  */
-namespace share\components;
-use share\gears\TagManager;
+namespace Energine\share\components;
+use Energine\share\gears\TagManager;
 /**
  * Site list.
  *

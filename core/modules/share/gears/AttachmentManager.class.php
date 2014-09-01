@@ -13,7 +13,7 @@ class AttachmentManager;
  *
  * @version 1.0.0
  */
-namespace share\gears;
+namespace Energine\share\gears;
 
 /**
  * This class is designed to automate the work of attaching files.

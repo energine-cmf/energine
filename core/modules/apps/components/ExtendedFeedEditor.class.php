@@ -100,7 +100,7 @@ class ExtendedFeedEditor extends FeedEditor {
                 }
             }
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             $result = array(
                 'result' => false,
                 'data' => false,

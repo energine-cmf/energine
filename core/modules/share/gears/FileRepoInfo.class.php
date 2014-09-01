@@ -239,6 +239,7 @@ class FileRepoInfo extends DBWorker {
 
             if (!empty($cfg[$repo_mime])) {
                 $repo_class_name = $cfg[$repo_mime];
+                $repo_class_name = 'share\\gears\\'.$repo_class_name;
                 $result = new $repo_class_name($repo_id, $upl_root);
                 if ($result instanceof IFileRepository) {
                     return $result;

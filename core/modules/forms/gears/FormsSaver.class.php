@@ -11,7 +11,7 @@ class FormsSaver;
  * @version 1.0.0
  */
 namespace forms\gears;
-use share\gears\Saver, share\gears\QAL;
+use share\gears\Saver;
 /**
  * Saver for forms.
  *
@@ -20,14 +20,5 @@ class FormsSaver;
 @endcode
  */
 class FormsSaver extends Saver{
-    /**
-     * Copydoc Saver::save
-     */
-    public function save(){
-        $result = parent::save();
-        if($this->getMode() == QAL::INSERT){
 
-        }
-        return $result;
-    }
 }

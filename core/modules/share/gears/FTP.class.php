@@ -14,7 +14,7 @@ class FTP;
  * @version 1.0.0
  */
 
-
+namespace share\gears;
 /**
  * Upload files over FTP.
  *

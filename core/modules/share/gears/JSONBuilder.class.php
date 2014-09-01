@@ -35,10 +35,6 @@ class JSONBuilder extends AbstractBuilder {
      */
     private $errors = array();
 
-    public function __construct() {
-        parent::__construct();
-    }
-
     //todo VZ: Why true is returned?
     /**
      * @copydoc IBuilder::build

@@ -55,7 +55,7 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
                 if (($appID = $this->getConfigValue('auth.' . $socialType . '.appID'))
                     && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))
                 ) {
-                    $authClassName = strtoupper($socialType) . 'OAuth';
+                    $authClassName = 'share\\gears\\'.strtoupper($socialType) . 'OAuth';
                     $auth = new $authClassName(array(
                         'appId' => $appID,
                         'secret' => $secretKey,

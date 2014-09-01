@@ -13,6 +13,7 @@ class OKOAuth;
  *
  * @version 1.0.0
  */
+namespace share\gears;
 /**
  * Class for user authorisation over <a href="http://www.odnoklassniki.ru">Однокласники</a>.
  *
@@ -126,7 +127,7 @@ class OKOAuth extends Object {
      *
      * @return mixed
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function connect() {
         $parameters = array(
@@ -140,7 +141,7 @@ class OKOAuth extends Object {
         $response = $this->parseRequestResult($response);
 
         if(!$response || !isset($response->access_token)){
-            throw new Exception( "Error: " . $response->error);
+            throw new \Exception( "Error: " . $response->error);
         }
         $this->accessToken = $response->access_token;
         return $response;

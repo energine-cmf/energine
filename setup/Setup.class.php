@@ -97,7 +97,7 @@ final class Setup {
         if (preg_match('/^[\~\-0-9a-zA-Z\/\.\_]+$/i', $var))
             return $var;
         else
-            throw new Exception('Некорректные данные системных переменных, возможна атака на сервер.' . $var);
+            throw new \Exception('Некорректные данные системных переменных, возможна атака на сервер.' . $var);
     }
 
     /**
@@ -145,13 +145,13 @@ final class Setup {
 
         //А что за PHP версия используется?
         if (floatval(phpversion()) < MIN_PHP_VERSION) {
-            throw new Exception('Вашему РНР нужно еще немного подрости. Минимальная допустимая версия ' . MIN_PHP_VERSION);
+            throw new \Exception('Вашему РНР нужно еще немного подрости. Минимальная допустимая версия ' . MIN_PHP_VERSION);
         }
         $this->text('Версия РНР ', floatval(phpversion()), ' соответствует требованиям');
 
         //При любом действии без конфига нам не обойтись
         if (!file_exists($configName = implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, 'system.config.php')))) {
-            throw new Exception('Не найден конфигурационный файл system.config.php. По хорошему, он должен лежать в корне проекта.');
+            throw new \Exception('Не найден конфигурационный файл system.config.php. По хорошему, он должен лежать в корне проекта.');
         }
 
         $this->config = include($configName);
@@ -166,18 +166,18 @@ final class Setup {
         //Если бы мы потом это в конфиг писали - то еще куда ни шло ... а так ... до выяснения  - закомментировал
 
         if (!is_array($this->config)) {
-            throw new Exception('Странный какой то конфиг. Пользуясь ним я не могу ничего сконфигурить. Или возьмите нормальный конфиг, или - извините.');
+            throw new \Exception('Странный какой то конфиг. Пользуясь ним я не могу ничего сконфигурить. Или возьмите нормальный конфиг, или - извините.');
         }
 
         //маловероятно конечно, но лучше убедиться
         if (!isset($this->config['site']['debug'])) {
-            throw new Exception('В конфиге ничего не сказано о режиме отладки. Это плохо. Так я работать не буду.');
+            throw new \Exception('В конфиге ничего не сказано о режиме отладки. Это плохо. Так я работать не буду.');
         }
         $this->text('Конфигурационный файл подключен и проверен');
 
         //Если режим отладки отключен - то и говорить дальше не о чем
         if (!$this->isFromConsole && !$this->config['site']['debug']) {
-            throw new Exception('Нет. С отключенным режимом отладки я работать не буду, и не просите. Запускайте меня после того как исправите в конфиге ["site"]["debug"] с 0 на 1.');
+            throw new \Exception('Нет. С отключенным режимом отладки я работать не буду, и не просите. Запускайте меня после того как исправите в конфиге ["site"]["debug"] с 0 на 1.');
         }
         if ($this->config['site']['debug']) {
             $this->text('Режим отладки включен');
@@ -187,7 +187,7 @@ final class Setup {
 
         //А задан ли у нас перечень модулей?
         if (!isset($this->config['modules']) && empty($this->config['modules'])) {
-            throw new Exception('Странно. Отсутствует перечень модулей. Я могу конечно и сам посмотреть, что находится в папке core/modules, но как то это не кузяво будет. ');
+            throw new \Exception('Странно. Отсутствует перечень модулей. Я могу конечно и сам посмотреть, что находится в папке core/modules, но как то это не кузяво будет. ');
         }
         $this->text('Перечень модулей:', PHP_EOL . ' => ' . implode(PHP_EOL . ' => ', array_values($this->config['modules'])));
     }
@@ -206,7 +206,7 @@ final class Setup {
         );
 
         if (!$res) {
-            throw new Exception('Удивительно.... Не с чем работать. А проверьте все ли хорошо с базой? не пустая ли? похоже некоторых нужных таблиц в ней нет.');
+            throw new \Exception('Удивительно.... Не с чем работать. А проверьте все ли хорошо с базой? не пустая ли? похоже некоторых нужных таблиц в ней нет.');
 
         }
         $domains = $res->fetchAll();
@@ -244,7 +244,7 @@ final class Setup {
         $this->text('Проверяем коннект к БД');
 
         if (!isset($this->config['database']) || empty($this->config['database'])) {
-            throw new Exception('В конфиге нет информации о подключении к базе данных');
+            throw new \Exception('В конфиге нет информации о подключении к базе данных');
         }
 
         $dbInfo = $this->config['database'];
@@ -252,7 +252,7 @@ final class Setup {
         //валидируем все скопом
         foreach (array('host' => 'адрес хоста', 'db' => 'имя БД', 'username' => 'имя пользователя', 'password' => 'пароль') as $key => $description) {
             if (!isset($dbInfo[$key]) && empty($dbInfo[$key])) {
-                throw new Exception('Удивительно, но не указан параметр: ' . $description . '  (["database"]["' . $key . '"])');
+                throw new \Exception('Удивительно, но не указан параметр: ' . $description . '  (["database"]["' . $key . '"])');
             }
         }
         try {
@@ -278,8 +278,8 @@ final class Setup {
                 ));
 
             $this->dbConnect = $connect;
-        } catch (Exception $e) {
-            throw new Exception('Не удалось соединиться с БД по причине: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception('Не удалось соединиться с БД по причине: ' . $e->getMessage());
         }
         restore_error_handler();
         $connect->query('SET NAMES utf8');
@@ -298,7 +298,7 @@ final class Setup {
      */
     public function execute($action, $arguments) {
         if (!method_exists($this, $methodName = $action . 'Action')) {
-            throw new Exception('Подозрительно все это... Либо программисты че то не учли, либо.... произошло непоправимое.');
+            throw new \Exception('Подозрительно все это... Либо программисты че то не учли, либо.... произошло непоправимое.');
         }
         call_user_func_array(array($this, $methodName), $arguments);
         //$this->{$methodName}();
@@ -355,7 +355,7 @@ final class Setup {
             } elseif ($mode = 'file') {
                 $this->writeTranslations($this->fillTranslations($result), 'untranslated.csv');
             } else {
-                throw new Exception('Режим ' . $mode . ' не зарегистрирован');
+                throw new \Exception('Режим ' . $mode . ' не зарегистрирован');
             }
         } else {
             $this->text('Все в порядке, все языковые константы переведены');
@@ -390,7 +390,7 @@ final class Setup {
     private function loadTransFileAction($path, $module = 'share') {
         $this->title('Загрузка файла с переводами: ' . $path . ' в модуль ' . $module);
         if (!file_exists($path)) {
-            throw new Exception('Не видать файла:' . $path);
+            throw new \Exception('Не видать файла:' . $path);
         }
         $row = 0;
         $loadedRows = 0;
@@ -410,7 +410,7 @@ final class Setup {
                         array_shift($data);
                         foreach ($data as $langNum => $langAbbr) {
                             if (!$langRes->execute(array(strtolower($langAbbr)))) {
-                                throw new Exception('Что то опять не слава Богу.');
+                                throw new \Exception('Что то опять не слава Богу.');
                             }
                             //Создаем масив соответствия порядкового номера колонки - идентификатору языка
                             $langInfo[$langNum + 1] = $langRes->fetch(PDO::FETCH_COLUMN);
@@ -418,7 +418,7 @@ final class Setup {
                     } else {
 
                         if ($r = !$langTagRes->execute(array($data[0], $module))) {
-                            throw new Exception('Произошла ошибка при вставке в share_lang_tags значения:' . $data[0]);
+                            throw new \Exception('Произошла ошибка при вставке в share_lang_tags значения:' . $data[0]);
                         }
                         $ltagID = $this->dbConnect->lastInsertId();
                         if ($ltagID) {
@@ -426,7 +426,7 @@ final class Setup {
                             $loadedRows++;
                             foreach ($langInfo as $langNum => $langID) {
                                 if (!$langTransTagRes->execute(array($ltagID, $langID, stripslashes($data[$langNum])))) {
-                                    throw new Exception('Произошла ошибка при вставке в share_lang_tags_translation значения:' . $data[$langNum]);
+                                    throw new \Exception('Произошла ошибка при вставке в share_lang_tags_translation значения:' . $data[$langNum]);
                                 }
                                 $this->text('Пишем в таблицу переводов: ' . $ltagID . ', ' . $langID . ', ' . $data[$langNum]);
                             }
@@ -436,13 +436,13 @@ final class Setup {
                     }
                 }
                 $this->dbConnect->commit();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->dbConnect->rollBack();
                 throw $e;
             }
             fclose($handle);
         } else {
-            throw new Exception('Файл вроде как есть, а вот читать из него невозможно.');
+            throw new \Exception('Файл вроде как есть, а вот читать из него невозможно.');
         }
 
 
@@ -687,12 +687,12 @@ final class Setup {
 
             foreach ($modulesInfo as $moduleName => $data) {
                 if (!file_exists($dirName = sprintf($filePath, $moduleName)) || !is_writable($dirName)) {
-                    throw new Exception('Директория ' . $dirName . ' отсутствует или недоступна для записи.');
+                    throw new \Exception('Директория ' . $dirName . ' отсутствует или недоступна для записи.');
                 }
                 array_unshift($data, 'CONST;' . implode(';', $langData));
 
                 if (!file_put_contents($dirName . $transFileName, implode("\r\n", $data))) {
-                    throw new Exception('Произошла ошибка при записи в файл: ' . $dirName . $transFileName . '.');
+                    throw new \Exception('Произошла ошибка при записи в файл: ' . $dirName . $transFileName . '.');
                 }
                 $this->text('Записываем в файл ' . $dirName . $transFileName . ' (' . sizeof($data) . ')');
 
@@ -742,7 +742,7 @@ final class Setup {
 
             if (!file_exists($dir)) {
                 if (!@mkdir($dir, 0755, true)) {
-                    throw new Exception('Невозможно создать директорию:' . $dir);
+                    throw new \Exception('Невозможно создать директорию:' . $dir);
                 }
             } else {
                 $this->cleaner($dir);
@@ -761,12 +761,12 @@ final class Setup {
             }
 
             if (!file_exists($module_path)) {
-                throw new Exception('Не существует: ' . $module_path);
+                throw new \Exception('Не существует: ' . $module_path);
             }
 
             $modules_dir = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, MODULES));
             if (!is_writeable($modules_dir)) {
-                throw new Exception('Нет доступа на запись: ' . $modules_dir);
+                throw new \Exception('Нет доступа на запись: ' . $modules_dir);
             }
 
             symlink($module_path, $symlinked_dir);
@@ -819,9 +819,9 @@ final class Setup {
 
                 echo $uplPath . PHP_EOL;
                 $res = $this->dbConnect->query('SELECT upl_id, upl_pid FROM ' . self::UPLOADS_TABLE . ' WHERE upl_path = "' . $uplPath . '"');
-                if (!$res) throw new Exception('ERROR');
+                if (!$res) throw new \Exception('ERROR');
 
-                $data = $res->fetch(PDO::FETCH_ASSOC);
+                $data = $res->fetch(\PDO::FETCH_ASSOC);
 
                 if (empty($data)) {
                     $uplWidth = $uplHeight = 'NULL';
@@ -864,7 +864,7 @@ final class Setup {
                     $PID = (empty($PID)) ? 'NULL' : $PID;
 
                     $r = $this->dbConnect->query($q = sprintf('INSERT INTO ' . self::UPLOADS_TABLE . ' (upl_pid, upl_childs_count, upl_path, upl_filename, upl_name, upl_title,upl_internal_type, upl_mime_type, upl_width, upl_height) VALUES(%s, %s, "%s", "%s", "%s", "%s", "%s", "%s", %s, %s)', $PID, $childsCount, $uplPath, $filename, $title, $title, $internalType, $mimeType, $uplWidth, $uplHeight));
-                    if (!$r) throw new Exception('ERROR INSERTING');
+                    if (!$r) throw new \Exception('ERROR INSERTING');
                     //$this->text($uplPath);
                     if ($fileinfo->isDir()) {
                         $newPID = $this->dbConnect->lastInsertId();
@@ -874,7 +874,7 @@ final class Setup {
                 } else {
                     $newPID = $data['upl_pid'];
                     $r = $this->dbConnect->query('UPDATE ' . self::UPLOADS_TABLE . ' SET upl_is_active=1 WHERE upl_id="' . $data['upl_id'] . '"');
-                    if (!$r) throw new Exception('ERROR UPDATING');
+                    if (!$r) throw new \Exception('ERROR UPDATING');
                 }
                 if ($fileinfo->isDir()) {
                     $this->iterateUploads($fileinfo->getPathname(), $newPID);
@@ -901,11 +901,11 @@ final class Setup {
         }
         $r = $this->dbConnect->query('SELECT upl_id FROM ' . self::UPLOADS_TABLE . ' WHERE upl_path LIKE "' . $uploadsPath . '"');
         if (!$r) {
-            throw new Exception('Репозиторий по такому пути не существует');
+            throw new \Exception('Репозиторий по такому пути не существует');
         }
         $PID = $r->fetchColumn();
         if (!$PID) {
-            throw new Exception('Странный какой то идентификатор родительский.');
+            throw new \Exception('Странный какой то идентификатор родительский.');
         }
         $uploadsPath .= '/';
 
@@ -913,9 +913,9 @@ final class Setup {
             $this->dbConnect->query('UPDATE ' . self::UPLOADS_TABLE . ' SET upl_is_active=0 WHERE upl_path LIKE "' . $uploadsPath . '%"');
             $this->iterateUploads(implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, $uploadsPath)), $PID);
             $this->dbConnect->commit();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->dbConnect->rollBack();
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 
@@ -983,7 +983,7 @@ final class Setup {
                         case self::MODE_SYMLINK:
                             $this->text('Создаем симлинк ', $fo, ' --> ', $dest);
                             if (!@symlink($fo, $dest)) {
-                                throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+                                throw new \Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
                             }
                             break;
                         case self::MODE_COPY:
@@ -1013,14 +1013,14 @@ final class Setup {
                                 } else {
                                     $this->text('Создаем символическую ссылку ', $fo, ' --> ', $dest);
                                     if (!@symlink($fo, $dest)) {
-                                        throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+                                        throw new \Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
                                     }
                                 }
 
                             } else {
                                 $this->text('Создаем символическую ссылку ', $fo, ' --> ', $dest);
                                 if (!@symlink($fo, $dest)) {
-                                    throw new Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
+                                    throw new \Exception('Не удалось создать символическую ссылку с ' . $fo . ' на ' . $dest);
 
                                 }
                             }
@@ -1062,7 +1062,7 @@ final class Setup {
                     case self::MODE_SYMLINK:
                         $this->text('Создаем симлинк ', $srcFile, ' --> ', $linkPath);
                         if (!@symlink($srcFile, $linkPath)) {
-                            throw new Exception('Не удалось создать символическую ссылку с ' . $srcFile . ' на ' . $linkPath);
+                            throw new \Exception('Не удалось создать символическую ссылку с ' . $srcFile . ' на ' . $linkPath);
                         }
                         break;
                     case self::MODE_COPY:
@@ -1074,7 +1074,7 @@ final class Setup {
                         } else {
                             $this->text('Создаем символическую ссылку ', $srcFile, ' --> ', $linkPath);
                             if (!@symlink($srcFile, $linkPath)) {
-                                throw new Exception('Не удалось создать символическую ссылку с ' . $srcFile . ' на ' . $linkPath);
+                                throw new \Exception('Не удалось создать символическую ссылку с ' . $srcFile . ' на ' . $linkPath);
 
                             }
                         }

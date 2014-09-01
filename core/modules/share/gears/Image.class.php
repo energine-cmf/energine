@@ -279,7 +279,7 @@ class Image extends Object {
         try {
             @chmod($filename, 0666);
         }
-        catch (Exception $e){}
+        catch (\Exception $e){}
         return $success;
     }
 

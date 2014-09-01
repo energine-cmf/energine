@@ -129,7 +129,7 @@ class CommentsEditor extends Grid {
     /**
      * Approve comment.
      *
-     * @throws Exception 'Add comment can auth user only'
+     * @throws \Exception 'Add comment can auth user only'
      */
     protected function approve() {
 

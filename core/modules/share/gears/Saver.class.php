@@ -14,6 +14,7 @@ class Saver;
  * @version 1.0.0
  */
 namespace share\gears;
+use share\components\DataSet;
 
 /**
  * Data saver into data base.
@@ -305,7 +306,7 @@ class Saver extends DBWorker {
                         /*$result = */
                         $this->dbh->modify(QAL::INSERT, $tableName, array_merge($row, $this->getFilter()));
                     }
-                    catch (Exception $e) {
+                    catch (\Exception $e) {
                         /*$result = */
                         $this->dbh->modify(QAL::UPDATE, $tableName, $row, array_merge($this->getFilter(), array('lang_id' => $langID)));
                     }

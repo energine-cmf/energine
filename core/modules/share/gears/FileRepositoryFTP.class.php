@@ -13,7 +13,8 @@ class FileRepositoryFTP;
  *
  * @version 1.0.0
  */
-
+namespace share\gears;
+use share\components\FileRepository;
 
 /**
  * Implementation of file loader interface IFileRepository for remote FTP repositories.
@@ -189,7 +190,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
             }
             $this->ftp_media->disconnect();
             return $fi;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -210,7 +211,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
             }
             $this->ftp_media->disconnect();
             return $fi;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -231,7 +232,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
             }
             $this->ftp_alts->disconnect();
             return $fi;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -250,7 +251,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
             }
             $this->ftp_media->disconnect();
             return $fi;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -271,7 +272,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
             }
             $this->ftp_alts->disconnect();
             return $fi;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -325,7 +326,7 @@ class FileRepositoryFTP extends Object implements IFileRepository {
             if (!$initially_connected) {
                 $this->ftp_media->disconnect();
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 

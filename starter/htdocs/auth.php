@@ -136,7 +136,7 @@ if (
 
             }
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);
             goto escape;
         }

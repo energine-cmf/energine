@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class FormEditor;
-@endcode
+ * @endcode
  *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
@@ -14,13 +14,15 @@ class FormEditor;
  * @version 1.0.0
  */
 namespace forms\components;
+
 use share\gears\SystemException, forms\gears\FormConstructor, share\gears\DataDescription, share\gears\FieldDescription, share\gears\MultiLanguageBuilder, share\gears\JSONBuilder, share\gears\Data, share\gears\Field, share\gears\QAL, share\gears\JSONCustomBuilder, share\components\Grid, share\gears\Cache, share\components\DataSet;
+
 /**
  * Form editor.
  *
  * @code
 class FormEditor;
-@endcode
+ * @endcode
  */
 class FormEditor extends DataSet {
     /**
@@ -56,8 +58,8 @@ class FormEditor extends DataSet {
         return array_merge(
             parent::defineParams(),
             array(
-                 'form_id' => false,
-                 'active' => true
+                'form_id' => false,
+                'active' => true
             )
         );
     }
@@ -70,60 +72,59 @@ class FormEditor extends DataSet {
         if (in_array($this->getState(), array('edit'))) {
             $dd = new DataDescription();
             $dd->load(array(
-                           'ltag_id' => array(
-                               'nullable' => false,
-                               'length' => 10,
-                               'default' => '',
-                               'key' => true,
-                               'type' => FieldDescription::FIELD_TYPE_INT,
-                               'index' => 'PRI',
-                               'tableName' => 'share_lang_tags',
-                               'languageID' => false,
-                           ),
-                           'lang_id' => array(
-                               'nullable' => false,
-                               'length' => 10,
-                               'default' => '',
-                               'key' => false,
-                               'type' => FieldDescription::FIELD_TYPE_INT,
-                               'index' => 'PRI',
-                               'tableName' => 'share_lang_tags_translation',
-                               'languageID' => true,
-                               'isMultilanguage' => true
-                           ),
-                           'field_type' => array(
-                               'nullable' => false,
-                               'length' => 255,
-                               'default' => '',
-                               'key' => false,
-                               'type' => FieldDescription::FIELD_TYPE_HIDDEN,
-                               'mode' => FieldDescription::FIELD_MODE_READ,
-                               'index' => false,
-                               'languageID' => false
-                           ),
-                           'ltag_name' => array(
-                               'nullable' => false,
-                               'length' => 255,
-                               'default' => '',
-                               'key' => false,
-                               'type' => FieldDescription::FIELD_TYPE_STRING,
-                               'index' => false,
-                               'languageID' => false
-                           ),
-                           'ltag_value_rtf' => array(
-                               'nullable' => false,
-                               'length' => 1024,
-                               'default' => '',
-                               'key' => false,
-                               'type' => FieldDescription::FIELD_TYPE_TEXT,
-                               'index' => false,
-                               'tableName' => 'share_lang_tags_translation',
-                               'isMultilanguage' => true
-                           )));
+                'ltag_id' => array(
+                    'nullable' => false,
+                    'length' => 10,
+                    'default' => '',
+                    'key' => true,
+                    'type' => FieldDescription::FIELD_TYPE_INT,
+                    'index' => 'PRI',
+                    'tableName' => 'share_lang_tags',
+                    'languageID' => false,
+                ),
+                'lang_id' => array(
+                    'nullable' => false,
+                    'length' => 10,
+                    'default' => '',
+                    'key' => false,
+                    'type' => FieldDescription::FIELD_TYPE_INT,
+                    'index' => 'PRI',
+                    'tableName' => 'share_lang_tags_translation',
+                    'languageID' => true,
+                    'isMultilanguage' => true
+                ),
+                'field_type' => array(
+                    'nullable' => false,
+                    'length' => 255,
+                    'default' => '',
+                    'key' => false,
+                    'type' => FieldDescription::FIELD_TYPE_HIDDEN,
+                    'mode' => FieldDescription::FIELD_MODE_READ,
+                    'index' => false,
+                    'languageID' => false
+                ),
+                'ltag_name' => array(
+                    'nullable' => false,
+                    'length' => 255,
+                    'default' => '',
+                    'key' => false,
+                    'type' => FieldDescription::FIELD_TYPE_STRING,
+                    'index' => false,
+                    'languageID' => false
+                ),
+                'ltag_value_rtf' => array(
+                    'nullable' => false,
+                    'length' => 1024,
+                    'default' => '',
+                    'key' => false,
+                    'type' => FieldDescription::FIELD_TYPE_TEXT,
+                    'index' => false,
+                    'tableName' => 'share_lang_tags_translation',
+                    'isMultilanguage' => true
+                )));
             $dd->getFieldDescriptionByName('ltag_name')->setMode(FieldDescription::FIELD_MODE_READ);
             return $dd;
-        }
-        else {
+        } else {
             return $this->constructor->getDataDescription();
         }
     }
@@ -147,7 +148,7 @@ class FormEditor extends DataSet {
      */
     protected function createData() {
         return $this->constructor->getData((isset($_POST['languageID'])) ? $_POST['languageID']
-                                                   : E()->getLanguage()->getDefault());
+            : E()->getLanguage()->getDefault());
     }
 
     //todo VZ: Where is return?
@@ -272,9 +273,9 @@ class FormEditor extends DataSet {
         $this->constructor->changeOrder(Grid::DIR_UP, $fieldIndex);
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
-                               'result' => true,
-                               'dir' => Grid::DIR_UP
-                          ));
+            'result' => true,
+            'dir' => Grid::DIR_UP
+        ));
         $this->setBuilder($b);
     }
 
@@ -287,9 +288,9 @@ class FormEditor extends DataSet {
         $this->constructor->changeOrder(Grid::DIR_DOWN, $fieldIndex);
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
-                               'result' => true,
-                               'dir' => Grid::DIR_DOWN
-                          ));
+            'result' => true,
+            'dir' => Grid::DIR_DOWN
+        ));
         $this->setBuilder($b);
     }
 
@@ -304,8 +305,7 @@ class FormEditor extends DataSet {
         $tableName = current($fieldInfo);
         if (!strpos($fieldName, '_multi')) {
             $tableName = $tableName['key']['tableName'];
-        }
-        else {
+        } else {
             $tableName = FormConstructor::getDatabase() . '.' . $fieldName . '_values';
         }
 
@@ -328,8 +328,7 @@ class FormEditor extends DataSet {
     protected function save() {
         if ($_POST['componentAction'] != 'edit') {
             $this->constructor->save($_POST);
-        }
-        else {
+        } else {
             $this->saveField();
         }
 
@@ -349,8 +348,8 @@ class FormEditor extends DataSet {
         if (isset($_POST) && isset($_POST[$tableName]) && isset($_POST['share_lang_tags'])) {
             $translations = $_POST[$tableName];
             if (is_array($translations)) {
-                foreach ($translations as $key => $value) {
-                    $result = $this->dbh->modify(
+                foreach ($translations as $value) {
+                    $this->dbh->modify(
                         QAL::UPDATE,
                         $tableName,
                         array('ltag_value_rtf' => $value['ltag_value_rtf']),
@@ -367,8 +366,7 @@ class FormEditor extends DataSet {
     public function build() {
         if ($this->getState() == 'editSelector') {
             $result = $this->SVEditor->build();
-        }
-        else {
+        } else {
             $result = parent::build();
         }
 
@@ -398,8 +396,7 @@ class FormEditor extends DataSet {
             return array(
                 $cols[$fieldIndex - 1] => $colsInfo[$cols[$fieldIndex - 1]]
             );
-        }
-        else {
+        } else {
             return $cols[$fieldIndex - 1];
         }
     }

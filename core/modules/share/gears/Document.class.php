@@ -308,7 +308,7 @@ final class Document extends DBWorker implements IDocument {
                         $componentResult->documentElement,
                         true
                     );
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     //stop($e->getTraceAsString());
                 }
                 if ($dom_errors) {

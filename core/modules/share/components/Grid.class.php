@@ -487,7 +487,7 @@ class Grid extends DBDataSet {
      */
     final protected function getSaver() {
         if (is_null($this->saver)) {
-            $this->saver = new ExtendedSaver();
+            $this->saver = new gears\ExtendedSaver();
         }
 
         return $this->saver;
@@ -496,9 +496,9 @@ class Grid extends DBDataSet {
     /**
      * Set saver.
      *
-     * @param Saver $saver share\gears\Saver.
+     * @param gears\Saver $saver share\gears\Saver.
      */
-    final protected function setSaver(\share\gears\Saver $saver) {
+    final protected function setSaver(gears\Saver $saver) {
         $this->saver = $saver;
     }
 
@@ -567,10 +567,10 @@ class Grid extends DBDataSet {
         $saver->setData($this->getData());
 
         if ($saver->validate() === true) {
+
             $saver->setFilter($this->getFilter());
             $saver->save();
             $result = $saver->getResult();
-
         } else {
             //выдвигается exception который перехватывается в методе save
             throw new SystemException('ERR_VALIDATE_FORM', SystemException::ERR_WARNING, $this->saver->getErrors());
@@ -758,7 +758,7 @@ class Grid extends DBDataSet {
                                 case FieldDescription::FIELD_TYPE_TIME:
                                 case FieldDescription::FIELD_TYPE_DATETIME:
                                     if ($format = $fieldInfo->getPropertyValue('outputFormat')) {
-                                        $fieldValue = AbstractBuilder::enFormatDate($fieldValue, $format, $fd->getType());
+                                        $fieldValue = gears\AbstractBuilder::enFormatDate($fieldValue, $format, $fd->getType());
                                     }
                                     break;
                                 case FieldDescription::FIELD_TYPE_SELECT:
@@ -812,7 +812,7 @@ class Grid extends DBDataSet {
     protected function printData() {
         $this->setParam('recordsPerPage', false);
         if (E()->getController()->getViewMode() ==
-            \share\gears\DocumentController::TRANSFORM_HTML
+            gears\DocumentController::TRANSFORM_HTML
         )
             E()->getController()->getTransformer()->setFileName('print.xslt');
         $this->prepare();

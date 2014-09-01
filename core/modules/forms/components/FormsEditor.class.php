@@ -34,13 +34,6 @@ class FormsEditor extends Grid {
      */
     private $results;
 
-    //todo VZ: used?
-    /**
-     * Form component.
-     * @var Component $formComponent
-     */
-    private $formComponent;
-
     /**
      * @copydoc Grid::__construct
      */

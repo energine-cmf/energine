@@ -120,10 +120,10 @@ class CommentsForm extends DataSet {
      *
      * Only for authorized users.
      *
-     * @throws Exception 'Adding comments has been disabled'
-     * @throws Exception 'Add comment can auth user only'
-     * @throws Exception 'Mistake targetId'
-     * @throws Exception 'Save error'
+     * @throws \Exception 'Adding comments has been disabled'
+     * @throws \Exception 'Add comment can auth user only'
+     * @throws \Exception 'Mistake targetId'
+     * @throws \Exception 'Save error'
      */
     protected function saveComment() {
         $builder = new JSONCustomBuilder();
@@ -266,9 +266,9 @@ class CommentsForm extends DataSet {
     /**
      * Delete comment.
      *
-     * @throws Exception 'Adding comments has been disabled'
-     * @throws Exception 'Add comment can auth user only'
-     * @throws Exception 'Mistake arg'
+     * @throws \Exception 'Adding comments has been disabled'
+     * @throws \Exception 'Add comment can auth user only'
+     * @throws \Exception 'Mistake arg'
      */
     protected function deleteComment() {
         $builder = new JSONCustomBuilder();

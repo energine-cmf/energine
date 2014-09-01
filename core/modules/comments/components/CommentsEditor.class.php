@@ -12,7 +12,8 @@ class CommentsEditor;
  *
  * @version 1.0.0
  */
-
+namespace comments\components;
+use share\components\Grid, share\gears\QAL, share\gears\SystemException, share\gears\FieldDescription, share\gears\JSONCustomBuilder;
 /**
  * Comments editor.
  *
@@ -133,7 +134,7 @@ class CommentsEditor extends Grid {
     protected function approve() {
 
         if (!$this->document->user->isAuthenticated()) {
-            throw new Exception('Add comment can auth user only');
+            throw new \Exception('Add comment can auth user only');
         }
 
         list($commentId) = $this->getStateParams();
@@ -200,7 +201,7 @@ class CommentsEditor extends Grid {
      */
     protected function getForeinKeyFieldName($fkTableName, $fkKeyName) {
         // нам нужны первичные поля в таблице с флагом 'title' в комментарии
-        $fields = $this->dbh->selectRequest(
+        $fields = $this->dbh->select(
             "SHOW FULL COLUMNS FROM `$fkTableName`
 			WHERE `Key`='PRI' AND `Comment` LIKE '%title=%'"
         );
@@ -255,7 +256,7 @@ class CommentsEditor extends Grid {
                 $fkKeyName,
                 $currentLangID
             );
-            $res = $this->dbh->selectRequest($request);
+            $res = $this->dbh->select($request);
         }
         else {
             $columns = $this->dbh->getColumnsInfo($fkTableName);

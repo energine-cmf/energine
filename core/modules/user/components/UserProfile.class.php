@@ -13,7 +13,8 @@ class UserProfile;
  *
  * @version 1.0.0
  */
-
+namespace user\components;
+use share\components\DBDataSet, share\gears\SystemException, share\gears\DataDescription, share\gears\Data, share\gears\FieldDescription, share\gears\Field;
 
 /**
  * form to edit user profile.

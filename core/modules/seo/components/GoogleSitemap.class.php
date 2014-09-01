@@ -13,7 +13,8 @@ class GoogleSitemap;
  *
  * @version 1.0.0
  */
-
+namespace seo\components;
+use share\components\SitemapTree, share\gears\SimpleBuilder, share\gears\FieldDescription, share\gears\DataDescription, share\gears\TreeBuilder;
 /**
  * Component for generation Google Sitemap, Google Sitemap Index and Google Video Sitemap.
  *
@@ -37,7 +38,7 @@ class GoogleSitemap extends SitemapTree {
 
     /**
      * Exemplar of PDO class.
-     * @var PDO $pdoDB
+     * @var \PDO $pdoDB
      */
     private $pdoDB;
 

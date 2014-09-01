@@ -13,7 +13,8 @@ class CalendarBuilder;
  *
  * @version 1.0.0
  */
-
+namespace calendar\gears;
+use share\gears\Builder, share\gears\FieldDescription;
 /**
  * Calendar builder.
  *
@@ -22,13 +23,6 @@ class CalendarBuilder;
 @endcode
  */
 class CalendarBuilder extends Builder {
-    //todo VZ: this can be removed.
-    /**
-     * @copydoc AbstractBuilder::__construct
-     */
-    public function __construct() {
-        parent::__construct();
-    }
 
     /**
      * @copydoc Builder::createField

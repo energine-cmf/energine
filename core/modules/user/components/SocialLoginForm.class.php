@@ -13,7 +13,8 @@ class SocialLoginForm;
  *
  * @version 1.0.0
  */
-
+namespace user\components;
+use share\gears\Field;
 
 /**
  * Show authorization form with possibility to authorize over social networks.

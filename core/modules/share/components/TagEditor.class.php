@@ -11,6 +11,9 @@ class TagEditor;
  * @author andy.karpov
  * @copyright Energine 2013
  */
+namespace share\components;
+use share\gears\TagManager, share\gears\JSONCustomBuilder;
+
 
 /**
  * Tag editor.

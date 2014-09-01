@@ -12,7 +12,7 @@ class CommentsHelper;
  *
  * @version 1.0.0
  */
-namespace comments\components;
+namespace comments\gears;
 use share\gears\DataDescription, share\gears\Data, share\gears\FieldDescription, share\gears\Field, share\gears\Builder, share\gears\TreeBuilder, share\gears\TreeConverter;
 /**
  * Comments helper.
@@ -112,7 +112,7 @@ class CommentsHelper extends Comments
      * Build comments.
      *
 	 * @param array $data Data.
-	 * @return DOMNode
+	 * @return \DOMNode
 	 */
 	private function buildComments($data){
     	$localData = new Data();

@@ -13,7 +13,8 @@ class Branding;
  *
  * @version 1.0.0
  */
-
+namespace apps\components;
+use share\components\DBDataSet, share\gears\SimpleBuilder, share\gears\FieldDescription;
 /**
  * Show branding.
  *

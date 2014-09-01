@@ -12,7 +12,7 @@ class Comments;
  *
  * @version 1.0.0
  */
-namespace comments\components;
+namespace comments\gears;
 use share\gears\DBWorker, share\gears\QAL;
 /**
  * Comments CRUD.
@@ -217,7 +217,7 @@ class Comments extends DBWorker
 			$cond = 'target_id = '. intval($targetIds);
 		}
 
-		$count = $this->dbh->selectRequest(
+		$count = $this->dbh->select(
 			"SELECT target_id, COUNT(*) as count 
 			 FROM {$this->commentTable}
 			 WHERE $cond

@@ -11,7 +11,7 @@ class Remover;
  * @author dr.Pavka
  * @copyright Energine 2006
  */
-
+namespace share\components;
 
 /**
  * Store the component name, that should be removed.

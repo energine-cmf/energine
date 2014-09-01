@@ -13,7 +13,8 @@ class RestorePassword;
  *
  * @version 1.0.0
  */
-
+namespace user\components;
+use share\components\DataSet, share\gears\User, share\gears\QAL, share\gears\Field, share\gears\Mail;
 
 /**
  * Form to restoring password.
@@ -74,7 +75,7 @@ class RestorePassword extends DataSet {
                 try {
                     $mailer->send();
                 }
-                catch (Exception $e) {
+                catch (\Exception $e) {
                     $message = $e->getMessage();
                 }
             }

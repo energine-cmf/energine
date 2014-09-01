@@ -13,6 +13,8 @@ class SimilarNews;
  *
  * @version 1.0.0
  */
+namespace apps\components;
+use share\components\DBDataSet, share\gears\SimpleBuilder, share\gears\QAL, share\gears\FieldDescription, share\gears\Field;
 
 /**
  * Similar news.
@@ -137,7 +139,7 @@ class SimilarNews extends DBDataSet {
         $tagIDs = $this->getNewsTagIDs();
 
         if ($tagIDs) {
-            $result = simplifyDBResult($this->dbh->selectRequest(
+            $result = simplifyDBResult($this->dbh->select(
                 'SELECT DISTINCT sn.news_id news_id, sn.news_date FROM ' .
                         $this->getTableName() . ' AS sn LEFT JOIN ' .
                         $this->getTableName() . '_tags AS snt ' .
@@ -159,7 +161,7 @@ class SimilarNews extends DBDataSet {
      * @return array
      * */
     private function getNewsTagIDs() {
-        $result = simplifyDBResult($this->dbh->selectRequest(
+        $result = simplifyDBResult($this->dbh->select(
             'SELECT * FROM ' . $this->getTableName() .
                     '_tags WHERE news_id=%s', $this->newsID), 'tag_id');
         return $result;

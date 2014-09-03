@@ -31,7 +31,7 @@ namespace {
 
 namespace Energine\share\gears {
 // Подключаем предка напрямую
-    require('Object.class.php');
+    require('Object.php');
 
     /**
      * Application registry.

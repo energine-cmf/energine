@@ -311,7 +311,7 @@ final class ComponentManager extends Object implements \Iterator {
                 'class' => (($module !==
                         'site') ? str_replace('*', $module, CORE_COMPONENTS_DIR) :
                         SITE_COMPONENTS_DIR . $module) . '/' . $class .
-                    '.class.php',
+                    '.php',
                 'trace' => $e->getTraceAsString()
             ));
         }

@@ -59,7 +59,7 @@ if (!empty($args)) {
 
 
 try {
-    require_once('Setup.class.php');
+    require_once('Setup.php');
     $setup = new Setup($isConsole);
     $setup->execute($action, $additionalArgs);
 

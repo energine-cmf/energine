@@ -9,6 +9,7 @@
  */
 
 try {
+    require_once('../../vendor/autoload.php');
     // подключаем bootstrap
     require_once('bootstrap.php');
 

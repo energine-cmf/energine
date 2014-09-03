@@ -96,10 +96,10 @@ define('ACCESS_EDIT', 2);
 define('ACCESS_FULL', 3);
 
 // Подключаем реестр и мемкешер, нужные нам для автолоадера
-require_once('Registry.class.php');
-require_once('Cache.class.php');
+require_once('Registry.php');
+//require_once('Cache.class.php');
 
-spl_autoload_register(
+//spl_autoload_register(
 /*
  * Функция автозагрузки файлов классов
  *
@@ -107,7 +107,7 @@ spl_autoload_register(
  * @return void
  * @staticvar array $paths массив путей к файлам классов вида [имя класса]=>путь к файлу класса
  */
-function ($className) {
+/*function ($className) {
     $className = simplifyClassName($className);
     static $paths = array();
     //если массив путей не заполнен - заполняем
@@ -143,7 +143,7 @@ function ($className) {
     if (!isset($paths[$className]) || !@require($paths[$className])) {
         throw new Energine\share\gears\SystemException('ERR_NO_CLASS', Energine\share\gears\SystemException::ERR_CRITICAL, $className);
     }
-});
+});*/
 
 # устанавливаем свой обработчик ошибок
 set_error_handler('nrgnErrorHandler');

@@ -8,3 +8,4 @@ starter/htdocs/system.config.php
 starter/htdocs/system.jsmap.php
 starter/htdocs/templates/
 vendor/
+starter/htdocs/logs/*

@@ -4,7 +4,7 @@
         <params>
             <param name="rights">3</param>
             <param name="tableName">apps_feedback_recipient</param>
-            <param name="config">site/modules/default/config/FeedbackRecipientsEditor.component.xml</param>
+            <param name="config">site/modules/main/config/FeedbackRecipientsEditor.component.xml</param>
         </params>
     </component>
 </content>

@@ -303,7 +303,13 @@ final class ComponentManager extends Object implements \Iterator {
      */
     static private function _createComponent($name, $module, $class, $params = null) {
         try {
-            $fqClassName = 'Energine'.'\\'.$module.'\\'.'components'.'\\'.$class;
+            $module = explode('/', $module);
+            $vendorNS = 'Energine';
+            if(sizeof($module) > 1){
+                $vendorNS = 'EnergineSite';
+            }
+            $module = array_pop($module);
+            $fqClassName = $vendorNS.'\\'.$module.'\\'.'components'.'\\'.$class;
             $result = new $fqClassName($name, $module, $params);
         }
         catch (SystemException $e) {

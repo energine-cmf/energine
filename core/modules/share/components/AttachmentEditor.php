@@ -14,8 +14,12 @@ class AttachmentEditor;
  * @version 1.0.0
  */
 namespace Energine\share\components;
-use Energine\share\gears;
+
+use Energine\share\gears\Data;
+use Energine\share\gears\DataDescription;
 use Energine\share\gears\FieldDescription;
+use Energine\share\gears\JSONCustomBuilder;
+use Energine\share\gears\QAL;
 use Energine\share\gears\SystemException;
 
 /**
@@ -244,7 +248,7 @@ class AttachmentEditor extends Grid
                 $langs = E()->getLanguage()->getLanguages();
                 foreach ($langs as $lang_id => $lang_data) {
                     $this->dbh->modify(
-                        gears\QAL::INSERT,
+                        QAL::INSERT,
                         $langTable,
                         array_merge($fields, array('lang_id' => $lang_id))
                     );
@@ -253,7 +257,7 @@ class AttachmentEditor extends Grid
 
             $transactionStarted = !($this->dbh->commit());
 
-            $b = new gears\JSONCustomBuilder();
+            $b = new JSONCustomBuilder();
             $b->setProperties(array(
                 'data' => (is_int($result)) ? $result : false,
                 'result' => true,
@@ -286,7 +290,7 @@ class AttachmentEditor extends Grid
         }
 
         //создаем объект описания данных
-        $dataDescriptionObject = new gears\DataDescription();
+        $dataDescriptionObject = new DataDescription();
 
         if (!method_exists($this, $this->getPreviousState())) {
             throw new SystemException('ERR_NO_ACTION', SystemException::ERR_CRITICAL);

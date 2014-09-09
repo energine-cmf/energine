@@ -6,8 +6,8 @@
  * It contains the definition to:
  * @code
 final class DivisionEditor;
-interface SampleDivisionEditor;
-@endcode
+ * interface SampleDivisionEditor;
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -21,7 +21,7 @@ interface SampleDivisionEditor;
  *
  * @code
 final class DivisionEditor;
-@endcode
+ * @endcode
  *
  * @final
  */
@@ -216,7 +216,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
 
         if (file_exists($includeFile)) {
             $includeRules = file($includeFile);
-            foreach($includeRules as $rule) {
+            foreach ($includeRules as $rule) {
                 $rule = trim($rule);
                 if (empty($rule)) continue;
                 $folders[] = glob($dirPath . $rule);
@@ -282,21 +282,15 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
 
         if ($result && $this->getState() == 'getRawData') {
             $params = $this->getStateParams(true);
+
             $result = array_map(
-                create_function(
-                    '$val',
-                    '
-                    $val["smap_segment"] = E()->getMap(' .
-                    $params['site_id'] . ')->getURLByID($val["smap_id"]);
-                    ' .
-                    (($this->getDataDescription()->getFieldDescriptionByName('site')) ?
-                        '$val["site"] = E()->getSiteManager()->getSiteByID(' .
-                        $params['site_id'] .
-                        ')->base;' : '') . '
+                function ($val) use ($params) {
+                    $val["smap_segment"] = E()->getMap($params['site_id'])->getURLByID($val["smap_id"]);
+                    if ($this->getDataDescription()->getFieldDescriptionByName('site')) {
+                        $val["site"] = E()->getSiteManager()->getSiteByID($params['site_id'])->base;
+                    }
                     return $val;
-                    '
-                )
-                , $result);
+                }, $result);
         }
         return $result;
     }
@@ -393,6 +387,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $actionParams = $this->getStateParams(true);
         $this->buildRightsTab($actionParams['pid']);
 
+        $this->getDataDescription()->getFieldDescriptionByName('smap_segment')->removeProperty('nullable');
         $site = E()->getSiteManager()->getSiteByPage($actionParams['pid']);
         $sitemap = E()->getMap($site->id);
 
@@ -499,6 +494,8 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         if ($field->getRowData(0) !== null) {
             $smapSegment =
                 E()->getMap($site->id)->getURLByID($field->getRowData(0));
+
+            $this->getDataDescription()->getFieldDescriptionByName('smap_segment')->removeProperty('nullable');
         } else {
             $this->getDataDescription()->getFieldDescriptionByName('smap_pid')
                 ->setMode(FieldDescription::FIELD_MODE_READ)
@@ -928,12 +925,13 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
 
     }
 }
+
 /**
  * Fake interface to create sample.
  *
  * @code
 interface SampleDivisionEditor;
-@endcode
+ * @endcode
  */
 interface SampleDivisionEditor {
 }

@@ -6,3 +6,5 @@ starter/htdocs/stylesheets/
 starter/htdocs/system.config.php
 starter/htdocs/system.jsmap.php
 starter/htdocs/templates/
+
+starter/configs/system.config.pavka.php

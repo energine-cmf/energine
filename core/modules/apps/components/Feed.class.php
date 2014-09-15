@@ -43,6 +43,7 @@ class Feed extends DBDataSet {
         if ($this->getParam('editable') && $this->document->isEditable()) {
             $this->setProperty('editable', 'editable');
         }
+        //@todo по хорошему тут должно быть ограничение не для main а для всех списков
         if ($this->getState() == 'main') {
             if (!($this->filterID = $this->getParam('id'))) {
                 $this->filterID = $this->document->getID();

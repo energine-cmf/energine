@@ -225,7 +225,10 @@ var FeedToolbar = new Class(/** @lends FeedToolbar# */{
                 element.addEvent('mouseout', function () {
                     this.removeClass('record_highlight')
                 });
-                element.addEvent('click', this._select.bind(this, element));
+                element.addEvent('click', function(e){
+                    e.preventDefault();
+                    this._select(element);
+                }.bind(this));
             }, this);
         }
     }

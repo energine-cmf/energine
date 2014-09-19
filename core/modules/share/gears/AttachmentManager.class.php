@@ -179,7 +179,7 @@ class AttachmentManager extends DBWorker {
 
                 $request = 'SELECT spu.' . $mapFieldName .
                            ',spu.upl_id as id, spu.*, ' .
-                           'upl_path as file, upl_name as name, TIME_FORMAT(upl_duration, "%i:%s") as duration,
+                           'upl_path as file, upl_name as name, upl_title as title, TIME_FORMAT(upl_duration, "%i:%s") as duration,
                             upl_internal_type as type,upl_mime_type as mime, upl_data as data, ' .
                             'upl_is_mp4 as is_mp4, upl_is_webm as is_webm, upl_is_flv as is_flv ' .
                             (($langMapTableName && $lang_pk) ? ', spt.*' : '') .
@@ -262,6 +262,11 @@ class AttachmentManager extends DBWorker {
                             $dataDescription->addFieldDescription($fd);
 
                             $fd = new FieldDescription('data');
+                            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+                            $dataDescription->addFieldDescription($fd);
+
+
+                            $fd = new FieldDescription('title');
                             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
                             $dataDescription->addFieldDescription($fd);
 

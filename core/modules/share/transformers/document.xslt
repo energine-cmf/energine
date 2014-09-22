@@ -215,6 +215,7 @@
         <xsl:if test="document/og/property[@name='image']">
             <link rel="image_src" href="{document/og/property[@name='image']}" />
         </xsl:if>
+        <meta property="og:url" content="{$DOC_PROPS[@name='url']}" />
     </xsl:template>
 
     <xsl:template match="/" mode="head">

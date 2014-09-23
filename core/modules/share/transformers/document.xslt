@@ -3,6 +3,7 @@
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:og="http://ogp.me/ns#"
+    xmlns:video="http://ogp.me/ns/video#"
     >
     <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
     <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
@@ -22,6 +23,7 @@
     <!--Оставлено для обратной совместимости, сейчас рекомендуется определять обработчик рута в модуле сайта и взывать рутовый шаблон в режиме head-->
     <xsl:template match="/">
         <html>
+            <xsl:attribute name="prefix"><xsl:text disable-output-escaping="yes">og: http://ogp.me/ns# video: http://ogp.me/ns/video#</xsl:text></xsl:attribute>
         	<head>
                 <title><xsl:call-template name="build_title"/></title>
         		<base href="{$BASE}"/>
@@ -209,9 +211,12 @@
     </xsl:template>
 
     <xsl:template match="/" mode="og">
-        <xsl:for-each select="document/og/property">
+        <xsl:for-each select="document/og/property[@name!='duration']">
             <meta property="og:{@name}" content="{.}" />
         </xsl:for-each>
+        <xsl:if test="document/og/property[@name='duration']">
+            <meta property="video:duration" content="{document/og/property[@name='duration']}" />
+        </xsl:if>
         <xsl:if test="document/og/property[@name='image']">
             <link rel="image_src" href="{document/og/property[@name='image']}" />
         </xsl:if>

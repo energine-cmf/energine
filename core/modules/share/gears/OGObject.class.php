@@ -127,14 +127,20 @@ class OGObject extends Object {
      * @param int $width
      * @param int $height
      */
-    public function setVideo($url, $duration, $mime, $width = self::DEFAULT_WIDTH, $height = self::DEFAULT_HEIGHT, $type='video.other') {
+    public function setVideo($url, $duration, $mime, $width = self::DEFAULT_WIDTH, $height = self::DEFAULT_HEIGHT, $type = 'video.other') {
+        $duration = explode(':', $duration);
+        if (sizeof($duration) == 2) {
+            $duration = (int)$duration[0] * 60 + (int)$duration[1];
+        } else {
+            $duration = '';
+        }
         $this->video = array(
             'url' => $url,
             'duration' => $duration,
-            'type' => ($type)?$type:'video.other',
+            'type' => ($type) ? $type : 'video.other',
             'mime' => $mime,
-            'width' => ($width)?$width:self::DEFAULT_WIDTH,
-            'height' => ($height)?$height:self::DEFAULT_HEIGHT
+            'width' => ($width) ? $width : self::DEFAULT_WIDTH,
+            'height' => ($height) ? $height : self::DEFAULT_HEIGHT
         );
     }
 
@@ -164,7 +170,7 @@ class OGObject extends Object {
             foreach ($this->images as $imageProps) {
 
                 $prop = $doc->createElement('property', (($resizerURL =
-                        $this->getConfigValue('site.resizer')) ? $resizerURL : (E()->getSiteManager()->getDefaultSite()->base . 'resizer/')) . 'w' . $imageProps['width'] . '-h' . $imageProps['height'] . '/' . $imageProps['url'].'?preview.jpg');
+                        $this->getConfigValue('site.resizer')) ? $resizerURL : (E()->getSiteManager()->getDefaultSite()->base . 'resizer/')) . 'w' . $imageProps['width'] . '-h' . $imageProps['height'] . '/' . $imageProps['url'] . '?preview.jpg');
                 $prop->setAttribute('name', 'image');
                 $result->appendChild($prop);
                 $prop = $doc->createElement('property', $imageProps['width']);
@@ -177,7 +183,7 @@ class OGObject extends Object {
         }
         if (!empty($this->video)) {
             $prop = $doc->createElement('property', (($url =
-                    $this->getConfigValue('site.media')) ? $url : (E()->getSiteManager()->getDefaultSite()->base )) . $this->video['url']);
+                    $this->getConfigValue('site.media')) ? $url : (E()->getSiteManager()->getDefaultSite()->base)) . $this->video['url']);
             $prop->setAttribute('name', 'video');
             $result->appendChild($prop);
             $prop = $doc->createElement('property', $this->video['width']);
@@ -187,7 +193,7 @@ class OGObject extends Object {
             $prop->setAttribute('name', 'video:height');
             $result->appendChild($prop);
             $prop = $doc->createElement('property', $this->video['duration']);
-            $prop->setAttribute('name', 'video:duration');
+            $prop->setAttribute('name', 'duration');
             $result->appendChild($prop);
             $prop = $doc->createElement('property', $this->video['type']);
             $prop->setAttribute('name', 'type');

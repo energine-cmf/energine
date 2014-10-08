@@ -695,7 +695,10 @@ abstract class DataSet extends Component {
             'share_uploads',
             array(
                 'upl_path',
-                'upl_name'
+                'upl_name',
+                'upl_title',
+                'upl_internal_type',
+                'upl_mime_type',
             ),
             array(
                 'upl_id' => intval($uplId),
@@ -706,12 +709,15 @@ abstract class DataSet extends Component {
             throw new SystemException('ERROR_NO_VIDEO_FILE', SystemException::ERR_404);
         }
         // Using array_values to transform associative index to key index
-        list($file, $name) = array_values($fileInfo[0]);
+        list($file, $name, $title, $type, $mime) = array_values($fileInfo[0]);
         $dd = new DataDescription();
         foreach(
             array(
                 'file' => FieldDescription::FIELD_TYPE_STRING,
-                'name' => FieldDescription::FIELD_TYPE_STRING
+                'name' => FieldDescription::FIELD_TYPE_STRING,
+                'title' => FieldDescription::FIELD_TYPE_STRING,
+                'type' => FieldDescription::FIELD_TYPE_STRING,
+                'mime' => FieldDescription::FIELD_TYPE_STRING,
             ) as $fName => $fType
         ) {
             $fd = new FieldDescription($fName);
@@ -723,15 +729,22 @@ abstract class DataSet extends Component {
         $data = new Data();
         $data->load(
           array(
-              array(
-                  'file' => $file,
-                  'name' => $name
-              )
+              compact('file', 'name', 'title','type', 'mime')
           )
         );
         $this->setData($data);
         $this->js = $this->buildJS();
-        E()->getController()->getTransformer()->setFileName('core/modules/share/transformers/embed_player.xslt', true);
+        /**
+         * If we want to use custom embed player we need to redefine embed_player.xslt in module transformers dir
+         */
+        $fn = 'embed_player.xslt';
+        if(file_exists($file = sprintf(SITE_DIR.XSLTTransformer::MAIN_TRANSFORMER_DIR, E()->getSiteManager()->getCurrentSite()->folder).$fn )){
+            E()->getController()->getTransformer()->setFileName($fn);
+        }
+        else {
+            E()->getController()->getTransformer()->setFileName('core/modules/share/transformers/embed_player.xslt', true);
+        }
+
     }
 
     /**

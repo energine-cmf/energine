@@ -410,6 +410,18 @@
 
     <!-- поле типа thumb используется только в FileRepository -->
     <xsl:template match="field[@type='thumb'][ancestor::component[@type='form']]" mode="field_input">
+        <xsl:variable name="WIDTH">
+            <xsl:choose>
+                <xsl:when test="@width!=''"><xsl:value-of select="@width"/></xsl:when>
+                <xsl:otherwise>0</xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="HEIGHT">
+            <xsl:choose>
+                <xsl:when test="@height!=''"><xsl:value-of select="@height"/></xsl:when>
+                <xsl:otherwise>0</xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
         <div class="preview">
             <img border="0" id="preview_{@name}" data="data_{@name}"  width="{@width}" height="{@height}">
                 <xsl:choose>
@@ -418,7 +430,7 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:if test="@name!='preview'"><xsl:attribute name="class">thumb</xsl:attribute></xsl:if>
-                        <xsl:attribute name="src"><xsl:value-of select="$RESIZER_URL"/>w<xsl:value-of select="@width"/>-h<xsl:value-of select="@height"/>/<xsl:value-of  select="../field[@name='upl_path']"/>?<xsl:value-of select="generate-id()"/></xsl:attribute>
+                        <xsl:attribute name="src"><xsl:value-of select="$RESIZER_URL"/>w<xsl:value-of select="$WIDTH"/>-h<xsl:value-of select="$HEIGHT"/>/<xsl:value-of  select="../field[@name='upl_path']"/>?<xsl:value-of select="generate-id()"/></xsl:attribute>
                     </xsl:otherwise>
                 </xsl:choose>
             </img>

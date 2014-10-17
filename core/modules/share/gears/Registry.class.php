@@ -276,27 +276,28 @@ final class Registry extends Object {
     /**
      * Get QAL.
      *
+     * @param string $dbRecord
      * @return QAL
      */
-    public function getDB() {
-        if (!isset($this->entities['QAL'])) {
-            $this->entities['QAL'] = new QAL(
+    public function getDB($dbRecord = 'database') {
+        if (!isset($this->entities['QAL'][$dbRecord])) {
+            $this->entities['QAL'][$dbRecord] = new QAL(
                 sprintf('mysql:host=%s;port=%s;dbname=%s',
-                    $this->getConfigValue('database.host'),
-                    $this->getConfigValue('database.port'),
-                    $this->getConfigValue('database.db')
+                    $this->getConfigValue($dbRecord.'.host'),
+                    $this->getConfigValue($dbRecord.'.port'),
+                    $this->getConfigValue($dbRecord.'.db')
                 ),
-                $this->getConfigValue('database.username'),
-                $this->getConfigValue('database.password'),
+                $this->getConfigValue($dbRecord.'.username'),
+                $this->getConfigValue($dbRecord.'.password'),
                 array(
-                    PDO::ATTR_PERSISTENT => (bool)$this->getConfigValue('database.persistent'),
+                    PDO::ATTR_PERSISTENT => (bool)$this->getConfigValue($dbRecord.'.persistent'),
                     PDO::ATTR_EMULATE_PREPARES => true,
                     PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
                 )
             );
         }
 
-        return $this->entities['QAL'];
+        return $this->entities['QAL'][$dbRecord];
     }
 
     /**

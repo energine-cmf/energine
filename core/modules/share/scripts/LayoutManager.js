@@ -786,7 +786,8 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
                 this.overlay.element.addClass('e-overlay-loading');
                 if (result) {
                     Object.each(result, function (param, paramName) {
-                        this.getComponent().getParam(paramName).setValue(param);
+                        if(this.getComponent().getParam(paramName).setValue)
+                            this.getComponent().getParam(paramName).setValue(param);
                     }, this);
                     this.reload();
                     LayoutManager.changed = true;

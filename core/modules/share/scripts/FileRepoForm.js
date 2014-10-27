@@ -235,8 +235,8 @@ var FileRepoForm = new Class(/** @lends FileRepoForm# */{
      */
     getPlayerParams: function () {
         var player = {};
-        player.width = parseInt(this.componentElement.getElementById('width').value) || '';
-        player.height = parseInt(this.componentElement.getElementById('height').value) || '';
+        player.width = this.componentElement.getElementById('width').value || '';
+        player.height = this.componentElement.getElementById('height').value || '';
         ModalBox.setReturnValue(player);
         this.close();
     }

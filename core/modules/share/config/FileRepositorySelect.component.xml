@@ -137,8 +137,8 @@
         <fields>
             <field name="upl_id"/>
             <field name="upl_path" type="file" mode="1" title="TXT_PREVIEW"/>
-            <field name="width" title="TXT_WIDTH"/>
-            <field name="height" title="TXT_HEIGHT"/>
+            <field name="width" title="TXT_WIDTH" type="string"/>
+            <field name="height" title="TXT_HEIGHT" type="string"/>
         </fields>
         <toolbar>
             <control type="button" id="insert" title="BTN_INSERT_VIDEO" onclick="getPlayerParams"/>

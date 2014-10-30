@@ -78,7 +78,7 @@
                 <ul class="e-pane-toolbar e-tabs">
                     <xsl:for-each select="set:distinct($FIELDS/@tabName)">
                         <xsl:variable name="TAB_NAME" select="."></xsl:variable>
-                        <xsl:if test="count(set:distinct($FIELDS[not(@index='PRI') and not(@type='hidden')][@tabName=$TAB_NAME]))&gt;0">
+                        <xsl:if test="count(set:distinct($FIELDS[not(@index='PRI') and not(@type='tab') and not(@type='hidden')][@tabName=$TAB_NAME]))&gt;0">
                             <li>
                                 <a href="#{generate-id(.)}"><xsl:value-of select="$TAB_NAME" /></a>
                                 <xsl:if test="$FIELDS[@tabName=$TAB_NAME][1]/@language">

@@ -799,7 +799,7 @@ class Grid extends DBDataSet {
         $MIMEType = 'application/csv';
 
         if ($encoding != 'utf-8') {
-            $data = iconv('utf-8', $encoding . '//TRANSLIT', $data);
+            $data = iconv('utf-8', $encoding . '//IGNORE', $data);
         }
         $this->downloadFile($data, $MIMEType, $filename);
     }

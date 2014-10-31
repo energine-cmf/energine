@@ -336,7 +336,9 @@ class Grid extends DBDataSet {
     }
 
     /**
-     * Single mode state for gettting latest values from FK table
+     * Single mode state for getting latest values from FK table
+     *
+     * @throws SystemException
      */
     protected function fkValues() {
         list($fkField) = $this->getStateParams();

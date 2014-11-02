@@ -943,7 +943,9 @@ class Grid extends DBDataSet {
      */
     protected function setOrderColumn($columnName) {
         $this->orderColumn = $columnName;
-        $this->setOrder(array($columnName => QAL::ASC));
+        if($columnName){
+            $this->setOrder(array($columnName => QAL::ASC));
+        }
     }
 
     /**

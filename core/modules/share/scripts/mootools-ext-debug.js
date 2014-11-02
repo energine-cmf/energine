@@ -222,7 +222,14 @@ Element.Events.message = {
     }
 };
 
-/* the class */
+/**
+ * PostMessager 0.4
+
+
+ PostMessager is a MooTools plugin that acts as a wrapper for the window.postMessage API which is available in IE8+, Firefox 3.1+, Opera 9+, Safari, and Chrome. PostMessager also normalizes the onMessage event for use within MooTools.
+
+ * @see http://mootools.net/forge/p/postmessager
+**/
 var PostMessager  = new Class({
 
     Implements: [Options,Events],

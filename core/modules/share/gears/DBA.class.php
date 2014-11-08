@@ -361,6 +361,18 @@ array(
     }
 
     /**
+     * return table list
+     * this is draft method - I do not understand its necessity
+     *
+     * @todo use db cache if need be
+     * @todo add pattern param - if need be
+     * @return array
+     */
+    public function getTables(){
+       return $this->getPDO()->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
+    /**
      * Get columns info of the table.
      *
      * The returned array looks like:

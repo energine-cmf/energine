@@ -50,14 +50,20 @@ class Feed extends DBDataSet {
             }
 
             if ($this->getParam('showAll')) {
-                $par = E()->getMap()->getTree()->getNodeById($this->filterID);
-                $descendants = array();
-                if($par){
-                    $descendants = array_keys(
-                        $par->getDescendants()->asList(false)
-                    );
+                if(!is_array($this->filterID)){
+                    $this->filterID = (array)$this->filterID;
                 }
-                $this->filterID = array_merge(array($this->filterID), $descendants);
+                $filters = $this->filterID;
+
+                foreach($filters as $filterID){
+                    $par = E()->getMap(E()->getSiteManager()->getSiteByPage($filterID)->id)->getTree()->getNodeById($filterID);
+                    if($par){
+                        $this->filterID = array_merge($this->filterID, array_keys(
+                            $par->getDescendants()->asList(false)
+                        ));
+                    }
+
+                }
             }
             if ($orderParam = $this->getParam('orderField')) {
                 if (is_array($orderParam)) {
@@ -70,6 +76,7 @@ class Feed extends DBDataSet {
                 if (!in_array($dir, array(QAL::ASC, QAL::DESC))) $dir = QAL::ASC;
                 $this->setOrder(array($field => $dir));
             }
+
             $this->addFilterCondition(array('smap_id' => $this->filterID));
             if ($limit = $this->getParam('limit')) {
                 $this->setLimit(array(0, $limit));
@@ -128,7 +135,9 @@ class Feed extends DBDataSet {
         parent::main();
         if($f = $this->getData()->getFieldByName('smap_id')){
             foreach($f as $key=>$value){
-                $f->setRowProperty($key,'url',E()->getMap()->getURLByID($value));
+                $site = E()->getSiteManager()->getSiteByPage($value);
+                $f->setRowProperty($key,'url',E()->getMap($site->id)->getURLByID($value));
+                $f->setRowProperty($key,'base',$site->base);
             }
         }
     }

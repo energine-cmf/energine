@@ -85,7 +85,8 @@ class PageInfo extends DataSet {
         $m = new AttachmentManager(
             $this->getDataDescription(),
             $this->getData(),
-            'share_sitemap'
+            'share_sitemap',
+            true
         );
         $m->createFieldDescription();
         $m->createField('smap_id', false, $this->document->getID());

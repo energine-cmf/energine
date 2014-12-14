@@ -83,7 +83,14 @@
     <!-- именованный шаблон для подключения значка сайта -->
     <!--@deprecated-->
     <xsl:template name="favicon">
-        <link rel="shortcut icon" href="{$STATIC_URL}images/energine.ico" type="image/x-icon"/>
+        <link rel="shortcut icon" type="image/x-icon">
+            <xsl:attribute name="href">
+                <xsl:choose>
+                    <xsl:when test="$DOC_PROPS[@name='base']/@favicon!=''"><xsl:value-of select="$DOC_PROPS[@name='base']/@favicon"/></xsl:when>
+                    <xsl:otherwise><xsl:value-of select="$STATIC_URL"/>images/energine.ico"</xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+        </link>
     </xsl:template>
 
     <!-- именованный шаблон для подключения интерфейсных скриптов  -->

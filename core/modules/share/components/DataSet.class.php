@@ -699,6 +699,7 @@ abstract class DataSet extends Component {
                 'upl_title',
                 'upl_internal_type',
                 'upl_mime_type',
+                'upl_data',
             ),
             array(
                 'upl_id' => intval($uplId),
@@ -709,7 +710,7 @@ abstract class DataSet extends Component {
             throw new SystemException('ERROR_NO_VIDEO_FILE', SystemException::ERR_404);
         }
         // Using array_values to transform associative index to key index
-        list($file, $name, $title, $type, $mime) = array_values($fileInfo[0]);
+        list($file, $name, $title, $type, $mime, $data) = array_values($fileInfo[0]);
         $dd = new DataDescription();
         foreach(
             array(
@@ -718,6 +719,7 @@ abstract class DataSet extends Component {
                 'title' => FieldDescription::FIELD_TYPE_STRING,
                 'type' => FieldDescription::FIELD_TYPE_STRING,
                 'mime' => FieldDescription::FIELD_TYPE_STRING,
+                'data' => FieldDescription::FIELD_TYPE_TEXT,
             ) as $fName => $fType
         ) {
             $fd = new FieldDescription($fName);
@@ -726,13 +728,13 @@ abstract class DataSet extends Component {
         }
         $this->setBuilder(new SimpleBuilder());
         $this->setDataDescription($dd);
-        $data = new Data();
-        $data->load(
+        $d = new Data();
+        $d->load(
           array(
-              compact('file', 'name', 'title','type', 'mime')
+              compact('file', 'name', 'title','type', 'mime', 'data')
           )
         );
-        $this->setData($data);
+        $this->setData($d);
         $this->js = $this->buildJS();
         /**
          * If we want to use custom embed player we need to redefine embed_player.xslt in module transformers dir

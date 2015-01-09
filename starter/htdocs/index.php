@@ -9,18 +9,27 @@
  */
 
 try {
+	if (!file_exists($autoloader = '../vendor/autoload.php')) {
+		throw new \LogicException('Autoloader not found. Firstly you have to run "composer install".');
+	}
+	require_once($autoloader);
+
     // подключаем bootstrap
     require_once('bootstrap.php');
 
     if ($use_timer = E()->getConfigValue('site.useTimer')) {
-        class Timer Extends Object {
+		class Timer Extends Energine\share\gears\Object {
 
         }
+
         $timer = new Timer();
         $timer->startTimer();
     }
-    UserSession::start();
+
+	Energine\share\gears\UserSession::start();
+
     $reg = E();
+
     $reg->getController()->run();
 
     if ($use_timer) {
@@ -29,14 +38,13 @@ try {
     }
 
     $reg->getResponse()->commit();
-} catch (LogicException $bootstrapException) {
+} catch (\LogicException $bootstrapException) {
     //Все исключения перехваченные здесь произошли в bootstrap'e
     //И ориентироваться на наличие DEBUG здесь нельзя
     //Поэтому выводим как есть
     header('Content-Type: text/plain; charset=utf-8');
     echo $bootstrapException->getMessage();
-}
-catch (Exception $generalException) {
+} catch (\Exception $generalException) {
     //Если отрабатывает этот кетчер, значит дела пошли совсем плохо
     if (defined('DEBUG') && DEBUG) {
         header('Content-Type: text/plain; charset=utf-8');

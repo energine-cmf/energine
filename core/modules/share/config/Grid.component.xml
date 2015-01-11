@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    <state name="main">
+    <state name="main" rights="3">
         <javascript>
             <behavior name="GridManager"/>
         </javascript>
@@ -17,7 +17,7 @@
             -->
         </toolbar>
     </state>
-    <state name="add">
+    <state name="add" rights="3">
         <uri_patterns>
             <pattern>/add/</pattern>
         </uri_patterns>
@@ -37,7 +37,7 @@
                      onclick="close"/>
         </toolbar>
     </state>
-    <state name="edit">
+    <state name="edit" rights="3">
         <uri_patterns>
             <pattern>/[int]/edit/</pattern>
         </uri_patterns>
@@ -62,12 +62,12 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <state name="delete" rights="2">
+    <state name="delete" rights="3">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
         </uri_patterns>
     </state>
-    <state name="getRawData" rights="2">
+    <state name="getRawData" rights="3">
         <uri_patterns>
             <pattern>/get-data/</pattern>
             <pattern>/get-data/page-[pageNumber]/</pattern>
@@ -75,7 +75,7 @@
             <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
         </uri_patterns>
     </state>
-    <state name="view">
+    <state name="view" rights="3">
         <uri_patterns>
             <pattern>/[int]/</pattern>
         </uri_patterns>

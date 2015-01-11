@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
-    <component name="ads" module="share" class="Ads"/>
+    <component name="ads" module="apps" class="Ads"/>
 	<component name="langSwitcher" module="share" class="LangSwitcher"/>
 	<component name="footerTextBlock" module="share" class="TextBlock">
 		<params>

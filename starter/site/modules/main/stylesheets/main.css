@@ -1,0 +1,920 @@
+@charset "utf-8";
+/*
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
+*/
+
+/* -------------------- BASE -------------------- */
+/* ----- reset ----- */
+html, body, iframe, address, blockquote, p, pre, h1, h2, h3, h4, h5, h6, hr,        /* блочные элементы кроме div */
+dd, dl, dt, ul, ol, li,                                                             /* списки */
+a, abbr, acronym, b, cite, code, del, dfn, em, i,                                   /* строчные элементы кроме span */
+ins, kbd, q, samp, strong, tt, var,                                                 /* строчные элементы */
+img, object,                                                                        /* картинки и объекты */
+caption, table, tbody, td, tfoot, th, thead, tr,                                    /* табличные элементы */
+form, fieldset, legend, label,                                                      /* элементы формы кроме контролов */
+u, font, s, center, dir, menu, strike, xmp                                          /* устаревшие элементы */
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+    text-indent: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1em;
+}
+/* ----- /reset ----- */
+
+/* ----- common ----- */
+html, body  {
+    background: white;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+p {
+    margin: 0 0 1em 0;
+}
+img, a img {
+    border: 0;
+}
+code, kbd, pre, samp, tt, var {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1em;
+}
+pre {
+    margin: 0 0 1em 0;
+    white-space: pre;
+}
+hr {
+    height: 1px;
+    margin: 1em 0;
+    padding: 0;
+    color: gray;
+    background: gray;
+    border: 0;
+}
+q:before, q:after,
+blockquote:before, blockquote:after {
+    content: "";
+}
+/* ----- /common ----- */
+
+/* ----- headers ----- */
+h1, h2, h3, h4, h5, h6 {
+    margin: 1em 0 0.3em 0;
+}
+h1 {
+    font-size: 2em; /* =26px */
+    font-weight: normal;
+}
+h2 {
+    font-size: 1.693em; /* =22px */
+    font-weight: normal;
+}
+h3 {
+    font-size: 1.462em; /* =19px */
+    font-weight: normal;
+}
+h4 {
+    font-size: 1.231em; /* =16px */
+}
+h5 {
+    font-size: 1.077em; /* =14px */
+}
+h6 {
+    font-size: 0.924em; /* =12px */
+}
+/* ----- /headers ----- */
+
+/* ----- links ----- */
+a:link,
+a:visited {
+    color: #428bca;
+    text-decoration: none;
+}
+a[href]:hover, a[href]:active {
+    color: #2a6496;
+    text-decoration: underline;
+}
+/* ----- /links ----- */
+
+/* ----- lists ----- */
+ul, ol, dl {
+    margin: 0 0 1em 0;
+}
+ul, ol {
+    padding: 0 0 0 2em;
+    list-style-position: outside;
+}
+ol {
+    list-style-type: decimal;
+}
+ul li, ol li {
+    margin: 0.2em 0;
+}
+dt {
+    margin: 0;
+    font-weight: bold;
+}
+dd {
+    margin: 0 0 1em 0;
+}
+ul ul, ol ul, ul ol, ol ol {
+    margin: 0 0 0.3em 0;
+    padding: 0 0 0 1.5em;
+}
+/* ----- /lists ----- */
+
+/* ----- tables ----- */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    vertical-align: top;
+    font-family: Arial, sans-serif;
+    font-size: 1em;
+}
+caption {
+    padding-bottom: 0.5em;
+    text-align: left;
+}
+th {
+    vertical-align: top;
+    text-align: left;
+    font-weight: bold;
+}
+td {
+    vertical-align: top;
+}
+tfoot {
+    font-weight: bold;
+}
+/* ----- /tables ----- */
+
+/* ----- forms ----- */
+form {
+    margin: 0 0 1em 0;
+    font-family: Arial, sans-serif;
+}
+fieldset {
+    padding: 12px;
+    border: 1px solid gray;
+}
+input, textarea, select, button {
+    height: auto;
+    margin: 0;
+    padding: 6px;
+    vertical-align: middle;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+button {
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 6px 12px;
+    line-height: 18px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+button:hover {
+    background-color: #ebebeb;
+    border-color: #adadad;
+}
+input:focus,
+textarea:focus,
+select:focus,
+input:hover,
+textarea:hover,
+select:hover,
+.required input:focus,
+.required textarea:focus,
+.required select:focus,
+.required input:hover,
+.required textarea:hover,
+.required select:hover {
+    border-color: #6FCFE3;
+    background-color: #FaFFFF;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
+}
+textarea {
+    vertical-align: top;
+}
+select {
+    min-height: 24px;
+    padding: 2px;
+}
+select option {
+    background: white;
+}
+optgroup {
+    color: black;
+    background: white;
+}
+optgroup option {
+    padding-left: 22px;
+}
+.required input,
+.required select,
+.required textarea {
+    background: #f0fff0;
+    border-color: #7DC27D;
+}
+
+/* ----- /forms ----- */
+/* -------------------- /BASE -------------------- */
+
+/* -------------------- COMMON -------------------- */
+/* ----- clearfix ----- */
+.clearfix:after, .colset:after {
+    clear: both;
+    display: block;
+    visibility: hidden;
+    height: 0;
+    content: ".";
+    line-height: 0;
+    font-size: 0;
+}
+.clearfix, .colset {
+    *zoom: 1; /* IE7 */
+}
+/* ----- /clearfix ----- */
+
+/* ----- misc ----- */
+.small_margin {
+	margin: 0 0 0.5em 0;
+}
+.no_margin {
+	margin: 0;
+}
+.clear {
+	clear: both;
+}
+.align_left {
+	text-align: left;
+}
+.align_right {
+	text-align: right;
+}
+.align_center {
+	text-align: center;
+}
+.align_justify {
+	text-align: justify;
+}
+.error, .error_message {
+    color: red;
+}
+.play_button {
+    display: block;
+    left: 50%;
+    margin: -16px 0 0 -16px;
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    top: 50%;
+    z-index: 1;
+    background: url("../../images/play_button_small.png") left top no-repeat;
+}
+.image_info {
+    display: block;
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    z-index: 1;
+    padding: 1px 4px;
+    background: black;
+    text-decoration: none;
+    font-size: 0.847em; /* =11px */
+    color: white;
+}
+/* ----- /misc ----- */
+
+/* ----- block ----- */
+.block {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+}
+.block_header {
+    padding: 5px 10px 3px 10px;
+    background: silver;
+}
+.black .block_header {
+    background: #474544;
+    color: #e4e4e4;
+}
+.block_title {
+    margin: 0;
+	font-weight: normal;
+    font-size: 1.847em; /* =24px */    
+}
+.block_content {
+    padding: 10px;
+}
+/* ----- /block ----- */
+
+/* ----- default forms ----- */
+input.radio, input.checkbox {
+    width: auto;
+    vertical-align: middle;
+}
+.field {
+    clear: both;
+    padding: 5px 0;
+}
+.field .name {
+    padding-bottom: 5px;
+}
+.checkbox_set div {
+    padding-bottom: 5px;
+}
+.controlset {
+    padding: 10px 0;
+}
+.mark {
+    color: #ff6000;
+}
+.note {
+    padding: 5px 0;
+    color: gray;
+}
+.date_field input.text {
+    width: 40px;
+    vertical-align: middle;
+}
+.date_field select {
+    width: 100px;
+    vertical-align: middle;
+}
+.captcha_field {
+    padding: 10px 0;
+}
+.captcha_field input.text {
+    display: block;
+    width: 92px;
+    margin-top: 5px;
+}
+.captcha_field .name {
+    padding-bottom: 5px;
+}
+/* base form */
+.base_form {
+    margin: 0 0 1em 0;
+}
+.base_form input.text {
+    width: 270px;
+}
+.base_form textarea {
+    width: 270px;
+    height: 70px;
+}
+.base_form select, .base_form input.file {
+    width: 284px;
+    height: 30px;
+}
+.base_form button[type="submit"],
+.base_form button[type="submit"]:focus,
+.base_form button[type="submit"]:hover,
+.base_form button[type="submit"]:active {
+    color: #fff;
+    background-color: #3276b1;
+    border-color: #285e8e;
+}
+.base_form .date_field input.text {
+    width: 40px;
+}
+.base_form .date_field select {
+    width: 100px;
+}
+.base_form .captcha_field input.text {
+    width: 92px;
+}
+.base_form .captcha_field .name {
+    padding-bottom: 5px;
+}
+/* /base form */
+/* ----- /default forms ----- */
+/* -------------------- /COMMON -------------------- */
+
+/* -------------------- LAYOUT -------------------- */
+/* ----- base ----- */
+.top_adblock {
+    padding: 10px 0;
+    text-align: center;
+}
+.left_adblock {
+    padding: 0 0 10px 0;
+    text-align: center;
+}
+/* ----- /base ----- */
+
+/* ----- header ----- */
+.header .logo {
+    float: left;
+	margin: 0;
+	padding: 10px;
+}
+.header .logo img {
+	display: block;
+}
+/* ----- /header ----- */
+
+/* ----- breadcrumbs ----- */
+.breadcrumbs {
+    background: #474544;
+    padding: 11px 34px 11px 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #e4e4e4;
+}
+.breadcrumbs a {
+    color: #bbb;
+}
+.breadcrumbs a:hover,
+.breadcrumbs a:active {
+    color: #e4e4e4;
+    text-decoration: none;
+}
+.breadcrumbs_home {
+    padding-left: 24px;
+    background: url("../../images/main/icons.png") no-repeat;
+}
+.breadcrumbs_home:hover,
+.breadcrumbs_home:active {
+    background-position: 0 -24px;
+}
+/* ----- /breadcrumbs ----- */
+
+/* ----- content ----- */
+.main {
+    clear: both;
+	padding: 10px;
+}
+/* 1 column */
+.colset > .col {
+    float: left;
+    width: 100%;
+    padding-right: 1%;
+}
+.colset > .last_col {
+    padding-right: 0;
+}
+/* 2 columns */
+.colset2 > .col1 {
+    width: 29%
+}
+.colset2 > .col2 {
+    width: 70%
+}
+.colset2 > .col2 > .colset2 > .col2 {
+    width: 400px;
+}
+/* 3 columns */
+.colset3 > .col1 {
+    width: 29%
+}
+.colset3 > .col2 {
+    width: 39%
+}
+.colset3 > .col3 {
+    width: 30%
+}
+/* ----- /content ----- */
+
+/* ----- language switcher ----- */
+.lang_switcher {
+    float: right;
+    margin: 26px 10px;
+	padding: 7px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    list-style: none;
+    text-align: right;
+}
+.lang_switcher li {
+    display: inline;
+    padding: 0 7px;
+}
+.lang_switcher li + li {
+    border-left: 1px solid #ddd;
+}
+/* ----- /language switcher ----- */
+
+/* ----- main menu ----- */
+.main_menu {
+    margin: -10px -10px -20px;
+    padding: 5px 0;
+    background: #F7F7F9;
+    border-radius: 4px;
+    list-style: none;
+}
+.main_menu_item .main_menu,
+.main_menu_item {
+    margin: 0;
+    padding: 0;
+}
+.main_menu_item a,
+.home a {
+    display: block;
+    padding: 7px 15px;
+    color: #428bca;
+}
+.main_menu_item a {
+    padding: 7px 25px;
+}
+.main_menu_item .main_menu_item a {
+    padding: 5px 15px 5px 45px;
+    font-size: 90%;
+}
+.main_menu_item .main_menu_item .main_menu_item a {
+    padding: 3px 15px 3px 80px;
+    font-size: 85%;
+}
+.main_menu_item .main_menu_item .main_menu_item .main_menu_item a {
+    padding: 2px 15px 2px 130px;
+    font-size: 80%;
+}
+.main_menu_item a:hover,
+.main_menu_item a:active,
+.main_menu_item.active a:hover,
+.main_menu_item.active a:active,
+.home a:hover,
+.home a:active {
+    background: #428bca;
+    color: #F7F7F9;
+    text-decoration: none;
+}
+
+.main_menu_item.active > a {
+    font-weight: bold;
+    border-right: 5px solid #428bca;
+    background: #f0f0f0;
+}
+/* --- black theme for main menu --- */
+.black .main_menu {
+    background: #474544;
+}
+.black .main_menu_item a,
+.black .home a {
+    color: #eee;
+}
+.black .main_menu_item a:hover,
+.black .main_menu_item a:active,
+.black .main_menu_item.active a:hover,
+.black .main_menu_item.active a:active,
+.black .home a:hover,
+.black .home a:active {
+    background: #eee;
+    color: #474544;
+}
+.black .main_menu_item.active > a {
+    border-right: 5px solid #eee;
+    background: #3D3B3A;
+}
+/* --- /black theme for main menu --- */
+/* ----- /main menu ----- */
+
+/* ----- footer ----- */
+.footer {
+    clear: both;
+    margin: 0 10px;
+    padding: 10px;
+    border-top: 1px dotted silver;
+    color: gray;
+    font-size: 0.924em; /* =12px */
+    text-align: center;
+}
+.footer p {
+    margin: 0;
+}
+/* ----- /footer ----- */
+/* -------------------- /LAYOUT -------------------- */
+
+/* -------------------- CONTENT -------------------- */
+/* ----- textblock ----- */
+.textbox, .textblock {
+    clear: both;
+    margin: 0 0 1em 0;
+}
+/* ----- /textblock ----- */
+
+/* ----- pager ----- */
+.pager {
+	margin: 0 0 1em 0;
+}
+.pager a:visited {
+    color: #00E;
+}
+.pager a:hover, .pager a:active {
+    color: #F00;
+}
+.pager .control {
+    margin: 0 5px;
+}
+.pager .arrow img {
+    vertical-align: middle;
+}
+.pager .current {
+    padding: 0 3px 1px 3px;
+    background: #0080FF;
+    color: #fff;
+}
+/* ----- /pager ----- */
+
+/* ----- player ----- */
+.media_box {
+    margin-bottom: 1em;
+}
+.player_box {    
+    padding: 1px;
+    border: 1px solid silver;
+}
+.player {
+    position: relative;
+    background: black;
+}
+.player .play_button {
+    margin: -50px 0 0 -50px;
+    width: 100px;
+    height: 100px;
+    background: url("../../images/play_button_large.png") left top no-repeat;
+}
+.carousel_box {
+    margin-top: 1px;
+    border: 1px solid silver;
+}
+/* ----- /player ----- */
+
+/* ----- feed ----- */
+.feed_list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.feed_item {
+    clear: both;
+    float: left;
+    width: 100%;
+    margin: 0 0 10px 0;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.feed_image {
+    float: left;
+    position: relative;
+    margin: 0 10px 2px 0;
+    padding: 1px;
+    border: 1px solid silver;
+    background: white;
+}
+.feed_image a {
+    text-decoration: none; /* для Webkit */
+}
+.feed_image img {
+    display: block;
+}
+.feed_date {
+    padding-bottom: 1px;
+    font-size: 0.924em; /* =12px */
+    color: gray;        
+}
+.feed_name {
+    margin: 0;
+    padding-bottom: 4px;
+    font-size: 1em; /* =13px */
+}
+.feed_text {
+    margin-bottom: 1em;
+}
+.feed .read_more {
+    text-transform: lowercase;
+}
+.feed_view .feed_name {
+    padding-bottom: 8px;
+    font-weight: normal;
+    font-size: 1.539em; /* =20px */
+}
+.feed_view .go_back {
+    margin-top: 5px;
+}
+/* short feed */
+.short_feed .feed_list > li {
+    margin-bottom: 0;
+    border-bottom: 0;
+}
+/* ----- /feed ----- */
+
+/* ----- menu ----- */
+.menu {
+    margin: 0;
+    padding: 10px;
+    list-style: none;
+    border: 1px solid #e0e0e0;
+    background: #f5f5f5;
+}
+.menu_item {
+    clear: both;
+    float: left;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 10px 0;
+}
+.menu_image {
+    float: left;
+    position: relative;
+    margin: 0 10px 2px 0;
+    padding: 1px;
+    border: 1px solid silver;
+    background: white;
+}
+.menu_image a {
+    text-decoration: none; /* для Webkit */
+}
+.menu_image img {
+    display: block;
+}
+.menu_name {
+    margin: 0;
+    padding-bottom: 5px;
+    font-size: 1.231em; /* =16px */
+}
+/* ----- /menu ----- */
+
+/* ----- site list ----- */
+.site_list_box {
+    float: left;
+    width: 26%;
+    margin-right: 4%;
+}
+.site_list .active {
+    font-weight: bold;
+}
+/* ----- /site list ----- */
+
+/* ----- div editor ----- */
+.div_editor_form {
+    float: left;
+    width: 70%;
+}
+/* ----- /div editor ----- */
+
+/* ----- vote ----- */
+.vote_date {
+    padding: 6px 12px;
+    color: #969696;
+}
+.vote_text {
+    padding: 0 0 10px 12px;
+    font-weight: bold;
+}
+.vote_options {
+    padding-bottom: 5px;
+}
+.vote_option {
+    padding-bottom: 5px;
+}
+.vote_option a,
+.vote_option .result {
+    display: block;
+    background: #f3f3f3 url(../images/vote_option_bg.gif) 0 0 repeat-x;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #555;
+}
+.vote_option a {
+    cursor: pointer;
+}
+.vote_option a:hover,
+.vote_option a:active {
+    text-decoration: none;
+    color: #f3f3f3;
+    background: #428bca;
+}
+.vote_option .name {
+    float: left;
+    width: 67%;
+}
+.vote_option .figure {
+    float: right;
+    width: 32%;
+    text-align: right;
+    line-height: 14px;
+    font-size: 18px;
+}
+.vote_count {
+    padding: 0 0 10px 12px;
+    font-size: 11px;
+}
+.vote .go_ahead {
+    text-align: right;
+}
+/* ----- /vote ----- */
+
+/* ----- error page ----- */
+.error_item {
+    padding-bottom: 10px;
+}
+.error_name {
+    margin: 0 0 10px 0;
+    color: red;
+}
+.error_text {
+    margin: 0 0 1em 0;
+}
+.error_page .go_back {
+    padding-bottom: 10px;   
+}
+/* ----- /error page ----- */
+/* -------------------- /CONTENT -------------------- */
+
+/* -------------------- FORMS -------------------- */
+/* ----- login form ----- */
+.login_form .controlset {
+    padding-top: 0.5em;
+}
+.login_form input.text {
+	width: 213px;
+}
+.login_form input.checkbox {
+	width: auto;
+	margin: 0 5px;
+}
+.login_form .restore_link {
+    margin-top: 5px;
+}
+.login_form .error_message {
+    margin: 2px 0;
+    padding: 5px;
+    border: 2px solid red;
+    font-weight: bold;
+}
+/* ----- /login form ----- */
+/* -------------------- /FORMS -------------------- */
+
+p.red { color: red; }
+p.underline { text-decoration: underline; }
+
+/* --- media queries --- */
+@media screen and (max-width: 1024px) {
+   .colset3 > .col1,
+   .colset3 > .col2 {
+       width: 49%;
+   }
+   .colset3 > .col3 {
+       width: 100%;
+   }
+   .colset.colset3 > .col {
+       padding-right: 0;
+   }
+   .colset3 .col1 + .col2 {
+       padding-left: 2%;
+   }
+}
+@media screen and (max-width: 768px) {
+    .colset3 > .col1,
+    .colset3 > .col2,
+    .colset3 > .col3,
+    .colset2 > .col1,
+    .colset2 > .col2 {
+        width: 100%;
+    }
+    .colset.colset2 > .col {
+        padding-right: 0;
+    }
+    .colset3 .col1 + .col2 {
+        padding-left: 0;
+    }
+}
+@media screen and (max-width: 480px) {
+    .header .logo {
+        width: 38%;
+        padding: 26px 10px;
+    }
+    .header .logo img {
+        width: 100%;
+        height: auto;
+    }
+}
+/* --- /media queries -- */

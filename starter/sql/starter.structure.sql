@@ -624,7 +624,7 @@ CREATE TABLE IF NOT EXISTS `share_sites` (
   `site_is_active` tinyint(1) NOT NULL DEFAULT '1',
   `site_is_indexed` tinyint(1) NOT NULL DEFAULT '1',
   `site_is_default` tinyint(1) NOT NULL DEFAULT '0',
-  `site_folder` char(20) NOT NULL DEFAULT 'default',
+  `site_folder` char(20) NOT NULL DEFAULT 'main',
   `site_order_num` int(10) unsigned DEFAULT '1',
   `site_meta_robots` text,
   `site_ga_code` text,

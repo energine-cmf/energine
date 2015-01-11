@@ -59,7 +59,7 @@ if (!empty($args)) {
 
 
 try {
-    require_once('Setup.class.php');
+    require_once('Setup.php');
     $setup = new Setup($isConsole);
     $setup->execute($action, $additionalArgs);
 
@@ -73,7 +73,7 @@ try {
     //впрочем наверное возможны варианты
 
 }
-catch (Exception $e) {
+catch (\Exception $e) {
     if(ob_get_length()) ob_end_clean();
     echo 'При установке все пошло не так.', PHP_EOL, 'А точнее :', PHP_EOL, $e->getMessage();
 }

@@ -11,7 +11,11 @@
 
 // Подключаем конфиг, чтобы достать из него местоположение ядер и имя текущего ядра
 if (!file_exists($configName = realpath(dirname(__FILE__)) . '/system.config.php')) {
+<<<<<<< HEAD
     throw new \LogicException('Configuration file (htdocs/system.config.php) not found.');
+=======
+    throw new \LogicException('Не найден конфигурационный файл system.config.php.');
+>>>>>>> energine.ns
 }
 
 // загружаем конфиг в $config
@@ -19,11 +23,19 @@ $config = include($configName);
 
 // получение из конфига пути к setup
 if (!array_key_exists('setup_dir', $config)) {
+<<<<<<< HEAD
     throw new \LogicException('Setup_dir section not found in system.config.php.');
 }
 
 // относительный путь к ядру - если ядро вынесено на 1 уроверь выше htdocs
 define('CORE_REL_DIR', '../core');
+=======
+    throw new \LogicException('Не указана секция setup_dir в system.config.php.');
+}
+
+// относительный путь к ядру - если ядро вынесено на 1 уроверь выше htdocs
+// define('CORE_REL_DIR', '../core');
+>>>>>>> energine.ns
 
 // относительный путь к ядру - если ядро находится на одном уровне с htdocs
 //define('CORE_REL_DIR', 'core');
@@ -34,6 +46,11 @@ define('SITE_REL_DIR', '../site');
 // относительный путь к сайту - если site находится на одном уровне с htdocs
 // define('SITE_REL_DIR', '../site');
 
+<<<<<<< HEAD
+=======
+// относительный путь к сайту - если site вынесен на 1 уровень выше htdocs
+define('SITE_REL_DIR', '../site');
+>>>>>>> energine.ns
 
 // абсолютный путь к htdocs
 define('HTDOCS_DIR', realpath(dirname(__FILE__)));

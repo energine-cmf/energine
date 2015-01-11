@@ -15,6 +15,7 @@ array(
  *
  * @note This file was created because of the big information overhead of all headers by debugging.
  */
+namespace Energine\share\gears;
 
 return array(
         100 => 'Continue',

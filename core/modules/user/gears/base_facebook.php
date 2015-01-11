@@ -1,4 +1,7 @@
 <?php
+
+namespace Energine\user\gears;
+
 /**
  * Copyright 2011 Facebook, Inc.
  *
@@ -16,10 +19,10 @@
  */
 
 if (!function_exists('curl_init')) {
-  throw new Exception('Facebook needs the CURL PHP extension.');
+  throw new \Exception('Facebook needs the CURL PHP extension.');
 }
 if (!function_exists('json_decode')) {
-  throw new Exception('Facebook needs the JSON PHP extension.');
+  throw new \Exception('Facebook needs the JSON PHP extension.');
 }
 
 /**
@@ -27,7 +30,7 @@ if (!function_exists('json_decode')) {
  *
  * @author Naitik Shah <naitik@facebook.com>
  */
-class FacebookApiException extends Exception
+class FacebookApiException extends \Exception
 {
   /**
    * The result from the API server that represents the exception information.

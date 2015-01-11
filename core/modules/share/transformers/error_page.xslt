@@ -14,7 +14,7 @@
 
     <xsl:variable name="BASE" select="/document/properties/property[@name='base']"/>
     <xsl:variable name="STATIC_URL" select="$BASE"/>
-    <xsl:variable name="FOLDER">default</xsl:variable>
+    <xsl:variable name="FOLDER" select="$BASE/@folder"></xsl:variable>
     <xsl:variable name="LANG_ABBR" select="/document/properties/property[@name='lang']/@abbr"/>
     <xsl:variable name="IN_DEBUG_MODE"><xsl:value-of select="/document/@debug"/></xsl:variable>
 
@@ -44,7 +44,7 @@
                         <div class="go_back"><a href="{$BASE}{$LANG_ABBR}">Вернуться на главную</a></div>
                     </div>
                     <div class="footer">
-                        2011
+                        2014
                     </div>
                 </div>
 
@@ -68,19 +68,34 @@
                     <div><strong>File: </strong><xsl:value-of select="@file"/></div>
                     <div><strong>Line: </strong><xsl:value-of select="@line"/></div>
                 </div>
-                <xsl:apply-templates select="customMessages"/>
+                <xsl:if test="customMessage">
+                    <ul>
+                        <xsl:apply-templates select="customMessage"/>
+                    </ul>
+                </xsl:if>
+
             </xsl:if>
         </div>
     </xsl:template>
 
-    <xsl:template match="customMessages">
-        <ul>
-            <xsl:apply-templates />
-        </ul>
+    <xsl:template match="customMessage">
+        <li><pre><xsl:value-of select="."/></pre></li>
     </xsl:template>
 
-    <xsl:template match="customMessage">
-        <li><xsl:value-of select="."/></li>
+    <xsl:template match="backtrace">
+        <ol>
+            <xsl:apply-templates />
+        </ol>
+    </xsl:template>
+
+    <xsl:template match="backtrace/call">
+        <li>
+            <div><strong><xsl:value-of select="file"/>(<xsl:value-of select="line"/>)</strong></div>
+            <div>
+                <xsl:value-of select="class"/><xsl:value-of select="type"/><xsl:value-of select="function"/>(<xsl:value-of
+                    select="args"/>)
+            </div>
+        </li>
     </xsl:template>
 
 </xsl:stylesheet>

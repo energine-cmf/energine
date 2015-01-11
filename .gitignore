@@ -1,4 +1,5 @@
 .idea/
+vendor/
 starter/htdocs/core/
 starter/htdocs/images/
 starter/htdocs/scripts/

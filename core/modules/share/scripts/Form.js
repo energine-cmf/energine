@@ -1007,7 +1007,9 @@ Form.RichEditor = new Class(/** @lends Form.RichEditor# */{
          */
         this.form = form;
         try {
-            this.editor = CKEDITOR.replace(this.textarea.get('id'));
+            this.editor = CKEDITOR.replace(this.textarea.get('id'), {
+                language: Energine.lang
+            });
             this.editor.editorId = this.textarea.get('id');
             this.editor.singleTemplate = this.form.singlePath;
         } catch (e) {

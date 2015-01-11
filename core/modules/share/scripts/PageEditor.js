@@ -134,7 +134,9 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
          * Editor.
          * @type {CKEDITOR}
          */
-        this.editor = CKEDITOR.inline(this.area.get('id'));
+        this.editor = CKEDITOR.inline(this.area.get('id'), {
+            language: Energine.lang
+        });
         this.editor.singleTemplate = this.area.getProperty('single_template');
         this.editor.editorId = this.area.get('id');
 

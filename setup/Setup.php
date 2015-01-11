@@ -140,14 +140,8 @@ final class Setup {
      * @throws Exception 'Странно. Отсутствует перечень модулей. Я могу конечно и сам посмотреть, что находится в папке core/modules, но как то это не кузяво будет. '
      */
     public function checkEnvironment() {
-
         $this->title('Проверка системного окружения');
 
-        //А что за PHP версия используется?
-        if (floatval(phpversion()) < MIN_PHP_VERSION) {
-            throw new \Exception('Вашему РНР нужно еще немного подрости. Минимальная допустимая версия ' . MIN_PHP_VERSION);
-        }
-        $this->text('Версия РНР ', floatval(phpversion()), ' соответствует требованиям');
 
         //При любом действии без конфига нам не обойтись
         if (!file_exists($configName = implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, 'system.config.php')))) {

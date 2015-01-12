@@ -14,7 +14,8 @@ interface IBuilder;
  *
  * @version 1.0.0
  */
-namespace Energine\share\gears;
+namespace Energine\share\components;
+use Energine\share\gears\DBWorker, Energine\share\gears\IBlock, Energine\share\gears\Request, Energine\share\gears\ComponentConfig, Energine\share\gears\Document;
 /**
  * Page component.
  *

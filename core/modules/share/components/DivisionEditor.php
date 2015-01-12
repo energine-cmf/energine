@@ -16,7 +16,7 @@ final class DivisionEditor;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears, Energine\share\gears\FieldDescription, Energine\share\gears\JSONDivBuilder, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Field, Energine\share\gears\DataDescription, Energine\share\gears\DBWorker, Energine\share\gears\Document, Energine\share\gears\DivisionSaver,Energine\share\gears\TagManager, Energine\apps\gears\AdsManager, Energine\share\gears\SystemException, Energine\share\gears\Component, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL;
+use Energine\share\gears, Energine\share\gears\FieldDescription, Energine\share\gears\JSONDivBuilder, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Field, Energine\share\gears\DataDescription, Energine\share\gears\DBWorker, Energine\share\gears\Document, Energine\share\gears\DivisionSaver,Energine\share\gears\TagManager, Energine\apps\gears\AdsManager, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL;
 
 /**
  * Division editor.

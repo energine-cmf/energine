@@ -14,7 +14,7 @@ class LinkingEditor;
  * @version 1.0.0
  */
 namespace Energine\share\components;
-use Energine\share\gears\Component;
+//use Energine\share\components\Component;
 /**
  * Linking editor.
  *

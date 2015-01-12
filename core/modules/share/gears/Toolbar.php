@@ -14,6 +14,7 @@ class Toolbar;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
+use Energine\share\components\Component;
 /**
  * Toolbar.
  *

@@ -14,6 +14,7 @@ abstract class AbstractBuilder;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
+use Energine\share\components\IBuilder;
 /**
  * Builder.
  *

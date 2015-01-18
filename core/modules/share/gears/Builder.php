@@ -56,7 +56,7 @@ class Builder extends AbstractBuilder {
 
             foreach ($this->dataDescription as $fieldName => $fieldInfo) {
                 $fieldProperties = false;
-                if ($fieldInfo->getPropertyValue('tabName') === null) {
+                if (is_null($fieldInfo->getPropertyValue('tabName'))) {
                     $fieldInfo->setProperty('tabName', $this->title);
                 }
 

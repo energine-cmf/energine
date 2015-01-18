@@ -41,7 +41,7 @@ class MultiLanguageBuilder extends AbstractBuilder {
                 $fieldData = $this->data->getFieldByName($fieldName);
                 // если это первичный ключ
                 if ($fieldInfo->getPropertyValue('key') === true) {
-                    $fieldInfo->setProperty('tabName', $this->translate('TXT_PROPERTIES'));
+                    $fieldInfo->setProperty('tabName', 'TXT_PROPERTIES');
                     $i = 0;
                     while ($i < $fieldData->getRowCount()) {
                         $rowData = $fieldData->getRowData($i);
@@ -95,11 +95,11 @@ class MultiLanguageBuilder extends AbstractBuilder {
 
                         $dataProperties = ($fieldData)?$fieldData->getRowProperties($value):false;
                         if (is_null($fieldInfo->getPropertyValue('tabName'))) {
-                            $fieldInfo->setProperty('tabName', $this->translate('TXT_PROPERTIES'));
+                            $fieldInfo->setProperty('tabName', 'TXT_PROPERTIES');
                         }
-                        else {
+                        /*else {
                         	$fieldInfo->setProperty('tabName', $fieldInfo->getPropertyValue('tabName'));
-                        }
+                        }*/
 
                         $dom_field = $this->createField($fieldName, $fieldInfo, $fieldValue, $dataProperties);
                         $records[$correlation[$value]][] = $dom_field;
@@ -136,11 +136,11 @@ class MultiLanguageBuilder extends AbstractBuilder {
                     }
 
                     if (is_null($fieldInfo->getPropertyValue('tabName'))) {
-                        $fieldInfo->setProperty('tabName', $this->translate('TXT_PROPERTIES'));
+                        $fieldInfo->setProperty('tabName', 'TXT_PROPERTIES');
                     }
-                    else {
+                    /*else {
                     	$fieldInfo->setProperty('tabName', $fieldInfo->getPropertyValue('tabName'));
-                    }
+                    }*/
 
                     $dom_record->appendChild($this->createField($fieldName, $fieldInfo, $fieldValue));
                 }

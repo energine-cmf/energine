@@ -79,11 +79,11 @@ class RoleEditor extends Grid {
         $result = parent::createDataDescription();
         if ($this->getType() != self::COMPONENT_TYPE_LIST) {
             foreach ($result as $fieldDescription) {
-                $fieldDescription->setProperty('tabName', $this->translate('TXT_ROLE_EDITOR'));
+                $fieldDescription->setProperty('tabName', 'TXT_ROLE_EDITOR');
             }
             $fd = new FieldDescription('group_div_rights');
             $fd->setType(FieldDescription::FIELD_TYPE_CUSTOM);
-            $fd->setProperty('tabName', $this->translate('TXT_ROLE_DIV_RIGHTS'));
+            $fd->setProperty('tabName', 'TXT_ROLE_DIV_RIGHTS');
             $fd->setProperty('customField', true);
             $result->addFieldDescription($fd);
         }

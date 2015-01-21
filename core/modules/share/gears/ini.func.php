@@ -10,16 +10,6 @@
  *
  * @version 1.0.0
  */
-
-//todo VZ: Delete this?
-/*
- * опыт показывает что есть еще люди пользующиеся register_globals = On
- * не катит
- */
-/*if (ini_get('register_globals')) {
-    die('Register_globals directive must be turned off.');
-}*/
-
 // Хак для cgi mode, где SCRIPT_FILENAME возвращает путь к PHP, вместо пути к текущему исполняемому файлу
 if (isset($_SERVER['SCRIPT_FILENAME'])) {
     $_SERVER['SCRIPT_FILENAME'] =
@@ -37,37 +27,52 @@ error_reporting(E_ALL);
 @date_default_timezone_set('Europe/Kiev');
 
 /**
- * Path to the directory with user components.
- * @var string SITE_COMPONENTS_DIR
- * @note Sign @c '*' means the module name.
- */
-define('SITE_COMPONENTS_DIR', SITE_DIR . '/modules/*/components');
-/**
- * Path to the directory with site PHP files.
- * @var string SITE_GEARS_DIR
- * @note Sign @c '*' means the module name.
- */
-define('SITE_GEARS_DIR', SITE_DIR . '/modules/*/gears');
-/**
- * Path to the directory with standard components.
- * @var string CORE_COMPONENTS_DIR
- * @note Sign @c '*' means the module name.
- */
-define('CORE_COMPONENTS_DIR', CORE_DIR . '/modules/*/components');
-
-/**
- * Path to the directory with core PHP files.
- * @var string CORE_GEARS_DIR
- * @note Sign @c '*' means the module name.
- */
-define('CORE_GEARS_DIR', CORE_DIR . '/modules/*/gears');
-
-/**
  * Path to the site kernel directory.
  * @var string SITE_KERNEL_DIR
  */
 define('SITE_KERNEL_DIR', SITE_DIR . '/kernel');
 
+$openBasedirRestrictionsIteratorFunc = function ($moduleDir, $phpClassType) {
+    return array_map(
+        function ($row) use ($moduleDir, $phpClassType) {
+            return implode(DIRECTORY_SEPARATOR, [$moduleDir, MODULES, $row, $phpClassType]) . DIRECTORY_SEPARATOR;
+        },
+        array_filter(
+            scandir($moduleDir . DIRECTORY_SEPARATOR . MODULES),
+            function ($row) {
+                return strpos($row, '.') === false;
+            }
+        )
+    );
+};
+$dirs = array_merge(
+    ['.'],
+    call_user_func_array('array_merge',
+        array_map(
+            function ($folder) use ($openBasedirRestrictionsIteratorFunc) {
+                return call_user_func_array('array_merge',
+                    array_map(
+                        function ($moduleType) use ($folder, $openBasedirRestrictionsIteratorFunc) {
+                            return $openBasedirRestrictionsIteratorFunc($moduleType, $folder);
+                        },
+                        [CORE_DIR, SITE_DIR]));
+            },
+            ['components', 'gears', 'templates', 'config', 'transformers'])
+    )
+);
+
+if (!($dir = @ini_get('upload_tmp_dir'))) {
+    $dir = '/tmp';
+}
+
+array_push($dirs, $dir);
+ini_set('open_basedir',
+    implode(PATH_SEPARATOR,
+        $dirs
+    )
+);
+
+unset($openBasedirRestrictionsIteratorFunc, $dirs, $dir);
 
 /*
  * Определяем константы прав доступа
@@ -97,53 +102,6 @@ define('ACCESS_FULL', 3);
 
 // Подключаем реестр и мемкешер, нужные нам для автолоадера
 require_once('Registry.php');
-//require_once('Cache.class.php');
-
-//spl_autoload_register(
-/*
- * Функция автозагрузки файлов классов
- *
- * @param string $className имя класса
- * @return void
- * @staticvar array $paths массив путей к файлам классов вида [имя класса]=>путь к файлу класса
- */
-/*function ($className) {
-    $className = simplifyClassName($className);
-    static $paths = array();
-    //если массив путей не заполнен - заполняем
-    if (empty($paths)) {
-        //Если мемкеш не заенейблен или значения путей в нем нет
-        $mc = E()->getCache();
-        if (!$mc->isEnabled() || !($paths = $mc->retrieve(Energine\share\gears\Cache::CLASS_STRUCTURE_KEY))) {
-            //собираем в статическую переменную
-            $tmp = array_reduce(
-                array(
-                    CORE_COMPONENTS_DIR,
-                    CORE_GEARS_DIR,
-                    SITE_KERNEL_DIR,
-                    SITE_COMPONENTS_DIR,
-                    SITE_GEARS_DIR
-                ),
-                function ($result, $row) {
-                    if (!($cmps = glob($row . '/*.class.php'))) {
-                        $cmps = array();
-                    }
-                    return array_merge($result, $cmps);
-                },
-                array());
-
-            foreach ($tmp as $fileName) {
-                $paths[substr(strrchr($fileName, '/'), 1, -10)] = $fileName;
-            }
-            if ($mc->isEnabled())
-                $mc->store(Energine\share\gears\Cache::CLASS_STRUCTURE_KEY, $paths);
-        }
-    }
-
-    if (!isset($paths[$className]) || !@require($paths[$className])) {
-        throw new Energine\share\gears\SystemException('ERR_NO_CLASS', Energine\share\gears\SystemException::ERR_CRITICAL, $className);
-    }
-});*/
 
 # устанавливаем свой обработчик ошибок
 set_error_handler('nrgnErrorHandler');
@@ -161,7 +119,8 @@ set_error_handler('nrgnErrorHandler');
  *
  * @throws SystemException
  */
-function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext) {
+function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext)
+{
     try {
         $e = new Energine\share\gears\SystemException(
             $message,

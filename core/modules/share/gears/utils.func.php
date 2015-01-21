@@ -351,9 +351,6 @@ function array_push_after($src,$in,$pos){
     }return $R;
 }
 
-/*function is_assoc($array) {
-    return (is_array($array) && (0 !== count(array_diff_key($array, array_keys(array_keys($array)))) || count($array)==0));
-}*/
 /**
  * @fn file_get_contents_stripped($fileName)
  * @brief Get stripped contents.

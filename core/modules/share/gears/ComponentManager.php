@@ -314,10 +314,7 @@ final class ComponentManager extends Object implements \Iterator {
         }
         catch (SystemException $e) {
             throw new SystemException($e->getMessage(), SystemException::ERR_DEVELOPER, array(
-                'class' => (($module !==
-                        'site') ? str_replace('*', $module, CORE_COMPONENTS_DIR) :
-                        SITE_COMPONENTS_DIR . $module) . '/' . $class .
-                    '.php',
+                'class' => $class,
                 'trace' => $e->getTraceAsString()
             ));
         }

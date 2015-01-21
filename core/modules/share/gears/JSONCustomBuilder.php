@@ -24,7 +24,7 @@ namespace Energine\share\gears;
  @endcode
   */
  
-class JSONCustomBuilder extends Object implements IBuilder{
+class JSONCustomBuilder extends Object implements \Energine\share\components\IBuilder{
     /**
      * Set of the additional properties.
      * @var array $properties

@@ -86,24 +86,6 @@ final class ComponentManager extends Object implements \Iterator {
      */
     public function add(IBlock $block) {
         $this->blocks[$block->getName()] = $block;
-        /*
-                $iterateContainer = function(Block $block) use(&$iterateContainer) {
-                    $result = array();
-                    if ($block instanceof ComponentContainer) {
-                        foreach ($block as $blockChildName => $blockChild) {
-                            $result[$blockChildName] = $blockChild;
-                            $result = array_merge($result, $iterateContainer($blockChild));
-                        }
-                    }
-                    else {
-                         $result[$block->getName()] = $block;
-                    }
-                    return $result;
-                };
-
-                $this->blockCache = array_merge($this->blockCache, $iterateContainer($block));
-         *
-         */
     }
 
 
@@ -187,18 +169,14 @@ final class ComponentManager extends Object implements \Iterator {
                 }
             }
         }
-        /*        $result = false;
-                if(
-                    !isset($params['rights'])
-                    ||
-                    (isset($params['rights']) && self::$document->getRights() >= $params['rights'])
-                ) {
-                    $result = self::_createComponent($name, $module, $class, $params);
-                }*/
 
         $result = self::_createComponent($name, $module, $class, $params);
 
         return $result;
+    }
+
+    static public function copyTag(\SimpleXMLElement $tagDescription){
+        return new Tag($tagDescription);
     }
 
     /**
@@ -263,10 +241,8 @@ final class ComponentManager extends Object implements \Iterator {
      * @param array $additionalProps Additional properties.
      * @return IBlock
      *
-     * @throws SystemException ERR_UNKNOWN_BLOCKTYPE
      */
     static public function createBlockFromDescription(\SimpleXMLElement $blockDescription, $additionalProps = array()) {
-        $result = false;
         switch ($blockDescription->getName()) {
             case 'content':
                 $props = array_merge(array('tag' => 'content'), $additionalProps);
@@ -283,7 +259,7 @@ final class ComponentManager extends Object implements \Iterator {
                 $result = self::createComponentFromDescription($blockDescription);
                 break;
             default:
-                throw new SystemException('ERR_UNKNOWN_BLOCKTYPE', SystemException::ERR_CRITICAL);
+                $result = self::copyTag($blockDescription);
                 break;
         }
 

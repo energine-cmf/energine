@@ -25,6 +25,10 @@
             "EnergineSite\\": "starter/site/modules"
         }
     },
+    "scripts": {
+        "nrgn-setup": "php htdocs/index.php setup",
+        "nrgn-linker": "php htdocs/index.php setup linker"
+    },
     "authors": [
         {
             "name": "Pavel Dubenko",

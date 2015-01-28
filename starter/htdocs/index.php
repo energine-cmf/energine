@@ -8,7 +8,7 @@
  */
 
 try {
-    if (!file_exists($autoloader = '../vendor/autoload.php')) {
+    if (!file_exists($autoloader = realpath(dirname(__FILE__)).'/../vendor/autoload.php')) {
         throw new \LogicException('Autoloader not found. Firstly you have to run "composer install".');
     }
     require_once($autoloader);

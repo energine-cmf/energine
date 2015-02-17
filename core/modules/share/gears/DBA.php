@@ -105,6 +105,22 @@ abstract class DBA extends Object {
      */
     const COLTYPE_BLOB = 'BLOB';
 
+	/**
+	 * Column type: @c SET
+	 * SET
+	 *
+	 * @var string COLTYPE_SET
+	 */
+	const COLTYPE_SET = 'SET';
+
+	/**
+	 * Column type: @c ENUM
+	 * ENUM
+	 *
+	 * @var string COLTYPE_ENUM
+	 */
+	const COLTYPE_ENUM = 'ENUM';
+
     /**
      * Error type of the column.
      * @var string ERR_BAD_REQUEST

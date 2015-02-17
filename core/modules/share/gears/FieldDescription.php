@@ -355,6 +355,12 @@ class FieldDescription extends DBWorker implements \Iterator {
                 case 'isMultilanguage':
                     $this->isMultilanguage = true;
                     break;
+	            case 'options':
+					if(in_array($fieldInfo['type'], [DBA::COLTYPE_SET, DBA::COLTYPE_ENUM]) && is_array($propValue) && !@empty($propValue)){
+						$this->loadAvailableValues(array_map(function($row){ return ['key' => $row, 'value' => $row];}, $propValue), 'key', 'value');
+					}
+
+		            break;
                 default:
                     $this->setProperty($propName, $propValue);
             }
@@ -362,6 +368,7 @@ class FieldDescription extends DBWorker implements \Iterator {
         if (isset($fieldInfo['index']) && ($fieldInfo['index'] == 'PRI')) {
             $this->setType(FieldDescription::FIELD_TYPE_HIDDEN);
         }
+
         return $result;
     }
 
@@ -834,6 +841,12 @@ class FieldDescription extends DBWorker implements \Iterator {
             case DBA::COLTYPE_DATE:
                 $result = self::FIELD_TYPE_DATE;
                 break;
+	        case DBA::COLTYPE_ENUM:
+		        $result = self::FIELD_TYPE_SELECT;
+		        break;
+	        case DBA::COLTYPE_SET:
+		        $result = self::FIELD_TYPE_MULTI;
+		        break;
             default:
                 $result = $systemType;
         }
@@ -884,7 +897,10 @@ class FieldDescription extends DBWorker implements \Iterator {
      * @return boolean
      */
     public function validate($data) {
-        if (is_int($this->length) && strlen($data) > $this->length) {
+        if (
+	        !is_array($data) &&
+	        (is_int($this->length) && strlen($data) > $this->length)
+        ) {
             return false;
         }
         if ($this->getPropertyValue('pattern') && !preg_match($this->getPropertyValue('pattern'), $data)) {

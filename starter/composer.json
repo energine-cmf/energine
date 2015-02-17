@@ -6,23 +6,23 @@
     "keywords": ["xml", "xslt", "framework", "cmf"],
     "homepage": "http://energine.net/",
     "require": {
-        "php": ">=5.4.0",
-        "ext-dom":"*",
-        "ext-gd":"*",
-        "ext-json":"*",
-        "ext-libxml":"*",
-        "ext-mbstring":"*",
-        "ext-PDO":"*",
-        "ext-pdo_mysql":"*",
-        "ext-SimpleXML":"*",
-        "ext-session":"*",
-        "ext-tidy":"*",
-        "ext-xsl":"*"
+      "php": ">=5.4.0",
+      "ext-dom":"*",
+      "ext-gd":"*",
+      "ext-json":"*",
+      "ext-libxml":"*",
+      "ext-mbstring":"*",
+      "ext-PDO":"*",
+      "ext-pdo_mysql":"*",
+      "ext-SimpleXML":"*",
+      "ext-session":"*",
+      "ext-tidy":"*",
+      "ext-xsl":"*"
     },
     "autoload": {
         "psr-4": {
-            "Energine\\": "starter/core/modules",
-            "EnergineSite\\": "starter/site/modules"
+            "Energine\\": "core/modules",
+            "EnergineSite\\": "site/modules"
         }
     },
     "scripts": {

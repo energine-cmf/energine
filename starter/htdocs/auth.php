@@ -5,7 +5,7 @@ if (!isset($_SERVER['HTTP_REFERER']) && (!isset($_GET['return']))) {
     //не местных  - в сад
     exit;
 }
-require_once('../../vendor/autoload.php');
+require_once('../vendor/autoload.php');
 //подключаем bootstrap
 require_once('bootstrap.php');
 

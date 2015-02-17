@@ -31,7 +31,8 @@ return array(
         'port' => '3306',
         'db' => 'DB NAME',
         'username' => 'DB LOGIN',
-        'password' => 'DB PASSWORD'
+        'password' => 'DB PASSWORD',
+	    'prepare' => 1
     ),
 
     // настройки сайта

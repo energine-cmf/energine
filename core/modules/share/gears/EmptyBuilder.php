@@ -15,6 +15,7 @@ class EmptyBuilder;
  */
 
 namespace Energine\share\gears;
+use Energine\share\components\IBuilder;
 /**
  * Empty builder.
  *

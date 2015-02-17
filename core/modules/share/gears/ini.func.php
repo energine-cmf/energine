@@ -65,12 +65,14 @@ if (!($dir = @ini_get('upload_tmp_dir'))) {
     $dir = '/tmp';
 }
 
-array_push($dirs, $dir);
+// выключено 03.02.2015 by andy.karpov временно
+// по причине глючности данного решения с модулями сайта (например при вызове file_exists для xml компонента сайта)
+/*array_push($dirs, $dir);
 ini_set('open_basedir',
     implode(PATH_SEPARATOR,
         $dirs
     )
-);
+);*/
 
 unset($openBasedirRestrictionsIteratorFunc, $dirs, $dir);
 

@@ -62,7 +62,20 @@ class MultiLanguageBuilder extends AbstractBuilder {
                         $dataProperties = $fieldData->getRowProperties($key);
                         $fieldInfo->setProperty('language', $langID);
                         $fieldInfo->setProperty('tabName', $lang->getNameByID($langID));
-                        $dom_field = $this->createField($fieldName, $fieldInfo, $data, $dataProperties);
+
+						// языковое поле типа select
+						if (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_MULTI, FieldDescription::FIELD_TYPE_SELECT))) {
+							if ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_SELECT) {
+								$data = array($data);
+							}
+							$fieldValue = $this->createOptions($fieldInfo, $data);
+							$dom_field = $this->createField($fieldName, $fieldInfo, $fieldValue, $dataProperties);
+						}
+						// другие поля
+						else {
+							$dom_field = $this->createField($fieldName, $fieldInfo, $data, $dataProperties);
+						}
+
                         $records[$correlation[$key]][] = $dom_field;
                     }
                 }

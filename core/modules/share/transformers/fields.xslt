@@ -271,7 +271,7 @@
     <xsl:template match="field[@type='select'][ancestor::component[@type='form']]" mode="field_input">
         <select id="{@name}">
             <xsl:attribute name="name"><xsl:choose>
-                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
                 <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
             </xsl:choose></xsl:attribute>
             <xsl:if test="@nullable='1'">
@@ -285,7 +285,7 @@
         <!--<div class="with_append">-->
             <select id="{@name}">
                 <xsl:attribute name="name"><xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
                     <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                 </xsl:choose></xsl:attribute>
                 <xsl:if test="@nullable='1'">

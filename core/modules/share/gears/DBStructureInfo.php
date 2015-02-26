@@ -251,24 +251,33 @@ class DBStructureInfo extends Object {
 				foreach ($matches['name'] as $index => $fieldName) {
 					if (!$fieldName) continue;
 					$options = null;
-					//Normal flow - in length we have length
-					if (!in_array(strtolower($matches['type'][$index]), ['set', 'enum'])) {
-						$length = (int)$matches['len'][$index];
-					}
+					$type = self::convertType($matches['type'][$index]);
+
+
 					//for enum or set
-					else {
+					if (in_array($type, [DBA::COLTYPE_SET, DBA::COLTYPE_ENUM])) {
 						$options = explode(',', $matches['len'][$index]);
 						$options = array_map(function($value){return trim($value, '\'""');}, $options);
 						$length = true;
-						//$length = sizeof($options);
+
 					}
+					elseif($type == DBA::COLTYPE_DECIMAL){
+						//len = 10,2
+						//length = 10 + 2 + 1 = 13
+						$length = array_sum(array_map('intval', array_filter(explode(',', $matches['len'][$index])))) + 1;
+					}
+					//Normal flow - in length we have length
+					else {
+						$length = (int)$matches['len'][$index];
+					}
+
 					$res[$fieldName] = [
 						'nullable' => (
 							$matches['is_null'][$index] != 'NOT NULL'),
 						'length' => $length,
 						'default' => (strcasecmp(trim($matches['default'][$index], "'"), 'null') == 0) ? null : trim($matches['default'][$index], "'"),
 						'key' => false,
-						'type' => self::convertType($matches['type'][$index]),
+						'type' => $type,
 						'index' => false,
 					    'options' => $options
 					];
@@ -314,9 +323,11 @@ class DBStructureInfo extends Object {
 				break;
 			case 'FLOAT':
 			case 'DOUBLE':
+				$result = DBA::COLTYPE_FLOAT;
+				break;
 			case 'DECIMAL':
 			case 'NUMERIC':
-				$result = DBA::COLTYPE_FLOAT;
+				$result = DBA::COLTYPE_DECIMAL;
 				break;
 			case 'DATE':
 				$result = DBA::COLTYPE_DATE;
@@ -352,7 +363,7 @@ class DBStructureInfo extends Object {
 			case 'ENUM':
 				$result = DBA::COLTYPE_ENUM;
 				break;
-			default: // не используется
+			default: // not used
 		}
 
 		return $result;

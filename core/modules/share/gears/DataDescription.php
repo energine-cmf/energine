@@ -14,7 +14,6 @@ class DataDescription;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
-//todo VZ: Why the Iterator is multiple times have the same implementation?
 /**
  * Meta data.
  *

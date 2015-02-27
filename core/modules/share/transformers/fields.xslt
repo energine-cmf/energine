@@ -178,6 +178,12 @@
         </input>
     </xsl:template>
 
+    <xsl:template match="field[@type='color'][ancestor::component[@type='form']]" mode="field_input">
+        <input class="text inp_color">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+        </input>
+    </xsl:template>
+
     <!-- поле пароля (password) -->
     <xsl:template match="field[@type='password' and ancestor::component[@type='form']]" mode="field_input">
         <input class="text inp_password">

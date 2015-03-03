@@ -108,20 +108,8 @@ class AttachmentEditor extends Grid
                     $fd->setProperty('upl_path', $res);
                 }
             }
-
-            $f = $this->getData()->getFieldByName($this->getParam('pk'));
-            $f->setData($this->getParam('linkedID'), true);
-
-            $f = $this->getData()->getFieldByName('session_id');
-            $f->setData(session_id(), true);
-
-            /*for ($i = 0; $i < $this->getData()->getRowCount(); $i++) {
-                $f = $this->getData()->getFieldByName($this->getParam('pk'));
-                $f->setRowData($i, $this->getParam('linkedID'));
-
-                $f = $this->getData()->getFieldByName('session_id');
-                $f->setRowData($i, session_id());
-            }*/
+	        $this->getData()->loadInto($this->getData()->getFieldByName($this->getParam('pk')), $this->getParam('linkedID'));
+	        $this->getData()->loadInto($this->getData()->getFieldByName($this->getData()->getFieldByName('session_id')), session_id());
         }
     }
 

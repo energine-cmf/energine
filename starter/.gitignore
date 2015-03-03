@@ -1,1 +1,12 @@
 core/modules/*
+image-cache/*
+htdocs/core/
+htdocs/images/
+htdocs/scripts/
+htdocs/stylesheets/
+htdocs/system.config.php
+htdocs/system.jsmap.php
+htdocs/templates/
+vendor/
+htdocs/logs/*
+configs/system.config.pavka.php

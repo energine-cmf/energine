@@ -46,12 +46,6 @@ class DomainEditor extends Grid {
             $fd = $this->getDataDescription()->getFieldDescriptionByName('domain_protocol');
             $fd->setType(FieldDescription::FIELD_TYPE_SELECT);
             $fd->loadAvailableValues(array(array('key' => 'http', 'value' => 'http://'), array('key' => 'https', 'value' => 'https://')), 'key', 'value');
-
-
-            if ($this->getState() == 'add') {
-                $this->getData()->getFieldByName('domain_port')->setData(80, true);
-                $this->getData()->getFieldByName('domain_root')->setData('/', true);
-            }
         }
     }
     /**

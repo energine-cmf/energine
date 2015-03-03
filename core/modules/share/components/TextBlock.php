@@ -157,10 +157,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
     // Создаем свои данные
     protected function createData() {
         $data = new Data();
-        $field = new Field($this->getName());
-        $field->setData($this->getContent());
-        $data->addField($field);
-
+        $data->loadInto(new Field($this->getName()), $this->getContent());
         return $data;
     }
 

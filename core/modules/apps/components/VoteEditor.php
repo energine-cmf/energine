@@ -47,21 +47,11 @@ class VoteEditor extends Grid {
 
             $field = new Field('questions');
             $state = $this->getState();
-            $tab_url = (($state != 'add') ? $this->getData()->getFieldByName($this->getPK())->getRowData(0) : '') . '/question/';
-
-            $field->setData($tab_url, true);
-            $this->getData()->addField($field);
+            $tabUrl = (($state != 'add') ? $this->getData()->getFieldByName($this->getPK())->getRowData(0) : '') . '/question/';
+            $this->getData()->loadInto($field, $tabUrl);
         }
     }
 
-    /**
-     * @copydoc Grid::add
-     */
-    // Делаем голосование активным по умолчанию
-    protected function add() {
-        parent::add();
-        $this->getData()->getFieldByName('vote_is_active')->setData(1, true);
-    }
 
     /**
      * Create component for editing the answers to the question.

@@ -39,9 +39,6 @@ class NewsEditor extends ExtendedFeedEditor {
     protected function add() {
         parent::add();
         $this->getDataDescription()->getFieldDescriptionByName('news_segment')->setType(FieldDescription::FIELD_TYPE_HIDDEN);
-        $f = new Field('news_is_active');
-        $f->setData(true, true);
-        $this->getData()->addField($f);
     }
 
 }

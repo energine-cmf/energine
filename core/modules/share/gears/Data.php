@@ -65,6 +65,22 @@ class Data extends Object {
         }
     }
 
+    public function loadInto(Field $field, $data){
+        if(!in_array($field, $this->fields)){
+            $this->addField($field);
+        }
+        if($c = $this->getRowCount())
+            for ($i = 0; $i < $c; $i++) {
+                $field->setRowData($i, $data);
+            }
+        else
+            for ($i = 0; $i < sizeof(E()->getLanguage()->getLanguages()); $i++) {
+                $field->setRowData($i, $data);
+            }
+
+        return $field;
+    }
+
     /**
      * Add data row to all data fields.
      *

@@ -208,9 +208,8 @@ class FileRepository extends Grid implements SampleFileRepository{
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->setData(new Data());
-        $f = new Field('upl_pid');
-        $f->setData($uplPID);
-        $this->getData()->addField($f);
+        $this->setData(new Data());
+        $this->getData()->loadInto(new Field('upl_pid'), $uplPID);
 
         $toolbars = $this->createToolbar();
         if (!empty($toolbars)) {
@@ -467,9 +466,7 @@ class FileRepository extends Grid implements SampleFileRepository{
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
         $this->setData(new Data());
-        $f = new Field('upl_pid');
-        $f->setData($uplPID);
-        $this->getData()->addField($f);
+        $this->getData()->loadInto(new Field('upl_pid'), $uplPID);
 
         $toolbars = $this->createToolbar();
         if (!empty($toolbars)) {

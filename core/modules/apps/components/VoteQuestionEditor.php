@@ -65,12 +65,4 @@ class VoteQuestionEditor extends Grid {
         }
         return $result;
     }
-
-    /**
-     * @copydoc Grid::add
-     */
-    protected function add() {
-        parent::add();
-        $this->getData()->getFieldByName('vote_question_counter')->setData(0, true);
-    }
 }

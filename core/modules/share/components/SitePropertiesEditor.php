@@ -61,7 +61,7 @@ class SitePropertiesEditor extends Grid {
     protected function createData() {
         $data = parent::createData();
         if($this->getState() == 'add') {
-            $data->getFieldByName('site_id')->setData($this->getParam('siteID'), true);
+            $data->loadInto($data->getFieldByName('site_id'), $this->getParam('siteID'));
         }
         return $data;
     }

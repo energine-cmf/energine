@@ -154,9 +154,8 @@ class Grid extends DBDataSet {
             if (($default = $fieldDescription->getPropertyValue('default')) || ($default === '0')) {
                 if (!($f = $this->getData()->getFieldByName($fdName))) {
                     $f = new Field($fdName);
-                    $this->getData()->addField($f);
                 }
-                $f->setData($default, true);
+                $this->getData()->loadInto($f, $default);
             }
         }
     }
@@ -1225,9 +1224,7 @@ class Grid extends DBDataSet {
             $field = new Field('attached_files');
             $state = $this->getState();
             $tab_url = (($state != 'add') ? $this->getData()->getFieldByName($this->getPK())->getRowData(0) : '') . '/attachments/';
-
-            $field->setData($tab_url, true);
-            $this->getData()->addField($field);
+            $this->getData()->loadInto($field, $tab_url);
         }
 
         if ($this->dbh->tableExists($this->getTableName() . TagManager::TAGS_TABLE_SUFFIX)) {

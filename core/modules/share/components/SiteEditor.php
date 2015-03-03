@@ -77,8 +77,7 @@ class SiteEditor extends Grid {
             $field = new Field('domains');
             $state = $this->getState();
             $tab_url = (($state != 'add') ? $this->getData()->getFieldByName($this->getPK())->getRowData(0) : '') . '/domains/';
-            $field->setData($tab_url, true);
-            $this->getData()->addField($field);
+            $this->getData()->loadInto($field, $tab_url);
 
             $fd = $this->getDataDescription()->getFieldDescriptionByName('site_folder');
             $fd->setType(FieldDescription::FIELD_TYPE_SELECT);
@@ -93,9 +92,6 @@ class SiteEditor extends Grid {
             $this->getDataDescription()->addFieldDescription($tagField);
 
             if ($this->getState() == 'add') {
-                $this->getData()->getFieldByName('site_is_active')->setData(1, true);
-                $this->getData()->getFieldByName('site_is_indexed')->setData(1, true);
-
                 //Добавляем селект позволяющий скопировать структуру одного из существующих сайтов в новый
                 $fd = new FieldDescription('copy_site_structure');
                 $fd->setType(FieldDescription::FIELD_TYPE_SELECT);

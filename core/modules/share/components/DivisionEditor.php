@@ -394,7 +394,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $site = E()->getSiteManager()->getSiteByPage($actionParams['pid']);
         $sitemap = E()->getMap($site->id);
 
-        $this->getData()->getFieldByName('site_id')->setData($site->id, true);
+        $this->getData()->loadInto($this->getData()->getFieldByName('site_id'), true);
 
         $field = $this->getData()->getFieldByName('smap_pid');
         $smapSegment = $sitemap->getURLByID($actionParams['pid']);
@@ -488,8 +488,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $doc->loadXML($contentXMLFieldData);
             $doc->formatOutput = true;
             $doc->preserveWhiteSpace = true;
-            $newField->setData($doc->saveXML(null, LIBXML_NOEMPTYTAG), true);
-            $this->getData()->addField($newField);
+            $this->getData()->loadInto($newField, $doc->saveXML(null, LIBXML_NOEMPTYTAG));
             unset($contentFilename, $contentFD, $av, $doc, $newField);
 
         }

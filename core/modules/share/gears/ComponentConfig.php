@@ -95,13 +95,14 @@ class ComponentConfig {
      * @return string|bool
      */
     private function getConfigPath($configFilename, $moduleName) {
-        $file = false;
-        if ($configFilename && !file_exists($file = $configFilename)) {
+	    if(!$configFilename) {
+		    return false;
+	    }
+
+        if (!file_exists($file = ROOT_DIR.'/'.$configFilename)) {
             //Смотрим в директории текущего сайта с пользовательскими конфигами
             if (!file_exists($file = sprintf(SITE_DIR . self::SITE_CONFIG_DIR . $configFilename, E()->getSiteManager()->getCurrentSite()->folder))) {
                 if (!file_exists($file = sprintf(CORE_DIR . self::CORE_CONFIG_DIR, $moduleName) . $configFilename)) {
-                    //если файла с указанным именем нет ни в папке с пользовательскими конфигами, ни в папке модуля с конфигами
-                    //throw new SystemException('ERR_DEV_NO_CONFIG', SystemException::ERR_DEVELOPER, $configFilename);
                     $file = false;
                 }
             }

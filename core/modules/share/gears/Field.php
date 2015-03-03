@@ -154,9 +154,11 @@ class Field extends Object implements \Iterator {
      *
      * @param int $rowIndex Row index
      * @param mixed $newData New data.
+     * @return Field
      */
     public function setRowData($rowIndex, $newData) {
         $this->data[$rowIndex] = $newData;
+	    return $this;
     }
 
     /**

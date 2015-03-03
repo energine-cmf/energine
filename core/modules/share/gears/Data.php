@@ -29,7 +29,7 @@ class Data extends Object {
      * Data fields.
      * @var array $fields
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * Amount of data fields.
@@ -73,12 +73,14 @@ class Data extends Object {
             for ($i = 0; $i < $c; $i++) {
                 $field->setRowData($i, $data);
             }
-        else
-            for ($i = 0; $i < sizeof(E()->getLanguage()->getLanguages()); $i++) {
-                $field->setRowData($i, $data);
-            }
+        else{
+	        $field->setRowData(0, $data);
+	        /*for ($i = 0; $i < sizeof(E()->getLanguage()->getLanguages()); $i++) {
+		        $field->setRowData($i, $data);
+	        }*/
+        }
 
-        return $field;
+	    return $field;
     }
 
     /**
@@ -209,8 +211,8 @@ class Data extends Object {
      * @return array
      */
     public function asArray($groupedByFields = false) {
-        $result = array();
-        $res = array();
+        $result = [];
+        $res = [];
 
         foreach ($this->fields as $fieldName => $field) {
             $result[$fieldName] = $field->getData();

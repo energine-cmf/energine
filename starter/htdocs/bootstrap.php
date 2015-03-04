@@ -9,9 +9,20 @@
  * @copyright Energine 2013
  */
 
+// absolute path to htdocs
+define('HTDOCS_DIR', realpath(dirname(__FILE__)));
+
+//absolute path to project's dir
+define('ROOT_DIR', realpath(HTDOCS_DIR.'/../'));
+
+if (!file_exists($autoloader = ROOT_DIR.'/vendor/autoload.php')) {
+    throw new \LogicException('Autoloader not found. Firstly you have to run "composer install".');
+}
+require_once($autoloader);
+
 // Подключаем конфиг, чтобы достать из него местоположение ядер и имя текущего ядра
-if (!file_exists($configName = realpath(dirname(__FILE__)) . '/system.config.php')) {
-    throw new \LogicException('Configuration file (htdocs/system.config.php) not found.');
+if (!file_exists($configName = HTDOCS_DIR . '/system.config.php')) {
+    throw new \LogicException('Configuration file '.$configName.' not found.');
 }
 
 // загружаем конфиг в $config
@@ -25,17 +36,11 @@ if (!array_key_exists('setup_dir', $config)) {
 
 // относительный путь к ядру - если ядро вынесено на 1 уроверь выше htdocs
 define('CORE_REL_DIR', '../core');
-// относительный путь к ядру - если ядро находится на одном уровне с htdocs
-//define('CORE_REL_DIR', 'core');
 
 // относительный путь к сайту - если site вынесен на 1 уровень выше htdocs
 define('SITE_REL_DIR', '../site');
 
-// относительный путь к сайту - если site находится на одном уровне с htdocs
-// define('SITE_REL_DIR', '../site');
 
-// абсолютный путь к htdocs
-define('HTDOCS_DIR', realpath(dirname(__FILE__)));
 
 // абсолютный путь к ядру
 define('CORE_DIR', realpath(implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, CORE_REL_DIR))));
@@ -54,7 +59,7 @@ define('DEBUG', $config['site']['debug']);
 
 // установка текущего пути местоположения файла bootstrap.php
 // как одного из путей для нахождения файлов для include
-set_include_path(implode(PATH_SEPARATOR, array(realpath(dirname(__FILE__)), get_include_path())));
+set_include_path(implode(PATH_SEPARATOR, array(HTDOCS_DIR, get_include_path())));
 
 // inline-подключение точки входа для setup
 // подключение осуществляется именно в данном файле по причине отсутствия симлинков в htdocs/core/modules

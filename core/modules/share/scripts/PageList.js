@@ -83,17 +83,12 @@ var PageList = new Class(/** @lends PageList# */{
         this.clear();
 
         if (numPages <= 1) {
-            this.element.dispose();
+            this.element.hide();
             return;
         }
-        /*else if(numPages == 1){
-            this.element.setStyle('visibility', 'hidden');
-            return;
+        else {
+            this.element.show();
         }
-        this.element.setStyle('visibility', 'visible');*/
-
-
-
 
         // Amount of visible pages on the each side relative to the current page.
         var VISIBLE_PAGES_COUNT = 2;

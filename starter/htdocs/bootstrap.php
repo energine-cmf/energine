@@ -12,9 +12,17 @@
 // absolute path to htdocs
 define('HTDOCS_DIR', realpath(dirname(__FILE__)));
 
+//absolute path to project's dir
+define('ROOT_DIR', realpath(HTDOCS_DIR.'/../'));
+
+if (!file_exists($autoloader = ROOT_DIR.'/vendor/autoload.php')) {
+    throw new \LogicException('Autoloader not found. Firstly you have to run "composer install".');
+}
+require_once($autoloader);
+
 // Подключаем конфиг, чтобы достать из него местоположение ядер и имя текущего ядра
 if (!file_exists($configName = HTDOCS_DIR . '/system.config.php')) {
-    throw new \LogicException('Configuration file (htdocs/system.config.php) not found.');
+    throw new \LogicException('Configuration file '.$configName.' not found.');
 }
 
 // загружаем конфиг в $config
@@ -32,8 +40,7 @@ define('CORE_REL_DIR', '../core');
 // относительный путь к сайту - если site вынесен на 1 уровень выше htdocs
 define('SITE_REL_DIR', '../site');
 
-//absolute path to project's dir
-define('ROOT_DIR', realpath(HTDOCS_DIR.'/../'));
+
 
 // абсолютный путь к ядру
 define('CORE_DIR', realpath(implode(DIRECTORY_SEPARATOR, array(HTDOCS_DIR, CORE_REL_DIR))));

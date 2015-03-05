@@ -16,6 +16,8 @@ interface IBuilder;
  */
 namespace Energine\share\components;
 use Energine\share\gears\DBWorker, Energine\share\gears\IBlock, Energine\share\gears\Request, Energine\share\gears\ComponentConfig, Energine\share\gears\Document;
+use Energine\share\gears\SystemException;
+
 /**
  * Page component.
  *

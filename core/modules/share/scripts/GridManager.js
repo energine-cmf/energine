@@ -1041,7 +1041,7 @@ var GridManager = new Class(/** @lends GridManager# */{
         this.grid.setData(result.data || []);
 
         if (result.pager) {
-            this.pageList.build(result.pager.count, result.pager.current, result.pager.records);
+            this.pageList.build(result.pager.count, result.pager.current);
         }
 
         if (!this.grid.isEmpty()) {

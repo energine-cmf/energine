@@ -172,6 +172,12 @@
         </input>
     </xsl:template>
 
+    <xsl:template match="field[@type='money'][ancestor::component[@type='form']]" mode="field_input">
+        <input class="text inp_money">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+        </input>
+    </xsl:template>
+
     <!-- поле пароля (password) -->
     <xsl:template match="field[@type='password' and ancestor::component[@type='form']]" mode="field_input">
         <input class="text inp_password">

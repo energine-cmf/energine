@@ -5,6 +5,7 @@
     xmlns:og="http://ogp.me/ns#"
     xmlns:video="http://ogp.me/ns/video#"
     xmlns:nrgn="http://energine.net#"
+    exclude-result-prefixes="og video nrgn"
     >
     <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
     <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
@@ -147,7 +148,7 @@
         </html>
     </xsl:template>
 
-    <xsl:template match="/" mode="title">
+    <xsl:template match="/" mode="title" xml:space="">
         <title><xsl:choose>
             <xsl:when test="$DOC_PROPS[@name='title']/@alt = ''">
                 <xsl:for-each select="$COMPONENTS[@name='breadCrumbs']/recordset/record">

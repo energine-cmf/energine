@@ -102,11 +102,11 @@ class FieldDescription extends DBWorker implements \Iterator {
      */
     const FIELD_TYPE_FLOAT = 'float';
 
-    /*
-     * Visual field type for image.
-     * @var string FIELD_TYPE_IMAGE
-     */
-    //const FIELD_TYPE_IMAGE = 'image';
+	/**
+	 * Visual field type for money storage.
+	 * @var string FIELD_TYPE_FLOAT
+	 */
+	const FIELD_TYPE_MONEY = 'money';
 
     /**
      * Visual field type for file.
@@ -114,11 +114,6 @@ class FieldDescription extends DBWorker implements \Iterator {
      */
     const FIELD_TYPE_FILE = 'file';
 
-    /*
-     * Visual field type for private file.
-     * @var string FIELD_TYPE_PFILE
-     */
-    //const FIELD_TYPE_PFILE = 'pfile';
     /**
      * Visual field type for thumbnail.
      * @var string FIELD_TYPE_THUMB
@@ -219,6 +214,7 @@ class FieldDescription extends DBWorker implements \Iterator {
      * Visual field type for section selecting.
      * Forwarding through /selector/ shall be provided.
      * @var string FIELD_TYPE_SMAP_SELECTOR
+     * @deprecated
      */
     const FIELD_TYPE_SMAP_SELECTOR = 'smap';
 
@@ -499,31 +495,15 @@ class FieldDescription extends DBWorker implements \Iterator {
                 }
                 $this->setProperty('sort', 1);
                 $this->setProperty('pattern', $regexp);
-                //$this->setProperty('message', $this->translate('MSG_BAD_PHONE_FORMAT'));
                 $this->setProperty('message', 'MSG_BAD_PHONE_FORMAT');
-                //$this->setProperty('outputFormat', '%s');
                 break;
-            /*case self::FIELD_TYPE_IMAGE:
-                if ($this->getPropertyValue('nullable') === false) {
-                    $this->setProperty('pattern', '/^.+$/');
-                    //$this->setProperty('message', $this->translate('MSG_IMG_IS_NOT_NULL'));
-                    $this->setProperty('message', 'MSG_IMG_IS_NOT_NULL');
-                }
-                $this->length = true;
-                //$this->setProperty('outputFormat', '%s');
-                $this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
-                break;*/
             case self::FIELD_TYPE_FILE:
-                //case self::FIELD_TYPE_PFILE:
             case self::FIELD_TYPE_VIDEO:
                 if ($this->getPropertyValue('nullable') === false) {
                     $this->setProperty('pattern', '/^.+$/');
-                    //$this->setProperty('message', $this->translate('MSG_FILE_IS_NOT_NULL'));
                     $this->setProperty('message', 'MSG_FILE_IS_NOT_NULL');
                 }
                 $this->length = true;
-                //$this->setProperty('outputFormat', '%s');
-                //$this->setProperty('deleteFileTitle', $this->translate('MSG_DELETE_FILE'));
                 break;
             case self::FIELD_TYPE_STRING:
                 $this->setProperty('sort', 1);
@@ -551,11 +531,23 @@ class FieldDescription extends DBWorker implements \Iterator {
                     $regexp = '/^[0-9,\.]{0,' . $this->length . '}$/';
                 }
                 $this->setProperty('sort', 1);
-                //$this->setProperty('outputFormat', '%f');
                 $this->setProperty('pattern', $regexp);
-                //$this->setProperty('message', $this->translate('MSG_BAD_FLOAT_FORMAT'));
                 $this->setProperty('message', 'MSG_BAD_FLOAT_FORMAT');
                 break;
+	        case self::FIELD_TYPE_MONEY:
+		        if (
+			        ($this->getPropertyValue('nullable') === false)
+			        ||
+			        (is_null($this->getPropertyValue('nullable')))
+		        ) {
+			        $regexp = '/^[0-9]{1,10}[,\.]?[0-9]{0,2}$/';
+		        } else {
+			        $regexp = '/^(?:[0-9]{1,10}[,\.]?[0-9]{0,2})?$/';
+		        }
+		        $this->setProperty('sort', 1);
+		        $this->setProperty('pattern', $regexp);
+		        $this->setProperty('message', 'MSG_BAD_MONEY_FORMAT');
+		        break;
             case self::FIELD_TYPE_BOOL:
                 $this->length = true;
                 $this->setProperty('outputFormat', '%s');
@@ -791,14 +783,10 @@ class FieldDescription extends DBWorker implements \Iterator {
                     $result = self::FIELD_TYPE_EMAIL;
                 } elseif (strpos($name, '_phone')) {
                     $result = self::FIELD_TYPE_PHONE;
-                } /*elseif (strpos($name, '_img')) {
-                    $result = self::FIELD_TYPE_IMAGE;
-                }*/
+                }
                 elseif (strpos($name, '_file') || strpos($name, '_img')) {
                     $result = self::FIELD_TYPE_FILE;
-                } /*elseif (strpos($name, '_pfile')) {
-                    $result = self::FIELD_TYPE_PFILE;
-                }*/
+                }
                 elseif (strpos($name, '_video')) {
                     $result = self::FIELD_TYPE_VIDEO;
                 } else {
@@ -808,6 +796,15 @@ class FieldDescription extends DBWorker implements \Iterator {
             case DBA::COLTYPE_FLOAT:
                 $result = self::FIELD_TYPE_FLOAT;
                 break;
+	        case DBA::COLTYPE_DECIMAL:
+				if($length == 13){
+					$result = self::FIELD_TYPE_MONEY;
+				}
+				else {
+					$result = self::FIELD_TYPE_FLOAT;
+				}
+
+		        break;
             case DBA::COLTYPE_INTEGER:
                 if ($length == 1) {
                     if (strpos($name, '_info')) {

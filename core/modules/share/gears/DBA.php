@@ -57,6 +57,12 @@ abstract class DBA extends Object {
      */
     const COLTYPE_FLOAT = 'FLOAT';
 
+	/**
+     * Column type: @c DECIMAL/NUMERIC
+     * @var string COLTYPE_DECIMAL
+     */
+    const COLTYPE_DECIMAL = 'DECIMAL';
+
     /**
      * Column type: @c DATE
      * @var string COLTYPE_DATE

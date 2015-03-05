@@ -353,7 +353,19 @@ class FieldDescription extends DBWorker implements \Iterator {
                     break;
 	            case 'options':
 					if(in_array($fieldInfo['type'], [DBA::COLTYPE_SET, DBA::COLTYPE_ENUM]) && is_array($propValue) && !@empty($propValue)){
-						$this->loadAvailableValues(array_map(function($row){ return ['key' => $row, 'value' => $row];}, $propValue), 'key', 'value');
+						$name = $this -> name;
+						$this->loadAvailableValues(
+							array_map(
+								function($row) use ($name) {
+									return [
+										'key' => $row,
+										'value' => $this->translate('FIELD_' . $name . '_ENUM_'. $row)
+									];
+								},
+								$propValue
+							),
+							'key', 'value'
+						);
 					}
 
 		            break;

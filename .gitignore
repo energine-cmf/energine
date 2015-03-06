@@ -1,12 +1,1 @@
 .idea/
-starter/image-cache/*
-starter/htdocs/core/
-starter/htdocs/images/
-starter/htdocs/scripts/
-starter/htdocs/stylesheets/
-starter/htdocs/system.config.php
-starter/htdocs/system.jsmap.php
-starter/htdocs/templates/
-vendor/
-starter/htdocs/logs/*
-starter/configs/system.config.pavka.php

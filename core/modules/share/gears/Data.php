@@ -29,7 +29,7 @@ class Data extends Object {
      * Data fields.
      * @var array $fields
      */
-    private $fields = array();
+	private $fields = [];
 
     /**
      * Amount of data fields.
@@ -64,6 +64,30 @@ class Data extends Object {
             }
         }
     }
+
+	public function loadInto(Field $field, $data) {
+
+		if (!in_array($field, $this->fields)) {
+			$this->addField($field);
+		}
+
+		if ($c = $this->getRowCount())
+			for ($i = 0; $i < $c; $i++) {
+				$field->setRowData($i, $data);
+			}
+		elseif (!is_array($data)) {
+			$field->setRowData(0, $data);
+			/*for ($i = 0; $i < sizeof(E()->getLanguage()->getLanguages()); $i++) {
+				$field->setRowData($i, $data);
+			}*/
+		} else {
+			foreach (array_values($data) as $i => $rowData) {
+				$field->setRowData($i, $rowData);
+			}
+		}
+var_dump($field);
+		return $field;
+	}
 
     /**
      * Add data row to all data fields.
@@ -106,6 +130,7 @@ class Data extends Object {
                 $result = $field->setRowData($rowIndex, $fieldValue);
             }
         }
+
         return $result;
     }
 
@@ -142,6 +167,7 @@ class Data extends Object {
         if (isset($this->fields[$name])) {
             $field = $this->fields[$name];
         }
+
         return $field;
     }
 
@@ -183,6 +209,7 @@ class Data extends Object {
             $firstFieldName = $fieldNames[0];
             $this->rows = $this->getFieldByName($firstFieldName)->getRowCount();
         }
+
         return $this->rows;
     }
 
@@ -193,8 +220,8 @@ class Data extends Object {
      * @return array
      */
     public function asArray($groupedByFields = false) {
-        $result = array();
-        $res = array();
+		$result = [];
+		$res = [];
 
         foreach ($this->fields as $fieldName => $field) {
             $result[$fieldName] = $field->getData();
@@ -210,6 +237,7 @@ class Data extends Object {
                 $res[$i][$fieldName] = $result[$fieldName][$i];
             }
         }
+
         return $res;
     }
 }

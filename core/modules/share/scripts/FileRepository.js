@@ -342,8 +342,9 @@ var FileRepository = new Class(/** @lends FileRepository# */{
         this.grid.setData(result.data);
 
         if (result.pager) {
-            this.pageList.build(result.pager.count, result.pager.current, result.pager.records);
+            this.pageList.build(result.pager.count, result.pager.current);
         }
+
 
         if (!this.grid.isEmpty()) {
             this.toolbar.enableControls();

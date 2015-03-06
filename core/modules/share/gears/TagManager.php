@@ -122,8 +122,7 @@ class TagManager extends DBWorker {
                     !$this->data->isEmpty()
                     && ($currentData = $this->data->getFieldByName($this->pk->getName()))
                 ) {
-                    $field->setData($this->pull($currentData->getData(), $this->tableName));
-                    $this->data->addField($field);
+	                $this->data->loadInto($field, $this->pull($currentData->getData(), $this->tableName));
                 }
             }
             else {

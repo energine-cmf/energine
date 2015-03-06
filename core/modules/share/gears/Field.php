@@ -80,7 +80,7 @@ class Field extends Object implements \Iterator {
      * @param mixed $data Data.
      * @param bool $setForAll Defines whether the data should be set for all rows (only for data overwriting). In the case that the field is newly created - fill it by using iterator.
      * @return Field
-     * @deprecated use Data::loadInto instead
+     *  deprecated use Data::loadInto instead
      */
     public function setData($data, $setForAll = false) {
         if ($setForAll && $this->getRowCount()) {

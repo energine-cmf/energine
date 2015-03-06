@@ -24,9 +24,9 @@ class SitePropertiesSaver;
 class SitePropertiesSaver extends ExtendedSaver {
     public function setData(Data $data) {
         parent::setData($data);
-        if($fPropName = $this->getData()->getFieldByName('prop_name')) {
-            $name = Translit::transliterate($fPropName->getRowData(0), '_');
-            $fPropName->setData(preg_replace("/[^A-Za-z0-9_]/", '', $name), true);
+        if($fPropNameField = $this->getData()->getFieldByName('prop_name')) {
+            $name = Translit::transliterate($fPropNameField->getRowData(0), '_');
+	        $data->loadInto($fPropNameField, preg_replace("/[^A-Za-z0-9_]/", '', $name));
         }
     }
 
@@ -44,7 +44,7 @@ class SitePropertiesSaver extends ExtendedSaver {
             $propCount = (int)$this->dbh->getScalar('SELECT COUNT(prop_id) FROM share_sites_properties WHERE prop_name = %s AND (site_id = %s OR site_id IS NULL)', $propName, $siteId);
             // If there is no property, we need to insert "default" property with NULL as site id
             if($propCount === 0) {
-                $sIdField->setData('', true);
+	            $this->getData()->loadInto($sIdField, '');
             }
             elseif($propCount > 1) {
                 throw new SystemException('ERR_PROPERTY_EXIST');

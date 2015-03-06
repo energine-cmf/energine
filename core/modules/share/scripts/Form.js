@@ -81,6 +81,11 @@ var Form = new Class(/** @lends Form# */{
      * @type {CodeMirror[]}
      */
     codeEditors: [],
+    /**
+     * Array of color picker controls
+     * @type {ColorPicker[]}
+     */
+    colorPickers:[],
 
 //    smapSelectors: [],
 
@@ -138,6 +143,10 @@ var Form = new Class(/** @lends Form# */{
 
         this.form.getElements('input.acpl').each(function (el) {
             new AcplField(el);
+        }, this);
+
+        this.form.getElements('input.inp_color').each(function(el){
+            this.colorPickers.push(new ColorPicker(el,{cellWidth: 8, cellHeight: 12}));
         }, this);
 
         var showHideFunc = function (e) {

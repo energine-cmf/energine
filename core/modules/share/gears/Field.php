@@ -153,15 +153,11 @@ class Field extends Object implements \Iterator {
      *
      * @param int $rowIndex Row index
      * @param mixed $newData New data.
-     * @return boolean
+     * @return Field
      */
     public function setRowData($rowIndex, $newData) {
-        $result = false;
-        //if (isset($this->data[$rowIndex])) {
         $this->data[$rowIndex] = $newData;
-        $result = true;
-        //}
-        return $result;
+	    return $this;
     }
 
     /**

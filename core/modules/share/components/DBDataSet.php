@@ -224,7 +224,12 @@ class DBDataSet extends DataSet {
 				}
 			}
 		}
-		$valueFields = $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_VALUE);
+
+		$valueFields = array_merge(
+            $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_VALUE),
+            $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_LOOKUP)
+        );
+
 		if (!empty($valueFields)) {
 			//Готовим инфу для получения данных их связанных таблиц
 			foreach ($valueFields as $valueFieldName => $valueField) {
@@ -251,7 +256,7 @@ class DBDataSet extends DataSet {
 			unset($valueFields, $langTable, $relInfo);
 			foreach ($data as $key => $row) {
 				foreach ($row as $name => $value) {
-					if (in_array($name, array_keys($relations)) && array_key_exists($value, $values[$name])) {
+					if (in_array($name, array_keys($relations)) && is_array($values[$name]) && array_key_exists($value, $values[$name])) {
 						$data[$key][$name] = [
 							'id' => $value,
 							'value' => $values[$name][$value][$relations[$name]['valueField']]

@@ -25,7 +25,7 @@
  * @version 1.0.1
  */
 
-ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader');
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader', 'Lookup');
 
 /**
  * Form.
@@ -141,7 +141,11 @@ var Form = new Class(/** @lends Form# */{
             this.codeEditors.push(CodeMirror.fromTextArea(textarea, {mode: "text/html", tabMode: "indent", lineNumbers: true, theme:'elegant'}));
         }, this);
 
-        this.form.getElements('input.acpl').each(function (el) {
+        this.form.getElements('div.type_lookup').each(function (el) {
+            new Lookup(el);
+        }, this);
+
+        this.form.getElements('input.tag_acpl').each(function (el) {
             new AcplField(el);
         }, this);
 

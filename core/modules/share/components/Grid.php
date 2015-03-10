@@ -74,9 +74,9 @@ class Grid extends DBDataSet {
 
     /**
      * Grid for select fields
-     * @var Grid
+     * @var \Lookup
      */
-    protected $fkCRUDEditor = null;
+    protected $lookupEditor = null;
 
     /**
      * @copydoc DBDataSet::__construct
@@ -277,6 +277,31 @@ class Grid extends DBDataSet {
             $this->setData($data);
         }
         if ($this->pager) $this->getBuilder()->setPager($this->pager);
+    }
+
+    protected function lookup(){
+        $params = $this->getStateParams(true);
+        $FKField = $params['fk_field_name'];
+
+        if(array_key_exists('className', $params)){
+            $lookupClass = $params['className'];
+        }
+        else {
+            $lookupClass = 'Lookup';
+            $module = $this->module;
+        }
+        $columns = $this->dbh->getColumnsInfo($this->getTableName());
+        if(!isset($columns[$FKField]) || !is_array($columns[$FKField]['key'])){
+            throw new \SystemException('ERR_NO_FIELD', SystemException::ERR_DEVELOPER, $FKField);
+        }
+
+        $params = [
+            'tableName' => $columns[$FKField]['key']['tableName']
+        ];
+
+        $this->request->shiftPath(2);
+        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', $module, $lookupClass, $params);
+        $this->lookupEditor->run();
     }
 
     /**
@@ -596,21 +621,14 @@ class Grid extends DBDataSet {
      */
     public function build() {
         switch ($this->getState()) {
-            /*case 'imageManager':
-                return $this->imageManager->build();
-                break;
-            case 'fileLibrary':
-            case 'put':
-                return $this->fileLibrary->build();
-                break;*/
             case 'attachments':
                 return $this->attachmentEditor->build();
                 break;
             case 'tags':
                 return $this->tagEditor->build();
                 break;
-            case 'fkEditor':
-                return $this->fkCRUDEditor->build();
+            case 'lookup':
+                return $this->lookupEditor->build();
                 break;
             default:
                 // do nothing
@@ -619,9 +637,6 @@ class Grid extends DBDataSet {
         if ($this->getType() == self::COMPONENT_TYPE_LIST) {
             $this->addTranslation('MSG_CONFIRM_DELETE');
         }
-        /*elseif($this->getTranslationTableName()) {
-            $this->addTranslation('TXT_COPY_DATA_TO_ANOTHER_TAB');
-        }*/
 
         $result = parent::build();
 

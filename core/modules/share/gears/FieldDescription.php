@@ -645,8 +645,8 @@ class FieldDescription extends DBWorker implements \Iterator {
                 $this->setProperty('message', 'MSG_WRONG_DATE_FORMAT');
                 $this->length = true;
                 break;
-            case self::FIELD_TYPE_TEXTBOX_LIST:
-
+            case self::FIELD_TYPE_LOOKUP:
+                $this->setProperty('url', '/'.$this->getName().'/lookup/');
                 break;
             case self::FIELD_TYPE_CUSTOM:
                 if ($this->getPropertyValue('nullable') === false) {

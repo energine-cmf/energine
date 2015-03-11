@@ -189,7 +189,7 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             require_once(CORE_DIR . '/modules/share/gears/recaptchalib.php');
             $fieldValue = recaptcha_get_html($this->getConfigValue('recaptcha.public'));
         }
-        elseif($fieldInfo->getType() == FieldDescription::FIELD_TYPE_VALUE){
+        elseif($fieldInfo->getType() == FieldDescription::FIELD_TYPE_LOOKUP && $fieldValue){
             $value = $this->result->createElement('value', $fieldValue['value']);
             $value->setAttribute('id', $fieldValue['id']);
             $fieldValue = $value;

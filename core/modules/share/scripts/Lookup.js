@@ -4,8 +4,10 @@ var Lookup = new Class({
         var button;
         this.el =$(el);
         this.url = componentPath + this.el.getProperty('data-url');
-        this.keyFieldName = this.el.getElement('input[type=hidden]').id;
+        this.keyField = this.el.getElement('input[type=hidden]');
+        this.keyFieldName = this.keyField.id;
         this.valueFieldName = this.el.getProperty('data-value-field');
+
         this.input = this.el.getElement('input[type=text]');
 
         this.el.getElement('button').addEvent('click', function(e){
@@ -98,8 +100,7 @@ var Lookup = new Class({
     },
 
     load: function(data){
-        var valueEl = this.el.getElement('input[type=hidden]');
-        valueEl.set('value', data.data[this.keyFieldName]);
+        this.keyField.set('value', data.data[this.keyFieldName]);
         this.input.set('value', data.data[this.valueFieldName]);
     },
     /**
@@ -112,6 +113,7 @@ var Lookup = new Class({
 
         if ((this.list.selected !== false) && this.list.items[this.list.selected]) {
             this.input.set('value', text);
+            this.keyField.set('value', li.retrieve('key'));
         }
         this.list.hide();
     }

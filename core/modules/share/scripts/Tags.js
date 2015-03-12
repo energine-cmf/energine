@@ -270,15 +270,6 @@ var Tags = new Class(/** @lends Tags# */{
     },
 
     /**
-     * Prepare the data.
-     *
-     * @param {Object} result Result object.
-     */
-    _prepareData: function(result) {
-        this.setValues(result.data);
-    },
-
-    /**
      * Put in queue.
      *
      * @param {string} str One word.
@@ -298,7 +289,7 @@ var Tags = new Class(/** @lends Tags# */{
     requestValues: function(str) {
         new Request.JSON({
             url: this.url,
-            onSuccess: this._prepareData.bind(this)
+            onSuccess: this.rebuild.bind(this)
         }).send({
             method: 'post',
             data: 'value=' + str
@@ -310,14 +301,13 @@ var Tags = new Class(/** @lends Tags# */{
      *
      * @param {Array} data Data array.
      */
-    setValues: function(data) {
-        this.list.empty();
-        if (data && data.length) {
-            data.each(function(row) {
-                this.list.add(this.list.create(row));
-            }, this);
-
+    rebuild: function(data) {
+        if(data.result && data.data){
+            this.list.update(data.data, this.value);
             this.list.show();
+        }
+        else {
+            this.list.hide();
         }
     },
 

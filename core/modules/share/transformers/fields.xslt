@@ -304,7 +304,7 @@
             <xsl:attribute name="value"><xsl:value-of select="value/@id"/></xsl:attribute>
         </input>
         <div class="with_append">
-            <input type="text" id="{@name}_name"  class="text acpl" style="height:32px;" value="{value}"/>
+            <input type="text" id="{@name}_name"  class="text acpl" autocomplete="off" spellcheck="false" style="height:32px;" value="{value}"/>
             <div class="appended_block">
                 <button type="button"  style="height: 18px;">...</button>
             </div>

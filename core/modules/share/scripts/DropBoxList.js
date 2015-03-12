@@ -1,10 +1,12 @@
 /**
- * Active list. From MooTools it implements: Events.
+ * Drop box list.
+ *
+ * @augments ActiveList
  *
  * @constructor
- * @param {Element|string} container Active list container.
+ * @param {Element|string} input Drop box element.
  */
-var ActiveList = new Class(/** @lends ActiveList# */{
+var DropBoxList = new Class(/** @lends DropBoxList# */{
     Implements: Events,
 
     /**
@@ -31,15 +33,24 @@ var ActiveList = new Class(/** @lends ActiveList# */{
      */
     items: null,
 
+
     // constructor
-    initialize: function(container) {
+    initialize: function(input) {
+        /**
+         * Drop box list element.
+         * @type {Element}
+         */
+        this.input = $(input);
+        Asset.css('acpl.css');
         Asset.css('acpl.css');
 
         /**
          * Active list container.
          * @type {Element}
          */
-        this.container = $(container);
+        this.container = new Element('div', {
+            'class': 'acpl_variants'
+        });
         this.container.addClass('alist');
         this.container.tabIndex = 1;
         this.container.setStyle('-moz-user-select', 'none');
@@ -51,8 +62,25 @@ var ActiveList = new Class(/** @lends ActiveList# */{
             this.ul = this.container.getChildren('ul')[0];
         }
         this.items = this.ul.getChildren();
-    },
 
+
+
+        this.input.addEvent('blur', this.hide.bind(this));
+
+        this.hide();
+    },
+    /**
+     *
+     * @param data
+     */
+    update: function(data, string){
+        this.empty();
+        if (data && data.length) {
+            data.each(function(row) {
+                this.add(row,string);
+            }, this);
+        }
+    },
     /**
      * Activate list.
      *
@@ -123,8 +151,9 @@ var ActiveList = new Class(/** @lends ActiveList# */{
         }
 
         this.unselectItem(this.selected);
+        if(this.items[id])
+            this.items[id].addClass('selected');
 
-        this.items[id].addClass('selected');
         this.selected = id;
 
         var body = $(document.body);
@@ -142,36 +171,12 @@ var ActiveList = new Class(/** @lends ActiveList# */{
         if (this.items[id]) {
             this.items[id].removeClass('selected');
         }
-    }
-});
-
-/**
- * Drop box list.
- *
- * @augments ActiveList
- *
- * @constructor
- * @param {Element|string} input Drop box element.
- */
-var DropBoxList = new Class(/** @lends DropBoxList# */{
-    Extends: ActiveList,
-
-    // constructor
-    initialize: function(input) {
-        /**
-         * Drop box list element.
-         * @type {Element}
-         */
-        this.input = $(input);
-        Asset.css('acpl.css');
-
-        this.parent(new Element('div', {
-            'class': 'acpl_variants'
-        }));
-
-        this.input.addEvent('blur', this.hide.bind(this));
-
-        this.hide();
+    },
+    /**
+     * Empty the list.
+     */
+    empty: function() {
+        this.ul.empty();
     },
 
     /**
@@ -210,27 +215,18 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     },
 
     /**
-     * Empty the list.
-     */
-    empty: function() {
-        this.ul.empty();
-    },
-
-    /**
-     * Create an item for the list.
-     * @param {{value: string, key:string}} data Object withe the properties for the item.
-     * @returns {Element}
-     */
-    create: function(data) {
-        return new Element('li').set('text', data.value).store('key', data.key);
-    },
-
-    /**
      * Add the new item to the list.
      *
      * @param {HTMLLIElement} li New item for the list.
      */
-    add: function(li) {
-        this.ul.grab(li);
+    add: function(data,string) {
+        if(data.key && data.value){
+            var value = data.value;
+            if(string){
+                value = value.replace(string, '<b>'+string+'</b>');
+            }
+            this.ul.grab(new Element('li').set('html', value).store('key', data.key));
+        }
+
     }
 });

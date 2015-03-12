@@ -36,7 +36,7 @@ class SiteSaver extends Saver {
 
 
         if (isset($_POST[$mainTableName]['site_is_default']) && $_POST[$mainTableName]['site_is_default'] !== '0') {
-            $this->dbh->modify(QAL::UPDATE, $mainTableName, array('site_is_default' => 0));
+            $this->dbh->modify(QAL::UPDATE, $mainTableName, array('site_is_default' => '0'));
         }
         $result = parent::save();
         $id = ($this->getMode() == QAL::INSERT) ? $result : $this->getData()->getFieldByName('site_id')->getRowData(0);

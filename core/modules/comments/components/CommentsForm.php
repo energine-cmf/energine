@@ -591,7 +591,7 @@ class CommentsForm extends DataSet {
         $commentsList =
                 $this->document->componentManager->createComponent('commentsList', 'comments', 'CommentsList', $commentsParams);
 
-        $this->document->componentManager->addComponent($commentsList);
+        $this->document->componentManager->add($commentsList);
 
         if ($this->getParam('bind') && $forumTheme =
                 $this->document->componentManager->getBlockByName($this->getParam('bind'))) {

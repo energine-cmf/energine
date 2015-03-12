@@ -36,7 +36,7 @@ class Robots extends DataSet {
      */
     // Основной стейт генерации robots.txt
     protected function main(){
-        E()->getController()->getTransformer()->setFileName('core/modules/seo/transformers/robots_txt.xslt', true);
+        E()->getController()->getTransformer()->setFileName('../core/modules/seo/transformers/robots_txt.xslt', true);
         parent::main();
         $this->setBuilder(new SimpleBuilder());
     }
@@ -105,7 +105,7 @@ class Robots extends DataSet {
         if ($smap_ids) return;
 
         // вставка нового сегмента в sitemap на основании конфига
-        $this->dbh->selectRequest(
+        $this->dbh->select(
             'INSERT IGNORE INTO share_sitemap
             (site_id,smap_layout,smap_content,smap_segment,smap_pid) '
             . 'SELECT sso.site_id, %s, %s, %s, '
@@ -127,7 +127,7 @@ class Robots extends DataSet {
             foreach($smap_ids as $smap_id) {
 
                 // права доступа
-                $this->dbh->selectRequest(
+                $this->dbh->select(
                     'INSERT IGNORE INTO share_access_level (smap_id, group_id, right_id) ' .
                     ' SELECT %s as smap_id, group_id, (SELECT right_id FROM `user_group_rights` WHERE right_const = "ACCESS_READ") ' .
                     ' FROM `user_groups` ',
@@ -135,7 +135,7 @@ class Robots extends DataSet {
                 );
 
                 // переводы
-                $this->dbh->selectRequest(
+                $this->dbh->select(
                     'INSERT IGNORE INTO share_sitemap_translation (smap_id, lang_id, smap_name, smap_is_disabled) ' .
                     ' VALUES (%s, (SELECT lang_id FROM `share_languages` WHERE lang_default), "Google sitemap", 0)',
                     $smap_id
@@ -160,7 +160,7 @@ class Robots extends DataSet {
 
             $this->createSitemapSegment();
 
-            $domainsInfo = $this->dbh->selectRequest(
+            $domainsInfo = $this->dbh->select(
                'SELECT ss.site_id, sd.domain_protocol, sd.domain_host, sd.domain_root ' .
                'FROM share_sites ss ' .
                'INNER JOIN share_domain2site d2s ON ss.site_id = d2s.site_id ' .

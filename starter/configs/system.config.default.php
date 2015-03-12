@@ -190,13 +190,13 @@ return array(
 
     // настройка SEO модуля
     'seo' => array(
-        'sitemapSegment' => 'google_sitemap',
+        'sitemapSegment' => 'google-sitemap',
         'sitemapTemplate' => 'google_sitemap',
         'maxVideosInMap' => '10'
     ),
 
     // параметри пользовательских стилей RichText редактора
-    'wysiwyg' => array(
+    /*'wysiwyg' => array(
         'styles' => array(
             'p.red' => array(
                 'element' => 'p',
@@ -209,7 +209,7 @@ return array(
                 'caption' => 'TXT_TEXT_UNDERLINE'
             )
         )
-    ),
+    ),*/
 
 );
 

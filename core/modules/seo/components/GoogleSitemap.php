@@ -61,8 +61,8 @@ class GoogleSitemap extends SitemapTree {
         return array_merge(
             parent::defineParams(),
             array(
-                'index.xslt' => 'core/modules/seo/transformers/google_sitemap_index.xslt',
-                'map.xslt' => 'core/modules/seo/transformers/google_sitemap.xslt'
+                'index.xslt' => '../core/modules/seo/transformers/google_sitemap_index.xslt',
+                'map.xslt' => '../core/modules/seo/transformers/google_sitemap.xslt'
             )
         );
     }

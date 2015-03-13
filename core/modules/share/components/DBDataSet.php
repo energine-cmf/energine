@@ -137,7 +137,6 @@ class DBDataSet extends DataSet {
                 $this->commonLoadData() :
                 $this->multiLoadData()
         );
-
         return $data;
     }
 
@@ -218,15 +217,14 @@ class DBDataSet extends DataSet {
             }
         }
 
-        $valueFields = array_merge(
-            $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_VALUE),
-            $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_LOOKUP)
-        );
+        $lookupField =
+            $this->getDataDescription()->getFieldDescriptionsByType(FieldDescription::FIELD_TYPE_LOOKUP);
 
-        if (!empty($valueFields)) {
+        if (!empty($lookupField)) {
             //Готовим инфу для получения данных их связанных таблиц
-            foreach ($valueFields as $valueFieldName => $valueField) {
+            foreach ($lookupField as $valueFieldName => $valueField) {
                 $relInfo = $valueField->getPropertyValue('key');
+
                 if (is_array($relInfo)) {
                     $langTable = $this->dbh->getTranslationTablename($relInfo['tableName']);
                     $relations[$valueFieldName] = [
@@ -237,20 +235,22 @@ class DBDataSet extends DataSet {
                     ];
 
                     $cond = [
-                        $relations[$valueFieldName]['field'] => simplifyDBResult($data,
-                            $relations[$valueFieldName]['field'])
+                        $relations[$valueFieldName]['field'] => simplifyDBResult($data,$valueFieldName)
                     ];
+
+
                     if ($relations[$valueFieldName]['lang']) {
                         $cond['lang_id'] = $relations[$valueFieldName]['lang'];
                     }
                     $values[$valueFieldName] = convertDBResult($this->dbh->select($relations[$valueFieldName]['table'],
                         [$relations[$valueFieldName]['field'], $relations[$valueFieldName]['valueField']], $cond),
                         $relations[$valueFieldName]['field'], true);
+
                 }
 
             }
 
-            unset($valueFields, $langTable, $relInfo);
+            unset($lookupField, $langTable, $relInfo);
             foreach ($data as $key => $row) {
                 foreach ($row as $name => $value) {
                     if (in_array($name, array_keys($relations)) && is_array($values[$name]) && array_key_exists($value,
@@ -353,7 +353,6 @@ class DBDataSet extends DataSet {
         }
 
         if ($this->getOrder()) {
-            //inspect($this->getOrder());
             $order = $this->dbh->buildOrderCondition($this->getOrder());
         }
 

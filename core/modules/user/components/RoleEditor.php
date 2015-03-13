@@ -16,6 +16,8 @@ class RoleEditor;
 
 namespace Energine\user\components;
 use Energine\share\components\Grid, Energine\share\gears\FieldDescription, Energine\share\gears\QAL, Energine\share\gears\TreeBuilder, Energine\share\gears\TreeConverter, Energine\share\gears\SystemException, Energine\share\gears\Data, Energine\share\gears\DataDescription;
+use Energine\share\gears\Field;
+
 /**
  * Role editor.
  *
@@ -29,7 +31,7 @@ class RoleEditor extends Grid {
      * This fields can exist only for one user.
      * @var array $uniqueFields
      */
-    private $uniqueFields = array('group_default', 'group_user_default');
+    private $uniqueFields = ['group_default', 'group_user_default'];
 
     /**
      * @copydoc Grid::__construct
@@ -64,7 +66,7 @@ class RoleEditor extends Grid {
         if ($this->getState() == 'save') {
             foreach ($this->uniqueFields as $fieldName) {
                 if (isset($result[0][$fieldName]) && $result[0][$fieldName]) {
-                    $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array($fieldName=>null));
+                    $this->dbh->modify(QAL::UPDATE, $this->getTableName(), [$fieldName=>null]);
                 }
             }
         }
@@ -101,9 +103,9 @@ class RoleEditor extends Grid {
             TreeConverter::convert(
                 $this->dbh->select(
                     'share_sitemap', 
-                    array('smap_id', 'smap_pid'), 
+                    ['smap_id', 'smap_pid'],
                     null, 
-                    array('smap_order_num'=>QAL::ASC)), 'smap_id', 'smap_pid'));
+                    ['smap_order_num'=>QAL::ASC]), 'smap_id', 'smap_pid'));
 
         $id = $this->getFilter();
         $id = (!empty($id))?current($id):'';
@@ -148,8 +150,8 @@ class RoleEditor extends Grid {
         if ($this->getState() == 'view') {
             $f->setMode(FieldDescription::FIELD_MODE_READ);
         }
-        $rights = $this->dbh->select('user_group_rights', array('right_id', 'right_const'));
-        $rights = array_merge(array(array('right_id'=>0, 'right_const'=>'NO_RIGHTS')), $rights);
+        $rights = $this->dbh->select('user_group_rights', ['right_id', 'right_const']);
+        $rights = array_merge([['right_id'=>0, 'right_const'=>'NO_RIGHTS']], $rights);
         foreach ($rights as $key => $value) {
             $rights[$key]['right_const'] = $this->translate('TXT_'.$value['right_const']);
         }
@@ -188,12 +190,12 @@ class RoleEditor extends Grid {
 
         $roleID = (is_int($result))?$result:current($this->getFilter());
 
-        $this->dbh->modify(QAL::DELETE, 'share_access_level', null, array('group_id'=>$roleID));
+        $this->dbh->modify(QAL::DELETE, 'share_access_level', null, ['group_id'=>$roleID]);
 
         if(isset($_POST['div_right']) && is_array($_POST['div_right']))
         foreach ($_POST['div_right'] as $smapID=>$rightID) {
             if(!empty($rightID))
-            $this->dbh->modify(QAL::INSERT, 'share_access_level',array('group_id'=>$roleID, 'smap_id'=>$smapID, 'right_id'=>$rightID));
+            $this->dbh->modify(QAL::INSERT, 'share_access_level',['group_id'=>$roleID, 'smap_id'=>$smapID, 'right_id'=>$rightID]);
         }
 
         return $result;
@@ -204,7 +206,7 @@ class RoleEditor extends Grid {
      */
     // При удалении происходит проверка не удаляется ли дефолтная группа
     protected function deleteData($id) {
-        if ($this->dbh->select($this->getTableName(), 'group_id', array('group_id'=>$id, 'group_default'=>true)) !== true) {
+        if ($this->dbh->select($this->getTableName(), 'group_id', ['group_id'=>$id, 'group_default'=>true]) !== true) {
             throw new SystemException('ERR_DEFAULT_GROUP', SystemException::ERR_NOTICE);
         }
         parent::deleteData($id);

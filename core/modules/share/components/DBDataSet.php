@@ -669,17 +669,21 @@ class DBDataSet extends DataSet {
                         break;
                     case FieldDescription::FIELD_TYPE_LOOKUP:
                         $table = $keyInfo['tableName'];
+
                         if ($this->dbh->tableExists($table)) {
                             if($t = $this->dbh->getTranslationTablename($table)){
                                 $table = $t; unset($t);
                             }
                             $valueFieldName = array_reduce(array_keys($this->dbh->getColumnsInfo($table)), function($str, $row){
+
                                 if(strpos($row, '_name')){
                                     return $row;
                                 }
-                                return '';
+                                return $str;
                             });
                             $fieldMetaData->setProperty('value_field', $valueFieldName);
+                            $fieldMetaData->setProperty('value_table', $table);
+                            $fieldMetaData->setProperty('key_field', $keyInfo['fieldName']);
                         }
                         break;
                 }

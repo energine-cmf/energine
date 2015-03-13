@@ -113,7 +113,7 @@ var Form = new Class(/** @lends Form# */{
          */
         this.form = this.componentElement.getParent('form').addClass('form');
 
-        if(this.form.getElements('input[type=text]').concat(this.form.getElements('select'),this.form.getElements('textarea')).length < 2){
+        if(this.form.getElements('input[type=text]').concat(this.form.getElements('select'),this.form.getElements('textarea')).length){
            this.form.addEvent('keypress', function(e){
                if(e.key == 'enter') e.preventDefault();
            })

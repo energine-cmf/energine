@@ -35,7 +35,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
 
 
     // constructor
-    initialize: function(input) {
+    initialize: function (input) {
         /**
          * Drop box list element.
          * @type {Element}
@@ -62,7 +62,9 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
             this.ul = this.container.getChildren('ul')[0];
         }
         this.items = this.ul.getChildren();
-        //this.input.addEvent('blur', this.hide.delay(10,this));
+        this.input.addEvent('blur', function () {
+            this.hide.delay(100, this)
+        }.bind(this)/**/);
         this.container.addEvent('keypress', this.keyPressed.bind(this));
         this.active = true;
         this.selectItem();
@@ -72,11 +74,12 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      *
      * @param data
      */
-    update: function(data, string){
+    update: function (data, string) {
+
         this.empty();
         if (data && data.length) {
-            data.each(function(row) {
-                this.add(row,string);
+            data.each(function (row) {
+                this.add(row, string);
             }, this);
         }
         this.active = true;
@@ -92,7 +95,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      *
      * @param {Object} e Event.
      */
-    keyPressed: function(e) {
+    keyPressed: function (e) {
         switch (e.key) {
             case 'up':
                 this.selectItem(this.selected - 1);
@@ -116,7 +119,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      *
      * @param {number} [id = 0] Item ID.
      */
-    selectItem: function(id) {
+    selectItem: function (id) {
         if (!id) {
             id = 0;
         }
@@ -128,7 +131,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
         }
 
         this.unselectItem(this.selected);
-        if(this.items[id])
+        if (this.items[id])
             this.items[id].addClass('selected');
 
         this.selected = id;
@@ -144,7 +147,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      *
      * @param {number} id Item ID.
      */
-    unselectItem: function(id) {
+    unselectItem: function (id) {
         if (this.items[id]) {
             this.items[id].removeClass('selected');
         }
@@ -152,7 +155,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     /**
      * Empty the list.
      */
-    empty: function() {
+    empty: function () {
         this.items.removeEvents('click');
         this.items.removeEvents('mouseover');
         this.ul.empty();
@@ -164,7 +167,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      *
      * @returns {boolean}
      */
-    isOpen: function() {
+    isOpen: function () {
         return (this.container.getStyle('display') !== 'none');
     },
 
@@ -173,14 +176,14 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      *
      * @returns {Element}
      */
-    get: function() {
+    get: function () {
         return this.container;
     },
 
     /**
      * Show the drop box list.
      */
-    show: function() {
+    show: function () {
         this.container.removeClass('hidden');
         var size = this.container.getComputedSize();
         this.container.setStyle('width', this.input.getSize().x - size['border-left-width'] - size['border-right-width']);
@@ -190,8 +193,13 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     /**
      * Hide the drop box list.
      */
-    hide: function() {
+    hide: function () {
         this.container.addClass('hidden');
+    },
+    highlight: function (data, search) {
+        if (!search) return data;
+
+        return data.replace(new RegExp("(" + search + ")", 'gi'), "<b>$1</b>");
     },
 
     /**
@@ -199,16 +207,12 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      *
      * @param {HTMLLIElement} li New item for the list.
      */
-    add: function(data,string) {
-        if(data.key && data.value){
-
-            var value = data.value;
+    add: function (data, string) {
+        if (data.key && data.value) {
+            var value = this.highlight(data.value, string);
             var item;
-            if(string){
-                value = value.replace(string, '<b>'+string+'</b>');
-            }
             this.ul.grab(item = new Element('li').set('html', value).store('key', data.key));
-            item.addEvent('click', function(e) {
+            item.addEvent('click', function (e) {
                 /**
                  * The item from [items]{@link ActiveList#items} is selected.
                  * @event ActiveList#choose
@@ -216,8 +220,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
                  */
                 this.fireEvent('choose', this.items[this.selected]);
             }.bind(this));
-            item.addEvent('mouseover', function(e) {
-                console.log(e.target)
+            item.addEvent('mouseover', function (e) {
                 this.selectItem(e.target.getAllPrevious().length);
             }.bind(this));
 

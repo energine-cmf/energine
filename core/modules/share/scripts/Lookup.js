@@ -1,16 +1,16 @@
-
 var Lookup = new Class({
-    initialize: function(el, componentPath){
+    initialize: function (el, componentPath) {
         var button;
-        this.el =$(el);
+        this.el = $(el);
         this.url = componentPath + this.el.getProperty('data-url');
         this.keyField = this.el.getElement('input[type=hidden]');
-        this.keyFieldName = this.keyField.id;
+        this.keyFieldName = this.el.getProperty('data-key-field');
         this.valueFieldName = this.el.getProperty('data-value-field');
+        this.valueTable = this.el.getProperty('data-value-table');
 
         this.input = this.el.getElement('input[type=text]');
 
-        this.el.getElement('button').addEvent('click', function(e){
+        this.el.getElement('button').addEvent('click', function (e) {
             e.stop();
             ModalBox.open({
                 url: this.url,
@@ -34,7 +34,7 @@ var Lookup = new Class({
      *
      * @param {Object} e Event.
      */
-    enter: function(e) {
+    enter: function (e) {
         if (!this.url) {
             return;
         }
@@ -65,12 +65,12 @@ var Lookup = new Class({
      *
      * @param {Object} result Result object.
      */
-    rebuild: function(result) {
-        if(result.result && result.data){
-            this.list.update(result.data.map(function(item){
+    rebuild: function (result) {
+        if (result.result && result.data) {
+            this.list.update(result.data.map(function (item) {
                 return {
                     key: item[this.keyFieldName],
-                    'value':item[this.valueFieldName]
+                    'value': item[this.valueFieldName]
                 }
             }.bind(this)), this.value);
             this.list.show();
@@ -80,7 +80,6 @@ var Lookup = new Class({
         }
 
 
-
     },
 
     /**
@@ -88,10 +87,10 @@ var Lookup = new Class({
      *
      * @param {string} str Data string.
      */
-    requestValues: function(str) {
-        var filterString = 'filter[test_fk_table_translation]['+this.valueFieldName+'][]='+str+'&filter[condition]=like';
+    requestValues: function (str) {
+        var filterString = 'filter[' + this.valueTable + '][' + this.valueFieldName + '][]=' + str + '&filter[condition]=like';
         new Request.JSON({
-            url: this.url+'get-data/',
+            url: this.url + 'get-data/',
             onSuccess: this.rebuild.bind(this)
         }).send({
                 method: 'post',
@@ -99,7 +98,7 @@ var Lookup = new Class({
             });
     },
 
-    load: function(data){
+    load: function (data) {
         this.keyField.set('value', data[this.keyFieldName]);
         this.input.set('value', data[this.valueFieldName]);
     },
@@ -108,7 +107,7 @@ var Lookup = new Class({
      *
      * @param {HTMLLIElement} li Element that will be selected.
      */
-    select: function(li) {
+    select: function (li) {
         var text = li.get('text');
 
         if ((this.list.selected !== false) && this.list.items[this.list.selected]) {

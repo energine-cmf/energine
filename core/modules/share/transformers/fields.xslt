@@ -97,7 +97,7 @@
     </xsl:template>
 
     <xsl:template match="field[@type='lookup'][ancestor::component[@exttype='grid']]" mode="field_content">
-        <div class="control type_{@type}" id="control_{@language}_{@name}" data-url="{@url}" data-value-field="{@value_field}">
+        <div class="control type_{@type}" id="control_{@language}_{@name}" data-url="{@url}" data-value-field="{@value_field}" data-value-table="{@value_table}" data-key-field="{@key_field}">
             <xsl:apply-templates select="." mode="field_input"/>
         </div>
     </xsl:template>

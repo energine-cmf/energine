@@ -288,7 +288,7 @@ class Grid extends DBDataSet {
         }
         else {
             $lookupClass = 'Lookup';
-            $module = $this->module;
+            $module = 'share';
         }
         $columns = $this->dbh->getColumnsInfo($this->getTableName());
         if(!isset($columns[$FKField]) || !is_array($columns[$FKField]['key'])){

@@ -106,7 +106,7 @@ function simple_log($var){
 function dump_log($var, $append = false) {
     $t = microtime(true);
     $micro = sprintf("%06d",($t - floor($t)) * 1000000);
-    $d = new DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
+    $d = new \DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
 
     $flags = ($append ? FILE_APPEND : null);
     ob_start();
@@ -351,9 +351,6 @@ function array_push_after($src,$in,$pos){
     }return $R;
 }
 
-/*function is_assoc($array) {
-    return (is_array($array) && (0 !== count(array_diff_key($array, array_keys(array_keys($array)))) || count($array)==0));
-}*/
 /**
  * @fn file_get_contents_stripped($fileName)
  * @brief Get stripped contents.
@@ -379,4 +376,13 @@ function str_replace_opt($from, $to, $src) {
         }
     }
     return $src;
+}
+
+/**
+ * @param $fullyQualifiedClassName string
+ * @return string
+ */
+function simplifyClassName($fullyQualifiedClassName){
+    $className = explode('\\', $fullyQualifiedClassName);
+    return array_pop($className);
 }

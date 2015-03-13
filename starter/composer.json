@@ -1,0 +1,55 @@
+{
+    "name": "energine/cmf",
+    "description": "Energine is an XML/XSLT content management framework.",
+    "type":"project",
+    "license": "MIT",
+    "keywords": ["xml", "xslt", "framework", "cmf"],
+    "homepage": "http://energine.net/",
+    "require": {
+      "php": ">=5.4.0",
+      "ext-dom":"*",
+      "ext-gd":"*",
+      "ext-json":"*",
+      "ext-libxml":"*",
+      "ext-mbstring":"*",
+      "ext-PDO":"*",
+      "ext-pdo_mysql":"*",
+      "ext-SimpleXML":"*",
+      "ext-session":"*",
+      "ext-tidy":"*",
+      "ext-xsl":"*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Energine\\": "core/modules",
+            "EnergineSite\\": "site/modules"
+        }
+    },
+    "scripts": {
+        "nrgn-setup": "php htdocs/index.php setup",
+        "nrgn-linker": "php htdocs/index.php setup linker"
+    },
+    "authors": [
+        {
+            "name": "Pavel Dubenko",
+            "email": "d.pavka@gmail.com",
+            "homepage": "http://web-developer.kiev.ua",
+            "role": "Owner"
+        },
+        {
+            "name": "Andy Karpov",
+            "email": "andy.karpov@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Andrew Alexeenko",
+            "email": "wildex1@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Valeriy Zinchenko",
+            "email": "formatcok@gmail.com",
+            "role": "Developer"
+        }
+    ]
+}

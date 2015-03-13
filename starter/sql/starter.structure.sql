@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS `apps_news_uploads` (
 CREATE TABLE IF NOT EXISTS `apps_vote` (
   `vote_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `vote_date` datetime NOT NULL,
-  `vote_is_active` tinyint(1) NOT NULL,
+  `vote_is_active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`vote_id`),
   KEY `vote_is_active` (`vote_is_active`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
@@ -442,7 +442,7 @@ CREATE TABLE IF NOT EXISTS `share_domains` (
   `domain_protocol` char(5) NOT NULL DEFAULT 'http',
   `domain_port` mediumint(8) unsigned NOT NULL DEFAULT '80',
   `domain_host` varchar(255) NOT NULL,
-  `domain_root` varchar(255) NOT NULL,
+  `domain_root` varchar(255) NOT NULL DEFAULT '/',
   PRIMARY KEY (`domain_id`),
   UNIQUE KEY `domain_protocol` (`domain_protocol`,`domain_host`,`domain_port`,`domain_root`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
@@ -624,7 +624,7 @@ CREATE TABLE IF NOT EXISTS `share_sites` (
   `site_is_active` tinyint(1) NOT NULL DEFAULT '1',
   `site_is_indexed` tinyint(1) NOT NULL DEFAULT '1',
   `site_is_default` tinyint(1) NOT NULL DEFAULT '0',
-  `site_folder` char(20) NOT NULL DEFAULT 'default',
+  `site_folder` char(20) NOT NULL DEFAULT 'main',
   `site_order_num` int(10) unsigned DEFAULT '1',
   `site_meta_robots` text,
   `site_ga_code` text,

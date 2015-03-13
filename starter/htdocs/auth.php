@@ -1,10 +1,16 @@
 <?php
+use
+	Energine\share\gears\UserSession,
+	Energine\share\gears\Object,
+	Energine\share\gears\User,
+	Energine\user\gears\FBOAuth,
+	Energine\user\gears\VKOAuth;
+
 //на всякий пожарный проверяем реферрера
 if (!isset($_SERVER['HTTP_REFERER']) && (!isset($_GET['return']))) {
     //не местных  - в сад
     exit;
 }
-
 //подключаем bootstrap
 require_once('bootstrap.php');
 
@@ -23,7 +29,7 @@ if (
     ($vkAuth = isset($_GET['vkAuth']))
 ) {
     if ($login) {
-        if ($UID = AuthUser::authenticate(
+        if ($UID = Energine\share\gears\AuthUser::authenticate(
             $_POST['user']['username'],
             $_POST['user']['password']
         )
@@ -81,7 +87,7 @@ if (
 
             }
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);
             goto escape;
         }
@@ -135,7 +141,7 @@ if (
 
             }
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);
             goto escape;
         }

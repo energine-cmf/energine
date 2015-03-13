@@ -4,6 +4,8 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:og="http://ogp.me/ns#"
     xmlns:video="http://ogp.me/ns/video#"
+    xmlns:nrgn="http://energine.net#"
+    exclude-result-prefixes="og video nrgn"
     >
     <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
     <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
@@ -146,7 +148,7 @@
         </html>
     </xsl:template>
 
-    <xsl:template match="/" mode="title">
+    <xsl:template match="/" mode="title" xml:space="">
         <title><xsl:choose>
             <xsl:when test="$DOC_PROPS[@name='title']/@alt = ''">
                 <xsl:for-each select="$COMPONENTS[@name='breadCrumbs']/recordset/record">
@@ -384,10 +386,6 @@
         <xsl:apply-templates select="container | component"/>
     </xsl:template>
 
-    <xsl:template match="layout | content | container">
-        <xsl:apply-templates/>
-    </xsl:template>
-    
     <xsl:template match="/document/translations"/>
 
     <xsl:template match="component/javascript"/>
@@ -432,6 +430,11 @@
 
     <xsl:template match="component[@class='SiteProperties']">
         <xsl:value-of select="." disable-output-escaping="yes"/>
+    </xsl:template>
+
+    <xsl:template match="nrgn:insert-component">
+        <xsl:variable name="NAME" select="@name"/>
+        <xsl:apply-templates select="$COMPONENTS[@name=$NAME]"/>
     </xsl:template>
 
 </xsl:stylesheet>

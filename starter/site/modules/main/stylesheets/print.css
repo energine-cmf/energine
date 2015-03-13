@@ -1,0 +1,36 @@
+@charset "utf-8";
+/*
+Author: Yuriy Ponomarev (mailto:yourick.po@gmail.com)
+*/
+
+body {
+    background: #fff;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	color: #000;
+}
+hr {
+	height: 1px;
+	margin: 1em 0;
+	padding: 0;
+	color: gray;
+	background: gray;
+	border: 0;
+}
+img, a img {
+	border: 0;
+}
+h1, h2, h3, h4, h5, h6 {
+	margin: 0.5em 0 0.2em 0;
+}
+
+#pageToolbar, hr.separator, .e-topframe, .e-sideframe,
+.breadcrumbs, .lang_switcher, .main_menu, .login_form, .top_adblock, .left_adblock {
+	display: none;
+}
+.main {
+	margin: 1em 0;
+	padding: 1em 0;
+    border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+}

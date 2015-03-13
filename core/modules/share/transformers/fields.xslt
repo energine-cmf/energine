@@ -172,6 +172,18 @@
         </input>
     </xsl:template>
 
+    <xsl:template match="field[@type='money'][ancestor::component[@type='form']]" mode="field_input">
+        <input class="text inp_money">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+        </input>
+    </xsl:template>
+
+    <xsl:template match="field[@type='color'][ancestor::component[@type='form']]" mode="field_input">
+        <input class="text inp_color">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+        </input>
+    </xsl:template>
+
     <!-- поле пароля (password) -->
     <xsl:template match="field[@type='password' and ancestor::component[@type='form']]" mode="field_input">
         <input class="text inp_password">
@@ -271,7 +283,7 @@
     <xsl:template match="field[@type='select'][ancestor::component[@type='form']]" mode="field_input">
         <select id="{@name}">
             <xsl:attribute name="name"><xsl:choose>
-                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
                 <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
             </xsl:choose></xsl:attribute>
             <xsl:if test="@nullable='1'">
@@ -285,7 +297,7 @@
         <!--<div class="with_append">-->
             <select id="{@name}">
                 <xsl:attribute name="name"><xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
                     <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
                 </xsl:choose></xsl:attribute>
                 <xsl:if test="@nullable='1'">
@@ -308,7 +320,7 @@
     <!-- поле множественного выбора (multi) -->
     <xsl:template match="field[@type='multi'][ancestor::component[@type='form']]" mode="field_input">
         <xsl:variable name="NAME"><xsl:choose>
-            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
             <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
         </xsl:choose>[]</xsl:variable>
         <div class="checkbox_set">

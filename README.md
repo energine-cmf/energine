@@ -1,7 +1,8 @@
 energine
 ========
 
-Energine is a content management system which allows to support web-applications (including websites) of any level of complexity. Energine is based on Energine CMF — a power full toolkit for web-application development using XML/XSLT transformations.
+Energine is a content management framework which allows to support web-applications/websites of any level of complexity.
+Energine is component oriented system based on MVC pattern where all internal data is stored in XML format and View layer is implemented through XSLT transformations .
 
 Main features of Energine are:
 

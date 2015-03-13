@@ -1041,7 +1041,7 @@ var GridManager = new Class(/** @lends GridManager# */{
         this.grid.setData(result.data || []);
 
         if (result.pager) {
-            this.pageList.build(result.pager.count, result.pager.current, result.pager.records);
+            this.pageList.build(result.pager.count, result.pager.current);
         }
 
         if (!this.grid.isEmpty()) {
@@ -1390,13 +1390,16 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
         this.inputs = new GridManager.Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
 
         this.condition = this.element.getElement('.f_condition');
+        this.conditionOptions = [];
+
         this.condition.getChildren().each(function (el) {
             var types;
+            this.conditionOptions.push(el);
             if (types = el.getProperty('data-types')) {
                 el.store('type', types.split('|'));
                 el.removeProperty('data-types');
             }
-        });
+        }, this);
 
         this.fields = this.element.getElement('.f_fields');
         this.fields.addEvent('change', this.checkCondition.bind(this));
@@ -1413,50 +1416,25 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
     checkCondition: function () {
         var fieldType = this.fields.getSelected()[0].getAttribute('type'),
             isDate = (fieldType == 'datetime' || fieldType == 'date');
-        this.condition.getChildren().each(function (el) {
+        this.conditionOptions.each(function (el) {
             var types;
-
             if (types = el.retrieve('type')) {
                 if (types.contains(fieldType)) {
-                    el.setStyle('display', '');
+                    this.condition.grab(el);
                 }
                 else {
-                    el.setStyle('display', 'none');
+                    el.dispose();
                 }
             }
         }, this);
-
-        /*var typesMap = [
-         //Date types Если дата - оставляем период, < , > , =
-         {types: ['date', 'datetime'], conditions: ['between', '>', '<', '=', '!=']},
-         //string types Строковые - содержит, не содержит, =, !=
-         {types: ['string', 'text', 'htmlblock', 'select', 'phone', 'email'], conditions: ['like', 'notlike', '=', '!=']},
-         //Чисельные <, >, =, !=, период
-         {types: ['integer', 'float'], conditions: ['>', '<', '=', '!=', 'between']},
-         //Булиновы  - checked, unchecked
-         {types: ['boolean'], conditions: ['checked', 'unchecked']}
-         ];
-
-         //var availableConditions = ['like', 'notlike', '=', '!='];
-         this.condition.getElements('option').setStyle('display', 'none');
-
-         for (var i in typesMap) {
-         if (typesMap[i].types.contains(fieldType)) {
-         typesMap[i].conditions.each(function (c) {
-         if(this.condition.getElement('option[value=' + c + ']'))this.condition.getElement('option[value=' + c + ']').setStyle('display', '');
-         }, this);
-         break;
-         }
-         }
-         */
-        if (this.condition.options[this.condition.selectedIndex].getStyle('display') == 'none') {
+        /*if (this.condition.options[this.condition.selectedIndex].getStyle('display') == 'none') {
             for (var n = 0; n < this.condition.options.length; n++) {
                 if (this.condition.options[n].getStyle('display') !== 'none') {
                     this.condition.selectedIndex = n;
                     break;
                 }
             }
-        }
+        }*/
         this.switchInputs(this.condition.get('value'), fieldType);
         this.disableInputField(isDate);
         this.inputs.showDatePickers(isDate);

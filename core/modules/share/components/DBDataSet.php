@@ -86,9 +86,9 @@ class DBDataSet extends DataSet {
         return array_merge(
             parent::defineParams(),
             [
-                'tableName'       => false,
+                'tableName' => false,
                 'onlyCurrentLang' => false,
-                'editable'        => false
+                'editable' => false
             ]
         );
     }
@@ -137,6 +137,7 @@ class DBDataSet extends DataSet {
                 $this->commonLoadData() :
                 $this->multiLoadData()
         );
+
         return $data;
     }
 
@@ -228,14 +229,14 @@ class DBDataSet extends DataSet {
                 if (is_array($relInfo)) {
                     $langTable = $this->dbh->getTranslationTablename($relInfo['tableName']);
                     $relations[$valueFieldName] = [
-                        'table'      => (!$langTable) ? $relInfo['tableName'] : $langTable,
-                        'field'      => $relInfo['fieldName'],
-                        'lang'       => ($langTable) ? E()->getLanguage()->getCurrent() : false,
+                        'table' => (!$langTable) ? $relInfo['tableName'] : $langTable,
+                        'field' => $relInfo['fieldName'],
+                        'lang' => ($langTable) ? E()->getLanguage()->getCurrent() : false,
                         'valueField' => substr($relInfo['fieldName'], 0, strrpos($relInfo['fieldName'], '_')) . '_name'
                     ];
 
                     $cond = [
-                        $relations[$valueFieldName]['field'] => simplifyDBResult($data,$valueFieldName)
+                        $relations[$valueFieldName]['field'] => simplifyDBResult($data, $valueFieldName)
                     ];
 
 
@@ -257,13 +258,14 @@ class DBDataSet extends DataSet {
                             $values[$name])
                     ) {
                         $data[$key][$name] = [
-                            'id'    => $value,
+                            'id' => $value,
                             'value' => $values[$name][$value][$relations[$name]['valueField']]
                         ];
                     }
                 }
             }
         }
+
         return $data;
     }
 
@@ -670,16 +672,19 @@ class DBDataSet extends DataSet {
                         $table = $keyInfo['tableName'];
 
                         if ($this->dbh->tableExists($table)) {
-                            if($t = $this->dbh->getTranslationTablename($table)){
-                                $table = $t; unset($t);
+                            if ($t = $this->dbh->getTranslationTablename($table)) {
+                                $table = $t;
+                                unset($t);
                             }
-                            $valueFieldName = array_reduce(array_keys($this->dbh->getColumnsInfo($table)), function($str, $row){
+                            $valueFieldName = array_reduce(array_keys($this->dbh->getColumnsInfo($table)),
+                                function ($str, $row) {
 
-                                if(strpos($row, '_name')){
-                                    return $row;
-                                }
-                                return $str;
-                            });
+                                    if (strpos($row, '_name')) {
+                                        return $row;
+                                    }
+
+                                    return $str;
+                                });
                             $fieldMetaData->setProperty('value_field', $valueFieldName);
                             $fieldMetaData->setProperty('value_table', $table);
                             $fieldMetaData->setProperty('key_field', $keyInfo['fieldName']);

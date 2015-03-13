@@ -15,8 +15,8 @@ var Lookup = new Class({
             ModalBox.open({
                 url: this.url,
                 onClose: function (returnValue) {
-                    if (returnValue) {
-                        this.load(returnValue);
+                    if (returnValue && returnValue.data) {
+                        this.load(returnValue.data);
                     }
                 }.bind(this)
             });
@@ -100,8 +100,8 @@ var Lookup = new Class({
     },
 
     load: function(data){
-        this.keyField.set('value', data.data[this.keyFieldName]);
-        this.input.set('value', data.data[this.valueFieldName]);
+        this.keyField.set('value', data[this.keyFieldName]);
+        this.input.set('value', data[this.valueFieldName]);
     },
     /**
      * Select an item from the [list]{@link Tags#list}.

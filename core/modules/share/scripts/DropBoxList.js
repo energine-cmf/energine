@@ -62,11 +62,10 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
             this.ul = this.container.getChildren('ul')[0];
         }
         this.items = this.ul.getChildren();
-
-
-
-        this.input.addEvent('blur', this.hide.bind(this));
-
+        //this.input.addEvent('blur', this.hide.delay(10,this));
+        this.container.addEvent('keypress', this.keyPressed.bind(this));
+        this.active = true;
+        this.selectItem();
         this.hide();
     },
     /**
@@ -80,32 +79,10 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
                 this.add(row,string);
             }, this);
         }
-    },
-    /**
-     * Activate list.
-     *
-     * @fires ActiveList#choose
-     */
-    activate: function() {
-        this.items = this.ul.getChildren();
         this.active = true;
-        //this.container.focus();
-
+        this.items = this.ul.getChildren();
         this.selectItem();
 
-        this.container.addEvent('keypress', this.keyPressed.bind(this));
-
-        this.items.addEvent('mouseover', function(e) {
-            this.selectItem(e.target.getAllPrevious().length);
-        }.bind(this));
-        this.items.addEvent('click', function(e) {
-            /**
-             * The item from [items]{@link ActiveList#items} is selected.
-             * @event ActiveList#choose
-             * @param {Element} item Selected item.
-             */
-            this.fireEvent('choose', this.items[this.selected]);
-        }.bind(this));
     },
 
     /**
@@ -176,7 +153,10 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      * Empty the list.
      */
     empty: function() {
+        this.items.removeEvents('click');
+        this.items.removeEvents('mouseover');
         this.ul.empty();
+
     },
 
     /**
@@ -204,7 +184,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
         this.container.removeClass('hidden');
         var size = this.container.getComputedSize();
         this.container.setStyle('width', this.input.getSize().x - size['border-left-width'] - size['border-right-width']);
-        this.activate();
+
     },
 
     /**
@@ -221,11 +201,27 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      */
     add: function(data,string) {
         if(data.key && data.value){
+
             var value = data.value;
+            var item;
             if(string){
                 value = value.replace(string, '<b>'+string+'</b>');
             }
-            this.ul.grab(new Element('li').set('html', value).store('key', data.key));
+            this.ul.grab(item = new Element('li').set('html', value).store('key', data.key));
+            item.addEvent('click', function(e) {
+                /**
+                 * The item from [items]{@link ActiveList#items} is selected.
+                 * @event ActiveList#choose
+                 * @param {Element} item Selected item.
+                 */
+                this.fireEvent('choose', this.items[this.selected]);
+            }.bind(this));
+            item.addEvent('mouseover', function(e) {
+                console.log(e.target)
+                this.selectItem(e.target.getAllPrevious().length);
+            }.bind(this));
+
+
         }
 
     }

@@ -36,4 +36,26 @@ class Lookup extends Grid {
         return $this->config;
     }
 
+    protected function createDataDescription() {
+        $result = parent::createDataDescription();
+        $extraFields = [];
+        foreach ($result as $name => $fd) {
+            if (
+            !(($name == $this->getPK())
+                ||
+                ($name == 'lang_id')
+                ||
+                ($name == str_replace('_id', '_name', $this->getPK())))
+            ) {
+                array_push($extraFields, $fd);
+            }
+        }
+
+        foreach ($extraFields as $fd) {
+            $result->removeFieldDescription($fd);
+        }
+
+        return $result;
+    }
+
 }

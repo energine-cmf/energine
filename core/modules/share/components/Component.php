@@ -16,6 +16,8 @@ interface IBuilder;
  */
 namespace Energine\share\components;
 use Energine\share\gears\DBWorker, Energine\share\gears\IBlock, Energine\share\gears\Request, Energine\share\gears\ComponentConfig, Energine\share\gears\Document;
+use Energine\share\gears\SystemException;
+
 /**
  * Page component.
  *
@@ -97,13 +99,13 @@ class Component extends DBWorker implements IBlock {
      * Component properties.
      * @var array $properties
      */
-    private $properties = array();
+    private $properties = [];
 
     /**
      * List of errors, that occurs by component work.
      * @var array $errors
      */
-    private $errors = array();
+    private $errors = [];
 
     /**
      * Name of the current component state.
@@ -225,12 +227,12 @@ class Component extends DBWorker implements IBlock {
      * @return array
      */
     protected function defineParams() {
-        return array(
+        return [
             'state' => $this->state,
             'rights' => $this->document->getRights(),
             'config' => false,
             'active' => false,
-        );
+        ];
     }
 
     /**
@@ -373,18 +375,18 @@ class Component extends DBWorker implements IBlock {
      */
     public function run() {
         if (!$params = $this->getStateParams()) {
-            $params = array();
+            $params = [];
         }
 
         if (method_exists($this, $this->getState() . 'State')) {
-            call_user_func_array(array($this, $this->getState().'State'), $params);
+            call_user_func_array([$this, $this->getState().'State'], $params);
         } elseif (method_exists($this, $this->getState() )) {
-            call_user_func_array(array($this, $this->getState()), $params);
+            call_user_func_array([$this, $this->getState()], $params);
         } else {
             throw new SystemException(
                 'ERR_DEV_NO_ACTION',
                 SystemException::ERR_DEVELOPER,
-                array($this->getState(), $this->getName())
+                [$this->getState(), $this->getName()]
             );
         }
     }

@@ -2,32 +2,27 @@
 /**
  * @file
  * FieldDescription.
- *
  * It contains the definition to:
  * @code
 class FieldDescription;
-@endcode
- *
+ * @endcode
  * @author dr.Pavka
  * @copyright Energine 2006
- *
  * @version 1.0.0
  */
 namespace Energine\share\gears;
 
 /**
  * Description of the field data.
- *
  * @code
 class FieldDescription;
-@endcode
+ * @endcode
  */
 class FieldDescription extends DBWorker implements \Iterator {
     /**
      * Additional property names.
      * It is initialized in FieldDescription::$rewind and used by iterations.@n
      * This variable was created for eliminating calling 'array_keys' by iterations.
-     *
      * @var array $additionalPropertiesNames
      */
     private $additionalPropertiesNames;
@@ -62,7 +57,7 @@ class FieldDescription extends DBWorker implements \Iterator {
      */
     const FIELD_TYPE_TEXT = 'text';
     /**
-    Visual field type for code.
+     * Visual field type for code.
      * @var string FIELD_TYPE_CODE
      */
     const FIELD_TYPE_CODE = 'code';
@@ -102,11 +97,11 @@ class FieldDescription extends DBWorker implements \Iterator {
      */
     const FIELD_TYPE_FLOAT = 'float';
 
-	/**
-	 * Visual field type for money storage.
-	 * @var string FIELD_TYPE_FLOAT
-	 */
-	const FIELD_TYPE_MONEY = 'money';
+    /**
+     * Visual field type for money storage.
+     * @var string FIELD_TYPE_FLOAT
+     */
+    const FIELD_TYPE_MONEY = 'money';
 
     /**
      * Visual field type for file.
@@ -261,7 +256,6 @@ class FieldDescription extends DBWorker implements \Iterator {
     /**
      * System field name.
      * For fields from data base it includes table name: @code tableName[field_name] @endcode
-     *
      * @var string $systemName
      */
     private $systemName;
@@ -300,7 +294,6 @@ class FieldDescription extends DBWorker implements \Iterator {
      * Additional field properties.
      * It is a hash like @code array(propertyName => propertyValue)@endcode
      * Iteration works with this variable.
-     *
      * @var Object $additionalProperties
      */
     private $additionalProperties;
@@ -310,7 +303,6 @@ class FieldDescription extends DBWorker implements \Iterator {
     /**
      * Field length.
      * For the fields that has not the length it will set to @c true.
-     *
      * @var int $length
      */
     private $length = true;
@@ -324,7 +316,7 @@ class FieldDescription extends DBWorker implements \Iterator {
         $this->name = $name;
         $this->systemName = $name;
         $this->isMultilanguage = false;
-        $this->additionalProperties = $this->additionalPropertiesLower = array();
+        $this->additionalProperties = $this->additionalPropertiesLower = [];
 
         // формируем название поля добавляя префикс 'FIELD_'
         if ($name != self::EMPTY_FIELD_NAME) {
@@ -337,7 +329,6 @@ class FieldDescription extends DBWorker implements \Iterator {
     //todo VZ: This always return true. Why?
     /**
      * Load field description form the array.
-     *
      * @param array $fieldInfo Field information.
      * @return boolean
      */
@@ -357,24 +348,26 @@ class FieldDescription extends DBWorker implements \Iterator {
                 case 'isMultilanguage':
                     $this->isMultilanguage = true;
                     break;
-	            case 'options':
-					if(in_array($fieldInfo['type'], [DBA::COLTYPE_SET, DBA::COLTYPE_ENUM]) && is_array($propValue) && !@empty($propValue)){
-						$name = $this -> name;
-						$this->loadAvailableValues(
-							array_map(
-								function($row) use ($name) {
-									return [
-										'key' => $row,
-										'value' => $this->translate('FIELD_' . $name . '_ENUM_'. $row)
-									];
-								},
-								$propValue
-							),
-							'key', 'value'
-						);
-					}
+                case 'options':
+                    if (in_array($fieldInfo['type'],
+                            [DBA::COLTYPE_SET, DBA::COLTYPE_ENUM]) && is_array($propValue) && !@empty($propValue)
+                    ) {
+                        $name = $this->name;
+                        $this->loadAvailableValues(
+                            array_map(
+                                function ($row) use ($name) {
+                                    return [
+                                        'key'   => $row,
+                                        'value' => $this->translate('FIELD_' . $name . '_ENUM_' . $row)
+                                    ];
+                                },
+                                $propValue
+                            ),
+                            'key', 'value'
+                        );
+                    }
 
-		            break;
+                    break;
                 default:
                     $this->setProperty($propName, $propValue);
             }
@@ -386,10 +379,8 @@ class FieldDescription extends DBWorker implements \Iterator {
         return $result;
     }
 
-    //todo VZ: This always return true. Why?
     /**
      * Load field description from XML-description.
-     *
      * @param \SimpleXMLElement $fieldInfo XML element.
      * @return boolean
      */
@@ -417,18 +408,15 @@ class FieldDescription extends DBWorker implements \Iterator {
                     $this->setMode($attrValue);
                     break;
                 default:
-                    /*if(in_array($attrName, array('title', 'message', 'tabName'))){
-                             $attrValue = $this->translate($attrValue);
-                         }*/
                     $this->setProperty($attrName, $attrValue);
             }
         }
+
         return $result;
     }
 
     /**
      * Get field name.
-     *
      * @return string
      */
     public function getName() {
@@ -437,7 +425,6 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Set system field name.
-     *
      * @param string $systemName System name.
      */
     public function setSystemName($systemName) {
@@ -446,7 +433,6 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Get field length.
-     *
      * @return int|true
      */
     public function getLength() {
@@ -455,18 +441,17 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Set field length.
-     *
      * @param int $length Length.
      * @return FieldDescription
      */
     public function setLength($length) {
         $this->length = (int)$length;
+
         return $this;
     }
 
     /**
      * Get system name.
-     *
      * @return string
      */
     public function getSystemName() {
@@ -475,7 +460,6 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Set visual type.
-     *
      * @param string $type Visual field type.
      * @return FieldDescription
      */
@@ -552,20 +536,20 @@ class FieldDescription extends DBWorker implements \Iterator {
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('message', 'MSG_BAD_FLOAT_FORMAT');
                 break;
-	        case self::FIELD_TYPE_MONEY:
-		        if (
-			        ($this->getPropertyValue('nullable') === false)
-			        ||
-			        (is_null($this->getPropertyValue('nullable')))
-		        ) {
-			        $regexp = '/^[0-9]{1,10}[,\.]?[0-9]{0,2}$/';
-		        } else {
-			        $regexp = '/^(?:[0-9]{1,10}[,\.]?[0-9]{0,2})?$/';
-		        }
-		        $this->setProperty('sort', 1);
-		        $this->setProperty('pattern', $regexp);
-		        $this->setProperty('message', 'MSG_BAD_MONEY_FORMAT');
-		        break;
+            case self::FIELD_TYPE_MONEY:
+                if (
+                    ($this->getPropertyValue('nullable') === false)
+                    ||
+                    (is_null($this->getPropertyValue('nullable')))
+                ) {
+                    $regexp = '/^[0-9]{1,10}[,\.]?[0-9]{0,2}$/';
+                } else {
+                    $regexp = '/^(?:[0-9]{1,10}[,\.]?[0-9]{0,2})?$/';
+                }
+                $this->setProperty('sort', 1);
+                $this->setProperty('pattern', $regexp);
+                $this->setProperty('message', 'MSG_BAD_MONEY_FORMAT');
+                break;
             case self::FIELD_TYPE_BOOL:
                 $this->length = true;
                 $this->setProperty('outputFormat', '%s');
@@ -645,9 +629,6 @@ class FieldDescription extends DBWorker implements \Iterator {
                 $this->setProperty('message', 'MSG_WRONG_DATE_FORMAT');
                 $this->length = true;
                 break;
-            case self::FIELD_TYPE_LOOKUP:
-                $this->setProperty('url', '/'.$this->getName().'/lookup/');
-                break;
             case self::FIELD_TYPE_CUSTOM:
                 if ($this->getPropertyValue('nullable') === false) {
                     $this->setProperty('pattern', '/^.+$/');
@@ -664,7 +645,6 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Get visual type.
-     *
      * @return string
      */
     public function getType() {
@@ -674,7 +654,6 @@ class FieldDescription extends DBWorker implements \Iterator {
     /**
      * Set system field type.
      * At the same time the visual field type will be set based on system type.
-     *
      * @param string $systemType
      */
     public function setSystemType($systemType) {
@@ -684,7 +663,6 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Get system type.
-     *
      * @return string
      */
     public function getSystemType() {
@@ -693,18 +671,17 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Set Field mode.
-     *
      * @param int $mode Mode.
      * @return FieldDescription
      */
     public function setMode($mode) {
         $this->mode = $mode;
+
         return $this;
     }
 
     /**
      * Get field mode.
-     *
      * @return int
      */
     public function getMode() {
@@ -713,7 +690,6 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Set field rights.
-     *
      * @param int $rights Rights.
      */
     public function setRights($rights) {
@@ -722,7 +698,6 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Get rights.
-     *
      * @return int
      */
     public function getRights() {
@@ -732,35 +707,34 @@ class FieldDescription extends DBWorker implements \Iterator {
     /**
      * Set field property.
      * Some properties an values, that contain reserved construction @c trans(), will be automatic translated.
-     *
      * @param string $name Property name.
      * @param mixed $value Property value.
      * @return FieldDescription
      */
     public function setProperty($name, $value) {
-        if (in_array($name, array('title', 'message', 'tabName'))) {
+        if (in_array($name, ['title', 'message', 'tabName'])) {
             $value = $this->translate($value);
         } elseif (is_scalar($value) && (strpos($value, 'trans(') !== false)) {
-            $value = $this->translate(str_replace(array('trans', '(', ')'), '', $value));
+            $value = $this->translate(str_replace(['trans', '(', ')'], '', $value));
         }
         $this->additionalProperties[$name] = $this->additionalPropertiesLower[strtolower($name)] = $value;
+
         return $this;
     }
 
     /**
      * Remove property.
-     *
      * @param string $name Property name.
      * @return FieldDescription
      */
     public function removeProperty($name) {
         unset($this->additionalProperties[$name], $this->additionalPropertiesLower[strtolower($name)]);
+
         return $this;
     }
 
     /**
      * Get the list of additional property names.
-     *
      * @return array
      */
     public function getPropertyNames() {
@@ -769,7 +743,6 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Get property value.
-     *
      * @param string $name Property name.
      * @return mixed
      */
@@ -780,19 +753,19 @@ class FieldDescription extends DBWorker implements \Iterator {
         } elseif (isset($this->additionalProperties[$name])) {
             $value = $this->additionalProperties[$name];
         }
+
         return $value;
     }
 
     /**
      * Convert field type from system type to visual type.
-     *
      * @param string $systemType System type.
      * @param string $name Field name.
      * @param int $length Field length.
      * @param array $props Field properties.
      * @return string
      */
-    static public function convertType($systemType, $name, $length = 1, $props = array()) {
+    static public function convertType($systemType, $name, $length = 1, $props = []) {
         switch ($systemType) {
             case DBA::COLTYPE_STRING:
                 if (strpos($name, '_password')) {
@@ -801,11 +774,9 @@ class FieldDescription extends DBWorker implements \Iterator {
                     $result = self::FIELD_TYPE_EMAIL;
                 } elseif (strpos($name, '_phone')) {
                     $result = self::FIELD_TYPE_PHONE;
-                }
-                elseif (strpos($name, '_file') || strpos($name, '_img')) {
+                } elseif (strpos($name, '_file') || strpos($name, '_img')) {
                     $result = self::FIELD_TYPE_FILE;
-                }
-                elseif (strpos($name, '_video')) {
+                } elseif (strpos($name, '_video')) {
                     $result = self::FIELD_TYPE_VIDEO;
                 } else {
                     $result = self::FIELD_TYPE_STRING;
@@ -814,15 +785,14 @@ class FieldDescription extends DBWorker implements \Iterator {
             case DBA::COLTYPE_FLOAT:
                 $result = self::FIELD_TYPE_FLOAT;
                 break;
-	        case DBA::COLTYPE_DECIMAL:
-				if($length == 13){
-					$result = self::FIELD_TYPE_MONEY;
-				}
-				else {
-					$result = self::FIELD_TYPE_FLOAT;
-				}
+            case DBA::COLTYPE_DECIMAL:
+                if ($length == 13) {
+                    $result = self::FIELD_TYPE_MONEY;
+                } else {
+                    $result = self::FIELD_TYPE_FLOAT;
+                }
 
-		        break;
+                break;
             case DBA::COLTYPE_INTEGER:
                 if ($length == 1) {
                     if (strpos($name, '_info')) {
@@ -856,21 +826,21 @@ class FieldDescription extends DBWorker implements \Iterator {
             case DBA::COLTYPE_DATE:
                 $result = self::FIELD_TYPE_DATE;
                 break;
-	        case DBA::COLTYPE_ENUM:
-		        $result = self::FIELD_TYPE_SELECT;
-		        break;
-	        case DBA::COLTYPE_SET:
-		        $result = self::FIELD_TYPE_MULTI;
-		        break;
+            case DBA::COLTYPE_ENUM:
+                $result = self::FIELD_TYPE_SELECT;
+                break;
+            case DBA::COLTYPE_SET:
+                $result = self::FIELD_TYPE_MULTI;
+                break;
             default:
                 $result = $systemType;
         }
+
         return $result;
     }
 
     /**
      * Intersect the configuration meta-data with meta-data from data base.
-     *
      * @param FieldDescription $configFieldDescription Configuration meta-data.
      * @param FieldDescription $dbFieldDescription Meta-data from data base.
      * @return FieldDescription
@@ -893,7 +863,8 @@ class FieldDescription extends DBWorker implements \Iterator {
             $dbFieldDescription->setMode($mode);
         }
         $dbFieldDescription->isMultilanguage = $configFieldDescription->isMultilanguage || $dbFieldDescription->isMultilanguage();
-        $properties = array_unique(array_merge($configFieldDescription->getPropertyNames(), $dbFieldDescription->getPropertyNames()));
+        $properties = array_unique(array_merge($configFieldDescription->getPropertyNames(),
+            $dbFieldDescription->getPropertyNames()));
 
         foreach ($properties as $propertyName) {
             $propertyValue = $configFieldDescription->getPropertyValue($propertyName);
@@ -902,31 +873,31 @@ class FieldDescription extends DBWorker implements \Iterator {
                 $dbFieldDescription->setProperty($propertyName, $propertyValue);
             }
         }
+
         return $dbFieldDescription;
     }
 
     /**
      * Validate data.
-     *
      * @param mixed $data Data.
      * @return boolean
      */
     public function validate($data) {
         if (
-	        !is_array($data) &&
-	        (is_int($this->length) && strlen($data) > $this->length)
+            !is_array($data) &&
+            (is_int($this->length) && strlen($data) > $this->length)
         ) {
             return false;
         }
         if ($this->getPropertyValue('pattern') && !preg_match($this->getPropertyValue('pattern'), $data)) {
             return false;
         }
+
         return true;
     }
 
     /**
      * Check if the data in the field is multilingual.
-     *
      * @return boolean
      */
     public function isMultilanguage() {
@@ -942,17 +913,15 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Load the set of available field values.
-     *
      * @param mixed $values Set of values.
      * @param string $keyName Name of the key field.
      * @param string $valueName Field name of the main value.
      * @return $this
-     *
      * @see QAL::select()
      */
     public function loadAvailableValues($values, $keyName, $valueName) {
         if (is_array($values) && empty($this->availableValues)) {
-            $result = array();
+            $result = [];
             foreach ($values as $row) {
                 $key = $row[$keyName];
                 $value = $row[$valueName];
@@ -960,49 +929,48 @@ class FieldDescription extends DBWorker implements \Iterator {
                 unset($row[$keyName]);
                 unset($row[$valueName]);
 
-                $result[$key] = array(
-                    'value' => $value,
+                $result[$key] = [
+                    'value'      => $value,
                     'attributes' => (empty($row) ? false : $row)
-                );
+                ];
             }
             $this->availableValues = $result;
         }
+
         return $this;
     }
 
     /**
      * Load available values from the component config.
      * @code
-<field type="select">
-    <options>
-        <option id="1" [attributes]>TXT_1</option>
-        <option id="2" [attributes]>TXT_2</option>
-    </options>
-</field>
-@endcode
-     *
+    <field type="select">
+     * <options>
+     * <option id="1" [attributes]>TXT_1</option>
+     * <option id="2" [attributes]>TXT_2</option>
+     * </options>
+     * </field>
+     * @endcode
      * @param \SimpleXMLElement $options Options.
      */
     private function loadAvailableXMLValues(\SimpleXMLElement $options) {
-        $result = array();
+        $result = [];
         foreach ($options as $option) {
-            $optAttributes = array();
+            $optAttributes = [];
             foreach ($option->attributes() as $optAttrName => $optAttrValue) {
                 if ((string)$optAttrName != 'id') {
                     $optAttributes[(string)$optAttrName] = (string)$optAttrValue;
                 }
             }
-            $result[(int)$option['id']] = array(
-                'value' => $this->translate((string)$option),
+            $result[(int)$option['id']] = [
+                'value'      => $this->translate((string)$option),
                 'attributes' => $optAttributes
-            );
+            ];
         }
         $this->availableValues = $result;
     }
 
     /**
      * Get available field values.
-     *
      * @return array
      */
     public function &getAvailableValues() {
@@ -1011,19 +979,18 @@ class FieldDescription extends DBWorker implements \Iterator {
 
     /**
      * Set available values.
-     *
      * @param array $av Available values.
      * @return FieldDescription
      */
     public function setAvailableValues($av) {
         $this->availableValues = $av;
+
         return $this;
     }
 
     //todo VZ: What is $RORights and $FCRights?
     /**
      * Compute the field rights.
-     *
      * @param int $methodRights Method rights.
      * @param null|int $RORights
      * @param null|int $FCRights

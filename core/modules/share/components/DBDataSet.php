@@ -669,8 +669,13 @@ class DBDataSet extends DataSet {
                         //если нет значит это забота программиста наполнить значениями
                         break;
                     case FieldDescription::FIELD_TYPE_LOOKUP:
+                        if ($editor = $fieldMetaData->getPropertyValue('editor')) {
+                            $url = $fieldMetaData->getName() . '-' . $editor;
+                        } else {
+                            $url = $fieldMetaData->getName();
+                        }
+                        $fieldMetaData->setProperty('url', '/' . urlencode($url) . '/lookup/');
                         $table = $keyInfo['tableName'];
-
                         if ($this->dbh->tableExists($table)) {
                             if ($t = $this->dbh->getTranslationTablename($table)) {
                                 $table = $t;

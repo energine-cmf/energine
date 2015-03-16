@@ -4,6 +4,7 @@
         <filter>
             <field name="news_title" title="FIELD_NEWS_TITLE"/>
             <field name="news_is_active"/>
+            <field name="news_date"/>
         </filter>
         <javascript>
             <behavior name="GridManager"/>

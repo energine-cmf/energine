@@ -14,7 +14,9 @@ class Filter;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
+
 use Energine\share\components\Grid;
+
 /**
  * Filters.
  *
@@ -72,7 +74,6 @@ class Filter extends Object {
             FieldDescription::FIELD_TYPE_SELECT,
             FieldDescription::FIELD_TYPE_TEXT,
             FieldDescription::FIELD_TYPE_HTML_BLOCK,
-            FieldDescription::FIELD_TYPE_VALUE,
             FieldDescription::FIELD_TYPE_PHONE,
             FieldDescription::FIELD_TYPE_EMAIL,
             FieldDescription::FIELD_TYPE_CODE,
@@ -132,16 +133,24 @@ class Filter extends Object {
                 'condition' => '!=1'
             ),
         );
-
         if (isset($_POST[self::TAG_NAME]) && !empty($_POST[self::TAG_NAME])) {
-            $this->data = $_POST[self::TAG_NAME];
-            if (!isset($this->data['condition']) || !in_array($this->data['condition'], array_keys($this->map))) {
-
-                throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $this->data);
+            if (!($this->data = json_decode($_POST[self::TAG_NAME], true))) {
+                throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $_POST[self::TAG_NAME]);
             }
-            $this->condition = $this->data['condition'];
-            unset($this->data['condition']);
+
+            $clear = function ($data) use (&$clear) {
+                $result = [];
+                foreach ($data as $key => $value) {
+                    if (!is_null($value)) {
+                        if (is_array($value)) $value = $clear($value);
+                        $result[$key] = $value;
+                    }
+                }
+                return $result;
+            };
+            $this->data = new FilterClauseSet($clear($this->data));
         }
+
     }
 
     /**
@@ -152,10 +161,10 @@ class Filter extends Object {
     public function apply(Grid $grid) {
         if ($this->data) {
             $dbh = E()->getDB();
+            inspect($this->data);
             $tableName = key($this->data);
             $fieldName = key($this->data[$tableName]);
             $values = $this->data[$tableName][$fieldName];
-
             if (
                 !$dbh->tableExists($tableName)
                 ||
@@ -208,7 +217,7 @@ class Filter extends Object {
 
 
                 if (in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE))) {
-                    array_walk($this->map, function(&$row){
+                    array_walk($this->map, function (&$row) {
                         $row['condition'] = str_replace('\'%s\'', 'DATE(\'%s\')', $row['condition']);
                     });
 
@@ -371,5 +380,67 @@ class Filter extends Object {
         foreach ($this->fields as $field) {
             $field->translate();
         }
+    }
+}
+
+class FilterClause extends Object {
+    private $table;
+    private $field;
+    private $condition;
+    private $value;
+
+    function __construct($data) {
+        if (isset($data['field']) && preg_match('/^\[([a-z_]+)\]\[([a-z_]+)\]$/', $data['field'], $matches)) {
+            $this->table = $matches[1];
+            $this->field = $matches[2];
+        }
+        if (isset($data['condition'])) {
+            $this->condition = $data['condition'];
+        }
+        if (isset($data['value'])) {
+            $this->value = $data['value'];
+        }
+    }
+
+    public function build() {
+
+    }
+}
+
+class FilterClauseSet extends Object {
+    private $children = [];
+    private $operator = 'OR';
+
+    public function __construct($data) {
+        $this->load($data);
+    }
+
+    private function load($data) {
+        if (isset($data['children']) && is_array($data['children'])) {
+            foreach ($data['children'] as $child) {
+                if (array_key_exists('children', $child)) {
+                    $child = new FilterClauseSet($child);
+                } else {
+                    $child = new FilterClause($child);
+                }
+                array_push($this->children, $child);
+
+            }
+        }
+        if (isset($data['operator'])) {
+            $this->operator = $data['operator'];
+        }
+    }
+
+    public function build() {
+        array_reduce($this->children, function(){
+
+        });
+        /*.each(function (child, index, clause) {
+                           result += '(' + child.build() + ')';
+                           if (index < clause.length - 1) {
+                               result += ' ' + this.operator + ' ';
+                           }
+                       }, this);*/
     }
 }

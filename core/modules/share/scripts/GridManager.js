@@ -48,11 +48,11 @@ var Grid = (function () {
             // Увеличиваем дельту на 16px (размер полосы прокрутки) если это последняя колонка и грид не пустой.
             if (i == firstRow.childNodes.length - 1) {
                 delta += ((this.data.length ||
-                    this.prevDataLength > 0) ? 16 : 0);
+                this.prevDataLength > 0) ? 16 : 0);
                 this.prevDataLength = this.data.length;
             }
             header.setStyle('width', firstRow.childNodes[i].getSize().size.x +
-                delta + 'px');
+            delta + 'px');
         }, this);
         if (!this.data.length) this.tbody.getFirst().dispose();
     }
@@ -433,8 +433,9 @@ var Grid = (function () {
                 case 'boolean':
                     var checkbox = new Element('img').setProperties({
                         'src': 'images/checkbox_' + (record[fieldName] == true ? 'on' : 'off') + '.png',
-                        'width': '13', 'height': '13'}).inject(cell);
-                    cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
+                        'width': '13', 'height': '13'
+                    }).inject(cell);
+                    cell.setStyles({'text-align': 'center', 'vertical-align': 'middle'});
                     break;
                 case 'value':
                     cell.set('html', record[fieldName]['value']);
@@ -448,8 +449,12 @@ var Grid = (function () {
                     break;
                 case 'file':
                     if (record[fieldName]) {
-                        var image = new Element('img').setProperties({ 'src': Energine.resizer + 'w40-h40/' + record[fieldName], 'width': 40, 'height': 40 }).inject(cell);
-                        cell.setStyles({ 'text-align': 'center', 'vertical-align': 'middle' });
+                        var image = new Element('img').setProperties({
+                            'src': Energine.resizer + 'w40-h40/' + record[fieldName],
+                            'width': 40,
+                            'height': 40
+                        }).inject(cell);
+                        cell.setStyles({'text-align': 'center', 'vertical-align': 'middle'});
                     }
                     break;
                 default :
@@ -775,7 +780,7 @@ var GridManager = new Class(/** @lends GridManager# */{
          * Pages.
          * @type {PageList}
          */
-        this.pageList = new PageList({ onPageSelect: this.loadPage.bind(this) });
+        this.pageList = new PageList({onPageSelect: this.loadPage.bind(this)});
 
         /**
          * Grid.
@@ -791,7 +796,7 @@ var GridManager = new Class(/** @lends GridManager# */{
          * Tabs.
          * @type {TabPane}
          */
-        this.tabPane = new TabPane(this.element, { onTabChange: this.onTabChange.bind(this) });
+        this.tabPane = new TabPane(this.element, {onTabChange: this.onTabChange.bind(this)});
 
         var toolbarContainer = this.tabPane.element.getElement('.e-pane-b-toolbar');
         if (toolbarContainer) {
@@ -924,9 +929,9 @@ var GridManager = new Class(/** @lends GridManager# */{
         if (this.toolbar.getControlById('edit')) {
             this.edit();
         }
-        else if(this.toolbar.controls.length) {
+        else if (this.toolbar.controls.length) {
             var action = this.toolbar.controls[0].properties.action;
-            if(this[action]) this[action]();
+            if (this[action]) this[action]();
         }
     },
 
@@ -992,7 +997,7 @@ var GridManager = new Class(/** @lends GridManager# */{
 
         if (this.grid.sort.order) {
             url = this.singlePath + 'get-data/' + this.grid.sort.field + '-'
-                + this.grid.sort.order + '/page-' + pageNum
+            + this.grid.sort.order + '/page-' + pageNum
         } else {
             url = this.singlePath + 'get-data/page-' + pageNum;
         }
@@ -1094,8 +1099,10 @@ var GridManager = new Class(/** @lends GridManager# */{
      * @public
      */
     view: function () {
-        ModalBox.open({ url: this.singlePath +
-            this.grid.getSelectedRecordKey() });
+        ModalBox.open({
+            url: this.singlePath +
+            this.grid.getSelectedRecordKey()
+        });
     },
 
     /**
@@ -1428,13 +1435,13 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
             }
         }, this);
         /*if (this.condition.options[this.condition.selectedIndex].getStyle('display') == 'none') {
-            for (var n = 0; n < this.condition.options.length; n++) {
-                if (this.condition.options[n].getStyle('display') !== 'none') {
-                    this.condition.selectedIndex = n;
-                    break;
-                }
-            }
-        }*/
+         for (var n = 0; n < this.condition.options.length; n++) {
+         if (this.condition.options[n].getStyle('display') !== 'none') {
+         this.condition.selectedIndex = n;
+         break;
+         }
+         }
+         }*/
         this.switchInputs(this.condition.get('value'), fieldType);
         this.disableInputField(isDate);
         this.inputs.showDatePickers(isDate);
@@ -1519,10 +1526,10 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
     getValue: function () {
         var result = '';
         if (this.active && this.inputs.hasValues()) {
-            var fieldName = this.fields.options[this.fields.selectedIndex].value,
-                fieldCondition = this.condition.options[this.condition.selectedIndex].value;
-
-            result = this.inputs.getValues('filter' + fieldName) + '&filter[condition]=' + fieldCondition + '&';
+            var f = new GridManager.Filter.Clause(this.fields.options[this.fields.selectedIndex].value, this.condition.options[this.condition.selectedIndex].value);
+            result = 'filter=' + JSON.encode(
+                new GridManager.Filter.ClauseSet(this.inputs.getValues(f))
+            ) + '&';
         }
         return result;
     }
@@ -1625,17 +1632,11 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      * @param {string} fieldName The field name from the recordset.
      * @returns {string}
      */
-    getValues: function (fieldName) {
-        var str = '';
-        this[(this.isDate) ? 'dpsInputs' : 'inputs'].each(function (el, index, els) {
-            if (el.get('value')) {
-                str += fieldName + '[]=' + el.get('value');
-            }
-            if (index != (els.length - 1)) {
-                str += '&';
-            }
+    getValues: function (clause) {
+        this[(this.isDate) ? 'dpsInputs' : 'inputs'].each(function (el) {
+            clause.setValue(el.get('value'));
         });
-        return str;
+        return clause;
     },
 
     /**
@@ -1691,7 +1692,47 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
         }
     }
 });
+GridManager.Filter.Clause = new Class({
+    value: '',
+    initialize: function (fieldName, condition) {
+        this.field = fieldName;
+        this.condition = condition;
+    },
+    setValue: function (value) {
+        console.log(value)
+        if (value) {
+            if (this.value) {
+                this.value = [this.value].push(value);
+            }
+            else {
+                this.value = value;
+            }
+        }
 
+    }
+});
+GridManager.Filter.ClauseSet = new Class({
+    children: [],
+    initialize: function () {
+        if (!arguments.length) {
+            throw 'No arguments';
+        }
+        Array.each(arguments, function (arg) {
+            this.add(arg);
+        }, this);
+        this.setOperator('OR');
+    },
+    add: function (clause) {
+        this.children.push(clause);
+    },
+    setOperator: function (operator) {
+        operator = operator.toUpperCase();
+        if (['OR', 'AND'].indexOf(operator) != -1) {
+            this.operator = operator;
+        }
+        return this;
+    }
+});
 document.addEvent('domready', function () {
     /**
      * Scroll bar width of the browser.

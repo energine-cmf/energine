@@ -2,15 +2,12 @@
 /**
  * @file
  * Filter
- *
  * It contains the definition to:
  * @code
 class Filter;
  * @endcode
- *
  * @author andy.karpov
  * @copyright Energine 2013
- *
  * @version 1.0.0
  */
 namespace Energine\share\gears;
@@ -19,7 +16,6 @@ use Energine\share\components\Grid;
 
 /**
  * Filters.
- *
  * @code
 class Filter;
  * @endcode
@@ -41,35 +37,32 @@ class Filter extends Object {
      * Set of FilterField's.
      * @var array $fields
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * Additional properties.
      * @var array $properties
      */
-    private $properties = array();
+    private $properties = [];
     /**
      * Filter map
      * Contains all info about filters
-     *
      * @var array
      */
-    private $map = array();
+    private $map = [];
     /**
      * Filter data
-     *
      * @var array
      */
     private $data = null;
     /**
      * Current filter condition
-     *
      * @var string
      */
     private $condition = false;
 
     public function __construct() {
-        $stringTypes = array(
+        $stringTypes = [
             FieldDescription::FIELD_TYPE_STRING,
             FieldDescription::FIELD_TYPE_SELECT,
             FieldDescription::FIELD_TYPE_TEXT,
@@ -77,62 +70,62 @@ class Filter extends Object {
             FieldDescription::FIELD_TYPE_PHONE,
             FieldDescription::FIELD_TYPE_EMAIL,
             FieldDescription::FIELD_TYPE_CODE,
-        );
-        $numericTypes = array(
+        ];
+        $numericTypes = [
             FieldDescription::FIELD_TYPE_INT,
             FieldDescription::FIELD_TYPE_FLOAT
-        );
-        $dateTypes = array(
+        ];
+        $dateTypes = [
             FieldDescription::FIELD_TYPE_DATETIME,
             FieldDescription::FIELD_TYPE_DATE
-        );
-        $this->map = array(
-            'like' => array(
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_CONTAINS'),
-                'type' => $stringTypes,
+        ];
+        $this->map = [
+            'like'      => [
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_CONTAINS'),
+                'type'      => $stringTypes,
                 'condition' => 'LIKE \'%%%s%%\'',
-            ),
-            'notlike' => array(
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_NOT_CONTAINS'),
-                'type' => $stringTypes,
+            ],
+            'notlike'   => [
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_NOT_CONTAINS'),
+                'type'      => $stringTypes,
                 'condition' => 'NOT LIKE \'%%%s%%\'',
-            ),
-            '=' => array(
-                'title' => '=',
-                'type' => array_merge($stringTypes, $numericTypes, $dateTypes),
+            ],
+            '='         => [
+                'title'     => '=',
+                'type'      => array_merge($stringTypes, $numericTypes, $dateTypes),
                 'condition' => '= \'%s\'',
-            ),
-            '!=' => array(
-                'title' => '!=',
-                'type' => array_merge($stringTypes, $numericTypes, $dateTypes),
+            ],
+            '!='        => [
+                'title'     => '!=',
+                'type'      => array_merge($stringTypes, $numericTypes, $dateTypes),
                 'condition' => '!= \'%s\'',
-            ),
-            '<' => array(
-                'title' => '<',
-                'type' => array_merge($dateTypes, $numericTypes),
+            ],
+            '<'         => [
+                'title'     => '<',
+                'type'      => array_merge($dateTypes, $numericTypes),
                 'condition' => '<\'%s\'',
-            ),
-            '>' => array(
-                'title' => '>',
-                'type' => array_merge($dateTypes, $numericTypes),
+            ],
+            '>'         => [
+                'title'     => '>',
+                'type'      => array_merge($dateTypes, $numericTypes),
                 'condition' => '>\'%s\'',
-            ),
-            'between' => array(
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_BETWEEN'),
-                'type' => array_merge($dateTypes, $numericTypes),
+            ],
+            'between'   => [
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_BETWEEN'),
+                'type'      => array_merge($dateTypes, $numericTypes),
                 'condition' => 'BETWEEN \'%s\' AND \'%s\'',
-            ),
-            'checked' => array(
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_CHECKED'),
-                'type' => array(FieldDescription::FIELD_TYPE_BOOL),
+            ],
+            'checked'   => [
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_CHECKED'),
+                'type'      => [FieldDescription::FIELD_TYPE_BOOL],
                 'condition' => '= 1',
-            ),
-            'unchecked' => array(
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_UNCHEKED'),
-                'type' => array(FieldDescription::FIELD_TYPE_BOOL),
+            ],
+            'unchecked' => [
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_UNCHEKED'),
+                'type'      => [FieldDescription::FIELD_TYPE_BOOL],
                 'condition' => '!=1'
-            ),
-        );
+            ],
+        ];
         if (isset($_POST[self::TAG_NAME]) && !empty($_POST[self::TAG_NAME])) {
             if (!($this->data = json_decode($_POST[self::TAG_NAME], true))) {
                 throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $_POST[self::TAG_NAME]);
@@ -142,13 +135,16 @@ class Filter extends Object {
                 $result = [];
                 foreach ($data as $key => $value) {
                     if (!is_null($value)) {
-                        if (is_array($value)) $value = $clear($value);
+                        if (is_array($value)) {
+                            $value = $clear($value);
+                        }
                         $result[$key] = $value;
                     }
                 }
+
                 return $result;
             };
-            $this->data = new FilterClauseSet($clear($this->data));
+            $this->data =  FilterFieldGroup::createFrom($clear($this->data));
         }
 
     }
@@ -186,23 +182,29 @@ class Filter extends Object {
                         $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
                     '_name';
                 $fkTableInfo = $dbh->getColumnsInfo($fkTableName);
-                if (!isset($fkTableInfo[$fkValueField])) $fkValueField = $fkKeyName;
+                if (!isset($fkTableInfo[$fkValueField])) {
+                    $fkValueField = $fkKeyName;
+                }
 
                 if ($res =
                     $dbh->getColumn($fkTableName, $fkKeyName,
                         $fkTableName . '.' . $fkValueField . ' ' .
-                        call_user_func_array('sprintf', array_merge(array($this->map[$this->condition]['condition']), $values)) .
+                        call_user_func_array('sprintf',
+                            array_merge([$this->map[$this->condition]['condition']], $values)) .
                         ' ')
                 ) {
-                    $grid->addFilterCondition(array($tableName . '.' . $fieldName => $res));
+                    $grid->addFilterCondition([$tableName . '.' . $fieldName => $res]);
                 } else {
                     $grid->addFilterCondition(' FALSE');
                 }
             } else {
 
-                $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName, $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
+                $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName,
+                    $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
 
-                if (in_array($this->condition, array('like', 'notlike')) && in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME))) {
+                if (in_array($this->condition, ['like', 'notlike']) && in_array($fieldType,
+                        [FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME])
+                ) {
                     if ($this->condition == 'like') {
                         $this->condition = '=';
                     } else {
@@ -216,7 +218,7 @@ class Filter extends Object {
                 }
 
 
-                if (in_array($fieldType, array(FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE))) {
+                if (in_array($fieldType, [FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE])) {
                     array_walk($this->map, function (&$row) {
                         $row['condition'] = str_replace('\'%s\'', 'DATE(\'%s\')', $row['condition']);
                     });
@@ -225,7 +227,7 @@ class Filter extends Object {
                 $conditionPatterns = $this->map[$this->condition]['condition'];
                 $grid->addFilterCondition(
                     $fieldName . ' ' .
-                    call_user_func_array('sprintf', array_merge(array($conditionPatterns), $values)) .
+                    call_user_func_array('sprintf', array_merge([$conditionPatterns], $values)) .
                     ' '
                 );
             }
@@ -235,7 +237,6 @@ class Filter extends Object {
 
     /**
      * Attach new filed.
-     *
      * @param FilterField $field New filter field.
      */
     public function attachField(FilterField $field) {
@@ -245,9 +246,7 @@ class Filter extends Object {
 
     /**
      * Detach field.
-     *
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TO_DETACH'
-     *
      * @param FilterField $field filter field.
      */
     public function detachField(FilterField $field) {
@@ -259,15 +258,13 @@ class Filter extends Object {
 
     /**
      * Build filter from XML description.
-     *
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
-     *
      * @param \SimpleXMLElement $filterDescription Filter description.
      * @param array $meta Info about table columns
      * @return mixed
      */
     public function load(\SimpleXMLElement $filterDescription, array $meta = null) {
-        if (!empty($filterDescription))
+        if (!empty($filterDescription)) {
             foreach ($filterDescription->field as $fieldDescription) {
                 if (!isset($fieldDescription['name'])) {
                     throw new SystemException('ERR_BAD_FILTER_XML', SystemException::ERR_DEVELOPER);
@@ -277,11 +274,11 @@ class Filter extends Object {
                 $this->attachField($field);
                 $field->load($fieldDescription, (isset($meta[$name]) ? $meta[$name] : null));
             }
+        }
     }
 
     /**
      * Get filter fields.
-     *
      * @return array
      */
     public function getFields() {
@@ -290,7 +287,6 @@ class Filter extends Object {
 
     /**
      * Set filter property.
-     *
      * @param string $name Property name.
      * @param mixed $value Property value.
      */
@@ -300,7 +296,6 @@ class Filter extends Object {
 
     /**
      * Get property.
-     *
      * @param string $name Property name.
      * @return array|null
      */
@@ -308,12 +303,12 @@ class Filter extends Object {
         if (isset($this->properties[$name])) {
             return $this->properties[$name];
         }
+
         return null;
     }
 
     /**
      * Build filter.
-     *
      * @return \DOMNode
      */
     public function build() {
@@ -383,64 +378,47 @@ class Filter extends Object {
     }
 }
 
-class FilterClause extends Object {
-    private $table;
-    private $field;
-    private $condition;
-    private $value;
-
-    function __construct($data) {
-        if (isset($data['field']) && preg_match('/^\[([a-z_]+)\]\[([a-z_]+)\]$/', $data['field'], $matches)) {
-            $this->table = $matches[1];
-            $this->field = $matches[2];
-        }
-        if (isset($data['condition'])) {
-            $this->condition = $data['condition'];
-        }
-        if (isset($data['value'])) {
-            $this->value = $data['value'];
-        }
-    }
-
-    public function build() {
-
-    }
-}
-
-class FilterClauseSet extends Object {
+class FilterFieldGroup {
     private $children = [];
     private $operator = 'OR';
 
-    public function __construct($data) {
-        $this->load($data);
+    private function __construct() {
+
+    }
+    public function add($child){
+        array_push($this->children, $child);
     }
 
-    private function load($data) {
+    public static function createFrom($data){
+        $result = new FilterFieldGroup();
         if (isset($data['children']) && is_array($data['children'])) {
             foreach ($data['children'] as $child) {
                 if (array_key_exists('children', $child)) {
-                    $child = new FilterClauseSet($child);
+                    $child = new FilterFieldGroup($child);
                 } else {
-                    $child = new FilterClause($child);
+                    $child = FilterField::createFrom($child);
                 }
-                array_push($this->children, $child);
+                $child->add($child);
+
 
             }
         }
         if (isset($data['operator'])) {
-            $this->operator = $data['operator'];
+            $result->setOperator($data['operator']);
         }
+        return $result;
     }
 
-    public function build() {
-        array_reduce($this->children, function(){
+    public function setOperator($operator) {
+        $this->operator = $operator;
+    }
 
+    public function __toString() {
+        $result = '';
+        array_reduce($this->children, function ($result, $filter) {
+            return $result . ' (' . (string)$filter . ') ' . $this->operator;
         });
-        /*.each(function (child, index, clause) {
-                           result += '(' + child.build() + ')';
-                           if (index < clause.length - 1) {
-                               result += ' ' + this.operator + ' ';
-                           }
-                       }, this);*/
+
+        return substr($result, 0, -sizeof($this->operator));
     }
 }

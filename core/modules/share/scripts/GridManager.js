@@ -1526,7 +1526,7 @@ GridManager.Filter = new Class(/** @lends GridManager.Filter# */{
     getValue: function () {
         var result = '';
         if (this.active && this.inputs.hasValues()) {
-            var f = new GridManager.Filter.Clause(this.fields.options[this.fields.selectedIndex].value, this.condition.options[this.condition.selectedIndex].value);
+            var f = new GridManager.Filter.Clause(this.fields.options[this.fields.selectedIndex].value, this.condition.options[this.condition.selectedIndex].value, this.fields.options[this.fields.selectedIndex].getAttribute('type'));
             result = 'filter=' + JSON.encode(
                 new GridManager.Filter.ClauseSet(this.inputs.getValues(f))
             ) + '&';
@@ -1634,7 +1634,7 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
      */
     getValues: function (clause) {
         this[(this.isDate) ? 'dpsInputs' : 'inputs'].each(function (el) {
-            clause.setValue(el.get('value'));
+            clause.setValue(el.get('value').toString());
         });
         return clause;
     },
@@ -1694,15 +1694,15 @@ GridManager.Filter.QueryControls = new Class(/** @lends GridManager.Filter.Query
 });
 GridManager.Filter.Clause = new Class({
     value: '',
-    initialize: function (fieldName, condition) {
+    initialize: function (fieldName, condition, type) {
         this.field = fieldName;
         this.condition = condition;
+        this.type = type;
     },
     setValue: function (value) {
-        console.log(value)
         if (value) {
             if (this.value) {
-                this.value = [this.value].push(value);
+                (this.value = [this.value]).push(value);
             }
             else {
                 this.value = value;

@@ -2,24 +2,18 @@
 /**
  * @file
  * FilterField
- *
  * It contains the definition to:
  * @code
 class FilterField;
  * @endcode
- *
  * @author andy.karpov
  * @copyright Energine 2013
- *
  * @version 1.0.0
  */
 namespace Energine\share\gears;
 
-//todo VZ: This is very similar to Control class.
-//todo Pavka: But this is not control .... hmm .... but why not? :)
 /**
  * Filter control.
- *
  * @code
 class FilterField;
  * @endcode
@@ -39,7 +33,6 @@ class FilterField extends Object {
 
     /**
      * Element type.
-     *
      * @var string $type
      */
     protected $type = FieldDescription::FIELD_TYPE_STRING;
@@ -48,7 +41,7 @@ class FilterField extends Object {
      * Additional attributes.
      * @var array $attributes
      */
-    private $attributes = array();
+    private $attributes = [];
 
     /**
      * Filter that holds this control element.
@@ -61,6 +54,8 @@ class FilterField extends Object {
      * @var int $index
      */
     private $index = false;
+    private $condition;
+    private $value;
 
     /**
      * @param string $name Name.
@@ -74,7 +69,6 @@ class FilterField extends Object {
 
     /**
      * Attach filter.
-     *
      * @param Filter $filter Filter.
      */
     public function attach($filter) {
@@ -83,7 +77,6 @@ class FilterField extends Object {
 
     /**
      * Get attached filter.
-     *
      * @return Filter
      */
     protected function getFilter() {
@@ -92,7 +85,6 @@ class FilterField extends Object {
 
     /**
      * Set element ID.
-     *
      * @param int $index ID.
      */
     public function setIndex($index) {
@@ -101,21 +93,19 @@ class FilterField extends Object {
 
     /**
      * Get element ID.
-     *
      * @return int
-     *
      * @throws SystemException 'ERR_DEV_NO_CONTROL_INDEX'
      */
     public function getIndex() {
         if ($this->index === false) {
             throw new SystemException('ERR_DEV_NO_CONTROL_INDEX', SystemException::ERR_DEVELOPER);
         }
+
         return $this->index;
     }
 
     /**
      * Load element from XML description.
-     *
      * @param \SimpleXMLElement $description Element description.
      * @param array $meta DB column meta data
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
@@ -129,13 +119,13 @@ class FilterField extends Object {
         unset($attrs['name']);
 
         if ($meta) {
-            if(!isset($attrs['title'])){
-                $attrs['title'] = 'FIELD_'.$this->getAttribute('name');
+            if (!isset($attrs['title'])) {
+                $attrs['title'] = 'FIELD_' . $this->getAttribute('name');
             }
-            $attrs['type'] = FieldDescription::convertType($meta['type'], $this->getAttribute('name'), $meta['length'], $meta);
+            $attrs['type'] = FieldDescription::convertType($meta['type'], $this->getAttribute('name'), $meta['length'],
+                $meta);
             $attrs['tableName'] = $meta['tableName'];
         }
-
 
         foreach ($attrs as $key => $value) {
             if (isset($this->$key)) {
@@ -148,9 +138,7 @@ class FilterField extends Object {
 
     /**
      * Get element type.
-     *
      * @return string
-     *
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function getType() {
@@ -159,7 +147,6 @@ class FilterField extends Object {
 
     /**
      * Set attribute.
-     *
      * @param string $attrName Attribute name.
      * @param mixed $attrValue Attribute value.
      */
@@ -169,7 +156,6 @@ class FilterField extends Object {
 
     /**
      * Get attribute.
-     *
      * @param string $attrName Attribute name.
      * @return mixed
      */
@@ -177,12 +163,42 @@ class FilterField extends Object {
         if (isset($this->attributes[$attrName])) {
             return $this->attributes[$attrName];
         }
+
         return false;
     }
 
     /**
+     * @param $data
+     * @return FilterField
+     */
+    public static function createFrom($data) {
+        if (isset($data['field']) && preg_match('/^\[([a-z_]+)\]\[([a-z_]+)\]$/', $data['field'], $matches)) {
+            $result = new FilterField($matches[2]);
+            $result->setAttribute('tableName', $matches[1]);
+            if (isset($data['type'])) {
+                $result->setAttribute('type', $data['type']);
+                if (isset($data['condition'])) {
+                    $result->condition = $data['condition'];
+                }
+                if (isset($data['value'])) {
+                    $result->value = $data['value'];
+                }
+            }
+        }
+
+        return $result;
+    }
+
+
+    function __toString() {
+        $result = 'TRUE';
+
+        return $result;
+    }
+
+
+    /**
      * Build element.
-     *
      * @return DOMNode
      */
     public function build() {
@@ -200,10 +216,9 @@ class FilterField extends Object {
 
     /**
      * Translate language-dependent attributes.
-     *
      * @param array $attrs Set of attributes for translation.
      */
-    public function translate($attrs = array('title')) {
+    public function translate($attrs = ['title']) {
         foreach ($attrs as $attrName) {
             $attrValue = (string)$this->getAttribute($attrName);
             if ($attrValue) {

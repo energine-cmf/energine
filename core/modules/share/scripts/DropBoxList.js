@@ -140,6 +140,9 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
         if (body.scrollHeight > body.getSize().y) {
             this.input.scrollIntoView();
         }
+
+        if(this.items[id])
+            new Fx.Scroll(this.container).toElementEdge(this.items[id]);
     },
 
     /**

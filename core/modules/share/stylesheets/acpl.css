@@ -16,6 +16,7 @@
 }
 .alist ul li{
     padding:5px;
+    cursor: default;
 }
 .alist ul li.selected{
     background-color: #6FCFE3;

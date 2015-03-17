@@ -287,11 +287,17 @@ class FilterFieldGroup implements \Iterator {
         $this->index = 0;
     }
 
-
+    /**
+     * @param $child
+     */
     public function add($child) {
         array_push($this->children, $child);
     }
 
+    /**
+     * @param $data
+     * @return FilterFieldGroup
+     */
     public static function createFrom($data) {
         $result = new FilterFieldGroup();
         if (isset($data['children']) && is_array($data['children'])) {
@@ -310,10 +316,21 @@ class FilterFieldGroup implements \Iterator {
         return $result;
     }
 
+    /**
+     * @param $operator
+     */
     public function setOperator($operator) {
-        $this->operator = $operator;
+        $operator = strtoupper($operator);
+
+        if(in_array($operator, ['OR', 'AND']))
+            $this->operator = $operator;
     }
 
+    /**
+     * return filter conditions as SQL string
+     *
+     * @return string
+     */
     public function __toString() {
         $result = '';
         array_reduce($this->children, function ($result, $filter) {
@@ -324,6 +341,12 @@ class FilterFieldGroup implements \Iterator {
     }
 }
 
+/**
+ * Class FilterConditionConverter
+ * Mapper for types and corresponded condition
+ *
+ * @package Energine\share\gears
+ */
 class FilterConditionConverter implements \ArrayAccess, \Iterator {
     /**
      * @var FilterConditionConverter

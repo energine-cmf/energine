@@ -63,9 +63,7 @@ class Filter extends Object {
      */
     public function apply(Grid $grid) {
         if ($this->data) {
-            foreach ($this->data as $v) {
-                $grid->addFilterCondition((string)$v);
-            }
+            $grid->addFilterCondition((string)$this->data);
         }
     }
 
@@ -203,7 +201,6 @@ class Filter extends Object {
 /**
  * Class FilterConditionConverter
  * Mapper for types and corresponded condition
- *
  * @package Energine\share\gears
  */
 class FilterConditionConverter implements \ArrayAccess, \Iterator {
@@ -342,6 +339,7 @@ class FilterConditionConverter implements \ArrayAccess, \Iterator {
         if (is_null(self::$instance)) {
             self::$instance = new static;
         }
+
         return self::$instance;
     }
 
@@ -367,49 +365,49 @@ class FilterConditionConverter implements \ArrayAccess, \Iterator {
             FieldDescription::FIELD_TYPE_DATE
         ];
         $this->map = [
-            'like' => [
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_CONTAINS'),
-                'type' => $stringTypes,
+            'like'      => [
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_CONTAINS'),
+                'type'      => $stringTypes,
                 'condition' => 'LIKE \'%%%s%%\'',
             ],
-            'notlike' => [
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_NOT_CONTAINS'),
-                'type' => $stringTypes,
+            'notlike'   => [
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_NOT_CONTAINS'),
+                'type'      => $stringTypes,
                 'condition' => 'NOT LIKE \'%%%s%%\'',
             ],
-            '=' => [
-                'title' => '=',
-                'type' => array_merge($stringTypes, $numericTypes, $dateTypes),
+            '='         => [
+                'title'     => '=',
+                'type'      => array_merge($stringTypes, $numericTypes, $dateTypes),
                 'condition' => '= \'%s\'',
             ],
-            '!=' => [
-                'title' => '!=',
-                'type' => array_merge($stringTypes, $numericTypes, $dateTypes),
+            '!='        => [
+                'title'     => '!=',
+                'type'      => array_merge($stringTypes, $numericTypes, $dateTypes),
                 'condition' => '!= \'%s\'',
             ],
-            '<' => [
-                'title' => '<',
-                'type' => array_merge($dateTypes, $numericTypes),
+            '<'         => [
+                'title'     => '<',
+                'type'      => array_merge($dateTypes, $numericTypes),
                 'condition' => '<\'%s\'',
             ],
-            '>' => [
-                'title' => '>',
-                'type' => array_merge($dateTypes, $numericTypes),
+            '>'         => [
+                'title'     => '>',
+                'type'      => array_merge($dateTypes, $numericTypes),
                 'condition' => '>\'%s\'',
             ],
-            'between' => [
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_BETWEEN'),
-                'type' => array_merge($dateTypes, $numericTypes),
+            'between'   => [
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_BETWEEN'),
+                'type'      => array_merge($dateTypes, $numericTypes),
                 'condition' => 'BETWEEN \'%s\' AND \'%s\'',
             ],
-            'checked' => [
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_CHECKED'),
-                'type' => [FieldDescription::FIELD_TYPE_BOOL],
+            'checked'   => [
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_CHECKED'),
+                'type'      => [FieldDescription::FIELD_TYPE_BOOL],
                 'condition' => '= 1',
             ],
             'unchecked' => [
-                'title' => DBWorker::_translate('TXT_FILTER_SIGN_UNCHEKED'),
-                'type' => [FieldDescription::FIELD_TYPE_BOOL],
+                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_UNCHEKED'),
+                'type'      => [FieldDescription::FIELD_TYPE_BOOL],
                 'condition' => '!=1'
             ],
         ];

@@ -56,15 +56,15 @@ class FilterField extends Object {
     private $index = false;
     private $condition;
     private $value;
+    private $name;
 
     /**
      * @param string $name Name.
      * @param string
      */
     public function __construct($name, $type = FieldDescription::FIELD_TYPE_STRING) {
-        $this->setAttribute('name', $name);
+        $this->name = $name;
         $this->type = $type;
-        $this->doc = new \DOMDocument('1.0', 'UTF-8');
     }
 
     /**
@@ -120,7 +120,7 @@ class FilterField extends Object {
 
         if ($meta) {
             if (!isset($attrs['title'])) {
-                $attrs['title'] = 'FIELD_' . $this->getAttribute('name');
+                $attrs['title'] = 'FIELD_' . $this->name;
             }
             $attrs['type'] = FieldDescription::convertType($meta['type'], $this->getAttribute('name'), $meta['length'],
                 $meta);
@@ -191,9 +191,79 @@ class FilterField extends Object {
 
 
     function __toString() {
-        $result = 'TRUE';
 
-        return $result;
+        if (!$this->value) return '';
+
+        $dbh = E()->getDB();
+        $tableName = $this->getAttribute('tableName');
+        $fieldName = $this->name;
+        $values = $this->value;
+        if (!is_array($values)) {
+            $values = [$values];
+        }
+
+        if (
+            !$dbh->tableExists($tableName)
+            ||
+            !($tableInfo = $dbh->getColumnsInfo($tableName))
+            ||
+            !isset($tableInfo[$fieldName])
+        ) {
+            throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $tableName);
+        }
+
+        if (is_array($tableInfo[$fieldName]['key'])) {
+            $fkTranslationTableName =
+                $dbh->getTranslationTablename($tableInfo[$fieldName]['key']['tableName']);
+            $fkTableName =
+                ($fkTranslationTableName) ? $fkTranslationTableName
+                    : $tableInfo[$fieldName]['key']['tableName'];
+            $fkValueField = substr($fkKeyName =
+                    $tableInfo[$fieldName]['key']['fieldName'], 0, strrpos($fkKeyName, '_')) .
+                '_name';
+            $fkTableInfo = $dbh->getColumnsInfo($fkTableName);
+            if (!isset($fkTableInfo[$fkValueField])) {
+                $fkValueField = $fkKeyName;
+            }
+
+            if ($res =
+                $dbh->getColumn($fkTableName, $fkKeyName,
+                    $fkTableName . '.' . $fkValueField . ' ' .
+                    call_user_func_array('sprintf',
+                        array_merge([FilterConditionConverter::getInstance()[$this->condition]['condition']], $values)) .
+                    ' ')
+            ) {
+                return $tableName . '.' . $fieldName . ' IN (' . implode(',', $res) . ')';
+            } else {
+                return 'FALSE';
+            }
+        } else {
+
+            $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName,
+                $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
+
+            if (in_array($this->condition, ['like', 'notlike']) && in_array($fieldType,
+                    [FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME])
+            ) {
+                if ($this->condition == 'like') {
+                    $this->condition = '=';
+                } else {
+                    $this->condition = '!=';
+                }
+            }
+
+            $fieldName = (($tableName) ? $tableName . '.' : '') . $fieldName;
+            if ($fieldType == FieldDescription::FIELD_TYPE_DATETIME) {
+                $fieldName = 'DATE(' . $fieldName . ')';
+            }
+
+            $conditionPatterns = FilterConditionConverter::getInstance()[$this->condition]['condition'];
+            if (in_array($fieldType, [FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE])) {
+                $conditionPatterns = str_replace('\'%s\'', 'DATE(\'%s\')', $conditionPatterns);
+            }
+
+            return $fieldName . ' ' . call_user_func_array('sprintf', array_merge([$conditionPatterns], $values)) . ' ';
+        }
     }
 
 
@@ -202,12 +272,14 @@ class FilterField extends Object {
      * @return DOMNode
      */
     public function build() {
+        $this->doc = new \DOMDocument('1.0', 'UTF-8');
 
         $controlElem = $this->doc->createElement(self::TAG_NAME);
-
+        $controlElem->setAttribute('name', $this->name);
         foreach ($this->attributes as $attrName => $attrValue) {
             $controlElem->setAttribute($attrName, $attrValue);
         }
+
         $controlElem->setAttribute('type', $this->getType());
         $this->doc->appendChild($controlElem);
 

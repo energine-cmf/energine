@@ -149,9 +149,12 @@ class FilterField extends Object {
      * Set attribute.
      * @param string $attrName Attribute name.
      * @param mixed $attrValue Attribute value.
+     *
+     * @return FilterField
      */
     public function setAttribute($attrName, $attrValue) {
         $this->attributes[$attrName] = $attrValue;
+        return $this;
     }
 
     /**
@@ -189,11 +192,30 @@ class FilterField extends Object {
         return $result;
     }
 
+    public function setValue($value){
+        $this->value = $value;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue() {
+        return $this->value;
+    }
+
+    /**
+     * @param mixed $condition
+     * @return FilterField
+     */
+    public function setCondition($condition) {
+        $this->condition = $condition;
+        return $this;
+    }
+
 
     function __toString() {
-
         if (!$this->value) return '';
-
         $dbh = E()->getDB();
         $tableName = $this->getAttribute('tableName');
         $fieldName = $this->name;

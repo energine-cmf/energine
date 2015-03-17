@@ -16,6 +16,7 @@ use Energine\share\gears\AbstractBuilder;
 use Energine\share\gears\DocumentController;
 use Energine\share\gears\ExtendedSaver;
 use Energine\share\gears\FilterField;
+use Energine\share\gears\FilterData;
 use Energine\share\gears\GridConfig;
 use Energine\share\gears\Saver;
 use Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\QAL, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\Filter, Energine\share\gears\ComponentConfig, Energine\share\gears\JSONBuilder, Energine\share\gears\TagManager, Energine\share\gears\Field, Energine\share\gears\AttachmentManager, Energine\share\gears\Image, Energine\share\gears\Data, Energine\share\gears\DataDescription;
@@ -325,10 +326,10 @@ class Grid extends DBDataSet {
 
             $b = new JSONCustomBuilder();
             $b->setProperties([
-                'data'   => (is_int($result)) ? $result
+                'data' => (is_int($result)) ? $result
                     : (int)$_POST[$this->getTableName()][$this->getPK()],
                 'result' => true,
-                'mode'   => (is_int($result)) ? 'insert' : 'update'
+                'mode' => (is_int($result)) ? 'insert' : 'update'
             ]);
             $this->setBuilder($b);
         } catch (SystemException $e) {
@@ -767,8 +768,8 @@ class Grid extends DBDataSet {
         $sp = $this->getStateParams(true);
         $attachmentEditorParams = [
             'origTableName' => $this->getTableName(),
-            'pk'            => $this->getPK(),
-            'tableName'     => $this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX,
+            'pk' => $this->getPK(),
+            'tableName' => $this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX,
         ];
 
         if (isset($sp['id'])) {
@@ -1055,7 +1056,7 @@ class Grid extends DBDataSet {
         $b = new JSONCustomBuilder();
         $b->setProperties([
             'result' => true,
-            'dir'    => $direction
+            'dir' => $direction
         ]);
         $this->setBuilder($b);
     }
@@ -1064,8 +1065,7 @@ class Grid extends DBDataSet {
      * Apply user filter.
      */
     protected function applyUserFilter() {
-        $filter = new Filter();
-        $filter->apply($this);
+        (new Filter(FilterData::createFromPOST()))->apply($this);
     }
 
     /**
@@ -1146,7 +1146,7 @@ class Grid extends DBDataSet {
                 if (is_array($tags) && !empty($tags)) {
                     foreach ($tags as $tag) {
                         $result['data'][] = [
-                            'key'   => $tag,
+                            'key' => $tag,
                             'value' => $tag
                         ];
                     }
@@ -1155,7 +1155,7 @@ class Grid extends DBDataSet {
         } catch (\Exception $e) {
             $result = [
                 'result' => false,
-                'data'   => false,
+                'data' => false,
                 'errors' => []
             ];
         }

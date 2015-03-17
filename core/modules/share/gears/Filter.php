@@ -13,7 +13,6 @@ class Filter;
 namespace Energine\share\gears;
 
 use Energine\share\components\Grid;
-use RecursiveIterator;
 
 /**
  * Filters.
@@ -47,32 +46,14 @@ class Filter extends Object {
     private $properties = [];
     /**
      * Filter data
-     * @var FilterFieldGroup
+     * @var FilterData
      */
     private $data = null;
 
-    public function __construct() {
-        if (isset($_POST[self::TAG_NAME]) && !empty($_POST[self::TAG_NAME])) {
-            if (!($this->data = json_decode($_POST[self::TAG_NAME], true))) {
-                throw new SystemException('ERR_BAD_FILTER_DATA', SystemException::ERR_CRITICAL, $_POST[self::TAG_NAME]);
-            }
-
-            $clear = function ($data) use (&$clear) {
-                $result = [];
-                foreach ($data as $key => $value) {
-                    if (!is_null($value)) {
-                        if (is_array($value)) {
-                            $value = $clear($value);
-                        }
-                        $result[$key] = $value;
-                    }
-                }
-
-                return $result;
-            };
-            $this->data = FilterFieldGroup::createFrom($clear($this->data));
+    public function __construct(FilterData $data = null) {
+        if (!is_null($data)) {
+            $this->data = $data;
         }
-
     }
 
     /**
@@ -216,128 +197,6 @@ class Filter extends Object {
         foreach ($this->fields as $field) {
             $field->translate();
         }
-    }
-}
-
-/**
- * Class FilterFieldGroup
- * @package Energine\share\gears
- * @param FilterFieldGroup[]|FilterField[]
- */
-class FilterFieldGroup implements \Iterator {
-    /**
-     * @var FilterFieldGroup[]|FilterField[]
-     */
-    private $children = [];
-    private $operator = 'OR';
-    private $index;
-
-    private function __construct() {
-
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Return the current element
-     * @link http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     */
-    public function current() {
-        return $this->children[$this->index];
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Move forward to next element
-     * @link http://php.net/manual/en/iterator.next.php
-     * @return void Any returned value is ignored.
-     */
-    public function next() {
-        $this->index++;
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Return the key of the current element
-     * @link http://php.net/manual/en/iterator.key.php
-     * @return mixed scalar on success, or null on failure.
-     */
-    public function key() {
-        return $this->index;
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Checks if current position is valid
-     * @link http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
-     */
-    public function valid() {
-        return isset($this->children[$this->index]);
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Rewind the Iterator to the first element
-     * @link http://php.net/manual/en/iterator.rewind.php
-     * @return void Any returned value is ignored.
-     */
-    public function rewind() {
-        $this->index = 0;
-    }
-
-    /**
-     * @param $child
-     */
-    public function add($child) {
-        array_push($this->children, $child);
-    }
-
-    /**
-     * @param $data
-     * @return FilterFieldGroup
-     */
-    public static function createFrom($data) {
-        $result = new FilterFieldGroup();
-        if (isset($data['children']) && is_array($data['children'])) {
-            foreach ($data['children'] as $child) {
-                if (array_key_exists('children', $child)) {
-                    $child = new FilterFieldGroup($child);
-                } else {
-                    $child = FilterField::createFrom($child);
-                }
-                $result->add($child);
-            }
-        }
-        if (isset($data['operator'])) {
-            $result->setOperator($data['operator']);
-        }
-        return $result;
-    }
-
-    /**
-     * @param $operator
-     */
-    public function setOperator($operator) {
-        $operator = strtoupper($operator);
-
-        if(in_array($operator, ['OR', 'AND']))
-            $this->operator = $operator;
-    }
-
-    /**
-     * return filter conditions as SQL string
-     *
-     * @return string
-     */
-    public function __toString() {
-        $result = '';
-        array_reduce($this->children, function ($result, $filter) {
-            return $result . ' (' . (string)$filter . ') ' . $this->operator;
-        });
-
-        return substr($result, 0, -sizeof($this->operator));
     }
 }
 

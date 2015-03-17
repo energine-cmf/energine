@@ -1,3 +1,5 @@
+ScriptLoader.load('Filter');
+
 var Lookup = new Class({
     initialize: function (el, componentPath) {
         var button;
@@ -88,13 +90,15 @@ var Lookup = new Class({
      * @param {string} str Data string.
      */
     requestValues: function (str) {
-        var filterString = 'filter[' + this.valueTable + '][' + this.valueFieldName + '][]=' + str + '&filter[condition]=like';
+        console.log(Filter.Clause.create(this.valueFieldName, this.valueTable, 'like', 'string'))
         new Request.JSON({
             url: this.url + 'get-data/',
             onSuccess: this.rebuild.bind(this)
         }).send({
                 method: 'post',
-                data: filterString
+                data: 'filter=' + JSON.encode(
+                    new Filter.ClauseSet(Filter.Clause.create(this.valueFieldName, this.valueTable, 'like', 'string').setValue(str))
+                ) + '&'
             });
     },
 

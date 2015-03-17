@@ -1176,6 +1176,8 @@ class Grid extends DBDataSet {
 
     /**
      * Create Grid filter
+     * if there is filter description in config - load it
+     * else  - create filter using DataDescription info
      */
     protected function createFilter() {
         if ($config = $this->getConfig()->getCurrentStateConfig()) {

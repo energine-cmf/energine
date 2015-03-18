@@ -291,7 +291,7 @@ class Grid extends DBDataSet {
         $FKField = $params['fk_field_name'];
 
         if (array_key_exists('editor_class', $params)) {
-            list($section, $module, , $lookupClass) = explode('\\', urldecode($params['editor_class']));
+            list($section, $module, , $lookupClass) = explode('.', $params['editor_class']);
             $module = (($section == 'Energine') ? '' : 'site/') . $module;
         } else {
             $lookupClass = 'Lookup';

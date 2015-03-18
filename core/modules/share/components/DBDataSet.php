@@ -674,7 +674,8 @@ class DBDataSet extends DataSet {
                         } else {
                             $url = $fieldMetaData->getName();
                         }
-                        $fieldMetaData->setProperty('url', '/' . urlencode($url) . '/lookup/');
+                        //Problem with safari where urlencoded backslash(%5C) converted into backslash
+                        $fieldMetaData->setProperty('url', '/' . str_replace('\\', '.', $url) . '/lookup/');
                         $table = $keyInfo['tableName'];
                         if ($this->dbh->tableExists($table)) {
                             if ($t = $this->dbh->getTranslationTablename($table)) {

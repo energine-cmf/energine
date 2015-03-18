@@ -59,7 +59,7 @@ var Lookup = new Class({
 
             default :
                 if (val != this.value) {
-                    if (val.length > 3) {
+                    if (val.length > Lookup.START_CHAR_COUNT) {
                         this.value = val;
                         this.requestValues(val);
                     }
@@ -143,3 +143,4 @@ var Lookup = new Class({
 });
 
 Lookup.TIMEOUT_PERIOD = 500;
+Lookup.START_CHAR_COUNT = 2;

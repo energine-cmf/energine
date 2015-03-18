@@ -120,29 +120,40 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
      * @param {number} [id = 0] Item ID.
      */
     selectItem: function (id) {
-        if (!id) {
-            id = 0;
+        if (!this.selectionPeriod) {
+            this.selectionPeriod = new Date().get('sec');
         }
-
-        if (id < 0) {
-            id = this.items.length + id;
-        } else if (id >= this.items.length) {
-            id -= this.items.length;
+        if ((this.selectionPeriod - new Date().get('sec')) < DropBoxList.SELECTION_PERIOD) {
+            if (this.selectionTimeout) {
+                clearTimeout(this.selectionTimeout);
+                this.selectionTimeout = null;
+            }
         }
+        this.selectionTimeout = (function () {
+            if (!id) {
+                id = 0;
+            }
 
-        this.unselectItem(this.selected);
-        if (this.items[id])
-            this.items[id].addClass('selected');
+            if (id < 0) {
+                id = this.items.length + id;
+            } else if (id >= this.items.length) {
+                id -= this.items.length;
+            }
 
-        this.selected = id;
+            this.unselectItem(this.selected);
+            if (this.items[id])
+                this.items[id].addClass('selected');
 
-        var body = $(document.body);
-        if (body.scrollHeight > body.getSize().y) {
-            this.input.scrollIntoView();
-        }
+            this.selected = id;
 
-        if(this.items[id])
-            new Fx.Scroll(this.container).toElementEdge(this.items[id]);
+            var body = $(document.body);
+            if (body.scrollHeight > body.getSize().y) {
+                this.input.scrollIntoView();
+            }
+
+            if (this.items[id])
+                new Fx.Scroll(this.container).toElementEdge(this.items[id]);
+        }).delay(DropBoxList.SELECTION_PERIOD, this);
     },
 
     /**
@@ -201,7 +212,7 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
     },
     highlight: function (data, search) {
         if (!search) return data;
-
+        search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
         return data.replace(new RegExp("(" + search + ")", 'gi'), "<b>$1</b>");
     },
 
@@ -232,3 +243,5 @@ var DropBoxList = new Class(/** @lends DropBoxList# */{
 
     }
 });
+
+DropBoxList.SELECTION_PERIOD = 300;

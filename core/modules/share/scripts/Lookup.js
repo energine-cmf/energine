@@ -3,6 +3,7 @@ ScriptLoader.load('Filter');
 var Lookup = new Class({
     initialize: function (el, componentPath) {
         var button;
+
         this.el = $(el);
         this.url = componentPath + this.el.getProperty('data-url');
         this.keyField = this.el.getElement('input[type=hidden]');
@@ -29,6 +30,7 @@ var Lookup = new Class({
         this.list.get().inject(this.input, 'after');
         //Вешаем на keyup для того чтобы у нас было реальное value поля
         this.input.addEvent('keyup', this.enter.bind(this));
+        this.date = false;
     },
 
     /**
@@ -56,8 +58,13 @@ var Lookup = new Class({
                 break;
 
             default :
-                this.value = val;
-                this.requestValues(val);
+                if (val != this.value) {
+                    if (val.length > 3) {
+                        this.value = val;
+                        this.requestValues(val);
+                    }
+                }
+
 
         }
     },
@@ -90,16 +97,29 @@ var Lookup = new Class({
      * @param {string} str Data string.
      */
     requestValues: function (str) {
-        console.log(Filter.Clause.create(this.valueFieldName, this.valueTable, 'like', 'string'))
-        new Request.JSON({
-            url: this.url + 'get-data/',
-            onSuccess: this.rebuild.bind(this)
-        }).send({
-                method: 'post',
-                data: 'filter=' + JSON.encode(
-                    new Filter.ClauseSet(Filter.Clause.create(this.valueFieldName, this.valueTable, 'like', 'string').setValue(str))
-                ) + '&'
-            });
+        if (!this.date) {
+            this.date = new Date();
+        }
+
+        if ((this.date.get('sec') - new Date().get('sec')) < Lookup.TIMEOUT_PERIOD) {
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+                this.timeout = null;
+            }
+        }
+
+        this.timeout = (function () {
+            new Request.JSON({
+                url: this.url + 'get-data/',
+                link: 'cancel',
+                onSuccess: this.rebuild.bind(this)
+            }).send({
+                    data: 'filter=' + JSON.encode(
+                        new Filter.ClauseSet(Filter.Clause.create(this.valueFieldName, this.valueTable, 'like', 'string').setValue(str))
+                    ) + '&'
+                });
+        }).delay(Lookup.TIMEOUT_PERIOD, this);
+
     },
 
     load: function (data) {
@@ -121,3 +141,5 @@ var Lookup = new Class({
         this.list.hide();
     }
 });
+
+Lookup.TIMEOUT_PERIOD = 500;

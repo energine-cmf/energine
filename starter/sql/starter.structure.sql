@@ -863,13 +863,17 @@ CREATE TABLE IF NOT EXISTS `user_user_groups` (
   KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Constraints for dumped tables
---
 
---
--- Constraints for table `apps_feed`
---
+CREATE TABLE share_sites_properties (
+  prop_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  site_id int(10) unsigned DEFAULT NULL,
+  prop_name varchar(255) NOT NULL,
+  prop_value text NOT NULL,
+  PRIMARY KEY (prop_id),
+  UNIQUE KEY site_id (site_id,prop_name)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
 ALTER TABLE `apps_feed`
   ADD CONSTRAINT `apps_feed_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -1109,6 +1113,8 @@ ALTER TABLE `share_uploads_tags`
 ALTER TABLE `user_user_groups`
   ADD CONSTRAINT `user_user_groups_ibfk_3` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_user_groups_ibfk_4` FOREIGN KEY (`group_id`) REFERENCES `user_groups` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE share_sites_properties  ADD CONSTRAINT share_sites_properties_ibfk_1 FOREIGN KEY (site_id) REFERENCES share_sites (site_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;

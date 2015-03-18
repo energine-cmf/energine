@@ -1,0 +1,16 @@
+.idea
+image-cache/*
+htdocs/images/
+htdocs/scripts/
+htdocs/stylesheets/
+htdocs/system.config.php
+htdocs/system.jsmap.php
+htdocs/templates/
+htdocs/logs/
+configs/system.config.pavka.php
+core/modules/*
+/core/modules/.gitkeep
+/vendor/*
+/htdocs/uploads/public/*
+/htdocs/uploads/temp/*
+composer.lock

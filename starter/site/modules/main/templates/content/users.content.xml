@@ -2,7 +2,7 @@
 <content html_class="colset colset2">
     <container name="left" column="column" html_class="col col1">
         <container name="mainMenuContainer" block="beta" widget="widget">
-            <component name="mainMenu" module="share" class="PageList">
+            <component name="mainMenu" class="Energine\share\components\PageList">
                 <params>
                     <param name="tags">menu</param>
                     <param name="recursive">1</param>
@@ -12,12 +12,12 @@
         </container>
         <container name="leftAdBlock"/>
         <container name="loginFormContainer" block="beta" widget="widget">
-            <component name="loginForm" module="user" class="LoginForm"/>
+            <component name="loginForm" class="Energine\user\components\LoginForm"/>
         </container>
     </container>
     <container name="center" column="column" html_class="col col2 last_col">
         <container name="usersContainer" block="alfa" widget="static">
-            <component name="userEditor" module="user" class="UserEditor">
+            <component name="userEditor" class="Energine\user\components\UserEditor">
                 <params>
                     <param name="rights">3</param>
                 </params>

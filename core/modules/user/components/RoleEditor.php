@@ -36,7 +36,7 @@ class RoleEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module,   array $params = null) {
+    public function __construct($name,    array $params = null) {
         parent::__construct($name, $module,  $params);
         $this->setTableName('user_groups');
         $this->setTitle($this->translate('TXT_ROLE_EDITOR'));

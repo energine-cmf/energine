@@ -33,8 +33,8 @@ class NewsFeed extends ExtendedFeed {
      * @copydoc ExtendedFeed::__construct
      */
     // Жестко привязываемя к таблице новостей
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('apps_news');
         $this->setOrder(array('news_date' => QAL::DESC));
         if ($this->document->getRights() < ACCESS_EDIT) {
@@ -257,7 +257,7 @@ class NewsFeed extends ExtendedFeed {
             //Создаем компонент календаря новостей
             $this->document->componentManager->addComponent(
                 $this->calendar =
-                    $this->document->componentManager->createComponent('calendar', 'apps', 'NewsCalendar', $calendarParams)
+                    $this->document->componentManager->createComponent('calendar', 'Energine\apps\components\NewsCalendar', $calendarParams)
             );
         }
 

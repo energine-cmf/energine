@@ -50,8 +50,8 @@ class GoogleSitemap extends SitemapTree {
     /**
      * @copydoc SitemapTree::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         E()->getResponse()->setHeader('Content-Type', 'text/xml; charset=utf-8');
         $this->pdoDB = $this->dbh->getPDO();
         $this->maxVideos = ((int)$this->getConfigValue('seo.maxVideosInMap'))? (int)$this->getConfigValue('seo.maxVideosInMap'): self::DEFAULT_MAX_VIDEOS;

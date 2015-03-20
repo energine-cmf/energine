@@ -47,7 +47,7 @@ class BlogPost extends DBDataSet {
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module,   array $params = null) {
+    public function __construct($name,    array $params = null) {
         parent::__construct($name, $module,  $params);
         $this->setTableName('blog_post');
 //        $this->setFilter(array('post_is_draft'=>0));
@@ -493,7 +493,7 @@ class BlogPost extends DBDataSet {
             //Создаем компонент календаря новостей
             $this->document->componentManager->addComponent(
                 $this->calendar = $this->document->componentManager->createComponent(
-                    'blogCalendar', 'blog', 'BlogCalendar', $this->calendarParams
+                    'blogCalendar', 'Energine\blog\components\BlogCalendar', $this->calendarParams
                 )
             );
             $this->calendar->run();

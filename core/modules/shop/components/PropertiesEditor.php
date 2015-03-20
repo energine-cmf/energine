@@ -21,8 +21,8 @@ class PropertiesEditor;
  * Just a grid for product types CRUD
  */
 class PropertiesEditor extends Grid {
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('shop_product_properties');
         $linkedID = $this->getParam('typeID');
 

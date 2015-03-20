@@ -120,8 +120,8 @@ abstract class DataSet extends Component {
     /**
      * @copydoc Component::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_FORM);
         if (!$this->getParam('recordsPerPage')) $this->setParam('recordsPerPage', self::RECORD_PER_PAGE);
         if ($this->getParam('template')) {
@@ -670,7 +670,7 @@ abstract class DataSet extends Component {
     protected function fileLibrary() {
         $this->request->shiftPath(1);
 
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositorySelect.component.xml'));
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary',  'Energine\share\components\FileRepository', array('config' => 'core/modules/share/config/FileRepositorySelect.component.xml'));
 
         $this->fileLibrary->run();
     }
@@ -679,7 +679,7 @@ abstract class DataSet extends Component {
      * Run source.
      */
     protected function source() {
-        $this->source = $this->document->componentManager->createComponent('textblocksource', 'share', 'TextBlockSource', null);
+        $this->source = $this->document->componentManager->createComponent('textblocksource', 'Energine\share\components\TextBlockSource', null);
         $this->source->run();
     }
 
@@ -687,7 +687,7 @@ abstract class DataSet extends Component {
      * Show image manager.
      */
     protected function imageManager() {
-        $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'share', 'ImageManager', null);
+        $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'Energine\share\components\ImageManager', null);
         $this->imageManager->run();
     }
 

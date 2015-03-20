@@ -2,7 +2,7 @@
 <content html_class="colset colset3">
     <container name="left" column="column" html_class="col col1">
         <container name="mainMenuContainer" block="beta" widget="widget">
-            <component name="mainMenu" module="share" class="PageList">
+            <component name="mainMenu" class="Energine\share\components\PageList">
                 <params>
                     <param name="tags">menu</param>
                     <param name="recursive">1</param>
@@ -12,7 +12,7 @@
         </container>
         <container name="leftAdBlock"/>
         <container name="sidebarTextBlockContainer" block="beta" widget="widget">
-            <component name="sidebarTextBlock" module="share" class="TextBlock">
+            <component name="sidebarTextBlock" class="Energine\share\components\TextBlock">
                 <params>
                     <param name="title"></param>
                     <param name="num">sidebarTextBlock</param>
@@ -20,12 +20,12 @@
             </component>
         </container>
         <container name="loginFormContainer" block="beta" widget="widget">
-            <component name="loginForm" module="user" class="LoginForm"/>
+            <component name="loginForm" class="Energine\user\components\LoginForm"/>
         </container>
     </container>
     <container name="center" column="column" html_class="col col2">
         <container name="textBlockContainer1" block="alfa" widget="static">
-            <component name="textBlock_1" module="share" class="TextBlock">
+            <component name="textBlock_1" class="Energine\share\components\TextBlock">
                 <params>
                     <param name="num">1</param>
                 </params>
@@ -34,7 +34,7 @@
     </container>
     <container name="right" column="column" html_class="col col3 last_col">
         <container name="topNewsContainer" block="beta" widget="widget">
-            <component name="topNews" module="apps" class="NewsFeed">
+            <component name="topNews" class="Energine\apps\components\NewsFeed">
                 <params>
                     <param name="title">TXT_TOP_NEWS</param>
                     <param name="limit" type="hidden">5</param>

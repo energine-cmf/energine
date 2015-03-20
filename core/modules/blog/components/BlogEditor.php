@@ -24,7 +24,7 @@
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module,   array $params = null) {
+    public function __construct($name,    array $params = null) {
         parent::__construct($name, $module,  $params);
         $this->setTableName('blog_title');
 //        $this->setOrderColumn('blog_name');

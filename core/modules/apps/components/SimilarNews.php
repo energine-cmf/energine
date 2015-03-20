@@ -48,8 +48,8 @@ class SimilarNews extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setParam('onlyCurrentLang', true);
         $bindComponentName = ($this->getParam('bind'))? $this->getParam('bind'): self::DEFAULT_LINK_TO;
         $this->cp =

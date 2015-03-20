@@ -42,8 +42,8 @@ class SiteEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('share_sites');
         $this->setSaver(new SiteSaver());
     }
@@ -116,7 +116,7 @@ class SiteEditor extends Grid {
      */
     protected function reset() {
         $this->request->shiftPath(1);
-        $this->divEditor = $this->document->componentManager->createComponent('dEditor', 'share', 'DivisionEditor');
+        $this->divEditor = $this->document->componentManager->createComponent('dEditor', 'Energine\share\components\DivisionEditor');
         $this->divEditor->run();
     }
 
@@ -134,7 +134,7 @@ class SiteEditor extends Grid {
         else {
             $this->request->shiftPath(1);
         }
-        $this->domainEditor = $this->document->componentManager->createComponent('domainEditor', 'share', 'DomainEditor', $domainEditorParams);
+        $this->domainEditor = $this->document->componentManager->createComponent('domainEditor', 'Energine\share\components\DomainEditor', $domainEditorParams);
         $this->domainEditor->run();
     }
 
@@ -147,7 +147,7 @@ class SiteEditor extends Grid {
             $sitePropertiesEditorParams = array('siteID' => $sp['site_id']);
         }
 
-        $this->propertiesEditor = $this->document->componentManager->createComponent('propertiesEditor', 'share', 'SitePropertiesEditor', $sitePropertiesEditorParams);
+        $this->propertiesEditor = $this->document->componentManager->createComponent('propertiesEditor', 'Energine\share\components\SitePropertiesEditor', $sitePropertiesEditorParams);
         $this->propertiesEditor->run();
     }
 

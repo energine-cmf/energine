@@ -33,8 +33,8 @@ class ExtendedFeedEditor extends FeedEditor {
     /**
      * @copydoc FeedEditor::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setSaver(new ExtendedSaver());
     }
 

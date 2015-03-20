@@ -26,10 +26,10 @@ class Branding extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name,  array $params = null) {
         $params['active'] = false;
 
-        parent::__construct($name, $module, $params);
+        parent::__construct($name, $params);
         $this->setTableName('apps_branding');
         $this->setFilter(array('brand_id' => $this->findNearestParentBrandID()));
         $this->setParam('recordsPerPage', false);

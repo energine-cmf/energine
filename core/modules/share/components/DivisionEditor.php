@@ -72,8 +72,8 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('share_sitemap');
         $this->setTitle($this->translate('TXT_DIVISION_EDITOR'));
         $this->setParam('recordsPerPage', false);
@@ -594,7 +594,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showWidgetEditor() {
         $this->request->shiftPath(1);
         $this->widgetEditor =
-            $this->document->componentManager->createComponent('widgetEditor', 'share', 'WidgetsRepository', array('config' => 'ModalWidgetsRepository.component.xml'));
+            $this->document->componentManager->createComponent('widgetEditor', 'Energine\share\components\WidgetsRepository', array('config' => 'ModalWidgetsRepository.component.xml'));
         $this->widgetEditor->run();
     }
 
@@ -757,7 +757,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showTransEditor() {
         $this->request->shiftPath(1);
         $this->transEditor =
-            $this->document->componentManager->createComponent('transEditor', 'share', 'TranslationEditor', null);
+            $this->document->componentManager->createComponent('transEditor', 'Energine\share\components\TranslationEditor', null);
         $this->transEditor->run();
     }
 
@@ -767,7 +767,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showUserEditor() {
         $this->request->shiftPath(1);
         $this->userEditor =
-            $this->document->componentManager->createComponent('userEditor', 'user', 'UserEditor', null);
+            $this->document->componentManager->createComponent('userEditor', 'Energine\user\components\UserEditor', null);
         $this->userEditor->run();
     }
 
@@ -777,7 +777,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showRoleEditor() {
         $this->request->shiftPath(1);
         $this->roleEditor =
-            $this->document->componentManager->createComponent('roleEditor', 'user', 'RoleEditor', null);
+            $this->document->componentManager->createComponent('roleEditor', 'Energine\user\components\RoleEditor', null);
         $this->roleEditor->run();
     }
 
@@ -787,14 +787,14 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showLangEditor() {
         $this->request->shiftPath(1);
         $this->langEditor =
-            $this->document->componentManager->createComponent('langEditor', 'share', 'LanguageEditor', null);
+            $this->document->componentManager->createComponent('langEditor', 'Energine\share\components\LanguageEditor', null);
         $this->langEditor->run();
     }
 
     protected function fileLibrary() {
         $this->request->shiftPath(1);
 
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'Energine\share\components\FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
 
         $this->fileLibrary->run();
     }
@@ -805,7 +805,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showSiteEditor() {
         $this->request->shiftPath(1);
         $this->siteEditor =
-            $this->document->componentManager->createComponent('siteEditor', 'share', 'SiteEditor', array('config' => 'core/modules/share/config/SiteEditorModal.component.xml'));
+            $this->document->componentManager->createComponent('siteEditor', 'Energine\share\components\SiteEditor', array('config' => 'core/modules/share/config/SiteEditorModal.component.xml'));
         $this->siteEditor->run();
     }
 

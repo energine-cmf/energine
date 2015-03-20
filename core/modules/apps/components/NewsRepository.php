@@ -32,8 +32,8 @@ class NewsRepository extends NewsEditor {
     /**
      * @copydoc NewsEditor::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->enable();
         $this->setProperty('exttype', 'grid');
         $this->setSaver(new NewsEditorSaver());

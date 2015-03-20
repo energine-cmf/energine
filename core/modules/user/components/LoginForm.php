@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class LoginForm;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -17,18 +17,19 @@ class LoginForm;
 namespace Energine\user\components;
 
 use Energine\share\components\DataSet, Energine\share\gears\Object, Energine\share\gears\FieldDescription, Energine\share\gears\UserSession, Energine\share\gears\Field;
+
 /**
  * Show login form.
  *
  * @code
 class LoginForm;
-@endcode
+ * @endcode
  */
 class LoginForm extends DataSet implements SampleLoginForm {
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = null) {
         $params['state'] = E()->getDocument()->user->isAuthenticated() ? 'showLogoutForm' : 'showLoginForm';
         parent::__construct($name, $params);
         $this->setTitle($this->translate('TXT_LOGIN_FORM'));
@@ -37,7 +38,7 @@ class LoginForm extends DataSet implements SampleLoginForm {
             $base = 'http://' . Object::_getConfigValue('site.domain') . '/';
         }
 
-        $this->setAction($base . 'auth.php' . ((isset($_SERVER['HTTP_REFERER'])) ? '' : '?return=' . (($return = $this->getParam('successAction')) ? $return : E()->getRequest()->getURI())),true);
+        $this->setAction($base . 'auth.php' . ((isset($_SERVER['HTTP_REFERER'])) ? '' : '?return=' . (($return = $this->getParam('successAction')) ? $return : E()->getRequest()->getURI())), true);
     }
 
     /**
@@ -74,15 +75,17 @@ class LoginForm extends DataSet implements SampleLoginForm {
         $this->getData()->addField((new Field('username'))->setRowData(0, ''));
         //Если есть информация о авторизации через фейсбук
         foreach (array('auth.facebook', 'auth.vk') as $configSectionName) {
-            list($tbr) = array_values($this->getToolbar());
-            if ($ctrl = $tbr->getControlByID($configSectionName)) $ctrl->disable();
+            if ($this->getToolbar()) {
+                list($tbr) = array_values($this->getToolbar());
+                if ($ctrl = $tbr->getControlByID($configSectionName)) $ctrl->disable();
 
-            if ($ctrl && $this->getConfigValue($configSectionName)) {
-                if ($appID = $this->getConfigValue($configSectionName . '.appID')) {
-                    $ctrl->setAttribute('appID', $appID);
-                    $ctrl->enable();
+                if ($ctrl && $this->getConfigValue($configSectionName)) {
+                    if ($appID = $this->getConfigValue($configSectionName . '.appID')) {
+                        $ctrl->setAttribute('appID', $appID);
+                        $ctrl->enable();
+                    }
+
                 }
-
             }
         }
     }

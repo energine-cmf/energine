@@ -132,7 +132,7 @@ class Component extends DBWorker implements IBlock {
      */
     public function __construct($name,  array $params = null) {
         parent::__construct();
-        list(, $this->module) = explode('\\', __NAMESPACE__);
+        list(, $this->module) = explode('\\', get_called_class());
         $this->name = $name;
         $this->document = E()->getDocument();
         $this->params = $this->defineParams();

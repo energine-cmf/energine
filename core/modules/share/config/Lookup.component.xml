@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <state name="main">
-        <filter>
-            <field name="news_title" title="FIELD_NEWS_TITLE"/>
-            <field name="news_is_active"/>
-            <field name="news_date"/>
-        </filter>
         <javascript>
-            <behavior name="GridManager"/>
+            <behavior name="GridManagerModal"/>
         </javascript>
-        <fields>
-            <field name="news_id"/>
-            <field name="news_date" outputFormat="%E"/>
-            <field name="smap_id"/>
-            <field name="news_title"/>
-        </fields>
         <toolbar>
+            <control id="use" title="BTN_USE" type="button" onclick="use"/>
+            <control id="sep1" type="separator"/>
             <control id="add" title="BTN_ADD" type="button" onclick="add"/>
             <control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
             <control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+            <control id="sep2" type="separator"/>
+            <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
     <state name="add">
@@ -50,6 +43,14 @@
         </javascript>
         <toolbar>
             <control id="save" title="BTN_SAVE" type="button" onclick="save"/>
+            <control id="after_save_action" title="TXT_AFTER_SAVE_ACTION" type="select">
+                <options>
+                    <option id="reload">BTN_CLOSE</option>
+                    <option id="editNext">BTN_EDIT_NEXT</option>
+                    <option id="editPrev">BTN_EDIT_PREV</option>
+                </options>
+            </control>
+            <control id="sep1" type="separator"/>
             <control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
@@ -58,22 +59,9 @@
             <pattern>/save/</pattern>
         </uri_patterns>
     </state>
-    <state name="delete" rights="2">
+    <state name="delete" rights="3">
         <uri_patterns>
             <pattern>/[int]/delete/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="getRawData" rights="2">
-        <uri_patterns>
-            <pattern>/get-data/</pattern>
-            <pattern>/get-data/page-[pageNumber]/</pattern>
-            <pattern>/get-data/[sortField]-[sortDir]/</pattern>
-            <pattern>/get-data/[sortField]-[sortDir]/page-[pageNumber]/</pattern>
-        </uri_patterns>
-    </state>
-    <state name="showSmapSelector" rights="3">
-        <uri_patterns>
-            <pattern>/selector/[any]/</pattern>
         </uri_patterns>
     </state>
 </configuration>

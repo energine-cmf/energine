@@ -27,8 +27,7 @@ class GridConfig extends DataSetConfig {
      */
     public function __construct($config, $className, $moduleName){
         parent::__construct($config, $className, $moduleName);
-        $this->registerState('fkEditor', array('/[field]-[class]/crud/[any]/'));
-        $this->registerState('fkValues', array('/[field]/fk-values/[any]/'));
+        $this->registerState('lookup', array('/[fk_field_name]/lookup/[any]/', '/[fk_field_name]-[editor_class]/lookup/[any]/'));
         $this->registerState('put', array('/put/'));
         $this->registerState('upload', array('/upload/'));
         $this->registerState('cleanup', array('/cleanup/'));

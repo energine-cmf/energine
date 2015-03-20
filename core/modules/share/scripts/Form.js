@@ -25,7 +25,7 @@
  * @version 1.0.1
  */
 
-ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader');
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader','Tags','Lookup');
 
 /**
  * Form.
@@ -113,6 +113,12 @@ var Form = new Class(/** @lends Form# */{
          */
         this.form = this.componentElement.getParent('form').addClass('form');
 
+        if(this.form.getElements('input[type=text]').concat(this.form.getElements('select'),this.form.getElements('textarea')).length){
+           this.form.addEvent('keypress', function(e){
+               if(e.key == 'enter') e.preventDefault();
+           })
+        }
+
         /**
          * State of the form.
          * @type {string}
@@ -141,8 +147,12 @@ var Form = new Class(/** @lends Form# */{
             this.codeEditors.push(CodeMirror.fromTextArea(textarea, {mode: "text/html", tabMode: "indent", lineNumbers: true, theme:'elegant'}));
         }, this);
 
-        this.form.getElements('input.acpl').each(function (el) {
-            new AcplField(el);
+        this.form.getElements('div.type_lookup').each(function (el) {
+            new Lookup(el, this.singlePath);
+        }, this);
+
+        this.form.getElements('input.tag_acpl').each(function (el) {
+            new Tags(el);
         }, this);
 
         this.form.getElements('input.inp_color').each(function(el){
@@ -150,7 +160,7 @@ var Form = new Class(/** @lends Form# */{
         }, this);
 
         var showHideFunc = function (e) {
-            Energine.cancelEvent(e);
+            e.stop();
             var el = $(e.target),
                 field = el.getParent('.field');
 

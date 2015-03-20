@@ -56,6 +56,7 @@
                 <field name="lang_id"/>
                 <field name="lang_abbr"/>
                 <field name="lang_name"/>
+                <field name="lang_locale"/>
                 <field name="lang_default"/>
             </fields>
             <javascript>

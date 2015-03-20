@@ -96,7 +96,11 @@
         </div>
     </xsl:template>
 
-
+    <xsl:template match="field[@type='lookup'][ancestor::component[@exttype='grid']]" mode="field_content">
+        <div class="control type_{@type}" id="control_{@language}_{@name}" data-url="{@url}" data-value-field="{@value_field}" data-value-table="{@value_table}" data-key-field="{@key_field}">
+            <xsl:apply-templates select="." mode="field_input"/>
+        </div>
+    </xsl:template>
     <!--
         Секция 2. Инпуты.
         В этой секции собраны правила вывода полей формы, которые создают сам html-элемент (input, select, etc.).
@@ -125,14 +129,13 @@
     <!-- поле с автодополнением (textbox) -->
     <xsl:template match="field[@type='textbox'][ancestor::component[@type='form']]" mode="field_input">
         <xsl:variable name="SEPARATOR" select="@separator"/>
-        <script type="text/javascript" src="scripts/AcplField.js"></script>
-        <input class="text acpl">
+        <input class="text acpl tag_acpl">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="nrgn:url" xmlns:nrgn="http://energine.org">
+            <xsl:attribute name="data-url">
                 <xsl:value-of select="$BASE"/><xsl:value-of
                     select="ancestor::component/@single_template"/><xsl:value-of select="@url"/>
             </xsl:attribute>
-            <xsl:attribute name="nrgn:separator" xmlns:nrgn="http://energine.org">
+            <xsl:attribute name="data-separator">
                 <xsl:value-of select="$SEPARATOR"/>
             </xsl:attribute>
             <xsl:attribute name="value">
@@ -275,8 +278,8 @@
             </xsl:if>
         </div>
         <br/>
-        <img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
-        <span class="progress_indicator hidden" id="indicator">0%</span>
+        <!--<img src="images/loading.gif" alt="" width="32" height="32" class="hidden" id="loader"/>
+        <span class="progress_indicator hidden" id="indicator">0%</span>-->
     </xsl:template>
 
     <!-- поле выбора из списка (select) -->
@@ -291,6 +294,21 @@
             </xsl:if>
             <xsl:apply-templates mode="field_input"/>
         </select>
+    </xsl:template>
+
+    <xsl:template match="field[@type='lookup' and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]" mode="field_input">
+        <input>
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">hidden</xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+            <xsl:attribute name="value"><xsl:value-of select="value/@id"/></xsl:attribute>
+        </input>
+        <div class="with_append">
+            <input type="text" id="{@name}_name"  class="text acpl" autocomplete="off" spellcheck="false" style="height:32px;" value="{value}"/>
+            <div class="appended_block">
+                <button type="button"  style="height: 18px;">...</button>
+            </div>
+        </div>
     </xsl:template>
 
     <xsl:template match="field[@type='select' and @editor][ancestor::component[@exttype='grid' or @exttype='feed']]" mode="field_input">

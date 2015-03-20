@@ -158,6 +158,7 @@ optgroup option {
 .e-pane-content .field .control  .with_append {
     display: table;
     width: 100%;
+    position: relative;
 }
 div.with_append.focus_block {
     border-color: #6FCFE3;

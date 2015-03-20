@@ -37,7 +37,7 @@ class DataDescription extends Object implements \Iterator {
 
     /**
      * Meta data for fields.
-     * @var array $fieldDescriptions
+     * @var FieldDescription[] $fieldDescriptions
      */
     private $fieldDescriptions;
 
@@ -48,7 +48,7 @@ class DataDescription extends Object implements \Iterator {
     private $currentIndex = 0;
 
     public function __construct() {
-        $this->fieldDescriptions = array();
+        $this->fieldDescriptions = [];
     }
 
     //todo VZ: I recommend to create method for loading single data description and use it for this and next load methods.
@@ -91,7 +91,7 @@ class DataDescription extends Object implements \Iterator {
      */
     public function addFieldDescription(FieldDescription $fieldDescription, $location = 'bottom', $targetFDName = null) {
         if($location == self::FIELD_POSITION_AFTER && $targetFDName && array_key_exists($targetFDName, $this->fieldDescriptions)){
-            $this->fieldDescriptions = array_push_after($this->fieldDescriptions, array($fieldDescription->getName() => $fieldDescription), $targetFDName);
+            $this->fieldDescriptions = array_push_after($this->fieldDescriptions, [$fieldDescription->getName() => $fieldDescription], $targetFDName);
         }
        /* elseif($location == 'before' ){
 
@@ -133,8 +133,8 @@ class DataDescription extends Object implements \Iterator {
      * @return FieldDescription[]
      */
     public function getFieldDescriptionsByType($types){
-        $result = array();
-        if(!is_array($types)) $types = array($types);
+        $result = [];
+        if(!is_array($types)) $types = [$types];
         foreach($this->fieldDescriptions as $name => $fieldDescription){
             if(in_array($fieldDescription->getType(), $types)){
                 $result[$name] = $fieldDescription;
@@ -201,11 +201,17 @@ class DataDescription extends Object implements \Iterator {
         $this->currentIndex = 0;
     }
 
+    /**
+     * @return FieldDescription
+     */
     public function current() {
         $fieldNames = $this->getFieldDescriptionList();
         return $this->fieldDescriptions[$fieldNames[$this->currentIndex]];
     }
 
+    /**
+     * @return mixed
+     */
     public function key() {
         $fieldNames = $this->getFieldDescriptionList();
         return $fieldNames[$this->currentIndex];
@@ -215,6 +221,9 @@ class DataDescription extends Object implements \Iterator {
         $this->currentIndex++;
     }
 
+    /**
+     * @return bool
+     */
     public function valid() {
         $fieldNames = $this->getFieldDescriptionList();
         return isset($fieldNames[$this->currentIndex]);

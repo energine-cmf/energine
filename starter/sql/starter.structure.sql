@@ -455,7 +455,7 @@ CREATE TABLE IF NOT EXISTS `share_domains` (
 
 CREATE TABLE IF NOT EXISTS `share_languages` (
   `lang_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `lang_locale` char(30) NOT NULL,
+  `lang_locale` char(30),
   `lang_abbr` char(2) NOT NULL,
   `lang_name` char(20) NOT NULL,
   `lang_default` tinyint(1) NOT NULL DEFAULT '0',

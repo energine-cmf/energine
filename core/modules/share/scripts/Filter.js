@@ -45,12 +45,18 @@ var Filter = new Class(/** @lends Filter# */{
          * Filter element of the GridManager.
          * @type {Element}
          */
-        this.element = gridManager.element.getElement('.filter');
+        this.element = gridManager.element.getElement('.filters');
 
         if (!this.element) {
             throw 'Element for Filter was not found.';
         }
-
+        this.firstFilter = this.element.getElement('.filter');
+        this.element.getElements('.add_filter').addEvent('click', function(e){
+            e.stop();
+            var f = this.firstFilter.clone();
+            f.inject(this.firstFilter, 'after');
+            gridManager.grid.fitGridSize();
+        }.bind(this));
         var applyButton = this.element.getElement('.f_apply'),
             resetLink = this.element.getElement('.f_reset');
 

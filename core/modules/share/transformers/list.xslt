@@ -115,20 +115,21 @@
                         <!-- или если есть узел filters -->
                         <xsl:if test="ancestor::component/filter">
                             <div class="grid_toolbar clearfix">
+                                <div class="filters clearfix">
                                     <div class="filter">
-                                        <xsl:value-of select="ancestor::component/filter/@title" />:<xsl:text>&#160;</xsl:text>
+                                        <a href="#" class="add_filter">+</a><xsl:value-of select="ancestor::component/filter/@title"/>:<xsl:text>&#160;</xsl:text>
                                         <select name="fieldName" class="f_fields">
                                             <xsl:for-each select="ancestor::component/filter/field">
-                                                <option value="[{@tableName}][{@name}]" type="{@type}"><xsl:value-of select="@title"/></option>
+                                                <option value="[{@tableName}][{@name}]" type="{@type}">
+                                                    <xsl:value-of select="@title"/>
+                                                </option>
                                             </xsl:for-each>
                                         </select>
                                         <select name="condition" class="f_condition">
                                             <xsl:for-each select="ancestor::component/filter/operators/operator">
                                                 <option value="{@name}">
                                                     <xsl:attribute name="data-types">
-                                                        <xsl:for-each select="types/type"><xsl:value-of select="."/><xsl:if
-                                                                test="position()!=last()">|</xsl:if></xsl:for-each>
-                                                    </xsl:attribute>
+                                                        <xsl:for-each select="types/type"><xsl:value-of select="."/><xsl:if test="position()!=last()">|</xsl:if></xsl:for-each></xsl:attribute>
                                                     <xsl:value-of select="@title"/>
                                                 </option>
                                             </xsl:for-each>
@@ -140,10 +141,17 @@
                                             <input type="text" class="query"/>
                                         </span>
                                         <!--<span class="f_query_date_container hidden"><input type="text" class="query"/><input type="text" class="hidden query"/></span>-->
-                                        <button type="button" class="f_apply"><xsl:value-of select="ancestor::component/filter/@apply"/></button>
-                                        <!--<xsl:text>&#160;</xsl:text>-->
-                                        <a href="#" class="f_reset"><xsl:value-of select="ancestor::component/filter/@reset"/></a>
                                     </div>
+                                    <div>
+                                        <button type="button" class="f_apply">
+                                            <xsl:value-of select="ancestor::component/filter/@apply"/>
+                                        </button>
+                                        <!--<xsl:text>&#160;</xsl:text>-->
+                                        <a href="#" class="f_reset">
+                                            <xsl:value-of select="ancestor::component/filter/@reset"/>
+                                        </a>
+                                    </div>
+                                </div>
 
                                 <xsl:if test="ancestor::component[@sample='FileRepository']">
                                     <div class="grid_breadcrumbs" id="breadcrumbs"><!-- <a href="#">Локальный репозиторий</a><span> / </span><a href="#">Тест</a>--></div>

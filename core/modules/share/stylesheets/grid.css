@@ -12,12 +12,16 @@ div.grid table tr .firstColumn { border-left: 0; }
 .grid_toolbar {
     padding: 10px 0;
 }
-div.grid div.filter {
+
+div.grid div.filters {
     background-color: #eee;
     margin: 0;
     padding: 10px;
     border-radius: 4px;
     font-family: Tahoma, sans-serif;
+}
+div.grid div.filter:nth-last-child(2) {
+    float:left;
 }
 div.grid div.filter.active {
     background: #ecf3f8;

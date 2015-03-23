@@ -232,6 +232,8 @@ var Filter = new Class({
         }
     },
     isEmpty: function () {
+        return !((this.fields.getSelected()[0].getAttribute('type') == 'boolean') || this.inputs.hasValues());
+
         return !this.inputs.hasValues();
     },
     reset: function () {

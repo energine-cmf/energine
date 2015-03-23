@@ -15,6 +15,7 @@
  * @param {GridManager} gridManager
  */
 var Filters = new Class(/** @lends Filter# */{
+    Implements: Events,
     /**
      * Filter object.
      * @type {Filter[]}
@@ -40,7 +41,9 @@ var Filters = new Class(/** @lends Filter# */{
             throw 'Element for Filter was not found.';
         }
         this.element.getElements('.filter').each(function (el) {
-            this.filters.push(new Filter(el));
+            this.filters[this.filters.push(new Filter(el))-1].addEvent('apply', function(){
+                if (this.use()) gridManager.reload();
+            }.bind(this));
         }, this);
 
         /*this.firstFilter = this.element.getElement('.filter');
@@ -55,25 +58,13 @@ var Filters = new Class(/** @lends Filter# */{
             resetLink = this.element.getElement('.f_reset');
 
         applyButton.addEvent('click', function () {
-            this.use();
-            gridManager.reload();
+            if (this.use()) gridManager.reload();
         }.bind(this));
 
         resetLink.addEvent('click', function (e) {
             e.stop();
-            this.reset();
-            gridManager.reload();
+            if (this.reset()) gridManager.reload();
         }.bind(this));
-
-        //Only if filters.length =1
-
-        /*this.dpsInputs.concat(this.inputs).addEvent('keydown', function (event) {
-         if ((event.key == 'enter') && (event.target.value != '')) {
-         event.stop();
-         applyAction.click();
-         }
-         });*/
-
 
     },
     /**
@@ -82,11 +73,14 @@ var Filters = new Class(/** @lends Filter# */{
      * @public
      */
     reset: function () {
-        this.filters.each(function (filter) {
-            filter.reset();
-        })
-        this.element.removeClass('active');
-        this.active = false;
+        if (this.active) {
+            this.filters.each(function (filter) {
+                filter.reset();
+            })
+            this.element.removeClass('active');
+            return !(this.active = false)
+        }
+        return false;
     },
 
     /**
@@ -132,6 +126,8 @@ var Filters = new Class(/** @lends Filter# */{
     }
 });
 var Filter = new Class({
+    Implements: Events,
+
     element: null,
     /**
      * Query controls for the filter.
@@ -151,7 +147,10 @@ var Filter = new Class({
     condition: null,
     initialize: function (element) {
         this.element = $(element);
-        this.inputs = new Filter.QueryControls(this.element.getElement('.f_query_container'));
+        this.inputs = new Filter.QueryControls(this.element.getElements('.f_query_container'));
+        this.inputs.addEvent('apply', function(e){
+            this.fireEvent('apply');
+        }.bind(this));
         this.condition = this.element.getElement('.f_condition');
         this.conditionOptions = [];
 
@@ -250,6 +249,7 @@ var Filter = new Class({
  * @param {Element} applyAction Apply button.
  */
 Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
+    Implements:Events,
     /**
      * Indicate, whether the date picker is used as query control.
      * @type {boolean}
@@ -298,7 +298,11 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
             }));
         }.bind(this));
 
-
+        this.dpsInputs.concat(this.inputs).addEvent('keydown', function (event) {
+            if ((event.key == 'enter') && (event.target.value != '')) {
+                this.fireEvent('apply');
+            }
+        }.bind(this));
     },
 
     /**
@@ -310,7 +314,7 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
      */
     hasValues: function () {
         return this[(this.isDate) ? 'dpsInputs' : 'inputs'].some(function (el) {
-            return el.get('value');
+            return el[0].get('value');
         });
     },
 

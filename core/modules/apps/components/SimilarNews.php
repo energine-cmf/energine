@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class SimilarNews;
-@endcode
+ * @endcode
  *
  * @author Andrii A
  * @copyright eggmengroup.com
@@ -14,6 +14,7 @@ class SimilarNews;
  * @version 1.0.0
  */
 namespace Energine\apps\components;
+
 use Energine\share\components\DBDataSet, Energine\share\gears\SimpleBuilder, Energine\share\gears\QAL, Energine\share\gears\FieldDescription, Energine\share\gears\Field;
 
 /**
@@ -21,7 +22,7 @@ use Energine\share\components\DBDataSet, Energine\share\gears\SimpleBuilder, Ene
  *
  * @code
 class SimilarNews;
-@endcode
+ * @endcode
  */
 class SimilarNews extends DBDataSet {
     /**
@@ -51,13 +52,13 @@ class SimilarNews extends DBDataSet {
     public function __construct($name, $module, array $params = null) {
         parent::__construct($name, $module, $params);
         $this->setParam('onlyCurrentLang', true);
-        $bindComponentName = ($this->getParam('bind'))? $this->getParam('bind'): self::DEFAULT_LINK_TO;
+        $bindComponentName = ($this->getParam('bind')) ? $this->getParam('bind') : self::DEFAULT_LINK_TO;
         $this->cp =
             E()->getDocument()->componentManager->getBlockByName($bindComponentName);
         if (!$this->cp || ($this->cp && $this->cp->getState() != 'view')) {
             $this->disable();
         }
-        $this->setParam('recordsPerPage',false);
+        $this->setParam('recordsPerPage', false);
     }
 
     /**
@@ -85,7 +86,7 @@ class SimilarNews extends DBDataSet {
      */
     protected function main() {
         $ap = $this->cp->getStateParams(true);
-        $this->newsID = (int) $ap['newsID'];
+        $this->newsID = (int)$ap['newsID'];
         $this->setTableName($this->cp->getTableName());
         $similarNews = $this->getSimilarNewsIDs();
 
@@ -102,7 +103,7 @@ class SimilarNews extends DBDataSet {
         if ($this->getData()->getFieldByName('site_id')) {
             $this->getDataDescription()->getFieldDescriptionByName('site_id')->setType(FieldDescription::FIELD_TYPE_STRING);
             foreach ($f =
-                             $this->getData()->getFieldByName('site_id') as $rowID => $siteID) {
+                         $this->getData()->getFieldByName('site_id') as $rowID => $siteID) {
                 $f->setRowData($rowID, E()->getSiteManager()->getSiteById($siteID)->base);
             }
         } else {
@@ -112,16 +113,16 @@ class SimilarNews extends DBDataSet {
             $this->getData()->addField($fd);
             $this->getDataDescription()->addFieldDescription($fdd);
             $urlPath =
-                    E()->getSiteManager()->getSiteByID(E()->getMap()->getSiteID($this->document->getID()))->base;
+                E()->getSiteManager()->getSiteByID(E()->getMap()->getSiteID($this->document->getID()))->base;
             foreach ($f =
-                             $this->getData()->getFieldByName('site_id') as $rowID => $siteID) {
+                         $this->getData()->getFieldByName('site_id') as $rowID => $siteID) {
                 $f->setRowData($rowID, $urlPath);
             }
         }
 
         if ($this->getData()->getFieldByName('news_date')) {
             foreach ($f =
-                             $this->getData()->getFieldByName('news_date') as $rowID => $date) {
+                         $this->getData()->getFieldByName('news_date') as $rowID => $date) {
                 $date = splitDate($date);
                 $f->setRowProperty($rowID, 'year', $date['year']);
                 $f->setRowProperty($rowID, 'month', $date['month']);
@@ -141,12 +142,12 @@ class SimilarNews extends DBDataSet {
         if ($tagIDs) {
             $result = simplifyDBResult($this->dbh->select(
                 'SELECT DISTINCT sn.news_id news_id, sn.news_date FROM ' .
-                        $this->getTableName() . ' AS sn LEFT JOIN ' .
-                        $this->getTableName() . '_tags AS snt ' .
-                        ' ON snt.news_id=sn.news_id WHERE snt.tag_id IN (' .
-                        implode(',', $tagIDs) . ') ' .
-                        ' ORDER BY sn.news_date DESC LIMIT 0,' .
-                        intval($this->getParam('limit'))
+                $this->getTableName() . ' AS sn LEFT JOIN ' .
+                $this->getTableName() . '_tags AS snt ' .
+                ' ON snt.news_id=sn.news_id WHERE snt.tag_id IN (%s) ' .
+                ' ORDER BY sn.news_date DESC LIMIT 0,' .
+                intval($this->getParam('limit')),
+                $tagIDs
             ), 'news_id');
 
             unset($result[array_search($this->newsID, $result)]);
@@ -163,7 +164,7 @@ class SimilarNews extends DBDataSet {
     private function getNewsTagIDs() {
         $result = simplifyDBResult($this->dbh->select(
             'SELECT * FROM ' . $this->getTableName() .
-                    '_tags WHERE news_id=%s', $this->newsID), 'tag_id');
+            '_tags WHERE news_id=%s', $this->newsID), 'tag_id');
         return $result;
     }
 }

@@ -192,7 +192,7 @@ class FilterField extends Object {
         return $result;
     }
 
-    public function setValue($value){
+    public function setValue($value) {
         $this->value = $value;
         return $this;
     }
@@ -215,10 +215,10 @@ class FilterField extends Object {
 
 
     function __toString() {
-        if (!$this->value) return '';
         $dbh = E()->getDB();
         $tableName = $this->getAttribute('tableName');
         $fieldName = $this->name;
+
         $values = $this->value;
         if (!is_array($values)) {
             $values = [$values];
@@ -263,7 +263,10 @@ class FilterField extends Object {
 
             $fieldType = FieldDescription::convertType($tableInfo[$fieldName]['type'], $fieldName,
                 $tableInfo[$fieldName]['length'], $tableInfo[$fieldName]);
-
+            if ($fieldType == FieldDescription::FIELD_TYPE_BOOL) $this->value = '';
+            elseif (!$this->value) {
+                return '';
+            }
             if (in_array($this->condition, ['like', 'notlike']) && in_array($fieldType,
                     [FieldDescription::FIELD_TYPE_DATE, FieldDescription::FIELD_TYPE_DATETIME])
             ) {
@@ -283,8 +286,8 @@ class FilterField extends Object {
             if (in_array($fieldType, [FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE])) {
                 $conditionPatterns = str_replace('\'%s\'', 'DATE(\'%s\')', $conditionPatterns);
             }
-
-            return $fieldName . ' ' . call_user_func_array('sprintf', array_merge([$conditionPatterns], $values)) . ' ';
+            $r = $fieldName . ' ' . call_user_func_array('sprintf', array_merge([$conditionPatterns], $values)) . ' ';
+            return $r;
         }
     }
 

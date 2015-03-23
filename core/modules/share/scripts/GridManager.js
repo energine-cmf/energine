@@ -12,7 +12,7 @@
  * @requires Overlay
  * @requires ModalBox
  * @requires datepicker
- * @requires Filter
+ * @requires Filters
  *
  * @author Pavel Dubenko
  * @author Valerii Zinchenko
@@ -22,7 +22,7 @@
 
 // todo: Strange to use scrolling and changing pages to see more data fields.
 
-ScriptLoader.load('TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'datepicker', 'Filter');
+ScriptLoader.load('TabPane', 'PageList', 'Toolbar', 'Overlay', 'ModalBox', 'datepicker', 'Filters');
 
 /**
  * From MooTools it implements: Events, Options.
@@ -766,14 +766,11 @@ var GridManager = new Class(/** @lends GridManager# */{
 
         /**
          * Filter tool.
-         * @type {Filter}
+         * @type {Filters}
          */
-        try {
-            this.filter = new Filter(this);
-        } catch (err) {
-            console.warn(err);
-            console.warn('Filter is not created.');
-        }
+
+            this.filter = new Filters(this);
+
 
         /**
          * Pages.

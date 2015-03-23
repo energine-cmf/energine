@@ -48,7 +48,7 @@ var Register = new Class(/** @lends Register# */{
                         if (this.registerButton) {
                             this.registerButton.setProperty('disabled', 'disabled');
                         }
-                        Energine.cancelEvent(event);
+                        event.stop();
                     }
                 }
             }.bind(this));

@@ -23,7 +23,7 @@ div.grid div.filters {
 div.grid div.filter:nth-last-child(2) {
     float:left;
 }
-div.grid div.filter.active {
+div.grid div.filters.active {
     background: #ecf3f8;
 }
 

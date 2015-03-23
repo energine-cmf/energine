@@ -78,7 +78,7 @@ var Playlist = new Class(/** @lends Playlist */{
             this.elements.push(clipConf);
 
             el.addEvent('click', function(event) {
-                Energine.cancelEvent(event);
+                event.stop();
                 if(!this.player) {
                     this.player = this.createPlayer(this.playerElement);
                 }
@@ -88,7 +88,7 @@ var Playlist = new Class(/** @lends Playlist */{
 
         this.liElements = new Elements(this.liElements);
         this.playerBox.getElement('a').addEvent('click', function(event){
-            Energine.cancelEvent(event);
+            event.stop();
             if (!this.player) {
                 this.player = this.createPlayer(this.playerElement);
             }

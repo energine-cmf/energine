@@ -1,7 +1,7 @@
 /**
  * <ul>
- *     <li>[GridManager.Filter]{@link GridManager.Filter}</li>
- *     <li>[GridManager.Filter.QueryControls]{@link GridManager.Filter.QueryControls}</li>
+ *     <li>[Filters]{@link Filters}</li>
+ *     <li>[Filter.QueryControls]{@link Filter.QueryControls}</li>
  * </ul>
  */
 
@@ -14,24 +14,13 @@
  * @constructor
  * @param {GridManager} gridManager
  */
-var Filter = new Class(/** @lends Filter# */{
+var Filters = new Class(/** @lends Filter# */{
     /**
-     * Column names for filter.
-     * @type {Elements}
+     * Filter object.
+     * @type {Filter[]}
      */
-    fields: null,
+    filters: [],
 
-    /**
-     * Filter condition.
-     * @type {Elements}
-     */
-    condition: null,
-
-    /**
-     * Query controls for the filter.
-     * @type {Filter.QueryControls}
-     */
-    inputs: null,
 
     /**
      * Indicates whether the filter is active or not.
@@ -50,13 +39,18 @@ var Filter = new Class(/** @lends Filter# */{
         if (!this.element) {
             throw 'Element for Filter was not found.';
         }
-        this.firstFilter = this.element.getElement('.filter');
-        this.element.getElements('.add_filter').addEvent('click', function(e){
-            e.stop();
-            var f = this.firstFilter.clone();
-            f.inject(this.firstFilter, 'after');
-            gridManager.grid.fitGridSize();
-        }.bind(this));
+        this.element.getElements('.filter').each(function (el) {
+            this.filters.push(new Filter(el));
+        }, this);
+
+        /*this.firstFilter = this.element.getElement('.filter');
+         this.element.getElements('.add_filter').addEvent('click', function(e){
+         e.stop();
+         var f = this.firstFilter.clone();
+         f.inject(this.firstFilter, 'after');
+         gridManager.grid.fitGridSize();
+         }.bind(this));*/
+
         var applyButton = this.element.getElement('.f_apply'),
             resetLink = this.element.getElement('.f_reset');
 
@@ -67,12 +61,97 @@ var Filter = new Class(/** @lends Filter# */{
 
         resetLink.addEvent('click', function (e) {
             e.stop();
-            this.remove();
+            this.reset();
             gridManager.reload();
         }.bind(this));
 
-        this.inputs = new Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
+        //Only if filters.length =1
 
+        /*this.dpsInputs.concat(this.inputs).addEvent('keydown', function (event) {
+         if ((event.key == 'enter') && (event.target.value != '')) {
+         event.stop();
+         applyAction.click();
+         }
+         });*/
+
+
+    },
+    /**
+     * Reset the whole [filter element]{@link Filter#element}.
+     * @function
+     * @public
+     */
+    reset: function () {
+        this.filters.each(function (filter) {
+            filter.reset();
+        })
+        this.element.removeClass('active');
+        this.active = false;
+    },
+
+    /**
+     * Mark the filter element as used or not.
+     *
+     * @function
+     * @public
+     * @returns {boolean}
+     */
+    use: function () {
+        if (!this.isEmpty()) {
+            this.element.addClass('active');
+            this.active = true;
+        } else {
+            this.reset();
+        }
+
+        return this.active;
+    },
+
+    /**
+     * Get filter string.
+     *
+     * @function
+     * @public
+     * @returns {string}
+     */
+    getValue: function () {
+        var result = '', fs;
+        if (this.active && !this.isEmpty()) {
+            fs = new Filter.ClauseSet();
+            this.filters.each(function (filter) {
+                fs.add(filter.getValue());
+            })
+            result = 'filter=' + JSON.encode(fs) + '&';
+        }
+        return result;
+    },
+    isEmpty: function () {
+        return this.filters.some(function (filter) {
+            return filter.isEmpty();
+        }, this);
+    }
+});
+var Filter = new Class({
+    element: null,
+    /**
+     * Query controls for the filter.
+     * @type {Filter.QueryControls}
+     */
+    inputs: null,
+    /**
+     * Column names for filter.
+     * @type {Elements}
+     */
+    fields: null,
+
+    /**
+     * Filter condition.
+     * @type {Elements}
+     */
+    condition: null,
+    initialize: function (element) {
+        this.element = $(element);
+        this.inputs = new Filter.QueryControls(this.element.getElement('.f_query_container'));
         this.condition = this.element.getElement('.f_condition');
         this.conditionOptions = [];
 
@@ -90,10 +169,8 @@ var Filter = new Class(/** @lends Filter# */{
         this.condition.addEvent('change', function (event) {
             this.switchInputs($(event.target).get('value'), this.fields.getSelected()[0].getAttribute('type'));
         }.bind(this));
-
         this.checkCondition();
     },
-
     /**
      * Check the filter's condition option.
      */
@@ -155,55 +232,16 @@ var Filter = new Class(/** @lends Filter# */{
             });
         }
     },
-
-    /**
-     * Reset the whole [filter element]{@link Filter#element}.
-     * @function
-     * @public
-     */
-    remove: function () {
+    isEmpty: function () {
+        return !this.inputs.hasValues();
+    },
+    reset: function () {
         this.inputs.empty();
-        this.element.removeClass('active');
-        this.active = false;
     },
-
-    /**
-     * Mark the filter element as used or not.
-     *
-     * @function
-     * @public
-     * @returns {boolean}
-     */
-    use: function () {
-        if (this.inputs.hasValues()) {
-            this.element.addClass('active');
-            this.active = true;
-        } else {
-            this.remove();
-        }
-
-        return this.active;
-    },
-
-    /**
-     * Get filter string.
-     *
-     * @function
-     * @public
-     * @returns {string}
-     */
     getValue: function () {
-        var result = '';
-        if (this.active && this.inputs.hasValues()) {
-            var f = new Filter.Clause(this.fields.options[this.fields.selectedIndex].value, this.condition.options[this.condition.selectedIndex].value, this.fields.options[this.fields.selectedIndex].getAttribute('type'));
-            result = 'filter=' + JSON.encode(
-                new Filter.ClauseSet(this.inputs.getValues(f))
-            ) + '&';
-        }
-        return result;
+        return this.inputs.getValues(new Filter.Clause(this.fields.options[this.fields.selectedIndex].value, this.condition.options[this.condition.selectedIndex].value, this.fields.options[this.fields.selectedIndex].getAttribute('type')));
     }
 });
-
 /**
  * Query controls.
  *
@@ -219,7 +257,7 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
     isDate: false,
 
     // constructor
-    initialize: function (els, applyAction) {
+    initialize: function (els) {
         Asset.css('datepicker.css');
 
         /**
@@ -235,7 +273,6 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
          * @type {Elements}
          */
         this.inputs = new Elements(this.containers.getElements('input'));
-
         /**
          * Input elements for DatePicker.
          * @type {Elements}
@@ -261,12 +298,7 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
             }));
         }.bind(this));
 
-        this.dpsInputs.concat(this.inputs).addEvent('keydown', function (event) {
-            if ((event.key == 'enter') && (event.target.value != '')) {
-                event.stop();
-                applyAction.click();
-            }
-        });
+
     },
 
     /**
@@ -380,19 +412,18 @@ Filter.Clause = new Class({
         return this;
     }
 });
-Filter.Clause.create = function(fieldName, tableName, condition, type){
-    return new Filter.Clause('['+tableName+']['+fieldName+']', condition, type);
+Filter.Clause.create = function (fieldName, tableName, condition, type) {
+    return new Filter.Clause('[' + tableName + '][' + fieldName + ']', condition, type);
 };
 
 Filter.ClauseSet = new Class({
     children: [],
     initialize: function () {
-        if (!arguments.length) {
-            throw 'No arguments';
+        if (arguments.length) {
+            Array.each(arguments, function (arg) {
+                this.add(arg);
+            }, this);
         }
-        Array.each(arguments, function (arg) {
-            this.add(arg);
-        }, this);
         this.setOperator('OR');
     },
     add: function (clause) {

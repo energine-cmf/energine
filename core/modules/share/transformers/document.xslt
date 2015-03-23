@@ -105,7 +105,7 @@
                                             select="."/>'<xsl:if test="position()!=last()">,</xsl:if>}</xsl:for-each></xsl:if>);
                             }
                             catch (e) {
-                                safeConsoleError(e);
+                                console.error(e);
                             }
         				</xsl:if>
 
@@ -120,7 +120,7 @@
                                                     }
                                             }
                                             catch (e) {
-                                                safeConsoleError(e);
+                                                console.error(e);
                                             }
                                             });
 
@@ -131,7 +131,7 @@
                                 <xsl:value-of select="$objectID"/> = new PageEditor();
                                 }
                                 catch (e) {
-                                    safeConsoleError(e);
+                                    console.error(e);
                                 }
                             </xsl:if>
                         </xsl:if>
@@ -291,15 +291,6 @@
                 var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[@name!='PageEditor']]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
             </xsl:if>
             window.addEvent('domready', function () {
-                var safeConsoleError = function(e){
-                    if (window['console'] <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> console['error']) {
-                        if (Browser.chrome <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> instanceOf(e, TypeError) <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> Energine.debug) {
-                            console.error(e.stack);
-                        } else {
-                            console.error(e);
-                        }
-                    }
-                };
                 <xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
                     try {
                     <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
@@ -316,7 +307,7 @@
                                                                 select="."/>'<xsl:if test="position()!=last()">,</xsl:if>}</xsl:for-each></xsl:if>);
                     }
                     catch (e) {
-                        safeConsoleError(e);
+                        console.error(e);
                     }
                 </xsl:if>
                 <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[@name!='PageEditor']">
@@ -326,7 +317,7 @@
                             <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>($('<xsl:value-of select="$objectID"/>'));
                         }
                         catch (e) {
-                            safeConsoleError(e);
+                            console.error(e);
                         }
                     }
                 </xsl:for-each>
@@ -337,7 +328,7 @@
                             <xsl:value-of select="$objectID"/> = new PageEditor();
                         }
                         catch (e) {
-                            safeConsoleError(e);
+                            console.error(e);
                         }
                     </xsl:if>
                 </xsl:if>

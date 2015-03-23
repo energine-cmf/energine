@@ -55,7 +55,7 @@ window.addEvent('domready', function () {
     }
 
     fbAuth.addEvent('click', function (e) {
-        Energine.cancelEvent(e);
+        e.stop();
 
         var over = new Overlay(document.body);
         over.show();

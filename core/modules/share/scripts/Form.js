@@ -790,7 +790,7 @@ Form.SmapSelector = new Class(/** @lends Form.SmapSelector# */{
         this.field = selector.getProperty('field');
 
         selector.addEvent('click', function (e) {
-            Energine.cancelEvent(e);
+            e.stop();
             this.smap.id = $($(e.target).getProperty('smap_id'));
             this.smap.name = $($(e.target).getProperty('smap_name'));
             this.showSelector.apply(this);
@@ -845,7 +845,7 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
         this.field = selector.getProperty('field');
 
         selector.addEvent('click', function (e) {
-            Energine.cancelEvent(e);
+            e.stop();
             /**
              * Upload name.
              * @type {string}

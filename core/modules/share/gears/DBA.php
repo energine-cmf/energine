@@ -520,7 +520,14 @@ array(
         if (sizeof($args) > 1) {
             $query = array_shift($args); // отбрасываем первый аргумент $query
             foreach ($args as &$arg) {
-                if(!is_null($arg))
+				if(is_array($arg)) {
+					if (empty($arg)) $arg = array('-1'); // для пустых массивов делаем трюк с -1
+					$arg = array_map(function($var) {
+						return is_numeric($var) ? $var : $this->pdo->quote($var);
+					}, $arg);
+					$arg = implode(',', $arg);
+				}
+				elseif(!is_null($arg))
                     $arg = $this->pdo->quote($arg);
                 else {
                     $arg = 'NULL';

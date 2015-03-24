@@ -93,10 +93,6 @@ abstract class DBA extends Object {
      */
     const COLTYPE_STRING = 'VARCHAR';
 
-    //Типы строк только для внутреннего использования. Без комментариев :)
-    //const COLTYPE_STRING1 = 'STRING';
-    //const COLTYPE_STRING2 = 'VAR_STRING';
-
     /**
      * Column type: @c TEXT
      * @var string COLTYPE_TEXT

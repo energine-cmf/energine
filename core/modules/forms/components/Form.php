@@ -50,11 +50,7 @@ class Form extends DBDataSet {
         if ($formID = $this->getParam('id')) {
             $filter['form_id'] = $formID;
         }
-        $this->formID = simplifyDBResult(
-            $this->dbh->select('frm_forms', 'form_id', $filter, 'RAND()', 1),
-            'form_id',
-            true
-        );
+        $this->formID = $this->dbh->getScalar('frm_forms', 'form_id', $filter, 'RAND()', 1);
         //If formID is actual number, but we don't have table with name form_$formID, then set formID to false.
         //Otherwiste setTableName.
         if (!$this->formID || !$this->dbh->tableExists($tableName =
@@ -215,7 +211,7 @@ class Form extends DBDataSet {
                 $data['pk_id'] = $result;
                 foreach ($data as $key => $value) {
                     $data[$key] = array('translation' => $this->translate(
-                            'FIELD_' . $key),
+                        'FIELD_' . $key),
                         'value' => $value);
                     if ($fd = $this->saver->getDataDescription()->getFieldDescriptionByName($key)) {
                         if (($fd->getType() == FieldDescription::FIELD_TYPE_MULTI) && is_array($keyInfo = $fd->getPropertyValue('key'))) {
@@ -243,13 +239,11 @@ class Form extends DBDataSet {
                 try {
                     $mailer = new Mail();
                     //Get subject
-                    $subject = simplifyDBResult(
-                        $this->dbh->select(
+                    $subject =
+                        $this->dbh->getScalar(
                             'frm_forms_translation',
-                            array('form_name'),
-                            array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent())),
-                        'form_name',
-                        true);
+                            'form_name',
+                            array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
                     $subject = $this->translate('TXT_EMAIL_FROM_FORM') . ' ' .
                         $subject;
 
@@ -272,11 +266,11 @@ class Form extends DBDataSet {
                             '<br>';
                     }
                     $mailer->setFrom($this->getConfigValue('mail.from'))->
-                        setSubject($subject)->
-                        setText($body)->
-                        addTo(($recp =
-                            $this->getRecipientEmail()) ? $recp
-                            : $this->getConfigValue('mail.manager'))->send();
+                    setSubject($subject)->
+                    setText($body)->
+                    addTo(($recp =
+                        $this->getRecipientEmail()) ? $recp
+                        : $this->getConfigValue('mail.manager'))->send();
                 } catch (\Exception $e) {
                 }
             }
@@ -330,13 +324,9 @@ class Form extends DBDataSet {
         $this->setDataDescription($dataDescription);
         $this->setData($data);
 
-        if ($result = simplifyDBResult(
-            $this->dbh->select('frm_forms_translation',
-                array('form_name'),
-                array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent())), 'form_name', true)
-        ) {
-        }
-        $this->setTitle($result);
+        $this->setTitle($this->dbh->getScalar('frm_forms_translation',
+            array('form_name'),
+            array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent())));
     }
 
     //todo VZ: Input argument is not used.
@@ -347,11 +337,7 @@ class Form extends DBDataSet {
      * @return string
      */
     protected function getRecipientEmail($options = false) {
-        $result =
-            simplifyDBResult($this->dbh->select('frm_forms', array('form_email_adresses'), array('form_id' => $this->formID)),
-                'form_email_adresses',
-                true);
-        return $result;
+        return $this->dbh->getScalar('frm_forms', array('form_email_adresses'), array('form_id' => $this->formID));
     }
 
     /**

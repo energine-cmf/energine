@@ -59,8 +59,8 @@ class RestorePassword extends DataSet {
         }
         else {
             $uName = $_POST['u_name'];
-            $UID = simplifyDBResult($this->dbh->select('user_users', 'u_id', array('u_name'=>$uName)), 'u_id', true);
-            if (!$UID) {
+
+            if (!($UID = $this->dbh->getScalar('user_users', 'u_id', array('u_name'=>$uName)))) {
                 $message = $this->translate('ERR_NO_U_NAME');
             }
             else {

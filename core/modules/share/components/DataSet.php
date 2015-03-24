@@ -570,7 +570,8 @@ abstract class DataSet extends Component {
      * @final
      */
     final protected function setTitle($title) {
-        $this->setProperty('title', $title);
+        if(!empty($title))
+            $this->setProperty('title', $title);
     }
 
     /**

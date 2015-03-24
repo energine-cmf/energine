@@ -86,7 +86,7 @@ class SimilarNews extends DBDataSet {
      */
     protected function main() {
         $ap = $this->cp->getStateParams(true);
-        $this->newsID = (int)$ap['newsID'];
+        $this->newsID = (int)$ap['id'];
         $this->setTableName($this->cp->getTableName());
         $similarNews = $this->getSimilarNewsIDs();
 
@@ -138,18 +138,15 @@ class SimilarNews extends DBDataSet {
      */
     private function getSimilarNewsIDs() {
         $tagIDs = $this->getNewsTagIDs();
-
         if ($tagIDs) {
-            $result = simplifyDBResult($this->dbh->select(
-                'SELECT DISTINCT sn.news_id news_id, sn.news_date FROM ' .
+            $result = $this->dbh->getColumn(
+                'SELECT DISTINCT sn.news_id news_id FROM ' .
                 $this->getTableName() . ' AS sn LEFT JOIN ' .
                 $this->getTableName() . '_tags AS snt ' .
                 ' ON snt.news_id=sn.news_id WHERE snt.tag_id IN (%s) ' .
                 ' ORDER BY sn.news_date DESC LIMIT 0,' .
                 intval($this->getParam('limit')),
-                $tagIDs
-            ), 'news_id');
-
+                $tagIDs);
             unset($result[array_search($this->newsID, $result)]);
             return $result;
         }
@@ -162,9 +159,6 @@ class SimilarNews extends DBDataSet {
      * @return array
      * */
     private function getNewsTagIDs() {
-        $result = simplifyDBResult($this->dbh->select(
-            'SELECT * FROM ' . $this->getTableName() .
-            '_tags WHERE news_id=%s', $this->newsID), 'tag_id');
-        return $result;
+        return $this->dbh->getColumn($this->getTableName().'_tags', 'tag_id', ['news_id' => $this->newsID]);
     }
 }

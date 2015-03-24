@@ -41,7 +41,7 @@ class SiteSaver extends Saver {
         $result = parent::save();
         $id = ($this->getMode() == QAL::INSERT) ? $result : $this->getData()->getFieldByName('site_id')->getRowData(0);
         //Сохраняем информацию о доменах
-        $domainIDs = simplifyDBResult($this->dbh->select('SELECT domain_id FROM share_domains WHERE domain_id NOT IN (SELECT domain_id FROM share_domain2site)'), 'domain_id');
+        $domainIDs = $this->dbh->getColumn('SELECT domain_id FROM share_domains WHERE domain_id NOT IN (SELECT domain_id FROM share_domain2site)');
 
         if (!empty($domainIDs)) {
             foreach ($domainIDs as $domainID) {

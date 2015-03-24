@@ -118,7 +118,7 @@ function dump_log($var, $append = false) {
         "\ndate: ".$d->format('l dS of F Y h:i:s:u')."\n\n".$data."\n",
         $flags
     );
-    chmod('logs/debug.log', 0666);
+    @chmod('logs/debug.log', 0666);
 }
 
 /**
@@ -146,6 +146,7 @@ function ddump_log() {
  * @brief Simplify data base result.
  * It selects the values at the defined field from the result of SELECT request.
  *
+ * @see array_column
  * @param mixed $dbResult Result of SELECT request.
  * @param string $fieldName Field name that will be selected from result.
  * @param boolean $singleRow Return only the first value at defined field name?
@@ -159,11 +160,7 @@ function simplifyDBResult($dbResult, $fieldName, $singleRow = false) {
             $result = $dbResult[0][$fieldName];
         }
         else {
-            foreach ($dbResult as $row) {
-                if (array_key_exists($fieldName, $row)) {
-                    $result[] = $row[$fieldName];
-                }
-            }
+            $result = array_column($dbResult, $fieldName);
         }
     }
     return $result;

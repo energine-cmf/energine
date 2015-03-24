@@ -529,7 +529,8 @@ abstract class DBA extends Object {
             if (!($result = $this->pdo->prepare($query))) {
                 throw new SystemException('ERR_PREPARE_REQUEST', SystemException::ERR_DB, $query);
             }
-            if (!$result->execute($data)) {
+
+            if (!$result->execute($this->prepareSQLArgs($data))) {
                 throw new SystemException('ERR_EXECUTE_REQUEST', SystemException::ERR_DB, array($query, $data));
             }
 
@@ -537,5 +538,31 @@ abstract class DBA extends Object {
             $result = $this->pdo->query($query);
         }
         return $result;
+    }
+
+    /**
+     * Prepare array arguments for
+     *
+     * @see DBA::runQuery
+     * @see \PDOStatement::execute
+     *
+     * @param array $data [0=>first binded arg, 1=>second argument]
+     * @return array
+     */
+    private function prepareSQLArgs($data) {
+        $data = array_map(function ($val) {
+            if (is_array($val)) {
+                if (empty($val)) {
+                    $val = [-1];
+                } else {
+                    $val = array_map(function ($var) {
+                        return is_numeric($var) ? $var : $this->pdo->quote($var);
+                    }, $val);
+                }
+                $val = implode(',', $val);
+            }
+            return $val;
+        }, $data);
+        return $data;
     }
 }

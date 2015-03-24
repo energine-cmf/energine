@@ -16,7 +16,7 @@ final class DivisionEditor;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears, Energine\share\gears\FieldDescription, Energine\share\gears\JSONDivBuilder, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Field, Energine\share\gears\DataDescription, Energine\share\gears\DBWorker, Energine\share\gears\Document, Energine\share\gears\DivisionSaver,Energine\share\gears\TagManager, Energine\apps\gears\AdsManager, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL;
+use Energine\share\gears, Energine\share\gears\FieldDescription, Energine\share\gears\JSONDivBuilder, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Field, Energine\share\gears\DataDescription, Energine\share\gears\DBWorker, Energine\share\gears\Document, Energine\share\gears\DivisionSaver, Energine\share\gears\TagManager, Energine\apps\gears\AdsManager, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL;
 
 /**
  * Division editor.
@@ -471,7 +471,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $contentFD =
                 $this->getDataDescription()->getFieldDescriptionByName('smap_content');
             $contentFD->setProperty('reset', $this->translate('TXT_RESET_CONTENT'));
-            $av = & $contentFD->getAvailableValues();
+            $av = &$contentFD->getAvailableValues();
             if (isset($av[$contentFilename])) {
                 $av[$contentFilename]['value'] .=
                     ' - ' . $this->translate('TXT_CHANGED');
@@ -517,8 +517,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                 );
             }
         }
-        $smapName =
-            simplifyDBResult($this->dbh->select($this->getTranslationTableName(), array('smap_name'), array('smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang())), 'smap_name', true);
+        $smapName = $this->dbh->getScalar($this->getTranslationTableName(), 'smap_name', array('smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang()));
 
         for ($i = 0; $i < (
         $langs = count(E()->getLanguage()->getLanguages())); $i++) {
@@ -822,10 +821,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $filter = array('smap_id' => $ap['smap_id']);
         }
 
-        $smapID = simplifyDBResult(
-            $this->dbh->select($this->getTableName(), array('smap_id'), $filter),
-            'smap_id'
-        );
+        $smapID = $this->dbh->getColumn($this->getTableName(), array('smap_id'), $filter);
         $this->dbh->beginTransaction();
         if (is_array($smapID) && !empty($smapID)) {
             $this->dbh->modify(
@@ -861,11 +857,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $order[key($order)] =
                 ($order[key($order)] == QAL::ASC) ? QAL::DESC : QAL::ASC;
         }
-
-        //Определяем PID
-        $res =
-            $this->dbh->select($this->getTableName(), array('smap_pid'), array('smap_id' => $id));
-        $PID = simplifyDBResult($res, 'smap_pid', true);
+        $PID = $this->dbh->getScalar($this->getTableName(), array('smap_pid'), array('smap_id' => $id));
 
         if (!is_null($PID)) {
             $PID = ' = ' . $PID;

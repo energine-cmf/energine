@@ -64,17 +64,15 @@ class AuthUser extends User {
      * @return bool|int
      */
     public static function authenticate($username, $password) {
-        $username = trim($username);
-        $password = sha1(trim($password));
         //Проверяем совпадает ли имя/пароль в SHA1 с данными в таблице
-        if($id = simplifyDBResult(E()->getDB()->select(
+        if($id = E()->getDB()->getScalar(
             'user_users', array('u_id'),
             array(
-                'u_name' => $username,
-                'u_password' => $password,
+                'u_name' => trim($username),
+                'u_password' => sha1(trim($password)),
                 'u_is_active' => 1
-            )
-        ), 'u_id', true)) {
+            ))
+        ) {
             return (int)$id; 
         }
         else {

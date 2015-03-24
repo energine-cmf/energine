@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 abstract class DataSet;
-@endcode
+ * @endcode
  *
  * @author spacelord
  * @copyright Energine 2010
@@ -14,13 +14,15 @@ abstract class DataSet;
  * @version 1.0.0
  */
 namespace Energine\share\components;
+
 use Energine\share\gears\QAL, Energine\share\gears\FieldDescription, Energine\share\gears\SystemException, Energine\share\gears\ComponentManager, Energine\share\gears\Field, Energine\share\gears\Data, Energine\share\gears\DataDescription, Energine\share\gears\Builder, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\Translit;
+
 /**
  * Class to work with repository widgets.
  *
  * @code
 abstract class DataSet;
-@endcode
+ * @endcode
  */
 class WidgetsRepository extends Grid {
     /**
@@ -41,9 +43,9 @@ class WidgetsRepository extends Grid {
     /**
      * @copydoc Grid::createDataDescription
      */
-    protected function createDataDescription(){
+    protected function createDataDescription() {
         $result = parent::createDataDescription();
-        if(in_array($this->getState(), array('add', 'edit'))){
+        if (in_array($this->getState(), array('add', 'edit'))) {
             $result->getFieldDescriptionByName('widget_xml')->setType(FieldDescription::FIELD_TYPE_CODE);
         }
         return $result;
@@ -65,7 +67,7 @@ class WidgetsRepository extends Grid {
         }
         list($componentName) = $this->getStateParams();
         $component =
-                ComponentManager::findBlockByName($widgetXML, $componentName);
+            ComponentManager::findBlockByName($widgetXML, $componentName);
         $dd = new DataDescription();
         $d = new Data();
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
@@ -79,7 +81,7 @@ class WidgetsRepository extends Grid {
             $paramType = (isset($param['type'])) ? (string)$param['type'] : FieldDescription::FIELD_TYPE_STRING;
 
             $fd = new FieldDescription($paramName);
-            if(isset($param['nullable'])){
+            if (isset($param['nullable'])) {
                 $fd->setProperty('nullable', true);
             }
 
@@ -113,7 +115,7 @@ class WidgetsRepository extends Grid {
         unset($_SERVER['HTTP_X_REQUEST']);
         $this->request->shiftPath(1);
         $this->tmpComponent =
-                ComponentManager::createBlockFromDescription($xml);
+            ComponentManager::createBlockFromDescription($xml);
         $this->tmpComponent->run();
     }
 
@@ -161,10 +163,10 @@ class WidgetsRepository extends Grid {
         $this->dbh->modify(QAL::UPDATE, 'share_sitemap', array('smap_content_xml' => $xml), array('smap_id' => E()->getDocument()->getID()));
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
-                               'xml' => $xml,
-                               'result' => true,
-                               'mode' => 'none'
-                          ));
+            'xml' => $xml,
+            'result' => true,
+            'mode' => 'none'
+        ));
         $this->setBuilder($b);
     }
 
@@ -194,7 +196,7 @@ class WidgetsRepository extends Grid {
             throw new SystemException('ERR_BAD_XML');
         }
         //Определяем шаблон текущей страницы
-        $content = simplifyDBResult($this->dbh->select('share_sitemap', array('smap_content'), array('smap_id' => $this->document->getID())), 'smap_content', true);
+        $content = $this->dbh->getScalar('share_sitemap', 'smap_content', array('smap_id' => $this->document->getID()));
 
         //если шаблон  - ядреный - мы не можем в него писать изменения
         if ($content == basename($content)) {
@@ -205,8 +207,7 @@ class WidgetsRepository extends Grid {
             //переназначаем для данной страницы шаблон
             //перенезначаем для всех страниц созданных по ядреному шаблону
             $this->dbh->modify(QAL::UPDATE, 'share_sitemap', array('smap_content' => $symlink), array('smap_content' => $content));
-        }
-        else {
+        } else {
             //перезаписываем файл
             list($moduleName, $fileName) = array_values(pathinfo($content));
 
@@ -217,10 +218,10 @@ class WidgetsRepository extends Grid {
         //формируем ответ
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
-                               'xml' => $xml,
-                               'result' => true,
-                               'mode' => 'none'
-                          ));
+            'xml' => $xml,
+            'result' => true,
+            'mode' => 'none'
+        ));
         $this->setBuilder($b);
     }
 
@@ -292,10 +293,10 @@ class WidgetsRepository extends Grid {
         //формируем ответ
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
-                               'xml' => $xml,
-                               'result' => true,
-                               'mode' => 'none'
-                          ));
+            'xml' => $xml,
+            'result' => true,
+            'mode' => 'none'
+        ));
         $this->setBuilder($b);
     }
 
@@ -305,20 +306,16 @@ class WidgetsRepository extends Grid {
      * @throws SystemException 'ERR_CONTENT_NOT_REVERTED'
      */
     protected function revertTemplate() {
-        $content = simplifyDBResult(
-            $this->dbh->select(
-                'SELECT  smap_content as content FROM share_sitemap WHERE smap_id = %s', $this->document->getID()),
-            'content',
-            true);
+        $content = $this->dbh->getScalar('SELECT  smap_content as content FROM share_sitemap WHERE smap_id = %s', $this->document->getID());
         if ((dirname($content) == '.') || !file_exists('templates/content/' . basename($content))) {
             throw new SystemException('ERR_CONTENT_NOT_REVERTED', SystemException::ERR_CRITICAL, $content);
         }
         $this->dbh->modify(QAL::UPDATE, 'share_sitemap', array('smap_content' => basename($content), 'smap_content_xml' => QAL::EMPTY_STRING), array('smap_content' => $content));
         $b = new JSONCustomBuilder();
         $b->setProperties(array(
-                               'result' => true,
-                               'mode' => 'none'
-                          ));
+            'result' => true,
+            'mode' => 'none'
+        ));
         $this->setBuilder($b);
     }
 }

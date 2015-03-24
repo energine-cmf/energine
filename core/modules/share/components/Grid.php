@@ -214,17 +214,15 @@ class Grid extends DBDataSet {
      */
     protected function deleteData($id) {
         if ($orderColumn = $this->getOrderColumn()) {
-            $deletedOrderNum =
-                simplifyDBResult($this->dbh->select($this->getTableName(), $this->getOrderColumn(),
-                    [$this->getPK() => $id]), $this->getOrderColumn(), true);
+            $deletedOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(),
+                [$this->getPK() => $id]);
 
-            $ids =
-                simplifyDBResult($this->dbh->select($this->getTableName(), [$this->getPK()],
-                    array_merge($this->getFilter(), [
-                        $orderColumn .
-                        ' > ' .
-                        $deletedOrderNum
-                    ]), [$orderColumn => QAL::ASC]), $this->getPK());
+            $ids = $this->dbh->getColumn($this->getTableName(), [$this->getPK()],
+                array_merge($this->getFilter(), [
+                    $orderColumn .
+                    ' > ' .
+                    $deletedOrderNum
+                ]), [$orderColumn => QAL::ASC]);
 
         }
         $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, [$this->getPK() => $id]);
@@ -1000,16 +998,7 @@ class Grid extends DBDataSet {
         list($currentID) = $currentID;
 
         //Определяем order_num текущей страницы
-        $currentOrderNum = simplifyDBResult(
-            $this->dbh->selectRequest(
-                'SELECT ' . $this->getOrderColumn() . ' ' .
-                'FROM ' . $this->getTableName() . ' ' .
-                'WHERE ' . $this->getPK() . ' = %s',
-                $currentID
-            ),
-            $this->getOrderColumn(),
-            true
-        );
+        $currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(), [$this->getPK() =>$currentID]);
 
         $orderDirection = ($direction == Grid::DIR_DOWN) ? QAL::ASC : QAL::DESC;
 

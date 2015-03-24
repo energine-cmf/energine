@@ -170,11 +170,7 @@ final class Sitemap extends DBWorker {
      * @return mixed
      */
     public static function getSiteID($pageID) {
-        return simplifyDBResult(
-            E()->getDB()->select('share_sitemap', 'site_id', array('smap_id' => (int)$pageID)),
-            'site_id',
-            true
-        );
+        return E()->getDB()->getScalar('share_sitemap', 'site_id', array('smap_id' => (int)$pageID));
     }
 
     /**

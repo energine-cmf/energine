@@ -302,12 +302,7 @@ class DBDataSet extends DataSet {
             if (is_array($res)) {
                 $data = $res;
                 if ($this->pager) {
-                    if (!($recordsCount = simplifyDBResult($this->dbh->selectRequest('SELECT FOUND_ROWS() as c'), 'c',
-                        true))
-                    ) {
-                        $recordsCount = 0;
-                    }
-                    $this->pager->setRecordsCount($recordsCount);
+                    $this->pager->setRecordsCount($this->dbh->getScalar('SELECT FOUND_ROWS() as c'));
                 }
             }
         }
@@ -385,14 +380,9 @@ class DBDataSet extends DataSet {
                 $order,
                 $limit
             );
-            $data = $this->dbh->selectRequest($request);
+            $data = $this->dbh->select($request);
             if ($this->pager) {
-                if (!($recordsCount = simplifyDBResult($this->dbh->selectRequest('SELECT FOUND_ROWS() as c'), 'c',
-                    true))
-                ) {
-                    $recordsCount = 0;
-                }
-                $this->pager->setRecordsCount($recordsCount);
+                $this->pager->setRecordsCount($this->dbh->getScalar('SELECT FOUND_ROWS() as c'));
             }
             //Если данные не только для текущего языка
             if (is_array($data) && (!$this->getDataLanguage() || $this->getDataLanguage() && !$this->getParam('onlyCurrentLang') && isset($dbFields[$this->getTranslationTableName()]))) {

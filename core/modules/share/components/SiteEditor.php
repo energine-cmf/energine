@@ -192,14 +192,14 @@ class SiteEditor extends Grid {
      */
     protected function go() {
         list($siteID) = $this->getStateParams();
-        if(!($url = simplifyDBResult(
-            $this->dbh->select(
+        if(!($url =
+            $this->dbh->getScalar(
                 'SELECT CONCAT( domain_protocol, "://", domain_host, ":", domain_port, domain_root ) AS url
                 FROM `share_domains`
                 LEFT JOIN share_domain2site
                 USING ( domain_id )
                 WHERE (site_id = %s)
-                LIMIT 1', $siteID), 'url', true))){
+                LIMIT 1', $siteID))){
             throw new SystemException('ERR_BAD_URL', SystemException::ERR_CRITICAL, $this->dbh->getLastRequest());
         }
         E()->getResponse()->setRedirect($url);

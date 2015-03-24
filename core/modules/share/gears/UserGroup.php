@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 final class UserGroup;
-@endcode
+ * @endcode
  *
  * @author 1m.dm
  * @copyright Energine 2006
@@ -75,7 +75,7 @@ final class UserGroup extends DBWorker {
                 }
             }
             if ($result == false) {
-            	throw new SystemException('ERR_DEV_NO_DEFAULT_GROUP', SystemException::ERR_CRITICAL);
+                throw new SystemException('ERR_DEV_NO_DEFAULT_GROUP', SystemException::ERR_CRITICAL);
             }
             $this->defaultGuestGroup = $result;
         }
@@ -99,7 +99,7 @@ final class UserGroup extends DBWorker {
                 }
             }
             if ($result == false) {
-            	throw new SystemException('ERR_DEV_NO_DEFAULT_USER_GROUP', SystemException::ERR_CRITICAL);
+                throw new SystemException('ERR_DEV_NO_DEFAULT_USER_GROUP', SystemException::ERR_CRITICAL);
             }
             $this->defaultUserGroup = $result;
         }
@@ -148,18 +148,18 @@ final class UserGroup extends DBWorker {
      * @param int $groupID Group ID.
      * @return array
      */
-    public function getMembers($groupID){
+    public function getMembers($groupID) {
         $result = array();
-    	$members = simplifyDBResult($this->dbh->select('user_user_groups', array('u_id'), array('group_id'=>$groupID)), 'u_id');
-    	if (is_array($members)) {
-    		foreach ($members as $memberID) {
-    		    $member = new User($memberID);
-    		    if ($member->getValue('u_is_active') == 1) {
-    		      $result[] = $member;
-    		    }
+        $members = $this->dbh->getColumn('user_user_groups', 'u_id', array('group_id' => $groupID));
+        if (is_array($members)) {
+            foreach ($members as $memberID) {
+                $member = new User($memberID);
+                if ($member->getValue('u_is_active') == 1) {
+                    $result[] = $member;
+                }
 
-    		}
-    	}
-    	return $result;
+            }
+        }
+        return $result;
     }
 }

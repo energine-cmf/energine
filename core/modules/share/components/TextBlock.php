@@ -93,12 +93,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
      */
     protected function getTextBlockID($smapID, $num) {
         $smapID = (empty($smapID)) ? null : $smapID;
-        $result = false;
-        $res = $this->dbh->select($this->tableName, array('tb_id'), array('smap_id' => $smapID, 'tb_num' => $num));
-        if (is_array($res)) {
-            $result = simplifyDBResult($res, 'tb_id', true);
-        }
-        return $result;
+        return $this->dbh->getScalar($this->tableName, array('tb_id'), array('smap_id' => $smapID, 'tb_num' => $num));
     }
 
     /**

@@ -87,9 +87,9 @@ class FormsEditor extends Grid {
         $res = $this->dbh->select('SHOW FULL TABLES FROM `' . FormConstructor::getDatabase() . '` LIKE "%form_' . $id . '%"');
         if (is_array($res)) {
             $tables = array_map(function($row) { return current($row); }, $res);
-            $this->dbh->modifyRequest('SET FOREIGN_KEY_CHECKS=0;');
+            $this->dbh->modify('SET FOREIGN_KEY_CHECKS=0;');
             foreach ($tables as $tableName) {
-                $this->dbh->modifyRequest('DROP TABLE `' . FormConstructor::getDatabase() . '`.' . $tableName);
+                $this->dbh->modify('DROP TABLE `' . FormConstructor::getDatabase() . '`.' . $tableName);
             }
         }
     }

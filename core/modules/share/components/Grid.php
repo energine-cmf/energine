@@ -235,7 +235,7 @@ class Grid extends DBDataSet {
                 ' = ' . $orderColumn . ' - 1 ' .
                 $this->dbh->buildWhereCondition($this->getFilter());
 
-            $this->dbh->modifyRequest($request);
+            $this->dbh->modify($request);
         }
     }
 
@@ -494,7 +494,7 @@ class Grid extends DBDataSet {
                 'UPDATE ' . $this->getTableName() . ' SET ' . $orderColumn .
                 '=' . $orderColumn . '+1 ' .
                 $this->dbh->buildWhereCondition($this->getFilter());
-            $this->dbh->modifyRequest($request);
+            $this->dbh->modify($request);
         }
 
         return $result;
@@ -943,7 +943,7 @@ class Grid extends DBDataSet {
                         );
                         $this->dbh->beginTransaction();
                         // сдвигаем все элементы выше или ниже второго id
-                        $this->dbh->select(
+                        $this->dbh->modify(
                             'UPDATE ' . $this->getTableName() . ' ' .
                             'SET ' . $this->getOrderColumn() . ' = ' .
                             $this->getOrderColumn() . (($direction == 'below') ? ' +2 ' : ' -2 ') .

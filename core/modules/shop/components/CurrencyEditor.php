@@ -52,7 +52,7 @@ class CurrencyEditor extends Grid {
 		}
 		
 		if($_POST[$this->getTableName()]['curr_is_main']){
-		  $this->dbh->modifyRequest('UPDATE '.$this->getTableName().' SET curr_is_main = 0');
+		  $this->dbh->modify('UPDATE '.$this->getTableName().' SET curr_is_main = 0');
 		}
 		else {
 			$_POST[$this->getTableName()]['curr_is_main'] = '';

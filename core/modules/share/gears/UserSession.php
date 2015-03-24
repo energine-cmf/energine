@@ -129,7 +129,7 @@ final class UserSession extends DBWorker {
             $this->data = self::isValid($this->phpSessId);
             //Если сессия валидная
             if (!is_null($this->data)) {
-                E()->getDB()->modifyRequest('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
+                E()->getDB()->modify('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
             } elseif ($force) {
                 //создаем ее вручную
                 $sessInfo = self::manuallyCreateSessionInfo();

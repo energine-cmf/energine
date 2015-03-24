@@ -195,8 +195,7 @@ abstract class DBA extends Object {
      * )
      * )
      * @endcode
-     *  - @c true for empty result;
-     *  - @c false by fail.
+     *  - @c empty array for empty result;
      *
      * @param string $query SELECT query.
      * @return mixed
@@ -219,9 +218,6 @@ abstract class DBA extends Object {
         while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
             array_push($result, $row);
         }
-        if (empty($result)) {
-            $result = true;
-        }
 
         return $result;
     }
@@ -243,7 +239,7 @@ abstract class DBA extends Object {
      *
      * @throws SystemException
      */
-    public function modifyRequest($query) {
+    protected function modifyRequest($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
         if (!($res instanceof \PDOStatement)) {
@@ -551,7 +547,7 @@ abstract class DBA extends Object {
                     $val = [-1];
                 } else {
                     $val = array_map(function ($var) {
-                        return is_numeric($var) ? $var : $this->pdo->quote($var);
+                        return is_numeric($var) ? $var : $this->quote($var);
                     }, $val);
                 }
                 $val = implode(',', $val);

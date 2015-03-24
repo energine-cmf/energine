@@ -118,7 +118,7 @@ class ExtendedFeedEditor extends FeedEditor {
      */
     protected function publish() {
         list($id) = $this->getStateParams();
-        $this->dbh->modifyRequest('UPDATE ' . $this->getTableName() . ' SET ' . $this->publishFieldName . ' = NOT ' . $this->publishFieldName . ' WHERE ' . $this->getPK() . ' = %s', $id);
+        $this->dbh->modify('UPDATE ' . $this->getTableName() . ' SET ' . $this->publishFieldName . ' = NOT ' . $this->publishFieldName . ' WHERE ' . $this->getPK() . ' = %s', $id);
 
         $b = new JSONCustomBuilder();
         $b->setProperties(

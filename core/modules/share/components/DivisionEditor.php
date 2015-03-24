@@ -111,7 +111,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $data =
             $this->dbh->select('share_access_level', array('group_id', 'right_id'), array('smap_id' => $id));
 
-        if (is_array($data)) {
+        if ($data) {
             $data = convertDBResult($data, 'group_id', true);
 
             for ($i = 0; $i < $resultData->getRowCount(); $i++) {
@@ -409,15 +409,14 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                     'key', 'value');
             }
 
-        $res =
-            $this->dbh->select(
-                $this->getTranslationTableName(),
-                array('smap_name'),
-                array(
-                    'smap_id' => $actionParams['pid'],
-                    'lang_id' => $this->document->getLang()));
-        if (!empty($res)) {
-            $name = simplifyDBResult($res, 'smap_name', true);
+
+        if ($name = $this->dbh->getScalar(
+            $this->getTranslationTableName(),
+            array('smap_name'),
+            array(
+                'smap_id' => $actionParams['pid'],
+                'lang_id' => $this->document->getLang()))
+        ) {
             for ($i = 0,
                  $langCount = count(E()->getLanguage()->getLanguages());
                  $i < $langCount; $i++) {
@@ -570,20 +569,12 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
      */
     // Не позволяет удалить раздел по умолчанию а также системные разделы
     protected function deleteData($id) {
-        $res =
-            $this->dbh->select('share_sitemap', array('smap_pid'), array($this->getPK() => $id));
-        if (!is_array($res))
+        if (!($PID = $this->dbh->getScalar('share_sitemap', array('smap_pid'), array($this->getPK() => $id))))
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_CRITICAL);
-
-        list($res) = $res;
-
-        $PID = $res['smap_pid'];
         if (empty($PID)) {
             $PID = null;
         }
-
         $this->setFilter(array('smap_pid' => $PID));
-
         parent::deleteData($id);
     }
 
@@ -672,7 +663,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
      */
     protected function getTemplateInfo() {
         $res = $this->dbh->select('SELECT smap_layout, smap_content, IF(smap_content_xml<>"", 1,0 ) as modified FROM share_sitemap WHERE smap_id = %s', $this->document->getID());
-        if (!empty($res)) {
+        if ($res) {
             list($res) = $res;
 
             list($contentTitle) = explode('.', basename($res['smap_content']));
@@ -885,7 +876,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $this->dbh->buildOrderCondition($order));
 
         $result = $this->dbh->select($request);
-        if ($result === true || sizeof($result) < 2) {
+        if (!$result || sizeof($result) < 2) {
             throw new SystemException('ERR_CANT_MOVE', SystemException::ERR_NOTICE);
         }
 

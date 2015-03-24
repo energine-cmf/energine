@@ -454,7 +454,7 @@ class CommentsForm extends DataSet {
         $parentIdSql = intval($parentId) ? intval($parentId) : 'NULL';
         $uIdSql = intval($uId) ? intval($uId) : 'NULL';
 
-        $commentId = $this->dbh->modifyRequest("INSERT {$this->commentTable}
+        $commentId = $this->dbh->modify("INSERT {$this->commentTable}
         	SET target_id = %s,
         		comment_parent_id = $parentIdSql, 
         		comment_name = %s,

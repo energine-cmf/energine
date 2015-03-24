@@ -184,8 +184,7 @@ class DBDataSet extends DataSet {
                             $primaryKeyName => $pks
                         ]
                     );
-
-                    if (is_array($res)) {
+                    if ($res) {
                         foreach ($res as $row) {
                             $pk = $row[$relInfo['fieldName']];
                             unset($row[$relInfo['fieldName']]);
@@ -299,6 +298,7 @@ class DBDataSet extends DataSet {
                 $res = $this->dbh->select($this->getTableName(), (($this->pager) ? ' SQL_CALC_FOUND_ROWS '
                         : '') . implode(',', $dbFields), $this->getFilter(), $this->getOrder(), $this->getLimit());
             }
+
             if (is_array($res)) {
                 $data = $res;
                 if ($this->pager) {
@@ -385,7 +385,7 @@ class DBDataSet extends DataSet {
                 $this->pager->setRecordsCount($this->dbh->getScalar('SELECT FOUND_ROWS() as c'));
             }
             //Если данные не только для текущего языка
-            if (is_array($data) && (!$this->getDataLanguage() || $this->getDataLanguage() && !$this->getParam('onlyCurrentLang') && isset($dbFields[$this->getTranslationTableName()]))) {
+            if ($data && (!$this->getDataLanguage() || $this->getDataLanguage() && !$this->getParam('onlyCurrentLang') && isset($dbFields[$this->getTranslationTableName()]))) {
 
                 //формируем матрицу
                 foreach ($data as $row) {
@@ -746,8 +746,7 @@ class DBDataSet extends DataSet {
         }
 
         $res = $this->dbh->select($this->getTableName(), [$fieldName], [$fieldName => $id]);
-
-        return is_array($res);
+        return !empty($res);
     }
 
     /**

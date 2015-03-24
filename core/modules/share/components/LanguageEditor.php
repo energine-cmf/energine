@@ -133,7 +133,7 @@ class LanguageEditor extends Grid {
                     $fields =
                         array_keys($this->dbh->getColumnsInfo($tableName));
                     $fields[1] = $langID;
-                    $this->dbh->modifyRequest('INSERT INTO ' . $tableName . ' SELECT ' .
+                    $this->dbh->modify('INSERT INTO ' . $tableName . ' SELECT ' .
                         implode(',', $fields) . ' FROM ' . $tableName .
                         ' WHERE lang_id=%s', $defaultLangID
                     );

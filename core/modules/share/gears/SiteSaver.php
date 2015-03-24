@@ -116,7 +116,7 @@ class SiteSaver extends Saver {
             );
         }
         //права берем ориентируясь на главную страницу дефолтного сайта
-        $this->dbh->modifyRequest(
+        $this->dbh->modify(
             'INSERT IGNORE INTO share_access_level ' .
             '(smap_id, right_id, group_id) ' .
             'SELECT %s, al.right_id, al.group_id ' .
@@ -144,7 +144,7 @@ class SiteSaver extends Saver {
         if (is_array($source)) {
             $oldtoNewMAP = $this->copyRows($source, null, '', $destinationSiteID);
             foreach ($oldtoNewMAP as $oldID => $newID) {
-                $this->dbh->modifyRequest('
+                $this->dbh->modify('
                 INSERT INTO share_sitemap_translation( 
                     smap_id, 
                     lang_id, 
@@ -167,14 +167,14 @@ class SiteSaver extends Saver {
                  WHERE smap_id = %s
                  ', $newID, $oldID
                 );
-                $this->dbh->modifyRequest(
+                $this->dbh->modify(
                     'INSERT INTO share_sitemap_tags(smap_id, tag_id)
                      SELECT %s, tag_id
                         FROM share_sitemap_tags
                         WHERE smap_id = %s
                     ', $newID, $oldID
                 );
-                $this->dbh->modifyRequest(
+                $this->dbh->modify(
                     'INSERT INTO share_access_level ' .
                     '(smap_id, right_id, group_id) ' .
                     'SELECT %s, al.right_id, al.group_id ' .

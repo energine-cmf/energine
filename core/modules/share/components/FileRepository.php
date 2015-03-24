@@ -243,12 +243,10 @@ class FileRepository extends Grid implements SampleFileRepository{
             $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
             if ($mode == QAL::INSERT) {
 
-                $parentData = $this->dbh->select($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_pid']));
-                if (empty($parentData)) {
+                $parentData = $this->dbh->getColumn($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_pid']));
+                if (!$parentData) {
                     throw new SystemException('ERR_BAD_PID');
                 }
-                list($parentData) = $parentData;
-
                 unset($data[$this->getPK()]);
                 $data['upl_name'] = $data['upl_filename'] = Translit::asURLSegment($data['upl_title']);
                 $data['upl_mime_type'] = 'unknown/mime-type';

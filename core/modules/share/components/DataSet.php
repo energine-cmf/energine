@@ -713,7 +713,7 @@ abstract class DataSet extends Component {
                 'upl_internal_type' => \Energine\share\gears\FileRepoInfo::META_TYPE_VIDEO
             )
         );
-        if(!is_array($fileInfo)) {
+        if(!$fileInfo) {
             throw new SystemException('ERROR_NO_VIDEO_FILE', SystemException::ERR_404);
         }
         // Using array_values to transform associative index to key index

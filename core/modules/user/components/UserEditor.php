@@ -94,7 +94,7 @@ class UserEditor extends Grid {
                 throw new SystemException('ERR_CANT_ACTIVATE_YOURSELF', SystemException::ERR_CRITICAL);
             }
 
-            $this->dbh->modifyRequest('UPDATE ' . $this->getTableName() . ' SET u_is_active = NOT u_is_active WHERE u_id = %s', $id);
+            $this->dbh->modify('UPDATE ' . $this->getTableName() . ' SET u_is_active = NOT u_is_active WHERE u_id = %s', $id);
 
 
             $b->setProperties(array(

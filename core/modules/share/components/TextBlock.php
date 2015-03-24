@@ -113,7 +113,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
             $this->setProperty('global', 'global');
         }
 
-        $res = $this->dbh->selectRequest(
+        $res = $this->dbh->select(
             'SELECT st.tb_id as id, stt.tb_content as content ' .
             'FROM `share_textblocks`  st ' .
             'LEFT JOIN share_textblocks_translation stt ON st.tb_id = stt.tb_id and lang_id = %s ' .

@@ -1022,7 +1022,7 @@ class Grid extends DBDataSet {
             $orderDirection . ' Limit 1';
 
         $data =
-            convertDBResult($this->dbh->selectRequest($request), 'neighborID');
+            convertDBResult($this->dbh->select($request), 'neighborID');
         if ($data) {
             $neighborID = null;
             $neighborOrderNum = 0;

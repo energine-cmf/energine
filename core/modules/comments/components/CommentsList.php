@@ -295,7 +295,7 @@ class CommentsList extends DataSet {
 
             if ($userIds) {
                 $userIds = implode(',', $userIds);
-                $result = $this->dbh->selectRequest(
+                $result = $this->dbh->select(
                     'SELECT u.* ' .
                             " FROM user_users u
 					 WHERE u.u_id in($userIds)"

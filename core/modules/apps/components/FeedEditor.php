@@ -109,7 +109,7 @@ class FeedEditor extends LinkingEditor {
                 $orderDirection . ' Limit 1';
 
         $data =
-            convertDBResult($this->dbh->selectRequest($request), 'neighborID');
+            convertDBResult($this->dbh->select($request), 'neighborID');
         if ($data) {
             extract(current($data));
             $this->dbh->beginTransaction();

@@ -406,7 +406,7 @@ class DBDataSet extends DataSet {
                         : '', implode(',', $translationColumns),
                     $this->getTableName(),
                     $this->getPK(), implode(',', array_keys($matrix)));
-                $res = $this->dbh->selectRequest($request);
+                $res = $this->dbh->select($request);
 
                 foreach ($res as $row) {
                     $template[$row[$this->getPK()]] = $row;

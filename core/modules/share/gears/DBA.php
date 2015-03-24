@@ -206,9 +206,8 @@ abstract class DBA extends Object {
      *
      * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
      *
-     * @deprecated
      */
-    public function selectRequest($query) {
+    protected function selectRequest($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
         if (!($res instanceof \PDOStatement)) {

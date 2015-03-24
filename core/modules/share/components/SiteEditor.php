@@ -99,7 +99,7 @@ class SiteEditor extends Grid {
                 //Добавляем селект позволяющий скопировать структуру одного из существующих сайтов в новый
                 $fd = new FieldDescription('copy_site_structure');
                 $fd->setType(FieldDescription::FIELD_TYPE_SELECT);
-                $fd->loadAvailableValues($this->dbh->selectRequest('SELECT ss.site_id, site_name FROM share_sites ss LEFT JOIN share_sites_translation sst ON ss.site_id = sst.site_id WHERE lang_id =%s ', $this->document->getLang()), 'site_id', 'site_name');
+                $fd->loadAvailableValues($this->dbh->select('SELECT ss.site_id, site_name FROM share_sites ss LEFT JOIN share_sites_translation sst ON ss.site_id = sst.site_id WHERE lang_id =%s ', $this->document->getLang()), 'site_id', 'site_name');
                 $this->getDataDescription()->addFieldDescription($fd);
             }
             else {

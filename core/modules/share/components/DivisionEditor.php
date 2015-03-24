@@ -654,7 +654,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         }
 
         $this->setFilter(array('smap_id' => $id, 'lang_id' => $langID));
-        $result = $this->dbh->selectRequest(
+        $result = $this->dbh->select(
             'SELECT smap_name, smap_pid, smap_order_num ' .
             ' FROM share_sitemap s' .
             ' LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id' .
@@ -884,7 +884,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $PID,
             $this->dbh->buildOrderCondition($order));
 
-        $result = $this->dbh->selectRequest($request);
+        $result = $this->dbh->select($request);
         if ($result === true || sizeof($result) < 2) {
             throw new SystemException('ERR_CANT_MOVE', SystemException::ERR_NOTICE);
         }

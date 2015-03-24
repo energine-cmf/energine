@@ -132,7 +132,7 @@ final class NavigationMenu extends DataSet {
             //проходимся по всем прямым предкам
             foreach ($parents as $nodeID => $node) {
                 //получаем дочерние разделы
-                $nodeChilds = $this->dbh->selectRequest('
+                $nodeChilds = $this->dbh->select('
 				    SELECT s.smap_id, s.smap_pid
 				    FROM share_sitemap s
 				    LEFT JOIN share_sitemap_translation st ON s.smap_id=st.smap_id
@@ -163,7 +163,7 @@ final class NavigationMenu extends DataSet {
         }
         //если первого уровня - получаем дочерние разделы
         else {
-            $childs = $this->dbh->selectRequest('SELECT smap_id, null as smap_pid FROM share_sitemap WHERE smap_pid = %s ORDER BY smap_order_num', $this->document->getID());
+            $childs = $this->dbh->select('SELECT smap_id, null as smap_pid FROM share_sitemap WHERE smap_pid = %s ORDER BY smap_order_num', $this->document->getID());
         }
 
         if (is_array($childs))

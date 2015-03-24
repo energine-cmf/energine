@@ -382,7 +382,7 @@ class BlogPost extends DBDataSet {
         		WHERE $where
         		ORDER BY p.post_created DESC
         		$limit";
-        return $this->dbh->selectRequest($sql);
+        return $this->dbh->select($sql);
     }
     
     /**

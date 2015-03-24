@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 abstract class DBA;
-@endcode
+ * @endcode
  *
  * @author 1m.dm
  * @author dr.Pavka
@@ -21,7 +21,7 @@ namespace Energine\share\gears;
  *
  * @code
 abstract class DBA;
-@endcode
+ * @endcode
  *
  * @abstract
  */
@@ -57,7 +57,7 @@ abstract class DBA extends Object {
      */
     const COLTYPE_FLOAT = 'FLOAT';
 
-	/**
+    /**
      * Column type: @c DECIMAL/NUMERIC
      * @var string COLTYPE_DECIMAL
      */
@@ -111,21 +111,21 @@ abstract class DBA extends Object {
      */
     const COLTYPE_BLOB = 'BLOB';
 
-	/**
-	 * Column type: @c SET
-	 * SET
-	 *
-	 * @var string COLTYPE_SET
-	 */
-	const COLTYPE_SET = 'SET';
+    /**
+     * Column type: @c SET
+     * SET
+     *
+     * @var string COLTYPE_SET
+     */
+    const COLTYPE_SET = 'SET';
 
-	/**
-	 * Column type: @c ENUM
-	 * ENUM
-	 *
-	 * @var string COLTYPE_ENUM
-	 */
-	const COLTYPE_ENUM = 'ENUM';
+    /**
+     * Column type: @c ENUM
+     * ENUM
+     *
+     * @var string COLTYPE_ENUM
+     */
+    const COLTYPE_ENUM = 'ENUM';
 
     /**
      * Error type of the column.
@@ -180,7 +180,7 @@ abstract class DBA extends Object {
      *
      * @return \PDO
      */
-    public function getPDO(){
+    public function getPDO() {
         return $this->pdo;
     }
 
@@ -192,13 +192,13 @@ abstract class DBA extends Object {
      * It returns one from the following:
      *  - an array for non-empty result like
      * @code
-array(
-    rowID => array(
-                   fieldName => fieldValue,
-                   ...
-                  )
-)
-@endcode
+    array(
+     * rowID => array(
+     * fieldName => fieldValue,
+     * ...
+     * )
+     * )
+     * @endcode
      *  - @c true for empty result;
      *  - @c false by fail.
      *
@@ -207,7 +207,6 @@ array(
      *
      * @throws SystemException
      *
-     * @see DBA::constructQuery
      *
      * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
      *
@@ -246,7 +245,6 @@ array(
      *
      * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
      *
-     * @see DBA::constructQuery
      *
      * @throws SystemException
      */
@@ -313,15 +311,11 @@ array(
         if (!is_string($request) || empty($request)) {
             return false;
         }
-        if ($this->getConfigValue('database.prepare')) {
-            $res = $this->runQuery(func_get_args());
-            if ($res instanceof \PDOStatement)
-                $this->lastQuery = $res->queryString;
-        } else {
-            $request = $this->constructQuery(func_get_args());
-            $res = $this->pdo->query($request);
-            $this->lastQuery = $request;
-        }
+
+        $res = $this->runQuery(func_get_args());
+        if ($res instanceof \PDOStatement)
+            $this->lastQuery = $res->queryString;
+
         return $res;
     }
 
@@ -390,8 +384,8 @@ array(
      * @todo add pattern param - if need be
      * @return array
      */
-    public function getTables(){
-       return $this->getPDO()->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN, 0);
+    public function getTables() {
+        return $this->getPDO()->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     /**
@@ -399,17 +393,17 @@ array(
      *
      * The returned array looks like:
      * @code
-array(
-    'columnName' => array(
-        'type'      => column type,
-        'length'    => length,
-        'nullable'  => accept NULL?,
-        'key'       => description of the columns key (if exist),
-        'default'   => default value,
-        'index'     => index type
-    )
-)
-@endcode
+    array(
+     * 'columnName' => array(
+     * 'type'      => column type,
+     * 'length'    => length,
+     * 'nullable'  => accept NULL?,
+     * 'key'       => description of the columns key (if exist),
+     * 'default'   => default value,
+     * 'index'     => index type
+     * )
+     * )
+     * @endcode
      *
      * @param string $tableName Table name.
      * @return array
@@ -501,44 +495,6 @@ array(
         return (!$returnAsArray) ? implode('.', array_map(function ($row) {
             return '`' . $row . '`';
         }, $result)) : $result;
-    }
-
-    /**
-     * Construct query.
-     *
-     * If the number of the arguments is > 1, then this method behaves like printf() function.
-     *
-     * @param array $args Array from which the single query string will be built.
-     * @return string
-     *
-     * @deprecated
-     *
-     * @see DBA::selectRequest()
-     * @see DBA::modifyRequest()
-     */
-    protected function constructQuery(array $args) {
-        if (sizeof($args) > 1) {
-            $query = array_shift($args); // отбрасываем первый аргумент $query
-            foreach ($args as &$arg) {
-				if(is_array($arg)) {
-					if (empty($arg)) $arg = array('-1'); // для пустых массивов делаем трюк с -1
-					$arg = array_map(function($var) {
-						return is_numeric($var) ? $var : $this->pdo->quote($var);
-					}, $arg);
-					$arg = implode(',', $arg);
-				}
-				elseif(!is_null($arg))
-                    $arg = $this->pdo->quote($arg);
-                else {
-                    $arg = 'NULL';
-                }
-            }
-            array_unshift($args, $query);
-            $query = call_user_func_array('sprintf', $args);
-        } else {
-            $query = $args[0];
-        }
-        return $query;
     }
 
     /**

@@ -122,6 +122,7 @@ final class QAL extends DBA {
      *
      * @see DBA::selectRequest()
      * @see QAL::buildSQL
+     * @throws SystemException
      */
     public function select() {
         $args = func_get_args();
@@ -241,7 +242,7 @@ final class QAL extends DBA {
      * @see QAL::selectRequest()
      */
     public function buildWhereCondition($condition, array &$args = null) {
-        if ($this->getConfigValue('database.prepare') && !is_null($args)) {
+        if (!is_null($args)) {
             $result = '';
             if (!empty($condition)) {
                 $result = ' WHERE ';

@@ -299,7 +299,7 @@ class DBDataSet extends DataSet {
                         : '') . implode(',', $dbFields), $this->getFilter(), $this->getOrder(), $this->getLimit());
             }
 
-            if (is_array($res)) {
+            if ($res) {
                 $data = $res;
                 if ($this->pager) {
                     $this->pager->setRecordsCount($this->dbh->getScalar('SELECT FOUND_ROWS() as c'));

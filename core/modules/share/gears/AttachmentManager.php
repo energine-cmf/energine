@@ -203,7 +203,7 @@ class AttachmentManager extends DBWorker {
 
                 $images = $this->dbh->select($request);
 
-                if (is_array($images)) {
+                if ($images) {
                     foreach ($images as $row) {
                         $repoPath = E()->FileRepoInfo->getRepositoryRoot($row['file']);
                         $row['secure'] = (E()->getConfigValue('repositories.ftp.' . $repoPath . '.secure', 0)) ? true : false;

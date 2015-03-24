@@ -77,15 +77,12 @@ class Robots extends DataSet {
      * @return array|bool
      */
     protected function getSitemapSegmentIds() {
-
         $res = $this->dbh->select(
             'share_sitemap', 'smap_id', array(
                 'smap_segment' => E()->getConfigValue('seo.sitemapSegment')
             )
         );
-
-        if (!is_array($res)) return false;
-
+        if (!$res) return false;
         $result = array();
         foreach ($res as $row) {
             $result[] = $row['smap_id'];
@@ -105,7 +102,7 @@ class Robots extends DataSet {
         if ($smap_ids) return;
 
         // вставка нового сегмента в sitemap на основании конфига
-        $this->dbh->select(
+        $this->dbh->modify(
             'INSERT IGNORE INTO share_sitemap
             (site_id,smap_layout,smap_content,smap_segment,smap_pid) '
             . 'SELECT sso.site_id, %s, %s, %s, '
@@ -127,7 +124,7 @@ class Robots extends DataSet {
             foreach($smap_ids as $smap_id) {
 
                 // права доступа
-                $this->dbh->select(
+                $this->dbh->modify(
                     'INSERT IGNORE INTO share_access_level (smap_id, group_id, right_id) ' .
                     ' SELECT %s as smap_id, group_id, (SELECT right_id FROM `user_group_rights` WHERE right_const = "ACCESS_READ") ' .
                     ' FROM `user_groups` ',
@@ -135,7 +132,7 @@ class Robots extends DataSet {
                 );
 
                 // переводы
-                $this->dbh->select(
+                $this->dbh->modify(
                     'INSERT IGNORE INTO share_sitemap_translation (smap_id, lang_id, smap_name, smap_is_disabled) ' .
                     ' VALUES (%s, (SELECT lang_id FROM `share_languages` WHERE lang_default), "Google sitemap", 0)',
                     $smap_id
@@ -168,7 +165,7 @@ class Robots extends DataSet {
                'WHERE ss.site_is_indexed'
             );
 
-            if (is_array($domainsInfo)) {
+            if ($domainsInfo) {
                 foreach($domainsInfo as $row) {
                     array_push(
                         $entries,

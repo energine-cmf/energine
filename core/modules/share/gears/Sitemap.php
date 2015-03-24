@@ -122,7 +122,7 @@ final class Sitemap extends DBWorker {
         ) ORDER BY smap_order_num
         */
 
-        if ($res === true) {
+        if (empty($res)) {
             return;
             throw new SystemException('ERR_NO_TRANSLATION', SystemException::ERR_CRITICAL, $this->dbh->getLastRequest());
         }
@@ -131,7 +131,7 @@ final class Sitemap extends DBWorker {
         //[идентификатор раздела][идентификатор роли] = идентификатор уровня доступа
         $rightsMatrix = $this->dbh->select('share_access_level', true, array('smap_id' => array_map(create_function('$a', 'return $a["smap_id"];'), $res)));
 
-        if (!is_array($rightsMatrix)) {
+        if (!$rightsMatrix) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
 
@@ -208,7 +208,7 @@ final class Sitemap extends DBWorker {
                     $this->siteID
                 ),
                 'smap_id', true);
-            if (is_array($result)) {
+            if ($result) {
                 $result = array_map(array($this, 'preparePageInfo'), $result);
                 $this->info += $result;
             }

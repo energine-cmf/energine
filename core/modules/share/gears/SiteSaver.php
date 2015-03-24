@@ -141,7 +141,7 @@ class SiteSaver extends Saver {
             array('site_id' => $sourceSiteID)
         );
 
-        if (is_array($source)) {
+        if ($source) {
             $oldtoNewMAP = $this->copyRows($source, null, '', $destinationSiteID);
             foreach ($oldtoNewMAP as $oldID => $newID) {
                 $this->dbh->modify('

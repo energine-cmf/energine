@@ -204,7 +204,7 @@ class TagManager extends DBWorker {
         $res =
             $this->dbh->select($mapTableName, array('tag_id', $mapFieldName), array($mapFieldName => $mapValue));
 
-        if (is_array($res)) {
+        if ($res) {
             $result = array();
             foreach ($res as $row) {
                 if (!isset($result[$row[$mapFieldName]])) {
@@ -237,27 +237,20 @@ class TagManager extends DBWorker {
         if (!is_array($tag)) {
             $tag = explode(self::TAG_SEPARATOR, $tag);
         }
-
-        $in = array();
-        foreach ($tag as $t) {
-            $in[] = E()->getDB()->quote($t);
-        }
-
-        if (!empty($in)) {
+        $res = [];
+        if (!empty($tag)) {
             $res = E()->getDB()->select(
                 'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
                 'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
-                'WHERE tr.tag_name IN (' . implode(',', $in) . ')',
-                E()->getLanguage()->getCurrent()
+                'WHERE tr.tag_name IN (%s)',
+                E()->getLanguage()->getCurrent(), $tag
             );
-        } else {
-            $res = false;
         }
-        if (is_array($res)) {
-            foreach ($res as $row) {
-                $result[$row['tag_id']] = $row['tag_name'];
-            }
+
+        foreach ($res as $row) {
+            $result[$row['tag_id']] = $row['tag_name'];
         }
+
 
         return $result;
     }
@@ -302,16 +295,13 @@ class TagManager extends DBWorker {
         $res = E()->getDB()->select(
             'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
             'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
-            'WHERE tr.tag_id IN (' . implode(',', $tagID) . ')',
-            E()->getLanguage()->getCurrent()
+            'WHERE tr.tag_id IN (%s)',
+            E()->getLanguage()->getCurrent(), $tagID
         );
 
-        if (is_array($res)) {
-            foreach ($res as $resVal) {
-                $result[$resVal['tag_id']] = $resVal['tag_name'];
-            }
+        foreach ($res as $resVal) {
+            $result[$resVal['tag_id']] = $resVal['tag_name'];
         }
-
         return ($asSting &&
             is_array($result)) ? implode(self::TAG_SEPARATOR, $result) : $result;
     }
@@ -335,7 +325,7 @@ class TagManager extends DBWorker {
             $columns = array_keys(E()->getDB()->getColumnsInfo($mapTableName));
             unset($columns['tag_id']);
             list($mapFieldName) = $columns;
-            $result =E()->getDB()->getColumn($mapTableName, array($mapFieldName), array('tag_id' => array_keys($tagInfo)));
+            $result = E()->getDB()->getColumn($mapTableName, array($mapFieldName), array('tag_id' => array_keys($tagInfo)));
         }
         return $result;
     }

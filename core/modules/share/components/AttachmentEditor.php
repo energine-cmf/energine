@@ -183,20 +183,17 @@ class AttachmentEditor extends Grid {
                 array('upl_id', 'upl_path', 'upl_title as upl_name', 'upl_duration'),
                 array('upl_id' => $upl_ids)
             );
-
-            if ($data) {
-                foreach ($data as $i => $row) {
-                    if ($res) {
-                        $new_row = false;
-                        foreach ($res as $row2) {
-                            if ($row2['upl_id'] == $row['upl_id']) {
-                                $new_row = $row2;
-                            }
+            foreach ($data as $i => $row) {
+                if ($res) {
+                    $new_row = false;
+                    foreach ($res as $row2) {
+                        if ($row2['upl_id'] == $row['upl_id']) {
+                            $new_row = $row2;
                         }
-                        if ($new_row) {
-                            $data[$i]['upl_path'] = $new_row['upl_path'];
-                            $data[$i]['upl_name'] = $new_row['upl_name'];
-                        }
+                    }
+                    if ($new_row) {
+                        $data[$i]['upl_path'] = $new_row['upl_path'];
+                        $data[$i]['upl_name'] = $new_row['upl_name'];
                     }
                 }
             }

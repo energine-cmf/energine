@@ -70,7 +70,7 @@ final class SiteManager extends DBWorker implements \Iterator {
             $res = $this->dbh->select($request);
         }
 
-        if (empty($res) || !is_array($res)) {
+        if (!$res) {
             throw new SystemException('ERR_NO_SITE', SystemException::ERR_DEVELOPER);
         }
         foreach ($res as $domainData) {

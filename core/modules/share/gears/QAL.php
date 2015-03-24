@@ -380,7 +380,6 @@ final class QAL extends DBA {
                 }
             );
             $res = $this->select($fkTableName, array_keys($columns), $filter, $order);
-            //$res = $this->selectRequest('SELECT '.implode(',', array_keys($columns)).' FROM '.$fkTableName.)
         } else {
             $columns = $this->getColumnsInfo($transTableName);
             if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;

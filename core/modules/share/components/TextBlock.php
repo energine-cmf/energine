@@ -122,7 +122,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
             $this->getParam('num')
         );
 
-        if (is_array($res)) {
+        if ($res) {
             list($res) = $res;
             $this->id = $res['id'];
             $this->content = $res['content'];
@@ -236,12 +236,11 @@ class TextBlock extends DataSet implements SampleTextBlock{
 
                 $res = $this->dbh->select($tableName, array('tb_id'), array('tb_id' => $tbID, 'lang_id' => $langID));
                 //если есть запись в таблице переводов - апдейтим
-                if (is_array($res)) {
-
-                    $res = $this->dbh->modify(QAL::UPDATE, $tableName, array('tb_content' => $result), array('tb_id' => $tbID, 'lang_id' => $langID));
-                } elseif ($res === true) {
+                if (!empty($res)) {
+                    $this->dbh->modify(QAL::UPDATE, $tableName, array('tb_content' => $result), array('tb_id' => $tbID, 'lang_id' => $langID));
+                } else {
                     //если нет - вставляем
-                    $res = $this->dbh->modify(QAL::INSERT, $tableName, array('tb_content' => $result, 'tb_id' => $tbID, 'lang_id' => $langID));
+                    $this->dbh->modify(QAL::INSERT, $tableName, array('tb_content' => $result, 'tb_id' => $tbID, 'lang_id' => $langID));
                 }
             } elseif ($tbID) {
                 $this->dbh->modify(QAL::DELETE, $this->tableName, null, array('tb_id' => $tbID));

@@ -119,7 +119,7 @@ final class UserGroup extends DBWorker {
             $cachedGroups[$userId] = array($this->getDefaultGuestGroup());
             if (!empty($userId)) {
                 $res = $this->dbh->select('user_user_groups', array('group_id'), array('u_id' => $userId));
-                if (is_array($res)) {
+                if ($res) {
                     $cachedGroups[$userId] = simplifyDBResult($res, 'group_id');
                 }
             }

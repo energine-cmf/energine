@@ -188,7 +188,7 @@ final class UserSession extends DBWorker {
                 ' AND session_expires >= UNIX_TIMESTAMP()',
             addslashes($sessID)
         );
-        return (!is_array($res)) ? false : $res[0]['session_data'];
+        return (!$res)?: $res[0]['session_data'];
     }
 
     //todo VZ: Why not to use 0 as the default for arguments?

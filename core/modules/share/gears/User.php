@@ -76,7 +76,7 @@ class User extends DBWorker {
      */
     protected function loadInfo($UID) {
         $result = $this->dbh->select(self::USER_TABLE_NAME, true, array('u_id' => $UID));
-        if (is_array($result) && !empty($result)) {
+        if ($result) {
             $this->id = $UID;
             $result[0]['u_password'] = true;
             $this->info = $result[0];

@@ -140,7 +140,7 @@ final class NavigationMenu extends DataSet {
 				    ORDER BY smap_order_num ASC
 				');
 
-                if (is_array($nodeChilds)) {
+                if ($nodeChilds) {
                     $nodeChilds = array_map(
                         create_function(
                             '$node',
@@ -166,7 +166,7 @@ final class NavigationMenu extends DataSet {
             $childs = $this->dbh->select('SELECT smap_id, null as smap_pid FROM share_sitemap WHERE smap_pid = %s ORDER BY smap_order_num', $this->document->getID());
         }
 
-        if (is_array($childs))
+        if ($childs)
             $treeData = array_merge(
                 $treeData,
                 $childs

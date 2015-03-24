@@ -51,7 +51,7 @@ class Data extends Object {
      * @see DBA::selectRequest()
      */
     public function load($data) {
-        if (is_array($data) && ! empty($data)) {
+        if (is_array($data) && !empty($data)) {
             $data = inverseDBResult($data);
             foreach ($data as $fieldName => $fieldValues) {
                 //Если такого поля не существует еще, то создаем

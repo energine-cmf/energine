@@ -535,7 +535,6 @@ abstract class DBA extends Object {
                 },
                 $data
             );
-            inspect( $realData);
             $qIndex = 0;
             $realQuery = '';
             for ($i = 0; $i < strlen($query); $i++) {

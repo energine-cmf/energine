@@ -246,7 +246,6 @@ class TagManager extends DBWorker {
                 'WHERE tr.tag_name IN (%s)',
                 E()->getLanguage()->getCurrent(), $tag
             );
-            E()->getDB()->select('SELECT * FROM `share_sitemap` WHERE site_id =%s AND smap_id!=%s AND  smap_content IN(%s)',1,80, []);
         }
 
         foreach ($res as $row) {

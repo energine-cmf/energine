@@ -10,6 +10,7 @@
  * @version 1.0.0
  */
 
+use Energine\share\gears\SystemException;
 
 /**
  * @fn inspect()

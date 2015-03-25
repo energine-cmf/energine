@@ -27,8 +27,8 @@ class VoteQuestionEditor extends Grid {
      * @copydoc Grid::__construct
      */
     // На вход параметром получаем ID голосования, к которому следует привязать вариант ответа.
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('apps_vote_question');
         $filter = ' (vote_id IS NULL) ';
         if ($this->getParam('voteID')) {

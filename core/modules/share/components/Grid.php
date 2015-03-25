@@ -78,8 +78,8 @@ class Grid extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
 
         $this->setProperty('exttype', 'grid');
         if (!$this->getParam('recordsPerPage')) {
@@ -305,7 +305,7 @@ class Grid extends DBDataSet {
         ];
 
         $this->request->shiftPath(2);
-        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', $module, $lookupClass,
+        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', $lookupClass,
             $params);
         $this->lookupEditor->run();
     }
@@ -778,7 +778,7 @@ class Grid extends DBDataSet {
         }
 
         $this->attachmentEditor = $this->document->componentManager->createComponent(
-            'attachmentEditor', 'share', 'AttachmentEditor', $attachmentEditorParams
+            'attachmentEditor', 'Energine\share\components\AttachmentEditor', $attachmentEditorParams
         );
         $this->attachmentEditor->run();
     }
@@ -788,7 +788,7 @@ class Grid extends DBDataSet {
      */
     protected function tags() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->tagEditor = $this->document->componentManager->createComponent('tageditor', 'share', 'TagEditor',
+        $this->tagEditor = $this->document->componentManager->createComponent('tageditor', 'Energine\share\components\TagEditor',
             ['config' => 'core/modules/share/config/TagEditorModal.component.xml']);
         $this->tagEditor->run();
     }

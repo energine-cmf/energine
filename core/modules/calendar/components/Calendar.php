@@ -31,8 +31,8 @@ class Calendar;
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
+    public function __construct($name,    array $params = null) {
+        parent::__construct($name, $params);
         $this->setProperty('exttype', 'calendar');
     }
     /**

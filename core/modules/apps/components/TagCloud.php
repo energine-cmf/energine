@@ -54,8 +54,8 @@ class TagCloud extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->setTableName('share_tags');
         $this->bindedBlock = $this->document->componentManager->getBlockByName($this->getParam('bind'));

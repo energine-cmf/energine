@@ -33,9 +33,9 @@ class Feed extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name,  array $params = null) {
 
-        parent::__construct($name, $module, $params);
+        parent::__construct($name, $params);
         //Если title не указан  - устанавливаем дефолтный
         if(!$this->getProperty('title')){
             $this->setProperty('title', $this->translate(

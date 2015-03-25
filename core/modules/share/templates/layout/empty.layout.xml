@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page >
-<component name="dummy" module="share" class="Component"></component>
+<component name="dummy" class="Energine\share\components\Component"></component>
 </page>

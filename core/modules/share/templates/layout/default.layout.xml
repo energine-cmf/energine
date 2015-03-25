@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
-    <component name="ads" module="apps" class="Ads"/>
-	<component name="langSwitcher" module="share" class="LangSwitcher"/>
-	<component name="footerTextBlock" module="share" class="TextBlock">
+    <component name="ads" class="Energine\apps\components\Ads"/>
+	<component name="langSwitcher" class="Energine\share\components\LangSwitcher"/>
+	<component name="footerTextBlock" class="Energine\share\components\TextBlock">
 		<params>
 			<param name="num">footerTextBlock</param> 
 		</params>
 	</component>    
-    <component name="adminPanel" module="share" class="DivisionEditor">
+    <component name="adminPanel" class="Energine\share\components\DivisionEditor">
         <params>
             <param name="state">showPageToolbar</param>
             <param name="rights">3</param> 

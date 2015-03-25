@@ -29,7 +29,7 @@ class SelectorValuesEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name,  array $params = null) {
         /*
          * финт ушами связанный с заменой PHP
          * "." на "_"
@@ -37,7 +37,7 @@ class SelectorValuesEditor extends Grid {
          */
 
         $_POST = getRealPOST();
-        parent::__construct($name, $module, $params);
+        parent::__construct($name, $params);
         $this->setTableName($this->getParam('table_name'));
         //stop(file_get_contents("php://input"), $_POST, $_POST[$this->getTableName()]);
     }

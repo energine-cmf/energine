@@ -37,8 +37,8 @@ class FormsEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('frm_forms');
         $this->setSaver(new FormsSaver());
         $this->setOrder(array('form_creation_date' => QAL::DESC));
@@ -65,7 +65,7 @@ class FormsEditor extends Grid {
     protected function editForm() {
         list($formID) = $this->getStateParams();
         E()->getRequest()->shiftPath(2);
-        $this->form = $this->document->componentManager->createComponent('form', 'forms', 'FormEditor', array('form_id' => $formID));
+        $this->form = $this->document->componentManager->createComponent('form', 'Energine\forms\components\FormEditor', array('form_id' => $formID));
         $this->form->run();
     }
 
@@ -75,7 +75,7 @@ class FormsEditor extends Grid {
     protected function showResult() {
         list($formID) = $this->getStateParams();
         E()->getRequest()->shiftPath(2);
-        $this->results = $this->document->componentManager->createComponent('form', 'forms', 'FormResults', array('form_id' => $formID));
+        $this->results = $this->document->componentManager->createComponent('form', 'Energine\forms\components\FormResults', array('form_id' => $formID));
         $this->results->run();
     }
 

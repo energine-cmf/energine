@@ -124,7 +124,7 @@ final class ComponentManager extends Object implements \Iterator {
      */
     static public function createComponentFromDescription(\SimpleXMLElement $componentDescription) {
         // перечень необходимых атрибутов компонента
-        $requiredAttributes = array('name', 'module', 'class');
+        $requiredAttributes = array('name', /*'module', */'class');
 
         $name = $class = $module = null;
         //после отработки итератора должны получить $name, $module, $class
@@ -170,7 +170,7 @@ final class ComponentManager extends Object implements \Iterator {
             }
         }
 
-        $result = self::_createComponent($name, $module, $class, $params);
+        $result = self::_createComponent($name, $class, $params);
 
         return $result;
     }
@@ -183,12 +183,11 @@ final class ComponentManager extends Object implements \Iterator {
      * Create component.
      *
      * @param string $name Component name.
-     * @param string $module Component module name.
      * @param string $class Component class.
      * @param array $params Component properties.
      * @return Component
      */
-    public function createComponent($name, $module, $class, $params = null) {
+    public function createComponent($name, $class, $params = null) {
         return call_user_func_array(array('Energine\\share\\gears\\ComponentManager', '_createComponent'), func_get_args());
     }
 
@@ -230,7 +229,6 @@ final class ComponentManager extends Object implements \Iterator {
         if (!($blockDescription = simplexml_load_file($blockDescriptionFileName))) {
             throw new SystemException('ERR_DEV_BAD_CONTAINER_FILE', SystemException::ERR_CRITICAL, $blockDescriptionFileName);
         }
-
         return $blockDescription;
     }
 
@@ -270,27 +268,19 @@ final class ComponentManager extends Object implements \Iterator {
      * Create component by requested parameters.
      *
      * @param string $name Component name.
-     * @param string $module Component module name.
-     * @param  $class Component class.
-     * @param $params Parameters.
+     * @param string $fqClassName Component class name.
+     * @param array $params Parameters.
      * @return Component
      *
      * @throws SystemException
      */
-    static private function _createComponent($name, $module, $class, $params = null) {
+    static private function _createComponent($name, $fqClassName, $params = null) {
         try {
-            $module = explode('/', $module);
-            $vendorNS = 'Energine';
-            if(sizeof($module) > 1){
-                $vendorNS = 'EnergineSite';
-            }
-            $module = array_pop($module);
-            $fqClassName = $vendorNS.'\\'.$module.'\\'.'components'.'\\'.$class;
-            $result = new $fqClassName($name, $module, $params);
+            $result = new $fqClassName($name, $params);
         }
         catch (SystemException $e) {
             throw new SystemException($e->getMessage(), SystemException::ERR_DEVELOPER, array(
-                'class' => $class,
+                'class' => $fqClassName,
                 'trace' => $e->getTraceAsString()
             ));
         }

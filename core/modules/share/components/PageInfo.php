@@ -78,7 +78,7 @@ class PageInfo extends DataSet {
 
         //Поле добавлено чтобы Data не был пустым
         $this->getData()->addField(new Field('fake'));
-        $m = new AttachmentEditor(
+        $m = new AttachmentManager(
             $this->getDataDescription(),
             $this->getData(),
             'share_sitemap',

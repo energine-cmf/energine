@@ -243,7 +243,7 @@ abstract class DataSet extends Component {
     protected function prepare() {
         $this->setBuilder($this->createBuilder());
 
-        //$this->setDataDescription($this->createDataDescription());
+
         $this->setDataDescription($this->createDataDescription());
         $this->createPager();
         $data = $this->createData();

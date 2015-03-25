@@ -359,7 +359,10 @@ function array_push_after($src,$in,$pos){
  * @return string
  */
 function file_get_contents_stripped($fileName){
-    return stripslashes(trim(file_get_contents($fileName)));
+    $result =  stripslashes(preg_replace_callback('/class=\"(?:[A-Za-z\\\]*)\"/', function($matches){
+        return str_replace('\\', '\\\\', $matches[0]);
+    }, trim(file_get_contents($fileName))));
+    return $result;
 }
 
 /**

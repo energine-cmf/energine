@@ -32,8 +32,8 @@ class VoteEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('apps_vote');
     }
 
@@ -77,7 +77,7 @@ class VoteEditor extends Grid {
         } else {
             $this->request->shiftPath(1);
         }
-        $this->qEditor = $this->document->componentManager->createComponent('qEditor', 'apps', 'VoteQuestionEditor', $params);
+        $this->qEditor = $this->document->componentManager->createComponent('qEditor', 'Energine\apps\components\VoteQuestionEditor', $params);
         $this->qEditor->run();
     }
 

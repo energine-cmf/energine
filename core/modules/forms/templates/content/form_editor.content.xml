@@ -2,7 +2,7 @@
 <content>
     <container name="center" column="column" html_class="col">
         <container name="formEditorContainer" block="alfa" widget="static">
-            <component name="formEditor" class="FormsEditor" module="forms">
+            <component name="formEditor" class="Energine\forms\components\FormsEditor" >
                 <params>
                     <param name="rights">3</param>
                 </params>

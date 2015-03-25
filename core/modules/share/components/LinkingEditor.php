@@ -26,8 +26,8 @@ class LinkingEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
+    public function __construct($name,    array $params = null) {
+        parent::__construct($name, $params);
         if(!($this->isEditable = $this->document->isEditable()) && ($this->getState() == self::DEFAULT_STATE_NAME)){
            $this->disable();
         }

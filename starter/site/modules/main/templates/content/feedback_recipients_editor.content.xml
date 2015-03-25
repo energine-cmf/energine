@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content>
-    <component name="feedbackRecipientsEditor" module="share" class="Grid">
+    <component name="feedbackRecipientsEditor" class="Energine\share\components\Grid">
         <params>
             <param name="rights">3</param>
             <param name="tableName">apps_feedback_recipient</param>

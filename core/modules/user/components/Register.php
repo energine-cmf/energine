@@ -32,8 +32,8 @@ class Register extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setAction('save-new-user');
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->user = new User();

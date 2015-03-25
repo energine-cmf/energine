@@ -23,14 +23,6 @@ class SitemapTree;
 @endcode
  */
 class SitemapTree extends DataSet {
-    //todo VZ: This can be removed.
-    /**
-     * @copydoc DataSet::__construct
-     */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
-
-    }
     /**
      * @copydoc DataSet::loadData
      */

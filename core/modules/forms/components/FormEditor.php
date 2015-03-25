@@ -40,8 +40,8 @@ class FormEditor extends DataSet {
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         if (!$this->getParam('form_id')) {
             throw new SystemException('ERR_BAD_FORM_ID');
         }
@@ -309,7 +309,7 @@ class FormEditor extends DataSet {
             $tableName = FormConstructor::getDatabase() . '.' . $fieldName . '_values';
         }
 
-        $this->SVEditor = $this->document->componentManager->createComponent('form', 'forms', 'SelectorValuesEditor', array('table_name' => $tableName));
+        $this->SVEditor = $this->document->componentManager->createComponent('form', 'Energine\forms\components\SelectorValuesEditor', array('table_name' => $tableName));
         $this->SVEditor->run();
 
     }

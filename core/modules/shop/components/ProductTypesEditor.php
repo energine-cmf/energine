@@ -26,8 +26,8 @@ class ProductTypesEditor extends Grid {
      */
     private $propEditor;
 
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('shop_product_types');
     }
 
@@ -62,7 +62,7 @@ class ProductTypesEditor extends Grid {
         } else {
             $this->request->shiftPath(1);
         }
-        $this->propEditor = $this->document->componentManager->createComponent('propEditor', 'shop', 'PropertiesEditor', $params);
+        $this->propEditor = $this->document->componentManager->createComponent('propEditor', 'PropertiesEditor', $params);
         $this->propEditor->run();
     }
 

@@ -51,8 +51,8 @@ class FileRepository extends Grid implements SampleFileRepository{
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->repoinfo = E()->FileRepoInfo;
         $this->setTableName('share_uploads');
         $this->setFilter(array('upl_is_active' => 1));

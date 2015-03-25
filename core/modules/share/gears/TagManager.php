@@ -238,6 +238,7 @@ class TagManager extends DBWorker {
             $tag = explode(self::TAG_SEPARATOR, $tag);
         }
         $res = [];
+
         if (!empty($tag)) {
             $res = E()->getDB()->select(
                 'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
@@ -245,12 +246,12 @@ class TagManager extends DBWorker {
                 'WHERE tr.tag_name IN (%s)',
                 E()->getLanguage()->getCurrent(), $tag
             );
+            E()->getDB()->select('SELECT * FROM `share_sitemap` WHERE site_id =%s AND smap_id!=%s AND  smap_content IN(%s)',1,80, []);
         }
 
         foreach ($res as $row) {
             $result[$row['tag_id']] = $row['tag_name'];
         }
-
 
         return $result;
     }
@@ -321,12 +322,14 @@ class TagManager extends DBWorker {
         }
         $result = array();
         $tagInfo = self::getID($tags);
+
         if (!empty($tagInfo)) {
             $columns = array_keys(E()->getDB()->getColumnsInfo($mapTableName));
             unset($columns['tag_id']);
             list($mapFieldName) = $columns;
             $result = E()->getDB()->getColumn($mapTableName, array($mapFieldName), array('tag_id' => array_keys($tagInfo)));
         }
+
         return $result;
     }
 

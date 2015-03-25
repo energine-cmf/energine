@@ -504,24 +504,55 @@ abstract class DBA extends Object {
         $query = str_replace('%%', '%', $query);
         if (!empty($args)) {
             if (preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)) {
+                $data = [];
                 $query = preg_replace('(%(?:(\d)\$)?s)', '?', $query);
                 $argIndex = 0;
                 foreach ($matches[1] as $a) {
                     if ($a = (int)$a) {
-                        $data[] = $args[$a - 1];
+                        $v = $a - 1;
                     } else {
-                        $data[] = $args[$argIndex++];
+                        $v = $argIndex++;
                     }
+                    array_push($data, $args[$v]);
                 }
             } else {
                 $data = $args;
             }
+            $realData = [];
+            $replaceRule = array_map(
+                function ($v) use(&$realData){
+                    if(is_array($v)){
+                        if(empty($v)){
+                           $v = [-1];
+                        }
+                        $realData = array_merge($realData, $v);
+                    }
+                    else {
+                        array_push($realData, $v);
+                    }
 
-            if (!($result = $this->pdo->prepare($query))) {
+                    return implode(',', array_fill(0, sizeof($v), '?'));
+                },
+                $data
+            );
+            inspect( $realData);
+            $qIndex = 0;
+            $realQuery = '';
+            for ($i = 0; $i < strlen($query); $i++) {
+                if($query[$i] == '?'){
+                    $realQuery .= $replaceRule[$qIndex++];
+                }
+                else {
+                    $realQuery .= $query[$i];
+                }
+            }
+
+
+            if (!($result = $this->pdo->prepare($realQuery))) {
                 throw new SystemException('ERR_PREPARE_REQUEST', SystemException::ERR_DB, $query);
             }
 
-            if (!$result->execute($this->prepareSQLArgs($data))) {
+            if (!$result->execute($realData)) {
                 throw new SystemException('ERR_EXECUTE_REQUEST', SystemException::ERR_DB, array($query, $data));
             }
 
@@ -529,31 +560,5 @@ abstract class DBA extends Object {
             $result = $this->pdo->query($query);
         }
         return $result;
-    }
-
-    /**
-     * Prepare array arguments for
-     *
-     * @see DBA::runQuery
-     * @see \PDOStatement::execute
-     *
-     * @param array $data [0=>first binded arg, 1=>second argument]
-     * @return array
-     */
-    private function prepareSQLArgs($data) {
-        $data = array_map(function ($val) {
-            if (is_array($val)) {
-                if (empty($val)) {
-                    $val = [-1];
-                } else {
-                    $val = array_map(function ($var) {
-                        return is_numeric($var) ? $var : $this->quote($var);
-                    }, $val);
-                }
-                $val = implode(',', $val);
-            }
-            return $val;
-        }, $data);
-        return $data;
     }
 }

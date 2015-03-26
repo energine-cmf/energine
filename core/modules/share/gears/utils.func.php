@@ -402,6 +402,7 @@ function translate($const, $langId = null) {
     if (is_null($findTranslationSQL)) {
         $findTranslationSQL = E()->getDB()->getPDO()->prepare('SELECT trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id  WHERE (ltag.ltag_name = ?) AND (lang_id = ?)');
     }
+
     $const = strtoupper($const);
     if (is_null($langId)) {
         $langId = intval(E()->getLanguage()->getCurrent());
@@ -416,7 +417,7 @@ function translate($const, $langId = null) {
             if ($result = $findTranslationSQL->fetchColumn()) {
                 $translationsCache[$langId][$const] = $result;
             } else {
-                $result = $const;
+                $translationsCache[$langId][$const] = $const;
             }
         }
 

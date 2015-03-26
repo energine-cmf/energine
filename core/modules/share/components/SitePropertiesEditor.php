@@ -26,8 +26,8 @@ class SitePropertiesEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('share_sites_properties');
         $this->setSaver(new SitePropertiesSaver());
         // Если передан параметр siteID,

@@ -27,8 +27,8 @@ class BlogCalendar extends Calendar {
      * @param array $params
      * @access public
      */
-    public function __construct($name, $module,  array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,   array $params = null) {
+        parent::__construct($name, $params);
         $this->setCalendar(new CalendarObject($this->getParam('month'), $this->getParam('year')));
 
         //Отмечаем использованные даты календаря
@@ -56,7 +56,7 @@ class BlogCalendar extends Calendar {
             $conditions['blog_id'] = $blogId;
         }
         $existingDates = simplifyDBResult(
-            $this->dbh->selectRequest(
+            $this->dbh->select(
                 'SELECT DISTINCT DATE_FORMAT(post_created, "%Y-%c-%e") as post_date FROM blog_post'.
                 $this->dbh->buildWhereCondition($conditions)
             ),

@@ -16,7 +16,7 @@ final class DivisionEditor;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears, Energine\share\gears\FieldDescription, Energine\share\gears\JSONDivBuilder, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Field, Energine\share\gears\DataDescription, Energine\share\gears\DBWorker, Energine\share\gears\Document, Energine\share\gears\DivisionSaver,Energine\share\gears\TagManager, Energine\apps\gears\AdsManager, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL;
+use Energine\share\gears, Energine\share\gears\FieldDescription, Energine\share\gears\JSONDivBuilder, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Field, Energine\share\gears\DataDescription, Energine\share\gears\DBWorker, Energine\share\gears\Document, Energine\share\gears\DivisionSaver, Energine\share\gears\TagManager, Energine\apps\gears\AdsManager, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL;
 
 /**
  * Division editor.
@@ -72,8 +72,8 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('share_sitemap');
         $this->setTitle($this->translate('TXT_DIVISION_EDITOR'));
         $this->setParam('recordsPerPage', false);
@@ -111,7 +111,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $data =
             $this->dbh->select('share_access_level', array('group_id', 'right_id'), array('smap_id' => $id));
 
-        if (is_array($data)) {
+        if ($data) {
             $data = convertDBResult($data, 'group_id', true);
 
             for ($i = 0; $i < $resultData->getRowCount(); $i++) {
@@ -409,15 +409,14 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                     'key', 'value');
             }
 
-        $res =
-            $this->dbh->select(
-                $this->getTranslationTableName(),
-                array('smap_name'),
-                array(
-                    'smap_id' => $actionParams['pid'],
-                    'lang_id' => $this->document->getLang()));
-        if (!empty($res)) {
-            $name = simplifyDBResult($res, 'smap_name', true);
+
+        if ($name = $this->dbh->getScalar(
+            $this->getTranslationTableName(),
+            array('smap_name'),
+            array(
+                'smap_id' => $actionParams['pid'],
+                'lang_id' => $this->document->getLang()))
+        ) {
             for ($i = 0,
                  $langCount = count(E()->getLanguage()->getLanguages());
                  $i < $langCount; $i++) {
@@ -471,7 +470,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $contentFD =
                 $this->getDataDescription()->getFieldDescriptionByName('smap_content');
             $contentFD->setProperty('reset', $this->translate('TXT_RESET_CONTENT'));
-            $av = & $contentFD->getAvailableValues();
+            $av = &$contentFD->getAvailableValues();
             if (isset($av[$contentFilename])) {
                 $av[$contentFilename]['value'] .=
                     ' - ' . $this->translate('TXT_CHANGED');
@@ -517,8 +516,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                 );
             }
         }
-        $smapName =
-            simplifyDBResult($this->dbh->select($this->getTranslationTableName(), array('smap_name'), array('smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang())), 'smap_name', true);
+        $smapName = $this->dbh->getScalar($this->getTranslationTableName(), 'smap_name', array('smap_id' => $field->getRowData(0), 'lang_id' => $this->document->getLang()));
 
         for ($i = 0; $i < (
         $langs = count(E()->getLanguage()->getLanguages())); $i++) {
@@ -571,20 +569,12 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
      */
     // Не позволяет удалить раздел по умолчанию а также системные разделы
     protected function deleteData($id) {
-        $res =
-            $this->dbh->select('share_sitemap', array('smap_pid'), array($this->getPK() => $id));
-        if (!is_array($res))
+        if (!($PID = $this->dbh->getScalar('share_sitemap', array('smap_pid'), array($this->getPK() => $id))))
             throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_CRITICAL);
-
-        list($res) = $res;
-
-        $PID = $res['smap_pid'];
         if (empty($PID)) {
             $PID = null;
         }
-
         $this->setFilter(array('smap_pid' => $PID));
-
         parent::deleteData($id);
     }
 
@@ -594,7 +584,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showWidgetEditor() {
         $this->request->shiftPath(1);
         $this->widgetEditor =
-            $this->document->componentManager->createComponent('widgetEditor', 'share', 'WidgetsRepository', array('config' => 'ModalWidgetsRepository.component.xml'));
+            $this->document->componentManager->createComponent('widgetEditor', 'Energine\share\components\WidgetsRepository', array('config' => 'ModalWidgetsRepository.component.xml'));
         $this->widgetEditor->run();
     }
 
@@ -655,7 +645,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         }
 
         $this->setFilter(array('smap_id' => $id, 'lang_id' => $langID));
-        $result = $this->dbh->selectRequest(
+        $result = $this->dbh->select(
             'SELECT smap_name, smap_pid, smap_order_num ' .
             ' FROM share_sitemap s' .
             ' LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id' .
@@ -673,7 +663,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
      */
     protected function getTemplateInfo() {
         $res = $this->dbh->select('SELECT smap_layout, smap_content, IF(smap_content_xml<>"", 1,0 ) as modified FROM share_sitemap WHERE smap_id = %s', $this->document->getID());
-        if (!empty($res)) {
+        if ($res) {
             list($res) = $res;
 
             list($contentTitle) = explode('.', basename($res['smap_content']));
@@ -757,7 +747,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showTransEditor() {
         $this->request->shiftPath(1);
         $this->transEditor =
-            $this->document->componentManager->createComponent('transEditor', 'share', 'TranslationEditor', null);
+            $this->document->componentManager->createComponent('transEditor', 'Energine\share\components\TranslationEditor', null);
         $this->transEditor->run();
     }
 
@@ -767,7 +757,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showUserEditor() {
         $this->request->shiftPath(1);
         $this->userEditor =
-            $this->document->componentManager->createComponent('userEditor', 'user', 'UserEditor', null);
+            $this->document->componentManager->createComponent('userEditor', 'Energine\user\components\UserEditor', null);
         $this->userEditor->run();
     }
 
@@ -777,7 +767,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showRoleEditor() {
         $this->request->shiftPath(1);
         $this->roleEditor =
-            $this->document->componentManager->createComponent('roleEditor', 'user', 'RoleEditor', null);
+            $this->document->componentManager->createComponent('roleEditor', 'Energine\user\components\RoleEditor', null);
         $this->roleEditor->run();
     }
 
@@ -787,14 +777,14 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showLangEditor() {
         $this->request->shiftPath(1);
         $this->langEditor =
-            $this->document->componentManager->createComponent('langEditor', 'share', 'LanguageEditor', null);
+            $this->document->componentManager->createComponent('langEditor', 'Energine\share\components\LanguageEditor', null);
         $this->langEditor->run();
     }
 
     protected function fileLibrary() {
         $this->request->shiftPath(1);
 
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'share', 'FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'Energine\share\components\FileRepository', array('config' => 'core/modules/share/config/FileRepositoryModal.component.xml'));
 
         $this->fileLibrary->run();
     }
@@ -805,7 +795,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
     protected function showSiteEditor() {
         $this->request->shiftPath(1);
         $this->siteEditor =
-            $this->document->componentManager->createComponent('siteEditor', 'share', 'SiteEditor', array('config' => 'core/modules/share/config/SiteEditorModal.component.xml'));
+            $this->document->componentManager->createComponent('siteEditor', 'Energine\share\components\SiteEditor', array('config' => 'core/modules/share/config/SiteEditorModal.component.xml'));
         $this->siteEditor->run();
     }
 
@@ -822,10 +812,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $filter = array('smap_id' => $ap['smap_id']);
         }
 
-        $smapID = simplifyDBResult(
-            $this->dbh->select($this->getTableName(), array('smap_id'), $filter),
-            'smap_id'
-        );
+        $smapID = $this->dbh->getColumn($this->getTableName(), array('smap_id'), $filter);
         $this->dbh->beginTransaction();
         if (is_array($smapID) && !empty($smapID)) {
             $this->dbh->modify(
@@ -861,11 +848,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $order[key($order)] =
                 ($order[key($order)] == QAL::ASC) ? QAL::DESC : QAL::ASC;
         }
-
-        //Определяем PID
-        $res =
-            $this->dbh->select($this->getTableName(), array('smap_pid'), array('smap_id' => $id));
-        $PID = simplifyDBResult($res, 'smap_pid', true);
+        $PID = $this->dbh->getScalar($this->getTableName(), array('smap_pid'), array('smap_id' => $id));
 
         if (!is_null($PID)) {
             $PID = ' = ' . $PID;
@@ -892,8 +875,8 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $PID,
             $this->dbh->buildOrderCondition($order));
 
-        $result = $this->dbh->selectRequest($request);
-        if ($result === true || sizeof($result) < 2) {
+        $result = $this->dbh->select($request);
+        if (!$result || sizeof($result) < 2) {
             throw new SystemException('ERR_CANT_MOVE', SystemException::ERR_NOTICE);
         }
 

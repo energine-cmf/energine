@@ -23,8 +23,8 @@ class CurrencyEditor extends Grid {
      * @param string $module
      * @param array $params
      */
-    public function __construct($name, $module, array $params = null) {
-		parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+		parent::__construct($name, $params);
 		$this->setTableName('shop_currency');
 	}
 
@@ -52,7 +52,7 @@ class CurrencyEditor extends Grid {
 		}
 		
 		if($_POST[$this->getTableName()]['curr_is_main']){
-		  $this->dbh->modifyRequest('UPDATE '.$this->getTableName().' SET curr_is_main = 0');
+		  $this->dbh->modify('UPDATE '.$this->getTableName().' SET curr_is_main = 0');
 		}
 		else {
 			$_POST[$this->getTableName()]['curr_is_main'] = '';

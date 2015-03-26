@@ -147,21 +147,21 @@ class Comments extends DBWorker
         }
 
         if($limit){
-            $comments = $this->dbh->selectRequest(
+            $comments = $this->dbh->select(
                 "SELECT SQL_CALC_FOUND_ROWS *
                  FROM {$this->commentTable}
                  WHERE $cond
                  ORDER BY comment_created
                  $limit"
             );
-            if(is_array($this->countLastList = $this->dbh->selectRequest('SELECT FOUND_ROWS() as c'))){
+            if(is_array($this->countLastList = $this->dbh->select('SELECT FOUND_ROWS() as c'))){
                 list($this->countLastList) = $this->countLastList;
                 $this->countLastList = $this->countLastList['c'];
             }
             else $this->countLastList = 0;
         }
         else{
-            $comments = $this->dbh->selectRequest(
+            $comments = $this->dbh->select(
                 "SELECT *
                  FROM {$this->commentTable}
                  WHERE $cond

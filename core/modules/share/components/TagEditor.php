@@ -26,8 +26,8 @@ class TagEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName(TagManager::TAG_TABLENAME);
     }
 

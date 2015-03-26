@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @file
  * NewsCalendar
@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class NewsCalendar;
-@endcode
+ * @endcode
  *
  * @author andrii.a
  * @copyright eggmengroup.com
@@ -14,20 +14,22 @@ class NewsCalendar;
  * @version 1.0.0
  */
 namespace Energine\apps\components;
+
 use Energine\calendar\gears\CalendarObject, Energine\share\gears\SystemException, Energine\calendar\components\Calendar;
+
 /**
  * Calendar for news.
  *
  * @code
 class NewsCalendar;
-@endcode
+ * @endcode
  */
 class NewsCalendar extends Calendar {
     /**
      * @copydoc Calendar::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setCalendar(new CalendarObject($this->getParam('month'), $this->getParam('year')));
 
         //Отмечаем использованные даты календаря
@@ -35,23 +37,20 @@ class NewsCalendar extends Calendar {
         $tableName = $this->getParam('tableName');
         $translationTableName = $this->dbh->getTranslationTablename($tableName);
 
-        $existingDates = simplifyDBResult(
-            $this->dbh->selectRequest(
-                'SELECT DATE_FORMAT(news_date, "%Y-%c-%e") as news_date FROM ' . $tableName .
-                ' LEFT JOIN ' . $translationTableName . ' ON ' . $translationTableName . '.news_id = ' . $tableName . '.news_id ' .
-                $this->dbh->buildWhereCondition(
-                    array_merge(
-                        array(
-                             'lang_id' => $this->document->getLang(),
-                             'news_date>=' .
-                             $range->start->format('"Y-m-d"') .
-                             ' AND news_date<=' .
-                             $range->end->format('"Y-m-d"')),
-                        $this->getParam('filter')
-                    )
+        $existingDates = $this->dbh->getColumn(
+            'SELECT DATE_FORMAT(news_date, "%Y-%c-%e") as news_date FROM ' . $tableName .
+            ' LEFT JOIN ' . $translationTableName . ' ON ' . $translationTableName . '.news_id = ' . $tableName . '.news_id ' .
+            $this->dbh->buildWhereCondition(
+                array_merge(
+                    array(
+                        'lang_id' => $this->document->getLang(),
+                        'news_date>=' .
+                        $range->start->format('"Y-m-d"') .
+                        ' AND news_date<=' .
+                        $range->end->format('"Y-m-d"')),
+                    $this->getParam('filter')
                 )
-            ),
-            'news_date'
+            )
         );
 
         if (is_array($existingDates)) {
@@ -71,12 +70,12 @@ class NewsCalendar extends Calendar {
         return array_merge(
             parent::defineParams(),
             array(
-                 'month' => false,
-                 'year' => false,
-                 'date' => new \DateTime(),
-                 'filter' => array(),
-                 //'template' => 'news',
-                 'tableName' => false,
+                'month' => false,
+                'year' => false,
+                'date' => new \DateTime(),
+                'filter' => array(),
+                //'template' => 'news',
+                'tableName' => false,
             )
         );
     }
@@ -96,17 +95,15 @@ class NewsCalendar extends Calendar {
             if ($value > (date('Y') + 1)) {
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
-        }
-        elseif ($name == 'month') {
+        } elseif ($name == 'month') {
             if (!is_numeric($value)) {
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
             if (($value > 12) || ($value < 1)) {
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
-        }
-        elseif($name == 'date'){
-            if($value === false){
+        } elseif ($name == 'date') {
+            if ($value === false) {
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
         }

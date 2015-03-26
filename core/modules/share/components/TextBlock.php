@@ -53,8 +53,8 @@ class TextBlock extends DataSet implements SampleTextBlock{
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         /**
          * @todo Не забыть убрать $_REQUEST или переделать чтобы для режима отладки  -_REQUEST а так  - _POST
          *
@@ -93,12 +93,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
      */
     protected function getTextBlockID($smapID, $num) {
         $smapID = (empty($smapID)) ? null : $smapID;
-        $result = false;
-        $res = $this->dbh->select($this->tableName, array('tb_id'), array('smap_id' => $smapID, 'tb_num' => $num));
-        if (is_array($res)) {
-            $result = simplifyDBResult($res, 'tb_id', true);
-        }
-        return $result;
+        return $this->dbh->getScalar($this->tableName, array('tb_id'), array('smap_id' => $smapID, 'tb_num' => $num));
     }
 
     /**
@@ -118,7 +113,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
             $this->setProperty('global', 'global');
         }
 
-        $res = $this->dbh->selectRequest(
+        $res = $this->dbh->select(
             'SELECT st.tb_id as id, stt.tb_content as content ' .
             'FROM `share_textblocks`  st ' .
             'LEFT JOIN share_textblocks_translation stt ON st.tb_id = stt.tb_id and lang_id = %s ' .
@@ -127,7 +122,7 @@ class TextBlock extends DataSet implements SampleTextBlock{
             $this->getParam('num')
         );
 
-        if (is_array($res)) {
+        if ($res) {
             list($res) = $res;
             $this->id = $res['id'];
             $this->content = $res['content'];
@@ -241,12 +236,11 @@ class TextBlock extends DataSet implements SampleTextBlock{
 
                 $res = $this->dbh->select($tableName, array('tb_id'), array('tb_id' => $tbID, 'lang_id' => $langID));
                 //если есть запись в таблице переводов - апдейтим
-                if (is_array($res)) {
-
-                    $res = $this->dbh->modify(QAL::UPDATE, $tableName, array('tb_content' => $result), array('tb_id' => $tbID, 'lang_id' => $langID));
-                } elseif ($res === true) {
+                if (!empty($res)) {
+                    $this->dbh->modify(QAL::UPDATE, $tableName, array('tb_content' => $result), array('tb_id' => $tbID, 'lang_id' => $langID));
+                } else {
                     //если нет - вставляем
-                    $res = $this->dbh->modify(QAL::INSERT, $tableName, array('tb_content' => $result, 'tb_id' => $tbID, 'lang_id' => $langID));
+                    $this->dbh->modify(QAL::INSERT, $tableName, array('tb_content' => $result, 'tb_id' => $tbID, 'lang_id' => $langID));
                 }
             } elseif ($tbID) {
                 $this->dbh->modify(QAL::DELETE, $this->tableName, null, array('tb_id' => $tbID));

@@ -15,6 +15,7 @@ class PageList;
 namespace Energine\share\components;
 
 use Energine\share\gears\TreeBuilder, Energine\share\gears\SimpleBuilder, Energine\share\gears\FieldDescription, Energine\share\gears\Response, Energine\share\gears\TagManager, Energine\share\gears\AttachmentManager;
+
 /**
  * Show the list of subsections.
  *
@@ -22,8 +23,7 @@ use Energine\share\gears\TreeBuilder, Energine\share\gears\SimpleBuilder, Energi
 class PageList;
  * @endcode
  */
-class PageList extends DataSet
-{
+class PageList extends DataSet {
     /**
      * Current page.
      * @var string CURRENT_PAGE
@@ -44,9 +44,8 @@ class PageList extends DataSet
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module, array $params = null)
-    {
-        parent::__construct($name, $module, $params);
+    public function __construct($name, array $params = null) {
+        parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->addTranslation('TXT_HOME');
         if ($this->getParam('site') == 'default') {
@@ -59,8 +58,7 @@ class PageList extends DataSet
     /**
      * @copydoc DataSet::createBuilder
      */
-    protected function createBuilder()
-    {
+    protected function createBuilder() {
         if ($this->getParam('recursive')) {
             $builder = new TreeBuilder();
         } else {
@@ -79,8 +77,7 @@ class PageList extends DataSet
      * site - идентфиикатор сайта
      * recursive - рекурсивно
      */
-    protected function defineParams()
-    {
+    protected function defineParams() {
         $result = array_merge(parent::defineParams(),
             array(
                 'tags' => '',
@@ -95,8 +92,7 @@ class PageList extends DataSet
      * @copydoc DataSet::main
      */
     // Добавляем информацию о присоединенных файлах
-    protected function main()
-    {
+    protected function main() {
         parent::main();
         if ($this->getDataDescription()->isEmpty()) {
             $this->getDataDescription()->loadXML(
@@ -142,8 +138,7 @@ class PageList extends DataSet
     /**
      * @copydoc DataSet::loadData
      */
-    protected function loadData()
-    {
+    protected function loadData() {
         $sitemap = E()->getMap();
 
         $methodName = 'getChilds';
@@ -216,6 +211,8 @@ class PageList extends DataSet
         } else {
             $this->setBuilder(new SimpleBuilder());
         }
+
+
         return $data;
     }
 }

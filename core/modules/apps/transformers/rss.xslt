@@ -11,7 +11,7 @@
     <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']" />
     <xsl:variable name="BASE" select="$DOC_PROPS[@name='base']" />
     <xsl:variable name="LANG_ABBR" select="$DOC_PROPS[@name='lang']/@real_abbr" />
-    <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
+    <xsl:variable name="COMPONENTS" select="//component[@name]"/>
     <xsl:variable name="TRANSLATION" select="/document/translations/translation"/>
 
 

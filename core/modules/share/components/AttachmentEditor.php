@@ -29,14 +29,13 @@ use Energine\share\gears\SystemException;
 class AttachmentEditor;
  * @endcode
  */
-class AttachmentEditor extends Grid
-{
+class AttachmentEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null)
+    public function __construct($name,  array $params = null)
     {
-        parent::__construct($name, $module, $params);
+        parent::__construct($name, $params);
 
         $linkedID = $this->getParam('linkedID');
         $pk = $this->getParam('pk');
@@ -79,8 +78,7 @@ class AttachmentEditor extends Grid
     /**
      * @copydoc Grid::defineParams
      */
-    protected function defineParams()
-    {
+    protected function defineParams() {
         return array_merge(
             parent::defineParams(),
             array(
@@ -95,8 +93,7 @@ class AttachmentEditor extends Grid
      * @copydoc Grid::prepare
      */
     // Делает поле upl_id типа INT в форме add/edit, чтобы исключить подтягивание значений по FK
-    protected function prepare()
-    {
+    protected function prepare() {
         parent::prepare();
 
         if (in_array($this->getState(), array('add', 'edit'))) {
@@ -129,8 +126,7 @@ class AttachmentEditor extends Grid
      * @copydoc Grid::createDataDescription
      */
     // Дополняет описание данных доп полями из таблицы share_uploads, а также исключает из вывода PK основной таблицы и поле session_id
-    protected function createDataDescription()
-    {
+    protected function createDataDescription() {
         $dd = parent::createDataDescription();
 
         $fd = $dd->getFieldDescriptionByName($this->getParam('pk'));
@@ -165,8 +161,7 @@ class AttachmentEditor extends Grid
      * @copydoc Grid::loadDataDescription
      */
     // Отключаем FK для ul_id и связки с основной таблицей
-    protected function loadDataDescription()
-    {
+    protected function loadDataDescription() {
         $r = parent::loadDataDescription();
         $r['upl_id']['key'] = false;
         $r[$this->getParam('pk')]['key'] = false;
@@ -177,12 +172,10 @@ class AttachmentEditor extends Grid
      * @copydoc Grid::loadData
      */
     // Дополняет набор данных значениями полей upl_path, upl_name и upl_duration
-    protected function loadData()
-    {
+    protected function loadData() {
         $data = parent::loadData();
 
-        if ($this->getState() == 'getRawData' && is_array($data)) {
-
+        if ($this->getState() == 'getRawData' && $data) {
             $inverted = inverseDBResult($data);
             $upl_ids = $inverted['upl_id'];
 
@@ -191,20 +184,17 @@ class AttachmentEditor extends Grid
                 array('upl_id', 'upl_path', 'upl_title as upl_name', 'upl_duration'),
                 array('upl_id' => $upl_ids)
             );
-
-            if ($data) {
-                foreach ($data as $i => $row) {
-                    if ($res) {
-                        $new_row = false;
-                        foreach ($res as $row2) {
-                            if ($row2['upl_id'] == $row['upl_id']) {
-                                $new_row = $row2;
-                            }
+            foreach ($data as $i => $row) {
+                if ($res) {
+                    $new_row = false;
+                    foreach ($res as $row2) {
+                        if ($row2['upl_id'] == $row['upl_id']) {
+                            $new_row = $row2;
                         }
-                        if ($new_row) {
-                            $data[$i]['upl_path'] = $new_row['upl_path'];
-                            $data[$i]['upl_name'] = $new_row['upl_name'];
-                        }
+                    }
+                    if ($new_row) {
+                        $data[$i]['upl_path'] = $new_row['upl_path'];
+                        $data[$i]['upl_name'] = $new_row['upl_name'];
                     }
                 }
             }
@@ -219,8 +209,7 @@ class AttachmentEditor extends Grid
      * @throws \Exception
      * @throws SystemException
      */
-    protected function savequickupload()
-    {
+    protected function savequickupload() {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
             $upl_id = (isset($_POST['upl_id'])) ? intval($_POST['upl_id']) : false;
@@ -276,8 +265,7 @@ class AttachmentEditor extends Grid
      * @copydoc Grid::saveData
      */
     //Правильно сохраняет порядок в order_num полях
-    protected function saveData()
-    {
+    protected function saveData() {
         $result = false;
         //если в POST не пустое значение значение первичного ключа - значит мы находимся в режиме редактирования
         if (isset($_POST[$this->getTableName()][$this->getPK()]) &&
@@ -368,7 +356,7 @@ class AttachmentEditor extends Grid
             $request =
                 'UPDATE ' . $this->getTableName() . ' SET ' . $orderColumn . ' = %s ' .
                 $this->dbh->buildWhereCondition($this->getFilter());
-            $this->dbh->modifyRequest($request, $new_order_num);
+            $this->dbh->modify($request, $new_order_num);
 
         }
 

@@ -74,8 +74,8 @@ class DBDataSet extends DataSet {
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
     }
 
@@ -184,8 +184,7 @@ class DBDataSet extends DataSet {
                             $primaryKeyName => $pks
                         ]
                     );
-
-                    if (is_array($res)) {
+                    if ($res) {
                         foreach ($res as $row) {
                             $pk = $row[$relInfo['fieldName']];
                             unset($row[$relInfo['fieldName']]);
@@ -299,15 +298,11 @@ class DBDataSet extends DataSet {
                 $res = $this->dbh->select($this->getTableName(), (($this->pager) ? ' SQL_CALC_FOUND_ROWS '
                         : '') . implode(',', $dbFields), $this->getFilter(), $this->getOrder(), $this->getLimit());
             }
-            if (is_array($res)) {
+
+            if ($res) {
                 $data = $res;
                 if ($this->pager) {
-                    if (!($recordsCount = simplifyDBResult($this->dbh->selectRequest('SELECT FOUND_ROWS() as c'), 'c',
-                        true))
-                    ) {
-                        $recordsCount = 0;
-                    }
-                    $this->pager->setRecordsCount($recordsCount);
+                    $this->pager->setRecordsCount($this->dbh->getScalar('SELECT FOUND_ROWS() as c'));
                 }
             }
         }
@@ -385,17 +380,12 @@ class DBDataSet extends DataSet {
                 $order,
                 $limit
             );
-            $data = $this->dbh->selectRequest($request);
+            $data = $this->dbh->select($request);
             if ($this->pager) {
-                if (!($recordsCount = simplifyDBResult($this->dbh->selectRequest('SELECT FOUND_ROWS() as c'), 'c',
-                    true))
-                ) {
-                    $recordsCount = 0;
-                }
-                $this->pager->setRecordsCount($recordsCount);
+                $this->pager->setRecordsCount($this->dbh->getScalar('SELECT FOUND_ROWS() as c'));
             }
             //Если данные не только для текущего языка
-            if (is_array($data) && (!$this->getDataLanguage() || $this->getDataLanguage() && !$this->getParam('onlyCurrentLang') && isset($dbFields[$this->getTranslationTableName()]))) {
+            if ($data && (!$this->getDataLanguage() || $this->getDataLanguage() && !$this->getParam('onlyCurrentLang') && isset($dbFields[$this->getTranslationTableName()]))) {
 
                 //формируем матрицу
                 foreach ($data as $row) {
@@ -416,7 +406,7 @@ class DBDataSet extends DataSet {
                         : '', implode(',', $translationColumns),
                     $this->getTableName(),
                     $this->getPK(), implode(',', array_keys($matrix)));
-                $res = $this->dbh->selectRequest($request);
+                $res = $this->dbh->select($request);
 
                 foreach ($res as $row) {
                     $template[$row[$this->getPK()]] = $row;
@@ -756,8 +746,7 @@ class DBDataSet extends DataSet {
         }
 
         $res = $this->dbh->select($this->getTableName(), [$fieldName], [$fieldName => $id]);
-
-        return is_array($res);
+        return !empty($res);
     }
 
     /**

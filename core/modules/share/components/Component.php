@@ -6,8 +6,8 @@
  * It contains the definition to:
  * @code
 class Component;
-interface IBuilder;
-@endcode
+ * interface IBuilder;
+ * @endcode
  *
  * @author 1m.dm
  * @copyright Energine 2006
@@ -15,6 +15,7 @@ interface IBuilder;
  * @version 1.0.0
  */
 namespace Energine\share\components;
+
 use Energine\share\gears\DBWorker, Energine\share\gears\IBlock, Energine\share\gears\Request, Energine\share\gears\ComponentConfig, Energine\share\gears\Document;
 use Energine\share\gears\SystemException;
 
@@ -23,7 +24,7 @@ use Energine\share\gears\SystemException;
  *
  * @code
 class Component;
-@endcode
+ * @endcode
  */
 class Component extends DBWorker implements IBlock {
     /**
@@ -127,14 +128,12 @@ class Component extends DBWorker implements IBlock {
 
     /**
      * @param string $name Component name.
-     * @param string $module Module name.
      * @param array $params Component parameters.
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name,  array $params = null) {
         parent::__construct();
-
+        list(, $this->module) = explode('\\', get_called_class());
         $this->name = $name;
-        $this->module = $module;
         $this->document = E()->getDocument();
         $this->params = $this->defineParams();
         if (is_array($params)) {
@@ -162,9 +161,9 @@ class Component extends DBWorker implements IBlock {
         //Определяем sample
         $ifs = class_implements($this);
         if (!empty($ifs)) {
-            foreach ($ifs as $iname){
+            foreach ($ifs as $iname) {
                 $iname = simplifyClassName($iname);
-                if(strtolower(substr($iname, 0, 6)) == 'sample'){
+                if (strtolower(substr($iname, 0, 6)) == 'sample') {
                     $this->setProperty('sample', substr($iname, 6));
                     break;
                 }
@@ -379,8 +378,8 @@ class Component extends DBWorker implements IBlock {
         }
 
         if (method_exists($this, $this->getState() . 'State')) {
-            call_user_func_array([$this, $this->getState().'State'], $params);
-        } elseif (method_exists($this, $this->getState() )) {
+            call_user_func_array([$this, $this->getState() . 'State'], $params);
+        } elseif (method_exists($this, $this->getState())) {
             call_user_func_array([$this, $this->getState()], $params);
         } else {
             throw new SystemException(
@@ -405,7 +404,8 @@ class Component extends DBWorker implements IBlock {
      * Prepare data.
      * @note It calls at the beginning of the method, that realize main action.
      */
-    protected function prepare() {}
+    protected function prepare() {
+    }
 
     /**
      * Disable component.
@@ -477,7 +477,6 @@ class Component extends DBWorker implements IBlock {
     public function build() {
         $result = $this->doc->createElement('component');
         $result->setAttribute('name', $this->getName());
-        $result->setAttribute('module', $this->module);
         $result->setAttribute('componentAction', $this->getState());
         $result->setAttribute('class', simplifyClassName(get_class($this)));
 
@@ -544,7 +543,7 @@ class Component extends DBWorker implements IBlock {
  *
  * @code
 interface IBuilder;
-@endcode
+ * @endcode
  */
 interface IBuilder {
     /**

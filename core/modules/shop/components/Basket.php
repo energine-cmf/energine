@@ -30,9 +30,9 @@ class Basket extends DBDataSet {
      *
      * @access public
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name,  array $params = null) {
         $params['active'] = true;
-        parent::__construct($name, $module, $params);
+        parent::__construct($name, $params);
         $this->setTableName('shop_basket');
         // Т.к. метод loadData перепесин, то
         // необходимо добавить фильтр по lang_id

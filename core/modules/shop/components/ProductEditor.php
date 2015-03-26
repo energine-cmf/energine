@@ -31,8 +31,8 @@ class ProductEditor extends Grid {
      *
      * @access public
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('shop_product');
         $this->setSaver(new ProductSaver());
     }
@@ -96,7 +96,7 @@ class ProductEditor extends Grid {
         } else {
             $this->request->shiftPath(1);
         }
-        $this->propEditor = $this->document->componentManager->createComponent('propEditor', 'shop', 'PropertiesValuesEditor', $params);
+        $this->propEditor = $this->document->componentManager->createComponent('propEditor', 'PropertiesValuesEditor', $params);
         $this->propEditor->run();
     }
 

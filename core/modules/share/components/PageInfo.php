@@ -6,13 +6,19 @@
  * It contains the definition to:
  * @code
 class PageInfo;
-@endcode
+ * @endcode
  *
  * @author andy.karpov@gmail.com
  * @copyright Energine 2013
  *
  * @version 1.0.0
  */
+namespace Energine\share\components;
+
+use Energine\share\gears\Data;
+use Energine\share\gears\Field;
+use Energine\share\gears\FieldDescription;
+use Energine\share\gears\SimpleBuilder;
 
 /**
  * page information.
@@ -20,16 +26,9 @@ class PageInfo;
  *
  * @code
 class PageInfo;
-@endcode
+ * @endcode
  */
 class PageInfo extends DataSet {
-    //todo VZ: this can be removed.
-    /**
-     * @copydoc DataSet::__construct
-     */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
-    }
 
     /**
      * @copydoc DataSet::main
@@ -74,11 +73,8 @@ class PageInfo extends DataSet {
         }
 
         $this->setData($d);
-        $data = $this->dbh->select($query, $this->document->getID(), $this->document->getLang());
+        $d->load($this->dbh->select($query, $this->document->getID(), $this->document->getLang()));
 
-        if (is_array($data) && !empty($data)) {
-            $d->load($data);
-        }
 
         //Поле добавлено чтобы Data не был пустым
         $this->getData()->addField(new Field('fake'));

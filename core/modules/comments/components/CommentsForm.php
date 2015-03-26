@@ -6,32 +6,34 @@
  * It contains the definition to:
  * @code
 class CommentsForm;
-@endcode
+ * @endcode
  *
  * @author sign
  *
  * @version 1.0.0
  */
 namespace Energine\comments\components;
+
 use Energine\share\components\DataSet, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\comments\gears\CommentsJSONBuilder, Energine\share\gears\Data, Energine\share\gears\Field;
+
 /**
  * Show comments and form for commenting.
  *
  * @code
 class CommentsForm;
-@endcode
+ * @endcode
  *
  * Usage example in @c "*.content.xml":
  * @code
 <component name="commentsForm" module="comments" class="CommentsForm">
-<params>
-<param name="bind">newsArchive</param>
-<param name="comment_tables">stb_news_comment</param>
-<param name="show_comments">1</param>
-<param name="show_form">1</param>
-</params>
-</component>
-@endcode
+ * <params>
+ * <param name="bind">newsArchive</param>
+ * <param name="comment_tables">stb_news_comment</param>
+ * <param name="show_comments">1</param>
+ * <param name="show_form">1</param>
+ * </params>
+ * </component>
+ * @endcode
  */
 class CommentsForm extends DataSet {
     /**
@@ -80,23 +82,23 @@ class CommentsForm extends DataSet {
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
+    public function __construct($name, array $params = null) {
         // если комментарии скрыты то бессмысленно показывать форму
         if (!isset($params['show_comments']) or !$params['show_comments']) {
             $params['show_form'] = 0;
         }
-        parent::__construct($name, $module, $params);
+        parent::__construct($name, $params);
 
         $this->commentTable = $this->getParam('comment_tables');
         $this->targetTable =
-                substr($this->commentTable, 0, strrpos($this->commentTable, '_'));
+            substr($this->commentTable, 0, strrpos($this->commentTable, '_'));
 
         $this->bindComponent =
-                $this->document->componentManager->getBlockByName($this->getParam('bind'));
+            $this->document->componentManager->getBlockByName($this->getParam('bind'));
         $this->isTree = $this->getParam('is_tree');
         $this->setProperty('limit', $this->getParam('textLimit'));
 
-        $this->setProperty('is_anonymous', (string) !$this->document->user->isAuthenticated());
+        $this->setProperty('is_anonymous', (string)!$this->document->user->isAuthenticated());
 
         $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
@@ -109,8 +111,8 @@ class CommentsForm extends DataSet {
     protected function isExistsNeedTables() {
         if (is_null($this->isExistsTables)) {
             $this->isExistsTables =
-                    (bool) $this->dbh->tableExists($this->commentTable) &&
-                            (bool) $this->dbh->tableExists($this->targetTable);
+                (bool)$this->dbh->tableExists($this->commentTable) &&
+                (bool)$this->dbh->tableExists($this->targetTable);
         }
         return $this->isExistsTables;
     }
@@ -139,7 +141,8 @@ class CommentsForm extends DataSet {
             }
 
             if (!isset($_POST['target_id']) or
-                    !($targetId = (int) $_POST['target_id']))
+                !($targetId = (int)$_POST['target_id'])
+            )
                 throw new Exception('Mistake targetId');
 
             if (!$this->isTargetEditable()) {
@@ -155,29 +158,29 @@ class CommentsForm extends DataSet {
             }
 
             if (isset($_POST['comment_name']) and
-                    $commentName = trim($_POST['comment_name'])) {
+                $commentName = trim($_POST['comment_name'])
+            ) {
                 if ($this->isTree and isset($_POST['parent_id'])) {
                     $parentId = intval($_POST['parent_id']);
-                }
-                else $parentId = 0;
+                } else $parentId = 0;
 
                 $commentName = $this->clearPost($commentName);
                 $commentNick = $this->clearPost((isset($_POST['comment_nick'])) ? $_POST['comment_nick'] : '');
 
                 if (isset($_POST['comment_id']) and
-                        $commentId = intval($_POST['comment_id'])) {
+                    $commentId = intval($_POST['comment_id'])
+                ) {
                     // отредактированный коммент
                     if (!$isUpdated =
-                            $this->updateComment($targetId, $commentName, $commentNick, $commentId))
+                        $this->updateComment($targetId, $commentName, $commentNick, $commentId)
+                    )
                         throw new \Exception('Save error');
-                }
-                else {
+                } else {
                     // новый коммент
                     $comment =
-                            $this->addComment($targetId, $commentName, $commentNick, $parentId);
+                        $this->addComment($targetId, $commentName, $commentNick, $parentId);
                 }
-            }
-            else {
+            } else {
                 throw new SystemException('Comment is empty');
             }
 
@@ -191,14 +194,12 @@ class CommentsForm extends DataSet {
                         'comment_id' => $commentId
                     )
                 ));
-            }
-            else {
+            } else {
                 $this->setBuilder($this->buildResult(array($comment)));
             }
-        }
-        catch (SystemException $e) {
+        } catch (SystemException $e) {
             $message['errors'][] = array('message' =>
-            $e->getMessage() . current($e->getCustomMessage()));
+                $e->getMessage() . current($e->getCustomMessage()));
             $builder->setProperties(
                 array_merge(array('result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')), $message));
         }
@@ -224,7 +225,7 @@ class CommentsForm extends DataSet {
         if (!$this->getParam('allows_anonymous') && !E()->getAUser()->isAuthenticated())
             return false;
         $right =
-                E()->getMap()->getDocumentRights($this->document->getID());
+            E()->getMap()->getDocumentRights($this->document->getID());
         return $right >= ACCESS_READ;
     }
 
@@ -244,7 +245,7 @@ class CommentsForm extends DataSet {
             }
             // если не админ -  проверяем авторство
             $comments =
-                    $this->dbh->select($this->commentTable, true, array('comment_id' => $commentId));
+                $this->dbh->select($this->commentTable, true, array('comment_id' => $commentId));
             if (!$comments) { // удалён
                 return false;
             }
@@ -284,7 +285,8 @@ class CommentsForm extends DataSet {
             }
 
             if (!isset($_POST['comment_id']) or
-                    !($commentId = (int) $_POST['comment_id']))
+                !($commentId = (int)$_POST['comment_id'])
+            )
                 throw new \Exception('Mistake arg');
             $builder->setProperties(
                 array(
@@ -292,10 +294,9 @@ class CommentsForm extends DataSet {
                     'result' => $this->removeComment($commentId)
                 )
             );
-        }
-        catch (SystemException $e) {
+        } catch (SystemException $e) {
             $message['errors'][] = array('message' =>
-            $e->getMessage() . current($e->getCustomMessage()));
+                $e->getMessage() . current($e->getCustomMessage()));
             $builder->setProperties(
                 array_merge(
                     array('result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')),
@@ -317,7 +318,7 @@ class CommentsForm extends DataSet {
             }
             // если не админ -  проверяем авторство
             $comments =
-                    $this->dbh->select($this->commentTable, true, array('comment_id' => $id));
+                $this->dbh->select($this->commentTable, true, array('comment_id' => $id));
             if (!$comments) { // уже удалён
                 return true;
             }
@@ -357,16 +358,15 @@ class CommentsForm extends DataSet {
     // При построении формы назначаем ID комментируемого элемента
     protected function prepare() {
         if ($this->getState() == 'deleteComment') {
-            ;
-            ;
-        }
-        else {
+            ;;
+        } else {
             if (($this->bindComponent &&
                     $this->bindComponent->getState() == $this->getParam('bind_state')) &&
-                    ($this->getState() == 'main')
-                    && $this->getParam('show_form') &&
-                    $this->getParam('show_comments')
-                    && $this->isExistsNeedTables()) {
+                ($this->getState() == 'main')
+                && $this->getParam('show_form') &&
+                $this->getParam('show_comments')
+                && $this->isExistsNeedTables()
+            ) {
                 parent::prepare();
 
                 if (
@@ -405,23 +405,22 @@ class CommentsForm extends DataSet {
                     $this->addTranslation('COMMENT_SYMBOL2'); // символа
                     $this->addTranslation('COMMENT_SYMBOL3'); // символов
                     $this->addTranslation('COMMENT_REALY_REMOVE'); // Действительно удалить комментарий?
-                }
-                else {
+                } else {
                     // форма нужна только для вывода списка комментариев
                     $this->setProperty('hide_form', 1);
                 }
                 $this->addTranslation('COMMENTS'); // коментирии
-            }
-            else {
+            } else {
                 $this->disable();
             }
 
             if ($this->getParam('show_comments') &&
-                    $this->isExistsNeedTables() &&
-                    is_object($this->bindComponent) &&
-                    $this->bindComponent->getState() == $this->getParam('bind_state')
-                    && $this->bindComponent->getData() &&
-                    !$this->bindComponent->getData()->isEmpty()) {
+                $this->isExistsNeedTables() &&
+                is_object($this->bindComponent) &&
+                $this->bindComponent->getState() == $this->getParam('bind_state')
+                && $this->bindComponent->getData() &&
+                !$this->bindComponent->getData()->isEmpty()
+            ) {
                 $this->showComments();
             }
         }
@@ -454,7 +453,7 @@ class CommentsForm extends DataSet {
         $parentIdSql = intval($parentId) ? intval($parentId) : 'NULL';
         $uIdSql = intval($uId) ? intval($uId) : 'NULL';
 
-        $commentId = $this->dbh->modifyRequest("INSERT {$this->commentTable}
+        $commentId = $this->dbh->modify("INSERT {$this->commentTable}
         	SET target_id = %s,
         		comment_parent_id = $parentIdSql, 
         		comment_name = %s,
@@ -466,7 +465,7 @@ class CommentsForm extends DataSet {
         );
 
         return array(
-            'is_tree' => (int) $this->isTree, // для отрисовки или не отрисовки ссылки "коментировать" в js
+            'is_tree' => (int)$this->isTree, // для отрисовки или не отрисовки ссылки "коментировать" в js
             'comment_id' => $commentId,
             'comment_parent_id' => $parentId,
             'target_id' => $targetId,
@@ -589,12 +588,13 @@ class CommentsForm extends DataSet {
         $this->setProperty('bind', $this->getParam('bind'));
 
         $commentsList =
-                $this->document->componentManager->createComponent('commentsList', 'comments', 'CommentsList', $commentsParams);
+            $this->document->componentManager->createComponent('commentsList', 'Energine\comments\components\CommentsList', $commentsParams);
 
         $this->document->componentManager->add($commentsList);
 
         if ($this->getParam('bind') && $forumTheme =
-                $this->document->componentManager->getBlockByName($this->getParam('bind'))) {
+                $this->document->componentManager->getBlockByName($this->getParam('bind'))
+        ) {
             $ap = $forumTheme->getStateParams(true);
             if (isset($ap['pageNumber'])) {
                 $commentsList->addActionParam('pageNumber', $ap['pageNumber']);
@@ -606,18 +606,18 @@ class CommentsForm extends DataSet {
     /**
      * Ban.
      */
-    protected function ban(){
+    protected function ban() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->userEditor = $this->document->componentManager->createComponent('ue','user','UserEditor');
+        $this->userEditor = $this->document->componentManager->createComponent('ue', 'Energine\user\components\UserEditor');
         $this->userEditor->run();
     }
 
     /**
      * @copydoc DataSet::build
      */
-    public function build(){
+    public function build() {
         $result = '';
-        switch($this->getState()){
+        switch ($this->getState()) {
             case 'ban':
                 $result = $this->userEditor->build();
                 break;
@@ -635,9 +635,9 @@ class CommentsForm extends DataSet {
     /**
      * Ban IP.
      */
-    protected function banip(){
+    protected function banip() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->banIPEditor = $this->document->componentManager->createComponent('bie','user','BanIPEditor');
+        $this->banIPEditor = $this->document->componentManager->createComponent('bie', 'Energine\user\components\BanIPEditor');
         $this->banIPEditor->run();
     }
 

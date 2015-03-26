@@ -47,7 +47,7 @@ final class Language extends DBWorker{
 
         // получаем все языки, определённые в системе
         $res = $this->dbh->select('share_languages', true, null, array('lang_order_num'=>QAL::ASC));
-        if (!is_array($res)) {
+        if (!$res) {
             throw new SystemException('ERR_NO_LANG_INFO', SystemException::ERR_CRITICAL, $this->dbh->getLastRequest());
         }
         // формируем набор языков вида array(langID => langInfo)

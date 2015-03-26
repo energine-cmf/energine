@@ -35,8 +35,8 @@ final class NavigationMenu extends DataSet {
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
     }
 
     /**
@@ -132,7 +132,7 @@ final class NavigationMenu extends DataSet {
             //проходимся по всем прямым предкам
             foreach ($parents as $nodeID => $node) {
                 //получаем дочерние разделы
-                $nodeChilds = $this->dbh->selectRequest('
+                $nodeChilds = $this->dbh->select('
 				    SELECT s.smap_id, s.smap_pid
 				    FROM share_sitemap s
 				    LEFT JOIN share_sitemap_translation st ON s.smap_id=st.smap_id
@@ -140,7 +140,7 @@ final class NavigationMenu extends DataSet {
 				    ORDER BY smap_order_num ASC
 				');
 
-                if (is_array($nodeChilds)) {
+                if ($nodeChilds) {
                     $nodeChilds = array_map(
                         create_function(
                             '$node',
@@ -163,10 +163,10 @@ final class NavigationMenu extends DataSet {
         }
         //если первого уровня - получаем дочерние разделы
         else {
-            $childs = $this->dbh->selectRequest('SELECT smap_id, null as smap_pid FROM share_sitemap WHERE smap_pid = %s ORDER BY smap_order_num', $this->document->getID());
+            $childs = $this->dbh->select('SELECT smap_id, null as smap_pid FROM share_sitemap WHERE smap_pid = %s ORDER BY smap_order_num', $this->document->getID());
         }
 
-        if (is_array($childs))
+        if ($childs)
             $treeData = array_merge(
                 $treeData,
                 $childs

@@ -82,8 +82,8 @@ class CommentsList extends DataSet {
      * target_ids array - айдишники комментируемых сущностей
      * is_tree bool - комментарии древовидные?
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setProperty('exttype', 'comments');
         $this->setType(self::COMPONENT_TYPE_LIST);
 
@@ -295,7 +295,7 @@ class CommentsList extends DataSet {
 
             if ($userIds) {
                 $userIds = implode(',', $userIds);
-                $result = $this->dbh->selectRequest(
+                $result = $this->dbh->select(
                     'SELECT u.* ' .
                             " FROM user_users u
 					 WHERE u.u_id in($userIds)"

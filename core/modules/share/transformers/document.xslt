@@ -8,7 +8,7 @@
     exclude-result-prefixes="og video nrgn"
     >
     <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
-    <xsl:variable name="COMPONENTS" select="//component[@name][@module]"/>
+    <xsl:variable name="COMPONENTS" select="//component[@name]"/>
     <xsl:variable name="TRANSLATION" select="/document/translations/translation"/>
     <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']"/>
 	<xsl:variable name="BASE" select="$DOC_PROPS[@name='base']"/>

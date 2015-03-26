@@ -122,6 +122,7 @@ final class QAL extends DBA {
      *
      * @see DBA::selectRequest()
      * @see QAL::buildSQL
+     * @throws SystemException
      */
     public function select() {
         $args = func_get_args();
@@ -232,6 +233,42 @@ final class QAL extends DBA {
     }
 
     /**
+     * Get the scalar value of the column in the table.
+     *
+     * @param string $tableName Table name.
+     * @param string $colName Column name.
+     * @param array|mixed $cond Condition.
+     * @return null|string
+     */
+    public function getScalar() {
+        $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
+
+        if ($res instanceof \PDOStatement) {
+            return $res->fetchColumn();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get column values from the table.
+     *
+     * @param string $tableName Table name.
+     * @param string $colName Column name.
+     * @param array|mixed $cond Condition.
+     * @return array
+     */
+    public function getColumn() {
+        $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
+
+        $result = array();
+        if ($res instanceof \PDOStatement) {
+            $result = $res->fetchAll(\PDO::FETCH_COLUMN);
+        }
+        return $result;
+    }
+
+    /**
      * Build @c WHERE condition for SQL request.
      *
      * @param mixed $condition Condition.
@@ -241,7 +278,7 @@ final class QAL extends DBA {
      * @see QAL::selectRequest()
      */
     public function buildWhereCondition($condition, array &$args = null) {
-        if ($this->getConfigValue('database.prepare') && !is_null($args)) {
+        if (!is_null($args)) {
             $result = '';
             if (!empty($condition)) {
                 $result = ' WHERE ';
@@ -343,7 +380,6 @@ final class QAL extends DBA {
                 }
             );
             $res = $this->select($fkTableName, array_keys($columns), $filter, $order);
-            //$res = $this->selectRequest('SELECT '.implode(',', array_keys($columns)).' FROM '.$fkTableName.)
         } else {
             $columns = $this->getColumnsInfo($transTableName);
             if (!isset($columns[$fkValueName])) $fkValueName = $fkKeyName;
@@ -482,44 +518,5 @@ final class QAL extends DBA {
             }
         }
         return array($sqlQuery);
-    }
-
-    /**
-     * Get the scalar value of the column in the table.
-     *
-     * @param string $tableName Table name.
-     * @param string $colName Column name.
-     * @param array|mixed $cond Condition.
-     * @return null|string
-     */
-    public function getScalar() {
-        $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
-
-        if ($res instanceof \PDOStatement) {
-            return $res->fetchColumn();
-        }
-
-        return null;
-    }
-
-    /**
-     * Get column values from the table.
-     *
-     * @param string $tableName Table name.
-     * @param string $colName Column name.
-     * @param array|mixed $cond Condition.
-     * @return array
-     */
-    public function getColumn() {
-        $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
-
-        $result = array();
-        if ($res instanceof \PDOStatement) {
-            while ($row = $res->fetch(\PDO::FETCH_NUM)) {
-                array_push($result, $row[0]);
-            }
-        }
-
-        return $result;
     }
 }

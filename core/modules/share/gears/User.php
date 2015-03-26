@@ -76,7 +76,7 @@ class User extends DBWorker {
      */
     protected function loadInfo($UID) {
         $result = $this->dbh->select(self::USER_TABLE_NAME, true, array('u_id' => $UID));
-        if (is_array($result) && !empty($result)) {
+        if ($result) {
             $this->id = $UID;
             $result[0]['u_password'] = true;
             $this->info = $result[0];
@@ -161,7 +161,7 @@ class User extends DBWorker {
                 $condition[] = $fieldname . ' = "' . $data[$fieldname] . '"';
             }
             $condition = implode(' OR ', $condition);
-            if (simplifyDBResult($this->dbh->select(self::USER_TABLE_NAME, 'COUNT(u_id) as num', $condition), 'num', true) > 0) {
+            if ($this->dbh->getScalar(self::USER_TABLE_NAME, 'COUNT(u_id) as num', $condition) > 0) {
                 throw new SystemException('ERR_NOT_UNIQUE_DATA', SystemException::ERR_WARNING);
             }
         }
@@ -232,7 +232,7 @@ class User extends DBWorker {
      */
     public static function getFBUser($fbID) {
         $result = false;
-        if ($UID = simplifyDBResult(E()->getDB()->select(self::USER_TABLE_NAME, 'u_id', array('u_fbid' => $fbID, 'u_is_active' => 1)), 'u_id', true)) {
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', array('u_fbid' => $fbID, 'u_is_active' => 1))) {
             return new User($UID);
         }
         return $result;
@@ -247,7 +247,7 @@ class User extends DBWorker {
      */
     public static function linkFBUserByEmail($email, $fbID) {
         $result = false;
-        if ($UID = simplifyDBResult(E()->getDB()->select(self::USER_TABLE_NAME, 'u_id', array('u_name' => $email, 'u_is_active' => 1)), 'u_id', true)) {
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', array('u_name' => $email, 'u_is_active' => 1))) {
             $result = new User($UID);
             $result->update(array('u_fbid' => $fbID));
         }
@@ -262,7 +262,7 @@ class User extends DBWorker {
      */
     public static function getVKUser($vkID) {
         $result = false;
-        if ($UID = simplifyDBResult(E()->getDB()->select(self::USER_TABLE_NAME, 'u_id', array('u_vkid' => $vkID, 'u_is_active' => 1)), 'u_id', true)) {
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', array('u_vkid' => $vkID, 'u_is_active' => 1))) {
             return new User($UID);
         }
         return $result;
@@ -276,7 +276,7 @@ class User extends DBWorker {
      */
     public static function getOKUser($okID) {
         $result = false;
-        if ($UID = simplifyDBResult(E()->getDB()->select(self::USER_TABLE_NAME, 'u_id', array('u_okid' => $okID, 'u_is_active' => 1)), 'u_id', true)) {
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', array('u_okid' => $okID, 'u_is_active' => 1))) {
             return new User($UID);
         }
         return $result;

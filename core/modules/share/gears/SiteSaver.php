@@ -41,7 +41,7 @@ class SiteSaver extends Saver {
         $result = parent::save();
         $id = ($this->getMode() == QAL::INSERT) ? $result : $this->getData()->getFieldByName('site_id')->getRowData(0);
         //Сохраняем информацию о доменах
-        $domainIDs = simplifyDBResult($this->dbh->select('SELECT domain_id FROM share_domains WHERE domain_id NOT IN (SELECT domain_id FROM share_domain2site)'), 'domain_id');
+        $domainIDs = $this->dbh->getColumn('SELECT domain_id FROM share_domains WHERE domain_id NOT IN (SELECT domain_id FROM share_domain2site)');
 
         if (!empty($domainIDs)) {
             foreach ($domainIDs as $domainID) {
@@ -116,7 +116,7 @@ class SiteSaver extends Saver {
             );
         }
         //права берем ориентируясь на главную страницу дефолтного сайта
-        $this->dbh->modifyRequest(
+        $this->dbh->modify(
             'INSERT IGNORE INTO share_access_level ' .
             '(smap_id, right_id, group_id) ' .
             'SELECT %s, al.right_id, al.group_id ' .
@@ -141,10 +141,10 @@ class SiteSaver extends Saver {
             array('site_id' => $sourceSiteID)
         );
 
-        if (is_array($source)) {
+        if ($source) {
             $oldtoNewMAP = $this->copyRows($source, null, '', $destinationSiteID);
             foreach ($oldtoNewMAP as $oldID => $newID) {
-                $this->dbh->modifyRequest('
+                $this->dbh->modify('
                 INSERT INTO share_sitemap_translation( 
                     smap_id, 
                     lang_id, 
@@ -167,14 +167,14 @@ class SiteSaver extends Saver {
                  WHERE smap_id = %s
                  ', $newID, $oldID
                 );
-                $this->dbh->modifyRequest(
+                $this->dbh->modify(
                     'INSERT INTO share_sitemap_tags(smap_id, tag_id)
                      SELECT %s, tag_id
                         FROM share_sitemap_tags
                         WHERE smap_id = %s
                     ', $newID, $oldID
                 );
-                $this->dbh->modifyRequest(
+                $this->dbh->modify(
                     'INSERT INTO share_access_level ' .
                     '(smap_id, right_id, group_id) ' .
                     'SELECT %s, al.right_id, al.group_id ' .

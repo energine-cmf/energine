@@ -33,8 +33,8 @@ class ExtendedFeedEditor extends FeedEditor {
     /**
      * @copydoc FeedEditor::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setSaver(new ExtendedSaver());
     }
 
@@ -118,7 +118,7 @@ class ExtendedFeedEditor extends FeedEditor {
      */
     protected function publish() {
         list($id) = $this->getStateParams();
-        $this->dbh->modifyRequest('UPDATE ' . $this->getTableName() . ' SET ' . $this->publishFieldName . ' = NOT ' . $this->publishFieldName . ' WHERE ' . $this->getPK() . ' = %s', $id);
+        $this->dbh->modify('UPDATE ' . $this->getTableName() . ' SET ' . $this->publishFieldName . ' = NOT ' . $this->publishFieldName . ' WHERE ' . $this->getPK() . ' = %s', $id);
 
         $b = new JSONCustomBuilder();
         $b->setProperties(

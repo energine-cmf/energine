@@ -15,7 +15,9 @@ class UserEditor;
  */
 
 namespace Energine\user\components;
+
 use Energine\share\components\Grid, Energine\share\gears\SystemException, Energine\share\gears\QAL, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\FieldDescription, Energine\share\gears\Field;
+
 /**
  * User editor.
  *
@@ -27,8 +29,8 @@ class UserEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('user_users');
         $this->setTitle($this->translate('TXT_USER_EDITOR'));
     }
@@ -60,7 +62,7 @@ class UserEditor extends Grid {
         } else {
             $_POST[$this->getTableName()]['u_password'] = sha1($_POST[$this->getTableName()]['u_password']);
         }
-        if($this->getPreviousState() == 'add' && $this->dbh->getScalar('SELECT COUNT(*) FROM ' . $this->getTableName() . ' WHERE u_name=%s', $_POST[$this->getTableName()]['u_name'])){
+        if ($this->getPreviousState() == 'add' && $this->dbh->getScalar('SELECT COUNT(*) FROM ' . $this->getTableName() . ' WHERE u_name=%s', $_POST[$this->getTableName()]['u_name'])) {
             throw new SystemException('ERR_USER_EXISTS', SystemException::ERR_CRITICAL);
         }
         $result = parent::saveData();
@@ -94,7 +96,7 @@ class UserEditor extends Grid {
                 throw new SystemException('ERR_CANT_ACTIVATE_YOURSELF', SystemException::ERR_CRITICAL);
             }
 
-            $this->dbh->modifyRequest('UPDATE ' . $this->getTableName() . ' SET u_is_active = NOT u_is_active WHERE u_id = %s', $id);
+            $this->dbh->modify('UPDATE ' . $this->getTableName() . ' SET u_is_active = NOT u_is_active WHERE u_id = %s', $id);
 
 
             $b->setProperties(array(
@@ -221,7 +223,7 @@ class UserEditor extends Grid {
             $result->addField($f);
 
             $data = $this->dbh->select('user_user_groups', array('group_id'), array('u_id' => $id));
-            if (is_array($data)) {
+            if (!empty($data)) {
                 $f->addRowData(array_keys(convertDBResult($data, 'group_id', true)));
             } else {
                 $f->setData(array());

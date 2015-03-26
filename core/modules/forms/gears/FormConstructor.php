@@ -46,7 +46,7 @@ class FormConstructor extends DBWorker {
         $this->fDBName = FormConstructor::getDatabase();
         $this->tableName = DBA::getFQTableName(
             $this->fDBName . '.' . self::TABLE_PREFIX . $formID);
-        $this->dbh->modifyRequest(
+        $this->dbh->modify(
             'CREATE TABLE IF NOT EXISTS ' . $this->tableName .
             ' (pk_id int(10) unsigned NOT NULL AUTO_INCREMENT,form_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`pk_id`), INDEX(form_date)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ');
 
@@ -245,7 +245,7 @@ class FormConstructor extends DBWorker {
 
         $this->dbh->beginTransaction();
 
-        if ($this->dbh->modifyRequest($query)) {
+        if ($this->dbh->modify($query)) {
             $ltagID =
                 $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $this->deleteFieldLTag($fieldName)));
 
@@ -317,7 +317,7 @@ class FormConstructor extends DBWorker {
             ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
 
         foreach ($query as $request)
-            $this->dbh->modifyRequest($request);
+            $this->dbh->modify($request);
     }
 
     /**
@@ -360,7 +360,7 @@ class FormConstructor extends DBWorker {
             ' (fk_id) ON DELETE CASCADE ON UPDATE CASCADE';
         //stop($query);
         foreach ($query as $request)
-            $this->dbh->modifyRequest($request);
+            $this->dbh->modify($request);
     }
 
     /**
@@ -403,7 +403,7 @@ class FormConstructor extends DBWorker {
             }
             $queries[] = 'ALTER TABLE ' . $this->tableName . ' DROP ' . $fieldName;
             foreach ($queries as $query) {
-                $this->dbh->modifyRequest($query);
+                $this->dbh->modify($query);
             }
 
             $this->dbh->commit();
@@ -429,7 +429,7 @@ class FormConstructor extends DBWorker {
      */
     private function deleteFieldLTag($fieldName) {
         $ltagName = $this->getFieldLTag($fieldName);
-        $this->dbh->modifyRequest('DELETE FROM share_lang_tags WHERE ltag_name=%s', $ltagName);
+        $this->dbh->modify('DELETE FROM share_lang_tags WHERE ltag_name=%s', $ltagName);
         return $ltagName;
     }
 
@@ -464,7 +464,7 @@ class FormConstructor extends DBWorker {
             self::getFDAsSQLString(FieldDescription::convertType($colsInfo[$srcField]['type'], $srcField, $colsInfo[$srcField]['length'], $colsInfo[$srcField])) .
             ((!$colsInfo[$srcField]['nullable']) ? ' NOT NULL ' : '') .
             ' AFTER ' . $destColField;
-        $this->dbh->modifyRequest($query);
+        $this->dbh->modify($query);
     }
 
     /**

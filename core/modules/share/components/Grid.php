@@ -78,8 +78,8 @@ class Grid extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, $module, array $params = null) {
-        parent::__construct($name, $module, $params);
+    public function __construct($name,  array $params = null) {
+        parent::__construct($name, $params);
 
         $this->setProperty('exttype', 'grid');
         if (!$this->getParam('recordsPerPage')) {
@@ -214,17 +214,15 @@ class Grid extends DBDataSet {
      */
     protected function deleteData($id) {
         if ($orderColumn = $this->getOrderColumn()) {
-            $deletedOrderNum =
-                simplifyDBResult($this->dbh->select($this->getTableName(), $this->getOrderColumn(),
-                    [$this->getPK() => $id]), $this->getOrderColumn(), true);
+            $deletedOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(),
+                [$this->getPK() => $id]);
 
-            $ids =
-                simplifyDBResult($this->dbh->select($this->getTableName(), [$this->getPK()],
-                    array_merge($this->getFilter(), [
-                        $orderColumn .
-                        ' > ' .
-                        $deletedOrderNum
-                    ]), [$orderColumn => QAL::ASC]), $this->getPK());
+            $ids = $this->dbh->getColumn($this->getTableName(), [$this->getPK()],
+                array_merge($this->getFilter(), [
+                    $orderColumn .
+                    ' > ' .
+                    $deletedOrderNum
+                ]), [$orderColumn => QAL::ASC]);
 
         }
         $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, [$this->getPK() => $id]);
@@ -237,7 +235,7 @@ class Grid extends DBDataSet {
                 ' = ' . $orderColumn . ' - 1 ' .
                 $this->dbh->buildWhereCondition($this->getFilter());
 
-            $this->dbh->modifyRequest($request);
+            $this->dbh->modify($request);
         }
     }
 
@@ -307,7 +305,7 @@ class Grid extends DBDataSet {
         ];
 
         $this->request->shiftPath(2);
-        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', $module, $lookupClass,
+        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', $lookupClass,
             $params);
         $this->lookupEditor->run();
     }
@@ -496,7 +494,7 @@ class Grid extends DBDataSet {
                 'UPDATE ' . $this->getTableName() . ' SET ' . $orderColumn .
                 '=' . $orderColumn . '+1 ' .
                 $this->dbh->buildWhereCondition($this->getFilter());
-            $this->dbh->modifyRequest($request);
+            $this->dbh->modify($request);
         }
 
         return $result;
@@ -780,7 +778,7 @@ class Grid extends DBDataSet {
         }
 
         $this->attachmentEditor = $this->document->componentManager->createComponent(
-            'attachmentEditor', 'share', 'AttachmentEditor', $attachmentEditorParams
+            'attachmentEditor', 'Energine\share\components\AttachmentEditor', $attachmentEditorParams
         );
         $this->attachmentEditor->run();
     }
@@ -790,7 +788,7 @@ class Grid extends DBDataSet {
      */
     protected function tags() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->tagEditor = $this->document->componentManager->createComponent('tageditor', 'share', 'TagEditor',
+        $this->tagEditor = $this->document->componentManager->createComponent('tageditor', 'Energine\share\components\TagEditor',
             ['config' => 'core/modules/share/config/TagEditorModal.component.xml']);
         $this->tagEditor->run();
     }
@@ -945,7 +943,7 @@ class Grid extends DBDataSet {
                         );
                         $this->dbh->beginTransaction();
                         // сдвигаем все элементы выше или ниже второго id
-                        $this->dbh->select(
+                        $this->dbh->modify(
                             'UPDATE ' . $this->getTableName() . ' ' .
                             'SET ' . $this->getOrderColumn() . ' = ' .
                             $this->getOrderColumn() . (($direction == 'below') ? ' +2 ' : ' -2 ') .
@@ -1000,16 +998,7 @@ class Grid extends DBDataSet {
         list($currentID) = $currentID;
 
         //Определяем order_num текущей страницы
-        $currentOrderNum = simplifyDBResult(
-            $this->dbh->selectRequest(
-                'SELECT ' . $this->getOrderColumn() . ' ' .
-                'FROM ' . $this->getTableName() . ' ' .
-                'WHERE ' . $this->getPK() . ' = %s',
-                $currentID
-            ),
-            $this->getOrderColumn(),
-            true
-        );
+        $currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(), [$this->getPK() =>$currentID]);
 
         $orderDirection = ($direction == Grid::DIR_DOWN) ? QAL::ASC : QAL::DESC;
 
@@ -1033,7 +1022,7 @@ class Grid extends DBDataSet {
             $orderDirection . ' Limit 1';
 
         $data =
-            convertDBResult($this->dbh->selectRequest($request), 'neighborID');
+            convertDBResult($this->dbh->select($request), 'neighborID');
         if ($data) {
             $neighborID = null;
             $neighborOrderNum = 0;

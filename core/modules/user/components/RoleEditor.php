@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class RoleEditor;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -15,6 +15,7 @@ class RoleEditor;
  */
 
 namespace Energine\user\components;
+
 use Energine\share\components\Grid, Energine\share\gears\FieldDescription, Energine\share\gears\QAL, Energine\share\gears\TreeBuilder, Energine\share\gears\TreeConverter, Energine\share\gears\SystemException, Energine\share\gears\Data, Energine\share\gears\DataDescription;
 use Energine\share\gears\Field;
 
@@ -23,7 +24,7 @@ use Energine\share\gears\Field;
  *
  * @code
 class RoleEditor;
-@endcode
+ * @endcode
  */
 class RoleEditor extends Grid {
     /**
@@ -36,8 +37,8 @@ class RoleEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name, $module,   array $params = null) {
-        parent::__construct($name, $module,  $params);
+    public function __construct($name,    array $params = null) {
+        parent::__construct($name, $params);
         $this->setTableName('user_groups');
         $this->setTitle($this->translate('TXT_ROLE_EDITOR'));
     }
@@ -47,7 +48,7 @@ class RoleEditor extends Grid {
      */
     // Для формы редактирования, если чекбоксы ролей по умолчанию отмечены делает их неактивными
     public function build() {
-        if ($this->getType() == self::COMPONENT_TYPE_FORM_ALTER ) {
+        if ($this->getType() == self::COMPONENT_TYPE_FORM_ALTER) {
             foreach ($this->uniqueFields as $fieldName) {
                 if ($this->getData()->getFieldByName($fieldName)->getRowData(0) === true) {
                     $this->getDataDescription()->getFieldDescriptionByName($fieldName)->setMode(FieldDescription::FIELD_MODE_READ);
@@ -59,14 +60,14 @@ class RoleEditor extends Grid {
     }
 
     /**
-      * @copydoc Grid::loadData
-      */
+     * @copydoc Grid::loadData
+     */
     protected function loadData() {
         $result = parent::loadData();
         if ($this->getState() == 'save') {
             foreach ($this->uniqueFields as $fieldName) {
                 if (isset($result[0][$fieldName]) && $result[0][$fieldName]) {
-                    $this->dbh->modify(QAL::UPDATE, $this->getTableName(), [$fieldName=>null]);
+                    $this->dbh->modify(QAL::UPDATE, $this->getTableName(), [$fieldName => null]);
                 }
             }
         }
@@ -98,24 +99,24 @@ class RoleEditor extends Grid {
      * @return DOMNode
      */
     private function buildDivRightsData() {
-        $builder  = new TreeBuilder();
+        $builder = new TreeBuilder();
         $builder->setTree(
             TreeConverter::convert(
                 $this->dbh->select(
-                    'share_sitemap', 
+                    'share_sitemap',
                     ['smap_id', 'smap_pid'],
-                    null, 
-                    ['smap_order_num'=>QAL::ASC]), 'smap_id', 'smap_pid'));
+                    null,
+                    ['smap_order_num' => QAL::ASC]), 'smap_id', 'smap_pid'));
 
         $id = $this->getFilter();
-        $id = (!empty($id))?current($id):'';
+        $id = (!empty($id)) ? current($id) : '';
 
         $data = convertDBResult(
-            $this->dbh->selectRequest(
-                'select s.smap_id as Id, smap_pid as Pid, site_id as Site, smap_name as Name '.
-                'from share_sitemap s '.
-                'left join share_sitemap_translation st on st.smap_id = s.smap_id '.
-                'where lang_id='.E()->getLanguage()->getCurrent()), 'Id');
+            $this->dbh->select(
+                'select s.smap_id as Id, smap_pid as Pid, site_id as Site, smap_name as Name ' .
+                'from share_sitemap s ' .
+                'left join share_sitemap_translation st on st.smap_id = s.smap_id ' .
+                'where lang_id=%s', E()->getLanguage()->getCurrent()), 'Id');
 
         foreach ($data as $smapID => $smapInfo) {
             $data[$smapID]['RightsId'] = E()->getMap($smapInfo['Site'])->getDocumentRights($smapID, $id);
@@ -144,16 +145,16 @@ class RoleEditor extends Grid {
         $f = new FieldDescription('Site');
         $f->setType(FieldDescription::FIELD_TYPE_STRING);
         $dataDescriptionObject->addFieldDescription($f);
-        
+
         $f = new FieldDescription('RightsId');
         $f->setType(FieldDescription::FIELD_TYPE_SELECT);
         if ($this->getState() == 'view') {
             $f->setMode(FieldDescription::FIELD_MODE_READ);
         }
         $rights = $this->dbh->select('user_group_rights', ['right_id', 'right_const']);
-        $rights = array_merge([['right_id'=>0, 'right_const'=>'NO_RIGHTS']], $rights);
+        $rights = array_merge([['right_id' => 0, 'right_const' => 'NO_RIGHTS']], $rights);
         foreach ($rights as $key => $value) {
-            $rights[$key]['right_const'] = $this->translate('TXT_'.$value['right_const']);
+            $rights[$key]['right_const'] = $this->translate('TXT_' . $value['right_const']);
         }
         $f->loadAvailableValues($rights, 'right_id', 'right_const');
         $dataDescriptionObject->addFieldDescription($f);
@@ -167,8 +168,8 @@ class RoleEditor extends Grid {
     }
 
     /**
-      * @copydoc Grid::createData
-      */
+     * @copydoc Grid::createData
+     */
     // Для методов add и edit добавляется инфо о роли
     protected function createData() {
         $result = parent::createData();
@@ -188,15 +189,15 @@ class RoleEditor extends Grid {
     protected function saveData() {
         $result = parent::saveData();
 
-        $roleID = (is_int($result))?$result:current($this->getFilter());
+        $roleID = (is_int($result)) ? $result : current($this->getFilter());
 
-        $this->dbh->modify(QAL::DELETE, 'share_access_level', null, ['group_id'=>$roleID]);
+        $this->dbh->modify(QAL::DELETE, 'share_access_level', null, ['group_id' => $roleID]);
 
-        if(isset($_POST['div_right']) && is_array($_POST['div_right']))
-        foreach ($_POST['div_right'] as $smapID=>$rightID) {
-            if(!empty($rightID))
-            $this->dbh->modify(QAL::INSERT, 'share_access_level',['group_id'=>$roleID, 'smap_id'=>$smapID, 'right_id'=>$rightID]);
-        }
+        if (isset($_POST['div_right']) && is_array($_POST['div_right']))
+            foreach ($_POST['div_right'] as $smapID => $rightID) {
+                if (!empty($rightID))
+                    $this->dbh->modify(QAL::INSERT, 'share_access_level', ['group_id' => $roleID, 'smap_id' => $smapID, 'right_id' => $rightID]);
+            }
 
         return $result;
     }
@@ -206,7 +207,7 @@ class RoleEditor extends Grid {
      */
     // При удалении происходит проверка не удаляется ли дефолтная группа
     protected function deleteData($id) {
-        if ($this->dbh->select($this->getTableName(), 'group_id', ['group_id'=>$id, 'group_default'=>true]) !== true) {
+        if (!empty($this->dbh->select($this->getTableName(), 'group_id', ['group_id' => $id, 'group_default' => true]))) {
             throw new SystemException('ERR_DEFAULT_GROUP', SystemException::ERR_NOTICE);
         }
         parent::deleteData($id);

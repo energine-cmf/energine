@@ -41,7 +41,7 @@ final class Document extends DBWorker implements IDocument {
      * Name of the BreadCrumbs default class
      * @var string
      */
-    private $breadCrumbsClass = 'BreadCrumbs';
+    private $breadCrumbsClass = 'Energine\share\components\BreadCrumbs';
 
     /**
      * Document ID
@@ -419,8 +419,7 @@ final class Document extends DBWorker implements IDocument {
                 $this->componentManager->add(
                     $this->componentManager->createComponent(
                         'pageToolBar',
-                        'share',
-                        'DivisionEditor',
+                        'Energine\share\components\DivisionEditor',
                         array('state' => 'showPageToolbar')
                     )
                 );
@@ -480,7 +479,7 @@ final class Document extends DBWorker implements IDocument {
             * обязательные стандартные компоненты:
             *     - BreadCrumbs
             */
-            $this->componentManager->add($this->componentManager->createComponent('breadCrumbs', 'share', $this->breadCrumbsClass));
+            $this->componentManager->add($this->componentManager->createComponent('breadCrumbs', $this->breadCrumbsClass));
             //Если пользователь не авторизован и авторизационный домен не включает текущеий домен - то добавляем компонент для кроссдоменной авторизации
             if (
                 !$this->user->isAuthenticated()
@@ -488,7 +487,7 @@ final class Document extends DBWorker implements IDocument {
                 (strpos(E()->getSiteManager()->getCurrentSite()->host, $this->getConfigValue('site.domain')) === false)
             )
                 $this->componentManager->add(
-                    $this->componentManager->createComponent('cdAuth', 'share', 'CrossDomainAuth')
+                    $this->componentManager->createComponent('cdAuth', 'Energine\share\components\CrossDomainAuth')
                 );
         }
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @file
  * TagManager
@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class TagManager;
-@endcode
+ * @endcode
  *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
@@ -19,7 +19,7 @@ namespace Energine\share\gears;
  *
  * @code
 class TagManager;
-@endcode
+ * @endcode
  */
 class TagManager extends DBWorker {
     /**
@@ -116,7 +116,7 @@ class TagManager extends DBWorker {
         if ($this->isActive) {
             $field = new Field('tags');
             if (
-                is_null($initialValue)
+            is_null($initialValue)
             ) {
                 if (
                     !$this->data->isEmpty()
@@ -125,10 +125,9 @@ class TagManager extends DBWorker {
                     $field->setData($this->pull($currentData->getData(), $this->tableName));
                     $this->data->addField($field);
                 }
-            }
-            else {
-                for($i=0; $i<count(E()->getLanguage()->getLanguages()); $i++){
-                    $field->setRowData($i, (is_array($initialValue))?$initialValue:array($initialValue));
+            } else {
+                for ($i = 0; $i < count(E()->getLanguage()->getLanguages()); $i++) {
+                    $field->setRowData($i, (is_array($initialValue)) ? $initialValue : array($initialValue));
                 }
                 $this->data->addField($field);
             }
@@ -158,7 +157,7 @@ class TagManager extends DBWorker {
             throw new SystemException('ERR_WRONG_TABLE_NAME', SystemException::ERR_DEVELOPER, $mapTableName);
         }
         $tags =
-                array_filter(array_map(create_function('$tag', 'return mb_convert_case(trim($tag), MB_CASE_LOWER, "UTF-8");'), explode(self::TAG_SEPARATOR, $tags)));
+            array_filter(array_map(create_function('$tag', 'return mb_convert_case(trim($tag), MB_CASE_LOWER, "UTF-8");'), explode(self::TAG_SEPARATOR, $tags)));
         //Анализируем структуру таблицы
         $columns = array_keys($this->dbh->getColumnsInfo($mapTableName));
         unset($columns['tag_id']);
@@ -172,8 +171,7 @@ class TagManager extends DBWorker {
                     if (!$tag_id) {
                         $tag_id = self::insert($tag);
                     }
-                }
-                catch (\Exception $e) {
+                } catch (\Exception $e) {
 
                 }
             }
@@ -204,9 +202,9 @@ class TagManager extends DBWorker {
         unset($columns['tag_id']);
         list($mapFieldName) = $columns;
         $res =
-                $this->dbh->select($mapTableName, array('tag_id', $mapFieldName), array($mapFieldName => $mapValue));
+            $this->dbh->select($mapTableName, array('tag_id', $mapFieldName), array($mapFieldName => $mapValue));
 
-        if (is_array($res)) {
+        if ($res) {
             $result = array();
             foreach ($res as $row) {
                 if (!isset($result[$row[$mapFieldName]])) {
@@ -219,8 +217,7 @@ class TagManager extends DBWorker {
         foreach ((array)$mapValue as $targetID) {
             if (isset($result[$targetID])) {
                 $data[] = self::getTags($result[$targetID], $asString);
-            }
-            else {
+            } else {
                 $data[] = array();
             }
         }
@@ -240,26 +237,19 @@ class TagManager extends DBWorker {
         if (!is_array($tag)) {
             $tag = explode(self::TAG_SEPARATOR, $tag);
         }
+        $res = [];
 
-        $in = array();
-        foreach($tag as $t) {
-            $in[] = E()->getDB()->quote($t);
-        }
-
-        if (!empty($in)) {
+        if (!empty($tag)) {
             $res = E()->getDB()->select(
-                'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
+                'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
                 'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
-                'WHERE tr.tag_name IN (' . implode(',', $in) . ')',
-                E()->getLanguage()->getCurrent()
+                'WHERE tr.tag_name IN (%s)',
+                E()->getLanguage()->getCurrent(), $tag
             );
-        } else {
-            $res = false;
         }
-        if (is_array($res)) {
-            foreach ($res as $row) {
-                $result[$row['tag_id']] = $row['tag_name'];
-            }
+
+        foreach ($res as $row) {
+            $result[$row['tag_id']] = $row['tag_name'];
         }
 
         return $result;
@@ -273,18 +263,14 @@ class TagManager extends DBWorker {
      * @return array
      */
     static public function getTagStartedWith($str, $limit = false) {
-        $res = E()->getDB()->select(
-            'SELECT tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
+        return E()->getDB()->getColumn(
+            'SELECT tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
             'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
             'WHERE tr.tag_name LIKE ' . E()->getDB()->quote(trim($str) . '%%') . ' ' .
             'ORDER BY tr.tag_name DESC ' .
-            (($limit) ? 'LIMIT ' . (int) $limit : ''),
+            (($limit) ? 'LIMIT ' . (int)$limit : ''),
             E()->getLanguage()->getCurrent()
         );
-
-        $result = simplifyDBResult($res, 'tag_name');
-
-        return $result;
     }
 
 
@@ -307,20 +293,17 @@ class TagManager extends DBWorker {
         }
 
         $res = E()->getDB()->select(
-            'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t '.
+            'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
             'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
-            'WHERE tr.tag_id IN (' . implode(',', $tagID) . ')',
-            E()->getLanguage()->getCurrent()
+            'WHERE tr.tag_id IN (%s)',
+            E()->getLanguage()->getCurrent(), $tagID
         );
 
-        if(is_array($res)){
-            foreach ($res as $resVal){
-                $result[$resVal['tag_id']] = $resVal['tag_name'];
-            }
+        foreach ($res as $resVal) {
+            $result[$resVal['tag_id']] = $resVal['tag_name'];
         }
-
         return ($asSting &&
-                is_array($result)) ? implode(self::TAG_SEPARATOR, $result) : $result;
+            is_array($result)) ? implode(self::TAG_SEPARATOR, $result) : $result;
     }
 
     /**
@@ -338,13 +321,14 @@ class TagManager extends DBWorker {
         }
         $result = array();
         $tagInfo = self::getID($tags);
+
         if (!empty($tagInfo)) {
             $columns = array_keys(E()->getDB()->getColumnsInfo($mapTableName));
             unset($columns['tag_id']);
             list($mapFieldName) = $columns;
-            $result =
-                    simplifyDBResult(E()->getDB()->select($mapTableName, array($mapFieldName), array('tag_id' => array_keys($tagInfo))), $mapFieldName);
+            $result = E()->getDB()->getColumn($mapTableName, array($mapFieldName), array('tag_id' => array_keys($tagInfo)));
         }
+
         return $result;
     }
 
@@ -358,7 +342,7 @@ class TagManager extends DBWorker {
         $tag_id = E()->getDB()->modify(QAL::INSERT, self::TAG_TABLENAME, array('tag_code' => $tag));
         $langs = E()->getLanguage()->getLanguages();
         if ($langs && $tag_id) {
-            foreach($langs as $lang_id => $lang_info) {
+            foreach ($langs as $lang_id => $lang_info) {
                 E()->getDB()->modify(QAL::INSERT_IGNORE, self::TAG_TABLENAME_TRANSLATION,
                     array('tag_id' => $tag_id, 'lang_id' => $lang_id, 'tag_name' => $tag));
             }

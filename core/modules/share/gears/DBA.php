@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 abstract class DBA;
-@endcode
+ * @endcode
  *
  * @author 1m.dm
  * @author dr.Pavka
@@ -21,7 +21,7 @@ namespace Energine\share\gears;
  *
  * @code
 abstract class DBA;
-@endcode
+ * @endcode
  *
  * @abstract
  */
@@ -57,7 +57,7 @@ abstract class DBA extends Object {
      */
     const COLTYPE_FLOAT = 'FLOAT';
 
-	/**
+    /**
      * Column type: @c DECIMAL/NUMERIC
      * @var string COLTYPE_DECIMAL
      */
@@ -93,10 +93,6 @@ abstract class DBA extends Object {
      */
     const COLTYPE_STRING = 'VARCHAR';
 
-    //Типы строк только для внутреннего использования. Без комментариев :)
-    //const COLTYPE_STRING1 = 'STRING';
-    //const COLTYPE_STRING2 = 'VAR_STRING';
-
     /**
      * Column type: @c TEXT
      * @var string COLTYPE_TEXT
@@ -111,21 +107,21 @@ abstract class DBA extends Object {
      */
     const COLTYPE_BLOB = 'BLOB';
 
-	/**
-	 * Column type: @c SET
-	 * SET
-	 *
-	 * @var string COLTYPE_SET
-	 */
-	const COLTYPE_SET = 'SET';
+    /**
+     * Column type: @c SET
+     * SET
+     *
+     * @var string COLTYPE_SET
+     */
+    const COLTYPE_SET = 'SET';
 
-	/**
-	 * Column type: @c ENUM
-	 * ENUM
-	 *
-	 * @var string COLTYPE_ENUM
-	 */
-	const COLTYPE_ENUM = 'ENUM';
+    /**
+     * Column type: @c ENUM
+     * ENUM
+     *
+     * @var string COLTYPE_ENUM
+     */
+    const COLTYPE_ENUM = 'ENUM';
 
     /**
      * Error type of the column.
@@ -180,7 +176,7 @@ abstract class DBA extends Object {
      *
      * @return \PDO
      */
-    public function getPDO(){
+    public function getPDO() {
         return $this->pdo;
     }
 
@@ -192,28 +188,25 @@ abstract class DBA extends Object {
      * It returns one from the following:
      *  - an array for non-empty result like
      * @code
-array(
-    rowID => array(
-                   fieldName => fieldValue,
-                   ...
-                  )
-)
-@endcode
-     *  - @c true for empty result;
-     *  - @c false by fail.
+    array(
+     * rowID => array(
+     * fieldName => fieldValue,
+     * ...
+     * )
+     * )
+     * @endcode
+     *  - @c empty array for empty result;
      *
      * @param string $query SELECT query.
      * @return mixed
      *
      * @throws SystemException
      *
-     * @see DBA::constructQuery
      *
      * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
      *
-     * @deprecated
      */
-    public function selectRequest($query) {
+    protected function selectRequest($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
         if (!($res instanceof \PDOStatement)) {
@@ -224,9 +217,6 @@ array(
         $result = array();
         while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
             array_push($result, $row);
-        }
-        if (empty($result)) {
-            $result = true;
         }
 
         return $result;
@@ -246,11 +236,10 @@ array(
      *
      * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
      *
-     * @see DBA::constructQuery
      *
      * @throws SystemException
      */
-    public function modifyRequest($query) {
+    protected function modifyRequest($query) {
         $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
 
         if (!($res instanceof \PDOStatement)) {
@@ -313,15 +302,11 @@ array(
         if (!is_string($request) || empty($request)) {
             return false;
         }
-        if ($this->getConfigValue('database.prepare')) {
-            $res = $this->runQuery(func_get_args());
-            if ($res instanceof \PDOStatement)
-                $this->lastQuery = $res->queryString;
-        } else {
-            $request = $this->constructQuery(func_get_args());
-            $res = $this->pdo->query($request);
-            $this->lastQuery = $request;
-        }
+
+        $res = $this->runQuery(func_get_args());
+        if ($res instanceof \PDOStatement)
+            $this->lastQuery = $res->queryString;
+
         return $res;
     }
 
@@ -390,8 +375,8 @@ array(
      * @todo add pattern param - if need be
      * @return array
      */
-    public function getTables(){
-       return $this->getPDO()->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN, 0);
+    public function getTables() {
+        return $this->getPDO()->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     /**
@@ -399,17 +384,17 @@ array(
      *
      * The returned array looks like:
      * @code
-array(
-    'columnName' => array(
-        'type'      => column type,
-        'length'    => length,
-        'nullable'  => accept NULL?,
-        'key'       => description of the columns key (if exist),
-        'default'   => default value,
-        'index'     => index type
-    )
-)
-@endcode
+    array(
+     * 'columnName' => array(
+     * 'type'      => column type,
+     * 'length'    => length,
+     * 'nullable'  => accept NULL?,
+     * 'key'       => description of the columns key (if exist),
+     * 'default'   => default value,
+     * 'index'     => index type
+     * )
+     * )
+     * @endcode
      *
      * @param string $tableName Table name.
      * @return array
@@ -504,37 +489,6 @@ array(
     }
 
     /**
-     * Construct query.
-     *
-     * If the number of the arguments is > 1, then this method behaves like printf() function.
-     *
-     * @param array $args Array from which the single query string will be built.
-     * @return string
-     *
-     * @deprecated
-     *
-     * @see DBA::selectRequest()
-     * @see DBA::modifyRequest()
-     */
-    protected function constructQuery(array $args) {
-        if (sizeof($args) > 1) {
-            $query = array_shift($args); // отбрасываем первый аргумент $query
-            foreach ($args as &$arg) {
-                if(!is_null($arg))
-                    $arg = $this->pdo->quote($arg);
-                else {
-                    $arg = 'NULL';
-                }
-            }
-            array_unshift($args, $query);
-            $query = call_user_func_array('sprintf', $args);
-        } else {
-            $query = $args[0];
-        }
-        return $query;
-    }
-
-    /**
      * Run query.
      *
      * @param array $args Query arguments. First argument is SQL string
@@ -550,23 +504,54 @@ array(
         $query = str_replace('%%', '%', $query);
         if (!empty($args)) {
             if (preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)) {
+                $data = [];
                 $query = preg_replace('(%(?:(\d)\$)?s)', '?', $query);
                 $argIndex = 0;
                 foreach ($matches[1] as $a) {
                     if ($a = (int)$a) {
-                        $data[] = $args[$a - 1];
+                        $v = $a - 1;
                     } else {
-                        $data[] = $args[$argIndex++];
+                        $v = $argIndex++;
                     }
+                    array_push($data, $args[$v]);
                 }
             } else {
                 $data = $args;
             }
+            $realData = [];
+            $replaceRule = array_map(
+                function ($v) use(&$realData){
+                    if(is_array($v)){
+                        if(empty($v)){
+                           $v = [-1];
+                        }
+                        $realData = array_merge($realData, $v);
+                    }
+                    else {
+                        array_push($realData, $v);
+                    }
 
-            if (!($result = $this->pdo->prepare($query))) {
+                    return implode(',', array_fill(0, sizeof($v), '?'));
+                },
+                $data
+            );
+            $qIndex = 0;
+            $realQuery = '';
+            for ($i = 0; $i < strlen($query); $i++) {
+                if($query[$i] == '?'){
+                    $realQuery .= $replaceRule[$qIndex++];
+                }
+                else {
+                    $realQuery .= $query[$i];
+                }
+            }
+
+
+            if (!($result = $this->pdo->prepare($realQuery))) {
                 throw new SystemException('ERR_PREPARE_REQUEST', SystemException::ERR_DB, $query);
             }
-            if (!$result->execute($data)) {
+
+            if (!$result->execute($realData)) {
                 throw new SystemException('ERR_EXECUTE_REQUEST', SystemException::ERR_DB, array($query, $data));
             }
 

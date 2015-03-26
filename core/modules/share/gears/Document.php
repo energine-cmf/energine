@@ -327,7 +327,7 @@ final class Document extends DBWorker implements IDocument {
 
             foreach ($this->translations as $const => $componentName) {
                 $dom_translation =
-                    $this->doc->createElement('translation', $this->translate($const));
+                    $this->doc->createElement('translation', DBWorker::_translate($const));
                 $dom_translation->setAttribute('const', $const);
                 if (!is_null($componentName)) {
                     $dom_translation->setAttribute('component', $componentName);

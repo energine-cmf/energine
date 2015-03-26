@@ -141,11 +141,11 @@ class User extends DBWorker {
         $necessaryFields = $uniqueFields = array();
         foreach ($tableInfo as $columnName => $columnInfo) {
             //отбираем все поля !nullable, не PRI, и без дефолтного значения
-            if (!$columnInfo['nullable'] && $columnInfo['index'] != DBA::PRIMARY_INDEX && !$columnInfo['default']) {
+            if (!$columnInfo['nullable'] && $columnInfo['index'] != QAL::PRIMARY_INDEX && !$columnInfo['default']) {
                 array_push($necessaryFields, $columnName);
             }
             //Отбираем все уникальные поля
-            if ($columnInfo['index'] == DBA::UNIQUE_INDEX) {
+            if ($columnInfo['index'] == QAL::UNIQUE_INDEX) {
                 array_push($uniqueFields, $columnName);
             }
         }

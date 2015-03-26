@@ -95,7 +95,7 @@ class DBStructureInfo extends Object {
 		//Если не существует в кеше
 		if (!isset($this->structure[$tableName])) {
 
-			$FQTableName = DBA::getFQTableName($tableName, true);
+			$FQTableName = QAL::getFQTableName($tableName, true);
 
 			$query = '/*ms=slave*/SHOW TABLES '.((sizeof($FQTableName) == 2) ? ' FROM `'.reset($FQTableName).'` ' : '').' LIKE \''.end($FQTableName).'\'';
 
@@ -165,7 +165,7 @@ class DBStructureInfo extends Object {
 				'key' => ($rowIndex === 0) ? true : false,
 				'nullable' => (strtolower($fieldData['Null']) == 'yes') ? true : false,
 				'type' => $type,
-				'length' => ($type == DBA::COLTYPE_STRING) ? 100 : 10,
+				'length' => ($type == QAL::COLTYPE_STRING) ? 100 : 10,
 				'index' => ($rowIndex === 0) ? 'PRI' : false,
 				'default' => ''
             );
@@ -183,7 +183,7 @@ class DBStructureInfo extends Object {
 	 * @throws SystemException
 	 */
 	private function analyzeTable($tableName) {
-		$dTableName = DBA::getFQTableName($tableName, true);
+		$dTableName = QAL::getFQTableName($tableName, true);
 		$query = '/*ms=slave*/SHOW CREATE TABLE '.implode('.', $dTableName);
 
 		$dbName = '';
@@ -255,13 +255,13 @@ class DBStructureInfo extends Object {
 
 
 					//for enum or set
-					if (in_array($type, [DBA::COLTYPE_SET, DBA::COLTYPE_ENUM])) {
+					if (in_array($type, [QAL::COLTYPE_SET, QAL::COLTYPE_ENUM])) {
 						$options = explode(',', $matches['len'][$index]);
 						$options = array_map(function($value){return trim($value, '\'""');}, $options);
 						$length = true;
 
 					}
-					elseif($type == DBA::COLTYPE_DECIMAL){
+					elseif($type == QAL::COLTYPE_DECIMAL){
 						//len = 10,2
 						//length = 10 + 2 + 1 = 13
 						$length = array_sum(array_map('intval', array_filter(explode(',', $matches['len'][$index])))) + 1;
@@ -319,49 +319,49 @@ class DBStructureInfo extends Object {
 			case 'SMALLINT':
 			case 'INT':
 			case 'BIGINT':
-				$result = DBA::COLTYPE_INTEGER;
+				$result = QAL::COLTYPE_INTEGER;
 				break;
 			case 'FLOAT':
 			case 'DOUBLE':
-				$result = DBA::COLTYPE_FLOAT;
+				$result = QAL::COLTYPE_FLOAT;
 				break;
 			case 'DECIMAL':
 			case 'NUMERIC':
-				$result = DBA::COLTYPE_DECIMAL;
+				$result = QAL::COLTYPE_DECIMAL;
 				break;
 			case 'DATE':
-				$result = DBA::COLTYPE_DATE;
+				$result = QAL::COLTYPE_DATE;
 				break;
 			case 'TIME':
-				$result = DBA::COLTYPE_TIME;
+				$result = QAL::COLTYPE_TIME;
 				break;
 			case 'TIMESTAMP':
-				$result = DBA::COLTYPE_TIMESTAMP;
+				$result = QAL::COLTYPE_TIMESTAMP;
 				break;
 			case 'DATETIME':
-				$result = DBA::COLTYPE_DATETIME;
+				$result = QAL::COLTYPE_DATETIME;
 				break;
 			case 'VARCHAR':
 			case 'CHAR':
-				$result = DBA::COLTYPE_STRING;
+				$result = QAL::COLTYPE_STRING;
 				break;
 			case 'TEXT':
 			case 'TINYTEXT':
 			case 'MEDIUMTEXT':
 			case 'LONGTEXT':
-				$result = DBA::COLTYPE_TEXT;
+				$result = QAL::COLTYPE_TEXT;
 				break;
 			case 'BLOB':
 			case 'TINYBLOB':
 			case 'MEDIUMBLOB':
 			case 'LONGBLOB':
-				$result = DBA::COLTYPE_BLOB;
+				$result = QAL::COLTYPE_BLOB;
 				break;
 			case 'SET':
-				$result = DBA::COLTYPE_SET;
+				$result = QAL::COLTYPE_SET;
 				break;
 			case 'ENUM':
-				$result = DBA::COLTYPE_ENUM;
+				$result = QAL::COLTYPE_ENUM;
 				break;
 			default: // not used
 		}

@@ -350,7 +350,7 @@ class FieldDescription extends DBWorker implements \Iterator {
                     break;
                 case 'options':
                     if (in_array($fieldInfo['type'],
-                            [DBA::COLTYPE_SET, DBA::COLTYPE_ENUM]) && is_array($propValue) && !@empty($propValue)
+                            [QAL::COLTYPE_SET, QAL::COLTYPE_ENUM]) && is_array($propValue) && !@empty($propValue)
                     ) {
                         $name = $this->name;
                         $this->loadAvailableValues(
@@ -358,7 +358,7 @@ class FieldDescription extends DBWorker implements \Iterator {
                                 function ($row) use ($name) {
                                     return [
                                         'key'   => $row,
-                                        'value' => $this->translate('FIELD_' . $name . '_ENUM_' . $row)
+                                        'value' => DBWorker::_translate('FIELD_' . $name . '_ENUM_' . $row)
                                     ];
                                 },
                                 $propValue
@@ -713,9 +713,9 @@ class FieldDescription extends DBWorker implements \Iterator {
      */
     public function setProperty($name, $value) {
         if (in_array($name, ['title', 'message', 'tabName'])) {
-            $value = $this->translate($value);
+            $value = DBWorker::_translate($value);
         } elseif (is_scalar($value) && (strpos($value, 'trans(') !== false)) {
-            $value = $this->translate(str_replace(['trans', '(', ')'], '', $value));
+            $value = DBWorker::_translate(str_replace(['trans', '(', ')'], '', $value));
         }
         $this->additionalProperties[$name] = $this->additionalPropertiesLower[strtolower($name)] = $value;
 
@@ -767,7 +767,7 @@ class FieldDescription extends DBWorker implements \Iterator {
      */
     static public function convertType($systemType, $name, $length = 1, $props = []) {
         switch ($systemType) {
-            case DBA::COLTYPE_STRING:
+            case QAL::COLTYPE_STRING:
                 if (strpos($name, '_password')) {
                     $result = self::FIELD_TYPE_PWD;
                 } elseif (strpos($name, '_email')) {
@@ -782,10 +782,10 @@ class FieldDescription extends DBWorker implements \Iterator {
                     $result = self::FIELD_TYPE_STRING;
                 }
                 break;
-            case DBA::COLTYPE_FLOAT:
+            case QAL::COLTYPE_FLOAT:
                 $result = self::FIELD_TYPE_FLOAT;
                 break;
-            case DBA::COLTYPE_DECIMAL:
+            case QAL::COLTYPE_DECIMAL:
                 if ($length == 13) {
                     $result = self::FIELD_TYPE_MONEY;
                 } else {
@@ -793,7 +793,7 @@ class FieldDescription extends DBWorker implements \Iterator {
                 }
 
                 break;
-            case DBA::COLTYPE_INTEGER:
+            case QAL::COLTYPE_INTEGER:
                 if ($length == 1) {
                     if (strpos($name, '_info')) {
                         $result = self::FIELD_TYPE_INFO;
@@ -807,7 +807,7 @@ class FieldDescription extends DBWorker implements \Iterator {
                     $result = self::FIELD_TYPE_INT;
                 }
                 break;
-            case DBA::COLTYPE_TEXT:
+            case QAL::COLTYPE_TEXT:
                 if (strpos($name, '_rtf')) {
                     $result = self::FIELD_TYPE_HTML_BLOCK;
                 } elseif (strpos($name, '_code')) {
@@ -816,20 +816,20 @@ class FieldDescription extends DBWorker implements \Iterator {
                     $result = self::FIELD_TYPE_TEXT;
                 }
                 break;
-            case DBA::COLTYPE_DATETIME:
-            case DBA::COLTYPE_TIMESTAMP:
+            case QAL::COLTYPE_DATETIME:
+            case QAL::COLTYPE_TIMESTAMP:
                 $result = self::FIELD_TYPE_DATETIME;
                 break;
-            case DBA::COLTYPE_TIME:
+            case QAL::COLTYPE_TIME:
                 $result = self::FIELD_TYPE_TIME;
                 break;
-            case DBA::COLTYPE_DATE:
+            case QAL::COLTYPE_DATE:
                 $result = self::FIELD_TYPE_DATE;
                 break;
-            case DBA::COLTYPE_ENUM:
+            case QAL::COLTYPE_ENUM:
                 $result = self::FIELD_TYPE_SELECT;
                 break;
-            case DBA::COLTYPE_SET:
+            case QAL::COLTYPE_SET:
                 $result = self::FIELD_TYPE_MULTI;
                 break;
             default:
@@ -962,7 +962,7 @@ class FieldDescription extends DBWorker implements \Iterator {
                 }
             }
             $result[(int)$option['id']] = [
-                'value'      => $this->translate((string)$option),
+                'value'      => DBWorker::_translate((string)$option),
                 'attributes' => $optAttributes
             ];
         }

@@ -109,30 +109,4 @@ abstract class DBWorker extends Object {
         $result = (int)$day . ' ' . self::_translate('TXT_MONTH_' . (int)$month) . ' ' . $year;
         return $result;
     }
-
-    /**
-     * Non-static wrapper method over DBWorker::_translate.
-     *
-     * This is for using inside derived class.
-     *
-     * @param string $const Text constant.
-     * @param mixed $langID Language ID.
-     * @return string
-     */
-    public function translate($const, $langID = null) {
-        return self::_translate($const, $langID);
-    }
-
-    /**
-     * Non-static wrapper method over DBWorker::_dateToString.
-     *
-     * @param string $date Date.
-     * @param string $format Date format.
-     * @return string
-     */
-    public function dateToString($date, $format = '%d-%d-%d') {
-        list($year, $month, $day) = sscanf($date, $format);
-        return self::_dateToString($year, $month, $day);
-    }
-
 }

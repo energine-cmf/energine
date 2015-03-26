@@ -15,7 +15,8 @@ class Form;
  */
 namespace Energine\forms\components;
 
-use Energine\share\components\DBDataSet, Energine\share\gears\Saver, Energine\forms\gears\FormConstructor, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\DataDescription, Energine\share\gears\DBA, Energine\share\gears\FileUploader, Energine\share\gears\Mail, Energine\share\gears\Field, Energine\share\gears\SimpleBuilder;
+use Energine\share\components\DBDataSet, Energine\share\gears\Saver, Energine\forms\gears\FormConstructor, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\DataDescription, Energine\share\gears\FileUploader, Energine\share\gears\Mail, Energine\share\gears\Field, Energine\share\gears\SimpleBuilder;
+use Energine\share\gears\QAL;
 
 /**
  * Form.
@@ -115,7 +116,7 @@ class Form extends DBDataSet {
         $result = false;
         if (isset($_FILES) && !empty($_FILES)) {
             list($dbName, $tName) =
-                DBA::getFQTableName($this->getTableName(), true);
+                QAL::getFQTableName($this->getTableName(), true);
             if (isset($_FILES[$phpTableName = $dbName . '_' . $tName])) {
                 $fileData = array();
                 //Переворачиваем пришедший массив в удобный для нас вид

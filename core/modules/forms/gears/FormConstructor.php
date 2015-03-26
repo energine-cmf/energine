@@ -44,7 +44,7 @@ class FormConstructor extends DBWorker {
     public function __construct($formID) {
         parent::__construct();
         $this->fDBName = FormConstructor::getDatabase();
-        $this->tableName = DBA::getFQTableName(
+        $this->tableName = QAL::getFQTableName(
             $this->fDBName . '.' . self::TABLE_PREFIX . $formID);
         $this->dbh->modify(
             'CREATE TABLE IF NOT EXISTS ' . $this->tableName .
@@ -217,7 +217,7 @@ class FormConstructor extends DBWorker {
         $fieldIsNullable = $data['table_name']['field_is_nullable'];
         $fieldIndex = sizeof(
             $cols = array_keys($this->dbh->getColumnsInfo($this->tableName)));
-        list(, $tblName) = DBA::getFQTableName($this->tableName, true);
+        list(, $tblName) = QAL::getFQTableName($this->tableName, true);
         $fieldSuffix = '';
         if ($fieldType == FieldDescription::FIELD_TYPE_MULTI) {
             $fieldSuffix = '_multi';
@@ -276,13 +276,13 @@ class FormConstructor extends DBWorker {
 
         //Создаем таблицу связку
         $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkTableName =
-                DBA::getFQTableName(
+                QAL::getFQTableName(
                     $this->fDBName . '.' . $fieldName)) .
             '( pk_id int(11) unsigned NOT NULL , fk_id int(11) UNSIGNED  , PRIMARY KEY (`pk_id`, `fk_id`), KEY `fk_id`(`fk_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
 
         //Создаем таблицу с значениями
         $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkValuesFQTableName =
-                DBA::getFQTableName(
+                QAL::getFQTableName(
                     $this->fDBName . '.' . ($fkValuesTableName = $fieldName . '_values'))) .
             '( fk_id int(11) unsigned NOT NULL AUTO_INCREMENT, fk_order_num int(10) UNSIGNED  DEFAULT \'1\', PRIMARY KEY (`fk_id`), KEY `fk_order_num`(`fk_order_num`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
 
@@ -304,7 +304,7 @@ class FormConstructor extends DBWorker {
 
         //Создаем таблицу с переводами для значений
         $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($langTableName =
-                DBA::getFQTableName(
+                QAL::getFQTableName(
                     $this->fDBName . '.' . $fkValuesTableName . '_translation')) .
             '( fk_id int(11) unsigned NOT NULL , lang_id int(11) UNSIGNED  NOT NULL, fk_name VARCHAR(255) NOT NULL, PRIMARY KEY (`fk_id`, `lang_id`), KEY `lang_id` (`lang_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
 
@@ -335,7 +335,7 @@ class FormConstructor extends DBWorker {
 
         //create foreign key table
         $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($fkTableName =
-                DBA::getFQTableName(
+                QAL::getFQTableName(
                     $this->fDBName . '.' . $fieldName)) .
             '( fk_id int(11) unsigned NOT NULL AUTO_INCREMENT, fk_order_num int(10) UNSIGNED  DEFAULT \'1\', PRIMARY KEY (`fk_id`), KEY `fk_order_num`(`fk_order_num`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
 
@@ -347,7 +347,7 @@ class FormConstructor extends DBWorker {
 
 
         $query[] = 'CREATE TABLE IF NOT EXISTS ' . ($langTableName =
-                DBA::getFQTableName(
+                QAL::getFQTableName(
                     $this->fDBName . '.' . $fieldName . '_translation')) .
             '( fk_id int(11) unsigned NOT NULL , lang_id int(11) UNSIGNED  NOT NULL, fk_name VARCHAR(255) NOT NULL, PRIMARY KEY (`fk_id`, `lang_id`), KEY `lang_id` (`lang_id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8';
 
@@ -388,17 +388,17 @@ class FormConstructor extends DBWorker {
                     //но это как то неспортивно
 
                     //удаляем m2m таблицу
-                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName']);
+                    $queries[] = 'DROP TABLE ' . QAL::getFQTableName($info['key']['tableName']);
                     //удаляем переводы
-                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName'] . '_values_translation');
+                    $queries[] = 'DROP TABLE ' . QAL::getFQTableName($info['key']['tableName'] . '_values_translation');
                     //значения
-                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName'] . '_values');
+                    $queries[] = 'DROP TABLE ' . QAL::getFQTableName($info['key']['tableName'] . '_values');
                 } else {
                     //селект
                     //удаляем таблицу с переводами
-                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName'] . '_translation');
+                    $queries[] = 'DROP TABLE ' . QAL::getFQTableName($info['key']['tableName'] . '_translation');
                     //удаляем таблицу с значениями
-                    $queries[] = 'DROP TABLE ' . DBA::getFQTableName($info['key']['tableName']);
+                    $queries[] = 'DROP TABLE ' . QAL::getFQTableName($info['key']['tableName']);
                 }
             }
             $queries[] = 'ALTER TABLE ' . $this->tableName . ' DROP ' . $fieldName;
@@ -417,7 +417,7 @@ class FormConstructor extends DBWorker {
      * @return string
      */
     private function getFieldLTag($fieldName) {
-        list(, $tblName) = DBA::getFQTableName($this->tableName, true);
+        list(, $tblName) = QAL::getFQTableName($this->tableName, true);
         return 'FIELD_' . $fieldName;
     }
 

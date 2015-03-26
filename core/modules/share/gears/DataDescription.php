@@ -57,7 +57,7 @@ class DataDescription extends Object implements \Iterator {
      *
      * @param array $columnsInfo Data description.
      *
-     * @see DBA::getColumnsInfo()
+     * @see QAL::getColumnsInfo()
      */
 	//TODO Добавить возможность загрузки обычного массива создавая FieldDescription с параметрами по умолчанию
     public function load(array $columnsInfo) {

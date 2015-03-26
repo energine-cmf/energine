@@ -24,6 +24,10 @@ use Energine\share\gears\SystemException;
 /**
  * Page component.
  *
+ * @property-read DBWorker $dbh
+ * @method string translate() translate(string $string, int $langID = null)
+ * @method string dateToString() dateToString(int $year, int $month, int $day)
+ *
  * @code
 class Component;
  * @endcode
@@ -135,8 +139,8 @@ class Component extends Object implements IBlock {
 
 
     public function __construct($name, array $params = null) {
-
         list(, $this->module) = explode('\\', get_called_class());
+
         $this->name = $name;
         $this->document = E()->getDocument();
         $this->params = $this->defineParams();
@@ -182,7 +186,7 @@ class Component extends Object implements IBlock {
 
     public function __call($name, $args) {
         if (in_array($name, ['translate', 'dateToString'])) {
-            return call_user_func_array(['DBWorker', '__' . $name], $args);
+            return call_user_func_array('Energine\share\gears\DBWorker::_' . $name, $args);
         }
         throw \OutOfBoundsException();
     }

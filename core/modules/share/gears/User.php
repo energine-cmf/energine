@@ -23,7 +23,8 @@ class User;
  *
  * It holds an information about user, saves data, etc.
  */
-class User extends DBWorker {
+class User extends Object {
+    use DBWorker;
     /**
      * Table name of users.
      * @var string USER_TABLE_NAME

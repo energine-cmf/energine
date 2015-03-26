@@ -19,7 +19,8 @@ namespace Energine\share\gears;
  *
  * @final
  */
-final class UserGroup extends DBWorker {
+final class UserGroup extends Object {
+    use DBWorker;
     /**
      * Default group for guests.
      * @var int $defaultGuestGroup

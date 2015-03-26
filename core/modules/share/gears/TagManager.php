@@ -21,7 +21,8 @@ namespace Energine\share\gears;
 class TagManager;
  * @endcode
  */
-class TagManager extends DBWorker {
+class TagManager extends Object {
+    use DBWorker;
     /**
      * Table name with tags.
      * @var string TAG_TABLENAME

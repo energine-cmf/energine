@@ -26,7 +26,8 @@ abstract class AbstractBuilder;
  *
  * @abstract
  */
-abstract class AbstractBuilder extends DBWorker implements IBuilder {
+abstract class AbstractBuilder extends Object implements IBuilder {
+    use DBWorker;
     /**
      * Meta-data.
      * @var DataDescription $dataDescription
@@ -327,23 +328,23 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
             switch ($format) {
                 case '%E':
                     if ($date >= $today and $date < $tomorrow) {
-                        $result .= DBWorker::_translate('TXT_TODAY');
+                        $result .= translate('TXT_TODAY');
                     } elseif ($date < $today and $date >= $yesterday) {
-                        $result .= DBWorker::_translate('TXT_YESTERDAY');
+                        $result .= translate('TXT_YESTERDAY');
                     } elseif ($date < $yesterday and $date >= $beforeYesterday) {
-                        $result .= DBWorker::_translate('TXT_BEFORE_YESTERDAY');
+                        $result .= translate('TXT_BEFORE_YESTERDAY');
                     } elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
-                        $result .= DBWorker::_translate('TXT_TOMORROW');
+                        $result .= translate('TXT_TOMORROW');
                     } elseif ($date >= $dayAfterTomorrow && $date < $tomorrowPlus3) {
-                        $result .= DBWorker::_translate('TXT_AFTER_TOMORROW');
+                        $result .= translate('TXT_AFTER_TOMORROW');
                     } else {
                         $dayNum = date('w', $date);
                         if ($dayNum == 0) {
                             $dayNum = 7;
                         }
-                        $result .= DBWorker::_translate('TXT_WEEKDAY_SHORT_' . $dayNum);
+                        $result .= translate('TXT_WEEKDAY_SHORT_' . $dayNum);
                     }
-                    $result .= ', ' . date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                    $result .= ', ' . date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
                     if (date('Y', $date) != date('Y')) {
                         $result .= ' ' . date('Y', $date);
                     }
@@ -353,23 +354,23 @@ abstract class AbstractBuilder extends DBWorker implements IBuilder {
                     if ($dayNum == 0) {
                         $dayNum = 7;
                     }
-                    $result .= DBWorker::_translate('TXT_WEEKDAY_' . $dayNum) . ', ' . date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                    $result .= translate('TXT_WEEKDAY_' . $dayNum) . ', ' . date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
                     if (date('Y', $date) != date('Y')) {
                         $result .= ' ' . date('Y', $date);
                     }
                     break;
                 case '%o':
                     if ($date >= $today and $date < $tomorrow) {
-                        $result .= DBWorker::_translate('TXT_TODAY') . ', ';
+                        $result .= translate('TXT_TODAY') . ', ';
                     }
-                    $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                    $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
 
                     if (date('Y', $date) != date('Y')) {
                         $result .= ' ' . date('Y', $date);
                     }
                     break;
                 case '%q':
-                    $result .= date('j', $date) . ' ' . (DBWorker::_translate('TXT_MONTH_' . date('n', $date)));
+                    $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
 
                     if (date('Y', $date) != date('Y')) {
                         $result .= ' ' . date('Y', $date);

@@ -24,7 +24,8 @@ final class Document;
  *
  * @final
  */
-final class Document extends DBWorker implements IDocument {
+final class Document extends Object implements IDocument {
+    use DBWorker;
     /**
      * Reserved URL segment for 'single'-mode
      * @var string SINGLE_SEGMENT
@@ -327,7 +328,7 @@ final class Document extends DBWorker implements IDocument {
 
             foreach ($this->translations as $const => $componentName) {
                 $dom_translation =
-                    $this->doc->createElement('translation', DBWorker::_translate($const));
+                    $this->doc->createElement('translation', translate($const));
                 $dom_translation->setAttribute('const', $const);
                 if (!is_null($componentName)) {
                     $dom_translation->setAttribute('component', $componentName);

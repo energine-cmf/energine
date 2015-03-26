@@ -22,7 +22,8 @@ use Energine\share\gears\DBWorker, Energine\share\gears\DBA, Energine\share\gear
 class FormConstructor;
  * @endcode
  */
-class FormConstructor extends DBWorker {
+class FormConstructor extends Object {
+    use DBWorker;
     /**
      * Table name prefix.
      */

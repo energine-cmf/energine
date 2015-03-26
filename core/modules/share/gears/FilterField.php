@@ -319,7 +319,7 @@ class FilterField extends Object {
         foreach ($attrs as $attrName) {
             $attrValue = (string)$this->getAttribute($attrName);
             if ($attrValue) {
-                $this->setAttribute($attrName, DBWorker::_translate($attrValue));
+                $this->setAttribute($attrName, translate($attrValue));
             }
         }
     }

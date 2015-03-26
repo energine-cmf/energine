@@ -24,7 +24,6 @@ use Energine\share\gears\SystemException;
 /**
  * Page component.
  *
- * @property-read DBWorker $dbh
  * @method string translate() translate(string $string, int $langID = null)
  * @method string dateToString() dateToString(int $year, int $month, int $day)
  *
@@ -33,6 +32,7 @@ class Component;
  * @endcode
  */
 class Component extends Object implements IBlock {
+    use DBWorker;
     /**
      * Default state name:
      * @code
@@ -179,17 +179,7 @@ class Component extends Object implements IBlock {
         }
     }
 
-    public function __get($name) {
-        if ($name == 'dbh') return E()->getDB();
-        throw new \OutOfBoundsException();
-    }
 
-    public function __call($name, $args) {
-        if (in_array($name, ['translate', 'dateToString'])) {
-            return call_user_func_array('Energine\share\gears\DBWorker::_' . $name, $args);
-        }
-        throw \OutOfBoundsException();
-    }
 
     /**
      * Get the @c 'active' parameter of the component.

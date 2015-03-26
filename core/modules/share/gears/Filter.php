@@ -149,9 +149,9 @@ class Filter extends Object {
             $this->translate();
             $this->doc = new \DOMDocument('1.0', 'UTF-8');
             $filterElem = $this->doc->createElement(self::TAG_NAME);
-            $filterElem->setAttribute('title', DBWorker::_translate('TXT_FILTER'));
-            $filterElem->setAttribute('apply', DBWorker::_translate('BTN_APPLY_FILTER'));
-            $filterElem->setAttribute('reset', DBWorker::_translate('TXT_RESET_FILTER'));
+            $filterElem->setAttribute('title', translate('TXT_FILTER'));
+            $filterElem->setAttribute('apply', translate('BTN_APPLY_FILTER'));
+            $filterElem->setAttribute('reset', translate('TXT_RESET_FILTER'));
 
             if (!empty($this->properties)) {
                 $props = $this->doc->createElement('properties');
@@ -366,12 +366,12 @@ class FilterConditionConverter implements \ArrayAccess, \Iterator {
         ];
         $this->map = [
             'like'      => [
-                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_CONTAINS'),
+                'title'     => translate('TXT_FILTER_SIGN_CONTAINS'),
                 'type'      => $stringTypes,
                 'condition' => 'LIKE \'%%%s%%\'',
             ],
             'notlike'   => [
-                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_NOT_CONTAINS'),
+                'title'     => translate('TXT_FILTER_SIGN_NOT_CONTAINS'),
                 'type'      => $stringTypes,
                 'condition' => 'NOT LIKE \'%%%s%%\'',
             ],
@@ -396,17 +396,17 @@ class FilterConditionConverter implements \ArrayAccess, \Iterator {
                 'condition' => '>\'%s\'',
             ],
             'between'   => [
-                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_BETWEEN'),
+                'title'     => translate('TXT_FILTER_SIGN_BETWEEN'),
                 'type'      => array_merge($dateTypes, $numericTypes),
                 'condition' => 'BETWEEN \'%s\' AND \'%s\'',
             ],
             'checked'   => [
-                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_CHECKED'),
+                'title'     => translate('TXT_FILTER_SIGN_CHECKED'),
                 'type'      => [FieldDescription::FIELD_TYPE_BOOL],
                 'condition' => '= 1',
             ],
             'unchecked' => [
-                'title'     => DBWorker::_translate('TXT_FILTER_SIGN_UNCHEKED'),
+                'title'     => translate('TXT_FILTER_SIGN_UNCHEKED'),
                 'type'      => [FieldDescription::FIELD_TYPE_BOOL],
                 'condition' => '!=1'
             ],

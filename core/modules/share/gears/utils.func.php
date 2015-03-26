@@ -19,12 +19,11 @@ use Energine\share\gears\SystemException;
  */
 function inspect() {
     $args = func_get_args();
-    if(php_sapi_name() != 'cli'){
+    if (php_sapi_name() != 'cli') {
         echo '<pre>';
         call_user_func_array('var_dump', $args);
         echo '</pre>';
-    }
-    else {
+    } else {
         print(PHP_EOL);
         call_user_func_array('var_dump', $args);
         print(PHP_EOL);
@@ -43,24 +42,24 @@ function inspect() {
  */
 function splitDate($date) {
     $timeInfo =
-        $dateInfo = array('','','');
-    $dateArray = explode(' ',$date);
-    if(is_array($dateArray)){
-        $dateInfo = explode('-',$dateArray[0]);
-        if(isset($dateArray[1])){
-            $timeInfo = explode(':',$dateArray[1]);
+    $dateInfo = array('', '', '');
+    $dateArray = explode(' ', $date);
+    if (is_array($dateArray)) {
+        $dateInfo = explode('-', $dateArray[0]);
+        if (isset($dateArray[1])) {
+            $timeInfo = explode(':', $dateArray[1]);
         }
     }
     return array(
-                'year' => $dateInfo[0],
-                'month' => $dateInfo[1],
-                'day' => $dateInfo[2],
-                'time' => array(
-                    'h' => $timeInfo[0],
-                    'm' => $timeInfo[1],
-                    's' => $timeInfo[2]
-                )
-            );
+        'year' => $dateInfo[0],
+        'month' => $dateInfo[1],
+        'day' => $dateInfo[2],
+        'time' => array(
+            'h' => $timeInfo[0],
+            'm' => $timeInfo[1],
+            's' => $timeInfo[2]
+        )
+    );
 }
 
 /**
@@ -79,22 +78,22 @@ function stop() {
  * @brief Simple log function.
  * @param string $var Variable.
  */
-function simple_log($var){
-	static $simpleLog;
-	if(!isset($simpleLog)){
-		$simpleLog = 'logs/simple.log';
-		file_put_contents($simpleLog,'');
-	}
-	
-	if(file_exists($simpleLog)){
-	   $flag = 	FILE_APPEND;
-	}
-	$flag = (file_exists($simpleLog))? FILE_APPEND : null;
-	file_put_contents(
-	   $simpleLog,
-	   str_replace("\n", ' ', $var)."\n",
-	   $flag
-	);
+function simple_log($var) {
+    static $simpleLog;
+    if (!isset($simpleLog)) {
+        $simpleLog = 'logs/simple.log';
+        file_put_contents($simpleLog, '');
+    }
+
+    if (file_exists($simpleLog)) {
+        $flag = FILE_APPEND;
+    }
+    $flag = (file_exists($simpleLog)) ? FILE_APPEND : null;
+    file_put_contents(
+        $simpleLog,
+        str_replace("\n", ' ', $var) . "\n",
+        $flag
+    );
 }
 
 /**
@@ -106,8 +105,8 @@ function simple_log($var){
  */
 function dump_log($var, $append = false) {
     $t = microtime(true);
-    $micro = sprintf("%06d",($t - floor($t)) * 1000000);
-    $d = new \DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
+    $micro = sprintf("%06d", ($t - floor($t)) * 1000000);
+    $d = new \DateTime(date('Y-m-d H:i:s.' . $micro, $t));
 
     $flags = ($append ? FILE_APPEND : null);
     ob_start();
@@ -116,7 +115,7 @@ function dump_log($var, $append = false) {
     ob_end_clean();
     file_put_contents(
         'logs/debug.log',
-        "\ndate: ".$d->format('l dS of F Y h:i:s:u')."\n\n".$data."\n",
+        "\ndate: " . $d->format('l dS of F Y h:i:s:u') . "\n\n" . $data . "\n",
         $flags
     );
     @chmod('logs/debug.log', 0666);
@@ -131,11 +130,11 @@ function ddump_log() {
     $result = array();
     $args = func_get_args();
     foreach ($args as $arg) {
-    	$result[] = var_export($arg, true);
+        $result[] = var_export($arg, true);
     }
     file_put_contents(
         'logs/debug.log',
-        "\ndate: ".date("l dS of F Y h:i:s")."\n\n".implode("\n", $result)."\n"
+        "\ndate: " . date("l dS of F Y h:i:s") . "\n\n" . implode("\n", $result) . "\n"
     );
     chmod('logs/debug.log', 0666);
     E()->getResponse()->commit();
@@ -159,8 +158,7 @@ function simplifyDBResult($dbResult, $fieldName, $singleRow = false) {
     if (is_array($dbResult)) {
         if ($singleRow) {
             $result = $dbResult[0][$fieldName];
-        }
-        else {
+        } else {
             $result = array_column($dbResult, $fieldName);
         }
     }
@@ -175,21 +173,21 @@ function simplifyDBResult($dbResult, $fieldName, $singleRow = false) {
  * Input:
  * @code
 array(
-    $n => array(
-        $fieldName => $fieldValue
-    )
-)
-@endcode
+ * $n => array(
+ * $fieldName => $fieldValue
+ * )
+ * )
+ * @endcode
  *
  * Output:
  *     array($fieldName => array($n => $fieldValue))
  * @code
 array(
-    $fieldName => array(
-        $n => $fieldValue
-    )
-)
-@endcode
+ * $fieldName => array(
+ * $n => $fieldValue
+ * )
+ * )
+ * @endcode
  *
  * @param array $dbResult 2D array.
  * @return array
@@ -229,13 +227,11 @@ function convertDBResult($dbResult, $pkName, $deletePK = false) {
                     if ($deletePK) {
                         unset($result[$row[$pkName]][$pkName]);
                     }
-                }
-                else {
+                } else {
                     throw new SystemException('ERR_DEV_BAD_DATA', SystemException::ERR_DEVELOPER);
                 }
             }
-        }
-        elseif (is_array($pkName) && sizeof($pkName) == 2) {
+        } elseif (is_array($pkName) && sizeof($pkName) == 2) {
             foreach ($dbResult as $key => $row) {
                 $result[$row[$pkName[0]]][$row[$pkName[1]]] = $row;
                 if ($deletePK) {
@@ -263,7 +259,9 @@ function convertFieldNames(array $fields, $prefix = '') {
             $fieldName = substr($fieldName, $plen);
         }
         //$fieldName = preg_replace('/_(\w)/e', 'strtoupper(\'$1\')', $fieldName);
-        $fieldName = preg_replace_callback('/_(\w)/', function($m){ return strtoupper($m[1]);}, $fieldName);
+        $fieldName = preg_replace_callback('/_(\w)/', function ($m) {
+            return strtoupper($m[1]);
+        }, $fieldName);
 
         $result[$fieldName] = $fieldValue;
     }
@@ -290,8 +288,7 @@ function arrayPush(array &$array, $var, $key = null) {
         if (is_null($key)) {
             rsort($keys);
             $newkey = $keys[0] + 1;
-        }
-        else {
+        } else {
             $newkey = $key;
         }
     }
@@ -319,9 +316,8 @@ function array_push_before(array $array, $var, $pos) {
             $var,
             array_slice($array, $pos)
         );
-    }
-    else {
-        foreach ($array as $key => $value){
+    } else {
+        foreach ($array as $key => $value) {
             if ($key == $pos) {
                 $result = array_merge($result, $var);
             }
@@ -330,6 +326,7 @@ function array_push_before(array $array, $var, $pos) {
     }
     return $result;
 }
+
 /**
  * @fn array_push_after($src,$in,$pos)
  * @brief Push the new array element after specific position.
@@ -338,15 +335,16 @@ function array_push_before(array $array, $var, $pos) {
  * @param mixed $in New array element.
  * @param int|string $pos Position.
  * @return array
-*/
-function array_push_after($src,$in,$pos){
-    if(is_int($pos)) $R=array_merge(array_slice($src,0,$pos+1), $in, array_slice($src,$pos+1));
-    else{
-        foreach($src as $k=>$v){
-            $R[$k]=$v;
-            if($k==$pos)$R=array_merge($R,$in);
+ */
+function array_push_after($src, $in, $pos) {
+    if (is_int($pos)) $R = array_merge(array_slice($src, 0, $pos + 1), $in, array_slice($src, $pos + 1));
+    else {
+        foreach ($src as $k => $v) {
+            $R[$k] = $v;
+            if ($k == $pos) $R = array_merge($R, $in);
         }
-    }return $R;
+    }
+    return $R;
 }
 
 /**
@@ -355,8 +353,8 @@ function array_push_after($src,$in,$pos){
  * @param string $fileName Filename.
  * @return string
  */
-function file_get_contents_stripped($fileName){
-    $result =  stripslashes(preg_replace_callback('/class=\"(?:[A-Za-z\\\]*)\"/', function($matches){
+function file_get_contents_stripped($fileName) {
+    $result = stripslashes(preg_replace_callback('/class=\"(?:[A-Za-z\\\]*)\"/', function ($matches) {
         return str_replace('\\', '\\\\', $matches[0]);
     }, trim(file_get_contents($fileName))));
     return $result;
@@ -372,7 +370,7 @@ function file_get_contents_stripped($fileName){
  */
 function str_replace_opt($from, $to, $src) {
     for ($i = 0; $i < strlen($src); $i++) {
-        if($src[$i] == $from){
+        if ($src[$i] == $from) {
             $src[$i] = $to;
         }
     }
@@ -383,7 +381,64 @@ function str_replace_opt($from, $to, $src) {
  * @param $fullyQualifiedClassName string
  * @return string
  */
-function simplifyClassName($fullyQualifiedClassName){
+function simplifyClassName($fullyQualifiedClassName) {
     $className = explode('\\', $fullyQualifiedClassName);
     return array_pop($className);
+}
+
+/**
+ * Get the translation of the text constant.
+ *
+ * Get the translation of the text constant from the translation table for specific language.
+ * If the language not provided, then current language will be used.
+ *
+ * @param string $const Text constant
+ * @param int $langId Language ID.
+ * @return string
+ */
+function translate($const, $langId = null) {
+    static $translationsCache, $findTranslationSQL;
+    if (empty($const)) return $const;
+    if (is_null($findTranslationSQL)) {
+        $findTranslationSQL = E()->getDB()->getPDO()->prepare('SELECT trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id  WHERE (ltag.ltag_name = ?) AND (lang_id = ?)');
+    }
+    $const = strtoupper($const);
+    if (is_null($langId)) {
+        $langId = intval(E()->getLanguage()->getCurrent());
+    }
+    $result = $const;
+
+    //Мы еще не обращались за этим переводом
+    if (!isset($translationsCache[$langId][$const])) {
+        //Если что то пошло не так - нет смысл генерить ошибку, отдадим просто константу
+        if ($findTranslationSQL->execute(array($const, $langId))) {
+            //записали в кеш
+            if ($result = $findTranslationSQL->fetchColumn()) {
+                $translationsCache[$langId][$const] = $result;
+            } else {
+                $result = $const;
+            }
+        }
+
+    } //За переводом уже обращались  Он есть
+    elseif ($translationsCache[$langId][$const]) {
+        $result = $translationsCache[$langId][$const];
+    }
+    //Неявный случай - за переводом уже обращались но его нету
+    //Отдаем константу
+
+    return $result;
+}
+
+/**
+ * Transform date to the string.
+ *
+ * @param int $year Year value.
+ * @param int $month Month value.
+ * @param int $day Day value
+ * @return string
+ */
+function dateToString($year, $month, $day) {
+    $result = (int)$day . ' ' . translate('TXT_MONTH_' . (int)$month) . ' ' . $year;
+    return $result;
 }

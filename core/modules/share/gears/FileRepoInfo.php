@@ -21,7 +21,8 @@ namespace Energine\share\gears;
 class FileRepoInfo;
 @endcode
  */
-class FileRepoInfo extends DBWorker {
+class FileRepoInfo extends Object {
+    use DBWorker;
     /**
      * Image meta type.
      * @var string META_TYPE_IMAGE

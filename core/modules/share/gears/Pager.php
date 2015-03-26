@@ -198,9 +198,9 @@ VISIBLE_PAGES_COUNT = 3 --> 1 2 ... 5  6  7 _8_ 9 10 11 ... 455 456
             }
         }
 
-        $pager->setProperty('from', DBWorker::_translate('TXT_FROM'));
-        $pager->setProperty('to', DBWorker::_translate('TXT_TO'));
-        //$pager->setProperty('total', DBWorker::_translate('TXT_TOTAL'));
+        $pager->setProperty('from', translate('TXT_FROM'));
+        $pager->setProperty('to', translate('TXT_TO'));
+        //$pager->setProperty('total', translate('TXT_TOTAL'));
         $pager->setProperty('records', $this->recordsCount);
         $total = $this->numPages;
         $current = $this->currentPage;

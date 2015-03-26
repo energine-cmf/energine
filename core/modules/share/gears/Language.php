@@ -24,7 +24,8 @@ final class Language;
  *
  * @final
  */
-final class Language extends DBWorker{
+final class Language extends Object{
+    use DBWorker;
     /**
      * Current language ID.
      * @var int $current

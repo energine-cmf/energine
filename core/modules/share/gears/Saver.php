@@ -24,7 +24,8 @@ use Energine\share\components\DataSet;
 class Saver;
  * @endcode
  */
-class Saver extends DBWorker {
+class Saver extends Object {
+    use DBWorker;
 	/**
 	 * Field names where errors occurred.
 	 * @var array $errors
@@ -204,7 +205,7 @@ class Saver extends DBWorker {
 	 * @param string $fieldName Field name.
 	 */
 	public function addError($fieldName) {
-		array_push($this->errors, DBWorker::_translate('FIELD_'.$fieldName));
+		array_push($this->errors, translate('FIELD_'.$fieldName));
 	}
 
 	/**

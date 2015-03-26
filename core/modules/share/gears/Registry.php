@@ -22,8 +22,7 @@ namespace {
      * Shortcut for Registry::getInstance.
      * @return Energine\share\gears\Registry
      */
-    function E()
-    {
+    function E() {
         return Energine\share\gears\Registry::getInstance();
     }
 
@@ -48,8 +47,7 @@ namespace Energine\share\gears {
      *
      * @final
      */
-    final class Registry extends Object
-    {
+    final class Registry extends Object {
         /**
          * Instance of this class.
          * @var Registry $instance
@@ -71,8 +69,7 @@ namespace Energine\share\gears {
         /**
          * @throws SystemException
          */
-        public function __construct()
-        {
+        public function __construct() {
             if (is_null(self::$flag)) {
                 throw new \SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
             }
@@ -82,8 +79,7 @@ namespace Energine\share\gears {
         /**
          * Disable cloning.
          */
-        private function __clone()
-        {
+        private function __clone() {
         }
 
         /**
@@ -93,8 +89,7 @@ namespace Energine\share\gears {
          *
          * @final
          */
-        final public static function getInstance()
-        {
+        final public static function getInstance() {
             if (is_null(self::$instance)) {
                 self::$flag = true;
                 self::$instance = new Registry();
@@ -110,12 +105,11 @@ namespace Energine\share\gears {
          *
          * @throws \Exception 'Use Registry::getMap($siteID) instead.'
          */
-        public function __get($className)
-        {
+        public function __get($className) {
             if ($className == 'Sitemap') {
                 throw new \Exception('Use Registry::getMap($siteID) instead.');
             }
-            $className = 'Energine\\share\\gears\\'.$className;
+            $className = 'Energine\\share\\gears\\' . $className;
             return $this->get($className);
         }
 
@@ -125,8 +119,7 @@ namespace Energine\share\gears {
          * @param string $className Class name.
          * @return mixed
          */
-        private function get($className)
-        {
+        private function get($className) {
             $result = null;
             if (isset($this->entities[$className])) {
                 $result = $this->entities[$className];
@@ -144,8 +137,7 @@ namespace Energine\share\gears {
          * @param string $className Class name.
          * @param mixed $object Object.
          */
-        public function __set($className, $object)
-        {
+        public function __set($className, $object) {
             if (!isset($this->entities[$className])) {
                 $this->entities[$className] = $object;
             }
@@ -157,8 +149,7 @@ namespace Energine\share\gears {
          * @param string $entityName
          * @return bool
          */
-        public function __isset($entityName)
-        {
+        public function __isset($entityName) {
             return isset($this->entities[$entityName]);
         }
 
@@ -167,8 +158,7 @@ namespace Energine\share\gears {
          *
          * @param string $entityName Entity name.
          */
-        public function __unset($entityName)
-        {
+        public function __unset($entityName) {
         }
 
         /**
@@ -176,8 +166,7 @@ namespace Energine\share\gears {
          *
          * @return AuthUser
          */
-        public function getAUser()
-        {
+        public function getAUser() {
             return $this->get('Energine\\share\\gears\\AuthUser');
         }
 
@@ -188,8 +177,7 @@ namespace Energine\share\gears {
          *
          * @throws \Exception 'AuthUser object is already used. You can not substitute it here.'
          */
-        public function setAUser($anotherAuthUserObject)
-        {
+        public function setAUser($anotherAuthUserObject) {
             if (isset($this->entities['AuthUser'])) {
                 throw new \Exception ('AuthUser object is already used. You can not substitute it here.');
             }
@@ -215,8 +203,7 @@ namespace Energine\share\gears {
          *
          * @return Request
          */
-        public function getRequest()
-        {
+        public function getRequest() {
             return $this->get('Energine\\share\\gears\\Request');
         }
 
@@ -225,8 +212,7 @@ namespace Energine\share\gears {
          *
          * @return Response
          */
-        public function getResponse()
-        {
+        public function getResponse() {
             return $this->get('Energine\\share\\gears\\Response');
         }
 
@@ -235,8 +221,7 @@ namespace Energine\share\gears {
          *
          * @return Document
          */
-        public function getDocument()
-        {
+        public function getDocument() {
             return $this->get('Energine\\share\\gears\\Document');
         }
 
@@ -245,8 +230,7 @@ namespace Energine\share\gears {
          *
          * @return OGObject
          */
-        public function getOGObject()
-        {
+        public function getOGObject() {
             return $this->get('Energine\\share\\gears\\OGObject');
         }
 
@@ -255,8 +239,7 @@ namespace Energine\share\gears {
          *
          * @return Language
          */
-        public function getLanguage()
-        {
+        public function getLanguage() {
             return $this->get('Energine\\share\\gears\\Language');
         }
 
@@ -265,8 +248,7 @@ namespace Energine\share\gears {
          *
          * @return SiteManager
          */
-        public function getSiteManager()
-        {
+        public function getSiteManager() {
             return $this->get('Energine\\share\\gears\\SiteManager');
         }
 
@@ -278,8 +260,7 @@ namespace Energine\share\gears {
          *
          * @note In fact, several objects of these class exist.
          */
-        public function getMap($siteID = false)
-        {
+        public function getMap($siteID = false) {
             if (!$siteID) $siteID = E()->getSiteManager()->getCurrentSite()->id;
             if (!isset($this->entities['Sitemap'][$siteID])) {
                 $this->entities['Sitemap'][$siteID] = new Sitemap($siteID);
@@ -292,8 +273,7 @@ namespace Energine\share\gears {
          *
          * @return DocumentController
          */
-        public function getController()
-        {
+        public function getController() {
             return $this->get('Energine\\share\\gears\\DocumentController');
         }
 
@@ -302,8 +282,7 @@ namespace Energine\share\gears {
          *
          * @return QAL
          */
-        public function getDB()
-        {
+        public function getDB() {
             if (!isset($this->entities['QAL'])) {
                 $this->entities['QAL'] = new QAL(
                     sprintf('mysql:host=%s;port=%s;dbname=%s',
@@ -329,8 +308,7 @@ namespace Energine\share\gears {
          *
          * @return Cache
          */
-        public function getCache()
-        {
+        public function getCache() {
             return $this->get('Energine\\share\\gears\\Cache');
         }
     }

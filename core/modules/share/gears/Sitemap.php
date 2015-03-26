@@ -25,7 +25,8 @@ final class Sitemap;
  * @attention This is singleton class.
  * @final
  */
-final class Sitemap extends DBWorker {
+final class Sitemap extends Object {
+    use DBWorker;
     /**
      * Class exemplar that works with tree structures.
      * @var TreeNodeList $tree

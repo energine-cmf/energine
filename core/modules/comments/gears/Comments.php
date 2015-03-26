@@ -57,8 +57,8 @@ $comments->saveItem($cItem);
 $comments->deleteItem($targetId);
 @endcode
  */
-class Comments extends DBWorker
-{
+class Comments extends Object{
+    use DBWorker;
 	/*
 	 * Таблица комментируемой сущности
 	 * @var string

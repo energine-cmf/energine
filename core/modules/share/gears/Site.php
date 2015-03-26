@@ -21,7 +21,10 @@ namespace Energine\share\gears;
 class Site;
 @endcode
  */
-class Site extends DBWorker {
+class Site extends Object {
+    use DBWorker {
+        __get as _get;
+    }
     /**
      * Site data.
      * @var array $data
@@ -94,6 +97,8 @@ class Site extends DBWorker {
      */
     public function __get($propName) {
         $result = null;
+        if(!is_null($result = $this::_get($propName))) return $result;
+
         if (isset($this->data[$propName])) {
             $result = $this->data[$propName];
         } elseif (strtolower($propName) == 'name') {
@@ -111,6 +116,7 @@ class Site extends DBWorker {
             );
             $result = (false !== $res)? $res: $result;
         }
+
         return $result;
     }
 

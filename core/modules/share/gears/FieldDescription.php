@@ -18,7 +18,7 @@ namespace Energine\share\gears;
 class FieldDescription;
  * @endcode
  */
-class FieldDescription extends DBWorker implements \Iterator {
+class FieldDescription extends Object implements \Iterator {
     /**
      * Additional property names.
      * It is initialized in FieldDescription::$rewind and used by iterations.@n
@@ -358,7 +358,7 @@ class FieldDescription extends DBWorker implements \Iterator {
                                 function ($row) use ($name) {
                                     return [
                                         'key'   => $row,
-                                        'value' => DBWorker::_translate('FIELD_' . $name . '_ENUM_' . $row)
+                                        'value' => translate('FIELD_' . $name . '_ENUM_' . $row)
                                     ];
                                 },
                                 $propValue
@@ -713,9 +713,9 @@ class FieldDescription extends DBWorker implements \Iterator {
      */
     public function setProperty($name, $value) {
         if (in_array($name, ['title', 'message', 'tabName'])) {
-            $value = DBWorker::_translate($value);
+            $value = translate($value);
         } elseif (is_scalar($value) && (strpos($value, 'trans(') !== false)) {
-            $value = DBWorker::_translate(str_replace(['trans', '(', ')'], '', $value));
+            $value = translate(str_replace(['trans', '(', ')'], '', $value));
         }
         $this->additionalProperties[$name] = $this->additionalPropertiesLower[strtolower($name)] = $value;
 
@@ -962,7 +962,7 @@ class FieldDescription extends DBWorker implements \Iterator {
                 }
             }
             $result[(int)$option['id']] = [
-                'value'      => DBWorker::_translate((string)$option),
+                'value'      => translate((string)$option),
                 'attributes' => $optAttributes
             ];
         }

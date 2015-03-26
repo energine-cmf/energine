@@ -5,7 +5,7 @@
  *
  * @code
 abstract class DBWorker;
-@endcode
+ * @endcode
  *
  * @author 1m.dm
  * @copyright Energine 2006
@@ -14,99 +14,35 @@ abstract class DBWorker;
  */
 namespace Energine\share\gears;
 /**
- * Provide the derived classes the reference to the object for work with DB.
+ * @property-read QAL $dbh
  *
- * @code
-abstract class DBWorker;
-@endcode
+ * @method string translate()
+ * @method string dateToString()
  *
- * @abstract
+ *
+ * Class DBWorker
+ * @package Energine\share\gears
  */
-abstract class DBWorker extends Object {
+trait DBWorker {
     /**
-     * QAL object.
-     * @var QAL $dbhInstance
-     */
-    protected static $dbhInstance;
-
-    /**
-     * Reference to the DBWorker::$dbhInstance for derived classes.
-     * @var QAL $dbh
-     */
-    protected $dbh;
-
-    //todo VZ: I do not understand the comment in the brackets.
-    /**
-     * Translation cache.
+     * @param $name
+     * @param $args
+     * @return mixed
      *
-     * (получается за ними по отдельности очень часто нужно обращаться)
-     * @var array $translationsCache
+     * @throws \OutOfBoundsException
      */
-    private static $translationsCache = null;
-
-    /**
-     * Request to find translation.
-     * @var PDOStatement $findTranslationSQL
-     */
-    private static $findTranslationSQL;
-
-    public function __construct() {
-        $this->dbh = E()->getDB();
-        self::$findTranslationSQL = $this->dbh->getPDO()->prepare('SELECT trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id  WHERE (ltag.ltag_name = ?) AND (lang_id = ?)');
+    public function __call($name, $args) {
+        if (in_array($name, ['translate', 'dateToString'])) {
+            return call_user_func_array($name, $args);
+        }
+        throw \OutOfBoundsException();
     }
 
     /**
-     * Get the translation of the text constant.
-     *
-     * Get the translation of the text constant from the translation table for specific language.
-     * If the language not provided, then current language will be used.
-     *
-     * @param string $const Text constant
-     * @param int $langId Language ID.
-     * @return string
+     * @param $name
+     * @return \Energine\share\gears\QAL|\QAL
      */
-    public static function _translate($const, $langId = null) {
-        if (empty($const)) return $const;
-        $const = strtoupper($const);
-        if(is_null($langId)){
-            $langId = intval(E()->getLanguage()->getCurrent());
-        }
-        $result = $const;
-
-        //Мы еще не обращались за этим переводом
-        if(!isset(self::$translationsCache[$langId][$const])){
-            //Если что то пошло не так - нет смысл генерить ошибку, отдадим просто константу
-            if(self::$findTranslationSQL->execute(array($const, $langId))){
-                //записали в кеш
-                if($result = self::$findTranslationSQL->fetchColumn()){
-                    self::$translationsCache[$langId][$const] = $result;
-                }
-                else {
-                    $result = $const;
-                }
-            }
-
-        }
-        //За переводом уже обращались  Он есть
-        elseif(self::$translationsCache[$langId][$const]){
-            $result = self::$translationsCache[$langId][$const];
-        }
-        //Неявный случай - за переводом уже обращались но его нету
-        //Отдаем константу
-
-        return $result;
-    }
-
-    /**
-     * Transform date to the string.
-     *
-     * @param int $year Year value.
-     * @param int $month Month value.
-     * @param int $day Day value
-     * @return string
-     */
-    public static function _dateToString($year, $month, $day) {
-        $result = (int)$day . ' ' . self::_translate('TXT_MONTH_' . (int)$month) . ' ' . $year;
-        return $result;
+    public function __get($name) {
+        if ($name == 'dbh') return E()->getDB();
     }
 }

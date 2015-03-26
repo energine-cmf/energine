@@ -61,7 +61,7 @@ class Select extends Control {
      */
     public function addItem($id, $value, $itemProperties = array()) {
     	$this->items[$id] = array(
-    	   'value' => DBWorker::_translate($value),
+    	   'value' => translate($value),
     	   'properties' => $itemProperties
     	);
     }

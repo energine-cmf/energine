@@ -6,7 +6,7 @@
                 <params>
                     <param name="tags">menu</param>
                     <param name="recursive">1</param>
-                    <param name="config">core/modules/share/MainMenu.component.xml</param>
+                    <param name="config">core/modules/share/config/MainMenu.component.xml</param>
                 </params>
             </component>
         </container>

@@ -16,7 +16,9 @@ class Component;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears\DBWorker, Energine\share\gears\IBlock, Energine\share\gears\Request, Energine\share\gears\ComponentConfig, Energine\share\gears\Document;
+use Energine\share\gears\DBWorker;
+use Energine\share\gears\IBlock, Energine\share\gears\Request, Energine\share\gears\ComponentConfig, Energine\share\gears\Document;
+use Energine\share\gears\Object;
 use Energine\share\gears\SystemException;
 
 /**
@@ -26,7 +28,7 @@ use Energine\share\gears\SystemException;
 class Component;
  * @endcode
  */
-class Component extends DBWorker implements IBlock {
+class Component extends Object implements IBlock {
     /**
      * Default state name:
      * @code
@@ -130,8 +132,10 @@ class Component extends DBWorker implements IBlock {
      * @param string $name Component name.
      * @param array $params Component parameters.
      */
-    public function __construct($name,  array $params = null) {
-        parent::__construct();
+
+
+    public function __construct($name, array $params = null) {
+
         list(, $this->module) = explode('\\', get_called_class());
         $this->name = $name;
         $this->document = E()->getDocument();
@@ -169,6 +173,18 @@ class Component extends DBWorker implements IBlock {
                 }
             }
         }
+    }
+
+    public function __get($name) {
+        if ($name == 'dbh') return E()->getDB();
+        throw new \OutOfBoundsException();
+    }
+
+    public function __call($name, $args) {
+        if (in_array($name, ['translate', 'dateToString'])) {
+            return call_user_func_array(['DBWorker', '__' . $name], $args);
+        }
+        throw \OutOfBoundsException();
     }
 
     /**

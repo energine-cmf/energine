@@ -123,18 +123,18 @@ class SystemException extends \Exception {
         if ($code == self::ERR_LANG) {
             $this->response->setStatus(503);
             $this->response->setHeader('Retry-After', 20);
-            $message = DBWorker::_translate($message, E()->getLanguage()->getDefault());
+            $message = translate($message, E()->getLanguage()->getDefault());
         }
         elseif ($code == self::ERR_403) {
             $this->response->setStatus(403);
-            $message = DBWorker::_translate($message, E()->getLanguage()->getCurrent());
+            $message = translate($message, E()->getLanguage()->getCurrent());
         }
         elseif ($code == self::ERR_404) {
             $this->response->setStatus(404);
-            $message = DBWorker::_translate($message, E()->getLanguage()->getCurrent());
+            $message = translate($message, E()->getLanguage()->getCurrent());
         }
         elseif ($code != self::ERR_DB ) {
-            $message = DBWorker::_translate($message, E()->getLanguage()->getCurrent());
+            $message = translate($message, E()->getLanguage()->getCurrent());
         }
         $this->backtrace = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT, 5);
 

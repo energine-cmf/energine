@@ -23,7 +23,8 @@ final class SiteManager;
  *
  * @final
  */
-final class SiteManager extends DBWorker implements \Iterator {
+final class SiteManager extends Object implements \Iterator {
+    use DBWorker;
     /*
      * Instance of the current class.
      *

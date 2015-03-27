@@ -48,6 +48,8 @@ abstract class Object {
      */
     private $executionTime;
 
+    public function __construct(){}
+
     /**
      * Start the execution time counter.
      */

@@ -17,7 +17,7 @@ final class QAL;
 namespace Energine\share\gears;
 
 /**
- * Query Abstraction Layer.
+ * Query Abstraction Layer + Database Abstraction Layer
  *
  * @code
 final class QAL;
@@ -25,7 +25,128 @@ final class QAL;
  *
  * @final
  */
-final class QAL extends DBA {
+final class QAL extends Object {
+    /**
+     * Instance of PDO class (PHP Data Objects).
+     * @var \PDO $pdo
+     */
+    private $pdo;
+
+    /**
+     * Last query to the data base.
+     * @var string $lastQuery
+     */
+    private $lastQuery;
+
+    /**
+     * Data base cache.
+     * @var DBStructureInfo $dbCache
+     */
+    private $dbCache;
+
+    //Типы полей таблиц БД:
+    /**
+     * Column type: @c INTEGER
+     * @var string COLTYPE_INTEGER
+     */
+    const COLTYPE_INTEGER = 'INT';
+
+    /**
+     * Column type: @c FLOAT
+     * @var string COLTYPE_FLOAT
+     */
+    const COLTYPE_FLOAT = 'FLOAT';
+
+    /**
+     * Column type: @c DECIMAL/NUMERIC
+     * @var string COLTYPE_DECIMAL
+     */
+    const COLTYPE_DECIMAL = 'DECIMAL';
+
+    /**
+     * Column type: @c DATE
+     * @var string COLTYPE_DATE
+     */
+    const COLTYPE_DATE = 'DATE';
+
+    /**
+     * Column type: @c TIME
+     * @var string COLTYPE_TIME
+     */
+    const COLTYPE_TIME = 'TIME';
+
+    /**
+     * Column type: @c TIMESTAMP
+     * @var string COLTYPE_TIMESTAMP
+     */
+    const COLTYPE_TIMESTAMP = 'TIMESTAMP';
+
+    /**
+     * Column type: @c DATETIME
+     * @var string COLTYPE_DATETIME
+     */
+    const COLTYPE_DATETIME = 'DATETIME';
+
+    /**
+     * Column type: @c VARCHAR
+     * @var string COLTYPE_STRING
+     */
+    const COLTYPE_STRING = 'VARCHAR';
+
+    /**
+     * Column type: @c TEXT
+     * @var string COLTYPE_TEXT
+     */
+    const COLTYPE_TEXT = 'TEXT';
+
+    /**
+     * Column type: @c BLOB
+     * Binary data.
+     *
+     * @var string COLTYPE_BLOB
+     */
+    const COLTYPE_BLOB = 'BLOB';
+
+    /**
+     * Column type: @c SET
+     * SET
+     *
+     * @var string COLTYPE_SET
+     */
+    const COLTYPE_SET = 'SET';
+
+    /**
+     * Column type: @c ENUM
+     * ENUM
+     *
+     * @var string COLTYPE_ENUM
+     */
+    const COLTYPE_ENUM = 'ENUM';
+
+    /**
+     * Error type of the column.
+     * @var string ERR_BAD_REQUEST
+     */
+    const ERR_BAD_REQUEST = 'ERR_DATABASE_ERROR';
+
+    /**
+     * Primary index
+     * @var string PRIMARY_INDEX
+     */
+    const PRIMARY_INDEX = 'PRI';
+
+    /**
+     * Unique index.
+     * @var string UNIQUE_INDEX
+     */
+    const UNIQUE_INDEX = 'UNI';
+
+    /**
+     * Index.
+     * @var string INDEX
+     */
+    const INDEX = 'MUL';
+
     //Режимы модифицирующих операций
     /**
      * INSERT operation.
@@ -82,12 +203,415 @@ final class QAL extends DBA {
      */
     const ERR_BAD_QUERY_FORMAT = 'Bad query format.';
 
-    //todo VZ: I think this can be removed from here.
     /**
-     * @copydoc DBA::__construct
+     * @param string $dsn Data Source Name; for connecting to the data base.
+     * @param string $username User name.
+     * @param string $password Password.
+     * @param array $driverOptions Specific DB driver parameters.
+     * @param string $charset Encoding.
+     *
+     * @throws SystemException Unable to connect. The site is temporarily unavailable.
      */
     public function __construct($dsn, $username, $password, array $driverOptions, $charset = 'utf8') {
-        parent::__construct($dsn, $username, $password, $driverOptions, $charset);
+        try {
+            $this->pdo = new \PDO($dsn, $username, $password, $driverOptions);
+            $this->pdo->query('SET NAMES ' . $charset);
+
+            $this->dbCache = new DBStructureInfo($this->pdo);
+
+        } catch (\PDOException $e) {
+            throw new SystemException('Unable to connect. The site is temporarily unavailable.', SystemException::ERR_DB, 'The site is temporarily unavailable');
+        }
+    }
+
+    /**
+     * Get @link QAL::$pdo \PDO@endlink.
+     *
+     * Use this for direct work with DB.
+     *
+     * @return \PDO
+     */
+    public function getPDO() {
+        return $this->pdo;
+    }
+
+    //todo VZ: What is the alternative?
+    //todo VZ: I think it will be better to throw some value instead of returning false or true.
+    /**
+     * Execute SELECT request.
+     *
+     * It returns one from the following:
+     *  - an array for non-empty result like
+     * @code
+    array(
+     * rowID => array(
+     * fieldName => fieldValue,
+     * ...
+     * )
+     * )
+     * @endcode
+     *  - @c empty array for empty result;
+     *
+     * @param string $query SELECT query.
+     * @return mixed
+     *
+     * @throws SystemException
+     *
+     *
+     * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
+     *
+     */
+    private function selectRequest($query) {
+        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
+
+        if (!($res instanceof \PDOStatement)) {
+            $errorInfo = $this->pdo->errorInfo();
+            throw new SystemException($errorInfo[2], SystemException::ERR_DB, array($this->getLastRequest()));
+        }
+
+        $result = array();
+        while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
+            array_push($result, $row);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Execute modification request like INSERT, UPDATE, DELETE.
+     *
+     *
+     * It returns one from the following:
+     * - last generated ID for field type AUTO_INCREMENT;
+     * - @c true by success;
+     * - @c false by fail.
+     *
+     * @param string $query Query.
+     * @return mixed
+     *
+     * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
+     *
+     *
+     * @throws SystemException
+     */
+    private function modifyRequest($query) {
+        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
+
+        if (!($res instanceof \PDOStatement)) {
+            $errorInfo = $this->pdo->errorInfo();
+            throw new SystemException($errorInfo[2], SystemException::ERR_DB, array($this->getLastRequest(),));
+        }
+        $result = intval($this->pdo->lastInsertId());
+
+        if ($result == 0) {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Call procedure.
+     *
+     * @param  string $name Procedure name.
+     * @param  array $args Procedure arguments.
+     * @return array|bool
+     */
+    public function call($name, &$args = null) {
+        if (!$args) {
+            $res = $this->pdo->query("call $name();", \PDO::FETCH_NAMED);
+        } else {
+            $argString = implode(',', array_fill(0, count($args), '?'));
+            $stmt = $this->pdo->prepare("CALL $name($argString)");
+            foreach ($args as $index => &$value) {
+                $stmt->bindParam($index + 1, $value);
+            }
+            if ($res = $stmt->execute()) {
+                $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            }
+        }
+        return $res;
+    }
+
+    /**
+     * Get data for further iteration.
+     *
+     * @param string $query SQL request.
+     * @return bool|\PDOStatement
+     */
+    public function get($query) {
+        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
+        if ($res instanceof \PDOStatement) {
+            return $res;
+        }
+        return false;
+    }
+
+    /**
+     * Execute the request.
+     *
+     * @param string $request Request.
+     * @return bool|\PDOStatement
+     */
+    private function fulfill($request) {
+        if (!is_string($request) || empty($request)) {
+            return false;
+        }
+
+        $res = $this->runQuery(func_get_args());
+        if ($res instanceof \PDOStatement)
+            $this->lastQuery = $res->queryString;
+
+        return $res;
+    }
+
+    /**
+     * Process string.
+     *
+     * Place, if needed, double quotes around the input string and isolates special symbols inside the string.
+     *
+     * @param string $string Some string.
+     * @return string
+     */
+    public function quote($string) {
+        return $this->pdo->quote($string);
+    }
+
+    /**
+     * Get the @link QAL::$lastQuery last query@endlink.
+     *
+     * @return string
+     */
+    public function getLastRequest() {
+        return $this->lastQuery;
+    }
+
+    /**
+     * Get last error message.
+     *
+     * @return string
+     */
+    public function getLastError() {
+        return $this->pdo->errorInfo();
+    }
+
+    /**
+     * Begin an transaction.
+     *
+     * @return boolean
+     */
+    public function beginTransaction() {
+        return $this->pdo->beginTransaction();
+    }
+
+    /**
+     * Execute @c commit transaction.
+     *
+     * @return boolean
+     */
+    public function commit() {
+        return $this->pdo->commit();
+    }
+
+    /**
+     * Open transaction.
+     *
+     * @return boolean
+     */
+    public function rollback() {
+        return $this->pdo->rollBack();
+    }
+
+    /**
+     * return table list
+     * this is draft method - I do not understand its necessity
+     *
+     * @todo use db cache if need be
+     * @todo add pattern param - if need be
+     * @return array
+     */
+    public function getTables() {
+        return $this->getPDO()->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
+    /**
+     * Get columns info of the table.
+     *
+     * The returned array looks like:
+     * @code
+    array(
+     * 'columnName' => array(
+     * 'type'      => column type,
+     * 'length'    => length,
+     * 'nullable'  => accept NULL?,
+     * 'key'       => description of the columns key (if exist),
+     * 'default'   => default value,
+     * 'index'     => index type
+     * )
+     * )
+     * @endcode
+     *
+     * @param string $tableName Table name.
+     * @return array
+     */
+    public function getColumnsInfo($tableName) {
+        $result = $this->dbCache->getTableMeta($tableName);
+        return $result;
+    }
+
+
+    /**
+     * Get the table name with translations.
+     *
+     * Get the table name with translations for some table name, if such exist.
+     * Otherwise false will be returned.
+     *
+     * @param string $tableName
+     * @return string|bool
+     */
+    public function getTranslationTablename($tableName) {
+        return $this->tableExists($tableName . '_translation');
+    }
+
+    /**
+     * Check whether some table name exist.
+     *
+     * @param $tableName string Table name.
+     * @return string|bool
+     */
+    public function tableExists($tableName) {
+        return ($this->dbCache->tableExists($tableName)) ? $tableName : false;
+    }
+
+    /**
+     * Check whether some procedure exist.
+     *
+     * @param string $procName Procedure name.
+     * @return boolean
+     */
+    public function procExists($procName) {
+        return ($this->getScalar(
+            'SELECT ROUTINE_NAME
+                FROM information_schema.ROUTINES
+                WHERE
+                ROUTINE_TYPE="PROCEDURE"
+                AND ROUTINE_SCHEMA=%s
+                AND ROUTINE_NAME=%s',
+            E()->getConfigValue('database.db'),
+            $procName
+        )) ? true : false;
+    }
+
+    /**
+     * Check whether some function exist.
+     *
+     * @param string $funcName Function name.
+     * @return boolean
+     */
+    public function funcExists($funcName) {
+        return ($this->getScalar(
+            'SELECT ROUTINE_NAME
+                FROM information_schema.ROUTINES
+                WHERE
+                ROUTINE_TYPE="FUNCTION"
+                AND ROUTINE_SCHEMA=%s
+                AND ROUTINE_NAME=%s',
+            E()->getConfigValue('database.db'),
+            $funcName
+        )) ? true : false;
+    }
+
+    /**
+     * Get the fully qualified table name in MySQL quotes.
+     *
+     * @param string $tableName Table name.
+     * @param bool $returnAsArray Return as array?
+     * @return string | array
+     */
+    public static function getFQTableName($tableName, $returnAsArray = false) {
+        $result = array();
+
+        $tableName = str_replace('`', '', $tableName);
+
+        if ($pos = strpos($tableName, '.')) {
+            array_push($result, substr($tableName, 0, $pos));
+            $tableName = substr($tableName, $pos + 1);
+        }
+        array_push($result, $tableName);
+        return (!$returnAsArray) ? implode('.', array_map(function ($row) {
+            return '`' . $row . '`';
+        }, $result)) : $result;
+    }
+
+    /**
+     * Run query.
+     *
+     * @param array $args Query arguments. First argument is SQL string
+     * @return \PDOStatement
+     *
+     * @throws SystemException 'ERR_BAD_REQUEST'
+     */
+    private function runQuery(array $args) {
+        if (empty($args)) {
+            throw new SystemException('ERR_BAD_REQUEST');
+        }
+        $query = array_shift($args);
+        $query = str_replace('%%', '%', $query);
+        if (!empty($args)) {
+            if (preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)) {
+                $data = [];
+                $query = preg_replace('(%(?:(\d)\$)?s)', '?', $query);
+                $argIndex = 0;
+                foreach ($matches[1] as $a) {
+                    if ($a = (int)$a) {
+                        $v = $a - 1;
+                    } else {
+                        $v = $argIndex++;
+                    }
+                    array_push($data, $args[$v]);
+                }
+            } else {
+                $data = $args;
+            }
+            $realData = [];
+            $replaceRule = array_map(
+                function ($v) use (&$realData) {
+                    if (is_array($v)) {
+                        if (empty($v)) {
+                            $v = [-1];
+                        }
+                        $realData = array_merge($realData, $v);
+                    } else {
+                        array_push($realData, $v);
+                    }
+
+                    return implode(',', array_fill(0, sizeof($v), '?'));
+                },
+                $data
+            );
+            $qIndex = 0;
+            $realQuery = '';
+            for ($i = 0; $i < strlen($query); $i++) {
+                if ($query[$i] == '?') {
+                    $realQuery .= $replaceRule[$qIndex++];
+                } else {
+                    $realQuery .= $query[$i];
+                }
+            }
+
+
+            if (!($result = $this->pdo->prepare($realQuery))) {
+                throw new SystemException('ERR_PREPARE_REQUEST', SystemException::ERR_DB, $query);
+            }
+
+            if (!$result->execute($realData)) {
+                throw new SystemException('ERR_EXECUTE_REQUEST', SystemException::ERR_DB, array($query, $data));
+            }
+
+        } else {
+            $result = $this->pdo->query($query);
+        }
+        return $result;
     }
 
     //todo VZ: There is not clear the order of arguments.
@@ -120,7 +644,7 @@ final class QAL extends DBA {
      * @param array|string $lim Limit.
      * @return array|true
      *
-     * @see DBA::selectRequest()
+     * @see QAL::selectRequest()
      * @see QAL::buildSQL
      * @throws SystemException
      */
@@ -167,7 +691,7 @@ final class QAL extends DBA {
      *
      * @throws SystemException
      *
-     * @see DBA::modifyRequest()
+     * @see QAL::modifyRequest()
      */
     public function modify($mode, $tableName = null, $data = null, $condition = null) {
         //Если в первом параметре не один из зарегистрированных режимов - считаем что это запрос
@@ -178,7 +702,7 @@ final class QAL extends DBA {
         if (empty($mode) || empty($tableName)) {
             throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB);
         }
-        $tableName = DBA::getFQTableName($tableName);
+        $tableName = QAL::getFQTableName($tableName);
 
         $args = array();
 
@@ -397,8 +921,8 @@ final class QAL extends DBA {
                     LEFT JOIN %s on %3$s.%s = %2$s.%s
                     WHERE lang_id =%s' . $filter . (($order) ? ' ORDER BY ' . $order : ''),
                 $fkValueName,
-                DBA::getFQTableName($fkTableName),
-                DBA::getFQTableName($transTableName),
+                QAL::getFQTableName($fkTableName),
+                QAL::getFQTableName($transTableName),
                 $fkKeyName,
                 $fkKeyName,
                 $currentLangID
@@ -464,7 +988,7 @@ final class QAL extends DBA {
      *
      * @throws SystemException
      */
-    protected function buildSQL(array $args) {
+    private function buildSQL(array $args) {
         //If first argument contains space  - assume this is SQL string
         if (strpos($args[0], ' ')) {
             return $args;
@@ -500,7 +1024,7 @@ final class QAL extends DBA {
         }
 
 
-        $sqlQuery = "SELECT $fields FROM " . DBA::getFQTableName($tableName);
+        $sqlQuery = "SELECT $fields FROM " . QAL::getFQTableName($tableName);
 
         if (isset($condition)) {
             $sqlQuery .= $this->buildWhereCondition($condition);

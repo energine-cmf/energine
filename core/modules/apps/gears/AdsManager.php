@@ -14,7 +14,10 @@ class AdsManager;
  * @version 1.0.0
  */
 namespace Energine\apps\gears;
-use Energine\share\gears\DBWorker, Energine\share\gears\DataDescription, Energine\share\gears\Data, Energine\share\gears\QAL, Energine\share\gears\Field;
+use Energine\share\gears\DataDescription, Energine\share\gears\Data, Energine\share\gears\QAL, Energine\share\gears\Field;
+use Energine\share\gears\DBWorker;
+use Energine\share\gears\Object;
+
 /**
  * Ads manager.
  *
@@ -22,7 +25,8 @@ use Energine\share\gears\DBWorker, Energine\share\gears\DataDescription, Energin
 class AdsManager;
 @endcode
  */
-class AdsManager extends DBWorker {
+class AdsManager extends Object {
+    use DBWorker;
     /**
      * Table name.
      * @var string TABLE_NAME

@@ -16,17 +16,23 @@ class Component;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears\DBWorker, Energine\share\gears\IBlock, Energine\share\gears\Request, Energine\share\gears\ComponentConfig, Energine\share\gears\Document;
+use Energine\share\gears\DBWorker;
+use Energine\share\gears\IBlock, Energine\share\gears\Request, Energine\share\gears\ComponentConfig, Energine\share\gears\Document;
+use Energine\share\gears\Object;
 use Energine\share\gears\SystemException;
 
 /**
  * Page component.
  *
+ * @method string translate() translate(string $string, int $langID = null)
+ * @method string dateToString() dateToString(int $year, int $month, int $day)
+ *
  * @code
 class Component;
  * @endcode
  */
-class Component extends DBWorker implements IBlock {
+class Component extends Object implements IBlock {
+    use DBWorker;
     /**
      * Default state name:
      * @code
@@ -130,9 +136,11 @@ class Component extends DBWorker implements IBlock {
      * @param string $name Component name.
      * @param array $params Component parameters.
      */
-    public function __construct($name,  array $params = null) {
-        parent::__construct();
+
+
+    public function __construct($name, array $params = null) {
         list(, $this->module) = explode('\\', get_called_class());
+
         $this->name = $name;
         $this->document = E()->getDocument();
         $this->params = $this->defineParams();
@@ -170,6 +178,8 @@ class Component extends DBWorker implements IBlock {
             }
         }
     }
+
+
 
     /**
      * Get the @c 'active' parameter of the component.

@@ -24,7 +24,8 @@ use Energine\share\components\DataSet;
 class Saver;
  * @endcode
  */
-class Saver extends DBWorker {
+class Saver extends Object {
+    use DBWorker;
 	/**
 	 * Field names where errors occurred.
 	 * @var array $errors
@@ -204,7 +205,7 @@ class Saver extends DBWorker {
 	 * @param string $fieldName Field name.
 	 */
 	public function addError($fieldName) {
-		array_push($this->errors, $this->translate('FIELD_'.$fieldName));
+		array_push($this->errors, translate('FIELD_'.$fieldName));
 	}
 
 	/**
@@ -223,7 +224,7 @@ class Saver extends DBWorker {
 
 					//@todo На хера оно здесь?
 					//с 260 тот же самый код - пока не убираю но нужно разобраться
-					if (!in_array($fieldInfo->getSystemType(), [DBA::COLTYPE_ENUM, DBA::COLTYPE_SET])) {
+					if (!in_array($fieldInfo->getSystemType(), [QAL::COLTYPE_ENUM, QAL::COLTYPE_SET])) {
 						//Определяем имя m2m таблицы
 						list($m2mTableName, $m2mPKName) = array_values($fieldInfo->getPropertyValue('key'));
 						//Определяем имя поля
@@ -255,7 +256,7 @@ class Saver extends DBWorker {
 								 *
 								 */
 								//many 2 many relations stored in tables
-								if (!in_array($fieldInfo->getSystemType(), [DBA::COLTYPE_ENUM, DBA::COLTYPE_SET])) {
+								if (!in_array($fieldInfo->getSystemType(), [QAL::COLTYPE_ENUM, QAL::COLTYPE_SET])) {
 									$m2mValues = $fieldValue;
 									//Поскольку мультиполе реально фейковое
 									//записываем в него NULL

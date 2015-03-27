@@ -78,7 +78,7 @@ if(!file_exists($iniPath = implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules
 require_once($iniPath);
 
 // подключаем служебные(вспомогательные) функции
-require_once(implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'gears', 'utils.func.php')));
+require_once(implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'gears', 'Utils.php')));
 
 // установка уже подключенного конфига в статическую переменную Object
 Energine\share\gears\Object::setConfigArray($config);

@@ -48,11 +48,11 @@ class Data extends Object {
      *
      * @param array $data Dataset.
      *
-     * @see DBA::selectRequest()
+     * @see QAL::select()
      */
     public function load($data) {
         if (is_array($data) && !empty($data)) {
-            $data = inverseDBResult($data);
+            $data = transpose($data);
             foreach ($data as $fieldName => $fieldValues) {
                 //Если такого поля не существует еще, то создаем
                 if (!($fieldObject = $this->getFieldByName($fieldName))) {

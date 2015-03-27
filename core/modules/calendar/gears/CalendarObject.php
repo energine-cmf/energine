@@ -15,7 +15,7 @@ final class CalendarItem
  * @version 1.0.0
  */
 namespace Energine\calendar\gears;
-use Energine\share\gears\Object, Energine\share\gears\DBWorker;
+use Energine\share\gears\Object;
 /**
  * Calendar object.
  *
@@ -134,7 +134,7 @@ final class CalendarObject extends Object implements \Iterator {
 	           $tmp->modify('-1 day');    	
 	       	break;
 		}
-	   return (object)array('month' => $tmp->format('n'), 'monthName' => DBWorker::_translate('TXT_MONTH_NAME_'.$tmp->format('m')), 'year' => $tmp->format('Y'));
+	   return (object)array('month' => $tmp->format('n'), 'monthName' => translate('TXT_MONTH_NAME_'.$tmp->format('m')), 'year' => $tmp->format('Y'));
 	}
 	
 	/**

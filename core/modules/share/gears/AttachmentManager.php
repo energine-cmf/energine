@@ -22,7 +22,9 @@ namespace Energine\share\gears;
 class AttachmentManager;
  * @endcode
  */
-class AttachmentManager extends DBWorker {
+class AttachmentManager extends Object {
+    use DBWorker;
+
     /**
      * Attach table suffix.
      * @var string ATTACH_TABLE_SUFFIX

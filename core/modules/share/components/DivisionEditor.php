@@ -16,7 +16,7 @@ final class DivisionEditor;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears, Energine\share\gears\FieldDescription, Energine\share\gears\JSONDivBuilder, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Field, Energine\share\gears\DataDescription, Energine\share\gears\DBWorker, Energine\share\gears\Document, Energine\share\gears\DivisionSaver, Energine\share\gears\TagManager, Energine\apps\gears\AdsManager, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL;
+use Energine\share\gears, Energine\share\gears\FieldDescription, Energine\share\gears\JSONDivBuilder, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Field, Energine\share\gears\DataDescription, Energine\share\gears\Document, Energine\share\gears\DivisionSaver, Energine\share\gears\TagManager, Energine\apps\gears\AdsManager, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\QAL;
 
 /**
  * Division editor.
@@ -144,7 +144,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
             $this->dbh->select('user_group_rights', array('right_id', 'right_const as right_name'));
         $data =
             array_map(function ($a) {
-                $a["right_name"] = DBWorker::_translate("TXT_" . $a["right_name"]);
+                $a["right_name"] = translate("TXT_" . $a["right_name"]);
                 return $a;
             }, $data);
         $data[] =

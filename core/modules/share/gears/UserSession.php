@@ -23,7 +23,8 @@ final class UserSession;
  *
  * @final
  */
-final class UserSession extends DBWorker {
+final class UserSession extends Object {
+    use DBWorker;
     /**
      * Cookie name for failed login.
      * @var string FAILED_LOGIN_COOKIE_NAME

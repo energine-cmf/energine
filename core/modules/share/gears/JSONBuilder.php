@@ -127,7 +127,7 @@ class JSONBuilder extends AbstractBuilder {
             $result['pager'] = array(
                 'current' => $this->pager->getCurrentPage(),
                 'count' => $this->pager->getNumPages(),
-                'records' => $this->translate('TXT_TOTAL').': '.$this->pager->getRecordsCount()
+                'records' => translate('TXT_TOTAL').': '.$this->pager->getRecordsCount()
             );
         }
         $result = json_encode($result, JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);

@@ -14,6 +14,8 @@ class Comments;
  */
 namespace Energine\comments\gears;
 use Energine\share\gears\DBWorker, Energine\share\gears\QAL;
+use Energine\share\gears\Object;
+
 /**
  * Comments CRUD.
  *

@@ -176,7 +176,7 @@ class AttachmentEditor extends Grid {
         $data = parent::loadData();
 
         if ($this->getState() == 'getRawData' && $data) {
-            $inverted = inverseDBResult($data);
+            $inverted = transpose($data);
             $upl_ids = $inverted['upl_id'];
 
             $res = $this->dbh->select(

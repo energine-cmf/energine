@@ -35,9 +35,7 @@ namespace Energine\share\gears {
     /**
      * Application registry.
      *
-     * @code
-    final class Registry;
-     * @endcode
+     * @property-read Energine\share\gears\Utils $Utils
      *
      * Such Registry & Service Locator hybrid.
      * Any injected object here become a singleton.
@@ -92,7 +90,7 @@ namespace Energine\share\gears {
         final public static function getInstance() {
             if (is_null(self::$instance)) {
                 self::$flag = true;
-                self::$instance = new Registry();
+                self::$instance = new static;
             }
             return self::$instance;
         }

@@ -508,7 +508,7 @@ namespace {
      *
      * @see QAL::select()
      *
-     * @throws SystemException 'ERR_DEV_BAD_DATA'
+     * @deprecated
      */
     function convertDBResult(array $dbResult, $pkName, $deletePK = false) {
         return call_user_func_array([E()->Utils, 'reindex'], func_get_args());
@@ -521,6 +521,7 @@ namespace {
      * @param array $fields
      * @param string $prefix Prefix, that should be removed from the name.
      * @return array
+     * @deprecated
      */
     function convertFieldNames(array $fields, $prefix = '') {
         return E()->Utils->convertFieldNames($fields, $prefix);
@@ -538,6 +539,7 @@ namespace {
      * @return int
      *
      * @see array_push()
+     * @deprecated
      */
     function arrayPush(array &$array, $var, $key = null) {
         return E()->Utils->arrayPush($array, $var, $key);
@@ -551,6 +553,7 @@ namespace {
      * @param mixed $var New array element.
      * @param int|string $pos Position.
      * @return array
+     * @deprecated
      */
     function array_push_before(array $array, $var, $pos) {
         return E()->Utils->arrayPushBefore($array, $var, $pos);
@@ -564,6 +567,7 @@ namespace {
      * @param mixed $in New array element.
      * @param int|string $pos Position.
      * @return array
+     * @deprecated
      */
     function array_push_after($src, $in, $pos) {
         return E()->Utils->arrayPushAfter($src, $in, $pos);
@@ -574,6 +578,7 @@ namespace {
      * @brief Get stripped contents.
      * @param string $fileName Filename.
      * @return string
+     * @deprecated
      */
     function file_get_contents_stripped($fileName) {
         return E()->Utils->fileGetContentsStripped($fileName);
@@ -586,6 +591,7 @@ namespace {
      * @param $to char
      * @param $src string
      * @return string
+     * @deprecated
      */
     function str_replace_opt($from, $to, $src) {
         return E()->Utils->strReplaceOpt($from, $to, $src);
@@ -609,6 +615,7 @@ namespace {
      * @param string $const Text constant
      * @param int $langId Language ID.
      * @return string
+     * @deprecated
      */
     function translate($const, $langId = null) {
         return E()->Utils->translate($const, $langId);

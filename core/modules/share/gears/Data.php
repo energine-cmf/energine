@@ -51,7 +51,7 @@ class Data extends Object {
      * @see QAL::select()
      */
     public function load($data) {
-        if (is_array($data) && !empty($data)) {
+        if (!empty($data)) {
             $data = transpose($data);
             foreach ($data as $fieldName => $fieldValues) {
                 //Если такого поля не существует еще, то создаем

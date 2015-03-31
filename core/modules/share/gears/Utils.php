@@ -143,7 +143,7 @@ namespace Energine\share\gears {
             $result = false;
             $fieldName = strtolower($fieldName);
             if (is_array($dbResult) || ($dbResult instanceof \Traversable)) {
-                if(!is_array($dbResult)) $dbResult = iterator_to_array($dbResult);
+                if (!is_array($dbResult)) $dbResult = iterator_to_array($dbResult);
                 if ($singleRow) {
                     $result = $dbResult[0][$fieldName];
                 } else {
@@ -176,16 +176,17 @@ namespace Energine\share\gears {
          * )
          * @endcode
          *
-         * @param array $dbResult 2D array.
+         * @param array|\Traversable $dbResult 2D array.
          * @return array
          */
-        function transpose(array $dbResult) {
-            $result = array();
-            foreach ($dbResult as $row) {
-                foreach ($row as $fieldName => $fieldValue) {
-                    $result[$fieldName][] = $fieldValue;
+        function transpose($dbResult) {
+            $result = [];
+            if (!empty($dbResult))
+                foreach ($dbResult as $row) {
+                    foreach ($row as $fieldName => $fieldValue) {
+                        $result[$fieldName][] = $fieldValue;
+                    }
                 }
-            }
             return $result;
         }
 
@@ -514,7 +515,7 @@ namespace {
      * @param array $r 2D array.
      * @return array
      */
-    function transpose(array $r) {
+    function transpose($r) {
         return E()->Utils->transpose($r);
     }
 

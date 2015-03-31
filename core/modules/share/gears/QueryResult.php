@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * QueryResult 
+ * QueryResult
  *
  * Contains the definition to:
  * @code
@@ -19,9 +19,10 @@ namespace Energine\share\gears;
 
 use Traversable;
 
-class QueryResult implements \IteratorAggregate, \ArrayAccess{
-    private $data;
-    function __construct(array $data) {
+class QueryResult implements \IteratorAggregate, \ArrayAccess {
+    private $data = [];
+
+    function __construct(array $data = null) {
         $this->data = $data;
     }
 
@@ -36,13 +37,14 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess{
     public function getIterator() {
         return new \ArrayIterator($this->data);
     }
+
     /**
      * Get a data by key
      *
      * @param string The key data to retrieve
      * @access public
      */
-    public function &__get ($key) {
+    public function &__get($key) {
         return $this->data[$key];
     }
 
@@ -53,7 +55,7 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess{
      * @param mixed  The value to set
      * @access public
      */
-    public function __set($key,$value) {
+    public function __set($key, $value) {
         $this->data[$key] = $value;
     }
 
@@ -65,7 +67,7 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess{
      * @return boolean
      * @abstracting ArrayAccess
      */
-    public function __isset ($key) {
+    public function __isset($key) {
         return isset($this->data[$key]);
     }
 
@@ -82,12 +84,12 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess{
     /**
      * Assigns a value to the specified offset
      *
-     * @param string The offset to assign the value to
+     * @param mixed The offset to assign the value to
      * @param mixed  The value to set
      * @access public
      * @abstracting ArrayAccess
      */
-    public function offsetSet($offset,$value) {
+    public function offsetSet($offset, $value) {
         if (is_null($offset)) {
             $this->data[] = $value;
         } else {
@@ -98,7 +100,7 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess{
     /**
      * Whether or not an offset exists
      *
-     * @param string An offset to check for
+     * @param mixed An offset to check for
      * @access public
      * @return boolean
      * @abstracting ArrayAccess
@@ -110,7 +112,7 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess{
     /**
      * Unsets an offset
      *
-     * @param string The offset to unset
+     * @param mixed The offset to unset
      * @access public
      * @abstracting ArrayAccess
      */
@@ -123,12 +125,13 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess{
     /**
      * Returns the value at specified offset
      *
-     * @param string The offset to retrieve
+     * @param mixed The offset to retrieve
      * @access public
      * @return mixed
      * @abstracting ArrayAccess
      */
-    public function offsetGet($offset) {
-        return $this->offsetExists($offset) ? $this->data[$offset] : null;
+    public function &offsetGet($offset) {
+        return $this->data[$offset];//$this->offsetExists($offset) ? $this->data[$offset] : null;
     }
+
 }

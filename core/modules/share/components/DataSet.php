@@ -456,14 +456,14 @@ abstract class DataSet extends Component {
      * @throws SystemException 'ERR_DEV_LOAD_DATA_IS_FUNCTION'
      */
     protected function createData() {
-        $result = false;
+
         $data = $this->loadData();
         if (is_null($data)) {
             throw new SystemException('ERR_DEV_LOAD_DATA_IS_FUNCTION', SystemException::ERR_DEVELOPER);
         }
         $result = new Data();
 
-        if (is_array($data)) {
+        if (!empty($data)) {
             $result->load($data);
         }
         return $result;

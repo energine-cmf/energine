@@ -21,7 +21,7 @@ use Traversable;
 
 class QueryResult implements \IteratorAggregate, \ArrayAccess{
     private $data;
-    function __construct($data) {
+    function __construct(array $data) {
         $this->data = $data;
     }
 

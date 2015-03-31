@@ -142,13 +142,15 @@ namespace Energine\share\gears {
         function simplify($dbResult, $fieldName, $singleRow = false) {
             $result = false;
             $fieldName = strtolower($fieldName);
-            if (is_array($dbResult)) {
+            if (is_array($dbResult) || ($dbResult instanceof \Traversable)) {
+                if(!is_array($dbResult)) $dbResult = iterator_to_array($dbResult);
                 if ($singleRow) {
                     $result = $dbResult[0][$fieldName];
                 } else {
                     $result = array_column($dbResult, $fieldName);
                 }
             }
+
             return $result;
         }
 
@@ -203,6 +205,12 @@ namespace Energine\share\gears {
          * @throws SystemException 'ERR_DEV_BAD_DATA'
          */
         function reindex($result, $pkName, $deletePK = false) {
+            if (!is_array($result) && ($result instanceof \Traversable)) {
+                $result = iterator_to_array($result);
+            } elseif (!is_array($result)) {
+                throw new \UnexpectedValueException();
+            }
+
             $result = array_column($result, null, $pkName);
             if ($deletePK) {
                 array_walk($result, function (&$row) use ($pkName) {
@@ -398,6 +406,20 @@ namespace {
         call_user_func_array([E()->Utils, 'inspect'], func_get_args());
     }
 
+    function inspect2() {
+        $args = func_get_args();
+
+        if (php_sapi_name() != 'cli') {
+            echo '<pre>';
+            call_user_func_array('var_dump', $args);
+            echo '</pre>';
+        } else {
+            echo PHP_EOL;
+            call_user_func_array('var_dump', $args);
+            echo PHP_EOL;
+        }
+    }
+
     /**
      * @fn splitDate($date)
      * @brief Split date.
@@ -510,7 +532,7 @@ namespace {
      *
      * @deprecated
      */
-    function convertDBResult(array $dbResult, $pkName, $deletePK = false) {
+    function convertDBResult(\Traversable $dbResult, $pkName, $deletePK = false) {
         return call_user_func_array([E()->Utils, 'reindex'], func_get_args());
     }
 

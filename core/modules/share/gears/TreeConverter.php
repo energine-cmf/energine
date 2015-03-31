@@ -62,7 +62,7 @@ final class TreeConverter{
 	 *
      * @throws \Exception 'Неправильный формат древовидных данных'
 	 */
-	static public function convert(array $data, $keyName, $parentKeyName) {
+	static public function convert(\Traversable $data, $keyName, $parentKeyName) {
         self::$keyName = $keyName;
         self::$parentKeyName = $parentKeyName;
 
@@ -82,7 +82,7 @@ final class TreeConverter{
      *
      * @todo реализовать
      */
-    static private function validate(array $data) {
+    static private function validate(\Traversable $data) {
     	foreach ($data as $value) {
     		if (!array_key_exists(self::$parentKeyName, $value) || !array_key_exists(self::$parentKeyName, $value)) {
     			return false;
@@ -101,7 +101,7 @@ final class TreeConverter{
 	 * @param TreeNode|TreeNodeList $parent Parent object.
      * @return TreeNodeList
      */
-    static private function iterate(array $data, $parent) {
+    static private function iterate(\Traversable $data, $parent) {
         foreach ($data as $key => $value) {
         	//Если родителем является TreeNodeList  - значит мы на начальном шаге итерации и ключ - пустой, во всех других случаях - ключом является идентификатор узла родителя
         	if ($parent instanceof TreeNodeList) {

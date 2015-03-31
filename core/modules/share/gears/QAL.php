@@ -274,7 +274,7 @@ final class QAL extends Object {
             array_push($result, $row);
         }
 
-        return $result;
+        return new QueryResult($result);
     }
 
     /**

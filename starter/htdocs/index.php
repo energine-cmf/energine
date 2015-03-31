@@ -37,12 +37,12 @@ try {
     //И ориентироваться на наличие DEBUG здесь нельзя
     //Поэтому выводим как есть
     header('Content-Type: text/plain; charset=utf-8');
-    echo $bootstrapException->getMessage();
+    echo $bootstrapException;
 } catch (\Exception $generalException) {
     //Если отрабатывает этот кетчер, значит дела пошли совсем плохо
     if (defined('DEBUG') && DEBUG) {
         header('Content-Type: text/plain; charset=utf-8');
-        echo (string)$generalException->getMessage();
+        echo $generalException;
     }
     //TODO В лог что ли писать?
     /*

@@ -204,7 +204,6 @@ class TagManager extends Object {
         list($mapFieldName) = $columns;
         $res =
             $this->dbh->select($mapTableName, array('tag_id', $mapFieldName), array($mapFieldName => $mapValue));
-
         if ($res) {
             $result = array();
             foreach ($res as $row) {

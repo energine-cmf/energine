@@ -35,7 +35,7 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess {
      * <b>Traversable</b>
      */
     public function getIterator() {
-        return new \ArrayIterator($this->data);
+        return (!empty($this->data)) ? new \ArrayIterator($this->data) : new \EmptyIterator;
     }
 
     /**

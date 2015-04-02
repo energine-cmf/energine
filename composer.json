@@ -1,7 +1,7 @@
 {
     "name": "energine-cmf/energine",
     "description": "Energine is an XML/XSLT content management framework.",
-    "type":"project",
+    "type":"library",
     "license": "MIT",
     "keywords": ["xml", "xslt", "framework", "cmf"],
     "homepage": "http://energine.net/",

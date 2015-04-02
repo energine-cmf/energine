@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 final class UserSession;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2011
@@ -19,11 +19,11 @@ namespace Energine\share\gears;
  *
  * @code
 final class UserSession;
-@endcode
+ * @endcode
  *
  * @final
  */
-final class UserSession extends Object {
+final class UserSession extends Object implements \SessionHandlerInterface {
     use DBWorker;
     /**
      * Cookie name for failed login.
@@ -102,11 +102,11 @@ final class UserSession extends Object {
     /**
      * @param bool $force Force to create session?
      *
-     * @throws \SystemException 'ERR_NO_CONSTRUCTOR'
+     * @throws \BadMethodCallException
      */
     public function __construct($force = false) {
         if (!self::$instance) {
-            throw new \SystemException('ERR_NO_CONSTRUCTOR');
+            throw new \BadMethodCallException();
         }
 
         parent::__construct();
@@ -116,14 +116,7 @@ final class UserSession extends Object {
 
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
         // устанавливаем обработчики сеанса
-        session_set_save_handler(
-            array($this, 'open'),
-            array($this, 'close'),
-            array($this, 'read'),
-            array($this, 'write'),
-            array($this, 'destroy'),
-            array($this, 'gc')
-        );
+        session_set_save_handler($this);
         session_name(self::DEFAULT_SESSION_NAME);
         $this->data = false;
         if ($this->phpSessId = self::isOpen()) {
@@ -135,8 +128,7 @@ final class UserSession extends Object {
                 //создаем ее вручную
                 $sessInfo = self::manuallyCreateSessionInfo();
                 $this->phpSessId = $sessInfo[1];
-            }
-            //сессия невалидная
+            } //сессия невалидная
             else {
                 $this->dbh->modify(QAL::DELETE, self::$tableName, null, array("session_native_id" => addslashes($this->phpSessId)));
                 // удаляем cookie сеанса
@@ -147,8 +139,8 @@ final class UserSession extends Object {
             //создаем ее вручную
             $sessInfo = self::manuallyCreateSessionInfo();
             $this->phpSessId = $sessInfo[1];
-        }
-        else {
+        } else {
+            self::$instance = false;
             return;
         }
 
@@ -171,7 +163,7 @@ final class UserSession extends Object {
      * @return bool
      */
     static public function isOpen() {
-        return (isset($_COOKIE[self::DEFAULT_SESSION_NAME]) && !empty($_COOKIE[self::DEFAULT_SESSION_NAME]))?$_COOKIE[self::DEFAULT_SESSION_NAME]:false;
+        return (isset($_COOKIE[self::DEFAULT_SESSION_NAME]) && !empty($_COOKIE[self::DEFAULT_SESSION_NAME])) ? $_COOKIE[self::DEFAULT_SESSION_NAME] : false;
     }
 
     /**
@@ -185,11 +177,11 @@ final class UserSession extends Object {
         // проверяем
         $res = E()->getDB()->select(
             'SELECT session_id, session_data FROM ' . self::$tableName .
-                ' WHERE session_native_id = %s ' .
-                ' AND session_expires >= UNIX_TIMESTAMP()',
+            ' WHERE session_native_id = %s ' .
+            ' AND session_expires >= UNIX_TIMESTAMP()',
             addslashes($sessID)
         );
-        return (!$res)?: $res[0]['session_data'];
+        return (!$res) ?: $res[0]['session_data'];
     }
 
     //todo VZ: Why not to use 0 as the default for arguments?
@@ -247,12 +239,10 @@ final class UserSession extends Object {
      * @throws \SystemException 'ERR_SESSION_ALREADY_STARTED'
      */
     public static function start($force = false) {
-        if (self::$instance) {
-            throw new \SystemException('ERR_SESSION_ALREADY_STARTED');
+        if (!self::$instance) {
+            self::$instance = true;
+            new UserSession($force);
         }
-        self::$instance = true;
-
-        new UserSession($force);
     }
 
     /**

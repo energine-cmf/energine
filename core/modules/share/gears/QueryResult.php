@@ -21,6 +21,7 @@ use Traversable;
 
 class QueryResult implements \IteratorAggregate, \ArrayAccess {
     private $data = [];
+    private $props = [];
 
     function __construct(array $data = null) {
         $this->data = $data;
@@ -132,6 +133,10 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess {
      */
     public function &offsetGet($offset) {
         return $this->data[$offset];//$this->offsetExists($offset) ? $this->data[$offset] : null;
+    }
+
+    public function map(\Closure $callback){
+        array_walk($this->data, $callback);
     }
 
 }

@@ -17,6 +17,7 @@ class UserEditor;
 namespace Energine\user\components;
 
 use Energine\share\components\Grid, Energine\share\gears\SystemException, Energine\share\gears\QAL, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\FieldDescription, Energine\share\gears\Field;
+use Energine\share\gears\QueryResult;
 
 /**
  * User editor.
@@ -29,7 +30,7 @@ class UserEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = null) {
         parent::__construct($name, $params);
         $this->setTableName('user_users');
         $this->setTitle($this->translate('TXT_USER_EDITOR'));
@@ -122,6 +123,9 @@ class UserEditor extends Grid {
      */
     // Для метода редактирования убирается пароль
     protected function loadData() {
+        /**
+         * @var QueryResult
+         */
         $result = parent::loadData();
 
         /*if ($this->getState() == 'save') {
@@ -129,33 +133,26 @@ class UserEditor extends Grid {
         }
         else*/
         if ($this->getState() == 'getRawData' && $result) {
-            $result = array_map(array($this, 'printUserGroups'), $result);
+            $result->map(function (&$row) {
+                $userGroup = E()->UserGroup;
+                $userGroupIDs = $userGroup->getUserGroups($row['u_id']);
+                $userGroupName = array();
+                foreach ($userGroupIDs as $UGID) {
+                    $groupInfo = $userGroup->getInfo($UGID);
+                    $userGroupName[] = $groupInfo['group_name'];
+                }
+                $row['u_group'] = implode(', ', $userGroupName);
+            });
         } elseif ($this->getState() == 'edit') {
             $result[0]['u_password'] = '';
         } elseif ($this->getState() == 'view') {
             $result[0]['u_password'] = '';
         }
+
         return $result;
     }
 
-    /**
-     * Callback method that called by data loading.
-     * It adds a string to the array with all user's groups.
-     *
-     * @param array $row Row.
-     * @return array
-     */
-    private function printUserGroups($row) {
-        $userGroup = E()->UserGroup;
-        $userGroupIDs = $userGroup->getUserGroups($row['u_id']);
-        $userGroupName = array();
-        foreach ($userGroupIDs as $UGID) {
-            $groupInfo = $userGroup->getInfo($UGID);
-            $userGroupName[] = $groupInfo['group_name'];
-        }
-        $row['u_group'] = implode(', ', $userGroupName);
-        return $row;
-    }
+
 
     /**
      * @copydoc Grid::createDataDescription

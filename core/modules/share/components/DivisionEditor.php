@@ -284,15 +284,13 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
 
         if ($result && $this->getState() == 'getRawData') {
             $params = $this->getStateParams(true);
+            foreach ($result as &$val) {
+                $val["smap_segment"] = E()->getMap($params['site_id'])->getURLByID($val["smap_id"]);
+                if ($this->getDataDescription()->getFieldDescriptionByName('site')) {
+                    $val["site"] = E()->getSiteManager()->getSiteByID($params['site_id'])->base;
+                }
+            }
 
-            $result = array_map(
-                function ($val) use ($params) {
-                    $val["smap_segment"] = E()->getMap($params['site_id'])->getURLByID($val["smap_id"]);
-                    if ($this->getDataDescription()->getFieldDescriptionByName('site')) {
-                        $val["site"] = E()->getSiteManager()->getSiteByID($params['site_id'])->base;
-                    }
-                    return $val;
-                }, $result);
         }
         return $result;
     }

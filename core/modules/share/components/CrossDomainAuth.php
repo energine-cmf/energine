@@ -13,7 +13,7 @@ class CrossDomainAuth;
  *
  * @version 1.0.0
  */
-
+namespace Energine\share\components;
 /**
  * Component for cross-domain authentication.
  *

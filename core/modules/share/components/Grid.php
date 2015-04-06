@@ -643,7 +643,7 @@ class Grid extends DBDataSet {
                 $request .= ' GROUP BY ' . $this->getPK();
             }
             //в $data накапливаем строки
-            $res = $this->dbh->get($request);
+            $res = $this->dbh->query($request);
 
             if ($res && $res->rowCount()) {
                 while ($row = $res->fetch(\PDO::FETCH_LAZY)) {

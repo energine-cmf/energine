@@ -584,7 +584,7 @@ final class QAL extends Object {
                     } else {
                         array_push($realData, $v);
                     }
-
+					if (empty($v)) $v = 1;
                     return implode(',', array_fill(0, sizeof($v), '?'));
                 },
                 $data

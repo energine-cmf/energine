@@ -35,7 +35,7 @@ trait DBWorker {
         if (in_array($name, ['translate', 'dateToString'])) {
             return call_user_func_array($name, $args);
         }
-        throw \OutOfBoundsException();
+        throw new \OutOfBoundsException(__CLASS__ . " $name does not exists");
     }
 
     /**

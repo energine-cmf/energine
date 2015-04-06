@@ -262,11 +262,17 @@ final class QAL extends Object {
      *
      */
     private function selectRequest($query) {
+        /**
+         * @var \PDOStatement
+         */
         $res = call_user_func_array([$this, 'get'], func_get_args());
-        $result = new QueryResult();
+        $result = new QueryResult('<root/>');
+        $result->setSource($res);
+
         while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
             $result[] = $row;
         }
+
         return $result;
     }
 

@@ -174,7 +174,9 @@ class AttachmentEditor extends Grid {
     // Дополняет набор данных значениями полей upl_path, upl_name и upl_duration
     protected function loadData() {
         $data = parent::loadData();
-
+if(!$data){
+    inspect(11);
+}
         if ($this->getState() == 'getRawData' && $data) {
             $inverted = transpose($data);
             $upl_ids = $inverted['upl_id'];

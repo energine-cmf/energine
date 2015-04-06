@@ -21,10 +21,13 @@ use Traversable;
 
 class QueryResult implements \IteratorAggregate, \ArrayAccess {
     private $data = [];
-    private $props = [];
+    private $query = '';
 
-    function __construct(array $data = null) {
-        $this->data = $data;
+    public function setSource(\PDOStatement $pdo){
+        $this->query = $pdo->queryString;
+    }
+    public function getQuery() {
+        return $this->query;
     }
 
 
@@ -39,26 +42,6 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess {
         return (!empty($this->data)) ? new \ArrayIterator($this->data) : new \EmptyIterator;
     }
 
-    /**
-     * Get a data by key
-     *
-     * @param string The key data to retrieve
-     * @access public
-     */
-    public function &__get($key) {
-        return $this->data[$key];
-    }
-
-    /**
-     * Assigns a value to the specified data
-     *
-     * @param string The data key to assign the value to
-     * @param mixed  The value to set
-     * @access public
-     */
-    public function __set($key, $value) {
-        $this->data[$key] = $value;
-    }
 
     /**
      * Whether or not an data exists by key
@@ -72,15 +55,6 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess {
         return isset($this->data[$key]);
     }
 
-    /**
-     * Unsets an data by key
-     *
-     * @param string The key to unset
-     * @access public
-     */
-    public function __unset($key) {
-        unset($this->data[$key]);
-    }
 
     /**
      * Assigns a value to the specified offset
@@ -135,8 +109,7 @@ class QueryResult implements \IteratorAggregate, \ArrayAccess {
         return $this->data[$offset];//$this->offsetExists($offset) ? $this->data[$offset] : null;
     }
 
-    public function map(\Closure $callback){
+    public function map(\Closure $callback) {
         array_walk($this->data, $callback);
     }
-
 }

@@ -216,6 +216,7 @@ final class QAL extends Object {
         try {
             $this->pdo = new \PDO($dsn, $username, $password, $driverOptions);
             $this->pdo->query('SET NAMES ' . $charset);
+            $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
             $this->dbCache = new DBStructureInfo($this->pdo);
 
@@ -395,7 +396,7 @@ final class QAL extends Object {
         } catch (\UnexpectedValueException $e) {
             new \PDOException($this->pdo->errorInfo()[2]);
         }
-
+        $this->lastQuery = $result->queryString;
         return $result;
     }
 

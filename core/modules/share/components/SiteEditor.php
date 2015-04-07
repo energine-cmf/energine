@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class SiteEditor;
-@endcode
+ * @endcode
  *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
@@ -14,13 +14,15 @@ class SiteEditor;
  * @version 1.0.0
  */
 namespace Energine\share\components;
+
 use Energine\share\gears\SiteSaver, Energine\share\gears\SiteEditorConfig, Energine\share\gears\FieldDescription, Energine\share\gears\Field, Energine\share\gears\TagManager, Energine\share\gears\SystemException;
+
 /**
  * Site editor.
  *
  * @code
 class SiteEditor;
-@endcode
+ * @endcode
  */
 class SiteEditor extends Grid {
     /**
@@ -42,7 +44,7 @@ class SiteEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = null) {
         parent::__construct($name, $params);
         $this->setTableName('share_sites');
         $this->setSaver(new SiteSaver());
@@ -101,8 +103,7 @@ class SiteEditor extends Grid {
                 $fd->setType(FieldDescription::FIELD_TYPE_SELECT);
                 $fd->loadAvailableValues($this->dbh->select('SELECT ss.site_id, site_name FROM share_sites ss LEFT JOIN share_sites_translation sst ON ss.site_id = sst.site_id WHERE lang_id =%s ', $this->document->getLang()), 'site_id', 'site_name');
                 $this->getDataDescription()->addFieldDescription($fd);
-            }
-            else {
+            } else {
                 $this->getDataDescription()->getFieldDescriptionByName($this->getPK())->setType(FieldDescription::FIELD_TYPE_INT)->setMode(FieldDescription::FIELD_MODE_READ);
                 $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
                 $tm->createFieldDescription();
@@ -130,8 +131,7 @@ class SiteEditor extends Grid {
         if (isset($sp['site_id'])) {
             $this->request->shiftPath(2);
             $domainEditorParams = array('siteID' => $sp['site_id']);
-        }
-        else {
+        } else {
             $this->request->shiftPath(1);
         }
         $this->domainEditor = $this->document->componentManager->createComponent('domainEditor', 'Energine\share\components\DomainEditor', $domainEditorParams);
@@ -157,14 +157,11 @@ class SiteEditor extends Grid {
     public function build() {
         if ($this->getState() == 'reset') {
             $result = $this->divEditor->build();
-        }
-        elseif ($this->getState() == 'domains') {
+        } elseif ($this->getState() == 'domains') {
             $result = $this->domainEditor->build();
-        }
-        elseif ($this->getState() == 'properties') {
+        } elseif ($this->getState() == 'properties') {
             $result = $this->propertiesEditor->build();
-        }
-        else {
+        } else {
             $result = parent::build();
         }
 
@@ -192,14 +189,15 @@ class SiteEditor extends Grid {
      */
     protected function go() {
         list($siteID) = $this->getStateParams();
-        if(!($url =
+        if (!($url =
             $this->dbh->getScalar(
                 'SELECT CONCAT( domain_protocol, "://", domain_host, ":", domain_port, domain_root ) AS url
                 FROM `share_domains`
                 LEFT JOIN share_domain2site
                 USING ( domain_id )
                 WHERE (site_id = %s)
-                LIMIT 1', $siteID))){
+                LIMIT 1', $siteID))
+        ) {
             throw new SystemException('ERR_BAD_URL', SystemException::ERR_CRITICAL, $this->dbh->getLastRequest());
         }
         E()->getResponse()->setRedirect($url);

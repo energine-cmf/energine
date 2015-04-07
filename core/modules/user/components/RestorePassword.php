@@ -64,7 +64,7 @@ class RestorePassword extends DataSet {
                 $message = $this->translate('ERR_NO_U_NAME');
             } else {
                 $password = User::generatePassword();
-                $this->dbh->modify(QAL::UPDATE, 'user_users', array('u_password' => sha1($password)), array('u_id' => $UID));
+                $this->dbh->modify(QAL::UPDATE, 'user_users', array('u_password' => password_hash($password, PASSWORD_DEFAULT)), array('u_id' => $UID));
                 $mailer = new Mail();
                 $mailer->setFrom($this->getConfigValue('mail.from'))->
                 setSubject($this->translate('TXT_SUBJ_RESTORE_PASSWORD'))->

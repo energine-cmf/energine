@@ -837,7 +837,7 @@ CREATE TABLE IF NOT EXISTS `user_users` (
   `u_vkid` char(25) DEFAULT NULL,
   `u_name` varchar(50) NOT NULL,
   `u_phone` varchar(100) DEFAULT NULL,
-  `u_password` varchar(40) NOT NULL,
+  `u_password` varchar(255) NOT NULL,
   `u_is_active` tinyint(1) NOT NULL DEFAULT '1',
   `u_fullname` varchar(250) NOT NULL,
   `u_country` varchar(255) DEFAULT NULL,

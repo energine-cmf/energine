@@ -48,11 +48,10 @@ class DivisionSaver extends ExtendedSaver {
         }
         //$this->setFilter(array('smap_pid'=>$PID));
         //Проверяем изменился ли лейаут или контент
-        $prevTemplateData =
-            $this->dbh->select('share_sitemap', array('smap_layout', 'smap_content'), array('smap_id' => $_POST['share_sitemap']['smap_id']));
 
         //Значит - редактирование
-        if (is_array($prevTemplateData)) {
+        if ($prevTemplateData =
+                    $this->dbh->select('share_sitemap', array('smap_layout', 'smap_content'), array('smap_id' => $_POST['share_sitemap']['smap_id']))) {
             list($prevTemplateData) = $prevTemplateData;
         }
 
@@ -92,7 +91,9 @@ class DivisionSaver extends ExtendedSaver {
                 $this->dbh->modify(QAL::INSERT, 'share_access_level', array('smap_id' => $smapID, 'right_id' => $rightID, 'group_id' => $groupID));
             }
         }
-
+        /**
+         * @todo remove
+         */
         if (class_exists('AdsManager', false)
             && AdsManager::isActive()
             && isset($_POST[AdsManager::TABLE_NAME])

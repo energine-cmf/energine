@@ -78,7 +78,7 @@ class Grid extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = null) {
         parent::__construct($name, $params);
 
         $this->setProperty('exttype', 'grid');
@@ -289,12 +289,9 @@ class Grid extends DBDataSet {
         $FKField = $params['fk_field_name'];
 
         if (array_key_exists('editor_class', $params)) {
-            list($section, $module, , $lookupClass) = explode('.', $params['editor_class']);
-            $section .= (($section !== 'Energine')?'site':'');
+            $lookupClass = str_replace('.', '\\', $params['editor_class']);
         } else {
-            $section = 'Energine';
-            $lookupClass = 'Lookup';
-            $module = 'share';
+            $lookupClass = implode('\\', ['Energine', 'share', 'components', 'Lookup']);
         }
 
         $columns = $this->dbh->getColumnsInfo($this->getTableName());
@@ -307,8 +304,7 @@ class Grid extends DBDataSet {
         ];
 
         $this->request->shiftPath(2);
-        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', implode('\\', [$section, $module, 'components', $lookupClass]),
-            $params);
+        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', $lookupClass, $params);
         $this->lookupEditor->run();
     }
 
@@ -1000,7 +996,7 @@ class Grid extends DBDataSet {
         list($currentID) = $currentID;
 
         //Определяем order_num текущей страницы
-        $currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(), [$this->getPK() =>$currentID]);
+        $currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(), [$this->getPK() => $currentID]);
 
         $orderDirection = ($direction == Grid::DIR_DOWN) ? QAL::ASC : QAL::DESC;
 

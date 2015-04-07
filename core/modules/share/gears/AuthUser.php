@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class AuthUser;
-@endcode
+ * @endcode
  *
  * @author d.pavka
  * @copyright Energine 2011
@@ -20,7 +20,7 @@ namespace Energine\share\gears;
  *
  * @code
 class AuthUser;
-@endcode
+ * @endcode
  */
 class AuthUser extends User {
     //todo VZ: Why not to use 0 as the default user id?
@@ -57,26 +57,24 @@ class AuthUser extends User {
 
 
     /**
-     * Authenticate user by his name and SHA-1 hash code.
+     * Authenticate user by his name and password
      *
      * @param string $username User name.
      * @param string $password SHA-1 hash code.
      * @return bool|int
      */
     public static function authenticate($username, $password) {
-        //Проверяем совпадает ли имя/пароль в SHA1 с данными в таблице
-        if($id = E()->getDB()->getScalar(
-            'user_users', array('u_id'),
-            array(
-                'u_name' => trim($username),
-                'u_password' => sha1(trim($password)),
-                'u_is_active' => 1
-            ))
-        ) {
-            return (int)$id; 
+        $res = E()->getDB()->query('SELECT u_id, u_password FROM user_users WHERE u_name = %s', $username);
+        $result = false;
+        while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
+            if (password_verify($password, $row['u_password'])) {
+                $result = $row['u_id'];
+                unset($row, $res);
+                break;
+            }
         }
-        else {
-            return false;
-        }
+
+        return $result;
+
     }
 }

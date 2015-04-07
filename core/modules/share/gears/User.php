@@ -169,7 +169,7 @@ class User extends Object {
 
         $this->info = $data;
         //$this->info['u_password'] = $data['u_password'];
-        $data['u_password'] = sha1($data['u_password']);
+        $data['u_password'] = password_hash($data['u_password'], PASSWORD_DEFAULT);
         $this->id = $this->dbh->modify(QAL::INSERT, self::USER_TABLE_NAME, $data);
         $this->setGroups(array($this->userGroup->getDefaultUserGroup()));
     }

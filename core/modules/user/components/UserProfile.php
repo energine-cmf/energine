@@ -69,7 +69,7 @@ class UserProfile extends DBDataSet {
      * Save.
      */
     protected function save() {
-        if ($this->document->user->getValue('u_password') != sha1($_POST[$this->getTableName()]['u_password'])) {
+        if (!password_verify($this->document->user->getValue('u_password'), password_hash($_POST[$this->getTableName()]['u_password'], PASSWORD_DEFAULT))) {
             $_SESSION['error'] = true;
             $this->response->redirectToCurrentSection('error/');
         }
@@ -79,7 +79,7 @@ class UserProfile extends DBDataSet {
                 $this->generateError(SystemException::ERR_WARNING, 'ERR_PWD_MISMATCH');
             }
             unset($_POST['u_password2']);
-            $_POST[$this->getTableName()]['u_password'] = sha1($_POST[$this->getTableName()]['u_password']);
+            $_POST[$this->getTableName()]['u_password'] = password_hash($_POST[$this->getTableName()]['u_password'], PASSWORD_DEFAULT);
         }
         $_POST[$this->getTableName()]['u_id'] = $this->document->getUser()->getID();
 

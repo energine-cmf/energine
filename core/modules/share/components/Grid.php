@@ -290,11 +290,13 @@ class Grid extends DBDataSet {
 
         if (array_key_exists('editor_class', $params)) {
             list($section, $module, , $lookupClass) = explode('.', $params['editor_class']);
-            $module = (($section == 'Energine') ? '' : 'site/') . $module;
+            $section .= (($section !== 'Energine')?'site':'');
         } else {
+            $section = 'Energine';
             $lookupClass = 'Lookup';
             $module = 'share';
         }
+
         $columns = $this->dbh->getColumnsInfo($this->getTableName());
         if (!isset($columns[$FKField]) || !is_array($columns[$FKField]['key'])) {
             throw new SystemException('ERR_NO_FIELD', SystemException::ERR_DEVELOPER, $FKField);
@@ -305,7 +307,7 @@ class Grid extends DBDataSet {
         ];
 
         $this->request->shiftPath(2);
-        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', $lookupClass,
+        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', implode('\\', [$section, $module, 'components', $lookupClass]),
             $params);
         $this->lookupEditor->run();
     }

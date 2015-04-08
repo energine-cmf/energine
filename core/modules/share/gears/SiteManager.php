@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 final class SiteManager;
-@endcode
+ * @endcode
  *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
@@ -19,12 +19,13 @@ namespace Energine\share\gears;
  *
  * @code
 final class SiteManager;
-@endcode
+ * @endcode
  *
  * @final
  */
 final class SiteManager extends Object implements \Iterator {
     use DBWorker;
+
     /*
      * Instance of the current class.
      *
@@ -62,7 +63,7 @@ final class SiteManager extends Object implements \Iterator {
         $this->data = Site::load();
 
         if (!($this->getConfigValue('site.debug')
-              && $res = $this->getConfigValue('site.dev_domains'))
+            && $res = $this->getConfigValue('site.dev_domains'))
         ) {
             $request = 'SELECT d . * , site_id as domain_site
                       FROM `share_domains` d
@@ -75,7 +76,7 @@ final class SiteManager extends Object implements \Iterator {
             throw new SystemException('ERR_NO_SITE', SystemException::ERR_DEVELOPER);
         }
         foreach ($res as $domainData) {
-            $domainData = convertFieldNames($domainData, 'domain_');
+            $domainData = E()->Utils->convertFieldNames($domainData, 'domain_');
             //Если не установлен уже домен - для сайта - дописываем
             //по сути первый домен будет дефолтным
             if (isset($domainData['site']) && is_null($this->data[$domainData['site']]->base)) {
@@ -148,6 +149,25 @@ final class SiteManager extends Object implements \Iterator {
     public function getCurrentSite() {
         return $this->data[$this->currentSiteID];
 
+    }
+
+    /**
+     * Return sites by tag
+     *
+     * @param string $tag
+     * @return Site[]
+     */
+    public function getSitesByTag($tag) {
+        $result = [];
+        $tagID = TagManager::getID($tag);
+        if ($tagID) $tagID = array_keys($tagID);
+        if ($sites = $this->dbh->getColumn('share_sites_tags', 'site_id', ['tag_id' => $tagID])) {
+            $result = array_map(function ($siteID) {
+                return $this->getSiteByID($siteID);
+            }, $sites);
+
+        }
+        return $result;
     }
 
     /**

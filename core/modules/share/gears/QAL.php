@@ -317,7 +317,7 @@ final class QAL extends Object {
             foreach ($args as $index => &$value) {
                 $stmt->bindParam($index + 1, $value);
             }
-            if ($res = $stmt->execute()) {
+            if (($res = $stmt->execute()) && $stmt->rowCount() ) {
                 $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             }
         }

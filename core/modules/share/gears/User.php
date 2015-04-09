@@ -90,9 +90,7 @@ class User extends Object {
      * @return array
      */
     public function getGroups() {
-        $result = array();
-        $result = $this->userGroup->getUserGroups($this->id);
-        return $result;
+        return $this->userGroup->getUserGroups($this->id);
     }
 
     /**

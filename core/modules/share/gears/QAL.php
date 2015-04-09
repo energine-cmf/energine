@@ -830,19 +830,22 @@ final class QAL extends Object {
      * @param string $fkKeyName Key name.
      * @param int $currentLangID Current language ID.
      * @param mixed $filter Restriction for selecting.
+     * @param mixed $order Order condition
+     *
      * @return array
      */
-    public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
+    public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null, $order = null) {
         $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')) . '_name';
         $columns = $this->getColumnsInfo($fkTableName);
 
-        $order = '';
-        foreach (array_keys($columns) as $columnName) {
-            if (strpos($columnName, '_order_num')) {
-                $order = $columnName . ' ' . QAL::ASC;
-                break;
+        if (!$order)
+            foreach (array_keys($columns) as $columnName) {
+                if (strpos($columnName, '_order_num')) {
+                    $order = $columnName . ' ' . QAL::ASC;
+                    break;
+                }
             }
-        }
+
         $transTableName = $this->getTranslationTablename($fkTableName);
         //если существует таблица с переводами для связанной таблицы
         //нужно брать значения оттуда
@@ -866,20 +869,17 @@ final class QAL extends Object {
                 $filter = '';
             }
 
-            $request = sprintf(
-                'SELECT 
-                    %2$s.*, %3$s.%s 
-                    FROM %s
-                    LEFT JOIN %s on %3$s.%s = %2$s.%s
-                    WHERE lang_id =%s' . $filter . (($order) ? ' ORDER BY ' . $order : ''),
+            $res = $this->selectRequest(sprintf('SELECT
+                                %2$s.*, %3$s.%s
+                                FROM %s
+                                LEFT JOIN %s on %3$s.%s = %2$s.%s
+                                WHERE lang_id =%s' . $filter . $this->buildOrderCondition($order),
                 $fkValueName,
                 QAL::getFQTableName($fkTableName),
                 QAL::getFQTableName($transTableName),
                 $fkKeyName,
                 $fkKeyName,
-                $currentLangID
-            );
-            $res = $this->selectRequest($request);
+                $currentLangID));
         }
 
         return array($res, $fkKeyName, $fkValueName);
@@ -893,7 +893,8 @@ final class QAL extends Object {
      *
      * @see QAL::selectRequest()
      */
-    public function buildOrderCondition($clause) {
+    public
+    function buildOrderCondition($clause) {
         $orderClause = '';
         if (!empty($clause)) {
             $orderClause = ' ORDER BY ';
@@ -920,7 +921,8 @@ final class QAL extends Object {
      *
      * @see QAL::selectRequest()
      */
-    public function buildLimitStatement($clause) {
+    public
+    function buildLimitStatement($clause) {
         $limitClause = '';
         if (is_array($clause)) {
             $limitClause = " LIMIT {$clause[0]}";
@@ -940,7 +942,8 @@ final class QAL extends Object {
      *
      * @throws SystemException
      */
-    private function buildSQL(array $args) {
+    private
+    function buildSQL(array $args) {
         //If first argument contains space  - assume this is SQL string
         if (strpos($args[0], ' ')) {
             return $args;

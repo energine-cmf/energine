@@ -43,8 +43,8 @@ class DivisionSaver extends ExtendedSaver {
      * @copydoc ExtendedSaver::save
      */
     public function save() {
-        if (!$this->getData()->getFieldByName('smap_segment')->getRowData(0)) {
-            $this->getData()->getFieldByName('smap_segment')->setData(Translit::asURLSegment($this->getData()->getFieldByName('smap_name')->getRowData(0)), true);
+        if (($f = $this->getData()->getFieldByName('smap_segment')) && !$f->getRowData(0)) {
+            $f->setData(Translit::asURLSegment($this->getData()->getFieldByName('smap_name')->getRowData(0)), true);
         }
 
         //Выставляем фильтр для родительского идентификатора

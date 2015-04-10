@@ -49,7 +49,7 @@ final class SiteManager extends Object implements \Iterator {
      * Current site ID.
      * @var int $currentSiteID
      */
-    private $currentSiteID = null;
+    private $currentSiteID = NULL;
 
     /**
      * @copydoc DBWorker::__construct
@@ -137,7 +137,7 @@ final class SiteManager extends Object implements \Iterator {
      */
     public function getSiteByPage($pageID) {
         return $this->getSiteByID(
-            $this->dbh->getScalar('share_sitemap', 'site_id', array('smap_id' => $pageID))
+            $this->dbh->getScalar('share_sitemap', 'site_id', ['smap_id' => $pageID])
         );
     }
 
@@ -155,15 +155,16 @@ final class SiteManager extends Object implements \Iterator {
      * Return sites by tag
      *
      * @param string $tag
+     * @param boolean $asArray
      * @return Site[]
      */
-    public function getSitesByTag($tag) {
+    public function getSitesByTag($tag, $asArray = false) {
         $result = [];
         $tagID = TagManager::getID($tag);
         if ($tagID) $tagID = array_keys($tagID);
         if ($sites = $this->dbh->getColumn('share_sites_tags', 'site_id', ['tag_id' => $tagID])) {
-            $result = array_map(function ($siteID) {
-                return $this->getSiteByID($siteID);
+            $result = array_map(function ($siteID) use ($asArray) {
+                return (!$asArray) ? $this->getSiteByID($siteID) : $siteID;
             }, $sites);
 
         }

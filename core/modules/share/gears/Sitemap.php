@@ -231,7 +231,10 @@ final class Sitemap extends Object {
      * @return array
      */
     public function getPagesByTag($tag) {
-        return $this->dbh->getColumn('share_sitemap_tags', 'smap_id', ['tag_id' => array_keys(TagManager::getID($tag))]);
+        return $this->dbh->getColumn('SELECT *
+        FROM `share_sitemap_tags` st
+        RIGHT JOIN share_sitemap s On (st.smap_id = s.smap_id) AND (s.site_id= %s)
+        WHERE tag_id IN (%s)', $this->siteID, array_keys(TagManager::getID($tag)));
     }
 
 

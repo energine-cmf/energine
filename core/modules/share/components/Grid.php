@@ -474,7 +474,6 @@ class Grid extends DBDataSet {
         $saver->setData($this->getData());
 
         if ($saver->validate() === true) {
-
             $saver->setFilter($this->getFilter());
             $saver->save();
             $result = $saver->getResult();

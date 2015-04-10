@@ -143,6 +143,17 @@ final class UserGroup extends Object {
     }
 
     /**
+     * @param int $groupID
+     * @param bool $asArray
+     * @return Site[] | array
+     */
+    public function getSites($groupID, $asArray = true) {
+        return array_map(function ($siteID) use ($asArray) {
+            return ($asArray) ? $siteID : E()->getSiteManager()->getSiteByID($siteID);
+        }, $this->dbh->getColumn('share_groups2sites', 'site_id', ['group_id' => $groupID]));
+    }
+
+    /**
      * Get the list of specific group members.
      *
      * @param int $groupID Group ID.

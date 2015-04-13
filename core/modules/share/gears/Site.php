@@ -2,24 +2,23 @@
 /**
  * @file
  * Site.
- *
  * It contains the definition to:
  * @code
 class Site;
-@endcode
- *
+ * @endcode
  * @author d.pavka
  * @copyright d.pavka@gmail.com
- *
  * @version 1.0.0
  */
 namespace Energine\share\gears;
+
 /**
  * Site.
- *
  * @code
 class Site;
-@endcode
+ * @endcode
+ * @property-read int $id
+ * @property-read string $
  */
 class Site extends Object {
     use DBWorker {
@@ -47,7 +46,7 @@ class Site extends Object {
     public function __construct($data) {
         parent::__construct();
         $this->data = convertFieldNames($data, 'site_');
-        if(is_null(self::$isPropertiesTableExists)) {
+        if (is_null(self::$isPropertiesTableExists)) {
             self::$isPropertiesTableExists = $this->dbh->tableExists('share_sites_properties');
         }
     }
@@ -56,25 +55,26 @@ class Site extends Object {
      * Load site.
      * Return the information about all sites in the form of an array of Site objects.
      * Right away all info is cached from translation table, because ata this moment current language is not yet defined.
-     *
      * @return Site[]
      */
     public static function load() {
-        $result = array();
+        $result = [];
         $res = E()->getDB()->select('share_sites');
         foreach ($res as $siteData) {
             $result[$siteData['site_id']] = new Site($siteData);
         }
         $res = E()->getDB()->select('share_sites_translation');
-        self::$siteTranslationsData = array();
+        self::$siteTranslationsData = [];
         $f = function ($row) {
             unset($row['lang_id'], $row['site_id']);
+
             return $row;
         };
         foreach ($res as $row) {
             self::$siteTranslationsData[$row['lang_id']][$row['site_id']] = $f($row);
 
         }
+
         return $result;
     }
 
@@ -85,19 +85,20 @@ class Site extends Object {
         $this->data = array_merge($this->data, $domainData);
         $this->data['base'] =
             $this->data['protocol'] . '://' .
-                $this->data['host'] . (($this->data['port'] == 80) ? '' : ':' . $this->data['port']) .
-                $this->data['root'];
+            $this->data['host'] . (($this->data['port'] == 80) ? '' : ':' . $this->data['port']) .
+            $this->data['root'];
     }
 
     /**
      * Magic @c get method.
-     *
      * @param string $propName Property name.
      * @return mixed
      */
     public function __get($propName) {
         $result = null;
-        if(!is_null($result = $this::_get($propName))) return $result;
+        if (!is_null($result = $this::_get($propName))) {
+            return $result;
+        }
 
         if (isset($this->data[$propName])) {
             $result = $this->data[$propName];
@@ -114,10 +115,13 @@ class Site extends Object {
                 $propName,
                 $this->data['id']
             );
-            $result = (false !== $res)? $res: $result;
+            $result = (false !== $res) ? $res : $result;
         }
 
         return $result;
     }
 
+    function __toString() {
+        return (string)$this->id;
+    }
 }

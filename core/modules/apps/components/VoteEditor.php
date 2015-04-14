@@ -55,15 +55,6 @@ class VoteEditor extends Grid {
     }
 
     /**
-     * @copydoc Grid::add
-     */
-    // Делаем голосование активным по умолчанию
-    protected function add() {
-        parent::add();
-        $this->getData()->getFieldByName('vote_is_active')->setData(1, true);
-    }
-
-    /**
      * Create component for editing the answers to the question.
      */
     protected function questionEditor() {

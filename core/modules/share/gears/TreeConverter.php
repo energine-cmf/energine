@@ -106,16 +106,14 @@ final class TreeConverter{
         	//Если родителем является TreeNodeList  - значит мы на начальном шаге итерации и ключ - пустой, во всех других случаях - ключом является идентификатор узла родителя
         	if ($parent instanceof TreeNodeList) {
         	   $parentKey = '';
-        	   $methodName = 'add';
         	}
         	else {
         	   $parentKey = $parent->getID();
-        	   $methodName = 'addChild';
         	}
 
         	if ($value[self::$parentKeyName] == $parentKey) {
         		//добавляем узел к родителю
-        		$addedNode = $parent->$methodName(new TreeNode($value[self::$keyName]));
+        		$addedNode = $parent->add(new TreeNode($value[self::$keyName]));
         		//удаляем из массива данных
         		unset($data[$key]);
         		//делаем рекурсивный вызов, передавая изменившийся набор данных, и родительский узел

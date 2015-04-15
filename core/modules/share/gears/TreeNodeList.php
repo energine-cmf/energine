@@ -283,7 +283,7 @@ final class TreeNode implements \IteratorAggregate{
      * @param TreeNode $node Child node.
      * @return TreeNode
      */
-    public function addChild(TreeNode $node) {
+    public function add(TreeNode $node) {
         $node = $this->children->add($node);
         $node->parent = $this;
 

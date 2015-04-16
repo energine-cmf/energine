@@ -34,20 +34,14 @@ var DivSidebar = new Class(/** @lends DivSidebar# */{
         new Element('ul')
             .setProperty('id', 'divTree')
             .addClass('treeview')
-            .inject($('treeContainer'))
-            .adopt( new Element('li')
-                .setProperty('id', 'treeRoot')
-                .adopt( new Element('a')
-                    .set('html', Energine.translations.get('TXT_DIVISIONS'))
-                )
-            );
+            .inject($('treeContainer'));
 
         this.langId = this.element.getProperty('lang_id');
 
         this.tree = new TreeView('divTree', {dblClick: this.go.bind(this)});
 
-        this.treeRoot = this.tree.getSelectedNode();
-        this.treeRoot.onSelect = this.onSelectNode.bind(this);
+        /*this.treeRoot = this.tree.getSelectedNode();
+        this.treeRoot.onSelect = this.onSelectNode.bind(this);*/
 
         this.singlePath = this.element.getProperty('single_template');
 

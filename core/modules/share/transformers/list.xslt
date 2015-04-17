@@ -117,7 +117,7 @@
                             <div class="grid_toolbar clearfix">
                                 <div class="filters clearfix">
                                     <div class="filter">
-                                        <a href="#" class="add_filter">+</a><xsl:value-of select="ancestor::component/filter/@title"/>:<xsl:text>&#160;</xsl:text>
+                                        <a href="#" class="add_filter">+</a><xsl:text>&#160;</xsl:text>
                                         <select name="fieldName" class="f_fields">
                                             <xsl:for-each select="ancestor::component/filter/field">
                                                 <option value="[{@tableName}][{@name}]" type="{@type}">

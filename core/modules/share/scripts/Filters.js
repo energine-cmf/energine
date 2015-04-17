@@ -46,13 +46,13 @@ var Filters = new Class(/** @lends Filter# */{
             }.bind(this));
         }, this);
 
-        /*this.firstFilter = this.element.getElement('.filter');
-         this.element.getElements('.add_filter').addEvent('click', function(e){
-         e.stop();
-         var f = this.firstFilter.clone();
-         f.inject(this.firstFilter, 'after');
-         gridManager.grid.fitGridSize();
-         }.bind(this));*/
+        this.firstFilter = this.element.getElement('.filter');
+        this.element.getElements('.add_filter').addEvent('click', function (e) {
+            e.stop();
+            var f = this.firstFilter.clone();
+            f.inject(this.firstFilter, 'after');
+            gridManager.grid.fitGridSize();
+        }.bind(this));
 
         var applyButton = this.element.getElement('.f_apply'),
             resetLink = this.element.getElement('.f_reset');

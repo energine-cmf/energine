@@ -216,6 +216,7 @@ final class QAL extends Object {
         try {
             $this->pdo = new \PDO($dsn, $username, $password, $driverOptions);
             $this->pdo->query('SET NAMES ' . $charset);
+            $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
             $this->dbCache = new DBStructureInfo($this->pdo);
 
@@ -262,18 +263,14 @@ final class QAL extends Object {
      *
      */
     private function selectRequest($query) {
-        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
-
-        if (!($res instanceof \PDOStatement)) {
-            $errorInfo = $this->pdo->errorInfo();
-            throw new SystemException($errorInfo[2], SystemException::ERR_DB, array($this->getLastRequest()));
-        }
-
-        $result = array();
+        $result = [];
+        /**
+         * @var \PDOStatement
+         */
+        $res = call_user_func_array([$this, 'query'], func_get_args());
         while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
             array_push($result, $row);
         }
-
         return $result;
     }
 
@@ -292,17 +289,11 @@ final class QAL extends Object {
      * @note If the total amount of arguments is more than 1, then this function process the input arguments like @c printf function.
      *
      *
-     * @throws SystemException
      */
     private function modifyRequest($query) {
-        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
+        call_user_func_array([$this, 'query'], func_get_args());
 
-        if (!($res instanceof \PDOStatement)) {
-            $errorInfo = $this->pdo->errorInfo();
-            throw new SystemException($errorInfo[2], SystemException::ERR_DB, array($this->getLastRequest(),));
-        }
         $result = intval($this->pdo->lastInsertId());
-
         if ($result == 0) {
             $result = true;
         }
@@ -326,7 +317,7 @@ final class QAL extends Object {
             foreach ($args as $index => &$value) {
                 $stmt->bindParam($index + 1, $value);
             }
-            if ($res = $stmt->execute()) {
+            if (($res = $stmt->execute()) && $stmt->rowCount() ) {
                 $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             }
         }
@@ -335,34 +326,78 @@ final class QAL extends Object {
 
     /**
      * Get data for further iteration.
-     *
-     * @param string $query SQL request.
-     * @return bool|\PDOStatement
+     * @param string $request
+     * @return \PDOStatement
      */
-    public function get($query) {
-        $res = call_user_func_array(array($this, 'fulfill'), func_get_args());
-        if ($res instanceof \PDOStatement) {
-            return $res;
+    public function query($request) {
+        $args = func_get_args();
+        try {
+            $request = array_shift($args);
+            $request = str_replace('%%', '%', $request);
+            if (!empty($args)) {
+                if (preg_match_all('(%(?:(\d)\$)?s)', $request, $matches)) {
+                    $data = [];
+                    $request = preg_replace('(%(?:(\d)\$)?s)', '?', $request);
+                    $argIndex = 0;
+                    foreach ($matches[1] as $a) {
+                        if ($a = (int)$a) {
+                            $v = $a - 1;
+                        } else {
+                            $v = $argIndex++;
+                        }
+                        array_push($data, $args[$v]);
+                    }
+                } else {
+                    $data = $args;
+                }
+                $realData = [];
+
+                $replaceRule = array_map(
+                    function ($v) use (&$realData) {
+                        if (is_array($v)) {
+                            if (empty($v)) {
+                                $v = [-1];
+                            }
+                            $realData = array_merge($realData, $v);
+                        } else {
+                            array_push($realData, $v);
+                        }
+
+                        if (is_null($v)) $v = 1;
+
+                        return implode(',', array_fill(0, ($s = sizeof($v)) ? $s : 1, '?'));
+                    },
+                    $data
+                );
+                $qIndex = 0;
+                $realQuery = '';
+                for ($i = 0; $i < strlen($request); $i++) {
+                    if ($request[$i] == '?') {
+                        $realQuery .= $replaceRule[$qIndex++];
+                    } else {
+                        $realQuery .= $request[$i];
+                    }
+                }
+
+
+                if (!($result = $this->pdo->prepare($realQuery))) {
+                    throw new \UnexpectedValueException();
+                }
+
+                if (!$result->execute($realData)) {
+                    throw new \UnexpectedValueException();
+                }
+
+            } else {
+                if (!$result = $this->pdo->query($request)) {
+                    throw new \UnexpectedValueException();
+                }
+            }
+        } catch (\UnexpectedValueException $e) {
+            new \PDOException($this->pdo->errorInfo()[2]);
         }
-        return false;
-    }
-
-    /**
-     * Execute the request.
-     *
-     * @param string $request Request.
-     * @return bool|\PDOStatement
-     */
-    private function fulfill($request) {
-        if (!is_string($request) || empty($request)) {
-            return false;
-        }
-
-        $res = $this->runQuery(func_get_args());
-        if ($res instanceof \PDOStatement)
-            $this->lastQuery = $res->queryString;
-
-        return $res;
+        $this->lastQuery = $result->queryString;
+        return $result;
     }
 
     /**
@@ -543,77 +578,6 @@ final class QAL extends Object {
         }, $result)) : $result;
     }
 
-    /**
-     * Run query.
-     *
-     * @param array $args Query arguments. First argument is SQL string
-     * @return \PDOStatement
-     *
-     * @throws SystemException 'ERR_BAD_REQUEST'
-     */
-    private function runQuery(array $args) {
-        if (empty($args)) {
-            throw new SystemException('ERR_BAD_REQUEST');
-        }
-        $query = array_shift($args);
-        $query = str_replace('%%', '%', $query);
-        if (!empty($args)) {
-            if (preg_match_all('(%(?:(\d)\$)?s)', $query, $matches)) {
-                $data = [];
-                $query = preg_replace('(%(?:(\d)\$)?s)', '?', $query);
-                $argIndex = 0;
-                foreach ($matches[1] as $a) {
-                    if ($a = (int)$a) {
-                        $v = $a - 1;
-                    } else {
-                        $v = $argIndex++;
-                    }
-                    array_push($data, $args[$v]);
-                }
-            } else {
-                $data = $args;
-            }
-            $realData = [];
-            $replaceRule = array_map(
-                function ($v) use (&$realData) {
-                    if (is_array($v)) {
-                        if (empty($v)) {
-                            $v = [-1];
-                        }
-                        $realData = array_merge($realData, $v);
-                    } else {
-                        array_push($realData, $v);
-                    }
-
-                    return implode(',', array_fill(0, sizeof($v), '?'));
-                },
-                $data
-            );
-            $qIndex = 0;
-            $realQuery = '';
-            for ($i = 0; $i < strlen($query); $i++) {
-                if ($query[$i] == '?') {
-                    $realQuery .= $replaceRule[$qIndex++];
-                } else {
-                    $realQuery .= $query[$i];
-                }
-            }
-
-
-            if (!($result = $this->pdo->prepare($realQuery))) {
-                throw new SystemException('ERR_PREPARE_REQUEST', SystemException::ERR_DB, $query);
-            }
-
-            if (!$result->execute($realData)) {
-                throw new SystemException('ERR_EXECUTE_REQUEST', SystemException::ERR_DB, array($query, $data));
-            }
-
-        } else {
-            $result = $this->pdo->query($query);
-        }
-        return $result;
-    }
-
     //todo VZ: There is not clear the order of arguments.
     /**
      * Execute simple SELECT-request and return the result.
@@ -762,16 +726,10 @@ final class QAL extends Object {
      * @param string $tableName Table name.
      * @param string $colName Column name.
      * @param array|mixed $cond Condition.
-     * @return null|string
+     * @return mixed
      */
     public function getScalar() {
-        $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
-
-        if ($res instanceof \PDOStatement) {
-            return $res->fetchColumn();
-        }
-
-        return null;
+        return call_user_func_array([$this, 'query'], $this->buildSQL(func_get_args()))->fetchColumn();
     }
 
     /**
@@ -783,13 +741,7 @@ final class QAL extends Object {
      * @return array
      */
     public function getColumn() {
-        $res = call_user_func_array(array($this, 'fulfill'), $this->buildSQL(func_get_args()));
-
-        $result = array();
-        if ($res instanceof \PDOStatement) {
-            $result = $res->fetchAll(\PDO::FETCH_COLUMN);
-        }
-        return $result;
+        return call_user_func_array([$this, 'query'], $this->buildSQL(func_get_args()))->fetchAll(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -878,19 +830,22 @@ final class QAL extends Object {
      * @param string $fkKeyName Key name.
      * @param int $currentLangID Current language ID.
      * @param mixed $filter Restriction for selecting.
+     * @param mixed $order Order condition
+     *
      * @return array
      */
-    public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
+    public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null, $order = null) {
         $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')) . '_name';
         $columns = $this->getColumnsInfo($fkTableName);
 
-        $order = '';
-        foreach (array_keys($columns) as $columnName) {
-            if (strpos($columnName, '_order_num')) {
-                $order = $columnName . ' ' . QAL::ASC;
-                break;
+        if (!$order)
+            foreach (array_keys($columns) as $columnName) {
+                if (strpos($columnName, '_order_num')) {
+                    $order = $columnName . ' ' . QAL::ASC;
+                    break;
+                }
             }
-        }
+
         $transTableName = $this->getTranslationTablename($fkTableName);
         //если существует таблица с переводами для связанной таблицы
         //нужно брать значения оттуда
@@ -914,20 +869,17 @@ final class QAL extends Object {
                 $filter = '';
             }
 
-            $request = sprintf(
-                'SELECT 
-                    %2$s.*, %3$s.%s 
-                    FROM %s
-                    LEFT JOIN %s on %3$s.%s = %2$s.%s
-                    WHERE lang_id =%s' . $filter . (($order) ? ' ORDER BY ' . $order : ''),
+            $res = $this->selectRequest(sprintf('SELECT
+                                %2$s.*, %3$s.%s
+                                FROM %s
+                                LEFT JOIN %s on %3$s.%s = %2$s.%s
+                                WHERE lang_id =%s' . $filter . $this->buildOrderCondition($order),
                 $fkValueName,
                 QAL::getFQTableName($fkTableName),
                 QAL::getFQTableName($transTableName),
                 $fkKeyName,
                 $fkKeyName,
-                $currentLangID
-            );
-            $res = $this->selectRequest($request);
+                $currentLangID));
         }
 
         return array($res, $fkKeyName, $fkValueName);
@@ -941,7 +893,8 @@ final class QAL extends Object {
      *
      * @see QAL::selectRequest()
      */
-    public function buildOrderCondition($clause) {
+    public
+    function buildOrderCondition($clause) {
         $orderClause = '';
         if (!empty($clause)) {
             $orderClause = ' ORDER BY ';
@@ -968,7 +921,8 @@ final class QAL extends Object {
      *
      * @see QAL::selectRequest()
      */
-    public function buildLimitStatement($clause) {
+    public
+    function buildLimitStatement($clause) {
         $limitClause = '';
         if (is_array($clause)) {
             $limitClause = " LIMIT {$clause[0]}";
@@ -988,7 +942,8 @@ final class QAL extends Object {
      *
      * @throws SystemException
      */
-    private function buildSQL(array $args) {
+    private
+    function buildSQL(array $args) {
         //If first argument contains space  - assume this is SQL string
         if (strpos($args[0], ' ')) {
             return $args;

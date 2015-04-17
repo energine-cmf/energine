@@ -14,6 +14,7 @@ class SiteList;
  * @version 1.0.0
  */
 namespace Energine\share\components;
+use Energine\share\gears\SimpleBuilder;
 use Energine\share\gears\TagManager;
 /**
  * Site list.
@@ -29,6 +30,7 @@ class SiteList extends DataSet {
     public function __construct($name,  array $params = null) {
         parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
+        $this->setBuilder(new SimpleBuilder());
     }
 
     /**
@@ -37,10 +39,10 @@ class SiteList extends DataSet {
     // Добавлены теги, количество принудительно сброшено
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
-            array(
+            [
                 'tags' => '',
                 'recordsPerPage' => false
-            ));
+            ]);
         return $result;
     }
 
@@ -49,7 +51,7 @@ class SiteList extends DataSet {
      */
     // Загружаем данные SiteManager
     protected function loadData() {
-        $result = array();
+        $result = [];
         $filteredIDs = true;
 
         if ($this->getParam('tags'))
@@ -62,11 +64,11 @@ class SiteList extends DataSet {
                     ||
                     ($filteredIDs === true)
                 ) {
-                    $result[] = array(
+                    $result[] = [
                         'site_id' => $site->id,
                         'site_name' => $site->name,
                         'site_host' => $site->protocol . '://' . $site->host . (($site->port != 80) ? ':' . $site->port : '') . $site->root
-                    );
+                    ];
                 }
             }
         return $result;

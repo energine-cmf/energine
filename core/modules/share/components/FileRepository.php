@@ -2,27 +2,25 @@
 /**
  * @file
  * FileRepository
- *
  * It contains the definition to:
  * @code
 class FileRepository;
  * @endcode
- *
  * @author dr.Pavka
  * @copyright Energine 2012
- *
  * @version 1.0.0
  */
 namespace Energine\share\components;
+
 use Energine\share\gears\QAL, Energine\share\gears\FileRepoInfo, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\Field, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\Translit, Energine\share\gears\JSONRepoBuilder;
+
 /**
  * File repository.
- *
-@code
-class FileRepository;
-@endcode
+ * @code
+ * class FileRepository;
+ * @endcode
  */
-class FileRepository extends Grid implements SampleFileRepository{
+class FileRepository extends Grid implements SampleFileRepository {
     /**
      * Path to temporary directory.
      * @var string TEMPORARY_DIR
@@ -51,20 +49,23 @@ class FileRepository extends Grid implements SampleFileRepository{
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = null) {
         parent::__construct($name, $params);
         $this->repoinfo = E()->FileRepoInfo;
         $this->setTableName('share_uploads');
-        $this->setFilter(array('upl_is_active' => 1));
+        $this->setFilter(['upl_is_active' => 1]);
 
-        $this->setOrder(array('upl_publication_date' => QAL::DESC));
+        $this->setOrder(['upl_publication_date' => QAL::DESC]);
         $this->addTranslation('TXT_NOT_READY', 'FIELD_UPL_IS_READY', 'ERR_UPL_NOT_READY');
         //Если данные пришли из модального окна
         if (isset($_POST['modalBoxData']) && ($d = json_decode($_POST['modalBoxData']))) {
-            if ((isset($d->upl_pid) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_id', array('upl_id' => $d->upl_pid)))))
-                || (isset($d->upl_path) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_path' => $d->upl_path)))))
+            if ((isset($d->upl_pid) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_id',
+                        ['upl_id' => $d->upl_pid]))))
+                || (isset($d->upl_path) && ($uplPID = ($this->dbh->getScalar($this->getTableName(), 'upl_pid',
+                        ['upl_path' => $d->upl_path]))))
             ) {
-                $this->response->addCookie(self::STORED_PID, $uplPID, 0, E()->getSiteManager()->getCurrentSite()->host, E()->getSiteManager()->getCurrentSite()->root);
+                $this->response->addCookie(self::STORED_PID, $uplPID, 0, E()->getSiteManager()->getCurrentSite()->host,
+                    E()->getSiteManager()->getCurrentSite()->root);
             }
         }
     }
@@ -78,7 +79,7 @@ class FileRepository extends Grid implements SampleFileRepository{
         $uplID = $sp[0];
         if ($this->dbh->getScalar($this->getTableName(),
                 'upl_internal_type',
-                array('upl_id' => $uplID)) == FileRepoInfo::META_TYPE_FOLDER
+                ['upl_id' => $uplID]) == FileRepoInfo::META_TYPE_FOLDER
         ) {
             $this->editDir($uplID);
         } else {
@@ -95,7 +96,7 @@ class FileRepository extends Grid implements SampleFileRepository{
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
-        $this->addFilterCondition(array('upl_id' => $uplID));
+        $this->addFilterCondition(['upl_id' => $uplID]);
         $this->setData($this->createData());
 
         $toolbars = $this->createToolbar();
@@ -108,11 +109,10 @@ class FileRepository extends Grid implements SampleFileRepository{
 
     /**
      * Edit directory.
-     *
      * @param int $uplID Upload ID.
      */
     private function editDir($uplID) {
-        $this->setFilter(array('upl_id' => $uplID));
+        $this->setFilter(['upl_id' => $uplID]);
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->setBuilder($this->createBuilder());
         $dd = new DataDescription();
@@ -151,7 +151,7 @@ class FileRepository extends Grid implements SampleFileRepository{
         $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
         $this->setBuilder($this->createBuilder());
         $this->setDataDescription($this->createDataDescription());
-        $this->addFilterCondition(array('upl_id' => $uplID));
+        $this->addFilterCondition(['upl_id' => $uplID]);
 
         $repository = $this->repoinfo->getRepositoryInstanceById($uplID);
         // меняем mode у поля для загрузки файла, если репозитарий RO
@@ -222,7 +222,6 @@ class FileRepository extends Grid implements SampleFileRepository{
 
     /**
      * Save data in directory.
-     *
      * @throws SystemException 'ERR_NO_DATA'
      * @throws SystemException 'ERR_BAD_PID'
      */
@@ -243,8 +242,10 @@ class FileRepository extends Grid implements SampleFileRepository{
             $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
             if ($mode == QAL::INSERT) {
 
-                $parentData = $this->dbh->getColumn($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_pid']));
-                if (!$parentData) {
+                $parentPath = $this->dbh->getScalar($this->getTableName(), ['upl_path'],
+                    ['upl_id' => $data['upl_pid']]);
+
+                if (!$parentPath) {
                     throw new SystemException('ERR_BAD_PID');
                 }
                 unset($data[$this->getPK()]);
@@ -253,14 +254,14 @@ class FileRepository extends Grid implements SampleFileRepository{
                 $data['upl_internal_type'] = FileRepoInfo::META_TYPE_FOLDER;
                 $data['upl_childs_count'] = 0;
                 $data['upl_publication_date'] = date('Y-m-d H:i:s');
-                $data['upl_path'] = $parentData['upl_path'] . ((substr($parentData['upl_path'], -1) != '/') ? '/' : '') . $data['upl_filename'];
+                $data['upl_path'] = $parentPath . ((substr($parentPath, -1) != '/') ? '/' : '') . $data['upl_filename'];
 
                 $where = false;
 
                 $repository->createDir($data['upl_path']);
 
             } else {
-                $where = array('upl_id' => $data['upl_id']);
+                $where = ['upl_id' => $data['upl_id']];
                 /*$currentUplPath = simplifyDBResult($this->dbh->select($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_id'])), 'upl_path', true);
                 $data['upl_name'] = $data['upl_filename'] = Translit::asURLSegment($data['upl_title']);
                 if($currentUplPath != $data['upl_path']){
@@ -272,16 +273,16 @@ class FileRepository extends Grid implements SampleFileRepository{
             $transactionStarted = !($this->dbh->commit());
             $uplID = (is_int($result)) ? $result : (int)$_POST[$this->getTableName()][$this->getPK()];
 
-            $args = array($uplID, date('Y-m-d H:i:s'));
+            $args = [$uplID, date('Y-m-d H:i:s')];
 
             $this->dbh->call('proc_update_dir_date', $args);
 
             $b = new JSONCustomBuilder();
-            $b->setProperties(array(
-                'data' => $uplID,
+            $b->setProperties([
+                'data'   => $uplID,
                 'result' => true,
-                'mode' => (is_int($result)) ? 'insert' : 'update'
-            ));
+                'mode'   => (is_int($result)) ? 'insert' : 'update'
+            ]);
             $this->setBuilder($b);
         } catch (SystemException $e) {
             if ($transactionStarted) {
@@ -293,11 +294,9 @@ class FileRepository extends Grid implements SampleFileRepository{
 
     /**
      * Save thumbs.
-     *
      * @param array $thumbsData Thumbs data in the form @code name -> tmp_filename @endcode.
      * @param string $baseFileName Base file name.
      * @param IFileRepository $repo Repository.
-     *
      * @throws SystemException 'ERR_SAVE_THUMBNAIL'
      */
     private function saveThumbs($thumbsData, $baseFileName, $repo) {
@@ -319,7 +318,6 @@ class FileRepository extends Grid implements SampleFileRepository{
 
     /**
      * @copydoc Grid::save
-     *
      * @throws SystemException 'ERR_NO_DATA'
      * @throws SystemException 'ERR_BAD_PID'
      * @throws SystemException 'ERR_SAVE_FILE'
@@ -346,9 +344,11 @@ class FileRepository extends Grid implements SampleFileRepository{
             if ($mode == QAL::INSERT) {
 
                 $tmpFileName = $data['upl_path'];
-                $uplPath = $this->dbh->getScalar($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_pid']));
+                $uplPath = $this->dbh->getScalar($this->getTableName(), ['upl_path'], ['upl_id' => $data['upl_pid']]);
 
-                if ($uplPath && substr($uplPath, -1) == '/') $uplPath = substr($uplPath, 0, -1);
+                if ($uplPath && substr($uplPath, -1) == '/') {
+                    $uplPath = substr($uplPath, 0, -1);
+                }
 
                 if (empty($uplPath)) {
                     throw new SystemException('ERR_BAD_PID');
@@ -356,7 +356,8 @@ class FileRepository extends Grid implements SampleFileRepository{
 
                 unset($data[$this->getPK()]);
 
-                $data['upl_filename'] = self::generateFilename($uplPath, pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
+                $data['upl_filename'] = self::generateFilename($uplPath,
+                    pathinfo($data['upl_filename'], PATHINFO_EXTENSION));
                 $data['upl_path'] = $uplPath . ((substr($uplPath, -1) != '/') ? '/' : '') . $data['upl_filename'];
 
                 if (!($fi = $repository->uploadFile($tmpFileName, $data['upl_path']))) {
@@ -390,7 +391,7 @@ class FileRepository extends Grid implements SampleFileRepository{
 
                 $pk = $data[$this->getPK()];
 
-                $old_upl_path = $this->dbh->getScalar($this->getTableName(), 'upl_path', array($this->getPK() => $pk));
+                $old_upl_path = $this->dbh->getScalar($this->getTableName(), 'upl_path', [$this->getPK() => $pk]);
                 $new_upl_path = $data['upl_path'];
 
                 unset($data['upl_path']);
@@ -398,7 +399,7 @@ class FileRepository extends Grid implements SampleFileRepository{
                 // если пришел новый tmpfile в поле upl_path
                 if ($new_upl_path != $old_upl_path) {
 
-                    $old_mime = $this->dbh->getScalar($this->getTableName(), 'upl_mime_type', array($this->getPK() => $pk));
+                    $old_mime = $this->dbh->getScalar($this->getTableName(), 'upl_mime_type', [$this->getPK() => $pk]);
                     $new_info = $repository->analyze($new_upl_path);
 
                     if ($new_info && $new_info->mime != $old_mime) {
@@ -418,7 +419,7 @@ class FileRepository extends Grid implements SampleFileRepository{
                     $data['upl_publication_date'] = date('Y-m-d H:i:s');
                 }
 
-                $result = $this->dbh->modify($mode, $this->getTableName(), $data, array($this->getPK() => $pk));
+                $result = $this->dbh->modify($mode, $this->getTableName(), $data, [$this->getPK() => $pk]);
                 $data['upl_path'] = $old_upl_path;
             }
 
@@ -430,16 +431,16 @@ class FileRepository extends Grid implements SampleFileRepository{
             $uplID = (is_int($result)) ? $result : (int)$_POST[$this->getTableName()][$this->getPK()];
 
             if ($mode == QAL::INSERT) {
-                $args = array($uplID, $data['upl_publication_date']);
+                $args = [$uplID, $data['upl_publication_date']];
                 $this->dbh->call('proc_update_dir_date', $args);
             }
 
             $b = new JSONCustomBuilder();
-            $b->setProperties(array(
-                'data' => $uplID,
+            $b->setProperties([
+                'data'   => $uplID,
                 'result' => true,
-                'mode' => (is_int($result)) ? 'insert' : 'update'
-            ));
+                'mode'   => (is_int($result)) ? 'insert' : 'update'
+            ]);
             $this->setBuilder($b);
         } catch (SystemException $e) {
             if ($transactionStarted) {
@@ -491,7 +492,9 @@ class FileRepository extends Grid implements SampleFileRepository{
 
             $uplPID = (!empty($sp['pid'])) ? (int)$sp['pid'] : null;
 
-            if (!$uplPID) return $result;
+            if (!$uplPID) {
+                return $result;
+            }
             // инстанс IFileRepository для текущего $uplPID
             $repo = $this->repoinfo->getRepositoryInstanceById($uplPID);
             $repo->prepare($result);
@@ -506,6 +509,7 @@ class FileRepository extends Grid implements SampleFileRepository{
                 }
             }
         }
+
         return $result;
     }
 
@@ -523,67 +527,69 @@ class FileRepository extends Grid implements SampleFileRepository{
             $uplPID = (int)$sp['pid'];
             if (isset($_COOKIE[self::STORED_PID])) {
                 //проверям а есть ли такое?
-                if (!($this->dbh->getScalar($this->getTableName(), 'upl_id', array('upl_id' => $uplPID)))) {
+                if (!($this->dbh->getScalar($this->getTableName(), 'upl_id', ['upl_id' => $uplPID]))) {
                     goto jump;
                 }
             }
-            $this->addFilterCondition(array('upl_pid' => $uplPID));
+            $this->addFilterCondition(['upl_pid' => $uplPID]);
         }
 
         parent::getRawData();
         // Плохо реализован дефолтный механизм подключения билдера
         $this->setBuilder(new JSONRepoBuilder());
-        if ($this->pager) $this->getBuilder()->setPager($this->pager);
+        if ($this->pager) {
+            $this->getBuilder()->setPager($this->pager);
+        }
 
         if ($uplPID) {
             $data = $this->getData();
-            $uplID = $this->dbh->getScalar($this->getTableName(), 'upl_pid', array('upl_id' => $sp['pid']));
+            $uplID = $this->dbh->getScalar($this->getTableName(), 'upl_pid', ['upl_id' => $sp['pid']]);
             if (is_null($uplID)) {
                 $uplID = 0;
             }
             // инстанс IFileRepository для текущего $uplPID
             $repo = $this->repoinfo->getRepositoryInstanceById($uplPID);
-            $newData = array(
-                'upl_id' => $uplID,
-                'upl_pid' => $uplPID,
-                'upl_title' => '...',
-                'upl_internal_type' => self::TYPE_FOLDER_UP,
+            $newData = [
+                'upl_id'                 => $uplID,
+                'upl_pid'                => $uplPID,
+                'upl_title'              => '...',
+                'upl_internal_type'      => self::TYPE_FOLDER_UP,
                 // набор виртуальных upl_allows_* полей репозитария для folderup
-                'upl_allows_create_dir' => $repo->allowsCreateDir(),
+                'upl_allows_create_dir'  => $repo->allowsCreateDir(),
                 'upl_allows_upload_file' => $repo->allowsUploadFile(),
-                'upl_allows_edit_dir' => $repo->allowsEditDir(),
-                'upl_allows_edit_file' => $repo->allowsEditFile(),
-                'upl_allows_delete_dir' => $repo->allowsDeleteDir(),
+                'upl_allows_edit_dir'    => $repo->allowsEditDir(),
+                'upl_allows_edit_file'   => $repo->allowsEditFile(),
+                'upl_allows_delete_dir'  => $repo->allowsDeleteDir(),
                 'upl_allows_delete_file' => $repo->allowsDeleteFile(),
-            );
+            ];
 
             //Так получилось что uplPID содержит текущий идентификатор, а uplID - родительский
-            $p = array($uplPID);
+            $p = [$uplPID];
             $res = $this->dbh->call('proc_get_upl_pid_list', $p);
 
             unset($p);
             if (!empty($res)) {
-                $breadcrumbsData = array();
+                $breadcrumbsData = [];
                 foreach ($res as $row) {
                     $breadcrumbsData[$row['id']] = $row['title'];
                 }
                 $this->getBuilder()->setBreadcrumbs(array_reverse($breadcrumbsData, true));
             }
 
-            if (!$data->isEmpty())
+            if (!$data->isEmpty()) {
                 foreach ($this->getDataDescription()->getFieldDescriptionList() as $fieldName) {
-                    if ($f = $data->getFieldByName($fieldName))
+                    if ($f = $data->getFieldByName($fieldName)) {
                         $f->addRowData(((isset($newData[$fieldName])) ? $newData[$fieldName] : ''), false);
+                    }
                 }
-            else {
-                $data->load(array($newData));
+            } else {
+                $data->load([$newData]);
             }
         }
     }
 
     /**
      * Show form to upload Zip file.
-     *
      * @todo доделать
      */
     protected function uploadZip() {
@@ -602,7 +608,7 @@ class FileRepository extends Grid implements SampleFileRepository{
             }
             $uplPID = $_POST['PID'];
             $transactionStarted = $this->dbh->beginTransaction();
-            $extractPath = $this->dbh->getScalar($this->getTableName(), 'upl_path', array('upl_id' => $uplPID));
+            $extractPath = $this->dbh->getScalar($this->getTableName(), 'upl_path', ['upl_id' => $uplPID]);
 
             $zip = new \ZipArchive();
             $zip->open($fileName);
@@ -648,7 +654,6 @@ class FileRepository extends Grid implements SampleFileRepository{
 
     /**
      * Get path of temporary file.
-     *
      * @param string $filename Filename.
      * @return string
      */
@@ -658,7 +663,6 @@ class FileRepository extends Grid implements SampleFileRepository{
 
     /**
      * Generate filename.
-     *
      * @param string $dirPath Directory path.
      * @param string $fileExtension File extension.
      * @return string
@@ -693,15 +697,15 @@ class FileRepository extends Grid implements SampleFileRepository{
             exit();
         }
 
-        $response = array(
-            'name' => '',
-            'type' => '',
-            'tmp_name' => '',
-            'error' => false,
+        $response = [
+            'name'          => '',
+            'type'          => '',
+            'tmp_name'      => '',
+            'error'         => false,
             'error_message' => '',
-            'size' => 0,
-            'preview' => ''
-        );
+            'size'          => 0,
+            'preview'       => ''
+        ];
 
         try {
             if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
@@ -712,7 +716,8 @@ class FileRepository extends Grid implements SampleFileRepository{
                 if (isset($_FILES[$key]) and is_uploaded_file($_FILES[$key]['tmp_name'])) {
                     $tmp_name = $this->getTmpFilePath($_FILES[$key]['name']);
                     if (!is_writeable(dirname($tmp_name))) {
-                        throw new SystemException('ERR_TEMP_DIR_WRITE', SystemException::ERR_CRITICAL, dirname($tmp_name));
+                        throw new SystemException('ERR_TEMP_DIR_WRITE', SystemException::ERR_CRITICAL,
+                            dirname($tmp_name));
                     }
 
                     if (move_uploaded_file($_FILES[$key]['tmp_name'], $tmp_name)) {
@@ -757,12 +762,10 @@ class FileRepository extends Grid implements SampleFileRepository{
 
     /**
      * Clean incoming from JS FileReader.
-     *
      * @param string $data Data.
      * @param int $maxFileSize maximum file size (5mB default)
      * @return object
      * @throws SystemException
-     *
      */
     public static function cleanFileData($data, $maxFileSize = 5242880) {
         ini_set('pcre.backtrack_limit', $maxFileSize);
@@ -792,7 +795,7 @@ class FileRepository extends Grid implements SampleFileRepository{
         //http://j-query.blogspot.com/2011/02/save-base64-encoded-canvas-image-to-png.html?showComment=1402329668513#c517521780203205620
         $string = str_replace_opt(' ', '+', $string);
 
-        return (object)array('mime' => $mime, 'data' => base64_decode($string));
+        return (object)['mime' => $mime, 'data' => base64_decode($string)];
     }
 }
 
@@ -800,6 +803,6 @@ class FileRepository extends Grid implements SampleFileRepository{
  * Fake interface for XSLT
  * Interface SampleFileRepository
  */
-interface SampleFileRepository{
+interface SampleFileRepository {
 
 }

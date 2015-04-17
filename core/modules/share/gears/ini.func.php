@@ -105,9 +105,6 @@ define('ACCESS_FULL', 3);
 // Подключаем реестр и мемкешер, нужные нам для автолоадера
 require_once('Registry.php');
 
-# устанавливаем свой обработчик ошибок
-set_error_handler('nrgnErrorHandler');
-
 /**
  * @fn nrgnErrorHandler($errLevel, $message, $file, $line, $errContext)
  * @brief Error handler.
@@ -119,19 +116,12 @@ set_error_handler('nrgnErrorHandler');
  * @param int $line Error line.
  * @param array $errContext Error context.
  *
- * @throws SystemException
  */
-function nrgnErrorHandler($errLevel, $message, $file, $line, $errContext)
-{
-    try {
+set_error_handler(function ($errLevel, $message, $file, $line, $errContext) {
         $e = new Energine\share\gears\SystemException(
             $message,
             Energine\share\gears\SystemException::ERR_DEVELOPER
         );
         throw $e->setFile($file)->setLine($line);
-    } catch (\Exception $e) {
-        //Если ошибка произошла здесь, то капец
-        echo 'Message:', $message, PHP_EOL, 'File:', $file, PHP_EOL, 'Line:', $line, PHP_EOL;
-        exit;
     }
-}
+);

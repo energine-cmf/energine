@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
-    <component name="ads" class="Energine\apps\components\Ads"/>
 	<component name="langSwitcher" class="Energine\share\components\LangSwitcher"/>
 	<component name="footerTextBlock" class="Energine\share\components\TextBlock">
 		<params>

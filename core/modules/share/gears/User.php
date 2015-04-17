@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class User;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -19,7 +19,7 @@ namespace Energine\share\gears;
  *
  * @code
 class User;
-@endcode
+ * @endcode
  *
  * It holds an information about user, saves data, etc.
  */
@@ -54,7 +54,7 @@ class User extends Object {
      * Information about the user.
      * @var array $info
      */
-    private $info = array();
+    private $info = [];
 
     //todo VZ: Why not to use 0 as the default user id?
     /**
@@ -76,7 +76,7 @@ class User extends Object {
      * @param int $UID User ID.
      */
     protected function loadInfo($UID) {
-        $result = $this->dbh->select(self::USER_TABLE_NAME, true, array('u_id' => $UID));
+        $result = $this->dbh->select(self::USER_TABLE_NAME, true, ['u_id' => $UID]);
         if ($result) {
             $this->id = $UID;
             $result[0]['u_password'] = true;
@@ -90,9 +90,7 @@ class User extends Object {
      * @return array
      */
     public function getGroups() {
-        $result = array();
-        $result = $this->userGroup->getUserGroups($this->id);
-        return $result;
+        return $this->userGroup->getUserGroups($this->id);
     }
 
     /**
@@ -102,6 +100,23 @@ class User extends Object {
      */
     public function getID() {
         return $this->id;
+    }
+
+    /**
+     * @param bool $asArray
+     * @return array
+     */
+    public function getSites($asArray = true) {
+        $result = [];
+        $r = array_filter(array_map(function ($groupID) use ($asArray) {
+            return $this->userGroup->getSites($groupID, $asArray);
+        }, array_filter($this->getGroups(), function ($groupID) {
+            return $groupID != $this->userGroup->getDefaultGuestGroup();
+        })));
+        array_walk($r, function ($values) use (&$result) {
+            $result = array_merge($result, $values);
+        });
+        return $result;
     }
 
     /**
@@ -139,7 +154,7 @@ class User extends Object {
     public function create($data) {
         //проверяем имеются ли все необходимые значения
         $tableInfo = $this->dbh->getColumnsInfo(self::USER_TABLE_NAME);
-        $necessaryFields = $uniqueFields = array();
+        $necessaryFields = $uniqueFields = [];
         foreach ($tableInfo as $columnName => $columnInfo) {
             //отбираем все поля !nullable, не PRI, и без дефолтного значения
             if (!$columnInfo['nullable'] && $columnInfo['index'] != QAL::PRIMARY_INDEX && !$columnInfo['default']) {
@@ -157,7 +172,7 @@ class User extends Object {
         }
         //проверяем являются ли введенные поля уникальными
         if (!empty($uniqueFields)) {
-            $condition = array();
+            $condition = [];
             foreach ($uniqueFields as $fieldname) {
                 $condition[] = $fieldname . ' = "' . $data[$fieldname] . '"';
             }
@@ -169,9 +184,9 @@ class User extends Object {
 
         $this->info = $data;
         //$this->info['u_password'] = $data['u_password'];
-        $data['u_password'] = sha1($data['u_password']);
+        $data['u_password'] = password_hash($data['u_password'], PASSWORD_DEFAULT);
         $this->id = $this->dbh->modify(QAL::INSERT, self::USER_TABLE_NAME, $data);
-        $this->setGroups(array($this->userGroup->getDefaultUserGroup()));
+        $this->setGroups([$this->userGroup->getDefaultUserGroup()]);
     }
 
     /**
@@ -183,7 +198,7 @@ class User extends Object {
     public function update($data) {
         $result = false;
         if ($this->getID()) {
-            $result = $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, $data, array('u_id' => $this->getID()));
+            $result = $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, $data, ['u_id' => $this->getID()]);
         }
         return $result;
     }
@@ -192,7 +207,7 @@ class User extends Object {
      * @param $groupID int Group id
      * @return bool
      */
-    public function isInGroup($groupID){
+    public function isInGroup($groupID) {
         return in_array($groupID, $this->getGroups());
     }
 
@@ -206,18 +221,17 @@ class User extends Object {
     public function setGroups($groups) {
         //Устанавливать группы можно только тогда, когда пользователь создан
         if ($this->getID()) {
-            if(!is_array($groups)){
-                $groups = array($groups);
+            if (!is_array($groups)) {
+                $groups = [$groups];
             }
             //$this->dbh->beginTransaction();
             try {
-                $this->dbh->modify(QAL::DELETE, self::GROUP_TABLE_NAME, null, array('u_id' => $this->getID()));
+                $this->dbh->modify(QAL::DELETE, self::GROUP_TABLE_NAME, NULL, ['u_id' => $this->getID()]);
                 foreach ($groups as $groupID) {
-                    $this->dbh->modify(QAL::INSERT, self::GROUP_TABLE_NAME, array('u_id' => $this->getID(), 'group_id' => $groupID));
+                    $this->dbh->modify(QAL::INSERT, self::GROUP_TABLE_NAME, ['u_id' => $this->getID(), 'group_id' => $groupID]);
                 }
                 //$this->dbh->commit();
-            }
-            catch (SystemException $e) {
+            } catch (SystemException $e) {
                 //$this->dbh->rollback();
                 //передаем исключение дальше
                 throw new SystemException($e->getMessage(), $e->getCode(), $e->getCustomMessage());
@@ -233,7 +247,7 @@ class User extends Object {
      */
     public static function getFBUser($fbID) {
         $result = false;
-        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', array('u_fbid' => $fbID, 'u_is_active' => 1))) {
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', ['u_fbid' => $fbID, 'u_is_active' => 1])) {
             return new User($UID);
         }
         return $result;
@@ -248,9 +262,9 @@ class User extends Object {
      */
     public static function linkFBUserByEmail($email, $fbID) {
         $result = false;
-        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', array('u_name' => $email, 'u_is_active' => 1))) {
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', ['u_name' => $email, 'u_is_active' => 1])) {
             $result = new User($UID);
-            $result->update(array('u_fbid' => $fbID));
+            $result->update(['u_fbid' => $fbID]);
         }
         return $result;
     }
@@ -263,7 +277,7 @@ class User extends Object {
      */
     public static function getVKUser($vkID) {
         $result = false;
-        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', array('u_vkid' => $vkID, 'u_is_active' => 1))) {
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', ['u_vkid' => $vkID, 'u_is_active' => 1])) {
             return new User($UID);
         }
         return $result;
@@ -277,7 +291,7 @@ class User extends Object {
      */
     public static function getOKUser($okID) {
         $result = false;
-        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', array('u_okid' => $okID, 'u_is_active' => 1))) {
+        if ($UID = E()->getDB()->getScalar(self::USER_TABLE_NAME, 'u_id', ['u_okid' => $okID, 'u_is_active' => 1])) {
             return new User($UID);
         }
         return $result;

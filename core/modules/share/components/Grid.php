@@ -78,7 +78,7 @@ class Grid extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = null) {
         parent::__construct($name, $params);
 
         $this->setProperty('exttype', 'grid');
@@ -289,12 +289,11 @@ class Grid extends DBDataSet {
         $FKField = $params['fk_field_name'];
 
         if (array_key_exists('editor_class', $params)) {
-            list($section, $module, , $lookupClass) = explode('.', $params['editor_class']);
-            $module = (($section == 'Energine') ? '' : 'site/') . $module;
+            $lookupClass = str_replace('.', '\\', $params['editor_class']);
         } else {
-            $lookupClass = 'Lookup';
-            $module = 'share';
+            $lookupClass = implode('\\', ['Energine', 'share', 'components', 'Lookup']);
         }
+
         $columns = $this->dbh->getColumnsInfo($this->getTableName());
         if (!isset($columns[$FKField]) || !is_array($columns[$FKField]['key'])) {
             throw new SystemException('ERR_NO_FIELD', SystemException::ERR_DEVELOPER, $FKField);
@@ -305,8 +304,7 @@ class Grid extends DBDataSet {
         ];
 
         $this->request->shiftPath(2);
-        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', $lookupClass,
-            $params);
+        $this->lookupEditor = $this->document->componentManager->createComponent('lookupEditor', $lookupClass, $params);
         $this->lookupEditor->run();
     }
 
@@ -476,7 +474,6 @@ class Grid extends DBDataSet {
         $saver->setData($this->getData());
 
         if ($saver->validate() === true) {
-
             $saver->setFilter($this->getFilter());
             $saver->save();
             $result = $saver->getResult();
@@ -643,7 +640,7 @@ class Grid extends DBDataSet {
                 $request .= ' GROUP BY ' . $this->getPK();
             }
             //в $data накапливаем строки
-            $res = $this->dbh->get($request);
+            $res = $this->dbh->query($request);
 
             if ($res && $res->rowCount()) {
                 while ($row = $res->fetch(\PDO::FETCH_LAZY)) {
@@ -998,7 +995,7 @@ class Grid extends DBDataSet {
         list($currentID) = $currentID;
 
         //Определяем order_num текущей страницы
-        $currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(), [$this->getPK() =>$currentID]);
+        $currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(), [$this->getPK() => $currentID]);
 
         $orderDirection = ($direction == Grid::DIR_DOWN) ? QAL::ASC : QAL::DESC;
 

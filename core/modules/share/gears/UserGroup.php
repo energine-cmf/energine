@@ -115,14 +115,13 @@ final class UserGroup extends Object {
      * @return array
      */
     public function getUserGroups($userId = false) {
-        static $cachedGroups = array();
+        static $cachedGroups = [];
+        if (!$userId) return [$this->getDefaultGuestGroup()];
+
         if (!isset($cachedGroups[$userId])) {
-            $cachedGroups[$userId] = array($this->getDefaultGuestGroup());
-            if (!empty($userId)) {
-                $res = $this->dbh->select('user_user_groups', array('group_id'), array('u_id' => $userId));
-                if ($res) {
-                    $cachedGroups[$userId] = simplifyDBResult($res, 'group_id');
-                }
+            $cachedGroups[$userId] = [$this->getDefaultGuestGroup()];
+            if ($res = $this->dbh->getColumn('user_user_groups', ['group_id'], ['u_id' => $userId])) {
+                $cachedGroups[$userId] = $res;
             }
         }
 
@@ -136,11 +135,22 @@ final class UserGroup extends Object {
      * @return array
      */
     public function getInfo($groupId) {
-        $result = array();
+        $result = [];
         if (isset($this->groups[$groupId])) {
             $result = $this->groups[$groupId];
         }
         return $result;
+    }
+
+    /**
+     * @param int $groupID
+     * @param bool $asArray
+     * @return Site[] | array
+     */
+    public function getSites($groupID, $asArray = true) {
+        return array_map(function ($siteID) use ($asArray) {
+            return ($asArray) ? $siteID : E()->getSiteManager()->getSiteByID($siteID);
+        }, $this->dbh->getColumn('share_groups2sites', 'site_id', ['group_id' => $groupID]));
     }
 
     /**
@@ -150,8 +160,8 @@ final class UserGroup extends Object {
      * @return array
      */
     public function getMembers($groupID) {
-        $result = array();
-        $members = $this->dbh->getColumn('user_user_groups', 'u_id', array('group_id' => $groupID));
+        $result = [];
+        $members = $this->dbh->getColumn('user_user_groups', 'u_id', ['group_id' => $groupID]);
         if (is_array($members)) {
             foreach ($members as $memberID) {
                 $member = new User($memberID);

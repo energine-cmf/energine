@@ -62,26 +62,19 @@ var DivManager = new Class(/** @lends DivManager# */{
         new Element('ul')
             .setProperty('id', 'divTree')
             .addClass('treeview')
-            .inject($('treeContainer'))
-            .adopt( new Element('li')
-                .setProperty('id', 'treeRoot')
-                .adopt( new Element('a', {'href':'#'})
-                    .set('html', Energine.translations.get('TXT_DIVISIONS'))
-                )
-            );
+            .inject($('treeContainer'));
 
         /**
          * Tree.
          * @type {TreeView}
          */
-        this.tree = new TreeView('divTree', {dblClick:this.go.bind(this)});
+        this.tree = new TreeView('divTree', {dblClick: this.go.bind(this)});
 
         /**
          * Trre's root node.
          * @type {TreeView.Node}
          */
-        this.treeRoot = this.tree.getSelectedNode();
-        //this.treeRoot.onSelect = this.onSelectNode.bind(this);
+        this.treeRoot = null;
 
         /**
          * Path to the component on the page.
@@ -110,7 +103,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @public
      * @param {Toolbar} toolbar Toolbar that will be attached.
      */
-    attachToolbar:function (toolbar) {
+    attachToolbar: function (toolbar) {
         var toolbarContainer = this.element.getElement('.e-pane-b-toolbar');
 
         this.toolbar = toolbar;
@@ -137,7 +130,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    loadTree:function () {
+    loadTree: function () {
         Energine.request(
             this.singlePath + this.site + '/get-data/',
             'languageID=' + this.langId,
@@ -167,7 +160,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @param {} nodes Tree nodes.
      * @param {} currentNodeID Current node in the tree.
      */
-    buildTree:function (nodes, currentNodeID) {
+    buildTree: function (nodes, currentNodeID) {
         var treeInfo = {};
         for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
@@ -178,9 +171,7 @@ var DivManager = new Class(/** @lends DivManager# */{
             treeInfo[pid].push(node);
         }
 
-        var lambda = function (nodeId) {
-            var node = this.tree.getNodeById(nodeId);
-
+        var lambda = function (nodeId, parentElement) {
             //console.log(treeInfo[nodeId], nodeId);
             for (var i = 0; i < treeInfo[nodeId].length; i++) {
                 var child = treeInfo[nodeId][i],
@@ -189,37 +180,30 @@ var DivManager = new Class(/** @lends DivManager# */{
                         : Energine.base + 'templates/icons/empty.icon.gif',
                     childId = child['smap_id'];
 
-                if (!child['smap_pid']) {
-                    this.treeRoot.setName(child['smap_name']);
-                    this.treeRoot.id = child['smap_id'];
-                    this.treeRoot.setData(child);
-                    this.treeRoot.setIcon(icon);
-                    this.treeRoot.addEvent('select', this.onSelectNode.bind(this));
-                } else {
-                    var newNode = new TreeView.Node({
-                        id: childId,
-                        name: child['smap_name'],
-                        data: {
-                            'class': ((childId == currentNodeID) ? ' current' : ''),
-                            'icon': icon
-                        }
-                    }, this.tree);
+                var newNode = new TreeView.Node({
+                    id: childId,
+                    name: child['smap_name'],
+                    data: {
+                        'class': ((childId == currentNodeID) ? ' current' : ''),
+                        'icon': icon
+                    }
+                }, this.tree);
 
-                    newNode.setData(child);
-                    newNode.addEvent('select', this.onSelectNode.bind(this));
-                    node.adopt(newNode);
-                }
+                newNode.setData(child);
+                newNode.addEvent('select', this.onSelectNode.bind(this));
+                parentElement.adopt(newNode);
+
 
                 if (treeInfo[childId]) {
-                    lambda(childId);
+                    lambda(childId, newNode);
                 }
             }
         }.bind(this);
+        lambda('treeRoot', this.tree);
 
-        lambda(this.treeRoot.getId());
 
         this.tree.setupCssClasses();
-        this.treeRoot.expand();
+        //this.treeRoot.expand();
         this.tree.expandToNode(currentNodeID);
         if (this.tree.getNodeById(currentNodeID)) {
             this.tree.getNodeById(currentNodeID).select();
@@ -231,7 +215,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    fitTreeFormSize:function () {
+    fitTreeFormSize: function () {
         var windowHeight = window.getSize().y - 10,
             treeContainerHeight = this.treeContainer.getSize().y,
             paneOthersHeight = this.pane.getSize().y - this.paneContent.getSize().y + 22;
@@ -254,9 +238,8 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    reload:function () {
-        this.treeRoot.removeChilds();
-        this.treeRoot.id = 'treeRoot';
+    reload: function () {
+        this.tree.empty();
         this.loadTree();
     },
 
@@ -266,10 +249,10 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    add:function () {
+    add: function () {
         var nodeId = this.tree.getSelectedNode().getId();
         ModalBox.open({
-            url:this.singlePath + 'add/' + nodeId + '/',
+            url: this.singlePath + 'add/' + nodeId + '/',
             onClose: function (returnValue) {
                 if (returnValue) {
                     switch (returnValue.afterClose) {
@@ -295,12 +278,12 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    edit:function () {
+    edit: function () {
         var nodeId = this.tree.getSelectedNode().getId();
         ModalBox.open({
-            url:this.singlePath + nodeId + '/edit',
-            onClose:this.refreshNode.bind(this),
-            extraData:this.tree.getSelectedNode()
+            url: this.singlePath + nodeId + '/edit',
+            onClose: this.refreshNode.bind(this),
+            extraData: this.tree.getSelectedNode()
         });
     },
 
@@ -309,19 +292,16 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    del:function () {
+    del: function () {
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
             'Do you really want to delete record?';
         if (!confirm(MSG_CONFIRM_DELETE)) return;
 
         var nodeId = this.tree.getSelectedNode().getId();
         Energine.request(
-            this.singlePath + nodeId + '/delete',
+            this.singlePath + nodeId + '/delete/',
             '',
-            function (response) {
-                this.tree.getSelectedNode().remove();
-                this.treeRoot.select();
-            }.bind(this)
+            this.reload.bind(this)
         );
     },
 
@@ -332,7 +312,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @public
      * @param {Object} response Server response.
      */
-    changeOrder:function (response) {
+    changeOrder: function (response) {
         if (!response.result) {
             return;
         }
@@ -345,7 +325,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    up:function () {
+    up: function () {
         var nodeId = this.tree.getSelectedNode().getId();
         Energine.request(this.singlePath + nodeId + '/up', '', this.changeOrder.bind(this));
     },
@@ -355,7 +335,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    down:function () {
+    down: function () {
         var nodeId = this.tree.getSelectedNode().getId();
         Energine.request(this.singlePath + nodeId + '/down', '', this.changeOrder.bind(this));
     },
@@ -365,7 +345,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    select:function () {
+    select: function () {
         var nodeData = this.tree.getSelectedNode().getData();
 
         if ($('site_selector') && nodeData) {
@@ -382,7 +362,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    close:function () {
+    close: function () {
         ModalBox.close();
     },
 
@@ -391,12 +371,12 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    go:function () {
+    go: function () {
         var nodeData = this.tree.getSelectedNode().getData();
 
         if (nodeData.smap_segment || !nodeData.smap_pid) {
             window.top.document.location = ((nodeData.site) ? nodeData.site : Energine.base)
-                + nodeData.smap_segment;
+            + nodeData.smap_segment;
         }
     },
     // End actions
@@ -408,7 +388,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @public
      * @param {TreeView.Node} node Node that will be selected.
      */
-    onSelectNode:function (node) {
+    onSelectNode: function (node) {
         if (!this.toolbar) {
             return;
         }
@@ -428,7 +408,7 @@ var DivManager = new Class(/** @lends DivManager# */{
             ]);
         }
 
-        buttons.each(function(btn) {
+        buttons.each(function (btn) {
             if (btn) {
                 btn.enable();
             }
@@ -440,7 +420,7 @@ var DivManager = new Class(/** @lends DivManager# */{
      * @function
      * @public
      */
-    refreshNode:function () {
+    refreshNode: function () {
         var nodeId = this.tree.getSelectedNode().getId();
         Energine.request(
             this.singlePath + 'get-node-data',

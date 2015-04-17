@@ -82,8 +82,10 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
         mainFrame.adopt(currentBody);
 
         topFrame.grab(this.element);
-        var gear = new Element('img', {'src': Energine.static + ((Energine.debug) ? 'images/toolbar/nrgnptbdbg.png' : 'images/toolbar/nrgnptb.png'),
-            'class': 'pagetb_logo'}).inject(topFrame, 'top');
+        var gear = new Element('img', {
+            'src': Energine.static + ((Energine.debug) ? 'images/toolbar/nrgnptbdbg.png' : 'images/toolbar/nrgnptb.png'),
+            'class': 'pagetb_logo'
+        }).inject(topFrame, 'top');
 
         if (!this.properties['noSideFrame']) {
             if ((Cookie.read('sidebar') == 1)) {
@@ -128,7 +130,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @public
      */
     add: function () {
-        ModalBox.open({ 'url': this.componentPath + 'add/' + this.documentId });
+        ModalBox.open({'url': this.componentPath + 'add/' + this.documentId});
     },
 
     /**
@@ -137,8 +139,10 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @public
      */
     edit: function () {
-        ModalBox.open({ 'url': this.componentPath + this.documentId +
-            '/edit' });
+        ModalBox.open({
+            'url': this.componentPath + this.documentId +
+            '/edit'
+        });
     },
 
     /**
@@ -148,19 +152,19 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      */
     toggleSidebar: function () {
         $$('html')[0].toggleClass('e-has-sideframe');
-        var url = new URI(Energine.base),
-            domainChunks = url.get('host').split('.'),
-            domain;
-
-        if (domainChunks.length > 2) {
-            domainChunks.shift();
+        var url;
+        if (new URI(Energine.base).get('host').contains(new URI(Energine.root).get('host'))) {
+            url = Energine.root;
         }
+        else {
+            url = Energine.base;
+        }
+        url = new URI(url);
 
-        domain = '.' + domainChunks.join('.');
         Cookie.write('sidebar',
             $$('html')[0].hasClass('e-has-sideframe') ? 1 : 0,
             {
-                domain: domain,
+                domain: '.' + url.get('host'),
                 path: url.get('directory'),
                 duration: 30
             });
@@ -172,7 +176,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @public
      */
     showTmplEditor: function () {
-        ModalBox.open({ 'url': this.componentPath + 'template' });
+        ModalBox.open({'url': this.componentPath + 'template'});
     },
 
     /**
@@ -181,7 +185,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @public
      */
     showTransEditor: function () {
-        ModalBox.open({ 'url': this.componentPath + 'translation' });
+        ModalBox.open({'url': this.componentPath + 'translation'});
     },
 
     /**
@@ -190,7 +194,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @public
      */
     showUserEditor: function () {
-        ModalBox.open({ 'url': this.componentPath + 'user' });
+        ModalBox.open({'url': this.componentPath + 'user'});
     },
 
     /**
@@ -199,7 +203,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @public
      */
     showRoleEditor: function () {
-        ModalBox.open({ 'url': this.componentPath + 'role' });
+        ModalBox.open({'url': this.componentPath + 'role'});
     },
 
     /**
@@ -208,7 +212,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @public
      */
     showLangEditor: function () {
-        ModalBox.open({ 'url': this.componentPath + 'languages' });
+        ModalBox.open({'url': this.componentPath + 'languages'});
     },
 
     /**
@@ -217,7 +221,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @public
      */
     showFileRepository: function () {
-        ModalBox.open({ 'url': this.componentPath + 'file-library' });
+        ModalBox.open({'url': this.componentPath + 'file-library'});
     },
 
     /**
@@ -226,7 +230,7 @@ var PageToolbar = new Class(/** @lends PageToolbar# */{
      * @public
      */
     showSiteEditor: function () {
-        ModalBox.open({ 'url': this.componentPath + 'sites' });
+        ModalBox.open({'url': this.componentPath + 'sites'});
     },
 
     /**

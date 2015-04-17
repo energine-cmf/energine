@@ -53,12 +53,21 @@ var TreeView = new Class(/** @lends TreeView# */{
         this.element = $(element);
         this.setOptions(options);
 
-        this.element.getElements('li').each(function(item) {
+        /*this.element.getElements('li').each(function(item) {
             this.nodes.push(new TreeView.Node(item, this));
-        }, this);
+        }, this);*/
 
-        this.nodes[0].select();
-        this.setupCssClasses();
+        //this.nodes[0].select();
+        //this.setupCssClasses();
+    },
+    adopt: function(node){
+        this.nodes.push(node);
+        this.element.adopt(node.element);
+    },
+
+    empty: function(){
+        this.nodes.length = 0;
+        this.element.empty();
     },
 
     /**

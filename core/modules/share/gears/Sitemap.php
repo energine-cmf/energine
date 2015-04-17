@@ -37,7 +37,7 @@ final class Sitemap extends Object {
      * Information about sections where the user can access.
      * @var array $info
      */
-    private $info = array();
+    private $info = [];
 
     /**
      * Default page ID.
@@ -78,7 +78,7 @@ final class Sitemap extends Object {
      * Cache of access levels.
      * @var array $cacheAccessLevels
      */
-    private $cacheAccessLevels = array();
+    private $cacheAccessLevels = [];
 
     /**
      * Current site ID.
@@ -130,7 +130,7 @@ final class Sitemap extends Object {
         //Кешируем уровни доступа к страницам сайта
         //Формируем матрицу вида
         //[идентификатор раздела][идентификатор роли] = идентификатор уровня доступа
-        $rightsMatrix = $this->dbh->select('share_access_level', true, array('smap_id' => array_map(create_function('$a', 'return $a["smap_id"];'), $res)));
+        $rightsMatrix = $this->dbh->select('share_access_level', true, ['smap_id' => array_map(create_function('$a', 'return $a["smap_id"];'), $res)]);
 
         if (!$rightsMatrix) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
@@ -171,7 +171,7 @@ final class Sitemap extends Object {
      * @return mixed
      */
     public static function getSiteID($pageID) {
-        return E()->getDB()->getScalar('share_sitemap', 'site_id', array('smap_id' => (int)$pageID));
+        return E()->getDB()->getScalar('share_sitemap', 'site_id', ['smap_id' => (int)$pageID]);
     }
 
     /**
@@ -182,7 +182,7 @@ final class Sitemap extends Object {
      */
     private function getSitemapData($id) {
         if (!is_array($id)) {
-            $id = array($id);
+            $id = [$id];
         }
 
         if ($diff = array_diff($id, array_keys($this->info))) {
@@ -210,12 +210,12 @@ final class Sitemap extends Object {
                 ),
                 'smap_id', true);
             if ($result) {
-                $result = array_map(array($this, 'preparePageInfo'), $result);
+                $result = array_map([$this, 'preparePageInfo'], $result);
                 $this->info += $result;
             }
 
         } else {
-            $result = array();
+            $result = [];
             foreach ($this->info as $key => $value) {
                 if (in_array($key, $diff))
                     $result[$key] = $value;
@@ -224,6 +224,17 @@ final class Sitemap extends Object {
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $tag
+     * @return array
+     */
+    public function getPagesByTag($tag) {
+        return $this->dbh->getColumn('SELECT *
+        FROM `share_sitemap_tags` st
+        RIGHT JOIN share_sitemap s On (st.smap_id = s.smap_id) AND (s.site_id= %s)
+        WHERE tag_id IN (%s)', $this->siteID, array_keys(TagManager::getID($tag)));
     }
 
 
@@ -266,7 +277,7 @@ final class Sitemap extends Object {
      * @return string
      */
     public function getURLByID($smapID) {
-        $result = array();
+        $result = [];
         $node = $this->tree->getNodeById($smapID);
         if (!is_null($node)) {
             $parents = array_reverse(array_keys($node->getParents()->asList(false)));
@@ -335,7 +346,7 @@ final class Sitemap extends Object {
         if (!$groups) {
             $groups = E()->getAUser()->getGroups();
         } elseif (!is_array($groups)) {
-            $groups = array($groups);
+            $groups = [$groups];
         }
 
         $groups = array_combine($groups, $groups);
@@ -356,7 +367,7 @@ final class Sitemap extends Object {
      * @return array
      */
     public function getChilds($smapID, $returnAsTreeNodeList = false) {
-        $result = array();
+        $result = [];
         if ($node = $this->tree->getNodeById($smapID)) {
             if (!$returnAsTreeNodeList) {
                 $result = $this->buildPagesMap(array_keys($node->getChildren()->asList(false)));
@@ -374,7 +385,7 @@ final class Sitemap extends Object {
      * @return array
      */
     public function getDescendants($smapID) {
-        $result = array();
+        $result = [];
         if ($node = $this->tree->getNodeById($smapID)) {
             $result = $this->buildPagesMap(array_keys($node->getChildren()->asList()));
         }
@@ -405,7 +416,7 @@ final class Sitemap extends Object {
      */
     public function getParents($smapID) {
         $node = $this->tree->getNodeById($smapID);
-        $result = array();
+        $result = [];
         if (!is_null($node)) {
             $result = $this->buildPagesMap(array_reverse(array_keys($node->getParents()->asList(false))));
         }
@@ -421,7 +432,7 @@ final class Sitemap extends Object {
      * @return array
      */
     private function buildPagesMap($ids) {
-        $result = array();
+        $result = [];
         if (is_array($ids)) {
             foreach ($ids as $id) {
                 $info = $this->getDocumentInfo($id);

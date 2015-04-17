@@ -154,6 +154,6 @@ class FilterData implements \Iterator {
             return $result . ' (' . (string)$filter . ') ' . $this->operator;
         });
 
-        return (string)substr($result, 0, -sizeof($this->operator)-2);
+        return '('.(string)substr($result, 0, -sizeof($this->operator)-2).')';
     }
 }

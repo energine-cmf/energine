@@ -119,10 +119,12 @@
 	                                <div class="filters_block_inner clearfix">
 	                                    <div class="filters">
 	                                        <div class="filter">
-                                                <select class="filters_operand">
-                                                                                                <option value="OR">OR</option>
-                                                                                                <option value="AND">AND</option>
-                                                                                            </select>
+                                                <span class="f_select_container">
+                                                    <select class="filters_operand">
+                                                        <option value="OR">OR</option>
+                                                        <option value="AND">AND</option>
+                                                    </select>
+                                                </span>
 		                                        <span class="f_select_container">
 		                                            <select name="fieldName" class="f_fields">
 		                                                <xsl:for-each select="ancestor::component/filter/field">

@@ -23,7 +23,7 @@ var FiltersFabric = new Class({
         },
         create: function () {
             var result = this.template.clone();
-            this.parentContainer.grab(result);
+            this.parentContainer.grab(result, 'bottom');
             return new Filter(result);
         }
     }
@@ -66,8 +66,20 @@ var Filters = new Class(/** @lends Filter# */{
 
         var addFilter = this.element.getElement('.add_filter'),
             applyButton = this.element.getElement('.f_apply'),
-            resetLink = this.element.getElement('.f_reset');
+            resetLink = this.element.getElement('.f_reset'),
+            inner = this.element.getElement('.filters_block_inner');
 
+        this.element.getElement('.filter_toggle').addEvent('click', function (e) {
+            e.stop();
+
+            if (inner.hasClass('hidden')) {
+                inner.removeClass('hidden');
+            }
+            else {
+                inner.addClass('hidden');
+
+            }
+        }.bind(this));
         addFilter.addEvent('click', function (e) {
             e.stop();
             this.add();
@@ -89,11 +101,14 @@ var Filters = new Class(/** @lends Filter# */{
             if (this.use()) this.gridManager.reload();
         }.bind(this));
         this.filters.push(f);
-        if(this.filters.length ==1) {
+        if (this.filters.length == 1) {
             f.element.getElement('.filters_operand').hide();
+            f.element.getElement('.remove_filter').setProperty('disabled', 'disabled');
         }
         else {
             f.element.getElement('.filters_operand').show();
+            this.element.getElements('.remove_filter').removeProperty('disabled');
+
         }
     },
     /**

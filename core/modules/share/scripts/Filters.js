@@ -47,42 +47,48 @@ var Filters = new Class(/** @lends Filter# */{
      * @type {FiltersFabric}
      */
     fabric: null,
+    gridManager: null,
 
     // constructor
     initialize: function (gridManager) {
+        this.gridManager = gridManager;
         /**
          * Filter element of the GridManager.
          * @type {Element}
          */
-        this.element = gridManager.element.getElement('.filters_block');
+        this.element = this.gridManager.element.getElement('.filters_block');
 
         if (!this.element) {
             throw 'Element for Filter was not found.';
         }
         this.fabric = new FiltersFabric(this.element.getElement('.filter'));
-        var f = this.fabric.create();
-        f.addEvent('apply', function () {
-            if (this.use()) gridManager.reload();
-        }.bind(this));
-        this.filters.push(f);
-
+        this.add();
 
         var addFilter = this.element.getElement('.add_filter'),
             applyButton = this.element.getElement('.f_apply'),
             resetLink = this.element.getElement('.f_reset');
+
         addFilter.addEvent('click', function (e) {
             e.stop();
+            this.add();
 
-        })
+        }.bind(this));
         applyButton.addEvent('click', function () {
-            if (this.use()) gridManager.reload();
+            if (this.use()) this.gridManager.reload();
         }.bind(this));
 
         resetLink.addEvent('click', function (e) {
             e.stop();
-            if (this.reset()) gridManager.reload();
+            if (this.reset()) this.gridManager.reload();
         }.bind(this));
 
+    },
+    add: function () {
+        var f = this.fabric.create();
+        f.addEvent('apply', function () {
+            if (this.use()) this.gridManager.reload();
+        }.bind(this));
+        this.filters.push(f);
     },
     /**
      * Reset the whole [filter element]{@link Filter#element}.

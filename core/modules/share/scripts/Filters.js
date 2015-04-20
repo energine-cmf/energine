@@ -89,6 +89,12 @@ var Filters = new Class(/** @lends Filter# */{
             if (this.use()) this.gridManager.reload();
         }.bind(this));
         this.filters.push(f);
+        if(this.filters.length ==1) {
+            f.element.getElement('.filters_operand').hide();
+        }
+        else {
+            f.element.getElement('.filters_operand').show();
+        }
     },
     /**
      * Reset the whole [filter element]{@link Filter#element}.
@@ -96,11 +102,15 @@ var Filters = new Class(/** @lends Filter# */{
      * @public
      */
     reset: function () {
-        if (this.active) {
+        if (this.active || (this.filters.length > 1)) {
             this.filters.each(function (filter) {
                 filter.reset();
-            })
+                delete filter;
+            });
+            this.filters.length = 0;
             this.element.removeClass('active');
+            this.add();
+
             return !(this.active = false)
         }
         return false;
@@ -260,10 +270,19 @@ var Filter = new Class({
         return !this.inputs.hasValues();
     },
     reset: function () {
-        this.inputs.empty();
+        this.inputs.removeEvents('click');
+        this.fields.removeEvents('change');
+        this.condition.removeEvents('change');
+        this.element.destroy();
     },
     getValue: function () {
-        return this.inputs.getValues(new Filter.Clause(this.fields.options[this.fields.selectedIndex].value, this.condition.options[this.condition.selectedIndex].value, this.fields.options[this.fields.selectedIndex].getAttribute('type')));
+        return this.inputs.getValues(
+            new Filter.Clause(
+                this.fields.options[this.fields.selectedIndex].value,
+                this.condition.options[this.condition.selectedIndex].value,
+                this.fields.options[this.fields.selectedIndex].getAttribute('type')
+            )
+        );
     }
 });
 /**

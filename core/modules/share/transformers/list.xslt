@@ -118,6 +118,10 @@
                                 <div class="filters_block clearfix">
                                     <div class="filters">
                                         <div class="filter">
+                                            <select class="filters_operand">
+                                                <option value="OR">OR</option>
+                                                <option value="AND">AND</option>
+                                            </select>
                                             <select name="fieldName" class="f_fields">
                                                 <xsl:for-each select="ancestor::component/filter/field">
                                                     <option value="[{@tableName}][{@name}]" type="{@type}">

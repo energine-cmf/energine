@@ -1,3 +1,5 @@
+@import 'font-awesome/css/font-awesome.css';
+
 a.f_reset,
 a.f_reset:hover,
 a.f_reset:active {
@@ -13,12 +15,154 @@ div.grid table tr .firstColumn { border-left: 0; }
     padding: 10px 0;
 }
 
-div.grid div.filters {
+div.grid div.filters_block {
     background-color: #eee;
     margin: 0;
     padding: 10px;
     border-radius: 4px;
     font-family: Tahoma, sans-serif;
+}
+.filter_toggle {
+    margin: 5px 0 0;
+    display: block;
+    width: 100%;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+}
+a.filter_toggle:hover {
+    background: rgb(104, 104, 104);
+    color: rgb(255, 255, 255);
+}
+div.grid div.filters_block .filters {
+    position: relative;
+    float: left;
+    width: 62%;
+    padding-left: 50px;
+}
+div.grid div.filters_block .filters .filter {
+    position: relative;
+    float: left;
+    width: 100%;
+    display: table;
+}
+div.grid div.filters_block .filters .filter + .filter {
+    margin-top: 10px;
+}
+div.grid div.filters_block .filters .filter .f_select_container,
+div.grid div.filters_block .filters .filter .f_query_container {
+    display: table-cell;
+}
+div.grid div.filters_block .filters .filter .f_select_container select,
+div.grid div.filters_block .filters .filter .f_query_container input {
+    width: 98%;
+}
+div.grid div.filters_block .filters .filter_add_block,
+div.grid div.filters_block .filters .filter_remove_block {
+    position: absolute;
+    top: 6px;
+    left: 0;
+}
+div.grid div.filters_block .filters .filter_remove_block {
+    left: -26px;
+}
+div.grid div.filters_block .filters .filter_add_block button,
+div.grid div.filters_block .filters .filter_remove_block button {
+    display: block;
+    float: left;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border-radius: 50%;
+    background-image: linear-gradient(270deg , rgba(255, 255, 255, 1) 0%,
+                                               rgba(140, 140, 140, 0.6) 80%,
+                                               rgba(140, 140, 140, 0.8) 90%);
+    background-image: -webkit-linear-gradient(270deg , rgba(255, 255, 255, 1) 0%,
+                                                       rgba(140, 140, 140, 0.6) 80%,
+                                                       rgba(140, 140, 140, 0.8) 90%);
+    background-image: -moz-linear-gradient(270deg , rgba(255, 255, 255, 1) 0%,
+                                                    rgba(140, 140, 140, 0.6) 80%,
+                                                    rgba(140, 140, 140, 0.8) 90%);
+    text-align: center;
+    outline: none;
+}
+div.grid div.filters_block .filters .filter_add_block button:hover,
+div.grid div.filters_block .filters .filter_remove_block button:hover {
+    background-image: linear-gradient(270deg , rgba(140, 140, 140, 0.8) 10%,
+                                               rgba(140, 140, 140, 0.6) 20%,
+                                               rgba(255, 255, 255, 1) 100%);
+    background-image: -webkit-linear-gradient(270deg , rgba(140, 140, 140, 0.8) 10%,
+                                                       rgba(140, 140, 140, 0.6) 20%,
+                                                       rgba(255, 255, 255, 1) 100%);
+    background-image: -moz-linear-gradient(270deg , rgba(140, 140, 140, 0.8) 10%,
+                                                    rgba(140, 140, 140, 0.6) 20%,
+                                                    rgba(255, 255, 255, 1) 100%);
+}
+div.grid div.filters_block .filters .filter_add_block button:disabled,
+div.grid div.filters_block .filters .filter_remove_block button:disabled {
+    background: rgb(150, 150, 150);
+    color: #fff;
+    cursor: not-allowed;
+}
+div.grid div.filters_block .filter_controls {
+    float: left;
+    margin-left: calc(63% + 70px);
+    margin-top: -31px;
+}
+div.grid div.filters_block .filter_controls .f_apply {
+    margin-right: 15px;
+}
+div.grid div.filters_block .filter_save_block {
+    float: left;
+    margin: 10px 3% 0;
+    width: 94%;
+    text-align: left;
+}
+div.grid div.filters_block .filter_save_block .filter_divider {
+    margin-bottom: 10px;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(104, 104, 104, 0.6);
+    /*background-image: linear-gradient(180deg , rgb(238, 238, 238),
+                                               rgb(150, 150, 150),
+                                               rgb(238, 238, 238));
+    background-image: -webkit-linear-gradient(180deg , rgb(238, 238, 238),
+                                                       rgb(150, 150, 150),
+                                                       rgb(238, 238, 238));
+    background-image: -moz-linear-gradient(180deg , rgb(238, 238, 238),
+                                                    rgb(150, 150, 150),
+                                                    rgb(238, 238, 238));*/
+}
+div.grid div.filters_block .filter_save_block .save_filter {
+    height: 26px;
+    padding: 0 12px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background-image: linear-gradient(270deg , rgba(255, 255, 255, 0.9),
+                                               rgba(150, 150, 150, 0.3));
+    background-image: -webkit-linear-gradient(270deg , rgba(255, 255, 255, 0.9),
+                                                       rgba(150, 150, 150, 0.3));
+    background-image: -moz-linear-gradient(270deg , rgba(255, 255, 255, 0.9),
+                                                    rgba(150, 150, 150, 0.3));
+    font-size: 10px;
+}
+div.grid div.filters_block .filter_save_block .load_filter {
+    margin-left: 15px;
+    height: 26px;
+    font-size: 10px;
+}
+div.grid div.filters_block .filter_save_block .filter_name {
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    height: 26px;
+    font-size: 10px;
+}
+div.grid div.filters_block .filter_save_block .filter_name:hover,
+div.grid div.filters_block .filter_save_block .filter_name:focus {
+    border-color: rgb(204, 204, 204);
+    -webkit-box-shadow: 0 0;
+    box-shadow: 0 0;
 }
 div.grid div.filter:nth-last-child(2) {
     float:left;
@@ -26,7 +170,6 @@ div.grid div.filter:nth-last-child(2) {
 div.grid div.filters.active {
     background: #ecf3f8;
 }
-
 div.grid div.filter select, div.grid div.filter input, div.grid div.filter button {
     font-family: Tahoma, sans-serif;
     font-size: 14px;
@@ -211,7 +354,7 @@ table.gridTable {
 }
 /* --- media queries --- */
 @media screen and (max-width: 768px) {
-    div.grid div.filter {
+    div.grid div.filters_block {
         display: none;
     }
 }

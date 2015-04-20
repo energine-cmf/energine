@@ -115,34 +115,36 @@
                         <!-- или если есть узел filters -->
                         <xsl:if test="ancestor::component/filter">
                             <div class="grid_toolbar clearfix">
-                                <div class="filters clearfix">
-                                    <div class="filter">
-                                        <a href="#" class="add_filter">+</a><xsl:text>&#160;</xsl:text>
-                                        <select name="fieldName" class="f_fields">
-                                            <xsl:for-each select="ancestor::component/filter/field">
-                                                <option value="[{@tableName}][{@name}]" type="{@type}">
-                                                    <xsl:value-of select="@title"/>
-                                                </option>
-                                            </xsl:for-each>
-                                        </select>
-                                        <select name="condition" class="f_condition">
-                                            <xsl:for-each select="ancestor::component/filter/operators/operator">
-                                                <option value="{@name}">
-                                                    <xsl:attribute name="data-types">
-                                                        <xsl:for-each select="types/type"><xsl:value-of select="."/><xsl:if test="position()!=last()">|</xsl:if></xsl:for-each></xsl:attribute>
-                                                    <xsl:value-of select="@title"/>
-                                                </option>
-                                            </xsl:for-each>
-                                        </select>
-                                        <span class="f_query_container">
-                                            <input type="text" class="query"/>
-                                        </span>
-                                        <span class="f_query_container hidden">
-                                            <input type="text" class="query"/>
-                                        </span>
-                                        <!--<span class="f_query_date_container hidden"><input type="text" class="query"/><input type="text" class="hidden query"/></span>-->
+                                <div class="filters_block clearfix">
+                                    <div class="filters">
+                                        <div class="filter">
+                                            <select name="fieldName" class="f_fields">
+                                                <xsl:for-each select="ancestor::component/filter/field">
+                                                    <option value="[{@tableName}][{@name}]" type="{@type}">
+                                                        <xsl:value-of select="@title"/>
+                                                    </option>
+                                                </xsl:for-each>
+                                            </select>
+                                            <select name="condition" class="f_condition">
+                                                <xsl:for-each select="ancestor::component/filter/operators/operator">
+                                                    <option value="{@name}">
+                                                        <xsl:attribute name="data-types">
+                                                            <xsl:for-each select="types/type"><xsl:value-of select="."/><xsl:if test="position()!=last()">|</xsl:if></xsl:for-each></xsl:attribute>
+                                                        <xsl:value-of select="@title"/>
+                                                    </option>
+                                                </xsl:for-each>
+                                            </select>
+                                            <span class="f_query_container">
+                                                <input type="text" class="query"/>
+                                            </span>
+                                            <span class="f_query_container hidden">
+                                                <input type="text" class="query"/>
+                                            </span>
+                                            <!--<span class="f_query_date_container hidden"><input type="text" class="query"/><input type="text" class="hidden query"/></span>-->
+                                        </div>
                                     </div>
-                                    <div>
+                                    <div class="filter_controls">
+                                        <a href="#" class="add_filter">+</a><xsl:text>&#160;</xsl:text>
                                         <button type="button" class="f_apply">
                                             <xsl:value-of select="ancestor::component/filter/@apply"/>
                                         </button>

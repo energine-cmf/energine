@@ -14,6 +14,21 @@
  * @constructor
  * @param {GridManager} gridManager
  */
+var FiltersFabric = new Class({
+        initialize: function (templateEl) {
+            this.parentContainer = templateEl.getParent('.filters');
+
+            this.template = templateEl.clone();
+            templateEl.destroy();
+        },
+        create: function () {
+            var result = this.template.clone();
+            this.parentContainer.grab(result);
+            return new Filter(result);
+        }
+    }
+);
+
 var Filters = new Class(/** @lends Filter# */{
     Implements: Events,
     /**
@@ -28,6 +43,10 @@ var Filters = new Class(/** @lends Filter# */{
      * @type {boolean}
      */
     active: false,
+    /**
+     * @type {FiltersFabric}
+     */
+    fabric: null,
 
     // constructor
     initialize: function (gridManager) {
@@ -35,28 +54,26 @@ var Filters = new Class(/** @lends Filter# */{
          * Filter element of the GridManager.
          * @type {Element}
          */
-        this.element = gridManager.element.getElement('.filters');
+        this.element = gridManager.element.getElement('.filters_block');
 
         if (!this.element) {
             throw 'Element for Filter was not found.';
         }
-        this.element.getElements('.filter').each(function (el) {
-            this.filters[this.filters.push(new Filter(el))-1].addEvent('apply', function(){
-                if (this.use()) gridManager.reload();
-            }.bind(this));
-        }, this);
-
-        this.firstFilter = this.element.getElement('.filter');
-        this.element.getElements('.add_filter').addEvent('click', function (e) {
-            e.stop();
-            var f = this.firstFilter.clone();
-            f.inject(this.firstFilter, 'after');
-            gridManager.grid.fitGridSize();
+        this.fabric = new FiltersFabric(this.element.getElement('.filter'));
+        var f = this.fabric.create();
+        f.addEvent('apply', function () {
+            if (this.use()) gridManager.reload();
         }.bind(this));
+        this.filters.push(f);
 
-        var applyButton = this.element.getElement('.f_apply'),
+
+        var addFilter = this.element.getElement('.add_filter'),
+            applyButton = this.element.getElement('.f_apply'),
             resetLink = this.element.getElement('.f_reset');
+        addFilter.addEvent('click', function (e) {
+            e.stop();
 
+        })
         applyButton.addEvent('click', function () {
             if (this.use()) gridManager.reload();
         }.bind(this));
@@ -148,7 +165,7 @@ var Filter = new Class({
     initialize: function (element) {
         this.element = $(element);
         this.inputs = new Filter.QueryControls(this.element.getElements('.f_query_container'));
-        this.inputs.addEvent('apply', function(e){
+        this.inputs.addEvent('apply', function (e) {
             this.fireEvent('apply');
         }.bind(this));
         this.condition = this.element.getElement('.f_condition');
@@ -251,7 +268,7 @@ var Filter = new Class({
  * @param {Element} applyAction Apply button.
  */
 Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
-    Implements:Events,
+    Implements: Events,
     /**
      * Indicate, whether the date picker is used as query control.
      * @type {boolean}

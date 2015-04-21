@@ -40,18 +40,18 @@ class CommentsForm extends DataSet {
      * User editor.
      * @var Component $userEditor
      */
-    private $userEditor;
+    protected $userEditor;
 
     /**
      * Editor of baned IPs.
      * @var mixed $banIPEditor
      */
-    private $banIPEditor;
+	protected $banIPEditor;
     /**
      * Bounded component.
      * @var DBDataSet|boolean $bindComponent
      */
-    private $bindComponent;
+	protected $bindComponent;
 
     /**
      * Table with comments.
@@ -59,25 +59,25 @@ class CommentsForm extends DataSet {
      *
      * @note It should be a component parameter.
      */
-    private $commentTable = '';
+	protected $commentTable = '';
 
     /**
      * Commented table.
      * @var string $targetTable
      */
-    private $targetTable = '';
+	protected $targetTable = '';
 
     /**
      * Are the comments tree-like?
      * @var bool $isTree
      */
-    private $isTree = false;
+	protected $isTree = false;
 
     /**
      * Are tables exist?
      * @var bool $isExistsTables
      */
-    private $isExistsTables = null;
+	protected $isExistsTables = null;
 
     /**
      * @copydoc DataSet::__construct
@@ -143,7 +143,7 @@ class CommentsForm extends DataSet {
             if (!isset($_POST['target_id']) or
                 !($targetId = (int)$_POST['target_id'])
             )
-                throw new Exception('Mistake targetId');
+                throw new \Exception('Mistake targetId');
 
             if (!$this->isTargetEditable()) {
                 throw new SystemException('read only');
@@ -238,7 +238,7 @@ class CommentsForm extends DataSet {
      * @param string|int $commentId Comment ID.
      * @return bool|int
      */
-    private function updateComment($targetId, $commentName, $commentNick, $commentId) {
+	protected function updateComment($targetId, $commentName, $commentNick, $commentId) {
         if (!in_array('1', E()->getAUser()->getGroups())) {
             if (!$this->isTargetEditable()) { // юзеру доступно только чтение
                 return false;
@@ -311,7 +311,7 @@ class CommentsForm extends DataSet {
      * @param int $id Comment ID.
      * @return bool
      */
-    private function removeComment($id) {
+	protected function removeComment($id) {
         if (!in_array('1', E()->getAUser()->getGroups())) {
             if (!$this->isTargetEditable()) { // юзеру доступно только чтение
                 return false;
@@ -436,7 +436,7 @@ class CommentsForm extends DataSet {
      * @param int $parentId Parent comment.
      * @return array
      */
-    private function addComment($targetId, $commentName, $commentNick, $parentId = null) {
+	protected function addComment($targetId, $commentName, $commentNick, $parentId = null) {
 
         if ($this->document->user && $this->document->user->getID()) {
             $uId = $this->document->user->getID();
@@ -484,7 +484,7 @@ class CommentsForm extends DataSet {
      * @param int $uId User ID.
      * @return string[]
      */
-    private function getUserInfo($uId) {
+	protected function getUserInfo($uId) {
         $result = array('u_nick' => '');
         $userInfo = $this->dbh->select('user_users',
             array('u_nick', 'u_fullname'),
@@ -507,7 +507,7 @@ class CommentsForm extends DataSet {
      * @param array $comment Comment.
      * @return IBuilder
      */
-    private function buildResult($comment) {
+	protected function buildResult($comment) {
         $builder = new CommentsJSONBuilder();
 
         $dataDescription = new DataDescription();

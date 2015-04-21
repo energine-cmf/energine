@@ -30,6 +30,9 @@ div.grid div.filters_block {
     font-weight: bold;
     text-align: center;
 }
+div.grid div.filters_block .filters_block_inner.hidden + .filter_toggle .fa-angle-double-up:before {
+    content: "\f103";
+}
 a.filter_toggle:hover {
     background: rgb(104, 104, 104);
     color: rgb(255, 255, 255);

@@ -266,7 +266,7 @@ class Component extends Object implements IBlock {
         }*/
 
         // если новое значение пустое - оставляем значение по-умолчанию
-        if (!empty($value) || $value === false) {
+        //if (!empty($value) || $value === false) {
             if (is_scalar($value)) {
                 //ОБрабатываем случай передачи массива-строки в параметры
                 $value = explode('|', $value);
@@ -278,7 +278,7 @@ class Component extends Object implements IBlock {
             } else {
                 $this->params[$name] = $value;
             }
-        }
+        //}
     }
 
     /**

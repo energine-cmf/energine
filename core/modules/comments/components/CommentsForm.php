@@ -99,6 +99,7 @@ class CommentsForm extends DataSet {
         $this->setProperty('limit', $this->getParam('textLimit'));
 
         $this->setProperty('is_anonymous', (string)!$this->document->user->isAuthenticated());
+		$this->setProperty('use_captcha', (string)$params['use_captcha']);
 
         $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
@@ -153,7 +154,7 @@ class CommentsForm extends DataSet {
                 throw new SystemException('TXT_COMMENT_NICK_IS_REQUIRED');
             }
 
-            if (!$this->document->getUser()->isAuthenticated()) {
+            if ($this->getParam('use_captcha') and !$this->document->getUser()->isAuthenticated()) {
                 $this->checkCaptcha();
             }
 
@@ -348,6 +349,7 @@ class CommentsForm extends DataSet {
             'show_form' => false,
             'textLimit' => 250,
             'allows_anonymous' => true,
+			'use_captcha' => true
         ));
         return $result;
     }
@@ -370,7 +372,7 @@ class CommentsForm extends DataSet {
                 parent::prepare();
 
                 if (
-                    $this->document->getUser()->isAuthenticated()
+					($this->document->getUser()->isAuthenticated() or !$this->getParam('use_captcha'))
                     &&
                     ($captcha =
                         $this->getDataDescription()->getFieldDescriptionByName('captcha'))
@@ -647,7 +649,7 @@ class CommentsForm extends DataSet {
      * @throws SystemException 'TXT_BAD_CAPTCHA'
      */
     protected function checkCaptcha() {
-        require_once('core/modules/share/gears/recaptchalib.php');
+        require_once( CORE_DIR . '/modules/share/gears/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');
         $resp = recaptcha_check_answer($privatekey,
             $_SERVER["REMOTE_ADDR"],

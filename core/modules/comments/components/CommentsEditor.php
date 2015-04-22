@@ -6,20 +6,22 @@
  * It contains the definition to:
  * @code
 class CommentsEditor;
-@endcode
+ * @endcode
  *
  * @author sign
  *
  * @version 1.0.0
  */
 namespace Energine\comments\components;
+
 use Energine\share\components\Grid, Energine\share\gears\QAL, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\JSONCustomBuilder;
+
 /**
  * Comments editor.
  *
  * @code
 class CommentsEditor;
-@endcode
+ * @endcode
  */
 class CommentsEditor extends Grid {
     /**
@@ -28,7 +30,7 @@ class CommentsEditor extends Grid {
      *
      * @see comments_editor.content.xml
      */
-    private $commentTables = array();
+    private $commentTables = [];
 
     /**
      * Current table ID.
@@ -41,7 +43,7 @@ class CommentsEditor extends Grid {
      *
      * @throws SystemException 'Please set `comment_tables` parameter in comments_editor.content.xml file'
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
 
         $this->commentTables = $this->getParam('comment_tables');
@@ -49,11 +51,11 @@ class CommentsEditor extends Grid {
             throw new SystemException('Please set `comment_tables` parameter in comments_editor.content.xml file');
         }
         if (!is_array($this->commentTables)) {
-            $this->commentTables = array($this->commentTables);
+            $this->commentTables = [$this->commentTables];
         }
 
         $this->changeTableName();
-        $this->setOrder(array('comment_created' => QAL::DESC));
+        $this->setOrder(['comment_created' => QAL::DESC]);
         $this->setParam('onlyCurrentLang', true);
     }
 
@@ -80,18 +82,19 @@ class CommentsEditor extends Grid {
         // для метода save имя таблицы ищем в $_POST
         if ($this->getState() == 'save') {
             if (isset($_POST['componentAction']) &&
-                    $_POST['componentAction'] == 'edit') {
+                $_POST['componentAction'] == 'edit'
+            ) {
                 foreach ($_POST as $key => $value) {
                     if (in_array($key, $this->commentTables) &&
-                            is_array($value) && isset($value['comment_name'])) {
+                        is_array($value) && isset($value['comment_name'])
+                    ) {
                         $index = array_search($key, $this->commentTables);
                     }
                 }
             }
-        }
-        elseif (!$index) {
+        } elseif (!$index) {
             $index =
-                    isset($_POST['tab_index']) ? intval($_POST['tab_index']) : 0;
+                isset($_POST['tab_index']) ? intval($_POST['tab_index']) : 0;
         }
 
         $this->currTabIndex = $index;
@@ -107,7 +110,7 @@ class CommentsEditor extends Grid {
     protected function edit() {
         $tab = $this->getStateParams();
         if ($tab) {
-            $tab = (int) array_pop($tab);
+            $tab = (int)array_pop($tab);
             $this->changeTableName($tab);
         }
         parent::edit();
@@ -116,14 +119,11 @@ class CommentsEditor extends Grid {
 
         $UID = $this->getData()->getFieldByName('u_id');
         $UID->setRowData(0,
-            simplifyDBResult(
-                $this->dbh->select(
-                    'user_users',
-                    'u_fullname',
-                    array('u_id' => $UID->getRowData(0))
-                ),
+            $this->dbh->getScalar(
+                'user_users',
                 'u_fullname',
-                true));
+                ['u_id' => $UID->getRowData(0)]
+            ));
     }
 
     /**
@@ -143,14 +143,14 @@ class CommentsEditor extends Grid {
         $currTableName = $this->commentTables[$tabIndex];
         $result = $this->dbh->modify('UPDATE',
             $currTableName,
-            array('comment_approved' => 1),
-            array('comment_id' => $commentId)
+            ['comment_approved' => 1],
+            ['comment_id' => $commentId]
         );
 
         $b = new JSONCustomBuilder();
-        $b->setProperties(array(
+        $b->setProperties([
             'result' => $commentId,
-        ));
+        ]);
         $this->setBuilder($b);
 
     }
@@ -163,9 +163,11 @@ class CommentsEditor extends Grid {
         parent::main();
 
         if ($f =
-                $this->getDataDescription()->getFieldDescriptionByName('u_id'))$f->setType(FieldDescription::FIELD_TYPE_STRING);
+            $this->getDataDescription()->getFieldDescriptionByName('u_id')
+        ) $f->setType(FieldDescription::FIELD_TYPE_STRING);
         if ($f =
-                $this->getDataDescription()->getFieldDescriptionByName('target_id'))$f->setType(FieldDescription::FIELD_TYPE_STRING);
+            $this->getDataDescription()->getFieldDescriptionByName('target_id')
+        ) $f->setType(FieldDescription::FIELD_TYPE_STRING);
 
         foreach ($this->commentTables as $i => $table) {
             //пропускаем текущую таблицу - для неё уже создана нулевая вкладка
@@ -182,7 +184,7 @@ class CommentsEditor extends Grid {
     /**
      * @copydoc Grid::getFKData
      */
-     //todo кажется здесь нужен фильтр
+    //todo кажется здесь нужен фильтр
     protected function getFKData($fkTableName, $fkKeyName) {
         return $this->getForeignKeyData($fkTableName, $fkKeyName, $this->document->getLang());
     }
@@ -207,7 +209,8 @@ class CommentsEditor extends Grid {
         );
         // первое поле первичного ключа
         if ($fields && isset($fields[0]['Comment']) &&
-                ($field = $fields[0]['Comment'])) {
+            ($field = $fields[0]['Comment'])
+        ) {
             $properties = explode('|', $field);
             foreach ($properties as $property) {
                 list($key, $value) = explode('=', $property);
@@ -227,19 +230,19 @@ class CommentsEditor extends Grid {
      * @todo Исключать поля типа текст из результатов выборки для таблицы с переводами
      * @todo Подключить фильтрацию
      */
-    protected function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null) {
+    protected function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = NULL) {
         //        $fkValueName = substr($fkKeyName, 0, strpos($fkKeyName, '_')).'_name';
         $fkValueName = $this->getForeinKeyFieldName($fkTableName, $fkKeyName);
 
         //если существует таблица с переводами для связанной таблицы
         //нужно брать значения оттуда
         if (
-        $transTableName = $this->dbh->getTranslationTablename($fkTableName)) {
+        $transTableName = $this->dbh->getTranslationTablename($fkTableName)
+        ) {
             if ($filter) {
                 $filter = ' AND ' .
-                        str_replace('WHERE', '', $this->dbh->buildWhereCondition($filter));
-            }
-            else {
+                    str_replace('WHERE', '', $this->dbh->buildWhereCondition($filter));
+            } else {
                 $filter = '';
             }
 
@@ -257,18 +260,17 @@ class CommentsEditor extends Grid {
                 $currentLangID
             );
             $res = $this->dbh->select($request);
-        }
-        else {
+        } else {
             $columns = $this->dbh->getColumnsInfo($fkTableName);
             $columns = array_filter($columns,
                 create_function('$value', 'return !($value["type"] == QAL::COLTYPE_TEXT);')
             );
             $ordering = $this->getOrderingByTable($fkTableName, $fkValueName);
             $res =
-                    $this->dbh->select($fkTableName, array_keys($columns), $filter, $ordering);
+                $this->dbh->select($fkTableName, array_keys($columns), $filter, $ordering);
         }
 
-        return array($res, $fkKeyName, $fkValueName);
+        return [$res, $fkKeyName, $fkValueName];
     }
 
     /**
@@ -283,7 +285,7 @@ class CommentsEditor extends Grid {
      * @see STBCommentsEditor::getOrderingByTable()
      */
     protected function getOrderingByTable($fkTableName, $fkValueName) {
-        return array($fkValueName => QAL::ASC);
+        return [$fkValueName => QAL::ASC];
     }
 
     /**
@@ -292,9 +294,9 @@ class CommentsEditor extends Grid {
     // Параметер comment_tables содержит имена комментируемых таблиц разделённых символом '|'
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
-            array(
-                'comment_tables' => array()
-            ));
+            [
+                'comment_tables' => []
+            ]);
         return $result;
     }
 
@@ -304,7 +306,7 @@ class CommentsEditor extends Grid {
     protected function delete() {
         $tab = $this->getStateParams();
         if ($tab) {
-            $tab = (int) array_pop($tab);
+            $tab = (int)array_pop($tab);
             $this->changeTableName($tab);
         }
         return parent::delete();

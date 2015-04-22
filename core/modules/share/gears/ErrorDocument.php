@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class ErrorDocument;
-@endcode
+ * @endcode
  *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
@@ -14,13 +14,13 @@ class ErrorDocument;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
- /**
-  * Error document.
-  *
-  * @code
- class ErrorDocument;
- @endcode
-  */
+/**
+ * Error document.
+ *
+ * @code
+class ErrorDocument;
+ * @endcode
+ */
 class ErrorDocument extends Object implements IDocument {
     /**
      * Document.
@@ -48,21 +48,21 @@ class ErrorDocument extends Object implements IDocument {
         $this->doc = new \DOMDocument('1.0', 'UTF-8');
         $dom_root = $this->doc->createElement('document');
         $dom_root->setAttribute('debug', $this->getConfigValue('site.debug'));
-        $dom_root->setAttribute('url', (string) E()->getRequest()->getURI());
+        $dom_root->setAttribute('url', (string)E()->getRequest()->getURI());
         $this->doc->appendChild($dom_root);
         $dom_documentProperties = $this->doc->createElement('properties');
         $dom_root->appendChild($dom_documentProperties);
         $prop =
-                $this->doc->createElement('property', E()->getSiteManager()->getCurrentSite()->base);
-        $prop ->setAttribute('name', 'base');
-        $prop ->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
+            $this->doc->createElement('property', E()->getSiteManager()->getCurrentSite()->base);
+        $prop->setAttribute('name', 'base');
+        $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
         $dom_documentProperties->appendChild($prop);
 
         $prop = $this->doc->createElement('property',
             $langID = E()->getLanguage()->getCurrent());
-        $prop ->setAttribute('name', 'lang');
-        $prop ->setAttribute('abbr', E()->getRequest()->getLangSegment());
-        $prop ->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($langID));
+        $prop->setAttribute('name', 'lang');
+        $prop->setAttribute('abbr', E()->getRequest()->getLangSegment());
+        $prop->setAttribute('real_abbr', E()->getLanguage()->getAbbrByID($langID));
         $dom_documentProperties->appendChild($prop);
         unset($prop);
 
@@ -72,18 +72,17 @@ class ErrorDocument extends Object implements IDocument {
 
         $vm = E()->getController()->getViewMode();
         if ($vm == DocumentController::TRANSFORM_JSON) {
-            $errors = array(array('message' => $this->e->getMessage()));
+            $errors = [['message' => $this->e->getMessage()]];
             $customMessages = $this->e->getCustomMessage();
-            if(is_array($customMessages) && !empty($customMessages)){
+            if (is_array($customMessages) && !empty($customMessages)) {
                 array_push($errors, $customMessages);
             }
-            $data = array(
+            $data = [
                 'result' => false,
                 'errors' => $errors
-            );
+            ];
             $result->appendChild(new \DOMText(json_encode($data)));
-        }
-        else {
+        } else {
             $error = $this->doc->createElement('error');
             $result->appendChild($error);
 
@@ -91,9 +90,9 @@ class ErrorDocument extends Object implements IDocument {
             $error->setAttribute('file', $this->e->getFile());
             $error->setAttribute('line', $this->e->getLine());
             $customMessages = $this->e->getCustomMessage();
-            if(is_array($customMessages) && !empty($customMessages)){
-                foreach($customMessages as $message){
-                    if(is_array($message)){
+            if (is_array($customMessages) && !empty($customMessages)) {
+                foreach ($customMessages as $message) {
+                    if (is_array($message)) {
                         $message = implode(', ', $message);
                     }
                     $error->appendChild($this->doc->createElement('customMessage', $message));
@@ -102,18 +101,23 @@ class ErrorDocument extends Object implements IDocument {
 
             $bktrace = $this->doc->createElement('backtrace');
             $dbgObj = $this->e->getBacktrace();
-            array_walk($dbgObj, function($callable) use ($bktrace){
+            array_walk($dbgObj, function ($callable) use ($bktrace) {
                 $bktrace->appendChild($call = $this->doc->createElement('call'));
-                array_walk($callable, function($value, $key) use ($call){
-                    if(is_scalar($value))
+                array_walk($callable, function ($value, $key) use ($call) {
+                    if (is_scalar($value))
                         $call->appendChild($this->doc->createElement($key, $value));
-                    elseif(is_array($value)){
-                        $call->appendChild(
-                            $this->doc->createElement(
-                                $key,
-                                var_export($value, true)
-                            )
-                        );
+                    elseif (is_array($value)) {
+                        foreach ($value as $k1 => $v1) {
+                            if(is_array($v1)) $v1 = '[...]';
+
+                            $call->appendChild(
+                                $this->doc->createElement(
+                                    $key,
+                                    $v1
+                                )
+                            );
+                        }
+
                     }
 
                 });

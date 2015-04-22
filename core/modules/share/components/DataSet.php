@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 abstract class DataSet;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -15,13 +15,15 @@ abstract class DataSet;
  */
 
 namespace Energine\share\components;
+
 use Energine\share\gears\Toolbar, Energine\share\gears\QAL, Energine\share\gears\SystemException, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Object, Energine\share\gears\SimpleBuilder, Energine\share\gears\DataSetConfig, Energine\share\gears\Pager;
+
 /**
  * Abstract data set.
  *
  * @code
 abstract class DataSet;
-@endcode
+ * @endcode
  *
  * This is a parent class for form, list and tree; it contains methods to work with toolbar and data sets.
  *
@@ -79,19 +81,19 @@ abstract class DataSet extends Component {
      * Data description.
      * @var DataDescription $dataDescription
      */
-    private $dataDescription = false;
+    private $dataDescription = null;
 
     /**
      * Data
      * @var Data $data
      */
-    private $data = false;
+    private $data = null;
 
     /**
      * Array of toolbars.
      * @var array $toolbar
      */
-    private $toolbar = array();
+    private $toolbar = [];
 
     /**
      * JavaScript
@@ -120,7 +122,7 @@ abstract class DataSet extends Component {
     /**
      * @copydoc Component::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_FORM);
         if (!$this->getParam('recordsPerPage')) $this->setParam('recordsPerPage', self::RECORD_PER_PAGE);
@@ -141,12 +143,12 @@ abstract class DataSet extends Component {
         $this->setProperty('state', '');
         return array_merge(
             parent::defineParams(),
-            array(
+            [
                 'datasetAction' => '',
                 'recordsPerPage' => false,
                 'title' => false,
                 'template' => false,
-            )
+            ]
         );
     }
 
@@ -166,6 +168,7 @@ abstract class DataSet extends Component {
      *
      */
     public function getData() {
+
         return $this->data;
     }
 
@@ -176,7 +179,7 @@ abstract class DataSet extends Component {
      * @return Toolbar|array
      */
     protected function getToolbar($toolbarName = false) {
-        $result = array();
+        $result = [];
         if (!$toolbarName) {
             $result = $this->toolbar;
         } elseif (isset($this->toolbar[$toolbarName])) {
@@ -195,7 +198,7 @@ abstract class DataSet extends Component {
      */
     protected function addToolbar($toolbar) {
         if (!is_array($toolbar)) {
-            $toolbar = array($toolbar);
+            $toolbar = [$toolbar];
         }
         foreach ($toolbar as $tb)
             if ($tb instanceof Toolbar) {
@@ -242,17 +245,11 @@ abstract class DataSet extends Component {
      */
     protected function prepare() {
         $this->setBuilder($this->createBuilder());
-
-
         $this->setDataDescription($this->createDataDescription());
         $this->createPager();
-        $data = $this->createData();
-        if ($data instanceof Data) {
-            $this->setData($data);
-        }
+        $this->setData($this->createData());
 
         $toolbars = $this->createToolbar();
-
         if (!empty($toolbars)) {
             $this->addToolbar($toolbars);
         }
@@ -309,7 +306,7 @@ abstract class DataSet extends Component {
      * @return Toolbar|Toolbar[]
      */
     protected function createToolbar() {
-        $result = array();
+        $result = [];
         if ($config = $this->getConfig()->getCurrentStateConfig()) {
             foreach ($config->toolbar as $toolbarDescription) {
                 $toolbarName = ((string)$toolbarDescription['name']) ?
@@ -456,7 +453,6 @@ abstract class DataSet extends Component {
      * @throws SystemException 'ERR_DEV_LOAD_DATA_IS_FUNCTION'
      */
     protected function createData() {
-        $result = false;
         $data = $this->loadData();
         if (is_null($data)) {
             throw new SystemException('ERR_DEV_LOAD_DATA_IS_FUNCTION', SystemException::ERR_DEVELOPER);
@@ -545,7 +541,7 @@ abstract class DataSet extends Component {
      */
     final protected function setType($type) {
         $this->type = $type;
-        if (in_array($type, array(self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER))) {
+        if (in_array($type, [self::COMPONENT_TYPE_FORM_ADD, self::COMPONENT_TYPE_FORM_ALTER])) {
             $type = self::COMPONENT_TYPE_FORM;
         }
         $this->setProperty('type', $type);
@@ -570,7 +566,7 @@ abstract class DataSet extends Component {
      * @final
      */
     final protected function setTitle($title) {
-        if(!empty($title))
+        if (!empty($title))
             $this->setProperty('title', $title);
     }
 
@@ -633,7 +629,7 @@ abstract class DataSet extends Component {
      * @final
      */
     final protected function addWYSIWYGTranslations() {
-        $translations = array(
+        $translations = [
             'BTN_ITALIC',
             'BTN_HREF',
             'BTN_UL',
@@ -661,8 +657,8 @@ abstract class DataSet extends Component {
             'BTN_ALIGN_JUSTIFY',
             'BTN_EXT_FLASH',
             'BTN_ACTIVATE'
-        );
-        call_user_func_array(array($this, 'addTranslation'), $translations);
+        ];
+        call_user_func_array([$this, 'addTranslation'], $translations);
     }
 
     /**
@@ -671,7 +667,7 @@ abstract class DataSet extends Component {
     protected function fileLibrary() {
         $this->request->shiftPath(1);
 
-        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary',  'Energine\share\components\FileRepository', array('config' => 'core/modules/share/config/FileRepositorySelect.component.xml'));
+        $this->fileLibrary = $this->document->componentManager->createComponent('filelibrary', 'Energine\share\components\FileRepository', ['config' => 'core/modules/share/config/FileRepositorySelect.component.xml']);
 
         $this->fileLibrary->run();
     }
@@ -680,7 +676,7 @@ abstract class DataSet extends Component {
      * Run source.
      */
     protected function source() {
-        $this->source = $this->document->componentManager->createComponent('textblocksource', 'Energine\share\components\TextBlockSource', null);
+        $this->source = $this->document->componentManager->createComponent('textblocksource', 'Energine\share\components\TextBlockSource', NULL);
         $this->source->run();
     }
 
@@ -688,7 +684,7 @@ abstract class DataSet extends Component {
      * Show image manager.
      */
     protected function imageManager() {
-        $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'Energine\share\components\ImageManager', null);
+        $this->imageManager = $this->document->componentManager->createComponent('imagemanager', 'Energine\share\components\ImageManager', NULL);
         $this->imageManager->run();
     }
 
@@ -700,34 +696,34 @@ abstract class DataSet extends Component {
         list($uplId) = $sp;
         $fileInfo = $this->dbh->select(
             'share_uploads',
-            array(
+            [
                 'upl_path',
                 'upl_name',
                 'upl_title',
                 'upl_internal_type',
                 'upl_mime_type',
                 'upl_data',
-            ),
-            array(
+            ],
+            [
                 'upl_id' => intval($uplId),
                 'upl_internal_type' => \Energine\share\gears\FileRepoInfo::META_TYPE_VIDEO
-            )
+            ]
         );
-        if(!$fileInfo) {
+        if (!$fileInfo) {
             throw new SystemException('ERROR_NO_VIDEO_FILE', SystemException::ERR_404);
         }
         // Using array_values to transform associative index to key index
         list($file, $name, $title, $type, $mime, $data) = array_values($fileInfo[0]);
         $dd = new DataDescription();
-        foreach(
-            array(
+        foreach (
+            [
                 'file' => FieldDescription::FIELD_TYPE_STRING,
                 'name' => FieldDescription::FIELD_TYPE_STRING,
                 'title' => FieldDescription::FIELD_TYPE_STRING,
                 'type' => FieldDescription::FIELD_TYPE_STRING,
                 'mime' => FieldDescription::FIELD_TYPE_STRING,
                 'data' => FieldDescription::FIELD_TYPE_TEXT,
-            ) as $fName => $fType
+            ] as $fName => $fType
         ) {
             $fd = new FieldDescription($fName);
             $fd->setType($fType);
@@ -737,9 +733,9 @@ abstract class DataSet extends Component {
         $this->setDataDescription($dd);
         $d = new Data();
         $d->load(
-          array(
-              compact('file', 'name', 'title','type', 'mime', 'data')
-          )
+            [
+                compact('file', 'name', 'title', 'type', 'mime', 'data')
+            ]
         );
         $this->setData($d);
         $this->js = $this->buildJS();
@@ -747,10 +743,9 @@ abstract class DataSet extends Component {
          * If we want to use custom embed player we need to redefine embed_player.xslt in module transformers dir
          */
         $fn = 'embed_player.xslt';
-        if(file_exists($file = sprintf(SITE_DIR.XSLTTransformer::MAIN_TRANSFORMER_DIR, E()->getSiteManager()->getCurrentSite()->folder).$fn )){
+        if (file_exists($file = sprintf(SITE_DIR . XSLTTransformer::MAIN_TRANSFORMER_DIR, E()->getSiteManager()->getCurrentSite()->folder) . $fn)) {
             E()->getController()->getTransformer()->setFileName($fn);
-        }
-        else {
+        } else {
             E()->getController()->getTransformer()->setFileName('core/modules/share/transformers/embed_player.xslt', true);
         }
 
@@ -769,7 +764,7 @@ abstract class DataSet extends Component {
         if (function_exists('tidy_get_output') && $aggressive) {
             try {
                 $tidy = new \tidy();
-                $config = array(
+                $config = [
                     'bare' => true,
                     'drop-font-tags' => true,
                     'drop-proprietary-attributes' => true,
@@ -781,15 +776,15 @@ abstract class DataSet extends Component {
                     'indent' => 'auto',
                     'wrap' => 72,
                     'output-html' => true,
-                );
+                ];
                 //if ($aggressive) {
                 $config = array_merge(
                     $config,
-                    array(
+                    [
                         //'clean' => true,
                         'word-2000' => true,
                         'drop-empty-paras' => true
-                    )
+                    ]
                 );
                 //}
                 $data = $tidy->repairString($data, $config, 'utf8');

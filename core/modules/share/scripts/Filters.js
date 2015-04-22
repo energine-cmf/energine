@@ -72,12 +72,11 @@ var Filters = new Class(/** @lends Filter# */{
         this.element.getElement('.filter_toggle').addEvent('click', function (e) {
             e.stop();
 
-            if (inner.hasClass('hidden')) {
-                inner.removeClass('hidden');
+            if (inner.hasClass('toggled')) {
+                inner.tween('height').removeClass('toggled');
             }
             else {
-                inner.addClass('hidden');
-
+				inner.tween('height', '0').addClass('toggled');
             }
         }.bind(this));
         addFilter.addEvent('click', function (e) {
@@ -102,7 +101,7 @@ var Filters = new Class(/** @lends Filter# */{
         }.bind(this));
         this.filters.push(f);
         if (this.filters.length == 1) {
-            f.element.getElement('.filters_operand').hide();
+            f.element.getElement('.operand_container').hide();
             f.element.getElement('.remove_filter').setProperty('disabled', 'disabled');
         }
         else {

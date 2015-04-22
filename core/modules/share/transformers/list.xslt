@@ -116,16 +116,16 @@
                         <xsl:if test="ancestor::component/filter">
                             <div class="grid_toolbar clearfix">
                                 <div class="filters_block">
-	                                <div class="filters_block_inner clearfix">
+	                                <div class="filters_block_inner toggled clearfix" style="height: 0;">
 	                                    <div class="filters">
 	                                        <div class="filter">
-                                                <span class="f_select_container">
+                                                <span class="f_select_container operand_container">
                                                     <select class="filters_operand">
                                                         <option value="OR">OR</option>
                                                         <option value="AND">AND</option>
                                                     </select>
                                                 </span>
-		                                        <span class="f_select_container">
+		                                        <span class="f_select_container fieldname_container">
 		                                            <select name="fieldName" class="f_fields">
 		                                                <xsl:for-each select="ancestor::component/filter/field">
 		                                                    <option value="[{@tableName}][{@name}]" type="{@type}">
@@ -169,20 +169,22 @@
 	                                            <xsl:value-of select="ancestor::component/filter/@reset"/>
 	                                        </a>
 	                                    </div>
-		                                <div class="filter_save_block">
-			                                <div class="filter_divider"></div>
-			                                <input type="text" class="filter_name" placeholder="FILTER_NAME" />
-			                                <button type="button" class="save_filter">BTN_FILTER_SAVE</button>
-			                                <select class="load_filter">
-				                                <option value="false">LOAD_FILTER</option>
-				                                <option value="filter1">Filter1</option>
-				                                <option value="filter2">Filter2</option>
-			                                </select>
-		                                </div>
+		                                <div class="filter_divider"></div>
 		                            </div>
 	                                <a href="#" class="filter_toggle">
-		                                <i class="fa fa-angle-double-up"></i>
+		                                <i class="fa fa-caret-up"></i>
 	                                </a>
+	                                <div class="filter_save_block">
+		                                <span class="filter_save_text">FILTER:</span>
+		                                <span class="filter_status"></span>
+		                                <input type="text" class="filter_name" placeholder="FILTER_NAME" />
+		                                <button type="button" class="save_filter">BTN_FILTER_SAVE</button>
+		                                <select class="load_filter">
+			                                <option value="false">LOAD_FILTER</option>
+			                                <option value="filter1">Filter1</option>
+			                                <option value="filter2">Filter2</option>
+		                                </select>
+	                                </div>
                                 </div>
 
                                 <xsl:if test="ancestor::component[@sample='FileRepository']">

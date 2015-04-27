@@ -61,7 +61,7 @@ class Grid extends DBDataSet {
      * Column name for user sorting.
      * @var string $orderColumn
      */
-    private $orderColumn = null;
+    private $orderColumn = NULL;
 
     /**
      * Filter.
@@ -73,12 +73,12 @@ class Grid extends DBDataSet {
      * Grid for select fields
      * @var \Lookup
      */
-    protected $lookupEditor = null;
+    protected $lookupEditor = NULL;
 
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
 
         $this->setProperty('exttype', 'grid');
@@ -225,7 +225,7 @@ class Grid extends DBDataSet {
                 ]), [$orderColumn => QAL::ASC]);
 
         }
-        $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, [$this->getPK() => $id]);
+        $this->dbh->modify(QAL::DELETE, $this->getTableName(), NULL, [$this->getPK() => $id]);
 
         //если определен порядок следования перестраиваем индекс сортировки
         if ($orderColumn && $ids) {
@@ -931,7 +931,7 @@ class Grid extends DBDataSet {
                 // двигаем элемент выше или ниже id=$secondItem
                 case 'above':
                 case 'below':
-                    $secondItem = (!empty($params[2])) ? $params[2] : null;
+                    $secondItem = (!empty($params[2])) ? $params[2] : NULL;
                     if ($secondItem == intval($secondItem) && $firstItem != $secondItem) {
                         $secondItemOrderNum = $this->dbh->getScalar(
                             'SELECT ' . $this->getOrderColumn() . ' as secondItemOrderNum ' .
@@ -1021,7 +1021,7 @@ class Grid extends DBDataSet {
         $data =
             convertDBResult($this->dbh->select($request), 'neighborID');
         if ($data) {
-            $neighborID = null;
+            $neighborID = NULL;
             $neighborOrderNum = 0;
             extract(current($data));
             $this->dbh->beginTransaction();

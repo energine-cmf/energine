@@ -144,7 +144,6 @@ abstract class DataSet extends Component {
         return array_merge(
             parent::defineParams(),
             [
-                'datasetAction' => '',
                 'recordsPerPage' => false,
                 'title' => false,
                 'template' => false,
@@ -515,21 +514,7 @@ abstract class DataSet extends Component {
                 $action .= '/';
             }
         }
-
-
-        $this->setParam('datasetAction', $action);
         $this->setProperty('action', $action);
-    }
-
-    /**
-     * Get an address of form processor.
-     *
-     * @return string
-     *
-     * @final
-     */
-    final protected function getDataSetAction() {
-        return $this->getParam('datasetAction');
     }
 
     /**

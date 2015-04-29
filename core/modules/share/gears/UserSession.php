@@ -92,7 +92,7 @@ final class UserSession extends Object implements \SessionHandlerInterface {
      *
      * @var null|bool|string $data
      */
-    private $data = null;
+    private $data = NULL;
     /**
      * Session table name in data base.
      * @var string $tableName
@@ -122,7 +122,7 @@ final class UserSession extends Object implements \SessionHandlerInterface {
         if ($this->phpSessId = self::isOpen()) {
             $this->data = self::isValid($this->phpSessId);
             //Если сессия валидная
-            if (!is_null($this->data)) {
+            if (is_null($this->data) || $this->data) {
                 E()->getDB()->modify('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
             } elseif ($force) {
                 //создаем ее вручную
@@ -130,7 +130,7 @@ final class UserSession extends Object implements \SessionHandlerInterface {
                 $this->phpSessId = $sessInfo[1];
             } //сессия невалидная
             else {
-                $this->dbh->modify(QAL::DELETE, self::$tableName, null, array("session_native_id" => addslashes($this->phpSessId)));
+                $this->dbh->modify(QAL::DELETE, self::$tableName, NULL, ["session_native_id" => addslashes($this->phpSessId)]);
                 // удаляем cookie сеанса
                 E()->getResponse()->deleteCookie(self::DEFAULT_SESSION_NAME);
                 return;
@@ -174,14 +174,12 @@ final class UserSession extends Object implements \SessionHandlerInterface {
      * @return mixed|false
      */
     static public function isValid($sessID) {
-        // проверяем
-        $res = E()->getDB()->select(
-            'SELECT session_id, session_data FROM ' . self::$tableName .
+        return E()->getDB()->getScalar(
+            'SELECT session_data FROM ' . self::$tableName .
             ' WHERE session_native_id = %s ' .
             ' AND session_expires >= UNIX_TIMESTAMP()',
-            addslashes($sessID)
+            $sessID
         );
-        return (!$res) ?: $res[0]['session_data'];
     }
 
     //todo VZ: Why not to use 0 as the default for arguments?
@@ -194,6 +192,17 @@ final class UserSession extends Object implements \SessionHandlerInterface {
      * @return array
      */
     public static function manuallyCreateSessionInfo($UID = false, $expires = false) {
+        if (($id = self::isOpen()) && (self::isValid($id) !== false)){
+            if($UID){
+                $data['u_id'] = $UID;
+                $data['session_last_impression'] = time();
+                $data['session_data'] = 'userID|' . serialize($UID);
+                $data['session_ip'] = E()->getRequest()->getClientIP(true);
+
+                E()->getDB()->modify(QAL::UPDATE, 'share_session', $data, ['session_native_id' => $id]);
+            }
+            return false;
+        }
         //Записали данные в БД
         $data['session_native_id'] = self::createIdentifier();
         $data['session_created'] = $data['session_last_impression'] = time();
@@ -212,7 +221,8 @@ final class UserSession extends Object implements \SessionHandlerInterface {
         E()->getDB()->modify(QAL::INSERT, 'share_session', $data);
         $_COOKIE[self::DEFAULT_SESSION_NAME] = $data['session_native_id'];
 
-        return array(self::DEFAULT_SESSION_NAME, $data['session_native_id'], $data['session_expires']);
+
+        return [self::DEFAULT_SESSION_NAME, $data['session_native_id'], $data['session_expires']];
     }
 
     /**
@@ -221,7 +231,7 @@ final class UserSession extends Object implements \SessionHandlerInterface {
     public static function manuallyDeleteSessionInfo() {
         if (isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])) {
             $sessID = $_COOKIE[UserSession::DEFAULT_SESSION_NAME];
-            E()->getDB()->modify(QAL::DELETE, 'share_session', null, array('session_native_id' => $sessID));
+            E()->getDB()->modify(QAL::DELETE, 'share_session', NULL, ['session_native_id' => $sessID]);
         }
     }
 
@@ -298,12 +308,12 @@ final class UserSession extends Object implements \SessionHandlerInterface {
     public function write($phpSessId, $data) {
         if (!empty($data)) {
             $this->data = $data;
-            $data = array('session_data' => $data);
+            $data = ['session_data' => $data];
             if (isset($_SESSION['userID'])) {
                 $data['u_id'] = (int)$_SESSION['userID'];
             }
 
-            $this->dbh->modify(QAL::UPDATE, self::$tableName, $data, array('session_native_id' => $phpSessId));
+            $this->dbh->modify(QAL::UPDATE, self::$tableName, $data, ['session_native_id' => $phpSessId]);
         }
         return true;
     }
@@ -315,7 +325,7 @@ final class UserSession extends Object implements \SessionHandlerInterface {
      * @return bool
      */
     public function destroy($phpSessId) {
-        return $this->dbh->modify(QAL::DELETE, self::$tableName, null, array('session_native_id' => $phpSessId));
+        return $this->dbh->modify(QAL::DELETE, self::$tableName, NULL, ['session_native_id' => $phpSessId]);
     }
 
     //todo VZ: input argument is not used.
@@ -330,7 +340,7 @@ final class UserSession extends Object implements \SessionHandlerInterface {
         $this->dbh->modify(
             QAL::DELETE,
             self::$tableName,
-            null,
+            NULL,
             'session_expires < UNIX_TIMESTAMP()'
         );
         return true;

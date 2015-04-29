@@ -195,7 +195,7 @@ final class QAL extends Object {
      * Empty string.
      * @var string EMPTY_STRING
      */
-    const EMPTY_STRING = null;
+    const EMPTY_STRING = NULL;
 
     /**
      * Errors.
@@ -308,7 +308,7 @@ final class QAL extends Object {
      * @param  array $args Procedure arguments.
      * @return array|bool
      */
-    public function call($name, &$args = null) {
+    public function call($name, &$args = NULL) {
         if (!$args) {
             $res = $this->pdo->query("call $name();", \PDO::FETCH_NAMED);
         } else {
@@ -317,7 +317,7 @@ final class QAL extends Object {
             foreach ($args as $index => &$value) {
                 $stmt->bindParam($index + 1, $value);
             }
-            if (($res = $stmt->execute()) && $stmt->rowCount() ) {
+            if (($res = $stmt->execute()) && $stmt->rowCount()) {
                 $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             }
         }
@@ -508,6 +508,14 @@ final class QAL extends Object {
         return $this->tableExists($tableName . '_translation');
     }
 
+    public function getTagsTablename($tableName) {
+        return $this->tableExists($tableName . '_tags');
+    }
+
+    public function getUploadsTablename($tableName) {
+        return $this->tableExists($tableName . '_uploads');
+    }
+
     /**
      * Check whether some table name exist.
      *
@@ -564,7 +572,7 @@ final class QAL extends Object {
      * @return string | array
      */
     public static function getFQTableName($tableName, $returnAsArray = false) {
-        $result = array();
+        $result = [];
 
         $tableName = str_replace('`', '', $tableName);
 
@@ -622,7 +630,7 @@ final class QAL extends Object {
             //будем считать что это просто SQL код
             $args = $this->buildSQL($args);
         }
-        return call_user_func_array(array($this, 'selectRequest'), $args);
+        return call_user_func_array([$this, 'selectRequest'], $args);
     }
 
     /**
@@ -657,10 +665,10 @@ final class QAL extends Object {
      *
      * @see QAL::modifyRequest()
      */
-    public function modify($mode, $tableName = null, $data = null, $condition = null) {
+    public function modify($mode, $tableName = NULL, $data = NULL, $condition = NULL) {
         //Если в первом параметре не один из зарегистрированных режимов - считаем что это запрос
-        if (!in_array($mode, array(self::INSERT, self::INSERT_IGNORE, self::REPLACE, self::DELETE, self::UPDATE))) {
-            return call_user_func_array(array($this, 'modifyRequest'), func_get_args());
+        if (!in_array($mode, [self::INSERT, self::INSERT_IGNORE, self::REPLACE, self::DELETE, self::UPDATE])) {
+            return call_user_func_array([$this, 'modifyRequest'], func_get_args());
         }
 
         if (empty($mode) || empty($tableName)) {
@@ -668,7 +676,7 @@ final class QAL extends Object {
         }
         $tableName = QAL::getFQTableName($tableName);
 
-        $args = array();
+        $args = [];
 
         $buildQueryBody = function ($data, &$args) {
             if (!empty($data)) {
@@ -678,7 +686,7 @@ final class QAL extends Object {
                     if ($fieldValue === self::EMPTY_STRING) {
                         $args[$key] = '';
                     } elseif ($fieldValue == '') {
-                        $args[$key] = null;
+                        $args[$key] = NULL;
                     }
                     $key++;
                 }
@@ -717,7 +725,7 @@ final class QAL extends Object {
             $sqlQuery .= $this->buildWhereCondition($condition, $args);
         }
         array_unshift($args, $sqlQuery);
-        return call_user_func_array(array($this, 'modifyRequest'), $args);
+        return call_user_func_array([$this, 'modifyRequest'], $args);
     }
 
     /**
@@ -753,13 +761,13 @@ final class QAL extends Object {
      *
      * @see QAL::selectRequest()
      */
-    public function buildWhereCondition($condition, array &$args = null) {
+    public function buildWhereCondition($condition, array &$args = NULL) {
         if (!is_null($args)) {
             $result = '';
             if (!empty($condition)) {
                 $result = ' WHERE ';
                 if (is_array($condition)) {
-                    $cond = array();
+                    $cond = [];
                     foreach ($condition as $fieldName => $value) {
                         if (is_null($value)) {
                             $cond[] = $fieldName . ' IS NULL';
@@ -791,7 +799,7 @@ final class QAL extends Object {
                 $result = ' WHERE ';
 
                 if (is_array($condition)) {
-                    $cond = array();
+                    $cond = [];
                     foreach ($condition as $fieldName => $value) {
                         //$fieldName = strtolower($fieldName);
                         if (is_null($value)) {
@@ -834,7 +842,7 @@ final class QAL extends Object {
      *
      * @return array
      */
-    public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = null, $order = null) {
+    public function getForeignKeyData($fkTableName, $fkKeyName, $currentLangID, $filter = NULL, $order = NULL) {
         $fkValueName = substr($fkKeyName, 0, strrpos($fkKeyName, '_')) . '_name';
         $columns = $this->getColumnsInfo($fkTableName);
 
@@ -882,7 +890,7 @@ final class QAL extends Object {
                 $currentLangID));
         }
 
-        return array($res, $fkKeyName, $fkValueName);
+        return [$res, $fkKeyName, $fkValueName];
     }
 
     /**
@@ -900,7 +908,7 @@ final class QAL extends Object {
             $orderClause = ' ORDER BY ';
 
             if (is_array($clause)) {
-                $cls = array();
+                $cls = [];
                 foreach ($clause as $fieldName => $direction) {
                     $direction = strtoupper($direction);
                     $cls[] = "$fieldName " . constant("self::$direction");
@@ -952,7 +960,7 @@ final class QAL extends Object {
         //list($tableName, $fields, $condition, $order, $limit )  = $args;
 
         $fields = true;
-        $condition = $order = $limit = null;
+        $condition = $order = $limit = NULL;
         $tableName = $args[0];
         if (isset($args[1])) {
             $fields = $args[1];
@@ -975,7 +983,7 @@ final class QAL extends Object {
         } elseif ($fields === true) {
             $fields = '*';
         } else {
-            throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB, array($tableName, $fields, $condition, $order, $limit));
+            throw new SystemException(self::ERR_BAD_QUERY_FORMAT, SystemException::ERR_DB, [$tableName, $fields, $condition, $order, $limit]);
         }
 
 
@@ -996,6 +1004,6 @@ final class QAL extends Object {
                 $sqlQuery .= " LIMIT $limit";
             }
         }
-        return array($sqlQuery);
+        return [$sqlQuery];
     }
 }

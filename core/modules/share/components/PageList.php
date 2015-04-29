@@ -185,7 +185,7 @@ class PageList extends DataSet {
             $filteredIDs = true;
             if ($this->getParam('tags'))
                 $filteredIDs =
-                    TagManager::getFilter($this->getParam('tags'), 'share_sitemap_tags');
+                    TagManager::getFilter($this->getParam('tags'), 'share_sitemap');
 
             reset($data);
             while (list($key, $value) = each($data)) {

@@ -30,12 +30,6 @@ class TagManager extends Object {
     const TAG_TABLENAME = 'share_tags';
 
     /**
-     * Table suffix.
-     * @var string TAGS_TABLE_SUFFIX
-     */
-    const TAGS_TABLE_SUFFIX = '_tags';
-
-    /**
      * Translation table for tags.
      * @var string TAG_TABLENAME_TRANSLATION
      */
@@ -311,16 +305,17 @@ class TagManager extends Object {
      * Get filter.
      *
      * @param mixed $tags
-     * @param string $mapTableName Map table name.
+     * @param string $tableName table name.
      * @return array|mixed
      *
      * @throws SystemException 'ERR_WRONG_TABLE_NAME'
      */
-    static public function getFilter($tags, $mapTableName) {
-        if (!E()->getDB()->tableExists($mapTableName)) {
-            throw new SystemException('ERR_WRONG_TABLE_NAME', SystemException::ERR_DEVELOPER, $mapTableName);
+    static public function getFilter($tags, $tableName) {
+        $result = null;
+        if (!($mapTableName = E()->getDB()->getTagsTablename($tableName))) {
+            return $result;
         }
-        $result = array();
+
         $tagInfo = self::getID($tags);
 
         if (!empty($tagInfo)) {

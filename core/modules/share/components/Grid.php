@@ -1106,7 +1106,7 @@ class Grid extends DBDataSet {
             $this->getData()->addField($field);
         }
 
-        if ($this->dbh->tableExists($this->getTableName() . TagManager::TAGS_TABLE_SUFFIX)) {
+        if ($this->dbh->getTagsTablename($this->getTableName())) {
             $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
             $tm->createFieldDescription();
             $tm->createField();

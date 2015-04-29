@@ -124,8 +124,8 @@ class TagCloud extends DBDataSet {
             $smapFilter = ' AND ct.smap_id = ' . $this->filterId;
         }
         $result = $this->dbh->select('SELECT COUNT(ctl.' . $this->bindedBlock->getPK() . ') as frq,ctl.tag_id FROM '
-                . $this->bindedBlock->getTableName()
-                . '_tags ctl INNER JOIN ' . $this->bindedBlock->getTableName() . ' ct '
+                . $this->dbh->getTagsTablename($this->bindedBlock->getTableName())
+                . ' ctl INNER JOIN ' . $this->bindedBlock->getTableName() . ' ct '
                 . 'WHERE ctl.' . $this->bindedBlock->getPK() . ' = ct.' . $this->bindedBlock->getPK()
                 .  $smapFilter
                 . ' GROUP BY tag_id');

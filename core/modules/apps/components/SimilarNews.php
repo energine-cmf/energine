@@ -142,7 +142,7 @@ class SimilarNews extends DBDataSet {
             $result = $this->dbh->getColumn(
                 'SELECT DISTINCT sn.news_id news_id FROM ' .
                 $this->getTableName() . ' AS sn LEFT JOIN ' .
-                $this->getTableName() . '_tags AS snt ' .
+                $this->dbh->getTagsTablename($this->getTableName()) . ' AS snt ' .
                 ' ON snt.news_id=sn.news_id WHERE snt.tag_id IN (%s) ' .
                 ' ORDER BY sn.news_date DESC LIMIT 0,' .
                 intval($this->getParam('limit')),
@@ -159,6 +159,6 @@ class SimilarNews extends DBDataSet {
      * @return array
      * */
     private function getNewsTagIDs() {
-        return $this->dbh->getColumn($this->getTableName().'_tags', 'tag_id', ['news_id' => $this->newsID]);
+        return $this->dbh->getColumn($this->dbh->getTagsTablename($this->getTableName()), 'tag_id', ['news_id' => $this->newsID]);
     }
 }

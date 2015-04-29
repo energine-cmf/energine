@@ -1,10 +1,10 @@
 <?php
 use
-	Energine\share\gears\UserSession,
-	Energine\share\gears\Object,
-	Energine\share\gears\User,
-	Energine\user\gears\FBOAuth,
-	Energine\user\gears\VKOAuth;
+    Energine\share\gears\UserSession,
+    Energine\share\gears\Object,
+    Energine\share\gears\User,
+    Energine\user\gears\FBOAuth,
+    Energine\user\gears\VKOAuth;
 
 //на всякий пожарный проверяем реферрера
 if (!isset($_SERVER['HTTP_REFERER']) && (!isset($_GET['return']))) {
@@ -19,8 +19,8 @@ $response->disableCache();
 
 if (
     ($login = (isset($_POST['user']['login']) &&
-    isset($_POST['user']['username']) &&
-    isset($_POST['user']['password'])))
+        isset($_POST['user']['username']) &&
+        isset($_POST['user']['password'])))
     ||
     ($logout = (isset($_POST['user']['logout']) || isset($_GET['logout'])))
     ||
@@ -34,13 +34,13 @@ if (
             $_POST['user']['password']
         )
         ) {
-            /**
-             * $response->addCookie()
-             */
-            call_user_func_array(
-                array($response, 'addCookie'),
-                $cookieInfo = UserSession::manuallyCreateSessionInfo($UID)
-            );
+            if (($cookieInfo = UserSession::manuallyCreateSessionInfo($UID))) {
+                call_user_func_array(
+                    [$response, 'addCookie'],
+                    $cookieInfo
+                );
+            }
+
         } else {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, 'bad auth data', time() + 60);
         }
@@ -57,37 +57,39 @@ if (
         ($secretKey = Object::_getConfigValue('auth.fb.secretKey'))
     ) {
         try {
-            $fb = new FBOAuth(array(
-                'appId'     => $appID,
-                'secret'    => $secretKey,
-            ));
+            $fb = new FBOAuth([
+                'appId' => $appID,
+                'secret' => $secretKey,
+            ]);
             $userInfo = $fb->api('/me?fields=id,name,email,picture.type(small)');
             if (is_array($userInfo) && !isset($_REQUEST['error'])) {
                 //Смотрим есть ли такой юзер в списке зарегистрированных
                 if (!($user = User::getFBUser($userInfo['id']))
-                        && !($user = User::linkFBUserByEmail($userInfo['email'], $userInfo['id']))) {
+                    && !($user = User::linkFBUserByEmail($userInfo['email'], $userInfo['id']))
+                ) {
                     //Если нет - создаем
-                        $userData = array(
-                            'u_name'        => (isset($userInfo['email']))
-                                                    ? $userInfo['email']
-                                                        : $userInfo['id'] . '@facebook.com',
-                            'u_fbid'        => $userInfo['id'],
-                            'u_password'    => User::generatePassword(),
-                            'u_fullname'    => $userInfo['name'],
-                            'u_avatar_img'  => $userInfo['picture']['data']['url']
-                        );
+                    $userData = [
+                        'u_name' => (isset($userInfo['email']))
+                            ? $userInfo['email']
+                            : $userInfo['id'] . '@facebook.com',
+                        'u_fbid' => $userInfo['id'],
+                        'u_password' => User::generatePassword(),
+                        'u_fullname' => $userInfo['name'],
+                        'u_avatar_img' => $userInfo['picture']['data']['url']
+                    ];
 
-                        $user = new User();
-                        $user->create($userData);
+                    $user = new User();
+                    $user->create($userData);
                 }
-                call_user_func_array(
-                    array($response, 'addCookie'),
-                    UserSession::manuallyCreateSessionInfo($user->getID())
-                );
+                if (($cookieInfo = UserSession::manuallyCreateSessionInfo($UID))) {
+                    call_user_func_array(
+                        [$response, 'addCookie'],
+                        $cookieInfo
+                    );
+                }
 
             }
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);
             goto escape;
         }
@@ -100,10 +102,10 @@ if (
     ) {
         try {
 
-            $vk = new VKOAuth(array(
+            $vk = new VKOAuth([
                 'appId' => $appID,
                 'secret' => $secretKey,
-            ),
+            ],
                 $_GET['return']
             );
             $vk->connect();
@@ -111,37 +113,37 @@ if (
                 //Смотрим есть ли такой юзер в списке зарегистрированных
                 if (!($user = User::getVKUser($vkUID))) {
                     //Если нет - создаем
-                        $user = new User();
-                        $res = $vk->api('users.get',
-                            array(
-                                'uids'   => $vkUID,
-                                'fields' => 'uid,first_name,last_name,photo'
-                            )
-                        );
-                        if(is_array($res['response'])) {
-                            $vkUser = $res['response'][0];
-                            $userInfo = array(
-                                'u_name'        => $vkUser['uid'].'@vk.com',
-                                'u_vkid'        => $vkUser['uid'],
-                                'u_password'    => User::generatePassword(),
-                                'u_fullname'    => $vkUser['first_name'] . ' ' . $vkUser['last_name'],
-                                'u_avatar_img'  => $vkUser['photo'],
-                            );
-                            $user->create($userInfo);
-                        }
-                        else {
-                            throw new SystemException('TXT_CREATE_SOCIAL_USER_ERROR');
-                        }
+                    $user = new User();
+                    $res = $vk->api('users.get',
+                        [
+                            'uids' => $vkUID,
+                            'fields' => 'uid,first_name,last_name,photo'
+                        ]
+                    );
+                    if (is_array($res['response'])) {
+                        $vkUser = $res['response'][0];
+                        $userInfo = [
+                            'u_name' => $vkUser['uid'] . '@vk.com',
+                            'u_vkid' => $vkUser['uid'],
+                            'u_password' => User::generatePassword(),
+                            'u_fullname' => $vkUser['first_name'] . ' ' . $vkUser['last_name'],
+                            'u_avatar_img' => $vkUser['photo'],
+                        ];
+                        $user->create($userInfo);
+                    } else {
+                        throw new SystemException('TXT_CREATE_SOCIAL_USER_ERROR');
+                    }
 
                 }
-                call_user_func_array(
-                    array($response, 'addCookie'),
-                    UserSession::manuallyCreateSessionInfo($user->getID())
-                );
+                if (($cookieInfo = UserSession::manuallyCreateSessionInfo($UID))) {
+                    call_user_func_array(
+                        [$response, 'addCookie'],
+                        $cookieInfo
+                    );
+                }
 
             }
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);
             goto escape;
         }

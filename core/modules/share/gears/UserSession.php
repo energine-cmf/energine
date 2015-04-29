@@ -23,7 +23,7 @@ final class UserSession;
  *
  * @final
  */
-final class UserSession extends Object implements \SessionHandlerInterface {
+final class UserSession implements \SessionHandlerInterface {
     use DBWorker;
     /**
      * Cookie name for failed login.
@@ -104,14 +104,9 @@ final class UserSession extends Object implements \SessionHandlerInterface {
      *
      * @throws \BadMethodCallException
      */
-    public function __construct($force = false) {
-        if (!self::$instance) {
-            throw new \BadMethodCallException();
-        }
-
-        parent::__construct();
-        $this->timeout = $this->getConfigValue('session.timeout');
-        $this->lifespan = $this->getConfigValue('session.lifespan');
+    private function __construct($force = false) {
+        $this->timeout = Object::_getConfigValue('session.timeout');
+        $this->lifespan = Object::_getConfigValue('session.lifespan');
         $this->userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'ROBOT';
 
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
@@ -119,6 +114,7 @@ final class UserSession extends Object implements \SessionHandlerInterface {
         session_set_save_handler($this);
         session_name(self::DEFAULT_SESSION_NAME);
         $this->data = false;
+
         if ($this->phpSessId = self::isOpen()) {
             $this->data = self::isValid($this->phpSessId);
             //Если сессия валидная
@@ -126,8 +122,15 @@ final class UserSession extends Object implements \SessionHandlerInterface {
                 E()->getDB()->modify('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
             } elseif ($force) {
                 //создаем ее вручную
-                $sessInfo = self::manuallyCreateSessionInfo();
-                $this->phpSessId = $sessInfo[1];
+                $cookieInfo = self::manuallyCreateSessionInfo();
+                $this->phpSessId = $cookieInfo[1];
+
+                if (($cookieInfo = UserSession::manuallyCreateSessionInfo())) {
+                    call_user_func_array(
+                        [E()->getResponse(), 'addCookie'],
+                        $cookieInfo
+                    );
+                }
             } //сессия невалидная
             else {
                 $this->dbh->modify(QAL::DELETE, self::$tableName, NULL, ["session_native_id" => addslashes($this->phpSessId)]);
@@ -137,17 +140,23 @@ final class UserSession extends Object implements \SessionHandlerInterface {
             }
         } elseif ($force) {
             //создаем ее вручную
-            $sessInfo = self::manuallyCreateSessionInfo();
-            $this->phpSessId = $sessInfo[1];
+            $cookieInfo = self::manuallyCreateSessionInfo();
+            $this->phpSessId = $cookieInfo[1];
+            if (($cookieInfo = UserSession::manuallyCreateSessionInfo())) {
+                call_user_func_array(
+                    [E()->getResponse(), 'addCookie'],
+                    $cookieInfo
+                );
+            }
         } else {
             self::$instance = false;
             return;
         }
 
         // устанавливаем время жизни cookie
-        if ($this->getConfigValue('site.domain')) {
+        if (Object::_getConfigValue('site.domain')) {
             $path = '/';
-            $domain = '.' . $this->getConfigValue('site.domain');
+            $domain = '.' . Object::_getConfigValue('site.domain');
         } else {
             $path = E()->getSiteManager()->getCurrentSite()->root;
             $domain = '';
@@ -155,6 +164,17 @@ final class UserSession extends Object implements \SessionHandlerInterface {
         session_set_cookie_params($this->lifespan, $path, $domain);
         session_id($this->phpSessId);
         session_start();
+    }
+
+    private function reload() {
+        if (!$this->phpSessId) {
+            if (($cookieInfo = UserSession::manuallyCreateSessionInfo())) {
+                call_user_func_array(
+                    [E()->getResponse(), 'addCookie'],
+                    $cookieInfo
+                );
+            }
+        }
     }
 
     /**
@@ -192,8 +212,8 @@ final class UserSession extends Object implements \SessionHandlerInterface {
      * @return array
      */
     public static function manuallyCreateSessionInfo($UID = false, $expires = false) {
-        if (($id = self::isOpen()) && (self::isValid($id) !== false)){
-            if($UID){
+        if (($id = self::isOpen()) && (self::isValid($id) !== false)) {
+            if ($UID) {
                 $data['u_id'] = $UID;
                 $data['session_last_impression'] = time();
                 $data['session_data'] = 'userID|' . serialize($UID);
@@ -246,13 +266,14 @@ final class UserSession extends Object implements \SessionHandlerInterface {
      * @see index.php
      * @see auth.php
      *
-     * @throws \SystemException 'ERR_SESSION_ALREADY_STARTED'
+
      */
     public static function start($force = false) {
         if (!self::$instance) {
-            self::$instance = true;
-            new UserSession($force);
+            self::$instance = new UserSession($force);
         }
+
+        if ($force) self::$instance->reload();
     }
 
     /**

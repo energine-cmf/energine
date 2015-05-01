@@ -520,7 +520,9 @@ ul.inline li:last-child {
 ul.inline li + li {
     border-left: 1px solid #ddd;
 }
-
+ul.inline.wo-separator li + li {
+    border-left: none;
+}
 /* ----- language switcher ----- */
 .inline.lang_switcher {
     float: right;

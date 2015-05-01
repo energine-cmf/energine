@@ -106,7 +106,7 @@ class Register extends DBDataSet {
      * @throws SystemException
      */
     protected function checkCaptcha() {
-        require_once('core/modules/share/gears/recaptchalib.php');
+        require_once(CORE_DIR.'/modules/share/gears/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');
         $resp = recaptcha_check_answer($privatekey,
             $_SERVER["REMOTE_ADDR"],

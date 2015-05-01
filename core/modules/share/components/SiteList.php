@@ -55,7 +55,7 @@ class SiteList extends DataSet {
         $filteredIDs = true;
 
         if ($this->getParam('tags'))
-            $filteredIDs = TagManager::getFilter($this->getParam('tags'), 'share_sites_tags');
+            $filteredIDs = TagManager::getFilter($this->getParam('tags'), 'share_sites');
 
         if (!empty($filteredIDs))
             foreach (E()->getSiteManager() as $siteID => $site) {

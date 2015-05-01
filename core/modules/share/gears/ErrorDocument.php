@@ -108,7 +108,7 @@ class ErrorDocument extends Object implements IDocument {
                         $call->appendChild($this->doc->createElement($key, $value));
                     elseif (is_array($value)) {
                         foreach ($value as $k1 => $v1) {
-                            if(is_array($v1)) $v1 = '[...]';
+                            if(!is_scalar($v1)) $v1 = '[...]';
 
                             $call->appendChild(
                                 $this->doc->createElement(

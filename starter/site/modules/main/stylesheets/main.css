@@ -502,25 +502,30 @@ input.radio, input.checkbox {
     width: 30%
 }
 /* ----- /content ----- */
+ul.inline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+ul.inline li {
+    display: inline;
+    padding: 0 7px 0 8px;
+}
+ul.inline li:first-child {
+    padding-left: 0;
+}
+ul.inline li:last-child {
+    padding-right: 0;
+}
+ul.inline li + li {
+    border-left: 1px solid #ddd;
+}
 
 /* ----- language switcher ----- */
-.lang_switcher {
+.inline.lang_switcher {
     float: right;
     margin: 26px 10px;
 	padding: 7px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
-    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
-    list-style: none;
-    text-align: right;
-}
-.lang_switcher li {
-    display: inline;
-    padding: 0 7px;
-}
-.lang_switcher li + li {
-    border-left: 1px solid #ddd;
 }
 /* ----- /language switcher ----- */
 

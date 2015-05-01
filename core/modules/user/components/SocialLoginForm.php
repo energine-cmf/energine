@@ -15,6 +15,7 @@ class SocialLoginForm;
  */
 namespace Energine\user\components;
 use Energine\share\gears\Field;
+use Energine\share\gears\UserSession;
 
 /**
  * Show authorization form with possibility to authorize over social networks.
@@ -46,8 +47,9 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
         $f->setData('');
         $this->getData()->addField($f);
         //Если есть информация о авторизации через соц. сети
-        foreach (array('fb', 'vk', 'ok') as $socialType) {
+        foreach (['fb', 'vk', 'ok'] as $socialType) {
             list($tbr) = array_values($this->getToolbar());
+
             if ($ctrl = $tbr->getControlByID('auth.' . $socialType)) {
                 $ctrl->disable();
             }
@@ -55,18 +57,18 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
                 if (($appID = $this->getConfigValue('auth.' . $socialType . '.appID'))
                     && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))
                 ) {
-                    $authClassName = 'Energine\\share\\gears\\'.strtoupper($socialType) . 'OAuth';
-                    $auth = new $authClassName(array(
+                    $authClassName = 'Energine\\user\\gears\\'.strtoupper($socialType) . 'OAuth';
+                    $auth = new $authClassName([
                         'appId' => $appID,
                         'secret' => $secretKey,
                         'public' => $this->getConfigValue('auth.' . $socialType . '.publicKey'),
-                    ));
+                    ]);
                     $ctrl->setAttribute('loginUrl', $auth->getLoginUrl(
-                        array(
+                        [
                             'redirect_uri' => ($base = E()->getSiteManager()->getCurrentSite()->base)
                             . 'auth.php?' . $socialType . 'Auth&return=' . $this->getReturnUrl(),
                             'scope' => $ctrl->getAttribute('permissions')
-                        )
+                        ]
                     ));
                     $ctrl->setAttribute('appID', $appID);
                     $ctrl->enable();

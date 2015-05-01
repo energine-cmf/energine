@@ -294,21 +294,6 @@ var Energine = /** @lends Energine */{
 };
 
 /**
- * Print error message in the console.
- *
- * @param {string|TypeError} e Error.
- */
-var safeConsoleError = function(e){
-    if (window['console'] && console['error']) {
-        if (Browser.chrome && instanceOf(e, TypeError) && Energine.debug) {
-            console.error(e.stack);
-        } else {
-            console.error(e);
-        }
-    }
-};
-
-/**
  * Compatibility fix.
  * @type {Function}
  *

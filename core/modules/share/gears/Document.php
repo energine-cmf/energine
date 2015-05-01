@@ -612,7 +612,7 @@ final class Document extends Object implements IDocument {
      */
     static public function getTemplatesData($documentID) {
         $loadDataFromFile = function ($fileName, $type) {
-            if (!($result = simplexml_load_string(file_get_contents_stripped(
+            if (!($result = simplexml_load_string(E()->Utils->fileGetContentsStripped(
                 Document::TEMPLATES_DIR .
                 constant(
                     'Energine\\share\\components\\DivisionEditor::TMPL_' .

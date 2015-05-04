@@ -162,8 +162,8 @@
         <xsl:apply-templates select="." mode="scripts"/>
         <script type="text/javascript">
             var componentToolbars = [];
-            <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[(@name!='PageEditor') and not(@library)]) &gt; 0">
-                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[(@name!='PageEditor') and not(@library)]]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
+            <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[(@name!='PageEditor') and not(@use='jquery')]) &gt; 0">
+                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[(@name!='PageEditor') and not(@use='jquery')]]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
             </xsl:if>
             window.addEvent('domready', function () {
                 <xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
@@ -183,7 +183,7 @@
                         console.error(e);
                     }
                 </xsl:if>
-                <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[(@name!='PageEditor') and not(@library)]">
+                <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[(@name!='PageEditor') and not(@use='jquery')]">
                     <xsl:call-template name="INIT_JS" />
                 </xsl:for-each>
                 <xsl:if test="$COMPONENTS/javascript/behavior[@name='PageEditor']">
@@ -203,7 +203,7 @@
         <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
             <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
         </xsl:if>
-        <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@library='jquery']) &gt; 0">
+        <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
             <script type="text/javascript">
                 jQuery.noConflict();
@@ -213,7 +213,7 @@
                 (function($, window, document) {
                 // Listen for the jQuery ready event on the document
                 $(function() {
-            <xsl:for-each select="$COMPONENTS[recordset]/javascript/behavior[@library='jquery']">
+            <xsl:for-each select="$COMPONENTS[recordset]/javascript/behavior[@use='jquery']">
                 <xsl:call-template name="INIT_JS"/>
             </xsl:for-each>
                 });
@@ -226,7 +226,7 @@
     <xsl:template name="INIT_JS">
         <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
         if(document.getElementById('<xsl:value-of select="$objectID"/>')){
-        <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>(('<xsl:value-of select="$objectID"/>'));
+        <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>('<xsl:value-of select="$objectID"/>');
         }
     </xsl:template>
 
@@ -288,17 +288,17 @@
 
     <xsl:template match="/document/javascript/library" mode="head">
         <xsl:variable name="PATH" select="@path"/>
-        <xsl:if test="(substring(@path, 1,4) != 'http') and (//behavior[@library='jquery']/@name!=$PATH)">
+        <xsl:if test="(not(contains(@path, 'jquery')) and (//behavior[@use='jquery']/@name!=$PATH))">
             <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
         </xsl:if>
     </xsl:template>
 
     <xsl:template match="/document/javascript/library" mode="jquery">
         <xsl:variable name="PATH" select="@path"/>
-        <xsl:if test="substring($PATH, 1,4) = 'http'">
+        <xsl:if test="contains($PATH,'jquery')">
             <script type="text/javascript" src="{@path}"/>
         </xsl:if>
-        <xsl:if test="//behavior[@library='jquery']/@name=$PATH">
+        <xsl:if test="//behavior[@use='jquery']/@name=$PATH">
             <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
         </xsl:if>
     </xsl:template>

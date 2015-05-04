@@ -184,15 +184,7 @@
                     }
                 </xsl:if>
                 <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[(@name!='PageEditor') and not(@library)]">
-                    <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
-                    if($('<xsl:value-of select="$objectID"/>')){
-                        try {
-                            <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>($('<xsl:value-of select="$objectID"/>'));
-                        }
-                        catch (e) {
-                            console.error(e);
-                        }
-                    }
+                    <xsl:call-template name="INIT_JS" />
                 </xsl:for-each>
                 <xsl:if test="$COMPONENTS/javascript/behavior[@name='PageEditor']">
                     <xsl:if test="position()=1">
@@ -216,7 +208,26 @@
             <script type="text/javascript">
                 jQuery.noConflict();
             </script>
+            <xsl:apply-templates select="/document/javascript/library" mode="jquery"/>
+            <script type="text/javascript">
+                (function($, window, document) {
+                // Listen for the jQuery ready event on the document
+                $(function() {
+            <xsl:for-each select="$COMPONENTS[recordset]/javascript/behavior[@library='jquery']">
+                <xsl:call-template name="INIT_JS"/>
+            </xsl:for-each>
+                });
+                }(window.jQuery, window, document));
+            </script>
+            <xsl:apply-templates select="/document/javascript/library"/>
         </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="INIT_JS">
+        <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
+        if(document.getElementById('<xsl:value-of select="$objectID"/>')){
+        <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>(('<xsl:value-of select="$objectID"/>'));
+        }
     </xsl:template>
 
     <xsl:template match="document">
@@ -276,7 +287,20 @@
     <xsl:template match="/document//javascript/variable"/>
 
     <xsl:template match="/document/javascript/library" mode="head">
-        <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
+        <xsl:variable name="PATH" select="@path"/>
+        <xsl:if test="(substring(@path, 1,4) != 'http') and (//behavior[@library='jquery']/@name!=$PATH)">
+            <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="/document/javascript/library" mode="jquery">
+        <xsl:variable name="PATH" select="@path"/>
+        <xsl:if test="substring($PATH, 1,4) = 'http'">
+            <script type="text/javascript" src="{@path}"/>
+        </xsl:if>
+        <xsl:if test="//behavior[@library='jquery']/@name=$PATH">
+            <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="/document//javascript/variable" mode="head">

@@ -356,10 +356,11 @@ final class Document extends Object implements IDocument {
                         $cls_path .= '/';
                     }
                     $cls = (($cls_path) ? $cls_path : '') . $node->getAttribute('name');
+
                     $this->createJavascriptDependencies(array($cls), $jsmap, $js_includes);
                 }
             }
-
+            //inspect($jsmap, $js_includes);
             $dom_javascript = $this->doc->createElement('javascript');
             foreach ($js_includes as $js) {
                 $dom_js_library = $this->doc->createElement('library');

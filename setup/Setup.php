@@ -1106,9 +1106,7 @@ final class Setup {
      * @param array $result Reference to the result.
      */
     private function iterateScripts($directory, &$result) {
-
         $iterator = new DirectoryIterator($directory);
-
         foreach ($iterator as $fileinfo) {
             if ($fileinfo->isFile() && !$fileinfo->isDot() && $fileinfo->getExtension() == 'js') {
                 $class = str_replace(array(HTDOCS_DIR . '/scripts/', '.js'), '', $directory . DIRECTORY_SEPARATOR . $fileinfo->getFilename());
@@ -1131,10 +1129,9 @@ final class Setup {
      */
     private function parseScriptLoader($script) {
         $result = array();
-
         $data = file_get_contents($script);
         $r = array();
-        if (preg_match_all('/ScriptLoader\.load\((([\s,]{1,})?((?:\'|")([a-zA-Z\/.-]{1,})(?:\'|")){1,}([\s,]{1,})?){1,}\)/', $data, $r)) {
+        if (preg_match_all('/ScriptLoader\.load\((([\s,]{1,})?((?:\'|")([a-zA-Z0-9\/\:.-]{1,})(?:\'|")){1,}([\s,]{1,})?){1,}\)/', $data, $r)) {
             $s = str_replace(array('ScriptLoader.load', '(', ')', "\r", "\n"), '', (string)$r[0][0]);
             $classes = array_map(function ($el) {
                 return str_replace(array('\'', '"',',', ' '), '', $el);

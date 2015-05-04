@@ -17,7 +17,10 @@
 /**
  * Загружает указанные скрипты из директории scripts.
  */
-var ScriptLoader = {load: function () {}};
+var ScriptLoader = {
+    load: function () {
+    }
+};
 
 /**
  * @namespace
@@ -41,7 +44,7 @@ var Energine = /** @lends Energine */{
      * Static URL.
      * @type {string}
      */
-    'static' : '',
+    'static': '',
 
     /**
      * Resizer URL.
@@ -117,7 +120,8 @@ var Energine = /** @lends Energine */{
      * @param {string} [method = 'post'] Request method: 'get', 'post'.
      */
     request: function (uri, data, onSuccess, onUserError, onServerError, method) {
-        onServerError = onServerError || function (responseText) {};
+        onServerError = onServerError || function (responseText) {
+        };
         method = method || 'post';
 
         new Request.JSON({
@@ -286,7 +290,7 @@ var Energine = /** @lends Energine */{
      * Energine.resize($$('img')[0], 'images/img01.png', 100, 50);
      * $$('img')[0].getProperty('src') == 'http://www.site.ua/resizer/w100-h50/images/img01.png'
      */
-    resize: function(img, src, w, h, r) {
+    resize: function (img, src, w, h, r) {
         if (r === undefined)
             r = '';
         img.setAttribute('src', Energine.resizer + r + 'w' + w + '-h' + h + '/' + src);
@@ -300,3 +304,21 @@ var Energine = /** @lends Energine */{
  * @deprecated Use Energine.request.
  */
 Energine.request.request = Energine.request;
+
+$(window).addEvent('domready', function () {
+    if (Energine.debug)
+        document.getElements('img').each(function (el) {
+            el.onerror = function (e) {
+                var image= $(e.target);
+                var matches;
+                if (
+                    (matches = /\/resizer\/w(\d*)-h(\d*)/.exec(image.getProperty('src')))
+                &&
+                    (matches.length >2)
+                ) {
+                     image.setProperty('src', 'http://placehold.it/'+matches[1]+'x'+matches[2]);
+                }
+            };
+        });
+});
+

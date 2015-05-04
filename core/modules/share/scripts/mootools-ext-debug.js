@@ -98,6 +98,8 @@ Asset = Object.append(Asset, /** @lends Asset# */{
             return null;
         }
 
+        if(source.substr(0, 4) == 'http')return Asset.cssParent(source, {'media': 'Screen, projection'});
+
         var fullSource = ((Energine['static']) ? Energine['static'] : '') + 'stylesheets/' + source;
         Asset.loaded.css[source] = fullSource;
 
@@ -106,6 +108,10 @@ Asset = Object.append(Asset, /** @lends Asset# */{
 });
 
 Element.implement({
+    setPosition: function(obj){
+        if(obj)
+            return this.setStyles(this.computePosition(obj));
+    },
     getComputedStyle: function(property){
         var floatName = (document.html.style.cssFloat == null) ? 'styleFloat' : 'cssFloat',
             defaultView = Element.getDocument(this).defaultView,

@@ -1,6 +1,7 @@
 <?php
 use
     Energine\share\gears\UserSession,
+    Energine\share\gears\SystemException,
     Energine\share\gears\Object,
     Energine\share\gears\User,
     Energine\user\gears\FBOAuth,

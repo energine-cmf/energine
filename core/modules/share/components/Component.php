@@ -24,7 +24,7 @@ use Energine\share\gears\SystemException;
 /**
  * Page component.
  *
- * @method string translate() translate(string $string, int $langID = null)
+ * @method string translate() translate(string $string, int $langID = NULL)
  * @method string dateToString() dateToString(int $year, int $month, int $day)
  *
  * @code
@@ -138,7 +138,7 @@ class Component extends Object implements IBlock {
      */
 
 
-    public function __construct($name, array $params = null) {
+    public function __construct($name, array $params = NULL) {
         list(, $this->module) = explode('\\', get_called_class());
 
         $this->name = $name;
@@ -178,7 +178,6 @@ class Component extends Object implements IBlock {
             }
         }
     }
-
 
 
     /**
@@ -267,17 +266,17 @@ class Component extends Object implements IBlock {
 
         // если новое значение пустое - оставляем значение по-умолчанию
         //if (!empty($value) || $value === false) {
-            if (is_scalar($value)) {
-                //ОБрабатываем случай передачи массива-строки в параметры
-                $value = explode('|', $value);
-                $this->params[$name] =
-                    (sizeof($value) == 1) ? current($value) : $value;
-            } elseif (is_array($value)) {
-                //$this->params[$name] = array_values($value);
-                $this->params[$name] = $value;
-            } else {
-                $this->params[$name] = $value;
-            }
+        if (is_scalar($value)) {
+            //ОБрабатываем случай передачи массива-строки в параметры
+            $value = explode('|', $value);
+            $this->params[$name] =
+                (sizeof($value) == 1) ? current($value) : $value;
+        } elseif (is_array($value)) {
+            //$this->params[$name] = array_values($value);
+            $this->params[$name] = $value;
+        } else {
+            $this->params[$name] = $value;
+        }
         //}
     }
 
@@ -292,7 +291,7 @@ class Component extends Object implements IBlock {
      * @final
      */
     final protected function getParam($name) {
-        return (array_key_exists($name, $this->params) ? $this->params[$name] : null);
+        return (array_key_exists($name, $this->params) ? $this->params[$name] : NULL);
     }
 
     /**
@@ -545,6 +544,88 @@ class Component extends Object implements IBlock {
      */
     public function setStateParam($paramName, $paramValue) {
         $this->stateParams[$paramName] = $paramValue;
+    }
+
+    /**
+     * Create component from XML description.
+     *
+     * @param \SimpleXMLElement $componentDescription Component description.
+     * @return Component
+     *
+     * @throws SystemException ERR_DEV_NO_REQUIRED_ATTRIB [attribute_name]
+     */
+    static public function createFromDescription(\SimpleXMLElement $componentDescription) {
+        // перечень необходимых атрибутов компонента
+        $requiredAttributes = ['name', /*'module', */
+            'class'];
+
+        $name = $class = $module = NULL;
+        //после отработки итератора должны получить $name, $module, $class
+        foreach ($requiredAttributes as $attrName) {
+            if (!isset($componentDescription[$attrName])) {
+                throw new SystemException("ERR_DEV_NO_REQUIRED_ATTRIB $attrName", SystemException::ERR_DEVELOPER);
+            }
+            $$attrName = (string)$componentDescription[$attrName];
+        }
+
+
+        // извлекаем параметры компонента
+        $params = NULL;
+        if (isset($componentDescription->params)) {
+            $params = [];
+            foreach ($componentDescription->params->param as $tagName => $paramDescr) {
+                if ($tagName == 'param') {
+                    if (isset($paramDescr['name'])) {
+                        $paramName = (string)$paramDescr['name'];
+                        //Если count больше ноля значит это вложенный SimpleXML елемент
+                        if (!$paramDescr->count()) {
+                            $paramValue = (string)$paramDescr;
+                        } else {
+                            list($paramValue) = $paramDescr->children();
+                        }
+
+                        //$paramValue = (string) $paramDescr;
+
+                        //Если в массиве параметров уже существует параметр с таким именем, превращаем этот параметр в массив
+                        if (isset($params[$paramName])) {
+                            if (!is_array($params[$paramName])) {
+                                $params[$paramName] =
+                                    [$params[$paramName]];
+                            }
+                            array_push($params[$paramName], $paramValue);
+                        } else {
+                            $params[$paramName] = $paramValue;
+                        }
+                    }
+                }
+            }
+        }
+
+        $result = self::create($name, $class, $params);
+
+        return $result;
+    }
+
+    /**
+     * Create component by requested parameters.
+     *
+     * @param string $name Component name.
+     * @param string $fqClassName Component class name.
+     * @param array $params Parameters.
+     * @return Component
+     * @todo Na huy Na huy
+     * @throws SystemException
+     */
+    static public function create($name, $fqClassName, $params = NULL) {
+        try {
+            $result = new $fqClassName($name, $params);
+        } catch (SystemException $e) {
+            throw new SystemException($e->getMessage(), SystemException::ERR_DEVELOPER, [
+                'class' => $fqClassName,
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+        return $result;
     }
 }
 

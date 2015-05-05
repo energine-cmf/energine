@@ -159,19 +159,19 @@
     <!-- номер текущей страницы выделен -->
     <xsl:template match="control[@disabled][parent::toolbar[@name='pager']]">
         <xsl:if test="preceding-sibling::control">
-            <span class="control arrow">
+            <span class="control arrow prev">
                 <a>
                     <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/><xsl:value-of select="../properties/property[@name='additional_url']"/>page-<xsl:value-of select="@action - 1"/>/<xsl:if test="../properties/property[@name='get_string']!=''">?<xsl:value-of select="../properties/property[@name='get_string']"/></xsl:if></xsl:attribute>
-                    <img src="images/prev_page.gif"/>
+                    <i class="fa fa-caret-left"/>
                 </a>
             </span>
         </xsl:if>
         <span class="control current"><xsl:value-of select="@title"/></span>
         <xsl:if test="following-sibling::control">
-            <span class="control arrow">
+            <span class="control arrow next">
                 <a>
                     <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/><xsl:value-of select="../properties/property[@name='additional_url']"/>page-<xsl:value-of select="@action + 1"/>/<xsl:if test="../properties/property[@name='get_string']!=''">?<xsl:value-of select="../properties/property[@name='get_string']"/></xsl:if></xsl:attribute>
-                    <img src="images/next_page.gif"/>
+                    <i class="fa fa-caret-right"/>
                 </a>
             </span>
         </xsl:if>

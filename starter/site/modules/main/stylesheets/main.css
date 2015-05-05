@@ -647,7 +647,7 @@ ul.inline.wo-separator li + li {
 }
 .pager .current {
     padding: 0 3px 1px 3px;
-    background: #0080FF;
+    background: #428bca;
     color: #fff;
 }
 /* ----- /pager ----- */

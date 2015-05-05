@@ -6,8 +6,8 @@
  * It contains the definition to:
  * @code
 final class ComponentManager;
-interface IBlock;
-@endcode
+ * interface IBlock;
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -16,12 +16,14 @@ interface IBlock;
  */
 namespace Energine\share\gears;
 
+use Energine\share\components\Component;
+
 /**
  * Manager of the set of the document's components.
  *
  * @code
 final class ComponentManager;
-@endcode
+ * @endcode
  *
  * @final
  */
@@ -34,7 +36,7 @@ final class ComponentManager extends Object implements \Iterator {
      *
      * @var array $registeredBlocks
      */
-    private $registeredBlocks = array();
+    private $registeredBlocks = [];
 
     /**
      * Document.
@@ -48,7 +50,7 @@ final class ComponentManager extends Object implements \Iterator {
      *
      * @var array $blocks
      */
-    private $blocks = array();
+    private $blocks = [];
     /**
      * Array of block names.
      * This used for increasing the iterations.
@@ -56,7 +58,7 @@ final class ComponentManager extends Object implements \Iterator {
      *
      * @var array $blockNames
      */
-    private $blockNames = array();
+    private $blockNames = [];
     /**
      * Iterator index.
      * @var int $iteratorIndex
@@ -76,7 +78,7 @@ final class ComponentManager extends Object implements \Iterator {
      * @param IBlock $block New block.
      */
     public function register(IBlock $block) {
-        $this->registeredBlocks[$block->getName()]  = $block;
+        $this->registeredBlocks[$block->getName()] = $block;
     }
 
     /**
@@ -114,68 +116,8 @@ final class ComponentManager extends Object implements \Iterator {
         return $result;
     }
 
-    /**
-     * Create component from XML description.
-     *
-     * @param \SimpleXMLElement $componentDescription Component description.
-     * @return Component
-     *
-     * @throws SystemException ERR_DEV_NO_REQUIRED_ATTRIB [attribute_name]
-     */
-    static public function createComponentFromDescription(\SimpleXMLElement $componentDescription) {
-        // перечень необходимых атрибутов компонента
-        $requiredAttributes = array('name', /*'module', */'class');
 
-        $name = $class = $module = null;
-        //после отработки итератора должны получить $name, $module, $class
-        foreach ($requiredAttributes as $attrName) {
-            if (!isset($componentDescription[$attrName])) {
-                throw new SystemException("ERR_DEV_NO_REQUIRED_ATTRIB $attrName", SystemException::ERR_DEVELOPER);
-            }
-            $$attrName = (string) $componentDescription[$attrName];
-        }
-
-
-        // извлекаем параметры компонента
-        $params = null;
-        if (isset($componentDescription->params)) {
-            $params = array();
-            foreach ($componentDescription->params->param as $tagName => $paramDescr) {
-                if ($tagName == 'param') {
-                    if (isset($paramDescr['name'])) {
-                        $paramName = (string) $paramDescr['name'];
-                        //Если count больше ноля значит это вложенный SimpleXML елемент
-                        if(!$paramDescr->count()){
-                            $paramValue = (string)$paramDescr;
-                        }
-                        else {
-                            list($paramValue) = $paramDescr->children();
-                        }
-
-                        //$paramValue = (string) $paramDescr;
-
-                        //Если в массиве параметров уже существует параметр с таким именем, превращаем этот параметр в массив
-                        if (isset($params[$paramName])) {
-                            if (!is_array($params[$paramName])) {
-                                $params[$paramName] =
-                                    array($params[$paramName]);
-                            }
-                            array_push($params[$paramName], $paramValue);
-                        }
-                        else {
-                            $params[$paramName] = $paramValue;
-                        }
-                    }
-                }
-            }
-        }
-
-        $result = self::_createComponent($name, $class, $params);
-
-        return $result;
-    }
-
-    static public function copyTag(\SimpleXMLElement $tagDescription){
+    static public function copyTag(\SimpleXMLElement $tagDescription) {
         return new Tag($tagDescription);
     }
 
@@ -187,8 +129,8 @@ final class ComponentManager extends Object implements \Iterator {
      * @param array $params Component properties.
      * @return Component
      */
-    public function createComponent($name, $class, $params = null) {
-        return call_user_func_array(array('Energine\\share\\gears\\ComponentManager', '_createComponent'), func_get_args());
+    public function createComponent($name, $class, $params = NULL) {
+        return call_user_func_array(['Energine\\share\\components\\Component', 'create'], func_get_args());
     }
 
     /**
@@ -205,8 +147,7 @@ final class ComponentManager extends Object implements \Iterator {
         );
         if (!empty($blocks)) {
             list($blocks) = $blocks;
-        }
-        else {
+        } else {
             $blocks = false;
         }
 
@@ -240,50 +181,27 @@ final class ComponentManager extends Object implements \Iterator {
      * @return IBlock
      *
      */
-    static public function createBlockFromDescription(\SimpleXMLElement $blockDescription, $additionalProps = array()) {
+    static public function createBlockFromDescription(\SimpleXMLElement $blockDescription, $additionalProps = []) {
         switch ($blockDescription->getName()) {
             case 'content':
-                $props = array_merge(array('tag' => 'content'), $additionalProps);
+                $props = array_merge(['tag' => 'content'], $additionalProps);
                 $result = ComponentContainer::createFromDescription($blockDescription, $props);
                 break;
             case 'page':
-                $props = array_merge(array('tag' => 'layout'), $additionalProps);
+                $props = array_merge(['tag' => 'layout'], $additionalProps);
                 $result = ComponentContainer::createFromDescription($blockDescription, $props);
                 break;
             case 'container':
                 $result = ComponentContainer::createFromDescription($blockDescription);
                 break;
             case 'component':
-                $result = self::createComponentFromDescription($blockDescription);
+                $result = Component::createFromDescription($blockDescription);
                 break;
             default:
-                $result = self::copyTag($blockDescription);
+                $result = Tag::createFromDescription($blockDescription);
                 break;
         }
 
-        return $result;
-    }
-
-    /**
-     * Create component by requested parameters.
-     *
-     * @param string $name Component name.
-     * @param string $fqClassName Component class name.
-     * @param array $params Parameters.
-     * @return Component
-     *
-     * @throws SystemException
-     */
-    static private function _createComponent($name, $fqClassName, $params = null) {
-        try {
-            $result = new $fqClassName($name, $params);
-        }
-        catch (SystemException $e) {
-            throw new SystemException($e->getMessage(), SystemException::ERR_DEVELOPER, array(
-                'class' => $fqClassName,
-                'trace' => $e->getTraceAsString()
-            ));
-        }
         return $result;
     }
 
@@ -314,7 +232,7 @@ final class ComponentManager extends Object implements \Iterator {
  *
  * @code
 interface IBlock;
-@endcode
+ * @endcode
  */
 interface IBlock {
     /**
@@ -347,4 +265,5 @@ interface IBlock {
      * @return string
      */
     public function getName();
+
 }

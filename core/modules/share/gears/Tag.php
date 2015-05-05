@@ -23,29 +23,49 @@ namespace Energine\share\gears;
 class Tag;
  * @endcode
  */
-class Tag extends Object implements IBlock
-{
-    private $description;
+class Tag extends Object implements IBlock {
+    /**
+     * Array of IBlock.
+     * @var array $blocks
+     */
+    private $blocks = [];
+    private $attributes;
+    private $tagName;
+    private $name;
 
-    function __construct(\SimpleXMLElement $xmlDescription)
-    {
-        $this->description = $xmlDescription;
+    function __construct(\SimpleXMLElement $xmlDescription) {
+        $this->attributes = $xmlDescription->attributes();
+        $this->name = md5((string)$xmlDescription) . '_name';
+        $this->tagName = $xmlDescription->getName();
+
+        foreach ($xmlDescription->children() as $blockDescription) {
+            array_push($this->blocks, ComponentManager::createBlockFromDescription($blockDescription));
+        }
+    }
+
+    static public function createFromDescription(\SimpleXMLElement $XMLDescription) {
+        return new Tag($XMLDescription);
     }
 
     /**
      * Run execution.
      * @return void
      */
-    public function run(){
-
+    public function run() {
+        foreach ($this->blocks as $block) {
+            if ($block->enabled()
+                && (E()->getDocument()->getRights() >= $block->getCurrentStateRights())
+            ) {
+                $block->run();
+            }
+        }
     }
 
     /**
      * Is enabled?
      * @return bool
      */
-    public function enabled()
-    {
+    public function enabled() {
         return true;
     }
 
@@ -54,8 +74,7 @@ class Tag extends Object implements IBlock
      * This is needed for running current action.
      * @return mixed
      */
-    public function getCurrentStateRights()
-    {
+    public function getCurrentStateRights() {
         return 0;
     }
 
@@ -63,11 +82,29 @@ class Tag extends Object implements IBlock
      * Build block.
      * @return \DOMDocument
      */
-    public function build()
-    {
-        $dom_sxe = dom_import_simplexml($this->description);
+    public function build() {
         $doc = new \DOMDocument('1.0', 'UTF-8');
-        $doc->appendChild($doc->importNode($dom_sxe, true));
+        $containerDOM = $doc->createElement($this->tagName);
+
+        $doc->appendChild($containerDOM);
+        foreach ($this->attributes as $propertyName => $propertyValue) {
+            $containerDOM->setAttribute($propertyName, $propertyValue);
+        }
+
+        foreach ($this->blocks as $block) {
+            if (
+                $block->enabled()
+                &&
+                (E()->getDocument()->getRights() >= $block->getCurrentStateRights())
+            ) {
+                $blockDOM = $block->build();
+                if ($blockDOM instanceof \DOMDocument) {
+                    $blockDOM =
+                        $doc->importNode($blockDOM->documentElement, true);
+                    $containerDOM->appendChild($blockDOM);
+                }
+            }
+        }
 
         return $doc;
     }
@@ -76,9 +113,8 @@ class Tag extends Object implements IBlock
      * Get name.
      * @return string
      */
-    public function getName()
-    {
-        return md5((string)$this->description).'_name';
+    public function getName() {
+        return $this->name;
     }
 
 }  

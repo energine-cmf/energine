@@ -50,7 +50,7 @@ var CommentsForm = new Class(/** @lends CommentsForm# */{
 
         this.parent(element);
 
-        if (this.componentElement && this.form) {
+        if (this.element && this.form) {
             this.form.addClass('form');
 
             $$('div.comments div.comment_inputblock a.link_comment').addEvent('click', this.show_form_base.bind(this));
@@ -179,7 +179,7 @@ var CommentsForm = new Class(/** @lends CommentsForm# */{
             this.form.addClass('hidden');
             $$('ul.comment_list div.comment_inputblock').removeClass('hidden');
 
-            var t = this.componentElement.getElement('textarea[name=comment_name]');
+            var t = this.element.getElement('textarea[name=comment_name]');
             t.value = '';
 
             /**

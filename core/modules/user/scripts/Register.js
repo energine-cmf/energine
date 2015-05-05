@@ -28,7 +28,7 @@ var Register = new Class(/** @lends Register# */{
     initialize:function (element) {
         this.parent(element);
 
-        if (this.componentElement) {
+        if (this.element) {
             /**
              * Register button.
              * @type {Element}
@@ -76,7 +76,7 @@ var Register = new Class(/** @lends Register# */{
      */
     checkLogin:function (loginValue) {
         new Request.JSON({
-            url: this.componentElement.getProperty('single_template') + 'check/',
+            url: this.element.getProperty('single_template') + 'check/',
             method: 'post',
             onSuccess: function (response) {
                 if (!response.result) {

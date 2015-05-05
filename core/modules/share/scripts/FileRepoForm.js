@@ -32,7 +32,7 @@ var FileRepoForm = new Class(/** @lends FileRepoForm# */{
         FileAPI.staticPath = Energine.base + 'scripts/FileAPI/';
         FileAPI.debug = false;
 
-        var uploader = this.componentElement.getElementById('uploader');
+        var uploader = this.element.getElementById('uploader');
         if (uploader) {
             uploader.addEvent('change', this.showPreview.bind(this))
         }
@@ -41,17 +41,17 @@ var FileRepoForm = new Class(/** @lends FileRepoForm# */{
          * Thumbnails.
          * @type {Elements}
          */
-        this.thumbs = this.componentElement.getElements('img.thumb');
+        this.thumbs = this.element.getElements('img.thumb');
         if (this.thumbs) {
-            this.componentElement.getElements('input.thumb').addEvent('change', this.showThumbPreview.bind(this));
+            this.element.getElements('input.thumb').addEvent('change', this.showThumbPreview.bind(this));
 
-            var altPreview = this.componentElement.getElements('input.preview');
+            var altPreview = this.element.getElements('input.preview');
             if (altPreview) {
                 altPreview.addEvent('change', this.showAltPreview.bind(this));
             }
         }
 
-        var data = this.componentElement.getElementById('data');
+        var data = this.element.getElementById('data');
         if(data && !(data.get('value'))) {
             this.tabPane.disableTab(1);
         }
@@ -235,8 +235,8 @@ var FileRepoForm = new Class(/** @lends FileRepoForm# */{
      */
     getPlayerParams: function () {
         var player = {};
-        player.width = this.componentElement.getElementById('width').value || '';
-        player.height = this.componentElement.getElementById('height').value || '';
+        player.width = this.element.getElementById('width').value || '';
+        player.height = this.element.getElementById('height').value || '';
         ModalBox.setReturnValue(player);
         this.close();
     }

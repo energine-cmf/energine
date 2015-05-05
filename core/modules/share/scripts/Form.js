@@ -99,19 +99,19 @@ var Form = new Class(/** @lends Form# */{
          * The component element.
          * @type {Element}
          */
-        this.componentElement = $(element);
+        this.element = $(element);
 
         /**
          * Value of property 'single_template'.
          * @type {string}
          */
-        this.singlePath = this.componentElement.getProperty('single_template');
+        this.singlePath = this.element.getProperty('single_template');
 
         /**
          * The main holder element.
          * @type {Element}
          */
-        this.form = this.componentElement.getParent('form').addClass('form');
+        this.form = this.element.getParent('form').addClass('form');
 
         if(this.form.getElements('input[type=text]').concat(this.form.getElements('select'),this.form.getElements('textarea')).length){
            this.form.addEvent('keypress', function(e){
@@ -129,7 +129,7 @@ var Form = new Class(/** @lends Form# */{
          * Tab panels.
          * @type {TabPane}
          */
-        this.tabPane = new TabPane(this.componentElement, {
+        this.tabPane = new TabPane(this.element, {
             onTabChange: this.onTabChange
         });
 
@@ -184,11 +184,11 @@ var Form = new Class(/** @lends Form# */{
             new Form.AttachmentSelector(el, this);
         }, this);
 
-        this.componentElement.getElements('.uploader').each(function (uploader) {
+        this.element.getElements('.uploader').each(function (uploader) {
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
 
-        (this.componentElement.getElements('.inp_date')|| []).append(this.componentElement.getElements('.inp_datetime')|| []).each(function (dateControl) {
+        (this.element.getElements('.inp_date')|| []).append(this.element.getElements('.inp_datetime')|| []).each(function (dateControl) {
                 var isNullable = !dateControl.getParent('.field').hasClass('required');
                 this.dateControls.push(
                     (dateControl.hasClass('inp_datetime') ? Energine.createDateTimePicker(dateControl, isNullable)
@@ -196,7 +196,7 @@ var Form = new Class(/** @lends Form# */{
                 );
             }, this);
 
-        this.componentElement.getElements('.pane').setStyles({
+        this.element.getElements('.pane').setStyles({
             'border': '1px dotted #777',
             'overflow': 'auto'
         });
@@ -210,7 +210,7 @@ var Form = new Class(/** @lends Form# */{
                 }
             });
         }
-        this.componentElement.getElements('.crud').addEvent('click', function (e) {
+        this.element.getElements('.crud').addEvent('click', function (e) {
             var control = $($(e.target).getProperty('data-field'));
             if (control) {
                 ModalBox.open({
@@ -339,13 +339,13 @@ var Form = new Class(/** @lends Form# */{
      */
     attachToolbar: function (toolbar) {
         this.toolbar = toolbar;
-        var toolbarContainer = this.componentElement.getElement('.e-pane-b-toolbar'),
+        var toolbarContainer = this.element.getElement('.e-pane-b-toolbar'),
             afterSaveActionSelect = this.toolbar.getControlById('after_save_action');
 
         if (toolbarContainer) {
             toolbarContainer.adopt(this.toolbar.getElement());
         } else {
-            this.componentElement.adopt(this.toolbar.getElement());
+            this.element.adopt(this.toolbar.getElement());
         }
 
         if (afterSaveActionSelect) {
@@ -804,7 +804,7 @@ Form.SmapSelector = new Class(/** @lends Form.SmapSelector# */{
      */
     showSelector: function () {
         ModalBox.open({
-            url: this.form.componentElement.getProperty('template') + 'selector/',
+            url: this.form.element.getProperty('template') + 'selector/',
             onClose: this.setName.bind(this)
         });
     },
@@ -845,7 +845,7 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
         this.field = selector.getProperty('field');
 
         selector.addEvent('click', function (e) {
-            Energine.cancelEvent(e);
+            e.stop();
             /**
              * Upload name.
              * @type {string}
@@ -867,7 +867,7 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
      */
     showSelector: function () {
         ModalBox.open({
-            url: this.form.componentElement.getProperty('template') + 'file-library/',
+            url: this.form.element.getProperty('template') + 'file-library/',
             onClose: this.setName.bind(this)
         });
     },

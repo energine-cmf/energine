@@ -15,7 +15,7 @@ class FilterData implements \Iterator {
      */
     private $children = [];
     private $operator = 'OR';
-    private $index =0 ;
+    private $index = 0;
 
     private function __construct() {
 
@@ -103,13 +103,15 @@ class FilterData implements \Iterator {
      */
     public static function createFromPOST() {
         if (
-            !isset($_POST[Filter::TAG_NAME])
-            ||
-            !($result = json_decode($_POST[Filter::TAG_NAME], true))
+            isset($_POST[Filter::TAG_NAME])
+            &&
+            is_string($_POST[Filter::TAG_NAME])
+            &&
+            ($result = json_decode($_POST[Filter::TAG_NAME], true))
 
-        ) return null;
+        ) return FilterData::createFrom(self::clearPOSTData($result));
 
-        return FilterData::createFrom(self::clearPOSTData($result));
+        return NULL;
     }
 
     /**
@@ -154,6 +156,6 @@ class FilterData implements \Iterator {
             return $result . ' (' . (string)$filter . ') ' . $this->operator;
         });
 
-        return '('.(string)substr($result, 0, -sizeof($this->operator)-2).')';
+        return '(' . (string)substr($result, 0, -sizeof($this->operator) - 2) . ')';
     }
 }

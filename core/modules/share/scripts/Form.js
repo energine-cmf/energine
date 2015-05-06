@@ -25,7 +25,7 @@
  * @version 1.0.1
  */
 
-ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader','Tags','Lookup');
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader', 'Tags', 'Lookup');
 
 /**
  * Form.
@@ -85,7 +85,7 @@ var Form = new Class(/** @lends Form# */{
      * Array of color picker controls
      * @type {ColorPicker[]}
      */
-    colorPickers:[],
+    colorPickers: [],
 
 //    smapSelectors: [],
 
@@ -113,10 +113,10 @@ var Form = new Class(/** @lends Form# */{
          */
         this.form = this.element.getParent('form').addClass('form');
 
-        if(this.form.getElements('input[type=text]').concat(this.form.getElements('select'),this.form.getElements('textarea')).length){
-           this.form.addEvent('keypress', function(e){
-               if(e.key == 'enter') e.preventDefault();
-           })
+        if (this.form.getElements('input[type=text]').concat(this.form.getElements('select'), this.form.getElements('textarea')).length) {
+            this.form.addEvent('keypress', function (e) {
+                if (e.key == 'enter') e.preventDefault();
+            })
         }
 
         /**
@@ -144,7 +144,12 @@ var Form = new Class(/** @lends Form# */{
         }, this);
 
         this.form.getElements('textarea.code').each(function (textarea) {
-            this.codeEditors.push(CodeMirror.fromTextArea(textarea, {mode: "text/html", tabMode: "indent", lineNumbers: true, theme:'elegant'}));
+            this.codeEditors.push(CodeMirror.fromTextArea(textarea, {
+                mode: "text/html",
+                tabMode: "indent",
+                lineNumbers: true,
+                theme: 'elegant'
+            }));
         }, this);
 
         this.form.getElements('div.type_lookup').each(function (el) {
@@ -155,8 +160,8 @@ var Form = new Class(/** @lends Form# */{
             new Tags(el);
         }, this);
 
-        this.form.getElements('input.inp_color').each(function(el){
-            this.colorPickers.push(new ColorPicker(el,{cellWidth: 8, cellHeight: 12}));
+        this.form.getElements('input.inp_color').each(function (el) {
+            this.colorPickers.push(new ColorPicker(el, {cellWidth: 8, cellHeight: 12}));
         }, this);
 
         var showHideFunc = function (e) {
@@ -188,13 +193,13 @@ var Form = new Class(/** @lends Form# */{
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
 
-        (this.element.getElements('.inp_date')|| []).append(this.element.getElements('.inp_datetime')|| []).each(function (dateControl) {
-                var isNullable = !dateControl.getParent('.field').hasClass('required');
-                this.dateControls.push(
-                    (dateControl.hasClass('inp_datetime') ? Energine.createDateTimePicker(dateControl, isNullable)
-                        : Energine.createDatePicker(dateControl, isNullable))
-                );
-            }, this);
+        (this.element.getElements('.inp_date') || []).append(this.element.getElements('.inp_datetime') || []).each(function (dateControl) {
+            var isNullable = !dateControl.getParent('.field').hasClass('required');
+            this.dateControls.push(
+                (dateControl.hasClass('inp_datetime') ? Energine.createDateTimePicker(dateControl, isNullable)
+                    : Energine.createDatePicker(dateControl, isNullable))
+            );
+        }, this);
 
         this.element.getElements('.pane').setStyles({
             'border': '1px dotted #777',
@@ -214,7 +219,7 @@ var Form = new Class(/** @lends Form# */{
             var control = $($(e.target).getProperty('data-field'));
             if (control) {
                 ModalBox.open({
-                    url: [this.singlePath, $(e.target).getProperty('data-field') , '-', $(e.target).getProperty('data-editor'), '/crud/'].join(''),
+                    url: [this.singlePath, $(e.target).getProperty('data-field'), '-', $(e.target).getProperty('data-editor'), '/crud/'].join(''),
                     onClose: function (result) {
                         var selectedValue = result.key;
                         if (result.dirty) {
@@ -265,7 +270,7 @@ var Form = new Class(/** @lends Form# */{
          * @type {Element[]}
          */
         this.appendedControls = this.form.getElements('.with_append');
-        this.appendedControls.each(function(el) {
+        this.appendedControls.each(function (el) {
             Object.append(el, {
                 isOnFocus: false,
                 controlEl: el
@@ -275,8 +280,8 @@ var Form = new Class(/** @lends Form# */{
                 mouseleave: this.glow.bind(this)
             });
         }, this);
-        this.appendedControls.getElements('input,select').each(function(el, id) {
-            el.each(function(el){
+        this.appendedControls.getElements('input,select').each(function (el, id) {
+            el.each(function (el) {
                 el.controlEl = this.appendedControls[id];
             }.bind(this));
 
@@ -406,7 +411,10 @@ var Form = new Class(/** @lends Form# */{
     processServerResponse: function (response) {
         var nextActionSelector;
         if (response && (nextActionSelector = this.toolbar.getControlById('after_save_action'))) {
-            Cookie.write('after_add_default_action', nextActionSelector.getValue(), {path: new URI(Energine.base).get('directory'), duration: 1});
+            Cookie.write('after_add_default_action', nextActionSelector.getValue(), {
+                path: new URI(Energine.base).get('directory'),
+                duration: 1
+            });
             response.afterClose = nextActionSelector.getValue();
         }
         ModalBox.setReturnValue(response);
@@ -592,10 +600,14 @@ var Form = new Class(/** @lends Form# */{
                             'method': 'post',
                             'data': {
                                 json: 1,
-                                filter: {
-                                    condition: '=',
-                                    share_uploads: {'upl_id': [upl_id]}
-                                }
+                                filter: JSON.encode({
+                                    'children': [{
+                                        'field': '[share_uploads][upl_id]',
+                                        'type': 'string',
+                                        condition: '=',
+                                        'value': upl_id
+                                    }]
+                                })
                             },
                             'evalResponse': true,
                             'onComplete': function (data) {
@@ -659,7 +671,11 @@ Form.Uploader = new Class(/** @lends Form.Uploader# */{
             instantStart: true,
             appendCookieData: false,
             timeLimit: 0,
-            data: {'NRGNCookie': document.cookie, 'path': (typeOf(ModalBox.getExtraData()) == 'string') ? ModalBox.getExtraData() : '', 'element': this.element.getProperty('nrgn:input')},
+            data: {
+                'NRGNCookie': document.cookie,
+                'path': (typeOf(ModalBox.getExtraData()) == 'string') ? ModalBox.getExtraData() : '',
+                'element': this.element.getProperty('nrgn:input')
+            },
             typeFilter: {
                 'All files (*.*)': '*.*',
                 'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
@@ -1046,17 +1062,29 @@ Form.RichEditor = new Class(/** @lends Form.RichEditor# */{
             CKEDITOR.config.extraPlugins = 'energineimage,energinevideo,energinefile';
             CKEDITOR.config.allowedContent = true;
             CKEDITOR.config.toolbar = [
-                { name: 'document', groups: [ 'mode' ], items: [ 'Source' ] },
-                { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-                { name: 'editing', groups: [ 'find', 'selection' ], items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
-                { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-                { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'EnergineImage', 'EnergineVideo', 'EnergineFile' ] },
-                { name: 'tools', items: [ 'ShowBlocks' ] },
+                {name: 'document', groups: ['mode'], items: ['Source']},
+                {
+                    name: 'clipboard',
+                    groups: ['clipboard', 'undo'],
+                    items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']
+                },
+                {name: 'editing', groups: ['find', 'selection'], items: ['Find', 'Replace', '-', 'SelectAll']},
+                {name: 'links', items: ['Link', 'Unlink', 'Anchor']},
+                {name: 'insert', items: ['Image', 'Flash', 'Table', 'EnergineImage', 'EnergineVideo', 'EnergineFile']},
+                {name: 'tools', items: ['ShowBlocks']},
                 '/',
-                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
-                { name: 'paragraph', groups: [ 'list', 'indent', 'align' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
-                { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
-                { name: 'colors', items: [ 'TextColor', 'BGColor' ] }
+                {
+                    name: 'basicstyles',
+                    groups: ['basicstyles', 'cleanup'],
+                    items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']
+                },
+                {
+                    name: 'paragraph',
+                    groups: ['list', 'indent', 'align'],
+                    items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
+                },
+                {name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize']},
+                {name: 'colors', items: ['TextColor', 'BGColor']}
             ];
             var styles = [];
             if (window['wysiwyg_styles']) {
@@ -1064,7 +1092,7 @@ Form.RichEditor = new Class(/** @lends Form.RichEditor# */{
                     styles.push({
                         name: style['caption'],
                         element: style['element'],
-                        attributes: { 'class': style['class'] }
+                        attributes: {'class': style['class']}
                     });
                 });
             }

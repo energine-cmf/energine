@@ -52,6 +52,28 @@ class UserProfile extends DBDataSet {
 
     }
 
+    protected function edit() {
+        if (!$this->document->user->isAuthenticated()) {
+            throw new SystemException('ERR_DEV_NO_AUTH_USER', SystemException::ERR_DEVELOPER);
+        }
+        $this->setFilter($this->document->user->getID());
+
+        $this->setAction('save-user');
+        $this->setTitle($this->translate('TXT_USER_PROFILE_EDIT'));
+        $this->prepare();
+    }
+
+    protected function changepassword() {
+        if (!$this->document->user->isAuthenticated()) {
+            throw new SystemException('ERR_DEV_NO_AUTH_USER', SystemException::ERR_DEVELOPER);
+        }
+        $this->setFilter($this->document->user->getID());
+
+        $this->setAction('save-password');
+        $this->setTitle($this->translate('TXT_CHANGE_PASSWORD'));
+        $this->prepare();
+    }
+
     /**
      * @copydoc DBDataSet::defineParams
      */
@@ -69,22 +91,29 @@ class UserProfile extends DBDataSet {
      * Save.
      */
     protected function save() {
-        if (!password_verify($this->document->user->getValue('u_password'), password_hash($_POST[$this->getTableName()]['u_password'], PASSWORD_DEFAULT))) {
-            $_SESSION['error'] = true;
-            $this->response->redirectToCurrentSection('error/');
-        }
 
-        if (!empty($_POST[$this->getTableName()]['u_password'])) {
-            if ($_POST[$this->getTableName()]['u_password'] != $_POST['u_password2']) {
-                $this->generateError(SystemException::ERR_WARNING, 'ERR_PWD_MISMATCH');
-            }
-            unset($_POST['u_password2']);
-            $_POST[$this->getTableName()]['u_password'] = password_hash($_POST[$this->getTableName()]['u_password'], PASSWORD_DEFAULT);
-        }
         $_POST[$this->getTableName()]['u_id'] = $this->document->getUser()->getID();
 
         $this->prepare();
-        $fields = $this->getDataDescription()->getFieldDescriptionList();
+
+        $dd = $this->getDataDescription();
+        $fields = $dd->getFieldDescriptionList();
+
+        if ($dd->getFieldDescriptionByName('u_password')) {
+            if (!password_verify($this->document->user->getValue('u_password'), password_hash($_POST[$this->getTableName()]['u_password'], PASSWORD_DEFAULT))) {
+                $_SESSION['error'] = true;
+                $this->response->redirectToCurrentSection('error/');
+            }
+
+            if (!empty($_POST[$this->getTableName()]['u_password'])) {
+                if ($_POST[$this->getTableName()]['u_password'] != $_POST['u_password2']) {
+                    $this->generateError(SystemException::ERR_WARNING, 'ERR_PWD_MISMATCH');
+                }
+                unset($_POST['u_password2']);
+                $_POST[$this->getTableName()]['u_password'] = password_hash($_POST[$this->getTableName()]['u_password'], PASSWORD_DEFAULT);
+            }
+        }
+
         /*
         if (array_diff($fields, array_keys($_POST[$this->getTableName()])) != array()) {
             throw new SystemException('ERR_BAD_DATA', SystemException::ERR_CRITICAL);
@@ -117,6 +146,11 @@ class UserProfile extends DBDataSet {
         }
     }
 
+    protected function savepassword()
+    {
+        $this->save();
+    }
+
     /**
      * Show message about successful saving data.
      *
@@ -145,10 +179,12 @@ class UserProfile extends DBDataSet {
         $this->setData($d);
 
         $di = new Field('success_message');
+        $this->setTitle($this->translate('TXT_USER_PROFILE'));
         $di->setData($this->translate('TXT_USER_PROFILE_SAVED'));
         $d->addField($di);
 
-        $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
+        // wtf ?
+        //$this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
     }
 
 
@@ -196,19 +232,23 @@ class UserProfile extends DBDataSet {
             $result->removeFieldDescription($field);
         }
 
-        $field = $result->getFieldDescriptionByName('u_password');
-        $field->setProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
-        $result->removeFieldDescription($field);
-        $result->addFieldDescription($field);
+        if ($field = $result->getFieldDescriptionByName('u_password')) {
+            $field->setProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
+            $result->removeFieldDescription($field);
+            $result->addFieldDescription($field);
+        }
 
         if ($this->getState() !== 'save') {
-            $field = new FieldDescription('u_password2');
-            $field->setProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
-            $field->setType(FieldDescription::FIELD_TYPE_PWD);
-            $field->setProperty('customField', true);
-            //$field->setProperty('title', $this->translate('FIELD_U_PASSWORD2'));
-            $field->setProperty('title', 'FIELD_U_PASSWORD2');
-            $result->addFieldDescription($field);
+
+            if ($result->getFieldDescriptionByName('u_password')) {
+                $field = new FieldDescription('u_password2');
+                $field->setProperty('message2', $this->translate('ERR_PWD_MISMATCH'));
+                $field->setType(FieldDescription::FIELD_TYPE_PWD);
+                $field->setProperty('customField', true);
+                //$field->setProperty('title', $this->translate('FIELD_U_PASSWORD2'));
+                $field->setProperty('title', 'FIELD_U_PASSWORD2');
+                $result->addFieldDescription($field);
+            }
         }
 
 
@@ -221,7 +261,9 @@ class UserProfile extends DBDataSet {
     // Для метода success создаем свой объект данных
     protected function createData() {
         $result = parent::createData();
-        $result->getFieldByName('u_password')->setData('');
+        if ($field = $result->getFieldByName('u_password')) {
+            $field->setData('');
+        }
         return $result;
     }
 }

@@ -88,12 +88,14 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
      * @throws SystemException ERR_NO_CONTAINER_NAME
      */
     static public function createFromDescription(\SimpleXMLElement $containerDescription, array $additionalAttributes = array()) {
+        $properties['tag'] = $containerDescription->getName();
+
         $attributes = $containerDescription->attributes();
         if (in_array($containerDescription->getName(), array('page', 'content'))) {
-            $properties['name'] = $containerDescription->getName();
+            $properties['name'] = $properties['tag'];
         }
         elseif (!isset($attributes['name'])) {
-            throw new SystemException('ERR_NO_CONTAINER_NAME', SystemException::ERR_DEVELOPER);
+            $properties['name'] = md5((string)$containerDescription) . '_name';
         }
         foreach ($attributes as $propertyName => $propertyValue) {
             $properties[(string) $propertyName] = (string) $propertyValue;
@@ -164,7 +166,9 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
     public function build() {
         $doc = new \DOMDocument('1.0', 'UTF-8');
         $containerDOM = $doc->createElement($this->properties['tag']);
-        $containerDOM->setAttribute('name', $this->getName());
+        if(in_array($this->properties['tag'], ['page', 'content', 'container']))
+            $containerDOM->setAttribute('name', $this->getName());
+
         $doc->appendChild($containerDOM);
         foreach ($this->properties as $propertyName => $propertyValue) {
             if ($propertyName != 'tag') {

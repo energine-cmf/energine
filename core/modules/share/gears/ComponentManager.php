@@ -116,11 +116,6 @@ final class ComponentManager extends Object implements \Iterator {
         return $result;
     }
 
-
-    static public function copyTag(\SimpleXMLElement $tagDescription) {
-        return new Tag($tagDescription);
-    }
-
     /**
      * Create component.
      *
@@ -183,22 +178,11 @@ final class ComponentManager extends Object implements \Iterator {
      */
     static public function createBlockFromDescription(\SimpleXMLElement $blockDescription, $additionalProps = []) {
         switch ($blockDescription->getName()) {
-            case 'content':
-                $props = array_merge(['tag' => 'content'], $additionalProps);
-                $result = ComponentContainer::createFromDescription($blockDescription, $props);
-                break;
-            case 'page':
-                $props = array_merge(['tag' => 'layout'], $additionalProps);
-                $result = ComponentContainer::createFromDescription($blockDescription, $props);
-                break;
-            case 'container':
-                $result = ComponentContainer::createFromDescription($blockDescription);
-                break;
             case 'component':
                 $result = Component::createFromDescription($blockDescription);
                 break;
             default:
-                $result = Tag::createFromDescription($blockDescription);
+                $result = ComponentContainer::createFromDescription($blockDescription, $additionalProps);
                 break;
         }
 

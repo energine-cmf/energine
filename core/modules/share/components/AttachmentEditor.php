@@ -33,8 +33,7 @@ class AttachmentEditor extends Grid {
     /**
      * @copydoc Grid::__construct
      */
-    public function __construct($name,  array $params = null)
-    {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
 
         $linkedID = $this->getParam('linkedID');
@@ -42,9 +41,9 @@ class AttachmentEditor extends Grid {
 
         if ($this->getState() != 'save') {
             if ($linkedID) {
-                $this->addFilterCondition(array($pk => $linkedID));
+                $this->addFilterCondition([$pk => $linkedID]);
             } else {
-                $this->addFilterCondition(array($pk => null, 'session_id' => session_id()));
+                $this->addFilterCondition([$pk => NULL, 'session_id' => session_id()]);
             }
         }
 
@@ -69,7 +68,6 @@ class AttachmentEditor extends Grid {
                 }
             }
         }
-
         $this->setProperty('quickUploadPath', $quick_upload_path);
         $this->setProperty('quickUploadPid', $quick_upload_pid);
         $this->setProperty('quickUploadEnabled', $quick_upload_enabled);
@@ -81,11 +79,11 @@ class AttachmentEditor extends Grid {
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
-            array(
+            [
                 'linkedID' => false,
                 'pk' => false,
                 'origTableName' => false,
-            )
+            ]
         );
     }
 
@@ -96,11 +94,11 @@ class AttachmentEditor extends Grid {
     protected function prepare() {
         parent::prepare();
 
-        if (in_array($this->getState(), array('add', 'edit'))) {
+        if (in_array($this->getState(), ['add', 'edit'])) {
             $fd = $this->getDataDescription()->getFieldDescriptionByName('upl_id');
             $fd->setType(FieldDescription::FIELD_TYPE_INT);
             if ($this->getState() == 'edit') {
-                $res = $this->dbh->getScalar('share_uploads', 'upl_path', array('upl_id' => $this->getData()->getFieldByName('upl_id')->getRowData(0)));
+                $res = $this->dbh->getScalar('share_uploads', 'upl_path', ['upl_id' => $this->getData()->getFieldByName('upl_id')->getRowData(0)]);
                 if ($res) {
                     $fd->setProperty('upl_path', $res);
                 }
@@ -111,14 +109,6 @@ class AttachmentEditor extends Grid {
 
             $f = $this->getData()->getFieldByName('session_id');
             $f->setData(session_id(), true);
-
-            /*for ($i = 0; $i < $this->getData()->getRowCount(); $i++) {
-                $f = $this->getData()->getFieldByName($this->getParam('pk'));
-                $f->setRowData($i, $this->getParam('linkedID'));
-
-                $f = $this->getData()->getFieldByName('session_id');
-                $f->setRowData($i, session_id());
-            }*/
         }
     }
 
@@ -181,8 +171,8 @@ class AttachmentEditor extends Grid {
 
             $res = $this->dbh->select(
                 'share_uploads',
-                array('upl_id', 'upl_path', 'upl_title as upl_name', 'upl_duration'),
-                array('upl_id' => $upl_ids)
+                ['upl_id', 'upl_path', 'upl_title as upl_name', 'upl_duration'],
+                ['upl_id' => $upl_ids]
             );
             foreach ($data as $i => $row) {
                 if ($res) {
@@ -216,19 +206,19 @@ class AttachmentEditor extends Grid {
             $result = $this->dbh->modify(
                 QAL::INSERT,
                 $this->getTableName(),
-                array(
+                [
                     $this->getParam('pk') => $this->getParam('linkedID'),
                     'session_id' => session_id(),
                     'upl_id' => $upl_id
-                )
+                ]
             );
 
             if ($result && $langTable = $this->dbh->getTranslationTablename($this->getTableName())) {
                 // todo: вставка языковых данных
                 $lang_columns = $this->dbh->getColumnsInfo($langTable);
-                $fields = array(
+                $fields = [
                     $this->getPK() => $result
-                );
+                ];
                 foreach ($lang_columns as $colName => $colProps) {
                     if (empty($colProps['index']) or $colProps['index'] != 'PRI') {
                         $fields[$colName] = '';
@@ -239,7 +229,7 @@ class AttachmentEditor extends Grid {
                     $this->dbh->modify(
                         QAL::INSERT,
                         $langTable,
-                        array_merge($fields, array('lang_id' => $lang_id))
+                        array_merge($fields, ['lang_id' => $lang_id])
                     );
                 }
             }
@@ -247,11 +237,11 @@ class AttachmentEditor extends Grid {
             $transactionStarted = !($this->dbh->commit());
 
             $b = new JSONCustomBuilder();
-            $b->setProperties(array(
+            $b->setProperties([
                 'data' => (is_int($result)) ? $result : false,
                 'result' => true,
                 'mode' => (is_int($result)) ? 'insert' : 'update'
-            ));
+            ]);
             $this->setBuilder($b);
         } catch (SystemException $e) {
             if ($transactionStarted) {
@@ -272,7 +262,7 @@ class AttachmentEditor extends Grid {
             !empty($_POST[$this->getTableName()][$this->getPK()])
         ) {
             $mode = self::COMPONENT_TYPE_FORM_ALTER;
-            $this->setFilter(array($this->getPK() => $_POST[$this->getTableName()][$this->getPK()]));
+            $this->setFilter([$this->getPK() => $_POST[$this->getTableName()][$this->getPK()]]);
         } else {
             $mode = self::COMPONENT_TYPE_FORM_ADD;
         }
@@ -352,7 +342,7 @@ class AttachmentEditor extends Grid {
 
             $new_order_num = (!$new_order_num) ? 1 : $new_order_num + 1;
 
-            $this->addFilterCondition(array($this->getPK() . '=' . $result));
+            $this->addFilterCondition([$this->getPK() . '=' . $result]);
             $request =
                 'UPDATE ' . $this->getTableName() . ' SET ' . $orderColumn . ' = %s ' .
                 $this->dbh->buildWhereCondition($this->getFilter());

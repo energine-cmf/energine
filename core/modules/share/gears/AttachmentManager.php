@@ -69,6 +69,10 @@ class AttachmentManager extends Object {
      * @var bool $addOG
      */
     private $addOG;
+    /**
+     * @var string|boolean
+     */
+    private $hasTags = false;
 
     /**
      * Constructor.
@@ -83,6 +87,8 @@ class AttachmentManager extends Object {
     public function __construct(DataDescription $dataDescription, Data $data, $tableName, $addToOG = false) {
         parent::__construct();
         if ($this->isActive = $this->dbh->tableExists($this->tableName = $tableName . self::ATTACH_TABLE_SUFFIX)) {
+            $this->hasTags = $this->dbh->tableExists($this->tableName . '_tags');
+
             $this->dataDescription = $dataDescription;
             $this->data = $data;
             $this->addOG = $addToOG;
@@ -136,7 +142,7 @@ class AttachmentManager extends Object {
             $this->data->addField($f);
 
             if (!is_array($mapValue)) {
-                $mapValue = array($mapValue);
+                $mapValue = [$mapValue];
             }
 
             if ($filteredMapValue = array_filter(array_values($mapValue))) {
@@ -161,7 +167,7 @@ class AttachmentManager extends Object {
                     }
                 }
 
-                $additional_fields = array();
+                $additional_fields = [];
                 foreach ($columns as $cname => $col) {
                     if ($cname != 'session_id' && (empty($col['index']) or ($col['index'] != 'PRI' and (empty($col['key']['tableName']))))) {
                         $new_cname = str_replace($prefix . '_', '', $cname);
@@ -227,7 +233,7 @@ class AttachmentManager extends Object {
                         ) continue;
 
                         if (!isset($imageData[$mapID]))
-                            $imageData[$mapID] = array();
+                            $imageData[$mapID] = [];
 
                         array_push($imageData[$mapID], $row);
                     }
@@ -258,6 +264,7 @@ class AttachmentManager extends Object {
                             $localData->load($imageData[$mapValue[$i]]);
                             $dataDescription = new DataDescription();
                             $fd = new FieldDescription('id');
+                            $fd->setProperty('key', true);
                             $dataDescription->addFieldDescription($fd);
 
                             $fd = new FieldDescription('file');
@@ -293,10 +300,10 @@ class AttachmentManager extends Object {
                             $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
                             $dataDescription->addFieldDescription($fd);
 
-                            $playlist = array();
-                            foreach (array('mp4', 'webm', 'flv') as $fileType) {
+                            $playlist = [];
+                            foreach (['mp4', 'webm', 'flv'] as $fileType) {
                                 if ($imageData[$mapValue[$i]][0]['is_' . $fileType] == '1') {
-                                    $playlist[] = array('id' => $base . '.' . $fileType, 'type' => $fileType);
+                                    $playlist[] = ['id' => $base . '.' . $fileType, 'type' => $fileType];
                                 }
                             }
 
@@ -319,6 +326,11 @@ class AttachmentManager extends Object {
                             $builder->setData($localData);
                             $builder->setDataDescription($dataDescription);
 
+                            if ($this->dbh->getTagsTablename($mapTableName)) {
+                                $tm = new TagManager($dataDescription, $localData, $mapTableName);
+                                $tm->createFieldDescription();
+                                $tm->createField();
+                            }
                             $builder->build();
 
                             $f->setRowData($i, $builder->getResult());

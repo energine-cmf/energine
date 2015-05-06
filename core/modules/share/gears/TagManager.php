@@ -85,6 +85,7 @@ class TagManager extends Object {
                     break;
                 }
             }
+
         }
     }
 
@@ -106,8 +107,7 @@ class TagManager extends Object {
      *
      * @param mixed $initialValue Initial value.
      */
-    public function createField($initialValue = null) {
-
+    public function createField($initialValue = NULL) {
         if ($this->isActive) {
             $field = new Field('tags');
             if (
@@ -122,7 +122,7 @@ class TagManager extends Object {
                 }
             } else {
                 for ($i = 0; $i < count(E()->getLanguage()->getLanguages()); $i++) {
-                    $field->setRowData($i, (is_array($initialValue)) ? $initialValue : array($initialValue));
+                    $field->setRowData($i, (is_array($initialValue)) ? $initialValue : [$initialValue]);
                 }
                 $this->data->addField($field);
             }
@@ -157,12 +157,12 @@ class TagManager extends Object {
         $columns = array_keys($this->dbh->getColumnsInfo($mapTableName));
         unset($columns['tag_id']);
         list($mapFieldName) = $columns;
-        $this->dbh->modify(QAL::DELETE, $mapTableName, null, array($mapFieldName => $mapValue));
+        $this->dbh->modify(QAL::DELETE, $mapTableName, NULL, [$mapFieldName => $mapValue]);
 
         if (!empty($tags)) {
             foreach ($tags as $tag) {
                 try {
-                    $tag_id = $this->dbh->getScalar(self::TAG_TABLENAME_TRANSLATION, 'tag_id', array('tag_name' => $tag, 'lang_id' => E()->getLanguage()->getCurrent()));
+                    $tag_id = $this->dbh->getScalar(self::TAG_TABLENAME_TRANSLATION, 'tag_id', ['tag_name' => $tag, 'lang_id' => E()->getLanguage()->getCurrent()]);
                     if (!$tag_id) {
                         $tag_id = self::insert($tag);
                     }
@@ -172,7 +172,7 @@ class TagManager extends Object {
             }
             $tagIDs = array_keys(self::getID($tags));
             foreach ($tagIDs as $tagID) {
-                $this->dbh->modify(QAL::INSERT, $mapTableName, array($mapFieldName => $mapValue, 'tag_id' => $tagID));
+                $this->dbh->modify(QAL::INSERT, $mapTableName, [$mapFieldName => $mapValue, 'tag_id' => $tagID]);
             }
         }
     }
@@ -197,13 +197,13 @@ class TagManager extends Object {
         unset($columns['tag_id']);
         list($mapFieldName) = $columns;
         $res =
-            $this->dbh->select($mapTableName, array('tag_id', $mapFieldName), array($mapFieldName => $mapValue));
+            $this->dbh->select($mapTableName, ['tag_id', $mapFieldName], [$mapFieldName => $mapValue]);
 
         if ($res) {
-            $result = array();
+            $result = [];
             foreach ($res as $row) {
                 if (!isset($result[$row[$mapFieldName]])) {
-                    $result[$row[$mapFieldName]] = array();
+                    $result[$row[$mapFieldName]] = [];
                 }
                 $result[$row[$mapFieldName]][] = $row['tag_id'];
             }
@@ -213,7 +213,7 @@ class TagManager extends Object {
             if (isset($result[$targetID])) {
                 $data[] = self::getTags($result[$targetID], $asString);
             } else {
-                $data[] = array();
+                $data[] = [];
             }
         }
 
@@ -228,7 +228,7 @@ class TagManager extends Object {
      * @return array
      */
     static public function getID($tag) {
-        $result = null;
+        $result = NULL;
         if (!is_array($tag)) {
             $tag = explode(self::TAG_SEPARATOR, $tag);
         }
@@ -277,14 +277,14 @@ class TagManager extends Object {
      * @return array|string|mixed
      */
     static public function getTags($tagID, $asSting = false) {
-        $result = array();
+        $result = [];
 
         if (empty($tagID)) {
-            $tagID = array('-1');
+            $tagID = ['-1'];
         }
 
         if (!is_array($tagID)) {
-            $tagID = array($tagID);
+            $tagID = [$tagID];
         }
 
         $res = E()->getDB()->select(
@@ -311,7 +311,7 @@ class TagManager extends Object {
      * @throws SystemException 'ERR_WRONG_TABLE_NAME'
      */
     static public function getFilter($tags, $tableName) {
-        $result = null;
+        $result = NULL;
         if (!($mapTableName = E()->getDB()->getTagsTablename($tableName))) {
             return $result;
         }
@@ -322,7 +322,7 @@ class TagManager extends Object {
             $columns = array_keys(E()->getDB()->getColumnsInfo($mapTableName));
             unset($columns['tag_id']);
             list($mapFieldName) = $columns;
-            $result = E()->getDB()->getColumn($mapTableName, array($mapFieldName), array('tag_id' => array_keys($tagInfo)));
+            $result = E()->getDB()->getColumn($mapTableName, [$mapFieldName], ['tag_id' => array_keys($tagInfo)]);
         }
 
         return $result;
@@ -335,12 +335,12 @@ class TagManager extends Object {
      * @return bool|int
      */
     public static function insert($tag) {
-        $tag_id = E()->getDB()->modify(QAL::INSERT, self::TAG_TABLENAME, array('tag_code' => $tag));
+        $tag_id = E()->getDB()->modify(QAL::INSERT, self::TAG_TABLENAME, ['tag_code' => $tag]);
         $langs = E()->getLanguage()->getLanguages();
         if ($langs && $tag_id) {
             foreach ($langs as $lang_id => $lang_info) {
                 E()->getDB()->modify(QAL::INSERT_IGNORE, self::TAG_TABLENAME_TRANSLATION,
-                    array('tag_id' => $tag_id, 'lang_id' => $lang_id, 'tag_name' => $tag));
+                    ['tag_id' => $tag_id, 'lang_id' => $lang_id, 'tag_name' => $tag]);
             }
         }
         return $tag_id;

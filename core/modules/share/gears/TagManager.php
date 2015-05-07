@@ -73,7 +73,7 @@ class TagManager extends Object {
      * @param Data $data Data.
      * @param string $tableName Table name.
      */
-    public function __construct($dataDescription, $data, $tableName) {
+    public function __construct(DataDescription $dataDescription, Data $data, $tableName) {
         parent::__construct();
         if ($this->isActive = $this->dbh->tableExists($this->tableName = $tableName . '_tags')) {
             $this->dataDescription = $dataDescription;
@@ -198,7 +198,6 @@ class TagManager extends Object {
         list($mapFieldName) = $columns;
         $res =
             $this->dbh->select($mapTableName, ['tag_id', $mapFieldName], [$mapFieldName => $mapValue]);
-
         if ($res) {
             $result = [];
             foreach ($res as $row) {

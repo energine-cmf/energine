@@ -237,6 +237,7 @@ class AttachmentManager extends Object {
 
                         array_push($imageData[$mapID], $row);
                     }
+                    list($uploadsPK) = array_keys($columns);
 
                     for ($i = 0; $i < sizeof($mapValue); $i++) {
                         if (isset($imageData[$mapValue[$i]])) {
@@ -264,6 +265,10 @@ class AttachmentManager extends Object {
                             $localData->load($imageData[$mapValue[$i]]);
                             $dataDescription = new DataDescription();
                             $fd = new FieldDescription('id');
+                            $dataDescription->addFieldDescription($fd);
+
+                            $fd = new FieldDescription($uploadsPK);
+                            $fd->setType(FieldDescription::FIELD_TYPE_INT);
                             $fd->setProperty('key', true);
                             $dataDescription->addFieldDescription($fd);
 

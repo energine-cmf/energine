@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class Builder;
-@endcode
+ * @endcode
  *
  * @author 1m.dm
  * @copyright Energine 2006
@@ -19,7 +19,7 @@ namespace Energine\share\gears;
  *
  * @code
 class Builder;
-@endcode
+ * @endcode
  */
 class Builder extends AbstractBuilder {
     /**
@@ -43,55 +43,52 @@ class Builder extends AbstractBuilder {
         $dom_recordSet = $this->result->createElement('recordset');
         $this->result->appendChild($dom_recordSet);
         if ($this->data->isEmpty() || !$this->data->getRowCount()) {
-        	$dom_recordSet->setAttribute('empty', translate('MSG_EMPTY_RECORDSET'));
+            $dom_recordSet->setAttribute('empty', translate('MSG_EMPTY_RECORDSET'));
         }
-        $rowCount = 0;
-        $i = 0;
-        do {
-            if (!$this->data->isEmpty()) {
-                $rowCount = $this->data->getRowCount();
-            }
-
-            $dom_record = $this->result->createElement('record');
-
-            foreach ($this->dataDescription as $fieldName => $fieldInfo) {
-                $fieldProperties = false;
-                if (is_null($fieldInfo->getPropertyValue('tabName'))) {
-                    $fieldInfo->setProperty('tabName', $this->title);
+        if (!$this->dataDescription->isEmpty()) {
+            $rowCount = 0;
+            $i = 0;
+            do {
+                if (!$this->data->isEmpty()) {
+                    $rowCount = $this->data->getRowCount();
                 }
 
-                // если тип поля предполагает выбор из нескольких значений - создаем соответствующие узлы
-                if (in_array($fieldInfo->getType(), array(FieldDescription::FIELD_TYPE_MULTI, FieldDescription::FIELD_TYPE_SELECT))) {
-                    if ($this->data && $this->data->getFieldByName($fieldName)) {
-                        if ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_SELECT) {
-                        	$data = array($this->data->getFieldByName($fieldName)->getRowData($i));
-                        }
-                        else {
-                            $data = $this->data->getFieldByName($fieldName)->getRowData($i);
-                        }
+                $dom_record = $this->result->createElement('record');
+
+                foreach ($this->dataDescription as $fieldName => $fieldInfo) {
+                    $fieldProperties = false;
+                    if (is_null($fieldInfo->getPropertyValue('tabName'))) {
+                        $fieldInfo->setProperty('tabName', $this->title);
                     }
-                    else {
-                    	$data = false;
-                    }
-                    $fieldValue = $this->createOptions($fieldInfo, $data);
-                }
-                elseif ($this->data->isEmpty()) {
-                	$fieldValue = false;
-                }
-                elseif ($this->data->getFieldByName($fieldName)) {
-                    $fieldProperties = $this->data->getFieldByName($fieldName)->getRowProperties($i);
-                    $fieldValue = $this->data->getFieldByName($fieldName)->getRowData($i);
-                }
-                else {
-                    $fieldValue = false;
-                }
-                $dom_field = $this->createField($fieldName, $fieldInfo, $fieldValue, $fieldProperties);
-                $dom_record->appendChild($dom_field);
-            }
 
-            $dom_recordSet->appendChild($dom_record);
-            $i++;
+                    // если тип поля предполагает выбор из нескольких значений - создаем соответствующие узлы
+                    if (in_array($fieldInfo->getType(), [FieldDescription::FIELD_TYPE_MULTI, FieldDescription::FIELD_TYPE_SELECT])) {
+                        if ($this->data && $this->data->getFieldByName($fieldName)) {
+                            if ($fieldInfo->getType() == FieldDescription::FIELD_TYPE_SELECT) {
+                                $data = [$this->data->getFieldByName($fieldName)->getRowData($i)];
+                            } else {
+                                $data = $this->data->getFieldByName($fieldName)->getRowData($i);
+                            }
+                        } else {
+                            $data = false;
+                        }
+                        $fieldValue = $this->createOptions($fieldInfo, $data);
+                    } elseif ($this->data->isEmpty()) {
+                        $fieldValue = false;
+                    } elseif ($this->data->getFieldByName($fieldName)) {
+                        $fieldProperties = $this->data->getFieldByName($fieldName)->getRowProperties($i);
+                        $fieldValue = $this->data->getFieldByName($fieldName)->getRowData($i);
+                    } else {
+                        $fieldValue = false;
+                    }
+                    $dom_field = $this->createField($fieldName, $fieldInfo, $fieldValue, $fieldProperties);
+                    $dom_record->appendChild($dom_field);
+                }
+
+                $dom_recordSet->appendChild($dom_record);
+                $i++;
+            } while ($i < $rowCount);
         }
-        while ($i < $rowCount);
+
     }
 }

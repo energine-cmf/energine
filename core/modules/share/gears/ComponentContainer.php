@@ -68,6 +68,9 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
         if (!isset($this->properties['tag'])) {
             $this->properties['tag'] = 'container';
         }
+        if($this->properties['tag'] == 'page'){
+            $this->properties['tag'] = 'layout';
+        }
         $this->document->componentManager->register($this);
     }
 

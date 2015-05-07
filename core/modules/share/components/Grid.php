@@ -328,11 +328,11 @@ class Grid extends DBDataSet {
                 'mode' => (is_int($result)) ? 'insert' : 'update'
             ]);
             $this->setBuilder($b);
-        } catch (SystemException $e) {
+        } catch (\Exception $e) {
             if ($transactionStarted) {
                 $this->dbh->rollback();
             }
-            throw $e;
+            throw new SystemException($e->getMessage(), $e->getCode());
         }
     }
 

@@ -69,6 +69,8 @@ var PageEditor = new Class(/** @lends PageEditor# */{
         }
         CKEDITOR.stylesSet.add('energine', styles);
         CKEDITOR.config.stylesSet = 'energine';
+		// allow empty <i></i>
+		CKEDITOR.dtd.$removeEmpty['i'] = false;
 
         $(document.body).getElements('.' + this.editorClassName).each(function (element) {
             this.editors.push(new PageEditor.BlockEditor(element));

@@ -101,6 +101,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
         } elseif (!isset($attributes['name'])) {
             $properties['name'] = uniqid('name_');
         }
+
         foreach ($attributes as $propertyName => $propertyValue) {
             $properties[(string)$propertyName] = (string)$propertyValue;
         }

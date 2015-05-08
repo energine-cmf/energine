@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class SimpleBuilder;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2010
@@ -19,25 +19,18 @@ namespace Energine\share\gears;
  *
  * @code
 class SimpleBuilder;
-@endcode
+ * @endcode
  *
  * This is used for the cases when there is not necessary to view all filed attributes.
  */
 class SimpleBuilder extends Builder {
-    /**
-     * @param string $title Recordset title.
-     */
-    public function __construct($title = '') {
-        parent::__construct();
-        $this->title = $title;
-    }
 
     /**
      * @copydoc Builder::createField
      */
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
-        foreach(
-            array(
+        foreach (
+            [
                 'nullable',
                 'pattern',
                 'message',
@@ -51,11 +44,11 @@ class SimpleBuilder extends Builder {
                 /*'msgOpenField',
                 'msgCloseField',*/
                 'default'
-            ) as $propertyName
+            ] as $propertyName
         ) {
             $fieldInfo->removeProperty($propertyName);
         }
-        
+
         return parent::createField($fieldName, $fieldInfo, $fieldValue, $fieldProperties);
     }
 }

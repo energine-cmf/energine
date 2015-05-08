@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class ComponentContainer
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2010
@@ -19,19 +19,19 @@ namespace Energine\share\gears;
  *
  * @code
 class ComponentContainer
-@endcode
+ * @endcode
  */
-class ComponentContainer extends Object implements IBlock, \Iterator{
+class ComponentContainer extends Object implements IBlock, \Iterator {
     /**
      * Defines whether the component container is enabled.
      * @var bool $enabled
      */
-    private  $enabled= true;
+    private $enabled = true;
     /**
      * Properties.
      * @var array $properties
      */
-    private $properties = array();
+    private $properties = [];
     /**
      * Container name.
      * @var string $name
@@ -41,7 +41,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
      * Array of IBlock.
      * @var array $blocks
      */
-    private $blocks = array();
+    private $blocks = [];
     /**
      * Iterator index.
      * @var int $iteratorIndex
@@ -51,16 +51,17 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
      * Array of child names.
      * @var array $childNames
      */
-    private $childNames = array();
+    private $childNames = [];
     /**
      * @var Document $document
      */
     private $document;
+
     /**
      * @param string $name Component name.
      * @param array $properties Component properties.
      */
-    public function __construct($name, array $properties = array()) {
+    public function __construct($name, array $properties = []) {
         $this->name = $name;
         $this->document = E()->getDocument();
 
@@ -68,7 +69,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
         if (!isset($this->properties['tag'])) {
             $this->properties['tag'] = 'container';
         }
-        if($this->properties['tag'] == 'page'){
+        if ($this->properties['tag'] == 'page') {
             $this->properties['tag'] = 'layout';
         }
         $this->document->componentManager->register($this);
@@ -81,6 +82,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
     public function add(IBlock $block) {
         $this->blocks[$block->getName()] = $block;
     }
+
     /**
      * Create component container from description.
      *
@@ -90,18 +92,17 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
      *
      * @throws SystemException ERR_NO_CONTAINER_NAME
      */
-    static public function createFromDescription(\SimpleXMLElement $containerDescription, array $additionalAttributes = array()) {
+    static public function createFromDescription(\SimpleXMLElement $containerDescription, array $additionalAttributes = []) {
         $properties['tag'] = $containerDescription->getName();
 
         $attributes = $containerDescription->attributes();
-        if (in_array($containerDescription->getName(), array('page', 'content'))) {
+        if (in_array($containerDescription->getName(), ['page', 'content'])) {
             $properties['name'] = $properties['tag'];
-        }
-        elseif (!isset($attributes['name'])) {
-            $properties['name'] = md5((string)$containerDescription) . '_name';
+        } elseif (!isset($attributes['name'])) {
+            $properties['name'] = md5($containerDescription->asXML()) . '_name';
         }
         foreach ($attributes as $propertyName => $propertyValue) {
-            $properties[(string) $propertyName] = (string) $propertyValue;
+            $properties[(string)$propertyName] = (string)$propertyValue;
         }
         $name = $properties['name'];
         unset($properties['name']);
@@ -121,7 +122,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
      * @return bool
      */
     public function isEmpty() {
-        return (boolean) sizeof($this->childs);
+        return (boolean)sizeof($this->childs);
     }
 
     public function getName() {
@@ -135,7 +136,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
      * @param string $propertyValue Property value.
      */
     public function setProperty($propertyName, $propertyValue) {
-        $this->properties[(string) $propertyName] = (string) $propertyValue;
+        $this->properties[(string)$propertyName] = (string)$propertyValue;
     }
 
     /**
@@ -145,7 +146,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
      * @return string or null
      */
     public function getProperty($propertyName) {
-        $result = null;
+        $result = NULL;
         if (isset($this->properties[$propertyName])) {
             $result = $this->properties[$propertyName];
         }
@@ -169,7 +170,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
     public function build() {
         $doc = new \DOMDocument('1.0', 'UTF-8');
         $containerDOM = $doc->createElement($this->properties['tag']);
-        if(in_array($this->properties['tag'], ['page', 'content', 'container']))
+        if (in_array($this->properties['tag'], ['page', 'content', 'container']))
             $containerDOM->setAttribute('name', $this->getName());
 
         $doc->appendChild($containerDOM);
@@ -195,6 +196,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
 
         return $doc;
     }
+
     /**
      * Call @c run() method for all @link ComponentContainer::$blocks blocks@endlink.
      */
@@ -232,7 +234,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator{
     /**
      * Disable ComponentContainer.
      */
-    public function disable(){
+    public function disable() {
         $this->enabled = false;
 
         foreach ($this->blocks as $block) {

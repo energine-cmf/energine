@@ -99,7 +99,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
         if (in_array($containerDescription->getName(), ['page', 'content'])) {
             $properties['name'] = $properties['tag'];
         } elseif (!isset($attributes['name'])) {
-            $properties['name'] = md5($containerDescription->asXML()) . '_name';
+            $properties['name'] = uniqid('name_');
         }
         foreach ($attributes as $propertyName => $propertyValue) {
             $properties[(string)$propertyName] = (string)$propertyValue;

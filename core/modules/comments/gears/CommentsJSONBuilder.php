@@ -48,8 +48,7 @@ class CommentsJSONBuilder;
                             case FieldDescription::FIELD_TYPE_DATETIME:
                             case FieldDescription::FIELD_TYPE_DATE:
                                 if (!empty($fieldValue)) {
-                                    $fieldValue =
-                                            self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'));
+                                    $fieldValue = E()->Utils->formatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'));
                                 }
                                 break;
                             default: // not used

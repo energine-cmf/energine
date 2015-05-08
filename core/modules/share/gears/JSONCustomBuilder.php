@@ -14,7 +14,9 @@ class JSONCustomBuilder;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
- /**
+use Energine\share\components\IBuilder;
+
+/**
   * Custom JSON builder.
   *
   * This is simplified JSON builder.
@@ -24,14 +26,13 @@ namespace Energine\share\gears;
  @endcode
   */
  
-class JSONCustomBuilder extends Object implements \Energine\share\components\IBuilder{
+class JSONCustomBuilder extends Object implements IBuilder{
     /**
      * Set of the additional properties.
      * @var array $properties
      */
-    public $properties = array();
+    public $properties = [];
 
-    //todo VZ: Why only true is returned?
     /**
      * @return bool
      */

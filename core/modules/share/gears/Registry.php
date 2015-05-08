@@ -35,7 +35,7 @@ namespace Energine\share\gears {
     /**
      * Application registry.
      *
-     * @property-read Energine\share\gears\Utils $Utils
+     * @property-read \Energine\share\gears\Utils $Utils
      *
      * Such Registry & Service Locator hybrid.
      * Any injected object here become a singleton.

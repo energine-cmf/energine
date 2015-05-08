@@ -239,8 +239,7 @@ class Builder extends XMLBuilder {
                     case FieldDescription::FIELD_TYPE_DATE:
                     case FieldDescription::FIELD_TYPE_TIME:
                         $result->setAttribute('date', $fieldValue);
-                        $fieldValue =
-                            self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
+                        $fieldValue =E()->Utils->formatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
 
                         break;
                     case FieldDescription::FIELD_TYPE_STRING:
@@ -271,99 +270,6 @@ class Builder extends XMLBuilder {
             ['/', '%20'],
             urlencode($url)
         );
-    }
-
-    //todo VZ: What '%q' means?
-    /**
-     * Format date.
-     *
-     * Pseudo modifiers:
-     * - %E - Today|Yesterday|Tomorrow|After tomorrow|Weekday_abbreviation $Date $month_name, $time[$Year(if not current)]
-     * - %f - Weekday name $Date $month_name, $time[$Year(if not current)]
-     * - %o - [Today,] $Date $month_name, $time[$Year(if not current)]
-     * - %q
-     *
-     * @param int $date Timestamp.
-     * @param string $format Format.
-     * @param string $type Type.
-     * @return string
-     */
-    static public function enFormatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
-        if (!$date) return '';
-
-        $date = strtotime($date);
-        if (!in_array($format, ['%E', '%f', '%o', '%q'])) {
-            $result = @strftime($format, $date);
-            if (!$result) {
-                $result = $date;
-            }
-        } else {
-            $result = '';
-            $today = strtotime("midnight");
-            $tomorrow = strtotime("midnight +1 day");
-            $dayAfterTomorrow = strtotime("midnight +2 day");
-            $tomorrowPlus3 = strtotime("midnight +3 day");
-            $yesterday = strtotime("midnight -1 day");
-            $beforeYesterday = strtotime("midnight -2 day");
-            switch ($format) {
-                case '%E':
-                    if ($date >= $today and $date < $tomorrow) {
-                        $result .= translate('TXT_TODAY');
-                    } elseif ($date < $today and $date >= $yesterday) {
-                        $result .= translate('TXT_YESTERDAY');
-                    } elseif ($date < $yesterday and $date >= $beforeYesterday) {
-                        $result .= translate('TXT_BEFORE_YESTERDAY');
-                    } elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
-                        $result .= translate('TXT_TOMORROW');
-                    } elseif ($date >= $dayAfterTomorrow && $date < $tomorrowPlus3) {
-                        $result .= translate('TXT_AFTER_TOMORROW');
-                    } else {
-                        $dayNum = date('w', $date);
-                        if ($dayNum == 0) {
-                            $dayNum = 7;
-                        }
-                        $result .= translate('TXT_WEEKDAY_SHORT_' . $dayNum);
-                    }
-                    $result .= ', ' . date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
-                    if (date('Y', $date) != date('Y')) {
-                        $result .= ' ' . date('Y', $date);
-                    }
-                    break;
-                case '%f':
-                    $dayNum = date('w', $date);
-                    if ($dayNum == 0) {
-                        $dayNum = 7;
-                    }
-                    $result .= translate('TXT_WEEKDAY_' . $dayNum) . ', ' . date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
-                    if (date('Y', $date) != date('Y')) {
-                        $result .= ' ' . date('Y', $date);
-                    }
-                    break;
-                case '%o':
-                    if ($date >= $today and $date < $tomorrow) {
-                        $result .= translate('TXT_TODAY') . ', ';
-                    }
-                    $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
-
-                    if (date('Y', $date) != date('Y')) {
-                        $result .= ' ' . date('Y', $date);
-                    }
-                    break;
-                case '%q':
-                    $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
-
-                    if (date('Y', $date) != date('Y')) {
-                        $result .= ' ' . date('Y', $date);
-                    }
-                    break;
-            }
-            //Если часы и минуты = 0, считаем что это просто дата, без времени
-            if (in_array($type, [FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_HIDDEN])) {
-                $result .= ', ';
-                $result .= date('G', $date) . ':' . date('i', $date);
-            }
-        }
-        return $result;
     }
 
 

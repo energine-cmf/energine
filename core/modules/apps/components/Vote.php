@@ -84,7 +84,7 @@ class Vote extends DataSet {
             $this->getData()->load($this->dbh->select('SELECT vote_question_id, vote_question_title  FROM `apps_vote_question` LEFT JOIN apps_vote_question_translation USING(vote_question_id)
         WHERE lang_id=%s AND vote_id= %s ORDER BY vote_question_order_num', $this->document->getLang(), $voteID));
             $this->setProperty('question', $this->dbh->getScalar('apps_vote_translation', 'vote_name', ['vote_id' => $voteID, 'lang_id' => $this->document->getLang()]));
-            $this->setProperty('date', Builder::enFormatDate($this->dbh->getScalar('apps_vote', 'vote_date', ['vote_id' => $voteID]), '%E'));
+            $this->setProperty('date', E()->Utils->formatDate($this->dbh->getScalar('apps_vote', 'vote_date', ['vote_id' => $voteID]), '%E'));
             $this->setProperty('count', $this->dbh->getScalar   ('apps_vote_question', 'SUM(vote_question_counter', ['vote_id' => $voteID]));
             $this->setProperty('canVote', 1);
         } else {
@@ -141,7 +141,7 @@ class Vote extends DataSet {
         if ($data && is_array($data))
             $this->getData()->load($data);
         $this->setProperty('question', $this->dbh->getScalar('apps_vote_translation', 'vote_name', ['vote_id' => $voteID, 'lang_id' => $this->document->getLang()]));
-        $this->setProperty('date', Builder::enFormatDate($this->dbh->getScalar('apps_vote', 'vote_date', ['vote_id' => $voteID]), '%E'));
+        $this->setProperty('date', E()->Utils->formatDate($this->dbh->getScalar('apps_vote', 'vote_date', ['vote_id' => $voteID]), '%E'));
         $fd = new FieldDescription('percent');
         $fd->setType(FieldDescription::FIELD_TYPE_INT);
         $this->getDataDescription()->addFieldDescription($fd);

@@ -652,7 +652,7 @@ class Grid extends DBDataSet {
                                 case FieldDescription::FIELD_TYPE_TIME:
                                 case FieldDescription::FIELD_TYPE_DATETIME:
                                     if ($format = $fieldInfo->getPropertyValue('outputFormat')) {
-                                        $fieldValue = Builder::enFormatDate($fieldValue, $format,
+                                        $fieldValue = E()->Utils->formatDate($fieldValue, $format,
                                             $fd->getType());
                                     }
                                     break;

@@ -34,9 +34,7 @@ abstract class XMLBuilder extends  Object implements IBuilder{
         return $this->result;
     }
 
-    protected function run(){
-
-    }
+    abstract protected function run();
 
     /**
      * Run building.

@@ -12,7 +12,7 @@ class Grid;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears\AbstractBuilder;
+use Energine\share\gears\Builder;
 use Energine\share\gears\DocumentController;
 use Energine\share\gears\ExtendedSaver;
 use Energine\share\gears\FilterField;
@@ -652,7 +652,7 @@ class Grid extends DBDataSet {
                                 case FieldDescription::FIELD_TYPE_TIME:
                                 case FieldDescription::FIELD_TYPE_DATETIME:
                                     if ($format = $fieldInfo->getPropertyValue('outputFormat')) {
-                                        $fieldValue = AbstractBuilder::enFormatDate($fieldValue, $format,
+                                        $fieldValue = Builder::enFormatDate($fieldValue, $format,
                                             $fd->getType());
                                     }
                                     break;

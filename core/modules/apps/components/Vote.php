@@ -14,7 +14,7 @@ class Vote;
  * @version 1.0.0
  */
 namespace Energine\apps\components;
-use Energine\share\components\DataSet, Energine\share\gears\EmptyBuilder, Energine\share\gears\SimpleBuilder, Energine\share\gears\AbstractBuilder, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\DataDescription;
+use Energine\share\components\DataSet, Energine\share\gears\EmptyBuilder, Energine\share\gears\SimpleBuilder, Energine\share\gears\Builder, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\DataDescription;
 /**
  * Voting by discussions.
  *
@@ -83,9 +83,9 @@ class Vote extends DataSet {
         if ($this->isUserCanVote($voteID)) {
             $this->getData()->load($this->dbh->select('SELECT vote_question_id, vote_question_title  FROM `apps_vote_question` LEFT JOIN apps_vote_question_translation USING(vote_question_id)
         WHERE lang_id=%s AND vote_id= %s ORDER BY vote_question_order_num', $this->document->getLang(), $voteID));
-            $this->setProperty('question', $this->dbh->getScalar('apps_vote_translation', 'vote_name', array('vote_id' => $voteID, 'lang_id' => $this->document->getLang())));
-            $this->setProperty('date', AbstractBuilder::enFormatDate($this->dbh->getScalar('apps_vote', 'vote_date', array('vote_id' => $voteID)), '%E'));
-            $this->setProperty('count', $this->dbh->getScalar   ('apps_vote_question', 'SUM(vote_question_counter', array('vote_id' => $voteID)));
+            $this->setProperty('question', $this->dbh->getScalar('apps_vote_translation', 'vote_name', ['vote_id' => $voteID, 'lang_id' => $this->document->getLang()]));
+            $this->setProperty('date', Builder::enFormatDate($this->dbh->getScalar('apps_vote', 'vote_date', ['vote_id' => $voteID]), '%E'));
+            $this->setProperty('count', $this->dbh->getScalar   ('apps_vote_question', 'SUM(vote_question_counter', ['vote_id' => $voteID]));
             $this->setProperty('canVote', 1);
         } else {
             $this->setProperty('canVote', 0);
@@ -119,7 +119,7 @@ class Vote extends DataSet {
     protected function vote() {
         $sp = $this->getStateParams(true);
         $QID = (int)$sp['qid'];
-        $voteID = $this->dbh->getScalar('apps_vote_question', 'vote_id', array('vote_question_id' => $QID));
+        $voteID = $this->dbh->getScalar('apps_vote_question', 'vote_id', ['vote_question_id' => $QID]);
 
         if ($this->isUserCanVote($voteID)) {
             $this->dbh->modify('UPDATE apps_vote_question SET vote_question_counter = vote_question_counter+1 WHERE vote_question_id=%s', $QID);
@@ -134,14 +134,14 @@ class Vote extends DataSet {
      * @param int|string $voteID Vote ID.
      */
     private function getVoteResults($voteID) {
-        $this->setProperty('count', $counter = $this->dbh->getScalar('apps_vote_question', 'SUM(vote_question_counter)', array('vote_id' => $voteID)));
+        $this->setProperty('count', $counter = $this->dbh->getScalar('apps_vote_question', 'SUM(vote_question_counter)', ['vote_id' => $voteID]));
         $this->prepare();
         $data = $this->dbh->select('SELECT vote_question_id, vote_question_title, ROUND(100*vote_question_counter/%s) as percent FROM `apps_vote_question` LEFT JOIN apps_vote_question_translation USING(vote_question_id) WHERE lang_id=%s AND vote_id= %s ORDER BY vote_question_order_num', $counter, $this->document->getLang(), $voteID);
 
         if ($data && is_array($data))
             $this->getData()->load($data);
-        $this->setProperty('question', $this->dbh->getScalar('apps_vote_translation', 'vote_name', array('vote_id' => $voteID, 'lang_id' => $this->document->getLang())));
-        $this->setProperty('date', AbstractBuilder::enFormatDate($this->dbh->getScalar('apps_vote', 'vote_date', array('vote_id' => $voteID)), '%E'));
+        $this->setProperty('question', $this->dbh->getScalar('apps_vote_translation', 'vote_name', ['vote_id' => $voteID, 'lang_id' => $this->document->getLang()]));
+        $this->setProperty('date', Builder::enFormatDate($this->dbh->getScalar('apps_vote', 'vote_date', ['vote_id' => $voteID]), '%E'));
         $fd = new FieldDescription('percent');
         $fd->setType(FieldDescription::FIELD_TYPE_INT);
         $this->getDataDescription()->addFieldDescription($fd);
@@ -154,22 +154,22 @@ class Vote extends DataSet {
         $data = new Data();
         $dataDescription = new DataDescription();
         $dataDescription->load(
-            array(
-                'vote_question_id' => array(
+            [
+                'vote_question_id' => [
                     'key' => true,
                     'nullable' => false,
                     'type' => FieldDescription::FIELD_TYPE_INT,
                     'length' => 10,
                     'index' => 'PRI'
-                ),
-                'vote_question_title' => array(
+                ],
+                'vote_question_title' => [
                     'key' => false,
                     'nullable' => false,
                     'type' => FieldDescription::FIELD_TYPE_STRING,
                     'length' => 255,
                     'index' => false
-                )
-            )
+                ]
+            ]
         );
         $this->setData($data);
         $this->setDataDescription($dataDescription);

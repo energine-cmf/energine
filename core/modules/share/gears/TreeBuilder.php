@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class TreeBuilder;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -19,11 +19,11 @@ namespace Energine\share\gears;
  *
  * @code
 class TreeBuilder;
-@endcode
+ * @endcode
  *
  * Except of Data and DataDescription it contain Tree whereby the structure will be defined.
  */
-class TreeBuilder extends AbstractBuilder  {
+class TreeBuilder extends Builder {
     /**
      * field name with key ID.
      * @var string $idFieldName
@@ -34,11 +34,6 @@ class TreeBuilder extends AbstractBuilder  {
      * @var TreeNodeList $tree
      */
     private $tree;
-
-    //todo VZ: I think it can be removed.
-    public function __construct() {
-        parent::__construct();
-    }
 
     /**
      * Set tree.
@@ -59,63 +54,66 @@ class TreeBuilder extends AbstractBuilder  {
     }
 
     /**
-     * @copydoc AbstractBuilder::run
+     * @copydoc Builder::run
      *
      * @throws SystemException 'ERR_DEV_NO_TREE_IDENT'
      */
     protected function run() {
         foreach ($this->dataDescription as $fieldName => $fieldDescription) {
             if (!is_null($fieldDescription->getPropertyValue('key'))) {
-            	$this->idFieldName = $fieldName;
+                $this->idFieldName = $fieldName;
             }
         }
         if (!$this->idFieldName) {
-        	throw new SystemException('ERR_DEV_NO_TREE_IDENT', SystemException::ERR_DEVELOPER, array($this->idFieldName));
+            throw new SystemException('ERR_DEV_NO_TREE_IDENT', SystemException::ERR_DEVELOPER, [$this->idFieldName]);
         }
-        if(!$this->data->isEmpty())
-            $this->result->appendChild($this->treeBuild($this->tree));
+        if (!$this->data->isEmpty()) {
+            $this->treeBuild($this->tree, $this->getResult());
+        }
     }
 
     /**
      * Build tree-like XML.
      *
      * @param TreeNodeList $tree Tree.
-     * @return \DOMNode
+     * @param \DOMElement
+     *
+     * @return \DOMElement
      */
-    private function treeBuild(TreeNodeList $tree) {
-        $dom_recordset = $this->result->createElement('recordset');
+    private function treeBuild(TreeNodeList $tree, \DOMElement $recordset) {
         $data = array_flip($this->data->getFieldByName($this->idFieldName)->getData());
         foreach ($tree as $id => $node) {
-        	if(isset($data[$id])){
-            //Идентификатор строки
-            $num = $data[$id];
-            $dom_record = $this->result->createElement('record');
-            foreach ($this->dataDescription as $fieldName => $fieldDescription) {
-                $fieldProperties = array();
-                $fieldValue = '';
+            if (isset($data[$id])) {
+                //Идентификатор строки
+                $num = $data[$id];
+                $dom_record = $this->document->createElement('record');
+                foreach ($this->dataDescription as $fieldName => $fieldDescription) {
+                    $fieldProperties = [];
+                    $fieldValue = '';
 
-                if($f = $this->data->getFieldByName($fieldName)){
-                    $fieldValue = $this->data->getFieldByName($fieldName)->getRowData($num);
-                    $fieldProperties = $this->data->getFieldByName($fieldName)->getRowProperties($num);
-                    if ($fieldDescription->getType() == FieldDescription::FIELD_TYPE_SELECT ) {
-                	    $fieldValue = $this->createOptions($fieldDescription, array($fieldValue));
+                    if ($f = $this->data->getFieldByName($fieldName)) {
+                        $fieldValue = $this->data->getFieldByName($fieldName)->getRowData($num);
+                        $fieldProperties = $this->data->getFieldByName($fieldName)->getRowProperties($num);
+                        if ($fieldDescription->getType() == FieldDescription::FIELD_TYPE_SELECT) {
+                            $fieldValue = $this->createOptions($fieldDescription, [$fieldValue]);
+                        }
                     }
+                    $dom_field = $this->createField($fieldName, $fieldDescription, $fieldValue, $fieldProperties);
+                    $dom_record->appendChild($dom_field);
                 }
-            	$dom_field = $this->createField($fieldName, $fieldDescription, $fieldValue, $fieldProperties);
-            	$dom_record->appendChild($dom_field);
+                $recordset->appendChild($dom_record);
+                if ($node->hasChildren()) {
+                    $dom_record->appendChild($this->treeBuild($node->getChildren(), $this->document->createElement('recordset')));
+                }
             }
-        	$dom_recordset->appendChild($dom_record);
-            if ($node->hasChildren()) {
-        		$dom_record->appendChild($this->treeBuild($node->getChildren()));
-        	}
-        	}
 
         }
-        return $dom_recordset;
+        return $recordset;
     }
+
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
-        foreach(
-            array(
+        foreach (
+            [
                 'nullable',
                 'pattern',
                 'message',
@@ -127,7 +125,7 @@ class TreeBuilder extends AbstractBuilder  {
                 /*'msgOpenField',
                 'msgCloseField',*/
                 'default'
-            ) as $propertyName
+            ] as $propertyName
         ) {
             $fieldInfo->removeProperty($propertyName);
         }

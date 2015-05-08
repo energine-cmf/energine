@@ -14,6 +14,8 @@ class JSONBuilder;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
+use Energine\share\components\IBuilder;
+
 /**
  * Build data in JSON (JavaScript Object Notation) format.
  *
@@ -21,7 +23,10 @@ namespace Energine\share\gears;
 class JSONBuilder;
 @endcode
  */
-class JSONBuilder extends AbstractBuilder {
+class JSONBuilder implements  IBuilder {
+    use DataBuilderWorker;
+
+    protected $result;
     /**
      * Pager.
      * @var Pager $pager
@@ -33,7 +38,7 @@ class JSONBuilder extends AbstractBuilder {
      * @var array $errors
      * @todo зачем это!?
      */
-    private $errors = array();
+    private $errors = [];
 
     //todo VZ: Why true is returned?
     /**
@@ -49,7 +54,7 @@ class JSONBuilder extends AbstractBuilder {
         }
 
         foreach ($this->dataDescription as $fieldName => $fieldInfo) {
-            $result['meta'][$fieldName] = array(
+            $result['meta'][$fieldName] = [
                 'title' => $fieldInfo->getPropertyValue('title'),
                 'type' => $fieldInfo->getType(),
                 'key' => $fieldInfo->getPropertyValue('key') &&
@@ -63,7 +68,7 @@ class JSONBuilder extends AbstractBuilder {
                 'rights' => $fieldInfo->getRights(),
                 'field' => $fieldName,
                 'sort' => $fieldInfo->getPropertyValue('sort')
-            );
+            ];
 
         }
 
@@ -93,7 +98,7 @@ class JSONBuilder extends AbstractBuilder {
                             case FieldDescription::FIELD_TYPE_MULTI:
                                 if (is_array($fieldValue) && !empty($fieldValue)) {
                                     $values = $fieldInfo->getAvailableValues();
-                                    $res = array();
+                                    $res = [];
                                     foreach ($fieldValue as $val) {
                                         if (isset($values[$val])) {
                                             array_push($res, $values[$val]['value']);
@@ -124,11 +129,11 @@ class JSONBuilder extends AbstractBuilder {
     public function getResult() {
         $result = $this->result;
         if (!is_null($this->pager)) {
-            $result['pager'] = array(
+            $result['pager'] = [
                 'current' => $this->pager->getCurrentPage(),
                 'count' => $this->pager->getNumPages(),
                 'records' => translate('TXT_TOTAL').': '.$this->pager->getRecordsCount()
-            );
+            ];
         }
         $result = json_encode($result, JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
         return $result;

@@ -23,15 +23,13 @@ namespace Energine\share\gears;
 class MultiLanguageBuilder;
 @endcode
  */
-class MultiLanguageBuilder extends AbstractBuilder {
+class MultiLanguageBuilder extends Builder {
     /**
-     * @copydoc AbstractBuilder::run
+     * @copydoc Builder::run
      */
     protected function run() {
         $lang = E()->getLanguage();
 
-        $dom_recordSet = $this->result->createElement('recordset');
-        $this->result->appendChild($dom_recordSet);
         $records = array();
         $correlation = array();
 
@@ -121,16 +119,16 @@ class MultiLanguageBuilder extends AbstractBuilder {
                 }
             }
             foreach ($records as $key => $value) {
-                $dom_record = $this->result->createElement('record');
+                $dom_record = $this->document->createElement('record');
                 foreach ($value as $val) {
                     $dom_record->appendChild($val);
                 }
-                $dom_recordSet->appendChild($dom_record);
+                $this->getResult()->appendChild($dom_record);
             }
         }
         // для режима вставки (когда данные отсутствуют)
         else {
-            $dom_record = $this->result->createElement('record');
+            $dom_record = $this->document->createElement('record');
             foreach ($this->dataDescription as $fieldName => $fieldInfo) {
                 if ($fieldInfo->isMultilanguage()) {
                     //$title = $fieldInfo->getPropertyValue('title');
@@ -158,8 +156,8 @@ class MultiLanguageBuilder extends AbstractBuilder {
                     $dom_record->appendChild($this->createField($fieldName, $fieldInfo, $fieldValue));
                 }
             }
-            $dom_recordSet->setAttribute('empty', translate('MSG_EMPTY_RECORDSET'));
-            $dom_recordSet->appendChild($dom_record);
+            $this->getResult()->setAttribute('empty', translate('MSG_EMPTY_RECORDSET'));
+            $this->getResult()->appendChild($dom_record);
         }
     }
 }

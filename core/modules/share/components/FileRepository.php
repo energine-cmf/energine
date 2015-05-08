@@ -12,7 +12,25 @@ class FileRepository;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears\QAL, Energine\share\gears\FileRepoInfo, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\Field, Energine\share\gears\SystemException, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\Translit, Energine\share\gears\JSONRepoBuilder;
+use Energine\share\gears\Data;
+use Energine\share\gears\DataDescription;
+use Energine\share\gears\Field;
+use Energine\share\gears\FieldDescription;
+use Energine\share\gears\FileRepoInfo;
+use Energine\share\gears\IFileRepository;
+use Energine\share\gears\JSONCustomBuilder;
+use Energine\share\gears\JSONRepoBuilder;
+use Energine\share\gears\QAL;
+use Energine\share\gears\SystemException;
+use Energine\share\gears\Translit;
+
+/**
+ * Fake interface for XSLT
+ * Interface SampleFileRepository
+ */
+interface SampleFileRepository {
+
+}
 
 /**
  * File repository.
@@ -74,6 +92,45 @@ class FileRepository extends Grid implements SampleFileRepository {
      * Proxy method for editing.
      */
     // разбрасывает по методам редактирования директории и файла
+    /**
+     * Clean incoming from JS FileReader.
+     * @param string $data Data.
+     * @param int $maxFileSize maximum file size (5mB default)
+     * @return object
+     * @throws SystemException
+     */
+    public static function cleanFileData($data, $maxFileSize = 5242880) {
+        ini_set('pcre.backtrack_limit', $maxFileSize);
+        if (!preg_match('/data\:(.*);base64\,(.*)$/', $data, $matches)) {
+            switch (preg_last_error()) {
+                case PREG_NO_ERROR:
+                    $errorMessage = 'ERR_BAD_FILE';
+                    break;
+                case PREG_INTERNAL_ERROR:
+                    $errorMessage = 'ERR_PREG_INTERNAL';
+                    break;
+                case PREG_BACKTRACK_LIMIT_ERROR:
+                    $errorMessage = 'ERR_PREG_BACKTRACK_LIMIT';
+                    break;
+                case PREG_RECURSION_LIMIT_ERROR:
+                    $errorMessage = 'ERR_PREG_RECURSION_LIMIT';
+                    break;
+                case PREG_BAD_UTF8_ERROR:
+                    $errorMessage = 'ERR_PREG_BAD_UTF8_ERROR';
+                    break;
+            }
+            throw new SystemException($errorMessage, SystemException::ERR_WARNING);
+        }
+        $mime = $matches[1];
+        $string = $matches[2];
+        unset($matches);
+        //http://j-query.blogspot.com/2011/02/save-base64-encoded-canvas-image-to-png.html?showComment=1402329668513#c517521780203205620
+        $string = str_replace_opt(' ', '+', $string);
+
+        return (object)['mime' => $mime, 'data' => base64_decode($string)];
+    }
+
+
     protected function edit() {
         $sp = $this->getStateParams();
         $uplID = $sp[0];
@@ -85,26 +142,6 @@ class FileRepository extends Grid implements SampleFileRepository {
         } else {
             $this->editFile($uplID);
         }
-    }
-
-    /**
-     * Method for adding video in text blocks.
-     */
-    protected function putVideo() {
-        $sp = $this->getStateParams();
-        $uplID = intval($sp[0]);
-        $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
-        $this->setBuilder($this->createBuilder());
-        $this->setDataDescription($this->createDataDescription());
-        $this->addFilterCondition(['upl_id' => $uplID]);
-        $this->setData($this->createData());
-
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
-        $this->js = $this->buildJS();
-        $this->setAction('save/');
     }
 
     /**
@@ -192,129 +229,6 @@ class FileRepository extends Grid implements SampleFileRepository {
             }
         }
     }
-
-    /**
-     * Add directory.
-     */
-    protected function addDir() {
-        $sp = $this->getStateParams(true);
-        if (isset($sp['pid'])) {
-            $uplPID = (int)$sp['pid'];
-        } else {
-            $uplPID = '';
-        }
-
-        $this->setType(self::COMPONENT_TYPE_FORM_ADD);
-        $this->setBuilder($this->createBuilder());
-        $this->setDataDescription($this->createDataDescription());
-        $this->setData(new Data());
-        $f = new Field('upl_pid');
-        $f->setData($uplPID);
-        $this->getData()->addField($f);
-
-        $toolbars = $this->createToolbar();
-        if (!empty($toolbars)) {
-            $this->addToolbar($toolbars);
-        }
-        $this->js = $this->buildJS();
-        $this->setAction('save-dir/');
-    }
-
-    /**
-     * Save data in directory.
-     * @throws SystemException 'ERR_NO_DATA'
-     * @throws SystemException 'ERR_BAD_PID'
-     */
-    protected function saveDir() {
-        $transactionStarted = $this->dbh->beginTransaction();
-        try {
-            if (!isset($_POST[$this->getTableName()]) || !isset($_POST[$this->getTableName()][$this->getPK()]) || !isset($_POST[$this->getTableName()]['upl_title']) || !isset($_POST[$this->getTableName()]['upl_pid'])) {
-                throw new SystemException('ERR_NO_DATA');
-            }
-            $data = $_POST[$this->getTableName()];
-            if (!$data['upl_pid']) {
-                throw new SystemException('ERR_BAD_PID');
-            }
-
-            // получаем instance IFileRepository
-            $repository = $this->repoinfo->getRepositoryInstanceById($data['upl_pid']);
-
-            $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
-            if ($mode == QAL::INSERT) {
-
-                $parentPath = $this->dbh->getScalar($this->getTableName(), ['upl_path'],
-                    ['upl_id' => $data['upl_pid']]);
-
-                if (!$parentPath) {
-                    throw new SystemException('ERR_BAD_PID');
-                }
-                unset($data[$this->getPK()]);
-                $data['upl_name'] = $data['upl_filename'] = Translit::asURLSegment($data['upl_title']);
-                $data['upl_mime_type'] = 'unknown/mime-type';
-                $data['upl_internal_type'] = FileRepoInfo::META_TYPE_FOLDER;
-                $data['upl_childs_count'] = 0;
-                $data['upl_publication_date'] = date('Y-m-d H:i:s');
-                $data['upl_path'] = $parentPath . ((substr($parentPath, -1) != '/') ? '/' : '') . $data['upl_filename'];
-
-                $where = false;
-
-                $repository->createDir($data['upl_path']);
-
-            } else {
-                $where = ['upl_id' => $data['upl_id']];
-                /*$currentUplPath = simplifyDBResult($this->dbh->select($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_id'])), 'upl_path', true);
-                $data['upl_name'] = $data['upl_filename'] = Translit::asURLSegment($data['upl_title']);
-                if($currentUplPath != $data['upl_path']){
-                    rename($currentUplPath, $data['upl_path']);
-                }*/
-            }
-            $result = $this->dbh->modify($mode, $this->getTableName(), $data, $where);
-
-            $transactionStarted = !($this->dbh->commit());
-            $uplID = (is_int($result)) ? $result : (int)$_POST[$this->getTableName()][$this->getPK()];
-
-            $args = [$uplID, date('Y-m-d H:i:s')];
-
-            $this->dbh->call('proc_update_dir_date', $args);
-
-            $b = new JSONCustomBuilder();
-            $b->setProperties([
-                'data'   => $uplID,
-                'result' => true,
-                'mode'   => (is_int($result)) ? 'insert' : 'update'
-            ]);
-            $this->setBuilder($b);
-        } catch (SystemException $e) {
-            if ($transactionStarted) {
-                $this->dbh->rollback();
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Save thumbs.
-     * @param array $thumbsData Thumbs data in the form @code name -> tmp_filename @endcode.
-     * @param string $baseFileName Base file name.
-     * @param IFileRepository $repo Repository.
-     * @throws SystemException 'ERR_SAVE_THUMBNAIL'
-     */
-    private function saveThumbs($thumbsData, $baseFileName, $repo) {
-        $thumbProps = $this->getConfigValue('thumbnails');
-        foreach ($thumbsData as $thumbName => $thumbTmpName) {
-            if ($thumbTmpName) {
-                $w = (!empty($thumbProps[$thumbName]['width'])) ? (int)$thumbProps[$thumbName]['width'] : 0;
-                $h = (!empty($thumbProps[$thumbName]['height'])) ? (int)$thumbProps[$thumbName]['height'] : 0;
-                try {
-                    // todo: thumbName == preview ?
-                    $repo->uploadAlt($thumbTmpName, $baseFileName, $w, $h);
-                } catch (\Exception $e) {
-                    throw new SystemException('ERR_SAVE_THUMBNAIL', SystemException::ERR_CRITICAL, (string)$e);
-                }
-            }
-        }
-    }
-
 
     /**
      * @copydoc Grid::save
@@ -449,6 +363,48 @@ class FileRepository extends Grid implements SampleFileRepository {
             throw $e;
         }
 
+    }
+
+    /**
+     * Generate filename.
+     * @param string $dirPath Directory path.
+     * @param string $fileExtension File extension.
+     * @return string
+     */
+    public static function generateFilename($dirPath, $fileExtension) {
+        /*
+         * Генерируем уникальное имя файла.
+         */
+        $c = ''; // первый вариант имени не будет включать символ '0'
+        do {
+            $filename = time() . rand(1, 10000) . "$c.{$fileExtension}";
+            $c++; // при первом проходе цикла $c приводится к integer(1)
+        } while (file_exists($dirPath . $filename));
+
+        return $filename;
+    }
+
+    /**
+     * Save thumbs.
+     * @param array $thumbsData Thumbs data in the form @code name -> tmp_filename @endcode.
+     * @param string $baseFileName Base file name.
+     * @param IFileRepository $repo Repository.
+     * @throws SystemException 'ERR_SAVE_THUMBNAIL'
+     */
+    private function saveThumbs($thumbsData, $baseFileName, $repo) {
+        $thumbProps = $this->getConfigValue('thumbnails');
+        foreach ($thumbsData as $thumbName => $thumbTmpName) {
+            if ($thumbTmpName) {
+                $w = (!empty($thumbProps[$thumbName]['width'])) ? (int)$thumbProps[$thumbName]['width'] : 0;
+                $h = (!empty($thumbProps[$thumbName]['height'])) ? (int)$thumbProps[$thumbName]['height'] : 0;
+                try {
+                    // todo: thumbName == preview ?
+                    $repo->uploadAlt($thumbTmpName, $baseFileName, $w, $h);
+                } catch (\Exception $e) {
+                    throw new SystemException('ERR_SAVE_THUMBNAIL', SystemException::ERR_CRITICAL, (string)$e);
+                }
+            }
+        }
     }
 
     /**
@@ -589,10 +545,30 @@ class FileRepository extends Grid implements SampleFileRepository {
     }
 
     /**
+     * Method for adding video in text blocks.
+     */
+    protected function putVideo() {
+        $sp = $this->getStateParams();
+        $uplID = intval($sp[0]);
+        $this->setType(self::COMPONENT_TYPE_FORM_ALTER);
+        $this->setBuilder($this->createBuilder());
+        $this->setDataDescription($this->createDataDescription());
+        $this->addFilterCondition(['upl_id' => $uplID]);
+        $this->setData($this->createData());
+
+        $toolbars = $this->createToolbar();
+        if (!empty($toolbars)) {
+            $this->addToolbar($toolbars);
+        }
+        $this->js = $this->buildJS();
+        $this->setAction('save/');
+    }
+
+    /**
      * Show form to upload Zip file.
      * @todo доделать
      */
-    protected function uploadZip() {
+    /*protected function uploadZip() {
         $builder = new JSONCustomBuilder();
         $this->setBuilder($builder);
         $transactionStarted = false;
@@ -616,7 +592,7 @@ class FileRepository extends Grid implements SampleFileRepository {
                 $currentFile = $zip->statIndex($i);
                 $currentFile = $currentFile['name'];
                 $fileInfo = pathinfo($currentFile);
-                inspect($fileInfo);
+
                 if (
                 !((substr($fileInfo['filename'], 0, 1) === '.') || (strpos($currentFile, 'MACOSX') !== false)
                 )
@@ -650,34 +626,105 @@ class FileRepository extends Grid implements SampleFileRepository {
                 $this->dbh->rollback();
             }
         }
+    }*/
+
+    /**
+     * Add directory.
+     */
+    protected function addDir() {
+        $sp = $this->getStateParams(true);
+        if (isset($sp['pid'])) {
+            $uplPID = (int)$sp['pid'];
+        } else {
+            $uplPID = '';
+        }
+
+        $this->setType(self::COMPONENT_TYPE_FORM_ADD);
+        $this->setBuilder($this->createBuilder());
+        $this->setDataDescription($this->createDataDescription());
+        $this->setData(new Data());
+        $f = new Field('upl_pid');
+        $f->setData($uplPID);
+        $this->getData()->addField($f);
+
+        $toolbars = $this->createToolbar();
+        if (!empty($toolbars)) {
+            $this->addToolbar($toolbars);
+        }
+        $this->js = $this->buildJS();
+        $this->setAction('save-dir/');
     }
 
     /**
-     * Get path of temporary file.
-     * @param string $filename Filename.
-     * @return string
+     * Save data in directory.
+     * @throws SystemException 'ERR_NO_DATA'
+     * @throws SystemException 'ERR_BAD_PID'
      */
-    public static function getTmpFilePath($filename) {
-        return self::TEMPORARY_DIR . basename($filename);
-    }
+    protected function saveDir() {
+        $transactionStarted = $this->dbh->beginTransaction();
+        try {
+            if (!isset($_POST[$this->getTableName()]) || !isset($_POST[$this->getTableName()][$this->getPK()]) || !isset($_POST[$this->getTableName()]['upl_title']) || !isset($_POST[$this->getTableName()]['upl_pid'])) {
+                throw new SystemException('ERR_NO_DATA');
+            }
+            $data = $_POST[$this->getTableName()];
+            if (!$data['upl_pid']) {
+                throw new SystemException('ERR_BAD_PID');
+            }
 
-    /**
-     * Generate filename.
-     * @param string $dirPath Directory path.
-     * @param string $fileExtension File extension.
-     * @return string
-     */
-    public static function generateFilename($dirPath, $fileExtension) {
-        /*
-         * Генерируем уникальное имя файла.
-         */
-        $c = ''; // первый вариант имени не будет включать символ '0'
-        do {
-            $filename = time() . rand(1, 10000) . "$c.{$fileExtension}";
-            $c++; // при первом проходе цикла $c приводится к integer(1)
-        } while (file_exists($dirPath . $filename));
+            // получаем instance IFileRepository
+            $repository = $this->repoinfo->getRepositoryInstanceById($data['upl_pid']);
 
-        return $filename;
+            $mode = (empty($data[$this->getPK()])) ? QAL::INSERT : QAL::UPDATE;
+            if ($mode == QAL::INSERT) {
+
+                $parentPath = $this->dbh->getScalar($this->getTableName(), ['upl_path'],
+                    ['upl_id' => $data['upl_pid']]);
+
+                if (!$parentPath) {
+                    throw new SystemException('ERR_BAD_PID');
+                }
+                unset($data[$this->getPK()]);
+                $data['upl_name'] = $data['upl_filename'] = Translit::asURLSegment($data['upl_title']);
+                $data['upl_mime_type'] = 'unknown/mime-type';
+                $data['upl_internal_type'] = FileRepoInfo::META_TYPE_FOLDER;
+                $data['upl_childs_count'] = 0;
+                $data['upl_publication_date'] = date('Y-m-d H:i:s');
+                $data['upl_path'] = $parentPath . ((substr($parentPath, -1) != '/') ? '/' : '') . $data['upl_filename'];
+
+                $where = false;
+
+                $repository->createDir($data['upl_path']);
+
+            } else {
+                $where = ['upl_id' => $data['upl_id']];
+                /*$currentUplPath = simplifyDBResult($this->dbh->select($this->getTableName(), array('upl_path'), array('upl_id' => $data['upl_id'])), 'upl_path', true);
+                $data['upl_name'] = $data['upl_filename'] = Translit::asURLSegment($data['upl_title']);
+                if($currentUplPath != $data['upl_path']){
+                    rename($currentUplPath, $data['upl_path']);
+                }*/
+            }
+            $result = $this->dbh->modify($mode, $this->getTableName(), $data, $where);
+
+            $transactionStarted = !($this->dbh->commit());
+            $uplID = (is_int($result)) ? $result : (int)$_POST[$this->getTableName()][$this->getPK()];
+
+            $args = [$uplID, date('Y-m-d H:i:s')];
+
+            $this->dbh->call('proc_update_dir_date', $args);
+
+            $b = new JSONCustomBuilder();
+            $b->setProperties([
+                'data'   => $uplID,
+                'result' => true,
+                'mode'   => (is_int($result)) ? 'insert' : 'update'
+            ]);
+            $this->setBuilder($b);
+        } catch (SystemException $e) {
+            if ($transactionStarted) {
+                $this->dbh->rollback();
+            }
+            throw $e;
+        }
     }
 
     /**
@@ -761,48 +808,11 @@ class FileRepository extends Grid implements SampleFileRepository {
     }
 
     /**
-     * Clean incoming from JS FileReader.
-     * @param string $data Data.
-     * @param int $maxFileSize maximum file size (5mB default)
-     * @return object
-     * @throws SystemException
+     * Get path of temporary file.
+     * @param string $filename Filename.
+     * @return string
      */
-    public static function cleanFileData($data, $maxFileSize = 5242880) {
-        ini_set('pcre.backtrack_limit', $maxFileSize);
-        if (!preg_match('/data\:(.*);base64\,(.*)$/', $data, $matches)) {
-            switch (preg_last_error()) {
-                case PREG_NO_ERROR:
-                    $errorMessage = 'ERR_BAD_FILE';
-                    break;
-                case PREG_INTERNAL_ERROR:
-                    $errorMessage = 'ERR_PREG_INTERNAL';
-                    break;
-                case PREG_BACKTRACK_LIMIT_ERROR:
-                    $errorMessage = 'ERR_PREG_BACKTRACK_LIMIT';
-                    break;
-                case PREG_RECURSION_LIMIT_ERROR:
-                    $errorMessage = 'ERR_PREG_RECURSION_LIMIT';
-                    break;
-                case PREG_BAD_UTF8_ERROR:
-                    $errorMessage = 'ERR_PREG_BAD_UTF8_ERROR';
-                    break;
-            }
-            throw new SystemException($errorMessage, SystemException::ERR_WARNING);
-        }
-        $mime = $matches[1];
-        $string = $matches[2];
-        unset($matches);
-        //http://j-query.blogspot.com/2011/02/save-base64-encoded-canvas-image-to-png.html?showComment=1402329668513#c517521780203205620
-        $string = str_replace_opt(' ', '+', $string);
-
-        return (object)['mime' => $mime, 'data' => base64_decode($string)];
+    public static function getTmpFilePath($filename) {
+        return self::TEMPORARY_DIR . basename($filename);
     }
-}
-
-/**
- * Fake interface for XSLT
- * Interface SampleFileRepository
- */
-interface SampleFileRepository {
-
 }

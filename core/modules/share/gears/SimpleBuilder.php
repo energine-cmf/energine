@@ -26,7 +26,11 @@ class SimpleBuilder;
 class SimpleBuilder extends Builder {
 
     /**
-     * @copydoc Builder::createField
+     * @param string $fieldName
+     * @param FieldDescription $fieldInfo
+     * @param bool $fieldValue
+     * @param bool $fieldProperties
+     * @return \DOMElement
      */
     protected function createField($fieldName, FieldDescription $fieldInfo, $fieldValue = false, $fieldProperties = false) {
         foreach (

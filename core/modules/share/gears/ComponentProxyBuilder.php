@@ -8,6 +8,7 @@
  */
 namespace Energine\share\gears;
 
+use Energine\share\components\Component;
 use Energine\share\components\IBuilder;
 
 /**
@@ -16,29 +17,35 @@ use Energine\share\components\IBuilder;
  * @package energine
  * @author dr.Pavka
  */
-class ComponentProxyBuilder extends Object implements IBuilder {
-    private $name = null;
-    private $className = null;
-    private $params = [];
+class ComponentProxyBuilder extends XMLBuilder implements IBuilder {
+    /**
+     * @var Component component which recordset we want to get
+     */
+    private $component;
 
+    /**
+     * @param string $name proxy object name
+     * @param string $class fully qualified class name
+     * @param array $params component params
+     */
     public function setComponent($name, $class, $params = []) {
-
+        $this->component = E()->getDocument()->componentManager->createComponent($name, $class, $params);
     }
 
     /**
      * Get build result.
-     * @return mixed
+     * @return \DOMElement
      */
     public function getResult() {
-        // TODO: Implement getResult() method.
+        return $this->component->getBuilder()->getResult();
     }
 
     /**
      * Run building.
-     * @return mixed
      */
-    public function build() {
-        //if()
+    public function run() {
+        $this->component->run();
+        $this->component->build();
     }
 
 }

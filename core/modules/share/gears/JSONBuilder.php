@@ -49,7 +49,7 @@ class JSONBuilder implements  IBuilder {
     public function build() {
         $result = false;
 
-        if ($this->dataDescription == false) {
+        if (!$this->dataDescription) {
             throw new SystemException('ERR_DEV_NO_DATA_DESCRIPTION', SystemException::ERR_DEVELOPER);
         }
 
@@ -125,6 +125,9 @@ class JSONBuilder implements  IBuilder {
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getResult() {
         $result = $this->result;
         if (!is_null($this->pager)) {

@@ -51,15 +51,28 @@ abstract class Object {
     public function __construct(){}
 
     /**
-     * Start the execution time counter.
+     * Get the @link Object::$systemConfig configurations@endlink.
+     * @return array
      */
-    public function startTimer() {
-        $this->executionTime = \microtime(true);
+    public static function getConfigArray() {
+        return self::$systemConfig;
+    }
+
+    /**
+     * Reset the execution time counter.
+
+     * @return float
+     */
+    public function resetTimer() {
+        $result = $this->stopTimer();
+        $this->startTimer();
+
+        return $result;
     }
 
     /**
      * Stop the execution time counter.
-     *
+
      * @return float
      */
     public function stopTimer() {
@@ -67,19 +80,14 @@ abstract class Object {
     }
 
     /**
-     * Reset the execution time counter.
-     *
-     * @return float
+     * Start the execution time counter.
      */
-    public function resetTimer() {
-        $result = $this->stopTimer();
-        $this->startTimer();
-        return $result;
+    public function startTimer() {
+        $this->executionTime = \microtime(true);
     }
 
     /**
      * Get the current value of the execution time counter.
-     *
      * @return float
      */
     public function getTimer() {
@@ -87,26 +95,37 @@ abstract class Object {
     }
 
     /**
+     * Non-static method-wrapper over Object::_getConfigValue for simpler using inside the derivative classes.
+
+     * @param string $paramPath Parameter path.
+     * @param mixed $initial Default value. It will be used if the looked value is not found.
+     * @return mixed
+     * @see Object::_getConfigValue()
+     */
+    public function getConfigValue($paramPath, $initial = null) {
+        return self::_getConfigValue($paramPath, $initial);
+    }
+
+    /**
      * Get the configuration value by parameter path.
-     *
      * @code
-Object::_getConfigValue('database.dsn');
-@endcode
-     *
+    Object::_getConfigValue('database.dsn');
+     * @endcode
      * @param string $paramPath Parameter path.
      * @param mixed $initial Default value. It will be used if the looked value is not found.
      * @return string
-     *
      * @note Use dot character as separator between configuration's tree levels.
      */
     public static function _getConfigValue($paramPath, $initial = null) {
-        if(is_null(self::$systemConfig)) self::setConfigArray(include(self::CONFIG_FILE));
+        if (is_null(self::$systemConfig)) {
+            self::setConfigArray(include(self::CONFIG_FILE));
+        }
         $result = self::$systemConfig;
         $paramPath = explode('.', $paramPath);
-        foreach($paramPath as $segment) {
-            if(isset($result[$segment]))
+        foreach ($paramPath as $segment) {
+            if (isset($result[$segment])) {
                 $result = $result[$segment];
-            else {
+            } else {
                 return $initial;
             }
         }
@@ -115,31 +134,10 @@ Object::_getConfigValue('database.dsn');
     }
 
     /**
-     * Non-static method-wrapper over Object::_getConfigValue for simpler using inside the derivative classes.
-     *
-     * @param string $paramPath Parameter path.
-     * @param mixed $initial Default value. It will be used if the looked value is not found.
-     * @return string
-     *
-     * @see Object::_getConfigValue()
-     */
-    public function getConfigValue($paramPath, $initial = null) {
-        return self::_getConfigValue($paramPath, $initial);
-    }
-
-    /**
      * Set the Object::$systemConfig.
      * @param array $config
      */
     public static function setConfigArray($config) {
         self::$systemConfig = $config;
-    }
-
-    /**
-     * Get the @link Object::$systemConfig configurations@endlink.
-     * @return array
-     */
-    public static function getConfigArray() {
-        return self::$systemConfig;
     }
 }

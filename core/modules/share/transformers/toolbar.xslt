@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet 
-    version="1.0" 
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+<xsl:stylesheet
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        version="1.0"
     >
 
     <!-- Шаблоны панели управления -->
@@ -51,7 +51,7 @@
     <xsl:template match="toolbar/control[@disabled]"></xsl:template>
 
     <xsl:template match="toolbar/control[@type='separator']">
-        <br/>
+        <span style="margin-left:10px;"/>
     </xsl:template>
     <!-- Панель управления для формы -->
     <xsl:template match="toolbar[parent::component[@exttype='grid']]">

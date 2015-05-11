@@ -225,6 +225,70 @@ CREATE TABLE IF NOT EXISTS `apps_news_uploads` (
   KEY `anu_order_num_idx` (`anu_order_num`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
+
+
+DROP TABLE IF EXISTS `apps_tops`;
+CREATE TABLE IF NOT EXISTS `apps_tops` (
+  `top_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `top_is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `tg_id` int(10) unsigned DEFAULT NULL,
+  `top_link` varchar(255) NOT NULL,
+  `top_order_num` int(10) unsigned DEFAULT '1',
+  PRIMARY KEY (`top_id`),
+  KEY `top_is_active` (`top_is_active`),
+  KEY `top_order_num` (`top_order_num`),
+  KEY `tg_id` (`tg_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `apps_tops_translation`;
+CREATE TABLE IF NOT EXISTS `apps_tops_translation` (
+  `top_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
+  `top_name` varchar(255) NOT NULL,
+  `top_text_rtf` text NOT NULL,
+  PRIMARY KEY (`top_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `apps_tops_uploads`;
+CREATE TABLE IF NOT EXISTS `apps_tops_uploads` (
+  `tu_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `top_id` int(10) unsigned DEFAULT NULL,
+  `upl_id` int(10) unsigned NOT NULL,
+  `tu_order_num` int(10) unsigned NOT NULL DEFAULT '1',
+  `session_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`tu_id`),
+  KEY `upl_id` (`upl_id`),
+  KEY `top_id` (`top_id`),
+  KEY `session_id` (`session_id`),
+  KEY `tu_order_num_idx` (`tu_order_num`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `apps_tops_uploads_tags`;
+CREATE TABLE IF NOT EXISTS `apps_tops_uploads_tags` (
+  `tu_id` int(10) unsigned NOT NULL,
+  `tag_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`tu_id`,`tag_id`),
+  KEY `tag_id` (`tag_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `apps_top_groups`;
+CREATE TABLE IF NOT EXISTS `apps_top_groups` (
+  `tg_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tg_order_num` int(10) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`tg_id`),
+  KEY `tg_order_num` (`tg_order_num`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `apps_top_groups_translation`;
+CREATE TABLE IF NOT EXISTS `apps_top_groups_translation` (
+  `tg_id` int(10) unsigned NOT NULL,
+  `lang_id` int(10) unsigned NOT NULL,
+  `tg_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`tg_id`,`lang_id`),
+  KEY `lang_id` (`lang_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
 --
@@ -946,6 +1010,24 @@ ALTER TABLE `apps_news_uploads`
   ADD CONSTRAINT `apps_news_uploads_ibfk_1` FOREIGN KEY (`news_id`) REFERENCES `apps_news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `apps_news_uploads_ibfk_2` FOREIGN KEY (`upl_id`) REFERENCES `share_uploads` (`upl_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE `apps_tops`
+  ADD CONSTRAINT `apps_tops_ibfk_1` FOREIGN KEY (`tg_id`) REFERENCES `apps_top_groups` (`tg_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `apps_tops_translation`
+  ADD CONSTRAINT `apps_tops_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `apps_tops_translation_ibfk_1` FOREIGN KEY (`top_id`) REFERENCES `apps_tops` (`top_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `apps_tops_uploads`
+  ADD CONSTRAINT `apps_tops_uploads_ibfk_3` FOREIGN KEY (`top_id`) REFERENCES `apps_tops` (`top_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `apps_tops_uploads_ibfk_4` FOREIGN KEY (`upl_id`) REFERENCES `share_uploads` (`upl_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `apps_tops_uploads_tags`
+  ADD CONSTRAINT `apps_tops_uploads_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `share_tags` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `apps_tops_uploads_tags_ibfk_1` FOREIGN KEY (`tu_id`) REFERENCES `apps_tops_uploads` (`tu_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `apps_top_groups_translation`
+  ADD CONSTRAINT `apps_top_groups_translation_ibfk_2` FOREIGN KEY (`lang_id`) REFERENCES `share_languages` (`lang_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `apps_top_groups_translation_ibfk_1` FOREIGN KEY (`tg_id`) REFERENCES `apps_top_groups` (`tg_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 --
 -- Constraints for table `apps_vote_question`
 --

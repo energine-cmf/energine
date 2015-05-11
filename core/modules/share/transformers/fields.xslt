@@ -812,6 +812,19 @@
 
     <!-- поле для выбора upl_id гридах -->
     <xsl:template match="field[@name='upl_id' and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]" mode="field_input">
+        <a class="preview" id="{generate-id(.)}_preview" target="_blank">
+                <xsl:attribute name="href"><xsl:value-of select="$MEDIA_URL"/><xsl:value-of select="@upl_path"/></xsl:attribute>
+                <xsl:if test="not(@upl_path)">
+                    <xsl:attribute name="class">hidden</xsl:attribute>
+                </xsl:if>
+                <img alt="">
+                    <xsl:attribute name="src"><xsl:value-of select="$MEDIA_URL"/><xsl:choose>
+                        <xsl:when test="@media_type='image'"><xsl:value-of select="@upl_path"/></xsl:when>
+                        <xsl:when test="@media_type='video'">resizer/w0-h0/<xsl:value-of select="@upl_path"/></xsl:when>
+                        <xsl:otherwise>images/icons/icon_undefined.gif</xsl:otherwise>
+                    </xsl:choose></xsl:attribute>
+                </img>
+        </a>
         <div class="with_append">
             <input>
                 <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
@@ -820,7 +833,7 @@
             </input>
             <input type="text" id="{generate-id(.)}_name" value="{@upl_path}" readonly="readonly" class="text inp_string" style="height: 32px;"/>
             <div class="appended_block">
-                <button type="button" style="width:22px;height:18px;" class="attachment_selector" upl_name="{generate-id(.)}_name" upl_id="{generate-id(.)}_id" field="{@name}">...</button>
+                <button type="button" style="width:22px;height:18px;" class="attachment_selector" data-name="{generate-id(.)}_name" data-id="{generate-id(.)}_id" data-field="{@name}" data-preview="{generate-id(.)}_preview">...</button>
             </div>
         </div>
     </xsl:template>

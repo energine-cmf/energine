@@ -18,6 +18,7 @@ namespace Energine\share\components;
 use Energine\share\gears\Data;
 use Energine\share\gears\DataDescription;
 use Energine\share\gears\FieldDescription;
+use Energine\share\gears\FileRepoInfo;
 use Energine\share\gears\JSONCustomBuilder;
 use Energine\share\gears\QAL;
 use Energine\share\gears\SystemException;
@@ -97,11 +98,11 @@ class AttachmentEditor extends Grid {
         if (in_array($this->getState(), ['add', 'edit'])) {
             $fd = $this->getDataDescription()->getFieldDescriptionByName('upl_id');
             $fd->setType(FieldDescription::FIELD_TYPE_INT);
-            if ($this->getState() == 'edit') {
-                $res = $this->dbh->getScalar('share_uploads', 'upl_path', ['upl_id' => $this->getData()->getFieldByName('upl_id')->getRowData(0)]);
-                if ($res) {
-                    $fd->setProperty('upl_path', $res);
-                }
+            if (($this->getState() == 'edit') && ($uplPath = $this->dbh->getScalar('share_uploads', 'upl_path', ['upl_id' => $this->getData()->getFieldByName('upl_id')->getRowData(0)]))) {
+                    $fd->setProperty('upl_path', $uplPath);
+                    $info = new FileRepoInfo();
+                    $fileInfo = $info->analyze($uplPath);
+                    $fd->setProperty('media_type', $fileInfo->type);
             }
 
             $f = $this->getData()->getFieldByName($this->getParam('pk'));

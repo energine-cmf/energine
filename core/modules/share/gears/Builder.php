@@ -177,7 +177,7 @@ class Builder extends XMLBuilder {
             $fieldValue = $value;
         }
         foreach ($fieldInfo as $propName => $propValue) {
-            if (!is_null($propValue) && !is_array($propValue)) {
+            if ($propValue && is_scalar($propValue) && ($propValue !== '0')) {
                 $result->setAttribute($propName, $propValue);
             }
         }

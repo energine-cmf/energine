@@ -858,7 +858,7 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
     initialize: function (selector, form) {
         selector = $(selector);
         this.form = form;
-        this.field = selector.getProperty('field');
+        this.field = selector.getProperty('data-field');
 
         selector.addEvent('click', function (e) {
             e.stop();
@@ -866,12 +866,13 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
              * Upload name.
              * @type {string}
              */
-            this.uplName = $($(e.target).getProperty('upl_name'));
+            this.uplName = $($(e.target).getProperty('data-name'));
             /**
              * Upload ID.
              * @type {string|number}
              */
-            this.uplId = $($(e.target).getProperty('upl_id'));
+            this.uplId = $($(e.target).getProperty('data-id'));
+            this.uplPreview = $($(e.target).getProperty('data-preview'));
             this.showSelector.apply(this);
         }.bind(this));
     },
@@ -899,6 +900,10 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
         if (result) {
             this.uplName.set('value', result.upl_path);
             this.uplId.set('value', result.upl_id);
+            if(['image', 'video'].indexOf(result.upl_internal_type) != -1){
+                this.uplPreview.removeClass('hidden');
+                this.uplPreview.getElement('img').setProperty('src', result.upl_path);
+            }
         }
     }
 });

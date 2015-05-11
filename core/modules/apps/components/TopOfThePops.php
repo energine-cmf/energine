@@ -45,7 +45,7 @@ class TopOfThePops extends DataSet {
         $fd->setType(FieldDescription::FIELD_TYPE_CUSTOM);
         $dd->addFieldDescription($fd);
         $d = new Data();
-        $d->load($this->dbh->select('SELECT t.tg_id as id, tg_name as `name`, t.tg_id as data FROM apps_top_groups t LEFT JOIN apps_top_groups_translation tt ON (tt.tg_id = t.tg_id) AND (lang_id=%s) ORDER by tg_order_num', $this->document->getLang()));
+        $d->load($this->dbh->select('SELECT t.tg_id as id, tg_name as `name`, t.tg_id as data FROM apps_top_groups t LEFT JOIN apps_top_groups_translation tt ON (tt.tg_id = t.tg_id) AND (lang_id=%s) WHERE site_id = %s ORDER by tg_order_num', $this->document->getLang(), E()->getSiteManager()->getCurrentSite()->id));
         $this->setData($d);
         $this->setDataDescription($dd);
         $this->js = $this->buildJS();

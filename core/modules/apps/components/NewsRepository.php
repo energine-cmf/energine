@@ -58,7 +58,7 @@ class NewsRepository extends NewsEditor {
     protected function showSmapSelector() {
         $this->request->shiftPath(1);
         $this->divisionEditor = ComponentManager::createBlockFromDescription(
-            ComponentManager::getDescriptionFromFile('core/modules/apps/templates/content/site_div_selector.container.xml'));
+            ComponentManager::getDescriptionFromFile(CORE_DIR.'/modules/apps/templates/content/site_div_selector.container.xml'));
         $this->divisionEditor->run();
     }
 

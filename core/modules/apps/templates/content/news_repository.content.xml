@@ -10,11 +10,10 @@
                </params>
             </component>
         </container>
-        <container name="leftAdBlock"/>
         <container name="loginFormContainer" block="beta" widget="widget">
             <component name="loginForm" class="Energine\user\components\LoginForm"/>
         </container>
-    </container>
+    </container>честно гов
     <container name="center" column="column" html_class="col col2 last_col">
         <container name="newsRepoContainer" block="alfa" widget="static">
             <component name="newsRepo" class="Energine\apps\components\NewsRepository">

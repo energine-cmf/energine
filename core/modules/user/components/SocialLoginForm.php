@@ -15,6 +15,7 @@ class SocialLoginForm;
  */
 namespace Energine\user\components;
 use Energine\share\gears\Field;
+use Energine\share\gears\FieldDescription;
 use Energine\share\gears\UserSession;
 
 /**

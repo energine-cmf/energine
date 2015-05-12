@@ -156,9 +156,16 @@ var Form = new Class(/** @lends Form# */{
             new Lookup(el, this.singlePath);
         }, this);
 
+        var tags = null;
         this.form.getElements('input.tag_acpl').each(function (el) {
-            new Tags(el);
+            tags = new Tags(el);
         }, this);
+
+        this.booleanTags = [];
+        if (tags)
+            this.form.getElements('input[data-tag]').each(function (el) {
+                this.booleanTags.push(new Form.BooleanTag(el, tags));
+            }, this);
 
         this.form.getElements('input.inp_color').each(function (el) {
             this.colorPickers.push(new ColorPicker(el, {cellWidth: 8, cellHeight: 12}));
@@ -389,6 +396,10 @@ var Form = new Class(/** @lends Form# */{
         if (!this.validator.validate()) {
             return;
         }
+
+        this.booleanTags.each(function(bt){
+            bt.save();
+        });
 
         this.overlay.show();
 
@@ -900,7 +911,7 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
         if (result) {
             this.uplName.set('value', result.upl_path);
             this.uplId.set('value', result.upl_id);
-            if(['image', 'video'].indexOf(result.upl_internal_type) != -1){
+            if (['image', 'video'].indexOf(result.upl_internal_type) != -1) {
                 this.uplPreview.removeClass('hidden');
                 this.uplPreview.getElement('img').setProperty('src', result.upl_path);
             }
@@ -1008,7 +1019,32 @@ Form.Label = /** @lends Form.Label */{
         }
     }
 }
+Form.BooleanTag = new Class({
+    initialize: function (el, tagsControl) {
+        this.el = el;
+        this.tags = tagsControl;
+        var currentTags = this.tags.element.get('value').split(this.tags.separator);
+        var tag = this.el.getProperty('data-tag');
+        if(currentTags.indexOf(tag) !== -1){
+            this.el.setProperty('checked', 'checked');
+            currentTags.erase(tag);
+            this.tags.element.set('value', currentTags.join(this.tags.separator));
+        }
+    },
+    save: function(){
+        var value = this.el.getProperty('checked');
+        var currentTags = this.tags.element.get('value').split(this.tags.separator);
+        var tag = this.el.getProperty('data-tag');
 
+        if(value && (currentTags.indexOf(tag) === -1)){
+            currentTags.push(tag);
+        }
+        else if(!value && (currentTags.indexOf(tag) !== -1)){
+            currentTags.erase(tag);
+        }
+        this.tags.element.set('value', currentTags.join(this.tags.separator));
+    }
+});
 /**
  * The rich editor form.
  *

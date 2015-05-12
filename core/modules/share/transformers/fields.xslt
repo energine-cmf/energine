@@ -214,6 +214,15 @@
             <xsl:if test=". = 1">
                 <xsl:attribute name="checked">checked</xsl:attribute>
             </xsl:if>
+            <xsl:choose>
+                <xsl:when test="@tag">
+                    <xsl:attribute name="data-tag"><xsl:value-of select="@tag"/></xsl:attribute>
+                    <xsl:attribute name="value"><xsl:value-of select="@tag"/></xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="value">1</xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
         </input>
         <label for="{@name}">
             <xsl:value-of select="concat(' ', @title)" disable-output-escaping="yes"/>

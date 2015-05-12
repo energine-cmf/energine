@@ -284,5 +284,155 @@
         </xsl:if>
     </xsl:template>
     <!-- /QuestionEditor -->
+    <xsl:template match="component[@name='topNews']">
+        <div class="feed short_feed news short_news">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="recordset[parent::component[@name='topNews'][@type='list']]">
+        <ul id="{generate-id(.)}" class="feed_list">
+            <xsl:apply-templates/>
+        </ul>
+        <div class="read_more">
+            <a href="{$BASE}{$LANG_ABBR}{../@template}"><xsl:value-of select="$TRANSLATION[@const='TXT_ALL_NEWS']"/></a>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="record[ancestor::component[@name='topNews'][@type='list']]">
+        <li class="feed_item">
+            <xsl:if test="$COMPONENTS[@editable]">
+                <xsl:attribute name="record">
+                    <xsl:value-of select="field[@index='PRI']"/>
+                </xsl:attribute>
+            </xsl:if>
+            <div class="feed_image">
+                <xsl:choose>
+                    <xsl:when test="field[@name='news_text_rtf']=1">
+                        <a href="{$BASE}{$LANG_ABBR}{field[@name='category']/@url}{field[@name='news_id']}--{field[@name='news_segment']}/">
+                            <xsl:apply-templates select="field[@name='attachments']" mode="preview">
+                                <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
+                                <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                            </xsl:apply-templates>
+                        </a>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:apply-templates select="field[@name='attachments']" mode="preview">
+                            <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
+                            <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                        </xsl:apply-templates>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </div>
+            <div class="feed_date">
+                <xsl:value-of select="field[@name='news_date']"/>
+            </div>
+            <h4 class="feed_name">
+                <xsl:choose>
+                    <xsl:when test="field[@name='news_text_rtf']=1">
+                        <a href="{$BASE}{$LANG_ABBR}{field[@name='category']/@url}{field[@name='news_id']}--{field[@name='news_segment']}/">
+                            <xsl:value-of select="field[@name='news_title']" disable-output-escaping="yes"/>
+                        </a>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="field[@name='news_title']" disable-output-escaping="yes"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </h4>
+        </li>
+    </xsl:template>
+    <!-- /фид новостей -->
+
+    <!-- фид проектов (тестовый фид из apps_feed) -->
+    <xsl:template match="component[@name='testFeed']">
+        <div class="feed news">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="record[ancestor::component[@name='testFeed'][@type='list']]">
+        <li class="feed_item">
+            <xsl:if test="$COMPONENTS[@editable]">
+                <xsl:attribute name="record">
+                    <xsl:value-of select="field[@index='PRI']"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="field[@name='attachments']/recordset">
+                <div class="feed_image">
+                    <xsl:choose>
+                        <xsl:when test="field[@name='tf_text_rtf']!=''">
+                            <a href="{$BASE}{$LANG_ABBR}{field[@name='category']/@url}{field[@name='tf_id']}/">
+                                <xsl:apply-templates select="field[@name='attachments']" mode="preview">
+                                    <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
+                                    <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                                </xsl:apply-templates>
+                            </a>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="field[@name='attachments']" mode="preview">
+                                <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
+                                <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                            </xsl:apply-templates>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </div>
+            </xsl:if>
+            <h4 class="feed_name">
+                <xsl:choose>
+                    <xsl:when test="field[@name='tf_text_rtf']!=''">
+                        <a href="{$BASE}{$LANG_ABBR}{field[@name='category']/@url}{field[@name='tf_id']}/">
+                            <xsl:value-of select="field[@name='tf_name']" disable-output-escaping="yes"/>
+                        </a>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="field[@name='tf_name']" disable-output-escaping="yes"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </h4>
+            <div class="feed_announce">
+                <xsl:value-of select="field[@name='tf_annotation_rtf']" disable-output-escaping="yes"/>
+            </div>
+        </li>
+    </xsl:template>
+
+    <xsl:template match="record[ancestor::component[@name='testFeed'][@type='form']]">
+        <div class="feed_view" id="{generate-id(../.)}">
+            <xsl:if test="$COMPONENTS[@editable]">
+                <xsl:attribute name="current">
+                    <xsl:value-of select="field[@index='PRI']"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:apply-templates select="field[@name='tf_name']"/>
+            <div class="feed_date">
+                <xsl:value-of select="field[@name='tf_date']"/>
+            </div>
+            <xsl:if test="field[@name='attachments']/recordset">
+                <div class="feed_image">
+                    <xsl:apply-templates select="field[@name='attachments']" mode="preview">
+                        <xsl:with-param name="PREVIEW_WIDTH">260</xsl:with-param>
+                        <xsl:with-param name="PREVIEW_HEIGHT">195</xsl:with-param>
+                    </xsl:apply-templates>
+                </div>
+            </xsl:if>
+            <xsl:apply-templates select="field[@name='tf_text_rtf']"/>
+            <xsl:if test="field[@name='attachments']/recordset">
+                <div class="media_box">
+                    <xsl:apply-templates select="field[@name='attachments']" mode="player">
+                        <xsl:with-param name="PLAYER_WIDTH">664</xsl:with-param>
+                        <xsl:with-param name="PLAYER_HEIGHT">498</xsl:with-param>
+                    </xsl:apply-templates>
+                    <xsl:apply-templates select="field[@name='attachments']" mode="carousel">
+                        <xsl:with-param name="PREVIEW_WIDTH">90</xsl:with-param>
+                        <xsl:with-param name="PREVIEW_HEIGHT">68</xsl:with-param>
+                    </xsl:apply-templates>
+                </div>
+            </xsl:if>
+            <div class="go_back">
+                <a href="{$BASE}{$LANG_ABBR}{../../@template}"><xsl:value-of select="$TRANSLATION[@const='TXT_BACK_TO_LIST']"/></a>
+            </div>
+        </div>
+    </xsl:template>
+
+    <!-- фид проектов (тестовый фид из apps_feed) -->
     
 </xsl:stylesheet>

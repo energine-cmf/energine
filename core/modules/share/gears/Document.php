@@ -279,10 +279,7 @@ final class Document extends Object implements IDocument {
             ));
 
         }
-
-
         unset($prop, $staticURL, $baseURL, $og);
-
         foreach ($this->componentManager as $component) {
             $componentResult = false;
             $dom_errors = false;
@@ -291,7 +288,6 @@ final class Document extends Object implements IDocument {
                     &&
                     ($this->getRights() >= $component->getCurrentStateRights())
                 ) {
-
                     $componentResult = $component->build();
                 }
             } catch (DummyException $dummyException) {
@@ -539,13 +535,12 @@ final class Document extends Object implements IDocument {
             }
             $result[$type] = trim(preg_replace('/<\?xml\s.+?>/sm', '', $result[$type]));
         }
-        $resultDoc = '';
+
         if ($result[DivisionEditor::TMPL_LAYOUT] == ($resultDoc = preg_replace('/<content.*\/>/sm',
                 $result[DivisionEditor::TMPL_CONTENT], $result[DivisionEditor::TMPL_LAYOUT]))
         ) {
             $resultDoc = $result[DivisionEditor::TMPL_LAYOUT] . $result[DivisionEditor::TMPL_CONTENT];
         }
-        //var_dump(preg_match('/<content.*\/>/sm', $result[DivisionEditor::TMPL_LAYOUT], $matches), $matches);
 
         if (!$resultDoc = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?><structure>' . $resultDoc . '</structure>')) {
             list($simpleXMLError) = libxml_get_errors();

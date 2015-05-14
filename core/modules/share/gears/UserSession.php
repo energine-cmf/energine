@@ -94,6 +94,11 @@ final class UserSession implements \SessionHandlerInterface {
      */
     private $data = NULL;
     /**
+     * @var int
+     */
+    private $id = NULL;
+
+    /**
      * Session table name in data base.
      * @var string $tableName
      */
@@ -119,6 +124,8 @@ final class UserSession implements \SessionHandlerInterface {
             $this->data = self::isValid($this->phpSessId);
             //Если сессия валидная
             if (is_null($this->data) || $this->data) {
+                $this->id = $this->dbh->getScalar(self::$tableName, 'session_id', ['session_native_id' => $this->phpSessId]);
+
                 E()->getDB()->modify('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
             } elseif ($force) {
                 //создаем ее вручную
@@ -266,7 +273,7 @@ final class UserSession implements \SessionHandlerInterface {
      * @see index.php
      * @see auth.php
      *
-
+     * @return UserSession
      */
     public static function start($force = false) {
         if (!self::$instance) {
@@ -274,7 +281,13 @@ final class UserSession implements \SessionHandlerInterface {
         }
 
         if ($force) self::$instance->reload();
+        return self::$instance;
     }
+
+    public function getID() {
+        return $this->id;
+    }
+
 
     /**
      * Generate ID.

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains Class Utils and functions inspect(), splitDate(), stop(), simple_log(), dump_log(), ddump_log(), simplifyDBResult(), inverseDBResult(), convertDBResult(), convertFieldNames(), arrayPush(), array_push_before(), array_push_after(), file_get_contents_stripped().
+ * Contains Class Utils and functions inspect(), splitDate(), stop(), simple_log(), dump_log(), ddump_log(), simplifyDBResult(), inverseDBResult(), convertDBResult(), convertFieldNames(), arrayPush(), array_push_before(), array_push_after().
  * It contain the set of service utilities of the system.
  *
  * @author pavka
@@ -310,18 +310,6 @@ namespace Energine\share\gears {
                 }
             }
             return $R;
-        }
-
-        /**
-         * @brief Get stripped contents.
-         * @param string $fileName Filename.
-         * @return string
-         */
-        function fileGetContentsStripped($fileName) {
-            $result = stripslashes(preg_replace_callback('/class=\"(?:[A-Za-z\\\]*)\"/', function ($matches) {
-                return str_replace('\\', '\\\\', $matches[0]);
-            }, trim(file_get_contents($fileName))));
-            return $result;
         }
 
         /**
@@ -662,17 +650,6 @@ namespace {
      */
     function array_push_after($src, $in, $pos) {
         return E()->Utils->arrayPushAfter($src, $in, $pos);
-    }
-
-    /**
-     * @fn file_get_contents_stripped($fileName)
-     * @brief Get stripped contents.
-     * @param string $fileName Filename.
-     * @return string
-     * @deprecated
-     */
-    function file_get_contents_stripped($fileName) {
-        return E()->Utils->fileGetContentsStripped($fileName);
     }
 
     /**

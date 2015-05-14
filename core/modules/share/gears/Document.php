@@ -404,7 +404,6 @@ final class Document extends Object implements IDocument {
         $contentFile = $templateData->contentFile;
         $layoutFile = $templateData->layoutFile;
         unset($templateData);
-
         // вызывается ли компонент в single режиме?
         $actionParams = $this->request->getPath(Request::PATH_ACTION);
         if (sizeof($actionParams) > 1 &&
@@ -613,7 +612,7 @@ final class Document extends Object implements IDocument {
      */
     static public function getTemplatesData($documentID) {
         $loadDataFromFile = function ($fileName, $type) {
-            if (!($result = simplexml_load_string(E()->Utils->fileGetContentsStripped(
+            if (!($result = simplexml_load_string(file_get_contents(
                 Document::TEMPLATES_DIR .
                 constant(
                     'Energine\\share\\components\\DivisionEditor::TMPL_' .
@@ -643,7 +642,7 @@ final class Document extends Object implements IDocument {
                 //Если есть данные в поле
                 //Пытаемся распарсить
                 if (!($templateData[$type] =
-                    simplexml_load_string(stripslashes($templateData[$type])))
+                    simplexml_load_string($templateData[$type]))
                 ) {
                     //Если не удалось - берем из файла
                     $templateData[$type] = $loadDataFromFile($templateData[$type .

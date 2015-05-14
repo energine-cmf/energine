@@ -44,28 +44,36 @@ class PageMedia extends DataSet {
 
         $this->setBuilder(new SimpleBuilder());
         $dd = new DataDescription();
+        if ($this->getConfig()->getCurrentStateConfig() && $this->getConfig()->getCurrentStateConfig()->fields) {
+            $dd->loadXML($this->getConfig()->getCurrentStateConfig()->fields);
+        } else {
+            $dd->load([
+                'Id' => [
+                    'type' => FieldDescription::FIELD_TYPE_INT,
+                ],
+                'Name' => [
+                    'type' => FieldDescription::FIELD_TYPE_STRING,
+                ],
+                'Title' => [
+                    'type' => FieldDescription::FIELD_TYPE_STRING,
+                ],
+                'HtmlTitle' => [
+                    'type' => FieldDescription::FIELD_TYPE_STRING,
+                ],
+                'DescriptionRtf' => [
+                    'type' => FieldDescription::FIELD_TYPE_HTML_BLOCK,
+                ]
+
+            ]);
+        }
+        $fd = new FieldDescription('Url');
+        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+        $dd->addFieldDescription($fd);
+
         $info = E()->getMap()->getDocumentInfo($id);
-
-        $dd->load([
-            'Id' => [
-                'type' => FieldDescription::FIELD_TYPE_INT,
-            ],
-            'Name' => [
-                'type' => FieldDescription::FIELD_TYPE_STRING,
-            ],
-            'Title' => [
-                'type' => FieldDescription::FIELD_TYPE_STRING,
-            ],
-            'HtmlTitle' => [
-                'type' => FieldDescription::FIELD_TYPE_STRING,
-            ],
-            'DescriptionRtf' => [
-                'type' => FieldDescription::FIELD_TYPE_HTML_BLOCK,
-            ]
-
-        ]);
         $d = new Data();
         $info['Id'] = $id;
+        $info['Url'] = E()->getMap()->getURLByID($id);
         $d->load([$info]);
         $this->setDataDescription($dd);
         $this->setData($d);
@@ -78,5 +86,11 @@ class PageMedia extends DataSet {
         );
         $m->createFieldDescription();
         $m->createField('smap_id', false, $id);
+        $toolbars = $this->createToolbar();
+        if (!empty($toolbars)) {
+            $this->addToolbar($toolbars);
+        }
+        $this->js = $this->buildJS();
+
     }
 }

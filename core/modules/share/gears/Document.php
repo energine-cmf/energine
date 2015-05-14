@@ -2,15 +2,12 @@
 /**
  * @file.
  * Document.
- *
  * It contains the definition to:
  * @code
 final class Document;
  * @endcode
- *
  * @author dr.Pavka
  * @copyright Energine 2006
- *
  * @version 1.0.0
  */
 namespace Energine\share\gears;
@@ -20,11 +17,9 @@ use Energine\shop\components\DivisionEditor;
 
 /**
  * Page document.
- *
  * @code
 final class Document;
  * @endcode
- *
  * @final
  */
 final class Document extends Object implements IDocument {
@@ -40,55 +35,51 @@ final class Document extends Object implements IDocument {
      * @var string TEMPLATES_DIR
      */
     const TEMPLATES_DIR = 'templates/';
-
-    /**
-     * Name of the BreadCrumbs default class
-     * @var string
-     */
-    private $breadCrumbsClass = 'Energine\share\components\BreadCrumbs';
-
-    /**
-     * Document ID
-     * @var int $id
-     */
-    private $id = false;
-
-    /**
-     * Document language ID.
-     * @var int $lang
-     */
-    private $lang;
-
-    /**
-     * Info about system language.
-     * @var Language $language
-     */
-    protected $language;
-
-    /**
-     * Site map.
-     * @var Sitemap $sitemap
-     */
-    protected $sitemap;
-
-    /**
-     * Request.
-     * @var Request $request
-     */
-    private $request;
-
     /**
      * Component manager.
      * @var ComponentManager $componentManager
      */
     public $componentManager;
-
+    /**
+     * Exemplar of the AuthUser class.
+     * @var AuthUser $user
+     */
+    public $user;
+    /**
+     * Info about system language.
+     * @var Language $language
+     */
+    protected $language;
+    /**
+     * Site map.
+     * @var Sitemap $sitemap
+     */
+    protected $sitemap;
+    /**
+     * Name of the BreadCrumbs default class
+     * @var string
+     */
+    private $breadCrumbsClass = 'Energine\share\components\BreadCrumbs';
+    /**
+     * Document ID
+     * @var int $id
+     */
+    private $id = false;
+    /**
+     * Document language ID.
+     * @var int $lang
+     */
+    private $lang;
+    /**
+     * Request.
+     * @var Request $request
+     */
+    private $request;
     /**
      * Result document.
      * @var \DOMDocument $doc
      */
     private $doc;
-
     /**
      * User rights for document.
      * Rights:
@@ -96,23 +87,14 @@ final class Document extends Object implements IDocument {
      * - ACCESS_READ = 1
      * - ACCESS_EDIT = 2
      * - ACCESS_FULL = 3
-     *
      * @var int $rights
      */
     private $rights = false;
-
     /**
      * Document properties.
      * @var array $properties
      */
     private $properties = [];
-
-    /**
-     * Exemplar of the AuthUser class.
-     * @var AuthUser $user
-     */
-    public $user;
-
     /**
      * Document information.
      * @var array $documentInfo
@@ -122,7 +104,6 @@ final class Document extends Object implements IDocument {
 
     /**
      * Array of constants for translations.
-     *
      * @var array $translations
      */
     private $translations = [];
@@ -137,8 +118,9 @@ final class Document extends Object implements IDocument {
         $segments = $this->request->getPath();
         $this->componentManager = new ComponentManager($this);
         // получаем идентификатор документа
-        if (isset($segments[0]) && $segments[0] == self::SINGLE_SEGMENT)
+        if (isset($segments[0]) && $segments[0] == self::SINGLE_SEGMENT) {
             $segments = [];
+        }
         $this->id = $this->sitemap->getIDByURI($segments);
         if (empty($this->id)) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
@@ -193,7 +175,6 @@ final class Document extends Object implements IDocument {
 
     /**
      * Get document ID.
-     *
      * @return int
      */
     public function getID() {
@@ -201,18 +182,26 @@ final class Document extends Object implements IDocument {
     }
 
     /**
-     * Get language ID.
-     *
+     * Get user rights.
+     * @see Document::$rights
      * @return int
      */
-    public function getLang() {
-        return $this->lang;
+    public function getRights() {
+        return $this->rights;
+    }
+
+    /**
+     * Set document property.
+     * @param string $propName Property name.
+     * @param string $propValue Property value.
+     */
+    public function setProperty($propName, $propValue) {
+        $this->properties[$propName] = $propValue;
     }
 
     /**
      * Setting breadCrumbs class name
      * It gives the possibilty to add custom BreadCrumbs class
-     *
      * @param string $breadCrumbsClass
      * @throws SystemException
      */
@@ -263,7 +252,8 @@ final class Document extends Object implements IDocument {
             $this->getConfigValue('site.resizer')) ? $resizerURL : (E()->getSiteManager()->getDefaultSite()->base . 'resizer/')));
         $prop->setAttribute('folder', E()->getSiteManager()->getCurrentSite()->folder);
         $prop->setAttribute('default', E()->getSiteManager()->getDefaultSite()->base);
-        $prop->setAttribute('favicon', ($favicon = E()->getSiteManager()->getCurrentSite()->faviconFile) ? $favicon : E()->getSiteManager()->getDefaultSite()->faviconFile);
+        $prop->setAttribute('favicon',
+            ($favicon = E()->getSiteManager()->getCurrentSite()->faviconFile) ? $favicon : E()->getSiteManager()->getDefaultSite()->faviconFile);
         $dom_documentProperties->appendChild($prop);
 
         $prop = $this->doc->createElement('property', $this->getLang());
@@ -375,8 +365,27 @@ final class Document extends Object implements IDocument {
     }
 
     /**
+     * Check if the component editable.
+     * @return bool
+     */
+    public function isEditable() {
+        if ($this->getRights() > 2) {
+            return ($this->getConfigValue('site.debug')) ? isset($_REQUEST['editMode']) : isset($_POST['editMode']);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get language ID.
+     * @return int
+     */
+    public function getLang() {
+        return $this->lang;
+    }
+
+    /**
      * Create unique flat array of connected .js-files and their dependencies.
-     *
      * @param array $dependencies Dependencies.
      * @param array $jsmap JS map.
      * @param array $js_includes JS includes.
@@ -384,8 +393,9 @@ final class Document extends Object implements IDocument {
     protected function createJavascriptDependencies($dependencies, $jsmap, &$js_includes) {
         if ($dependencies) {
             foreach ($dependencies as $dep) {
-                if (isset($jsmap[$dep]))
+                if (isset($jsmap[$dep])) {
                     $this->createJavascriptDependencies($jsmap[$dep], $jsmap, $js_includes);
+                }
 
                 if (!in_array($dep, $js_includes)) {
                     $js_includes[] = $dep;
@@ -394,21 +404,17 @@ final class Document extends Object implements IDocument {
         }
     }
 
+    public function getResult() {
+        return $this->doc;
+    }
+
     /**
      * Define and load page components into the ComponentManager.
-     *
      * @todo Полный рефакторинг!
      */
     public function loadComponents() {
         // определяем и загружаем описания content- и layout- частей страницы
-        $templateData = Document::getStructure($this->getID());
-
-        die(var_dump($templateData));
-        $contentXML = $templateData->content;
-        $layoutXML = $templateData->layout;
-        $contentFile = $templateData->contentFile;
-        $layoutFile = $templateData->layoutFile;
-        unset($templateData);
+        $structure = Document::getStructure($this->getID());
         // вызывается ли компонент в single режиме?
         $actionParams = $this->request->getPath(Request::PATH_ACTION);
         if (sizeof($actionParams) > 1 &&
@@ -431,28 +437,18 @@ final class Document extends Object implements IDocument {
                 );
             } // существует ли запрошенный компонент среди компонентов страницы?
             else {
-                if (
-                    !(
-                    $blockDescription = ComponentManager::findBlockByName(
-                        $layoutXML,
-                        $actionParams[1]
-                    )
-                    )
-                    &&
-                    !(
-                    $blockDescription = ComponentManager::findBlockByName(
-                        $contentXML,
-                        $actionParams[1]
-                    )
-                    )
+                if (!($blockDescription = ComponentManager::findBlockByName(
+                    $structure,
+                    $actionParams[1]))
                 ) {
-                    throw new SystemException('ERR_NO_SINGLE_COMPONENT', SystemException::ERR_CRITICAL, $actionParams[1]);
+                    throw new SystemException('ERR_NO_SINGLE_COMPONENT', SystemException::ERR_CRITICAL,
+                        $actionParams[1]);
                 }
                 if (E()->getController()->getViewMode() ==
                     DocumentController::TRANSFORM_STRUCTURE_XML
                 ) {
                     $int = new IRQ();
-                    $int->addBlock($blockDescription);
+                    $int->setStructure($blockDescription);
                     throw $int;
                 }
                 $this->componentManager->add(
@@ -465,18 +461,13 @@ final class Document extends Object implements IDocument {
                 DocumentController::TRANSFORM_STRUCTURE_XML
             ) {
                 $int = new IRQ();
-                $int->addBlock($layoutXML);
-                $int->addBlock($contentXML);
+                $int->setStructure($structure);
                 throw $int;
             }
 
-            foreach ([
-                         $layoutXML,
-                         $contentXML
-                     ] as $XML) {
+            foreach ($structure->children() as $XML) {
                 $this->componentManager->add(
-                    ComponentManager::createBlockFromDescription($XML, ['file' => ($XML == $contentXML)
-                        ? $contentFile : $layoutFile])
+                    ComponentManager::createBlockFromDescription($XML)
                 );
 
             }
@@ -485,18 +476,83 @@ final class Document extends Object implements IDocument {
             * обязательные стандартные компоненты:
             *     - BreadCrumbs
             */
-            $this->componentManager->add($this->componentManager->createComponent('breadCrumbs', $this->breadCrumbsClass));
+            $this->componentManager->add($this->componentManager->createComponent('breadCrumbs',
+                $this->breadCrumbsClass));
             //Если пользователь не авторизован и авторизационный домен не включает текущеий домен - то добавляем компонент для кроссдоменной авторизации
             if (
                 !$this->user->isAuthenticated()
                 &&
                 (strpos(E()->getSiteManager()->getCurrentSite()->host, $this->getConfigValue('site.domain')) === false)
-            )
+            ) {
                 $this->componentManager->add(
                     $this->componentManager->createComponent('cdAuth', 'Energine\share\components\CrossDomainAuth')
                 );
+            }
         }
 
+    }
+
+    /**
+     * Get the information about document XML-code.
+     * If the value 'xml' is missed or incorrect then it will try to load XML from the file.
+     * @param int $documentID Document ID.
+     * @return \SimpleXMLElement
+     * @throws SystemException 'ERR_WRONG_[type]'
+     * @throws SystemException 'ERR_BAD_DOC_ID'
+     */
+    static public function getStructure($documentID) {
+        $result = [];
+        $loadDataFromFile = function ($fileName, $type) {
+            if (!($result = file_get_contents(
+                Document::TEMPLATES_DIR .
+                constant(
+                    'Energine\\share\\components\\DivisionEditor::TMPL_' .
+                    strtoupper($type)) .
+                '/' . $fileName))
+            ) {
+                throw new SystemException('ERR_WRONG_' . strtoupper($type));
+            }
+
+            return $result;
+        };
+        if (!($templateData =
+            E()->getDB()->select('share_sitemap', [
+                'smap_content_xml as content',
+                'smap_layout_xml as layout',
+                'smap_content as content_file',
+                'smap_layout as layout_file'
+            ], ['smap_id' => $documentID]))
+        ) {
+            throw new SystemException('ERR_BAD_DOC_ID');
+        }
+        list($templateData) = $templateData;
+
+        libxml_use_internal_errors(true);
+        foreach ([DivisionEditor::TMPL_LAYOUT, DivisionEditor::TMPL_CONTENT] as $type) {
+            //Если нет данных поле
+            if (!$templateData[$type]) {
+                //Берем из файла
+                $result[$type] = $loadDataFromFile($templateData[$type .
+                '_file'], $type);
+            } else {
+                $result[$type] = $templateData[$type];
+            }
+            $result[$type] = trim(preg_replace('/<\?xml\s.+?>/sm', '', $result[$type]));
+        }
+        $resultDoc = '';
+        if ($result[DivisionEditor::TMPL_LAYOUT] == ($resultDoc = preg_replace('/<content.*\/>/sm',
+                $result[DivisionEditor::TMPL_CONTENT], $result[DivisionEditor::TMPL_LAYOUT]))
+        ) {
+            $resultDoc = $result[DivisionEditor::TMPL_LAYOUT] . $result[DivisionEditor::TMPL_CONTENT];
+        }
+        //var_dump(preg_match('/<content.*\/>/sm', $result[DivisionEditor::TMPL_LAYOUT], $matches), $matches);
+
+        if (!$resultDoc = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?><structure>' . $resultDoc . '</structure>')) {
+            list($simpleXMLError) = libxml_get_errors();
+            throw new SystemException('ERR_BAD_STRUCTURE', SystemException::ERR_CRITICAL, $simpleXMLError->message);
+        }
+
+        return $resultDoc;
     }
 
     /**
@@ -523,13 +579,8 @@ final class Document extends Object implements IDocument {
         }
     }
 
-    public function getResult() {
-        return $this->doc;
-    }
-
     /**
      * Get current user.
-     *
      * @return AuthUser
      */
     public function getUser() {
@@ -537,29 +588,7 @@ final class Document extends Object implements IDocument {
     }
 
     /**
-     * Get user rights.
-     *
-     * @see Document::$rights
-     *
-     * @return int
-     */
-    public function getRights() {
-        return $this->rights;
-    }
-
-    /**
-     * Set document property.
-     *
-     * @param string $propName Property name.
-     * @param string $propValue Property value.
-     */
-    public function setProperty($propName, $propValue) {
-        $this->properties[$propName] = $propValue;
-    }
-
-    /**
      * Get document property.
-     *
      * @param string $propName Property name.
      * @return string|false
      */
@@ -567,12 +596,12 @@ final class Document extends Object implements IDocument {
         if (isset($this->properties[$propName])) {
             return $this->properties[$propName];
         }
+
         return false;
     }
 
     /**
      * Remove property.
-     *
      * @param string $propName Property name.
      */
     public function removeProperty($propName) {
@@ -583,79 +612,12 @@ final class Document extends Object implements IDocument {
 
     /**
      * Add translation constant.
-     *
      * @param string $const Translation constant
      * @param Component $component Component object.
      */
-    public function addTranslation($const, Component $component = NULL) {
+    public function addTranslation($const, Component $component = null) {
         $this->translations[$const] =
-            (!is_null($component)) ? $component->getName() : NULL;
-    }
-
-    /**
-     * Check if the component editable.
-     *
-     * @return bool
-     */
-    public function isEditable() {
-        if ($this->getRights() > 2) {
-            return ($this->getConfigValue('site.debug')) ? isset($_REQUEST['editMode']) : isset($_POST['editMode']);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Get the information about document XML-code.
-     * If the value 'xml' is missed or incorrect then it will try to load XML from the file.
-     *
-     * @param int $documentID Document ID.
-     * @return object
-     *
-     * @throws SystemException 'ERR_WRONG_[type]'
-     * @throws SystemException 'ERR_BAD_DOC_ID'
-     */
-    static public function getStructure($documentID) {
-        $result = [];
-        $loadDataFromFile = function ($fileName, $type) {
-            if (!($result = file_get_contents(
-                Document::TEMPLATES_DIR .
-                constant(
-                    'Energine\\share\\components\\DivisionEditor::TMPL_' .
-                    strtoupper($type)) .
-                '/' . $fileName))
-            ) {
-                throw new SystemException('ERR_WRONG_' . strtoupper($type));
-            }
-            return $result;
-        };
-        if (!($templateData =
-            E()->getDB()->select('share_sitemap', ['smap_content_xml as content', 'smap_layout_xml as layout', 'smap_content as content_file', 'smap_layout as layout_file'], ['smap_id' => $documentID]))
-        ) {
-            throw new SystemException('ERR_BAD_DOC_ID');
-        }
-        list($templateData) = $templateData;
-
-        libxml_use_internal_errors(true);
-        foreach ([DivisionEditor::TMPL_LAYOUT, DivisionEditor::TMPL_CONTENT] as $type) {
-            //Если нет данных поле
-            if (!$templateData[$type]) {
-                //Берем из файла
-                $result[$type] = $loadDataFromFile($templateData[$type .
-                '_file'], $type);
-            } else {
-                $result[$type] = $templateData[$type];
-            }
-            $result[$type] = trim(preg_replace('/<\?xml\s.+?>/sm', '', $result[$type]));
-        }
-        $resultDoc = '';
-        if ($result[DivisionEditor::TMPL_LAYOUT] == ($resultDoc = preg_replace('/<content.*\/>/sm', $result[DivisionEditor::TMPL_CONTENT], $result[DivisionEditor::TMPL_LAYOUT]))) {
-            $resultDoc = $result[DivisionEditor::TMPL_LAYOUT] . $result[DivisionEditor::TMPL_CONTENT];
-        }
-        var_dump(preg_match('/<content.*\/>/sm', $result[DivisionEditor::TMPL_LAYOUT], $matches), $matches);
-        $resultDoc = '<?xml version="1.0" encoding="UTF-8"?>' . $resultDoc;
-
-        return (object)$templateData;
+            (!is_null($component)) ? $component->getName() : null;
     }
 
     public function getXMLDocument() {

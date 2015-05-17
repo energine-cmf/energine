@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+	<component name="langSwitcher" class="Energine\share\components\LangSwitcher"/>
+	<component name="footerTextBlock" class="Energine\share\components\TextBlock">
+		<params>
+			<param name="num">footerTextBlock</param> 
+		</params>
+	</component>    
+    <component name="adminPanel" class="Energine\share\components\DivisionEditor">
+        <params>
+            <param name="state">showPageToolbar</param>
+            <param name="rights">3</param> 
+        </params>
+    </component>
+</page>

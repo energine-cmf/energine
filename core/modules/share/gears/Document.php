@@ -13,7 +13,7 @@ final class Document;
 namespace Energine\share\gears;
 
 use Energine\share\components\Component;
-use Energine\shop\components\DivisionEditor;
+use Energine\share\components\DivisionEditor;
 
 /**
  * Page document.

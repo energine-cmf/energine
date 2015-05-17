@@ -507,27 +507,39 @@ ul.inline {
     margin: 0;
     padding: 0;
 }
+
 ul.inline li {
     display: inline;
     padding: 0 7px 0 8px;
 }
+
 ul.inline li:first-child {
     padding-left: 0;
 }
+
 ul.inline li:last-child {
     padding-right: 0;
 }
+
 ul.inline li + li {
     border-left: 1px solid #ddd;
 }
+
+ul.inline a {
+    padding: 5px;
+}
+
+
+
 ul.inline.wo-separator li + li {
     border-left: none;
 }
+
 /* ----- language switcher ----- */
 .inline.lang_switcher {
     float: right;
     margin: 26px 10px;
-	padding: 7px 10px;
+    padding: 7px 10px;
 }
 /* ----- /language switcher ----- */
 

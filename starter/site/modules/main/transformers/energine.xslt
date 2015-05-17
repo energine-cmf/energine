@@ -180,7 +180,7 @@
 
     <xsl:template match="recordset[parent::component[@class='LangSwitcher']]">
         <xsl:if test="count(record)&gt;1">
-            <ul class="lang_switcher">
+            <ul class="inline lang_switcher">
                 <xsl:apply-templates/>
             </ul>
         </xsl:if>

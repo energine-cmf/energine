@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <javascript>
+            <behavior name="Subscriptions"/>
+        </javascript>
+        <uri_patterns>
+            <pattern>/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="toggle">
+        <uri_patterns>
+            <pattern>/toggle/[subscriptionID]/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

@@ -69,7 +69,7 @@ class MailSubscriptionEditor extends Grid {
     protected function saveData() {
         $subscriptionID = parent::saveData();
         $this->dbh->modify(
-            'UPDATE shop_subscriptions2users
+            'UPDATE mail_subscriptions2users
 			SET session_id = NULL, subscription_id=%s
 			WHERE (subscription_id IS NULL and session_id = %s) or (subscription_id = %1$s)',
             $subscriptionID, session_id()

@@ -15,7 +15,18 @@ class Form;
  */
 namespace Energine\forms\components;
 
-use Energine\share\components\DBDataSet, Energine\share\gears\Saver, Energine\forms\gears\FormConstructor, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\DataDescription, Energine\share\gears\FileUploader, Energine\share\gears\Mail, Energine\share\gears\Field, Energine\share\gears\SimpleBuilder;
+use Energine\share\components\DBDataSet,
+    Energine\share\gears\Saver,
+    Energine\forms\gears\FormConstructor,
+    Energine\share\gears\SystemException,
+    Energine\share\gears\FieldDescription,
+    Energine\share\gears\Data,
+    Energine\share\gears\DataDescription,
+    Energine\share\gears\FileUploader,
+    Energine\mail\gears\MailTemplate,
+    Energine\mail\gears\Mail,
+    Energine\share\gears\Field,
+    Energine\share\gears\SimpleBuilder;
 use Energine\share\gears\QAL;
 
 /**
@@ -267,8 +278,10 @@ class Form extends DBDataSet {
                             '<br>';
                     }
                     $mailer->setFrom($this->getConfigValue('mail.from'))->
+                    // TODO: refactor via MailTemplate
                     setSubject($subject)->
-                    setText($body)->
+                    setText(strip_tags($body))->
+                    setHtmlText($body)->
                     addTo(($recp =
                         $this->getRecipientEmail()) ? $recp
                         : $this->getConfigValue('mail.manager'))->send();

@@ -1,32 +1,11 @@
 <?php
-/**
- * @file
- * Mail.
- *
- * It contains the definition to:
- * @code
-final class Mail;
-@endcode
- *
- * @author dr.Pavka
- * @copyright Energine 2007
- *
- * @version 1.0.0
- */
 
-namespace Energine\share\gears;
+namespace Energine\mail\gears;
 
-/**
- * Message sender.
- *
- * It contains the definition to:
- * @code
-final class Mail;
-@endcode
- *
- * @final
- */
+use Energine\share\gears\Object;
+
 final class Mail extends Object {
+
     /**
      * End Of Line.
      * @var string EOL
@@ -63,6 +42,12 @@ final class Mail extends Object {
      * @var string $text
      */
     private $text = false;
+
+    /**
+     * Message HTML text.
+     * @var bool
+     */
+    private $html_text = false;
 
     /**
      * Message header.
@@ -178,6 +163,26 @@ final class Mail extends Object {
     }
 
     /**
+     * Set message html text.
+     *
+     * @param string $html_text Text.
+     * @return Mail
+     */
+    public function setHtmlText($html_text) {
+        $this->html_text = $html_text;
+        return $this;
+    }
+
+    /**
+     * Get message html text.
+     *
+     * @return string
+     */
+    public function getHtmlText() {
+        return $this->html_text;
+    }
+
+    /**
      * Add attachment.
      *
      * @param mixed $file File.
@@ -224,13 +229,13 @@ final class Mail extends Object {
         $message .= "--".$MIMEBoundary2.self::EOL;
         $message .= "Content-Type: text/plain; charset=UTF-8".self::EOL;
         $message .= "Content-Transfer-Encoding: 8bit".self::EOL.self::EOL;
-        $message .= strip_tags($this->text).self::EOL.self::EOL;
+        $message .= $this->text .self::EOL.self::EOL;
 
         # HTML Version
         $message .= "--".$MIMEBoundary2.self::EOL;
         $message .= "Content-Type: text/html; charset=UTF-8".self::EOL;
         $message .= "Content-Transfer-Encoding: 8bit".self::EOL.self::EOL;
-        $message .= '<HTML><HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></HEAD><BODY>'.$this->text.'</BODY></HTML>'.self::EOL.self::EOL;
+        $message .= '<HTML><HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></HEAD><BODY>'.$this->html_text.'</BODY></HTML>'.self::EOL.self::EOL;
 
         # Finished
         $message .= "--".$MIMEBoundary2."--".self::EOL.self::EOL;  // finish with two eol's for better security. see Injection.

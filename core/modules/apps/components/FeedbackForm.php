@@ -14,7 +14,16 @@ class FeedbackForm;
  * @version 1.0.0
  */
 namespace Energine\apps\components;
-use Energine\share\components\DBDataSet, Energine\share\gears\DataDescription, Energine\share\gears\Data, Energine\share\gears\Saver, Energine\share\gears\SystemException, Energine\share\gears\QAL, Energine\share\gears\FieldDescription, Energine\share\gears\Field, Energine\share\gears\Mail;
+use Energine\share\components\DBDataSet,
+    Energine\share\gears\DataDescription,
+    Energine\share\gears\Data,
+    Energine\share\gears\Saver,
+    Energine\share\gears\SystemException,
+    Energine\share\gears\QAL,
+    Energine\share\gears\FieldDescription,
+    Energine\share\gears\Field,
+    Energine\mail\gears\MailTemplate,
+    Energine\mail\gears\Mail;
 /**
  * Form for feedback.
  *
@@ -141,24 +150,32 @@ class FeedbackForm extends DBDataSet {
 
                 $this->dbh->modify(QAL::UPDATE, $this->getTableName(), array('feed_date' => date('Y-m-d H:i:s')), array($this->getPK() => $result));
                 if ($senderEmail) {
+
+                    $template = new MailTemplate('feedback_form', $data);
                     $mailer = new Mail();
-                    $mailer->setFrom($this->getConfigValue('mail.from'))->
-                            setSubject($this->translate($this->getParam('userSubject')))->
-                            setText($this->translate($this->getParam('userBody')), $data)->
-                            addTo($senderEmail, $senderEmail)
-                            ->send();
+                    $mailer
+                        ->setFrom($this->getConfigValue('mail.from'))
+                        ->setSubject($template->getSubject())
+                        ->setText($template->getBody())
+                        ->setHtmlText($template->getHTMLBody())
+                        ->addTo($senderEmail, $senderEmail)
+                        ->send();
                 }
                 try {
+                    $template = new MailTemplate('feedback_form_admin', $data);
                     $mailer = new Mail();
                     $recipientID = false;
                     if (isset($data['feed_type']) &&
                             intval($data['feed_type'])) {
                         $recipientID = $data['feed_type'];
                     }
-                    $mailer->setFrom($this->getConfigValue('mail.from'))->
-                            setSubject($this->translate($this->getParam('adminSubject')))->
-                            setText($this->translate($this->getParam('adminBody')), $data)->
-                            addTo($this->getRecipientEmail($recipientID))->send();
+                    $mailer
+                        ->setFrom($this->getConfigValue('mail.from'))
+                        ->setSubject($template->getSubject())
+                        ->setText($template->getBody())
+                        ->setHtmlText($template->getHTMLBody())
+                        ->addTo($this->getRecipientEmail($recipientID))
+                        ->send();
                 }
                 catch (\Exception $e) {
                 }

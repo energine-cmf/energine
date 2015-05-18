@@ -14,7 +14,16 @@ class Register;
  * @version 1.0.0
  */
 namespace Energine\user\components;
-use Energine\share\components\DBDataSet, Energine\share\gears\User, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\DataDescription, Energine\share\gears\Field, Energine\share\gears\Mail;
+use Energine\share\components\DBDataSet,
+    Energine\share\gears\User,
+    Energine\share\gears\JSONCustomBuilder,
+    Energine\share\gears\SystemException,
+    Energine\share\gears\FieldDescription,
+    Energine\share\gears\Data,
+    Energine\share\gears\DataDescription,
+    Energine\share\gears\Field,
+    Energine\mail\gears\MailTemplate,
+    Energine\mail\gears\Mail;
 /**
  * Registration form.
  *
@@ -144,19 +153,23 @@ class Register extends DBDataSet {
     protected function saveData() {
         $password = $_POST[$this->getTableName()]['u_password'] = User::generatePassword();
         try {
+
             $result = $this->user->create($_POST[$this->getTableName()]);
+
+            $template = new MailTemplate('user_registration', [
+                    'user_login' => $this->user->getValue('u_name'),
+                    'user_name' => $this->user->getValue('u_fullname'),
+                    'user_password' => $password,
+                    'site_url' => E()->getSiteManager()->getCurrentSite()->base,
+                    'site_name' => $this->translate('TXT_SITE_NAME')
+                ]
+            );
 
             $mailer = new Mail();
             $mailer->setFrom($this->getConfigValue('mail.from'));
-            $mailer->setSubject($this->translate('TXT_SUBJ_REGISTER'));
-            $mailer->setText(
-                $this->translate('TXT_BODY_REGISTER'),
-                array(
-                    'login' => $this->user->getValue('u_name'),
-                    'name' => $this->user->getValue('u_fullname'),
-                    'password' => $password
-                )
-            );
+            $mailer->setSubject($template->getSubject());
+            $mailer->setText($template->getBody());
+            $mailer->setHtmlText($template->getHTMLBody());
             $mailer->addTo($this->user->getValue('u_name'));
             $mailer->send();
 

@@ -332,7 +332,11 @@ class Grid extends DBDataSet {
             if ($transactionStarted) {
                 $this->dbh->rollback();
             }
-            throw new SystemException($e->getMessage(), $e->getCode());
+            $code = $e->getCode();
+            if (!is_numeric($code)) {
+                $code = SystemException::ERR_CRITICAL;
+            }
+            throw new SystemException($e->getMessage(), $code);
         }
     }
 

@@ -16,6 +16,8 @@
     	</form>
     </xsl:template>
 
+    <xsl:template match="component[@componentAction='showPageToolbar' and @exttype='grid' and @type='list' and @sample='DivisionEditor']"/>
+
     <xsl:template match="component[@type='list']/recordset">
         <xsl:choose>
             <xsl:when test="not(@empty)">

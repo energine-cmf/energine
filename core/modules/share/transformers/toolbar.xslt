@@ -78,7 +78,7 @@
             });
         </script>
     </xsl:template>    
-    
+
     <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'button']">
     	componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(
             new Toolbar.Button({

@@ -56,12 +56,17 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
      * @var Document $document
      */
     private $document;
+    /**
+     * @var string
+     */
+    private $value = null;
 
     /**
      * @param string $name Component name.
      * @param array $properties Component properties.
+     * @param string $value Node value
      */
-    public function __construct($name, array $properties = []) {
+    public function __construct($name, array $properties = [], $value = null) {
         $this->name = $name;
         $this->document = E()->getDocument();
 
@@ -73,6 +78,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
             $this->properties['tag'] = 'layout';
         }
         $this->document->componentManager->register($this);
+        $this->value = $value;
     }
 
     /**
@@ -108,10 +114,13 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
         $name = $properties['name'];
         unset($properties['name']);
         $properties = array_merge($properties, $additionalAttributes);
-
-        $result = new ComponentContainer($name, $properties);
-
-        foreach ($containerDescription->children() as $blockDescription) {
+        $value = null;
+        $containerDescriptionValue = trim((string)$containerDescription);
+        if(!empty($containerDescriptionValue)){
+            $value = $containerDescriptionValue;
+        }
+        $result = new ComponentContainer($name, $properties, $value);
+        foreach ($containerDescription as $blockDescription) {
             $result->add(ComponentManager::createBlockFromDescription($blockDescription));
         }
 
@@ -170,7 +179,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
      */
     public function build() {
         $doc = new \DOMDocument('1.0', 'UTF-8');
-        $containerDOM = $doc->createElement($this->properties['tag']);
+        $containerDOM = $doc->createElement($this->properties['tag'], $this->value);
         if (in_array($this->properties['tag'], ['page', 'content', 'container']))
             $containerDOM->setAttribute('name', $this->getName());
 

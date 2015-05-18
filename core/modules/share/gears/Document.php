@@ -354,6 +354,8 @@ final class Document extends Object implements IDocument {
             foreach ($js_includes as $js) {
                 $dom_js_library = $this->doc->createElement('library');
                 $dom_js_library->setAttribute('path', $js);
+                $onlyName = explode('/', $js);
+                $dom_js_library->setAttribute('name', array_pop($onlyName));
                 $dom_javascript->appendChild($dom_js_library);
             }
             $dom_root->appendChild($dom_javascript);

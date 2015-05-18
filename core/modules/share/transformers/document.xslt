@@ -8,6 +8,7 @@
     exclude-result-prefixes="og video nrgn"
     >
     <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
+    <xsl:variable name="VARS" select="/document/variables/var"/>
     <xsl:variable name="COMPONENTS" select="//component[@name]"/>
     <xsl:variable name="TRANSLATION" select="/document/translations/translation"/>
     <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']"/>
@@ -162,8 +163,8 @@
         <xsl:apply-templates select="." mode="scripts"/>
         <script type="text/javascript">
             var componentToolbars = [];
-            <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[(@name!='PageEditor') and not(@use='jquery')]) &gt; 0">
-                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[(@name!='PageEditor') and not(@use='jquery')]]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
+            <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[(@name!='PageEditor')]) &gt; 0">
+                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[(@name!='PageEditor')]]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
             </xsl:if>
             window.addEvent('domready', function () {
                 <xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
@@ -203,11 +204,13 @@
         <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
             <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
         </xsl:if>
-        <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
+        <xsl:if test="(count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0) or (count($VARS[@name='FORCE_USE_JQUERY']) &gt;0)">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
             <script type="text/javascript">
                 jQuery.noConflict();
             </script>
+        </xsl:if>
+        <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
             <xsl:apply-templates select="/document/javascript/library" mode="jquery"/>
             <script type="text/javascript">
                 (function($, window, document) {
@@ -287,7 +290,7 @@
     <xsl:template match="/document//javascript/variable"/>
 
     <xsl:template match="/document/javascript/library" mode="head">
-        <xsl:variable name="PATH" select="@path"/>
+        <xsl:variable name="PATH" select="@name"/>
         <xsl:if test="not(contains($PATH, 'jquery')) and not(//behavior[(@use='jquery') and (@name=$PATH)])">
             <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
         </xsl:if>
@@ -295,10 +298,11 @@
 
     <xsl:template match="/document/javascript/library" mode="jquery">
         <xsl:variable name="PATH" select="@path"/>
+        <xsl:variable name="NAME" select="@name"/>
         <xsl:if test="contains($PATH,'jquery')">
             <script type="text/javascript" src="{@path}"/>
         </xsl:if>
-        <xsl:if test="//behavior[@use='jquery']/@name=$PATH">
+        <xsl:if test="//behavior[@use='jquery']/@name=$NAME">
             <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
         </xsl:if>
     </xsl:template>

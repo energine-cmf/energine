@@ -2,15 +2,15 @@
     font-family: Tahoma, sans-serif;
 }
 /* ----- forms ----- */
-form {
+.e-pane-content form {
     margin: 0 0 1em 0;
     font-family: Tahoma, sans-serif;
 }
-fieldset {
+.e-pane-content fieldset {
     padding: 12px;
     border: 1px solid gray;
 }
-input, textarea, select, button {
+.e-pane-content input, .e-pane-content textarea, .e-pane-content select, .e-pane-content button {
     height: auto;
     margin: 0;
     padding: 6px;
@@ -28,7 +28,7 @@ input, textarea, select, button {
     -moz-box-sizing: border-box;
 }
 
-button {
+.e-pane-content button {
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
@@ -44,48 +44,48 @@ button {
     -o-user-select: none;
     user-select: none;
 }
-button:hover {
+.e-pane-content button:hover {
     background-color: #ebebeb;
     border-color: #adadad;
 }
-div.control > input:focus,
-div.control > textarea:focus,
-div.control > select:focus,
-div.control > input:hover,
-div.control > textarea:hover,
-div.control > select:hover,
-.required input:focus,
-.required textarea:focus,
-.required select:focus,
-.required input:hover,
-.required textarea:hover,
-.required select:hover {
+.e-pane-content div.control > input:focus,
+.e-pane-content div.control > textarea:focus,
+.e-pane-content div.control > select:focus,
+.e-pane-content div.control > input:hover,
+.e-pane-content div.control > textarea:hover,
+.e-pane-content div.control > select:hover,
+.e-pane-content .required input:focus,
+.e-pane-content .required textarea:focus,
+.e-pane-content .required select:focus,
+.e-pane-content .required input:hover,
+.e-pane-content .required textarea:hover,
+.e-pane-content .required select:hover {
     border-color: #6FCFE3;
     background-color: #FaFFFF;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px #6FCFE3;
 }
-textarea {
+.e-pane-content textarea {
     vertical-align: top;
 }
-select {
+.e-pane-content select {
     min-height: 24px;
     padding: 2px;
 }
-select option {
+.e-pane-content select option {
     background: white;
 }
-optgroup {
+.e-pane-content optgroup {
     color: black;
     background: white;
 }
-optgroup option {
+.e-pane-content optgroup option {
     padding-left: 22px;
 }
-.required input,
-.required select,
-.required textarea {
+.e-pane-content .required input,
+.e-pane-content .required select,
+.e-pane-content .required textarea {
     background: #f0fff0;
     border-color: #7DC27D;
 }

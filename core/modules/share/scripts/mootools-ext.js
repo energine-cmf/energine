@@ -31,44 +31,7 @@ Class.Mutators = Object.append(Class.Mutators, {
 
 Asset = Object.append(Asset, {
     loaded: {css: {}},
-    cssParent: function (source, properties) {
-        if (!properties) properties = {};
-
-        var load = properties.onload || properties.onLoad,
-            doc = properties.document || document,
-            timeout = properties.timeout || 3000;
-
-        ['onload', 'onLoad', 'document'].each(function (prop) {
-            delete properties[prop];
-        });
-
-        var link = new Element('link', {
-            type: 'text/css',
-            rel: 'stylesheet',
-            media: 'screen',
-            href: source
-        }).setProperties(properties).inject(doc.getElementsByTagName('base')[0], 'after');
-
-        if (load) {
-            // based on article at http://www.yearofmoo.com/2011/03/cross-browser-stylesheet-preloading.html
-            var loaded = false, retries = 0;
-            var check = function () {
-                var stylesheets = document.styleSheets;
-                for (var i = 0; i < stylesheets.length; i++) {
-                    var file = stylesheets[i];
-                    var owner = file.ownerNode ? file.ownerNode : file.owningElement;
-                    if (owner && owner == link) {
-                        loaded = true;
-                        return load.call(link);
-                    }
-                }
-                retries++;
-                if (!loaded && retries < timeout / 50) return setTimeout(check, 50);
-            }
-            setTimeout(check, 0);
-        }
-        return link;
-    },
+    cssParent: Asset.css,
     css: function (source) {
         if (Asset.loaded.css[source]) return null;
         var fs = ((Energine['static']) ? Energine['static'] : '') + 'stylesheets/' + source;

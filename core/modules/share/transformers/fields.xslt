@@ -15,7 +15,7 @@
     -->
     <xsl:template match="field[ancestor::component[@type='form']]">
         <div>
-            <xsl:attribute name="class">field<xsl:if test="not(@nullable) and @type!='boolean'"> required</xsl:if></xsl:attribute>
+            <xsl:attribute name="class">form-group field<xsl:if test="not(@nullable) and @type!='boolean'"> required</xsl:if></xsl:attribute>
             <xsl:apply-templates select="." mode="field_name"/>
             <xsl:apply-templates select="." mode="field_content"/>
         </div>
@@ -107,7 +107,7 @@
     -->
     <!-- строковое поле (string), или поле, к которому не нашлось шаблона -->
     <xsl:template match="field[ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_string">
+        <input class="text inp_string form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
     </xsl:template>
@@ -189,7 +189,7 @@
 
     <!-- поле пароля (password) -->
     <xsl:template match="field[@type='password' and ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_password">
+        <input class="text inp_password  form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="type">password</xsl:attribute>
             <xsl:attribute name="name"><xsl:choose>

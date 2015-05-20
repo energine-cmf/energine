@@ -7,7 +7,7 @@
     <!-- компонент LoginForm  -->
     <!-- режим гостя -->
     <xsl:template match="component[@sample='LoginForm']">
-        <form method="post" action="{@action}" class="base_form login_form">
+        <form method="post" action="{@action}" class="base_form login_form form-horizontal">
             <input type="hidden" name="componentAction" value="{@componentAction}" />
             <xsl:apply-templates/>
         </form>

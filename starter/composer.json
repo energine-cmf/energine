@@ -17,7 +17,9 @@
       "ext-SimpleXML":"*",
       "ext-session":"*",
       "ext-tidy":"*",
-      "ext-xsl":"*"
+      "ext-xsl":"*",
+      "symfony/console": "2.6.*@dev",
+      "psr/log": "dev-master"
     },
     "autoload": {
         "psr-4": {

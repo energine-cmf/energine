@@ -14,6 +14,8 @@ error_reporting(E_ALL);
 require dirname(__DIR__) . '/vendor/autoload.php';
 require dirname(__DIR__) . '/htdocs/bootstrap.php';
 
+E()->getLanguage()->setCurrent(E()->getLanguage()->getDefault());
+
 $console = new Application('Mail processor', '0.1');
 $console
     ->register('run')

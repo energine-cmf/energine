@@ -67,8 +67,26 @@ final class Mail extends Object {
      */
     private $attachments = array();
 
+    /**
+     * Debug mode
+     *
+     * @var bool
+     */
+    private $debug = false;
+
     public function __construct() {
         $this->sender = $this->getConfigValue('mail.from');
+    }
+
+    /**
+     * Set debug mode
+     *
+     * @param bool $debug
+     * @return Mail
+     */
+    public function setDebugMode($debug) {
+        $this -> debug = $debug;
+        return $this;
     }
 
     /**
@@ -254,7 +272,19 @@ final class Mail extends Object {
         $headers = implode(self::EOL, $this->headers);
 
         if(!empty($this->to)) {
-            $result = mail(implode(',', $this->to), $this->subject, $message, $headers);
+
+            if ($this->debug) {
+                $content = '--------------------------------------------' . "\n";
+                $content .= date('Y-m-d H:i:s') . "\n";
+                $content .= 'TO: ' . implode(',', $this->to) . "\n";
+                $content .= 'SUBJECT: ' . $this->subject . "\n";
+                $content .= 'BODY: ' . $message . "\n";
+                $content .= 'HEADERS: ' . $headers . "\n\n";
+                file_put_contents(HTDOCS_DIR . '/mailout.txt', $content, FILE_APPEND);
+                $result = true;
+            } else {
+                $result = mail(implode(',', $this->to), $this->subject, $message, $headers);
+            }
         }
         else {
             $result = false;

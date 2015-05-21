@@ -48,13 +48,7 @@ class MailProcessor
     }
 
     protected function getDefaultLanguage() {
-        return $this->dbh->getScalar(
-            'share_languages',
-            'lang_id',
-            array(
-                'lang_default' => 1
-            )
-        );
+        return E()->getLanguage()->getDefault();
     }
 
     protected function getActiveSubscriptions() {
@@ -137,9 +131,10 @@ class MailProcessor
                         $mail = new Mail();
                         $subscriber = ['user_email' => $email, 'user_name' => $name];
                         $mail
+                            ->setDebugMode(E()->getConfigValue('site.debug'))
                             ->setSubject($source->getSubject($subscriber))
                             ->setText($source->getBody($subscriber, $items))
-                            ->setHtmlText($source->getBody($subscriber, $items))
+                            ->setHtmlText($source->getHTMLBody($subscriber, $items))
                             ->setFrom(E()->getConfigValue('mail.from'))
                             ->addTo($email, $name)
                             ->send();

@@ -14,8 +14,6 @@ class MailTemplate {
     protected $data = [];
     protected $template = [];
 
-    protected static $cache = [];
-
     public function __construct($name, $data = [], $lang_id = null) {
         $this->name = $name;
         $this->lang_id = ($lang_id) ? $lang_id : E()->getLanguage()->getCurrent();
@@ -24,10 +22,6 @@ class MailTemplate {
     }
 
     protected function loadTemplate() {
-
-        if (isset(self::$cache[$this->name][$this->lang_id])) {
-            return self::$cache[$this->name][$this->lang_id];
-        }
 
         $res = $this->dbh->select(
             'select tt.template_subject, tt.template_body, tt.template_body_rtf
@@ -43,8 +37,6 @@ class MailTemplate {
         }
 
         $this->template = ($res) ? ($res[0]) : array();
-
-        self::$cache[$this->name][$this->lang_id] = $this->template;
     }
 
     protected function getKeys() {

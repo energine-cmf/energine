@@ -11,11 +11,6 @@ class MailSourceNews extends MailSourceAbstract
     protected $template_name = 'mail_news';
     protected $template_item_name = 'mail_news_item';
 
-    protected function getURLBySmapIDSegment($smap_id, $segment) {
-        // todo: строить URL новости без использования ядра ?
-        return 'http://todo/' . $smap_id . '/' . $segment . '/';
-    }
-
     public function getItemsSinceDate(\DateTime $date)
     {
 
@@ -31,11 +26,10 @@ class MailSourceNews extends MailSourceAbstract
             $date->format('Y-m-d H:i:s')
         );
 
-        //$map = E()->getMap();
+        $map = E()->getMap();
 
-        array_walk($items, function (&$item) {
-            //$item['url'] = $map->getURLByID($item['smap_id']) . $item['segment'] . '/';
-            $item['url'] = $this->getURLBySmapIDSegment($item['smap_id'], $item['segment']);
+        array_walk($items, function (&$item) use ($map) {
+            $item['url'] = 'http://' . E()->getConfigValue('site.domain') . '/' . $map->getURLByID($item['smap_id']) . $item['segment'] . '/';
             unset($item['smap_id']);
             unset($item['segment']);
             $item['description'] = strip_tags($item['description']);

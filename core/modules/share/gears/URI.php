@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 final class URI;
-@endcode
+ * @endcode
  *
  * @author 1m
  * @copyright Energine
@@ -69,19 +69,18 @@ final class URI extends Object {
      * @throws SystemException 'ERR_PRIVATE_CONSTRUCTOR'
      */
     public function __construct($uri) {
-        if(is_null(self::$trick)){
+        if (is_null(self::$trick)) {
             throw new SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
         }
-        $matches = array();
+        $matches = [];
 
-        if($uri && ($matches = self::validate($uri))){
+        if ($uri && ($matches = self::validate($uri))) {
             $this->setScheme($matches[0]);
             $this->setHost($matches[1]);
             $this->setPort($matches[2]);
             $this->setPath($matches[3]);
             $this->setQuery(isset($matches[4]) ? $matches[4] : '');
-        }
-        else {
+        } else {
             $this->scheme = $this->host = $this->path = $this->query = $this->fragment = '';
         }
     }
@@ -94,9 +93,9 @@ final class URI extends Object {
      * @param string $uri URI
      * @return array|bool
      */
-    public static function validate($uri){
+    public static function validate($uri) {
         $result = false;
-        if(preg_match('/^(\w+):\/\/([a-z0-9\.\-]+)\:?([0-9]{2,5})?(\/[^?]*)[\?]?(.*)?$/i', $uri, $matches) && count($matches) >= 5){
+        if (preg_match('/^(\w+):\/\/([a-z0-9\.\-]+)\:?([0-9]{2,5})?(\/[^?]*)[\?]?(.*)?$/i', $uri, $matches) && count($matches) >= 5) {
             array_shift($matches);
             $result = $matches;
         }
@@ -109,21 +108,27 @@ final class URI extends Object {
      * @param string $uriString URI string.
      * @return URI
      */
-    public static function create($uriString = ''){
+    public static function create($uriString = '') {
         self::$trick = true;
-        if(!$uriString){
-            $host = explode(':', ((isset($_SERVER['HTTP_HOST']))?$_SERVER['HTTP_HOST']:$_SERVER['SERVER_NAME']));
-            $protocol = (isset($_SERVER['HTTPS']) ? 'https' : 'http');
-
-            if(sizeof($host) == 1){
-                $port = ($protocol == 'http')?80:443;
-                list($host) = $host;
+        if (!$uriString) {
+            $host = Object::_getConfigValue('site.domain');
+            $protocol = 'http';
+            $requestURI = '/';
+            if (!E()->Utils->is_PHP_CLI()) {
+                $host = explode(':', ((isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']));
+                $protocol = (isset($_SERVER['HTTPS']) ? 'https' : 'http');
+                $requestURI = $_SERVER['REQUEST_URI'];
             }
-            else{
+
+
+            if (sizeof($host) == 1) {
+                $port = ($protocol == 'http') ? 80 : 443;
+                list($host) = $host;
+            } else {
                 list($host, $port) = $host;
             }
 
-            $uriString = $protocol.'://'.$host.':'.$port.$_SERVER['REQUEST_URI'];
+            $uriString = $protocol . '://' . $host . ':' . $port . $requestURI;
         }
         return new URI($uriString);
     }
@@ -170,7 +175,7 @@ final class URI extends Object {
      * @param int $port Port number.
      */
     public function setPort($port) {
-        if(!$port) $port = 80;
+        if (!$port) $port = 80;
         $this->port = $port;
     }
 
@@ -190,7 +195,7 @@ final class URI extends Object {
      */
     public function setPath($path) {
         if (!is_array($path)) {
-            $path = array_values(array_diff(explode('/', $path), array('')));
+            $path = array_values(array_diff(explode('/', $path), ['']));
         }
         $this->path = $path;
     }
@@ -205,9 +210,8 @@ final class URI extends Object {
         $path = $this->path;
         if ($asString) {
             if (!empty($path)) {
-                $path = '/'.implode('/', $path).'/';
-            }
-            else {
+                $path = '/' . implode('/', $path) . '/';
+            } else {
                 $path = '/';
             }
         }
@@ -270,12 +274,11 @@ final class URI extends Object {
      */
     public function __toString() {
         if (!empty($this->scheme) && !empty($this->host)) {
-            return $this->scheme.'://'.$this->host.
-            (empty($this->path) ? '/' : $this->getPath(true)).
-            (empty($this->query) ? '' : '?'.$this->query).
-            (empty($this->fragment) ? '' : '#'.$this->fragment);
-        }
-        else {
+            return $this->scheme . '://' . $this->host .
+            (empty($this->path) ? '/' : $this->getPath(true)) .
+            (empty($this->query) ? '' : '?' . $this->query) .
+            (empty($this->fragment) ? '' : '#' . $this->fragment);
+        } else {
             return '';
         }
     }

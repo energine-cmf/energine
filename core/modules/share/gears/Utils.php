@@ -22,7 +22,7 @@ namespace Energine\share\gears {
         function inspect() {
             $args = func_get_args();
             ob_start();
-            if (php_sapi_name() != 'cli') {
+            if (!$this->is_PHP_CLI()) {
                 echo '<pre>';
                 call_user_func_array('var_dump', $args);
                 echo '</pre>';
@@ -464,6 +464,10 @@ namespace Energine\share\gears {
                }
                return $result;
            }
+
+        public function is_PHP_CLI(){
+            return (php_sapi_name() === 'cli' OR defined('STDIN'));
+        }
     }
 }
 

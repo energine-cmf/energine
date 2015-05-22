@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <state name="main">
+        <javascript>
+            <behavior name="SubscriptionForm"/>
+        </javascript>
+        <uri_patterns>
+            <pattern>/</pattern>
+        </uri_patterns>
+        <toolbar>
+            <control id="subscribe" title="TXT_SUBSCRIBE" type="submit"/>
+        </toolbar>
+    </state>
+    <state name="subscribe">
+        <uri_patterns>
+            <pattern>/subscribe-now/</pattern>
+        </uri_patterns>
+    </state>
+</configuration>

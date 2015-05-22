@@ -15,7 +15,7 @@ class MailSubscriptionEditor extends Grid {
     private $oEditor;
 
 
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
         $this->setTableName('mail_subscriptions');
         $this->setTitle($this->translate('TXT_MAIL_SUBSCRIPTION_EDITOR'));
@@ -25,7 +25,7 @@ class MailSubscriptionEditor extends Grid {
 
         parent::prepare();
 
-        if (in_array($this->getState(), array('add', 'edit'))) {
+        if (in_array($this->getState(), ['add', 'edit'])) {
 
             $fd = new FieldDescription('users');
             $fd->setType(FieldDescription::FIELD_TYPE_TAB);
@@ -43,7 +43,7 @@ class MailSubscriptionEditor extends Grid {
 
     protected function usersEditor() {
         $sp = $this->getStateParams(true);
-        $params = array('config' => 'core/modules/mail/config/MailSubscriptionUserEditor.component.xml');
+        $params = ['config' => 'core/modules/mail/config/MailSubscriptionUserEditor.component.xml'];
 
         if (isset($sp['subscription_id'])) {
             $this->request->shiftPath(2);

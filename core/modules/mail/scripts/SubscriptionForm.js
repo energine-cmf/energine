@@ -21,6 +21,9 @@ var SubscriptionForm = new Class({
             this.form.getElements('input').setProperty('disabled', 'disabled');
             this.form.getElement('button').setProperty('disabled', 'disabled').set('html', response.message);
         }
+        else {
+            this.validator.showError('email', response.message);
+        }
 
     }
 });

@@ -59,6 +59,7 @@ var Validator = new Class(/** @lends Validator# */{
      * @param {Element} field Invalid field element (with the class <tt>'invalid'</tt>).
      */
     removeError: function(field){
+        field = $(field);
         if (field.hasClass('invalid')) {
             field.removeClass('invalid');
             var errorDiv;
@@ -77,6 +78,7 @@ var Validator = new Class(/** @lends Validator# */{
      * @param {string} [message] Error message.
      */
     showError: function(field, message){
+        field = $(field);
         this.removeError(field);
         field.addClass('invalid');
         new Element('div').addClass('error').appendText(message).inject(field.parentNode, 'after');

@@ -13,7 +13,9 @@ use Energine\share\gears\Builder;
 use Energine\share\gears\Data;
 use Energine\share\gears\DataDescription;
 use Energine\share\gears\FieldDescription;
+use Energine\share\gears\FormBuilder;
 use Energine\share\gears\JSONCustomBuilder;
+use Energine\share\gears\QAL;
 
 /**
  * Email subscription form
@@ -40,7 +42,7 @@ class MailEmailSubscription extends DataSet {
     }
 
     protected function main() {
-        $this->setBuilder(new Builder());
+        $this->setBuilder(new FormBuilder());
         $dd = new DataDescription();
         $fd = new FieldDescription('email');
         $fd->setType(FieldDescription::FIELD_TYPE_EMAIL);
@@ -57,10 +59,30 @@ class MailEmailSubscription extends DataSet {
 
     protected function subscribe() {
         $this->setBuilder($b = new JSONCustomBuilder());
+        try {
+            if (!isset($_POST['email'])) {
+                throw new \InvalidArgumentException('ERR_NO_EMAIL');
+            }
+            $email = $_POST['email'];
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                throw new \InvalidArgumentException('ERR_BAD_EMAIL');
+            }
+            if (($r = $this->dbh->getScalar('mail_email_subscribers', 'COUNT(*)', ['me_email' => $email]))) {
+                throw new \RuntimeException('ERR_MAIL_EXISTS');
+            }
+            $meID = $this->dbh->modify(QAL::INSERT, 'mail_email_subscribers', ['me_email' => $email]);
+            $this->dbh->modify('INSERT INTO mail_email2subscriptions (me_id, subscription_id) SELECT %s as me_id, subscription_id FROM mail_subscriptions WHERE subscription_is_active and subscription_is_default', $meID);
 
-        $b->setProperties([
-            'result' => true,
-            'message' => $this->translate('MSG_SUBSCRIBED')
-        ]);
+            $b->setProperties([
+                'result' => true,
+                'message' => $this->translate('MSG_SUBSCRIBED')
+            ]);
+        } catch (\Exception $e) {
+            $b->setProperties([
+                'result' => false,
+                'message' => $this->translate($e->getMessage())
+            ]);
+        }
+
     }
 }

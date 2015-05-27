@@ -73,7 +73,13 @@ class MailProcessor
             'select DISTINCT u.u_name, u.u_fullname
             from mail_subscriptions2users su
             left join user_users u on su.u_id = u.u_id
-            where su.subscription_id = %s', $subscription_id
+            where su.subscription_id = %s
+            UNION
+            select DISTINCT me_email as u_name, %s as u_fullname
+            from mail_email2subscriptions esu
+            left join mail_email_subscribers es on esu.me_id = es.me_id
+            where esu.subscription_id = %1$s
+            ', $subscription_id, $this->translate('TXT_EMAIL_USER')
         );
         $result = [];
         if ($res) {

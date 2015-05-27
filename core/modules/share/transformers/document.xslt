@@ -291,7 +291,7 @@
 
     <xsl:template match="/document/javascript/library" mode="head">
         <xsl:variable name="PATH" select="@name"/>
-        <xsl:if test="not(contains($PATH, 'jquery')) and not(//behavior[(@use='jquery') and (@name=$PATH)])">
+        <xsl:if test="not(contains($PATH, 'jquery')) and not(//behavior[(@use='jquery') and (@name=$PATH)]) and(not(contains(@path, 'jquery')))">
             <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
         </xsl:if>
     </xsl:template>

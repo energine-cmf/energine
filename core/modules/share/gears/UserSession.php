@@ -174,8 +174,17 @@ final class UserSession implements \SessionHandlerInterface {
     }
 
     private function reload() {
+
         if (!$this->phpSessId) {
             if (($cookieInfo = UserSession::manuallyCreateSessionInfo())) {
+                //var_dump($cookieInfo, session_status() == PHP_SESSION_NONE);
+                $this->phpSessId = $cookieInfo[1];
+                $this->id = $cookieInfo[3];
+
+                if (session_status() == PHP_SESSION_NONE) {
+                    session_id($this->phpSessId);
+                    session_start();
+                }
                 call_user_func_array(
                     [E()->getResponse(), 'addCookie'],
                     $cookieInfo
@@ -245,11 +254,11 @@ final class UserSession implements \SessionHandlerInterface {
         }
 
         $data['session_ip'] = E()->getRequest()->getClientIP(true);
-        E()->getDB()->modify(QAL::INSERT, 'share_session', $data);
+        $id = E()->getDB()->modify(QAL::INSERT, 'share_session', $data);
         $_COOKIE[self::DEFAULT_SESSION_NAME] = $data['session_native_id'];
 
 
-        return [self::DEFAULT_SESSION_NAME, $data['session_native_id'], $data['session_expires']];
+        return [self::DEFAULT_SESSION_NAME, $data['session_native_id'], $data['session_expires'], $id];
     }
 
     /**

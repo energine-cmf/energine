@@ -859,4 +859,23 @@
         <div id="{generate-id(.)}"></div>
     </xsl:template>
 
+    <xsl:template match="field[@type='textbox'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+           <xsl:variable name="SEPARATOR" select="@separator"/>
+           <input>
+               <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+               <xsl:attribute name="value">
+                   <xsl:for-each select="items/item">
+                       <xsl:value-of select="."/>
+                       <xsl:if test="position()!=last()">
+                           <xsl:value-of select="$SEPARATOR"/>
+                       </xsl:if>
+                   </xsl:for-each>
+               </xsl:attribute>
+           </input>
+
+           <!--<input class="text inp_textbox">
+               <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+               <xsl:attribute name="value"><xsl:for-each select="items/item"><xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each></xsl:attribute>
+           </input>-->
+       </xsl:template>
 </xsl:stylesheet>

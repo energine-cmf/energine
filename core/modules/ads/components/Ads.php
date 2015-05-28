@@ -33,7 +33,7 @@ class Ads extends DBDataSet {
 
         $this->setLimit([0,1]);
 
-        // todo: set order by RAND() somehow
+        $this->setOrder('RAND()');
 
         parent::main();
     }

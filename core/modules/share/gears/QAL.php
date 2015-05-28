@@ -901,8 +901,7 @@ final class QAL extends Object {
      *
      * @see QAL::selectRequest()
      */
-    public
-    function buildOrderCondition($clause) {
+    public function buildOrderCondition($clause) {
         $orderClause = '';
         if (!empty($clause)) {
             $orderClause = ' ORDER BY ';

@@ -118,16 +118,16 @@
                         <xsl:if test="ancestor::component/filter">
                             <div class="grid_toolbar clearfix">
                                 <div class="filters_block">
-	                                <div class="filters_block_inner clearfix">
+	                                <div class="filters_block_inner toggled clearfix" style="height: 0;">
 	                                    <div class="filters">
 	                                        <div class="filter">
-                                                <span class="f_select_container">
+                                                <span class="f_select_container operand_container">
                                                     <select class="filters_operand">
                                                         <option value="OR">OR</option>
                                                         <option value="AND">AND</option>
                                                     </select>
                                                 </span>
-		                                        <span class="f_select_container">
+		                                        <span class="f_select_container fieldname_container">
 		                                            <select name="fieldName" class="f_fields">
 		                                                <xsl:for-each select="ancestor::component/filter/field">
 		                                                    <option value="[{@tableName}][{@name}]" type="{@type}">
@@ -181,9 +181,10 @@
 				                                <option value="filter2">Filter2</option>
 			                                </select>
 		                                </div>-->
+		                                <div class="filter_divider"></div>
 		                            </div>
 	                                <a href="#" class="filter_toggle">
-		                                <i class="fa fa-angle-double-up"></i>
+		                                <i class="fa fa-caret-up"></i>
 	                                </a>
                                 </div>
 

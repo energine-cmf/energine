@@ -50,7 +50,7 @@ class SiteSaver extends Saver {
         }
 
         //Записываем информацию в таблицу тегов
-        $tm = new TagManager($this->dataDescription, $this->dataDescription, 'share_sites');
+        $tm = new TagManager($this->dataDescription, $this->data, 'share_sites');
         $tm->save($id);
 
 

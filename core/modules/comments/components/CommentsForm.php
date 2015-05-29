@@ -40,18 +40,18 @@ class CommentsForm extends DataSet {
      * User editor.
      * @var Component $userEditor
      */
-    private $userEditor;
+    protected $userEditor;
 
     /**
      * Editor of baned IPs.
      * @var mixed $banIPEditor
      */
-    private $banIPEditor;
+    protected $banIPEditor;
     /**
      * Bounded component.
      * @var DBDataSet|boolean $bindComponent
      */
-    private $bindComponent;
+    protected $bindComponent;
 
     /**
      * Table with comments.
@@ -59,30 +59,30 @@ class CommentsForm extends DataSet {
      *
      * @note It should be a component parameter.
      */
-    private $commentTable = '';
+    protected $commentTable = '';
 
     /**
      * Commented table.
      * @var string $targetTable
      */
-    private $targetTable = '';
+    protected $targetTable = '';
 
     /**
      * Are the comments tree-like?
      * @var bool $isTree
      */
-    private $isTree = false;
+    protected $isTree = false;
 
     /**
      * Are tables exist?
      * @var bool $isExistsTables
      */
-    private $isExistsTables = null;
+    protected $isExistsTables = NULL;
 
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, array $params = null) {
+    public function __construct($name, array $params = NULL) {
         // если комментарии скрыты то бессмысленно показывать форму
         if (!isset($params['show_comments']) or !$params['show_comments']) {
             $params['show_form'] = 0;
@@ -99,6 +99,8 @@ class CommentsForm extends DataSet {
         $this->setProperty('limit', $this->getParam('textLimit'));
 
         $this->setProperty('is_anonymous', (string)!$this->document->user->isAuthenticated());
+
+        $this->setProperty('use_captcha', (string)$this->getParam('use_captcha'));
 
         $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
@@ -143,7 +145,7 @@ class CommentsForm extends DataSet {
             if (!isset($_POST['target_id']) or
                 !($targetId = (int)$_POST['target_id'])
             )
-                throw new Exception('Mistake targetId');
+                throw new \Exception('Mistake targetId');
 
             if (!$this->isTargetEditable()) {
                 throw new SystemException('read only');
@@ -153,7 +155,7 @@ class CommentsForm extends DataSet {
                 throw new SystemException('TXT_COMMENT_NICK_IS_REQUIRED');
             }
 
-            if (!$this->document->getUser()->isAuthenticated()) {
+            if ($this->getParam('use_captcha') and !$this->document->getUser()->isAuthenticated()) {
                 $this->checkCaptcha();
             }
 
@@ -185,23 +187,23 @@ class CommentsForm extends DataSet {
             }
 
             if (!empty($isUpdated)) {
-                $builder->setProperties(array(
+                $builder->setProperties([
                     'result' => true,
                     'mode' => 'update',
-                    'data' => array(
+                    'data' => [
                         'comment_name' => $commentName,
                         'comment_nick' => $commentNick,
                         'comment_id' => $commentId
-                    )
-                ));
+                    ]
+                ]);
             } else {
-                $this->setBuilder($this->buildResult(array($comment)));
+                $this->setBuilder($this->buildResult([$comment]));
             }
         } catch (SystemException $e) {
-            $message['errors'][] = array('message' =>
-                $e->getMessage() . current($e->getCustomMessage()));
+            $message['errors'][] = ['message' =>
+                $e->getMessage() . current($e->getCustomMessage())];
             $builder->setProperties(
-                array_merge(array('result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')), $message));
+                array_merge(['result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')], $message));
         }
     }
 
@@ -238,14 +240,14 @@ class CommentsForm extends DataSet {
      * @param string|int $commentId Comment ID.
      * @return bool|int
      */
-    private function updateComment($targetId, $commentName, $commentNick, $commentId) {
+    protected function updateComment($targetId, $commentName, $commentNick, $commentId) {
         if (!in_array('1', E()->getAUser()->getGroups())) {
             if (!$this->isTargetEditable()) { // юзеру доступно только чтение
                 return false;
             }
             // если не админ -  проверяем авторство
             $comments =
-                $this->dbh->select($this->commentTable, true, array('comment_id' => $commentId));
+                $this->dbh->select($this->commentTable, true, ['comment_id' => $commentId]);
             if (!$comments) { // удалён
                 return false;
             }
@@ -256,11 +258,11 @@ class CommentsForm extends DataSet {
             }
         }
         return $this->dbh->modify(QAL::UPDATE, $this->commentTable,
-            array(
+            [
                 'comment_name' => $commentName,
                 'comment_nick' => $commentNick,
-            ),
-            array('comment_id' => $commentId)
+            ],
+            ['comment_id' => $commentId]
         );
     }
 
@@ -289,17 +291,17 @@ class CommentsForm extends DataSet {
             )
                 throw new \Exception('Mistake arg');
             $builder->setProperties(
-                array(
+                [
                     'mode' => 'delete',
                     'result' => $this->removeComment($commentId)
-                )
+                ]
             );
         } catch (SystemException $e) {
-            $message['errors'][] = array('message' =>
-                $e->getMessage() . current($e->getCustomMessage()));
+            $message['errors'][] = ['message' =>
+                $e->getMessage() . current($e->getCustomMessage())];
             $builder->setProperties(
                 array_merge(
-                    array('result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')),
+                    ['result' => false, 'header' => $this->translate('TXT_SHIT_HAPPENS')],
                     $message)
             );
         }
@@ -311,14 +313,14 @@ class CommentsForm extends DataSet {
      * @param int $id Comment ID.
      * @return bool
      */
-    private function removeComment($id) {
+    protected function removeComment($id) {
         if (!in_array('1', E()->getAUser()->getGroups())) {
             if (!$this->isTargetEditable()) { // юзеру доступно только чтение
                 return false;
             }
             // если не админ -  проверяем авторство
             $comments =
-                $this->dbh->select($this->commentTable, true, array('comment_id' => $id));
+                $this->dbh->select($this->commentTable, true, ['comment_id' => $id]);
             if (!$comments) { // уже удалён
                 return true;
             }
@@ -329,7 +331,7 @@ class CommentsForm extends DataSet {
             }
         }
 
-        return $this->dbh->modify(QAL::DELETE, $this->commentTable, null, array('comment_id' => $id));
+        return $this->dbh->modify(QAL::DELETE, $this->commentTable, NULL, ['comment_id' => $id]);
     }
 
     /**
@@ -337,7 +339,7 @@ class CommentsForm extends DataSet {
      */
     // Добавляем обязательный параметер comment_tables - имя таблицы с комментариями
     protected function defineParams() {
-        $result = array_merge(parent::defineParams(), array(
+        $result = array_merge(parent::defineParams(), [
             'comment_tables' => '',
             'active' => true,
             'is_tree' => 0,
@@ -348,7 +350,8 @@ class CommentsForm extends DataSet {
             'show_form' => false,
             'textLimit' => 250,
             'allows_anonymous' => true,
-        ));
+            'use_captcha' => true
+        ]);
         return $result;
     }
 
@@ -370,7 +373,7 @@ class CommentsForm extends DataSet {
                 parent::prepare();
 
                 if (
-                    $this->document->getUser()->isAuthenticated()
+                    ($this->document->getUser()->isAuthenticated() or !$this->getParam('use_captcha'))
                     &&
                     ($captcha =
                         $this->getDataDescription()->getFieldDescriptionByName('captcha'))
@@ -436,14 +439,14 @@ class CommentsForm extends DataSet {
      * @param int $parentId Parent comment.
      * @return array
      */
-    private function addComment($targetId, $commentName, $commentNick, $parentId = null) {
+    protected function addComment($targetId, $commentName, $commentNick, $parentId = NULL) {
 
         if ($this->document->user && $this->document->user->getID()) {
             $uId = $this->document->user->getID();
             $userInfo = $this->getUserInfo($uId);
             $userName = array_shift($userInfo);
         } else {
-            $uId = null;
+            $uId = NULL;
             $userName = $commentNick;
         }
 
@@ -464,7 +467,7 @@ class CommentsForm extends DataSet {
             $targetId, $commentName, $commentNick, $createdStr
         );
 
-        return array(
+        return [
             'is_tree' => (int)$this->isTree, // для отрисовки или не отрисовки ссылки "коментировать" в js
             'comment_id' => $commentId,
             'comment_parent_id' => $parentId,
@@ -474,7 +477,7 @@ class CommentsForm extends DataSet {
             'comment_name' => $commentName,
             'comment_approved' => 0,
             'u_nick' => $userName
-        );
+        ];
     }
 
     /**
@@ -484,12 +487,12 @@ class CommentsForm extends DataSet {
      * @param int $uId User ID.
      * @return string[]
      */
-    private function getUserInfo($uId) {
-        $result = array('u_nick' => '');
+    protected function getUserInfo($uId) {
+        $result = ['u_nick' => ''];
         $userInfo = $this->dbh->select('user_users',
-            array('u_nick', 'u_fullname'),
-            array('u_id' => $uId),
-            null, array(1)
+            ['u_nick', 'u_fullname'],
+            ['u_id' => $uId],
+            NULL, [1]
         );
         if ($userInfo) {
             $result = $userInfo[0];
@@ -507,7 +510,7 @@ class CommentsForm extends DataSet {
      * @param array $comment Comment.
      * @return IBuilder
      */
-    private function buildResult($comment) {
+    protected function buildResult($comment) {
         $builder = new CommentsJSONBuilder();
 
         $dataDescription = new DataDescription();
@@ -576,14 +579,14 @@ class CommentsForm extends DataSet {
             $targetIds = $this->bindComponent->getData()->getFieldByName($priFieldName)->getData();
         }
 
-        $commentsParams = array(
+        $commentsParams = [
             'active' => true,
             'table_name' => $this->targetTable,
             'is_tree' => $this->getParam('is_tree'),
             'bind' => $this->getParam('bind'),
             'recordsPerPage' => $this->getParam('recordsPerPage'),
             'target_ids' => $targetIds
-        );
+        ];
 
         $this->setProperty('bind', $this->getParam('bind'));
 
@@ -647,7 +650,7 @@ class CommentsForm extends DataSet {
      * @throws SystemException 'TXT_BAD_CAPTCHA'
      */
     protected function checkCaptcha() {
-        require_once('core/modules/share/gears/recaptchalib.php');
+        require_once(CORE_DIR . '/modules/share/gears/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');
         $resp = recaptcha_check_answer($privatekey,
             $_SERVER["REMOTE_ADDR"],

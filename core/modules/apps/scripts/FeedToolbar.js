@@ -36,6 +36,7 @@ var FeedToolbar = new Class(/** @lends FeedToolbar# */{
 
     // constructor
     initialize: function (Container) {
+        Container = $(Container);
         Asset.css('pagetoolbar.css');
         Asset.css('feedtoolbar.css');
 

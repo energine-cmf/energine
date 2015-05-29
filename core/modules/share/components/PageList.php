@@ -185,7 +185,7 @@ class PageList extends DataSet {
             $filteredIDs = true;
             if ($this->getParam('tags'))
                 $filteredIDs =
-                    TagManager::getFilter($this->getParam('tags'), 'share_sitemap_tags');
+                    TagManager::getFilter($this->getParam('tags'), 'share_sitemap');
 
             reset($data);
             while (list($key, $value) = each($data)) {
@@ -201,7 +201,7 @@ class PageList extends DataSet {
                     $data[$key]['Name'] = $value['Name'];
                     $data[$key]['Redirect'] = Response::prepareRedirectURL($value['RedirectUrl']);
                     $data[$key]['Site'] =
-                        E()->getSiteManager()->getSiteByID($data[$key]['site'])->base;
+                        E()->getSiteManager()->getSiteByID($data[$key]['Site'])->base;
                     if ($hasDescriptionRtf) $data[$key]['DescriptionRtf'] =
                         $value['DescriptionRtf'];
                 }

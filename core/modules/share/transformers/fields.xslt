@@ -15,7 +15,7 @@
     -->
     <xsl:template match="field[ancestor::component[@type='form']]">
         <div>
-            <xsl:attribute name="class">field<xsl:if test="not(@nullable) and @type!='boolean'"> required</xsl:if></xsl:attribute>
+            <xsl:attribute name="class">form-group field<xsl:if test="not(@nullable) and @type!='boolean'"> required</xsl:if></xsl:attribute>
             <xsl:apply-templates select="." mode="field_name"/>
             <xsl:apply-templates select="." mode="field_content"/>
         </div>
@@ -107,7 +107,7 @@
     -->
     <!-- строковое поле (string), или поле, к которому не нашлось шаблона -->
     <xsl:template match="field[ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_string">
+        <input class="text inp_string form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
     </xsl:template>
@@ -189,7 +189,7 @@
 
     <!-- поле пароля (password) -->
     <xsl:template match="field[@type='password' and ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_password">
+        <input class="text inp_password  form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
             <xsl:attribute name="type">password</xsl:attribute>
             <xsl:attribute name="name"><xsl:choose>
@@ -214,6 +214,15 @@
             <xsl:if test=". = 1">
                 <xsl:attribute name="checked">checked</xsl:attribute>
             </xsl:if>
+            <xsl:choose>
+                <xsl:when test="@tag">
+                    <xsl:attribute name="data-tag"><xsl:value-of select="@tag"/></xsl:attribute>
+                    <xsl:attribute name="value"><xsl:value-of select="@tag"/></xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="value">1</xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
         </input>
         <label for="{@name}">
             <xsl:value-of select="concat(' ', @title)" disable-output-escaping="yes"/>
@@ -745,7 +754,7 @@
                     <xsl:attribute name="alt"><xsl:value-of select="recordset/record[1]/field[@name='name']"/></xsl:attribute>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:attribute name="src"><xsl:value-of select="$STATIC_URL"/>images/default_<xsl:value-of select="$PREVIEW_WIDTH"/>x<xsl:value-of select="$PREVIEW_HEIGHT"/>.png</xsl:attribute>
+                    <xsl:attribute name="src">http://placehold.it/<xsl:value-of select="$PREVIEW_WIDTH"/>x<xsl:value-of select="$PREVIEW_HEIGHT"/>/</xsl:attribute>
                     <xsl:attribute name="alt"><xsl:value-of select="$TRANSLATION[@const='TXT_NO_IMAGE']"/></xsl:attribute>
                 </xsl:otherwise>
             </xsl:choose>
@@ -812,6 +821,19 @@
 
     <!-- поле для выбора upl_id гридах -->
     <xsl:template match="field[@name='upl_id' and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]" mode="field_input">
+        <a class="preview" id="{generate-id(.)}_preview" target="_blank">
+                <xsl:attribute name="href"><xsl:value-of select="$MEDIA_URL"/><xsl:value-of select="@upl_path"/></xsl:attribute>
+                <xsl:if test="not(@upl_path)">
+                    <xsl:attribute name="class">hidden</xsl:attribute>
+                </xsl:if>
+                <img alt="">
+                    <xsl:attribute name="src"><xsl:value-of select="$MEDIA_URL"/><xsl:choose>
+                        <xsl:when test="@media_type='image'"><xsl:value-of select="@upl_path"/></xsl:when>
+                        <xsl:when test="@media_type='video'">resizer/w0-h0/<xsl:value-of select="@upl_path"/></xsl:when>
+                        <xsl:otherwise>images/icons/icon_undefined.gif</xsl:otherwise>
+                    </xsl:choose></xsl:attribute>
+                </img>
+        </a>
         <div class="with_append">
             <input>
                 <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
@@ -820,7 +842,7 @@
             </input>
             <input type="text" id="{generate-id(.)}_name" value="{@upl_path}" readonly="readonly" class="text inp_string" style="height: 32px;"/>
             <div class="appended_block">
-                <button type="button" style="width:22px;height:18px;" class="attachment_selector" upl_name="{generate-id(.)}_name" upl_id="{generate-id(.)}_id" field="{@name}">...</button>
+                <button type="button" style="width:22px;height:18px;" class="attachment_selector" data-name="{generate-id(.)}_name" data-id="{generate-id(.)}_id" data-field="{@name}" data-preview="{generate-id(.)}_preview">...</button>
             </div>
         </div>
     </xsl:template>
@@ -837,4 +859,23 @@
         <div id="{generate-id(.)}"></div>
     </xsl:template>
 
+    <xsl:template match="field[@type='textbox'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+           <xsl:variable name="SEPARATOR" select="@separator"/>
+           <input>
+               <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+               <xsl:attribute name="value">
+                   <xsl:for-each select="items/item">
+                       <xsl:value-of select="."/>
+                       <xsl:if test="position()!=last()">
+                           <xsl:value-of select="$SEPARATOR"/>
+                       </xsl:if>
+                   </xsl:for-each>
+               </xsl:attribute>
+           </input>
+
+           <!--<input class="text inp_textbox">
+               <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+               <xsl:attribute name="value"><xsl:for-each select="items/item"><xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each></xsl:attribute>
+           </input>-->
+       </xsl:template>
 </xsl:stylesheet>

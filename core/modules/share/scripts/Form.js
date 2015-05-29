@@ -25,7 +25,7 @@
  * @version 1.0.1
  */
 
-ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader','Tags','Lookup');
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader', 'Tags', 'Lookup');
 
 /**
  * Form.
@@ -85,7 +85,7 @@ var Form = new Class(/** @lends Form# */{
      * Array of color picker controls
      * @type {ColorPicker[]}
      */
-    colorPickers:[],
+    colorPickers: [],
 
 //    smapSelectors: [],
 
@@ -99,24 +99,24 @@ var Form = new Class(/** @lends Form# */{
          * The component element.
          * @type {Element}
          */
-        this.componentElement = $(element);
+        this.element = $(element);
 
         /**
          * Value of property 'single_template'.
          * @type {string}
          */
-        this.singlePath = this.componentElement.getProperty('single_template');
+        this.singlePath = this.element.getProperty('single_template');
 
         /**
          * The main holder element.
          * @type {Element}
          */
-        this.form = this.componentElement.getParent('form').addClass('form');
+        this.form = this.element.getParent('form').addClass('form');
 
-        if(this.form.getElements('input[type=text]').concat(this.form.getElements('select'),this.form.getElements('textarea')).length){
-           this.form.addEvent('keypress', function(e){
-               if(e.key == 'enter') e.preventDefault();
-           })
+        if (this.form.getElements('input[type=text]').concat(this.form.getElements('select'), this.form.getElements('textarea')).length) {
+            this.form.addEvent('keypress', function (e) {
+                if (e.key == 'enter') e.preventDefault();
+            })
         }
 
         /**
@@ -129,7 +129,7 @@ var Form = new Class(/** @lends Form# */{
          * Tab panels.
          * @type {TabPane}
          */
-        this.tabPane = new TabPane(this.componentElement, {
+        this.tabPane = new TabPane(this.element, {
             onTabChange: this.onTabChange
         });
 
@@ -144,19 +144,31 @@ var Form = new Class(/** @lends Form# */{
         }, this);
 
         this.form.getElements('textarea.code').each(function (textarea) {
-            this.codeEditors.push(CodeMirror.fromTextArea(textarea, {mode: "text/html", tabMode: "indent", lineNumbers: true, theme:'elegant'}));
+            this.codeEditors.push(CodeMirror.fromTextArea(textarea, {
+                mode: "text/html",
+                tabMode: "indent",
+                lineNumbers: true,
+                theme: 'elegant'
+            }));
         }, this);
 
         this.form.getElements('div.type_lookup').each(function (el) {
             new Lookup(el, this.singlePath);
         }, this);
 
+        var tags = null;
         this.form.getElements('input.tag_acpl').each(function (el) {
-            new Tags(el);
+            tags = new Tags(el);
         }, this);
 
-        this.form.getElements('input.inp_color').each(function(el){
-            this.colorPickers.push(new ColorPicker(el,{cellWidth: 8, cellHeight: 12}));
+        this.booleanTags = [];
+        if (tags)
+            this.form.getElements('input[data-tag]').each(function (el) {
+                this.booleanTags.push(new Form.BooleanTag(el, tags));
+            }, this);
+
+        this.form.getElements('input.inp_color').each(function (el) {
+            this.colorPickers.push(new ColorPicker(el, {cellWidth: 8, cellHeight: 12}));
         }, this);
 
         var showHideFunc = function (e) {
@@ -184,19 +196,19 @@ var Form = new Class(/** @lends Form# */{
             new Form.AttachmentSelector(el, this);
         }, this);
 
-        this.componentElement.getElements('.uploader').each(function (uploader) {
+        this.element.getElements('.uploader').each(function (uploader) {
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
 
-        (this.componentElement.getElements('.inp_date')|| []).append(this.componentElement.getElements('.inp_datetime')|| []).each(function (dateControl) {
-                var isNullable = !dateControl.getParent('.field').hasClass('required');
-                this.dateControls.push(
-                    (dateControl.hasClass('inp_datetime') ? Energine.createDateTimePicker(dateControl, isNullable)
-                        : Energine.createDatePicker(dateControl, isNullable))
-                );
-            }, this);
+        (this.element.getElements('.inp_date') || []).append(this.element.getElements('.inp_datetime') || []).each(function (dateControl) {
+            var isNullable = !dateControl.getParent('.field').hasClass('required');
+            this.dateControls.push(
+                (dateControl.hasClass('inp_datetime') ? Energine.createDateTimePicker(dateControl, isNullable)
+                    : Energine.createDatePicker(dateControl, isNullable))
+            );
+        }, this);
 
-        this.componentElement.getElements('.pane').setStyles({
+        this.element.getElements('.pane').setStyles({
             'border': '1px dotted #777',
             'overflow': 'auto'
         });
@@ -210,11 +222,11 @@ var Form = new Class(/** @lends Form# */{
                 }
             });
         }
-        this.componentElement.getElements('.crud').addEvent('click', function (e) {
+        this.element.getElements('.crud').addEvent('click', function (e) {
             var control = $($(e.target).getProperty('data-field'));
             if (control) {
                 ModalBox.open({
-                    url: [this.singlePath, $(e.target).getProperty('data-field') , '-', $(e.target).getProperty('data-editor'), '/crud/'].join(''),
+                    url: [this.singlePath, $(e.target).getProperty('data-field'), '-', $(e.target).getProperty('data-editor'), '/crud/'].join(''),
                     onClose: function (result) {
                         var selectedValue = result.key;
                         if (result.dirty) {
@@ -265,7 +277,7 @@ var Form = new Class(/** @lends Form# */{
          * @type {Element[]}
          */
         this.appendedControls = this.form.getElements('.with_append');
-        this.appendedControls.each(function(el) {
+        this.appendedControls.each(function (el) {
             Object.append(el, {
                 isOnFocus: false,
                 controlEl: el
@@ -275,8 +287,8 @@ var Form = new Class(/** @lends Form# */{
                 mouseleave: this.glow.bind(this)
             });
         }, this);
-        this.appendedControls.getElements('input,select').each(function(el, id) {
-            el.each(function(el){
+        this.appendedControls.getElements('input,select').each(function (el, id) {
+            el.each(function (el) {
                 el.controlEl = this.appendedControls[id];
             }.bind(this));
 
@@ -339,13 +351,13 @@ var Form = new Class(/** @lends Form# */{
      */
     attachToolbar: function (toolbar) {
         this.toolbar = toolbar;
-        var toolbarContainer = this.componentElement.getElement('.e-pane-b-toolbar'),
+        var toolbarContainer = this.element.getElement('.e-pane-b-toolbar'),
             afterSaveActionSelect = this.toolbar.getControlById('after_save_action');
 
         if (toolbarContainer) {
             toolbarContainer.adopt(this.toolbar.getElement());
         } else {
-            this.componentElement.adopt(this.toolbar.getElement());
+            this.element.adopt(this.toolbar.getElement());
         }
 
         if (afterSaveActionSelect) {
@@ -385,6 +397,10 @@ var Form = new Class(/** @lends Form# */{
             return;
         }
 
+        this.booleanTags.each(function(bt){
+            bt.save();
+        });
+
         this.overlay.show();
 
         Energine.request(
@@ -406,7 +422,10 @@ var Form = new Class(/** @lends Form# */{
     processServerResponse: function (response) {
         var nextActionSelector;
         if (response && (nextActionSelector = this.toolbar.getControlById('after_save_action'))) {
-            Cookie.write('after_add_default_action', nextActionSelector.getValue(), {path: new URI(Energine.base).get('directory'), duration: 1});
+            Cookie.write('after_add_default_action', nextActionSelector.getValue(), {
+                path: new URI(Energine.base).get('directory'),
+                duration: 1
+            });
             response.afterClose = nextActionSelector.getValue();
         }
         ModalBox.setReturnValue(response);
@@ -592,10 +611,14 @@ var Form = new Class(/** @lends Form# */{
                             'method': 'post',
                             'data': {
                                 json: 1,
-                                filter: {
-                                    condition: '=',
-                                    share_uploads: {'upl_id': [upl_id]}
-                                }
+                                filter: JSON.encode({
+                                    'children': [{
+                                        'field': '[share_uploads][upl_id]',
+                                        'type': 'string',
+                                        condition: '=',
+                                        'value': upl_id
+                                    }]
+                                })
                             },
                             'evalResponse': true,
                             'onComplete': function (data) {
@@ -659,7 +682,11 @@ Form.Uploader = new Class(/** @lends Form.Uploader# */{
             instantStart: true,
             appendCookieData: false,
             timeLimit: 0,
-            data: {'NRGNCookie': document.cookie, 'path': (typeOf(ModalBox.getExtraData()) == 'string') ? ModalBox.getExtraData() : '', 'element': this.element.getProperty('nrgn:input')},
+            data: {
+                'NRGNCookie': document.cookie,
+                'path': (typeOf(ModalBox.getExtraData()) == 'string') ? ModalBox.getExtraData() : '',
+                'element': this.element.getProperty('nrgn:input')
+            },
             typeFilter: {
                 'All files (*.*)': '*.*',
                 'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png',
@@ -804,7 +831,7 @@ Form.SmapSelector = new Class(/** @lends Form.SmapSelector# */{
      */
     showSelector: function () {
         ModalBox.open({
-            url: this.form.componentElement.getProperty('template') + 'selector/',
+            url: this.form.element.getProperty('template') + 'selector/',
             onClose: this.setName.bind(this)
         });
     },
@@ -842,7 +869,7 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
     initialize: function (selector, form) {
         selector = $(selector);
         this.form = form;
-        this.field = selector.getProperty('field');
+        this.field = selector.getProperty('data-field');
 
         selector.addEvent('click', function (e) {
             e.stop();
@@ -850,12 +877,13 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
              * Upload name.
              * @type {string}
              */
-            this.uplName = $($(e.target).getProperty('upl_name'));
+            this.uplName = $($(e.target).getProperty('data-name'));
             /**
              * Upload ID.
              * @type {string|number}
              */
-            this.uplId = $($(e.target).getProperty('upl_id'));
+            this.uplId = $($(e.target).getProperty('data-id'));
+            this.uplPreview = $($(e.target).getProperty('data-preview'));
             this.showSelector.apply(this);
         }.bind(this));
     },
@@ -867,7 +895,7 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
      */
     showSelector: function () {
         ModalBox.open({
-            url: this.form.componentElement.getProperty('template') + 'file-library/',
+            url: this.form.element.getProperty('template') + 'file-library/',
             onClose: this.setName.bind(this)
         });
     },
@@ -883,6 +911,10 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
         if (result) {
             this.uplName.set('value', result.upl_path);
             this.uplId.set('value', result.upl_id);
+            if (['image', 'video'].indexOf(result.upl_internal_type) != -1) {
+                this.uplPreview.removeClass('hidden');
+                this.uplPreview.getElement('img').setProperty('src', result.upl_path);
+            }
         }
     }
 });
@@ -987,7 +1019,32 @@ Form.Label = /** @lends Form.Label */{
         }
     }
 }
+Form.BooleanTag = new Class({
+    initialize: function (el, tagsControl) {
+        this.el = el;
+        this.tags = tagsControl;
+        var currentTags = this.tags.element.get('value').split(this.tags.separator);
+        var tag = this.el.getProperty('data-tag');
+        if(currentTags.indexOf(tag) !== -1){
+            this.el.setProperty('checked', 'checked');
+            currentTags.erase(tag);
+            this.tags.element.set('value', currentTags.join(this.tags.separator));
+        }
+    },
+    save: function(){
+        var value = this.el.getProperty('checked');
+        var currentTags = this.tags.element.get('value').split(this.tags.separator);
+        var tag = this.el.getProperty('data-tag');
 
+        if(value && (currentTags.indexOf(tag) === -1)){
+            currentTags.push(tag);
+        }
+        else if(!value && (currentTags.indexOf(tag) !== -1)){
+            currentTags.erase(tag);
+        }
+        this.tags.element.set('value', currentTags.join(this.tags.separator));
+    }
+});
 /**
  * The rich editor form.
  *
@@ -1046,17 +1103,29 @@ Form.RichEditor = new Class(/** @lends Form.RichEditor# */{
             CKEDITOR.config.extraPlugins = 'energineimage,energinevideo,energinefile';
             CKEDITOR.config.allowedContent = true;
             CKEDITOR.config.toolbar = [
-                { name: 'document', groups: [ 'mode' ], items: [ 'Source' ] },
-                { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-                { name: 'editing', groups: [ 'find', 'selection' ], items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
-                { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-                { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'EnergineImage', 'EnergineVideo', 'EnergineFile' ] },
-                { name: 'tools', items: [ 'ShowBlocks' ] },
+                {name: 'document', groups: ['mode'], items: ['Source']},
+                {
+                    name: 'clipboard',
+                    groups: ['clipboard', 'undo'],
+                    items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']
+                },
+                {name: 'editing', groups: ['find', 'selection'], items: ['Find', 'Replace', '-', 'SelectAll']},
+                {name: 'links', items: ['Link', 'Unlink', 'Anchor']},
+                {name: 'insert', items: ['Image', 'Flash', 'Table', 'EnergineImage', 'EnergineVideo', 'EnergineFile']},
+                {name: 'tools', items: ['ShowBlocks']},
                 '/',
-                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
-                { name: 'paragraph', groups: [ 'list', 'indent', 'align' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
-                { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
-                { name: 'colors', items: [ 'TextColor', 'BGColor' ] }
+                {
+                    name: 'basicstyles',
+                    groups: ['basicstyles', 'cleanup'],
+                    items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']
+                },
+                {
+                    name: 'paragraph',
+                    groups: ['list', 'indent', 'align'],
+                    items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
+                },
+                {name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize']},
+                {name: 'colors', items: ['TextColor', 'BGColor']}
             ];
             var styles = [];
             if (window['wysiwyg_styles']) {
@@ -1064,7 +1133,7 @@ Form.RichEditor = new Class(/** @lends Form.RichEditor# */{
                     styles.push({
                         name: style['caption'],
                         element: style['element'],
-                        attributes: { 'class': style['class'] }
+                        attributes: {'class': style['class']}
                     });
                 });
             }

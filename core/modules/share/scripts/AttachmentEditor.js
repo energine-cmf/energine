@@ -30,19 +30,19 @@ var AttachmentEditor = new Class(/** @lends AttachmentEditor# */{
          * Quick upload path.
          * @type {string}
          */
-        this.quick_upload_path = element.get('quick_upload_path');
+        this.quick_upload_path = this.element.get('quick_upload_path');
 
         /**
          * Quick upload PID (Parent repository ID).
          * @type {string}
          */
-        this.quick_upload_pid = element.get('quick_upload_pid');
+        this.quick_upload_pid = this.element.get('quick_upload_pid');
 
         /**
          * Defines whether quick upload is enabled.
          * @type {string}
          */
-        this.quick_upload_enabled = element.get('quick_upload_enabled');
+        this.quick_upload_enabled = this.element.get('quick_upload_enabled');
     },
 
     /**

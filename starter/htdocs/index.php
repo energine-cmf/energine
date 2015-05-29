@@ -41,7 +41,8 @@ try {
 } catch (\Exception $generalException) {
     //Если отрабатывает этот кетчер, значит дела пошли совсем плохо
     if (defined('DEBUG') && DEBUG) {
-        header('Content-Type: text/plain; charset=utf-8');
+        if(!headers_sent())
+            header('Content-Type: text/plain; charset=utf-8');
         echo (string)$generalException->getMessage();
     }
     //TODO В лог что ли писать?

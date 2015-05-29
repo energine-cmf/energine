@@ -50,12 +50,12 @@ var CommentsForm = new Class(/** @lends CommentsForm# */{
 
         this.parent(element);
 
-        if (this.componentElement && this.form) {
+        if (this.element && this.form) {
             this.form.addClass('form');
 
             $$('div.comments div.comment_inputblock a.link_comment').addEvent('click', this.show_form_base.bind(this));
-            this.form.getElement('a.btn_comment').addEvent('click', this.validateForm.bind(this));
-            this.form.getElement('a.btn_cancel').addEvent('click', this.show_form_base.bind(this));
+            this.form.getElement('.btn_comment').addEvent('click', this.validateForm.bind(this));
+            this.form.getElement('.btn_cancel').addEvent('click', this.show_form_base.bind(this));
             this.form.getElement('textarea').addEvent('keyup', this.countOut.bind(this));
 
             $$('li.comment_item div.comment_inputblock').each(function(el) {
@@ -179,7 +179,7 @@ var CommentsForm = new Class(/** @lends CommentsForm# */{
             this.form.addClass('hidden');
             $$('ul.comment_list div.comment_inputblock').removeClass('hidden');
 
-            var t = this.componentElement.getElement('textarea[name=comment_name]');
+            var t = this.element.getElement('textarea[name=comment_name]');
             t.value = '';
 
             /**

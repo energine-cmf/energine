@@ -283,8 +283,8 @@ class WidgetsRepository extends Grid {
 
         //вносим перевод, если не существует
         $ltagName = strtoupper('CONTENT_' . $contentName);
-
-        if (empty($this->dbh->select('share_lang_tags', array('ltag_id'), array('ltag_name' => $ltagName)))) {
+        $ltagID = $this->dbh->getScalar('share_lang_tags', array('ltag_id'), array('ltag_name' => $ltagName));
+        if (!$ltagID) {
             $ltagID = $this->dbh->modify(QAL::INSERT, 'share_lang_tags', array('ltag_name' => $ltagName));
             foreach (array_keys(E()->getLanguage()->getLanguages()) as $langID) {
                 $this->dbh->modify(QAL::INSERT, 'share_lang_tags_translation', array('lang_id' => $langID, 'ltag_value_rtf' => $title, 'ltag_id' => $ltagID));

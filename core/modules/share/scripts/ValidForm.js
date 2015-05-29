@@ -27,19 +27,19 @@ var ValidForm = new Class(/** @lends ValidForm# */{
          * The main element.
          * @type {Element}
          */
-        this.componentElement = $(element);
-        if (this.componentElement) {
+        this.element = $(element);
+        if (this.element) {
             /**
              * Form element.
              * @type {Element}
              */
-            this.form = this.componentElement.getParent('form');
+            this.form = this.element.getParent('form');
             if (this.form) {
                 /**
                  * Single path.
                  * @type {string}
                  */
-                this.singlePath = this.componentElement.getProperty('single_template');
+                this.singlePath = this.element.getProperty('single_template');
 
                 this.form.addClass('form').addEvent('submit', this.validateForm.bind(this));
 

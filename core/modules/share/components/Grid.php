@@ -12,7 +12,7 @@ class Grid;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears\AbstractBuilder;
+use Energine\share\gears\Builder;
 use Energine\share\gears\DocumentController;
 use Energine\share\gears\ExtendedSaver;
 use Energine\share\gears\FilterField;
@@ -61,7 +61,7 @@ class Grid extends DBDataSet {
      * Column name for user sorting.
      * @var string $orderColumn
      */
-    private $orderColumn = null;
+    private $orderColumn = NULL;
 
     /**
      * Filter.
@@ -73,12 +73,12 @@ class Grid extends DBDataSet {
      * Grid for select fields
      * @var \Lookup
      */
-    protected $lookupEditor = null;
+    protected $lookupEditor = NULL;
 
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
 
         $this->setProperty('exttype', 'grid');
@@ -225,7 +225,7 @@ class Grid extends DBDataSet {
                 ]), [$orderColumn => QAL::ASC]);
 
         }
-        $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, [$this->getPK() => $id]);
+        $this->dbh->modify(QAL::DELETE, $this->getTableName(), NULL, [$this->getPK() => $id]);
 
         //если определен порядок следования перестраиваем индекс сортировки
         if ($orderColumn && $ids) {
@@ -328,11 +328,15 @@ class Grid extends DBDataSet {
                 'mode' => (is_int($result)) ? 'insert' : 'update'
             ]);
             $this->setBuilder($b);
-        } catch (SystemException $e) {
+        } catch (\Exception $e) {
             if ($transactionStarted) {
                 $this->dbh->rollback();
             }
-            throw $e;
+            $code = $e->getCode();
+            if (!is_numeric($code)) {
+                $code = SystemException::ERR_CRITICAL;
+            }
+            throw new SystemException($e->getMessage(), $code);
         }
     }
 
@@ -652,7 +656,7 @@ class Grid extends DBDataSet {
                                 case FieldDescription::FIELD_TYPE_TIME:
                                 case FieldDescription::FIELD_TYPE_DATETIME:
                                     if ($format = $fieldInfo->getPropertyValue('outputFormat')) {
-                                        $fieldValue = AbstractBuilder::enFormatDate($fieldValue, $format,
+                                        $fieldValue = E()->Utils->formatDate($fieldValue, $format,
                                             $fd->getType());
                                     }
                                     break;
@@ -931,7 +935,7 @@ class Grid extends DBDataSet {
                 // двигаем элемент выше или ниже id=$secondItem
                 case 'above':
                 case 'below':
-                    $secondItem = (!empty($params[2])) ? $params[2] : null;
+                    $secondItem = (!empty($params[2])) ? $params[2] : NULL;
                     if ($secondItem == intval($secondItem) && $firstItem != $secondItem) {
                         $secondItemOrderNum = $this->dbh->getScalar(
                             'SELECT ' . $this->getOrderColumn() . ' as secondItemOrderNum ' .
@@ -1021,7 +1025,7 @@ class Grid extends DBDataSet {
         $data =
             convertDBResult($this->dbh->select($request), 'neighborID');
         if ($data) {
-            $neighborID = null;
+            $neighborID = NULL;
             $neighborOrderNum = 0;
             extract(current($data));
             $this->dbh->beginTransaction();
@@ -1106,7 +1110,7 @@ class Grid extends DBDataSet {
             $this->getData()->addField($field);
         }
 
-        if ($this->dbh->tableExists($this->getTableName() . TagManager::TAGS_TABLE_SUFFIX)) {
+        if ($this->dbh->getTagsTablename($this->getTableName())) {
             $tm = new TagManager($this->getDataDescription(), $this->getData(), $this->getTableName());
             $tm->createFieldDescription();
             $tm->createField();

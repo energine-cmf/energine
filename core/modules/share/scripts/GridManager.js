@@ -762,7 +762,7 @@ var GridManager = new Class(/** @lends GridManager# */{
          * The main holder element.
          * @type {Element}
          */
-        this.element = element;
+        this.element = $(element);
 
         /**
          * Filter tool.

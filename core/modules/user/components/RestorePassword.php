@@ -15,7 +15,12 @@ class RestorePassword;
  */
 namespace Energine\user\components;
 
-use Energine\share\components\DataSet, Energine\share\gears\User, Energine\share\gears\QAL, Energine\share\gears\Field, Energine\share\gears\Mail;
+use Energine\share\components\DataSet,
+    Energine\share\gears\User,
+    Energine\share\gears\QAL,
+    Energine\share\gears\Field,
+    Energine\mail\gears\MailTemplate,
+    Energine\mail\gears\Mail;
 
 /**
  * Form to restoring password.
@@ -65,11 +70,21 @@ class RestorePassword extends DataSet {
             } else {
                 $password = User::generatePassword();
                 $this->dbh->modify(QAL::UPDATE, 'user_users', array('u_password' => password_hash($password, PASSWORD_DEFAULT)), array('u_id' => $UID));
+
+                $template = new MailTemplate('user_restore_password', [
+                    'user_login' => $uName,
+                    'user_password' => $password,
+                    'site_url' => E()->getSiteManager()->getCurrentSite()->base,
+                    'site_name' => $this->translate('TXT_SITE_NAME')
+                ]);
+
                 $mailer = new Mail();
-                $mailer->setFrom($this->getConfigValue('mail.from'))->
-                setSubject($this->translate('TXT_SUBJ_RESTORE_PASSWORD'))->
-                setText($this->translate('TXT_BODY_RESTORE_PASSWORD'), compact('password'))->
-                addTo($uName);
+                $mailer
+                    ->setFrom($this->getConfigValue('mail.from'))
+                    ->setSubject($template->getSubject())
+                    ->setText($template->getBody())
+                    ->setHtmlText($template->getHTMLBody())
+                    ->addTo($uName);
                 $message = $this->translate('MSG_PASSWORD_SENT');
                 try {
                     $mailer->send();

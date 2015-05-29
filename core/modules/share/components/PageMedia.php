@@ -6,41 +6,78 @@
  * It contains the definition to:
  * @code
 class PageMedia;
-@endcode
+ * @endcode
  *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
  *
  * @version 1.0.0
  */
+namespace Energine\share\components;
+
+use Energine\share\gears\AttachmentManager;
+use Energine\share\gears\Data;
+use Energine\share\gears\DataDescription;
+use Energine\share\gears\FieldDescription;
+use Energine\share\gears\SimpleBuilder;
 
 /**
- * Show media container on the page with attached to that page media files.
+ * Show media container on the page with attached to that page media files and additional page info
  *
  * @code
 class PageMedia;
-@endcode
+ * @endcode
  */
 class PageMedia extends DataSet {
-    //todo VZ: This can be removed.
-    /**
-     * @copydoc DataSet::__construct
-     */
-    public function __construct($name,  array $params = null) {
-        parent::__construct($name, $params);
+
+    protected function defineParams() {
+        return array_merge(
+            parent::defineParams(),
+            [
+                'id' => false
+            ]
+        );
     }
 
-    /**
-     * @copydoc DataSet::main
-     */
-    // Выводит галлерею
     protected function main() {
-        $this->prepare();
+        $id = (!$id = $this->getParam('id')) ? $this->document->getID() : $id;
 
-        //Поле добавлено чтобы Data не был пустым
-        $this->getDataDescription()->addFieldDescription(new FieldDescription('fake'));
-        $this->getData()->addField($f = new Field('fake'));
-        $f->setData(false);
+        $this->setBuilder(new SimpleBuilder());
+        $dd = new DataDescription();
+        if ($this->getConfig()->getCurrentStateConfig() && $this->getConfig()->getCurrentStateConfig()->fields) {
+            $dd->loadXML($this->getConfig()->getCurrentStateConfig()->fields);
+        } else {
+            $dd->load([
+                'Id' => [
+                    'type' => FieldDescription::FIELD_TYPE_INT,
+                ],
+                'Name' => [
+                    'type' => FieldDescription::FIELD_TYPE_STRING,
+                ],
+                'Title' => [
+                    'type' => FieldDescription::FIELD_TYPE_STRING,
+                ],
+                'HtmlTitle' => [
+                    'type' => FieldDescription::FIELD_TYPE_STRING,
+                ],
+                'DescriptionRtf' => [
+                    'type' => FieldDescription::FIELD_TYPE_HTML_BLOCK,
+                ]
+
+            ]);
+        }
+        $fd = new FieldDescription('Url');
+        $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+        $dd->addFieldDescription($fd);
+
+        $info = E()->getMap()->getDocumentInfo($id);
+        $d = new Data();
+        $info['Id'] = $id;
+        $info['Url'] = E()->getMap()->getURLByID($id);
+        $d->load([$info]);
+        $this->setDataDescription($dd);
+        $this->setData($d);
+
         $m = new AttachmentManager(
             $this->getDataDescription(),
             $this->getData(),
@@ -48,6 +85,12 @@ class PageMedia extends DataSet {
             true
         );
         $m->createFieldDescription();
-        $m->createField('smap_id', false, $this->document->getID());
+        $m->createField('smap_id', false, $id);
+        $toolbars = $this->createToolbar();
+        if (!empty($toolbars)) {
+            $this->addToolbar($toolbars);
+        }
+        $this->js = $this->buildJS();
+
     }
 }

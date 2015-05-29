@@ -31,10 +31,6 @@ class JSONUploadBuilder extends JSONBuilder {
      */
     private $currentDirectory = false;
 
-    //todo VZ: this can be removed.
-	public function __construct() {
-		parent::__construct();
-	}
 
 	public function getResult() {
 	    $this->result['currentDirectory'] = $this->getCurrentDirectory();

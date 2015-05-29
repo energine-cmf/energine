@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-	<state name="main">
-		<javascript>
-			<behavior name="Register" />
-		</javascript>
-		<fields>
-		  <field name="u_id"/>
-		  <field name="u_name"/>
-		  <field name="u_fullname"/>
-		</fields>
-		<toolbar>
-			<control id="register" title="BTN_REGISTER" type="submit"/>
-		</toolbar>
-		<translations>
-			<translation const="TXT_REQUIRED_FIELDS" />
-		</translations>
-	</state>
-	<state name="checkLogin">
-      <uri_patterns>
-           <pattern>/check/</pattern>
-       </uri_patterns>
-	</state>
-	<state name="save">
-	    <uri_patterns>
-	        <pattern>/save-new-user/</pattern>
-	    </uri_patterns>
-	</state>
-	<state name="success">
-	    <uri_patterns>
-	        <pattern>/success/</pattern>
-	    </uri_patterns>
-	</state>
+    <state name="main">
+        <javascript>
+            <behavior name="Register"/>
+        </javascript>
+        <fields>
+            <field name="u_id"/>
+            <field name="u_name"/>
+            <field name="u_fullname"/>
+            <field name="u_country"/>
+            <field name="u_city"/>
+            <field name="u_address"/>
+            <field name="captcha" type="captcha"/>
+        </fields>
+        <toolbar>
+            <control id="register" title="BTN_REGISTER" type="submit"/>
+        </toolbar>
+        <translations>
+            <translation const="TXT_REQUIRED_FIELDS"/>
+        </translations>
+    </state>
+    <state name="checkLogin">
+        <uri_patterns>
+            <pattern>/check/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="save">
+        <uri_patterns>
+            <pattern>/save-new-user/</pattern>
+        </uri_patterns>
+    </state>
+    <state name="success">
+        <uri_patterns>
+            <pattern>/success/</pattern>
+        </uri_patterns>
+    </state>
 </configuration>

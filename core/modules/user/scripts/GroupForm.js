@@ -28,8 +28,8 @@ var GroupForm = new Class(/** @lends GroupForm# */{
     initialize:function(element) {
         this.parent(element);
 
-        this.componentElement.getElements('.groupRadio').addEvent('click', this.checkAllRadioInColumn);
-//        this.componentElement.getElements('input[type=radio]').addEvent('change', this.uncheckGroupRadio);
+        this.element.getElements('.groupRadio').addEvent('click', this.checkAllRadioInColumn);
+//        this.element.getElements('input[type=radio]').addEvent('change', this.uncheckGroupRadio);
     },
 
     /**

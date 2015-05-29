@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet 
-    version="1.0" 
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+<xsl:stylesheet
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        version="1.0"
     >
 
     <!-- Шаблоны панели управления -->
@@ -51,7 +51,7 @@
     <xsl:template match="toolbar/control[@disabled]"></xsl:template>
 
     <xsl:template match="toolbar/control[@type='separator']">
-        <br/>
+        <span style="margin-left:10px;"/>
     </xsl:template>
     <!-- Панель управления для формы -->
     <xsl:template match="toolbar[parent::component[@exttype='grid']]">
@@ -78,7 +78,7 @@
             });
         </script>
     </xsl:template>    
-    
+
     <xsl:template match="component[@exttype='grid']/toolbar/control[@type = 'button']">
     	componentToolbars['<xsl:value-of select="generate-id(../../recordset)"/>'].appendControl(
             new Toolbar.Button({
@@ -159,19 +159,19 @@
     <!-- номер текущей страницы выделен -->
     <xsl:template match="control[@disabled][parent::toolbar[@name='pager']]">
         <xsl:if test="preceding-sibling::control">
-            <span class="control arrow">
+            <span class="control arrow prev">
                 <a>
                     <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/><xsl:value-of select="../properties/property[@name='additional_url']"/>page-<xsl:value-of select="@action - 1"/>/<xsl:if test="../properties/property[@name='get_string']!=''">?<xsl:value-of select="../properties/property[@name='get_string']"/></xsl:if></xsl:attribute>
-                    <img src="images/prev_page.gif"/>
+                    <i class="fa fa-caret-left"/>
                 </a>
             </span>
         </xsl:if>
         <span class="control current"><xsl:value-of select="@title"/></span>
         <xsl:if test="following-sibling::control">
-            <span class="control arrow">
+            <span class="control arrow next">
                 <a>
                     <xsl:attribute name="href"><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="../../@template"/><xsl:value-of select="../properties/property[@name='additional_url']"/>page-<xsl:value-of select="@action + 1"/>/<xsl:if test="../properties/property[@name='get_string']!=''">?<xsl:value-of select="../properties/property[@name='get_string']"/></xsl:if></xsl:attribute>
-                    <img src="images/next_page.gif"/>
+                    <i class="fa fa-caret-right"/>
                 </a>
             </span>
         </xsl:if>

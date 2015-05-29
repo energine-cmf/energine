@@ -35,9 +35,9 @@ var DivForm = new Class(/** @lends DivForm# */{
         this.parent(element);
         this.prepareLabel($('site_id').get('value') + '/list/');
 
-        var contentSelector = this.componentElement.getElementById('smap_content'),
-            layoutSelector = this.componentElement.getElementById('smap_layout'),
-            segmentInput = this.componentElement.getElementById('smap_segment'),
+        var contentSelector = this.element.getElementById('smap_content'),
+            layoutSelector = this.element.getElementById('smap_layout'),
+            segmentInput = this.element.getElementById('smap_segment'),
             contentFunc;
 
         //чтоб ради одного вызова не биндится на this
@@ -74,11 +74,11 @@ var DivForm = new Class(/** @lends DivForm# */{
      */
     resetPageContentTemplate: function () {
         this.request(
-            this.singlePath + 'reset-templates/' + this.componentElement.getElementById('smap_id').get('value') + '/',
+            this.singlePath + 'reset-templates/' + this.element.getElementById('smap_id').get('value') + '/',
             null,
             function (response) {
                 if (response.result) {
-                    var select = this.componentElement.getElementById('smap_content'),
+                    var select = this.element.getElementById('smap_content'),
                         option = select.getChildren()[select.selectedIndex],
                         optionText = option.get('text');
 

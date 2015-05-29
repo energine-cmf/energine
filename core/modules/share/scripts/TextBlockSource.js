@@ -28,7 +28,7 @@ var TextBlockSource = new Class(/** @lends TextBlockSource# */{
     initialize: function(element) {
         this.parent(element);
 
-        this.componentElement.getElement('div.field').swapClass('min', 'max');
+        this.element.getElement('div.field').swapClass('min', 'max');
         this.codeEditors[0].setValue(window.top.ModalBox.getExtraData());
     },
 

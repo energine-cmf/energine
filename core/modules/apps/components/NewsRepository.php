@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class NewsRepository;
-@endcode
+ * @endcode
  *
  * @author d.pavka
  * @copyright d.pavka@gmail.com
@@ -14,13 +14,16 @@ class NewsRepository;
  * @version 1.0.0
  */
 namespace Energine\apps\components;
+
 use Energine\apps\gears\NewsEditorSaver, Energine\share\gears\ComponentManager, Energine\share\gears\FieldDescription, Energine\share\components\LinkingEditor, Energine\share\components\Grid;
+use Energine\share\gears\DataDescription;
+
 /**
  * News repository.
  *
  * @code
 class NewsRepository;
-@endcode
+ * @endcode
  */
 class NewsRepository extends NewsEditor {
     /**
@@ -32,7 +35,7 @@ class NewsRepository extends NewsEditor {
     /**
      * @copydoc NewsEditor::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
         $this->enable();
         $this->setProperty('exttype', 'grid');
@@ -46,9 +49,9 @@ class NewsRepository extends NewsEditor {
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
-            array(
+            [
                 'bind' => false
-            )
+            ]
         );
     }
 
@@ -58,7 +61,7 @@ class NewsRepository extends NewsEditor {
     protected function showSmapSelector() {
         $this->request->shiftPath(1);
         $this->divisionEditor = ComponentManager::createBlockFromDescription(
-            ComponentManager::getDescriptionFromFile('core/modules/apps/templates/content/site_div_selector.container.xml'));
+            ComponentManager::getDescriptionFromFile(CORE_DIR . '/modules/apps/templates/content/site_div_selector.container.xml'));
         $this->divisionEditor->run();
     }
 
@@ -69,8 +72,14 @@ class NewsRepository extends NewsEditor {
     // Переписываем чтобы вернуть smap_id
     protected function createDataDescription() {
         $dd = LinkingEditor::createDataDescription();
-        if (in_array($this->getState(), array('add', 'edit'))) {
+        if (in_array($this->getState(), ['add', 'edit'])) {
             $dd->getFieldDescriptionByName('smap_id')->setType(FieldDescription::FIELD_TYPE_SMAP_SELECTOR);
+
+            $fd = new FieldDescription('news_is_top');
+            $fd->setType(FieldDescription::FIELD_TYPE_BOOL);
+            $fd->setProperty('tag', 'top');
+            $dd->addFieldDescription($fd, DataDescription::FIELD_POSITION_AFTER, $this->getPK());
+
         }
         return $dd;
     }

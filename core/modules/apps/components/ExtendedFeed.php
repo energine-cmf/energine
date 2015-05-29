@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class ExtendedFeed;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2011
@@ -14,13 +14,15 @@ class ExtendedFeed;
  * @version 1.0.0
  */
 namespace Energine\apps\components;
+
 use Energine\share\components\DBDataSet, Energine\share\gears\FieldDescription, Energine\share\gears\Field, Energine\share\gears\AttachmentManager, Energine\share\gears\TagManager;
+
 /**
  * Extended list.
  *
  * @code
 class ExtendedFeed;
-@endcode
+ * @endcode
  */
 class ExtendedFeed extends Feed {
     /**
@@ -30,9 +32,10 @@ class ExtendedFeed extends Feed {
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
-            array(
-                 'editable' => true,
-            )
+            [
+                'editable' => true,
+                'tags' => false
+            ]
         );
     }
 
@@ -63,6 +66,17 @@ class ExtendedFeed extends Feed {
             $res['smap_id']['key'] = false;
         }
         return $res;
+    }
+
+    protected function loadData() {
+        if ($tags = $this->getParam('tags')) {
+            if (!($tagFilter = TagManager::getFilter(TagManager::getID($tags), $this->getTableName()))) {
+                return false;
+            }
+            $this->addFilterCondition([$this->getTableName().'.'.$this->getPK() => $tagFilter]);
+        }
+        $result = parent::loadData();
+        return $result;
     }
 
     /**
@@ -98,7 +112,7 @@ class ExtendedFeed extends Feed {
         );
         $m->createFieldDescription();
         $m->createField($this->getPK(), true);
-        
+
         $m = new TagManager(
             $this->getDataDescription(),
             $this->getData(),
@@ -112,7 +126,7 @@ class ExtendedFeed extends Feed {
      * @copydoc Feed::view
      */
     protected function view() {
-        $this->addFilterCondition(array('smap_id' => $this->document->getID()));
+        $this->addFilterCondition(['smap_id' => $this->document->getID()]);
         DBDataSet::view();
         $this->addTranslation('BTN_RETURN_LIST');
         $am = new AttachmentManager($this->getDataDescription(), $this->getData(), $this->getTableName(), true);

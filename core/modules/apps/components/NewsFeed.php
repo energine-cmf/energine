@@ -170,7 +170,7 @@ class NewsFeed extends ExtendedFeed {
     protected function tag() {
         $tagID = $this->getStateParams(true);
         $tagID = (int)$tagID['tagID'];
-        $newsIDs = $this->dbh->select($this->getTableName() . '_tags', 'news_id', array('tag_id' => $tagID));
+        $newsIDs = $this->dbh->select($this->dbh->getTagsTablename($this->getTableName()), 'news_id', array('tag_id' => $tagID));
         if (is_array($newsIDs)) {
             $newsIDs = array_keys(convertDBResult($newsIDs, 'news_id', true));
             $this->addFilterCondition(array($this->getTableName() . '.news_id' => $newsIDs));
@@ -233,7 +233,7 @@ class NewsFeed extends ExtendedFeed {
 
             if ($this->getParam('tags')) {
 
-                $filteredIDs = TagManager::getFilter($this->getParam('tags'), $this->tagsTableName);
+                $filteredIDs = TagManager::getFilter($this->getParam('tags'), $this->getTableName());
 
                 if (!empty($filteredIDs)) {
                     $this->addFilterCondition(array($this->getTableName() . '.news_id' => $filteredIDs));

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains Class Utils and functions inspect(), splitDate(), stop(), simple_log(), dump_log(), ddump_log(), simplifyDBResult(), inverseDBResult(), convertDBResult(), convertFieldNames(), arrayPush(), array_push_before(), array_push_after(), file_get_contents_stripped().
+ * Contains Class Utils and functions inspect(), splitDate(), stop(), simple_log(), dump_log(), ddump_log(), simplifyDBResult(), inverseDBResult(), convertDBResult(), convertFieldNames(), arrayPush(), array_push_before(), array_push_after().
  * It contain the set of service utilities of the system.
  *
  * @author pavka
@@ -22,7 +22,7 @@ namespace Energine\share\gears {
         function inspect() {
             $args = func_get_args();
             ob_start();
-            if (php_sapi_name() != 'cli') {
+            if (!$this->is_PHP_CLI()) {
                 echo '<pre>';
                 call_user_func_array('var_dump', $args);
                 echo '</pre>';
@@ -44,7 +44,7 @@ namespace Energine\share\gears {
          */
         function splitDate($date) {
             $timeInfo =
-            $dateInfo = array('', '', '');
+            $dateInfo = ['', '', ''];
             $dateArray = explode(' ', $date);
             if (is_array($dateArray)) {
                 $dateInfo = explode('-', $dateArray[0]);
@@ -52,16 +52,16 @@ namespace Energine\share\gears {
                     $timeInfo = explode(':', $dateArray[1]);
                 }
             }
-            return array(
+            return [
                 'year' => $dateInfo[0],
                 'month' => $dateInfo[1],
                 'day' => $dateInfo[2],
-                'time' => array(
+                'time' => [
                     'h' => $timeInfo[0],
                     'm' => $timeInfo[1],
                     's' => $timeInfo[2]
-                )
-            );
+                ]
+            ];
         }
 
         /**
@@ -78,7 +78,7 @@ namespace Energine\share\gears {
             if (file_exists($simpleLog)) {
                 $flag = FILE_APPEND;
             }
-            $flag = (file_exists($simpleLog)) ? FILE_APPEND : null;
+            $flag = (file_exists($simpleLog)) ? FILE_APPEND : NULL;
             file_put_contents(
                 $simpleLog,
                 str_replace("\n", ' ', $var) . "\n",
@@ -97,7 +97,7 @@ namespace Energine\share\gears {
             $micro = sprintf("%06d", ($t - floor($t)) * 1000000);
             $d = new \DateTime(date('Y-m-d H:i:s.' . $micro, $t));
 
-            $flags = ($append ? FILE_APPEND : null);
+            $flags = ($append ? FILE_APPEND : NULL);
             ob_start();
             var_dump($var);
             $data = ob_get_contents();
@@ -115,7 +115,7 @@ namespace Energine\share\gears {
          * Log-file will be overwritten.
          */
         function ddumpLog() {
-            $result = array();
+            $result = [];
             $args = func_get_args();
             foreach ($args as $arg) {
                 $result[] = var_export($arg, true);
@@ -178,7 +178,7 @@ namespace Energine\share\gears {
          * @return array
          */
         function transpose(array $dbResult) {
-            $result = array();
+            $result = [];
             foreach ($dbResult as $row) {
                 foreach ($row as $fieldName => $fieldValue) {
                     $result[$fieldName][] = $fieldValue;
@@ -203,7 +203,7 @@ namespace Energine\share\gears {
          * @throws SystemException 'ERR_DEV_BAD_DATA'
          */
         function reindex($result, $pkName, $deletePK = false) {
-            $result = array_column($result, null, $pkName);
+            $result = array_column($result, NULL, $pkName);
             if ($deletePK) {
                 array_walk($result, function (&$row) use ($pkName) {
                     unset($row[$pkName]);
@@ -248,7 +248,7 @@ namespace Energine\share\gears {
          *
          * @see array_push()
          */
-        function arrayPush(array &$array, $var, $key = null) {
+        function arrayPush(array &$array, $var, $key = NULL) {
             $newkey = 0;
             $keys = array_keys($array);
             if (!empty($keys)) {
@@ -272,9 +272,9 @@ namespace Energine\share\gears {
          * @return array
          */
         function arrayPushBefore(array $array, $var, $pos) {
-            $result = array();
+            $result = [];
             if (!is_array($var)) {
-                $var = array($var);
+                $var = [$var];
             }
             if (is_int($pos)) {
                 $result = array_merge(
@@ -313,18 +313,6 @@ namespace Energine\share\gears {
         }
 
         /**
-         * @brief Get stripped contents.
-         * @param string $fileName Filename.
-         * @return string
-         */
-        function fileGetContentsStripped($fileName) {
-            $result = stripslashes(preg_replace_callback('/class=\"(?:[A-Za-z\\\]*)\"/', function ($matches) {
-                return str_replace('\\', '\\\\', $matches[0]);
-            }, trim(file_get_contents($fileName))));
-            return $result;
-        }
-
-        /**
          * Optimized for large strings str_replace
          *
          * @param $from char
@@ -351,7 +339,7 @@ namespace Energine\share\gears {
          * @param int $langId Language ID.
          * @return string
          */
-        function translate($const, $langId = null) {
+        function translate($const, $langId = NULL) {
             static $translationsCache, $findTranslationSQL;
             if (empty($const)) return $const;
             if (is_null($findTranslationSQL)) {
@@ -367,7 +355,7 @@ namespace Energine\share\gears {
             //Мы еще не обращались за этим переводом
             if (!isset($translationsCache[$langId][$const])) {
                 //Если что то пошло не так - нет смысл генерить ошибку, отдадим просто константу
-                if ($findTranslationSQL->execute(array($const, $langId))) {
+                if ($findTranslationSQL->execute([$const, $langId])) {
                     //записали в кеш
                     if ($result = $findTranslationSQL->fetchColumn()) {
                         $translationsCache[$langId][$const] = $result;
@@ -384,6 +372,101 @@ namespace Energine\share\gears {
             //Отдаем константу
 
             return $result;
+        }
+        /**
+            * Format date.
+            *
+            * Pseudo modifiers:
+            * - %E - Today|Yesterday|Tomorrow|After tomorrow|Weekday_abbreviation $Date $month_name, $time[$Year(if not current)]
+            * - %f - Weekday name $Date $month_name, $time[$Year(if not current)]
+            * - %o - [Today,] $Date $month_name, $time[$Year(if not current)]
+            * - %q
+            *
+            * @param int $date Timestamp.
+            * @param string $format Format.
+            * @param string $type Type.
+            * @return string
+            */
+            public function formatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
+               if (!$date) return '';
+
+               $date = strtotime($date);
+               if (!in_array($format, ['%E', '%f', '%o', '%q'])) {
+                   $result = @strftime($format, $date);
+                   if (!$result) {
+                       $result = $date;
+                   }
+               } else {
+                   $result = '';
+                   $today = strtotime("midnight");
+                   $tomorrow = strtotime("midnight +1 day");
+                   $dayAfterTomorrow = strtotime("midnight +2 day");
+                   $tomorrowPlus3 = strtotime("midnight +3 day");
+                   $yesterday = strtotime("midnight -1 day");
+                   $beforeYesterday = strtotime("midnight -2 day");
+                   switch ($format) {
+                       case '%E':
+                           if ($date >= $today and $date < $tomorrow) {
+                               $result .= translate('TXT_TODAY');
+                           } elseif ($date < $today and $date >= $yesterday) {
+                               $result .= translate('TXT_YESTERDAY');
+                           } elseif ($date < $yesterday and $date >= $beforeYesterday) {
+                               $result .= translate('TXT_BEFORE_YESTERDAY');
+                           } elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
+                               $result .= translate('TXT_TOMORROW');
+                           } elseif ($date >= $dayAfterTomorrow && $date < $tomorrowPlus3) {
+                               $result .= translate('TXT_AFTER_TOMORROW');
+                           } else {
+                               $dayNum = date('w', $date);
+                               if ($dayNum == 0) {
+                                   $dayNum = 7;
+                               }
+                               $result .= translate('TXT_WEEKDAY_SHORT_' . $dayNum);
+                           }
+                           $result .= ', ' . date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
+                           if (date('Y', $date) != date('Y')) {
+                               $result .= ' ' . date('Y', $date);
+                           }
+                           break;
+                       case '%f':
+                           $dayNum = date('w', $date);
+                           if ($dayNum == 0) {
+                               $dayNum = 7;
+                           }
+                           $result .= translate('TXT_WEEKDAY_' . $dayNum) . ', ' . date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
+                           if (date('Y', $date) != date('Y')) {
+                               $result .= ' ' . date('Y', $date);
+                           }
+                           break;
+                       case '%o':
+                           if ($date >= $today and $date < $tomorrow) {
+                               $result .= translate('TXT_TODAY') . ', ';
+                           }
+                           $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
+
+                           if (date('Y', $date) != date('Y')) {
+                               $result .= ' ' . date('Y', $date);
+                           }
+                           break;
+                       case '%q':
+                           $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
+
+                           if (date('Y', $date) != date('Y')) {
+                               $result .= ' ' . date('Y', $date);
+                           }
+                           break;
+                   }
+                   //Если часы и минуты = 0, считаем что это просто дата, без времени
+                   if (in_array($type, [FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_HIDDEN])) {
+                       $result .= ', ';
+                       $result .= date('G', $date) . ':' . date('i', $date);
+                   }
+               }
+               return $result;
+           }
+
+        public function is_PHP_CLI(){
+            return (php_sapi_name() === 'cli' OR defined('STDIN'));
         }
     }
 }
@@ -571,17 +654,6 @@ namespace {
      */
     function array_push_after($src, $in, $pos) {
         return E()->Utils->arrayPushAfter($src, $in, $pos);
-    }
-
-    /**
-     * @fn file_get_contents_stripped($fileName)
-     * @brief Get stripped contents.
-     * @param string $fileName Filename.
-     * @return string
-     * @deprecated
-     */
-    function file_get_contents_stripped($fileName) {
-        return E()->Utils->fileGetContentsStripped($fileName);
     }
 
     /**

@@ -36,12 +36,12 @@ class JSONRepoBuilder extends JSONBuilder {
     public function build() {
         $result = false;
 
-        if ($this->dataDescription == false) {
+        if (!$this->dataDescription) {
             throw new SystemException('ERR_DEV_NO_DATA_DESCRIPTION', SystemException::ERR_DEVELOPER);
         }
 
         foreach ($this->dataDescription as $fieldName => $fieldInfo) {
-            $result['meta'][$fieldName] = array(
+            $result['meta'][$fieldName] = [
                 'title' => $fieldInfo->getPropertyValue('title'),
                 'type' => $fieldInfo->getType(),
                 'key' => $fieldInfo->getPropertyValue('key') &&
@@ -55,14 +55,13 @@ class JSONRepoBuilder extends JSONBuilder {
                 'rights' => $fieldInfo->getRights(),
                 'field' => $fieldName,
                 'sort' => $fieldInfo->getPropertyValue('sort')
-            );
+            ];
 
         }
 
         if (!$this->data->isEmpty()) {
             for ($i = 0; $i < $this->data->getRowCount(); $i++) {
                 foreach ($this->dataDescription as $fieldName => $fieldInfo) {
-                    $fieldType = $fieldInfo->getType();
                     $fieldValue = null;
                     if ($this->data->getFieldByName($fieldName)) {
                         $fieldValue =
@@ -73,8 +72,7 @@ class JSONRepoBuilder extends JSONBuilder {
                         }
                         if($fieldName == 'upl_publication_date'){
                             if (!empty($fieldValue)) {
-                                $fieldValue =
-                                    self::enFormatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), FieldDescription::FIELD_TYPE_DATETIME);
+                                $fieldValue =E()->Utils->formatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), FieldDescription::FIELD_TYPE_DATETIME);
                             }
                         }
                     }

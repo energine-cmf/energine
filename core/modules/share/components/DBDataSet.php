@@ -527,7 +527,7 @@ class DBDataSet extends DataSet {
 
     /**
      * Get sort order.
-     * @return array
+     * @return mixed
      * @final
      */
     final protected function getOrder() {
@@ -547,15 +547,10 @@ class DBDataSet extends DataSet {
 
     /**
      * Set sort order.
-     * @param array $order Sort order in the form @code array($orderFieldName => $orderDirection) @endcode
+     * @param string | array $order Sort order in the form @code array($orderFieldName => $orderDirection) @endcode
      * @final
      */
-    final protected function setOrder(array $order) {
-        /*$orderDirection = strtoupper($orderDirection);
-        if (!in_array($orderDirection, array(QAL::ASC, QAL::DESC))) {
-            $orderDirection = QAL::ASC;
-        }
-        */
+    final protected function setOrder($order) {
         $this->order = $order;
     }
 

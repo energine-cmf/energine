@@ -10,7 +10,6 @@
                </params>
             </component>
         </container>
-        <container name="leftAdBlock"/>
         <container name="loginFormContainer" block="beta" widget="widget">
             <component name="loginForm" class="Energine\user\components\LoginForm"/>
         </container>

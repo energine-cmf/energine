@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class NewsEditor;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2007
@@ -14,22 +14,25 @@ class NewsEditor;
  * @version 1.0.0
  */
 namespace Energine\apps\components;
+
+use Energine\share\gears\DataDescription;
 use Energine\share\gears\Field, Energine\share\gears\FieldDescription, Energine\share\gears\QAL, Energine\apps\gears\NewsEditorSaver;
+
 /**
  * News editor.
  *
  * @code
 class NewsEditor;
-@endcode
+ * @endcode
  */
 class NewsEditor extends ExtendedFeedEditor {
     /**
      * @copydoc ExtendedFeedEditor::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
         $this->setTableName('apps_news');
-        $this->setOrder(array('news_date' => QAL::DESC));
+        $this->setOrder(['news_date' => QAL::DESC]);
         $this->setSaver(new NewsEditorSaver());
     }
 
@@ -44,4 +47,15 @@ class NewsEditor extends ExtendedFeedEditor {
         $this->getData()->addField($f);
     }
 
+
+    protected function createDataDescription() {
+        $result = parent::createDataDescription();
+        if (in_array($this->getState(), ['add', 'edit'])) {
+            $fd = new FieldDescription('news_is_top');
+            $fd->setType(FieldDescription::FIELD_TYPE_BOOL);
+            $fd->setProperty('tag', 'top');
+            $result->addFieldDescription($fd, DataDescription::FIELD_POSITION_AFTER, $this->getPK());
+        }
+        return $result;
+    }
 }

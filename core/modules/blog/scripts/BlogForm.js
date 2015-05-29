@@ -4,10 +4,10 @@ var BlogForm = new Class({
     Extends: Form,
     initialize: function(element) {
         Asset.css('form.css');
-		this.componentElement = $(element);
-		this.singlePath = this.componentElement.getProperty('single_template');
+		this.element = $(element);
+		this.singlePath = this.element.getProperty('single_template');
 
-        this.form = this.componentElement.getParent('form').addClass('form');
+        this.form = this.element.getParent('form').addClass('form');
 
 		this.validator = new Validator(this.form);
 

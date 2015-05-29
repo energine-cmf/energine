@@ -8,6 +8,7 @@
     exclude-result-prefixes="og video nrgn"
     >
     <xsl:variable name="DOC_PROPS" select="/document/properties/property"/>
+    <xsl:variable name="VARS" select="/document/variables/var"/>
     <xsl:variable name="COMPONENTS" select="//component[@name]"/>
     <xsl:variable name="TRANSLATION" select="/document/translations/translation"/>
     <xsl:variable name="ID" select="$DOC_PROPS[@name='ID']"/>
@@ -23,132 +24,7 @@
 
     <!--@deprecated-->
     <!--Оставлено для обратной совместимости, сейчас рекомендуется определять обработчик рута в модуле сайта и взывать рутовый шаблон в режиме head-->
-    <xsl:template match="/">
-        <html>
-            <xsl:attribute name="prefix"><xsl:text disable-output-escaping="yes">og: http://ogp.me/ns# video: http://ogp.me/ns/video#</xsl:text></xsl:attribute>
-        	<head>
-                <title><xsl:call-template name="build_title"/></title>
-        		<base href="{$BASE}"/>
-                <xsl:call-template name="favicon"/>                
-        		<xsl:choose>
-            		<xsl:when test="not($DOC_PROPS[@name='single'])">
-            		    <xsl:call-template name="stylesheets"/>
-            		</xsl:when>
-            		<xsl:otherwise>
-                        <link rel="stylesheet" type="text/css" href="{$STATIC_URL}stylesheets/singlemode.css"/>
-                        <script type="text/javascript">window.singleMode = true;</script>
-            		</xsl:otherwise>
-        		</xsl:choose>
-                <link rel="stylesheet" type="text/css" href="{$STATIC_URL}stylesheets/energine.css"/>
-                <xsl:if test="$DOC_PROPS[@name='google_verify']">
-                    <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
-                </xsl:if>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
-                <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
-                <xsl:if test="$DOC_PROPS[@name='robots']!=''">
-                    <meta name="robots" content="{$DOC_PROPS[@name='robots']}"/>
-                </xsl:if>
-                <xsl:apply-templates select="/" mode="og"/>
-                <xsl:choose>
-                    <xsl:when test="document/@debug=1">
-                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-debug.js"></script>
-                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more-debug.js"></script>
-                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext-debug.js"></script>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools.js"></script>
-                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more.js"></script>
-                        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext.js"></script>
-                    </xsl:otherwise>
-                </xsl:choose>
-        		<script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
-
-                <script type="text/javascript">
-                    Object.append(Energine, {
-                    <xsl:if test="document/@debug=1">
-                        debug :true,
-                    </xsl:if>
-                    'base' : '<xsl:value-of select="$BASE"/>',
-                    'static' : '<xsl:value-of select="$STATIC_URL"/>',
-                    'resizer' : '<xsl:value-of select="$RESIZER_URL"/>',
-                    'media' : '<xsl:value-of select="$MEDIA_URL"/>',
-                    'root' : '<xsl:value-of select="$MAIN_SITE"/>',
-                    'lang' : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
-                    });
-                </script>
-
-                <xsl:apply-templates select="/document//javascript/variable" mode="head"/>
-
-                <xsl:apply-templates select="/document/javascript/library" mode="head"/>
-
-
-                <xsl:call-template name="scripts"/>
-
-                <script type="text/javascript">
-                    var componentToolbars = [];
-                    <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@name!='PageEditor']) &gt; 0">
-                        var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[@name!='PageEditor']]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
-                    </xsl:if>
-                    window.addEvent('domready', function () {
-        				<xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
-                            try {
-                            <xsl:variable name="PAGE_TOOLBAR" select="$COMPONENTS[@componentAction='showPageToolbar']"></xsl:variable>
-                            var pageToolbar = new <xsl:value-of select="$PAGE_TOOLBAR/javascript/behavior/@name" />('<xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/><xsl:value-of select="$PAGE_TOOLBAR/@single_template" />', <xsl:value-of select="$ID" />, '<xsl:value-of select="$PAGE_TOOLBAR/toolbar/@name"/>', [
-                            <xsl:for-each select="$PAGE_TOOLBAR/toolbar/control">{
-                                <xsl:for-each select="@*[name()!='mode']">
-                                    '<xsl:value-of select="name()"/>':'<xsl:value-of select="."/>'
-                                    <xsl:if test="position()!=last()">,</xsl:if>
-                                </xsl:for-each>}<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>
-                            ]<xsl:if
-                                            test="$PAGE_TOOLBAR/toolbar/properties/property">, <xsl:for-each select="properties/property">{'<xsl:value-of select="@name"/>':'<xsl:value-of
-                                            select="."/>'<xsl:if test="position()!=last()">,</xsl:if>}</xsl:for-each></xsl:if>);
-                            }
-                            catch (e) {
-                                console.error(e);
-                            }
-        				</xsl:if>
-
-                                            Object.each({<xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[@name!='PageEditor']">
-                                                '<xsl:value-of select="generate-id(../../recordset[not(@name)])"/>':'<xsl:value-of select="@name"/>'<xsl:if
-                                            test="position()!=last()">,</xsl:if>
-                                            </xsl:for-each>}, function(className, componentID){
-                                        try {
-                                                    var component;
-                                                    if((component = document.getElementById(componentID)) <xsl:text disable-output-escaping="yes">&amp;&amp;</xsl:text> window[className]){
-                                                        window[componentID] = new window[className](component);
-                                                    }
-                                            }
-                                            catch (e) {
-                                                console.error(e);
-                                            }
-                                            });
-
-                        <xsl:if test="$COMPONENTS/javascript/behavior[@name='PageEditor']">
-                            <xsl:if test="position()=1">
-                                <xsl:variable name="objectID" select="generate-id($COMPONENTS[javascript/behavior[@name='PageEditor']]/recordset)"/>
-                                try {
-                                <xsl:value-of select="$objectID"/> = new PageEditor();
-                                }
-                                catch (e) {
-                                    console.error(e);
-                                }
-                            </xsl:if>
-                        </xsl:if>
-                    });
-        		</script>
-                <xsl:apply-templates select="document/translations"/>
-                <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
-                    <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
-                </xsl:if>
-        	</head>
-        	<body>
-        		<xsl:apply-templates select="document"/>
-        	</body>
-        </html>
-    </xsl:template>
-
-    <xsl:template match="/" mode="title" xml:space="">
+    <xsl:template match="/" mode="title">
         <title><xsl:choose>
             <xsl:when test="$DOC_PROPS[@name='title']/@alt = ''">
                 <xsl:for-each select="$COMPONENTS[@name='breadCrumbs']/recordset/record">
@@ -287,8 +163,8 @@
         <xsl:apply-templates select="." mode="scripts"/>
         <script type="text/javascript">
             var componentToolbars = [];
-            <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@name!='PageEditor']) &gt; 0">
-                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[@name!='PageEditor']]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
+            <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[(@name!='PageEditor')]) &gt; 0">
+                var <xsl:for-each select="$COMPONENTS[recordset]/javascript[behavior[(@name!='PageEditor')]]"><xsl:value-of select="generate-id(../recordset)"/><xsl:if test="position() != last()">,</xsl:if></xsl:for-each>;
             </xsl:if>
             window.addEvent('domready', function () {
                 <xsl:if test="$COMPONENTS[@componentAction='showPageToolbar']">
@@ -302,24 +178,14 @@
                             <xsl:if test="position()!=last()">,</xsl:if>
                         </xsl:for-each>
                         }<xsl:if test="position()!=last()">,</xsl:if></xsl:for-each>
-                    ]<xsl:if
-                                                                test="$PAGE_TOOLBAR/toolbar/properties/property">, <xsl:for-each select="$PAGE_TOOLBAR/toolbar/properties/property">{'<xsl:value-of select="@name"/>':'<xsl:value-of
-                                                                select="."/>'<xsl:if test="position()!=last()">,</xsl:if>}</xsl:for-each></xsl:if>);
+                    ]<xsl:if test="$PAGE_TOOLBAR/toolbar/properties/property">, <xsl:for-each select="$PAGE_TOOLBAR/toolbar/properties/property">{'<xsl:value-of select="@name"/>':'<xsl:value-of select="."/>'<xsl:if test="position()!=last()">,</xsl:if>}</xsl:for-each></xsl:if>);
                     }
                     catch (e) {
                         console.error(e);
                     }
                 </xsl:if>
-                <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[@name!='PageEditor']">
-                    <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
-                    if($('<xsl:value-of select="$objectID"/>')){
-                        try {
-                            <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>($('<xsl:value-of select="$objectID"/>'));
-                        }
-                        catch (e) {
-                            console.error(e);
-                        }
-                    }
+                <xsl:for-each select="$COMPONENTS[@componentAction!='showPageToolbar']/javascript/behavior[(@name!='PageEditor') and not(@use='jquery')]">
+                    <xsl:call-template name="INIT_JS" />
                 </xsl:for-each>
                 <xsl:if test="$COMPONENTS/javascript/behavior[@name='PageEditor']">
                     <xsl:if test="position()=1">
@@ -338,6 +204,33 @@
         <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
             <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
         </xsl:if>
+        <xsl:if test="(count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0) or (count($VARS[@name='FORCE_USE_JQUERY']) &gt;0)">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+            <script type="text/javascript">
+                jQuery.noConflict();
+            </script>
+        </xsl:if>
+        <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
+            <xsl:apply-templates select="/document/javascript/library" mode="jquery"/>
+            <script type="text/javascript">
+                (function($, window, document) {
+                // Listen for the jQuery ready event on the document
+                $(function() {
+            <xsl:for-each select="$COMPONENTS[recordset]/javascript/behavior[@use='jquery']">
+                <xsl:call-template name="INIT_JS"/>
+            </xsl:for-each>
+                });
+                }(window.jQuery, window, document));
+            </script>
+            <xsl:apply-templates select="/document/javascript/library"/>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="INIT_JS">
+        <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
+        if(document.getElementById('<xsl:value-of select="$objectID"/>')){
+        <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>('<xsl:value-of select="$objectID"/>');
+        }
     </xsl:template>
 
     <xsl:template match="document">
@@ -397,7 +290,21 @@
     <xsl:template match="/document//javascript/variable"/>
 
     <xsl:template match="/document/javascript/library" mode="head">
-        <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
+        <xsl:variable name="PATH" select="@name"/>
+        <xsl:if test="not(contains($PATH, 'jquery')) and not(//behavior[(@use='jquery') and (@name=$PATH)]) and(not(contains(@path, 'jquery')))">
+            <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="/document/javascript/library" mode="jquery">
+        <xsl:variable name="PATH" select="@path"/>
+        <xsl:variable name="NAME" select="@name"/>
+        <xsl:if test="contains($PATH,'jquery')">
+            <script type="text/javascript" src="{@path}"/>
+        </xsl:if>
+        <xsl:if test="//behavior[@use='jquery']/@name=$NAME">
+            <script type="text/javascript" src="{$STATIC_URL}scripts/{@path}.js"/>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="/document//javascript/variable" mode="head">

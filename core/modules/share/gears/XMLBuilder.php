@@ -22,13 +22,13 @@ abstract class XMLBuilder extends  Object implements IBuilder{
      */
     protected $document;
     /**
-     * @var \DOMElement
+     * @var \DOMElement | \DOMNodeList
      */
-    protected $result;
+    protected $result = null;
 
     /**
      * Get build result.
-     * @return mixed
+     * @return \DOMElement | \DOMNodeList
      */
     public function getResult() {
         return $this->result;

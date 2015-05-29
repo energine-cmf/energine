@@ -22,13 +22,20 @@ class ComponentProxyBuilder extends XMLBuilder implements IBuilder {
      * @var Component component which recordset we want to get
      */
     private $component;
+    /**
+     * @var string
+     */
+    private $filter = NULL;
+    private $componentDocument;
 
     /**
      * @param string $name proxy object name
      * @param string $class fully qualified class name
      * @param array $params component params
+     * @param string $filter xpath filter
      */
-    public function setComponent($name, $class, $params = []) {
+    public function setComponent($name, $class, $params = [], $filter = NULL) {
+        $this->filter = $filter;
         $this->component = E()->getDocument()->componentManager->createComponent($name, $class, $params);
     }
 
@@ -37,7 +44,18 @@ class ComponentProxyBuilder extends XMLBuilder implements IBuilder {
      * @return \DOMElement
      */
     public function getResult() {
-        return $this->component->getBuilder()->getResult();
+        if (!$this->filter)
+            $result = $this->component->getBuilder()->getResult();
+        else {
+            $result = $this->componentDocument;
+            $xpath = new \DOMXPath($result);
+            $result = $xpath->query($this->filter);
+            if (!$result->length) {
+                $result = false;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -45,7 +63,7 @@ class ComponentProxyBuilder extends XMLBuilder implements IBuilder {
      */
     public function run() {
         $this->component->run();
-        $this->component->build();
+        $this->componentDocument = $this->component->build();
     }
 
 }

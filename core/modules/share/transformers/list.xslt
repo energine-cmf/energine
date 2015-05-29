@@ -171,7 +171,7 @@
 	                                            <xsl:value-of select="ancestor::component/filter/@reset"/>
 	                                        </a>
 	                                    </div>
-		                                <div class="filter_save_block">
+		                                <!--<div class="filter_save_block">
 			                                <div class="filter_divider"></div>
 			                                <input type="text" class="filter_name" placeholder="FILTER_NAME" />
 			                                <button type="button" class="save_filter">BTN_FILTER_SAVE</button>
@@ -180,7 +180,7 @@
 				                                <option value="filter1">Filter1</option>
 				                                <option value="filter2">Filter2</option>
 			                                </select>
-		                                </div>
+		                                </div>-->
 		                            </div>
 	                                <a href="#" class="filter_toggle">
 		                                <i class="fa fa-angle-double-up"></i>

@@ -103,12 +103,11 @@ var Filters = new Class(/** @lends Filter# */{
         this.filters.push(f);
         if (this.filters.length == 1) {
             f.element.getElement('.filters_operand').hide();
-            f.element.getElement('.remove_filter').setProperty('disabled', 'disabled');
+            f.removeBtn.setProperty('disabled', 'disabled');
         }
         else {
             f.element.getElement('.filters_operand').show();
             this.element.getElements('.remove_filter').removeProperty('disabled');
-
         }
     },
     /**
@@ -196,6 +195,11 @@ var Filter = new Class({
     initialize: function (element) {
         this.element = $(element);
         this.inputs = new Filter.QueryControls(this.element.getElements('.f_query_container'));
+        this.removeBtn = this.element.getElement('.remove_filter');
+
+        this.removeBtn.addEvent('click', function(){
+            this.reset();
+        }.bind(this));
         this.inputs.addEvent('apply', function (e) {
             this.fireEvent('apply');
         }.bind(this));
@@ -288,6 +292,7 @@ var Filter = new Class({
         this.inputs.removeEvents('click');
         this.fields.removeEvents('change');
         this.condition.removeEvents('change');
+        this.removeBtn.removeEvents('click');
         this.element.destroy();
     },
     getValue: function () {

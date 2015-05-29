@@ -398,7 +398,18 @@ class Component extends Object implements IBlock {
                         true
                     )
                 );
-            } else {
+            }
+            elseif($builderResult instanceof \DOMNodeList){
+                foreach($builderResult as $node){
+                    $result->appendChild(
+                        $this->doc->importNode(
+                            $node,
+                            true
+                        )
+                    );
+                }
+            }
+            else {
                 $el = $this->doc->createElement('result', $builderResult);
                 $el->setAttribute('xml:id', 'result');
                 $result->appendChild($el);

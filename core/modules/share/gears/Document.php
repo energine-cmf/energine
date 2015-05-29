@@ -513,27 +513,15 @@ final class Document extends Object implements IDocument {
 
             return $result;
         };
-        if (!($templateData =
-            E()->getDB()->select('share_sitemap', [
-                'smap_content_xml as content',
-                'smap_layout_xml as layout',
-                'smap_content as content_file',
-                'smap_layout as layout_file'
-            ], ['smap_id' => $documentID]))
-        ) {
-            throw new SystemException('ERR_BAD_DOC_ID');
-        }
-        list($templateData) = $templateData;
-
+        $docData = E()->getMap()->getDocumentInfo($documentID);
         libxml_use_internal_errors(true);
         foreach ([DivisionEditor::TMPL_LAYOUT, DivisionEditor::TMPL_CONTENT] as $type) {
             //Если нет данных поле
-            if (!$templateData[$type]) {
+            if (!$docData[ucfirst($type).'Xml']) {
                 //Берем из файла
-                $result[$type] = $loadDataFromFile($templateData[$type .
-                '_file'], $type);
+                $result[$type] = $loadDataFromFile($docData[ucfirst($type)], $type);
             } else {
-                $result[$type] = $templateData[$type];
+                $result[$type] = $docData[ucfirst($type).'Xml'];
             }
             $result[$type] = trim(preg_replace('/<\?xml\s.+?>/sm', '', $result[$type]));
         }

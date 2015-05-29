@@ -189,18 +189,7 @@ final class Sitemap extends Object {
             $ids = implode(',', $diff);
             $result = convertDBResult(
                 $this->dbh->select(
-                    'SELECT s.smap_id,
-	                    s.smap_pid,
-	                    s.site_id as site,
-	                    s.smap_segment as Segment,
-	                    s.smap_meta_robots,
-	                    st.smap_name,
-	                    st.smap_title,
-	                    smap_redirect_url,
-	                    smap_description_rtf,
-	                    smap_html_title,
-	                    smap_meta_keywords,
-	                    smap_meta_description
+                    'SELECT s.*, st.*
 	                    FROM share_sitemap s
 	                    LEFT JOIN share_sitemap_translation st ON s.smap_id = st.smap_id
 	                    WHERE st.lang_id = %s AND s.site_id = %s AND s.smap_id IN (' .
@@ -209,6 +198,7 @@ final class Sitemap extends Object {
                     $this->siteID
                 ),
                 'smap_id', true);
+
             if ($result) {
                 $result = array_map([$this, 'preparePageInfo'], $result);
                 $this->info += $result;
@@ -222,7 +212,6 @@ final class Sitemap extends Object {
 
             }
         }
-
         return $result;
     }
 
@@ -252,10 +241,11 @@ final class Sitemap extends Object {
         //здесь что то лишнее
         //@todo А нужно ли вообще обрабатывать все разделы?
         $result = convertFieldNames($current, 'smap');
+        $result['Site'] = $result['siteId'];
+        unset($result['siteId'], $result['OrderNum'], $result['langId'], $result['IsDisabled']);
         if (is_null($result['MetaKeywords'])) $result['MetaKeywords'] = $this->defaultMetaKeywords;
         if (is_null($result['MetaDescription'])) $result['MetaDescription'] = $this->defaultMetaDescription;
         if (is_null($result['MetaRobots']) || empty($result['MetaRobots'])) $result['MetaRobots'] = $this->defaultMetaRobots;
-        //if($result['RedirectUrl']) $result['RedirectUrl'] = (URI::validate($result['RedirectUrl']))?$result['RedirectUrl']:E()->getSiteManager()->getCurrentSite()->base.$result['RedirectUrl'];
 
         return $result;
     }

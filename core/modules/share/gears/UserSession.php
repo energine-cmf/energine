@@ -50,26 +50,14 @@ final class UserSession implements \SessionHandlerInterface {
      */
     const DEFAULT_PROBABILITY = 10;
 
-    const STATUS_NONE = 0;
-    const STATUS_CREATED = 1;
-    const STATUS_INITIALIZED = 2;
-    const STATUS_LAUNCHED = 4;
-    const STATUS_STARTED = 6;
 
-    private $status = self::STATUS_NONE;
+    private $isStarted = false;
 
     /**
      * Session ID.
      * @var string $phpSessId
      */
     private $phpSessId;
-
-    /**
-     * Timeout.
-     * If time difference between requests is bigger than this value then the session become invalid.
-     * @var int $timeout
-     */
-    private $timeout;
 
     /**
      * Maximal session lifespan.
@@ -105,70 +93,33 @@ final class UserSession implements \SessionHandlerInterface {
     static private $tableName = 'share_session';
 
     /**
-     *
+     * @throws \ErrorException
      */
     public function __construct() {
-        $this->timeout = Object::_getConfigValue('session.timeout');
+        if (session_status() == PHP_SESSION_DISABLED) throw new \ErrorException('Session must be enabled');
+
         $this->lifespan = Object::_getConfigValue('session.lifespan');
-        $this->userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'ROBOT';
+        $this->userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'NOBODY';
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
     }
 
     public function init() {
+        if (!$this->isStarted && ($id = self::getSessionID())) {
+            if ($this->load($id)) {
+                $this->launch();
+                $this->dbh->modify('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
+            } else {
+                $this->kill();
+            }
+        }
+
+        return $this;
+    }
+
+    private function launch() {
         session_set_save_handler($this);
         session_name(self::DEFAULT_SESSION_NAME);
-        $this->status = self::STATUS_INITIALIZED;
 
-        return $this;
-    }
-
-    public function launch() {
-        if ($this->status < self::STATUS_INITIALIZED) {
-            $this->init();
-        } elseif ($this->status < self::STATUS_LAUNCHED) {
-            if ($this->load(self::getSessionID())) {
-                E()->getDB()->modify('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
-            } else {
-                $this->refuse();
-            }
-
-        }
-        $this->status = self::STATUS_LAUNCHED;
-        return $this;
-    }
-
-    /**
-     * @param null $UID
-     * @return array|bool
-     * @throws \Energine\share\gears\SystemException
-     */
-    public function create($UID = NULL) {
-        $data['session_last_impression'] = time();
-        $data['session_expires'] = $data['session_last_impression'] + 15 * 60;
-
-        if ($this->status == self::STATUS_STARTED) {
-            if ($UID != $this->UID) {
-                $this->UID = $data['u_id'] = $UID;
-                $data['session_data'] = 'UID|' . serialize($UID);
-                $data['session_ip'] = E()->getRequest()->getClientIP(true);
-            }
-            E()->getDB()->modify(QAL::UPDATE, self::$tableName, $data, ['session_id' => $this->id]);
-        } else {
-            $this->phpSessId = $data['session_native_id'] = self::createIdentifier();
-            $data['session_created'] = $data['session_last_impression'];
-            if ($UID) {
-                $this->UID = $data['u_id'] = $UID;
-                $data['session_data'] = 'UID|' . serialize($UID);
-            }
-            $data['session_ip'] = E()->getRequest()->getClientIP(true);
-            $this->id = E()->getDB()->modify(QAL::INSERT, self::$tableName, $data);
-            $_COOKIE[self::DEFAULT_SESSION_NAME] = $this->phpSessId;
-        }
-        $this->status = self::STATUS_CREATED;
-        E()->Response->addCookie(self::DEFAULT_SESSION_NAME, $this->phpSessId, $data['session_expires']);
-    }
-
-    private function forceStart() {
         // устанавливаем время жизни cookie
         if (Object::_getConfigValue('site.domain')) {
             $path = '/';
@@ -180,17 +131,23 @@ final class UserSession implements \SessionHandlerInterface {
         session_set_cookie_params($this->lifespan, $path, $domain);
         session_id($this->phpSessId);
         session_start();
+        $this->isStarted = true;
     }
 
-    public function start() {
-        if ($this->status < self::STATUS_LAUNCHED) {
+    public function start($UID = NULL) {
+        //if session not started
+        if (!$this->init()->isStarted) {
+            //Inserts session info into DB
+            $data['session_created'] = $data['session_last_impression'] = time();
+            $data['session_expires'] = $data['session_last_impression'] + $this->lifespan;
+            $data['session_ip'] = E()->getRequest()->getClientIP(true);
+            $this->phpSessId = $data['session_native_id'] = self::createIdentifier();
+            $this->id = $this->dbh->modify(QAL::INSERT, self::$tableName, $data);
+            //start PHP session
             $this->launch();
         }
 
-        if ($this->status < self::STATUS_STARTED) {
-            $this->forceStart();
-            $this->status = self::STATUS_STARTED;
-        }
+        if ($UID != $this->UID) $_SESSION['UID'] = $UID;
 
         return $this;
     }
@@ -201,7 +158,7 @@ final class UserSession implements \SessionHandlerInterface {
      *
      * @return bool
      */
-    static public function getSessionID() {
+    static private function getSessionID() {
         return (isset($_COOKIE[self::DEFAULT_SESSION_NAME]) && !empty($_COOKIE[self::DEFAULT_SESSION_NAME])) ? $_COOKIE[self::DEFAULT_SESSION_NAME] : false;
     }
 
@@ -213,15 +170,14 @@ final class UserSession implements \SessionHandlerInterface {
      * @return mixed|false
      */
     public function load($sessionID) {
-        $result = NULL;
+        $this->UID = $this->data = $this->id = $this->phpSessId = $result = NULL;
         if ($sessionID) {
-            $result = E()->getDB()->select(
+            $result = $this->dbh->select(
                 'SELECT * FROM ' . self::$tableName .
                 ' WHERE session_native_id = %s ' .
                 ' AND session_expires >= UNIX_TIMESTAMP()',
                 $sessionID
             );
-
             if ($result) {
                 $this->phpSessId = $sessionID;
                 list($row) = $result;
@@ -229,10 +185,7 @@ final class UserSession implements \SessionHandlerInterface {
                 $this->data = $row['session_data'];
                 $this->UID = $row['u_id'];
 
-                $result = true;
-            } else {
-                $this->phpSessId = NULL;
-                $result = false;
+                $this->isStarted = $result = true;
             }
         }
 
@@ -243,27 +196,29 @@ final class UserSession implements \SessionHandlerInterface {
     /**
      * Delete session information.
      */
-    public function refuse() {
+    public function kill() {
         if (isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])) {
-            $sessID = $_COOKIE[UserSession::DEFAULT_SESSION_NAME];
-            E()->getDB()->modify(QAL::DELETE, 'share_session', NULL, ['session_native_id' => $sessID]);
+            $sessionID = $_COOKIE[UserSession::DEFAULT_SESSION_NAME];
+            unset($_COOKIE[UserSession::DEFAULT_SESSION_NAME]);
             E()->Response->deleteCookie(UserSession::DEFAULT_SESSION_NAME);
         }
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_destroy();
+        } elseif (isset($sessionID)) {
+            $this->dbh->modify(QAL::DELETE, self::$tableName, NULL, ['session_native_id' => $sessionID]);
+        }
+
+        $this->isStarted = false;
+    }
+
+    public static function createIdentifier() {
+        return sha1(time() + rand(0, 10000));
     }
 
     public function getID() {
         return $this->id;
     }
 
-
-    /**
-     * Generate ID.
-     *
-     * @return string
-     */
-    private static function createIdentifier() {
-        return sha1(time() + rand(0, 10000));
-    }
 
     /**
      * Open session.
@@ -313,7 +268,6 @@ final class UserSession implements \SessionHandlerInterface {
             if ($this->UID) {
                 $data['u_id'] = $this->UID;
             }
-
             $this->dbh->modify(QAL::UPDATE, self::$tableName, $data, ['session_native_id' => $phpSessId]);
         }
         return true;
@@ -346,33 +300,4 @@ final class UserSession implements \SessionHandlerInterface {
         );
         return true;
     }
-
-    public function __get($var) {
-        $result = NULL;
-        if ($this->status < self::STATUS_LAUNCHED) {
-            $this->launch();
-        }
-        if ($var == 'UID') {
-            $result = $this->UID;
-        } elseif (isset($this->data[$var])) {
-            $result = $this->data[$var];
-        }
-
-        return $result;
-    }
-
-    function __set($name, $value) {
-        if ($this->status < self::STATUS_LAUNCHED) {
-            $this->launch();
-        }
-        $_SESSION[$name] = $value;
-    }
-
-    function __unset($name) {
-        if ($this->status < self::STATUS_LAUNCHED) {
-            $this->launch();
-        }
-        unset($_SESSION[$name]);
-    }
-
 }

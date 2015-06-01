@@ -33,8 +33,9 @@ class AuthUser extends User {
      * @todo избавиться от hardcoded имен полей формы?
      */
     public function __construct($id = false) {
-        $id = E()->UserSession->UID;
-
+        if(isset($_SESSION['UID'])){
+            $id = $_SESSION['UID'];
+        }
         parent::__construct($id);
     }
 
@@ -48,7 +49,7 @@ class AuthUser extends User {
      * @return boolean
      */
     public function isAuthenticated() {
-        return ($this->getID() === false) ? false : true;
+        return (bool)$this->getID();
     }
 
 

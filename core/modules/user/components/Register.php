@@ -102,7 +102,7 @@ class Register extends DBDataSet {
         try {
             $this->checkCaptcha();
             $this->saveData();
-            E()->UserSession->saved = true;
+
             $this->response->redirectToCurrentSection('success/');
         } catch (SystemException $e) {
             $this->failure($e->getMessage(), $_POST[$this->getTableName()]);

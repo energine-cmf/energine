@@ -1,7 +1,6 @@
 <?php
 use
     Energine\share\gears\UserSession,
-    Energine\share\gears\SystemException,
     Energine\share\gears\Object,
     Energine\share\gears\User,
     Energine\user\gears\FBOAuth,
@@ -35,21 +34,13 @@ if (
             $_POST['user']['password']
         )
         ) {
-            if (($cookieInfo = UserSession::manuallyCreateSessionInfo($UID))) {
-                call_user_func_array(
-                    [$response, 'addCookie'],
-                    $cookieInfo
-                );
-            }
-
+            E()->UserSession->start($UID);
         } else {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, 'bad auth data', time() + 60);
         }
         //о том прошла ли аутентификация успешноыны LoginForm узнает из куков
     } elseif ($logout) {
-        UserSession::manuallyDeleteSessionInfo();
-        //просто удаляем куку
-        $response->deleteCookie(UserSession::DEFAULT_SESSION_NAME);
+        E()->UserSession->kill();
     } elseif (
         $fbAuth
         &&
@@ -82,13 +73,7 @@ if (
                     $user = new User();
                     $user->create($userData);
                 }
-                if (($cookieInfo = UserSession::manuallyCreateSessionInfo($UID))) {
-                    call_user_func_array(
-                        [$response, 'addCookie'],
-                        $cookieInfo
-                    );
-                }
-
+                E()->UserSession->start($UID);
             }
         } catch (\Exception $e) {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);
@@ -136,13 +121,7 @@ if (
                     }
 
                 }
-                if (($cookieInfo = UserSession::manuallyCreateSessionInfo($UID))) {
-                    call_user_func_array(
-                        [$response, 'addCookie'],
-                        $cookieInfo
-                    );
-                }
-
+                E()->UserSession->start($UID);
             }
         } catch (\Exception $e) {
             $response->addCookie(UserSession::FAILED_LOGIN_COOKIE_NAME, $e->getMessage(), time() + 60);

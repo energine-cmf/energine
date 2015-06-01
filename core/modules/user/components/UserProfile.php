@@ -101,7 +101,7 @@ class UserProfile extends DBDataSet {
 
         if ($dd->getFieldDescriptionByName('u_password')) {
             if (!password_verify($this->document->user->getValue('u_password'), password_hash($_POST[$this->getTableName()]['u_password'], PASSWORD_DEFAULT))) {
-                E()->UserSession->error = true;
+                $_SESSION['error'] = true;
                 $this->response->redirectToCurrentSection('error/');
             }
 
@@ -123,7 +123,7 @@ class UserProfile extends DBDataSet {
 
         try {
             $this->document->user->update($data);
-            E()->UserSession->saved = true;
+            $_SESSION['saved'] = true;
 
             //переадресация
             $this->response->redirectToCurrentSection('success/');
@@ -158,11 +158,11 @@ class UserProfile extends DBDataSet {
      */
     protected function success() {
         //если в сессии нет переменной saved, значит этот метод пытаются дернуть напрямую. Не выйдет!
-        if (!E()->UserSession->saved) {
+        if (!isset($_SESSION['saved'])) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
         //Мавр сделал свое дело...
-        unset(E()->UserSession->saved);
+        unset($_SESSION['saved']);
 
         $this->setBuilder($this->createBuilder());
 
@@ -195,11 +195,11 @@ class UserProfile extends DBDataSet {
      */
     protected function error() {
         //если в сессии нет переменной error, значит этот метод пытаются дернуть напрямую. Не выйдет!
-        if (!E()->UserSession->error) {
+        if (!isset($_SESSION['error'])) {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }
         //Мавр сделал свое дело...
-        unset(E()->UserSession->error);
+        unset($_SESSION['error']);
 
         $this->setBuilder($this->createBuilder());
 

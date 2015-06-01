@@ -36,6 +36,11 @@ namespace Energine\share\gears {
      * Application registry.
      *
      * @property-read \Energine\share\gears\Utils $Utils
+     * @property-read \Energine\share\gears\UserSession $UserSession
+     * @property-read \Energine\share\gears\Request $Request
+     * @property-read \Energine\share\gears\Response $Response
+     * @property-read \Energine\share\gears\DocumentController $DocumentController
+     *
      *
      * Such Registry & Service Locator hybrid.
      * Any injected object here become a singleton.
@@ -181,20 +186,6 @@ namespace Energine\share\gears {
             }
             $this->entities['AuthUser'] = $anotherAuthUserObject;
         }
-
-        //todo VZ: remove this?
-        /*
-         * Пока непонятно что с ним делать
-         *
-         * public function substitute($object){
-         * if(!($className = get_class($object))){
-         * throw new Exception((string)$object.' is not an object');
-         * }
-         * if(isset($this->entities[$className])){
-         * throw new Exception($className.' is already used. You can not substitute it here.');
-         * }
-         * return $this->get($className);
-         * }*/
 
         /**
          * Get Request.

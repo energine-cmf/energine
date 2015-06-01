@@ -33,11 +33,7 @@ class AuthUser extends User {
      * @todo избавиться от hardcoded имен полей формы?
      */
     public function __construct($id = false) {
-        //Если есть в сессии данные о юзере
-        //это означает что сессия правильная
-        if (isset($_SESSION['userID'])) {
-            $id = $_SESSION['userID'];
-        }
+        $id = E()->UserSession->UID;
 
         parent::__construct($id);
     }

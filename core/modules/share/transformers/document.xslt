@@ -92,7 +92,9 @@
 
     <xsl:template match="/" mode="scripts">
         <xsl:if test="not($DOC_PROPS[@name='single'])"><!-- User JS is here--></xsl:if>
-
+    </xsl:template>
+    <xsl:template match="/" mode="jquery_scripts">
+        <xsl:if test="not($DOC_PROPS[@name='single'])"><!-- User JS is here--></xsl:if>
     </xsl:template>
 
     <xsl:template match="/" mode="og">
@@ -209,6 +211,7 @@
             <script type="text/javascript">
                 jQuery.noConflict();
             </script>
+            <xsl:apply-templates select="/" mode="jquery_scripts"/>
         </xsl:if>
         <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
             <xsl:apply-templates select="/document/javascript/library" mode="jquery"/>

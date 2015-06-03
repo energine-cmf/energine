@@ -526,7 +526,7 @@ final class Document extends Object implements IDocument {
             $result[$type] = trim(preg_replace('/<\?xml\s.+?>/sm', '', $result[$type]));
         }
 
-        if ($result[DivisionEditor::TMPL_LAYOUT] == ($resultDoc = preg_replace('/<content.*\/>/sm',
+        if ($result[DivisionEditor::TMPL_LAYOUT] == ($resultDoc = preg_replace('/<content((?!\<).)*\/>/sm',
                 $result[DivisionEditor::TMPL_CONTENT], $result[DivisionEditor::TMPL_LAYOUT]))
         ) {
             $resultDoc = $result[DivisionEditor::TMPL_LAYOUT] . $result[DivisionEditor::TMPL_CONTENT];

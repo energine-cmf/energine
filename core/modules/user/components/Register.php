@@ -14,6 +14,7 @@ class Register;
  * @version 1.0.0
  */
 namespace Energine\user\components;
+
 use Energine\share\components\DBDataSet,
     Energine\share\gears\User,
     Energine\share\gears\JSONCustomBuilder,
@@ -24,6 +25,7 @@ use Energine\share\components\DBDataSet,
     Energine\share\gears\Field,
     Energine\mail\gears\MailTemplate,
     Energine\mail\gears\Mail;
+
 /**
  * Registration form.
  *
@@ -41,7 +43,7 @@ class Register extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
         $this->setAction('save-new-user');
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
@@ -59,9 +61,10 @@ class Register extends DBDataSet {
     // Переопределен параметр active
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
-            array(
+            [
                 'active' => true,
-            ));
+                'noCaptcha' => false
+            ]);
         return $result;
     }
 
@@ -74,19 +77,19 @@ class Register extends DBDataSet {
         $result = !(bool)simplifyDBResult(
             $this->dbh->select(
                 $this->getTableName(),
-                array('COUNT(u_id) as number'),
-                array('u_name' => $login)
+                ['COUNT(u_id) as number'],
+                ['u_name' => $login]
             ),
             'number',
             true
         );
         $field = 'login';
         $message = ($result) ? $this->translate('TXT_LOGIN_AVAILABLE') : $this->translate('TXT_LOGIN_ENGAGED');
-        $result = array(
+        $result = [
             'result' => $result,
             'message' => $message,
             'field' => $field,
-        );
+        ];
         $builder = new JSONCustomBuilder();
         $this->setBuilder($builder);
         $builder->setProperties($result);
@@ -100,7 +103,9 @@ class Register extends DBDataSet {
     protected function save() {
         //inspect($_SESSION);
         try {
-            $this->checkCaptcha();
+            if (!$this->document->getUser()->isAuthenticated() && !$this->getParam('noCaptcha')) {
+                $this->checkCaptcha();
+            }
             $this->saveData();
 
             $this->response->redirectToCurrentSection('success/');
@@ -115,7 +120,7 @@ class Register extends DBDataSet {
      * @throws SystemException
      */
     protected function checkCaptcha() {
-        require_once(CORE_DIR.'/modules/share/gears/recaptchalib.php');
+        require_once(CORE_DIR . '/modules/share/gears/recaptchalib.php');
         $privatekey = $this->getConfigValue('recaptcha.private');
         $resp = recaptcha_check_answer($privatekey,
             $_SERVER["REMOTE_ADDR"],
@@ -140,7 +145,7 @@ class Register extends DBDataSet {
         $eFD->setMode(FieldDescription::FIELD_MODE_READ);
         $eFD->setType(FieldDescription::FIELD_TYPE_STRING);
         $this->getDataDescription()->addFieldDescription($eFD);
-        $this->getData()->load(array(array_merge(array('error_message' => $errorMessage), $data)));
+        $this->getData()->load([array_merge(['error_message' => $errorMessage], $data)]);
         $this->getDataDescription()->getFieldDescriptionByName('error_message')->removeProperty('title');
     }
 

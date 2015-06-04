@@ -18,7 +18,7 @@ namespace Energine\share\gears;
 class Site;
  * @endcode
  * @property-read int $id
- * @property-read string $
+ * @property-read string $base
  */
 class Site extends Object {
     use DBWorker {

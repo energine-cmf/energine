@@ -46,7 +46,6 @@ class FeedbackForm extends DBDataSet {
         }*/
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->setAction('send');
-        $this->setTitle($this->translate('TXT_FEEDBACK_FORM'));
         $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
 

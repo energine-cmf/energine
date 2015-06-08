@@ -45,7 +45,7 @@ class Register extends DBDataSet {
      */
     public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
-        $this->setAction('save-new-user');
+        $this->setAction((string)$this->config->getStateConfig('save')->uri_patterns->pattern, true);
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->user = new User();
         $this->setTableName(User::USER_TABLE_NAME);
@@ -201,7 +201,10 @@ class Register extends DBDataSet {
         if ($this->getDataDescription()->getFieldDescriptionByName('u_password')) {
             $this->getDataDescription()->removeFieldDescription($this->getDataDescription()->getFieldDescriptionByName('u_password'));
         }
-        $this->getDataDescription()->getFieldDescriptionByName('u_name')->setType(FieldDescription::FIELD_TYPE_EMAIL);
+
+        if ($this->getDataDescription()->getFieldDescriptionByName('u_name')) {
+            $this->getDataDescription()->getFieldDescriptionByName('u_name')->setType(FieldDescription::FIELD_TYPE_EMAIL);
+        }
     }
 
     /**

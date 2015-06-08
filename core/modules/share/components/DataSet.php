@@ -210,10 +210,13 @@ abstract class DataSet extends Component {
     /**
      * Set data description.
      *
+     * @param DataDescription $dataDescription
+     *
      * @final
+     * @return DataDescription
      */
     protected function setDataDescription(DataDescription $dataDescription) {
-        $this->dataDescription = $dataDescription;
+        return $this->dataDescription = $dataDescription;
     }
 
     /**

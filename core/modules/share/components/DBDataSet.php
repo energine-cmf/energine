@@ -788,7 +788,7 @@ class DBDataSet extends DataSet {
     final protected function getPreviousState() {
         if (!$this->previousState) {
             if (!isset($_POST['componentAction'])) {
-                throw new SystemException('ERR_NO_COMPONENT_ACTION', SystemException::ERR_CRITICAL);
+                return self::DEFAULT_STATE_NAME;
             } else {
                 $this->previousState = $_POST['componentAction'];
             }

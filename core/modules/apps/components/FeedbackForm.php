@@ -101,21 +101,21 @@ class FeedbackForm extends DBDataSet {
         $this->setData($dataObject);
 
         //Создаем сейвер
-        $this->saver = new Saver();
+        $saver = new Saver();
         //Устанавливаем его режим
-        $this->saver->setMode(self::COMPONENT_TYPE_FORM_ADD);
-        $this->saver->setDataDescription($this->getDataDescription());
-        $this->saver->setData($this->getData());
+        $saver->setMode(self::COMPONENT_TYPE_FORM_ADD);
+        $saver->setDataDescription($this->getDataDescription());
+        $saver->setData($this->getData());
 
-        if ($this->saver->validate() === true) {
-            $this->saver->setFilter($this->getFilter());
-            $this->saver->save();
-            $result = $this->saver->getResult();
+        if ($saver->validate() === true) {
+            $saver->setFilter($this->getFilter());
+            $saver->save();
+            $result = $saver->getResult();
 
         }
         else {
             //выдвигается пустой exception который перехватывается в методе save
-            throw new SystemException('ERR_VALIDATE_FORM', SystemException::ERR_WARNING, $this->saver->getErrors());
+            throw new SystemException('ERR_VALIDATE_FORM', SystemException::ERR_WARNING, $saver->getErrors());
         }
 
         return $result;

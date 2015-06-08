@@ -25,7 +25,8 @@
  * @version 1.0.1
  */
 
-ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader', 'Tags', 'Lookup');
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Tags', 'Lookup');
+//ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader', 'Tags', 'Lookup');
 
 /**
  * Form.
@@ -81,11 +82,6 @@ var Form = new Class(/** @lends Form# */{
      * @type {CodeMirror[]}
      */
     codeEditors: [],
-    /**
-     * Array of color picker controls
-     * @type {ColorPicker[]}
-     */
-    colorPickers: [],
 
 //    smapSelectors: [],
 
@@ -167,9 +163,6 @@ var Form = new Class(/** @lends Form# */{
                 this.booleanTags.push(new Form.BooleanTag(el, tags));
             }, this);
 
-        this.form.getElements('input.inp_color').each(function (el) {
-            this.colorPickers.push(new ColorPicker(el, {cellWidth: 8, cellHeight: 12}));
-        }, this);
 
         var showHideFunc = function (e) {
             e.stop();

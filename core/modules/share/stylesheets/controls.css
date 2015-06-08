@@ -128,18 +128,23 @@
 .e-pane-content .field .control input[type="text"]
 .e-pane-content .field .control input[type="password"],
 .e-pane-content .field .control input[type="email"],
-.e-pane-content .field .control input[type="phone"],
+.e-pane-content .field .control input[type="tel"],
+.e-pane-content .field .control input[type="color"],
 .e-pane-content .field .control select {
     width: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     outline: none;
 }
+.e-pane-content .field .control input[type="color"] {
+    height:30px;
+    padding:1px;
+}
 .e-pane-content .field .control select {
     width: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
-    height: 32px;
+    height: 30px;
 }
 .e-pane-content .field .control.type_code,
 .e-pane-content .field .control.type_htmlblock,

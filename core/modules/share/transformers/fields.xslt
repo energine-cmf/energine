@@ -114,15 +114,25 @@
 
     <!-- поле для почтового адреса (email) -->
     <xsl:template match="field[@type='email'][ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_email">
+        <input class="text inp_email form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">email</xsl:attribute>
+        </input>
+    </xsl:template>
+
+    <!-- поле для цвета -->
+    <xsl:template match="field[@type='color'][ancestor::component[@type='form']]" mode="field_input">
+        <input class="text inp_color form-control">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">color</xsl:attribute>
         </input>
     </xsl:template>
 
     <!-- поле для телефона (phone)-->
     <xsl:template match="field[@type='phone'][ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_phone">
+        <input class="text inp_phone form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">tel</xsl:attribute>
         </input>
     </xsl:template>
 
@@ -162,6 +172,7 @@
     <xsl:template match="field[@type='integer'][ancestor::component[@type='form']]" mode="field_input">
         <input length="5" class="text inp_integer">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">number</xsl:attribute>
             <xsl:if test="@length">
                 <xsl:attribute name="maxlength">5</xsl:attribute>
             </xsl:if>
@@ -177,12 +188,6 @@
 
     <xsl:template match="field[@type='money'][ancestor::component[@type='form']]" mode="field_input">
         <input class="text inp_money">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-    </xsl:template>
-
-    <xsl:template match="field[@type='color'][ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_color">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
     </xsl:template>

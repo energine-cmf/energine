@@ -103,6 +103,14 @@ final class UserSession implements \SessionHandlerInterface {
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
     }
 
+    /**
+     * Session initialization
+     * if valid session data exists  - PHP session started
+     * otherwise - session is not started
+     *
+     * @return $this
+     * @throws SystemException
+     */
     public function init() {
         if (!$this->isStarted && ($id = self::getSessionID())) {
             if ($this->load($id)) {
@@ -116,6 +124,9 @@ final class UserSession implements \SessionHandlerInterface {
         return $this;
     }
 
+    /**
+     * Real PHP session start procedure
+     */
     private function launch() {
         session_set_save_handler($this);
         session_name(self::DEFAULT_SESSION_NAME);
@@ -134,6 +145,11 @@ final class UserSession implements \SessionHandlerInterface {
         $this->isStarted = true;
     }
 
+    /**
+     * @param null $UID User ID - if NULL existing UID rewrited
+     * @return $this
+     * @throws SystemException
+     */
     public function start($UID = NULL) {
         //if session not started
         if (!$this->init()->isStarted) {
@@ -211,10 +227,18 @@ final class UserSession implements \SessionHandlerInterface {
         $this->isStarted = false;
     }
 
+    /**
+     * Creating session identifier
+     * @return string
+     */
     public static function createIdentifier() {
         return sha1(time() + rand(0, 10000));
     }
 
+    /**
+     *
+     * @return int Session ID
+     */
     public function getID() {
         return $this->id;
     }

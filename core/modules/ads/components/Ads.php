@@ -16,6 +16,8 @@ class Ads extends DBDataSet {
             parent::defineParams(),
             [
                 'type' => false,
+                'limit' => 1,
+                'order' => 'rand'
             ]
         );
     }
@@ -31,9 +33,17 @@ class Ads extends DBDataSet {
             'ads_item_is_active' => 1
         ]);
 
-        $this->setLimit([0,1]);
+        if ($limit = $this->getParam('limit')) {
+            $this->setLimit([0, $limit]);
+        }
 
-        $this->setOrder('RAND()');
+        if ($order = $this->getParam('order')) {
+            if ($order == 'rand') {
+                $this->setOrder('RAND()');
+            } else {
+                $this->setOrder('ads_item_order_num');
+            }
+        }
 
         parent::main();
     }

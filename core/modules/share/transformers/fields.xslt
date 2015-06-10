@@ -590,10 +590,12 @@
 
     <!-- read-only поле типа select -->
     <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]">
-        <div class="field">
-            <xsl:apply-templates select="." mode="field_name_readonly"/>
-            <xsl:apply-templates select="." mode="field_input_readonly"/>
-        </div>
+        <xsl:if test="options/option[@selected='selected']">
+            <div class="field">
+                <xsl:apply-templates select="." mode="field_name_readonly"/>
+                <xsl:apply-templates select="." mode="field_input_readonly"/>
+            </div>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">

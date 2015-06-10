@@ -199,7 +199,7 @@ final class ComponentManager extends Object implements \Iterator {
      * @return Component
      */
     public function getBlockByName($name) {
-        $result = false;
+        $result = null;
         if (isset($this->registeredBlocks[$name])) {
             $result = $this->registeredBlocks[$name];
         }

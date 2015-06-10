@@ -110,7 +110,7 @@ final class Document extends Object implements IDocument {
 
     public function __construct() {
         parent::__construct();
-        $this->user = E()->getAUser();
+        $this->user = E()->getUser();
         $this->language = E()->getLanguage();
         $this->lang = $this->language->getCurrent();
         $this->sitemap = E()->getMap();

@@ -107,7 +107,7 @@ final class Sitemap extends Object {
             'AND s.smap_id IN( ' .
             ' SELECT smap_id ' .
             ' FROM share_access_level ' .
-            ' WHERE group_id IN (' . implode(',', E()->getAUser()->getGroups()) . ')) ' .
+            ' WHERE group_id IN (' . implode(',', E()->getUser()->getGroups()) . ')) ' .
             'ORDER BY smap_order_num',
             $this->siteID,
             $this->langID
@@ -334,7 +334,7 @@ final class Sitemap extends Object {
      */
     public function getDocumentRights($docID, $groups = false) {
         if (!$groups) {
-            $groups = E()->getAUser()->getGroups();
+            $groups = E()->getUser()->getGroups();
         } elseif (!is_array($groups)) {
             $groups = [$groups];
         }

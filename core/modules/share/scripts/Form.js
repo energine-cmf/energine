@@ -111,7 +111,12 @@ var Form = new Class(/** @lends Form# */{
 
         if (this.form.getElements('input[type=text]').concat(this.form.getElements('select'), this.form.getElements('textarea')).length) {
             this.form.addEvent('keypress', function (e) {
-                if (e.key == 'enter') e.preventDefault();
+                if (e.key == 'enter') {
+                    var target = $(e.target);
+                    if ((target.get('tag') == 'input') && (target.getProperty('type') == 'text')) {
+                        e.preventDefault();
+                    }
+                }
             })
         }
 
@@ -1011,7 +1016,7 @@ Form.Label = /** @lends Form.Label */{
             }
         }
     }
-}
+};
 Form.BooleanTag = new Class({
     initialize: function (el, tagsControl) {
         this.el = el;

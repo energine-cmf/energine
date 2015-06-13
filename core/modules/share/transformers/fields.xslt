@@ -503,7 +503,7 @@
     <!-- шаблон-обвязка для любого поля, на которое права только чтение -->
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
-            <div class="field">
+            <div class="field readonly">
                 <xsl:apply-templates select="." mode="field_name_readonly"/>
                 <xsl:apply-templates select="." mode="field_input_readonly"/>
             </div>
@@ -512,18 +512,20 @@
 
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]" mode="field_name_readonly">
         <xsl:if test="@title">
-            <label for="{@name}">
-                <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes"/>
-            </label><xsl:text> </xsl:text>
+                <div class="name"><label for="{@name}">
+                    <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes"/>
+                </label></div>
         </xsl:if>
     </xsl:template>
 
     <!-- для любого поля, на которое права только чтение -->
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
-        <span class="read"><xsl:value-of select="." disable-output-escaping="yes"/></span>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
-        </input>
+        <div class="control">
+            <xsl:value-of select="." disable-output-escaping="yes"/>
+            <input>
+                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+            </input>
+        </div>
     </xsl:template>
 
     <!-- read-only поле логического типа -->
@@ -639,12 +641,13 @@
     </xsl:template>
 
     <!-- read-only поле типа date и datetime -->
-    <xsl:template match="field[@type='date' or @type='datetime'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+<!--    <xsl:template match="field[@type='date' or @type='datetime'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+
         <div class="read"><xsl:value-of select="." disable-output-escaping="yes"/></div>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
         </input>
-    </xsl:template>
+    </xsl:template>-->
 
 
     <!--

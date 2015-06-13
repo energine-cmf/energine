@@ -34,6 +34,7 @@
                             <xsl:if test="$LANG/@abbr != field[@name='lang_abbr']">
                             <xsl:value-of select="field[@name='lang_abbr']"/>/</xsl:if><xsl:value-of select="$RECORD/field[@name='Segment']"/>
                         </loc>
+                        <lastmod><xsl:value-of select="$RECORD/field[@name='LastMod']"/></lastmod>
                     </url>
                 </xsl:if>
                 </xsl:for-each>

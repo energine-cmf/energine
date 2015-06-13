@@ -124,6 +124,11 @@
     width: 68%;
     margin-left: -4px;
 }
+.e-pane-content .field.readonly {
+    font-weight: bold;
+    color: gray;
+    padding: 0;
+}
 .e-pane-content .field .control textarea,
 .e-pane-content .field .control input[type="text"]
 .e-pane-content .field .control input[type="password"],

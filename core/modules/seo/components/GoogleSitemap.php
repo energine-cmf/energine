@@ -88,6 +88,7 @@ class GoogleSitemap extends SitemapTree {
         foreach (array('Id' => FieldDescription::FIELD_TYPE_INT,
                      'Pid' => FieldDescription::FIELD_TYPE_INT,
                      'Segment' => FieldDescription::FIELD_TYPE_STRING,
+                     'LastMod' => FieldDescription::FIELD_TYPE_DATETIME,
                      'Site' => FieldDescription::FIELD_TYPE_STRING) as $fieldName => $fieldType) {
 
             $fd = new FieldDescription($fieldName);
@@ -98,18 +99,20 @@ class GoogleSitemap extends SitemapTree {
                 $fd->setType($fieldType);
 
             $dd->addFieldDescription($fd);
-
         }
+        $dd->getFieldDescriptionByName('LastMod')->setProperty('outputFormat', '%Y-%m-%d');
         $this->setDataDescription($dd);
         foreach (E()->getSiteManager() as $siteID => $site) {
             if ($site->isIndexed) {
                 $sitemap = E()->getMap($siteID);
                 $res = $sitemap->getInfo();
+
                 foreach ($res as $id => $info) {
                     $result [] = array(
                         'Id' => $id,
                         'Pid' => $info['Pid'],
                         'Name' => $info['Name'],
+                        'LastMod' => $info['LastMod'],
                         'Segment' => $sitemap->getURLByID($id),
                         'Site' => $site->base
                     );

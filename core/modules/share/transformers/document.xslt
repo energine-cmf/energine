@@ -131,8 +131,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
         <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
-        <!--<xsl:if test="$DOC_PROPS[@name='robots']!=''">
-            <meta name="robots" content="{$DOC_PROPS[@name='robots']}"/>
+<!--        <xsl:if test="$DOC_PROPS[@name='noindex']">
+            <meta name="robots" content="noindex"/>
         </xsl:if>-->
         <xsl:apply-templates select="." mode="og"/>
         <xsl:choose>

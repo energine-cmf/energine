@@ -150,7 +150,7 @@ final class Document extends Object implements IDocument {
         // устанавливаем свойства документа
         $this->setProperty('keywords', $this->documentInfo['MetaKeywords']);
         $this->setProperty('description', $this->documentInfo['MetaDescription']);
-        $this->setProperty('robots', $this->documentInfo['MetaRobots']);
+        //$this->setProperty('robots', $this->documentInfo['MetaRobots']);
         $this->setProperty('ID', $this->getID());
         $this->setProperty('default',
             $this->sitemap->getDefault() == $this->getID());

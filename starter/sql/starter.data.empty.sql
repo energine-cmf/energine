@@ -512,7 +512,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (300, 'FIELD_SMAP_LINK_ID'),
 (133, 'FIELD_SMAP_META_DESCRIPTION'),
 (131, 'FIELD_SMAP_META_KEYWORDS'),
-(1206, 'FIELD_SMAP_META_ROBOTS'),
+(1206, 'FIELD_SMAP_IS_INDEXED'),
 (129, 'FIELD_SMAP_NAME'),
 (125, 'FIELD_SMAP_ORDER_NUM'),
 (122, 'FIELD_SMAP_PID'),
@@ -2261,8 +2261,8 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (1204, 2, 'XML-код блока'),
 (1205, 1, 'Новый текстовый блок'),
 (1205, 2, 'Новий текстовий блок'),
-(1206, 1, 'Параметры индексирования страницы (содержимое meta-тега robots)'),
-(1206, 2, 'Параметри індексування сторінки (значення meta-тега robots)'),
+(1206, 1, 'Индексировать страницу в поисковиках'),
+(1206, 2, 'Індексувати сторінку'),
 (1207, 1, 'Вставить embed код'),
 (1207, 2, 'Вставити embed код'),
 (1208, 1, 'Применить'),
@@ -3135,7 +3135,7 @@ INSERT INTO `share_sites_translation` (`site_id`, `lang_id`, `site_name`, `site_
 (1, 2, 'Energine Platform', NULL, NULL);
 
 
-INSERT INTO `share_sitemap` (`smap_id`, `site_id`, `brand_id`, `smap_layout`, `smap_layout_xml`, `smap_content`, `smap_content_xml`, `smap_pid`, `smap_segment`, `smap_order_num`, `smap_redirect_url`, `smap_meta_robots`) VALUES
+INSERT INTO `share_sitemap` (`smap_id`, `site_id`, `brand_id`, `smap_layout`, `smap_layout_xml`, `smap_content`, `smap_content_xml`, `smap_pid`, `smap_segment`, `smap_order_num`, `smap_redirect_url`, `smap_is_indexed`) VALUES
 (80, 1, NULL, 'default.layout.xml', NULL, 'main.content.xml', NULL, NULL, '', 446, NULL, NULL),
 (330, 1, NULL, 'default.layout.xml', NULL, 'login.content.xml', NULL, 80, 'login', 180, NULL, NULL);
 

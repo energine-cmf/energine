@@ -586,6 +586,7 @@ CREATE TABLE IF NOT EXISTS `share_session` (
 
 CREATE TABLE IF NOT EXISTS `share_sitemap` (
   `smap_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `smap_last_mod` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `site_id` int(10) unsigned NOT NULL,
   `brand_id` int(11) unsigned DEFAULT NULL,
   `smap_layout` char(200) NOT NULL,
@@ -596,7 +597,7 @@ CREATE TABLE IF NOT EXISTS `share_sitemap` (
   `smap_segment` char(50) NOT NULL,
   `smap_order_num` int(10) unsigned DEFAULT '1',
   `smap_redirect_url` char(250) DEFAULT NULL,
-  `smap_meta_robots` text,
+  `smap_is_indexed` BOOLEAN DEFAULT TRUE,
   PRIMARY KEY (`smap_id`),
   UNIQUE KEY `smap_pid` (`smap_pid`,`site_id`,`smap_segment`),
   KEY `site_id` (`site_id`),

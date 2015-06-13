@@ -19,6 +19,7 @@ class Site;
  * @endcode
  * @property-read int $id
  * @property-read string $base
+ * @property-read bool $isIndexed
  */
 class Site extends Object {
     use DBWorker {

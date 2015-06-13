@@ -62,11 +62,6 @@ final class Sitemap extends Object {
      * @see Sitemap::defaultMetaKeywords
      */
     private $defaultMetaDescription;
-    /**
-     * Default Meta-Robots.
-     * @var string $defaultMetaRobots
-     */
-    private $defaultMetaRobots;
 
     /**
      * Current language ID.
@@ -149,7 +144,7 @@ final class Sitemap extends Object {
         $this->tree = TreeConverter::convert($res, 'smap_id', 'smap_pid');
 
         $res = $this->dbh->select('
-		  SELECT s.smap_id,ss.site_meta_keywords, ss.site_meta_description, sss.site_meta_robots 
+		  SELECT s.smap_id,ss.site_meta_keywords, ss.site_meta_description
             FROM share_sitemap s
             LEFT JOIN share_sites_translation ss ON ss.site_id=s.site_id
             LEFT JOIN share_sites sss ON sss.site_id=s.site_id 
@@ -159,7 +154,6 @@ final class Sitemap extends Object {
         $this->defaultID = $res['smap_id'];
         $this->defaultMetaKeywords = $res['site_meta_keywords'];
         $this->defaultMetaDescription = $res['site_meta_description'];
-        $this->defaultMetaRobots = $res['site_meta_robots'];
 
         $this->getSitemapData(array_keys($this->tree->asList()));
     }
@@ -237,7 +231,6 @@ final class Sitemap extends Object {
      * @return array
      */
     private function preparePageInfo($current) {
-        //inspect($current);
         //здесь что то лишнее
         //@todo А нужно ли вообще обрабатывать все разделы?
         $result = convertFieldNames($current, 'smap');
@@ -245,7 +238,6 @@ final class Sitemap extends Object {
         unset($result['siteId'], $result['OrderNum'], $result['langId'], $result['IsDisabled']);
         if (is_null($result['MetaKeywords'])) $result['MetaKeywords'] = $this->defaultMetaKeywords;
         if (is_null($result['MetaDescription'])) $result['MetaDescription'] = $this->defaultMetaDescription;
-        if (is_null($result['MetaRobots']) || empty($result['MetaRobots'])) $result['MetaRobots'] = $this->defaultMetaRobots;
 
         return $result;
     }

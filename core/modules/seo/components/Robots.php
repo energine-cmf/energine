@@ -146,38 +146,19 @@ class Robots extends DataSet {
      */
     protected function loadData() {
         $entries = array();
-
-        if (!$this->isSeoConfigured()) {
-
+        $site = E()->getSiteManager()->getCurrentSite();
+        if (!$this->isSeoConfigured() || !$site->isIndexed) {
             array_push($entries, array('entry' => 'User-agent: *' . PHP_EOL . 'Disallow: /'));
-
         } else {
-
             array_push($entries, array('entry' => 'User-agent: *' . PHP_EOL . 'Allow: /'));
-
             $this->createSitemapSegment();
-
-            $domainsInfo = $this->dbh->select(
-               'SELECT ss.site_id, sd.domain_protocol, sd.domain_host, sd.domain_root ' .
-               'FROM share_sites ss ' .
-               'INNER JOIN share_domain2site d2s ON ss.site_id = d2s.site_id ' .
-               'INNER JOIN share_domains sd ON  sd.domain_id = d2s.domain_id ' .
-               'WHERE ss.site_is_indexed'
+            array_push(
+                $entries,
+                array('entry' =>
+                    'Sitemap: ' . $site->base . E()->getConfigValue('seo.sitemapSegment')
+                )
             );
-
-            if ($domainsInfo) {
-                foreach($domainsInfo as $row) {
-                    array_push(
-                        $entries,
-                        array('entry' =>
-                            'Sitemap: ' . $row['domain_protocol'] . '://' . $row['domain_host'] .
-                            $row['domain_root'] . E()->getConfigValue('seo.sitemapSegment')
-                        )
-                    );
-                }
-            }
         }
-
         return $entries;
     }
 

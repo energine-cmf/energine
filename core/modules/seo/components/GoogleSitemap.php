@@ -38,13 +38,13 @@ class GoogleSitemap extends SitemapTree {
      * Maximal amount of records with information about video in file <tt>video sitemap</tt>.
      * @var int $maxVideos
      */
-    private $maxVideos;
+    protected $maxVideos;
 
     /**
      * Exemplar of PDO class.
      * @var \PDO $pdoDB
      */
-    private $pdoDB;
+    protected $pdoDB;
 
     /**
      * Default maximal amount of videos in file <tt>sitemap</tt>

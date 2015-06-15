@@ -75,6 +75,7 @@ final class SiteManager extends Object implements \Iterator {
         if (!$res) {
             throw new SystemException('ERR_NO_SITE', SystemException::ERR_DEVELOPER);
         }
+
         foreach ($res as $domainData) {
             $domainData = E()->Utils->convertFieldNames($domainData, 'domain_');
             //Если не установлен уже домен - для сайта - дописываем
@@ -111,10 +112,11 @@ final class SiteManager extends Object implements \Iterator {
         if (!$this->data[$this->currentSiteID]->isActive) {
             throw new SystemException('ERR_403', SystemException::ERR_403);
         }
+
     }
 
     /**
-     * Get exemplar of Site object by his ID.
+     * Get Site instance by its ID.
      *
      * @param int $siteID Site ID.
      * @return Site

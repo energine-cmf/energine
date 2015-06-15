@@ -77,7 +77,7 @@
             <field name="smap_layout"/>
             <field name="smap_segment" pattern="/^[a-z0-9\-\.]*$/" message="TXT_BAD_SEGMENT_FORMAT"/>
             <field name="smap_redirect_url"/>
-            <field name="smap_is_indexed"/>
+            <field name="smap_meta_robots"/>
             <field name="smap_is_disabled"/>
             <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>
             <field name="smap_name"/>
@@ -116,7 +116,7 @@
             <field name="smap_layout"/>
             <field name="smap_segment" pattern="/^[a-z0-9\-\.]*$/" message="TXT_BAD_SEGMENT_FORMAT"/>
             <field name="smap_redirect_url"/>
-            <field name="smap_is_indexed"/>
+            <field name="smap_meta_robots"/>
             <field name="smap_is_disabled"/>
             <field name="page_rights" type="custom" tabName="TAB_PAGE_RIGHTS"/>
             <field name="smap_name"/>

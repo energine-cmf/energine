@@ -20,6 +20,9 @@ class Site;
  * @property-read int $id
  * @property-read string $base
  * @property-read bool $isIndexed
+ * @property-read array $metaRobots
+ * @property-read string $metaKeywords
+ * @property-read string $metaDescription
  */
 class Site extends Object {
     use DBWorker {
@@ -46,7 +49,7 @@ class Site extends Object {
      */
     public function __construct($data) {
         parent::__construct();
-        $this->data = convertFieldNames($data, 'site_');
+        $this->data = E()->Utils->convertFieldNames($data, 'site_');
         if (is_null(self::$isPropertiesTableExists)) {
             self::$isPropertiesTableExists = $this->dbh->tableExists('share_sites_properties');
         }
@@ -62,13 +65,21 @@ class Site extends Object {
         $result = [];
         $res = E()->getDB()->select('share_sites');
         foreach ($res as $siteData) {
+            if(!empty($siteData['site_meta_robots'])){
+                $siteData['site_meta_robots'] = explode(',', $siteData['site_meta_robots']);
+            }
+            else {
+                $siteData['site_meta_robots'] = [];
+            }
+            $siteData['site_is_indexed'] = !in_array('NOINDEX', $siteData['site_meta_robots']);
             $result[$siteData['site_id']] = new Site($siteData);
         }
         $res = E()->getDB()->select('share_sites_translation');
+
         self::$siteTranslationsData = [];
         $f = function ($row) {
             unset($row['lang_id'], $row['site_id']);
-
+            $row = E()->Utils->convertFieldNames($row, 'site_');
             return $row;
         };
         foreach ($res as $row) {
@@ -103,8 +114,9 @@ class Site extends Object {
 
         if (isset($this->data[$propName])) {
             $result = $this->data[$propName];
-        } elseif (strtolower($propName) == 'name') {
-            $result = $this->data[$propName] = self::$siteTranslationsData[E()->getLanguage()->getCurrent()][$this->data['id']]['site_name'];
+        }
+        elseif (in_array($propName, ['name', 'metaKeywords', 'metaDescription'])) {
+            $result = $this->data[$propName] = self::$siteTranslationsData[E()->getLanguage()->getCurrent()][$this->data['id']][$propName];
         } elseif (self::$isPropertiesTableExists) {
             $res = $this->data[$propName] = $this->dbh->getScalar(
                 'SELECT prop_value FROM share_sites_properties

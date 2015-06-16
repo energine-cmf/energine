@@ -164,9 +164,9 @@ class FeedbackForm extends DBDataSet {
                     $template = new MailTemplate('feedback_form_admin', $data);
                     $mailer = new Mail();
                     $recipientID = false;
-                    if (isset($data['feed_type']) &&
-                            intval($data['feed_type'])) {
-                        $recipientID = $data['feed_type'];
+                    if (isset($data['rcp_id']) &&
+                            intval($data['rcp_id'])) {
+                        $recipientID = $data['rcp_id'];
                     }
                     $mailer
                         ->setFrom($this->getConfigValue('mail.from'))
@@ -200,11 +200,11 @@ class FeedbackForm extends DBDataSet {
     /**
      * Get recipient E-Mail.
      *
-     * @param bool $options Options.
+     * @param int $recipientID
      * @return string
      */
-    protected function getRecipientEmail($options = false) {
-        return $this->getParam('recipientEmail');
+    protected function getRecipientEmail($recipientID) {
+        return $this->dbh->getScalar('apps_feedback_recipient', 'rcp_recipients', ['rcp_id' => $recipientID]);
     }
 
     /**

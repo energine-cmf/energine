@@ -71,7 +71,7 @@
             <xsl:attribute name="href">
                 <xsl:choose>
                     <xsl:when test="$DOC_PROPS[@name='base']/@favicon!=''"><xsl:value-of select="$DOC_PROPS[@name='base']/@favicon"/></xsl:when>
-                    <xsl:otherwise><xsl:value-of select="$STATIC_URL"/>images/energine.ico"</xsl:otherwise>
+                    <xsl:otherwise><xsl:value-of select="$STATIC_URL"/>images/energine.ico</xsl:otherwise>
                 </xsl:choose>
             </xsl:attribute>
         </link>
@@ -210,7 +210,7 @@
         <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
             <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
         </xsl:if>
-        <xsl:if test="(count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0) or (count($VARS[@name='FORCE_USE_JQUERY']) &gt;0)">
+        <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
             <script type="text/javascript">
                 jQuery.noConflict();

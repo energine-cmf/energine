@@ -124,7 +124,7 @@
     <xsl:template match="field[@type='color'][ancestor::component[@type='form']]" mode="field_input">
         <input class="text inp_color form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-            <xsl:attribute name="type">color</xsl:attribute>
+            <xsl:attribute name="type">hidden</xsl:attribute>
         </input>
     </xsl:template>
 

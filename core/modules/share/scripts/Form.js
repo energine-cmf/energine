@@ -25,7 +25,7 @@
  * @version 1.0.1
  */
 
-ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Tags', 'Lookup');
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Tags', 'Lookup', 'mootools-colorpicker');
 //ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader', 'Tags', 'Lookup');
 
 /**
@@ -197,6 +197,13 @@ var Form = new Class(/** @lends Form# */{
         this.element.getElements('.uploader').each(function (uploader) {
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
+        var cps;
+        if(cps = this.element.getElements('input.inp_color')){
+            cps.each(function(colorElement){
+                new ColorPicker(colorElement);
+            }, this);
+        }
+
 
         (this.element.getElements('.inp_date') || []).append(this.element.getElements('.inp_datetime') || []).each(function (dateControl) {
             var isNullable = !dateControl.getParent('.field').hasClass('required');

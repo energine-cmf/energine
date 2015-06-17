@@ -25,7 +25,7 @@
  * @version 1.0.1
  */
 
-ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Tags', 'Lookup', 'mootools-colorpicker');
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Tags', 'Lookup');
 //ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader', 'Tags', 'Lookup');
 
 /**
@@ -200,7 +200,7 @@ var Form = new Class(/** @lends Form# */{
         var cps;
         if(cps = this.element.getElements('input.inp_color')){
             cps.each(function(colorElement){
-                new ColorPicker(colorElement);
+                new ColorPicker(colorElement, {'changeOnHover': true});
             }, this);
         }
 

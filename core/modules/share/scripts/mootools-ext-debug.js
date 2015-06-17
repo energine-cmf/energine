@@ -366,7 +366,7 @@ var ColorPicker = new Class({
                 .set('title', color)
                 .setStyle('background-color', color);
             this.input.getElement('i').removeClass('fa-eyedropper').addClass('fa-close');
-
+            this.element.set('value', color);
             var cc = new Color(color);
             this.input.setStyle('color', cc.invert());
         }
@@ -389,5 +389,12 @@ var ColorPicker = new Class({
             edge: 'upperLeft'
         });
         this.box.show();
+    }
+});
+
+Element.implement({
+    setPosition: function(obj){
+        if(obj)
+            return this.setStyles(this.computePosition(obj));
     }
 });

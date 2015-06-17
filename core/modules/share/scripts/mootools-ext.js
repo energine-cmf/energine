@@ -394,3 +394,4 @@ var ColorPicker = new Class({
         this.box.show();
     }
 });
+

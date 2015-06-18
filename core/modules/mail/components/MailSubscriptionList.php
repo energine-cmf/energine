@@ -29,7 +29,7 @@ class MailSubscriptionList extends DBDataSet {
     public function __construct($name, $module, array $params = NULL) {
         parent::__construct($name, $module, $params);
         $this->setTableName('mail_subscriptions');
-        $this->setFilter(['subscription_is_active' => '1']);
+        $this->setFilter(['subscription_is_active' => '1', 'subscription_is_hidden' => '0']);
         $this->setParam('active', true);
     }
 

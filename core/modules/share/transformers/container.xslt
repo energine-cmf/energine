@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns:dyn="http://exslt.org/dynamic"
+        extension-element-prefixes="dyn"
         version="1.0">
 
     <xsl:template match="layout | content | container">
@@ -95,6 +97,11 @@
         <xsl:apply-templates select="//container[@name=$CONTAINS] | $COMPONENTS[@name=$CONTAINS]">
             <xsl:with-param name="HOLDER_NAME"><xsl:if test="@widget='widget'"><xsl:value-of select="@name"/></xsl:if></xsl:with-param>
         </xsl:apply-templates>
+    </xsl:template>
+
+    <xsl:template match="container[@evaluate]">
+        <xsl:variable name="EXPRESSION" select="@evaluate"/>
+        <xsl:apply-templates select="dyn:evaluate($EXPRESSION)"/>
     </xsl:template>
 
     <!-- Заголовок блока по-умолчанию -->

@@ -336,10 +336,4 @@
     <xsl:template match="component[@class='SiteProperties']">
         <xsl:value-of select="." disable-output-escaping="yes"/>
     </xsl:template>
-
-    <xsl:template match="nrgn:insert-component">
-        <xsl:variable name="NAME" select="@name"/>
-        <xsl:apply-templates select="$COMPONENTS[@name=$NAME]"/>
-    </xsl:template>
-
 </xsl:stylesheet>

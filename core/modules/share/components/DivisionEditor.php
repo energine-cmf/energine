@@ -90,6 +90,18 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $this->setTableName('share_sitemap');
         $this->setTitle($this->translate('TXT_DIVISION_EDITOR'));
         $this->setParam('recordsPerPage', false);
+        if($this->getParam('site') && is_numeric($this->getParam('site'))){
+            $this->setStateParam('site_id', (int)$this->getParam('site'));
+        }
+    }
+
+    protected function defineParams() {
+        return array_merge(
+            parent::defineParams(),
+            [
+                'site' => false
+            ]
+        );
     }
 
     /**

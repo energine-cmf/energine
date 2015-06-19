@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    <state name="main" rights="3">
+    <state name="main">
         <uri_patterns>
             <pattern>/show/</pattern>
             <pattern>/show/[site_id]/</pattern>
@@ -20,13 +20,13 @@
             <control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
         </toolbar>
     </state>
-    <state name="getRawData" rights="3">
+    <state name="getRawData">
         <uri_patterns>
             <pattern>/[site_id]/get-data/</pattern>
             <pattern>/[site_id]/get-data/[string]/</pattern>
         </uri_patterns>
     </state>
-    <state name="getProperties" rights="3">
+    <state name="getProperties">
         <uri_patterns>
             <pattern>/get-node-data/</pattern>
         </uri_patterns>

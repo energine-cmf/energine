@@ -870,7 +870,7 @@ CREATE TABLE IF NOT EXISTS `test_feed` (
 
 CREATE TABLE IF NOT EXISTS `user_groups` (
   `group_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `group_name` char(50) NOT NULL DEFAULT '',
+  `group_name` char(100) NOT NULL DEFAULT '',
   `group_default` tinyint(1) NOT NULL DEFAULT '0',
   `group_user_default` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`group_id`),

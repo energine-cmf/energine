@@ -895,10 +895,11 @@ class FieldDescription extends Object implements \Iterator {
     public function validate($data) {
         if (
             !is_array($data) &&
-            (is_int($this->length) && strlen($data) > $this->length)
+            (is_int($this->length) && mb_strlen($data) > $this->length)
         ) {
             return false;
         }
+
         if ($this->getPropertyValue('pattern') && !preg_match($this->getPropertyValue('pattern'), $data)) {
             return false;
         }

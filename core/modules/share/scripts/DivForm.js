@@ -123,10 +123,12 @@ var DivForm = new Class(/** @lends DivForm# */{
         tabs.each(function (tab) {
             if (tab.data.lang) {
                 var checkbox = tab.pane.getElement('input[type="checkbox"]');
-                var disabled = checkbox.name.test(/share_sitemap_translation\[\d+\]\[smap_is_disabled\]/) ? checkbox.checked : false;
-                if (!disabled) {
-                    if (tab.pane.getElement('input[type="text"]').value.trim().length == 0) {
-                        valid = false;
+                if(checkbox) {
+                    var disabled = checkbox.name.test(/share_sitemap_translation\[\d+\]\[smap_is_disabled\]/) ? checkbox.checked : false;
+                    if (!disabled) {
+                        if (tab.pane.getElement('input[type="text"]').value.trim().length == 0) {
+                            valid = false;
+                        }
                     }
                 }
             }

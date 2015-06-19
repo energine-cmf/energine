@@ -101,7 +101,14 @@
 
     <xsl:template match="container[@evaluate]">
         <xsl:variable name="EXPRESSION" select="@evaluate"/>
-        <xsl:apply-templates select="dyn:evaluate($EXPRESSION)"/>
+        <xsl:choose>
+            <xsl:when test="@value">
+                <xsl:value-of select="dyn:evaluate($EXPRESSION)"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates select="dyn:evaluate($EXPRESSION)"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <!-- Заголовок блока по-умолчанию -->

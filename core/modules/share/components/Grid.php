@@ -12,14 +12,25 @@ class Grid;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears\Builder;
+use Energine\share\gears\AttachmentManager;
+use Energine\share\gears\ComponentConfig;
+use Energine\share\gears\Data;
+use Energine\share\gears\DataDescription;
 use Energine\share\gears\DocumentController;
 use Energine\share\gears\ExtendedSaver;
-use Energine\share\gears\FilterField;
+use Energine\share\gears\Field;
+use Energine\share\gears\FieldDescription;
+use Energine\share\gears\Filter;
 use Energine\share\gears\FilterData;
+use Energine\share\gears\FilterField;
 use Energine\share\gears\GridConfig;
+use Energine\share\gears\Image;
+use Energine\share\gears\JSONBuilder;
+use Energine\share\gears\JSONCustomBuilder;
+use Energine\share\gears\QAL;
 use Energine\share\gears\Saver;
-use Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\QAL, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\Filter, Energine\share\gears\ComponentConfig, Energine\share\gears\JSONBuilder, Energine\share\gears\TagManager, Energine\share\gears\Field, Energine\share\gears\AttachmentManager, Energine\share\gears\Image, Energine\share\gears\Data, Energine\share\gears\DataDescription;
+use Energine\share\gears\SystemException;
+use Energine\share\gears\TagManager;
 
 /**
  * Grid.
@@ -76,6 +87,11 @@ class Grid extends DBDataSet {
     protected $lookupEditor = NULL;
 
     /**
+     * @var ActionLog
+     */
+    protected $logClass = null;
+
+    /**
      * @copydoc DBDataSet::__construct
      */
     public function __construct($name, array $params = NULL) {
@@ -94,6 +110,7 @@ class Grid extends DBDataSet {
                 $this->orderColumn = $this->getParam('order');
             }
         }
+        $this->logClass = $this->getConfigValue('site.action_log');
     }
 
     /**
@@ -194,7 +211,13 @@ class Grid extends DBDataSet {
             }
 
             $this->deleteData($id);
-
+            if($this->logClass){
+                /**
+                 * @var ActionLog $logger
+                 */
+                $logger = new $this->logClass(get_class($this), $this->getName());
+                $logger->write(QAL::DELETE, $id);
+            }
             $b = new JSONCustomBuilder();
             $b->setProperty('result', true)->setProperty('mode', 'delete');
             $this->setBuilder($b);
@@ -317,9 +340,12 @@ class Grid extends DBDataSet {
         $transactionStarted = $this->dbh->beginTransaction();
         try {
             $result = $this->saveData();
-
             $transactionStarted = !($this->dbh->commit());
+            if($this->logClass){
+                $logger = new $this->logClass(get_class($this), $this->getName());
+                $logger->write($this->getSaver()->getMode(), $this->getSaver()->getData()->asArray(true));
 
+            }
             $b = new JSONCustomBuilder();
             $b->setProperties([
                 'data' => (is_int($result)) ? $result

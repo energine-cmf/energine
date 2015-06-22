@@ -557,6 +557,13 @@
         </input>
     </xsl:template>
 
+    <xsl:template match="field[@type='code'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+        <textarea class="code">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:value-of select="."/>
+        </textarea>
+    </xsl:template>
+
     <!-- для поля EMAIL на которое права только чтение -->
     <xsl:template match="field[@type='email'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
         <a href="mailto:{.}" class="email"><xsl:value-of select="."/></a>

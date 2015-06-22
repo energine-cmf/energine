@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content html_class="colset colset2">
+    <container name="left" column="column" html_class="col col1">
+        <container name="mainMenuContainer" block="beta" widget="widget">
+            <component name="mainMenu" class="Energine\share\components\PageList">
+                <params>
+                    <param name="tags">menu</param>
+                    <param name="recursive">1</param>
+                    <param name="config">core/modules/share/config/MainMenu.component.xml</param>
+                </params>
+            </component>
+        </container>
+        <container name="loginFormContainer" block="beta" widget="widget">
+            <component name="loginForm" class="Energine\user\components\LoginForm"/>
+        </container>
+    </container>
+    <container name="center" column="column" html_class="col col2 last_col">
+        <container name="actionsContainer" block="alfa" widget="static">
+            <component name="actionsList" class="Energine\share\components\ActionList">
+                <params>
+                    <param name="rights">3</param>
+                </params>
+            </component>
+        </container>
+    </container>
+</content>
+

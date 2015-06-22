@@ -763,7 +763,7 @@ var GridManager = new Class(/** @lends GridManager# */{
          * @type {Element}
          */
         this.element = $(element);
-
+        this.delConfirmCounter = 0;
         /**
          * Filter tool.
          * @type {Filter}
@@ -1256,7 +1256,8 @@ var GridManager = new Class(/** @lends GridManager# */{
     del: function () {
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
             'Do you really want to delete selected record?';
-        if (confirm(MSG_CONFIRM_DELETE)) {
+        if ((this.delConfirmCounter > 1) || confirm(MSG_CONFIRM_DELETE)) {
+            this.delConfirmCounter ++;
             this.overlay.show();
             Energine.request(this.singlePath + this.grid.getSelectedRecordKey() +
                 '/delete/', null,
@@ -1273,6 +1274,9 @@ var GridManager = new Class(/** @lends GridManager# */{
                     this.overlay.hide();
                 }.bind(this)
             );
+        }
+        else {
+            this.delConfirmCounter = 0;
         }
     },
     /**

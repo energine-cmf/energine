@@ -25,6 +25,9 @@ class FileRepositoryFTP;
  * @endcode
  */
 class FileRepositoryLocal extends Object implements IFileRepository {
+
+    use FileRepositoryWatermark;
+
     /**
      * Path to the cache for alternative images.
      * @var string IMAGE_ALT_CACHE
@@ -109,6 +112,9 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         if (!is_writable($dir)) {
             throw new SystemException('ERR_DIR_WRITE', SystemException::ERR_CRITICAL, $dir);
         }
+
+        $this->applyWatermark($sourceFilename);
+
         if (!copy($sourceFilename, $destFilename)) {
             throw new SystemException('ERR_COPY_UPLOADED_FILE', SystemException::ERR_CRITICAL, $destFilename);
         }
@@ -127,6 +133,9 @@ class FileRepositoryLocal extends Object implements IFileRepository {
         if (!file_put_contents($filePath, $fileData)) {
             throw new SystemException('ERR_PUT_FILE', SystemException::ERR_CRITICAL, $dir . DIRECTORY_SEPARATOR . $filePath);
         }
+
+        $this->applyWatermark($filePath);
+
         return $this->analyze($filePath);
     }
 

@@ -410,6 +410,11 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
 
 
         $transactionStarted = !($this->dbh->commit());
+        if($this->logClass){
+            $logger = new $this->logClass(get_class($this), $this->getName());
+            $logger->write($this->getSaver()->getMode(), $this->getSaver()->getData()->asArray(true));
+
+        }
         $b = $this->getBuilder();
         $b->setProperty('result', true)->setProperty('mode', $mode)->setProperty('url', $url);
     }

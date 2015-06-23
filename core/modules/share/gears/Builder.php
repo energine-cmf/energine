@@ -235,6 +235,9 @@ class Builder extends XMLBuilder {
             // empty() не пропускает значиния 0 и '0'
             if (!empty($fieldValue) || ($fieldValue === 0) || ($fieldValue === '0')) {
                 switch ($fieldInfo->getType()) {
+                    case FieldDescription::FIELD_TYPE_STRING:
+                        $fieldValue =E()->Utils->formatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldInfo->getType());
+                        break;
                     case FieldDescription::FIELD_TYPE_DATETIME:
                     case FieldDescription::FIELD_TYPE_DATE:
                     case FieldDescription::FIELD_TYPE_TIME:

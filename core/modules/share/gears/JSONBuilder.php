@@ -81,6 +81,11 @@ class JSONBuilder implements  IBuilder {
                         $fieldValue =
                                 $this->data->getFieldByName($fieldName)->getRowData($i);
                         switch ($fieldType) {
+                            case FieldDescription::FIELD_TYPE_STRING:
+                                if($fieldInfo->getPropertyValue('outputFormat')){
+                                    $fieldValue =E()->Utils->formatDate($fieldValue, $fieldInfo->getPropertyValue('outputFormat'), $fieldType);
+                                }
+                                break;
                             case FieldDescription::FIELD_TYPE_DATETIME:
                             case FieldDescription::FIELD_TYPE_DATE:
                             case FieldDescription::FIELD_TYPE_TIME:

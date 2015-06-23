@@ -938,6 +938,18 @@ CREATE TABLE share_sites_properties (
   UNIQUE KEY site_id (site_id,prop_name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+CREATE TABLE share_action_log (
+  al_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  al_date timestamp  on UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  u_id int(10) UNSIGNED NULL,
+  al_classname VARCHAR(100),
+  al_objectname VARCHAR(100),
+  al_data MEDIUMTEXT NULL,
+  PRIMARY KEY (al_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE `share_action_log`
+  ADD CONSTRAINT `share_action_log_uid` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `apps_feed`
   ADD CONSTRAINT `apps_feed_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1276,6 +1276,18 @@ var GridManager = new Class(/** @lends GridManager# */{
         }
     },
     /**
+     * Duplicate item
+     * @function
+     * @public
+     */
+    duplicate: function(){
+        Energine.request(
+            this.singlePath + this.grid.getSelectedRecordKey() + '/duplicate/',
+            null,
+            this.loadPage.pass(this.pageList.currentPage, this)
+        );
+    },
+    /**
      * Use action
      * Return selected record as a result of modal box call
      *

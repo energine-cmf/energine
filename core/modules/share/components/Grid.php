@@ -12,14 +12,25 @@ class Grid;
  */
 namespace Energine\share\components;
 
-use Energine\share\gears\Builder;
+use Energine\share\gears\AttachmentManager;
+use Energine\share\gears\ComponentConfig;
+use Energine\share\gears\Data;
+use Energine\share\gears\DataDescription;
 use Energine\share\gears\DocumentController;
 use Energine\share\gears\ExtendedSaver;
-use Energine\share\gears\FilterField;
+use Energine\share\gears\Field;
+use Energine\share\gears\FieldDescription;
+use Energine\share\gears\Filter;
 use Energine\share\gears\FilterData;
+use Energine\share\gears\FilterField;
 use Energine\share\gears\GridConfig;
+use Energine\share\gears\Image;
+use Energine\share\gears\JSONBuilder;
+use Energine\share\gears\JSONCustomBuilder;
+use Energine\share\gears\QAL;
 use Energine\share\gears\Saver;
-use Energine\share\gears\SystemException, Energine\share\gears\FieldDescription, Energine\share\gears\QAL, Energine\share\gears\JSONCustomBuilder, Energine\share\gears\Filter, Energine\share\gears\ComponentConfig, Energine\share\gears\JSONBuilder, Energine\share\gears\TagManager, Energine\share\gears\Field, Energine\share\gears\AttachmentManager, Energine\share\gears\Image, Energine\share\gears\Data, Energine\share\gears\DataDescription;
+use Energine\share\gears\SystemException;
+use Energine\share\gears\TagManager;
 
 /**
  * Grid.
@@ -61,7 +72,7 @@ class Grid extends DBDataSet {
      * Column name for user sorting.
      * @var string $orderColumn
      */
-    private $orderColumn = NULL;
+    private $orderColumn = null;
 
     /**
      * Filter.
@@ -73,12 +84,12 @@ class Grid extends DBDataSet {
      * Grid for select fields
      * @var \Lookup
      */
-    protected $lookupEditor = NULL;
+    protected $lookupEditor = null;
 
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name, array $params = NULL) {
+    public function __construct($name, array $params = null) {
         parent::__construct($name, $params);
 
         $this->setProperty('exttype', 'grid');
@@ -225,7 +236,7 @@ class Grid extends DBDataSet {
                 ]), [$orderColumn => QAL::ASC]);
 
         }
-        $this->dbh->modify(QAL::DELETE, $this->getTableName(), NULL, [$this->getPK() => $id]);
+        $this->dbh->modify(QAL::DELETE, $this->getTableName(), null, [$this->getPK() => $id]);
 
         //если определен порядок следования перестраиваем индекс сортировки
         if ($orderColumn && $ids) {
@@ -281,7 +292,6 @@ class Grid extends DBDataSet {
 
     /**
      * Lookup state
-     *
      * @throws SystemException
      */
     protected function lookup() {
@@ -322,10 +332,10 @@ class Grid extends DBDataSet {
 
             $b = new JSONCustomBuilder();
             $b->setProperties([
-                'data' => (is_int($result)) ? $result
+                'data'   => (is_int($result)) ? $result
                     : (int)$_POST[$this->getTableName()][$this->getPK()],
                 'result' => true,
-                'mode' => (is_int($result)) ? 'insert' : 'update'
+                'mode'   => (is_int($result)) ? 'insert' : 'update'
             ]);
             $this->setBuilder($b);
         } catch (\Exception $e) {
@@ -767,8 +777,8 @@ class Grid extends DBDataSet {
         $sp = $this->getStateParams(true);
         $attachmentEditorParams = [
             'origTableName' => $this->getTableName(),
-            'pk' => $this->getPK(),
-            'tableName' => $this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX,
+            'pk'            => $this->getPK(),
+            'tableName'     => $this->getTableName() . AttachmentManager::ATTACH_TABLE_SUFFIX,
         ];
 
         if (isset($sp['id'])) {
@@ -789,7 +799,8 @@ class Grid extends DBDataSet {
      */
     protected function tags() {
         $this->request->setPathOffset($this->request->getPathOffset() + 1);
-        $this->tagEditor = $this->document->componentManager->createComponent('tageditor', 'Energine\share\components\TagEditor',
+        $this->tagEditor = $this->document->componentManager->createComponent('tageditor',
+            'Energine\share\components\TagEditor',
             ['config' => 'core/modules/share/config/TagEditorModal.component.xml']);
         $this->tagEditor->run();
     }
@@ -935,7 +946,7 @@ class Grid extends DBDataSet {
                 // двигаем элемент выше или ниже id=$secondItem
                 case 'above':
                 case 'below':
-                    $secondItem = (!empty($params[2])) ? $params[2] : NULL;
+                    $secondItem = (!empty($params[2])) ? $params[2] : null;
                     if ($secondItem == intval($secondItem) && $firstItem != $secondItem) {
                         $secondItemOrderNum = $this->dbh->getScalar(
                             'SELECT ' . $this->getOrderColumn() . ' as secondItemOrderNum ' .
@@ -983,6 +994,41 @@ class Grid extends DBDataSet {
         $this->changeOrder(Grid::DIR_DOWN);
     }
 
+    protected function duplicate($id) {
+        $transactionStarted = $this->dbh->beginTransaction();
+        try {
+            $this->dbh->getColumnsInfo('shop_goods');
+            $cols = array_keys(array_filter($this->dbh->getColumnsInfo($this->getTableName()), function($info){
+                return $info['index'] != 'PRI';
+            }, ARRAY_FILTER_USE_BOTH));
+inspect($cols);
+            if(!empty($cols)){
+                $request = 'INSERT INTO '.$this->getTableName().'('.implode(',', $cols).') SELECT '.implode(',', $cols).' FROM '.$this->getTableName().' WHERE '.$this->getPK().'='.$id;
+                //$this->dbh->modify('INSERT INTO '.$this->getTableName().'('.implode(',', $cols).') SELECT '.implode(',', $cols).' FROM '.$this->getTableName().' WHERE '.$this->getPK().'='.$id);
+            }
+            else {
+
+            }
+
+
+            if (!$this->recordExists($id)) {
+                throw new SystemException('ERR_404', SystemException::ERR_404);
+            }
+
+
+            $b = new JSONCustomBuilder();
+            $b->setProperty('result', true)->setProperty('mode', 'duplicate');
+            $this->setBuilder($b);
+
+            $this->dbh->commit();
+        } catch (SystemException $e) {
+            if ($transactionStarted) {
+                $this->dbh->rollback();
+            }
+            throw $e;
+        }
+    }
+
     /**
      * Change order.
      * @param string $direction Direction.
@@ -999,7 +1045,8 @@ class Grid extends DBDataSet {
         list($currentID) = $currentID;
 
         //Определяем order_num текущей страницы
-        $currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(), [$this->getPK() => $currentID]);
+        $currentOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(),
+            [$this->getPK() => $currentID]);
 
         $orderDirection = ($direction == Grid::DIR_DOWN) ? QAL::ASC : QAL::DESC;
 
@@ -1025,7 +1072,7 @@ class Grid extends DBDataSet {
         $data =
             convertDBResult($this->dbh->select($request), 'neighborID');
         if ($data) {
-            $neighborID = NULL;
+            $neighborID = null;
             $neighborOrderNum = 0;
             extract(current($data));
             $this->dbh->beginTransaction();
@@ -1046,7 +1093,7 @@ class Grid extends DBDataSet {
         $b = new JSONCustomBuilder();
         $b->setProperties([
             'result' => true,
-            'dir' => $direction
+            'dir'    => $direction
         ]);
         $this->setBuilder($b);
     }
@@ -1136,7 +1183,7 @@ class Grid extends DBDataSet {
                 if (is_array($tags) && !empty($tags)) {
                     foreach ($tags as $tag) {
                         $result['data'][] = [
-                            'key' => $tag,
+                            'key'   => $tag,
                             'value' => $tag
                         ];
                     }
@@ -1145,7 +1192,7 @@ class Grid extends DBDataSet {
         } catch (\Exception $e) {
             $result = [
                 'result' => false,
-                'data' => false,
+                'data'   => false,
                 'errors' => []
             ];
         }

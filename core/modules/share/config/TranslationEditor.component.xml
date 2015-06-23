@@ -13,6 +13,9 @@
 				<control id="add" title="BTN_ADD" type="button" onclick="add"/>
 				<control id="edit" title="BTN_EDIT" type="button" onclick="edit"/>
 				<control id="delete" title="BTN_DELETE" type="button" onclick="del"/>
+                <control id="sep1" type="separator"/>
+                <control id="duplicate" title="BTN_DUPLICATE" type="button" onclick="duplicate"/>
+                <control id="sep2" type="separator"/>
 				<control id="close" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
 		</state>
@@ -54,6 +57,11 @@
                 <control id="sep1" type="separator" />
 				<control id="list" title="BTN_CLOSE" type="button" onclick="close"/>
 			</toolbar>
+		</state>
+		<state name="duplicate" rights="3">
+		     <uri_patterns>
+		         <pattern>/[int]/duplicate/</pattern>
+		     </uri_patterns>
 		</state>
 		<state name="save" rights="3">
 		     <uri_patterns>

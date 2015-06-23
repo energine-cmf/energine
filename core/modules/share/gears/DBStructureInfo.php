@@ -222,10 +222,10 @@ class DBStructureInfo extends Object {
 		$mul = '(?:^\s*(?:UNIQUE\s*)?KEY\s+`\w+`\s+\((?<muls>.*)\),?$)';
 
 		$pri = '(?:PRIMARY KEY\s+\((?<pri>[^\)]*)\))';
-
 		$pattern = "/(?:$row|$constraint|$mul|$pri)/im";
 
 		if (preg_match_all($pattern, trim($fields), $matches)) {
+inspect($matches);
 			if ($matches['name']) {
 				// список полей в первичном ключе
                 $pri = array();
@@ -237,12 +237,15 @@ class DBStructureInfo extends Object {
 						}
 					}
 				}
-
+                $uniques = [];
 				// список полей входящих в индексы
                 $muls = array();
 				if (isset($matches['muls'])) {
 					$mulStr = '';
 					foreach ($matches['muls'] as $s) {
+                        if(strpos($s, 'unique') !== false){
+
+                        }
 						if ($s) $mulStr .= ($mulStr ? ',' : '').$s;
 					}
 					$muls = array_map($trimQ, explode(',', $mulStr));

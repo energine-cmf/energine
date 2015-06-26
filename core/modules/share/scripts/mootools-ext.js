@@ -356,22 +356,19 @@ var ColorPicker = new Class({
         return this;
     },
     selectColor: function (color) {
-        console.log(color)
         this.box.hide();
         this.setColor(color);
         this.element.fireEvent('onSelectColor');
     },
     setColor: function (color) {
-
         if (color) {
             this.input.set('data-color', color)
                 .set('title', color)
                 .setStyle('background-color', color);
             this.input.getElement('i').removeClass('fa-eyedropper').addClass('fa-close');
-
+            this.element.set('value', color);
             var cc = new Color(color);
-            console.log(cc)
-            //this.input.setStyle('color', cc.invert());
+            this.input.setStyle('color', cc.invert());
         }
     },
     resetColor: function () {
@@ -395,3 +392,33 @@ var ColorPicker = new Class({
     }
 });
 
+Element.implement({
+    setPosition: function (obj) {
+        if (obj)
+            return this.setStyles(this.computePosition(obj));
+    }
+});
+
+Number.implement({
+    formatCurrency: function (decimals) {
+        if (this.format) {
+            var locale = Locale.get('Number.currency') || {};
+            if (locale.scientific == null) locale.scientific = false;
+            locale.decimals = decimals != null ? decimals
+                : (locale.decimals == null ? 2 : locale.decimals);
+
+            return this.format(locale);
+        }
+
+    },
+    formatPercentage: function(decimals){
+        if (this.format) {
+            var locale = Locale.get('Number.percentage') || {};
+            if (locale.suffix == null) locale.suffix = '%';
+            locale.decimals = decimals != null ? decimals
+                : (locale.decimals == null ? 2 : locale.decimals);
+
+            return this.format(locale);
+        }
+   	}
+});

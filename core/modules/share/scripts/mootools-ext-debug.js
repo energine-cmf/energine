@@ -393,8 +393,32 @@ var ColorPicker = new Class({
 });
 
 Element.implement({
-    setPosition: function(obj){
-        if(obj)
+    setPosition: function (obj) {
+        if (obj)
             return this.setStyles(this.computePosition(obj));
     }
+});
+
+Number.implement({
+    formatCurrency: function (decimals) {
+        if (this.format) {
+            var locale = Locale.get('Number.currency') || {};
+            if (locale.scientific == null) locale.scientific = false;
+            locale.decimals = decimals != null ? decimals
+                : (locale.decimals == null ? 2 : locale.decimals);
+
+            return this.format(locale);
+        }
+
+    },
+    formatPercentage: function(decimals){
+        if (this.format) {
+            var locale = Locale.get('Number.percentage') || {};
+            if (locale.suffix == null) locale.suffix = '%';
+            locale.decimals = decimals != null ? decimals
+                : (locale.decimals == null ? 2 : locale.decimals);
+
+            return this.format(locale);
+        }
+   	}
 });

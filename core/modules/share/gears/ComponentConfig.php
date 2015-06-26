@@ -67,6 +67,18 @@ class ComponentConfig {
         if (!$config || is_string($config)) {
             $config = ($param = $this->getConfigPath($config, $moduleName)) ? $param
                     : $this->getConfigPath(simplifyClassName($className) . '.component.xml', $moduleName);
+            //search in parents classes configs
+            if(!$config){
+                foreach(class_parents($className) as $tClass){
+                    list(,$pModuleName,,$pClassName) = explode('\\', $tClass);
+                    if(in_array($pClassName, ['DBDataSet', 'DataSet', 'Component'])){
+                        break;
+                    }
+                    if($config = $this->getConfigPath(simplifyClassName($pClassName) . '.component.xml', $pModuleName)){
+                        break;
+                    }
+                }
+            }
 
             if ($config) {
                 try {

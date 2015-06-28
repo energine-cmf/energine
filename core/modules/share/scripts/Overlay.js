@@ -46,7 +46,11 @@ var Overlay = new Class(/** @lends Overlay# */{
         this.parentElement = parentElement;
 
         //создаем елемент но не присоединяем его
-        this.element = new Element('div', {'class': 'e-overlay' + ((this.options.indicator) ? ' e-overlay-loading' : ''), 'styles':{'opacity': 0}});
+        this.element = new Element('div', {'class': 'e-overlay' + ((this.options.indicator) ? ' e-overlay-loading' : ''), 'styles':{'opacity': 0}, events: {
+            'click': function(){
+                ModalBox.close();
+            }
+        }});
     },
 
     /**

@@ -6,9 +6,9 @@
  * It contains the definition to:
  * @code
 class DocumentController;
-interface ITransformer;
-interface IDocument;
-@endcode
+ * interface ITransformer;
+ * interface IDocument;
+ * @endcode
  *
  * @author 1m.dm
  * @copyright Energine 2006
@@ -120,7 +120,7 @@ class DocumentController extends Object {
 
         try {
             $document = E()->getDocument();
-            $document->loadComponents();
+            $document->loadComponents([$this, 'getXMLStructure']);
             $document->runComponents();
 
             if (($p = sizeof($path = E()->getRequest()->getPath())) != ($o = E()->getRequest()->getUsedSegments())) {
@@ -142,6 +142,48 @@ class DocumentController extends Object {
             $document->build();
         }
         E()->getResponse()->write($this->transform($document));
+    }
+
+    public function getXMLStructure($documentID) {
+        $result = [];
+        $loadDataFromFile = function ($fileName, $type) {
+            if (!($result = file_get_contents(
+                Document::TEMPLATES_DIR .
+                constant(
+                    '\\Energine\\share\\gears\\Document::TMPL_' .
+                    strtoupper($type)) .
+                '/' . $fileName))
+            ) {
+                throw new SystemException('ERR_WRONG_' . strtoupper($type));
+            }
+
+            return $result;
+        };
+        $docData = E()->getMap()->getDocumentInfo($documentID);
+        libxml_use_internal_errors(true);
+        foreach ([Document::TMPL_LAYOUT, Document::TMPL_CONTENT] as $type) {
+            //Если нет данных поле
+            if (!$docData[ucfirst($type) . 'Xml']) {
+                //Берем из файла
+                $result[$type] = $loadDataFromFile($docData[ucfirst($type)], $type);
+            } else {
+                $result[$type] = $docData[ucfirst($type) . 'Xml'];
+            }
+            $result[$type] = trim(preg_replace('/<\?xml\s.+?>/sm', '', $result[$type]));
+        }
+
+        if ($result[Document::TMPL_LAYOUT] == ($resultDoc = preg_replace('/<content((?!\<).)*\/>/sm',
+                $result[Document::TMPL_CONTENT], $result[Document::TMPL_LAYOUT]))
+        ) {
+            $resultDoc = $result[Document::TMPL_LAYOUT] . $result[Document::TMPL_CONTENT];
+        }
+
+        if (!$resultDoc = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?><structure>' . $resultDoc . '</structure>')) {
+            list($simpleXMLError) = libxml_get_errors();
+            throw new SystemException('ERR_BAD_STRUCTURE', SystemException::ERR_CRITICAL, $simpleXMLError->message);
+        }
+
+        return $resultDoc;
     }
 
     /**

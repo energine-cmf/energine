@@ -319,13 +319,13 @@ TreeView.Node = new Class(/** @lends TreeView.Node# */{
         this.tree = tree;
         if (typeOf(nodeInfo) == 'element') {
             this.element = $(nodeInfo);
-            this.element.getElement('a').setProperty('href', '#');
+            this.element.getElement('a').setProperty('href', Energine.base + Energine.lang + '/');
             this.id = this.element.getProperty('id');
         } else {
             this.element = new Element('li').adopt(
                 new Element('a')
                     .setProperties({
-                        'href': '#'
+                        'href': Energine.base + Energine.lang + '/' + nodeInfo['data']['segment']
                     })
                     .set('html', nodeInfo['name'])
             );

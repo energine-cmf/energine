@@ -42,16 +42,6 @@ final class DivisionEditor;
  */
 class DivisionEditor extends Grid implements SampleDivisionEditor {
     /**
-     * Template content.
-     * @var string TMPL_CONTENT
-     */
-    const TMPL_CONTENT = 'content';
-    /**
-     * Template layout.
-     * @var string TMPL_LAYOUT
-     */
-    const TMPL_LAYOUT = 'layout';
-    /**
      * Site editor.
      * @var SiteEditor $siteEditor
      */
@@ -438,7 +428,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $field = $this->getData()->getFieldByName('smap_pid');
         $smapSegment = $sitemap->getURLByID($actionParams['pid']);
 
-        foreach ([self::TMPL_CONTENT, self::TMPL_LAYOUT] as $type)
+        foreach ([Document::TMPL_CONTENT, Document::TMPL_LAYOUT] as $type)
             if ($f = $this->getDataDescription()->getFieldDescriptionByName(
                 'smap_' . $type)
             ) {
@@ -490,7 +480,7 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $site =
             E()->getSiteManager()->getSiteByID($this->getData()->getFieldByName('site_id')->getRowData(0));
 
-        foreach ([self::TMPL_CONTENT, self::TMPL_LAYOUT] as $type)
+        foreach ([Document::TMPL_CONTENT, Document::TMPL_LAYOUT] as $type)
             if ($f = $this->getDataDescription()->getFieldDescriptionByName(
                 'smap_' . $type)
             ) {

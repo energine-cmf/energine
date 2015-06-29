@@ -184,6 +184,7 @@ var DivManager = new Class(/** @lends DivManager# */{
                     id: childId,
                     name: child['smap_name'],
                     data: {
+                        'segment':child['smap_segment'],
                         'class': ((childId == currentNodeID) ? ' current' : ''),
                         'icon': icon
                     }

@@ -228,260 +228,197 @@ var PostMessager = new Class({
 
 });
 
-/*
- ---
- description: Simple color picker for mootools.
-
- license: MIT-style
-
- authors:
- - Fiona Coulter
-
- requires:
- - core/1.2: [Class, Class.Extras, Element, Element.Event,Element.Style,Fx,Fx.Tween]
-
- provides: [ColorPicker]
-
- ...
- */
-
 var ColorPicker = new Class({
-    getOptions: function () {
-        return {
-            cellWidth: 5, cellHeight: 10, top: 20, left: -100, transition: true
-        };
+    Implements: [Options],
+    options: {
+        defaultColor: '#FFFFFF',
+        colorsPerLine: 8,
+        changeOnHover: false,
+        prefix: 'colorpicker',
+        colors: ['#000000', '#444444', '#666666', '#999999', '#cccccc', '#eeeeee', '#f3f3f3', '#ffffff'
+            , '#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#9900ff', '#ff00ff'
+            , '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#d0e0e3', '#cfe2f3', '#d9d2e9', '#ead1dc'
+            , '#ea9999', '#f9cb9c', '#ffe599', '#b6d7a8', '#a2c4c9', '#9fc5e8', '#b4a7d6', '#d5a6bd'
+            , '#e06666', '#f6b26b', '#ffd966', '#93c47d', '#76a5af', '#6fa8dc', '#8e7cc3', '#c27ba0'
+            , '#cc0000', '#e69138', '#f1c232', '#6aa84f', '#45818e', '#3d85c6', '#674ea7', '#a64d79'
+            , '#990000', '#b45f06', '#bf9000', '#38761d', '#134f5c', '#0b5394', '#351c75', '#741b47'
+            , '#660000', '#783f04', '#7f6000', '#274e13', '#0c343d', '#073763', '#20124d', '#4C1130']
     },
-    initialize: function (el, options) {
-        this.setOptions(this.getOptions(), options);
-        var ms = new String(MooTools.version);
-        this.version = ms.substr(0, 3);
-
-        if (this.version == '1.1') {
-            this.el = $(el);
-
-        }
-        else {
-            this.el = document.id(el);
-        }
-        this.el.addEvent("focus", function (e) {
-            this.openPicker();
-        }.bind(this));
-        this.el.addEvent("change", function (e) {
-            this.validate();
-            this.closePicker();
-        }.bind(this));
-        this.el.addEvent('keyup', function (e) {
-            e = new Event(e);
-            try {
-                this.colorPanel.setStyle("backgroundColor", this.el.value);
-            } catch (e) {
+    element: null,
+    box: null,
+    input: null,
+    initialize: function (element, options) {
+        this.setOptions(options);
+        this.element = document.id(element);
+        Asset.css('mootools-colorpicker.css');
+        // Create element
+        this.build();
+    },
+    build: function () {
+        // Build colorbox
+        this.box = new Element('div', {
+            'class': 'colorpicker-box',
+            id: this.options.prefix + '-colorbox',
+            events: {
+                mouseleave: function () {
+                    if (this.options.changeOnHover === true) {
+                        this.setColor(this.element.get('value'));
+                    }
+                }.bind(this)
             }
-        }.bind(this));
-
-        this.height = this.options.cellHeight * 8 + this.options.top;
-        this.active = false;
-
-
-        this.container = new Element("div");
-
-        this.el.parentNode.insertBefore(this.container, this.el);
-        this.container.appendChild(this.el);
-        this.el.setStyle("float", "left");
-
-
-        this.colorPanel = new Element("input");
-        this.colorPanel.setAttribute("size", "2");
-        this.colorPanel.setAttribute("type", "text");
-        this.colorPanel.setAttribute("readonly", "readonly");
-        this.colorPanel.setStyle("backgroundColor", this.el.value);
-        this.colorPanel.setStyle("cursor", "pointer");
-        this.colorPanel.setStyle("float", "left");
-
-        this.colorPanel.addEvent("focus", function (e) {
-            this.openPicker();
-        }.bind(this));
-        this.container.appendChild(this.colorPanel);
-
-        this.infoPanel = new Element("span");
-        this.infoPanel.setStyle("float", "left");
-        this.container.appendChild(this.infoPanel);
-
-        //color chart container
-        this.chartContainer = new Element("div");
-        this.chartContainer.setStyles({
-            position: "relative",
-            "z-index": 100,
-            cursor: "pointer",
-            "background-color": "#000000",
-            float: "left",
-            "overflow": "visible"
         });
-        this.chartContainer.addEvent('blur', function (e) {
-            e = new Event(e);
-            this.closePicker();
-        }.bind(this));
 
-
-        this.container.parentNode.insertBefore(this.chartContainer, this.container);
-
-
-        this.colorTable = new Element("table");
-        this.colorTable.setAttribute("border", "1");
-        this.colorTable.setAttribute("bordercolor", "silver");
-        this.colorTable.setAttribute("cellpadding", "0");
-        this.colorTable.setAttribute("cellspacing", "0");
-        this.colorTable.setStyles({
-            "background-color": "#000000",
-            "margin": "4px",
-            visibility: "visible",
-            position: "absolute",
-            top: this.options.top + "px",
-            left: this.options.left + "px",
-            "z-index": 100,
-            cursor: "pointer"
-        });
-        var tabBody = new Element("tbody");
-        this.colorTable.appendChild(tabBody);
-
-
-        var colorArray = ["00", "33", "66", "99", "cc", "ff"];
-        for (var i = 0; i < colorArray.length; i++) {
-            var currRow = new Element("tr");
-            tabBody.appendChild(currRow);
-
-            for (var j = 0; j < colorArray.length; j++) {
-
-                for (var k = 0; k < colorArray.length; k++) {
-
-                    var currColor = "#" + colorArray[i] + colorArray[j] + colorArray[k];
-                    var currCell = new Element("td");
-                    currCell.innerHTML = '<div width="' + this.options.cellWidth + 'px" height="' + this.options.cellHeight + 'px" style="width:' + this.options.cellWidth + 'px;height:' + this.options.cellHeight + 'px;">&nbsp;</div>';
-                    currCell.setStyle("backgroundColor", currColor);
-                    currCell.addEvent('click', function (e, currColor) {
-                        e = new Event(e);
-                        this.el.value = currColor;
-                        this.closePicker();
-                    }.bindWithEvent(this, currColor));
-                    currCell.addEvent('mouseover', function (e, currColor) {
-                        e = new Event(e);
-                        this.colorPanel.setStyle("backgroundColor", currColor);
-                        this.infoPanel.innerHTML = currColor;
-                    }.bindWithEvent(this, currColor));
-                    //currCell.setStyles({"width":this.options.cellWidth +"px", "height":this.options.cellHeight +"px"});
-                    currCell.setStyles({"padding": "0px"});
-                    //currCell.setAttribute("width", this.options.cellWidth +'px');
-
-                    currRow.appendChild(currCell);
-
-
+        var colorBoxColors = new Element('ul');
+        // Build color selection
+        Array.each(this.options.colors, function (currentColor, i) {
+            currentColor = currentColor.toUpperCase();
+            var colorUnit = new Element('li', {
+                styles: {
+                    'background-color': currentColor
+                },
+                'class': 'colorpicker-color',
+                title: currentColor,
+                id: this.options.prefix + '-color-' + i,
+                'data-color': currentColor,
+                events: {
+                    click: function () {
+                        this.selectColor(currentColor);
+                    }.bind(this),
+                    mouseover: function () {
+                        if (this.options.changeOnHover === true) {
+                            this.hoverColor(currentColor);
+                        }
+                    }.bind(this)
                 }
+            });
 
-
+            if (i % this.options.colorsPerLine === 0) {
+                colorUnit.setStyle('clear', 'both');
             }
 
+            colorUnit.inject(colorBoxColors);
+        }, this);
 
-        }
-
-        this.fader = null;
-        if (this.options.transition) {
-            if (this.version == '1.1') {
-                this.fader = new Fx.Style(this.colorTable, 'opacity', {duration: 1000});
+        // Build color input
+        this.input = new Element('div', {
+            'class': 'colorpicker-input clearfix',
+            styles: {
+                'background-color': this.options.defaultColor
+            },
+            'data-color': this.options.defaultColor,
+            'title': this.options.defaultColor,
+            events: {
+                click: function () {
+                    this.positionAndShowBox();
+                }.bind(this)
             }
-            else {
-                this.fader = new Fx.Tween(this.colorTable, 'opacity', {duration: 1000});
-            }
+        });
+        this.input.grab(
+            new Element('i',
+                {
+                    'class': 'fa fa-eyedropper',
+                    events: {
+                        click: function (e) {
+                            e.stopPropagation();
+                            if ($(e.target).hasClass('fa-close')) {
+                                this.resetColor();
+                            }
+                            else {
+                                this.positionAndShowBox();
+                            }
 
-        }
+                        }.bind(this)
+                    }
+                }
+            )
+        );
 
+        // Initialize default color
+        this.setColor(this.element.get('value'));
 
-        this.chartContainer.addEvent('mouseout', function (e, currColor) {
-            e = new Event(e);
-            try {
-                this.colorPanel.setStyle("backgroundColor", this.el.value);
-            } catch (e) {
-            }
-            this.infoPanel.innerHTML = '';
-        }.bindWithEvent(this, currColor));
-
-        this.chartContainer.appendChild(this.colorTable);
-
-        $(document).addEvent('click', function (e) {
-            e = new Event(e);
-            if ((e.target != this.el) && (e.target != this.colorPanel)) {
-                this.closePicker();
+        // Onblur event
+        $$('body').addEvent('click', function (e) {
+            if (!$(e.target).hasClass('colorpicker-color') && !$(e.target).hasClass('colorpicker-input')) {
+                this.setColor(this.element.get('value'))
+                this.box.hide();
             }
         }.bind(this));
-        this.hidePicker();
 
+        // Place elements
+        this.input.inject(this.element, 'after');
+        colorBoxColors.inject(this.box);
+        this.box.inject(this.input, 'after');
+
+        // Hide the colorbox
+        this.box.hide();
+        this.element.hide();
+
+        return this;
     },
-    closePicker: function () {
-        this.colorTable.setStyle("visibility", "hidden");
-        this.infoPanel.innerHTML = '';
-        this.colorPanel.setStyle("backgroundColor", this.el.value);
-        //this.chartContainer.setStyle("height","auto");
-        if (this.options.transition && this.active) {
-            if (this.version == '1.1') {
-                this.fader.start(1, 0);
-            }
-            else {
-                this.colorTable.fade('show');
-                this.colorTable.fade('out');
-            }
-        }
-        this.active = false;
-
+    selectColor: function (color) {
+        this.box.hide();
+        this.setColor(color);
+        this.element.fireEvent('onSelectColor');
     },
-    openPicker: function () {
-        this.colorTable.setStyle("visibility", "visible");
-        //this.chartContainer.setStyle("height",this.height + "px");
-        if (this.options.transition) {
-            if (this.version == '1.1') {
-                this.fader.start(0, 1);
-            }
-            else {
-                this.colorTable.fade('hide');
-                this.colorTable.fade('in');
-            }
+    setColor: function (color) {
+        if (color) {
+            this.input.set('data-color', color)
+                .set('title', color)
+                .setStyle('background-color', color);
+            this.input.getElement('i').removeClass('fa-eyedropper').addClass('fa-close');
+            this.element.set('value', color);
+            var cc = new Color(color);
+            this.input.setStyle('color', cc.invert());
         }
-        this.active = true;
     },
-    hidePicker: function () {
-        this.colorTable.setStyle("visibility", "hidden");
-        this.infoPanel.innerHTML = '';
-        this.colorPanel.setStyle("backgroundColor", this.el.value);
+    resetColor: function () {
+        this.input.getElement('i').removeClass('fa-close').addClass('fa-eyedropper');
+        this.element.erase('value');
+        this.input.erase('value').erase('data-color').erase('title');
+        this.input.setStyle('background-color', '').setStyle('color', '');
+
+        this.box.hide();
     },
-    validate: function () {
-        var pattern = /#[0-9A-Fa-f]{6}/;
-        if (pattern.test(this.el.value)) {
-            return;
-        }
-
-        var stringVal = new String(this.el.value);
-        if (stringVal.charAt(0) != '#') {
-            stringVal = '#' + stringVal;
-        }
-
-        var pattern2 = /[^#A-Fa-f0-9]/g;
-        stringVal = stringVal.replace(pattern2, '');
-
-        var l = 7 - stringVal.length; //extra 0s to pad
-        for (var i = 0; i < l; i++) {
-            stringVal = stringVal + '0';
-        }
-
-        stringVal = stringVal.substr(0, 7);
-
-        //finally retest
-        if (!pattern.test(stringVal)) {
-            stringVal = '#ffffff';
-        }
-
-        this.el.value = stringVal;
-
+    hoverColor: function (color) {
+        this.input.setStyle('background-color', color);
+    },
+    positionAndShowBox: function () {
+        this.box.position({
+            relativeTo: this.input,
+            position: 'bottomLeft',
+            edge: 'upperLeft'
+        });
+        this.box.show();
     }
-
-
 });
 
-ColorPicker.implement(new Events);
-ColorPicker.implement(new Options);
+Element.implement({
+    setPosition: function (obj) {
+        if (obj)
+            return this.setStyles(this.computePosition(obj));
+    }
+});
+
+Number.implement({
+    formatCurrency: function (decimals) {
+        if (this.format) {
+            var locale = Locale.get('Number.currency') || {};
+            if (locale.scientific == null) locale.scientific = false;
+            locale.decimals = decimals != null ? decimals
+                : (locale.decimals == null ? 2 : locale.decimals);
+
+            return this.format(locale);
+        }
+
+    },
+    formatPercentage: function(decimals){
+        if (this.format) {
+            var locale = Locale.get('Number.percentage') || {};
+            if (locale.suffix == null) locale.suffix = '%';
+            locale.decimals = decimals != null ? decimals
+                : (locale.decimals == null ? 2 : locale.decimals);
+
+            return this.format(locale);
+        }
+   	}
+});

@@ -46,7 +46,6 @@ class FeedbackForm extends DBDataSet {
         }*/
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         $this->setAction('send');
-        $this->setTitle($this->translate('TXT_FEEDBACK_FORM'));
         $this->addTranslation('TXT_ENTER_CAPTCHA');
     }
 
@@ -102,21 +101,21 @@ class FeedbackForm extends DBDataSet {
         $this->setData($dataObject);
 
         //Создаем сейвер
-        $this->saver = new Saver();
+        $saver = new Saver();
         //Устанавливаем его режим
-        $this->saver->setMode(self::COMPONENT_TYPE_FORM_ADD);
-        $this->saver->setDataDescription($this->getDataDescription());
-        $this->saver->setData($this->getData());
+        $saver->setMode(self::COMPONENT_TYPE_FORM_ADD);
+        $saver->setDataDescription($this->getDataDescription());
+        $saver->setData($this->getData());
 
-        if ($this->saver->validate() === true) {
-            $this->saver->setFilter($this->getFilter());
-            $this->saver->save();
-            $result = $this->saver->getResult();
+        if ($saver->validate() === true) {
+            $saver->setFilter($this->getFilter());
+            $saver->save();
+            $result = $saver->getResult();
 
         }
         else {
             //выдвигается пустой exception который перехватывается в методе save
-            throw new SystemException('ERR_VALIDATE_FORM', SystemException::ERR_WARNING, $this->saver->getErrors());
+            throw new SystemException('ERR_VALIDATE_FORM', SystemException::ERR_WARNING, $saver->getErrors());
         }
 
         return $result;
@@ -165,9 +164,9 @@ class FeedbackForm extends DBDataSet {
                     $template = new MailTemplate('feedback_form_admin', $data);
                     $mailer = new Mail();
                     $recipientID = false;
-                    if (isset($data['feed_type']) &&
-                            intval($data['feed_type'])) {
-                        $recipientID = $data['feed_type'];
+                    if (isset($data['rcp_id']) &&
+                            intval($data['rcp_id'])) {
+                        $recipientID = $data['rcp_id'];
                     }
                     $mailer
                         ->setFrom($this->getConfigValue('mail.from'))
@@ -201,11 +200,11 @@ class FeedbackForm extends DBDataSet {
     /**
      * Get recipient E-Mail.
      *
-     * @param bool $options Options.
+     * @param int $recipientID
      * @return string
      */
-    protected function getRecipientEmail($options = false) {
-        return $this->getParam('recipientEmail');
+    protected function getRecipientEmail($recipientID) {
+        return $this->dbh->getScalar('apps_feedback_recipient', 'rcp_recipients', ['rcp_id' => $recipientID]);
     }
 
     /**

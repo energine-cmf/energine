@@ -74,6 +74,11 @@ class FieldDescription extends Object implements \Iterator {
      */
     const FIELD_TYPE_EMAIL = 'email';
     /**
+     * Visual field type for color picking/demonstration.
+     * @var string FIELD_TYPE_COLOR
+     */
+    const FIELD_TYPE_COLOR = 'color';
+    /**
      * Visual field type for captcha.
      * @var string FIELD_TYPE_CAPTCHA
      */
@@ -499,6 +504,9 @@ class FieldDescription extends Object implements \Iterator {
                 $this->setProperty('pattern', $regexp);
                 $this->setProperty('message', 'MSG_BAD_PHONE_FORMAT');
                 break;
+            case  self::FIELD_TYPE_COLOR:
+
+                break;
             case self::FIELD_TYPE_FILE:
             case self::FIELD_TYPE_VIDEO:
                 if ($this->getPropertyValue('nullable') === false) {
@@ -778,6 +786,8 @@ class FieldDescription extends Object implements \Iterator {
                     $result = self::FIELD_TYPE_FILE;
                 } elseif (strpos($name, '_video')) {
                     $result = self::FIELD_TYPE_VIDEO;
+                } elseif (strpos($name, '_color')) {
+                    $result = self::FIELD_TYPE_COLOR;
                 } else {
                     $result = self::FIELD_TYPE_STRING;
                 }
@@ -885,10 +895,11 @@ class FieldDescription extends Object implements \Iterator {
     public function validate($data) {
         if (
             !is_array($data) &&
-            (is_int($this->length) && strlen($data) > $this->length)
+            (is_int($this->length) && mb_strlen($data) > $this->length)
         ) {
             return false;
         }
+
         if ($this->getPropertyValue('pattern') && !preg_match($this->getPropertyValue('pattern'), $data)) {
             return false;
         }

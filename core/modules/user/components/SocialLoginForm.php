@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class SocialLoginForm;
-@endcode
+ * @endcode
  *
  * @author Andrii A
  * @copyright Energine 2013
@@ -14,6 +14,7 @@ class SocialLoginForm;
  * @version 1.0.0
  */
 namespace Energine\user\components;
+
 use Energine\share\gears\Field;
 use Energine\share\gears\FieldDescription;
 use Energine\share\gears\UserSession;
@@ -23,7 +24,7 @@ use Energine\share\gears\UserSession;
  *
  * @code
 class SocialLoginForm;
-@endcode
+ * @endcode
  */
 class SocialLoginForm extends LoginForm implements SampleLoginForm {
     /**
@@ -49,32 +50,31 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
         $this->getData()->addField($f);
         //Если есть информация о авторизации через соц. сети
         foreach (['fb', 'vk', 'ok'] as $socialType) {
-            list($tbr) = array_values($this->getToolbar());
-
-            if ($ctrl = $tbr->getControlByID('auth.' . $socialType)) {
-                $ctrl->disable();
-            }
-            if ($ctrl && $this->getConfigValue('auth.' . $socialType)) {
-                if (($appID = $this->getConfigValue('auth.' . $socialType . '.appID'))
-                    && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))
-                ) {
-                    $authClassName = 'Energine\\user\\gears\\'.strtoupper($socialType) . 'OAuth';
-                    $auth = new $authClassName([
-                        'appId' => $appID,
-                        'secret' => $secretKey,
-                        'public' => $this->getConfigValue('auth.' . $socialType . '.publicKey'),
-                    ]);
-                    $ctrl->setAttribute('loginUrl', $auth->getLoginUrl(
-                        [
-                            'redirect_uri' => ($base = E()->getSiteManager()->getCurrentSite()->base)
-                            . 'auth.php?' . $socialType . 'Auth&return=' . $this->getReturnUrl(),
-                            'scope' => $ctrl->getAttribute('permissions')
-                        ]
-                    ));
-                    $ctrl->setAttribute('appID', $appID);
-                    $ctrl->enable();
+            foreach (array_values($this->getToolbar()) as $tbr) {
+                if ($ctrl = $tbr->getControlByID('auth.' . $socialType)) {
+                    $ctrl->disable();
                 }
-
+                if ($ctrl && $this->getConfigValue('auth.' . $socialType)) {
+                    if (($appID = $this->getConfigValue('auth.' . $socialType . '.appID'))
+                        && ($secretKey = $this->getConfigValue('auth.' . $socialType . '.appID'))
+                    ) {
+                        $authClassName = 'Energine\\user\\gears\\' . strtoupper($socialType) . 'OAuth';
+                        $auth = new $authClassName([
+                            'appId' => $appID,
+                            'secret' => $secretKey,
+                            'public' => $this->getConfigValue('auth.' . $socialType . '.publicKey'),
+                        ]);
+                        $ctrl->setAttribute('loginUrl', $auth->getLoginUrl(
+                            [
+                                'redirect_uri' => ($base = E()->getSiteManager()->getCurrentSite()->base)
+                                    . 'auth.php?' . $socialType . 'Auth&return=' . $this->getReturnUrl(),
+                                'scope' => $ctrl->getAttribute('permissions')
+                            ]
+                        ));
+                        $ctrl->setAttribute('appID', $appID);
+                        $ctrl->enable();
+                    }
+                }
             }
         }
     }
@@ -85,7 +85,7 @@ class SocialLoginForm extends LoginForm implements SampleLoginForm {
      * @return mixed|string
      */
     private function getReturnUrl() {
-        if(!$returnUrl = $this->getParam('successAction')) {
+        if (!$returnUrl = $this->getParam('successAction')) {
             $returnUrl = (string)E()->getRequest()->getURI();
         }
         return $returnUrl;

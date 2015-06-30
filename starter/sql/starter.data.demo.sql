@@ -775,7 +775,7 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (300, 'FIELD_SMAP_LINK_ID'),
 (133, 'FIELD_SMAP_META_DESCRIPTION'),
 (131, 'FIELD_SMAP_META_KEYWORDS'),
-(1206, 'FIELD_SMAP_META_ROBOTS'),
+(1206, 'FIELD_SMAP_IS_INDEXED'),
 (129, 'FIELD_SMAP_NAME'),
 (125, 'FIELD_SMAP_ORDER_NUM'),
 (122, 'FIELD_SMAP_PID'),
@@ -2524,8 +2524,8 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 (1204, 2, 'XML-код блока'),
 (1205, 1, 'Новый текстовый блок'),
 (1205, 2, 'Новий текстовий блок'),
-(1206, 1, 'Параметры индексирования страницы (содержимое meta-тега robots)'),
-(1206, 2, 'Параметри індексування сторінки (значення meta-тега robots)'),
+(1206, 1, 'Индексировать страницу в поисковиках'),
+(1206, 2, 'Індексувати сторінку'),
 (1207, 1, 'Вставить embed код'),
 (1207, 2, 'Вставити embed код'),
 (1208, 1, 'Применить'),
@@ -3389,7 +3389,7 @@ INSERT INTO `share_lang_tags_translation` (`ltag_id`, `lang_id`, `ltag_value_rtf
 -- Дамп данных таблицы `share_sitemap`
 --
 
-INSERT INTO `share_sitemap` (`smap_id`, `site_id`, `brand_id`, `smap_layout`, `smap_layout_xml`, `smap_content`, `smap_content_xml`, `smap_pid`, `smap_segment`, `smap_order_num`, `smap_redirect_url`, `smap_meta_robots`) VALUES
+INSERT INTO `share_sitemap` (`smap_id`, `site_id`, `brand_id`, `smap_layout`, `smap_layout_xml`, `smap_content`, `smap_content_xml`, `smap_pid`, `smap_segment`, `smap_order_num`, `smap_redirect_url`, `smap_is_indexed`) VALUES
 (80, 1, NULL, 'default.layout.xml', NULL, 'main.content.xml', '<?xml version="1.0" encoding="utf-8" ?><content html_class="colset colset3"><container name="left" column="column" html_class="col col1"><container name="mainMenuContainer" block="beta" widget="widget"><component name="mainMenu" module="share" class="PageList"><params><param name="tags">menu</param>\n<param name="recursive">1</param>\n<param name="config">core/modules/share/MainMenu.component.xml</param></params></component></container>\n<container name="leftAdBlock"></container>\n<container name="topNewsContainer" block="beta" widget="widget"><component name="topNews" module="apps" class="NewsFeed"><params><param name="title">TXT_TOP_NEWS</param>\n<param name="limit" type="hidden">5</param>\n<param name="showAll">1</param>\n<param name="active" type="hidden">0</param>\n<param name="template">news</param></params></component></container></container>\n<container name="center" column="column" html_class="col col2"><container name="textBlockContainer1" block="alfa" widget="static"><component name="textBlock_1" module="share" class="TextBlock"><params><param name="num">1</param></params></component></container></container>\n<container name="right" column="column" html_class="col col3 last_col"><container name="loginFormContainer" block="beta" widget="widget"><component name="loginForm" module="user" class="LoginForm"></component></container>\n<container name="sidebarTextBlockContainer" block="beta" widget="widget"><component name="sidebarTextBlock" module="share" class="TextBlock"><params><param name="title"></param>\n<param name="num">sidebarTextBlock</param></params></component></container>\n<container name="VoteContainer5748" block="beta" widget="widget"><component class="Vote" module="apps" name="Vote6093"><params><param name="title">TXT_VOTE</param></params></component></container></container></content>', NULL, '', 446, NULL, NULL),
 (330, 1, NULL, 'default.layout.xml', NULL, 'login.content.xml', NULL, 80, 'login', 188, NULL, NULL),
 (1275, 1, NULL, 'default.layout.xml', NULL, 'childs.content.xml', NULL, 80, 'admin', 401, NULL, NULL),

@@ -114,15 +114,25 @@
 
     <!-- поле для почтового адреса (email) -->
     <xsl:template match="field[@type='email'][ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_email">
+        <input class="text inp_email form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">email</xsl:attribute>
+        </input>
+    </xsl:template>
+
+    <!-- поле для цвета -->
+    <xsl:template match="field[@type='color'][ancestor::component[@type='form']]" mode="field_input">
+        <input class="text inp_color form-control">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">hidden</xsl:attribute>
         </input>
     </xsl:template>
 
     <!-- поле для телефона (phone)-->
     <xsl:template match="field[@type='phone'][ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_phone">
+        <input class="text inp_phone form-control">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">tel</xsl:attribute>
         </input>
     </xsl:template>
 
@@ -162,6 +172,7 @@
     <xsl:template match="field[@type='integer'][ancestor::component[@type='form']]" mode="field_input">
         <input length="5" class="text inp_integer">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:attribute name="type">number</xsl:attribute>
             <xsl:if test="@length">
                 <xsl:attribute name="maxlength">5</xsl:attribute>
             </xsl:if>
@@ -177,12 +188,6 @@
 
     <xsl:template match="field[@type='money'][ancestor::component[@type='form']]" mode="field_input">
         <input class="text inp_money">
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
-        </input>
-    </xsl:template>
-
-    <xsl:template match="field[@type='color'][ancestor::component[@type='form']]" mode="field_input">
-        <input class="text inp_color">
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
         </input>
     </xsl:template>
@@ -498,7 +503,7 @@
     <!-- шаблон-обвязка для любого поля, на которое права только чтение -->
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]">
         <xsl:if test=".!=''">
-            <div class="field">
+            <div class="field readonly">
                 <xsl:apply-templates select="." mode="field_name_readonly"/>
                 <xsl:apply-templates select="." mode="field_input_readonly"/>
             </div>
@@ -507,18 +512,20 @@
 
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]" mode="field_name_readonly">
         <xsl:if test="@title">
-            <label for="{@name}">
-                <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes"/>
-            </label><xsl:text> </xsl:text>
+                <div class="name"><label for="{@name}">
+                    <xsl:value-of select="concat(@title, ':')" disable-output-escaping="yes"/>
+                </label></div>
         </xsl:if>
     </xsl:template>
 
     <!-- для любого поля, на которое права только чтение -->
     <xsl:template match="field[@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
-        <span class="read"><xsl:value-of select="." disable-output-escaping="yes"/></span>
-        <input>
-            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
-        </input>
+        <div class="control">
+            <xsl:value-of select="." disable-output-escaping="yes"/>
+            <input>
+                <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
+            </input>
+        </div>
     </xsl:template>
 
     <!-- read-only поле логического типа -->
@@ -548,6 +555,13 @@
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
         </input>
+    </xsl:template>
+
+    <xsl:template match="field[@type='code'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+        <textarea class="code">
+            <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES"/>
+            <xsl:value-of select="."/>
+        </textarea>
     </xsl:template>
 
     <!-- для поля EMAIL на которое права только чтение -->
@@ -585,10 +599,12 @@
 
     <!-- read-only поле типа select -->
     <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]">
-        <div class="field">
-            <xsl:apply-templates select="." mode="field_name_readonly"/>
-            <xsl:apply-templates select="." mode="field_input_readonly"/>
-        </div>
+        <xsl:if test="options/option[@selected='selected']">
+            <div class="field">
+                <xsl:apply-templates select="." mode="field_name_readonly"/>
+                <xsl:apply-templates select="." mode="field_input_readonly"/>
+            </div>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="field[@type='select'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
@@ -632,12 +648,13 @@
     </xsl:template>
 
     <!-- read-only поле типа date и datetime -->
-    <xsl:template match="field[@type='date' or @type='datetime'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+<!--    <xsl:template match="field[@type='date' or @type='datetime'][@mode='1'][ancestor::component[@type='form']]" mode="field_input_readonly">
+
         <div class="read"><xsl:value-of select="." disable-output-escaping="yes"/></div>
         <input>
             <xsl:call-template name="FORM_ELEMENT_ATTRIBUTES_READONLY"/>
         </input>
-    </xsl:template>
+    </xsl:template>-->
 
 
     <!--

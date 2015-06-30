@@ -98,8 +98,8 @@ class CommentsList extends DataSet {
         $this->setProperty('is_editable', (int) (
                 $right > 1)); // добавлять и править/удалять своё
         $this->setProperty('is_admin', (int) ($right > 2)); // godmode
-        if (E()->getAUser()->isAuthenticated()) {
-            $this->document->setProperty('CURRENT_UID', E()->getAUser()->getID());
+        if (E()->getUser()->isAuthenticated()) {
+            $this->document->setProperty('CURRENT_UID', E()->getUser()->getID());
         }
 
         $this->targetIds = $this->getParam('target_ids');

@@ -38,6 +38,9 @@
         <xsl:if test="@message2">
             <xsl:attribute name="nrgn:message2" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message2"/></xsl:attribute>
         </xsl:if>
+        <xsl:if test="@placeholder">
+            <xsl:attribute name="placeholder"><xsl:value-of select="@placeholder"/></xsl:attribute>
+        </xsl:if>
     </xsl:template>
 
     <!-- именованный шаблон с дефолтным набором атрибутов для элемента формы, на который права только на чтение - НЕ ПЕРЕПИСЫВАТЬ В ДРУГОМ МЕСТЕ! -->

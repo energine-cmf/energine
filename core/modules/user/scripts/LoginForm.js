@@ -13,9 +13,7 @@
  *
  * @version 1.0.0
  */
-
-// todo: Does we need Form?
-ScriptLoader.load('Form', 'FBAuth', 'VKAuth');
+ScriptLoader.load('ValidForm', 'FBAuth', 'VKAuth');
 
 /**
  * Login form.
@@ -24,8 +22,10 @@ ScriptLoader.load('Form', 'FBAuth', 'VKAuth');
  * @param {Element} element Login form element.
  */
 var LoginForm = new Class({
+    Extends: ValidForm,
     // constructor
     initialize:function(element) {
+        this.parent(element);
         window.addEvent('domready', function() {
             var vkAuth = $('vkAuth');
             if(vkAuth) {

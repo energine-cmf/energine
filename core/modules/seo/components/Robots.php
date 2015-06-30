@@ -14,7 +14,11 @@ class Robots;
  * @version 1.0.0
  */
 namespace Energine\seo\components;
-use Energine\share\components\DataSet, Energine\share\gears\SimpleBuilder, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription;
+use Energine\share\components\DataSet;
+use Energine\share\gears\DataDescription;
+use Energine\share\gears\FieldDescription;
+use Energine\share\gears\SimpleBuilder;
+
 /**
  * Component for generation @c robot.txt
  *
@@ -63,7 +67,7 @@ class Robots extends DataSet {
         if (!array_key_exists('seo', $cfg)) {
             return false;
         }
-        foreach (array('sitemapSegment', 'sitemapTemplate', 'maxVideosInMap') as $seoParam) {
+        foreach (['sitemapSegment', 'sitemapTemplate', 'maxVideosInMap'] as $seoParam) {
             if (!array_key_exists($seoParam, $cfg['seo'])) {
                 return false;
             }
@@ -78,12 +82,12 @@ class Robots extends DataSet {
      */
     protected function getSitemapSegmentIds() {
         $res = $this->dbh->select(
-            'share_sitemap', 'smap_id', array(
+            'share_sitemap', 'smap_id', [
                 'smap_segment' => E()->getConfigValue('seo.sitemapSegment')
-            )
+            ]
         );
         if (!$res) return false;
-        $result = array();
+        $result = [];
         foreach ($res as $row) {
             $result[] = $row['smap_id'];
         }
@@ -108,7 +112,7 @@ class Robots extends DataSet {
             . 'SELECT sso.site_id, %s, %s, %s, '
             . '(SELECT smap_id FROM share_sitemap ss2 WHERE ss2.site_id = sso.site_id AND smap_pid IS NULL LIMIT 0,1) '
             . 'FROM share_sites sso '
-            . 'WHERE site_is_indexed AND site_is_active '
+            . 'WHERE NOT FIND_IN_SET(\'NOINDEX\', site_meta_robots) AND site_is_active '
             . 'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
             . 'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
             . 'WHERE ssm.smap_segment = %s AND ssi.site_id = sso.site_id) = 0',
@@ -145,39 +149,20 @@ class Robots extends DataSet {
      * @copydoc DataSet::loadData
      */
     protected function loadData() {
-        $entries = array();
-
-        if (!$this->isSeoConfigured()) {
-
-            array_push($entries, array('entry' => 'User-agent: *' . PHP_EOL . 'Disallow: /'));
-
+        $entries = [];
+        $site = E()->getSiteManager()->getCurrentSite();
+        if (!$this->isSeoConfigured() || !$site->isIndexed) {
+            array_push($entries, ['entry' => 'User-agent: *' . PHP_EOL . 'Disallow: /']);
         } else {
-
-            array_push($entries, array('entry' => 'User-agent: *' . PHP_EOL . 'Allow: /'));
-
+            array_push($entries, ['entry' => 'User-agent: *' . PHP_EOL . 'Allow: /']);
             $this->createSitemapSegment();
-
-            $domainsInfo = $this->dbh->select(
-               'SELECT ss.site_id, sd.domain_protocol, sd.domain_host, sd.domain_root ' .
-               'FROM share_sites ss ' .
-               'INNER JOIN share_domain2site d2s ON ss.site_id = d2s.site_id ' .
-               'INNER JOIN share_domains sd ON  sd.domain_id = d2s.domain_id ' .
-               'WHERE ss.site_is_indexed'
+            array_push(
+                $entries,
+                ['entry' =>
+                    'Sitemap: ' . $site->base . E()->getConfigValue('seo.sitemapSegment')
+                ]
             );
-
-            if ($domainsInfo) {
-                foreach($domainsInfo as $row) {
-                    array_push(
-                        $entries,
-                        array('entry' =>
-                            'Sitemap: ' . $row['domain_protocol'] . '://' . $row['domain_host'] .
-                            $row['domain_root'] . E()->getConfigValue('seo.sitemapSegment')
-                        )
-                    );
-                }
-            }
         }
-
         return $entries;
     }
 

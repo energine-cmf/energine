@@ -142,7 +142,9 @@ PageEditor.BlockEditor = new Class(/** @lends PageEditor.BlockEditor# */{
         });
         this.editor.singleTemplate = this.area.getProperty('single_template');
         this.editor.editorId = this.area.get('id');
-
+        this.editor.on('focus', function () {
+                this.editor.setReadOnly(false);
+        }.bind(this));
         /**
          * Overlay.
          * @type {Overlay}

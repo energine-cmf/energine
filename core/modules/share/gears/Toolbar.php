@@ -14,7 +14,9 @@ class Toolbar;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
+
 use Energine\share\components\Component;
+
 /**
  * Toolbar.
  *
@@ -38,7 +40,7 @@ class Toolbar extends Object {
      * Set of control elements.
      * @var array $controls
      */
-    private $controls = array();
+    private $controls = [];
 
     /**
      * Toolbar name.
@@ -56,7 +58,7 @@ class Toolbar extends Object {
      * Additional properties.
      * @var array $properties
      */
-    private $properties = array();
+    private $properties = [];
 
     /**
      * Component that holds toolbar.
@@ -110,7 +112,7 @@ class Toolbar extends Object {
      * @param Control $control Control element.
      * @param Control $position Control position. If it is not set than the control will be placed at the end.
      */
-    public function attachControl(Control $control, Control $position = null) {
+    public function attachControl(Control $control, Control $position = NULL) {
         $control->setIndex(arrayPush($this->controls, $control));
         $control->attach($this);
     }
@@ -154,7 +156,16 @@ class Toolbar extends Object {
      * @throws SystemException 'ERR_DEV_NO_CONTROL_TYPE'
      */
     public function loadXML(\SimpleXMLElement $toolbarDescription) {
-        if (!empty($toolbarDescription))
+        if (!empty($toolbarDescription)) {
+            if($toolbarDescription->properties->property)
+                foreach ($toolbarDescription->properties->property as $property){
+                    $propName = (string)$property['name'];
+                    $propValue = (string)$property;
+
+                    if($propName == 'title') $propValue = E()->Utils->translate($propValue);
+
+                    $this->setProperty($propName, $propValue);
+                }
             foreach ($toolbarDescription->control as $controlDescription) {
 
                 if (!isset($controlDescription['type'])) {
@@ -170,13 +181,13 @@ class Toolbar extends Object {
 
 
                 $control = new $controlClassName(
-                    isset($controlDescription['id']) ? (string)$controlDescription['id'] : null
+                    isset($controlDescription['id']) ? (string)$controlDescription['id'] : NULL
                 );
 
                 $this->attachControl($control);
                 $control->loadFromXml($controlDescription);
             }
-
+        }
 
     }
 
@@ -210,7 +221,7 @@ class Toolbar extends Object {
         if (isset($this->properties[$name])) {
             return $this->properties[$name];
         }
-        return null;
+        return NULL;
     }
 
     /**

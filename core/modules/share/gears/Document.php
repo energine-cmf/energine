@@ -13,7 +13,6 @@ final class Document;
 namespace Energine\share\gears;
 
 use Energine\share\components\Component;
-use Energine\share\components\DivisionEditor;
 
 /**
  * Page document.
@@ -24,6 +23,17 @@ final class Document;
  */
 final class Document extends Object implements IDocument {
     use DBWorker;
+    /**
+     * Template content.
+     * @var string TMPL_CONTENT
+     */
+    const TMPL_CONTENT = 'content';
+    /**
+     * Template layout.
+     * @var string TMPL_LAYOUT
+     */
+    const TMPL_LAYOUT = 'layout';
+
     /**
      * Reserved URL segment for 'single'-mode
      * @var string SINGLE_SEGMENT
@@ -110,7 +120,7 @@ final class Document extends Object implements IDocument {
 
     public function __construct() {
         parent::__construct();
-        $this->user = E()->getAUser();
+        $this->user = E()->getUser();
         $this->language = E()->getLanguage();
         $this->lang = $this->language->getCurrent();
         $this->sitemap = E()->getMap();
@@ -148,9 +158,14 @@ final class Document extends Object implements IDocument {
         //$this->loadComponents($this->documentInfo['templateID']);
 
         // устанавливаем свойства документа
-        $this->setProperty('keywords', $this->documentInfo['MetaKeywords']);
-        $this->setProperty('description', $this->documentInfo['MetaDescription']);
-        $this->setProperty('robots', $this->documentInfo['MetaRobots']);
+        if($this->documentInfo['MetaKeywords'])
+            $this->setProperty('keywords', $this->documentInfo['MetaKeywords']);
+        if($this->documentInfo['MetaDescription'])
+            $this->setProperty('description', $this->documentInfo['MetaDescription']);
+
+        if($this->documentInfo['MetaRobots'])
+            $this->setProperty('robots', implode(',', $this->documentInfo['MetaRobots']));
+
         $this->setProperty('ID', $this->getID());
         $this->setProperty('default',
             $this->sitemap->getDefault() == $this->getID());
@@ -410,9 +425,9 @@ final class Document extends Object implements IDocument {
      * Define and load page components into the ComponentManager.
      * @todo Полный рефакторинг!
      */
-    public function loadComponents() {
+    public function loadComponents(callable $getStructure) {
         // определяем и загружаем описания content- и layout- частей страницы
-        $structure = Document::getStructure($this->getID());
+        $structure = call_user_func($getStructure, $this->getID());
         // вызывается ли компонент в single режиме?
         $actionParams = $this->request->getPath(Request::PATH_ACTION);
         if (sizeof($actionParams) > 1 &&
@@ -488,56 +503,6 @@ final class Document extends Object implements IDocument {
             }
         }
 
-    }
-
-    /**
-     * Get the information about document XML-code.
-     * If the value 'xml' is missed or incorrect then it will try to load XML from the file.
-     * @param int $documentID Document ID.
-     * @return \SimpleXMLElement
-     * @throws SystemException 'ERR_WRONG_[type]'
-     * @throws SystemException 'ERR_BAD_DOC_ID'
-     */
-    static public function getStructure($documentID) {
-        $result = [];
-        $loadDataFromFile = function ($fileName, $type) {
-            if (!($result = file_get_contents(
-                Document::TEMPLATES_DIR .
-                constant(
-                    'Energine\\share\\components\\DivisionEditor::TMPL_' .
-                    strtoupper($type)) .
-                '/' . $fileName))
-            ) {
-                throw new SystemException('ERR_WRONG_' . strtoupper($type));
-            }
-
-            return $result;
-        };
-        $docData = E()->getMap()->getDocumentInfo($documentID);
-        libxml_use_internal_errors(true);
-        foreach ([DivisionEditor::TMPL_LAYOUT, DivisionEditor::TMPL_CONTENT] as $type) {
-            //Если нет данных поле
-            if (!$docData[ucfirst($type).'Xml']) {
-                //Берем из файла
-                $result[$type] = $loadDataFromFile($docData[ucfirst($type)], $type);
-            } else {
-                $result[$type] = $docData[ucfirst($type).'Xml'];
-            }
-            $result[$type] = trim(preg_replace('/<\?xml\s.+?>/sm', '', $result[$type]));
-        }
-
-        if ($result[DivisionEditor::TMPL_LAYOUT] == ($resultDoc = preg_replace('/<content.*\/>/sm',
-                $result[DivisionEditor::TMPL_CONTENT], $result[DivisionEditor::TMPL_LAYOUT]))
-        ) {
-            $resultDoc = $result[DivisionEditor::TMPL_LAYOUT] . $result[DivisionEditor::TMPL_CONTENT];
-        }
-
-        if (!$resultDoc = simplexml_load_string('<?xml version="1.0" encoding="UTF-8"?><structure>' . $resultDoc . '</structure>')) {
-            list($simpleXMLError) = libxml_get_errors();
-            throw new SystemException('ERR_BAD_STRUCTURE', SystemException::ERR_CRITICAL, $simpleXMLError->message);
-        }
-
-        return $resultDoc;
     }
 
     /**

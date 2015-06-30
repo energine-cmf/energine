@@ -586,6 +586,7 @@ CREATE TABLE IF NOT EXISTS `share_session` (
 
 CREATE TABLE IF NOT EXISTS `share_sitemap` (
   `smap_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `smap_last_mod` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `site_id` int(10) unsigned NOT NULL,
   `brand_id` int(11) unsigned DEFAULT NULL,
   `smap_layout` char(200) NOT NULL,
@@ -596,7 +597,7 @@ CREATE TABLE IF NOT EXISTS `share_sitemap` (
   `smap_segment` char(50) NOT NULL,
   `smap_order_num` int(10) unsigned DEFAULT '1',
   `smap_redirect_url` char(250) DEFAULT NULL,
-  `smap_meta_robots` text,
+  `smap_is_indexed` BOOLEAN DEFAULT TRUE,
   PRIMARY KEY (`smap_id`),
   UNIQUE KEY `smap_pid` (`smap_pid`,`site_id`,`smap_segment`),
   KEY `site_id` (`site_id`),
@@ -869,7 +870,7 @@ CREATE TABLE IF NOT EXISTS `test_feed` (
 
 CREATE TABLE IF NOT EXISTS `user_groups` (
   `group_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `group_name` char(50) NOT NULL DEFAULT '',
+  `group_name` char(100) NOT NULL DEFAULT '',
   `group_default` tinyint(1) NOT NULL DEFAULT '0',
   `group_user_default` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`group_id`),
@@ -937,6 +938,18 @@ CREATE TABLE share_sites_properties (
   UNIQUE KEY site_id (site_id,prop_name)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+CREATE TABLE share_action_log (
+  al_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  al_date timestamp  on UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  u_id int(10) UNSIGNED NULL,
+  al_classname VARCHAR(100),
+  al_objectname VARCHAR(100),
+  al_data MEDIUMTEXT NULL,
+  PRIMARY KEY (al_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE `share_action_log`
+  ADD CONSTRAINT `share_action_log_uid` FOREIGN KEY (`u_id`) REFERENCES `user_users` (`u_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `apps_feed`
   ADD CONSTRAINT `apps_feed_ibfk_1` FOREIGN KEY (`smap_id`) REFERENCES `share_sitemap` (`smap_id`) ON DELETE CASCADE ON UPDATE CASCADE;

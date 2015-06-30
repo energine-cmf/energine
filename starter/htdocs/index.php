@@ -12,26 +12,23 @@ try {
 
     if ($use_timer = E()->getConfigValue('site.useTimer')) {
 
-        class Timer Extends Energine\share\gears\Object
-        {
+        class Timer Extends Energine\share\gears\Object {
 
         }
 
         $timer = new Timer();
         $timer->startTimer();
     }
+    E()->UserSession->init();
 
-    Energine\share\gears\UserSession::start();
-    $reg = E();
-
-    $reg->getController()->run();
+    E()->getController()->run();
 
     if ($use_timer) {
         $timer->stopTimer();
-        $reg->getResponse()->setHeader('X-Timer', $timer->getTimer());
+        E()->getResponse()->setHeader('X-Timer', $timer->getTimer());
     }
 
-    $reg->getResponse()->commit();
+    E()->getResponse()->commit();
 } catch (\LogicException $bootstrapException) {
     //Все исключения перехваченные здесь произошли в bootstrap'e
     //И ориентироваться на наличие DEBUG здесь нельзя
@@ -41,9 +38,12 @@ try {
 } catch (\Exception $generalException) {
     //Если отрабатывает этот кетчер, значит дела пошли совсем плохо
     if (defined('DEBUG') && DEBUG) {
-        if(!headers_sent())
-            header('Content-Type: text/plain; charset=utf-8');
-        echo (string)$generalException->getMessage();
+        header('Content-Type: text/plain; charset=utf-8');
+        try {
+            var_dump($generalException);
+        } catch (\Exception $e) {
+            echo (string)$e->getMessage();
+        }
     }
     //TODO В лог что ли писать?
     /*

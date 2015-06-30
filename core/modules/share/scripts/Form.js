@@ -25,7 +25,8 @@
  * @version 1.0.1
  */
 
-ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader', 'Tags', 'Lookup');
+ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Tags', 'Lookup');
+//ScriptLoader.load('ckeditor/ckeditor', 'TabPane', 'Toolbar', 'Validator', 'ModalBox', 'Overlay', 'datepicker', 'Swiff.Uploader', 'Tags', 'Lookup');
 
 /**
  * Form.
@@ -81,11 +82,6 @@ var Form = new Class(/** @lends Form# */{
      * @type {CodeMirror[]}
      */
     codeEditors: [],
-    /**
-     * Array of color picker controls
-     * @type {ColorPicker[]}
-     */
-    colorPickers: [],
 
 //    smapSelectors: [],
 
@@ -115,7 +111,12 @@ var Form = new Class(/** @lends Form# */{
 
         if (this.form.getElements('input[type=text]').concat(this.form.getElements('select'), this.form.getElements('textarea')).length) {
             this.form.addEvent('keypress', function (e) {
-                if (e.key == 'enter') e.preventDefault();
+                if (e.key == 'enter') {
+                    var target = $(e.target);
+                    if ((target.get('tag') == 'input') && (target.getProperty('type') == 'text')) {
+                        e.preventDefault();
+                    }
+                }
             })
         }
 
@@ -167,9 +168,6 @@ var Form = new Class(/** @lends Form# */{
                 this.booleanTags.push(new Form.BooleanTag(el, tags));
             }, this);
 
-        this.form.getElements('input.inp_color').each(function (el) {
-            this.colorPickers.push(new ColorPicker(el, {cellWidth: 8, cellHeight: 12}));
-        }, this);
 
         var showHideFunc = function (e) {
             e.stop();
@@ -199,6 +197,13 @@ var Form = new Class(/** @lends Form# */{
         this.element.getElements('.uploader').each(function (uploader) {
             this.uploaders.push(new Form.Uploader(uploader, this, 'upload/'));
         }, this);
+        var cps;
+        if(cps = this.element.getElements('input.inp_color')){
+            cps.each(function(colorElement){
+                new ColorPicker(colorElement, {'changeOnHover': true});
+            }, this);
+        }
+
 
         (this.element.getElements('.inp_date') || []).append(this.element.getElements('.inp_datetime') || []).each(function (dateControl) {
             var isNullable = !dateControl.getParent('.field').hasClass('required');
@@ -1018,7 +1023,7 @@ Form.Label = /** @lends Form.Label */{
             }
         }
     }
-}
+};
 Form.BooleanTag = new Class({
     initialize: function (el, tagsControl) {
         this.el = el;

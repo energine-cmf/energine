@@ -3,15 +3,12 @@
  * @file
  * Contains Class Utils and functions inspect(), splitDate(), stop(), simple_log(), dump_log(), ddump_log(), simplifyDBResult(), inverseDBResult(), convertDBResult(), convertFieldNames(), arrayPush(), array_push_before(), array_push_after().
  * It contain the set of service utilities of the system.
- *
  * @author pavka
  * @copyright Energine 2015
- *
  */
 namespace Energine\share\gears {
     /**
      * Class Utils
-     *
      * @package Energine\share\gears
      */
     class Utils {
@@ -38,7 +35,6 @@ namespace Energine\share\gears {
         /**
          * @brief Split date.
          * It splits the date into the year, month, month day and time (hours, minutes, seconds).
-         *
          * @param string $date Date.
          * @return array
          */
@@ -52,11 +48,12 @@ namespace Energine\share\gears {
                     $timeInfo = explode(':', $dateArray[1]);
                 }
             }
+
             return [
-                'year' => $dateInfo[0],
+                'year'  => $dateInfo[0],
                 'month' => $dateInfo[1],
-                'day' => $dateInfo[2],
-                'time' => [
+                'day'   => $dateInfo[2],
+                'time'  => [
                     'h' => $timeInfo[0],
                     'm' => $timeInfo[1],
                     's' => $timeInfo[2]
@@ -78,7 +75,7 @@ namespace Energine\share\gears {
             if (file_exists($simpleLog)) {
                 $flag = FILE_APPEND;
             }
-            $flag = (file_exists($simpleLog)) ? FILE_APPEND : NULL;
+            $flag = (file_exists($simpleLog)) ? FILE_APPEND : null;
             file_put_contents(
                 $simpleLog,
                 str_replace("\n", ' ', $var) . "\n",
@@ -88,7 +85,6 @@ namespace Energine\share\gears {
 
         /**
          * @brief Write the variable information into log file.
-         *
          * @param mixed $var Variable
          * @param boolean $append Append the log into the file? If @c false the file will be overwritten.
          */
@@ -97,7 +93,7 @@ namespace Energine\share\gears {
             $micro = sprintf("%06d", ($t - floor($t)) * 1000000);
             $d = new \DateTime(date('Y-m-d H:i:s.' . $micro, $t));
 
-            $flags = ($append ? FILE_APPEND : NULL);
+            $flags = ($append ? FILE_APPEND : null);
             ob_start();
             var_dump($var);
             $data = ob_get_contents();
@@ -132,7 +128,6 @@ namespace Energine\share\gears {
         /**
          * @brief Simplify data base result.
          * It selects the values at the defined field from the result of SELECT request.
-         *
          * @see array_column
          * @param mixed $dbResult Result of SELECT request.
          * @param string $fieldName Field name that will be selected from result.
@@ -149,12 +144,12 @@ namespace Energine\share\gears {
                     $result = array_column($dbResult, $fieldName);
                 }
             }
+
             return $result;
         }
 
         /**
          * @brief Transpose 2D array.
-         *
          * Input:
          * @code
         array(
@@ -163,7 +158,6 @@ namespace Energine\share\gears {
          * )
          * )
          * @endcode
-         *
          * Output:
          *     array($fieldName => array($n => $fieldValue))
          * @code
@@ -173,7 +167,6 @@ namespace Energine\share\gears {
          * )
          * )
          * @endcode
-         *
          * @param array $dbResult 2D array.
          * @return array
          */
@@ -184,6 +177,7 @@ namespace Energine\share\gears {
                     $result[$fieldName][] = $fieldValue;
                 }
             }
+
             return $result;
         }
 
@@ -191,19 +185,15 @@ namespace Energine\share\gears {
          * @brief Convert data base result.
          * Reindexes array
          * In new array $pkNAme value become new index
-         *
          * @param mixed $result Data base result.
          * @param mixed $pkName Primary key.
          * @param boolean $deletePK Delete fields with primary key from the result?
          * @return array
-         *
-         *
          * @see QAL::select()
-         *
          * @throws SystemException 'ERR_DEV_BAD_DATA'
          */
         function reindex($result, $pkName, $deletePK = false) {
-            $result = array_column($result, NULL, $pkName);
+            $result = array_column($result, null, $pkName);
             if ($deletePK) {
                 array_walk($result, function (&$row) use ($pkName) {
                     unset($row[$pkName]);
@@ -215,7 +205,6 @@ namespace Energine\share\gears {
 
         /**
          * @brief Convert field names to Camel Notation.
-         *
          * @param array $fields
          * @param string $prefix Prefix, that should be removed from the name.
          * @return array
@@ -240,15 +229,13 @@ namespace Energine\share\gears {
         /**
          * @brief Push the new array element at the end of the array.
          * The index of newly inserted element will be returned.
-         *
          * @param array $array Array.
          * @param mixed $var New array element
          * @param int $key Desired key value of the new element.
          * @return int
-         *
          * @see array_push()
          */
-        function arrayPush(array &$array, $var, $key = NULL) {
+        function arrayPush(array &$array, $var, $key = null) {
             $newkey = 0;
             $keys = array_keys($array);
             if (!empty($keys)) {
@@ -260,12 +247,12 @@ namespace Energine\share\gears {
                 }
             }
             $array[$newkey] = $var;
+
             return $newkey;
         }
 
         /**
          * @brief Push the new array element before specific position.
-         *
          * @param array $array Array.
          * @param mixed $var New array element.
          * @param int|string $pos Position.
@@ -290,31 +277,34 @@ namespace Energine\share\gears {
                     $result[$key] = $value;
                 }
             }
+
             return $result;
         }
 
         /**
          * @brief Push the new array element after specific position.
-         *
          * @param array $src Array.
          * @param mixed $in New array element.
          * @param int|string $pos Position.
          * @return array
          */
         function arrayPushAfter($src, $in, $pos) {
-            if (is_int($pos)) $R = array_merge(array_slice($src, 0, $pos + 1), $in, array_slice($src, $pos + 1));
-            else {
+            if (is_int($pos)) {
+                $R = array_merge(array_slice($src, 0, $pos + 1), $in, array_slice($src, $pos + 1));
+            } else {
                 foreach ($src as $k => $v) {
                     $R[$k] = $v;
-                    if ($k == $pos) $R = array_merge($R, $in);
+                    if ($k == $pos) {
+                        $R = array_merge($R, $in);
+                    }
                 }
             }
+
             return $R;
         }
 
         /**
          * Optimized for large strings str_replace
-         *
          * @param $from char
          * @param $to char
          * @param $src string
@@ -326,22 +316,23 @@ namespace Energine\share\gears {
                     $src[$i] = $to;
                 }
             }
+
             return $src;
         }
 
         /**
          * Get the translation of the text constant.
-         *
          * Get the translation of the text constant from the translation table for specific language.
          * If the language not provided, then current language will be used.
-         *
          * @param string $const Text constant
          * @param int $langId Language ID.
          * @return string
          */
-        function translate($const, $langId = NULL) {
+        function translate($const, $langId = null) {
             static $translationsCache, $findTranslationSQL;
-            if (empty($const)) return $const;
+            if (empty($const)) {
+                return $const;
+            }
             if (is_null($findTranslationSQL)) {
                 $findTranslationSQL = E()->getDB()->getPDO()->prepare('SELECT trans.ltag_value_rtf AS translation FROM share_lang_tags ltag  LEFT JOIN share_lang_tags_translation trans ON trans.ltag_id = ltag.ltag_id  WHERE (ltag.ltag_name = ?) AND (lang_id = ?)');
             }
@@ -373,99 +364,112 @@ namespace Energine\share\gears {
 
             return $result;
         }
+
         /**
-            * Format date.
-            *
-            * Pseudo modifiers:
-            * - %E - Today|Yesterday|Tomorrow|After tomorrow|Weekday_abbreviation $Date $month_name, $time[$Year(if not current)]
-            * - %f - Weekday name $Date $month_name, $time[$Year(if not current)]
-            * - %o - [Today,] $Date $month_name, $time[$Year(if not current)]
-            * - %q
-            *
-            * @param int $date Timestamp.
-            * @param string $format Format.
-            * @param string $type Type.
-            * @return string
-            */
-            public function formatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
-               if (!$date) return '';
+         * Format date.
+         * Pseudo modifiers:
+         * - %E - Today|Yesterday|Tomorrow|After tomorrow|Weekday_abbreviation $Date $month_name, $time[$Year(if not current)]
+         * - %f - Weekday name $Date $month_name, $time[$Year(if not current)]
+         * - %o - [Today,] $Date $month_name, $time[$Year(if not current)]
+         * - %q
+         * @param int $date Timestamp.
+         * @param string $format Format.
+         * @param string $type Type.
+         * @return string
+         */
+        public function formatDate($date, $format, $type = FieldDescription::FIELD_TYPE_DATE) {
+            if (!$date) {
+                return '';
+            }
+            if($type == FieldDescription::FIELD_TYPE_STRING){
+                $result = $date;
+                if($format == 'translate(%s)'){
+                    $result = E()->Utils->translate($date);
+                }
+                return $result;
+            }
+            $date = strtotime($date);
+            if (!in_array($format, ['%E', '%f', '%o', '%q'])) {
+                $result = @strftime($format, $date);
+                if (!$result) {
+                    $result = $date;
+                }
+            } else {
+                $result = '';
+                $today = strtotime("midnight");
+                $tomorrow = strtotime("midnight +1 day");
+                $dayAfterTomorrow = strtotime("midnight +2 day");
+                $tomorrowPlus3 = strtotime("midnight +3 day");
+                $yesterday = strtotime("midnight -1 day");
+                $beforeYesterday = strtotime("midnight -2 day");
+                switch ($format) {
+                    case '%E':
+                        if ($date >= $today and $date < $tomorrow) {
+                            $result .= translate('TXT_TODAY');
+                        } elseif ($date < $today and $date >= $yesterday) {
+                            $result .= translate('TXT_YESTERDAY');
+                        } elseif ($date < $yesterday and $date >= $beforeYesterday) {
+                            $result .= translate('TXT_BEFORE_YESTERDAY');
+                        } elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
+                            $result .= translate('TXT_TOMORROW');
+                        } elseif ($date >= $dayAfterTomorrow && $date < $tomorrowPlus3) {
+                            $result .= translate('TXT_AFTER_TOMORROW');
+                        } else {
+                            $dayNum = date('w', $date);
+                            if ($dayNum == 0) {
+                                $dayNum = 7;
+                            }
+                            $result .= translate('TXT_WEEKDAY_SHORT_' . $dayNum);
+                        }
+                        $result .= ', ' . date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
+                        if (date('Y', $date) != date('Y')) {
+                            $result .= ' ' . date('Y', $date);
+                        }
+                        break;
+                    case '%f':
+                        $dayNum = date('w', $date);
+                        if ($dayNum == 0) {
+                            $dayNum = 7;
+                        }
+                        $result .= translate('TXT_WEEKDAY_' . $dayNum) . ', ' . date('j',
+                                $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
+                        if (date('Y', $date) != date('Y')) {
+                            $result .= ' ' . date('Y', $date);
+                        }
+                        break;
+                    case '%o':
+                        if ($date >= $today and $date < $tomorrow) {
+                            $result .= translate('TXT_TODAY') . ', ';
+                        }
+                        $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
 
-               $date = strtotime($date);
-               if (!in_array($format, ['%E', '%f', '%o', '%q'])) {
-                   $result = @strftime($format, $date);
-                   if (!$result) {
-                       $result = $date;
-                   }
-               } else {
-                   $result = '';
-                   $today = strtotime("midnight");
-                   $tomorrow = strtotime("midnight +1 day");
-                   $dayAfterTomorrow = strtotime("midnight +2 day");
-                   $tomorrowPlus3 = strtotime("midnight +3 day");
-                   $yesterday = strtotime("midnight -1 day");
-                   $beforeYesterday = strtotime("midnight -2 day");
-                   switch ($format) {
-                       case '%E':
-                           if ($date >= $today and $date < $tomorrow) {
-                               $result .= translate('TXT_TODAY');
-                           } elseif ($date < $today and $date >= $yesterday) {
-                               $result .= translate('TXT_YESTERDAY');
-                           } elseif ($date < $yesterday and $date >= $beforeYesterday) {
-                               $result .= translate('TXT_BEFORE_YESTERDAY');
-                           } elseif ($date >= $tomorrow && $date < $dayAfterTomorrow) {
-                               $result .= translate('TXT_TOMORROW');
-                           } elseif ($date >= $dayAfterTomorrow && $date < $tomorrowPlus3) {
-                               $result .= translate('TXT_AFTER_TOMORROW');
-                           } else {
-                               $dayNum = date('w', $date);
-                               if ($dayNum == 0) {
-                                   $dayNum = 7;
-                               }
-                               $result .= translate('TXT_WEEKDAY_SHORT_' . $dayNum);
-                           }
-                           $result .= ', ' . date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
-                           if (date('Y', $date) != date('Y')) {
-                               $result .= ' ' . date('Y', $date);
-                           }
-                           break;
-                       case '%f':
-                           $dayNum = date('w', $date);
-                           if ($dayNum == 0) {
-                               $dayNum = 7;
-                           }
-                           $result .= translate('TXT_WEEKDAY_' . $dayNum) . ', ' . date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
-                           if (date('Y', $date) != date('Y')) {
-                               $result .= ' ' . date('Y', $date);
-                           }
-                           break;
-                       case '%o':
-                           if ($date >= $today and $date < $tomorrow) {
-                               $result .= translate('TXT_TODAY') . ', ';
-                           }
-                           $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
+                        if (date('Y', $date) != date('Y')) {
+                            $result .= ' ' . date('Y', $date);
+                        }
+                        break;
+                    case '%q':
+                        $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
 
-                           if (date('Y', $date) != date('Y')) {
-                               $result .= ' ' . date('Y', $date);
-                           }
-                           break;
-                       case '%q':
-                           $result .= date('j', $date) . ' ' . (translate('TXT_MONTH_' . date('n', $date)));
+                        if (date('Y', $date) != date('Y')) {
+                            $result .= ' ' . date('Y', $date);
+                        }
+                        break;
+                }
+                //Если часы и минуты = 0, считаем что это просто дата, без времени
+                if (in_array($type, [
+                    FieldDescription::FIELD_TYPE_DATETIME,
+                    FieldDescription::FIELD_TYPE_TIME,
+                    FieldDescription::FIELD_TYPE_HIDDEN
+                ])) {
+                    $result .= ', ';
+                    $result .= date('G', $date) . ':' . date('i', $date);
+                }
+            }
 
-                           if (date('Y', $date) != date('Y')) {
-                               $result .= ' ' . date('Y', $date);
-                           }
-                           break;
-                   }
-                   //Если часы и минуты = 0, считаем что это просто дата, без времени
-                   if (in_array($type, [FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_TIME, FieldDescription::FIELD_TYPE_HIDDEN])) {
-                       $result .= ', ';
-                       $result .= date('G', $date) . ':' . date('i', $date);
-                   }
-               }
-               return $result;
-           }
+            return $result;
+        }
 
-        public function is_PHP_CLI(){
+        public function is_PHP_CLI() {
             return (php_sapi_name() === 'cli' OR defined('STDIN'));
         }
     }
@@ -485,7 +489,6 @@ namespace {
      * @fn splitDate($date)
      * @brief Split date.
      * It splits the date into the year, month, month day and time (hours, minutes, seconds).
-     *
      * @param string $date Date.
      * @return array
      */
@@ -516,7 +519,6 @@ namespace {
     /**
      * @fn dump_log($var, $append = false)
      * @brief Write the variable information into log file.
-     *
      * @param mixed $var Variable
      * @param boolean $append Append the log into the file? If @c false the file will be overwritten.
      */
@@ -538,7 +540,6 @@ namespace {
      * @fn simplifyDBResult($dbResult, $fieldName, $singleRow = false)
      * @brief Simplify data base result.
      * It selects the values at the defined field from the result of SELECT request.
-     *
      * @see array_column
      * @param mixed $dbResult Result of SELECT request.
      * @param string $fieldName Field name that will be selected from result.
@@ -552,7 +553,6 @@ namespace {
     /**
      * @fn transpose(array $dbResult)
      * @brief Transpose 2D array.
-     *
      * Input:
      * @code
     array(
@@ -561,7 +561,6 @@ namespace {
      * )
      * )
      * @endcode
-     *
      * Output:
      *     array($fieldName => array($n => $fieldValue))
      * @code
@@ -571,7 +570,6 @@ namespace {
      * )
      * )
      * @endcode
-     *
      * @param array $r 2D array.
      * @return array
      */
@@ -582,15 +580,11 @@ namespace {
     /**
      * @fn convertDBResult($dbResult, $pkName, $deletePK = false)
      * @brief Convert data base result.
-     *
      * @param mixed $dbResult Data base result.
      * @param mixed $pkName Primary key.
      * @param boolean $deletePK Delete fields with primary key from the result?
      * @return array
-     *
-     *
      * @see QAL::select()
-     *
      * @deprecated
      */
     function convertDBResult(array $dbResult, $pkName, $deletePK = false) {
@@ -600,7 +594,6 @@ namespace {
     /**
      * @fn convertFieldNames(array $fields, $prefix = '')
      * @brief Convert field names to Camel Notation.
-     *
      * @param array $fields
      * @param string $prefix Prefix, that should be removed from the name.
      * @return array
@@ -615,12 +608,10 @@ namespace {
      * @fn arrayPush(array &$array, $var, $key = null)
      * @brief Push the new array element at the end of the array.
      * The index of newly inserted element will be returned.
-     *
      * @param array $array Array.
      * @param mixed $var New array element
      * @param int $key Desired key value of the new element.
      * @return int
-     *
      * @see array_push()
      * @deprecated
      */
@@ -631,7 +622,6 @@ namespace {
     /**
      * @fn array_push_before(array $array, $var, $pos)
      * @brief Push the new array element before specific position.
-     *
      * @param array $array Array.
      * @param mixed $var New array element.
      * @param int|string $pos Position.
@@ -645,7 +635,6 @@ namespace {
     /**
      * @fn array_push_after($src,$in,$pos)
      * @brief Push the new array element after specific position.
-     *
      * @param array $src Array.
      * @param mixed $in New array element.
      * @param int|string $pos Position.
@@ -658,7 +647,6 @@ namespace {
 
     /**
      * Optimized for large strings str_replace
-     *
      * @param $from char
      * @param $to char
      * @param $src string
@@ -675,15 +663,14 @@ namespace {
      */
     function simplifyClassName($fullyQualifiedClassName) {
         $className = explode('\\', $fullyQualifiedClassName);
+
         return array_pop($className);
     }
 
     /**
      * Get the translation of the text constant.
-     *
      * Get the translation of the text constant from the translation table for specific language.
      * If the language not provided, then current language will be used.
-     *
      * @param string $const Text constant
      * @param int $langId Language ID.
      * @return string
@@ -695,7 +682,6 @@ namespace {
 
     /**
      * Transform date to the string.
-     *
      * @param int $year Year value.
      * @param int $month Month value.
      * @param int $day Day value
@@ -703,6 +689,7 @@ namespace {
      */
     function dateToString($year, $month, $day) {
         $result = (int)$day . ' ' . translate('TXT_MONTH_' . (int)$month) . ' ' . $year;
+
         return $result;
     }
 }

@@ -224,7 +224,7 @@ class CommentsForm extends DataSet {
      * @return bool
      */
     protected function isTargetEditable() {
-        if (!$this->getParam('allows_anonymous') && !E()->getAUser()->isAuthenticated())
+        if (!$this->getParam('allows_anonymous') && !E()->getUser()->isAuthenticated())
             return false;
         $right =
             E()->getMap()->getDocumentRights($this->document->getID());
@@ -241,7 +241,7 @@ class CommentsForm extends DataSet {
      * @return bool|int
      */
     protected function updateComment($targetId, $commentName, $commentNick, $commentId) {
-        if (!in_array('1', E()->getAUser()->getGroups())) {
+        if (!in_array('1', E()->getUser()->getGroups())) {
             if (!$this->isTargetEditable()) { // юзеру доступно только чтение
                 return false;
             }
@@ -252,7 +252,7 @@ class CommentsForm extends DataSet {
                 return false;
             }
             $comment = $comments[0];
-            if (E()->getAUser()->getID() != $comment['u_id']) {
+            if (E()->getUser()->getID() != $comment['u_id']) {
                 // не автор - запретить!
                 return false;
             }
@@ -314,7 +314,7 @@ class CommentsForm extends DataSet {
      * @return bool
      */
     protected function removeComment($id) {
-        if (!in_array('1', E()->getAUser()->getGroups())) {
+        if (!in_array('1', E()->getUser()->getGroups())) {
             if (!$this->isTargetEditable()) { // юзеру доступно только чтение
                 return false;
             }
@@ -325,7 +325,7 @@ class CommentsForm extends DataSet {
                 return true;
             }
             $comment = $comments[0];
-            if (!E()->getAUser() || E()->getAUser()->getID() != $comment['u_id']) {
+            if (!E()->getUser() || E()->getUser()->getID() != $comment['u_id']) {
                 // не автор - запретить!
                 return false;
             }

@@ -71,7 +71,7 @@
             <xsl:attribute name="href">
                 <xsl:choose>
                     <xsl:when test="$DOC_PROPS[@name='base']/@favicon!=''"><xsl:value-of select="$DOC_PROPS[@name='base']/@favicon"/></xsl:when>
-                    <xsl:otherwise><xsl:value-of select="$STATIC_URL"/>images/energine.ico"</xsl:otherwise>
+                    <xsl:otherwise><xsl:value-of select="$STATIC_URL"/>images/energine.ico</xsl:otherwise>
                 </xsl:choose>
             </xsl:attribute>
         </link>
@@ -92,7 +92,9 @@
 
     <xsl:template match="/" mode="scripts">
         <xsl:if test="not($DOC_PROPS[@name='single'])"><!-- User JS is here--></xsl:if>
-
+    </xsl:template>
+    <xsl:template match="/" mode="jquery_scripts">
+        <xsl:if test="not($DOC_PROPS[@name='single'])"><!-- User JS is here--></xsl:if>
     </xsl:template>
 
     <xsl:template match="/" mode="og">
@@ -127,9 +129,13 @@
             <meta name="google-site-verification" content="{$DOC_PROPS[@name='google_verify']}"/>
         </xsl:if>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
-        <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
-        <xsl:if test="$DOC_PROPS[@name='robots']!=''">
+        <xsl:if test="$DOC_PROPS[@name='keywords']">
+            <meta name="keywords" content="{$DOC_PROPS[@name='keywords']}"/>
+        </xsl:if>
+        <xsl:if test="$DOC_PROPS[@name='description']">
+            <meta name="description" content="{$DOC_PROPS[@name='description']}"/>
+        </xsl:if>
+        <xsl:if test="$DOC_PROPS[@name='robots']">
             <meta name="robots" content="{$DOC_PROPS[@name='robots']}"/>
         </xsl:if>
         <xsl:apply-templates select="." mode="og"/>
@@ -204,11 +210,12 @@
         <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
             <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
         </xsl:if>
-        <xsl:if test="(count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0) or (count($VARS[@name='FORCE_USE_JQUERY']) &gt;0)">
+        <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
             <script type="text/javascript">
                 jQuery.noConflict();
             </script>
+            <xsl:apply-templates select="/" mode="jquery_scripts"/>
         </xsl:if>
         <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
             <xsl:apply-templates select="/document/javascript/library" mode="jquery"/>
@@ -329,10 +336,4 @@
     <xsl:template match="component[@class='SiteProperties']">
         <xsl:value-of select="." disable-output-escaping="yes"/>
     </xsl:template>
-
-    <xsl:template match="nrgn:insert-component">
-        <xsl:variable name="NAME" select="@name"/>
-        <xsl:apply-templates select="$COMPONENTS[@name=$NAME]"/>
-    </xsl:template>
-
 </xsl:stylesheet>

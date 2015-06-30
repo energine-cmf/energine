@@ -50,25 +50,14 @@ final class UserSession implements \SessionHandlerInterface {
      */
     const DEFAULT_PROBABILITY = 10;
 
-    /**
-     * Instance flag.
-     * It denies to call directly UserSession, only over UserSession::start().
-     * @var bool $instance
-     */
-    private static $instance = false;
+
+    private $isStarted = false;
 
     /**
      * Session ID.
      * @var string $phpSessId
      */
     private $phpSessId;
-
-    /**
-     * Timeout.
-     * If time difference between requests is bigger than this value then the session become invalid.
-     * @var int $timeout
-     */
-    private $timeout;
 
     /**
      * Maximal session lifespan.
@@ -86,9 +75,6 @@ final class UserSession implements \SessionHandlerInterface {
     /**
      * Session data.
      *
-     * - null - Session is not exist.
-     * - false - Session is exist but there is no data.
-     * - string - Session and data are exist.
      *
      * @var null|bool|string $data
      */
@@ -98,6 +84,8 @@ final class UserSession implements \SessionHandlerInterface {
      */
     private $id = NULL;
 
+    private $UID = NULL;
+
     /**
      * Session table name in data base.
      * @var string $tableName
@@ -105,60 +93,43 @@ final class UserSession implements \SessionHandlerInterface {
     static private $tableName = 'share_session';
 
     /**
-     * @param bool $force Force to create session?
-     *
-     * @throws \BadMethodCallException
+     * @throws \ErrorException
      */
-    private function __construct($force = false) {
-        $this->timeout = Object::_getConfigValue('session.timeout');
-        $this->lifespan = Object::_getConfigValue('session.lifespan');
-        $this->userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'ROBOT';
+    public function __construct() {
+        if (session_status() == PHP_SESSION_DISABLED) throw new \ErrorException('Session must be enabled');
 
+        $this->lifespan = Object::_getConfigValue('session.lifespan');
+        $this->userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'NOBODY';
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
-        // устанавливаем обработчики сеанса
+    }
+
+    /**
+     * Session initialization
+     * if valid session data exists  - PHP session started
+     * otherwise - session is not started
+     *
+     * @return $this
+     * @throws SystemException
+     */
+    public function init() {
+        if (!$this->isStarted && ($id = self::getSessionID())) {
+            if ($this->load($id)) {
+                $this->launch();
+                $this->dbh->modify('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
+            } else {
+                $this->kill();
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Real PHP session start procedure
+     */
+    private function launch() {
         session_set_save_handler($this);
         session_name(self::DEFAULT_SESSION_NAME);
-        $this->data = false;
-
-        if ($this->phpSessId = self::isOpen()) {
-            $this->data = self::isValid($this->phpSessId);
-            //Если сессия валидная
-            if (is_null($this->data) || $this->data) {
-                $this->id = $this->dbh->getScalar(self::$tableName, 'session_id', ['session_native_id' => $this->phpSessId]);
-
-                E()->getDB()->modify('UPDATE ' . self::$tableName . ' SET session_last_impression = UNIX_TIMESTAMP(), session_expires = (UNIX_TIMESTAMP() + %s) WHERE session_native_id = %s', $this->lifespan, $this->phpSessId);
-            } elseif ($force) {
-                //создаем ее вручную
-                $cookieInfo = self::manuallyCreateSessionInfo();
-                $this->phpSessId = $cookieInfo[1];
-
-                if (($cookieInfo = UserSession::manuallyCreateSessionInfo())) {
-                    call_user_func_array(
-                        [E()->getResponse(), 'addCookie'],
-                        $cookieInfo
-                    );
-                }
-            } //сессия невалидная
-            else {
-                $this->dbh->modify(QAL::DELETE, self::$tableName, NULL, ["session_native_id" => addslashes($this->phpSessId)]);
-                // удаляем cookie сеанса
-                E()->getResponse()->deleteCookie(self::DEFAULT_SESSION_NAME);
-                return;
-            }
-        } elseif ($force) {
-            //создаем ее вручную
-            $cookieInfo = self::manuallyCreateSessionInfo();
-            $this->phpSessId = $cookieInfo[1];
-            if (($cookieInfo = UserSession::manuallyCreateSessionInfo())) {
-                call_user_func_array(
-                    [E()->getResponse(), 'addCookie'],
-                    $cookieInfo
-                );
-            }
-        } else {
-            self::$instance = false;
-            return;
-        }
 
         // устанавливаем время жизни cookie
         if (Object::_getConfigValue('site.domain')) {
@@ -171,34 +142,39 @@ final class UserSession implements \SessionHandlerInterface {
         session_set_cookie_params($this->lifespan, $path, $domain);
         session_id($this->phpSessId);
         session_start();
+        $this->isStarted = true;
     }
 
-    private function reload() {
-
-        if (!$this->phpSessId) {
-            if (($cookieInfo = UserSession::manuallyCreateSessionInfo())) {
-                //var_dump($cookieInfo, session_status() == PHP_SESSION_NONE);
-                $this->phpSessId = $cookieInfo[1];
-                $this->id = $cookieInfo[3];
-
-                if (session_status() == PHP_SESSION_NONE) {
-                    session_id($this->phpSessId);
-                    session_start();
-                }
-                call_user_func_array(
-                    [E()->getResponse(), 'addCookie'],
-                    $cookieInfo
-                );
-            }
+    /**
+     * @param null $UID User ID - if NULL existing UID rewrited
+     * @return $this
+     * @throws SystemException
+     */
+    public function start($UID = NULL) {
+        //if session not started
+        if (!$this->init()->isStarted) {
+            //Inserts session info into DB
+            $data['session_created'] = $data['session_last_impression'] = time();
+            $data['session_expires'] = $data['session_last_impression'] + $this->lifespan;
+            $data['session_ip'] = E()->getRequest()->getClientIP(true);
+            $this->phpSessId = $data['session_native_id'] = self::createIdentifier();
+            $this->id = $this->dbh->modify(QAL::INSERT, self::$tableName, $data);
+            //start PHP session
+            $this->launch();
         }
+
+        if ($UID != $this->UID) $_SESSION['UID'] = $UID;
+
+        return $this;
     }
+
 
     /**
      * Check if the session is opened.
      *
      * @return bool
      */
-    static public function isOpen() {
+    static private function getSessionID() {
         return (isset($_COOKIE[self::DEFAULT_SESSION_NAME]) && !empty($_COOKIE[self::DEFAULT_SESSION_NAME])) ? $_COOKIE[self::DEFAULT_SESSION_NAME] : false;
     }
 
@@ -206,106 +182,67 @@ final class UserSession implements \SessionHandlerInterface {
      * Validate the session.
      * It checks the validity of the session with this ID. If true then session data will be returned.
      *
-     * @param int $sessID Session ID.
+     * @param int $sessionID Session ID.
      * @return mixed|false
      */
-    static public function isValid($sessID) {
-        return E()->getDB()->getScalar(
-            'SELECT session_data FROM ' . self::$tableName .
-            ' WHERE session_native_id = %s ' .
-            ' AND session_expires >= UNIX_TIMESTAMP()',
-            $sessID
-        );
-    }
+    public function load($sessionID) {
+        $this->UID = $this->data = $this->id = $this->phpSessId = $result = NULL;
+        if ($sessionID) {
+            $result = $this->dbh->select(
+                'SELECT * FROM ' . self::$tableName .
+                ' WHERE session_native_id = %s ' .
+                ' AND session_expires >= UNIX_TIMESTAMP()',
+                $sessionID
+            );
+            if ($result) {
+                $this->phpSessId = $sessionID;
+                list($row) = $result;
+                $this->id = $row['session_id'];
+                $this->data = $row['session_data'];
+                $this->UID = $row['u_id'];
 
-    //todo VZ: Why not to use 0 as the default for arguments?
-    /**
-     * Create new session information.
-     * It returns an information about cookie for new session for Response::addCookie().
-     *
-     * @param int|bool $UID User ID.
-     * @param bool $expires
-     * @return array
-     */
-    public static function manuallyCreateSessionInfo($UID = false, $expires = false) {
-        if (($id = self::isOpen()) && (self::isValid($id) !== false)) {
-            if ($UID) {
-                $data['u_id'] = $UID;
-                $data['session_last_impression'] = time();
-                $data['session_data'] = 'userID|' . serialize($UID);
-                $data['session_ip'] = E()->getRequest()->getClientIP(true);
-
-                E()->getDB()->modify(QAL::UPDATE, 'share_session', $data, ['session_native_id' => $id]);
+                $this->isStarted = $result = true;
             }
-            return false;
-        }
-        //Записали данные в БД
-        $data['session_native_id'] = self::createIdentifier();
-        $data['session_created'] = $data['session_last_impression'] = time();
-        if (!$expires)
-            $data['session_expires'] = $data['session_created'] + 15 * 60;
-        else
-            $data['session_expires'] = $expires;
-
-        if ($UID) {
-            $data['u_id'] = $UID;
-            //Финт ушами поскольку стандартно в РНР сериализированные данные сессии содержат еще и имя переменной
-            $data['session_data'] = 'userID|' . serialize($UID);
         }
 
-        $data['session_ip'] = E()->getRequest()->getClientIP(true);
-        $id = E()->getDB()->modify(QAL::INSERT, 'share_session', $data);
-        $_COOKIE[self::DEFAULT_SESSION_NAME] = $data['session_native_id'];
-
-
-        return [self::DEFAULT_SESSION_NAME, $data['session_native_id'], $data['session_expires'], $id];
+        return $result;
     }
+
 
     /**
      * Delete session information.
      */
-    public static function manuallyDeleteSessionInfo() {
+    public function kill() {
         if (isset($_COOKIE[UserSession::DEFAULT_SESSION_NAME])) {
-            $sessID = $_COOKIE[UserSession::DEFAULT_SESSION_NAME];
-            E()->getDB()->modify(QAL::DELETE, 'share_session', NULL, ['session_native_id' => $sessID]);
+            $sessionID = $_COOKIE[UserSession::DEFAULT_SESSION_NAME];
+            unset($_COOKIE[UserSession::DEFAULT_SESSION_NAME]);
+            E()->Response->deleteCookie(UserSession::DEFAULT_SESSION_NAME);
         }
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_destroy();
+        } elseif (isset($sessionID)) {
+            $this->dbh->modify(QAL::DELETE, self::$tableName, NULL, ['session_native_id' => $sessionID]);
+        }
+
+        $this->isStarted = false;
     }
 
     /**
-     * Start session.
-     * Actually the session in Energine starts as continuation of already existed session (created in auth.php).
-     * If there are no information about the session in cookies or posts (there is an exception for flash uploader) then no session will start.
-     * For captcha we need to force to start session.
-     *
-     * @param $force bool Force to create session if this is not necessary?
-     *
-     * @see index.php
-     * @see auth.php
-     *
-     * @return UserSession
-     */
-    public static function start($force = false) {
-        if (!self::$instance) {
-            self::$instance = new UserSession($force);
-        }
-
-        if ($force) self::$instance->reload();
-        return self::$instance;
-    }
-
-    public function getID() {
-        return $this->id;
-    }
-
-
-    /**
-     * Generate ID.
-     *
+     * Creating session identifier
      * @return string
      */
     public static function createIdentifier() {
         return sha1(time() + rand(0, 10000));
     }
+
+    /**
+     *
+     * @return int Session ID
+     */
+    public function getID() {
+        return $this->id;
+    }
+
 
     /**
      * Open session.
@@ -352,10 +289,9 @@ final class UserSession implements \SessionHandlerInterface {
         if (!empty($data)) {
             $this->data = $data;
             $data = ['session_data' => $data];
-            if (isset($_SESSION['userID'])) {
-                $data['u_id'] = (int)$_SESSION['userID'];
+            if ($this->UID) {
+                $data['u_id'] = $this->UID;
             }
-
             $this->dbh->modify(QAL::UPDATE, self::$tableName, $data, ['session_native_id' => $phpSessId]);
         }
         return true;

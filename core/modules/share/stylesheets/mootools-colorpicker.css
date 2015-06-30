@@ -1,0 +1,48 @@
+@import 'font-awesome/css/font-awesome.min.css';
+
+.colorpicker-input {
+    height: 30px;
+    width: 128px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    font-family: Tahoma, sans-serif;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+.colorpicker-input i{
+    float: right;
+    font-size: 15px;
+    padding-top:7px;
+    padding-right: 3px;
+}
+
+.colorpicker-box {
+    border-left: 1px solid #000;
+    border-top: 1px solid #000;
+    position: absolute;
+    padding: 0px;
+    z-index: 20;
+}
+
+.colorpicker-box ul {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    float: left;
+}
+
+.colorpicker-box ul li {
+    display: block;
+    width: 15px;
+    height: 15px;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    margin: 0px;
+    float: left;
+    cursor: pointer;
+}

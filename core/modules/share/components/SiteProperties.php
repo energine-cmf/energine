@@ -12,9 +12,10 @@
  * Информация о текущем сайте.
  *
  * @package energine
- * @subpackage trku
  * @author dr.Pavka
  */
+namespace Energine\share\components;
+
 class SiteProperties extends Component {
     protected function defineParams() {
         return array_merge(
@@ -29,15 +30,15 @@ class SiteProperties extends Component {
         $result = parent::build();
         try {
             if (!$this->getParam('id')) {
-                throw new InvalidArgumentException();
+                throw new \InvalidArgumentException();
             }
             $code = E()->getSiteManager()->getCurrentSite()->{$this->getParam('id')};
             if (!$code) {
-                throw new InvalidArgumentException();
+                throw new \InvalidArgumentException();
             }
-            $result->documentElement->appendChild(new DOMText($code));
+            $result->documentElement->appendChild(new \DOMText($code));
         }
-        catch(InvalidArgumentException $e){
+        catch(\InvalidArgumentException $e){
             $result = false;
         }
         return $result;

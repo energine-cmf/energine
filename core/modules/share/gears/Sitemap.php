@@ -59,12 +59,14 @@ final class Sitemap extends Object {
      * Default Meta-Description.
      * @var string $defaultMetaDescription
      *
-     * @see Sitemap::defaultMetaKeywords
+     * @see Site::MetaKeywords
      */
     private $defaultMetaDescription;
     /**
-     * Default Meta-Robots.
-     * @var string $defaultMetaRobots
+     * Default Meta Robots
+     * @var array $defaultMetaRobots
+     *
+     * @see Site::MetaKeywords
      */
     private $defaultMetaRobots;
 
@@ -107,7 +109,7 @@ final class Sitemap extends Object {
             'AND s.smap_id IN( ' .
             ' SELECT smap_id ' .
             ' FROM share_access_level ' .
-            ' WHERE group_id IN (' . implode(',', E()->getAUser()->getGroups()) . ')) ' .
+            ' WHERE group_id IN (' . implode(',', E()->getUser()->getGroups()) . ')) ' .
             'ORDER BY smap_order_num',
             $this->siteID,
             $this->langID
@@ -147,19 +149,17 @@ final class Sitemap extends Object {
 
         //Загружаем перечень идентификаторов в объект дерева
         $this->tree = TreeConverter::convert($res, 'smap_id', 'smap_pid');
-
+        $site = E()->getSiteManager()->getSiteByID($this->siteID);
         $res = $this->dbh->select('
-		  SELECT s.smap_id,ss.site_meta_keywords, ss.site_meta_description, sss.site_meta_robots 
-            FROM share_sitemap s
-            LEFT JOIN share_sites_translation ss ON ss.site_id=s.site_id
-            LEFT JOIN share_sites sss ON sss.site_id=s.site_id 
-            WHERE ss.site_id = %s AND s.smap_pid IS NULL and ss.lang_id = %s
-		', $this->siteID, $this->langID);
+		  SELECT s.smap_id FROM share_sitemap s
+            WHERE s.site_id = %s AND s.smap_pid IS NULL
+		', $this->siteID);
         list($res) = $res;
         $this->defaultID = $res['smap_id'];
-        $this->defaultMetaKeywords = $res['site_meta_keywords'];
-        $this->defaultMetaDescription = $res['site_meta_description'];
-        $this->defaultMetaRobots = $res['site_meta_robots'];
+
+        $this->defaultMetaKeywords = $site->metaKeywords;
+        $this->defaultMetaDescription = $site->metaDescription;
+        $this->defaultMetaRobots = $site->metaRobots;
 
         $this->getSitemapData(array_keys($this->tree->asList()));
     }
@@ -237,15 +237,20 @@ final class Sitemap extends Object {
      * @return array
      */
     private function preparePageInfo($current) {
-        //inspect($current);
         //здесь что то лишнее
         //@todo А нужно ли вообще обрабатывать все разделы?
         $result = convertFieldNames($current, 'smap');
         $result['Site'] = $result['siteId'];
         unset($result['siteId'], $result['OrderNum'], $result['langId'], $result['IsDisabled']);
-        if (is_null($result['MetaKeywords'])) $result['MetaKeywords'] = $this->defaultMetaKeywords;
-        if (is_null($result['MetaDescription'])) $result['MetaDescription'] = $this->defaultMetaDescription;
-        if (is_null($result['MetaRobots']) || empty($result['MetaRobots'])) $result['MetaRobots'] = $this->defaultMetaRobots;
+        if(!empty($result['MetaRobots'])){
+            $result['MetaRobots'] = explode(',', $result['MetaRobots']);
+        }
+
+        foreach(['MetaKeywords', 'MetaDescription', 'MetaRobots'] as $default){
+            if(is_null($result[$default])){
+                $result[$default] = $this->{'default'.$default};
+            }
+        }
 
         return $result;
     }
@@ -334,7 +339,7 @@ final class Sitemap extends Object {
      */
     public function getDocumentRights($docID, $groups = false) {
         if (!$groups) {
-            $groups = E()->getAUser()->getGroups();
+            $groups = E()->getUser()->getGroups();
         } elseif (!is_array($groups)) {
             $groups = [$groups];
         }

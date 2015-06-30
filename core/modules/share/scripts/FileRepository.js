@@ -90,8 +90,8 @@ Grid.implement(/** @lends Grid# */{
                         image.setProperty('src', Energine.resizer + 'w60-h45/' + record[fieldName])
                             .addEvents({
                                 'error': function () {
-                                    image.setProperty('src', 'images/icons/icon_error_image.gif');
-                                    container.removeEvents('mouseenter').removeEvent('mouseleave');
+                                    image.setProperty('src', 'http://placehold.it/60x45/');
+                                    container.removeEvents('mouseenter').removeEvents('mouseleave');
                                 }
                             })
                             .setStyles({

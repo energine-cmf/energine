@@ -68,7 +68,9 @@ var Validator = new Class(/** @lends Validator# */{
             }
         }
     },
-
+    clearErrors: function(field){
+        this.form.getElements('.field').each(this.removeError);
+    },
     /**
      * Show the error message for specific field.
      *

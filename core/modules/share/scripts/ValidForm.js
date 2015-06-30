@@ -33,7 +33,8 @@ var ValidForm = new Class(/** @lends ValidForm# */{
              * Form element.
              * @type {Element}
              */
-            this.form = this.element.getParent('form');
+            this.form = (this.element.get('tag') === 'form')?this.element:this.element.getParent('form');
+
             if (this.form) {
                 /**
                  * Single path.

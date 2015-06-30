@@ -58,6 +58,9 @@ class FileRepositoryFTP;
  * </table>
  */
 class FileRepositoryFTP extends Object implements IFileRepository {
+
+    use FileRepositoryWatermark;
+
     // путь FTP начиная от FTP root для загрузки alt-файлов
     /**
      * Path to the cache for alternative images.
@@ -182,6 +185,9 @@ class FileRepositoryFTP extends Object implements IFileRepository {
             if (strpos($destFilename, $base) === 0) {
                 $destFilename = substr($destFilename, strlen($base));
             }
+
+            $this->applyWatermark($sourceFilename);
+
             $this->ftp_media->connect();
             $result = $this->ftp_media->uploadFile($sourceFilename, $destFilename);
             $fi = false;
@@ -204,6 +210,9 @@ class FileRepositoryFTP extends Object implements IFileRepository {
             if (!file_put_contents($filePath2 = FileRepository::TEMPORARY_DIR.basename($destFilename), $fileData)) {
                 throw new SystemException('ERR_PUT_FILE', SystemException::ERR_CRITICAL, $filePath2);
             }
+
+            $this->applyWatermark($filePath2);
+
             $result = $this->ftp_media->uploadFile($filePath2, $filePath);
             $fi = false;
             if ($result) {

@@ -23,6 +23,8 @@ error_reporting(E_ALL);
 // включаем вывод ошибок и отключаем вывод в HTML
 @ini_set('display_errors', 1);
 @ini_set('html_errors', 0);
+@ini_set('session.auto_start', 0);
+@ini_set('session.use_trans_sid', 0);
 
 @date_default_timezone_set('Europe/Kiev');
 

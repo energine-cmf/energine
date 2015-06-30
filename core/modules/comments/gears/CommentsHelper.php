@@ -88,7 +88,7 @@ class CommentsHelper extends Comments {
     protected function createField($targetIds) {
         $f = new Field($this->commentsFieldName);
         $f->setRowProperty(0, 'is_tree', (bool)$this->isTree);
-        $f->setRowProperty(0, 'is_editable', (int)E()->getAUser()->isAuthenticated());
+        $f->setRowProperty(0, 'is_editable', (int)E()->getUser()->isAuthenticated());
 
         $data = $this->getBuildedListByIds($targetIds);
 

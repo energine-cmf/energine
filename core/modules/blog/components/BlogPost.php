@@ -163,7 +163,7 @@ class BlogPost extends DBDataSet {
      * @return void
      */
     private function checkAccess($blogUid){
-        $user = E()->getAUser();
+        $user = E()->getUser();
         if(!$user->isAuthenticated()
             or (($user->getID() != $blogUid) and (!in_array('1', $user->getGroups())))
         ){
@@ -191,9 +191,9 @@ class BlogPost extends DBDataSet {
 		$data = $_POST['blog_post'];
 
         if(!isset($data['blog_id'])){
-            if(!E()->getAUser()->isAuthenticated() or
+            if(!E()->getUser()->isAuthenticated() or
                 !$blogId = $this->dbh->select('blog_title', array('blog_id'),
-                array('u_id' => E()->getAUser()->getID())
+                array('u_id' => E()->getUser()->getID())
             )){
                 throw new SystemException('ERR_404', SystemException::ERR_404);
             }
@@ -272,13 +272,13 @@ class BlogPost extends DBDataSet {
 	 * @throws SystemException Если юзер не авторизован или если он не завёл себе блог
 	 */
 	protected function create(){
-        if(!E()->getAUser()->isAuthenticated()){
+        if(!E()->getUser()->isAuthenticated()){
 			// @todo add SystemException::ERR_401
 			throw new SystemException('ERR_404', SystemException::ERR_404);
 		}
         
         if(!$blogId = $this->dbh->select('blog_title', array('blog_id'),
-			array('u_id' => E()->getAUser()->getID())
+			array('u_id' => E()->getUser()->getID())
 		)){
 			// блог не существует - юзер не завёл себе блог
 			throw new SystemException('ERR_404', SystemException::ERR_404);
@@ -464,11 +464,11 @@ class BlogPost extends DBDataSet {
      */
     protected function prepare(){
         // добавляем id текущего пользователя - что бы вывести ему ссылки create/edit/delete в его блоге
-    	if(E()->getAUser()->isAuthenticated()){
-    		$this->setProperty('curr_user_id', E()->getAUser()->getID());
+    	if(E()->getUser()->isAuthenticated()){
+    		$this->setProperty('curr_user_id', E()->getUser()->getID());
     	}
         // признак админа - выводим ему ссылки edit/delete во всех блогах
-        if(in_array('1', E()->getAUser()->getGroups())){
+        if(in_array('1', E()->getUser()->getGroups())){
     		$this->setProperty('curr_user_is_admin', '1');
     	}
     	parent::prepare();

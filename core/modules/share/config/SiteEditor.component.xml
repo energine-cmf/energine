@@ -5,7 +5,7 @@
             <behavior name="SiteManager"/>
         </javascript>
         <fields>
-            <field name="site_id"/>
+            <field name="site_id" type="integer"/>
             <field name="site_name"/>
         </fields>
         <toolbar>

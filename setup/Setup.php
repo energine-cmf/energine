@@ -707,7 +707,7 @@ final class Setup {
             . '\'' . $this->config['seo']['sitemapSegment'] . '\','
             . '(SELECT smap_id FROM share_sitemap ss2 WHERE ss2.site_id = sso.site_id AND smap_pid IS NULL LIMIT 0,1) '
             . 'FROM share_sites sso '
-            . 'WHERE site_is_indexed AND site_is_active '
+            . 'WHERE NOT FIND_IN_SET(\'NOINDEX\', site_meta_robots) AND site_is_active '
             . 'AND (SELECT COUNT(ssi.site_id) FROM share_sites ssi '
             . 'INNER JOIN share_sitemap ssm ON ssi.site_id = ssm.site_id '
             . 'WHERE ssm.smap_segment = \'' . $this->config['seo']['sitemapSegment'] . '\' AND ssi.site_id = sso.site_id) = 0');

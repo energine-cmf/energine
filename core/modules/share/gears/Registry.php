@@ -36,6 +36,10 @@ namespace Energine\share\gears {
      * Application registry.
      *
      * @property-read \Energine\share\gears\Utils $Utils
+     * @property-read \Energine\share\gears\UserSession $UserSession
+     * @property-read \Energine\share\gears\Request $Request
+     * @property-read \Energine\share\gears\Response $Response
+     *
      *
      * Such Registry & Service Locator hybrid.
      * Any injected object here become a singleton.
@@ -56,7 +60,7 @@ namespace Energine\share\gears {
          * List of stored objects in the registry.
          * @var array $entities
          */
-        private $entities = array();
+        private $entities = [];
 
         /**
          * Flag for imitation the private constructor.
@@ -65,11 +69,11 @@ namespace Energine\share\gears {
         private static $flag = null;
 
         /**
-         * @throws SystemException
+         * @throws \InvalidArgumentException
          */
         public function __construct() {
             if (is_null(self::$flag)) {
-                throw new \SystemException('ERR_PRIVATE_CONSTRUCTOR', SystemException::ERR_DEVELOPER);
+                throw new \InvalidArgumentException('This class could only be instantiated through "getInstance" method.');
             }
             self::$flag = null;
         }
@@ -164,7 +168,7 @@ namespace Energine\share\gears {
          *
          * @return AuthUser
          */
-        public function getAUser() {
+        public function getUser() {
             return $this->get('Energine\\share\\gears\\AuthUser');
         }
 
@@ -175,26 +179,12 @@ namespace Energine\share\gears {
          *
          * @throws \Exception 'AuthUser object is already used. You can not substitute it here.'
          */
-        public function setAUser($anotherAuthUserObject) {
+        public function setUser(AuthUser $anotherAuthUserObject) {
             if (isset($this->entities['AuthUser'])) {
                 throw new \Exception ('AuthUser object is already used. You can not substitute it here.');
             }
             $this->entities['AuthUser'] = $anotherAuthUserObject;
         }
-
-        //todo VZ: remove this?
-        /*
-         * Пока непонятно что с ним делать
-         *
-         * public function substitute($object){
-         * if(!($className = get_class($object))){
-         * throw new Exception((string)$object.' is not an object');
-         * }
-         * if(isset($this->entities[$className])){
-         * throw new Exception($className.' is already used. You can not substitute it here.');
-         * }
-         * return $this->get($className);
-         * }*/
 
         /**
          * Get Request.
@@ -272,7 +262,35 @@ namespace Energine\share\gears {
          * @return DocumentController
          */
         public function getController() {
-            return $this->get('Energine\\share\\gears\\DocumentController');
+            if(!isset($this->entities['DocumentController'])){
+                return $this->setController();
+            }
+            return $this->entities['DocumentController'];
+        }
+
+        /**
+         * @param $newDocumentController
+         *
+         * @return DocumentController
+         */
+        public function setController($newDocumentController = null){
+            $path = 'Energine\\share\\gears\\';
+            if($newDocumentController && isset($this->entities['DocumentController'])){
+                throw new \InvalidArgumentException('Document controller is already defined.');
+            }
+            if(is_null($newDocumentController)){
+                $newDocumentController = 'DocumentController';
+            }
+            if(!(class_exists($newDocumentController) || class_exists($newDocumentController = $path.$newDocumentController))){
+                throw new \InvalidArgumentException("Class $newDocumentController not found");
+            }
+
+            $this->entities['DocumentController'] = new $newDocumentController;
+            if(!is_a($this->entities['DocumentController'], $path.'DocumentController')){
+                throw new \InvalidArgumentException('Class must be extended from '.$path.'DocumentController class.');
+            }
+
+            return $this->entities['DocumentController'];
         }
 
         /**
@@ -290,11 +308,11 @@ namespace Energine\share\gears {
                     ),
                     $this->getConfigValue('database.username'),
                     $this->getConfigValue('database.password'),
-                    array(
+                    [
                         \PDO::ATTR_PERSISTENT => (bool)$this->getConfigValue('database.persistent'),
                         \PDO::ATTR_EMULATE_PREPARES => true,
                         \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-                    )
+                    ]
                 );
             }
 

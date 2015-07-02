@@ -530,7 +530,7 @@ class DBDataSet extends DataSet {
      * @return mixed
      * @final
      */
-    final protected function getOrder() {
+    final public function getOrder() {
         if (is_null($this->order)) {
             $this->order = false;
             $columns = $this->dbh->getColumnsInfo($this->getTableName());

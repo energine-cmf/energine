@@ -71,10 +71,10 @@ class MailEmailSubscription extends DataSet {
             if ($uid = $this->dbh->getScalar('user_users', 'u_id', ['u_name' => $email])) {
                 $this->dbh->modify('INSERT INTO mail_subscriptions2users (u_id, subscription_id) SELECT %s as me_id, subscription_id FROM mail_subscriptions WHERE subscription_is_active and subscription_is_default', $uid);
             } else {
-                if ($this->dbh->getScalar('mail_email_subscribers', 'COUNT(*)', ['me_email' => $email])) {
+                if ($this->dbh->getScalar('mail_email_subscribers', 'COUNT(*)', ['me_name' => $email])) {
                     throw new \RuntimeException('ERR_MAIL_EXISTS');
                 }
-                $meID = $this->dbh->modify(QAL::INSERT, 'mail_email_subscribers', ['me_date' => date('Y-m-d H:i:s'), 'me_email' => $email]);
+                $meID = $this->dbh->modify(QAL::INSERT, 'mail_email_subscribers', ['me_date' => date('Y-m-d H:i:s'), 'me_name' => $email]);
                 $this->dbh->modify('INSERT INTO mail_email2subscriptions (me_id, subscription_id) SELECT %s as me_id, subscription_id FROM mail_subscriptions WHERE subscription_is_active and subscription_is_default', $meID);
             }
 

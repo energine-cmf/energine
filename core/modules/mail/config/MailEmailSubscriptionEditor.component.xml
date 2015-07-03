@@ -6,7 +6,7 @@
         </javascript>
         <fields>
             <field name="me_id"/>
-            <field name="me_email"/>
+            <field name="me_name"/>
             <field name="me_date" outputFormat="%E"/>
         </fields>
         <toolbar>

@@ -13,6 +13,10 @@ class MailSubscriptionEditor extends Grid {
      * @var MailSubscriptionUserEditor $oEditor
      */
     private $oEditor;
+    /**
+     * @var MailSubscriptionEmailEditor $eEditor
+     */
+    private $eEditor;
 
 
     public function __construct($name, array $params = NULL) {
@@ -38,6 +42,18 @@ class MailSubscriptionEditor extends Grid {
 
             $field->setData($tab_url, true);
             $this->getData()->addField($field);
+
+            $fd = new FieldDescription('emails');
+            $fd->setType(FieldDescription::FIELD_TYPE_TAB);
+            $fd->setProperty('title', $this->translate('TAB_SUBSCRIBED_EMAILS'));
+            $this->getDataDescription()->addFieldDescription($fd);
+
+            $field = new Field('emails');
+            $state = $this->getState();
+            $tab_url = (($state != 'add') ? $this->getData()->getFieldByName($this->getPK())->getRowData(0) : '') . '/email/';
+
+            $field->setData($tab_url, true);
+            $this->getData()->addField($field);
         }
     }
 
@@ -55,10 +71,26 @@ class MailSubscriptionEditor extends Grid {
         $this->oEditor = $this->document->componentManager->createComponent('oEditor', 'Energine\mail\components\MailSubscriptionUserEditor', $params);
         $this->oEditor->run();
     }
+    protected function emailsEditor() {
+        $sp = $this->getStateParams(true);
+        $params = ['config' => 'core/modules/mail/config/MailSubscriptionEmailEditor.component.xml'];
+
+        if (isset($sp['subscription_id'])) {
+            $this->request->shiftPath(2);
+            $params['subscriptionID'] = $sp['subscription_id'];
+
+        } else {
+            $this->request->shiftPath(1);
+        }
+        $this->eEditor = $this->document->componentManager->createComponent('eEditor', 'Energine\mail\components\MailSubscriptionEmailEditor', $params);
+        $this->eEditor->run();
+    }
 
     public function build() {
         if ($this->getState() == 'usersEditor') {
             $result = $this->oEditor->build();
+        } elseif ($this->getState() == 'emailsEditor') {
+            $result = $this->eEditor->build();
         } else {
             $result = parent::build();
         }

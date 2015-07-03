@@ -81,4 +81,10 @@
 			<pattern>/[subscription_id]/users/[any]/</pattern>
 		</uri_patterns>
 	</state>
+	<state name="emailsEditor" rights="3">
+		<uri_patterns>
+			<pattern>/email/[any]/</pattern>
+			<pattern>/[subscription_id]/email/[any]/</pattern>
+		</uri_patterns>
+	</state>
 </configuration>

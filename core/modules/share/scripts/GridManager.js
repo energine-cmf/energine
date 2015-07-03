@@ -437,6 +437,7 @@ var Grid = (function () {
                     cell.setStyles({'text-align': 'center', 'vertical-align': 'middle'});
                     break;
                 case 'value':
+                case 'lookup':
                     cell.set('html', record[fieldName]['value']);
                     break;
                 case 'textbox':
@@ -644,10 +645,14 @@ var Grid = (function () {
          * @returns {boolean}
          */
         getSelectedRecordKey: function () {
-            if (!this.keyFieldName) {
+            if (!this.keyFieldName || !this.getSelectedRecord()) {
                 return false;
             }
-            return this.getSelectedRecord()[this.keyFieldName];
+            var id = this.getSelectedRecord()[this.keyFieldName];
+            if(this.metadata[this.keyFieldName].type == 'lookup'){
+                id = this.getSelectedRecord()[this.keyFieldName]['id'];
+            }
+            return id;
         },
 
         /**

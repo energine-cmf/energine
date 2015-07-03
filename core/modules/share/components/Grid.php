@@ -341,7 +341,7 @@ class Grid extends DBDataSet {
         try {
             $result = $this->saveData();
             $transactionStarted = !($this->dbh->commit());
-            if($this->logClass){
+            if($this->logClass && $this->getSaver()->getData()){
                 $logger = new $this->logClass(get_class($this), $this->getName());
                 $logger->write($this->getSaver()->getMode(), $this->getSaver()->getData()->asArray(true));
 

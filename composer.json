@@ -1,45 +1,54 @@
 {
-    "name": "energine-cmf/energine",
-    "description": "Energine is an XML/XSLT content management framework.",
-    "type":"library",
-    "license": "MIT",
-    "keywords": ["xml", "xslt", "framework", "cmf"],
-    "homepage": "http://energine.net/",
-    "require": {
-      "php": ">=5.5.0",
-      "ext-dom":"*",
-      "ext-gd":"*",
-      "ext-json":"*",
-      "ext-libxml":"*",
-      "ext-mbstring":"*",
-      "ext-PDO":"*",
-      "ext-pdo_mysql":"*",
-      "ext-SimpleXML":"*",
-      "ext-session":"*",
-      "ext-tidy":"*",
-      "ext-xsl":"*"
+  "name": "energine-cmf/energine",
+  "description": "Energine is an XML/XSLT content management framework.",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "xml",
+    "xslt",
+    "framework",
+    "cmf"
+  ],
+  "homepage": "http://energine.net/",
+  "support": {
+    "issues": "https://github.com/energine-cmf/energine/issues",
+    "source": "https://github.com/energine-cmf/energine"
+  },
+  "require": {
+    "php": ">=5.5.0",
+    "ext-dom": "*",
+    "ext-gd": "*",
+    "ext-json": "*",
+    "ext-libxml": "*",
+    "ext-mbstring": "*",
+    "ext-PDO": "*",
+    "ext-pdo_mysql": "*",
+    "ext-SimpleXML": "*",
+    "ext-session": "*",
+    "ext-tidy": "*",
+    "ext-xsl": "*"
+  },
+  "authors": [
+    {
+      "name": "Pavel Dubenko",
+      "email": "d.pavka@gmail.com",
+      "homepage": "http://web-developer.kiev.ua",
+      "role": "Owner"
     },
-    "authors": [
-        {
-            "name": "Pavel Dubenko",
-            "email": "d.pavka@gmail.com",
-            "homepage": "http://web-developer.kiev.ua",
-            "role": "Owner"
-        },
-        {
-            "name": "Andy Karpov",
-            "email": "andy.karpov@gmail.com",
-            "role": "Developer"
-        },
-        {
-            "name": "Andrew Alexeenko",
-            "email": "wildex1@gmail.com",
-            "role": "Developer"
-        },
-        {
-            "name": "Valeriy Zinchenko",
-            "email": "formatcok@gmail.com",
-            "role": "Developer"
-        }
-    ]
+    {
+      "name": "Andy Karpov",
+      "email": "andy.karpov@gmail.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Andrew Alexeenko",
+      "email": "wildex1@gmail.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Valeriy Zinchenko",
+      "email": "formatcok@gmail.com",
+      "role": "Developer"
+    }
+  ]
 }

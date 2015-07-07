@@ -15,6 +15,8 @@ class CommentsList;
 namespace Energine\comments\components;
 use Energine\comments\gears\Comments;
 use Energine\share\components\DataSet, Energine\share\gears\Pager, Energine\share\gears\TreeBuilder, Energine\share\gears\TreeConverter, Energine\share\gears\FieldDescription, Energine\share\gears\DataDescription;
+use Energine\share\gears\SimpleBuilder;
+
 /**
  * List of comments.
  *
@@ -45,7 +47,7 @@ class CommentsList extends DataSet {
      * Comment ID(s).
      * @var int|array $targetIds
      */
-    protected $targetIds = array();
+    protected $targetIds = [];
 
     /**
      * Loaded data.
@@ -166,7 +168,7 @@ class CommentsList extends DataSet {
             $builder->setTree($tree);
         }
         else {
-            $builder = parent::createBuilder();
+            $builder = new SimpleBuilder();
         }
         $this->builder = $builder;
         return $this->builder;
@@ -239,13 +241,13 @@ class CommentsList extends DataSet {
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
-            array(
+            [
                 'table_name' => '',
                 'is_tree' => 0,
-                'target_ids' => array(),
+                'target_ids' => [],
                 'bind' => '',
                 'commentsFieldName' => 'comments',
-            )
+            ]
         );
     }
 
@@ -282,10 +284,10 @@ class CommentsList extends DataSet {
      * @return array
      */
     private function getUsersByComments($data) {
-        $result = array();
+        $result = [];
 
         if ($data && is_array($data)) {
-            $userIds = array();
+            $userIds = [];
             foreach ($data as $item) {
                 if ($item['u_id']) {
                     $userIds[] = $item['u_id'];

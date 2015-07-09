@@ -280,7 +280,7 @@ final class Mail extends Object {
                 $content .= 'SUBJECT: ' . $this->subject . "\n";
                 $content .= 'BODY: ' . $message . "\n";
                 $content .= 'HEADERS: ' . $headers . "\n\n";
-                file_put_contents('uploads/tmp/mailout.txt', $content, FILE_APPEND);
+                file_put_contents(HTDOCS_DIR . '/uploads/tmp/mailout.txt', $content, FILE_APPEND);
                 $result = true;
             } else {
                 $result = mail(implode(',', $this->to), $this->subject, $message, $headers);

@@ -351,6 +351,7 @@ class CommentsForm extends DataSet {
             'show_form' => false,
             'textLimit' => 250,
             'allows_anonymous' => true,
+            'premoderated' => true,
             'use_captcha' => true
         ]);
         return $result;
@@ -464,8 +465,8 @@ class CommentsForm extends DataSet {
         		comment_nick = %s,
         		u_id = $uIdSql,
         		comment_created = %s,
-        		comment_approved = 0",
-            $targetId, $commentName, $commentNick, $createdStr
+        		comment_approved = %s",
+            $targetId, $commentName, $commentNick, $createdStr, $this->getParam('premoderated')
         );
 
         return [
@@ -476,7 +477,7 @@ class CommentsForm extends DataSet {
             'u_id' => $uId,
             'comment_created' => $createdStr,
             'comment_name' => $commentName,
-            'comment_approved' => 0,
+            'comment_approved' => $this->getParam('premoderated'),
             'u_nick' => $userName
         ];
     }

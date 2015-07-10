@@ -125,7 +125,9 @@ var Lookup = new Class({
     load: function (data) {
         this.keyField.set('value', data[this.keyFieldName]);
         this.input.set('value', data[this.valueFieldName]);
+        this.keyField.fireEvent('change');
     },
+
     /**
      * Select an item from the [list]{@link Tags#list}.
      *
@@ -137,6 +139,7 @@ var Lookup = new Class({
         if ((this.list.selected !== false) && this.list.items[this.list.selected]) {
             this.input.set('value', text);
             this.keyField.set('value', li.retrieve('key'));
+            this.keyField.fireEvent('change');
         }
         this.list.hide();
     }

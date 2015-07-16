@@ -136,7 +136,13 @@ final class UserGroup extends Object {
      */
     public function getInfo($groupId) {
         $result = [];
-        if (isset($this->groups[$groupId])) {
+        if (is_array($groupId)) {
+            foreach ($groupId as $gid) {
+                if (isset($this->groups[$gid])) {
+                    $result[$gid] = $this->groups[$gid];
+                }
+            }
+        } elseif (isset($this->groups[$groupId])) {
             $result = $this->groups[$groupId];
         }
         return $result;

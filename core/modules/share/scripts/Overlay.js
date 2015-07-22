@@ -17,7 +17,7 @@
  * @param {Object} [options] [Options]{@link Overlay#options}.
  */
 var Overlay = new Class(/** @lends Overlay# */{
-    Implements: Options,
+    Implements: [Options, Events],
 
     /**
      * Overlay options.
@@ -27,30 +27,42 @@ var Overlay = new Class(/** @lends Overlay# */{
      * @property {boolean} [hideObjects = true] Defines whether to hide the objects under or not.
      * @property {boolean} [indicator = true]
      */
-    options:{
+    options: {
+        duration: 500,
         opacity: 0.5,
         indicator: true
     },
 
     // constructor
-    initialize: function(parentElement, options) {
-        Asset.css('overlay.css');
+    initialize: function (parentElement, options) {
         this.setOptions(options);
 
         //определяем родительский элемент
-        parentElement = $(parentElement) || $(document.body);
-        // todo: What is the underground of this? Detect IE? -- comment and check
+        parentElement = $(parentElement) || $(window.top.document.body);
         if (!parentElement.getElement) {
-            parentElement = document;
+            parentElement = window.top.document;
         }
-        this.parentElement = parentElement;
+        this.container = parentElement;
 
         //создаем елемент но не присоединяем его
-        this.element = new Element('div', {'class': 'e-overlay' + ((this.options.indicator) ? ' e-overlay-loading' : ''), 'styles':{'opacity': 0}, events: {
-            'click': function(){
-                ModalBox.close();
+        this.element = new Element('div', {
+            'styles': {opacity: 0},
+            'class': 'e-overlay ' + ((this.options.indicator)?'e-overlay-loading':''),
+            events: {
+                'click': function () {
+                    ModalBox.close();
+                }
             }
-        }});
+        });
+
+        this.tween = new Fx.Tween(this.element, {
+            duration: this.options.duration,
+            link: 'cancel',
+            property: 'opacity',
+            onComplete: function () {
+                this.fireEvent(this.element.get('opacity') == this.options.opacity ? 'show' : 'hide');
+            }.bind(this)
+        });
     },
 
     /**
@@ -58,12 +70,13 @@ var Overlay = new Class(/** @lends Overlay# */{
      * @function
      * @public
      */
-    show: function() {
+    show: function () {
         this.setupObjects(true);
-        if (!this.parentElement.getChildren('.e-overlay').length) {
-            this.element.inject(this.parentElement);
+
+        if (!this.container.getChildren('.e-overlay').length) {
+            this.element.inject(this.container);
         }
-        this.element.fade(this.options.opacity);
+        this.tween.start(this.options.opacity);
     },
 
     /**
@@ -71,14 +84,10 @@ var Overlay = new Class(/** @lends Overlay# */{
      * @function
      * @public
      */
-    hide: function() {
-        var fx = new Fx.Tween(this.element, {property: 'opacity'});
+    hide: function () {
         this.setupObjects(false);
-        fx.start(this.options.opacity, 0).chain(
-            function() {
-                this.start(0);
-            },
-            function() {
+        this.tween.start(0).chain(
+            function () {
                 this.element = this.element.dispose();
             }.bind(this)
         );
@@ -91,12 +100,12 @@ var Overlay = new Class(/** @lends Overlay# */{
      * @public
      * @param {boolean} hide
      */
-    setupObjects: function(hide) {
+    setupObjects: function (hide) {
         var body;
 
         var elements = Array.from((body = $(document.body)).getElements('object'));
-        elements.append(Array.from(body.getElements(Browser.ie ? 'select' : 'embed')) );
-        elements.each(function(element) {
+        elements.append(Array.from(body.getElements(Browser.ie ? 'select' : 'embed')));
+        elements.each(function (element) {
             element.style.visibility = hide ? 'hidden' : '';
         });
     }

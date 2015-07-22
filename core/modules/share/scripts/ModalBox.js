@@ -42,7 +42,7 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
          * Overlay for the modal box.
          * @type {Overlay}
          */
-        this.overlay = new Overlay(document.body, {indicator: false});
+        this.overlay = new Overlay(null, {indicator: false});
         this.initialized = true;
     },
 
@@ -168,7 +168,6 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
         });
 
         this.boxes.push(box);
-
         if (this.boxes.length == 1) {
             this.overlay.show();
         }

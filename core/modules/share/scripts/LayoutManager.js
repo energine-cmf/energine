@@ -783,7 +783,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
             post: this.xml.asXMLString(),
             url: LayoutManager.singlePath + 'widgets/edit-params/' + this.component.name + '/',
             onClose: function (result) {
-                this.overlay.element.addClass('e-overlay-loading');
+                //this.overlay.element.addClass('e-overlay-loading');
                 if (result) {
                     Object.each(result, function (param, paramName) {
                         if(this.getComponent().getParam(paramName).setValue)
@@ -792,7 +792,7 @@ LayoutManager.Widget = new Class(/** @lends LayoutManager.Widget */{
                     this.reload();
                     LayoutManager.changed = true;
                 }
-                this.overlay.element.removeClass('e-overlay-loading');
+                //this.overlay.element.removeClass('e-overlay-loading');
             }.bind(this)
         });
     },

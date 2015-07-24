@@ -271,14 +271,22 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                 'key' => $path,
                 'value' => $name,
             ];
-
+            $shortPath = $path;
             if (($type == 'content') && (file_exists($path = Document::TEMPLATES_DIR . $type . '/' . $path))) {
                 $d->load($path);
+
                 if ($attr = $d->documentElement->getAttribute('segment')) {
                     $row['data-segment'] = $attr;
                 }
                 if ($attr = $d->documentElement->getAttribute('layout')) {
                     $row['data-layout'] = $attr;
+                }
+                if ($d->documentElement->hasAttribute('unique')) {
+                    if($this->dbh->getScalar('share_sitemap', 'count(*)', ['smap_content' => $shortPath, 'site_id' => E()->getSiteManager()->getCurrentSite()->id])>0){
+                        $row['disabled'] = 'disabled';
+                        $row['unique'] = 'unique';
+                    }
+
                 }
             }
             array_push($result, $row);

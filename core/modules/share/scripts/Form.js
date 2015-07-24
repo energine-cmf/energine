@@ -822,10 +822,14 @@ Form.SmapSelector = new Class(/** @lends Form.SmapSelector# */{
         this.field = selector.getProperty('field');
 
         selector.addEvent('click', function (e) {
-            Energine.cancelEvent(e);
+            e.stop();
             this.smap.id = $($(e.target).getProperty('smap_id'));
             this.smap.name = $($(e.target).getProperty('smap_name'));
-            this.showSelector.apply(this);
+            var params = [];
+            if(this.smap.id.get('value')){
+                params.push(this.smap.id.get('value'));
+            }
+            this.showSelector.apply(this, params);
         }.bind(this));
     },
 
@@ -834,9 +838,14 @@ Form.SmapSelector = new Class(/** @lends Form.SmapSelector# */{
      * @function
      * @public
      */
-    showSelector: function () {
+    showSelector: function (id) {
+        var segment = '';
+        if(id){
+            segment = id + '/';
+        }
+
         ModalBox.open({
-            url: this.form.element.getProperty('template') + 'selector/',
+            url: this.form.element.getProperty('template') + segment + 'selector/',
             onClose: this.setName.bind(this)
         });
     },

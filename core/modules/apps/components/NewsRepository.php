@@ -79,9 +79,24 @@ class NewsRepository extends NewsEditor {
      * Show division tree for form of adding/editing.
      */
     protected function showSmapSelector() {
-        $this->request->shiftPath(1);
+        $n = 1;
+        $params = [];
+        $sp = $this->getStateParams(true);
+
+        if(isset($sp['smap_id'])){
+            $n++;
+            $siteID = E()->getSiteManager()->getSiteByPage($sp['smap_id'])->id;
+            if($siteID){
+                //$params['smap_id'] = $sp['smap_id'];
+                $params['site'] = $siteID;
+            }
+        }
+
+        $this->request->shiftPath($n);
         $this->divisionEditor = ComponentManager::createBlockFromDescription(
-            ComponentManager::getDescriptionFromFile(CORE_DIR . '/modules/apps/templates/content/site_div_selector.container.xml'));
+            ComponentManager::getDescriptionFromFile(CORE_DIR . '/modules/apps/templates/content/site_div_selector.container.xml'),
+            $params
+        );
         $this->divisionEditor->run();
     }
 

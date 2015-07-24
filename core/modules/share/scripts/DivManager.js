@@ -204,10 +204,14 @@ var DivManager = new Class(/** @lends DivManager# */{
 
 
         this.tree.setupCssClasses();
-        //this.treeRoot.expand();
         this.tree.expandToNode(currentNodeID);
+
         if (this.tree.getNodeById(currentNodeID)) {
             this.tree.getNodeById(currentNodeID).select();
+            this.tree.getNodeById(currentNodeID).expand();
+        }
+        else {
+            this.tree.expandAllNodes();
         }
     },
 

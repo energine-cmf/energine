@@ -158,7 +158,7 @@ final class ComponentManager extends Object implements \Iterator {
     static public function createBlockFromDescription(\SimpleXMLElement $blockDescription, $additionalProps = []) {
         switch ($blockDescription->getName()) {
             case 'component':
-                $result = Component::createFromDescription($blockDescription);
+                $result = Component::createFromDescription($blockDescription, $additionalProps);
                 break;
             default:
                 $result = ComponentContainer::createFromDescription($blockDescription, $additionalProps);

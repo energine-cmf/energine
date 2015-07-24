@@ -121,7 +121,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
         }
         $result = new ComponentContainer($name, $properties, $value);
         foreach ($containerDescription as $blockDescription) {
-            $result->add(ComponentManager::createBlockFromDescription($blockDescription));
+            $result->add(ComponentManager::createBlockFromDescription($blockDescription, $additionalAttributes));
         }
 
         return $result;

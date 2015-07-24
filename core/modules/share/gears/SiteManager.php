@@ -138,9 +138,9 @@ final class SiteManager extends Object implements \Iterator {
      * @return Site
      */
     public function getSiteByPage($pageID) {
-        return $this->getSiteByID(
-            $this->dbh->getScalar('share_sitemap', 'site_id', ['smap_id' => $pageID])
-        );
+        if(!($id = $this->dbh->getScalar('share_sitemap', 'site_id', ['smap_id' => $pageID]))) return null;
+
+        return $this->getSiteByID($id);
     }
 
     /**

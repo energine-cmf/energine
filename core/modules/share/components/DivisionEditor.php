@@ -80,7 +80,9 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         $this->setTableName('share_sitemap');
         $this->setTitle($this->translate('TXT_DIVISION_EDITOR'));
         $this->setParam('recordsPerPage', false);
-        if($this->getParam('site') && is_numeric($this->getParam('site'))){
+        $sp = $this->getStateParams(true);
+
+        if($this->getParam('site') && is_numeric($this->getParam('site')) && !isset($sp['site_id'])){
             $this->setStateParam('site_id', (int)$this->getParam('site'));
         }
     }
@@ -89,7 +91,8 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
         return array_merge(
             parent::defineParams(),
             [
-                'site' => false
+                'site' => false,
+             //   'smap_id' => false
             ]
         );
     }
@@ -287,6 +290,9 @@ class DivisionEditor extends Grid implements SampleDivisionEditor {
                         $row['unique'] = 'unique';
                     }
 
+                }
+                if($d->documentElement->hasAttribute('disabled')){
+                    continue;
                 }
             }
             array_push($result, $row);

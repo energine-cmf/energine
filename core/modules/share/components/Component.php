@@ -450,10 +450,11 @@ class Component extends Object implements IBlock {
     /**
      * Create component from XML description.
      * @param \SimpleXMLElement $componentDescription Component description.
+     * @param array $externalParams additional params
      * @return Component
      * @throws SystemException ERR_DEV_NO_REQUIRED_ATTRIB [attribute_name]
      */
-    static public function createFromDescription(\SimpleXMLElement $componentDescription) {
+    static public function createFromDescription(\SimpleXMLElement $componentDescription, $externalParams = []) {
         // перечень необходимых атрибутов компонента
         $requiredAttributes = [
             'name', /*'module', */
@@ -503,6 +504,9 @@ class Component extends Object implements IBlock {
                     }
                 }
             }
+        }
+        if(is_array($params)){
+            $params = array_merge($externalParams, $params);
         }
 
         $result = self::create($name, $class, $params);

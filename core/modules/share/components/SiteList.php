@@ -41,7 +41,8 @@ class SiteList extends DataSet {
         $result = array_merge(parent::defineParams(),
             [
                 'tags' => '',
-                'recordsPerPage' => false
+                'recordsPerPage' => false,
+                'site' => false
             ]);
         return $result;
     }

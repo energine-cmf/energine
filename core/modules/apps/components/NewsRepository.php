@@ -57,7 +57,7 @@ class NewsRepository extends NewsEditor {
             ]
         );
     }
-    private function getSites() {
+    protected function getSites() {
         $result = [];
         if ($siteID = $this->getParam('site')) {
             $result = [$siteID];

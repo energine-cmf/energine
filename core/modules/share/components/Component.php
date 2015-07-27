@@ -337,14 +337,16 @@ class Component extends Object implements IBlock {
             $params = [];
         }
 
-        if (method_exists($this, $this->getState() . 'State')) {
-            call_user_func_array([$this, $this->getState() . 'State'], $params);
-        } elseif (method_exists($this, $this->getState())) {
-            call_user_func_array([$this, $this->getState()], $params);
-        } elseif (is_callable([$this, $this->getState(). 'State'])) {
-            call_user_func_array([$this, $this->getState() . 'State'], $params);
-        } elseif (is_callable([$this, $this->getState()])) {
-            call_user_func_array([$this, $this->getState()], $params);
+        $state = $this->getState();
+
+        if (method_exists($this, $state . 'State')) {
+            call_user_func_array([$this, $state . 'State'], $params);
+        } elseif (method_exists($this, $state)) {
+            call_user_func_array([$this, $state], $params);
+        } elseif (is_callable([$this, $state . 'State'])) {
+            call_user_func_array([$this, $state . 'State'], $params);
+        } elseif (is_callable([$this, $state])) {
+            call_user_func_array([$this, $state], $params);
         }
         else {
             throw new SystemException(

@@ -15,7 +15,8 @@ class SimilarNews;
  */
 namespace Energine\apps\components;
 
-use Energine\share\components\DBDataSet, Energine\share\gears\SimpleBuilder, Energine\share\gears\QAL, Energine\share\gears\FieldDescription, Energine\share\gears\Field;
+use Energine\share\components\DataSet;
+use Energine\share\gears\ComponentProxyBuilder;
 
 /**
  * Similar news.
@@ -24,7 +25,7 @@ use Energine\share\components\DBDataSet, Energine\share\gears\SimpleBuilder, Ene
 class SimilarNews;
  * @endcode
  */
-class SimilarNews extends DBDataSet {
+class SimilarNews extends DataSet {
     /**
      * Default component name for binding.
      */
@@ -42,16 +43,15 @@ class SimilarNews extends DBDataSet {
 
     /**
      * Component to which "Similar news" will be bounded.
-     * @var Component $cp
+     * @var NewsFeed $cp
      */
     private $cp;
 
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
-        $this->setParam('onlyCurrentLang', true);
         $bindComponentName = ($this->getParam('bind')) ? $this->getParam('bind') : self::DEFAULT_LINK_TO;
         $this->cp =
             E()->getDocument()->componentManager->getBlockByName($bindComponentName);
@@ -62,22 +62,15 @@ class SimilarNews extends DBDataSet {
     }
 
     /**
-     * @copydoc DBDataSet::createBuilder
-     */
-    protected function createBuilder() {
-        return new SimpleBuilder();
-    }
-
-    /**
      * @copydoc DBDataSet::defineParams
      */
     // Определяет допустимые параметры компонента и их значения по-умолчанию в виде массива array(paramName => defaultValue).
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
-            array(
+            [
                 'limit' => 5,
                 'bind' => ''
-            ));
+            ]);
         return $result;
     }
 
@@ -86,79 +79,25 @@ class SimilarNews extends DBDataSet {
      */
     protected function main() {
         $ap = $this->cp->getStateParams(true);
-        $this->newsID = (int)$ap['id'];
-        $this->setTableName($this->cp->getTableName());
-        $similarNews = $this->getSimilarNewsIDs();
+        /**
+         * @var $tag Array of tag ids
+         */
+        $tags = $this->dbh->getColumn($this->dbh->getTagsTablename($this->cp->getTableName()), 'tag_id', ['news_id' => (int)$ap['id']]);
 
-        if ($this->document->getRights() != ACCESS_FULL)
-            $this->addFilterCondition(array(
-                '(news_date<="' . date('Y-m-d H:i:s') . '")'));
-
-        $this->addFilterCondition(array(
-            $this->getTableName() . '.' . $this->getPK() => $similarNews));
-        $this->setOrder(array('news_date' => QAL::DESC));
-
-        parent::main();
-
-        if ($this->getData()->getFieldByName('site_id')) {
-            $this->getDataDescription()->getFieldDescriptionByName('site_id')->setType(FieldDescription::FIELD_TYPE_STRING);
-            foreach ($f =
-                         $this->getData()->getFieldByName('site_id') as $rowID => $siteID) {
-                $f->setRowData($rowID, E()->getSiteManager()->getSiteById($siteID)->base);
-            }
-        } else {
-            $fd = new Field('site_id');
-            $fdd = new FieldDescription('site_id');
-            $fdd->setType(FieldDescription::FIELD_TYPE_STRING);
-            $this->getData()->addField($fd);
-            $this->getDataDescription()->addFieldDescription($fdd);
-            $urlPath =
-                E()->getSiteManager()->getSiteByID(E()->getMap()->getSiteID($this->document->getID()))->base;
-            foreach ($f =
-                         $this->getData()->getFieldByName('site_id') as $rowID => $siteID) {
-                $f->setRowData($rowID, $urlPath);
-            }
-        }
-
-        if ($this->getData()->getFieldByName('news_date')) {
-            foreach ($f =
-                         $this->getData()->getFieldByName('news_date') as $rowID => $date) {
-                $date = splitDate($date);
-                $f->setRowProperty($rowID, 'year', $date['year']);
-                $f->setRowProperty($rowID, 'month', $date['month']);
-                $f->setRowProperty($rowID, 'day', $date['day']);
-            }
-        }
-    }
-
-    /**
-     * Get similar news IDs.
-     *
-     * @return array|false
-     */
-    private function getSimilarNewsIDs() {
-        $tagIDs = $this->getNewsTagIDs();
-        if ($tagIDs) {
-            $result = $this->dbh->getColumn(
-                'SELECT DISTINCT sn.news_id news_id FROM ' .
-                $this->getTableName() . ' AS sn LEFT JOIN ' .
-                $this->dbh->getTagsTablename($this->getTableName()) . ' AS snt ' .
-                ' ON snt.news_id=sn.news_id WHERE snt.tag_id IN (%s) ' .
-                ' ORDER BY sn.news_date DESC LIMIT 0,' .
-                intval($this->getParam('limit')),
-                $tagIDs);
-            unset($result[array_search($this->newsID, $result)]);
-            return $result;
-        }
-        return false;
-    }
-
-    /**
-     * Get news tag IDs.
-     *
-     * @return array
-     * */
-    private function getNewsTagIDs() {
-        return $this->dbh->getColumn($this->dbh->getTagsTablename($this->getTableName()), 'tag_id', ['news_id' => $this->newsID]);
+        $this->setType(self::COMPONENT_TYPE_LIST);
+        $this->setBuilder($b = new ComponentProxyBuilder());
+        $params = [
+            'active' => false,
+            'state' => 'main',
+            'tags' => $tags,
+            'tableName' => $this->cp->getTableName(),
+            'exclude' => (int)$ap['id'],
+            'limit' => $this->getParam('limit')
+        ];
+        $b->setComponent(
+            'simNews',
+            'Energine\\apps\\components\\NewsFeed',
+            $params
+        );
     }
 }

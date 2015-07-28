@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 class Feed;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2007
@@ -16,12 +16,13 @@ class Feed;
 namespace Energine\apps\components;
 
 use Energine\share\components\DBDataSet, Energine\share\gears\QAL, Energine\share\gears\FieldDescription;
+
 /**
  * Parent class for components on the site structure.
  *
  * @code
 class Feed;
-@endcode
+ * @endcode
  */
 class Feed extends DBDataSet {
     /**
@@ -33,13 +34,13 @@ class Feed extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
 
         parent::__construct($name, $params);
         //Если title не указан  - устанавливаем дефолтный
-        if(!$this->getProperty('title')){
+        if (!$this->getProperty('title')) {
             $this->setProperty('title', $this->translate(
-                        'TXT_' . strtoupper($this->getName())));
+                'TXT_' . strtoupper($this->getName())));
         }
         $this->setProperty('exttype', 'feed');
         $this->setParam('onlyCurrentLang', true);
@@ -53,14 +54,14 @@ class Feed extends DBDataSet {
             }
 
             if ($this->getParam('showAll')) {
-                if(!is_array($this->filterID)){
+                if (!is_array($this->filterID)) {
                     $this->filterID = (array)$this->filterID;
                 }
                 $filters = $this->filterID;
 
-                foreach($filters as $filterID){
+                foreach ($filters as $filterID) {
                     $par = E()->getMap(E()->getSiteManager()->getSiteByPage($filterID)->id)->getTree()->getNodeById($filterID);
-                    if($par){
+                    if ($par) {
                         $this->filterID = array_merge($this->filterID, array_keys(
                             $par->getDescendants()->asList(false)
                         ));
@@ -76,13 +77,18 @@ class Feed extends DBDataSet {
                     $field = $orderParam;
                     $dir = QAL::ASC;
                 }
-                if (!in_array($dir, array(QAL::ASC, QAL::DESC))) $dir = QAL::ASC;
-                $this->setOrder(array($field => $dir));
+                if (!in_array($dir, [QAL::ASC, QAL::DESC])) $dir = QAL::ASC;
+                $this->setOrder([$field => $dir]);
             }
 
-            $this->addFilterCondition(array('smap_id' => $this->filterID));
+            $this->addFilterCondition(['smap_id' => $this->filterID]);
+            if ($excludedIDs = $this->getParam('exclude')) {
+
+                $this->addFilterCondition($this->getTableName().'.'.$this->getPK() . ' NOT IN (' . ((is_array($excludedIDs))?implode(',', $excludedIDs):$excludedIDs) . ')');
+            }
+
             if ($limit = $this->getParam('limit')) {
-                $this->setLimit(array(0, $limit));
+                $this->setLimit([0, $limit]);
                 $this->setParam('recordsPerPage', false);
             }
         }
@@ -98,7 +104,7 @@ class Feed extends DBDataSet {
      */
     protected function loadDataDescription() {
         $result = parent::loadDataDescription();
-        if(isset($result['smap_id'])){
+        if (isset($result['smap_id'])) {
             $result['smap_id']['key'] = false;
         }
         return $result;
@@ -117,7 +123,7 @@ class Feed extends DBDataSet {
         if ($this->getState() == 'main') {
             if (!($fd = $result->getFieldDescriptionByName('smap_id'))) {
                 $fd = new FieldDescription('smap_id');
-                $fd->setProperty('tableName',$this->getTableName());
+                $fd->setProperty('tableName', $this->getTableName());
                 $result->addFieldDescription($fd);
             }
             $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
@@ -134,13 +140,13 @@ class Feed extends DBDataSet {
      * Таким чином, якщо у нас на одній сторінці Feed витягне елементи з різними smap_id,
      * то ми завжди будемо знати як правильно сформувати link для того щоб дістатися до конкретного елементу.
      */
-    protected function main(){
+    protected function main() {
         parent::main();
-        if($f = $this->getData()->getFieldByName('smap_id')){
-            foreach($f as $key=>$value){
+        if ($f = $this->getData()->getFieldByName('smap_id')) {
+            foreach ($f as $key => $value) {
                 $site = E()->getSiteManager()->getSiteByPage($value);
-                $f->setRowProperty($key,'url',E()->getMap($site->id)->getURLByID($value));
-                $f->setRowProperty($key,'base',$site->base);
+                $f->setRowProperty($key, 'url', E()->getMap($site->id)->getURLByID($value));
+                $f->setRowProperty($key, 'base', $site->base);
             }
         }
     }
@@ -152,7 +158,7 @@ class Feed extends DBDataSet {
     // Добавляем крошку
     protected function view() {
         parent::view();
-        $this->addFilterCondition(array('smap_id' => $this->document->getID()));
+        $this->addFilterCondition(['smap_id' => $this->document->getID()]);
         $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb();
     }
 
@@ -163,14 +169,15 @@ class Feed extends DBDataSet {
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
-            array(
-                 'active' => true,
-                 'showAll' => false,
-                 'id' => false,
-                 'limit' => false,
-                 'editable' => false,
-                 'orderField' => false,
-            )
+            [
+                'active' => true,
+                'showAll' => false,
+                'id' => false,
+                'limit' => false,
+                'editable' => false,
+                'orderField' => false,
+                'exclude' => false
+            ]
         );
     }
 }

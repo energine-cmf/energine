@@ -223,29 +223,42 @@ class TagManager extends Object {
     /**
      * Get tag IDs by passed values.
      *
-     * @param mixed $tag Tags.
+     * @param mixed $tags Tags.
      * @return array
      */
-    static public function getID($tag) {
+    static public function getID($tags) {
         $result = NULL;
-        if (!is_array($tag)) {
-            $tag = explode(self::TAG_SEPARATOR, $tag);
-        }
-        $res = [];
+        $r = [
+            't.tag_id' => [],
+            'tr.tag_name' => []
+        ];
 
-        if (!empty($tag)) {
-            $res = E()->getDB()->select(
-                'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
-                'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
-                'WHERE tr.tag_name IN (%s)',
-                E()->getLanguage()->getCurrent(), $tag
-            );
+
+        if (!is_array($tags)) {
+            $tags = explode(self::TAG_SEPARATOR, $tags);
         }
 
-        foreach ($res as $row) {
-            $result[$row['tag_id']] = $row['tag_name'];
+        foreach ($tags as $tag) {
+            if (is_numeric($tag)) {
+                array_push($r['t.tag_id'], $tag);
+            } else {
+                array_push($r['tr.tag_name'], $tag);
+            }
         }
 
+        foreach ($r as $fieldName => $data) {
+            if (!empty($data)) {
+                $res = E()->getDB()->select(
+                    'SELECT t.tag_id, tr.tag_name FROM ' . self::TAG_TABLENAME . ' as t ' .
+                    'JOIN ' . self::TAG_TABLENAME_TRANSLATION . ' as tr ON t.tag_id = tr.tag_id AND tr.lang_id = %s ' .
+                    'WHERE ' . $fieldName . ' IN (%s)',
+                    E()->getLanguage()->getCurrent(), $data
+                );
+                foreach ($res as $row) {
+                    $result[$row['tag_id']] = $row['tag_name'];
+                }
+            }
+        }
         return $result;
     }
 

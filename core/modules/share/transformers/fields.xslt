@@ -686,12 +686,7 @@
 
     <xsl:template match="field[@type='captcha'][ancestor::component[@type='form']]">
         <div class="field">
-            <script type="text/javascript">
-                var RecaptchaOptions = {
-                   lang : '<xsl:value-of select="$DOC_PROPS[@name='lang']/@real_abbr"/>'
-                };
-            </script>
-            <xsl:value-of select="." disable-output-escaping="yes"/>
+            <div class="g-recaptcha" data-sitekey="{.}"></div>
         </div>
     </xsl:template>
 

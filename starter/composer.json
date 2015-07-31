@@ -19,7 +19,8 @@
       "ext-tidy":"*",
       "ext-xsl":"*",
       "symfony/console": "2.6.*@dev",
-      "psr/log": "dev-master"
+      "psr/log": "dev-master",
+      "google/recaptcha": "~1.1"
     },
     "autoload": {
         "psr-4": {

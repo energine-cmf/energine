@@ -56,9 +56,9 @@ class Form extends DBDataSet {
     /**
      * @copydoc DBDataSet::__construct
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
-        $filter = array('form_is_active' => 1);
+        $filter = ['form_is_active' => 1];
         if ($formID = $this->getParam('id')) {
             $filter['form_id'] = $formID;
         }
@@ -86,11 +86,11 @@ class Form extends DBDataSet {
     protected function defineParams() {
         return array_merge(
             parent::defineParams(),
-            array(
+            [
                 'id' => false,
                 'active' => true,
                 'noCaptcha' => false
-            )
+            ]
         );
     }
 
@@ -129,7 +129,7 @@ class Form extends DBDataSet {
             list($dbName, $tName) =
                 QAL::getFQTableName($this->getTableName(), true);
             if (isset($_FILES[$phpTableName = $dbName . '_' . $tName])) {
-                $fileData = array();
+                $fileData = [];
                 //Переворачиваем пришедший массив в удобный для нас вид
                 foreach ($_FILES[$phpTableName] as $fParam => $fileInfo) {
                     foreach ($fileInfo as $fName => $val) {
@@ -222,9 +222,9 @@ class Form extends DBDataSet {
                 //Unset pk_id field, because we don't need it in body of message to send
                 $data['pk_id'] = $result;
                 foreach ($data as $key => $value) {
-                    $data[$key] = array('translation' => $this->translate(
+                    $data[$key] = ['translation' => $this->translate(
                         'FIELD_' . $key),
-                        'value' => $value);
+                        'value' => $value];
                     if ($fd = $this->saver->getDataDescription()->getFieldDescriptionByName($key)) {
                         if (($fd->getType() == FieldDescription::FIELD_TYPE_MULTI) && is_array($keyInfo = $fd->getPropertyValue('key'))) {
                             $m2mTableName = $keyInfo['tableName'];
@@ -235,7 +235,7 @@ class Form extends DBDataSet {
                                 unset($tableInfo[$m2mPKName]);
                                 $m2mValueFieldInfo = current($tableInfo);
                                 if (isset($m2mValueFieldInfo['key']) && is_array($m2mValueFieldInfo)) {
-                                    list($values, ,) = $this->dbh->getForeignKeyData($m2mValueFieldInfo['key']['tableName'], $m2mValueFieldInfo['key']['fieldName'], E()->getLanguage()->getCurrent(), array($m2mValueFieldInfo['key']['tableName'] . '.' . $m2mValueFieldInfo['key']['fieldName'] => $value));
+                                    list($values, ,) = $this->dbh->getForeignKeyData($m2mValueFieldInfo['key']['tableName'], $m2mValueFieldInfo['key']['fieldName'], E()->getLanguage()->getCurrent(), [$m2mValueFieldInfo['key']['tableName'] . '.' . $m2mValueFieldInfo['key']['fieldName'] => $value]);
                                     if (is_array($values)) {
                                         $data[$key]['value'] = implode(',', array_map(function ($row) {
                                             return $row['fk_name'];
@@ -255,7 +255,7 @@ class Form extends DBDataSet {
                         $this->dbh->getScalar(
                             'frm_forms_translation',
                             'form_name',
-                            array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
+                            ['form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()]);
                     $subject = $this->translate('TXT_EMAIL_FROM_FORM') . ' ' .
                         $subject;
 
@@ -304,16 +304,12 @@ class Form extends DBDataSet {
      * @throws SystemException
      */
     protected function checkCaptcha() {
-        require_once(CORE_DIR.'/modules/share/gears/recaptchalib.php');
-        $privatekey = $this->getConfigValue('recaptcha.private');
-        $resp = recaptcha_check_answer($privatekey,
-            $_SERVER["REMOTE_ADDR"],
-            $_POST["recaptcha_challenge_field"],
-            $_POST["recaptcha_response_field"]);
+        $gRecaptchaResponse = (isset($_POST['g-recaptcha-response'])) ? $_POST['g-recaptcha-response'] : false;
 
-
-        if (!$resp->is_valid) {
-            throw new SystemException($this->translate('TXT_BAD_CAPTCHA'), SystemException::ERR_CRITICAL);
+        $recaptcha = new \ReCaptcha\ReCaptcha($this->getConfigValue('recaptcha.private'));
+        $resp = $recaptcha->verify($gRecaptchaResponse, $_SERVER["REMOTE_ADDR"]);
+        if (!$resp->isSuccess()) {
+            throw new SystemException($this->translate('TXT_BAD_CAPTCHA'), SystemException::ERR_CRITICAL, $resp->getErrorCodes());
         }
     }
 
@@ -339,8 +335,8 @@ class Form extends DBDataSet {
         $this->setData($data);
 
         $this->setTitle($this->dbh->getScalar('frm_forms_translation',
-            array('form_name'),
-            array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent())));
+            ['form_name'],
+            ['form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()]));
     }
 
     //todo VZ: Input argument is not used.
@@ -351,7 +347,7 @@ class Form extends DBDataSet {
      * @return string
      */
     protected function getRecipientEmail($options = false) {
-        return $this->dbh->getScalar('frm_forms', array('form_email_adresses'), array('form_id' => $this->formID));
+        return $this->dbh->getScalar('frm_forms', ['form_email_adresses'], ['form_id' => $this->formID]);
     }
 
     /**
@@ -396,8 +392,8 @@ class Form extends DBDataSet {
      */
     private function buildForm() {
         $result = $this->dbh->select('frm_forms_translation',
-            array('form_name', 'form_annotation_rtf', 'form_post_annotation_rtf'),
-            array('form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()));
+            ['form_name', 'form_annotation_rtf', 'form_post_annotation_rtf'],
+            ['form_id' => $this->formID, 'lang_id' => E()->getLanguage()->getCurrent()]);
 
         if (is_array($result)) {
             $this->setTitle($result[0]['form_name']);

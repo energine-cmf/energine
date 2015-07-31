@@ -84,21 +84,23 @@ class GoogleSitemap extends SitemapTree {
         $d = new Data();
         $sitemaps = [];
         $siteinfo = E()->getSiteManager()->getCurrentSite();
-        if(!$siteinfo->isIndexed) throw new SystemException('ERR_404', SystemException::ERR_404);
+        if (!$siteinfo->isIndexed) throw new SystemException('ERR_404', SystemException::ERR_404);
 
         $sitePath = $siteinfo->base;
         $fullPath = $this->request->getPath(1, true);
+        if ($this->dbh->tableExists('seo_sitemap_videos')) {
+            $this->pdoDB->query('SELECT SQL_CALC_FOUND_ROWS videos_id FROM seo_sitemap_videos WHERE site_id = ' . $siteinfo->id . ' ORDER BY videos_date DESC');
+            $rows_info = $this->pdoDB->query('SELECT FOUND_ROWS() as num_rows');
+            $rows_info = $rows_info->fetch();
 
-        $this->pdoDB->query('SELECT SQL_CALC_FOUND_ROWS videos_id FROM seo_sitemap_videos WHERE site_id = ' . $siteinfo->id . ' ORDER BY videos_date DESC');
-        $rows_info = $this->pdoDB->query('SELECT FOUND_ROWS() as num_rows');
-        $rows_info = $rows_info->fetch();
-
-        $totalMaps = ceil($rows_info[0] / $this->maxVideos);
+            $totalMaps = ceil($rows_info[0] / $this->maxVideos);
+            for ($i = 1; $i <= $totalMaps; $i++) {
+                array_push($sitemaps, ['path' => $sitePath . $fullPath . 'videomap/' . $i]);
+            }
+        }
 
         array_push($sitemaps, ['path' => $sitePath . $fullPath . 'map']);
-        for ($i = 1; $i <= $totalMaps; $i++) {
-            array_push($sitemaps, ['path' => $sitePath . $fullPath . 'videomap/' . $i]);
-        }
+
         $d->load($sitemaps);
         $this->setData($d);
         $this->setBuilder(new SimpleBuilder());
@@ -133,7 +135,7 @@ class GoogleSitemap extends SitemapTree {
         $res = $sitemap->getInfo();
 
         foreach ($res as $id => $info) {
-            if($info['IsIndexed']){
+            if ($info['IsIndexed']) {
                 $result [] = [
                     'Id' => $id,
                     'Name' => $info['Name'],
@@ -185,7 +187,6 @@ class GoogleSitemap extends SitemapTree {
 
         E()->getResponse()->commit();
     }
-
 
 
 }

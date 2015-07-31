@@ -231,15 +231,12 @@ class FeedbackForm extends DBDataSet {
      * @throws SystemException
      */
     protected function checkCaptcha() {
-        require_once(CORE_DIR.'/modules/share/gears/recaptchalib.php');
-        $privatekey = $this->getConfigValue('recaptcha.private');
-        $resp = recaptcha_check_answer($privatekey,
-            $_SERVER["REMOTE_ADDR"],
-            $_POST["recaptcha_challenge_field"],
-            $_POST["recaptcha_response_field"]);
+        $gRecaptchaResponse = (isset($_POST['g-recaptcha-response']))?$_POST['g-recaptcha-response']:false;
 
-        if (!$resp->is_valid) {
-            throw new SystemException($this->translate('TXT_BAD_CAPTCHA'), SystemException::ERR_CRITICAL);
+        $recaptcha = new \ReCaptcha\ReCaptcha($this->getConfigValue('recaptcha.private'));
+        $resp = $recaptcha->verify($gRecaptchaResponse, $_SERVER["REMOTE_ADDR"]);
+        if (!$resp->isSuccess()) {
+            throw new SystemException($this->translate('TXT_BAD_CAPTCHA'), SystemException::ERR_CRITICAL, $resp->getErrorCodes());
         }
     }
 

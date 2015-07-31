@@ -91,8 +91,12 @@
     </xsl:template>
 
     <xsl:template match="/" mode="scripts">
+        <xsl:if test="//field[@type='captcha' and ancestor::component[@type='form']]">
+            <script src="https://www.google.com/recaptcha/api.js" async="async" defer="defer"></script>
+        </xsl:if>
         <xsl:if test="not($DOC_PROPS[@name='single'])"><!-- User JS is here--></xsl:if>
     </xsl:template>
+
     <xsl:template match="/" mode="jquery_scripts">
         <xsl:if test="not($DOC_PROPS[@name='single'])"><!-- User JS is here--></xsl:if>
     </xsl:template>

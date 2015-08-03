@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 abstract class Control;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -20,7 +20,7 @@ namespace Energine\share\gears;
  *
  * @code
 abstract class Control;
-@endcode
+ * @endcode
  *
  * @abstract
  */
@@ -53,7 +53,7 @@ abstract class Control extends Object {
      * Additional attributes.
      * @var array $attributes
      */
-    private $attributes = array();
+    private $attributes = [];
 
     /**
      * Toolbar.
@@ -140,8 +140,8 @@ abstract class Control extends Object {
         $this->setAttribute('mode',
             FieldDescription::computeRights(
                 $this->getToolbar()->getComponent()->document->getRights(),
-                !is_null($attr['ro_rights']) ? (int)$attr['ro_rights'] : null,
-                !is_null($attr['fc_rights']) ? (int)$attr['fc_rights'] : null
+                !is_null($attr['ro_rights']) ? (int)$attr['ro_rights'] : NULL,
+                !is_null($attr['fc_rights']) ? (int)$attr['fc_rights'] : NULL
             )
         );
         unset($attr['ro_rights']);
@@ -228,6 +228,11 @@ abstract class Control extends Object {
         }*/
         foreach ($this->attributes as $attrName => $attrValue) {
             $controlElem->setAttribute($attrName, $attrValue);
+
+            if(($attrName == 'auth') && E()->getUser()->isAuthenticated()){
+                $controlElem->removeAttribute($attrName);
+            }
+
         }
         if ($this->disabled) {
             $controlElem->setAttribute('disabled', 'disabled');
@@ -243,7 +248,7 @@ abstract class Control extends Object {
      *
      * @param array $attrs Set of attributes for translation.
      */
-    public function translate($attrs = array('title', 'tooltip')) {
+    public function translate($attrs = ['title', 'tooltip']) {
         foreach ($attrs as $attrName) {
             $attrValue = (string)$this->getAttribute($attrName);
             if ($attrValue) {

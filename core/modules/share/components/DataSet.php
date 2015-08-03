@@ -191,7 +191,7 @@ abstract class DataSet extends Component {
     /**
      * Add toolbar.
      *
-     * @param mixed $toolbar New toolbar.
+     * @param mixed $toolbar Toolbar[]|Toolbar
      *
      * @throws SystemException 'ERR_BAD_TOOLBAR'
      */

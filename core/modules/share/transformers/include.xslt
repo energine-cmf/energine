@@ -4,7 +4,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     >
     
-    <xsl:import href="base.xslt"/>
+    <!--<xsl:import href="base.xslt"/>-->
     <xsl:include href="document.xslt"/>
     <xsl:include href="container.xslt"/>
     <xsl:include href="list.xslt"/>

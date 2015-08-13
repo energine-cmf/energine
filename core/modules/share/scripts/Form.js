@@ -227,55 +227,6 @@ var Form = new Class(/** @lends Form# */{
                 }
             });
         }
-        this.element.getElements('.crud').addEvent('click', function (e) {
-            var control = $($(e.target).getProperty('data-field'));
-            if (control) {
-                ModalBox.open({
-                    url: [this.singlePath, $(e.target).getProperty('data-field'), '-', $(e.target).getProperty('data-editor'), '/crud/'].join(''),
-                    onClose: function (result) {
-                        var selectedValue = result.key;
-                        if (result.dirty) {
-                            Energine.request(
-                                [this.singlePath, $(e.target).getProperty('data-field'), '/fk-values/'].join(''),
-                                null,
-                                function (data) {
-                                    if (data.result) {
-                                        control.empty();
-                                        var id = data.result[1];
-                                        var title = data.result[2];
-                                        data.result[0].each(function (row) {
-                                            var option = new Element('option');
-                                            Object.each(row, function (value, key) {
-                                                if (key == id) {
-                                                    option.setProperty('value', value);
-                                                }
-                                                else if (key == title) {
-                                                    option.set('text', value);
-                                                }
-                                                else {
-                                                    option.setProperty(key, value);
-                                                }
-                                            });
-                                            control.grab(option);
-                                        });
-                                        if (selectedValue) {
-                                            control.set('value', selectedValue);
-                                        }
-                                    }
-                                },
-                                this.processServerError.bind(this),
-                                this.processServerError.bind(this)
-                            );
-                        }
-                        else {
-                            if (selectedValue) {
-                                control.set('value', selectedValue);
-                            }
-                        }
-                    }.bind(this)
-                });
-            }
-        }.bind(this));
 
         /**
          * Controls, that appended with additional controls, like buttons.
@@ -884,20 +835,24 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
         selector = $(selector);
         this.form = form;
         this.field = selector.getProperty('data-field');
+        /**
+         * Upload name.
+         * @type {string}
+         */
+        this.uplName = $(selector.getProperty('data-name'));
+        /**
+         * Upload ID.
+         * @type {string|number}
+         */
+        this.uplId = $(selector.getProperty('data-id'));
+        this.uplPreview = $(selector.getProperty('data-preview'));
+
+        if(this.form.form.getElementById('componentAction').get('value') == 'add'){
+            this.showSelector.apply(this);
+        }
 
         selector.addEvent('click', function (e) {
             e.stop();
-            /**
-             * Upload name.
-             * @type {string}
-             */
-            this.uplName = $($(e.target).getProperty('data-name'));
-            /**
-             * Upload ID.
-             * @type {string|number}
-             */
-            this.uplId = $($(e.target).getProperty('data-id'));
-            this.uplPreview = $($(e.target).getProperty('data-preview'));
             this.showSelector.apply(this);
         }.bind(this));
     },

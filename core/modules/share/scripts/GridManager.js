@@ -51,7 +51,7 @@ var Grid = (function () {
                 this.prevDataLength = this.data.length;
             }
             header.setStyle('width', firstRow.childNodes[i].getSize().size.x +
-            delta + 'px');
+                delta + 'px');
         }, this);
         if (!this.data.length) this.tbody.getFirst().dispose();
     }
@@ -105,10 +105,16 @@ var Grid = (function () {
             'mouseout': function () {
                 this.removeClass('highlighted');
             },
-            'click': function () {
-                if (this != grid.getSelectedItem()) {
-                    grid.selectItem(this);
+            'click': function (e) {
+                if (!e.control) {
+                    if (this != grid.getSelectedItem()) {
+                        grid.selectItem(this);
+                    }
                 }
+                else {
+                    grid.selectItem(this, true);
+                }
+
             },
             'dblclick': function () {
                 /**
@@ -159,9 +165,9 @@ var Grid = (function () {
 
         /**
          * Current selected data field.
-         * @type {Element}
+         * @type {Elements}
          */
-        selectedItem: null,
+        selectedItem: new Elements(),
 
         /**
          * Sorting properties.
@@ -292,11 +298,17 @@ var Grid = (function () {
          * @public
          * @param {Element} item Data field that will be selected.
          */
-        selectItem: function (item) {
-            this.deselectItem();
+        selectItem: function (item, multiple) {
+            if(!multiple)
+                this.deselectItem();
+
             if (item) {
                 item.addClass('selected');
-                this.selectedItem = item;
+                if(multiple)
+                    this.selectedItem.push(item);
+                else
+                    this.selectedItem = new Elements([item]);
+
                 /**
                  * Select event.
                  * @event Grid#select
@@ -312,7 +324,7 @@ var Grid = (function () {
          * @public
          */
         deselectItem: function () {
-            if (this.selectedItem) {
+            if (this.selectedItem.length) {
                 this.selectedItem.removeClass('selected');
             }
         },
@@ -324,8 +336,12 @@ var Grid = (function () {
          * @public
          * @returns {Element}
          */
-        getSelectedItem: function () {
-            return this.selectedItem;
+        getSelectedItem: function (returnAsArray) {
+            if (!arguments.length)
+                return (this.selectedItem.length) ? this.selectedItem[0] : null;
+            else {
+                return (this.selectedItem.length) ? this.selectedItem : null;
+            }
         },
 
         /**
@@ -337,7 +353,7 @@ var Grid = (function () {
         build: function () {
             var preiouslySelectedRecordKey = this.getSelectedRecordKey();
 
-            this.selectedItem = null;
+            this.selectedItem = new Elements();
 
             if (!this.isEmpty()) {
                 if (!this.dataKeyExists(preiouslySelectedRecordKey)) {
@@ -346,7 +362,7 @@ var Grid = (function () {
                 this.data.each(function (record, id) {
                     addRecord.call(this, record, id, preiouslySelectedRecordKey);
                 }, this);
-                if (!this.selectedItem && !preiouslySelectedRecordKey) {
+                if (!this.selectedItem.length && !preiouslySelectedRecordKey) {
                     this.selectItem(this.tbody.getFirst());
                 }
             } else {
@@ -649,7 +665,7 @@ var Grid = (function () {
                 return false;
             }
             var id = this.getSelectedRecord()[this.keyFieldName];
-            if(this.metadata[this.keyFieldName].type == 'lookup'){
+            if (this.metadata[this.keyFieldName].type == 'lookup') {
                 id = this.getSelectedRecord()[this.keyFieldName]['id'];
             }
             return id;
@@ -1001,7 +1017,7 @@ var GridManager = new Class(/** @lends GridManager# */{
 
         if (this.grid.sort.order) {
             url = this.singlePath + 'get-data/' + this.grid.sort.field + '-'
-            + this.grid.sort.order + '/page-' + pageNum
+                + this.grid.sort.order + '/page-' + pageNum
         } else {
             url = this.singlePath + 'get-data/page-' + pageNum;
         }
@@ -1262,7 +1278,7 @@ var GridManager = new Class(/** @lends GridManager# */{
         var MSG_CONFIRM_DELETE = Energine.translations.get('MSG_CONFIRM_DELETE') ||
             'Do you really want to delete selected record?';
         if ((this.delConfirmCounter > 1) || confirm(MSG_CONFIRM_DELETE)) {
-            this.delConfirmCounter ++;
+            this.delConfirmCounter++;
             this.overlay.show();
             Energine.request(this.singlePath + this.grid.getSelectedRecordKey() +
                 '/delete/', null,
@@ -1349,23 +1365,23 @@ document.addEvent('domready', function () {
      * @type {number}
      */
     ScrollBarWidth = window.top.ScrollBarWidth || (function () {
-        var parent = new Element('div', {
-            styles: {
-                height: '1px',
-                overflow: 'scroll',
-                visibility: 'hidden'
-            }
-        });
-        var child = new Element('div', {
-            styles: {
-                height: '2px'
-            }
-        });
-        parent.grab(child);
-        $(document.body).grab(parent);
-        var width = parent.offsetWidth - child.offsetWidth;
-        parent.destroy();
+            var parent = new Element('div', {
+                styles: {
+                    height: '1px',
+                    overflow: 'scroll',
+                    visibility: 'hidden'
+                }
+            });
+            var child = new Element('div', {
+                styles: {
+                    height: '2px'
+                }
+            });
+            parent.grab(child);
+            $(document.body).grab(parent);
+            var width = parent.offsetWidth - child.offsetWidth;
+            parent.destroy();
 
-        return width;
-    })();
+            return width;
+        })();
 });

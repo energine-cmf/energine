@@ -3,7 +3,6 @@
     version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     >
-
     <!-- Секция 1. Обвязка для полей формы. -->
     <!--
         Шаблон-контроллер для обработки любого поля из компонента типа форма.
@@ -89,6 +88,7 @@
             <xsl:apply-templates select="." mode="field_input"/>
         </div>
     </xsl:template>
+
 
     <xsl:template match="field[@type='file'][ancestor::component[@type='form']]" mode="field_content">
         <div class="control type_{@type}" id="control_{@language}_{@name}">
@@ -326,7 +326,6 @@
     </xsl:template>
 
     <xsl:template match="field[@type='select' and @editor][ancestor::component[@exttype='grid' or @exttype='feed']]" mode="field_input">
-        <!--<div class="with_append">-->
             <select id="{@name}">
                 <xsl:attribute name="name"><xsl:choose>
                     <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
@@ -337,11 +336,8 @@
                 </xsl:if>
                 <xsl:apply-templates mode="field_input"/>
             </select>
-            <!--<div class="appended_block">
-                <button type="button" class="crud" data-field="{@name}" data-editor="{@editor}">...</button>
-            </div>-->
-        <!--</div>-->
         </xsl:template>
+
     <xsl:template match="option[ancestor::field[@type='select'][ancestor::component[@type='form']]]" mode="field_input">
         <option value="{@id}">
             <xsl:copy-of select="attribute::*[name(.)!='id']"/>
@@ -830,6 +826,11 @@
              </div>
         </xsl:if>
     </xsl:template>
+    <xsl:template match="field[@name='upl_id'][ancestor::component[@type='form' and @exttype='grid']]" mode="field_content">
+            <div class="control toggle type_file" id="control_{@language}_{@name}">
+                <xsl:apply-templates select="." mode="field_input"/>
+            </div>
+        </xsl:template>
 
     <!-- поле для выбора upl_id гридах -->
     <xsl:template match="field[@name='upl_id' and ancestor::component[@type='form' and (@exttype='feed' or @exttype='grid')]]" mode="field_input">
@@ -890,4 +891,44 @@
                <xsl:attribute name="value"><xsl:for-each select="items/item"><xsl:value-of select="."/><xsl:if test="position()!=last()">,</xsl:if></xsl:for-each></xsl:attribute>
            </input>-->
        </xsl:template>
+    <xsl:template name="FORM_ELEMENT_ATTRIBUTES">
+            <xsl:if test="not(@type='text') and not(@type='htmlblock')">
+                <xsl:attribute name="type">text</xsl:attribute>
+                <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+            </xsl:if>
+            <xsl:attribute name="id">
+                <xsl:value-of select="@name"/>
+                <xsl:if test="@language">_<xsl:value-of select="@language"/></xsl:if>
+            </xsl:attribute>
+            <xsl:attribute name="name"><xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/><xsl:if test="@language">[<xsl:value-of select="@language"/>]</xsl:if>[<xsl:value-of select="@name"/>]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+            </xsl:choose></xsl:attribute>
+            <xsl:if test="@length and not(@type='htmlblock')">
+                <xsl:attribute name="maxlength"><xsl:value-of select="@length"/></xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@pattern">
+                <xsl:attribute name="nrgn:pattern" xmlns:nrgn="http://energine.org"><xsl:value-of select="@pattern"/></xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@message">
+                <xsl:attribute name="nrgn:message" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message"/></xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@message2">
+                <xsl:attribute name="nrgn:message2" xmlns:nrgn="http://energine.org"><xsl:value-of select="@message2"/></xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@placeholder">
+                <xsl:attribute name="placeholder"><xsl:value-of select="@placeholder"/></xsl:attribute>
+            </xsl:if>
+        </xsl:template>
+
+        <!-- именованный шаблон с дефолтным набором атрибутов для элемента формы, на который права только на чтение - НЕ ПЕРЕПИСЫВАТЬ В ДРУГОМ МЕСТЕ! -->
+        <xsl:template name="FORM_ELEMENT_ATTRIBUTES_READONLY">
+            <xsl:attribute name="type">hidden</xsl:attribute>
+            <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+            <xsl:attribute name="name"><xsl:choose>
+                <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+            </xsl:choose></xsl:attribute>
+        </xsl:template>
 </xsl:stylesheet>

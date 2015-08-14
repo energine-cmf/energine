@@ -165,7 +165,7 @@ final class Document extends Object implements IDocument {
 
         if($this->documentInfo['MetaRobots'])
             $this->setProperty('robots', implode(',', $this->documentInfo['MetaRobots']));
-
+        $this->setProperty('template',$this->request->getPath(Request::PATH_TEMPLATE, true));
         $this->setProperty('ID', $this->getID());
         $this->setProperty('default',
             $this->sitemap->getDefault() == $this->getID());

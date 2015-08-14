@@ -41,7 +41,7 @@
     <xsl:template match="toolbar[ancestor::component[@exttype='feed'][@type='list']][@name!='pager']"/>
 
     <xsl:template match="control[parent::toolbar[@name!='pager' and ancestor::component[@exttype='feed'][@type='list']]]">
-        <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@template}"><xsl:value-of select="@title"/></a>
+        <a href="{$BASE}{$LANG_ABBR}{$TEMPLATE}"><xsl:value-of select="@title"/></a>
     </xsl:template>
 
     <!-- компонент feed в режиме просмотра -->
@@ -194,7 +194,7 @@
                 </div>
             </xsl:if>
             <div class="go_back">
-                <a href="{$BASE}{$LANG_ABBR}{../../@template}"><xsl:value-of select="$TRANSLATION[@const='TXT_BACK_TO_LIST']"/></a>
+                <a href="{$BASE}{$LANG_ABBR}{$TEMPLATE}"><xsl:value-of select="$TRANSLATION[@const='TXT_BACK_TO_LIST']"/></a>
             </div>
         </div>
     </xsl:template>

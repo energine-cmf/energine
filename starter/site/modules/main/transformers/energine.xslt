@@ -295,7 +295,7 @@
             <xsl:apply-templates/>
         </ul>
         <div class="read_more">
-            <a href="{$BASE}{$LANG_ABBR}{../@template}"><xsl:value-of select="$TRANSLATION[@const='TXT_ALL_NEWS']"/></a>
+            <a href="{$BASE}{$LANG_ABBR}{$TEMPLATE}"><xsl:value-of select="$TRANSLATION[@const='TXT_ALL_NEWS']"/></a>
         </div>
     </xsl:template>
 
@@ -428,7 +428,7 @@
                 </div>
             </xsl:if>
             <div class="go_back">
-                <a href="{$BASE}{$LANG_ABBR}{../../@template}"><xsl:value-of select="$TRANSLATION[@const='TXT_BACK_TO_LIST']"/></a>
+                <a href="{$BASE}{$LANG_ABBR}{$TEMPLATE}"><xsl:value-of select="$TRANSLATION[@const='TXT_BACK_TO_LIST']"/></a>
             </div>
         </div>
     </xsl:template>

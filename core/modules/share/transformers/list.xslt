@@ -33,7 +33,7 @@
 
     <xsl:template match="component[@type='list' and @exttype='grid']/recordset">
         <xsl:variable name="NAME" select="../@name"/>
-        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1  e-pane-has-b-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1  e-pane-has-b-toolbar1" template="{$BASE}{$LANG_ABBR}{$TEMPLATE}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <!--<xsl:if test="../toolbar">
                 <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
             </xsl:if>-->

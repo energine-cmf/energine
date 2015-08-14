@@ -46,7 +46,7 @@
     </xsl:template>
     
     <xsl:template match="recordset[parent::component[@type='form']]">
-    	<div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
+    	<div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{$TEMPLATE}">
     		<xsl:apply-templates/>
     	</div>
 		<xsl:if test="$TRANSLATION[@const='TXT_REQUIRED_FIELDS']">
@@ -70,7 +70,7 @@
     <!-- форма как часть grid-а выводится в другом стиле -->
     <xsl:template match="recordset[parent::component[@type='form' and @exttype='grid']]">
         <xsl:variable name="FIELDS" select="record/field"/>
-        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{$TEMPLATE}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <xsl:if test="../toolbar">
                 <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
             </xsl:if>

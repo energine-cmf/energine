@@ -155,12 +155,9 @@ class Component extends Object implements IBlock {
 
         $this->doc = new \DOMDocument('1.0', 'UTF-8');
         $this->document->componentManager->register($this);
-        $this->setProperty('template',
-            $template = $this->request->getPath(Request::PATH_TEMPLATE, true));
+
         $this->setProperty(
-            'single_template',
-            ($this->document->getProperty('single') ? $template :
-                $template . 'single/' . $this->getName() . '/')
+            'single_template',$this->request->getPath(Request::PATH_TEMPLATE, true).((!$this->document->getProperty('single')) ?'single/' . $this->getName() . '/':'')
         );
 
         $this->determineState();

@@ -14,7 +14,7 @@
     </xsl:template>
 
     <xsl:template match="recordset[parent::component[@sample='LoginForm']]">
-        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{../@template}">
+        <div id="{generate-id(.)}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" template="{$BASE}{$LANG_ABBR}{$TEMPLATE}">
             <xsl:apply-templates/>
         </div>
     </xsl:template>

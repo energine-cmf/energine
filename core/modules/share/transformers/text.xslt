@@ -60,7 +60,7 @@
     
     <xsl:template match="component[@class='TextBlockSource']/recordset">
         <xsl:variable name="paneID"><xsl:value-of select="generate-id(record)" /></xsl:variable>
-        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
+        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{$TEMPLATE}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}">
             <xsl:if test="../toolbar">
                 <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
             </xsl:if>

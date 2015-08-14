@@ -26,7 +26,7 @@ use Energine\share\gears\UserSession;
 class SocialLoginForm;
  * @endcode
  */
-class SocialLoginForm extends LoginForm implements SampleLoginForm {
+class SocialLoginForm extends LoginForm {
     /**
      * @copydoc LoginForm::showLoginForm
      */

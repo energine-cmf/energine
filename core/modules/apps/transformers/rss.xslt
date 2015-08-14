@@ -38,13 +38,13 @@
 
     <xsl:template match="record[ancestor::component[@class='NewsFeed'][@componentAction='rss']]">
         <item>
-            <guid><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/>/<xsl:value-of select="../../@template"/><xsl:value-of select="field[@name='news_segment']"/></guid>
+            <guid><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/>/<xsl:value-of select="$TEMPLATE"/><xsl:value-of select="field[@name='news_segment']"/></guid>
             <title>
                 <xsl:value-of select="field[@name='news_title']"/>
             </title>
             <description><xsl:value-of select="field[@name='news_announce_rtf']"/></description>
             <pubDate><xsl:value-of select="field[@name='news_date']"/></pubDate>
-            <link><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/>/<xsl:value-of select="../../@template"/><xsl:value-of select="field[@name='news_segment']"/>/</link>
+            <link><xsl:value-of select="$BASE"/><xsl:value-of select="$LANG_ABBR"/>/<xsl:value-of select="$TEMPLATE"/><xsl:value-of select="field[@name='news_segment']"/>/</link>
         </item>
     </xsl:template>
 

@@ -16,7 +16,7 @@
     <!-- вывод дерева разделов -->
     <xsl:template match="recordset[parent::component[javascript/behavior/@name='DivManager' or javascript/behavior/@name='DivSelector'or javascript/behavior/@name='DivTree'][@sample='DivisionEditor'][@type='list']]">
         <xsl:variable name="TAB_ID" select="generate-id(record[1])"/>
-        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{../@template}" lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
+        <div id="{generate-id(.)}" class="e-pane e-pane-has-t-toolbar1" template="{$BASE}{$LANG_ABBR}{$TEMPLATE}" lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
             <xsl:if test="../toolbar">
                 <xsl:attribute name="class">e-pane e-pane-has-t-toolbar1 e-pane-has-b-toolbar1</xsl:attribute>
             </xsl:if>
@@ -43,7 +43,7 @@
         
     <!-- вывод дерева разделов в боковом тулбаре -->
     <xsl:template match="recordset[parent::component[javascript/behavior/@name='DivSidebar'][@sample='DivisionEditor'][@componentAction='main'][@type='list']]">
-        <div id="{generate-id(.)}" class="e-divtree-wrapper" template="{$BASE}{$LANG_ABBR}{../@template}"  lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
+        <div id="{generate-id(.)}" class="e-divtree-wrapper" template="{$BASE}{$LANG_ABBR}{$TEMPLATE}"  lang_id="{$LANG_ID}" single_template="{$BASE}{$LANG_ABBR}{../@single_template}" site="{../@site}">
             <div id="treeContainer" class="e-divtree-main"></div>
         </div>
     </xsl:template>
@@ -157,16 +157,19 @@
 
     <!-- поле выбора контентного шаблона раздела -->
     <xsl:template match="field[@name='smap_content'][ancestor::component[@sample='DivisionEditor' and @type='form']]" mode="field_input">
+        <xsl:variable name="NAME"><xsl:choose>
+                            <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
+                            <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
+        </xsl:choose></xsl:variable>
        <div>
+           <xsl:if test="options/option[@selected]/@unique">
+               <input type="hidden" name="{$NAME}" value="{options/option[@selected]/@id}"/>
+           </xsl:if>
             <xsl:if test="@reset"><xsl:attribute name="class">with_append with_link</xsl:attribute></xsl:if>
-            <select id="{@name}">
+            <select id="{@name}" name="{$NAME}">
                 <xsl:if test="options/option[@selected]/@unique">
                     <xsl:attribute name="disabled">disabled</xsl:attribute>
                 </xsl:if>
-                <xsl:attribute name="name"><xsl:choose>
-                    <xsl:when test="@tableName"><xsl:value-of select="@tableName"/>[<xsl:value-of select="@name"/>]</xsl:when>
-                    <xsl:otherwise><xsl:value-of select="@name"/></xsl:otherwise>
-                </xsl:choose></xsl:attribute>
                 <xsl:if test="@nullable='1'">
                     <option></option>
                 </xsl:if>
@@ -222,14 +225,14 @@
             <xsl:if test="field[@name='site_id'] = $COMPONENTS[@sample='DivisionEditor']/@site">
                 <xsl:attribute name="class">active</xsl:attribute>
             </xsl:if>
-            <a href="{$BASE}{$LANG_ABBR}{../../@template}show/{field[@name='site_id']}/"><xsl:value-of select="field[@name='site_name']"/></a>
+            <a href="{$BASE}{$LANG_ABBR}{$TEMPLATE}show/{field[@name='site_id']}/"><xsl:value-of select="field[@name='site_name']"/></a>
         </li>
     </xsl:template>
 
     <xsl:template match="component[@class='SiteList' and (following::component[@sample='DivisionEditor'] or preceding::component[@sample='DivisionEditor'])]" />
 
     <xsl:template match="component[@class='SiteList' and (following::component[@sample='DivisionEditor'] or preceding::component[@sample='DivisionEditor'])]"  mode="insideEditor">
-        <select onchange="document.location = '{$BASE}{$LANG_ABBR}{@template}show/' + this.options[this.selectedIndex].value + '/';" id="site_selector">
+        <select onchange="document.location = '{$BASE}{$LANG_ABBR}{$TEMPLATE}show/' + this.options[this.selectedIndex].value + '/';" id="site_selector">
             <xsl:for-each select="recordset/record">
                 <option value="{field[@name='site_id']}">
                     <xsl:if test="field[@name='site_id'] = $COMPONENTS[@sample='DivisionEditor']/@site">

@@ -796,7 +796,7 @@ Form.SmapSelector = new Class(/** @lends Form.SmapSelector# */{
         }
 
         ModalBox.open({
-            url: this.form.element.getProperty('template') + segment + 'selector/',
+            url: this.form.element.getProperty('single_template') + segment + 'selector/',
             onClose: this.setName.bind(this)
         });
     },
@@ -864,7 +864,7 @@ Form.AttachmentSelector = new Class(/** @lends Form.AttachmentSelector# */{
      */
     showSelector: function () {
         ModalBox.open({
-            url: this.form.element.getProperty('template') + 'file-library/',
+            url: this.form.element.getProperty('single_template') + 'file-library/',
             onClose: this.setName.bind(this)
         });
     },

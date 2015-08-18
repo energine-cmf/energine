@@ -16,6 +16,7 @@ abstract class DataSet;
 
 namespace Energine\share\components;
 
+use Energine\share\gears\Request;
 use Energine\share\gears\Toolbar, Energine\share\gears\QAL, Energine\share\gears\SystemException, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Object, Energine\share\gears\SimpleBuilder, Energine\share\gears\DataSetConfig, Energine\share\gears\Pager;
 
 /**
@@ -515,7 +516,7 @@ abstract class DataSet extends Component {
         // если у нас не полностью сформированный путь, то добавляем информацию о языке + путь к шаблону
         if (!$isFullURI) {
             $action = $this->request->getLangSegment() .
-                $this->request->getPath(\Energine\share\gears\Request::PATH_TEMPLATE, true) .
+                $this->request->getPath(Request::PATH_TEMPLATE, true) .
                 $action;
 
             // если в конце нет слеша - добавляем его

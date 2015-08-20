@@ -20,7 +20,6 @@ use Energine\share\components\Component;
 
 /**
  * Block interface.
-
  * @code
 interface IBlock;
  * @endcode
@@ -57,11 +56,12 @@ interface IBlock {
      */
     public function getName();
 
+    static public function createFromDescription(\SimpleXMLElement $componentDescription, array $externalParams = []);
+
 }
 
 /**
  * Manager of the set of the document's components.
-
  * @code
 final class ComponentManager;
  * @endcode
@@ -152,13 +152,21 @@ final class ComponentManager extends Object implements \Iterator {
      *
      * @param \SimpleXMLElement $blockDescription Block description.
      * @param array $additionalProps Additional properties.
-     * @return IBlock
+     * @return IBlock | null
      *
      */
     static public function createBlockFromDescription(\SimpleXMLElement $blockDescription, $additionalProps = []) {
+        $result = null;
         switch ($blockDescription->getName()) {
             case 'component':
                 $result = Component::createFromDescription($blockDescription, $additionalProps);
+                break;
+            case 'translations':
+                foreach ($blockDescription as $tagName => $tag) {
+                    if ($tagName == 'translation' && isset($tag['const'])) {
+                        E()->getDocument()->addTranslation((string)$tag['const']);
+                    }
+                }
                 break;
             default:
                 $result = ComponentContainer::createFromDescription($blockDescription, $additionalProps);
@@ -199,7 +207,7 @@ final class ComponentManager extends Object implements \Iterator {
      * @return Component
      */
     public function getBlockByName($name) {
-        $result = null;
+        $result = NULL;
         if (isset($this->registeredBlocks[$name])) {
             $result = $this->registeredBlocks[$name];
         }
@@ -214,7 +222,7 @@ final class ComponentManager extends Object implements \Iterator {
      * @param array $params Component properties.
      * @return Component
      */
-    public function createComponent($name, $class, $params = null) {
+    public function createComponent($name, $class, $params = NULL) {
         return call_user_func_array(['Energine\\share\\components\\Component', 'create'], func_get_args());
     }
 

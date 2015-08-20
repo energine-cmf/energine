@@ -114,8 +114,7 @@ class WidgetsRepository extends Grid {
         $xml = simplexml_load_string($xml);
         unset($_SERVER['HTTP_X_REQUEST']);
         $this->request->shiftPath(1);
-        $this->tmpComponent =
-            ComponentManager::createBlockFromDescription($xml);
+        $this->tmpComponent = ComponentManager::createBlockFromDescription($xml);
         $this->tmpComponent->run();
     }
 

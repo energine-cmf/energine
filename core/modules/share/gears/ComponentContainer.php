@@ -93,12 +93,12 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
      * Create component container from description.
      *
      * @param \SimpleXMLElement $containerDescription Container description.
-     * @param array $additionalAttributes Additional attributes.
+     * @param array $externalParams Additional attributes.
      * @return ComponentContainer
      *
      * @throws SystemException ERR_NO_CONTAINER_NAME
      */
-    static public function createFromDescription(\SimpleXMLElement $containerDescription, array $additionalAttributes = []) {
+    static public function createFromDescription(\SimpleXMLElement $containerDescription, array $externalParams = []) {
         $properties['tag'] = $containerDescription->getName();
 
         $attributes = $containerDescription->attributes();
@@ -113,7 +113,7 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
         }
         $name = $properties['name'];
         unset($properties['name']);
-        $properties = array_merge($properties, $additionalAttributes);
+        $properties = array_merge($properties, $externalParams);
         $value = null;
         $containerDescriptionValue = trim((string)$containerDescription);
         if(!empty($containerDescriptionValue)){
@@ -121,7 +121,8 @@ class ComponentContainer extends Object implements IBlock, \Iterator {
         }
         $result = new ComponentContainer($name, $properties, $value);
         foreach ($containerDescription as $blockDescription) {
-            $result->add(ComponentManager::createBlockFromDescription($blockDescription, $additionalAttributes));
+            if($c = ComponentManager::createBlockFromDescription($blockDescription, $externalParams))
+                $result->add($c);
         }
 
         return $result;

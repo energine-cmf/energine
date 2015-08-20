@@ -458,7 +458,7 @@ class Component extends Object implements IBlock {
      * @return Component
      * @throws SystemException ERR_DEV_NO_REQUIRED_ATTRIB [attribute_name]
      */
-    static public function createFromDescription(\SimpleXMLElement $componentDescription, $externalParams = []) {
+    static public function createFromDescription(\SimpleXMLElement $componentDescription, array $externalParams = []) {
         // перечень необходимых атрибутов компонента
         $requiredAttributes = [
             'name', /*'module', */

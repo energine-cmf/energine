@@ -464,9 +464,9 @@ final class Document extends Object implements IDocument {
                     $int->setStructure($blockDescription);
                     throw $int;
                 }
-                $this->componentManager->add(
-                    ComponentManager::createBlockFromDescription($blockDescription)
-                );
+
+                if($c = ComponentManager::createBlockFromDescription($blockDescription))
+                    $this->componentManager->add($c);
             }
 
         } else {
@@ -479,9 +479,8 @@ final class Document extends Object implements IDocument {
             }
 
             foreach ($structure->children() as $XML) {
-                $this->componentManager->add(
-                    ComponentManager::createBlockFromDescription($XML)
-                );
+                if($c = ComponentManager::createBlockFromDescription($XML))
+                    $this->componentManager->add($c);
 
             }
             /*

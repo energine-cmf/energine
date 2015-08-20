@@ -117,6 +117,12 @@ final class Document extends Object implements IDocument {
      * @var array $translations
      */
     private $translations = [];
+    /**
+     * Array of document javascripts (js behaviours included into content/layout files)
+     *
+     * @var \DOMElement[]
+     */
+    private $js = [];
 
     public function __construct() {
         parent::__construct();
@@ -158,14 +164,14 @@ final class Document extends Object implements IDocument {
         //$this->loadComponents($this->documentInfo['templateID']);
 
         // устанавливаем свойства документа
-        if($this->documentInfo['MetaKeywords'])
+        if ($this->documentInfo['MetaKeywords'])
             $this->setProperty('keywords', $this->documentInfo['MetaKeywords']);
-        if($this->documentInfo['MetaDescription'])
+        if ($this->documentInfo['MetaDescription'])
             $this->setProperty('description', $this->documentInfo['MetaDescription']);
 
-        if($this->documentInfo['MetaRobots'])
+        if ($this->documentInfo['MetaRobots'])
             $this->setProperty('robots', implode(',', $this->documentInfo['MetaRobots']));
-        $this->setProperty('template',$this->request->getPath(Request::PATH_TEMPLATE, true));
+        $this->setProperty('template', $this->request->getPath(Request::PATH_TEMPLATE, true));
         $this->setProperty('ID', $this->getID());
         $this->setProperty('default',
             $this->sitemap->getDefault() == $this->getID());
@@ -341,40 +347,44 @@ final class Document extends Object implements IDocument {
             }
         }
 
-        // построение списка подключаемых js библиотек в порядке зависимостей
-        $jsmap_file = HTDOCS_DIR . '/system.jsmap.php';
-
-        if (file_exists($jsmap_file)) {
-
-            $js_includes = [];
-
-            $jsmap = include($jsmap_file);
-
-            $xpath = new \DOMXPath($this->doc);
-            $nl = $xpath->query('//javascript/behavior');
-
-            if ($nl->length) {
-                foreach ($nl as $node) {
-                    $cls_path = $node->getAttribute('path');
-                    if ($cls_path && substr($cls_path, -1) != '/') {
-                        $cls_path .= '/';
-                    }
-                    $cls = (($cls_path) ? $cls_path : '') . $node->getAttribute('name');
-
-                    $this->createJavascriptDependencies([$cls], $jsmap, $js_includes);
-                }
-            }
-            //inspect($jsmap, $js_includes);
-            $dom_javascript = $this->doc->createElement('javascript');
-            foreach ($js_includes as $js) {
-                $dom_js_library = $this->doc->createElement('library');
-                $dom_js_library->setAttribute('path', $js);
-                $onlyName = explode('/', $js);
-                $dom_js_library->setAttribute('name', array_pop($onlyName));
-                $dom_javascript->appendChild($dom_js_library);
-            }
-            $dom_root->appendChild($dom_javascript);
+        $dom_javascript = $this->doc->createElement('javascript');
+        $dom_root->appendChild($dom_javascript);
+        foreach ($this->js as $behavior) {
+            $dom_javascript->appendChild($this->doc->importNode($behavior, true));
         }
+
+        // построение списка подключаемых js библиотек в порядке зависимостей
+        $jsMapFile = HTDOCS_DIR . '/system.jsmap.php';
+        if (!file_exists($jsMapFile)) {
+            throw new \RuntimeException('JS dependencies file ' . $jsMapFile . ' does\'nt exists');
+        }
+        $jsIncludes = [];
+        $jsmap = include($jsMapFile);
+
+        $xpath = new \DOMXPath($this->doc);
+        $nl = $xpath->query('//javascript/behavior');
+
+        if ($nl->length) {
+            foreach ($nl as $node) {
+                $classPath = $node->getAttribute('path');
+                if ($classPath && substr($classPath, -1) != '/') {
+                    $classPath .= '/';
+                }
+                $cls = (($classPath) ? $classPath : '') . $node->getAttribute('name');
+
+                $this->createJavascriptDependencies([$cls], $jsmap, $jsIncludes);
+            }
+        }
+        //inspect($jsmap, $jsIncludes);
+
+        foreach ($jsIncludes as $js) {
+            $dom_js_library = $this->doc->createElement('library');
+            $dom_js_library->setAttribute('path', $js);
+            $onlyName = explode('/', $js);
+            $dom_js_library->setAttribute('name', array_pop($onlyName));
+            $dom_javascript->appendChild($dom_js_library);
+        }
+
     }
 
     /**
@@ -401,17 +411,17 @@ final class Document extends Object implements IDocument {
      * Create unique flat array of connected .js-files and their dependencies.
      * @param array $dependencies Dependencies.
      * @param array $jsmap JS map.
-     * @param array $js_includes JS includes.
+     * @param array $jsIncludes JS includes.
      */
-    protected function createJavascriptDependencies($dependencies, $jsmap, &$js_includes) {
+    protected function createJavascriptDependencies($dependencies, $jsmap, &$jsIncludes) {
         if ($dependencies) {
             foreach ($dependencies as $dep) {
                 if (isset($jsmap[$dep])) {
-                    $this->createJavascriptDependencies($jsmap[$dep], $jsmap, $js_includes);
+                    $this->createJavascriptDependencies($jsmap[$dep], $jsmap, $jsIncludes);
                 }
 
-                if (!in_array($dep, $js_includes)) {
-                    $js_includes[] = $dep;
+                if (!in_array($dep, $jsIncludes)) {
+                    $jsIncludes[] = $dep;
                 }
             }
         }
@@ -465,7 +475,7 @@ final class Document extends Object implements IDocument {
                     throw $int;
                 }
 
-                if($c = ComponentManager::createBlockFromDescription($blockDescription))
+                if ($c = ComponentManager::createBlockFromDescription($blockDescription))
                     $this->componentManager->add($c);
             }
 
@@ -479,7 +489,7 @@ final class Document extends Object implements IDocument {
             }
 
             foreach ($structure->children() as $XML) {
-                if($c = ComponentManager::createBlockFromDescription($XML))
+                if ($c = ComponentManager::createBlockFromDescription($XML))
                     $this->componentManager->add($c);
 
             }
@@ -564,10 +574,24 @@ final class Document extends Object implements IDocument {
      * @param string $const Translation constant
      * @param Component $component Component object.
      */
-    public function addTranslation($const, Component $component = null) {
+    public function addTranslation($const, Component $component = NULL) {
         $this->translations[$const] =
-            (!is_null($component)) ? $component->getName() : null;
+            (!is_null($component)) ? $component->getName() : NULL;
     }
+
+    /**
+     * @param $behavior
+     * @throws \DOMException
+     */
+    public function addJSBehavior($behavior) {
+        if (is_a($behavior, '\SimpleXMLElement')) {
+            if (!($bNode = dom_import_simplexml($behavior))) {
+                throw new \DOMException('Bad JS behaviour.');
+            }
+            array_push($this->js, $bNode);
+        }
+    }
+
 
     public function getXMLDocument() {
         return $this->doc;

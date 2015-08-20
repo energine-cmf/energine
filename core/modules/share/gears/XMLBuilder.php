@@ -20,7 +20,7 @@ abstract class XMLBuilder extends  Object implements IBuilder{
      * Result document.
      * @var \DOMDocument $result
      */
-    protected $document;
+    public $document;
     /**
      * @var \DOMElement | \DOMNodeList
      */

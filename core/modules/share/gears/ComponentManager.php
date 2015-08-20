@@ -156,7 +156,7 @@ final class ComponentManager extends Object implements \Iterator {
      *
      */
     static public function createBlockFromDescription(\SimpleXMLElement $blockDescription, $additionalProps = []) {
-        $result = null;
+        $result = NULL;
         switch ($blockDescription->getName()) {
             case 'component':
                 $result = Component::createFromDescription($blockDescription, $additionalProps);
@@ -165,6 +165,13 @@ final class ComponentManager extends Object implements \Iterator {
                 foreach ($blockDescription as $tagName => $tag) {
                     if ($tagName == 'translation' && isset($tag['const'])) {
                         E()->getDocument()->addTranslation((string)$tag['const']);
+                    }
+                }
+                break;
+            case 'javascript':
+                foreach ($blockDescription as $tagName => $tag) {
+                    if ($tagName == 'behavior') {
+                        E()->getDocument()->addJSBehavior($tag);
                     }
                 }
                 break;

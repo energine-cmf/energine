@@ -215,20 +215,20 @@
         <xsl:if test="$DOC_PROPS[@name='google_analytics'] and ($DOC_PROPS[@name='google_analytics'] != '')">
             <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
         </xsl:if>
-        <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
+        <xsl:if test="count(//javascript/behavior[@use='jquery']) &gt; 0">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
             <script type="text/javascript">
                 jQuery.noConflict();
             </script>
             <xsl:apply-templates select="/" mode="jquery_scripts"/>
         </xsl:if>
-        <xsl:if test="count($COMPONENTS[recordset]/javascript/behavior[@use='jquery']) &gt; 0">
+        <xsl:if test="count(//javascript/behavior[@use='jquery']) &gt; 0">
             <xsl:apply-templates select="/document/javascript/library" mode="jquery"/>
             <script type="text/javascript">
                 (function($, window, document) {
                 // Listen for the jQuery ready event on the document
                 $(function() {
-            <xsl:for-each select="$COMPONENTS[recordset]/javascript/behavior[@use='jquery']">
+            <xsl:for-each select="//javascript/behavior[@use='jquery']">
                 <xsl:call-template name="INIT_JS"/>
             </xsl:for-each>
                 });
@@ -240,17 +240,20 @@
 
     <xsl:template name="INIT_JS">
         <xsl:variable name="objectID" select="generate-id(../../recordset[not(@name)])"/>
-        if(document.getElementById('<xsl:value-of select="$objectID"/>')){
-        <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>('<xsl:value-of select="$objectID"/>');
-        }
+        <xsl:choose>
+            <xsl:when test="$objectID!=''">
+                if(document.getElementById('<xsl:value-of select="$objectID"/>')){
+                    <xsl:value-of select="$objectID"/> = new <xsl:value-of select="@name"/>('<xsl:value-of select="$objectID"/>');
+                }
+            </xsl:when>
+            <xsl:otherwise>
+                new <xsl:value-of select="@name"/>();
+            </xsl:otherwise>
+        </xsl:choose>
+
     </xsl:template>
 
     <xsl:template match="document">
-        <xsl:if test="$COMPONENTS[@class='Ads']/recordset/record/field[@name='ad_top_728_90']">
-            <div class="top_adblock">
-                <xsl:value-of select="$COMPONENTS[@class='Ads']/recordset/record/field[@name='ad_top_728_90']" disable-output-escaping="yes"/>
-            </div>
-        </xsl:if>
         <xsl:if test="$COMPONENTS[@class='CrossDomainAuth']">
             <img src="{$COMPONENTS[@class='CrossDomainAuth']/@authURL}?return={$COMPONENTS[@class='CrossDomainAuth']/@returnURL}" width="1" height="1" style="display:none;" alt="" onload="document.location = document.location.href;"/>
         </xsl:if>

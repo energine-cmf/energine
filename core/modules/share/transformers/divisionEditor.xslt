@@ -225,14 +225,14 @@
             <xsl:if test="field[@name='site_id'] = $COMPONENTS[@sample='DivisionEditor']/@site">
                 <xsl:attribute name="class">active</xsl:attribute>
             </xsl:if>
-            <a href="{$BASE}{$LANG_ABBR}{$TEMPLATE}show/{field[@name='site_id']}/"><xsl:value-of select="field[@name='site_name']"/></a>
+            <a href="{$BASE}{$LANG_ABBR}{ancestor::component/@single_template}show/{field[@name='site_id']}/"><xsl:value-of select="field[@name='site_name']"/></a>
         </li>
     </xsl:template>
 
     <xsl:template match="component[@class='SiteList' and (following::component[@sample='DivisionEditor'] or preceding::component[@sample='DivisionEditor'])]" />
 
     <xsl:template match="component[@class='SiteList' and (following::component[@sample='DivisionEditor'] or preceding::component[@sample='DivisionEditor'])]"  mode="insideEditor">
-        <select onchange="document.location = '{$BASE}{$LANG_ABBR}{$TEMPLATE}show/' + this.options[this.selectedIndex].value + '/';" id="site_selector">
+        <select onchange="document.location = '{$BASE}{$LANG_ABBR}{@single_template}show/' + this.options[this.selectedIndex].value + '/';" id="site_selector">
             <xsl:for-each select="recordset/record">
                 <option value="{field[@name='site_id']}">
                     <xsl:if test="field[@name='site_id'] = $COMPONENTS[@sample='DivisionEditor']/@site">

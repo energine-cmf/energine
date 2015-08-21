@@ -114,7 +114,10 @@ class NewsFeed extends ExtendedFeed {
             if ($additionalURL) {
                 unset($ap['pageNumber']);
                 $pageTitle = $this->translate('TXT_NEWS_BY_DATE') . ': ' . implode('/', array_reverse($ap));
-                E()->getDocument()->componentManager->getBlockByName('breadCrumbs')->addCrumb(null, $pageTitle);
+                $breadCrumbs = E()->getDocument()->componentManager->getBlockByName('breadCrumbs');
+                if ($breadCrumbs) {
+                    $breadCrumbs->addCrumb(null, $pageTitle);
+                }
                 E()->getDocument()->setProperty('title', $pageTitle);
                 $additionalURL = implode('/', $additionalURL) . '/';
                 $this->pager->setProperty('additional_url', $additionalURL);
@@ -145,7 +148,10 @@ class NewsFeed extends ExtendedFeed {
         $this->setData($this->createData());
         if (!$this->getData()->isEmpty()) {
             list($newsTitle) = $this->getData()->getFieldByName('news_title')->getData();
-            $this->document->componentManager->getBlockByName('breadCrumbs')->addCrumb('', $newsTitle);
+            $breadCrumbs = E()->getDocument()->componentManager->getBlockByName('breadCrumbs');
+            if ($breadCrumbs) {
+                $breadCrumbs->addCrumb('', $newsTitle);
+            }
         } else {
             throw new SystemException('ERR_404', SystemException::ERR_404);
         }

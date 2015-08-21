@@ -74,6 +74,7 @@
     <state name="showSmapSelector" rights="3">
         <uri_patterns>
             <pattern>/selector/[any]/</pattern>
+            <pattern>/[smap_id]/selector/[any]/</pattern>
         </uri_patterns>
     </state>
 </configuration>

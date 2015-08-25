@@ -144,7 +144,7 @@
             <meta name="robots" content="{$DOC_PROPS[@name='robots']}"/>
         </xsl:if>
         <xsl:apply-templates select="." mode="og"/>
-        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools.min.js"></script>
+        <script type="text/javascript" src="{/document/javascript/@mootools}"></script>
         <script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
         <script type="text/javascript">
             Object.append(Energine, {
@@ -205,7 +205,7 @@
             <xsl:value-of select="$DOC_PROPS[@name='google_analytics']" disable-output-escaping="yes"/>
         </xsl:if>
         <xsl:if test="count(//javascript/behavior[@use='jquery']) &gt; 0">
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+            <script src="{/document/javascript/@jquery}"></script>
             <script type="text/javascript">
                 jQuery.noConflict();
             </script>

@@ -266,7 +266,7 @@ final class Document extends Object implements IDocument {
         $baseURL = E()->getSiteManager()->getCurrentSite()->base));
         $prop->setAttribute('name', 'base');
         $prop->setAttribute('static', (($staticURL =
-            $this->getConfigValue('site.static')) ? $staticURL : $baseURL));
+            $this->getConfigValue('site.static') ? $staticURL : $baseURL)));
         $prop->setAttribute('media', (($mediaURL =
             $this->getConfigValue('site.media')) ? $mediaURL : $baseURL));
         $prop->setAttribute('resizer', (($resizerURL =
@@ -300,7 +300,7 @@ final class Document extends Object implements IDocument {
             ));
 
         }
-        unset($prop, $staticURL, $baseURL, $og);
+        unset($prop, $og);
         foreach ($this->componentManager as $component) {
             $componentResult = false;
             $dom_errors = false;
@@ -347,18 +347,18 @@ final class Document extends Object implements IDocument {
             }
         }
 
+        $jsLibs = Object::_getConfigValue('site.js-lib');
+        if (!isset($jsLibs['mootools'])) {
+            $jsLibs['mootools'] = $staticURL . 'scripts/mootools.min.js';
+        }
+        if (!isset($jsLibs['jquery'])) {
+            $jsLibs['jquery'] = 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js';
+        }
         $dom_javascript = $this->doc->createElement('javascript');
 
-        if(!$jsLibs = Object::_getConfigValue('js-lib')){
-            $jsLibs = [
-                'mootools' => '',
-                'jquery' =>''
-            ];
-        }
-        foreach($jsLibs as $name=>$path){
+        foreach ($jsLibs as $name => $path) {
             $dom_javascript->setAttribute($name, $path);
         }
-
         $dom_root->appendChild($dom_javascript);
         foreach ($this->js as $behavior) {
             $dom_javascript->appendChild($this->doc->importNode($behavior, true));
@@ -386,8 +386,6 @@ final class Document extends Object implements IDocument {
                 $this->createJavascriptDependencies([$cls], $jsmap, $jsIncludes);
             }
         }
-        //inspect($jsmap, $jsIncludes);
-
         foreach ($jsIncludes as $js) {
             $dom_js_library = $this->doc->createElement('library');
             $dom_js_library->setAttribute('path', $js);

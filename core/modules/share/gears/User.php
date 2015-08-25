@@ -312,4 +312,8 @@ class User extends Object {
         }
         return $password;
     }
+
+    public function asArray(){
+        return $this->info;
+    }
 }

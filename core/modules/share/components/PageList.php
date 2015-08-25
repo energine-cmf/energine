@@ -44,7 +44,7 @@ class PageList extends DataSet {
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
         $this->addTranslation('TXT_HOME');
@@ -79,12 +79,12 @@ class PageList extends DataSet {
      */
     protected function defineParams() {
         $result = array_merge(parent::defineParams(),
-            array(
+            [
                 'tags' => '',
                 'id' => false,
                 'site' => false,
                 'recursive' => false
-            ));
+            ]);
         return $result;
     }
 
@@ -106,7 +106,7 @@ class PageList extends DataSet {
             );
         }
         if (!$this->getData()->isEmpty()) {
-            foreach (array('Site', 'Redirect') as $fieldName) {
+            foreach (['Site', 'Redirect'] as $fieldName) {
                 $FD = new FieldDescription($fieldName);
                 $FD->setType(FieldDescription::FIELD_TYPE_STRING);
                 $this->getDataDescription()->addFieldDescription($FD);
@@ -146,8 +146,11 @@ class PageList extends DataSet {
             $methodName = 'getDescendants';
         }
 
-        //Выводим siblin
-        if ($this->getParam('id') == self::PARENT_PAGE) {
+        if (is_numeric($this->getParam('id'))) {
+            $param = (int)$this->getParam('id');
+            $sitemap = E()->getMap(E()->getSiteManager()->getSiteByPage($param)->id);
+        } //Выводим siblin
+        elseif ($this->getParam('id') == self::PARENT_PAGE) {
             $param = $sitemap->getParent($this->document->getID());
         } //выводим child текуще
         elseif ($this->getParam('id') == self::CURRENT_PAGE) {
@@ -155,24 +158,28 @@ class PageList extends DataSet {
         } //выводим все разделы
         elseif ($this->getParam('id') == self::ALL_PAGES) {
             $methodName = 'getInfo';
-            $param = null;
+            $param = NULL;
             if (!($siteId = $this->getParam('site'))) {
                 $siteId = E()->getSiteManager()->getCurrentSite()->id;
             }
             $sitemap = E()->getMap($siteId);
-        } //если пустой id
-        elseif (!$this->getParam('id')) {
+        } elseif (!$this->getParam('id')) {
             if ($this->getParam('site')) {
                 $sitemap = E()->getMap($this->getParam('site'));
             }
             $param = $sitemap->getDefault();
-        } //выводим child переданной в параметре
+        } //id - is number
         else {
-            $param = (int)$this->getParam('id');
-            $sitemap = E()->getMap(E()->getSiteManager()->getSiteByPage($param)->id);
+            if ($this->getParam('site')) {
+                $sitemap = E()->getMap($this->getParam('site'));
+            }
+            $param = $sitemap->getPagesByTag($this->getParam('id'));
+            if(!empty($param)){
+                list($param) = $param;
+            }
         }
 
-        $data = call_user_func(array($sitemap, $methodName), $param);
+        $data = call_user_func([$sitemap, $methodName], $param);
 
         if (!empty($data)) {
             if ($this->getParam('recursive')) {

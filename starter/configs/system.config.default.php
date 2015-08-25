@@ -55,6 +55,11 @@ return array(
             'ANOTHER_GLOBAL_XML_VARIABLE' => 'another value',
         ),
         */
+        //'action_log' => 'Energine\\share\\components\\ActionLog',
+        /*'js-lib' => [
+            'jquery' => 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js',
+            'mootools' => /*$staticURL*//*'scripts/mootools.min.js'
+        ]*/
     ),
     // настройки документа
     'document' => array(

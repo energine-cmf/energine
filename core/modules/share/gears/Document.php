@@ -348,6 +348,17 @@ final class Document extends Object implements IDocument {
         }
 
         $dom_javascript = $this->doc->createElement('javascript');
+
+        if(!$jsLibs = Object::_getConfigValue('js-lib')){
+            $jsLibs = [
+                'mootools' => '',
+                'jquery' =>''
+            ];
+        }
+        foreach($jsLibs as $name=>$path){
+            $dom_javascript->setAttribute($name, $path);
+        }
+
         $dom_root->appendChild($dom_javascript);
         foreach ($this->js as $behavior) {
             $dom_javascript->appendChild($this->doc->importNode($behavior, true));

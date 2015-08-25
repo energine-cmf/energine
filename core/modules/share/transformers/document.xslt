@@ -144,18 +144,7 @@
             <meta name="robots" content="{$DOC_PROPS[@name='robots']}"/>
         </xsl:if>
         <xsl:apply-templates select="." mode="og"/>
-        <xsl:choose>
-            <xsl:when test="document/@debug=1">
-                <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-debug.js"></script>
-                <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more-debug.js"></script>
-                <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext-debug.js"></script>
-            </xsl:when>
-            <xsl:otherwise>
-                <script type="text/javascript" src="{$STATIC_URL}scripts/mootools.js"></script>
-                <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-more.js"></script>
-                <script type="text/javascript" src="{$STATIC_URL}scripts/mootools-ext.js"></script>
-            </xsl:otherwise>
-        </xsl:choose>
+        <script type="text/javascript" src="{$STATIC_URL}scripts/mootools.min.js"></script>
         <script type="text/javascript" src="{$STATIC_URL}scripts/Energine.js"></script>
         <script type="text/javascript">
             Object.append(Energine, {

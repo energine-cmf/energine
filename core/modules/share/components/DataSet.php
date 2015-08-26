@@ -112,7 +112,7 @@ abstract class DataSet extends Component {
      * List of pages (pager).
      * @var Pager $pager
      */
-    protected $pager;
+    public $pager;
     /**
      * Default amount of records per page.
      * @var int RECORD_PER_PAGE

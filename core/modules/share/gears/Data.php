@@ -85,7 +85,6 @@ class Data extends Primitive {
 				$field->setRowData($i, $rowData);
 			}
 		}
-var_dump($field);
 		return $field;
 	}
 
@@ -232,9 +231,15 @@ var_dump($field);
 
         $fieldNames = array_keys($this->fields);
         $rows = $this->getRowCount();
+
         for ($i = 0; $i < $rows; $i++) {
             foreach ($fieldNames as $fieldName) {
-                $res[$i][$fieldName] = $result[$fieldName][$i];
+                if(isset($result[$fieldName][$i])){
+                    $res[$i][$fieldName] = $result[$fieldName][$i];
+                }
+                else {
+                    $res[$i][$fieldName] = null;
+                }
             }
         }
 

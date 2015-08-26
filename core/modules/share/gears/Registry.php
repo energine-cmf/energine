@@ -49,12 +49,12 @@ namespace Energine\share\gears {
      *
      * @final
      */
-    final class Registry extends Primitive {
+    final class Registry extends Primitive implements \ArrayAccess {
         /**
          * Instance of this class.
          * @var Registry $instance
          */
-        static private $instance = null;
+        static private $instance = NULL;
 
         /**
          * List of stored objects in the registry.
@@ -66,7 +66,7 @@ namespace Energine\share\gears {
          * Flag for imitation the private constructor.
          * @var boolean $flag
          */
-        private static $flag = null;
+        private static $flag = NULL;
 
         /**
          * @throws \InvalidArgumentException
@@ -75,7 +75,7 @@ namespace Energine\share\gears {
             if (is_null(self::$flag)) {
                 throw new \InvalidArgumentException('This class could only be instantiated through "getInstance" method.');
             }
-            self::$flag = null;
+            self::$flag = NULL;
         }
 
         /**
@@ -112,25 +112,7 @@ namespace Energine\share\gears {
                 throw new \Exception('Use Registry::getMap($siteID) instead.');
             }
             $className = 'Energine\\share\\gears\\' . $className;
-            return $this->get($className);
-        }
-
-        /**
-         * Get class by name.
-         *
-         * @param string $className Class name.
-         * @return mixed
-         */
-        private function get($className) {
-            $result = null;
-            if (isset($this->entities[$className])) {
-                $result = $this->entities[$className];
-            } //поскольку предполагается хранить синглтоны, пробуем создать соответствующий класс ориентируясь на имя
-            else {
-                $result = new $className();
-                $this->entities[$className] = $result;
-            }
-            return $result;
+            return $this->offsetGet($className);
         }
 
         /**
@@ -140,9 +122,7 @@ namespace Energine\share\gears {
          * @param mixed $object Primitive.
          */
         public function __set($className, $object) {
-            if (!isset($this->entities[$className])) {
-                $this->entities[$className] = $object;
-            }
+            $this->offsetSet($className, $object);
         }
 
         /**
@@ -152,7 +132,7 @@ namespace Energine\share\gears {
          * @return bool
          */
         public function __isset($entityName) {
-            return isset($this->entities[$entityName]);
+            return $this->offsetExists($entityName);
         }
 
         /**
@@ -161,6 +141,7 @@ namespace Energine\share\gears {
          * @param string $entityName Entity name.
          */
         public function __unset($entityName) {
+            $this->offsetUnset($entityName);
         }
 
         /**
@@ -169,7 +150,7 @@ namespace Energine\share\gears {
          * @return AuthUser
          */
         public function getUser() {
-            return $this->get('Energine\\share\\gears\\AuthUser');
+            return $this->offsetGet('Energine\\share\\gears\\AuthUser');
         }
 
         /**
@@ -192,7 +173,7 @@ namespace Energine\share\gears {
          * @return Request
          */
         public function getRequest() {
-            return $this->get('Energine\\share\\gears\\Request');
+            return $this->offsetGet('Energine\\share\\gears\\Request');
         }
 
         /**
@@ -201,7 +182,7 @@ namespace Energine\share\gears {
          * @return Response
          */
         public function getResponse() {
-            return $this->get('Energine\\share\\gears\\Response');
+            return $this->offsetGet('Energine\\share\\gears\\Response');
         }
 
         /**
@@ -210,7 +191,7 @@ namespace Energine\share\gears {
          * @return Document
          */
         public function getDocument() {
-            return $this->get('Energine\\share\\gears\\Document');
+            return $this->offsetGet('Energine\\share\\gears\\Document');
         }
 
         /**
@@ -219,7 +200,7 @@ namespace Energine\share\gears {
          * @return OGPrimitive
          */
         public function getOGObject() {
-            return $this->get('Energine\\share\\gears\\OGPrimitive');
+            return $this->offsetGet('Energine\\share\\gears\\OGPrimitive');
         }
 
         /**
@@ -228,7 +209,7 @@ namespace Energine\share\gears {
          * @return Language
          */
         public function getLanguage() {
-            return $this->get('Energine\\share\\gears\\Language');
+            return $this->offsetGet('Energine\\share\\gears\\Language');
         }
 
         /**
@@ -237,7 +218,7 @@ namespace Energine\share\gears {
          * @return SiteManager
          */
         public function getSiteManager() {
-            return $this->get('Energine\\share\\gears\\SiteManager');
+            return $this->offsetGet('Energine\\share\\gears\\SiteManager');
         }
 
         /**
@@ -262,7 +243,7 @@ namespace Energine\share\gears {
          * @return DocumentController
          */
         public function getController() {
-            if(!isset($this->entities['DocumentController'])){
+            if (!isset($this->entities['DocumentController'])) {
                 return $this->setController();
             }
             return $this->entities['DocumentController'];
@@ -273,21 +254,21 @@ namespace Energine\share\gears {
          *
          * @return DocumentController
          */
-        public function setController($newDocumentController = null){
+        public function setController($newDocumentController = NULL) {
             $path = 'Energine\\share\\gears\\';
-            if($newDocumentController && isset($this->entities['DocumentController'])){
+            if ($newDocumentController && isset($this->entities['DocumentController'])) {
                 throw new \InvalidArgumentException('Document controller is already defined.');
             }
-            if(is_null($newDocumentController)){
+            if (is_null($newDocumentController)) {
                 $newDocumentController = 'DocumentController';
             }
-            if(!(class_exists($newDocumentController) || class_exists($newDocumentController = $path.$newDocumentController))){
+            if (!(class_exists($newDocumentController) || class_exists($newDocumentController = $path . $newDocumentController))) {
                 throw new \InvalidArgumentException("Class $newDocumentController not found");
             }
 
             $this->entities['DocumentController'] = new $newDocumentController;
-            if(!is_a($this->entities['DocumentController'], $path.'DocumentController')){
-                throw new \InvalidArgumentException('Class must be extended from '.$path.'DocumentController class.');
+            if (!is_a($this->entities['DocumentController'], $path . 'DocumentController')) {
+                throw new \InvalidArgumentException('Class must be extended from ' . $path . 'DocumentController class.');
             }
 
             return $this->entities['DocumentController'];
@@ -325,7 +306,76 @@ namespace Energine\share\gears {
          * @return Cache
          */
         public function getCache() {
-            return $this->get('Energine\\share\\gears\\Cache');
+            return $this->offsetGet('Energine\\share\\gears\\Cache');
+        }
+
+        /**
+         * Whether a offset exists
+         * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+         * @param mixed $entityName <p>
+         * An offset to check for.
+         * </p>
+         * @return boolean true on success or false on failure.
+         * </p>
+         * <p>
+         * The return value will be casted to boolean if non-boolean was returned.
+         * @since 5.0.0
+         */
+        public function offsetExists($entityName) {
+            return isset($this->entities[$entityName]);
+        }
+
+        /**
+         * Offset to retrieve
+         * @link http://php.net/manual/en/arrayaccess.offsetget.php
+         * @param mixed $className <p>
+         * The offset to retrieve.
+         * </p>
+         * @return mixed Can return all value types.
+         * @since 5.0.0
+         */
+        public function offsetGet($className) {
+            $result = NULL;
+            if (isset($this->entities[$className])) {
+                $result = $this->entities[$className];
+            } //поскольку предполагается хранить синглтоны, пробуем создать соответствующий класс ориентируясь на имя
+            else {
+                $result = new $className();
+                $this->entities[$className] = $result;
+            }
+            return $result;
+        }
+
+        /**
+         * Offset to set
+         * @link http://php.net/manual/en/arrayaccess.offsetset.php
+         * @param mixed $className <p>
+         * The offset to assign the value to.
+         * </p>
+         * @param mixed $object <p>
+         * The value to set.
+         * </p>
+         * @return void
+         * @since 5.0.0
+         */
+        public function offsetSet($className, $object) {
+            if (!isset($this->entities[$className])) {
+                $this->entities[$className] = $object;
+            }
+        }
+
+        /**
+         * Offset to unset
+         * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+         * @param mixed $offset <p>
+         * The offset to unset.
+         * </p>
+         * @return void
+         * @since 5.0.0
+         */
+        public function offsetUnset($offset) {
+            // nothing to do
+            //Manual unsetting is impossible
         }
     }
 }

@@ -107,16 +107,16 @@ class Site extends Primitive {
      * @return mixed
      */
     public function __get($propName) {
-        $result = null;
+         $result = null;
+        //DBWorker __get alias
         if (!is_null($result = $this::_get($propName))) {
             return $result;
         }
-
         if (isset($this->data[$propName])) {
             $result = $this->data[$propName];
         }
         elseif (in_array($propName, ['name', 'metaKeywords', 'metaDescription'])) {
-            $result = $this->data[$propName] = self::$siteTranslationsData[E()->getLanguage()->getCurrent()][$this->data['id']][$propName];
+            return $this->data[$propName] = self::$siteTranslationsData[E()->getLanguage()->getCurrent()][$this->data['id']][$propName];
         } elseif (self::$isPropertiesTableExists) {
             $res = $this->data[$propName] = $this->dbh->getScalar(
                 'SELECT prop_value FROM share_sites_properties
@@ -128,9 +128,10 @@ class Site extends Primitive {
                 $propName,
                 $this->data['id']
             );
-            $result = (false !== $res) ? $res : $result;
-        }
 
+            $result = (false !== $res) ? $res : $result;
+            //var_dump($result, $propName);
+        }
         return $result;
     }
 

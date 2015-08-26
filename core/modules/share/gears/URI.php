@@ -20,7 +20,7 @@ namespace Energine\share\gears;
  *
  * @final
  */
-final class URI extends Object {
+final class URI extends Primitive {
     /**
      * Request scheme (protocol).
      * @var string $scheme
@@ -111,7 +111,7 @@ final class URI extends Object {
     public static function create($uriString = '') {
         self::$trick = true;
         if (!$uriString) {
-            $host = Object::_getConfigValue('site.domain');
+            $host = Primitive::getConfigValue('site.domain');
             $protocol = 'http';
             $requestURI = '/';
             if (!E()->Utils->is_PHP_CLI()) {

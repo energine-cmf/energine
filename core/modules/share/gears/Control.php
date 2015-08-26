@@ -14,7 +14,7 @@ abstract class Control;
  * @version 1.0.0
  */
 namespace Energine\share\gears;
-//todo VZ: There should be Element class that is extended from Object and has all needed methods and members.
+//todo VZ: There should be Element class that is extended from Primitive and has all needed methods and members.
 /**
  * Toolbar control.
  *
@@ -24,7 +24,7 @@ abstract class Control;
  *
  * @abstract
  */
-abstract class Control extends Object {
+abstract class Control extends Primitive {
     /**
      * Element tag name.
      * @var string TAG_NAME

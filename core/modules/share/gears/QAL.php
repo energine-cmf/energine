@@ -25,7 +25,7 @@ final class QAL;
  *
  * @final
  */
-final class QAL extends Object {
+final class QAL extends Primitive {
     /**
      * Instance of PDO class (PHP Data Objects).
      * @var \PDO $pdo
@@ -489,8 +489,11 @@ final class QAL extends Object {
      * @param string $tableName Table name.
      * @return array
      */
-    public function getColumnsInfo($tableName) {
+    public function getColumnsInfo($tableName, $columns = NULL) {
         $result = $this->dbCache->getTableMeta($tableName);
+        if (is_array($columns)) {
+
+        }
         return $result;
     }
 

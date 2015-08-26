@@ -50,8 +50,8 @@ class Cache {
 
     public function __construct() {
         $this->enabled =
-                (bool)Object::_getConfigValue('site.cache')
-                        && (!(bool)Object::_getConfigValue('site.debug'))
+                (bool)Primitive::getConfigValue('site.cache')
+                        && (!(bool)Primitive::getConfigValue('site.debug'))
                         && is_dir(self::CACHE_DIR)
                         && is_writable(self::CACHE_DIR);
     }

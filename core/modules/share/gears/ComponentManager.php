@@ -67,7 +67,7 @@ final class ComponentManager;
  * @endcode
  * @final
  */
-final class ComponentManager extends Object implements \Iterator {
+final class ComponentManager extends Primitive implements \Iterator {
 
     /**
      * Document.

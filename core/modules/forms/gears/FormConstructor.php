@@ -13,7 +13,7 @@ class FormConstructor;
 //todo Хреново получилось, так и хочется все переписать
 namespace Energine\forms\gears;
 
-use Energine\share\gears\DBWorker, Energine\share\gears\DBA, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\components\Grid, Energine\share\gears\Object, Energine\share\gears\QAL;
+use Energine\share\gears\DBWorker, Energine\share\gears\DBA, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\components\Grid, Energine\share\gears\Primitive, Energine\share\gears\QAL;
 
 /**
  * Form constructor.
@@ -22,7 +22,7 @@ use Energine\share\gears\DBWorker, Energine\share\gears\DBA, Energine\share\gear
 class FormConstructor;
  * @endcode
  */
-class FormConstructor extends Object {
+class FormConstructor extends Primitive {
     use DBWorker;
     /**
      * Table name prefix.
@@ -469,13 +469,13 @@ class FormConstructor extends Object {
     }
 
     /**
-     * Wrapper for Object::_getConfigValue.
+     * Wrapper for Primitive::getConfigValue.
      * This is for the cases when database name is not set in the configurations. In this case the current database will be used.
      *
      * @return string
      */
     public static function getDatabase() {
-        return Object::_getConfigValue('forms.database', Object::_getConfigValue('database.db'));
+        return Primitive::getConfigValue('forms.database', Primitive::getConfigValue('database.db'));
     }
 
     /**

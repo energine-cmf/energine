@@ -20,7 +20,7 @@ use Energine\share\components\Grid;
 class Filter;
  * @endcode
  */
-class Filter extends Object {
+class Filter extends Primitive {
     /**
      * Filter tag name.
      * @var string TAG_NAME

@@ -57,7 +57,7 @@ class FileRepositoryFTP;
  *      </tr>
  * </table>
  */
-class FileRepositoryFTP extends Object implements IFileRepository {
+class FileRepositoryFTP extends Primitive implements IFileRepository {
 
     use FileRepositoryWatermark;
 

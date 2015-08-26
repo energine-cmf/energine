@@ -22,7 +22,7 @@ namespace Energine\share\gears;
 class Field;
 @endcode
  */
-class Field extends Object implements \Iterator {
+class Field extends Primitive implements \Iterator {
     /**
      * Set of additional properties.
      * @var array $properties

@@ -16,7 +16,7 @@ class AdsManager;
 namespace Energine\apps\gears;
 use Energine\share\gears\DataDescription, Energine\share\gears\Data, Energine\share\gears\QAL, Energine\share\gears\Field;
 use Energine\share\gears\DBWorker;
-use Energine\share\gears\Object;
+use Energine\share\gears\Primitive;
 
 /**
  * Ads manager.
@@ -25,7 +25,7 @@ use Energine\share\gears\Object;
 class AdsManager;
 @endcode
  */
-class AdsManager extends Object {
+class AdsManager extends Primitive {
     use DBWorker;
     /**
      * Table name.

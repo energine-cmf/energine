@@ -18,7 +18,7 @@ namespace Energine\share\gears;
 class FieldDescription;
  * @endcode
  */
-class FieldDescription extends Object implements \Iterator {
+class FieldDescription extends Primitive implements \Iterator {
     /**
      * Additional property names.
      * It is initialized in FieldDescription::$rewind and used by iterations.@n

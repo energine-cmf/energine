@@ -24,7 +24,7 @@ class Data
 @endcode
  *
  */
-class Data extends Object {
+class Data extends Primitive {
     /**
      * Data fields.
      * @var array $fields

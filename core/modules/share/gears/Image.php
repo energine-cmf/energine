@@ -21,7 +21,7 @@ namespace Energine\share\gears;
 class Image;
 @endcode
  */
-class Image extends Object {
+class Image extends Primitive {
     /**
      * Default memory limit.
      * 16 Mb.

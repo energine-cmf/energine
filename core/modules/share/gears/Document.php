@@ -21,7 +21,7 @@ final class Document;
  * @endcode
  * @final
  */
-final class Document extends Object implements IDocument {
+final class Document extends Primitive implements IDocument {
     use DBWorker;
     /**
      * Template content.
@@ -347,7 +347,7 @@ final class Document extends Object implements IDocument {
             }
         }
 
-        $jsLibs = Object::_getConfigValue('site.js-lib');
+        $jsLibs = Primitive::getConfigValue('site.js-lib');
         if (!isset($jsLibs['mootools'])) {
             $jsLibs['mootools'] = $staticURL . 'scripts/mootools.min.js';
         }

@@ -24,7 +24,7 @@ use Energine\share\components\Component;
 class Toolbar;
  * @endcode
  */
-class Toolbar extends Object {
+class Toolbar extends Primitive {
     /**
      * Tag name.
      */

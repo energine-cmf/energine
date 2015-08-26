@@ -2,9 +2,9 @@
 
 namespace Energine\mail\gears;
 
-use Energine\share\gears\Object;
+use Energine\share\gears\Primitive;
 
-final class Mail extends Object {
+final class Mail extends Primitive {
 
     /**
      * End Of Line.

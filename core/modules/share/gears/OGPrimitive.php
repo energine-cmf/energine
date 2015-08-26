@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * OGObject.
+ * OGPrimitive.
  *
  * It contains the definition to:
  * @code
-class OGObject;
+class OGPrimitive;
  * @endcode
  *
  * @author dr.Pavka
@@ -18,12 +18,12 @@ namespace Energine\share\gears;
  * Class for OpenGraph.
  *
  * @code
-class OGObject;
+class OGPrimitive;
  * @endcode
  *
  * Generates a list of OpenGraph properties. It is called from Document.
  */
-class OGObject extends Object {
+class OGPrimitive extends Primitive {
     /**
      * Default image width.
      * @var int DEFAULT_IMAGE_WIDTH

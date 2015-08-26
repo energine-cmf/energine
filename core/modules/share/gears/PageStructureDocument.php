@@ -21,7 +21,7 @@ namespace Energine\share\gears;
 class PageStructureDocument;
 @endcode
  */
-class PageStructureDocument extends Object implements IDocument{
+class PageStructureDocument extends Primitive implements IDocument{
     /**
      * Document
      * @var \DOMDocument $doc

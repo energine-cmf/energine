@@ -17,7 +17,7 @@ abstract class DataSet;
 namespace Energine\share\components;
 
 use Energine\share\gears\Request;
-use Energine\share\gears\Toolbar, Energine\share\gears\QAL, Energine\share\gears\SystemException, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Object, Energine\share\gears\SimpleBuilder, Energine\share\gears\DataSetConfig, Energine\share\gears\Pager;
+use Energine\share\gears\Toolbar, Energine\share\gears\QAL, Energine\share\gears\SystemException, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription, Energine\share\gears\Data, Energine\share\gears\Builder, Energine\share\gears\Primitive, Energine\share\gears\SimpleBuilder, Energine\share\gears\DataSetConfig, Energine\share\gears\Pager;
 
 /**
  * Abstract data set.
@@ -753,7 +753,7 @@ abstract class DataSet extends Component {
      * @return string
      */
     public static function cleanupHTML($data) {
-        $aggressive = Object::_getConfigValue('site.aggressive_cleanup', false);
+        $aggressive = Primitive::getConfigValue('site.aggressive_cleanup', false);
 
         //Если подключено расширение tidy
         if (function_exists('tidy_get_output') && $aggressive) {

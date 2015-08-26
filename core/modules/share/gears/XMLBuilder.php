@@ -15,7 +15,7 @@ use Energine\share\components\IBuilder;
  * @package energine
  * @author dr.Pavka
  */
-abstract class XMLBuilder extends  Object implements IBuilder{
+abstract class XMLBuilder extends  Primitive implements IBuilder{
     /**
      * Result document.
      * @var \DOMDocument $result

@@ -25,7 +25,7 @@ final class DBStructureInfo;
  *
  * @final
  */
-class DBStructureInfo extends Object {
+class DBStructureInfo extends Primitive {
 	/**
 	 * Structure information.
 	 *

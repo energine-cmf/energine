@@ -23,7 +23,7 @@ class User;
  *
  * It holds an information about user, saves data, etc.
  */
-class User extends Object {
+class User extends Primitive {
     use DBWorker;
     /**
      * Table name of users.
@@ -45,7 +45,7 @@ class User extends Object {
     private $id = false;
 
     /**
-     * Object for work with users.
+     * Primitive for work with users.
      * @var UserGroup $userGroup
      */
     protected $userGroup;

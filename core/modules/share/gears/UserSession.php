@@ -98,7 +98,7 @@ final class UserSession implements \SessionHandlerInterface {
     public function __construct() {
         if (session_status() == PHP_SESSION_DISABLED) throw new \ErrorException('Session must be enabled');
 
-        $this->lifespan = Object::_getConfigValue('session.lifespan');
+        $this->lifespan = Primitive::getConfigValue('session.lifespan');
         $this->userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'NOBODY';
         ini_set('session.gc_probability', self::DEFAULT_PROBABILITY);
     }
@@ -132,9 +132,9 @@ final class UserSession implements \SessionHandlerInterface {
         session_name(self::DEFAULT_SESSION_NAME);
 
         // устанавливаем время жизни cookie
-        if (Object::_getConfigValue('site.domain')) {
+        if (Primitive::getConfigValue('site.domain')) {
             $path = '/';
-            $domain = '.' . Object::_getConfigValue('site.domain');
+            $domain = '.' . Primitive::getConfigValue('site.domain');
         } else {
             $path = E()->getSiteManager()->getCurrentSite()->root;
             $domain = '';

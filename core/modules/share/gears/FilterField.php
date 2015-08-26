@@ -18,7 +18,7 @@ namespace Energine\share\gears;
 class FilterField;
  * @endcode
  */
-class FilterField extends Object {
+class FilterField extends Primitive {
     /**
      * Element tag name.
      * @var string TAG_NAME

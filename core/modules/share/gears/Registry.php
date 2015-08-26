@@ -29,8 +29,8 @@ namespace {
 }
 
 namespace Energine\share\gears {
-// Подключаем предка напрямую
-    require('Object.php');
+    // Подключаем предка напрямую
+    require('Primitive.php');
 
     /**
      * Application registry.
@@ -49,7 +49,7 @@ namespace Energine\share\gears {
      *
      * @final
      */
-    final class Registry extends Object {
+    final class Registry extends Primitive {
         /**
          * Instance of this class.
          * @var Registry $instance
@@ -137,7 +137,7 @@ namespace Energine\share\gears {
          * Magic set.
          *
          * @param string $className Class name.
-         * @param mixed $object Object.
+         * @param mixed $object Primitive.
          */
         public function __set($className, $object) {
             if (!isset($this->entities[$className])) {
@@ -214,12 +214,12 @@ namespace Energine\share\gears {
         }
 
         /**
-         * Get OGObject.
+         * Get OGPrimitive.
          *
-         * @return OGObject
+         * @return OGPrimitive
          */
         public function getOGObject() {
-            return $this->get('Energine\\share\\gears\\OGObject');
+            return $this->get('Energine\\share\\gears\\OGPrimitive');
         }
 
         /**

@@ -24,7 +24,7 @@ class Site;
  * @property-read string $metaKeywords
  * @property-read string $metaDescription
  */
-class Site extends Object {
+class Site extends Primitive {
     use DBWorker {
         __get as _get;
     }

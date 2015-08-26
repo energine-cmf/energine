@@ -14,7 +14,7 @@ class VKOAuth;
  * @version 1.0.0
  */
 namespace Energine\user\gears;
-use Energine\share\gears\Object, Energine\share\gears\SystemException;
+use Energine\share\gears\Primitive, Energine\share\gears\SystemException;
 /**
  * Class for user authorization over <a href="http://vk.com">Вконтакте (VK)</a>.
  *
@@ -22,7 +22,7 @@ use Energine\share\gears\Object, Energine\share\gears\SystemException;
 class VKOAuth;
 @endcode
  */
-class VKOAuth extends Object {
+class VKOAuth extends Primitive {
     /**
      * VK application ID.
      * @var string $appId

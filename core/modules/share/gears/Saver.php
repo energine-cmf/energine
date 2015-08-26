@@ -24,7 +24,7 @@ use Energine\share\components\DataSet;
 class Saver;
  * @endcode
  */
-class Saver extends Object {
+class Saver extends Primitive {
     use DBWorker;
     /**
      * Field names where errors occurred.

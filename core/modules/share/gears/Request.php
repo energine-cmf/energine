@@ -19,7 +19,7 @@ namespace Energine\share\gears;
  *
  * @final
  */
-final class Request extends Object {
+final class Request extends Primitive {
     /**
      * Current request URI.
      * @var URI $uri

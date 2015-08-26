@@ -23,7 +23,7 @@ final class Response;
  *
  * @final
  */
-final class Response extends Object {
+final class Response extends Primitive {
     /**
      * Reason phrases.
      * @var mixed $reasonPhrases
@@ -262,10 +262,10 @@ final class Response extends Object {
         }
         $contents = $this->body;
 
-        if ((bool)Object::_getConfigValue('site.compress')
+        if ((bool)Primitive::getConfigValue('site.compress')
             && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
             && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)
-            && !(bool)Object::_getConfigValue('site.debug')
+            && !(bool)Primitive::getConfigValue('site.debug')
         ) {
             header("Vary: Accept-Encoding");
             header("Content-Encoding: gzip");

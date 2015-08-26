@@ -21,7 +21,7 @@ namespace Energine\share\gears;
 class ErrorDocument;
  * @endcode
  */
-class ErrorDocument extends Object implements IDocument {
+class ErrorDocument extends Primitive implements IDocument {
     /**
      * Document.
      * @var \DOMDocument $doc

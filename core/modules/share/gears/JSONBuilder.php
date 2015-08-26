@@ -17,7 +17,7 @@ namespace Energine\share\gears;
 use Energine\share\components\IBuilder;
 
 /**
- * Build data in JSON (JavaScript Object Notation) format.
+ * Build data in JSON (JavaScript Primitive Notation) format.
  *
  * @code
 class JSONBuilder;

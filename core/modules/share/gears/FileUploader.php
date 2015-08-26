@@ -22,7 +22,7 @@ use Energine\share\components\FileRepository;
 class FileUploader;
 @endcode
  */
-class FileUploader extends Object {
+class FileUploader extends Primitive {
     /**
      * Description of uploaded file.
      * $_FILES

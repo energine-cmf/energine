@@ -22,7 +22,7 @@ namespace Energine\share\gears;
 class FieldRow;
 @endcode
  */
-class FieldRow extends Object implements \ArrayAccess {
+class FieldRow extends Primitive implements \ArrayAccess {
 
 	/**
 	 * (PHP 5 &gt;= 5.0.0)<br/>

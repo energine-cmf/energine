@@ -21,7 +21,7 @@ namespace Energine\share\gears;
 class ComponentContainer
  * @endcode
  */
-class ComponentContainer extends Object implements IBlock, \Iterator {
+class ComponentContainer extends Primitive implements IBlock, \Iterator {
     /**
      * Defines whether the component container is enabled.
      * @var bool $enabled

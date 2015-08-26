@@ -21,7 +21,7 @@ namespace Energine\share\gears;
 class XSLTTransformer;
 @endcode
  */
-class XSLTTransformer extends Object implements ITransformer {
+class XSLTTransformer extends Primitive implements ITransformer {
     /**
      * Directory where the main transform file is stored.
      * @var string MAIN_TRANSFORMER_DIR

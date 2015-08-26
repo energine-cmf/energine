@@ -22,7 +22,7 @@ namespace Energine\share\gears;
 class AttachmentManager;
  * @endcode
  */
-class AttachmentManager extends Object {
+class AttachmentManager extends Primitive {
     use DBWorker;
 
     /**

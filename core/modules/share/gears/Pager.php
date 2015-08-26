@@ -24,7 +24,7 @@ final class Pager;
  *
  * @final
  */
-final class Pager extends Object {
+final class Pager extends Primitive {
     //todo VZ: In PageList.js VISIBLE_PAGES_COUNT is always 2. For what is this?
     /**
      * Amount of visible pages by both side of current page.

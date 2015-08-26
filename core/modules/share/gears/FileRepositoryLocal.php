@@ -24,7 +24,7 @@ namespace Energine\share\gears;
 class FileRepositoryFTP;
  * @endcode
  */
-class FileRepositoryLocal extends Object implements IFileRepository {
+class FileRepositoryLocal extends Primitive implements IFileRepository {
 
     use FileRepositoryWatermark;
 

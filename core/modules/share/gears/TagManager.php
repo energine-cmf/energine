@@ -21,7 +21,7 @@ namespace Energine\share\gears;
 class TagManager;
  * @endcode
  */
-class TagManager extends Object {
+class TagManager extends Primitive {
     use DBWorker;
     /**
      * Table name with tags.

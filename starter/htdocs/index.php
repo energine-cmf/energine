@@ -12,7 +12,7 @@ try {
 
     if ($use_timer = E()->getConfigValue('site.useTimer')) {
 
-        class Timer Extends Energine\share\gears\Object {
+        class Timer Extends Energine\share\gears\Primitive {
 
         }
 

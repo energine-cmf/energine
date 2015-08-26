@@ -69,7 +69,7 @@ interface IDocument {
 class DocumentController;
  * @endcode
  */
-class DocumentController extends Object {
+class DocumentController extends Primitive {
     /**
      * Constant string for transforming into the HTML.
      * @var string TRANSFORM_HTML

@@ -26,7 +26,7 @@ use Energine\share\components\IBuilder;
  @endcode
   */
  
-class JSONCustomBuilder extends Object implements IBuilder{
+class JSONCustomBuilder extends Primitive implements IBuilder{
     /**
      * Set of the additional properties.
      * @var array $properties

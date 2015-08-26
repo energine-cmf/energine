@@ -24,7 +24,7 @@ final class Language;
  *
  * @final
  */
-final class Language extends Object{
+final class Language extends Primitive{
     use DBWorker;
     /**
      * Current language ID.

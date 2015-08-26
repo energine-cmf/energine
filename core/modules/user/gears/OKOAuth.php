@@ -21,7 +21,7 @@ namespace Energine\share\gears;
 class OKOAuth;
 @endcode
  */
-class OKOAuth extends Object {
+class OKOAuth extends Primitive {
     /**
      * API URL.
      * @var string API_URL

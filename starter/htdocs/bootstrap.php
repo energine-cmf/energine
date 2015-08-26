@@ -30,7 +30,6 @@ $config = include($configName);
 
 // получение из конфига пути к setup
 if (!array_key_exists('setup_dir', $config)) {
-
     throw new \LogicException('Setup_dir section not found in system.config.php.');
 }
 
@@ -81,4 +80,4 @@ require_once($iniPath);
 require_once(implode(DIRECTORY_SEPARATOR, array(CORE_DIR, 'modules', 'share', 'gears', 'Utils.php')));
 
 // установка уже подключенного конфига в статическую переменную Object
-Energine\share\gears\Object::setConfigArray($config);
+Energine\share\gears\Object::setConfig($config);

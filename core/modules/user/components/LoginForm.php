@@ -16,7 +16,7 @@ class LoginForm;
 
 namespace Energine\user\components;
 
-use Energine\share\components\DataSet, Energine\share\gears\Object, Energine\share\gears\FieldDescription, Energine\share\gears\UserSession, Energine\share\gears\Field;
+use Energine\share\components\DataSet, Energine\share\gears\Primitive, Energine\share\gears\FieldDescription, Energine\share\gears\UserSession, Energine\share\gears\Field;
 
 /**
  * Show login form.
@@ -34,8 +34,8 @@ class LoginForm extends DataSet implements SampleLoginForm {
         parent::__construct($name, $params);
         $this->setTitle($this->translate('TXT_LOGIN_FORM'));
         $base = E()->getSiteManager()->getCurrentSite()->base;
-        if (strpos($currDomain = E()->getSiteManager()->getCurrentSite()->host, Object::_getConfigValue('site.domain')) === false) {
-            $base = 'http://' . Object::_getConfigValue('site.domain') . '/';
+        if (strpos($currDomain = E()->getSiteManager()->getCurrentSite()->host, Primitive::getConfigValue('site.domain')) === false) {
+            $base = 'http://' . Primitive::getConfigValue('site.domain') . '/';
         }
 
         $this->setAction($base . 'auth.php' . ((isset($_SERVER['HTTP_REFERER'])) ? '' : '?return=' . (($return = $this->getParam('successAction')) ? $return : E()->getRequest()->getURI())), true);

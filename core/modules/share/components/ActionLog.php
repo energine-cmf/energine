@@ -16,10 +16,10 @@ namespace Energine\share\components;
 
 use Energine\share\gears\Data;
 use Energine\share\gears\DBWorker;
-use Energine\share\gears\Object;
+use Energine\share\gears\Primitive;
 use Energine\share\gears\QAL;
 
-class ActionLog extends Object {
+class ActionLog extends Primitive {
     use DBWorker;
     private $className = null;
     private $objectName = null;

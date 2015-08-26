@@ -18,7 +18,7 @@ use Energine\share\gears\ComponentConfig;
 use Energine\share\gears\DBWorker;
 use Energine\share\gears\Document;
 use Energine\share\gears\IBlock;
-use Energine\share\gears\Object;
+use Energine\share\gears\Primitive;
 use Energine\share\gears\Request;
 use Energine\share\gears\SystemException;
 
@@ -50,7 +50,7 @@ interface IBuilder {
 class Component;
  * @endcode
  */
-class Component extends Object implements IBlock {
+class Component extends Primitive implements IBlock {
     use DBWorker;
     /**
      * Default state name:

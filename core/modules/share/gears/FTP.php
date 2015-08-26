@@ -24,7 +24,7 @@ namespace Energine\share\gears;
 class FTP;
 @endcode
  */
-class FTP extends Object {
+class FTP extends Primitive {
     /**
      * Connection resource over FTP.
      * @var resource $conn_id

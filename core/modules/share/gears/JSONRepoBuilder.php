@@ -15,7 +15,7 @@ class JSONRepoBuilder;
  */
 namespace Energine\share\gears;
 /**
- * Build data in JSON (JavaScript Object Notation) format.
+ * Build data in JSON (JavaScript Primitive Notation) format.
  *
  * @code
 class JSONRepoBuilder;

@@ -14,7 +14,7 @@ class Comments;
  */
 namespace Energine\comments\gears;
 use Energine\share\gears\DBWorker, Energine\share\gears\QAL;
-use Energine\share\gears\Object;
+use Energine\share\gears\Primitive;
 
 /**
  * Comments CRUD.
@@ -59,7 +59,7 @@ $comments->saveItem($cItem);
 $comments->deleteItem($targetId);
 @endcode
  */
-class Comments extends Object{
+class Comments extends Primitive{
     use DBWorker;
 	/*
 	 * Таблица комментируемой сущности

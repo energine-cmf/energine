@@ -23,7 +23,7 @@ class DataDescription
  *
  * Data description.
  */
-class DataDescription extends Object implements \Iterator {
+class DataDescription extends Primitive implements \Iterator {
     /**
      * Field position: @c 'after'
      * @var string FIELD_POSITION_AFTER

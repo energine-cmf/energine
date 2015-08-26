@@ -1,7 +1,7 @@
 <?php
 use
     Energine\share\gears\UserSession,
-    Energine\share\gears\Object,
+    Energine\share\gears\Primitive,
     Energine\share\gears\User,
     Energine\user\gears\FBOAuth,
     Energine\user\gears\VKOAuth;
@@ -44,9 +44,9 @@ if (
     } elseif (
         $fbAuth
         &&
-        ($appID = Object::_getConfigValue('auth.fb.appID'))
+        ($appID = Primitive::getConfigValue('auth.fb.appID'))
         &&
-        ($secretKey = Object::_getConfigValue('auth.fb.secretKey'))
+        ($secretKey = Primitive::getConfigValue('auth.fb.secretKey'))
     ) {
         try {
             $fb = new FBOAuth([
@@ -82,9 +82,9 @@ if (
     } elseif (
         $vkAuth
         &&
-        ($appID = Object::_getConfigValue('auth.vk.appID'))
+        ($appID = Primitive::getConfigValue('auth.vk.appID'))
         &&
-        ($secretKey = Object::_getConfigValue('auth.vk.secretKey'))
+        ($secretKey = Primitive::getConfigValue('auth.vk.secretKey'))
     ) {
         try {
 

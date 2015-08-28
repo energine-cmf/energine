@@ -28,7 +28,7 @@ class MailEmailSubscription extends DataSet {
         parent::__construct($name, $module, $params);
         $this->setType(self::COMPONENT_TYPE_FORM_ADD);
         /*@todo create smth like StateConfig - descendant of SimpleXML*/
-        $this->setAction((string)$this->config->getStateConfig('subscribe')->uri_patterns->pattern);
+        $this->setAction((string)$this->config->getStateConfig('subscribe')->uri_patterns->pattern, true);
 
     }
 

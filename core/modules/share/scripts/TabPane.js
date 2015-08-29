@@ -54,7 +54,7 @@ var TabPane = new Class(/** @lends TabPane# */{
             var paneId = anchor.getProperty('href').slice(anchor.getProperty('href').lastIndexOf('#'));
             anchor.addEvent('click', function (event) {
                 event.preventDefault();
-                tab.blur();
+                //tab.blur();
             });
 
             var tabData = tab.getElement('span.data');

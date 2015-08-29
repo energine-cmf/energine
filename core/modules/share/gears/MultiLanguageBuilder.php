@@ -39,7 +39,7 @@ class MultiLanguageBuilder extends Builder {
                 $fieldData = $this->data->getFieldByName($fieldName);
                 // если это первичный ключ
                 if ($fieldInfo->getPropertyValue('key') === true) {
-                    $fieldInfo->setProperty('tabName', 'TXT_PROPERTIES');
+                    $fieldInfo->setProperty('tabName', E()->Utils->translate('TXT_PROPERTIES'));
                     $i = 0;
                     while ($i < $fieldData->getRowCount()) {
                         $rowData = $fieldData->getRowData($i);
@@ -106,7 +106,7 @@ class MultiLanguageBuilder extends Builder {
 
                         $dataProperties = ($fieldData)?$fieldData->getRowProperties($value):false;
                         if (is_null($fieldInfo->getPropertyValue('tabName'))) {
-                            $fieldInfo->setProperty('tabName', 'TXT_PROPERTIES');
+                            $fieldInfo->setProperty('tabName', E()->Utils->translate('TXT_PROPERTIES'));
                         }
                         /*else {
                         	$fieldInfo->setProperty('tabName', $fieldInfo->getPropertyValue('tabName'));
@@ -147,7 +147,7 @@ class MultiLanguageBuilder extends Builder {
                     }
 
                     if (is_null($fieldInfo->getPropertyValue('tabName'))) {
-                        $fieldInfo->setProperty('tabName', 'TXT_PROPERTIES');
+                        $fieldInfo->setProperty('tabName', E()->Utils->translate('TXT_PROPERTIES'));
                     }
                     /*else {
                     	$fieldInfo->setProperty('tabName', $fieldInfo->getPropertyValue('tabName'));

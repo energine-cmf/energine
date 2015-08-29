@@ -221,7 +221,7 @@ class FileRepository extends Grid implements SampleFileRepository {
                 $fd = new FieldDescription($name);
                 $fd->setType(FieldDescription::FIELD_TYPE_THUMB);
                 $this->getDataDescription()->addFieldDescription($fd);
-                $fd->setProperty('tabName', 'TXT_THUMBS');
+                $fd->setProperty('tabName', E()->Utils->translate('TXT_THUMBS'));
                 $fd->setProperty('tableName', 'thumbs');
                 foreach ($data as $attrName => $attrValue) {
                     $fd->setProperty($attrName, $attrValue);

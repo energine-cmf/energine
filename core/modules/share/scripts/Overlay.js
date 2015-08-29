@@ -47,12 +47,7 @@ var Overlay = new Class(/** @lends Overlay# */{
         //создаем елемент но не присоединяем его
         this.element = new Element('div', {
             'styles': {opacity: 0},
-            'class': 'e-overlay ' + ((this.options.indicator)?'e-overlay-loading':''),
-            events: {
-                'click': function () {
-                    ModalBox.close();
-                }
-            }
+            'class': 'e-overlay ' + ((this.options.indicator) ? 'e-overlay-loading' : '')
         });
 
         this.tween = new Fx.Tween(this.element, {
@@ -60,11 +55,15 @@ var Overlay = new Class(/** @lends Overlay# */{
             link: 'cancel',
             property: 'opacity',
             onComplete: function () {
-                this.fireEvent(this.element.get('opacity') == this.options.opacity ? 'show' : 'hide');
+                var type = (this.element.get('opacity') == this.options.opacity) ? 'show' : 'hide';
+
+                this.fireEvent(type);
             }.bind(this)
         });
     },
-
+    isVisible: function(){
+        return this.element.getStyle('opacity') == 0;
+    },
     /**
      * Show the overlay.
      * @function

@@ -720,7 +720,7 @@ class FieldDescription extends Primitive implements \Iterator {
      * @return FieldDescription
      */
     public function setProperty($name, $value) {
-        if (in_array($name, ['title', 'message', 'tabName'])) {
+        if (in_array($name, ['title', 'message'/*, 'tabName'*/])) {
             $value = translate($value);
         } elseif (is_scalar($value) && (strpos($value, 'trans(') !== false)) {
             $value = translate(str_replace(['trans', '(', ')'], '', $value));

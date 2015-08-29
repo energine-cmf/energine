@@ -158,20 +158,17 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
 
         box.closeButton = new Element('div').addClass('e-modalbox-close').inject(box);
         box.closeButton.addEvents({
-            'click': this.close.bind(this),
-            'mouseover': function () {
-                this.addClass('highlighted');
-            },
-            'mouseout': function () {
-                this.removeClass('highlighted');
-            }
+            'click': this.close.bind(this)
         });
 
         this.boxes.push(box);
         if (this.boxes.length == 1) {
             this.overlay.show();
+            this.overlay.element.removeEvents('click');
+            this.overlay.element.addEvent('click', function () {
+                this.close();
+            }.bind(this));
         }
-
     },
 
     /**

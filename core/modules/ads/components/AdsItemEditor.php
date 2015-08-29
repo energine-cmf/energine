@@ -26,7 +26,7 @@ class AdsItemEditor extends Grid {
     protected function createDataDescription() {
         $r = parent::createDataDescription();
         if (in_array($this->getState(), ['add', 'edit'])) {
-            $r->getFieldDescriptionByName('ads_item_smap_multi')->setProperty('tabName', 'TXT_CATEGORIES');
+            $r->getFieldDescriptionByName('ads_item_smap_multi')->setProperty('tabName', E()->Utils->translate('TXT_CATEGORIES'));
             if (($this->document->getRights() < ACCESS_FULL) && ($fd = $r->getFieldDescriptionByName('ads_item_site_multi'))) {
                 $fd->setType(FieldDescription::FIELD_TYPE_HIDDEN);
             }

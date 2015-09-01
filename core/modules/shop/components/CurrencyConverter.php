@@ -15,7 +15,7 @@
  * @subpackage shop
  * @author Andrii A
  */
-class CurrencyConverter extends Object {
+class CurrencyConverter extends \Energine\share\gears\Primitive {
     use \Energine\share\gears\DBWorker;
     /**
      * Инстанс класса

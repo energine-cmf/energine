@@ -259,8 +259,7 @@ class AttachmentManager extends Primitive {
 
 
                             }
-
-                            $builder = new SimpleBuilder();
+                            $builder = new SimplestBuilder();
                             $localData = new Data();
                             $localData->load($imageData[$mapValue[$i]]);
                             $dataDescription = new DataDescription();
@@ -282,6 +281,14 @@ class AttachmentManager extends Primitive {
                             $dataDescription->addFieldDescription($fd);
 
                             $fd = new FieldDescription('duration');
+                            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+                            $dataDescription->addFieldDescription($fd);
+
+                            $fd = new FieldDescription('width');
+                            $fd->setType(FieldDescription::FIELD_TYPE_STRING);
+                            $dataDescription->addFieldDescription($fd);
+
+                            $fd = new FieldDescription('height');
                             $fd->setType(FieldDescription::FIELD_TYPE_STRING);
                             $dataDescription->addFieldDescription($fd);
 

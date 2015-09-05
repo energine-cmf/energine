@@ -1,3 +1,5 @@
+@import 'font-awesome/css/font-awesome.css';
+
 a.f_reset,
 a.f_reset:hover,
 a.f_reset:active {
@@ -9,20 +11,187 @@ div.grid table tr.highlighted td {  background: #ecf3f8; }
 div.grid table tr.selected td {  background: #428bca; color: #fff; }
 
 div.grid table tr .firstColumn { border-left: 0; }
+
 .grid_toolbar {
+    position: relative;
     padding: 10px 0;
+    height: 46px;
 }
-div.grid div.filter {
+
+div.grid div.filters_block {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 100%;
     background-color: #eee;
     margin: 0;
     padding: 10px;
     border-radius: 4px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     font-family: Tahoma, sans-serif;
+
+    box-shadow:         0 3px 6px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow:    0 3px 6px 0 rgba(0, 0, 0, 0.5);
 }
-div.grid div.filter.active {
+div.grid div.filters_block .filters_block_inner {
+    height: auto;
+}
+div.grid div.filters_block .filters_block_inner.toggled {
+    overflow: hidden;
+}
+div.grid div.filters_block .filters_block_inner .filter_divider {
+    float: left;
+    margin: 10px 0;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(104, 104, 104, 0.6);
+}
+.filter_toggle {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    display: block;
+    font-size: 22px;
+    font-weight: bold;
+
+    transition:         transform 0.3s ease-out;
+    -webkit-transition: -webkit-transform 0.3s ease-out;
+    -moz-transition:    -moz-transform 0.3s ease-out;
+}
+div.grid div.filters_block .filters_block_inner.toggled + .filter_toggle .fa-caret-up:before {
+    content: "\f0d7";
+}
+a.filter_toggle:hover {
+    transform:          scale(1.2);
+    -webkit-transform:  scale(1.2);
+    -moz-transform:     scale(1.2);
+}
+div.grid div.filters_block .filters {
+    position: relative;
+    float: left;
+    width: 62%;
+    padding-left: 50px;
+}
+div.grid div.filters_block .filters .filter {
+    position: relative;
+    float: left;
+    width: 100%;
+    display: table;
+}
+div.grid div.filters_block .filters .filter + .filter {
+    margin-top: 10px;
+}
+div.grid div.filters_block .filters .filter .f_select_container,
+div.grid div.filters_block .filters .filter .f_query_container {
+    display: table-cell;
+}
+div.grid div.filters_block .filters .filter .f_select_container.operand_container {
+    width: 16%;
+}
+div.grid div.filters_block .filters .filter .f_select_container.fieldname_container {
+    width: 24%;
+}
+div.grid div.filters_block .filters .filter_add_block + .filter .f_select_container.fieldname_container {
+    width: calc(40% + 5px);
+}
+div.grid div.filters_block .filters .filter .f_select_container select,
+div.grid div.filters_block .filters .filter .f_query_container input {
+    width: 98%;
+}
+div.grid div.filters_block .filters .filter_add_block,
+div.grid div.filters_block .filters .filter_remove_block {
+    position: absolute;
+    top: 6px;
+    left: 0;
+}
+div.grid div.filters_block .filters .filter_remove_block {
+    left: -26px;
+}
+div.grid div.filters_block .filters .filter_add_block button,
+div.grid div.filters_block .filters .filter_remove_block button {
+    display: block;
+    float: left;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border-radius: 50%;
+    text-align: center;
+    outline: none;
+}
+div.grid div.filters_block .filters .filter_add_block button:disabled,
+div.grid div.filters_block .filters .filter_remove_block button:disabled {
+    background: rgb(150, 150, 150);
+    color: #fff;
+    cursor: not-allowed;
+}
+div.grid div.filters_block .filter_controls {
+    float: left;
+    margin-left: calc(63% + 70px);
+    margin-top: -31px;
+}
+div.grid div.filters_block .filter_controls .f_apply {
+    margin-right: 15px;
+}
+div.grid div.filters_block .filter_save_block {
+    float: left;
+    margin: 0;
+    width: 100%;
+    text-align: left;
+}
+div.grid div.filters_block .filter_save_block .save_filter {
+    height: 26px;
+    padding: 0 12px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background-image: linear-gradient(270deg , rgba(255, 255, 255, 0.9),
+                                               rgba(150, 150, 150, 0.3));
+    background-image: -webkit-linear-gradient(270deg , rgba(255, 255, 255, 0.9),
+                                                       rgba(150, 150, 150, 0.3));
+    background-image: -moz-linear-gradient(270deg , rgba(255, 255, 255, 0.9),
+                                                    rgba(150, 150, 150, 0.3));
+    font-size: 10px;
+}
+div.grid div.filters_block .filter_save_block .load_filter {
+    margin-left: 15px;
+    height: 26px;
+    font-size: 10px;
+}
+div.grid div.filters_block .filter_save_block .filter_name {
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    height: 26px;
+    font-size: 10px;
+}
+div.grid div.filters_block .filter_save_block input[type="text"]:hover,
+div.grid div.filters_block .filter_save_block input[type="text"]:focus {
+    border-color: rgb(204, 204, 204);
+    -webkit-box-shadow: 0 0;
+    box-shadow: 0 0;
+}
+div.grid div.filters_block .filter_save_block .filter_save_text {
+    float: left;
+    display: block;
+    line-height: 26px;
+}
+div.grid div.filters_block .filter_save_block .filter_status {
+    float: left;
+    display: block;
+    margin: 0 15px;
+    width: 40%;
+    height: 26px;
+    background-color: #fff;
+    font-size: 10px;
+}
+div.grid div.filter:nth-last-child(2) {
+    float:left;
+}
+div.grid div.filters.active {
     background: #ecf3f8;
 }
-
 div.grid div.filter select, div.grid div.filter input, div.grid div.filter button {
     font-family: Tahoma, sans-serif;
     font-size: 14px;
@@ -207,7 +376,22 @@ table.gridTable {
 }
 /* --- media queries --- */
 @media screen and (max-width: 768px) {
-    div.grid div.filter {
+    div.grid div.filters_block {
         display: none;
+    }
+}
+@media screen and  (max-width: 1100px) {
+    .filter_toggle {
+        position: static;
+        margin: 5px 0 0;
+        display: block;
+        width: 100%;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: center;
+    }
+    a.filter_toggle:hover {
+        background: rgb(104, 104, 104);
+        color: rgb(255, 255, 255);
     }
 }

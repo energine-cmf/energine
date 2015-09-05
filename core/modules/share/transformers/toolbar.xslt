@@ -38,6 +38,9 @@
             <xsl:if test="@click!=''">
                 <xsl:attribute name="onclick"><xsl:value-of select="@click"/></xsl:attribute>
             </xsl:if>
+            <xsl:if test="$CONTROL_TYPE = 'button' or $CONTROL_TYPE='submit'">
+                <xsl:attribute name="class">btn btn-primary</xsl:attribute>
+            </xsl:if>
     		<xsl:value-of select="@title"/>
     	</xsl:element>
     </xsl:template>

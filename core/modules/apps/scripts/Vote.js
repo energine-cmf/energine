@@ -43,7 +43,7 @@ var Vote = new Class(/** @lends Vote# */{
      */
     init: function(){
         this.element.getElements('.vote .vote_option a').addEvent('click', function(e){
-            Energine.cancelEvent(e);
+            e.stop();
             this.element.getElement('.vote_options').addClass('invisible');
             this.element.load(e.target.href);
         }.bind(this))

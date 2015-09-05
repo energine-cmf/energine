@@ -42,7 +42,7 @@ var UserProfile = new Class(/** @lends UserProfile# */{
 
         if (field.value != field2.value) {
             this.validator.showError(field, field.getProperty('nrgn:message2'));
-            Energine.cancelEvent(event);
+            event.stop();
         } else {
             this.parent(event);
         }

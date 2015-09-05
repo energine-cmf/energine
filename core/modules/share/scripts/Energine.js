@@ -167,30 +167,6 @@ var Energine = /** @lends Energine */{
     },
 
     /**
-     * Cancel event.
-     *
-     * @deprecated Use MooTools implementation: e.stop()
-     *
-     * @function
-     * @static
-     * @param {Object} e Event.
-     */
-    cancelEvent: function (e) {
-        e = e || window.event;
-        try {
-            if (e.preventDefault) {
-                e.stopPropagation();
-                e.preventDefault();
-            } else {
-                e.returnValue = false;
-                e.cancelBubble = true;
-            }
-        } catch (err) {
-            console.warn(err)
-        }
-    },
-
-    /**
      * Create the DatePicker object without time selecting.
      *
      * @function
@@ -266,7 +242,7 @@ var Energine = /** @lends Energine */{
             if (Energine.debug && Browser.chrome && instanceOf(e, TypeError)) {
                 console.warn(e.stack);
             } else {
-                console.warn(e);
+                console.error(e);
             }
         }
 

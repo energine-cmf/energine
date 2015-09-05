@@ -536,7 +536,7 @@ var PathList = new Class(/** @lends PathList# */{
                     'text': title,
                     'events': {
                         'click': function (e) {
-                            Energine.cancelEvent(e);
+                            e.stop();
                             loader(id);
                         }
                     }

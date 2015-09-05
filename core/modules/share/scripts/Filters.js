@@ -1,7 +1,7 @@
 /**
  * <ul>
- *     <li>[GridManager.Filter]{@link GridManager.Filter}</li>
- *     <li>[GridManager.Filter.QueryControls]{@link GridManager.Filter.QueryControls}</li>
+ *     <li>[Filters]{@link Filters}</li>
+ *     <li>[Filter.QueryControls]{@link Filter.QueryControls}</li>
  * </ul>
  */
 
@@ -14,7 +14,173 @@
  * @constructor
  * @param {GridManager} gridManager
  */
-var Filter = new Class(/** @lends Filter# */{
+var FiltersFabric = new Class({
+        initialize: function (templateEl) {
+            this.parentContainer = templateEl.getParent('.filters');
+
+            this.template = templateEl.clone();
+            templateEl.destroy();
+        },
+        create: function () {
+            var result = this.template.clone();
+            this.parentContainer.grab(result, 'bottom');
+            return new Filter(result);
+        }
+    }
+);
+
+var Filters = new Class(/** @lends Filter# */{
+    Implements: Events,
+    /**
+     * Filter object.
+     * @type {Filter[]}
+     */
+    filters: [],
+
+
+    /**
+     * Indicates whether the filter is active or not.
+     * @type {boolean}
+     */
+    active: false,
+    /**
+     * @type {FiltersFabric}
+     */
+    fabric: null,
+    gridManager: null,
+
+    // constructor
+    initialize: function (gridManager) {
+        this.gridManager = gridManager;
+        /**
+         * Filter element of the GridManager.
+         * @type {Element}
+         */
+        this.element = this.gridManager.element.getElement('.filters_block');
+
+        if (!this.element) {
+            throw 'Element for Filter was not found.';
+        }
+        this.fabric = new FiltersFabric(this.element.getElement('.filter'));
+        this.add();
+
+        var addFilter = this.element.getElement('.add_filter'),
+            applyButton = this.element.getElement('.f_apply'),
+            resetLink = this.element.getElement('.f_reset'),
+            inner = this.element.getElement('.filters_block_inner');
+
+        this.element.getElement('.filter_toggle').addEvent('click', function (e) {
+            e.stop();
+
+            if (inner.hasClass('toggled')) {
+                inner.tween('height').removeClass('toggled');
+            }
+            else {
+				inner.tween('height', '0').addClass('toggled');
+            }
+        }.bind(this));
+        addFilter.addEvent('click', function (e) {
+            e.stop();
+            this.add();
+
+        }.bind(this));
+        applyButton.addEvent('click', function () {
+            if (this.use()) this.gridManager.reload();
+        }.bind(this));
+
+        resetLink.addEvent('click', function (e) {
+            e.stop();
+            if (this.reset()) this.gridManager.reload();
+        }.bind(this));
+
+    },
+    add: function () {
+        var f = this.fabric.create();
+        f.addEvent('apply', function () {
+            if (this.use()) this.gridManager.reload();
+        }.bind(this));
+        this.filters.push(f);
+        if (this.filters.length == 1) {
+            f.element.getElement('.operand_container').hide();
+            f.element.getElement('.remove_filter').setProperty('disabled', 'disabled');
+        }
+        else {
+            f.element.getElement('.filters_operand').show();
+            this.element.getElements('.remove_filter').removeProperty('disabled');
+
+        }
+    },
+    /**
+     * Reset the whole [filter element]{@link Filter#element}.
+     * @function
+     * @public
+     */
+    reset: function () {
+        if (this.active || (this.filters.length > 1)) {
+            this.filters.each(function (filter) {
+                filter.reset();
+                delete filter;
+            });
+            this.filters.length = 0;
+            this.element.removeClass('active');
+            this.add();
+
+            return !(this.active = false)
+        }
+        return false;
+    },
+
+    /**
+     * Mark the filter element as used or not.
+     *
+     * @function
+     * @public
+     * @returns {boolean}
+     */
+    use: function () {
+        if (!this.isEmpty()) {
+            this.element.addClass('active');
+            this.active = true;
+        } else {
+            this.reset();
+        }
+
+        return this.active;
+    },
+
+    /**
+     * Get filter string.
+     *
+     * @function
+     * @public
+     * @returns {string}
+     */
+    getValue: function () {
+        var result = '', fs;
+        if (this.active && !this.isEmpty()) {
+            fs = new Filter.ClauseSet();
+            this.filters.each(function (filter) {
+                fs.add(filter.getValue());
+            })
+            result = 'filter=' + JSON.encode(fs) + '&';
+        }
+        return result;
+    },
+    isEmpty: function () {
+        return this.filters.some(function (filter) {
+            return filter.isEmpty();
+        }, this);
+    }
+});
+var Filter = new Class({
+    Implements: Events,
+
+    element: null,
+    /**
+     * Query controls for the filter.
+     * @type {Filter.QueryControls}
+     */
+    inputs: null,
     /**
      * Column names for filter.
      * @type {Elements}
@@ -26,47 +192,17 @@ var Filter = new Class(/** @lends Filter# */{
      * @type {Elements}
      */
     condition: null,
+    initialize: function (element) {
+        this.element = $(element);
+        this.inputs = new Filter.QueryControls(this.element.getElements('.f_query_container'));
+        this.removeBtn = this.element.getElement('.remove_filter');
 
-    /**
-     * Query controls for the filter.
-     * @type {Filter.QueryControls}
-     */
-    inputs: null,
-
-    /**
-     * Indicates whether the filter is active or not.
-     * @type {boolean}
-     */
-    active: false,
-
-    // constructor
-    initialize: function (gridManager) {
-        /**
-         * Filter element of the GridManager.
-         * @type {Element}
-         */
-        this.element = gridManager.element.getElement('.filter');
-
-        if (!this.element) {
-            throw 'Element for Filter was not found.';
-        }
-
-        var applyButton = this.element.getElement('.f_apply'),
-            resetLink = this.element.getElement('.f_reset');
-
-        applyButton.addEvent('click', function () {
-            this.use();
-            gridManager.reload();
+        this.removeBtn.addEvent('click', function(){
+            this.reset();
         }.bind(this));
-
-        resetLink.addEvent('click', function (e) {
-            e.stop();
-            this.remove();
-            gridManager.reload();
+        this.inputs.addEvent('apply', function (e) {
+            this.fireEvent('apply');
         }.bind(this));
-
-        this.inputs = new Filter.QueryControls(this.element.getElements('.f_query_container'), applyButton);
-
         this.condition = this.element.getElement('.f_condition');
         this.conditionOptions = [];
 
@@ -84,10 +220,8 @@ var Filter = new Class(/** @lends Filter# */{
         this.condition.addEvent('change', function (event) {
             this.switchInputs($(event.target).get('value'), this.fields.getSelected()[0].getAttribute('type'));
         }.bind(this));
-
         this.checkCondition();
     },
-
     /**
      * Check the filter's condition option.
      */
@@ -149,55 +283,28 @@ var Filter = new Class(/** @lends Filter# */{
             });
         }
     },
+    isEmpty: function () {
+        return !((this.fields.getSelected()[0].getAttribute('type') == 'boolean') || this.inputs.hasValues());
 
-    /**
-     * Reset the whole [filter element]{@link Filter#element}.
-     * @function
-     * @public
-     */
-    remove: function () {
-        this.inputs.empty();
-        this.element.removeClass('active');
-        this.active = false;
+        return !this.inputs.hasValues();
     },
-
-    /**
-     * Mark the filter element as used or not.
-     *
-     * @function
-     * @public
-     * @returns {boolean}
-     */
-    use: function () {
-        if (this.inputs.hasValues()) {
-            this.element.addClass('active');
-            this.active = true;
-        } else {
-            this.remove();
-        }
-
-        return this.active;
+    reset: function () {
+        this.inputs.removeEvents('click');
+        this.fields.removeEvents('change');
+        this.condition.removeEvents('change');
+        this.removeBtn.removeEvents('click');
+        this.element.destroy();
     },
-
-    /**
-     * Get filter string.
-     *
-     * @function
-     * @public
-     * @returns {string}
-     */
     getValue: function () {
-        var result = '';
-        if (this.active && this.inputs.hasValues()) {
-            var f = new Filter.Clause(this.fields.options[this.fields.selectedIndex].value, this.condition.options[this.condition.selectedIndex].value, this.fields.options[this.fields.selectedIndex].getAttribute('type'));
-            result = 'filter=' + JSON.encode(
-                new Filter.ClauseSet(this.inputs.getValues(f))
-            ) + '&';
-        }
-        return result;
+        return this.inputs.getValues(
+            new Filter.Clause(
+                this.fields.options[this.fields.selectedIndex].value,
+                this.condition.options[this.condition.selectedIndex].value,
+                this.fields.options[this.fields.selectedIndex].getAttribute('type')
+            )
+        );
     }
 });
-
 /**
  * Query controls.
  *
@@ -206,6 +313,7 @@ var Filter = new Class(/** @lends Filter# */{
  * @param {Element} applyAction Apply button.
  */
 Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
+    Implements: Events,
     /**
      * Indicate, whether the date picker is used as query control.
      * @type {boolean}
@@ -213,7 +321,7 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
     isDate: false,
 
     // constructor
-    initialize: function (els, applyAction) {
+    initialize: function (els) {
         Asset.css('datepicker.css');
 
         /**
@@ -229,7 +337,6 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
          * @type {Elements}
          */
         this.inputs = new Elements(this.containers.getElements('input'));
-
         /**
          * Input elements for DatePicker.
          * @type {Elements}
@@ -257,10 +364,9 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
 
         this.dpsInputs.concat(this.inputs).addEvent('keydown', function (event) {
             if ((event.key == 'enter') && (event.target.value != '')) {
-                event.stop();
-                applyAction.click();
+                this.fireEvent('apply');
             }
-        });
+        }.bind(this));
     },
 
     /**
@@ -272,7 +378,7 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
      */
     hasValues: function () {
         return this[(this.isDate) ? 'dpsInputs' : 'inputs'].some(function (el) {
-            return el.get('value');
+            return el[0].get('value');
         });
     },
 
@@ -374,19 +480,18 @@ Filter.Clause = new Class({
         return this;
     }
 });
-Filter.Clause.create = function(fieldName, tableName, condition, type){
-    return new Filter.Clause('['+tableName+']['+fieldName+']', condition, type);
+Filter.Clause.create = function (fieldName, tableName, condition, type) {
+    return new Filter.Clause('[' + tableName + '][' + fieldName + ']', condition, type);
 };
 
 Filter.ClauseSet = new Class({
     children: [],
     initialize: function () {
-        if (!arguments.length) {
-            throw 'No arguments';
+        if (arguments.length) {
+            Array.each(arguments, function (arg) {
+                this.add(arg);
+            }, this);
         }
-        Array.each(arguments, function (arg) {
-            this.add(arg);
-        }, this);
         this.setOperator('OR');
     },
     add: function (clause) {

@@ -75,7 +75,7 @@ var CommentsForm = new Class(/** @lends CommentsForm# */{
     validateForm: function(event) {
         if (this.parent(event)) {
             this.showOverlay();
-            Energine.cancelEvent(event);
+            event.stop()
 
             Energine.request(
                 this.singlePath + 'save-comment/',

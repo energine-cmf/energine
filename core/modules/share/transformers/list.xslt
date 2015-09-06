@@ -184,7 +184,7 @@
 		                                <!--<div class="filter_divider"></div>-->
 		                            </div>
 	                                <a href="#" class="filter_toggle">
-		                                <i class="fa fa-caret-up"></i>
+		                                <i class="fa fa-angle-down"></i>
 	                                </a>
                                 </div>
 

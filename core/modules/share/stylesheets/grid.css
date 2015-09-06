@@ -22,19 +22,22 @@ div.grid div.filters_block {
     position: absolute;
     top: 10px;
     left: 0;
-    width: 100%;
+    width: 99%;
     background-color: #eee;
     margin: 0;
+    margin-left: 0.5%;
     padding: 10px;
     border-radius: 4px;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     font-family: Tahoma, sans-serif;
-
     box-shadow:         0 3px 6px 0 rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
     -moz-box-shadow:    0 3px 6px 0 rgba(0, 0, 0, 0.5);
+}
+div.grid div.filters_block.active {
+    background-color: #EED;
 }
 div.grid div.filters_block .filters_block_inner {
     height: auto;
@@ -60,6 +63,16 @@ div.grid div.filters_block .filters_block_inner .filter_divider {
     transition:         transform 0.3s ease-out;
     -webkit-transition: -webkit-transform 0.3s ease-out;
     -moz-transition:    -moz-transform 0.3s ease-out;
+
+
+    position: static;
+
+    display: block;
+    width: 100%;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    color: black;
 }
 div.grid div.filters_block .filters_block_inner.toggled + .filter_toggle .fa-caret-up:before {
     content: "\f0d7";
@@ -116,6 +129,7 @@ div.grid div.filters_block .filters .filter_remove_block button {
     float: left;
     width: 22px;
     height: 22px;
+    font-size: 12px;
     padding: 0;
     border-radius: 50%;
     text-align: center;
@@ -374,6 +388,7 @@ table.gridTable {
     font-size: xx-small;
     border: none;
 }
+
 /* --- media queries --- */
 @media screen and (max-width: 768px) {
     div.grid div.filters_block {
@@ -386,9 +401,10 @@ table.gridTable {
         margin: 5px 0 0;
         display: block;
         width: 100%;
-        font-size: 22px;
+        font-size: 18px;
         font-weight: bold;
         text-align: center;
+        color: black;
     }
    /* a.filter_toggle:hover {
         background: rgb(104, 104, 104);

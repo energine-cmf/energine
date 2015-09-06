@@ -57,6 +57,8 @@ class FilterField extends Primitive {
     private $condition;
     private $value;
     private $name;
+    private $operator = '';
+
 
     /**
      * @param string $name Name.
@@ -186,8 +188,12 @@ class FilterField extends Primitive {
                 if (isset($data['value'])) {
                     $result->value = $data['value'];
                 }
+                if (isset($data['operator'])) {
+                    $result->operator = $data['operator'];
+                }
             }
         }
+
 
         return $result;
     }
@@ -255,9 +261,9 @@ class FilterField extends Primitive {
                         array_merge([FilterConditionConverter::getInstance()[$this->condition]['condition']], $values)) .
                     ' ')
             ) {
-                return $tableName . '.' . $fieldName . ' IN (' . implode(',', $res) . ')';
+                return $this->operator.' '.$tableName . '.' . $fieldName . ' IN (' . implode(',', $res) . ')';
             } else {
-                return 'FALSE';
+                return $this->operator.' '.'FALSE';
             }
         } else {
 
@@ -286,7 +292,7 @@ class FilterField extends Primitive {
             if (in_array($fieldType, [FieldDescription::FIELD_TYPE_DATETIME, FieldDescription::FIELD_TYPE_DATE])) {
                 $conditionPatterns = str_replace('\'%s\'', 'DATE(\'%s\')', $conditionPatterns);
             }
-            $r = $fieldName . ' ' . call_user_func_array('sprintf', array_merge([$conditionPatterns], $values)) . ' ';
+            $r = $this->operator.' '.$fieldName . ' ' . call_user_func_array('sprintf', array_merge([$conditionPatterns], $values)) . ' ';
             return $r;
         }
     }

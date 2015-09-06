@@ -11,7 +11,7 @@ namespace Energine\mail\components;
 use Energine\share\components\Grid;
 use Energine\share\gears\FieldDescription;
 use Energine\share\gears\Filter;
-use Energine\share\gears\FilterData;
+use Energine\share\gears\FilterExpression;
 use Energine\share\gears\FilterField;
 
 /**
@@ -30,7 +30,7 @@ class UsersLookup extends Grid {
 	 */
 	protected function applyUserFilter() {
 		//получили данные о текущем фильтре
-		if ($f = FilterData::createFromPOST()) {
+		if ($f = FilterExpression::createFromPOST()) {
 			//Добавили к фильтру новое условие
 			$f->add(
 			//Значение фильтра взяли из того что пришло

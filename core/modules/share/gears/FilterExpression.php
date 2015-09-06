@@ -9,12 +9,11 @@ namespace Energine\share\gears;
  * @package Energine\share\gears
  * @param FilterFieldGroup []|FilterField[]
  */
-class FilterData implements \Iterator {
+class FilterExpression implements \Iterator {
     /**
-     * @var FilterData[]|FilterField[]
+     * @var FilterExpression[]|FilterField[]
      */
     private $children = [];
-    private $operator = 'OR';
     private $index = 0;
 
     private function __construct() {
@@ -99,7 +98,7 @@ class FilterData implements \Iterator {
     }
 
     /**
-     * @return FilterData|null
+     * @return FilterExpression|null
      */
     public static function createFromPOST() {
         if (
@@ -109,43 +108,24 @@ class FilterData implements \Iterator {
             &&
             ($result = json_decode($_POST[Filter::TAG_NAME], true))
 
-        ) return FilterData::createFrom(self::clearPOSTData($result));
+        ) return FilterExpression::createFrom(self::clearPOSTData($result));
 
         return NULL;
     }
 
     /**
      * @param $data
-     * @return FilterData
+     * @return FilterExpression
      */
     public static function createFrom($data) {
-        $result = new FilterData();
+        $result = new FilterExpression();
         if (isset($data['children']) && is_array($data['children'])) {
             foreach ($data['children'] as $child) {
-                if (array_key_exists('children', $child)) {
-                    $child = new FilterData($child);
-                } else {
-                    $child = FilterField::createFrom($child);
-                }
-                $result->add($child);
+                $result->add(FilterField::createFrom($child));
             }
-        }
-        if (isset($data['operator'])) {
-            $result->setOperator($data['operator']);
         }
         return $result;
     }
-
-    /**
-     * @param $operator
-     */
-    public function setOperator($operator) {
-        $operator = strtoupper($operator);
-
-        if (in_array($operator, ['OR', 'AND']))
-            $this->operator = $operator;
-    }
-
     /**
      * return filter conditions as SQL string
      *
@@ -153,9 +133,8 @@ class FilterData implements \Iterator {
      */
     public function __toString() {
         $result = array_reduce($this->children, function ($result, $filter) {
-            return $result . ' (' . (string)$filter . ') ' . $this->operator;
+            return $result . (string)$filter ;
         });
-
-        return '(' . (string)substr($result, 0, -sizeof($this->operator) - 2) . ')';
+        return '(' . $result . ')';
     }
 }

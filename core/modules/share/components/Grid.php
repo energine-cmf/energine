@@ -21,7 +21,7 @@ use Energine\share\gears\ExtendedSaver;
 use Energine\share\gears\Field;
 use Energine\share\gears\FieldDescription;
 use Energine\share\gears\Filter;
-use Energine\share\gears\FilterData;
+use Energine\share\gears\FilterExpression;
 use Energine\share\gears\FilterField;
 use Energine\share\gears\GridConfig;
 use Energine\share\gears\Image;
@@ -1081,7 +1081,7 @@ class Grid extends DBDataSet {
      * Apply user filter.
      */
     protected function applyUserFilter() {
-        (new Filter(FilterData::createFromPOST()))->apply($this);
+        (new Filter(FilterExpression::createFromPOST()))->apply($this);
     }
 
     /**

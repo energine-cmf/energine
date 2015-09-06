@@ -46,11 +46,11 @@ class Filter extends Primitive {
     private $properties = [];
     /**
      * Filter data
-     * @var FilterData
+     * @var FilterExpression
      */
     private $data = null;
 
-    public function __construct(FilterData $data = null) {
+    public function __construct(FilterExpression $data = null) {
         if (!is_null($data)) {
             $this->data = $data;
         }

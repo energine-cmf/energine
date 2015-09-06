@@ -6,7 +6,7 @@
  * It contains the definition to:
  * @code
 final class LangSwitcher;
-@endcode
+ * @endcode
  *
  * @author dr.Pavka
  * @copyright Energine 2006
@@ -14,19 +14,23 @@ final class LangSwitcher;
  * @version 1.0.0
  */
 namespace Energine\share\components;
+
 use Energine\share\gears\SimpleBuilder, Energine\share\gears\Request, Energine\share\gears\DataDescription, Energine\share\gears\FieldDescription;
+
 /**
  * language switcher.
  *
  * @code
 final class LangSwitcher;
-@endcode
+ * @endcode
  */
-final class LangSwitcher extends DataSet {
+final class LangSwitcher extends DataSet
+{
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name,   array $params = null) {
+    public function __construct($name, array $params = null)
+    {
         parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
     }
@@ -34,29 +38,31 @@ final class LangSwitcher extends DataSet {
     /**
      * @copydoc DataSet::createBuilder
      */
-    protected function createBuilder() {
+    protected function createBuilder()
+    {
         return new SimpleBuilder();
     }
 
     /**
      * @copydoc DataSet::loadData
      */
-    protected function loadData() {
+    protected function loadData()
+    {
         $lang = E()->getLanguage();
         $data = $lang->getLanguages();
-
         foreach ($data as $langID => $langInfo) {
-            $abbr = $langInfo['lang_abbr'];
-            if($langInfo['lang_default']){
-                $langInfo['lang_abbr'] = '';
-            }
-            $result[$langID] = $langInfo;
-            $result[$langID]['lang_real_abbr'] = $abbr;
-            $result[$langID]['lang_id'] = $langID;
-            $result[$langID]['lang_url'] = $result[$langID]['lang_abbr'] . (($result[$langID]['lang_abbr'])?'/':'') .
+            if (!isset($langInfo['lang_is_active']) || $langInfo['lang_is_active']) {
+                $abbr = $langInfo['lang_abbr'];
+                if ($langInfo['lang_default']) {
+                    $langInfo['lang_abbr'] = '';
+                }
+                $result[$langID] = $langInfo;
+                $result[$langID]['lang_real_abbr'] = $abbr;
+                $result[$langID]['lang_id'] = $langID;
+                $result[$langID]['lang_url'] = $result[$langID]['lang_abbr'] . (($result[$langID]['lang_abbr']) ? '/' : '') .
                     E()->getRequest()->getPath(Request::PATH_WHOLE, true);
+            }
         }
-        //inspect($result);
         return $result;
     }
 
@@ -65,7 +71,8 @@ final class LangSwitcher extends DataSet {
      *
      * @return DataDescription
      */
-    protected function createDataDescription() {
+    protected function createDataDescription()
+    {
         $result = new DataDescription();
         $f = new FieldDescription('lang_id');
         $f->setType(FieldDescription::FIELD_TYPE_INT);

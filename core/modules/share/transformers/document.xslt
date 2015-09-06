@@ -330,7 +330,6 @@
         </script>
     </xsl:template>
 
-    <xsl:template match="component[@class='SiteProperties']">
-        <xsl:value-of select="." disable-output-escaping="yes"/>
-    </xsl:template>
+    <xsl:template match="component[@class='SiteProperties']"/>
+
 </xsl:stylesheet>

@@ -459,21 +459,11 @@ class Component extends Primitive implements IBlock {
      * @throws SystemException ERR_DEV_NO_REQUIRED_ATTRIB [attribute_name]
      */
     static public function createFromDescription(\SimpleXMLElement $componentDescription, array $externalParams = []) {
-        // перечень необходимых атрибутов компонента
-        $requiredAttributes = [
-            'name', /*'module', */
-            'class'
-        ];
-
-        $name = $class = $module = null;
-        //после отработки итератора должны получить $name, $module, $class
-        foreach ($requiredAttributes as $attrName) {
-            if (!isset($componentDescription[$attrName])) {
-                throw new SystemException("ERR_DEV_NO_REQUIRED_ATTRIB $attrName", SystemException::ERR_DEVELOPER);
-            }
-            $$attrName = (string)$componentDescription[$attrName];
+        if (!isset($componentDescription['class'])) {
+            throw new SystemException("ERR_DEV_NO_CLASS", SystemException::ERR_DEVELOPER);
         }
-
+        $class = (string)$componentDescription['class'];
+        $name = (isset($componentDescription['name']))?(string)$componentDescription['name']:uniqid('cmp_');
 
         // извлекаем параметры компонента
         $params = null;

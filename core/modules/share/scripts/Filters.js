@@ -76,7 +76,7 @@ var Filters = new Class(/** @lends Filter# */{
                 inner.tween('height').removeClass('toggled');
             }
             else {
-				inner.tween('height', '0').addClass('toggled');
+                inner.tween('height', '0').addClass('toggled');
             }
         }.bind(this));
         addFilter.addEvent('click', function (e) {
@@ -100,6 +100,7 @@ var Filters = new Class(/** @lends Filter# */{
             if (this.use()) this.gridManager.reload();
         }.bind(this));
         this.filters.push(f);
+        f.addEvent('delete', this.remove.bind(this));
         if (this.filters.length == 1) {
             f.element.getElement('.operand_container').hide();
             f.element.getElement('.remove_filter').setProperty('disabled', 'disabled');
@@ -108,6 +109,14 @@ var Filters = new Class(/** @lends Filter# */{
             f.element.getElement('.filters_operand').show();
             this.element.getElements('.remove_filter').removeProperty('disabled');
 
+        }
+    },
+    remove: function(f){
+        f.removeEvents('delete');
+        this.filters.erase(f);
+        if (this.filters.length == 1) {
+            this.filters[0].element.getElement('.operand_container').hide();
+            this.filters[0].element.getElement('.remove_filter').setProperty('disabled', 'disabled');
         }
     },
     /**
@@ -192,12 +201,13 @@ var Filter = new Class({
      * @type {Elements}
      */
     condition: null,
+    operator:null,
     initialize: function (element) {
         this.element = $(element);
         this.inputs = new Filter.QueryControls(this.element.getElements('.f_query_container'));
         this.removeBtn = this.element.getElement('.remove_filter');
 
-        this.removeBtn.addEvent('click', function(){
+        this.removeBtn.addEvent('click', function () {
             this.reset();
         }.bind(this));
         this.inputs.addEvent('apply', function (e) {
@@ -221,6 +231,7 @@ var Filter = new Class({
             this.switchInputs($(event.target).get('value'), this.fields.getSelected()[0].getAttribute('type'));
         }.bind(this));
         this.checkCondition();
+        this.operator = this.element.getElement('.filters_operand');
     },
     /**
      * Check the filter's condition option.
@@ -294,13 +305,15 @@ var Filter = new Class({
         this.condition.removeEvents('change');
         this.removeBtn.removeEvents('click');
         this.element.destroy();
+        this.fireEvent('delete', this);
     },
     getValue: function () {
         return this.inputs.getValues(
             new Filter.Clause(
                 this.fields.options[this.fields.selectedIndex].value,
                 this.condition.options[this.condition.selectedIndex].value,
-                this.fields.options[this.fields.selectedIndex].getAttribute('type')
+                this.fields.options[this.fields.selectedIndex].getAttribute('type'),
+                (this.operator.offsetParent)?this.operator.options[this.operator.selectedIndex].value:null
             )
         );
     }
@@ -463,10 +476,11 @@ Filter.QueryControls = new Class(/** @lends Filter.QueryControls# */{
 });
 Filter.Clause = new Class({
     value: '',
-    initialize: function (fieldName, condition, type) {
+    initialize: function (fieldName, condition, type, operator) {
         this.field = fieldName;
         this.condition = condition;
         this.type = type;
+        this.operator = ('undefined' != typeof operator)?operator:'';
     },
     setValue: function (value) {
         if (value) {
@@ -492,16 +506,9 @@ Filter.ClauseSet = new Class({
                 this.add(arg);
             }, this);
         }
-        this.setOperator('OR');
+
     },
     add: function (clause) {
         this.children.push(clause);
-    },
-    setOperator: function (operator) {
-        operator = operator.toUpperCase();
-        if (['OR', 'AND'].indexOf(operator) != -1) {
-            this.operator = operator;
-        }
-        return this;
     }
 });

@@ -181,7 +181,7 @@
 				                                <option value="filter2">Filter2</option>
 			                                </select>
 		                                </div>-->
-		                                <div class="filter_divider"></div>
+		                                <!--<div class="filter_divider"></div>-->
 		                            </div>
 	                                <a href="#" class="filter_toggle">
 		                                <i class="fa fa-caret-up"></i>

@@ -64,11 +64,11 @@ div.grid div.filters_block .filters_block_inner .filter_divider {
 div.grid div.filters_block .filters_block_inner.toggled + .filter_toggle .fa-caret-up:before {
     content: "\f0d7";
 }
-a.filter_toggle:hover {
-    transform:          scale(1.2);
-    -webkit-transform:  scale(1.2);
-    -moz-transform:     scale(1.2);
-}
+/*a.filter_toggle:hover {*/
+    /*transform:          scale(1.2);*/
+    /*-webkit-transform:  scale(1.2);*/
+    /*-moz-transform:     scale(1.2);*/
+/*}*/
 div.grid div.filters_block .filters {
     position: relative;
     float: left;
@@ -390,8 +390,8 @@ table.gridTable {
         font-weight: bold;
         text-align: center;
     }
-    a.filter_toggle:hover {
+   /* a.filter_toggle:hover {
         background: rgb(104, 104, 104);
         color: rgb(255, 255, 255);
-    }
+    }*/
 }

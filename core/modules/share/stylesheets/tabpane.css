@@ -143,7 +143,7 @@
 }
 .e-grid-pane .e-pane-item {
     border: 0;
-    padding: 0;
+    /*padding: 0;*/
     overflow: hidden;
 }
 
@@ -154,6 +154,9 @@
     list-style: none !important;
     line-height: normal;
     border-bottom: 1px solid #ddd;
+    -webkit-box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5);
+        -moz-box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5);
+        box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5);
 }
 .e-tabs li {
     float: left;
@@ -193,6 +196,9 @@
     background-color: #fff;
     border: 1px solid #ddd;
     border-bottom-color: transparent;
+    -webkit-box-shadow: 2px -2px 1px 0px rgba(0,0,0,0.5);
+        -moz-box-shadow: 2px -2px 1px 0px rgba(0,0,0,0.5);
+        box-shadow: 2px -2px 1px 0px rgba(0,0,0,0.5);
 }
 .e-tabs .current a {
     cursor: default;

@@ -263,7 +263,7 @@ class FilterField extends Primitive {
             ) {
                 return $this->operator.' '.$tableName . '.' . $fieldName . ' IN (' . implode(',', $res) . ')';
             } else {
-                return $this->operator.' '.'FALSE';
+                return $this->operator.' '.' FALSE ';
             }
         } else {
 

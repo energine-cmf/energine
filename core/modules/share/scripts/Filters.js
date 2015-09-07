@@ -58,41 +58,39 @@ var Filters = new Class(/** @lends Filter# */{
          */
         this.element = this.gridManager.element.getElement('.filters_block');
 
-        if (!this.element) {
-            throw 'Element for Filter was not found.';
-        }
-        this.fabric = new FiltersFabric(this.element.getElement('.filter'));
-        this.add();
-
-        var addFilter = this.element.getElement('.add_filter'),
-            applyButton = this.element.getElement('.f_apply'),
-            resetLink = this.element.getElement('.f_reset'),
-            inner = this.element.getElement('.filters_block_inner');
-
-        this.element.getElement('.filter_toggle').addEvent('click', function (e) {
-            e.stop();
-
-            if (inner.hasClass('toggled')) {
-                inner.tween('height').removeClass('toggled');
-            }
-            else {
-                inner.tween('height', '0').addClass('toggled');
-            }
-        }.bind(this));
-        addFilter.addEvent('click', function (e) {
-            e.stop();
+        if (this.element) {
+            this.fabric = new FiltersFabric(this.element.getElement('.filter'));
             this.add();
 
-        }.bind(this));
-        applyButton.addEvent('click', function () {
-            if (this.use()) this.gridManager.reload();
-        }.bind(this));
+            var addFilter = this.element.getElement('.add_filter'),
+                applyButton = this.element.getElement('.f_apply'),
+                resetLink = this.element.getElement('.f_reset'),
+                inner = this.element.getElement('.filters_block_inner');
 
-        resetLink.addEvent('click', function (e) {
-            e.stop();
-            if (this.reset()) this.gridManager.reload();
-        }.bind(this));
+            this.element.getElement('.filter_toggle').addEvent('click', function (e) {
+                e.stop();
 
+                if (inner.hasClass('toggled')) {
+                    inner.tween('height').removeClass('toggled');
+                }
+                else {
+                    inner.tween('height', '0').addClass('toggled');
+                }
+            }.bind(this));
+            addFilter.addEvent('click', function (e) {
+                e.stop();
+                this.add();
+
+            }.bind(this));
+            applyButton.addEvent('click', function () {
+                if (this.use()) this.gridManager.reload();
+            }.bind(this));
+
+            resetLink.addEvent('click', function (e) {
+                e.stop();
+                if (this.reset()) this.gridManager.reload();
+            }.bind(this));
+        }
     },
     add: function () {
         var f = this.fabric.create();
@@ -111,7 +109,7 @@ var Filters = new Class(/** @lends Filter# */{
 
         }
     },
-    remove: function(f){
+    remove: function (f) {
         f.removeEvents('delete');
         this.filters.erase(f);
         if (this.filters.length == 1) {
@@ -201,7 +199,7 @@ var Filter = new Class({
      * @type {Elements}
      */
     condition: null,
-    operator:null,
+    operator: null,
     initialize: function (element) {
         this.element = $(element);
         this.inputs = new Filter.QueryControls(this.element.getElements('.f_query_container'));
@@ -313,7 +311,7 @@ var Filter = new Class({
                 this.fields.options[this.fields.selectedIndex].value,
                 this.condition.options[this.condition.selectedIndex].value,
                 this.fields.options[this.fields.selectedIndex].getAttribute('type'),
-                (this.operator.offsetParent)?this.operator.options[this.operator.selectedIndex].value:null
+                (this.operator.offsetParent) ? this.operator.options[this.operator.selectedIndex].value : null
             )
         );
     }
@@ -480,7 +478,7 @@ Filter.Clause = new Class({
         this.field = fieldName;
         this.condition = condition;
         this.type = type;
-        this.operator = ('undefined' != typeof operator)?operator:'';
+        this.operator = ('undefined' != typeof operator) ? operator : '';
     },
     setValue: function (value) {
         if (value) {

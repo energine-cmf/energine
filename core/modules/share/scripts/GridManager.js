@@ -923,7 +923,7 @@ var GridManager = new Class(/** @lends GridManager# */{
     onTabChange: function (data) {
         this.langId = data.lang;
         // Загружаем первую страницу только если панель инструментов уже прикреплена.
-        if (this.filter) {
+        if (this.filter.element) {
             this.filter.remove();
         }
         this.reload();

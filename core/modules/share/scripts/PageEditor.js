@@ -38,8 +38,6 @@ var PageEditor = new Class(/** @lends PageEditor# */{
     editors: [],
 
     initialize: function () {
-        Asset.css('pageeditor.css');
-
         CKEDITOR.disableAutoInline = true;
         CKEDITOR.config.extraPlugins = 'sourcedialog,energineimage,energinevideo,energinefile';
         CKEDITOR.config.removePlugins = 'sourcearea';

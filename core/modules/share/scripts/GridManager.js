@@ -575,7 +575,7 @@ var Grid = (function () {
                         - ((margin) ? margin.toInt() : 0)
                         - ((eBToolbar) ? eBToolbar.getSize().y : 0);
                 if (gridHeight > 0) {
-                    this.gridContainer.setStyle('height', gridHeight);
+                    this.gridContainer.setStyle('height', gridHeight-9);
                 }
             }
         },

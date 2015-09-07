@@ -1,3 +1,4 @@
+
 /* ----- clearfix ----- */
 .clearfix:after {
     clear: both;
@@ -33,4 +34,12 @@ code{
 }
 .e-overlay-loading {
     background: black url("../images/overlay_loading.gif") 50% 50% no-repeat;
+}
+
+.nrgnEditor {
+    outline: 1px dashed #F00;
+}
+
+.nrgnEditor.cke_focus {
+    outline: 2px dashed #0D0;
 }

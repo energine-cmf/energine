@@ -14,8 +14,8 @@ html, body {
     left: 50%;
     top: 5%;
     z-index: 1001;
-    max-width: 780px;
-    margin-left: -390px;
+    max-width: 80%;
+    margin-left: -40%;
     width: 90%;
     height: 90%;
     background: white;

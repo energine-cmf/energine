@@ -56,7 +56,7 @@
     top: 0;
     padding-top: 10px;
     padding-left: 10px;
-        padding-right: 10px;
+    padding-right: 10px;
 }
 .e-pane-b-toolbar {                    
     bottom: 0;
@@ -70,31 +70,31 @@
     display: block;
 }
 /* 1 тулбар вверху */
-.e-pane-has-t-toolbar1 .e-pane-t-toolbar { 
+.e-pane-has-t-toolbar1 .e-pane-t-toolbar {
     height: 36px;
 }
-.e-pane-has-t-toolbar1 .e-pane-content { 
+.e-pane-has-t-toolbar1 .e-pane-content {
     top: 47px;
 }
 /* 2 тулбара вверху */
-.e-pane-has-t-toolbar2 .e-pane-t-toolbar { 
-    height: 48px; 
+.e-pane-has-t-toolbar2 .e-pane-t-toolbar {
+    height: 48px;
 }
-.e-pane-has-t-toolbar2 .e-pane-content { 
+.e-pane-has-t-toolbar2 .e-pane-content {
     top: 58px;
 }
 /* 1 тулбар внизу */
-.e-pane-has-b-toolbar1 .e-pane-b-toolbar { 
+.e-pane-has-b-toolbar1 .e-pane-b-toolbar {
     height: 62px;
 }
-.e-pane-has-b-toolbar1 .e-pane-content { 
+.e-pane-has-b-toolbar1 .e-pane-content {
     bottom: 72px;
 }
 /* 2 тулбара внизу */
-.e-pane-has-b-toolbar2 .e-pane-b-toolbar { 
+.e-pane-has-b-toolbar2 .e-pane-b-toolbar {
     /*height: 108px;*/
 }
-.e-pane-has-b-toolbar2 .e-pane-content { 
+.e-pane-has-b-toolbar2 .e-pane-content {
     bottom: 0px;
 }
 
@@ -106,24 +106,24 @@
 }
 /* pane content  */
 .e-pane-content {
-    position: absolute;            
+    position: absolute;
     top: 10px;
     right: 10px;
     bottom: 10px;
-    left: 10px;                 
+    left: 10px;
     overflow: hidden;
     /*border-bottom: 1px solid #ddd;*/
     background: white;
     padding: 0;
     font-family: Tahoma, sans-serif;
 }
-.e-singlemode-layout .e-pane-t-toolbar, 
-.e-singlemode-layout .e-pane-b-toolbar, 
+.e-singlemode-layout .e-pane-t-toolbar,
+.e-singlemode-layout .e-pane-b-toolbar,
 .e-singlemode-layout .e-pane-content {
     position: fixed;
 }
-.e-pane-item {/* 
-        Для этого блока применяется метод перевода боксовой модели в модель border-box, 
+.e-pane-item {/*
+        Для этого блока применяется метод перевода боксовой модели в модель border-box,
         что дает возможность создать отступы и бордеры у блока при его 100% высоте.
     */
         -moz-box-sizing: border-box;/* Firefox 2+ */
@@ -170,8 +170,14 @@
     line-height: 16px;
     cursor: pointer;
     text-transform: uppercase;
-
 }
+/*.inside-form .e-items-count-1 .e-pane-t-toolbar li{
+    display: none;
+}
+.inside-form .e-items-count-1 .e-pane-content{
+    top: 0;
+}*/
+
 .e-tabs li a,
 .e-tabs li a:link,
 .e-tabs li a:visited,
@@ -217,10 +223,10 @@
     .e-pane-has-b-toolbar2 .e-pane-b-toolbar ul.toolbar {
         margin: 0 2px !important;
     }
-    .e-pane-has-t-toolbar1 .e-pane-content {
+    /*.e-pane-has-t-toolbar1 .e-pane-content {
         border: 1px solid #ddd;
-    }
-    .e-tabs {
+    }*/
+    /*.e-tabs {
         border: 0;
         padding-right: 15px !important;
     }
@@ -238,7 +244,7 @@
     .e-tabs li.current a,
     .e-tabs li.current a:link {
         color: #fafafa;
-    }
+    }*/
 }
 @media screen and (max-width: 630px){
     .e-pane-has-t-toolbar1 .e-pane-content {

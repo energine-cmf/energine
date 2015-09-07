@@ -47,7 +47,7 @@ var TabPane = new Class(/** @lends TabPane# */{
          * @type {Element}
          */
         this.currentTab = this.tabs[0];
-
+        this.element.addClass('e-items-count-' + this.tabs.length )
         this.tabs.each(function (tab) {
             tab.setProperty('unselectable', 'on');
             var anchor = tab.getElement('a');

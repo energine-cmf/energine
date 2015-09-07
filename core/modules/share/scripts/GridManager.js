@@ -784,6 +784,9 @@ var GridManager = new Class(/** @lends GridManager# */{
          * @type {Element}
          */
         this.element = $(element);
+        if($(window.parent.document).getElement('form.e-grid-form')){
+            this.element.addClass('inside-form');
+        }
         this.delConfirmCounter = 0;
         /**
          * Filter tool.

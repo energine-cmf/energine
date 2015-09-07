@@ -53,24 +53,18 @@ div.grid div.filters_block .filters_block_inner .filter_divider {
     background-color: rgba(104, 104, 104, 0.6);
 }
 .filter_toggle {
-    position: absolute;
+/*    position: absolute;*/
     top: 5px;
     right: 15px;
     display: block;
     font-size: 22px;
     font-weight: bold;
-
+    padding-top: 5px;
     transition:         transform 0.3s ease-out;
     -webkit-transition: -webkit-transform 0.3s ease-out;
     -moz-transition:    -moz-transform 0.3s ease-out;
-
-
     position: static;
-
-    display: block;
     width: 100%;
-    font-size: 22px;
-    font-weight: bold;
     text-align: center;
     color: black;
 }

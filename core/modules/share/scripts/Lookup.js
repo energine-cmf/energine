@@ -1,4 +1,4 @@
-ScriptLoader.load('Filter');
+ScriptLoader.load('Filters');
 
 var Lookup = new Class({
     initialize: function (el, componentPath) {

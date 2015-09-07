@@ -123,8 +123,8 @@
 	                                        <div class="filter">
                                                 <span class="f_select_container operand_container">
                                                     <select class="filters_operand">
-                                                        <option value="OR">OR</option>
-                                                        <option value="AND">AND</option>
+                                                        <option value="OR"><xsl:value-of select="$TRANSLATION[@const='TXT_OR']"/></option>
+                                                        <option value="AND"><xsl:value-of select="$TRANSLATION[@const='TXT_AND']"/></option>
                                                     </select>
                                                 </span>
 		                                        <span class="f_select_container fieldname_container">

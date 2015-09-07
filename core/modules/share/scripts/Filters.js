@@ -110,12 +110,16 @@ var Filters = new Class(/** @lends Filter# */{
         }
     },
     remove: function (f) {
-        f.removeEvents('delete');
-        this.filters.erase(f);
-        if (this.filters.length == 1) {
-            this.filters[0].element.getElement('.operand_container').hide();
-            this.filters[0].element.getElement('.remove_filter').setProperty('disabled', 'disabled');
+        if (f) {
+            f.removeEvents('delete');
+            this.filters.erase(f);
+            f.reset();
+            if (this.filters.length == 1) {
+                this.filters[0].element.getElement('.operand_container').hide();
+                this.filters[0].element.getElement('.remove_filter').setProperty('disabled', 'disabled');
+            }
         }
+
     },
     /**
      * Reset the whole [filter element]{@link Filter#element}.
@@ -124,11 +128,11 @@ var Filters = new Class(/** @lends Filter# */{
      */
     reset: function () {
         if (this.active || (this.filters.length > 1)) {
-            this.filters.each(function (filter) {
-                filter.reset();
-                delete filter;
-            });
-            this.filters.length = 0;
+            var i=0;
+            do{
+                this.filters[i].reset();
+            }while(this.filters.length);
+
             this.element.removeClass('active');
             this.add();
 

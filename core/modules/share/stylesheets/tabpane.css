@@ -55,6 +55,8 @@
 .e-pane-t-toolbar {
     top: 0;
     padding-top: 10px;
+    padding-left: 10px;
+        padding-right: 10px;
 }
 .e-pane-b-toolbar {                    
     bottom: 0;
@@ -120,26 +122,25 @@
 .e-singlemode-layout .e-pane-content {
     position: fixed;
 }
-.e-pane-item {
-    /* 
+.e-pane-item {/* 
         Для этого блока применяется метод перевода боксовой модели в модель border-box, 
         что дает возможность создать отступы и бордеры у блока при его 100% высоте.
     */
-    -moz-box-sizing: border-box; /* Firefox 2+ */
-    -ms-box-sizing: border-box; /* IE 8 */
-    -khtml-box-sizing: border-box; /* Konquerror */
-    -webkit-box-sizing: border-box; /* Safari 3+ */
-    box-sizing: border-box;  /* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
-    height: 100%;    
-    overflow: auto;
-    padding: 10px;
-    *position: absolute;
-    *top: 10px;
-    *right: 10px;
-    *bottom: 10px;
-    *left: 10px;
-    *height: auto;
-    font-family: Tahoma, sans-serif;
+        -moz-box-sizing: border-box;/* Firefox 2+ */
+        -ms-box-sizing: border-box;/* IE 8 */
+        -khtml-box-sizing: border-box;/* Konquerror */
+        -webkit-box-sizing: border-box;/* Safari 3+ */
+        box-sizing: border-box;/* Opera 8+, Chrome, браузеры с поддержкой CSS3 */
+        height: 100%;
+        overflow: auto;
+        padding: 10px;*
+        position: absolute;*
+        top: 10px;*
+        right: 10px;*
+        bottom: 10px;*
+        left: 10px;*
+        height: auto;
+        font-family: Tahoma, sans-serif;
 }
 .e-grid-pane .e-pane-item {
     border: 0;
@@ -153,10 +154,10 @@
     padding: 0 !important;
     list-style: none !important;
     line-height: normal;
-    border-bottom: 1px solid #ddd;
-    -webkit-box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5);
-        -moz-box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5);
-        box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5);
+    /* border-bottom: 1px solid #ddd; */
+    /* -webkit-box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5); */
+    /*-moz-box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5);*/
+    /* box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,0.5); */
 }
 .e-tabs li {
     float: left;
@@ -164,12 +165,12 @@
     clear: none;
     overflow: hidden;
     padding: 10px 15px;
-    border-radius: 4px 4px 0 0;
     font-size: 14px;
     height: 16px;
     line-height: 16px;
     cursor: pointer;
-    border: 1px solid transparent;
+    text-transform: uppercase;
+
 }
 .e-tabs li a,
 .e-tabs li a:link,
@@ -181,7 +182,8 @@
     text-decoration: none;
 }
 .e-tabs .highlighted {
-    background-color: #eee;
+
+    border-bottom: 3px solid #EEEEEE;
 }
 .e-tabs li.disabled a{
     color:silver;
@@ -194,11 +196,8 @@
     color: #555;
     cursor: default;
     background-color: #fff;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-    -webkit-box-shadow: 2px -2px 1px 0px rgba(0,0,0,0.5);
-        -moz-box-shadow: 2px -2px 1px 0px rgba(0,0,0,0.5);
-        box-shadow: 2px -2px 1px 0px rgba(0,0,0,0.5);
+    border-bottom: 3px solid gray;
+    font-weight: bold;
 }
 .e-tabs .current a {
     cursor: default;

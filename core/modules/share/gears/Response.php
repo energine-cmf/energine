@@ -189,7 +189,7 @@ final class Response extends Primitive {
         if(!in_array($status, array(301, 302))) throw new InvalidArgumentException();
 
         $this->setStatus($status);
-        $this->setHeader('Location', $location);
+        $this->setHeader('Location', self::prepareRedirectURL($location));
         $this->setHeader('Content-Length', 0);
         $this->commit();
     }

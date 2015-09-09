@@ -89,7 +89,7 @@ class Grid extends DBDataSet {
     /**
      * @var ActionLog
      */
-    protected $logClass = null;
+    protected $logClass = NULL;
 
     /**
      * @copydoc DBDataSet::__construct
@@ -211,7 +211,7 @@ class Grid extends DBDataSet {
             }
 
             $this->deleteData($id);
-            if($this->logClass){
+            if ($this->logClass) {
                 /**
                  * @var ActionLog $logger
                  */
@@ -236,17 +236,19 @@ class Grid extends DBDataSet {
      * @param int $id Record ID.
      */
     protected function deleteData($id) {
+        $ids = false;
+
         if ($orderColumn = $this->getOrderColumn()) {
             $deletedOrderNum = $this->dbh->getScalar($this->getTableName(), $this->getOrderColumn(),
                 [$this->getPK() => $id]);
-
-            $ids = $this->dbh->getColumn($this->getTableName(), [$this->getPK()],
-                array_merge($this->getFilter(), [
-                    $orderColumn .
-                    ' > ' .
-                    $deletedOrderNum
-                ]), [$orderColumn => QAL::ASC]);
-
+            if (!empty($deletedOrderNum)) {
+                $ids = $this->dbh->getColumn($this->getTableName(), [$this->getPK()],
+                    array_merge($this->getFilter(), [
+                        $orderColumn .
+                        ' > ' .
+                        $deletedOrderNum
+                    ]), [$orderColumn => QAL::ASC]);
+            }
         }
         $this->dbh->modify(QAL::DELETE, $this->getTableName(), NULL, [$this->getPK() => $id]);
 
@@ -341,7 +343,7 @@ class Grid extends DBDataSet {
         try {
             $result = $this->saveData();
             $transactionStarted = !($this->dbh->commit());
-            if($this->logClass && $this->getSaver()->getData()){
+            if ($this->logClass && $this->getSaver()->getData()) {
                 $logger = new $this->logClass(get_class($this), $this->getName());
                 $logger->write($this->getSaver()->getMode(), $this->getSaver()->getData()->asArray(true));
 

@@ -2,8 +2,7 @@
 <xsl:stylesheet 
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-    xmlns:set="http://exslt.org/sets"
-    extension-element-prefixes="set">
+    >
 
     <xsl:template match="document/translations[translation[@component=//component[@sample='DivisionEditor' or @class='SiteEditor']/@name]]">
             <script type="text/javascript">

@@ -24,7 +24,8 @@
     "ext-tidy": "*",
     "ext-xsl": "*",
     "symfony/console": "2.6.*@dev",
-    "google/recaptcha": "~1.1"
+    "google/recaptcha": "~1.1",
+    "eventviva/php-image-resize": "1.5.*"
   },
   "require-dev": {
     "psr/log": "dev-master"

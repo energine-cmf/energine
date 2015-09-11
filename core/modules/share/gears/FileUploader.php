@@ -170,30 +170,7 @@ array(
         ) {
             throw new SystemException('ERR_DEV_UPLOAD_FAILED', SystemException::ERR_WARNING, $this->file['name']);
         }
-        //@todo Отключено до выяснения
-        //Ресайзим изображение
-        /*
-        if(in_array($this->getExtension(), array('gif', 'png', 'jpg', 'jpeg'))){
-//            $img = new Image();
-//            $img->loadFromFile($filePath);
-//
-//            if(($img->getWidth()> 800) && ($img->getHeight() > 600)){
-//	            $img->resize(800, 600);
-//	            $img->saveToFile($filePath);
-//            }
-//            unset($image);
-        	// ------------------------
-//            elseif($img->getWidth()> 800){
-//            	$img->resize(800, null);
-//                $img->saveToFile($filePath);
-//            }
-//            elseif($img->getHeight()> 600){
-//                $img->resize(null, 600);
-//                $img->saveToFile($filePath);
-//            }
-        }
-        */
-        
+
         $this->FileRealName = $this->file['name'];
         $this->FileObjectName = $filePath;
         chmod($this->FileObjectName, 0666);

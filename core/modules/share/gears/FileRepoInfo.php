@@ -188,7 +188,7 @@ class FileRepoInfo extends Primitive {
      * It returns IFileRepository for processing video files into the repository.
      *
      * @param string $upl_path Uploads path.
-     * @return IFileRepository|FileRepositoryLocal|FileRepositoryRO
+     * @return IFileRepository
      *
      * @throws SystemException
      */

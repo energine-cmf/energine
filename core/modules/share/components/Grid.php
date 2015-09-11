@@ -24,7 +24,6 @@ use Energine\share\gears\Filter;
 use Energine\share\gears\FilterExpression;
 use Energine\share\gears\FilterField;
 use Energine\share\gears\GridConfig;
-use Energine\share\gears\Image;
 use Energine\share\gears\JSONBuilder;
 use Energine\share\gears\JSONCustomBuilder;
 use Energine\share\gears\QAL;
@@ -821,47 +820,6 @@ class Grid extends DBDataSet {
             ['config' => 'core/modules/share/config/TagEditorModal.component.xml']);
         $this->tagEditor->run();
     }
-
-    /**
-     * Generate thumbnails and save them in data base.
-     * @param string $sourceFileName Source filename.
-     * @param string $destFieldName Destination filed name.
-     * @param int $width Width
-     * @param int $height Height.
-     * @param array $filter Filter.
-     * @param bool $rewrite Overwrite existed?
-     * @return bool|string
-     */
-    protected function generateThumbnail($sourceFileName, $destFieldName, $width, $height, $filter, $rewrite = true) {
-        $destFileName = false;
-        if (!empty($sourceFileName)) {
-            list($dirname, $basename, $extension, $filename) =
-                array_values(pathinfo($sourceFileName));
-            $destFileName =
-                $dirname . '/' . '.' . $filename . '.' . $width . '-' .
-                $height . '.' . $extension;
-            if ((
-                    file_exists($fullDestFileName =
-                        dirname($_SERVER['SCRIPT_FILENAME']) .
-                        '/' .
-                        $destFileName)
-                    && $rewrite
-                )
-                || !file_exists($fullDestFileName)
-            ) {
-                $image = new Image();
-                $image->loadFromFile($sourceFileName);
-                $image->resize($width, $height);
-                $image->saveToFile($destFileName);
-
-                //Сохраняем в БД
-                $this->dbh->modify(QAL::UPDATE, $this->getTableName(), [$destFieldName => $destFileName], $filter);
-            }
-        }
-
-        return $destFileName;
-    }
-
     /**
      * Set column name for user sorting.
      * @param string $columnName Column name.

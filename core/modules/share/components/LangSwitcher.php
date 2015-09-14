@@ -24,13 +24,11 @@ use Energine\share\gears\SimpleBuilder, Energine\share\gears\Request, Energine\s
 final class LangSwitcher;
  * @endcode
  */
-final class LangSwitcher extends DataSet
-{
+final class LangSwitcher extends DataSet {
     /**
      * @copydoc DataSet::__construct
      */
-    public function __construct($name, array $params = null)
-    {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
         $this->setType(self::COMPONENT_TYPE_LIST);
     }
@@ -38,16 +36,14 @@ final class LangSwitcher extends DataSet
     /**
      * @copydoc DataSet::createBuilder
      */
-    protected function createBuilder()
-    {
+    protected function createBuilder() {
         return new SimpleBuilder();
     }
 
     /**
      * @copydoc DataSet::loadData
      */
-    protected function loadData()
-    {
+    protected function loadData() {
         $lang = E()->getLanguage();
         $data = $lang->getLanguages();
         foreach ($data as $langID => $langInfo) {
@@ -71,28 +67,32 @@ final class LangSwitcher extends DataSet
      *
      * @return DataDescription
      */
-    protected function createDataDescription()
-    {
+    protected function createDataDescription() {
         $result = new DataDescription();
-        $f = new FieldDescription('lang_id');
-        $f->setType(FieldDescription::FIELD_TYPE_INT);
-        $result->addFieldDescription($f);
+        if (!$this->getConfig()->getCurrentStateConfig()) {
+            $f = new FieldDescription('lang_id');
+            $f->setType(FieldDescription::FIELD_TYPE_INT);
+            $result->addFieldDescription($f);
 
-        $f = new FieldDescription('lang_abbr');
-        $f->setType(FieldDescription::FIELD_TYPE_STRING);
-        $result->addFieldDescription($f);
+            $f = new FieldDescription('lang_abbr');
+            $f->setType(FieldDescription::FIELD_TYPE_STRING);
+            $result->addFieldDescription($f);
 
-        $f = new FieldDescription('lang_name');
-        $f->setType(FieldDescription::FIELD_TYPE_STRING);
-        $result->addFieldDescription($f);
+            $f = new FieldDescription('lang_name');
+            $f->setType(FieldDescription::FIELD_TYPE_STRING);
+            $result->addFieldDescription($f);
 
-        $f = new FieldDescription('lang_url');
-        $f->setType(FieldDescription::FIELD_TYPE_STRING);
-        $result->addFieldDescription($f);
+            $f = new FieldDescription('lang_url');
+            $f->setType(FieldDescription::FIELD_TYPE_STRING);
+            $result->addFieldDescription($f);
 
-        $f = new FieldDescription('lang_real_abbr');
-        $f->setType(FieldDescription::FIELD_TYPE_STRING);
-        $result->addFieldDescription($f);
+            $f = new FieldDescription('lang_real_abbr');
+            $f->setType(FieldDescription::FIELD_TYPE_STRING);
+            $result->addFieldDescription($f);
+        }
+        else {
+            $result->loadXML($this->getConfig()->getCurrentStateConfig()->fields);
+        }
 
         return $result;
     }

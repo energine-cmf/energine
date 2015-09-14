@@ -198,7 +198,10 @@ class User extends Primitive {
     public function update($data) {
         $result = false;
         if ($this->getID()) {
-            $result = $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, $data, ['u_id' => $this->getID()]);
+            if($this->getID() != $this->dbh->getScalar('user_users', 'u_id', ['u_name' => $data['u_name']])){
+                throw new SystemException('ERR_DUPLICATE_LOGIN');
+            }
+            $result = $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, $this->info = $data, ['u_id' => $this->getID()]);
         }
         return $result;
     }

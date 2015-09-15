@@ -76,10 +76,13 @@ var Filters = new Class(/** @lends Filter# */{
                 else {
                     inner.tween('height', '0').addClass('toggled');
                 }
+
+
             }.bind(this));
             addFilter.addEvent('click', function (e) {
                 e.stop();
                 this.add();
+                window.fireEvent('resize');
 
             }.bind(this));
             applyButton.addEvent('click', function () {
@@ -89,6 +92,8 @@ var Filters = new Class(/** @lends Filter# */{
             resetLink.addEvent('click', function (e) {
                 e.stop();
                 if (this.reset()) this.gridManager.reload();
+
+                //window.fireEvent('resize');
             }.bind(this));
         }
     },
@@ -111,6 +116,7 @@ var Filters = new Class(/** @lends Filter# */{
     },
     remove: function (f) {
         if (f) {
+            window.fireEvent('resize');
             f.removeEvents('delete');
             this.filters.erase(f);
             f.reset();
@@ -128,10 +134,10 @@ var Filters = new Class(/** @lends Filter# */{
      */
     reset: function () {
         if (this.active || (this.filters.length > 1)) {
-            var i=0;
-            do{
+            var i = 0;
+            do {
                 this.filters[i].reset();
-            }while(this.filters.length);
+            } while (this.filters.length);
 
             this.element.removeClass('active');
             this.add();

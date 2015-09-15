@@ -79,7 +79,6 @@ class User extends Primitive {
         $result = $this->dbh->select(self::USER_TABLE_NAME, true, ['u_id' => $UID]);
         if ($result) {
             $this->id = $UID;
-            $result[0]['u_password'] = true;
             $this->info = $result[0];
         }
     }
@@ -192,14 +191,18 @@ class User extends Primitive {
     /**
      * Update user data.
      *
+     * @throws SystemException
      * @param array $data New user data.
      * @return boolean
      */
     public function update($data) {
         $result = false;
         if ($this->getID()) {
-            if($this->getID() != $this->dbh->getScalar('user_users', 'u_id', ['u_name' => $data['u_name']])){
+            if ($this->getID() != $this->dbh->getScalar('user_users', 'u_id', ['u_name' => $data['u_name']])) {
                 throw new SystemException('ERR_DUPLICATE_LOGIN');
+            }
+            if (isset($data['u_password'])) {
+                $data['u_password'] = password_hash($data['u_password'], PASSWORD_DEFAULT);
             }
             $result = $this->dbh->modify(QAL::UPDATE, self::USER_TABLE_NAME, $this->info = $data, ['u_id' => $this->getID()]);
         }
@@ -316,7 +319,7 @@ class User extends Primitive {
         return $password;
     }
 
-    public function asArray(){
+    public function asArray() {
         return $this->info;
     }
 }

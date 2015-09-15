@@ -25,7 +25,7 @@ html, body {
    	-moz-box-shadow: 0pt 1.125pt 3pt 0.75pt rgba(0,0,0,0.25);
    	box-shadow: 0pt 1.125pt 3pt 0.75pt rgba(0,0,0,0.25);
 }
-
+/*
 .e-modalbox-close {
     position: absolute;
     top: 8px;
@@ -43,7 +43,7 @@ html, body {
 .e-modalbox .highlighted {
     background-color: #d2322d;
     background-image: url(../images/close_white.png);
-}
+}*/
 
 .e-modalbox-frame {
     width: 100%;

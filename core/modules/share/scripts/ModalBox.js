@@ -156,10 +156,10 @@ var ModalBox = window.top.ModalBox || /** @lends ModalBox */{
         }
         $(document.body).addEvent('keypress', this.keyboardListener.bind(this));
 
-        box.closeButton = new Element('div').addClass('e-modalbox-close').inject(box);
+        /*box.closeButton = new Element('div').addClass('e-modalbox-close').inject(box);
         box.closeButton.addEvents({
             'click': this.close.bind(this)
-        });
+        });*/
 
         this.boxes.push(box);
         if (this.boxes.length == 1) {

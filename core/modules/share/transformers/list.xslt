@@ -118,7 +118,10 @@
                         <xsl:if test="ancestor::component/filter">
                             <div class="grid_toolbar clearfix">
                                 <div class="filters_block">
-	                                <div class="filters_block_inner toggled clearfix" style="height: 0;">
+	                                <div class="filters_block_inner toggled clearfix">
+                                        <xsl:if test="$DOC_PROPS[@name='single']">
+                                            <xsl:attribute name="style">height: 0;</xsl:attribute>
+                                        </xsl:if>
 	                                    <div class="filters">
 	                                        <div class="filter">
                                                 <span class="f_select_container operand_container">

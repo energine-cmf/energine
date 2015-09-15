@@ -225,9 +225,7 @@ var Grid = (function () {
             if (document.getElement('.e-singlemode-layout')) {
                 window.addEvent('resize', this.fitGridSize.bind(this));
             } else {
-                if (navigator.userAgent.indexOf('MSIE 6') == -1) {
-                    window.addEvent('resize', this.fitGridFormSize.bind(this));
-                }
+                window.addEvent('resize', this.fitGridFormSize.bind(this));
             }
 
             this.addEvent('dirty', function () {
@@ -617,8 +615,8 @@ var Grid = (function () {
                  */
                 var windowHeight = window.getSize().y;
                 var freespace = windowHeight;
-                if ($(document.body).scrollHeight - ScrollBarWidth - 81 < windowHeight) {
-                    freespace -= this.pane.getPosition().y + ScrollBarWidth + 81;
+                if ($(document.body).scrollHeight - ScrollBarWidth  < windowHeight) {
+                    freespace -= this.pane.getPosition().y + ScrollBarWidth ;
                 }
 
                 if (totalH > paneH) {

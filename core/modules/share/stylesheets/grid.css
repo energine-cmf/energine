@@ -7,44 +7,63 @@ a.f_reset:active {
     color: #428bca;
     text-decoration: none;
 }
-div.grid table tr.highlighted td {  background: #ecf3f8; }
-div.grid table tr.selected td {  background: #428bca; color: #fff; }
 
-div.grid table tr .firstColumn { border-left: 0; }
+div.grid table tr.highlighted td {
+    background: #ecf3f8;
+}
+
+div.grid table tr.selected td {
+    background: #428bca;
+    color: #fff;
+}
+
+div.grid table tr .firstColumn {
+    border-left: 0;
+}
 
 .grid_toolbar {
-    position: relative;
     padding: 10px 0;
+}
+
+.e-singlemode-layout .grid_toolbar {
+    position: relative;
     height: 46px;
 }
 
 div.grid div.filters_block {
-    position: absolute;
-    top: 10px;
-    left: 0;
     width: 99%;
     background-color: #eee;
     margin: 0;
     margin-left: 0.5%;
     padding: 10px;
-    border-radius: 4px;
+    border-radius: 1px;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     font-family: Tahoma, sans-serif;
-    box-shadow:         0 3px 6px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
-    -moz-box-shadow:    0 3px 6px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
 }
+
+.e-singlemode-layout div.grid div.filters_block {
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
 div.grid div.filters_block.active {
     background-color: #EED;
 }
+
 div.grid div.filters_block .filters_block_inner {
     height: auto;
 }
+
 div.grid div.filters_block .filters_block_inner.toggled {
     overflow: hidden;
 }
+
 div.grid div.filters_block .filters_block_inner .filter_divider {
     float: left;
     margin: 10px 0;
@@ -52,29 +71,35 @@ div.grid div.filters_block .filters_block_inner .filter_divider {
     height: 1px;
     background-color: rgba(104, 104, 104, 0.6);
 }
+
 .filter_toggle {
-/*    position: absolute;*/
+    /*    position: absolute;*/
     top: 5px;
     right: 15px;
-    display: block;
+    display: none;
     font-size: 22px;
     font-weight: bold;
     padding-top: 5px;
-    transition:         transform 0.3s ease-out;
+    transition: transform 0.3s ease-out;
     -webkit-transition: -webkit-transform 0.3s ease-out;
-    -moz-transition:    -moz-transform 0.3s ease-out;
+    -moz-transition: -moz-transform 0.3s ease-out;
     position: static;
     width: 100%;
     text-align: center;
     color: black;
 }
+.e-singlemode-layout  .filter_toggle {
+    display:block;
+}
+
 div.grid div.filters_block .filters_block_inner.toggled + .filter_toggle .fa-caret-up:before {
     content: "\f0d7";
 }
+
 /*a.filter_toggle:hover {*/
-    /*transform:          scale(1.2);*/
-    /*-webkit-transform:  scale(1.2);*/
-    /*-moz-transform:     scale(1.2);*/
+/*transform:          scale(1.2);*/
+/*-webkit-transform:  scale(1.2);*/
+/*-moz-transform:     scale(1.2);*/
 /*}*/
 div.grid div.filters_block .filters {
     position: relative;
@@ -82,41 +107,51 @@ div.grid div.filters_block .filters {
     width: 62%;
     padding-left: 50px;
 }
+
 div.grid div.filters_block .filters .filter {
     position: relative;
     float: left;
     width: 100%;
     display: table;
 }
+
 div.grid div.filters_block .filters .filter + .filter {
     margin-top: 10px;
 }
+
 div.grid div.filters_block .filters .filter .f_select_container,
 div.grid div.filters_block .filters .filter .f_query_container {
     display: table-cell;
 }
+
 div.grid div.filters_block .filters .filter .f_select_container.operand_container {
     width: 16%;
 }
+
 div.grid div.filters_block .filters .filter .f_select_container.fieldname_container {
     width: 24%;
 }
+
 div.grid div.filters_block .filters .filter_add_block + .filter .f_select_container.fieldname_container {
     width: calc(40% + 5px);
 }
+
 div.grid div.filters_block .filters .filter .f_select_container select,
 div.grid div.filters_block .filters .filter .f_query_container input {
     width: 98%;
 }
+
 div.grid div.filters_block .filters .filter_add_block,
 div.grid div.filters_block .filters .filter_remove_block {
     position: absolute;
     top: 6px;
     left: 0;
 }
+
 div.grid div.filters_block .filters .filter_remove_block {
     left: -26px;
 }
+
 div.grid div.filters_block .filters .filter_add_block button,
 div.grid div.filters_block .filters .filter_remove_block button {
     display: block;
@@ -129,44 +164,55 @@ div.grid div.filters_block .filters .filter_remove_block button {
     text-align: center;
     outline: none;
 }
+
 div.grid div.filters_block .filters .filter_add_block button:disabled,
 div.grid div.filters_block .filters .filter_remove_block button:disabled {
     background: rgb(150, 150, 150);
     color: #fff;
     cursor: not-allowed;
 }
+
 div.grid div.filters_block .filter_controls {
     float: left;
     margin-left: calc(63% + 70px);
     margin-top: -31px;
+    height:35px;
 }
+
 div.grid div.filters_block .filter_controls .f_apply {
     margin-right: 15px;
+    -webkit-box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.5);
+    box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.5);
 }
+
 div.grid div.filters_block .filter_save_block {
     float: left;
     margin: 0;
     width: 100%;
     text-align: left;
 }
+
 div.grid div.filters_block .filter_save_block .save_filter {
     height: 26px;
     padding: 0 12px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    background-image: linear-gradient(270deg , rgba(255, 255, 255, 0.9),
-                                               rgba(150, 150, 150, 0.3));
-    background-image: -webkit-linear-gradient(270deg , rgba(255, 255, 255, 0.9),
-                                                       rgba(150, 150, 150, 0.3));
-    background-image: -moz-linear-gradient(270deg , rgba(255, 255, 255, 0.9),
-                                                    rgba(150, 150, 150, 0.3));
+    background-image: linear-gradient(270deg, rgba(255, 255, 255, 0.9),
+    rgba(150, 150, 150, 0.3));
+    background-image: -webkit-linear-gradient(270deg, rgba(255, 255, 255, 0.9),
+    rgba(150, 150, 150, 0.3));
+    background-image: -moz-linear-gradient(270deg, rgba(255, 255, 255, 0.9),
+    rgba(150, 150, 150, 0.3));
     font-size: 10px;
 }
+
 div.grid div.filters_block .filter_save_block .load_filter {
     margin-left: 15px;
     height: 26px;
     font-size: 10px;
 }
+
 div.grid div.filters_block .filter_save_block .filter_name {
     border-right: 0;
     border-top-right-radius: 0;
@@ -174,17 +220,20 @@ div.grid div.filters_block .filter_save_block .filter_name {
     height: 26px;
     font-size: 10px;
 }
-div.grid div.filters_block .filter_save_block input[type="text"]:hover,
+
+/*div.grid div.filters_block .filter_save_block input[type="text"]:hover,
 div.grid div.filters_block .filter_save_block input[type="text"]:focus {
     border-color: rgb(204, 204, 204);
     -webkit-box-shadow: 0 0;
     box-shadow: 0 0;
-}
+}*/
+
 div.grid div.filters_block .filter_save_block .filter_save_text {
     float: left;
     display: block;
     line-height: 26px;
 }
+
 div.grid div.filters_block .filter_save_block .filter_status {
     float: left;
     display: block;
@@ -194,27 +243,34 @@ div.grid div.filters_block .filter_save_block .filter_status {
     background-color: #fff;
     font-size: 10px;
 }
+
 div.grid div.filter:nth-last-child(2) {
-    float:left;
+    float: left;
 }
+
 div.grid div.filters.active {
     background: #ecf3f8;
 }
+
 div.grid div.filter select, div.grid div.filter input, div.grid div.filter button {
     font-family: Tahoma, sans-serif;
     font-size: 14px;
     color: #555;
-	margin:0 5px 0 0;
+    margin: 0 5px 0 0;
     line-height: 20px;
     padding: 6px 8px;
 }
+
 div.grid div.filter select.f_condition {
     width: 150px;
+    height: 32px;
 }
+
 div.grid div.filter button {
     padding: 5px 8px;
 }
-div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_container{
+
+div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_container {
     margin-right: 5px;
 }
 
@@ -223,30 +279,35 @@ div.grid div.filter input {
     margin-right: 0;
     height: 32px;
 }
+
 div.grid div.filter input.small {
     width: 72px;
-    margin-right:5px;
+    margin-right: 5px;
     /*vertical-align:middle;*/
 }
+
 div.grid .f_fields {
     width: 150px;
-    height:auto;
+    height: auto;
     font-family: Tahoma, sans-serif;
 }
+
 div.grid .f_condition {
-    height:auto;
+    height: auto;
     font-family: Tahoma, sans-serif;
 }
+
 div.grid .query {
-    height:auto;
+    height: auto;
     font-family: Tahoma, sans-serif;
 }
+
 .f_datepicker {
     /*vertical-align:middle;*/
-    margin-left:-23px;
-    padding-right:5px;
-    position:relative;
-    top:3px;
+    margin-left: -23px;
+    padding-right: 5px;
+    position: relative;
+    top: 3px;
     font-family: Tahoma, sans-serif;
 }
 
@@ -258,18 +319,20 @@ div.grid .query {
     font-size: 13px;
     font-family: Tahoma, sans-serif;
 }
+
 .grid_breadcrumbs a {
     color: #428bca;
 }
+
 .grid {
     background: #fcfcfc;
-    color:black;
+    color: black;
     font-family: Tahoma, sans-serif;
-    font-size:13px;
-    font-size-adjust:none;
-    font-stretch:normal;
-    font-style:normal;
-    font-variant:normal;
+    font-size: 13px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
 }
 
 .gridHeadContainer {
@@ -291,9 +354,10 @@ div.grid .query {
 
 .gridHeadContainer th.asc {
     padding-right: 2em;
-	background: url("../images/desc.gif") 100% 6px no-repeat;
+    background: url("../images/desc.gif") 100% 6px no-repeat;
 }
-.gridHeadContainer th.desc {    
+
+.gridHeadContainer th.desc {
     padding-right: 2em;
     background: url("../images/asc.gif") 100% 6px no-repeat;
 }
@@ -317,9 +381,10 @@ table.gridTable {
     border-collapse: separate;
     border-spacing: 0;
     line-height: normal;
-    *border-right: 17px solid #efefef;  /* исправляет выползание скролла за пределы контейнера в IE */
+    *border-right: 17px solid #efefef; /* исправляет выползание скролла за пределы контейнера в IE */
     *margin-right: -17px;
 }
+
 .gridTable th {
     margin: 0;
     padding: 8px;
@@ -327,17 +392,18 @@ table.gridTable {
     border-right: 1px solid #ddd;
     background: #eeeeee;
     text-align: left;
-    color:#000000;
+    color: #000000;
     font-family: Tahoma, sans-serif;
     font-weight: bold;
     text-align: center;
 }
+
 .gridTable td {
     margin: 0;
     padding: 12px 8px;
     border: 0;
     border-right: 1px solid #ddd;
-    cursor:default;
+    cursor: default;
     font-family: Tahoma, sans-serif;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -354,15 +420,19 @@ table.gridTable {
 .gridContainer table.gridTable {
     border-bottom: 1px solid #ddd;
 }
+
 .gridContainer table.gridTable a {
     color: #428bca;;
 }
+
 .gridContainer table.gridTable .selected a {
     color: #fefefe;
 }
-.thumb_container{
+
+.thumb_container {
     position: relative;
 }
+
 .video_file {
     position: absolute;
     width: 12px;
@@ -373,12 +443,14 @@ table.gridTable {
     margin: 7px 0 0 15px;
     background: url(../images/icons/subicon_video.gif) 0 0 no-repeat;
 }
-.properties table{
+
+.properties table {
     padding: 0;
     margin: 0;
     border: none;
 }
-.properties table td{
+
+.properties table td {
     font-size: xx-small;
     border: none;
 }
@@ -389,6 +461,7 @@ table.gridTable {
         display: none;
     }*/
 }
+
 @media screen and  (max-width: 1100px) {
     .filter_toggle {
         position: static;
@@ -400,8 +473,9 @@ table.gridTable {
         text-align: center;
         color: black;
     }
-   /* a.filter_toggle:hover {
-        background: rgb(104, 104, 104);
-        color: rgb(255, 255, 255);
-    }*/
+
+    /* a.filter_toggle:hover {
+         background: rgb(104, 104, 104);
+         color: rgb(255, 255, 255);
+     }*/
 }

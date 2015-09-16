@@ -445,8 +445,7 @@ class CommentsForm extends DataSet {
 
         if ($this->document->user && $this->document->user->getID()) {
             $uId = $this->document->user->getID();
-            $userInfo = $this->getUserInfo($uId);
-            $userName = array_shift($userInfo);
+            $userName = $this->getUserName($uId);
         } else {
             $uId = NULL;
             $userName = $commentNick;
@@ -478,7 +477,7 @@ class CommentsForm extends DataSet {
             'comment_created' => $createdStr,
             'comment_name' => $commentName,
             'comment_approved' => $this->getParam('premoderated'),
-            'u_nick' => $userName
+            'u_fullname' => $userName
         ];
     }
 
@@ -489,21 +488,8 @@ class CommentsForm extends DataSet {
      * @param int $uId User ID.
      * @return string[]
      */
-    protected function getUserInfo($uId) {
-        $result = ['u_nick' => ''];
-        $userInfo = $this->dbh->select('user_users',
-            ['u_nick', 'u_fullname'],
-            ['u_id' => $uId],
-            NULL, [1]
-        );
-        if ($userInfo) {
-            $result = $userInfo[0];
-            if (!$result['u_nick']) {
-                $result['u_nick'] = $result['u_fullname'];
-            }
-            unset($result['u_fullname']);
-        }
-        return $result;
+    protected function getUserName($uId) {
+        return $this->dbh->getScalar('user_users','u_fullname',['u_id' => $uId]);
     }
 
     /**
@@ -562,7 +548,7 @@ class CommentsForm extends DataSet {
         $builder->setDataDescription($dataDescription);
 
         //добавляем поля о прокоментировавшем
-        $fd = new FieldDescription('u_nick');
+        $fd = new FieldDescription('u_fullname');
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
         $dataDescription->addFieldDescription($fd);
 

@@ -259,15 +259,41 @@ div.grid div.filter select, div.grid div.filter input, div.grid div.filter butto
     margin: 0 5px 0 0;
     line-height: 20px;
     padding: 6px 8px;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition:none;
+    transition: none;
 }
 
 div.grid div.filter select.f_condition {
     width: 150px;
     height: 32px;
+    -webkit-box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.5);
+        	-moz-box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.5);
+        	box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.5);
 }
 
-div.grid div.filter button {
+div.grid div.filter_controls button {
     padding: 5px 8px;
+    text-align: center;
+       white-space: nowrap;
+       vertical-align: middle;
+       cursor: pointer;
+       background-image: none;
+       border: 1px solid #ccc;
+       border-radius: 0;
+       padding: 6px 12px;
+       line-height: 18px;
+       -webkit-user-select: none;
+       -moz-user-select: none;
+       -ms-user-select: none;
+       -o-user-select: none;
+       user-select: none;
+}
+div.grid div.filter_controls button:hover{
+        background-color: #EED;
+        border-color: #adadad;
 }
 
 div.grid div.filter .f_query_container, div.grid div.filter .f_query_date_container {

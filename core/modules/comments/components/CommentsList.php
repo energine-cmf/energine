@@ -6,13 +6,14 @@
  * It contains the definition to:
  * @code
 class CommentsList;
-@endcode
+ * @endcode
  *
  * @author sign
  *
  * @version 1.0.0
  */
 namespace Energine\comments\components;
+
 use Energine\comments\gears\Comments;
 use Energine\share\components\DataSet, Energine\share\gears\Pager, Energine\share\gears\TreeBuilder, Energine\share\gears\TreeConverter, Energine\share\gears\FieldDescription, Energine\share\gears\DataDescription;
 use Energine\share\gears\SimpleBuilder;
@@ -22,19 +23,19 @@ use Energine\share\gears\SimpleBuilder;
  *
  * @code
 class CommentsList;
-@endcode
+ * @endcode
  *
  * Usage example:
  * @code
 $commentsParams = array(
-    'table_name' => $this->getTableName(),
-    'is_tree' => false,
-    'target_ids' => $this->getData()->getFieldByName('news_id')->getData()
-);
-$commentsList = $this->document->componentManager->createComponent('commentsList', 'comments', 'CommentsList', $commentsParams);
-$commentsList->run();
-$this->document->componentManager->addComponent($commentsList);
-@endcode
+ * 'table_name' => $this->getTableName(),
+ * 'is_tree' => false,
+ * 'target_ids' => $this->getData()->getFieldByName('news_id')->getData()
+ * );
+ * $commentsList = $this->document->componentManager->createComponent('commentsList', 'comments', 'CommentsList', $commentsParams);
+ * $commentsList->run();
+ * $this->document->componentManager->addComponent($commentsList);
+ * @endcode
  */
 class CommentsList extends DataSet {
     /**
@@ -53,13 +54,13 @@ class CommentsList extends DataSet {
      * Loaded data.
      * @var array $loadedData
      */
-    private $loadedData = null;
+    private $loadedData = NULL;
 
     /**
      * Comments.
      * @var Comments $comments
      */
-    protected $comments = null;
+    protected $comments = NULL;
 
     //todo VZ: remove this?
     /**
@@ -67,13 +68,13 @@ class CommentsList extends DataSet {
      * @var string $commentsFieldName
      */
     private $commentsFieldName = '';
-    
+
 
     /**
      * Component to which this list is bound.
      * @var Component $bindComponent
      */
-    private $bindComponent = null;
+    private $bindComponent = NULL;
 
     /**
      * @copydoc DataSet::__construct
@@ -84,7 +85,7 @@ class CommentsList extends DataSet {
      * target_ids array - айдишники комментируемых сущностей
      * is_tree bool - комментарии древовидные?
      */
-    public function __construct($name,  array $params = null) {
+    public function __construct($name, array $params = NULL) {
         parent::__construct($name, $params);
         $this->setProperty('exttype', 'comments');
         $this->setType(self::COMPONENT_TYPE_LIST);
@@ -97,9 +98,9 @@ class CommentsList extends DataSet {
         $this->setProperty('is_tree', $this->isTree);
 
         $right = $this->document->getRights();
-        $this->setProperty('is_editable', (int) (
-                $right > 1)); // добавлять и править/удалять своё
-        $this->setProperty('is_admin', (int) ($right > 2)); // godmode
+        $this->setProperty('is_editable', (int)(
+            $right > 1)); // добавлять и править/удалять своё
+        $this->setProperty('is_admin', (int)($right > 2)); // godmode
         if (E()->getUser()->isAuthenticated()) {
             $this->document->setProperty('CURRENT_UID', E()->getUser()->getID());
         }
@@ -149,7 +150,7 @@ class CommentsList extends DataSet {
         $dataDescription->addFieldDescription($fd);
 
         // Инфа о юзере
-        $fd = new FieldDescription('u_nick');
+        $fd = new FieldDescription('u_fullname');
         $fd->setType(FieldDescription::FIELD_TYPE_STRING);
         $dataDescription->addFieldDescription($fd);
 
@@ -164,10 +165,9 @@ class CommentsList extends DataSet {
         if ($this->isTree and is_array($data = $this->loadData())) {
             $builder = new TreeBuilder();
             $tree =
-                    TreeConverter::convert($data, 'comment_id', 'comment_parent_id');
+                TreeConverter::convert($data, 'comment_id', 'comment_parent_id');
             $builder->setTree($tree);
-        }
-        else {
+        } else {
             $builder = new SimpleBuilder();
         }
         $this->builder = $builder;
@@ -184,21 +184,21 @@ class CommentsList extends DataSet {
             if ($recordsPerPage > 0) {
                 $this->pager = new Pager($recordsPerPage);
                 if ($this->isActive() &&
-                        $this->getType() == self::COMPONENT_TYPE_LIST) {
+                    $this->getType() == self::COMPONENT_TYPE_LIST
+                ) {
                     $actionParams = $this->getStateParams(true);
                     if (
-                            !isset($actionParams['pageNumber'])
-                            ||
-                            (
-                                !($page = intval($actionParams['pageNumber']))
-                                &&
-                                ($actionParams['pageNumber'] !== 'last')
-                            )
+                        !isset($actionParams['pageNumber'])
+                        ||
+                        (
+                            !($page = intval($actionParams['pageNumber']))
+                            &&
+                            ($actionParams['pageNumber'] !== 'last')
+                        )
                     ) {
                         $page = 1;
-                    }
-                    elseif($actionParams['pageNumber'] === 'last'){
-                        $page = $this->comments->getPageCount($this->targetIds, $recordsPerPage);    
+                    } elseif ($actionParams['pageNumber'] === 'last') {
+                        $page = $this->comments->getPageCount($this->targetIds, $recordsPerPage);
                     }
                     $this->pager->setCurrentPage($page);
                 }
@@ -216,13 +216,13 @@ class CommentsList extends DataSet {
         if (is_null($this->loadedData)) {
             $this->createPager();
 
-            $limitArr = null;
+            $limitArr = NULL;
             if (!$this->isTree and $this->pager) {
                 // pager существует -- загружаем только часть данных, текущую страницу
                 $limitArr = $this->pager->getLimit();
             }
             $this->loadedData =
-                    $this->comments->getListByIds($this->targetIds, $limitArr);
+                $this->comments->getListByIds($this->targetIds, $limitArr);
             if ($this->pager and $limitArr) {
                 $this->setType(self::COMPONENT_TYPE_LIST);
                 $this->pager->setRecordsCount($this->comments->getCountByLastList());
@@ -265,10 +265,9 @@ class CommentsList extends DataSet {
             foreach ($data as &$item) {
                 if ($item['u_id']) {
                     $user = $usersInfo[$item['u_id']];
-                    $item['u_nick'] =
-                            trim($user['u_nick']) ? trim($user['u_nick']) : $user['u_fullname'];
+                    $item['u_fullname'] = $user['u_fullname'];
                 } else {
-                    $item['u_nick'] = $item['comment_nick'];
+                    $item['u_fullname'] = $item['comment_nick'];
                 }
             }
         }
@@ -299,7 +298,7 @@ class CommentsList extends DataSet {
                 $userIds = implode(',', $userIds);
                 $result = $this->dbh->select(
                     'SELECT u.* ' .
-                            " FROM user_users u
+                    " FROM user_users u
 					 WHERE u.u_id in($userIds)"
                 );
             }
@@ -316,7 +315,7 @@ class CommentsList extends DataSet {
 
         if ($this->getParam('bind')) {
             $this->bindComponent =
-                    $this->document->componentManager->getBlockByName($this->getParam('bind'));
+                $this->document->componentManager->getBlockByName($this->getParam('bind'));
 
             if (!$this->isTree and $this->pager) {
                 $ap = $this->bindComponent->getStateParams(true);

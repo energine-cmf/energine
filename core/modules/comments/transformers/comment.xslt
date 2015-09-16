@@ -48,7 +48,7 @@
                     <xsl:if test="position() = last()">last_item </xsl:if>
                 </xsl:with-param>
                 <xsl:with-param name="COMMENT_ID"><xsl:value-of select="field[@name='comment_id']"/></xsl:with-param>
-                <xsl:with-param name="USER_NAME"><xsl:value-of select="field[@name='u_nick']"/></xsl:with-param>
+                <xsl:with-param name="USER_NAME"><xsl:value-of select="field[@name='u_fullname']"/></xsl:with-param>
                 <xsl:with-param name="DATE"><xsl:value-of select="field[@name='comment_created']"/></xsl:with-param>
                 <xsl:with-param name="TEXT"><xsl:value-of select="field[@name='comment_name']"/></xsl:with-param>
                 <xsl:with-param name="IS_SHOW_COMMENT_LINK"><xsl:value-of select="$IS_SHOW_COMMENT_LINK"/></xsl:with-param>

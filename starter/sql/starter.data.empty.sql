@@ -611,8 +611,6 @@ INSERT INTO `share_lang_tags` (`ltag_id`, `ltag_name`) VALUES
 (694, 'FIELD_U_IS_MALE'),
 (345, 'FIELD_U_MAIN_PHONE'),
 (50, 'FIELD_U_NAME'),
-(693, 'FIELD_U_NICK'),
-(958, 'FIELD_U_NICK_2'),
 (52, 'FIELD_U_PASSWORD'),
 (53, 'FIELD_U_PASSWORD2'),
 (1285, 'FIELD_U_PHONE'),
@@ -3164,8 +3162,8 @@ INSERT INTO `user_group_rights` (`right_id`, `right_name`, `right_const`) VALUES
 (3, 'Full control', 'ACCESS_FULL');
 
 
-INSERT INTO `user_users` (`u_id`, `u_fbid`, `u_vkid`, `u_name`, `u_phone`, `u_password`, `u_is_active`, `u_fullname`, `u_country`, `u_city`, `u_company`, `u_position`, `u_nick`) VALUES
-(1, NULL, NULL, 'demo@energine.org', '123-45-67', '89e495e7941cf9e40e6980d14a16bf023ccd4c91', 1, 'Admin', NULL, NULL, NULL, NULL, 'Admins');
+INSERT INTO `user_users` (`u_id`, `u_fbid`, `u_vkid`, `u_name`, `u_phone`, `u_password`, `u_is_active`, `u_fullname`, `u_country`, `u_city`, `u_company`, `u_position`) VALUES
+(1, NULL, NULL, 'demo@energine.org', '123-45-67', '89e495e7941cf9e40e6980d14a16bf023ccd4c91', 1, 'Admin', NULL, NULL, NULL, NULL);
 
 
 INSERT INTO `user_user_groups` (`u_id`, `group_id`) VALUES

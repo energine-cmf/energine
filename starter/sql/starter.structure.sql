@@ -908,8 +908,7 @@ CREATE TABLE IF NOT EXISTS `user_users` (
   `u_country` varchar(255) DEFAULT NULL,
   `u_city` varchar(255) DEFAULT NULL,
   `u_company` varchar(255) DEFAULT NULL,
-  `u_position` varchar(255) DEFAULT NULL,
-  `u_nick` varchar(250) DEFAULT NULL,
+  `u_position` varchar(255) DEFAULT NULL
   PRIMARY KEY (`u_id`),
   UNIQUE KEY `u_login` (`u_name`),
   UNIQUE KEY `u_fbid` (`u_fbid`)

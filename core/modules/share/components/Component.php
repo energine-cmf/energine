@@ -130,7 +130,7 @@ class Component extends Primitive implements IBlock {
      * Name of the current component state.
      * @var string $state
      */
-    private $state = self::DEFAULT_STATE_NAME;
+    protected $state = self::DEFAULT_STATE_NAME;
 
     /**
      * @param string $name Component name.

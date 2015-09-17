@@ -1,6 +1,6 @@
 /* MooTools: the javascript framework. license: MIT-style license. copyright: Copyright (c) 2006-2015 [Valerio Proietti](http://mad4milk.net/).*/ 
 /*
-Web Build: http://mootools.net/more/builder/32d66b652d087b3ec48dfe3ad8b7a2a7
+Web Build: http://mootools.net/more/builder/3cab1031cad4a5ee0980f28a1e9a2d2e
 */
 /*
 ---
@@ -6205,6 +6205,45 @@ Class.Mutators.initialize = function(initialize){
 /*
 ---
 
+script: Class.Occlude.js
+
+name: Class.Occlude
+
+description: Prevents a class from being applied to a DOM element twice.
+
+license: MIT-style license.
+
+authors:
+  - Aaron Newton
+
+requires:
+  - Core/Class
+  - Core/Element
+  - MooTools.More
+
+provides: [Class.Occlude]
+
+...
+*/
+
+Class.Occlude = new Class({
+
+	occlude: function(property, element){
+		element = document.id(element || this.element);
+		var instance = element.retrieve(property || this.property);
+		if (instance && !this.occluded)
+			return (this.occluded = instance);
+
+		this.occluded = false;
+		element.store(property || this.property, this);
+		return this.occluded;
+	}
+
+});
+
+/*
+---
+
 script: Class.Refactor.js
 
 name: Class.Refactor
@@ -6295,47 +6334,6 @@ Class.Singleton = new Class({
 	}
 	
 });
-
-/*
----
-
-script: Elements.From.js
-
-name: Elements.From
-
-description: Returns a collection of elements from a string of html.
-
-license: MIT-style license
-
-authors:
-  - Aaron Newton
-
-requires:
-  - Core/String
-  - Core/Element
-  - MooTools.More
-
-provides: [Elements.from, Elements.From]
-
-...
-*/
-
-Elements.from = function(text, excludeScripts){
-	if (excludeScripts || excludeScripts == null) text = text.stripScripts();
-
-	var container, match = text.match(/^\s*(?:<!--.*?-->\s*)*<(t[dhr]|tbody|tfoot|thead)/i);
-
-	if (match){
-		container = new Element('table');
-		var tag = match[1].toLowerCase();
-		if (['td', 'th', 'tr'].contains(tag)){
-			container = new Element('tbody').inject(container);
-			if (tag != 'tr') container = new Element('tr').inject(container);
-		}
-	}
-
-	return (container || new Element('div')).set('html', text).getChildren();
-};
 
 /*
 ---
@@ -6502,6 +6500,137 @@ Element.implement({
 	}
 
 });
+
+})();
+
+/*
+---
+
+script: Element.Pin.js
+
+name: Element.Pin
+
+description: Extends the Element native object to include the pin method useful for fixed positioning for elements.
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+
+requires:
+  - Core/Element.Event
+  - Core/Element.Dimensions
+  - Core/Element.Style
+  - MooTools.More
+
+provides: [Element.Pin]
+
+...
+*/
+
+(function(){
+	var supportsPositionFixed = false,
+		supportTested = false;
+
+	var testPositionFixed = function(){
+		var test = new Element('div').setStyles({
+			position: 'fixed',
+			top: 0,
+			right: 0
+		}).inject(document.body);
+		supportsPositionFixed = (test.offsetTop === 0);
+		test.dispose();
+		supportTested = true;
+	};
+
+	Element.implement({
+
+		pin: function(enable, forceScroll){
+			if (!supportTested) testPositionFixed();
+			if (this.getStyle('display') == 'none') return this;
+
+			var pinnedPosition,
+				scroll = window.getScroll(),
+				parent,
+				scrollFixer;
+
+			if (enable !== false){
+				pinnedPosition = this.getPosition();
+				if (!this.retrieve('pin:_pinned')) {
+					var currentPosition = {
+						top: pinnedPosition.y - scroll.y,
+						left: pinnedPosition.x - scroll.x,
+						margin: '0px',
+						padding: '0px'
+					};
+
+					if (supportsPositionFixed && !forceScroll){
+						this.setStyle('position', 'fixed').setStyles(currentPosition);
+					} else {
+
+						parent = this.getOffsetParent();
+						var position = this.getPosition(parent),
+							styles = this.getStyles('left', 'top');
+
+						if (parent && styles.left == 'auto' || styles.top == 'auto') this.setPosition(position);
+						if (this.getStyle('position') == 'static') this.setStyle('position', 'absolute');
+
+						position = {
+							x: styles.left.toInt() - scroll.x,
+							y: styles.top.toInt() - scroll.y
+						};
+
+						scrollFixer = function(){
+							if (!this.retrieve('pin:_pinned')) return;
+							var scroll = window.getScroll();
+							this.setStyles({
+								left: position.x + scroll.x,
+								top: position.y + scroll.y
+							});
+						}.bind(this);
+
+						this.store('pin:_scrollFixer', scrollFixer);
+						window.addEvent('scroll', scrollFixer);
+					}
+					this.store('pin:_pinned', true);
+				}
+
+			} else {
+				if (!this.retrieve('pin:_pinned')) return this;
+
+				parent = this.getParent();
+				var offsetParent = (parent.getComputedStyle('position') != 'static' ? parent : parent.getOffsetParent());
+
+				pinnedPosition = this.getPosition();
+
+				this.store('pin:_pinned', false);
+				scrollFixer = this.retrieve('pin:_scrollFixer');
+				if (!scrollFixer){
+					this.setStyles({
+						position: 'absolute',
+						top: pinnedPosition.y + scroll.y,
+						left: pinnedPosition.x + scroll.x
+					});
+				} else {
+					this.store('pin:_scrollFixer', null);
+					window.removeEvent('scroll', scrollFixer);
+				}
+				this.removeClass('isPinned');
+			}
+			return this;
+		},
+
+		unpin: function(){
+			return this.pin(false);
+		},
+
+		togglePin: function(){
+			return this.pin(!this.retrieve('pin:_pinned'));
+		}
+
+	});
+
+
 
 })();
 
@@ -6746,38 +6875,76 @@ Element.implement({
 /*
 ---
 
-script: Class.Occlude.js
+script: Element.Shortcuts.js
 
-name: Class.Occlude
+name: Element.Shortcuts
 
-description: Prevents a class from being applied to a DOM element twice.
+description: Extends the Element native object to include some shortcut methods.
 
-license: MIT-style license.
+license: MIT-style license
 
 authors:
   - Aaron Newton
 
 requires:
-  - Core/Class
-  - Core/Element
+  - Core/Element.Style
   - MooTools.More
 
-provides: [Class.Occlude]
+provides: [Element.Shortcuts]
 
 ...
 */
 
-Class.Occlude = new Class({
+Element.implement({
 
-	occlude: function(property, element){
-		element = document.id(element || this.element);
-		var instance = element.retrieve(property || this.property);
-		if (instance && !this.occluded)
-			return (this.occluded = instance);
+	isDisplayed: function(){
+		return this.getStyle('display') != 'none';
+	},
 
-		this.occluded = false;
-		element.store(property || this.property, this);
-		return this.occluded;
+	isVisible: function(){
+		var w = this.offsetWidth,
+			h = this.offsetHeight;
+		return (w == 0 && h == 0) ? false : (w > 0 && h > 0) ? true : this.style.display != 'none';
+	},
+
+	toggle: function(){
+		return this[this.isDisplayed() ? 'hide' : 'show']();
+	},
+
+	hide: function(){
+		var d;
+		try {
+			//IE fails here if the element is not in the dom
+			d = this.getStyle('display');
+		} catch(e){}
+		if (d == 'none') return this;
+		return this.store('element:_originalDisplay', d || '').setStyle('display', 'none');
+	},
+
+	show: function(display){
+		if (!display && this.isDisplayed()) return this;
+		display = display || this.retrieve('element:_originalDisplay') || 'block';
+		return this.setStyle('display', (display == 'none') ? 'block' : display);
+	},
+
+	swapClass: function(remove, add){
+		return this.removeClass(remove).addClass(add);
+	}
+
+});
+
+Document.implement({
+
+	clearSelection: function(){
+		if (window.getSelection){
+			var selection = window.getSelection();
+			if (selection && selection.removeAllRanges) selection.removeAllRanges();
+		} else if (document.selection && document.selection.empty){
+			try {
+				//IE fails here if selected element is not in dom
+				document.selection.empty();
+			} catch(e){}
+		}
 	}
 
 });
@@ -6919,6 +7086,93 @@ var IframeShim = this.IframeShim = new Class({
 window.addEvent('load', function(){
 	IframeShim.ready = true;
 });
+
+/*
+---
+
+script: String.QueryString.js
+
+name: String.QueryString
+
+description: Methods for dealing with URI query strings.
+
+license: MIT-style license
+
+authors:
+  - Sebastian Markbåge
+  - Aaron Newton
+  - Lennart Pilon
+  - Valerio Proietti
+
+requires:
+  - Core/Array
+  - Core/String
+  - MooTools.More
+
+provides: [String.QueryString]
+
+...
+*/
+
+(function(){
+
+/**
+ * decodeURIComponent doesn't do the correct thing with query parameter keys or
+ * values. Specifically, it leaves '+' as '+' when it should be converting them
+ * to spaces as that's the specification. When browsers submit HTML forms via
+ * GET, the values are encoded using 'application/x-www-form-urlencoded'
+ * which converts spaces to '+'.
+ *
+ * See: http://unixpapa.com/js/querystring.html for a description of the
+ * problem.
+ */
+var decodeComponent = function(str){
+	return decodeURIComponent(str.replace(/\+/g, ' '));
+};
+
+String.implement({
+
+	parseQueryString: function(decodeKeys, decodeValues){
+		if (decodeKeys == null) decodeKeys = true;
+		if (decodeValues == null) decodeValues = true;
+
+		var vars = this.split(/[&;]/),
+			object = {};
+		if (!vars.length) return object;
+
+		vars.each(function(val){
+			var index = val.indexOf('=') + 1,
+				value = index ? val.substr(index) : '',
+				keys = index ? val.substr(0, index - 1).match(/([^\]\[]+|(\B)(?=\]))/g) : [val],
+				obj = object;
+			if (!keys) return;
+			if (decodeValues) value = decodeComponent(value);
+			keys.each(function(key, i){
+				if (decodeKeys) key = decodeComponent(key);
+				var current = obj[key];
+
+				if (i < keys.length - 1) obj = obj[key] = current || {};
+				else if (typeOf(current) == 'array') current.push(value);
+				else obj[key] = current != null ? [current, value] : value;
+			});
+		});
+
+		return object;
+	},
+
+	cleanQueryString: function(method){
+		return this.split('&').filter(function(val){
+			var index = val.indexOf('='),
+				key = index < 0 ? '' : val.substr(0, index),
+				value = val.substr(index + 1);
+
+			return method ? method.call(null, key, value) : (value || value === 0);
+		}).join('&');
+	}
+
+});
+
+})();
 
 /*
 ---
@@ -7844,6 +8098,81 @@ Locale.define('en-US', 'FormValidator', {
 /*
 ---
 
+script: Fx.Elements.js
+
+name: Fx.Elements
+
+description: Effect to change any number of CSS properties of any number of Elements.
+
+license: MIT-style license
+
+authors:
+  - Valerio Proietti
+
+requires:
+  - Core/Fx.CSS
+  - MooTools.More
+
+provides: [Fx.Elements]
+
+...
+*/
+
+Fx.Elements = new Class({
+
+	Extends: Fx.CSS,
+
+	initialize: function(elements, options){
+		this.elements = this.subject = $$(elements);
+		this.parent(options);
+	},
+
+	compute: function(from, to, delta){
+		var now = {};
+
+		for (var i in from){
+			var iFrom = from[i], iTo = to[i], iNow = now[i] = {};
+			for (var p in iFrom) iNow[p] = this.parent(iFrom[p], iTo[p], delta);
+		}
+
+		return now;
+	},
+
+	set: function(now){
+		for (var i in now){
+			if (!this.elements[i]) continue;
+
+			var iNow = now[i];
+			for (var p in iNow) this.render(this.elements[i], p, iNow[p], this.options.unit);
+		}
+
+		return this;
+	},
+
+	start: function(obj){
+		if (!this.check(obj)) return this;
+		var from = {}, to = {};
+
+		for (var i in obj){
+			if (!this.elements[i]) continue;
+
+			var iProps = obj[i], iFrom = from[i] = {}, iTo = to[i] = {};
+
+			for (var p in iProps){
+				var parsed = this.prepare(this.elements[i], p, iProps[p]);
+				iFrom[p] = parsed.from;
+				iTo[p] = parsed.to;
+			}
+		}
+
+		return this.parent(from, to);
+	}
+
+});
+
+/*
+---
+
 script: Fx.Scroll.js
 
 name: Fx.Scroll
@@ -8082,115 +8411,6 @@ Fx.SmoothScroll = new Class({
 		return this;
 	}
 });
-
-/*
----
-
-script: Scroller.js
-
-name: Scroller
-
-description: Class which scrolls the contents of any Element (including the window) when the mouse reaches the Element's boundaries.
-
-license: MIT-style license
-
-authors:
-  - Valerio Proietti
-
-requires:
-  - Core/Events
-  - Core/Options
-  - Core/Element.Event
-  - Core/Element.Dimensions
-  - MooTools.More
-
-provides: [Scroller]
-
-...
-*/
-(function(){
-
-var Scroller = this.Scroller = new Class({
-
-	Implements: [Events, Options],
-
-	options: {
-		area: 20,
-		velocity: 1,
-		onChange: function(x, y){
-			this.element.scrollTo(x, y);
-		},
-		fps: 50
-	},
-
-	initialize: function(element, options){
-		this.setOptions(options);
-		this.element = document.id(element);
-		this.docBody = document.id(this.element.getDocument().body);
-		this.listener = (typeOf(this.element) != 'element') ? this.docBody : this.element;
-		this.timer = null;
-		this.bound = {
-			attach: this.attach.bind(this),
-			detach: this.detach.bind(this),
-			getCoords: this.getCoords.bind(this)
-		};
-	},
-
-	start: function(){
-		this.listener.addEvents({
-			mouseover: this.bound.attach,
-			mouseleave: this.bound.detach
-		});
-		return this;
-	},
-
-	stop: function(){
-		this.listener.removeEvents({
-			mouseover: this.bound.attach,
-			mouseleave: this.bound.detach
-		});
-		this.detach();
-		this.timer = clearInterval(this.timer);
-		return this;
-	},
-
-	attach: function(){
-		this.listener.addEvent('mousemove', this.bound.getCoords);
-	},
-
-	detach: function(){
-		this.listener.removeEvent('mousemove', this.bound.getCoords);
-		this.timer = clearInterval(this.timer);
-	},
-
-	getCoords: function(event){
-		this.page = (this.listener.get('tag') == 'body') ? event.client : event.page;
-		if (!this.timer) this.timer = this.scroll.periodical(Math.round(1000 / this.options.fps), this);
-	},
-
-	scroll: function(){
-		var size = this.element.getSize(),
-			scroll = this.element.getScroll(),
-			pos = ((this.element != this.docBody) && (this.element != window)) ? this.element.getOffsets() : {x: 0, y: 0},
-			scrollSize = this.element.getScrollSize(),
-			change = {x: 0, y: 0},
-			top = this.options.area.top || this.options.area,
-			bottom = this.options.area.bottom || this.options.area;
-		for (var z in this.page){
-			if (this.page[z] < (top + pos[z]) && scroll[z] != 0){
-				change[z] = (this.page[z] - top - pos[z]) * this.options.velocity;
-			} else if (this.page[z] + bottom > (size[z] + pos[z]) && scroll[z] + size[z] != scrollSize[z]){
-				change[z] = (this.page[z] - size[z] + bottom - pos[z]) * this.options.velocity;
-			}
-			change[z] = change[z].round();
-		}
-		if (change.y || change.x) this.fireEvent('change', [scroll.x + change.x, scroll.y + change.y]);
-	}
-
-});
-
-})();
-
 
 /*
 ---
@@ -8885,6 +9105,264 @@ Request.JSONP.request_map = {};
 /*
 ---
 
+script: Request.Periodical.js
+
+name: Request.Periodical
+
+description: Requests the same URL to pull data from a server but increases the intervals if no data is returned to reduce the load
+
+license: MIT-style license
+
+authors:
+  - Christoph Pojer
+
+requires:
+  - Core/Request
+  - MooTools.More
+
+provides: [Request.Periodical]
+
+...
+*/
+
+Request.implement({
+
+	options: {
+		initialDelay: 5000,
+		delay: 5000,
+		limit: 60000
+	},
+
+	startTimer: function(data){
+		var fn = function(){
+			if (!this.running) this.send({data: data});
+		};
+		this.lastDelay = this.options.initialDelay;
+		this.timer = fn.delay(this.lastDelay, this);
+		this.completeCheck = function(response){
+			clearTimeout(this.timer);
+			this.lastDelay = (response) ? this.options.delay : (this.lastDelay + this.options.delay).min(this.options.limit);
+			this.timer = fn.delay(this.lastDelay, this);
+		};
+		return this.addEvent('complete', this.completeCheck);
+	},
+
+	stopTimer: function(){
+		clearTimeout(this.timer);
+		return this.removeEvent('complete', this.completeCheck);
+	}
+
+});
+
+/*
+---
+
+script: Array.Extras.js
+
+name: Array.Extras
+
+description: Extends the Array native object to include useful methods to work with arrays.
+
+license: MIT-style license
+
+authors:
+  - Christoph Pojer
+  - Sebastian Markbåge
+
+requires:
+  - Core/Array
+  - MooTools.More
+
+provides: [Array.Extras]
+
+...
+*/
+
+(function(nil){
+
+Array.implement({
+
+	min: function(){
+		return Math.min.apply(null, this);
+	},
+
+	max: function(){
+		return Math.max.apply(null, this);
+	},
+
+	average: function(){
+		return this.length ? this.sum() / this.length : 0;
+	},
+
+	sum: function(){
+		var result = 0, l = this.length;
+		if (l){
+			while (l--){
+				if (this[l] != null) result += parseFloat(this[l]);
+			}
+		}
+		return result;
+	},
+
+	unique: function(){
+		return [].combine(this);
+	},
+
+	shuffle: function(){
+		for (var i = this.length; i && --i;){
+			var temp = this[i], r = Math.floor(Math.random() * ( i + 1 ));
+			this[i] = this[r];
+			this[r] = temp;
+		}
+		return this;
+	},
+
+	reduce: function(fn, value){
+		for (var i = 0, l = this.length; i < l; i++){
+			if (i in this) value = value === nil ? this[i] : fn.call(null, value, this[i], i, this);
+		}
+		return value;
+	},
+
+	reduceRight: function(fn, value){
+		var i = this.length;
+		while (i--){
+			if (i in this) value = value === nil ? this[i] : fn.call(null, value, this[i], i, this);
+		}
+		return value;
+	},
+
+	pluck: function(prop){
+		return this.map(function(item){
+			return item[prop];
+		});
+	}
+
+});
+
+})();
+
+/*
+---
+
+script: Date.Extras.js
+
+name: Date.Extras
+
+description: Extends the Date native object to include extra methods (on top of those in Date.js).
+
+license: MIT-style license
+
+authors:
+  - Aaron Newton
+  - Scott Kyle
+
+requires:
+  - Date
+
+provides: [Date.Extras]
+
+...
+*/
+
+Date.implement({
+
+	timeDiffInWords: function(to){
+		return Date.distanceOfTimeInWords(this, to || new Date);
+	},
+
+	timeDiff: function(to, separator){
+		if (to == null) to = new Date;
+		var delta = ((to - this) / 1000).floor().abs();
+
+		var vals = [],
+			durations = [60, 60, 24, 365, 0],
+			names = ['s', 'm', 'h', 'd', 'y'],
+			value, duration;
+
+		for (var item = 0; item < durations.length; item++){
+			if (item && !delta) break;
+			value = delta;
+			if ((duration = durations[item])){
+				value = (delta % duration);
+				delta = (delta / duration).floor();
+			}
+			vals.unshift(value + (names[item] || ''));
+		}
+
+		return vals.join(separator || ':');
+	}
+
+}).extend({
+
+	distanceOfTimeInWords: function(from, to){
+		return Date.getTimePhrase(((to - from) / 1000).toInt());
+	},
+
+	getTimePhrase: function(delta){
+		var suffix = (delta < 0) ? 'Until' : 'Ago';
+		if (delta < 0) delta *= -1;
+
+		var units = {
+			minute: 60,
+			hour: 60,
+			day: 24,
+			week: 7,
+			month: 52 / 12,
+			year: 12,
+			eon: Infinity
+		};
+
+		var msg = 'lessThanMinute';
+
+		for (var unit in units){
+			var interval = units[unit];
+			if (delta < 1.5 * interval){
+				if (delta > 0.75 * interval) msg = unit;
+				break;
+			}
+			delta /= interval;
+			msg = unit + 's';
+		}
+
+		delta = delta.round();
+		return Date.getMsg(msg + suffix, delta).substitute({delta: delta});
+	}
+
+}).defineParsers(
+
+	{
+		// "today", "tomorrow", "yesterday"
+		re: /^(?:tod|tom|yes)/i,
+		handler: function(bits){
+			var d = new Date().clearTime();
+			switch (bits[0]){
+				case 'tom': return d.increment();
+				case 'yes': return d.decrement();
+				default: return d;
+			}
+		}
+	},
+
+	{
+		// "next Wednesday", "last Thursday"
+		re: /^(next|last) ([a-z]+)$/i,
+		handler: function(bits){
+			var d = new Date().clearTime();
+			var day = d.getDay();
+			var newDay = Date.parseDay(bits[2], true);
+			var addDays = newDay - day;
+			if (newDay <= day) addDays += 7;
+			if (bits[1] == 'last') addDays -= 7;
+			return d.set('date', d.getDate() + addDays);
+		}
+	}
+
+).alias('timeAgoInWords', 'timeDiffInWords');
+
+/*
+---
+
 name: Hash
 
 description: Contains Hash Prototypes. Provides a means for overcoming the JavaScript practical impossibility of extending native Objects.
@@ -9191,93 +9669,6 @@ Number.implement({
 /*
 ---
 
-script: String.QueryString.js
-
-name: String.QueryString
-
-description: Methods for dealing with URI query strings.
-
-license: MIT-style license
-
-authors:
-  - Sebastian Markbåge
-  - Aaron Newton
-  - Lennart Pilon
-  - Valerio Proietti
-
-requires:
-  - Core/Array
-  - Core/String
-  - MooTools.More
-
-provides: [String.QueryString]
-
-...
-*/
-
-(function(){
-
-/**
- * decodeURIComponent doesn't do the correct thing with query parameter keys or
- * values. Specifically, it leaves '+' as '+' when it should be converting them
- * to spaces as that's the specification. When browsers submit HTML forms via
- * GET, the values are encoded using 'application/x-www-form-urlencoded'
- * which converts spaces to '+'.
- *
- * See: http://unixpapa.com/js/querystring.html for a description of the
- * problem.
- */
-var decodeComponent = function(str){
-	return decodeURIComponent(str.replace(/\+/g, ' '));
-};
-
-String.implement({
-
-	parseQueryString: function(decodeKeys, decodeValues){
-		if (decodeKeys == null) decodeKeys = true;
-		if (decodeValues == null) decodeValues = true;
-
-		var vars = this.split(/[&;]/),
-			object = {};
-		if (!vars.length) return object;
-
-		vars.each(function(val){
-			var index = val.indexOf('=') + 1,
-				value = index ? val.substr(index) : '',
-				keys = index ? val.substr(0, index - 1).match(/([^\]\[]+|(\B)(?=\]))/g) : [val],
-				obj = object;
-			if (!keys) return;
-			if (decodeValues) value = decodeComponent(value);
-			keys.each(function(key, i){
-				if (decodeKeys) key = decodeComponent(key);
-				var current = obj[key];
-
-				if (i < keys.length - 1) obj = obj[key] = current || {};
-				else if (typeOf(current) == 'array') current.push(value);
-				else obj[key] = current != null ? [current, value] : value;
-			});
-		});
-
-		return object;
-	},
-
-	cleanQueryString: function(method){
-		return this.split('&').filter(function(val){
-			var index = val.indexOf('='),
-				key = index < 0 ? '' : val.substr(0, index),
-				value = val.substr(index + 1);
-
-			return method ? method.call(null, key, value) : (value || value === 0);
-		}).join('&');
-	}
-
-});
-
-})();
-
-/*
----
-
 script: URI.js
 
 name: URI
@@ -9444,6 +9835,64 @@ String.implement({
 });
 
 })();
+
+/*
+---
+
+script: URI.Relative.js
+
+name: URI.Relative
+
+description: Extends the URI class to add methods for computing relative and absolute urls.
+
+license: MIT-style license
+
+authors:
+  - Sebastian Markbåge
+
+
+requires:
+  - Class.refactor
+  - URI
+
+provides: [URI.Relative]
+
+...
+*/
+
+URI = Class.refactor(URI, {
+
+	combine: function(bits, base){
+		if (!base || bits.scheme != base.scheme || bits.host != base.host || bits.port != base.port)
+			return this.previous.apply(this, arguments);
+		var end = bits.file + (bits.query ? '?' + bits.query : '') + (bits.fragment ? '#' + bits.fragment : '');
+
+		if (!base.directory) return (bits.directory || (bits.file ? '' : './')) + end;
+
+		var baseDir = base.directory.split('/'),
+			relDir = bits.directory.split('/'),
+			path = '',
+			offset;
+
+		var i = 0;
+		for (offset = 0; offset < baseDir.length && offset < relDir.length && baseDir[offset] == relDir[offset]; offset++);
+		for (i = 0; i < baseDir.length - offset - 1; i++) path += '../';
+		for (i = offset; i < relDir.length - 1; i++) path += relDir[i] + '/';
+
+		return (path || (bits.file ? '' : './')) + end;
+	},
+
+	toAbsolute: function(base){
+		base = new URI(base);
+		if (base) base.set('directory', '').set('file', '');
+		return this.toRelative(base);
+	},
+
+	toRelative: function(base){
+		return this.get('value', new URI(base));
+	}
+
+});
 
 /*
 ---

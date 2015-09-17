@@ -40,7 +40,7 @@ Asset = Object.append(Asset, {
     }
 });
 
-Element.implement({
+/*Element.implement({
     getComputedStyle: function (p) {
         var f = (document.html.style.cssFloat == null) ? 'styleFloat' : 'cssFloat',
             d = Element.getDocument(this).defaultView,
@@ -102,7 +102,7 @@ Element.implement({
         }, this);
         return Object.append(s, sts);
     }
-});
+});*/
 
 /*
  ---
@@ -399,26 +399,3 @@ Element.implement({
     }
 });
 
-Number.implement({
-    formatCurrency: function (decimals) {
-        if (this.format) {
-            var locale = Locale.get('Number.currency') || {};
-            if (locale.scientific == null) locale.scientific = false;
-            locale.decimals = decimals != null ? decimals
-                : (locale.decimals == null ? 2 : locale.decimals);
-
-            return this.format(locale);
-        }
-
-    },
-    formatPercentage: function(decimals){
-        if (this.format) {
-            var locale = Locale.get('Number.percentage') || {};
-            if (locale.suffix == null) locale.suffix = '%';
-            locale.decimals = decimals != null ? decimals
-                : (locale.decimals == null ? 2 : locale.decimals);
-
-            return this.format(locale);
-        }
-   	}
-});

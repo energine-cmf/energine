@@ -111,7 +111,7 @@ namespace Energine\share\gears {
             if ($className == 'Sitemap') {
                 throw new \Exception('Use Registry::getMap($siteID) instead.');
             }
-            $className = 'Energine\\share\\gears\\' . $className;
+
             return $this->offsetGet($className);
         }
 
@@ -328,19 +328,24 @@ namespace Energine\share\gears {
         /**
          * Offset to retrieve
          * @link http://php.net/manual/en/arrayaccess.offsetget.php
-         * @param mixed $className <p>
+         * @param mixed $fullClassName <p>
          * The offset to retrieve.
          * </p>
          * @return mixed Can return all value types.
          * @since 5.0.0
          */
-        public function offsetGet($className) {
+        public function offsetGet($fullClassName) {
             $result = NULL;
+            $c = explode('\\', $fullClassName);
+            $className = array_pop($c);
+            if(!sizeof($c)){
+                $fullClassName = 'Energine\\share\\gears\\' . $className;
+            }
             if (isset($this->entities[$className])) {
                 $result = $this->entities[$className];
             } //поскольку предполагается хранить синглтоны, пробуем создать соответствующий класс ориентируясь на имя
             else {
-                $result = new $className();
+                $result = new $fullClassName();
                 $this->entities[$className] = $result;
             }
             return $result;
